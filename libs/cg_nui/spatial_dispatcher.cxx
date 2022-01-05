@@ -188,8 +188,27 @@ namespace cgv {
 			// if we had object in focus before
 			if (rfi.foc_info_ptr && rfi.foc_info_ptr->object) {
 				// and if this keeps focus, nothing to be done here
-				if (foc_info_ptr && (foc_info_ptr->object == rfi.foc_info_ptr->object))
+				if (foc_info_ptr && (foc_info_ptr->object == rfi.foc_info_ptr->object)) {
 					focus_kept = true;
+					// check if dispatch mode stayed the same but primitive index changed
+					if (rfi.dis_info_ptr_ptr && *rfi.dis_info_ptr_ptr &&
+						((*rfi.dis_info_ptr_ptr)->mode == dispatch_mode::pointing ||
+							(*rfi.dis_info_ptr_ptr)->mode == dispatch_mode::proximity) &&
+						(*rfi.dis_info_ptr_ptr)->mode == di_ptr->mode &&
+						reinterpret_cast<const hit_dispatch_info*>(*rfi.dis_info_ptr_ptr)->get_hit_info()->primitive_index !=
+						reinterpret_cast<const hit_dispatch_info*>(di_ptr)->get_hit_info()->primitive_index)
+					{
+						//std::cout << "index change:"
+						//	<< reinterpret_cast<const hit_dispatch_info*>(*rfi.dis_info_ptr_ptr)->get_hit_info()->primitive_index
+						//	<< " -> "
+						//	<< reinterpret_cast<const hit_dispatch_info*>(di_ptr)->get_hit_info()->primitive_index 
+						//	<< std::endl;
+
+						// announce change of primitive index to object
+						foc_info_ptr->object->get_interface<focusable>()->focus_change(
+							focus_change_action::index_change, rfa, { foc_att, foc_info_ptr->config }, e, *di_ptr, 0);
+					}
+				}
 				else {
 					focus_kept = false;
 					if (rfi.foc_info_ptr) {

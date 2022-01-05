@@ -89,7 +89,8 @@ namespace cgv {
 			detach,
 			reconfigure,
 			reattach,
-			attach
+			attach,
+			index_change
 		};
 		/// focus request extends the demand by a flag that has to be actively set to ask for a focus change
 		struct focus_request
