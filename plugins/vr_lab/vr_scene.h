@@ -1,14 +1,20 @@
 #include <cgv/base/node.h>
+#include <cgv/base/register.h>
 #include <cgv/render/drawable.h>
 #include <cgv_gl/rectangle_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/cone_renderer.h>
+#include <cgv_gl/sphere_renderer.h>
 #include <cgv_proc/terrain_renderer.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <vr_view_interactor.h>
-#include "label_manager.h"
+#include <3rd/screen_capture_lite/include/ScreenCapture.h>
+#include <cg_nui/label_manager.h>
+#include <cg_nui/spatial_dispatcher.h>
+#include "vr_table.h"
+#include "table_gizmo.h"
 
 #include "lib_begin.h"
 
@@ -46,16 +52,21 @@ extern CGV_API cgv::reflect::enum_reflection_traits<GroundMode> get_reflection_t
 extern CGV_API cgv::reflect::enum_reflection_traits<EnvironmentMode> get_reflection_traits(const EnvironmentMode&);
 
 /// class manages static and dynamic parts of scene
-class vr_scene :
+class CGV_API vr_scene :
 	public cgv::base::node,
+	public cgv::base::registration_listener,
 	public cgv::render::drawable,
 	public cgv::gui::event_handler,
+	public cgv::nui::spatial_dispatcher,
 	public cgv::gui::provider
 {
 private:
 	// keep reference to vr view (initialized in init function)
 	vr_view_interactor* vr_view_ptr;
-protected:
+
+	// keep reference to vr table
+	vr_table_ptr table;
+
 	//@name boxes and table
 	//@{	
 
@@ -66,45 +77,11 @@ protected:
 	// rendering style for rendering of boxes
 	cgv::render::box_render_style box_style;
 
-	// use cones for the turn table
-	std::vector<vec4> cone_vertices;
-	std::vector<rgb> cone_colors;
-
-	// rendering style for rendering of cones
-	cgv::render::cone_render_style cone_style;
-
 	cgv::render::texture skybox;
 	cgv::render::shader_program cubemap_prog;
 
 	bool invert_skybox;
 	std::string skybox_file_names;
-
-	/**@name ui parameters for table construction*/
-	//@{
-	/// table mode
-	TableMode table_mode;
-	/// global sizes 
-	union {
-		/// width of rectangular table
-		float table_width;
-		/// top radius of round table
-		float table_top_radius;
-	};
-	union {
-		/// depth of rectangular table
-		float table_depth;
-		/// bottom radius of round table
-		float table_bottom_radius;
-	};
-	/// height of table measured from ground to top face
-	float table_height;
-	/// width of legs of rectangular table or radius of central leg of round table
-	float leg_width;
-	/// offset of legs relative to table width/radius 
-	float percentual_leg_offset;
-	/// color of table top and legs
-	rgb table_color, leg_color;
-	//@}
 
 	GroundMode ground_mode;
 
@@ -122,10 +99,6 @@ protected:
 	bool draw_room, draw_walls, draw_ceiling;
 	float room_width, room_depth, room_height, wall_width;
 
-	/// construct boxes that represent a rectangular table of dimensions tw,td,th, leg width tW, percentual leg offset and table/leg colors
-	void construct_rectangular_table(float tw, float td, float th, float tW, float tpO, rgb table_clr, rgb leg_clr);
-	/// construct cones that represent a round table of dimensions top/bottom radius ttr/tbr, height th, leg width tW, percentual leg offset and table/leg colors
-	void construct_round_table(float ttr, float tbr, float th, float tW, float tpO, rgb table_clr, rgb leg_clr);
 	/// construct boxes that represent a room of dimensions w,d,h and wall width W
 	void construct_room(float w, float d, float h, float W, bool walls, bool ceiling);
 	/// construct boxes for environment
@@ -134,8 +107,6 @@ protected:
 	void build_scene(float w, float d, float h, float W);
 	/// clear scene geometry containers
 	void clear_scene();
-	/// update labels in ui that change based on table type
-	void update_table_labels();
 	//@}
 
 	/// store poses of different coordinate systems. These are computed in init_frame() function
@@ -147,7 +118,7 @@ protected:
 	//@name labels
 	//@{	
 	/// use label manager to organize labels in texture
-	label_manager lm;
+	cgv::nui::label_manager lm;
 
 	/// store label placements for rectangle renderer
 	std::vector<vec3> label_positions;
@@ -162,7 +133,20 @@ protected:
 	cgv::render::rectangle_render_style rrs;
 	/// attribute array manager for rectangle renderer
 	cgv::render::attribute_array_manager aam;
+protected:
+	bool draw_controller_mode;
+	cgv::render::sphere_render_style srs;
+	cgv::render::cone_render_style crs;
+	std::vector<vec3> sphere_positions;
+	std::vector<rgb> sphere_colors;
+	std::vector<vec3> cone_positions;
+	std::vector<rgb> cone_colors;
+	void construct_hit_geometry();
 public:
+	/// overload to handle registration events
+	void register_object(base_ptr object, const std::string& options);
+	/// overload to handle unregistration events
+	void unregister_object(base_ptr object, const std::string& options);
 	/// different coordinate systems used to place labels
 	enum CoordinateSystem
 	{
@@ -253,8 +237,6 @@ public:
 	/// draw transparent part here
 	void finish_frame(cgv::render::context& ctx);
 	//@}
-	/// provide access to table dimensions
-	vec3 get_table_extent() const { return vec3(table_width, table_height, table_depth); }
 	/// check whether coordinate system is available
 	bool is_coordsystem_valid(CoordinateSystem cs) const { return valid[cs]; }
 	/// provide access to coordinate system - check validity with is_coordsystem_valid() before

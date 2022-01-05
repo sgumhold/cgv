@@ -227,11 +227,13 @@ void context::configure_new_child(base_ptr child)
 	if (is_created()) {
 		make_current();
 
+		// use last traverser constructor argument to ensure that set_context and init are also called on hidden drawables
+
 		single_method_action<cgv::render::drawable,void,cgv::render::context*> sma(this, &drawable::set_context);
-		traverser(sma, "nc").traverse(child);
+		traverser(sma, "nc", cgv::base::TS_DEPTH_FIRST, false, true).traverse(child);
 
 		single_method_action<cgv::render::drawable,bool,cgv::render::context&> sma1(*this, &drawable::init);
-		traverser(sma1, "nc").traverse(child);
+		traverser(sma1, "nc", cgv::base::TS_DEPTH_FIRST, false, true).traverse(child);
 
 		post_redraw();
 	}

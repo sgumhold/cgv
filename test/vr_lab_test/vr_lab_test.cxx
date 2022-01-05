@@ -105,6 +105,8 @@ public:
 		plot.adjust_domain_to_data();
 		plot.adjust_tick_marks();
 		plot.adjust_extent_to_domain_aspect_ratio();
+
+		plot.place_center(vec3(0, 0.5f * plot.get_extent()(1), -0.5f));
 	}
 	void on_set(void* member_ptr)
 	{
@@ -194,8 +196,8 @@ public:
 	void draw(cgv::render::context& ctx)
 	{
 		ctx.push_modelview_matrix();
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 1.5f, 0)));
-	
+		ctx.mul_modelview_matrix(mat4(3, 4, &get_scene_ptr()->get_coordsystem(vr::vr_scene::CS_TABLE)(0, 0)));
+		
 		if (show_plot)
 			plot.draw(ctx);
 

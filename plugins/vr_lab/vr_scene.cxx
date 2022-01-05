@@ -10,7 +10,30 @@
 #include <cgv/defines/quote.h>
 #include <random>
 
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 namespace vr {
+
+void vr_scene::register_object(base_ptr object, const std::string& options)
+{
+	if (object->get_interface<vr_table>())
+		table = object->cast<vr_table>();
+	auto* foc_ptr = object->get_interface<cgv::nui::focusable>();
+	if (!foc_ptr)
+		return;
+	std::cout << "register focusable: " << (object->get_named() ? object->get_named()->get_name() : object->get_type_name()) << std::endl;
+	add_object(object);
+}
+/// overload to handle unregistration events
+void vr_scene::unregister_object(base_ptr object, const std::string& options)
+{
+	auto* foc_ptr = object->get_interface<cgv::nui::focusable>();
+	if (!foc_ptr)
+		return;
+	std::cout << "unregister focusable: " << (object->get_named() ? object->get_named()->get_name() : object->get_type_name()) << std::endl;
+	remove_object(object);
+}
 
 /// set the common border color of labels
 void vr_scene::set_label_border_color(const rgba& border_color)
@@ -23,67 +46,6 @@ void vr_scene::set_label_border_width(float border_width)
 {
 	rrs.percentual_border_width = border_width;
 	update_member(&rrs.percentual_border_width);
-}
-
-void vr_scene::construct_rectangular_table(float tw, float td, float th, float tW, float tpO, rgb table_clr, rgb leg_clr) 
-{
-	float tO = tpO * tw;
-	float x0 = -0.5f * tw;
-	float x1 = -0.5f * tw + tO;
-	float x2 = -0.5f * tw + tO + tW;
-	float x3 = 0.5f * tw - tO - tW;
-	float x4 = 0.5f * tw - tO;
-	float x5 = 0.5f * tw;
-	float y0 = 0;
-	float y1 = th - tW;
-	float y2 = th;
-	float z0 = -0.5f * td;
-	float z1 = -0.5f * td + tO;
-	float z2 = -0.5f * td + tO + tW;
-	float z3 =  0.5f * td - tO - tW;
-	float z4 =  0.5f * td - tO;
-	float z5 =  0.5f * td;
-	boxes.push_back(box3(vec3(x0, y1, z0), vec3(x5, y2, z5))); box_colors.push_back(table_clr);
-
-	boxes.push_back(box3(vec3(x1, y0, z1), vec3(x2, y1, z2))); box_colors.push_back(leg_clr);
-	boxes.push_back(box3(vec3(x3, y0, z1), vec3(x4, y1, z2))); box_colors.push_back(leg_clr);
-	boxes.push_back(box3(vec3(x3, y0, z3), vec3(x4, y1, z4))); box_colors.push_back(leg_clr);
-	boxes.push_back(box3(vec3(x1, y0, z3), vec3(x2, y1, z4))); box_colors.push_back(leg_clr);
-}
-
-void vr_scene::construct_round_table(float ttr, float tbr, float th, float tW, float tpO, rgb table_clr, rgb leg_clr)
-{
-	float r0 = 0.5f*tbr;
-	float r1 = 0.5f*(1.0f-tpO)*tbr;
-	float r2 = 2*tW;
-	float r3 = 2*tW;
-	float r4 = 0.5f*(1.0f - tpO)*ttr;
-	float r5 = 0.5f*ttr;
-	float y0 = 0;
-	float y1 = tW;
-	float y2 = 5 * tW;
-	float y3 = th - 5 * tW;
-	float y4 = th - tW;
-	float y5 = th;
-	cone_vertices.push_back(vec4(0, y0, 0, r0));
-	cone_vertices.push_back(vec4(0, y1, 0, r0));
-	
-	cone_vertices.push_back(vec4(0, y1, 0, r1));
-	cone_vertices.push_back(vec4(0, y2, 0, r2));
-	
-	cone_vertices.push_back(vec4(0, y2, 0, r2));
-	cone_vertices.push_back(vec4(0, y3, 0, r3));
-
-	cone_vertices.push_back(vec4(0, y3, 0, r3));
-	cone_vertices.push_back(vec4(0, y4, 0, r4));
-	cone_colors.push_back(table_clr);
-	cone_colors.push_back(table_clr);
-	for (size_t i = 2; i < cone_vertices.size(); ++i)
-		cone_colors.push_back(leg_clr);
-	cone_vertices.push_back(vec4(0, y4, 0, r5));
-	cone_vertices.push_back(vec4(0, y5, 0, r5));
-	cone_colors.push_back(table_clr);
-	cone_colors.push_back(table_clr);
 }
 
 void vr_scene::construct_room(float w, float d, float h, float W, bool walls, bool ceiling) {
@@ -140,24 +102,12 @@ void vr_scene::build_scene(float w, float d, float h, float W)
 	if (ground_mode == GM_BOXES) {
 		construct_ground(0.3f, 3 * w, 3 * d, w, d, h);
 	}
-	switch (table_mode) {
-	case TM_RECTANGULAR:
-		construct_rectangular_table(table_width, table_depth, table_height, leg_width, percentual_leg_offset, table_color, leg_color);
-		break;
-	case TM_ROUND:
-		construct_round_table(table_top_radius, table_bottom_radius, table_height, leg_width, percentual_leg_offset, table_color, leg_color);
-		break;
-	default:
-		break;
-	}
 }
 
 void vr_scene::clear_scene()
 {
 	boxes.clear();
 	box_colors.clear();
-	cone_vertices.clear();
-	cone_colors.clear();
 }
 
 vr_scene::vr_scene() : lm(false)
@@ -167,17 +117,14 @@ vr_scene::vr_scene() : lm(false)
 
 	std::fill(valid, valid + 5, false);
 
-	table_mode = TM_ROUND;
+	draw_controller_mode = true;
+	crs.radius = 0.005f;
+	crs.rounded_caps = true;
+	srs.radius = 0.005f;
+
 	draw_room = true;
 	draw_walls = false;
 	draw_ceiling = false;
-	table_color = rgb(0.3f, 0.2f, 0.0f);
-	table_width = 1.6f;
-	table_depth = 0.8f;
-	table_height = 0.7f;
-	leg_color = rgb(0.2f, 0.1f, 0.1f);
-	leg_width = 0.03f;
-	percentual_leg_offset = 0.03f;
 
 	ground_mode = GM_BOXES;
 
@@ -210,13 +157,6 @@ vr_scene::vr_scene() : lm(false)
 	build_scene(room_width, room_depth, room_height, wall_width);
 
 	pixel_scale = 0.001f;
-
-	on_set(&table_width);
-}
-
-cgv::reflect::enum_reflection_traits<TableMode> get_reflection_traits(const TableMode& tm)
-{
-	return cgv::reflect::enum_reflection_traits<TableMode>("hide,rectangular,round");
 }
 
 cgv::reflect::enum_reflection_traits<GroundMode> get_reflection_traits(const GroundMode& gm)
@@ -234,14 +174,6 @@ bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 	return 		
 		rh.reflect_member("invert_skybox", invert_skybox) &&
 		rh.reflect_member("skybox_file_names", skybox_file_names) &&
-		rh.reflect_member("table_mode", table_mode) &&
-		rh.reflect_member("table_color", table_color) &&
-		rh.reflect_member("table_width", table_width) &&
-		rh.reflect_member("table_depth", table_depth) &&
-		rh.reflect_member("table_height", table_height) &&
-		rh.reflect_member("table_leg_color", leg_color) &&
-		rh.reflect_member("table_legs", leg_width) &&
-		rh.reflect_member("percentual_leg_offset", percentual_leg_offset) &&
 		rh.reflect_member("draw_room", draw_room) &&
 		rh.reflect_member("room_width", room_width) &&
 		rh.reflect_member("room_depth", room_depth) &&
@@ -258,6 +190,8 @@ bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 void vr_scene::on_set(void* member_ptr)
 {
 	if (member_ptr == &ground_mode) {
+		clear_scene();
+		build_scene(room_width, room_depth, room_height, wall_width);
 		if (ground_mode == GM_TERRAIN && get_context()) {
 			cgv::render::context& ctx = *get_context();
 			static bool terrain_textures_loaded = false;
@@ -332,25 +266,9 @@ void vr_scene::on_set(void* member_ptr)
 			}
 		}		
 	}
-	if (member_ptr >= &table_width && member_ptr < &leg_color + 1) {
-		switch (table_mode) {
-		case TM_RECTANGULAR :
-			boxes.resize(boxes.size() - 5);
-			box_colors.resize(box_colors.size() - 5);
-			construct_rectangular_table(table_width, table_depth, table_height, leg_width, percentual_leg_offset, table_color, leg_color);
-			break;
-		case TM_ROUND:
-			cone_vertices.clear();
-			cone_colors.clear();
-			construct_round_table(table_top_radius, table_bottom_radius, table_height, leg_width, percentual_leg_offset, table_color, leg_color);
-			break;
-		}
-	}
-	if (member_ptr == &table_mode || member_ptr == &draw_room || member_ptr == &ground_mode || member_ptr == &draw_walls || member_ptr == &draw_ceiling || (member_ptr >= &room_width && member_ptr < &wall_width + 1)) {
+	if (draw_room && (member_ptr == &draw_ceiling || member_ptr == &draw_walls || member_ptr == &room_depth || member_ptr == &room_width || member_ptr == &room_height || member_ptr == &wall_width)) {
 		clear_scene();
 		build_scene(room_width, room_depth, room_height, wall_width);
-		if (member_ptr == &table_mode)
-			update_table_labels();
 	}
 	update_member(member_ptr);
 	post_redraw();
@@ -358,19 +276,20 @@ void vr_scene::on_set(void* member_ptr)
 
 bool vr_scene::init(cgv::render::context& ctx)
 {
-	for (size_t li = 0; li < ctx.get_nr_default_light_sources(); ++li) {
-		cgv::media::illum::light_source ls = ctx.get_default_light_source(li);
-		ls.set_local_to_eye(false);
-		ctx.set_default_light_source(li, ls);
-	}
+
+//	for (size_t li = 0; li < ctx.get_nr_default_light_sources(); ++li) {
+//		cgv::media::illum::light_source ls = ctx.get_default_light_source(li);
+//		ls.set_local_to_eye(false);
+//		ctx.set_default_light_source(li, ls);
+//	}
 
 	if (!cubemap_prog.build_program(ctx, "cubemap.glpr", true)) {
 		std::cerr << "could not build cubemap program" << std::endl;
 	}
 
 	cgv::render::ref_sphere_renderer(ctx, 1);
-	cgv::render::ref_box_renderer(ctx, 1);
 	cgv::render::ref_cone_renderer(ctx, 1);
+	cgv::render::ref_box_renderer(ctx, 1);
 	cgv::render::ref_rectangle_renderer(ctx, 1);
 	cgv::render::ref_terrain_renderer(ctx, 1);
 
@@ -423,7 +342,12 @@ void vr_scene::init_frame(cgv::render::context& ctx)
 	valid[0] = valid[1] = true, true;
 	valid[2] = valid[3] = valid[4] = false;
 	// update table pose
-	cgv::math::pose_position(pose[CS_TABLE]) = vec3(0.0f, table_height, 0.0f);
+	if (table) {
+		mat4 M = table->get_transform();
+		pose[CS_TABLE] = mat34(4, 4, &M(0, 0));
+	}
+	else
+		cgv::math::pose_position(pose[CS_TABLE]) = vec3(0.0f, 0.7f, 0.0f);
 	// extract poses from tracked vr devices
 	if (vr_view_ptr) {
 		const auto* cs = vr_view_ptr->get_current_vr_state();
@@ -444,7 +368,7 @@ void vr_scene::init_frame(cgv::render::context& ctx)
 void vr_scene::clear(cgv::render::context& ctx)
 {
 	cgv::render::ref_sphere_renderer(ctx, -1);
-	cgv::render::ref_box_renderer(ctx,-1);
+	cgv::render::ref_box_renderer(ctx, -1);
 	cgv::render::ref_cone_renderer(ctx, -1);
 	cgv::render::ref_terrain_renderer(ctx, -1);
 	aam.destruct(ctx);
@@ -454,14 +378,15 @@ void vr_scene::clear(cgv::render::context& ctx)
 
 void vr_scene::draw(cgv::render::context& ctx)
 {
+	set_modelview_projection_window_matrix(ctx);
+
 	bool repack = lm.is_packing_outofdate();
 	lm.ensure_texture_uptodate(ctx);
 	if (repack) {
 		for (uint32_t li = 0; li < label_texture_ranges.size(); ++li)
 			label_texture_ranges[li] = lm.get_texcoord_range(li);
 	}
-
-	if ((ground_mode == GM_BOXES) || draw_room || table_mode != TM_HIDE) {
+	if ((ground_mode == GM_BOXES) || draw_room) {
 		// activate render styles
 		auto& br = cgv::render::ref_box_renderer(ctx);
 		br.set_render_style(box_style);
@@ -470,14 +395,6 @@ void vr_scene::draw(cgv::render::context& ctx)
 		br.set_box_array(ctx, boxes);
 		br.set_color_array(ctx, box_colors);
 		br.render(ctx, 0, (GLsizei)boxes.size());
-
-		if (!cone_vertices.empty()) {
-			auto& cr = cgv::render::ref_cone_renderer(ctx);
-			cr.set_render_style(cone_style);
-			cr.set_sphere_array(ctx, cone_vertices);
-			cr.set_color_array(ctx, cone_colors);
-			cr.render(ctx, 0, cone_vertices.size());
-		}
 	}
 	if (ground_mode == GM_TERRAIN && !custom_indices.empty()) {
 		ctx.push_modelview_matrix();
@@ -489,7 +406,6 @@ void vr_scene::draw(cgv::render::context& ctx)
 			tr.render(ctx, 0, custom_indices.size());
 		ctx.pop_modelview_matrix();
 	}
-
 	if (environment_mode == EM_SKYBOX && skybox.is_created()) {
 		// lastly render the environment
 		GLint prev_depth_func;
@@ -503,6 +419,53 @@ void vr_scene::draw(cgv::render::context& ctx)
 				skybox.disable(ctx);
 			glDepthFunc(prev_depth_func);
 		cubemap_prog.disable(ctx);
+	}
+	if (draw_controller_mode) {
+		auto* state_ptr = vr_view_ptr->get_current_vr_state();
+		if (state_ptr) {
+			sphere_positions.clear();
+			sphere_colors.clear();
+			cone_positions.clear();
+			cone_colors.clear();
+			for (int ci = 0; ci < 2; ++ci) {
+				vec3 ro, rd;
+				state_ptr->controller[ci].put_ray(ro, rd);
+				if (ctrl_infos[ci].grabbing) {
+					sphere_positions.push_back(ro + max_grabbing_distance * rd);
+					sphere_colors.push_back(ctrl_infos[ci].color);
+				}
+				if (ctrl_infos[ci].pointing) {
+					cone_positions.push_back(ro + min_pointing_distance * rd);
+					cone_positions.push_back(ro + max_pointing_distance * rd);
+					auto iter = dis_info_hid_map.find({ cgv::nui::hid_category::controller, vr_view_ptr->get_current_vr_kit()->get_handle(), int16_t(ci) });
+					if (iter != dis_info_hid_map.end()) {
+						if (iter->second) {
+							if (iter->second->mode == cgv::nui::dispatch_mode::pointing) {
+								auto* idi_ptr = reinterpret_cast<cgv::nui::intersection_dispatch_info*>(iter->second);
+								if (idi_ptr->ray_param < std::numeric_limits<float>::max())
+									cone_positions.back() = ro + (min_pointing_distance + idi_ptr->ray_param) * rd;
+							}
+						}
+					}
+					cone_colors.push_back(ctrl_infos[ci].color);
+					cone_colors.push_back(ctrl_infos[ci].color);
+				}
+			}
+		}
+		if (!cone_positions.empty()) {
+			auto& cr = cgv::render::ref_cone_renderer(ctx);
+			cr.set_render_style(crs);
+			cr.set_position_array(ctx, cone_positions);
+			cr.set_color_array(ctx, cone_colors);
+			cr.render(ctx, 0, cone_positions.size());
+		}
+		if (!sphere_positions.empty()) {
+			auto& sr = cgv::render::ref_sphere_renderer(ctx);
+			sr.set_render_style(srs);
+			sr.set_position_array(ctx, sphere_positions);
+			sr.set_color_array(ctx, sphere_colors);
+			sr.render(ctx, 0, sphere_positions.size());
+		}
 	}
 }
 
@@ -522,8 +485,10 @@ void vr_scene::finish_frame(cgv::render::context& ctx)
 		mat34 label_pose = cgv::math::pose_construct(label_orientations[li], label_positions[li]);
 		cgv::math::pose_transform(pose[label_coord_systems[li]], label_pose);
 		P.push_back(cgv::math::pose_position(label_pose));
-		Q.push_back(quat(cgv::math::pose_orientation(label_pose)));
-		E.push_back(label_extents[li]);
+		mat3 L = cgv::math::pose_orientation(label_pose);
+		float s = L.frobenius_norm() / sqrt(3.0f);
+		Q.push_back(quat((1/s)*L));
+		E.push_back(s*label_extents[li]);
 		T.push_back(label_texture_ranges[li]);
 		C.push_back(lm.get_label(li).background_color);
 	}
@@ -562,24 +527,88 @@ void vr_scene::stream_help(std::ostream& os)
 	os << "vr_scene: navigate scenes with direction pad left and right and save with down" << std::endl;
 }
 
+void vr_scene::construct_hit_geometry()
+{
+	cone_positions.clear();
+	cone_colors.clear();
+	rgb nml_color(0.5f, 0.5f, 0.5f);
+	for (const auto& di : dis_info_hid_map) {
+		if (!di.second)
+			continue;
+		if (di.second->hid_id.category != cgv::nui::hid_category::controller)
+			continue;
+		if (di.second->mode == cgv::nui::dispatch_mode::pointing) {
+			const auto* idi_ptr = reinterpret_cast<const cgv::nui::intersection_dispatch_info*>(di.second);			
+			cone_positions.push_back(idi_ptr->ray_origin);
+			cone_positions.push_back(idi_ptr->hit_point);
+			rgb color = rgb(1, 1, 0);
+			cone_colors.push_back(color);
+			cone_colors.push_back(color);
+		}
+		else if (di.second->mode == cgv::nui::dispatch_mode::proximity) {
+			const auto* pdi_ptr = reinterpret_cast<const cgv::nui::proximity_dispatch_info*>(di.second);
+			cone_positions.push_back(pdi_ptr->query_point);
+			cone_positions.push_back(pdi_ptr->hit_point);
+			rgb color = rgb(1, 1, 1);
+			cone_colors.push_back(color);
+			cone_colors.push_back(color);
+		}
+	}
+}
 bool vr_scene::handle(cgv::gui::event& e)
 {
-	return false;
-}
-
-void vr_scene::update_table_labels()
-{
-	auto cp = find_control(table_width);
-	if (cp)
-		cp->set("label", table_mode == TM_ROUND ? "top_radius" : "table_width");
-	cp = find_control(table_depth);
-	if (cp)
-		cp->set("label", table_mode == TM_ROUND ? "bottom_radius" : "table_depth");
+	if ((e.get_flags() & cgv::gui::EF_VR) != 0 && e.get_kind() == cgv::gui::EID_KEY) {
+		const auto& vrke = reinterpret_cast<const cgv::gui::vr_key_event&>(e);
+		int ci = vrke.get_controller_index();
+		if (vrke.get_action() == cgv::gui::KA_PRESS) {
+			switch (vrke.get_key()) {
+			case vr::VR_DPAD_UP:
+				ctrl_infos[ci].grabbing = false;
+				ctrl_infos[ci].pointing = true;
+				update_member(&ctrl_infos[ci].grabbing);
+				update_member(&ctrl_infos[ci].pointing);
+				return true;
+			case vr::VR_INPUT0:
+				ctrl_infos[ci].grabbing = true;
+				ctrl_infos[ci].pointing = true;
+				update_member(&ctrl_infos[ci].grabbing);
+				update_member(&ctrl_infos[ci].pointing);
+				return true;
+			case vr::VR_DPAD_DOWN:
+				ctrl_infos[ci].grabbing = true;
+				ctrl_infos[ci].pointing = false;
+				update_member(&ctrl_infos[ci].grabbing);
+				update_member(&ctrl_infos[ci].pointing);
+				return true;
+			}
+		}
+	}
+	cgv::nui::dispatch_report report;
+	bool ret = dispatch(e, &report);
+//	if (report.action != cgv::nui::refocus_action::none)
+//		grab_focus();
+	return ret;
 }
 
 void vr_scene::create_gui()
 {
 	add_decorator("vr_scene", "heading");
+	if (begin_tree_node("hids", ctrl_infos)) {
+		align("\a");
+		add_member_control(this, "draw_controller_mode", draw_controller_mode, "check");
+		add_member_control(this, " left ctrl grabs", ctrl_infos[0].grabbing, "check");
+		add_member_control(this, " left ctrl point", ctrl_infos[0].pointing, "check");
+		add_member_control(this, " left ctrl color", ctrl_infos[0].color);
+		add_member_control(this, "right ctrl grabs", ctrl_infos[1].grabbing, "check");
+		add_member_control(this, "right ctrl point", ctrl_infos[1].pointing, "check");
+		add_member_control(this, "right ctrl color", ctrl_infos[1].color);
+		add_member_control(this, "intersection_bias", intersection_bias, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+		add_member_control(this, "max_grabbing_distance", max_grabbing_distance, "value_slider", "min=0.001;max=0.1;log=true;ticks=true");
+		add_member_control(this, "min_pointing_distance", max_pointing_distance, "value_slider", "min=0.01;max=3;log=true;ticks=true");
+		add_member_control(this, "max_pointing_distance", max_pointing_distance, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+		align("\b");
+		end_tree_node(ctrl_infos);
+	}
 	if (begin_tree_node("environment", environment_mode)) {
 		align("\a");
 		add_member_control(this, "mode", environment_mode, "dropdown", "enums='empty,skybox,procedural'");
@@ -615,20 +644,6 @@ void vr_scene::create_gui()
 		align("\b");
 		end_tree_node(boxes);
 	}
-	if (begin_tree_node("table", table_width)) {
-		align("\a");
-		add_member_control(this, "table", table_mode, "dropdown", "enums='hide,rectangular,round'");
-		add_member_control(this, "color", table_color);
-		add_member_control(this, "width", table_width, "value_slider", "min=0.1;max=3.0;ticks=true");
-		add_member_control(this, "depth", table_depth, "value_slider", "min=0.1;max=3.0;ticks=true");
-		update_table_labels();
-		add_member_control(this, "height", table_height, "value_slider", "min=0.1;max=3.0;ticks=true");
-		add_member_control(this, "leg color", leg_color);
-		add_member_control(this, "legs", leg_width, "value_slider", "min=0.0;max=0.3;ticks=true");
-		add_member_control(this, "percentual_offset", percentual_leg_offset, "value_slider", "min=0.0;max=0.5;ticks=true");
-		align("\b");
-		end_tree_node(table_width);
-	}
 	if (begin_tree_node("labels", lm)) {
 		align("\a");
 		for (size_t i = 0; i < label_positions.size(); ++i) {
@@ -646,8 +661,7 @@ void vr_scene::create_gui()
 		align("\b");
 		end_tree_node(lm);
 	}
-	if (begin_tree_node("styles", table_color)) {
-		align("\a");
+	if (begin_tree_node("styles", draw_room)) {
 		if (begin_tree_node("rectangles", rrs)) {
 			align("\a");
 			add_gui("rrs", rrs);
@@ -660,11 +674,11 @@ void vr_scene::create_gui()
 			align("\b");
 			end_tree_node(box_style);
 		}
-		if (begin_tree_node("cones", cone_style)) {
+		if (begin_tree_node("cones", crs)) {
 			align("\a");
-			add_gui("cone_style", cone_style);
+			add_gui("cone_style", crs);
 			align("\b");
-			end_tree_node(cone_style);
+			end_tree_node(crs);
 		}
 		if (begin_tree_node("terrain", terrain_style)) {
 			align("\a");
@@ -673,11 +687,14 @@ void vr_scene::create_gui()
 			end_tree_node(terrain_style);
 		}
 		align("\b");
-		end_tree_node(table_color);
+		end_tree_node(draw_room);
 	}
 }
 
 }
 #include <cgv/base/register.h>
+#include "vr_screen.h"
 
 cgv::base::object_registration<vr::vr_scene> vr_scene_reg("vr_scene");
+cgv::base::object_registration_1<vr::vr_screen, std::string> vr_screen_reg("vr_screen");
+cgv::base::object_registration<vr::vr_table> vr_table_reg("vr_table");
