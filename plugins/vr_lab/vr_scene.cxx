@@ -563,22 +563,12 @@ bool vr_scene::handle(cgv::gui::event& e)
 		if (vrke.get_action() == cgv::gui::KA_PRESS) {
 			switch (vrke.get_key()) {
 			case vr::VR_DPAD_UP:
-				ctrl_infos[ci].grabbing = false;
-				ctrl_infos[ci].pointing = true;
-				update_member(&ctrl_infos[ci].grabbing);
-				update_member(&ctrl_infos[ci].pointing);
-				return true;
-			case vr::VR_INPUT0:
-				ctrl_infos[ci].grabbing = true;
-				ctrl_infos[ci].pointing = true;
-				update_member(&ctrl_infos[ci].grabbing);
+				ctrl_infos[ci].pointing = !ctrl_infos[ci].pointing;
 				update_member(&ctrl_infos[ci].pointing);
 				return true;
 			case vr::VR_DPAD_DOWN:
-				ctrl_infos[ci].grabbing = true;
-				ctrl_infos[ci].pointing = false;
+				ctrl_infos[ci].grabbing = !ctrl_infos[ci].grabbing;
 				update_member(&ctrl_infos[ci].grabbing);
-				update_member(&ctrl_infos[ci].pointing);
 				return true;
 			}
 		}
