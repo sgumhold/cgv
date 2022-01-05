@@ -146,15 +146,74 @@ namespace vr {
 				is.in_focus = true;
 				update_member(&is.in_focus);
 				is.hid_id = dis_info.hid_id;
-				if (idx >= 2)
-					scale_arrow_focus_idx = int(idx-2);
+				if (idx >= 2) {
+					scale_arrow_focus_idx = int(idx - 2);
+					update_member(&scale_arrow_focus_idx);
+				}
 				if (idx == 0)
 					compute_spline_geometry(true);
 				else
 					compute_arrow_geometry();
 			}
 		}
-		else {
+		else if (action == cgv::nui::focus_change_action::index_change) {
+			// first find old ctrl idx
+			size_t old_idx;
+			for (old_idx = 0; old_idx < 3; ++old_idx) {
+				auto& is = iis[old_idx];
+				if (is.hid_id == dis_info.hid_id)
+					break;
+			}
+			// next extract new primitive and new ctrl indices
+			size_t new_prim_idx = static_cast<const cgv::nui::hit_dispatch_info&>(dis_info).get_hit_info()->primitive_index;
+			size_t new_idx = std::min(size_t(2), new_prim_idx);
+			// if old ctrl index found
+			if (old_idx < 3) {
+				auto& ois = iis[old_idx];
+				// for same ctrl indices
+				if (new_idx == old_idx) {
+					// only in case of multiple primitves an index change can happen
+					if (new_idx != 2) {
+						std::cerr << "index_change focus change action arised with identical indices" << std::endl;
+						abort();
+					}
+					// is_triggered status is not transmitted to new primitive in order to force fresh triggering
+					ois.is_triggered = false;
+					update_member(&ois.is_triggered);
+					// update index of arrow in focus
+					scale_arrow_focus_idx = int(new_prim_idx - 2);
+					update_member(&scale_arrow_focus_idx);
+					return;
+				}
+				// for different ctrl indices
+
+				// first turn off focus in old ctrl
+				ois.in_focus = false;
+				ois.is_triggered = false;
+				update_member(&ois.in_focus);
+				update_member(&ois.is_triggered);
+				if (old_idx == 2) {
+					scale_arrow_focus_idx = -1;
+					update_member(&scale_arrow_focus_idx);
+				}
+				ois.hid_id = cgv::nui::hid_identifier();
+			}
+			// next or if old ctrl was not found ensure that new ctrl is not already in focus by other hid
+			auto& nis = iis[new_idx];
+			if (!nis.in_focus) {
+				nis.in_focus = true;
+				update_member(&nis.in_focus);
+				nis.hid_id = dis_info.hid_id;
+				if (new_idx == 2) {
+					scale_arrow_focus_idx = int(new_prim_idx - 2);
+					update_member(&scale_arrow_focus_idx);
+				}
+			}
+			// finally update all geometry
+			compute_spline_geometry(iis[0].in_focus);
+			compute_arrow_geometry();
+		}
+		else if (action == cgv::nui::focus_change_action::detach) {
 			for (size_t idx = 0; idx < 3; ++idx) {
 				auto& is = iis[idx];
 				if (is.hid_id == dis_info.hid_id) {
@@ -162,8 +221,10 @@ namespace vr {
 					is.is_triggered = false;
 					update_member(&is.in_focus);
 					update_member(&is.is_triggered);
-					if (idx == 2)
+					if (idx == 2) {
 						scale_arrow_focus_idx = -1;
+						update_member(&scale_arrow_focus_idx);
+					}
 					is.hid_id = cgv::nui::hid_identifier();
 					if (idx == 0)
 						compute_spline_geometry(false);
