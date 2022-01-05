@@ -31,7 +31,6 @@
 #include <vr/vr_driver.h>
 #include <cgv/defines/quote.h>
 #include <numeric>
-#include <cgv/type/standard_types.h>
 
 ///@ingroup VR
 ///@{
@@ -47,25 +46,19 @@
 #include "intersection.h"
 
 // different interaction states for the controllers
-enum InteractionState
-{
-	IS_NONE,
-	IS_OVER,
-	IS_GRAB
-};
+enum InteractionState { IS_NONE, IS_OVER, IS_GRAB };
 
 struct vertex : public cgv::render::render_types
 {
-	vec3  point;
+	vec3 point;
 	rgba8 color;
 };
 
 /// the plugin class vr_rgbd inherits like other plugins from node, drawable and provider
-class vr_rgbd :
-	public cgv::base::node,
-	public cgv::render::drawable,
-	public cgv::gui::event_handler,
-	public cgv::gui::provider
+class vr_rgbd : public cgv::base::node,
+				public cgv::render::drawable,
+				public cgv::gui::event_handler,
+				public cgv::gui::provider
 {
   protected:
 	/// internal members used for data storage
@@ -77,40 +70,44 @@ class vr_rgbd :
 	bool record_frame;
 	///
 	bool record_all_frames;
-	/// 
+	///
 	bool record_key_frames;
 	bool clear_all_frames;
 	bool in_calibration;
+	bool zoom_in;
+	bool zoom_out;
 	bool save_pointcloud;
 	int key_frame_step;
 	/// intermediate point cloud and to be rendered point cloud
 	std::vector<vertex> intermediate_pc, current_pc;
 	/// list of recorded point clouds
-	std::vector<std::vector<vertex> > recorded_pcs;
+	std::vector<std::vector<vertex>> recorded_pcs;
 	/// translations of recorded point clouds
 	std::vector<quat> rotations;
 	/// rotations of recorded point clouds
 	std::vector<vec3> translations;
 	/// rendering style for points
 	cgv::render::point_render_style point_style;
-	///counter of storing point cloud
+	/// counter of storing point cloud
 
-	///counter of pc
+	/// counter of pc
 	int counter_pc;
-	///registration
+	/// registration
 	bool registration_started;
 
 	int rgbd_controller_index;
 	/// current pose of the controller
 	mat3 controller_orientation;
 	vec3 controller_position;
-	/// pose of controller when last point cloud was acquire; this is used for contruction of point cloud in parallel thread
+	/// pose of controller when last point cloud was acquire; this is used for contruction of point cloud in parallel
+	/// thread
 	mat3 controller_orientation_pc;
 	vec3 controller_position_pc;
-	/// current calibration pose mapping from rgbd coordinates to controller coordinates 
+	/// current calibration pose mapping from rgbd coordinates to controller coordinates
 	mat3 rgbd_2_controller_orientation;
 	vec3 rgbd_2_controller_position;
-	/// calibration pose mapping from rgbd coordinates to controller coordinates stored at the time when freezing the point cloud for calibration
+	/// calibration pose mapping from rgbd coordinates to controller coordinates stored at the time when freezing the
+	/// point cloud for calibration
 	mat3 rgbd_2_controller_orientation_start_calib;
 	vec3 rgbd_2_controller_position_start_calib;
 	///
@@ -120,14 +117,14 @@ class vr_rgbd :
 	float recording_fps;
 	///
 	std::future<size_t> future_handle;
-	/// 
-	
+	///
+
 	/// path to be set for pc files
 	std::string pc_file_path;
 	///
 	bool rgbd_started;
 	std::string rgbd_protocol_path;
-	/// 
+	///
 	rgbd::rgbd_input rgbd_inp;
 	// store the scene as colored boxes
 	std::vector<box3> boxes;
@@ -150,10 +147,10 @@ class vr_rgbd :
 
 	// intersection points
 	std::vector<vec3> intersection_points;
-	std::vector<rgb>  intersection_colors;
-	std::vector<int>  intersection_box_indices;
-	std::vector<int>  intersection_controller_indices;
-	
+	std::vector<rgb> intersection_colors;
+	std::vector<int> intersection_box_indices;
+	std::vector<int> intersection_controller_indices;
+
 	// camera pose points
 	std::vector<vec3> cam_pose_points;
 	std::vector<rgb> cam_pose_colors;
@@ -168,7 +165,6 @@ class vr_rgbd :
 	std::vector<vec3> cam_cord_y;
 	std::vector<vec3> cam_cord_z;
 
-
 	// state of current interaction with boxes for each controller
 	InteractionState state[4];
 
@@ -176,7 +172,7 @@ class vr_rgbd :
 	cgv::render::sphere_render_style srs;
 	cgv::render::box_render_style movable_style;
 	cgv::render::arrow_render_style ars;
-	//declare aam for arrow renderer
+	// declare aam for arrow renderer
 	cgv::render::attribute_array_manager a_manager;
 	// sicp;
 	cgv::pointcloud::SICP::ComputationMode sicp_computation_mode;
@@ -191,12 +187,11 @@ class vr_rgbd :
 			vec3 direction_box_i = direction;
 			movable_box_rotations[i].inverse_rotate(direction_box_i);
 			float t_result;
-			vec3  p_result;
-			vec3  n_result;
-			if (cgv::media::ray_axis_aligned_box_intersection(
-				origin_box_i, direction_box_i,
-				movable_boxes[i],
-				t_result, p_result, n_result, 0.000001f)) {
+			vec3 p_result;
+			vec3 n_result;
+			if (cgv::media::ray_axis_aligned_box_intersection(origin_box_i, direction_box_i, movable_boxes[i], t_result,
+															  p_result, n_result, 0.000001f))
+			{
 
 				// transform result back to world coordinates
 				movable_box_rotations[i].rotate(p_result);
@@ -226,8 +221,7 @@ class vr_rgbd :
 	/// construct boxes that represent a table of dimensions tw,td,th and leg width tW
 	void construct_movable_boxes(float tw, float td, float th, float tW, size_t nr);
 	/// construct a scene with a table
-	void build_scene(float w, float d, float h, float W,
-		float tw, float td, float th, float tW)
+	void build_scene(float w, float d, float h, float W, float tw, float td, float th, float tW)
 	{
 		construct_room(w, d, h, W, false, false);
 		construct_table(tw, td, th, tW);
@@ -238,7 +232,7 @@ class vr_rgbd :
 	void generate_point_cloud(std::vector<vertex>& pc)
 	{
 		std::default_random_engine r;
-		std::uniform_real_distribution<float> d(0.0f,1.0f);
+		std::uniform_real_distribution<float> d(0.0f, 1.0f);
 		vec3 S(0.0f, 2.0f, 0.0f);
 		vec3 V(1.0f, 0, 0);
 		vec3 U(0.0f, 1.0f, 0);
@@ -249,8 +243,8 @@ class vr_rgbd :
 			float x = 2 * d(r) - 1;
 			float y = 2 * d(r) - 1;
 			float z = d(r) + 1;
-			vec3  p = x * aspect * tan_2 * z * X + y * tan_2 * z * U + z*V;
-			rgba8 c((cgv::type::uint8_type)(255*d(r)), 0, 0);
+			vec3 p = x * aspect * tan_2 * z * X + y * tan_2 * z * U + z * V;
+			rgba8 c((cgv::type::uint8_type)(255 * d(r)), 0, 0);
 			vertex v;
 			v.point = S + p;
 			v.color = c;
@@ -279,7 +273,8 @@ class vr_rgbd :
 		rgbd_started = rgbd_inp.stop();
 		update_member(&rgbd_started);
 	}
-public:
+
+  public:
 	vr_rgbd()
 	{
 		set_name("vr_rgbd");
@@ -287,6 +282,8 @@ public:
 		controller_orientation.identity();
 		controller_position = vec3(0, 1.5f, 0);
 		in_calibration = false;
+		zoom_in = false;
+		zoom_out = false;
 		save_pointcloud = true;
 		registration_started = false;
 		rgbd_2_controller_orientation.identity();
@@ -299,9 +296,9 @@ public:
 		rgbd_2_controller_position_start_calib.zeros();
 
 		build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.9f, 0.03f);
-		//icp_pc->read("C:/Users/ltf/Desktop/test/monkey.obj");
-		//pc2vertex(*icp_pc, current_pc);
-		//generate_point_cloud(current_pc);
+		// icp_pc->read("C:/Users/ltf/Desktop/test/monkey.obj");
+		// pc2vertex(*icp_pc, current_pc);
+		// generate_point_cloud(current_pc);
 		vr_view_ptr = 0;
 		ray_length = 2;
 		connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_rgbd::on_device_change);
@@ -332,7 +329,7 @@ public:
 		intermediate_pc.clear();
 		const unsigned short* depths = reinterpret_cast<const unsigned short*>(&depth_frame_2.frame_data.front());
 		const unsigned char* colors = reinterpret_cast<const unsigned char*>(&color_frame_2.frame_data.front());
-	
+
 		rgbd_inp.map_color_to_depth(depth_frame_2, color_frame_2, warped_color_frame_2);
 		colors = reinterpret_cast<const unsigned char*>(&warped_color_frame_2.frame_data.front());
 
@@ -347,21 +344,21 @@ public:
 					p = controller_orientation_pc * p + controller_position_pc;
 					rgba8 c(colors[4 * i + 2], colors[4 * i + 1], colors[4 * i], 255);
 					vertex v;
-					//filter points without color for 32 bit formats
+					// filter points without color for 32 bit formats
 					static const rgba8 filter_color = rgba8(0, 0, 0, 255);
 					if (!(c == filter_color)) {
 						v.color = c;
 						v.point = p;
 					}
-					//v.point = p;
-					//v.color = c;
+					// v.point = p;
+					// v.color = c;
 					intermediate_pc.push_back(v);
 				}
 				++i;
 			}
 		return intermediate_pc.size();
 	}
-	rgbd::frame_type read_rgb_frame()    //should be a thread
+	rgbd::frame_type read_rgb_frame() // should be a thread
 	{
 		return color_frame;
 	}
@@ -369,9 +366,10 @@ public:
 	{
 		return depth_frame;
 	}
-	///cast vertex to point_cloud
-	void copy_pointcloud(const std::vector<vertex> input, point_cloud &output){
-		for (unsigned int i = 0; i < input.size(); i++){
+	/// cast vertex to point_cloud
+	void copy_pointcloud(const std::vector<vertex> input, point_cloud& output)
+	{
+		for (unsigned int i = 0; i < input.size(); i++) {
 			point_cloud_types::Pnt temp;
 			temp[0] = input.at(i).point[0];
 			temp[1] = input.at(i).point[1];
@@ -384,8 +382,9 @@ public:
 			output.C.push_back(tempcolor);
 		}
 	}
-	///cast point_cloud to vertex
-	void pc2vertex(const point_cloud &input, std::vector<vertex> &output) {
+	/// cast point_cloud to vertex
+	void pc2vertex(const point_cloud& input, std::vector<vertex>& output)
+	{
 		for (unsigned int i = 0; i < input.get_nr_points(); i++) {
 			vertex temp;
 			temp.point[0] = input.pnt(i).x();
@@ -400,16 +399,15 @@ public:
 			output.push_back(temp);
 		}
 	}
-	///here should be const point cloud
+	/// here should be const point cloud
 	void write_pcs_to_disk(int i)
 	{
-		if (!intermediate_pc.empty())
-		{
-			//define point cloud type, wirte to disk
-			point_cloud *pc_save = new point_cloud();
+		if (!intermediate_pc.empty()) {
+			// define point cloud type, wirte to disk
+			point_cloud* pc_save = new point_cloud();
 			pc_save->has_clrs = true;
 			copy_pointcloud(intermediate_pc, *pc_save);
-			///pathname
+			/// pathname
 			std::string filename = pc_file_path + std::to_string(i) + ".obj";
 			pc_save->write(filename);
 		}
@@ -417,18 +415,19 @@ public:
 	size_t read_pc_queue(const std::string filename, std::string content)
 	{
 		cgv::utils::file::read(filename, content, false);
-		//read pcs from disk
+		// read pcs from disk
 	}
-	void registrationPointCloud() {
-		cgv::pointcloud::ICP *icp = new cgv::pointcloud::ICP();
+	void registrationPointCloud()
+	{
+		cgv::pointcloud::ICP* icp = new cgv::pointcloud::ICP();
 		if (recorded_pcs.size() >= 1) {
 			cgv::math::fmat<float, 3, 3> r;
 			cgv::math::fvec<float, 3> t;
 			r.identity();
 			t.zeros();
-			point_cloud *sourcePC = new point_cloud();
+			point_cloud* sourcePC = new point_cloud();
 			point_cloud* sourcecopy = new point_cloud();
-			point_cloud *targetPC = new point_cloud();
+			point_cloud* targetPC = new point_cloud();
 			sourcePC->resize(intermediate_pc.size());
 			targetPC->resize(recorded_pcs.front().size());
 			sourcecopy->resize(intermediate_pc.size());
@@ -439,20 +438,20 @@ public:
 			icp->set_iterations(5);
 			icp->set_eps(1e-10);
 			icp->reg_icp(r, t);
-			for (int i = 0; i < sourcePC->get_nr_points(); i++)
-			{
+			for (int i = 0; i < sourcePC->get_nr_points(); i++) {
 				sourcePC->pnt(i) = r * sourcePC->pnt(i) + t;
 			}
 			intermediate_pc.clear();
 			pc2vertex(*sourcePC, intermediate_pc);
-			std::cout << "size: " << recorded_pcs.size() << " "<< intermediate_pc.size()<<std::endl;
-		}		
+			std::cout << "size: " << recorded_pcs.size() << " " << intermediate_pc.size() << std::endl;
+		}
 	}
 
-	void generate_rdm_pc(point_cloud &pc1, point_cloud& pc2) {
+	void generate_rdm_pc(point_cloud& pc1, point_cloud& pc2)
+	{
 		mat3 rotate_m;
 		rotate_m.identity();
-		double theta = M_PI / 8;  // The angle of rotation in radians
+		double theta = M_PI / 8; // The angle of rotation in radians
 		rotate_m.set_col(0, vec3(std::cos(theta), -sin(theta), 0));
 		rotate_m.set_col(1, vec3(sin(theta), std::cos(theta), 0));
 		rotate_m.set_col(2, vec3(0, 0, 1));
@@ -468,7 +467,8 @@ public:
 		}
 	}
 
-	void  test_icp() {
+	void test_icp()
+	{
 		cgv::pointcloud::ICP* icp = new cgv::pointcloud::ICP();
 		cgv::math::fmat<float, 3, 3> r;
 		cgv::math::fvec<float, 3> t;
@@ -481,8 +481,8 @@ public:
 		generate_rdm_pc(*sourcePC, *targetPC);
 		icp->set_source_cloud(*sourcePC);
 		icp->set_target_cloud(*targetPC);
-		//icp->set_source_cloud(*targetPC);
-		//icp->set_target_cloud(*sourcePC);
+		// icp->set_source_cloud(*targetPC);
+		// icp->set_target_cloud(*sourcePC);
 		icp->set_iterations(5);
 		icp->set_num_random(3);
 		icp->set_eps(1e-10);
@@ -491,7 +491,7 @@ public:
 
 	void construct_TSDtree()
 	{
-		//using pc queue to construct the TSDtree
+		// using pc queue to construct the TSDtree
 	}
 	bool record_this_frame(double t)
 	{
@@ -514,14 +514,14 @@ public:
 				// copy computed point cloud
 				if (record_this_frame(t)) {
 					if (registration_started && !recorded_pcs.empty()) {
-						//registrationPointCloud();
-						//test_icp();
+						// registrationPointCloud();
+						// test_icp();
 						on_reg_SICP_cb();
 						registration_started = !registration_started;
 						update_member(&registration_started);
 					}
 					recorded_pcs.push_back(intermediate_pc);
-					if (save_pointcloud){
+					if (save_pointcloud) {
 						counter_pc++;
 						write_pcs_to_disk(counter_pc);
 					}
@@ -529,7 +529,7 @@ public:
 					record_frame = false;
 					update_member(&record_frame);
 				}
-				else if(clear_all_frames){
+				else if (clear_all_frames) {
 					recorded_pcs.clear();
 					clear_all_frames = false;
 					update_member(&clear_all_frames);
@@ -548,7 +548,7 @@ public:
 				do {
 					new_frame = false;
 					bool new_color_frame_changed = rgbd_inp.get_frame(rgbd::IS_COLOR, color_frame, 0);
-					//TODO add ORB feature extraction and estimate camera pose
+					// TODO add ORB feature extraction and estimate camera pose
 					if (new_color_frame_changed) {
 						++nr_color_frames;
 						color_frame_changed = new_color_frame_changed;
@@ -569,11 +569,19 @@ public:
 					post_redraw();
 				if (color_frame.is_allocated() && depth_frame.is_allocated() &&
 					(color_frame_changed || depth_frame_changed)) {
-					
-					if (!future_handle.valid()) { 
+
+					if (!future_handle.valid()) {
 						if (!in_calibration) {
 							color_frame_2 = color_frame;
 							depth_frame_2 = depth_frame;
+						}
+						if (zoom_out && !zoom_in) {
+							controller_orientation_pc = controller_orientation * 2;
+							controller_position_pc = controller_position;
+						}
+						else if (zoom_in && !zoom_out) {
+							controller_orientation_pc = controller_orientation * 0.5;
+							controller_position_pc = controller_position;
 						}
 						else {
 							controller_orientation_pc = controller_orientation;
@@ -601,20 +609,23 @@ public:
 		add_member_control(this, "trigger_is_pressed", trigger_is_pressed, "check");
 		add_member_control(this, "recording_fps", recording_fps, "value_slider", "min=1;max=30;ticks=true;log=true");
 		add_member_control(this, "in_calibration", in_calibration, "check");
+		add_member_control(this, "zoom_in", zoom_in, "check");
+		add_member_control(this, "zoom_out", zoom_out, "check");
 		add_member_control(this, "save_pc", save_pointcloud, "check");
 		add_member_control(this, "register_pc", registration_started, "check");
 		//connect_copy(add_button("SICP")->click, rebind(this, &vr_rgbd::on_reg_SICP_cb));
 
-		add_member_control(this, "rgbd_controller_index", rgbd_controller_index, "value_slider", "min=0;max=3;ticks=true");
-		
+		add_member_control(this, "rgbd_controller_index", rgbd_controller_index, "value_slider",
+						   "min=0;max=3;ticks=true");
 
 		add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 		bool show = begin_tree_node("points", show_points, true, "w=100;align=' '");
 		add_member_control(this, "show", show_points, "toggle", "w=50");
 		if (show) {
 			align("\a");
-			add_member_control(this, "max_nr_shown_recorded_pcs", max_nr_shown_recorded_pcs, "value_slider", "min=0;max=100;log=true;ticks=true");
-			//add_member_control(this, "sort_points", sort_points, "check");
+			add_member_control(this, "max_nr_shown_recorded_pcs", max_nr_shown_recorded_pcs, "value_slider",
+							   "min=0;max=100;log=true;ticks=true");
+			// add_member_control(this, "sort_points", sort_points, "check");
 			if (begin_tree_node("point style", point_style)) {
 				align("\a");
 				add_gui("point_style", point_style);
@@ -665,17 +676,16 @@ public:
 	}
 	bool self_reflect(cgv::reflect::reflection_handler& rh)
 	{
-		return
-			rh.reflect_member("rgbd_controller_index", rgbd_controller_index) &&
-			rh.reflect_member("save_pc", save_pointcloud) &&
-			rh.reflect_member("register_pc", registration_started) &&
-			rh.reflect_member("recording_fps", recording_fps) &&
-			rh.reflect_member("ray_length", ray_length) &&
-			rh.reflect_member("record_frame", record_frame) &&
-			rh.reflect_member("record_all_frames", record_all_frames) &&
-			rh.reflect_member("clear_all_frames", clear_all_frames) &&
-			rh.reflect_member("rgbd_started", rgbd_started) &&
-			rh.reflect_member("rgbd_protocol_path", rgbd_protocol_path);
+		return rh.reflect_member("rgbd_controller_index", rgbd_controller_index) &&
+			   rh.reflect_member("zoom_in", zoom_in) && rh.reflect_member("zoom_out", zoom_out) &&
+			   rh.reflect_member("save_pc", save_pointcloud) &&
+			   rh.reflect_member("register_pc", registration_started) &&
+			   rh.reflect_member("recording_fps", recording_fps) && rh.reflect_member("ray_length", ray_length) &&
+			   rh.reflect_member("record_frame", record_frame) &&
+			   rh.reflect_member("record_all_frames", record_all_frames) &&
+			   rh.reflect_member("clear_all_frames", clear_all_frames) &&
+			   rh.reflect_member("rgbd_started", rgbd_started) &&
+			   rh.reflect_member("rgbd_protocol_path", rgbd_protocol_path);
 	}
 	void on_set(void* member_ptr)
 	{
@@ -706,36 +716,54 @@ public:
 			return false;
 		// check event id
 		switch (e.get_kind()) {
-		case cgv::gui::EID_KEY:
-		{
+		case cgv::gui::EID_KEY: {
 			cgv::gui::vr_key_event& vrke = static_cast<cgv::gui::vr_key_event&>(e);
 			int ci = vrke.get_controller_index();
 			if (ci == 0 && vrke.get_key() == vr::VR_DPAD_DOWN) {
 				switch (vrke.get_action()) {
-				case cgv::gui::KA_PRESS :
+				case cgv::gui::KA_PRESS:
 					rgbd_2_controller_orientation_start_calib = controller_orientation; // V^0 = V
-					rgbd_2_controller_position_start_calib = controller_position;       // r^0 = r
+					rgbd_2_controller_position_start_calib = controller_position;		// r^0 = r
 					in_calibration = true;
 					update_member(&in_calibration);
 					break;
 				case cgv::gui::KA_RELEASE:
-					rgbd_2_controller_orientation = transpose(rgbd_2_controller_orientation_start_calib)*controller_orientation*rgbd_2_controller_orientation;
-					rgbd_2_controller_position = transpose(rgbd_2_controller_orientation_start_calib)*((controller_orientation*rgbd_2_controller_position + controller_position) - rgbd_2_controller_position_start_calib);
+					rgbd_2_controller_orientation = transpose(rgbd_2_controller_orientation_start_calib) *
+													controller_orientation * rgbd_2_controller_orientation;
+					rgbd_2_controller_position =
+						  transpose(rgbd_2_controller_orientation_start_calib) *
+						  ((controller_orientation * rgbd_2_controller_position + controller_position) -
+						   rgbd_2_controller_position_start_calib);
 					in_calibration = false;
 					update_member(&in_calibration);
 					break;
 				}
 			}
-			if (ci == 0 && vrke.get_key() == vr::VR_DPAD_LEFT)
-			{
-				;
+			if (ci == 0 && vrke.get_key() == vr::VR_DPAD_LEFT) {
+				switch (vrke.get_action()) {
+				case cgv::gui::KA_PRESS:
+					zoom_in = true;
+					update_member(&zoom_in);
+					break;
+				case cgv::gui::KA_RELEASE:
+					zoom_in = false;
+					update_member(&zoom_in);
+					break;
+				}
 			}
-			if (ci == 0 && vrke.get_key() == vr::VR_DPAD_RIGHT)
-			{
-				;
+			if (ci == 0 && vrke.get_key() == vr::VR_DPAD_RIGHT) {
+				switch (vrke.get_action()) {
+				case cgv::gui::KA_PRESS:
+					zoom_out = true;
+					update_member(&zoom_out);
+					break;
+				case cgv::gui::KA_RELEASE:
+					zoom_out = false;
+					update_member(&zoom_out);
+					break;
+				}
 			}
-			if (ci == 0 && vrke.get_key() == vr::VR_MENU)
-			{
+			if (ci == 0 && vrke.get_key() == vr::VR_MENU) {
 				switch (vrke.get_action()) {
 				case cgv::gui::KA_PRESS:
 					clear_all_frames = true;
@@ -749,8 +777,7 @@ public:
 			}
 			return true;
 		}
-		case cgv::gui::EID_THROTTLE:
-		{
+		case cgv::gui::EID_THROTTLE: {
 			cgv::gui::vr_throttle_event& vrte = static_cast<cgv::gui::vr_throttle_event&>(e);
 			if ((vrte.get_last_value() > 0.8f) != (vrte.get_value() > 0.8f)) {
 				trigger_is_pressed = (vrte.get_value() > 0.5f);
@@ -794,8 +821,7 @@ public:
 						// extract box index
 						unsigned bi = intersection_box_indices[i];
 						// update translation with position change and rotation
-						movable_box_translations[bi] = 
-							rotation * (movable_box_translations[bi] - last_pos) + pos;
+						movable_box_translations[bi] = rotation * (movable_box_translations[bi] - last_pos) + pos;
 						// update orientation with rotation, note that quaternions
 						// need to be multiplied in oposite order. In case of matrices
 						// one would write box_orientation_matrix *= rotation
@@ -804,8 +830,8 @@ public:
 						intersection_points[i] = rotation * (intersection_points[i] - last_pos) + pos;
 					}
 				}
-				else {// not grab
-					// clear intersections of current controller 
+				else { // not grab
+					// clear intersections of current controller
 					size_t i = 0;
 					while (i < intersection_points.size()) {
 						if (intersection_controller_indices[i] == ci) {
@@ -823,13 +849,12 @@ public:
 					vrpe.get_state().controller[ci].put_ray(&origin(0), &direction(0));
 					compute_intersections(origin, direction, ci, ci == 0 ? rgb(1, 0, 0) : rgb(0, 0, 1));
 
-					// update state based on whether we have found at least 
+					// update state based on whether we have found at least
 					// one intersection with controller ray
 					if (intersection_points.size() == i)
 						state[ci] = IS_NONE;
-					else
-						if (state[ci] == IS_NONE)
-							state[ci] = IS_OVER;
+					else if (state[ci] == IS_NONE)
+						state[ci] = IS_OVER;
 				}
 				post_redraw();
 			}
@@ -852,22 +877,15 @@ public:
 			vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
 			if (vr_view_ptr) {
 				// configure vr event processing
-				vr_view_ptr->set_event_type_flags(
-					cgv::gui::VREventTypeFlags(
-						cgv::gui::VRE_KEY +
-						cgv::gui::VRE_ONE_AXIS +
-						cgv::gui::VRE_ONE_AXIS_GENERATES_KEY +
-						cgv::gui::VRE_TWO_AXES +
-						cgv::gui::VRE_TWO_AXES_GENERATES_DPAD +
-						cgv::gui::VRE_POSE
-					));
+				vr_view_ptr->set_event_type_flags(cgv::gui::VREventTypeFlags(
+					  cgv::gui::VRE_KEY + cgv::gui::VRE_ONE_AXIS + cgv::gui::VRE_ONE_AXIS_GENERATES_KEY +
+					  cgv::gui::VRE_TWO_AXES + cgv::gui::VRE_TWO_AXES_GENERATES_DPAD + cgv::gui::VRE_POSE));
 				vr_view_ptr->enable_vr_event_debugging(false);
 				// configure vr rendering
 				vr_view_ptr->draw_action_zone(false);
 				vr_view_ptr->draw_vr_kits(true);
 				vr_view_ptr->enable_blit_vr_views(true);
 				vr_view_ptr->set_blit_vr_view_width(200);
-
 			}
 		}
 		cgv::render::ref_box_renderer(ctx, 1);
@@ -907,8 +925,8 @@ public:
 			size_t end = recorded_pcs.size();
 			if (end > max_nr_shown_recorded_pcs)
 				begin = end - max_nr_shown_recorded_pcs;
-			
-			for (size_t i=begin; i<end; ++i)
+
+			for (size_t i = begin; i < end; ++i)
 				draw_pc(ctx, recorded_pcs[i]);
 		}
 		if (vr_view_ptr) {
@@ -916,15 +934,16 @@ public:
 			std::vector<rgb> C;
 			const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
 			if (state_ptr) {
-				for (int ci = 0; ci < 2; ++ci) if (state_ptr->controller[ci].status == vr::VRS_TRACKED) {
-					vec3 ray_origin, ray_direction;
-					state_ptr->controller[ci].put_ray(&ray_origin(0), &ray_direction(0));
-					P.push_back(ray_origin);
-					P.push_back(ray_origin + ray_length * ray_direction);
-					rgb c(float(1 - ci), 0.5f*(int)state[ci], float(ci));
-					C.push_back(c);
-					C.push_back(c);
-				}
+				for (int ci = 0; ci < 2; ++ci)
+					if (state_ptr->controller[ci].status == vr::VRS_TRACKED) {
+						vec3 ray_origin, ray_direction;
+						state_ptr->controller[ci].put_ray(&ray_origin(0), &ray_direction(0));
+						P.push_back(ray_origin);
+						P.push_back(ray_origin + ray_length * ray_direction);
+						rgb c(float(1 - ci), 0.5f * (int)state[ci], float(ci));
+						C.push_back(c);
+						C.push_back(c);
+					}
 			}
 			if (P.size() > 0) {
 				cgv::render::shader_program& prog = ctx.ref_default_shader_program();
@@ -953,7 +972,7 @@ public:
 		}
 		renderer.disable(ctx);
 
-		// draw dynamic boxes 
+		// draw dynamic boxes
 		renderer.set_render_style(movable_style);
 		renderer.set_box_array(ctx, movable_boxes);
 		renderer.set_color_array(ctx, movable_box_colors);
@@ -1012,13 +1031,37 @@ public:
 			a_renderer.set_direction_array(ctx, cam_cord_z);
 			a_renderer.render(ctx, 0, cam_pose_points.size());
 		}
-		
 	}
 	void on_reg_SICP_cb()
 	{
 		point_cloud source_pc, target_pc;
+		// last frame in the recorded_pcs
 		copy_pointcloud(recorded_pcs.front(), target_pc);
+		// current frame
 		copy_pointcloud(intermediate_pc, source_pc);
+		if (!target_pc.has_normals()) {
+			static constexpr int k = 15;
+			ann_tree neighborhood;
+			neighborhood.build(target_pc);
+			neighbor_graph graph;
+			graph.build(target_pc.get_nr_points(), k, neighborhood);
+
+			normal_estimator normi = normal_estimator(target_pc, graph);
+			normi.compute_plane_bilateral_weighted_normals(true);
+		}
+		if (!source_pc.has_normals()) {
+			static constexpr int k = 15;
+			ann_tree neighborhood;
+			neighborhood.build(source_pc);
+			neighbor_graph graph;
+			graph.build(source_pc.get_nr_points(), k, neighborhood);
+
+			normal_estimator normi = normal_estimator(source_pc, graph);
+			normi.compute_plane_bilateral_weighted_normals(true);
+		}
+		if (source_pc.has_normals() && target_pc.has_normals()) {
+			std::cout << "both of them have normals" << std::endl;
+		}
 		sicp.set_source_cloud(source_pc);
 		sicp.set_target_cloud(target_pc);
 		vec3 translation, offset;
@@ -1046,15 +1089,14 @@ void vr_rgbd::construct_table(float tw, float td, float th, float tW)
 {
 	// construct table
 	rgb table_clr(0.3f, 0.2f, 0.0f);
-	boxes.push_back(box3(
-		vec3(-0.5f*tw - 2*tW, th, -0.5f*td - 2*tW), 
-		vec3( 0.5f*tw + 2*tW, th + tW, 0.5f*td + 2*tW)));
+	boxes.push_back(box3(vec3(-0.5f * tw - 2 * tW, th, -0.5f * td - 2 * tW),
+						 vec3(0.5f * tw + 2 * tW, th + tW, 0.5f * td + 2 * tW)));
 	box_colors.push_back(table_clr);
 
-	boxes.push_back(box3(vec3(-0.5f*tw, 0, -0.5f*td), vec3(-0.5f*tw - tW, th, -0.5f*td - tW)));
-	boxes.push_back(box3(vec3(-0.5f*tw, 0, 0.5f*td), vec3(-0.5f*tw - tW, th, 0.5f*td + tW)));
-	boxes.push_back(box3(vec3(0.5f*tw, 0, -0.5f*td), vec3(0.5f*tw + tW, th, -0.5f*td - tW)));
-	boxes.push_back(box3(vec3(0.5f*tw, 0, 0.5f*td), vec3(0.5f*tw + tW, th, 0.5f*td + tW)));
+	boxes.push_back(box3(vec3(-0.5f * tw, 0, -0.5f * td), vec3(-0.5f * tw - tW, th, -0.5f * td - tW)));
+	boxes.push_back(box3(vec3(-0.5f * tw, 0, 0.5f * td), vec3(-0.5f * tw - tW, th, 0.5f * td + tW)));
+	boxes.push_back(box3(vec3(0.5f * tw, 0, -0.5f * td), vec3(0.5f * tw + tW, th, -0.5f * td - tW)));
+	boxes.push_back(box3(vec3(0.5f * tw, 0, 0.5f * td), vec3(0.5f * tw + tW, th, 0.5f * td + tW)));
 	box_colors.push_back(table_clr);
 	box_colors.push_back(table_clr);
 	box_colors.push_back(table_clr);
@@ -1064,22 +1106,22 @@ void vr_rgbd::construct_table(float tw, float td, float th, float tW)
 void vr_rgbd::construct_room(float w, float d, float h, float W, bool walls, bool ceiling)
 {
 	// construct floor
-	boxes.push_back(box3(vec3(-0.5f*w, -W, -0.5f*d), vec3(0.5f*w, 0, 0.5f*d)));
+	boxes.push_back(box3(vec3(-0.5f * w, -W, -0.5f * d), vec3(0.5f * w, 0, 0.5f * d)));
 	box_colors.push_back(rgb(0.2f, 0.2f, 0.2f));
 
 	if (walls) {
 		// construct walls
-		boxes.push_back(box3(vec3(-0.5f*w, -W, -0.5f*d - W), vec3(0.5f*w, h, -0.5f*d)));
+		boxes.push_back(box3(vec3(-0.5f * w, -W, -0.5f * d - W), vec3(0.5f * w, h, -0.5f * d)));
 		box_colors.push_back(rgb(0.8f, 0.5f, 0.5f));
-		boxes.push_back(box3(vec3(-0.5f*w, -W, 0.5f*d), vec3(0.5f*w, h, 0.5f*d + W)));
+		boxes.push_back(box3(vec3(-0.5f * w, -W, 0.5f * d), vec3(0.5f * w, h, 0.5f * d + W)));
 		box_colors.push_back(rgb(0.8f, 0.5f, 0.5f));
 
-		boxes.push_back(box3(vec3(0.5f*w, -W, -0.5f*d - W), vec3(0.5f*w + W, h, 0.5f*d + W)));
+		boxes.push_back(box3(vec3(0.5f * w, -W, -0.5f * d - W), vec3(0.5f * w + W, h, 0.5f * d + W)));
 		box_colors.push_back(rgb(0.5f, 0.8f, 0.5f));
 	}
 	if (ceiling) {
 		// construct ceiling
-		boxes.push_back(box3(vec3(-0.5f*w - W, h, -0.5f*d - W), vec3(0.5f*w + W, h + W, 0.5f*d + W)));
+		boxes.push_back(box3(vec3(-0.5f * w - W, h, -0.5f * d - W), vec3(0.5f * w + W, h + W, 0.5f * d + W)));
 		box_colors.push_back(rgb(0.5f, 0.5f, 0.8f));
 	}
 }
@@ -1094,17 +1136,17 @@ void vr_rgbd::construct_environment(float s, float ew, float ed, float eh, float
 	unsigned n = unsigned(ew / s);
 	unsigned m = unsigned(ed / s);
 	for (unsigned i = 0; i < n; ++i) {
-		float x = i * s - 0.5f*ew;
+		float x = i * s - 0.5f * ew;
 		for (unsigned j = 0; j < m; ++j) {
-			float z = j * s - 0.5f*ed;
-			if ( (x + s > -0.5f*w && x < 0.5f*w) && (z + s > -0.5f*d && z < 0.5f*d) )
+			float z = j * s - 0.5f * ed;
+			if ((x + s > -0.5f * w && x < 0.5f * w) && (z + s > -0.5f * d && z < 0.5f * d))
 				continue;
-			float h = 0.2f*(std::max(abs(x)-0.5f*w,0.0f)+std::max(abs(z)-0.5f*d,0.0f))*distribution(generator)+0.1f;
-			boxes.push_back(box3(vec3(x, 0, z), vec3(x+s, h, z+s)));
-			box_colors.push_back(
-				rgb(0.3f*distribution(generator)+0.3f, 
-					0.3f*distribution(generator)+0.2f, 
-					0.2f*distribution(generator)+0.1f));
+			float h = 0.2f * (std::max(abs(x) - 0.5f * w, 0.0f) + std::max(abs(z) - 0.5f * d, 0.0f)) *
+							distribution(generator) +
+					  0.1f;
+			boxes.push_back(box3(vec3(x, 0, z), vec3(x + s, h, z + s)));
+			box_colors.push_back(rgb(0.3f * distribution(generator) + 0.3f, 0.3f * distribution(generator) + 0.2f,
+									 0.2f * distribution(generator) + 0.1f));
 		}
 	}
 }
@@ -1120,19 +1162,18 @@ void vr_rgbd::construct_movable_boxes(float tw, float td, float th, float tW, si
 		float y = distribution(generator);
 		vec3 extent(distribution(generator), distribution(generator), distribution(generator));
 		extent += 0.1f;
-		extent *= std::min(tw, td)*0.2f;
+		extent *= std::min(tw, td) * 0.2f;
 
-		vec3 center(-0.5f*tw + x * tw, th + tW, -0.5f*td + y * td);
-		movable_boxes.push_back(box3(-0.5f*extent, 0.5f*extent));
+		vec3 center(-0.5f * tw + x * tw, th + tW, -0.5f * td + y * td);
+		movable_boxes.push_back(box3(-0.5f * extent, 0.5f * extent));
 		movable_box_colors.push_back(rgb(distribution(generator), distribution(generator), distribution(generator)));
 		movable_box_translations.push_back(center);
-		quat rot(signed_distribution(generator), signed_distribution(generator), signed_distribution(generator), signed_distribution(generator));
+		quat rot(signed_distribution(generator), signed_distribution(generator), signed_distribution(generator),
+				 signed_distribution(generator));
 		rot.normalize();
 		movable_box_rotations.push_back(rot);
 	}
 }
-
-
 
 #include <cgv/base/register.h>
 
