@@ -460,6 +460,8 @@ namespace cgv {
 			}
 			//delete* rfi.dis_info_ptr_ptr;
 			//rfi.dis_info_ptr_ptr = 0;
+			update_dispatch_info(rfi.dis_info_ptr_ptr, { hid_id, dispatch_mode::none } );
+
 			return false;
 		}
 		bool dispatcher::dispatch(const cgv::gui::event& e, dispatch_report* report_ptr)

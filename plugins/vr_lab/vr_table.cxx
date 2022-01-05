@@ -330,18 +330,16 @@ namespace vr {
 				on_set(&use_gizmo);
 				state = state_enum::gizmo;
 				on_set(&state);
-				return true;
 			}
-			return false;
+			return true;
 		case state_enum::gizmo:
 			if (is_trigger_change(e, activate) && activate) {
 				use_gizmo = false;
 				on_set(&use_gizmo);
 				state = state_enum::pointed;
 				on_set(&state);
-				return true;
 			}
-			return false;
+			return true;
 		}
 		return false;
 	}
