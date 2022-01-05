@@ -147,21 +147,28 @@ bool vr_screen::wants_to_grab_focus(const cgv::gui::event& e, const cgv::nui::hi
 	return true;
 }
 /// inform focusable that its focus changed (fst param tells whether receiving or loosing) together with focus request and causing event plus dispatch info
-void vr_screen::focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info, cgv::base::base_ptr other_object_ptr)
+bool vr_screen::focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info)
 {
 	// just keep track of focus type here and do anything else in the handle method
 	if (action == cgv::nui::focus_change_action::attach) {
-		ft = rfa == cgv::nui::refocus_action::grab ? focus_type::grab : focus_type::pointing;
-		update_member(&ft);
-		if (ft == focus_type::pointing) {
-			if (!mouse_emulation) {
-				mouse_hid = dis_info.hid_id;
-				mouse_emulation = true;
-				update_member(&mouse_emulation);
+		if (rfa == cgv::nui::refocus_action::grab) {
+			ft = focus_type::grab;
+			update_member(&ft);
+		}
+		else if (rfa == cgv::nui::refocus_action::intersection) {
+			if (ft == focus_type::none) {
+				ft = focus_type::pointing;
+				if (!mouse_emulation) {
+					mouse_hid = dis_info.hid_id;
+					mouse_emulation = true;
+					update_member(&mouse_emulation);
+				}
+				return true;
 			}
 		}
+		return false;
 	}
-	else {
+	else if (action == cgv::nui::focus_change_action::detach) {
 		if (mouse_emulation) {
 			if (dis_info.hid_id == mouse_hid) {
 				// ensure that mouse buttons pressed in emulation are also released again
@@ -186,6 +193,7 @@ void vr_screen::focus_change(cgv::nui::focus_change_action action, cgv::nui::ref
 			update_member(&ft);
 		}
 	}
+	return true;
 }
 
 /// stream help information to the given output stream

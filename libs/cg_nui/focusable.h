@@ -9,6 +9,8 @@
 namespace cgv {
 	namespace nui {
 
+		class CGV_API dispatcher;
+
 		/// policy that defines how to update the focus during dispatching
 		struct refocus_policy
 		{
@@ -103,17 +105,33 @@ namespace cgv {
 		class CGV_API focusable
 		{
 		protected:
+			friend class dispatcher;
+			dispatcher* disp_ptr = 0;
+			void set_dispatcher_ptr(dispatcher* _disp_ptr);
 			/// helper function to reconfigure focus configuration during grabbing or pointing
 			void reconfigure_focus(focus_request& request, bool pointing_not_grabbing, focus_configuration& last_focus_config) const;
 			/// helper function to recover focus configuration after grabbing or pointing
 			void recover_focus(focus_request& request, focus_configuration& last_focus_config) const;
+			/// helper function to recover focus configuration based on hid_id at any time after focusable is added to dispatcher; return whether dispatcher available
+			bool recover_focus(const hid_identifier& hid_id, focus_configuration& last_focus_config) const;
 		public:
 			/// construct
 			focusable();
 			/// ask focusable what it wants to grab focus based on given event - in case of yes, the focus_demand should be filled
 			virtual bool wants_to_grab_focus(const cgv::gui::event& e, const hid_identifier& hid_id, focus_demand& demand);
-			/// inform focusable that its focus changed (fst param tells whether receiving or loosing) together with focus request and causing event plus dispatch info
-			virtual void focus_change(focus_change_action action, refocus_action rfa, const focus_demand& demand, const cgv::gui::event& e, const dispatch_info& dis_info, cgv::base::base_ptr other_object_ptr);
+			/// <summary>
+			/// inform focusable of focus change. Possible focus_change_actions are detach, attach or index_change.
+			/// In case of attach and index_change, the focusable can refuse the attachment by returning false. 
+			/// In case of index_change a refusal causes a focus detachment. For the detach focus_change_action 
+			/// the return value is ignored.
+			/// </summary>
+			/// <param name="action">one out of detach, attach or index_change</param>
+			/// <param name="rfa">cause for focus change</param>
+			/// <param name="demand">in case of attach, detailed information on attachment and configuration</param>
+			/// <param name="e">event causing focus change</param>
+			/// <param name="dis_info">dispatch info</param>
+			/// <returns>whether to accept attach or index_change - ignored for focus detach</returns>
+			virtual bool focus_change(focus_change_action action, refocus_action rfa, const focus_demand& demand, const cgv::gui::event& e, const dispatch_info& dis_info);
 			/// stream help information to the given output stream
 			virtual void stream_help(std::ostream& os) = 0;
 			//! ask active focusable to handle event providing dispatch info

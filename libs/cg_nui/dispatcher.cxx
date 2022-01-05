@@ -21,6 +21,14 @@ namespace cgv {
 		dispatcher::dispatcher()
 		{
 		}
+		dispatcher::~dispatcher()
+		{
+			for (auto& obj : objects) {
+				auto* foc = obj->get_interface<focusable>();
+				if (foc)
+					foc->set_dispatcher_ptr(0);
+			}
+		}
 		void dispatcher::update_dispatch_info(dispatch_info** dis_info_ptr_ptr, const dispatch_info& dis_info)
 		{
 			if (*dis_info_ptr_ptr) {
@@ -35,160 +43,162 @@ namespace cgv {
 
 		void dispatcher::attach_focus(refocus_action rfa, focus_attachment foc_att, const focus_info& foc_info, const cgv::gui::event& e, const dispatch_info& dis_info, refocus_info& rfi)
 		{
-			cgv::base::base_ptr other_object_ptr;
 			// detach overlapping focus attachments
 			switch (foc_att.level) {
 			case focus_level::hid:
 			{
-				// detach conflicting hid attachments
-				auto iter = focus_hid_map.find(foc_att.hid_id);
-				if (iter != focus_hid_map.end()) {
-					other_object_ptr = iter->second.object;
-					iter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-					focus_hid_map.erase(iter);
-				}
-				// detach conflicting kit attachments
-				if (is_part_of_kit(foc_att.hid_id.category)) {
-					kit_identifier kit_id = { get_kit_category(foc_att.hid_id.category), foc_att.hid_id.kit_ptr };
-					auto iter = focus_kit_map.find(kit_id);
-					if (iter != focus_kit_map.end()) {
-						iter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-						focus_kit_map.erase(iter);
+				// first check, whether focusable acccepts focus attachment
+				if (foc_info.object->get_interface<focusable>()->focus_change(focus_change_action::attach, rfa, { foc_att, foc_info.config }, e, dis_info)) {
+					// detach conflicting hid attachments
+					auto iter = focus_hid_map.find(foc_att.hid_id);
+					if (iter != focus_hid_map.end()) {
+						iter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+						focus_hid_map.erase(iter);
 					}
-				}
-				// detach conflicting category selection attachments
-				for (size_t i = 0; i < focus_category_attachments.size(); ) {
-					auto jter = focus_category_attachments.begin() + i;
-					if (jter->first.selection.contains(foc_att.hid_id.category)) {
-						jter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-						focus_category_attachments.erase(jter);
+					// detach conflicting kit attachments
+					if (is_part_of_kit(foc_att.hid_id.category)) {
+						kit_identifier kit_id = { get_kit_category(foc_att.hid_id.category), foc_att.hid_id.kit_ptr };
+						auto iter = focus_kit_map.find(kit_id);
+						if (iter != focus_kit_map.end()) {
+							iter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+							focus_kit_map.erase(iter);
+						}
 					}
-					else
-						++i;
+					// detach conflicting category selection attachments
+					for (size_t i = 0; i < focus_category_attachments.size(); ) {
+						auto jter = focus_category_attachments.begin() + i;
+						if (jter->first.selection.contains(foc_att.hid_id.category)) {
+							jter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+							focus_category_attachments.erase(jter);
+						}
+						else
+							++i;
+					}
+					// detach all attachment
+					if (!focus_all_attachment.empty()) {
+						focus_all_attachment.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+						focus_all_attachment.clear();
+					}
+					// finally attach focus to hid
+					rfi.foc_info_ptr = &(focus_hid_map[foc_att.hid_id] = foc_info);
 				}
-				// detach all attachment
-				if (!focus_all_attachment.empty()) {
-					focus_all_attachment.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-					focus_all_attachment.clear();
-				}
-				// finally attach focus to hid
-				rfi.foc_info_ptr = &(focus_hid_map[foc_att.hid_id] = foc_info);
-				foc_info.object->get_interface<focusable>()->focus_change(focus_change_action::attach, rfa, { foc_att, foc_info.config }, e, dis_info, other_object_ptr);
 				break;
 			}
 			case focus_level::kit:
 			{
-				// detach conflicting hid attachments by iterating categories and device indices and copy dispatch info to these
-				for (hid_category hid_cat : get_hid_categories(foc_att.kit_id.category)) {
-					for (int16_t di = get_min_index(hid_cat); di <= get_max_index(hid_cat); ++di) {
-						hid_identifier hid_id = { hid_cat, foc_att.kit_id.kit_ptr, di };
-						hid_id.index = di;
-						auto iter = focus_hid_map.find(hid_id);
-						if (iter != focus_hid_map.end()) {
-							iter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-							focus_hid_map.erase(iter);
+				// first check, whether focusable acccepts focus attachment
+				if (foc_info.object->get_interface<focusable>()->focus_change(focus_change_action::attach, rfa, { foc_att, foc_info.config }, e, dis_info)) {
+					// detach conflicting hid attachments by iterating categories and device indices and copy dispatch info to these
+					for (hid_category hid_cat : get_hid_categories(foc_att.kit_id.category)) {
+						for (int16_t di = get_min_index(hid_cat); di <= get_max_index(hid_cat); ++di) {
+							hid_identifier hid_id = { hid_cat, foc_att.kit_id.kit_ptr, di };
+							hid_id.index = di;
+							auto iter = focus_hid_map.find(hid_id);
+							if (iter != focus_hid_map.end()) {
+								iter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+								focus_hid_map.erase(iter);
+							}
 						}
 					}
-				}
-				// detach conflicting kit attachment
-				auto iter = focus_kit_map.find(foc_att.kit_id);
-				if (iter != focus_kit_map.end()) {
-					other_object_ptr = iter->second.object;
-					iter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-					focus_kit_map.erase(iter);
-				}
-				// detach conflicting category selection attachments
-				for (size_t i = 0; i < focus_category_attachments.size(); ) {
-					auto jter = focus_category_attachments.begin() + i;
-					if (jter->first.selection.overlaps(foc_att.kit_id.category)) {
-						jter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-						focus_category_attachments.erase(jter);
+					// detach conflicting kit attachment
+					auto iter = focus_kit_map.find(foc_att.kit_id);
+					if (iter != focus_kit_map.end()) {
+						iter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+						focus_kit_map.erase(iter);
 					}
-					else
-						++i;
+					// detach conflicting category selection attachments
+					for (size_t i = 0; i < focus_category_attachments.size(); ) {
+						auto jter = focus_category_attachments.begin() + i;
+						if (jter->first.selection.overlaps(foc_att.kit_id.category)) {
+							jter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+							focus_category_attachments.erase(jter);
+						}
+						else
+							++i;
+					}
+					// detach all attachment
+					if (!focus_all_attachment.empty()) {
+						focus_all_attachment.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+						focus_all_attachment.clear();
+					}
+					// finally attach focus to kit
+					rfi.foc_info_ptr = &(focus_kit_map[foc_att.kit_id] = foc_info);
 				}
-				// detach all attachment
-				if (!focus_all_attachment.empty()) {
-					focus_all_attachment.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-					focus_all_attachment.clear();
-				}
-				// finally attach focus to kit
-				rfi.foc_info_ptr = &(focus_kit_map[foc_att.kit_id] = foc_info);
-				foc_info.object->get_interface<focusable>()->focus_change(focus_change_action::attach, rfa, { foc_att, foc_info.config }, e, dis_info, other_object_ptr);
 				break;
 			}
 			case focus_level::category:
 			{
-				for (hid_category hid_cat : foc_att.selection.get_categories()) {
-					// detach conflicting hid attachments by iterating categories and device indices
-					for (int16_t di = get_min_index(hid_cat); di < get_max_index(hid_cat); ++di) {
-						hid_identifier hid_id = { hid_cat, foc_att.kit_id.kit_ptr, di };
-						hid_id.index = di;
-						auto iter = focus_hid_map.find(hid_id);
-						if (iter != focus_hid_map.end()) {
-							iter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-							focus_hid_map.erase(iter);
+				// first check, whether focusable acccepts focus attachment
+				if (foc_info.object->get_interface<focusable>()->focus_change(focus_change_action::attach, rfa, { foc_att, foc_info.config }, e, dis_info)) {
+					for (hid_category hid_cat : foc_att.selection.get_categories()) {
+						// detach conflicting hid attachments by iterating categories and device indices
+						for (int16_t di = get_min_index(hid_cat); di < get_max_index(hid_cat); ++di) {
+							hid_identifier hid_id = { hid_cat, foc_att.kit_id.kit_ptr, di };
+							hid_id.index = di;
+							auto iter = focus_hid_map.find(hid_id);
+							if (iter != focus_hid_map.end()) {
+								iter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+								focus_hid_map.erase(iter);
+							}
+						}
+						// detach conflicting kit attachment by iterating all kit attachments
+						std::vector<kit_identifier> to_be_removed;
+						kit_category kit_cat = get_kit_category(hid_cat);
+						for (auto iter = focus_kit_map.begin(); iter != focus_kit_map.end(); ++iter)
+							if (kit_cat == iter->first.category)
+								to_be_removed.emplace_back(iter->first);
+						for (auto tbr : to_be_removed) {
+							focus_kit_map[tbr].object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+							focus_kit_map.erase(tbr);
 						}
 					}
-					// detach conflicting kit attachment by iterating all kit attachments
-					std::vector<kit_identifier> to_be_removed;
-					kit_category kit_cat = get_kit_category(hid_cat);
-					for (auto iter = focus_kit_map.begin(); iter != focus_kit_map.end(); ++iter)
-						if (kit_cat == iter->first.category)
-							to_be_removed.emplace_back(iter->first);
-					for (auto tbr : to_be_removed) {
-						focus_kit_map[tbr].object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-						focus_kit_map.erase(tbr);
+					// detach conflicting category selection attachments
+					for (size_t i = 0; i < focus_category_attachments.size(); ) {
+						auto jter = focus_category_attachments.begin() + i;
+						if (jter->first.selection.overlaps(foc_att.selection)) {
+							jter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+							focus_category_attachments.erase(jter);
+						}
+						else
+							++i;
 					}
-				}
-				// detach conflicting category selection attachments
-				for (size_t i = 0; i < focus_category_attachments.size(); ) {
-					auto jter = focus_category_attachments.begin() + i;
-					if (jter->first.selection.overlaps(foc_att.selection)) {
-						if (jter->first.selection == foc_att.selection)
-							other_object_ptr = jter->second.object;
-						jter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-						focus_category_attachments.erase(jter);
+					// detach all attachment
+					if (!focus_all_attachment.empty()) {
+						focus_all_attachment.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+						focus_all_attachment.clear();
 					}
-					else
-						++i;
+					// finally attach focus to category selection
+					focus_category_attachments.push_back({ foc_att, foc_info });
+					rfi.foc_info_ptr = &focus_category_attachments.back().second;
 				}
-				// detach all attachment
-				if (!focus_all_attachment.empty()) {
-					focus_all_attachment.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-					focus_all_attachment.clear();
-				}
-				// finally attach focus to category selection
-				focus_category_attachments.push_back({ foc_att, foc_info });
-				rfi.foc_info_ptr = &focus_category_attachments.back().second;
-				foc_info.object->get_interface<focusable>()->focus_change(focus_change_action::attach, rfa, { foc_att, foc_info.config }, e, dis_info, other_object_ptr);
 				break;
 			}
 			case focus_level::all:
 			{
-				// detach all hid attachments
-				for (auto hid2foc : focus_hid_map) {
-					hid2foc.second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
+				// first check, whether focusable acccepts focus attachment
+				if (foc_info.object->get_interface<focusable>()->focus_change(focus_change_action::attach, rfa, { foc_att, foc_info.config }, e, dis_info)) {
+					// detach all hid attachments
+					for (auto hid2foc : focus_hid_map) {
+						hid2foc.second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+					}
+					focus_hid_map.clear();
+					// detach all kit attachments
+					for (auto kit2foc : focus_kit_map) {
+						kit2foc.second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+					}
+					focus_kit_map.clear();
+					// detach all category selection attachments
+					for (auto cat2foc : focus_category_attachments) {
+						cat2foc.second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+					}
+					focus_category_attachments.clear();
+					// detach all attachment
+					if (!focus_all_attachment.empty()) {
+						focus_all_attachment.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info);
+					}
+					// finally attach focus to all
+					rfi.foc_info_ptr = &(focus_all_attachment = foc_info);
 				}
-				focus_hid_map.clear();
-				// detach all kit attachments
-				for (auto kit2foc : focus_kit_map) {
-					kit2foc.second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-				}
-				focus_kit_map.clear();
-				// detach all category selection attachments
-				for (auto cat2foc : focus_category_attachments) {
-					cat2foc.second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-				}
-				focus_category_attachments.clear();
-				// detach all attachment
-				if (!focus_all_attachment.empty()) {
-					other_object_ptr = focus_all_attachment.object;
-					focus_all_attachment.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, foc_info.config }, e, dis_info, foc_info.object);
-				}
-				// finally attach focus to all
-				rfi.foc_info_ptr = &(focus_all_attachment = foc_info);
-				foc_info.object->get_interface<focusable>()->focus_change(focus_change_action::attach, rfa, { foc_att, foc_info.config }, e, dis_info, other_object_ptr);
 				break;
 			}
 			}
@@ -202,7 +212,7 @@ namespace cgv {
 				// find hid attachment and detach if same object as in detach request
 				auto iter = focus_hid_map.find(foc_att.hid_id);
 				if (iter != focus_hid_map.end() && iter->second.object == fi.object) {
-					iter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, iter->second.config }, e, dis_info, 0);
+					iter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, iter->second.config }, e, dis_info);
 					focus_hid_map.erase(iter);
 					rfi.foc_info_ptr = &default_focus_info;
 				}
@@ -213,7 +223,7 @@ namespace cgv {
 				// find kit attachment and detach if same object as in detach request
 				auto iter = focus_kit_map.find(foc_att.kit_id);
 				if (iter != focus_kit_map.end() && iter->second.object == fi.object) {
-					iter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, iter->second.config }, e, dis_info, 0);
+					iter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, iter->second.config }, e, dis_info);
 					focus_kit_map.erase(iter);
 					rfi.foc_info_ptr = &default_focus_info;
 				}
@@ -225,7 +235,7 @@ namespace cgv {
 				for (size_t i = 0; i < focus_category_attachments.size(); ) {
 					auto jter = focus_category_attachments.begin() + i;
 					if (jter->first.selection.overlaps(foc_att.selection) && jter->second.object == fi.object) {
-						jter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, jter->second.config }, e, dis_info, 0);
+						jter->second.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, jter->second.config }, e, dis_info);
 						focus_category_attachments.erase(jter);
 						rfi.foc_info_ptr = &default_focus_info;
 					}
@@ -238,7 +248,7 @@ namespace cgv {
 			{
 				// detach all attachment
 				if (!focus_all_attachment.empty() && focus_all_attachment.object == fi.object) {
-					focus_all_attachment.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, focus_all_attachment.config }, e, dis_info, 0);
+					focus_all_attachment.object->get_interface<focusable>()->focus_change(focus_change_action::detach, rfa, { foc_att, focus_all_attachment.config }, e, dis_info);
 					focus_all_attachment.clear();
 					rfi.foc_info_ptr = &default_focus_info;
 				}
@@ -251,6 +261,19 @@ namespace cgv {
 		void dispatcher::add_object(cgv::base::base_ptr obj)
 		{
 			objects.insert(obj);
+			set_dispatcher_ptr_recursive(obj);
+		}
+		void dispatcher::set_dispatcher_ptr_recursive(cgv::base::base_ptr obj)
+		{
+			auto* foc = obj->get_interface<focusable>();
+			if (foc)
+				foc->set_dispatcher_ptr(this);
+			// next check for group and children thereof
+			auto grp_ptr = obj->cast<cgv::base::group>();
+			if (grp_ptr) {
+				for (unsigned ci = 0; ci < grp_ptr->get_nr_children(); ++ci)
+					set_dispatcher_ptr_recursive(grp_ptr->get_child(ci));
+			}
 		}
 		void dispatcher::remove_object(cgv::base::base_ptr obj)
 		{
@@ -348,6 +371,15 @@ namespace cgv {
 			if (handle_called_ptr)
 				*handle_called_ptr = false;
 			return false;
+		}
+
+		bool dispatcher::reconfigure(const hid_identifier& hid_id, focus_configuration& focus_config)
+		{
+			auto iter = focus_hid_map.find(hid_id);
+			if (iter == focus_hid_map.end())
+				return false;
+			iter->second.config = focus_config;
+			return true;
 		}
 
 		bool dispatcher::dispatch(const cgv::gui::event& e, const hid_identifier& hid_id, dispatch_report* report_ptr)

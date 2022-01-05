@@ -204,9 +204,11 @@ namespace cgv {
 						//	<< reinterpret_cast<const hit_dispatch_info*>(di_ptr)->get_hit_info()->primitive_index 
 						//	<< std::endl;
 
-						// announce change of primitive index to object
-						foc_info_ptr->object->get_interface<focusable>()->focus_change(
-							focus_change_action::index_change, rfa, { foc_att, foc_info_ptr->config }, e, *di_ptr, 0);
+						// announce change of primitive index to object and in case of refusal, detach focus
+						if (!foc_info_ptr->object->get_interface<focusable>()->focus_change(
+							focus_change_action::index_change, rfa, { foc_att, foc_info_ptr->config }, e, *di_ptr)) {
+							detach_focus(rfa, foc_att, *foc_info_ptr, e, *di_ptr, rfi);
+						}
 					}
 				}
 				else {
