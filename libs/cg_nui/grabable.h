@@ -33,6 +33,8 @@ namespace cgv {
 			bool is_grab_change(const cgv::gui::event& e, bool& grabbed) const;
 			/// check whether event is a grabbing event
 			bool is_grabbing(const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info) const;
+			/// in case is_grabbing returned true, this provides access to proximity info of dispatch info
+			const proximity_info& get_proximity_info(const dispatch_info& dis_info) const;
 		};
 	}
 }

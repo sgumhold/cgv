@@ -20,7 +20,6 @@ namespace cgv {
 		pointable::pointable()
 		{
 		}
-		/// check whether event changes the default trigger for pointing
 		bool pointable::is_trigger_change(const cgv::gui::event& e, bool& triggered) const
 		{
 			if (e.get_kind() == cgv::gui::EID_KEY && ((e.get_flags() & cgv::gui::EF_VR) != 0)) {
@@ -45,7 +44,6 @@ namespace cgv {
 			}
 			return false;
 		}
-		/// check whether event is a pointing event
 		bool pointable::is_pointing(const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info) const
 		{
 			if (dis_info.mode != cgv::nui::dispatch_mode::pointing)
@@ -63,6 +61,9 @@ namespace cgv {
 			}
 			return false;
 		}
-
+		const intersection_info& pointable::get_intersection_info(const dispatch_info& dis_info) const
+		{
+			return reinterpret_cast<const intersection_dispatch_info&>(dis_info);
+		}
 	}
 }

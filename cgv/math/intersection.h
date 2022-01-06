@@ -139,6 +139,37 @@ namespace cgv {
 				n = cgv::math::pose_transform_vector(pose, n);
 			return t;
 		}
+		template <typename T>
+		int ray_sphere_intersection(const fvec<T,3>& ro, const fvec<T,3>& rd, const fvec<T,3>& ce, T ra, fvec<T, 2>& res)
+		{
+			fvec<T,3> oc = ro - ce;
+			T b = dot(oc, rd);
+			T c = dot(oc, oc) - ra * ra;
+			T h = b * b - c;
+			if (h < 0.0)
+				return 0;
+			h = std::sqrt(h);
+			res = fvec<T,2>(-b - h, -b + h);
+			return 2;
+		}
+		template <typename T>
+		int ray_box_intersection(const fvec<T,3>& ro, const fvec<T,3>& rd, fvec<T,3> boxSize, fvec<T,2>& res, fvec<T,3>& outNormal)
+		{
+			fvec<T,3> m = fvec<T,3>(T(1)) / rd; // can precompute if traversing a set of aligned boxes
+			fvec<T,3> n = m * ro;   // can precompute if traversing a set of aligned boxes
+			fvec<T,3> k = abs(m) * boxSize;
+			fvec<T,3> t1 = -n - k;
+			fvec<T,3> t2 = -n + k;
+			T tN = std::max(std::max(t1.x(), t1.y()), t1.z());
+			T tF = std::min(std::min(t2.x(), t2.y()), t2.z());
+			if (tN > tF || tF < 0.0)
+				return 0;
+			outNormal = -sign(rd)
+				* step(fvec<T, 3>(t1.y(), t1.z(), t1.x()), fvec<T, 3>(t1.x(), t1.y(), t1.z()))
+				* step(fvec<T, 3>(t1.z(), t1.x(), t1.y()), fvec<T, 3>(t1.x(), t1.y(), t1.z()));
+			res = fvec<T,2>(tN, tF);
+			return 2;
+		}
 	}
 }
 

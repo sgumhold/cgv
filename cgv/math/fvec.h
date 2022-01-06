@@ -230,8 +230,14 @@ public:
 
 	///componentwise sign values
 	void sign() {
-		for(unsigned i = 0; i < N; i++)
+		for (unsigned i = 0; i < N; i++)
 			v[i] = cgv::math::sign(v[i]);
+	}
+
+	///componentwise sign values
+	void step(const fvec<T, N>& r) {
+		for (unsigned i = 0; i < N; i++)
+			v[i] = cgv::math::step(v[i], r[i]);
 	}
 
 	///componentwise absolute values
@@ -325,6 +331,10 @@ inline T length(const fvec<T, N>& v) { return sqrt(dot(v, v)); }
 /// apply sign function component wise to vector
 template <typename T, cgv::type::uint32_type N>
 inline fvec<T, N> sign(const fvec<T, N>& v) { fvec<T, N> r(v); r.sign(); return r; }
+
+/// apply step function component wise to vector
+template <typename T, cgv::type::uint32_type N>
+inline fvec<T, N> step(const fvec<T, N>& a, const fvec<T, N>& b) { fvec<T, N> r(a); r.step(b); return r; }
 
 /// apply abs function component wise to vector
 template <typename T, cgv::type::uint32_type N>

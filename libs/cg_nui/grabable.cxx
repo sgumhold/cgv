@@ -15,11 +15,9 @@ namespace cgv {
 		{
 			return new proximity_dispatch_info(*this);
 		}
-
 		grabable::grabable()
 		{
 		}
-		/// check whether event changes the default grabbing state
 		bool grabable::is_grab_change(const cgv::gui::event& e, bool& grabbed) const
 		{
 			if (e.get_kind() != cgv::gui::EID_KEY)
@@ -32,7 +30,6 @@ namespace cgv {
 			grabbed = vrke.get_action() == cgv::gui::KA_PRESS;
 			return true;
 		}
-		/// check whether event is a grabbing event
 		bool grabable::is_grabbing(const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info) const
 		{
 			if (dis_info.mode != cgv::nui::dispatch_mode::proximity)
@@ -40,6 +37,10 @@ namespace cgv {
 			if (e.get_kind() == cgv::gui::EID_POSE)
 				return true;
 			return false;
+		}
+		const proximity_info& grabable::get_proximity_info(const dispatch_info& dis_info) const
+		{
+			return reinterpret_cast<const proximity_dispatch_info&>(dis_info);
 		}
 	}
 }

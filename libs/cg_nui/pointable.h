@@ -35,6 +35,8 @@ namespace cgv {
 			bool is_trigger_change(const cgv::gui::event& e, bool& triggered) const;
 			/// check whether event is a pointing event
 			bool is_pointing(const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info) const;
+			/// in case is_pointing returned true, this provides access to intersection info of dispatch info
+			const intersection_info& get_intersection_info(const dispatch_info& dis_info) const;
 		};
 	}
 }
