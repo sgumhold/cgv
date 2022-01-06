@@ -567,6 +567,32 @@ void vr_scene::construct_hit_geometry()
 		}
 	}
 }
+
+void vr_scene::check_for_detach(int ci, const cgv::gui::event& e)
+{
+	if (ctrl_infos[ci].grabbing || ctrl_infos[ci].pointing)
+		return;
+	void* vr_kit_handle = vr_view_ptr->get_current_vr_kit()->get_handle();
+	cgv::nui::hid_identifier hid_id = { cgv::nui::hid_category::controller, vr_kit_handle, int16_t(ci) };
+	auto iter = focus_hid_map.find(hid_id);
+	if (iter != focus_hid_map.end()) {
+		iter->second.object->get_interface<cgv::nui::focusable>()->focus_change(
+			cgv::nui::focus_change_action::detach, cgv::nui::refocus_action::none,
+			{ iter->first, iter->second.config }, e, { hid_id, cgv::nui::dispatch_mode::none });
+		std::cout << "detaching hid: " << iter->first << " -> " << iter->second.config << std::endl;
+		focus_hid_map.erase(iter);
+	}
+	cgv::nui::kit_identifier kit_id = { cgv::nui::kit_category::vr, vr_kit_handle };
+	auto jter = focus_kit_map.find(kit_id);
+	if (jter != focus_kit_map.end()) {
+		jter->second.object->get_interface<cgv::nui::focusable>()->focus_change(
+			cgv::nui::focus_change_action::detach, cgv::nui::refocus_action::none,
+			{ jter->first, jter->second.config }, e, { hid_id, cgv::nui::dispatch_mode::none });
+		std::cout << "detaching kit: " << jter->first << " -> " << jter->second.config << std::endl;
+		focus_kit_map.erase(jter);
+	}
+}
+
 bool vr_scene::handle(cgv::gui::event& e)
 {
 	if ((e.get_flags() & cgv::gui::EF_VR) == 0 && e.get_kind() == cgv::gui::EID_KEY) {
@@ -593,6 +619,7 @@ bool vr_scene::handle(cgv::gui::event& e)
 				if (dt < ctrl_pointing_animation_duration)
 					ctrl_infos[ci].toggle_time -= (ctrl_pointing_animation_duration-dt);
 				update_member(&ctrl_infos[ci].pointing);
+				check_for_detach(ci, e);
 				return true;
 			case vr::VR_DPAD_DOWN:
 				ctrl_infos[ci].grabbing = !ctrl_infos[ci].grabbing;
