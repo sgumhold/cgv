@@ -65,7 +65,8 @@ private:
 	vr_view_interactor* vr_view_ptr;
 
 	double ctrl_pointing_animation_duration = 0.5;
-
+	// if both grabbing and pointing turned off for controller ci, detach it from focus in hid and kit attachments
+	void check_for_detach(int ci, const cgv::gui::event& e);
 	// keep reference to vr table
 	vr_table_ptr table;
 
