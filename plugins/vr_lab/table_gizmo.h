@@ -31,7 +31,7 @@ protected:
 	struct interaction_info {
 		bool in_focus = false;
 		bool is_triggered = false;
-		cgv::nui::focus_configuration last_focus_config;
+		cgv::nui::focus_configuration original_config;
 		cgv::nui::hid_identifier hid_id;
 		int arrow_index;
 		float value_at_trigger;

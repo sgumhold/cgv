@@ -72,16 +72,10 @@ vr_screen::vr_screen(const std::string& name) : cgv::base::node(name)
 	screen_capture_manager->setMouseChangeInterval(std::chrono::milliseconds(100));
 	screen_capture_manager->pause();
 	screen_capture = false;
-	mouse_emulation = false;
-	mouse_hid.category = cgv::nui::hid_category::mouse;
 	mouse_button_pressed[0] = mouse_button_pressed[1] = mouse_button_pressed[2] = false;
-	screen_distance = 2.0f;
 	initial_placement = true;
 	show_screen = false;
 	hide();
-	screen_scale = 1.0f;
-	placement_controller = -1;
-	ft = focus_type::none;
 }
 
 bool vr_screen::self_reflect(cgv::reflect::reflection_handler& rh)
@@ -120,8 +114,8 @@ void vr_screen::on_set(void* member_ptr)
 /// ask focusable what it wants to grab focus based on given event - in case of yes, the focus_demand should be filled
 bool vr_screen::wants_to_grab_focus(const cgv::gui::event& e, const cgv::nui::hid_identifier& hid_id, cgv::nui::focus_demand& demand)
 {
-	// do not grab focus in mouse emulation mode
-	if (mouse_emulation)
+	// only grab focus when idle
+	if (state != state_enum::idle)
 		return false;
 	// ask to grab focus of vr kit if menu key of a vr control is pressed 
 	if (e.get_kind() != cgv::gui::EID_KEY || e.get_flags() & ((cgv::gui::EF_VR) == 0))
@@ -152,25 +146,24 @@ bool vr_screen::focus_change(cgv::nui::focus_change_action action, cgv::nui::ref
 	// just keep track of focus type here and do anything else in the handle method
 	if (action == cgv::nui::focus_change_action::attach) {
 		if (rfa == cgv::nui::refocus_action::grab) {
-			ft = focus_type::grab;
-			update_member(&ft);
+			state = state_enum::place;
+			update_member(&state);
+			hid_id = dis_info.hid_id;
+			return true;
 		}
 		else if (rfa == cgv::nui::refocus_action::intersection) {
-			if (ft == focus_type::none) {
-				ft = focus_type::pointing;
-				if (!mouse_emulation) {
-					mouse_hid = dis_info.hid_id;
-					mouse_emulation = true;
-					update_member(&mouse_emulation);
-				}
+			if (state == state_enum::idle) {
+				state = state_enum::mouse;
+				update_member(&state);
+				hid_id = dis_info.hid_id;
 				return true;
 			}
 		}
 		return false;
 	}
 	else if (action == cgv::nui::focus_change_action::detach) {
-		if (mouse_emulation) {
-			if (dis_info.hid_id == mouse_hid) {
+		if (state == state_enum::mouse) {
+			if (dis_info.hid_id == hid_id) {
 				// ensure that mouse buttons pressed in emulation are also released again
 				static const DWORD mouse_button_up[3] = { MOUSEEVENTF_LEFTUP, MOUSEEVENTF_MIDDLEUP, MOUSEEVENTF_RIGHTUP };
 				for (int i = 0; i < 3; ++i) {
@@ -182,15 +175,13 @@ bool vr_screen::focus_change(cgv::nui::focus_change_action action, cgv::nui::ref
 						mouse_button_pressed[i] = false;
 					}
 				}
-				mouse_emulation = false;
-				update_member(&mouse_emulation);
-				ft = focus_type::none;
-				update_member(&ft);
+				state = state_enum::idle;
+				update_member(&state);
 			}
 		}
 		else {
-			ft = focus_type::none;
-			update_member(&ft);
+			state = state_enum::idle;
+			update_member(&state);
 		}
 	}
 	return true;
@@ -199,7 +190,6 @@ bool vr_screen::focus_change(cgv::nui::focus_change_action action, cgv::nui::ref
 /// stream help information to the given output stream
 void vr_screen::stream_help(std::ostream& os)
 {
-
 }
 
 void vr_screen::compute_mouse_xy(const vec3& p, int& X, int& Y) const
@@ -211,146 +201,159 @@ void vr_screen::compute_mouse_xy(const vec3& p, int& X, int& Y) const
 	Y = screen_texture.get_height() - int(screen_texture.get_height() * rd.y());
 }
 
+void vr_screen::placement_trigger(const cgv::gui::vr_key_event& vrke, cgv::nui::focus_request& request)
+{
+	const auto& vr_state = vrke.get_state();
+	int ci = vrke.get_controller_index();
+	const auto& ctrl_state = vr_state.controller[ci];
+	if (vrke.get_action() == cgv::gui::KA_PRESS) {
+		start_placement_pose = cgv::math::pose_concat(
+			cgv::math::pose_inverse(reinterpret_cast<const mat34&>(vr_state.hmd.pose[0])),
+			reinterpret_cast<const mat34&>(ctrl_state.pose[0])
+		);
+		start_placement_time = vrke.get_time();
+		if (initial_placement) {
+			start_placement_time -= 0.2;
+			place_screen(vr_state);
+			initial_placement = false;
+		}
+		last_show_screen = show_screen;
+		if (!is_visible()) {
+			show_screen = true;
+			update_member(&show_screen);
+			show();
+		}
+		if (!screen_capture) {
+			screen_capture = true;
+			on_set(&screen_capture);
+		}
+	}
+	else if (vrke.get_action() == cgv::gui::KA_RELEASE) {
+		if (vrke.get_time() - start_placement_time < 0.2) {
+			if (last_show_screen == show_screen) {
+				if (show_screen) {
+					show_screen = false;
+					hide();
+					if (screen_capture) {
+						screen_capture = false;
+						on_set(&screen_capture);
+					}
+				}
+				else {
+					show_screen = true;
+					show();
+					if (!screen_capture) {
+						screen_capture = true;
+						on_set(&screen_capture);
+					}
+				}
+				update_member(&show_screen);
+			}
+		}
+		else {
+			if (ctrl_state.status == vr::VRS_TRACKED)
+				place_screen(vr_state);
+		}
+		// in case of menu key release also release kit focus
+		request.request = cgv::nui::focus_change_action::detach;
+		request.demand.attach.level = cgv::nui::focus_level::kit;
+	}
+}
+
 //! ask active focusable to handle event providing dispatch info
 /*! return whether event was handled
 	To request a focus change, fill the passed request struct and set the focus_change_request flag.*/
 bool vr_screen::handle(const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info, cgv::nui::focus_request& request)
 {
-	switch (e.get_kind()) {
-	case cgv::gui::EID_KEY: {
-		if ((e.get_flags() & cgv::gui::EF_VR) != 0) {
+	if (state == state_enum::idle)
+		return false;
+	if (!(dis_info.hid_id == hid_id))
+		return false;
+	if ((e.get_flags() & cgv::gui::EF_VR) == 0)
+		return false;
+	if (state == state_enum::place) {
+		if (e.get_kind() == cgv::gui::EID_KEY) {
 			const auto& vrke = reinterpret_cast<const cgv::gui::vr_key_event&>(e);
-			const auto& vr_state = vrke.get_state();
-			int ci = vrke.get_controller_index();
-			const auto& ctrl_state = vr_state.controller[ci];
 			if (vrke.get_key() == vr::VR_MENU) {
-				if (vrke.get_action() == cgv::gui::KA_PRESS) {
-					if (ctrl_state.status == vr::VRS_TRACKED && placement_controller != ci) {
-						placement_controller = ci;
-						start_placement_pose = cgv::math::pose_concat(
-							cgv::math::pose_inverse(reinterpret_cast<const mat34&>(vr_state.hmd.pose[0])),
-							reinterpret_cast<const mat34&>(ctrl_state.pose[0])
-						);
-						start_placement_time = vrke.get_time();
-						if (initial_placement) {
-							start_placement_time -= 0.2;
-							place_screen(vr_state);
-							initial_placement = false;
-						}
-						last_show_screen = show_screen;
-						if (!is_visible()) {
-							show_screen = true;
-							update_member(&show_screen);
-							show();
-						}
-						if (!screen_capture) {
-							screen_capture = true;
-							on_set(&screen_capture);
-						}
-						mouse_emulation = false;
-						update_member(&mouse_emulation);
-						return true;
-					}
-				}
-				else if (vrke.get_action() == cgv::gui::KA_RELEASE && placement_controller == ci) {
-					if (vrke.get_time() - start_placement_time < 0.2) {
-						if (last_show_screen == show_screen) {
-							if (show_screen) {
-								show_screen = false;
-								hide();
-								if (screen_capture) {
-									screen_capture = false;
-									on_set(&screen_capture);
-								}
-							}
-							else {
-								show_screen = true;
-								show();
-								if (!screen_capture) {
-									screen_capture = true;
-									on_set(&screen_capture);
-								}
-							}
-							update_member(&show_screen);
-						}
-					}
-					else {
-						if (ctrl_state.status == vr::VRS_TRACKED)
-							place_screen(vr_state);
-					}
-					placement_controller = -1;
-					// in case of menu key release also release kit focus
-					request.request = cgv::nui::focus_change_action::detach;
-					request.demand.attach.level = cgv::nui::focus_level::kit;
-					return true;
-				}
-			}
-			if (mouse_emulation && dis_info.hid_id == mouse_hid) {
-				int bi = 0;
-				switch (vrke.get_key()) {
-				case vr::VR_DPAD_RIGHT:
-					++bi;
-				case vr::VR_DPAD_DOWN:
-					++bi;
-				case vr::VR_DPAD_LEFT:
-					if (vrke.get_action() == cgv::gui::KA_PRESS) {
-						static const DWORD mouse_button_dn[3] = { MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_MIDDLEDOWN, MOUSEEVENTF_RIGHTDOWN };
-						INPUT inputs[1] = { 0 };
-						inputs[0].type = INPUT_MOUSE;
-						inputs[0].mi.dwFlags = mouse_button_dn[bi];
-						SendInput(1, inputs, sizeof(INPUT));
-
-						mouse_button_pressed[bi] = true;
-						update_member(&mouse_button_pressed[bi]);
-						last_focus_config = request.demand.config;
-						request.request = cgv::nui::focus_change_action::reconfigure;
-						request.demand.config.refocus.spatial = false;
-						request.demand.config.dispatch.structural = false;
-						request.demand.config.dispatch.focus_recursive = false;
-						request.demand.config.spatial.proximity = false;
-						return true;
-					}
-
-					else if (vrke.get_action() == cgv::gui::KA_RELEASE) {
-						static const DWORD mouse_button_up[3] = { MOUSEEVENTF_LEFTUP, MOUSEEVENTF_MIDDLEUP, MOUSEEVENTF_RIGHTUP };
-						INPUT inputs[1] = { 0 };
-						inputs[0].type = INPUT_MOUSE;
-						inputs[0].mi.dwFlags = mouse_button_up[bi];
-						SendInput(1, inputs, sizeof(INPUT));
-						mouse_button_pressed[bi] = false;
-						update_member(&mouse_button_pressed[bi]);
-						request.request = cgv::nui::focus_change_action::reconfigure;
-						request.demand.config = last_focus_config;
-						return true;
-					}
-					break;
-				}
-			}
-		}
-		break;
-	case cgv::gui::EID_POSE:
-		switch (ft) {
-		case focus_type::grab:
-			if (placement_controller != -1) {
-				const auto& vrpe = reinterpret_cast<const cgv::gui::vr_pose_event&>(e);
-				if ( (vrpe.get_trackable_index() == -1 || vrpe.get_trackable_index() == placement_controller) && vrpe.get_time()-start_placement_time > 0.2) {
-					place_screen(vrpe.get_state());
-					return true;
-				}
-			}
-			break;
-		case focus_type::pointing:
-			if (mouse_emulation && dis_info.mode == cgv::nui::dispatch_mode::pointing && dis_info.hid_id == mouse_hid) {
-				const auto& di = reinterpret_cast<const cgv::nui::intersection_dispatch_info&>(dis_info);
-				int X, Y;
-				compute_mouse_xy(screen_point = di.hit_point, X, Y);
-				SetCursorPos(X, Y);
+				placement_trigger(vrke, request);
 				return true;
 			}
 		}
-	default:
-		break;
+		else if (e.get_kind() == cgv::gui::EID_POSE) {
+			const auto& vrpe = reinterpret_cast<const cgv::gui::vr_pose_event&>(e);
+			if (vrpe.get_time() - start_placement_time > 0.2) {
+				place_screen(vrpe.get_state());
+				return true;
+			}
+		}
+		return false;
 	}
+	// finally state is mouse or drag
+	if (e.get_kind() == cgv::gui::EID_KEY) {
+		const auto& vrke = reinterpret_cast<const cgv::gui::vr_key_event&>(e);
+		const auto& vr_state = vrke.get_state();
+		int ci = vrke.get_controller_index();
+		const auto& ctrl_state = vr_state.controller[ci];
+		int bi = 0;
+		switch (vrke.get_key()) {
+		case vr::VR_MENU:
+			if (vrke.get_action() == cgv::gui::KA_RELEASE) {
+				show_screen = false;
+				hide();
+				if (screen_capture) {
+					screen_capture = false;
+					on_set(&screen_capture);
+				}
+				request.request = cgv::nui::focus_change_action::detach;
+				request.demand.attach.level = cgv::nui::focus_level::hid;
+			}
+			return true;
+		case vr::VR_DPAD_RIGHT:
+			++bi;
+		case vr::VR_DPAD_DOWN:
+			++bi;
+		case vr::VR_DPAD_LEFT:
+			//std::cout << "mouse button " << bi << (vrke.get_action() == cgv::gui::KA_PRESS ? "pressed" : "released") << std::endl;
+			if (vrke.get_action() == cgv::gui::KA_PRESS) {
+				static const DWORD mouse_button_dn[3] = { MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_MIDDLEDOWN, MOUSEEVENTF_RIGHTDOWN };
+				INPUT inputs[1] = { 0 };
+				inputs[0].type = INPUT_MOUSE;
+				inputs[0].mi.dwFlags = mouse_button_dn[bi];
+				SendInput(1, inputs, sizeof(INPUT));
+
+				mouse_button_pressed[bi] = true;
+				update_member(&mouse_button_pressed[bi]);
+				drag_begin(request, true, original_config);
+				state = state_enum::drag;
+				update_member(&state);
+				return true;
+			}
+			if (vrke.get_action() == cgv::gui::KA_RELEASE) {
+				static const DWORD mouse_button_up[3] = { MOUSEEVENTF_LEFTUP, MOUSEEVENTF_MIDDLEUP, MOUSEEVENTF_RIGHTUP };
+				INPUT inputs[1] = { 0 };
+				inputs[0].type = INPUT_MOUSE;
+				inputs[0].mi.dwFlags = mouse_button_up[bi];
+				SendInput(1, inputs, sizeof(INPUT));
+				mouse_button_pressed[bi] = false;
+				update_member(&mouse_button_pressed[bi]);
+				drag_end(request, original_config);
+				state = state_enum::mouse;
+				update_member(&state);
+				return true;
+			}
+			break;
+		}
+		return false;
+	}
+	if (e.get_kind() == cgv::gui::EID_POSE) {
+		if (dis_info.mode == cgv::nui::dispatch_mode::pointing) {
+			const auto& di = reinterpret_cast<const cgv::nui::intersection_dispatch_info&>(dis_info);
+			int X, Y;
+			compute_mouse_xy(screen_point = di.hit_point, X, Y);
+			SetCursorPos(X, Y);
+			return true;
+		}
+		return false;
 	}
 	return false;
 }
@@ -361,10 +364,10 @@ bool vr_screen::place_screen(const vr::vr_kit_state& state)
 		return false;
 
 	const mat34& hmd_pose = reinterpret_cast<const mat34&>(state.hmd.pose[0]);
-	if (state.controller[placement_controller].status == vr::VRS_TRACKED) {
+	if (state.controller[hid_id.index].status == vr::VRS_TRACKED) {
 		const mat34& hand_pose = cgv::math::pose_concat(
 			cgv::math::pose_inverse(reinterpret_cast<const mat34&>(hmd_pose[0])),
-			reinterpret_cast<const mat34&>(state.controller[placement_controller].pose[0])
+			reinterpret_cast<const mat34&>(state.controller[hid_id.index].pose[0])
 		);
 		vec3 z = hand_pose.col(2);
 		vec3 z0 = start_placement_pose.col(2);
@@ -438,16 +441,17 @@ void vr_screen::draw(cgv::render::context& ctx)
 		screen_texture.enable(ctx);
 	}
 	rr.set_color(ctx, rgb(1, 1, 0));
-	switch (ft) {
-	case focus_type::none:	    rr.set_border_color(ctx, rgb(0.3f, 0.3f, 0.3f)); break;
-	case focus_type::grab:	    rr.set_border_color(ctx, rgb(0.3f, 0.8f, 0.3f)); break;
-	case focus_type::pointing:	rr.set_border_color(ctx, rgb(0.8f, 0.3f, 0.3f)); break;
+	switch (state) {
+	case state_enum::idle:	rr.set_border_color(ctx, rgb(0.3f, 0.3f, 0.3f)); break;
+	case state_enum::place:	rr.set_border_color(ctx, rgb(0.3f, 0.8f, 0.3f)); break;
+	case state_enum::mouse:	rr.set_border_color(ctx, rgb(0.8f, 0.3f, 0.3f)); break;
+	case state_enum::drag:	rr.set_border_color(ctx, rgb(1.0f, 0.5f, 0.5f)); break;
 	}
 	rr.render(ctx, 0, 1);
 	if (screen_texture.is_created())
 		screen_texture.disable(ctx);
 
-	if (mouse_emulation) {
+	if (state == state_enum::mouse || state == state_enum::drag) {
 		auto& sr = cgv::render::ref_sphere_renderer(ctx);
 		sr.set_position(ctx, screen_point);
 		sr.set_color(ctx, rgb(1, 0, 0));
@@ -482,6 +486,8 @@ bool vr_screen::compute_intersection(const vec3& rectangle_center, const vec2& r
 /// implement ray object intersection and return whether intersection was found and in this case set \c hit_param to ray parameter and optionally \c hit_normal to surface normal of intersection
 bool vr_screen::compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx)
 {
+	if (!is_visible())
+		return false;
 	if (!compute_intersection(screen_center, screen_extent, screen_rotation, ray_start, ray_direction, hit_param))
 		return false;
 	hit_normal = screen_rotation.apply(vec3(0, 0, 1.0f));
@@ -505,15 +511,14 @@ void vr_screen::create_gui()
 	add_member_control(this, "show", show_screen, "toggle");
 	add_member_control(this, "aspect", screen_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 	add_member_control(this, "capture", screen_capture, "toggle");
-	if (begin_tree_node("interaction", ft)) {
+	if (begin_tree_node("interaction", state)) {
 		align("\a");
-		add_member_control(this, "focus type", ft, "dropdown", "enums='none,grab,pointing'");
-		add_member_control(this, "mouse_emulation", mouse_emulation, "toggle");
+		add_member_control(this, "state", state, "dropdown", "enums='idle,place,mouse,drag'");
 		add_member_control(this, "left mouse button", mouse_button_pressed[0], "toggle");
 		add_member_control(this, "middle mouse button", mouse_button_pressed[1], "toggle");
 		add_member_control(this, "right mouse button", mouse_button_pressed[2], "toggle");
 		align("\b");
-		end_tree_node(ft);
+		end_tree_node(state);
 	}
 	if (begin_tree_node("placement", screen_reference, true)) {
 		align("\a");

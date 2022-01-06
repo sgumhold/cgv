@@ -1,11 +1,14 @@
 #pragma once
 
 #include <vector>
+#include <string>
+#include <iostream>
 
 #include "lib_begin.h"
 
 namespace cgv {
 	namespace nui {
+		extern CGV_API void consider_flag(bool f, const std::string& name, std::string& res, char sep);
 
 		enum class hid_category : uint8_t {
 			keyboard,
@@ -16,12 +19,16 @@ namespace cgv {
 			controller,
 			tracker
 		};
+		/// provide conversion of hid_category to string
+		extern CGV_API std::string to_string(hid_category hc);
 
 		enum class kit_category : uint8_t {
 			none,
 			keyboard_mouse,
 			vr
 		};
+		/// provide conversion of kit_category to string
+		extern CGV_API std::string to_string(kit_category kc);
 
 		extern CGV_API bool is_part_of_kit(hid_category hid_cat);
 		extern CGV_API kit_category get_kit_category(hid_category hid_cat);
@@ -43,6 +50,8 @@ namespace cgv {
 			std::vector<hid_category> get_categories() const;
 			bool operator == (const hid_selection& hs) const;
 		};
+		/// provide conversion of hid_selection to string
+		extern CGV_API std::string to_string(hid_selection hs, char sep = ',');
 
 		/// unique identifier for a hid
 		struct CGV_API hid_identifier
@@ -53,6 +62,7 @@ namespace cgv {
 			bool operator < (const hid_identifier& di) const;
 			bool operator == (const hid_identifier& di) const;
 		};
+		extern CGV_API std::ostream& operator << (std::ostream& os, const hid_identifier& hid_id);
 
 		/// unique identifier for a kit
 		struct CGV_API kit_identifier
@@ -62,6 +72,7 @@ namespace cgv {
 			bool operator < (const kit_identifier& di) const;
 			bool operator == (const kit_identifier& di) const;
 		};
+		extern CGV_API std::ostream& operator << (std::ostream& os, const kit_identifier& kit_id);
 
 		extern CGV_API int get_hid_unique_index(const hid_identifier& hid_id);
 	}

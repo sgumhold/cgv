@@ -42,7 +42,7 @@ protected:
 	//@name interaction
 	//@{
 	/// temporary storage for focus config before restriction during grab
-	cgv::nui::focus_configuration last_focus_config;
+	cgv::nui::focus_configuration original_config;
 	/// possible states of vr_table
 	enum class state_enum {
 		idle=0,  // no input focus
@@ -51,7 +51,7 @@ protected:
 		grabbed, // grabbed in proximity based focus
 		gizmo    // gizmo activated during pointing 
 	};
-	/// whether table is in focus
+	/// current state of table
 	state_enum state = state_enum::idle;
 	/// focus hid (includes controller index)
 	cgv::nui::hid_identifier hid_id;

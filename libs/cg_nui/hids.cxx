@@ -4,6 +4,48 @@
 namespace cgv {
 	namespace nui {
 
+		std::string to_string(hid_category hc)
+		{
+			const char* names[] = {
+				"keyboard",
+				"mouse",
+				"joystick",
+				"gamepad",
+				"hmd",
+				"controller",
+				"tracker"
+			};
+			return names[int(hc)];
+		}
+		std::string to_string(kit_category kc)
+		{
+			const char* names[] = {
+				"none",
+				"keyboard_mouse",
+				"vr"
+			};
+			return names[int(kc)];
+		}
+		void consider_flag(bool f, const std::string& name, std::string& res, char sep)
+		{
+			if (!f)
+				return;
+			if (!res.empty())
+				res += sep;
+			res += name;
+		}
+		std::string to_string(hid_selection hs, char sep)
+		{
+			std::string res;
+			consider_flag(hs.keyboard, "keyboard", res, sep);
+			consider_flag(hs.mouse, "mouse", res, sep);
+			consider_flag(hs.joystick, "joystick", res, sep);
+			consider_flag(hs.gamepad, "gamepad", res, sep);
+			consider_flag(hs.hmd, "hmd", res, sep);
+			consider_flag(hs.controller, "controller", res, sep);
+			consider_flag(hs.tracker, "tracker", res, sep);
+			return res;
+		}
 		bool is_part_of_kit(hid_category hid_cat)
 		{
 			switch (hid_cat) {
@@ -164,5 +206,14 @@ namespace cgv {
 			L.emplace_back(hid_id);
 			return ret;
 		}
+		std::ostream& operator << (std::ostream& os, const hid_identifier& hid_id)
+		{
+			return os << to_string(hid_id.category) << "[" << hid_id.kit_ptr << "|" << hid_id.index << "]";
+		}
+		std::ostream& operator << (std::ostream& os, const kit_identifier& kit_id)
+		{
+			return os << to_string(kit_id.category) << "[" << kit_id.kit_ptr << "]";
+		}
+
 	}
 }

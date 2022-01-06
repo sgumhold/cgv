@@ -20,6 +20,8 @@ namespace cgv {
 			bool handle : 1;     // process focus requests from handle function
 			bool spatial : 1;    // allow focus change based on spatial analysis
 		};
+		/// provide conversion of refocus_policy to string
+		extern CGV_API std::string to_string(refocus_policy rp, char sep = ',');
 
 		/// refocus action performed during dispatch used to in dispatch report
 		enum class refocus_action
@@ -39,6 +41,8 @@ namespace cgv {
 			bool current_root_first : 1;  // start structural dispatch with root of object in focus
 			bool spatial : 1;             // use spatial dispatching
 		};
+		/// provide conversion of dispatch_policy to string
+		extern CGV_API std::string to_string(dispatch_policy dp, char sep = ',');
 
 		/// configuration of spatial analysis performed during dispatching
 		struct spatial_analysis
@@ -47,6 +51,8 @@ namespace cgv {
 			bool proximity : 1;  // perform proximity query
 			bool pointing : 1;   // perform pointing query
 		};
+		/// provide conversion of spatial_analysis to string
+		extern CGV_API std::string to_string(spatial_analysis sa, char sep = ',');
 
 		/// focus level defines abstraction level for attachment of focus
 		enum class focus_level : uint8_t
@@ -57,7 +63,8 @@ namespace cgv {
 			category, // attach to all hids in a selection of categories
 			all       // attach to all hids
 		};
-
+		/// provide conversion of focus_level to string
+		extern CGV_API std::string to_string(focus_level fl);
 		/// focus configuration defines how dispatch processed events 
 		struct focus_configuration
 		{
@@ -65,6 +72,7 @@ namespace cgv {
 			dispatch_policy  dispatch = { true, true, true, true };
 			spatial_analysis spatial = { false, true, true };
 		};
+		extern CGV_API std::ostream& operator << (std::ostream& os, const focus_configuration& foc_cfg);
 
 		/// defines information on where to attach focus to
 		struct CGV_API focus_attachment
@@ -75,8 +83,12 @@ namespace cgv {
 				kit_identifier kit_id;   // used if level == kit 
 				hid_selection selection; // used if level == category
 			};
-			focus_attachment();
+			focus_attachment(focus_level _level = focus_level::none);
+			focus_attachment(const hid_identifier& _hid_id);
+			focus_attachment(const kit_identifier& _kit_id);
+			focus_attachment(hid_selection _selection);
 		};
+		extern CGV_API std::ostream& operator << (std::ostream& os, const focus_attachment& foc_att);
 
 		/// focus demand combines attachment and configuration
 		struct focus_demand
@@ -108,12 +120,34 @@ namespace cgv {
 			friend class dispatcher;
 			dispatcher* disp_ptr = 0;
 			void set_dispatcher_ptr(dispatcher* _disp_ptr);
-			/// helper function to reconfigure focus configuration during grabbing or pointing
-			void reconfigure_focus(focus_request& request, bool pointing_not_grabbing, focus_configuration& last_focus_config) const;
-			/// helper function to recover focus configuration after grabbing or pointing
-			void recover_focus(focus_request& request, focus_configuration& last_focus_config) const;
-			/// helper function to recover focus configuration based on hid_id at any time after focusable is added to dispatcher; return whether dispatcher available
-			bool recover_focus(const hid_identifier& hid_id, focus_configuration& last_focus_config) const;
+			/// <summary>
+			/// helper function to be used in handle() to reconfigure the focus on start of a drag operation 
+			/// such that it is not lost during the operation. If drag_begin() is called, it always has to
+			/// be terminated with a mathcing drag_end() that is called either again in handle() with a 
+			/// focus_request as first argument or outside handle with a focus_attachment as first argument.
+			/// The matching drag_end() call recovers the original focus configuration for the attachment.
+			/// </summary>
+			/// <param name="request">focus request passed to handle() function</param>
+			/// <param name="pointing_not_grabbing">true if drag operation is based on pointing 
+			/// at object and fals if drag operation is based on grabbing an object</param>
+			/// <param name="original_config"></param>
+			void drag_begin(focus_request& request, bool pointing_not_grabbing, focus_configuration& original_config) const;
+			/// <summary>
+			/// helper function to be used in handle() to recover original focus configuration at end of drag operation
+			/// </summary>
+			/// <param name="request">focus request passed to handle() function</param>
+			/// <param name="original_config">focus config instance set in corresponding drag_begin() function</param>
+			void drag_end(focus_request& request, focus_configuration& original_config) const;
+			/// <summary>
+			/// helper function to be used outside of handle() to recover original focus configuration 
+			/// from corresponding drag_begin() function call.
+			/// </summary>
+			/// <param name="foc_att">attachment to which focus was attached</param>
+			/// <param name="obj_ptr">object to which focus was attached</param>
+			/// <param name="original_config">focus config instance set in corresponding drag_begin() function</param>
+			/// <returns>whether focus attachment with specific object has been found and whether 
+			/// original configuration could be recovered.</returns>
+			bool drag_end(const focus_attachment& foc_att, cgv::base::base_ptr obj_ptr, focus_configuration& original_config) const;
 		public:
 			/// construct
 			focusable();

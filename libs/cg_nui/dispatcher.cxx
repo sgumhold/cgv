@@ -373,13 +373,50 @@ namespace cgv {
 			return false;
 		}
 
-		bool dispatcher::reconfigure(const hid_identifier& hid_id, focus_configuration& focus_config)
+		bool dispatcher::reconfigure(const focus_attachment& foc_att, cgv::base::base_ptr obj_ptr, focus_configuration& focus_config)
 		{
-			auto iter = focus_hid_map.find(hid_id);
-			if (iter == focus_hid_map.end())
+			switch (foc_att.level) {
+			case focus_level::hid:
+			{
+				auto iter = focus_hid_map.find(foc_att.hid_id);
+				if (iter == focus_hid_map.end())
+					return false;
+				if (iter->second.object != obj_ptr)
+					return false;
+				iter->second.config = focus_config;
+				return true;
+			}
+			case focus_level::kit:
+			{
+				auto iter = focus_kit_map.find(foc_att.kit_id);
+				if (iter == focus_kit_map.end())
+					return false;
+				if (iter->second.object != obj_ptr)
+					return false;
+				iter->second.config = focus_config;
+				return true;
+			}
+			case focus_level::category:
+			{
+				for (auto fca : focus_category_attachments) {
+					if (fca.second.object == obj_ptr) {
+						fca.second.config = focus_config;
+						return true;
+					}
+				}
 				return false;
-			iter->second.config = focus_config;
-			return true;
+			}
+			case focus_level::all:
+			{
+				if (focus_all_attachment.empty())
+					return false;
+				if (focus_all_attachment.object != obj_ptr)
+					return false;
+				focus_all_attachment.config = focus_config;
+				return true;
+			}
+			}
+			return false;
 		}
 
 		bool dispatcher::dispatch(const cgv::gui::event& e, const hid_identifier& hid_id, dispatch_report* report_ptr)
