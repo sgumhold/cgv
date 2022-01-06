@@ -3,11 +3,6 @@ projectType="plugin";
 projectName="vr_lab";
 projectGUID="D46FFE4E-B9F5-4FFA-903E-C457E0D23C31";
 addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd"];
-excludeSourceFiles = [
-	INPUT_DIR."/label_manager.cxx", INPUT_DIR."/label_manager.h",
-	INPUT_DIR."/vr_object.cxx", INPUT_DIR."/vr_object.h",
-	INPUT_DIR."/vr_object_collection.cxx", INPUT_DIR."/vr_object_collection.h"
-];
 addProjectDeps=[
 	"cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_math", "cgv_media", "cgv_gui", "cgv_render", 
 	"cgv_gl", "cg_vr", "cg_nui", "cgv_proc", "crg_vr_view"
