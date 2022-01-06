@@ -28,9 +28,10 @@ namespace cgv {
 		protected:
 			struct controller_info
 			{
-				bool pointing;
-				bool grabbing;
+				bool pointing = true;
+				bool grabbing = true;
 				rgb color;
+				double toggle_time = 0.0;
 			};
 			controller_info ctrl_infos[2] = { {true, true, {0.6f,0.3f,0.3f} },{true, true, {0.3f,0.3f,0.6f} } };
 			/// when deciding between proximity and pointing, a factor multiplied to distance to first ray intersection when compared to closest point distance (defaults to 2)

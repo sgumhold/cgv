@@ -87,7 +87,7 @@ namespace cgv {
 						vrpe.get_state().controller[ci].put_ray(gi.inter_info.ray_origin, gi.inter_info.ray_direction);
 						gi.check_proximity = rfi.foc_info_ptr->config.spatial.proximity && ctrl_infos[ci].grabbing;
 						gi.prox_info.query_point = gi.inter_info.ray_origin + max_grabbing_distance*gi.inter_info.ray_direction;
-						gi.inter_info.ray_origin += min_pointing_distance * gi.inter_info.ray_direction;
+						gi.inter_info.ray_origin += (ctrl_infos[ci].grabbing ? min_pointing_distance : 0.0f) * gi.inter_info.ray_direction;
 						if (!gi.check_proximity && !gi.check_intersection)
 							return false;
 					}

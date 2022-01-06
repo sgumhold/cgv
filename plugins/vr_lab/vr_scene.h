@@ -64,6 +64,8 @@ private:
 	// keep reference to vr view (initialized in init function)
 	vr_view_interactor* vr_view_ptr;
 
+	double ctrl_pointing_animation_duration = 0.5;
+
 	// keep reference to vr table
 	vr_table_ptr table;
 
