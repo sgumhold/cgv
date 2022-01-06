@@ -557,6 +557,18 @@ void vr_scene::construct_hit_geometry()
 }
 bool vr_scene::handle(cgv::gui::event& e)
 {
+	if ((e.get_flags() & cgv::gui::EF_VR) == 0 && e.get_kind() == cgv::gui::EID_KEY) {
+		const auto& ke = reinterpret_cast<const cgv::gui::key_event&>(e);
+		if (ke.get_action() == cgv::gui::KA_PRESS && ke.get_char() == '?') {
+			std::cout << "hid attachments:" << std::endl;
+			for (auto& ha : focus_hid_map)
+				std::cout << ha.first << "|" << ha.second.object->get_type_name() << ":" << ha.second.config << std::endl;
+			std::cout << "kit attachments:" << std::endl;
+			for (auto& ka : focus_kit_map)
+				std::cout << ka.first << "|" << ka.second.object->get_type_name() << ":" << ka.second.config << std::endl;
+			return true;
+		}
+	}
 	if ((e.get_flags() & cgv::gui::EF_VR) != 0 && e.get_kind() == cgv::gui::EID_KEY) {
 		const auto& vrke = reinterpret_cast<const cgv::gui::vr_key_event&>(e);
 		int ci = vrke.get_controller_index();
@@ -575,8 +587,8 @@ bool vr_scene::handle(cgv::gui::event& e)
 	}
 	cgv::nui::dispatch_report report;
 	bool ret = dispatch(e, &report);
-//	if (report.action != cgv::nui::refocus_action::none)
-//		grab_focus();
+	if (report.action != cgv::nui::refocus_action::none)
+		grab_focus();
 	return ret;
 }
 

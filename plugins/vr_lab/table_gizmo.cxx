@@ -78,7 +78,7 @@ namespace vr {
 						std::cout << "mouse";
 					std::cout << " - recover" << std::endl;
 				}
-				recover_focus(iis[idx].hid_id, iis[idx].last_focus_config);
+				drag_end(cgv::nui::focus_attachment(iis[idx].hid_id), this, iis[idx].original_config);
 				iis[idx].is_triggered = false;
 			}
 			iis[idx].in_focus = false;
@@ -334,7 +334,7 @@ namespace vr {
 					const auto& inter_dis_info = reinterpret_cast<const cgv::nui::intersection_dispatch_info&>(dis_info);
 					iis[idx].arrow_index = int(inter_dis_info.primitive_index) - 2;
 				}
-				reconfigure_focus(request, true, iis[idx].last_focus_config);
+				drag_begin(request, true, iis[idx].original_config);
 				if (debug_gizmo) {
 					std::cout << "gizmo(" << idx << "):";
 					if (dis_info.hid_id.category == cgv::nui::hid_category::controller)
@@ -356,7 +356,7 @@ namespace vr {
 						std::cout << "mouse";
 					std::cout << " - recover" << std::endl;
 				}
-				recover_focus(request, iis[idx].last_focus_config);
+				drag_end(request, iis[idx].original_config);
 				return true;
 			}
 		}
@@ -522,8 +522,8 @@ namespace vr {
 	void table_gizmo::create_gui()
 	{
 		add_decorator("table_gizmo", "heading");
-		add_member_control(this, "radius", radius, "value_slider", "min=0.1;max=10;log=true;ticks=true");
-		add_member_control(this, "draw_radius_scale", draw_radius_scale, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+		add_member_control(this, "radius", radius, "value_slider", "min=0.01;max=0.2;log=true;ticks=true");
+		add_member_control(this, "draw_radius_scale", draw_radius_scale, "value_slider", "min=0.1;max=2;log=true;ticks=true");
 		add_member_control(this, "nr_spline_segments", nr_spline_segments, "value_slider", "min=2;max=16;log=true;ticks=true");
 		add_member_control(this, "nr_scale_arrows", nr_scale_arrows, "value_slider", "min=2;max=16;log=true;ticks=true");
 		add_member_control(this, "spline_color", strs.surface_color);

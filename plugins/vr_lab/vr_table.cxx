@@ -303,7 +303,7 @@ namespace vr {
 				state = state_enum::grabbed;
 				on_set(&state);
 				// change focus to restrict to table asjustments
-				reconfigure_focus(request, false, last_focus_config);
+				drag_begin(request, false, original_config);
 				return true;
 			}
 			if (is_grabbing(e, dis_info)) {
@@ -316,7 +316,7 @@ namespace vr {
 				state = state_enum::close;
 				on_set(&state);
 				// recover focus configuration
-				recover_focus(request, last_focus_config);
+				drag_end(request, original_config);
 				return true;
 			}
 			if (is_grabbing(e, dis_info)) {

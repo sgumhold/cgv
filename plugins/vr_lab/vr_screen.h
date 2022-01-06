@@ -32,15 +32,17 @@ protected:
 	vec2 screen_extent;
 	quat screen_rotation;
 
-	// interaction type
-	enum class focus_type
-	{
-		none,
-		grab,
-		pointing
+	/// possible states of screen
+	enum class state_enum {
+		idle = 0,  // no input focus
+		place,     // kit focus grabed for hmd+ctrl based placement of screen
+		mouse,     // controller focus for emulation of mouse input
+		drag       // controller focus in emulation during drag operation
 	};
-	focus_type ft;
-	cgv::nui::focus_configuration last_focus_config;
+	/// current state of screen
+	state_enum state = state_enum::idle;
+
+	cgv::nui::focus_configuration original_config;
 
 	// screen placement
 	vec3 screen_reference;
@@ -52,7 +54,6 @@ private:
 	bool last_show_screen = false;
 protected:
 	bool initial_placement = true;
-	int placement_controller = -1;
 	double start_placement_time;
 	mat34 start_placement_pose;
 	bool place_screen(const vr::vr_kit_state& state); // define reference, rotation, distance, scale and x_offset based on hmd and placement controller
@@ -66,8 +67,7 @@ protected:
 	void screen_capture_callback(const SL::Screen_Capture::Image& img, const SL::Screen_Capture::Monitor& monitor);
 
 	// mouse emulation
-	bool mouse_emulation;
-	cgv::nui::hid_identifier mouse_hid;
+	cgv::nui::hid_identifier hid_id;
 	vec3 screen_point;
 	bool mouse_button_pressed[3];
 	void compute_mouse_xy(const vec3& p, int& X, int& Y) const;
@@ -75,6 +75,7 @@ protected:
 
 	bool compute_intersection(const vec3& rectangle_center, const vec2& rectangle_extent, const vec3& ray_start, const vec3& ray_direction, float& ray_param);
 	bool compute_intersection(const vec3& rectangle_center, const vec2& rectangle_extent, const quat& rectangle_rotation, const vec3& ray_start, const vec3& ray_direction, float& ray_param);
+	void placement_trigger(const cgv::gui::vr_key_event& vrke, cgv::nui::focus_request& request);
 public:
 	/** node interface*/
 	//@{

@@ -92,7 +92,7 @@ namespace cgv {
 			virtual bool dispatch_spatial(const focus_attachment& foc_att, const cgv::gui::event& e, const hid_identifier& hid_id, refocus_info& rfi, bool* handle_called_ptr);
 			friend class focusable;
 			void set_dispatcher_ptr_recursive(cgv::base::base_ptr obj);
-			bool reconfigure(const hid_identifier& hid_id, focus_configuration& focus_config);
+			bool reconfigure(const focus_attachment& foc_att, cgv::base::base_ptr obj_ptr, focus_configuration& focus_config);
 		public:
 			dispatcher();
 			virtual ~dispatcher();
