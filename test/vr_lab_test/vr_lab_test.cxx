@@ -205,34 +205,34 @@ public:
 		// draw tool in case it is active and we have access to state 
 		vr::vr_kit* kit_ptr = get_kit_ptr();
 		vr_view_interactor* vr_view_ptr = get_view_ptr();
-		if (!(tool_is_active && kit_ptr && vr_view_ptr))
-			return;
-		const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
-		if (!state_ptr)
-			return;
+		if (tool_is_active && kit_ptr && vr_view_ptr) {
+			const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
+			if (state_ptr) {
 
-		auto& sr = cgv::render::ref_sphere_renderer(ctx);
-		sr.set_render_style(srs);
-		auto& rcr = cgv::render::ref_cone_renderer(ctx);
-		rcr.set_render_style(rcrs);
-		// draw spheres that represent the pen
-		std::vector<vec3> P;
-		std::vector<float> R;
-		std::vector<rgb> C;
-		P.push_back(vec3(0.0f));
-		R.push_back(0.3f);
-		C.push_back(rgb(0.5f, 0.8f, 0.3f));
-		box3 B(vec3(-1.0f), vec3(1.0f));
-		for (int ci = 0; ci < 8; ++ci) {
-			P.push_back(B.get_corner(ci));
-			R.push_back(0.1f);
-			vec3 col = 0.5f*(B.get_corner(ci) - B.get_min_pnt());
-			C.push_back(reinterpret_cast<const rgb&>(col));
+				auto& sr = cgv::render::ref_sphere_renderer(ctx);
+				sr.set_render_style(srs);
+				auto& rcr = cgv::render::ref_cone_renderer(ctx);
+				rcr.set_render_style(rcrs);
+				// draw spheres that represent the pen
+				std::vector<vec3> P;
+				std::vector<float> R;
+				std::vector<rgb> C;
+				P.push_back(vec3(0.0f));
+				R.push_back(0.3f);
+				C.push_back(rgb(0.5f, 0.8f, 0.3f));
+				box3 B(vec3(-1.0f), vec3(1.0f));
+				for (int ci = 0; ci < 8; ++ci) {
+					P.push_back(B.get_corner(ci));
+					R.push_back(0.1f);
+					vec3 col = 0.5f * (B.get_corner(ci) - B.get_min_pnt());
+					C.push_back(reinterpret_cast<const rgb&>(col));
+				}
+				sr.set_position_array(ctx, P);
+				sr.set_radius_array(ctx, R);
+				sr.set_color_array(ctx, C);
+				sr.render(ctx, 0, (GLsizei)P.size());
+			}
 		}
-		sr.set_position_array(ctx, P);
-		sr.set_radius_array(ctx, R);
-		sr.set_color_array(ctx, C);
-		sr.render(ctx, 0, (GLsizei)P.size());
 		ctx.pop_modelview_matrix();
 	}
 	void stream_help(std::ostream& os)
