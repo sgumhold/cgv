@@ -3,22 +3,7 @@ projectName="cg_nui";
 projectType="library";
 projectGUID="6AD7992B-CE61-405D-BF54-A377203FB866";
 addSharedDefines=["CG_NUI_EXPORTS"];
-sourceFiles = [
-	INPUT_DIR."/lib_begin.h",
-	INPUT_DIR."/hit_info.h",
-	INPUT_DIR."/hids.cxx",INPUT_DIR."/hids.h",
-	INPUT_DIR."/focusable.cxx",INPUT_DIR."/focusable.h",
-	INPUT_DIR."/pointable.cxx",INPUT_DIR."/pointable.h",
-	INPUT_DIR."/grabable.cxx",INPUT_DIR."/grabable.h",
-	INPUT_DIR."/transformed.cxx",INPUT_DIR."/transformed.h",
-	INPUT_DIR."/dispatch_info.cxx",INPUT_DIR."/dispatch_info.h",
-	INPUT_DIR."/label_manager.cxx",INPUT_DIR."/label_manager.h",
-	INPUT_DIR."/vr_screen.cxx",INPUT_DIR."/vr_screen.h",
-	INPUT_DIR."/vr_table.cxx",INPUT_DIR."/vr_table.h",
-	INPUT_DIR."/table_gizmo.cxx",INPUT_DIR."/table_gizmo.h",
-	INPUT_DIR."/dispatcher.cxx",INPUT_DIR."/dispatcher.h",
-	INPUT_DIR."/spatial_dispatcher.cxx",INPUT_DIR."/spatial_dispatcher.h"
-];
+excludeSourceDirs = ["deprecated"];
 addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
 addProjectDeps=[
 	"cgv_utils","cgv_type","cgv_reflect", "cgv_data","cgv_base", "vr", "cg_vr",
