@@ -1,17 +1,12 @@
 #include "vr_table.h"
 #include "table_gizmo.h"
 #include <cgv/math/intersection.h>
-#include <cgv/base/register.h>
-#include <cgv/base/import.h>
 #include <cgv/math/ftransform.h>
-#include <cgv/math/pose.h>
 #include <cg_vr/vr_events.h>
-#include <cgv/gui/dialog.h>
-#include <cgv/gui/file_dialog.h>
-#include <cgv/defines/quote.h>
 #include <random>
 
-namespace vr {
+namespace cgv {
+	namespace nui {
 
 	vr_table::mat4 vr_table::get_transform() const
 	{
@@ -388,5 +383,6 @@ namespace vr {
 			align("\b");
 			end_tree_node(table_color);
 		}
+	}
 	}
 }

@@ -6,15 +6,22 @@
 #include <cgv/render/drawable.h>
 #include <cgv/base/node.h>
 #include <cg_vr/vr_events.h>
-#include <3rd/screen_capture_lite/include/ScreenCapture.h>
+
+namespace SL {
+	namespace Screen_Capture {
+		class IScreenCaptureManager;
+		struct Image;
+		struct Monitor;
+	}
+}
 
 #include "lib_begin.h"
 
-namespace vr {
-
+namespace cgv {
+	namespace nui {
 
 /// class manages static and dynamic parts of scene
-class vr_screen :
+class CGV_API vr_screen :
 	public cgv::base::node,
 	public cgv::render::drawable,
 	public cgv::nui::focusable,
@@ -63,6 +70,7 @@ protected:
 	std::vector<bool> screen_image_dirty;
 	std::vector<cgv::data::data_format> screen_image_dfs;
 	std::vector<cgv::data::data_view> screen_images;
+
 	std::shared_ptr<SL::Screen_Capture::IScreenCaptureManager> screen_capture_manager;
 	void screen_capture_callback(const SL::Screen_Capture::Image& img, const SL::Screen_Capture::Monitor& monitor);
 
@@ -129,6 +137,6 @@ public:
 
 typedef cgv::data::ref_ptr<vr_screen, true> vr_screen_ptr;
 
+	}
 }
-
 #include <cgv/config/lib_end.h>

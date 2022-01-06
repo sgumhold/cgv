@@ -13,7 +13,8 @@
 
 #include "lib_begin.h"
 
-namespace vr {
+namespace cgv {
+	namespace nui {
 
 /// class manages static and dynamic parts of scene
 class CGV_API table_gizmo :
@@ -56,7 +57,7 @@ protected:
 
 	cgv::render::spline_tube_render_style strs;
 
-	vr::vr_table_ptr table;
+	vr_table_ptr table;
 	void update_rotation_angle(float& v, float v0, const vec3& origin, const vec3& p0, const vec3& ro, const vec3& rd) const;
 	void update_height(float& v, float v0, const vec3& p0, const vec3& ro, const vec3& rd) const; 
 	void update_scale(float& v, float v0, const vec3& p0, const vec3& ad, const vec3& ro, const vec3& rd) const;
@@ -65,7 +66,7 @@ public:
 	/// standard constructor for scene
 	table_gizmo();
 	/// 
-	void attach(vr::vr_table_ptr _table);
+	void attach(vr_table_ptr _table);
 	/// 
 	void detach();
 	/// return type name
@@ -100,7 +101,7 @@ public:
 };
 
 typedef cgv::data::ref_ptr<table_gizmo, true> table_gizmo_ptr;
-
+	}
 }
 
 #include <cgv/config/lib_end.h>

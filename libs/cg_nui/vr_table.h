@@ -12,7 +12,8 @@
 
 #include "lib_begin.h"
 
-namespace vr {
+namespace cgv {
+	namespace nui {
 
 /// different table types
 enum table_mode
@@ -162,6 +163,7 @@ public:
 
 typedef cgv::data::ref_ptr<vr_table, true> vr_table_ptr;
 
+	}
 }
 
 #include <cgv/config/lib_end.h>
