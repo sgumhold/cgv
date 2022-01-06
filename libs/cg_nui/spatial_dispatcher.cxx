@@ -61,7 +61,7 @@ namespace cgv {
 		{
 			// next check mouse and pose events for proximity and intersection
 			geometric_info gi;
-			if (e.get_kind() == cgv::gui::EID_MOUSE) {
+			if (e.get_kind() == cgv::gui::EID_MOUSE && dispatch_mouse_spatial) {
 				const auto& me = reinterpret_cast<const cgv::gui::mouse_event&>(e);
 				if (me.get_action() == cgv::gui::MA_ENTER || me.get_action() == cgv::gui::MA_MOVE || me.get_action() == cgv::gui::MA_DRAG) {
 					gi.check_intersection = rfi.foc_info_ptr->config.spatial.pointing;

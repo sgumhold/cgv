@@ -48,7 +48,6 @@ void table_gizmo::compute_spline_geometry(bool in_focus)
 	}
 	strs.surface_color = rgb(v + 0.2f, v + 0.2f, v + 0.8f);
 }
-/// standard constructor for scene
 table_gizmo::table_gizmo()
 {
 	set_name("table_gizmo");
@@ -58,7 +57,6 @@ table_gizmo::table_gizmo()
 	on_set(&radius);
 	hide();
 }
-/// 
 void table_gizmo::attach(vr_table_ptr _table)
 {
 	table = _table;
@@ -66,7 +64,6 @@ void table_gizmo::attach(vr_table_ptr _table)
 	compute_spline_geometry(false);
 	show();
 }
-/// 
 void table_gizmo::detach()
 {
 	for (int idx = 0; idx < 3; ++idx) {
@@ -127,12 +124,10 @@ void table_gizmo::update_scale(float& v, float v0, const vec3& p0, const vec3& a
 	if (v > 4.0f)
 		v = 4.0f;
 }
-/// reflect member variables
 bool table_gizmo::self_reflect(cgv::reflect::reflection_handler& rh)
 {
 	return rh.reflect_member("radius", radius);
 }
-/// callback on member updates to keep data structure consistent
 void table_gizmo::on_set(void* member_ptr)
 {
 	if (member_ptr == &table->height || member_ptr == &table->angle || member_ptr == &table->scale) {
@@ -151,7 +146,6 @@ void table_gizmo::on_set(void* member_ptr)
 	}
 	update_member(member_ptr);
 	post_redraw();
-
 }
 bool table_gizmo::focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info)
 {
@@ -181,6 +175,7 @@ bool table_gizmo::focus_change(cgv::nui::focus_change_action action, cgv::nui::r
 				std::cout << "mouse";
 			std::cout << " - attach" << std::endl;
 		}
+		post_redraw();
 		return true;
 	}
 	if (action == cgv::nui::focus_change_action::index_change) {
@@ -219,6 +214,7 @@ bool table_gizmo::focus_change(cgv::nui::focus_change_action action, cgv::nui::r
 				scale_arrow_focus_idx = int(new_prim_idx - 2);
 				update_member(&scale_arrow_focus_idx);
 
+				post_redraw();
 				return true;
 			}
 			// for different ctrl indices
@@ -249,9 +245,10 @@ bool table_gizmo::focus_change(cgv::nui::focus_change_action action, cgv::nui::r
 		}
 		// next or if old ctrl was not found ensure that new ctrl is not already in focus by other hid
 		auto& nis = iis[new_idx];
-		if (nis.in_focus)
+		if (nis.in_focus) {
+			post_redraw();
 			return false;
-
+		}
 		nis.in_focus = true;
 		update_member(&nis.in_focus);
 		nis.hid_id = dis_info.hid_id;
@@ -276,7 +273,6 @@ bool table_gizmo::focus_change(cgv::nui::focus_change_action action, cgv::nui::r
 		// finally update all geometry
 		compute_spline_geometry(iis[0].in_focus);
 		compute_arrow_geometry();
-		return true;
 	}
 	else if (action == cgv::nui::focus_change_action::detach) {
 		for (size_t idx = 0; idx < 3; ++idx) {
@@ -306,6 +302,7 @@ bool table_gizmo::focus_change(cgv::nui::focus_change_action action, cgv::nui::r
 			}
 		}
 	}
+	post_redraw();
 	return true;
 }
 void table_gizmo::stream_help(std::ostream& os)

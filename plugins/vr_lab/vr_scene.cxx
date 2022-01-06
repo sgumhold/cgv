@@ -13,6 +13,14 @@
 
 namespace vr {
 
+cgv::reflect::enum_reflection_traits<GroundMode> get_reflection_traits(const GroundMode& gm)
+{
+	return cgv::reflect::enum_reflection_traits<GroundMode>("none,boxes,terrain");
+}
+cgv::reflect::enum_reflection_traits<EnvironmentMode> get_reflection_traits(const EnvironmentMode& em)
+{
+	return cgv::reflect::enum_reflection_traits<EnvironmentMode>("empty,skybox,procedural");
+}
 void vr_scene::register_object(base_ptr object, const std::string& options)
 {
 	if (object->get_interface<cgv::nui::vr_table>())
@@ -23,7 +31,6 @@ void vr_scene::register_object(base_ptr object, const std::string& options)
 	std::cout << "register focusable: " << (object->get_named() ? object->get_named()->get_name() : object->get_type_name()) << std::endl;
 	add_object(object);
 }
-/// overload to handle unregistration events
 void vr_scene::unregister_object(base_ptr object, const std::string& options)
 {
 	auto* foc_ptr = object->get_interface<cgv::nui::focusable>();
@@ -32,20 +39,16 @@ void vr_scene::unregister_object(base_ptr object, const std::string& options)
 	std::cout << "unregister focusable: " << (object->get_named() ? object->get_named()->get_name() : object->get_type_name()) << std::endl;
 	remove_object(object);
 }
-
-/// set the common border color of labels
 void vr_scene::set_label_border_color(const rgba& border_color)
 {
 	rrs.default_border_color = border_color;
 	update_member(&rrs.percentual_border_width);
 }
-/// set the common border width in percent of the minimal extent
 void vr_scene::set_label_border_width(float border_width)
 {
 	rrs.percentual_border_width = border_width;
 	update_member(&rrs.percentual_border_width);
 }
-
 void vr_scene::construct_room(float w, float d, float h, float W, bool walls, bool ceiling) {
 	// construct floor
 	boxes.push_back(box3(vec3(-0.5f * w, -W, -0.5f * d), vec3(0.5f * w, 0, 0.5f * d)));
@@ -70,7 +73,6 @@ void vr_scene::construct_room(float w, float d, float h, float W, bool walls, bo
 		box_colors.push_back(rgb(0.5f, 0.5f, 0.8f));
 	}
 }
-
 void vr_scene::construct_ground(float s, float ew, float ed, float w, float d, float h) {
 	std::default_random_engine generator;
 	std::uniform_real_distribution<float> distribution(0, 1);
@@ -91,7 +93,6 @@ void vr_scene::construct_ground(float s, float ew, float ed, float w, float d, f
 		}
 	}
 }
-
 void vr_scene::build_scene(float w, float d, float h, float W)
 {
 	if (draw_room) {
@@ -101,13 +102,11 @@ void vr_scene::build_scene(float w, float d, float h, float W)
 		construct_ground(0.3f, 3 * w, 3 * d, w, d, h);
 	}
 }
-
 void vr_scene::clear_scene()
 {
 	boxes.clear();
 	box_colors.clear();
 }
-
 vr_scene::vr_scene() : lm(false)
 {
 	set_name("vr_scene");
@@ -156,17 +155,6 @@ vr_scene::vr_scene() : lm(false)
 
 	pixel_scale = 0.001f;
 }
-
-cgv::reflect::enum_reflection_traits<GroundMode> get_reflection_traits(const GroundMode& gm)
-{
-	return cgv::reflect::enum_reflection_traits<GroundMode>("none,boxes,terrain");
-}
-
-cgv::reflect::enum_reflection_traits<EnvironmentMode> get_reflection_traits(const EnvironmentMode& em)
-{
-	return cgv::reflect::enum_reflection_traits<EnvironmentMode>("empty,skybox,procedural");
-}
-
 bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 {
 	return 		
@@ -182,10 +170,10 @@ bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 		rh.reflect_member("terrain_scale", terrain_scale) &&
 		rh.reflect_member("draw_ceiling", draw_ceiling) &&
 		rh.reflect_member("ground_mode", ground_mode) &&
-		rh.reflect_member("ctrl_pointing_animation_duration", ctrl_pointing_animation_duration) &&		
+		rh.reflect_member("ctrl_pointing_animation_duration", ctrl_pointing_animation_duration) &&
+		rh.reflect_member("dispatch_mouse_spatial", dispatch_mouse_spatial) &&
 		rh.reflect_member("environment_mode", environment_mode);
 }
-
 void vr_scene::on_set(void* member_ptr)
 {
 	if (member_ptr == &ground_mode) {
@@ -272,7 +260,6 @@ void vr_scene::on_set(void* member_ptr)
 	update_member(member_ptr);
 	post_redraw();
 }
-
 bool vr_scene::init(cgv::render::context& ctx)
 {
 
@@ -326,7 +313,6 @@ bool vr_scene::init(cgv::render::context& ctx)
 	}
 	return true;
 }
-
 void vr_scene::init_frame(cgv::render::context& ctx)
 {
 	if (environment_mode == EM_SKYBOX) {
@@ -363,7 +349,6 @@ void vr_scene::init_frame(cgv::render::context& ctx)
 		}
 	}
 }
-
 void vr_scene::clear(cgv::render::context& ctx)
 {
 	cgv::render::ref_sphere_renderer(ctx, -1);
@@ -374,7 +359,6 @@ void vr_scene::clear(cgv::render::context& ctx)
 	lm.destruct(ctx);
 	cgv::render::ref_rectangle_renderer(ctx, -1);
 }
-
 void vr_scene::draw(cgv::render::context& ctx)
 {
 	set_modelview_projection_window_matrix(ctx);
@@ -477,8 +461,6 @@ void vr_scene::draw(cgv::render::context& ctx)
 		}
 	}
 }
-
-/// draw transparent part here
 void vr_scene::finish_frame(cgv::render::context& ctx)
 {
 	// compute label poses in lab coordinate system
@@ -489,8 +471,8 @@ void vr_scene::finish_frame(cgv::render::context& ctx)
 	std::vector<rgba> C;
 	// set poses of visible labels in valid coordinate systems
 	for (uint32_t li = 0; li < label_coord_systems.size(); ++li) {
-		//if (label_visibilities[li] == 0 || !valid[label_coord_systems[li]])
-		//	continue;
+		if (label_visibilities[li] == 0 || !valid[label_coord_systems[li]])
+			continue;
 		mat34 label_pose = cgv::math::pose_construct(label_orientations[li], label_positions[li]);
 		cgv::math::pose_transform(pose[label_coord_systems[li]], label_pose);
 		P.push_back(cgv::math::pose_position(label_pose));
@@ -530,12 +512,10 @@ void vr_scene::finish_frame(cgv::render::context& ctx)
 		glBlendFunc(blend_src, blend_dst);
 	}
 }
-
 void vr_scene::stream_help(std::ostream& os)
 {
-	os << "vr_scene: navigate scenes with direction pad left and right and save with down" << std::endl;
+	os << "vr_scene: <?> shows focus attachments, <C-M> toggles dispatch_mouse_spatial" << std::endl;
 }
-
 void vr_scene::construct_hit_geometry()
 {
 	cone_positions.clear();
@@ -564,7 +544,6 @@ void vr_scene::construct_hit_geometry()
 		}
 	}
 }
-
 void vr_scene::check_for_detach(int ci, const cgv::gui::event& e)
 {
 	if (ctrl_infos[ci].grabbing || ctrl_infos[ci].pointing)
@@ -589,7 +568,6 @@ void vr_scene::check_for_detach(int ci, const cgv::gui::event& e)
 		focus_kit_map.erase(jter);
 	}
 }
-
 bool vr_scene::handle(cgv::gui::event& e)
 {
 	if ((e.get_flags() & cgv::gui::EF_VR) == 0 && e.get_kind() == cgv::gui::EID_KEY) {
@@ -602,6 +580,10 @@ bool vr_scene::handle(cgv::gui::event& e)
 			for (auto& ka : focus_kit_map)
 				std::cout << ka.first << "|" << ka.second.object->get_type_name() << ":" << ka.second.config << std::endl;
 			return true;
+		}
+		if (ke.get_action() == cgv::gui::KA_PRESS && ke.get_modifiers() == cgv::gui::EM_CTRL && ke.get_key() == 'M') {
+			dispatch_mouse_spatial = !dispatch_mouse_spatial;
+			on_set(&dispatch_mouse_spatial);
 		}
 	}
 	if ((e.get_flags() & cgv::gui::EF_VR) != 0 && e.get_kind() == cgv::gui::EID_KEY) {
@@ -631,12 +613,12 @@ bool vr_scene::handle(cgv::gui::event& e)
 		grab_focus();
 	return ret;
 }
-
 void vr_scene::create_gui()
 {
 	add_decorator("vr_scene", "heading");
 	if (begin_tree_node("hids", ctrl_infos)) {
 		align("\a");
+		add_member_control(this, "dispatch_mouse_spatial", dispatch_mouse_spatial, "toggle");
 		add_member_control(this, "ctrl_pointing_animation_duration", ctrl_pointing_animation_duration, "value_slider", "min=0;max=2;ticks=true");
 		add_member_control(this, "draw_controller_mode", draw_controller_mode, "check");
 		add_member_control(this, " left ctrl grabs", ctrl_infos[0].grabbing, "check");
@@ -735,6 +717,7 @@ void vr_scene::create_gui()
 }
 
 }
+
 #include <cgv/base/register.h>
 #include <cg_nui/vr_screen.h>
 
