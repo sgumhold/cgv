@@ -69,6 +69,7 @@ var classcgv_1_1math_1_1fmat =
     [ "sign", "classcgv_1_1math_1_1fmat.html#a4e8ab8f759404ce077e80a9fd47f370d", null ],
     [ "size", "classcgv_1_1math_1_1fmat.html#afea901268f6ba41a98e59d08b417f024", null ],
     [ "sqr_length", "classcgv_1_1math_1_1fmat.html#a5cd801220df833f820048962abe40d89", null ],
+    [ "step", "classcgv_1_1math_1_1fmat.html#afaa81133284c1a5c63333ef1535f9b97", null ],
     [ "to_vec", "classcgv_1_1math_1_1fmat.html#a9e07f200dccec2bf7decb19bae51080f", null ],
     [ "trace", "classcgv_1_1math_1_1fmat.html#acd467df60bb7e088cdb8c4ba405b7f66", null ],
     [ "transpose", "classcgv_1_1math_1_1fmat.html#ab1d4d9fd7ce1b58f263f2d2d668efa9b", null ],

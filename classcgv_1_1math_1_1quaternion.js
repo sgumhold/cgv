@@ -92,6 +92,7 @@ var classcgv_1_1math_1_1quaternion =
     [ "sign", "classcgv_1_1math_1_1quaternion.html#a4e8ab8f759404ce077e80a9fd47f370d", null ],
     [ "size", "classcgv_1_1math_1_1quaternion.html#afea901268f6ba41a98e59d08b417f024", null ],
     [ "sqr_length", "classcgv_1_1math_1_1quaternion.html#a5cd801220df833f820048962abe40d89", null ],
+    [ "step", "classcgv_1_1math_1_1quaternion.html#afaa81133284c1a5c63333ef1535f9b97", null ],
     [ "to_vec", "classcgv_1_1math_1_1quaternion.html#a9e07f200dccec2bf7decb19bae51080f", null ],
     [ "w", "classcgv_1_1math_1_1quaternion.html#a5f04e9eab2e30bac293f9e8abe140dd1", null ],
     [ "w", "classcgv_1_1math_1_1quaternion.html#a5b662e6ebdd464f0478c8c4def7465cf", null ],
