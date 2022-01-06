@@ -1,5 +1,7 @@
 var NAVTREEINDEX10 =
 {
+"classcgv_1_1math_1_1quaternion.html#a6c36c84a3cd26dafb07dd18423eafef0":[11,0,0,3,10,25],
+"classcgv_1_1math_1_1quaternion.html#a6c5676dd325f7902c4c8e0ba98343ff7":[11,0,0,3,10,20],
 "classcgv_1_1math_1_1quaternion.html#a6d0574effc7f327d144fe6d2e7d5bb8a":[11,0,0,3,10,23],
 "classcgv_1_1math_1_1quaternion.html#a6d37c6834a4acaaaf8c90844b0b16185":[11,0,0,3,10,61],
 "classcgv_1_1math_1_1quaternion.html#a6deaaa9cc232afe687c0de21e0b01907":[11,0,0,3,10,24],
@@ -13,7 +15,7 @@ var NAVTREEINDEX10 =
 "classcgv_1_1math_1_1quaternion.html#a7f9c624f3f601c2878f45a767214b426":[11,0,0,3,10,26],
 "classcgv_1_1math_1_1quaternion.html#a80cd608d84311aae9c6400b579ab70f9":[11,0,0,3,10,27],
 "classcgv_1_1math_1_1quaternion.html#a88027cb23d3d54b991528f98cfc8989d":[11,0,0,3,10,50],
-"classcgv_1_1math_1_1quaternion.html#a8d199c8049b2ed5806be3c3af7d2860e":[11,0,0,3,10,97],
+"classcgv_1_1math_1_1quaternion.html#a8d199c8049b2ed5806be3c3af7d2860e":[11,0,0,3,10,98],
 "classcgv_1_1math_1_1quaternion.html#a8f03fd04e375363e722b222d8e8b04de":[11,0,0,3,10,17],
 "classcgv_1_1math_1_1quaternion.html#a91360984269586a7dc86788e02b919ce":[11,0,0,3,10,42],
 "classcgv_1_1math_1_1quaternion.html#a92e7cdb2f9ce7d3a14926541b664c20a":[11,0,0,3,10,40],
@@ -24,7 +26,7 @@ var NAVTREEINDEX10 =
 "classcgv_1_1math_1_1quaternion.html#a9acb0006dc8a8dd275a61638902f7959":[11,0,0,3,10,19],
 "classcgv_1_1math_1_1quaternion.html#a9b7a0855f31c27034de9d3aff1dad5c9":[11,0,0,3,10,72],
 "classcgv_1_1math_1_1quaternion.html#a9cfba18658f7521c9126f1fe8123e74a":[11,0,0,3,10,87],
-"classcgv_1_1math_1_1quaternion.html#a9e07f200dccec2bf7decb19bae51080f":[11,0,0,3,10,92],
+"classcgv_1_1math_1_1quaternion.html#a9e07f200dccec2bf7decb19bae51080f":[11,0,0,3,10,93],
 "classcgv_1_1math_1_1quaternion.html#a9e78d41a54a2ed4d2309b7e1068bcb09":[11,0,0,3,10,5],
 "classcgv_1_1math_1_1quaternion.html#aa040759573984a0d4fc319e89093ea69":[11,0,0,3,10,56],
 "classcgv_1_1math_1_1quaternion.html#aa2ad8468b164cc112c35e0a2e5725e1a":[11,0,0,3,10,7],
@@ -49,12 +51,13 @@ var NAVTREEINDEX10 =
 "classcgv_1_1math_1_1quaternion.html#ae7bc649c7bfbebbe65cd504fe06f9637":[11,0,0,3,10,14],
 "classcgv_1_1math_1_1quaternion.html#aec33769cb2cac546b11724683feb1098":[11,0,0,3,10,18],
 "classcgv_1_1math_1_1quaternion.html#aef7d0aaa94606f0d0a8d85f3afcae8ed":[11,0,0,3,10,43],
-"classcgv_1_1math_1_1quaternion.html#af492aff2f4dcc61d70b1eeecfcb5b618":[11,0,0,3,10,101],
+"classcgv_1_1math_1_1quaternion.html#af492aff2f4dcc61d70b1eeecfcb5b618":[11,0,0,3,10,102],
 "classcgv_1_1math_1_1quaternion.html#af524648d06feaaeee50abd17773761c7":[11,0,0,3,10,6],
 "classcgv_1_1math_1_1quaternion.html#af567dd18d8822167ab6ea37a20d81b6e":[11,0,0,3,10,22],
 "classcgv_1_1math_1_1quaternion.html#af56d9974185332beb4bc8e67a1d5852c":[11,0,0,3,10,36],
 "classcgv_1_1math_1_1quaternion.html#af633fbab9c6747c8901c9abd92350b8d":[11,0,0,3,10,46],
-"classcgv_1_1math_1_1quaternion.html#afc3554068914f06d45fbac8fdd919725":[11,0,0,3,10,100],
+"classcgv_1_1math_1_1quaternion.html#afaa81133284c1a5c63333ef1535f9b97":[11,0,0,3,10,92],
+"classcgv_1_1math_1_1quaternion.html#afc3554068914f06d45fbac8fdd919725":[11,0,0,3,10,101],
 "classcgv_1_1math_1_1quaternion.html#afea901268f6ba41a98e59d08b417f024":[11,0,0,3,10,90],
 "classcgv_1_1math_1_1rigid__transform.html":[11,0,0,3,13],
 "classcgv_1_1math_1_1rigid__transform.html#a31e4cc5c71bc3dac31ab460149173923":[11,0,0,3,13,6],
@@ -246,8 +249,5 @@ var NAVTREEINDEX10 =
 "classcgv_1_1media_1_1axis__aligned__box.html#aad1d6b90ab47012aaf3095019e60ce65":[11,0,0,4,7,6],
 "classcgv_1_1media_1_1axis__aligned__box.html#aadda54ad0b42b1b41b94209157896c5d":[11,0,0,4,7,22],
 "classcgv_1_1media_1_1axis__aligned__box.html#ab9defb9f7625ed727808d35c6ed96522":[11,0,0,4,7,14],
-"classcgv_1_1media_1_1axis__aligned__box.html#ac1e3fee239fdecbb794c8407cf400750":[11,0,0,4,7,11],
-"classcgv_1_1media_1_1axis__aligned__box.html#ac7b92d13ec99828dc80e4f85c9f77538":[11,0,0,4,7,21],
-"classcgv_1_1media_1_1axis__aligned__box.html#ad557a358e6cf7eff922b7199b61e7da6":[11,0,0,4,7,12],
-"classcgv_1_1media_1_1axis__aligned__box.html#ae204fb33141df1f6057134d29378c069":[11,0,0,4,7,9]
+"classcgv_1_1media_1_1axis__aligned__box.html#ac1e3fee239fdecbb794c8407cf400750":[11,0,0,4,7,11]
 };

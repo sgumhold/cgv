@@ -1,5 +1,8 @@
 var NAVTREEINDEX36 =
 {
+"reflection__traits__info_8h_source.html":[12,0,0,9,9],
+"register_8h_source.html":[12,0,0,0,11],
+"render_2color__scale_8h_source.html":[12,0,0,10,3],
 "render_2view_8h_source.html":[12,0,0,10,18],
 "render__buffer_8h_source.html":[12,0,0,10,10],
 "render__info_8h_source.html":[12,0,1,2,0,14],
@@ -246,8 +249,5 @@ var NAVTREEINDEX36 =
 "structcgv_1_1base_1_1factory__impl__2.html#aa0fe4266b74ebe49de68faaab3ca7a7a":[11,0,0,0,14,28],
 "structcgv_1_1base_1_1factory__impl__2.html#aa2b866151a23c63b3e8029849e71a796":[11,0,0,0,14,11],
 "structcgv_1_1base_1_1factory__impl__2.html#aa4d907250a697d6c8368140133c9d719":[11,0,0,0,14,20],
-"structcgv_1_1base_1_1factory__impl__2.html#aaadcb676b15e72fce5acdd9af0e9fac9":[11,0,0,0,14,8],
-"structcgv_1_1base_1_1factory__impl__2.html#aae2e9d39b7dafc4fe87bb1263a29365f":[11,0,0,0,14,17],
-"structcgv_1_1base_1_1factory__impl__2.html#ab0cb1553fde097b63c82309b74954b89":[11,0,0,0,14,18],
-"structcgv_1_1base_1_1factory__impl__2.html#abceffe95f08d3fc13cf9286cf360e705":[11,0,0,0,14,31]
+"structcgv_1_1base_1_1factory__impl__2.html#aaadcb676b15e72fce5acdd9af0e9fac9":[11,0,0,0,14,8]
 };
