@@ -6,6 +6,7 @@
 #include <cg_vr/vr_events.h>
 #include <cgv/os/cmdline_tools.h>
 #include <cgv/gui/dialog.h>
+#include <cgv/gui/trigger.h>
 #include <cgv/gui/file_dialog.h>
 #include <cgv/defines/quote.h>
 #include <random>
@@ -184,6 +185,7 @@ bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 		rh.reflect_member("terrain_scale", terrain_scale) &&
 		rh.reflect_member("draw_ceiling", draw_ceiling) &&
 		rh.reflect_member("ground_mode", ground_mode) &&
+		rh.reflect_member("ctrl_pointing_animation_duration", ctrl_pointing_animation_duration) &&		
 		rh.reflect_member("environment_mode", environment_mode);
 }
 
@@ -427,6 +429,7 @@ void vr_scene::draw(cgv::render::context& ctx)
 			sphere_colors.clear();
 			cone_positions.clear();
 			cone_colors.clear();
+			double time = cgv::gui::trigger::get_current_time();
 			for (int ci = 0; ci < 2; ++ci) {
 				vec3 ro, rd;
 				state_ptr->controller[ci].put_ray(ro, rd);
@@ -434,19 +437,28 @@ void vr_scene::draw(cgv::render::context& ctx)
 					sphere_positions.push_back(ro + max_grabbing_distance * rd);
 					sphere_colors.push_back(ctrl_infos[ci].color);
 				}
-				if (ctrl_infos[ci].pointing) {
-					cone_positions.push_back(ro + min_pointing_distance * rd);
-					cone_positions.push_back(ro + max_pointing_distance * rd);
+				double dt = time - ctrl_infos[ci].toggle_time;
+				if (ctrl_infos[ci].pointing || dt < ctrl_pointing_animation_duration) {
+					float begin = ctrl_infos[ci].grabbing ? min_pointing_distance : 0.0f;
+					float end = max_pointing_distance;
+					if (dt < ctrl_pointing_animation_duration) {
+						float lambda = float(dt / ctrl_pointing_animation_duration);
+						if (!ctrl_infos[ci].pointing)
+							lambda = 1.0f - lambda;
+						end = begin + lambda * (end - begin);
+					}
 					auto iter = dis_info_hid_map.find({ cgv::nui::hid_category::controller, vr_view_ptr->get_current_vr_kit()->get_handle(), int16_t(ci) });
 					if (iter != dis_info_hid_map.end()) {
 						if (iter->second) {
 							if (iter->second->mode == cgv::nui::dispatch_mode::pointing) {
 								auto* idi_ptr = reinterpret_cast<cgv::nui::intersection_dispatch_info*>(iter->second);
 								if (idi_ptr->ray_param < std::numeric_limits<float>::max())
-									cone_positions.back() = ro + (min_pointing_distance + idi_ptr->ray_param) * rd;
+									end = std::min(end, begin + idi_ptr->ray_param);
 							}
 						}
 					}
+					cone_positions.push_back(ro + begin * rd);
+					cone_positions.push_back(ro + end * rd);
 					cone_colors.push_back(ctrl_infos[ci].color);
 					cone_colors.push_back(ctrl_infos[ci].color);
 				}
@@ -573,9 +585,13 @@ bool vr_scene::handle(cgv::gui::event& e)
 		const auto& vrke = reinterpret_cast<const cgv::gui::vr_key_event&>(e);
 		int ci = vrke.get_controller_index();
 		if (vrke.get_action() == cgv::gui::KA_PRESS) {
+			double dt = e.get_time() - ctrl_infos[ci].toggle_time;
 			switch (vrke.get_key()) {
 			case vr::VR_DPAD_UP:
 				ctrl_infos[ci].pointing = !ctrl_infos[ci].pointing;
+				ctrl_infos[ci].toggle_time = e.get_time();
+				if (dt < ctrl_pointing_animation_duration)
+					ctrl_infos[ci].toggle_time -= (ctrl_pointing_animation_duration-dt);
 				update_member(&ctrl_infos[ci].pointing);
 				return true;
 			case vr::VR_DPAD_DOWN:
@@ -597,6 +613,7 @@ void vr_scene::create_gui()
 	add_decorator("vr_scene", "heading");
 	if (begin_tree_node("hids", ctrl_infos)) {
 		align("\a");
+		add_member_control(this, "ctrl_pointing_animation_duration", ctrl_pointing_animation_duration, "value_slider", "min=0;max=2;ticks=true");
 		add_member_control(this, "draw_controller_mode", draw_controller_mode, "check");
 		add_member_control(this, " left ctrl grabs", ctrl_infos[0].grabbing, "check");
 		add_member_control(this, " left ctrl point", ctrl_infos[0].pointing, "check");
