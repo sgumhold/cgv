@@ -1,5 +1,6 @@
 var NAVTREEINDEX44 =
 {
+"structcgv_1_1render_1_1surfel__render__style.html#a65daf724c16fb2e17b417a2b0d7a546d":[11,0,0,9,48,1],
 "structcgv_1_1render_1_1surfel__render__style.html#a723a0a3000a8117c13c8682adb72df39":[11,0,0,9,48,11],
 "structcgv_1_1render_1_1surfel__render__style.html#a7d36f503553b1e9719b7753ff483a70f":[11,0,0,9,48,53],
 "structcgv_1_1render_1_1surfel__render__style.html#a7dcb5f4ba047993daa2d11d93a828cc6":[11,0,0,9,48,47],
@@ -248,6 +249,5 @@ var NAVTREEINDEX44 =
 "structgamepad_1_1gamepad__driver.html#ac74802108435066efc452cc162577cb8":[11,0,1,3,6],
 "structgamepad_1_1gamepad__driver.html#ae35233c535694e3883e0c3c5fd82afd7":[11,0,1,3,1],
 "structgamepad_1_1gamepad__state.html":[11,0,1,4],
-"structgamepad_1_1gamepad__state.html#a085176ecd68c889a3f508dacf9018795":[11,0,1,4,3],
-"structgamepad_1_1gamepad__state.html#a8111170499d3033b263b92b92ac1115a":[11,0,1,4,4]
+"structgamepad_1_1gamepad__state.html#a085176ecd68c889a3f508dacf9018795":[11,0,1,4,3]
 };
