@@ -12,7 +12,11 @@ namespace cgv{
 
 		/// returns the abs(a)*sign(b)
 		template<typename T>
-		T sign(const T&a, const T&b) { return (b < 0) ? -std::abs(a) : std::abs(a); }
+		T sign(const T& a, const T& b) { return (b < 0) ? -std::abs(a) : std::abs(a); }
+		/// returns 0 for b < a and 1 otherwise
+		template<typename T>
+		T step(const T& a, const T& b) { return (b < a) ? T(0) : T(1); }
+
 		/// if v >= 0 returns 1 and otherwise -1
 		template<typename T>
 		T sign(const T&v) { return (v >= T(0)) ? T(1) : T(-1); }
