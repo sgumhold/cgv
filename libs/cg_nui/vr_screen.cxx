@@ -2,12 +2,12 @@
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/math/pose.h>
+#include <cgv/os/mouse_ctrl.h>
 #include <cg_vr/vr_events.h>
+#include <3rd/screen_capture_lite/include/ScreenCapture.h>
 
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-
-namespace vr {
+namespace cgv {
+	namespace nui {
 
 /*
 void enum_monitors()
@@ -165,13 +165,9 @@ bool vr_screen::focus_change(cgv::nui::focus_change_action action, cgv::nui::ref
 		if (state == state_enum::mouse) {
 			if (dis_info.hid_id == hid_id) {
 				// ensure that mouse buttons pressed in emulation are also released again
-				static const DWORD mouse_button_up[3] = { MOUSEEVENTF_LEFTUP, MOUSEEVENTF_MIDDLEUP, MOUSEEVENTF_RIGHTUP };
 				for (int i = 0; i < 3; ++i) {
 					if (mouse_button_pressed[i]) {
-						INPUT inputs[1] = { 0 };
-						inputs[0].type = INPUT_MOUSE;
-						inputs[0].mi.dwFlags = mouse_button_up[i];
-						SendInput(1, inputs, sizeof(INPUT));
+						cgv::os::send_mouse_button_event(i, false);
 						mouse_button_pressed[i] = false;
 					}
 				}
@@ -315,12 +311,7 @@ bool vr_screen::handle(const cgv::gui::event& e, const cgv::nui::dispatch_info& 
 		case vr::VR_DPAD_LEFT:
 			//std::cout << "mouse button " << bi << (vrke.get_action() == cgv::gui::KA_PRESS ? "pressed" : "released") << std::endl;
 			if (vrke.get_action() == cgv::gui::KA_PRESS) {
-				static const DWORD mouse_button_dn[3] = { MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_MIDDLEDOWN, MOUSEEVENTF_RIGHTDOWN };
-				INPUT inputs[1] = { 0 };
-				inputs[0].type = INPUT_MOUSE;
-				inputs[0].mi.dwFlags = mouse_button_dn[bi];
-				SendInput(1, inputs, sizeof(INPUT));
-
+				cgv::os::send_mouse_button_event(bi, true);
 				mouse_button_pressed[bi] = true;
 				update_member(&mouse_button_pressed[bi]);
 				drag_begin(request, true, original_config);
@@ -329,11 +320,7 @@ bool vr_screen::handle(const cgv::gui::event& e, const cgv::nui::dispatch_info& 
 				return true;
 			}
 			if (vrke.get_action() == cgv::gui::KA_RELEASE) {
-				static const DWORD mouse_button_up[3] = { MOUSEEVENTF_LEFTUP, MOUSEEVENTF_MIDDLEUP, MOUSEEVENTF_RIGHTUP };
-				INPUT inputs[1] = { 0 };
-				inputs[0].type = INPUT_MOUSE;
-				inputs[0].mi.dwFlags = mouse_button_up[bi];
-				SendInput(1, inputs, sizeof(INPUT));
+				cgv::os::send_mouse_button_event(bi, false);
 				mouse_button_pressed[bi] = false;
 				update_member(&mouse_button_pressed[bi]);
 				drag_end(request, original_config);
@@ -348,9 +335,9 @@ bool vr_screen::handle(const cgv::gui::event& e, const cgv::nui::dispatch_info& 
 	if (e.get_kind() == cgv::gui::EID_POSE) {
 		if (dis_info.mode == cgv::nui::dispatch_mode::pointing) {
 			const auto& di = reinterpret_cast<const cgv::nui::intersection_dispatch_info&>(dis_info);
-			int X, Y;
-			compute_mouse_xy(screen_point = di.hit_point, X, Y);
-			SetCursorPos(X, Y);
+			int x, y;
+			compute_mouse_xy(screen_point = di.hit_point, x, y);
+			cgv::os::set_mouse_cursor(x, y);
 			return true;
 		}
 		return false;
@@ -539,4 +526,5 @@ void vr_screen::create_gui()
 	}
 }
 
+	}
 }

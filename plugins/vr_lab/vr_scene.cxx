@@ -11,15 +11,12 @@
 #include <cgv/defines/quote.h>
 #include <random>
 
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-
 namespace vr {
 
 void vr_scene::register_object(base_ptr object, const std::string& options)
 {
-	if (object->get_interface<vr_table>())
-		table = object->cast<vr_table>();
+	if (object->get_interface<cgv::nui::vr_table>())
+		table = object->cast<cgv::nui::vr_table>();
 	auto* foc_ptr = object->get_interface<cgv::nui::focusable>();
 	if (!foc_ptr)
 		return;
@@ -739,8 +736,8 @@ void vr_scene::create_gui()
 
 }
 #include <cgv/base/register.h>
-#include "vr_screen.h"
+#include <cg_nui/vr_screen.h>
 
 cgv::base::object_registration<vr::vr_scene> vr_scene_reg("vr_scene");
-cgv::base::object_registration_1<vr::vr_screen, std::string> vr_screen_reg("vr_screen");
-cgv::base::object_registration<vr::vr_table> vr_table_reg("vr_table");
+cgv::base::object_registration_1<cgv::nui::vr_screen, std::string> vr_screen_reg("vr_screen");
+cgv::base::object_registration<cgv::nui::vr_table> vr_table_reg("vr_table");

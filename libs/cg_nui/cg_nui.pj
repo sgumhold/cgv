@@ -13,13 +13,16 @@ sourceFiles = [
 	INPUT_DIR."/transformed.cxx",INPUT_DIR."/transformed.h",
 	INPUT_DIR."/dispatch_info.cxx",INPUT_DIR."/dispatch_info.h",
 	INPUT_DIR."/label_manager.cxx",INPUT_DIR."/label_manager.h",
+	INPUT_DIR."/vr_screen.cxx",INPUT_DIR."/vr_screen.h",
+	INPUT_DIR."/vr_table.cxx",INPUT_DIR."/vr_table.h",
+	INPUT_DIR."/table_gizmo.cxx",INPUT_DIR."/table_gizmo.h",
 	INPUT_DIR."/dispatcher.cxx",INPUT_DIR."/dispatcher.h",
 	INPUT_DIR."/spatial_dispatcher.cxx",INPUT_DIR."/spatial_dispatcher.h"
 ];
 addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
 addProjectDeps=[
 	"cgv_utils","cgv_type","cgv_reflect", "cgv_data","cgv_base", "vr", "cg_vr",
-	"cgv_media", "cgv_os", "cgv_gui", "cgv_render", "cgv_gl", "rect_pack"
+	"cgv_media", "cgv_os", "cgv_gui", "cgv_render", "cgv_gl", "rect_pack", "screen_capture_lite"
 ];
 addIncDirs=[CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName];
 if(SYSTEM=="windows") {

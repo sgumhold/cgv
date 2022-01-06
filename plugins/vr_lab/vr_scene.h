@@ -13,8 +13,8 @@
 #include <3rd/screen_capture_lite/include/ScreenCapture.h>
 #include <cg_nui/label_manager.h>
 #include <cg_nui/spatial_dispatcher.h>
-#include "vr_table.h"
-#include "table_gizmo.h"
+#include <cg_nui/vr_table.h>
+#include <cg_nui/table_gizmo.h>
 
 #include "lib_begin.h"
 
@@ -68,7 +68,7 @@ private:
 	// if both grabbing and pointing turned off for controller ci, detach it from focus in hid and kit attachments
 	void check_for_detach(int ci, const cgv::gui::event& e);
 	// keep reference to vr table
-	vr_table_ptr table;
+	cgv::nui::vr_table_ptr table;
 
 	//@name boxes and table
 	//@{	
