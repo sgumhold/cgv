@@ -74,10 +74,10 @@ bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_in
 	// ignore events from other hids
 	if (!(dis_info.hid_id == hid_id))
 		return false;
-	bool active;
+	bool pressed;
 	// hid independent check if grabbing is activated or deactivated
-	if (is_grab_change(e, active)) {
-		if (active) {
+	if (is_grab_change(e, pressed)) {
+		if (pressed) {
 			state = state_enum::grabbed;
 			on_set(&state);
 			drag_begin(request, false, original_config);
@@ -105,8 +105,8 @@ bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_in
 		return true;
 	}
 	// hid independent check if object is triggered during pointing
-	if (is_trigger_change(e, active)) {
-		if (active) {
+	if (is_trigger_change(e, pressed)) {
+		if (pressed) {
 			state = state_enum::triggered;
 			on_set(&state);
 			drag_begin(request, true, original_config);
