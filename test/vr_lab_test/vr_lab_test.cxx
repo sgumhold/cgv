@@ -10,16 +10,6 @@
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/cone_renderer.h>
 
-//#include <vr/vr_state.h>
-//#include <vr/vr_kit.h>
-//#include <vr/vr_driver.h>
-//#include <cg_vr/vr_events.h>
-//#include <vr_view_interactor.h>
-//#include <cgv/utils/dir.h>
-//#include <cgv/utils/advanced_scan.h>
-//#include <cgv/math/ftransform.h>
-//#include <cgv/utils/file.h>
-//#include <fstream>
 #include <libs/plot/plot2d.h>
 #include "simple_object.h"
 
