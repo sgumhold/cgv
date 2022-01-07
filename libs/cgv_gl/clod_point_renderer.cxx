@@ -50,15 +50,15 @@ namespace cgv {
 		}
 		
 		/// enables the reduction compute shader and sets invariant uniforms
-		void clod_point_renderer::reduce_buffer_init(context& ctx)
+		void clod_point_renderer::reduce_buffer_init(context& ctx, bool reset_parameters)
 		{
 			// bind output buffers for the reduce shader
 
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, active_draw_parameter_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, active_render_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index_pos, active_index_buffer);
-
-			reset_draw_parameters(ctx, active_draw_parameter_buffer);
+			if (reset_parameters)
+				reset_draw_parameters(ctx, active_draw_parameter_buffer);
 			reduce_prog.set_uniform(ctx, uniforms.frustum_extent, frustum_extend);
 			reduce_prog.set_uniform(ctx, uniforms.target_buffer_size, active_buffer_manager_ptr->size());
 			reduce_prog.enable(ctx);
