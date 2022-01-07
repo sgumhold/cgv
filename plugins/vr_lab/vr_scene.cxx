@@ -13,6 +13,27 @@
 
 namespace vr {
 
+	struct controller_info_reflect : public cgv::nui::spatial_dispatcher::controller_info
+	{
+		bool self_reflect(cgv::reflect::reflection_handler& rh)
+		{
+			return
+				rh.reflect_member("pointing", pointing) &&
+				rh.reflect_member("grabbing", grabbing) &&
+				rh.reflect_member("color", color);
+		}
+	};
+}
+namespace cgv {
+	namespace reflect {
+		cgv::reflect::extern_reflection_traits<cgv::nui::spatial_dispatcher::controller_info, vr::controller_info_reflect>
+			get_reflection_traits(const cgv::nui::spatial_dispatcher::controller_info&)
+		{
+			return {};
+		}
+	}
+}
+namespace vr {
 cgv::reflect::enum_reflection_traits<GroundMode> get_reflection_traits(const GroundMode& gm)
 {
 	return cgv::reflect::enum_reflection_traits<GroundMode>("none,boxes,terrain");
@@ -170,6 +191,8 @@ bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 		rh.reflect_member("terrain_scale", terrain_scale) &&
 		rh.reflect_member("draw_ceiling", draw_ceiling) &&
 		rh.reflect_member("ground_mode", ground_mode) &&
+		rh.reflect_member("ctrl_info_left", ctrl_infos[0]) &&
+		rh.reflect_member("ctrl_info_right", ctrl_infos[1]) &&
 		rh.reflect_member("ctrl_pointing_animation_duration", ctrl_pointing_animation_duration) &&
 		rh.reflect_member("dispatch_mouse_spatial", dispatch_mouse_spatial) &&
 		rh.reflect_member("environment_mode", environment_mode);

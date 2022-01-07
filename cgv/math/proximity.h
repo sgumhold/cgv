@@ -8,6 +8,21 @@
 namespace cgv {
 	namespace math {
 		/// <summary>
+		/// find point on sphere closest to reference point 
+		/// </summary>
+		/// <typeparam name="T">coordinate type</typeparam>
+		/// <param name="so">sphere center</param>
+		/// <param name="sr">sphere radius</param>
+		/// <param name="p">reference point</param>
+		/// <param name="q">closest point</param>
+		/// <param name="n">normal at closest point</param>
+		template <typename T>
+		void closest_point_on_sphere_to_point(const fvec<T, 3>& so, T sr, const fvec<T, 3>& p, fvec<T, 3>& q, fvec<T, 3>& n)
+		{
+			n = normalize(p - so);
+			q = sr * n + so;
+		}
+		/// <summary>
 		/// find point on cylinder closest to reference point
 		/// </summary>
 		/// <typeparam name="T">coordinate type</typeparam>

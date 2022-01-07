@@ -57,7 +57,7 @@ protected:
 	void compute_state_poses();
 	bool query_state_impl(vr::vr_kit_state& state, int pose_query = 2);
 public:
-	vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name);
+	vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, int _nr_trackers);
 	vec3 get_body_direction() const;
 	const std::vector<std::pair<int, int> >& get_controller_throttles_and_sticks(int controller_index) const;
 	const std::vector<std::pair<float, float> >& get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const;
@@ -91,6 +91,7 @@ public:
 	static bool gamepad_connected;
 	unsigned screen_width, screen_height;
 	unsigned counter;
+	int nr_trackers = 2;
 	vec3 body_position;
 	float body_direction;
 	float body_height;

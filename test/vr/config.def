@@ -18,6 +18,8 @@ type(vr_emulator):current_kit_index=0
 type(vr_emulator):create_body_direction=0.0
 // initial 3d body ground position as 3d vector
 type(vr_emulator):create_body_position='2.0 0 -1'
+// number of trackers in range [0,4] activated at creation
+type(vr_emulator):create_nr_trackers=2
 // body height in meters
 type(vr_emulator):body_height=1.90
 // resolution of virtual eye display of single eye of to be created vr kit

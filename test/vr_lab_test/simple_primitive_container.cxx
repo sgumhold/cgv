@@ -153,7 +153,20 @@ bool simple_primitive_container::handle(const cgv::gui::event& e, const cgv::nui
 }
 bool simple_primitive_container::compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx)
 {
-	return false;
+	float min_dist = std::numeric_limits<float>::max();
+	vec3 q, n;
+	for (size_t i = 0; i < positions.size(); ++i) {
+		cgv::math::closest_point_on_sphere_to_point(positions[i], radii[i], point, q, n);
+		float dist = (point - q).length();
+		if (dist < min_dist) {
+			primitive_idx = i;
+			prj_point = q;
+			prj_normal = n;
+			min_dist = dist;
+		}
+	}
+	//std::cout << "min_dist = " << positions[0] << " <-> " << point << " | " << radii[0] << " at " << min_dist << " for " << primitive_idx << std::endl;
+	return min_dist < std::numeric_limits<float>::max();
 }
 bool simple_primitive_container::compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx)
 {

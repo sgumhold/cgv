@@ -174,7 +174,7 @@ namespace cgv {
 			rh.reflect_member("aspect", aspect) &&
 			rh.reflect_member("height", height) &&
 			rh.reflect_member("leg_color", leg_color) &&
-			rh.reflect_member("table_legs", leg_width) &&
+			rh.reflect_member("leg_width", leg_width) &&
 			rh.reflect_member("percentual_leg_offset", percentual_leg_offset);
 	}
 	void vr_table::on_set(void* member_ptr)
