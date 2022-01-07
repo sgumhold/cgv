@@ -40,6 +40,7 @@ namespace cgv {
 			bool structural : 1;          // dispatch over all objects and their children
 			bool current_root_first : 1;  // start structural dispatch with root of object in focus
 			bool spatial : 1;             // use spatial dispatching
+			bool event_handler : 1;       // whether to dispatch to objects implementing cgv::gui::event_handler interface
 		};
 		/// provide conversion of dispatch_policy to string
 		extern CGV_API std::string to_string(dispatch_policy dp, char sep = ',');
@@ -69,7 +70,7 @@ namespace cgv {
 		struct focus_configuration
 		{
 			refocus_policy   refocus = { true, true, true, true, true };
-			dispatch_policy  dispatch = { true, true, true, true };
+			dispatch_policy  dispatch = { true, true, true, true, false };
 			spatial_analysis spatial = { false, true, true };
 		};
 		extern CGV_API std::ostream& operator << (std::ostream& os, const focus_configuration& foc_cfg);

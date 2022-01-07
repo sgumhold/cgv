@@ -21,6 +21,7 @@ namespace cgv {
 			consider_flag(dp.structural, "structural", res, sep);
 			consider_flag(dp.current_root_first, "current_root_first", res, sep);
 			consider_flag(dp.spatial, "spatial", res, sep);
+			consider_flag(dp.event_handler, "event_handler", res, sep);			
 			return res;
 
 		}

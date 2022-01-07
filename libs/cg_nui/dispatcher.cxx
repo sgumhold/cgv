@@ -351,10 +351,12 @@ namespace cgv {
 					return true;
 			}
 			// next check object with event_handler interface
-			auto* event_handler_ptr = object_ptr->get_interface<cgv::gui::event_handler>();
-			if (event_handler_ptr) {
-				if (event_handler_ptr->handle(const_cast<cgv::gui::event&>(e)))
-					return true;
+			if (rfi.foc_info_ptr->config.dispatch.event_handler) {
+				auto* event_handler_ptr = object_ptr->get_interface<cgv::gui::event_handler>();
+				if (event_handler_ptr) {
+					if (event_handler_ptr->handle(const_cast<cgv::gui::event&>(e)))
+						return true;
+				}
 			}
 			// next check for group and children thereof
 			auto grp_ptr = object_ptr->cast<cgv::base::group>();
