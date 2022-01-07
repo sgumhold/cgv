@@ -1,7 +1,8 @@
 var structcgv_1_1base_1_1factory__impl__1 =
 [
     [ "call_void", "structcgv_1_1base_1_1factory__impl__1.html#a6746cd9f70fefe5a4f2b72534869fcc3", null ],
-    [ "cast", "structcgv_1_1base_1_1factory__impl__1.html#a465d1e143a091da84a346ea011b9af7b", null ],
+    [ "cast", "structcgv_1_1base_1_1factory__impl__1.html#a6401d6fb8aa227bd28cacc7e42b39e2b", null ],
+    [ "cast_const", "structcgv_1_1base_1_1factory__impl__1.html#a5e4ce80d45ccfdc5100f7ddd2f33b64d", null ],
     [ "cast_dynamic", "structcgv_1_1base_1_1factory__impl__1.html#ad8d0e6ffe70e6d8adc43876dfca2e84a", null ],
     [ "create_object", "structcgv_1_1base_1_1factory__impl__1.html#a2342d533452b40ec0a9187739cb6f878", null ],
     [ "create_object_impl", "structcgv_1_1base_1_1factory__impl__1.html#a2640a9d180d0acebaada5e837a47b474", null ],
@@ -11,9 +12,13 @@ var structcgv_1_1base_1_1factory__impl__1 =
     [ "get_created_type_name", "structcgv_1_1base_1_1factory__impl__1.html#aaadcb676b15e72fce5acdd9af0e9fac9", null ],
     [ "get_default_options", "structcgv_1_1base_1_1factory__impl__1.html#a79a9ca57ee7e6364153cda52223b8501", null ],
     [ "get_group", "structcgv_1_1base_1_1factory__impl__1.html#acd6c94f5eb8784c955f687984cbb70ae", null ],
+    [ "get_group_const", "structcgv_1_1base_1_1factory__impl__1.html#a8229995c361dc313cecd1ca42ded82ae", null ],
     [ "get_interface", "structcgv_1_1base_1_1factory__impl__1.html#aa2b866151a23c63b3e8029849e71a796", null ],
+    [ "get_name_or_type_name", "structcgv_1_1base_1_1factory__impl__1.html#aec86a78e596c9c4fb203fcad98fb6afd", null ],
     [ "get_named", "structcgv_1_1base_1_1factory__impl__1.html#a6d2b95a4802d2a4fc33b556726e0656f", null ],
+    [ "get_named_const", "structcgv_1_1base_1_1factory__impl__1.html#acb0c5b45da256e0696602feaf69a5cf3", null ],
     [ "get_node", "structcgv_1_1base_1_1factory__impl__1.html#ac5198433016d177ca57f4c24c3427eca", null ],
+    [ "get_node_const", "structcgv_1_1base_1_1factory__impl__1.html#a5c0c21c14a4322c3edcce6018ab1c608", null ],
     [ "get_object_options", "structcgv_1_1base_1_1factory__impl__1.html#a6d0fe7564875c93607fc827585a68777", null ],
     [ "get_property_declarations", "structcgv_1_1base_1_1factory__impl__1.html#a614db734b9dab12958b6c0370addfb6f", null ],
     [ "get_ref_count", "structcgv_1_1base_1_1factory__impl__1.html#a67b5dba890a068acef62d9c026c05320", null ],

@@ -1,7 +1,8 @@
 var classcgv_1_1media_1_1font_1_1font__server =
 [
     [ "call_void", "classcgv_1_1media_1_1font_1_1font__server.html#a6746cd9f70fefe5a4f2b72534869fcc3", null ],
-    [ "cast", "classcgv_1_1media_1_1font_1_1font__server.html#a465d1e143a091da84a346ea011b9af7b", null ],
+    [ "cast", "classcgv_1_1media_1_1font_1_1font__server.html#a6401d6fb8aa227bd28cacc7e42b39e2b", null ],
+    [ "cast_const", "classcgv_1_1media_1_1font_1_1font__server.html#a5e4ce80d45ccfdc5100f7ddd2f33b64d", null ],
     [ "cast_dynamic", "classcgv_1_1media_1_1font_1_1font__server.html#ad8d0e6ffe70e6d8adc43876dfca2e84a", null ],
     [ "default_font", "classcgv_1_1media_1_1font_1_1font__server.html#a1cb444e08bceb9eeaee0108fa9a4e2e3", null ],
     [ "enumerate_font_names", "classcgv_1_1media_1_1font_1_1font__server.html#a7aa7ca5bacd7952fedc913ad2d755e4b", null ],
@@ -11,9 +12,13 @@ var classcgv_1_1media_1_1font_1_1font__server =
     [ "get_const_interface", "classcgv_1_1media_1_1font_1_1font__server.html#a322bdd4891db870dafaba22e40d99bff", null ],
     [ "get_default_options", "classcgv_1_1media_1_1font_1_1font__server.html#a79a9ca57ee7e6364153cda52223b8501", null ],
     [ "get_group", "classcgv_1_1media_1_1font_1_1font__server.html#acd6c94f5eb8784c955f687984cbb70ae", null ],
+    [ "get_group_const", "classcgv_1_1media_1_1font_1_1font__server.html#a8229995c361dc313cecd1ca42ded82ae", null ],
     [ "get_interface", "classcgv_1_1media_1_1font_1_1font__server.html#aa2b866151a23c63b3e8029849e71a796", null ],
+    [ "get_name_or_type_name", "classcgv_1_1media_1_1font_1_1font__server.html#aec86a78e596c9c4fb203fcad98fb6afd", null ],
     [ "get_named", "classcgv_1_1media_1_1font_1_1font__server.html#a6d2b95a4802d2a4fc33b556726e0656f", null ],
+    [ "get_named_const", "classcgv_1_1media_1_1font_1_1font__server.html#acb0c5b45da256e0696602feaf69a5cf3", null ],
     [ "get_node", "classcgv_1_1media_1_1font_1_1font__server.html#ac5198433016d177ca57f4c24c3427eca", null ],
+    [ "get_node_const", "classcgv_1_1media_1_1font_1_1font__server.html#a5c0c21c14a4322c3edcce6018ab1c608", null ],
     [ "get_property_declarations", "classcgv_1_1media_1_1font_1_1font__server.html#a4d67c8d339fe06f17396aaa8625292f8", null ],
     [ "get_ref_count", "classcgv_1_1media_1_1font_1_1font__server.html#a67b5dba890a068acef62d9c026c05320", null ],
     [ "get_type_name", "classcgv_1_1media_1_1font_1_1font__server.html#a6e64a898476591f7246e522652abfa4c", null ],

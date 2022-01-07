@@ -13,7 +13,7 @@ var searchData=
   ['base_159',['base',['../classcgv_1_1base_1_1base.html',1,'cgv::base']]],
   ['base_5fgenerator_160',['base_generator',['../classcgv_1_1base_1_1base__generator.html',1,'cgv::base']]],
   ['base_5fmethod_5faction_161',['base_method_action',['../classcgv_1_1base_1_1base__method__action.html',1,'cgv::base::base_method_action&lt; X &gt;'],['../classcgv_1_1base_1_1base__method__action.html#a0723f396c242c1676ecf5bdcbf3e0580',1,'cgv::base::base_method_action::base_method_action()']]],
-  ['base_5fptr_162',['base_ptr',['../namespacecgv_1_1base.html#adf49b672c57e35e9ac4a9d6980f50562',1,'cgv::base']]],
+  ['base_5fptr_162',['base_ptr',['../namespacecgv_1_1base.html#a580333ed27888f5e8c61452a44545f51',1,'cgv::base']]],
   ['base_5ftype_163',['base_type',['../classcgv_1_1data_1_1ref__ptr.html#a317ed3142712b9d72c9db3f6c49f97c0',1,'cgv::data::ref_ptr::base_type()'],['../classcgv_1_1math_1_1fmat.html#a54ad673d8e18aa032f16bdf71ac8b463',1,'cgv::math::fmat::base_type()'],['../classcgv_1_1math_1_1quaternion.html#ab9fc68c2751a5c92836318202451f4d8',1,'cgv::math::quaternion::base_type()']]],
   ['battery_5fcharge_5flevel_164',['battery_charge_level',['../structvr_1_1vr__trackable__info.html#a562b5f398d47ad4992cd95d07e5e8dfa',1,'vr::vr_trackable_info']]],
   ['before_5fdrop_5fvertex_165',['before_drop_vertex',['../structcgv_1_1media_1_1mesh_1_1streaming__mesh__callback__handler.html#af36d8de89c9f4acbc555faefe0c9cdd6',1,'cgv::media::mesh::streaming_mesh_callback_handler::before_drop_vertex()'],['../classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#a4e6f512aa79fb1f11cfde576b37ca025',1,'cgv::render::gl::gl_implicit_surface_drawable_base::before_drop_vertex()']]],
