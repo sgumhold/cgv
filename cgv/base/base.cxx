@@ -21,52 +21,46 @@ namespace cgv {
 base::~base()
 {
 }
- 
 void base::stream_stats(std::ostream&)
 {
 }
-
-/// overload to return a type info structure. By default an empty pointer is returned.
-//const_type_ptr base::get_type() const
-//{
-//	return const_type_ptr();
-//}
-
 void base::on_register()
 {
 }
-
-/// overload to handle unregistration of instances
 void base::unregister()
 {
 }
-
-/// overload to handle the appication exit request, return true if exiting is allowed and false otherwise
 bool base::on_exit_request()
 {
 	return true;
 }
-
-/// cast upward to named
-data::ref_ptr<named,true> base::get_named()
+data::ref_ptr<named, true> base::get_named()
 {
-	return data::ref_ptr<named,true>(); 
+	return data::ref_ptr<named, true>();
 }
-/// cast upward to node
-data::ref_ptr<node,true> base::get_node()
+data::ref_ptr<node, true> base::get_node()
 {
-	return data::ref_ptr<node,true>(); 
+	return data::ref_ptr<node, true>();
 }
-/// cast upward to group
-data::ref_ptr<group,true> base::get_group() 
+data::ref_ptr<group, true> base::get_group()
 {
-	return data::ref_ptr<group,true>(); 
+	return data::ref_ptr<group, true>();
 }
-/// this virtual update allows for example to ask a view to update the viewed value. The default implementation is empty.
+data::ref_ptr<const named, true> base::get_named_const() const
+{
+	return data::ref_ptr<const named, true>();
+}
+data::ref_ptr<const node, true> base::get_node_const() const
+{
+	return data::ref_ptr<const node, true>();
+}
+data::ref_ptr<const group, true> base::get_group_const() const
+{
+	return data::ref_ptr<const group, true>();
+}
 void base::update()
 {
 }
-/// this virtual method allows derived classes to pass application specific data
 void* base::get_user_data() const
 {
 	return 0;
@@ -256,6 +250,14 @@ std::string base::get_type_name() const
 std::string base::get_default_options() const
 {
 	return std::string();
+}
+/// determine name of instance by checking cgv::base::named interface and in failure fallback to get_type_name()
+std::string base::get_name_or_type_name() const
+{
+	const_named_ptr n = get_named_const();
+	if (n)
+		return n->get_name();
+	return get_type_name();
 }
 
 /// return a semicolon separated list of property declarations of the form "name:type", by default an empty list is returned

@@ -28,7 +28,7 @@ void vr_scene::register_object(base_ptr object, const std::string& options)
 	auto* foc_ptr = object->get_interface<cgv::nui::focusable>();
 	if (!foc_ptr)
 		return;
-	std::cout << "register focusable: " << (object->get_named() ? object->get_named()->get_name() : object->get_type_name()) << std::endl;
+	std::cout << "register focusable: " << object->get_name_or_type_name() << std::endl;
 	add_object(object);
 }
 void vr_scene::unregister_object(base_ptr object, const std::string& options)
@@ -36,7 +36,7 @@ void vr_scene::unregister_object(base_ptr object, const std::string& options)
 	auto* foc_ptr = object->get_interface<cgv::nui::focusable>();
 	if (!foc_ptr)
 		return;
-	std::cout << "unregister focusable: " << (object->get_named() ? object->get_named()->get_name() : object->get_type_name()) << std::endl;
+	std::cout << "unregister focusable: " << object->get_name_or_type_name() << std::endl;
 	remove_object(object);
 }
 void vr_scene::set_label_border_color(const rgba& border_color)

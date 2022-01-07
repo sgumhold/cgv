@@ -6,6 +6,8 @@ namespace cgv {
 
 		transforming::transforming()
 		{
+			M.identity();
+			iM.identity();
 		}
 		/// read access to model transform
 		const transforming::mat4& transforming::get_model_transform() const
