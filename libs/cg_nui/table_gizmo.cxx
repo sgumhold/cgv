@@ -197,7 +197,7 @@ bool table_gizmo::focus_change(cgv::nui::focus_change_action action, cgv::nui::r
 				// only in case of multiple primitves an index change can happen
 				if (new_idx != 2) {
 					std::cerr << "index_change focus change action arised with identical indices" << std::endl;
-					abort();
+					//abort();
 				}
 				// is_triggered status is not transmitted to new primitive in order to force fresh triggering
 				ois.is_triggered = false;

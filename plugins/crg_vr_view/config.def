@@ -9,34 +9,31 @@
 type(vr_view_interactor):calibration_file_path="D:/develop/projects/git/cgv/plugins/vr_test/table.cal"
 
 
-// *********** Meshes ****************************
+// *********** Visualization of human interface devices (hids) ****************************
 
-// set mesh file name for hmd
-// mesh file is searched recursively in paths registered in environment variable CGV_DATA
-// under windows you can drag your data path onto CGV_DIR/define_data_dir.bat to set CGV_DATA
+// If CGV_DATA environment variable is set and mesh files for hids are located there or in a subfolder,
+// one can skip path in mesh file specification as mesh files are searched recursively in all paths registered 
+// in form of a semicolon separated list in the environment variable CGV_DATA.
+// HINT: under windows you can drag your data path onto CGV_DIR/define_data_dir.bat to set CGV_DATA
+
+// visualization types can be one out of {none,sphere,mesh,both} and default to sphere in Debug and mesh in Release configuration
+// set scaling factors convert mesh coordinates to meter scale
+
 type(vr_view_interactor):hmd_mesh_file_name="generic_hmd.obj"
-
-// set scaling factor for hmd mesh to scale it to meter
 type(vr_view_interactor):hmd_scale=1.0
+//type(vr_view_interactor):hmd_vis_type=mesh
 
-// set mesh file name for controllers
 type(vr_view_interactor):controller_mesh_file_name="vr_controller_vive_1_5.obj"
-
-// set scaling factor for controllers
 type(vr_view_interactor):controller_scale=1.0
+//type(vr_view_interactor):controller_vis_type=mesh
 
-// set mesh file name for trackers
 type(vr_view_interactor):tracker_mesh_file_name="HTC_Vive_Tracker_2017.obj"
-
-// set scaling factor for trackers (here mesh was specified in mm units requiring 0.001 as scale factor)
 type(vr_view_interactor):tracker_scale=0.001
+//type(vr_view_interactor):tracker_vis_type=mesh
 
-// set mesh file name for base stations
 type(vr_view_interactor):base_mesh_file_name="lh_basestation_vive.obj"
-
-// set scaling factor for base stations
 type(vr_view_interactor):base_scale=1.0
-
+//type(vr_view_interactor):base_vis_type=mesh
 
 type(vr_view_interactor):show_focus=true
 name(main):selected="vr_wall"

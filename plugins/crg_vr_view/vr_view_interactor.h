@@ -23,6 +23,8 @@ enum VRkitVisType
 	VVT_BOTH
 };
 
+/// support reflection of enum names
+extern CGV_API cgv::reflect::enum_reflection_traits<VRkitVisType> get_reflection_traits(const VRkitVisType& gm);
 
 //! extends the stereo view interactor for vr support
 /*! Besides adding the crg_vr_view plugin to your project, you can configure
