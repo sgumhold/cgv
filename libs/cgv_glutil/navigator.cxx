@@ -18,45 +18,31 @@ navigator::navigator() {
 	set_name("Navigator");
 
 	view_ptr = nullptr;
-	navigator_eye_pos = vec3(0.0f, 0.0f, 4.0f);
+	navigator_eye_pos = vec3(0.0f, 0.0f, 2.5f);
 
 	check_for_click = -1;
 
-	layout.padding = 8;
-	layout.total_height = 200;
-	layout.color_scale_height = 30;
-
-	set_overlay_alignment(AO_CENTER, AO_CENTER);
+	set_overlay_alignment(AO_END, AO_END);
 	set_overlay_stretch(SO_NONE);
-	set_overlay_margin(ivec2(0));
-	set_overlay_size(ivec2(300));
+	set_overlay_margin(ivec2(10));
+	set_overlay_size(ivec2(100));
 	
 	fbc.add_attachment("color", "flt32[R,G,B,A]");
 	fbc.set_size(get_overlay_size());
 
-	//canvas.register_shader("rectangle", "rect2d.glpr");
-	//canvas.register_shader("circle", "circle2d.glpr");
-	//canvas.register_shader("histogram", "hist2d.glpr");
-	//canvas.register_shader("background", "bg2d.glpr");
+	blit_canvas.register_shader("rectangle", "rect2d.glpr");
 
-	//overlay_canvas.register_shader("rectangle", "rect2d.glpr");
-
-	//hit_box = false;
 	hit_axis = 0;
-
-	//box_data = cgv::glutil::box_render_data<>(true);
-	//sphere_data = cgv::glutil::sphere_render_data<>(true);
-	//cone_data = cgv::glutil::cone_render_data<>(true);
 
 	box_style.default_extent = vec3(1.0f);
 	box_style.map_color_to_material = CM_COLOR_AND_OPACITY;
 	box_style.surface_color = rgb(0.5f);
-	box_style.surface_opacity = 0.5f;
+	box_style.surface_opacity = 0.6f;
 
 	sphere_style.radius = 0.02f;
 	sphere_style.surface_color = rgb(0.5f);
 
-	cone_style.radius = 0.01f;
+	cone_style.radius = 0.02f;
 
 	rectangle_style.illumination_mode = IM_OFF;
 	rectangle_style.map_color_to_material = CM_COLOR_AND_OPACITY;
@@ -70,12 +56,13 @@ navigator::navigator() {
 	show_cursor = false;
 	cursor_pos = ivec2(-100);
 	cursor_drawtext = "";
+
+	block_events = false;
 }
 
 void navigator::clear(cgv::render::context& ctx) {
 
-	//canvas.destruct(ctx);
-	//overlay_canvas.destruct(ctx);
+	blit_canvas.destruct(ctx);
 	fbc.clear(ctx);
 
 	ref_box_renderer(ctx, -1);
@@ -86,7 +73,7 @@ void navigator::clear(cgv::render::context& ctx) {
 
 bool navigator::self_reflect(cgv::reflect::reflection_handler& _rh) {
 
-	return true;// _rh.reflect_member("file_name", file_name);
+	return true;
 }
 
 bool navigator::handle_event(cgv::gui::event& e) {
@@ -98,35 +85,7 @@ bool navigator::handle_event(cgv::gui::event& e) {
 	if(!show)
 		return false;
 
-	if(et == cgv::gui::EID_KEY) {
-		cgv::gui::key_event& ke = (cgv::gui::key_event&) e;
-
-		if(ke.get_action() == cgv::gui::KA_PRESS) {
-			switch(ke.get_key()) {
-			case cgv::gui::KEY_Left_Ctrl:
-				show_cursor = true;
-				cursor_drawtext = "+";
-				post_redraw();
-				break;
-			case cgv::gui::KEY_Left_Alt:
-				show_cursor = true;
-				cursor_drawtext = "-";
-				post_redraw();
-				break;
-			}
-		} else if(ke.get_action() == cgv::gui::KA_RELEASE) {
-			switch(ke.get_key()) {
-			case cgv::gui::KEY_Left_Ctrl:
-				show_cursor = false;
-				post_redraw();
-				break;
-			case cgv::gui::KEY_Left_Alt:
-				show_cursor = false;
-				post_redraw();
-				break;
-			}
-		}
-	} else if(et == cgv::gui::EID_MOUSE) {
+	if(et == cgv::gui::EID_MOUSE) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 		cgv::gui::MouseAction ma = me.get_action();
 
@@ -137,10 +96,13 @@ bool navigator::handle_event(cgv::gui::event& e) {
 			cgv::render::context& ctx = *get_context();
 
 			ivec2 mpos(static_cast<int>(me.get_x()), static_cast<int>(me.get_y()));
-			mpos = get_transformed_mouse_pos(mpos);
-			vec2 window_coord = vec2(mpos) * vec2(2.0f) / last_viewport_size - vec2(1.0f);
+			//mpos = get_transformed_mouse_pos(mpos);
+			//vec2 window_coord = vec2(mpos) * vec2(2.0f) / last_viewport_size - vec2(1.0f);
 
-			mat4 MVP = ctx.get_projection_matrix() * get_view_matrix(ctx);
+			mpos = get_local_mouse_pos(mpos);
+			vec2 window_coord = vec2(mpos) * vec2(2.0f) / get_overlay_size() - vec2(1.0f);
+
+			mat4 MVP = get_projection_matrix() * get_view_matrix(ctx);
 
 			vec4 world_coord(window_coord.x(), window_coord.y(), 1.0f, 1.0f);
 			world_coord = inv(MVP) * world_coord;
@@ -204,10 +166,12 @@ bool navigator::handle_event(cgv::gui::event& e) {
 							std::cout << up_dir << std::endl;
 
 							post_redraw();
+							return true;
 						}
 					}
 				}
 			}
+			return true;
 			break;
 		}
 
@@ -218,12 +182,6 @@ bool navigator::handle_event(cgv::gui::event& e) {
 }
 
 void navigator::on_set(void* member_ptr) {
-
-	if(member_ptr == &layout.total_height) {
-		ivec2 size = get_overlay_size();
-		size.y() = layout.total_height;
-		set_overlay_size(size);
-	}
 
 	update_member(member_ptr);
 	post_redraw();
@@ -240,8 +198,7 @@ bool navigator::init(cgv::render::context& ctx) {
 	bool success = true;
 
 	success &= fbc.ensure(ctx);
-	//success &= canvas.init(ctx);
-	//success &= overlay_canvas.init(ctx);
+	success &= blit_canvas.init(ctx);
 	success &= box_data.init(ctx);
 	success &= sphere_data.init(ctx);
 	success &= cone_data.init(ctx);
@@ -262,6 +219,19 @@ bool navigator::init(cgv::render::context& ctx) {
 		cone_data.add(rgb(0.0f, 1.0f, 0.0f));
 		cone_data.add(vec3(0.0f), vec3(0.0f, 0.0f, 0.35f));
 		cone_data.add(rgb(0.0f, 0.0f, 1.0f));
+
+		blit_style.fill_color = rgba(1.0f);
+		blit_style.use_texture = true;
+		blit_style.use_blending = true;
+		blit_style.apply_gamma = false;
+		blit_style.feather_width = 1.0f;
+		blit_style.border_color = rgba(1.0f, 1.0f, 1.0f, 0.2f);
+		blit_style.border_width = 2.0f;
+		blit_style.border_radius = 8.0f;
+
+		auto& blit_prog = blit_canvas.enable_shader(ctx, "rectangle");
+		blit_style.apply(ctx, blit_prog);
+		blit_canvas.disable_current_shader(ctx);
 	}
 
 	return success;
@@ -274,19 +244,11 @@ void navigator::init_frame(cgv::render::context& ctx) {
 
 	if(ensure_overlay_layout(ctx)) {
 		ivec2 container_size = get_overlay_size();
-		layout.update(container_size);
-
+		
 		fbc.set_size(container_size);
 		fbc.ensure(ctx);
 
-		//canvas.set_resolution(ctx, container_size);
-		//overlay_canvas.set_resolution(ctx, get_viewport_size());
-
-		//auto& bg_prog = canvas.enable_shader(ctx, "background");
-		//float width_factor = static_cast<float>(layout.editor_rect.size().x()) / static_cast<float>(layout.editor_rect.size().y());
-		//bg_style.texcoord_scaling = vec2(5.0f * width_factor, 5.0f);
-		//bg_style.apply(ctx, bg_prog);
-		//canvas.disable_current_shader(ctx);
+		blit_canvas.set_resolution(ctx, get_viewport_size());
 	}
 }
 
@@ -295,13 +257,13 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 	if(!show)
 		return;
 
-	//fbc.enable(ctx);
-	
-	//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	//glClear(GL_COLOR_BUFFER_BIT);
+	fbc.enable(ctx);
+
+	glClearColor(0.05f, 0.05f, 0.05f, 0.5f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	ctx.push_projection_matrix();
-	ctx.set_projection_matrix(cgv::math::perspective4(45.0f, 1.0f, 0.1f, 10.0f));
+	ctx.set_projection_matrix(get_projection_matrix());
 
 	ctx.push_modelview_matrix();
 	ctx.set_modelview_matrix(get_view_matrix(ctx) * get_model_matrix(ctx));
@@ -311,8 +273,9 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
+	//box_style.illumination_mode = IM_OFF;
 	box_data.render(ctx, ref_box_renderer(ctx), box_style);
 
 	if(hit_axis != 0) {
@@ -343,15 +306,28 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 	ctx.pop_modelview_matrix();
 	ctx.pop_projection_matrix();
 
+	fbc.disable(ctx);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// draw frame buffer texture to screen
+	auto& blit_prog = blit_canvas.enable_shader(ctx, "rectangle");
+	
+	fbc.enable_attachment(ctx, "color", 0);
+	blit_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());
+	fbc.disable_attachment(ctx, "color");
+
+	blit_canvas.disable_current_shader(ctx);
+
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 }
 
 void navigator::create_gui() {
 
-	add_decorator("Transfer Function Editor", "heading", "level=2");
+	add_decorator("Navigator", "heading", "level=2");
 
-	create_overlay_gui();
+	create_overlay_gui(true, false, true);
 }
 
 void navigator::create_gui(cgv::gui::provider& p) {
@@ -374,6 +350,14 @@ navigator::mat4 navigator::get_model_matrix(context& ctx) {
 navigator::mat4 navigator::get_view_matrix(context& ctx) {
 
 	return cgv::math::look_at4(navigator_eye_pos, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
+}
+
+navigator::mat4 navigator::get_projection_matrix() {
+
+	ivec2 size = get_overlay_size();
+	float aspect = static_cast<float>(size.x()) / static_cast<float>(size.y());
+
+	return cgv::math::perspective4(45.0f, aspect, 0.1f, 10.0f);
 }
 
 bool navigator::intersect_box(const vec3 &origin, const vec3& direction, float& t) const {

@@ -44,6 +44,7 @@ protected:
 	ivec2 margin;
 	ivec2 size;
 	bool show; /// whether the overlay is visible
+	bool block_events; /// whether the overlay blocks events or lets them pass through to other handlers
 
 	/// rectangle area of this overlay is fully contained whithin
 	rect container;
@@ -79,6 +80,8 @@ public:
 
 	/// overload this method to handle events
 	virtual bool handle_event(cgv::gui::event& e) { return false; };
+
+	bool blocks_events() { return block_events; }
 
 	/// returns the current viewport size
 	ivec2 get_viewport_size() {
@@ -144,19 +147,22 @@ public:
 	bool ensure_viewport(cgv::render::context& ctx);
 
 	bool ensure_overlay_layout(cgv::render::context& ctx) {
-		ivec2 viewport_size(ctx.get_width(), ctx.get_height());
+		bool ret = ensure_viewport(ctx);
+
+		/*ivec2 viewport_size(ctx.get_width(), ctx.get_height());
 		if(last_viewport_size != viewport_size) {
 			last_viewport_size = viewport_size;
 			update_overlay_layout();
-		}
+			ret = true;
+		}*/
 
 		ivec2 current_size = container.size();
 		if(last_size != current_size) {
 			last_size = current_size;
-			return true;
+			ret = true;
 		}
 
-		return false;
+		return ret;
 	}
 
 	/** Tests if the mouse pointer is hovering over this overlay and returns
@@ -167,7 +173,7 @@ public:
 	virtual bool is_hit(const ivec2& mouse_pos);
 
 	/// provides a default gui implementation for private overlay layout members
-	void create_overlay_gui();
+	void create_overlay_gui(bool allow_alignment = true, bool allow_stretch = true, bool allow_margin = true);
 };
 
 }
