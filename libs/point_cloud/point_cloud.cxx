@@ -129,6 +129,7 @@ void point_cloud::clear()
 	I.clear();
 
 	lods.clear();
+	labels.clear();
 	//last_additional_model_matrix.identity();
 	point_cloud_scale = 1;
 	point_cloud_position = Dir(0);
