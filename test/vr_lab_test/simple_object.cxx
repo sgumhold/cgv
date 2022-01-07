@@ -2,6 +2,24 @@
 #include <cgv/math/proximity.h>
 #include <cgv/math/intersection.h>
 
+simple_object::rgb simple_object::get_modified_color(const rgb& color) const
+{
+	rgb mod_col(color);
+	switch (state) {
+	case state_enum::grabbed:
+		mod_col[1] = std::min(1.0f, mod_col[0] + 0.2f);
+	case state_enum::close:
+		mod_col[0] = std::min(1.0f, mod_col[0] + 0.2f);
+		break;
+	case state_enum::triggered:
+		mod_col[1] = std::min(1.0f, mod_col[0] + 0.2f);
+	case state_enum::pointed:
+		mod_col[2] = std::min(1.0f, mod_col[2] + 0.2f);
+		break;
+	}
+	return mod_col;
+}
+
 simple_object::simple_object(const std::string& _name, const vec3& _position, const rgb& _color, const vec3& _extent, const quat& _rotation)
 	: cgv::base::node(_name), position(_position), color(_color), extent(_extent), rotation(_rotation)
 {
@@ -162,7 +180,8 @@ void simple_object::draw(cgv::render::context& ctx)
 	auto& br = cgv::render::ref_box_renderer(ctx);
 	br.set_render_style(brs);
 	br.set_position(ctx, position);
-	br.set_color_array(ctx, &color, 1);
+	rgb modified_color = get_modified_color(color);
+	br.set_color_array(ctx, &modified_color, 1);
 	br.set_extent(ctx, extent);
 	br.set_rotation_array(ctx, &rotation, 1);
 	br.render(ctx, 0, 1);
