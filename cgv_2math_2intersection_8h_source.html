@@ -232,35 +232,37 @@ $(document).ready(function(){initNavTree('cgv_2math_2intersection_8h_source.html
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                        fvec&lt;T,3&gt; oc = ro - ce;</div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                        T b = <a class="code" href="namespacecgv_1_1math.html#a8cb663d99581ddaad548e7dd52946a51">dot</a>(oc, rd);</div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;                        T c = <a class="code" href="namespacecgv_1_1math.html#a8cb663d99581ddaad548e7dd52946a51">dot</a>(oc, oc) - ra * ra;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;                        T h = b * b - c;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                        <span class="keywordflow">if</span> (h &lt; 0.0)</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                                <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                        h = std::sqrt(h);</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;                        res = fvec&lt;T,2&gt;(-b - h, -b + h);</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                        <span class="keywordflow">return</span> 2;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                }</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;                <span class="keywordtype">int</span> ray_box_intersection(<span class="keyword">const</span> fvec&lt;T,3&gt;&amp; ro, <span class="keyword">const</span> fvec&lt;T,3&gt;&amp; rd, fvec&lt;T,3&gt; boxSize, fvec&lt;T,2&gt;&amp; res, fvec&lt;T,3&gt;&amp; outNormal)</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                {</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                        fvec&lt;T,3&gt; m = fvec&lt;T,3&gt;(T(1)) / rd; <span class="comment">// can precompute if traversing a set of aligned boxes</span></div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                        fvec&lt;T,3&gt; n = m * ro;   <span class="comment">// can precompute if traversing a set of aligned boxes</span></div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;                        fvec&lt;T,3&gt; k = <a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">abs</a>(m) * boxSize;</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;                        fvec&lt;T,3&gt; t1 = -n - k;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                        fvec&lt;T,3&gt; t2 = -n + k;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                        T tN = std::max(std::max(t1.x(), t1.y()), t1.z());</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                        T tF = std::min(std::min(t2.x(), t2.y()), t2.z());</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                        <span class="keywordflow">if</span> (tN &gt; tF || tF &lt; 0.0)</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                                <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                        outNormal = -<a class="code" href="namespacecgv_1_1math.html#a2eb93f97516015984f2581e7ff178b3f">sign</a>(rd)</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                                * <a class="code" href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">step</a>(fvec&lt;T, 3&gt;(t1.y(), t1.z(), t1.x()), fvec&lt;T, 3&gt;(t1.x(), t1.y(), t1.z()))</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                                * <a class="code" href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">step</a>(fvec&lt;T, 3&gt;(t1.z(), t1.x(), t1.y()), fvec&lt;T, 3&gt;(t1.x(), t1.y(), t1.z()));</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                        res = fvec&lt;T,2&gt;(tN, tF);</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                        <span class="keywordflow">return</span> 2;</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                }</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        }</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;}</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;                        T sld = <a class="code" href="namespacecgv_1_1math.html#a8cb663d99581ddaad548e7dd52946a51">dot</a>(rd, rd);</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                        T h = b * b / sld - c;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                        <span class="keywordflow">if</span> (h &lt; 0.0)</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                                <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;                        h = std::sqrt(h);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                        b /= std::sqrt(sld);</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                        res = fvec&lt;T,2&gt;(-b - h, -b + h);</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                        <span class="keywordflow">return</span> 2;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;                }</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                <span class="keywordtype">int</span> ray_box_intersection(<span class="keyword">const</span> fvec&lt;T,3&gt;&amp; ro, <span class="keyword">const</span> fvec&lt;T,3&gt;&amp; rd, fvec&lt;T,3&gt; boxSize, fvec&lt;T,2&gt;&amp; res, fvec&lt;T,3&gt;&amp; outNormal)</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                {</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;                        fvec&lt;T,3&gt; m = fvec&lt;T,3&gt;(T(1)) / rd; <span class="comment">// can precompute if traversing a set of aligned boxes</span></div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;                        fvec&lt;T,3&gt; n = m * ro;   <span class="comment">// can precompute if traversing a set of aligned boxes</span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                        fvec&lt;T,3&gt; k = <a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">abs</a>(m) * boxSize;</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                        fvec&lt;T,3&gt; t1 = -n - k;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                        fvec&lt;T,3&gt; t2 = -n + k;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                        T tN = std::max(std::max(t1.x(), t1.y()), t1.z());</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                        T tF = std::min(std::min(t2.x(), t2.y()), t2.z());</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                        <span class="keywordflow">if</span> (tN &gt; tF || tF &lt; 0.0)</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                                <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                        outNormal = -<a class="code" href="namespacecgv_1_1math.html#a2eb93f97516015984f2581e7ff178b3f">sign</a>(rd)</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                                * <a class="code" href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">step</a>(fvec&lt;T, 3&gt;(t1.y(), t1.z(), t1.x()), fvec&lt;T, 3&gt;(t1.x(), t1.y(), t1.z()))</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                                * <a class="code" href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">step</a>(fvec&lt;T, 3&gt;(t1.z(), t1.x(), t1.y()), fvec&lt;T, 3&gt;(t1.x(), t1.y(), t1.z()));</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                        res = fvec&lt;T,2&gt;(tN, tF);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                        <span class="keywordflow">return</span> 2;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                }</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        }</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;}</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="apose_8h_html"><div class="ttname"><a href="pose_8h.html">pose.h</a></div></div>
