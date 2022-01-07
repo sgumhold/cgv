@@ -141,12 +141,20 @@ bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_in
 }
 bool simple_object::compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx)
 {
-	return false;
+	vec3 p = point - position;
+	rotation.inverse_rotate(p);
+	for (int i = 0; i < 3; ++i)
+		p[i] = std::max(-0.5f * extent[i], std::min(0.5f * extent[i], p[i]));
+	rotation.rotate(p);
+	prj_point = p + position;
+	return true;
 }
 bool simple_object::compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx)
 {
 	vec3 ro = ray_start - position;
 	vec3 rd = ray_direction;
+	rotation.inverse_rotate(ro);
+	rotation.inverse_rotate(rd);
 	vec3 n;
 	vec2 res;
 	if (cgv::math::ray_box_intersection(ro, rd, 0.5f*extent, res, n) == 0)
@@ -160,6 +168,7 @@ bool simple_object::compute_intersection(const vec3& ray_start, const vec3& ray_
 		hit_param = res[0];
 	}
 	hit_normal = n;
+	rotation.rotate(n);
 	return true;
 }
 bool simple_object::init(cgv::render::context& ctx)
@@ -209,4 +218,5 @@ void simple_object::create_gui()
 	add_member_control(this, "width", extent[0], "value_slider", "min=0.01;max=1;log=true");
 	add_member_control(this, "height", extent[1], "value_slider", "min=0.01;max=1;log=true");
 	add_member_control(this, "depth", extent[2], "value_slider", "min=0.01;max=1;log=true");
+	add_gui("rotation", rotation, "direction", "options='min=-1;max=1;ticks=true'");
 }
