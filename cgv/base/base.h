@@ -34,7 +34,10 @@ class CGV_API node;
 class CGV_API group;
 
 /// ref counted pointer to base
-typedef data::ref_ptr<base,true> base_ptr;
+typedef data::ref_ptr<base, true> base_ptr;
+
+/// ref counted pointer to const base
+typedef data::ref_ptr<const base, true> const_base_ptr;
 
 struct cast_helper_base
 {
@@ -48,6 +51,21 @@ struct cast_helper : public cast_helper_base
 	inline static data::ref_ptr<T,true> cast(base* b) 
 	{ 
 		return cast_of_base<T>(b); 
+	}
+};
+
+struct cast_const_helper_base
+{
+	template <class T>
+	static data::ref_ptr<const T, true> cast_const_of_base(const base* b);
+};
+
+template <class T>
+struct cast_const_helper : public cast_const_helper_base
+{
+	inline static data::ref_ptr<const T, true> cast_const(const base* b)
+	{
+		return cast_const_of_base<T>(b);
 	}
 };
 
@@ -73,6 +91,8 @@ public:
 	virtual std::string get_type_name() const;
 	/// overload to provide default options for registration
 	virtual std::string get_default_options() const;
+	/// determine name of instance by checking cgv::base::named interface and in failure fallback to get_type_name()
+	std::string get_name_or_type_name() const;
 	/// overload to handle register events that is sent after the instance has been registered
 	virtual void on_register();
 	/// overload to handle unregistration of instances
@@ -82,15 +102,26 @@ public:
 	/// overload to show the content of this object
 	virtual void stream_stats(std::ostream&);
 	/// cast upward to named
-	virtual data::ref_ptr<named,true> get_named();
+	virtual data::ref_ptr<named, true> get_named();
 	/// cast upward to node
-	virtual data::ref_ptr<node,true> get_node();
+	virtual data::ref_ptr<node, true> get_node();
 	/// cast upward to group
-	virtual data::ref_ptr<group,true> get_group();
+	virtual data::ref_ptr<group, true> get_group();
+	/// const cast upward to named
+	virtual data::ref_ptr<const named, true> get_named_const() const;
+	/// const cast upward to node
+	virtual data::ref_ptr<const node, true> get_node_const() const;
+	/// const cast upward to group
+	virtual data::ref_ptr<const group, true> get_group_const() const;
 	/// cast to arbitrary class, but use the casts to named, node and group from the interface
 	template <class T>
-	data::ref_ptr<T,true> cast() {
+	data::ref_ptr<T, true> cast() {
 		return cast_helper<T>::cast(this);
+	}
+	/// const cast to arbitrary class, but use the casts to named, node and group from the interface
+	template <class T>
+	data::ref_ptr<const T, true> cast_const() {
+		return cast_const_helper<T>::cast_const(this);
 	}
 	/// use dynamic type cast to check for the given interface
 	template <class T>
@@ -176,9 +207,14 @@ public:
 	//@}
 };
 
+template <typename T>
+inline data::ref_ptr<T, true> cast_helper_base::cast_of_base(base* b)
+{
+	return base::cast_dynamic<T>(b);
+}
 
 template <typename T>
-inline data::ref_ptr<T,true> cast_helper_base::cast_of_base(base* b)
+inline data::ref_ptr<const T, true> cast_const_helper_base::cast_const_of_base(const base* b)
 {
 	return base::cast_dynamic<T>(b);
 }

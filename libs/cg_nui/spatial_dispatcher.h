@@ -44,6 +44,12 @@ namespace cgv {
 			float max_pointing_distance = 5.0f;
 			///
 			float min_pointing_distance = 0.2f;
+			/// concatenate transformations of transforming interface from model to world coordinates
+			void concatenate_transformations(cgv::base::base_ptr object_ptr, cgv::base::base_ptr root_ptr, mat4& M, mat4& iM);
+			//! check whether object in current focus info and the one used to calculate
+			//! spatial dispatch info are the same. If not transform spatial info into the
+			//! local coordinate system of the current focus object
+			void ensure_local_coordinate_system(const focus_info& foc_info, const focus_info& dis_foc_info, dispatch_info& dis_info);
 			/// recursively traverse hierarchy and compute proximity & intersections to find to be grabbed or pointed to object
 			void update_geometric_info_recursive(cgv::base::base_ptr root_ptr, cgv::base::base_ptr object_ptr, geometric_info& gi, bool recurse = true) const;
 			/// provide implementation of spatial dispatching

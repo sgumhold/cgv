@@ -7,6 +7,57 @@
 namespace cgv {
 	namespace nui {
 
+		void spatial_dispatcher::concatenate_transformations(cgv::base::base_ptr object_ptr, cgv::base::base_ptr root_ptr, mat4& M, mat4& iM)
+		{
+			int nr_iters = 0;
+			do {
+				auto* transforming_ptr = object_ptr->get_interface<transforming>();
+				if (transforming_ptr) {
+					M = transforming_ptr->get_model_transform() * M;
+					iM = transforming_ptr->get_inverse_model_transform() * iM;
+				}
+				if (root_ptr == object_ptr)
+					break;
+				cgv::base::node_ptr n_ptr = object_ptr->cast<cgv::base::node>();
+				if (!n_ptr) {
+					std::cerr << "dispatched object " << object_ptr->get_name_or_type_name()
+						<< " does not implement node interface" << std::endl;
+					break;
+				}
+				object_ptr = n_ptr->get_parent();
+			} while (++nr_iters < 100);
+		}
+
+		void spatial_dispatcher::ensure_local_coordinate_system(const focus_info& foc_info, const focus_info& dis_foc_info, dispatch_info& dis_info)
+		{
+			if (foc_info.object == dis_foc_info.object)
+				return;
+			if (dis_info.mode == dispatch_mode::pointing || dis_info.mode == dispatch_mode::proximity)
+			{
+				// compute transformation from dispatch focus object to world
+				mat4 M, iM, dM, diM;
+				M.identity(); iM.identity();
+				dM.identity(); diM.identity();
+				concatenate_transformations(foc_info.object, foc_info.root, M, iM);
+				concatenate_transformations(dis_foc_info.object, dis_foc_info.root, dM, diM);
+				mat4 d2fM = iM * dM;
+				mat4 d2fiM = diM * M;
+				if (dis_info.mode == dispatch_mode::pointing) {
+					auto& inter_dis_info = reinterpret_cast<intersection_dispatch_info&>(dis_info);
+					inter_dis_info.ray_origin = d2fM * vec4(inter_dis_info.ray_origin,1.0f);
+					inter_dis_info.ray_direction = d2fM * vec4(inter_dis_info.ray_direction, 0.0f);
+					inter_dis_info.hit_point = d2fM * vec4(inter_dis_info.hit_point, 1.0f);
+					inter_dis_info.hit_normal = vec4(inter_dis_info.hit_normal,0.0f) * d2fiM;
+				}
+				else {
+					auto& prox_dis_info = reinterpret_cast<proximity_dispatch_info&>(dis_info);
+					prox_dis_info.query_point = d2fM * vec4(prox_dis_info.query_point, 1.0f);
+					prox_dis_info.hit_point = d2fM * vec4(prox_dis_info.hit_point, 1.0f);
+					prox_dis_info.hit_normal = vec4(prox_dis_info.hit_normal,0.0f)*d2fiM;
+				}
+			}
+		}
+
 		void spatial_dispatcher::update_geometric_info_recursive(cgv::base::base_ptr root_ptr, cgv::base::base_ptr object_ptr, geometric_info& gi, bool recurse) const
 		{
 			auto* transforming_ptr = object_ptr->get_interface<transforming>();
@@ -216,6 +267,7 @@ namespace cgv {
 			if (rfi.foc_info_ptr && !rfi.foc_info_ptr->config.refocus.spatial) {
 				if (handle_called_ptr)
 					*handle_called_ptr = true;
+				ensure_local_coordinate_system(*rfi.foc_info_ptr, *foc_info_ptr, *di_ptr);
 				return dispath_with_focus_update(rfi.foc_info_ptr->root, rfi.foc_info_ptr->object, e, *di_ptr, rfi);
 			}
 			// if we had object in focus before
