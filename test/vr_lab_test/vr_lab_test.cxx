@@ -195,7 +195,7 @@ public:
 
 		if (show_plot)
 			plot.draw(ctx);
-
+		/*
 		// ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(0.25f)));
 		// draw tool in case it is active and we have access to state 
 		vr::vr_kit* kit_ptr = get_kit_ptr();
@@ -228,6 +228,7 @@ public:
 				sr.render(ctx, 0, (GLsizei)P.size());
 			}
 		}
+		*/
 	}
 	void finish_draw(cgv::render::context& ctx)
 	{

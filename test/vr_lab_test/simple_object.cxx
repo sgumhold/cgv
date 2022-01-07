@@ -19,7 +19,6 @@ simple_object::rgb simple_object::get_modified_color(const rgb& color) const
 	}
 	return mod_col;
 }
-
 simple_object::simple_object(const std::string& _name, const vec3& _position, const rgb& _color, const vec3& _extent, const quat& _rotation)
 	: cgv::base::node(_name), position(_position), color(_color), extent(_extent), rotation(_rotation)
 {

@@ -18,11 +18,11 @@ namespace cgv {
 			struct geometric_info
 			{
 				bool check_proximity = false;
-				proximity_info prox_info;
+				proximity_info prox_info, local_prox_info;
 				focus_info prox_foc_info;
 
 				bool check_intersection = false;
-				intersection_info inter_info;
+				intersection_info inter_info, local_inter_info;
 				focus_info inter_foc_info;
 			};
 		protected:

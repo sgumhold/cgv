@@ -1,4 +1,5 @@
 #include "spatial_dispatcher.h"
+#include "transforming.h"
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/event_handler.h>
 #include <libs/cg_vr/vr_events.h>
@@ -8,6 +9,20 @@ namespace cgv {
 
 		void spatial_dispatcher::update_geometric_info_recursive(cgv::base::base_ptr root_ptr, cgv::base::base_ptr object_ptr, geometric_info& gi, bool recurse) const
 		{
+			auto* transforming_ptr = object_ptr->get_interface<transforming>();
+			if (transforming_ptr) {
+				if (gi.check_intersection) {
+					gi.inter_info.ray_origin = transforming_ptr->inverse_transform_point(gi.inter_info.ray_origin);
+					gi.inter_info.ray_direction = transforming_ptr->inverse_transform_vector(gi.inter_info.ray_direction);
+					gi.inter_info.hit_point = transforming_ptr->inverse_transform_point(gi.inter_info.hit_point);
+					gi.inter_info.hit_normal = transforming_ptr->inverse_transform_normal(gi.inter_info.hit_normal);
+				}
+				if (gi.check_proximity) {
+					gi.prox_info.query_point = transforming_ptr->inverse_transform_point(gi.prox_info.query_point);
+					gi.prox_info.hit_point = transforming_ptr->inverse_transform_point(gi.prox_info.hit_point);
+					gi.prox_info.hit_normal = transforming_ptr->inverse_transform_normal(gi.prox_info.hit_normal);
+				}
+			}
 			auto* focusable_ptr = object_ptr->get_interface<focusable>();
 			if (focusable_ptr) {
 				if (gi.check_intersection) {
@@ -21,6 +36,7 @@ namespace cgv {
 								gi.inter_info.ray_param = hit_param;
 								gi.inter_info.hit_normal = hit_normal;
 								gi.inter_info.primitive_index = primitive_index;
+								gi.local_inter_info = gi.inter_info;
 								gi.inter_foc_info = { object_ptr, root_ptr, default_focus_info.config };
 							}
 						}
@@ -39,19 +55,33 @@ namespace cgv {
 								gi.prox_info.hit_point = closest_point;
 								gi.prox_info.hit_normal = closest_normal;
 								gi.prox_info.primitive_index = primitive_index;
+								gi.local_prox_info = gi.prox_info;
 								gi.prox_foc_info = { object_ptr, root_ptr, default_focus_info.config };
 							}
 						}
 					}
 				}
 			}
-			if (!recurse)
-				return;
-			// next check for group and children thereof
-			auto grp_ptr = object_ptr->cast<cgv::base::group>();
-			if (grp_ptr) {
-				for (unsigned ci = 0; ci < grp_ptr->get_nr_children(); ++ci)
-					update_geometric_info_recursive(root_ptr, grp_ptr->get_child(ci), gi, recurse);
+			if (recurse) {
+				// next check for group and children thereof
+				auto grp_ptr = object_ptr->cast<cgv::base::group>();
+				if (grp_ptr) {
+					for (unsigned ci = 0; ci < grp_ptr->get_nr_children(); ++ci)
+						update_geometric_info_recursive(root_ptr, grp_ptr->get_child(ci), gi, recurse);
+				}
+			}
+			if (transforming_ptr) {
+				if (gi.check_intersection) {
+					gi.inter_info.ray_origin = transforming_ptr->transform_point(gi.inter_info.ray_origin);
+					gi.inter_info.ray_direction = transforming_ptr->transform_vector(gi.inter_info.ray_direction);
+					gi.inter_info.hit_point = transforming_ptr->transform_point(gi.inter_info.hit_point);
+					gi.inter_info.hit_normal = transforming_ptr->transform_normal(gi.inter_info.hit_normal);
+				}
+				if (gi.check_proximity) {
+					gi.prox_info.query_point = transforming_ptr->transform_point(gi.prox_info.query_point);
+					gi.prox_info.hit_point = transforming_ptr->transform_point(gi.prox_info.hit_point);
+					gi.prox_info.hit_normal = transforming_ptr->transform_normal(gi.prox_info.hit_normal);
+				}
 			}
 		}
 		spatial_dispatcher::spatial_dispatcher()
@@ -100,6 +130,9 @@ namespace cgv {
 					}
 					return false;
 				}
+			gi.local_inter_info = gi.inter_info;
+			gi.local_prox_info = gi.prox_info;
+
 			if (rfi.foc_info_ptr->config.spatial.only_focus)
 				update_geometric_info_recursive(rfi.foc_info_ptr->root, rfi.foc_info_ptr->object, gi, false);
 			else
@@ -131,17 +164,17 @@ namespace cgv {
 			if (gi.check_proximity) {
 				pdi.hid_id = hid_id;
 				pdi.mode = dispatch_mode::proximity;
-				pdi.query_point = gi.prox_info.query_point;
-				pdi.hit_point = gi.prox_info.hit_point;
-				pdi.primitive_index = gi.prox_info.primitive_index;
+				pdi.query_point = gi.local_prox_info.query_point;
+				pdi.hit_point = gi.local_prox_info.hit_point;
+				pdi.primitive_index = gi.local_prox_info.primitive_index;
 				// transfer normal if it was computed before
-				if (gi.prox_info.hit_normal.length() > 0.01f)
-					pdi.hit_normal = gi.prox_info.hit_normal;
+				if (gi.local_prox_info.hit_normal.length() > 0.01f)
+					pdi.hit_normal = gi.local_prox_info.hit_normal;
 				else {
 					// in case of not availability try to estimate from vector from closest to reference point
-					pdi.hit_normal = gi.prox_info.hit_point - gi.prox_info.query_point;
+					pdi.hit_normal = gi.local_prox_info.hit_point - gi.local_prox_info.query_point;
 					// invert normal in case of inside points marked with negative distance
-					if (gi.prox_info.closest_distance < 0)
+					if (gi.local_prox_info.closest_distance < 0)
 						pdi.hit_normal = -pdi.hit_normal;
 					float length = pdi.hit_normal.length();
 					if (length > 0.0001f)
@@ -163,12 +196,12 @@ namespace cgv {
 			else if (gi.check_intersection) {
 				idi.hid_id = hid_id;
 				idi.mode = dispatch_mode::pointing;
-				idi.ray_origin = gi.inter_info.ray_origin;
-				idi.ray_direction = gi.inter_info.ray_direction;
-				idi.primitive_index = gi.inter_info.primitive_index;
-				idi.ray_param = gi.inter_info.ray_param;
-				idi.hit_point = gi.inter_info.ray_origin + gi.inter_info.ray_param * gi.inter_info.ray_direction;
-				idi.hit_normal = gi.inter_info.hit_normal;
+				idi.ray_origin = gi.local_inter_info.ray_origin;
+				idi.ray_direction = gi.local_inter_info.ray_direction;
+				idi.primitive_index = gi.local_inter_info.primitive_index;
+				idi.ray_param = gi.local_inter_info.ray_param;
+				idi.hit_point = gi.local_inter_info.ray_origin + gi.local_inter_info.ray_param * gi.local_inter_info.ray_direction;
+				idi.hit_normal = gi.local_inter_info.hit_normal;
 				di_ptr = &idi;
 				if (rfi.report_ptr) {
 					rfi.report_ptr->mode = dispatch_mode::pointing;
