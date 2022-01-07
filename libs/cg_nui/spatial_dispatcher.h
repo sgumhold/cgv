@@ -25,7 +25,7 @@ namespace cgv {
 				intersection_info inter_info, local_inter_info;
 				focus_info inter_foc_info;
 			};
-		protected:
+		public:
 			struct controller_info
 			{
 				bool pointing = true;
@@ -33,6 +33,7 @@ namespace cgv {
 				rgb color;
 				double toggle_time = 0.0;
 			};
+		protected:
 			controller_info ctrl_infos[2] = { {true, true, {0.6f,0.3f,0.3f} },{true, true, {0.3f,0.3f,0.6f} } };
 			/// whether to dispatch mouse events spatially
 			bool dispatch_mouse_spatial = true;

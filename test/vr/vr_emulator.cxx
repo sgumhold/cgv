@@ -110,7 +110,7 @@ void vr_emulated_kit::compute_state_poses()
 	}
 }
 
-vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name)
+vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, int _nr_trackers)
 	: vr_kit(_driver, _handle, _name, _width, _height)
 {
 	body_position = _body_position;
@@ -127,7 +127,9 @@ vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_positi
 	state.controller[0].status = vr::VRS_TRACKED;
 	state.controller[1].status = vr::VRS_TRACKED;
 
-	tracker_enabled[0] = tracker_enabled[1] = tracker_enabled[2] = tracker_enabled[3] = true;
+	for (int i=0; i<4; ++i)
+		tracker_enabled[i] = i < _nr_trackers;
+
 	tracker_positions[0] = vec3(0.2f, 1.2f, 0.0f);
 	tracker_positions[1] = vec3(-0.2f, 1.2f, 0.0f);
 	tracker_positions[2] = vec3(-0.6f, 1.2f, 0.0f);
@@ -456,7 +458,7 @@ void vr_emulator::add_new_kit()
 	(unsigned&)handle = counter;
 	vr_emulated_kit* new_kit = new vr_emulated_kit(body_direction, body_position, body_height,
 		screen_width, screen_height, this, handle, 
-		std::string("vr_emulated_kit[") + cgv::utils::to_string(counter) + "]");
+		std::string("vr_emulated_kit[") + cgv::utils::to_string(counter) + "]", nr_trackers);
 	kits.push_back(new_kit);
 	register_vr_kit(handle, new_kit);
 	if (current_kit_index == -1) {
@@ -691,24 +693,17 @@ bool vr_emulator::init(cgv::render::context& ctx)
 {
 	return true;
 }
-
-/// this method is called in one pass over all drawables before the draw method
 void vr_emulator::init_frame(cgv::render::context& ctx)
 {
 }
-
-/// 
 void vr_emulator::draw(cgv::render::context&)
 {
 	for (auto kit_ptr : kits) {
 	}
 }
-
-/// this method is called in one pass over all drawables after drawing
 void vr_emulator::finish_frame(cgv::render::context&)
 {
 }
-///
 bool vr_emulator::self_reflect(cgv::reflect::reflection_handler& srh)
 {
 	bool res =
@@ -716,6 +711,7 @@ bool vr_emulator::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("installed", installed) &&
 		srh.reflect_member("create_body_direction", body_direction) &&
 		srh.reflect_member("create_body_position", body_position) &&
+		srh.reflect_member("create_nr_trackers", nr_trackers) &&
 		srh.reflect_member("body_height", body_height) &&
 		srh.reflect_member("screen_height", screen_height) &&
 		srh.reflect_member("screen_width", screen_width);
@@ -751,7 +747,6 @@ bool vr_emulator::self_reflect(cgv::reflect::reflection_handler& srh)
 	}
 	return res;
 }
-
 void vr_emulator::create_trackable_gui(const std::string& name, vr::vr_trackable_state& ts)
 {
 	add_decorator(name, "heading", "level=3");
@@ -774,7 +769,6 @@ void vr_emulator::create_trackable_gui(const std::string& name, vr::vr_trackable
 		end_tree_node(ts.pose[0]);
 	}
 }
-
 void vr_emulator::create_controller_gui(int i, vr::vr_controller_state& cs)
 {
 	create_trackable_gui(std::string("controller") + cgv::utils::to_string(i), cs);
@@ -791,7 +785,6 @@ void vr_emulator::create_controller_gui(int i, vr::vr_controller_state& cs)
 	add_view("vibration[0]", cs.vibration[0], "value", "w=50", " ");
 	add_view("[1]", cs.vibration[1], "value", "w=50");
 }
-
 void vr_emulator::create_tracker_gui(vr_emulated_kit* kit, int i)
 {
 	if (begin_tree_node(std::string("tracker_") + cgv::utils::to_string(i+1), kit->tracker_enabled[i], false, "level=3")) {
@@ -804,8 +797,6 @@ void vr_emulator::create_tracker_gui(vr_emulated_kit* kit, int i)
 		end_tree_node(kit->tracker_enabled[i]);
 	}
 }
-
-///
 void vr_emulator::create_gui()
 {
 	add_decorator("vr emulator", "heading", "level=2");
@@ -831,6 +822,7 @@ void vr_emulator::create_gui()
 		add_gui("body_position", body_position, "", "options='min=-1;max=1;step=0.0001;ticks=true'");
 		add_member_control(this, "body_direction", body_direction, "min=0;max=6.3;ticks=true");
 		add_member_control(this, "body_height", body_height, "min=1.2;max=2.0;step=0.001;ticks=true");
+		add_member_control(this, "nr_trackers", nr_trackers, "min=0;max=4;ticks=true");
 		connect_copy(add_button("create new kit")->click, cgv::signal::rebind(this, &vr_emulator::add_new_kit));
 		align("\b");
 		end_tree_node(screen_width);
