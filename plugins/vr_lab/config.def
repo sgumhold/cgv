@@ -1,29 +1,95 @@
 // uncomment to show all configurations
 //show all
 
+/********** main *****************************/
+
 // configure startup window size and turn off gamma correction
-//name(main):W=1280;H=720
+name(main):W=1280;H=720
 name(main):gamma=1.0
 
-// construct an emulated vr kit 
+/********** vr_emulator *****************************/
+// construct an emulated vr kit with certain number of active trackers
+//type(vr_emulator):create_nr_trackers=2
 //type(vr_emulator):current_kit_index=0
 
-// choose table from hide,rectangular,round [default]
-//type(vr_scene):table_mode=rectangular
+/********** vr_table *****************************/
+// one out of rectangular, round
+type(vr_table):mode=round
+// rotation angle in radians
+type(vr_table):angle=0
+// color of table top
+type(vr_table):color='0.6 0.4 0.2'
+// whether to show a wirebox in table coordinates spanning [-0.5,0,-0.5] ... [0.5,1,0.5]
+type(vr_table):show_wirebox
+// color of wirebox (currently not working)
+type(vr_table):wire_color='1 0 0'
+// scale defining diameter (round) or x-extent (rectangular) of table
+type(vr_table):scale=1.6
+// aspect ratio of rectangular table or ration between table top radius and foot radius
+type(vr_table):aspect=2
+// height of table top above ground
+type(vr_table):height=0.72
+// color of legs
+type(vr_table):leg_color='0.3 0.0 0.2'
+// width of rectangular legs 
+type(vr_table):leg_width=0.04
+// percentual offset to the inside of legs of rectangular table
+type(vr_table):percentual_leg_offset
 
-// configure rectangular table
-//type(vr_scene):table_width=0.80
-//type(vr_scene):table_depth=0.80
-//type(vr_scene):table_height=1.20
-// specify percentual shift of legs to the inside of table
-//type(vr_scene):percentual_leg_offset=
-// specify table color in RGB
-//type(vr_scene):table_color="0.7 0.8 0.2"
-// specify color of legs in RGB
-//type(vr_scene):table_leg_color="0.4 0.3 0.1"
+/************** vr_scene *****************************/
 
+// whether to point reflect skybox at origin
+type(vr_scene):invert_skybox=true
+// compact file name list of skybox cube map sides
+type(vr_scene):skybox_file_names="skybox_{right,left,bottom,top,front,back}.jpg"
+// whether to draw the room
+type(vr_scene):draw_room=true
+// box extent of room and walls in meters
+type(vr_scene):room_width=2
+type(vr_scene):room_depth=3
+type(vr_scene):room_height=5
+type(vr_scene):wall_width=0.2
+// whether to draw walls
+type(vr_scene):draw_walls=false
+// whether to draw ceiling
+type(vr_scene):draw_ceiling=false
+// one out of empty,skybox,procedural
+type(vr_scene):environment_mode=skybox
+// one out of none,boxes,terrain
+type(vr_scene):ground_mode=boxes
+// placement of terrain
+type(vr_scene):terrain_y_offset=0
+type(vr_scene):terrain_scale=0.1
+// controller configuration
+type(vr_scene):ctrl_info_left.pointing=true
+type(vr_scene):ctrl_info_left.grabbing=true
+type(vr_scene):ctrl_info_left.color='0.8 0.3 0.3'
+type(vr_scene):ctrl_info_right.pointing=true
+type(vr_scene):ctrl_info_right.grabbing=true
+type(vr_scene):ctrl_info_right.color='0.3 0.3 0.8'
+// duration in seconds of animation for turning on and off controller rays
+type(vr_scene):ctrl_pointing_animation_duration=0.5
+// whether to dispatch mouse events spatially
+type(vr_scene):dispatch_mouse_spatial=true
+
+
+/************** vr_interactor *****************************/
 // read calibration file
 type(vr_view_interactor):calibration_file_path="D:/develop/VIVE_office.cal"
+
+// visualization of hids
+type(vr_view_interactor):hmd_mesh_file_name="generic_hmd.obj"
+type(vr_view_interactor):hmd_scale=1.0
+type(vr_view_interactor):hmd_vis_type=mesh
+type(vr_view_interactor):controller_mesh_file_name="vr_controller_vive_1_5.obj"
+type(vr_view_interactor):controller_scale=1.0
+type(vr_view_interactor):controller_vis_type=mesh
+type(vr_view_interactor):tracker_mesh_file_name="HTC_Vive_Tracker_2017.obj"
+type(vr_view_interactor):tracker_scale=0.001
+type(vr_view_interactor):tracker_vis_type=mesh
+type(vr_view_interactor):base_mesh_file_name="lh_basestation_vive.obj"
+type(vr_view_interactor):base_scale=1.0
+type(vr_view_interactor):base_vis_type=mesh
 
 // configure initial view onto scene
 type(vr_view_interactor):focus_x=0.0
@@ -35,21 +101,3 @@ type(vr_view_interactor):view_dir_z=-0.8666
 type(vr_view_interactor):up_dir_x=0.0
 type(vr_view_interactor):up_dir_y=1.0
 type(vr_view_interactor):up_dir_z=0.0
-
-// set mesh file name for hmd
-type(vr_view_interactor):hmd_mesh_file_name="generic_hmd.obj"
-// set scaling factor for hmd mesh to scale it to meter
-type(vr_view_interactor):hmd_scale=1.0
-// set mesh file name for controllers
-type(vr_view_interactor):controller_mesh_file_name="vr_controller_vive_1_5.obj"
-// set scaling factor for controllers
-type(vr_view_interactor):controller_scale=1.0
-// set mesh file name for trackers
-type(vr_view_interactor):tracker_mesh_file_name="HTC_Vive_Tracker_2017.obj"
-// set scaling factor for trackers (here mesh was specified in mm units requiring 0.001 as scale factor)
-type(vr_view_interactor):tracker_scale=0.001
-// set mesh file name for base stations
-type(vr_view_interactor):base_mesh_file_name="lh_basestation_vive.obj"
-// set scaling factor for base stations
-type(vr_view_interactor):base_scale=1.0
-

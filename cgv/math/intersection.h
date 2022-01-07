@@ -3,6 +3,7 @@
 #include "fvec.h"
 #include "pose.h"
 #include "functions.h"
+#include <limits>
 
 #include "lib_begin.h"
 
@@ -142,16 +143,19 @@ namespace cgv {
 		template <typename T>
 		int ray_sphere_intersection(const fvec<T,3>& ro, const fvec<T,3>& rd, const fvec<T,3>& ce, T ra, fvec<T, 2>& res)
 		{
-			fvec<T,3> oc = ro - ce;
-			T b = dot(oc, rd);
-			T c = dot(oc, oc) - ra * ra;
-			T sld = dot(rd, rd);
-			T h = b * b / sld - c;
-			if (h < 0.0)
+			fvec<T,3> d = ro - ce;
+			T il = T(1)/dot(rd, rd);
+			T b = il*dot(d, rd);
+			T c = il*(dot(d, d) - ra * ra);
+			T D = b * b - c;
+			if (D < 0.0)
 				return 0;
-			h = std::sqrt(h);
-			b /= std::sqrt(sld);
-			res = fvec<T,2>(-b - h, -b + h);
+			if (D < std::numeric_limits<T>::epsilon()) {
+				res = -b;
+				return 1;
+			}
+			D = std::sqrt(D);
+			res = fvec<T,2>(-b - D, -b + D);
 			return 2;
 		}
 		template <typename T>
