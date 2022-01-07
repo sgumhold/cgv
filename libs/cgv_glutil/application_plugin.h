@@ -13,7 +13,7 @@ namespace cgv {
 namespace glutil {
 
 class CGV_API application_plugin :
-	public cgv::base::node,			// derive from node to integrate into global tree structure and to store a name
+	public cgv::base::group,		// derive from group to integrate into global tree structure and allow registration of child nodes
 	public cgv::render::drawable,	// derive from drawable for being able to render
 	public cgv::gui::provider,		// derive from provider to obtain a GUI tab
 	public cgv::gui::event_handler	// derive from event handler to be able to directly react to user interaction
@@ -33,7 +33,8 @@ public:
 		T* ptr = new T();
 		ptr->set_name(name);
 		ptr->set_parent_handler(this);
-		cgv::base::register_object(base_ptr(ptr));
+		//cgv::base::register_object(base_ptr(ptr));
+		cgv::base::group::append_child(base_ptr(ptr));
 		overlays.push_back(ptr);
 		return ptr;
 	}
