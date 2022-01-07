@@ -1,24 +1,25 @@
-#include <plugins/vr_lab/vr_tool.h>
-#include <cgv/defines/quote.h>
 #include <cgv/base/group.h>
-#include <cgv/render/context.h>
 #include <cgv/render/drawable.h>
-#include <cgv/render/shader_program.h>
-#include <cgv_gl/gl/mesh_render_info.h>
+#include <cgv/gui/provider.h>
+
+#include <cg_nui/focusable.h>
+#include <cg_nui/transforming.h>
+
+#include <plugins/vr_lab/vr_tool.h>
+
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/cone_renderer.h>
-#include <cgv/gui/event_handler.h>
-#include <cg_nui/focusable.h>
-#include <vr/vr_state.h>
-#include <vr/vr_kit.h>
-#include <vr/vr_driver.h>
-#include <cg_vr/vr_events.h>
-#include <vr_view_interactor.h>
-#include <cgv/utils/dir.h>
-#include <cgv/utils/advanced_scan.h>
-#include <cgv/math/ftransform.h>
-#include <cgv/utils/file.h>
-#include <fstream>
+
+//#include <vr/vr_state.h>
+//#include <vr/vr_kit.h>
+//#include <vr/vr_driver.h>
+//#include <cg_vr/vr_events.h>
+//#include <vr_view_interactor.h>
+//#include <cgv/utils/dir.h>
+//#include <cgv/utils/advanced_scan.h>
+//#include <cgv/math/ftransform.h>
+//#include <cgv/utils/file.h>
+//#include <fstream>
 #include <libs/plot/plot2d.h>
 #include "simple_object.h"
 
@@ -26,6 +27,7 @@ class vr_lab_test :
 	public cgv::base::group,
 	public cgv::render::drawable,
 	public cgv::nui::focusable,
+	public cgv::nui::transforming,
 	public cgv::gui::provider,
 	public vr::vr_tool
 {
@@ -185,13 +187,16 @@ public:
 	}
 	void draw(cgv::render::context& ctx)
 	{
+		mat4 model_transform(3, 4, &get_scene_ptr()->get_coordsystem(vr::vr_scene::CS_TABLE)(0, 0));
+		set_model_transform(model_transform);
+
 		ctx.push_modelview_matrix();
-		ctx.mul_modelview_matrix(mat4(3, 4, &get_scene_ptr()->get_coordsystem(vr::vr_scene::CS_TABLE)(0, 0)));
+		ctx.mul_modelview_matrix(model_transform);
 
 		if (show_plot)
 			plot.draw(ctx);
 
-		ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(0.25f)));
+		// ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(0.25f)));
 		// draw tool in case it is active and we have access to state 
 		vr::vr_kit* kit_ptr = get_kit_ptr();
 		vr_view_interactor* vr_view_ptr = get_view_ptr();
@@ -223,10 +228,10 @@ public:
 				sr.render(ctx, 0, (GLsizei)P.size());
 			}
 		}
-		ctx.pop_modelview_matrix();
 	}
 	void finish_draw(cgv::render::context& ctx)
 	{
+		ctx.pop_modelview_matrix();
 	}
 	void stream_help(std::ostream& os)
 	{

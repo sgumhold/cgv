@@ -42,6 +42,8 @@ protected:
 	cgv::nui::hid_identifier hid_id;
 	// state of object
 	state_enum state = state_enum::idle;
+	/// return color modified based on state
+	rgb get_modified_color(const rgb& color) const;
 public:
 	simple_object(const std::string& _name, const vec3& _position, const rgb& _color = rgb(0.5f,0.5f,0.5f), const vec3& _extent = vec3(0.3f,0.2f,0.1f), const quat& _rotation = quat(1,0,0,0));
 	std::string get_type_name() const;
