@@ -1,5 +1,6 @@
 var NAVTREEINDEX46 =
 {
+"structvr_1_1vr__controller__info.html#a980db8b1ff784fef32f6e7065bd7f0a2":[11,0,3,5,14],
 "structvr_1_1vr__controller__info.html#a9bb447518f6a90171e85687e22c6f1c9":[11,0,3,5,7],
 "structvr_1_1vr__controller__info.html#aac03869f0da14d6ff1bfc445e2daf8e9":[11,0,3,5,12],
 "structvr_1_1vr__controller__info.html#abd01eed0005449a0a51e5b1ed2f0c1f8":[11,0,3,5,6],
