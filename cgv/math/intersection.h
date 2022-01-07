@@ -145,10 +145,12 @@ namespace cgv {
 			fvec<T,3> oc = ro - ce;
 			T b = dot(oc, rd);
 			T c = dot(oc, oc) - ra * ra;
-			T h = b * b - c;
+			T sld = dot(rd, rd);
+			T h = b * b / sld - c;
 			if (h < 0.0)
 				return 0;
 			h = std::sqrt(h);
+			b /= std::sqrt(sld);
 			res = fvec<T,2>(-b - h, -b + h);
 			return 2;
 		}
