@@ -154,17 +154,17 @@ var NAVTREEINDEX =
 "classcgv_1_1render_1_1view.html#a7e52ca02bd8c29c57efe8b561af5f947",
 "classvr_1_1vr__camera.html#a6c6431708b2fecd53bca7f49449f2966",
 "dir_d251fc85a687a674f056c13facf782b0.html",
-"namespacecgv_1_1media_1_1video.html",
-"stl__reader_8h.html#ad1f73011673b374d1131dd449757c4d7",
-"structcgv_1_1base_1_1object__registration__2.html",
-"structcgv_1_1media_1_1image_1_1writer__listener.html#a322bdd4891db870dafaba22e40d99bff",
-"structcgv_1_1os_1_1condition__mutex.html#a791a1c1d48a59fd91ef4a9d0bd310471",
-"structcgv_1_1plot_1_1plot__base__config.html#abc3c98098e2cedc857c903f9c1c37988",
-"structcgv_1_1render_1_1arrow__render__style.html#a5d02bba4f5c672593254a42cac89fcb1",
-"structcgv_1_1render_1_1context__config.html#a7fc273c2e75fd6a690e1f6029036f431",
-"structcgv_1_1render_1_1render__config.html#abceffe95f08d3fc13cf9286cf360e705",
-"structcgv_1_1render_1_1surfel__render__style.html#ab9e51ddef8a68db550e09b61fe6129c4",
-"structvr_1_1vr__controller__info.html#a9bb447518f6a90171e85687e22c6f1c9"
+"namespacecgv_1_1media_1_1image.html",
+"stl__reader_8h.html#ac46eb930e343d35b3729ed68a65787a2",
+"structcgv_1_1base_1_1object__registration__1.html#ad6c7742fff03eec51be9725236bc37f2",
+"structcgv_1_1media_1_1image_1_1writer__listener.html#a313232084b52192201cecaf4ae257ee8",
+"structcgv_1_1os_1_1condition__mutex.html#a6e650f9af49da9b48aa8d9f81b292fef",
+"structcgv_1_1plot_1_1plot__base__config.html#aba44df469fbb076a65cfa8e05d2e8457",
+"structcgv_1_1render_1_1arrow__render__style.html#a52caec9a8363a35db51d863033978d2c",
+"structcgv_1_1render_1_1context__config.html#a6a70c2df599f0aa5ce809dac0e648125",
+"structcgv_1_1render_1_1render__config.html#abc1a5f04f585d5427e3027fdba361382",
+"structcgv_1_1render_1_1surfel__render__style.html#ab9dec72a3e70241c8d69d5e17c30105d",
+"structvr_1_1vr__controller__info.html#a980db8b1ff784fef32f6e7065bd7f0a2"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
