@@ -96,45 +96,50 @@ $(document).ready(function(){initNavTree('named_8h_source.html',''); initResizab
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">class </span>CGV_API named;</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="namespacecgv_1_1base.html#a41ed99892cc76b1f339b9a0693bb0e1f">   13</a></span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr&lt;named,true&gt;</a> <a class="code" href="namespacecgv_1_1base.html#a41ed99892cc76b1f339b9a0693bb0e1f">named_ptr</a>;</div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="namespacecgv_1_1base.html#abfcd30049d34b52e335da99b47c3979d">   13</a></span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr&lt;named, true&gt;</a> <a class="code" href="namespacecgv_1_1base.html#abfcd30049d34b52e335da99b47c3979d">named_ptr</a>;</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1named.html">   16</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1base_1_1named.html">named</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1base_1_1base.html">base</a></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1named.html#aed909ea4f87f07ccf729a618ea554ca7">   20</a></span>&#160;        <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr</a>&lt;<a class="code" href="classcgv_1_1base_1_1named.html">named</a>,true&gt;;</div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1named.html#aeacb85dab71b803971f8611644898371">   22</a></span>&#160;        std::string <a class="code" href="classcgv_1_1base_1_1named.html#aeacb85dab71b803971f8611644898371">name</a>;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <a class="code" href="classcgv_1_1base_1_1named.html">named</a>(<span class="keyword">const</span> std::string&amp; name = <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keyword">const</span> std::string&amp; get_name() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordtype">void</span> set_name(<span class="keyword">const</span> std::string&amp; _name);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr&lt;named,true&gt;</a> get_named();</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        std::string get_type_name() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;};</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">template</span> &lt;&gt; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">struct </span>cast_helper&lt;<a class="code" href="classcgv_1_1base_1_1named.html">named</a>&gt;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;{ </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr&lt;named,true&gt;</a> cast(<a class="code" href="classcgv_1_1base_1_1base.html">base</a>* b) </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        { </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                <span class="keywordflow">return</span> b-&gt;get_named();</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        } </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;};</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#if _MSC_VER &gt;= 1400</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;CGV_TEMPLATE <span class="keyword">template</span> <span class="keyword">class </span>CGV_API data::ref_ptr&lt;named&gt;;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        }</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="namespacecgv_1_1base.html#acc1c8267eac5b54dcab53b3adb1fa357">   16</a></span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr&lt;const named, true&gt;</a> <a class="code" href="namespacecgv_1_1base.html#acc1c8267eac5b54dcab53b3adb1fa357">const_named_ptr</a>;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1named.html">   19</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1base_1_1named.html">named</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1base_1_1base.html">base</a></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1named.html#aed909ea4f87f07ccf729a618ea554ca7">   23</a></span>&#160;        <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr</a>&lt;<a class="code" href="classcgv_1_1base_1_1named.html">named</a>,true&gt;;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1named.html#aeacb85dab71b803971f8611644898371">   25</a></span>&#160;        std::string <a class="code" href="classcgv_1_1base_1_1named.html#aeacb85dab71b803971f8611644898371">name</a>;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <a class="code" href="classcgv_1_1base_1_1named.html">named</a>(<span class="keyword">const</span> std::string&amp; name = <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keyword">const</span> std::string&amp; get_name() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordtype">void</span> set_name(<span class="keyword">const</span> std::string&amp; _name);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">named_ptr</a> get_named();</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">const_named_ptr</a> get_named_const();</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        std::string get_type_name() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;};</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">template</span> &lt;&gt; <span class="keyword">struct </span>cast_helper&lt;<a class="code" href="classcgv_1_1base_1_1named.html">named</a>&gt;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;{</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">named_ptr</a> cast(<a class="code" href="classcgv_1_1base_1_1base.html">base</a>* b) { <span class="keywordflow">return</span> b-&gt;get_named(); }</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;};</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">template</span> &lt;&gt; <span class="keyword">struct </span>cast_const_helper&lt;named&gt;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;{</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="namespacecgv_1_1base.html#acc1c8267eac5b54dcab53b3adb1fa357">const_named_ptr</a> cast_const(<span class="keyword">const</span> base* b) { <span class="keywordflow">return</span> b-&gt;get_named_const(); }</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;};</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#if _MSC_VER &gt;= 1400</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;CGV_TEMPLATE <span class="keyword">template</span> <span class="keyword">class </span>CGV_API data::ref_ptr&lt;named&gt;;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        }</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="anamespacecgv_1_1base_html_abfcd30049d34b52e335da99b47c3979d"><div class="ttname"><a href="namespacecgv_1_1base.html#abfcd30049d34b52e335da99b47c3979d">cgv::base::named_ptr</a></div><div class="ttdeci">data::ref_ptr&lt; named, true &gt; named_ptr</div><div class="ttdoc">ref counted pointer to a node</div><div class="ttdef"><b>Definition:</b> named.h:13</div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a></div><div class="ttdef"><b>Definition:</b> ref_ptr.h:19</div></div>
-<div class="ttc" id="aclasscgv_1_1base_1_1named_html"><div class="ttname"><a href="classcgv_1_1base_1_1named.html">cgv::base::named</a></div><div class="ttdef"><b>Definition:</b> named.h:16</div></div>
-<div class="ttc" id="aclasscgv_1_1base_1_1named_html_aeacb85dab71b803971f8611644898371"><div class="ttname"><a href="classcgv_1_1base_1_1named.html#aeacb85dab71b803971f8611644898371">cgv::base::named::name</a></div><div class="ttdeci">std::string name</div><div class="ttdoc">store the name as a string</div><div class="ttdef"><b>Definition:</b> named.h:22</div></div>
-<div class="ttc" id="aclasscgv_1_1base_1_1base_html"><div class="ttname"><a href="classcgv_1_1base_1_1base.html">cgv::base::base</a></div><div class="ttdef"><b>Definition:</b> base.h:56</div></div>
-<div class="ttc" id="anamespacecgv_1_1base_html_a41ed99892cc76b1f339b9a0693bb0e1f"><div class="ttname"><a href="namespacecgv_1_1base.html#a41ed99892cc76b1f339b9a0693bb0e1f">cgv::base::named_ptr</a></div><div class="ttdeci">data::ref_ptr&lt; named, true &gt; named_ptr</div><div class="ttdoc">ref counted pointer to a node</div><div class="ttdef"><b>Definition:</b> named.h:13</div></div>
+<div class="ttc" id="aclasscgv_1_1base_1_1named_html"><div class="ttname"><a href="classcgv_1_1base_1_1named.html">cgv::base::named</a></div><div class="ttdef"><b>Definition:</b> named.h:19</div></div>
+<div class="ttc" id="anamespacecgv_1_1base_html_acc1c8267eac5b54dcab53b3adb1fa357"><div class="ttname"><a href="namespacecgv_1_1base.html#acc1c8267eac5b54dcab53b3adb1fa357">cgv::base::const_named_ptr</a></div><div class="ttdeci">data::ref_ptr&lt; const named, true &gt; const_named_ptr</div><div class="ttdoc">ref counted pointer to a const node</div><div class="ttdef"><b>Definition:</b> named.h:16</div></div>
+<div class="ttc" id="aclasscgv_1_1base_1_1named_html_aeacb85dab71b803971f8611644898371"><div class="ttname"><a href="classcgv_1_1base_1_1named.html#aeacb85dab71b803971f8611644898371">cgv::base::named::name</a></div><div class="ttdeci">std::string name</div><div class="ttdoc">store the name as a string</div><div class="ttdef"><b>Definition:</b> named.h:25</div></div>
+<div class="ttc" id="aclasscgv_1_1base_1_1base_html"><div class="ttname"><a href="classcgv_1_1base_1_1base.html">cgv::base::base</a></div><div class="ttdef"><b>Definition:</b> base.h:74</div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> vr_calib.cxx:9</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

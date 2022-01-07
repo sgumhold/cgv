@@ -1,7 +1,8 @@
 var structcgv_1_1base_1_1object__constructor =
 [
     [ "call_void", "structcgv_1_1base_1_1object__constructor.html#a6746cd9f70fefe5a4f2b72534869fcc3", null ],
-    [ "cast", "structcgv_1_1base_1_1object__constructor.html#a465d1e143a091da84a346ea011b9af7b", null ],
+    [ "cast", "structcgv_1_1base_1_1object__constructor.html#a6401d6fb8aa227bd28cacc7e42b39e2b", null ],
+    [ "cast_const", "structcgv_1_1base_1_1object__constructor.html#a5e4ce80d45ccfdc5100f7ddd2f33b64d", null ],
     [ "cast_dynamic", "structcgv_1_1base_1_1object__constructor.html#ad8d0e6ffe70e6d8adc43876dfca2e84a", null ],
     [ "construct_object", "structcgv_1_1base_1_1object__constructor.html#a9df205baad55e14176d646ab12514c00", null ],
     [ "find_member_ptr", "structcgv_1_1base_1_1object__constructor.html#ad121ecb072de62a4ab4a180bc9d183bb", null ],
@@ -10,9 +11,13 @@ var structcgv_1_1base_1_1object__constructor =
     [ "get_constructed_type_name", "structcgv_1_1base_1_1object__constructor.html#a2a8df43ff616083096555cce5e743b13", null ],
     [ "get_default_options", "structcgv_1_1base_1_1object__constructor.html#a79a9ca57ee7e6364153cda52223b8501", null ],
     [ "get_group", "structcgv_1_1base_1_1object__constructor.html#acd6c94f5eb8784c955f687984cbb70ae", null ],
+    [ "get_group_const", "structcgv_1_1base_1_1object__constructor.html#a8229995c361dc313cecd1ca42ded82ae", null ],
     [ "get_interface", "structcgv_1_1base_1_1object__constructor.html#aa2b866151a23c63b3e8029849e71a796", null ],
+    [ "get_name_or_type_name", "structcgv_1_1base_1_1object__constructor.html#aec86a78e596c9c4fb203fcad98fb6afd", null ],
     [ "get_named", "structcgv_1_1base_1_1object__constructor.html#a6d2b95a4802d2a4fc33b556726e0656f", null ],
+    [ "get_named_const", "structcgv_1_1base_1_1object__constructor.html#acb0c5b45da256e0696602feaf69a5cf3", null ],
     [ "get_node", "structcgv_1_1base_1_1object__constructor.html#ac5198433016d177ca57f4c24c3427eca", null ],
+    [ "get_node_const", "structcgv_1_1base_1_1object__constructor.html#a5c0c21c14a4322c3edcce6018ab1c608", null ],
     [ "get_property_declarations", "structcgv_1_1base_1_1object__constructor.html#a4d67c8d339fe06f17396aaa8625292f8", null ],
     [ "get_ref_count", "structcgv_1_1base_1_1object__constructor.html#a67b5dba890a068acef62d9c026c05320", null ],
     [ "get_type_name", "structcgv_1_1base_1_1object__constructor.html#a072d77dbad3f324928ef35de4674f13c", null ],

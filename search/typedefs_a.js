@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['named_5fptr_6702',['named_ptr',['../namespacecgv_1_1base.html#a41ed99892cc76b1f339b9a0693bb0e1f',1,'cgv::base']]],
-  ['node_5fptr_6703',['node_ptr',['../namespacecgv_1_1base.html#af525d4a6a81e7899a679e179ccbbab7b',1,'cgv::base']]]
+  ['named_5fptr_6720',['named_ptr',['../namespacecgv_1_1base.html#abfcd30049d34b52e335da99b47c3979d',1,'cgv::base']]],
+  ['node_5fptr_6721',['node_ptr',['../namespacecgv_1_1base.html#a876ea103d1a70f0477574fd136a99192',1,'cgv::base']]]
 ];
