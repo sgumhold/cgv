@@ -12,6 +12,7 @@
 
 #include <libs/plot/plot2d.h>
 #include "simple_object.h"
+#include "simple_primitive_container.h"
 
 class vr_lab_test : 
 	public cgv::base::group,
@@ -51,7 +52,7 @@ public:
 		return mat34(3, 4, pose) * vec4(p, 1.0f);
 	}
 	std::vector<simple_object_ptr> objects;
-
+	simple_primitive_container_ptr container;
 	void construct_plot()
 	{
 		// compute vector of vec3 with x coordinates and function values of cos and sin
@@ -110,6 +111,8 @@ public:
 		append_child(objects.back());
 		objects.push_back(new simple_object("blue", vec3(0.5f, 0.2f, 0), rgb(0.2f, 0.6f, 0.4f)));
 		append_child(objects.back());
+		container = new simple_primitive_container("spheres");
+		append_child(container);
 	}
 	void on_set(void* member_ptr)
 	{
@@ -318,6 +321,12 @@ public:
 				}
 			align("\b");
 			end_tree_node(objects);
+		}
+		if (begin_tree_node("container", container)) {
+			align("\a");
+			inline_object_gui(container);
+			align("\b");
+			end_tree_node(container);
 		}
 	}
 };
