@@ -61,7 +61,7 @@ public:
 	///
 	void create_gui();
 
-protected:
+  protected:
 	void timer_event(double t, double dt);
 
 	void on_load_source_point_cloud_cb();
@@ -92,6 +92,7 @@ private:
 	int icp_iterations;
 	cgv::pointcloud::ICP::Sampling_Type icp_filter_type;
 	bool view_find_point_cloud;
+	bool show_corresponding_lines;
 	cgv::pointcloud::GoICP::DistanceComputationMode goicp_distance_computation_mode;
 	cgv::pointcloud::SICP::ComputationMode sicp_computation_mode;
 };
