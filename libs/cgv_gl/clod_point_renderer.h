@@ -25,7 +25,8 @@ namespace cgv {
 
 		
 		//stores and manages point buffers modified by the reduce step
-		class clod_point_buffer_manager : public cgv::render::render_types {
+		class CGV_API clod_point_buffer_manager : public cgv::render::render_types
+		{
 			/// buffer contains all points that should be drawn on screen
 			GLuint points;
 			/// the referred buffer contains ids of points after reduction
@@ -266,8 +267,11 @@ namespace cgv {
 			/// set an external buffer that is used for one enable disable cycle
 			// void set_reduced_buffer(const GLuint ext_render_buffer, const GLuint ext_index_buffer, const GLuint draw_parameters);
 
-			/* methods for step wise operation */
-			void reduce_buffer_init(context& ctx);
+			/* methods for step wise operation*/
+
+			/// initializes reduce,
+			/// @param reset_parameters : resets draw parameter buffer
+			void reduce_buffer_init(context& ctx, bool reset_parameters = true);
 			/// reduces a provided opengl buffer
 			void reduce_buffer(context& ctx, const GLuint buffer,const GLuint point_id_buffer, size_t start, size_t count);
 
