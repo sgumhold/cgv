@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.8)
-project(screen_capture_lite)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-option(BUILD_SHARED_LIBS "Build shared library" OFF) 
-option(BUILD_EXAMPLE "Build example" ON)
+#option(BUILD_SHARED_LIBS "Build shared library" ON) 
+#option(BUILD_EXAMPLE "Build example" ON)
 
 if(MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
@@ -78,7 +77,7 @@ include_directories(
 	include 
 	${SCREEN_CAPTURE_PLATFORM_INC} 
 )
-add_library(${PROJECT_NAME} 
+add_library(screen_capture_lite SHARED
 	include/ScreenCapture.h 
 	include/internal/SCCommon.h 
 	include/internal/ThreadManager.h 
@@ -87,73 +86,58 @@ add_library(${PROJECT_NAME}
 	src/ThreadManager.cpp
 	${SCREEN_CAPTURE_PLATFORM_SRC}
  )
- if(${BUILD_SHARED_LIBS})	
-	set_target_properties(${PROJECT_NAME} PROPERTIES DEFINE_SYMBOL SC_LITE_DLL)
-	 if(WIN32) 
-		target_link_libraries(${PROJECT_NAME} ${COMMON_LIBRARIES}  Dwmapi)
-		install (FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION bin OPTIONAL)
-	elseif(APPLE)
-		find_package(Threads REQUIRED)
-        find_library(corefoundation_lib CoreFoundation REQUIRED)
-        find_library(cocoa_lib Cocoa REQUIRED)
-        find_library(coremedia_lib CoreMedia REQUIRED)
-        find_library(avfoundation_lib AVFoundation REQUIRED)
-        find_library(coregraphics_lib CoreGraphics REQUIRED)
-        find_library(corevideo_lib CoreVideo REQUIRED)
+set_target_properties(screen_capture_lite PROPERTIES DEFINE_SYMBOL SC_LITE_DLL)
+if(WIN32) 
+	target_link_libraries(screen_capture_lite ${COMMON_LIBRARIES}  Dwmapi)
+	install (FILES $<TARGET_PDB_FILE:screen_capture_lite> DESTINATION bin OPTIONAL)
+elseif(APPLE)
+	find_package(Threads REQUIRED)
+    find_library(corefoundation_lib CoreFoundation REQUIRED)
+    find_library(cocoa_lib Cocoa REQUIRED)
+    find_library(coremedia_lib CoreMedia REQUIRED)
+    find_library(avfoundation_lib AVFoundation REQUIRED)
+    find_library(coregraphics_lib CoreGraphics REQUIRED)
+    find_library(corevideo_lib CoreVideo REQUIRED)
 
-        target_link_libraries(
-            ${PROJECT_NAME}
-            ${CMAKE_THREAD_LIBS_INIT}
-            ${corefoundation_lib}
-            ${cocoa_lib}
-            ${coremedia_lib}
-            ${avfoundation_lib}
-            ${coregraphics_lib}
-            ${corevideo_lib}
-        )
-	else()
-		find_package(X11 REQUIRED)
-		if(!X11_XTest_FOUND)
- 			message(FATAL_ERROR "X11 extensions are required, but not found!")
-		endif()
-		if(!X11_Xfixes_LIB)
- 			message(FATAL_ERROR "X11 fixes extension is required, but not found!")
-		endif()
-		find_package(Threads REQUIRED)
-		set(${PROJECT_NAME}_PLATFORM_LIBS
-			${X11_LIBRARIES}
-			${X11_Xfixes_LIB}
-			${X11_XTest_LIB}
-			${X11_Xinerama_LIB}
-			${CMAKE_THREAD_LIBS_INIT}
-		)	
-		target_link_libraries(${PROJECT_NAME} ${COMMON_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} dl)
+    target_link_libraries(
+        screen_capture_lite
+        ${CMAKE_THREAD_LIBS_INIT}
+        ${corefoundation_lib}
+        ${cocoa_lib}
+        ${coremedia_lib}
+        ${avfoundation_lib}
+        ${coregraphics_lib}
+        ${corevideo_lib}
+    )
+else()
+	find_package(X11 REQUIRED)
+	if(!X11_XTest_FOUND)
+ 		message(FATAL_ERROR "X11 extensions are required, but not found!")
 	endif()
+	if(!X11_Xfixes_LIB)
+ 		message(FATAL_ERROR "X11 fixes extension is required, but not found!")
+	endif()
+	find_package(Threads REQUIRED)
+	set(screen_capture_lite_PLATFORM_LIBS
+		${X11_LIBRARIES}
+		${X11_Xfixes_LIB}
+		${X11_XTest_LIB}
+		${X11_Xinerama_LIB}
+		${CMAKE_THREAD_LIBS_INIT}
+	)	
+	target_link_libraries(screen_capture_lite ${COMMON_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} dl)
 endif()
 
-install (TARGETS ${PROJECT_NAME}  
-	RUNTIME DESTINATION bin
-	ARCHIVE DESTINATION lib
-	LIBRARY DESTINATION lib
-)
+install(TARGETS screen_capture_lite EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 
-install (FILES 
+add_library(screen_capture_lite_static STATIC
 	include/ScreenCapture.h 
-	DESTINATION include
+	include/internal/SCCommon.h 
+	include/internal/ThreadManager.h 
+	src/ScreenCapture.cpp 
+	src/SCCommon.cpp 
+	src/ThreadManager.cpp
+	${SCREEN_CAPTURE_PLATFORM_SRC}
 )
 
-if (NOT TARGET uninstall)
-  configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-    IMMEDIATE @ONLY)
-
-  add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
-endif()
-
-enable_testing() 
-
-if (${BUILD_EXAMPLE})
-  add_subdirectory(Example) 
-endif()
+install(TARGETS screen_capture_lite_static EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})

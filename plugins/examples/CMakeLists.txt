@@ -31,6 +31,7 @@ add_dependencies(examples
         cg_icons
         cg_meta
         cmi_io
+        cgv_proc
         cmf_tt_gl_font
         crg_antialias
         crg_depth_of_field
@@ -80,7 +81,7 @@ if (MSVC)
             cgv_gl_static
             cgv_os_static
             cgv_signal_static
-
+            cgv_proc_static
             cg_fltk_static
             crg_stereo_view_static
 
