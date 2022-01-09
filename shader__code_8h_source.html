@@ -130,7 +130,7 @@ $(document).ready(function(){initNavTree('shader__code_8h_source.html',''); init
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                <span class="keywordflow">else</span></div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                        defines.erase(name);</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        }</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor">#if defined(__GNUC__) &amp;&amp; (__GNUC___ &gt; 4 || (__GNUC__ == 4 &amp;&amp; __GNUC_MINOR__ &gt;= 3))</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor">#if defined(__clang__) || (defined(__GNUC__) &amp;&amp; (__GNUC___ &gt; 4 || (__GNUC__ == 4 &amp;&amp; __GNUC_MINOR__ &gt;= 3)))</span></div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#define TEMPLATE_STORAGE_CLASS</span></div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#define TEMPLATE_STORAGE_CLASS static</span></div>
