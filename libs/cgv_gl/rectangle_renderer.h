@@ -234,7 +234,7 @@ namespace cgv {
 			void set_depth_offset_array(const context& ctx, const std::vector<T>& depth_offsets) { has_depth_offsets = true; set_attribute_array(ctx, "depth_offset", depth_offsets); }
 			/// template method to set translation for all rectangles from a vector type T, which should have 3 components
 			template <typename T>
-			void set_translation(const context& ctx, const T& translations) { has_translations = true; ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "translation"), translation); }
+			void set_translation(const context& ctx, const T& translation) { has_translations = true; ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "translation"), translation); }
 			/// template method to set the translations from a vector of vectors of type T, which should have 3 components
 			template <typename T>
 			void set_translation_array(const context& ctx, const std::vector<T>& translations) { has_translations = true; set_attribute_array(ctx, "translation", translations); }

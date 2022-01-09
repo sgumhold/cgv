@@ -4,6 +4,11 @@
 namespace cgv {
 	namespace math {
 
+/// make constructor virtual
+sparse_les_factory::~sparse_les_factory()
+{
+}
+
 std::vector<sparse_les_factory_ptr>& ref_solver_factories()
 {
 	static std::vector<sparse_les_factory_ptr> facs;
