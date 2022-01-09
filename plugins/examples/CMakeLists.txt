@@ -32,6 +32,7 @@ add_dependencies(examples
         cg_icons
         cg_meta
         cmi_io
+        cgv_proc
         cmf_tt_gl_font
         crg_antialias
         crg_depth_of_field
