@@ -203,11 +203,12 @@ var NAVTREEINDEX10 =
 "classcgv_1_1math_1_1sparse__les.html#acee1d2283d9aa2e7ba639e33bf53582c":[11,0,0,3,14,10],
 "classcgv_1_1math_1_1sparse__les.html#adbec19807f7cd510050e89838ccbfb95":[11,0,0,3,14,5],
 "classcgv_1_1math_1_1sparse__les__factory.html":[11,0,0,3,15],
-"classcgv_1_1math_1_1sparse__les__factory.html#a67b5dba890a068acef62d9c026c05320":[11,0,0,3,15,2],
-"classcgv_1_1math_1_1sparse__les__factory.html#aa08c0a981f3ad603b49536771abd8920":[11,0,0,3,15,1],
-"classcgv_1_1math_1_1sparse__les__factory.html#aa5b4c6bf4587b9480d775ad26a9f736d":[11,0,0,3,15,3],
-"classcgv_1_1math_1_1sparse__les__factory.html#abceffe95f08d3fc13cf9286cf360e705":[11,0,0,3,15,4],
-"classcgv_1_1math_1_1sparse__les__factory.html#afc5146db3b7bec41eb4bbd7593008a5b":[11,0,0,3,15,0],
+"classcgv_1_1math_1_1sparse__les__factory.html#a67b5dba890a068acef62d9c026c05320":[11,0,0,3,15,3],
+"classcgv_1_1math_1_1sparse__les__factory.html#a7b6f7c55b282e4ab7070bada04a001ae":[11,0,0,3,15,0],
+"classcgv_1_1math_1_1sparse__les__factory.html#aa08c0a981f3ad603b49536771abd8920":[11,0,0,3,15,2],
+"classcgv_1_1math_1_1sparse__les__factory.html#aa5b4c6bf4587b9480d775ad26a9f736d":[11,0,0,3,15,4],
+"classcgv_1_1math_1_1sparse__les__factory.html#abceffe95f08d3fc13cf9286cf360e705":[11,0,0,3,15,5],
+"classcgv_1_1math_1_1sparse__les__factory.html#afc5146db3b7bec41eb4bbd7593008a5b":[11,0,0,3,15,1],
 "classcgv_1_1math_1_1sparse__les__factory__impl.html":[11,0,0,3,16],
 "classcgv_1_1math_1_1sparse__les__factory__impl.html#a3da9c8696ef36abff7bc13c0a5461492":[11,0,0,3,16,3],
 "classcgv_1_1math_1_1sparse__les__factory__impl.html#a67b5dba890a068acef62d9c026c05320":[11,0,0,3,16,2],
@@ -248,6 +249,5 @@ var NAVTREEINDEX10 =
 "classcgv_1_1math_1_1vec.html#a0b40b0cb197e3d2eff85f236e50bb5d7":[11,0,0,3,23,10],
 "classcgv_1_1math_1_1vec.html#a0c091407b4730f66b2aaa27b8c0d12d6":[11,0,0,3,23,59],
 "classcgv_1_1math_1_1vec.html#a127258bf934408a83b214d6d3624d491":[11,0,0,3,23,55],
-"classcgv_1_1math_1_1vec.html#a1c69001c0ebb984467c8aab06eecf9d3":[11,0,0,3,23,24],
-"classcgv_1_1math_1_1vec.html#a1d3c0844fb8ea068ea08ca34c9019971":[11,0,0,3,23,42]
+"classcgv_1_1math_1_1vec.html#a1c69001c0ebb984467c8aab06eecf9d3":[11,0,0,3,23,24]
 };
