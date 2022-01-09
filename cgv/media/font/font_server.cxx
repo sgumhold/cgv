@@ -20,21 +20,21 @@ font_ptr font_server::default_font(bool mono_space)
 {
 	font_ptr f;
 	if (mono_space) {
-		if (f = find_font("Consolas"))
+		if ((f = find_font("Consolas")))
 			return f;
-		if (f = find_font("FreeMono"))
+		if ((f = find_font("FreeMono")))
 			return f;
-		if (f = find_font("Courier New"))
+		if ((f = find_font("Courier New")))
 			return f;
-		if (f = find_font("Courier"))
+		if ((f = find_font("Courier")))
 			return f;
 	}
 	else {
-		if (f = find_font("Open Sans"))
+		if ((f = find_font("Open Sans")))
 			return f;
-		if (f = find_font("Tahoma"))
+		if ((f = find_font("Tahoma")))
 			return f;
-		if (f = find_font("Arial"))
+		if ((f = find_font("Arial")))
 			return f;
 	}
 	return f;

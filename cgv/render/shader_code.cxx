@@ -72,7 +72,7 @@ void shader_code::decode_if_base64(std::string& content) {
 	}
 #else
 	if (content.size() > 1) {
-		if (content[0]==0xC2 && content[1]==0xA7) // UTF-8 for '§'
+		if ((uint8_t&)content[0]==0xC2 && (uint8_t&)content[1]==0xA7) // UTF-8 for '§'
 			content = cgv::utils::decode_base64(content.substr(2));
 		else if (
 			content.size() > 2 &&

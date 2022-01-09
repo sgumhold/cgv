@@ -1524,6 +1524,7 @@ bool gl_context::check_texture_support(TextureType tt, const std::string& where,
 			error(where + ": cubemap texture not supported", rc);
 			return false;
 		}
+	default:
 		break;
 	}
 	return true;
@@ -1661,6 +1662,7 @@ bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df) co
 			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0,
 			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+	default:
 		break;
 	}
 	if (check_gl_error("gl_context::texture_create", &tb)) {
@@ -1701,7 +1703,9 @@ bool gl_context::texture_create(
 			switch(tb.tt) {
 			case TT_1D: tb.tt = TT_1D_ARRAY; break;
 			case TT_2D: tb.tt = TT_2D_ARRAY; break;
-			case TT_3D: tb.tt = TT_2D_ARRAY; break;
+			case TT_3D: tb.tt = TT_2D_ARRAY; 
+			default: 
+				break;
 			}
 		}
 	}
@@ -1873,7 +1877,8 @@ bool gl_context::texture_replace_from_buffer(
 	switch (tb.tt) {
 	case TT_2D :      glCopyTexSubImage2D(GL_TEXTURE_2D, level, x, y, x_buffer, y_buffer, width, height); break;
 	case TT_3D :      glCopyTexSubImage3D(GL_TEXTURE_3D, level, x, y, z, x_buffer, y_buffer, width, height); break;
-	case TT_CUBEMAP : glCopyTexSubImage2D(get_gl_cube_map_target(z), level, x, y, x_buffer, y_buffer, width, height); break;
+	case TT_CUBEMAP : glCopyTexSubImage2D(get_gl_cube_map_target(z), level, x, y, x_buffer, y_buffer, width, height); 
+	default: break;
 	}
 	bool result = !check_gl_error("gl_context::texture_replace_from_buffer", &tb);
 	texture_unbind(tb.tt, tmp_id);
@@ -2419,6 +2424,7 @@ std::string value_type_index_to_string(type_descriptor td)
 		res = std::string("matrix<") + res + "," + cgv::utils::to_string(td.nr_rows) + "," + cgv::utils::to_string(td.nr_columns) + ">";
 		if (td.is_row_major)
 			res += "^T";
+	default:
 		break;
 	}
 	if (td.is_array)
