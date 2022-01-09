@@ -364,7 +364,7 @@ bool is_double(const char* begin, const char* end, double& value)
 	const char* p = begin;
 	while (p < end && *p == ' ')
 		++p;
-	for (p; p<end; ++p) {
+	for (; p<end; ++p) {
 		switch (*p) {
 		case '0' :
 		case '1' :
