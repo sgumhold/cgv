@@ -1,5 +1,6 @@
 var NAVTREEINDEX41 =
 {
+"structcgv_1_1plot_1_1plot__base__config.html#ab9e51ddef8a68db550e09b61fe6129c4":[11,0,0,6,8,0],
 "structcgv_1_1plot_1_1plot__base__config.html#aba44df469fbb076a65cfa8e05d2e8457":[11,0,0,6,8,65],
 "structcgv_1_1plot_1_1plot__base__config.html#abc3c98098e2cedc857c903f9c1c37988":[11,0,0,6,8,49],
 "structcgv_1_1plot_1_1plot__base__config.html#abcd4a3a1ac9d67a85d9b38956b943dad":[11,0,0,6,8,15],
@@ -248,6 +249,5 @@ var NAVTREEINDEX41 =
 "structcgv_1_1render_1_1arrow__render__style.html#a38863e19ba391222d8ab4dc71e3f4000":[11,0,0,9,2,23],
 "structcgv_1_1render_1_1arrow__render__style.html#a38dd03f0b24790b4f25dd4c23bddc11c":[11,0,0,9,2,16],
 "structcgv_1_1render_1_1arrow__render__style.html#a3bf1a0f5d32ed0c6b44728595f6c8201":[11,0,0,9,2,21],
-"structcgv_1_1render_1_1arrow__render__style.html#a3cbbe8d71d4ba26a9e2709f19d52fb50":[11,0,0,9,2,37],
-"structcgv_1_1render_1_1arrow__render__style.html#a3f4c54c23e849fa07adeca68dd718966":[11,0,0,9,2,2]
+"structcgv_1_1render_1_1arrow__render__style.html#a3cbbe8d71d4ba26a9e2709f19d52fb50":[11,0,0,9,2,37]
 };

@@ -1,5 +1,6 @@
 var NAVTREEINDEX45 =
 {
+"structcgv_1_1render_1_1surfel__render__style.html#ab510d7e1706c6061a03086d28b9b33d3":[11,0,0,9,48,27],
 "structcgv_1_1render_1_1surfel__render__style.html#ab9dec72a3e70241c8d69d5e17c30105d":[11,0,0,9,48,32],
 "structcgv_1_1render_1_1surfel__render__style.html#ab9e51ddef8a68db550e09b61fe6129c4":[11,0,0,9,48,0],
 "structcgv_1_1render_1_1surfel__render__style.html#abbf94aae29d615b8b7688f7180cf92c7":[11,0,0,9,48,45],
@@ -248,6 +249,5 @@ var NAVTREEINDEX45 =
 "structvr_1_1vr__controller__info.html#a51d1a316fe2e554f95fc55da84eb1c4a":[11,0,3,5,15],
 "structvr_1_1vr__controller__info.html#a56257d80bf9cdc6044290244ada9ab97":[11,0,3,5,5],
 "structvr_1_1vr__controller__info.html#a562b5f398d47ad4992cd95d07e5e8dfa":[11,0,3,5,2],
-"structvr_1_1vr__controller__info.html#a5ba0670c854d28974c14c416732c0f54":[11,0,3,5,4],
-"structvr_1_1vr__controller__info.html#a61c9dd10fd0b2f391f9caf8c15b66af6":[11,0,3,5,3]
+"structvr_1_1vr__controller__info.html#a5ba0670c854d28974c14c416732c0f54":[11,0,3,5,4]
 };
