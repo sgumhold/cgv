@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <limits>
 #include <iostream>
 
 #include "lib_begin.h"

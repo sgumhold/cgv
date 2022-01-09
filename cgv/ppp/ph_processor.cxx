@@ -305,7 +305,7 @@ namespace cgv {
 
 			ph_processor* fp = new ph_processor(additional_include_path, false);
 			bool success = false;
-			if (success = fp->parse_file(file_path)) {
+			if ((success = fp->parse_file(file_path))) {
 				if (insert) {
 					std::string output;
 					success = fp->process_to_string(output);
@@ -1696,7 +1696,7 @@ namespace cgv {
 					}
 					ph_processor* fp = new ph_processor(additional_include_path, false);
 					bool success = false;
-					if (success = fp->parse_file(inp)) {
+					if ((success = fp->parse_file(inp))) {
 						std::string output;
 						success = fp->process_to_file(v2.get_str(), cgv::utils::file::get_last_write_time(inp)) != 0;
 					}

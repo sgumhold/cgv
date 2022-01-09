@@ -118,7 +118,7 @@ namespace cgv {
 			double Y_2 = Y * Y;
 			double Z_2 = Z * Z;
 
-			if (sqrt(X_2 + Y_2 + Z_2) > (a * e_2 / (sqrt(1.0 - e_2))))
+			if (sqrt(X_2 + Y_2 + Z_2) > (a * e_2 / (sqrt(1.0 - e_2)))) {
 				if (!((std::abs(X) < POSITION_TOLERANCE) && (std::abs(Y) < POSITION_TOLERANCE))) // <- TODO: adjust tolerance? 
 				{
 					// some intermediate results...
@@ -156,8 +156,9 @@ namespace cgv {
 					lambda *= RAD_TO_DEG;
 
 				}
-				else 
+				else
 					std::cout << "\nError! Input coordinates not valid";
+			}
 			return geodetic;
 		}
 
