@@ -13,33 +13,35 @@ jobs:
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
 
-      - name: Install llvm repository
-        run: wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 12 && sudo apt-get update
+      - name: Build Docker Image
+        run: docker build . -t build-image
+      - name: Run Build
+        run: docker run -v $(pwd):/app build-image
 
-      - name: Install build tools
-        run: sudo apt-get install -y cmake clang-tools-12 libclang-12-dev
-
-      - name: Install cgv dependencies
-        run: sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev libx11-dev xorg-dev
-
-      - name: Install OpenGL headless dependencies
-        run: sudo apt-get install -y xpra
-
-      - run: mkdir build
-
-      - name: Run CMake
-        working-directory: ./build
-        run: cmake .. -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=../install -D CMAKE_C_COMPILER=/usr/bin/clang-12 -D CMAKE_CXX_COMPILER=/usr/bin/clang++-12
-
-      - name: Build and Install
-        working-directory: build
-        run: xpra start :100 --start-child="DISPLAY=:100 cmake --build . --target install" --exit-with-children
-
+#      - name: Install llvm repository
+#        run: wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 12 && sudo apt-get update
+#
+#      - name: Install build tools
+#        run: sudo apt-get install -y cmake clang-tools-12 libclang-12-dev
+#
+#      - name: Install cgv dependencies
+#        run: sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev libx11-dev xorg-dev xvfb
+#
+#      - name: Install OpenGL headless dependencies
+#        run: sudo apt-get install -y xpra
+#
+#      - run: mkdir build
+#
+#      - name: Run CMake
+#        working-directory: ./build
+#        run: cmake .. -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=../install -D CMAKE_C_COMPILER=/usr/bin/clang-12 -D CMAKE_CXX_COMPILER=/usr/bin/clang++-12
+#
 #      - name: Build and Install
-#        uses: GabrielBB/xvfb-action@v1
 #        with:
-#          run: cmake --build . --target install
+#          run: xvfb-run -a cmake --build . --target install
 #          working-directory: ./build
+#
+#      - run: cat /tmp/xpra/xpra/:100.log
 
       - name: Upload Install zip for Ubuntu
         uses: actions/upload-artifact@v2
