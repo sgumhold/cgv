@@ -9,6 +9,7 @@
 #include <cgv/gui/trigger.h>
 #include <cgv/gui/file_dialog.h>
 #include <cgv/defines/quote.h>
+#include <cgv/reflect/reflection_traits.h>
 #include <random>
 
 namespace vr {
@@ -25,7 +26,7 @@ namespace vr {
 	};
 }
 namespace cgv {
-	namespace reflect {
+	namespace nui {
 		cgv::reflect::extern_reflection_traits<cgv::nui::spatial_dispatcher::controller_info, vr::controller_info_reflect>
 			get_reflection_traits(const cgv::nui::spatial_dispatcher::controller_info&)
 		{

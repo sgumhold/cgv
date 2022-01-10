@@ -33,7 +33,7 @@ namespace cgv {
 			refocus_action action;
 		};
 
-		struct CGV_API refocus_info 			
+		struct CGV_API refocus_info
 		{
 			focus_attachment foc_att;
 			focus_info* foc_info_ptr = 0;
@@ -86,7 +86,7 @@ namespace cgv {
 			void set_dispatcher_ptr_recursive(cgv::base::base_ptr obj);
 			bool reconfigure(const focus_attachment& foc_att, cgv::base::base_ptr obj_ptr, focus_configuration& focus_config);
 		public:
-			dispatcher();
+			dispatcher() = default;
 			virtual ~dispatcher();
 			virtual void add_object(cgv::base::base_ptr root);
 			virtual void remove_object(cgv::base::base_ptr root);
