@@ -22,6 +22,9 @@ jobs:
       - name: Install cgv dependencies
         run: sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev libx11-dev xorg-dev
 
+      - name: Install OpenGL headless dependencies
+        run: sudo apt-get install -y xpra
+
       - run: mkdir build
 
       - name: Run CMake
@@ -29,10 +32,14 @@ jobs:
         run: cmake .. -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=../install -D CMAKE_C_COMPILER=/usr/bin/clang-12 -D CMAKE_CXX_COMPILER=/usr/bin/clang++-12
 
       - name: Build and Install
-        uses: GabrielBB/xvfb-action@v1
-        with:
-          run: cmake --build . --target install
-          working-directory: ./build
+        working-directory: build
+        run: xpra start :100 --start-child="DISPLAY=:100 cmake --build . --target install" --exit-with-children
+
+#      - name: Build and Install
+#        uses: GabrielBB/xvfb-action@v1
+#        with:
+#          run: cmake --build . --target install
+#          working-directory: ./build
 
       - name: Upload Install zip for Ubuntu
         uses: actions/upload-artifact@v2
