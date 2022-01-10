@@ -1,6 +1,5 @@
 #include "dispatcher.h"
 #include "grabable.h"
-#include "pointable.h"
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/event_handler.h>
 #include <libs/cg_vr/vr_events.h>
@@ -18,9 +17,6 @@ namespace cgv {
 			root.clear();
 		}
 
-		dispatcher::dispatcher()
-		{
-		}
 		dispatcher::~dispatcher()
 		{
 			for (auto& obj : objects) {

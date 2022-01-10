@@ -198,7 +198,7 @@ namespace cgv {
 		int get_hid_unique_index(const hid_identifier& hid_id)
 		{
 			auto& M = ref_hid_unique_index_map();
-			auto& i = M.find(hid_id);
+			const auto& i = M.find(hid_id);
 			if (i != M.end())
 				return i->second;
 			auto& L = ref_hid_list();
