@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <cgv/render/render_types.h>
 #include <cgv/media/font/font.h>
 #include <cgv_gl/rectangle_renderer.h>
