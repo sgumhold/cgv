@@ -8,11 +8,7 @@
 #include <cgv/render/drawable.h>
 #include <cgv/gui/event.h>
 #include <libs/vr/vr_kit.h>
-#if __cplusplus >= 201100L
-#include <unordered_set>
-#else 
 #include <set>
-#endif
 
 #include "lib_begin.h"
 
@@ -37,7 +33,7 @@ namespace cgv {
 			refocus_action action;
 		};
 
-		struct CGV_API refocus_info 			
+		struct CGV_API refocus_info
 		{
 			focus_attachment foc_att;
 			focus_info* foc_info_ptr = 0;
@@ -66,11 +62,7 @@ namespace cgv {
 		class CGV_API dispatcher
 		{
 		protected:
-#if __cplusplus >= 201100L
-			std::unordered_set<cgv::base::base_ptr> roots;
-#else 
 			std::set<cgv::base::base_ptr> objects;
-#endif
 			/// store dispatch information per hid
 			std::map<hid_identifier, dispatch_info*> dis_info_hid_map;
 			/// store focus information per hid
@@ -94,7 +86,7 @@ namespace cgv {
 			void set_dispatcher_ptr_recursive(cgv::base::base_ptr obj);
 			bool reconfigure(const focus_attachment& foc_att, cgv::base::base_ptr obj_ptr, focus_configuration& focus_config);
 		public:
-			dispatcher();
+			dispatcher() = default;
 			virtual ~dispatcher();
 			virtual void add_object(cgv::base::base_ptr root);
 			virtual void remove_object(cgv::base::base_ptr root);
