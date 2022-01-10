@@ -1,3 +1,4 @@
+#include <memory>
 #include <cg_nui/focusable.h>
 #include <cg_nui/pointable.h>
 #include <cg_nui/transformed.h>

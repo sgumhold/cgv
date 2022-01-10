@@ -8,11 +8,7 @@
 #include <cgv/render/drawable.h>
 #include <cgv/gui/event.h>
 #include <libs/vr/vr_kit.h>
-#if __cplusplus >= 201100L
-#include <unordered_set>
-#else 
 #include <set>
-#endif
 
 #include "lib_begin.h"
 
@@ -66,11 +62,7 @@ namespace cgv {
 		class CGV_API dispatcher
 		{
 		protected:
-#if __cplusplus >= 201100L
-			std::unordered_set<cgv::base::base_ptr> roots;
-#else 
 			std::set<cgv::base::base_ptr> objects;
-#endif
 			/// store dispatch information per hid
 			std::map<hid_identifier, dispatch_info*> dis_info_hid_map;
 			/// store focus information per hid
