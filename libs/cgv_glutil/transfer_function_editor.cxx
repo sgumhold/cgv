@@ -90,14 +90,14 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 	unsigned et = e.get_kind();
 	unsigned char modifiers = e.get_modifiers();
 
-	if(!show)
+	if (!show)
 		return false;
 
-	if(et == cgv::gui::EID_KEY) {
-		cgv::gui::key_event& ke = (cgv::gui::key_event&) e;
+	if (et == cgv::gui::EID_KEY) {
+		cgv::gui::key_event& ke = (cgv::gui::key_event&)e;
 
-		if(ke.get_action() == cgv::gui::KA_PRESS) {
-			switch(ke.get_key()) {
+		if (ke.get_action() == cgv::gui::KA_PRESS) {
+			switch (ke.get_key()) {
 			case cgv::gui::KEY_Left_Ctrl:
 				show_cursor = true;
 				cursor_drawtext = "+";
@@ -109,8 +109,9 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 				post_redraw();
 				break;
 			}
-		} else if(ke.get_action() == cgv::gui::KA_RELEASE) {
-			switch(ke.get_key()) {
+		}
+		else if (ke.get_action() == cgv::gui::KA_RELEASE) {
+			switch (ke.get_key()) {
 			case cgv::gui::KEY_Left_Ctrl:
 				show_cursor = false;
 				post_redraw();
@@ -121,11 +122,12 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 				break;
 			}
 		}
-	} else if(et == cgv::gui::EID_MOUSE) {
-		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
+	}
+	else if (et == cgv::gui::EID_MOUSE) {
+		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&)e;
 		cgv::gui::MouseAction ma = me.get_action();
 
-		switch(ma) {
+		switch (ma) {
 		case cgv::gui::MA_ENTER:
 			mouse_is_on_overlay = true;
 			break;
@@ -136,24 +138,24 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 		case cgv::gui::MA_MOVE:
 		case cgv::gui::MA_DRAG:
 			cursor_pos = ivec2(me.get_x(), me.get_y());
-			if(show_cursor)
+			if (show_cursor)
 				post_redraw();
 			break;
 		}
 
-		if(me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
-			if(ma == cgv::gui::MA_PRESS && modifiers > 0) {
+		if (me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
+			if (ma == cgv::gui::MA_PRESS && modifiers > 0) {
 				ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
 
-				switch(modifiers) {
+				switch (modifiers) {
 				case cgv::gui::EM_CTRL:
-					if(!get_hit_point(mpos))
+					if (!get_hit_point(mpos))
 						add_point(mpos);
 					break;
 				case cgv::gui::EM_ALT:
 				{
 					point* hit_point = get_hit_point(mpos);
-					if(hit_point)
+					if (hit_point)
 						remove_point(hit_point);
 				}
 				break;
@@ -162,9 +164,8 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 		}
 
 		return tfc.points.handle(e, last_viewport_size, container);
-	} else {
-		return false;
 	}
+	return false;
 }
 
 void transfer_function_editor::on_set(void* member_ptr) {
@@ -360,7 +361,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	if(show_histogram && tfc.hist_tex.is_created()) {
 		hist_style.fill_color = histogram_color;
 		hist_style.border_color = histogram_border_color;
-		hist_style.border_width = histogram_border_width;
+		hist_style.border_width = float(histogram_border_width);
 
 		auto& hist_prog = canvas.enable_shader(ctx, "histogram");
 		hist_prog.set_uniform(ctx, "max_value", tfc.hist_max);
@@ -503,7 +504,7 @@ bool transfer_function_editor::set_histogram(const std::vector<unsigned>& data) 
 	}
 
 	tfc.hist_tex.destruct(*ctx_ptr);
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(data.size(), TI_FLT32, cgv::data::CF_R), fdata.data());
+	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(unsigned(data.size()), TI_FLT32, cgv::data::CF_R), fdata.data());
 	tfc.hist_tex = texture("flt32[I]", TF_LINEAR, TF_LINEAR);
 	tfc.hist_tex.create(*ctx_ptr, dv, 0);
 	return true;
@@ -802,9 +803,9 @@ bool transfer_function_editor::update_geometry() {
 		const point& pl = points[0];
 		rgba coll = tf.interpolate(pl.val.x());
 
-		lines.add(vec2(layout.editor_rect.pos().x(), pl.center().y()), rgb(coll));
+		lines.add(vec2(float(layout.editor_rect.pos().x()), pl.center().y()), rgb(coll));
 		
-		triangles.add(vec2(layout.editor_rect.pos().x(), pl.center().y()), coll);
+		triangles.add(vec2(float(layout.editor_rect.pos().x()), pl.center().y()), coll);
 		triangles.add(layout.editor_rect.pos(), coll);
 
 		for(unsigned i = 0; i < points.size(); ++i) {
@@ -814,7 +815,7 @@ bool transfer_function_editor::update_geometry() {
 
 			lines.add(pos, rgb(col));
 			triangles.add(pos, col);
-			triangles.add(vec2(pos.x(), layout.editor_rect.pos().y()), col);
+			triangles.add(vec2(pos.x(), (float)layout.editor_rect.pos().y()), col);
 			point_geometry.add(pos,
 				tfc.points.get_selected() == &p ? rgba(0.5f, 0.5f, 0.5f, 1.0f) : rgba(0.9f, 0.9f, 0.9f, 1.0f)
 			);
@@ -901,13 +902,13 @@ static bool xml_attribute_to_int(const std::string& attribute, int& value) {
 	std::string value_str = xml_attribute_value(attribute);
 
 	if(!value_str.empty()) {
-		int value_i = 0.0f;
+		int value_i = 0;
 
 		try {
 			value_i = stoi(value_str);
-		} catch(const std::invalid_argument& e) {
+		} catch(const std::invalid_argument&) {
 			return false;
-		} catch(const std::out_of_range& e) {
+		} catch(const std::out_of_range&) {
 			return false;
 		}
 
@@ -927,9 +928,9 @@ static bool xml_attribute_to_float(const std::string& attribute, float& value) {
 
 		try {
 			value_f = stof(value_str);
-		} catch(const std::invalid_argument& e) {
+		} catch(const std::invalid_argument&) {
 			return false;
-		} catch(const std::out_of_range& e) {
+		} catch(const std::out_of_range&) {
 			return false;
 		}
 
