@@ -66,6 +66,7 @@ transfer_function_editor::transfer_function_editor() {
 }
 
 bool transfer_function_editor::on_exit_request() {
+	// TODO: does not seem to fire when window is maximized
 	if(has_unsaved_changes) {
 		return cgv::gui::question("The transfer function has unsaved changes. Are you sure you want to quit?");
 	}
