@@ -154,10 +154,6 @@ namespace cgv {
 
 		float ICP::error(Pnt& ps, Pnt& pd, Mat& r, Dir& t)
 		{
-			//Pnt res;
-			//res = r * pd;
-			//float err = pow(ps.x() - res.x() - t[0], 2.0) + pow(ps.y() - res.y() - t[1], 2.0) + pow(ps.z() - res.z() - t[2], 2.0);
-			//return err;
 			Pnt tmp = ps - r * pd - t;
 			return dot(tmp, tmp);
 		}
@@ -231,17 +227,25 @@ namespace cgv {
 					cost += error(Q.pnt(i), S.pnt(i), rotation_update_mat, translation_update_vec);
 				}
 				cost /= sourceCloud->get_nr_points();
+				std::cout << "no:" << iter  <<"cost: " << cost << std::endl;
 				///judge if cost is decreasing, and is larger than eps. If so, update the R and t, otherwise stop and output R and t
 				if (min >= abs(cost)) {
 					///update the R and t
 					rotation_mat = rotation_update_mat * rotation_mat;
 					translation_vec = rotation_update_mat * translation_vec + translation_update_vec;
+					//std::cout << "no:" << iter << "cost: " << cost << std::endl;
 					min = abs(cost);
+				}
+				else {
+					break;
 				}
 				pc1.clear();
 				pc2.clear();
-				for (int i = 0; i < S.get_nr_points(); i++)
+				for (int i = 0; i < S.get_nr_points(); i++) {
+					// this is for drawing corresponding lines after transforming
+					S.pnt(i) = rotation_mat * S.pnt(i) + translation_vec;
 					pc1.add_point(S.pnt(i));
+				}
 				for (int i = 0; i < Q.get_nr_points(); i++)
 					pc2.add_point(Q.pnt(i));
 			}
@@ -272,6 +276,7 @@ namespace cgv {
 			int randSample = std::rand() % source.get_nr_points();
 			source_p = source.pnt(randSample);
 			target_p = target.pnt(tree->find_closest(source_p));
+			//std::cout << "source_p: " << source_p << "target_p: " << target_p << std::endl;
 			dist = dis_pts(source_p, target_p);
 			Pnt source_p_inv = source.pnt(tree_inv->find_closest(target_p));
 			dist_inv = dis_pts(source_p_inv, target_p);

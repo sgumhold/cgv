@@ -16,8 +16,9 @@ namespace cgv {
 		class CGV_API ICP : public point_cloud_types {
 		public:
 			enum Sampling_Type {
-				RANDOM_SAMPLING = 0,
-				NORMAL_SPACE_SAMPLING = 1,
+				DEFAULT_SAMPLING = 0,
+				RANDOM_SAMPLING = 1,
+				NORMAL_SPACE_SAMPLING = 2  ,
 			} S_type;
 
 			const point_cloud* sourceCloud;

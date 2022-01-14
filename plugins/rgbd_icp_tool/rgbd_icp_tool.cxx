@@ -45,11 +45,13 @@ rgbd_icp_tool::rgbd_icp_tool() {
 	rot_intensity = 0.2f;
 	trans_intensity = 0.1;
 	//lrs.line_width = 1.0f;
-	rcrs.radius = 0.001f;
-	rcrs.rounded_caps = true;
+	//rcrs.radius = 0.001f;
+	//rcrs.rounded_caps = true;
 
 	icp_iterations = 50;
 	icp_eps = 1e-8;
+
+	show_corresponding_lines = true;
 
 	goicp_distance_computation_mode = GoICP::DCM_DISTANCE_TRANSFORM;
 	sicp_computation_mode = SICP::CM_POINT_TO_POINT;
@@ -57,7 +59,8 @@ rgbd_icp_tool::rgbd_icp_tool() {
 
 bool rgbd_icp_tool::self_reflect(cgv::reflect::reflection_handler & rh)
 {
-	return rh.reflect_member("ply_path", ply_path);
+	return  rh.reflect_member("ply_path", ply_path)&&
+		    rh.reflect_member("show_corresponding_lines", show_corresponding_lines);
 }
 
 void rgbd_icp_tool::on_set(void * member_ptr)
@@ -117,18 +120,22 @@ void draw_correspondences(cgv::render::context& ctx, point_cloud& crspd_src, poi
 	if (crspd_src.get_nr_points() > 0) {
 		vector<point_cloud::Pnt> P;
 		//add start and end point of each correspondence in world coordinates to points
+		glBegin(GL_LINES);
 		for (int i = 0; i < crspd_src.get_nr_points(); ++i) {
 			P.push_back(crspd_src.pnt(i));
 			P.push_back(crspd_tgt.pnt(i));
+			glColor3f(1.0f, 0.0f, 0.0f);
+			glVertex3f(crspd_src.pnt(i).x(), crspd_src.pnt(i).y(), crspd_src.pnt(i).z());
+			glVertex3f(crspd_tgt.pnt(i).x(), crspd_tgt.pnt(i).y(), crspd_tgt.pnt(i).z());
 		}
-		cgv::render::cone_renderer& rcr = ref_cone_renderer(ctx);
-		rcr.set_render_style(rcrs);
-		rcr.set_position_array(ctx, P);
+		glEnd();
+		/*cgv::render::cone_renderer& cr = ref_cone_renderer(ctx);
+		cr.set_render_style(rcrs);
+		cr.set_position_array(ctx, P);
 		//rcr.set_radius_array(ctx, radii);
 		vector<cgv::math::fvec<float, 4>> color(P.size(), color);
-		rcr.set_color_array(ctx, color);
-		rcr.render(ctx, 0, P.size());
-
+		cr.set_color_array(ctx, color);
+		cr.render(ctx, 0, P.size());*/
 	}
 	ctx.pop_modelview_matrix();
 }
@@ -138,7 +145,8 @@ void rgbd_icp_tool::draw(cgv::render::context & ctx)
 	ctx.push_modelview_matrix();
 	draw_point_cloud(ctx, source_pc, source_srs,vec4(1.0,0.0,0.0,0.8));
 	draw_point_cloud(ctx, target_pc, target_srs, vec4(0.0, 1.0, 0.0, 0.8));
-	draw_correspondences(ctx, crs_srs_pc, crs_tgt_pc, rcrs, vec4(0.0, 1.0, 1.0, 0.8));
+	if (crs_srs_pc.get_nr_points() > 0 && crs_tgt_pc.get_nr_points() > 0 && show_corresponding_lines)
+		draw_correspondences(ctx, crs_srs_pc, crs_tgt_pc, rcrs, vec4(0.0, 1.0, 1.0, 0.8));
 	ctx.pop_modelview_matrix();
 
 	if (view_find_point_cloud) {
@@ -162,8 +170,6 @@ void rgbd_icp_tool::find_pointcloud(cgv::render::context & ctx)
 		view_ptr->move(view_ptr->get_depth_of_focus()-1.0);
 		
 	}
-
-	
 }
 
 void rgbd_icp_tool::clear(cgv::render::context & ctx)
@@ -197,12 +203,13 @@ void rgbd_icp_tool::create_gui()
 	connect_copy(add_button("GoICP")->click, rebind(this, &rgbd_icp_tool::on_reg_GoICP_cb));
 
 	add_decorator("point cloud", "heading", "level=2");
-	connect_copy(add_control("Point size", source_srs.point_size, "value_slider", "min=0.01;max=3.0;log=false;ticks=true")->value_change, rebind(this, &rgbd_icp_tool::on_point_cloud_style_cb));
+	connect_copy(add_control("Point size", source_srs.point_size, "value_slider", "min=0.01;max=5.0;log=false;ticks=true")->value_change, rebind(this, &rgbd_icp_tool::on_point_cloud_style_cb));
 
 	add_decorator("ICP", "heading", "level=2");
 	add_member_control(this, "Max. iterations", icp_iterations, "value_slider", "min=50;max=1000;ticks=false");
 	add_member_control(this, "ICP epsilon", icp_eps, "value_slider", "min=0.0000001;max=0.1;log=true;ticks=false");
-	add_member_control(this, "Sampling Type", (DummyEnum&)icp_filter_type, "dropdown", "enums='Radom Sampling,Normal-space Sampling'");
+	add_member_control(this, "Sampling Type", (DummyEnum&)icp_filter_type, "dropdown", "enums='Default Sampling,Radom Sampling,Normal-space Sampling'");
+	add_member_control(this, "show_corresponding_lines", show_corresponding_lines, "check");
 
 	add_decorator("Go-ICP", "heading", "level=2");
 	add_member_control(this, "Go-ICP MSE Threshold", goicp.mse_threshhold, "value_slider", "min=0.000001;max=1.0;log=true;ticks=false");
@@ -245,14 +252,22 @@ void rgbd_icp_tool::timer_event(double t, double dt)
 
 void rgbd_icp_tool::on_load_source_point_cloud_cb()
 {
-	std::string fn = cgv::gui::file_open_dialog("source point cloud", "Point cloud files (obj,ply):*.obj;*.ply");
+	std::string fn = cgv::gui::file_open_dialog(
+		  "source point cloud(*.obj;*.pobj;*.ply;*.bpc;*.lpc;*.xyz;*.pct;*.points;*.wrl;*.apc;*.pnt;*.txt)",
+		  "Point cloud files:*.obj;*.pobj;*.ply;*.bpc;*.lpc;*.xyz;*.pct;*.points;*.wrl;*.apc;*.pnt;*.txt;");
+	if (fn.empty())
+		return;
 	source_pc.read(fn);
 	post_redraw();
 }
 
 void rgbd_icp_tool::on_load_target_point_cloud_cb()
 {
-	std::string fn = cgv::gui::file_open_dialog("source point cloud", "OBJ files (obj,ply):*.obj;*.ply");
+	std::string fn = cgv::gui::file_open_dialog(
+		  "source point cloud(*.obj;*.pobj;*.ply;*.bpc;*.lpc;*.xyz;*.pct;*.points;*.wrl;*.apc;*.pnt;*.txt)",
+		  "Point cloud files:*.obj;*.pobj;*.ply;*.bpc;*.lpc;*.xyz;*.pct;*.points;*.wrl;*.apc;*.pnt;*.txt;");
+	if (fn.empty())
+		return;
 	target_pc.read(fn);
 	post_redraw();
 }
@@ -294,7 +309,7 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	translation.zeros();
 	icp.set_source_cloud(source_pc);
 	icp.set_target_cloud(target_pc);
-	icp.set_iterations(2);
+	icp.set_iterations(5);
 	icp.set_eps(icp_eps);
 	icp.set_num_random(100);
 
