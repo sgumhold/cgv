@@ -254,7 +254,6 @@ namespace cgv {
 			//
 			reduce_prog.set_uniform(ctx, "model_view_projection", mvp_matrix);
 			reduce_prog.set_uniform(ctx, "model_view", modelview_matrix);
-			//reduce_prog.set_uniform(ctx, "projection", projection_matrix, true);
 
 			// compute shader
 			reduce_prog.set_uniform(ctx, uniforms.CLOD, prs.CLOD);
@@ -424,14 +423,6 @@ namespace cgv {
 			draw_prog_ptr = &one_shot_prog;
 		}
 		
-		/*
-		void clod_point_renderer::set_reduced_buffer(const GLuint ext_render_buffer, const GLuint ext_index_buffer, const GLuint draw_parameters)
-		{
-			assert(render_buffer != 0 && draw_parameters != 0);
-			active_render_buffer = ext_render_buffer;
-			active_index_buffer = ext_index_buffer;
-			active_draw_parameter_buffer = draw_parameters;
-		}*/
 
 		void clod_point_renderer::add_shader(context& ctx, shader_program& prog, const std::string& sf,const cgv::render::ShaderType st)
 		{
@@ -534,6 +525,7 @@ namespace cgv {
 			glDeleteBuffers(1, &points);
 			glDeleteBuffers(1, &indices);
 			glDeleteBuffers(1, &draw_parameters);
+			glDeleteVertexArrays(1, &vertex_array);
 		}
 
 		void clod_point_buffer_manager::resize(GLuint num_points) {
