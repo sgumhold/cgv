@@ -493,8 +493,12 @@ void context::set_light_source(void* handle, const cgv::media::illum::light_sour
 {
 	auto iter = light_sources.find(handle);
 	iter->second.first = light;
-	if (iter->second.second.enabled)
-		on_lights_changed();
+	if (place_now)
+		place_light_source(handle);
+	else {
+		if (iter->second.second.enabled)
+			on_lights_changed();
+	}
 }
 
 /// set the shader program view matrices to the currently enabled view matrices

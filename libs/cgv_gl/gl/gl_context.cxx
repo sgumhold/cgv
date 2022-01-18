@@ -326,12 +326,13 @@ void gl_context::init_render_pass()
 	if (get_render_pass_flags()&RPF_SET_LIGHTS) {
 		for (unsigned i = 0; i < nr_default_light_sources; ++i)
 			set_light_source(default_light_source_handles[i], default_light_source[i], false);
+
+		for (unsigned i = 0; i < nr_default_light_sources; ++i)
+			if (get_render_pass_flags() & RPF_SET_LIGHTS_ON)
+				enable_light_source(default_light_source_handles[i]);
+			else
+				disable_light_source(default_light_source_handles[i]);
 	}
-	for (unsigned i = 0; i < nr_default_light_sources; ++i)
-		if (get_render_pass_flags()&RPF_SET_LIGHTS_ON)
-			enable_light_source(default_light_source_handles[i]);
-		else
-			disable_light_source(default_light_source_handles[i]);
 
 	if (get_render_pass_flags()&RPF_SET_MATERIAL) {
 		set_material(default_material);
@@ -3049,9 +3050,12 @@ GLenum buffer_usage(VertexBufferUsage vbu)
 	return buffer_usages[vbu];
 }
 
-bool gl_context::vertex_buffer_bind(const vertex_buffer_base& vbb, VertexBufferType _type) const
+bool gl_context::vertex_buffer_bind(const vertex_buffer_base& vbb, VertexBufferType _type, unsigned _idx) const
 {
-	glBindBuffer(buffer_target(_type), get_gl_id(vbb.handle));
+	if (_idx == unsigned(-1))
+		glBindBuffer(buffer_target(_type), get_gl_id(vbb.handle));
+	else
+		glBindBufferBase(buffer_target(_type), _idx, get_gl_id(vbb.handle));
 	return !check_gl_error("gl_context::vertex_buffer_bind", &vbb);
 }
 

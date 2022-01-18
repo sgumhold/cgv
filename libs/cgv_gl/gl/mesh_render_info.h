@@ -87,6 +87,8 @@ public:
 		finish_construct_vbos_base(ctx, triangle_element_buffer, edge_element_buffer);
 		construct_draw_calls(ctx);
 	}
+	/// set the number of to be drawn instances - in case of 0, instanced drawing is turned off
+	void set_nr_instances(unsigned nr);
 	/// return number of mesh primitives
 	size_t get_nr_primitives() const { return primitive_names.size(); }
 	/// return name of i-th mesh primitive
