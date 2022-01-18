@@ -68,6 +68,7 @@ var classcgv_1_1render_1_1mesh__render__info =
     [ "ref_materials", "classcgv_1_1render_1_1mesh__render__info.html#a4d6c314b7d74e35e5b00b1d92bba4f19", null ],
     [ "ref_textures", "classcgv_1_1render_1_1mesh__render__info.html#a28eb9c93ab8c9eea1d34627804513f10", null ],
     [ "ref_vbos", "classcgv_1_1render_1_1mesh__render__info.html#a122a484f3d252d8059bced0a5385d0eb", null ],
+    [ "set_nr_instances", "classcgv_1_1render_1_1mesh__render__info.html#a5e9586a37d83a629d41201b1692c5236", null ],
     [ "aas", "classcgv_1_1render_1_1mesh__render__info.html#a801a9f7d88f8a57ee8ec5f635deec266", null ],
     [ "color_increment", "classcgv_1_1render_1_1mesh__render__info.html#a5465e0b2db8ec9fd220d6a646b2d5913", null ],
     [ "ct", "classcgv_1_1render_1_1mesh__render__info.html#a801dc4517ddecd253951d8bc0b5be58d", null ],
