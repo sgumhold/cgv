@@ -2,6 +2,7 @@ var classcgv_1_1render_1_1vertex__buffer =
 [
     [ "vertex_buffer", "classcgv_1_1render_1_1vertex__buffer.html#a38c35c74e480ffd1f95555f1a94ea293", null ],
     [ "~vertex_buffer", "classcgv_1_1render_1_1vertex__buffer.html#a7a780ea3e62f6c27a960593132edcd3d", null ],
+    [ "bind", "classcgv_1_1render_1_1vertex__buffer.html#aa29d9ed4925992d02bcc6c4e6af798ee", null ],
     [ "bind", "classcgv_1_1render_1_1vertex__buffer.html#ac5989dc4d880c44e000418657183d89e", null ],
     [ "copy", "classcgv_1_1render_1_1vertex__buffer.html#aa7f8028feae37954dd4b5d11d6de3a93", null ],
     [ "copy", "classcgv_1_1render_1_1vertex__buffer.html#a6e1b82910e71abc8553cfe90e5e81965", null ],

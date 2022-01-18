@@ -281,6 +281,9 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a6ff079800523ee8cafe285df2d48f5fb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a6ff079800523ee8cafe285df2d48f5fb">construct</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">cgv::media::mesh::simple_mesh</a>&lt; T &gt; &amp;mesh)</td></tr>
 <tr class="memdesc:a6ff079800523ee8cafe285df2d48f5fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct mesh render info from a given simple mesh and store attributes in vertex buffer objects <br /></td></tr>
 <tr class="separator:a6ff079800523ee8cafe285df2d48f5fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e9586a37d83a629d41201b1692c5236"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a5e9586a37d83a629d41201b1692c5236">set_nr_instances</a> (unsigned nr)</td></tr>
+<tr class="memdesc:a5e9586a37d83a629d41201b1692c5236"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the number of to be drawn instances - in case of 0, instanced drawing is turned off  <a href="classcgv_1_1render_1_1mesh__render__info.html#a5e9586a37d83a629d41201b1692c5236">More...</a><br /></td></tr>
+<tr class="separator:a5e9586a37d83a629d41201b1692c5236"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad37eed23447b45e0243d1af483d9091a"><td class="memItemLeft" align="right" valign="top"><a id="ad37eed23447b45e0243d1af483d9091a"></a>
 size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#ad37eed23447b45e0243d1af483d9091a">get_nr_primitives</a> () const</td></tr>
 <tr class="memdesc:ad37eed23447b45e0243d1af483d9091a"><td class="mdescLeft">&#160;</td><td class="mdescRight">return number of mesh primitives <br /></td></tr>
@@ -471,7 +474,29 @@ std::vector&lt; draw_call &gt;&#160;</td><td class="memItemRight" valign="bottom
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>the <a class="el" href="classcgv_1_1render_1_1mesh__render__info.html">mesh_render_info</a> structure manages vertex buffer objects for attribute and element buffers as well as an attribute array binding object. The vertex buffer can be constructed from a simple mesh and the attribute array binding is bound to a specific shader program which defines the attribute locations. <br  />
  </p>
-</div><hr/>The documentation for this class was generated from the following files:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a5e9586a37d83a629d41201b1692c5236"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e9586a37d83a629d41201b1692c5236">&#9670;&nbsp;</a></span>set_nr_instances()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::render::mesh_render_info::set_nr_instances </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>nr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>set the number of to be drawn instances - in case of 0, instanced drawing is turned off </p>
+<p>set the number of to be drawn instances - in case of 1, instanced drawing is turned off </p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>libs/cgv_gl/gl/<a class="el" href="mesh__render__info_8h_source.html">mesh_render_info.h</a></li>
 <li>libs/cgv_gl/gl/mesh_render_info.cxx</li>
 </ul>
