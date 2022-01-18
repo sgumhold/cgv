@@ -353,7 +353,8 @@ enum VertexBufferType {
 	VBT_TEXTURE,
 	VBT_UNIFORM,
 	VBT_FEEDBACK,
-	VBT_STORAGE
+	VBT_STORAGE,
+	VBT_ATOMIC_COUNTER
 };
 
 /// different vertex buffer usages as defined in OpenGL
@@ -709,7 +710,7 @@ protected:
 	virtual bool enable_attribute_array(attribute_array_binding_base* aab, int loc, bool do_enable) const = 0;
 	virtual bool is_attribute_array_enabled(const attribute_array_binding_base* aab, int loc) const = 0;
 
-	virtual bool vertex_buffer_bind(const vertex_buffer_base& vbb, VertexBufferType _type) const = 0;
+	virtual bool vertex_buffer_bind(const vertex_buffer_base& vbb, VertexBufferType _type, unsigned _idx = -1) const = 0;
 	virtual bool vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const = 0;
 	virtual bool vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) const = 0;
 	virtual bool vertex_buffer_copy(const vertex_buffer_base& src, size_t src_offset, vertex_buffer_base& target, size_t target_offset, size_t size_in_bytes) const = 0;

@@ -19,6 +19,8 @@ public:
 	~vertex_buffer();
 	/// bind buffer potentially overwriting buffer type
 	void bind(context& ctx, VertexBufferType _type = VBT_UNDEF) const;
+	/// bind uniform, feedback, storage or atomic counter buffer to an indexed buffer target
+	void bind(context& ctx, unsigned index) const;
 	/// create empty vertex buffer of size \c size given in bytes
 	bool create(const context& ctx, size_t size_in_bytes);
 	/// create vertex buffer and copy data from CPU array \c array into buffer memory
