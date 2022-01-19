@@ -234,7 +234,7 @@ bool gl_context::configure_gl()
 #ifdef _DEBUG
 	std::cout << "OpenGL version " << version_major << "." << version_minor << (core_profile?" (core)":"") << (debug?" (debug)":"") << (forward_compatible?" (forward_compatible)":"") << std::endl;
 	const GLubyte* vendor_string = glGetString(GL_VENDOR);
-	const GLubyte* renderer_string = glGetString(GL_RENDER);
+	const GLubyte* renderer_string = glGetString(GL_RENDERER);
 	const GLubyte* glslversion_string = glGetString(GL_SHADING_LANGUAGE_VERSION);
 	if (vendor_string)
 		std::cout << "   vendor     : " << vendor_string << std::endl;
@@ -242,7 +242,6 @@ bool gl_context::configure_gl()
 		std::cout << "   renderer   : " << renderer_string << std::endl;
 	if (glslversion_string)
 		std::cout << "   glslversion: " << glslversion_string << std::endl;
-
 #endif
 	if (debug) {
 		glEnable(GL_DEBUG_OUTPUT);
