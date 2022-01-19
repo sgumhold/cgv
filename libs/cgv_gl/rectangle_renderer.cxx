@@ -164,7 +164,8 @@ namespace cgv {
 			const rectangle_render_style& rrs = get_style<rectangle_render_style>();
 			if (!has_depth_offsets)
 				ref_prog().set_attribute(ctx, "depth_offset", rrs.default_depth_offset);
-			if (!has_secondary_colors)
+			int sci = ref_prog().get_attribute_location(ctx, "secondary_color");
+			if (!has_secondary_colors && sci != -1)
 				ref_prog().set_attribute(ctx, "secondary_color", rrs.default_secondary_color);
 			if (!has_border_colors)
 				ref_prog().set_attribute(ctx, "border_color", rrs.default_border_color);
