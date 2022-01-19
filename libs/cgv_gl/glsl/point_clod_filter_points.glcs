@@ -37,16 +37,16 @@ struct Vertex{
 	uint colors;
 };
 
-layout(std430, binding = 0) buffer ssInputBuffer{
-	restrict Vertex inputBuffer[];
+layout(std430, binding = 0) restrict readonly buffer ssInputBuffer{
+	Vertex inputBuffer[];
 };
 
-layout(std430, binding = 1) buffer ssTargetBuffer{
-	restrict Vertex targetBuffer[];
+layout(std430, binding = 1) restrict buffer ssTargetBuffer{
+	Vertex targetBuffer[];
 };
 
-layout(std430, binding = 2) buffer ssTargetIndexBuffer{
-	restrict uint targetIndexBuffer[];
+layout(std430, binding = 2) restrict buffer ssTargetIndexBuffer{
+	uint targetIndexBuffer[];
 };
 
 //draw parameters for glDrawArraysIndirect
@@ -57,8 +57,8 @@ layout(std430, binding = 3) restrict buffer ssDrawParameters{
 	uint baseInstance;
 } drawParameters;
 
-layout(std430, binding = 4) buffer ssInputIdBuffer{
-	restrict uint inputIdBuffer[];
+layout(std430, binding = 4) restrict buffer ssInputIdBuffer{
+	uint inputIdBuffer[];
 };
 
 layout(location = 21) uniform int batch_offset;
