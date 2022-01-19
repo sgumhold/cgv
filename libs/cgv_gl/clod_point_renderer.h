@@ -81,24 +81,10 @@ namespace cgv {
 			// draw circles instead of squares
 			bool draw_circles = false;
 			//@}
+		  private:
+			char reserved_space[36]; //this is here to fix some mess in serialization
 
-			/* @name splat rendering attributes*/
-			//@{
-			/// set to 1 in constructor 
-			float blend_width_in_pixel;
-			/// set to 0 in constructor
-			float halo_width_in_pixel;
-			/// set to 0 in constructor
-			float percentual_halo_width;
-			/// color of halo with opacity channel
-			rgba halo_color;
-			/// strength in [0,1] of halo color with respect to color of primitive
-			float halo_color_strength = 0.0;
-			/// set to true in constructor
-			bool orient_splats;
-			/// set to false in constructor
-			bool blend_points;
-			//@}
+		  public:
 			/// construct with default values
 			clod_point_render_style();
 		};

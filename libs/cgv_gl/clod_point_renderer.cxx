@@ -33,20 +33,13 @@ namespace cgv {
 			return r;
 		}
 
-		clod_point_render_style::clod_point_render_style() : halo_color(1.0, 1.0, 1.0, 1.0) {
+		clod_point_render_style::clod_point_render_style() {
 			CLOD = 1.f;
 			spacing = 1.f;
 			scale = 1.f;
 			min_millimeters = 1.f;
 			pointSize = 1.f;
 			draw_circles = false;
-			
-			blend_width_in_pixel = 1.0;
-			halo_width_in_pixel = 0.0;
-			percentual_halo_width = 0.0;
-
-			orient_splats = true;
-			blend_points = false;
 		}
 		
 		/// enables the reduction compute shader and sets invariant uniforms
@@ -239,8 +232,6 @@ namespace cgv {
 			draw_prog_ptr->set_uniform(ctx, "screenSize", screenSize);
 			draw_prog_ptr->set_uniform(ctx, "pivot", pivot_point_in_view_space);
 			draw_prog_ptr->set_uniform(ctx, "draw_circles", prs.draw_circles);
-			draw_prog_ptr->set_uniform(ctx, "halo_color", prs.halo_color);
-			draw_prog_ptr->set_uniform(ctx, "halo_color_strength", prs.halo_color_strength);
 
 
 			//view.glsl uniforms are set on draw_prog.enable(ctx) and  reduce_prog.enable(ctx)
@@ -464,21 +455,13 @@ namespace cgv {
 		bool clod_point_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
 			return
-				//rh.reflect_base(*static_cast<cgv::render::clod_point_render_style*>(this)) &&
-				rh.reflect_member("CLOD_factor", CLOD) &&
+				// rh.reflect_base(*static_cast<cgv::render::clod_point_render_style*>(this)) &&
+				rh.reflect_member("CLOD_factor", CLOD) && 
 				rh.reflect_member("spacing", spacing) &&
 				rh.reflect_member("scale", scale) &&
 				rh.reflect_member("min_millimeters", min_millimeters) &&
 				rh.reflect_member("point_size", pointSize) &&
-				rh.reflect_member("draw_circles", draw_circles) &&
-				// splat reflects
-				rh.reflect_member("blend_points", blend_points) &&
-				rh.reflect_member("orient_splats", orient_splats) &&
-				rh.reflect_member("blend_width_in_pixel", blend_width_in_pixel) &&
-				rh.reflect_member("halo_width_in_pixel", halo_width_in_pixel) &&
-				//rh.reflect_member("halo_color", halo_color) &&
-				rh.reflect_member("halo_color_strength", halo_color_strength) &&
-				rh.reflect_member("percentual_halo_width", percentual_halo_width);
+				rh.reflect_member("draw_circles", draw_circles);
 		}
 
 		cgv::reflect::extern_reflection_traits<clod_point_render_style, clod_point_render_style_reflect> get_reflection_traits(const clod_point_render_style&)
