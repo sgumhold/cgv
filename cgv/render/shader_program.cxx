@@ -270,8 +270,8 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 #endif
 	if (get_shader_config()->show_file_paths)
 		std::cout << "read shader program <" << fn << ">" << std::endl;
-	static std::vector<line> lines;
-	lines.clear();
+	std::vector<line> lines;
+	
 	split_to_lines(content, lines);
 	std::string old_shader_path = get_shader_config()->shader_path;
 	std::string path = file::get_path(file_name);
