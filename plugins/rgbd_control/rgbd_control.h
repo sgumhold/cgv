@@ -17,6 +17,7 @@
 #include <string>
 #include <mutex>
 #include <future>
+#include "fast.h"
 
 #include "lib_begin.h"
 
@@ -105,7 +106,8 @@ protected:
 
 	/// one shader program for each visualization mode
 	cgv::render::shader_program rgbd_prog;
-private:
+
+  private:
 	/// internal members used to create gui
 	DeviceMode device_mode;
 	bool near_mode;
@@ -123,7 +125,7 @@ private:
 	/// internal members used for data storage
 	rgbd::frame_type color_frame, depth_frame, ir_frame, warped_color_frame,mesh_frame;
 	rgbd::frame_type color_frame_2, depth_frame_2, ir_frame_2, warped_color_frame_2;
-
+	std::vector<fast::fast_xy> corners;
 	std::future<size_t> future_handle;
 	size_t construct_point_cloud();
 	bool acquire_next;

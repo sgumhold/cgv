@@ -8,6 +8,7 @@ addProjectDeps=["cgv_utils","cgv_type","cgv_data","cgv_base", "cgv_signal", "cgv
                 "cgv_viewer","cgv_gl", "cg_fltk", "cg_ext", "crg_stereo_view", "cmi_io", "cmv_avi", "crg_grid", "glew",
                 "rgbd_capture"
 				,"rgbd_kinect_azure"
+				,"rgbd_kinect"
 ];
 addDependencies=["opengl", "glu"];
 addSharedDefines=["RGBD_CONTROL_EXPORTS"];
