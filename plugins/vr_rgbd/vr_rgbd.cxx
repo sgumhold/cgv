@@ -783,9 +783,9 @@ class vr_rgbd : public cgv::base::node,
 				trigger_is_pressed = (vrte.get_value() > 0.5f);
 				cam_pose_points.push_back(controller_position);
 				cam_pose_ori.push_back(controller_orientation);
-				cam_cord_x.push_back(cam_pose_ori.back().row(0));
-				cam_cord_y.push_back(cam_pose_ori.back().row(1));
-				cam_cord_z.push_back(cam_pose_ori.back().row(2));
+				cam_cord_x.push_back(cam_pose_ori.back().col(0));
+				cam_cord_y.push_back(cam_pose_ori.back().col(1));
+				cam_cord_z.push_back(cam_pose_ori.back().col(2));
 				cam_pose_colors.push_back(rgb(1.0, 0.0, 0.0));
 				cam_cord_x_clr.push_back(rgb(1.0, 0.0, 0.0));
 				cam_cord_y_clr.push_back(rgb(0.0, 1.0, 0.0));

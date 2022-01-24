@@ -548,6 +548,10 @@ size_t rgbd_control::construct_point_cloud()
 	const unsigned char* colors = reinterpret_cast<const unsigned char*>(&color_frame_2.frame_data.front());
 	if (remap_color) {
 		rgbd_inp.map_color_to_depth(depth_frame_2, color_frame_2, warped_color_frame_2);
+		//TODO extract FAST or ORB features
+		fast::fast_corner_detect_10((fast::fast_byte*)color_frame_2.frame_data.front(), color_frame_2.width,
+									color_frame_2.height, color_frame_2.width, 10, corners);
+		std::cout << "corners: " << corners.size() << std::endl;
 		colors = reinterpret_cast<const unsigned char*>(&warped_color_frame_2.frame_data.front());
 	}
 	unsigned bytes_per_pixel = color_frame_2.nr_bits_per_pixel / 8;
@@ -590,6 +594,7 @@ size_t rgbd_control::construct_point_cloud()
 			}
 			++i;
 		}
+	//std::cout << "warpped_color_size: " << i << std::endl;
 	/* debug code to print out bounding box of points */
 	/*
 	box3 box;

@@ -168,9 +168,17 @@ namespace cgv {
 			ann_tree* tree = new ann_tree();
 			tree->build(*targetCloud);
 			size_t num_source_points = sourceCloud->get_nr_points();
-
+			
 			get_center_point(*targetCloud, target_center);
 			get_center_point(*sourceCloud, source_center);
+			Dir trans_center;
+			if (target_center.x() - source_center.x() > eps || target_center.y() - source_center.y() > eps ||
+				target_center.z() - source_center.z() > eps)
+			{
+				trans_center = Dir(target_center.x() - source_center.x(), target_center.y() - source_center.y(),
+								   target_center.z() - source_center.z());
+			}
+			//std::cout << "target_center: " << target_center << "source_center: " << source_center << std::endl;
 			Pnt p;
 
 			float cost = 1.0;

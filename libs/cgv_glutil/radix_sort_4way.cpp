@@ -3,7 +3,8 @@
 namespace cgv {
 namespace glutil {
 
-bool radix_sort_4way::load_shader_programs(context& ctx) {
+bool radix_sort_4way::load_shader_programs(context& ctx)
+{
 
 	bool res = true;
 	std::string where = "radix_sort_4way::load_shader_programs()";
@@ -14,11 +15,11 @@ bool radix_sort_4way::load_shader_programs(context& ctx) {
 	shader_code::set_define(distance_defines, "USE_AUXILIARY_BUFFER", auxiliary_type_def != "", false);
 	shader_code::set_define(distance_defines, "VALUE_TYPE_DEFINITION", value_type_def, std::string("uint"));
 
-	if(data_type_def != "")
+	if (data_type_def != "")
 		distance_defines["DATA_TYPE_DEFINITION"] = data_type_def;
-	if(auxiliary_type_def != "")
+	if (auxiliary_type_def != "")
 		distance_defines["AUXILIARY_TYPE_DEFINITION"] = auxiliary_type_def;
-	if(key_definition != "")
+	if (key_definition != "")
 		distance_defines["KEY_DEFINITION"] = key_definition;
 
 	/*distance_defines["ORDER"] = std::to_string((int)sort_order);
@@ -32,14 +33,16 @@ bool radix_sort_4way::load_shader_programs(context& ctx) {
 	res = res && shader_library::load(ctx, distance_prog, "distance", distance_defines, true, where);
 	res = res && shader_library::load(ctx, scan_local_prog, "scan_local", true, where);
 	res = res && shader_library::load(ctx, scan_global_prog, "scan_global", true, where);
-	res = res && shader_library::load(ctx, scatter_prog, "scatter", { {"VALUE_TYPE_DEFINITION", value_type_def} }, true, where);
+	res = res &&
+		  shader_library::load(ctx, scatter_prog, "scatter", {{"VALUE_TYPE_DEFINITION", value_type_def}}, true, where);
 
 	return res;
 }
 
-bool radix_sort_4way::init(context& ctx, size_t count) {
+bool radix_sort_4way::init(context& ctx, size_t count)
+{
 
-	if(!load_shader_programs(ctx))
+	if (!load_shader_programs(ctx))
 		return false;
 
 	delete_buffers();
@@ -51,7 +54,7 @@ bool radix_sort_4way::init(context& ctx, size_t count) {
 
 	// Calculate padding for n to next multiple of blocksize.
 	n_pad = block_size - (n % (block_size));
-	if(n % block_size == 0)
+	if (n % block_size == 0)
 		n_pad = 0;
 
 	num_groups = (n + n_pad + group_size - 1) / group_size;
@@ -61,7 +64,7 @@ bool radix_sort_4way::init(context& ctx, size_t count) {
 	num_blocksums = num_scan_groups;
 
 	unsigned int num = 1;
-	while(num_blocksums > num)
+	while (num_blocksums > num)
 		num <<= 1;
 	num_blocksums = num;
 
@@ -70,7 +73,7 @@ bool radix_sort_4way::init(context& ctx, size_t count) {
 
 	create_buffer(keys_in_ssbo, data_size);
 	create_buffer(keys_out_ssbo, data_size);
-	create_buffer(values_out_ssbo, value_component_count*data_size);
+	create_buffer(values_out_ssbo, value_component_count * data_size);
 	create_buffer(prefix_sum_ssbo, data_size / 4);
 	create_buffer(blocksums_ssbo, blocksums_size);
 	create_buffer(scratch_ssbo, 8 * sizeof(unsigned int));
@@ -99,16 +102,18 @@ bool radix_sort_4way::init(context& ctx, size_t count) {
 	return true;
 }
 
-void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos, const vec3& view_dir, GLuint auxiliary_buffer) {
+void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos,
+						   const vec3& view_dir, GLuint auxiliary_buffer)
+{
 
 	GLuint values_in_buffer = value_buffer;
 
-	//begin_time_query();
+	// begin_time_query();
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, data_buffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, keys_in_ssbo);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, values_in_buffer);
-	if(auxiliary_type_def != "" && auxiliary_buffer > 0)
+	if (auxiliary_type_def != "" && auxiliary_buffer > 0)
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, auxiliary_buffer);
 
 	distance_prog.enable(ctx);
@@ -122,7 +127,7 @@ void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, blocksums_ssbo);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, scratch_ssbo);
 
-	for(unsigned int b = 0; b < 32; b += 2) {
+	for (unsigned int b = 0; b < 32; b += 2) {
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, keys_in_ssbo);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, keys_out_ssbo);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, values_in_buffer);
@@ -147,7 +152,7 @@ void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer
 		std::swap(values_in_buffer, values_out_ssbo);
 	}
 
-	//end_time_query();
+	// end_time_query();
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
@@ -158,5 +163,5 @@ void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, 0);
 }
 
-}
-}
+} // namespace glutil
+} // namespace cgv
