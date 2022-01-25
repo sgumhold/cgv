@@ -141,15 +141,15 @@ public:
 		
 		show_background = true;
 
-		canvas.register_shader("rectangle", "rect2d.glpr");
-		canvas.register_shader("circle", "circle2d.glpr");
-		canvas.register_shader("ellipse", "ellipse2d.glpr");
-		canvas.register_shader("arrow", "arrow2d.glpr");
-		canvas.register_shader("grid", "grid2d.glpr");
+		canvas.register_shader("rectangle", cgv::glutil::canvas::shaders_2d::rectangle);
+		canvas.register_shader("circle", cgv::glutil::canvas::shaders_2d::circle);
+		canvas.register_shader("ellipse", cgv::glutil::canvas::shaders_2d::ellipse);
+		canvas.register_shader("arrow", cgv::glutil::canvas::shaders_2d::arrow);
+		canvas.register_shader("grid", cgv::glutil::canvas::shaders_2d::grid);
 
-		line_renderer = cgv::glutil::generic_renderer("line2d.glpr");
-		spline_renderer = cgv::glutil::generic_renderer("cubic_spline2d.glpr");
-		point_renderer = cgv::glutil::generic_renderer("circle2d.glpr");
+		line_renderer = cgv::glutil::generic_renderer(cgv::glutil::canvas::shaders_2d::line);
+		spline_renderer = cgv::glutil::generic_renderer(cgv::glutil::canvas::shaders_2d::cubic_spline);
+		point_renderer = cgv::glutil::generic_renderer(cgv::glutil::canvas::shaders_2d::circle);
 
 		text_align_h = text_align_v = cgv::render::TA_NONE;
 

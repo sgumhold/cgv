@@ -7,14 +7,14 @@
 
 #include "../shader_library.h"
 
-//#include "../lib_begin.h"
+#include "../lib_begin.h"
 
 namespace cgv {
 namespace glutil {
 
-class canvas : public cgv::render::render_types {
+class CGV_API canvas : public cgv::render::render_types {
 public:
-	struct shaders_2d {
+	struct CGV_API shaders_2d {
 		static const std::string arrow;
 		static const std::string background;
 		static const std::string circle;
@@ -186,4 +186,4 @@ public:
 }
 }
 
-//#include <cgv/config/lib_end.h>
+#include <cgv/config/lib_end.h>
