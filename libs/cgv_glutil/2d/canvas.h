@@ -13,6 +13,19 @@ namespace cgv {
 namespace glutil {
 
 class canvas : public cgv::render::render_types {
+public:
+	struct shaders_2d {
+		static const std::string arrow;
+		static const std::string background;
+		static const std::string circle;
+		static const std::string cubic_spline;
+		static const std::string ellipse;
+		static const std::string grid;
+		static const std::string line;
+		static const std::string polygon;
+		static const std::string rectangle;
+	};
+
 protected:
 	cgv::glutil::shader_library shaders;
 	ivec2 resolution;
