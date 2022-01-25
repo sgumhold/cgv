@@ -82,8 +82,8 @@ protected:
 		void update_pos(const layout_attributes& la, const float scale_exponent) {
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
 			float t = val;
-			pos.x() = la.handles_rect.pos().x() + t * la.handles_rect.size().x();
-			pos.y() = la.handles_rect.pos().y();
+			pos.x() = static_cast<float>(la.handles_rect.pos().x()) + t * la.handles_rect.size().x();
+			pos.y() = static_cast<float>(la.handles_rect.pos().y());
 		}
 
 		float sd_rectangle(const vec2& p, const vec2& b) const {
