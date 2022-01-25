@@ -316,12 +316,16 @@ void shader_code::set_defines(std::string& source, const shader_define_map& defi
 		if(define_pos == std::string::npos)
 			continue;
 
-		size_t overwrite_pos = define_pos + 8 + name.length() + 1; // length of: #define <NAME><SINGLE_SPACE>
+		size_t offset = 1;
+		if(source[define_pos + 8 + name.length()] == '\n')
+			offset = 0; // set search offset to zero if define has empty string as default value
+
+		size_t overwrite_pos = define_pos + 8 + name.length() + offset; // length of: #define <NAME><SINGLE_SPACE/NO-SPACE0>
 		std::string first_part = source.substr(0, overwrite_pos);
 		size_t new_line_pos = source.find_first_of('\n', overwrite_pos);
 		if(new_line_pos != std::string::npos) {
 			std::string second_part = source.substr(new_line_pos);
-			source = first_part + value + second_part;
+			source = first_part + (offset == 0 ? " " : "") + value + second_part;
 			source += "";
 		}
 	}
