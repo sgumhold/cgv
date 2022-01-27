@@ -86,6 +86,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1shader__program.
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-static-methods">Static Protected Member Functions</a> &#124;
 <a href="classcgv_1_1render_1_1shader__program-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::render::shader_program Class Reference</div>  </div>
@@ -145,10 +146,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#ac3f7b03e1e0ef7d38cdb4358db75af57">attach_dir</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;dir_name, bool recursive)</td></tr>
 <tr class="memdesc:ac3f7b03e1e0ef7d38cdb4358db75af57"><td class="mdescLeft">&#160;</td><td class="mdescRight">collect shader code files from directory, compile and attach. <br /></td></tr>
 <tr class="separator:ac3f7b03e1e0ef7d38cdb4358db75af57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd82a332550d3b6cd5f9f84fbec63f52"><td class="memItemLeft" align="right" valign="top"><a id="acd82a332550d3b6cd5f9f84fbec63f52"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#acd82a332550d3b6cd5f9f84fbec63f52">attach_program</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;file_name, bool show_error=false, const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines=<a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a>())</td></tr>
-<tr class="memdesc:acd82a332550d3b6cd5f9f84fbec63f52"><td class="mdescLeft">&#160;</td><td class="mdescRight">collect shader code files declared in shader program file, compile and attach them <br /></td></tr>
-<tr class="separator:acd82a332550d3b6cd5f9f84fbec63f52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7001d8eec9dd9906a2014dfc263af84a"><td class="memItemLeft" align="right" valign="top"><a id="a7001d8eec9dd9906a2014dfc263af84a"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a7001d8eec9dd9906a2014dfc263af84a">attach_program</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, std::string file_name, bool show_error=false, const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines=<a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a>())</td></tr>
+<tr class="memdesc:a7001d8eec9dd9906a2014dfc263af84a"><td class="mdescLeft">&#160;</td><td class="mdescRight">collect shader code files declared in shader program file, compile and attach them <br /></td></tr>
+<tr class="separator:a7001d8eec9dd9906a2014dfc263af84a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98bd7f00b2aae4b4093fd410a0fc8e36"><td class="memItemLeft" align="right" valign="top"><a id="a98bd7f00b2aae4b4093fd410a0fc8e36"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a98bd7f00b2aae4b4093fd410a0fc8e36">link</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, bool show_error=false)</td></tr>
 <tr class="memdesc:a98bd7f00b2aae4b4093fd410a0fc8e36"><td class="mdescLeft">&#160;</td><td class="mdescRight">link shaders to an executable program <br /></td></tr>
@@ -268,6 +269,10 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a284d348185df93093343912db7d1a497">get_max_nr_geometry_shader_output_vertices</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:a284d348185df93093343912db7d1a497"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the maximum number of output vertices of a geometry shader <br /></td></tr>
 <tr class="separator:a284d348185df93093343912db7d1a497"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2626297e05cb505a85d0dbea5d6df18e"><td class="memItemLeft" align="right" valign="top"><a id="a2626297e05cb505a85d0dbea5d6df18e"></a>
+static std::vector&lt; <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a2626297e05cb505a85d0dbea5d6df18e">extract_instances</a> (std::string file_name)</td></tr>
+<tr class="memdesc:a2626297e05cb505a85d0dbea5d6df18e"><td class="mdescLeft">&#160;</td><td class="mdescRight">find and parse all instance definitions in a shader program file <br /></td></tr>
+<tr class="separator:a2626297e05cb505a85d0dbea5d6df18e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -290,6 +295,13 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a88e2480f41b18f91f0b13b072a0587ae">update_state</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:a88e2480f41b18f91f0b13b072a0587ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">ensure that the state has been set in the context <br /></td></tr>
 <tr class="separator:a88e2480f41b18f91f0b13b072a0587ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-methods"></a>
+Static Protected Member Functions</h2></td></tr>
+<tr class="memitem:a83f8ebf3a11a6439177816650161b87d"><td class="memItemLeft" align="right" valign="top"><a id="a83f8ebf3a11a6439177816650161b87d"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a83f8ebf3a11a6439177816650161b87d">open_program_file</a> (std::string &amp;file_name, std::string &amp;content, std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1line.html">cgv::utils::line</a> &gt; &amp;lines, std::string *last_error_ptr=0)</td></tr>
+<tr class="memdesc:a83f8ebf3a11a6439177816650161b87d"><td class="mdescLeft">&#160;</td><td class="mdescRight">common code necessary to open file <br /></td></tr>
+<tr class="separator:a83f8ebf3a11a6439177816650161b87d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>a shader program combines several shader code fragments to a complete definition of the shading pipeline. </p>

@@ -38,6 +38,7 @@ var classcgv_1_1render_1_1line__renderer =
     [ "vecn", "classcgv_1_1render_1_1line__renderer.html#aa4274bbe9929cab87164fda32123be1a", null ],
     [ "line_renderer", "classcgv_1_1render_1_1line__renderer.html#a5d219e60151a749bdc8346b1267e8e4b", null ],
     [ "attributes_persist", "classcgv_1_1render_1_1line__renderer.html#acf98eb4a64e230a55861683dee4b31ef", null ],
+    [ "build_program", "classcgv_1_1render_1_1line__renderer.html#a6de4a9420782e2117ede9db2a646c020", null ],
     [ "build_shader_program", "classcgv_1_1render_1_1line__renderer.html#a436a9b3d2c5e2bfeec9990823c16c7d9", null ],
     [ "clear", "classcgv_1_1render_1_1line__renderer.html#a78cd29d5497c8a9d3c554266e7b171ee", null ],
     [ "create_render_style", "classcgv_1_1render_1_1line__renderer.html#a331c9c0cb6b633798a98585d8eb10f7a", null ],

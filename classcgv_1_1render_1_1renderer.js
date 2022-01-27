@@ -39,6 +39,7 @@ var classcgv_1_1render_1_1renderer =
     [ "renderer", "classcgv_1_1render_1_1renderer.html#a7b8f6d80876c3f364470b414583feead", null ],
     [ "~renderer", "classcgv_1_1render_1_1renderer.html#a457f9b1fe12157efee3d95310cb8b760", null ],
     [ "attributes_persist", "classcgv_1_1render_1_1renderer.html#acf98eb4a64e230a55861683dee4b31ef", null ],
+    [ "build_program", "classcgv_1_1render_1_1renderer.html#a6de4a9420782e2117ede9db2a646c020", null ],
     [ "build_shader_program", "classcgv_1_1render_1_1renderer.html#af013e9b4c5e3731618d1f23df15a1fce", null ],
     [ "clear", "classcgv_1_1render_1_1renderer.html#a78cd29d5497c8a9d3c554266e7b171ee", null ],
     [ "create_render_style", "classcgv_1_1render_1_1renderer.html#a3a0385be3fce7d46b315c50520d2b76e", null ],
