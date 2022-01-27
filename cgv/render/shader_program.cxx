@@ -231,31 +231,76 @@ bool shader_program::attach_dir(const context& ctx, const std::string& dir_name,
 		return false;
 	return attach_files(ctx, file_names);
 }
-
-/// collect shader code files declared in shader program file, compile and attach them
-bool shader_program::attach_program(const context& ctx, const std::string& file_name, bool show_error, const shader_define_map& defines) {
+bool shader_program::open_program_file(std::string& file_name, std::string& content, std::vector<line>& lines, std::string* last_error_ptr)
+{
 	std::string fn = shader_code::find_file(file_name);
-	if(fn.empty()) {
-		last_error = "could not find shader program file " + file_name;
-		if(show_error)
-			std::cerr << last_error << std::endl;
+	if (fn.empty()) {
+		if (last_error_ptr)
+			*last_error_ptr = "could not find shader program file " + file_name;
 		return false;
 	}
-	std::string content;
-	if(!cgv::base::read_data_file(fn, content, true)) {
-		last_error = "could not read shader program file " + file_name;
-		if(show_error)
-			std::cerr << last_error << std::endl;
+	if (!cgv::base::read_data_file(fn, content, true)) {
+		if (last_error_ptr)
+			*last_error_ptr = "could not read shader program file " + file_name;
 		return false;
 	}
 #if WIN32
 	shader_code::decode_if_base64(content);
 #endif
-	if (get_shader_config()->show_file_paths)
-		std::cout << "read shader program <" << fn << ">" << std::endl;
-	static std::vector<line> lines;
-	lines.clear();
 	split_to_lines(content, lines);
+	file_name = fn;
+	return true;
+}
+std::vector<shader_define_map> shader_program::extract_instances(std::string file_name)
+{
+	std::string content;
+	std::vector<line> lines;
+	std::vector<shader_define_map> result;
+	if (!open_program_file(file_name, content, lines))
+		return result;
+	for (unsigned int i = 0; i < lines.size(); ++i) {
+		token tok = lines[i];
+		while (tok.begin < tok.end && cgv::utils::is_space(*tok.begin))
+			++tok.begin;
+		std::string l = to_string(tok);
+		if (l.empty() || l[0] == '/')
+			continue;
+		if (l.substr(0, 9) != "instance:")
+			continue;
+		std::string defs=l.substr(9);
+		std::vector<token> toks;
+		split_to_tokens(defs, toks, "", false, "", "", ";");
+		shader_define_map defines;
+		for (const auto& t : toks) {
+			std::vector<token> sides;
+			split_to_tokens(t, sides, "", false, "", "", "=");
+			std::vector<std::string> S;
+			for (auto& s : sides) {
+				while (s.begin < s.end && cgv::utils::is_space(*s.begin))
+					++s.begin;
+				while (s.begin < s.end && cgv::utils::is_space(s.end[-1]))
+					--s.end;
+				if (s.begin < s.end)
+					S.push_back(to_string(s));
+			}
+			if (S.size() == 2)
+				defines[S[0]] = S[1];
+		}
+		result.push_back(defines);
+	}
+	return result;
+}
+
+bool shader_program::attach_program(const context& ctx, std::string file_name, bool show_error, const shader_define_map& defines) 
+{
+	std::string content;
+	std::vector<line> lines;
+	if (!open_program_file(file_name, content, lines, &last_error)) {
+		std::cerr << last_error << std::endl;
+		return false;
+	}
+	if (get_shader_config()->show_file_paths)
+		std::cout << "read shader program <" << file_name << ">" << std::endl;
 	std::string old_shader_path = get_shader_config()->shader_path;
 	std::string path = file::get_path(file_name);
 	if (!path.empty())
@@ -336,16 +381,17 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 				success = false;
 				error = "3 : geometry_shader_info takes three arguments separated by colons";
 			}
-		} else {
-			if (show_error) {
-				std::cerr << fn.c_str() << " (" << i+1
-					       << "): warning G0001 : syntax error in line '"
-							 << l.c_str() << "'" << std::endl;
-			}
 		}
+		else if (l.substr(0, 9) == "instance:") {
+		}
+		else if (show_error) {
+			std::cerr << file_name.c_str() << " (" << i + 1
+				<< "): warning G0001 : syntax error in line '"
+				<< l.c_str() << "'" << std::endl;
+		}		
 		if (!success) {
 			if (show_error) {
-				std::cerr << fn.c_str() << " (" << i+1
+				std::cerr << file_name.c_str() << " (" << i+1
 					       << "): error G000" << error.c_str() << std::endl;
 			}
 			no_error = false;
