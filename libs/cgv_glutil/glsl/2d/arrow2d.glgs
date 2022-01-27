@@ -1,6 +1,6 @@
 #version 430
 
-#define MODE 0
+#define MODE 1
 
 //***** begin interface of shape2d.glsl ***********************************
 uniform float border_radius = 0.0;
@@ -13,7 +13,11 @@ void override_color(in vec4 color);
 vec4 transform_world_to_window_space(vec2 p);
 //***** end interface of shape2d.glsl ***********************************
 
+#if MODE == 0
 layout(points) in;
+#else
+layout(lines) in;
+#endif
 layout(triangle_strip, max_vertices = 4) out;
 
 const vec2 corners[4] = vec2[](
@@ -53,9 +57,14 @@ vec2 ortho2d(vec2 v) {
 	return vec2(v.y, -v.x);
 }
 
-void main() {	
+void main() {
+#if MODE == 0
 	vec2 position_a = gl_in[0].gl_Position.xy;
 	vec2 position_b = gl_in[0].gl_Position.zw;
+#else
+	vec2 position_a = gl_in[0].gl_Position.xy;
+	vec2 position_b = gl_in[1].gl_Position.xy;
+#endif
 
 	float width = max(stem_width, head_width);
 	
