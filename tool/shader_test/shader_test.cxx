@@ -181,6 +181,14 @@ int g_argc;
 char** g_argv;
 context* g_ctx_ptr;
 
+void stream_out_prog(std::ostream& os, const std::string& fn, const cgv::render::shader_define_map& defines)
+{
+	os << fn;
+	if (!defines.empty())
+		for (const auto& d : defines)
+			os << "|" << d.first << "=" << d.second;
+}
+
 int perform_test()
 {
 	bool shader_developer = cgv::utils::has_option("SHADER_DEVELOPER");
@@ -194,19 +202,28 @@ int perform_test()
 	// check input file extension
 	std::string ext = to_lower(get_extension(g_argv[1]));
 	if (ext == "glpr") {
-		// in case of shader program, build it from the file
-		shader_program prog(true);
-		if (prog.build_program(*g_ctx_ptr, g_argv[1], shader_developer)) {
-			convert_to_string(g_argv[1], g_argv[2]);
-			//write(g_argv[2], "ok", 2, true);
-			std::cout << "shader program ok (" << g_argv[1] << ")" << std::endl;
-		}
-		else {
-			if (!shader_developer)
+		std::vector<shader_define_map> define_maps = shader_program::extract_instances(g_argv[1]);
+		if (define_maps.empty())
+			define_maps.push_back({});
+		for (auto defines : define_maps) {
+			// in case of shader program, build it from the file
+			shader_program prog(true);
+			if (prog.build_program(*g_ctx_ptr, g_argv[1], shader_developer, defines)) {
 				convert_to_string(g_argv[1], g_argv[2]);
+				//write(g_argv[2], "ok", 2, true);
+				std::cout << "shader program ok (";
+				stream_out_prog(std::cout, g_argv[1], defines);
+				std::cout << ")" << std::endl;
+			}
 			else {
-				std::cout << "error:" << g_argv[1] << " (1) : glsl program error" << std::endl;
-				exit_code = 1;
+				if (!shader_developer)
+					convert_to_string(g_argv[1], g_argv[2]);
+				else {
+					std::cout << "error:";
+					stream_out_prog(std::cout, g_argv[1], defines);
+					std::cout << " (1) : glsl program error" << std::endl;
+					exit_code = 1;
+				}
 			}
 		}
 	}
@@ -258,7 +275,7 @@ int main(int argc, char** argv)
 	delete ctx_ptr;
 	return exit_code;
 }
-
+#ifndef SHADER_TEST_APP
 namespace cgv {
 	namespace render {
 		namespace gl {
@@ -344,3 +361,4 @@ void textured_material::disable_textures(context&)
 
 	}
 }
+#endif

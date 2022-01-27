@@ -119,6 +119,19 @@ namespace cgv {
 		{
 			rs = &_rs;
 		}
+
+		/// build shader program for specific render style
+		bool renderer::build_program(context& ctx, shader_program& prog, const render_style& _rs)
+		{
+			shader_define_map defines;
+			auto* tmp = rs;
+			rs = &_rs;
+			update_defines(defines);
+			bool res = build_shader_program(ctx, prog, defines);
+			rs = tmp;
+			return res;
+		}
+
 		/// access to render style
 		const render_style* renderer::get_style_ptr() const
 		{
