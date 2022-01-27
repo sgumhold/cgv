@@ -37,6 +37,7 @@ var classcgv_1_1render_1_1sphere__renderer =
     [ "vec4", "classcgv_1_1render_1_1sphere__renderer.html#a8f6fdf00ab6917209d081ffe691c75f3", null ],
     [ "vecn", "classcgv_1_1render_1_1sphere__renderer.html#aa4274bbe9929cab87164fda32123be1a", null ],
     [ "attributes_persist", "classcgv_1_1render_1_1sphere__renderer.html#acf98eb4a64e230a55861683dee4b31ef", null ],
+    [ "build_program", "classcgv_1_1render_1_1sphere__renderer.html#a6de4a9420782e2117ede9db2a646c020", null ],
     [ "build_shader_program", "classcgv_1_1render_1_1sphere__renderer.html#a3375af3f9d5365f429fcf72f9d45327e", null ],
     [ "clear", "classcgv_1_1render_1_1sphere__renderer.html#a78cd29d5497c8a9d3c554266e7b171ee", null ],
     [ "create_render_style", "classcgv_1_1render_1_1sphere__renderer.html#a0d35b6084aee64b3926b1132a7f29be1", null ],
