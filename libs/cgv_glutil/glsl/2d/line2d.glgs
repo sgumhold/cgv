@@ -10,7 +10,11 @@ void override_color(in vec4 color);
 vec4 transform_world_to_window_space(vec2 p);
 //***** end interface of shape2d.glsl ***********************************
 
+#if MODE == 0
+layout(points) in;
+#else
 layout(lines) in;
+#endif
 layout(triangle_strip, max_vertices = 4) out;
 
 const vec2 corners[4] = vec2[](
@@ -39,9 +43,13 @@ vec2 ortho2d(vec2 v) {
 }
 
 void main() {
-	
+#if MODE == 0
+	vec2 start = gl_in[0].gl_Position.xy;
+	vec2 end = gl_in[0].gl_Position.zw;
+#else
 	vec2 start = gl_in[0].gl_Position.xy;
 	vec2 end = gl_in[1].gl_Position.xy;
+#endif
 
 	vec2 delta = end - start;
 	float len = length(delta);
