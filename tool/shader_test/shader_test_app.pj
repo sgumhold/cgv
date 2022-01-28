@@ -1,6 +1,9 @@
 @=
-include(INPUT_DIR."/shader_test.pj")
 projectType="application";
 projectName="shader_test_app";
 projectGUID="D120F525-7A7E-4b3f-8D71-08FF29349578";
-addCommandLineArguments=[CGV_DIR."/libs/cgv_gl/glsl/arrow.glpr", "arrow.log"];
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd/fltk", CGV_DIR."/3rd/glew"];
+addProjectDeps=["glew","fltk","cgv_utils","cgv_type","cgv_reflect","cgv_data","cgv_base","cgv_signal","cgv_render","cgv_ppp","cgv_media","cgv_os","cgv_gl","cgv_gui"];
+addIncDirs=[CGV_DIR."/3rd/glew", CGV_DIR."/libs"];
+addCommandLineArguments=[CGV_DIR."/libs/cgv_gl/glsl/box.glpr", "box.log"];
+addDefines=["SHADER_TEST_APP"];

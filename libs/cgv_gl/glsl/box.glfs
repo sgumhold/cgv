@@ -1,9 +1,20 @@
 #version 150 
 
+#define ROUNDING 0
+
 in vec3 normal;
 in vec4 color_fs;
 in vec3 position;
 flat in int side;
+
+#if ROUNDING == 1
+in vec3 extent;
+in vec3 pos_box;
+in vec3 eye_box;
+in float radius;
+in mat3 NM_fs;
+in vec4 secondary_color;
+#endif
 
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
@@ -14,8 +25,127 @@ void finish_fragment(vec4 color);
 vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
 //***** end interface of surface.glsl ***********************************
 
+#if ROUNDING == 1
+bool roundedboxIntersect(in vec3 ro, in vec3 rd, in vec3 size, in float rad, out float t, out bool rounded)
+{
+    rounded = false;
+    // bounding box
+    vec3 m = 1.0/rd;
+    vec3 n = m*ro;
+    vec3 k = abs(m)*(size+rad);
+    vec3 t1 = -n - k;
+    vec3 t2 = -n + k;
+    float tN = max( max( t1.x, t1.y ), t1.z );
+    float tF = min( min( t2.x, t2.y ), t2.z );
+    if( tN>tF) {
+        //color = vec3(tN-tF,0.0,0.0);
+        return false;
+    }
+    if( tF<0.0) {
+        //color = vec3(0.0,-tF,0.0);
+        return false;
+    }
+    t = tN;
+
+    // convert to first octant
+    vec3 pos = ro+t*rd;
+    vec3 s = sign(pos);
+    ro  *= s;
+    rd  *= s;
+    pos *= s;
+        
+    // faces
+    pos -= size;
+    pos = max( pos.xyz, pos.yzx );
+    if( min(min(pos.x,pos.y),pos.z) < 0.0 ) {
+        //color = vec3(0.0,1.0,0.0);
+        return true;
+    }
+    // some precomputation
+    vec3 oc = ro - size;
+    vec3 dd = rd*rd;
+    vec3 oo = oc*oc;
+    vec3 od = oc*rd;
+    float ra2 = rad*rad;
+
+    t = 1e20;        
+
+    // corner
+    {
+    float b = od.x + od.y + od.z;
+    float c = oo.x + oo.y + oo.z - ra2;
+    float h = b*b - c;
+    if( h>0.0 ) t = -b-sqrt(h);
+    }
+    // edge X
+    {
+    float a = dd.y + dd.z;
+    float b = od.y + od.z;
+    float c = oo.y + oo.z - ra2;
+    float h = b*b - a*c;
+    if( h>0.0 )
+    {
+        h = (-b-sqrt(h))/a;
+        if( h>0.0 && h<t && abs(ro.x+rd.x*h)<size.x ) t = h;
+    }
+    }
+    // edge Y
+    {
+    float a = dd.z + dd.x;
+    float b = od.z + od.x;
+    float c = oo.z + oo.x - ra2;
+    float h = b*b - a*c;
+    if( h>0.0 )
+    {
+        h = (-b-sqrt(h))/a;
+        if( h>0.0 && h<t && abs(ro.y+rd.y*h)<size.y ) t = h;
+    }
+    }
+    // edge Z
+    {
+    float a = dd.x + dd.y;
+    float b = od.x + od.y;
+    float c = oo.x + oo.y - ra2;
+    float h = b*b - a*c;
+    if( h>0.0 )
+    {
+        h = (-b-sqrt(h))/a;
+        if( h>0.0 && h<t && abs(ro.z+rd.z*h)<size.z ) t = h;
+    }
+    }
+
+    if( t>1e19 ) {
+        //color = vec3(0.0,0.0,1.0);
+        return false;
+    }
+    //color = vec3(0.5,0.5,0.5);
+    rounded = true;
+    return true;
+}
+
+// normal of a rounded box
+vec3 roundedboxNormal( in vec3 pos, in vec3 siz, in float rad )
+{
+    return sign(pos)*normalize(max(abs(pos)-siz,0.0));
+}
+#endif
 void main()
 {
-	// illumination
-	finish_fragment(compute_reflected_appearance(position, normalize(normal), color_fs, side));
+#if ROUNDING == 0
+    finish_fragment(compute_reflected_appearance(position, normalize(normal), color_fs, side));
+#else
+    vec3 ray_dir_box = pos_box - eye_box;
+    float l = length(ray_dir_box);
+    vec3 rd = normalize(ray_dir_box);
+    float t;
+    bool rounded;
+    if (!roundedboxIntersect(eye_box, rd, 0.5*extent - radius, radius, t, rounded))
+        discard;
+    vec3 hit_box = eye_box + t * rd;
+    vec3 nml_box = roundedboxNormal(hit_box, 0.5*extent - radius, radius);
+    vec3 hit_eye = l * position;
+    vec3 nml_eye = NM_fs*nml_box;
+    finish_fragment(compute_reflected_appearance(hit_eye, normalize(nml_eye), rounded ? secondary_color : color_fs, side));
+#endif
 }
+

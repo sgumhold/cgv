@@ -115,13 +115,11 @@ bool check(bool result, bool report_success = false)
 
 int main(int argc, char** argv) 
 {
-	if (argc == 1) {
-		display::show_all_displays();
-		return 1;
-	}
-	if (argc == 2) {
+	// check for more
+	DisplayScanMode mode = DSM_ALL;
+	int i = 1;
+	if (argc >= 2) {
 		if (argv[1][0] == 'p' || argv[1][0] == '+' || argv[1][0] == '-') {
-			DisplayScanMode mode = DSM_ALL;
 			int j = 0;
 			while (argv[1][j] != 0 && j < 2) {
 				switch (argv[1][j]) {
@@ -131,13 +129,17 @@ int main(int argc, char** argv)
 				}
 				++j;
 			}
-			display::show_all_displays(mode);
-			return 1;
+			++i;
 		}
 	}
+	if (i == argc) {
+		display::show_all_displays(mode);
+		return 1;
+	}
+	display::scan_displays(mode);
 	const std::vector<display*>& displays = display::get_displays();
 	bool mode_changed, position_changed;
-	for (int i=1; i<argc; ++i) {
+	for (; i<argc; ++i) {
 		if (argv[i][0] == '=') {
 			check(display::activate_all());
 			continue;

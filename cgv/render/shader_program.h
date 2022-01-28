@@ -17,6 +17,9 @@ namespace cgv {
 #include "lib_begin.h"
 
 namespace cgv {
+	namespace utils {
+		struct line;
+	}
 	namespace render {
 
 /** a shader program combines several shader code fragments
@@ -34,6 +37,8 @@ protected:
 	bool attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_define_map& defines = shader_define_map());
 	/// ensure that the state has been set in the context
 	void update_state(const context& ctx);
+	/// common code necessary to open file
+	static bool open_program_file(std::string& file_name, std::string& content, std::vector<cgv::utils::line>& lines, std::string* last_error_ptr = 0);
 public:
 	/// resolve file name with shader_code::find_file and add file to list if found
 	static bool collect_file(const std::string& file_name, std::vector<std::string>& file_names);
@@ -88,7 +93,9 @@ public:
 	/// collect shader code files from directory, compile and attach.
 	bool attach_dir(const context& ctx, const std::string& dir_name, bool recursive);
 	/// collect shader code files declared in shader program file, compile and attach them
-	bool attach_program(const context& ctx, const std::string& file_name, bool show_error = false, const shader_define_map& defines = shader_define_map());
+	bool attach_program(const context& ctx, std::string file_name, bool show_error = false, const shader_define_map& defines = shader_define_map());
+	/// find and parse all instance definitions in a shader program file
+	static std::vector<shader_define_map> extract_instances(std::string file_name);
 	/// link shaders to an executable program
 	bool link(const context& ctx, bool show_error = false);
 	/// return whether program is linked

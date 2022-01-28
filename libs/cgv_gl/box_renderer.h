@@ -21,6 +21,10 @@ namespace cgv { // @<
 			vec3 default_extent;
 			/// box anchor position relative to center that corresponds to the position attribute
 			vec3 relative_anchor;
+			/// whether to use rounding of edges and corners (enabling re-compiles shader program)
+			bool rounding = false;
+			/// radius used in case radius array is not specified
+			float default_radius = 0.01f;
 			/// default constructor sets default extent to (1,1,1) and relative anchor to (0,0,0)
 			box_render_style();
 		};
@@ -31,6 +35,10 @@ namespace cgv { // @<
 		protected:
 			/// store whether extent array has been specified
 			bool has_extents;
+			/// store whether extent array has been specified
+			bool has_radii;
+			/// whether secondary color or color array was set
+			bool has_secondary_colors;
 			/// whether array with per box translations has been specified
 			bool has_translations;
 			/// whether array with per box rotations has been specified
@@ -41,6 +49,8 @@ namespace cgv { // @<
 			render_style* create_render_style() const;
 			/// build box program
 			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
+			///
+			void update_defines(shader_define_map& defines);
 		public:
 			/// initializes position_is_center to true 
 			box_renderer();
@@ -61,6 +71,29 @@ namespace cgv { // @<
 			/// extent array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
 			template <typename T>
 			void set_extent_array(const context& ctx, const T* extents, size_t nr_elements, unsigned stride_in_bytes = 0) { has_extents = true;  set_attribute_array(ctx, "extent", extents, nr_elements, stride_in_bytes); }
+			///
+			template <typename T = float>
+			void set_radius(const context& ctx, const T& radius) { has_radii = true; ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "radius"), radius); }
+			///
+			template <typename T = float>
+			void set_radius_array(const context& ctx, const std::vector<T>& radii) { has_radii = true; set_attribute_array(ctx, "radius", radii); }
+			/// 
+			template <typename T = float>
+			void set_radius_array(const context& ctx, const T* radii, size_t nr_elements, unsigned stride_in_bytes = 0) { has_radii = true;  set_attribute_array(ctx, "radius", radii, nr_elements, stride_in_bytes); }
+			/// templated method to set the secondary color attribute from a single color of type T
+			template <typename T>
+			void set_secondary_color(const context& ctx, const T& color) { has_secondary_colors = true; ref_prog().set_attribute(ctx, "secondary_color", color); }
+			/// template method to set the secondary color attribute from a vector of colors of type T
+			template <typename T>
+			void set_secondary_color_array(const context& ctx, const std::vector<T>& colors) { has_secondary_colors = true;  set_attribute_array(ctx, "secondary_color", colors); }
+			/// template method to set the secondary color attribute from a vector of colors of type T
+			template <typename T>
+			void set_secondary_color_array(const context& ctx, const T* colors, size_t nr_elements, unsigned stride_in_bytes = 0) { has_secondary_colors = true;  set_attribute_array(ctx, "secondary_color", colors, nr_elements, stride_in_bytes); }
+			/// method to set the secondary color attribute from a vertex buffer object, the element type must be given as explicit template parameter
+			void set_secondary_color_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
+			/// template method to set the secondary color attribute from a vertex buffer object, the element type must be given as explicit template parameter
+			template <typename T>
+			void set_secondary_color_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_secondary_color_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
 			/// specify a single box. This sets position_is_center to false as well as position and extent attributes
 			template <typename T>
 			void set_box(const context& ctx, const cgv::media::axis_aligned_box<T, 3>& box) {
