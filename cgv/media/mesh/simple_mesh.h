@@ -113,11 +113,11 @@ public:
 	/// extract element array buffers for edges in wireframe
 	void extract_wireframe_element_buffer(const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& edge_element_buffer) const;
 	/// compute a index vector storing the inv corners per corner and optionally index vectors with per position corner index, per corner next and or prev corner index (implementation assumes closed manifold connectivity)
-	void compute_inv(std::vector<uint32_t>& inv, std::vector<uint32_t>* p2c_ptr = 0, std::vector<uint32_t>* next_ptr = 0, std::vector<uint32_t>* prev_ptr = 0);
+	void compute_inv(std::vector<uint32_t>& inv, std::vector<uint32_t>* p2c_ptr = 0, std::vector<uint32_t>* next_ptr = 0, std::vector<uint32_t>* prev_ptr = 0) const;
 	/// given the inv corners compute index vector per corner its edge index and optionally per edge its corner index and return edge count (implementation assumes closed manifold connectivity)
-	uint32_t compute_c2e(const std::vector<uint32_t>& inv, std::vector<uint32_t>& c2e, std::vector<uint32_t>* e2c_ptr = 0);
+	uint32_t compute_c2e(const std::vector<uint32_t>& inv, std::vector<uint32_t>& c2e, std::vector<uint32_t>* e2c_ptr = 0) const;
 	/// compute index vector with per corner its face index
-	void compute_c2f(std::vector<uint32_t>& c2f);
+	void compute_c2f(std::vector<uint32_t>& c2f) const;
 };
 
 /// the simple_mesh class is templated over the coordinate type that defaults to float

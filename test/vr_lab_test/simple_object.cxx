@@ -2,6 +2,8 @@
 #include <cgv/math/proximity.h>
 #include <cgv/math/intersection.h>
 
+cgv::render::shader_program simple_object::prog;
+
 simple_object::rgb simple_object::get_modified_color(const rgb& color) const
 {
 	rgb mod_col(color);
@@ -23,6 +25,8 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 	: cgv::base::node(_name), position(_position), color(_color), extent(_extent), rotation(_rotation)
 {
 	debug_point = position + 0.5f*extent;
+	brs.rounding = true;
+	brs.default_radius = 0.02f;
 	srs.radius = 0.01f;
 }
 std::string simple_object::get_type_name() const
@@ -173,9 +177,11 @@ bool simple_object::compute_intersection(const vec3& ray_start, const vec3& ray_
 }
 bool simple_object::init(cgv::render::context& ctx)
 {
-	cgv::render::ref_box_renderer(ctx, 1);
 	cgv::render::ref_sphere_renderer(ctx, 1);
-	return true;
+	auto& br = cgv::render::ref_box_renderer(ctx, 1);
+	if (prog.is_linked())
+		return true;
+	return br.build_program(ctx, prog, brs);
 }
 void simple_object::clear(cgv::render::context& ctx)
 {
@@ -187,9 +193,11 @@ void simple_object::draw(cgv::render::context& ctx)
 	// show box
 	auto& br = cgv::render::ref_box_renderer(ctx);
 	br.set_render_style(brs);
+	if (brs.rounding)
+		br.set_prog(prog);
 	br.set_position(ctx, position);
-	rgb modified_color = get_modified_color(color);
-	br.set_color_array(ctx, &modified_color, 1);
+	br.set_color_array(ctx, &color, 1);
+	br.set_secondary_color(ctx, get_modified_color(color));
 	br.set_extent(ctx, extent);
 	br.set_rotation_array(ctx, &rotation, 1);
 	br.render(ctx, 0, 1);
@@ -219,4 +227,10 @@ void simple_object::create_gui()
 	add_member_control(this, "height", extent[1], "value_slider", "min=0.01;max=1;log=true");
 	add_member_control(this, "depth", extent[2], "value_slider", "min=0.01;max=1;log=true");
 	add_gui("rotation", rotation, "direction", "options='min=-1;max=1;ticks=true'");
+	if (begin_tree_node("style", brs)) {
+		align("\a");
+		add_gui("brs", brs);
+		align("\b");
+		end_tree_node(brs);
+	}
 }
