@@ -11,6 +11,9 @@
 #include <cgv_glutil/frame_buffer_container.h>
 #include <cgv_glutil/overlay.h>
 
+#include "2d/canvas.h"
+#include "2d/shape2d_styles.h"
+
 #include "lib_begin.h"
 
 namespace cgv {
@@ -31,28 +34,9 @@ protected:
 
 	cgv::glutil::frame_buffer_container fbc;
 
-	//cgv::glutil::canvas canvas, overlay_canvas;
-	//cgv::glutil::shape2d_style container_style, border_style, color_scale_style, bg_style, hist_style;
-	
-	struct layout_attributes {
-		int padding;
-		int total_height;
-		int color_scale_height;
+	cgv::glutil::canvas blit_canvas;
+	cgv::glutil::shape2d_style blit_style;
 
-		// dependent members
-		rect editor_rect;
-		rect color_scale_rect;
-
-		void update(const ivec2& parent_size) {
-
-			editor_rect.set_pos(ivec2(padding) + ivec2(0, color_scale_height + 1)); // add one for a small border
-			editor_rect.set_size(parent_size - 2 * padding - ivec2(0, color_scale_height + 1));
-
-			color_scale_rect.set_pos(ivec2(padding));
-			color_scale_rect.set_size(ivec2(parent_size.x() - 2*padding, color_scale_height));
-		}
-	} layout;
-	
 	int hit_axis;
 
 	cgv::glutil::box_render_data<> box_data;
@@ -68,16 +52,8 @@ protected:
 	
 	mat4 get_model_matrix(context& ctx);
 	mat4 get_view_matrix(context& ctx);
+	mat4 get_projection_matrix();
 	bool intersect_box(const vec3 &origin, const vec3& direction, float& t) const;
-
-	//void init_styles(context& ctx);
-	
-	//void handle_drag();
-	//void handle_drag_end();
-	//void sort_points();
-	//void update_point_positions();
-	//void update_transfer_function(bool is_data_change);
-	//bool update_geometry();
 
 public:
 	navigator();

@@ -32,6 +32,11 @@ void vertex_buffer::bind(context& ctx, VertexBufferType _type) const
 {
 	ctx.vertex_buffer_bind(*this, _type == VBT_UNDEF ? this->type : _type);
 }
+/// bind uniform, feedback, storage or atomic counter buffer to an indexed buffer target
+void vertex_buffer::bind(context& ctx, unsigned index) const
+{
+	ctx.vertex_buffer_bind(*this, this->type, index);
+}
 
 /// create empty vertex buffer of size \c size given in bytes
 bool vertex_buffer::create(const context& ctx, size_t _size_in_bytes)

@@ -87,7 +87,7 @@ public:
 		
 
 		if(pos_handle > 0 && idx_handle > 0 && do_sort) {
-			sorter->sort(ctx, pos_handle, idx_handle, view_ptr->get_eye());
+			sorter->sort(ctx, pos_handle, idx_handle, view_ptr->get_eye(), view_ptr->get_view_dir());
 		}
 
 		rd.render(ctx, sr, sphere_style);

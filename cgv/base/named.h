@@ -10,7 +10,10 @@ namespace cgv {
 class CGV_API named;
 
 /// ref counted pointer to a node
-typedef data::ref_ptr<named,true> named_ptr;
+typedef data::ref_ptr<named, true> named_ptr;
+
+/// ref counted pointer to a const node
+typedef data::ref_ptr<const named, true> const_named_ptr;
 
 /** base class for all gui types */
 class CGV_API named : public base
@@ -28,18 +31,21 @@ public:
 	/// set a new parent node
 	void set_name(const std::string& _name);
 	/// cast upward to named
-	data::ref_ptr<named,true> get_named();
+	named_ptr get_named();
+	/// cast upward to const named
+	const_named_ptr get_named_const();
 	/// overload to return the type name of this object
 	std::string get_type_name() const;
 };
 
-template <> 
-struct cast_helper<named>
-{ 
-	inline static data::ref_ptr<named,true> cast(base* b) 
-	{ 
-		return b->get_named();
-	} 
+template <> struct cast_helper<named>
+{
+	inline static named_ptr cast(base* b) { return b->get_named(); }
+};
+
+template <> struct cast_const_helper<named>
+{
+	inline static const_named_ptr cast_const(const base* b) { return b->get_named_const(); }
 };
 
 #if _MSC_VER >= 1400

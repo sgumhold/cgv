@@ -11,7 +11,9 @@ namespace cgv {
 class CGV_API group;
 
 /// ref counted pointer to a node
-typedef data::ref_ptr<group,true> group_ptr;
+typedef data::ref_ptr<group, true> group_ptr;
+/// ref counted pointer to a node
+typedef data::ref_ptr<const group, true> const_group_ptr;
 
 /** The group class is a node with children. */
 class CGV_API group : public node
@@ -41,18 +43,20 @@ public:
 	/// insert a child at the given position
 	virtual void insert_child(unsigned int i, base_ptr child);
 	/// cast upward to group
-	data::ref_ptr<group,true> get_group();
+	group_ptr get_group();
+	/// cast upward to const group
+	const_group_ptr get_group_const();
 	/// overload to return the type name of this object
 	std::string get_type_name() const;
 };
 
-template <> 
-struct cast_helper<group>
-{ 
-	inline static data::ref_ptr<group,true> cast(base* b) 
-	{
-		return b->get_group(); 
-	} 
+template <> struct cast_helper<group>
+{
+	inline static group_ptr cast(base* b) { return b->get_group(); }
+};
+template <> struct cast_const_helper<group>
+{
+	inline static const_group_ptr cast_const(const base* b) { return b->get_group_const(); }
 };
 
 

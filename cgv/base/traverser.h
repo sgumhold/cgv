@@ -105,6 +105,7 @@ protected:
 	TraverseStrategy strategy;
 	std::string visit_order;
 	bool stop_if_not_implemented;
+	bool ignore_inactive;
 	/// traverse a single object, template over a static traverse callback handler interface
 	template <typename TCH>
 	bool traverse_tmp_1(base_ptr dest, base_ptr src, bool& force_termination, TCH& tch);
@@ -116,7 +117,7 @@ public:
 	traverser(action& _a, 
 			  const std::string& _visit_order = "pnc", 
 			  TraverseStrategy _strategy = TS_DEPTH_FIRST, 
-			  bool _stop_if_not_implemented = false);
+			  bool _stop_if_not_implemented = false, bool _ignore_inactive = false);
 	/// set a different visiting order of node, children and parent
 	traverser& set_visit_order(const std::string& _visit_order);
 	/// set a different traverse strategy

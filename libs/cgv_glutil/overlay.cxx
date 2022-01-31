@@ -16,6 +16,7 @@ overlay::overlay() {
 	last_size = ivec2(-1);
 
 	show = true;
+	block_events = true;
 }
 
 void overlay::on_visibility_change() {
@@ -110,7 +111,7 @@ bool overlay::is_hit(const ivec2& mouse_pos) {
 	return container.is_inside(test_pos);
 };
 
-void overlay::create_overlay_gui() {
+void overlay::create_overlay_gui(bool allow_alignment, bool allow_stretch, bool allow_margin) {
 
 	if(begin_tree_node("Overlay", horizontal_alignment, false)) {
 		align("\a");
@@ -120,27 +121,34 @@ void overlay::create_overlay_gui() {
 			cgv::signal::rebind(this, &overlay::on_layout_change)
 		);
 
-		cgv::signal::connect_copy(
-			add_control("Horizontal Alignment", horizontal_alignment, "dropdown", "enums='Free,Left,Center,Right'")->value_change,
-			cgv::signal::rebind(this, &overlay::on_layout_change)
-		);
-		cgv::signal::connect_copy(
-			add_control("Vertical Alignment", vertical_alignment, "dropdown", "enums='Free=0,Top=3,Center=2,Bottom=1'")->value_change,
-			cgv::signal::rebind(this, &overlay::on_layout_change)
-		);
-		cgv::signal::connect_copy(
-			add_control("Stretch", stretch, "dropdown", "enums='None,Horizontal,Vertical,Both'")->value_change,
-			cgv::signal::rebind(this, &overlay::on_layout_change)
-		);
+		if(allow_alignment) {
+			cgv::signal::connect_copy(
+				add_control("Horizontal Alignment", horizontal_alignment, "dropdown", "enums='Free,Left,Center,Right'")->value_change,
+				cgv::signal::rebind(this, &overlay::on_layout_change)
+			);
+			cgv::signal::connect_copy(
+				add_control("Vertical Alignment", vertical_alignment, "dropdown", "enums='Free=0,Top=3,Center=2,Bottom=1'")->value_change,
+				cgv::signal::rebind(this, &overlay::on_layout_change)
+			);
+		}
 
-		cgv::signal::connect_copy(
-			add_control("Margin", margin[0], "value", "w=100;min=0;max=100;step=1;", "")->value_change,
-			cgv::signal::rebind(this, &overlay::on_layout_change)
-		);
-		cgv::signal::connect_copy(
-			add_control("", margin[1], "value", "w=100;min=0;max=100;step=1;")->value_change,
-			cgv::signal::rebind(this, &overlay::on_layout_change)
-		);
+		if(allow_stretch) {
+			cgv::signal::connect_copy(
+				add_control("Stretch", stretch, "dropdown", "enums='None,Horizontal,Vertical,Both'")->value_change,
+				cgv::signal::rebind(this, &overlay::on_layout_change)
+			);
+		}
+
+		if(allow_margin) {
+			cgv::signal::connect_copy(
+				add_control("Margin", margin[0], "value", "w=100;min=0;max=100;step=1;", "")->value_change,
+				cgv::signal::rebind(this, &overlay::on_layout_change)
+			);
+			cgv::signal::connect_copy(
+				add_control("", margin[1], "value", "w=100;min=0;max=100;step=1;")->value_change,
+				cgv::signal::rebind(this, &overlay::on_layout_change)
+			);
+		}
 
 		align("\b");
 		end_tree_node(horizontal_alignment);

@@ -63,6 +63,9 @@ namespace cgv { // @<
 			void set_y_view_angle(float y_view_angle);
 			///
 			template <typename T = float>
+			void set_radius(const context& ctx, const T& radius) { has_radii = true; ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "radius"), radius); }
+			///
+			template <typename T = float>
 			void set_radius_array(const context& ctx, const std::vector<T>& radii) { has_radii = true; set_attribute_array(ctx, "radius", radii); }
 			/// 
 			template <typename T = float>
@@ -70,6 +73,14 @@ namespace cgv { // @<
 			///
 			template <typename T = float>
 			void set_group_radii(const context& ctx, const std::vector<T>& group_radii) { has_group_radii = true; ref_prog().set_uniform_array(ctx, "group_radii", group_radii); }
+			/// 
+			template <typename T = float>
+			void set_sphere(const context& ctx, const cgv::math::fvec<T, 4>& sphere) {
+				ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "position"), (const cgv::math::fvec<T, 3>&)sphere);
+				ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "radius"), sphere[3]);
+				has_positions = true;
+				has_radii = true;
+			}
 			/// use this function if you store spheres in vec4 with the 4th component the radius
 			template <typename T = float>
 			void set_sphere_array(const context& ctx, const std::vector<cgv::math::fvec<T, 4> >& spheres) {

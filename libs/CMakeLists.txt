@@ -1,6 +1,8 @@
 
 add_subdirectory(cg_gamepad)
+add_subdirectory(cgv_proc)
 add_subdirectory(cg_vr)
+add_subdirectory(cg_nui)
 add_subdirectory(cgv_gl)
 add_subdirectory(cgv_reflect_types)
 add_subdirectory(delaunay)

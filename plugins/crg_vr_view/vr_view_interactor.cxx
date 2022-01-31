@@ -15,6 +15,11 @@
 #include <cg_vr/vr_events.h>
 #include <cg_vr/vr_calib.h>
 
+cgv::reflect::enum_reflection_traits<VRkitVisType> get_reflection_traits(const VRkitVisType& gm)
+{
+	return cgv::reflect::enum_reflection_traits<VRkitVisType>("none,sphere,mesh,both");
+}
+
 ///
 vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interactor(name),
 	fence_color1(0,0,1), fence_color2(1,1,0)
@@ -1000,11 +1005,11 @@ bool vr_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 {
 	return stereo_view_interactor::self_reflect(srh) &&
 		srh.reflect_member("calibration_file_path", calibration_file_path) &&
-		srh.reflect_member("vis_type", (int&)vis_type) &&
-		srh.reflect_member("hmd_vis_type", (int&)hmd_vis_type) &&
-		srh.reflect_member("controller_vis_type", (int&)controller_vis_type) &&
-		srh.reflect_member("tracker_vis_type", (int&)tracker_vis_type) &&
-		srh.reflect_member("base_vis_type", (int&)base_vis_type) &&
+		srh.reflect_member("vis_type", vis_type) &&
+		srh.reflect_member("hmd_vis_type", hmd_vis_type) &&
+		srh.reflect_member("controller_vis_type", controller_vis_type) &&
+		srh.reflect_member("tracker_vis_type", tracker_vis_type) &&
+		srh.reflect_member("base_vis_type", base_vis_type) &&
 		srh.reflect_member("hmd_scale", mesh_scales[0]) &&
 		srh.reflect_member("controller_scale", mesh_scales[1]) &&
 		srh.reflect_member("tracker_scale", mesh_scales[2]) &&

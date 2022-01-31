@@ -11,11 +11,10 @@ namespace cgv {
 namespace glutil {
 
 template <typename ColorType = render_types::rgb>
-class box_render_data : public render_data_base {
+class box_render_data : public render_data_base<ColorType> {
 protected:
 	std::vector<vec3> ext;
 	std::vector<quat> rot;
-	std::vector<ColorType> col;
 
 	bool transfer(context& ctx, box_renderer& r) {
 		if(render_data_base::transfer(ctx, r)) {
@@ -24,8 +23,6 @@ protected:
 				r.set_extent_array(ctx, ext);
 			if(rot.size() == size())
 				r.set_rotation_array(ctx, rot);
-			if(col.size() == size())
-				r.set_color_array(ctx, col);
 			return true;
 		}
 		return false;
@@ -34,15 +31,12 @@ protected:
 public:
 	void clear() {
 		render_data_base::clear();
-
 		ext.clear();
 		rot.clear();
-		col.clear();
 	}
 
-	std::vector<vec3>&		ref_ext() { return ext; }
-	std::vector<quat>&		ref_rot() { return rot; }
-	std::vector<ColorType>&	ref_col() { return col; }
+	std::vector<vec3>& ref_ext() { return ext; }
+	std::vector<quat>& ref_rot() { return rot; }
 
 	void early_transfer(context& ctx, box_renderer& r) {
 		r.enable_attribute_array_manager(ctx, aam);

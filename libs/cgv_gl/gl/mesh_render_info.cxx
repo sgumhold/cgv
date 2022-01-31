@@ -202,6 +202,33 @@ void mesh_render_info::construct_draw_calls(cgv::render::context& ctx)
 	wire_draw_call.prog = 0;
 }
 
+/// set the number of to be drawn instances - in case of 1, instanced drawing is turned off
+void mesh_render_info::set_nr_instances(unsigned nr)
+{
+	for (auto& dc : ref_draw_calls()) {
+		dc.instance_count = nr;
+		switch (dc.draw_call_type) {
+		case RCT_ARRAYS:
+			if (nr > 0)
+				dc.draw_call_type = RCT_ARRAYS_INSTANCED;
+			break;
+		case RCT_INDEXED:
+			if (nr > 0)
+				dc.draw_call_type = RCT_INDEXED_INSTANCED;
+			break;
+		case RCT_ARRAYS_INSTANCED:
+			if (nr == 0)
+				dc.draw_call_type = RCT_ARRAYS;
+			break;
+		case RCT_INDEXED_INSTANCED:
+			if (nr == 0)
+				dc.draw_call_type = RCT_INDEXED;
+			break;
+		}
+	}
+}
+
+
 /// draw triangles of given mesh part or whole mesh in case part_index is not given (=-1)
 void mesh_render_info::draw_primitive(cgv::render::context& ctx, size_t primitive_index, bool skip_opaque, bool skip_blended, bool use_materials)
 {

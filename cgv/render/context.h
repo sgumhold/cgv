@@ -353,7 +353,8 @@ enum VertexBufferType {
 	VBT_TEXTURE,
 	VBT_UNIFORM,
 	VBT_FEEDBACK,
-	VBT_STORAGE
+	VBT_STORAGE,
+	VBT_ATOMIC_COUNTER
 };
 
 /// different vertex buffer usages as defined in OpenGL
@@ -709,7 +710,7 @@ protected:
 	virtual bool enable_attribute_array(attribute_array_binding_base* aab, int loc, bool do_enable) const = 0;
 	virtual bool is_attribute_array_enabled(const attribute_array_binding_base* aab, int loc) const = 0;
 
-	virtual bool vertex_buffer_bind(const vertex_buffer_base& vbb, VertexBufferType _type) const = 0;
+	virtual bool vertex_buffer_bind(const vertex_buffer_base& vbb, VertexBufferType _type, unsigned _idx = -1) const = 0;
 	virtual bool vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const = 0;
 	virtual bool vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) const = 0;
 	virtual bool vertex_buffer_copy(const vertex_buffer_base& src, size_t src_offset, vertex_buffer_base& target, size_t target_offset, size_t size_in_bytes) const = 0;
@@ -1169,7 +1170,7 @@ public:
 	//! compute model space 3D point from the given window coordinates with the given modelview_projection_window matrix
 	/*! the function inversely transforms the window space 3D point with the given
 		modelview_projection_window matrix */
-	inline vec3 get_model_point(int x_window, int y_window, double z_window, const dmat4& modelview_projection_window_matrix) const {
+	inline static vec3 get_model_point(int x_window, int y_window, double z_window, const dmat4& modelview_projection_window_matrix) {
 		return get_model_point(dvec3(x_window+0.5, y_window+0.5, z_window), modelview_projection_window_matrix);
 	}
 	//! compute model space 3D point from the given window space point
@@ -1181,7 +1182,7 @@ public:
 	//! compute model space 3D point from the given window space point and the given modelview_projection_window matrix
 	/*! the function inversely transforms the window space point with the given
 		modelview_projection_window matrix */
-	vec3 get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) const;
+	static vec3 get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix);
 	/// return homogeneous 4x4 projection matrix, which transforms from clip to device space
 	DEPRECATED("use get_window_matrix() instead.") dmat4 get_device_matrix() const { return get_window_matrix(); }
 	/// return matrix to transfrom from model to device coordinates, i.e. the product of modelview, projection and device matrix in reversed order (device_matrix*projection_matrix*modelview_matrix)

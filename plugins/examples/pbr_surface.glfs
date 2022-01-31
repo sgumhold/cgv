@@ -240,8 +240,8 @@ void main()
 {
 #if ENABLE_TEXTURES == 1
 	vec3 albedo = texture(albedo_tex, texcoord_fs).rgb;
-	vec3 _F0 = texture(metallic_tex, texcoord_fs).rgb;
-	float _roughness = texture(roughness_tex, texcoord_fs).r;
+	vec3 _F0 = F0*texture(metallic_tex, texcoord_fs).rgb;
+	float _roughness = roughness*texture(roughness_tex, texcoord_fs).r;
 	vec3 _normal = 2.0 * texture(normal_tex, texcoord_fs).xyz - 1.0; // load and rescale normal to [-1,1]
 #else
 	vec3 albedo = color_fs.rgb;

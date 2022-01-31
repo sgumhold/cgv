@@ -27,6 +27,8 @@ enum SparseLesCaps
 class CGV_API sparse_les_factory : public cgv::data::ref_counted
 {
 public:
+	/// make constructor virtual
+	virtual ~sparse_les_factory();
 	/// return the supported capabilities of the solver
 	virtual SparseLesCaps get_caps() const = 0;
 	/// return the name of the solver
