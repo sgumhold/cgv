@@ -110,7 +110,7 @@ void vr_emulated_kit::compute_state_poses()
 	}
 }
 
-vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name)
+vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, int _nr_trackers)
 	: vr_kit(_driver, _handle, _name, _width, _height)
 {
 	body_position = _body_position;
@@ -127,7 +127,9 @@ vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_positi
 	state.controller[0].status = vr::VRS_TRACKED;
 	state.controller[1].status = vr::VRS_TRACKED;
 
-	tracker_enabled[0] = tracker_enabled[1] = tracker_enabled[2] = tracker_enabled[3] = true;
+	for (int i=0; i<4; ++i)
+		tracker_enabled[i] = i < _nr_trackers;
+
 	tracker_positions[0] = vec3(0.2f, 1.2f, 0.0f);
 	tracker_positions[1] = vec3(-0.2f, 1.2f, 0.0f);
 	tracker_positions[2] = vec3(-0.6f, 1.2f, 0.0f);
@@ -456,7 +458,7 @@ void vr_emulator::add_new_kit()
 	(unsigned&)handle = counter;
 	vr_emulated_kit* new_kit = new vr_emulated_kit(body_direction, body_position, body_height,
 		screen_width, screen_height, this, handle, 
-		std::string("vr_emulated_kit[") + cgv::utils::to_string(counter) + "]");
+		std::string("vr_emulated_kit[") + cgv::utils::to_string(counter) + "]", nr_trackers);
 	kits.push_back(new_kit);
 	register_vr_kit(handle, new_kit);
 	if (current_kit_index == -1) {
@@ -613,11 +615,11 @@ bool vr_emulator::handle(cgv::gui::event& e)
 
 	case 'A': return check_for_button_toggle(ke, 0, vr::VRF_INPUT0_TOUCH, -1, 0);
 	case 'S': return check_for_button_toggle(ke, 0, vr::VRF_INPUT0, 0, 0);
-	case 'D': return check_for_button_toggle(ke, 0, vr::VRF_INPUT0_TOUCH, 1, 0);
+	case 'D': return check_for_button_toggle(ke, 0, vr::VRF_INPUT1_TOUCH, 1, 0);
 
-	case 'Y': return check_for_button_toggle(ke, 0, vr::VRButtonStateFlags(0), -1, -1);
+	case 'Y': return check_for_button_toggle(ke, 0, vr::VRF_GRIP, -1, -1);
 	case 'X': return check_for_button_toggle(ke, 0, vr::VRF_GRIP, 0, -1);
-	case 'C': return check_for_button_toggle(ke, 0, vr::VRButtonStateFlags(0),  1, -1);
+	case 'C': return check_for_button_toggle(ke, 0, vr::VRF_INPUT1,  1, -1);
 
 
 	case 'U': return check_for_button_toggle(ke, 1, vr::VRF_SYSTEM, -1, 1);
@@ -626,11 +628,11 @@ bool vr_emulator::handle(cgv::gui::event& e)
 
 	case 'J': return check_for_button_toggle(ke, 1, vr::VRF_INPUT0_TOUCH, -1, 0);
 	case 'K': return check_for_button_toggle(ke, 1, vr::VRF_INPUT0, 0, 0);
-	case 'L': return check_for_button_toggle(ke, 1, vr::VRF_INPUT0_TOUCH, 1, 0);
+	case 'L': return check_for_button_toggle(ke, 1, vr::VRF_INPUT1_TOUCH, 1, 0);
 
-	case 'M': return check_for_button_toggle(ke, 1, vr::VRButtonStateFlags(0), -1, -1);
+	case 'M': return check_for_button_toggle(ke, 1, vr::VRF_GRIP, -1, -1);
 	case ',': return check_for_button_toggle(ke, 1, vr::VRF_GRIP, 0, -1);
-	case '.': return check_for_button_toggle(ke, 1, vr::VRButtonStateFlags(0), 1, -1);
+	case '.': return check_for_button_toggle(ke, 1, vr::VRF_INPUT1, 1, -1);
 
 	case cgv::gui::KEY_Left:
 	case cgv::gui::KEY_Num_4:
@@ -670,7 +672,8 @@ void vr_emulator::stream_help(std::ostream& os)
 	   << "          <home|end> .. gear, <alt>+<left|right> .. side step\n"
 	   << "    hand: <home|end> .. trigger\n"
 	   << "    hand&tracker: <left|right|up|down|pgdn|pgup> .. rotate or with <alt> translate\n"
-	   << "  <W|X|Q|E|C|A|S:I|N|O|U|B|K|J> to toggle left:right controller buttons\n"
+	   << "  <Q|W|E|A|S|D|Y|X|C:U|I|O|J|K|L|M|,|.> toggle left:right controller buttons\n"
+	   << "    <System|Menu|A|Touch0|Press0|Touch1|Grip|Grip|Press1>; adjust TP position with Shift\n"
 	   << "  <Shift>-<QWE:ASD:YXC>|<UIO:HJK:BNM> to set left:right controller touch xy to -1|0|+1\n"
 	   << std::endl;
 }
@@ -690,24 +693,17 @@ bool vr_emulator::init(cgv::render::context& ctx)
 {
 	return true;
 }
-
-/// this method is called in one pass over all drawables before the draw method
 void vr_emulator::init_frame(cgv::render::context& ctx)
 {
 }
-
-/// 
 void vr_emulator::draw(cgv::render::context&)
 {
 	for (auto kit_ptr : kits) {
 	}
 }
-
-/// this method is called in one pass over all drawables after drawing
 void vr_emulator::finish_frame(cgv::render::context&)
 {
 }
-///
 bool vr_emulator::self_reflect(cgv::reflect::reflection_handler& srh)
 {
 	bool res =
@@ -715,6 +711,7 @@ bool vr_emulator::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("installed", installed) &&
 		srh.reflect_member("create_body_direction", body_direction) &&
 		srh.reflect_member("create_body_position", body_position) &&
+		srh.reflect_member("create_nr_trackers", nr_trackers) &&
 		srh.reflect_member("body_height", body_height) &&
 		srh.reflect_member("screen_height", screen_height) &&
 		srh.reflect_member("screen_width", screen_width);
@@ -750,7 +747,6 @@ bool vr_emulator::self_reflect(cgv::reflect::reflection_handler& srh)
 	}
 	return res;
 }
-
 void vr_emulator::create_trackable_gui(const std::string& name, vr::vr_trackable_state& ts)
 {
 	add_decorator(name, "heading", "level=3");
@@ -773,7 +769,6 @@ void vr_emulator::create_trackable_gui(const std::string& name, vr::vr_trackable
 		end_tree_node(ts.pose[0]);
 	}
 }
-
 void vr_emulator::create_controller_gui(int i, vr::vr_controller_state& cs)
 {
 	create_trackable_gui(std::string("controller") + cgv::utils::to_string(i), cs);
@@ -790,7 +785,6 @@ void vr_emulator::create_controller_gui(int i, vr::vr_controller_state& cs)
 	add_view("vibration[0]", cs.vibration[0], "value", "w=50", " ");
 	add_view("[1]", cs.vibration[1], "value", "w=50");
 }
-
 void vr_emulator::create_tracker_gui(vr_emulated_kit* kit, int i)
 {
 	if (begin_tree_node(std::string("tracker_") + cgv::utils::to_string(i+1), kit->tracker_enabled[i], false, "level=3")) {
@@ -803,8 +797,6 @@ void vr_emulator::create_tracker_gui(vr_emulated_kit* kit, int i)
 		end_tree_node(kit->tracker_enabled[i]);
 	}
 }
-
-///
 void vr_emulator::create_gui()
 {
 	add_decorator("vr emulator", "heading", "level=2");
@@ -830,6 +822,7 @@ void vr_emulator::create_gui()
 		add_gui("body_position", body_position, "", "options='min=-1;max=1;step=0.0001;ticks=true'");
 		add_member_control(this, "body_direction", body_direction, "min=0;max=6.3;ticks=true");
 		add_member_control(this, "body_height", body_height, "min=1.2;max=2.0;step=0.001;ticks=true");
+		add_member_control(this, "nr_trackers", nr_trackers, "min=0;max=4;ticks=true");
 		connect_copy(add_button("create new kit")->click, cgv::signal::rebind(this, &vr_emulator::add_new_kit));
 		align("\b");
 		end_tree_node(screen_width);
@@ -837,13 +830,13 @@ void vr_emulator::create_gui()
 	add_view("current_kit", current_kit_index, "", "w=50", " ");
 	add_member_control(this, "mode", interaction_mode, "dropdown", "w=100;enums='body,left hand,right hand,tracker 1,tracker 2,tracker 3,tracker 4,base 1, base 2,base 3, base 4'");
 	add_member_control(this, "alt", is_alt,   "toggle", "w=15", " ");
-	add_member_control(this, "L", left_ctrl,  "toggle", "w=15", " ");
+	add_member_control(this, "L", left_ctrl,  "toggle", "w=15", "");
 	add_member_control(this, "R", right_ctrl, "toggle", "w=15", " ");
-	add_member_control(this, "U", up_ctrl,    "toggle", "w=15", " ");
+	add_member_control(this, "U", up_ctrl,    "toggle", "w=15", "");
 	add_member_control(this, "D", down_ctrl,  "toggle", "w=15", " ");
-	add_member_control(this, "H", home_ctrl,  "toggle", "w=15", " ");
+	add_member_control(this, "H", home_ctrl,  "toggle", "w=15", "");
 	add_member_control(this, "E", end_ctrl,   "toggle", "w=15", " ");
-	add_member_control(this, "P", pgup_ctrl,  "toggle", "w=15", " ");
+	add_member_control(this, "P", pgup_ctrl,  "toggle", "w=15", "");
 	add_member_control(this, "p", pgdn_ctrl,  "toggle", "w=15");
 
 	for (unsigned i = 0; i < kits.size(); ++i) {
@@ -851,22 +844,24 @@ void vr_emulator::create_gui()
 			align("\a");
 			add_view("buttons left", kits[i]->fovy, "", "w=0", "");
 			add_gui("button_flags", kits[i]->state.controller[0].button_flags, "bit_field_control",
-				"enums='SY=1,ME=2,GR=4,A=128,TO=256,PR=512';options='w=18;tooltip=\""
-				"SYstem button<Q> \nMEnu button <W>\nGRip button <X>\nA button <E>\n"
-				"pad TOuch <A>\npad PRess <S>\"';"
+				"enums='SY=1,ME=2,GR=4,A=128,PT=256,PP=512,TT=1024,TP=2048';options='w=16;tooltip=\""
+				"SYstem button<Q> \nMEnu button <W>\nA button <E>\n"
+				"Pad Touch <A>\nPad Press <S>\nTrigger Touch\n<D>"
+				"GRip button <Y|X>\nTrigger Press <C>\"';"
 				"align='';gui_type='toggle'");
 			align(" ");
-			add_view("touch xy", kits[i]->state.controller[0].axes[0], "", "w=18", "");
-			add_view("", kits[i]->state.controller[0].axes[1], "", "w=18");
+			add_view("Pxy", kits[i]->state.controller[0].axes[0], "", "w=16", "");
+			add_view("", kits[i]->state.controller[0].axes[1], "", "w=16");
 			add_view("buttons right", kits[i]->fovy, "", "w=0", "");
 			add_gui("button_flags", kits[i]->state.controller[1].button_flags, "bit_field_control",
-				"enums='SY=1,ME=2,GR=4,A=128,TO=256,PR=512';options='w=18;tooltip=\""
-				"SYstem button<U> \nMEnu button <I>\nGRip button <O>\nA button <B>\n"
-				"pad TOuch <K>\npad PRess <J>\"';"
+				"enums='SY=1,ME=2,GR=4,A=128,PT=256,PP=512,TT=1024,TP=2048';options='w=16;tooltip=\""
+				"SYstem button<U>\nMEnu button <I>\nA button <O>\n"
+				"Pad Touch <J>\nPad Press <K>\nTrigger Touch\n"
+				"GRip button <M|,>\nTrigger Press\"';"
 				"align='';gui_type='toggle'");			
 			align(" ");
-			add_view("touch xy", kits[i]->state.controller[1].axes[0], "", "w=18", "");
-			add_view("", kits[i]->state.controller[1].axes[1], "", "w=18");
+			add_view("Pxy", kits[i]->state.controller[1].axes[0], "", "w=16", "");
+			add_view("", kits[i]->state.controller[1].axes[1], "", "w=16");
 
 			add_member_control(this, "fovy", kits[i]->fovy, "value_slider", "min=30;max=180;ticks=true;log=true");
 			if (begin_tree_node("body pose", kits[i]->body_position, false, "level=3")) {

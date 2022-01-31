@@ -1,0 +1,14 @@
+@=
+projectName="screen_capture_lite";
+projectType="library";
+projectGUID="58A0F162-73E5-40AC-A977-0B3B2437FC74";
+addSharedDefines=["SC_LITE_DLL"];
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins"];
+addIncDirs=[INPUT_DIR."/include"];
+sourceDirs=[INPUT_DIR."/src"];
+if(SYSTEM=="windows") {
+	excludeSourceDirs = [INPUT_DIR."/src/linux", INPUT_DIR."/src/ios"];
+	addIncDirs=addIncDirs.[INPUT_DIR."/include/windows"];
+	addDefines=["NOMINMAX"];
+	addDependencies = ["Dwmapi"];
+}

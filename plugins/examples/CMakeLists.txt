@@ -19,6 +19,7 @@ target_link_libraries(examples
         delaunay
         plot
         cg_gamepad
+        cgv_proc
         cgv_gl
         cgv_os
         cgv_signal)
@@ -31,6 +32,7 @@ add_dependencies(examples
         cg_icons
         cg_meta
         cmi_io
+        cgv_proc
         cmf_tt_gl_font
         crg_antialias
         crg_depth_of_field
@@ -45,7 +47,7 @@ if (WIN32)
 endif ()
 
 set_plugin_execution_params(examples "plugin:cg_fltk \
-\"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl'\" \
+\"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl'\" \
 plugin:cg_ext \
 plugin:cg_icons \
 plugin:crg_stereo_view \
@@ -80,7 +82,7 @@ if (MSVC)
             cgv_gl_static
             cgv_os_static
             cgv_signal_static
-
+            cgv_proc_static
             cg_fltk_static
             crg_stereo_view_static
 

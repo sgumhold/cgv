@@ -1,29 +1,24 @@
-#include <plugins/vr_lab/vr_tool.h>
-#include <cgv/defines/quote.h>
-#include <cgv/base/node.h>
-#include <cgv/render/context.h>
+#include <cgv/base/group.h>
 #include <cgv/render/drawable.h>
-#include <cgv/render/shader_program.h>
-#include <cgv_gl/gl/mesh_render_info.h>
+#include <cgv/gui/provider.h>
+
+#include <cg_nui/focusable.h>
+#include <cg_nui/transforming.h>
+
+#include <plugins/vr_lab/vr_tool.h>
+
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/cone_renderer.h>
-#include <cgv/gui/event_handler.h>
-#include <vr/vr_state.h>
-#include <vr/vr_kit.h>
-#include <vr/vr_driver.h>
-#include <cg_vr/vr_events.h>
-#include <vr_view_interactor.h>
-#include <cgv/utils/dir.h>
-#include <cgv/utils/advanced_scan.h>
-#include <cgv/math/ftransform.h>
-#include <cgv/utils/file.h>
-#include <fstream>
+
 #include <libs/plot/plot2d.h>
+#include "simple_object.h"
+#include "simple_primitive_container.h"
 
 class vr_lab_test : 
-	public cgv::base::node,
+	public cgv::base::group,
 	public cgv::render::drawable,
-	public cgv::gui::event_handler,
+	public cgv::nui::focusable,
+	public cgv::nui::transforming,
 	public cgv::gui::provider,
 	public vr::vr_tool
 {
@@ -56,14 +51,10 @@ public:
 	{
 		return mat34(3, 4, pose) * vec4(p, 1.0f);
 	}
-public:
-	vr_lab_test() : cgv::base::node("vr lab test"), plot("trigonometry", 2)
+	std::vector<simple_object_ptr> objects;
+	simple_primitive_container_ptr container;
+	void construct_plot()
 	{
-		li_help[0] = li_help[1] = -1;
-		li_stats = -1;
-		stats_bgclr = rgba(0.8f, 0.6f, 0.0f, 0.6f);
-
-		show_plot = false;
 		// compute vector of vec3 with x coordinates and function values of cos and sin
 		unsigned i;
 		for (i = 1; i < 50; ++i) {
@@ -105,6 +96,23 @@ public:
 		plot.adjust_domain_to_data();
 		plot.adjust_tick_marks();
 		plot.adjust_extent_to_domain_aspect_ratio();
+
+		plot.place_center(vec3(0, 0.5f * plot.get_extent()(1), -0.5f));
+	}
+public:
+	vr_lab_test() : cgv::base::group("vr lab test"), plot("trigonometry", 2)
+	{
+		li_help[0] = li_help[1] = -1;
+		li_stats = -1;
+		stats_bgclr = rgba(0.8f, 0.6f, 0.0f, 0.6f);
+		show_plot = false;
+		construct_plot();
+		objects.push_back(new simple_object("ruby", vec3(-0.5f, 0.2f, 0), rgb(0.6f, 0.3f, 0.1f)));
+		append_child(objects.back());
+		objects.push_back(new simple_object("blue", vec3(0.5f, 0.2f, 0), rgb(0.2f, 0.6f, 0.4f)));
+		append_child(objects.back());
+		container = new simple_primitive_container("spheres");
+		append_child(container);
 	}
 	void on_set(void* member_ptr)
 	{
@@ -120,7 +128,6 @@ public:
 		cgv::render::ref_cone_renderer(ctx, 1);
 
 		plot.set_view_ptr(find_view_as_node());
-		// and init plot
 		return plot.init(ctx);
 	}
 	void init_frame(cgv::render::context& ctx)
@@ -165,26 +172,6 @@ public:
 			else
 				scene_ptr->hide_label(li_help[ci]);
 		}
-		/*
-		static const char* draw_mode_str[] = { "point","line","colorize" };
-		for (int ci = 0; ci < 2; ++ci) {
-			if (li_help[ci] == -1)
-				continue;
-			// update help text
-			cgv::media::color<float, cgv::media::HLS> hls = draw_color[ci];
-			std::stringstream ss;
-			ss << "DPAD_Right .. next/new drawing\nDPAD_Left  .. prev drawing\nDPAD_Down  .. save drawing\nDPAD_Up .. toggle draw mode\nTPAD_Touch&Up/Dn .. change radius\nTPAD_Touch&Move .. change color\n"
-				<< draw_mode_str[draw_mode[ci]] << " (" << std::setw(4) << std::setprecision(2) << draw_radius[ci] << ")"
-				<< "\nRGB(" << std::setw(4) << std::setprecision(2) << draw_color[ci][0] << "," << std::setw(4) << std::setprecision(2) << draw_color[ci][1] << "," << std::setw(4) << std::setprecision(2) << draw_color[ci][2] << ")"
-				<< "\nHLS(" << std::setw(4) << std::setprecision(2) << hls[0] << "," << std::setw(4) << std::setprecision(2) << hls[1] << "," << std::setw(4) << std::setprecision(2) << hls[2] << ")";
-			ss.flush();
-			scene_ptr->update_label_text(li_help[ci], ss.str());
-			// update visibility of labels
-			if (in_color_selection[ci])
-				scene_ptr->show_label(li_help[ci]);
-			else
-				scene_ptr->hide_label(li_help[ci]);
-		}*/
 	}
 	void clear(cgv::render::context& ctx)
 	{
@@ -193,50 +180,68 @@ public:
 	}
 	void draw(cgv::render::context& ctx)
 	{
+		mat4 model_transform(3, 4, &get_scene_ptr()->get_coordsystem(vr::vr_scene::CS_TABLE)(0, 0));
+		set_model_transform(model_transform);
+
 		ctx.push_modelview_matrix();
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 1.5f, 0)));
-	
+		ctx.mul_modelview_matrix(model_transform);
+
 		if (show_plot)
 			plot.draw(ctx);
-
-		ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(0.25f)));
+		/*
+		// ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(0.25f)));
 		// draw tool in case it is active and we have access to state 
 		vr::vr_kit* kit_ptr = get_kit_ptr();
 		vr_view_interactor* vr_view_ptr = get_view_ptr();
-		if (!(tool_is_active && kit_ptr && vr_view_ptr))
-			return;
-		const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
-		if (!state_ptr)
-			return;
+		if (tool_is_active && kit_ptr && vr_view_ptr) {
+			const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
+			if (state_ptr) {
 
-		auto& sr = cgv::render::ref_sphere_renderer(ctx);
-		sr.set_render_style(srs);
-		auto& rcr = cgv::render::ref_cone_renderer(ctx);
-		rcr.set_render_style(rcrs);
-		// draw spheres that represent the pen
-		std::vector<vec3> P;
-		std::vector<float> R;
-		std::vector<rgb> C;
-		P.push_back(vec3(0.0f));
-		R.push_back(0.3f);
-		C.push_back(rgb(0.5f, 0.8f, 0.3f));
-		box3 B(vec3(-1.0f), vec3(1.0f));
-		for (int ci = 0; ci < 8; ++ci) {
-			P.push_back(B.get_corner(ci));
-			R.push_back(0.1f);
-			vec3 col = 0.5f*(B.get_corner(ci) - B.get_min_pnt());
-			C.push_back(reinterpret_cast<const rgb&>(col));
+				auto& sr = cgv::render::ref_sphere_renderer(ctx);
+				sr.set_render_style(srs);
+				auto& rcr = cgv::render::ref_cone_renderer(ctx);
+				rcr.set_render_style(rcrs);
+				// draw spheres that represent the pen
+				std::vector<vec3> P;
+				std::vector<float> R;
+				std::vector<rgb> C;
+				P.push_back(vec3(0.0f));
+				R.push_back(0.3f);
+				C.push_back(rgb(0.5f, 0.8f, 0.3f));
+				box3 B(vec3(-1.0f), vec3(1.0f));
+				for (int ci = 0; ci < 8; ++ci) {
+					P.push_back(B.get_corner(ci));
+					R.push_back(0.1f);
+					vec3 col = 0.5f * (B.get_corner(ci) - B.get_min_pnt());
+					C.push_back(reinterpret_cast<const rgb&>(col));
+				}
+				sr.set_position_array(ctx, P);
+				sr.set_radius_array(ctx, R);
+				sr.set_color_array(ctx, C);
+				sr.render(ctx, 0, (GLsizei)P.size());
+			}
 		}
-		sr.set_position_array(ctx, P);
-		sr.set_radius_array(ctx, R);
-		sr.set_color_array(ctx, C);
-		sr.render(ctx, 0, (GLsizei)P.size());
+		*/
+	}
+	void finish_draw(cgv::render::context& ctx)
+	{
 		ctx.pop_modelview_matrix();
 	}
 	void stream_help(std::ostream& os)
 	{
 		os << "vr_lab_test: select draw <M>ode, press vr pad or trigger to draw, grip to change color" << std::endl;
 	}
+
+	bool focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info)
+	{
+		return false;
+	}
+	bool handle(const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info, cgv::nui::focus_request& request)
+	{
+		return false;
+	}
+
+	/*
 	bool handle(cgv::gui::event& e)
 	{
 		if ((e.get_flags() & cgv::gui::EF_VR) == 0) {
@@ -299,33 +304,29 @@ public:
 		}
 		return false;
 	}
+	*/
 	void create_gui()
 	{
 		add_decorator("vr_lab_test", "heading");
 		add_member_control(this, "stats_bgclr", stats_bgclr);
-		if (begin_tree_node("rendering", srs.material)) {
+
+		if (begin_tree_node("objects", objects)) {
 			align("\a");
-			if (begin_tree_node("spheres", srs)) {
-				align("\a");
-				add_gui("spheres", srs);
-				align("\b");
-				end_tree_node(srs);
-			}
-			if (begin_tree_node("cones", rcrs)) {
-				align("\a");
-				add_gui("cones", rcrs);
-				align("\b");
-				end_tree_node(rcrs);
-			}
+			for (auto op : objects)
+				if (begin_tree_node(op->get_name(), *op)) {
+					align("\a");
+					inline_object_gui(op);
+					align("\b");
+					end_tree_node(*op);
+				}
 			align("\b");
-			end_tree_node(srs.material);
+			end_tree_node(objects);
 		}
-		add_member_control(this, "show_plot", show_plot, "check");
-		if (begin_tree_node("plot", plot)) {
+		if (begin_tree_node("container", container)) {
 			align("\a");
-			plot.create_gui(this, *this);
+			inline_object_gui(container);
 			align("\b");
-			end_tree_node(plot);
+			end_tree_node(container);
 		}
 	}
 };

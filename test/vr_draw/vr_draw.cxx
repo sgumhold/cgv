@@ -382,6 +382,8 @@ public:
 		min_radius = 0.001f;
 		max_radius = 0.03f;
 
+		rcrs.rounded_caps = true;
+		rcrs.show_caps = true;
 		li_stats = -1;
 
 		on_set(&draw_file_path);

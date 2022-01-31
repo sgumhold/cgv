@@ -8,7 +8,7 @@ namespace cgv {
 	cgv::media::font::font_ptr tt_gl_font_server::default_font(bool mono_space)
 	{
 		cgv::media::font::font_ptr f;
-		if (f = font_server::default_font(mono_space))
+		if ((f = font_server::default_font(mono_space)))
 			return f;
 		f = find_font(get_font_names().front());
 		return f;

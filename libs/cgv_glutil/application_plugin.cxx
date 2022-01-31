@@ -6,7 +6,7 @@
 namespace cgv {
 namespace glutil {
 
-application_plugin::application_plugin(const std::string& name) : node(name) {
+application_plugin::application_plugin(const std::string& name) : group(name) {
 	last_blocking_overlay_ptr = nullptr;
 	blocking_overlay_ptr = nullptr;
 }
@@ -39,11 +39,13 @@ bool application_plugin::handle(cgv::gui::event& e) {
 		}
 
 		bool was_handled = false;
+		bool was_blocked = false;
 		bool result = false;
 
 		if(blocking_overlay_ptr) {
 			result = blocking_overlay_ptr->handle_event(e);
 			was_handled = true;
+			was_blocked = blocking_overlay_ptr->blocks_events();
 		}
 
 		if(ma == cgv::gui::MA_RELEASE) {
@@ -53,9 +55,10 @@ bool application_plugin::handle(cgv::gui::event& e) {
 		last_blocking_overlay_ptr = blocking_overlay_ptr;
 
 		if(was_handled)
-			// TODO: if overlay is blocking events always return true. But return result if overlay is not fully blocking events.
-			return true;
-		//return result;
+			if(was_blocked)
+				return true;
+			else
+				return result;
 		else
 			return handle_event(e);
 	} else {

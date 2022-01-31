@@ -6,7 +6,6 @@
 namespace cgv{
 	namespace math{
 
-
 template <typename T>
 bool line_line_intersection(const vec<T>& x1,const vec<T>& d1,const vec<T>& x2,const vec<T>& d2, T& t1, T& t2, T eps=0.00001)
 {
@@ -66,17 +65,6 @@ bool ray_plane_intersection(const vec<T>& x,const vec<T>& d,const vec<T>& plane,
 	return ( t >= 0);
 		
 }
-
-
-
-
-
-
-
-
-
-
-
 
 	}
 }

@@ -197,8 +197,11 @@ namespace cgv {
 		/// return a reference to vr server singleton
 		extern CGV_API vr_server& ref_vr_server();
 
-		/// connect the vr server to the given window or the first window of the application, if window is not provided
-		extern CGV_API void connect_vr_server(bool connect_device_change_only_to_animation_trigger = true, cgv::gui::window_ptr w = cgv::gui::window_ptr());
+		//! connect the vr server to the given window or the first window of the application, if window is not provided
+		/*! If first parameter is true, one of the check_new_state() functions needs to be called actively. This is 
+		    for example done in vr_view_interactor::query_vr_states() in the crg_vr_view plugin, which is the prefered
+			view plugin to be used when using vr. */
+		extern CGV_API void connect_vr_server(bool connect_only_device_change_to_animation_trigger = true, cgv::gui::window_ptr w = cgv::gui::window_ptr());
 	}
 }
 

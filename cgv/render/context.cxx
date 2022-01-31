@@ -227,11 +227,13 @@ void context::configure_new_child(base_ptr child)
 	if (is_created()) {
 		make_current();
 
+		// use last traverser constructor argument to ensure that set_context and init are also called on hidden drawables
+
 		single_method_action<cgv::render::drawable,void,cgv::render::context*> sma(this, &drawable::set_context);
-		traverser(sma, "nc").traverse(child);
+		traverser(sma, "nc", cgv::base::TS_DEPTH_FIRST, false, true).traverse(child);
 
 		single_method_action<cgv::render::drawable,bool,cgv::render::context&> sma1(*this, &drawable::init);
-		traverser(sma1, "nc").traverse(child);
+		traverser(sma1, "nc", cgv::base::TS_DEPTH_FIRST, false, true).traverse(child);
 
 		post_redraw();
 	}
@@ -491,8 +493,12 @@ void context::set_light_source(void* handle, const cgv::media::illum::light_sour
 {
 	auto iter = light_sources.find(handle);
 	iter->second.first = light;
-	if (iter->second.second.enabled)
-		on_lights_changed();
+	if (place_now)
+		place_light_source(handle);
+	else {
+		if (iter->second.second.enabled)
+			on_lights_changed();
+	}
 }
 
 /// set the shader program view matrices to the currently enabled view matrices
@@ -1733,7 +1739,7 @@ context::dmat4 context::get_modelview_projection_window_matrix(unsigned array_in
 }
 
 //! compute model space 3D point from the given window space point and the given modelview_projection_window matrix
-context::vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) const
+context::vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) 
 {
 	dmat_type A(4, 4, &modelview_projection_window_matrix(0, 0));
 	dvec_type x;

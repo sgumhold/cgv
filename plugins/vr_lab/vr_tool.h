@@ -11,7 +11,7 @@ private:
 	mutable vr_scene* scene_ptr;
 	/// store pointer to vr kit
 	mutable vr::vr_kit* kit_ptr;
-	/// flag to remember that search of view yielded a no vr_view_interactor
+	/// flag to remember that search of view yielded no vr_view_interactor
 	mutable bool no_vr_view;
 	/// store pointer to vr view interactor
 	mutable vr_view_interactor* view_ptr;

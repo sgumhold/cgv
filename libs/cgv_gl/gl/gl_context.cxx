@@ -234,7 +234,7 @@ bool gl_context::configure_gl()
 #ifdef _DEBUG
 	std::cout << "OpenGL version " << version_major << "." << version_minor << (core_profile?" (core)":"") << (debug?" (debug)":"") << (forward_compatible?" (forward_compatible)":"") << std::endl;
 	const GLubyte* vendor_string = glGetString(GL_VENDOR);
-	const GLubyte* renderer_string = glGetString(GL_RENDER);
+	const GLubyte* renderer_string = glGetString(GL_RENDERER);
 	const GLubyte* glslversion_string = glGetString(GL_SHADING_LANGUAGE_VERSION);
 	if (vendor_string)
 		std::cout << "   vendor     : " << vendor_string << std::endl;
@@ -242,7 +242,6 @@ bool gl_context::configure_gl()
 		std::cout << "   renderer   : " << renderer_string << std::endl;
 	if (glslversion_string)
 		std::cout << "   glslversion: " << glslversion_string << std::endl;
-
 #endif
 	if (debug) {
 		glEnable(GL_DEBUG_OUTPUT);
@@ -326,12 +325,13 @@ void gl_context::init_render_pass()
 	if (get_render_pass_flags()&RPF_SET_LIGHTS) {
 		for (unsigned i = 0; i < nr_default_light_sources; ++i)
 			set_light_source(default_light_source_handles[i], default_light_source[i], false);
+
+		for (unsigned i = 0; i < nr_default_light_sources; ++i)
+			if (get_render_pass_flags() & RPF_SET_LIGHTS_ON)
+				enable_light_source(default_light_source_handles[i]);
+			else
+				disable_light_source(default_light_source_handles[i]);
 	}
-	for (unsigned i = 0; i < nr_default_light_sources; ++i)
-		if (get_render_pass_flags()&RPF_SET_LIGHTS_ON)
-			enable_light_source(default_light_source_handles[i]);
-		else
-			disable_light_source(default_light_source_handles[i]);
 
 	if (get_render_pass_flags()&RPF_SET_MATERIAL) {
 		set_material(default_material);
@@ -1524,6 +1524,7 @@ bool gl_context::check_texture_support(TextureType tt, const std::string& where,
 			error(where + ": cubemap texture not supported", rc);
 			return false;
 		}
+	default:
 		break;
 	}
 	return true;
@@ -1661,6 +1662,7 @@ bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df) co
 			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0,
 			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+	default:
 		break;
 	}
 	if (check_gl_error("gl_context::texture_create", &tb)) {
@@ -1701,7 +1703,9 @@ bool gl_context::texture_create(
 			switch(tb.tt) {
 			case TT_1D: tb.tt = TT_1D_ARRAY; break;
 			case TT_2D: tb.tt = TT_2D_ARRAY; break;
-			case TT_3D: tb.tt = TT_2D_ARRAY; break;
+			case TT_3D: tb.tt = TT_2D_ARRAY; 
+			default: 
+				break;
 			}
 		}
 	}
@@ -1873,7 +1877,8 @@ bool gl_context::texture_replace_from_buffer(
 	switch (tb.tt) {
 	case TT_2D :      glCopyTexSubImage2D(GL_TEXTURE_2D, level, x, y, x_buffer, y_buffer, width, height); break;
 	case TT_3D :      glCopyTexSubImage3D(GL_TEXTURE_3D, level, x, y, z, x_buffer, y_buffer, width, height); break;
-	case TT_CUBEMAP : glCopyTexSubImage2D(get_gl_cube_map_target(z), level, x, y, x_buffer, y_buffer, width, height); break;
+	case TT_CUBEMAP : glCopyTexSubImage2D(get_gl_cube_map_target(z), level, x, y, x_buffer, y_buffer, width, height); 
+	default: break;
 	}
 	bool result = !check_gl_error("gl_context::texture_replace_from_buffer", &tb);
 	texture_unbind(tb.tt, tmp_id);
@@ -2419,6 +2424,7 @@ std::string value_type_index_to_string(type_descriptor td)
 		res = std::string("matrix<") + res + "," + cgv::utils::to_string(td.nr_rows) + "," + cgv::utils::to_string(td.nr_columns) + ">";
 		if (td.is_row_major)
 			res += "^T";
+	default:
 		break;
 	}
 	if (td.is_array)
@@ -3043,9 +3049,12 @@ GLenum buffer_usage(VertexBufferUsage vbu)
 	return buffer_usages[vbu];
 }
 
-bool gl_context::vertex_buffer_bind(const vertex_buffer_base& vbb, VertexBufferType _type) const
+bool gl_context::vertex_buffer_bind(const vertex_buffer_base& vbb, VertexBufferType _type, unsigned _idx) const
 {
-	glBindBuffer(buffer_target(_type), get_gl_id(vbb.handle));
+	if (_idx == unsigned(-1))
+		glBindBuffer(buffer_target(_type), get_gl_id(vbb.handle));
+	else
+		glBindBufferBase(buffer_target(_type), _idx, get_gl_id(vbb.handle));
 	return !check_gl_error("gl_context::vertex_buffer_bind", &vbb);
 }
 

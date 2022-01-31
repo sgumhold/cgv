@@ -46,7 +46,7 @@ float oren_nayar_brdf(vec3 n, vec3 l, vec3 v, float roughness)
 	float roughsqaure = roughness * roughness;
 	float vdotn = dot(v, n);
 	float ldotn = dot(l, n);
-	float sintan = sqrt((1.0 - vdotn * vdotn) * (1.0 - ldotn * ldotn)) / max(vdotn, ldotn);
+	float sintan = sqrt(max(0.0,(1.0 - vdotn * vdotn) * (1.0 - ldotn * ldotn))) / max(vdotn, ldotn);
 	float anglediff = dot(normalize(v - n * vdotn), normalize(l - n * ldotn));
 	float a = 1.0 - 0.5 * roughsqaure / (roughsqaure + 0.33);
 	float b = 0.45 * roughsqaure / (roughsqaure + 0.09);
@@ -115,7 +115,7 @@ vec3 strauss_specular_brdf(vec3 N, vec3 L, vec3 V, float roughness, float metaln
 	roughness = 0.999*roughness + 0.001;
 	vec3 R = -reflect(L, N);
 	float theta_L = acos(clamp(-1.0, 1.0, dot(L, N)));
-	float theta_V = acos(clamp(-1.0, 1.0, dot(V, N)));
+	float theta_V = acos(clamp(-1.0, 1.0, dot(V, N))); 
 	float G_L = G_strauss(theta_L);
 	float G_V = G_strauss(theta_V);
 	float kf = 1.12;

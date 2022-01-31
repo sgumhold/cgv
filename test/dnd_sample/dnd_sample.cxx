@@ -65,6 +65,9 @@ protected:
 	unsigned lecture;
 	unsigned part;
 	unsigned subpart;
+
+	std::string trim_name;
+	std::string concat_name;
 public:
 	dnd_sample() : node("dnd_sample_instance")
 	{
@@ -74,6 +77,7 @@ public:
 		lecture = 10;
 		part = 1;
 		subpart = 1;
+		on_set(&subpart);
 		connect(cgv::gui::get_animation_trigger().shoot, this, &dnd_sample::timer_event);
 	}
 	void timer_event(double t, double dt)
@@ -143,8 +147,8 @@ public:
 	{
 		file_names.push_back(s);
 		selection.push_back(selected);
-		futures.push_back({ s, std::async(std::launch::async, &dnd_sample::get_file_duration, this, s) });
 		durations.push_back("??:??:??");
+		futures.push_back({ s, std::async(std::launch::async, &dnd_sample::get_file_duration, this, s) });
 		insert_position = file_names.size();
 	}
 	void append_directory(const std::string& d, bool selected = false)
@@ -181,7 +185,7 @@ public:
 	}
 	void stream_help(std::ostream& os)
 	{
-		os << "dnd_sample" << std::endl;
+		os << "dnd_sample:" << std::endl;
 	}
 	void clear_files()
 	{
@@ -289,30 +293,30 @@ public:
 			if (ke.get_action() == cgv::gui::KA_RELEASE)
 				return false;
 			switch (ke.get_key()) {
-			case '-':
+			case cgv::gui::KEY_Left:
 				if (ke.get_modifiers() == 0) {
-					if (lecture > 0) {
+					if (lecture > 1) {
 						--lecture;
 						on_set(&lecture);
 					}
 					return true;
 				}
 				if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
-					if (part > 0) {
+					if (part > 1) {
 						--part;
 						on_set(&part);
 					}
 					return true;
 				}
 				if (ke.get_modifiers() == cgv::gui::EM_CTRL) {
-					if (subpart > 0) {
+					if (subpart > 1) {
 						--subpart;
 						on_set(&subpart);
 					}
 					return true;
 				}
 				break;
-			case '=':
+			case cgv::gui::KEY_Right:
 				if (ke.get_modifiers() == 0) {
 					++lecture;
 					on_set(&lecture);
@@ -403,6 +407,7 @@ public:
 				if (ke.get_modifiers() == cgv::gui::EM_CTRL) {
 					if (cursor_position < file_names.size() && cursor_position > 0) {
 						std::swap(file_names[cursor_position], file_names[cursor_position - 1]);
+						std::swap(durations[cursor_position], durations[cursor_position - 1]);
 						std::swap(selection[cursor_position], selection[cursor_position - 1]);
 						--cursor_position;
 						on_set(&cursor_position);
@@ -431,6 +436,7 @@ public:
 				if (ke.get_modifiers() == cgv::gui::EM_CTRL) {
 					if (cursor_position + 1 < file_names.size()) {
 						std::swap(file_names[cursor_position], file_names[cursor_position + 1]);
+						std::swap(durations[cursor_position], durations[cursor_position + 1]);
 						std::swap(selection[cursor_position], selection[cursor_position + 1]);
 						++cursor_position;
 						on_set(&cursor_position);
@@ -461,6 +467,7 @@ public:
 				if (ke.get_modifiers() == cgv::gui::EM_CTRL) {
 					if (cursor_position < file_names.size() && cursor_position > 0) {
 						std::swap(file_names[cursor_position], file_names.front());
+						std::swap(durations[cursor_position], durations.front());
 						std::swap(selection[cursor_position], selection.front());
 						cursor_position = 0;
 						on_set(&cursor_position);
@@ -490,6 +497,7 @@ public:
 				if (ke.get_modifiers() == cgv::gui::EM_CTRL) {
 					if (cursor_position + 1 > file_names.size()) {
 						std::swap(file_names[cursor_position], file_names.back());
+						std::swap(durations[cursor_position], durations.back());
 						std::swap(selection[cursor_position], selection.back());
 						cursor_position = 0;
 						on_set(&cursor_position);
@@ -624,6 +632,12 @@ public:
 	}
 	void on_set(void* member_ptr)
 	{
+		if (member_ptr == &lecture || member_ptr == &part || member_ptr == &subpart || member_ptr == &output_prefix) {
+			concat_name = get_output_file_name();
+			trim_name = get_output_file_name(true);
+			update_member(&concat_name);
+			update_member(&trim_name);
+		}
 		if (member_ptr == &input_dir) {
 			append_directory(input_dir);
 		}
@@ -636,10 +650,12 @@ public:
 		add_decorator("dnd_sample", "heading", "level=1");
 		connect_copy(add_button("concat")->click, cgv::signal::rebind(this, &dnd_sample::concat));
 		add_gui("input_dir", input_dir, "directory");
+		add_member_control(this, "output_prefix", output_prefix);
 		add_member_control(this, "lecture", lecture, "value_slider", "min=1;max=15;ticks=true");
 		add_member_control(this, "part", part, "value_slider", "min=1;max=8;ticks=true");
+		add_view("concat name", concat_name);
 		add_member_control(this, "subpart", subpart, "value_slider", "min=1;max=9;ticks=true");
-		add_member_control(this, "output_prefix", output_prefix);
+		add_view("trim name", trim_name);
 	}
 };
 

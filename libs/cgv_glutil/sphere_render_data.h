@@ -11,17 +11,14 @@ namespace cgv {
 namespace glutil {
 
 template <typename ColorType = render_types::rgb>
-class sphere_render_data : public render_data_base {
+class sphere_render_data : public render_data_base<ColorType> {
 protected:
 	std::vector<float> rad;
-	std::vector<ColorType> col;
 
 	bool transfer(context& ctx, sphere_renderer& r) {
 		if(render_data_base::transfer(ctx, r)) {
 			if(rad.size() == size())
 				r.set_radius_array(ctx, rad);
-			if(col.size() == size())
-				r.set_color_array(ctx, col);
 			return true;
 		}
 		return false;
@@ -30,13 +27,10 @@ protected:
 public:
 	void clear() {
 		render_data_base::clear();
-
 		rad.clear();
-		col.clear();
 	}
 
-	std::vector<float>&		ref_rad() { return rad; }
-	std::vector<ColorType>&	ref_col() { return col; }
+	std::vector<float>& ref_rad() { return rad; }
 
 	void early_transfer(context& ctx, sphere_renderer& r) {
 		r.enable_attribute_array_manager(ctx, aam);
