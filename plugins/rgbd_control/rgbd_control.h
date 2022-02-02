@@ -57,6 +57,9 @@ public:
 	void stream_help(std::ostream& os);
 	///
 	void create_gui();
+	///
+
+
 protected:
 	void update_texture_from_frame(cgv::render::context& ctx, cgv::render::texture& tex, const rgbd::frame_type& frame, bool recreate, bool replace);
 	/// members for rgbd input
@@ -130,7 +133,9 @@ protected:
 	size_t construct_point_cloud();
 	bool acquire_next;
 	bool always_acquire_next;
-protected:
+	bool visualisation_enabled;
+
+  protected:
 	void timer_event(double t, double dt);
 	void on_start_cb();
 	void on_step_cb();
