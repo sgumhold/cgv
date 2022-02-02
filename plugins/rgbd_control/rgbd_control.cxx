@@ -88,6 +88,8 @@ rgbd_control::rgbd_control() :
 	color_attachment_changed = depth_attachment_changed = infrared_attachment_changed = false;
 	prs.measure_point_size_in_pixel = true;
 	prs.point_size = 3.0f;
+	visualisation_enabled = true;
+
 	connect(get_animation_trigger().shoot, this, &rgbd_control::timer_event);
 }
 
@@ -102,7 +104,8 @@ bool rgbd_control::self_reflect(cgv::reflect::reflection_handler& rh)
 		rh.reflect_member("depth_scale", depth_scale) &&
 		rh.reflect_member("infrared_scale", infrared_scale) &&
 		rh.reflect_member("device_mode", (int&)device_mode) &&
-		rh.reflect_member("device_idx", device_idx);
+		rh.reflect_member("device_idx", device_idx) &&
+		rh.reflect_member("visualisation_enabled", visualisation_enabled);
 }
 
 ///
@@ -135,6 +138,12 @@ void rgbd_control::on_set(void* member_ptr)
 	}
 	if (member_ptr == &near_mode)
 		rgbd_inp.set_near_mode(near_mode);
+	if (member_ptr == &visualisation_enabled) {
+		if (visualisation_enabled)
+			this->show();
+		else
+			this->hide();
+	}
 
 	update_member(member_ptr);
 	post_redraw();
