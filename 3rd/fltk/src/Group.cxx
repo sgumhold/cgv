@@ -207,6 +207,8 @@ void Group::remove(int index) {
   if (index >= children_) return;
   Widget* o = array_[index];
   // we must redraw the enclosing group that has an opaque box:
+  if (o == fltk::belowmouse_)
+      fltk::belowmouse_ = 0;
   if (o->visible_r())
     for (Widget *p = this; p; p = p->parent())
       if (p->box() != NO_BOX || !p->parent()) {p->redraw(); break;}
