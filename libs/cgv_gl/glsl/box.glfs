@@ -134,18 +134,22 @@ void main()
 #if ROUNDING == 0
     finish_fragment(compute_reflected_appearance(position, normalize(normal), color_fs, side));
 #else
-    vec3 ray_dir_box = pos_box - eye_box;
-    float l = length(ray_dir_box);
-    vec3 rd = normalize(ray_dir_box);
-    float t;
-    bool rounded;
-    if (!roundedboxIntersect(eye_box, rd, 0.5*extent - radius, radius, t, rounded))
-        discard;
-    vec3 hit_box = eye_box + t * rd;
-    vec3 nml_box = roundedboxNormal(hit_box, 0.5*extent - radius, radius);
-    vec3 hit_eye = l * position;
-    vec3 nml_eye = NM_fs*nml_box;
-    finish_fragment(compute_reflected_appearance(hit_eye, normalize(nml_eye), rounded ? secondary_color : color_fs, side));
+    if (radius == 0.0)
+        finish_fragment(compute_reflected_appearance(position, normalize(normal), color_fs, side));
+    else {
+        vec3 ray_dir_box = pos_box - eye_box;
+        float l = length(ray_dir_box);
+        vec3 rd = normalize(ray_dir_box);
+        float t;
+        bool rounded;
+        if (!roundedboxIntersect(eye_box, rd, 0.5*extent - radius, radius, t, rounded))
+            discard;
+        vec3 hit_box = eye_box + t * rd;
+        vec3 nml_box = roundedboxNormal(hit_box, 0.5*extent - radius, radius);
+        vec3 hit_eye = l * position;
+        vec3 nml_eye = NM_fs*nml_box;
+        finish_fragment(compute_reflected_appearance(hit_eye, normalize(nml_eye), rounded ? secondary_color : color_fs, side));
+    }
 #endif
 }
 
