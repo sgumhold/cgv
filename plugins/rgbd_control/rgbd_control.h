@@ -21,6 +21,8 @@
 
 #include "lib_begin.h"
 
+using namespace std;
+
 class rgbd_control : 
 	public cgv::base::node,
 	public cgv::render::drawable,
@@ -57,8 +59,13 @@ public:
 	void stream_help(std::ostream& os);
 	///
 	void create_gui();
-protected:
+	
+
+	bool show_grayscale;
+  protected:
 	void update_texture_from_frame(cgv::render::context& ctx, cgv::render::texture& tex, const rgbd::frame_type& frame, bool recreate, bool replace);
+	///
+	void convert_to_grayscale(const rgbd::frame_type& color_frame, rgbd::frame_type& gray_frame);
 	/// members for rgbd input
 	rgbd::rgbd_input rgbd_inp;
 	std::string protocol_path;
@@ -124,7 +131,7 @@ protected:
 
 	/// internal members used for data storage
 	rgbd::frame_type color_frame, depth_frame, ir_frame, warped_color_frame,mesh_frame;
-	rgbd::frame_type color_frame_2, depth_frame_2, ir_frame_2, warped_color_frame_2;
+	rgbd::frame_type color_frame_2, depth_frame_2, ir_frame_2, warped_color_frame_2, gray_frame_2;
 	std::vector<fast::fast_xy> corners;
 	std::future<size_t> future_handle;
 	size_t construct_point_cloud();
