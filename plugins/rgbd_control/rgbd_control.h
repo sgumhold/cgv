@@ -13,6 +13,8 @@
 #include <cgv/render/shader_program.h>
 #include <cgv/render/texture.h>
 #include <cgv_gl/point_renderer.h>
+#include <libs/point_cloud/point_cloud_provider.h>
+#include <libs/point_cloud/point_cloud.h>
 
 #include <string>
 #include <mutex>
@@ -27,7 +29,8 @@ class rgbd_control :
 	public cgv::base::node,
 	public cgv::render::drawable,
 	public cgv::gui::event_handler,
-	public cgv::gui::provider
+	public cgv::gui::provider,
+	public cgv::pointcloud::point_cloud_provider
 {
 public:
 	enum VisMode { VM_COLOR, VM_DEPTH, VM_INFRARED, VM_WARPED };
@@ -63,6 +66,9 @@ public:
 
 	bool show_grayscale;
   protected:
+	///
+	point_cloud get_point_cloud() override;
+
 	void update_texture_from_frame(cgv::render::context& ctx, cgv::render::texture& tex, const rgbd::frame_type& frame, bool recreate, bool replace);
 	///
 	void convert_to_grayscale(const rgbd::frame_type& color_frame, rgbd::frame_type& gray_frame);
@@ -137,7 +143,9 @@ public:
 	size_t construct_point_cloud();
 	bool acquire_next;
 	bool always_acquire_next;
-protected:
+	bool visualisation_enabled;
+
+  protected:
 	void timer_event(double t, double dt);
 	void on_start_cb();
 	void on_step_cb();
