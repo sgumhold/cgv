@@ -31,8 +31,8 @@ public:
 		opacity_interpolator.add_control_point(t, opacity);
 	}
 
-	const std::vector<decltype(color_interpolator)::control_point>& ref_color_nodes() { return color_interpolator.ref_control_points(); }
-	const std::vector<decltype(opacity_interpolator)::control_point>& ref_opacity_nodes() { return opacity_interpolator.ref_control_points(); }
+	const std::vector<decltype(color_interpolator)::control_point>& ref_color_points() { return color_interpolator.ref_control_points(); }
+	const std::vector<decltype(opacity_interpolator)::control_point>& ref_opacity_points() { return opacity_interpolator.ref_control_points(); }
 
 	rgb interpolate_color(float t) {
 
