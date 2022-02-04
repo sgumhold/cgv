@@ -560,6 +560,11 @@ point_cloud rgbd_control::get_point_cloud()
 	return pc;
 }
 
+cgv::signal::signal<>& rgbd_control::new_point_cloud_ready()
+{
+	return new_point_cloud_sig;
+}
+
 size_t rgbd_control::construct_point_cloud()
 {
 
@@ -626,6 +631,7 @@ size_t rgbd_control::construct_point_cloud()
 	return P2.size();
 }
 
+
 void rgbd_control::timer_event(double t, double dt)
 {
 	// in case a point cloud is being constructed
@@ -637,6 +643,7 @@ void rgbd_control::timer_event(double t, double dt)
 			P = P2;
 			C = C2;
 			post_redraw();
+			new_point_cloud_sig();
 		}
 	}
 	if (rgbd_inp.is_started()) {

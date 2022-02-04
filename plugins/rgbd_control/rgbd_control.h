@@ -62,8 +62,10 @@ public:
 	void create_gui();
 	///
 	point_cloud get_point_cloud() override;
+	
+	cgv::signal::signal<>& new_point_cloud_ready() override;
 
-protected:
+  protected:
 	void update_texture_from_frame(cgv::render::context& ctx, cgv::render::texture& tex, const rgbd::frame_type& frame, bool recreate, bool replace);
 	/// members for rgbd input
 	rgbd::rgbd_input rgbd_inp;
@@ -136,7 +138,9 @@ protected:
 	size_t construct_point_cloud();
 	bool acquire_next;
 	bool always_acquire_next;
+	bool construct_pointcloud_object;
 	bool visualisation_enabled;
+	cgv::signal::signal<> new_point_cloud_sig;
 
   protected:
 	void timer_event(double t, double dt);
