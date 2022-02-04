@@ -509,11 +509,11 @@ void color_map_editor::init_styles(context& ctx) {
 
 void color_map_editor::init_texture(context& ctx) {
 
-	std::vector<uint8_t> data(resolution * 4, 0u);
+	std::vector<uint8_t> data(resolution * 3, 0u);
 
 	cm_tex.destruct(ctx);
-	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGBA), data.data());
-	cm_tex = texture("uint8[R,G,B,A]", TF_LINEAR, TF_LINEAR);
+	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGB), data.data());
+	cm_tex = texture("uint8[R,G,B]", TF_LINEAR, TF_LINEAR);
 	cm_tex.create(ctx, tf_dv, 0);
 }
 
@@ -665,7 +665,7 @@ void color_map_editor::update_color_map(bool is_data_change) {
 
 	tex.destruct(ctx);
 	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, 2, TI_FLT32, cgv::data::CF_RGB), data2d.data());
-	tex = texture("flt32[R,G,B,A]", TF_LINEAR, TF_LINEAR);
+	tex = texture("flt32[R,G,B]", TF_LINEAR, TF_LINEAR);
 	tex.create(ctx, dv, 0);
 
 	if(cm_tex.is_created()) {
