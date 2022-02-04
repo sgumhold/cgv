@@ -1,6 +1,7 @@
 #include "point_cloud.h"
 #include <future>
 #include <memory>
+#include <cgv/signal/signal.h>
 
 namespace cgv {
 namespace pointcloud {
@@ -10,8 +11,8 @@ namespace pointcloud {
 class point_cloud_provider : public cgv::render::render_types
 {
   public:
+	virtual cgv::signal::signal<>& new_point_cloud_ready() = 0;
 	virtual point_cloud get_point_cloud() = 0;
-	//virtual std::shared_ptr<std::future<point_cloud>> get_point_cloud_future() = 0;
 };
 
 }
