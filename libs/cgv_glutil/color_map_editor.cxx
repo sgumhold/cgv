@@ -337,9 +337,9 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 	if(cmc.cm) {
 		// draw color scale texture
 		color_map_style.apply(ctx, rect_prog);
-		cmc.tex.enable(ctx, 0);
+		preview_tex.enable(ctx, 0);
 		canvas.draw_shape(ctx, layout.color_map_rect.pos(), layout.color_map_rect.size());
-		cmc.tex.disable(ctx);
+		preview_tex.disable(ctx);
 		canvas.disable_current_shader(ctx);
 	} else {
 		canvas.disable_current_shader(ctx);
@@ -435,10 +435,10 @@ void color_map_editor::create_gui(cgv::gui::provider& p) {
 	p.add_member_control(this, "Show", show, "check");
 }
 
-texture& color_map_editor::ref_tex() {
-
-	return cm_tex;
-}
+//texture& color_map_editor::ref_tex() {
+//
+//	return cm_tex;
+//}
 
 void color_map_editor::init_styles(context& ctx) {
 
@@ -509,12 +509,12 @@ void color_map_editor::init_styles(context& ctx) {
 
 void color_map_editor::init_texture(context& ctx) {
 
-	std::vector<uint8_t> data(resolution * 3, 0u);
+	std::vector<uint8_t> data(resolution * 3 * 2, 0u);
 
-	cm_tex.destruct(ctx);
-	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGB), data.data());
-	cm_tex = texture("uint8[R,G,B]", TF_LINEAR, TF_LINEAR);
-	cm_tex.create(ctx, tf_dv, 0);
+	preview_tex.destruct(ctx);
+	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2, TI_UINT8, cgv::data::CF_RGB), data.data());
+	preview_tex = texture("uint8[R,G,B]", TF_LINEAR, TF_LINEAR);
+	preview_tex.create(ctx, tf_dv, 0);
 }
 
 void color_map_editor::add_point(const vec2& pos) {
@@ -634,7 +634,7 @@ void color_map_editor::update_color_map(bool is_data_change) {
 	context& ctx = *ctx_ptr;
 
 	auto& cm = *cmc.cm;
-	auto& tex = cmc.tex;
+	//auto& tex = cmc.tex;
 	auto& points = cmc.points;
 	
 	sort_points();
@@ -646,40 +646,37 @@ void color_map_editor::update_color_map(bool is_data_change) {
 		cm.add_color_point(p.val, p.col);
 	}
 
-	std::vector<rgb> cs_data;
+	unsigned size = static_cast<unsigned>(resolution);
+	std::vector<rgb> cs_data(size);
 
-	unsigned size = resolution;
 	float step = 1.0f / static_cast<float>(size - 1);
 
 	for(unsigned i = 0; i < size; ++i) {
 		float t = i * step;
-		rgb col = cm.interpolate_color(t);
-		cs_data.push_back(col);
+		cs_data[i] = cm.interpolate_color(t);
 	}
 
-	std::vector<rgb> data2d(2 * size);
+	std::vector<uint8_t> data(3 * 2 * size);
 	for(unsigned i = 0; i < size; ++i) {
-		data2d[i + 0] = cs_data[i];
-		data2d[i + size] = cs_data[i];
+		rgb col = cs_data[i];
+		uint8_t r = static_cast<uint8_t>(255.0f * col.R());
+		uint8_t g = static_cast<uint8_t>(255.0f * col.G());
+		uint8_t b = static_cast<uint8_t>(255.0f * col.B());
+
+		unsigned idx = 3 * i;
+		data[idx + 0] = r;
+		data[idx + 1] = g;
+		data[idx + 2] = b;
+		idx += 3*size;
+		data[idx + 0] = r;
+		data[idx + 1] = g;
+		data[idx + 2] = b;
 	}
 
-	tex.destruct(ctx);
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, 2, TI_FLT32, cgv::data::CF_RGB), data2d.data());
-	tex = texture("flt32[R,G,B]", TF_LINEAR, TF_LINEAR);
-	tex.create(ctx, dv, 0);
-
-	if(cm_tex.is_created()) {
-		std::vector<uint8_t> cs_data_8(3*cs_data.size());
-		for(unsigned i = 0; i < cs_data.size(); ++i) {
-			rgba col = cs_data[i];
-			cs_data_8[3 * i + 0] = static_cast<uint8_t>(255.0f * col.R());
-			cs_data_8[3 * i + 1] = static_cast<uint8_t>(255.0f * col.G());
-			cs_data_8[3 * i + 2] = static_cast<uint8_t>(255.0f * col.B());
-		}
-
-		cgv::data::data_view dv1d = cgv::data::data_view(new cgv::data::data_format(size, TI_UINT8, cgv::data::CF_RGB), cs_data_8.data());
-		cm_tex.replace(ctx, 0, dv1d);
-	}
+	preview_tex.destruct(ctx);
+	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, 2, TI_UINT8, cgv::data::CF_RGB), data.data());
+	preview_tex = texture("uint8[R,G,B]", TF_LINEAR, TF_LINEAR);
+	preview_tex.create(ctx, dv, 0);
 
 	if(is_data_change) {
 		has_unsaved_changes = true;
