@@ -100,7 +100,7 @@ protected:
 	};
 
 	texture bg_tex;
-	texture cm_tex;
+	texture preview_tex;
 
 	generic_renderer handle_renderer;
 	DEFINE_GENERIC_RENDER_DATA_CLASS(handle_geometry, 2, vec2, position, rgb, color);
@@ -111,7 +111,7 @@ protected:
 		cgv::glutil::draggables_collection<point> points;
 		handle_geometry handles;
 
-		texture tex;
+		//texture tex;
 		
 		void reset() {
 			cm = nullptr;
@@ -168,7 +168,10 @@ public:
 	void create_gui();
 	void create_gui(cgv::gui::provider& p);
 
+	color_map* get_color_map() { return cmc.cm; }
+
 	void set_color_map(color_map* cm) {
+		cmc.reset();
 		cmc.cm = cm;
 
 		if(cmc.cm) {
@@ -186,10 +189,7 @@ public:
 			has_unsaved_changes = false;
 			on_set(&has_unsaved_changes);
 		}
-
 	}
-
-	texture& ref_tex();
 };
 
 }
