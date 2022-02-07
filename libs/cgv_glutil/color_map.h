@@ -41,9 +41,19 @@ public:
 		return color_interpolator.interpolate(t);
 	}
 
+	std::vector<rgb> interpolate_color(size_t n) const {
+
+		return color_interpolator.interpolate(n);
+	}
+
 	float interpolate_opacity(float t) const {
 
 		return opacity_interpolator.interpolate(t);
+	}
+
+	std::vector<float> interpolate_opacity(size_t n) const {
+
+		return opacity_interpolator.interpolate(n);
 	}
 
 	rgba interpolate(float t) const {
@@ -52,6 +62,20 @@ public:
 		float opacity = opacity_interpolator.interpolate(t);
 
 		return rgba(color.R(), color.G(), color.B(), opacity);
+	}
+
+	std::vector<rgba> interpolate(size_t n) const {
+
+		std::vector<rgb> colors = color_interpolator.interpolate(n);
+		std::vector<float> opacities = opacity_interpolator.interpolate(n);
+
+		std::vector<rgba> data(n);
+		for(size_t i = 0; i < n; ++i) {
+			const rgb& color = colors[i];
+			data[i] = rgba(color.R(), color.G(), color.B(), opacities[i]);
+		}
+
+		return data;
 	}
 };
 

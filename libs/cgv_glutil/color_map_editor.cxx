@@ -277,7 +277,7 @@ bool color_map_editor::init(cgv::render::context& ctx) {
 	
 	bg_tex.destruct(ctx);
 	cgv::data::data_view bg_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, TI_FLT32, cgv::data::CF_RGB), bg_data.data());
-	bg_tex = texture("flt32[R,G,B]", TF_NEAREST, TF_NEAREST, TW_REPEAT, TW_REPEAT);
+	bg_tex = texture("flt32[R,G,B]", TF_NEAREST, TF_NEAREST, TW_CLAMP_TO_EDGE, TW_CLAMP_TO_EDGE);
 	success &= bg_tex.create(ctx, bg_dv, 0);
 
 	return success;
@@ -644,18 +644,11 @@ void color_map_editor::update_color_map(bool is_data_change) {
 		cm.add_color_point(p.val, p.col);
 	}
 
-	unsigned size = static_cast<unsigned>(resolution);
-	std::vector<rgb> cs_data(size);
-
-	float step = 1.0f / static_cast<float>(size - 1);
-
-	for(unsigned i = 0; i < size; ++i) {
-		float t = i * step;
-		cs_data[i] = cm.interpolate_color(t);
-	}
+	size_t size = static_cast<size_t>(resolution);
+	std::vector<rgb> cs_data = cm.interpolate_color(size);
 
 	std::vector<uint8_t> data(3 * 2 * size);
-	for(unsigned i = 0; i < size; ++i) {
+	for(size_t i = 0; i < size; ++i) {
 		rgb col = cs_data[i];
 		uint8_t r = static_cast<uint8_t>(255.0f * col.R());
 		uint8_t g = static_cast<uint8_t>(255.0f * col.G());
@@ -673,7 +666,7 @@ void color_map_editor::update_color_map(bool is_data_change) {
 
 	preview_tex.destruct(ctx);
 	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, 2, TI_UINT8, cgv::data::CF_RGB), data.data());
-	preview_tex = texture("uint8[R,G,B]", TF_LINEAR, TF_LINEAR);
+	preview_tex = texture("uint8[R,G,B]", TF_LINEAR, TF_LINEAR, TW_CLAMP_TO_EDGE, TW_CLAMP_TO_EDGE);
 	preview_tex.create(ctx, dv, 0);
 
 	if(is_data_change) {
@@ -689,6 +682,8 @@ void color_map_editor::update_color_map(bool is_data_change) {
 	}
 
 	update_geometry();
+
+	has_updated = true;
 }
 
 bool color_map_editor::update_geometry() {
