@@ -212,7 +212,7 @@ void rgbd_control::update_texture_from_frame(context& ctx, texture& tex, const f
 		case PF_RGBA:  // 32 bit rgba format
 			fmt_descr += "8[R,G,B,A]";
 			break;
-		case PF_BGRA:  // 32 bit brga format
+		case PF_BGRA:  // 32 bit bgra format
 			fmt_descr += "8[B,G,R,A]";
 			break;
 		case PF_BAYER: // 8 bit raw bayer pattern values
