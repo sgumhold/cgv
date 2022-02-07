@@ -16,6 +16,7 @@ namespace glutil {
 navigator::navigator() {
 	
 	set_name("Navigator");
+	gui_options.allow_stretch = false;
 
 	view_ptr = nullptr;
 	navigator_eye_pos = vec3(0.0f, 0.0f, 2.5f);
@@ -325,9 +326,7 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 
 void navigator::create_gui() {
 
-	add_decorator("Navigator", "heading", "level=2");
-
-	create_overlay_gui(true, false, true);
+	create_overlay_gui();
 }
 
 void navigator::create_gui(cgv::gui::provider& p) {

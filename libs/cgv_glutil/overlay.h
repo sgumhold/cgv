@@ -33,7 +33,6 @@ protected:
 		SO_BOTH			// width and height are stretched to cover viewport
 	};
 
-protected:
 	/// the last recorded size of the viewport, is kept current with ensure_viewport
 	ivec2 last_viewport_size;
 
@@ -63,6 +62,14 @@ protected:
 	void update_overlay_layout();
 
 public:
+	struct {
+		bool show_heading = true;
+		bool show_layout_options = true;
+		bool allow_alignment = true;
+		bool allow_stretch = true;
+		bool allow_margin = true;
+	} gui_options;
+
 	/// creates an overlay in the bottom left corner with zero size
 	overlay();
 
@@ -173,7 +180,7 @@ public:
 	virtual bool is_hit(const ivec2& mouse_pos);
 
 	/// provides a default gui implementation for private overlay layout members
-	void create_overlay_gui(bool allow_alignment = true, bool allow_stretch = true, bool allow_margin = true);
+	void create_overlay_gui();
 };
 
 }
