@@ -25,6 +25,7 @@ protected:
 	std::string file_name;
 	std::string save_file_name;
 	bool has_unsaved_changes = false;
+	bool has_updated = false;
 
 	bool mouse_is_on_overlay;
 	bool show_cursor;
@@ -107,27 +108,13 @@ protected:
 	
 	struct cm_container {
 		color_map* cm = nullptr;
-
 		cgv::glutil::draggables_collection<point> points;
 		handle_geometry handles;
 
-		//texture tex;
-		
 		void reset() {
 			cm = nullptr;
-
 			points.clear();
 			handles.clear();
-
-			//point p;
-			//p.val = 0.0f;
-			//p.col = rgb(0.0f);
-			//points.add(p);
-			//
-			//p = point();
-			//p.val = 1.0f;
-			//p.col = rgb(1.0f);
-			//points.add(p);
 		}
 	} cmc;
 
@@ -168,6 +155,12 @@ public:
 	void create_gui();
 	void create_gui(cgv::gui::provider& p);
 
+	bool was_updated() {
+		bool temp = has_updated;
+		has_updated = false;
+		return temp;
+	}
+
 	color_map* get_color_map() { return cmc.cm; }
 
 	void set_color_map(color_map* cm) {
@@ -188,6 +181,8 @@ public:
 
 			has_unsaved_changes = false;
 			on_set(&has_unsaved_changes);
+
+			post_recreate_gui();
 		}
 	}
 };
