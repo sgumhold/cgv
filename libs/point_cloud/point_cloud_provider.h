@@ -1,3 +1,4 @@
+#pragma once
 #include "point_cloud.h"
 #include <future>
 #include <memory>
