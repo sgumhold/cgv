@@ -443,8 +443,6 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 
 void transfer_function_editor::create_gui() {
 
-	add_decorator("Transfer Function Editor", "heading", "level=2");
-
 	create_overlay_gui();
 
 	add_decorator("File", "heading", "level=3");

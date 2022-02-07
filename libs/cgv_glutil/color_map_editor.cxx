@@ -405,8 +405,6 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 
 void color_map_editor::create_gui() {
 
-	add_decorator("Color Scale Editor", "heading", "level=2");
-
 	create_overlay_gui();
 
 	add_decorator("File", "heading", "level=3");
