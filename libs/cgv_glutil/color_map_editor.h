@@ -38,7 +38,6 @@ protected:
 	cgv::glutil::canvas canvas, overlay_canvas;
 	cgv::glutil::shape2d_style container_style, border_style, color_map_style, bg_style, hist_style;
 	
-	float opacity_scale_exponent;
 	cgv::type::DummyEnum resolution;
 
 	struct layout_attributes {
