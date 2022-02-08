@@ -41,7 +41,6 @@ color_map_editor::color_map_editor() {
 
 	overlay_canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
 
-	opacity_scale_exponent = 1.0f;
 	resolution = (cgv::type::DummyEnum)256;
 
 	mouse_is_on_overlay = false;
@@ -221,14 +220,6 @@ void color_map_editor::on_set(void* member_ptr) {
 		set_overlay_size(size);
 	}
 
-	if(member_ptr == &opacity_scale_exponent) {
-		opacity_scale_exponent = cgv::math::clamp(opacity_scale_exponent, 1.0f, 5.0f);
-
-		update_point_positions();
-		sort_points();
-		update_geometry();
-	}
-
 	if(member_ptr == &resolution) {
 		context* ctx_ptr = get_context();
 		if(ctx_ptr)
@@ -345,7 +336,7 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 		canvas.disable_current_shader(ctx);
 		// draw editor checkerboard background
 		auto& bg_prog = canvas.enable_shader(ctx, "background");
-		bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
+		bg_prog.set_uniform(ctx, "scale_exponent", 1.0f);
 		bg_tex.enable(ctx, 0);
 		//canvas.draw_shape(ctx, layout.handles_rect.pos(), layout.handles_rect.size());
 		canvas.draw_shape(ctx, layout.color_map_rect.pos(), layout.color_map_rect.size());
@@ -415,7 +406,6 @@ void color_map_editor::create_gui() {
 	if(begin_tree_node("Settings", layout, false)) {
 		align("\a");
 		add_member_control(this, "Height", layout.total_height, "value_slider", "min=100;max=500;step=10;ticks=true");
-		add_member_control(this, "Opacity Scale Exponent", opacity_scale_exponent, "value_slider", "min=1.0;max=5.0;step=0.001;ticks=true");
 		add_member_control(this, "Resolution", resolution, "dropdown", "enums='2=2,4=4,8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024,2048=2048'");
 		align("\b");
 		end_tree_node(layout);
@@ -463,7 +453,6 @@ void color_map_editor::init_styles(context& ctx) {
 	bg_style.texcoord_scaling = vec2(5.0f, 5.0f);
 
 	auto& bg_prog = canvas.enable_shader(ctx, "background");
-	bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
 	bg_style.apply(ctx, bg_prog);
 	canvas.disable_current_shader(ctx);
 
@@ -520,7 +509,7 @@ void color_map_editor::add_point(const vec2& pos) {
 	if(cmc.cm) {
 		point p;
 		p.pos = ivec2(pos.x(), layout.handles_rect.pos().y());
-		p.update_val(layout, opacity_scale_exponent);
+		p.update_val(layout, 1.0f);
 		p.col = cmc.cm->interpolate_color(p.val);
 		cmc.points.add(p);
 
@@ -561,7 +550,7 @@ color_map_editor::point* color_map_editor::get_hit_point(const color_map_editor:
 
 void color_map_editor::handle_drag() {
 
-	cmc.points.get_dragged()->update_val(layout, opacity_scale_exponent);
+	cmc.points.get_dragged()->update_val(layout, 1.0f);
 	update_color_map(true);
 	post_redraw();
 }
@@ -622,7 +611,7 @@ void color_map_editor::sort_points() {
 void color_map_editor::update_point_positions() {
 
 	for(unsigned i = 0; i < cmc.points.size(); ++i)
-		cmc.points[i].update_pos(layout, opacity_scale_exponent);
+		cmc.points[i].update_pos(layout, 1.0f);
 }
 
 void color_map_editor::update_color_map(bool is_data_change) {
