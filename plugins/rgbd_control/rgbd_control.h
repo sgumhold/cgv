@@ -36,7 +36,7 @@ public:
 	enum VisMode { VM_COLOR, VM_DEPTH, VM_INFRARED, VM_WARPED };
 	enum DeviceMode { DM_DETACHED, DM_PROTOCOL, DM_DEVICE };
 	///
-	rgbd_control();
+	rgbd_control(bool no_interactor);
 	/// overload to return the type name of this object. By default the type interface is queried over get_type.
 	std::string get_type_name() const { return "rgbd_control"; }
 	///
@@ -63,8 +63,9 @@ public:
 	///
 	void create_gui();
 	
-
 	bool show_grayscale;
+
+	bool no_interactor = false;
   protected:
 	///
 	point_cloud get_point_cloud() override;
