@@ -36,13 +36,14 @@ std::string get_stream_format_enum(const std::vector<rgbd::stream_format>& sfs)
 }
 
 ///
-rgbd_control::rgbd_control() : 
+rgbd_control::rgbd_control(bool no_interactor)
+	: 
 	color_fmt("uint8[B,G,R,A]"),
 	infrared_fmt("uint16[L]"),
 	depth_fmt("uint16[L]"), 
 	depth("uint16[L]", TF_NEAREST, TF_NEAREST),
 	infrared("uint16[L]"),
-	depth_range(0.0f, 1.0f)
+	depth_range(0.0f, 1.0f), no_interactor(no_interactor)
 {
 	set_name("rgbd_control");
 	do_protocol = false;
@@ -243,6 +244,9 @@ void rgbd_control::update_texture_from_frame(context& ctx, texture& tex, const f
 ///
 void rgbd_control::init_frame(context& ctx)
 {
+	if (no_interactor)
+		return;
+
 	if (!rgbd_prog.is_created())
 		rgbd_prog.build_program(ctx, "rgbd_shader.glpr");
 
@@ -278,6 +282,9 @@ void rgbd_control::init_frame(context& ctx)
 /// overload to draw the content of this drawable
 void rgbd_control::draw(context& ctx)
 {
+	if (no_interactor)
+		return;
+
 	ctx.push_modelview_matrix();
 	vec3 flip_vec(flip[0] ? -1.0f : 1.0f, flip[1] ? -1.0f : 1.0f, flip[2] ? -1.0f : 1.0f);
 	ctx.mul_modelview_matrix(cgv::math::scale4<double>(flip_vec[0], -flip_vec[1], -flip_vec[2]));
@@ -381,6 +388,9 @@ void rgbd_control::draw(context& ctx)
 /// 
 bool rgbd_control::handle(cgv::gui::event& e)
 {
+	if (no_interactor)
+		return false;
+
 	if (e.get_kind() != cgv::gui::EID_KEY)
 		return false;
 	cgv::gui::key_event& ke = static_cast<cgv::gui::key_event&>(e);
@@ -1094,4 +1104,9 @@ void rgbd_control::convert_to_grayscale(const frame_type& color_frame2, frame_ty
 
 #include "lib_begin.h"
 
+#ifdef NO_VR_VIEW_INTERACTOR
+extern CGV_API object_registration_1<rgbd_control,bool> kc_or(true, "");
+#else
 extern CGV_API object_registration<rgbd_control> kc_or("");
+#endif
+
