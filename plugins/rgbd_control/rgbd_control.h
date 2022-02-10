@@ -78,7 +78,7 @@ public:
 	void convert_to_grayscale(const rgbd::frame_type& color_frame, rgbd::frame_type& gray_frame);
 	/// members for rgbd input
 	rgbd::rgbd_input rgbd_inp;
-	std::string protocol_path;
+	std::string record_path;
 	bool do_protocol;
 	bool stream_color;
 	bool stream_depth;
