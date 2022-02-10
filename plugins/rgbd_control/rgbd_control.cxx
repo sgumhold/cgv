@@ -100,7 +100,8 @@ rgbd_control::rgbd_control(bool no_interactor)
 bool rgbd_control::self_reflect(cgv::reflect::reflection_handler& rh)
 {
 	return
-		rh.reflect_member("protocol_path", protocol_path) &&
+		rh.reflect_member("record_path", record_path) &&
+		rh.reflect_member("protocol_path", record_path) &&
 		rh.reflect_member("do_protocol", do_protocol) &&
 		rh.reflect_member("vis_mode", (int&)vis_mode) &&
 		rh.reflect_member("color_scale", color_scale) &&
@@ -123,16 +124,16 @@ void rgbd_control::on_set(void* member_ptr)
 				do_protocol = false;
 				rgbd_inp.disable_protocol();
 			}
-			bool path_exists = cgv::utils::dir::exists(protocol_path);
+			bool path_exists = cgv::utils::dir::exists(record_path);
 			if (!path_exists) {
-				if (cgv::gui::question(protocol_path + " does not exist. Create it?", "No,Yes", 1)) {
-					path_exists = cgv::utils::dir::mkdir(protocol_path);
+				if (cgv::gui::question(record_path + " does not exist. Create it?", "No,Yes", 1)) {
+					path_exists = cgv::utils::dir::mkdir(record_path);
 					if (!path_exists)
-						cgv::gui::message(protocol_path + " creation failed!");
+						cgv::gui::message(record_path + " creation failed!");
 				}
 			}
 			if (path_exists)
-				rgbd_inp.enable_protocol(protocol_path);
+				rgbd_inp.enable_protocol(record_path);
 			else {
 				do_protocol = false;
 				update_member(&do_protocol);
@@ -526,9 +527,9 @@ void rgbd_control::create_gui()
 	}
 	if (begin_tree_node("IO", do_protocol, true, "level=2")) {
 		align("\a");
-		add_gui("protocol_path", protocol_path, "directory", "w=150");
+		add_gui("record_path", record_path, "directory", "w=150");
 		add_member_control(this, "write_async", rgbd_inp.protocol_write_async, "toggle");
-		add_member_control(this, "do_protocol", do_protocol, "toggle");
+		add_member_control(this, "record", do_protocol, "toggle");
 		connect_copy(add_button("clear protocol")->click, rebind(this, &rgbd_control::on_clear_protocol_cb));
 		connect_copy(add_button("save")->click, rebind(this, &rgbd_control::on_save_cb));
 		connect_copy(add_button("save point cloud")->click, rebind(this, &rgbd_control::on_save_point_cloud_cb));
@@ -984,14 +985,14 @@ void rgbd_control::on_device_select_cb()
 		}
 	}
 	else if (device_mode == DM_PROTOCOL) {
-		if (cgv::utils::dir::exists(protocol_path)) {
-			rgbd_inp.attach_path(protocol_path);
+		if (cgv::utils::dir::exists(record_path)) {
+			rgbd_inp.attach_path(record_path);
 			update_stream_formats();
 			reset_format_indices = true;
 			update_member(&device_idx);
 		}
 		else {
-			cgv::gui::message(protocol_path + " does not exist!");
+			cgv::gui::message(record_path + " does not exist!");
 			device_mode = DM_DETACHED;
 			device_idx = -2;
 			update_member(&device_mode);
@@ -1020,7 +1021,7 @@ void rgbd_control::on_clear_protocol_cb()
 {
 	//delete previosly recorded data
 	if (!rgbd_inp.is_started() || (rgbd_inp.is_started() && !do_protocol)){
-		rgbd_inp.clear_protocol(protocol_path);
+		rgbd_inp.clear_protocol(record_path);
 	}
 }
 
@@ -1107,6 +1108,6 @@ void rgbd_control::convert_to_grayscale(const frame_type& color_frame2, frame_ty
 #ifdef NO_VR_VIEW_INTERACTOR
 extern CGV_API object_registration_1<rgbd_control,bool> kc_or(true, "");
 #else
-extern CGV_API object_registration<rgbd_control> kc_or("");
+extern CGV_API object_registration_1<rgbd_control,bool> kc_or(false,"");
 #endif
 
