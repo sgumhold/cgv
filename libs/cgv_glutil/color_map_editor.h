@@ -9,7 +9,7 @@
 
 #include "generic_render_data.h"
 #include "generic_renderer.h"
-#include "transfer_function.h"
+#include "color_map.h"
 #include "2d/draggables_collection.h"
 
 #include "2d/canvas.h"
@@ -20,11 +20,12 @@
 namespace cgv {
 namespace glutil{
 
-class CGV_API color_scale_editor : public overlay {
+class CGV_API color_map_editor : public overlay {
 protected:
 	std::string file_name;
 	std::string save_file_name;
 	bool has_unsaved_changes = false;
+	bool has_updated = false;
 
 	bool mouse_is_on_overlay;
 	bool show_cursor;
@@ -35,28 +36,21 @@ protected:
 	cgv::glutil::frame_buffer_container fbc;
 
 	cgv::glutil::canvas canvas, overlay_canvas;
-	cgv::glutil::shape2d_style container_style, border_style, color_scale_style, bg_style, hist_style;
+	cgv::glutil::shape2d_style container_style, border_style, color_map_style, bg_style, hist_style;
 	
-	float opacity_scale_exponent;
 	cgv::type::DummyEnum resolution;
-
-	bool show_histogram;
-	rgba histogram_color;
-	rgba histogram_border_color;
-	unsigned histogram_border_width;
-	float histogram_smoothing;
 
 	struct layout_attributes {
 		int padding;
 		int total_height;
 
 		// dependent members
-		rect color_scale_rect;
+		rect color_map_rect;
 		rect handles_rect;
 
 		void update(const ivec2& parent_size) {
-			color_scale_rect.set_pos(ivec2(padding) + ivec2(0, 4));
-			color_scale_rect.set_size(parent_size - 2 * padding - ivec2(0, 4));
+			color_map_rect.set_pos(ivec2(padding) + ivec2(0, 4));
+			color_map_rect.set_size(parent_size - 2 * padding - ivec2(0, 4));
 
 			handles_rect.set_pos(ivec2(padding, 0));
 			handles_rect.set_size(ivec2(parent_size.x() - 2 * padding, 0));
@@ -106,33 +100,22 @@ protected:
 	};
 
 	texture bg_tex;
-	texture cs_tex;
+	texture preview_tex;
 
 	generic_renderer handle_renderer;
-	DEFINE_GENERIC_RENDER_DATA_CLASS(arrow_geometry, 2, vec2, position, rgb, color);
+	DEFINE_GENERIC_RENDER_DATA_CLASS(handle_geometry, 2, vec2, position, rgb, color);
 	
-	struct cs_container {
+	struct cm_container {
+		color_map* cm = nullptr;
 		cgv::glutil::draggables_collection<point> points;
+		handle_geometry handles;
 
-		transfer_function tf;
-		texture tex;
-
-		arrow_geometry handle_geometry;
-		
 		void reset() {
+			cm = nullptr;
 			points.clear();
-
-			point p;
-			p.val = 0.0f;
-			p.col = rgb(0.0f);
-			points.add(p);
-
-			p = point();
-			p.val = 1.0f;
-			p.col = rgb(1.0f);
-			points.add(p);
+			handles.clear();
 		}
-	} csc;
+	} cmc;
 
 	void init_styles(context& ctx);
 	void init_texture(context& ctx);
@@ -145,15 +128,15 @@ protected:
 	void handle_drag_end();
 	void sort_points();
 	void update_point_positions();
-	void update_color_scale(bool is_data_change);
+	void update_color_map(bool is_data_change);
 	bool update_geometry();
 
 	bool load_from_xml(const std::string& file_name);
 	bool save_to_xml(const std::string& file_name);
 
 public:
-	color_scale_editor();
-	std::string get_type_name() const { return "color_scale_editor"; }
+	color_map_editor();
+	std::string get_type_name() const { return "color_map_editor"; }
 
 	bool on_exit_request();
 	void clear(cgv::render::context& ctx);
@@ -171,9 +154,36 @@ public:
 	void create_gui();
 	void create_gui(cgv::gui::provider& p);
 
-	texture& ref_tex();
+	bool was_updated() {
+		bool temp = has_updated;
+		has_updated = false;
+		return temp;
+	}
 
-	//bool set_histogram(const std::vector<unsigned>& data);
+	color_map* get_color_map() { return cmc.cm; }
+
+	void set_color_map(color_map* cm) {
+		cmc.reset();
+		cmc.cm = cm;
+
+		if(cmc.cm) {
+			auto& cm = *cmc.cm;
+			auto& cp = cmc.cm->ref_color_points();
+			for(size_t i = 0; i < cp.size(); ++i) {
+				point p;
+				p.val = cgv::math::clamp(cp[i].first, 0.0f, 1.0f);
+				p.col = cp[i].second;
+				cmc.points.add(p);
+			}
+			update_point_positions();
+			update_color_map(false);
+
+			has_unsaved_changes = false;
+			on_set(&has_unsaved_changes);
+
+			post_recreate_gui();
+		}
+	}
 };
 
 }

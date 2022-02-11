@@ -1,4 +1,4 @@
-#include "color_scale_editor.h"
+#include "color_map_editor.h"
 
 #include <cgv/defines/quote.h>
 #include <cgv/gui/dialog.h>
@@ -13,7 +13,7 @@
 namespace cgv {
 namespace glutil {
 
-color_scale_editor::color_scale_editor() {
+color_map_editor::color_map_editor() {
 
 	set_name("Color Scale Editor");
 #ifdef CGV_FORCE_STATIC
@@ -41,29 +41,22 @@ color_scale_editor::color_scale_editor() {
 
 	overlay_canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
 
-	opacity_scale_exponent = 1.0f;
-	resolution = (cgv::type::DummyEnum)512;
-
-	show_histogram = true;
-	histogram_color = rgba(0.5f, 0.5f, 0.5f, 0.75f);
-	histogram_border_color = rgba(0.0f, 0.0f, 0.0f, 1.0f);
-	histogram_border_width = 0u;
-	histogram_smoothing = 0.5f;
+	resolution = (cgv::type::DummyEnum)256;
 
 	mouse_is_on_overlay = false;
 	show_cursor = false;
 	cursor_pos = ivec2(-100);
 	cursor_drawtext = "";
 
-	csc.points.set_drag_callback(std::bind(&color_scale_editor::handle_drag, this));
-	csc.points.set_drag_end_callback(std::bind(&color_scale_editor::handle_drag_end, this));
-	csc.points.set_constraint(layout.handles_rect);
+	cmc.points.set_drag_callback(std::bind(&color_map_editor::handle_drag, this));
+	cmc.points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
+	cmc.points.set_constraint(layout.handles_rect);
 
 	// TODO: make static members for these strings
 	handle_renderer = generic_renderer(canvas::shaders_2d::arrow);
 }
 
-bool color_scale_editor::on_exit_request() {
+bool color_map_editor::on_exit_request() {
 	// TODO: does not seem to fire when window is maximized
 	if(has_unsaved_changes) {
 		return cgv::gui::question("The transfer function has unsaved changes. Are you sure you want to quit?");
@@ -71,19 +64,19 @@ bool color_scale_editor::on_exit_request() {
 	return true;
 }
 
-void color_scale_editor::clear(cgv::render::context& ctx) {
+void color_map_editor::clear(cgv::render::context& ctx) {
 
 	canvas.destruct(ctx);
 	overlay_canvas.destruct(ctx);
 	fbc.clear(ctx);
 }
 
-bool color_scale_editor::self_reflect(cgv::reflect::reflection_handler& _rh) {
+bool color_map_editor::self_reflect(cgv::reflect::reflection_handler& _rh) {
 
 	return _rh.reflect_member("file_name", file_name);
 }
 
-bool color_scale_editor::handle_event(cgv::gui::event& e) {
+bool color_map_editor::handle_event(cgv::gui::event& e) {
 
 	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
 	unsigned et = e.get_kind();
@@ -162,12 +155,12 @@ bool color_scale_editor::handle_event(cgv::gui::event& e) {
 			}
 		}
 
-		return csc.points.handle(e, last_viewport_size, container);
+		return cmc.points.handle(e, last_viewport_size, container);
 	}
 	return false;
 }
 
-void color_scale_editor::on_set(void* member_ptr) {
+void color_map_editor::on_set(void* member_ptr) {
 
 	if(member_ptr == &file_name) {
 /*
@@ -181,11 +174,11 @@ void color_scale_editor::on_set(void* member_ptr) {
 		//}
 #endif
 */
-		if(!load_from_xml(file_name))
-			csc.reset();
+		//if(!load_from_xml(file_name))
+		//	cmc.reset();
 
 		update_point_positions();
-		update_color_scale(false);
+		update_color_map(false);
 
 		has_unsaved_changes = false;
 		on_set(&has_unsaved_changes);
@@ -227,24 +220,16 @@ void color_scale_editor::on_set(void* member_ptr) {
 		set_overlay_size(size);
 	}
 
-	if(member_ptr == &opacity_scale_exponent) {
-		opacity_scale_exponent = cgv::math::clamp(opacity_scale_exponent, 1.0f, 5.0f);
-
-		update_point_positions();
-		sort_points();
-		update_geometry();
-	}
-
 	if(member_ptr == &resolution) {
 		context* ctx_ptr = get_context();
 		if(ctx_ptr)
 			init_texture(*ctx_ptr);
-		update_color_scale(false);
+		update_color_map(false);
 	}
 
-	for(unsigned i = 0; i < csc.points.size(); ++i) {
-		if(member_ptr == &csc.points[i].col) {
-			update_color_scale(true);
+	for(unsigned i = 0; i < cmc.points.size(); ++i) {
+		if(member_ptr == &cmc.points[i].col) {
+			update_color_map(true);
 			break;
 		}
 	}
@@ -253,7 +238,7 @@ void color_scale_editor::on_set(void* member_ptr) {
 	post_redraw();
 }
 
-bool color_scale_editor::init(cgv::render::context& ctx) {
+bool color_map_editor::init(cgv::render::context& ctx) {
 	
 	// get a bold font face to use for the cursor
 	auto font = cgv::media::font::find_font("Arial");
@@ -271,11 +256,11 @@ bool color_scale_editor::init(cgv::render::context& ctx) {
 	if(success)
 		init_styles(ctx);
 
-	if(!load_from_xml(file_name))
-		csc.reset();
+	//if(!load_from_xml(file_name))
+	//	cmc.reset();
 	
 	init_texture(ctx);
-	update_color_scale(false);
+	update_color_map(false);
 
 	rgb a(0.75f);
 	rgb b(0.9f);
@@ -283,13 +268,13 @@ bool color_scale_editor::init(cgv::render::context& ctx) {
 	
 	bg_tex.destruct(ctx);
 	cgv::data::data_view bg_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, TI_FLT32, cgv::data::CF_RGB), bg_data.data());
-	bg_tex = texture("flt32[R,G,B]", TF_NEAREST, TF_NEAREST, TW_REPEAT, TW_REPEAT);
+	bg_tex = texture("flt32[R,G,B]", TF_NEAREST, TF_NEAREST, TW_CLAMP_TO_EDGE, TW_CLAMP_TO_EDGE);
 	success &= bg_tex.create(ctx, bg_dv, 0);
 
 	return success;
 }
 
-void color_scale_editor::init_frame(cgv::render::context& ctx) {
+void color_map_editor::init_frame(cgv::render::context& ctx) {
 
 	if(ensure_overlay_layout(ctx)) {
 		ivec2 container_size = get_overlay_size();
@@ -302,7 +287,8 @@ void color_scale_editor::init_frame(cgv::render::context& ctx) {
 		overlay_canvas.set_resolution(ctx, get_viewport_size());
 
 		auto& bg_prog = canvas.enable_shader(ctx, "background");
-		float width_factor = static_cast<float>(layout.handles_rect.size().x()) / static_cast<float>(layout.handles_rect.size().y());
+		//float width_factor = static_cast<float>(layout.handles_rect.size().x()) / static_cast<float>(layout.handles_rect.size().y());
+		float width_factor = static_cast<float>(layout.color_map_rect.size().x()) / static_cast<float>(layout.color_map_rect.size().y());
 		bg_style.texcoord_scaling = vec2(5.0f * width_factor, 5.0f);
 		bg_style.apply(ctx, bg_prog);
 		canvas.disable_current_shader(ctx);
@@ -310,11 +296,11 @@ void color_scale_editor::init_frame(cgv::render::context& ctx) {
 		update_point_positions();
 		sort_points();
 		update_geometry();
-		csc.points.set_constraint(layout.handles_rect);
+		cmc.points.set_constraint(layout.handles_rect);
 	}
 }
 
-void color_scale_editor::draw(cgv::render::context& ctx) {
+void color_map_editor::draw(cgv::render::context& ctx) {
 
 	if(!show)
 		return;
@@ -339,26 +325,30 @@ void color_scale_editor::draw(cgv::render::context& ctx) {
 	border_style.apply(ctx, rect_prog);
 	canvas.draw_shape(ctx, ivec2(layout.padding - 1) + ivec2(0, 4), container_size - 2*layout.padding + 2 - ivec2(0, 4));
 	
-	// draw color scale texture
-	color_scale_style.apply(ctx, rect_prog);
-	csc.tex.enable(ctx, 0);
-	canvas.draw_shape(ctx, layout.color_scale_rect.pos(), layout.color_scale_rect.size());
-	csc.tex.disable(ctx);
-	canvas.disable_current_shader(ctx);
-
-	// draw editor checkerboard background
-	auto& bg_prog = canvas.enable_shader(ctx, "background");
-	bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
-	bg_tex.enable(ctx, 0);
-	canvas.draw_shape(ctx, layout.handles_rect.pos(), layout.handles_rect.size());
-	bg_tex.disable(ctx);
-	canvas.disable_current_shader(ctx);
+	if(cmc.cm) {
+		// draw color scale texture
+		color_map_style.apply(ctx, rect_prog);
+		preview_tex.enable(ctx, 0);
+		canvas.draw_shape(ctx, layout.color_map_rect.pos(), layout.color_map_rect.size());
+		preview_tex.disable(ctx);
+		canvas.disable_current_shader(ctx);
+	} else {
+		canvas.disable_current_shader(ctx);
+		// draw editor checkerboard background
+		auto& bg_prog = canvas.enable_shader(ctx, "background");
+		bg_prog.set_uniform(ctx, "scale_exponent", 1.0f);
+		bg_tex.enable(ctx, 0);
+		//canvas.draw_shape(ctx, layout.handles_rect.pos(), layout.handles_rect.size());
+		canvas.draw_shape(ctx, layout.color_map_rect.pos(), layout.color_map_rect.size());
+		bg_tex.disable(ctx);
+		canvas.disable_current_shader(ctx);
+	}
 
 	// draw separator line
 	rect_prog = canvas.enable_shader(ctx, "rectangle");
 	border_style.apply(ctx, rect_prog);
 	canvas.draw_shape(ctx,
-		ivec2(layout.color_scale_rect.pos().x(), layout.color_scale_rect.box.get_max_pnt().y()),
+		ivec2(layout.color_map_rect.pos().x(), layout.color_map_rect.box.get_max_pnt().y()),
 		ivec2(container_size.x() - 2 * layout.padding, 1)
 	);
 	canvas.disable_current_shader(ctx);
@@ -367,10 +357,8 @@ void color_scale_editor::draw(cgv::render::context& ctx) {
 	auto& handle_prog = handle_renderer.ref_prog();
 	handle_prog.enable(ctx);
 	canvas.set_view(ctx, handle_prog);
-	// size is constant for all handles
-	//handle_prog.set_attribute(ctx, "size", vec2(csc.points[0].get_render_size()));
 	handle_prog.disable(ctx);
-	handle_renderer.render(ctx, PT_LINES, csc.handle_geometry);
+	handle_renderer.render(ctx, PT_LINES, cmc.handles);
 
 	glDisable(GL_BLEND);
 
@@ -406,9 +394,7 @@ void color_scale_editor::draw(cgv::render::context& ctx) {
 	glEnable(GL_DEPTH_TEST);
 }
 
-void color_scale_editor::create_gui() {
-
-	add_decorator("Color Scale Editor", "heading", "level=2");
+void color_map_editor::create_gui() {
 
 	create_overlay_gui();
 
@@ -420,63 +406,29 @@ void color_scale_editor::create_gui() {
 	if(begin_tree_node("Settings", layout, false)) {
 		align("\a");
 		add_member_control(this, "Height", layout.total_height, "value_slider", "min=100;max=500;step=10;ticks=true");
-		add_member_control(this, "Opacity Scale Exponent", opacity_scale_exponent, "value_slider", "min=1.0;max=5.0;step=0.001;ticks=true");
 		add_member_control(this, "Resolution", resolution, "dropdown", "enums='2=2,4=4,8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024,2048=2048'");
 		align("\b");
 		end_tree_node(layout);
 	}
 
-	if(begin_tree_node("Histogram", show_histogram, false)) {
-		align("\a");
-		add_member_control(this, "Show", show_histogram, "check");
-		add_member_control(this, "Fill Color", histogram_color, "");
-		add_member_control(this, "Border Color", histogram_border_color, "");
-		add_member_control(this, "Border Width", histogram_border_width, "value_slider", "min=0;max=10;step=1;ticks=true");
-		add_member_control(this, "Smoothing", histogram_smoothing, "value_slider", "min=0;max=1;step=0.01;ticks=true");
-		align("\b");
-		end_tree_node(show_histogram);
-	}
-
 	add_decorator("Control Points", "heading", "level=3");
 	// TODO: add controls for t?
-	auto& points = csc.points;
+	auto& points = cmc.points;
 	for(unsigned i = 0; i < points.size(); ++i)
-		add_member_control(this, "Color " + std::to_string(i), points[i].col, "", &points[i] == csc.points.get_selected() ? "label_color=0x4080ff" : "");
+		add_member_control(this, "Color " + std::to_string(i), points[i].col, "", &points[i] == cmc.points.get_selected() ? "label_color=0x4080ff" : "");
 }
 
-void color_scale_editor::create_gui(cgv::gui::provider& p) {
+void color_map_editor::create_gui(cgv::gui::provider& p) {
 
 	p.add_member_control(this, "Show", show, "check");
 }
 
-texture& color_scale_editor::ref_tex() {
+//texture& color_map_editor::ref_tex() {
+//
+//	return cm_tex;
+//}
 
-	return cs_tex;
-}
-
-/*bool color_scale_editor::set_histogram(const std::vector<unsigned>& data) {
-
-	context* ctx_ptr = get_context();
-	if(!ctx_ptr)
-		return false;
-
-	std::vector<float> fdata(data.size());
-
-	tfc.hist_max = 0;
-	for(unsigned i = 0; i < data.size(); ++i) {
-		unsigned value = data[i];
-		tfc.hist_max = std::max(tfc.hist_max, value);
-		fdata[i] = static_cast<float>(value);
-	}
-
-	tfc.hist_tex.destruct(*ctx_ptr);
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(unsigned(data.size()), TI_FLT32, cgv::data::CF_R), fdata.data());
-	tfc.hist_tex = texture("flt32[I]", TF_LINEAR, TF_LINEAR);
-	tfc.hist_tex.create(*ctx_ptr, dv, 0);
-	return true;
-}*/
-
-void color_scale_editor::init_styles(context& ctx) {
+void color_map_editor::init_styles(context& ctx) {
 
 	// configure style for the container rectangle
 	container_style.apply_gamma = false;
@@ -491,8 +443,8 @@ void color_scale_editor::init_styles(context& ctx) {
 	border_style.border_width = 0.0f;
 	
 	// configure style for the color scale rectangle
-	color_scale_style = border_style;
-	color_scale_style.use_texture = true;
+	color_map_style = border_style;
+	color_map_style.use_texture = true;
 
 	// configure style for background
 	bg_style.use_texture = true;
@@ -501,7 +453,6 @@ void color_scale_editor::init_styles(context& ctx) {
 	bg_style.texcoord_scaling = vec2(5.0f, 5.0f);
 
 	auto& bg_prog = canvas.enable_shader(ctx, "background");
-	bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
 	bg_style.apply(ctx, bg_prog);
 	canvas.disable_current_shader(ctx);
 
@@ -543,51 +494,53 @@ void color_scale_editor::init_styles(context& ctx) {
 	overlay_canvas.disable_current_shader(ctx);
 }
 
-void color_scale_editor::init_texture(context& ctx) {
+void color_map_editor::init_texture(context& ctx) {
 
-	std::vector<uint8_t> data(resolution * 4, 0u);
+	std::vector<uint8_t> data(resolution * 3 * 2, 0u);
 
-	cs_tex.destruct(ctx);
-	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGBA), data.data());
-	cs_tex = texture("uint8[R,G,B,A]", TF_LINEAR, TF_LINEAR);
-	cs_tex.create(ctx, tf_dv, 0);
+	preview_tex.destruct(ctx);
+	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2, TI_UINT8, cgv::data::CF_RGB), data.data());
+	preview_tex = texture("uint8[R,G,B]", TF_LINEAR, TF_LINEAR);
+	preview_tex.create(ctx, tf_dv, 0);
 }
 
-void color_scale_editor::add_point(const vec2& pos) {
+void color_map_editor::add_point(const vec2& pos) {
 
-	point p;
-	p.pos = ivec2(pos.x(), layout.handles_rect.pos().y());
-	p.update_val(layout, opacity_scale_exponent);
-	p.col = csc.tf.interpolate_color(p.val);
-	csc.points.add(p);
+	if(cmc.cm) {
+		point p;
+		p.pos = ivec2(pos.x(), layout.handles_rect.pos().y());
+		p.update_val(layout, 1.0f);
+		p.col = cmc.cm->interpolate_color(p.val);
+		cmc.points.add(p);
 
-	update_color_scale(true);
+		update_color_map(true);
+	}
 }
 
-void color_scale_editor::remove_point(const point* ptr) {
+void color_map_editor::remove_point(const point* ptr) {
 
-	if(csc.points.size() <= 2)
+	if(cmc.points.size() <= 2)
 		return;
 
 	bool removed = false;
 	std::vector<point> next_points;
-	for(unsigned i = 0; i < csc.points.size(); ++i) {
-		if(&csc.points[i] != ptr)
-			next_points.push_back(csc.points[i]);
+	for(unsigned i = 0; i < cmc.points.size(); ++i) {
+		if(&cmc.points[i] != ptr)
+			next_points.push_back(cmc.points[i]);
 		else
 			removed = true;
 	}
-	csc.points.ref_draggables() = std::move(next_points);
+	cmc.points.ref_draggables() = std::move(next_points);
 	
 	if(removed)
-		update_color_scale(true);
+		update_color_map(true);
 }
 
-color_scale_editor::point* color_scale_editor::get_hit_point(const color_scale_editor::vec2& pos) {
+color_map_editor::point* color_map_editor::get_hit_point(const color_map_editor::vec2& pos) {
 
 	point* hit = nullptr;
-	for(unsigned i = 0; i < csc.points.size(); ++i) {
-		point& p = csc.points[i];
+	for(unsigned i = 0; i < cmc.points.size(); ++i) {
+		point& p = cmc.points[i];
 		if(p.is_inside(pos))
 			hit = &p;
 	}
@@ -595,22 +548,22 @@ color_scale_editor::point* color_scale_editor::get_hit_point(const color_scale_e
 	return hit;
 }
 
-void color_scale_editor::handle_drag() {
+void color_map_editor::handle_drag() {
 
-	csc.points.get_dragged()->update_val(layout, opacity_scale_exponent);
-	update_color_scale(true);
+	cmc.points.get_dragged()->update_val(layout, 1.0f);
+	update_color_map(true);
 	post_redraw();
 }
 
-void color_scale_editor::handle_drag_end() {
+void color_map_editor::handle_drag_end() {
 
 	post_recreate_gui();
 	post_redraw();
 }
 
-void color_scale_editor::sort_points() {
+void color_map_editor::sort_points() {
 
-	auto& points = csc.points;
+	auto& points = cmc.points;
 
 	if(points.size() > 1) {
 		int dragged_point_idx = -1;
@@ -655,65 +608,55 @@ void color_scale_editor::sort_points() {
 	}
 }
 
-void color_scale_editor::update_point_positions() {
+void color_map_editor::update_point_positions() {
 
-	for(unsigned i = 0; i < csc.points.size(); ++i)
-		csc.points[i].update_pos(layout, opacity_scale_exponent);
+	for(unsigned i = 0; i < cmc.points.size(); ++i)
+		cmc.points[i].update_pos(layout, 1.0f);
 }
 
-void color_scale_editor::update_color_scale(bool is_data_change) {
+void color_map_editor::update_color_map(bool is_data_change) {
 	
 	context* ctx_ptr = get_context();
-	if(!ctx_ptr) return;
+	if(!ctx_ptr || !cmc.cm) return;
 	context& ctx = *ctx_ptr;
 
-	auto& tf = csc.tf;
-	auto& tex = csc.tex;
-	auto& points = csc.points;
+	auto& cm = *cmc.cm;
+	//auto& tex = cmc.tex;
+	auto& points = cmc.points;
 	
 	sort_points();
 
-	tf.clear();
+	cm.clear();
 
 	for(unsigned i = 0; i < points.size(); ++i) {
 		const point& p = points[i];
-		tf.add_color_point(p.val, p.col);
+		cm.add_color_point(p.val, p.col);
 	}
 
-	std::vector<rgb> cs_data;
+	size_t size = static_cast<size_t>(resolution);
+	std::vector<rgb> cs_data = cm.interpolate_color(size);
 
-	unsigned size = resolution;
-	float step = 1.0f / static_cast<float>(size - 1);
+	std::vector<uint8_t> data(3 * 2 * size);
+	for(size_t i = 0; i < size; ++i) {
+		rgb col = cs_data[i];
+		uint8_t r = static_cast<uint8_t>(255.0f * col.R());
+		uint8_t g = static_cast<uint8_t>(255.0f * col.G());
+		uint8_t b = static_cast<uint8_t>(255.0f * col.B());
 
-	for(unsigned i = 0; i < size; ++i) {
-		float t = i * step;
-		rgb col = tf.interpolate_color(t);
-		cs_data.push_back(col);
+		unsigned idx = 3 * i;
+		data[idx + 0] = r;
+		data[idx + 1] = g;
+		data[idx + 2] = b;
+		idx += 3*size;
+		data[idx + 0] = r;
+		data[idx + 1] = g;
+		data[idx + 2] = b;
 	}
 
-	std::vector<rgb> data2d(2 * size);
-	for(unsigned i = 0; i < size; ++i) {
-		data2d[i + 0] = cs_data[i];
-		data2d[i + size] = cs_data[i];
-	}
-
-	tex.destruct(ctx);
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, 2, TI_FLT32, cgv::data::CF_RGB), data2d.data());
-	tex = texture("flt32[R,G,B,A]", TF_LINEAR, TF_LINEAR);
-	tex.create(ctx, dv, 0);
-
-	if(cs_tex.is_created()) {
-		std::vector<uint8_t> cs_data_8(3*cs_data.size());
-		for(unsigned i = 0; i < cs_data.size(); ++i) {
-			rgba col = cs_data[i];
-			cs_data_8[3 * i + 0] = static_cast<uint8_t>(255.0f * col.R());
-			cs_data_8[3 * i + 1] = static_cast<uint8_t>(255.0f * col.G());
-			cs_data_8[3 * i + 2] = static_cast<uint8_t>(255.0f * col.B());
-		}
-
-		cgv::data::data_view dv1d = cgv::data::data_view(new cgv::data::data_format(size, TI_UINT8, cgv::data::CF_RGB), cs_data_8.data());
-		cs_tex.replace(ctx, 0, dv1d);
-	}
+	preview_tex.destruct(ctx);
+	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, 2, TI_UINT8, cgv::data::CF_RGB), data.data());
+	preview_tex = texture("uint8[R,G,B]", TF_LINEAR, TF_LINEAR, TW_CLAMP_TO_EDGE, TW_CLAMP_TO_EDGE);
+	preview_tex.create(ctx, dv, 0);
 
 	if(is_data_change) {
 		has_unsaved_changes = true;
@@ -728,32 +671,34 @@ void color_scale_editor::update_color_scale(bool is_data_change) {
 	}
 
 	update_geometry();
+
+	has_updated = true;
 }
 
-bool color_scale_editor::update_geometry() {
+bool color_map_editor::update_geometry() {
 
 	context* ctx_ptr = get_context();
-	if(!ctx_ptr) return false;
+	if(!ctx_ptr || !cmc.cm) return false;
 	context& ctx = *ctx_ptr;
 
-	auto& tf = csc.tf;
-	auto& points = csc.points;
-	auto& handle_geometry = csc.handle_geometry;
+	auto& cm = *cmc.cm;
+	auto& points = cmc.points;
+	auto& handles = cmc.handles;
 
-	handle_geometry.clear();
+	handles.clear();
 	
 	bool success = points.size() > 0;
 
 	for(unsigned i = 0; i < points.size(); ++i) {
 		const auto& p = points[i];
 		vec2 pos = p.center();
-		rgb col = tf.interpolate(points[i].val);
+		rgb col = cm.interpolate(points[i].val);
 
-		handle_geometry.add(pos + vec2(0.0f, 2.0f), csc.points.get_selected() == &p ? rgba(0.5f, 0.5f, 0.5f, 1.0f) : rgba(0.9f, 0.9f, 0.9f, 1.0f));
-		handle_geometry.add(pos + vec2(0.0f, 20.0f), csc.points.get_selected() == &p ? rgba(0.5f, 0.5f, 0.5f, 1.0f) : rgba(0.9f, 0.9f, 0.9f, 1.0f));
+		handles.add(pos + vec2(0.0f, 2.0f), cmc.points.get_selected() == &p ? rgba(0.5f, 0.5f, 0.5f, 1.0f) : rgba(0.9f, 0.9f, 0.9f, 1.0f));
+		handles.add(pos + vec2(0.0f, 20.0f), cmc.points.get_selected() == &p ? rgba(0.5f, 0.5f, 0.5f, 1.0f) : rgba(0.9f, 0.9f, 0.9f, 1.0f));
 	}
 
-	handle_geometry.set_out_of_date();
+	handles.set_out_of_date();
 
 	return success;
 }
@@ -859,7 +804,7 @@ static bool xml_attribute_to_float(const std::string& attribute, float& value) {
 	return false;
 }
 
-bool color_scale_editor::load_from_xml(const std::string& file_name) {
+bool color_map_editor::load_from_xml(const std::string& file_name) {
 
 	if(!cgv::utils::file::exists(file_name) || cgv::utils::to_upper(cgv::utils::file::get_extension(file_name)) != "XML")
 		return false;
@@ -874,7 +819,7 @@ bool color_scale_editor::load_from_xml(const std::string& file_name) {
 
 	int active_stain_idx = -1;
 
-	csc.points.clear();
+	cmc.points.clear();
 
 	while(read) {
 		std::string line = "";
@@ -926,7 +871,7 @@ bool color_scale_editor::load_from_xml(const std::string& file_name) {
 				point p;
 				p.col = col;
 				p.val = cgv::math::clamp(pos, 0.0f, 1.0f);
-				csc.points.add(p);
+				cmc.points.add(p);
 			}
 		}
 	}
@@ -934,7 +879,7 @@ bool color_scale_editor::load_from_xml(const std::string& file_name) {
 	return true;
 }
 
-bool color_scale_editor::save_to_xml(const std::string& file_name) {
+bool color_map_editor::save_to_xml(const std::string& file_name) {
 
 	auto to_col_uint8 = [](const float& val) {
 		int ival = cgv::math::clamp(static_cast<int>(255.0f * val + 0.5f), 0, 255);
@@ -945,8 +890,8 @@ bool color_scale_editor::save_to_xml(const std::string& file_name) {
 	content += "<ColorScale>\n";
 	std::string tab = "  ";
 
-	for(unsigned i = 0; i < csc.points.size(); ++i) {
-		const point& p = csc.points[i];
+	for(unsigned i = 0; i < cmc.points.size(); ++i) {
+		const point& p = cmc.points[i];
 
 		content += tab + "<Point ";
 		content += "position=\"" + std::to_string(p.val) + "\" ";
