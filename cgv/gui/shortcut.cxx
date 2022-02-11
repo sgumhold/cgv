@@ -137,7 +137,7 @@ bool shortcut::stream_in(std::istream& is)
 			case '^' :
 			case '<' :
 			case '\\' :
-			case '´':
+			case -76 : //'´'
 			case ' ':
 				key = c;
 				modifiers = _modifiers;
