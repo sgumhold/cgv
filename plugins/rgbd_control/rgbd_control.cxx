@@ -573,10 +573,9 @@ void rgbd_control::create_gui()
 point_cloud rgbd_control::get_point_cloud()
 {
 	point_cloud pc;
-	//TODO may need to protect P2 and C2 with a mutex
 	pc.create_colors();
 	pc.resize(P.size());
-	memcpy(&pc.pnt(0), P.data(), P.size());
+	memcpy(&pc.pnt(0), P.data(), P.size()*sizeof(vec3));
 	for (int i = 0; i < C.size(); ++i)
 		pc.clr(i) = C[i];
 	return pc;
