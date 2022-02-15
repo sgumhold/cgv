@@ -619,5 +619,41 @@ const char* cutoff_spaces(const char* begin, const char* end)
 	return end;
 }
 
+std::string& ltrim(std::string& str, const std::string& chars)
+{
+	str.erase(0, str.find_first_not_of(chars));
+	return str;
+}
+
+std::string& rtrim(std::string& str, const std::string& chars)
+{
+	str.erase(str.find_last_not_of(chars) + 1);
+	return str;
+}
+
+std::string& trim(std::string& str, const std::string& chars)
+{
+	return ltrim(rtrim(str, chars), chars);
+}
+
+std::string ltrim(const std::string& str, const std::string& chars)
+{
+	std::string s = str;
+	s.erase(0, str.find_first_not_of(chars));
+	return s;
+}
+
+std::string rtrim(const std::string& str, const std::string& chars)
+{
+	std::string s = str;
+	s.erase(str.find_last_not_of(chars) + 1);
+	return s;
+}
+
+std::string trim(const std::string& str, const std::string& chars)
+{
+	return ltrim(rtrim(str, chars), chars);
+}
+
 	}
 }

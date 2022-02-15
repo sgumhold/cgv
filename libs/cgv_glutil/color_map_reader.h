@@ -15,24 +15,6 @@ namespace glutil{
 
 class color_map_reader : cgv::render::render_types {
 private:
-	// TODO: move these three methods to some string lib
-	static std::string& ltrim(std::string& str, const std::string& chars = "\t\n\v\f\r ") {
-
-		str.erase(0, str.find_first_not_of(chars));
-		return str;
-	}
-
-	static std::string& rtrim(std::string& str, const std::string& chars = "\t\n\v\f\r ") {
-
-		str.erase(str.find_last_not_of(chars) + 1);
-		return str;
-	}
-
-	static std::string& trim(std::string& str, const std::string& chars = "\t\n\v\f\r ") {
-
-		return ltrim(rtrim(str, chars), chars);
-	}
-
 	static std::string xml_attribute_value(const std::string& attribute) {
 
 		size_t pos_start = attribute.find_first_of("\"");
@@ -116,35 +98,13 @@ private:
 		return false;
 	}
 
-	static bool parse_xml(const std::string& file_name, std::string& name, color_map& cm) {
+	static bool parse_xml(const std::vector<std::string>& lines, std::vector<std::string>& names, std::vector<color_map>& color_maps) {
+		std::string name = "";
+		color_map cm;
+		bool read_cm = false;
 
-		if(!cgv::utils::file::exists(file_name) || cgv::utils::to_upper(cgv::utils::file::get_extension(file_name)) != "XML")
-			return false;
-
-		std::string content;
-		cgv::utils::file::read(file_name, content, true);
-
-		bool read = true;
-		size_t nl_pos = content.find_first_of("\n");
-		size_t line_offset = 0;
-		bool first_line = true;
-
-		int active_stain_idx = -1;
-
-		while(read) {
-			std::string line = "";
-
-			if(nl_pos == std::string::npos) {
-				read = false;
-				line = content.substr(line_offset, std::string::npos);
-			} else {
-				size_t next_line_offset = nl_pos;
-				line = content.substr(line_offset, next_line_offset - line_offset);
-				line_offset = next_line_offset + 1;
-				nl_pos = content.find_first_of('\n', line_offset);
-			}
-
-			trim(line);
+		for(const auto& src_line : lines) {
+			std::string line = cgv::utils::trim(src_line);
 
 			if(line.length() < 3)
 				continue;
@@ -154,15 +114,33 @@ private:
 			std::vector<cgv::utils::token> tokens;
 			cgv::utils::split_to_tokens(line, tokens, "", true, "", "");
 
-			if(tokens.size() == 1 && to_string(tokens[0]) == "ColorMaps") {
-				// is probably a paraview color map file
+			if(tokens.size() > 0) {
+				std::string str = to_string(tokens[0]);
+				if(str == "ColorMaps") {
+					// is probably a paraview color map file
+				} else if(str == "ColorMap") {
+					if(!read_cm) {
+						// a new color map
+						if(tokens.size() > 1) {
+							name = xml_attribute_value(to_string(tokens[1]));
+						}
+						read_cm = true;
+					}
+				} else if(str == "/ColorMap") {
+					// a new color map
+					if(read_cm) {
+						if(!cm.empty()) {
+							names.push_back(name);
+							color_maps.push_back(cm);
+						}
+						name = "";
+						cm = color_map();
+						read_cm = false;
+					}
+				}
 			}
 
-			if(tokens.size() == 3 && to_string(tokens[0]) == "ColorMap") {
-				name = xml_attribute_value(to_string(tokens[1]));
-			}
-
-			if(tokens.size() == 6 && to_string(tokens[0]) == "Point") {
+			if(read_cm && tokens.size() == 6 && to_string(tokens[0]) == "Point") {
 				float x = -1.0f;
 				float o = 0.0f;
 				float r = 0.0f;
@@ -195,11 +173,47 @@ private:
 	}
 
 public:
-	static bool read_from_xml(const std::string& file_name, color_map& cm, std::string& name) {
+	static bool read_from_xml(const std::string& file_name, std::vector<std::string>& names, std::vector<color_map>& color_maps) {
 		// clear previous data
-		cm.clear();
-		//std::string name = "";
-		return parse_xml(file_name, name, cm);
+		names.clear();
+		color_maps.clear();
+		
+		if(!cgv::utils::file::exists(file_name) || cgv::utils::to_upper(cgv::utils::file::get_extension(file_name)) != "XML")
+			return false;
+
+		std::string content;
+		cgv::utils::file::read(file_name, content, true);
+
+		bool read = true;
+		size_t nl_pos = content.find_first_of("\n");
+		size_t line_offset = 0;
+
+		std::vector<std::string> lines;
+
+		while(read) {
+			std::string line = "";
+
+			if(nl_pos == std::string::npos) {
+				read = false;
+				line = content.substr(line_offset, std::string::npos);
+			} else {
+				size_t next_line_offset = nl_pos;
+				line = content.substr(line_offset, next_line_offset - line_offset);
+				line_offset = next_line_offset + 1;
+				nl_pos = content.find_first_of('\n', line_offset);
+			}
+
+			lines.push_back(line);
+		}
+
+		return parse_xml(lines, names, color_maps);
+	}
+
+	static bool read_from_xml_lines(const std::vector<std::string>& lines, std::vector<std::string>& names, std::vector<color_map>& color_maps) {
+		// clear previous data
+		names.clear();
+		color_maps.clear();
+		return parse_xml(lines, names, color_maps);
 	}
 };
 
