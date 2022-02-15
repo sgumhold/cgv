@@ -17,5 +17,6 @@ var dir_612c6253a0b3d27328c80d8d010d4bdb =
     [ "statistics.h", "utils_2statistics_8h_source.html", null ],
     [ "stopwatch.h", "stopwatch_8h_source.html", null ],
     [ "token.h", "token_8h_source.html", null ],
-    [ "tokenizer.h", "tokenizer_8h_source.html", null ]
+    [ "tokenizer.h", "tokenizer_8h_source.html", null ],
+    [ "xml.h", "xml_8h.html", null ]
 ];

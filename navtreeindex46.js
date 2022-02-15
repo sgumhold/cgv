@@ -1,5 +1,11 @@
 var NAVTREEINDEX46 =
 {
+"structgamepad_1_1driver__info.html#a4c2de59cb51018345b9b72662f679b37":[11,0,1,1,1],
+"structgamepad_1_1driver__info.html#ac3a54effbd73ab474b2c73770763bef7":[11,0,1,1,0],
+"structgamepad_1_1driver__registry.html":[11,0,1,2],
+"structgamepad_1_1gamepad__driver.html":[11,0,1,3],
+"structgamepad_1_1gamepad__driver.html#a0c4b82ce7e57b3bda3a04e8e46dfbb1e":[11,0,1,3,7],
+"structgamepad_1_1gamepad__driver.html#a336861478ac05c73e69b722139a997b8":[11,0,1,3,3],
 "structgamepad_1_1gamepad__driver.html#a3a656155c1845e00c54d9ca9b9d0eb84":[11,0,1,3,4],
 "structgamepad_1_1gamepad__driver.html#a88dcd6f092276cbef68905d3817a6114":[11,0,1,3,2],
 "structgamepad_1_1gamepad__driver.html#a8fa470ae544d590dd0d935e4a27f15b2":[11,0,1,3,8],
@@ -243,6 +249,5 @@ var NAVTREEINDEX46 =
 "vr__view__interactor_8h_source.html":[12,0,2,0,2],
 "web__server_8h_source.html":[12,0,0,7,15],
 "wgl_8h_source.html":[12,0,1,2,0,15],
-"window_8h_source.html":[12,0,0,4,32],
-"zero_8h_source.html":[12,0,0,12,4,4]
+"window_8h_source.html":[12,0,0,4,32]
 };

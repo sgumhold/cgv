@@ -55,6 +55,7 @@ var searchData=
   ['logn_5fpdf_1716',['logn_pdf',['../namespacecgv_1_1math.html#abf88fb10568cfdc08badf9f1689cb9da',1,'cgv::math']]],
   ['look_5fat4_1717',['look_at4',['../namespacecgv_1_1math.html#a38b587a38ce71938fc4bfe60c29e78d1',1,'cgv::math']]],
   ['look_5fat_5f44_1718',['look_at_44',['../namespacecgv_1_1math.html#aa66aa3ebe8fea232a892cb4d573d7417',1,'cgv::math']]],
-  ['lu_1719',['lu',['../namespacecgv_1_1math.html#abbb40b8cf269e19d2dd02c8e5d7f2605',1,'cgv::math']]],
-  ['lu_5fsolve_1720',['lu_solve',['../namespacecgv_1_1math.html#a51224bf488aae401d2056c703e4ac56a',1,'cgv::math::lu_solve(const mat&lt; T &gt; &amp;a, const vec&lt; T &gt; &amp;b, vec&lt; T &gt; &amp;x)'],['../namespacecgv_1_1math.html#a667e247eda3efd7411015db02d15a111',1,'cgv::math::lu_solve(const mat&lt; T &gt; &amp;a, const mat&lt; T &gt; &amp;b, mat&lt; T &gt; &amp;x)']]]
+  ['ltrim_1719',['ltrim',['../namespacecgv_1_1utils.html#a6111552f6d6592cb0a9bec7939f4e236',1,'cgv::utils::ltrim(std::string &amp;str, const std::string &amp;chars=&quot;\t\n\v\f\r &quot;)'],['../namespacecgv_1_1utils.html#a612b9004a640fd424d7ed20ba2104e74',1,'cgv::utils::ltrim(const std::string &amp;str, const std::string &amp;chars=&quot;\t\n\v\f\r &quot;)']]],
+  ['lu_1720',['lu',['../namespacecgv_1_1math.html#abbb40b8cf269e19d2dd02c8e5d7f2605',1,'cgv::math']]],
+  ['lu_5fsolve_1721',['lu_solve',['../namespacecgv_1_1math.html#a51224bf488aae401d2056c703e4ac56a',1,'cgv::math::lu_solve(const mat&lt; T &gt; &amp;a, const vec&lt; T &gt; &amp;b, vec&lt; T &gt; &amp;x)'],['../namespacecgv_1_1math.html#a667e247eda3efd7411015db02d15a111',1,'cgv::math::lu_solve(const mat&lt; T &gt; &amp;a, const mat&lt; T &gt; &amp;b, mat&lt; T &gt; &amp;x)']]]
 ];
