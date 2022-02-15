@@ -29,16 +29,43 @@ xml_attribute xml_read_attribute(const std::string& attribute)
 
 xml_tag xml_read_tag(const std::string& str)
 {
-	std::vector<cgv::utils::token> tokens;
-	split_to_tokens(str, tokens, "", true, "", "");
-
 	xml_tag tag;
+	// trim whitespace
+	std::string s = trim(str);
+	// trim trailing line breaks
+	rtrim(s, "\n");
+
+	size_t r = 1;
+	size_t l = 1;
+
+	if(s[0] == '<') {
+		tag.type = XTT_OPEN;
+		if(s[1] == '/') {
+			tag.type = XTT_CLOSE;
+			r = 2;
+		} else {
+			size_t len = s.length();
+			if(s[len - 2] == '/' && s[len - 1] == '>') {
+				tag.type = XTT_SINGLE;
+				l = 2;
+			}
+		}
+	}
+
+	s = s.substr(r, s.length() - l - 1 - (r - 1));
+
+	std::vector<cgv::utils::token> tokens;
+	split_to_tokens(s, tokens, "", true, "", "");
 
 	if(tokens.size() > 0) {
 		tag.name = to_string(tokens[0]);
 
-		for(size_t i = 1; i < tokens.size(); ++i)
-			tag.attributes.emplace(xml_read_attribute(to_string(tokens[i])));
+		if(tag.type != XTT_CLOSE) {
+			for(size_t i = 1; i < tokens.size(); ++i)
+				tag.attributes.emplace(xml_read_attribute(to_string(tokens[i])));
+		}
+	} else {
+		tag.type = XTT_UNDEF;
 	}
 
 	return tag;

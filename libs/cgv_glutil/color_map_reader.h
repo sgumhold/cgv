@@ -173,11 +173,14 @@ private:
 	}
 
 public:
-	static bool read_from_xml(const std::string& file_name, std::vector<std::string>& names, std::vector<color_map>& color_maps) {
+	static bool read_from_xml(const std::vector<std::string>& lines, std::vector<std::string>& names, std::vector<color_map>& color_maps) {
 		// clear previous data
 		names.clear();
 		color_maps.clear();
-		
+		return parse_xml(lines, names, color_maps);
+	}
+
+	static bool read_from_xml(const std::string& file_name, std::vector<std::string>& names, std::vector<color_map>& color_maps) {
 		if(!cgv::utils::file::exists(file_name) || cgv::utils::to_upper(cgv::utils::file::get_extension(file_name)) != "XML")
 			return false;
 
@@ -206,14 +209,7 @@ public:
 			lines.push_back(line);
 		}
 
-		return parse_xml(lines, names, color_maps);
-	}
-
-	static bool read_from_xml_lines(const std::vector<std::string>& lines, std::vector<std::string>& names, std::vector<color_map>& color_maps) {
-		// clear previous data
-		names.clear();
-		color_maps.clear();
-		return parse_xml(lines, names, color_maps);
+		return read_from_xml(lines, names, color_maps);
 	}
 };
 

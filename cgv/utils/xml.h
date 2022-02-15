@@ -15,19 +15,19 @@ namespace cgv {
 	namespace utils {
 
 typedef std::pair<std::string, std::string> xml_attribute;
-typedef std::map<xml_attribute::first_type, xml_attribute::second_type> xml_attribute_list;
+typedef std::map<xml_attribute::first_type, xml_attribute::second_type> xml_attribute_map;
 
 enum XMLTagType {
-	XTT_UNDEFINED,
-	XTT_OPENING,
-	XTT_CLOSING,
-	XTT_SELF_CLOSING
+	XTT_UNDEF, // undefined
+	XTT_OPEN,  // opening/starting tag
+	XTT_CLOSE, // closing tag
+	XTT_SINGLE // singleton or self closing tag
 };
 
 struct xml_tag {
-	XMLTagType type = XTT_UNDEFINED;
+	XMLTagType type = XTT_UNDEF;
 	std::string name = "";
-	xml_attribute_list attributes;
+	xml_attribute_map attributes;
 };
 
 extern CGV_API xml_attribute xml_read_attribute(const std::string& attribute);
