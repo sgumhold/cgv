@@ -155,16 +155,17 @@ var NAVTREEINDEX =
 "classvr_1_1gl__vr__display.html#a1bfe89765155044646b4d2211b55cdb5",
 "dir_179dad1cbe11e5b600d24c38e7cdbfc0.html",
 "member__pointer_8h_source.html",
-"scan__enum_8h.html#a1179ec7bcf94e1e5e40d5ad1cc8448be",
-"structcgv_1_1base_1_1object__constructor.html#a5e4ce80d45ccfdc5100f7ddd2f33b64d",
-"structcgv_1_1media_1_1image_1_1reader__listener.html#a6746cd9f70fefe5a4f2b72534869fcc3",
-"structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#ae94806cbae4dcceb0ac95beac5a66904",
-"structcgv_1_1plot_1_1plot__base__config.html#a5d4b3c8842ed5b0f5e2aa78e759cf749",
-"structcgv_1_1reflect_1_1reflection__traits__string__impl.html#aab3eac488886677c3380412d33e2b1f7",
-"structcgv_1_1render_1_1callback__drawable.html#ad647d5c457d7a25ad907b062fd9ca36a",
-"structcgv_1_1render_1_1render__config.html#a29bcff8dff9b613d9d9a8df2b67fdd78",
-"structcgv_1_1render_1_1surfel__render__style.html#a3850221d245b353028eca7e9306769aa",
-"structgamepad_1_1gamepad__driver.html#a3a656155c1845e00c54d9ca9b9d0eb84"
+"scan_8h.html#adcdb4408e94a15f0337146b18058c79e",
+"structcgv_1_1base_1_1object__constructor.html#a313232084b52192201cecaf4ae257ee8",
+"structcgv_1_1media_1_1image_1_1reader__listener.html#a4d67c8d339fe06f17396aaa8625292f8",
+"structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#aba951b1651529ca5866b6d924be2bff9",
+"structcgv_1_1plot_1_1plot__base__config.html#a3f4c54c23e849fa07adeca68dd718966",
+"structcgv_1_1reflect_1_1reflection__traits__string__impl.html",
+"structcgv_1_1render_1_1callback__drawable.html#ac985e72d3583fa5eb114d991ab294cce",
+"structcgv_1_1render_1_1render__config.html",
+"structcgv_1_1render_1_1surfel__render__style.html#a113f4aa88c33c892574038e0f2478a7a",
+"structgamepad_1_1driver__info.html#a4c2de59cb51018345b9b72662f679b37",
+"xml_8h.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

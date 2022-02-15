@@ -28,13 +28,19 @@ var scan_8h =
     [ "is_url_special", "scan_8h.html#a643f3fe18654ef2a7be7b78d5f82dada", null ],
     [ "is_year", "scan_8h.html#a5e16eed75c4f654d7295f4505ad7e697", null ],
     [ "is_year", "scan_8h.html#a2923901da5517a748563914debe34838", null ],
+    [ "ltrim", "scan_8h.html#a612b9004a640fd424d7ed20ba2104e74", null ],
+    [ "ltrim", "scan_8h.html#a6111552f6d6592cb0a9bec7939f4e236", null ],
     [ "replace", "scan_8h.html#a145360669d325a1f530539c8aff35990", null ],
     [ "replace", "scan_8h.html#a2791a9ab5164403dbdd107a4337a6e6b", null ],
     [ "replace_special", "scan_8h.html#a97032f8b8a5544a118c84ff2346b5bfe", null ],
+    [ "rtrim", "scan_8h.html#aa9ae735d0f4b701a6d3635053097a23c", null ],
+    [ "rtrim", "scan_8h.html#a275e5d68df06a511c2f9b41c1f9f4c28", null ],
     [ "skip_spaces", "scan_8h.html#a09d4dbe74933b21d153e5e4b4441b518", null ],
     [ "to_hex", "scan_8h.html#a155b5e0a440b5d442d41187cc8d41695", null ],
     [ "to_lower", "scan_8h.html#a6b682be2fdbb130c91a3bd8bd7936ff8", null ],
     [ "to_lower", "scan_8h.html#a7807eab90c69363c21cc7ef34a2dadf1", null ],
     [ "to_upper", "scan_8h.html#a768fdf54202b2fc80c51ea8f312b2b82", null ],
-    [ "to_upper", "scan_8h.html#a4a08e35caac21d6cb5f14df3715a9ff3", null ]
+    [ "to_upper", "scan_8h.html#a4a08e35caac21d6cb5f14df3715a9ff3", null ],
+    [ "trim", "scan_8h.html#adcdb4408e94a15f0337146b18058c79e", null ],
+    [ "trim", "scan_8h.html#a3eec00ae2b52df54329967f6ae7526d4", null ]
 ];

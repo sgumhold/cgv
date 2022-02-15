@@ -1,5 +1,11 @@
 var NAVTREEINDEX44 =
 {
+"structcgv_1_1render_1_1render__config.html":[11,0,0,9,33],
+"structcgv_1_1render_1_1render__config.html#a02a3d94a5e7e7c973b7bab45ef14484e":[11,0,0,9,33,47],
+"structcgv_1_1render_1_1render__config.html#a0a0a521fbd00fe317486503a0f9de08e":[11,0,0,9,33,56],
+"structcgv_1_1render_1_1render__config.html#a0b3db0f57373229e66422eeeb6750ebc":[11,0,0,9,33,33],
+"structcgv_1_1render_1_1render__config.html#a0c0cc1d446eef227047307c204d574b5":[11,0,0,9,33,51],
+"structcgv_1_1render_1_1render__config.html#a1ff38549b7f5c57918898543e78a416d":[11,0,0,9,33,28],
 "structcgv_1_1render_1_1render__config.html#a29bcff8dff9b613d9d9a8df2b67fdd78":[11,0,0,9,33,54],
 "structcgv_1_1render_1_1render__config.html#a2f074aea5bf4b0bfeb00845750d27623":[11,0,0,9,33,25],
 "structcgv_1_1render_1_1render__config.html#a313232084b52192201cecaf4ae257ee8":[11,0,0,9,33,24],
@@ -243,11 +249,5 @@ var NAVTREEINDEX44 =
 "structcgv_1_1render_1_1surfel__render__style.html#a0492ee8d0e1c7867d0a9bc01dfae38e4":[11,0,0,9,48,14],
 "structcgv_1_1render_1_1surfel__render__style.html#a0552924c9c708e0b6eaa2ffc667fb5d7":[11,0,0,9,48,18],
 "structcgv_1_1render_1_1surfel__render__style.html#a063c8e45a69cf091442d872cc33dd328":[11,0,0,9,48,48],
-"structcgv_1_1render_1_1surfel__render__style.html#a0736e6323efbd9fe0eed151b089854be":[11,0,0,9,48,49],
-"structcgv_1_1render_1_1surfel__render__style.html#a113f4aa88c33c892574038e0f2478a7a":[11,0,0,9,48,54],
-"structcgv_1_1render_1_1surfel__render__style.html#a115cfd532b3c0aaa4fb3b5ded65411db":[11,0,0,9,48,19],
-"structcgv_1_1render_1_1surfel__render__style.html#a1cad3d9016b0839b7c7ca6c442ad51ba":[11,0,0,9,48,28],
-"structcgv_1_1render_1_1surfel__render__style.html#a1e647cad0feb06b4067d49caefffec9b":[11,0,0,9,48,12],
-"structcgv_1_1render_1_1surfel__render__style.html#a1ebeba8ed9e5d0a169072c1d5497b8f3":[11,0,0,9,48,46],
-"structcgv_1_1render_1_1surfel__render__style.html#a3563b70772c201cb2bd6533c31a3930e":[11,0,0,9,48,24]
+"structcgv_1_1render_1_1surfel__render__style.html#a0736e6323efbd9fe0eed151b089854be":[11,0,0,9,48,49]
 };
