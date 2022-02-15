@@ -98,19 +98,19 @@ $(document).ready(function(){initNavTree('xml_8h_source.html',''); initResizable
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keyword">namespace </span>utils {</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">typedef</span> std::pair&lt;std::string, std::string&gt; xml_attribute;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">typedef</span> std::map&lt;xml_attribute::first_type, xml_attribute::second_type&gt; xml_attribute_list;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">typedef</span> std::map&lt;xml_attribute::first_type, xml_attribute::second_type&gt; xml_attribute_map;</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">enum</span> XMLTagType {</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        XTT_UNDEFINED,</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        XTT_OPENING,</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        XTT_CLOSING,</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        XTT_SELF_CLOSING</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        XTT_UNDEF, <span class="comment">// undefined</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        XTT_OPEN,  <span class="comment">// opening/starting tag</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        XTT_CLOSE, <span class="comment">// closing tag</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        XTT_SINGLE <span class="comment">// singleton or self closing tag</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;};</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">struct </span>xml_tag {</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        XMLTagType type = XTT_UNDEFINED;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        XMLTagType type = XTT_UNDEF;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        std::string name = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        xml_attribute_list attributes;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        xml_attribute_map attributes;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;};</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">extern</span> CGV_API xml_attribute xml_read_attribute(<span class="keyword">const</span> std::string&amp; attribute);</div>
