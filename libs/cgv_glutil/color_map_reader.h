@@ -125,6 +125,17 @@ private:
 							name = xml_attribute_value(to_string(tokens[1]));
 						}
 						read_cm = true;
+					} else {
+						if(!cm.empty()) {
+							names.push_back(name);
+							color_maps.push_back(cm);
+						}
+						name = "";
+						cm = color_map();
+						if(tokens.size() > 1) {
+							name = xml_attribute_value(to_string(tokens[1]));
+						}
+						read_cm = true;
 					}
 				} else if(str == "/ColorMap") {
 					// a new color map
@@ -140,7 +151,7 @@ private:
 				}
 			}
 
-			if(read_cm && tokens.size() == 6 && to_string(tokens[0]) == "Point") {
+			if(read_cm && tokens.size() >= 6 && to_string(tokens[0]) == "Point") {
 				float x = -1.0f;
 				float o = 0.0f;
 				float r = 0.0f;
