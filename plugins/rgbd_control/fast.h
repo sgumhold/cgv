@@ -1,38 +1,41 @@
 #pragma once
 #ifndef FAST_H
 #define FAST_H
-
 #include <vector>
-#include <iostream>
+#include <rgbd_input.h>
 
-namespace fast
-{
+namespace fast {
 
-	using ::std::vector;
-
-	struct fast_xy
+	typedef struct
 	{
-		short x, y;
-		fast_xy(short x_, short y_) : x(x_), y(y_) {}
-	};
+		int x, y;
+	} xy;
 
 	typedef unsigned char fast_byte;
 
-	/// SSE2 optimized version of the corner 10
-	//void fast_corner_detect_10_sse2(const fast_byte* img, int imgWidth, int imgHeight, int widthStep, short barrier, vector<fast_xy>& corners);
+	int fast9_corner_score(const fast_byte* p, const int pixel[], int bstart);
+	int fast10_corner_score(const fast_byte* p, const int pixel[], int bstart);
+	int fast11_corner_score(const fast_byte* p, const int pixel[], int bstart);
+	int fast12_corner_score(const fast_byte* p, const int pixel[], int bstart);
 
-	/// plain C++ version of the corner 10
-	void fast_corner_detect_10(const fast_byte* img, int imgWidth, int imgHeight, int widthStep, short barrier, vector<fast_xy>& corners);
+	xy* fast9_detect(const fast_byte* im, int xsize, int ysize, int stride, int b, int* ret_num_corners);
+	xy* fast10_detect(const fast_byte* im, int xsize, int ysize, int stride, int b, int* ret_num_corners);
+	xy* fast11_detect(const fast_byte* im, int xsize, int ysize, int stride, int b, int* ret_num_corners);
+	xy* fast12_detect(const fast_byte* im, int xsize, int ysize, int stride, int b, int* ret_num_corners);
 
-	/// corner score 10
-	//void fast_corner_score_10(const fast_byte* img, const int img_stride, const vector<fast_xy>& corners, const int threshold, vector<int>& scores);
+	int* fast9_score(const fast_byte* i, int stride, xy* corners, int num_corners, int b);
+	int* fast10_score(const fast_byte* i, int stride, xy* corners, int num_corners, int b);
+	int* fast11_score(const fast_byte* i, int stride, xy* corners, int num_corners, int b);
+	int* fast12_score(const fast_byte* i, int stride, xy* corners, int num_corners, int b);
 
-	/// Nonmax Suppression on a 3x3 Window
-	//void fast_nonmax_3x3(const vector<fast_xy>& corners, const vector<int>& scores, vector<int>& nonmax_corners);
+	xy* fast9_detect_nonmax(const fast_byte* im, int xsize, int ysize, int stride, int b, int* ret_num_corners);
+	xy* fast10_detect_nonmax(const fast_byte* im, int xsize, int ysize, int stride, int b, int* ret_num_corners);
+	xy* fast11_detect_nonmax(const fast_byte* im, int xsize, int ysize, int stride, int b, int* ret_num_corners);
+	xy* fast12_detect_nonmax(const fast_byte* im, int xsize, int ysize, int stride, int b, int* ret_num_corners);
 
-	/// NEON optimized version of the corner 9
-	//void fast_corner_detect_9_neon(const fast_byte* img, int imgWidth, int imgHeight, int widthStep, short barrier, vector<fast_xy>& corners);
+	xy* nonmax_suppression(const xy* corners, const int* scores, int num_corners, int* ret_num_nonmax);
 
-} // namespace fast
+	void pyramid(const rgbd::frame_type* img, int xsize, int ysize, float scalar, int nlevel);
+	} // namespace fast
 
 #endif

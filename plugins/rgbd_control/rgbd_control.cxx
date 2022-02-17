@@ -580,13 +580,16 @@ size_t rgbd_control::construct_point_cloud()
 	const unsigned char* colors = reinterpret_cast<const unsigned char*>(&color_frame_2.frame_data.front());
 	if (remap_color) {
 		rgbd_inp.map_color_to_depth(depth_frame_2, color_frame_2, warped_color_frame_2);
-		// convert to grayscale
-		//convert_to_grayscale(warped_color_frame_2, gray_frame_2);
-		//TODO extract FAST or ORB features
-		/*fast::fast_corner_detect_10((fast::fast_byte*)color_frame_2.frame_data.front(), color_frame_2.width,
-									color_frame_2.height, color_frame_2.width, 10, corners);*/
-		//colors = reinterpret_cast<const unsigned char*>(&warped_color_frame_2.frame_data.front());
-		colors = reinterpret_cast<const unsigned char*>(&gray_frame_2.frame_data.front());
+		if (show_grayscale) {
+			// convert to grayscale
+			convert_to_grayscale(warped_color_frame_2, gray_frame_2);
+			// TODO extract FAST or ORB features
+			int* ret_num = new int;
+			fast::xy* corners;
+			corners = fast::fast10_detect_nonmax(reinterpret_cast<const unsigned char*>(&gray_frame_2.frame_data.front()), gray_frame_2.width, gray_frame_2.height, gray_frame_2.width, 20,
+			ret_num); 
+		}
+		colors = reinterpret_cast<const unsigned char*>(&warped_color_frame_2.frame_data.front());
 	}
 	unsigned bytes_per_pixel = color_frame_2.nr_bits_per_pixel / 8;
 	int i = 0;
@@ -595,42 +598,33 @@ size_t rgbd_control::construct_point_cloud()
 		for (int x = 0; x < depth_frame_2.width; ++x) {
 			vec3 p;
 			rgba8 point_color;
-			rgba8 gray_scale;
 			if (rgbd_inp.map_depth_to_point(x, y, depths[i], &p[0])) {
 				switch (color_frame_2.pixel_format) {
 				case PF_BGR:
 				case PF_BGRA:
 					if (color_frame_2.nr_bits_per_pixel == 32) {
 						point_color = rgba8(colors[bytes_per_pixel * i + 2], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i], colors[bytes_per_pixel * i + 3]);
-						gray_scale = rgba8(0.33*colors[bytes_per_pixel * i + 2], 0.33*colors[bytes_per_pixel * i + 1], 0.33*colors[bytes_per_pixel * i], colors[bytes_per_pixel * i + 3]);
 					} else {
 						point_color = rgba8(colors[bytes_per_pixel * i + 2], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i], 255);
-						gray_scale = rgba8(0.33 * colors[bytes_per_pixel * i + 2], 0.33 * colors[bytes_per_pixel * i + 1],
-									0.33 * colors[bytes_per_pixel * i]);
 					}
 					break;
 				case PF_RGB:
 				case PF_RGBA:
 					if (color_frame_2.nr_bits_per_pixel == 32) {
 						point_color = rgba8(colors[bytes_per_pixel * i], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i + 2], colors[bytes_per_pixel * i + 3]);
-						gray_scale = rgba8(0.33 * colors[bytes_per_pixel * i], 0.33 * colors[bytes_per_pixel * i + 1],
-										   0.33 * colors[bytes_per_pixel * i + 2], colors[bytes_per_pixel * i + 3]);
 					} else {
 						point_color = rgba8(colors[bytes_per_pixel * i], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i + 2], 255);
-						gray_scale = rgba8(0.33 * colors[bytes_per_pixel * i], 0.33 * colors[bytes_per_pixel * i + 1],
-									0.33 * colors[bytes_per_pixel * i + 2]);
 					}
 					break;
 				case PF_BAYER:
 					point_color = rgba8(colors[i], colors[i], colors[i], 255);
-					gray_scale = rgba8(colors[i], colors[i], colors[i], 255);
 					break;
 				}
 				//filter points without color for 32 bit formats
 				static const rgba8 filter_color = rgba8(0, 0, 0, 0);
 				if (!(point_color ==  filter_color)) {
-					//C2.push_back(point_color);
-					C2.push_back(gray_scale);
+					C2.push_back(point_color);
+					//C2.push_back(gray_scale);
 					// flipping y to make it the same direction as in pixel y coordinate
 					p[1] = -p[1];
 					P2.push_back(p);
@@ -683,6 +677,7 @@ void rgbd_control::timer_event(double t, double dt)
 						++nr_color_frames;
 						color_frame_changed = new_color_frame_changed;
 						new_frame = true;
+						//TODO extract FAST features
 						update_member(&nr_color_frames);
 					}
 				}
@@ -1034,11 +1029,11 @@ void rgbd_control::convert_to_grayscale(const frame_type& color_frame2, frame_ty
 			case PF_BGR:
 			case PF_BGRA:
 					if (color_frame2.nr_bits_per_pixel == 32) {
-					s.emplace_back(color_frame2.frame_data.at(c) * 0.114 + color_frame2.frame_data.at(b) * 0.587 +
+						s.emplace_back(color_frame2.frame_data.at(c) * 0.114 + color_frame2.frame_data.at(b) * 0.587 +
 								   color_frame2.frame_data.at(a) * 0.299);
-					s.emplace_back(color_frame2.frame_data.at(c) * 0.114 + color_frame2.frame_data.at(b) * 0.587 +
+						s.emplace_back(color_frame2.frame_data.at(c) * 0.114 + color_frame2.frame_data.at(b) * 0.587 +
 									   color_frame2.frame_data.at(a) * 0.299);
-					s.emplace_back(color_frame2.frame_data.at(c) * 0.114 + color_frame2.frame_data.at(b) * 0.587 +
+						s.emplace_back(color_frame2.frame_data.at(c) * 0.114 + color_frame2.frame_data.at(b) * 0.587 +
 								   color_frame2.frame_data.at(a) * 0.299);
 						s.emplace_back(color_frame2.frame_data.at(d));
 						src = &s.front();
