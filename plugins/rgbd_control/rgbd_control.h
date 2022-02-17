@@ -36,7 +36,7 @@ public:
 	enum VisMode { VM_COLOR, VM_DEPTH, VM_INFRARED, VM_WARPED };
 	enum DeviceMode { DM_DETACHED, DM_PROTOCOL, DM_DEVICE };
 	///
-	rgbd_control();
+	rgbd_control(bool no_interactor);
 	/// overload to return the type name of this object. By default the type interface is queried over get_type.
 	std::string get_type_name() const { return "rgbd_control"; }
 	///
@@ -63,18 +63,22 @@ public:
 	///
 	void create_gui();
 	
-
 	bool show_grayscale;
+
+	bool no_interactor = false;
   protected:
 	///
 	point_cloud get_point_cloud() override;
+	
+	cgv::signal::signal<>& new_point_cloud_ready() override;
 
+  protected:
 	void update_texture_from_frame(cgv::render::context& ctx, cgv::render::texture& tex, const rgbd::frame_type& frame, bool recreate, bool replace);
 	///
 	void convert_to_grayscale(const rgbd::frame_type& color_frame, rgbd::frame_type& gray_frame);
 	/// members for rgbd input
 	rgbd::rgbd_input rgbd_inp;
-	std::string protocol_path;
+	std::string record_path;
 	bool do_protocol;
 	bool stream_color;
 	bool stream_depth;
@@ -144,6 +148,7 @@ public:
 	bool acquire_next;
 	bool always_acquire_next;
 	bool visualisation_enabled;
+	cgv::signal::signal<> new_point_cloud_sig;
 
   protected:
 	void timer_event(double t, double dt);

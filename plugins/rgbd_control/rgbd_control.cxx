@@ -36,13 +36,14 @@ std::string get_stream_format_enum(const std::vector<rgbd::stream_format>& sfs)
 }
 
 ///
-rgbd_control::rgbd_control() : 
+rgbd_control::rgbd_control(bool no_interactor)
+	: 
 	color_fmt("uint8[B,G,R,A]"),
 	infrared_fmt("uint16[L]"),
 	depth_fmt("uint16[L]"), 
 	depth("uint16[L]", TF_NEAREST, TF_NEAREST),
 	infrared("uint16[L]"),
-	depth_range(0.0f, 1.0f)
+	depth_range(0.0f, 1.0f), no_interactor(no_interactor)
 {
 	set_name("rgbd_control");
 	do_protocol = false;
@@ -99,7 +100,8 @@ rgbd_control::rgbd_control() :
 bool rgbd_control::self_reflect(cgv::reflect::reflection_handler& rh)
 {
 	return
-		rh.reflect_member("protocol_path", protocol_path) &&
+		rh.reflect_member("record_path", record_path) &&
+		rh.reflect_member("protocol_path", record_path) &&
 		rh.reflect_member("do_protocol", do_protocol) &&
 		rh.reflect_member("vis_mode", (int&)vis_mode) &&
 		rh.reflect_member("color_scale", color_scale) &&
@@ -122,16 +124,16 @@ void rgbd_control::on_set(void* member_ptr)
 				do_protocol = false;
 				rgbd_inp.disable_protocol();
 			}
-			bool path_exists = cgv::utils::dir::exists(protocol_path);
+			bool path_exists = cgv::utils::dir::exists(record_path);
 			if (!path_exists) {
-				if (cgv::gui::question(protocol_path + " does not exist. Create it?", "No,Yes", 1)) {
-					path_exists = cgv::utils::dir::mkdir(protocol_path);
+				if (cgv::gui::question(record_path + " does not exist. Create it?", "No,Yes", 1)) {
+					path_exists = cgv::utils::dir::mkdir(record_path);
 					if (!path_exists)
-						cgv::gui::message(protocol_path + " creation failed!");
+						cgv::gui::message(record_path + " creation failed!");
 				}
 			}
 			if (path_exists)
-				rgbd_inp.enable_protocol(protocol_path);
+				rgbd_inp.enable_protocol(record_path);
 			else {
 				do_protocol = false;
 				update_member(&do_protocol);
@@ -212,7 +214,7 @@ void rgbd_control::update_texture_from_frame(context& ctx, texture& tex, const f
 		case PF_RGBA:  // 32 bit rgba format
 			fmt_descr += "8[R,G,B,A]";
 			break;
-		case PF_BGRA:  // 32 bit brga format
+		case PF_BGRA:  // 32 bit bgra format
 			fmt_descr += "8[B,G,R,A]";
 			break;
 		case PF_BAYER: // 8 bit raw bayer pattern values
@@ -243,6 +245,9 @@ void rgbd_control::update_texture_from_frame(context& ctx, texture& tex, const f
 ///
 void rgbd_control::init_frame(context& ctx)
 {
+	if (no_interactor)
+		return;
+
 	if (!rgbd_prog.is_created())
 		rgbd_prog.build_program(ctx, "rgbd_shader.glpr");
 
@@ -278,6 +283,9 @@ void rgbd_control::init_frame(context& ctx)
 /// overload to draw the content of this drawable
 void rgbd_control::draw(context& ctx)
 {
+	if (no_interactor)
+		return;
+
 	ctx.push_modelview_matrix();
 	vec3 flip_vec(flip[0] ? -1.0f : 1.0f, flip[1] ? -1.0f : 1.0f, flip[2] ? -1.0f : 1.0f);
 	ctx.mul_modelview_matrix(cgv::math::scale4<double>(flip_vec[0], -flip_vec[1], -flip_vec[2]));
@@ -381,6 +389,9 @@ void rgbd_control::draw(context& ctx)
 /// 
 bool rgbd_control::handle(cgv::gui::event& e)
 {
+	if (no_interactor)
+		return false;
+
 	if (e.get_kind() != cgv::gui::EID_KEY)
 		return false;
 	cgv::gui::key_event& ke = static_cast<cgv::gui::key_event&>(e);
@@ -516,9 +527,9 @@ void rgbd_control::create_gui()
 	}
 	if (begin_tree_node("IO", do_protocol, true, "level=2")) {
 		align("\a");
-		add_gui("protocol_path", protocol_path, "directory", "w=150");
+		add_gui("record_path", record_path, "directory", "w=150");
 		add_member_control(this, "write_async", rgbd_inp.protocol_write_async, "toggle");
-		add_member_control(this, "do_protocol", do_protocol, "toggle");
+		add_member_control(this, "record", do_protocol, "toggle");
 		connect_copy(add_button("clear protocol")->click, rebind(this, &rgbd_control::on_clear_protocol_cb));
 		connect_copy(add_button("save")->click, rebind(this, &rgbd_control::on_save_cb));
 		connect_copy(add_button("save point cloud")->click, rebind(this, &rgbd_control::on_save_point_cloud_cb));
@@ -562,13 +573,17 @@ void rgbd_control::create_gui()
 point_cloud rgbd_control::get_point_cloud()
 {
 	point_cloud pc;
-	//TODO may need to protect P2 and C2 with a mutex
 	pc.create_colors();
 	pc.resize(P.size());
-	memcpy(&pc.pnt(0), P.data(), P.size());
+	memcpy(&pc.pnt(0), P.data(), P.size()*sizeof(vec3));
 	for (int i = 0; i < C.size(); ++i)
 		pc.clr(i) = C[i];
 	return pc;
+}
+
+cgv::signal::signal<>& rgbd_control::new_point_cloud_ready()
+{
+	return new_point_cloud_sig;
 }
 
 size_t rgbd_control::construct_point_cloud()
@@ -643,6 +658,7 @@ size_t rgbd_control::construct_point_cloud()
 	return P2.size();
 }
 
+
 void rgbd_control::timer_event(double t, double dt)
 {
 	// in case a point cloud is being constructed
@@ -654,6 +670,7 @@ void rgbd_control::timer_event(double t, double dt)
 			P = P2;
 			C = C2;
 			post_redraw();
+			new_point_cloud_sig();
 		}
 	}
 	if (rgbd_inp.is_started()) {
@@ -962,14 +979,14 @@ void rgbd_control::on_device_select_cb()
 		}
 	}
 	else if (device_mode == DM_PROTOCOL) {
-		if (cgv::utils::dir::exists(protocol_path)) {
-			rgbd_inp.attach_path(protocol_path);
+		if (cgv::utils::dir::exists(record_path)) {
+			rgbd_inp.attach_path(record_path);
 			update_stream_formats();
 			reset_format_indices = true;
 			update_member(&device_idx);
 		}
 		else {
-			cgv::gui::message(protocol_path + " does not exist!");
+			cgv::gui::message(record_path + " does not exist!");
 			device_mode = DM_DETACHED;
 			device_idx = -2;
 			update_member(&device_mode);
@@ -998,7 +1015,7 @@ void rgbd_control::on_clear_protocol_cb()
 {
 	//delete previosly recorded data
 	if (!rgbd_inp.is_started() || (rgbd_inp.is_started() && !do_protocol)){
-		rgbd_inp.clear_protocol(protocol_path);
+		rgbd_inp.clear_protocol(record_path);
 	}
 }
 
@@ -1082,4 +1099,9 @@ void rgbd_control::convert_to_grayscale(const frame_type& color_frame2, frame_ty
 
 #include "lib_begin.h"
 
-extern CGV_API object_registration<rgbd_control> kc_or("");
+#ifdef NO_VR_VIEW_INTERACTOR
+extern CGV_API object_registration_1<rgbd_control,bool> kc_or(true, "");
+#else
+extern CGV_API object_registration_1<rgbd_control,bool> kc_or(false,"");
+#endif
+
