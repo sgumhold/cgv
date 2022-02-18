@@ -22,13 +22,15 @@ protected:
 public:
 	size_t size() { return control_points.size(); }
 
-	const std::vector<control_point>& ref_control_points() { return control_points; }
+	const std::vector<control_point>& ref_control_points() const { return control_points; }
 
 	void clear() {
 		min_t = 0.0f;
 		max_t = 0.0f;
 		control_points.clear();
 	}
+
+	bool empty() { return control_points.empty(); }
 
 	void add_control_point(float t, T v) {	
 		// keep track of the interval of t over all control points

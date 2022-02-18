@@ -839,24 +839,6 @@ bool transfer_function_editor::update_geometry() {
 	return success;
 }
 
-// TODO: move these three methods to some string lib
-static std::string& ltrim(std::string& str, const std::string& chars = "\t\n\v\f\r ") {
-
-	str.erase(0, str.find_first_not_of(chars));
-	return str;
-}
-
-static std::string& rtrim(std::string& str, const std::string& chars = "\t\n\v\f\r ") {
-
-	str.erase(str.find_last_not_of(chars) + 1);
-	return str;
-}
-
-static std::string& trim(std::string& str, const std::string& chars = "\t\n\v\f\r ") {
-
-	return ltrim(rtrim(str, chars), chars);
-}
-
 static std::string xml_attribute_value(const std::string& attribute) {
 
 	size_t pos_start = attribute.find_first_of("\"");
@@ -970,7 +952,7 @@ bool transfer_function_editor::load_from_xml(const std::string& file_name) {
 			nl_pos = content.find_first_of('\n', line_offset);
 		}
 
-		trim(line);
+		cgv::utils::trim(line);
 
 		if(line.length() < 3)
 			continue;
