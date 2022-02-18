@@ -203,7 +203,7 @@ bool provider::begin_tree_node_void(const std::string& label, const void* value_
 	std::string align("\n");  cgv::base::has_property(options, "align", align, true);
 	std::string child_opt;    cgv::base::has_property(options, "options", child_opt, true);
 	std::string button_opt;   cgv::base::has_property(options, "button_options", button_opt, true);
-	int size = 24 - 4 * level;    cgv::base::has_property(options, "size", size, true);
+	int size = 20;/*- 4 *level*/;    cgv::base::has_property(options, "size", size, true);
 	int relative_offset = 12; cgv::base::has_property(options, "relative_offset", relative_offset, true);
 	int off  = size+relative_offset;
 
@@ -220,7 +220,7 @@ bool provider::begin_tree_node_void(const std::string& label, const void* value_
 	data::ref_ptr<control<bool> > control_ptr;
 	if (decorated) {
 		ggp->align(std::string("%x-=")+cgv::utils::to_string(off));
-		control_ptr = ggp->add_control(std::string(toggle ? "-" : "+"), toggle, "toggle", button_opt, " ");
+		control_ptr = ggp->add_control(std::string(toggle ? "@-6thinminus" : "@-6thinplus"), toggle, "toggle", button_opt, " ");
 
 		if (!child_opt.empty())
 			child_opt = std::string(";")+child_opt;
@@ -228,7 +228,7 @@ bool provider::begin_tree_node_void(const std::string& label, const void* value_
 		ggp->add_decorator(label, "heading", child_opt, align);
 	}
 	else {
-		control_ptr = ggp->add_control(std::string(toggle ? "-" : "+"), toggle, "toggle", button_opt, align);
+		control_ptr = ggp->add_control(std::string(toggle ? "@-6thinminus" : "@-6thinplus"), toggle, "toggle", button_opt, align);
 	}
 
 	if (control_ptr) {
