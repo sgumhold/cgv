@@ -22,6 +22,10 @@ public:
 		opacity_interpolator.clear();
 	}
 
+	bool empty() {
+		return color_interpolator.empty() && opacity_interpolator.empty();
+	}
+
 	void add_color_point(float t, rgb color) {
 		// TODO: do we need to keep it in the interval [0,1]?
 		// make sure t is in the interval [0,1]
@@ -33,8 +37,8 @@ public:
 		opacity_interpolator.add_control_point(t, opacity);
 	}
 
-	const std::vector<decltype(color_interpolator)::control_point>& ref_color_points() { return color_interpolator.ref_control_points(); }
-	const std::vector<decltype(opacity_interpolator)::control_point>& ref_opacity_points() { return opacity_interpolator.ref_control_points(); }
+	const std::vector<decltype(color_interpolator)::control_point>& ref_color_points() const { return color_interpolator.ref_control_points(); }
+	const std::vector<decltype(opacity_interpolator)::control_point>& ref_opacity_points() const { return opacity_interpolator.ref_control_points(); }
 
 	rgb interpolate_color(float t) const {
 
