@@ -91,16 +91,19 @@ namespace cgv {
 			Sigma.zeros();
 
 			point_cloud S, Q;
-			S.resize(sourceCloud->get_nr_points());
-			Q.resize(sourceCloud->get_nr_points());
+
 
 			/// sample the source point cloud
 			if (numRandomSamples > 0) {
+				S.resize(numRandomSamples);
+				Q.resize(numRandomSamples);
 				std::srand(std::time(0));
 				for (int i = 0; i < numRandomSamples; i++)
 					S.pnt(i) = sourceCloud->pnt(std::rand() % sourceCloud->get_nr_points());
 			}
 			else {
+				S.resize(sourceCloud->get_nr_points());
+				Q.resize(sourceCloud->get_nr_points());
 				for (int i = 0; i < sourceCloud->get_nr_points(); i++)
 					S.pnt(i) = sourceCloud->pnt(i);
 			}
@@ -137,6 +140,9 @@ namespace cgv {
 					rotation_mat = rotation_update_mat * rotation_mat;
 					translation_vec = rotation_update_mat * translation_vec + translation_update_vec;
 					min = abs(cost);
+				}
+				else {
+					break;
 				}
 			}
 			//std::cout << "rotate_mat: " << rotation_mat << std::endl;
