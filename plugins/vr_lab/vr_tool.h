@@ -32,6 +32,9 @@ protected:
 	vr_kit* get_kit_ptr() const;
 	/// access to vr view, which can return nullptr in case no vr view is available or vr view is registered after tool
 	vr_view_interactor* get_view_ptr() const;
+	///
+	typedef cgv::nui::label_drawable::coordinate_system coordinate_system;
+	typedef cgv::nui::label_drawable::label_alignment label_alignment;
 public:
 	/// construct with all pointers set to null and tool being active
 	vr_tool();

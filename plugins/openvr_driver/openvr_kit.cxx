@@ -553,9 +553,10 @@ bool openvr_kit::query_key_event(VRKeys& key, KeyAction& action)
 bool openvr_kit::set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength)
 {
 	// some hack
+	//VRInput()->TriggerHapticVibrationAction(k_ulInvalidActionHandle, 0.1f, 0.3f, 500, 1000, k_ulInvalidInputValueHandle);
 	get_hmd()->TriggerHapticPulse(
 		get_hmd()->GetTrackedDeviceIndexForControllerRole(controller_index == 0 ? TrackedControllerRole_LeftHand : TrackedControllerRole_RightHand),
-		0, 5);
+		0, high_frequency_strength);
 	return true;
 }
 
