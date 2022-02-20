@@ -191,7 +191,7 @@ extern "C" bool fltk_theme() {
 	  TabGroup::flat_tabs(true);
   }
   
-  if ((style = Style::find("ScrollBar"))) {
+  if ((style = Style::find("Scrollbar"))) {
 //    style->color = lerp(slider_background, text_background, .5);
     style->color_ = lerp(background, text_background, .5);
   }
