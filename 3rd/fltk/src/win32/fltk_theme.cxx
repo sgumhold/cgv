@@ -85,6 +85,8 @@ extern "C" bool fltk_theme() {
   int theme_idx = theme_idx_;
   Style* style;
 
+  fltk::reset_indexed_colors();
+
   // TODO: MARK
   if(theme_idx < 0) {
 	  // original
@@ -142,7 +144,8 @@ extern "C" bool fltk_theme() {
 	  //text_foreground = RED;
 	  //text_background = BLUE;
 
-	  fltk::reset_indexed_colors();
+	  //Color custom_dark_bg = color(static_cast<unsigned char>(30), static_cast<unsigned char>(30), static_cast<unsigned char>(35));
+
 	  fltk::set_background(background);
 	  Widget::default_style->labelcolor_ = foreground;
 	  Widget::default_style->highlight_textcolor_ = highlight_textcolor;

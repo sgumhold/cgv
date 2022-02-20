@@ -390,7 +390,7 @@ bool Slider::draw(const Rectangle& sr, Flags flags, bool slot)
   if (type()&16/*FILL*/) slider_size(0);
 
   Rectangle r = sr;
-  const int slot_size_ = 3; // was 6, really should be a preference?
+  const int slot_size_ = fltk::theme_idx_ < 0 ? 3 : 5; // was 6, really should be a preference?
 
   // draw the tick marks and inset the slider drawing area to clear them:
   if (tick_size_ && (type()&TICK_BOTH)) {
@@ -441,8 +441,14 @@ bool Slider::draw(const Rectangle& sr, Flags flags, bool slot)
       sl.x(r.x()+(r.w()-slot_size_+1)/2);
       sl.w(slot_size_);
     }
-    setbgcolor(BLACK);
-    THIN_DOWN_BOX->draw(sl);
+	// TODO: MARK
+	if(fltk::theme_idx_ < 0) {
+		setbgcolor(BLACK);
+		THIN_DOWN_BOX->draw(sl);
+	} else {
+		setbgcolor(style()->muted_textcolor());
+		FLAT_BOX->draw(sl);
+	}
   }
 
   drawstyle(style(),flags|OUTPUT);
@@ -580,19 +586,31 @@ public:
     box->draw(rr);
     Rectangle r = rr; box->inset(r);
 
+	Color C1 = GRAY33;
+	Color C2 = GRAY99;
+
+	// TODO:  MARK
+	if(Style::is_dark_theme_) {
+		C1 = GRAY99;
+		C2 = GRAY33;
+	}
+
+	if(box != UP_BOX)
+		C2 = C1;
+
     // draw the divider line into slider:
     if (r.w() < 4 || r.h() < 4) return;
     if (!(drawflags()&LAYOUT_VERTICAL)) { // horizontal
       int x = r.x()+(r.w()-1)/2;
-      setcolor(GRAY33);
+      setcolor(C1);
       drawline(x, r.y(), x, r.b());
-      setcolor(GRAY99);
+      setcolor(C2);
       drawline(x+1, r.y(), x+1, r.b());
     } else { // vertical
       int y = r.y()+r.h()/2;
-      setcolor(GRAY33);
+      setcolor(C1);
       drawline(r.x(), y, r.r(), y);
-      setcolor(GRAY99);
+      setcolor(C2);
       drawline(r.x(), y+1, r.r(), y+1);
     }
   }
