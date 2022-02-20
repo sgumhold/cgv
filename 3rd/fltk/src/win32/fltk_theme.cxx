@@ -126,15 +126,17 @@ extern "C" bool fltk_theme() {
 		  break;
 	  case 1:
 		  background = GRAY65;
-		  text_background = GRAY99;
+		  text_background = GRAY85;
+		  highlight_textcolor = custom_dark_blue;
+		  select_background = custom_light_blue;
 		  break;
 	  case 2:
-		  Color G70 = fltk::lerp(BLACK, WHITE, 0.70f);
-		  Color G80 = fltk::lerp(BLACK, WHITE, 0.80f);
+		  Color G70 = fltk::lerp(BLACK, WHITE, 0.60f);
+		  Color G80 = fltk::lerp(BLACK, WHITE, 0.75f);
 		  background = GRAY20;
 		  foreground = G80;
 		  text_foreground = G80;
-		  text_background = GRAY40;
+		  text_background = GRAY65;
 		  muted_textcolor = G70;
 		  highlight_textcolor = custom_light_blue;
 		  select_background = custom_dark_blue;
@@ -147,6 +149,7 @@ extern "C" bool fltk_theme() {
 	  //Color custom_dark_bg = color(static_cast<unsigned char>(30), static_cast<unsigned char>(30), static_cast<unsigned char>(35));
 
 	  fltk::set_background(background);
+	  //fltk::shift_background(background);
 	  Widget::default_style->labelcolor_ = foreground;
 	  Widget::default_style->highlight_textcolor_ = highlight_textcolor;
 	  Widget::default_style->color_ = text_background;

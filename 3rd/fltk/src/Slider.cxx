@@ -583,13 +583,18 @@ public:
     }
 
     Symbol* box = drawstyle()->buttonbox();
+	
+	// TODO:  MARK
+	if(Style::is_dark_theme_)
+		setbgcolor(GRAY60);
     box->draw(rr);
+
     Rectangle r = rr; box->inset(r);
 
 	Color C1 = GRAY33;
 	Color C2 = GRAY99;
 
-	// TODO:  MARK
+	
 	if(Style::is_dark_theme_) {
 		C1 = GRAY99;
 		C2 = GRAY33;

@@ -282,7 +282,7 @@ void fl_to_inactive(const char* s, char* to) {
 
 char fl_invert(const char b, const char c) {
 	char d = b - c;
-	return b + 3*d;
+	return b + 2*d;
 }
 
 void FrameBox::_draw(const fltk::Rectangle& R) const
@@ -427,10 +427,8 @@ void StateBox2::_draw(const fltk::Rectangle& R) const {
 		Rectangle r(R);
 		Symbol::inset(r);
 		if(drawflags(HIGHLIGHT|STATE))
-			//setcolor(fltk::lerp(getbgcolor(), BLACK, hover_darkening_));
 			setcolor(hover_color_ + (GRAY00 - 'A'));
 		else
-			//setcolor(fltk::lerp(getbgcolor(), BLACK, darkening_));
 			setcolor(bg_color_ + (GRAY00 - 'A'));
 		fillrect(r);
 	}
@@ -474,7 +472,7 @@ Box* const fltk::STATE_UP_BOX = &stateUpBox;
 
 
 
-static StateBox2 frameDownBox("frame_down", 1, 2, 2, 3, "2JNNNN", 'Q', 'Q');
+static StateBox2 frameDownBox("frame_down", 1, 2, 2, 3, "2JNNNN", 'P', 'P');
 /*!
   Pushed box in flat theme
 */

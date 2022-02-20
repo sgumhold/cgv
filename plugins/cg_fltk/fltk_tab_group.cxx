@@ -17,6 +17,7 @@ fltk_tab_group::fltk_tab_group(int x, int y, int w, int h, const std::string& _n
 : cgv::gui::gui_group(_name.c_str())
 {
 	tab_group = new CG<fltk::TabGroup>(x,y,w,h,get_name().c_str());
+	tab_group->resize_align(fltk::ALIGN_TOP);
 	tab_group->callback(fltk_select_cb,this);
 	last_selected_child = -1;
 }
