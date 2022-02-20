@@ -199,5 +199,5 @@ public:
 	}
 };
 
-factory_registration<depth_peeler_test> fr_depth_peeler_test("depth_peeler_test", "shortcut='Ctrl-Shift-P';menu_text='new/render/depth peeler'", true);
+factory_registration<depth_peeler_test> fr_depth_peeler_test("depth_peeler_test", "shortcut='Ctrl-Shift-P';menu_text='New/Render/Depth Peeler'", true);
 

@@ -58,6 +58,11 @@ using namespace fltk;
 
 */
 
+// default colors in colormap
+static unsigned cmap_def[256] = {
+#include "colormap.h" // this is a file produced by "colormap.cxx":
+};
+
 static unsigned cmap[256] = {
 #include "colormap.h" // this is a file produced by "colormap.cxx":
 };
@@ -253,6 +258,12 @@ void fltk::line_style(int style, float width, const char* dashes) {
 #else
 # error
 #endif
+
+/*! Reset the indexed colors to the default colors. */
+void fltk::reset_indexed_colors() {
+	for(int i = 0; i < 256; ++i)
+		cmap[i] = cmap_def[i];
+}
 
 /*! Set one of the indexed colors to the given rgb color. \a i must be
   in the range 0-255, and \a c must be a non-indexed rgb color. */

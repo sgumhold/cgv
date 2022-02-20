@@ -634,5 +634,5 @@ gl_delaunay_mesh_draw::Result gl_delaunay_mesh_draw::handle_event(int event)
 
 #include <cgv/base/register.h>
 
-factory_registration<gl_delaunay_mesh_draw> del_fac("new/algorithms/delaunay", 'D', true);
+factory_registration<gl_delaunay_mesh_draw> del_fac("New/Algorithms/Delaunay", 'D', true);
 

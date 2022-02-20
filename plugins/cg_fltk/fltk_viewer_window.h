@@ -133,6 +133,8 @@ protected:
 	int old_x, old_y, old_w, old_h;
 	/// whether to show gui and menu bar
 	bool gui_visible, menu_visible;
+	/// the selected theme
+	cgv::type::DummyEnum theme_idx;
 	/// store the factories
 	std::vector<base_ptr> factories;
 	/// 
@@ -159,6 +161,7 @@ protected:
 	bool ms_change_cb(cgv::gui::control<MonitorSelection>& c);
 	void menu_change_cb();
 	void gui_change_cb();
+	void theme_change_cb();
 };
 
 #include <cgv/config/lib_end.h>

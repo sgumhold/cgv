@@ -89,7 +89,7 @@ void fltk_viewer_window::on_tab_group_selection_change(base_ptr bp, bool selecte
 
 /// construct application
 fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
-	: cgv::gui::window("main"), title(_title), 
+	: cgv::gui::window("Main"), title(_title), 
 	  fltk::Window(w,h,"")
 
 {
@@ -99,27 +99,50 @@ fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
 	fullscreen_monitors = MS_MONITOR_CURRENT;
 	menu_visible = true;
 	gui_visible = true;
+	theme_idx = static_cast<cgv::type::DummyEnum>(1);
 	menu = 0;
 	callback(destroy_callback);
+
+	// TODO: MARK
+	int menu_height = 24;
+	bool menu_right = true;
+
 	begin();
 		main_group = new DockableGroup(0,0,w,h,"");
-		main_group->spacing(3);
+		main_group->spacing(1);
 		main_group->begin();
-			menu = new fltk::MenuBar(0, 0, w, 21);
-			view      = fltk_gl_view_ptr(new fltk_gl_view(0,0,w,h,"gl view"));
-			tab_group = fltk_tab_group_ptr(new fltk_tab_group((int)(2.85*w/4),0,(int)(1.15*w/4),h,""));
+			menu = new fltk::MenuBar(0, 0, w, menu_height);
+			view      = fltk_gl_view_ptr(new fltk_gl_view(0,0,w,h,"GL View"));
+			if(menu_right)
+				tab_group = fltk_tab_group_ptr(new fltk_tab_group((int)(2.85*w/4),0,(int)(1.15*w/4),h,""));
+			else
+				tab_group = fltk_tab_group_ptr(new fltk_tab_group(0,21,(int)(1.15*w/4),h- menu_height,""));
 			connect(tab_group->on_selection_change, this, &fltk_viewer_window::on_tab_group_selection_change);
 //			connect(view->on_remove_child, this, &fltk_viewer_window::on_remove_child);
 		main_group->end();
 		main_group->resizable(view->get_interface<fltk::Widget>());
-		main_group->dock(static_cast<fltk::Widget*>(tab_group->get_user_data()), 0, true);
-		main_group->dock(menu, 1, false);
+		if(menu_right) {
+			main_group->dock(static_cast<fltk::Widget*>(tab_group->get_user_data()), 0, true);
+			main_group->dock(menu, 1, false);
+		} else {
+			main_group->dock(menu, 1, false);
+			main_group->dock(static_cast<fltk::Widget*>(tab_group->get_user_data()), 2, true);
+		}
 	end();
 	resizable(main_group);	
 	update_member(&menu_visible);
 	update_member(&gui_visible);
 	append_child(view);
 	append_child(tab_group);
+
+	// TODO: MARK (move to separate method)
+	/*
+	fltk::Widget* menu_item = menu->add("Test/Item0", 0, nullptr); // nullptr argument is necessary for fltk to call innards and not flat_innards
+	menu_item = menu->add("Test/Item1", 0, nullptr);
+	fltk::Group* g = static_cast<fltk::Group*>(menu_item->parent());
+	ensure_menu_order();
+	g->user_data(this);
+	*/
 }
 
 void fltk_viewer_window::on_register()
@@ -173,6 +196,12 @@ void fltk_viewer_window::gui_change_cb()
 		show_gui(false);
 }
 
+void fltk_viewer_window::theme_change_cb() {
+	//fltk::theme
+	fltk::theme_idx_ = static_cast<int>(theme_idx) - 1;
+	fltk::reload_theme();
+}
+
 bool fltk_viewer_window::ws_change_cb(control<WindowState>& c)
 {
 	set_window_state(c.get_new_value(),fullscreen_monitors,false);
@@ -189,13 +218,15 @@ bool fltk_viewer_window::ms_change_cb(control<MonitorSelection>& c)
 void fltk_viewer_window::create_gui()
 {
 	provider::add_decorator("Main Settings", "heading");
-	connect_copy(provider::add_control("menu", menu_visible, "check")->value_change,
+	connect_copy(provider::add_control("Menu", menu_visible, "check")->value_change,
 		rebind(this, &fltk_viewer_window::menu_change_cb));
-	connect_copy(provider::add_control("gui", gui_visible, "check")->value_change,
+	connect_copy(provider::add_control("Gui", gui_visible, "check")->value_change,
 		rebind(this, &fltk_viewer_window::gui_change_cb));
-	connect(provider::add_control("state", window_state, "dropdown", "enums='regular;minimized;maximized;fullscreen'")->check_value,
+	connect_copy(provider::add_control("Theme", theme_idx, "dropdown", "enums='Legacy,Light,Mid,Dark'")->value_change,
+		rebind(this, &fltk_viewer_window::theme_change_cb));
+	connect(provider::add_control("State", window_state, "dropdown", "enums='regular;minimized;maximized;fullscreen'")->check_value,
 		this, &fltk_viewer_window::ws_change_cb);
-	connect(provider::add_control("fullscreen monitors", fullscreen_monitors, "dropdown", "enums='current;1;2;1+2;3;1+3;2+3;1+2+3'")->check_value,
+	connect(provider::add_control("Fullscreen Monitors", fullscreen_monitors, "dropdown", "enums='current;1;2;1+2;3;1+3;2+3;1+2+3'")->check_value,
 		this, &fltk_viewer_window::ms_change_cb);
 }
 

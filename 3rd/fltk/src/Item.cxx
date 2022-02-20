@@ -41,7 +41,7 @@ using namespace fltk;
 
 */
 
-static void revert(Style* s) {s->box_ = FLAT_BOX;}
+static void revert(Style* s) { s->box_ = FLAT_BOX; }
 static NamedStyle style("Item", revert, &Item::default_style);
 /** The default style sets FLAT_BOX. Changing this will mess up the
     appearance of both menus and browsers. All the rest of the style

@@ -153,4 +153,4 @@ public:
 	}
 };
 
-cgv::base::factory_registration<huge> fr_huge("new/huge", 'H', true);
+cgv::base::factory_registration<huge> fr_huge("New/Huge", 'H', true);

@@ -341,17 +341,20 @@ void TabGroup::draw() {
 
     if (!pager_->draw_tabs(this, selected, p, w)) { // no custom draw :
 	for (i=pager_->shift(); i<selected; i++) {
-	  draw_tab(p[i], p[i+1], w[i], H, child(i), TAB_LEFT);
+		if(flat_tabs_) draw_tab_flat(p[i], p[i+1], w[i], H, child(i), TAB_LEFT);
+		else draw_tab(p[i], p[i+1], w[i], H, child(i), TAB_LEFT);
 	}
 	for (i=children()-1; i > selected; i--) {
-	  draw_tab(p[i], p[i+1], w[i], H, child(i), TAB_RIGHT);
+		if(flat_tabs_) draw_tab_flat(p[i], p[i+1], w[i], H, child(i), TAB_RIGHT);
+		else draw_tab(p[i], p[i+1], w[i], H, child(i), TAB_RIGHT);
 	}
 	if (v) {
 	  i = selected;
-	  draw_tab(p[i], p[i+1], w[i], H, child(i), TAB_SELECTED);
+	  if(flat_tabs_) draw_tab_flat(p[i], p[i+1], w[i], H, child(i), TAB_SELECTED);
+	  else draw_tab(p[i], p[i+1], w[i], H, child(i), TAB_SELECTED);
 	} else {
 	  // draw the edge when no selection:
-	  setcolor(H >= 0 ? GRAY99 : GRAY33);
+	  setcolor(H >= 0 ? Color(GRAY99) : Color(GRAY33));
 	  int b = H >= 0 ? H : h()+H;
 	  drawline(0, b, this->w(), b);
 	}
@@ -378,7 +381,7 @@ void TabGroup::draw() {
 
 #if USE_CLIPOUT
   if (damage() & DAMAGE_EXPOSE) {
-    clipout(0, H>=0 ? 0 : h()+H, p[children()]+pager_->slope(), (H>=0?H:-H));
+    clipout(0, H>=0 ? 0 : h()+H, p[children()]/*+pager_->slope()*/, (H>=0?H:-H));
     clipout(0, H>0 ? H : 0, this->w(), h()-(H>=0?H:-H-1));
     fl_did_clipping = this;
   }
@@ -411,73 +414,143 @@ void TabGroup::draw_tab_background()
 }
 
 void TabGroup::draw_tab(int x1, int x2, int W, int H, Widget* o, int what) {
+	if(x2 <= x1) return; // ignore ones shrunk to zero width
+	bool drawlabel = true;
+	if(x2 < x1 + W) {
+		if(x2 <= x1 + pager_->slope()) drawlabel = false;
+		if(what == TAB_LEFT) {
+			if(x1 + W < x2 + pager_->slope()) x2 = x1 + W;
+			else x2 += pager_->slope();
+		} else {
+			if(x1 + W < x2 + pager_->slope()) x1 = x2 - W;
+			else x1 -= pager_->slope();
+		}
+	}
+	int sel = (what == TAB_SELECTED);
+	const int shrink_factor = 3;
+	int eat_border_factor = (H < 0 ? box()->dh() : 1)*sel;
+	int up_pos = (1 - sel)*shrink_factor;
+	setcolor(sel ? selection_color() : o->color());
+	if(H >= 0) {// put the tab thumbnail on top
+		newpath();
+		addvertex(x1, H + eat_border_factor);
+		addvertex(x1 + pager_->slope(), up_pos);
+		addvertex(x2, up_pos);
+		addvertex(x2 + pager_->slope(), H + eat_border_factor);
+		fillpath();
+		setcolor(!sel && o == push_ ? GRAY33 : GRAY99);
+		drawline(x1, H, x1 + pager_->slope(), up_pos);
+		drawline(x1 + pager_->slope(), up_pos, x2, up_pos);
+		if(sel) {
+			if(x1 > 0) drawline(0, H, x1, H);
+			if(x2 + pager_->slope() < w() - 1) drawline(x2 + pager_->slope(), H, w() - 1, H);
+		}
+		setcolor(!sel && o == push_ ? GRAY99 : GRAY33);
+		drawline(x2, (1 - sel)*shrink_factor, x2 + pager_->slope(), H);
+	} else { // put the tab thumbnail at the bottom
+		newpath();
+		addvertex(x1, h() + H - eat_border_factor);
+		addvertex(x1 + pager_->slope(), h() - 1 - up_pos);
+		addvertex(x2, h() - 1 - up_pos);
+		addvertex(x2 + pager_->slope(), h() + H - eat_border_factor);
+		fillpath();
+		setcolor(!sel && o == push_ ? GRAY99 : GRAY33);
+		newpath();
+		addvertex(x1 + pager_->slope(), h() - 1 - up_pos);
+		addvertex(x2, h() - 1 - up_pos);
+		addvertex(x2 + pager_->slope(), h() + H - eat_border_factor);
+		strokepath();
+		if(sel) {
+			if(x1 > 0) drawline(0, h() + H, x1, h() + H);
+			if(x2 + pager_->slope() < w() - 1) drawline(x2 + pager_->slope(), h() + H, w() - 1, h() + H);
+		}
+		setcolor(!sel && o == push_ ? GRAY33 : GRAY99);
+		drawline(x1, h() + H, x1 + pager_->slope(), h() - up_pos);
+	}
+	if(drawlabel) {
+		Rectangle r((what == TAB_LEFT ? x1 : x2 - W) + (pager_->slope() + pager_->extra_space() / 2),
+			H < 0 ? this->h() + H - 1 : 2,
+			W - (pager_->slope() + pager_->extra_space() / 2),
+			abs(H) - 1);
+		drawstyle(o->style(), sel && focused() ? FOCUSED | OUTPUT : OUTPUT);
+		setcolor(sel ? selection_textcolor() : o->textcolor());
+		o->draw_label(r, (o->flags() & ~ALIGN_MASK) | ALIGN_CENTER);
+		FLAT_BOX->draw_symbol_overlay(r);
+	}
+}
+
+void TabGroup::draw_tab_flat(int x1, int x2, int W, int H, Widget* o, int what) {
+	// TODO: MARK
   if (x2 <= x1) return; // ignore ones shrunk to zero width
   bool drawlabel = true;
   if (x2 < x1+W) {
-    if (x2 <= x1+pager_->slope()) drawlabel = false;
+    if (x2 <= x1) drawlabel = false;
     if (what == TAB_LEFT) {
-      if (x1+W < x2+pager_->slope()) x2 = x1+W;
-      else x2 += pager_->slope();
+      if (x1+W < x2) x2 = x1+W;
+	  else x2 += 0;
     } else {
-      if (x1+W < x2+pager_->slope()) x1 = x2-W;
-      else x1 -= pager_->slope();
+      if (x1+W < x2) x1 = x2-W;
+	  else x1 -= 0;
     }
   }
   int sel = (what == TAB_SELECTED);
   const int shrink_factor = 3;
-  int eat_border_factor = (H<0 ? box()->dh() : 1 )*sel;
-  int up_pos = (1-sel)*shrink_factor;
-  setcolor(sel  ? selection_color() : o->color());
-  if (H >= 0) {// put the tab thumbnail on top
-    newpath();
-    addvertex(x1, H+eat_border_factor);
-    addvertex(x1+pager_->slope(), up_pos );
-    addvertex(x2, up_pos );
-    addvertex(x2+pager_->slope(), H+eat_border_factor);
-    fillpath();
-    setcolor(!sel && o==push_ ? GRAY33 : GRAY99);
-    drawline(x1, H, x1+pager_->slope(), up_pos );
-    drawline(x1+pager_->slope(), up_pos , x2, up_pos );
-    if (sel) {
-      if (x1>0) drawline(0, H, x1, H);
-      if (x2+pager_->slope() < w()-1) drawline(x2+pager_->slope(), H, w()-1, H);
-    }
-    setcolor(!sel && o==push_ ? GRAY99 : GRAY33);
-    drawline(x2, (1-sel)*shrink_factor , x2+pager_->slope(), H);
+  int eat_border_factor = 0;
+  int up_pos = (1-sel)*shrink_factor + 1;
+  setcolor(o->color());
+  if(H >= 0) {// put the tab thumbnail on top
+	  newpath();
+	  addvertex(x1, H + eat_border_factor);
+	  addvertex(x1, up_pos);
+	  addvertex(x2, up_pos);
+	  addvertex(x2, H + eat_border_factor);
+	  if(!sel) setcolor(GRAY70);
+	  fillpath();
+	  if(sel) {
+		  setcolor(GRAY40);
+		  newpath();
+		  addvertex(x1, H);
+		  addvertex(x1, up_pos);
+		  addvertex(x2, up_pos);
+		  addvertex(x2, H);
+		  strokepath();
+		  if(x1 > 0) drawline(0, H, x1, H);
+		  if(x2 < w() - 1) drawline(x2, H, w() - 1, H);
+	  }
   } else { // put the tab thumbnail at the bottom
-    newpath();
-    addvertex(x1, h()+H-eat_border_factor);
-    addvertex(x1+pager_->slope(), h()-1-up_pos );
-    addvertex(x2, h()-1-up_pos );
-    addvertex(x2+pager_->slope(), h()+H-eat_border_factor);
-    fillpath();
-    setcolor(!sel && o==push_ ? GRAY99 : GRAY33);
-    newpath();
-    addvertex(x1+pager_->slope(), h()-1-up_pos);
-    addvertex(x2, h()-1-up_pos);
-    addvertex(x2+pager_->slope(), h()+H-eat_border_factor);
-    strokepath();
-    if (sel) {
-      if (x1>0) drawline(0, h()+H, x1, h()+H);
-      if (x2+pager_->slope() < w()-1) drawline(x2+pager_->slope(), h()+H, w()-1, h()+H);
-    }
-    setcolor(!sel && o==push_ ? GRAY33 : GRAY99);
-    drawline(x1, h()+H, x1+pager_->slope(), h()-up_pos);
+	  newpath();
+	  addvertex(x1, h() + H - eat_border_factor);
+	  addvertex(x1, h() - 1 - up_pos);
+	  addvertex(x2, h() - 1 - up_pos);
+	  addvertex(x2, h() + H - eat_border_factor);
+	  if(!sel) setcolor(GRAY70);
+	  fillpath();
+	  if(sel) {
+		  setcolor(GRAY40);
+		  newpath();
+		  addvertex(x1, h() + H);
+		  addvertex(x1, h() - 1 - up_pos);
+		  addvertex(x2, h() - 1 - up_pos);
+		  addvertex(x2, h() + H);
+		  strokepath();
+		  if(x1 > 0) drawline(0, h() + H, x1, h() + H);
+		  if(x2 < w() - 1) drawline(x2, h() + H, w() - 1, h() + H);
+	  }
   }
   if (drawlabel) {
-    Rectangle r((what==TAB_LEFT ? x1 : x2-W)+(pager_->slope()+pager_->extra_space()/2),
+    Rectangle r((what==TAB_LEFT ? x1 : x2-W)+(pager_->extra_space()/2),
 		H<0 ? this->h()+H-1 : 2,
-		W-(pager_->slope()+pager_->extra_space()/2),
+		W-(pager_->extra_space()/2),
 		abs(H)-1);
     drawstyle(o->style(), sel && focused() ? FOCUSED|OUTPUT : OUTPUT);
-    setcolor(sel  ? selection_textcolor() : o->textcolor());
+    setcolor(sel  ? o->highlight_textcolor() : o->muted_textcolor());
     o->draw_label(r, (o->flags() & ~ALIGN_MASK)|ALIGN_CENTER);
-    FLAT_BOX->draw_symbol_overlay(r);
+    //FLAT_BOX->draw_symbol_overlay(r);
   }
 }
 
 static void revert(Style* s) {
-  s->box_ = THIN_UP_BOX;
+	s->box_ = THIN_UP_BOX;
   s->color_ = GRAY75;
 }
 

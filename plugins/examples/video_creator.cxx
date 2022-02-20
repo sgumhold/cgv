@@ -167,8 +167,8 @@ public:
 
 #include <cgv/base/register.h>
 
-factory_registration<video_creator> video_creator_fac//("new/media/video creater", 'C', true);
-("video creator", "shortcut='Ctrl-Shift-C';menu_text='new/media/video creator'", true);
+factory_registration<video_creator> video_creator_fac//("New/Media/Video Creator", 'C', true);
+("video creator", "shortcut='Ctrl-Shift-C';menu_text='New/Media/Video Creator'", true);
 
 /*
 	cgv::media::video::video_writer writer("avi");

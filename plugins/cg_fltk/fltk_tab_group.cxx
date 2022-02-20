@@ -124,9 +124,14 @@ void* fltk_tab_group::get_user_data() const
 /// put default sizes into dimension fields and set inner_group to be active
 void fltk_tab_group::prepare_new_element(cgv::gui::gui_group_ptr ggp, int& x, int& y, int& w, int& h)
 {
-	x = y = 0;
+	// TODO: MARK
+	bool tabs_bottom = false;
+	int tab_height = 24;
+	x = 0;
+	x = 0;
+	y = tabs_bottom ? 0 : tab_height;
 	w = tab_group->w();
-	h = tab_group->h()-30;
+	h = tab_group->h() - tab_height;
 	tab_group->begin();
 }
 /// align last element and add element to group

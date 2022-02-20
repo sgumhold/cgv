@@ -25,6 +25,7 @@
 // colors and font sizes from standard Windows95 interfaces.
 
 #include <fltk/Widget.h>
+#include <fltk/TabGroup.h>
 #include <fltk/draw.h>
 #include <fltk/Monitor.h>
 #include <fltk/Font.h>
@@ -81,16 +82,109 @@ extern "C" bool fltk_theme() {
 // Windows doesn't seem to honor this one
 // Color slider_background = win_color(GetSysColor(COLOR_SCROLLBAR));
 
-  fltk::set_background(background);
-  Widget::default_style->labelcolor_ = foreground;
-  Widget::default_style->highlight_textcolor_ = foreground;
-  Widget::default_style->color_ = text_background;
-  Widget::default_style->textcolor_ = text_foreground;
-  Widget::default_style->selection_color_ = select_background;
-  Widget::default_style->selection_textcolor_ = select_foreground;
-
+  int theme_idx = theme_idx_;
   Style* style;
 
+  // TODO: MARK
+  if(theme_idx < 0) {
+	  // original
+	  fltk::set_background(background);
+	  Widget::default_style->labelcolor_ = foreground;
+	  Widget::default_style->highlight_textcolor_ = foreground;
+	  Widget::default_style->color_ = text_background;
+	  Widget::default_style->textcolor_ = text_foreground;
+	  Widget::default_style->selection_color_ = select_background;
+	  Widget::default_style->selection_textcolor_ = select_foreground;
+
+	  TabGroup::flat_tabs(false);
+  } else {
+	  /*
+	  !!! Use GRAY75 if the color shall be controlled by fltk::set_background() !!!
+	  >>> WARNING:
+		Setting the background color will replace all other GRAY colors
+		with a color ramp so highlights look ok
+
+	  THEMES:
+	  0: light bg = GRAY95
+	  1: mid   bg = GRAY45
+	  2: dark  bg = GRAY25
+	  */
+
+	  Color highlight_textcolor = foreground;
+	  Color muted_textcolor = text_foreground;
+	  Color custom_dark_blue = color(static_cast<unsigned char>(34), static_cast<unsigned char>(109), static_cast<unsigned char>(160));
+	  Color custom_light_blue = color(static_cast<unsigned char>(67), static_cast<unsigned char>(147), static_cast<unsigned char>(201));
+
+	  switch(theme_idx) {
+	  case 0:
+		  background = GRAY95;
+		  muted_textcolor = GRAY30;
+		  highlight_textcolor = custom_dark_blue;
+		  select_background = custom_light_blue;
+		  break;
+	  case 1:
+		  background = GRAY65;
+		  text_background = GRAY99;
+		  break;
+	  case 2:
+		  Color G70 = fltk::lerp(BLACK, WHITE, 0.70f);
+		  Color G80 = fltk::lerp(BLACK, WHITE, 0.80f);
+		  background = GRAY20;
+		  foreground = G80;
+		  text_foreground = G80;
+		  text_background = GRAY40;
+		  muted_textcolor = G70;
+		  highlight_textcolor = custom_light_blue;
+		  select_background = custom_dark_blue;
+		  break;
+	  }
+
+	  //text_foreground = RED;
+	  //text_background = BLUE;
+
+	  fltk::reset_indexed_colors();
+	  fltk::set_background(background);
+	  Widget::default_style->labelcolor_ = foreground;
+	  Widget::default_style->highlight_textcolor_ = highlight_textcolor;
+	  Widget::default_style->color_ = text_background;
+	  Widget::default_style->textcolor_ = text_foreground;
+	  Widget::default_style->selection_color_ = select_background;
+	  Widget::default_style->selection_textcolor_ = select_foreground;
+	  Widget::default_style->muted_textcolor_ = muted_textcolor;
+
+	  Widget::default_style->box_ = BORDER_BOX;
+	  Widget::default_style->buttonbox_ = FLAT_BOX;
+
+	  Widget::default_style->is_dark_theme_ = theme_idx > 1;
+
+	  if((style = Style::find("Window"))) {
+		  style->color_ = GRAY60;
+	  }
+
+	  if((style = Style::find("MenuBar"))) {
+		  style->buttonbox_ = MENU_BOX; //PLAIN_BOX;
+	  }
+
+	  if((style = Style::find("MenuWindow"))) {
+		  style->box_ = BORDER_BOX;
+	  }
+
+	  if((style = Style::find("Button"))) {
+		  style->box_ = FRAME_UP_BOX;
+	  }
+
+	  if((style = Style::find("Choice"))) {
+		  style->box_ = BORDER_BOX;
+		  style->buttonbox_ = NO_BOX;
+	  }
+
+	  if((style = Style::find("Slider"))) {
+		  style->buttonbox_ = BORDER_BOX;
+	  }
+
+	  TabGroup::flat_tabs(true);
+  }
+  
   if ((style = Style::find("ScrollBar"))) {
 //    style->color = lerp(slider_background, text_background, .5);
     style->color_ = lerp(background, text_background, .5);

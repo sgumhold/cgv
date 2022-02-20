@@ -225,6 +225,7 @@ public:
   Color	textcolor()		const;
   Color	selection_color()	const;
   Color	selection_textcolor()	const;
+  Color	muted_textcolor()	const;
   Color	buttoncolor()		const;
   Color	labelcolor()		const;
   Color	highlight_color()	const;
@@ -245,6 +246,7 @@ public:
   void textcolor(Color a)	;
   void selection_color(Color)	;
   void selection_textcolor(Color);
+  void muted_textcolor(Color);
   void buttoncolor(Color)	;
   void labelcolor(Color)	;
   void highlight_color(Color)	;

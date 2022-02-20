@@ -80,7 +80,7 @@ protected:
 	cgv::render::attribute_array_manager rc_manager;
 public:
 	/// define format and texture filters in constructor
-	renderer_tests() : cgv::base::node("renderer_test")
+	renderer_tests() : cgv::base::node("Renderer Test")
 	{
 		transform_points_only = true;
 		sort_points = false;
@@ -521,4 +521,5 @@ public:
 	}
 };
 
-cgv::base::factory_registration<renderer_tests> fr_renderer_test("new/render/render_test", 'K', true);
+// TODO: MARK
+cgv::base::factory_registration<renderer_tests> fr_renderer_test("New/Render/Renderer Test", 'K', true);

@@ -164,4 +164,4 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 	}
 };
 
-factory_registration<terrain_demo> terrain_demo_fac("terrain", "shortcut='Ctrl-Shift-T';menu_text='new/demo/terrain'", true);
+factory_registration<terrain_demo> terrain_demo_fac("terrain", "shortcut='Ctrl-Shift-T';menu_text='New/Demo/Terrain'", true);

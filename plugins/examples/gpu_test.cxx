@@ -192,4 +192,4 @@ public:
 	}
 };
 
-factory_registration<gpu_test> fr_gpu_test("new/render/gpu_test", 'U', true);
+factory_registration<gpu_test> fr_gpu_test("New/Render/GPU Test", 'U', true);
