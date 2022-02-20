@@ -75,7 +75,12 @@ extern bool fl_hide_underscore;
   to your own function that draws whatever you want.
 */
 void Choice::draw() {
-  if (damage() & DAMAGE_ALL) draw_frame();
+	if(damage() & DAMAGE_ALL) {
+		////TODO: MARK
+		//draw_frame();
+		setbgcolor(color());
+		box()->draw(Rectangle(w(), h()));
+	}
   Rectangle r(w(),h()); box()->inset(r);
   int w1 = r.h()*4/5;
   r.move_r(-w1);
@@ -86,7 +91,7 @@ void Choice::draw() {
     draw_glyph(ALIGN_BOTTOM|ALIGN_INSIDE, gr);
   }
   if (damage() & (DAMAGE_ALL|DAMAGE_VALUE)) {
-    setcolor(color());
+	setcolor(color());
     fillrect(r);
     Widget* o = get_item();
     //if (!o && children()) o = child(0);

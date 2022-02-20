@@ -1393,7 +1393,8 @@ void stereo_view_interactor::draw_focus()
 /// return a path in the main menu to select the gui
 std::string stereo_view_interactor::get_menu_path() const
 {
-	return "view/stereo interactor";
+	// TODO: MARK
+	return "View/Stereo Interactor";
 }
 
 void stereo_view_interactor::check_write_image(context& ctx, const char* post_fix, bool done)
@@ -1490,63 +1491,64 @@ void stereo_view_interactor::dir_gui_cb(dvec3& dir, int i)
 /// you must overload this for gui creation
 void stereo_view_interactor::create_gui()
 {
+	// TODO: MARK
 	if (begin_tree_node("View Configuration", zoom_sensitivity, false)) {
 		align("\a");
-		add_member_control(this, "use_gamepad", use_gamepad, "toggle");
-		add_member_control(this, "gamepad_emulation", gamepad_emulation, "toggle");
-		add_member_control(this, "pan_sensitivity", pan_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
-		add_member_control(this, "zoom_sensitivity", zoom_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
-		add_member_control(this, "rotate_sensitivity", rotate_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
-		add_member_control(this, "deadzone", deadzone, "value_slider", "min=0;max=1;ticks=true;step=0.0001;log=true");
-		add_member_control(this, "viewport_shrinkage", viewport_shrinkage, "value_slider", "min=0;max=40;ticks=true");
-		add_member_control(this, "show_focus", show_focus, "check");
+		add_member_control(this, "Use Gamepad", use_gamepad, "toggle");
+		add_member_control(this, "Gamepad Emulation", gamepad_emulation, "toggle");
+		add_member_control(this, "Pan Sensitivity", pan_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
+		add_member_control(this, "Zoom Sensitivity", zoom_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
+		add_member_control(this, "Rotate Sensitivity", rotate_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
+		add_member_control(this, "Deadzone", deadzone, "value_slider", "min=0;max=1;ticks=true;step=0.0001;log=true");
+		add_member_control(this, "Viewport Shrinkage", viewport_shrinkage, "value_slider", "min=0;max=40;ticks=true");
+		add_member_control(this, "Show Focus", show_focus, "check");
 		align("\b");
 		end_tree_node(zoom_sensitivity);
 	}
 	if (begin_tree_node("Framebuffer to Image", write_images, false)) {
 		align("\a");
-		add_member_control(this, "write_images", write_images, "toggle", "tooltip='write buffers to images'");
-		add_member_control(this, "write_width", write_width);
-		add_member_control(this, "write_height", write_height);
-		add_member_control(this, "write_stereo", write_stereo);
-		add_member_control(this, "write_color", write_color);
-		add_member_control(this, "write_depth", write_depth);
-		add_member_control(this, "depth_offset", depth_offset, "value_input", "min=0;max=1;ticks=true;log=true");
-		add_member_control(this, "depth_scale", depth_scale, "value_input", "min=0.01;max=100;ticks=true;log=true");
-		add_member_control(this, "image_file_name", image_file_name_prefix);
-		add_member_control(this, "auto_view_images", auto_view_images, "check");
+		add_member_control(this, "Write Images", write_images, "toggle", "tooltip='write buffers to images'");
+		add_member_control(this, "Write Width", write_width);
+		add_member_control(this, "Write Height", write_height);
+		add_member_control(this, "Write Stereo", write_stereo);
+		add_member_control(this, "Write Color", write_color);
+		add_member_control(this, "Write Depth", write_depth);
+		add_member_control(this, "Depth Offset", depth_offset, "value_input", "min=0;max=1;ticks=true;log=true");
+		add_member_control(this, "Depth Scale", depth_scale, "value_input", "min=0.01;max=100;ticks=true;log=true");
+		add_member_control(this, "Image File Name", image_file_name_prefix);
+		add_member_control(this, "Auto View Images", auto_view_images, "check");
 		align("\b");
 		end_tree_node(write_images);
 	}
 	if (begin_tree_node("Stereo Parameters", stereo_enabled, true)) {
 		align("\a");
-		connect_copy(add_control("stereo", stereo_enabled, "check")->value_change, rebind(this, &stereo_view_interactor::on_stereo_change));
-		add_member_control(this, "mono_mode", mono_mode, "dropdown", "enums='left=-1,center,right'");
-		add_member_control(this, "stereo_mode", stereo_mode, "dropdown", "enums='vsplit,hsplit,anaglyph,quad_buffer'");
-		add_member_control(this, "adapt_aspect_ratio", adapt_aspect_ratio_to_stereo_mode, "check");
-		add_member_control(this, "anaglyph_config", anaglyph_config, "dropdown", "enums='" AC_ENUMS "'");
-		add_member_control(this, "eye_distance", eye_distance, "value_slider", "min=0.001;max=0.5;ticks=true;step=0.00001;log=true");
-		add_member_control(this, "parallax_zero_scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");
-		add_member_control(this, "stereo_translate_in_model_view", stereo_translate_in_model_view, "check");
-		add_member_control(this, "stereo_mouse_pointer", stereo_mouse_pointer, "dropdown", "enums='" SMP_ENUMS "'");
+		connect_copy(add_control("Stereo", stereo_enabled, "check")->value_change, rebind(this, &stereo_view_interactor::on_stereo_change));
+		add_member_control(this, "Mono Mode", mono_mode, "dropdown", "enums='left=-1,center,right'");
+		add_member_control(this, "Stereo Mode", stereo_mode, "dropdown", "enums='vsplit,hsplit,anaglyph,quad_buffer'");
+		add_member_control(this, "Adapt Aspect Ratio", adapt_aspect_ratio_to_stereo_mode, "check");
+		add_member_control(this, "Anaglyph Config", anaglyph_config, "dropdown", "enums='" AC_ENUMS "'");
+		add_member_control(this, "Eye Distance", eye_distance, "value_slider", "min=0.001;max=0.5;ticks=true;step=0.00001;log=true");
+		add_member_control(this, "Parallax Zero Scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");
+		add_member_control(this, "Stereo Translate in Model View", stereo_translate_in_model_view, "check");
+		add_member_control(this, "Stereo Mouse Pointer", stereo_mouse_pointer, "dropdown", "enums='" SMP_ENUMS "'");
 		align("\b");
 		end_tree_node(stereo_enabled);
 	}
 	if (begin_tree_node("Current View", view::focus(0), true)) {
 		align("\a");
-		add_member_control(this, "focus x", view::focus(0), "value_input", "w=50;min=-10;max=10;ticks=true", " ");
+		add_member_control(this, "Focus x", view::focus(0), "value_input", "w=50;min=-10;max=10;ticks=true", " ");
 		add_member_control(this, "y", view::focus(1), "value_input", "w=50;min=-10;max=10;ticks=true", " ");
 		add_member_control(this, "z", view::focus(2), "value_input", "w=50;min=-10;max=10;ticks=true");
 		///
-		add_dir_control("view_dir", view_dir);
-		add_dir_control("view_up_dir", view_up_dir);
-		connect_copy(add_control("fix_view_up_dir", fix_view_up_dir, "check")->value_change, rebind(this, &stereo_view_interactor::on_rotation_change));
+		add_dir_control("View Dir", view_dir);
+		add_dir_control("View Up Dir", view_up_dir);
+		connect_copy(add_control("Fix View Up Dir", fix_view_up_dir, "check")->value_change, rebind(this, &stereo_view_interactor::on_rotation_change));
 
-		add_member_control(this, "y_view_angle", y_view_angle, "value_slider", "min=0;max=90;ticks=true;log=true");
-		add_member_control(this, "y_extent_at_focus", y_extent_at_focus, "value_slider", "min=0;max=100;ticks=true;log=true;step=0.0001");
-		add_member_control(this, "z_near", z_near, "value_slider", "min=0;max=100;log=true;step=0.00001");
-		add_member_control(this, "z_far", z_far, "value_slider", "min=0;max=10000;log=true;step=0.00001");
-		add_member_control(this, "clip_relative_to_extent", clip_relative_to_extent, "check");
+		add_member_control(this, "y View Angle", y_view_angle, "value_slider", "min=0;max=90;ticks=true;log=true");
+		add_member_control(this, "y Extent at Focus", y_extent_at_focus, "value_slider", "min=0;max=100;ticks=true;log=true;step=0.0001");
+		add_member_control(this, "z Near", z_near, "value_slider", "min=0;max=100;log=true;step=0.00001");
+		add_member_control(this, "z Far", z_far, "value_slider", "min=0;max=10000;log=true;step=0.00001");
+		add_member_control(this, "Clip Relative To Extent", clip_relative_to_extent, "check");
 		align("\b");
 		end_tree_node(view::focus(0));
 	}
@@ -1715,6 +1717,6 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 
 /// register a newly created cube with the name "cube1" as constructor argument
 cgv::base::object_registration_1<stereo_view_interactor, const char*>
-obj1("stereo interactor", "registration of stereo interactor");
+obj1("Stereo Interactor", "registration of stereo interactor");
 
 #endif

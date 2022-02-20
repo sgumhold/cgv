@@ -93,6 +93,7 @@ static void revert(Style* s) {
 
 bool Style::hide_underscore_ = true;
 bool Style::draw_boxes_inactive_ = true;
+bool Style::is_dark_theme_= false;
 int Style::wheel_scroll_lines_ = 3;
 
 /*! \fn Box* Style::box() const
@@ -289,6 +290,7 @@ style_functions(Color,		color		)
 style_functions(Color,		textcolor	)
 style_functions(Color,		selection_color	)
 style_functions(Color,		selection_textcolor)
+style_functions(Color,		muted_textcolor)
 style_functions(Color,		buttoncolor	)
 style_functions(Color,		labelcolor	)
 style_functions(Color,		highlight_color	)
@@ -499,6 +501,7 @@ Style* Style::find(const char* name) {
   reload_theme().
 */
 
+int fltk::theme_idx_ = 0;
 Theme fltk::theme_ = fltk_theme;
 
 Color fl_bg_switch = 0; // set by -bg in arg.cxx
@@ -584,6 +587,10 @@ void fltk::set_background(Color c) {
       B = b+DELTA; if (B > 255) B = 255;
     }
     set_color_index(Color(i), color(R,G,B));
+
+	//if(i == GRAY75) {
+	//	set_color_index(Color(i), color(r, g, b));
+	//}
   }
 }
 

@@ -115,6 +115,7 @@ FL_API Color inactive(Color fg);
 FL_API Color inactive(Color fg, Color bg);
 FL_API Color contrast(Color fg, Color bg);
 FL_API void split_color(Color c, unsigned char& r, unsigned char& g, unsigned char& b);
+FL_API void reset_indexed_colors();
 FL_API void set_color_index(Color index, Color);
 FL_API Color get_color_index(Color index);
 FL_API void set_background(Color);

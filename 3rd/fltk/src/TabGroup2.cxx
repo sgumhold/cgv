@@ -78,6 +78,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////////
 TabGroupPager* TabGroup::default_pager_= new MenuTabPager();
+bool TabGroup::flat_tabs_ = false;
 
 int TabGroupPager::available_width(TabGroup *g ) const {
     return g->w() - this->slope()-1;
@@ -269,19 +270,23 @@ bool MenuTabPager::draw_tabs(TabGroup* g, int selected, int* p, int* w) {
 	// when resizing, thumbnails behind the shift may be drawable again
 	// let's get them and update the shift consequently 
 	if (p[i]>=0 && 	p[i]+w[i]<=p[shift()]) {
-	    g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_LEFT);
+		if(g->flat_tabs()) g->draw_tab_flat(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_LEFT);
+	    else g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_LEFT);
 	    shift(i);
 	}
     for (i=this->shift(); i<selected; i++) 
-	g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_LEFT);
+		if(g->flat_tabs()) g->draw_tab_flat(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_LEFT);
+		else g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_LEFT);
     for (i=g->children()-1; i > selected; i--) 
 	if (p[i]+w[i]<=r)
-	    g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_RIGHT);
+		if(g->flat_tabs()) g->draw_tab_flat(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_RIGHT);
+	    else g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_RIGHT);
     
     if (v) {
 	i = selected;
 	if (p[i]+w[i]<=r)
-	    g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_SELECTED);
+		if(g->flat_tabs()) g->draw_tab_flat(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_SELECTED);
+	    else g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_SELECTED);
     } else {
 	// draw the edge when no selection:
 	fltk::setcolor(H >= 0 ? GRAY99 : GRAY33);

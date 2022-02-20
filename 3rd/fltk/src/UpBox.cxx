@@ -280,6 +280,11 @@ void fl_to_inactive(const char* s, char* to) {
   *to = 0;
 }
 
+char fl_invert(const char b, const char c) {
+	char d = b - c;
+	return b + 3*d;
+}
+
 void FrameBox::_draw(const fltk::Rectangle& R) const
 {
   if (drawflags(PUSHED|STATE) && down_) {
@@ -358,11 +363,151 @@ static FrameBox embossedBox("embossed", 2,2,4,4, "IIWWWWII", &downBox);
 */
 Box* const fltk::EMBOSSED_BOX = &embossedBox;
 
-static FrameBox borderBox("border", 1,1,2,2, "KKLL", &downBox);
+//static FrameBox borderBox("border", 1,1,2,2, "KKLL", &downBox);
+static FrameBox borderBox("border", 1, 1, 2, 2, "NNNN");// , &downBox);
 /*!
   1-pixel thick gray line around rectangle.
 */
 Box* const fltk::BORDER_BOX = &borderBox;
+
+
+
+
+
+
+
+
+
+
+// TODO: MARK
+//static FrameBox flatDownBox("flat_down", 2, 2, 4, 4, "2NNNNIRRR");
+///*!
+//  Pushed box in flat theme
+//*/
+//Box* const fltk::FLAT_DOWN_BOX = &flatDownBox;
+//
+//// A normal pushable flat button:
+//static FrameBox flatUpBox("flat_up", 2, 1, 4, 3, "NNNNIRRR", &flatDownBox);
+///*!
+//  A up button in fltk's standard theme.
+//*/
+//Box* const fltk::FLAT_UP_BOX = &flatUpBox;
+
+
+void StateBox::_draw(const fltk::Rectangle& R) const {
+	if(drawflags(PUSHED | STATE) && down_)
+		down_->draw(R);
+	else if(up_)
+		up_->draw(R);
+}
+
+bool StateBox::fills_rectangle() const { return true; }
+bool StateBox::is_frame() const { return true; }
+
+
+
+
+
+void StateBox2::_draw(const fltk::Rectangle& R) const {
+	if(drawflags(PUSHED | STATE) && down_) {
+		down_->draw(R);
+		return;
+	}
+	const Color fg = getcolor();
+	const char* s = data();
+	char buf[26]; if(drawflags(INACTIVE_R) && Style::draw_boxes_inactive_) {
+		fl_to_inactive(s, buf); s = buf;
+	}
+	if(*s == '2') {
+		drawframe2(s + 1, R.x(), R.y(), R.w(), R.h());
+	} else {
+		drawframe(s, R.x(), R.y(), R.w(), R.h());
+	}
+	if(!drawflags(INVISIBLE)) {
+		Rectangle r(R);
+		Symbol::inset(r);
+		if(drawflags(HIGHLIGHT|STATE))
+			//setcolor(fltk::lerp(getbgcolor(), BLACK, hover_darkening_));
+			setcolor(hover_color_ + (GRAY00 - 'A'));
+		else
+			//setcolor(fltk::lerp(getbgcolor(), BLACK, darkening_));
+			setcolor(bg_color_ + (GRAY00 - 'A'));
+		fillrect(r);
+	}
+	setcolor(fg);
+}
+
+bool HoverBox::fills_rectangle() const { return true; }
+bool HoverBox::is_frame() const { return true; }
+
+void HoverBox::_draw(const fltk::Rectangle& R) const {
+	Color bg = getbgcolor();
+	const char c = drawflags(HIGHLIGHT | STATE) ?
+		(Style::is_dark_theme_ ? fl_invert(bg_color_, hover_color_) : hover_color_ ) :
+		bg_color_;
+	setbgcolor(c + (GRAY00 - 'A'));
+	FlatBox::_draw(R);
+	setbgcolor(bg);
+}
+
+
+
+static HoverBox plainBox("plain_", 'R', 'A');
+
+Box* const fltk::PLAIN_BOX = &plainBox;
+
+
+
+static StateBox2 stateDownBox("state_down", 0, 0, 0, 0, "", 'R', 'R');
+/*!
+  Pushed box in flat theme
+*/
+Box* const fltk::STATE_DOWN_BOX = &stateDownBox;
+
+// A normal pushable flat button:
+static StateBox2 stateUpBox("state_up", 0, 0, 0, 0, "", 'R', 'R', &stateDownBox);
+/*!
+  A up button in fltk's standard theme.
+*/
+Box* const fltk::STATE_UP_BOX = &stateUpBox;
+
+
+
+
+static StateBox2 frameDownBox("frame_down", 1, 2, 2, 3, "2JNNNN", 'Q', 'Q');
+/*!
+  Pushed box in flat theme
+*/
+Box* const fltk::FRAME_DOWN_BOX = &frameDownBox;
+
+// A normal pushable flat button:
+static StateBox2 frameUpBox("frame_up", 1, 1, 2, 3, "NNNNJ", 'R', 'R', &frameDownBox);
+/*!
+  A up button in fltk's standard theme.
+*/
+Box* const fltk::FRAME_UP_BOX = &frameUpBox;
+
+
+//static StateBox2 menuDownBox("menu_down", 0, 0, 0, 0, "", 'N', 'N');
+//
+//// A normal pushable flat button:
+//static StateBox2 menuUpBox("menu_up", 0, 0, 0, 0, "", 'R', 'Q', &menuDownBox);
+///*!
+//  A up button in fltk's standard theme.
+//*/
+//Box* const fltk::MENU_BOX = &menuUpBox;
+
+
+static HoverBox menuDownBox("menu_down", 'N', 'N');
+static HoverBox menuUpBox("menu_up", 'R', 'Q');
+
+static StateBox menuBox("menu_", &menuUpBox, &menuDownBox);
+
+Box* const fltk::MENU_BOX = &menuBox;
+
+
+
+
 
 ////////////////////////////////////////////////////////////////
 // Deprecated "frame" box, appaently needed for fltk 1.0 compatability?

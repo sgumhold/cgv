@@ -555,6 +555,8 @@ void Group::layout(const Rectangle& r, int layout_damage) {
   // on and subclasses like PackedGroup can detect that:
   Widget::layout();
 
+  // TODO: MARK (somehow we need to hook into this and prevent the tab scaling for the tab group)
+
   if (children_ && layout_damage&LAYOUT_WH) {
     int* p = sizes(); // initialize the size array
 

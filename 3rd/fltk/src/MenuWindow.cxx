@@ -41,7 +41,7 @@ using namespace fltk;
 */
 
 static void revert(Style* s) {
-  s->box_ = UP_BOX;
+	s->box_ = UP_BOX;
 }
 static NamedStyle style("MenuWindow", revert, &MenuWindow::default_style);
 /*! The default style sets box() to UP_BOX. This box is used around all

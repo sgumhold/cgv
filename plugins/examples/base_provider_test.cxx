@@ -92,5 +92,5 @@ public:
 
 #include <cgv/base/register.h>
 
-cgv::base::factory_registration_1<base_provider_test,const char*> bpt_1("base_provider_test", "provider with default type based gui", "menu_text=\"new/gui/base provider default\"");
-cgv::base::factory_registration_1<base_provider_test,const char*> bpt_2("base_provider_test", "named_provider", "menu_text=\"new/gui/base provider named\"");
+cgv::base::factory_registration_1<base_provider_test,const char*> bpt_1("base_provider_test", "provider with default type based gui", "menu_text=\"New/GUI/Base Provider Default\"");
+cgv::base::factory_registration_1<base_provider_test,const char*> bpt_2("base_provider_test", "named_provider", "menu_text=\"New/GUI/Base Provider Named\"");
