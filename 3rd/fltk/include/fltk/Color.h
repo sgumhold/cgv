@@ -119,6 +119,7 @@ FL_API void reset_indexed_colors();
 FL_API void set_color_index(Color index, Color);
 FL_API Color get_color_index(Color index);
 FL_API void set_background(Color);
+FL_API void shift_background(int index);
 FL_API Color nearest_index(Color);
 
 }

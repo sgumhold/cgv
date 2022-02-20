@@ -575,23 +575,55 @@ void fltk::set_background(Color c) {
   split_color( c, r, g, b );
   int i;
   int R, G, B;
+  int lb = 0xe0;
+  if(fltk::theme_idx_ > -1)
+	  lb = 0xa0;
   for (i = GRAY00; i <= GRAY99; i++) {
     if (i <= GRAY75) {
       R = r*(i-GRAY00)/(GRAY75-GRAY00);
       G = g*(i-GRAY00)/(GRAY75-GRAY00);
       B = b*(i-GRAY00)/(GRAY75-GRAY00);
     } else {
-      const int DELTA = ((0xff-0xe0)*(i-GRAY75))/(GRAY99-GRAY75);
+      const int DELTA = ((0xff-lb)*(i-GRAY75))/(GRAY99-GRAY75);
       R = r+DELTA; if (R > 255) R = 255;
       G = g+DELTA; if (G > 255) G = 255;
       B = b+DELTA; if (B > 255) B = 255;
     }
     set_color_index(Color(i), color(R,G,B));
-
-	//if(i == GRAY75) {
-	//	set_color_index(Color(i), color(r, g, b));
-	//}
   }
+}
+
+/*!
+  fltk::GRAY75 is replaced with the passed color, and all the other
+  fltk::GRAY* colors are replaced with a color ramp (or sometimes
+  a straight line) so that using them for highlighted edges of
+  raised buttons looks correct.
+*/
+void fltk::shift_background(int index) {
+	int off = GRAY75 - index;
+	uchar r, g, b;
+	int i;
+
+	int rgb[3 * (GRAY99 - GRAY00 + 1)];
+
+	for(i = GRAY00; i <= GRAY99; i++) {
+		int c = i - off;
+		if(c < GRAY00)
+			c = GRAY00;
+		if(c > GRAY99)
+			c = GRAY99;
+		
+		split_color(c, r, g, b);
+		int bi = 3 * (i - GRAY00);
+		rgb[bi + 0] = r;
+		rgb[bi + 1] = g;
+		rgb[bi + 2] = b;
+	}
+
+	for(i = GRAY00; i <= GRAY99; i++) {
+		int bi = 3 * (i - GRAY00);
+		set_color_index(Color(i), color(rgb[bi + 0], rgb[bi + 1], rgb[bi + 2]));
+	}
 }
 
 //
