@@ -121,7 +121,7 @@ extern "C" bool fltk_theme() {
 
 	  switch(theme_idx) {
 	  case 0:
-		  background = GRAY99;
+		  background = GRAY95;
 		  muted_textcolor = GRAY20;
 		  highlight_textcolor = custom_dark_blue;
 		  select_background = custom_light_blue;

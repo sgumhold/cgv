@@ -1,8 +1,8 @@
 #include <cgv/base/node.h>
 #include <cgv/gui/provider.h>
-#include <cgv/render/drawable.h>
+#include <cgv/render/render_types.h>
 
-class gui_controls : public cgv::base::node, public cgv::gui::provider {
+class gui_controls : public cgv::base::node, public cgv::render::render_types, public cgv::gui::provider {
 protected:
 	struct {
 		float slider_value = 0.0f;
@@ -20,8 +20,12 @@ protected:
 		DE_B,
 		DE_C,
 	};
-
 	DemoEnum demo_enum = DE_A;
+
+	std::string file_name;
+	std::string save_file_name;
+
+	rgb color;
 
 	bool inactive = false;
 
@@ -59,6 +63,11 @@ public:
 		add_member_control(this, "Dial", dial_value, "dial", "min=-1.0;max=1.0;step=0.01;w=40;h=40" + active());
 		add_member_control(this, "Wheel", wheel_value, "wheel", "min=-1.0;max=1.0;step=0.01" + active());
 		add_member_control(this, "Dropdown", demo_enum, "dropdown", "enums='Option 1,Option 2, Option 3'" + active());
+		add_member_control(this, "Color", color);
+
+		std::string filter = "Text Files (txt):*.txt|All Files:*.*";
+		add_gui("File", file_name, "file_name", "title='Open Text File';" + filter + ";save=false;w=136;small_icon=true;align_gui=' '");
+		add_gui("save_file_name", save_file_name, "file_name", "title='Save Text ';filter='" + filter + "';save=true;control=false;small_icon=true");
 
 		if(begin_tree_node("Tree Node", tree_node, true, active())) {
 			align("\a");
