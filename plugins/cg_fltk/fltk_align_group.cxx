@@ -38,6 +38,7 @@ public:
 	}
 	void drag(int dx)
 	{
+		// TODO: MARK (removing the next line will disable dragging the insides of the group horizontally)
  		scrollTo(xposition()-dx, yposition());
 	}
 	bool inside()

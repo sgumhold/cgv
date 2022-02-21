@@ -321,16 +321,25 @@ Divider::Divider() : Widget(0,0,0,0) {
 }
 
 void Divider::draw() {
-  setcolor(GRAY33);
+	// TODO: MARK (choose other colors for non-legacy themes)
+	Color C1 = GRAY33;
+	Color C2 = GRAY99;
+
+	if(fltk::theme_idx_ > -1) {
+		C1 = GRAY40;
+		C2 = GRAY60;
+	}
+
+  setcolor(C1);
   if (w() > h()) {
     int y = (h()-1)/2;
     drawline(0, y, w()-1, y);
-    setcolor(GRAY99);
+    setcolor(C2);
     drawline(0, y+1, w()-1, y+1);
   } else if (h()) {
     int x = (w()-1)/2;
     drawline(x, 0, x, h()-1);
-    setcolor(GRAY99);
+    setcolor(C2);
     drawline(x+1, 0, x+1, h()-1);
   }
 }

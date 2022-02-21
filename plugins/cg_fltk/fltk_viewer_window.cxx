@@ -104,8 +104,9 @@ fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
 	callback(destroy_callback);
 
 	// TODO: MARK
-	int menu_height = 24;
-	bool menu_right = true;
+	menu_height = 24;
+	menu_right = true;
+	tabs_bottom = true;
 
 	begin();
 		main_group = new DockableGroup(0,0,w,h,"");
@@ -121,13 +122,7 @@ fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
 //			connect(view->on_remove_child, this, &fltk_viewer_window::on_remove_child);
 		main_group->end();
 		main_group->resizable(view->get_interface<fltk::Widget>());
-		if(menu_right) {
-			main_group->dock(static_cast<fltk::Widget*>(tab_group->get_user_data()), 0, true);
-			main_group->dock(menu, 1, false);
-		} else {
-			main_group->dock(menu, 1, false);
-			main_group->dock(static_cast<fltk::Widget*>(tab_group->get_user_data()), 2, true);
-		}
+		ensure_dock_state();
 	end();
 	resizable(main_group);	
 	update_member(&menu_visible);
@@ -200,6 +195,8 @@ void fltk_viewer_window::theme_change_cb() {
 	//fltk::theme
 	fltk::theme_idx_ = static_cast<int>(theme_idx) - 1;
 	fltk::reload_theme();
+	tab_group->update();
+	post_recreate_gui();
 }
 
 bool fltk_viewer_window::ws_change_cb(control<WindowState>& c)
@@ -296,6 +293,21 @@ void fltk_viewer_window::ensure_dock_order()
 			if (pj < pi)
 				std::swap(main_group->dock_order[i],main_group->dock_order[j]);
 		}
+	}
+}
+
+void fltk_viewer_window::ensure_dock_state() {
+	if(menu_visible && menu)
+		main_group->undock(menu);
+	if(gui_visible)
+		main_group->undock(static_cast<fltk::Widget*>(tab_group->get_user_data()));
+
+	if(menu_right) {
+		if(gui_visible) main_group->dock(static_cast<fltk::Widget*>(tab_group->get_user_data()), 0, true);
+		if(menu_visible && menu) main_group->dock(menu, 1, false);
+	} else {
+		if(menu_visible && menu) main_group->dock(menu, 1, false);
+		if(gui_visible) main_group->dock(static_cast<fltk::Widget*>(tab_group->get_user_data()), 2, true);
 	}
 }
 
@@ -672,8 +684,10 @@ void fltk_viewer_window::show_gui(bool update_control)
 {
 	if (gui_visible || tab_group->get_nr_children() == 0)
 		return;
+
 	gui_visible = true;
 	main_group->dock(static_cast<fltk::Widget*>(tab_group->get_user_data()), 0, true);
+	ensure_dock_state();
 	ensure_dock_order();
 	if (update_control && provider::find_control(gui_visible))
 		provider::find_control(gui_visible)->update();
@@ -682,8 +696,10 @@ void fltk_viewer_window::show_menu(bool update_control)
 {
 	if (menu_visible || !menu)
 		return;
+	
 	menu_visible = true;
 	main_group->dock(menu, 1, false);
+	ensure_dock_state();
 	ensure_dock_order();
 	if (update_control && provider::find_control(menu_visible))
 		provider::find_control(menu_visible)->update();
@@ -703,9 +719,10 @@ void fltk_viewer_window::hide_gui(bool update_control)
 {
 	if (!gui_shown())
 		return;
-
+	
 	gui_visible = false;
 	main_group->undock(static_cast<fltk::Widget*>(tab_group->get_user_data()));
+	ensure_dock_state();
 	ensure_dock_order();
 	if (update_control && provider::find_control(gui_visible))
 		provider::find_control(gui_visible)->update();
@@ -715,8 +732,10 @@ void fltk_viewer_window::hide_menu(bool update_control)
 {
 	if (!menu_shown())
 		return;
+
 	menu_visible = false;
 	main_group->undock(menu);
+	ensure_dock_state();
 	ensure_dock_order();
 	if (update_control && provider::find_control(menu_visible))
 		provider::find_control(menu_visible)->update();

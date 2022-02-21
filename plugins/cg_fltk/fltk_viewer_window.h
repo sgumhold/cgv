@@ -121,8 +121,10 @@ protected:
 	std::string menu_order;
 	///
 	unsigned int get_dock_idx(int i) const;
-	/// ensure that the menu is in the specific order
+	/// ensure that the menu entries are in the specific order
 	void ensure_dock_order();
+	/// ensure that the menu and gui layout is correct
+	void ensure_dock_state();
 	/// store the menu order
 	std::string dock_order;
 	/// store the current window state
@@ -152,6 +154,12 @@ protected:
 
 	/// title of the window
 	std::string title;
+	/// the height of the menu bar
+	int menu_height;
+	/// whether the gui shall be placed on the right side of the window
+	bool menu_right;
+	/// whether gui tabs shall be placed on the top or bottom
+	bool tabs_bottom;
 
 	static void create_cb(fltk::Widget* w, void* user_data);
 
