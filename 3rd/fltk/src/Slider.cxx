@@ -446,7 +446,9 @@ bool Slider::draw(const Rectangle& sr, Flags flags, bool slot)
 		setbgcolor(BLACK);
 		THIN_DOWN_BOX->draw(sl);
 	} else {
-		setbgcolor(style()->muted_textcolor());
+		Color c = GRAY33;// style()->muted_textcolor();
+		if(drawflags(INACTIVE)) c = inactive(c, getbgcolor());
+		setbgcolor(c);
 		FLAT_BOX->draw(sl);
 	}
   }

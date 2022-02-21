@@ -117,10 +117,12 @@ extern "C" bool fltk_theme() {
 	  Color custom_dark_blue = color(static_cast<unsigned char>(34), static_cast<unsigned char>(109), static_cast<unsigned char>(160));
 	  Color custom_light_blue = color(static_cast<unsigned char>(67), static_cast<unsigned char>(147), static_cast<unsigned char>(201));
 
+	  Color window_color = GRAY60;
+
 	  switch(theme_idx) {
 	  case 0:
-		  background = GRAY95;
-		  muted_textcolor = GRAY30;
+		  background = GRAY99;
+		  muted_textcolor = GRAY20;
 		  highlight_textcolor = custom_dark_blue;
 		  select_background = custom_light_blue;
 		  break;
@@ -140,6 +142,7 @@ extern "C" bool fltk_theme() {
 		  muted_textcolor = G70;
 		  highlight_textcolor = custom_light_blue;
 		  select_background = custom_dark_blue;
+		  window_color = GRAY40;
 		  break;
 	  }
 
@@ -164,7 +167,7 @@ extern "C" bool fltk_theme() {
 	  Widget::default_style->is_dark_theme_ = theme_idx > 1;
 
 	  if((style = Style::find("Window"))) {
-		  style->color_ = GRAY60;
+		  style->color_ = window_color;
 	  }
 
 	  if((style = Style::find("MenuBar"))) {
@@ -186,6 +189,7 @@ extern "C" bool fltk_theme() {
 
 	  if((style = Style::find("Slider"))) {
 		  style->buttonbox_ = BORDER_BOX;
+		  //style->selection_color_ = RED; / can change color of slider handle
 	  }
 
 	  TabGroup::flat_tabs(true);
