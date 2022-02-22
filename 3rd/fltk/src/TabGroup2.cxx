@@ -42,8 +42,8 @@ const int BORDER = 10;
 const int TABSLOPE = 5;
 const int EXTRASPACE = 5;
 
-const int BTN_WIDTH  = 14;
-const int BTN_HEIGHT = 14;
+const int BTN_WIDTH  = 24;
+const int BTN_HEIGHT = 24;
 
 ////////////////////////////////////////////////////////////////////////////////////
 class FL_API ShrinkTabPager : public TabGroupPager {
@@ -239,7 +239,7 @@ int MenuTabPager::which(TabGroup* g, int event_x,int event_y) {
     }
     if (event_x < 0) return -1;
     int p[128], w[128];
-    int selected = g->tab_positions(p, w);
+	int selected = g->tab_positions(p, w);
     int d = (event_y-(H>=0?0:g->h()))*slope()/H;
     for (int i=0; i<g->children(); i++) {
 	if (event_x < p[i+1]+(i<selected ? slope() - d : d)) return i;
@@ -319,7 +319,7 @@ void MenuTabPager::createExtMenu(TabGroup* g){
     if (!extension_) {
 	Group *cur = Group::current();
 	Group::current(0);
-	extension_ = new PopupMenu(0,0, BTN_WIDTH,BTN_HEIGHT,"@>>");
+	extension_ = new PopupMenu(0, 0, BTN_WIDTH, BTN_HEIGHT, "@>>");
 	g->parent()->add(extension_);
 	Group::current(cur);
 	extension_->callback(btnCb);
@@ -330,7 +330,7 @@ void MenuTabPager::createExtMenu(TabGroup* g){
     for (int i=0;i<g->children(); i++) {
 	Widget  * c = g->child(i);
 	if (c) {
-	    Widget* wi = extension_->add(c->label());
+		Widget* wi = extension_->add(c->label());
 	    wi->user_data((void*) c);
 	}
     }
@@ -339,6 +339,9 @@ void MenuTabPager::createExtMenu(TabGroup* g){
     extension_->resize(g->r()-BTN_WIDTH, th, BTN_WIDTH,BTN_HEIGHT);
     extension_->y(th);
     extension_->redraw();
+	// TODO: MARK (events dont reach the popup button)
+	// if popup is called, thge program crashes
+	//extension_->popup();
 }
 
 

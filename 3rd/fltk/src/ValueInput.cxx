@@ -115,7 +115,7 @@ void ValueInput::draw() {
 	if(style()->buttonbox_ == NO_BOX) {
 		Rectangle br(r.r(), r.y(), bw, bh + bh);
 		Color c = getcolor();
-		setcolor(GRAY33);
+		setcolor(color());
 		fillrect(br);
 		setcolor(c);
 	}
