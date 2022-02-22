@@ -110,6 +110,8 @@ bool rgbd_control::self_reflect(cgv::reflect::reflection_handler& rh)
 		rh.reflect_member("device_mode", (int&)device_mode) &&
 		rh.reflect_member("device_idx", device_idx) &&
 		rh.reflect_member("show_grayscale", show_grayscale) &&
+		rh.reflect_member("always_acquire_next", always_acquire_next) &&
+		rh.reflect_member("remap_color", remap_color) &&
 		rh.reflect_member("visualisation_enabled", visualisation_enabled);
 
 }
