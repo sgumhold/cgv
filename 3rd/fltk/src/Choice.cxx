@@ -76,14 +76,20 @@ extern bool fl_hide_underscore;
 */
 void Choice::draw() {
 	if(damage() & DAMAGE_ALL) {
-		////TODO: MARK
-		//draw_frame();
 		setbgcolor(color());
 		box()->draw(Rectangle(w(), h()));
 	}
+	// TODO: MARK (for a flat theme, offset the glyph one pixel to the left)
+	int wo = 0;
+	int go = 0;
+	if(style()->buttonbox_ != UP_BOX) {
+		wo = 4;// 1;
+		go = -0;//-2;
+	}
+
   Rectangle r(w(),h()); box()->inset(r);
-  int w1 = r.h()*4/5;
-  r.move_r(-w1);
+  int w1 = r.h()*4/5 + wo;
+  r.move_r(-w1+go);
   // draw the little mark at the right:
   if (damage() & (DAMAGE_ALL|DAMAGE_HIGHLIGHT)) {
     drawstyle(style(), (flags() & ~FOCUSED) | OUTPUT);

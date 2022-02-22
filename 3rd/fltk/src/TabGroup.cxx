@@ -496,7 +496,7 @@ void TabGroup::draw_tab_flat(int x1, int x2, int W, int H, Widget* o, int what) 
   int sel = (what == TAB_SELECTED);
   const int shrink_factor = 3;
   int eat_border_factor = 0;
-  int up_pos = (1-sel)*shrink_factor + 1;
+  int up_pos = (1-sel)*shrink_factor;
   setcolor(o->color());
   if(H >= 0) {// put the tab thumbnail on top
 	  newpath();
@@ -504,10 +504,10 @@ void TabGroup::draw_tab_flat(int x1, int x2, int W, int H, Widget* o, int what) 
 	  addvertex(x1, up_pos);
 	  addvertex(x2, up_pos);
 	  addvertex(x2, H + eat_border_factor);
-	  if(!sel) setcolor(GRAY70);
+	  if(!sel) setcolor(GRAY80);
 	  fillpath();
 	  if(sel) {
-		  setcolor(GRAY40);
+		  setcolor(GRAY85);
 		  newpath();
 		  addvertex(x1, H);
 		  addvertex(x1, up_pos);
@@ -523,10 +523,10 @@ void TabGroup::draw_tab_flat(int x1, int x2, int W, int H, Widget* o, int what) 
 	  addvertex(x1, h() - 1 - up_pos);
 	  addvertex(x2, h() - 1 - up_pos);
 	  addvertex(x2, h() + H - eat_border_factor);
-	  if(!sel) setcolor(GRAY70);
+	  if(!sel) setcolor(GRAY80);
 	  fillpath();
 	  if(sel) {
-		  setcolor(GRAY40);
+		  setcolor(GRAY85);
 		  newpath();
 		  addvertex(x1, h() + H);
 		  addvertex(x1, h() - 1 - up_pos);

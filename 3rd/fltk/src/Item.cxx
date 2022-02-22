@@ -326,8 +326,7 @@ void Divider::draw() {
 	Color C2 = GRAY99;
 
 	if(fltk::theme_idx_ > -1) {
-		C1 = GRAY40;
-		C2 = GRAY60;
+		C2 = GRAY33;
 	}
 
   setcolor(C1);

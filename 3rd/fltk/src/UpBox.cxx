@@ -364,7 +364,8 @@ static FrameBox embossedBox("embossed", 2,2,4,4, "IIWWWWII", &downBox);
 Box* const fltk::EMBOSSED_BOX = &embossedBox;
 
 //static FrameBox borderBox("border", 1,1,2,2, "KKLL", &downBox);
-static FrameBox borderBox("border", 1, 1, 2, 2, "NNNN");// , &downBox);
+//static FrameBox borderBox("border", 1, 1, 2, 2, "NNNN");// , &downBox);
+static FrameBox borderBox("border", 1, 1, 2, 2, "SSSS");// , &downBox);
 /*!
   1-pixel thick gray line around rectangle.
 */
@@ -441,63 +442,74 @@ bool HoverBox::is_frame() const { return true; }
 void HoverBox::_draw(const fltk::Rectangle& R) const {
 	Color bg = getbgcolor();
 	const char c = drawflags(HIGHLIGHT | STATE) ?
-		(Style::is_dark_theme_ ? fl_invert(bg_color_, hover_color_) : hover_color_ ) :
+		//(Style::is_dark_theme_ ? fl_invert(bg_color_, hover_color_) : hover_color_ ) :
+		hover_color_ :
 		bg_color_;
 	setbgcolor(c + (GRAY00 - 'A'));
+	
+	//Color c = bg;
+	//if(drawflags(HIGHLIGHT | STATE)) {
+	//	c = GRAY33;
+	//}
+	//setbgcolor(c);
+
 	FlatBox::_draw(R);
 	setbgcolor(bg);
 }
 
 
 
-static HoverBox plainBox("plain_", 'R', 'A');
-
-Box* const fltk::PLAIN_BOX = &plainBox;
-
-
-
-static StateBox2 stateDownBox("state_down", 0, 0, 0, 0, "", 'R', 'R');
-/*!
-  Pushed box in flat theme
-*/
-Box* const fltk::STATE_DOWN_BOX = &stateDownBox;
-
-// A normal pushable flat button:
-static StateBox2 stateUpBox("state_up", 0, 0, 0, 0, "", 'R', 'R', &stateDownBox);
-/*!
-  A up button in fltk's standard theme.
-*/
-Box* const fltk::STATE_UP_BOX = &stateUpBox;
+//static HoverBox plainBox("plain_", 'R', 'A');
+//
+//Box* const fltk::PLAIN_BOX = &plainBox;
 
 
 
-
-static StateBox2 frameDownBox("frame_down", 1, 2, 2, 3, "2JNNNN", 'P', 'P');
-/*!
-  Pushed box in flat theme
-*/
-Box* const fltk::FRAME_DOWN_BOX = &frameDownBox;
-
-// A normal pushable flat button:
-static StateBox2 frameUpBox("frame_up", 1, 1, 2, 3, "NNNNJ", 'R', 'R', &frameDownBox);
-/*!
-  A up button in fltk's standard theme.
-*/
-Box* const fltk::FRAME_UP_BOX = &frameUpBox;
-
-
-//static StateBox2 menuDownBox("menu_down", 0, 0, 0, 0, "", 'N', 'N');
+//static StateBox2 stateDownBox("state_down", 0, 0, 0, 0, "", 'R', 'R');
+///*!
+//  Pushed box in flat theme
+//*/
+//Box* const fltk::STATE_DOWN_BOX = &stateDownBox;
 //
 //// A normal pushable flat button:
-//static StateBox2 menuUpBox("menu_up", 0, 0, 0, 0, "", 'R', 'Q', &menuDownBox);
+//static StateBox2 stateUpBox("state_up", 0, 0, 0, 0, "", 'R', 'R', &stateDownBox);
 ///*!
 //  A up button in fltk's standard theme.
 //*/
-//Box* const fltk::MENU_BOX = &menuUpBox;
+//Box* const fltk::STATE_UP_BOX = &stateUpBox;
 
 
-static HoverBox menuDownBox("menu_down", 'N', 'N');
-static HoverBox menuUpBox("menu_up", 'R', 'Q');
+
+//2JNNNN
+static StateBox2 shadowDownBox("shadow_down", 1, 2, 2, 3, "2AHHHH", 'H', 'H');
+/*!
+  Pushed in flat button with thin inset shadow
+*/
+Box* const fltk::SHADOW_DOWN_BOX = &shadowDownBox;
+
+// A pushable flat button with a thin shadow appearance:
+//NNNNJ
+static StateBox2 shadowUpBox("shadow_up", 0, 0, 0, 2, "RRRRH", 'S', 'S', &shadowDownBox);
+/*!
+  A up button in fltk's standard theme.
+*/
+Box* const fltk::SHADOW_UP_BOX = &shadowUpBox;
+
+
+
+static HoverBox flatDownBox("flats_down", 'H', 'H');
+static HoverBox flatUpBox("flats_up", 'S', 'S');
+
+static StateBox flatStateBox("flats_", &flatUpBox, &flatDownBox);
+
+Box* const fltk::FLAT_UP_BOX = &flatStateBox;
+
+
+
+//static HoverBox menuDownBox("menu_down", 'N', 'N');
+//static HoverBox menuUpBox("menu_up", 'R', 'Q');
+static HoverBox menuDownBox("menu_down", 'S', 'S');
+static HoverBox menuUpBox("menu_up", 'R', 'H');
 
 static StateBox menuBox("menu_", &menuUpBox, &menuDownBox);
 
