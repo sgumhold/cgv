@@ -64,9 +64,12 @@ using namespace fltk;
 */
 
 void Dial::draw() {
+	// TODO: MARK (use another fill type for flat themes)
+	type(fltk::theme_idx_ < 0 ? NORMAL : RING);
+
   Rectangle r(w(),h());
   if (type()!=FILL || box() != OVAL_BOX) {
-    if (damage()&DAMAGE_ALL) draw_box();
+    if (damage()&DAMAGE_ALL && type() != RING) draw_box();
     box()->inset(r);
   }
   drawstyle(style(), flags());
@@ -79,17 +82,47 @@ void Dial::draw() {
   float angle = (a2-a1)*float((value()-minimum())/(maximum()-minimum())) + a1;
   if (type() == FILL) {
     if (damage()&DAMAGE_EXPOSE && box() == OVAL_BOX) draw_background();
+	Rectangle r1(r);
+	r1.inset(1);
     setcolor(getbgcolor());
     addpie(r, float(270-a1), float(angle > a1 ? 360+270-angle : 270-360-angle));
     fillpath();
     setcolor(fillcolor);
-    addpie(r, float(270-angle), float(270-a1));
+    addpie(r1, float(270-angle), float(270-a1));
     fillpath();
+
     if (box() == OVAL_BOX) {
       setcolor(linecolor);
       addchord(r, 0, 360);
       strokepath();
     }
+  } else if(type() == RING) {
+	  linecolor = textcolor();
+	  fillcolor = inactive(selection_color(), getbgcolor());
+	  if(flag(INACTIVE_R)) {
+		fillcolor = inactive(fillcolor, getbgcolor());
+	  }
+	  draw_background();
+
+	  setcolor(fillcolor);
+	  addpie(r, float(270 - angle), float(270 - a1));
+	  fillpath();
+	  setcolor(linecolor);
+	  addpie(r, float(270 - a1), float(angle > a1 ? 360 + 270 - angle : 270 - 360 - angle));
+	  fillpath();
+
+	  setcolor(GRAY75);
+	  addvertex(r.x(), r.b());
+	  addvertex(r.r(), r.b());
+	  addvertex(r.center_x(), r.center_y());
+	  fillpath();
+
+	  setcolor(GRAY75);
+	  int rw = r.h() / 4 - 1;
+	  if(rw < 1) rw = 1;
+	  r.inset(rw);
+	  addchord(r, 0, 360);
+	  fillpath();
   } else {
     if (!(damage()&DAMAGE_ALL)) {
       // erase interior without erasing any box edge:

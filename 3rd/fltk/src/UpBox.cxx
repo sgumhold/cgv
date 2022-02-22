@@ -416,7 +416,7 @@ void StateBox2::_draw(const fltk::Rectangle& R) const {
 	}
 	const Color fg = getcolor();
 	const char* s = data();
-	char buf[26]; if(drawflags(INACTIVE_R) && Style::draw_boxes_inactive_) {
+	char buf[26]; if(drawflags(INACTIVE_R) && Style::draw_boxes_inactive_ && fltk::theme_idx_ < 0) {
 		fl_to_inactive(s, buf); s = buf;
 	}
 	if(*s == '2') {

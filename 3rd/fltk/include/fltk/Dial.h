@@ -36,7 +36,7 @@ class FL_API Dial : public Valuator {
 
 public:
 
-  enum {NORMAL = 0, LINE, FILL}; // values for type()
+  enum {NORMAL = 0, LINE, FILL, RING}; // values for type()
   int handle(int);
   Dial(int x,int y,int w,int h, const char *l = 0);
   static NamedStyle* default_style;

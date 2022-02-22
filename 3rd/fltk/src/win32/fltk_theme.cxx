@@ -152,10 +152,6 @@ extern "C" bool fltk_theme() {
 		  select_background = custom_light_blue;
 		  break;
 	  case 2:
-		  /*c0 = color(static_cast<unsigned char>(255.0f * 0.16f));
-		  c1 = color(static_cast<unsigned char>(255.0f * 0.22f));
-		  c2 = color(static_cast<unsigned char>(255.0f * 0.30f));
-		  c3 = color(static_cast<unsigned char>(255.0f * 0.40f));*/
 		  c0 = color(0.16f);
 		  c1 = color(0.22f);
 		  c2 = color(0.30f);
@@ -239,8 +235,12 @@ extern "C" bool fltk_theme() {
 		  style->buttonbox_ = input_button_box;
 	  }
 
+	  if((style = Style::find("Check_Button"))) {
+		  style->box_ = input_frame_box;
+	  }
+
 	  if((style = Style::find("Slider"))) {
-		  style->box_ = NO_BOX;
+		  style->box_ = FLAT_BOX; // set to NO_BOX, to make color changes only affect the tickmarks
 		  style->buttonbox_ = FLAT_BOX;
 		  style->buttoncolor_ = GRAY80;
 		  //style->selection_color_ = RED; / can change color of slider handle
@@ -252,17 +252,14 @@ extern "C" bool fltk_theme() {
 		  style->color_ = GRAY80; // set this if you want a light background
 	  }
 
+	  if((style = Style::find("Scrollbar"))) {
+		  style->color_ = GRAY33;
+		  style->buttoncolor_ = GRAY80;
+		  style->box_ = NO_BOX;
+		  style->buttonbox_ = FLAT_BOX;
+	  }
+
 	  TabGroup::flat_tabs(true);
-  }
-  
-  if ((style = Style::find("Scrollbar"))) {
-//    style->color = lerp(slider_background, text_background, .5);
-	  // TODO: WIP
-	  style->color_ = RED;
-	  style->textcolor_ = GREEN;
-	  style->buttoncolor_ = BLUE;
-	  style->box_ = UP_BOX;
-	  style->buttonbox_ = ROUNDED_BOX;
   }
 
 //   if (menuitem_background != background || menuitem_foreground != foreground) {

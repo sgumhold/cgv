@@ -292,8 +292,8 @@ public:
   void _draw(const Rectangle& r) const {
     // If the box is being drawn, don't draw pushed in and turn on the box:
     if (!(drawflags()&ALIGN_MASK)) setdrawflags(drawflags()&~PUSHED);
-	if(fltk::theme_idx_ > -1)
-		setbgcolor(fltk::theme_idx_ > 0 ? GRAY60 : GRAY70);
+	//if(fltk::theme_idx_ > -1)
+	//	setbgcolor(fltk::theme_idx_ > 0 ? GRAY60 : GRAY70);
     Widget::default_glyph->draw(r);
   }
   ScrollBarGlyph() : Symbol() {}
