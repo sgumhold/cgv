@@ -236,7 +236,7 @@ void fltk_align_group::init_aligment()
 	y_spacing = 8;
 
 	current_x = x_offset;
-	current_y = y_offset;
+	current_y = y_offset; // TODO: MARK (add some more offset to the start and also a padding to the end, WARNING: adjust the scroll action)
 	current_line_height = 0;
 
 	default_width = 200;

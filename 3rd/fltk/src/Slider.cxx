@@ -446,7 +446,7 @@ bool Slider::draw(const Rectangle& sr, Flags flags, bool slot)
 		setbgcolor(BLACK);
 		THIN_DOWN_BOX->draw(sl);
 	} else {
-		Color c = GRAY33;// style()->muted_textcolor();
+		Color c = GRAY33;
 		if(drawflags(INACTIVE)) c = inactive(c, getbgcolor());
 		setbgcolor(c);
 		FLAT_BOX->draw(sl);
@@ -595,8 +595,10 @@ public:
 	Color C2 = GRAY99;
 
 	//if(Style::is_dark_theme_)
-	if(fltk::theme_idx_ > -1)
+	if(fltk::theme_idx_ > -1) {
 		C1 = GRAY95;
+		if(drawflags(INACTIVE)) C1 = inactive(C1, getbgcolor());
+	}
 
 	int o = 0;
 	if(box != UP_BOX) {

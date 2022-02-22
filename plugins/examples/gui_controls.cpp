@@ -29,6 +29,7 @@ protected:
 	rgba rgba_color = rgba(0.0f);
 
 	bool inactive = false;
+	bool colored = false;
 
 public:
 	gui_controls() : cgv::base::node("GUI Controls") {}
@@ -40,7 +41,7 @@ public:
 		return "gui_controlsss";
 	}
 	void on_set(void* member_ptr) {
-		if(member_ptr == &inactive)
+		if(member_ptr == &inactive || member_ptr == &colored)
 			post_recreate_gui();
 
 		//post_redraw();
@@ -50,40 +51,44 @@ public:
 		std::string s = ";active=";
 		return s + (inactive ? "false" : "true" );
 	}
+	std::string is_colored() {
+		return colored ? ";color=0xff0000" : "";
+	}
 	void create_gui() {
 
-		const std::string active = is_active();
+		const std::string opt = is_active() + is_colored();
 
-		add_decorator("Heading 1", "heading", "level=0" + active);
-		add_decorator("Heading 2", "heading", "level=1" + active);
-		add_decorator("Heading 3", "heading", "level=2" + active);
-		add_decorator("Heading 4", "heading", "level=3" + active);
-		add_decorator("Separator", "heading", "level=3" + active);
+		add_decorator("Heading 1", "heading", "level=0" + opt);
+		add_decorator("Heading 2", "heading", "level=1" + opt);
+		add_decorator("Heading 3", "heading", "level=2" + opt);
+		add_decorator("Heading 4", "heading", "level=3" + opt);
+		add_decorator("Separator", "heading", "level=3" + opt);
 		add_decorator("", "separator");
-
-		add_member_control(this, "Toggle Button", toggle, "toggle", active);
-		add_member_control(this, "Checkmark", check, "check", active);
-		add_member_control(this, "Value", value, "value", "min=-10;max=10;step=1" + active);
-		add_member_control(this, "Dial", dial_value, "dial", "min=-1.0;max=1.0;step=0.01;w=40;h=40" + active);
-		add_member_control(this, "Wheel", wheel_value, "wheel", "min=-1.0;max=1.0;step=0.01" + active);
-		add_member_control(this, "Dropdown", demo_enum, "dropdown", "enums='Option 1,Option 2, Option 3'" + active);
-		add_member_control(this, "RGB Color", rgb_color);
-		add_member_control(this, "RGBA Color", rgba_color);
+		
+		add_member_control(this, "Toggle Button", toggle, "toggle", opt);
+		add_member_control(this, "Checkmark", check, "check", opt);
+		add_member_control(this, "Value", value, "value", "min=-10;max=10;step=1" + opt);
+		add_member_control(this, "Dial", dial_value, "dial", "min=-1.0;max=1.0;step=0.01;w=40;h=40" + opt);
+		add_member_control(this, "Wheel", wheel_value, "wheel", "min=-1.0;max=1.0;step=0.01" + opt);
+		add_member_control(this, "Dropdown", demo_enum, "dropdown", "enums='Option 1,Option 2, Option 3'" + opt);
+		add_member_control(this, "RGB Color", rgb_color, "", opt);
+		add_member_control(this, "RGBA Color", rgba_color, "", opt);
 
 		std::string filter = "filter='Text Files (txt):*.txt|All Files:*.*'";
-		add_gui("File", file_name, "file_name", "title='Open Text File';" + filter + ";save=false;w=136;small_icon=true;align_gui=' '" + active);
-		add_gui("save_file_name", save_file_name, "file_name", "title='Save Text ';filter='" + filter + "';save=true;control=false;small_icon=true" + active);
+		add_gui("File", file_name, "file_name", "title='Open Text File';" + filter + ";save=false;w=136;small_icon=true;align_gui=' '" + opt);
+		add_gui("save_file_name", save_file_name, "file_name", "title='Save Text ';filter='" + filter + "';save=true;control=false;small_icon=true" + opt);
 
-		if(begin_tree_node("Tree Node", tree_node, true, active)) {
+		if(begin_tree_node("Tree Node", tree_node, true, opt)) {
 			align("\a");
-			add_button("Button", active);
-			add_member_control(this, "Slider", tree_node.slider_value, "value_slider", "min=0.0;max=1.0;step=0.01;" + active);
-			add_member_control(this, "Slider Ticks", tree_node.slider_value, "value_slider", "min=0.0;max=1.0;step=0.01;ticks=true" + active);
+			add_button("Button", opt);
+			add_member_control(this, "Slider", tree_node.slider_value, "value_slider", "min=0.0;max=1.0;step=0.01;" + opt);
+			add_member_control(this, "Slider Ticks", tree_node.slider_value, "value_slider", "min=0.0;max=1.0;step=0.01;ticks=true" + opt);
 			align("\b");
 			end_tree_node(tree_node);
 		}
-
+		
 		add_member_control(this, "Set Inactive", inactive, "toggle");
+		add_member_control(this, "Set Color", colored, "toggle");
 
 		add_decorator("Just", "heading", "level=3");
 		add_decorator("some", "heading", "level=3");
