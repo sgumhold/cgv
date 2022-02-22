@@ -84,7 +84,6 @@ static void revert(Style* s) {
   s->labelcolor_	= BLACK;
   s->highlight_color_	= NO_COLOR;
   s->highlight_textcolor_= NO_COLOR;
-  s->muted_textcolor_ = NO_COLOR;
   s->labelsize_		= 12;
   s->textsize_		= 12;
   s->leading_		= 2;
@@ -291,7 +290,6 @@ style_functions(Color,		color		)
 style_functions(Color,		textcolor	)
 style_functions(Color,		selection_color	)
 style_functions(Color,		selection_textcolor)
-style_functions(Color,		muted_textcolor)
 style_functions(Color,		buttoncolor	)
 style_functions(Color,		labelcolor	)
 style_functions(Color,		highlight_color	)
@@ -628,6 +626,7 @@ void fltk::shift_background(int index) {
 void fltk::set_main_gui_colors(Color c0, Color c1, Color c2, Color c3) {
 	uchar r, g, b;
 	split_color(c0, r, g, b);
+	set_color_index(Color(GRAY30), color(r/2, g/2, b/2));
 	set_color_index(Color(GRAY33), color(r, g, b));
 	split_color(c1, r, g, b);
 	set_color_index(Color(GRAY75), color(r, g, b));

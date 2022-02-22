@@ -543,7 +543,7 @@ void TabGroup::draw_tab_flat(int x1, int x2, int W, int H, Widget* o, int what) 
 		W-(pager_->extra_space()/2),
 		abs(H)-1);
     drawstyle(o->style(), sel && focused() ? FOCUSED|OUTPUT : OUTPUT);
-    setcolor(sel  ? o->highlight_textcolor() : o->muted_textcolor());
+    setcolor(sel  ? o->highlight_textcolor() : o->textcolor());
     o->draw_label(r, (o->flags() & ~ALIGN_MASK)|ALIGN_CENTER);
     //FLAT_BOX->draw_symbol_overlay(r);
   }

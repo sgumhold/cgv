@@ -115,7 +115,6 @@ class FL_API Style {
   Color		textcolor_;
   Color		selection_color_;
   Color		selection_textcolor_;
-  Color		muted_textcolor_;
   Color		buttoncolor_;
   Color		labelcolor_;
   Color		highlight_color_;
@@ -143,7 +142,6 @@ class FL_API Style {
   Color		textcolor()	const;
   Color		selection_color() const;
   Color		selection_textcolor() const;
-  Color		muted_textcolor() const;
   Color		buttoncolor()	const;
   Color		labelcolor()	const;
   Color		highlight_color() const;
@@ -170,7 +168,6 @@ class FL_API Style {
   void textcolor	(Color v)	{textcolor_ = v; 	}
   void selection_color	(Color v)	{selection_color_ = v;	}
   void selection_textcolor(Color v)	{selection_textcolor_ = v;}
-  void muted_textcolor(Color v) { muted_textcolor_ = v; }
   void buttoncolor	(Color v)	{buttoncolor_ = v; 	}
   void labelcolor	(Color v)	{labelcolor_ = v; 	}
   void highlight_color	(Color v)	{highlight_color_ = v; 	}

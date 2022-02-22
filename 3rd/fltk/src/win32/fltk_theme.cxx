@@ -87,8 +87,10 @@ extern "C" bool fltk_theme() {
 
   fltk::reset_indexed_colors();
 
+  Widget::default_style->is_dark_theme_ = false;
+
   // TODO: split flat style from windows theme?
-  // TODO: handle inactive colors
+  // TODO: remove is_dark_theme stuff if not needed
 
   // TODO: MARK
   if(theme_idx < 0) {
@@ -116,7 +118,6 @@ extern "C" bool fltk_theme() {
 	  */
 
 	  Color highlight_textcolor = foreground;
-	  Color muted_textcolor = text_foreground;
 	  Color custom_dark_blue = color(34, 109, 160);
 	  Color custom_light_blue = color(67, 147, 201);
 	  
@@ -139,36 +140,82 @@ extern "C" bool fltk_theme() {
 	  Color c2 = WHITE; // set as GRAY
 	  Color c3 = WHITE; // set as GRAY
 	  Color text_symbol_color = WHITE;
+	  Color dial_color = RED;
 
 	  switch(theme_idx) {
 	  case 0:
-		  muted_textcolor = GRAY20;
-		  highlight_textcolor = custom_dark_blue;
-		  select_background = custom_light_blue;
+		  c0 = color(0.70f);
+		  c1 = color(0.90f);
+		  c2 = color(0.98f);
+		  c3 = color(0.80f);
+		  text_symbol_color = color(0.19f);
+
+		  foreground = color(0.16f);// text_symbol_color;
+		  text_foreground = text_symbol_color;
+		  text_background = c2;
+		  highlight_textcolor = tu_marking1_blue;
+		  select_background = tu_marking2_blue;
+		  select_foreground = GRAY99;
+		  window_color = GRAY33;
+		  dial_color = c2;
+
+		  set_color_index(Color(GRAY95), text_symbol_color);
 		  break;
 	  case 1:
-		  text_background = GRAY85;
-		  highlight_textcolor = custom_dark_blue;
-		  select_background = custom_light_blue;
+		  c0 = color(0.42f);
+		  c1 = color(0.64f);
+		  c2 = color(0.78f);
+		  c3 = color(0.58f);
+		  text_symbol_color = color(0.04f);
+
+		  foreground = text_symbol_color;
+		  text_foreground = text_symbol_color;
+		  text_background = c2;
+		  highlight_textcolor = tu_marking1_blue;
+		  select_background = tu_marking2_blue;
+		  select_foreground = GRAY99;
+		  window_color = GRAY33;
+		  dial_color = c2;
+
+		  set_color_index(Color(GRAY95), text_symbol_color);
 		  break;
 	  case 2:
 		  c0 = color(0.16f);
 		  c1 = color(0.22f);
 		  c2 = color(0.30f);
 		  c3 = color(0.40f);
-		  text_symbol_color = color(static_cast<unsigned char>(255.0f * 0.86f));
+		  text_symbol_color = color(0.86f);
 		  
 		  foreground = text_symbol_color;
 		  text_foreground = text_symbol_color;
 		  text_background = c0;
-		  muted_textcolor = text_symbol_color;
 		  highlight_textcolor = tu_marking2_blue;
 		  select_background = tu_marking1_blue;
 		  select_foreground = GRAY99;
 		  window_color = GRAY33;
+		  dial_color = text_foreground;
 
 		  set_color_index(Color(GRAY95), text_symbol_color);
-		  
+		  Widget::default_style->is_dark_theme_ = true;
+		  break;
+	  case 3:
+		  c0 = color(0.10f);
+		  c1 = color(0.15f);
+		  c2 = color(0.20f);
+		  c3 = color(0.28f);
+		  text_symbol_color = color(0.84f);
+
+		  foreground = text_symbol_color;
+		  text_foreground = text_symbol_color;
+		  text_background = c0;
+		  highlight_textcolor = tu_marking2_blue;
+		  select_background = tu_marking1_blue;
+		  select_foreground = GRAY99;
+		  window_color = GRAY33;
+		  dial_color = text_foreground;
+
+		  set_color_index(Color(GRAY95), text_symbol_color);
+		  Widget::default_style->is_dark_theme_ = true;
 		  break;
 	  }
 
@@ -185,12 +232,9 @@ extern "C" bool fltk_theme() {
 	  Widget::default_style->textcolor_ = text_foreground;
 	  Widget::default_style->selection_color_ = select_background;
 	  Widget::default_style->selection_textcolor_ = select_foreground;
-	  Widget::default_style->muted_textcolor_ = muted_textcolor;
 
 	  Widget::default_style->box_ = BORDER_BOX;
 	  Widget::default_style->buttonbox_ = FLAT_BOX;
-
-	  Widget::default_style->is_dark_theme_ = theme_idx > 1;
 
 	  if((style = Style::find("Window"))) {
 		  style->color_ = window_color;
@@ -213,11 +257,13 @@ extern "C" bool fltk_theme() {
 	  BORDER_BOX: background color framed in a 1px thick broder
 	  */
 	  Box* input_frame_box = FLAT_BOX;
+	  //Box* input_frame_box = BORDER_BOX;
 	  /*
 	  NO_BOX: buttons of inputs are not highlighted and have the same background color as the input itself
 	  FLAT_UP_BOX: the buttons have a different background color than the input itself
 	  */
 	  Box* input_button_box = NO_BOX;
+	  //Box* input_button_box = FLAT_UP_BOX;
 
 	  if((style = Style::find("Choice"))) {
 		  style->box_ = input_frame_box;
@@ -227,7 +273,20 @@ extern "C" bool fltk_theme() {
 	  if((style = Style::find("Dial"))) {
 		  style->color_ = GRAY80;
 		  style->textcolor_ = GRAY33;
-		  style->selection_color_ = text_foreground;
+		  style->selection_color_ = dial_color;
+	  }
+
+	  if((style = Style::find("Output"))) {
+		  style->box_ = input_frame_box;
+	  }
+
+	  if((style = Style::find("ValueOutput"))) {
+		  style->box_ = input_frame_box;
+	  }
+
+	  if((style = Style::find("Input"))) {
+		  style->box_ = input_frame_box;
+		  //style->buttonbox_ = input_button_box;
 	  }
 
 	  if((style = Style::find("ValueInput"))) {

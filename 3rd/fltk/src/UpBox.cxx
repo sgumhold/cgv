@@ -365,7 +365,7 @@ Box* const fltk::EMBOSSED_BOX = &embossedBox;
 
 //static FrameBox borderBox("border", 1,1,2,2, "KKLL", &downBox);
 //static FrameBox borderBox("border", 1, 1, 2, 2, "NNNN");// , &downBox);
-static FrameBox borderBox("border", 1, 1, 2, 2, "SSSS");// , &downBox);
+static FrameBox borderBox("border", 1, 1, 2, 2, "TTTT");// , &downBox);
 /*!
   1-pixel thick gray line around rectangle.
 */
@@ -481,7 +481,7 @@ void HoverBox::_draw(const fltk::Rectangle& R) const {
 
 
 //2JNNNN
-static StateBox2 shadowDownBox("shadow_down", 1, 2, 2, 3, "2AHHHH", 'H', 'H');
+static StateBox2 shadowDownBox("shadow_down", 1, 2, 2, 3, "2GHHHH", 'H', 'H');
 /*!
   Pushed in flat button with thin inset shadow
 */
@@ -489,7 +489,7 @@ Box* const fltk::SHADOW_DOWN_BOX = &shadowDownBox;
 
 // A pushable flat button with a thin shadow appearance:
 //NNNNJ
-static StateBox2 shadowUpBox("shadow_up", 0, 0, 0, 2, "RRRRH", 'S', 'S', &shadowDownBox);
+static StateBox2 shadowUpBox("shadow_up", 0, 0, 0, 1, "H", 'S', 'S', &shadowDownBox);
 /*!
   A up button in fltk's standard theme.
 */
@@ -508,7 +508,7 @@ Box* const fltk::FLAT_UP_BOX = &flatStateBox;
 
 //static HoverBox menuDownBox("menu_down", 'N', 'N');
 //static HoverBox menuUpBox("menu_up", 'R', 'Q');
-static HoverBox menuDownBox("menu_down", 'S', 'S');
+static HoverBox menuDownBox("menu_down", 'T', 'T');
 static HoverBox menuUpBox("menu_up", 'R', 'H');
 
 static StateBox menuBox("menu_", &menuUpBox, &menuDownBox);

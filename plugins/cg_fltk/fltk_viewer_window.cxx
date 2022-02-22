@@ -99,7 +99,7 @@ fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
 	fullscreen_monitors = MS_MONITOR_CURRENT;
 	menu_visible = true;
 	gui_visible = true;
-	fltk::theme_idx_ = 2;
+	fltk::theme_idx_ = 0;
 	theme_idx = static_cast<cgv::type::DummyEnum>(fltk::theme_idx_ + 1);
 	menu = 0;
 	callback(destroy_callback);
@@ -220,7 +220,7 @@ void fltk_viewer_window::create_gui()
 		rebind(this, &fltk_viewer_window::menu_change_cb));
 	connect_copy(provider::add_control("Gui", gui_visible, "check")->value_change,
 		rebind(this, &fltk_viewer_window::gui_change_cb));
-	connect_copy(provider::add_control("Theme", theme_idx, "dropdown", "enums='Legacy,Light,Mid,Dark'")->value_change,
+	connect_copy(provider::add_control("Theme", theme_idx, "dropdown", "enums='Legacy,Light,Mid,Dark,Darkest'")->value_change,
 		rebind(this, &fltk_viewer_window::theme_change_cb));
 	connect(provider::add_control("State", window_state, "dropdown", "enums='regular;minimized;maximized;fullscreen'")->check_value,
 		this, &fltk_viewer_window::ws_change_cb);
