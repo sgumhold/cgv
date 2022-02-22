@@ -87,6 +87,9 @@ extern "C" bool fltk_theme() {
 
   fltk::reset_indexed_colors();
 
+  // TODO: split flat style from windows theme?
+  // TODO: handle inactive colors
+
   // TODO: MARK
   if(theme_idx < 0) {
 	  // original
@@ -114,35 +117,62 @@ extern "C" bool fltk_theme() {
 
 	  Color highlight_textcolor = foreground;
 	  Color muted_textcolor = text_foreground;
-	  Color custom_dark_blue = color(static_cast<unsigned char>(34), static_cast<unsigned char>(109), static_cast<unsigned char>(160));
-	  Color custom_light_blue = color(static_cast<unsigned char>(67), static_cast<unsigned char>(147), static_cast<unsigned char>(201));
-
-	  Color window_color = GRAY60;
+	  Color custom_dark_blue = color(34, 109, 160);
+	  Color custom_light_blue = color(67, 147, 201);
+	  
+	  // See corporate design 07/2021
+	  // "Auszeichnungsfarbe 1"
+	  const Color tu_marking1_blue = color(0, 105, 180);
+	  // "Auszeichnungsfarbe 2"
+	  const Color tu_marking2_blue = color(0, 159, 227);
+	  // "TUD-Web-Interface" - colors for web or other digital media
+	  // TU-Dresden blue
+	  const Color tu_blue = color(0, 37, 87);
+	  // dark red
+	  const Color tu_dark_red = color(181, 28, 28);
+	  // light red
+	  const Color tu_light_red = color(221, 39, 39);
+	  
+	  Color window_color = BLACK;
+	  Color c0 = WHITE; // set as GRAY33: the window background color (shall be the darkest color in the theme, except black and text colors)
+	  Color c1 = WHITE; // set as GRAY75: the background color for gui groups
+	  Color c2 = WHITE; // set as GRAY
+	  Color c3 = WHITE; // set as GRAY
+	  Color text_symbol_color = WHITE;
 
 	  switch(theme_idx) {
 	  case 0:
-		  background = GRAY95;
 		  muted_textcolor = GRAY20;
 		  highlight_textcolor = custom_dark_blue;
 		  select_background = custom_light_blue;
 		  break;
 	  case 1:
-		  background = GRAY65;
 		  text_background = GRAY85;
 		  highlight_textcolor = custom_dark_blue;
 		  select_background = custom_light_blue;
 		  break;
 	  case 2:
-		  Color G70 = fltk::lerp(BLACK, WHITE, 0.60f);
-		  Color G80 = fltk::lerp(BLACK, WHITE, 0.75f);
-		  background = GRAY20;
-		  foreground = G80;
-		  text_foreground = G80;
-		  text_background = GRAY65;
-		  muted_textcolor = G70;
-		  highlight_textcolor = custom_light_blue;
-		  select_background = custom_dark_blue;
-		  window_color = GRAY40;
+		  /*c0 = color(static_cast<unsigned char>(255.0f * 0.16f));
+		  c1 = color(static_cast<unsigned char>(255.0f * 0.22f));
+		  c2 = color(static_cast<unsigned char>(255.0f * 0.30f));
+		  c3 = color(static_cast<unsigned char>(255.0f * 0.40f));*/
+		  c0 = color(0.16f);
+		  c1 = color(0.22f);
+		  c2 = color(0.30f);
+		  c3 = color(0.40f);
+		  text_symbol_color = color(static_cast<unsigned char>(255.0f * 0.86f));
+		  
+		  foreground = text_symbol_color;
+		  text_foreground = text_symbol_color;
+		  text_background = c0;
+		  muted_textcolor = text_symbol_color;
+		  highlight_textcolor = tu_marking2_blue;
+		  select_background = tu_marking1_blue;
+		  select_foreground = GRAY99;
+		  window_color = GRAY33;
+
+		  set_color_index(Color(GRAY95), text_symbol_color);
+		  
 		  break;
 	  }
 
@@ -151,7 +181,7 @@ extern "C" bool fltk_theme() {
 
 	  //Color custom_dark_bg = color(static_cast<unsigned char>(30), static_cast<unsigned char>(30), static_cast<unsigned char>(35));
 
-	  fltk::set_background(background);
+	  fltk::set_main_gui_colors(c0, c1, c2, c3);
 	  //fltk::shift_background(background);
 	  Widget::default_style->labelcolor_ = foreground;
 	  Widget::default_style->highlight_textcolor_ = highlight_textcolor;
@@ -171,7 +201,7 @@ extern "C" bool fltk_theme() {
 	  }
 
 	  if((style = Style::find("MenuBar"))) {
-		  style->buttonbox_ = MENU_BOX; //PLAIN_BOX;
+		  style->buttonbox_ = MENU_BOX;
 	  }
 
 	  if((style = Style::find("MenuWindow"))) {
@@ -179,17 +209,47 @@ extern "C" bool fltk_theme() {
 	  }
 
 	  if((style = Style::find("Button"))) {
-		  style->box_ = FRAME_UP_BOX;
+		  style->box_ = SHADOW_UP_BOX; // use FLAT_UP_BOX if you dont want the thin shadow around the box
 	  }
 
+	  /*
+	  FLAT_BOX: no border, only the background color
+	  BORDER_BOX: background color framed in a 1px thick broder
+	  */
+	  Box* input_frame_box = FLAT_BOX;
+	  /*
+	  NO_BOX: buttons of inputs are not highlighted and have the same background color as the input itself
+	  FLAT_UP_BOX: the buttons have a different background color than the input itself
+	  */
+	  Box* input_button_box = NO_BOX;
+
 	  if((style = Style::find("Choice"))) {
-		  style->box_ = BORDER_BOX;
-		  style->buttonbox_ = NO_BOX;
+		  style->box_ = input_frame_box;
+		  style->buttonbox_ = input_button_box;
+	  }
+
+	  if((style = Style::find("Dial"))) {
+		  style->color_ = GRAY80;
+		  style->textcolor_ = GRAY33;
+		  style->selection_color_ = text_foreground;
+	  }
+
+	  if((style = Style::find("ValueInput"))) {
+		  style->box_ = input_frame_box;
+		  style->buttonbox_ = input_button_box;
 	  }
 
 	  if((style = Style::find("Slider"))) {
-		  style->buttonbox_ = BORDER_BOX;
+		  style->box_ = NO_BOX;
+		  style->buttonbox_ = FLAT_BOX;
+		  style->buttoncolor_ = GRAY80;
 		  //style->selection_color_ = RED; / can change color of slider handle
+	  }
+
+	  if((style = Style::find("ThumbWheel"))) {
+		  style->box_ = input_frame_box;
+		  style->buttonbox_ = NO_BOX;
+		  style->color_ = GRAY80; // set this if you want a light background
 	  }
 
 	  TabGroup::flat_tabs(true);
@@ -197,7 +257,12 @@ extern "C" bool fltk_theme() {
   
   if ((style = Style::find("Scrollbar"))) {
 //    style->color = lerp(slider_background, text_background, .5);
-    style->color_ = lerp(background, text_background, .5);
+	  // TODO: WIP
+	  style->color_ = RED;
+	  style->textcolor_ = GREEN;
+	  style->buttoncolor_ = BLUE;
+	  style->box_ = UP_BOX;
+	  style->buttonbox_ = ROUNDED_BOX;
   }
 
 //   if (menuitem_background != background || menuitem_foreground != foreground) {

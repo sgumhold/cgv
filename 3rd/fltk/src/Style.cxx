@@ -84,6 +84,7 @@ static void revert(Style* s) {
   s->labelcolor_	= BLACK;
   s->highlight_color_	= NO_COLOR;
   s->highlight_textcolor_= NO_COLOR;
+  s->muted_textcolor_ = NO_COLOR;
   s->labelsize_		= 12;
   s->textsize_		= 12;
   s->leading_		= 2;
@@ -595,9 +596,7 @@ void fltk::set_background(Color c) {
 
 /*!
   fltk::GRAY75 is replaced with the passed color, and all the other
-  fltk::GRAY* colors are replaced with a color ramp (or sometimes
-  a straight line) so that using them for highlighted edges of
-  raised buttons looks correct.
+  fltk::GRAY* colors are shifted according to the offset of the passed color.
 */
 void fltk::shift_background(int index) {
 	int off = GRAY75 - index;
@@ -624,6 +623,18 @@ void fltk::shift_background(int index) {
 		int bi = 3 * (i - GRAY00);
 		set_color_index(Color(i), color(rgb[bi + 0], rgb[bi + 1], rgb[bi + 2]));
 	}
+}
+
+void fltk::set_main_gui_colors(Color c0, Color c1, Color c2, Color c3) {
+	uchar r, g, b;
+	split_color(c0, r, g, b);
+	set_color_index(Color(GRAY33), color(r, g, b));
+	split_color(c1, r, g, b);
+	set_color_index(Color(GRAY75), color(r, g, b));
+	split_color(c2, r, g, b);
+	set_color_index(Color(GRAY80), color(r, g, b));
+	split_color(c3, r, g, b);
+	set_color_index(Color(GRAY85), color(r, g, b));
 }
 
 //

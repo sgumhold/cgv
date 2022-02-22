@@ -64,12 +64,14 @@ extern FL_API Box* const BORDER_FRAME;
 extern FL_API Box* const PLASTIC_UP_BOX;
 extern FL_API Box* const PLASTIC_DOWN_BOX;
 // Custom boxes
-extern FL_API Box* const PLAIN_BOX;
-extern FL_API Box* const FRAME_UP_BOX;
-extern FL_API Box* const FRAME_DOWN_BOX;
-extern FL_API Box* const STATE_UP_BOX;
-extern FL_API Box* const STATE_DOWN_BOX;
 extern FL_API Box* const MENU_BOX;
+//extern FL_API Box* const PLAIN_BOX;
+extern FL_API Box* const SHADOW_UP_BOX;
+extern FL_API Box* const SHADOW_DOWN_BOX;
+extern FL_API Box* const FLAT_UP_BOX;
+extern FL_API Box* const FLAT_DOWN_BOX;
+//extern FL_API Box* const STATE_UP_BOX;
+//extern FL_API Box* const STATE_DOWN_BOX;
 
 struct Font;
 extern FL_API Font* const HELVETICA;

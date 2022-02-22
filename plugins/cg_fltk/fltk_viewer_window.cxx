@@ -99,7 +99,8 @@ fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
 	fullscreen_monitors = MS_MONITOR_CURRENT;
 	menu_visible = true;
 	gui_visible = true;
-	theme_idx = static_cast<cgv::type::DummyEnum>(1);
+	fltk::theme_idx_ = 2;
+	theme_idx = static_cast<cgv::type::DummyEnum>(fltk::theme_idx_ + 1);
 	menu = 0;
 	callback(destroy_callback);
 
@@ -110,7 +111,7 @@ fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
 
 	begin();
 		main_group = new DockableGroup(0,0,w,h,"");
-		main_group->spacing(1);
+		main_group->spacing(3);
 		main_group->begin();
 			menu = new fltk::MenuBar(0, 0, w, menu_height);
 			view      = fltk_gl_view_ptr(new fltk_gl_view(0,0,w,h,"GL View"));

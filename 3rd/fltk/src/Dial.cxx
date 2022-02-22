@@ -159,7 +159,7 @@ int Dial::handle(int event) {
 }
 
 static void revert(Style* s) {
-  s->box_ = OVAL_BOX;
+	s->box_ = OVAL_BOX;
   s->selection_color_ = GRAY60;
 }
 static NamedStyle style("Dial", revert, &Dial::default_style);

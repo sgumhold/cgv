@@ -67,7 +67,8 @@ void DefaultGlyph::_draw(const Rectangle& rr) const
   // to draw the shape inactive, draw it twice to get the engraved look:
   const Color saved_color = getcolor();
   int i = 0;
-  if (drawflags(INACTIVE_R)) {i = 1; setcolor(GRAY99);}
+  // TODO: MARK (when a non-legacy theme is used we do not draw the outline for inactive labels)
+  if (drawflags(INACTIVE_R) && fltk::theme_idx_ < 0) {i = 1; setcolor(GRAY99);}
 
   for (;;) {
 
