@@ -9,6 +9,7 @@
 #include <cgv/utils/tokenizer.h>
 #include <cgv/type/variant.h>
 #include <cgv/render/drawable.h>
+#include <cgv/os/resources.h>
 
 #ifdef WIN32
 #pragma warning (disable:4311)
@@ -317,9 +318,10 @@ bool fltk_viewer_window::set_void(const std::string& property, const std::string
 #	ifdef _UNICODE
 		HINSTANCE hi = GetModuleHandle(cgv::utils::str2wstr(cgv::base::ref_prog_name()).c_str());
 #	else
-		HINSTANCE hi = GetModuleHandle(cgv::base::ref_prog_name().c_str());
+		HMODULE hi = GetModuleHandle(cgv::base::ref_prog_name().c_str());
 #	endif
-		icon(LoadIcon(hi,MAKEINTRESOURCE(i)));
+		auto ic = LoadIcon(hi, MAKEINTRESOURCE(i));
+		icon(ic);
 		return true;
 #else
 		return false;
