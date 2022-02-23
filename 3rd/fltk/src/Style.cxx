@@ -93,7 +93,6 @@ static void revert(Style* s) {
 
 bool Style::hide_underscore_ = true;
 bool Style::draw_boxes_inactive_ = true;
-bool Style::is_dark_theme_= false;
 int Style::wheel_scroll_lines_ = 3;
 
 /*! \fn Box* Style::box() const
@@ -623,7 +622,7 @@ void fltk::shift_background(int index) {
 	}
 }
 
-void fltk::set_main_gui_colors(Color c0, Color c1, Color c2, Color c3) {
+void fltk::set_main_gui_colors(Color c0, Color c1, Color c2, Color c3, Color tc) {
 	uchar r, g, b;
 	split_color(c0, r, g, b);
 	set_color_index(Color(GRAY30), color(r/2, g/2, b/2));
@@ -634,6 +633,8 @@ void fltk::set_main_gui_colors(Color c0, Color c1, Color c2, Color c3) {
 	set_color_index(Color(GRAY80), color(r, g, b));
 	split_color(c3, r, g, b);
 	set_color_index(Color(GRAY85), color(r, g, b));
+	split_color(tc, r, g, b);
+	set_color_index(Color(GRAY95), color(r, g, b));
 }
 
 //

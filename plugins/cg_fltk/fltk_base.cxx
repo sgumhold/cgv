@@ -116,7 +116,7 @@ bool fltk_base::set_void(fltk::Widget* w, cgv::base::named* nam, const std::stri
 	}
 	else if (property == "active")
 		w->activate(variant<bool>::get(value_type, value_ptr));
-	else if (property == "color")
+	else if(property == "color")
 		w->color(256*variant<int32_type>::get(value_type, value_ptr));
 	else if (property == "text_color")
 		w->textcolor(256*variant<int32_type>::get(value_type, value_ptr));

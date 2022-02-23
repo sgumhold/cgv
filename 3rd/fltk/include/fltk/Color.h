@@ -122,7 +122,7 @@ FL_API void set_color_index(Color index, Color);
 FL_API Color get_color_index(Color index);
 FL_API void set_background(Color);
 FL_API void shift_background(int index);
-FL_API void set_main_gui_colors(Color c0, Color c1, Color c2, Color c3);
+FL_API void set_main_gui_colors(Color c0, Color c1, Color c2, Color c3, Color tc);
 FL_API Color nearest_index(Color);
 
 }
