@@ -114,5 +114,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new rounded cone texturing tests
-//cgv::base::factory_registration<gui_controls> gui_controls_fac("New/GUI/Controls");
-cgv::base::object_registration<gui_controls> gui_controls_reg("GUI Controls");
+cgv::base::factory_registration<gui_controls> gui_controls_fac("New/GUI/Controls");
