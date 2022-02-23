@@ -173,6 +173,9 @@ int TabGroup::handle(int event) {
   case DRAG:
   case RELEASE:
     i = which(event_x(), event_y());
+	// TODO: MARK (MenuTabPager will explicitly return -2 if the extension button was pressed)
+	if(i == -2)
+		pager_->handle(event);
     if (event == RELEASE && !pushed()) {
       push(0);
       if (i >= 0 && value(i)) do_callback();

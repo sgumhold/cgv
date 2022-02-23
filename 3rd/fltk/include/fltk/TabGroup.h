@@ -54,6 +54,9 @@ public:
     virtual bool draw_tabs(TabGroup* g, int selected, int* tab_pos, int* tab_width) { return false;}
     /*! determine and return the index of the child group at the corresponding pos */
     virtual int which(TabGroup* g, int m_x,int m_y)=0;
+
+	virtual int handle(int event) { return 0; };
+
     /*! virtual copy from a prototype */
     virtual TabGroupPager* clone() const=0;
 
