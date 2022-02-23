@@ -25,6 +25,7 @@
 // colors and font sizes from standard Windows95 interfaces.
 
 #include <fltk/Widget.h>
+#include <fltk/Button.h>
 #include <fltk/TabGroup.h>
 #include <fltk/draw.h>
 #include <fltk/Monitor.h>
@@ -87,10 +88,8 @@ extern "C" bool fltk_theme() {
 
   fltk::reset_indexed_colors();
 
-  Widget::default_style->is_dark_theme_ = false;
-
   // TODO: split flat style from windows theme?
-  // TODO: remove is_dark_theme stuff if not needed
+  // TODO: make a theme handler singleton delivering color information to wherever it may be needed(including warning colors etc.)
 
   // TODO: MARK
   if(theme_idx < 0) {
@@ -110,42 +109,29 @@ extern "C" bool fltk_theme() {
 		  style->labelcolor_ = tooltip_foreground;
 	  }
   } else {
-	  /*
-	  !!! Use GRAY75 if the color shall be controlled by fltk::set_background() !!!
-	  >>> WARNING:
-		Setting the background color will replace all other GRAY colors
-		with a color ramp so highlights look ok
-
-	  THEMES:
-	  0: light bg = GRAY95
-	  1: mid   bg = GRAY45
-	  2: dark  bg = GRAY25
-	  */
-
 	  Color highlight_textcolor = foreground;
-	  Color custom_dark_blue = color(34, 109, 160);
-	  Color custom_light_blue = color(67, 147, 201);
-	  
+
 	  // See corporate design 07/2021
 	  // "Auszeichnungsfarbe 1"
-	  const Color tu_marking1_blue = color(0, 105, 180);
+	  const Color tud_marking1_blue = color(0, 105, 180);
 	  // "Auszeichnungsfarbe 2"
-	  const Color tu_marking2_blue = color(0, 159, 227);
+	  const Color tud_marking2_blue = color(0, 159, 227);
 	  // "TUD-Web-Interface" - colors for web or other digital media
 	  // TU-Dresden blue
-	  const Color tu_blue = color(0, 37, 87);
+	  const Color tud_blue = color(0, 37, 87);
 	  // dark red
-	  const Color tu_dark_red = color(181, 28, 28);
+	  const Color tud_dark_red = color(181, 28, 28);
 	  // light red
-	  const Color tu_light_red = color(221, 39, 39);
+	  const Color tud_light_red = color(221, 39, 39);
 	  
 	  Color window_color = BLACK;
+	  // GRAY30 is set to half way between BLACK and c0: used for the shadowing effect on SHADOW_UP_BOX
 	  Color c0 = WHITE; // set as GRAY33: the window background color (shall be the darkest color in the theme, except black and text colors)
 	  Color c1 = WHITE; // set as GRAY75: the background color for gui groups
-	  Color c2 = WHITE; // set as GRAY
-	  Color c3 = WHITE; // set as GRAY
-	  Color text_symbol_color = WHITE;
-	  Color dial_color = RED;
+	  Color c2 = WHITE; // set as GRAY80: lighter than c1, used for controls
+	  Color c3 = WHITE; // set as GRAY85: lighter or darker shade than c1, used for border frames
+	  Color text_symbol_color = WHITE; // set as GRAY95: used for some labels (like slider handle markings)
+	  Color dial_color = WHITE;
 
 	  switch(theme_idx) {
 	  case 0:
@@ -155,16 +141,15 @@ extern "C" bool fltk_theme() {
 		  c3 = color(0.80f);
 		  text_symbol_color = color(0.19f);
 
-		  foreground = color(0.16f);// text_symbol_color;
+		  foreground = color(0.16f);
 		  text_foreground = text_symbol_color;
 		  text_background = c2;
-		  highlight_textcolor = tu_marking1_blue;
-		  select_background = tu_marking2_blue;
+		  highlight_textcolor = tud_marking1_blue;
+		  select_background = tud_marking2_blue;
 		  select_foreground = GRAY99;
 		  window_color = GRAY33;
 		  dial_color = c2;
 
-		  set_color_index(Color(GRAY95), text_symbol_color);
 		  break;
 	  case 1:
 		  c0 = color(0.42f);
@@ -176,13 +161,12 @@ extern "C" bool fltk_theme() {
 		  foreground = text_symbol_color;
 		  text_foreground = text_symbol_color;
 		  text_background = c2;
-		  highlight_textcolor = tu_marking1_blue;
-		  select_background = tu_marking2_blue;
+		  highlight_textcolor = tud_marking1_blue;
+		  select_background = tud_marking2_blue;
 		  select_foreground = GRAY99;
 		  window_color = GRAY33;
 		  dial_color = c2;
 
-		  set_color_index(Color(GRAY95), text_symbol_color);
 		  break;
 	  case 2:
 		  c0 = color(0.16f);
@@ -194,42 +178,33 @@ extern "C" bool fltk_theme() {
 		  foreground = text_symbol_color;
 		  text_foreground = text_symbol_color;
 		  text_background = c0;
-		  highlight_textcolor = tu_marking2_blue;
-		  select_background = tu_marking1_blue;
+		  highlight_textcolor = tud_marking2_blue;
+		  select_background = tud_marking1_blue;
 		  select_foreground = GRAY99;
 		  window_color = GRAY33;
 		  dial_color = text_foreground;
 
-		  set_color_index(Color(GRAY95), text_symbol_color);
-		  Widget::default_style->is_dark_theme_ = true;
 		  break;
 	  case 3:
 		  c0 = color(0.10f);
 		  c1 = color(0.15f);
 		  c2 = color(0.20f);
 		  c3 = color(0.28f);
-		  text_symbol_color = color(0.84f);
+		  text_symbol_color = color(0.74f);
 
 		  foreground = text_symbol_color;
 		  text_foreground = text_symbol_color;
 		  text_background = c0;
-		  highlight_textcolor = tu_marking2_blue;
-		  select_background = tu_marking1_blue;
+		  highlight_textcolor = tud_marking2_blue;
+		  select_background = tud_marking1_blue;
 		  select_foreground = GRAY99;
 		  window_color = GRAY33;
 		  dial_color = text_foreground;
 
-		  set_color_index(Color(GRAY95), text_symbol_color);
-		  Widget::default_style->is_dark_theme_ = true;
 		  break;
 	  }
 
-	  //text_foreground = RED;
-	  //text_background = BLUE;
-
-	  //Color custom_dark_bg = color(static_cast<unsigned char>(30), static_cast<unsigned char>(30), static_cast<unsigned char>(35));
-
-	  fltk::set_main_gui_colors(c0, c1, c2, c3);
+	  fltk::set_main_gui_colors(c0, c1, c2, c3, text_symbol_color);
 	  //fltk::shift_background(background);
 	  Widget::default_style->labelcolor_ = foreground;
 	  Widget::default_style->highlight_textcolor_ = highlight_textcolor;
@@ -240,6 +215,7 @@ extern "C" bool fltk_theme() {
 
 	  Widget::default_style->box_ = BORDER_BOX;
 	  Widget::default_style->buttonbox_ = FLAT_BOX;
+	  
 
 	  TabGroup::flat_tabs(true);
 
@@ -255,9 +231,13 @@ extern "C" bool fltk_theme() {
 		  style->box_ = BORDER_BOX;
 	  }
 
-	  if((style = Style::find("Button"))) {
-		  style->box_ = SHADOW_UP_BOX; // use FLAT_UP_BOX if you dont want the thin shadow around the box
-	  }
+	  // use FLAT_UP_BOX if you dont want the thin shadow around the box
+	  Box* default_buttonbox = SHADOW_UP_BOX;
+	  Button::default_style->box_ = default_buttonbox;
+	  Button::default_style->buttonbox_ = default_buttonbox;
+	  /*if((style = Style::find("Button"))) {
+		  style->box_ = SHADOW_UP_BOX; 
+	  }*/
 
 	  /*
 	  FLAT_BOX: no border, only the background color

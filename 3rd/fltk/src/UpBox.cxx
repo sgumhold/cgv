@@ -406,6 +406,8 @@ void StateBox2::_draw(const fltk::Rectangle& R) const {
 			setcolor(hover_color_ + (GRAY00 - 'A'));
 		else
 			setcolor(bg_color_ + (GRAY00 - 'A'));
+		if(getbgcolor() != GRAY75)
+			setcolor(getbgcolor());
 		fillrect(r);
 	}
 	setcolor(fg);

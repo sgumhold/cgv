@@ -125,7 +125,6 @@ class FL_API Style {
   // global settings:
   static bool	hide_underscore_;
   static bool   draw_boxes_inactive_;
-  static bool	is_dark_theme_;
   static int	wheel_scroll_lines_;
 
   // Get functions, which search parents if value is zero:
@@ -151,7 +150,6 @@ class FL_API Style {
 
   bool		hide_underscore() const {return hide_underscore_;}
   bool		draw_boxes_inactive() const {return draw_boxes_inactive_;}
-  bool		is_dark_theme() const {return is_dark_theme_;}
   int		wheel_scroll_lines() const {return wheel_scroll_lines_;}
 
   // Set functions:
@@ -177,7 +175,6 @@ class FL_API Style {
 
   void hide_underscore	(bool v)	{hide_underscore_ = v;	}
   void draw_boxes_inactive(bool v)	{draw_boxes_inactive_ = v;}
-  void is_dark_theme(bool v)	{ is_dark_theme_ = v;}
   void wheel_scroll_lines(int v)	{wheel_scroll_lines_ = v;}
 
   Style();

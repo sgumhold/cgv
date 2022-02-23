@@ -35,7 +35,7 @@ public:
 		hscrollbar.pagesize(20);
 		scrollbar.pagesize(200);
 		scrollbar.linesize(14);
-		last_x = -std::numeric_limits<int>::max();
+		last_x = -999999;
 	}
 	void drag(int dx)
 	{
@@ -74,7 +74,7 @@ public:
 			return res;
 		case fltk::DRAG :
 			if (res == 0) {
-				int lx = last_x == -std::numeric_limits<int>::max() ? fltk::event_x() : last_x;
+				int lx = last_x == -999999 ? fltk::event_x() : last_x;
 				drag(fltk::event_x() - lx);
 				cursor(fltk::CURSOR_WE);
 				last_x = fltk::event_x();

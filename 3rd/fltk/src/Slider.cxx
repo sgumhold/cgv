@@ -586,7 +586,7 @@ public:
 
     Symbol* box = drawstyle()->buttonbox();
 	
-	// TODO:  MARK
+	// TODO: MARK (override some color settings in case of flat theme)
     box->draw(rr);
 
     Rectangle r = rr; box->inset(r);
@@ -594,7 +594,6 @@ public:
 	Color C1 = GRAY33;
 	Color C2 = GRAY99;
 
-	//if(Style::is_dark_theme_)
 	if(fltk::theme_idx_ > -1) {
 		C1 = GRAY95;
 		if(drawflags(INACTIVE)) C1 = inactive(C1, getbgcolor());
