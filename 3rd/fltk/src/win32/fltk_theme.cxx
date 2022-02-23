@@ -25,6 +25,7 @@
 // colors and font sizes from standard Windows95 interfaces.
 
 #include <fltk/Widget.h>
+#include <fltk/TabGroup.h>
 #include <fltk/draw.h>
 #include <fltk/Monitor.h>
 #include <fltk/Font.h>
@@ -81,19 +82,254 @@ extern "C" bool fltk_theme() {
 // Windows doesn't seem to honor this one
 // Color slider_background = win_color(GetSysColor(COLOR_SCROLLBAR));
 
-  fltk::set_background(background);
-  Widget::default_style->labelcolor_ = foreground;
-  Widget::default_style->highlight_textcolor_ = foreground;
-  Widget::default_style->color_ = text_background;
-  Widget::default_style->textcolor_ = text_foreground;
-  Widget::default_style->selection_color_ = select_background;
-  Widget::default_style->selection_textcolor_ = select_foreground;
-
+  int theme_idx = theme_idx_;
   Style* style;
 
-  if ((style = Style::find("ScrollBar"))) {
-//    style->color = lerp(slider_background, text_background, .5);
-    style->color_ = lerp(background, text_background, .5);
+  fltk::reset_indexed_colors();
+
+  Widget::default_style->is_dark_theme_ = false;
+
+  // TODO: split flat style from windows theme?
+  // TODO: remove is_dark_theme stuff if not needed
+
+  // TODO: MARK
+  if(theme_idx < 0) {
+	  // original
+	  fltk::set_background(background);
+	  Widget::default_style->labelcolor_ = foreground;
+	  Widget::default_style->highlight_textcolor_ = foreground;
+	  Widget::default_style->color_ = text_background;
+	  Widget::default_style->textcolor_ = text_foreground;
+	  Widget::default_style->selection_color_ = select_background;
+	  Widget::default_style->selection_textcolor_ = select_foreground;
+
+	  TabGroup::flat_tabs(false);
+
+	  if((style = Style::find("Tooltip"))) {
+		  style->color_ = tooltip_background;
+		  style->labelcolor_ = tooltip_foreground;
+	  }
+  } else {
+	  /*
+	  !!! Use GRAY75 if the color shall be controlled by fltk::set_background() !!!
+	  >>> WARNING:
+		Setting the background color will replace all other GRAY colors
+		with a color ramp so highlights look ok
+
+	  THEMES:
+	  0: light bg = GRAY95
+	  1: mid   bg = GRAY45
+	  2: dark  bg = GRAY25
+	  */
+
+	  Color highlight_textcolor = foreground;
+	  Color custom_dark_blue = color(34, 109, 160);
+	  Color custom_light_blue = color(67, 147, 201);
+	  
+	  // See corporate design 07/2021
+	  // "Auszeichnungsfarbe 1"
+	  const Color tu_marking1_blue = color(0, 105, 180);
+	  // "Auszeichnungsfarbe 2"
+	  const Color tu_marking2_blue = color(0, 159, 227);
+	  // "TUD-Web-Interface" - colors for web or other digital media
+	  // TU-Dresden blue
+	  const Color tu_blue = color(0, 37, 87);
+	  // dark red
+	  const Color tu_dark_red = color(181, 28, 28);
+	  // light red
+	  const Color tu_light_red = color(221, 39, 39);
+	  
+	  Color window_color = BLACK;
+	  Color c0 = WHITE; // set as GRAY33: the window background color (shall be the darkest color in the theme, except black and text colors)
+	  Color c1 = WHITE; // set as GRAY75: the background color for gui groups
+	  Color c2 = WHITE; // set as GRAY
+	  Color c3 = WHITE; // set as GRAY
+	  Color text_symbol_color = WHITE;
+	  Color dial_color = RED;
+
+	  switch(theme_idx) {
+	  case 0:
+		  c0 = color(0.70f);
+		  c1 = color(0.90f);
+		  c2 = color(0.98f);
+		  c3 = color(0.80f);
+		  text_symbol_color = color(0.19f);
+
+		  foreground = color(0.16f);// text_symbol_color;
+		  text_foreground = text_symbol_color;
+		  text_background = c2;
+		  highlight_textcolor = tu_marking1_blue;
+		  select_background = tu_marking2_blue;
+		  select_foreground = GRAY99;
+		  window_color = GRAY33;
+		  dial_color = c2;
+
+		  set_color_index(Color(GRAY95), text_symbol_color);
+		  break;
+	  case 1:
+		  c0 = color(0.42f);
+		  c1 = color(0.64f);
+		  c2 = color(0.78f);
+		  c3 = color(0.58f);
+		  text_symbol_color = color(0.04f);
+
+		  foreground = text_symbol_color;
+		  text_foreground = text_symbol_color;
+		  text_background = c2;
+		  highlight_textcolor = tu_marking1_blue;
+		  select_background = tu_marking2_blue;
+		  select_foreground = GRAY99;
+		  window_color = GRAY33;
+		  dial_color = c2;
+
+		  set_color_index(Color(GRAY95), text_symbol_color);
+		  break;
+	  case 2:
+		  c0 = color(0.16f);
+		  c1 = color(0.22f);
+		  c2 = color(0.30f);
+		  c3 = color(0.40f);
+		  text_symbol_color = color(0.86f);
+		  
+		  foreground = text_symbol_color;
+		  text_foreground = text_symbol_color;
+		  text_background = c0;
+		  highlight_textcolor = tu_marking2_blue;
+		  select_background = tu_marking1_blue;
+		  select_foreground = GRAY99;
+		  window_color = GRAY33;
+		  dial_color = text_foreground;
+
+		  set_color_index(Color(GRAY95), text_symbol_color);
+		  Widget::default_style->is_dark_theme_ = true;
+		  break;
+	  case 3:
+		  c0 = color(0.10f);
+		  c1 = color(0.15f);
+		  c2 = color(0.20f);
+		  c3 = color(0.28f);
+		  text_symbol_color = color(0.84f);
+
+		  foreground = text_symbol_color;
+		  text_foreground = text_symbol_color;
+		  text_background = c0;
+		  highlight_textcolor = tu_marking2_blue;
+		  select_background = tu_marking1_blue;
+		  select_foreground = GRAY99;
+		  window_color = GRAY33;
+		  dial_color = text_foreground;
+
+		  set_color_index(Color(GRAY95), text_symbol_color);
+		  Widget::default_style->is_dark_theme_ = true;
+		  break;
+	  }
+
+	  //text_foreground = RED;
+	  //text_background = BLUE;
+
+	  //Color custom_dark_bg = color(static_cast<unsigned char>(30), static_cast<unsigned char>(30), static_cast<unsigned char>(35));
+
+	  fltk::set_main_gui_colors(c0, c1, c2, c3);
+	  //fltk::shift_background(background);
+	  Widget::default_style->labelcolor_ = foreground;
+	  Widget::default_style->highlight_textcolor_ = highlight_textcolor;
+	  Widget::default_style->color_ = text_background;
+	  Widget::default_style->textcolor_ = text_foreground;
+	  Widget::default_style->selection_color_ = select_background;
+	  Widget::default_style->selection_textcolor_ = select_foreground;
+
+	  Widget::default_style->box_ = BORDER_BOX;
+	  Widget::default_style->buttonbox_ = FLAT_BOX;
+
+	  TabGroup::flat_tabs(true);
+
+	  if((style = Style::find("Window"))) {
+		  style->color_ = window_color;
+	  }
+
+	  if((style = Style::find("MenuBar"))) {
+		  style->buttonbox_ = MENU_BOX;
+	  }
+
+	  if((style = Style::find("MenuWindow"))) {
+		  style->box_ = BORDER_BOX;
+	  }
+
+	  if((style = Style::find("Button"))) {
+		  style->box_ = SHADOW_UP_BOX; // use FLAT_UP_BOX if you dont want the thin shadow around the box
+	  }
+
+	  /*
+	  FLAT_BOX: no border, only the background color
+	  BORDER_BOX: background color framed in a 1px thick broder
+	  */
+	  Box* input_frame_box = FLAT_BOX;
+	  //Box* input_frame_box = BORDER_BOX;
+	  /*
+	  NO_BOX: buttons of inputs are not highlighted and have the same background color as the input itself
+	  FLAT_UP_BOX: the buttons have a different background color than the input itself
+	  */
+	  Box* input_button_box = NO_BOX;
+	  //Box* input_button_box = FLAT_UP_BOX;
+
+	  if((style = Style::find("Choice"))) {
+		  style->box_ = input_frame_box;
+		  style->buttonbox_ = input_button_box;
+	  }
+
+	  if((style = Style::find("Dial"))) {
+		  style->color_ = GRAY80;
+		  style->textcolor_ = GRAY33;
+		  style->selection_color_ = dial_color;
+	  }
+
+	  if((style = Style::find("Output"))) {
+		  style->box_ = input_frame_box;
+	  }
+
+	  if((style = Style::find("ValueOutput"))) {
+		  style->box_ = input_frame_box;
+	  }
+
+	  if((style = Style::find("Input"))) {
+		  style->box_ = input_frame_box;
+		  //style->buttonbox_ = input_button_box;
+	  }
+
+	  if((style = Style::find("ValueInput"))) {
+		  style->box_ = input_frame_box;
+		  style->buttonbox_ = input_button_box;
+	  }
+
+	  if((style = Style::find("Check_Button"))) {
+		  style->box_ = input_frame_box;
+	  }
+
+	  if((style = Style::find("Slider"))) {
+		  style->box_ = FLAT_BOX; // set to NO_BOX, to make color changes only affect the tickmarks
+		  style->buttonbox_ = FLAT_BOX;
+		  style->buttoncolor_ = GRAY80;
+		  //style->selection_color_ = RED; / can change color of slider handle
+	  }
+
+	  if((style = Style::find("ThumbWheel"))) {
+		  style->box_ = input_frame_box;
+		  style->buttonbox_ = NO_BOX;
+		  style->color_ = GRAY80; // set this if you want a light background
+	  }
+
+	  if((style = Style::find("Scrollbar"))) {
+		  style->color_ = GRAY33;
+		  style->buttoncolor_ = GRAY80;
+		  style->box_ = NO_BOX;
+		  style->buttonbox_ = FLAT_BOX;
+	  }
+
+	  if((style = Style::find("Tooltip"))) {
+		  style->box_ = BORDER_BOX;
+		  style->color_ = text_background;
+		  style->textcolor_ = text_symbol_color;
+	  }
   }
 
 //   if (menuitem_background != background || menuitem_foreground != foreground) {
@@ -113,11 +349,6 @@ extern "C" bool fltk_theme() {
     style->selection_textcolor_ = foreground;
   }
 */
-
-  if ((style = Style::find("Tooltip"))) {
-    style->color_ = tooltip_background;
-    style->labelcolor_ = tooltip_foreground;
-  }
 
   /*
      Windows font stuff

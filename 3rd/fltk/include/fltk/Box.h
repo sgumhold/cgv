@@ -49,12 +49,46 @@ public:
     : Box(name),data_(pattern),down_(down) {set_inset(dx,dy,-dw,-dh);}
 };
 
+class FL_API StateBox : public Box {
+protected:
+	const Box* up_;
+	const Box* down_;
+public:
+	void _draw(const Rectangle&) const;
+	bool fills_rectangle() const;
+	bool is_frame() const;
+	StateBox(const char* name, const Box* up = 0, const Box* down = 0)
+		: Box(name), up_(up), down_(down) {}
+};
+
+class FL_API StateBox2 : public FrameBox {
+protected:
+	const char bg_color_;
+	const char hover_color_;
+public:
+	void _draw(const Rectangle&) const;
+	StateBox2(const char* name, int dx, int dy, int dw, int dh, const char* pattern, const char bg, const char hover, const Box* down = 0)
+		: FrameBox(name, dx, dy, dw, dh, pattern, down), bg_color_(bg), hover_color_(hover) {}
+};
+
 class FL_API FlatBox : public Box {
 public:
   void _draw(const Rectangle&) const;
   bool fills_rectangle() const;
   bool is_frame() const;
   FlatBox(const char* n);
+};
+
+class FL_API HoverBox : public FlatBox {
+protected:
+	const char bg_color_;
+	const char hover_color_;
+public:
+	void _draw(const Rectangle&) const;
+	bool fills_rectangle() const;
+	bool is_frame() const;
+	HoverBox(const char* name, const char bg, const char hover_bg)
+		: FlatBox(name), bg_color_(bg), hover_color_(hover_bg) {}
 };
 
 class FL_API HighlightBox : public FlatBox {

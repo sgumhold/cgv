@@ -395,4 +395,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-cgv::base::factory_registration<mesh> mesh_fac("new/media/mesh", 'M');
+cgv::base::factory_registration<mesh> mesh_fac("New/Media/Mesh", 'M');

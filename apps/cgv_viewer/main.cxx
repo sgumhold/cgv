@@ -14,7 +14,7 @@ using namespace cgv::utils;
 
 void generate_gui(gui_driver_ptr d)
 {
-	window_ptr w = application::create_window(1280,768,"cgv 3d viewer");
+	window_ptr w = application::create_window(1280,768,"CGV Viewer");
 	w->show();
 	register_object(w, "register viewer window");
 }

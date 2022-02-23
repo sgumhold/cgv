@@ -347,5 +347,5 @@ void process_request(http_request* r)
 }
 
 /// register web server test
-factory_registration<web_server_test> web_server_test_fac("new/demo/web server test", 'W', true);
+factory_registration<web_server_test> web_server_test_fac("New/Demo/Web Server", 'W', true);
 

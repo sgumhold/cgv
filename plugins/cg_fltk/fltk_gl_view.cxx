@@ -902,88 +902,89 @@ void fltk_gl_view::configure_opengl_controls()
 ///  
 void fltk_gl_view::create_gui()
 {
-	add_decorator("gl view", "heading");
-	if (begin_tree_node("rendering", fps, false, "level=3")) {
+	// TODO: MARK
+	add_decorator("GL View", "heading");
+	if (begin_tree_node("Rendering", fps, false)) {
 		provider::align("\a");
-		add_view("fps", fps, "", "w=72", " ");
+		add_view("FPS", fps, "", "w=72", " ");
 		add_member_control(this, "EWMA", fps_alpha, "value_slider", "min=0;max=1;ticks=true;w=120;align='B';tooltip='coefficient of exponentially weighted moving average'");
-		add_member_control(this, "vsynch", enable_vsynch, "toggle", "w=92", " ");
-		add_member_control(this, "instant redraw", instant_redraw, "toggle", "w=100");
-		add_member_control(this, "gamma", gamma, "value_slider", "min=0.2;max=5;ticks=true;log=true;tooltip='default gamma used for inverse gamma correction of fragment color'");
-		add_member_control(this, "sRGB_framebuffer", sRGB_framebuffer, "check");
+		add_member_control(this, "VSync", enable_vsynch, "toggle", "w=92", " ");
+		add_member_control(this, "Instant Redraw", instant_redraw, "toggle", "w=100");
+		add_member_control(this, "Gamma", gamma, "value_slider", "min=0.2;max=5;ticks=true;log=true;tooltip='default gamma used for inverse gamma correction of fragment color'");
+		add_member_control(this, "sRGB Framebuffer", sRGB_framebuffer, "check");
 		provider::align("\b");
 		end_tree_node(fps);
 	}
-	if (begin_tree_node("debug", enabled, false, "level=3")) {
+	if (begin_tree_node("Debug", enabled, false)) {
 		provider::align("\a");
-		add_member_control(this, "show_help", show_help, "check");
-		add_member_control(this, "show_stats", show_stats, "check");
-		add_member_control(this, "debug_render_passes", debug_render_passes, "check");
-		add_member_control(this, "performance monitoring", enabled, "check");
-		add_member_control(this, "time scale", time_scale, "value_slider", "min=1;max=90;ticks=true;log=true");
-		add_gui("placement", placement, "", "options='min=0;max=500'");
+		add_member_control(this, "Show Help", show_help, "check");
+		add_member_control(this, "Show Stats", show_stats, "check");
+		add_member_control(this, "Debug Render Passes", debug_render_passes, "check");
+		add_member_control(this, "Performance Monitoring", enabled, "check");
+		add_member_control(this, "Time Scale", time_scale, "value_slider", "min=1;max=90;ticks=true;log=true");
+		add_gui("Placement", placement, "", "options='min=0;max=500'");
 		provider::align("\b");
 		end_tree_node(enabled);
 	}
 
-	if (begin_tree_node("buffers", stereo_buffer, false, "level=3")) {
+	if (begin_tree_node("Buffers", stereo_buffer, false)) {
 		provider::align("\a");
-		add_member_control(this, "alpha buffer", alpha_buffer, "toggle");
-		add_member_control(this, "double buffer", context_config::double_buffer, "toggle");
+		add_member_control(this, "Alpha Buffer", alpha_buffer, "toggle");
+		add_member_control(this, "Double Buffer", context_config::double_buffer, "toggle");
 
-		add_view("depth bits", depth_bits, "", "w=32", " ");
-		add_member_control(this, "depth buffer", depth_buffer, "toggle", "w=160");
+		add_view("Depth Bits", depth_bits, "", "w=32", " ");
+		add_member_control(this, "Depth Buffer", depth_buffer, "toggle", "w=160");
 		
-		add_view("stencil bits", stencil_bits, "", "w=32", " ");
-		add_member_control(this, "stencil buffer", stencil_buffer, "toggle", "w=160");
+		add_view("Stencil Bits", stencil_bits, "", "w=32", " ");
+		add_member_control(this, "Stencil Buffer", stencil_buffer, "toggle", "w=160");
 
-		add_view("accumulation bits", accumulation_bits, "", "w=32", " ");
-		add_member_control(this, "accumulation buffer", accumulation_buffer, "toggle", "w=160");
+		add_view("Accumulation Bits", accumulation_bits, "", "w=32", " ");
+		add_member_control(this, "Accumulation Buffer", accumulation_buffer, "toggle", "w=160");
 
-		add_view("nr multi samples", nr_multi_samples, "", "w=32", " ");
-		add_member_control(this, "multi sample buffer", multi_sample_buffer, "toggle", "w=160");
+		add_view("Num Multi Samples", nr_multi_samples, "", "w=32", " ");
+		add_member_control(this, "Multi Sample Buffer", multi_sample_buffer, "toggle", "w=160");
 
-		add_member_control(this, "stereo buffer", stereo_buffer, "toggle");
+		add_member_control(this, "Stereo Buffer", stereo_buffer, "toggle");
 		provider::align("\b");
 		end_tree_node(stereo_buffer);
 	}
-	if (begin_tree_node("opengl", version, false, "level=3")) {
+	if (begin_tree_node("OpenGL", version, false)) {
 		provider::align("\a");
-		add_member_control(this, "version", reinterpret_cast<cgv::type::DummyEnum&>(version), "dropdown", 
+		add_member_control(this, "Version", reinterpret_cast<cgv::type::DummyEnum&>(version), "dropdown", 
 			"w=120;enums='detect=-1,1.0=10,1.1=11,1.2=12,1.3=13,1.4=14,1.5=15,2.0=20,2.1=21,3.0=30,3.1=31,3.2=32,3.3=33,4.0=40,4.1=41,4.2=42,4.3=43,4.4=44,4.5=45,4.6=46'", " ");
 		add_view("", version_major, "", "w=32", " ");
 		add_view(".", version_minor, "", "w=32");
-		add_member_control(this, "core", core_profile, "toggle", "w=60", " ");
-		add_member_control(this, "fwd_comp", forward_compatible, "toggle", "w=60", " ");
-		add_member_control(this, "debug", debug, "toggle", "w=60");
+		add_member_control(this, "Core", core_profile, "toggle", "w=60", " ");
+		add_member_control(this, "Fwd Comp", forward_compatible, "toggle", "w=60", " ");
+		add_member_control(this, "Debug", debug, "toggle", "w=60");
 		configure_opengl_controls();
 		provider::align("\b");
 		end_tree_node(version);
 	}
-	if (begin_tree_node("clear", bg_r, false, "level=3")) {
+	if (begin_tree_node("Clear", bg_r, false)) {
 		provider::align("\a");
-		add_member_control(this, "color", (cgv::media::color<float>&) bg_r);
-		add_member_control(this, "alpha", bg_a, "value_slider", "min=0;max=1;ticks=true;step=0.001");
-		add_member_control(this, "accum color", (cgv::media::color<float>&) bg_accum_r);
-		add_member_control(this, "accum alpha", bg_accum_a, "value_slider", "min=0;max=1;ticks=true;step=0.001");
-		add_member_control(this, "stencil", bg_s, "value_slider", "min=0;max=1;ticks=true;step=0.001");
-		add_member_control(this, "depth", bg_d, "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		add_member_control(this, "Color", (cgv::media::color<float>&) bg_r);
+		add_member_control(this, "Alpha", bg_a, "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		add_member_control(this, "Accum Color", (cgv::media::color<float>&) bg_accum_r);
+		add_member_control(this, "Accum Alpha", bg_accum_a, "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		add_member_control(this, "Stencil", bg_s, "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		add_member_control(this, "Depth", bg_d, "value_slider", "min=0;max=1;ticks=true;step=0.001");
 		provider::align("\b");
 		end_tree_node(bg_r);
 	}
-	if (begin_tree_node("compatibility", support_compatibility_mode, false, "level=3")) {
+	if (begin_tree_node("Compatibility", support_compatibility_mode, false)) {
 		provider::align("\a");
-		add_member_control(this, "auto_set_view_in_current_shader_program", auto_set_view_in_current_shader_program, "check");
-		add_member_control(this, "auto_set_lights_in_current_shader_program", auto_set_lights_in_current_shader_program, "check");
-		add_member_control(this, "auto_set_material_in_current_shader_program", auto_set_material_in_current_shader_program, "check");
-		add_member_control(this, "support_compatibility_mode", support_compatibility_mode, "check");
-		add_member_control(this, "draw_in_compatibility_mode", draw_in_compatibility_mode, "check");
+		add_member_control(this, "Auto Set View in Current Shader Program", auto_set_view_in_current_shader_program, "check");
+		add_member_control(this, "Auto Set Lights in Current Shader Program", auto_set_lights_in_current_shader_program, "check");
+		add_member_control(this, "Auto Set Material in Current Shader Program", auto_set_material_in_current_shader_program, "check");
+		add_member_control(this, "Support Compatibility Mode", support_compatibility_mode, "check");
+		add_member_control(this, "Draw in Compatibility Mode", draw_in_compatibility_mode, "check");
 		provider::align("\b");
 		end_tree_node(support_compatibility_mode);
 	}
-	if (begin_tree_node("defaults", current_material_is_textured, false, "level=3")) {
+	if (begin_tree_node("Defaults", current_material_is_textured, false)) {
 		provider::align("\a");
-		if (begin_tree_node("default_render_flags", default_render_flags, false, "level=4")) {
+		if (begin_tree_node("Default Render Flags", default_render_flags, false)) {
 			add_gui("default_render_flags", default_render_flags, "bit_field_control",
 			"enums='RPF_SET_PROJECTION = 1,RPF_SET_MODELVIEW = 2,RPF_SET_LIGHTS = 4,RPF_SET_MATERIAL = 8,\
 RPF_SET_LIGHTS_ON=16,RPF_ENABLE_MATERIAL=32,RPF_CLEAR_COLOR=64,RPF_CLEAR_DEPTH=128,\
@@ -996,14 +997,14 @@ RPF_DRAW_TEXTUAL_INFO=262144,RPF_DRAWABLES_AFTER_FINISH=524288,RPF_HANDLE_SCREEN
 		}
 
 
-		if (begin_tree_node("material", default_material, false, "level=4")) {
+		if (begin_tree_node("Material", default_material, false)) {
 			provider::align("\a");
 			add_gui("material", default_material);
 			provider::align("\b");
 			end_tree_node(default_material);
 		}
 		for (int i = 0; i < nr_default_light_sources; ++i) {
-			if (begin_tree_node("light[" + cgv::utils::to_string(i) + "]", default_light_source[i], false, "level=4")) {
+			if (begin_tree_node("Light " + cgv::utils::to_string(i), default_light_source[i], false)) {
 				provider::align("\a");
 				add_gui("light", default_light_source[i]);
 				provider::align("\b");

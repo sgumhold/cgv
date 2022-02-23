@@ -140,6 +140,7 @@ bool ColorChooser::hsv(float h, float s, float v) {
 bool ColorChooser::a(float a) {
   alphabox.show();
   if (a == a_ && !no_value_) return false;
+  if(a < 0) a = 0; else if(a > 1) a = 1;
   a_ = a; no_value_ = false;
   alphabox.redraw(DAMAGE_VALUE);
   return true;
@@ -244,6 +245,7 @@ void ccHueBox::draw() {
   if (Y < 0) Y = 0; else if (Y > r.h()-6) Y = r.h()-6;
   //  color(c->v()>.75 ? BLACK : WHITE);
   drawstyle(style(),OUTPUT);
+  if(fltk::theme_idx_ > -1) setbgcolor(getcolor());
   buttonbox()->draw(Rectangle(r.x()+X, r.y()+Y, 6, 6));
   px = X; py = Y;
 }
@@ -334,26 +336,30 @@ void ccValueBox::draw() {
   int Y = int((1-v) * (i.wh.h()-6));
   if (Y < 0) Y = 0; else if (Y > i.wh.h()-6) Y = i.wh.h()-6;
   drawstyle(style(),OUTPUT);
+  if(fltk::theme_idx_ > -1) setbgcolor(getcolor());
   buttonbox()->draw(Rectangle(i.wh.x(), i.wh.y()+Y, i.wh.w(), 6));
   py = Y;
 }
 
 ////////////////////////////////////////////////////////////////
 
-#define ROWS 4
+#define ROWS 3
 #define COLS 16
 
 FL_API Color fl_color_cells[ROWS*COLS] = {
-// first the 16 assignable fltk color indexes:
-0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
-16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,
-// then the closest gray ramps to 0,1/4,1/3,1/2,2/3,3/4,1:
-32,32,32,37,37,39,39,43,43,47,47,49,49,55,55,55,
-// repeat it twice:
-32,32,32,37,37,39,39,43,43,47,47,49,49,55,55,55};
+	// first the 16 assignable fltk color indexes:
+	0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
+	16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,
+	// then the closest gray ramps to 0,1/4,1/3,1/2,2/3,3/4,1:
+	32,32,32,37,37,39,39,43,43,47,47,49,49,55,55,55 };
+	// repeat it twice:
+	//32,32,32,37,37,39,39,43,43,47,47,49,49,55,55,55 };
 
 void ccCellBox::draw() {
   int yy = 0;
+  // TODO: MARK (switch the box for the color cells to a flat/or border one on the flat themes)
+  Box* box = fltk::theme_idx_ < 0 ? THIN_DOWN_BOX : BORDER_BOX;
+
   for (int Y = 0; Y < ROWS; Y++) {
     int hh = (Y+1)*h()/ROWS - yy;
     int xx = 0;
@@ -363,9 +369,9 @@ void ccCellBox::draw() {
       drawstyle(style(),OUTPUT);
       if (X || Y || !((ColorChooser*)parent())->support_no_value) {
 	setbgcolor(fl_color_cells[Y*COLS+X]);
-	THIN_DOWN_BOX->draw(r);
+	box->draw(r);
       } else {
-	THIN_DOWN_BOX->draw(r);
+	box->draw(r);
 	r.inset(1);
 	push_clip(r);
 	drawtext("@7+",r,0);
@@ -583,19 +589,24 @@ static void cancel_cb(Widget* w, void*) {
 
 static void make_it() {
   if (window) return;
-  window = new Window(210, 160+5+26+21+21+5);
+  int width = 260;
+  int padding = 10;
+  int chooser_height = 225;
+  window = new Window(width + 2*padding, chooser_height+5 + 26+20+20+ 2*padding);
+  window->color(GRAY75);
   window->begin();
-  chooser = new ColorChooser(5, 5, 200, 155);
+  chooser = new ColorChooser(padding, padding, width, chooser_height);
   chooser->callback(chooser_cb);
-  int y = 165;
-  int x = 5;
-  rvalue = new ccValueInput(x,y,50,21); x += 50;
+  int y = chooser_height + 15;
+  int x = padding;
+  int input_width = (width - 3 * padding) / 4;
+  rvalue = new ccValueInput(x,y, input_width,20); x += input_width + padding;
   rvalue->callback(input_cb);
-  gvalue = new ccValueInput(x,y,50,21); x += 50;
+  gvalue = new ccValueInput(x,y, input_width,20); x += input_width + padding;
   gvalue->callback(input_cb);
-  bvalue = new ccValueInput(x,y,50,21); x += 50;
+  bvalue = new ccValueInput(x,y, input_width,20); x += input_width + padding;
   bvalue->callback(input_cb);
-  avalue = new ccValueInput(x,y,50,21); x += 50;
+  avalue = new ccValueInput(x,y, input_width,20); x += input_width + padding;
   avalue->callback(input_cb);
   PopupMenu* choice = new PopupMenu(5,y,200,21); x+=40;
   choice->type(PopupMenu::POPUP3);
@@ -608,13 +619,15 @@ static void make_it() {
   choice->value(0);
   choice->tooltip("Right-click to change type of data entered here");
   y += 26;
-  ok_color = new Widget(5, y, 95, 21);
-  ok_color->box(ENGRAVED_BOX);
-  ok_button = new ReturnButton(5, y+21, 95, 21, ok);
+  int button_width = (width-padding) / 2;
+  Box* color_box = fltk::theme_idx_ < 0 ? ENGRAVED_BOX : BORDER_BOX;
+  ok_color = new Widget(padding, y, button_width, 20);
+  ok_color->box(color_box);
+  ok_button = new Button(padding, y+20, button_width, 20, ok);
   ok_button->callback(ok_cb);
-  cancel_color = new Widget(110, y, 95, 21);
-  cancel_color->box(ENGRAVED_BOX);
-  cancel_button = new Button(110, y+21, 95, 21, cancel);
+  cancel_color = new Widget(2*padding + button_width, y, button_width, 20);
+  ok_color->box(color_box);
+  cancel_button = new Button(2*padding + button_width, y+20, button_width, 20, cancel);
   cancel_button->callback(cancel_cb);
   // window->size_range(210, 240); // minimum usable size?
   window->resizable(chooser);
@@ -625,6 +638,9 @@ static int run_it(const char* name)
 {
   window->label(name);
   set_valuators(chooser);
+  // TODO: MARK override labels if desired (& before a character sets a shortcut keypress; symbols also possible)
+  //ok_button->label("@+ " + ok);
+  //cancel_button->label("@7thinplus " + cancel);
   ok_color->color(chooser->value());
   ok_color->label(chooser->no_value() ? "@7+" : 0);
   cancel_color->color(chooser->value());

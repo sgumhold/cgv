@@ -744,6 +744,14 @@ static void draw_filesave(Color col) {
 	EC;*/
 }
 
+static void draw_menu(Color col)
+{
+	float w = 1.0f;
+	rectangle(-w, -0.80f, w, -0.60f, col);
+	rectangle(-w, +0.05f, w, -0.10f, col);
+	rectangle(-w, +0.70f, w, +0.55f, col);
+}
+
 // These last two are probably obsolete:
 // static void draw_arrow(Color col)
 // {
@@ -782,15 +790,15 @@ static void init_symbols(void) {
 //  add_symbol("arrow",		draw_arrow,		1);
   add_symbol("square",		draw_square,		1);
   add_symbol("circle",		draw_circle,		1);
-  add_symbol("line",		draw_line,		1);
-  add_symbol("plus",		draw_plus,		1);
+  add_symbol("line",		draw_line,			1);
+  add_symbol("plus",		draw_plus,			1);
   add_symbol("search",		draw_search,		1);
   add_symbol("thinminus",	draw_thinminus,		1);
   add_symbol("thinplus",	draw_thinplus,		1);
-//  add_symbol("menu",		draw_menu,		1);
+  add_symbol("menu",		draw_menu,			1);
   add_symbol("UpArrow",		draw_uparrow,		1);
   add_symbol("DnArrow",		draw_downarrow,		1);
-  add_symbol("||",		draw_doublebar,		1);
+  add_symbol("||",			draw_doublebar,		1);
   add_symbol("filenew",		draw_filenew,		1);
   add_symbol("fileopen",	draw_fileopen,		1);
   add_symbol("filesave",	draw_filesave,		1);

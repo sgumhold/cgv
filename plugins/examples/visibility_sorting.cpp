@@ -155,4 +155,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new visibility sorting tests
-cgv::base::factory_registration<visibility_sorting> test_visibility_sorting_fac("new/GPGPU/visibility_sorting");
+cgv::base::factory_registration<visibility_sorting> test_visibility_sorting_fac("New/GPGPU/Visibility Sorting");

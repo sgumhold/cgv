@@ -516,4 +516,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-cgv::base::factory_registration<vbo_aab> vbo_aab_fac("new/media/vbo_aab", 'V');
+cgv::base::factory_registration<vbo_aab> vbo_aab_fac("New/Media/VBO AAB", 'V');

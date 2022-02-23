@@ -280,6 +280,11 @@ void fl_to_inactive(const char* s, char* to) {
   *to = 0;
 }
 
+char fl_invert(const char b, const char c) {
+	char d = b - c;
+	return b + 2*d;
+}
+
 void FrameBox::_draw(const fltk::Rectangle& R) const
 {
   if (drawflags(PUSHED|STATE) && down_) {
@@ -358,11 +363,98 @@ static FrameBox embossedBox("embossed", 2,2,4,4, "IIWWWWII", &downBox);
 */
 Box* const fltk::EMBOSSED_BOX = &embossedBox;
 
-static FrameBox borderBox("border", 1,1,2,2, "KKLL", &downBox);
+//static FrameBox borderBox("border", 1,1,2,2, "KKLL", &downBox);
+//static FrameBox borderBox("border", 1, 1, 2, 2, "NNNN");// , &downBox);
+static FrameBox borderBox("border", 1, 1, 2, 2, "TTTT");
 /*!
   1-pixel thick gray line around rectangle.
 */
 Box* const fltk::BORDER_BOX = &borderBox;
+
+
+
+
+void StateBox::_draw(const fltk::Rectangle& R) const {
+	if(drawflags(PUSHED | STATE) && down_)
+		down_->draw(R);
+	else if(up_)
+		up_->draw(R);
+}
+
+bool StateBox::fills_rectangle() const { return true; }
+bool StateBox::is_frame() const { return true; }
+
+void StateBox2::_draw(const fltk::Rectangle& R) const {
+	if(drawflags(PUSHED | STATE) && down_) {
+		down_->draw(R);
+		return;
+	}
+	const Color fg = getcolor();
+	const char* s = data();
+	char buf[26]; if(drawflags(INACTIVE_R) && Style::draw_boxes_inactive_ && fltk::theme_idx_ < 0) {
+		fl_to_inactive(s, buf); s = buf;
+	}
+	if(*s == '2') {
+		drawframe2(s + 1, R.x(), R.y(), R.w(), R.h());
+	} else {
+		drawframe(s, R.x(), R.y(), R.w(), R.h());
+	}
+	if(!drawflags(INVISIBLE)) {
+		Rectangle r(R);
+		Symbol::inset(r);
+		if(drawflags(HIGHLIGHT|STATE))
+			setcolor(hover_color_ + (GRAY00 - 'A'));
+		else
+			setcolor(bg_color_ + (GRAY00 - 'A'));
+		fillrect(r);
+	}
+	setcolor(fg);
+}
+
+bool HoverBox::fills_rectangle() const { return true; }
+bool HoverBox::is_frame() const { return true; }
+
+void HoverBox::_draw(const fltk::Rectangle& R) const {
+	Color bg = getbgcolor();
+	const char c = drawflags(HIGHLIGHT | STATE) ? hover_color_ : bg_color_;
+	setbgcolor(c + (GRAY00 - 'A'));
+	
+	FlatBox::_draw(R);
+	setbgcolor(bg);
+}
+
+/*!
+  Pushed in flat button with thin inset shadow
+*/
+static StateBox2 shadowDownBox("shadow_down", 1, 2, 2, 3, "2GHHHH", 'H', 'H');
+Box* const fltk::SHADOW_DOWN_BOX = &shadowDownBox;
+// 
+/*!
+  A pushable flat button with a thin shadow appearance.
+*/
+static StateBox2 shadowUpBox("shadow_up", 0, 0, 0, 1, "H", 'S', 'S', &shadowDownBox);
+Box* const fltk::SHADOW_UP_BOX = &shadowUpBox;
+
+
+static HoverBox flatDownBox("flat_s_down", 'H', 'H');
+static HoverBox flatUpBox("flat_s_up", 'S', 'S');
+
+static StateBox flatStateBox("flat_s_", &flatUpBox, &flatDownBox);
+
+Box* const fltk::FLAT_UP_BOX = &flatStateBox;
+
+
+
+static HoverBox menuDownBox("menu_down", 'T', 'T');
+static HoverBox menuUpBox("menu_up", 'R', 'H');
+
+static StateBox menuBox("menu_", &menuUpBox, &menuDownBox);
+
+Box* const fltk::MENU_BOX = &menuBox;
+
+
+
+
 
 ////////////////////////////////////////////////////////////////
 // Deprecated "frame" box, appaently needed for fltk 1.0 compatability?

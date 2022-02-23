@@ -159,5 +159,5 @@ void mouse_tracker::finish_frame(context& ctx)
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-cgv::base::factory_registration_1<mouse_tracker,const char*> tracker_fac("new/events/mouse tracker", 'M', "mouse tracker", true);
+cgv::base::factory_registration_1<mouse_tracker,const char*> tracker_fac("New/Events/Mouse Tracker", 'M', "mouse tracker", true);
 
