@@ -48,6 +48,15 @@ protected:
 
 };
 
+// overrides the draw method of PopupMenu to ge rid of the default glyph
+class FL_API PopupMenu2 : public PopupMenu {
+public:
+	PopupMenu2(int x, int y, int w, int h, const char *l = 0) : PopupMenu(x, y, w, h, l) {}
+protected:
+	void draw();
+
+};
+
 }
 #endif
 
