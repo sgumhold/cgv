@@ -345,5 +345,5 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new rounded cone texturing tests
-cgv::base::factory_registration<cone_texturing> test_cone_texturing_fac("new/demo/cone_texturing", '5');
-cgv::base::factory_registration<cone_tree> test_cone_tree_fac("new/demo/cone_tree", '6');
+cgv::base::factory_registration<cone_texturing> test_cone_texturing_fac("New/Demo/Cone Texturing", '5');
+cgv::base::factory_registration<cone_tree> test_cone_tree_fac("New/Demo/Cone Tree", '6');

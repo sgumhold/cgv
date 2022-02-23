@@ -803,5 +803,5 @@ public:
 
 #include <cgv/base/register.h>
 
-factory_registration<ear_cutting> ec_fac("new/algorithms/ear_cutting", 'E', true);
+factory_registration<ear_cutting> ec_fac("New/Algorithms/Ear Cutting", 'E', true);
 

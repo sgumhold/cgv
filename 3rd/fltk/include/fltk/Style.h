@@ -63,6 +63,12 @@ extern FL_API Box* const OFLAT_BOX;
 extern FL_API Box* const BORDER_FRAME;
 extern FL_API Box* const PLASTIC_UP_BOX;
 extern FL_API Box* const PLASTIC_DOWN_BOX;
+// Custom boxes
+extern FL_API Box* const MENU_BOX;
+extern FL_API Box* const SHADOW_UP_BOX;
+extern FL_API Box* const SHADOW_DOWN_BOX;
+extern FL_API Box* const FLAT_UP_BOX;
+extern FL_API Box* const FLAT_DOWN_BOX;
 
 struct Font;
 extern FL_API Font* const HELVETICA;
@@ -119,6 +125,7 @@ class FL_API Style {
   // global settings:
   static bool	hide_underscore_;
   static bool   draw_boxes_inactive_;
+  static bool	is_dark_theme_;
   static int	wheel_scroll_lines_;
 
   // Get functions, which search parents if value is zero:
@@ -144,6 +151,7 @@ class FL_API Style {
 
   bool		hide_underscore() const {return hide_underscore_;}
   bool		draw_boxes_inactive() const {return draw_boxes_inactive_;}
+  bool		is_dark_theme() const {return is_dark_theme_;}
   int		wheel_scroll_lines() const {return wheel_scroll_lines_;}
 
   // Set functions:
@@ -169,6 +177,7 @@ class FL_API Style {
 
   void hide_underscore	(bool v)	{hide_underscore_ = v;	}
   void draw_boxes_inactive(bool v)	{draw_boxes_inactive_ = v;}
+  void is_dark_theme(bool v)	{ is_dark_theme_ = v;}
   void wheel_scroll_lines(int v)	{wheel_scroll_lines_ = v;}
 
   Style();
@@ -188,6 +197,7 @@ struct FL_API NamedStyle : public Style {
 
 extern "C" {typedef bool (*Theme)();}
 extern FL_API Theme theme_;
+extern FL_API int theme_idx_;
 inline Theme theme() {return theme_;}
 inline void theme(Theme f) {theme_ = f;}
 FL_API void load_theme();

@@ -249,4 +249,4 @@ public:
 	}
 };
 
-factory_registration<proj_geom_demo> homo_demo_fac("proj_geom", "shortcut='Ctrl-Alt-P';menu_text='new/demo/proj geom demo'", true);
+factory_registration<proj_geom_demo> homo_demo_fac("proj_geom", "shortcut='Ctrl-Alt-P';menu_text='New/Demo/Project Geometry'", true);

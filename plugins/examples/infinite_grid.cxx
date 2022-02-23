@@ -125,5 +125,5 @@ public:
 
 #include <cgv/base/register.h>
 
-factory_registration_1<infinite_grid,int> ig_fac("new/render/infinite grid", 'I', 8, true);
+factory_registration_1<infinite_grid,int> ig_fac("New/Render/Infinite Grid", 'I', 8, true);
 

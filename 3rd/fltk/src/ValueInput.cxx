@@ -110,7 +110,15 @@ void ValueInput::draw() {
     if (which_pushed && pushed())
       f[which_pushed-1] |= PUSHED;
     Rectangle gr(r.r(),r.y(),bw,bh);
+	
     drawstyle(style(),f[0]);
+	if(style()->buttonbox_ == NO_BOX) {
+		Rectangle br(r.r(), r.y(), bw, bh + bh);
+		Color c = getcolor();
+		setcolor(color());
+		fillrect(br);
+		setcolor(c);
+	}
     draw_glyph(ALIGN_TOP|ALIGN_INSIDE, gr);
     gr.move_y(bh);
     gr.h(r.h()-bh);
@@ -264,10 +272,15 @@ void ValueInput::value_damage() {
 
 static int nogroup(int x) {Group::current(0); return x;}
 
+static void revert(Style* s) {}
+static NamedStyle style("ValueInput", revert, &ValueInput::default_style);
+NamedStyle* ValueInput::default_style = &::style;
+
 ValueInput::ValueInput(int x, int y, int w, int h, const char* l)
 : Valuator(x, y, w, h, l), input(nogroup(x), y, w, h, 0) {
   input.parent((Group*)this); // kludge!
   input.callback(input_cb, this);
+  style(default_style);
   clear_flag(ALIGN_MASK);
   set_flag(ALIGN_LEFT);
   Group::current(parent());
