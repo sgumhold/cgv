@@ -67,7 +67,7 @@ public:
 		add_decorator("Separator", "heading", "level=3" + opt);
 		add_decorator("", "separator");
 		
-		add_member_control(this, "Toggle Button", toggle, "toggle", opt);
+		add_member_control(this, "Toggle Button", toggle, "toggle", "tooltip='A toggle button'" + opt);
 		add_member_control(this, "Checkmark", check, "check", opt);
 		add_member_control(this, "Value", value, "value", "min=-10;max=10;step=1" + opt);
 		add_member_control(this, "Dial", dial_value, "dial", "min=-1.0;max=1.0;step=0.01;w=40;h=40" + opt);

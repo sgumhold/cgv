@@ -104,6 +104,11 @@ extern "C" bool fltk_theme() {
 	  Widget::default_style->selection_textcolor_ = select_foreground;
 
 	  TabGroup::flat_tabs(false);
+
+	  if((style = Style::find("Tooltip"))) {
+		  style->color_ = tooltip_background;
+		  style->labelcolor_ = tooltip_foreground;
+	  }
   } else {
 	  /*
 	  !!! Use GRAY75 if the color shall be controlled by fltk::set_background() !!!
@@ -236,6 +241,8 @@ extern "C" bool fltk_theme() {
 	  Widget::default_style->box_ = BORDER_BOX;
 	  Widget::default_style->buttonbox_ = FLAT_BOX;
 
+	  TabGroup::flat_tabs(true);
+
 	  if((style = Style::find("Window"))) {
 		  style->color_ = window_color;
 	  }
@@ -318,7 +325,11 @@ extern "C" bool fltk_theme() {
 		  style->buttonbox_ = FLAT_BOX;
 	  }
 
-	  TabGroup::flat_tabs(true);
+	  if((style = Style::find("Tooltip"))) {
+		  style->box_ = BORDER_BOX;
+		  style->color_ = text_background;
+		  style->textcolor_ = text_symbol_color;
+	  }
   }
 
 //   if (menuitem_background != background || menuitem_foreground != foreground) {
@@ -338,11 +349,6 @@ extern "C" bool fltk_theme() {
     style->selection_textcolor_ = foreground;
   }
 */
-
-  if ((style = Style::find("Tooltip"))) {
-    style->color_ = tooltip_background;
-    style->labelcolor_ = tooltip_foreground;
-  }
 
   /*
      Windows font stuff
