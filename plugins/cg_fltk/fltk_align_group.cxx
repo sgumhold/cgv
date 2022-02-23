@@ -28,7 +28,7 @@ namespace fltk {
 
 class MyScrollGroup : public ScrollGroup
 {
-	int last_x;
+	int last_x = -std::numeric_limits<int>::max();
 public:
 	MyScrollGroup(int x,int y,int w,int h, const char*l=0, bool begin=false) : ScrollGroup(x,y,w,h,l,begin)
 	{
@@ -38,7 +38,6 @@ public:
 	}
 	void drag(int dx)
 	{
-		// TODO: MARK (removing the next line will disable dragging the insides of the group horizontally)
  		scrollTo(xposition()-dx, yposition());
 	}
 	bool inside()
@@ -74,7 +73,8 @@ public:
 			return res;
 		case fltk::DRAG :
 			if (res == 0) {
-				drag(fltk::event_x() - last_x);
+				int lx = last_x == -std::numeric_limits<int>::max() ? fltk::event_x() : last_x;
+				drag(fltk::event_x() - lx);
 				cursor(fltk::CURSOR_WE);
 				last_x = fltk::event_x();
 				return 1;
