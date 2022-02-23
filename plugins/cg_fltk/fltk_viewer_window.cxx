@@ -99,8 +99,8 @@ fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
 	fullscreen_monitors = MS_MONITOR_CURRENT;
 	menu_visible = true;
 	gui_visible = true;
-	fltk::theme_idx_ = 0;
-	theme_idx = static_cast<cgv::type::DummyEnum>(fltk::theme_idx_ + 1);
+	theme_name = "light";
+	set_theme();
 	menu = 0;
 	callback(destroy_callback);
 
@@ -193,11 +193,59 @@ void fltk_viewer_window::gui_change_cb()
 }
 
 void fltk_viewer_window::theme_change_cb() {
-	//fltk::theme
-	fltk::theme_idx_ = static_cast<int>(theme_idx) - 1;
+	int idx = static_cast<int>(theme_idx) - 1;
+
+	switch(idx) {
+	case -1: theme_name = "legacy"; break;
+	case 0: theme_name = "light"; break;
+	case 1: theme_name = "mid"; break;
+	case 2: theme_name = "dark"; break;
+	case 3: theme_name = "darkest"; break;
+	default:
+	{
+		theme_name = "light";
+		theme_idx = static_cast<cgv::type::DummyEnum>(0);
+		update_member(&theme_idx);
+		idx = 0;
+	} break;
+	}
+
+	fltk::theme_idx_ = idx;
 	fltk::reload_theme();
-	tab_group->update();
-	post_recreate_gui();
+	if(tab_group) {
+		tab_group->update();
+		post_recreate_gui();
+	}
+}
+
+void fltk_viewer_window::set_theme() {
+	int idx = 0;
+	bool found = false;
+	if(theme_name == "legacy") {
+		idx = -1;
+		found = true;
+	} else if(theme_name == "light") {
+		idx = 0;
+		found = true;
+	} else if(theme_name == "mid") {
+		idx = 1;
+		found = true;
+	} else if(theme_name == "dark") {
+		idx = 2;
+		found = true;
+	} else if(theme_name == "darkest") {
+		idx = 3;
+		found = true;
+	}
+
+	if(!found) {
+		idx = 0;
+		theme_name = "light";
+	}
+
+	theme_idx = static_cast<cgv::type::DummyEnum>(idx + 1);
+	update_member(&theme_idx);
+	theme_change_cb();
 }
 
 bool fltk_viewer_window::ws_change_cb(control<WindowState>& c)
@@ -240,6 +288,17 @@ void fltk_viewer_window::update()
 	if (!tab_group.empty())
 		tab_group->update();
 	redraw();
+}
+
+void fltk_viewer_window::on_set(void* member_ptr) {
+	if(member_ptr == &theme_name) {
+		set_theme();
+	}
+}
+
+bool fltk_viewer_window::self_reflect(cgv::reflect::reflection_handler& rh) {
+	return
+		rh.reflect_member("theme", theme_name);
 }
 
 /// returns the property declaration
