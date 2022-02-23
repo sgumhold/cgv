@@ -66,6 +66,10 @@ public:
 	void update();
 	///
 	void on_register();
+	///
+	void on_set(void* member_ptr);
+	///
+	bool self_reflect(cgv::reflect::reflection_handler& rh);
 	/// returns the property declaration
 	std::string get_property_declarations();
 	/// abstract interface for the setter 
@@ -135,7 +139,15 @@ protected:
 	int old_x, old_y, old_w, old_h;
 	/// whether to show gui and menu bar
 	bool gui_visible, menu_visible;
-	/// the selected theme
+	/// the height of the menu bar
+	int menu_height;
+	/// whether the gui shall be placed on the right side of the window
+	bool menu_right;
+	/// whether gui tabs shall be placed on the top or bottom
+	bool tabs_bottom;
+	/// the name of the selected theme
+	std::string theme_name;
+	/// the selected theme index
 	cgv::type::DummyEnum theme_idx;
 	/// store the factories
 	std::vector<base_ptr> factories;
@@ -151,16 +163,9 @@ protected:
 	fltk_gl_view_ptr view;
 	/// used to manage guis of registered objects
 	fltk_tab_group_ptr tab_group;
-
 	/// title of the window
 	std::string title;
-	/// the height of the menu bar
-	int menu_height;
-	/// whether the gui shall be placed on the right side of the window
-	bool menu_right;
-	/// whether gui tabs shall be placed on the top or bottom
-	bool tabs_bottom;
-
+	
 	static void create_cb(fltk::Widget* w, void* user_data);
 
 	static void menu_cb(fltk::Widget* w, void* user_data);
@@ -170,6 +175,7 @@ protected:
 	void menu_change_cb();
 	void gui_change_cb();
 	void theme_change_cb();
+	void set_theme();
 };
 
 #include <cgv/config/lib_end.h>
