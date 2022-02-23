@@ -98,7 +98,11 @@ namespace cgv {
 
 		void enum_resources(const std::string& prog_name)
 		{
+		#ifdef UNICODE
+			HMODULE hi = GetModuleHandleA(prog_name.c_str());
+		#else
 			HMODULE hi = GetModuleHandle(prog_name.c_str());
+		#endif
 			EnumResourceTypes(hi, (ENUMRESTYPEPROC)EnumTypesFunc, 0);
 		}
 	}
