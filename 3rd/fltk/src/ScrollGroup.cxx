@@ -220,6 +220,11 @@ void ScrollGroup::layout() {
       if (o->y()+o->h() > b) b = o->y()+o->h();
     }
 
+	l -= padding_x;
+	r += padding_x;
+	t -= padding_y;
+	b += padding_y;
+
     // If there is empty space on the bottom (VERTICAL mode) or right
     // (HORIZONTAL mode), and widgets off to the top or left, move
     // widgets to use up the available space.
@@ -360,6 +365,7 @@ ScrollGroup::ScrollGroup(int X,int Y,int W,int H,const char* L,bool begin)
   xposition_ = 0;
   yposition_ = 0;
   scrolldx = scrolldy = layoutdx = layoutdy = 0;
+  padding_x = padding_y = 0;
   hscrollbar.parent(this);
   hscrollbar.callback(hscrollbar_cb);
   scrollbar.set_vertical();

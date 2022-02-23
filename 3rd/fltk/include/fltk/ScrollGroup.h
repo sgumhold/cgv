@@ -50,7 +50,8 @@ class FL_API ScrollGroup : public Group {
   static void draw_clip(void*,const Rectangle&);
 
 protected:
-
+  
+  int padding_x, padding_y;
   void draw();
 
 public:
@@ -60,6 +61,7 @@ public:
   Scrollbar hscrollbar;
 
   void enable_drag_scroll( bool enable ) { enable_drag_scroll_ = true; }
+  void set_padding(int px, int py) { padding_x = px, padding_y = py; }
 
   virtual int handle(int);
   virtual void layout();
