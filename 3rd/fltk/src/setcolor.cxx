@@ -67,6 +67,11 @@ static unsigned cmap[256] = {
 #include "colormap.h" // this is a file produced by "colormap.cxx":
 };
 
+// map for colors used in current theme
+static unsigned tcmap[8] = {
+	0, 0, 0, 0, 0, 0, 0, 0
+};
+
 /*! Set r,g,b to the 8-bit components of this color. If it is an indexed
   color they are looked up in the table, otherwise they are simply copied
   out of the color number. */
@@ -281,6 +286,18 @@ void fltk::set_color_index(Color i, Color color) {
 Color fltk::get_color_index(Color color) {
   if (color & 0xFFFFFF00) return color;
   return (Color)cmap[color];
+}
+
+/*! Set one of the theme colors to the given rgb color. \a idx must be
+  one of fltk::ThemeColorIndex, and \a color can be an indexed color or non-indexed rgb color. */
+void fltk::set_theme_color(ThemeColorIndex idx, Color color) {
+	if(!(color & 0xFFFFFF00)) color = Color(cmap[color]);
+	tcmap[idx] = color;
+}
+
+/*! Return the theme color stored under \a idx. */
+Color fltk::get_theme_color(ThemeColorIndex idx) {
+	return tcmap[idx];
 }
 
 /*!\fn Color color(unsigned char red, unsigned char green, unsigned char blue);

@@ -625,8 +625,19 @@ void fltk::shift_background(int index) {
 void fltk::set_main_gui_colors(Color c0, Color c1, Color c2, Color c3, Color tc) {
 	uchar r, g, b;
 	split_color(c0, r, g, b);
-	set_color_index(Color(GRAY30), color(r/2, g/2, b/2));
 	set_color_index(Color(GRAY33), color(r, g, b));
+
+	float rf = static_cast<float>(r);
+	float gf = static_cast<float>(g);
+	float bf = static_cast<float>(b);
+	float l = 0.333333f * (rf + gf + bf);
+	l /= 255.0f;
+	float t = (1.0f - l)*0.5f + l*0.75f;
+	r = static_cast<uchar>(t*rf);
+	g = static_cast<uchar>(t*gf);
+	b = static_cast<uchar>(t*bf);
+	set_color_index(Color(GRAY30), color(r, g, b));
+	
 	split_color(c1, r, g, b);
 	set_color_index(Color(GRAY75), color(r, g, b));
 	split_color(c2, r, g, b);
