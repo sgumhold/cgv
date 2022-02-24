@@ -40,6 +40,16 @@ namespace fltk {
 
 typedef unsigned Color;
 
+enum ThemeColorIndex {
+	THEME_BACKGROUND_COLOR = 0,
+	THEME_GROUP_COLOR = 1,
+	THEME_CONTROL_COLOR = 2,
+	THEME_BORDER_COLOR = 3,
+	THEME_SELECTION_COLOR = 4,
+	THEME_HIGHLIGHT_COLOR = 5,
+	THEME_WARNING_COLOR = 6,
+};
+
 /*! Symbolic names for some of the indexed colors.
 
   The 24-entry "gray ramp" is modified by fltk::set_background() so
@@ -120,6 +130,8 @@ FL_API void split_color(Color c, unsigned char& r, unsigned char& g, unsigned ch
 FL_API void reset_indexed_colors();
 FL_API void set_color_index(Color index, Color);
 FL_API Color get_color_index(Color index);
+FL_API void set_theme_color(ThemeColorIndex idx, Color color);
+FL_API Color get_theme_color(ThemeColorIndex idx);
 FL_API void set_background(Color);
 FL_API void shift_background(int index);
 FL_API void set_main_gui_colors(Color c0, Color c1, Color c2, Color c3, Color tc);
