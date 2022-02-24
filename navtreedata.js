@@ -165,7 +165,7 @@ var NAVTREEINDEX =
 "structcgv_1_1render_1_1rectangle__render__style.html#afa2befea14b945bd268fb6766e206c05",
 "structcgv_1_1render_1_1surfel__render__style.html#a0736e6323efbd9fe0eed151b089854be",
 "structgamepad_1_1driver__info.html",
-"window_8h_source.html"
+"wgl_8h_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

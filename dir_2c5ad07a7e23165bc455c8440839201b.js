@@ -29,6 +29,7 @@ var dir_2c5ad07a7e23165bc455c8440839201b =
     [ "shortcut.h", "shortcut_8h_source.html", null ],
     [ "stick_event.h", "stick__event_8h_source.html", null ],
     [ "text_editor.h", "text__editor_8h_source.html", null ],
+    [ "theme_info.h", "theme__info_8h_source.html", null ],
     [ "throttle_event.h", "throttle__event_8h_source.html", null ],
     [ "trigger.h", "trigger_8h_source.html", null ],
     [ "view.h", "gui_2view_8h_source.html", null ],
