@@ -63,6 +63,12 @@ extern FL_API Box* const OFLAT_BOX;
 extern FL_API Box* const BORDER_FRAME;
 extern FL_API Box* const PLASTIC_UP_BOX;
 extern FL_API Box* const PLASTIC_DOWN_BOX;
+// Custom boxes
+extern FL_API Box* const MENU_BOX;
+extern FL_API Box* const SHADOW_UP_BOX;
+extern FL_API Box* const SHADOW_DOWN_BOX;
+extern FL_API Box* const FLAT_UP_BOX;
+extern FL_API Box* const FLAT_DOWN_BOX;
 
 struct Font;
 extern FL_API Font* const HELVETICA;
@@ -188,6 +194,7 @@ struct FL_API NamedStyle : public Style {
 
 extern "C" {typedef bool (*Theme)();}
 extern FL_API Theme theme_;
+extern FL_API int theme_idx_;
 inline Theme theme() {return theme_;}
 inline void theme(Theme f) {theme_ = f;}
 FL_API void load_theme();

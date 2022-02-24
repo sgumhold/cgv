@@ -237,6 +237,6 @@ public:
 
 #include <cgv/base/register.h>
 
-factory_registration<video_drawable> video_drawable_fac//("new/media/video drawable", 'V', true);
-("video creator", "shortcut='Ctrl-Shift-V';menu_text='new/media/video drawable'", true);
+factory_registration<video_drawable> video_drawable_fac//("New/Media/Video Drawable", 'V', true);
+("video creator", "shortcut='Ctrl-Shift-V';menu_text='New/Media/Video Drawable'", true);
 

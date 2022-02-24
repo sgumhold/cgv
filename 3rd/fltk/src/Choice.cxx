@@ -75,10 +75,21 @@ extern bool fl_hide_underscore;
   to your own function that draws whatever you want.
 */
 void Choice::draw() {
-  if (damage() & DAMAGE_ALL) draw_frame();
+	if(damage() & DAMAGE_ALL) {
+		setbgcolor(color());
+		box()->draw(Rectangle(w(), h()));
+	}
+	// TODO: MARK (for a flat theme, offset the glyph one pixel to the left)
+	int wo = 0;
+	int go = 0;
+	if(style()->buttonbox_ != UP_BOX) {
+		wo = 4;// 1;
+		go = -0;//-2;
+	}
+
   Rectangle r(w(),h()); box()->inset(r);
-  int w1 = r.h()*4/5;
-  r.move_r(-w1);
+  int w1 = r.h()*4/5 + wo;
+  r.move_r(-w1+go);
   // draw the little mark at the right:
   if (damage() & (DAMAGE_ALL|DAMAGE_HIGHLIGHT)) {
     drawstyle(style(), (flags() & ~FOCUSED) | OUTPUT);
@@ -86,7 +97,7 @@ void Choice::draw() {
     draw_glyph(ALIGN_BOTTOM|ALIGN_INSIDE, gr);
   }
   if (damage() & (DAMAGE_ALL|DAMAGE_VALUE)) {
-    setcolor(color());
+	setcolor(color());
     fillrect(r);
     Widget* o = get_item();
     //if (!o && children()) o = child(0);

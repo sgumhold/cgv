@@ -32,8 +32,8 @@ class FL_API ValueOutput : public Valuator {
 public:
   void draw();
   int handle(int);
-  ValueOutput(int x,int y,int w,int h,const char *l = 0)
-    : Valuator(x, y, w, h, l) {align(ALIGN_LEFT);}
+  ValueOutput(int x, int y, int w, int h, const char *l = 0);
+  static NamedStyle* default_style;
 };
 
 }

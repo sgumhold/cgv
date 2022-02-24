@@ -499,6 +499,7 @@ Style* Style::find(const char* name) {
   reload_theme().
 */
 
+int fltk::theme_idx_ = 0;
 Theme fltk::theme_ = fltk_theme;
 
 Color fl_bg_switch = 0; // set by -bg in arg.cxx
@@ -572,19 +573,68 @@ void fltk::set_background(Color c) {
   split_color( c, r, g, b );
   int i;
   int R, G, B;
+  int lb = 0xe0;
+  if(fltk::theme_idx_ > -1)
+	  lb = 0xa0;
   for (i = GRAY00; i <= GRAY99; i++) {
     if (i <= GRAY75) {
       R = r*(i-GRAY00)/(GRAY75-GRAY00);
       G = g*(i-GRAY00)/(GRAY75-GRAY00);
       B = b*(i-GRAY00)/(GRAY75-GRAY00);
     } else {
-      const int DELTA = ((0xff-0xe0)*(i-GRAY75))/(GRAY99-GRAY75);
+      const int DELTA = ((0xff-lb)*(i-GRAY75))/(GRAY99-GRAY75);
       R = r+DELTA; if (R > 255) R = 255;
       G = g+DELTA; if (G > 255) G = 255;
       B = b+DELTA; if (B > 255) B = 255;
     }
     set_color_index(Color(i), color(R,G,B));
   }
+}
+
+/*!
+  fltk::GRAY75 is replaced with the passed color, and all the other
+  fltk::GRAY* colors are shifted according to the offset of the passed color.
+*/
+void fltk::shift_background(int index) {
+	int off = GRAY75 - index;
+	uchar r, g, b;
+	int i;
+
+	int rgb[3 * (GRAY99 - GRAY00 + 1)];
+
+	for(i = GRAY00; i <= GRAY99; i++) {
+		int c = i - off;
+		if(c < GRAY00)
+			c = GRAY00;
+		if(c > GRAY99)
+			c = GRAY99;
+		
+		split_color(c, r, g, b);
+		int bi = 3 * (i - GRAY00);
+		rgb[bi + 0] = r;
+		rgb[bi + 1] = g;
+		rgb[bi + 2] = b;
+	}
+
+	for(i = GRAY00; i <= GRAY99; i++) {
+		int bi = 3 * (i - GRAY00);
+		set_color_index(Color(i), color(rgb[bi + 0], rgb[bi + 1], rgb[bi + 2]));
+	}
+}
+
+void fltk::set_main_gui_colors(Color c0, Color c1, Color c2, Color c3, Color tc) {
+	uchar r, g, b;
+	split_color(c0, r, g, b);
+	set_color_index(Color(GRAY30), color(r/2, g/2, b/2));
+	set_color_index(Color(GRAY33), color(r, g, b));
+	split_color(c1, r, g, b);
+	set_color_index(Color(GRAY75), color(r, g, b));
+	split_color(c2, r, g, b);
+	set_color_index(Color(GRAY80), color(r, g, b));
+	split_color(c3, r, g, b);
+	set_color_index(Color(GRAY85), color(r, g, b));
+	split_color(tc, r, g, b);
+	set_color_index(Color(GRAY95), color(r, g, b));
 }
 
 //

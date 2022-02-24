@@ -30,11 +30,12 @@ class MyScrollGroup : public ScrollGroup
 {
 	int last_x;
 public:
-	MyScrollGroup(int x,int y,int w,int h, const char*l=0, bool begin=false) : ScrollGroup(x,y,w,h,l,begin)
+	MyScrollGroup(int x,int y,int w,int h,const char*l=0, bool begin=false) : ScrollGroup(x,y,w,h,l,begin)
 	{
 		hscrollbar.pagesize(20);
 		scrollbar.pagesize(200);
 		scrollbar.linesize(14);
+		last_x = -999999;
 	}
 	void drag(int dx)
 	{
@@ -73,7 +74,8 @@ public:
 			return res;
 		case fltk::DRAG :
 			if (res == 0) {
-				drag(fltk::event_x() - last_x);
+				int lx = last_x == -999999 ? fltk::event_x() : last_x;
+				drag(fltk::event_x() - lx);
 				cursor(fltk::CURSOR_WE);
 				last_x = fltk::event_x();
 				return 1;
@@ -89,8 +91,12 @@ public:
 
 fltk_align_group::fltk_align_group(int x, int y, int w, int h, const std::string& _name) : cgv::gui::gui_group(_name)
 {
+	// extra space applied inside of group before and after any widgets
+	x_padding = 0;
+	y_padding = 10;
 	init_aligment();
 	scroll_group = new CG<fltk::MyScrollGroup>(x,y,w,h,get_name().c_str());
+	scroll_group->set_padding(x_padding, y_padding);
 	scroll_group->box(fltk::FLAT_BOX);
 	scroll_group->user_data(static_cast<cgv::base::base*>(this));
 }
@@ -234,8 +240,8 @@ void fltk_align_group::init_aligment()
 	x_spacing = 12;
 	y_spacing = 8;
 
-	current_x = x_offset;
-	current_y = y_offset;
+	current_x = x_padding + x_offset;
+	current_y = y_padding;// y_offset;
 	current_line_height = 0;
 
 	default_width = 200;
