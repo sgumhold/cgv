@@ -1,5 +1,6 @@
 var NAVTREEINDEX46 =
 {
+"structgamepad_1_1device__info.html#af59c79d83101a11ca432b13d70924679":[11,0,1,0,5],
 "structgamepad_1_1driver__info.html":[11,0,1,1],
 "structgamepad_1_1driver__info.html#a4c2de59cb51018345b9b72662f679b37":[11,0,1,1,1],
 "structgamepad_1_1driver__info.html#ac3a54effbd73ab474b2c73770763bef7":[11,0,1,1,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX46 =
 "vr__state_8h_source.html":[12,0,1,5,7],
 "vr__test_8h.html":[12,0,2,1,1],
 "vr__test_8h_source.html":[12,0,2,1,1],
-"vr__view__interactor_8h_source.html":[12,0,2,0,2],
-"web__server_8h_source.html":[12,0,0,7,16]
+"vr__view__interactor_8h_source.html":[12,0,2,0,2]
 };

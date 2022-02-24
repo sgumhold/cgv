@@ -1,5 +1,6 @@
 var NAVTREEINDEX33 =
 {
+"classcgv_1_1render_1_1vertex__buffer.html#aed2e0d3382fd3600847e3fe42aa4c8f0":[11,0,0,9,55,14],
 "classcgv_1_1render_1_1vertex__buffer__base.html":[11,0,0,9,56],
 "classcgv_1_1render_1_1vertex__buffer__base.html#a06ff3003af849b32a76ec5be29bd89dc":[11,0,0,9,56,2],
 "classcgv_1_1render_1_1vertex__buffer__base.html#a4c896d2654616448824f5f2f759b8947":[11,0,0,9,56,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX33 =
 "classstl__reader_1_1StlMesh.html#adc4a45fdc87f0f48a204d6809e4f38fd":[11,0,2,0,11],
 "classstl__reader_1_1StlMesh.html#aefdafe070182cab44d08c6edf1f40c0d":[11,0,2,0,4],
 "classvr_1_1gl__vr__display.html":[11,0,3,2],
-"classvr_1_1gl__vr__display.html#a038042488c10a8d59608e736a80d7afa":[11,0,3,2,13],
-"classvr_1_1gl__vr__display.html#a0b29f59ef8ae2fe8f06da6181d67c90d":[11,0,3,2,3]
+"classvr_1_1gl__vr__display.html#a038042488c10a8d59608e736a80d7afa":[11,0,3,2,13]
 };
