@@ -490,6 +490,7 @@ var hierarchy =
       [ "cgv::utils::typed_token", "structcgv_1_1utils_1_1typed__token.html", null ]
     ] ],
     [ "cgv::media::color< float >", "classcgv_1_1media_1_1color.html", null ],
+    [ "cgv::media::color< float, cgv::media::RGB >", "classcgv_1_1media_1_1color.html", null ],
     [ "cgv::media::color< float, cgv::media::RGB, cgv::media::OPACITY >", "classcgv_1_1media_1_1color.html", null ],
     [ "cgv::media::color< float, RGB >", "classcgv_1_1media_1_1color.html", null ],
     [ "cgv::media::color< float, RGB, OPACITY >", "classcgv_1_1media_1_1color.html", null ],
