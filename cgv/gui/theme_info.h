@@ -26,10 +26,13 @@ std::string FIELD##_hex() { \
 
 class CGV_API theme_info {
 protected:
+	int theme_idx;
+
 	rgb background_col;
 	rgb group_col;
 	rgb control_col;
 	rgb border_col;
+	rgb text_col;
 	rgb selection_col;
 	rgb highlight_col;
 	rgb warning_col;
@@ -61,10 +64,14 @@ public:
 	/// destruct
 	~theme_info() {}
 
+	void set_theme_idx(int idx);
+	int get_theme_idx();
+
 	col_functions(background);
 	col_functions(group);
 	col_functions(control);
 	col_functions(border);
+	col_functions(text);
 	col_functions(selection);
 	col_functions(highlight);
 	col_functions(warning);

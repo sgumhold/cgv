@@ -3,8 +3,8 @@
 #include <cgv/defines/quote.h>
 #include <cgv/gui/dialog.h>
 #include <cgv/gui/key_event.h>
-#include <cgv/gui/dialog.h>
 #include <cgv/gui/mouse_event.h>
+#include <cgv/gui/theme_info.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/file.h>
@@ -23,12 +23,12 @@ color_map_editor::color_map_editor() {
 	file_name += "/res/default.xml";
 #endif
 
-	layout.padding = 8;
+	layout.padding = 13; // 10px plus 3px border
 	layout.total_height = 60;
 
 	set_overlay_alignment(AO_START, AO_START);
 	set_overlay_stretch(SO_HORIZONTAL);
-	set_overlay_margin(ivec2(20));
+	set_overlay_margin(ivec2(-3));
 	set_overlay_size(ivec2(600u, layout.total_height));
 	
 	fbc.add_attachment("color", "flt32[R,G,B,A]");
@@ -298,6 +298,18 @@ void color_map_editor::init_frame(cgv::render::context& ctx) {
 		update_geometry();
 		cmc.points.set_constraint(layout.handles_rect);
 	}
+
+	// TODO: move functionality of testing for theme changes to overlay? (or use observer pattern for theme info)
+	auto& ti = cgv::gui::theme_info::instance();
+	int theme_idx = ti.get_theme_idx();
+	if(last_theme_idx != theme_idx) {
+		last_theme_idx = theme_idx;
+		init_styles(ctx);
+		handle_color = rgba(ti.text(), 1.0f);
+		highlight_color = rgba(ti.highlight(), 1.0f);
+		highlight_color_hex = ti.highlight_hex();
+		update_geometry();
+	}
 }
 
 void color_map_editor::draw(cgv::render::context& ctx) {
@@ -323,7 +335,7 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 	
 	// draw inner border
 	border_style.apply(ctx, rect_prog);
-	canvas.draw_shape(ctx, ivec2(layout.padding - 1) + ivec2(0, 4), container_size - 2*layout.padding + 2 - ivec2(0, 4));
+	canvas.draw_shape(ctx, ivec2(layout.padding - 1) + ivec2(0, 10), container_size - 2*layout.padding + 2 - ivec2(0, 10));
 	
 	if(cmc.cm) {
 		// draw color scale texture
@@ -405,7 +417,7 @@ void color_map_editor::create_gui() {
 
 	if(begin_tree_node("Settings", layout, false)) {
 		align("\a");
-		add_member_control(this, "Height", layout.total_height, "value_slider", "min=100;max=500;step=10;ticks=true");
+		add_member_control(this, "Height", layout.total_height, "value_slider", "min=40;max=500;step=10;ticks=true");
 		add_member_control(this, "Resolution", resolution, "dropdown", "enums='2=2,4=4,8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024,2048=2048'");
 		align("\b");
 		end_tree_node(layout);
@@ -415,7 +427,7 @@ void color_map_editor::create_gui() {
 	// TODO: add controls for t?
 	auto& points = cmc.points;
 	for(unsigned i = 0; i < points.size(); ++i)
-		add_member_control(this, "Color " + std::to_string(i), points[i].col, "", &points[i] == cmc.points.get_selected() ? "label_color=0x4080ff" : "");
+		add_member_control(this, "Color " + std::to_string(i), points[i].col, "", &points[i] == cmc.points.get_selected() ? "label_color=" + highlight_color_hex : "");
 }
 
 void color_map_editor::create_gui(cgv::gui::provider& p) {
@@ -429,17 +441,22 @@ void color_map_editor::create_gui(cgv::gui::provider& p) {
 //}
 
 void color_map_editor::init_styles(context& ctx) {
+	// get theme colors
+	auto& ti = cgv::gui::theme_info::instance();
+	rgba background_color = rgba(ti.background(), 1.0f);
+	rgba group_color = rgba(ti.group(), 1.0f);
+	rgba border_color = rgba(ti.border(), 1.0f);
 
 	// configure style for the container rectangle
 	container_style.apply_gamma = false;
-	container_style.fill_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
-	container_style.border_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
-	container_style.border_width = 1.0f;
+	container_style.fill_color = group_color;
+	container_style.border_color = background_color;
+	container_style.border_width = 3.0f;
 	container_style.feather_width = 0.0f;
 	
 	// configure style for the border rectangles
 	border_style = container_style;
-	border_style.fill_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
+	border_style.fill_color = border_color;
 	border_style.border_width = 0.0f;
 	
 	// configure style for the color scale rectangle
@@ -471,7 +488,7 @@ void color_map_editor::init_styles(context& ctx) {
 	handle_style.apply_gamma = false;
 	handle_style.use_fill_color = false;
 	handle_style.position_is_center = true;
-	handle_style.border_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
+	handle_style.border_color = rgba(ti.border(), 1.0f);
 	handle_style.border_width = 1.5f;
 	handle_style.border_radius = 2.0f;
 	handle_style.stem_width = 12.0f;
@@ -557,6 +574,7 @@ void color_map_editor::handle_drag() {
 
 void color_map_editor::handle_drag_end() {
 
+	update_geometry();
 	post_recreate_gui();
 	post_redraw();
 }
@@ -692,10 +710,9 @@ bool color_map_editor::update_geometry() {
 	for(unsigned i = 0; i < points.size(); ++i) {
 		const auto& p = points[i];
 		vec2 pos = p.center();
-		rgb col = cm.interpolate(points[i].val);
-
-		handles.add(pos + vec2(0.0f, 2.0f), cmc.points.get_selected() == &p ? rgba(0.5f, 0.5f, 0.5f, 1.0f) : rgba(0.9f, 0.9f, 0.9f, 1.0f));
-		handles.add(pos + vec2(0.0f, 20.0f), cmc.points.get_selected() == &p ? rgba(0.5f, 0.5f, 0.5f, 1.0f) : rgba(0.9f, 0.9f, 0.9f, 1.0f));
+		rgba col = cmc.points.get_selected() == &p ? highlight_color : handle_color;
+		handles.add(pos + vec2(0.0f, 2.0f),  col);
+		handles.add(pos + vec2(0.0f, 20.0f), col);
 	}
 
 	handles.set_out_of_date();
