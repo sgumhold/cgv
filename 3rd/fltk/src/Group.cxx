@@ -555,6 +555,8 @@ void Group::layout(const Rectangle& r, int layout_damage) {
   // on and subclasses like PackedGroup can detect that:
   Widget::layout();
 
+  // TODO: MARK (somehow we need to hook into this and prevent the tab scaling for the tab group)
+
   if (children_ && layout_damage&LAYOUT_WH) {
     int* p = sizes(); // initialize the size array
 
@@ -610,7 +612,7 @@ void Group::layout(const Rectangle& r, int layout_damage) {
 	  case 0: Y = Y + dh/2; break;
 	  case ALIGN_TOP: break;
 	  case ALIGN_BOTTOM: Y = Y+dh; break;
-	  case ALIGN_TOP|ALIGN_BOTTOM: Y = Y + dh*(Y-IY)/(IB-IY); break;
+	  case ALIGN_TOP | ALIGN_BOTTOM: Y = Y + dh * (Y - IY) / (IB - IY); break;
 	  }
 	}
 	if (B >= IB) B += dh;
@@ -619,8 +621,10 @@ void Group::layout(const Rectangle& r, int layout_damage) {
 	  case 0: B = B + dh/2; break;
 	  case ALIGN_TOP: break;
 	  case ALIGN_BOTTOM: B = B+dh; break;
-	  case ALIGN_TOP|ALIGN_BOTTOM: B = B + dh*(B-IY)/(IB-IY); break;
+	  case ALIGN_TOP | ALIGN_BOTTOM: B = B + dh * (B - IY) / (IB - IY); break;
 	  }
+
+	  // TODO: MARK (dor TabGroup: B and Y shall not be changed)
 	}
 	if (B-Y != o->h()) {flags |= LAYOUT_H; o->h(B-Y);}
 	Y += r.y();

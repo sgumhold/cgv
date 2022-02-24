@@ -54,6 +54,9 @@ public:
     virtual bool draw_tabs(TabGroup* g, int selected, int* tab_pos, int* tab_width) { return false;}
     /*! determine and return the index of the child group at the corresponding pos */
     virtual int which(TabGroup* g, int m_x,int m_y)=0;
+
+	virtual int handle(int event) { return 0; };
+
     /*! virtual copy from a prototype */
     virtual TabGroupPager* clone() const=0;
 
@@ -115,11 +118,16 @@ public:
   static void default_pager(TabGroupPager * v);
   //! setting the default pager_ from the built-in ones
   static void default_pager(int factory_pager_index);
+  //! returns the tab style mode
+  static bool flat_tabs() { return flat_tabs_; }
+  //! setting the tab style mode
+  static void flat_tabs(bool v) { flat_tabs_ = v; }
 
   int tab_height();
   int tab_positions(int*, int*);
 
   void draw_tab(int x1, int x2, int W, int H, Widget* o, int sel=0);
+  void draw_tab_flat(int x1, int x2, int W, int H, Widget* o, int sel=0);
   void draw_tab_background();
 
 protected:
@@ -130,6 +138,7 @@ private:
   bool _drawOutline;
   TabGroupPager* pager_;
   static TabGroupPager* default_pager_;
+  static bool flat_tabs_;
 };
 
 }

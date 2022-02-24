@@ -57,7 +57,7 @@ static Widget* append(
   Group::current(0);
   Widget* o;
   if (flags & SUBMENU) {
-    o = new ItemGroup();
+	  o = new ItemGroup();
   } else {
     o = new Item();
   }

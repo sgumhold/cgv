@@ -79,6 +79,12 @@ int ThumbWheel::handle(int event) {
 }
 
 void ThumbWheel::draw() {
+	// TODO: MARK (use a special draw method for flat themes)
+	if(fltk::theme_idx_ > -1) {
+		draw_flat();
+		return;
+	}
+
   drawstyle(style(), flags()|OUTPUT);
   const Color fg = getcolor();
 
@@ -171,8 +177,72 @@ void ThumbWheel::draw() {
   box()->draw_symbol_overlay(Rectangle(w(),h()));
 }
 
+void ThumbWheel::draw_flat() {
+	drawstyle(style(), flags() | OUTPUT);
+	const Color fg = getcolor();
+
+	//if(damage()&(DAMAGE_ALL | DAMAGE_HIGHLIGHT)) draw_box();
+	draw_box();
+	Rectangle r(w(), h());
+	box()->inset(r);
+	if(r.empty()) return;
+
+	double s = step();
+	if(!s) s = (maximum() - minimum()) / 100;
+	int offset = int(value() / s);
+
+	const double ARC = 1.5; // 1/2 the number of radians visible
+	const double delta = .15; // radians per knurl
+	if(horizontal()) {
+		if(!(flags()&INACTIVE_R)) {
+			// draw ridges:
+			double junk;
+			for(double y = -ARC + modf(offset*sin(ARC) / (r.w() / 2) / delta, &junk)*delta;;
+				y += delta) {
+				int y1 = int((sin(y) / sin(ARC) + 1)*r.w() / 2);
+				if(y1 <= 0) continue; else if(y1 >= r.w() - 1) break;
+				setcolor(GRAY85); drawline(r.x() + y1, r.y() + 3, r.x() + y1, r.b() - 4);
+				if(y < 0) y1--; else y1++;
+				setcolor(GRAY85); drawline(r.x() + y1, r.y() + 3, r.x() + y1, r.b() - 4);
+			}
+			// draw shadow
+			if(style()->color_) {
+				setcolor(GRAY33);
+				drawline(r.x(), r.b(), r.r(), r.b());
+			}
+		}
+	} else { // vertical one
+		offset = (1 - offset);
+		if(!(flags()&INACTIVE_R)) {
+			// draw ridges:
+			double junk;
+			for(double y = -ARC + modf(offset*sin(ARC) / (r.h() / 2) / delta, &junk)*delta;
+				; y += delta) {
+				int y1 = int((sin(y) / sin(ARC) + 1)*r.h() / 2);
+				if(y1 <= 0) continue; else if(y1 >= r.h() - 1) break;
+				setcolor(GRAY85); drawline(r.x() + 3, r.y() + y1, r.r() - 4, r.y() + y1);
+				if(y < 0) y1--; else y1++;
+				setcolor(GRAY85); drawline(r.x() + 3, r.y() + y1, r.r() - 4, r.y() + y1);
+			}
+
+			// draw shadow
+			if(style()->color_) {
+				setcolor(GRAY33);
+				drawline(r.x(), r.b(), r.r(), r.b());
+			}
+		}
+	}
+	setcolor(fg);
+	box()->draw_symbol_overlay(Rectangle(w(), h()));
+}
+
+static void revert(Style* s) {}
+static NamedStyle style("ThumbWheel", revert, &ThumbWheel::default_style);
+NamedStyle* ThumbWheel::default_style = &::style;
+
 ThumbWheel::ThumbWheel(int X,int Y,int W,int H,const char* L) : Valuator(X,Y,W,H,L) {
   step(.001);
+  style(default_style);
   //set_vertical();
   //set_click_to_focus();
 }

@@ -42,8 +42,8 @@ const int BORDER = 10;
 const int TABSLOPE = 5;
 const int EXTRASPACE = 5;
 
-const int BTN_WIDTH  = 14;
-const int BTN_HEIGHT = 14;
+const int BTN_WIDTH  = 24;
+const int BTN_HEIGHT = 24;
 
 ////////////////////////////////////////////////////////////////////////////////////
 class FL_API ShrinkTabPager : public TabGroupPager {
@@ -63,6 +63,9 @@ public:
     virtual int update_positions(TabGroup* g, int nc, int& sel, int & cw, int& aw,int *p, int *w);
     virtual bool draw_tabs(TabGroup* g, int selected, int* tab_pos, int* tab_width);
     virtual int which(TabGroup* g, int m_x,int m_y);
+
+	virtual int handle(int event);
+
     virtual TabGroupPager* clone() const;
     virtual int available_width(TabGroup *g ) const;
     
@@ -73,11 +76,14 @@ public:
     }
 private:
     PopupMenu * extension_;
+	// somehow the fltk INVISIBLE flag gets set for the extension widget through some mechanism I don't understand, so we have to track it on our own
+	bool extension_visible_ = false;
     void createExtMenu(TabGroup * g);
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
 TabGroupPager* TabGroup::default_pager_= new MenuTabPager();
+bool TabGroup::flat_tabs_ = false;
 
 int TabGroupPager::available_width(TabGroup *g ) const {
     return g->w() - this->slope()-1;
@@ -229,23 +235,38 @@ int MenuTabPager::update_positions(TabGroup* g, int numchildren, int& selected,
 
 ////////////////////////////////////////////////////////////////
 int MenuTabPager::which(TabGroup* g, int event_x,int event_y) {
-    int H = g->tab_height();
-    if (!H) return -1;
-    if (H < 0) {
-	if (event_y > g->h() || event_y < g->h()+H) return -1;
-    } else {
-	if (event_y > H || event_y < 0) return -1;
-    }
-    if (event_x < 0) return -1;
-    int p[128], w[128];
-    int selected = g->tab_positions(p, w);
-    int d = (event_y-(H>=0?0:g->h()))*slope()/H;
-    for (int i=0; i<g->children(); i++) {
-	if (event_x < p[i+1]+(i<selected ? slope() - d : d)) return i;
-    }
-    return -1;
-    
+	int H = g->tab_height();
+	if(!H) return -1;
+	if(H < 0) {
+		if(event_y > g->h() || event_y < g->h() + H) return -1;
+	} else {
+		if(event_y > H || event_y < 0) return -1;
+	}
+	if(event_x < 0) return -1;
+
+	// if the extension is shown test for click inside the button area
+	if(extension_ && extension_visible_)
+		if(event_x >= g->w() - BTN_WIDTH)
+			return -2;
+	
+	int p[128], w[128];
+	int selected = g->tab_positions(p, w);
+	int d = (event_y - (H >= 0 ? 0 : g->h()))*slope() / H;
+	for(int i = 0; i < g->children(); i++) {
+		if(event_x < p[i + 1] + (i < selected ? slope() - d : d)) return i;
+	}
+	return -1;
 }
+
+// TODO: MARK (a hack to enable passing events to MenuTabPager popup menu extension)
+int MenuTabPager::handle(int event) {
+	if(extension_ && extension_visible_)
+		return extension_->handle(event);
+	return 0;
+}
+
+
+
 ////////////////////////////////////////////////////////////////
 #include <stdio.h>
 bool MenuTabPager::draw_tabs(TabGroup* g, int selected, int* p, int* w) {
@@ -269,33 +290,39 @@ bool MenuTabPager::draw_tabs(TabGroup* g, int selected, int* p, int* w) {
 	// when resizing, thumbnails behind the shift may be drawable again
 	// let's get them and update the shift consequently 
 	if (p[i]>=0 && 	p[i]+w[i]<=p[shift()]) {
-	    g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_LEFT);
+		if(g->flat_tabs()) g->draw_tab_flat(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_LEFT);
+	    else g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_LEFT);
 	    shift(i);
 	}
     for (i=this->shift(); i<selected; i++) 
-	g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_LEFT);
+		if(g->flat_tabs()) g->draw_tab_flat(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_LEFT);
+		else g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_LEFT);
     for (i=g->children()-1; i > selected; i--) 
 	if (p[i]+w[i]<=r)
-	    g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_RIGHT);
+		if(g->flat_tabs()) g->draw_tab_flat(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_RIGHT);
+	    else g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_RIGHT);
     
     if (v) {
 	i = selected;
 	if (p[i]+w[i]<=r)
-	    g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_SELECTED);
+		if(g->flat_tabs()) g->draw_tab_flat(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_SELECTED);
+	    else g->draw_tab(p[i], p[i]+w[i], w[i], H, g->child(i), TAB_SELECTED);
     } else {
 	// draw the edge when no selection:
 	fltk::setcolor(H >= 0 ? GRAY99 : GRAY33);
 	int b = H >= 0 ? H : g->h() + H;
 	fltk::drawline(0, b, g->w(), b);
     }
-    if (want_extension) {
-	createExtMenu(g);
-    } else {
-      if (extension_ && extension_->visible()) {
-        extension_->clear_visible();
-        // g->redraw(); // I think it is already erased
-      }
-    }
+	if(want_extension) {
+		createExtMenu(g);
+		extension_visible_ = true;
+	} else {
+		if(extension_ && extension_->visible()) {
+			extension_->clear_visible();
+			extension_visible_ = false;
+			// g->redraw(); // I think it is already erased
+		}
+	}
     return true;
 }
 
@@ -314,18 +341,19 @@ void MenuTabPager::createExtMenu(TabGroup* g){
     if (!extension_) {
 	Group *cur = Group::current();
 	Group::current(0);
-	extension_ = new PopupMenu(0,0, BTN_WIDTH,BTN_HEIGHT,"@>>");
+	extension_ = new PopupMenu2(0, 0, BTN_WIDTH, BTN_HEIGHT, "@menu");
 	g->parent()->add(extension_);
 	Group::current(cur);
 	extension_->callback(btnCb);
 	extension_->buttonbox(FLAT_BOX);
     }
     extension_->set_visible();
+	extension_->activate();
     extension_->clear();
     for (int i=0;i<g->children(); i++) {
 	Widget  * c = g->child(i);
 	if (c) {
-	    Widget* wi = extension_->add(c->label());
+		Widget* wi = extension_->add(c->label());
 	    wi->user_data((void*) c);
 	}
     }

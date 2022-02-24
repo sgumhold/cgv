@@ -37,7 +37,7 @@ struct choose_color<float,NO_ALPHA>
 {
 	static bool choose(color<float,RGB,NO_ALPHA>& c)
 	{
-		return fltk::color_chooser("choose a new color", c.R(), c.G(), c.B());
+		return fltk::color_chooser("Color Picker", c.R(), c.G(), c.B());
 	}
 };
 
@@ -46,7 +46,7 @@ struct choose_color<float,OPACITY>
 {
 	static bool choose(color<float,RGB,OPACITY>& c)
 	{
-		return fltk::color_chooser("choose a new color", c.R(), c.G(), c.B(), c.opacity());
+		return fltk::color_chooser("Color Picker", c.R(), c.G(), c.B(), c.opacity());
 	}
 };
 
@@ -55,7 +55,7 @@ struct choose_color<unsigned char,NO_ALPHA>
 {
 	static bool choose(color<unsigned char,RGB,NO_ALPHA>& c)
 	{
-		return fltk::color_chooser("choose a new color", c.R(), c.G(), c.B());
+		return fltk::color_chooser("Color Picker", c.R(), c.G(), c.B());
 	}
 };
 
@@ -64,7 +64,7 @@ struct choose_color<unsigned char,OPACITY>
 {
 	static bool choose(color<unsigned char,RGB,OPACITY>& c)
 	{
-		return fltk::color_chooser("choose a new color", c.R(), c.G(), c.B(), c.opacity());
+		return fltk::color_chooser("Color Picker", c.R(), c.G(), c.B(), c.opacity());
 	}
 };
 
@@ -88,6 +88,10 @@ struct fltk_color_control : public control<color<T,RGB,am> >, public fltk_base, 
 
 	{
 		view = new CW<fltk::Button>(x,y,w,h);
+		// TODO: MARK (fix boxes inside color_chooser)
+		if(fltk::theme_idx_ > -1) {
+			view->box(fltk::BORDER_BOX);
+		}
 		view->label(this->get_name().c_str());
 		view->align(fltk::ALIGN_LEFT);
 		view->callback(color_button_cb, static_cast<cgv::base::base*>(this));
