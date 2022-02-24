@@ -22,6 +22,11 @@ namespace glutil{
 
 class CGV_API color_map_editor : public overlay {
 protected:
+	int last_theme_idx = -1;
+	rgba handle_color = rgb(0.9f, 0.9f, 0.9f, 1.0f);
+	rgba highlight_color = rgb(0.5f, 0.5f, 0.5f, 1.0f);
+	std::string highlight_color_hex = "0x808080";
+
 	std::string file_name;
 	std::string save_file_name;
 	bool has_unsaved_changes = false;
@@ -49,10 +54,10 @@ protected:
 		rect handles_rect;
 
 		void update(const ivec2& parent_size) {
-			color_map_rect.set_pos(ivec2(padding) + ivec2(0, 4));
-			color_map_rect.set_size(parent_size - 2 * padding - ivec2(0, 4));
+			color_map_rect.set_pos(ivec2(padding) + ivec2(0, 10));
+			color_map_rect.set_size(parent_size - 2 * padding - ivec2(0, 10));
 
-			handles_rect.set_pos(ivec2(padding, 0));
+			handles_rect.set_pos(ivec2(padding, 8));
 			handles_rect.set_size(ivec2(parent_size.x() - 2 * padding, 0));
 		}
 	} layout;

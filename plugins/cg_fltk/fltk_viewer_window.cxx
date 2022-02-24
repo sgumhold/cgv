@@ -2,6 +2,7 @@
 #include "fltk_driver.h"
 #include "fltk_event.h"
 #include <cgv/gui/provider.h>
+#include <cgv/gui/theme_info.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/base/base_generator.h>
 #include <cgv/base/register.h>
@@ -35,40 +36,6 @@
 
 #include <iostream>
 #include <math.h>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#include <cgv/gui/theme_info.h>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 using namespace cgv::base;
 using namespace cgv::gui;
@@ -251,6 +218,7 @@ void fltk_viewer_window::theme_change_cb() {
 
 	{ // TODO: maybe move this to some other place
 		auto& ti = cgv::gui::theme_info::instance();
+		ti.set_theme_idx(idx);
 		uchar r, g, b;
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_BACKGROUND_COLOR), r, g, b);
 		ti.background(r, g, b);
@@ -260,6 +228,8 @@ void fltk_viewer_window::theme_change_cb() {
 		ti.control(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_BORDER_COLOR), r, g, b);
 		ti.border(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_TEXT_COLOR), r, g, b);
+		ti.text(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_SELECTION_COLOR), r, g, b);
 		ti.selection(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_HIGHLIGHT_COLOR), r, g, b);

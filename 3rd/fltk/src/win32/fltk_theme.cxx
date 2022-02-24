@@ -108,6 +108,15 @@ extern "C" bool fltk_theme() {
 		  style->color_ = tooltip_background;
 		  style->labelcolor_ = tooltip_foreground;
 	  }
+
+	  fltk::set_theme_color(THEME_BACKGROUND_COLOR, GRAY75);
+	  fltk::set_theme_color(THEME_GROUP_COLOR, GRAY75);
+	  fltk::set_theme_color(THEME_CONTROL_COLOR, GRAY70);
+	  fltk::set_theme_color(THEME_BORDER_COLOR, GRAY33);
+	  fltk::set_theme_color(THEME_TEXT_COLOR, text_foreground);
+	  fltk::set_theme_color(THEME_SELECTION_COLOR, select_background);
+	  fltk::set_theme_color(THEME_HIGHLIGHT_COLOR, select_background);
+	  fltk::set_theme_color(THEME_WARNING_COLOR, RED);
   } else {
 	  Color highlight_textcolor = foreground;
 
@@ -213,6 +222,7 @@ extern "C" bool fltk_theme() {
 	  fltk::set_theme_color(THEME_GROUP_COLOR, c1);
 	  fltk::set_theme_color(THEME_CONTROL_COLOR, c2);
 	  fltk::set_theme_color(THEME_BORDER_COLOR, c3);
+	  fltk::set_theme_color(THEME_TEXT_COLOR, text_foreground);
 	  fltk::set_theme_color(THEME_SELECTION_COLOR, select_background);
 	  fltk::set_theme_color(THEME_HIGHLIGHT_COLOR, highlight_textcolor);
 	  fltk::set_theme_color(THEME_WARNING_COLOR, warning_color);
