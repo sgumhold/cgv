@@ -1,5 +1,6 @@
 var NAVTREEINDEX19 =
 {
+"classcgv_1_1plot_1_1plot__base.html#a9152a17d40453f3be44a1794aa3c4865":[11,0,0,6,7,69],
 "classcgv_1_1plot_1_1plot__base.html#a91bc11bba10ea335bb3d40c136a538a2":[11,0,0,6,7,37],
 "classcgv_1_1plot_1_1plot__base.html#a921ba3f5165eadab9c23b10a19783f9e":[11,0,0,6,7,119],
 "classcgv_1_1plot_1_1plot__base.html#a96004e0274ffb8c20b5bbbc94d0f37a1":[11,0,0,6,7,108],
@@ -248,6 +249,5 @@ var NAVTREEINDEX19 =
 "classcgv_1_1render_1_1arrow__renderer.html#a23e3feda58fd42fdcc9bd06503c81e40":[11,0,0,9,3,98],
 "classcgv_1_1render_1_1arrow__renderer.html#a27f8ff1174aadbf76fcb25793c82b90e":[11,0,0,9,3,82],
 "classcgv_1_1render_1_1arrow__renderer.html#a29cb577054ab5aaf253fad0c0bd5d3ad":[11,0,0,9,3,70],
-"classcgv_1_1render_1_1arrow__renderer.html#a2c0837f4a22a9dfec615f9865f8142de":[11,0,0,9,3,104],
-"classcgv_1_1render_1_1arrow__renderer.html#a3279ec1419ef5cc3bff2b880a0522849":[11,0,0,9,3,68]
+"classcgv_1_1render_1_1arrow__renderer.html#a2c0837f4a22a9dfec615f9865f8142de":[11,0,0,9,3,104]
 };
