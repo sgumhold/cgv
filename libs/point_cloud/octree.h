@@ -652,6 +652,7 @@ struct SamplerRandom : public Sampler<point_t> {
 		// count points for each cell
 		std::function<void(int64_t first_point, int64_t num_points)> processor = [this, &grid, &cube_size, grid_size, vertices, &min, &max](int64_t first_point, int64_t num_points) {
 			for (int i = 0; i < num_points; i++) {
+				assert(cube_size != 0.f);
 				int64_t index = grid_index(vertices[first_point + i].position(), min, cube_size, grid_size);
 				grid[index].fetch_add(1, std::memory_order::memory_order_relaxed);
 			}
@@ -910,7 +911,7 @@ struct SamplerRandom : public Sampler<point_t> {
 	int64_t octree_lod_generator<point_t>::grid_index(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const
 	{
 		auto v = grid_index_vec(position, min, cube_size, grid_size);
-		int64_t index = v.x() + v.y() * grid_size + v.z() * grid_size * grid_size;
+		int64_t index = v.x() + v.y() * grid_size + v.z() * (int64_t)(grid_size * grid_size);
 		return index;
 	}
 
@@ -1413,15 +1414,31 @@ struct SamplerRandom : public Sampler<point_t> {
 
 		vec3 ext = max - min;
 		float cube_size = *std::max_element(ext.begin(), ext.end());
+		
+		//prevent some crashes caused by division by zero
+		if (cube_size == 0.f) {
+			if (allow_duplicate_elimination) {
+				//only copy one point
+				source_data_size = 1;
+			}
+			for (int i = 0; i < source_data_size; ++i) {
+				//all points have the same position
+				point_t p = points[i];
+				p.level() = 0; //assign root level to all points
+				out.push_back(p);
+			}
+		}
+		else if (source_data_size != 0) {
+			//run lod generation
+			max = min + vec3(cube_size, cube_size, cube_size);
 
-		max = min + vec3(cube_size, cube_size, cube_size);
+			Chunks<point_t> nodes = chunking(source_data, source_data_size, min, max, cube_size);
 
-		Chunks<point_t> nodes = chunking(source_data, source_data_size, min, max, cube_size);
-
-		SamplerRandom<point_t> sampler;
-		FlatIndexer indexer(&out);
-		indexing(nodes, indexer, sampler);
-		//assert(out.size() == points.size()); //can happen if duplicates were eliminated
+			SamplerRandom<point_t> sampler;
+			FlatIndexer indexer(&out);
+			indexing(nodes, indexer, sampler);
+		}
+		
 		if (out.size() != points.size()) {
 			std::cout << "lod generator: some points were eliminated!\n";
 		}
