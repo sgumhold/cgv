@@ -283,12 +283,27 @@ public:
 			 operator()(i)=inv_l*operator()(i);
 		return l;
 	}
+
+	/// normalize the vector if length is not zero using the L2-Norm and return the length
+	T safe_normalize() {
+		T l		= length();
+		if(std::abs(l) < std::numeric_limits<T>::epsilon())
+			return (T)0;
+		T inv_l = (T)1.0 / l;
+		for(unsigned i = 0; i < N; i++)
+			operator()(i) = inv_l * operator()(i);
+		return l;
+	}
 	//@}
 };
 
 /// return normalized vector
 template<typename T, cgv::type::uint32_type N>
 fvec<T,N> normalize(const fvec<T,N>& v) { fvec<T,N> w(v); w.normalize(); return w; }
+
+/// return safely normalized vector
+template<typename T, cgv::type::uint32_type N>
+fvec<T, N> safe_normalize(const fvec<T, N>& v) { fvec<T, N> w(v); w.safe_normalize(); return w; }
 
 ///output of a vector
 template<typename T, cgv::type::uint32_type N>

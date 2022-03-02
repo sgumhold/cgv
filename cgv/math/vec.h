@@ -653,6 +653,17 @@ public:
 			 operator()(i)=l*operator()(i);
 	}
 
+	///normalize the vector if length is not zero using the L2-Norm
+	void safe_normalize()
+	{
+		T l = length();
+		if(std::abs(l) > std::numeric_limits<T>::epsilon()) {
+			l = (T)1.0 / l;
+			for(unsigned i = 0; i < _size; i++)
+				operator()(i) = l * operator()(i);
+		}
+	}
+
 	///extracts sub vector beginning at index  ifrom with given size
 	vec<T> sub_vec(unsigned ifrom, unsigned size) const
 	{
@@ -694,6 +705,16 @@ vec<T> normalize(const vec<T>& v)
 {
 	vec<T> r = v;
 	r.normalize();
+	return r;
+}
+
+
+///returns a normalized version of v or zero vector if length is zero
+template<typename T>
+vec<T> safe_normalize(const vec<T>& v)
+{
+	vec<T> r = v;
+	r.safe_normalize();
 	return r;
 }
 
