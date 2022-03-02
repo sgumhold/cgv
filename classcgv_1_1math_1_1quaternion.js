@@ -79,6 +79,7 @@ var classcgv_1_1math_1_1quaternion =
     [ "rotate", "classcgv_1_1math_1_1quaternion.html#a53896163f65e215f805a870b32cdd064", null ],
     [ "rotate", "classcgv_1_1math_1_1quaternion.html#aabeb061cfe25f5059a318e85edc51763", null ],
     [ "round", "classcgv_1_1math_1_1quaternion.html#a22dc53e45605eaa804dfa636c2bbe8a7", null ],
+    [ "safe_normalize", "classcgv_1_1math_1_1quaternion.html#a102be6cd05e143eed19c9d9178bdf851", null ],
     [ "set", "classcgv_1_1math_1_1quaternion.html#a7c38a5d8d9cb598aba16c8294daf1024", null ],
     [ "set", "classcgv_1_1math_1_1quaternion.html#a421f99c5c149599ea7fccf2c4630bbd9", null ],
     [ "set", "classcgv_1_1math_1_1quaternion.html#ac731eedc4f05604a28dba6fe478279bd", null ],

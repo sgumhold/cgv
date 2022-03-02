@@ -47,6 +47,7 @@ var classcgv_1_1math_1_1fvec =
     [ "operator==", "classcgv_1_1math_1_1fvec.html#a24a121eb032199d623ce9d7aa51aac5a", null ],
     [ "rend", "classcgv_1_1math_1_1fvec.html#ab2de7d24f958c8f77470e906f7eef73d", null ],
     [ "round", "classcgv_1_1math_1_1fvec.html#a22dc53e45605eaa804dfa636c2bbe8a7", null ],
+    [ "safe_normalize", "classcgv_1_1math_1_1fvec.html#a102be6cd05e143eed19c9d9178bdf851", null ],
     [ "set", "classcgv_1_1math_1_1fvec.html#ac1352402a484b3bbc14bf220fc1ae740", null ],
     [ "set", "classcgv_1_1math_1_1fvec.html#a655d751227845c3147ab4c2eab42f6af", null ],
     [ "set", "classcgv_1_1math_1_1fvec.html#abd1455b91a56873d3297cd942e27386e", null ],

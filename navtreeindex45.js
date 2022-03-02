@@ -1,5 +1,10 @@
 var NAVTREEINDEX45 =
 {
+"structcgv_1_1render_1_1surface__render__style.html#aefe4161943c1abac1a582f2745c13698":[11,0,0,9,46,7],
+"structcgv_1_1render_1_1surface__render__style.html#af36c04fdeb21290f87a81d9bfae4ad32":[11,0,0,9,46,25],
+"structcgv_1_1render_1_1surfel__render__style.html":[11,0,0,9,48],
+"structcgv_1_1render_1_1surfel__render__style.html#a0492ee8d0e1c7867d0a9bc01dfae38e4":[11,0,0,9,48,14],
+"structcgv_1_1render_1_1surfel__render__style.html#a0552924c9c708e0b6eaa2ffc667fb5d7":[11,0,0,9,48,18],
 "structcgv_1_1render_1_1surfel__render__style.html#a063c8e45a69cf091442d872cc33dd328":[11,0,0,9,48,48],
 "structcgv_1_1render_1_1surfel__render__style.html#a0736e6323efbd9fe0eed151b089854be":[11,0,0,9,48,49],
 "structcgv_1_1render_1_1surfel__render__style.html#a113f4aa88c33c892574038e0f2478a7a":[11,0,0,9,48,54],
@@ -244,10 +249,5 @@ var NAVTREEINDEX45 =
 "structcgv_1_1utils_1_1typed__token.html#ab31c4e3c695ed4ad2ce0b69d09c2cf45":[11,0,0,12,8,7],
 "structgamepad_1_1device__info.html":[11,0,1,0],
 "structgamepad_1_1device__info.html#a0498dbd34f0f14ad1906077744346bce":[11,0,1,0,1],
-"structgamepad_1_1device__info.html#a146899103026a05bb5c12c2d6c61bb1c":[11,0,1,0,4],
-"structgamepad_1_1device__info.html#a2aea5df56a4500c03f2fd52b09d1c89b":[11,0,1,0,0],
-"structgamepad_1_1device__info.html#a3661dad12c7fedbc4072cc015e760be1":[11,0,1,0,7],
-"structgamepad_1_1device__info.html#a426415e64ffae0d5f34e3340f9a6c720":[11,0,1,0,6],
-"structgamepad_1_1device__info.html#a7aaf963df8817b232178ae927d849b63":[11,0,1,0,2],
-"structgamepad_1_1device__info.html#aeb3a19c97da1bbc4d2aa7599eae96daf":[11,0,1,0,3]
+"structgamepad_1_1device__info.html#a146899103026a05bb5c12c2d6c61bb1c":[11,0,1,0,4]
 };
