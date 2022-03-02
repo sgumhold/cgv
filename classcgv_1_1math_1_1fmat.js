@@ -61,6 +61,7 @@ var classcgv_1_1math_1_1fmat =
     [ "rend", "classcgv_1_1math_1_1fmat.html#ab2de7d24f958c8f77470e906f7eef73d", null ],
     [ "round", "classcgv_1_1math_1_1fmat.html#a22dc53e45605eaa804dfa636c2bbe8a7", null ],
     [ "row", "classcgv_1_1math_1_1fmat.html#a705e7c5b75bb84eb20850d6807c53f4e", null ],
+    [ "safe_normalize", "classcgv_1_1math_1_1fmat.html#a102be6cd05e143eed19c9d9178bdf851", null ],
     [ "set", "classcgv_1_1math_1_1fmat.html#ac1352402a484b3bbc14bf220fc1ae740", null ],
     [ "set", "classcgv_1_1math_1_1fmat.html#a655d751227845c3147ab4c2eab42f6af", null ],
     [ "set", "classcgv_1_1math_1_1fmat.html#abd1455b91a56873d3297cd942e27386e", null ],

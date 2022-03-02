@@ -53,6 +53,7 @@ var classcgv_1_1math_1_1qem =
     [ "paste", "classcgv_1_1math_1_1qem.html#ad816f73154d9d0f42392f7c9d7ca78aa", null ],
     [ "resize", "classcgv_1_1math_1_1qem.html#a36c8c27e7d890c63d6a5ee48c4e451d2", null ],
     [ "round", "classcgv_1_1math_1_1qem.html#a2e562cf12c9463cd9e6f0cd8ddab4057", null ],
+    [ "safe_normalize", "classcgv_1_1math_1_1qem.html#ab8aa5ca020ccf8ee10c5fb8683a879c2", null ],
     [ "scalar_part", "classcgv_1_1math_1_1qem.html#a14d9192b68de3cefac9236563c1ec594", null ],
     [ "set", "classcgv_1_1math_1_1qem.html#ac97b8a6328e53c58e1d639dcb008e46b", null ],
     [ "set", "classcgv_1_1math_1_1qem.html#a1fa4f2c909f8449586b6e5e025e6900a", null ],

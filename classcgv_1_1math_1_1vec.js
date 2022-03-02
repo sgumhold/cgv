@@ -52,6 +52,7 @@ var classcgv_1_1math_1_1vec =
     [ "paste", "classcgv_1_1math_1_1vec.html#ad816f73154d9d0f42392f7c9d7ca78aa", null ],
     [ "resize", "classcgv_1_1math_1_1vec.html#a4ad00087a03df57550f9082992ce827b", null ],
     [ "round", "classcgv_1_1math_1_1vec.html#a2e562cf12c9463cd9e6f0cd8ddab4057", null ],
+    [ "safe_normalize", "classcgv_1_1math_1_1vec.html#ab8aa5ca020ccf8ee10c5fb8683a879c2", null ],
     [ "set", "classcgv_1_1math_1_1vec.html#ac97b8a6328e53c58e1d639dcb008e46b", null ],
     [ "set", "classcgv_1_1math_1_1vec.html#a1fa4f2c909f8449586b6e5e025e6900a", null ],
     [ "set", "classcgv_1_1math_1_1vec.html#a4d2073241cae191531195288a71215e9", null ],

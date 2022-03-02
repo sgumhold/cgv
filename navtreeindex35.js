@@ -1,5 +1,10 @@
 var NAVTREEINDEX35 =
 {
+"det_8h_source.html":[12,0,0,5,7],
+"diag__mat_8h_source.html":[12,0,0,5,8],
+"dialog_8h_source.html":[12,0,0,4,7],
+"dir_00ac0d9dddc3649f685e4a803f315a6b.html":[12,0,0,8],
+"dir_024f11dfd9d2892e99697c3ed77babe5.html":[12,0,1,4],
 "dir_13e138d54eb8818da29c3992edef070a.html":[12,0,3],
 "dir_179dad1cbe11e5b600d24c38e7cdbfc0.html":[12,0,0,6,4],
 "dir_247a0f776eec227c09028960d6b03e4d.html":[12,0,0,6,2],
@@ -119,8 +124,8 @@ var NAVTREEINDEX35 =
 "functions_type.html":[11,3,3],
 "functions_u.html":[11,3,0,21],
 "functions_v.html":[11,3,0,22],
-"functions_vars.html":[11,3,2],
 "functions_vars.html":[11,3,2,0],
+"functions_vars.html":[11,3,2],
 "functions_vars_a.html":[11,3,2,1],
 "functions_vars_b.html":[11,3,2,2],
 "functions_vars_c.html":[11,3,2,3],
@@ -244,10 +249,5 @@ var NAVTREEINDEX35 =
 "marching__cubes_8h_source.html":[12,0,0,6,3,3],
 "mat_8h_source.html":[12,0,0,5,27],
 "math_2plane_8h_source.html":[12,0,0,5,34],
-"math_2sphere_8h_source.html":[12,0,0,5,50],
-"math_2statistics_8h_source.html":[12,0,0,5,51],
-"math_2union__find_8h_source.html":[12,0,0,5,56],
-"max_8h_source.html":[12,0,0,12,4,0],
-"media_2color__scale_8h_source.html":[12,0,0,6,9],
-"media_2plane_8h_source.html":[12,0,0,6,13]
+"math_2sphere_8h_source.html":[12,0,0,5,50]
 };
