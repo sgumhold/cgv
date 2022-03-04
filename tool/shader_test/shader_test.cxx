@@ -133,9 +133,14 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 	replace(sn, '.', '_');
 	os << "const char* " << sn.c_str() << " =\"\\\n";
 	// write out the content in form of a string
+	bool last_is_newline = false;
 	bool last_is_slash = false;
+	bool last_is_hashtag = false;
+	size_t written_chars = 0;
 	for (unsigned int i=0; i<content.size(); ++i) {
+		bool new_last_is_newline = false;
 		bool new_last_is_slash = false;
+		bool new_last_is_hashtag = false;
 		switch (content[i]) {
 		case '/':
 			// in case of single line comment
@@ -158,20 +163,48 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 				}
 			}
 			else
+			{
 				os << content[i];
+				++written_chars;
+			}
+			break;
+		case '#':
+		{
+			// make sure defines are always placed at the start of a new line
+			bool next_is_hashtag = false;
+			if(i < content.size() - 1)
+				if(content[i + 1] == '#')
+					next_is_hashtag = true;
+
+			if(!last_is_newline && !last_is_hashtag && !next_is_hashtag) {
+				os << "\\n\\\n";
+				written_chars += 3;
+			}
+			os << content[i];
+			++written_chars;
+
+			new_last_is_hashtag = true;
+		}
 			break;
 		default:
 			if (last_is_slash)
 				os << '/';
 			switch (content[i]) {
-			case '\\': os << "\\\\"; break;
-			case '\n': os << "\\n\\\n"; break;
-			case '\t': os << "\\t"; break;
-			case '"': os << "\\\""; break;
-			default: os << content[i]; break;
+			case '\\': os << "\\\\"; written_chars += 2; break;
+			case '\n': os << "\\n\\\n"; written_chars += 3; new_last_is_newline = true; break;
+			case '\t': os << "\\t"; ++written_chars; break;
+			case '"': os << "\\\""; written_chars += 2; break;
+			default: os << content[i]; ++written_chars; break;
 			}
 		}
-		last_is_slash = new_last_is_slash ;
+		// respect the Visual Studio C++ Compiler maximum string literal size of 16kB (with some tolerance)
+		if(written_chars > 16000) {
+			os << "\"\\\n\"";
+			written_chars = 0;
+		}
+		last_is_newline = new_last_is_newline;
+		last_is_slash = new_last_is_slash;
+		last_is_hashtag = new_last_is_hashtag;
 	}
 	os << "\";\n";
 	return true;
