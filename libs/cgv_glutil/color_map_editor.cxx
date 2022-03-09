@@ -16,12 +16,6 @@ namespace glutil {
 color_map_editor::color_map_editor() {
 
 	set_name("Color Scale Editor");
-#ifdef CGV_FORCE_STATIC
-	file_name = "";
-#else
-	file_name = QUOTE_SYMBOL_VALUE(INPUT_DIR);
-	file_name += "/res/default.xml";
-#endif
 
 	layout.padding = 13; // 10px plus 3px border
 	layout.total_height = 60;
@@ -52,16 +46,7 @@ color_map_editor::color_map_editor() {
 	cmc.points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
 	cmc.points.set_constraint(layout.handles_rect);
 
-	// TODO: make static members for these strings
 	handle_renderer = generic_renderer(canvas::shaders_2d::arrow);
-}
-
-bool color_map_editor::on_exit_request() {
-	// TODO: does not seem to fire when window is maximized
-	if(has_unsaved_changes) {
-		return cgv::gui::question("The transfer function has unsaved changes. Are you sure you want to quit?");
-	}
-	return true;
 }
 
 void color_map_editor::clear(cgv::render::context& ctx) {
@@ -69,11 +54,6 @@ void color_map_editor::clear(cgv::render::context& ctx) {
 	canvas.destruct(ctx);
 	overlay_canvas.destruct(ctx);
 	fbc.clear(ctx);
-}
-
-bool color_map_editor::self_reflect(cgv::reflect::reflection_handler& _rh) {
-
-	return _rh.reflect_member("file_name", file_name);
 }
 
 bool color_map_editor::handle_event(cgv::gui::event& e) {
@@ -162,58 +142,6 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 
 void color_map_editor::on_set(void* member_ptr) {
 
-	if(member_ptr == &file_name) {
-/*
-#ifndef CGV_FORCE_STATIC
-		// TODO: implemenmt
-		std::cout << "IMPLEMENT" << std::endl;
-		//std::filesystem::path file_path(file_name);
-		//if(file_path.is_relative()) {
-		//	std::string debug_file_name = QUOTE_SYMBOL_VALUE(INPUT_DIR);
-		//	file_name = debug_file_name + "/" + file_name;
-		//}
-#endif
-*/
-		//if(!load_from_xml(file_name))
-		//	cmc.reset();
-
-		update_point_positions();
-		update_color_map(false);
-
-		has_unsaved_changes = false;
-		on_set(&has_unsaved_changes);
-		
-		post_recreate_gui();
-	}
-
-	if(member_ptr == &save_file_name) {
-		std::string extension = cgv::utils::file::get_extension(save_file_name);
-
-		if(extension == "") {
-			extension = "xml";
-			save_file_name += "." + extension;
-		}
-
-		if(cgv::utils::to_upper(extension) == "XML") {
-			if(save_to_xml(save_file_name)) {
-				file_name = save_file_name;
-				update_member(&file_name);
-				has_unsaved_changes = false;
-				on_set(&has_unsaved_changes);
-			} else {
-				std::cout << "Error: Could not write transfer function to file: " << save_file_name << std::endl;
-			}
-		} else {
-			std::cout << "Please specify a xml file name." << std::endl;
-		}
-	}
-
-	if(member_ptr == &has_unsaved_changes) {
-		auto ctrl = find_control(file_name);
-		if(ctrl)
-			ctrl->set("color", has_unsaved_changes ? "0xff6666" : "0xffffff");
-	}
-	
 	if(member_ptr == &layout.total_height) {
 		ivec2 size = get_overlay_size();
 		size.y() = layout.total_height;
@@ -255,9 +183,6 @@ bool color_map_editor::init(cgv::render::context& ctx) {
 
 	if(success)
 		init_styles(ctx);
-
-	//if(!load_from_xml(file_name))
-	//	cmc.reset();
 	
 	init_texture(ctx);
 	update_color_map(false);
@@ -287,7 +212,6 @@ void color_map_editor::init_frame(cgv::render::context& ctx) {
 		overlay_canvas.set_resolution(ctx, get_viewport_size());
 
 		auto& bg_prog = canvas.enable_shader(ctx, "background");
-		//float width_factor = static_cast<float>(layout.handles_rect.size().x()) / static_cast<float>(layout.handles_rect.size().y());
 		float width_factor = static_cast<float>(layout.color_map_rect.size().x()) / static_cast<float>(layout.color_map_rect.size().y());
 		bg_style.texcoord_scaling = vec2(5.0f * width_factor, 5.0f);
 		bg_style.apply(ctx, bg_prog);
@@ -410,11 +334,6 @@ void color_map_editor::create_gui() {
 
 	create_overlay_gui();
 
-	add_decorator("File", "heading", "level=3");
-	std::string filter = "XML Files (xml):*.xml|All Files:*.*";
-	add_gui("File", file_name, "file_name", "title='Open Transfer Function';filter='" + filter + "';save=false;w=136;small_icon=true;align_gui=' ';color=" + (has_unsaved_changes ? "0xff6666" : "0xffffff"));
-	add_gui("save_file_name", save_file_name, "file_name", "title='Save Transfer Function';filter='" + filter + "';save=true;control=false;small_icon=true");
-
 	if(begin_tree_node("Settings", layout, false)) {
 		align("\a");
 		add_member_control(this, "Height", layout.total_height, "value_slider", "min=40;max=500;step=10;ticks=true");
@@ -424,7 +343,6 @@ void color_map_editor::create_gui() {
 	}
 
 	add_decorator("Control Points", "heading", "level=3");
-	// TODO: add controls for t?
 	auto& points = cmc.points;
 	for(unsigned i = 0; i < points.size(); ++i)
 		add_member_control(this, "Color " + std::to_string(i), points[i].col, "", &points[i] == cmc.points.get_selected() ? "label_color=" + highlight_color_hex : "");
@@ -435,10 +353,31 @@ void color_map_editor::create_gui(cgv::gui::provider& p) {
 	p.add_member_control(this, "Show", show, "check");
 }
 
-//texture& color_map_editor::ref_tex() {
-//
-//	return cm_tex;
-//}
+bool color_map_editor::was_updated() {
+	bool temp = has_updated;
+	has_updated = false;
+	return temp;
+}
+
+void color_map_editor::set_color_map(color_map* cm) {
+	cmc.reset();
+	cmc.cm = cm;
+
+	if(cmc.cm) {
+		auto& cm = *cmc.cm;
+		auto& cp = cmc.cm->ref_color_points();
+		for(size_t i = 0; i < cp.size(); ++i) {
+			point p;
+			p.val = cgv::math::clamp(cp[i].first, 0.0f, 1.0f);
+			p.col = cp[i].second;
+			cmc.points.add(p);
+		}
+		update_point_positions();
+		update_color_map(false);
+
+		post_recreate_gui();
+	}
+}
 
 void color_map_editor::init_styles(context& ctx) {
 	// get theme colors
@@ -676,18 +615,6 @@ void color_map_editor::update_color_map(bool is_data_change) {
 	preview_tex = texture("uint8[R,G,B]", TF_LINEAR, TF_LINEAR, TW_CLAMP_TO_EDGE, TW_CLAMP_TO_EDGE);
 	preview_tex.create(ctx, dv, 0);
 
-	if(is_data_change) {
-		has_unsaved_changes = true;
-		on_set(&has_unsaved_changes);
-	} else {
-		bool had_unsaved_changes = has_unsaved_changes;
-		if(has_unsaved_changes != had_unsaved_changes) {
-			has_unsaved_changes = has_unsaved_changes;
-			has_unsaved_changes = false;
-			on_set(&has_unsaved_changes);
-		}
-	}
-
 	update_geometry();
 
 	has_updated = true;
@@ -718,191 +645,6 @@ bool color_map_editor::update_geometry() {
 	handles.set_out_of_date();
 
 	return success;
-}
-
-static std::string xml_attribute_value(const std::string& attribute) {
-
-	size_t pos_start = attribute.find_first_of("\"");
-	size_t pos_end = attribute.find_last_of("\"");
-
-	if(pos_start != std::string::npos &&
-		pos_end != std::string::npos &&
-		pos_start < pos_end &&
-		attribute.length() > 2) {
-		return attribute.substr(pos_start + 1, pos_end - pos_start - 1);
-	}
-
-	return "";
-}
-
-static std::pair<std::string, std::string> xml_attribute_pair(const std::string& attribute) {
-
-	std::string name = "";
-	std::string value = "";
-
-	size_t pos = attribute.find_first_of('=');
-
-	if(pos != std::string::npos) {
-		name = attribute.substr(0, pos);
-	}
-
-	size_t pos_start = attribute.find_first_of("\"", pos);
-	size_t pos_end = attribute.find_last_of("\"");
-
-	if(pos_start != std::string::npos &&
-		pos_end != std::string::npos &&
-		pos_start < pos_end &&
-		attribute.length() > 2) {
-		value = attribute.substr(pos_start + 1, pos_end - pos_start - 1);
-	}
-
-	return { name, value };
-}
-
-static bool xml_attribute_to_int(const std::string& attribute, int& value) {
-
-	std::string value_str = xml_attribute_value(attribute);
-
-	if(!value_str.empty()) {
-		int value_i = 0;
-
-		try {
-			value_i = stoi(value_str);
-		} catch(const std::invalid_argument&) {
-			return false;
-		} catch(const std::out_of_range&) {
-			return false;
-		}
-
-		value = value_i;
-		return true;
-	}
-
-	return false;
-}
-
-static bool xml_attribute_to_float(const std::string& attribute, float& value) {
-
-	std::string value_str = xml_attribute_value(attribute);
-
-	if(!value_str.empty()) {
-		float value_f = 0.0f;
-
-		try {
-			value_f = stof(value_str);
-		} catch(const std::invalid_argument&) {
-			return false;
-		} catch(const std::out_of_range&) {
-			return false;
-		}
-
-		value = value_f;
-		return true;
-	}
-
-	return false;
-}
-
-bool color_map_editor::load_from_xml(const std::string& file_name) {
-
-	if(!cgv::utils::file::exists(file_name) || cgv::utils::to_upper(cgv::utils::file::get_extension(file_name)) != "XML")
-		return false;
-
-	std::string content;
-	cgv::utils::file::read(file_name, content, true);
-
-	bool read = true;
-	size_t nl_pos = content.find_first_of("\n");
-	size_t line_offset = 0;
-	bool first_line = true;
-
-	int active_stain_idx = -1;
-
-	cmc.points.clear();
-
-	while(read) {
-		std::string line = "";
-
-		if(nl_pos == std::string::npos) {
-			read = false;
-			line = content.substr(line_offset, std::string::npos);
-		} else {
-			size_t next_line_offset = nl_pos;
-			line = content.substr(line_offset, next_line_offset - line_offset);
-			line_offset = next_line_offset + 1;
-			nl_pos = content.find_first_of('\n', line_offset);
-		}
-
-		cgv::utils::trim(line);
-
-		if(line.length() < 3)
-			continue;
-		
-		line = line.substr(1, line.length() - 2);
-
-		std::vector<cgv::utils::token> tokens;
-		cgv::utils::split_to_tokens(line, tokens, "", true, "", "");
-
-		if(tokens.size() == 1 && to_string(tokens[0]) == "ColorScale") {
-			// is a color scale
-		}
-
-		if(tokens.size() == 6 && to_string(tokens[0]) == "Point") {
-			float pos = -1.0f;
-			int r = -1;
-			int g = -1;
-			int b = -1;
-
-			xml_attribute_to_float(to_string(tokens[1]), pos);
-			xml_attribute_to_int(to_string(tokens[2]), r);
-			xml_attribute_to_int(to_string(tokens[3]), g);
-			xml_attribute_to_int(to_string(tokens[4]), b);
-				
-			if(!(pos < 0.0f)) {
-				rgb col(0.0f);
-
-				if(!(r < 0 || g < 0 || b < 0)) {
-					col[0] = cgv::math::clamp(static_cast<float>(r / 255.0f), 0.0f, 1.0f);
-					col[1] = cgv::math::clamp(static_cast<float>(g / 255.0f), 0.0f, 1.0f);
-					col[2] = cgv::math::clamp(static_cast<float>(b / 255.0f), 0.0f, 1.0f);
-				}
-
-				point p;
-				p.col = col;
-				p.val = cgv::math::clamp(pos, 0.0f, 1.0f);
-				cmc.points.add(p);
-			}
-		}
-	}
-
-	return true;
-}
-
-bool color_map_editor::save_to_xml(const std::string& file_name) {
-
-	auto to_col_uint8 = [](const float& val) {
-		int ival = cgv::math::clamp(static_cast<int>(255.0f * val + 0.5f), 0, 255);
-		return static_cast<unsigned char>(ival);
-	};
-
-	std::string content = "";
-	content += "<ColorScale>\n";
-	std::string tab = "  ";
-
-	for(unsigned i = 0; i < cmc.points.size(); ++i) {
-		const point& p = cmc.points[i];
-
-		content += tab + "<Point ";
-		content += "position=\"" + std::to_string(p.val) + "\" ";
-		content += "r=\"" + std::to_string(to_col_uint8(p.col.R())) + "\" ";
-		content += "g=\"" + std::to_string(to_col_uint8(p.col.G())) + "\" ";
-		content += "b=\"" + std::to_string(to_col_uint8(p.col.B())) + "\" ";
-		content += "/>\n";
-	}
-	
-	content += "</ColorScale>\n";
-
-	return cgv::utils::file::write(file_name, content, true);
 }
 
 }
