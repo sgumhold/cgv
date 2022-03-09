@@ -744,6 +744,38 @@ static void draw_filesave(Color col) {
 	EC;*/
 }
 
+static void draw_edit(Color col) {
+	setcolor(col);
+	BP;
+	/*vv(0.6f, -0.8f);
+	vv(1.0f, -0.4f);
+	vv(0.0f, 0.6f);
+	vv(-0.4f, 0.6f);
+	vv(-0.4f, 0.2f);*/
+
+	vv(-1.0f, 0.4f);
+	vv(-1.0f, -0.4f);
+	vv(0.6f, -0.4f);
+	vv(1.0f, 0.0f);
+	vv(0.6f, 0.4f);
+	EP;
+
+	/*setcolor(GRAY75);
+	BC;
+	vv(-1.0f, 0.4f);
+	vv(-1.0f, -0.4f);
+	vv(0.6f, -0.4f);
+	vv(1.0f, 0.0f);
+	vv(0.6f, 0.4f);
+	EC;
+
+	BP;
+	vv(0.6f, 0.4f);
+	vv(1.0f, 0.0f);
+	vv(0.6f, -0.4f);
+	EC;*/
+}
+
 static void draw_menu(Color col)
 {
 	float w = 1.0f;
@@ -802,6 +834,7 @@ static void init_symbols(void) {
   add_symbol("filenew",		draw_filenew,		1);
   add_symbol("fileopen",	draw_fileopen,		1);
   add_symbol("filesave",	draw_filesave,		1);
+  add_symbol("edit",		draw_edit,			1);
 }
 
 //
