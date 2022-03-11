@@ -136,7 +136,7 @@ protected:
 
 			point p;
 			p.val = vec2(0.0f);
-			p.col = rgb(0.0f);
+			p.col = rgb(1.0f);
 			points.add(p);
 
 			p = point();
@@ -184,6 +184,8 @@ public:
 	void create_gui(cgv::gui::provider& p);
 
 	texture& ref_tex();
+
+	void set_color_points(const std::vector<std::pair<float, rgb>>& points);
 
 	bool set_histogram(const std::vector<unsigned>& data);
 };
