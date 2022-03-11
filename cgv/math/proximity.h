@@ -23,6 +23,89 @@ namespace cgv {
 			q = sr * n + so;
 		}
 		/// <summary>
+		/// find point on box closest to reference point. If reference point is 
+		/// in the interior, return reference point
+		/// </summary>
+		/// <typeparam name="T">coordinate type</typeparam>
+		/// <param name="bo">box center</param>
+		/// <param name="be">box extent</param>
+		/// <param name="p">reference point</param>
+		/// <param name="q">closest point</param>
+		/// <param name="n">normal at closest point if this is on the box surfaces, otherwise the 0 vector</param>
+		template <typename T>
+		void closest_point_on_box_to_point(const fvec<T, 3>& bo, const fvec<T, 3>& be, const fvec<T, 3>& p, fvec<T, 3>& q, fvec<T, 3>& n)
+		{
+			int j = 0;
+			for (int i = 0; i < 3; ++i) {
+				q[i] = p[i] - bo[i];
+				if (q[i] < 0) {
+					n[i] = -1;
+					if (q[i] < -0.5f * be[i]) {
+						q[i] = -0.5f * be[i];
+						++j;
+					}
+					else
+						n[i] = 0;
+				}
+				else {
+					n[i] = 1;
+					if (q[i] > 0.5f * be[i]) {
+						q[i] = 0.5f * be[i];
+						++j;
+					}
+					else
+						n[i] = 0;
+				}
+				q[i] += bo[i];
+			}
+			if (j > 1)
+				n *= sqrt(T(2));
+		}
+		/// <summary>
+		/// find point on box closest to reference point. If reference point is 
+		/// in the interior, return reference point
+		/// </summary>
+		/// <typeparam name="T">coordinate type</typeparam>
+		/// <param name="bo">box center</param>
+		/// <param name="be">box extent</param>
+		/// <param name="bq">box rotation as quaternion</param>
+		/// <param name="p">reference point</param>
+		/// <param name="q">closest point</param>
+		/// <param name="n">normal at closest point if this is on the box surfaces, otherwise the 0 vector</param>
+		template <typename T>
+		void closest_point_on_box_to_point(const fvec<T, 3>& bo, const fvec<T, 3>& be, const quaternion<T>& bq, const fvec<T, 3>& p, fvec<T, 3>& q, fvec<T, 3>& n)
+		{
+			fvec<T, 3> p_loc = p-bo;
+			bq.inverse_rotate(p_loc);
+			int j = 0;
+			for (int i = 0; i < 3; ++i) {
+				q[i] = p[i];
+				if (q[i] < 0) {
+					n[i] = -1;
+					if (q[i] < -0.5f * be[i]) {
+						q[i] = -0.5f * be[i];
+						++j;
+					}
+					else
+						n[i] = 0;
+				}
+				else {
+					n[i] = 1;
+					if (q[i] > 0.5f * be[i]) {
+						q[i] = 0.5f * be[i];
+						++j;
+					}
+					else
+						n[i] = 0;
+				}
+			}
+			if (j > 1)
+				n *= sqrt(T(2));
+			bq.rotate(n);
+			bq.rotate(q);
+			q += bo;
+		}
+		/// <summary>
 		/// find point on cylinder closest to reference point
 		/// </summary>
 		/// <typeparam name="T">coordinate type</typeparam>
