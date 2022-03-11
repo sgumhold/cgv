@@ -1,5 +1,6 @@
 #include <cgv/base/node.h>
 #include <cgv/gui/provider.h>
+#include <cgv/gui/theme_info.h>
 #include <cgv/render/render_types.h>
 
 class gui_controls : public cgv::base::node, public cgv::render::render_types, public cgv::gui::provider {
@@ -34,7 +35,9 @@ protected:
 	bool colored = false;
 
 public:
-	gui_controls() : cgv::base::node("GUI Controls") {}
+	gui_controls() : cgv::base::node("GUI Controls") {
+		auto& ti = cgv::gui::theme_info::instance();
+	}
 	void destruct() {
 		unregister_object(base_ptr(this));
 	}
@@ -54,7 +57,11 @@ public:
 		return s + (inactive ? "false" : "true" );
 	}
 	std::string is_colored() {
-		return colored ? ";color=0xff0000" : "";
+		auto& ti = cgv::gui::theme_info::instance();
+		std::string hex = ti.selection_hex();
+		return colored ? ";color=" + hex : "";
+		
+		//return colored ? ";color=0xff0000" : "";
 	}
 	void create_gui() {
 

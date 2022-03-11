@@ -88,7 +88,7 @@ struct fltk_color_control : public control<color<T,RGB,am> >, public fltk_base, 
 
 	{
 		view = new CW<fltk::Button>(x,y,w,h);
-		// TODO: MARK (fix boxes inside color_chooser)
+		// TODO: MARK (use a border box for the color button in flat themes)
 		if(fltk::theme_idx_ > -1) {
 			view->box(fltk::BORDER_BOX);
 		}

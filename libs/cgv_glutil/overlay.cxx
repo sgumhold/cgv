@@ -153,11 +153,11 @@ void overlay::create_overlay_gui() {
 
 			if(gui_options.allow_margin) {
 				cgv::signal::connect_copy(
-					add_control("Margin", margin[0], "value", "w=100;min=0;max=100;step=1;", "")->value_change,
+					add_control("Margin", margin[0], "value", "w=94;min=-10000;max=10000;step=1;", " ")->value_change,
 					cgv::signal::rebind(this, &overlay::on_layout_change)
 				);
 				cgv::signal::connect_copy(
-					add_control("", margin[1], "value", "w=100;min=0;max=100;step=1;")->value_change,
+					add_control("", margin[1], "value", "w=94;min=-10000;max=10000;step=1;")->value_change,
 					cgv::signal::rebind(this, &overlay::on_layout_change)
 				);
 			}

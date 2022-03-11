@@ -98,7 +98,7 @@ void Dial::draw() {
     }
   } else if(type() == RING) {
 	  linecolor = textcolor();
-	  fillcolor = inactive(selection_color(), getbgcolor());
+	  fillcolor = getbgcolor();
 	  if(flag(INACTIVE_R)) {
 		fillcolor = inactive(fillcolor, getbgcolor());
 	  }

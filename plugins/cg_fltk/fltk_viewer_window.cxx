@@ -2,6 +2,7 @@
 #include "fltk_driver.h"
 #include "fltk_event.h"
 #include <cgv/gui/provider.h>
+#include <cgv/gui/theme_info.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/base/base_generator.h>
 #include <cgv/base/register.h>
@@ -101,7 +102,6 @@ fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
 	menu_visible = true;
 	gui_visible = true;
 	theme_name = "light";
-	set_theme();
 	menu = 0;
 	callback(destroy_callback);
 
@@ -155,6 +155,8 @@ void fltk_viewer_window::show(bool modal)
 		fltk::Window::exec();
 	else
 		fltk::Window::show();
+
+	set_theme();
 }
 
 /// hide the window
@@ -213,6 +215,29 @@ void fltk_viewer_window::theme_change_cb() {
 
 	fltk::theme_idx_ = idx;
 	fltk::reload_theme();
+
+	{ // TODO: maybe move this to some other place
+		auto& ti = cgv::gui::theme_info::instance();
+		ti.set_theme_idx(idx);
+		uchar r, g, b;
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_BACKGROUND_COLOR), r, g, b);
+		ti.background(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_GROUP_COLOR), r, g, b);
+		ti.group(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_CONTROL_COLOR), r, g, b);
+		ti.control(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_BORDER_COLOR), r, g, b);
+		ti.border(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_TEXT_COLOR), r, g, b);
+		ti.text(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_SELECTION_COLOR), r, g, b);
+		ti.selection(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_HIGHLIGHT_COLOR), r, g, b);
+		ti.highlight(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_WARNING_COLOR), r, g, b);
+		ti.warning(r, g, b);
+	}
+
 	if(tab_group) {
 		tab_group->update();
 		post_recreate_gui();

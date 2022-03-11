@@ -108,6 +108,15 @@ extern "C" bool fltk_theme() {
 		  style->color_ = tooltip_background;
 		  style->labelcolor_ = tooltip_foreground;
 	  }
+
+	  fltk::set_theme_color(THEME_BACKGROUND_COLOR, GRAY75);
+	  fltk::set_theme_color(THEME_GROUP_COLOR, GRAY75);
+	  fltk::set_theme_color(THEME_CONTROL_COLOR, GRAY70);
+	  fltk::set_theme_color(THEME_BORDER_COLOR, GRAY33);
+	  fltk::set_theme_color(THEME_TEXT_COLOR, text_foreground);
+	  fltk::set_theme_color(THEME_SELECTION_COLOR, select_background);
+	  fltk::set_theme_color(THEME_HIGHLIGHT_COLOR, select_background);
+	  fltk::set_theme_color(THEME_WARNING_COLOR, RED);
   } else {
 	  Color highlight_textcolor = foreground;
 
@@ -125,13 +134,14 @@ extern "C" bool fltk_theme() {
 	  const Color tud_light_red = color(221, 39, 39);
 	  
 	  Color window_color = BLACK;
-	  // GRAY30 is set to half way between BLACK and c0: used for the shadowing effect on SHADOW_UP_BOX
+	  // GRAY30 is set to a darker shade of c0 (darkening depending on the brightness: less darkening for brighter c0): used for the shadowing effect on SHADOW_UP_BOX
 	  Color c0 = WHITE; // set as GRAY33: the window background color (shall be the darkest color in the theme, except black and text colors)
 	  Color c1 = WHITE; // set as GRAY75: the background color for gui groups
 	  Color c2 = WHITE; // set as GRAY80: lighter than c1, used for controls
 	  Color c3 = WHITE; // set as GRAY85: lighter or darker shade than c1, used for border frames
 	  Color text_symbol_color = WHITE; // set as GRAY95: used for some labels (like slider handle markings)
 	  Color dial_color = WHITE;
+	  Color warning_color = RED;
 
 	  switch(theme_idx) {
 	  case 0:
@@ -149,6 +159,7 @@ extern "C" bool fltk_theme() {
 		  select_foreground = GRAY99;
 		  window_color = GRAY33;
 		  dial_color = c2;
+		  warning_color = tud_light_red;
 
 		  break;
 	  case 1:
@@ -166,6 +177,7 @@ extern "C" bool fltk_theme() {
 		  select_foreground = GRAY99;
 		  window_color = GRAY33;
 		  dial_color = c2;
+		  warning_color = tud_light_red;
 
 		  break;
 	  case 2:
@@ -182,7 +194,8 @@ extern "C" bool fltk_theme() {
 		  select_background = tud_marking1_blue;
 		  select_foreground = GRAY99;
 		  window_color = GRAY33;
-		  dial_color = text_foreground;
+		  dial_color = c3;
+		  warning_color = tud_dark_red;
 
 		  break;
 	  case 3:
@@ -199,10 +212,20 @@ extern "C" bool fltk_theme() {
 		  select_background = tud_marking1_blue;
 		  select_foreground = GRAY99;
 		  window_color = GRAY33;
-		  dial_color = text_foreground;
+		  dial_color = c3;
+		  warning_color = tud_dark_red;
 
 		  break;
 	  }
+
+	  fltk::set_theme_color(THEME_BACKGROUND_COLOR, c0);
+	  fltk::set_theme_color(THEME_GROUP_COLOR, c1);
+	  fltk::set_theme_color(THEME_CONTROL_COLOR, c2);
+	  fltk::set_theme_color(THEME_BORDER_COLOR, c3);
+	  fltk::set_theme_color(THEME_TEXT_COLOR, text_foreground);
+	  fltk::set_theme_color(THEME_SELECTION_COLOR, select_background);
+	  fltk::set_theme_color(THEME_HIGHLIGHT_COLOR, highlight_textcolor);
+	  fltk::set_theme_color(THEME_WARNING_COLOR, warning_color);
 
 	  fltk::set_main_gui_colors(c0, c1, c2, c3, text_symbol_color);
 	  //fltk::shift_background(background);
@@ -260,7 +283,7 @@ extern "C" bool fltk_theme() {
 	  if((style = Style::find("Dial"))) {
 		  style->color_ = GRAY80;
 		  style->textcolor_ = GRAY33;
-		  style->selection_color_ = dial_color;
+		  style->color_ = dial_color;
 	  }
 
 	  if((style = Style::find("Output"))) {
