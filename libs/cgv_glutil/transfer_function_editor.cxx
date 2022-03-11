@@ -487,6 +487,22 @@ texture& transfer_function_editor::ref_tex() {
 	return tf_tex;
 }
 
+void transfer_function_editor::set_color_points(const std::vector<std::pair<float, rgb>>& points) {
+
+	tfc.points.clear();
+
+	for(const auto& pnt : points) {
+		point p;
+		p.col = pnt.second;
+		p.val.x() = cgv::math::clamp(pnt.first, 0.0f, 1.0f);
+		p.val.y() = pnt.first;
+		tfc.points.add(p);
+	}
+
+	update_point_positions();
+	update_transfer_function(false);
+}
+
 bool transfer_function_editor::set_histogram(const std::vector<unsigned>& data) {
 
 	context* ctx_ptr = get_context();
@@ -934,8 +950,6 @@ bool transfer_function_editor::load_from_xml(const std::string& file_name) {
 	size_t nl_pos = content.find_first_of("\n");
 	size_t line_offset = 0;
 	bool first_line = true;
-
-	int active_stain_idx = -1;
 
 	tfc.points.clear();
 

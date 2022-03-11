@@ -22,9 +22,14 @@ namespace glutil{
 
 class CGV_API color_map_editor : public overlay {
 protected:
-	std::string file_name;
-	std::string save_file_name;
-	bool has_unsaved_changes = false;
+	int last_theme_idx = -1;
+	rgba handle_color = rgb(0.9f, 0.9f, 0.9f, 1.0f);
+	rgba highlight_color = rgb(0.5f, 0.5f, 0.5f, 1.0f);
+	std::string highlight_color_hex = "0x808080";
+
+	//std::string file_name;
+	//std::string save_file_name;
+	//bool has_unsaved_changes = false;
 	bool has_updated = false;
 
 	bool mouse_is_on_overlay;
@@ -49,10 +54,10 @@ protected:
 		rect handles_rect;
 
 		void update(const ivec2& parent_size) {
-			color_map_rect.set_pos(ivec2(padding) + ivec2(0, 4));
-			color_map_rect.set_size(parent_size - 2 * padding - ivec2(0, 4));
+			color_map_rect.set_pos(ivec2(padding) + ivec2(0, 10));
+			color_map_rect.set_size(parent_size - 2 * padding - ivec2(0, 10));
 
-			handles_rect.set_pos(ivec2(padding, 0));
+			handles_rect.set_pos(ivec2(padding, 8));
 			handles_rect.set_size(ivec2(parent_size.x() - 2 * padding, 0));
 		}
 	} layout;
@@ -131,17 +136,12 @@ protected:
 	void update_color_map(bool is_data_change);
 	bool update_geometry();
 
-	bool load_from_xml(const std::string& file_name);
-	bool save_to_xml(const std::string& file_name);
-
 public:
 	color_map_editor();
 	std::string get_type_name() const { return "color_map_editor"; }
 
-	bool on_exit_request();
 	void clear(cgv::render::context& ctx);
 
-	bool self_reflect(cgv::reflect::reflection_handler& _rh);
 	void stream_help(std::ostream& os) {}
 
 	bool handle_event(cgv::gui::event& e);
@@ -154,36 +154,11 @@ public:
 	void create_gui();
 	void create_gui(cgv::gui::provider& p);
 
-	bool was_updated() {
-		bool temp = has_updated;
-		has_updated = false;
-		return temp;
-	}
+	bool was_updated();
 
 	color_map* get_color_map() { return cmc.cm; }
 
-	void set_color_map(color_map* cm) {
-		cmc.reset();
-		cmc.cm = cm;
-
-		if(cmc.cm) {
-			auto& cm = *cmc.cm;
-			auto& cp = cmc.cm->ref_color_points();
-			for(size_t i = 0; i < cp.size(); ++i) {
-				point p;
-				p.val = cgv::math::clamp(cp[i].first, 0.0f, 1.0f);
-				p.col = cp[i].second;
-				cmc.points.add(p);
-			}
-			update_point_positions();
-			update_color_map(false);
-
-			has_unsaved_changes = false;
-			on_set(&has_unsaved_changes);
-
-			post_recreate_gui();
-		}
-	}
+	void set_color_map(color_map* cm);
 };
 
 }
