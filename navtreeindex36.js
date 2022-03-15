@@ -1,5 +1,7 @@
 var NAVTREEINDEX36 =
 {
+"math_2plane_8h_source.html":[12,0,0,5,34],
+"math_2sphere_8h_source.html":[12,0,0,5,50],
 "math_2statistics_8h_source.html":[12,0,0,5,51],
 "math_2union__find_8h_source.html":[12,0,0,5,56],
 "max_8h_source.html":[12,0,0,12,4,0],
@@ -39,20 +41,20 @@ var NAVTREEINDEX36 =
 "namespacecgv_1_1media_1_1video.html":[11,0,0,4,4],
 "namespacecgv_1_1reflect.html":[10,0,0,5],
 "namespacecgv_1_1reflect.html":[11,0,0,8],
-"namespacecgv_1_1render.html":[10,0,0,6],
 "namespacecgv_1_1render.html":[11,0,0,9],
+"namespacecgv_1_1render.html":[10,0,0,6],
 "namespacecgv_1_1render_1_1gl.html":[10,0,0,6,0],
 "namespacecgv_1_1render_1_1gl.html":[11,0,0,9,0],
 "namespacecgv_1_1type.html":[11,0,0,11],
 "namespacecgv_1_1type.html":[10,0,0,7],
-"namespacecgv_1_1type_1_1cond.html":[11,0,0,11,0],
 "namespacecgv_1_1type_1_1cond.html":[10,0,0,7,0],
+"namespacecgv_1_1type_1_1cond.html":[11,0,0,11,0],
 "namespacecgv_1_1type_1_1func.html":[10,0,0,7,1],
 "namespacecgv_1_1type_1_1func.html":[11,0,0,11,2],
 "namespacecgv_1_1type_1_1info.html":[11,0,0,11,3],
 "namespacecgv_1_1type_1_1info.html":[10,0,0,7,2],
-"namespacecgv_1_1utils.html":[11,0,0,12],
 "namespacecgv_1_1utils.html":[10,0,0,8],
+"namespacecgv_1_1utils.html":[11,0,0,12],
 "namespacemembers.html":[10,1,0],
 "namespacemembers.html":[10,1,0,0],
 "namespacemembers_b.html":[10,1,0,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX36 =
 "scan_8h.html#a768fdf54202b2fc80c51ea8f312b2b82":[12,0,0,13,12,39],
 "scan_8h.html#a7807eab90c69363c21cc7ef34a2dadf1":[12,0,0,13,12,38],
 "scan_8h.html#a81d51336fe7248cc852738af2b6adf85":[12,0,0,13,12,20],
-"scan_8h.html#a8a31d2792f8f93b046c38aa6f387fd5f":[12,0,0,13,12,2],
-"scan_8h.html#a97032f8b8a5544a118c84ff2346b5bfe":[12,0,0,13,12,32],
-"scan_8h.html#aa1fd572ba3b638aa39f85a8553a9a23b":[12,0,0,13,12,8]
+"scan_8h.html#a8a31d2792f8f93b046c38aa6f387fd5f":[12,0,0,13,12,2]
 };
