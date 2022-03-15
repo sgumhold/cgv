@@ -153,8 +153,8 @@ bool navigator::handle_event(cgv::gui::event& e) {
 							vec3 focus = view_ptr->get_focus();
 							float dist = (focus - view_ptr->get_eye()).length();
 							
-							std::cout << hit_axis << std::endl;
-							std::cout << axis_idx << std::endl;
+							//std::cout << hit_axis << std::endl;
+							//std::cout << axis_idx << std::endl;
 
 							vec3 up_dir(0.0f, 1.0f, 0.0f);
 							if(axis_idx == 1)
@@ -163,8 +163,8 @@ bool navigator::handle_event(cgv::gui::event& e) {
 							view_ptr->set_eye_keep_extent(focus + dist * direction);
 							view_ptr->set_view_up_dir(up_dir);
 							
-							std::cout << direction << std::endl;
-							std::cout << up_dir << std::endl;
+							//std::cout << direction << std::endl;
+							//std::cout << up_dir << std::endl;
 
 							post_redraw();
 							return true;
