@@ -1,5 +1,7 @@
 var NAVTREEINDEX35 =
 {
+"debug__reflection__handler_8h_source.html":[12,0,0,9,0],
+"deprecated_8h_source.html":[12,0,0,3,1],
 "det_8h_source.html":[12,0,0,5,7],
 "diag__mat_8h_source.html":[12,0,0,5,8],
 "dialog_8h_source.html":[12,0,0,4,7],
@@ -247,7 +249,5 @@ var NAVTREEINDEX35 =
 "make__ref_8h_source.html":[12,0,0,12,2,6],
 "make__return_8h_source.html":[12,0,0,12,2,7],
 "marching__cubes_8h_source.html":[12,0,0,6,3,3],
-"mat_8h_source.html":[12,0,0,5,27],
-"math_2plane_8h_source.html":[12,0,0,5,34],
-"math_2sphere_8h_source.html":[12,0,0,5,50]
+"mat_8h_source.html":[12,0,0,5,27]
 };
