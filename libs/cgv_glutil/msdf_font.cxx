@@ -7,7 +7,6 @@ namespace cgv {
 namespace glutil {
 
 msdf_font::msdf_font() {
-	initialized = false;
 	initial_font_size = 0;
 	pixel_range = 0;
 }
@@ -25,7 +24,6 @@ bool msdf_font::init(cgv::render::context& ctx) {
 	bool success = true;
 	success &= load_atlas_texture(ctx, "res://segoeui_atlas.png");
 	success &= load_atlas_metadata("res://segoeui_meta.png");
-	initialized = success;
 	return success;
 }
 
