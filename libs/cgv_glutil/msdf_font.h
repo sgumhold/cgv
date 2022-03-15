@@ -20,6 +20,7 @@ public:
 	};
 
 protected:
+	bool initialized;
 	float initial_font_size;
 	float pixel_range;
 
@@ -40,6 +41,8 @@ public:
 	bool is_initialized() const;
 
 	bool init(cgv::render::context& ctx);
+
+	bool is_initialized() const { return initialized; }
 
 	const glyph_info& get_glyph_info(unsigned char id) const { return glyphs[id]; }
 
