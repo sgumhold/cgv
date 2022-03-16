@@ -12,7 +12,8 @@ class simple_object :
 
 protected:
 	// geometry of box with color
-	// position and rotation already defined by base class (grabable_interactable)
+	vec3 position;
+	quat rotation;
 	vec3 extent;
 	rgb  color;
 	/// return color modified based on state

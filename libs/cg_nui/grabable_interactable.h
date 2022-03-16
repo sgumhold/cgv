@@ -14,8 +14,11 @@ class CGV_API grabable_interactable : public interactable
 	rgb debug_point_trigger_color;
 
 protected:
-	vec3 position;
-	quat rotation;
+	vec3* position_ptr;
+	vec3** position_ptr_ptr;
+	// TODO: Implement change of rotation (with option to set rotation to nullptr if not needed)
+	quat* rotation_ptr;
+	quat** rotation_ptr_ptr;
 
 	vec3 query_point_at_grab, position_at_grab;
 	vec3 hit_point_at_trigger, position_at_trigger;
@@ -26,8 +29,23 @@ protected:
 	void on_triggered_drag(vec3 ray_origin, vec3 ray_direction, vec3 hit_point) override;
 
 public:
-	grabable_interactable(const vec3& position, const quat& rotation = quat(1, 0, 0, 0), const std::string& name = "") :
-		interactable(name), position(position), rotation(rotation) {}
+	grabable_interactable(vec3* position_ptr, quat* rotation_ptr, const std::string& name = "") :
+		interactable(name), position_ptr(position_ptr), position_ptr_ptr(nullptr), rotation_ptr(rotation_ptr), rotation_ptr_ptr(nullptr) {}
+
+	grabable_interactable(vec3* position_ptr, const std::string& name = "") :
+		interactable(name), position_ptr(position_ptr), position_ptr_ptr(nullptr), rotation_ptr(nullptr), rotation_ptr_ptr(nullptr) {}
+
+	grabable_interactable(quat* rotation_ptr, const std::string& name = "") :
+		interactable(name), position_ptr(nullptr), position_ptr_ptr(nullptr), rotation_ptr(rotation_ptr), rotation_ptr_ptr(nullptr) {}
+
+	grabable_interactable(vec3** position_ptr_ptr, quat** rotation_ptr_ptr, const std::string& name = "") :
+		interactable(name), position_ptr(nullptr), position_ptr_ptr(position_ptr_ptr), rotation_ptr(nullptr), rotation_ptr_ptr(rotation_ptr_ptr) {}
+
+	grabable_interactable(vec3** position_ptr_ptr, const std::string& name = "") :
+		interactable(name), position_ptr(nullptr), position_ptr_ptr(position_ptr_ptr), rotation_ptr(nullptr), rotation_ptr_ptr(nullptr) {}
+
+	grabable_interactable(quat** rotation_ptr_ptr, const std::string& name = "") :
+		interactable(name), position_ptr(nullptr), position_ptr_ptr(nullptr), rotation_ptr(nullptr), rotation_ptr_ptr(rotation_ptr_ptr) {}
 
 	// To be implemented by deriving classes
 	//@name cgv::nui::grabable interface

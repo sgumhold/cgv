@@ -23,7 +23,7 @@ simple_object::rgb simple_object::get_modified_color(const rgb& color) const
 }
 
 simple_object::simple_object(const std::string& _name, const vec3& _position, const rgb& _color, const vec3& _extent, const quat& _rotation) :
-	cgv::nui::grabable_interactable(_position, _rotation, _name),
+	cgv::nui::grabable_interactable(&position, &rotation, _name), position(_position), rotation(_rotation),
 	color(_color), extent(_extent)
 {
 	name = _name;
