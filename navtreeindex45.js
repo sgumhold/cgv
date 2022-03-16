@@ -1,5 +1,8 @@
 var NAVTREEINDEX45 =
 {
+"structcgv_1_1render_1_1surface__render__style.html#ad6cd67abc2b77e76500d387bb85ce300":[11,0,0,9,46,17],
+"structcgv_1_1render_1_1surface__render__style.html#ad8f48464b480e9ecfc40ca2ab1532b69":[11,0,0,9,46,40],
+"structcgv_1_1render_1_1surface__render__style.html#adf935427999ed33a4eb7be3bcf9512ad":[11,0,0,9,46,29],
 "structcgv_1_1render_1_1surface__render__style.html#ae157c607d60955c0586e5275bcc19b49":[11,0,0,9,46,13],
 "structcgv_1_1render_1_1surface__render__style.html#aecb36a2425963ed10456f952cfffeb4f":[11,0,0,9,46,22],
 "structcgv_1_1render_1_1surface__render__style.html#aefe4161943c1abac1a582f2745c13698":[11,0,0,9,46,7],
@@ -246,8 +249,5 @@ var NAVTREEINDEX45 =
 "structcgv_1_1utils_1_1typed__token.html#a69a63af3bc04b79c5ac4312aa6912729":[11,0,0,12,8,1],
 "structcgv_1_1utils_1_1typed__token.html#a76c686c3345b275faa5bacb0245a1af9":[11,0,0,12,8,6],
 "structcgv_1_1utils_1_1typed__token.html#a8795f9f939f15d61b4114c370a670344":[11,0,0,12,8,10],
-"structcgv_1_1utils_1_1typed__token.html#a9a2121933f46f315734a1994eafeff2b":[11,0,0,12,8,2],
-"structcgv_1_1utils_1_1typed__token.html#aa8e06c57774bb6d34436ff2e0ea22442":[11,0,0,12,8,8],
-"structcgv_1_1utils_1_1typed__token.html#ab31c4e3c695ed4ad2ce0b69d09c2cf45":[11,0,0,12,8,7],
-"structgamepad_1_1device__info.html":[11,0,1,0]
+"structcgv_1_1utils_1_1typed__token.html#a9a2121933f46f315734a1994eafeff2b":[11,0,0,12,8,2]
 };

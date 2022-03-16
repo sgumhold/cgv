@@ -1,5 +1,8 @@
 var NAVTREEINDEX46 =
 {
+"structcgv_1_1utils_1_1typed__token.html#aa8e06c57774bb6d34436ff2e0ea22442":[11,0,0,12,8,8],
+"structcgv_1_1utils_1_1typed__token.html#ab31c4e3c695ed4ad2ce0b69d09c2cf45":[11,0,0,12,8,7],
+"structgamepad_1_1device__info.html":[11,0,1,0],
 "structgamepad_1_1device__info.html#a0498dbd34f0f14ad1906077744346bce":[11,0,1,0,1],
 "structgamepad_1_1device__info.html#a146899103026a05bb5c12c2d6c61bb1c":[11,0,1,0,4],
 "structgamepad_1_1device__info.html#a2aea5df56a4500c03f2fd52b09d1c89b":[11,0,1,0,0],
@@ -142,9 +145,9 @@ var NAVTREEINDEX46 =
 "textured__surface__material_8h_source.html":[12,0,0,6,1,5],
 "theme__info_8h_source.html":[12,0,0,4,29],
 "thin__plate__spline_8h_source.html":[12,0,0,5,53],
-"thread_8h_source.html":[12,0,0,7,13],
-"thread__pthread_8h_source.html":[12,0,0,7,14],
-"thread__std__thread_8h_source.html":[12,0,0,7,15],
+"thread_8h_source.html":[12,0,0,7,14],
+"thread__pthread_8h_source.html":[12,0,0,7,15],
+"thread__std__thread_8h_source.html":[12,0,0,7,16],
 "throttle__event_8h_source.html":[12,0,0,4,30],
 "todo.html":[8],
 "token_8h_source.html":[12,0,0,13,16],
@@ -246,8 +249,5 @@ var NAVTREEINDEX46 =
 "vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a9273d7edfa6fd2c7ba9b5ff68583d3da":[12,0,1,5,7,5,11],
 "vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a94854079c11ad902b0dc2c5e6b5d8169":[12,0,1,5,7,5,4],
 "vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a9d53c4a251de30581b3559f4391ff69f":[12,0,1,5,7,5,15],
-"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04aa58230bba551bf04c67be515190abfa3":[12,0,1,5,7,5,12],
-"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04aa8afe3f1dd30d28f8b860b9f8d04d6a6":[12,0,1,5,7,5,9],
-"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04aa9164dfeaef539d83f2234af066d572f":[12,0,1,5,7,5,13],
-"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04ad094f6abedcdbcb72fb69321c29e6c95":[12,0,1,5,7,5,20]
+"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04aa58230bba551bf04c67be515190abfa3":[12,0,1,5,7,5,12]
 };

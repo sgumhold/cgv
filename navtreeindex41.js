@@ -1,5 +1,8 @@
 var NAVTREEINDEX41 =
 {
+"structcgv_1_1plot_1_1plot__base__config.html#a115cfd532b3c0aaa4fb3b5ded65411db":[11,0,0,6,8,19],
+"structcgv_1_1plot_1_1plot__base__config.html#a1cad3d9016b0839b7c7ca6c442ad51ba":[11,0,0,6,8,28],
+"structcgv_1_1plot_1_1plot__base__config.html#a1e62517ca0f100a6be4aba3974eb5986":[11,0,0,6,8,46],
 "structcgv_1_1plot_1_1plot__base__config.html#a1e647cad0feb06b4067d49caefffec9b":[11,0,0,6,8,12],
 "structcgv_1_1plot_1_1plot__base__config.html#a1e9d2050633cd60046a0a649fcba303c":[11,0,0,6,8,38],
 "structcgv_1_1plot_1_1plot__base__config.html#a2f0ebb384c7f9b553c46d744e2641861":[11,0,0,6,8,53],
@@ -246,8 +249,5 @@ var NAVTREEINDEX41 =
 "structcgv_1_1reflect_1_1reflection__traits__impl.html#a548d66e9c999c0db0d5236db34856e39":[9,1,0,4],
 "structcgv_1_1reflect_1_1reflection__traits__impl.html#a56e22e34752afcc0e2652707b84472bd":[9,1,0,3],
 "structcgv_1_1reflect_1_1reflection__traits__impl.html#a9f0cfa7444ca84b6ca3011d6c4616109":[9,1,0,7],
-"structcgv_1_1reflect_1_1reflection__traits__impl.html#aab3eac488886677c3380412d33e2b1f7":[9,1,0,2],
-"structcgv_1_1reflect_1_1reflection__traits__impl.html#aba3230fb990b2cc5e6fe21c993cb9a36":[9,1,0,6],
-"structcgv_1_1reflect_1_1reflection__traits__impl.html#ae4c9d972068da0cd4bfb5a9df27ad482":[9,1,0,0],
-"structcgv_1_1reflect_1_1reflection__traits__impl_3_01T_00_01B_00_01true_01_4.html":[9,1,1]
+"structcgv_1_1reflect_1_1reflection__traits__impl.html#aab3eac488886677c3380412d33e2b1f7":[9,1,0,2]
 };
