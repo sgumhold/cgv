@@ -5,6 +5,7 @@
  */
 
 #include <string>
+#include <vector>
 
 #include "date_time.h"
 
@@ -41,6 +42,10 @@ extern CGV_API bool is_letter(char c);
 extern CGV_API char to_lower(char c);
 /// convert to hex
 extern CGV_API std::string to_hex(uint8_t v, bool use_upper_case = true);
+/// convert from hex character
+extern CGV_API uint8_t from_hex(char c);
+/// parse bytes hex coded bytes
+extern CGV_API std::vector<uint8_t> parse_hex_bytes(const std::string& byte_str);
 /// convert string to lower case
 extern CGV_API std::string to_lower(const std::string& _s);
 /// convert char to upper case
