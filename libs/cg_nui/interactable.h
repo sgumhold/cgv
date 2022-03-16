@@ -26,7 +26,7 @@ class CGV_API interactable : public cgv::base::group,
 protected:
 	vec3 debug_point;
 	rgb debug_point_color;
-	cgv::render::sphere_render_style srs;
+	cgv::render::sphere_render_style debug_sphere_rs;
 
 	vec3 cached_query_point;
 	vec3 cached_hit_point;
