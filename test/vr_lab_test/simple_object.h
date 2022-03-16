@@ -3,7 +3,7 @@
 #include <cg_nui/grabable_interactable.h>
 #include <cgv_gl/box_renderer.h>
 
-
+/// Example implementation of a single object that can be grabbed/triggered and then moved.
 class simple_object :
 	public cgv::nui::grabable_interactable
 {

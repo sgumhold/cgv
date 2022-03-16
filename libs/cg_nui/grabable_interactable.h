@@ -7,8 +7,13 @@
 namespace cgv {
 	namespace nui {
 
-
-class CGV_API grabable_interactable : public interactable
+	/// Base class for interactable objects that can be moved while triggered/grabbed. The movement (and rotation)
+	///	is applied to variables provided in the constructor as either a pointer or a double pointer.
+	///	The double pointer can be used for an additional indirection to support the use of multiple primitives
+	///	(see simple_primitive_container in vr_lab_test for an example of this).
+	///	If enabled an additional debug point is drawn for the intersection/closest surface point at the start of
+	///	grabbing/triggering.
+	class CGV_API grabable_interactable : public interactable
 {
 	bool debug_point_enabled{ false };
 	rgb debug_point_color{ rgb(0.4f, 0.05f, 0.6f) };
