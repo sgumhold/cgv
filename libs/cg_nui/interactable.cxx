@@ -87,8 +87,8 @@ bool cgv::nui::interactable::focus_change(cgv::nui::focus_change_action action, 
 		}
 		return false;
 	case cgv::nui::focus_change_action::index_change:
-		// TODO: Implement handling of indices
-		// nothing to be done because with do not use indices
+		prim_idx = int(reinterpret_cast<const cgv::nui::hit_dispatch_info&>(dis_info).get_hit_info()->primitive_index);
+		on_set(&prim_idx);
 		break;
 	}
 	return true;
@@ -121,6 +121,8 @@ bool cgv::nui::interactable::handle(const cgv::gui::event& e, const cgv::nui::di
 		if (state == state_enum::close) {
 			debug_point = prox_info.hit_point;
 			cached_query_point = prox_info.query_point;
+			prim_idx = int(prox_info.primitive_index);
+			on_set(&prim_idx);
 		}
 		else if (state == state_enum::grabbed) {
 			debug_point = prox_info.hit_point;
@@ -147,6 +149,8 @@ bool cgv::nui::interactable::handle(const cgv::gui::event& e, const cgv::nui::di
 		if (state == state_enum::pointed) {
 			debug_point = inter_info.hit_point;
 			cached_hit_point = inter_info.hit_point;
+			prim_idx = int(inter_info.primitive_index);
+			on_set(&prim_idx);
 		}
 		else if (state == state_enum::triggered) {
 			// if we still have an intersection point, use as debug point

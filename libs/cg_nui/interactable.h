@@ -43,6 +43,8 @@ protected:
 	cgv::nui::hid_identifier hid_id;
 	// state of object
 	state_enum state = state_enum::idle;
+	// index of focused primitive (always 0 in case of only one primitive)
+	int prim_idx = 0;
 
 	// State change events that can be overriden
 
