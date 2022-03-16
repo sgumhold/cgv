@@ -42,8 +42,9 @@ void cgv::nui::grabable_interactable::on_triggered_drag(vec3 ray_origin, vec3 ra
 void cgv::nui::grabable_interactable::draw(cgv::render::context& ctx)
 {
 	interactable::draw(ctx);
+	return;
 	auto& sr = cgv::render::ref_sphere_renderer(ctx);
-	sr.set_render_style(srs);
+	sr.set_render_style(debug_sphere_rs);
 	if (state == state_enum::grabbed) {
 		sr.set_position(ctx, query_point_at_grab);
 		sr.set_color(ctx, debug_point_grab_color);
