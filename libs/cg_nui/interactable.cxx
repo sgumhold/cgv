@@ -49,8 +49,7 @@ void cgv::nui::interactable::change_state(state_enum new_state, vec3 query_point
 
 cgv::nui::interactable::interactable(const std::string& name) :
 	group(name),
-	cached_query_point(vec3(0.0f)), cached_hit_point(vec3(0.0f)), debug_point(vec3(0.0f)),
-	debug_point_color(rgb(0.5f, 0.5f, 0.5f))
+	cached_query_point(vec3(0.0f)), cached_hit_point(vec3(0.0f)), debug_point(vec3(0.0f))
 {
 	debug_sphere_rs.radius = 0.01f;
 }
@@ -178,7 +177,7 @@ void cgv::nui::interactable::clear(cgv::render::context& ctx)
 
 void cgv::nui::interactable::draw(cgv::render::context& ctx)
 {
-	if (state == state_enum::idle)
+	if (state == state_enum::idle || !debug_point_enabled)
 		return;
 	auto& sr = cgv::render::ref_sphere_renderer(ctx);
 	sr.set_render_style(debug_sphere_rs);
@@ -189,10 +188,11 @@ void cgv::nui::interactable::draw(cgv::render::context& ctx)
 
 void cgv::nui::interactable::create_gui()
 {
-	if (begin_tree_node("interactable", debug_point_color)) {
+	if (begin_tree_node("interactable", debug_point_enabled)) {
 		align("\a");
+		add_member_control(this, "enable debug point", debug_point_enabled, "check");
 		add_member_control(this, "debug point color", debug_point_color);
 		align("\b");
-		end_tree_node(debug_point_color);
+		end_tree_node(debug_point_enabled);
 	}
 }

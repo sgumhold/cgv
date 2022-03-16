@@ -42,29 +42,30 @@ void cgv::nui::grabable_interactable::on_triggered_drag(vec3 ray_origin, vec3 ra
 void cgv::nui::grabable_interactable::draw(cgv::render::context& ctx)
 {
 	interactable::draw(ctx);
-	return;
+	if (!(state == state_enum::grabbed || state == state_enum::triggered) || !debug_point_enabled)
+		return;
 	auto& sr = cgv::render::ref_sphere_renderer(ctx);
 	sr.set_render_style(debug_sphere_rs);
 	if (state == state_enum::grabbed) {
 		sr.set_position(ctx, query_point_at_grab);
-		sr.set_color(ctx, debug_point_grab_color);
+		sr.set_color_array(ctx, &debug_point_color, 1);
 		sr.render(ctx, 0, 1);
 	}
 	if (state == state_enum::triggered) {
 		sr.set_position(ctx, hit_point_at_trigger);
-		sr.set_color(ctx, debug_point_trigger_color);
+		sr.set_color_array(ctx, &debug_point_color, 1);
 		sr.render(ctx, 0, 1);
 	}
 }
 
 void cgv::nui::grabable_interactable::create_gui()
 {
-	if (begin_tree_node("grabable_interactable", debug_point_grab_color)) {
+	interactable::create_gui();
+	if (begin_tree_node("grabable_interactable", debug_point_enabled)) {
 		align("\a");
-		interactable::create_gui();
-		add_member_control(this, "debug point grab color", debug_point_grab_color);
-		add_member_control(this, "debug point trigger color", debug_point_trigger_color);
+		add_member_control(this, "enable debug point at grab", debug_point_enabled, "check");
+		add_member_control(this, "debug point color", debug_point_color);
 		align("\b");
-		end_tree_node(debug_point_grab_color);
+		end_tree_node(debug_point_enabled);
 	}
 }
