@@ -2,6 +2,7 @@
 
 #include <cg_nui/grabable_interactable.h>
 
+/// Example implementation of a collection of primitives that can be grabbed/triggered and then moved individually.
 class simple_primitive_container: public cgv::nui::grabable_interactable
 {
 protected:

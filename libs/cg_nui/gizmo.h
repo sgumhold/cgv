@@ -7,7 +7,7 @@
 namespace cgv {
 	namespace nui {
 
-/// abstract base class for gizmos
+/// Abstract base class for gizmos.
 class CGV_API gizmo : public cgv::nui::interactable
 {
 protected:

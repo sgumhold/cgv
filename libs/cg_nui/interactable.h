@@ -15,6 +15,15 @@ namespace cgv {
 
 /// Base class for objects that can have focus and be selected/activated by pointing or grabbing.
 ///	Provides a general implementation of different interaction states with event functions that can be overriden.
+///	States are:
+///		idle: default inactive state
+///		close: hid is in range for grabbing
+///		grabbed: hid has grabbed this object
+///		pointed: hid is pointing at object (ray is intersecting)
+///		triggered: hid has triggered this object while pointing at it
+///	The event functions are for entering (start) and leaving (stop) the states. Triggered and grabbed states
+///	also have a drag event that is called continuously while the object is grabbed/triggered.
+///	If enabled a debug point is drawn at the intersection / closest surface point while the state is not idle.
 class CGV_API interactable : public cgv::base::group,
 					  public cgv::render::drawable,
 					  public cgv::nui::focusable,
