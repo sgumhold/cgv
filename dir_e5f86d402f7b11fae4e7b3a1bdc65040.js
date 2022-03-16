@@ -6,6 +6,7 @@ var dir_e5f86d402f7b11fae4e7b3a1bdc65040 =
     [ "display.h", "display_8h_source.html", null ],
     [ "http_request.h", "http__request_8h_source.html", null ],
     [ "lib_begin.h", "cgv_2os_2lib__begin_8h_source.html", null ],
+    [ "line_break.h", "line__break_8h_source.html", null ],
     [ "mouse_ctrl.h", "mouse__ctrl_8h_source.html", null ],
     [ "mutex.h", "mutex_8h_source.html", null ],
     [ "mutex_pthread.h", "mutex__pthread_8h_source.html", null ],

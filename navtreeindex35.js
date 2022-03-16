@@ -70,8 +70,8 @@ var NAVTREEINDEX35 =
 "font__server_8h_source.html":[12,0,0,6,0,1],
 "frame__buffer_8h_source.html":[12,0,0,10,7],
 "ftransform_8h_source.html":[12,0,0,5,13],
-"functions.html":[11,3,0],
 "functions.html":[11,3,0,0],
+"functions.html":[11,3,0],
 "functions_8h_source.html":[12,0,0,5,14],
 "functions_a.html":[11,3,0,1],
 "functions_b.html":[11,3,0,2],
@@ -240,6 +240,7 @@ var NAVTREEINDEX35 =
 "libs_2vr_2lib__begin_8h_source.html":[12,0,1,5,1],
 "light__source_8hh_source.html":[12,0,0,6,1,1],
 "lin__solve_8h_source.html":[12,0,0,5,24],
+"line__break_8h_source.html":[12,0,0,7,6],
 "line__renderer_8h_source.html":[12,0,1,2,8],
 "list_8h_source.html":[12,0,0,11,3],
 "low__tri__mat_8h_source.html":[12,0,0,5,25],
@@ -248,6 +249,5 @@ var NAVTREEINDEX35 =
 "make__const_8h_source.html":[12,0,0,12,2,5],
 "make__ref_8h_source.html":[12,0,0,12,2,6],
 "make__return_8h_source.html":[12,0,0,12,2,7],
-"marching__cubes_8h_source.html":[12,0,0,6,3,3],
-"mat_8h_source.html":[12,0,0,5,27]
+"marching__cubes_8h_source.html":[12,0,0,6,3,3]
 };
