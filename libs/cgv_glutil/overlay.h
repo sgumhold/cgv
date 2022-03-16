@@ -18,7 +18,7 @@ class CGV_API overlay :
 	public cgv::gui::provider,
 	public cgv::gui::event_handler
 {
-protected:
+public:
 	enum AlignmentOption {
 		AO_FREE,	// alignment solely controlled by margin
 		AO_START,	// left for horizontal, bottom for vertical direction
@@ -33,6 +33,7 @@ protected:
 		SO_BOTH			// width and height are stretched to cover viewport
 	};
 
+protected:
 	/// the last recorded size of the viewport, is kept current with ensure_viewport
 	ivec2 last_viewport_size;
 
