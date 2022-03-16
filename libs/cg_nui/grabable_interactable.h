@@ -10,8 +10,8 @@ namespace cgv {
 
 class CGV_API grabable_interactable : public interactable
 {
-	rgb debug_point_grab_color;
-	rgb debug_point_trigger_color;
+	bool debug_point_enabled{ false };
+	rgb debug_point_color{ rgb(0.4f, 0.05f, 0.6f) };
 
 protected:
 	vec3* position_ptr;
@@ -46,15 +46,6 @@ public:
 
 	grabable_interactable(quat** rotation_ptr_ptr, const std::string& name = "") :
 		interactable(name), position_ptr(nullptr), position_ptr_ptr(nullptr), rotation_ptr(nullptr), rotation_ptr_ptr(rotation_ptr_ptr) {}
-
-	// To be implemented by deriving classes
-	//@name cgv::nui::grabable interface
-	//@{
-	bool compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx) override = 0;
-	//@}
-	//@name cgv::nui::pointable interface
-	//@{
-	bool compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx) override = 0;
 
 	// Used for drawing debug points
 	//@name cgv::render::drawable interface

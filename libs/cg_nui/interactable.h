@@ -23,9 +23,11 @@ class CGV_API interactable : public cgv::base::group,
 					  public cgv::gui::provider
 {
 	cgv::nui::focus_configuration original_config;
-protected:
+
 	vec3 debug_point;
-	rgb debug_point_color;
+	bool debug_point_enabled { false };
+	rgb debug_point_color{ rgb(0.5f, 0.5f, 0.5f) };
+protected:
 	cgv::render::sphere_render_style debug_sphere_rs;
 
 	vec3 cached_query_point;
