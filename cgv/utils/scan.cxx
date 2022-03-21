@@ -58,7 +58,44 @@ std::string to_hex(uint8_t v, bool use_upper_case)
 	char res[2] = { hex_digits[v / 16], hex_digits[v & 15] };
 	return std::string(res, 2);
 }
-
+uint8_t from_hex(char c)
+{
+	switch (c) {
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+		return c - '0';
+	case 'A':
+	case 'B':
+	case 'C':
+	case 'D':
+	case 'E':
+	case 'F':
+		return c - 'A';
+	case 'a':
+	case 'b':
+	case 'c':
+	case 'd':
+	case 'e':
+	case 'f':
+		return c - 'a';
+	}
+	return 0;
+}
+std::vector<uint8_t> parse_hex_bytes(const std::string& byte_str)
+{
+	std::vector<uint8_t> bytes;
+	for (size_t i = 0; i < byte_str.size(); i += 2)
+		bytes.push_back(16 * from_hex(byte_str[i]) + from_hex(byte_str[i + 1]));
+	return bytes;
+}
 std::string to_lower(const std::string& _s)
 {
 	std::string s(_s);
@@ -625,6 +662,42 @@ const char* cutoff_spaces(const char* begin, const char* end)
 	while (begin < end && is_space(*(end-1)))
 		--end;
 	return end;
+}
+
+std::string& ltrim(std::string& str, const std::string& chars)
+{
+	str.erase(0, str.find_first_not_of(chars));
+	return str;
+}
+
+std::string& rtrim(std::string& str, const std::string& chars)
+{
+	str.erase(str.find_last_not_of(chars) + 1);
+	return str;
+}
+
+std::string& trim(std::string& str, const std::string& chars)
+{
+	return ltrim(rtrim(str, chars), chars);
+}
+
+std::string ltrim(const std::string& str, const std::string& chars)
+{
+	std::string s = str;
+	s.erase(0, str.find_first_not_of(chars));
+	return s;
+}
+
+std::string rtrim(const std::string& str, const std::string& chars)
+{
+	std::string s = str;
+	s.erase(str.find_last_not_of(chars) + 1);
+	return s;
+}
+
+std::string trim(const std::string& str, const std::string& chars)
+{
+	return ltrim(rtrim(str, chars), chars);
 }
 
 	}

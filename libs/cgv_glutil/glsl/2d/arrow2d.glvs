@@ -4,7 +4,7 @@
 	0: SINGLE
 	1: ARRAY
 */
-#define MODE 0
+#define MODE 1
 
 #if MODE == 0
 in vec2 position0;

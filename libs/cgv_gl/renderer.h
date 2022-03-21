@@ -164,6 +164,8 @@ namespace cgv { // @<
 				virtual void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr = 0);
 			/// reference given render style
 			void set_render_style(const render_style& rs);
+			/// build shader program for specific render style
+			bool build_program(context& ctx, shader_program& prog, const render_style& rs);
 			//! call init() once before using renderer
 			/*! creates default render style and builds shader program based on defines that can be
 			    configured with ref_defines() before calling init(). Reconfiguring defines after init() causes

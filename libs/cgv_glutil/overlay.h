@@ -18,7 +18,7 @@ class CGV_API overlay :
 	public cgv::gui::provider,
 	public cgv::gui::event_handler
 {
-protected:
+public:
 	enum AlignmentOption {
 		AO_FREE,	// alignment solely controlled by margin
 		AO_START,	// left for horizontal, bottom for vertical direction
@@ -63,6 +63,14 @@ protected:
 	void update_overlay_layout();
 
 public:
+	struct {
+		bool show_heading = true;
+		bool show_layout_options = true;
+		bool allow_alignment = true;
+		bool allow_stretch = true;
+		bool allow_margin = true;
+	} gui_options;
+
 	/// creates an overlay in the bottom left corner with zero size
 	overlay();
 
@@ -173,7 +181,7 @@ public:
 	virtual bool is_hit(const ivec2& mouse_pos);
 
 	/// provides a default gui implementation for private overlay layout members
-	void create_overlay_gui(bool allow_alignment = true, bool allow_stretch = true, bool allow_margin = true);
+	void create_overlay_gui();
 };
 
 }

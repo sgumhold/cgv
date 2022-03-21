@@ -27,9 +27,11 @@ namespace cgv {
 		box_renderer::box_renderer()
 		{
 			has_extents = false;
+			has_radii = false;
 			position_is_center = true;
 			has_translations = false;
 			has_rotations = false;
+			has_secondary_colors = false;
 		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void box_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
@@ -37,6 +39,10 @@ namespace cgv {
 			surface_renderer::enable_attribute_array_manager(ctx, aam);
 			if (has_attribute(ctx, "extent"))
 				has_extents = true;
+			if (has_attribute(ctx, "secondary_color"))
+				has_secondary_colors = true;
+			if (has_attribute(ctx, "radius"))
+				has_radii = true;
 			if (has_attribute(ctx, "translation"))
 				has_translations = true;
 			if (has_attribute(ctx, "rotation"))
@@ -47,8 +53,10 @@ namespace cgv {
 		{
 			surface_renderer::disable_attribute_array_manager(ctx, aam);
 			has_extents = false;
+			has_radii = false;
 			has_translations = false;
 			has_rotations = false;
+			has_secondary_colors = false;
 		}
 		/// set the flag, whether the position is interpreted as the box center
 		void box_renderer::set_position_is_center(bool _position_is_center)
@@ -68,8 +76,13 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "position_is_center", position_is_center);
 			ref_prog().set_uniform(ctx, "has_rotations", has_rotations);
 			ref_prog().set_uniform(ctx, "has_translations", has_translations);
+			ref_prog().set_uniform(ctx, "has_radii", has_radii);
+			ref_prog().set_uniform(ctx, "has_secondary_colors", has_secondary_colors);
 			const auto& brs = get_style<box_render_style>();
-			ref_prog().set_uniform(ctx, "relative_anchor", brs.relative_anchor);
+			if (ref_prog().get_uniform_location(ctx, "default_radius") != -1)
+				ref_prog().set_uniform(ctx, "default_radius", brs.default_radius);
+			if (ref_prog().get_uniform_location(ctx, "relative_anchor") != -1)
+				ref_prog().set_uniform(ctx, "relative_anchor", brs.relative_anchor);
 			if (!has_extents)
 				ref_prog().set_attribute(ctx, "extent", brs.default_extent);
 			return true;
@@ -79,6 +92,7 @@ namespace cgv {
 		{
 			if (!attributes_persist()) {
 				has_extents = false;
+				has_radii = false;
 				position_is_center = true;
 				has_rotations = false;
 				has_translations = false;
@@ -97,10 +111,15 @@ namespace cgv {
 			return
 				rh.reflect_base(*static_cast<surface_render_style*>(this)) &&
 				rh.reflect_member("default_extent", default_extent) &&
+				rh.reflect_member("default_radius", default_radius) &&
 				rh.reflect_member("relative_anchor", relative_anchor);
 		}
 
-
+		void box_renderer::update_defines(shader_define_map& defines)
+		{
+			const box_render_style& brs = get_style<box_render_style>();
+			shader_code::set_define(defines, "ROUNDING", brs.rounding, false);
+		}
 		cgv::reflect::extern_reflection_traits<box_render_style, box_render_style_reflect> get_reflection_traits(const box_render_style&)
 		{
 			return cgv::reflect::extern_reflection_traits<box_render_style, box_render_style_reflect>();
@@ -130,6 +149,8 @@ namespace cgv {
 				p->add_member_control(b, "relative_anchor.x", brs_ptr->relative_anchor[0], "value_slider", "min=-1;max=1;ticks=true");
 				p->add_member_control(b, "relative_anchor.y", brs_ptr->relative_anchor[1], "value_slider", "min=-1;max=1;ticks=true");
 				p->add_member_control(b, "relative_anchor.z", brs_ptr->relative_anchor[2], "value_slider", "min=-1;max=1;ticks=true");
+				p->add_member_control(b, "rounding", brs_ptr->rounding, "toggle");
+				p->add_member_control(b, "default_radius", brs_ptr->default_radius, "value_slider", "min=0.0;max=10;step=0.0001;log=true;ticks=true");
 				p->add_gui("surface_render_style", *static_cast<cgv::render::surface_render_style*>(brs_ptr));
 				return true;
 			}

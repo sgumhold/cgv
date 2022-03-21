@@ -15,6 +15,11 @@ void msdf_font::destruct(cgv::render::context& ctx) {
 	atlas_texture.destruct(ctx);
 }
 
+bool msdf_font::is_initialized() const
+{
+	return atlas_texture.is_created();
+}
+
 bool msdf_font::init(cgv::render::context& ctx) {
 	bool success = true;
 	success &= load_atlas_texture(ctx, "res://segoeui_atlas.png");

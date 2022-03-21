@@ -159,6 +159,20 @@ namespace cgv {
 			return 2;
 		}
 		template <typename T>
+		T first_ray_sphere_intersection(const fvec<T, 3>& ro, const fvec<T, 3>& rd, const fvec<T, 3>& ce, T ra, fvec<T, 3>& n)
+		{
+			fvec<T, 2> res;
+			int k = ray_sphere_intersection(ro, rd, ce, ra, res);
+			T param = std::numeric_limits<T>::max();
+			if (k == 1 || (k == 2 && res[0] > 0))
+				param = res[0];
+			else if (k == 2 && res[1] > 0)
+				param = res[1];
+			if (param < std::numeric_limits<float>::max())
+				n = normalize(ro + param * rd - ce);
+			return param;
+		}
+		template <typename T>
 		int ray_box_intersection(const fvec<T,3>& ro, const fvec<T,3>& rd, fvec<T,3> boxSize, fvec<T,2>& res, fvec<T,3>& outNormal)
 		{
 			fvec<T,3> m = fvec<T,3>(T(1)) / rd; // can precompute if traversing a set of aligned boxes
@@ -175,6 +189,22 @@ namespace cgv {
 				* step(fvec<T, 3>(t1.z(), t1.x(), t1.y()), fvec<T, 3>(t1.x(), t1.y(), t1.z()));
 			res = fvec<T,2>(tN, tF);
 			return 2;
+		}
+		template <typename T>
+		T first_ray_box_intersection(const fvec<T, 3>& ro, const fvec<T, 3>& rd, const fvec<T, 3>& b_min, const fvec<T, 3>& b_max, fvec<T, 3>& n)
+		{
+			fvec<T, 2> res;
+			fvec<T, 3> bc = T(0.5) * (b_min + b_max);
+			fvec<T, 3> be = b_max - b_min;
+			int k = ray_box_intersection(ro - bc, rd, be, res, n);
+			T param = std::numeric_limits<T>::max();
+			if (k == 1 || (k == 2 && res[0] > 0))
+				param = res[0];
+			else if (k == 2 && res[1] > 0)
+				param = res[1];
+			if (param < std::numeric_limits<float>::max())
+				n = normalize(ro + param * rd - bc);
+			return param;
 		}
 	}
 }

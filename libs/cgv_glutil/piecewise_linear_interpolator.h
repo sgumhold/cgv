@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include <cgv/math/functions.h>
 
 #include "lib_begin.h"
@@ -20,13 +22,15 @@ protected:
 public:
 	size_t size() { return control_points.size(); }
 
-	const std::vector<control_point>& ref_control_points() { return control_points; }
+	const std::vector<control_point>& ref_control_points() const { return control_points; }
 
 	void clear() {
 		min_t = 0.0f;
 		max_t = 0.0f;
 		control_points.clear();
 	}
+
+	bool empty() { return control_points.empty(); }
 
 	void add_control_point(float t, T v) {	
 		// keep track of the interval of t over all control points
@@ -73,6 +77,53 @@ public:
 		} else {
 			return control_points[0].second;
 		}
+	}
+
+	std::vector<T> interpolate(size_t n) const {
+		std::vector<T> data(n, (T)0);
+		size_t count = control_points.size();
+
+		if(n == 0 || count == 0)
+			return data;
+
+		if(count == 1) {
+			std::fill(data.begin(), data.end(), control_points[0].second);
+			return data;
+		}
+
+		size_t l = 0;
+		size_t r = 1;
+
+		if(min_t < control_points[l].first)
+			r = 0;
+
+		// TODO: add option to define interpolation range
+		float step = 1.0f / static_cast<float>(n - 1);
+
+		for(size_t i = 0; i < n; ++i) {
+			float t = min_t + static_cast<float>(i) * step;
+
+			while(t > control_points[r].first && l < count - 1) {
+				l = r;
+				r = std::min(l + 1, count - 1);
+			}
+
+			if(l == r) {
+				data[i] = (T)(control_points[r].second);
+			} else {
+				std::pair<float, T> n0 = control_points[l];
+				std::pair<float, T> n1 = control_points[r];
+
+				float t0 = n0.first;
+				float t1 = n1.first;
+
+				float a = (t - t0) / (t1 - t0);
+			
+				data[i] = (T)((1.0f - a) * n0.second + a * n1.second);
+			}
+		}
+
+		return data;
 	}
 };
 

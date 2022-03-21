@@ -16,6 +16,7 @@ namespace glutil {
 navigator::navigator() {
 	
 	set_name("Navigator");
+	gui_options.allow_stretch = false;
 
 	view_ptr = nullptr;
 	navigator_eye_pos = vec3(0.0f, 0.0f, 2.5f);
@@ -152,8 +153,8 @@ bool navigator::handle_event(cgv::gui::event& e) {
 							vec3 focus = view_ptr->get_focus();
 							float dist = (focus - view_ptr->get_eye()).length();
 							
-							std::cout << hit_axis << std::endl;
-							std::cout << axis_idx << std::endl;
+							//std::cout << hit_axis << std::endl;
+							//std::cout << axis_idx << std::endl;
 
 							vec3 up_dir(0.0f, 1.0f, 0.0f);
 							if(axis_idx == 1)
@@ -162,8 +163,8 @@ bool navigator::handle_event(cgv::gui::event& e) {
 							view_ptr->set_eye_keep_extent(focus + dist * direction);
 							view_ptr->set_view_up_dir(up_dir);
 							
-							std::cout << direction << std::endl;
-							std::cout << up_dir << std::endl;
+							//std::cout << direction << std::endl;
+							//std::cout << up_dir << std::endl;
 
 							post_redraw();
 							return true;
@@ -325,9 +326,7 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 
 void navigator::create_gui() {
 
-	add_decorator("Navigator", "heading", "level=2");
-
-	create_overlay_gui(true, false, true);
+	create_overlay_gui();
 }
 
 void navigator::create_gui(cgv::gui::provider& p) {

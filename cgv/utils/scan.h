@@ -5,6 +5,7 @@
  */
 
 #include <string>
+#include <vector>
 
 #include "date_time.h"
 
@@ -17,6 +18,18 @@ namespace cgv {
 extern CGV_API const char* skip_spaces(const char* begin, const char* end);
 /// return new end pointer by cutting off spaces at the end
 extern CGV_API const char* cutoff_spaces(const char* begin, const char* end);
+/// trim white space or other characters from start of string
+extern CGV_API std::string& ltrim(std::string& str, const std::string& chars = "\t\n\v\f\r ");
+/// trim white space or other characters from end of string
+extern CGV_API std::string& rtrim(std::string& str, const std::string& chars = "\t\n\v\f\r ");
+/// trim white space or other characters from start and end of string
+extern CGV_API std::string& trim(std::string& str, const std::string& chars = "\t\n\v\f\r ");
+/// trim white space or other characters from start of string
+extern CGV_API std::string ltrim(const std::string& str, const std::string& chars = "\t\n\v\f\r ");
+/// trim white space or other characters from end of string
+extern CGV_API std::string rtrim(const std::string& str, const std::string& chars = "\t\n\v\f\r ");
+/// trim white space or other characters from start and end of string
+extern CGV_API std::string trim(const std::string& str, const std::string& chars = "\t\n\v\f\r ");
 /// check if char is a whitespace
 extern CGV_API bool is_space(char c);
 /// check if char is a special character from an url
@@ -29,6 +42,10 @@ extern CGV_API bool is_letter(char c);
 extern CGV_API char to_lower(char c);
 /// convert to hex
 extern CGV_API std::string to_hex(uint8_t v, bool use_upper_case = true);
+/// convert from hex character
+extern CGV_API uint8_t from_hex(char c);
+/// parse bytes hex coded bytes
+extern CGV_API std::vector<uint8_t> parse_hex_bytes(const std::string& byte_str);
 /// convert string to lower case
 extern CGV_API std::string to_lower(const std::string& _s);
 /// convert char to upper case

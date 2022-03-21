@@ -63,12 +63,12 @@ void vr_scene::unregister_object(base_ptr object, const std::string& options)
 }
 void vr_scene::set_label_border_color(const rgba& border_color)
 {
-	rrs.default_border_color = border_color;
+	label_drawable::set_label_border_color(border_color);
 	update_member(&rrs.percentual_border_width);
 }
 void vr_scene::set_label_border_width(float border_width)
 {
-	rrs.percentual_border_width = border_width;
+	label_drawable::set_label_border_width(border_width);
 	update_member(&rrs.percentual_border_width);
 }
 void vr_scene::construct_room(float w, float d, float h, float W, bool walls, bool ceiling) {
@@ -129,12 +129,10 @@ void vr_scene::clear_scene()
 	boxes.clear();
 	box_colors.clear();
 }
-vr_scene::vr_scene() : lm(false)
+vr_scene::vr_scene() 
 {
 	set_name("vr_scene");
 	vr_view_ptr = 0;
-
-	std::fill(valid, valid + 5, false);
 
 	draw_controller_mode = true;
 	crs.radius = 0.005f;
@@ -164,18 +162,11 @@ vr_scene::vr_scene() : lm(false)
 	grid_width = 10;
 	grid_height = 10;
 
-	rrs.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
-	rrs.border_mode = cgv::render::RBM_MIN;
-	rrs.texture_mode = cgv::render::RTM_RED_MIX_COLOR_AND_SECONDARY_COLOR;
-	rrs.illumination_mode = cgv::render::IM_OFF;
-
 	room_width = 5;
 	room_depth = 7;
 	room_height = 3;
 	wall_width = 0.2f;
 	build_scene(room_width, room_depth, room_height, wall_width);
-
-	pixel_scale = 0.001f;
 }
 bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 {
@@ -300,17 +291,9 @@ bool vr_scene::init(cgv::render::context& ctx)
 	cgv::render::ref_sphere_renderer(ctx, 1);
 	cgv::render::ref_cone_renderer(ctx, 1);
 	cgv::render::ref_box_renderer(ctx, 1);
-	cgv::render::ref_rectangle_renderer(ctx, 1);
 	cgv::render::ref_terrain_renderer(ctx, 1);
 
-	aam.init(ctx);
 	cgv::gui::connect_vr_server(true);
-	lm.init(ctx);
-	cgv::media::font::font_ptr f = cgv::media::font::default_font(true);
-	ctx.enable_font_face(f->get_font_face(cgv::media::font::FFA_BOLD), 36.0f);
-	lm.set_font_face(f->get_font_face(cgv::media::font::FFA_BOLD));
-	lm.set_font_size(36.0f);
-	lm.set_text_color(rgba(0, 0, 0, 1));
 
 	auto view_ptr = find_view_as_node();
 	if (view_ptr) {
@@ -335,10 +318,12 @@ bool vr_scene::init(cgv::render::context& ctx)
 			// vr_view_ptr->set_blit_vr_view_width(200);
 		}
 	}
-	return true;
+	return label_drawable::init(ctx);
 }
 void vr_scene::init_frame(cgv::render::context& ctx)
 {
+	set_coordinate_systems(vr_view_ptr ? vr_view_ptr->get_current_vr_state() : 0, table.empty() ? 0 : &mat34(4, 4, table->get_transform()));
+	label_drawable::init_frame(ctx);
 	if (environment_mode == EM_SKYBOX) {
 		static std::string last_file_names;
 		if (skybox_file_names != last_file_names) {
@@ -346,53 +331,20 @@ void vr_scene::init_frame(cgv::render::context& ctx)
 			last_file_names = skybox_file_names;
 		}
 	}
-	mat34 ID; ID.identity();
-	pose[0] = pose[1] = ID;
-	valid[0] = valid[1] = true, true;
-	valid[2] = valid[3] = valid[4] = false;
-	// update table pose
-	if (table) {
-		mat4 M = table->get_transform();
-		pose[CS_TABLE] = mat34(4, 4, &M(0, 0));
-	}
-	else
-		cgv::math::pose_position(pose[CS_TABLE]) = vec3(0.0f, 0.7f, 0.0f);
-	// extract poses from tracked vr devices
-	if (vr_view_ptr) {
-		const auto* cs = vr_view_ptr->get_current_vr_state();
-		if (cs) {
-			valid[CS_HEAD] = cs->hmd.status == vr::VRS_TRACKED;
-			valid[CS_LEFT_CONTROLLER] = cs->controller[0].status == vr::VRS_TRACKED;
-			valid[CS_RIGHT_CONTROLLER] = cs->controller[1].status == vr::VRS_TRACKED;
-			if (valid[CS_HEAD])
-				pose[CS_HEAD] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->hmd.pose[0]);
-			if (valid[CS_LEFT_CONTROLLER])
-				pose[CS_LEFT_CONTROLLER] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->controller[0].pose[0]);
-			if (valid[CS_RIGHT_CONTROLLER])
-				pose[CS_RIGHT_CONTROLLER] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->controller[1].pose[0]);
-		}
-	}
 }
+
 void vr_scene::clear(cgv::render::context& ctx)
 {
 	cgv::render::ref_sphere_renderer(ctx, -1);
 	cgv::render::ref_box_renderer(ctx, -1);
 	cgv::render::ref_cone_renderer(ctx, -1);
 	cgv::render::ref_terrain_renderer(ctx, -1);
-	aam.destruct(ctx);
-	lm.destruct(ctx);
-	cgv::render::ref_rectangle_renderer(ctx, -1);
+	label_drawable::clear(ctx);
 }
 void vr_scene::draw(cgv::render::context& ctx)
 {
 	set_modelview_projection_window_matrix(ctx);
-
-	bool repack = lm.is_packing_outofdate();
-	lm.ensure_texture_uptodate(ctx);
-	if (repack) {
-		for (uint32_t li = 0; li < label_texture_ranges.size(); ++li)
-			label_texture_ranges[li] = lm.get_texcoord_range(li);
-	}
+	label_drawable::draw(ctx);
 	if ((ground_mode == GM_BOXES) || draw_room) {
 		// activate render styles
 		auto& br = cgv::render::ref_box_renderer(ctx);
@@ -485,57 +437,6 @@ void vr_scene::draw(cgv::render::context& ctx)
 		}
 	}
 }
-void vr_scene::finish_frame(cgv::render::context& ctx)
-{
-	// compute label poses in lab coordinate system
-	std::vector<vec3> P;
-	std::vector<quat> Q;
-	std::vector<vec2> E;
-	std::vector<vec4> T;
-	std::vector<rgba> C;
-	// set poses of visible labels in valid coordinate systems
-	for (uint32_t li = 0; li < label_coord_systems.size(); ++li) {
-		if (label_visibilities[li] == 0 || !valid[label_coord_systems[li]])
-			continue;
-		mat34 label_pose = cgv::math::pose_construct(label_orientations[li], label_positions[li]);
-		cgv::math::pose_transform(pose[label_coord_systems[li]], label_pose);
-		P.push_back(cgv::math::pose_position(label_pose));
-		mat3 L = cgv::math::pose_orientation(label_pose);
-		float s = L.frobenius_norm() / sqrt(3.0f);
-		Q.push_back(quat((1/s)*L));
-		E.push_back(s*label_extents[li]);
-		T.push_back(label_texture_ranges[li]);
-		C.push_back(lm.get_label(li).background_color);
-	}
-	// draw labels
-	if (!P.empty()) {
-		GLboolean blend = glIsEnabled(GL_BLEND); glEnable(GL_BLEND);
-		GLenum blend_src, blend_dst, depth;
-		glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
-		glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&blend_src));
-		glGetIntegerv(GL_DEPTH_FUNC, reinterpret_cast<GLint*>(&depth));
-
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		auto& rr = cgv::render::ref_rectangle_renderer(ctx);
-		rr.set_render_style(rrs);
-		rr.enable_attribute_array_manager(ctx, aam);
-		rr.set_position_array(ctx, P);
-		rr.set_rotation_array(ctx, Q);
-		rr.set_extent_array(ctx, E);
-		rr.set_texcoord_array(ctx, T);
-		rr.set_color_array(ctx, C);
-		rr.set_secondary_color(ctx, lm.get_text_color());
-		lm.get_texture()->enable(ctx);
-		rr.render(ctx, 0, P.size());
-		lm.get_texture()->disable(ctx);
-		rr.disable_attribute_array_manager(ctx, aam);
-
-		if (!blend)
-			glDisable(GL_BLEND);
-		glBlendFunc(blend_src, blend_dst);
-	}
-}
 void vr_scene::stream_help(std::ostream& os)
 {
 	os << "vr_scene: <?> shows focus attachments, <C-M> toggles dispatch_mouse_spatial" << std::endl;
@@ -621,6 +522,11 @@ bool vr_scene::handle(cgv::gui::event& e)
 				ctrl_infos[ci].toggle_time = e.get_time();
 				if (dt < ctrl_pointing_animation_duration)
 					ctrl_infos[ci].toggle_time -= (ctrl_pointing_animation_duration-dt);
+				if (ctrl_infos[ci].pointing) {
+					auto* kit_ptr = vr::get_vr_kit(vrke.get_device_handle());
+					if (kit_ptr)
+						kit_ptr->set_vibration(ci, 0, 50000);
+				}
 				update_member(&ctrl_infos[ci].pointing);
 				check_for_detach(ci, e);
 				return true;

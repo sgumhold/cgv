@@ -40,6 +40,17 @@ namespace fltk {
 
 typedef unsigned Color;
 
+enum ThemeColorIndex {
+	THEME_BACKGROUND_COLOR = 0,
+	THEME_GROUP_COLOR = 1,
+	THEME_CONTROL_COLOR = 2,
+	THEME_TEXT_COLOR = 3,
+	THEME_BORDER_COLOR = 4,
+	THEME_SELECTION_COLOR = 5,
+	THEME_HIGHLIGHT_COLOR = 6,
+	THEME_WARNING_COLOR = 7,
+};
+
 /*! Symbolic names for some of the indexed colors.
 
   The 24-entry "gray ramp" is modified by fltk::set_background() so
@@ -108,6 +119,8 @@ inline Color color(unsigned char r, unsigned char g, unsigned char b) {
   return Color((r<<24)+(g<<16)+(b<<8)); }
 inline Color color(unsigned char g) {
   return Color(g*0x1010100u); }
+inline Color color(float brightness) {
+	return color(static_cast<unsigned char>(255.0f * brightness)); }
 FL_API Color color(const char*);
 FL_API Color parsecolor(const char*, unsigned length);
 FL_API Color lerp(Color c0, Color c1, float f);
@@ -115,9 +128,14 @@ FL_API Color inactive(Color fg);
 FL_API Color inactive(Color fg, Color bg);
 FL_API Color contrast(Color fg, Color bg);
 FL_API void split_color(Color c, unsigned char& r, unsigned char& g, unsigned char& b);
+FL_API void reset_indexed_colors();
 FL_API void set_color_index(Color index, Color);
 FL_API Color get_color_index(Color index);
+FL_API void set_theme_color(ThemeColorIndex idx, Color color);
+FL_API Color get_theme_color(ThemeColorIndex idx);
 FL_API void set_background(Color);
+FL_API void shift_background(int index);
+FL_API void set_main_gui_colors(Color c0, Color c1, Color c2, Color c3, Color tc);
 FL_API Color nearest_index(Color);
 
 }

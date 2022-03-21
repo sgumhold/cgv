@@ -111,47 +111,65 @@ bool overlay::is_hit(const ivec2& mouse_pos) {
 	return container.is_inside(test_pos);
 };
 
-void overlay::create_overlay_gui(bool allow_alignment, bool allow_stretch, bool allow_margin) {
+void overlay::create_overlay_gui() {
 
-	if(begin_tree_node("Overlay", horizontal_alignment, false)) {
-		align("\a");
+	if(gui_options.show_heading)
+		add_decorator(name, "heading", "level=2");
+
+	bool use_tree_node = gui_options.show_layout_options;
+
+	if(!gui_options.allow_alignment && !gui_options.allow_stretch && !gui_options.allow_margin)
+		use_tree_node = false;
+
+
+	if(use_tree_node) {
+		bool node_is_open = begin_tree_node_void("Overlay", &gui_options, -1, false, "level=2;options='w=160';align=''");
 		
 		cgv::signal::connect_copy(
-			add_control("Show", show, "check")->value_change,
+			add_control("Show", show, "toggle", "w=40")->value_change,
 			cgv::signal::rebind(this, &overlay::on_layout_change)
 		);
 
-		if(allow_alignment) {
-			cgv::signal::connect_copy(
-				add_control("Horizontal Alignment", horizontal_alignment, "dropdown", "enums='Free,Left,Center,Right'")->value_change,
-				cgv::signal::rebind(this, &overlay::on_layout_change)
-			);
-			cgv::signal::connect_copy(
-				add_control("Vertical Alignment", vertical_alignment, "dropdown", "enums='Free=0,Top=3,Center=2,Bottom=1'")->value_change,
-				cgv::signal::rebind(this, &overlay::on_layout_change)
-			);
-		}
+		if(node_is_open) {
+			align("\a");
 
-		if(allow_stretch) {
-			cgv::signal::connect_copy(
-				add_control("Stretch", stretch, "dropdown", "enums='None,Horizontal,Vertical,Both'")->value_change,
-				cgv::signal::rebind(this, &overlay::on_layout_change)
-			);
-		}
+			if(gui_options.allow_alignment) {
+				cgv::signal::connect_copy(
+					add_control("Horizontal Alignment", horizontal_alignment, "dropdown", "enums='Free,Left,Center,Right'")->value_change,
+					cgv::signal::rebind(this, &overlay::on_layout_change)
+				);
+				cgv::signal::connect_copy(
+					add_control("Vertical Alignment", vertical_alignment, "dropdown", "enums='Free=0,Top=3,Center=2,Bottom=1'")->value_change,
+					cgv::signal::rebind(this, &overlay::on_layout_change)
+				);
+			}
 
-		if(allow_margin) {
-			cgv::signal::connect_copy(
-				add_control("Margin", margin[0], "value", "w=100;min=0;max=100;step=1;", "")->value_change,
-				cgv::signal::rebind(this, &overlay::on_layout_change)
-			);
-			cgv::signal::connect_copy(
-				add_control("", margin[1], "value", "w=100;min=0;max=100;step=1;")->value_change,
-				cgv::signal::rebind(this, &overlay::on_layout_change)
-			);
-		}
+			if(gui_options.allow_stretch) {
+				cgv::signal::connect_copy(
+					add_control("Stretch", stretch, "dropdown", "enums='None,Horizontal,Vertical,Both'")->value_change,
+					cgv::signal::rebind(this, &overlay::on_layout_change)
+				);
+			}
 
-		align("\b");
-		end_tree_node(horizontal_alignment);
+			if(gui_options.allow_margin) {
+				cgv::signal::connect_copy(
+					add_control("Margin", margin[0], "value", "w=94;min=-10000;max=10000;step=1;", " ")->value_change,
+					cgv::signal::rebind(this, &overlay::on_layout_change)
+				);
+				cgv::signal::connect_copy(
+					add_control("", margin[1], "value", "w=94;min=-10000;max=10000;step=1;")->value_change,
+					cgv::signal::rebind(this, &overlay::on_layout_change)
+				);
+			}
+
+			align("\b");
+			end_tree_node(horizontal_alignment);
+		}
+	} else {
+		cgv::signal::connect_copy(
+			add_control("Show", show, "toggle")->value_change,
+			cgv::signal::rebind(this, &overlay::on_layout_change)
+		);
 	}
 }
 

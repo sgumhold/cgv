@@ -443,8 +443,6 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 
 void transfer_function_editor::create_gui() {
 
-	add_decorator("Transfer Function Editor", "heading", "level=2");
-
 	create_overlay_gui();
 
 	add_decorator("File", "heading", "level=3");
@@ -487,6 +485,22 @@ void transfer_function_editor::create_gui(cgv::gui::provider& p) {
 texture& transfer_function_editor::ref_tex() {
 
 	return tf_tex;
+}
+
+void transfer_function_editor::set_color_points(const std::vector<std::pair<float, rgb>>& points) {
+
+	tfc.points.clear();
+
+	for(const auto& pnt : points) {
+		point p;
+		p.col = pnt.second;
+		p.val.x() = cgv::math::clamp(pnt.first, 0.0f, 1.0f);
+		p.val.y() = pnt.first;
+		tfc.points.add(p);
+	}
+
+	update_point_positions();
+	update_transfer_function(false);
 }
 
 bool transfer_function_editor::set_histogram(const std::vector<unsigned>& data) {
@@ -841,24 +855,6 @@ bool transfer_function_editor::update_geometry() {
 	return success;
 }
 
-// TODO: move these three methods to some string lib
-static std::string& ltrim(std::string& str, const std::string& chars = "\t\n\v\f\r ") {
-
-	str.erase(0, str.find_first_not_of(chars));
-	return str;
-}
-
-static std::string& rtrim(std::string& str, const std::string& chars = "\t\n\v\f\r ") {
-
-	str.erase(str.find_last_not_of(chars) + 1);
-	return str;
-}
-
-static std::string& trim(std::string& str, const std::string& chars = "\t\n\v\f\r ") {
-
-	return ltrim(rtrim(str, chars), chars);
-}
-
 static std::string xml_attribute_value(const std::string& attribute) {
 
 	size_t pos_start = attribute.find_first_of("\"");
@@ -955,8 +951,6 @@ bool transfer_function_editor::load_from_xml(const std::string& file_name) {
 	size_t line_offset = 0;
 	bool first_line = true;
 
-	int active_stain_idx = -1;
-
 	tfc.points.clear();
 
 	while(read) {
@@ -972,7 +966,7 @@ bool transfer_function_editor::load_from_xml(const std::string& file_name) {
 			nl_pos = content.find_first_of('\n', line_offset);
 		}
 
-		trim(line);
+		cgv::utils::trim(line);
 
 		if(line.length() < 3)
 			continue;

@@ -240,5 +240,5 @@ public:
 
 #include <cgv/base/register.h>
 
-factory_registration<image_view> image_drawable_factory_registration("new/media/image view", 'I', true);
+factory_registration<image_view> image_drawable_factory_registration("New/Media/Image View", 'I', true);
 

@@ -34,12 +34,13 @@ void ValueOutput::draw() {
   push_clip(r);
   char buf[40];
   format(buf);
-  if (!(damage() & DAMAGE_ALL)) {
+  // TODO MARK: (always draw to fix initially missing color)
+  //if (!(damage() & DAMAGE_ALL)) {
     Color fg = getcolor();
     setcolor(getbgcolor());
     fillrect(r);
     setcolor(fg);
-  }
+  //}
 //    if (focused()) {
 //      setcolor(selection_color());
 //	Rectangle ir(r,r.w()-4,textsize()+2);
@@ -72,4 +73,15 @@ int ValueOutput::handle(int event) {
   default:
     return Valuator::handle(event);
   }
+}
+
+static NamedStyle style("ValueOutput", 0, &ValueOutput::default_style);
+/*! Output has it's own style so the color can be set to gray like
+  Motif-style programs want. */
+NamedStyle* ValueOutput::default_style = &::style;
+
+ValueOutput::ValueOutput(int x, int y, int w, int h, const char *l)
+	: Valuator(x, y, w, h, l) {
+	align(ALIGN_LEFT);
+	style(default_style);
 }

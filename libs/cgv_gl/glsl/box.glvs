@@ -1,9 +1,16 @@
 #version 150 
 
+#define ROUNDING 0
+
 uniform bool position_is_center;
 uniform bool has_rotations;
 uniform bool has_translations;
 uniform vec3 relative_anchor = vec3(0.0);
+#if ROUNDING == 1
+uniform bool has_radii = false;
+uniform bool has_secondary_colors = false;
+uniform float default_radius = 0.02;
+#endif
 
 in vec4 position;
 in vec3 extent;
@@ -11,10 +18,21 @@ in vec4 color;
 in int group_index;
 in vec4 rotation;
 in vec3 translation;
+#if ROUNDING == 1
+in float radius;
+in vec4 secondary_color;
+#endif
 
 out mat3 NM;
 out mat4 PM;
 out vec4 color_gs;
+#if ROUNDING == 1
+out vec3 extent_gs;
+out float radius_gs;
+out vec4 secondary_color_gs;
+out mat4 iPM;
+out mat3 iNM;
+#endif
 
 //***** begin interface of quaternion.glsl ***********************************
 vec4 unit_quaternion();
@@ -78,7 +96,6 @@ void main()
 
 	// setup position matrix from modelview, rotations and translations 
 	PM = get_modelview_matrix();
-
 	vec4 q;
 	if (has_rotations)
 		q = rotation;
@@ -88,8 +105,13 @@ void main()
 	if (has_translations)
 		t += translation;
 	right_multiply_group_position_matrix_and_rigid(PM, group_index, q, t);
-	
+#if ROUNDING == 1
+	iPM = inverse(PM);
+	iNM = inverse(NM);
+	extent_gs = extent;
+	radius_gs = has_radii ? radius : default_radius;
+	secondary_color_gs = has_secondary_colors ? secondary_color : color_gs;
+#endif
 	PM = PM * S;
-
 	gl_Position = position;
 }

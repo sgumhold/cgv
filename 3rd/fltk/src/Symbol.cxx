@@ -452,6 +452,9 @@ void SymbolSymbol::_draw(const Rectangle& r) const
 
 /******************** THE DEFAULT SYMBOLS ****************************/
 
+//#define BCP fl_begin_complex_polygon()
+//#define ECP fl_end_complex_polygon()
+
 #define BP
 #define EP fillpath()
 #define BL
@@ -475,6 +478,8 @@ static void draw_arrow1(Color col)
 
 static void draw_arrow2(Color col)
 {
+	// TODO: MARK
+  //setcolor(fltk::lerp(WHITE, col, 0.67f));
   BP; vv(-0.4f,1.0f); vv(0.6f,0.0f); vv(-0.4f,-1.0f); EF(col);
 }
 
@@ -583,6 +588,23 @@ static void draw_plus(Color col)
 #endif
 }
 
+static void draw_minus(Color col)
+{
+	BP; vv(-1.0f, -0.2f); vv(-1.0f, 0.2f); vv(1.0f, 0.2f); vv(1.0f, -0.2f); EF(col);
+}
+static void draw_thinplus(Color col)
+{
+	setcolor(col);
+	drawline(-1.0f, 0.0f, 1.0f, 0.0f);
+	drawline(0.0, -1.0f, 0.0f, 1.0f);
+}
+
+static void draw_thinminus(Color col)
+{
+	setcolor(col);
+	drawline(-1.0f, 0.0f, 1.0f, 0.0f);
+}
+
 static void draw_search(Color col) 
 {
   setcolor(col);
@@ -597,6 +619,170 @@ static void draw_search(Color col)
   line_style(0);
 }
 
+static Color fl_lighter(Color col) {
+	return fltk::lerp(WHITE, col, 0.67f);
+}
+
+static Color fl_darker(Color col) {
+	return fltk::lerp(BLACK, col, 0.67f);
+}
+
+// Standard UI icons...
+static void draw_filenew(Color col) {
+	//Color mid = fl_lighter(col);
+	//setcolor(mid);
+	BP;
+	vv(-0.7f, -1.0f);
+	vv(0.1f, -1.0f);
+	vv(0.1f, -0.4f);
+	vv(0.7f, -0.4f);
+	vv(0.7f, 1.0f);
+	vv(-0.7f, 1.0f);
+	EF(col);
+
+	/*setcolor(fl_lighter(mid));
+	BP;
+	vv(0.1f, -1.0f);
+	vv(0.1f, -0.4f);
+	vv(0.7f, -0.4f);
+	EF(col);*/
+
+	BL;
+	vv(0.1f, -1.0f);
+	vv(0.7f, -0.4f);
+	EL;
+}
+
+static void draw_fileopen(Color col) {
+	setcolor(col);
+	BP;
+	vv(-1.0f, -0.7f);
+	vv(-0.9f, -0.8f);
+	vv(-0.4f, -0.8f);
+	vv(-0.3f, -0.7f);
+	vv(0.6f, -0.7f);
+	vv(0.6f, 0.7f);
+	vv(-1.0f, 0.7f);
+	EP;
+
+	/*fl_color(fl_darker(c));
+	BC;
+	vv(-1.0, -0.7);
+	vv(-0.9, -0.8);
+	vv(-0.4, -0.8);
+	vv(-0.3, -0.7);
+	vv(0.6, -0.7);
+	vv(0.6, 0.7);
+	vv(-1.0, 0.7);
+	EC;*/
+
+	setcolor(GRAY75);
+	BP;
+	vv(-1.0f, 0.7f);
+	vv(-0.6f, -0.3f);
+	vv(1.0f, -0.3f);
+	vv(0.6f, 0.7f);
+	EF(col);
+
+	/*fl_color(fl_darker(c));
+	BC;
+	vv(-1.0, 0.7);
+	vv(-0.6, -0.3);
+	vv(1.0, -0.3);
+	vv(0.6, 0.7);
+	EC;*/
+	setcolor(col);
+}
+
+static void draw_filesave(Color col) {
+	setcolor(col);
+	BP;
+	vv(-0.9f, -1.0f);
+	vv(0.9f, -1.0f);
+	vv(1.0f, -0.9f);
+	vv(1.0f, 0.9f);
+	vv(0.9f, 1.0f);
+	vv(-0.9f, 1.0f);
+	vv(-1.0f, 0.9f);
+	vv(-1.0f, -0.9f);
+	EP;
+
+	setcolor(GRAY75);
+	BP;
+	vv(-0.7f, -1.0f);
+	vv(0.7f, -1.0f);
+	vv(0.7f, -0.4f);
+	vv(-0.7f, -0.4f);
+	EF(col);
+
+	setcolor(GRAY75);
+	BP;
+	vv(-0.7f, 0.0f);
+	vv(0.7f, 0.0f);
+	vv(0.7f, 1.0f);
+	vv(-0.7f, 1.0f);
+	EF(col);
+
+	setcolor(col);
+	BP;
+	vv(-0.4f, -0.9f);
+	vv(-0.2f, -0.9f);
+	vv(-0.2f, -0.5f);
+	vv(-0.4f, -0.5f);
+	EP;
+
+	/*fl_color(fl_darker(c));
+	BC;
+	vv(-0.9, -1.0);
+	vv(0.9, -1.0);
+	vv(1.0, -0.9);
+	vv(1.0, 0.9);
+	vv(0.9, 1.0);
+	vv(-0.9, 1.0);
+	vv(-1.0, 0.9);
+	vv(-1.0, -0.9);
+	EC;*/
+}
+
+static void draw_edit(Color col) {
+	setcolor(col);
+	BP;
+	/*vv(0.6f, -0.8f);
+	vv(1.0f, -0.4f);
+	vv(0.0f, 0.6f);
+	vv(-0.4f, 0.6f);
+	vv(-0.4f, 0.2f);*/
+
+	vv(-1.0f, 0.4f);
+	vv(-1.0f, -0.4f);
+	vv(0.6f, -0.4f);
+	vv(1.0f, 0.0f);
+	vv(0.6f, 0.4f);
+	EP;
+
+	/*setcolor(GRAY75);
+	BC;
+	vv(-1.0f, 0.4f);
+	vv(-1.0f, -0.4f);
+	vv(0.6f, -0.4f);
+	vv(1.0f, 0.0f);
+	vv(0.6f, 0.4f);
+	EC;
+
+	BP;
+	vv(0.6f, 0.4f);
+	vv(1.0f, 0.0f);
+	vv(0.6f, -0.4f);
+	EC;*/
+}
+
+static void draw_menu(Color col)
+{
+	float w = 1.0f;
+	rectangle(-w, -0.80f, w, -0.60f, col);
+	rectangle(-w, +0.05f, w, -0.10f, col);
+	rectangle(-w, +0.70f, w, +0.55f, col);
+}
 
 // These last two are probably obsolete:
 // static void draw_arrow(Color col)
@@ -629,19 +815,26 @@ static void init_symbols(void) {
   add_symbol("<|",		draw_0bararrow,		1);
   add_symbol("<->",		draw_doublearrow,	1);
 //  add_symbol("-->",		draw_arrow,		1);
+  add_symbol("-",		draw_minus,		1);
   add_symbol("+",		draw_plus,		1);
   add_symbol("->|",		draw_arrow1bar,		1);
   add_symbol("[]",		draw_box,		1);
 //  add_symbol("arrow",		draw_arrow,		1);
   add_symbol("square",		draw_square,		1);
   add_symbol("circle",		draw_circle,		1);
-  add_symbol("line",		draw_line,		1);
-  add_symbol("plus",		draw_plus,		1);
+  add_symbol("line",		draw_line,			1);
+  add_symbol("plus",		draw_plus,			1);
   add_symbol("search",		draw_search,		1);
-//  add_symbol("menu",		draw_menu,		1);
+  add_symbol("thinminus",	draw_thinminus,		1);
+  add_symbol("thinplus",	draw_thinplus,		1);
+  add_symbol("menu",		draw_menu,			1);
   add_symbol("UpArrow",		draw_uparrow,		1);
   add_symbol("DnArrow",		draw_downarrow,		1);
-  add_symbol("||",		draw_doublebar,		1);
+  add_symbol("||",			draw_doublebar,		1);
+  add_symbol("filenew",		draw_filenew,		1);
+  add_symbol("fileopen",	draw_fileopen,		1);
+  add_symbol("filesave",	draw_filesave,		1);
+  add_symbol("edit",		draw_edit,			1);
 }
 
 //

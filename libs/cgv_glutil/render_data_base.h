@@ -61,6 +61,12 @@ public:
 	void set_out_of_date() { out_of_date = true; }
 
 	size_t size() { return pos.size(); }
+	size_t render_count() {
+		if(idx.empty())
+			return pos.size();
+		else
+			return idx.size();
+	}
 
 	const attribute_array_manager& ref_aam() const { return aam; }
 

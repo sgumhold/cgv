@@ -431,13 +431,13 @@ public:
 				"nr vertices:   000000\n"
 				"nr edges:      000000", rgba(0.8f, 0.6f, 0.0f, 1.0f));
 			scene_ptr->fix_label_size(li_stats);
-			scene_ptr->place_label(li_stats, vec3(0.0f, 0.01f, 0.0f), quat(vec3(1, 0, 0), -1.5f), vr::vr_scene::CS_TABLE);
+			scene_ptr->place_label(li_stats, vec3(0.0f, 0.01f, 0.0f), quat(vec3(1, 0, 0), -1.5f), coordinate_system::table);
 			for (int ci = 0; ci < 8; ++ci) {
 				ctrl_infos[ci].li_help = scene_ptr->add_label("DPAD_Right .. next/new drawing\nDPAD_Left  .. prev drawing\nDPAD_Down  .. save drawing\nDPAD_Up .. toggle draw mode\nTPAD_Touch&Up/Dn .. change radius\nTPAD_Touch&Move .. change color\ncolorize (0.000)\nRGB(0.00,0.00,0.00)\nHLS(0.00,0.00,0.00)",
 					rgba(ci == 0 ? 0.8f : 0.4f, 0.4f, ci == 1 ? 0.8f : 0.4f, 1.0f));
 				scene_ptr->fix_label_size(ctrl_infos[ci].li_help);
 				scene_ptr->place_label(ctrl_infos[ci].li_help, vec3(ci == 1 ? -0.05f : 0.05f, 0.0f, 0.0f), quat(vec3(1, 0, 0), -1.5f),
-					ci == 0 ? vr::vr_scene::CS_LEFT_CONTROLLER : vr::vr_scene::CS_RIGHT_CONTROLLER, ci == 1 ? vr::vr_scene::LA_RIGHT : vr::vr_scene::LA_LEFT, 0.2f);
+					ci == 0 ? coordinate_system::left_controller : coordinate_system::right_controller, ci == 1 ? label_alignment::right : label_alignment::left, 0.2f);
 				scene_ptr->hide_label(ctrl_infos[ci].li_help);
 			}
 		}

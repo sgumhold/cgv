@@ -133,9 +133,14 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 	replace(sn, '.', '_');
 	os << "const char* " << sn.c_str() << " =\"\\\n";
 	// write out the content in form of a string
+	bool last_is_newline = false;
 	bool last_is_slash = false;
+	bool last_is_hashtag = false;
+	size_t written_chars = 0;
 	for (unsigned int i=0; i<content.size(); ++i) {
+		bool new_last_is_newline = false;
 		bool new_last_is_slash = false;
+		bool new_last_is_hashtag = false;
 		switch (content[i]) {
 		case '/':
 			// in case of single line comment
@@ -158,20 +163,48 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 				}
 			}
 			else
+			{
 				os << content[i];
+				++written_chars;
+			}
+			break;
+		case '#':
+		{
+			// make sure defines are always placed at the start of a new line
+			bool next_is_hashtag = false;
+			if(i < content.size() - 1)
+				if(content[i + 1] == '#')
+					next_is_hashtag = true;
+
+			if(!last_is_newline && !last_is_hashtag && !next_is_hashtag) {
+				os << "\\n\\\n";
+				written_chars += 3;
+			}
+			os << content[i];
+			++written_chars;
+
+			new_last_is_hashtag = true;
+		}
 			break;
 		default:
 			if (last_is_slash)
 				os << '/';
 			switch (content[i]) {
-			case '\\': os << "\\\\"; break;
-			case '\n': os << "\\n\\\n"; break;
-			case '\t': os << "\\t"; break;
-			case '"': os << "\\\""; break;
-			default: os << content[i]; break;
+			case '\\': os << "\\\\"; written_chars += 2; break;
+			case '\n': os << "\\n\\\n"; written_chars += 3; new_last_is_newline = true; break;
+			case '\t': os << "\\t"; ++written_chars; break;
+			case '"': os << "\\\""; written_chars += 2; break;
+			default: os << content[i]; ++written_chars; break;
 			}
 		}
-		last_is_slash = new_last_is_slash ;
+		// respect the Visual Studio C++ Compiler maximum string literal size of 16kB (with some tolerance)
+		if(written_chars > 16000) {
+			os << "\"\\\n\"";
+			written_chars = 0;
+		}
+		last_is_newline = new_last_is_newline;
+		last_is_slash = new_last_is_slash;
+		last_is_hashtag = new_last_is_hashtag;
 	}
 	os << "\";\n";
 	return true;
@@ -181,32 +214,51 @@ int g_argc;
 char** g_argv;
 context* g_ctx_ptr;
 
+void stream_out_prog(std::ostream& os, const std::string& fn, const cgv::render::shader_define_map& defines)
+{
+	os << fn;
+	if (!defines.empty())
+		for (const auto& d : defines)
+			os << "|" << d.first << "=" << d.second;
+}
+
 int perform_test()
 {
 	bool shader_developer = cgv::utils::has_option("SHADER_DEVELOPER");
 	int exit_code = 0;
 	if (get_shader_config()->shader_path.empty() && getenv("CGV_DIR") != 0) {
 		get_shader_config()->shader_path = 
-			std::string(getenv("CGV_DIR")) + "/libs/cgv_gl/glsl;"+
+			std::string(getenv("CGV_DIR")) + "/libs/cgv_gl/glsl;" +
+			std::string(getenv("CGV_DIR")) + "/libs/cgv_glutil/glsl;" +
+			std::string(getenv("CGV_DIR")) + "/libs/cgv_glutil/glsl/2d;" +
 			std::string(getenv("CGV_DIR")) + "/libs/plot/glsl;" +
 			std::string(getenv("CGV_DIR")) + "/libs/cgv_proc";
 	}
 	// check input file extension
 	std::string ext = to_lower(get_extension(g_argv[1]));
 	if (ext == "glpr") {
-		// in case of shader program, build it from the file
-		shader_program prog(true);
-		if (prog.build_program(*g_ctx_ptr, g_argv[1], shader_developer)) {
-			convert_to_string(g_argv[1], g_argv[2]);
-			//write(g_argv[2], "ok", 2, true);
-			std::cout << "shader program ok (" << g_argv[1] << ")" << std::endl;
-		}
-		else {
-			if (!shader_developer)
+		std::vector<shader_define_map> define_maps = shader_program::extract_instances(g_argv[1]);
+		if (define_maps.empty())
+			define_maps.push_back({});
+		for (auto defines : define_maps) {
+			// in case of shader program, build it from the file
+			shader_program prog(true);
+			if (prog.build_program(*g_ctx_ptr, g_argv[1], shader_developer, defines)) {
 				convert_to_string(g_argv[1], g_argv[2]);
+				//write(g_argv[2], "ok", 2, true);
+				std::cout << "shader program ok (";
+				stream_out_prog(std::cout, g_argv[1], defines);
+				std::cout << ")" << std::endl;
+			}
 			else {
-				std::cout << "error:" << g_argv[1] << " (1) : glsl program error" << std::endl;
-				exit_code = 1;
+				if (!shader_developer)
+					convert_to_string(g_argv[1], g_argv[2]);
+				else {
+					std::cout << "error:";
+					stream_out_prog(std::cout, g_argv[1], defines);
+					std::cout << " (1) : glsl program error" << std::endl;
+					exit_code = 1;
+				}
 			}
 		}
 	}
@@ -258,7 +310,7 @@ int main(int argc, char** argv)
 	delete ctx_ptr;
 	return exit_code;
 }
-
+#ifndef SHADER_TEST_APP
 namespace cgv {
 	namespace render {
 		namespace gl {
@@ -344,3 +396,4 @@ void textured_material::disable_textures(context&)
 
 	}
 }
+#endif
