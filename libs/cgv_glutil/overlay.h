@@ -146,6 +146,7 @@ public:
 	/// sets the visibility of the overlay to flag
 	void set_visibility(bool flag) {
 		show = flag;
+		update_member(&show);
 	}
 
 	/** Checks whether the viewport size has changed since the last call to
