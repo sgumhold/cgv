@@ -40,9 +40,11 @@ public:
 #endif
   int handle(int);
   ThumbWheel(int X,int Y,int W,int H,const char* L=0);
+  static NamedStyle* default_style;
 
 protected:
   void draw();
+  void draw_flat();
 };
 
 }

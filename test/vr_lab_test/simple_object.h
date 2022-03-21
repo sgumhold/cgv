@@ -23,6 +23,7 @@ class simple_object :
 	vec3 query_point_at_grab, position_at_grab;
 	vec3 hit_point_at_trigger, position_at_trigger;
 	cgv::nui::focus_configuration original_config;
+	static cgv::render::shader_program prog;
 public:
 	// different possible object states
 	enum class state_enum {

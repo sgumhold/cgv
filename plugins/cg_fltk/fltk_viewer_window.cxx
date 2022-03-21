@@ -2,6 +2,7 @@
 #include "fltk_driver.h"
 #include "fltk_event.h"
 #include <cgv/gui/provider.h>
+#include <cgv/gui/theme_info.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/base/base_generator.h>
 #include <cgv/base/register.h>
@@ -9,6 +10,7 @@
 #include <cgv/utils/tokenizer.h>
 #include <cgv/type/variant.h>
 #include <cgv/render/drawable.h>
+#include <cgv/os/resources.h>
 
 #ifdef WIN32
 #pragma warning (disable:4311)
@@ -89,7 +91,7 @@ void fltk_viewer_window::on_tab_group_selection_change(base_ptr bp, bool selecte
 
 /// construct application
 fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
-	: cgv::gui::window("main"), title(_title), 
+	: cgv::gui::window("Main"), title(_title), 
 	  fltk::Window(w,h,"")
 
 {
@@ -99,27 +101,45 @@ fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
 	fullscreen_monitors = MS_MONITOR_CURRENT;
 	menu_visible = true;
 	gui_visible = true;
+	theme_name = "light";
 	menu = 0;
 	callback(destroy_callback);
+
+	// TODO: MARK
+	menu_height = 24;
+	menu_right = true;
+	tabs_bottom = true;
+
 	begin();
 		main_group = new DockableGroup(0,0,w,h,"");
 		main_group->spacing(3);
 		main_group->begin();
-			menu = new fltk::MenuBar(0, 0, w, 21);
-			view      = fltk_gl_view_ptr(new fltk_gl_view(0,0,w,h,"gl view"));
-			tab_group = fltk_tab_group_ptr(new fltk_tab_group((int)(2.85*w/4),0,(int)(1.15*w/4),h,""));
+			menu = new fltk::MenuBar(0, 0, w, menu_height);
+			view      = fltk_gl_view_ptr(new fltk_gl_view(0,0,w,h,"GL View"));
+			if(menu_right)
+				tab_group = fltk_tab_group_ptr(new fltk_tab_group((int)(2.85*w/4),0,(int)(1.15*w/4),h,""));
+			else
+				tab_group = fltk_tab_group_ptr(new fltk_tab_group(0,21,(int)(1.15*w/4),h- menu_height,""));
 			connect(tab_group->on_selection_change, this, &fltk_viewer_window::on_tab_group_selection_change);
 //			connect(view->on_remove_child, this, &fltk_viewer_window::on_remove_child);
 		main_group->end();
 		main_group->resizable(view->get_interface<fltk::Widget>());
-		main_group->dock(static_cast<fltk::Widget*>(tab_group->get_user_data()), 0, true);
-		main_group->dock(menu, 1, false);
+		ensure_dock_state();
 	end();
 	resizable(main_group);	
 	update_member(&menu_visible);
 	update_member(&gui_visible);
 	append_child(view);
 	append_child(tab_group);
+
+	// TODO: MARK (move to separate method)
+	/*
+	fltk::Widget* menu_item = menu->add("Test/Item0", 0, nullptr); // nullptr argument is necessary for fltk to call innards and not flat_innards
+	menu_item = menu->add("Test/Item1", 0, nullptr);
+	fltk::Group* g = static_cast<fltk::Group*>(menu_item->parent());
+	ensure_menu_order();
+	g->user_data(this);
+	*/
 }
 
 void fltk_viewer_window::on_register()
@@ -135,6 +155,8 @@ void fltk_viewer_window::show(bool modal)
 		fltk::Window::exec();
 	else
 		fltk::Window::show();
+
+	set_theme();
 }
 
 /// hide the window
@@ -173,6 +195,85 @@ void fltk_viewer_window::gui_change_cb()
 		show_gui(false);
 }
 
+void fltk_viewer_window::theme_change_cb() {
+	int idx = static_cast<int>(theme_idx) - 1;
+
+	switch(idx) {
+	case -1: theme_name = "legacy"; break;
+	case 0: theme_name = "light"; break;
+	case 1: theme_name = "mid"; break;
+	case 2: theme_name = "dark"; break;
+	case 3: theme_name = "darkest"; break;
+	default:
+	{
+		theme_name = "light";
+		theme_idx = static_cast<cgv::type::DummyEnum>(0);
+		update_member(&theme_idx);
+		idx = 0;
+	} break;
+	}
+
+	fltk::theme_idx_ = idx;
+	fltk::reload_theme();
+
+	{ // TODO: maybe move this to some other place
+		auto& ti = cgv::gui::theme_info::instance();
+		ti.set_theme_idx(idx);
+		uchar r, g, b;
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_BACKGROUND_COLOR), r, g, b);
+		ti.background(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_GROUP_COLOR), r, g, b);
+		ti.group(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_CONTROL_COLOR), r, g, b);
+		ti.control(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_BORDER_COLOR), r, g, b);
+		ti.border(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_TEXT_COLOR), r, g, b);
+		ti.text(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_SELECTION_COLOR), r, g, b);
+		ti.selection(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_HIGHLIGHT_COLOR), r, g, b);
+		ti.highlight(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_WARNING_COLOR), r, g, b);
+		ti.warning(r, g, b);
+	}
+
+	if(tab_group) {
+		tab_group->update();
+		post_recreate_gui();
+	}
+}
+
+void fltk_viewer_window::set_theme() {
+	int idx = 0;
+	bool found = false;
+	if(theme_name == "legacy") {
+		idx = -1;
+		found = true;
+	} else if(theme_name == "light") {
+		idx = 0;
+		found = true;
+	} else if(theme_name == "mid") {
+		idx = 1;
+		found = true;
+	} else if(theme_name == "dark") {
+		idx = 2;
+		found = true;
+	} else if(theme_name == "darkest") {
+		idx = 3;
+		found = true;
+	}
+
+	if(!found) {
+		idx = 0;
+		theme_name = "light";
+	}
+
+	theme_idx = static_cast<cgv::type::DummyEnum>(idx + 1);
+	update_member(&theme_idx);
+	theme_change_cb();
+}
+
 bool fltk_viewer_window::ws_change_cb(control<WindowState>& c)
 {
 	set_window_state(c.get_new_value(),fullscreen_monitors,false);
@@ -189,13 +290,15 @@ bool fltk_viewer_window::ms_change_cb(control<MonitorSelection>& c)
 void fltk_viewer_window::create_gui()
 {
 	provider::add_decorator("Main Settings", "heading");
-	connect_copy(provider::add_control("menu", menu_visible, "check")->value_change,
+	connect_copy(provider::add_control("Menu", menu_visible, "check")->value_change,
 		rebind(this, &fltk_viewer_window::menu_change_cb));
-	connect_copy(provider::add_control("gui", gui_visible, "check")->value_change,
+	connect_copy(provider::add_control("Gui", gui_visible, "check")->value_change,
 		rebind(this, &fltk_viewer_window::gui_change_cb));
-	connect(provider::add_control("state", window_state, "dropdown", "enums='regular;minimized;maximized;fullscreen'")->check_value,
+	connect_copy(provider::add_control("Theme", theme_idx, "dropdown", "enums='Legacy,Light,Mid,Dark,Darkest'")->value_change,
+		rebind(this, &fltk_viewer_window::theme_change_cb));
+	connect(provider::add_control("State", window_state, "dropdown", "enums='regular;minimized;maximized;fullscreen'")->check_value,
 		this, &fltk_viewer_window::ws_change_cb);
-	connect(provider::add_control("fullscreen monitors", fullscreen_monitors, "dropdown", "enums='current;1;2;1+2;3;1+3;2+3;1+2+3'")->check_value,
+	connect(provider::add_control("Fullscreen Monitors", fullscreen_monitors, "dropdown", "enums='current;1;2;1+2;3;1+3;2+3;1+2+3'")->check_value,
 		this, &fltk_viewer_window::ms_change_cb);
 }
 
@@ -211,6 +314,17 @@ void fltk_viewer_window::update()
 	if (!tab_group.empty())
 		tab_group->update();
 	redraw();
+}
+
+void fltk_viewer_window::on_set(void* member_ptr) {
+	if(member_ptr == &theme_name) {
+		set_theme();
+	}
+}
+
+bool fltk_viewer_window::self_reflect(cgv::reflect::reflection_handler& rh) {
+	return
+		rh.reflect_member("theme", theme_name);
 }
 
 /// returns the property declaration
@@ -268,6 +382,21 @@ void fltk_viewer_window::ensure_dock_order()
 	}
 }
 
+void fltk_viewer_window::ensure_dock_state() {
+	if(menu_visible && menu)
+		main_group->undock(menu);
+	if(gui_visible)
+		main_group->undock(static_cast<fltk::Widget*>(tab_group->get_user_data()));
+
+	if(menu_right) {
+		if(gui_visible) main_group->dock(static_cast<fltk::Widget*>(tab_group->get_user_data()), 0, true);
+		if(menu_visible && menu) main_group->dock(menu, 1, false);
+	} else {
+		if(menu_visible && menu) main_group->dock(menu, 1, false);
+		if(gui_visible) main_group->dock(static_cast<fltk::Widget*>(tab_group->get_user_data()), 2, true);
+	}
+}
+
 /// abstract interface for the setter implemented via the fltk_gui_group
 bool fltk_viewer_window::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
 {
@@ -317,9 +446,10 @@ bool fltk_viewer_window::set_void(const std::string& property, const std::string
 #	ifdef _UNICODE
 		HINSTANCE hi = GetModuleHandle(cgv::utils::str2wstr(cgv::base::ref_prog_name()).c_str());
 #	else
-		HINSTANCE hi = GetModuleHandle(cgv::base::ref_prog_name().c_str());
+		HMODULE hi = GetModuleHandle(cgv::base::ref_prog_name().c_str());
 #	endif
-		icon(LoadIcon(hi,MAKEINTRESOURCE(i)));
+		auto ic = LoadIcon(hi, MAKEINTRESOURCE(i));
+		icon(ic);
 		return true;
 #else
 		return false;
@@ -641,8 +771,10 @@ void fltk_viewer_window::show_gui(bool update_control)
 {
 	if (gui_visible || tab_group->get_nr_children() == 0)
 		return;
+
 	gui_visible = true;
 	main_group->dock(static_cast<fltk::Widget*>(tab_group->get_user_data()), 0, true);
+	ensure_dock_state();
 	ensure_dock_order();
 	if (update_control && provider::find_control(gui_visible))
 		provider::find_control(gui_visible)->update();
@@ -651,8 +783,10 @@ void fltk_viewer_window::show_menu(bool update_control)
 {
 	if (menu_visible || !menu)
 		return;
+	
 	menu_visible = true;
 	main_group->dock(menu, 1, false);
+	ensure_dock_state();
 	ensure_dock_order();
 	if (update_control && provider::find_control(menu_visible))
 		provider::find_control(menu_visible)->update();
@@ -672,9 +806,10 @@ void fltk_viewer_window::hide_gui(bool update_control)
 {
 	if (!gui_shown())
 		return;
-
+	
 	gui_visible = false;
 	main_group->undock(static_cast<fltk::Widget*>(tab_group->get_user_data()));
+	ensure_dock_state();
 	ensure_dock_order();
 	if (update_control && provider::find_control(gui_visible))
 		provider::find_control(gui_visible)->update();
@@ -684,8 +819,10 @@ void fltk_viewer_window::hide_menu(bool update_control)
 {
 	if (!menu_shown())
 		return;
+
 	menu_visible = false;
 	main_group->undock(menu);
+	ensure_dock_state();
 	ensure_dock_order();
 	if (update_control && provider::find_control(menu_visible))
 		provider::find_control(menu_visible)->update();

@@ -37,6 +37,8 @@ public:
 
 	void destruct(cgv::render::context& ctx);
 
+	bool is_initialized() const;
+
 	bool init(cgv::render::context& ctx);
 
 	const glyph_info& get_glyph_info(unsigned char id) const { return glyphs[id]; }

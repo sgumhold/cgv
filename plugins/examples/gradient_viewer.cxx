@@ -345,4 +345,4 @@ void gradient_viewer::create_gui()
 
 #include <cgv/base/register.h>
 
-cgv::base::factory_registration<gradient_viewer> gradient_viewer_fac("new/GPGPU/gradient_viewer", 'G');
+cgv::base::factory_registration<gradient_viewer> gradient_viewer_fac("New/GPGPU/Gradient Viewer", 'G');

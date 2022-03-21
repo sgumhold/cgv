@@ -15,6 +15,7 @@ namespace fltk {
 class fltk_align_group : public cgv::gui::gui_group, public fltk_gui_group
 {
 protected:
+	int x_padding, y_padding;
 	int x_offset, y_offset;
 	int x_spacing, y_spacing;
 	int tab_size;

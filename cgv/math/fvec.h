@@ -1,6 +1,7 @@
 #pragma once
 
 #define _USE_MATH_DEFINES
+#include <array>
 #include <limits>
 #include <algorithm>
 #include <iostream>
@@ -106,10 +107,14 @@ public:
 	/// construct from vector of one dimension higher by cutting of the highest dimension
 	template <typename S>
 	fvec(const fvec<S, N + 1>& fv) { for (unsigned i = 0; i < N; ++i) v[i] = (T)fv(i); }
+	/// construct from std::array of same size
+	fvec(const std::array<T, N>& arr) : fvec(N, arr.data()) {}
 	///assign vector rhs, if vector and rhs have different sizes, vector has been resized to match the size of
 	fvec & operator = (const fvec<T,N> &rhs) { if (this != &rhs) std::copy(rhs.v, rhs.v+N, v); return *this; }
 	/// set all components of vector to constant value a
 	fvec & operator = (const T &a) { std::fill(v, v+N, a); return *this; }	
+	/// set to the contents of the given std::array with same size
+	fvec & operator = (const std::array<T, N>& arr) { std::copy(arr.cbegin(), arr.cend(), v); return *this; }
 	///set the first two components
 	void set(const T &x, const T &y) { v[0] = x; v[1] = y; }
 	///set the first three components
@@ -283,12 +288,27 @@ public:
 			 operator()(i)=inv_l*operator()(i);
 		return l;
 	}
+
+	/// normalize the vector if length is not zero using the L2-Norm and return the length
+	T safe_normalize() {
+		T l		= length();
+		if(std::abs(l) < std::numeric_limits<T>::epsilon())
+			return (T)0;
+		T inv_l = (T)1.0 / l;
+		for(unsigned i = 0; i < N; i++)
+			operator()(i) = inv_l * operator()(i);
+		return l;
+	}
 	//@}
 };
 
 /// return normalized vector
 template<typename T, cgv::type::uint32_type N>
 fvec<T,N> normalize(const fvec<T,N>& v) { fvec<T,N> w(v); w.normalize(); return w; }
+
+/// return safely normalized vector
+template<typename T, cgv::type::uint32_type N>
+fvec<T, N> safe_normalize(const fvec<T, N>& v) { fvec<T, N> w(v); w.safe_normalize(); return w; }
 
 ///output of a vector
 template<typename T, cgv::type::uint32_type N>

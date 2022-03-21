@@ -43,7 +43,7 @@ public:
 			r.set_render_style(s);
 			r.enable_attribute_array_manager(ctx, aam);
 			if(out_of_date) transfer(ctx, r);
-			r.render(ctx, offset, count < 0 ? size() : count);
+			r.render(ctx, offset, count < 0 ? render_count() : count);
 			r.disable_attribute_array_manager(ctx, aam);
 		}
 	}

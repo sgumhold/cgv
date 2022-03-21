@@ -90,12 +90,14 @@ struct file_name_gui_creator : public cgv::gui::gui_creator
 
 		if (open)
 			connect_copy(
-				p->add_button(label, "image='res://open" + image_size + ".png';w=" + button_size + ";h=" + button_size + ";label=''", save ? std::string(" ") : align_gui)->click,
+				//p->add_button(label, "image='res://open" + image_size + ".png';w=" + button_size + ";h=" + button_size + ";label=''", save ? std::string(" ") : align_gui)->click,
+				p->add_button("@fileopen", "w=" + button_size + ";h=" + button_size, save ? std::string(" ") : align_gui)->click,
 				rebind(this, &file_name_gui_creator::button_cb, &v, b, options, false)
 			);
 		if (save)
 			connect_copy(
-				p->add_button(label, "image='res://save" + image_size + ".png';w=" + button_size + ";h=" + button_size + ";label=''", align_gui)->click,
+				//p->add_button(label, "image='res://save" + image_size + ".png';w=" + button_size + ";h=" + button_size + ";label=''", align_gui)->click,
+				p->add_button("@filesave", "w=" + button_size + ";h=" + button_size, align_gui)->click,
 				rebind(this, &file_name_gui_creator::button_cb, &v, b, options, true)
 			);
 		if (!open && !save)

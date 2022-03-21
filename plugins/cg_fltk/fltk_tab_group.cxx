@@ -17,6 +17,7 @@ fltk_tab_group::fltk_tab_group(int x, int y, int w, int h, const std::string& _n
 : cgv::gui::gui_group(_name.c_str())
 {
 	tab_group = new CG<fltk::TabGroup>(x,y,w,h,get_name().c_str());
+	tab_group->resize_align(fltk::ALIGN_TOP);
 	tab_group->callback(fltk_select_cb,this);
 	last_selected_child = -1;
 }
@@ -124,9 +125,13 @@ void* fltk_tab_group::get_user_data() const
 /// put default sizes into dimension fields and set inner_group to be active
 void fltk_tab_group::prepare_new_element(cgv::gui::gui_group_ptr ggp, int& x, int& y, int& w, int& h)
 {
-	x = y = 0;
+	// TODO: MARK (does not update after children have been added)
+	bool tabs_bottom = fltk::theme_idx_ < 0;
+	int tab_height = 24;
+	x = 0;
+	y = tabs_bottom ? 0 : tab_height;
 	w = tab_group->w();
-	h = tab_group->h()-30;
+	h = tab_group->h() - tab_height;
 	tab_group->begin();
 }
 /// align last element and add element to group

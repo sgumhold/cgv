@@ -157,6 +157,12 @@ func(::get_rule_id_vs10; :>pj=MAP, :>ext="", :>return="")
 	elif (return == "headers_rule" && !check_is_rule(pj,ext)) {
 		return = "ClInclude";
 	}
+	elif (return == "resources_rule" && !check_is_rule(pj,ext)) {
+		return = "ResourceCompile";
+	}
+	elif (return == "icons_rule" && !check_is_rule(pj,ext)) {
+		return = "Image";
+	}
 	elif (!check_is_rule(<:pj =& pj, <:ext = ext)) {
 		return ="None";
 	}

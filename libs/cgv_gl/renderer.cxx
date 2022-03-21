@@ -52,9 +52,11 @@ namespace cgv {
 		void renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
 			aam_ptr = &aam;
-			if (aam_ptr->has_attribute(ctx, get_prog_attribute_location(ctx, "position")))
+			//if (aam_ptr->has_attribute(ctx, get_prog_attribute_location(ctx, "position")))
+			if (has_attribute(ctx, "position"))
 				has_positions = true;
-			if (aam_ptr->has_attribute(ctx, get_prog_attribute_location(ctx, "color")))
+			//if (aam_ptr->has_attribute(ctx, get_prog_attribute_location(ctx, "color")))
+			if (has_attribute(ctx, "color"))
 				has_colors = true;
 		}
 		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
@@ -119,6 +121,19 @@ namespace cgv {
 		{
 			rs = &_rs;
 		}
+
+		/// build shader program for specific render style
+		bool renderer::build_program(context& ctx, shader_program& prog, const render_style& _rs)
+		{
+			shader_define_map defines;
+			auto* tmp = rs;
+			rs = &_rs;
+			update_defines(defines);
+			bool res = build_shader_program(ctx, prog, defines);
+			rs = tmp;
+			return res;
+		}
+
 		/// access to render style
 		const render_style* renderer::get_style_ptr() const
 		{

@@ -775,5 +775,5 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new rounded cone texturing tests
-cgv::base::factory_registration<environment_demo> environment_demo_fac("new/demo/environment_demo");
-//cgv::base::object_registration<environment_demo> environment_demo_fac("new/demo/environment_demo");
+cgv::base::factory_registration<environment_demo> environment_demo_fac("New/Demo/Environment Demo");
+//cgv::base::object_registration<environment_demo> environment_demo_fac("New/Demo/Environment Demo");

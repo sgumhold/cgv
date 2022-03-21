@@ -202,7 +202,7 @@ void simple_mesh_base::extract_wireframe_element_buffer(const std::vector<idx_ty
 }
 
 /// compute a index vector storing the inv corners per corner and optionally index vectors with per position corner index, per corner next and or prev corner index (implementation assumes closed manifold connectivity)
-void simple_mesh_base::compute_inv(std::vector<uint32_t>& inv, std::vector<uint32_t>* p2c_ptr, std::vector<uint32_t>* next_ptr, std::vector<uint32_t>* prev_ptr)
+void simple_mesh_base::compute_inv(std::vector<uint32_t>& inv, std::vector<uint32_t>* p2c_ptr, std::vector<uint32_t>* next_ptr, std::vector<uint32_t>* prev_ptr) const
 {
 	uint32_t fi, e = 0;
 	if (p2c_ptr)
@@ -211,7 +211,7 @@ void simple_mesh_base::compute_inv(std::vector<uint32_t>& inv, std::vector<uint3
 		next_ptr->resize(get_nr_corners());
 	if (prev_ptr)
 		prev_ptr->resize(get_nr_corners());
-	inv.resize(get_nr_corners());
+	inv.resize(get_nr_corners(), uint32_t(-1));
 	std::map<std::pair<uint32_t, uint32_t>, uint32_t> pipj2ci;
 	for (fi = 0; fi < get_nr_faces(); ++fi) {
 		uint32_t prev_ci = end_corner(fi) - 1;
@@ -239,7 +239,7 @@ void simple_mesh_base::compute_inv(std::vector<uint32_t>& inv, std::vector<uint3
 	}
 }
 /// given the inv corners compute index vector per corner its edge index and optionally per edge its corner index (implementation assumes closed manifold connectivity)
-uint32_t simple_mesh_base::compute_c2e(const std::vector<uint32_t>& inv, std::vector<uint32_t>& c2e, std::vector<uint32_t>* e2c_ptr)
+uint32_t simple_mesh_base::compute_c2e(const std::vector<uint32_t>& inv, std::vector<uint32_t>& c2e, std::vector<uint32_t>* e2c_ptr) const
 {
 	uint32_t e = 0;
 	c2e.resize(get_nr_corners(), -1);
@@ -258,7 +258,7 @@ uint32_t simple_mesh_base::compute_c2e(const std::vector<uint32_t>& inv, std::ve
 	return e;
 }
 /// compute index vector with per corner its face index
-void simple_mesh_base::compute_c2f(std::vector<uint32_t>& c2f)
+void simple_mesh_base::compute_c2f(std::vector<uint32_t>& c2f) const
 {
 	c2f.resize(get_nr_corners(), -1);
 	for (uint32_t fi = 0; fi < get_nr_faces(); ++fi) {

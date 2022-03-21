@@ -167,7 +167,36 @@ PopupMenu::PopupMenu(int X,int Y,int W,int H,const char *l)
   default_style->parent_ = this->style();
   style(default_style);
   align(ALIGN_CENTER);
-  //set_click_to_focus();
+  clear_click_to_focus();
+}
+
+// draw without down arrow glyph
+void PopupMenu2::draw() {
+	if(type() & 7) { // draw nothing for the popup types
+		fl_did_clipping = this;
+		return;
+	}
+	// set_item() does not cause a redraw:
+	if(damage() == DAMAGE_VALUE) return;
+
+	Box* box = this->buttonbox();
+	if(!box->fills_rectangle()) draw_background();
+	Flags flags = this->flags() | OUTPUT;
+	if(::pushed == this) flags |= PUSHED | HIGHLIGHT;
+	drawstyle(style(), flags);
+	Rectangle r(w(), h());
+	box->draw(r);
+	Rectangle r1(r); box->inset(r1);
+	draw_label(r1, flags);
+	// draw the little mark at the right:
+	/*int w1 = int(textsize());
+	r.move_x(w() - w1);
+	const Color saved_color = getcolor();
+	setcolor(selection_color());
+	draw_glyph(ALIGN_BOTTOM, r);
+	//  draw_glyph(ALIGN_BOTTOM, x+w-w1, y, w1, h, flags);
+	setcolor(saved_color);
+	box->draw_symbol_overlay(r);*/
 }
 
 //

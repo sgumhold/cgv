@@ -45,6 +45,7 @@ void vr_screen::screen_capture_callback(const SL::Screen_Capture::Image& img, co
 
 vr_screen::vr_screen(const std::string& name) : cgv::base::node(name)
 {
+	enabled = true;
 	screen_style.percentual_border_width = 0.04f;
 	screen_style.illumination_mode = cgv::render::IM_OFF;
 	// allocate a data view for each monitor
@@ -81,6 +82,7 @@ vr_screen::vr_screen(const std::string& name) : cgv::base::node(name)
 bool vr_screen::self_reflect(cgv::reflect::reflection_handler& rh)
 {
 	return
+		rh.reflect_member("enabled", enabled) &&
 		rh.reflect_member("scale", screen_scale) &&
 		rh.reflect_member("show", show_screen) &&
 		rh.reflect_member("style", screen_style);
@@ -115,7 +117,7 @@ void vr_screen::on_set(void* member_ptr)
 bool vr_screen::wants_to_grab_focus(const cgv::gui::event& e, const cgv::nui::hid_identifier& hid_id, cgv::nui::focus_demand& demand)
 {
 	// only grab focus when idle
-	if (state != state_enum::idle)
+	if (state != state_enum::idle || !enabled)
 		return false;
 	// ask to grab focus of vr kit if menu key of a vr control is pressed 
 	if (e.get_kind() != cgv::gui::EID_KEY || e.get_flags() & ((cgv::gui::EF_VR) == 0))
@@ -496,6 +498,7 @@ bool vr_screen::compute_intersection(
 void vr_screen::create_gui()
 {
 	add_member_control(this, "show", show_screen, "toggle");
+	add_member_control(this, "enabled", enabled, "toggle");
 	add_member_control(this, "aspect", screen_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 	add_member_control(this, "capture", screen_capture, "toggle");
 	if (begin_tree_node("interaction", state)) {

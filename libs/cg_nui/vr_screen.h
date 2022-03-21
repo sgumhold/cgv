@@ -81,6 +81,8 @@ protected:
 	bool mouse_button_pressed[3];
 	void compute_mouse_xy(const vec3& p, int& X, int& Y) const;
 
+	// whether screen is enabled
+	bool enabled;
 
 	bool compute_intersection(const vec3& rectangle_center, const vec2& rectangle_extent, const vec3& ray_start, const vec3& ray_direction, float& ray_param);
 	bool compute_intersection(const vec3& rectangle_center, const vec2& rectangle_extent, const quat& rectangle_rotation, const vec3& ray_start, const vec3& ray_direction, float& ray_param);

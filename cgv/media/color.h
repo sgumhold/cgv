@@ -348,6 +348,8 @@ public:
 		if (nr_components > 3)
 			components[3] = c3;
 	}
+	/// construct from non-alpha color plus alpha
+	color(const color<T, cm>& c, T a) : color(c.R(), c.G(), c.B(), a) {}
 	/// copy constructor uses color conversion if necessary
 	template <typename T2, ColorModel cm2, AlphaModel am2>
 	color(const color<T2,cm2,am2>& c2) {
@@ -759,6 +761,12 @@ void convert_color_model(const color<T1,XYZ>& c1, color<T2,HLS>& c2) {
 	color<typename type::func::promote<T1,T2>::type,RGB> tmp;
 	convert_color(c1,tmp);
 	convert_color(tmp,c2);
+}
+
+/// specialization for conversion from RGB to RGBA via extension of RGB with alpha value
+template <typename T>
+color<T, cgv::media::RGB, cgv::media::OPACITY> convert_color_model(const color<T, cgv::media::RGB>& c, T a) {
+	return color<T, cgv::media::RGB, cgv::media::OPACITY>(c.clr_mod(), c.g(), c.B(), a);
 }
 
 	}
