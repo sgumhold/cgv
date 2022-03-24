@@ -31,6 +31,15 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 	//debug_point = position + 0.5f*extent;
 	brs.rounding = true;
 	brs.default_radius = 0.02f;
+
+	gizmo = new cgv::nui::translation_gizmo();
+	append_child(gizmo);
+	gizmo->configure_axes({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
+	gizmo->configure_axes_positioning({
+		vec3(extent.x() / 2.0f + 0.02f, 0.0f, 0.0f),
+		vec3(0.0f, extent.y() / 2.0f + 0.02f, 0.0f),
+		vec3(0.0f, 0.0f, extent.z() / 2.0f + 0.02f) });
+	gizmo->attach(this, &position, &rotation);
 }
 
 std::string simple_object::get_type_name() const
