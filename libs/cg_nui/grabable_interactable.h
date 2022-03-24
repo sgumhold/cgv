@@ -26,7 +26,6 @@ protected:
 	quat** rotation_ptr_ptr;
 
 	vec3 query_point_at_grab, position_at_grab;
-	vec3 hit_point_at_trigger, position_at_trigger;
 
 	void on_grabbed_start(vec3 query_point) override;
 	void on_grabbed_drag(vec3 query_point) override;

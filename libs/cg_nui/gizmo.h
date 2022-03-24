@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cg_nui/interactable.h>
+#include <cg_nui/grabable_interactable.h>
 
 #include "lib_begin.h"
 
@@ -8,16 +8,80 @@ namespace cgv {
 	namespace nui {
 
 /// Abstract base class for gizmos.
-class CGV_API gizmo : public cgv::nui::interactable
+///	A gizmo has an attach function that takes at least a base_ptr to the object this gizmo attaches to. The base_ptr is
+///	used to call the on_set function when the gizmo modifies values.
+///	Specific gizmo subclasses take additional pointers to to-be-manipulated values as arguments to attach.
+///	A gizmo also has a detach function that clears the connection between object and gizmo.
+class CGV_API gizmo : public cgv::nui::grabable_interactable
 {
 protected:
+	base_ptr obj_ptr;
 	bool is_attached = false;
+	/// Readonly position this gizmo is anchored to (e.g. position of an object)
+	const vec3* anchor_position_ptr;
+	/// Optional readonly rotation this gizmo is anchored to (e.g. rotation of an object) only needed
+	///	if the gizmo operates in a local coordinate system (e.g. the visual representation of the gizmo
+	///	follows the object's rotation).
+	const quat* anchor_rotation_ptr;
+
+	/// Position where a handle was grabbed (intersection/closest point)
+	vec3 start_position;
+	/// Projected new position of the grabbed point (start_position) after the hid moved/rotated
+	vec3 target_position;
+
+	// Needed to call the two events on_handle_grabbed and on_handle_drag
+	void on_grabbed_start(vec3 query_point) override
+	{
+		start_position = query_point_at_grab;
+		target_position = query_point_at_grab;
+		grabable_interactable::on_grabbed_start(query_point);
+		on_handle_grabbed();
+	}
+
+	void on_grabbed_drag(vec3 query_point) override
+	{
+		grabable_interactable::on_grabbed_drag(query_point);
+		on_handle_drag();
+	}
+
+	void on_triggered_start(vec3 hit_point) override
+	{
+		start_position = query_point_at_grab;
+		target_position = query_point_at_grab;
+		grabable_interactable::on_triggered_start(hit_point);
+		on_handle_grabbed();
+	}
+
+	void on_triggered_drag(vec3 ray_origin, vec3 ray_direction, vec3 hit_point) override
+	{
+		grabable_interactable::on_triggered_drag(ray_origin, ray_direction, hit_point);
+		on_handle_drag();
+	}
+
+	/// Event that is called when a primitive/handle of the gizmo gets grabbed by a hid.
+	///	prim_idx is the primitive that was grabbed, start_position is the point it was grabbed at.
+	virtual void on_handle_grabbed() {}
+	/// Event that is called whenever the hid moves/rotates while grabbing the gizmo.
+	///	prim_idx is the primitive that was grabbed, start_position is the point it was grabbed at,
+	///	target_position is the start_position projected to reflect the movement of the hid.
+	virtual void on_handle_drag() {}
+
 public:
-	gizmo(const std::string& name = "") : interactable(name) {}
+	gizmo(const std::string& name = "") : grabable_interactable(&target_position, name) {}
 
-	void attach() { is_attached = true; }
+	void attach(base_ptr obj, const vec3* anchor_position_ptr, const quat* anchor_rotation_ptr = nullptr)
+	{
+		obj_ptr = obj;
+		is_attached = true;
+		this->anchor_position_ptr = anchor_position_ptr;
+		this->anchor_rotation_ptr = anchor_rotation_ptr;
+	}
 
-	void detach() { is_attached = false; }
+	void detach()
+	{
+		is_attached = false;
+		obj_ptr.clear();
+	}
 
 
 	//@name cgv::base::base interface

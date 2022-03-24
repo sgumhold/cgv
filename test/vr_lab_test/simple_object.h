@@ -2,6 +2,7 @@
 
 #include <cg_nui/grabable_interactable.h>
 #include <cgv_gl/box_renderer.h>
+#include <cg_nui/translation_gizmo.h>
 
 /// Example implementation of a single object that can be grabbed/triggered and then moved.
 class simple_object :
@@ -18,6 +19,8 @@ protected:
 	rgb  color;
 	/// return color modified based on state
 	rgb get_modified_color(const rgb& color) const;
+
+	cgv::data::ref_ptr<cgv::nui::translation_gizmo, true> gizmo;
 
 public:
 	simple_object(const std::string& _name, const vec3& _position, const rgb& _color = rgb(0.5f,0.5f,0.5f), const vec3& _extent = vec3(0.3f,0.2f,0.1f), const quat& _rotation = quat(1,0,0,0));
