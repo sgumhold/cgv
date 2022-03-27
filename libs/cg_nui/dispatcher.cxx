@@ -301,7 +301,7 @@ namespace cgv {
 			// otherwise focus is not grabbed
 			return false;
 		}
-		bool dispatcher::dispath_with_focus_update(cgv::base::base_ptr root_ptr, cgv::base::base_ptr object_ptr, const cgv::gui::event& e, const dispatch_info& dis_info, refocus_info& rfi)
+		bool dispatcher::dispatch_with_focus_update(cgv::base::base_ptr root_ptr, cgv::base::base_ptr object_ptr, const cgv::gui::event& e, const dispatch_info& dis_info, refocus_info& rfi)
 		{
 			// first check object with focusable interface
 			auto* focusable_ptr = object_ptr->get_interface<focusable>();
@@ -343,7 +343,7 @@ namespace cgv {
 					return false;
 			}
 			else {
-				if (dispath_with_focus_update(root_ptr, object_ptr, e, dis_info, rfi))
+				if (dispatch_with_focus_update(root_ptr, object_ptr, e, dis_info, rfi))
 					return true;
 			}
 			// next check object with event_handler interface
@@ -466,7 +466,7 @@ namespace cgv {
 			// secondly we dispatch object in focus if not yet done in dispatch_spatial
 			if (!handle_called && rfi.foc_info_ptr->object) {
 				dispatch_info dis_info(hid_id, dispatch_mode::focus);
-				if (dispath_with_focus_update(rfi.foc_info_ptr->root, rfi.foc_info_ptr->object, e, dis_info, rfi))
+				if (dispatch_with_focus_update(rfi.foc_info_ptr->root, rfi.foc_info_ptr->object, e, dis_info, rfi))
 					return true;
 				if (rfi.foc_info_ptr->config.dispatch.focus_recursive) {
 					auto grp_ptr = rfi.foc_info_ptr->object->cast<cgv::base::group>();

@@ -155,7 +155,7 @@ namespace cgv {
 					if (*rfi.dis_info_ptr_ptr && (*rfi.dis_info_ptr_ptr)->hid_id == hid_id) {
 						if (handle_called_ptr)
 							*handle_called_ptr = true;
-						return dispath_with_focus_update(rfi.foc_info_ptr->root, rfi.foc_info_ptr->object, e, **rfi.dis_info_ptr_ptr, rfi);
+						return dispatch_with_focus_update(rfi.foc_info_ptr->root, rfi.foc_info_ptr->object, e, **rfi.dis_info_ptr_ptr, rfi);
 					}
 					return false;
 				}
@@ -178,7 +178,7 @@ namespace cgv {
 					if (*rfi.dis_info_ptr_ptr && (*rfi.dis_info_ptr_ptr)->hid_id == hid_id) {
 						if (handle_called_ptr)
 							*handle_called_ptr = true;
-						return dispath_with_focus_update(rfi.foc_info_ptr->root, rfi.foc_info_ptr->object, e, **rfi.dis_info_ptr_ptr, rfi);
+						return dispatch_with_focus_update(rfi.foc_info_ptr->root, rfi.foc_info_ptr->object, e, **rfi.dis_info_ptr_ptr, rfi);
 					}
 					return false;
 				}
@@ -269,7 +269,7 @@ namespace cgv {
 				if (handle_called_ptr)
 					*handle_called_ptr = true;
 				ensure_local_coordinate_system(*rfi.foc_info_ptr, *foc_info_ptr, *di_ptr);
-				return dispath_with_focus_update(rfi.foc_info_ptr->root, rfi.foc_info_ptr->object, e, *di_ptr, rfi);
+				return dispatch_with_focus_update(rfi.foc_info_ptr->root, rfi.foc_info_ptr->object, e, *di_ptr, rfi);
 			}
 			// if we had object in focus before
 			if (rfi.foc_info_ptr && rfi.foc_info_ptr->object) {
@@ -326,7 +326,7 @@ namespace cgv {
 			if (rfi.foc_info_ptr) {
 				if (handle_called_ptr)
 					*handle_called_ptr = true;
-				return dispath_with_focus_update(rfi.foc_info_ptr->root, rfi.foc_info_ptr->object, e, *di_ptr, rfi);
+				return dispatch_with_focus_update(rfi.foc_info_ptr->root, rfi.foc_info_ptr->object, e, *di_ptr, rfi);
 			}
 			return false;
 		}
