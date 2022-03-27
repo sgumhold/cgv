@@ -46,12 +46,16 @@ namespace cgv {
 					auto& inter_dis_info = reinterpret_cast<intersection_dispatch_info&>(dis_info);
 					inter_dis_info.ray_origin = d2fM * vec4(inter_dis_info.ray_origin,1.0f);
 					inter_dis_info.ray_direction = d2fM * vec4(inter_dis_info.ray_direction, 0.0f);
+					inter_dis_info.hid_position = d2fM * vec4(inter_dis_info.hid_position, 1.0f);
+					inter_dis_info.hid_direction = d2fM * vec4(inter_dis_info.hid_direction, 0.0f);
 					inter_dis_info.hit_point = d2fM * vec4(inter_dis_info.hit_point, 1.0f);
 					inter_dis_info.hit_normal = vec4(inter_dis_info.hit_normal,0.0f) * d2fiM;
 				}
 				else {
 					auto& prox_dis_info = reinterpret_cast<proximity_dispatch_info&>(dis_info);
 					prox_dis_info.query_point = d2fM * vec4(prox_dis_info.query_point, 1.0f);
+					prox_dis_info.hid_position = d2fM * vec4(prox_dis_info.hid_position, 1.0f);
+					prox_dis_info.hid_direction = d2fM * vec4(prox_dis_info.hid_direction, 0.0f);
 					prox_dis_info.hit_point = d2fM * vec4(prox_dis_info.hit_point, 1.0f);
 					prox_dis_info.hit_normal = vec4(prox_dis_info.hit_normal,0.0f)*d2fiM;
 				}
@@ -65,11 +69,15 @@ namespace cgv {
 				if (gi.check_intersection) {
 					gi.inter_info.ray_origin = transforming_ptr->inverse_transform_point(gi.inter_info.ray_origin);
 					gi.inter_info.ray_direction = transforming_ptr->inverse_transform_vector(gi.inter_info.ray_direction);
+					gi.inter_info.hid_position = transforming_ptr->inverse_transform_point(gi.inter_info.hid_position);
+					gi.inter_info.hid_direction = transforming_ptr->inverse_transform_vector(gi.inter_info.hid_direction);
 					gi.inter_info.hit_point = transforming_ptr->inverse_transform_point(gi.inter_info.hit_point);
 					gi.inter_info.hit_normal = transforming_ptr->inverse_transform_normal(gi.inter_info.hit_normal);
 				}
 				if (gi.check_proximity) {
 					gi.prox_info.query_point = transforming_ptr->inverse_transform_point(gi.prox_info.query_point);
+					gi.prox_info.hid_position = transforming_ptr->inverse_transform_point(gi.prox_info.hid_position);
+					gi.prox_info.hid_direction = transforming_ptr->inverse_transform_vector(gi.prox_info.hid_direction);
 					gi.prox_info.hit_point = transforming_ptr->inverse_transform_point(gi.prox_info.hit_point);
 					gi.prox_info.hit_normal = transforming_ptr->inverse_transform_normal(gi.prox_info.hit_normal);
 				}
@@ -125,11 +133,15 @@ namespace cgv {
 				if (gi.check_intersection) {
 					gi.inter_info.ray_origin = transforming_ptr->transform_point(gi.inter_info.ray_origin);
 					gi.inter_info.ray_direction = transforming_ptr->transform_vector(gi.inter_info.ray_direction);
+					gi.inter_info.hid_position = transforming_ptr->transform_vector(gi.inter_info.hid_position);
+					gi.inter_info.hid_direction = transforming_ptr->transform_vector(gi.inter_info.hid_direction);
 					gi.inter_info.hit_point = transforming_ptr->transform_point(gi.inter_info.hit_point);
 					gi.inter_info.hit_normal = transforming_ptr->transform_normal(gi.inter_info.hit_normal);
 				}
 				if (gi.check_proximity) {
 					gi.prox_info.query_point = transforming_ptr->transform_point(gi.prox_info.query_point);
+					gi.prox_info.hid_position = transforming_ptr->transform_point(gi.prox_info.hid_position);
+					gi.prox_info.hid_direction = transforming_ptr->transform_point(gi.prox_info.hid_direction);
 					gi.prox_info.hit_point = transforming_ptr->transform_point(gi.prox_info.hit_point);
 					gi.prox_info.hit_normal = transforming_ptr->transform_normal(gi.prox_info.hit_normal);
 				}
@@ -149,6 +161,8 @@ namespace cgv {
 					gi.check_intersection = rfi.foc_info_ptr->config.spatial.pointing;
 					gi.inter_info.ray_origin = cgv::render::context::get_model_point(me.get_x(), y_gl, 0.0, MVPW);
 					gi.inter_info.ray_direction = normalize(cgv::render::context::get_model_point(me.get_x(), y_gl, 0.1, MVPW) - gi.inter_info.ray_origin);
+					gi.inter_info.hid_position = gi.inter_info.ray_origin;
+					gi.inter_info.hid_direction = gi.inter_info.ray_direction;
 					gi.check_proximity = false;
 				}
 				else {
@@ -167,6 +181,10 @@ namespace cgv {
 					if (ci >= 0 && ci <= 1) {
 						gi.check_intersection = rfi.foc_info_ptr->config.spatial.pointing && ctrl_infos[ci].pointing;
 						vrpe.get_state().controller[ci].put_ray(gi.inter_info.ray_origin, gi.inter_info.ray_direction);
+						gi.inter_info.hid_position = gi.inter_info.ray_origin;
+						gi.inter_info.hid_direction = gi.inter_info.ray_direction;
+						gi.prox_info.hid_position = gi.inter_info.ray_origin;
+						gi.prox_info.hid_direction = gi.inter_info.ray_direction;
 						gi.check_proximity = rfi.foc_info_ptr->config.spatial.proximity && ctrl_infos[ci].grabbing;
 						gi.prox_info.query_point = gi.inter_info.ray_origin + max_grabbing_distance*gi.inter_info.ray_direction;
 						gi.inter_info.ray_origin += (ctrl_infos[ci].grabbing ? min_pointing_distance : 0.0f) * gi.inter_info.ray_direction;
@@ -219,6 +237,8 @@ namespace cgv {
 				pdi.query_point = gi.local_prox_info.query_point;
 				pdi.hit_point = gi.local_prox_info.hit_point;
 				pdi.primitive_index = gi.local_prox_info.primitive_index;
+				pdi.hid_position = gi.local_prox_info.hid_position;
+				pdi.hid_direction = gi.local_prox_info.hid_direction;
 				// transfer normal if it was computed before
 				if (gi.local_prox_info.hit_normal.length() > 0.01f)
 					pdi.hit_normal = gi.local_prox_info.hit_normal;
@@ -251,6 +271,8 @@ namespace cgv {
 				idi.ray_origin = gi.local_inter_info.ray_origin;
 				idi.ray_direction = gi.local_inter_info.ray_direction;
 				idi.primitive_index = gi.local_inter_info.primitive_index;
+				idi.hid_position = gi.local_inter_info.hid_position;
+				idi.hid_direction = gi.local_inter_info.hid_direction;
 				idi.ray_param = gi.local_inter_info.ray_param;
 				idi.hit_point = gi.local_inter_info.ray_origin + gi.local_inter_info.ray_param * gi.local_inter_info.ray_direction;
 				idi.hit_normal = gi.local_inter_info.hit_normal;
