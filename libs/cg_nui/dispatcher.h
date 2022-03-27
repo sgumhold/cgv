@@ -76,7 +76,7 @@ namespace cgv {
 			/// default focus config
 			focus_info default_focus_info;
 			void update_dispatch_info(dispatch_info** dis_info_ptr_ptr, const dispatch_info& dis_info);
-			bool dispath_with_focus_update(cgv::base::base_ptr root_ptr, cgv::base::base_ptr object_ptr, const cgv::gui::event& e, const dispatch_info& dis_info, refocus_info& rfi);
+			bool dispatch_with_focus_update(cgv::base::base_ptr root_ptr, cgv::base::base_ptr object_ptr, const cgv::gui::event& e, const dispatch_info& dis_info, refocus_info& rfi);
 			bool dispatch_recursive(cgv::base::base_ptr root_ptr, cgv::base::base_ptr object_ptr, const cgv::gui::event& e, const dispatch_info& dis_info, refocus_info& rfi);
 			void detach_focus(refocus_action rfa, focus_attachment foc_att, const focus_info& foc_info, const cgv::gui::event& e, const dispatch_info& dis_info, refocus_info& rfi);
 			void attach_focus(refocus_action rfa, focus_attachment foc_att, const focus_info& foc_info, const cgv::gui::event& e, const dispatch_info& dis_info, refocus_info& rfi);
