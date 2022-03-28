@@ -4,21 +4,15 @@
 #include <cgv/math/proximity.h>
 
 
-void cgv::nui::translation_gizmo::compute_arrow_geometry()
+void cgv::nui::translation_gizmo::compute_geometry()
 {
 	arrow_positions.clear();
 	arrow_directions.clear();
 	for (int i = 0; i < translation_axes.size(); ++i) {
 		if (position_ptr == nullptr)
 			continue;
-		if (use_local_coords && rotation_ptr != nullptr) {
-			arrow_positions.push_back(*position_ptr + (*rotation_ptr).apply(translation_axes_positions[i]));
-			arrow_directions.push_back((*rotation_ptr).apply(translation_axes[i] * translation_axes_length));
-		}
-		else {
-			arrow_positions.push_back(*position_ptr + translation_axes_positions[i]);
-			arrow_directions.push_back(translation_axes[i] * translation_axes_length);
-		}
+		arrow_positions.push_back(relative_to_absolute_position(translation_axes_positions[i], use_local_coords));
+		arrow_directions.push_back(relative_to_absolute_direction(translation_axes[i] * translation_axes_length, use_local_coords));
 	}
 	for (int i = 0; i < translation_axes_colors.size(); ++i) {
 		arrow_colors.push_back(translation_axes_colors[i]);
@@ -40,7 +34,7 @@ void cgv::nui::translation_gizmo::on_handle_drag()
 	if (position_ptr == nullptr)
 		return;
 
-	vec3 axis = use_local_coords ? (*rotation_ptr).apply(translation_axes[prim_idx]) : translation_axes[prim_idx];
+	vec3 axis = relative_to_absolute_direction(translation_axes[prim_idx], use_local_coords);
 
 	vec3 closest_point;
 	if (ii_at_grab.is_pointing) {
@@ -61,15 +55,6 @@ void cgv::nui::translation_gizmo::attach(base_ptr obj, vec3* position_ptr, quat*
 	gizmo::attach(obj, position_ptr, rotation_ptr);
 	this->position_ptr = position_ptr;
 	this->rotation_ptr = rotation_ptr;
-	if (position_ptr != nullptr)
-		prev_position = *position_ptr;
-	else
-		prev_position = vec3(0.0);
-	if (rotation_ptr != nullptr)
-		prev_rotation = *rotation_ptr;
-	else
-		prev_rotation = quat();
-	compute_arrow_geometry();
 }
 
 void cgv::nui::translation_gizmo::detach()
@@ -232,10 +217,6 @@ void cgv::nui::translation_gizmo::clear(cgv::render::context& ctx)
 void cgv::nui::translation_gizmo::draw(cgv::render::context& ctx)
 {
 	gizmo::draw(ctx);
-
-	// Check if arrow geometry should change
-	if ((position_ptr != nullptr && prev_position != *position_ptr) || (rotation_ptr != nullptr && prev_rotation != *rotation_ptr))
-		compute_arrow_geometry();
 
 	if (!arrow_positions.empty()) {
 		auto& ar = cgv::render::ref_arrow_renderer(ctx);
