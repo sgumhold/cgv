@@ -22,14 +22,7 @@ class CGV_API translation_gizmo : public cgv::nui::gizmo
 	std::vector<vec3> arrow_positions;
 	std::vector<vec3> arrow_directions;
 
-	// used to track if recomputation of the arrows is needed
-	vec3 prev_position { vec3(0.0) };
-	quat prev_rotation { quat() };
-
 	vec3 position_at_grab;
-
-	// helper function used to update the arrow geometry for the current position and rotation of the object
-	void compute_arrow_geometry();
 
 protected:
 	// pointers to properties of the object the gizmo is attached to
@@ -45,6 +38,8 @@ protected:
 
 	void on_handle_grabbed() override;
 	void on_handle_drag() override;
+
+	void compute_geometry() override;
 
 public:
 	translation_gizmo() : gizmo("translation_gizmo") {}

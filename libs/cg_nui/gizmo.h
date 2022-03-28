@@ -14,15 +14,20 @@ namespace cgv {
 ///	A gizmo also has a detach function that clears the connection between object and gizmo.
 class CGV_API gizmo : public cgv::nui::interactable
 {
-protected:
-	base_ptr obj_ptr;
-	bool is_attached = false;
 	/// Readonly position this gizmo is anchored to (e.g. position of an object)
 	const vec3* anchor_position_ptr;
 	/// Optional readonly rotation this gizmo is anchored to (e.g. rotation of an object) only needed
 	///	if the gizmo operates in a local coordinate system (e.g. the visual representation of the gizmo
 	///	follows the object's rotation).
 	const quat* anchor_rotation_ptr;
+
+protected:
+	base_ptr obj_ptr;
+	bool is_attached = false;
+
+	// used to track if recomputation of geometry is needed
+	vec3 current_anchor_position{ vec3(0.0) };
+	quat current_anchor_rotation{ quat() };
 
 	// Needed to call the two events on_handle_grabbed and on_handle_drag
 	void on_grabbed_start() override
@@ -53,28 +58,27 @@ protected:
 	///	target_position is the start_position projected to reflect the movement of the hid.
 	virtual void on_handle_drag() {}
 
-	/// Fill given vector up with last value if too few values are contained in it
-	template<typename T>
-	void fill_with_last_value_if_not_full(std::vector<T>& to_fill, size_t required_size)
-	{
-		const int size_diff = required_size - to_fill.size();
-		if (size_diff > 0) {
-			T last_value = to_fill.back();
-			for (int i = 0; i < size_diff; ++i) {
-				to_fill.push_back(last_value);
-			}
-		}
-	}
+	// Update the gizmo's geometry for the current anchor position and rotation
+	virtual void compute_geometry() = 0;
 
 public:
 	gizmo(const std::string& name = "") : interactable(name) {}
 
-	void attach(base_ptr obj, const vec3* anchor_position_ptr, const quat* anchor_rotation_ptr = nullptr)
+	void attach(base_ptr obj, const vec3* anchor_position_ptr = nullptr, const quat* anchor_rotation_ptr = nullptr)
 	{
 		obj_ptr = obj;
 		is_attached = true;
-		this->anchor_position_ptr = anchor_position_ptr;
-		this->anchor_rotation_ptr = anchor_rotation_ptr;
+		if (anchor_position_ptr != nullptr)
+			this->anchor_position_ptr = anchor_position_ptr;
+		else
+			this->anchor_position_ptr = new vec3(0.0);
+		if (anchor_rotation_ptr != nullptr)
+			this->anchor_rotation_ptr = anchor_rotation_ptr;
+		else
+			this->anchor_rotation_ptr = new quat();
+		current_anchor_position = *this->anchor_position_ptr;
+		current_anchor_rotation = *this->anchor_rotation_ptr;
+		compute_geometry();
 	}
 
 	void detach()
@@ -107,6 +111,54 @@ public:
 		return interactable::handle(e, dis_info, request);
 	}
 	//@}
+
+	//@name cgv::render::drawable interface
+	//@{
+	void draw(cgv::render::context& ctx) override
+	{
+		if (!is_attached)
+			return;
+		// Check if geometry has to be updated
+		if (current_anchor_position != *anchor_position_ptr || current_anchor_rotation != *anchor_rotation_ptr)
+		{
+			compute_geometry();
+			current_anchor_position = *anchor_position_ptr;
+			current_anchor_rotation = *anchor_rotation_ptr;
+		}
+	}
+	//@}
+
+protected:
+	// Common helper functions
+
+	/// Fill given vector up with last value if too few values are contained in it
+	template<typename T>
+	void fill_with_last_value_if_not_full(std::vector<T>& to_fill, size_t required_size)
+	{
+		const int size_diff = required_size - to_fill.size();
+		if (size_diff > 0) {
+			T last_value = to_fill.back();
+			for (int i = 0; i < size_diff; ++i) {
+				to_fill.push_back(last_value);
+			}
+		}
+	}
+
+	vec3 relative_to_absolute_position(vec3 relative_position, bool consider_local_rotation = true)
+	{
+		if (consider_local_rotation)
+			return current_anchor_position + current_anchor_rotation.apply(relative_position);
+		else
+			return current_anchor_position + relative_position;
+	}
+
+	vec3 relative_to_absolute_direction(vec3 relative_direction, bool consider_local_rotation = true)
+	{
+		if (consider_local_rotation)
+			return current_anchor_rotation.apply(relative_direction);
+		else
+			return relative_direction;
+	}
 };
 
 	}
