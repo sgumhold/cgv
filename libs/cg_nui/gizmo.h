@@ -53,6 +53,19 @@ protected:
 	///	target_position is the start_position projected to reflect the movement of the hid.
 	virtual void on_handle_drag() {}
 
+	/// Fill given vector up with last value if too few values are contained in it
+	template<typename T>
+	void fill_with_last_value_if_not_full(std::vector<T>& to_fill, size_t required_size)
+	{
+		const int size_diff = required_size - to_fill.size();
+		if (size_diff > 0) {
+			T last_value = to_fill.back();
+			for (int i = 0; i < size_diff; ++i) {
+				to_fill.push_back(last_value);
+			}
+		}
+	}
+
 public:
 	gizmo(const std::string& name = "") : interactable(name) {}
 
