@@ -11,13 +11,8 @@ namespace cgv {
 	///	is applied to variables provided in the constructor as either a pointer or a double pointer.
 	///	The double pointer can be used for an additional indirection to support the use of multiple primitives
 	///	(see simple_primitive_container in vr_lab_test for an example of this).
-	///	If enabled an additional debug point is drawn for the intersection/closest surface point at the start of
-	///	grabbing/triggering.
 	class CGV_API grabable_interactable : public interactable
 {
-	bool debug_point_enabled{ false };
-	rgb debug_point_color{ rgb(0.4f, 0.05f, 0.6f) };
-
 protected:
 	vec3* position_ptr;
 	vec3** position_ptr_ptr;
@@ -25,12 +20,12 @@ protected:
 	quat* rotation_ptr;
 	quat** rotation_ptr_ptr;
 
-	vec3 query_point_at_grab, position_at_grab;
+	vec3 position_at_grab;
 
-	void on_grabbed_start(vec3 query_point) override;
-	void on_grabbed_drag(vec3 query_point) override;
-	void on_triggered_start(vec3 hit_point) override;
-	void on_triggered_drag(vec3 ray_origin, vec3 ray_direction, vec3 hit_point) override;
+	void on_grabbed_start() override;
+	void on_grabbed_drag() override;
+	void on_triggered_start() override;
+	void on_triggered_drag() override;
 
 public:
 	grabable_interactable(vec3* position_ptr, quat* rotation_ptr, const std::string& name = "") :
