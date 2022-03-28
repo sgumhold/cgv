@@ -12,7 +12,7 @@ namespace cgv {
 ///	used to call the on_set function when the gizmo modifies values.
 ///	Specific gizmo subclasses take additional pointers to to-be-manipulated values as arguments to attach.
 ///	A gizmo also has a detach function that clears the connection between object and gizmo.
-class CGV_API gizmo : public cgv::nui::grabable_interactable
+class CGV_API gizmo : public cgv::nui::interactable
 {
 protected:
 	base_ptr obj_ptr;
@@ -24,37 +24,24 @@ protected:
 	///	follows the object's rotation).
 	const quat* anchor_rotation_ptr;
 
-	/// Position where a handle was grabbed (intersection/closest point)
-	vec3 start_position;
-	/// Projected new position of the grabbed point (start_position) after the hid moved/rotated
-	vec3 target_position;
-
 	// Needed to call the two events on_handle_grabbed and on_handle_drag
-	void on_grabbed_start(vec3 query_point) override
+	void on_grabbed_start() override
 	{
-		start_position = query_point_at_grab;
-		target_position = query_point_at_grab;
-		grabable_interactable::on_grabbed_start(query_point);
 		on_handle_grabbed();
 	}
 
-	void on_grabbed_drag(vec3 query_point) override
+	void on_grabbed_drag() override
 	{
-		grabable_interactable::on_grabbed_drag(query_point);
 		on_handle_drag();
 	}
 
-	void on_triggered_start(vec3 hit_point) override
+	void on_triggered_start() override
 	{
-		start_position = query_point_at_grab;
-		target_position = query_point_at_grab;
-		grabable_interactable::on_triggered_start(hit_point);
 		on_handle_grabbed();
 	}
 
-	void on_triggered_drag(vec3 ray_origin, vec3 ray_direction, vec3 hit_point) override
+	void on_triggered_drag() override
 	{
-		grabable_interactable::on_triggered_drag(ray_origin, ray_direction, hit_point);
 		on_handle_drag();
 	}
 
@@ -67,7 +54,7 @@ protected:
 	virtual void on_handle_drag() {}
 
 public:
-	gizmo(const std::string& name = "") : grabable_interactable(&target_position, name) {}
+	gizmo(const std::string& name = "") : interactable(name) {}
 
 	void attach(base_ptr obj, const vec3* anchor_position_ptr, const quat* anchor_rotation_ptr = nullptr)
 	{

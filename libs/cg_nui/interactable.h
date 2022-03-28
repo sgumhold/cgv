@@ -23,7 +23,13 @@ namespace cgv {
 ///		triggered: hid has triggered this object while pointing at it
 ///	The event functions are for entering (start) and leaving (stop) the states. Triggered and grabbed states
 ///	also have a drag event that is called continuously while the object is grabbed/triggered.
+///	The hid position and direction, the query point of the intersection/proximity check and whether the interaction
+///	was pointing or proximity is stored continuously while the interactable has focus (ii_during_focus) and once at
+///	the moment of grab/trigger (ii_at_grab). The stored information is available for deriving classes to be used
+///	e.g. for determining an updated position (see translation gizmo for an example).
 ///	If enabled a debug point is drawn at the intersection / closest surface point while the state is not idle.
+///	If enabled an additional debug point is drawn for the intersection/closest surface point at the start of
+///	grabbing/triggering.
 class CGV_API interactable : public cgv::base::group,
 					  public cgv::render::drawable,
 					  public cgv::nui::focusable,
@@ -33,21 +39,41 @@ class CGV_API interactable : public cgv::base::group,
 {
 	cgv::nui::focus_configuration original_config;
 
-	vec3 debug_point;
-	bool debug_point_enabled { false };
-	rgb debug_point_color{ rgb(0.5f, 0.5f, 0.5f) };
+	vec3 focus_debug_point;
+	bool focus_debug_point_enabled { false };
+	rgb focus_debug_point_color{ rgb(0.5f, 0.5f, 0.5f) };
+	bool grab_debug_point_enabled{ false };
+	rgb grab_debug_point_color{ rgb(0.4f, 0.05f, 0.6f) };
 protected:
 	cgv::render::sphere_render_style debug_sphere_rs;
 
-	vec3 cached_query_point;
-	vec3 cached_hit_point;
+	/// Collection of values that describe an interaction between a hid and an interactable at one moment in time.
+	struct interaction_info
+	{
+		/// Intersection or nearest point on surface that was used to determine the focus
+		vec3 query_point;
+		/// Position of the interacting hid at the moment of interaction
+		vec3 hid_position;
+		/// Orientation of the interacting hid at the moment of interaction
+		vec3 hid_direction;
+		/// Whether the interaction was by pointing (i.e. a ray-cast) or by closest-point-query
+		bool is_pointing;
+
+		interaction_info(vec3 query_point, vec3 hid_position, vec3 hid_direction, bool is_pointing) :
+			query_point(query_point), hid_position(hid_position), hid_direction(hid_direction), is_pointing(is_pointing) {}
+	};
+
+	/// Interaction Info that is constantly updated as long as the interactable is focused by some hid (all states except idle)
+	interaction_info ii_during_focus;
+	/// Interaction Info that is set once when transitioning to states grabbed or triggered
+	interaction_info ii_at_grab;
 
 public:
 	// different possible object states
 	enum class state_enum { idle, close, pointed, grabbed, triggered };
 
 private:
-	void change_state(state_enum new_state, vec3 query_point = vec3(0.0));
+	void change_state(state_enum new_state);
 
 protected:
 	// hid with focus on object
@@ -65,12 +91,12 @@ protected:
 	virtual void on_pointed_start() {}
 	virtual void on_pointed_stop() {}
 
-	virtual void on_grabbed_start(vec3 query_point) {}
-	virtual void on_grabbed_drag(vec3 query_point) {}
+	virtual void on_grabbed_start() {}
+	virtual void on_grabbed_drag() {}
 	virtual void on_grabbed_stop() {}
 
-	virtual void on_triggered_start(vec3 hit_point) {}
-	virtual void on_triggered_drag(vec3 ray_origin, vec3 ray_direction, vec3 hit_point) {}
+	virtual void on_triggered_start() {}
+	virtual void on_triggered_drag() {}
 	virtual void on_triggered_stop() {}
 
 public:
