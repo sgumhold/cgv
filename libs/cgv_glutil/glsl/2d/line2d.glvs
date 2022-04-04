@@ -11,14 +11,20 @@ in vec2 position0;
 in vec2 position1;
 in vec4 color0;
 in vec4 color1;
+in vec2 texcoord0;
+in vec2 texcoord1;
 
 flat out vec4 color0_gs;
 flat out vec4 color1_gs;
+flat out vec2 uv0_gs;
+flat out vec2 uv1_gs;
 
 void main() {
 	
 	color0_gs = color0;
 	color1_gs = color1;
+	uv0_gs = texcoord0;
+	uv1_gs = texcoord1;
 	gl_Position = vec4(position0, position1);
 }
 
@@ -26,12 +32,15 @@ void main() {
 
 in vec2 position;
 in vec4 color;
+in vec2 texcoord;
 
 flat out vec4 color_gs;
+flat out vec2 uv_gs;
 
 void main() {
 	
 	color_gs = color;
+	uv_gs = texcoord;
 	gl_Position = vec4(position, 0.0, 1.0);
 }
 #endif
