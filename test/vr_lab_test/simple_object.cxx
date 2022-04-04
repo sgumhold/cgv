@@ -39,7 +39,16 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
 		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
 	);
-	trans_gizmo->attach(this, &position, &rotation, &extent);
+	//trans_gizmo->attach(this, &position, &rotation, &extent);
+
+	scale_gizmo = new cgv::nui::scaling_gizmo();
+	append_child(scale_gizmo);
+	scale_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
+	scale_gizmo->configure_axes_positioning(
+		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
+		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
+	);
+	scale_gizmo->attach(this, &extent, &position, &rotation);
 }
 
 std::string simple_object::get_type_name() const
