@@ -20,6 +20,9 @@ class CGV_API gizmo : public cgv::nui::interactable
 	///	if the gizmo operates in a local coordinate system (e.g. the visual representation of the gizmo
 	///	follows the object's rotation).
 	const quat* anchor_rotation_ptr;
+	/// Optional readonly scale this gizmo is anchored to only needed if the gizmo's visual representation
+	///	should change with the objects scale.
+	const vec3* anchor_scale_ptr;
 
 protected:
 	base_ptr obj_ptr;
@@ -28,6 +31,7 @@ protected:
 	// used to track if recomputation of geometry is needed
 	vec3 current_anchor_position{ vec3(0.0) };
 	quat current_anchor_rotation{ quat() };
+	vec3 current_anchor_scale{ vec3(1.0) };
 
 	// Needed to call the two events on_handle_grabbed and on_handle_drag
 	void on_grabbed_start() override
@@ -64,7 +68,7 @@ protected:
 public:
 	gizmo(const std::string& name = "") : interactable(name) {}
 
-	void attach(base_ptr obj, const vec3* anchor_position_ptr = nullptr, const quat* anchor_rotation_ptr = nullptr)
+	void attach(base_ptr obj, const vec3* anchor_position_ptr, const quat* anchor_rotation_ptr = nullptr, const vec3* anchor_scale_ptr = nullptr)
 	{
 		obj_ptr = obj;
 		is_attached = true;
@@ -76,13 +80,20 @@ public:
 			this->anchor_rotation_ptr = anchor_rotation_ptr;
 		else
 			this->anchor_rotation_ptr = new quat();
+		if (anchor_scale_ptr != nullptr)
+			this->anchor_scale_ptr = anchor_scale_ptr;
+		else
+			this->anchor_scale_ptr = new vec3(1.0);
 		current_anchor_position = *this->anchor_position_ptr;
 		current_anchor_rotation = *this->anchor_rotation_ptr;
+		current_anchor_scale = *this->anchor_scale_ptr;
 		compute_geometry();
 	}
 
 	void detach()
 	{
+		if (!is_attached)
+			return;
 		is_attached = false;
 		obj_ptr.clear();
 	}
@@ -119,37 +130,26 @@ public:
 		if (!is_attached)
 			return;
 		// Check if geometry has to be updated
-		if (current_anchor_position != *anchor_position_ptr || current_anchor_rotation != *anchor_rotation_ptr)
+		if (current_anchor_position != *anchor_position_ptr ||
+			current_anchor_rotation != *anchor_rotation_ptr ||
+			current_anchor_scale != *anchor_scale_ptr)
 		{
 			compute_geometry();
 			current_anchor_position = *anchor_position_ptr;
 			current_anchor_rotation = *anchor_rotation_ptr;
+			current_anchor_scale = *anchor_scale_ptr;
 		}
 	}
 	//@}
 
 protected:
-	// Common helper functions
-
-	/// Fill given vector up with last value if too few values are contained in it
-	template<typename T>
-	void fill_with_last_value_if_not_full(std::vector<T>& to_fill, size_t required_size)
+	vec3 relative_to_absolute_position(vec3 relative_position, bool consider_local_rotation = true, bool ignore_scale = false)
 	{
-		const int size_diff = required_size - to_fill.size();
-		if (size_diff > 0) {
-			T last_value = to_fill.back();
-			for (int i = 0; i < size_diff; ++i) {
-				to_fill.push_back(last_value);
-			}
-		}
-	}
-
-	vec3 relative_to_absolute_position(vec3 relative_position, bool consider_local_rotation = true)
-	{
+		vec3 scale = ignore_scale ? vec3(1.0) : current_anchor_scale;
 		if (consider_local_rotation)
-			return current_anchor_position + current_anchor_rotation.apply(relative_position);
+			return current_anchor_position + current_anchor_rotation.apply(relative_position * scale);
 		else
-			return current_anchor_position + relative_position;
+			return current_anchor_position + relative_position * scale;
 	}
 
 	vec3 relative_to_absolute_direction(vec3 relative_direction, bool consider_local_rotation = true)

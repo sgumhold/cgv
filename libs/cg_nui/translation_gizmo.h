@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cg_nui/gizmo.h>
+#include <cg_nui/reusable_gizmo_functionalities.h>
 #include <cgv_gl/arrow_renderer.h>
 
 #include "lib_begin.h"
@@ -11,7 +12,9 @@ namespace cgv {
 /// A gizmo that provides the means to translate an object along configured axes.
 ///	Needs at least a position to manipulate.
 ///	Optionally takes a rotation to allow for translation in the object coordinates.
-class CGV_API translation_gizmo : public cgv::nui::gizmo
+class CGV_API translation_gizmo : public cgv::nui::gizmo,
+	public cgv::nui::gizmo_functionality_local_world_orientation,
+	public cgv::nui::gizmo_functionality_configurable_axes
 {
 	cgv::render::arrow_render_style ars;
 
@@ -27,12 +30,8 @@ class CGV_API translation_gizmo : public cgv::nui::gizmo
 protected:
 	// pointers to properties of the object the gizmo is attached to
 	vec3* position_ptr { nullptr };
-	quat* rotation_ptr { nullptr };
 
 	// current configuration of the gizmo
-	bool use_local_coords{ true };
-	std::vector<vec3> translation_axes;
-	std::vector<vec3> translation_axes_positions;
 	std::vector<rgb> translation_axes_colors;
 	float translation_axes_length { 0.2f };
 
@@ -46,15 +45,12 @@ public:
 
 	/// Attach this gizmo to the given object. The given position will be manipulated and used as the anchor
 	/// for the gizmo's visual representation. The optional rotation is needed if the gizmo should operate
-	///	in the local coordinate system.
-	void attach(base_ptr obj, vec3* position_ptr, quat* rotation_ptr = nullptr);
+	///	in the local coordinate system. The optional scale is needed if the gizmo's visuals should follow the given scale.
+	void attach(base_ptr obj, vec3* position_ptr, quat* rotation_ptr = nullptr, vec3* scale_ptr = nullptr);
 	void detach();
 
 	// Configuration functions
-	/// Set axes along which the object can be translated using the gizmo
-	void configure_axes(std::vector<vec3> axes);
-	/// Set positions of the visual/interactive representation of the axes in local coordinate system
-	void configure_axes_positioning(std::vector<vec3> relative_axis_positions);
+	void configure_axes_directions(std::vector<vec3> axes) override;
 	/// Set colors for the visual representation of the axes. If less colors then axes are given then the
 	///	last color will be repeated.
 	// TODO: Extend with configuration of selection/grab color change
@@ -62,10 +58,6 @@ public:
 	/// Set various parameters of the individual arrow geometries.
 	// TODO: Add more parameters
 	void configure_axes_geometry(float radius, float length);
-	/// Switch to interpreting the translation axes in world coordinate system
-	void use_world_coordinate_system();
-	/// Switch to interpreting the translation axes in local coordinate system
-	void use_local_coordinate_system();
 
 	//@name cgv::nui::grabable interface
 	//@{
@@ -91,3 +83,5 @@ public:
 
 	}
 }
+
+#include <cgv/config/lib_end.h>
