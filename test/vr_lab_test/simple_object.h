@@ -20,7 +20,7 @@ protected:
 	/// return color modified based on state
 	rgb get_modified_color(const rgb& color) const;
 
-	cgv::data::ref_ptr<cgv::nui::translation_gizmo, true> gizmo;
+	cgv::data::ref_ptr<cgv::nui::translation_gizmo, true> trans_gizmo;
 
 public:
 	simple_object(const std::string& _name, const vec3& _position, const rgb& _color = rgb(0.5f,0.5f,0.5f), const vec3& _extent = vec3(0.3f,0.2f,0.1f), const quat& _rotation = quat(1,0,0,0));
