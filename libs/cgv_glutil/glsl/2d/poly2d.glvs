@@ -2,14 +2,17 @@
 
 in vec2 position;
 in vec4 color;
+in vec2 texcoord;
 
 uniform ivec2 resolution;
 
 out vec4 col;
+out vec2 uv;
 
 void main() {
 	
 	col = color;
+	uv = texcoord;
 
 	// transform to window space
 	vec2 pos = (2.0*position) / resolution;
