@@ -1719,15 +1719,8 @@ context::dmat4 context::get_window_matrix(unsigned array_index) const
 	dmat4 M = cgv::math::identity4<double>();
 	M(0, 0) = 0.5*wt.viewport[2];
 	M(0, 3) = M(0, 0) + wt.viewport[0];
-//	if (make_y_point_downwards) {
-		M(1, 1) = -0.5*wt.viewport[3];
-		M(1, 3) = wt.viewport[3] + M(1, 1) - wt.viewport[1];
-/*	}
-	else {
-		M(1, 1) = 0.5*wt.viewport[3];
-		M(1, 3) = M(1, 1) + wt.viewport[1];
-	}
-	*/
+	M(1, 1) = -0.5*wt.viewport[3];
+	M(1, 3) = get_height() + M(1, 1) - wt.viewport[1];
 	M(2, 2) = 0.5*(wt.depth_range[1] - wt.depth_range[0]);
 	M(2, 3) = M(2, 2) + wt.depth_range[0];
 	return M;
