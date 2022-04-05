@@ -17,10 +17,12 @@ color_map_editor::color_map_editor() {
 
 	set_name("Color Scale Editor");
 
+	resolution = (cgv::type::DummyEnum)256;
+	opacity_scale_exponent = 1.0f;
+	supports_opacity = false;
+
 	layout.padding = 13; // 10px plus 3px border
-	layout.color_editor_height = 40;
-	layout.opacity_editor_height = 120;
-	layout.update(get_overlay_size());
+	layout.total_height = supports_opacity ? 200 : 60;
 
 	set_overlay_alignment(AO_START, AO_START);
 	set_overlay_stretch(SO_HORIZONTAL);
@@ -36,9 +38,6 @@ color_map_editor::color_map_editor() {
 	canvas.register_shader("background", canvas::shaders_2d::background);
 
 	overlay_canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
-
-	opacity_scale_exponent = 1.0f;
-	resolution = (cgv::type::DummyEnum)256;
 
 	mouse_is_on_overlay = false;
 	show_cursor = false;
@@ -155,15 +154,8 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 
 void color_map_editor::on_set(void* member_ptr) {
 
-	//if(member_ptr == &layout.total_height) {
-	//	ivec2 size = get_overlay_size();
-	//	size.y() = layout.total_height;
-	//	set_overlay_size(size);
-	//}
-
-	if(member_ptr == &layout.color_editor_height || member_ptr == &layout.opacity_editor_height) {
+	if(member_ptr == &layout.total_height) {
 		ivec2 size = get_overlay_size();
-		layout.update(size);
 		size.y() = layout.total_height;
 		set_overlay_size(size);
 	}
@@ -189,7 +181,34 @@ void color_map_editor::on_set(void* member_ptr) {
 			break;
 		}
 	}
+
+	for(unsigned i = 0; i < cmc.opacity_points.size(); ++i) {
+		if(member_ptr == &cmc.opacity_points[i].val[1]) {
+			cmc.opacity_points[i].update_pos(layout, opacity_scale_exponent);
+			update_color_map(true);
+			break;
+		}
+	}
 	
+	if(member_ptr == &supports_opacity) {
+		if(supports_opacity) {
+			layout.total_height = std::max(layout.total_height, 80);
+			on_set(&layout.total_height);
+		} else {
+			on_set(&layout.total_height);
+			if(cmc.cm) {
+				cmc.cm->clear_opacity_points();
+				cmc.opacity_points.clear();
+
+				update_point_positions();
+				update_color_map(false);
+			}
+		}
+
+		update_layout = true;
+		post_recreate_gui();
+	}
+
 	update_member(member_ptr);
 	post_redraw();
 }
@@ -232,9 +251,10 @@ bool color_map_editor::init(cgv::render::context& ctx) {
 
 void color_map_editor::init_frame(cgv::render::context& ctx) {
 
-	if(ensure_overlay_layout(ctx)) {
+	if(ensure_overlay_layout(ctx) || update_layout) {
+		update_layout = false;
 		ivec2 container_size = get_overlay_size();
-		layout.update(container_size);
+		layout.update(container_size, supports_opacity);
 
 		fbc.set_size(container_size);
 		fbc.ensure(ctx);
@@ -300,56 +320,58 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 		canvas.draw_shape(ctx, layout.color_editor_rect.pos(), layout.color_editor_rect.size());
 		preview_tex.disable(ctx);
 		canvas.disable_current_shader(ctx);
-
-		// draw opacity editor checkerboard background
-		auto& bg_prog = canvas.enable_shader(ctx, "background");
-		bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
-		bg_tex.enable(ctx, 0);
-		canvas.draw_shape(ctx, layout.opacity_editor_rect.pos(), layout.opacity_editor_rect.size());
-		bg_tex.disable(ctx);
-		canvas.disable_current_shader(ctx);
-
-		// draw histogram texture
-		/*if(show_histogram && tfc.hist_tex.is_created()) {
-			hist_style.fill_color = histogram_color;
-			hist_style.border_color = histogram_border_color;
-			hist_style.border_width = float(histogram_border_width);
-
-			auto& hist_prog = canvas.enable_shader(ctx, "histogram");
-			hist_prog.set_uniform(ctx, "max_value", tfc.hist_max);
-			hist_prog.set_uniform(ctx, "nearest_linear_mix", histogram_smoothing);
-			hist_style.apply(ctx, hist_prog);
-
-			tfc.hist_tex.enable(ctx, 1);
-			canvas.draw_shape(ctx, layout.editor_rect.pos(), layout.editor_rect.size());
-			tfc.hist_tex.disable(ctx);
-			canvas.disable_current_shader(ctx);
-		}*/
-
-		preview_tex.enable(ctx, 0);
-		// draw transfer function area polygon
-		auto& poly_prog = polygon_renderer.ref_prog();
-		poly_prog.enable(ctx);
-		canvas.set_view(ctx, poly_prog);
-		poly_prog.disable(ctx);
-		polygon_renderer.render(ctx, PT_TRIANGLE_STRIP, cmc.triangles);
 		
-		// draw transfer function lines
-		auto& line_prog = line_renderer.ref_prog();
-		line_prog.enable(ctx);
-		canvas.set_view(ctx, line_prog);
-		line_prog.disable(ctx);
-		line_renderer.render(ctx, PT_LINE_STRIP, cmc.lines);
-		preview_tex.disable(ctx);
+		if(supports_opacity) {
+			// draw opacity editor checkerboard background
+			auto& bg_prog = canvas.enable_shader(ctx, "background");
+			bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
+			bg_tex.enable(ctx, 0);
+			canvas.draw_shape(ctx, layout.opacity_editor_rect.pos(), layout.opacity_editor_rect.size());
+			bg_tex.disable(ctx);
+			canvas.disable_current_shader(ctx);
 
-		// draw separator line
-		rect_prog = canvas.enable_shader(ctx, "rectangle");
-		border_style.apply(ctx, rect_prog);
-		canvas.draw_shape(ctx,
-			ivec2(layout.color_editor_rect.pos().x(), layout.color_editor_rect.box.get_max_pnt().y()),
-			ivec2(container_size.x() - 2 * layout.padding, 1)
-		);
-		canvas.disable_current_shader(ctx);
+			// draw histogram texture
+			/*if(show_histogram && tfc.hist_tex.is_created()) {
+				hist_style.fill_color = histogram_color;
+				hist_style.border_color = histogram_border_color;
+				hist_style.border_width = float(histogram_border_width);
+
+				auto& hist_prog = canvas.enable_shader(ctx, "histogram");
+				hist_prog.set_uniform(ctx, "max_value", tfc.hist_max);
+				hist_prog.set_uniform(ctx, "nearest_linear_mix", histogram_smoothing);
+				hist_style.apply(ctx, hist_prog);
+
+				tfc.hist_tex.enable(ctx, 1);
+				canvas.draw_shape(ctx, layout.editor_rect.pos(), layout.editor_rect.size());
+				tfc.hist_tex.disable(ctx);
+				canvas.disable_current_shader(ctx);
+			}*/
+
+			preview_tex.enable(ctx, 0);
+			// draw transfer function area polygon
+			auto& poly_prog = polygon_renderer.ref_prog();
+			poly_prog.enable(ctx);
+			canvas.set_view(ctx, poly_prog);
+			poly_prog.disable(ctx);
+			polygon_renderer.render(ctx, PT_TRIANGLE_STRIP, cmc.triangles);
+
+			// draw transfer function lines
+			auto& line_prog = line_renderer.ref_prog();
+			line_prog.enable(ctx);
+			canvas.set_view(ctx, line_prog);
+			line_prog.disable(ctx);
+			line_renderer.render(ctx, PT_LINE_STRIP, cmc.lines);
+			preview_tex.disable(ctx);
+
+			// draw separator line
+			rect_prog = canvas.enable_shader(ctx, "rectangle");
+			border_style.apply(ctx, rect_prog);
+			canvas.draw_shape(ctx,
+				ivec2(layout.color_editor_rect.pos().x(), layout.color_editor_rect.box.get_max_pnt().y()),
+				ivec2(container_size.x() - 2 * layout.padding, 1)
+			);
+			canvas.disable_current_shader(ctx);
+		}
 
 		// draw control points
 		// color handles
@@ -359,14 +381,18 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 		color_handle_prog.disable(ctx);
 		color_handle_renderer.render(ctx, PT_LINES, cmc.color_handles);
 
-		// opacity handles
-		auto& opacity_handle_prog = opacity_handle_renderer.ref_prog();
-		opacity_handle_prog.enable(ctx);
-		canvas.set_view(ctx, opacity_handle_prog);
-		// size is constant for all points
-		opacity_handle_prog.set_attribute(ctx, "size", vec2(2.0f*6.0f));
-		opacity_handle_prog.disable(ctx);
-		opacity_handle_renderer.render(ctx, PT_POINTS, cmc.opacity_handles);
+		if(supports_opacity) {
+			// opacity handles
+			auto& opacity_handle_prog = opacity_handle_renderer.ref_prog();
+			opacity_handle_prog.enable(ctx);
+			canvas.set_view(ctx, opacity_handle_prog);
+			// size is constant for all points
+			opacity_handle_prog.set_attribute(ctx, "size", vec2(2.0f*6.0f));
+			opacity_handle_prog.disable(ctx);
+			opacity_handle_renderer.render(ctx, PT_POINTS, cmc.opacity_handles);
+		}
+	} else {
+		canvas.disable_current_shader(ctx);
 	}
 	
 	glDisable(GL_BLEND);
@@ -409,21 +435,46 @@ void color_map_editor::create_gui() {
 
 	if(begin_tree_node("Settings", layout, false)) {
 		align("\a");
-		//add_member_control(this, "Height", layout.total_height, "value_slider", "min=40;max=500;step=10;ticks=true");
+		std::string height_options = "min=";
+		height_options += supports_opacity ? "80" : "40";
+		height_options += ";max=500;step=10;ticks=true";
+		add_member_control(this, "Height", layout.total_height, "value_slider", height_options);
+		add_member_control(this, "Test", supports_opacity, "toggle");
 		add_member_control(this, "Resolution", resolution, "dropdown", "enums='2=2,4=4,8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024,2048=2048'");
+		add_member_control(this, "Opacity Scale Exponent", opacity_scale_exponent, "value_slider", "min=1.0;max=5.0;step=0.001;ticks=true");
 		align("\b");
 		end_tree_node(layout);
 	}
 
-	add_decorator("Control Points", "heading", "level=3");
-	auto& points = cmc.color_points;
-	for(unsigned i = 0; i < points.size(); ++i)
-		add_member_control(this, "Color " + std::to_string(i), points[i].col, "", &points[i] == cmc.color_points.get_selected() ? "label_color=" + highlight_color_hex : "");
+	if(begin_tree_node("Color Points", cmc.color_points, true)) {
+		align("\a");
+		auto& points = cmc.color_points;
+		for(unsigned i = 0; i < points.size(); ++i)
+			add_member_control(this, "#" + std::to_string(i), points[i].col, "", &points[i] == cmc.color_points.get_selected() ? "label_color=" + highlight_color_hex : "");
+		align("\b");
+		end_tree_node(cmc.color_points);
+	}
+	if(supports_opacity) {
+		if(begin_tree_node("Opacity Points", cmc.opacity_points, true)) {
+			align("\a");
+			auto& points = cmc.opacity_points;
+			for(unsigned i = 0; i < points.size(); ++i)
+				add_member_control(this, "#" + std::to_string(i), points[i].val[1], "", &points[i] == cmc.opacity_points.get_selected() ? "label_color=" + highlight_color_hex : "");
+			align("\b");
+			end_tree_node(cmc.color_points);
+		}
+	}
 }
 
 void color_map_editor::create_gui(cgv::gui::provider& p) {
 
 	p.add_member_control(this, "Show", show, "check");
+}
+
+void color_map_editor::set_opacity_support(bool flag) {
+	
+	supports_opacity = flag;
+	on_set(&supports_opacity);
 }
 
 bool color_map_editor::was_updated() {
@@ -445,11 +496,13 @@ void color_map_editor::set_color_map(color_map* cm) {
 			p.col = cp[i].second;
 			cmc.color_points.add(p);
 		}
-		auto& op = cmc.cm->ref_opacity_points();
-		for(size_t i = 0; i < op.size(); ++i) {
-			opacity_point p;
-			p.val = cgv::math::clamp(op[i].first, op[i].second, 1.0f);
-			cmc.opacity_points.add(p);
+		if(supports_opacity) {
+			auto& op = cmc.cm->ref_opacity_points();
+			for(size_t i = 0; i < op.size(); ++i) {
+				opacity_point p;
+				p.val = cgv::math::clamp(op[i].first, op[i].second, 1.0f);
+				cmc.opacity_points.add(p);
+			}
 		}
 		update_point_positions();
 		update_color_map(false);
@@ -536,6 +589,7 @@ void color_map_editor::init_styles(context& ctx) {
 	line_style.use_blending = true;
 	line_style.use_fill_color = false;
 	line_style.use_texture = true;
+	line_style.use_texture_alpha = false;
 	line_style.apply_gamma = false;
 	line_style.width = 3.0f;
 
@@ -543,6 +597,8 @@ void color_map_editor::init_styles(context& ctx) {
 	line_prog.enable(ctx);
 	line_style.apply(ctx, line_prog);
 	line_prog.disable(ctx);
+
+	line_style.use_texture_alpha = true;
 
 	auto& poly_prog = polygon_renderer.ref_prog();
 	poly_prog.enable(ctx);
@@ -564,11 +620,11 @@ void color_map_editor::init_styles(context& ctx) {
 
 void color_map_editor::init_texture(context& ctx) {
 
-	std::vector<uint8_t> data(resolution * 3 * 2, 0u);
+	std::vector<uint8_t> data(resolution * 4 * 2, 0u);
 
 	preview_tex.destruct(ctx);
-	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2, TI_UINT8, cgv::data::CF_RGB), data.data());
-	preview_tex = texture("uint8[R,G,B]", TF_LINEAR, TF_LINEAR);
+	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2, TI_UINT8, cgv::data::CF_RGBA), data.data());
+	preview_tex = texture("uint8[R,G,B,A]", TF_LINEAR, TF_LINEAR);
 	preview_tex.create(ctx, tf_dv, 0);
 }
 
@@ -584,7 +640,7 @@ void color_map_editor::add_point(const vec2& pos) {
 			p.update_val(layout);
 			p.col = cmc.cm->interpolate_color(p.val);
 			cmc.color_points.add(p);
-		} else if(layout.opacity_editor_rect.is_inside(test_pos)) {
+		} else if(supports_opacity && layout.opacity_editor_rect.is_inside(test_pos)) {
 			// opacity point
 			opacity_point p;
 			p.pos = pos;
@@ -631,16 +687,6 @@ void color_map_editor::remove_point(const draggable* ptr) {
 		}
 	}
 
-	/*bool removed = false;
-	std::vector<point> next_points;
-	for(unsigned i = 0; i < cmc.points.size(); ++i) {
-		if(&cmc.points[i] != ptr)
-			next_points.push_back(cmc.points[i]);
-		else
-			removed = true;
-	}
-	cmc.points.ref_draggables() = std::move(next_points);*/
-	
 	if(removed)
 		update_color_map(true);
 }
@@ -687,7 +733,8 @@ void color_map_editor::handle_drag_end() {
 
 void color_map_editor::sort_points() {
 	sort_color_points();
-	sort_opacity_points();
+	if(supports_opacity)
+		sort_opacity_points();
 }
 
 void color_map_editor::sort_color_points() {
@@ -812,9 +859,14 @@ void color_map_editor::update_color_map(bool is_data_change) {
 		cm.add_color_point(p.val, p.col);
 	}
 
-	for(unsigned i = 0; i < opacity_points.size(); ++i) {
-		const opacity_point& p = opacity_points[i];
-		cm.add_opacity_point(p.val.x(), p.val.y());
+	if(supports_opacity) {
+		for(unsigned i = 0; i < opacity_points.size(); ++i) {
+			const opacity_point& p = opacity_points[i];
+			cm.add_opacity_point(p.val.x(), p.val.y());
+		}
+	} else {
+		// add one fully opaque point that will be removed later on
+		cm.add_opacity_point(0.0f, 1.0f);
 	}
 
 	size_t size = static_cast<size_t>(resolution);
@@ -844,6 +896,9 @@ void color_map_editor::update_color_map(bool is_data_change) {
 	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, 2, TI_UINT8, cgv::data::CF_RGBA), data.data());
 	preview_tex = texture("uint8[R,G,B,A]", TF_LINEAR, TF_LINEAR, TW_CLAMP_TO_EDGE, TW_CLAMP_TO_EDGE);
 	preview_tex.create(ctx, dv, 0);
+
+	if(!supports_opacity)
+		cm.clear_opacity_points();
 
 	update_geometry();
 
@@ -889,15 +944,10 @@ bool color_map_editor::update_geometry() {
 	}
 
 	// TODO: handle case with only 1 opacity handle
-	if(opacity_points.size() > 1) {
+	if(opacity_points.size() > 0) {
 		const auto& pl = opacity_points[0];
-		rgba coll = rgba(1.0f, 0.0f, 0.0f, 0.5f);// tf.interpolate(pl.val.x());
 
-		//lines.add(vec2(float(layout.opacity_editor_rect.pos().x()), pl.center().y()), rgb(coll));
 		lines.add(vec2(float(layout.opacity_editor_rect.pos().x()), pl.center().y()), vec2(0.0f, 0.5f));
-
-		//triangles.add(vec2(float(layout.opacity_editor_rect.pos().x()), pl.center().y()), coll);
-		//triangles.add(layout.opacity_editor_rect.pos(), coll);
 
 		triangles.add(vec2(float(layout.opacity_editor_rect.pos().x()), pl.center().y()), vec2(0.0f, 0.5f));
 		triangles.add(layout.opacity_editor_rect.pos(), vec2(0.0f, 0.5f));
@@ -905,25 +955,16 @@ bool color_map_editor::update_geometry() {
 		for(unsigned i = 0; i < opacity_points.size(); ++i) {
 			const auto& p = opacity_points[i];
 			vec2 pos = p.center();
-			rgba col = rgba(1.0f, 0.0f, 0.0f, 0.5f);// tf.interpolate(points[i].val.x());
 
-			//lines.add(pos, rgb(col));
 			lines.add(pos, vec2(p.val.x(), 0.5f));
-			//triangles.add(pos, col);
 			triangles.add(pos, vec2(p.val.x(), 0.5f));
-			//triangles.add(vec2(pos.x(), (float)layout.opacity_editor_rect.pos().y()), col);
 			triangles.add(vec2(pos.x(), (float)layout.opacity_editor_rect.pos().y()), vec2(p.val.x(), 0.5f));
 		}
 
 		const auto& pr = opacity_points[opacity_points.size() - 1];
-		rgba colr = rgba(1.0f, 0.0f, 0.0f, 0.5f);// tf.interpolate(pr.val.x());
 		vec2 max_pos = layout.opacity_editor_rect.pos() + vec2(1.0f, 0.0f) * layout.opacity_editor_rect.size();
 
-		//lines.add(vec2(max_pos.x(), pr.center().y()), rgb(colr));
 		lines.add(vec2(max_pos.x(), pr.center().y()), vec2(1.0f, 0.5f));
-
-		//triangles.add(vec2(max_pos.x(), pr.center().y()), colr);
-		//triangles.add(max_pos, colr);
 
 		triangles.add(vec2(max_pos.x(), pr.center().y()), vec2(1.0f, 0.5f));
 		triangles.add(max_pos, vec2(1.0f, 0.5f));

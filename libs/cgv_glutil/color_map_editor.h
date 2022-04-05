@@ -46,21 +46,33 @@ protected:
 	//unsigned histogram_border_width;
 	//float histogram_smoothing;
 	
-	float opacity_scale_exponent;
 	cgv::type::DummyEnum resolution;
+	float opacity_scale_exponent;
+	bool supports_opacity;
+	bool update_layout = false;
 
 	struct layout_attributes {
 		int padding;
+		int total_height;
+		
+		// dependent members
 		int color_editor_height;
 		int opacity_editor_height;
-
-		// dependent members
 		rect color_handles_rect;
 		rect color_editor_rect;
 		rect opacity_editor_rect;
-		int total_height;
 
-		void update(const ivec2& parent_size) {
+		void update(const ivec2& parent_size, bool color_and_opacity) {
+
+			int content_height = total_height - 10 - 2 * padding;
+			if(color_and_opacity) {
+				color_editor_height = static_cast<int>(floor(0.15f * static_cast<float>(content_height)));
+				color_editor_height = cgv::math::clamp(color_editor_height, 4, 80);
+				opacity_editor_height = content_height - color_editor_height - 1;
+			} else {
+				color_editor_height = content_height;
+				opacity_editor_height = 0;
+			}
 
 			int y_off = padding;
 
@@ -77,9 +89,6 @@ protected:
 
 			opacity_editor_rect.set_pos(ivec2(padding, y_off));
 			opacity_editor_rect.set_size(ivec2(parent_size.x() - 2 * padding, opacity_editor_height));
-
-			y_off += opacity_editor_height + padding;
-			total_height = y_off;
 		}
 	} layout;
 	
@@ -234,6 +243,9 @@ public:
 	
 	void create_gui();
 	void create_gui(cgv::gui::provider& p);
+
+	bool get_opacity_support() { return supports_opacity; }
+	void set_opacity_support(bool flag);
 
 	bool was_updated();
 
