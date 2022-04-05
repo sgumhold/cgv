@@ -439,7 +439,6 @@ void color_map_editor::create_gui() {
 		height_options += supports_opacity ? "80" : "40";
 		height_options += ";max=500;step=10;ticks=true";
 		add_member_control(this, "Height", layout.total_height, "value_slider", height_options);
-		add_member_control(this, "Test", supports_opacity, "toggle");
 		add_member_control(this, "Resolution", resolution, "dropdown", "enums='2=2,4=4,8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024,2048=2048'");
 		add_member_control(this, "Opacity Scale Exponent", opacity_scale_exponent, "value_slider", "min=1.0;max=5.0;step=0.001;ticks=true");
 		align("\b");
