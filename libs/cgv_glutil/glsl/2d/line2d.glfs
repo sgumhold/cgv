@@ -8,6 +8,7 @@ uniform float border_width = 0.0;
 uniform vec2 tex_scaling = vec2(1.0);
 
 uniform bool use_texture = false;
+uniform bool use_texture_alpha = true;
 uniform bool use_smooth_feather = false;
 
 float get_feather_width();
@@ -99,7 +100,9 @@ void main() {
 
 	if(use_texture) {
 		float a = color.a;
-		color = texture(tex, tex_scaling * uv_fs);
+		vec4 tex_color = texture(tex, tex_scaling * uv_fs);
+		if(use_texture_alpha) color = tex_color;
+		else color.rgb = tex_color.rgb;
 		color.a *= a;
 	}
 
