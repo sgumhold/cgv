@@ -139,8 +139,6 @@ protected:
 
 		unsigned width = tex.get_width();
 
-		
-
 		bool replaced = false;
 		if(tex.is_created() && width == res && tex.get_nr_components() == 4)
 			replaced = tex.replace(ctx, 0, dv);
