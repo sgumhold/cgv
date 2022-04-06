@@ -191,11 +191,13 @@ void color_map_editor::on_set(void* member_ptr) {
 	}
 	
 	if(member_ptr == &supports_opacity) {
+		layout.total_height = supports_opacity ? 200 : 60;
+		on_set(&layout.total_height);
+
 		if(supports_opacity) {
-			layout.total_height = std::max(layout.total_height, 80);
-			on_set(&layout.total_height);
+			layout.total_height = 200;
 		} else {
-			on_set(&layout.total_height);
+			layout.total_height = 60;
 			if(cmc.cm) {
 				cmc.cm->clear_opacity_points();
 				cmc.opacity_points.clear();
@@ -499,7 +501,8 @@ void color_map_editor::set_color_map(color_map* cm) {
 			auto& op = cmc.cm->ref_opacity_points();
 			for(size_t i = 0; i < op.size(); ++i) {
 				opacity_point p;
-				p.val = cgv::math::clamp(op[i].first, op[i].second, 1.0f);
+				p.val.x() = cgv::math::clamp(op[i].first, 0.0f, 1.0f);
+				p.val.y() = cgv::math::clamp(op[i].second, 0.0f, 1.0f);
 				cmc.opacity_points.add(p);
 			}
 		}
