@@ -43,7 +43,7 @@ public:
 	}
 	/// overload to return the type name of this object
 	std::string get_type_name() const {
-		return "gui_controlsss";
+		return "gui_controls";
 	}
 	void on_set(void* member_ptr) {
 		if(member_ptr == &inactive || member_ptr == &colored)

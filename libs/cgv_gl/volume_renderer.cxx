@@ -4,15 +4,6 @@
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_tools.h>
 
-#define P_000 vec3(-0.5f,-0.5f,-0.5f)
-#define P_001 vec3(-0.5f,-0.5f,+0.5f)
-#define P_010 vec3(-0.5f,+0.5f,-0.5f)
-#define P_011 vec3(-0.5f,+0.5f,+0.5f)
-#define P_100 vec3(+0.5f,-0.5f,-0.5f)
-#define P_101 vec3(+0.5f,-0.5f,+0.5f)
-#define P_110 vec3(+0.5f,+0.5f,-0.5f)
-#define P_111 vec3(+0.5f,+0.5f,+0.5f)
-
 namespace cgv {
 	namespace render {
 		volume_renderer& ref_volume_renderer(context& ctx, int ref_count_change)
@@ -106,27 +97,6 @@ namespace cgv {
 			// TOOD: use aam from renderer base class
 			res = res && aa_manager.init(ctx);
 			enable_attribute_array_manager(ctx, aa_manager);
-
-			/*std::vector<vec3> positions = {
-				// front
-				P_001, P_101, P_111,
-				P_001, P_111, P_011,
-				// back
-				P_000, P_110, P_100,
-				P_000, P_010, P_110,
-				// left
-				P_000, P_011, P_010,
-				P_000, P_001, P_011,
-				// right
-				P_100, P_110, P_111,
-				P_100, P_111, P_101,
-				// top
-				P_010, P_111, P_110,
-				P_010, P_011, P_111,
-				// bottom
-				P_000, P_100, P_101,
-				P_000, P_101, P_001,
-			};*/
 
 			// use a single optimized triangle strip to define a cube
 			std::vector<vec3> positions = {
@@ -252,15 +222,6 @@ namespace cgv {
 		}
 	}
 }
-
-#undef P_000
-#undef P_001
-#undef P_010
-#undef P_011
-#undef P_100
-#undef P_101
-#undef P_110
-#undef P_111
 
 #include <cgv/gui/provider.h>
 
