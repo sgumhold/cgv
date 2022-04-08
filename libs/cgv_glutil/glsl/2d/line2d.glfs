@@ -5,8 +5,10 @@
 //***** begin interface of shape2d.glsl ***********************************
 uniform vec4 border_color = vec4(1.0);
 uniform float border_width = 0.0;
-//uniform vec2 tex_scaling = vec2(1.0);
+uniform vec2 tex_scaling = vec2(1.0);
 
+uniform bool use_texture = false;
+uniform bool use_texture_alpha = true;
 uniform bool use_smooth_feather = false;
 
 float get_feather_width();
@@ -16,6 +18,8 @@ vec4 transform_world_to_window_space(vec2 p);
 //***** end interface of shape2d.glsl ***********************************
 
 //***** begin interface of fragment2d.glfs ***********************************
+uniform layout(binding = 0) sampler2D tex;
+
 void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
 void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
 void finish_fragment2d(in vec4 color);
@@ -27,6 +31,7 @@ uniform float dash_ratio = 0.5;
 
 #if USE_ROUNDED_CAPS == 0
 in vec4 color_fs;
+in vec2 uv_fs;
 #else
 in flat vec4 color0_fs;
 in flat vec4 color1_fs;
@@ -93,6 +98,14 @@ void main() {
 
 	color.a *= (1.0 - tt) * (1.0 - tp) * (1.0 - td);
 
+	if(use_texture) {
+		float a = color.a;
+		vec4 tex_color = texture(tex, tex_scaling * uv_fs);
+		if(use_texture_alpha) color = tex_color;
+		else color.rgb = tex_color.rgb;
+		color.a *= a;
+	}
+
 	finish_fragment2d(color);
 
 
@@ -126,7 +139,7 @@ void main() {
 	float alpha = smoothstep(0.5 - delta, 0.5, dist);
 	color.a *= 1.0-alpha;
 
-	override_color(color);
+	//override_color(color);
 	finish_fragment2d();
 #endif
 }

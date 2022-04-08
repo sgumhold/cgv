@@ -22,6 +22,14 @@ public:
 		opacity_interpolator.clear();
 	}
 
+	void clear_color_points() {
+		color_interpolator.clear();
+	}
+
+	void clear_opacity_points() {
+		opacity_interpolator.clear();
+	}
+
 	bool empty() {
 		return color_interpolator.empty() && opacity_interpolator.empty();
 	}
@@ -86,7 +94,61 @@ public:
 class gl_color_map : public color_map {
 protected:
 	cgv::render::texture tex;
+	// TODO: make resolution adjustable by color_map_editor
 	unsigned res = 256u;
+
+	void generate_rgb_texture(cgv::render::context& ctx) {
+		std::vector<rgb> data = interpolate_color(static_cast<size_t>(res));
+		
+		std::vector<uint8_t> data_8(3 * data.size());
+		for(unsigned i = 0; i < data.size(); ++i) {
+			rgba col = data[i];
+			data_8[3 * i + 0] = static_cast<uint8_t>(255.0f * col.R());
+			data_8[3 * i + 1] = static_cast<uint8_t>(255.0f * col.G());
+			data_8[3 * i + 2] = static_cast<uint8_t>(255.0f * col.B());
+		}
+
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(res, TI_UINT8, cgv::data::CF_RGB), data_8.data());
+
+		unsigned width = tex.get_width();
+
+		bool replaced = false;
+		if(tex.is_created() && width == res && tex.get_nr_components() == 3)
+			replaced = tex.replace(ctx, 0, dv);
+
+		if(!replaced) {
+			tex.destruct(ctx);
+			tex = cgv::render::texture("uint8[R,G,B]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR);
+			tex.create(ctx, dv, 0);
+		}
+	}
+
+	void generate_rgba_texture(cgv::render::context& ctx) {
+		std::vector<rgba> data = interpolate(static_cast<size_t>(res));
+
+		std::vector<uint8_t> data_8(4 * data.size());
+		for(unsigned i = 0; i < data.size(); ++i) {
+			rgba col = data[i];
+			data_8[4 * i + 0] = static_cast<uint8_t>(255.0f * col.R());
+			data_8[4 * i + 1] = static_cast<uint8_t>(255.0f * col.G());
+			data_8[4 * i + 2] = static_cast<uint8_t>(255.0f * col.B());
+			data_8[4 * i + 3] = static_cast<uint8_t>(255.0f * col.alpha());
+		}
+
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(res, TI_UINT8, cgv::data::CF_RGBA), data_8.data());
+
+		unsigned width = tex.get_width();
+
+		bool replaced = false;
+		if(tex.is_created() && width == res && tex.get_nr_components() == 4)
+			replaced = tex.replace(ctx, 0, dv);
+
+		if(!replaced) {
+			tex.destruct(ctx);
+			tex = cgv::render::texture("uint8[R,G,B,A]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR);
+			tex.create(ctx, dv, 0);
+		}
+	}
 
 public:
 	gl_color_map() {}
@@ -120,35 +182,14 @@ public:
 	}
 
 	void generate_texture(cgv::render::context& ctx) {
-		std::vector<rgb> color_data(res);
 
-		float step = 1.0f / static_cast<float>(res - 1);
-
-		for(unsigned i = 0; i < res; ++i) {
-			float t = i * step;
-			color_data[i] = interpolate_color(t);
-		}
-
-		std::vector<uint8_t> color_data_8(3 * color_data.size());
-		for(unsigned i = 0; i < color_data.size(); ++i) {
-			rgba col = color_data[i];
-			color_data_8[3 * i + 0] = static_cast<uint8_t>(255.0f * col.R());
-			color_data_8[3 * i + 1] = static_cast<uint8_t>(255.0f * col.G());
-			color_data_8[3 * i + 2] = static_cast<uint8_t>(255.0f * col.B());
-		}
-
-		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(res, TI_UINT8, cgv::data::CF_RGB), color_data_8.data());
-
-		unsigned width = tex.get_width();
-		
-		if(tex.is_created() && width == res) {
-			tex.replace(ctx, 0, dv);
-		} else {
-			tex.destruct(ctx);
-			tex = cgv::render::texture("uint8[R,G,B]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR);
-			tex.create(ctx, dv, 0);
-		}
+		if(ref_opacity_points().size() > 0)
+			generate_rgba_texture(ctx);
+		else
+			generate_rgb_texture(ctx);
 	}
+
+	cgv::render::texture& ref_texture() { return tex; }
 };
 
 }
