@@ -20,6 +20,13 @@ type(vr_scene):ground_mode=terrain
 
 type(vr_scene):terrain_scale=0.02
 type(vr_scene):terrain_y_offset=-25
+//type(vr_scene):dispatch_mouse_spatial=false
+//type(vr_scene):ctrl_info_left.pointing=false
+//type(vr_scene):ctrl_info_left.grabbing=true
+//type(vr_scene):ctrl_info_left.color='0 1 0'
+//type(vr_scene):ctrl_info_right.pointing=false
+//type(vr_scene):ctrl_info_right.grabbing=false
+//type(vr_scene):ctrl_info_right.color='1 0 1'
 
 // choose table mode from hide,rectangular,round
 type(vr_scene):table_mode=rectangular
