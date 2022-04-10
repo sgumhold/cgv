@@ -1,13 +1,9 @@
 #include "navigator.h"
 
-#include <cgv/defines/quote.h>
-#include <cgv/gui/dialog.h>
+#include <cgv/gui/animate.h>
 #include <cgv/gui/key_event.h>
-#include <cgv/gui/dialog.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/math/ftransform.h>
-//#include <cgv/utils/advanced_scan.h>
-//#include <cgv/utils/file.h>
 #include <cgv_gl/gl/gl.h>
 
 namespace cgv {
@@ -17,6 +13,7 @@ navigator::navigator() {
 	
 	set_name("Navigator");
 	gui_options.allow_stretch = false;
+	block_events = false;
 
 	view_ptr = nullptr;
 	navigator_eye_pos = vec3(0.0f, 0.0f, 2.5f);
@@ -25,40 +22,44 @@ navigator::navigator() {
 
 	set_overlay_alignment(AO_END, AO_END);
 	set_overlay_stretch(SO_NONE);
-	set_overlay_margin(ivec2(10));
-	set_overlay_size(ivec2(100));
+	set_overlay_margin(ivec2(0));
+	set_overlay_size(ivec2(150));
 	
-	fbc.add_attachment("color", "flt32[R,G,B,A]");
-	fbc.set_size(get_overlay_size());
-
-	blit_canvas.register_shader("rectangle", "rect2d.glpr");
+	fbc.add_attachment("depth", "[D]");
+	fbc.add_attachment("color", "flt32[R,G,B,A]", TF_LINEAR);
+	fbc.set_size(2*get_overlay_size());
 
 	hit_axis = 0;
+
+	blit_canvas.register_shader("rectangle", "rect2d.glpr");
 
 	box_style.default_extent = vec3(1.0f);
 	box_style.map_color_to_material = CM_COLOR_AND_OPACITY;
 	box_style.surface_color = rgb(0.5f);
-	box_style.surface_opacity = 0.6f;
 
-	sphere_style.radius = 0.02f;
+	box_style.illumination_mode = IM_TWO_SIDED;
+	box_style.culling_mode = CM_OFF;
+	box_style.material.set_diffuse_reflectance(rgb(1.0f));
+	box_style.material.set_emission(rgb(0.35f));
+	box_style.surface_opacity = 0.35f;
+
+	sphere_style.illumination_mode = IM_OFF;
+	sphere_style.radius = 0.04f;
 	sphere_style.surface_color = rgb(0.5f);
 
-	cone_style.radius = 0.02f;
+	arrow_style.illumination_mode = IM_OFF;
+	arrow_style.radius_relative_to_length = 0.04f;
+	arrow_style.head_length_mode = AHLM_RELATIVE_TO_LENGTH;
+	arrow_style.head_length_relative_to_length = 0.3f;
+	arrow_style.head_radius_scale = 2.5f;
 
 	rectangle_style.illumination_mode = IM_OFF;
 	rectangle_style.map_color_to_material = CM_COLOR_AND_OPACITY;
 	rectangle_style.surface_color = rgb(0.25f, 0.5f, 1.0f);
 	rectangle_style.surface_opacity = 0.75f;
 	rectangle_style.pixel_blend = 0.0f;
-	rectangle_style.percentual_border_width = 0.1f;
+	rectangle_style.percentual_border_width = 0.111111f;
 	rectangle_style.default_border_color = rgba(0.15f, 0.4f, 0.9f, 0.75f);
-
-	mouse_is_on_overlay = false;
-	show_cursor = false;
-	cursor_pos = ivec2(-100);
-	cursor_drawtext = "";
-
-	block_events = false;
 }
 
 void navigator::clear(cgv::render::context& ctx) {
@@ -66,9 +67,9 @@ void navigator::clear(cgv::render::context& ctx) {
 	blit_canvas.destruct(ctx);
 	fbc.clear(ctx);
 
+	ref_arrow_renderer(ctx, -1);
 	ref_box_renderer(ctx, -1);
 	ref_sphere_renderer(ctx, -1);
-	ref_cone_renderer(ctx, -1);
 	ref_rectangle_renderer(ctx, -1);
 }
 
@@ -97,9 +98,7 @@ bool navigator::handle_event(cgv::gui::event& e) {
 			cgv::render::context& ctx = *get_context();
 
 			ivec2 mpos(static_cast<int>(me.get_x()), static_cast<int>(me.get_y()));
-			//mpos = get_transformed_mouse_pos(mpos);
-			//vec2 window_coord = vec2(mpos) * vec2(2.0f) / last_viewport_size - vec2(1.0f);
-
+			
 			mpos = get_local_mouse_pos(mpos);
 			vec2 window_coord = vec2(mpos) * vec2(2.0f) / get_overlay_size() - vec2(1.0f);
 
@@ -146,25 +145,26 @@ bool navigator::handle_event(cgv::gui::event& e) {
 					if(hit_axis != 0) {
 						int axis_idx = abs(hit_axis) - 1;
 
-						vec3 direction(0.0f);
-						direction[axis_idx] = hit_axis < 0.0f ? -1.0f : 1.0f;
+						vec3 view_dir(0.0f);
+						view_dir[axis_idx] = hit_axis < 0.0f ? -1.0f : 1.0f;
 
 						if(view_ptr) {
 							vec3 focus = view_ptr->get_focus();
 							float dist = (focus - view_ptr->get_eye()).length();
 							
-							//std::cout << hit_axis << std::endl;
-							//std::cout << axis_idx << std::endl;
-
-							vec3 up_dir(0.0f, 1.0f, 0.0f);
+							vec3 view_up_dir(0.0f, 1.0f, 0.0f);
 							if(axis_idx == 1)
-								up_dir = vec3(0.0f, 0.0f, hit_axis < 0 ? 1.0f : -1.0f);
+								view_up_dir = vec3(0.0f, 0.0f, hit_axis < 0 ? 1.0f : -1.0f);
 							
-							view_ptr->set_eye_keep_extent(focus + dist * direction);
-							view_ptr->set_view_up_dir(up_dir);
+							view_ptr->set_eye_keep_extent(focus + dist * view_dir);
+							view_ptr->set_view_up_dir(view_up_dir);
 							
-							//std::cout << direction << std::endl;
-							//std::cout << up_dir << std::endl;
+							//dvec3 axis;
+							//double angle;
+							//view_ptr->compute_axis_and_angle(view_dir, view_up_dir, axis, angle);
+							//
+							//cgv::gui::animate_with_axis_rotation(dvec3(view_dir), axis, angle, 0.5)->set_base_ptr(this);
+							//cgv::gui::animate_with_axis_rotation(dvec3(view_up_dir), axis, angle, 0.5)->set_base_ptr(this);
 
 							post_redraw();
 							return true;
@@ -202,11 +202,11 @@ bool navigator::init(cgv::render::context& ctx) {
 	success &= blit_canvas.init(ctx);
 	success &= box_data.init(ctx);
 	success &= sphere_data.init(ctx);
-	success &= cone_data.init(ctx);
+	success &= arrow_data.init(ctx);
 
+	ref_arrow_renderer(ctx, 1);
 	ref_box_renderer(ctx, 1);
 	ref_sphere_renderer(ctx, 1);
-	ref_cone_renderer(ctx, 1);
 	ref_rectangle_renderer(ctx, 1);
 
 	if(success) {
@@ -214,21 +214,24 @@ bool navigator::init(cgv::render::context& ctx) {
 
 		sphere_data.add(vec3(0.0f));
 
-		cone_data.add(vec3(0.0f), vec3(0.35f, 0.0f, 0.0f));
-		cone_data.add(rgb(1.0f, 0.0f, 0.0f));
-		cone_data.add(vec3(0.0f), vec3(0.0f, 0.35f, 0.0f));
-		cone_data.add(rgb(0.0f, 1.0f, 0.0f));
-		cone_data.add(vec3(0.0f), vec3(0.0f, 0.0f, 0.35f));
-		cone_data.add(rgb(0.0f, 0.0f, 1.0f));
+		const float length = 0.5f;
+
+		// x - red
+		arrow_data.add(vec3(0.0f), vec3(length, 0.0f, 0.0f));
+		arrow_data.add(rgb(0.85f, 0.0f, 0.0f));
+		// y - green
+		arrow_data.add(rgb(0.0f, 0.75f, 0.0f));
+		arrow_data.add(vec3(0.0f), vec3(0.0f, length, 0.0f));
+		// z - blue
+		arrow_data.add(vec3(0.0f), vec3(0.0f, 0.0f, length));
+		arrow_data.add(rgb(0.35f, 0.4f, 1.0f));
+		
 
 		blit_style.fill_color = rgba(1.0f);
 		blit_style.use_texture = true;
 		blit_style.use_blending = true;
 		blit_style.apply_gamma = false;
-		blit_style.feather_width = 1.0f;
-		blit_style.border_color = rgba(1.0f, 1.0f, 1.0f, 0.2f);
-		blit_style.border_width = 2.0f;
-		blit_style.border_radius = 8.0f;
+		blit_style.feather_width = 0.0f;
 
 		auto& blit_prog = blit_canvas.enable_shader(ctx, "rectangle");
 		blit_style.apply(ctx, blit_prog);
@@ -246,7 +249,7 @@ void navigator::init_frame(cgv::render::context& ctx) {
 	if(ensure_overlay_layout(ctx)) {
 		ivec2 container_size = get_overlay_size();
 		
-		fbc.set_size(container_size);
+		fbc.set_size(2*container_size);
 		fbc.ensure(ctx);
 
 		blit_canvas.set_resolution(ctx, get_viewport_size());
@@ -260,7 +263,7 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 
 	fbc.enable(ctx);
 
-	glClearColor(0.05f, 0.05f, 0.05f, 0.5f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	ctx.push_projection_matrix();
@@ -269,15 +272,20 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 	ctx.push_modelview_matrix();
 	ctx.set_modelview_matrix(get_view_matrix(ctx) * get_model_matrix(ctx));
 
-	sphere_data.render(ctx, ref_sphere_renderer(ctx), sphere_style);
-	cone_data.render(ctx, ref_cone_renderer(ctx), cone_style);
-
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-	//box_style.illumination_mode = IM_OFF;
 	box_data.render(ctx, ref_box_renderer(ctx), box_style);
+
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+
+	sphere_data.render(ctx, ref_sphere_renderer(ctx), sphere_style);
+	arrow_data.render(ctx, ref_arrow_renderer(ctx), arrow_style);
+
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
 
 	if(hit_axis != 0) {
 		int axis_idx = abs(hit_axis) - 1;
@@ -298,7 +306,7 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 
 		auto& rectangle_renderer = ref_rectangle_renderer(ctx);
 		rectangle_renderer.set_render_style(rectangle_style);
-		rectangle_renderer.set_extent(ctx, vec2(1.0f));
+		rectangle_renderer.set_extent(ctx, vec2(0.9f));
 		rectangle_renderer.set_position_array(ctx, positions);
 		rectangle_renderer.set_rotation_array(ctx, rotations);
 		rectangle_renderer.render(ctx, 0, 1);
@@ -313,7 +321,7 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 
 	// draw frame buffer texture to screen
 	auto& blit_prog = blit_canvas.enable_shader(ctx, "rectangle");
-	
+
 	fbc.enable_attachment(ctx, "color", 0);
 	blit_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());
 	fbc.disable_attachment(ctx, "color");
