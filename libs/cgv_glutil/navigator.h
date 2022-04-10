@@ -3,10 +3,9 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
-#include <cgv/render/texture.h>
 #include <cgv_gl/rectangle_renderer.h>
+#include <cgv_glutil/arrow_render_data.h>
 #include <cgv_glutil/box_render_data.h>
-#include <cgv_glutil/cone_render_data.h>
 #include <cgv_glutil/sphere_render_data.h>
 #include <cgv_glutil/frame_buffer_container.h>
 #include <cgv_glutil/overlay.h>
@@ -45,8 +44,8 @@ protected:
 	cgv::glutil::sphere_render_data<> sphere_data;
 	sphere_render_style sphere_style;
 
-	cgv::glutil::cone_render_data<> cone_data;
-	cone_render_style cone_style;
+	cgv::glutil::arrow_render_data<> arrow_data;
+	arrow_render_style arrow_style;
 
 	rectangle_render_style rectangle_style;
 	
