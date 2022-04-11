@@ -72,21 +72,15 @@ public:
 		else
 			defines.erase(name);
 	}
-#if defined(__clang__) || (defined(__GNUC__) && (__GNUC___ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)))
-#define TEMPLATE_STORAGE_CLASS
-#else
-#define TEMPLATE_STORAGE_CLASS static
-#endif
-	template<>
-	TEMPLATE_STORAGE_CLASS void set_define(shader_define_map& defines, const std::string& name, const std::string& value, const std::string& default_value) {
+
+	static void set_define(shader_define_map& defines, const std::string& name, const std::string& value, const std::string& default_value) {
 		if(value != default_value)
 			defines[name] = value;
 		else
 			defines.erase(name);
 	}
 
-	template<>
-	TEMPLATE_STORAGE_CLASS void set_define(shader_define_map& defines, const std::string& name, const bool& value, const bool& default_value) {
+	static void set_define(shader_define_map& defines, const std::string& name, const bool& value, const bool& default_value) {
 		if(value != default_value)
 			defines[name] = value ? "1" : "0";
 		else
