@@ -1,0 +1,448 @@
+#include "color_map_legend.h"
+
+//#include <cgv/math/ftransform.h>
+//#include <cgv_gl/gl/gl.h>
+
+#include <cgv/gui/theme_info.h>
+
+namespace cgv {
+namespace glutil {
+
+color_map_legend::color_map_legend() {
+
+	set_name("Color Map Legend");
+
+	layout.padding = 13; // 10px plus 3px border
+	layout.band_height = 15;
+	layout.total_height = 80;
+
+	set_overlay_alignment(AO_START, AO_END);
+	set_overlay_stretch(SO_NONE);
+	set_overlay_margin(ivec2(-3));
+	set_overlay_size(ivec2(150u, layout.total_height));
+
+	fbc.add_attachment("color", "flt32[R,G,B,A]");
+	fbc.set_size(get_overlay_size());
+
+	canvas.register_shader("rectangle", cgv::glutil::canvas::shaders_2d::rectangle);
+	//canvas.register_shader("color_maps", "color_maps.glpr");
+
+	overlay_canvas.register_shader("rectangle", cgv::glutil::canvas::shaders_2d::rectangle);
+
+	texture_ptr = nullptr;
+
+
+
+	//size = uvec2(140, 400);
+	//padding = vec2(8, 16);
+
+	// fbc.add_attachment("color", "uint8[R,G,B,A]");
+
+	//shaders.add("rectangle", "rect2d.glpr");
+
+	//lblr = label_renderer("Segoe UI", 16.0f, cgv::media::font::FFA_REGULAR);
+
+	range = vec2(-1.0f, 1.0f);
+	num_ticks = 3;
+
+	//show = true;
+	//background = true;
+	//transparent = true;
+}
+
+void color_map_legend::clear(cgv::render::context& ctx) {
+
+	msdf_font.destruct(ctx);
+	font_renderer.destruct(ctx);
+
+	canvas.destruct(ctx);
+	overlay_canvas.destruct(ctx);
+	fbc.clear(ctx);
+}
+
+bool color_map_legend::self_reflect(cgv::reflect::reflection_handler& _rh) {
+
+	return false;
+}
+
+bool color_map_legend::handle_event(cgv::gui::event& e) {
+
+	return false;
+}
+
+void color_map_legend::on_set(void* member_ptr) {
+
+	// TODO: test
+	if(member_ptr == &layout.total_height || member_ptr == &layout.band_height) {
+		ivec2 size = get_overlay_size();
+
+		if(texture_ptr) {
+			int h = static_cast<int>(texture_ptr->get_height());
+			//layout.total_height = 2 * layout.padding + h * layout.band_height;
+			layout.total_height = 2 * layout.padding + layout.band_height;
+		}
+
+		size.y() = layout.total_height;
+		set_overlay_size(size);
+	}
+
+	update_member(member_ptr);
+	post_redraw();
+}
+
+bool color_map_legend::init(cgv::render::context& ctx) {
+
+	bool success = true;
+
+	success &= fbc.ensure(ctx);
+	success &= canvas.init(ctx);
+	success &= overlay_canvas.init(ctx);
+
+	success &= font_renderer.init(ctx);
+	if(success)
+		init_styles(ctx);
+#ifndef CGV_FORCE_STATIC 
+	if(msdf_font.init(ctx)) {
+		texts.set_msdf_font(&msdf_font);
+		texts.set_font_size(font_size);
+	}
+#endif
+	return success;
+
+	//shaders.load_shaders(ctx);
+	//
+	//fbc.set_size(size);
+	//fbc.ensure(ctx);
+	//
+	//lblr.initialize();
+	//lblr.enable_culling(false);
+
+	create_ticks();
+
+	return true;
+}
+
+void color_map_legend::init_frame(cgv::render::context& ctx) {
+
+#ifdef CGV_FORCE_STATIC 
+	if(!msdf_font.is_initialized()) {
+		if(msdf_font.init(ctx)) {
+			texts.set_msdf_font(&msdf_font);
+			texts.set_font_size(font_size);
+		}
+	}
+#endif
+	if(ensure_overlay_layout(ctx)) {
+		ivec2 container_size = get_overlay_size();
+		layout.update(container_size);
+
+		fbc.set_size(container_size);
+		fbc.ensure(ctx);
+
+		canvas.set_resolution(ctx, container_size);
+		overlay_canvas.set_resolution(ctx, get_viewport_size());
+
+		create_ticks();
+	}
+
+	int theme_idx = cgv::gui::theme_info::instance().get_theme_idx();
+	if(last_theme_idx != theme_idx) {
+		last_theme_idx = theme_idx;
+		init_styles(ctx);
+	}
+
+	//if(texts_out_of_date)
+	//	update_texts();
+
+	//fbc.ensure(ctx);
+}
+
+void color_map_legend::draw(cgv::render::context& ctx) {
+
+	// TODO: draw to framebuffer when stuff changes and only draw fb texture in this method
+	if(!show || !texture_ptr)
+		return;
+
+	fbc.enable(ctx);
+
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	ivec2 container_size = get_overlay_size();
+
+	// draw container
+	auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
+	container_style.apply(ctx, rect_prog);
+	canvas.draw_shape(ctx, ivec2(0), container_size);
+
+	// draw inner border
+	border_style.apply(ctx, rect_prog);
+	canvas.draw_shape(ctx, ivec2(layout.padding - 1), container_size - 2 * layout.padding + 2);
+	canvas.disable_current_shader(ctx);
+
+	// draw color scale texture
+	auto& color_maps_prog = canvas.enable_shader(ctx, "rectangle");
+	color_map_style.apply(ctx, color_maps_prog);
+	texture_ptr->enable(ctx, 0);
+	canvas.draw_shape(ctx, layout.color_map_rect.pos(), layout.color_map_rect.size());
+	texture_ptr->disable(ctx);
+	canvas.disable_current_shader(ctx);
+
+	// draw color scale names
+	auto& font_prog = font_renderer.ref_prog();
+	font_prog.enable(ctx);
+	text_style.apply(ctx, font_prog);
+	canvas.set_view(ctx, font_prog);
+	font_prog.disable(ctx);
+	font_renderer.render(ctx, get_overlay_size(), texts);
+
+	glDisable(GL_BLEND);
+
+	fbc.disable(ctx);
+
+	// draw frame buffer texture to screen
+	auto& final_prog = overlay_canvas.enable_shader(ctx, "rectangle");
+	fbc.enable_attachment(ctx, "color", 0);
+	overlay_canvas.draw_shape(ctx, get_overlay_position(), container_size);
+	fbc.disable_attachment(ctx, "color");
+
+	overlay_canvas.disable_current_shader(ctx);
+
+	glEnable(GL_DEPTH_TEST);
+
+
+
+
+
+
+
+
+
+
+	/*ivec2 fb_size = fbc.get_size();
+
+	shader_program& sprite2d_prog = shaders.get("rectangle");
+	sprite2d_prog.enable(ctx);
+	sprite2d_prog.set_uniform(ctx, "resolution", fb_size);
+	sprite2d_prog.set_uniform(ctx, "use_blending", false);
+	sprite2d_prog.set_uniform(ctx, "apply_gamma", false);
+	sprite2d_prog.set_uniform(ctx, "use_texture", false);
+	glDisable(GL_DEPTH_TEST);
+
+	fbc.enable(ctx);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	if(background) {
+		sprite2d_prog.set_uniform(ctx, "use_blending", transparent);
+		sprite2d_prog.set_uniform(ctx, "fill_color", vec4(0.9f, 0.9f, 0.9f, transparent ? 0.85f : 1.0f));
+		sprite2d_prog.set_attribute(ctx, "position", vec2(0.0f));
+		sprite2d_prog.set_attribute(ctx, "size", vec2(size));
+
+		glDrawArrays(GL_POINTS, 0, 1);
+	}
+
+	// draw color scale texture
+	tex.enable(ctx, 0);
+
+	sprite2d_prog.set_uniform(ctx, "use_texture", true);
+	sprite2d_prog.set_uniform(ctx, "use_blending", false);
+	sprite2d_prog.set_uniform(ctx, "border_color", rgba(0.0f));
+	sprite2d_prog.set_uniform(ctx, "border_width", 1.0f);
+	sprite2d_prog.set_uniform(ctx, "feather_width", 0.0f);
+
+	sprite2d_prog.set_attribute(ctx, "position", vec2(-1.0f) + padding);
+	sprite2d_prog.set_attribute(ctx, "size", vec2(42.0f, size.y() - 2.0f*padding.y() + 2.0f));
+
+	glDrawArrays(GL_POINTS, 0, 1);
+
+	tex.disable(ctx);
+
+	// draw ticks
+	sprite2d_prog.set_uniform(ctx, "use_texture", false);
+	sprite2d_prog.set_uniform(ctx, "fill_color", vec4(0.0f));
+	sprite2d_prog.set_uniform(ctx, "feather_width", 0.0f);
+	sprite2d_prog.set_attribute(ctx, "size", vec2(15.0f, 1.0f));
+
+	for(unsigned i = 0; i < ticks.size(); ++i) {
+		sprite2d_prog.set_attribute(ctx, "position", vec2(padding.x() + 40.0f, fb_size.y() - ticks[i]));
+		glDrawArrays(GL_POINTS, 0, 1);
+	}
+
+	sprite2d_prog.disable(ctx);
+
+	ctx.push_modelview_matrix();
+	ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 2), dvec3(0, 0, 0), dvec3(0, 1, 0)));
+
+	ctx.push_projection_matrix();
+	ctx.set_projection_matrix(cgv::math::ortho4<double>(0.0, fb_size.x(), 0.0, fb_size.y(), 1, 4));
+
+	lblr.render(ctx, labels, TA_BOTTOM_LEFT, rgb(0.0f));
+
+	ctx.pop_modelview_matrix();
+	ctx.pop_projection_matrix();
+
+	fbc.disable(ctx);
+
+	vec2 legend_pos = vec2(20, (float)ctx.get_height() - (float)fb_size.y() - 20 - 48 - 10);
+
+	sprite2d_prog.enable(ctx);
+	sprite2d_prog.set_uniform(ctx, "resolution", ivec2(static_cast<int>(ctx.get_width()), static_cast<int>(ctx.get_height())));
+	sprite2d_prog.set_uniform(ctx, "use_texture", true);
+	sprite2d_prog.set_uniform(ctx, "use_blending", true);
+	sprite2d_prog.set_uniform(ctx, "apply_gamma", true);
+	sprite2d_prog.set_attribute(ctx, "position", legend_pos);
+	sprite2d_prog.set_attribute(ctx, "size", vec2(static_cast<float>(fb_size.x()), static_cast<float>(fb_size.y())));
+	sprite2d_prog.set_uniform(ctx, "border_color", rgba(0.02f, 0.02f, 0.02f, 1.0f));
+	sprite2d_prog.set_uniform(ctx, "border_width", 2.0f);
+
+	fbc.enable_attachment(ctx, "color", 0);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glDrawArrays(GL_POINTS, 0, 1);
+
+	glDisable(GL_BLEND);
+
+	fbc.disable_attachment(ctx, "color");
+
+	sprite2d_prog.disable(ctx);
+	glEnable(GL_DEPTH_TEST);
+	*/
+}
+
+void color_map_legend::create_gui() {
+
+	create_overlay_gui();
+	add_member_control(this, "Band Height", layout.band_height, "value_slider", "min=5;max=50;step=5;ticks=true");
+
+	//p.add_member_control(bp, "Background", background, "check");
+	//p.add_member_control(bp, "Transparent Background", transparent, "check");
+}
+
+void color_map_legend::create_gui(cgv::gui::provider& p) {
+
+	//p.add_member_control(this, "Show", show, "check");
+}
+
+void color_map_legend::set_color_map(cgv::glutil::gl_color_map& color_map) {
+
+}
+
+void color_map_legend::set_color_map_texture(texture* tex) {
+
+	this->texture_ptr = tex;
+	on_set(&layout.total_height);
+}
+
+void color_map_legend::set_range(vec2 range) {
+
+	this->range = range;
+	create_ticks();
+}
+
+void color_map_legend::set_num_ticks(unsigned n) {
+
+	this->num_ticks = n < 3 ? 3 : n;
+	create_ticks();
+}
+
+void color_map_legend::init_styles(context& ctx) {
+	// get theme colors
+	auto& ti = cgv::gui::theme_info::instance();
+	rgba background_color = rgba(ti.background(), 1.0f);
+	rgba group_color = rgba(ti.group(), 1.0f);
+	rgba border_color = rgba(ti.border(), 1.0f);
+
+	// configure style for the container rectangle
+	container_style.apply_gamma = false;
+	//container_style.fill_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
+	//container_style.border_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
+	container_style.fill_color = group_color;
+	container_style.border_color = background_color;
+	container_style.border_width = 3.0f;
+	container_style.feather_width = 0.0f;
+
+	// configure style for the border rectangles
+	border_style = container_style;
+	//border_style.fill_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
+	border_style.fill_color = border_color;
+	border_style.border_width = 0.0f;
+
+	// configure style for the color scale rectangle
+	color_map_style = border_style;
+	color_map_style.use_texture = true;
+
+	// configure text style
+	text_style.fill_color = rgba(rgb(1.0f), 0.666f);
+	text_style.border_color = rgba(rgb(0.0f), 0.666f);
+	text_style.border_radius = 0.25f;
+	text_style.border_width = 0.75f;
+	text_style.use_blending = true;
+
+	// configure style for final blitting of overlay into main frame buffer
+	cgv::glutil::shape2d_style final_style;
+	final_style.fill_color = rgba(1.0f);
+	final_style.use_texture = true;
+	final_style.use_blending = false;
+	final_style.feather_width = 0.0f;
+
+	auto& final_prog = overlay_canvas.enable_shader(ctx, "rectangle");
+	final_style.apply(ctx, final_prog);
+	overlay_canvas.disable_current_shader(ctx);
+}
+
+void color_map_legend::create_ticks() {
+
+	/*texts.clear();
+	if(names.size() == 0)
+		return;
+
+	int step = layout.color_map_rect.size().y() / names.size();
+	ivec2 base = layout.color_map_rect.pos() + ivec2(layout.color_map_rect.size().x() / 2, step / 2 - static_cast<int>(0.333f*font_size));
+	int i = 0;
+	for(const auto& name : names) {
+		ivec2 p = base;
+		p.y() += (names.size() - 1 - i)*step;
+		texts.add_text(name, p, TA_BOTTOM);
+		++i;
+	}
+	texts_out_of_date = false;
+	*/
+
+	/*ticks.clear();
+	labels.clear();
+
+	float extent = range.y() - range.x();
+	float step = extent / static_cast<float>(num_ticks - 1);
+
+	unsigned pixels = size.y() - 2 * padding.y() + 1;
+
+	float padding_scale = 2.0f*static_cast<float>(padding.y()) / static_cast<float>(size.y());
+
+	float world_size = 2.0f - 2.0f*padding_scale;
+
+	float world_min = -1.0f + padding_scale;
+	float world_max = 1.0f - 1.5f*padding_scale;
+
+	for(unsigned i = 0; i < num_ticks; ++i) {
+		float t = static_cast<float>(i) / static_cast<float>(num_ticks - 1);
+		//unsigned pos = static_cast<unsigned>(round(padding.y() + t * pixels));
+		unsigned pos = static_cast<unsigned>(padding.y() + t * pixels);
+		ticks.push_back(pos);
+
+		float world_y = cgv::math::lerp(world_min, world_max, t);
+
+		float val = cgv::math::lerp(range.x(), range.y(), t);
+		//labels.push_back(label_renderer::label_info(vec3(0.0f, world_y, 0.0f), util::ftos(val, 2)));
+		labels.push_back(label_renderer::label_info(vec3(padding.x() + 65.0f, pos - 4.0f, 0.0f), util::ftos(val, 2)));
+	}*/
+}
+
+}
+}
