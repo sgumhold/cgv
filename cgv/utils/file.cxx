@@ -520,9 +520,9 @@ char to_lower(char c)
 	if (c >= 'A' && c <= 'Z')
 		return (c-'A')+'a';
 	switch (c) {
-		case 'Ö' : return 'ö';
-		case 'Ü' : return 'ü';
-		case 'Ä' : return 'ä';
+		case 0xD6 : return 0xF6; // Oe -> oe
+		case 0xDC : return 0xFC; // Ue -> ue
+		case 0xC4 : return 0xE4; // Ae -> ae
 		default: return c;
 	}
 }
