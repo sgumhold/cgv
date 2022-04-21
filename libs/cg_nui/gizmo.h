@@ -44,6 +44,11 @@ protected:
 		on_handle_drag();
 	}
 
+	void on_grabbed_stop() override
+	{
+		on_handle_released();
+	}
+
 	void on_triggered_start() override
 	{
 		on_handle_grabbed();
@@ -54,6 +59,11 @@ protected:
 		on_handle_drag();
 	}
 
+	void on_triggered_stop() override
+	{
+		on_handle_released();
+	}
+
 	/// Event that is called when a primitive/handle of the gizmo gets grabbed by a hid.
 	///	prim_idx is the primitive that was grabbed, start_position is the point it was grabbed at.
 	virtual void on_handle_grabbed() {}
@@ -61,6 +71,9 @@ protected:
 	///	prim_idx is the primitive that was grabbed, start_position is the point it was grabbed at,
 	///	target_position is the start_position projected to reflect the movement of the hid.
 	virtual void on_handle_drag() {}
+
+	/// Event that is called when a primitive/handle of the gizmo gets released from grabbing by a hid.
+	virtual void on_handle_released() {}
 
 	// Update the gizmo's geometry for the current anchor position and rotation
 	virtual void compute_geometry() = 0;

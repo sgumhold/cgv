@@ -13,6 +13,7 @@
 #include <libs/plot/plot2d.h>
 #include "simple_object.h"
 #include "simple_primitive_container.h"
+#include "cg_nui/debug_visualization_helper.h"
 
 class vr_lab_test : 
 	public cgv::base::group,
@@ -64,7 +65,7 @@ public:
 		// create two sub plots and configure their colors
 		unsigned p1 = plot.add_sub_plot("cos");
 		unsigned p2 = plot.add_sub_plot("sin");
-		unsigned p3 = plot.add_sub_plot("cos²");
+		unsigned p3 = plot.add_sub_plot("cosï¿½");
 		//plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f));	// will be set later to the attribute with index 2
 		plot.set_sub_plot_colors(p2, rgb(0.1f, 0.0f, 1.0f));
 		plot.set_sub_plot_colors(p3, rgb(0.0f, 1.0f, 0.1f));
@@ -127,6 +128,8 @@ public:
 		cgv::render::ref_sphere_renderer(ctx, 1);
 		cgv::render::ref_cone_renderer(ctx, 1);
 
+		cgv::nui::ref_debug_visualization_helper(ctx, 1);
+
 		plot.set_view_ptr(find_view_as_node());
 		return plot.init(ctx);
 	}
@@ -176,16 +179,21 @@ public:
 	}
 	void clear(cgv::render::context& ctx)
 	{
+		cgv::nui::ref_debug_visualization_helper(ctx, -1);
+
 		cgv::render::ref_sphere_renderer(ctx, -1);
 		cgv::render::ref_cone_renderer(ctx, -1);
 	}
 	void draw(cgv::render::context& ctx)
 	{
+
 		mat4 model_transform(3, 4, &get_scene_ptr()->get_coordsystem(coordinate_system::table)(0, 0));
 		set_model_transform(model_transform);
 
 		ctx.push_modelview_matrix();
 		ctx.mul_modelview_matrix(model_transform);
+
+		cgv::nui::ref_debug_visualization_helper().draw(ctx);
 
 		if (show_plot)
 			plot.draw(ctx);
