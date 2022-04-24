@@ -303,4 +303,4 @@ void volume_viewer::create_gui()
 
 #include <cgv/base/register.h>
 
-cgv::base::object_registration<volume_viewer> volume_viewer_fac("New/Render/Volume Rendering");
+cgv::base::factory_registration<volume_viewer> volume_viewer_fac("New/Render/Volume Rendering");
