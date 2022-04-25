@@ -66,7 +66,8 @@ bool application_plugin::handle(cgv::gui::event& e) {
 		// TODO: make the overlay have a handles keys flag?
 		// TODO: have a flag that enables blocking the event from further processing when returning true or false?
 		for(auto overlay_ptr : overlays)
-			overlay_ptr->handle_event(e);
+			if(overlay_ptr->is_visible())
+				overlay_ptr->handle_event(e);
 		return handle_event(e);
 	}
 }
