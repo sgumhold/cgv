@@ -86,6 +86,7 @@ var classcgv_1_1plot_1_1plot2d =
     [ "is_visible", "classcgv_1_1plot_1_1plot2d.html#afffd8ead513770ac167efd9a2a56fdf5", null ],
     [ "on_font_face_selection", "classcgv_1_1plot_1_1plot2d.html#a57caf9755c043d9820dae5de5635db6e", null ],
     [ "on_font_selection", "classcgv_1_1plot_1_1plot2d.html#a1f4a71bca1bf1644f471d370b20c2ab2", null ],
+    [ "operator=", "classcgv_1_1plot_1_1plot2d.html#a264f3cc8f4818844a35d6fd47f2df24f", null ],
     [ "place_center", "classcgv_1_1plot_1_1plot2d.html#a7af532a307b115b7b75f259111fb3db8", null ],
     [ "place_corner", "classcgv_1_1plot_1_1plot2d.html#af5bff602e861f40ff7387d7debc16778", null ],
     [ "place_origin", "classcgv_1_1plot_1_1plot2d.html#a3c349da5808d3bc04fef65a2ce631a90", null ],
