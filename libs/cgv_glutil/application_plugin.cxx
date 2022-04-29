@@ -20,7 +20,8 @@ bool application_plugin::handle(cgv::gui::event& e) {
 			ivec2 mpos(me.get_x(), me.get_y());
 
 			blocking_overlay_ptr = nullptr;
-			for(auto overlay_ptr : overlays) {
+			for(auto it = overlays.rbegin(); it != overlays.rend(); ++it) {
+				auto overlay_ptr = (*it);
 				if(overlay_ptr->is_visible() && overlay_ptr->is_hit(mpos)) {
 					blocking_overlay_ptr = overlay_ptr;
 					break;
@@ -62,12 +63,13 @@ bool application_plugin::handle(cgv::gui::event& e) {
 		else
 			return handle_event(e);
 	} else {
-		// TODO: handle last registered one first?
 		// TODO: make the overlay have a handles keys flag?
 		// TODO: have a flag that enables blocking the event from further processing when returning true or false?
-		for(auto overlay_ptr : overlays)
+		for(auto it = overlays.rbegin(); it != overlays.rend(); ++it) {
+			auto overlay_ptr = (*it);
 			if(overlay_ptr->is_visible())
 				overlay_ptr->handle_event(e);
+		}
 		return handle_event(e);
 	}
 }

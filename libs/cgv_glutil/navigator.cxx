@@ -156,15 +156,15 @@ bool navigator::handle_event(cgv::gui::event& e) {
 							if(axis_idx == 1)
 								view_up_dir = vec3(0.0f, 0.0f, hit_axis < 0 ? 1.0f : -1.0f);
 							
-							view_ptr->set_eye_keep_extent(focus + dist * view_dir);
-							view_ptr->set_view_up_dir(view_up_dir);
+							//view_ptr->set_eye_keep_extent(focus + dist * view_dir);
+							//view_ptr->set_view_up_dir(view_up_dir);
 							
-							//dvec3 axis;
-							//double angle;
-							//view_ptr->compute_axis_and_angle(view_dir, view_up_dir, axis, angle);
-							//
-							//cgv::gui::animate_with_axis_rotation(dvec3(view_dir), axis, angle, 0.5)->set_base_ptr(this);
-							//cgv::gui::animate_with_axis_rotation(dvec3(view_up_dir), axis, angle, 0.5)->set_base_ptr(this);
+							dvec3 axis;
+							double angle;
+							view_ptr->compute_axis_and_angle(-view_dir, view_up_dir, axis, angle);
+							
+							cgv::gui::animate_with_axis_rotation(view_ptr->ref_view_dir(), axis, angle, 0.5)->set_base_ptr(this);
+							cgv::gui::animate_with_axis_rotation(view_ptr->ref_view_up_dir(), axis, angle, 0.5)->set_base_ptr(this);
 
 							post_redraw();
 							return true;
