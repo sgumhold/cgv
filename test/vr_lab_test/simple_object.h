@@ -3,6 +3,7 @@
 #include <cg_nui/grabable_interactable.h>
 #include <cgv_gl/box_renderer.h>
 #include <cg_nui/translation_gizmo.h>
+#include <cg_nui/rotation_gizmo.h>
 #include <cg_nui/scaling_gizmo.h>
 
 /// Example implementation of a single object that can be grabbed/triggered and then moved.
@@ -22,6 +23,7 @@ protected:
 	rgb get_modified_color(const rgb& color) const;
 
 	cgv::data::ref_ptr<cgv::nui::translation_gizmo, true> trans_gizmo;
+	cgv::data::ref_ptr<cgv::nui::rotation_gizmo, true> rot_gizmo;
 	cgv::data::ref_ptr<cgv::nui::scaling_gizmo, true> scale_gizmo;
 
 public:
