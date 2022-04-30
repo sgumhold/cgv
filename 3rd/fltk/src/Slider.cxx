@@ -22,6 +22,7 @@
 //
 
 #include <fltk/Slider.h>
+#include <fltk/FillSlider.h>
 #include <fltk/events.h>
 #include <fltk/damage.h>
 #include <fltk/Box.h>
@@ -642,6 +643,11 @@ Slider::Slider(int x, int y, int w, int h, const char* l)
   tick_size_ = 4;
   slider_size_ = 12;
   //set_vertical();
+}
+
+FillSlider::FillSlider(int x, int y, int w, int h, const char* l) : Slider(x, y, w, h, l) 
+{
+    slider_size(0); 
 }
 
 //

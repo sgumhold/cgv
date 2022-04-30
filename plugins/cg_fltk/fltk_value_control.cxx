@@ -12,6 +12,7 @@
 #include <fltk/events.h>
 #include <fltk/ThumbWheel.h>
 #include <fltk/Dial.h>
+#include <fltk/FillSlider.h>
 #include <fltk/ValueInput.h>
 #include <fltk/Group.h>
 #ifdef WIN32
@@ -294,15 +295,32 @@ struct fltk_value_control_factory : public abst_control_factory
 	{
 		if (gui_type == "slider")
 			return create_valuator_1<fltk::Slider>(label, value_ptr, acp, value_type, x, y, w, h);
-		else if (gui_type == "value_slider")
+		if (gui_type == "vslider") {
+			control_ptr cp = create_valuator_1<fltk::Slider>(label, value_ptr, acp, value_type, x, y, w, h);
+			reinterpret_cast<fltk::Widget*>(cp->get_user_data())->set_vertical();
+			return cp;
+		}
+		if (gui_type == "fill_slider")
+			return create_valuator_1<fltk::FillSlider>(label, value_ptr, acp, value_type, x, y, w, h);
+		if (gui_type == "vfill_slider") {
+			control_ptr cp = create_valuator_1<fltk::FillSlider>(label, value_ptr, acp, value_type, x, y, w, h);
+			reinterpret_cast<fltk::Widget*>(cp->get_user_data())->set_vertical();
+			return cp;
+		}
+		if (gui_type == "value_slider")
 			return create_valuator_1<fltk::ValueSlider>(label, value_ptr, acp, value_type, x, y, w, h);
-		else if (gui_type == "wheel")
+		if (gui_type == "vvalue_slider") {
+			control_ptr cp = create_valuator_1<fltk::ValueSlider>(label, value_ptr, acp, value_type, x, y, w, h);
+			reinterpret_cast<fltk::Widget*>(cp->get_user_data())->set_vertical();
+			return cp;
+		}
+		if (gui_type == "wheel")
 			return create_valuator_1<fltk::ThumbWheel>(label, value_ptr, acp, value_type, x, y, w, h);
-		else if (gui_type == "dial")
+		if (gui_type == "dial")
 			return create_valuator_1<fltk::Dial>(label, value_ptr, acp, value_type, x, y, w, h);
-		else if (gui_type == "adjuster")
+		if (gui_type == "adjuster")
 			return create_valuator_1<fltk::Adjuster>(label, value_ptr, acp, value_type, x, y, w, h);
-		else 
+		else
 			return create_valuator_1<fltk::ValueInput>(label, value_ptr, acp, value_type, x, y, w, h);
 	}
 };
