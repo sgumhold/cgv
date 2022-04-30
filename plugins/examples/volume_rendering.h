@@ -12,6 +12,7 @@
 #include <cgv_glutil/box_wire_render_data.h>
 #include <cgv_glutil/color_map.h>
 #include <cgv_glutil/color_map_editor.h>
+#include <cgv_glutil/color_map_legend.h>
 
 class volume_viewer :
 	public cgv::glutil::application_plugin // inherit from application plugin to enable overlay support
@@ -21,7 +22,8 @@ private:
 
 protected:
 	/// store a pointer to the color map editor overlay which is used to edit the volume transfer function
-	cgv::glutil::color_map_editor* transfer_function_editor_ptr;
+	cgv::glutil::color_map_editor* transfer_function_editor_ptr = nullptr;
+	cgv::glutil::color_map_legend* transfer_function_legend_ptr = nullptr;
 
 	/// resolution of the volume
 	uvec3 vres;
