@@ -64,7 +64,7 @@ protected:
 
 public:
 	struct {
-		bool show_heading = true;
+		bool show_heading = false;
 		bool show_layout_options = true;
 		bool allow_alignment = true;
 		bool allow_stretch = true;

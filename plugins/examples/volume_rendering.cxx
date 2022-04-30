@@ -42,6 +42,8 @@ volume_viewer::volume_viewer() : application_plugin("Volume Viewer")
 	transfer_function_editor_ptr->gui_options.show_heading = false;
 	// enable support for editing opacity values
 	transfer_function_editor_ptr->set_opacity_support(true);
+
+	//transfer_function_legend_ptr = register_overlay<cgv::glutil::color_map_legend>("TF Legend");
 }
 
 void volume_viewer::stream_stats(std::ostream& os)
@@ -245,13 +247,18 @@ void volume_viewer::init_frame(cgv::render::context& ctx) {
 		if(view_ptr) {
 			// do one-time initialization
 			// set the transfer function as the to-be-edited color map in the editor
-			transfer_function_editor_ptr->set_color_map(&transfer_function);
+			if(transfer_function_editor_ptr)
+				transfer_function_editor_ptr->set_color_map(&transfer_function);
+			if(transfer_function_legend_ptr)
+				transfer_function_legend_ptr->set_color_map_texture(&transfer_function.ref_texture());
 		}
 	}
 
 	// check for changes in transfer function and update texture if necessary
 	if(transfer_function_editor_ptr && transfer_function_editor_ptr->was_updated()) {
 		transfer_function.generate_texture(ctx);
+		if(transfer_function_legend_ptr)
+			transfer_function_legend_ptr->set_color_map_texture(&transfer_function.ref_texture());
 	}
 }
 

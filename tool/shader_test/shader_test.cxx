@@ -126,8 +126,12 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 	if (os.fail())
 		return false;
 	// encode in base64 if this a cgv option
-	if (cgv::utils::has_option("ENCODE_SHADER_BASE64"))
-		content = std::string("�") + cgv::utils::encode_base64(content);
+	if (cgv::utils::has_option("ENCODE_SHADER_BASE64")) {
+		// content = std::string("�") + cgv::utils::encode_base64(content);
+		static const unsigned char utf_bom[3] = {0xff, 0xfe, 0x00};
+		static const std::string utf_bom_str((char*)utf_bom);
+		content = utf_bom_str + cgv::utils::encode_base64(content);
+	}
 	// stream out the string declaration
 	std::string sn = get_file_name(in_fn);
 	replace(sn, '.', '_');

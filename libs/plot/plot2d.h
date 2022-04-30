@@ -57,6 +57,9 @@ public:
 	vec3 sub_plot_delta;
 	/// construct 2D plot with given number of additional attributes and default parameters
 	plot2d(const std::string& title, unsigned nr_attributes = 0);
+	///prevent copy and assignment for now until properly implemented
+	plot2d& operator=(const plot2d&) = delete;
+	plot2d(const plot2d&) = delete;
 	///
 	~plot2d();
 	/**@name management of sub plots*/
