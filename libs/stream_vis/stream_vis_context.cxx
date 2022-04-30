@@ -739,6 +739,15 @@ namespace stream_vis {
 	}
 	void stream_vis_context::init_frame(cgv::render::context& ctx)
 	{
+		if (!view_ptr) {
+			view_ptr = find_view_as_node();
+			if (view_ptr)
+				last_view = *view_ptr;
+			on_view_change(true);
+		}
+		else {
+			if (view_ptr->get_y_extent_at_focus() )
+		}
 		update_plot_samples(ctx);
 		update_plot_domains();
 		for (auto& pl : plot_pool)
