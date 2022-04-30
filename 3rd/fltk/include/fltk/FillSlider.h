@@ -31,8 +31,7 @@ namespace fltk {
 /*! Vertical Slider that is filled from the end (like a progress bar) */
 class FL_API FillSlider : public Slider {
 public:
-  FillSlider(int x,int y,int w,int h,const char *l=0)
-    : Slider(x,y,w,h,l) {slider_size(0);}
+  FillSlider(int x,int y,int w,int h,const char *l=0);
 };
 
 }
