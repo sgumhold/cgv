@@ -65,6 +65,10 @@ namespace stream_vis {
 		bool paused;
 		unsigned sleep_ms;
 
+		/// store view pointer and last view
+		cgv::render::view* view_ptr = 0;
+		cgv::render::view  last_view;
+
 		/// store for each typed time series and each of its components a list of references where the time series component is stored in the storage buffers/vbos
 		std::vector<std::vector<component_reference>> time_series_component_references;
 		/// 
