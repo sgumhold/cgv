@@ -58,7 +58,9 @@ void cgv::nui::scaling_gizmo::on_handle_drag()
 	}
 	float distance_at_grab = (ii_at_grab.query_point - current_anchor_position).length();
 	float current_distance = (closest_point - current_anchor_position).length();
-	*scale_ptr = scale_at_grab * (vec3(1.0) - axis) +  (scale_at_grab * current_distance / distance_at_grab) * axis;
+	
+	vec3 scale_ratio = scaling_axes_scale_ratios[prim_idx];
+	*scale_ptr = scale_at_grab * (vec3(1.0) - scale_ratio) +  (scale_at_grab * current_distance / distance_at_grab) * scale_ratio;
 }
 
 void cgv::nui::scaling_gizmo::attach(base_ptr obj, vec3* scale_ptr, vec3* position_ptr, quat* rotation_ptr)
@@ -82,6 +84,7 @@ void cgv::nui::scaling_gizmo::configure_axes_directions(std::vector<vec3> axes_d
 	// Default configuration
 	for (int i = 0; i < this->axes_directions.size(); ++i) {
 		scaling_axes_colors.push_back(rgb(0.2f, 0.6f, 0.84f));
+		scaling_axes_scale_ratios.push_back(axes_directions[i]);
 	}
 	configure_axes_geometry(0.015f, 0.2f, 0.035f);
 }
@@ -102,9 +105,14 @@ void cgv::nui::scaling_gizmo::configure_axes_geometry(float radius, float length
 	// TODO: Update rendering, Handle switching during use
 }
 
+void cgv::nui::scaling_gizmo::configure_axes_scale_ratios(std::vector<vec3> scale_ratios)
+{
+	scaling_axes_scale_ratios = scale_ratios;
+}
+
 
 bool cgv::nui::scaling_gizmo::compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal,
-	size_t& primitive_idx)
+                                                    size_t& primitive_idx)
 {
 	if (!is_attached)
 		return false;
