@@ -13,6 +13,16 @@ class simple_object :
 	cgv::render::box_render_style brs;
 	static cgv::render::shader_program prog;
 
+	enum ActiveGizmoOptions
+	{
+		AGO_NONE,
+		AGO_TRANSLATION,
+		AGO_SCALING,
+		AGO_ROTATION
+	};
+	ActiveGizmoOptions active_gizmo{ AGO_NONE };
+	ActiveGizmoOptions active_gizmo_ui{ AGO_NONE };
+
 protected:
 	// geometry of box with color
 	vec3 position;
@@ -37,6 +47,7 @@ public:
 	void clear(cgv::render::context& ctx) override;
 	void draw(cgv::render::context& ctx) override;
 
+	void on_set(void* member_ptr) override;
 	void create_gui() override;
 };
 

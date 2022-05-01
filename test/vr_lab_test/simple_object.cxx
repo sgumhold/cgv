@@ -32,6 +32,8 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 	brs.rounding = true;
 	brs.default_radius = 0.02f;
 
+	active_gizmo_ui = active_gizmo;
+
 	trans_gizmo = new cgv::nui::translation_gizmo();
 	append_child(trans_gizmo);
 	trans_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
@@ -39,12 +41,14 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
 		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
 	);
-	//trans_gizmo->attach(this, &position, &rotation, &extent);
+	if (active_gizmo == AGO_TRANSLATION)
+		trans_gizmo->attach(this, &position, &rotation, &extent);
 
 	rot_gizmo = new cgv::nui::rotation_gizmo();
 	append_child(rot_gizmo);
 	rot_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
-	rot_gizmo->attach(this, &position, &rotation, &extent);
+	if (active_gizmo == AGO_ROTATION)
+		rot_gizmo->attach(this, &position, &rotation, &extent);
 
 	scale_gizmo = new cgv::nui::scaling_gizmo();
 	append_child(scale_gizmo);
@@ -53,7 +57,8 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
 		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
 	);
-	//scale_gizmo->attach(this, &extent, &position, &rotation);
+	if (active_gizmo == AGO_SCALING)
+		scale_gizmo->attach(this, &extent, &position, &rotation);
 }
 
 std::string simple_object::get_type_name() const
@@ -122,6 +127,29 @@ void simple_object::draw(cgv::render::context& ctx)
 	br.set_rotation_array(ctx, &rotation, 1);
 	br.render(ctx, 0, 1);
 }
+
+void simple_object::on_set(void* member_ptr)
+{
+	if (member_ptr == &active_gizmo_ui)
+	{
+		if (active_gizmo_ui != active_gizmo) {
+			switch (active_gizmo) {
+			case AGO_TRANSLATION: trans_gizmo->detach(); break;
+			case AGO_ROTATION: rot_gizmo->detach(); break;
+			case AGO_SCALING: scale_gizmo->detach(); break;
+			}
+			switch (active_gizmo_ui) {
+			case AGO_TRANSLATION: trans_gizmo->attach(this, &position, &rotation, &extent); break;
+			case AGO_ROTATION: rot_gizmo->attach(this, &position, &rotation, &extent); break;
+			case AGO_SCALING: scale_gizmo->attach(this, &extent, &position, &rotation); break;
+			}
+			active_gizmo = active_gizmo_ui;
+		}
+	}
+	update_member(member_ptr);
+	post_redraw();
+}
+
 void simple_object::create_gui()
 {
 	add_decorator(get_name(), "heading", "level=2");
@@ -130,6 +158,7 @@ void simple_object::create_gui()
 	add_member_control(this, "height", extent[1], "value_slider", "min=0.01;max=1;log=true");
 	add_member_control(this, "depth", extent[2], "value_slider", "min=0.01;max=1;log=true");
 	add_gui("rotation", rotation, "direction", "options='min=-1;max=1;ticks=true'");
+	add_member_control(this, "Active Gizmo", active_gizmo_ui, "dropdown", "enums='None,Translation,Scaling,Rotation'");
 	if (begin_tree_node("style", brs)) {
 		align("\a");
 		add_gui("brs", brs);
