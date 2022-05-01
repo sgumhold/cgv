@@ -22,6 +22,8 @@ void cgv::nui::scaling_gizmo::compute_geometry()
 		splines[i].second.push_back(vec4(axis, 0.0));
 		cube_positions.push_back(end_point);
 		quat rot;
+		if (axis == vec3(-1.0, 0.0, 0.0))
+			axis = axis * -1.0f;
 		rot.set_normal(axis);
 		cube_rotations.push_back(rot);
 	}
@@ -84,7 +86,7 @@ void cgv::nui::scaling_gizmo::configure_axes_directions(std::vector<vec3> axes_d
 	// Default configuration
 	for (int i = 0; i < this->axes_directions.size(); ++i) {
 		scaling_axes_colors.push_back(rgb(0.2f, 0.6f, 0.84f));
-		scaling_axes_scale_ratios.push_back(axes_directions[i]);
+		scaling_axes_scale_ratios.push_back(abs(axes_directions[i]));
 	}
 	configure_axes_geometry(0.015f, 0.2f, 0.035f);
 }
@@ -107,7 +109,10 @@ void cgv::nui::scaling_gizmo::configure_axes_geometry(float radius, float length
 
 void cgv::nui::scaling_gizmo::configure_axes_scale_ratios(std::vector<vec3> scale_ratios)
 {
-	scaling_axes_scale_ratios = scale_ratios;
+	scaling_axes_scale_ratios.clear();
+	for (auto scale_ratio : scale_ratios) {
+		scaling_axes_scale_ratios.push_back(abs(scale_ratio));
+	}
 }
 
 
@@ -178,7 +183,10 @@ bool cgv::nui::scaling_gizmo::compute_intersection(const vec3& ray_start, const 
 		vec3 ro = ray_start - (absolute_axes_positions[i] + absolute_axes_directions[i] * scaling_axes_length / 2.0);
 		vec3 rd = ray_direction;
 		quat rot;
-		rot.set_normal(absolute_axes_directions[i]);
+		if (absolute_axes_directions[i] == vec3(-1.0, 0.0, 0.0))
+			rot.set_normal(absolute_axes_directions[i] * -1.0f);
+		else
+			rot.set_normal(absolute_axes_directions[i]);
 		rot.inverse_rotate(ro);
 		rot.inverse_rotate(rd);
 		vec3 n;
