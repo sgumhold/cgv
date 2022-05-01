@@ -39,6 +39,7 @@ protected:
 	// current configuration of the gizmo
 	std::vector<rgb> scaling_axes_colors;
 	float scaling_axes_length{ 0.2f };
+	std::vector<vec3> scaling_axes_scale_ratios;
 
 	void on_handle_grabbed() override;
 	void on_handle_drag() override;
@@ -63,6 +64,9 @@ public:
 	/// Set various parameters of the individual axis geometries.
 	// TODO: Add more parameters
 	void configure_axes_geometry(float radius, float length, float cube_size);
+	/// Set ratios between x, y and z that are used to scale with each axis.
+	///	Default value is that of the direction of the corresponding axis.
+	void configure_axes_scale_ratios(std::vector<vec3> scale_ratios);
 
 	//@name cgv::nui::grabable interface
 	//@{
