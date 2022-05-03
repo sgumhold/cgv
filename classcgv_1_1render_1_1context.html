@@ -974,7 +974,7 @@ const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> &amp;const&#1
 <tr class="separator:aac2c6df494de9a642d8ea3f4dcbcd2a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec099af0ba402c7b3dad4d192adb8c47"><td class="memItemLeft" align="right" valign="top"><a id="aec099af0ba402c7b3dad4d192adb8c47"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aec099af0ba402c7b3dad4d192adb8c47">pop_pixel_coords</a> ()=0</td></tr>
-<tr class="memdesc:aec099af0ba402c7b3dad4d192adb8c47"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop previously changed transformation matrices <br /></td></tr>
+<tr class="memdesc:aec099af0ba402c7b3dad4d192adb8c47"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop previously pushed transformation matrices from modelview and projection stacks <br /></td></tr>
 <tr class="separator:aec099af0ba402c7b3dad4d192adb8c47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf6b241cf3e57c435ef50cbb21427194"><td class="memItemLeft" align="right" valign="top"><a id="adf6b241cf3e57c435ef50cbb21427194"></a>
 virtual <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#adf6b241cf3e57c435ef50cbb21427194">get_modelview_matrix</a> () const =0</td></tr>
@@ -1053,16 +1053,16 @@ const std::vector&lt; <a class="el" href="structcgv_1_1render_1_1window__transfo
 <tr class="separator:a1299f6ec69d22c4fdec75e8f31b4031c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81ec9afc26401ea90bc20990fcd6d54d"><td class="memItemLeft" align="right" valign="top"><a id="a81ec9afc26401ea90bc20990fcd6d54d"></a>
 virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a81ec9afc26401ea90bc20990fcd6d54d">get_window_z</a> (int x_window, int y_window) const =0</td></tr>
-<tr class="memdesc:a81ec9afc26401ea90bc20990fcd6d54d"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the window z-coordinate from the depth buffer for the given window x- and y-coordinates <br /></td></tr>
+<tr class="memdesc:a81ec9afc26401ea90bc20990fcd6d54d"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the window z-coordinate from the depth buffer for the given opengl x- and y-coordinates <br /></td></tr>
 <tr class="separator:a81ec9afc26401ea90bc20990fcd6d54d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a63339acab384f44577c890f5107f80"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a1a63339acab384f44577c890f5107f80">get_model_point</a> (int x_window, int y_window) const</td></tr>
-<tr class="memdesc:a1a63339acab384f44577c890f5107f80"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given window location  <a href="classcgv_1_1render_1_1context.html#a1a63339acab384f44577c890f5107f80">More...</a><br /></td></tr>
+<tr class="memdesc:a1a63339acab384f44577c890f5107f80"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given opengl pixel location (window location)  <a href="classcgv_1_1render_1_1context.html#a1a63339acab384f44577c890f5107f80">More...</a><br /></td></tr>
 <tr class="separator:a1a63339acab384f44577c890f5107f80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac404160aa6e714d60532dc28fd88a4c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ac404160aa6e714d60532dc28fd88a4c7">get_model_point</a> (int x_window, int y_window, double z_window) const</td></tr>
-<tr class="memdesc:ac404160aa6e714d60532dc28fd88a4c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given window coordinates  <a href="classcgv_1_1render_1_1context.html#ac404160aa6e714d60532dc28fd88a4c7">More...</a><br /></td></tr>
+<tr class="memdesc:ac404160aa6e714d60532dc28fd88a4c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given opengl pixel location (window location)  <a href="classcgv_1_1render_1_1context.html#ac404160aa6e714d60532dc28fd88a4c7">More...</a><br /></td></tr>
 <tr class="separator:ac404160aa6e714d60532dc28fd88a4c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b0017bf20af7756a76bbd30907d6777"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a0b0017bf20af7756a76bbd30907d6777">get_model_point</a> (int x_window, int y_window, const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> &amp;modelview_projection_window_matrix) const</td></tr>
-<tr class="memdesc:a0b0017bf20af7756a76bbd30907d6777"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given window location and modelview_projection_window matrix  <a href="classcgv_1_1render_1_1context.html#a0b0017bf20af7756a76bbd30907d6777">More...</a><br /></td></tr>
+<tr class="memdesc:a0b0017bf20af7756a76bbd30907d6777"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given opengl pixel location (window location) and modelview_projection_window matrix  <a href="classcgv_1_1render_1_1context.html#a0b0017bf20af7756a76bbd30907d6777">More...</a><br /></td></tr>
 <tr class="separator:a0b0017bf20af7756a76bbd30907d6777"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a720876149d0608e8fff666d7484b1e24"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a720876149d0608e8fff666d7484b1e24">get_model_point</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> &amp;p_window) const</td></tr>
 <tr class="memdesc:a720876149d0608e8fff666d7484b1e24"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given window space point  <a href="classcgv_1_1render_1_1context.html#a720876149d0608e8fff666d7484b1e24">More...</a><br /></td></tr>
@@ -1107,7 +1107,7 @@ virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transformation_index</b> (int &amp;array_index)</td></tr>
 <tr class="separator:a7092cfe8d92f1b2217368d5fa145c76b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8eb35215240bd20a386bd5124a5481e5"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a8eb35215240bd20a386bd5124a5481e5">get_model_point</a> (int x_window, int y_window, double z_window, const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> &amp;modelview_projection_window_matrix)</td></tr>
-<tr class="memdesc:a8eb35215240bd20a386bd5124a5481e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given window coordinates with the given modelview_projection_window matrix  <a href="classcgv_1_1render_1_1context.html#a8eb35215240bd20a386bd5124a5481e5">More...</a><br /></td></tr>
+<tr class="memdesc:a8eb35215240bd20a386bd5124a5481e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given opengl pixel location (window location) with the given modelview_projection_window matrix  <a href="classcgv_1_1render_1_1context.html#a8eb35215240bd20a386bd5124a5481e5">More...</a><br /></td></tr>
 <tr class="separator:a8eb35215240bd20a386bd5124a5481e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85841c5a4bbec518e80458f85d642f60"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a85841c5a4bbec518e80458f85d642f60">get_model_point</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a> &amp;p_window, const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> &amp;modelview_projection_window_matrix)</td></tr>
 <tr class="memdesc:a85841c5a4bbec518e80458f85d642f60"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given window space point and the given modelview_projection_window matrix  <a href="classcgv_1_1render_1_1context.html#a85841c5a4bbec518e80458f85d642f60">More...</a><br /></td></tr>
@@ -1203,7 +1203,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
 </table>
 </div><div class="memdoc">
 
-<p>return current cursor location in mouse coordinates </p>
+<p>return current cursor location in opengl coordinates with (0,0) in lower left corner </p>
 <p>store the current cursor location in the passed references to x and y coordinate </p>
 
 </div>
@@ -1341,7 +1341,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
 </table>
 </div><div class="memdoc">
 
-<p>compute model space 3D point from the given window location </p>
+<p>compute model space 3D point from the given opengl pixel location (window location) </p>
 <p>the function queries the window z coordinate from the depth buffer and inversely transforms the window space 3D point with the current modelview_projection_window matrix </p>
 
 </div>
@@ -1386,7 +1386,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
 </table>
 </div><div class="memdoc">
 
-<p>compute model space 3D point from the given window location and modelview_projection_window matrix </p>
+<p>compute model space 3D point from the given opengl pixel location (window location) and modelview_projection_window matrix </p>
 <p>the function queries the window z coordinate from the depth buffer and inversely transforms the window space 3D point with the given modelview_projection_window matrix </p>
 
 </div>
@@ -1431,7 +1431,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
 </table>
 </div><div class="memdoc">
 
-<p>compute model space 3D point from the given window coordinates </p>
+<p>compute model space 3D point from the given opengl pixel location (window location) </p>
 <p>the function inversely transforms the window space 3D point with the current modelview_projection_window matrix </p>
 
 </div>
@@ -1482,7 +1482,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
 </table>
 </div><div class="memdoc">
 
-<p>compute model space 3D point from the given window coordinates with the given modelview_projection_window matrix </p>
+<p>compute model space 3D point from the given opengl pixel location (window location) with the given modelview_projection_window matrix </p>
 <p>the function inversely transforms the window space 3D point with the given modelview_projection_window matrix </p>
 
 </div>
@@ -1525,7 +1525,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
 
 <p>return a homogeneous 4x4 matrix to transform clip to window coordinates </p>
 <p>return a homogeneous 4x4 matrix to transform clip to window coordinates, optionally specify for the case of multiple viewports/depth ranges</p>
-<p>In window coordinates x- and y-coordinates correspond to mouse pixel coordinates and z to depth value stored in the depth buffer. This is a different convention as in OpenGL where the y-coordinates point from bottom to top instead from top to bottom. Optionally one can specify a window transformation index with the parameter <code>array_index</code> for the case when an array of window transformations is used. </p>
+<p>In window coordinates x- and y-coordinates correspond to opengl pixel coordinates with (0,0) in lower left corner and z corresponds to depth value stored in the depth buffer. This is the same convention as in gl_FragCoord and gl_FragDepth of GLSL. Optionally one can specify a window transformation index with the parameter <code>array_index</code> for the case when an array of window transformations is used. </p>
 
 </div>
 </div>
@@ -1553,7 +1553,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
 </div><div class="memdoc">
 
 <p>returns an output stream whose output is printed at the current cursor location </p>
-<p>returns an output stream whose output is printed at the current cursor location, which is managed by the context. The coordinate system of the cursor location corresponds to window / mouse coordinates. The cursor position is updated during text drawing also by special characters like tab or new line and can be read back with the get_cursor method. Use the flush method of the output_stream to ensure that text has been drawn to the context. </p>
+<p>returns an output stream whose output is printed at the current cursor location, which is managed by the context. The coordinate system of the cursor location corresponds to opengl coordinates with (0,0) in lower left corner. The cursor position is updated during text drawing also by special characters like tab or new line and can be read back with the get_cursor method. Use the flush method of the output_stream to ensure that text has been drawn to the context. </p>
 
 </div>
 </div>
@@ -1630,7 +1630,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
   </tr>
 </table>
 </div><div class="memdoc">
-<p>use this to push transformation matrices on the stack such that x and y coordinates correspond to window coordinates, i.e. the coordinates of the mouse pointer and the cursor for text output. </p>
+<p>use this to push new modelview and new projection matrices onto the transformation stacks such that x and y coordinates correspond to opengl coordinates with (0,0) in lower left corner. To transform mouse pointer coordinates to opengl coordinates use get_context()-&gt;<a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168" title="return the height of the window">get_height()</a>-1-mouse_y. </p>
 
 <p>Implemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a1906f71b925fe9b670cf610e8929146f">cgv::render::gl::gl_context</a>.</p>
 
@@ -1677,7 +1677,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
 </div><div class="memdoc">
 
 <p>transform point p into cursor coordinates and put x and y coordinates into the passed variables </p>
-<p>transform point p in current world coordinates into cursor coordinates and put x and y coordinates into the passed variables </p>
+<p>transform point p in current world coordinates into opengl coordinates with (0,0) in lower left corner and put x and y coordinates into the passed variables </p>
 
 </div>
 </div>
@@ -1979,7 +1979,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
 </div><div class="memdoc">
 
 <p>sets the current text ouput position </p>
-<p>flush output_stream and set the current text position from a 3D or 4D location in current world coordinates. These are transformed to mouse coordinates with the put_cursor_coords method. If the optional parameters are given, update the cursor location such that the given text alignment is achieved. </p>
+<p>flush output_stream and set the current text position from a 3D or 4D location in current world coordinates. These are transformed to opengl coordinates opengl coordinates with (0,0) in lower left corner using the put_cursor_coords method. If the optional parameters are given, update the cursor location such that the given text alignment is achieved. x_offset and y_offset are in pixel and y points upward. </p>
 
 </div>
 </div>
@@ -2017,8 +2017,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
 </table>
 </div><div class="memdoc">
 
+<p>flush the output_stream and set a new cursor position given in opengl coordinates with (0,0) in lower left corner </p>
 <p>set a new cursor position, which is only valid between calls of push_pixel_coords and pop_pixel_coords </p>
-<p>flush the output_stream and set a new cursor position given in window/mouse coordinates </p>
 
 </div>
 </div>
