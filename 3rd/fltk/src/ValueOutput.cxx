@@ -34,7 +34,7 @@ void ValueOutput::draw() {
   push_clip(r);
   char buf[40];
   format(buf);
-  // TODO MARK: (always draw to fix initially missing color)
+  // always draw to fix initially missing color
   //if (!(damage() & DAMAGE_ALL)) {
     Color fg = getcolor();
     setcolor(getbgcolor());

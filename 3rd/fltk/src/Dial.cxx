@@ -64,7 +64,7 @@ using namespace fltk;
 */
 
 void Dial::draw() {
-	// TODO: MARK (use another fill type for flat themes)
+	// use another fill type for flat themes
 	type(fltk::theme_idx_ < 0 ? NORMAL : RING);
 
   Rectangle r(w(),h());

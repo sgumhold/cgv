@@ -16,6 +16,10 @@ protected:
 	piecewise_linear_interpolator<rgb> color_interpolator;
 	piecewise_linear_interpolator<float> opacity_interpolator;
 
+	// TODO: make resolution adjustable by color_map_editor
+	/// resolution mostly used when generating textures from color maps
+	unsigned resolution = 256u;
+
 public:
 	void clear() {
 		color_interpolator.clear();
@@ -32,6 +36,13 @@ public:
 
 	bool empty() {
 		return color_interpolator.empty() && opacity_interpolator.empty();
+	}
+
+	unsigned get_resolution() { return resolution; }
+
+	void set_resolution(unsigned resolution) {
+
+		this->resolution = std::max(resolution, 2u);
 	}
 
 	void add_color_point(float t, rgb color) {
@@ -94,11 +105,9 @@ public:
 class gl_color_map : public color_map {
 protected:
 	cgv::render::texture tex;
-	// TODO: make resolution adjustable by color_map_editor
-	unsigned res = 256u;
-
+	
 	void generate_rgb_texture(cgv::render::context& ctx) {
-		std::vector<rgb> data = interpolate_color(static_cast<size_t>(res));
+		std::vector<rgb> data = interpolate_color(static_cast<size_t>(resolution));
 		
 		std::vector<uint8_t> data_8(3 * data.size());
 		for(unsigned i = 0; i < data.size(); ++i) {
@@ -108,12 +117,12 @@ protected:
 			data_8[3 * i + 2] = static_cast<uint8_t>(255.0f * col.B());
 		}
 
-		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(res, TI_UINT8, cgv::data::CF_RGB), data_8.data());
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGB), data_8.data());
 
 		unsigned width = tex.get_width();
 
 		bool replaced = false;
-		if(tex.is_created() && width == res && tex.get_nr_components() == 3)
+		if(tex.is_created() && width == resolution && tex.get_nr_components() == 3)
 			replaced = tex.replace(ctx, 0, dv);
 
 		if(!replaced) {
@@ -124,7 +133,7 @@ protected:
 	}
 
 	void generate_rgba_texture(cgv::render::context& ctx) {
-		std::vector<rgba> data = interpolate(static_cast<size_t>(res));
+		std::vector<rgba> data = interpolate(static_cast<size_t>(resolution));
 
 		std::vector<uint8_t> data_8(4 * data.size());
 		for(unsigned i = 0; i < data.size(); ++i) {
@@ -135,12 +144,12 @@ protected:
 			data_8[4 * i + 3] = static_cast<uint8_t>(255.0f * col.alpha());
 		}
 
-		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(res, TI_UINT8, cgv::data::CF_RGBA), data_8.data());
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGBA), data_8.data());
 
 		unsigned width = tex.get_width();
 
 		bool replaced = false;
-		if(tex.is_created() && width == res && tex.get_nr_components() == 4)
+		if(tex.is_created() && width == resolution && tex.get_nr_components() == 4)
 			replaced = tex.replace(ctx, 0, dv);
 
 		if(!replaced) {
@@ -154,7 +163,7 @@ public:
 	gl_color_map() {}
 
 	gl_color_map(unsigned resolution) : gl_color_map() {
-		res = std::max(resolution, 2u);
+		resolution = std::max(resolution, 2u);
 	}
 	
 	~gl_color_map() {
@@ -173,10 +182,10 @@ public:
 	}
 
 	bool init(cgv::render::context& ctx) {
-		std::vector<uint8_t> data(3 * res);
+		std::vector<uint8_t> data(3 * resolution);
 
 		tex.destruct(ctx);
-		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(res, TI_UINT8, cgv::data::CF_RGB), data.data());
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGB), data.data());
 		tex = cgv::render::texture("uint8[R,G,B]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR);
 		return tex.create(ctx, dv, 0);
 	}

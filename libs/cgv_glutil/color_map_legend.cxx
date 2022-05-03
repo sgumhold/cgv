@@ -3,6 +3,8 @@
 //#include <cgv/math/ftransform.h>
 //#include <cgv_gl/gl/gl.h>
 
+#include <cgv/utils/convert_string.h>
+
 #include <cgv/gui/theme_info.h>
 
 namespace cgv {
@@ -13,25 +15,25 @@ color_map_legend::color_map_legend() {
 	set_name("Color Map Legend");
 
 	layout.padding = 13; // 10px plus 3px border
-	layout.band_height = 15;
-	layout.total_height = 80;
+	//layout.band_height = 40;
+	layout.total_height = 50;
 
 	set_overlay_alignment(AO_START, AO_END);
 	set_overlay_stretch(SO_NONE);
 	set_overlay_margin(ivec2(-3));
-	set_overlay_size(ivec2(150u, layout.total_height));
+	set_overlay_size(ivec2(300, layout.total_height));
 
 	fbc.add_attachment("color", "flt32[R,G,B,A]");
 	fbc.set_size(get_overlay_size());
 
-	canvas.register_shader("rectangle", cgv::glutil::canvas::shaders_2d::rectangle);
+	canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
 	//canvas.register_shader("color_maps", "color_maps.glpr");
 
-	overlay_canvas.register_shader("rectangle", cgv::glutil::canvas::shaders_2d::rectangle);
+	overlay_canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
 
-	texture_ptr = nullptr;
+	//texture_ptr = nullptr;
 
-
+	tick_renderer = generic_renderer(canvas::shaders_2d::rectangle);
 
 	//size = uvec2(140, 400);
 	//padding = vec2(8, 16);
@@ -42,7 +44,7 @@ color_map_legend::color_map_legend() {
 
 	//lblr = label_renderer("Segoe UI", 16.0f, cgv::media::font::FFA_REGULAR);
 
-	range = vec2(-1.0f, 1.0f);
+	range = vec2(0.0f, 1.0f);
 	num_ticks = 3;
 
 	//show = true;
@@ -52,8 +54,13 @@ color_map_legend::color_map_legend() {
 
 void color_map_legend::clear(cgv::render::context& ctx) {
 
+	tex.clear();
+	tex.destruct(ctx);
+
 	msdf_font.destruct(ctx);
 	font_renderer.destruct(ctx);
+
+	tick_renderer.destruct(ctx);
 
 	canvas.destruct(ctx);
 	overlay_canvas.destruct(ctx);
@@ -72,18 +79,22 @@ bool color_map_legend::handle_event(cgv::gui::event& e) {
 
 void color_map_legend::on_set(void* member_ptr) {
 
-	// TODO: test
-	if(member_ptr == &layout.total_height || member_ptr == &layout.band_height) {
-		ivec2 size = get_overlay_size();
+	if(member_ptr == &layout.total_height) {// || member_ptr == &layout.band_height) {
+		//update_layout = true;
+		vec2 size = get_overlay_size();
 
-		if(texture_ptr) {
-			int h = static_cast<int>(texture_ptr->get_height());
-			//layout.total_height = 2 * layout.padding + h * layout.band_height;
-			layout.total_height = 2 * layout.padding + layout.band_height;
-		}
+		//int h = static_cast<int>(tex.get_height());
+		////layout.total_height = 2 * layout.padding + h * layout.band_height;
+		//layout.total_height = 2 * layout.padding + layout.band_height;
+		
+		layout.total_height = std::max(layout.total_height, 2 * layout.padding + 4 + layout.label_space);
 
 		size.y() = layout.total_height;
 		set_overlay_size(size);
+	}
+
+	if(member_ptr == &font_size) {
+		labels.set_font_size(font_size);
 	}
 
 	update_member(member_ptr);
@@ -99,12 +110,14 @@ bool color_map_legend::init(cgv::render::context& ctx) {
 	success &= overlay_canvas.init(ctx);
 
 	success &= font_renderer.init(ctx);
+	success &= tick_renderer.init(ctx);
+
 	if(success)
 		init_styles(ctx);
 #ifndef CGV_FORCE_STATIC 
 	if(msdf_font.init(ctx)) {
-		texts.set_msdf_font(&msdf_font);
-		texts.set_font_size(font_size);
+		labels.set_msdf_font(&msdf_font);
+		labels.set_font_size(font_size);
 	}
 #endif
 	return success;
@@ -132,7 +145,7 @@ void color_map_legend::init_frame(cgv::render::context& ctx) {
 		}
 	}
 #endif
-	if(ensure_overlay_layout(ctx)) {
+	if(ensure_overlay_layout(ctx) || update_layout) {
 		ivec2 container_size = get_overlay_size();
 		layout.update(container_size);
 
@@ -143,6 +156,8 @@ void color_map_legend::init_frame(cgv::render::context& ctx) {
 		overlay_canvas.set_resolution(ctx, get_viewport_size());
 
 		create_ticks();
+
+		update_layout = false;
 	}
 
 	int theme_idx = cgv::gui::theme_info::instance().get_theme_idx();
@@ -160,7 +175,7 @@ void color_map_legend::init_frame(cgv::render::context& ctx) {
 void color_map_legend::draw(cgv::render::context& ctx) {
 
 	// TODO: draw to framebuffer when stuff changes and only draw fb texture in this method
-	if(!show || !texture_ptr)
+	if(!show || !tex.is_created())
 		return;
 
 	fbc.enable(ctx);
@@ -181,37 +196,45 @@ void color_map_legend::draw(cgv::render::context& ctx) {
 
 	// draw inner border
 	border_style.apply(ctx, rect_prog);
-	canvas.draw_shape(ctx, ivec2(layout.padding - 1), container_size - 2 * layout.padding + 2);
-	canvas.disable_current_shader(ctx);
+	canvas.draw_shape(ctx, layout.color_map_rect.pos() - 1, layout.color_map_rect.size() + 2);
+	//canvas.disable_current_shader(ctx);
 
 	// draw color scale texture
-	auto& color_maps_prog = canvas.enable_shader(ctx, "rectangle");
-	color_map_style.apply(ctx, color_maps_prog);
-	texture_ptr->enable(ctx, 0);
+	//auto& color_maps_prog = canvas.enable_shader(ctx, "rectangle");
+	color_map_style.apply(ctx, rect_prog);
+	tex.enable(ctx, 0);
 	canvas.draw_shape(ctx, layout.color_map_rect.pos(), layout.color_map_rect.size());
-	texture_ptr->disable(ctx);
+	tex.disable(ctx);
 	canvas.disable_current_shader(ctx);
 
-	// draw color scale names
+	// draw tick marks
+	auto& tick_prog = tick_renderer.ref_prog();
+	tick_prog.enable(ctx);
+	canvas.set_view(ctx, tick_prog);
+	tick_prog.disable(ctx);
+	tick_renderer.render(ctx, PT_POINTS, ticks);
+
+	// draw tick labels
 	auto& font_prog = font_renderer.ref_prog();
 	font_prog.enable(ctx);
 	text_style.apply(ctx, font_prog);
 	canvas.set_view(ctx, font_prog);
 	font_prog.disable(ctx);
-	font_renderer.render(ctx, get_overlay_size(), texts);
+	font_renderer.render(ctx, get_overlay_size(), labels);
 
-	glDisable(GL_BLEND);
+	//glDisable(GL_BLEND);
 
 	fbc.disable(ctx);
 
 	// draw frame buffer texture to screen
-	auto& final_prog = overlay_canvas.enable_shader(ctx, "rectangle");
+	auto& blit_prog = overlay_canvas.enable_shader(ctx, "rectangle");
 	fbc.enable_attachment(ctx, "color", 0);
 	overlay_canvas.draw_shape(ctx, get_overlay_position(), container_size);
 	fbc.disable_attachment(ctx, "color");
 
 	overlay_canvas.disable_current_shader(ctx);
 
+	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 
 
@@ -319,7 +342,11 @@ void color_map_legend::draw(cgv::render::context& ctx) {
 void color_map_legend::create_gui() {
 
 	create_overlay_gui();
-	add_member_control(this, "Band Height", layout.band_height, "value_slider", "min=5;max=50;step=5;ticks=true");
+	//add_member_control(this, "Band Height", layout.band_height, "value_slider", "min=5;max=50;step=5;ticks=true");
+	add_member_control(this, "Height", layout.total_height, "value_slider", "min=40;max=80;step=1;ticks=true");
+
+	add_gui("", text_style);
+	add_member_control(this, "Font Size", font_size, "value_slider", "min=10;max=40;step=1");
 
 	//p.add_member_control(bp, "Background", background, "check");
 	//p.add_member_control(bp, "Transparent Background", transparent, "check");
@@ -330,14 +357,34 @@ void color_map_legend::create_gui(cgv::gui::provider& p) {
 	//p.add_member_control(this, "Show", show, "check");
 }
 
-void color_map_legend::set_color_map(cgv::glutil::gl_color_map& color_map) {
+void color_map_legend::set_color_map(cgv::render::context& ctx, color_map& cm) {
 
-}
+	unsigned resolution = cm.get_resolution();
+	std::vector<rgb> data = cm.interpolate_color(static_cast<size_t>(resolution));
 
-void color_map_legend::set_color_map_texture(texture* tex) {
+	std::vector<uint8_t> data_8(2 * 3 * data.size());
+	for(unsigned i = 0; i < data.size(); ++i) {
+		rgba col = data[i];
+		data_8[3 * i + 0] = static_cast<uint8_t>(255.0f * col.R());
+		data_8[3 * i + 1] = static_cast<uint8_t>(255.0f * col.G());
+		data_8[3 * i + 2] = static_cast<uint8_t>(255.0f * col.B());
+	}
 
-	this->texture_ptr = tex;
-	on_set(&layout.total_height);
+	std::copy(data_8.begin(), data_8.begin() + 3*resolution, data_8.begin() + 3*resolution);
+	
+	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2u, TI_UINT8, cgv::data::CF_RGB), data_8.data());
+
+	unsigned width = tex.get_width();
+
+	bool replaced = false;
+	if(tex.is_created() && width == resolution && tex.get_nr_components() == 3)
+		replaced = tex.replace(ctx, 0, 0, dv);
+
+	if(!replaced) {
+		tex.destruct(ctx);
+		tex = cgv::render::texture("uint8[R,G,B]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR);
+		tex.create(ctx, dv, 0);
+	}
 }
 
 void color_map_legend::set_range(vec2 range) {
@@ -368,36 +415,73 @@ void color_map_legend::init_styles(context& ctx) {
 	container_style.border_width = 3.0f;
 	container_style.feather_width = 0.0f;
 
-	// configure style for the border rectangles
+	// configure style for the border rectangle
 	border_style = container_style;
-	//border_style.fill_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
-	border_style.fill_color = border_color;
+	//border_style.fill_color = border_color;
+	//border_style.border_width = 0.0f;
+	border_style.fill_color = rgba(rgb(0.0f), 1.0);
+	//border_style.border_color = border_color;
 	border_style.border_width = 0.0f;
 
 	// configure style for the color scale rectangle
 	color_map_style = border_style;
 	color_map_style.use_texture = true;
-
+	color_map_style.use_texture_alpha = false;
+	
 	// configure text style
-	text_style.fill_color = rgba(rgb(1.0f), 0.666f);
-	text_style.border_color = rgba(rgb(0.0f), 0.666f);
-	text_style.border_radius = 0.25f;
-	text_style.border_width = 0.75f;
+	text_style.fill_color = rgba(rgb(0.0f), 1.0f);
+	text_style.border_color = group_color;
+	text_style.border_width = 0.5f;
+	text_style.feather_origin = 0.35f;
 	text_style.use_blending = true;
 
-	// configure style for final blitting of overlay into main frame buffer
-	cgv::glutil::shape2d_style final_style;
-	final_style.fill_color = rgba(1.0f);
-	final_style.use_texture = true;
-	final_style.use_blending = false;
-	final_style.feather_width = 0.0f;
+	shape2d_style tick_style;
+	tick_style.position_is_center = true;
+	tick_style.fill_color = rgba(rgb(0.0f), 1.0f);
+	tick_style.feather_width = 0.0f;
 
-	auto& final_prog = overlay_canvas.enable_shader(ctx, "rectangle");
-	final_style.apply(ctx, final_prog);
+	auto& tick_prog = tick_renderer.ref_prog();
+	tick_prog.enable(ctx);
+	tick_style.apply(ctx, tick_prog);
+	tick_prog.disable(ctx);
+
+	// configure style for final blitting of overlay into main frame buffer
+	shape2d_style blit_style;
+	blit_style.fill_color = rgba(1.0f);
+	blit_style.use_texture = true;
+	blit_style.use_blending = true;
+	blit_style.feather_width = 0.0f;
+
+	auto& blit_prog = overlay_canvas.enable_shader(ctx, "rectangle");
+	blit_style.apply(ctx, blit_prog);
 	overlay_canvas.disable_current_shader(ctx);
 }
 
 void color_map_legend::create_ticks() {
+
+	ticks.clear();
+	labels.clear();
+
+	int width = layout.color_map_rect.size().x();
+
+	float step = static_cast<float>(width + 1) / static_cast<float>(num_ticks - 1);
+
+	int y_tick = layout.padding + 0.75f*layout.label_space;
+	int y_label = layout.padding + 0.5f*layout.label_space;
+
+	for(size_t i = 0; i < num_ticks; ++i) {
+		float fi = static_cast<float>(i);
+		int x = layout.padding + layout.label_space + static_cast<int>(round(fi * step));
+		ticks.add(ivec2(x, y_tick), ivec2(1, 0.5f*layout.label_space));
+
+		float t = fi / static_cast<float>(num_ticks - 1);
+		float val = cgv::math::lerp(range.x(), range.y(), t);
+
+		std::string str = cgv::utils::to_string(val);
+		labels.add_text(str, ivec2(x, y_label), cgv::render::TextAlignment::TA_TOP);
+	}
+
+
 
 	/*texts.clear();
 	if(names.size() == 0)
