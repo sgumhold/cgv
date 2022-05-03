@@ -91,13 +91,13 @@ void view::set_focus(double x, double y, double z) { set_focus(dvec3(x,y,z)); }
 ///
 void view::set_view_up_dir(const dvec3& vud)
 {
-	view_up_dir = vud;
+	view_up_dir = normalize(vud);
 }
 void view::set_view_up_dir(double x, double y, double z) { set_view_up_dir(dvec3(x,y,z)); }
 ///
 void view::set_view_dir(const dvec3& vd)
 {
-	view_dir = vd;
+	view_dir = normalize(vd);
 }
 void view::set_view_dir(double x, double y, double z) { set_view_dir(dvec3(x,y,z)); }
 ///
@@ -230,7 +230,7 @@ void view::put_coordinate_system(vec3& x, vec3& y, vec3& z) const
 /// roll view around view direction by angle
 void view::roll(double angle)
 {
-	view_up_dir = cgv::math::rotate(view_up_dir, view_dir, angle);
+	view_up_dir = normalize(cgv::math::rotate(view_up_dir, view_dir, angle));
 }
 
 //! rotated view around axis by angle
@@ -250,8 +250,8 @@ void view::rotate(double axis_direction_x, double axis_direction_y, double axis_
 	axis_dir *= 1.0 / angle;
 	dvec3 axis_point = get_eye() + axis_point_depth*view_dir;
 	focus = cgv::math::rotate(focus - axis_point, axis_dir, angle) + axis_point;
-	view_dir = cgv::math::rotate(view_dir, axis_dir, angle);
-	view_up_dir = cgv::math::rotate(view_up_dir, axis_dir, angle);
+	view_dir = normalize(cgv::math::rotate(view_dir, axis_dir, angle));
+	view_up_dir = normalize(cgv::math::rotate(view_up_dir, axis_dir, angle));
 }
 
 /// move along view direction by given step length in world coordinates

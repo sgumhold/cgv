@@ -829,14 +829,14 @@ void gl_context::push_pixel_coords()
 		glMatrixMode(GL_PROJECTION);
 		// set orthogonal projection
 		glLoadIdentity();
-		gluOrtho2D(0, vp[2], vp[3], 0);
+		glOrtho(vp[0], vp[0]+vp[2], get_height()-vp[1], get_height() - (vp[1]+vp[3]), -1, 1);
 		// push modelview matrix
 		glMatrixMode(GL_MODELVIEW);
 		// use identity for modelview
 		glLoadIdentity();
 	}
 	set_modelview_matrix(cgv::math::identity4<double>());
-	set_projection_matrix(cgv::math::ortho4<double>(0, vp[2], vp[3], 0, -1, 1));
+	set_projection_matrix(cgv::math::ortho4<double>(vp[0], vp[0] + vp[2], get_height() - vp[1], get_height() - (vp[1]+vp[3]), -1, 1));
 }
 
 /// pop previously changed transformation matrices 

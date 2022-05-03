@@ -1123,7 +1123,7 @@ public:
 	//! set the current viewport or one of the viewports in the window transformation array
 	/*! If the parameter \c array_index is -1 (for example by not specifying it),
 	    the current window transformation array is resized to a single viewport and
-		depth range and the viewport is set to the integer vector of pixel values 
+		the viewport is set to the integer vector of pixel values 
 		in the \c viewport parameter: [x0,y0,width,height]. If an \c array_index >= 0
 		is specified, the window transformation array is resized such that the 
 		specified \c array_index is valid and the corresponding viewport is set.

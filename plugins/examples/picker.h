@@ -53,7 +53,7 @@ public:
 	/// init renderer
 	bool init(cgv::render::context&);
 	/// init renderer
-	void destruct(cgv::render::context&);
+	void clear(cgv::render::context&);
 	/// optional method of drawable
 	void draw(cgv::render::context&);
 };
