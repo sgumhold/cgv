@@ -52,15 +52,7 @@ void destroy_callback(fltk::Widget* w)
 	v->destroy();
 
 	window_ptr wp(v);
-/*
-	for (unsigned i = 0; i < wp->get_nr_children(); ++i) {
-		cgv::base::node_ptr np = wp->get_child(i)->get_node();
-		if (np) {
-			if (np->get_parent() == this) {}
-		}
-		cgv::base::unregister_object(, "");
-	}
-	*/
+
 	cgv::base::unregister_object(wp, "");
 
 	fltk_driver* d = cgv::gui::get_gui_driver()->get_interface<fltk_driver>();
@@ -105,7 +97,6 @@ fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
 	menu = 0;
 	callback(destroy_callback);
 
-	// TODO: MARK
 	menu_height = 24;
 	menu_right = true;
 	tabs_bottom = true;
@@ -131,15 +122,6 @@ fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
 	update_member(&gui_visible);
 	append_child(view);
 	append_child(tab_group);
-
-	// TODO: MARK (move to separate method)
-	/*
-	fltk::Widget* menu_item = menu->add("Test/Item0", 0, nullptr); // nullptr argument is necessary for fltk to call innards and not flat_innards
-	menu_item = menu->add("Test/Item1", 0, nullptr);
-	fltk::Group* g = static_cast<fltk::Group*>(menu_item->parent());
-	ensure_menu_order();
-	g->user_data(this);
-	*/
 }
 
 void fltk_viewer_window::on_register()

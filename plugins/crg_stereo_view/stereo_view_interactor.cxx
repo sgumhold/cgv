@@ -1393,7 +1393,6 @@ void stereo_view_interactor::draw_focus()
 /// return a path in the main menu to select the gui
 std::string stereo_view_interactor::get_menu_path() const
 {
-	// TODO: MARK
 	return "View/Stereo Interactor";
 }
 
@@ -1491,7 +1490,6 @@ void stereo_view_interactor::dir_gui_cb(dvec3& dir, int i)
 /// you must overload this for gui creation
 void stereo_view_interactor::create_gui()
 {
-	// TODO: MARK
 	if (begin_tree_node("View Configuration", zoom_sensitivity, false)) {
 		align("\a");
 		add_member_control(this, "Use Gamepad", use_gamepad, "toggle");
