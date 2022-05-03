@@ -902,7 +902,6 @@ void fltk_gl_view::configure_opengl_controls()
 ///  
 void fltk_gl_view::create_gui()
 {
-	// TODO: MARK
 	add_decorator("GL View", "heading");
 	if (begin_tree_node("Rendering", fps, false)) {
 		provider::align("\a");

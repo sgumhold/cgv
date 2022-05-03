@@ -258,7 +258,7 @@ int MenuTabPager::which(TabGroup* g, int event_x,int event_y) {
 	return -1;
 }
 
-// TODO: MARK (a hack to enable passing events to MenuTabPager popup menu extension)
+// a hack to enable passing events to MenuTabPager popup menu extension
 int MenuTabPager::handle(int event) {
 	if(extension_ && extension_visible_)
 		return extension_->handle(event);

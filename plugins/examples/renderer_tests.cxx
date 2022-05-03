@@ -521,5 +521,4 @@ public:
 	}
 };
 
-// TODO: MARK
 cgv::base::factory_registration<renderer_tests> fr_renderer_test("New/Render/Renderer Test", 'K', true);

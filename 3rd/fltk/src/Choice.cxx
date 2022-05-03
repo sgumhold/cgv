@@ -79,12 +79,12 @@ void Choice::draw() {
 		setbgcolor(color());
 		box()->draw(Rectangle(w(), h()));
 	}
-	// TODO: MARK (for a flat theme, offset the glyph one pixel to the left)
+	// for a flat theme, offset the glyph one pixel to the left
 	int wo = 0;
 	int go = 0;
 	if(style()->buttonbox_ != UP_BOX) {
 		wo = 4;// 1;
-		go = -0;//-2;
+		go = 0;//-2;
 	}
 
   Rectangle r(w(),h()); box()->inset(r);

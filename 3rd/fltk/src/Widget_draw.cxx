@@ -48,7 +48,7 @@ void LabelType::draw(const char* label,
 		     const Rectangle& r,
 		     Flags flags) const
 {
-	// TODO: MARK (when a non-legacy theme is used we do not draw the outline for inactive labels)
+  // when a non-legacy theme is used we do not draw the outline for inactive labels
   if (drawflags(INACTIVE) && fltk::theme_idx_ < 0) {
     Color fg = getcolor();
     setcolor(GRAY90);
