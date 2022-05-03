@@ -504,7 +504,7 @@ namespace cgv {
 			stbtt_aligned_quad q;
 			float y0 = p[1];
 			stbtt_GetBakedQuad(baked_chars.data(), bitmap_width, bitmap_height, int(c) - fst_char, &p[0], &p[1], &q, 1);
-			if (flip_y) {
+			if (!flip_y) {
 				float tmp = q.y0;
 				q.y0 = 2 * y0 - q.y1;
 				q.y1 = 2 * y0 - tmp;
@@ -528,7 +528,7 @@ namespace cgv {
 	{
 		box2 extent;
 		vec2 p(0.0f);
-		float y_scale = flip_y ? -1.0f : 1.0f;
+		float y_scale = !flip_y ? -1.0f : 1.0f;
 		for (unsigned char c : text) {
 			if (c < fst_char || c >= fst_char + nr_chars)
 				continue;
@@ -545,7 +545,7 @@ namespace cgv {
 		box2 B = compute_box(text, scale, flip_y);
 		vec2 a = B.get_center();
 		vec2 hE = 0.5f * B.get_extent();
-		if (flip_y)
+		if (!flip_y)
 			hE[1] *= -1.0f;
 		if ((ta & cgv::render::TA_BOTTOM) != 0)
 			a[1] += hE[1];

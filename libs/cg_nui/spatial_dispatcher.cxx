@@ -144,10 +144,11 @@ namespace cgv {
 			geometric_info gi;
 			if (e.get_kind() == cgv::gui::EID_MOUSE && dispatch_mouse_spatial) {
 				const auto& me = reinterpret_cast<const cgv::gui::mouse_event&>(e);
+				int y_gl = context_height - 1 - me.get_y();
 				if (me.get_action() == cgv::gui::MA_ENTER || me.get_action() == cgv::gui::MA_MOVE || me.get_action() == cgv::gui::MA_DRAG) {
 					gi.check_intersection = rfi.foc_info_ptr->config.spatial.pointing;
-					gi.inter_info.ray_origin = cgv::render::context::get_model_point(me.get_x(), me.get_y(), 0.0, MVPW);
-					gi.inter_info.ray_direction = normalize(cgv::render::context::get_model_point(me.get_x(), me.get_y(), 0.1, MVPW) - gi.inter_info.ray_origin);
+					gi.inter_info.ray_origin = cgv::render::context::get_model_point(me.get_x(), y_gl, 0.0, MVPW);
+					gi.inter_info.ray_direction = normalize(cgv::render::context::get_model_point(me.get_x(), y_gl, 0.1, MVPW) - gi.inter_info.ray_origin);
 					gi.check_proximity = false;
 				}
 				else {

@@ -182,8 +182,6 @@ public:
 			return;
 		
 		auto ex = plot.get_extent();
-		plot.set_extent(vecn(1.8f, 1.8f));
-		// if fbo is created, perform offline rendering with world space in the range [-1,1]² and white background
 		fbo.enable(ctx);
 		fbo.push_viewport(ctx);
 		glClearColor(1, 1, 1, 1);
@@ -191,17 +189,15 @@ public:
 		ctx.push_modelview_matrix();
 		ctx.set_modelview_matrix(cgv::math::identity4<double>());
 		ctx.push_projection_matrix();
-		ctx.set_projection_matrix(cgv::math::identity4<double>());
+		ctx.set_projection_matrix(cgv::math::ortho4<double>(-ex[0]/2, ex[0]/2, -ex[1]/2, ex[1]/2, -1, 1));
 		glDepthMask(GL_FALSE);
 		plot.draw(ctx);
 		glDepthMask(GL_TRUE);
 		ctx.pop_projection_matrix();
 		ctx.pop_modelview_matrix();
 
-		plot.set_extent(ex);
 		fbo.pop_viewport(ctx);
 		fbo.disable(ctx);
-
 		// generate mipmaps in rendered texture and in case of success enable anisotropic filtering
 		if (tex.generate_mipmaps(ctx))
 			tex.set_min_filter(cgv::render::TF_ANISOTROP, 16.0f);
@@ -217,8 +213,7 @@ public:
 			prog.set_uniform(ctx, "gamma", 1.0f);
 			ctx.set_color(rgba(1, 1, 1, 1));
 			ctx.push_modelview_matrix();
-			// scale down in y-direction according to texture resolution
-			ctx.mul_modelview_matrix(cgv::math::scale4<double>(0.5555556f*plot.get_extent()(0), 0.5555556f*plot.get_extent()(1), 1.0));
+			ctx.mul_modelview_matrix(cgv::math::scale4<double>(plot.get_extent()(0)/2, plot.get_extent()(1)/2, 1.0));
 			ctx.tesselate_unit_square();
 			ctx.pop_modelview_matrix();
 			prog.disable(ctx);

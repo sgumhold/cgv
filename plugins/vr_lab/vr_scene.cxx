@@ -275,9 +275,12 @@ void vr_scene::on_set(void* member_ptr)
 	update_member(member_ptr);
 	post_redraw();
 }
+void vr_scene::resize(unsigned int w, unsigned int h)
+{
+	context_height = h;
+}
 bool vr_scene::init(cgv::render::context& ctx)
 {
-
 //	for (size_t li = 0; li < ctx.get_nr_default_light_sources(); ++li) {
 //		cgv::media::illum::light_source ls = ctx.get_default_light_source(li);
 //		ls.set_local_to_eye(false);

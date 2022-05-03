@@ -97,23 +97,26 @@ public:
 		for (int i = 0; i < n; ++i) {
 			for (int j = 0; j < m; ++j) {
 				view_ptr->activate_split_viewport(ctx, i, j);
-				if (mouse_over_panel && col_idx == i && row_idx == j) {
-					glDepthMask(GL_FALSE);
+				if (mouse_over_panel && col_idx == i && row_idx == j)
+					ctx.set_color(rgb(1, 0.6f, 0.6f));
+				else
+					ctx.set_color(rgb(0.6f, 0.6f, 0.6f));
+				glDepthMask(GL_FALSE);
+				{
 					auto& prog = ctx.ref_default_shader_program();
 					prog.enable(ctx);
-					ctx.set_color(rgb(1, 0.6f, 0.6f));
 					cgv::render::gl::cover_screen(ctx, &prog);
 					prog.disable(ctx);
-					glDepthMask(GL_TRUE);
 				}
-
-				auto& prog = ctx.ref_surface_shader_program();
-				prog.set_uniform(ctx, "map_color_to_material", 3);
-				prog.enable(ctx);
-				ctx.set_color(rgb(0.7f, 0.5f, 0.4f));
-				ctx.tesselate_unit_cube();
-				prog.disable(ctx);
-
+				glDepthMask(GL_TRUE);
+				{
+					auto& prog = ctx.ref_surface_shader_program();
+					prog.set_uniform(ctx, "map_color_to_material", 3);
+					prog.enable(ctx);
+					ctx.set_color(rgb(0.7f, 0.5f, 0.4f));
+					ctx.tesselate_unit_cube();
+					prog.disable(ctx);
+				}
 				if (!points.empty()) {
 					auto& sr = ref_sphere_renderer(ctx);
 					sr.set_render_style(srs);
@@ -184,7 +187,8 @@ public:
 		if (e.get_kind() == EID_MOUSE) {
 			mouse_event& me = static_cast<mouse_event&>(e);
 			const dmat4* MPW_ptr = 0;
-
+			int x_gl = me.get_x();
+			int y_gl = get_context()->get_height() - 1 - me.get_y();
 			if (me.get_action() == MA_LEAVE) {
 				if (mouse_over_panel) {
 					mouse_over_panel = false;
@@ -192,16 +196,17 @@ public:
 				}
 			}
 			else {
-				view_ptr->get_modelview_projection_window_matrices(me.get_x(), me.get_y(),
+				view_ptr->get_modelview_projection_window_matrices(x_gl, y_gl,
 					get_context()->get_width(), get_context()->get_height(),
 					&MPW_ptr, 0, 0, 0, &col_idx, &row_idx);
 				mouse_over_panel = true;
+				//std::cout << "col_idx=" << col_idx << ", row_idx=" << row_idx << std::endl;
 				post_redraw();
 			}
 			switch (me.get_action()) {
 			case MA_PRESS:
 				if (me.get_button() == MB_LEFT_BUTTON && me.get_modifiers() == EM_CTRL) {
-					vec3 p = get_context()->get_model_point(me.get_x(), me.get_y(), *MPW_ptr);
+					vec3 p = get_context()->get_model_point(x_gl, y_gl, *MPW_ptr);
 					if (is_inside(p)) {
 						p = project(p);
 						drag_pnt_idx = -1;
@@ -235,7 +240,7 @@ public:
 				break;
 			case MA_DRAG:
 				if (drag_pnt_idx != -1) {
-					vec3 p = get_context()->get_model_point(me.get_x(), me.get_y(), *MPW_ptr);
+					vec3 p = get_context()->get_model_point(x_gl, y_gl, *MPW_ptr);
 					if (!is_inside(p)) {
 						points.erase(points.begin() + drag_pnt_idx);
 						colors.erase(colors.begin() + drag_pnt_idx);
@@ -262,6 +267,6 @@ public:
 
 #include <cgv/base/register.h>
 
-factory_registration<viewport_sample> vp_fac("New/Render/Viewport Sample", 'V', true);
+factory_registration<viewport_sample> vp_fac("New/Events/Viewport Sample", 'V', true);
 //object_registration<viewport_sample> vp_fac("Viewport Sample");
 

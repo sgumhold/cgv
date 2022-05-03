@@ -152,6 +152,8 @@ public:
 	//@{
 	/// initialization called once per context creation
 	bool init(cgv::render::context& ctx);
+	/// used to communicate context height to spatial dispatcher
+	void resize(unsigned int w, unsigned int h);
 	/// initialization called once per frame
 	void init_frame(cgv::render::context& ctx);
 	/// called before context destruction to clean up GPU objects

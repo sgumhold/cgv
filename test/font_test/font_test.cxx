@@ -338,13 +338,13 @@ public:
 		if (show_lines) {
 			std::vector<vec3> P;
 			std::vector<rgb> C;
-			int y = fst_line;
-			while (y < int(ctx.get_height())) {
+			int y = ctx.get_height() - 1 - fst_line;
+			while (y >= 0) {
 				P.push_back(vec3(0.0f, float(y), 0.0f));
 				C.push_back(rgb(1, 1, 1));
 				P.push_back(vec3(float(ctx.get_width()), float(y), 0.0f));
 				C.push_back(rgb(1, 1, 1));
-				y += line_delta;
+				y -= line_delta;
 			}
 			auto& prog = ctx.ref_default_shader_program();
 			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
@@ -363,6 +363,7 @@ public:
 			// default approach to draw text in single color
 			if (!use_colors) {
 				vec2 p = pixel_position;
+				p[1] = ctx.get_height() - 1 - p[1];
 				ctx.set_color(rrs.surface_color);
 				font_face_ptr->enable(&ctx, font_size);
 				font_face_ptr->draw_text(p[0], p[1], text);
@@ -371,6 +372,7 @@ public:
 				// otherwise convert to textured rectangles
 				std::vector<cgv::render::textured_rectangle> Q;
 				vec2 fpix_pos(pixel_position);
+				fpix_pos[1] = ctx.get_height() - 1 - fpix_pos[1];
 				font_face_ptr->text_to_quads(fpix_pos, text, Q);
 				if (!Q.empty()) {
 					// define color array

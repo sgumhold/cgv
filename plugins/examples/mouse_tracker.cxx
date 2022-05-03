@@ -96,7 +96,7 @@ bool mouse_tracker::handle(event& e)
 			return true;
 		case MA_MOVE :
 			x = me.get_x();
-			y = me.get_y();
+			y = get_context()->get_height()-1-me.get_y();
 			have_picked_point = false;
 			if (view_ptr)
 				have_picked_point = get_world_location(x, y, *view_ptr, picked_point);
@@ -104,7 +104,7 @@ bool mouse_tracker::handle(event& e)
 			return false;
 		case MA_DRAG :
 			x = me.get_x();
-			y = me.get_y();
+			y = get_context()->get_height() - 1 - me.get_y();
 			have_picked_point = false;
 			if (view_ptr)
 				have_picked_point = get_world_location(x, y, *view_ptr, picked_point);
