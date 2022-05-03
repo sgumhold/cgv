@@ -43,7 +43,7 @@ volume_viewer::volume_viewer() : application_plugin("Volume Viewer")
 	// enable support for editing opacity values
 	transfer_function_editor_ptr->set_opacity_support(true);
 
-	//transfer_function_legend_ptr = register_overlay<cgv::glutil::color_map_legend>("TF Legend");
+	transfer_function_legend_ptr = register_overlay<cgv::glutil::color_map_legend>("TF Legend");
 }
 
 void volume_viewer::stream_stats(std::ostream& os)
@@ -250,7 +250,7 @@ void volume_viewer::init_frame(cgv::render::context& ctx) {
 			if(transfer_function_editor_ptr)
 				transfer_function_editor_ptr->set_color_map(&transfer_function);
 			if(transfer_function_legend_ptr)
-				transfer_function_legend_ptr->set_color_map_texture(&transfer_function.ref_texture());
+				transfer_function_legend_ptr->set_color_map(ctx, transfer_function);
 		}
 	}
 
@@ -258,7 +258,7 @@ void volume_viewer::init_frame(cgv::render::context& ctx) {
 	if(transfer_function_editor_ptr && transfer_function_editor_ptr->was_updated()) {
 		transfer_function.generate_texture(ctx);
 		if(transfer_function_legend_ptr)
-			transfer_function_legend_ptr->set_color_map_texture(&transfer_function.ref_texture());
+			transfer_function_legend_ptr->set_color_map(ctx, transfer_function);
 	}
 }
 
@@ -298,6 +298,13 @@ void volume_viewer::create_gui()
 		inline_object_gui(transfer_function_editor_ptr);
 		align("\b");
 		end_tree_node(transfer_function_editor_ptr);
+	}
+
+	if(begin_tree_node("Transfer Function Legend", transfer_function_legend_ptr, false)) {
+		align("\a");
+		inline_object_gui(transfer_function_legend_ptr);
+		align("\b");
+		end_tree_node(transfer_function_legend_ptr);
 	}
 }
 

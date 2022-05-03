@@ -357,7 +357,7 @@ FL_API Color fl_color_cells[ROWS*COLS] = {
 
 void ccCellBox::draw() {
   int yy = 0;
-  // TODO: MARK (switch the box for the color cells to a flat/or border one on the flat themes)
+  // switch the box for the color cells to a flat/or border one on the flat themes
   Box* box = fltk::theme_idx_ < 0 ? THIN_DOWN_BOX : BORDER_BOX;
 
   for (int Y = 0; Y < ROWS; Y++) {
@@ -638,7 +638,7 @@ static int run_it(const char* name)
 {
   window->label(name);
   set_valuators(chooser);
-  // TODO: MARK override labels if desired (& before a character sets a shortcut keypress; symbols also possible)
+  // override labels if desired (& before a character sets a shortcut keypress; symbols also possible)
   //ok_button->label("@+ " + ok);
   //cancel_button->label("@7thinplus " + cancel);
   ok_color->color(chooser->value());

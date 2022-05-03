@@ -593,7 +593,7 @@ public:
 
     Symbol* box = drawstyle()->buttonbox();
 	
-	// TODO: MARK (override some color settings in case of flat theme)
+	// override some color settings in case of flat theme
     box->draw(rr);
 
     Rectangle r = rr; box->inset(r);
