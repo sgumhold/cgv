@@ -166,7 +166,7 @@ bool picker::init(cgv::render::context& ctx)
 }
 
 /// init renderer
-void picker::destruct(cgv::render::context& ctx)
+void picker::clear(cgv::render::context& ctx)
 {
 	view_ptr->disable_viewport_splitting();
 	ref_sphere_renderer(ctx, -1);

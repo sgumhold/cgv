@@ -812,7 +812,7 @@ bool stereo_view_interactor::handle(event& e)
 								dvec3 e = view_ptr->get_eye();
 								double l_old = (e - view_ptr->get_focus()).length();
 								double l_new = dot(p - e, view_ptr->get_view_dir());
-
+								//std::cout << "e=(" << e << "), p=(" << p << "), vd=(" << view_ptr->get_view_dir() << ") l_old=" << l_old << ", l_new=" << l_new << std::endl;
 								cgv::gui::animate_with_geometric_blend(view_ptr->ref_y_extent_at_focus(), view_ptr->get_y_extent_at_focus() * l_new / l_old, 0.5)->set_base_ptr(this);
 							}
 							cgv::gui::animate_with_linear_blend(view_ptr->ref_focus(), p, 0.5)->configure(cgv::gui::APM_SIN_SQUARED, this);
