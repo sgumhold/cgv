@@ -292,7 +292,7 @@ public:
 				ctx.set_cursor(vecn(float(x), float(y)), txt, cgv::render::TA_BOTTOM);
 				ctx.output_stream() << txt;
 				std::cout << txt;
-				y += int(1.5f * ctx.get_current_font_size());
+				y -= int(1.5f * ctx.get_current_font_size());
 				if (&txt == &text_lines.front()) { // check for first iteration
 					ctx.output_stream().flush(); // flush to ensure that white color is used for first line
 					ctx.set_color(rgb(1, 1, 0));

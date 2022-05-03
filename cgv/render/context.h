@@ -971,24 +971,24 @@ public:
 	//@{
 	/** returns an output stream whose output is printed at the current cursor 
 	    location, which is managed by the context. The coordinate system of the
-		 cursor location corresponds to window / mouse coordinates. The cursor position is
+		 cursor location corresponds to opengl coordinates with (0,0) in lower left corner.
+		 The cursor position is
 		 updated during text drawing also by special characters like tab or new line and
 		 can be read back with the get_cursor method. Use the flush method of the 
 		 output_stream to ensure that text has been drawn to the context. */
 	virtual std::ostream& output_stream();
-	/** flush the output_stream and set a new cursor position given in 
-		 window/mouse coordinates */
+	/// flush the output_stream and set a new cursor position given in opengl coordinates with (0,0) in lower left corner
 	virtual void set_cursor(int x, int y);
-	/// return current cursor location in mouse coordinates
+	/// return current cursor location in opengl coordinates with (0,0) in lower left corner
 	virtual void get_cursor(int& x, int& y) const;
-	/** transform point p in current world coordinates into cursor coordinates 
+	/** transform point p in current world coordinates into opengl coordinates with (0,0) in lower left corner
 		 and put x and y coordinates into the passed variables */
 	virtual void put_cursor_coords(const vec_type& p, int& x, int& y) const;
 	/** flush output_stream and set the current text position from a 3D or 4D
-		 location in current world coordinates. These are transformed to mouse
-		 coordinates with the put_cursor_coords method. If the optional parameters
-		 are given, update the cursor location such that the given text alignment
-		 is achieved. */
+		 location in current world coordinates. These are transformed to opengl
+		 coordinates opengl coordinates with (0,0) in lower left corner using the put_cursor_coords 
+		 method. If the optional parameters are given, update the cursor location such that the given 
+		 text alignment is achieved. x_offset and y_offset are in pixel and y points upward. */
 	virtual void set_cursor(const vec_type& pos, 
 		const std::string& text = "", TextAlignment ta = TA_BOTTOM_LEFT,
 		int x_offset=0, int y_offset=0);
@@ -1073,11 +1073,11 @@ public:
 	DEPRECATED("deprecated: use pop_projection_matrix() instead.") void pop_P() { pop_projection_matrix(); }
 	DEPRECATED("deprecated: use get_device_matrix() instead.") 	dmat_type get_D() const { return dmat_type(4, 4, &get_window_matrix()(0, 0)); }
 	DEPRECATED("deprecated: use get_modelview_projection_device_matrix() instead.")	mat_type get_DPV() const { return dmat_type(4, 4, &get_modelview_projection_window_matrix()(0, 0)); }
-	/** use this to push transformation matrices on the stack such that
-	    x and y coordinates correspond to window coordinates, i.e. the 
-		 coordinates of the mouse pointer and the cursor for text output. */
+	/** use this to push new modelview and new projection matrices onto the transformation stacks such that
+	    x and y coordinates correspond to opengl coordinates with (0,0) in lower left corner.
+		To transform mouse pointer coordinates to opengl coordinates use get_context()->get_height()-1-mouse_y. */
 	virtual void push_pixel_coords() = 0;
-	/// pop previously changed transformation matrices 
+	/// pop previously pushed transformation matrices from modelview and projection stacks
 	virtual void pop_pixel_coords() = 0;
 	/// return homogeneous 4x4 viewing matrix, which transforms from world to eye space
 	virtual dmat4 get_modelview_matrix() const = 0;
@@ -1139,35 +1139,35 @@ public:
 	/// return the current window transformation array
 	const std::vector<window_transformation>& get_window_transformation_array() const;
 	//! return a homogeneous 4x4 matrix to transform clip to window coordinates
-	/*! In window coordinates x- and y-coordinates correspond to mouse pixel coordinates
-	    and z to depth value stored in the depth buffer. This is a different convention as
-		in OpenGL where the y-coordinates point from bottom to top instead from top to bottom. 
+	/*! In window coordinates x- and y-coordinates correspond to opengl pixel coordinates
+	    with (0,0) in lower left corner and z corresponds to depth value stored in the depth buffer. 
+		This is the same convention as in gl_FragCoord and gl_FragDepth of GLSL. 
 		Optionally one can specify a window transformation index with the parameter \c array_index
 		for the case when an array of window transformations is used.*/
 	dmat4 get_window_matrix(unsigned array_index = 0) const;
 	/// return a homogeneous 4x4 matrix to transfrom from model to window coordinates, i.e. the product of modelview, projection and device matrix in reversed order (window_matrix*projection_matrix*modelview_matrix)
 	dmat4 get_modelview_projection_window_matrix(unsigned array_index = 0) const;
-	/// read the window z-coordinate from the depth buffer for the given window x- and y-coordinates
+	/// read the window z-coordinate from the depth buffer for the given opengl x- and y-coordinates
 	virtual double get_window_z(int x_window, int y_window) const = 0;
-	//! compute model space 3D point from the given window location
+	//! compute model space 3D point from the given opengl pixel location (window location)
 	/*! the function queries the window z coordinate from the depth buffer and inversely transforms the
 		window space 3D point with the current modelview_projection_window matrix */
 	inline vec3 get_model_point(int x_window, int y_window) const { 
 		return get_model_point(x_window, y_window, get_window_z(x_window, y_window)); 
 	}
-	//! compute model space 3D point from the given window coordinates
+	//! compute model space 3D point from the given opengl pixel location (window location)
 	/*! the function inversely transforms the window space 3D point with the current
 		modelview_projection_window matrix */
 	inline vec3 get_model_point(int x_window, int y_window, double z_window) const {
 		return get_model_point(x_window, y_window, z_window, get_modelview_projection_window_matrix());
 	}
-	//! compute model space 3D point from the given window location and modelview_projection_window matrix
+	//! compute model space 3D point from the given opengl pixel location (window location) and modelview_projection_window matrix
 	/*! the function queries the window z coordinate from the depth buffer and inversely transforms the
 		window space 3D point with the given modelview_projection_window matrix */
 	inline vec3 get_model_point(int x_window, int y_window, const dmat4& modelview_projection_window_matrix) const {
 		return get_model_point(x_window, y_window, get_window_z(x_window, y_window), modelview_projection_window_matrix);
 	}
-	//! compute model space 3D point from the given window coordinates with the given modelview_projection_window matrix
+	//! compute model space 3D point from the given opengl pixel location (window location) with the given modelview_projection_window matrix
 	/*! the function inversely transforms the window space 3D point with the given
 		modelview_projection_window matrix */
 	inline static vec3 get_model_point(int x_window, int y_window, double z_window, const dmat4& modelview_projection_window_matrix) {

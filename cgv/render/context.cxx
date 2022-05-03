@@ -793,7 +793,7 @@ void context::process_text(const std::string& text)
 		case '\n' :
 			draw_text(text.substr(j,n));
 			cursor_x = x_offset+(int)(nr_identations*tab_size*current_font_size);
-			cursor_y += (int)(1.2f*current_font_size);
+			cursor_y -= (int)(1.2f*current_font_size);
 			at_line_begin = true;
 			j = i+1;
 			break;
@@ -1719,8 +1719,8 @@ context::dmat4 context::get_window_matrix(unsigned array_index) const
 	dmat4 M = cgv::math::identity4<double>();
 	M(0, 0) = 0.5*wt.viewport[2];
 	M(0, 3) = M(0, 0) + wt.viewport[0];
-	M(1, 1) = -0.5*wt.viewport[3];
-	M(1, 3) = get_height() + M(1, 1) - wt.viewport[1];
+	M(1, 1) = 0.5*wt.viewport[3];
+	M(1, 3) = M(1, 1) + wt.viewport[1];
 	M(2, 2) = 0.5*(wt.depth_range[1] - wt.depth_range[0]);
 	M(2, 3) = M(2, 2) + wt.depth_range[0];
 	return M;
@@ -1782,8 +1782,8 @@ void context::set_cursor(const vec_type& pos,
 		default: break;
 		}
 		switch (ta&12) {
-		case 0 : y += (int)(floor(h)*0.5f);break;
-		case 4 : y += (int)floor(h);break;
+		case 0 : y -= (int)(floor(h)*0.3f);break;
+		case 4 : y -= (int)(floor(h)*0.6f); break;
 		default: break;
 		}
 	}

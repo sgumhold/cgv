@@ -766,8 +766,8 @@ void plot_base::draw_title(cgv::render::context& ctx, vec2 pos, float depth, int
 
 	auto* cfg = get_domain_config_ptr();
 	if (si <= 0) {
-		vec2 pos_aligned = ff->align_text(pos, cfg->title, cgv::render::TA_NONE, rs, true);
-		unsigned cnt = ff->text_to_quads(pos_aligned, cfg->title, Q, rs, true);
+		vec2 pos_aligned = ff->align_text(pos, cfg->title, cgv::render::TA_NONE, rs);
+		unsigned cnt = ff->text_to_quads(pos_aligned, cfg->title, Q, rs);
 		for (unsigned j = 0; j < cnt; ++j)
 			C.push_back(cfg->title_color);
 	}
@@ -776,8 +776,8 @@ void plot_base::draw_title(cgv::render::context& ctx, vec2 pos, float depth, int
 		if (si != -1 && i != si)
 			continue;
 		const auto& spc = ref_sub_plot_config(i);
-		vec2 pos_aligned = ff->align_text(pos, cfg->title, cgv::render::TA_NONE, rs, true);
-		unsigned cnt = ff->text_to_quads(pos_aligned, spc.name, Q, 0.8f * rs, true);
+		vec2 pos_aligned = ff->align_text(pos, cfg->title, cgv::render::TA_NONE, rs);
+		unsigned cnt = ff->text_to_quads(pos_aligned, spc.name, Q, 0.8f * rs);
 		for (unsigned j = 0; j < cnt; ++j)
 			C.push_back(spc.ref_color.color);
 		pos[1] -= 4.0f * cfg->title_font_size * rs;
@@ -826,8 +826,8 @@ void plot_base::draw_tick_labels(cgv::render::context& ctx, cgv::render::attribu
 			for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
 				const label_info& li = tick_labels[i];
 				vec2 pos = vec2::from_vec(li.position);
-				pos = ff->align_text(pos, li.label, li.align, li.scale * rs, true);
-				unsigned cnt = ff->text_to_quads(pos, li.label, Q, li.scale * rs, true);
+				pos = ff->align_text(pos, li.label, li.align, li.scale * rs);
+				unsigned cnt = ff->text_to_quads(pos, li.label, Q, li.scale * rs);
 				for (unsigned i = 0; i < cnt; ++i)
 					C.push_back(get_domain_config_ptr()->axis_configs[tbc.ai].color);
 			}

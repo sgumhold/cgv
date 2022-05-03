@@ -160,16 +160,15 @@ bool planar_view_interactor::handle(event& e)
 	if (e.get_kind() == EID_MOUSE) 
 	{
 		cgv::gui::mouse_event me = (cgv::gui::mouse_event&) e;
+		int y_gl = get_context()->get_height() - 1 - me.get_y();
 		switch (me.get_action()) {
-		
-			
 		case MA_PRESS:
 			if ( (me.get_button_state() == MB_RIGHT_BUTTON && me.get_modifiers() == 0) ||
 				 (me.get_button_state() == MB_LEFT_BUTTON && me.get_modifiers() == 0) ||
 				 (me.get_button_state() == MB_MIDDLE_BUTTON && me.get_modifiers() == 0) )
 					{
 				pressed=true;
-				auto p = get_context()->get_model_point(me.get_x(), me.get_y(), 0.0, MPW);
+				auto p = get_context()->get_model_point(me.get_x(), y_gl, 0.0, MPW);
 				pos_down = vec2(p(0), p(1));
 				return true;
 			}
@@ -183,21 +182,21 @@ bool planar_view_interactor::handle(event& e)
 			if (me.get_button_state() == MB_RIGHT_BUTTON && me.get_modifiers() == 0 && (me.get_dx() != 0 || me.get_dy() != 0))
 			{
 				if(pressed == true)
-					move(me.get_x(),me.get_y());
+					move(me.get_x(), y_gl);
 				post_redraw();
 				return true;
 			}
 			else if (me.get_button_state() == MB_LEFT_BUTTON && me.get_modifiers() == 0 && (me.get_dx() != 0 || me.get_dy() != 0) && !lock_rotation)
 			{
 				if (pressed == true)
-					rotate(me.get_x(), me.get_y());
+					rotate(me.get_x(), y_gl);
 				post_redraw();
 				return true;
 			}
 			else if (me.get_button_state() == MB_MIDDLE_BUTTON && me.get_modifiers() == 0 && me.get_dy() != 0)
 			{
 				if (pressed == true)
-					zoom(me.get_x(), me.get_y(), me.get_dy());
+					zoom(me.get_x(), y_gl, me.get_dy());
 				post_redraw();
 				return true;
 			}
@@ -211,7 +210,7 @@ bool planar_view_interactor::handle(event& e)
 			{
 			
 
-				zoom(me.get_x(),me.get_y(),me.get_dy());
+				zoom(me.get_x(), y_gl,me.get_dy());
 				
 			//	return true;
 			}

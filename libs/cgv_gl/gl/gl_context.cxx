@@ -430,7 +430,7 @@ void gl_context::draw_textual_info()
 		push_pixel_coords();
 		enable_font_face(info_font_face, info_font_size);
 
-		set_cursor(20, 20);
+		set_cursor(20, get_height()-1-20);
 
 		if (bg_r + bg_g + bg_b < 1.5f)
 			set_color(rgba(1, 1, 1, 1));
@@ -829,14 +829,14 @@ void gl_context::push_pixel_coords()
 		glMatrixMode(GL_PROJECTION);
 		// set orthogonal projection
 		glLoadIdentity();
-		glOrtho(vp[0], vp[0]+vp[2], get_height()-vp[1], get_height() - (vp[1]+vp[3]), -1, 1);
+		glOrtho(vp[0], vp[0]+vp[2], vp[1], vp[1]+vp[3], -1, 1);
 		// push modelview matrix
 		glMatrixMode(GL_MODELVIEW);
 		// use identity for modelview
 		glLoadIdentity();
 	}
 	set_modelview_matrix(cgv::math::identity4<double>());
-	set_projection_matrix(cgv::math::ortho4<double>(vp[0], vp[0] + vp[2], get_height() - vp[1], get_height() - (vp[1]+vp[3]), -1, 1));
+	set_projection_matrix(cgv::math::ortho4<double>(vp[0], vp[0] + vp[2], vp[1], vp[1]+vp[3], -1, 1));
 }
 
 /// pop previously changed transformation matrices 
@@ -1382,7 +1382,7 @@ double gl_context::get_window_z(int x_window, int y_window) const
 	if (!in_render_process() && !is_current())
 		make_current();
 
-	glReadPixels(x_window, get_height()-y_window-1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z_window);
+	glReadPixels(x_window, y_window, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z_window);
 	/*
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
