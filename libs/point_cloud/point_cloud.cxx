@@ -790,16 +790,20 @@ bool point_cloud::read_txt(const std::string& file_name)
 
 		if (true) {
 			Pnt p;
-			double c[3], I;
+			int icol[3], iint;
+			double dcol[3];
 			char tmp = lines[i].end[0];
 			content[lines[i].end - content.c_str()] = 0;
-			if (sscanf(lines[i].begin, "%f %f %f %d %d %d %d", &p[0], &p[1], &p[2], &I, c, c + 1, c + 2) == 7) {
+			if (sscanf(lines[i].begin, "%f %f %f %d %d %d %d", &p[0], &p[1], &p[2], &iint, icol, icol + 1, icol + 2) == 7) 
+			{
 				P.push_back(p);
-				C.push_back(Clr(byte_to_color_component(c[0]), byte_to_color_component(c[1]), byte_to_color_component(c[2])));
+				C.push_back(Clr(byte_to_color_component(icol[0]), byte_to_color_component(icol[1]),
+								byte_to_color_component(icol[2])));
 			}
-			else if (sscanf(lines[i].begin, "%f %f %f %lf %lf %lf", &p[0], &p[1], &p[2], c, c + 1, c + 2) == 6) {
+			else if (sscanf(lines[i].begin, "%f %f %f %lf %lf %lf", &p[0], &p[1], &p[2], dcol, dcol + 1, dcol + 2) == 6) {
 				P.push_back(p);
-				C.push_back(Clr(float_to_color_component(c[0]), float_to_color_component(c[1]), float_to_color_component(c[2])));
+				C.push_back(Clr(float_to_color_component(dcol[0]), float_to_color_component(dcol[1]),
+								float_to_color_component(dcol[2])));
 			}
 			content[lines[i].end - content.c_str()] = tmp;
 		}
