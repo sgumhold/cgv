@@ -22,7 +22,8 @@ target_link_libraries(examples
         cgv_proc
         cgv_gl
         cgv_os
-        cgv_signal)
+        cgv_signal
+        cgv_glutil)
 
 add_dependencies(examples
         cgv_viewer
@@ -85,6 +86,7 @@ if (MSVC)
             cgv_proc_static
             cg_fltk_static
             crg_stereo_view_static
+            cgv_glutil_static
 
             #        cg_ext_static
             #        cg_icons_static

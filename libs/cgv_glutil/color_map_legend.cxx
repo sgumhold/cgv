@@ -140,8 +140,10 @@ void color_map_legend::init_frame(cgv::render::context& ctx) {
 #ifdef CGV_FORCE_STATIC 
 	if(!msdf_font.is_initialized()) {
 		if(msdf_font.init(ctx)) {
-			texts.set_msdf_font(&msdf_font);
-			texts.set_font_size(font_size);
+			//texts.set_msdf_font(&msdf_font);
+			labels.set_msdf_font(&msdf_font);
+			//texts.set_font_size(font_size);
+			labels.set_font_size(font_size);
 		}
 	}
 #endif
