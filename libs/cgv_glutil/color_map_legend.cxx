@@ -26,8 +26,8 @@ color_map_legend::color_map_legend() {
 	fbc.add_attachment("color", "flt32[R,G,B,A]");
 	fbc.set_size(get_overlay_size());
 
-	canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
-	//canvas.register_shader("color_maps", "color_maps.glpr");
+	_canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
+	//_canvas.register_shader("color_maps", "color_maps.glpr");
 
 	overlay_canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
 
@@ -57,12 +57,12 @@ void color_map_legend::clear(cgv::render::context& ctx) {
 	tex.clear();
 	tex.destruct(ctx);
 
-	msdf_font.destruct(ctx);
+	font.destruct(ctx);
 	font_renderer.destruct(ctx);
 
 	tick_renderer.destruct(ctx);
 
-	canvas.destruct(ctx);
+	_canvas.destruct(ctx);
 	overlay_canvas.destruct(ctx);
 	fbc.clear(ctx);
 }
@@ -106,7 +106,7 @@ bool color_map_legend::init(cgv::render::context& ctx) {
 	bool success = true;
 
 	success &= fbc.ensure(ctx);
-	success &= canvas.init(ctx);
+	success &= _canvas.init(ctx);
 	success &= overlay_canvas.init(ctx);
 
 	success &= font_renderer.init(ctx);
@@ -115,8 +115,8 @@ bool color_map_legend::init(cgv::render::context& ctx) {
 	if(success)
 		init_styles(ctx);
 #ifndef CGV_FORCE_STATIC 
-	if(msdf_font.init(ctx)) {
-		labels.set_msdf_font(&msdf_font);
+	if(font.init(ctx)) {
+		labels.set_msdf_font(&font);
 		labels.set_font_size(font_size);
 	}
 #endif
@@ -138,10 +138,10 @@ bool color_map_legend::init(cgv::render::context& ctx) {
 void color_map_legend::init_frame(cgv::render::context& ctx) {
 
 #ifdef CGV_FORCE_STATIC 
-	if(!msdf_font.is_initialized()) {
-		if(msdf_font.init(ctx)) {
-			//texts.set_msdf_font(&msdf_font);
-			labels.set_msdf_font(&msdf_font);
+	if(!font.is_initialized()) {
+		if(font.init(ctx)) {
+			//texts.set_msdf_font(&font);
+			labels.set_msdf_font(&font);
 			//texts.set_font_size(font_size);
 			labels.set_font_size(font_size);
 		}
@@ -154,7 +154,7 @@ void color_map_legend::init_frame(cgv::render::context& ctx) {
 		fbc.set_size(container_size);
 		fbc.ensure(ctx);
 
-		canvas.set_resolution(ctx, container_size);
+		_canvas.set_resolution(ctx, container_size);
 		overlay_canvas.set_resolution(ctx, get_viewport_size());
 
 		create_ticks();
@@ -192,27 +192,27 @@ void color_map_legend::draw(cgv::render::context& ctx) {
 	ivec2 container_size = get_overlay_size();
 
 	// draw container
-	auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
+	auto& rect_prog = _canvas.enable_shader(ctx, "rectangle");
 	container_style.apply(ctx, rect_prog);
-	canvas.draw_shape(ctx, ivec2(0), container_size);
+	_canvas.draw_shape(ctx, ivec2(0), container_size);
 
 	// draw inner border
 	border_style.apply(ctx, rect_prog);
-	canvas.draw_shape(ctx, layout.color_map_rect.pos() - 1, layout.color_map_rect.size() + 2);
-	//canvas.disable_current_shader(ctx);
+	_canvas.draw_shape(ctx, layout.color_map_rect.pos() - 1, layout.color_map_rect.size() + 2);
+	//_canvas.disable_current_shader(ctx);
 
 	// draw color scale texture
-	//auto& color_maps_prog = canvas.enable_shader(ctx, "rectangle");
+	//auto& color_maps_prog = _canvas.enable_shader(ctx, "rectangle");
 	color_map_style.apply(ctx, rect_prog);
 	tex.enable(ctx, 0);
-	canvas.draw_shape(ctx, layout.color_map_rect.pos(), layout.color_map_rect.size());
+	_canvas.draw_shape(ctx, layout.color_map_rect.pos(), layout.color_map_rect.size());
 	tex.disable(ctx);
-	canvas.disable_current_shader(ctx);
+	_canvas.disable_current_shader(ctx);
 
 	// draw tick marks
 	auto& tick_prog = tick_renderer.ref_prog();
 	tick_prog.enable(ctx);
-	canvas.set_view(ctx, tick_prog);
+	_canvas.set_view(ctx, tick_prog);
 	tick_prog.disable(ctx);
 	tick_renderer.render(ctx, PT_POINTS, ticks);
 
@@ -220,7 +220,7 @@ void color_map_legend::draw(cgv::render::context& ctx) {
 	auto& font_prog = font_renderer.ref_prog();
 	font_prog.enable(ctx);
 	text_style.apply(ctx, font_prog);
-	canvas.set_view(ctx, font_prog);
+	_canvas.set_view(ctx, font_prog);
 	font_prog.disable(ctx);
 	font_renderer.render(ctx, get_overlay_size(), labels);
 
