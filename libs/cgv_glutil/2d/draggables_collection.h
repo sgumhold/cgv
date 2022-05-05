@@ -16,7 +16,7 @@ template<class T>
 class draggables_collection : public cgv::render::render_types {
 protected:
 	typedef typename std::remove_pointer<T>::type raw_type;
-	typedef typename raw_type* ptr_type;
+	typedef          raw_type* ptr_type;
 	typedef typename std::conditional<std::is_pointer<T>::value, ptr_type, raw_type&>::type accessor_type;
 
 	static_assert(std::is_base_of<draggable, raw_type>::value, "T must inherit from draggable");
@@ -98,7 +98,7 @@ public:
 	}
 
 	void remove_constraint() {
-		constraint_area = cgv::glutil::overlay::rect();
+		constraint_area = rect();
 		has_constraint = false;
 	}
 

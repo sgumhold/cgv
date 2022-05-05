@@ -264,9 +264,12 @@ void volume_viewer::init_frame(cgv::render::context& ctx) {
 
 void volume_viewer::draw(cgv::render::context& ctx) 
 {
+	// default render style for the bounding box
+	static const cgv::render::box_wire_render_style box_rs;
+
 	// render the wireframe bounding box if enabled
 	if(show_box)
-		box_rd.render(ctx, cgv::render::ref_box_wire_renderer(ctx), cgv::render::box_wire_render_style());
+		box_rd.render(ctx, cgv::render::ref_box_wire_renderer(ctx), box_rs);
 
 	// render the volume
 	auto& vr = cgv::render::ref_volume_renderer(ctx);
