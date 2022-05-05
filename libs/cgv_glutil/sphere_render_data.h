@@ -19,8 +19,14 @@ class sphere_render_data : public render_data_base<ColorType> {
 protected:
 	std::vector<float> rad;
 
-	bool transfer(context& ctx, sphere_renderer& r) {
-		if(render_data_base<>::transfer(ctx, r)) {
+	bool transfer(context& ctx, sphere_renderer& r)
+	{
+	#ifdef _MSC_VER
+		if(render_data_base::transfer(ctx, r))
+	#else
+		if(render_data_base<>::transfer(ctx, r))
+	#endif 
+		{
 			if(rad.size() == this->size())
 				r.set_radius_array(ctx, rad);
 			return true;
@@ -29,8 +35,13 @@ protected:
 	}
 
 public:
-	void clear() {
+	void clear()
+	{
+	#ifdef _MSC_VER
+		render_data_base::clear();
+	#else
 		render_data_base<>::clear();
+	#endif 
 		rad.clear();
 	}
 
