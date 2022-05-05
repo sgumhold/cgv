@@ -325,7 +325,8 @@ bool vr_scene::init(cgv::render::context& ctx)
 }
 void vr_scene::init_frame(cgv::render::context& ctx)
 {
-	set_coordinate_systems(vr_view_ptr ? vr_view_ptr->get_current_vr_state() : 0, table.empty() ? 0 : &mat34(4, 4, table->get_transform()));
+	mat34 table_pose(4, 4, table->get_transform());
+	set_coordinate_systems(vr_view_ptr ? vr_view_ptr->get_current_vr_state() : 0, table.empty() ? 0 : &table_pose);
 	label_drawable::init_frame(ctx);
 	if (environment_mode == EM_SKYBOX) {
 		static std::string last_file_names;
