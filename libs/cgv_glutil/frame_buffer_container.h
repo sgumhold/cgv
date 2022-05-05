@@ -30,7 +30,7 @@ protected:
 		std::string format;
 		TextureFilter tf;
 		TextureWrap tw;
-		texture texture;
+		texture tex;
 
 		bool is_depth_attachment() {
 			return

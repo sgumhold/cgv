@@ -21,7 +21,7 @@ void frame_buffer_container::clear(context& ctx) {
 	index_counter = 0;
 	for(auto it = attachments.begin(); it != attachments.end(); ++it) {
 		attachment& a = (*it).second;
-		a.texture.destruct(ctx);
+		a.tex.destruct(ctx);
 	}
 }
 
@@ -69,7 +69,7 @@ bool frame_buffer_container::enable_attachment(context& ctx, const std::string& 
 	auto elem = attachments.find(name);
 	if(elem != attachments.end()) {
 		attachment& a = (*elem).second;
-		return a.texture.enable(ctx, tex_unit);
+		return a.tex.enable(ctx, tex_unit);
 	}
 
 	return false;
@@ -80,7 +80,7 @@ bool frame_buffer_container::disable_attachment(context& ctx, const std::string&
 	auto elem = attachments.find(name);
 	if(elem != attachments.end()) {
 		attachment& a = (*elem).second;
-		return a.texture.disable(ctx);
+		return a.tex.disable(ctx);
 	}
 
 	return false;
@@ -91,7 +91,7 @@ texture* frame_buffer_container::attachment_texture_ptr(const std::string& name)
 	auto elem = attachments.find(name);
 	if(elem != attachments.end()) {
 		attachment& a = (*elem).second;
-		return &a.texture;
+		return &a.tex;
 	}
 
 	return nullptr;
@@ -140,17 +140,17 @@ bool frame_buffer_container::create_and_validate(context& ctx, const ivec2& size
 		// specifiers larger than 1 are using mipmaps
 		bool use_mipmaps = filter_specifier > 1;
 
-		a.texture = texture(a.format, mag_filter, a.tf, a.tw, a.tw);
-		a.texture.create(ctx, TT_2D, size.x(), size.y());
+		a.tex = texture(a.format, mag_filter, a.tf, a.tw, a.tw);
+		a.tex.create(ctx, TT_2D, size.x(), size.y());
 
 		if(use_mipmaps)
-			a.texture.generate_mipmaps(ctx);
+			a.tex.generate_mipmaps(ctx);
 
 		if(a.is_depth_attachment()) {
-			fb.attach(ctx, a.texture);
+			fb.attach(ctx, a.tex);
 		} else {
 			if(a.attach) {
-				fb.attach(ctx, a.texture, 0, a.index);
+				fb.attach(ctx, a.tex, 0, a.index);
 			}
 		}
 	}
