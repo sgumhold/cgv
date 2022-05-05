@@ -60,7 +60,12 @@ void shader_code::decode_if_base64(std::string& content) {
 	// TODO: on some occasions the encoded string starts with other characters than § (why is this the case?)
 #ifdef _WIN32
 	if (!content.empty()) {
-		if(content[0] == '§')
+		// test if the first character is equal to the base64 prefix (ANSI 'paragraph' char with hexcode A7)
+		if(content[0] == char(0xA7)) {
+			content = cgv::utils::decode_base64(content.substr(1));
+		}
+
+		/*if(content[0] == '§')
 			content = cgv::utils::decode_base64(content.substr(1));
 		else if (
 			content.size() > 2 &&
@@ -68,7 +73,7 @@ void shader_code::decode_if_base64(std::string& content) {
 			(int)content[1] == -65 &&
 			(int)content[2] == -67) {
 			content = cgv::utils::decode_base64(content.substr(3));
-		}
+		}*/
 	}
 #else
 	if (content.size() > 1) {
