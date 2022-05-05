@@ -22,11 +22,19 @@ protected:
 	canvas canvas, overlay_canvas;
 	shape2d_style container_style, border_style, color_map_style;
 
+	enum OrientationOption {
+		OO_HORIZONTAL,
+		OO_VERTICAL
+	};
+
 	struct layout_attributes {
 		int padding;
 		int label_space = 12;
 		//int band_height;
 		int total_height;
+
+		OrientationOption orientation;
+		AlignmentOption label_alignment;
 
 		// dependent members
 		rect color_map_rect;

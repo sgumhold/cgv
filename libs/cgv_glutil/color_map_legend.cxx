@@ -432,9 +432,9 @@ void color_map_legend::init_styles(context& ctx) {
 	
 	// configure text style
 	text_style.fill_color = rgba(rgb(0.0f), 1.0f);
-	text_style.border_color = group_color;
+	text_style.border_color = rgba(0.0f);// group_color;
 	text_style.border_width = 0.5f;
-	text_style.feather_origin = 0.35f;
+	text_style.feather_origin = 0.5f; // 0.35f
 	text_style.use_blending = true;
 
 	shape2d_style tick_style;
