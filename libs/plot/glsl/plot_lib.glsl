@@ -102,7 +102,7 @@ uniform float size_min[MAX_NR_SIZE_MAPPINGS] = { 0.2, 0.2 };
 bool discard_vertex(inout float attributes[8])
 {
 	for (int ai = 0; ai < 4; ++ai) {
-		// save this in a local variable first to prevent AMD driver compile error
+		// create a local variable first to prevent AMD driver compile error
 		int mode = out_of_range_mode[ai];
 		switch (mode) {
 		case 0: continue;
