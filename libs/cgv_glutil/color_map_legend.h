@@ -19,7 +19,7 @@ protected:
 	int last_theme_idx = -1;
 	frame_buffer_container fbc;
 
-	canvas canvas, overlay_canvas;
+	canvas _canvas, overlay_canvas;
 	shape2d_style container_style, border_style, color_map_style;
 
 	enum OrientationOption {
@@ -59,7 +59,7 @@ protected:
 	cgv::render::TextAlignment text_align_h, text_align_v;
 
 	shape2d_style text_style;
-	msdf_font msdf_font;
+	msdf_font font;
 	msdf_gl_font_renderer font_renderer;
 	msdf_text_geometry labels;
 
