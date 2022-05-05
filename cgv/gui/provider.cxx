@@ -507,7 +507,7 @@ void provider::post_recreate_gui()
 		std::set<provider*>& ps = ref_providers();
 		if (ps.find(this) == ps.end()) {
 			bool dont_insert = false;
-			if (!ref_one_shot_trigger().is_scheduled())
+			if (!ref_one_shot_trigger().is_scheduled() && get_trigger_server())
 				if (!ref_one_shot_trigger().schedule_one_shot(0))
 					dont_insert = true;
 			if (!dont_insert)
