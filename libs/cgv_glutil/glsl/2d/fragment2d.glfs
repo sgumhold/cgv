@@ -111,8 +111,7 @@ void finish_sdf_fragment2d(in float signed_distance, in vec4 color) {
 void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords) {
 	
 	if(use_texture) {
-		//vec4 tex_color = texture(tex, tex_scaling * texcoords);
-		vec4 tex_color = texture(tex, texcoords);
+		vec4 tex_color = texture(tex, tex_scaling * texcoords);
 		if(use_texture_alpha) color = tex_color;
 		else color.rgb = tex_color.rgb;
 	}
