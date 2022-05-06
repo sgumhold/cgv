@@ -22,7 +22,13 @@ var hierarchy =
     [ "cgv::base::config_file_driver", "structcgv_1_1base_1_1config__file__driver.html", null ],
     [ "cgv::base::config_file_observer", "structcgv_1_1base_1_1config__file__observer.html", null ],
     [ "cgv::base::driver", "structcgv_1_1base_1_1driver.html", [
-      [ "cgv::gui::gui_driver", "classcgv_1_1gui_1_1gui__driver.html", null ]
+      [ "cgv::gui::gui_driver", "classcgv_1_1gui_1_1gui__driver.html", null ],
+      [ "cgv::media::image::abst_image_reader", "classcgv_1_1media_1_1image_1_1abst__image__reader.html", [
+        [ "cgv::media::image::bmp_reader", "classcgv_1_1media_1_1image_1_1bmp__reader.html", null ]
+      ] ],
+      [ "cgv::media::image::abst_image_writer", "classcgv_1_1media_1_1image_1_1abst__image__writer.html", [
+        [ "cgv::media::image::bmp_writer", "classcgv_1_1media_1_1image_1_1bmp__writer.html", null ]
+      ] ]
     ] ],
     [ "cgv::base::factory_registration< T >", "structcgv_1_1base_1_1factory__registration.html", null ],
     [ "cgv::base::factory_registration_1< T, CA >", "structcgv_1_1base_1_1factory__registration__1.html", null ],
@@ -44,7 +50,9 @@ var hierarchy =
     [ "cgv::base::resource_file_registration", "structcgv_1_1base_1_1resource__file__registration.html", null ],
     [ "cgv::base::resource_string_registration", "structcgv_1_1base_1_1resource__string__registration.html", null ],
     [ "cgv::base::server", "structcgv_1_1base_1_1server.html", [
-      [ "cgv::media::font::font_server", "classcgv_1_1media_1_1font_1_1font__server.html", null ]
+      [ "cgv::media::font::font_server", "classcgv_1_1media_1_1font_1_1font__server.html", null ],
+      [ "cgv::media::image::reader_listener", "structcgv_1_1media_1_1image_1_1reader__listener.html", null ],
+      [ "cgv::media::image::writer_listener", "structcgv_1_1media_1_1image_1_1writer__listener.html", null ]
     ] ],
     [ "cgv::base::test_registration", "structcgv_1_1base_1_1test__registration.html", null ],
     [ "cgv::base::traverse_callback_handler", "classcgv_1_1base_1_1traverse__callback__handler.html", null ],
@@ -118,12 +126,8 @@ var hierarchy =
         [ "cgv::media::font::font", "classcgv_1_1media_1_1font_1_1font.html", null ],
         [ "cgv::media::font::font_face", "classcgv_1_1media_1_1font_1_1font__face.html", null ],
         [ "cgv::media::font::font_server", "classcgv_1_1media_1_1font_1_1font__server.html", null ],
-        [ "cgv::media::image::abst_image_reader", "classcgv_1_1media_1_1image_1_1abst__image__reader.html", [
-          [ "cgv::media::image::bmp_reader", "classcgv_1_1media_1_1image_1_1bmp__reader.html", null ]
-        ] ],
-        [ "cgv::media::image::abst_image_writer", "classcgv_1_1media_1_1image_1_1abst__image__writer.html", [
-          [ "cgv::media::image::bmp_writer", "classcgv_1_1media_1_1image_1_1bmp__writer.html", null ]
-        ] ],
+        [ "cgv::media::image::abst_image_reader", "classcgv_1_1media_1_1image_1_1abst__image__reader.html", null ],
+        [ "cgv::media::image::abst_image_writer", "classcgv_1_1media_1_1image_1_1abst__image__writer.html", null ],
         [ "cgv::media::image::image_reader", "classcgv_1_1media_1_1image_1_1image__reader.html", null ],
         [ "cgv::media::image::image_writer", "classcgv_1_1media_1_1image_1_1image__writer.html", null ],
         [ "cgv::media::image::reader_listener", "structcgv_1_1media_1_1image_1_1reader__listener.html", null ],
