@@ -1,11 +1,7 @@
 #include "color_map_legend.h"
 
-//#include <cgv/math/ftransform.h>
-//#include <cgv_gl/gl/gl.h>
-
-#include <cgv/utils/convert_string.h>
-
 #include <cgv/gui/theme_info.h>
+#include <cgv/math/ftransform.h>
 
 namespace cgv {
 namespace glutil {
@@ -15,12 +11,12 @@ color_map_legend::color_map_legend() {
 	set_name("Color Map Legend");
 
 	layout.padding = 13; // 10px plus 3px border
-	layout.total_height = 50;
+	layout.total_size = ivec2(300, 300);
 
 	set_overlay_alignment(AO_START, AO_END);
 	set_overlay_stretch(SO_NONE);
 	set_overlay_margin(ivec2(-3));
-	set_overlay_size(ivec2(300, layout.total_height));
+	set_overlay_size(layout.total_size);
 
 	fbc.add_attachment("color", "flt32[R,G,B,A]");
 	fbc.set_size(get_overlay_size());
@@ -64,13 +60,14 @@ bool color_map_legend::handle_event(cgv::gui::event& e) {
 
 void color_map_legend::on_set(void* member_ptr) {
 
-	if(member_ptr == &layout.total_height) {
+	if(member_ptr == &layout.total_size[0] || member_ptr == &layout.total_size[1]) {
 		vec2 size = get_overlay_size();
 
-		layout.total_height = std::max(layout.total_height, 2 * layout.padding + 4 + layout.label_space);
+		// TODO: minimum width and height depend on other layout parameters
+		//layout.total_size.y() = std::max(layout.total_size.y(), 2 * layout.padding + 4 + layout.label_space);
+		layout.total_size.y() = std::max(layout.total_size.y(), 2 * layout.padding + 4 + layout.label_space);
 
-		size.y() = layout.total_height;
-		set_overlay_size(size);
+		set_overlay_size(layout.total_size);
 	}
 
 	if(member_ptr == &show_background || member_ptr == &invert_color) {
@@ -79,9 +76,9 @@ void color_map_legend::on_set(void* member_ptr) {
 			init_styles(*ctx_ptr);
 	}
 
-	if(member_ptr == &layout.label_alignment) {
+	if(member_ptr == &range[0] || member_ptr == &range[1] || member_ptr == &layout.orientation || member_ptr == &layout.label_alignment || member_ptr == &layout.x_label_size) {
+		layout.set_label_space();
 		update_layout = true;
-		create_ticks();
 	}
 
 	if(member_ptr == &range ||
@@ -184,6 +181,8 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	//TODO: stupt proper bak to front blending equation
+
 	fbc.enable(ctx);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -204,11 +203,27 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 	_canvas.draw_shape(ctx, layout.color_map_rect.pos() - 1, layout.color_map_rect.size() + 2);
 
 	if(tex.is_created()) {
+		_canvas.push_modelview_matrix();
+		ivec2 pos = layout.color_map_rect.pos();
+		ivec2 size = layout.color_map_rect.size();
+		float angle = 0.0f;
+
+		if(layout.orientation == OO_VERTICAL) {
+			pos.x() += layout.color_map_rect.size().x();
+			std::swap(size.x(), size.y());
+			angle = 90.0f;
+		}
+
+		_canvas.mul_modelview_matrix(ctx, cgv::math::translate2h(pos));
+		_canvas.mul_modelview_matrix(ctx, cgv::math::rotate2h(angle));
+
 		// draw color scale texture
 		color_map_style.apply(ctx, rect_prog);
 		tex.enable(ctx, 0);
-		_canvas.draw_shape(ctx, layout.color_map_rect.pos(), layout.color_map_rect.size());
+		_canvas.draw_shape(ctx, ivec2(0), size);
 		tex.disable(ctx);
+
+		_canvas.pop_modelview_matrix(ctx);
 	}
 	_canvas.disable_current_shader(ctx);
 
@@ -238,19 +253,24 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 void color_map_legend::create_gui() {
 
 	create_overlay_gui();
-	add_member_control(this, "Height", layout.total_height, "value_slider", "min=40;max=80;step=1;ticks=true");
+	add_member_control(this, "Width", layout.total_size[0], "value_slider", "min=40;max=500;step=1;ticks=true");
+	add_member_control(this, "Height", layout.total_size[1], "value_slider", "min=40;max=500;step=1;ticks=true");
+	add_member_control(this, "LS", layout.x_label_size, "value_slider", "min=0;max=100;step=1;ticks=true");
+
+	add_member_control(this, "Range A", range[0], "value_slider", "min=-10000;max=0;step=1;ticks=true;log=true");
+	add_member_control(this, "Range B", range[1], "value_slider", "min=0;max=10000;step=1;ticks=true;log=true");
 
 	add_member_control(this, "Background", show_background, "check", "w=100", " ");
 	add_member_control(this, "Invert Color", invert_color, "check");
+
+	add_member_control(this, "Orientation", layout.orientation, "dropdown", "enums='Horizontal,Vertical'");
+	add_member_control(this, "Label Alignment", layout.label_alignment, "dropdown", "enums='-,Before,Inside,After'");
 
 	add_member_control(this, "Ticks", num_ticks, "value", "min=2;max=10;step=1");
 	std::string options = "w=140;min=0;max=10;step=1";//; active = ";
 	//options += label_auto_precision ? "false" : "true";
 	add_member_control(this, "Number Precision", label_precision, "value", options, " ");
 	add_member_control(this, "Auto", label_auto_precision, "check");
-
-
-	add_member_control(this, "Label Alignment", layout.label_alignment, "dropdown", "enums='-,Before,Inside,After'");
 }
 
 void color_map_legend::create_gui(cgv::gui::provider& p) {}
@@ -385,34 +405,56 @@ void color_map_legend::create_ticks() {
 	ticks.clear();
 	labels.clear();
 
-	int width = layout.color_map_rect.size().x();
+	ivec2 tick_size(1, 6);
 
-	float step = static_cast<float>(width + 1) / static_cast<float>(num_ticks - 1);
+	int axis = 0;
+	int label_offset = 4;
+	AlignmentOption label_alignment = layout.label_alignment;
+	cgv::render::TextAlignment text_h_start = cgv::render::TextAlignment::TA_LEFT;
+	cgv::render::TextAlignment text_h_end = cgv::render::TextAlignment::TA_RIGHT;
+	cgv::render::TextAlignment text_v_start = cgv::render::TextAlignment::TA_TOP;
+	cgv::render::TextAlignment text_v_end = cgv::render::TextAlignment::TA_BOTTOM;
 
-	int y_tick, y_label;
-	int ys_tick = 0.5f*layout.label_space;
+	if(layout.orientation == OO_VERTICAL) {
+		axis = 1;
+		label_offset = 6;
+		
+		std::swap(tick_size.x(), tick_size.y());
+
+		if(label_alignment == AO_START) label_alignment = AO_END;
+		else if(label_alignment == AO_END) label_alignment = AO_START;
+
+		text_h_start = cgv::render::TextAlignment::TA_BOTTOM;
+		text_h_end = cgv::render::TextAlignment::TA_TOP;
+		text_v_start = cgv::render::TextAlignment::TA_RIGHT;
+		text_v_end = cgv::render::TextAlignment::TA_LEFT;
+	}
+
+	ivec2 color_rect_pos = layout.color_map_rect.pos();
+	ivec2 color_rect_size = layout.color_map_rect.size();
+
+	int length = color_rect_size[axis];
+	float step = static_cast<float>(length + 1) / static_cast<float>(num_ticks - 1);
+
+	ivec2 tick_start = color_rect_pos;
+	
 	cgv::render::TextAlignment text_alignment;
 
 	bool inside = false;
-	switch(layout.label_alignment) {
-	case AO_FREE:
-		return;
+	switch(label_alignment) {
 	case AO_START:
-		text_alignment = cgv::render::TextAlignment::TA_BOTTOM;
-		y_tick = layout.color_map_rect.size().y() + layout.padding + 0.25f*layout.label_space;
-		y_label = layout.color_map_rect.size().y() + layout.padding + 0.5f*layout.label_space + 2;
+		tick_start[1 - axis] += color_rect_size[1 - axis] + 3;
+		text_alignment = text_v_end;
 		break;
 	case AO_CENTER:
+		tick_start[1 - axis] += 3;
 		inside = true;
-		text_alignment = cgv::render::TextAlignment::TA_BOTTOM;
-		y_tick = layout.color_map_rect.pos().y() + 0.125f*layout.color_map_rect.size().y();
-		ys_tick = 0.25f*layout.color_map_rect.size().y();
-		y_label = layout.color_map_rect.pos().y() + 0.25f*layout.color_map_rect.size().y() + 2;
+		text_alignment = text_v_end;
 		break;
 	case AO_END:
-		text_alignment = cgv::render::TextAlignment::TA_TOP;
-		y_tick = layout.padding + 0.75f*layout.label_space;
-		y_label = layout.padding + 0.5f*layout.label_space;
+		tick_start[1 - axis] -= 3;
+		label_offset = -label_offset;
+		text_alignment = text_v_start;
 		break;
 	default: break;
 	}
@@ -438,25 +480,31 @@ void color_map_legend::create_ticks() {
 
 	for(size_t i = 0; i < num_ticks; ++i) {
 		float fi = static_cast<float>(i);
-		int x = layout.padding + layout.label_space + static_cast<int>(round(fi * step));
-		ticks.add(ivec2(x, y_tick), ivec2(1, ys_tick));
-
+		int offset = static_cast<int>(round(fi * step));
 		float t = fi / static_cast<float>(num_ticks - 1);
 		float val = cgv::math::lerp(range.x(), range.y(), t);
-
 		std::string str = cgv::utils::to_string(val, -1, precision);
 
-		cgv::render::TextAlignment alignment = text_alignment;
-		if(inside)
-			if(i == 0) {
-				x += 2;
-				alignment = static_cast<cgv::render::TextAlignment>(alignment | cgv::render::TextAlignment::TA_LEFT);
-			} else if(i == num_ticks - 1) {
-				x -= 2;
-				alignment = static_cast<cgv::render::TextAlignment>(alignment | cgv::render::TextAlignment::TA_RIGHT);
-			}
+		ivec2 tick_pos = tick_start;
+		tick_pos[axis] += offset;
 
-		labels.add_text(str, ivec2(x, y_label), alignment);
+		ivec2 label_pos = tick_start;
+		label_pos[1 - axis] += label_offset;
+		label_pos[axis] += offset;
+
+		cgv::render::TextAlignment alignment = text_alignment;
+		if(inside) {
+			if(i == 0) {
+				label_pos[axis] += 3;
+				alignment = static_cast<cgv::render::TextAlignment>(alignment | text_h_start);
+			} else if(i == num_ticks - 1) {
+				label_pos[axis] -= 3;
+				alignment = static_cast<cgv::render::TextAlignment>(alignment | text_h_end);
+			}
+		}
+
+		ticks.add(tick_pos, tick_size);
+		labels.add_text(str, label_pos, alignment);
 	}
 }
 

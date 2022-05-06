@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv/render/texture.h>
+#include <cgv/utils/convert_string.h>
 #include <cgv_glutil/color_map.h>
 #include <cgv_glutil/frame_buffer_container.h>
 #include <cgv_glutil/generic_renderer.h>
@@ -29,37 +30,62 @@ protected:
 
 	struct layout_attributes {
 		int padding;
-		int label_space = 12;
-		//int band_height;
-		int total_height;
+		static const int h_label_space = 12;
+		static const int v_label_space = 48;
+		int label_space = h_label_space;
 
-		OrientationOption orientation;
+		int x_label_size = label_space;
+
+		//int band_height;
+		ivec2 total_size;
+
+		OrientationOption orientation = OO_HORIZONTAL;
 		AlignmentOption label_alignment = AO_END;
 
 		// dependent members
 		rect color_map_rect;
 
 		void update(const ivec2& parent_size) {
-			ivec2 offset(label_space, 0);
-			ivec2 size(parent_size.x() - 2 * label_space, parent_size.y());
+			ivec2 offset(0, 0);
+			ivec2 size(parent_size);
 
-			switch(label_alignment) {
-			case AO_FREE:
-				break;
+			int axis = 1;
+			AlignmentOption alignment = label_alignment;
+			switch(alignment) {
 			case AO_START:
-				size.y() -= label_space;
-				break;
-			case AO_CENTER:
+				if(orientation == OO_HORIZONTAL) {
+					offset.x() = x_label_size;
+					size.x() -= 2 * x_label_size;
+					size.y() -= label_space;
+				} else {
+					offset.x() = x_label_size;
+					offset.y() = 0;
+					size.x() -= x_label_size;
+					size.y() -= 0;
+				}
 				break;
 			case AO_END:
-				offset.y() = label_space;
-				size.y() -= label_space;
+				if(orientation == OO_HORIZONTAL) {
+					offset.x() = x_label_size;
+					offset.y() = label_space;
+					size.x() -= 2 * x_label_size;
+					size.y() -= label_space;
+				} else {
+					offset.x() = 0;
+					offset.y() = 0;
+					size.x() -= x_label_size;
+					size.y() -= 0;
+				}
 				break;
 			default: break;
 			}
 
 			color_map_rect.set_pos(offset + padding);
 			color_map_rect.set_size(size - 2 * padding);
+		}
+
+		void set_label_space() {
+			label_space = orientation == OO_HORIZONTAL ? h_label_space : v_label_space;
 		}
 	} layout;
 
