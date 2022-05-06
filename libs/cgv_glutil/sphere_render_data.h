@@ -16,17 +16,14 @@ class sphere_render_data : public render_data_base<ColorType> {
 	// be inherited again according to C++ spec
 	typedef render_types::vec3 vec3;
 
+	// Base class we're going to use virtual functions from
+	typedef render_data_base<ColorType> super;
+
 protected:
 	std::vector<float> rad;
 
-	bool transfer(context& ctx, sphere_renderer& r)
-	{
-	#ifdef _MSC_VER
-		if(render_data_base::transfer(ctx, r))
-	#else
-		if(render_data_base<>::transfer(ctx, r))
-	#endif 
-		{
+	bool transfer(context& ctx, sphere_renderer& r) {
+		if(super::transfer(ctx, r)) {
 			if(rad.size() == this->size())
 				r.set_radius_array(ctx, rad);
 			return true;
@@ -35,13 +32,8 @@ protected:
 	}
 
 public:
-	void clear()
-	{
-	#ifdef _MSC_VER
-		render_data_base::clear();
-	#else
-		render_data_base<>::clear();
-	#endif 
+	void clear() {
+		super::clear();
 		rad.clear();
 	}
 
