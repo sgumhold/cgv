@@ -9,9 +9,10 @@ namespace glutil {
 color_map_legend::color_map_legend() {
 
 	set_name("Color Map Legend");
+	block_events = false;
 
 	layout.padding = 13; // 10px plus 3px border
-	layout.total_size = ivec2(300, 300);
+	layout.total_size = ivec2(300, 50);
 
 	set_overlay_alignment(AO_START, AO_END);
 	set_overlay_stretch(SO_NONE);
@@ -64,7 +65,6 @@ void color_map_legend::on_set(void* member_ptr) {
 		vec2 size = get_overlay_size();
 
 		// TODO: minimum width and height depend on other layout parameters
-		//layout.total_size.y() = std::max(layout.total_size.y(), 2 * layout.padding + 4 + layout.label_space);
 		layout.total_size.y() = std::max(layout.total_size.y(), 2 * layout.padding + 4 + layout.label_space);
 
 		set_overlay_size(layout.total_size);
@@ -76,17 +76,19 @@ void color_map_legend::on_set(void* member_ptr) {
 			init_styles(*ctx_ptr);
 	}
 
-	if(member_ptr == &range[0] || member_ptr == &range[1] || member_ptr == &layout.orientation || member_ptr == &layout.label_alignment || member_ptr == &layout.x_label_size) {
-		layout.set_label_space();
-		update_layout = true;
+	if(member_ptr == &num_ticks) {
+		num_ticks = cgv::math::clamp(num_ticks, 2u, 100u);
 	}
 
-	if(member_ptr == &range ||
+	if(/*TODO: remove this line*/ member_ptr == &range[0] || member_ptr == &range[1] ||
+		member_ptr == &layout.orientation ||
+		member_ptr == &layout.label_alignment ||
+		member_ptr == &range ||
 		member_ptr == &num_ticks ||
 		member_ptr == &label_auto_precision ||
 		member_ptr == &label_precision) {
-		num_ticks = cgv::math::clamp(num_ticks, 2u, 100u);
-		create_ticks();
+
+		update_layout = true;
 	}
 
 	set_damaged();
@@ -107,38 +109,38 @@ bool color_map_legend::init(cgv::render::context& ctx) {
 
 	if(success)
 		init_styles(ctx);
-#ifndef CGV_FORCE_STATIC 
+//#ifndef CGV_FORCE_STATIC 
 	if(font.init(ctx)) {
 		labels.set_msdf_font(&font);
 		labels.set_font_size(font_size);
 	}
-#endif
+//#endif
 	return success;
 }
 
 void color_map_legend::init_frame(cgv::render::context& ctx) {
 
-#ifdef CGV_FORCE_STATIC
+/*#ifdef CGV_FORCE_STATIC
 	if(!font.is_initialized()) {
 		if(font.init(ctx)) {
 			labels.set_msdf_font(&font);
 			labels.set_font_size(font_size);
 		}
 	}
-#endif
+#endif*/
 	if(ensure_overlay_layout(ctx) || update_layout) {
 		update_layout = false;
 
 		ivec2 container_size = get_overlay_size();
+		create_labels();
 		layout.update(container_size);
+		create_ticks();
 
 		fbc.set_size(container_size);
 		fbc.ensure(ctx);
 
 		_canvas.set_resolution(ctx, container_size);
 		overlay_canvas.set_resolution(ctx, get_viewport_size());
-
-		create_ticks();
 
 		has_damage = true;
 	}
@@ -181,7 +183,7 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	//TODO: stupt proper bak to front blending equation
+	//TODO: setup proper bak to front blending equation
 
 	fbc.enable(ctx);
 
@@ -255,7 +257,6 @@ void color_map_legend::create_gui() {
 	create_overlay_gui();
 	add_member_control(this, "Width", layout.total_size[0], "value_slider", "min=40;max=500;step=1;ticks=true");
 	add_member_control(this, "Height", layout.total_size[1], "value_slider", "min=40;max=500;step=1;ticks=true");
-	add_member_control(this, "LS", layout.x_label_size, "value_slider", "min=0;max=100;step=1;ticks=true");
 
 	add_member_control(this, "Range A", range[0], "value_slider", "min=-10000;max=0;step=1;ticks=true;log=true");
 	add_member_control(this, "Range B", range[1], "value_slider", "min=0;max=10000;step=1;ticks=true;log=true");
@@ -400,10 +401,54 @@ void color_map_legend::init_styles(context& ctx) {
 	overlay_canvas.disable_current_shader(ctx);
 }
 
+void color_map_legend::create_labels() {
+
+	labels.clear();
+
+	unsigned precision = label_precision;
+	if(label_auto_precision) {
+		float m = std::max(abs(range.x()), abs(range.y()));
+		if(m >= 10000.0f) {
+			precision = 0;
+		} else {
+			if(m >= 1000.0f)
+				precision = 4;
+			else if(m >= 100.0f)
+				precision = 3;
+			else if(m >= 10.0f)
+				precision = 2;
+			else if(m >= 1.0f)
+				precision = 1;
+			else
+				precision = 0;
+		}
+	}
+
+	float max_length = -1.0f;
+
+	for(size_t i = 0; i < num_ticks; ++i) {
+		float fi = static_cast<float>(i);
+		float t = fi / static_cast<float>(num_ticks - 1);
+		float val = cgv::math::lerp(range.x(), range.y(), t);
+		std::string str = cgv::utils::to_string(val, -1, precision);
+
+		labels.add_text(str, ivec2(0), cgv::render::TextAlignment::TA_NONE);
+		max_length = std::max(max_length, labels.ref_texts().back().size.x());
+	}
+
+	if(labels.size() > 1) {
+		if(layout.orientation == OO_HORIZONTAL)
+			layout.x_label_size = std::max(labels.ref_texts().front().size.x(), labels.ref_texts().back().size.x()) * labels.get_font_size();
+		else
+			layout.x_label_size = max_length * labels.get_font_size();
+	} else {
+		layout.x_label_size = 0;
+	}
+}
+
 void color_map_legend::create_ticks() {
 
 	ticks.clear();
-	labels.clear();
 
 	ivec2 tick_size(1, 6);
 
@@ -459,31 +504,9 @@ void color_map_legend::create_ticks() {
 	default: break;
 	}
 
-	unsigned precision = label_precision;
-	if(label_auto_precision) {
-		float m = std::max(abs(range.x()), abs(range.y()));
-		if(m >= 10000.0f) {
-			precision = 0;
-		} else {
-			if(m >= 1000.0f)
-				precision = 4;
-			else if(m >= 100.0f)
-				precision = 3;
-			else if(m >= 10.0f)
-				precision = 2;
-			else if(m >= 1.0f)
-				precision = 1;
-			else
-				precision = 0;
-		}
-	}
-
 	for(size_t i = 0; i < num_ticks; ++i) {
 		float fi = static_cast<float>(i);
 		int offset = static_cast<int>(round(fi * step));
-		float t = fi / static_cast<float>(num_ticks - 1);
-		float val = cgv::math::lerp(range.x(), range.y(), t);
-		std::string str = cgv::utils::to_string(val, -1, precision);
 
 		ivec2 tick_pos = tick_start;
 		tick_pos[axis] += offset;
@@ -504,7 +527,9 @@ void color_map_legend::create_ticks() {
 		}
 
 		ticks.add(tick_pos, tick_size);
-		labels.add_text(str, label_pos, alignment);
+
+		labels.set_position(i, label_pos);
+		labels.set_alignment(i, alignment);
 	}
 }
 

@@ -36,7 +36,7 @@ protected:
 
 	float render_font_size;
 
-	float compute_length(const std::string& str);
+	float compute_length(const std::string& str) const;
 
 	void end_text(text_info text);
 
@@ -69,7 +69,7 @@ public:
 
 	void set_alignment(unsigned i, const cgv::render::TextAlignment alignment);
 
-	size_t size() { return texts.size(); }
+	size_t size() const { return texts.size(); }
 
 	const std::vector<text_info>& ref_texts() const { return texts; }
 
