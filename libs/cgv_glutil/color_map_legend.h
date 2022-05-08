@@ -30,11 +30,8 @@ protected:
 
 	struct layout_attributes {
 		int padding;
-		static const int h_label_space = 12;
-		static const int v_label_space = 48;
-		int label_space = h_label_space;
-
-		int x_label_size = label_space;
+		int label_space = 12;
+		int x_label_size = 0;
 
 		//int band_height;
 		ivec2 total_size;
@@ -49,32 +46,26 @@ protected:
 			ivec2 offset(0, 0);
 			ivec2 size(parent_size);
 
-			int axis = 1;
-			AlignmentOption alignment = label_alignment;
-			switch(alignment) {
+			switch(label_alignment) {
 			case AO_START:
 				if(orientation == OO_HORIZONTAL) {
-					offset.x() = x_label_size;
-					size.x() -= 2 * x_label_size;
+					offset.x() = x_label_size / 2;
+					size.x() -= x_label_size;
 					size.y() -= label_space;
 				} else {
-					offset.x() = x_label_size;
+					offset.x() = x_label_size + 4;
 					offset.y() = 0;
-					size.x() -= x_label_size;
-					size.y() -= 0;
+					size.x() -= x_label_size + 4;
 				}
 				break;
 			case AO_END:
 				if(orientation == OO_HORIZONTAL) {
-					offset.x() = x_label_size;
+					offset.x() = x_label_size / 2;
 					offset.y() = label_space;
-					size.x() -= 2 * x_label_size;
+					size.x() -= x_label_size;
 					size.y() -= label_space;
 				} else {
-					offset.x() = 0;
-					offset.y() = 0;
-					size.x() -= x_label_size;
-					size.y() -= 0;
+					size.x() -= x_label_size + 4;
 				}
 				break;
 			default: break;
@@ -82,10 +73,6 @@ protected:
 
 			color_map_rect.set_pos(offset + padding);
 			color_map_rect.set_size(size - 2 * padding);
-		}
-
-		void set_label_space() {
-			label_space = orientation == OO_HORIZONTAL ? h_label_space : v_label_space;
 		}
 	} layout;
 
@@ -117,6 +104,7 @@ protected:
 
 	void set_damaged();
 	void init_styles(context& ctx);
+	void create_labels();
 	void create_ticks();
 
 public:
