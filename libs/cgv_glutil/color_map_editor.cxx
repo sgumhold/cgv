@@ -118,7 +118,8 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 			break;
 		case cgv::gui::MA_MOVE:
 		case cgv::gui::MA_DRAG:
-			cursor_pos = ivec2(me.get_x(), me.get_y());
+			if(get_context())
+				cursor_pos = ivec2(me.get_x(), get_context()->get_height() - 1 - me.get_y());
 			if (show_cursor)
 				post_redraw();
 			break;
