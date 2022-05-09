@@ -1,4 +1,6 @@
 #include "point_cloud.h"
+#include <algorithm>
+#include <random>
 #include <fstream>
 #include "ICP.h"
 
@@ -94,12 +96,19 @@ namespace cgv {
 
 
 			/// sample the source point cloud
-			if (numRandomSamples > 0) {
+			if (numRandomSamples > 0 && numRandomSamples < sourceCloud->get_nr_points()) {
+				std::vector<int> numbers(sourceCloud->get_nr_points());
+				for (int i = 0; i < sourceCloud->get_nr_points(); ++i)
+					numbers[i] = i;
+				std::random_device rd;
+				std::default_random_engine rng(std::time(0));
+				std::shuffle(numbers.begin(), numbers.end(), rng);
+
 				S.resize(numRandomSamples);
 				Q.resize(numRandomSamples);
 				std::srand(std::time(0));
 				for (int i = 0; i < numRandomSamples; i++)
-					S.pnt(i) = sourceCloud->pnt(std::rand() % sourceCloud->get_nr_points());
+					S.pnt(i) = sourceCloud->pnt(numbers[i]);
 			}
 			else {
 				S.resize(sourceCloud->get_nr_points());
