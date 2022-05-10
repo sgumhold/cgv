@@ -88,10 +88,11 @@ namespace cgv {
 
 			cgv::math::mat<float> U, V;
 			cgv::math::diag_mat<float> Sigma;
+			/*
 			U.zeros();
 			V.zeros();
 			Sigma.zeros();
-
+			*/
 			point_cloud S, Q;
 
 
@@ -119,23 +120,31 @@ namespace cgv {
 
 			for (int iter = 0; iter < maxIterations && abs(cost) > eps; iter++)
 			{
-				cost = 0.0;
-				source_center = rotation_mat * source_center + translation_vec;
+				//source_center = rotation_mat * source_center + translation_vec;
+				Pnt tr_source_center = rotation_mat * source_center + translation_vec;
 				fA.zeros();
 				for (int i = 0; i < S.get_nr_points(); i++)
 				{
 					/// get the closest point in the target point cloud
-					Q.pnt(i) = targetCloud->pnt(tree->find_closest(rotation_mat * S.pnt(i) + translation_vec));
-					fA += Mat(Q.pnt(i) - target_center, rotation_mat * S.pnt(i) + translation_vec - source_center);
+					Pnt p = targetCloud->pnt(tree->find_closest(rotation_mat * S.pnt(i) + translation_vec));
+					Q.pnt(i) = p; 
+					fA += Mat(Q.pnt(i) - target_center, rotation_mat * (S.pnt(i) - source_center) + translation_vec);
 				}
 				///cast fA to A
 				cgv::math::mat<float> A(3, 3, &fA(0, 0));
-				cgv::math::svd(A, U, Sigma, V);
-				Mat fU(3, 3, &U(0, 0)), fV(3, 3, &V(0, 0));
+				cgv::math::svd(A, U, Sigma, V, false);
+				Mat fU(3, 3, &U(0, 0)), fV(3, 3, &V(0, 0)), m;
+				float det = cgv::math::det(V * cgv::math::transpose(U));
+				m.identity();
+				m(2, 2) = det;
 				///get new R and t
-				Mat rotation_update_mat = fU * cgv::math::transpose(fV);
-				Dir translation_update_vec = target_center - rotation_update_mat * source_center;
+				//Mat rotation_update_mat = fU * cgv::math::transpose(fV);
+				Mat rotation_update_mat = fV * m * cgv::math::transpose(fU);
+				rotation_update_mat.transpose();
+
+				Dir translation_update_vec = target_center - rotation_update_mat * tr_source_center;
 				///calculate error function E(R,t)
+				cost = 0.f;
 				for (int i = 0; i < S.get_nr_points(); i++) {
 					///transform Pi to R*Pi + t
 					Pnt p = rotation_mat * S.pnt(i) + translation_vec;
@@ -144,7 +153,9 @@ namespace cgv {
 				}
 				cost /= S.get_nr_points();
 				///judge if cost is decreasing, and is larger than eps. If so, update the R and t, otherwise stop and output R and t
-				if (min >= abs(cost)) {
+				
+				
+				if (min >= abs(cost) && eps < abs(cost)) {
 					///update the R and t
 					rotation_mat = rotation_update_mat * rotation_mat;
 					translation_vec = rotation_update_mat * translation_vec + translation_update_vec;
