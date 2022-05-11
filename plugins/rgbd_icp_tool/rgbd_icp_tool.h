@@ -74,7 +74,7 @@ public:
 	void on_reg_find_point_cloud_cb();
 	void on_point_cloud_style_cb();
 
-private:
+  private:
 	cgv::pointcloud::ICP icp;
 	cgv::pointcloud::GoICP goicp;
 	cgv::pointcloud::SICP sicp;
@@ -90,6 +90,7 @@ private:
 	float trans_intensity;
 	float icp_eps;
 	int icp_iterations;
+	int icp_random_samples;
 	cgv::pointcloud::ICP::Sampling_Type icp_filter_type;
 	bool view_find_point_cloud;
 	bool show_corresponding_lines;
