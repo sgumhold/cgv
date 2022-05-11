@@ -78,11 +78,10 @@ namespace cgv {
 
 			get_center_point(*targetCloud, target_center);
 			get_center_point(*sourceCloud, source_center);
-			Pnt p;
 
 			float cost = 1.0;
-			///define min as Infinity
-			float min = std::numeric_limits<float>::infinity();
+			///initialize as Infinity
+			float last_error = std::numeric_limits<float>::infinity();
 
 			Mat fA(0.0f);             // this initializes fA to matrix filled with zeros
 
@@ -118,17 +117,25 @@ namespace cgv {
 					S.pnt(i) = sourceCloud->pnt(i);
 			}
 
-			for (int iter = 0; iter < maxIterations && abs(cost) > eps; iter++)
+			Mat rotation_update_mat = rotation_mat;
+			Dir translation_update_vec = translation_vec;
+
+			for (int iter = 0; iter < maxIterations; iter++)
 			{
-				//source_center = rotation_mat * source_center + translation_vec;
-				Pnt tr_source_center = rotation_mat * source_center + translation_vec;
+				// update S
+				for (int i = 0; i < S.get_nr_points(); i++)
+					S.pnt(i) = rotation_update_mat * S.pnt(i) + translation_update_vec;
+				// update center
+				get_center_point(S, source_center);
+			
 				fA.zeros();
 				for (int i = 0; i < S.get_nr_points(); i++)
 				{
-					/// get the closest point in the target point cloud
-					Pnt p = targetCloud->pnt(tree->find_closest(rotation_mat * S.pnt(i) + translation_vec));
-					Q.pnt(i) = p; 
-					fA += Mat(Q.pnt(i) - target_center, rotation_mat * (S.pnt(i) - source_center) + translation_vec);
+					/// get the closest point to p from the target point cloud
+					Pnt p = S.pnt(i);
+					Pnt q = targetCloud->pnt(tree->find_closest(p));
+					Q.pnt(i) = q; 
+					fA += Mat(q - target_center, p - source_center);
 				}
 				///cast fA to A
 				cgv::math::mat<float> A(3, 3, &fA(0, 0));
@@ -139,31 +146,26 @@ namespace cgv {
 				m(2, 2) = det;
 				///get new R and t
 				//Mat rotation_update_mat = fU * cgv::math::transpose(fV);
-				Mat rotation_update_mat = fV * m * cgv::math::transpose(fU);
+				rotation_update_mat = fV * m * cgv::math::transpose(fU);
 				rotation_update_mat.transpose();
 
-				Dir translation_update_vec = target_center - rotation_update_mat * tr_source_center;
+				translation_update_vec = target_center - rotation_update_mat * source_center;
 				///calculate error function E(R,t)
 				cost = 0.f;
 				for (int i = 0; i < S.get_nr_points(); i++) {
-					///transform Pi to R*Pi + t
-					Pnt p = rotation_mat * S.pnt(i) + translation_vec;
 					///the new rotation matrix: rotation_update_mat
-					cost += error(Q.pnt(i), p, rotation_update_mat, translation_update_vec);
+					cost += error(Q.pnt(i), S.pnt(i), rotation_update_mat, translation_update_vec);
 				}
 				cost /= S.get_nr_points();
 				///judge if cost is decreasing, and is larger than eps. If so, update the R and t, otherwise stop and output R and t
 				
+				/// update the R and t		
+				rotation_mat = rotation_update_mat * rotation_mat;
+				translation_vec = rotation_update_mat * translation_vec + translation_update_vec;
 				
-				if (min >= abs(cost) && eps < abs(cost)) {
-					///update the R and t
-					rotation_mat = rotation_update_mat * rotation_mat;
-					translation_vec = rotation_update_mat * translation_vec + translation_update_vec;
-					min = abs(cost);
-				}
-				else {
+				if (abs(last_error-cost) <= eps)
 					break;
-				}
+				last_error = cost;
 			}
 			//std::cout << "rotate_mat: " << rotation_mat << std::endl;
 			//std::cout << "translation_vec: " << translation_vec << std::endl;
