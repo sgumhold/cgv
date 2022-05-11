@@ -124,13 +124,13 @@ bool plot2d::init(cgv::render::context& ctx)
 	}
 	else
 		line_prog.allow_context_to_set_color(false);
-	if (!point_prog.build_program(ctx, "plot2d_point.glpr")) {
+	if (!point_prog.build_program(ctx, "plot2d_point.glpr", true)) {
 		std::cerr << "could not build GLSL program from plot2d_point.glpr" << std::endl;
 		return false;
 	}
 	else 
 		point_prog.allow_context_to_set_color(false);
-	if (!rectangle_prog.build_program(ctx, "plot2d_rect.glpr")) {
+	if (!rectangle_prog.build_program(ctx, "plot2d_rect.glpr", true, { {"PLOT_MODE", "1"} })) {
 		std::cerr << "could not build GLSL program from plot2d_rect.glpr" << std::endl;
 		return false;
 	}
@@ -138,6 +138,33 @@ bool plot2d::init(cgv::render::context& ctx)
 		rectangle_prog.allow_context_to_set_color(false);
 	return plot_base::init(ctx);
 }
+
+
+
+
+void plot2d::reload_shaders(cgv::render::context& ctx) {
+	line_prog.destruct(ctx);
+	point_prog.destruct(ctx);
+	rectangle_prog.destruct(ctx);
+	if(!line_prog.build_program(ctx, "plot2d_line.glpr", true)) {
+		std::cerr << "could not build GLSL program from plot2d_line.glpr" << std::endl;
+		return;
+	} else
+		line_prog.allow_context_to_set_color(false);
+	if(!point_prog.build_program(ctx, "plot2d_point.glpr", true)) {
+		std::cerr << "could not build GLSL program from plot2d_point.glpr" << std::endl;
+		return;
+	} else
+		point_prog.allow_context_to_set_color(false);
+	if(!rectangle_prog.build_program(ctx, "plot2d_rect.glpr", true)) {
+		std::cerr << "could not build GLSL program from plot2d_rect.glpr" << std::endl;
+		return;
+	} else
+		rectangle_prog.allow_context_to_set_color(false);
+}
+
+
+
 
 void plot2d::clear(cgv::render::context& ctx)
 {
@@ -279,7 +306,7 @@ void plot2d::configure_bar_plot(cgv::render::context& ctx)
 	set_plot_uniforms(ctx, rectangle_prog);
 	set_mapping_uniforms(ctx, rectangle_prog);
 	// configure geometry shader
-	rectangle_prog.set_uniform(ctx, "pixel_blend", 1.0f);
+	rectangle_prog.set_uniform(ctx, "pixel_blend", 2.0f);
 	rectangle_prog.set_uniform(ctx, "viewport_height", (float)ctx.get_height());
 	// configure fragment shader
 	rectangle_prog.set_uniform(ctx, "use_texture", false);

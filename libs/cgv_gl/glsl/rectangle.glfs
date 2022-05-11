@@ -1,5 +1,8 @@
 #version 330 core
 
+#define USE_OLD_BLENDING 0
+#define USE_OLD_ALPHA 0
+
 uniform bool use_texture = false;
 // 0 ... replace (color.rgba = texture.rgba)
 // 1 ... replace alpha (color.a = texture.r)
@@ -55,25 +58,45 @@ float is_inside(in float value1, float min_value2, float max_value2)
 	return (value1 >= min_value2 && value1 < max_value2) ? 1.0 : 0.0;
 }
 
-vec2 compute_blended_factors(in float percentual_radial_position, in float percentual_core_size,
+vec3 compute_blended_factors(in float percentual_radial_position, in float percentual_core_size,
 	                         in float percentual_point_size,      in float percentual_blend_width)
 {
 	float min_value1 = percentual_radial_position - 0.5*percentual_blend_width;
 	float max_value1 = percentual_radial_position + 0.5*percentual_blend_width;
-	vec2 lambda;
+	
+	float core_blend_size = (1.0-0.5*percentual_blend_width)*percentual_core_size;
+	float point_blend_size = (1.0-0.5*percentual_blend_width)*percentual_point_size;
+	float border_fac = mix(1.0, 1.05, abs(core_blend_size - point_blend_size));
+
+#if USE_OLD_ALPHA == 1
+	core_blend_size = percentual_core_size;
+	point_blend_size = percentual_point_size;
+	border_fac = 1.0;
+#endif
+
+	vec3 lambda;
 	if (percentual_blend_width > 0.0) {
-		lambda[0] = compute_lambda(min_value1, max_value1, -percentual_core_size,   percentual_core_size);
-		lambda[1] = compute_lambda(min_value1, max_value1, -percentual_point_size, -percentual_core_size)
-		          + compute_lambda(min_value1, max_value1,  percentual_core_size,  percentual_point_size);
+		//lambda[0] = compute_lambda(min_value1, max_value1, -percentual_core_size,   percentual_core_size);
+		//lambda[1] = compute_lambda(min_value1, max_value1, -percentual_point_size, -percentual_core_size)
+		//          + compute_lambda(min_value1, max_value1,  percentual_core_size,  percentual_point_size);
+
+		lambda[0] = compute_lambda(min_value1, max_value1, -point_blend_size,  point_blend_size);
+		lambda[1] = compute_lambda(min_value1, max_value1, -core_blend_size,   core_blend_size);
+		lambda[2] = compute_lambda(min_value1, max_value1, -border_fac*point_blend_size, -core_blend_size)
+		          + compute_lambda(min_value1, max_value1,  core_blend_size,   border_fac*point_blend_size);
+
 		lambda /= percentual_blend_width;
 	}
 	else {
-		lambda[0] = is_inside(percentual_radial_position, -percentual_core_size, percentual_core_size);
-		lambda[1] = is_inside(abs(percentual_radial_position), percentual_core_size, percentual_point_size);
-		if (lambda[0]+lambda[1] > 1.0)
+		//lambda[0] = is_inside(percentual_radial_position, -percentual_core_size, percentual_core_size);
+		//lambda[1] = is_inside(abs(percentual_radial_position), percentual_core_size, percentual_point_size);
+		lambda[0] = is_inside(percentual_radial_position, -point_blend_size, point_blend_size);
+		lambda[1] = is_inside(percentual_radial_position, -core_blend_size, core_blend_size);
+		lambda[2] = is_inside(abs(percentual_radial_position), core_blend_size, point_blend_size);
+		if (lambda[1]+lambda[2] > 1.0)
 			lambda *= 0.5;
 	}
-	return lambda;
+	return clamp(lambda, 0.0, 1.0);
 }
 
 void main()
@@ -96,9 +119,22 @@ void main()
 		case 12 : core_color = mix(fi.border_color, fi.color, core_color.r); break;
 		}
 	}
-	vec2 u = compute_blended_factors(fi.splatcoord[0], fi.percentual_core_size[0], fi.percentual_rectangle_size[0], fi.percentual_blend_width[0]);
-	vec2 v = compute_blended_factors(fi.splatcoord[1], fi.percentual_core_size[1], fi.percentual_rectangle_size[1], fi.percentual_blend_width[1]);
-	vec4 color = u[0]*v[0]*core_color + (u[1]*(v[0]+v[1])+u[0]*v[1])*fi.border_color;
+	float bw_mult = 1.0;
+#if USE_OLD_ALPHA == 0
+	bw_mult *= 0.5;
+#endif
+	vec3 u = compute_blended_factors(fi.splatcoord[0], fi.percentual_core_size[0], fi.percentual_rectangle_size[0], bw_mult*fi.percentual_blend_width[0]);
+	vec3 v = compute_blended_factors(fi.splatcoord[1], fi.percentual_core_size[1], fi.percentual_rectangle_size[1], bw_mult*fi.percentual_blend_width[1]);
+
+#if USE_OLD_BLENDING == 1
+	vec4 color = u[1]*v[1]*core_color + (u[2]*(v[1]+v[2])+u[1]*v[2])*fi.border_color;
+#else
+	float point_alpha = u[0]*v[0];
+	float border_mix = clamp(u[2]*(v[1]+v[2])+u[1]*v[2], 0.0, 1.0);
+
+	vec4 color = mix(core_color, fi.border_color, border_mix);
+	color.a *= point_alpha;
+#endif
 
 	// illumination
 	color = compute_reflected_appearance(fi.position_eye, normalize(fi.normal_eye), color, fi.side);
