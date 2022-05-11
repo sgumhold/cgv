@@ -118,6 +118,8 @@ public:
 		plot.set_sub_plot_colors(p2, rgb(0.1f, 0.0f, 1.0f));
 		plot.set_sub_plot_colors(p3, rgb(0.0f, 1.0f, 0.1f));
 
+		plot.ref_sub_plot_config(p1).show_bars = true;
+
 		// attach sub plot attributes to previously created vector
 		// CAREFUL: this creates references to P and P is not allowed to be deleted thereafter
 		plot.set_sub_plot_attribute(p1, 0, &P[0][0], P.size(), sizeof(vec4));
@@ -152,6 +154,22 @@ public:
 		render_offscreen = false;
 		
 	}
+
+
+
+
+	void reload_shaders() {
+		if(auto ctx_ptr = get_context()) {
+			std::cout << "Reloading plot shaders" << std::endl;
+			plot.reload_shaders(*ctx_ptr);
+			post_redraw();
+		}
+	}
+
+
+
+
+
 	void on_set(void* member_ptr)
 	{
 		post_redraw();
@@ -226,6 +244,9 @@ public:
 	void create_gui()
 	{
 		add_decorator("plot2d test", "heading");
+
+		connect_copy(add_button("Reload Shaders")->click, cgv::signal::rebind(this, &test_plot2d::reload_shaders));
+
 		add_member_control(this, "render_offscreen", render_offscreen, "toggle");
 		plot.create_gui(this, *this);
 	}
@@ -234,5 +255,6 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-cgv::base::factory_registration<test_plot2d> test_plot2d_fac("New/Demo/Test Plot2d", '2');
+//cgv::base::factory_registration<test_plot2d> test_plot2d_fac("New/Demo/Test Plot2d", '2');
+cgv::base::object_registration<test_plot2d> test_plot2d_fac("Plot2d_reg");
 cgv::base::factory_registration<test_plot3d> test_plot3d_fac("New/Demo/Test Plot3d", '3');

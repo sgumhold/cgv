@@ -1,5 +1,7 @@
 #version 330 core
 
+#define PLOT_MODE 0
+
 layout(points) in;
 layout(triangle_strip, max_vertices = 4) out;
 
@@ -134,9 +136,23 @@ void main()
 		vec2 tc_D   = 0.5*fo.percentual_splat_size*(tc.zw - tc.xy);
 		tc.xy = tc_ctr - tc_D;
 		tc.zw = tc_ctr + tc_D;
+
+#if PLOT_MODE == 1
+		fo.depth_offset = gi[0].depth_offset - 0.000005f;
+#endif
 		emit_corner(position_eye-dx_eye-dy_eye, vec2(tc.xy), -fo.percentual_splat_size);
+#if PLOT_MODE == 1
+		fo.depth_offset = gi[0].depth_offset - 0.000005f;
+#endif
 		emit_corner(position_eye-dx_eye+dy_eye, vec2(tc.xw), vec2(-fo.percentual_splat_size.x, fo.percentual_splat_size.y));
+#if PLOT_MODE == 1
+		fo.depth_offset = gi[0].depth_offset + 0.000005f;
+#endif
 		emit_corner(position_eye+dx_eye-dy_eye, vec2(tc.zy), vec2(fo.percentual_splat_size.x, -fo.percentual_splat_size.y));
+#if PLOT_MODE == 1
+		fo.depth_offset = gi[0].depth_offset + 0.000005f;
+#endif
 		emit_corner(position_eye+dx_eye+dy_eye, vec2(tc.zw), fo.percentual_splat_size);
+
 	}
 }
