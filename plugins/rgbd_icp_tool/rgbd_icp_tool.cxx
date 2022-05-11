@@ -50,6 +50,7 @@ rgbd_icp_tool::rgbd_icp_tool() {
 
 	icp_iterations = 50;
 	icp_eps = 1e-8;
+	icp_random_samples = 0;
 
 	show_corresponding_lines = true;
 
@@ -93,24 +94,14 @@ bool rgbd_icp_tool::init(cgv::render::context & ctx)
 void draw_point_cloud(cgv::render::context & ctx, point_cloud & pc, surfel_render_style & srs, cgv::math::fvec<float,4> color) {
 	ctx.push_modelview_matrix();
 	if (pc.get_nr_points() > 0) {
+		int num_points = pc.get_nr_points();
 		cgv::render::surfel_renderer& sr = ref_surfel_renderer(ctx);
 		sr.set_render_style(srs);
-		vector<point_cloud::Pnt> P(pc.get_nr_points());
-		vector<point_cloud::Nml> N(pc.get_nr_points());
-		for (int i = 0; i < pc.get_nr_points(); ++i) {
-			P[i] = pc.pnt(i);
-			if (pc.has_normals()) {
-				N[i] = pc.nml(i);
-			}
-			else {
-				N[i] = cgv::math::fvec<float, 3>(1, 0, 0);
-			}
-		}
-		sr.set_position_array(ctx, P);
-		sr.set_normal_array(ctx, N);
-		vector<cgv::math::fvec<float, 4>> color(pc.get_nr_points(), color);
+		sr.set_position_array(ctx, &pc.pnt(0), num_points);
+		sr.set_normal_array(ctx, &pc.nml(0), num_points);
+		vector<cgv::math::fvec<float, 4>> color(num_points, color);
 		sr.set_color_array(ctx, color);
-		sr.render(ctx, 0, P.size());
+		sr.render(ctx, 0, num_points);
 	}
 	ctx.pop_modelview_matrix();
 }
@@ -142,12 +133,12 @@ void draw_correspondences(cgv::render::context& ctx, point_cloud& crspd_src, poi
 
 void rgbd_icp_tool::draw(cgv::render::context & ctx)
 {
-	ctx.push_modelview_matrix();
+	//ctx.push_modelview_matrix();
 	draw_point_cloud(ctx, source_pc, source_srs,vec4(1.0,0.0,0.0,0.8));
 	draw_point_cloud(ctx, target_pc, target_srs, vec4(0.0, 1.0, 0.0, 0.8));
 	if (crs_srs_pc.get_nr_points() > 0 && crs_tgt_pc.get_nr_points() > 0 && show_corresponding_lines)
 		draw_correspondences(ctx, crs_srs_pc, crs_tgt_pc, rcrs, vec4(0.0, 1.0, 1.0, 0.8));
-	ctx.pop_modelview_matrix();
+	//ctx.pop_modelview_matrix();
 
 	if (view_find_point_cloud) {
 		find_pointcloud(ctx);
@@ -159,16 +150,13 @@ void rgbd_icp_tool::find_pointcloud(cgv::render::context & ctx)
 {
 	cgv::render::view* view_ptr = find_view_as_node();
 	if (view_ptr) {
-		const point_cloud_types::Box& sb = source_pc.box();
-		const point_cloud_types::Box& tb = target_pc.box();
-		point_cloud_types::Box aabb(sb);
-		aabb.add_point(tb.get_min_pnt());
-		aabb.add_point(tb.get_max_pnt());
-
-		view_ptr->set_focus(aabb.get_center());
-		
-		view_ptr->move(view_ptr->get_depth_of_focus()-1.0);
-		
+		if (source_pc.get_nr_points() > 0) {
+			vec3 mean = accumulate(&source_pc.pnt(0), &source_pc.pnt(0) + source_pc.get_nr_points(), vec3(0, 0, 0)) /
+						((float)source_pc.get_nr_points());
+			//view_ptr->set_focus(mean);
+			view_ptr->set_view_dir(cgv::math::normalize(mean - view_ptr->get_eye()));
+			//view_ptr->move(view_ptr->get_depth_of_focus() - 1.0);
+		}
 	}
 }
 
@@ -209,6 +197,8 @@ void rgbd_icp_tool::create_gui()
 	add_member_control(this, "Max. iterations", icp_iterations, "value_slider", "min=50;max=1000;ticks=false");
 	add_member_control(this, "ICP epsilon", icp_eps, "value_slider", "min=0.0000001;max=0.1;log=true;ticks=false");
 	add_member_control(this, "Sampling Type", (DummyEnum&)icp_filter_type, "dropdown", "enums='Default Sampling,Radom Sampling,Normal-space Sampling'");
+	add_member_control(this, "Random Samples", icp_random_samples, "value_slider",
+					   "min=0;max=10000;log=true;ticks=false");
 	add_member_control(this, "show_corresponding_lines", show_corresponding_lines, "check");
 
 	add_decorator("Go-ICP", "heading", "level=2");
@@ -250,6 +240,19 @@ void rgbd_icp_tool::timer_event(double t, double dt)
 {
 }
 
+
+void fix_normals(point_cloud& pc)
+{
+	if (pc.has_normals()) {
+		for (int i = 0; i < pc.get_nr_points(); ++i)
+			pc.nml(i) = pc.nml(i).sqr_length() > 0.1 ? pc.nml(i) : cgv::math::fvec<float, 3>(1, 0, 0);
+	}
+	else {
+		for (int i = 0; i < pc.get_nr_points(); ++i)
+			pc.nml(i) = cgv::math::fvec<float, 3>(1, 0, 0);
+	}
+}
+
 void rgbd_icp_tool::on_load_source_point_cloud_cb()
 {
 	std::string fn = cgv::gui::file_open_dialog(
@@ -258,6 +261,7 @@ void rgbd_icp_tool::on_load_source_point_cloud_cb()
 	if (fn.empty())
 		return;
 	source_pc.read(fn);
+	fix_normals(source_pc);
 	post_redraw();
 }
 
@@ -269,6 +273,7 @@ void rgbd_icp_tool::on_load_target_point_cloud_cb()
 	if (fn.empty())
 		return;
 	target_pc.read(fn);
+	fix_normals(target_pc);
 	post_redraw();
 }
 
@@ -297,7 +302,6 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	if (!(source_pc.get_nr_points() && target_pc.get_nr_points())){
 		return;
 	}
-	
 	icp.set_source_cloud(source_pc);
 	icp.set_target_cloud(target_pc);
 	icp.set_iterations(icp_iterations);
@@ -311,11 +315,12 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	icp.set_target_cloud(target_pc);
 	icp.set_iterations(5);
 	icp.set_eps(icp_eps);
-	icp.set_num_random(100);
+	icp.set_num_random(icp_random_samples);
 
 	icp.build_ann_tree();
-	//icp.reg_icp(rotation, translation);
-	icp.get_crspd(rotation, translation, crs_srs_pc, crs_tgt_pc);
+	icp.reg_icp(rotation, translation);
+	//icp.get_crspd(rotation, translation, crs_srs_pc, crs_tgt_pc);
+	// need to de-mean for rotation
 	source_pc.rotate(cgv::math::quaternion<float>(rotation));
 	source_pc.translate(translation);
 	post_redraw();
