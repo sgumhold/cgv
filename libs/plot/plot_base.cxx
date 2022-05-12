@@ -33,6 +33,8 @@ domain_config::domain_config(unsigned dim, unsigned nr_attrs) : color(0.85f,0.85
 	label_font_index = -1;
 	label_font_size = 24.0f;
 	label_ffa = cgv::media::font::FFA_REGULAR;
+	show_title = true;
+	show_sub_plot_names = true;
 	title_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
 	title_font_index = -1;
 	title_font_size = 36.0f;
@@ -765,22 +767,24 @@ void plot_base::draw_title(cgv::render::context& ctx, vec2 pos, float depth, int
 	std::vector<rgba> C;
 
 	auto* cfg = get_domain_config_ptr();
-	if (si <= 0) {
+	if (si <= 0 && get_domain_config_ptr()->show_title) {
 		vec2 pos_aligned = ff->align_text(pos, cfg->title, cgv::render::TA_NONE, rs);
 		unsigned cnt = ff->text_to_quads(pos_aligned, cfg->title, Q, rs);
 		for (unsigned j = 0; j < cnt; ++j)
 			C.push_back(cfg->title_color);
 	}
-	pos[1] -= 5.0f * cfg->title_font_size * rs;
-	for (unsigned i = 0; i < get_nr_sub_plots(); ++i) {
-		if (si != -1 && i != si)
-			continue;
-		const auto& spc = ref_sub_plot_config(i);
-		vec2 pos_aligned = ff->align_text(pos, cfg->title, cgv::render::TA_NONE, rs);
-		unsigned cnt = ff->text_to_quads(pos_aligned, spc.name, Q, 0.8f * rs);
-		for (unsigned j = 0; j < cnt; ++j)
-			C.push_back(spc.ref_color.color);
-		pos[1] -= 4.0f * cfg->title_font_size * rs;
+	if(get_domain_config_ptr()->show_sub_plot_names) {
+		pos[1] -= 5.0f * cfg->title_font_size * rs;
+		for(unsigned i = 0; i < get_nr_sub_plots(); ++i) {
+			if(si != -1 && i != si)
+				continue;
+			const auto& spc = ref_sub_plot_config(i);
+			vec2 pos_aligned = ff->align_text(pos, cfg->title, cgv::render::TA_NONE, rs);
+			unsigned cnt = ff->text_to_quads(pos_aligned, spc.name, Q, 0.8f * rs);
+			for(unsigned j = 0; j < cnt; ++j)
+				C.push_back(spc.ref_color.color);
+			pos[1] -= 4.0f * cfg->title_font_size * rs;
+		}
 	}
 	if (Q.empty())
 		return;
@@ -1250,10 +1254,10 @@ void plot_base::clear(cgv::render::context& ctx)
 void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
 	ensure_font_names();
-	p.add_member_control(bp, "reference_size", get_domain_config_ptr()->reference_size, "value_slider", "min=0.0001;step=0.00001;max=1;log=true;ticks=true");
-	p.add_member_control(bp, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel, "value_slider", "min=0.0001;step=0.0;max=3.0;ticks=true");
+	p.add_member_control(bp, "Reference Size", get_domain_config_ptr()->reference_size, "value_slider", "min=0.0001;step=0.00001;max=1;log=true;ticks=true");
+	p.add_member_control(bp, "Blend Width (px)", get_domain_config_ptr()->blend_width_in_pixel, "value_slider", "min=0.0001;step=0.0;max=3.0;ticks=true");
 
-	if (p.begin_tree_node("visual variables", dim, false, "level=3")) {
+	if (p.begin_tree_node("Visual Variables", dim, false, "level=3")) {
 		std::string attribute_enums = "off=-1";
 		for (unsigned ai = 0; ai < get_dim() + nr_attributes; ++ai)
 			attribute_enums += std::string(",")+get_domain_config_ptr()->axis_configs[ai].name;
@@ -1261,43 +1265,43 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 		p.align("\a");
 		bool show;
 		unsigned nr = std::max(MAX_NR_COLOR_MAPPINGS, std::max(MAX_NR_SIZE_MAPPINGS, MAX_NR_OPACITY_MAPPINGS));
-		static const char* prefixes[] = { "primary_", "secondary_", "ternary_" };
+		static const char* prefixes[] = { "Primary ", "Secondary ", "Ternary " };
 		for (unsigned idx = 0; idx < nr; ++idx) {
 			std::string prefix(prefixes[idx]);
 			if (idx < MAX_NR_COLOR_MAPPINGS) {
-				show = p.begin_tree_node(prefix + "color", color_mapping[idx], false, "level=3;align=' ';options='w=100'");
+				show = p.begin_tree_node(prefix + "Color", color_mapping[idx], false, "level=3;align=' ';options='w=100'");
 				p.add_member_control(bp, "", (cgv::type::DummyEnum&)color_mapping[idx], "dropdown", dropdown_options);
 				if (show) {
 					p.align("\a");
-					p.add_member_control(bp, prefix + "color_scale", (cgv::type::DummyEnum&)color_scale_index[idx], "dropdown", cgv::media::get_color_scale_enum_definition());
-					p.add_member_control(bp, prefix + "color_gamma", color_scale_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
-					p.add_member_control(bp, prefix + "window_zero_position", window_zero_position[idx], "value_slider", "min=0;max=1;ticks=true");
+					p.add_member_control(bp, prefix + "Color Scale", (cgv::type::DummyEnum&)color_scale_index[idx], "dropdown", cgv::media::get_color_scale_enum_definition());
+					p.add_member_control(bp, prefix + "Color Gamma", color_scale_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+					p.add_member_control(bp, prefix + "Window Zero Position", window_zero_position[idx], "value_slider", "min=0;max=1;ticks=true");
 					p.align("\b");
 					p.end_tree_node(color_mapping[idx]);
 				}
 			}
 			if (idx < MAX_NR_OPACITY_MAPPINGS) {
-				show = p.begin_tree_node(prefix + "opacity", opacity_mapping[idx], false, "level=3;align=' ';options='w=100'");
+				show = p.begin_tree_node(prefix + "Opacity", opacity_mapping[idx], false, "level=3;align=' ';options='w=100'");
 				p.add_member_control(bp, "", (cgv::type::DummyEnum&)opacity_mapping[idx], "dropdown", dropdown_options);
 				if (show) {
 					p.align("\a");
-					p.add_member_control(bp, prefix + "opacity_gamma", opacity_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
-					p.add_member_control(bp, prefix + "opacity_is_bipolar", opacity_is_bipolar[idx], "check");
-					p.add_member_control(bp, prefix + "opacity_window_zero_position", opacity_window_zero_position[idx], "value_slider", "min=0;max=1;ticks=true");
-					p.add_member_control(bp, prefix + "opacity_min", opacity_min[idx], "value_slider", "min=0;step=0.01;max=1;ticks=true");
-					p.add_member_control(bp, prefix + "opacity_max", opacity_max[idx], "value_slider", "min=0;step=0.01;max=1;ticks=true");
+					p.add_member_control(bp, prefix + "Opacity Gamma", opacity_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+					p.add_member_control(bp, prefix + "Opacity Is Bipolar", opacity_is_bipolar[idx], "check");
+					p.add_member_control(bp, prefix + "Opacity Window Zero Position", opacity_window_zero_position[idx], "value_slider", "min=0;max=1;ticks=true");
+					p.add_member_control(bp, prefix + "Opacity Min", opacity_min[idx], "value_slider", "min=0;step=0.01;max=1;ticks=true");
+					p.add_member_control(bp, prefix + "Opacity Max", opacity_max[idx], "value_slider", "min=0;step=0.01;max=1;ticks=true");
 					p.align("\b");
 					p.end_tree_node(opacity_mapping[idx]);
 				}
 			}
 			if (idx < MAX_NR_SIZE_MAPPINGS) {
-				show = p.begin_tree_node(prefix + "size", size_mapping[idx], false, "level=3;align=' ';options='w=100'");
+				show = p.begin_tree_node(prefix + "Size", size_mapping[idx], false, "level=3;align=' ';options='w=100'");
 				p.add_member_control(bp, "", (cgv::type::DummyEnum&)size_mapping[idx], "dropdown", dropdown_options);
 				if (show) {
 					p.align("\a");
-					p.add_member_control(bp, prefix+"size_gamma", size_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
-					p.add_member_control(bp, prefix+"size_min", size_min[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
-					p.add_member_control(bp, prefix+"size_max", size_max[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+					p.add_member_control(bp, prefix + "Size Gamma", size_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+					p.add_member_control(bp, prefix + "Size Min", size_min[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+					p.add_member_control(bp, prefix + "Size Max", size_max[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
 					p.align("\b");
 					p.end_tree_node(size_mapping);
 				}
@@ -1306,13 +1310,13 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 		p.align("\b");
 		p.end_tree_node(dim);
 	}
-	if (p.begin_tree_node("legend", legend_components, false, "level=3")) {
+	if (p.begin_tree_node("Legend", legend_components, false, "level=3")) {
 		p.align("\a");
-		p.add_member_control(bp, "legend_color", legend_color);
-		p.add_gui("legend_components", legend_components, "bit_field_control", "enums='primary color=1,secondary color=2,primary opacity=4,secondary opacity=8,primary size=16,secondary size=32'");
-		p.add_gui("center", legend_location, "vector", "main_label='heading';gui_type='value_slider';options='min=-1.2;max=1.2;log=true;ticks=true'");
-		p.add_gui("extent", legend_extent, "vector", "main_label='heading';gui_type='value_slider';options='min=0.01;max=10;step=0.001;log=true;ticks=true'");
-		p.add_member_control(bp, "axis", legend_axis, "value_slider", "min=0;max=1");
+		p.add_member_control(bp, "Legend Color", legend_color);
+		p.add_gui("Legend Components", legend_components, "bit_field_control", "enums='Primary Color=1,Secondary Color=2,Primary Opacity=4,Secondary Opacity=8,Primary Size=16,Secondary Size=32'");
+		p.add_gui("Center", legend_location, "vector", "main_label='heading';gui_type='value_slider';options='min=-1.2;max=1.2;log=true;ticks=true'");
+		p.add_gui("Extent", legend_extent, "vector", "main_label='heading';gui_type='value_slider';options='min=0.01;max=10;step=0.001;log=true;ticks=true'");
+		p.add_member_control(bp, "Axis", legend_axis, "value_slider", "min=0;max=1");
 		connect_copy(p.find_control(legend_axis)->value_change, 
 			cgv::signal::rebind(this, &plot_base::on_legend_axis_change,cgv::signal::_r(p),cgv::signal::_1));
 		
@@ -1320,58 +1324,60 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 		p.end_tree_node(legend_components);
 	}
 
-	if (p.begin_tree_node("placement", center_location, false, "level=3")) {
+	if (p.begin_tree_node("Placement", center_location, false, "level=3")) {
 		p.align("\a");
-		p.add_gui("center", center_location, "vector", "main_label='heading';gui_type='value_slider';options='min=-100;max=100;log=true;ticks=true'");
-		p.add_gui("orientation", reinterpret_cast<vec4&>(orientation), "direction", "main_label='heading';gui_type='value_slider'");
+		p.add_gui("Center", center_location, "vector", "main_label='heading';gui_type='value_slider';options='min=-100;max=100;log=true;ticks=true'");
+		p.add_gui("Orientation", reinterpret_cast<vec4&>(orientation), "direction", "main_label='heading';gui_type='value_slider'");
 		p.align("\b");
 		p.end_tree_node(center_location);
 	}
-	bool open = p.begin_tree_node("domain", get_domain_config_ptr()->show_domain, false, "level=3;options='w=104';align=' '");
-	p.add_member_control(bp, "show", get_domain_config_ptr()->show_domain, "toggle", "w=40", " ");
-	p.add_member_control(bp, "fill", get_domain_config_ptr()->fill, "toggle", "w=40");
+	bool open = p.begin_tree_node("Domain", get_domain_config_ptr()->show_domain, false, "level=3;options='w=107';align=' '");
+	p.add_member_control(bp, "Show", get_domain_config_ptr()->show_domain, "toggle", "w=40", "%x+=1");
+	p.add_member_control(bp, "Fill", get_domain_config_ptr()->fill, "toggle", "w=40");
 	if (open) {
 		p.align("\a");
-		p.add_member_control(bp, "out_of_range_mode_x", (cgv::type::DummyEnum&)out_of_range_mode[0], "dropdown", "enums='keep,discard,clamp'");
-		p.add_member_control(bp, "out_of_range_mode_y", (cgv::type::DummyEnum&)out_of_range_mode[1], "dropdown", "enums='keep,discard,clamp'");
+		p.add_member_control(bp, "Out of Range Mode X", (cgv::type::DummyEnum&)out_of_range_mode[0], "dropdown", "enums='Keep,Discard,Clamp'");
+		p.add_member_control(bp, "Out of Range Mode Y", (cgv::type::DummyEnum&)out_of_range_mode[1], "dropdown", "enums='Keep,Discard,Clamp'");
 		if (get_dim() == 2) {
-			p.add_member_control(bp, "out_of_range_mode_a0", (cgv::type::DummyEnum&)out_of_range_mode[2], "dropdown", "enums='keep,discard,clamp'");
-			p.add_member_control(bp, "out_of_range_mode_a1", (cgv::type::DummyEnum&)out_of_range_mode[3], "dropdown", "enums='keep,discard,clamp'");
+			p.add_member_control(bp, "Out of Range Mode A0", (cgv::type::DummyEnum&)out_of_range_mode[2], "dropdown", "enums='Keep,Discard,Clamp'");
+			p.add_member_control(bp, "Out of Range Mode A1", (cgv::type::DummyEnum&)out_of_range_mode[3], "dropdown", "enums='Keep,Discard,Clamp'");
 		}
 		else {
-			p.add_member_control(bp, "out_of_range_mode_z", (cgv::type::DummyEnum&)out_of_range_mode[2], "dropdown", "enums='keep,discard,clamp'");
-			p.add_member_control(bp, "out_of_range_mode_a", (cgv::type::DummyEnum&)out_of_range_mode[3], "dropdown", "enums='keep,discard,clamp'");
+			p.add_member_control(bp, "Out of Range Mode Z", (cgv::type::DummyEnum&)out_of_range_mode[2], "dropdown", "enums='Keep,Discard,Clamp'");
+			p.add_member_control(bp, "Out of Range Mode A", (cgv::type::DummyEnum&)out_of_range_mode[3], "dropdown", "enums='Keep,Discard,Clamp'");
 		}
-		p.add_member_control(bp, "fill color", get_domain_config_ptr()->color);
+		p.add_member_control(bp, "Fill Color", get_domain_config_ptr()->color);
 		for (unsigned i = 0; i < get_domain_config_ptr()->axis_configs.size(); ++i)
 			get_domain_config_ptr()->axis_configs[i].create_gui(bp, p);
-		p.add_member_control(bp, "title", get_domain_config_ptr()->title);
-		p.add_member_control(bp, "title_pos_x", get_domain_config_ptr()->title_pos[0], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
-		p.add_member_control(bp, "title_pos_y", get_domain_config_ptr()->title_pos[1], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
+		p.add_member_control(bp, "Title", get_domain_config_ptr()->title);
+		p.add_member_control(bp, "Show Title", get_domain_config_ptr()->show_title, "toggle", "w=99", "%x+=1");
+		p.add_member_control(bp, "Show Names", get_domain_config_ptr()->show_sub_plot_names, "toggle", "w=100");
+		p.add_member_control(bp, "Title Pos X", get_domain_config_ptr()->title_pos[0], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
+		p.add_member_control(bp, "Title Pos Y", get_domain_config_ptr()->title_pos[1], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
 		if (get_dim() == 3)
-			p.add_member_control(bp, "title_pos_z", get_domain_config_ptr()->title_pos[2], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
-		p.add_member_control(bp, "title_font_size", get_domain_config_ptr()->title_font_size, "value_slider", "min=8;max=40;log=false;ticks=true");
-		p.add_member_control(bp, "title_font", (cgv::type::DummyEnum&)get_domain_config_ptr()->title_font_index, "dropdown", font_name_enum_def);
+			p.add_member_control(bp, "Title Pos Z", get_domain_config_ptr()->title_pos[2], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
+		p.add_member_control(bp, "Title Font Size", get_domain_config_ptr()->title_font_size, "value_slider", "min=8;max=40;log=false;ticks=true");
+		p.add_member_control(bp, "Title Font", (cgv::type::DummyEnum&)get_domain_config_ptr()->title_font_index, "dropdown", font_name_enum_def);
 		connect_copy(p.find_control((cgv::type::DummyEnum&)get_domain_config_ptr()->title_font_index)->value_change,
 			cgv::signal::rebind(this, &plot_base::on_font_selection));
-		p.add_member_control(bp, "title_font_face", get_domain_config_ptr()->title_ffa, "dropdown", "enums='normal,bold,italics,bold italics'");
+		p.add_member_control(bp, "Title Font Face", get_domain_config_ptr()->title_ffa, "dropdown", "enums='Regular,Bold,Italics,Bold Italics'");
 		connect_copy(p.find_control(get_domain_config_ptr()->title_ffa)->value_change,
 			cgv::signal::rebind(this, &plot_base::on_font_face_selection));
 
-		p.add_member_control(bp, "label_font_size", get_domain_config_ptr()->label_font_size, "value_slider", "min=8;max=40;log=false;ticks=true");
-		p.add_member_control(bp, "label_font", (cgv::type::DummyEnum&)get_domain_config_ptr()->label_font_index, "dropdown", font_name_enum_def);
+		p.add_member_control(bp, "Label Font Size", get_domain_config_ptr()->label_font_size, "value_slider", "min=8;max=40;log=false;ticks=true");
+		p.add_member_control(bp, "Label Font", (cgv::type::DummyEnum&)get_domain_config_ptr()->label_font_index, "dropdown", font_name_enum_def);
 		connect_copy(p.find_control((cgv::type::DummyEnum&)get_domain_config_ptr()->label_font_index)->value_change,
 			cgv::signal::rebind(this, &plot_base::on_font_selection));
-		p.add_member_control(bp, "label_font_face", get_domain_config_ptr()->label_ffa, "dropdown", "enums='normal,bold,italics,bold italics'");
+		p.add_member_control(bp, "Label Font Face", get_domain_config_ptr()->label_ffa, "dropdown", "enums='Regular,Bold,Italics,Bold Italics'");
 		connect_copy(p.find_control(get_domain_config_ptr()->label_ffa)->value_change,
 			cgv::signal::rebind(this, &plot_base::on_font_face_selection));
 		p.align("\b");
 		p.end_tree_node(get_domain_config_ptr()->show_domain);
 	}
-	if (p.begin_tree_node("rectangle", rrs, false, "level=3")) {
+	if (p.begin_tree_node("Rectangle", rrs, false, "level=3")) {
 		p.align("\a");
-		p.add_member_control(bp, "layer_depth", layer_depth, "value_slider", "min=0.000001;max=0.01;step=0.0000001;log=true;ticks=true");
-		p.add_gui("rectangle style", rrs);
+		p.add_member_control(bp, "Layer Depth", layer_depth, "value_slider", "min=0.000001;max=0.01;step=0.0000001;log=true;ticks=true");
+		p.add_gui("Rectangle Style", rrs);
 		p.align("\b");
 		p.end_tree_node(rrs);
 	}
@@ -1447,122 +1453,121 @@ void plot_base::update_ref_size_index(unsigned i, cgv::gui::provider& p)
 void plot_base::create_base_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
-	p.add_member_control(bp, "name", pbc.name);
-	p.add_gui("sub plot influence", pbc.sub_plot_influence, "bit_field_control", 
-		"gui_type='toggle';align='';options='w=32';enums='pnt=1,halo=2,line=4,stk=8,bar=16,out=32'");
+	p.add_member_control(bp, "Name", pbc.name);
+	p.add_gui("Sub Plot Influence", pbc.sub_plot_influence, "bit_field_control", 
+		"gui_type='toggle';align='%x+=1';options='w=32;x=2';enums='Pnt=1,Halo=2,Line=4,Stk=8,Bar=16,Out=32'");
 	p.align("\n");
-	connect_copy(p.add_member_control(bp, "color", pbc.ref_color.color, "", "w=100", " ")->value_change,
+	connect_copy(p.add_member_control(bp, "Color", pbc.ref_color.color, "", "w=100", " ")->value_change,
 		cgv::signal::rebind(this, &plot_base::update_ref_color, cgv::signal::_c(i), cgv::signal::_r(p)));
-	connect_copy(p.add_member_control(bp, "", (cgv::type::DummyEnum&)pbc.ref_color.color_idx, "dropdown", "w=92;enums='off=-1,primary=0,secondary=1'")->value_change,
+	connect_copy(p.add_member_control(bp, "", (cgv::type::DummyEnum&)pbc.ref_color.color_idx, "dropdown", "w=88;enums='Off=-1,Primary=0,Secondary=1'")->value_change,
 		cgv::signal::rebind(this, &plot_base::update_ref_color_index, cgv::signal::_c(i), cgv::signal::_r(p)));
 
-	connect_copy(p.add_member_control(bp, "opacity", pbc.ref_opacity.opacity, "value_slider", "min=0;max=1;ticks=true;w=100", " ")->value_change,
+	connect_copy(p.add_member_control(bp, "Opacity", pbc.ref_opacity.opacity, "value_slider", "min=0;max=1;ticks=true;w=100", " ")->value_change,
 		cgv::signal::rebind(this, &plot_base::update_ref_opacity, cgv::signal::_c(i), cgv::signal::_r(p)));
-	connect_copy(p.add_member_control(bp, "", (cgv::type::DummyEnum&)pbc.ref_opacity.opacity_idx, "dropdown", "w=92;enums='off=-1,primary=0,secondary=1'")->value_change,
+	connect_copy(p.add_member_control(bp, "", (cgv::type::DummyEnum&)pbc.ref_opacity.opacity_idx, "dropdown", "w=88;enums='Off=-1,Primary=0,Secondary=1'")->value_change,
 		cgv::signal::rebind(this, &plot_base::update_ref_opacity_index, cgv::signal::_c(i), cgv::signal::_r(p)));
 
-	connect_copy(p.add_member_control(bp, "size", pbc.ref_size.size, "value_slider", "min=1;max=20;log=true;ticks=true;w=100", " ")->value_change,
+	connect_copy(p.add_member_control(bp, "Size", pbc.ref_size.size, "value_slider", "min=1;max=20;log=true;ticks=true;w=100", " ")->value_change,
 		cgv::signal::rebind(this, &plot_base::update_ref_size, cgv::signal::_c(i), cgv::signal::_r(p)));
-	connect_copy(p.add_member_control(bp, "", (cgv::type::DummyEnum&)pbc.ref_size.size_idx, "dropdown", "w=92;enums='off=-1,primary=0,secondary=1'")->value_change,
+	connect_copy(p.add_member_control(bp, "", (cgv::type::DummyEnum&)pbc.ref_size.size_idx, "dropdown", "w=88;enums='Off=-1,Primary=0,Secondary=1'")->value_change,
 		cgv::signal::rebind(this, &plot_base::update_ref_size_index, cgv::signal::_c(i), cgv::signal::_r(p)));
 
-	p.add_member_control(bp, "begin", pbc.begin_sample, "value_slider", "min=0;ticks=true")->set("max", attribute_source_arrays[i].attribute_sources.front().count - 1);
-	p.add_member_control(bp, "end", pbc.end_sample, "value_slider", "min=-1;ticks=true")->set("max", attribute_source_arrays[i].attribute_sources.front().count - 1);
+	p.add_member_control(bp, "Begin", pbc.begin_sample, "value_slider", "min=0;ticks=true")->set("max", attribute_source_arrays[i].attribute_sources.front().count - 1);
+	p.add_member_control(bp, "End", pbc.end_sample, "value_slider", "min=-1;ticks=true")->set("max", attribute_source_arrays[i].attribute_sources.front().count - 1);
 }
 void add_mapped_size_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_size& ms, std::string options)
 {
 	if (options.empty())
-		options = "min=1;max=20;log=true;ticks=true;w=100";
+		options = "min=1;max=20;log=true;ticks=true;w=120";
 	else
-		options += ";w=140";
+		options += ";w=120";
 	p.add_member_control(bp, name, ms.size, "value_slider", options, " ");
-	p.add_member_control(bp, "si", (cgv::type::DummyEnum&)ms.size_idx, "dropdown", "enums='off=-1,primary,secondary';w=52");
+	p.add_member_control(bp, "Si", (cgv::type::DummyEnum&)ms.size_idx, "dropdown", "enums='Off=-1,Primary,Secondary';w=58;tooltip='Size mapping index'");
 }
 void add_mapped_rgb_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgb& ms)
 {
-	p.add_member_control(bp, name, ms.color, "", "w=140", " ");
-	p.add_member_control(bp, "ci", (cgv::type::DummyEnum&)ms.color_idx, "dropdown", "enums='off=-1,primary,secondary';w=52");
+	p.add_member_control(bp, name, ms.color, "", "w=80", " ");
+	p.add_member_control(bp, "Ci", (cgv::type::DummyEnum&)ms.color_idx, "dropdown", "enums='Off=-1,Primary,Secondary';w=58;tooltip='Color mapping index'");
 }
 void add_mapped_rgba_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgba& ms)
 {
-	p.add_member_control(bp, name, ms.color, "", "w=80", " ");
-	p.add_member_control(bp, "ci", (cgv::type::DummyEnum&)ms.color_idx, "dropdown", "enums='off=-1,primary,secondary';w=42", " ");
-	p.add_member_control(bp, "oi", (cgv::type::DummyEnum&)ms.opacity_idx, "dropdown", "enums='off=-1,primary,secondary';w=42");
+	p.add_member_control(bp, name, ms.color, "", "w=36", " ");
+	p.add_member_control(bp, "Ci", (cgv::type::DummyEnum&)ms.color_idx, "dropdown", "enums='Off=-1,Primary,Secondary';w=58;tooltip='Color mapping index'", " ");
+	p.add_member_control(bp, "Oi", (cgv::type::DummyEnum&)ms.opacity_idx, "dropdown", "enums='Off=-1,Primary,Secondary';w=58;tooltip='Opacity mapping index'");
 }
 void add_mapped_opacity_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_opacity& ms)
 {
-	p.add_member_control(bp, name, ms.opacity, "", "w=140", " ");
-	p.add_member_control(bp, "oi", (cgv::type::DummyEnum&)ms.opacity_idx, "dropdown", "enums='off=-1,primary,secondary';w=52");
+	p.add_member_control(bp, name, ms.opacity, "", "w=80", " ");
+	p.add_member_control(bp, "Oi", (cgv::type::DummyEnum&)ms.opacity_idx, "dropdown", "enums='Off=-1,Primary,Secondary';w=58;tooltip='Opacity mapping index'");
 }
 void plot_base::create_point_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
 {
-	add_mapped_rgba_control(p, bp, "color", pbc.point_color);
-	add_mapped_rgba_control(p, bp, "halo_color", pbc.point_halo_color);
-	add_mapped_size_control(p, bp, "size", pbc.point_size);
-	add_mapped_size_control(p, bp, "halo_width", pbc.point_halo_width, "min=-8;max=8;ticks=true");
+	add_mapped_rgba_control(p, bp, "Color", pbc.point_color);
+	add_mapped_rgba_control(p, bp, "Halo Color", pbc.point_halo_color);
+	add_mapped_size_control(p, bp, "Size", pbc.point_size);
+	add_mapped_size_control(p, bp, "Halo Width", pbc.point_halo_width, "min=-8;max=8;ticks=true");
 }
 void plot_base::create_line_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
 {
-	add_mapped_rgba_control(p, bp, "color", pbc.line_color);
-	add_mapped_rgba_control(p, bp, "halo_color", pbc.line_halo_color);
-	add_mapped_size_control(p, bp, "width", pbc.line_width);
-	add_mapped_size_control(p, bp, "halo_width", pbc.line_halo_width);
+	add_mapped_rgba_control(p, bp, "Color", pbc.line_color);
+	add_mapped_rgba_control(p, bp, "Halo Color", pbc.line_halo_color);
+	add_mapped_size_control(p, bp, "Width", pbc.line_width);
+	add_mapped_size_control(p, bp, "Halo Width", pbc.line_halo_width, "min=0;max=20;log=true;ticks=true");
 }
 void plot_base::create_stick_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
 {
-	p.add_member_control(bp, "crd_idx", pbc.stick_coordinate_index, "value_slider", "min=0;max=1;ticks=true")
+	p.add_member_control(bp, "Coordinate Index", pbc.stick_coordinate_index, "value_slider", "min=0;max=1;ticks=true")
 		->set("max", get_dim()-1);
-	p.add_member_control(bp, "base", pbc.stick_base_window, "value_slider", "min=0;max=1;ticks=true");
-	add_mapped_rgba_control(p, bp, "color", pbc.stick_color);
-	add_mapped_size_control(p, bp, "width", pbc.stick_width);
+	p.add_member_control(bp, "Base", pbc.stick_base_window, "value_slider", "min=0;max=1;ticks=true");
+	add_mapped_rgba_control(p, bp, "Color", pbc.stick_color);
+	add_mapped_size_control(p, bp, "Width", pbc.stick_width);
 }
 void plot_base::create_bar_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
 {
-	p.add_member_control(bp, "crd_idx", pbc.bar_coordinate_index, "value_slider", "min=0;max=1;ticks=true")
+	p.add_member_control(bp, "Coordinate Index", pbc.bar_coordinate_index, "value_slider", "min=0;max=1;ticks=true")
 		->set("max", get_dim() - 1);
-	p.add_member_control(bp, "base", pbc.bar_base_window, "value_slider", "min=0;max=1;ticks=true");
-	add_mapped_rgba_control(p, bp, "color", pbc.bar_color);
-	add_mapped_rgba_control(p, bp, "outline", pbc.bar_outline_color);
-	add_mapped_size_control(p, bp, "outline_width", pbc.bar_outline_width);
-	add_mapped_size_control(p, bp, "width", pbc.bar_percentual_width, "min=0.01;max=1;log=true;ticks=true");
+	p.add_member_control(bp, "Base", pbc.bar_base_window, "value_slider", "min=0;max=1;ticks=true");
+	add_mapped_rgba_control(p, bp, "Color", pbc.bar_color);
+	add_mapped_rgba_control(p, bp, "Outline", pbc.bar_outline_color);
+	add_mapped_size_control(p, bp, "Outline Width", pbc.bar_outline_width, "min=0;max=20;log=true;ticks=true");
+	add_mapped_size_control(p, bp, "Width", pbc.bar_percentual_width, "min=0.0;max=1.05;log=true;ticks=true");
 }
 void plot_base::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
-	bool show = p.begin_tree_node(pbc.name, pbc.show_plot, true, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_points, "toggle", "w=50");
+	bool show = p.begin_tree_node("General", pbc.show_plot, true, "level=3;options='w=142'");
 	if (show) {
 		p.align("\a");
 		create_base_config_gui(bp, p, i);
 		p.align("\b");
 		p.end_tree_node(pbc.show_plot);
 	}
-	show = p.begin_tree_node("points", pbc.show_points, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_points, "toggle", "w=50");
+	show = p.begin_tree_node("Points", pbc.show_points, false, "level=3;options='w=142';align=' '");
+	p.add_member_control(bp, "Show", pbc.show_points, "toggle", "w=50");
 	if (show) {
 		p.align("\a");
 		create_point_config_gui(bp, p, pbc);
 		p.align("\b");
 		p.end_tree_node(pbc.show_points);
 	}
-	show = p.begin_tree_node("lines", pbc.show_lines, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_lines, "toggle", "w=50");
+	show = p.begin_tree_node("Lines", pbc.show_lines, false, "level=3;options='w=142';align=' '");
+	p.add_member_control(bp, "Show", pbc.show_lines, "toggle", "w=50");
 	if (show) {
 		p.align("\a");
 		create_line_config_gui(bp, p, pbc);
 		p.align("\b");
 		p.end_tree_node(pbc.show_lines);
 	}
-	show = p.begin_tree_node("sticks", pbc.show_sticks, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_sticks, "toggle", "w=50");
+	show = p.begin_tree_node("Sticks", pbc.show_sticks, false, "level=3;options='w=142';align=' '");
+	p.add_member_control(bp, "Show", pbc.show_sticks, "toggle", "w=50");
 	if (show) {
 		p.align("\a");
 		create_stick_config_gui(bp, p, pbc);
 		p.align("\b");
 		p.end_tree_node(pbc.show_sticks);
 	}
-	show = p.begin_tree_node("bars", pbc.show_bars, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_bars, "toggle", "w=50");
+	show = p.begin_tree_node("Bars", pbc.show_bars, false, "level=3;options='w=142';align=' '");
+	p.add_member_control(bp, "Show", pbc.show_bars, "toggle", "w=50");
 	if (show) {
 		p.align("\a");
 		create_bar_config_gui(bp, p, pbc);
@@ -1573,10 +1578,12 @@ void plot_base::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, un
 void plot_base::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
 	create_plot_gui(bp, p);
+	p.add_decorator("Subplots", "heading", "level=3;font_style=regular;align=i", "%y-=8\n");
+	p.add_decorator("", "separator", "h=2");
 	for (unsigned i=0; i<get_nr_sub_plots(); ++i) {
 		plot_base_config& pbc = ref_sub_plot_config(i);
-		bool show = p.begin_tree_node(std::string("configure ")+pbc.name, pbc.name, false, "level=3;options='w=142';align=' '");
-		p.add_member_control(bp, "show", pbc.show_plot, "toggle", "w=50");
+		bool show = p.begin_tree_node(pbc.name, pbc.name, false, "level=3;options='w=148;font_style=italic';align=' '");
+		p.add_member_control(bp, "Show", pbc.show_plot, "toggle", "w=40");
 		if (show) {
 			p.align("\a");
 				create_config_gui(bp, p, i);

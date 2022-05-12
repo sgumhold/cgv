@@ -114,7 +114,7 @@ void main()
 	// compute core size
 	fo.percentual_core_size = fo.percentual_rectangle_size - percentual_border_size;
 	// compute scaling factor to get splat radius
-	fo.percentual_splat_size = fo.percentual_rectangle_size + fo.percentual_blend_width;
+	fo.percentual_splat_size = fo.percentual_rectangle_size + 2.0*fo.percentual_blend_width;
 	// compute splat parameters in x and y direction
 	dx_eye *= fo.percentual_splat_size.x;
 	dy_eye *= fo.percentual_splat_size.y;
