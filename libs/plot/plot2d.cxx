@@ -124,13 +124,13 @@ bool plot2d::init(cgv::render::context& ctx)
 	}
 	else
 		line_prog.allow_context_to_set_color(false);
-	if (!point_prog.build_program(ctx, "plot2d_point.glpr")) {
+	if (!point_prog.build_program(ctx, "plot2d_point.glpr", true)) {
 		std::cerr << "could not build GLSL program from plot2d_point.glpr" << std::endl;
 		return false;
 	}
 	else 
 		point_prog.allow_context_to_set_color(false);
-	if (!rectangle_prog.build_program(ctx, "plot2d_rect.glpr")) {
+	if (!rectangle_prog.build_program(ctx, "plot2d_rect.glpr", true, { {"PLOT_MODE", "1"} })) {
 		std::cerr << "could not build GLSL program from plot2d_rect.glpr" << std::endl;
 		return false;
 	}
@@ -279,7 +279,7 @@ void plot2d::configure_bar_plot(cgv::render::context& ctx)
 	set_plot_uniforms(ctx, rectangle_prog);
 	set_mapping_uniforms(ctx, rectangle_prog);
 	// configure geometry shader
-	rectangle_prog.set_uniform(ctx, "pixel_blend", 1.0f);
+	rectangle_prog.set_uniform(ctx, "pixel_blend", 2.0f);
 	rectangle_prog.set_uniform(ctx, "viewport_height", (float)ctx.get_height());
 	// configure fragment shader
 	rectangle_prog.set_uniform(ctx, "use_texture", false);
@@ -312,7 +312,7 @@ bool plot2d::draw_bar_plot(cgv::render::context& ctx, int i, int layer_idx)
 			rectangle_prog.set_uniform(ctx, "rectangle_border_width", spc.bar_outline_width.size * get_domain_config_ptr()->reference_size);
 			rectangle_prog.set_attribute(ctx, rectangle_prog.get_color_index(), spc.bar_color.color);
 			rectangle_prog.set_attribute(ctx, "secondary_color", spc.bar_outline_color.color);
-			rectangle_prog.set_attribute(ctx, "size", extent[0] / count * spc.bar_percentual_width.size);
+			rectangle_prog.set_attribute(ctx, "size", (count > 1 ? extent[0] / (count - 1) : extent[0]) * spc.bar_percentual_width.size);
 			rectangle_prog.set_attribute(ctx, "depth_offset", -layer_idx * layer_depth);
 			// configure geometry shader
 			rectangle_prog.set_uniform(ctx, "border_mode", spc.bar_coordinate_index == 0 ? 2 : 1);
@@ -669,18 +669,18 @@ void plot2d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsig
 
 void plot2d::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
-	if (p.begin_tree_node("multi modes", multi_axis_modes, false, "level=3")) {
+	if (p.begin_tree_node("Multi Modes", multi_axis_modes, false, "level=3")) {
 		p.align("\a");
 		for (unsigned ai = 0; ai < 2 + nr_attributes; ++ai)
 			p.add_member_control(bp, get_domain_config_ptr()->axis_configs[ai].name, multi_axis_modes[ai], "toggle");
 		p.align("\b");
 		p.end_tree_node(rrs);
 	}
-	p.add_member_control(bp, "dx", sub_plot_delta[0], "value_slider", "min=-1;max=1;step=0.001;ticks=true");
-	p.add_member_control(bp, "dy", sub_plot_delta[1], "value_slider", "min=-1;max=1;step=0.001;ticks=true");
-	p.add_member_control(bp, "dz", sub_plot_delta[2], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
+	p.add_member_control(bp, "Delta X", sub_plot_delta[0], "value_slider", "min=-1;max=1;step=0.001;ticks=true");
+	p.add_member_control(bp, "Delta Y", sub_plot_delta[1], "value_slider", "min=-1;max=1;step=0.001;ticks=true");
+	p.add_member_control(bp, "Delta Z", sub_plot_delta[2], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
 	plot_base::create_gui(bp, p);
-	p.add_member_control(bp, "disable_depth_mask", disable_depth_mask, "toggle");
+	p.add_member_control(bp, "Disable Depth Mask", disable_depth_mask, "toggle");
 }
 
 	}

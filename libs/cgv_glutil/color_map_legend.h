@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv/render/texture.h>
+#include <cgv/utils/convert_string.h>
 #include <cgv_glutil/color_map.h>
 #include <cgv_glutil/frame_buffer_container.h>
 #include <cgv_glutil/generic_renderer.h>
@@ -14,7 +15,7 @@
 namespace cgv {
 namespace glutil {
 
-class CGV_API color_map_legend : public cgv::glutil::overlay {
+class CGV_API color_map_legend : public overlay {
 protected:
 	int last_theme_idx = -1;
 	frame_buffer_container fbc;
@@ -30,30 +31,47 @@ protected:
 	struct layout_attributes {
 		int padding;
 		int label_space = 12;
-		//int band_height;
-		int total_height;
+		int x_label_size = 0;
+		int title_space = 0;
 
-		OrientationOption orientation;
+		//int band_height;
+		ivec2 total_size;
+
+		OrientationOption orientation = OO_HORIZONTAL;
 		AlignmentOption label_alignment = AO_END;
 
 		// dependent members
 		rect color_map_rect;
+		ivec2 title_position = ivec2(0);
+		float title_angle = 90.0f;
 
 		void update(const ivec2& parent_size) {
-			ivec2 offset(label_space, 0);
-			ivec2 size(parent_size.x() - 2 * label_space, parent_size.y());
+			ivec2 offset(0, 0);
+			ivec2 size(parent_size);
 
 			switch(label_alignment) {
-			case AO_FREE:
-				break;
 			case AO_START:
-				size.y() -= label_space;
-				break;
-			case AO_CENTER:
+				if(orientation == OO_HORIZONTAL) {
+					offset.x() = x_label_size / 2;
+					offset.y() = title_space;
+					size.x() -= x_label_size;
+					size.y() -= label_space + title_space;
+				} else {
+					offset.x() = x_label_size + 4;
+					offset.y() = 0;
+					size.x() -= x_label_size + 4 + title_space;
+				}
 				break;
 			case AO_END:
-				offset.y() = label_space;
-				size.y() -= label_space;
+				if(orientation == OO_HORIZONTAL) {
+					offset.x() = x_label_size / 2;
+					offset.y() = label_space;
+					size.x() -= x_label_size;
+					size.y() -= label_space + title_space;
+				} else {
+					offset.x() = title_space;
+					size.x() -= x_label_size + 4 + title_space;
+				}
 				break;
 			default: break;
 			}
@@ -70,10 +88,12 @@ protected:
 
 	texture tex;
 
+	std::string title;
 	vec2 range;
 	unsigned num_ticks;
 	bool label_auto_precision;
 	unsigned label_precision;
+	AlignmentOption title_align;
 
 	// text appearance
 	float font_size = 12.0f;
@@ -91,6 +111,7 @@ protected:
 
 	void set_damaged();
 	void init_styles(context& ctx);
+	void create_labels();
 	void create_ticks();
 
 public:
@@ -114,6 +135,11 @@ public:
 	void create_gui(cgv::gui::provider& p);
 
 	void set_color_map(cgv::render::context & ctx, color_map& cm);
+
+	void set_width(size_t w);
+	void set_height(size_t h);
+
+	void set_title(const std::string& t);
 
 	vec2 get_range() { return range; }
 	void set_range(vec2 r);

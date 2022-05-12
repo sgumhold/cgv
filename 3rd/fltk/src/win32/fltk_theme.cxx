@@ -89,9 +89,8 @@ extern "C" bool fltk_theme() {
   fltk::reset_indexed_colors();
 
   // TODO: split flat style from windows theme?
-  // TODO: make a theme handler singleton delivering color information to wherever it may be needed(including warning colors etc.)
 
-  // TODO: MARK
+  // set colors and styling based on selected theme
   if(theme_idx < 0) {
 	  // original
 	  fltk::set_background(background);
