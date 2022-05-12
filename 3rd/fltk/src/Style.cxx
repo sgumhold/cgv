@@ -624,24 +624,30 @@ void fltk::shift_background(int index) {
 
 void fltk::set_main_gui_colors(Color c0, Color c1, Color c2, Color c3, Color tc) {
 	uchar r, g, b;
-	split_color(c0, r, g, b);
-	set_color_index(Color(GRAY33), color(r, g, b));
+	uchar r0, g0, b0;
+	split_color(c0, r0, g0, b0);
+	set_color_index(Color(GRAY33), color(r0, g0, b0));
 
-	float rf = static_cast<float>(r);
-	float gf = static_cast<float>(g);
-	float bf = static_cast<float>(b);
+	float rf = static_cast<float>(r0);
+	float gf = static_cast<float>(g0);
+	float bf = static_cast<float>(b0);
 	float l = 0.333333f * (rf + gf + bf);
 	l /= 255.0f;
 	float t = (1.0f - l)*0.5f + l*0.75f;
-	r = static_cast<uchar>(t*rf);
-	g = static_cast<uchar>(t*gf);
-	b = static_cast<uchar>(t*bf);
-	set_color_index(Color(GRAY30), color(r, g, b));
+	uchar r30 = static_cast<uchar>(t*rf);
+	uchar g30 = static_cast<uchar>(t*gf);
+	uchar b30 = static_cast<uchar>(t*bf);
+	set_color_index(Color(GRAY30), color(r30, g30, b30));
 	
 	split_color(c1, r, g, b);
 	set_color_index(Color(GRAY75), color(r, g, b));
+	
 	split_color(c2, r, g, b);
 	set_color_index(Color(GRAY80), color(r, g, b));
+
+	//set_color_index(Color(GRAY35), lerp(color(r, g, b), color(r0, g0, b0), 0.333f));
+	//set_color_index(Color(GRAY25), lerp(color(r30, g30, b30), color(r0, g0, b0), 0.666f));
+
 	split_color(c3, r, g, b);
 	set_color_index(Color(GRAY85), color(r, g, b));
 	split_color(tc, r, g, b);

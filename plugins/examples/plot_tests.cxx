@@ -16,7 +16,7 @@ protected:
 	// persistent vector with plot data
 	std::vector<vec4> P1, P2;
 public:
-	test_plot3d() : cgv::base::node("3d plot tester"), plot(1)
+	test_plot3d() : cgv::base::node("3D Plot Test"), plot(1)
 	{
 		unsigned i, j;
 		unsigned pi1 = plot.add_sub_plot("x*y");
@@ -102,7 +102,7 @@ protected:
 	// whether to use offscreen rendering
 	bool render_offscreen;
 public:
-	test_plot2d() : cgv::base::node("2d plot tester"), tex("[R,G,B,A]"), depth("[D]"), plot("trigonometry", 2)
+	test_plot2d() : cgv::base::node("2D Plot Test"), tex("[R,G,B,A]"), depth("[D]"), plot("trigonometry", 2)
 	{
 		// compute vector of vec3 with x coordinates and function values of cos and sin
 		unsigned i;
@@ -117,8 +117,6 @@ public:
 		//plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f));	// will be set later to the attribute with index 2
 		plot.set_sub_plot_colors(p2, rgb(0.1f, 0.0f, 1.0f));
 		plot.set_sub_plot_colors(p3, rgb(0.0f, 1.0f, 0.1f));
-
-		plot.ref_sub_plot_config(p1).show_bars = true;
 
 		// attach sub plot attributes to previously created vector
 		// CAREFUL: this creates references to P and P is not allowed to be deleted thereafter
@@ -255,6 +253,5 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-//cgv::base::factory_registration<test_plot2d> test_plot2d_fac("New/Demo/Test Plot2d", '2');
-cgv::base::object_registration<test_plot2d> test_plot2d_fac("Plot2d_reg");
+cgv::base::factory_registration<test_plot2d> test_plot2d_fac("New/Demo/Test Plot2d", '2');
 cgv::base::factory_registration<test_plot3d> test_plot3d_fac("New/Demo/Test Plot3d", '3');
