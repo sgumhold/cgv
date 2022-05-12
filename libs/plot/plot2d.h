@@ -92,8 +92,6 @@ public:
 	///
 	void create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i);
 	void create_gui(cgv::base::base* bp, cgv::gui::provider& p);
-
-	void reload_shaders(cgv::render::context& ctx);
 };
 
 	}
