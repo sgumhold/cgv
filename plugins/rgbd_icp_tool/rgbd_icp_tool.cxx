@@ -248,6 +248,7 @@ void fix_normals(point_cloud& pc)
 			pc.nml(i) = pc.nml(i).sqr_length() > 0.1 ? pc.nml(i) : cgv::math::fvec<float, 3>(1, 0, 0);
 	}
 	else {
+		pc.create_normals();
 		for (int i = 0; i < pc.get_nr_points(); ++i)
 			pc.nml(i) = cgv::math::fvec<float, 3>(1, 0, 0);
 	}
