@@ -96,7 +96,7 @@ void msdf_text_geometry::disable(cgv::render::context& ctx) {
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
-float msdf_text_geometry::compute_length(const std::string& str) {
+float msdf_text_geometry::compute_length(const std::string& str) const {
 	float length = 0.0f;
 	float acc_advance = 0.0f;
 

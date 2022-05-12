@@ -38,9 +38,9 @@ public:
 		return prog.disable(ctx);
 	}
 
-	void draw(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg);
+	void draw(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg, size_t offset = 0, int count = -1);
 
-	bool render(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg);
+	bool render(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg, size_t offset = 0, int count = -1);
 };
 
 }
