@@ -44,7 +44,7 @@ namespace stream_vis {
 		cgv::base::process_command("plugin:cg_fltk");
 		cgv::base::process_command(shader_config_cmd);
 		cgv::base::process_command("plugin:cmf_tt_gl_font");
-		cgv::base::process_command("plugin:crg_stereo_view");
+		//cgv::base::process_command("plugin:crg_stereo_view");
 		cgv::base::process_command("plugin:crg_grid");
 		//  cgv::base::register_object(console::get_console());
 		//	process_config_file(cfg_file_name);
