@@ -168,7 +168,7 @@ void color_map_legend::draw(cgv::render::context& ctx) {
 
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	// draw frame buffer texture to screen
 	auto& blit_prog = overlay_canvas.enable_shader(ctx, "rectangle");
@@ -186,9 +186,7 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	//TODO: setup proper bak to front blending equation
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	fbc.enable(ctx);
 

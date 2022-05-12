@@ -300,7 +300,7 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 	
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -428,7 +428,7 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 
 		ctx.enable_font_face(fntf_ptr, s);
 	}
-
+	
 	glEnable(GL_DEPTH_TEST);
 }
 
