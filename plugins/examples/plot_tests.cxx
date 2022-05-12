@@ -152,22 +152,6 @@ public:
 		render_offscreen = false;
 		
 	}
-
-
-
-
-	void reload_shaders() {
-		if(auto ctx_ptr = get_context()) {
-			std::cout << "Reloading plot shaders" << std::endl;
-			plot.reload_shaders(*ctx_ptr);
-			post_redraw();
-		}
-	}
-
-
-
-
-
 	void on_set(void* member_ptr)
 	{
 		post_redraw();
@@ -241,10 +225,7 @@ public:
 	}
 	void create_gui()
 	{
-		add_decorator("plot2d test", "heading");
-
-		connect_copy(add_button("Reload Shaders")->click, cgv::signal::rebind(this, &test_plot2d::reload_shaders));
-
+		add_decorator("plot2d Test", "heading");
 		add_member_control(this, "render_offscreen", render_offscreen, "toggle");
 		plot.create_gui(this, *this);
 	}

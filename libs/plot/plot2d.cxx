@@ -139,33 +139,6 @@ bool plot2d::init(cgv::render::context& ctx)
 	return plot_base::init(ctx);
 }
 
-
-
-
-void plot2d::reload_shaders(cgv::render::context& ctx) {
-	line_prog.destruct(ctx);
-	point_prog.destruct(ctx);
-	rectangle_prog.destruct(ctx);
-	if(!line_prog.build_program(ctx, "plot2d_line.glpr", true)) {
-		std::cerr << "could not build GLSL program from plot2d_line.glpr" << std::endl;
-		return;
-	} else
-		line_prog.allow_context_to_set_color(false);
-	if(!point_prog.build_program(ctx, "plot2d_point.glpr", true)) {
-		std::cerr << "could not build GLSL program from plot2d_point.glpr" << std::endl;
-		return;
-	} else
-		point_prog.allow_context_to_set_color(false);
-	if(!rectangle_prog.build_program(ctx, "plot2d_rect.glpr", true, { {"PLOT_MODE", "1"} })) {
-		std::cerr << "could not build GLSL program from plot2d_rect.glpr" << std::endl;
-		return;
-	} else
-		rectangle_prog.allow_context_to_set_color(false);
-}
-
-
-
-
 void plot2d::clear(cgv::render::context& ctx)
 {
 	aam_domain.destruct(ctx);
