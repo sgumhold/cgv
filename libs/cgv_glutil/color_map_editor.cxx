@@ -118,7 +118,8 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 			break;
 		case cgv::gui::MA_MOVE:
 		case cgv::gui::MA_DRAG:
-			cursor_pos = ivec2(me.get_x(), me.get_y());
+			if(get_context())
+				cursor_pos = ivec2(me.get_x(), get_context()->get_height() - 1 - me.get_y());
 			if (show_cursor)
 				post_redraw();
 			break;
@@ -299,7 +300,7 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 	
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -427,7 +428,7 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 
 		ctx.enable_font_face(fntf_ptr, s);
 	}
-
+	
 	glEnable(GL_DEPTH_TEST);
 }
 

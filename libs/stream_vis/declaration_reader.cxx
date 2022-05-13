@@ -485,6 +485,7 @@ namespace stream_vis {
 				parse_bool("multi_1_axis_mode", plot2d_ptr->multi_axis_modes[3]);
 			pi.plot_ptr->set_extent(ext.to_vec());
 			pi.plot_ptr->get_domain_config_ptr()->reference_size = 0.003f;
+			parse_float("reference_size", pi.plot_ptr->get_domain_config_ptr()->reference_size);
 		}
 		else {
 			pi.plot_ptr = new cgv::plot::plot3d(unsigned(nr_attributes));

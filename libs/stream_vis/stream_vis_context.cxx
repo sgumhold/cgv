@@ -1,6 +1,7 @@
 #include "stream_vis_context.h"
 #include <cgv/math/ftransform.h>
 #include <cgv/utils/scan.h>
+#include <cgv/gui/mouse_event.h>
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/utils/file.h>
@@ -21,7 +22,6 @@ namespace stream_vis {
 		}
 		return component_index;
 	}
-
 	void stream_vis_context::construct_streaming_aabbs()
 	{
 		for (auto& tsrb : time_series_ringbuffers) {
@@ -73,7 +73,6 @@ namespace stream_vis {
 
 		}
 	}
-
 	void stream_vis_context::construct_storage_buffer()
 	{
 		// initialize component references to point to themselves
@@ -224,8 +223,7 @@ namespace stream_vis {
 		construct_streaming_aabbs();
 
 	}
-
-	stream_vis_context::stream_vis_context(const std::string& name) : node(name)
+	stream_vis_context::stream_vis_context(const std::string& name) : application_plugin(name)
 	{
 		paused = false;
 		sleep_ms = 20;
@@ -233,6 +231,8 @@ namespace stream_vis {
 		last_use_vbo = use_vbo = false;
 		plot_attributes_initialized = false;
 		aabb_mode = last_aabb_mode = AM_BRUTE_FORCE;
+		main_overlay = register_overlay<view2d_overlay>("Main View");
+		main_overlay->set_update_handler(this);
 	}
 	stream_vis_context::~stream_vis_context()
 	{
@@ -256,6 +256,8 @@ namespace stream_vis {
 		reader.init(&name2index, &typed_time_series, &offset_infos, &plot_pool);
 		if (reader.parse_declarations()) {
 			nr_uninitialized_offsets = offset_infos.size();
+//			plot_pool.back().view_index = 1;
+			
 			return;
 		}
 	}
@@ -413,7 +415,6 @@ namespace stream_vis {
 			--nr_uninitialized_offsets;
 		}
 	}
-
 	void stream_vis_context::show_plots() const
 	{
 		for (const auto& pl : plot_pool) {
@@ -453,37 +454,40 @@ namespace stream_vis {
 				tsrb.storage_buffer_index << "|" << tsrb.storage_buffer_offset << std::endl;
 		}
 	}
-	bool stream_vis_context::handle(cgv::gui::event& e)
+	bool stream_vis_context::handle_event(cgv::gui::event& e)
 	{
-		if (e.get_kind() != cgv::gui::EID_KEY)
-			return false;
-		auto& ke = reinterpret_cast<cgv::gui::key_event&>(e);
-		if (ke.get_action() != cgv::gui::KA_RELEASE) {
-			switch (ke.get_char()) {
-			case '+':
-				sleep_ms += 1;
-				on_set(&sleep_ms);
-				return true;
-			case '-':
-				if (sleep_ms > 0) {
-					sleep_ms -= 1;
+		if (e.get_kind() == cgv::gui::EID_KEY) {
+			auto& ke = reinterpret_cast<cgv::gui::key_event&>(e);
+			if (ke.get_action() != cgv::gui::KA_RELEASE) {
+				switch (ke.get_char()) {
+				case '+':
+					sleep_ms += 1;
 					on_set(&sleep_ms);
+					return true;
+				case '-':
+					if (sleep_ms > 0) {
+						sleep_ms -= 1;
+						on_set(&sleep_ms);
+					}
+					return true;
 				}
-				return true;
-			}
-			switch (ke.get_key()) {
-			case 'X':
-				sleep_ms = 0;
-				on_set(&sleep_ms);
-				return true;
-			case 'S':
-				sleep_ms = 20;
-				on_set(&sleep_ms);
-				return true;
-			case cgv::gui::KEY_Space:
-				paused = !paused;
-				on_set(&paused);
-				return true;
+				switch (ke.get_key()) {
+				case 'X':
+					sleep_ms = 0;
+					on_set(&sleep_ms);
+					return true;
+				case 'S':
+					sleep_ms = 20;
+					on_set(&sleep_ms);
+					return true;
+				case cgv::gui::KEY_Space:
+					if (ke.get_modifiers() == 0) {
+						paused = !paused;
+						on_set(&paused);
+						return true;
+					}
+					break;
+				}
 			}
 		}
 		return false;
@@ -755,9 +759,11 @@ namespace stream_vis {
 	}
 	void stream_vis_context::draw(cgv::render::context& ctx)
 	{
-		ctx.push_modelview_matrix();
-		for (auto& pl : plot_pool)
-			pl.plot_ptr->draw(ctx);
+		//ctx.push_modelview_matrix();
+		//for (auto& pl : plot_pool) 
+		//	if (pl.view_index == 0)
+		//		pl.plot_ptr->draw(ctx);
+		//ctx.pop_modelview_matrix();
 	}
 	void stream_vis_context::create_gui()
 	{

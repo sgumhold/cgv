@@ -1,6 +1,7 @@
 #pragma once
 
 #include "plot_info.h"
+#include "view2d_overlay.h"
 #include "offset_info.h"
 #include "streaming_time_series.h"
 #include "streaming_aabb.h"
@@ -9,6 +10,7 @@
 #include <cgv/os/mutex.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/vertex_buffer.h>
+#include <cgv_glutil/application_plugin.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <plot/plot2d.h>
@@ -40,12 +42,11 @@ namespace stream_vis {
 	};
 
 	class CGV_API stream_vis_context : 
-		public cgv::base::node, 
-		public cgv::render::drawable, 
-		public cgv::gui::event_handler,
-		public cgv::gui::provider
+		public cgv::glutil::application_plugin,
+		public view2d_update_handler
 	{
 	protected:
+		view2d_overlay* main_overlay;
 		std::atomic<bool> outofdate;
 		bool use_vbo, last_use_vbo, plot_attributes_initialized;
 		AABBMode aabb_mode, last_aabb_mode;
@@ -96,7 +97,7 @@ namespace stream_vis {
 		void show_plots() const;
 		void show_ringbuffers() const;
 		bool is_outofdate() const { return outofdate; }
-		bool handle(cgv::gui::event& e);
+		bool handle_event(cgv::gui::event& e);
 		void stream_help(std::ostream& os);
 		bool init(cgv::render::context& ctx);
 		void clear(cgv::render::context& ctx);

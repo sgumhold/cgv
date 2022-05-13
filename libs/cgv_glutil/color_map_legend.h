@@ -15,7 +15,7 @@
 namespace cgv {
 namespace glutil {
 
-class CGV_API color_map_legend : public cgv::glutil::overlay {
+class CGV_API color_map_legend : public overlay {
 protected:
 	int last_theme_idx = -1;
 	frame_buffer_container fbc;
@@ -32,6 +32,7 @@ protected:
 		int padding;
 		int label_space = 12;
 		int x_label_size = 0;
+		int title_space = 0;
 
 		//int band_height;
 		ivec2 total_size;
@@ -41,6 +42,8 @@ protected:
 
 		// dependent members
 		rect color_map_rect;
+		ivec2 title_position = ivec2(0);
+		float title_angle = 90.0f;
 
 		void update(const ivec2& parent_size) {
 			ivec2 offset(0, 0);
@@ -50,12 +53,13 @@ protected:
 			case AO_START:
 				if(orientation == OO_HORIZONTAL) {
 					offset.x() = x_label_size / 2;
+					offset.y() = title_space;
 					size.x() -= x_label_size;
-					size.y() -= label_space;
+					size.y() -= label_space + title_space;
 				} else {
 					offset.x() = x_label_size + 4;
 					offset.y() = 0;
-					size.x() -= x_label_size + 4;
+					size.x() -= x_label_size + 4 + title_space;
 				}
 				break;
 			case AO_END:
@@ -63,9 +67,10 @@ protected:
 					offset.x() = x_label_size / 2;
 					offset.y() = label_space;
 					size.x() -= x_label_size;
-					size.y() -= label_space;
+					size.y() -= label_space + title_space;
 				} else {
-					size.x() -= x_label_size + 4;
+					offset.x() = title_space;
+					size.x() -= x_label_size + 4 + title_space;
 				}
 				break;
 			default: break;
@@ -83,10 +88,12 @@ protected:
 
 	texture tex;
 
+	std::string title;
 	vec2 range;
 	unsigned num_ticks;
 	bool label_auto_precision;
 	unsigned label_precision;
+	AlignmentOption title_align;
 
 	// text appearance
 	float font_size = 12.0f;
@@ -128,6 +135,11 @@ public:
 	void create_gui(cgv::gui::provider& p);
 
 	void set_color_map(cgv::render::context & ctx, color_map& cm);
+
+	void set_width(size_t w);
+	void set_height(size_t h);
+
+	void set_title(const std::string& t);
 
 	vec2 get_range() { return range; }
 	void set_range(vec2 r);
