@@ -182,6 +182,7 @@ namespace cgv {
 		static bool initialized = false;
 		if (!initialized) {
 			aam.init(ctx);
+			initialized = true;
 		}
 		return aam;
 	}
