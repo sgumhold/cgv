@@ -93,13 +93,14 @@ var searchData=
   ['mul_5fmodelview_5fmatrix_1815',['mul_modelview_matrix',['../classcgv_1_1render_1_1context.html#a0ade6d5e9b7b5fdcd99b5ff493a5cd4d',1,'cgv::render::context']]],
   ['mul_5fprojection_5fmatrix_1816',['mul_projection_matrix',['../classcgv_1_1render_1_1context.html#af517d87c4ee1a51962a07d5b88fcf9c4',1,'cgv::render::context']]],
   ['multi_5faxis_5fmodes_1817',['multi_axis_modes',['../classcgv_1_1plot_1_1plot2d.html#a8852b4161456d79afb08461c8419c672',1,'cgv::plot::plot2d']]],
-  ['multi_5fdepth_5fbuffer_5fid_1818',['multi_depth_buffer_id',['../classvr_1_1gl__vr__display.html#aa905bbf9f3790d68d7cf4b216f7177ca',1,'vr::gl_vr_display']]],
-  ['multi_5fobserve_1819',['multi_observe',['../structcgv_1_1base_1_1config__file__observer.html#ab575bf113750edd78c4132850050911f',1,'cgv::base::config_file_observer']]],
-  ['multi_5fpass_5fdrawable_1820',['multi_pass_drawable',['../classcgv_1_1render_1_1multi__pass__drawable.html',1,'cgv::render::multi_pass_drawable'],['../classcgv_1_1render_1_1multi__pass__drawable.html#acc8467cf63dbd57bfcacb448fa8647c2',1,'cgv::render::multi_pass_drawable::multi_pass_drawable()']]],
-  ['multi_5fpass_5fignore_5ffinish_1821',['multi_pass_ignore_finish',['../classcgv_1_1render_1_1multi__pass__drawable.html#a60bbec96daf80b816e84e88897021ac4',1,'cgv::render::multi_pass_drawable']]],
-  ['multi_5fpass_5fterminate_1822',['multi_pass_terminate',['../classcgv_1_1render_1_1multi__pass__drawable.html#a057112bef0ae346ddf884aa4994f2a4a',1,'cgv::render::multi_pass_drawable']]],
-  ['multi_5fsample_5fbuffer_1823',['multi_sample_buffer',['../structcgv_1_1render_1_1context__config.html#a02a3d94a5e7e7c973b7bab45ef14484e',1,'cgv::render::context_config']]],
-  ['multi_5fset_1824',['multi_set',['../classcgv_1_1base_1_1base.html#afbfaded48bb322a4b77350ca73c9e1a2',1,'cgv::base::base']]],
-  ['multiple_5fselection_1825',['multiple_selection',['../classcgv_1_1gui_1_1gui__group.html#a63546812022df51b25221fef314f2509',1,'cgv::gui::gui_group']]],
-  ['mutex_1826',['mutex',['../structcgv_1_1os_1_1mutex.html',1,'cgv::os::mutex'],['../structcgv_1_1os_1_1mutex.html#abd638f63772d2a4d0dd8f52ba93dac7d',1,'cgv::os::mutex::mutex()']]]
+  ['multi_5faxis_5fticks_1818',['multi_axis_ticks',['../classcgv_1_1plot_1_1axis__config.html#afa91333092727bf85e99a0430390effa',1,'cgv::plot::axis_config']]],
+  ['multi_5fdepth_5fbuffer_5fid_1819',['multi_depth_buffer_id',['../classvr_1_1gl__vr__display.html#aa905bbf9f3790d68d7cf4b216f7177ca',1,'vr::gl_vr_display']]],
+  ['multi_5fobserve_1820',['multi_observe',['../structcgv_1_1base_1_1config__file__observer.html#ab575bf113750edd78c4132850050911f',1,'cgv::base::config_file_observer']]],
+  ['multi_5fpass_5fdrawable_1821',['multi_pass_drawable',['../classcgv_1_1render_1_1multi__pass__drawable.html',1,'cgv::render::multi_pass_drawable'],['../classcgv_1_1render_1_1multi__pass__drawable.html#acc8467cf63dbd57bfcacb448fa8647c2',1,'cgv::render::multi_pass_drawable::multi_pass_drawable()']]],
+  ['multi_5fpass_5fignore_5ffinish_1822',['multi_pass_ignore_finish',['../classcgv_1_1render_1_1multi__pass__drawable.html#a60bbec96daf80b816e84e88897021ac4',1,'cgv::render::multi_pass_drawable']]],
+  ['multi_5fpass_5fterminate_1823',['multi_pass_terminate',['../classcgv_1_1render_1_1multi__pass__drawable.html#a057112bef0ae346ddf884aa4994f2a4a',1,'cgv::render::multi_pass_drawable']]],
+  ['multi_5fsample_5fbuffer_1824',['multi_sample_buffer',['../structcgv_1_1render_1_1context__config.html#a02a3d94a5e7e7c973b7bab45ef14484e',1,'cgv::render::context_config']]],
+  ['multi_5fset_1825',['multi_set',['../classcgv_1_1base_1_1base.html#afbfaded48bb322a4b77350ca73c9e1a2',1,'cgv::base::base']]],
+  ['multiple_5fselection_1826',['multiple_selection',['../classcgv_1_1gui_1_1gui__group.html#a63546812022df51b25221fef314f2509',1,'cgv::gui::gui_group']]],
+  ['mutex_1827',['mutex',['../structcgv_1_1os_1_1mutex.html',1,'cgv::os::mutex'],['../structcgv_1_1os_1_1mutex.html#abd638f63772d2a4d0dd8f52ba93dac7d',1,'cgv::os::mutex::mutex()']]]
 ];

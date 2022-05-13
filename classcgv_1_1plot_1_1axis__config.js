@@ -68,6 +68,7 @@ var classcgv_1_1plot_1_1axis__config =
     [ "log_scale", "classcgv_1_1plot_1_1axis__config.html#a618a1a91a1f0dd1568189cb134ac800b", null ],
     [ "max_attribute_value", "classcgv_1_1plot_1_1axis__config.html#a792aeb84993458551cf6d4f8b022dafd", null ],
     [ "min_attribute_value", "classcgv_1_1plot_1_1axis__config.html#acef458e0fd657a41b1e5dbb2327914a3", null ],
+    [ "multi_axis_ticks", "classcgv_1_1plot_1_1axis__config.html#afa91333092727bf85e99a0430390effa", null ],
     [ "name", "classcgv_1_1plot_1_1axis__config.html#ab096ff107e63e1b31382f7bc482036a1", null ],
     [ "primary_ticks", "classcgv_1_1plot_1_1axis__config.html#a075d127b1da04b02a248e71f5654d5b7", null ],
     [ "secondary_ticks", "classcgv_1_1plot_1_1axis__config.html#af27c2ef5442f03e0c9c4959d27518b6d", null ]
