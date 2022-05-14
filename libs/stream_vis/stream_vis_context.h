@@ -2,6 +2,7 @@
 
 #include "plot_info.h"
 #include "view2d_overlay.h"
+#include "view3d_overlay.h"
 #include "offset_info.h"
 #include "streaming_time_series.h"
 #include "streaming_aabb.h"
@@ -43,10 +44,12 @@ namespace stream_vis {
 
 	class CGV_API stream_vis_context : 
 		public cgv::glutil::application_plugin,
-		public view2d_update_handler
+		public view2d_update_handler,
+		public view3d_update_handler
 	{
 	protected:
-		view2d_overlay* main_overlay;
+		view3d_overlay* main_overlay;
+		std::vector<cgv::glutil::overlay*> view_overlays;
 		std::atomic<bool> outofdate;
 		bool use_vbo, last_use_vbo, plot_attributes_initialized;
 		AABBMode aabb_mode, last_aabb_mode;

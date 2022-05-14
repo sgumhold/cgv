@@ -231,8 +231,17 @@ namespace stream_vis {
 		last_use_vbo = use_vbo = false;
 		plot_attributes_initialized = false;
 		aabb_mode = last_aabb_mode = AM_BRUTE_FORCE;
-		main_overlay = register_overlay<view2d_overlay>("Main View");
+		main_overlay = register_overlay<view3d_overlay>("3D View");
 		main_overlay->set_update_handler(this);
+		main_overlay->set_overlay_stretch(cgv::glutil::overlay::SO_PERCENTUAL, vec2(0.5f, 1.0f));
+		main_overlay->set_overlay_alignment(cgv::glutil::overlay::AO_PERCENTUAL, cgv::glutil::overlay::AO_START, vec2(0.5f, 0.0f));
+		view_overlays.push_back(main_overlay);
+
+		auto* v2d_overlay = register_overlay<view2d_overlay>("2D View");
+		v2d_overlay->set_update_handler(this);
+		v2d_overlay->set_overlay_stretch(cgv::glutil::overlay::SO_PERCENTUAL, vec2(0.5f, 1.0f));
+		v2d_overlay->set_overlay_alignment(cgv::glutil::overlay::AO_START, cgv::glutil::overlay::AO_START);
+		view_overlays.push_back(v2d_overlay);
 	}
 	stream_vis_context::~stream_vis_context()
 	{
@@ -256,8 +265,10 @@ namespace stream_vis {
 		reader.init(&name2index, &typed_time_series, &offset_infos, &plot_pool);
 		if (reader.parse_declarations()) {
 			nr_uninitialized_offsets = offset_infos.size();
-//			plot_pool.back().view_index = 1;
-			
+			plot_pool[0].view_index = 1;
+			plot_pool[1].view_index = 1;
+			plot_pool[2].view_index = 1;
+			plot_pool[3].view_index = 1;
 			return;
 		}
 	}
@@ -771,13 +782,31 @@ namespace stream_vis {
 		add_member_control(this, "pause", paused, "toggle");
 		add_member_control(this, "sleep_ms", sleep_ms, "value_slider", "min=0;max=1000;log=true;ticks=true");
 		add_member_control(this, "use_vbo", use_vbo, "check");
-		for (auto& pl : plot_pool) {
-			if (begin_tree_node(pl.name + std::string(pl.dim == 2 ? ":plot2d" : ":plot3d"), pl)) {
-				align("\a");
-				pl.plot_ptr->create_gui(this, *this);
-				align("\b");
-				end_tree_node(pl.name);
+		if (begin_tree_node("Plots", plot_pool, true)) {
+			align("\a");
+			for (auto& pl : plot_pool) {
+				if (begin_tree_node(pl.name + std::string(pl.dim == 2 ? ":plot2d" : ":plot3d"), pl)) {
+					align("\a");
+					pl.plot_ptr->create_gui(this, *this);
+					align("\b");
+					end_tree_node(pl.name);
+				}
 			}
+			align("\b");
+			end_tree_node(plot_pool);
+		}
+		if (begin_tree_node("Views", view_overlays, true)) {
+			align("\a");
+			for (auto& vo : view_overlays) {
+				if (begin_tree_node(vo->get_name(), vo)) {
+					align("\a");
+					inline_object_gui(vo);
+					align("\b");
+					end_tree_node(vo);
+				}
+			}
+			align("\b");
+			end_tree_node(view_overlays);
 		}
 	}
 
