@@ -110,25 +110,29 @@ $(document).ready(function(){initNavTree('clipped__view_8h_source.html',''); ini
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordtype">void</span> compute_clipping_planes(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">dvec3</a>&amp; eye, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">dvec3</a>&amp; view_dir, <span class="keywordtype">double</span>&amp; z_near_derived, <span class="keywordtype">double</span>&amp; z_far_derived, <span class="keywordtype">bool</span> clip_relative_to_extent = <span class="keyword">false</span>) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordtype">double</span> get_z_near() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_z_near(<span class="keywordtype">double</span> z);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordtype">double</span> get_z_far() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_z_far(<span class="keywordtype">double</span> z);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">double</span> get_z_D(<span class="keywordtype">double</span> z_eye, <span class="keywordtype">double</span> z_near, <span class="keywordtype">double</span> z_far);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_scene_extent(<span class="keyword">const</span> <a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html">dbox3</a>&amp; _box);</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html">dbox3</a> get_scene_extent() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_default_view();</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;};</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        }</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;}</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clipped__view.html#ae5e87cb40be8301093d63811fad40436">   36</a></span>&#160;        <span class="keywordtype">double</span>&amp; <a class="code" href="classcgv_1_1render_1_1clipped__view.html#ae5e87cb40be8301093d63811fad40436">ref_z_near</a>() { <span class="keywordflow">return</span> z_near; }</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_z_near(<span class="keywordtype">double</span> z);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordtype">double</span> get_z_far() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clipped__view.html#a1a6d1500ba0e2e1dd3d77f541ce6baa7">   42</a></span>&#160;        <span class="keywordtype">double</span>&amp; <a class="code" href="classcgv_1_1render_1_1clipped__view.html#a1a6d1500ba0e2e1dd3d77f541ce6baa7">ref_z_far</a>() { <span class="keywordflow">return</span> z_far; }</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_z_far(<span class="keywordtype">double</span> z);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">double</span> get_z_D(<span class="keywordtype">double</span> z_eye, <span class="keywordtype">double</span> z_near, <span class="keywordtype">double</span> z_far);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_scene_extent(<span class="keyword">const</span> dbox3&amp; _box);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        dbox3 get_scene_extent() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_default_view();</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;};</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="aclasscgv_1_1render_1_1clipped__view_html_ae5e87cb40be8301093d63811fad40436"><div class="ttname"><a href="classcgv_1_1render_1_1clipped__view.html#ae5e87cb40be8301093d63811fad40436">cgv::render::clipped_view::ref_z_near</a></div><div class="ttdeci">double &amp; ref_z_near()</div><div class="ttdoc">reference to z_near value for ui construction</div><div class="ttdef"><b>Definition:</b> clipped_view.h:36</div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1view_html"><div class="ttname"><a href="classcgv_1_1render_1_1view.html">cgv::render::view</a></div><div class="ttdef"><b>Definition:</b> view.h:21</div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt; double, 3 &gt;</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1clipped__view_html"><div class="ttname"><a href="classcgv_1_1render_1_1clipped__view.html">cgv::render::clipped_view</a></div><div class="ttdef"><b>Definition:</b> clipped_view.h:13</div></div>
 <div class="ttc" id="aclasscgv_1_1media_1_1axis__aligned__box_html"><div class="ttname"><a href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::media::axis_aligned_box&lt; double, 3 &gt;</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1clipped__view_html_a1a6d1500ba0e2e1dd3d77f541ce6baa7"><div class="ttname"><a href="classcgv_1_1render_1_1clipped__view.html#a1a6d1500ba0e2e1dd3d77f541ce6baa7">cgv::render::clipped_view::ref_z_far</a></div><div class="ttdeci">double &amp; ref_z_far()</div><div class="ttdoc">reference to z_far value for ui construction</div><div class="ttdef"><b>Definition:</b> clipped_view.h:42</div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> vr_calib.cxx:9</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
