@@ -1,5 +1,6 @@
 #include "stream_vis_context.h"
 #include <cgv/math/ftransform.h>
+#include <cgv/gui/theme_info.h>
 #include <cgv/utils/scan.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/utils/advanced_scan.h>
@@ -231,17 +232,6 @@ namespace stream_vis {
 		last_use_vbo = use_vbo = false;
 		plot_attributes_initialized = false;
 		aabb_mode = last_aabb_mode = AM_BRUTE_FORCE;
-		main_overlay = register_overlay<view3d_overlay>("3D View");
-		main_overlay->set_update_handler(this);
-		main_overlay->set_overlay_stretch(cgv::glutil::overlay::SO_PERCENTUAL, vec2(0.5f, 1.0f));
-		main_overlay->set_overlay_alignment(cgv::glutil::overlay::AO_PERCENTUAL, cgv::glutil::overlay::AO_START, vec2(0.5f, 0.0f));
-		view_overlays.push_back(main_overlay);
-
-		auto* v2d_overlay = register_overlay<view2d_overlay>("2D View");
-		v2d_overlay->set_update_handler(this);
-		v2d_overlay->set_overlay_stretch(cgv::glutil::overlay::SO_PERCENTUAL, vec2(0.5f, 1.0f));
-		v2d_overlay->set_overlay_alignment(cgv::glutil::overlay::AO_START, cgv::glutil::overlay::AO_START);
-		view_overlays.push_back(v2d_overlay);
 	}
 	stream_vis_context::~stream_vis_context()
 	{
@@ -262,13 +252,40 @@ namespace stream_vis {
 				content_ptr = &content;
 		}
 		cgv_declaration_reader reader(*content_ptr);
-		reader.init(&name2index, &typed_time_series, &offset_infos, &plot_pool);
+		reader.init(&name2index, &typed_time_series, &offset_infos, &view_infos, &plot_pool);
 		if (reader.parse_declarations()) {
 			nr_uninitialized_offsets = offset_infos.size();
-			plot_pool[0].view_index = 1;
-			plot_pool[1].view_index = 1;
-			plot_pool[2].view_index = 1;
-			plot_pool[3].view_index = 1;
+			// construct views
+			for (const auto& vi : view_infos) {
+				if (vi.dim == 2) {
+					auto* v2d_overlay = register_overlay<view2d_overlay>(vi.name);
+					v2d_overlay->set_update_handler(this);
+					v2d_overlay->set_overlay_stretch(cgv::glutil::overlay::SO_PERCENTUAL, vi.stretch);
+					v2d_overlay->set_overlay_alignment(cgv::glutil::overlay::AO_PERCENTUAL, cgv::glutil::overlay::AO_PERCENTUAL, vi.offset);
+					view_overlays.push_back(v2d_overlay);
+				}
+				else {
+					auto* v3d_overlay = register_overlay<view3d_overlay>(vi.name);
+					v3d_overlay->set_update_handler(this);
+					v3d_overlay->set_overlay_stretch(cgv::glutil::overlay::SO_PERCENTUAL, vi.stretch);
+					v3d_overlay->set_overlay_alignment(cgv::glutil::overlay::AO_PERCENTUAL, cgv::glutil::overlay::AO_PERCENTUAL, vi.offset);
+					v3d_overlay->set_current_view(vi.current_view);
+					v3d_overlay->set_default_view(vi.default_view);
+					view_overlays.push_back(v3d_overlay);
+				}
+			}
+			// assign plots to views
+			for (size_t pi = 0; pi < plot_pool.size(); ++pi) {
+				const auto& pl = plot_pool[pi];
+				if (pl.view_index >= view_overlays.size())
+					continue;
+				auto* v2d_overlay = dynamic_cast<stream_vis::view2d_overlay*>(view_overlays[pl.view_index]);
+				auto* v3d_overlay = dynamic_cast<stream_vis::view3d_overlay*>(view_overlays[pl.view_index]);
+				if (v2d_overlay)
+					v2d_overlay->add_plot((int)pi, pl.plot_ptr);
+				if (v3d_overlay)
+					v3d_overlay->add_plot((int)pi, pl.plot_ptr);
+			}
 			return;
 		}
 	}
@@ -770,11 +787,20 @@ namespace stream_vis {
 	}
 	void stream_vis_context::draw(cgv::render::context& ctx)
 	{
-		//ctx.push_modelview_matrix();
-		//for (auto& pl : plot_pool) 
-		//	if (pl.view_index == 0)
-		//		pl.plot_ptr->draw(ctx);
-		//ctx.pop_modelview_matrix();
+		// get theme colors
+		auto& ti = cgv::gui::theme_info::instance();
+		ctx.push_projection_matrix();
+		ctx.push_modelview_matrix();
+		ctx.set_projection_matrix(cgv::math::identity4<float>());
+		ctx.set_modelview_matrix(cgv::math::identity4<float>());
+		glDepthMask(GL_FALSE);
+		ctx.ref_default_shader_program().enable(ctx);
+		ctx.set_color(ti.background());
+		ctx.tesselate_unit_square();
+		ctx.ref_default_shader_program().disable(ctx);
+		glDepthMask(GL_TRUE);
+		ctx.pop_modelview_matrix();
+		ctx.pop_projection_matrix();
 	}
 	void stream_vis_context::create_gui()
 	{

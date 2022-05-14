@@ -1,4 +1,5 @@
 #include "view3d_overlay.h"
+#include <cgv/gui/theme_info.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/gui/animate.h>
 #include <cgv/gui/mouse_event.h>
@@ -16,6 +17,15 @@ namespace stream_vis {
 		current_view.set_y_extent_at_focus(4);
 		last_view = current_view;
 	}
+	void view3d_overlay::set_current_view(const cgv::render::clipped_view& _current_view)
+	{
+		current_view = _current_view;
+	}
+	void view3d_overlay::set_default_view(const cgv::render::view& _default_view)
+	{
+		default_view = _default_view;
+	}
+
 	void view3d_overlay::add_plot(int pi, cgv::plot::plot_base* plot_ptr)
 	{
 		plots.push_back({ pi, plot_ptr });
@@ -77,9 +87,21 @@ namespace stream_vis {
 		ctx.push_projection_matrix();
 		ctx.push_modelview_matrix();
 			ctx.set_viewport(vp);
+
+			ctx.set_projection_matrix(cgv::math::identity4<float>());
+			ctx.set_modelview_matrix(cgv::math::identity4<float>());
+			glDepthMask(GL_FALSE);
+			ctx.ref_default_shader_program().enable(ctx);
+			auto& ti = cgv::gui::theme_info::instance();
+			ctx.set_color(mouse_is_on_overlay ? ti.control() : ti.group());
+			ctx.tesselate_unit_square();
+			ctx.ref_default_shader_program().disable(ctx);
+			glDepthMask(GL_TRUE);
+
 			ctx.set_projection_matrix(P);
 			ctx.set_modelview_matrix(M);
 			MPW = ctx.get_modelview_projection_window_matrix();
+			
 			for (auto p : plots)
 				p.second->draw(ctx);
 		ctx.pop_modelview_matrix();
@@ -123,6 +145,14 @@ namespace stream_vis {
 			}
 
 			switch (me.get_action()) {
+			case cgv::gui::MA_ENTER:
+				mouse_is_on_overlay = true;
+				post_redraw();
+				return true;
+			case cgv::gui::MA_LEAVE:
+				mouse_is_on_overlay = false;
+				post_redraw();
+				return true;
 			case cgv::gui::MA_PRESS:
 				if (me.get_button() == cgv::gui::MB_LEFT_BUTTON && me.get_modifiers() == 0) {
 					check_for_click = me.get_time();

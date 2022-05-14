@@ -1,4 +1,5 @@
 #include "view2d_overlay.h"
+#include <cgv/gui/theme_info.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/key_event.h>
@@ -31,7 +32,6 @@ namespace stream_vis {
 				handler->handle_view2d_update(p.first, pixel_scales);
 		}
 	}
-
 	void view2d_overlay::on_set(void* member_ptr)
 	{
 		if (member_ptr == &zoom_factor)
@@ -46,23 +46,34 @@ namespace stream_vis {
 	}
 	void view2d_overlay::draw(cgv::render::context& ctx)
 	{
-		ivec2 container_size = get_overlay_size();
-		float aspect = (float)container_size[0]/ container_size[1];
+		ivec4 vp;
+		(ivec2&)vp = get_overlay_position();
+		((ivec2*)&vp)[1] = get_overlay_size();
+		float aspect = (float)vp[2]/ vp[3];
 		float extent_x = 0.5f * view_width / zoom_factor;
 		float extent_y = extent_x / aspect;
 		ctx.push_window_transformation_array();
 		ctx.push_projection_matrix();
 		ctx.push_modelview_matrix();
-		ctx.set_projection_matrix(cgv::math::ortho4<float>(pan_pos(0) - extent_x, pan_pos(0) + extent_x,
-			pan_pos(1) - extent_y, pan_pos(1) + extent_y, -10.0f, 10.0f));
-		ctx.set_modelview_matrix(cgv::math::identity4<float>());
-		ivec4 vp;
-		(ivec2&)vp = get_overlay_position();
-		((ivec2*)&vp)[1] = get_overlay_size();
-		ctx.set_viewport(vp);
 
-		for (auto p : plots)
-			p.second->draw(ctx);
+			ctx.set_viewport(vp);
+
+			ctx.set_projection_matrix(cgv::math::identity4<float>());
+			ctx.set_modelview_matrix(cgv::math::identity4<float>());
+			glDepthMask(GL_FALSE);
+			ctx.ref_default_shader_program().enable(ctx);
+			auto& ti = cgv::gui::theme_info::instance();
+			ctx.set_color(mouse_is_on_overlay ? ti.control() : ti.group());
+			ctx.tesselate_unit_square();
+			ctx.ref_default_shader_program().disable(ctx);
+			glDepthMask(GL_TRUE);
+
+			ctx.set_projection_matrix(cgv::math::ortho4<float>(pan_pos(0) - extent_x, pan_pos(0) + extent_x,
+				pan_pos(1) - extent_y, pan_pos(1) + extent_y, -10.0f, 10.0f));
+			ctx.set_modelview_matrix(cgv::math::identity4<float>());
+
+			for (auto p : plots)
+				p.second->draw(ctx);
 
 		ctx.pop_modelview_matrix();
 		ctx.pop_projection_matrix();
@@ -98,6 +109,14 @@ namespace stream_vis {
 		else if (e.get_kind() == cgv::gui::EID_MOUSE) {
 			auto& me = reinterpret_cast<cgv::gui::mouse_event&>(e);
 			switch (me.get_action()) {
+			case cgv::gui::MA_ENTER:
+				mouse_is_on_overlay = true;
+				post_redraw();
+				return true;
+			case cgv::gui::MA_LEAVE:
+				mouse_is_on_overlay = false;
+				post_redraw();
+				return true;
 			case cgv::gui::MA_PRESS:
 				if (me.get_button() == cgv::gui::MB_RIGHT_BUTTON) {
 					pan_start_x = me.get_x();

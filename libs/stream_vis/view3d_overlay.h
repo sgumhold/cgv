@@ -31,6 +31,8 @@ namespace stream_vis {
 	public:
 		view3d_overlay();
 		void set_update_handler(view3d_update_handler* _handler);
+		void set_current_view(const cgv::render::clipped_view& _current_view);
+		void set_default_view(const cgv::render::view& _default_view);
 		void add_plot(int pi, cgv::plot::plot_base* plot_ptr);
 		std::string get_type_name() const { return "view3d_overlay"; }
 		void on_set(void* member_ptr);

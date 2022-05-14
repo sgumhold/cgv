@@ -1,6 +1,7 @@
 #pragma once
 
 #include "plot_info.h"
+#include "view_info.h"
 #include "view2d_overlay.h"
 #include "view3d_overlay.h"
 #include "offset_info.h"
@@ -48,7 +49,6 @@ namespace stream_vis {
 		public view3d_update_handler
 	{
 	protected:
-		view3d_overlay* main_overlay;
 		std::vector<cgv::glutil::overlay*> view_overlays;
 		std::atomic<bool> outofdate;
 		bool use_vbo, last_use_vbo, plot_attributes_initialized;
@@ -63,6 +63,8 @@ namespace stream_vis {
 		size_t nr_uninitialized_offsets;
 		/// vector of all plots
 		std::vector<plot_info> plot_pool;
+		/// vector of view infos
+		std::vector<view_info> view_infos;
 		/// vector of all layouts
 //		std::vector<layout_info> layouts;
 
