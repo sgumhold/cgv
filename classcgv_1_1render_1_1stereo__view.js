@@ -41,6 +41,8 @@ var classcgv_1_1render_1_1stereo__view =
     [ "ref_viewport_view", "classcgv_1_1render_1_1stereo__view.html#a9036241fbececf55302051ea79d3ee0b", null ],
     [ "ref_y_extent_at_focus", "classcgv_1_1render_1_1stereo__view.html#a08a9518be1c7167117e3f7e589535ae3", null ],
     [ "ref_y_view_angle", "classcgv_1_1render_1_1stereo__view.html#a667eaea15d186e099bfece7d9410c91b", null ],
+    [ "ref_z_far", "classcgv_1_1render_1_1stereo__view.html#a1a6d1500ba0e2e1dd3d77f541ce6baa7", null ],
+    [ "ref_z_near", "classcgv_1_1render_1_1stereo__view.html#ae5e87cb40be8301093d63811fad40436", null ],
     [ "roll", "classcgv_1_1render_1_1stereo__view.html#af64a6bcbcae1030a1837ad2b1502ec1b", null ],
     [ "rotate", "classcgv_1_1render_1_1stereo__view.html#a3572856f4aaa667403c26ea11ddbf8db", null ],
     [ "set_default_view", "classcgv_1_1render_1_1stereo__view.html#af5d9a49b2e481ccc3f99d450b0057aee", null ],
