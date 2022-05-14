@@ -23,6 +23,7 @@ public:
 		AO_FREE,	// alignment solely controlled by margin
 		AO_START,	// left for horizontal, bottom for vertical direction
 		AO_CENTER,	// center of the viewport for both directions
+		AO_PERCENTUAL, // use percentual offset
 		AO_END,		// right for horizontal, top for vertical direction
 	};
 
@@ -30,6 +31,7 @@ public:
 		SO_NONE,		// size is unchanged
 		SO_HORIZONTAL,	// width is stretched to cover viewport
 		SO_VERTICAL,	// height is stretched to cover viewport
+		SO_PERCENTUAL,  // use percentual size
 		SO_BOTH			// width and height are stretched to cover viewport
 	};
 
@@ -43,6 +45,9 @@ protected:
 	StretchOption stretch;
 	ivec2 margin;
 	ivec2 size;
+	vec2 percentual_offset = vec2(0.0f);
+	vec2 percentual_size = vec2(1.0f);
+
 	bool show; /// whether the overlay is visible
 	bool block_events; /// whether the overlay blocks events or lets them pass through to other handlers
 
@@ -107,17 +112,10 @@ public:
 	ivec2 get_local_mouse_pos(ivec2 mouse_pos);
 
 	/// sets the alignment options
-	void set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical) {
-		horizontal_alignment = horizontal;
-		vertical_alignment = vertical;
-		update_overlay_layout();
-	}
+	void set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 _percentual_offset = vec2(-1.0f));
 
 	/// sets the stretch option
-	void set_overlay_stretch(StretchOption stretch) {
-		this->stretch = stretch;
-		update_overlay_layout();
-	}
+	void set_overlay_stretch(StretchOption stretch, vec2 _percentual_size = vec2(-1.0f));
 
 	/// returns the position of the overlay with origin at the bottom left
 	ivec2 get_overlay_position() { return container.pos(); }
