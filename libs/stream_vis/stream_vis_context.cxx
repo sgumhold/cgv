@@ -257,21 +257,24 @@ namespace stream_vis {
 			nr_uninitialized_offsets = offset_infos.size();
 			// construct views
 			for (const auto& vi : view_infos) {
+				view_overlay* v_overlay = 0;
 				if (vi.dim == 2) {
 					auto* v2d_overlay = register_overlay<view2d_overlay>(vi.name);
 					v2d_overlay->set_update_handler(this);
-					v2d_overlay->set_overlay_stretch(cgv::glutil::overlay::SO_PERCENTUAL, vi.stretch);
-					v2d_overlay->set_overlay_alignment(cgv::glutil::overlay::AO_PERCENTUAL, cgv::glutil::overlay::AO_PERCENTUAL, vi.offset);
-					view_overlays.push_back(v2d_overlay);
+					v_overlay = v2d_overlay;
 				}
 				else {
 					auto* v3d_overlay = register_overlay<view3d_overlay>(vi.name);
 					v3d_overlay->set_update_handler(this);
-					v3d_overlay->set_overlay_stretch(cgv::glutil::overlay::SO_PERCENTUAL, vi.stretch);
-					v3d_overlay->set_overlay_alignment(cgv::glutil::overlay::AO_PERCENTUAL, cgv::glutil::overlay::AO_PERCENTUAL, vi.offset);
 					v3d_overlay->set_current_view(vi.current_view);
 					v3d_overlay->set_default_view(vi.default_view);
-					view_overlays.push_back(v3d_overlay);
+					v_overlay = v3d_overlay;
+				}
+				if (v_overlay) {
+					v_overlay->set_overlay_stretch(cgv::glutil::overlay::SO_PERCENTUAL, vi.stretch);
+					v_overlay->set_overlay_alignment(cgv::glutil::overlay::AO_PERCENTUAL, cgv::glutil::overlay::AO_PERCENTUAL, vi.offset);
+					v_overlay->toggle_key = vi.toggle;
+					view_overlays.push_back(v_overlay);
 				}
 			}
 			// assign plots to views
@@ -487,6 +490,13 @@ namespace stream_vis {
 		if (e.get_kind() == cgv::gui::EID_KEY) {
 			auto& ke = reinterpret_cast<cgv::gui::key_event&>(e);
 			if (ke.get_action() != cgv::gui::KA_RELEASE) {
+				// first check for changes in overlay visibility
+				for (auto* vo : view_overlays) 
+					if (ke.get_key() == vo->toggle_key) {
+						vo->set_visibility(!vo->is_visible());
+						return true;
+					}
+
 				switch (ke.get_char()) {
 				case '+':
 					sleep_ms += 1;
