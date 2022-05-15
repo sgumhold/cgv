@@ -8,10 +8,6 @@ namespace stream_vis {
 	view2d_overlay::view2d_overlay()
 	{
 	}
-	void view2d_overlay::set_update_handler(view2d_update_handler* _handler)
-	{
-		handler = _handler;
-	}
 	void view2d_overlay::update_views()
 	{
 		ivec2 os = get_overlay_size();

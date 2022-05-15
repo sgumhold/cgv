@@ -7,11 +7,6 @@
 
 namespace stream_vis {
 
-	struct view3d_update_handler : public cgv::render::render_types
-	{
-		virtual void handle_view3d_update(int pi, const mat4& T, const ivec4& viewport) = 0;
-	};
-
 	class CGV_API view3d_overlay : public view_overlay
 	{
 	protected:
@@ -23,7 +18,6 @@ namespace stream_vis {
 		vec2 pan_start_pos = vec2(0.0f);
 		float rotate_sensitivity = 1.0f;
 		float zoom_sensitivity = 1.0f;
-		view3d_update_handler* handler = 0;
 		void compute_matrices_and_viewport(mat4& projection_matrix, mat4& model_view_matrix, ivec4& viewport);
 		void update_views();
 		void set_modelview_projection(cgv::render::context& ctx);
@@ -31,7 +25,6 @@ namespace stream_vis {
 		bool handle_mouse_event(const cgv::gui::mouse_event& me);
 	public:
 		view3d_overlay();
-		void set_update_handler(view3d_update_handler* _handler);
 		void set_current_view(const cgv::render::clipped_view& _current_view);
 		void set_default_view(const cgv::render::view& _default_view);
 		std::string get_type_name() const { return "view3d_overlay"; }

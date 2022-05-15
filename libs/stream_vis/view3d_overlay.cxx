@@ -21,10 +21,6 @@ namespace stream_vis {
 	{
 		default_view = _default_view;
 	}
-	void view3d_overlay::set_update_handler(view3d_update_handler* _handler)
-	{
-		handler = _handler;
-	}
 	void view3d_overlay::update_views()
 	{
 		ivec4 vp;

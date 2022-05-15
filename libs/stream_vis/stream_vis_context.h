@@ -2,9 +2,8 @@
 
 #include "plot_info.h"
 #include "view_info.h"
-#include "view2d_overlay.h"
-#include "view3d_overlay.h"
 #include "offset_info.h"
+#include "view_overlay.h"
 #include "streaming_time_series.h"
 #include "streaming_aabb.h"
 #include <cgv/base/node.h>
@@ -45,8 +44,7 @@ namespace stream_vis {
 
 	class CGV_API stream_vis_context : 
 		public cgv::glutil::application_plugin,
-		public view2d_update_handler,
-		public view3d_update_handler
+		public view_update_handler
 	{
 	protected:
 		std::vector<view_overlay*> view_overlays;
