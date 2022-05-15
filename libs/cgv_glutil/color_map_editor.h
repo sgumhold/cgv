@@ -50,6 +50,7 @@ protected:
 	float opacity_scale_exponent;
 	bool supports_opacity;
 	bool update_layout = false;
+	bool has_damage = true;
 
 	struct layout_attributes {
 		int padding;
@@ -240,6 +241,7 @@ public:
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
 	void draw(cgv::render::context& ctx);
+	void draw_content(cgv::render::context& ctx);
 	
 	void create_gui();
 	void create_gui(cgv::gui::provider& p);
