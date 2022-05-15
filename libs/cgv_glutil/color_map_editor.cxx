@@ -212,6 +212,7 @@ void color_map_editor::on_set(void* member_ptr) {
 		post_recreate_gui();
 	}
 
+	has_damage = true;
 	update_member(member_ptr);
 	post_redraw();
 }
@@ -276,6 +277,8 @@ void color_map_editor::init_frame(cgv::render::context& ctx) {
 		update_geometry();
 		cmc.color_points.set_constraint(layout.color_handles_rect);
 		cmc.opacity_points.set_constraint(layout.opacity_editor_rect);
+
+		has_damage = true;
 	}
 
 	// TODO: move functionality of testing for theme changes to overlay? (or use observer pattern for theme info)
@@ -296,26 +299,62 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 	if(!show)
 		return;
 
-	fbc.enable(ctx);
+	if(has_damage)
+		draw_content(ctx);
+
+	glDisable(GL_DEPTH_TEST);
 	
+	// draw frame buffer texture to screen
+	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
+	fbc.enable_attachment(ctx, "color", 0);
+	overlay_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());
+	fbc.disable_attachment(ctx, "color");
+	overlay_canvas.disable_current_shader(ctx);
+
+	// draw cursor decorators to show interaction hints
+	if(mouse_is_on_overlay && show_cursor) {
+		ivec2 pos = cursor_pos + ivec2(7, 4);
+
+		auto fntf_ptr = ctx.get_current_font_face();
+		auto s = ctx.get_current_font_size();
+
+		ctx.enable_font_face(cursor_font_face, s);
+
+		ctx.push_pixel_coords();
+		ctx.set_color(rgb(0.0f));
+		ctx.set_cursor(vecn(float(pos.x()), float(pos.y())), "", cgv::render::TA_TOP_LEFT);
+		ctx.output_stream() << cursor_drawtext;
+		ctx.output_stream().flush();
+		ctx.pop_pixel_coords();
+
+		ctx.enable_font_face(fntf_ptr, s);
+	}
+
+	glEnable(GL_DEPTH_TEST);
+}
+
+void color_map_editor::draw_content(cgv::render::context& ctx) {
+	
+	fbc.enable(ctx);
+
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	
+
 	ivec2 container_size = get_overlay_size();
-	
+
 	// draw container
 	auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
 	container_style.apply(ctx, rect_prog);
 	canvas.draw_shape(ctx, ivec2(0), container_size);
-	
+
 	// draw inner border
 	border_style.apply(ctx, rect_prog);
-	canvas.draw_shape(ctx, ivec2(layout.padding - 1) + ivec2(0, 10), container_size - 2*layout.padding + 2 - ivec2(0, 10));
-	
+	canvas.draw_shape(ctx, ivec2(layout.padding - 1) + ivec2(0, 10), container_size - 2 * layout.padding + 2 - ivec2(0, 10));
+
 	if(cmc.cm) {
 		// draw color scale texture
 		color_map_style.apply(ctx, rect_prog);
@@ -323,7 +362,7 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 		canvas.draw_shape(ctx, layout.color_editor_rect.pos(), layout.color_editor_rect.size());
 		preview_tex.disable(ctx);
 		canvas.disable_current_shader(ctx);
-		
+
 		if(supports_opacity) {
 			// draw opacity editor checkerboard background
 			auto& bg_prog = canvas.enable_shader(ctx, "background");
@@ -397,12 +436,13 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 	} else {
 		canvas.disable_current_shader(ctx);
 	}
-	
+
 	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
 
 	fbc.disable(ctx);
 
-	// draw frame buffer texture to screen
+	/*// draw frame buffer texture to screen
 	auto& final_prog = overlay_canvas.enable_shader(ctx, "rectangle");
 	fbc.enable_attachment(ctx, "color", 0);
 	overlay_canvas.draw_shape(ctx, get_overlay_position(), container_size);
@@ -427,9 +467,9 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 		ctx.pop_pixel_coords();
 
 		ctx.enable_font_face(fntf_ptr, s);
-	}
-	
-	glEnable(GL_DEPTH_TEST);
+	}*/
+
+	has_damage = false;
 }
 
 void color_map_editor::create_gui() {
@@ -609,15 +649,15 @@ void color_map_editor::init_styles(context& ctx) {
 	poly_style.apply(ctx, poly_prog);
 	poly_prog.disable(ctx);
 
-	// configure style for final blitting of overlay into main frame buffer
-	cgv::glutil::shape2d_style final_style;
-	final_style.fill_color = rgba(1.0f);
-	final_style.use_texture = true;
-	final_style.use_blending = false;
-	final_style.feather_width = 0.0f;
+	// configure style for final blending of overlay into main frame buffer
+	cgv::glutil::shape2d_style overlay_style;
+	overlay_style.fill_color = rgba(1.0f);
+	overlay_style.use_texture = true;
+	overlay_style.use_blending = false;
+	overlay_style.feather_width = 0.0f;
 
-	auto& final_prog = overlay_canvas.enable_shader(ctx, "rectangle");
-	final_style.apply(ctx, final_prog);
+	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
+	overlay_style.apply(ctx, overlay_prog);
 	overlay_canvas.disable_current_shader(ctx);
 }
 
@@ -906,6 +946,7 @@ void color_map_editor::update_color_map(bool is_data_change) {
 	update_geometry();
 
 	has_updated = true;
+	has_damage = true;
 }
 
 bool color_map_editor::update_geometry() {
