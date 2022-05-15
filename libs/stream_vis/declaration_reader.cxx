@@ -635,6 +635,10 @@ namespace stream_vis {
 		vi.current_view.set_y_extent_at_focus(4);
 		vi.default_view.set_y_view_angle(50);
 		vi.default_view.set_y_extent_at_focus(4);
+		std::string toggle;
+		if (get_value("toggle", toggle) && toggle.size() > 0) {
+			vi.toggle = toggle[0];
+		}
 		parse_vec2("stretch", vi.stretch);
 		parse_vec2("offset", vi.offset);
 		parse_dvec3("focus", vi.current_view.ref_focus());
