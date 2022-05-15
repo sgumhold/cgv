@@ -1,4 +1,6 @@
 #include "stream_vis_context.h"
+#include "view2d_overlay.h"
+#include "view3d_overlay.h"
 #include <cgv/math/ftransform.h>
 #include <cgv/gui/theme_info.h>
 #include <cgv/utils/scan.h>

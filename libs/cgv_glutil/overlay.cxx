@@ -19,8 +19,9 @@ overlay::overlay() {
 	block_events = true;
 }
 
-void overlay::on_visibility_change() {
-
+void overlay::on_visibility_change() 
+{
+	update_member(&show);
 	post_redraw();
 }
 

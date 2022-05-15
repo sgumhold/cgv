@@ -5,6 +5,20 @@
 
 namespace stream_vis {
 
+	void view_overlay::on_visibility_change()
+	{
+		overlay::on_visibility_change();
+		if (handler) {
+			for (auto& pl : plots)
+				handler->handle_plot_visibility_update(pl.first, is_visible());
+		}
+	}
+
+	void view_overlay::set_update_handler(view_update_handler* _handler)
+	{
+		handler = _handler;
+	}
+
 	view_overlay::view_overlay()
 	{
 		set_overlay_alignment(AO_START, AO_START);

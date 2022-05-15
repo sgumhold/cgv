@@ -59,10 +59,10 @@ protected:
 	cgv::gui::event_handler* parent_handler = nullptr;
 
 	/// called when the overlay visibility is changed through the default gui
-	void on_visibility_change();
+	virtual void on_visibility_change();
 
 	/// called when the overlay layout parameters are changed through the default gui
-	void on_layout_change();
+	virtual void on_layout_change();
 
 	/// updates the layout of the overlay container
 	void update_overlay_layout();
@@ -144,7 +144,7 @@ public:
 	/// sets the visibility of the overlay to flag
 	void set_visibility(bool flag) {
 		show = flag;
-		update_member(&show);
+		on_visibility_change();
 	}
 
 	/** Checks whether the viewport size has changed since the last call to
