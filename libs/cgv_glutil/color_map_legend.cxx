@@ -114,25 +114,17 @@ bool color_map_legend::init(cgv::render::context& ctx) {
 
 	if(success)
 		init_styles(ctx);
-//#ifndef CGV_FORCE_STATIC 
+
 	if(font.init(ctx)) {
 		labels.set_msdf_font(&font);
 		labels.set_font_size(font_size);
 	}
-//#endif
+
 	return success;
 }
 
 void color_map_legend::init_frame(cgv::render::context& ctx) {
 
-/*#ifdef CGV_FORCE_STATIC
-	if(!font.is_initialized()) {
-		if(font.init(ctx)) {
-			labels.set_msdf_font(&font);
-			labels.set_font_size(font_size);
-		}
-	}
-#endif*/
 	if(ensure_overlay_layout(ctx) || update_layout) {
 		update_layout = false;
 
