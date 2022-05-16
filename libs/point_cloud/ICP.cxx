@@ -76,9 +76,6 @@ namespace cgv {
 			target_center.zeros();
 			size_t num_source_points = sourceCloud->get_nr_points();
 
-			get_center_point(*targetCloud, target_center);
-			get_center_point(*sourceCloud, source_center);
-
 			float cost = 1.0;
 			///initialize as Infinity
 			float last_error = std::numeric_limits<float>::infinity();
@@ -137,6 +134,8 @@ namespace cgv {
 					Q.pnt(i) = q; 
 					fA += Mat(q - target_center, p - source_center);
 				}
+				get_center_point(Q, target_center);
+
 				///cast fA to A
 				cgv::math::mat<float> A(3, 3, &fA(0, 0));
 				cgv::math::svd(A, U, Sigma, V, false);
