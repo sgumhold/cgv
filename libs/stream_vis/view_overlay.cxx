@@ -76,6 +76,25 @@ namespace stream_vis {
 				return false;
 			if (!mouse_is_on_overlay)
 				return false;
+			if (current_pi != -1) {
+				if (ke.get_key() >= (int)'1' && ke.get_key() <= (int)'9') {
+					int si = ke.get_key() - (int)'1';
+					auto& pl = plots[current_pi].second;
+					if (si < pl->get_nr_sub_plots()) {
+						pl->ref_sub_plot_config(si).show_plot = !pl->ref_sub_plot_config(si).show_plot;
+						handler->handle_subplot_visibility_update(plots[current_pi].first, si, pl->ref_sub_plot_config(si).show_plot);
+//						std::cout << "plot " << plots[current_pi].first << "[" << si << "] : " << (pl->ref_sub_plot_config(si).show_plot ? "show" : "hide") << std::endl;
+						return true;
+					}
+				}
+				if (ke.get_key() >= (int)'X' && ke.get_key() < (int)'X' + plots[current_pi].second->get_dim()) {
+					int ai = ke.get_key() - (int)'X';
+					auto& pl = plots[current_pi].second;
+					bool log_scale = !pl->get_domain_config_ptr()->axis_configs[ai].get_log_scale();
+					pl->get_domain_config_ptr()->axis_configs[ai].set_log_scale(log_scale);
+					handler->handle_plot_axis_update(plots[current_pi].first, ai, log_scale);
+				}
+			}
 			switch (ke.get_key()) {
 			case cgv::gui::KEY_Space:
 				if (ke.get_modifiers() == cgv::gui::EM_CTRL) {
@@ -104,6 +123,7 @@ namespace stream_vis {
 			case cgv::gui::MA_PRESS:
 			case cgv::gui::MA_RELEASE:
 			case cgv::gui::MA_DRAG:
+			case cgv::gui::MA_MOVE:
 			case cgv::gui::MA_WHEEL:
 				return handle_mouse_event(me);
 			}

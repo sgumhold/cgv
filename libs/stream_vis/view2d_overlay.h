@@ -9,6 +9,7 @@ namespace stream_vis {
 	class CGV_API view2d_overlay : public view_overlay
 	{
 	protected:
+		dmat4 MPW = dmat4(0.0);
 		int pan_start_x = 0, pan_start_y = 0;
 		vec2 pan_start_pos = vec2(0.0f);
 		float zoom_factor = 1.0f;
@@ -27,6 +28,8 @@ namespace stream_vis {
 		void on_set(void* member_ptr);
 		void create_gui();
 	};
+
+	typedef cgv::data::ref_ptr<view2d_overlay> view2d_overlay_ptr;
 }
 
 #include <cgv/config/lib_end.h>

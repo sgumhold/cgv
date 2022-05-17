@@ -259,14 +259,14 @@ namespace stream_vis {
 			nr_uninitialized_offsets = offset_infos.size();
 			// construct views
 			for (const auto& vi : view_infos) {
-				view_overlay* v_overlay = 0;
+				view_overlay_ptr v_overlay = 0;
 				if (vi.dim == 2) {
-					auto* v2d_overlay = register_overlay<view2d_overlay>(vi.name);
+					view2d_overlay_ptr v2d_overlay = register_overlay<view2d_overlay>(vi.name);
 					v2d_overlay->set_update_handler(this);
 					v_overlay = v2d_overlay;
 				}
 				else {
-					auto* v3d_overlay = register_overlay<view3d_overlay>(vi.name);
+					view3d_overlay_ptr v3d_overlay = register_overlay<view3d_overlay>(vi.name);
 					v3d_overlay->set_update_handler(this);
 					v3d_overlay->set_current_view(vi.current_view);
 					v3d_overlay->set_default_view(vi.default_view);
@@ -284,8 +284,8 @@ namespace stream_vis {
 				const auto& pl = plot_pool[pi];
 				if (pl.view_index >= view_overlays.size())
 					continue;
-				auto* v2d_overlay = dynamic_cast<stream_vis::view2d_overlay*>(view_overlays[pl.view_index]);
-				auto* v3d_overlay = dynamic_cast<stream_vis::view3d_overlay*>(view_overlays[pl.view_index]);
+				view2d_overlay_ptr v2d_overlay = view_overlays[pl.view_index]->cast<stream_vis::view2d_overlay>();
+				view3d_overlay_ptr v3d_overlay = view_overlays[pl.view_index]->cast<stream_vis::view3d_overlay>();
 				if (v2d_overlay)
 					v2d_overlay->add_plot((int)pi, pl.plot_ptr);
 				if (v3d_overlay)
@@ -493,7 +493,7 @@ namespace stream_vis {
 			auto& ke = reinterpret_cast<cgv::gui::key_event&>(e);
 			if (ke.get_action() != cgv::gui::KA_RELEASE) {
 				// first check for changes in overlay visibility
-				for (auto* vo : view_overlays) 
+				for (view_overlay_ptr vo : view_overlays) 
 					if (ke.get_key() == vo->toggle_key) {
 						vo->set_visibility(!vo->is_visible());
 						return true;
@@ -835,7 +835,7 @@ namespace stream_vis {
 		}
 		if (begin_tree_node("Views", view_overlays, true)) {
 			align("\a");
-			for (auto& vo : view_overlays) {
+			for (view_overlay_ptr vo : view_overlays) {
 				if (begin_tree_node(vo->get_name(), vo)) {
 					align("\a");
 					inline_object_gui(vo);
