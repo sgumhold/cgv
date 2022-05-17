@@ -31,6 +31,9 @@ namespace stream_vis {
 		void init_frame(cgv::render::context& ctx);
 		void create_gui();
 	};
+
+	typedef cgv::data::ref_ptr<view3d_overlay> view3d_overlay_ptr;
+
 }
 
 #include <cgv/config/lib_end.h>

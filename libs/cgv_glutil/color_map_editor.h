@@ -256,6 +256,8 @@ public:
 	void set_color_map(color_map* cm);
 };
 
+typedef cgv::data::ref_ptr<color_map_editor> color_map_editor_ptr;
+
 }
 }
 

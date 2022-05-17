@@ -151,6 +151,8 @@ public:
 	void set_label_precision(unsigned p);
 };
 
+typedef cgv::data::ref_ptr<color_map_legend> color_map_legend_ptr;
+
 }
 }
 

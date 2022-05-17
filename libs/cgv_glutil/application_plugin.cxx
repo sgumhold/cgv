@@ -6,12 +6,12 @@
 namespace cgv {
 namespace glutil {
 
-application_plugin::application_plugin(const std::string& name) : group(name) {
-	last_blocking_overlay_ptr = nullptr;
-	blocking_overlay_ptr = nullptr;
+application_plugin::application_plugin(const std::string& name) : group(name) 
+{
 }
 
-bool application_plugin::handle(cgv::gui::event& e) {
+bool application_plugin::handle(cgv::gui::event& e) 
+{
 	if(e.get_kind() == cgv::gui::EID_MOUSE) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 		cgv::gui::MouseAction ma = me.get_action();
@@ -21,9 +21,9 @@ bool application_plugin::handle(cgv::gui::event& e) {
 
 			blocking_overlay_ptr = nullptr;
 			for(auto it = overlays.rbegin(); it != overlays.rend(); ++it) {
-				auto overlay_ptr = (*it);
-				if(overlay_ptr->is_visible() && overlay_ptr->is_hit(mpos)) {
-					blocking_overlay_ptr = overlay_ptr;
+				overlay_ptr op = (*it);
+				if(op->is_visible() && op->is_hit(mpos)) {
+					blocking_overlay_ptr = op;
 					break;
 				}
 			}
@@ -69,9 +69,9 @@ bool application_plugin::handle(cgv::gui::event& e) {
 		// TODO: make the overlay have a handles keys flag?
 		// TODO: have a flag that enables blocking the event from further processing when returning true or false?
 		for(auto it = overlays.rbegin(); it != overlays.rend(); ++it) {
-			auto overlay_ptr = (*it);
-			if(overlay_ptr->is_visible())
-				overlay_ptr->handle_event(e);
+			overlay_ptr op = (*it);
+			if(op->is_visible())
+				op->handle_event(e);
 		}
 		return handle_event(e);
 	}

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/defines/deprecated.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/context.h>
@@ -55,9 +56,6 @@ protected:
 	rect container;
 	ivec2 last_size;
 
-	/// a pointer to the parent event handler
-	cgv::gui::event_handler* parent_handler = nullptr;
-
 	/// called when the overlay visibility is changed through the default gui
 	virtual void on_visibility_change();
 
@@ -81,15 +79,13 @@ public:
 
 	/// finalize the handle method to prevent overloading in implementations of this class, use handle_events instead
 	virtual bool handle(cgv::gui::event& e) final {
-		return parent_handler->handle(e);
+		return false;
 	};
 	/// overload to stream help information to the given output stream
 	virtual void stream_help(std::ostream& os) {};
 
-	/// sets the parent event handler which gets called in the handle method (the parent shall always handle events first)
-	void set_parent_handler(cgv::gui::event_handler* parent_handler) {
-		this->parent_handler = parent_handler;
-	}
+	// deprecated do not call
+	DEPRECATED("cgv_glutil::overlay::set_parent_handler() deprecated and ignored.") void set_parent_handler(cgv::gui::event_handler* parent_handler) { }
 
 	/// overload this method to handle events
 	virtual bool handle_event(cgv::gui::event& e) { return false; };
@@ -182,6 +178,8 @@ public:
 	/// provides a default gui implementation for private overlay layout members
 	void create_overlay_gui();
 };
+
+typedef cgv::data::ref_ptr<overlay> overlay_ptr;
 
 }
 }

@@ -15,17 +15,18 @@ namespace stream_vis {
 
 	struct view_update_handler : public cgv::render::render_types
 	{
-		virtual void handle_plot2d_update(unsigned pi, const std::vector<bool>& subplot_visibility, axis_config axis_configs[2]) = 0;
-		virtual void handle_plot3d_update(unsigned pi, const std::vector<bool>& subplot_visibility, axis_config axis_configs[3]) = 0;
 		virtual void handle_view2d_update(int pi, const vec2& pixel_scales) = 0;
 		virtual void handle_view3d_update(int pi, const mat4& T, const ivec4& viewport) = 0;
 		virtual void handle_plot_visibility_update(unsigned pi, bool is_visible) = 0;
+		virtual void handle_plot_axis_update(unsigned pi, int ai, bool is_log) = 0;
+		virtual void handle_subplot_visibility_update(unsigned pi, int si, bool is_visible) = 0;
 	};
 
 	class CGV_API view_overlay : public cgv::glutil::overlay
 	{
 	public:
 		char toggle_key = 0;
+		int current_pi = -1;
 	protected:
 		bool mouse_is_on_overlay = false;
 		std::vector<std::pair<int,cgv::plot::plot_base*>> plots;
@@ -44,6 +45,8 @@ namespace stream_vis {
 		void draw(cgv::render::context& ctx);
 		bool handle_event(cgv::gui::event& e);
 	};
+	typedef cgv::data::ref_ptr<view_overlay> view_overlay_ptr;
+
 }
 
 #include <cgv/config/lib_end.h>
