@@ -47,7 +47,7 @@ namespace stream_vis {
 		public view_update_handler
 	{
 	protected:
-		std::vector<view_overlay*> view_overlays;
+		std::vector<view_overlay_ptr> view_overlays;
 		std::atomic<bool> outofdate;
 		bool use_vbo, last_use_vbo, plot_attributes_initialized;
 		AABBMode aabb_mode, last_aabb_mode;

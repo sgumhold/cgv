@@ -52,6 +52,7 @@ namespace stream_vis {
 		ctx.set_projection_matrix(cgv::math::ortho4<float>(pan_pos(0) - extent_x, pan_pos(0) + extent_x,
 			pan_pos(1) - extent_y, pan_pos(1) + extent_y, -10.0f, 10.0f));
 		ctx.set_modelview_matrix(cgv::math::identity4<float>());
+		MPW = ctx.get_modelview_projection_window_matrix();
 	}
 	bool view2d_overlay::handle_mouse_event(const cgv::gui::mouse_event& me)
 	{
@@ -64,13 +65,36 @@ namespace stream_vis {
 				return true;
 			}
 			break;
+		case cgv::gui::MA_MOVE:
+			{
+				int x_gl = me.get_x();
+				int y_gl = get_context()->get_height() - 1 - me.get_y();
+				vec3 p = get_context()->get_model_point(dvec3(me.get_x(), y_gl, 0.0f), MPW);
+				//std::cout << "x=" << x_gl << ", y=" << y_gl << " -> " << p << std::endl;
+				int pi = -1;
+				for (int pj = 0; pj < plots.size(); ++pj) {
+					const auto& pp = plots[pj];
+					vec2 e = vec2::from_vec(pp.second->get_extent());
+					vec2 c = (vec2&)pp.second->get_center();
+					box2 b(c - 0.5f * e, c + 0.5f * e);
+					//std::cout << pi << " | " << pp.second->get_domain().get_min_pnt() << " -> " << pp.second->get_domain().get_max_pnt() << std::endl;
+					if (b.inside((const vec2&)(p)))
+						pi = pj;
+				}
+				if (current_pi != pi) {
+//					std::cout << "focus plot changed from " << current_pi << " to " << pi << std::endl;
+					current_pi = pi;
+				}
+			}
+			break;
 		case cgv::gui::MA_DRAG:
 			if (me.get_button_state() == cgv::gui::MB_RIGHT_BUTTON) {
 				int dx = me.get_x() - pan_start_x;
 				int dy = me.get_y() - pan_start_y;
-				float aspect = (float)get_context()->get_width() / get_context()->get_height();
-				pan_pos(0) = pan_start_pos(0) - (float)dx / get_context()->get_width() * view_width / zoom_factor;
-				pan_pos(1) = pan_start_pos(1) + (float)dy / get_context()->get_height() * view_width / zoom_factor / aspect;
+				ivec2 os = get_overlay_size();
+				float aspect = (float)os[0]/os[1];
+				pan_pos(0) = pan_start_pos(0) - (float)dx/os[0] * view_width / zoom_factor;
+				pan_pos(1) = pan_start_pos(1) + (float)dy/os[1] * view_width / zoom_factor / aspect;
 				on_set(&pan_pos(0));
 				on_set(&pan_pos(1));
 				return true;
