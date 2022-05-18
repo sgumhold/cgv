@@ -78,6 +78,7 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 		cgv::gui::key_event& ke = (cgv::gui::key_event&)e;
 
 		if (ke.get_action() == cgv::gui::KA_PRESS) {
+			std::cout << "handle key press" << std::endl;
 			switch (ke.get_key()) {
 			case cgv::gui::KEY_Left_Ctrl:
 				show_cursor = true;
@@ -108,15 +109,18 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&)e;
 		cgv::gui::MouseAction ma = me.get_action();
 
+		std::cout << "mouse event: " << ma << std::endl;
+
 		switch (ma) {
 		case cgv::gui::MA_ENTER:
 			mouse_is_on_overlay = true;
-			break;
+			return true;
 		case cgv::gui::MA_LEAVE:
 			mouse_is_on_overlay = false;
 			post_redraw();
-			break;
+			return true;
 		case cgv::gui::MA_MOVE:
+			std::cout << "move mouse" << std::endl;
 		case cgv::gui::MA_DRAG:
 			if(get_context())
 				cursor_pos = ivec2(me.get_x(), get_context()->get_height() - 1 - me.get_y());
@@ -299,10 +303,10 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 	if(!show)
 		return;
 
+	glDisable(GL_DEPTH_TEST);
+
 	if(has_damage)
 		draw_content(ctx);
-
-	glDisable(GL_DEPTH_TEST);
 	
 	// draw frame buffer texture to screen
 	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
@@ -313,6 +317,7 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 
 	// draw cursor decorators to show interaction hints
 	if(mouse_is_on_overlay && show_cursor) {
+		std::cout << cursor_pos << std::endl;
 		ivec2 pos = cursor_pos + ivec2(7, 4);
 
 		auto fntf_ptr = ctx.get_current_font_face();
@@ -337,7 +342,6 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 	
 	fbc.enable(ctx);
 
-	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -438,36 +442,8 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 	}
 
 	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
 
 	fbc.disable(ctx);
-
-	/*// draw frame buffer texture to screen
-	auto& final_prog = overlay_canvas.enable_shader(ctx, "rectangle");
-	fbc.enable_attachment(ctx, "color", 0);
-	overlay_canvas.draw_shape(ctx, get_overlay_position(), container_size);
-	fbc.disable_attachment(ctx, "color");
-
-	overlay_canvas.disable_current_shader(ctx);
-
-	// draw cursor decorators to show interaction hints
-	if(mouse_is_on_overlay && show_cursor) {
-		ivec2 pos = cursor_pos + ivec2(7, 4);
-
-		auto fntf_ptr = ctx.get_current_font_face();
-		auto s = ctx.get_current_font_size();
-
-		ctx.enable_font_face(cursor_font_face, s);
-
-		ctx.push_pixel_coords();
-		ctx.set_color(rgb(0.0f));
-		ctx.set_cursor(vecn(float(pos.x()), float(pos.y())), "", cgv::render::TA_TOP_LEFT);
-		ctx.output_stream() << cursor_drawtext;
-		ctx.output_stream().flush();
-		ctx.pop_pixel_coords();
-
-		ctx.enable_font_face(fntf_ptr, s);
-	}*/
 
 	has_damage = false;
 }
