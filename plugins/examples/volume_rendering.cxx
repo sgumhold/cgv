@@ -44,6 +44,7 @@ volume_viewer::volume_viewer() : application_plugin("Volume Viewer")
 	transfer_function_editor_ptr->set_opacity_support(true);
 
 	transfer_function_legend_ptr = register_overlay<cgv::glutil::color_map_legend>("TF Legend");
+	transfer_function_legend_ptr->set_title("Density");
 }
 
 void volume_viewer::stream_stats(std::ostream& os)

@@ -22,8 +22,8 @@ private:
 
 protected:
 	/// store a pointer to the color map editor overlay which is used to edit the volume transfer function
-	cgv::glutil::color_map_editor* transfer_function_editor_ptr = nullptr;
-	cgv::glutil::color_map_legend* transfer_function_legend_ptr = nullptr;
+	cgv::glutil::color_map_editor_ptr transfer_function_editor_ptr;
+	cgv::glutil::color_map_legend_ptr transfer_function_legend_ptr;
 
 	/// resolution of the volume
 	uvec3 vres;

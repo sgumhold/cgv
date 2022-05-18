@@ -1,6 +1,10 @@
 #include "stream_vis_context.h"
+#include "view2d_overlay.h"
+#include "view3d_overlay.h"
 #include <cgv/math/ftransform.h>
+#include <cgv/gui/theme_info.h>
 #include <cgv/utils/scan.h>
+#include <cgv/gui/mouse_event.h>
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/utils/file.h>
@@ -21,7 +25,6 @@ namespace stream_vis {
 		}
 		return component_index;
 	}
-
 	void stream_vis_context::construct_streaming_aabbs()
 	{
 		for (auto& tsrb : time_series_ringbuffers) {
@@ -73,7 +76,6 @@ namespace stream_vis {
 
 		}
 	}
-
 	void stream_vis_context::construct_storage_buffer()
 	{
 		// initialize component references to point to themselves
@@ -224,8 +226,7 @@ namespace stream_vis {
 		construct_streaming_aabbs();
 
 	}
-
-	stream_vis_context::stream_vis_context(const std::string& name) : node(name)
+	stream_vis_context::stream_vis_context(const std::string& name) : application_plugin(name)
 	{
 		paused = false;
 		sleep_ms = 20;
@@ -253,9 +254,43 @@ namespace stream_vis {
 				content_ptr = &content;
 		}
 		cgv_declaration_reader reader(*content_ptr);
-		reader.init(&name2index, &typed_time_series, &offset_infos, &plot_pool);
+		reader.init(&name2index, &typed_time_series, &offset_infos, &view_infos, &plot_pool);
 		if (reader.parse_declarations()) {
 			nr_uninitialized_offsets = offset_infos.size();
+			// construct views
+			for (const auto& vi : view_infos) {
+				view_overlay_ptr v_overlay = 0;
+				if (vi.dim == 2) {
+					view2d_overlay_ptr v2d_overlay = register_overlay<view2d_overlay>(vi.name);
+					v2d_overlay->set_update_handler(this);
+					v_overlay = v2d_overlay;
+				}
+				else {
+					view3d_overlay_ptr v3d_overlay = register_overlay<view3d_overlay>(vi.name);
+					v3d_overlay->set_update_handler(this);
+					v3d_overlay->set_current_view(vi.current_view);
+					v3d_overlay->set_default_view(vi.default_view);
+					v_overlay = v3d_overlay;
+				}
+				if (v_overlay) {
+					v_overlay->set_overlay_stretch(cgv::glutil::overlay::SO_PERCENTUAL, vi.stretch);
+					v_overlay->set_overlay_alignment(cgv::glutil::overlay::AO_PERCENTUAL, cgv::glutil::overlay::AO_PERCENTUAL, vi.offset);
+					v_overlay->toggle_key = vi.toggle;
+					view_overlays.push_back(v_overlay);
+				}
+			}
+			// assign plots to views
+			for (size_t pi = 0; pi < plot_pool.size(); ++pi) {
+				const auto& pl = plot_pool[pi];
+				if (pl.view_index >= view_overlays.size())
+					continue;
+				view2d_overlay_ptr v2d_overlay = view_overlays[pl.view_index]->cast<stream_vis::view2d_overlay>();
+				view3d_overlay_ptr v3d_overlay = view_overlays[pl.view_index]->cast<stream_vis::view3d_overlay>();
+				if (v2d_overlay)
+					v2d_overlay->add_plot((int)pi, pl.plot_ptr);
+				if (v3d_overlay)
+					v3d_overlay->add_plot((int)pi, pl.plot_ptr);
+			}
 			return;
 		}
 	}
@@ -413,7 +448,6 @@ namespace stream_vis {
 			--nr_uninitialized_offsets;
 		}
 	}
-
 	void stream_vis_context::show_plots() const
 	{
 		for (const auto& pl : plot_pool) {
@@ -453,37 +487,47 @@ namespace stream_vis {
 				tsrb.storage_buffer_index << "|" << tsrb.storage_buffer_offset << std::endl;
 		}
 	}
-	bool stream_vis_context::handle(cgv::gui::event& e)
+	bool stream_vis_context::handle_event(cgv::gui::event& e)
 	{
-		if (e.get_kind() != cgv::gui::EID_KEY)
-			return false;
-		auto& ke = reinterpret_cast<cgv::gui::key_event&>(e);
-		if (ke.get_action() != cgv::gui::KA_RELEASE) {
-			switch (ke.get_char()) {
-			case '+':
-				sleep_ms += 1;
-				on_set(&sleep_ms);
-				return true;
-			case '-':
-				if (sleep_ms > 0) {
-					sleep_ms -= 1;
+		if (e.get_kind() == cgv::gui::EID_KEY) {
+			auto& ke = reinterpret_cast<cgv::gui::key_event&>(e);
+			if (ke.get_action() != cgv::gui::KA_RELEASE) {
+				// first check for changes in overlay visibility
+				for (view_overlay_ptr vo : view_overlays) 
+					if (ke.get_key() == vo->toggle_key) {
+						vo->set_visibility(!vo->is_visible());
+						return true;
+					}
+
+				switch (ke.get_char()) {
+				case '+':
+					sleep_ms += 1;
 					on_set(&sleep_ms);
+					return true;
+				case '-':
+					if (sleep_ms > 0) {
+						sleep_ms -= 1;
+						on_set(&sleep_ms);
+					}
+					return true;
 				}
-				return true;
-			}
-			switch (ke.get_key()) {
-			case 'X':
-				sleep_ms = 0;
-				on_set(&sleep_ms);
-				return true;
-			case 'S':
-				sleep_ms = 20;
-				on_set(&sleep_ms);
-				return true;
-			case cgv::gui::KEY_Space:
-				paused = !paused;
-				on_set(&paused);
-				return true;
+				switch (ke.get_key()) {
+				case 'X':
+					sleep_ms = 0;
+					on_set(&sleep_ms);
+					return true;
+				case 'S':
+					sleep_ms = 20;
+					on_set(&sleep_ms);
+					return true;
+				case cgv::gui::KEY_Space:
+					if (ke.get_modifiers() == 0) {
+						paused = !paused;
+						on_set(&paused);
+						return true;
+					}
+					break;
+				}
 			}
 		}
 		return false;
@@ -755,9 +799,20 @@ namespace stream_vis {
 	}
 	void stream_vis_context::draw(cgv::render::context& ctx)
 	{
+		// get theme colors
+		auto& ti = cgv::gui::theme_info::instance();
+		ctx.push_projection_matrix();
 		ctx.push_modelview_matrix();
-		for (auto& pl : plot_pool)
-			pl.plot_ptr->draw(ctx);
+		ctx.set_projection_matrix(cgv::math::identity4<float>());
+		ctx.set_modelview_matrix(cgv::math::identity4<float>());
+		glDepthMask(GL_FALSE);
+		ctx.ref_default_shader_program().enable(ctx);
+		ctx.set_color(ti.background());
+		ctx.tesselate_unit_square();
+		ctx.ref_default_shader_program().disable(ctx);
+		glDepthMask(GL_TRUE);
+		ctx.pop_modelview_matrix();
+		ctx.pop_projection_matrix();
 	}
 	void stream_vis_context::create_gui()
 	{
@@ -765,13 +820,31 @@ namespace stream_vis {
 		add_member_control(this, "pause", paused, "toggle");
 		add_member_control(this, "sleep_ms", sleep_ms, "value_slider", "min=0;max=1000;log=true;ticks=true");
 		add_member_control(this, "use_vbo", use_vbo, "check");
-		for (auto& pl : plot_pool) {
-			if (begin_tree_node(pl.name + std::string(pl.dim == 2 ? ":plot2d" : ":plot3d"), pl)) {
-				align("\a");
-				pl.plot_ptr->create_gui(this, *this);
-				align("\b");
-				end_tree_node(pl.name);
+		if (begin_tree_node("Plots", plot_pool, true)) {
+			align("\a");
+			for (auto& pl : plot_pool) {
+				if (begin_tree_node(pl.name + std::string(pl.dim == 2 ? ":plot2d" : ":plot3d"), pl)) {
+					align("\a");
+					pl.plot_ptr->create_gui(this, *this);
+					align("\b");
+					end_tree_node(pl.name);
+				}
 			}
+			align("\b");
+			end_tree_node(plot_pool);
+		}
+		if (begin_tree_node("Views", view_overlays, true)) {
+			align("\a");
+			for (view_overlay_ptr vo : view_overlays) {
+				if (begin_tree_node(vo->get_name(), vo)) {
+					align("\a");
+					inline_object_gui(vo);
+					align("\b");
+					end_tree_node(vo);
+				}
+			}
+			align("\b");
+			end_tree_node(view_overlays);
 		}
 	}
 

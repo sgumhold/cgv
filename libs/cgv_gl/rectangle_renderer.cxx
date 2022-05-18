@@ -260,7 +260,7 @@ namespace cgv {
 				p->add_member_control(b, "border_width_in_pixel", prs_ptr->border_width_in_pixel, "value_slider", "min=-10;max=10;ticks=true");
 				p->add_member_control(b, "percentual_border_width", prs_ptr->percentual_border_width, "value_slider", "min=-0.5;max=0.5;ticks=true");
 				p->add_member_control(b, "border_mode", (cgv::type::DummyEnum&)prs_ptr->border_mode, "dropdown", 
-					"enums='separate=0,width,height,min(width,height)'");
+					"enums='separate=0,width,height,min(width height)'");
 
 				p->add_member_control(b, "pixel_blend", prs_ptr->pixel_blend, "value_slider", "min=0.0;max=2;ticks=true");
 				p->add_member_control(b, "texture_mode", (cgv::type::DummyEnum&)prs_ptr->texture_mode, "dropdown",
