@@ -13,15 +13,15 @@ class simple_object :
 	cgv::render::box_render_style brs;
 	static cgv::render::shader_program prog;
 
-	enum ActiveGizmoOptions
+	enum class ActiveGizmoOptions
 	{
 		AGO_NONE,
 		AGO_TRANSLATION,
 		AGO_SCALING,
 		AGO_ROTATION
 	};
-	ActiveGizmoOptions active_gizmo{ AGO_NONE };
-	ActiveGizmoOptions active_gizmo_ui{ AGO_NONE };
+	ActiveGizmoOptions active_gizmo{ ActiveGizmoOptions::AGO_NONE };
+	ActiveGizmoOptions active_gizmo_ui{ ActiveGizmoOptions::AGO_NONE };
 
 protected:
 	// geometry of box with color
