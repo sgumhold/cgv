@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cg_nui/grabable_interactable.h>
+#include <cg_nui/poseable.h>
 #include <cgv_gl/box_renderer.h>
 #include <cg_nui/translation_gizmo.h>
 #include <cg_nui/rotation_gizmo.h>
@@ -8,7 +8,7 @@
 
 /// Example implementation of a single object that can be grabbed/triggered and then moved.
 class simple_object :
-	public cgv::nui::grabable_interactable
+	public cgv::nui::poseable
 {
 	cgv::render::box_render_style brs;
 	static cgv::render::shader_program prog;
