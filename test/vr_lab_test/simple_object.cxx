@@ -41,13 +41,13 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
 		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
 	);
-	if (active_gizmo == AGO_TRANSLATION)
+	if (active_gizmo == ActiveGizmoOptions::AGO_TRANSLATION)
 		trans_gizmo->attach(this, &position, &rotation, &extent);
 
 	rot_gizmo = new cgv::nui::rotation_gizmo();
 	append_child(rot_gizmo);
 	rot_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
-	if (active_gizmo == AGO_ROTATION)
+	if (active_gizmo == ActiveGizmoOptions::AGO_ROTATION)
 		rot_gizmo->attach(this, &position, &rotation, &extent);
 
 	scale_gizmo = new cgv::nui::scaling_gizmo();
@@ -57,7 +57,7 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
 		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
 	);
-	if (active_gizmo == AGO_SCALING)
+	if (active_gizmo == ActiveGizmoOptions::AGO_SCALING)
 		scale_gizmo->attach(this, &extent, &position, &rotation);
 }
 
@@ -134,14 +134,14 @@ void simple_object::on_set(void* member_ptr)
 	{
 		if (active_gizmo_ui != active_gizmo) {
 			switch (active_gizmo) {
-			case AGO_TRANSLATION: trans_gizmo->detach(); break;
-			case AGO_ROTATION: rot_gizmo->detach(); break;
-			case AGO_SCALING: scale_gizmo->detach(); break;
+			case ActiveGizmoOptions::AGO_TRANSLATION: trans_gizmo->detach(); break;
+			case ActiveGizmoOptions::AGO_ROTATION: rot_gizmo->detach(); break;
+			case ActiveGizmoOptions::AGO_SCALING: scale_gizmo->detach(); break;
 			}
 			switch (active_gizmo_ui) {
-			case AGO_TRANSLATION: trans_gizmo->attach(this, &position, &rotation, &extent); break;
-			case AGO_ROTATION: rot_gizmo->attach(this, &position, &rotation, &extent); break;
-			case AGO_SCALING: scale_gizmo->attach(this, &extent, &position, &rotation); break;
+			case ActiveGizmoOptions::AGO_TRANSLATION: trans_gizmo->attach(this, &position, &rotation, &extent); break;
+			case ActiveGizmoOptions::AGO_ROTATION: rot_gizmo->attach(this, &position, &rotation, &extent); break;
+			case ActiveGizmoOptions::AGO_SCALING: scale_gizmo->attach(this, &extent, &position, &rotation); break;
 			}
 			active_gizmo = active_gizmo_ui;
 		}
