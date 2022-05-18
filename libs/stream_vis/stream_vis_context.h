@@ -1,7 +1,9 @@
 #pragma once
 
 #include "plot_info.h"
+#include "view_info.h"
 #include "offset_info.h"
+#include "view_overlay.h"
 #include "streaming_time_series.h"
 #include "streaming_aabb.h"
 #include <cgv/base/node.h>
@@ -9,6 +11,7 @@
 #include <cgv/os/mutex.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/vertex_buffer.h>
+#include <cgv_glutil/application_plugin.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <plot/plot2d.h>
@@ -40,12 +43,11 @@ namespace stream_vis {
 	};
 
 	class CGV_API stream_vis_context : 
-		public cgv::base::node, 
-		public cgv::render::drawable, 
-		public cgv::gui::event_handler,
-		public cgv::gui::provider
+		public cgv::glutil::application_plugin,
+		public view_update_handler
 	{
 	protected:
+		std::vector<view_overlay_ptr> view_overlays;
 		std::atomic<bool> outofdate;
 		bool use_vbo, last_use_vbo, plot_attributes_initialized;
 		AABBMode aabb_mode, last_aabb_mode;
@@ -59,6 +61,8 @@ namespace stream_vis {
 		size_t nr_uninitialized_offsets;
 		/// vector of all plots
 		std::vector<plot_info> plot_pool;
+		/// vector of view infos
+		std::vector<view_info> view_infos;
 		/// vector of all layouts
 //		std::vector<layout_info> layouts;
 
@@ -96,7 +100,7 @@ namespace stream_vis {
 		void show_plots() const;
 		void show_ringbuffers() const;
 		bool is_outofdate() const { return outofdate; }
-		bool handle(cgv::gui::event& e);
+		bool handle_event(cgv::gui::event& e);
 		void stream_help(std::ostream& os);
 		bool init(cgv::render::context& ctx);
 		void clear(cgv::render::context& ctx);

@@ -16,7 +16,7 @@ protected:
 	// persistent vector with plot data
 	std::vector<vec4> P1, P2;
 public:
-	test_plot3d() : cgv::base::node("3d plot tester"), plot(1)
+	test_plot3d() : cgv::base::node("3D Plot Test"), plot(1)
 	{
 		unsigned i, j;
 		unsigned pi1 = plot.add_sub_plot("x*y");
@@ -102,7 +102,7 @@ protected:
 	// whether to use offscreen rendering
 	bool render_offscreen;
 public:
-	test_plot2d() : cgv::base::node("2d plot tester"), tex("[R,G,B,A]"), depth("[D]"), plot("trigonometry", 2)
+	test_plot2d() : cgv::base::node("2D Plot Test"), tex("[R,G,B,A]"), depth("[D]"), plot("trigonometry", 2)
 	{
 		// compute vector of vec3 with x coordinates and function values of cos and sin
 		unsigned i;
@@ -225,7 +225,7 @@ public:
 	}
 	void create_gui()
 	{
-		add_decorator("plot2d test", "heading");
+		add_decorator("plot2d Test", "heading");
 		add_member_control(this, "render_offscreen", render_offscreen, "toggle");
 		plot.create_gui(this, *this);
 	}

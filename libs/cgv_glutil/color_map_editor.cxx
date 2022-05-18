@@ -63,6 +63,11 @@ void color_map_editor::clear(cgv::render::context& ctx) {
 	canvas.destruct(ctx);
 	overlay_canvas.destruct(ctx);
 	fbc.clear(ctx);
+
+	color_handle_renderer.destruct(ctx);
+	opacity_handle_renderer.destruct(ctx);
+	line_renderer.destruct(ctx);
+	polygon_renderer.destruct(ctx);
 }
 
 bool color_map_editor::handle_event(cgv::gui::event& e) {
@@ -111,14 +116,15 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 		switch (ma) {
 		case cgv::gui::MA_ENTER:
 			mouse_is_on_overlay = true;
-			break;
+			return true;
 		case cgv::gui::MA_LEAVE:
 			mouse_is_on_overlay = false;
 			post_redraw();
-			break;
+			return true;
 		case cgv::gui::MA_MOVE:
 		case cgv::gui::MA_DRAG:
-			cursor_pos = ivec2(me.get_x(), me.get_y());
+			if(get_context())
+				cursor_pos = ivec2(me.get_x(), get_context()->get_height() - 1 - me.get_y());
 			if (show_cursor)
 				post_redraw();
 			break;
@@ -211,6 +217,7 @@ void color_map_editor::on_set(void* member_ptr) {
 		post_recreate_gui();
 	}
 
+	has_damage = true;
 	update_member(member_ptr);
 	post_redraw();
 }
@@ -275,6 +282,8 @@ void color_map_editor::init_frame(cgv::render::context& ctx) {
 		update_geometry();
 		cmc.color_points.set_constraint(layout.color_handles_rect);
 		cmc.opacity_points.set_constraint(layout.opacity_editor_rect);
+
+		has_damage = true;
 	}
 
 	// TODO: move functionality of testing for theme changes to overlay? (or use observer pattern for theme info)
@@ -295,26 +304,62 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 	if(!show)
 		return;
 
-	fbc.enable(ctx);
-	
 	glDisable(GL_DEPTH_TEST);
+
+	if(has_damage)
+		draw_content(ctx);
+	
+	// draw frame buffer texture to screen
+	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
+	fbc.enable_attachment(ctx, "color", 0);
+	overlay_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());
+	fbc.disable_attachment(ctx, "color");
+	overlay_canvas.disable_current_shader(ctx);
+
+	// draw cursor decorators to show interaction hints
+	if(mouse_is_on_overlay && show_cursor) {
+		std::cout << cursor_pos << std::endl;
+		ivec2 pos = cursor_pos + ivec2(7, 4);
+
+		auto fntf_ptr = ctx.get_current_font_face();
+		auto s = ctx.get_current_font_size();
+
+		ctx.enable_font_face(cursor_font_face, s);
+
+		ctx.push_pixel_coords();
+		ctx.set_color(rgb(0.0f));
+		ctx.set_cursor(vecn(float(pos.x()), float(pos.y())), "", cgv::render::TA_TOP_LEFT);
+		ctx.output_stream() << cursor_drawtext;
+		ctx.output_stream().flush();
+		ctx.pop_pixel_coords();
+
+		ctx.enable_font_face(fntf_ptr, s);
+	}
+
+	glEnable(GL_DEPTH_TEST);
+}
+
+void color_map_editor::draw_content(cgv::render::context& ctx) {
+	
+	fbc.enable(ctx);
+
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	
+
 	ivec2 container_size = get_overlay_size();
-	
+
 	// draw container
 	auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
 	container_style.apply(ctx, rect_prog);
 	canvas.draw_shape(ctx, ivec2(0), container_size);
-	
+
 	// draw inner border
 	border_style.apply(ctx, rect_prog);
-	canvas.draw_shape(ctx, ivec2(layout.padding - 1) + ivec2(0, 10), container_size - 2*layout.padding + 2 - ivec2(0, 10));
-	
+	canvas.draw_shape(ctx, ivec2(layout.padding - 1) + ivec2(0, 10), container_size - 2 * layout.padding + 2 - ivec2(0, 10));
+
 	if(cmc.cm) {
 		// draw color scale texture
 		color_map_style.apply(ctx, rect_prog);
@@ -322,7 +367,7 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 		canvas.draw_shape(ctx, layout.color_editor_rect.pos(), layout.color_editor_rect.size());
 		preview_tex.disable(ctx);
 		canvas.disable_current_shader(ctx);
-		
+
 		if(supports_opacity) {
 			// draw opacity editor checkerboard background
 			auto& bg_prog = canvas.enable_shader(ctx, "background");
@@ -396,39 +441,12 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 	} else {
 		canvas.disable_current_shader(ctx);
 	}
-	
+
 	glDisable(GL_BLEND);
 
 	fbc.disable(ctx);
 
-	// draw frame buffer texture to screen
-	auto& final_prog = overlay_canvas.enable_shader(ctx, "rectangle");
-	fbc.enable_attachment(ctx, "color", 0);
-	overlay_canvas.draw_shape(ctx, get_overlay_position(), container_size);
-	fbc.disable_attachment(ctx, "color");
-
-	overlay_canvas.disable_current_shader(ctx);
-
-	// draw cursor decorators to show interaction hints
-	if(mouse_is_on_overlay && show_cursor) {
-		ivec2 pos = cursor_pos + ivec2(7, 4);
-
-		auto fntf_ptr = ctx.get_current_font_face();
-		auto s = ctx.get_current_font_size();
-
-		ctx.enable_font_face(cursor_font_face, s);
-
-		ctx.push_pixel_coords();
-		ctx.set_color(rgb(0.0f));
-		ctx.set_cursor(vecn(float(pos.x()), float(pos.y())), "", cgv::render::TA_TOP_LEFT);
-		ctx.output_stream() << cursor_drawtext;
-		ctx.output_stream().flush();
-		ctx.pop_pixel_coords();
-
-		ctx.enable_font_face(fntf_ptr, s);
-	}
-
-	glEnable(GL_DEPTH_TEST);
+	has_damage = false;
 }
 
 void color_map_editor::create_gui() {
@@ -608,15 +626,15 @@ void color_map_editor::init_styles(context& ctx) {
 	poly_style.apply(ctx, poly_prog);
 	poly_prog.disable(ctx);
 
-	// configure style for final blitting of overlay into main frame buffer
-	cgv::glutil::shape2d_style final_style;
-	final_style.fill_color = rgba(1.0f);
-	final_style.use_texture = true;
-	final_style.use_blending = false;
-	final_style.feather_width = 0.0f;
+	// configure style for final blending of overlay into main frame buffer
+	cgv::glutil::shape2d_style overlay_style;
+	overlay_style.fill_color = rgba(1.0f);
+	overlay_style.use_texture = true;
+	overlay_style.use_blending = false;
+	overlay_style.feather_width = 0.0f;
 
-	auto& final_prog = overlay_canvas.enable_shader(ctx, "rectangle");
-	final_style.apply(ctx, final_prog);
+	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
+	overlay_style.apply(ctx, overlay_prog);
 	overlay_canvas.disable_current_shader(ctx);
 }
 
@@ -905,6 +923,7 @@ void color_map_editor::update_color_map(bool is_data_change) {
 	update_geometry();
 
 	has_updated = true;
+	has_damage = true;
 }
 
 bool color_map_editor::update_geometry() {

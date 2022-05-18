@@ -3,8 +3,8 @@
 namespace cgv {
 namespace glutil {
 
-void msdf_gl_font_renderer::draw(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg) {
-	if(!tg.enable(ctx))
+void msdf_gl_font_renderer::draw(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg, size_t offset, int count) {
+	if(offset >= tg.size() || !tg.enable(ctx))
 		return;
 
 	prog.set_uniform(ctx, "resolution", viewport_resolution);
@@ -12,7 +12,12 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, const ivec2& viewpor
 	prog.set_uniform(ctx, "pixel_range", tg.get_msdf_font()->get_pixel_range());
 	prog.set_uniform(ctx, "true_sdf_mix_factor", 0.0f);
 
-	for(const auto& text : tg.ref_texts()) {
+	size_t end = count < 0 ? tg.size() : offset + static_cast<size_t>(count);
+	end = std::min(end, tg.size());
+
+	//for(const auto& text : tg.ref_texts()) {
+	for(size_t i = offset; i < end; ++i) {
+		const auto& text = tg.ref_texts()[i];
 		vec2 position(text.position);
 		vec2 size = text.size * tg.get_font_size();
 
@@ -38,10 +43,10 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, const ivec2& viewpor
 	tg.disable(ctx);
 }
 
-bool msdf_gl_font_renderer::render(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg) {
+bool msdf_gl_font_renderer::render(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg, size_t offset, int count) {
 	if(!enable(ctx))
 		return false;
-	draw(ctx, viewport_resolution, tg);
+	draw(ctx, viewport_resolution, tg, offset, count);
 	return disable(ctx);
 }
 

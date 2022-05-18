@@ -429,12 +429,14 @@ void HoverBox::_draw(const fltk::Rectangle& R) const {
   Pushed in flat button with thin inset shadow
 */
 static StateBox2 shadowDownBox("shadow_down", 1, 2, 2, 3, "2GHHHH", 'H', 'H');
+//static StateBox2 shadowDownBox("shadow_down", 1, 2, 2, 3, "2GFHFH", 'H', 'H');
 Box* const fltk::SHADOW_DOWN_BOX = &shadowDownBox;
 // 
 /*!
   A pushable flat button with a thin shadow appearance.
 */
 static StateBox2 shadowUpBox("shadow_up", 0, 0, 0, 1, "H", 'S', 'S', &shadowDownBox);
+//static StateBox2 shadowUpBox("shadow_up", 1, 0, 2, 1, "HIII", 'S', 'S', &shadowDownBox);
 Box* const fltk::SHADOW_UP_BOX = &shadowUpBox;
 
 

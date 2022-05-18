@@ -566,8 +566,10 @@ public:
 		set_default_shape_style(line_style);
 		set_default_shape_style(arrow_style);
 		line_style.width = 20.0f;
+		line_style.use_fill_color = false;
 		arrow_style.stem_width = 20.0f;
 		arrow_style.head_width = 40.0f;
+		arrow_style.use_fill_color = false;
 	}
 	void set_default_shape_style(cgv::glutil::shape2d_style& s) {
 		s.fill_color = light_blue;
