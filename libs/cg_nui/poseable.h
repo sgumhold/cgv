@@ -11,7 +11,7 @@ namespace cgv {
 	///	is applied to variables provided in the constructor as either a pointer or a double pointer.
 	///	The double pointer can be used for an additional indirection to support the use of multiple primitives
 	///	(see simple_primitive_container in vr_lab_test for an example of this).
-	class CGV_API grabable_interactable : public interactable
+	class CGV_API poseable : public interactable
 {
 protected:
 	vec3* position_ptr;
@@ -28,22 +28,22 @@ protected:
 	void on_triggered_drag() override;
 
 public:
-	grabable_interactable(vec3* position_ptr, quat* rotation_ptr, const std::string& name = "") :
+	poseable(vec3* position_ptr, quat* rotation_ptr, const std::string& name = "") :
 		interactable(name), position_ptr(position_ptr), position_ptr_ptr(nullptr), rotation_ptr(rotation_ptr), rotation_ptr_ptr(nullptr) {}
 
-	grabable_interactable(vec3* position_ptr, const std::string& name = "") :
+	poseable(vec3* position_ptr, const std::string& name = "") :
 		interactable(name), position_ptr(position_ptr), position_ptr_ptr(nullptr), rotation_ptr(nullptr), rotation_ptr_ptr(nullptr) {}
 
-	grabable_interactable(quat* rotation_ptr, const std::string& name = "") :
+	poseable(quat* rotation_ptr, const std::string& name = "") :
 		interactable(name), position_ptr(nullptr), position_ptr_ptr(nullptr), rotation_ptr(rotation_ptr), rotation_ptr_ptr(nullptr) {}
 
-	grabable_interactable(vec3** position_ptr_ptr, quat** rotation_ptr_ptr, const std::string& name = "") :
+	poseable(vec3** position_ptr_ptr, quat** rotation_ptr_ptr, const std::string& name = "") :
 		interactable(name), position_ptr(nullptr), position_ptr_ptr(position_ptr_ptr), rotation_ptr(nullptr), rotation_ptr_ptr(rotation_ptr_ptr) {}
 
-	grabable_interactable(vec3** position_ptr_ptr, const std::string& name = "") :
+	poseable(vec3** position_ptr_ptr, const std::string& name = "") :
 		interactable(name), position_ptr(nullptr), position_ptr_ptr(position_ptr_ptr), rotation_ptr(nullptr), rotation_ptr_ptr(nullptr) {}
 
-	grabable_interactable(quat** rotation_ptr_ptr, const std::string& name = "") :
+	poseable(quat** rotation_ptr_ptr, const std::string& name = "") :
 		interactable(name), position_ptr(nullptr), position_ptr_ptr(nullptr), rotation_ptr(nullptr), rotation_ptr_ptr(rotation_ptr_ptr) {}
 
 	// Used for drawing debug points

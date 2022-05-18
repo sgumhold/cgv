@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cg_nui/grabable_interactable.h>
+#include <cg_nui/interactable.h>
 
 #include "lib_begin.h"
 

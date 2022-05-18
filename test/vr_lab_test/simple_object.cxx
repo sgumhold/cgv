@@ -23,7 +23,7 @@ simple_object::rgb simple_object::get_modified_color(const rgb& color) const
 }
 
 simple_object::simple_object(const std::string& _name, const vec3& _position, const rgb& _color, const vec3& _extent, const quat& _rotation) :
-	cgv::nui::grabable_interactable(&position, &rotation, _name), position(_position), rotation(_rotation),
+	cgv::nui::poseable(&position, &rotation, _name), position(_position), rotation(_rotation),
 	color(_color), extent(_extent)
 {
 	name = _name;
@@ -102,7 +102,7 @@ bool simple_object::compute_intersection(const vec3& ray_start, const vec3& ray_
 
 bool simple_object::init(cgv::render::context& ctx)
 {
-	grabable_interactable::init(ctx);
+	poseable::init(ctx);
 	auto& br = cgv::render::ref_box_renderer(ctx, 1);
 	if (prog.is_linked())
 		return true;
@@ -114,7 +114,7 @@ void simple_object::clear(cgv::render::context& ctx)
 }
 void simple_object::draw(cgv::render::context& ctx)
 {
-	grabable_interactable::draw(ctx);
+	poseable::draw(ctx);
 	// show box
 	auto& br = cgv::render::ref_box_renderer(ctx);
 	br.set_render_style(brs);
@@ -165,5 +165,5 @@ void simple_object::create_gui()
 		align("\b");
 		end_tree_node(brs);
 	}
-	grabable_interactable::create_gui();
+	poseable::create_gui();
 }

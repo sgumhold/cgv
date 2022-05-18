@@ -21,7 +21,7 @@ simple_primitive_container::rgb simple_primitive_container::get_modified_color(c
 	return mod_col;
 }
 simple_primitive_container::simple_primitive_container(const std::string& _name, unsigned sphere_count)
-	: cgv::nui::grabable_interactable(&active_position, name), active_position(nullptr)
+	: cgv::nui::poseable(&active_position, name), active_position(nullptr)
 {
 	std::default_random_engine e;
 	std::uniform_real_distribution<float> dr(0.6f, 1.3f);
@@ -43,7 +43,7 @@ void simple_primitive_container::on_set(void* member_ptr)
 	if (member_ptr == &prim_idx) {
 		active_position = &positions[prim_idx];
 	}
-	grabable_interactable::on_set(member_ptr);
+	poseable::on_set(member_ptr);
 }
 
 bool simple_primitive_container::compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx)
@@ -90,7 +90,7 @@ bool simple_primitive_container::compute_intersection(const vec3& ray_start, con
 }
 bool simple_primitive_container::init(cgv::render::context& ctx)
 {
-	if (!grabable_interactable::init(ctx))
+	if (!poseable::init(ctx))
 		return false;
 	cgv::render::ref_sphere_renderer(ctx, 1);
 	return true;
@@ -98,11 +98,11 @@ bool simple_primitive_container::init(cgv::render::context& ctx)
 void simple_primitive_container::clear(cgv::render::context& ctx)
 {
 	cgv::render::ref_sphere_renderer(ctx, -1);
-	grabable_interactable::clear(ctx);
+	poseable::clear(ctx);
 }
 void simple_primitive_container::draw(cgv::render::context& ctx)
 {
-	grabable_interactable::draw(ctx);
+	poseable::draw(ctx);
 	// show spheres
 	auto& sr = cgv::render::ref_sphere_renderer(ctx);
 	sr.set_render_style(srs);
@@ -127,5 +127,5 @@ void simple_primitive_container::create_gui()
 		align("\b");
 		end_tree_node(srs);
 	}
-	grabable_interactable::create_gui();
+	poseable::create_gui();
 }
