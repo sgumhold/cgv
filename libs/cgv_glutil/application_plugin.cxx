@@ -29,7 +29,7 @@ bool application_plugin::handle(cgv::gui::event& e)
 			}
 
 			if(ma == cgv::gui::MA_MOVE && blocking_overlay_ptr != last_blocking_overlay_ptr) {
-				if (last_blocking_overlay_ptr) {
+				if(last_blocking_overlay_ptr) {
 					me.set_action(cgv::gui::MA_LEAVE);
 					last_blocking_overlay_ptr->handle_event(e);
 				}
