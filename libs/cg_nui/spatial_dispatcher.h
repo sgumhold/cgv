@@ -37,6 +37,8 @@ namespace cgv {
 			controller_info ctrl_infos[2] = { {true, true, {0.6f,0.3f,0.3f} },{true, true, {0.3f,0.3f,0.6f} } };
 			/// whether to dispatch mouse events spatially
 			bool dispatch_mouse_spatial = true;
+			/// height of context needed to convert mouse y position to opengl y position
+			int context_height = 480;
 			/// when deciding between proximity and pointing, a factor multiplied to distance to first ray intersection when compared to closest point distance (defaults to 2)
 			float intersection_bias = 2.0f;
 			/// distance threshold up to which grabbing is possible (defaults to 5cm)

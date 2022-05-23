@@ -57,9 +57,9 @@ public:
 	void stream_out(std::ostream& os) const;
 	/// read from stream
 	void stream_in(std::istream& is);
-	/// current mouse x position 
+	/// current mouse x position (origin is top-left of window)
 	short get_x() const;
-	/// current mouse y position 
+	/// current mouse y position (origin is top-left of window)
 	short get_y() const;
 	/// for move and drag events the difference in x to the previous position
 	short get_dx() const;

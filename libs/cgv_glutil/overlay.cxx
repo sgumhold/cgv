@@ -19,8 +19,9 @@ overlay::overlay() {
 	block_events = true;
 }
 
-void overlay::on_visibility_change() {
-
+void overlay::on_visibility_change() 
+{
+	update_member(&show);
 	post_redraw();
 }
 
@@ -41,6 +42,26 @@ overlay::ivec2 overlay::get_local_mouse_pos(ivec2 mouse_pos) {
 	return get_transformed_mouse_pos(mouse_pos) - container.pos();
 }
 
+void overlay::set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 _percentual_offset)
+{
+	horizontal_alignment = horizontal;
+	vertical_alignment = vertical;
+	for (int i = 0; i < 2; ++i)
+		if (_percentual_offset[i] != -1.0f)
+			percentual_offset[i] = _percentual_offset[i];
+	update_overlay_layout();
+}
+
+/// sets the stretch option
+void overlay::set_overlay_stretch(StretchOption _stretch, vec2 _percentual_size)
+{
+	stretch = _stretch;
+	for (int i = 0; i < 2; ++i)
+		if (_percentual_size[i] != -1.0f)
+			percentual_size[i] = _percentual_size[i];
+	update_overlay_layout();
+}
+
 void overlay::update_overlay_layout() {
 
 	ivec2 pos = margin;
@@ -57,6 +78,10 @@ void overlay::update_overlay_layout() {
 		break;
 	case SO_BOTH:
 		size = max_size;
+		break;
+	case SO_PERCENTUAL:
+		size = percentual_size * max_size;
+		break;
 	case SO_NONE:
 	default:
 		break;
@@ -68,6 +93,9 @@ void overlay::update_overlay_layout() {
 		break;
 	case AO_END:
 		pos.x() = last_viewport_size.x() - size.x() - margin.x();
+		break;
+	case AO_PERCENTUAL:
+		pos.x() = margin.x() + percentual_offset.x() * max_size.x();
 		break;
 	case AO_START:
 	case AO_FREE:
@@ -82,6 +110,9 @@ void overlay::update_overlay_layout() {
 		break;
 	case AO_END:
 		pos.y() = last_viewport_size.y() - size.y() - margin.y();
+		break;
+	case AO_PERCENTUAL:
+		pos.y() = margin.y() + percentual_offset.y() * max_size.y();
 		break;
 	case AO_START:
 	case AO_FREE:

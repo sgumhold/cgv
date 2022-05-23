@@ -162,17 +162,18 @@ public:
 	virtual bool does_viewport_use_individual_view(unsigned col_index, unsigned row_index) const;
 	/// access the view of a given viewport
 	virtual view& ref_viewport_view(unsigned col_index, unsigned row_index);
-	//! given a mouse location and the pixel extent of the context, return the modelview_projection_window matrix for unprojection
-	/*! In stereo modes with split viewport, the returned MPW is the one the mouse pointer is on.
+	//! given an opengl pixel location and the size in pixels of the opengl window, return the modelview_projection_window matrix for unprojection
+	/*! In stereo modes with split viewport, the returned MPW is the one opengl pixel location is in.
 	The return value is in this case -1 or 1 and tells if MPW corresponds to the left (-1) or right (1) viewport.
-	Furthermore, the MPW of the corresponding mouse location in the other eye is returned through MPW_other_ptr
-	and the mouse location in x_other_ptr and y_other_ptr. In anaglyph or quad buffer stereo mode the other
+	Furthermore, the MPW of the corresponding opengl pixel location in the other eye is returned through MPW_other_ptr
+	and the opengl pixel location in x_other_ptr and y_other_ptr. In anaglyph or quad buffer stereo mode the other
 	mouse location is identical to the incoming x and y location and 0 is returned. In mono mode,
 	the other MPW and mouse locations are set to values identical to MPW and x,y and also 0 is returned.
 
 	In case the viewport splitting was enabled during the last drawing process, the MPW and
-	MPW_other matrices are set to the one valid in the panel that the mouse position x,y is
-	in. The panel column and row indices are passed to the vp_col_idx and vp_row_idx pointers.
+	MPW_other matrices are set to the one valid in the panel that the opengl pixel location x,y is
+	in. The panel column and row indices (counting from bottom to top as in opengl) are passed to 
+	the vp_col_idx and vp_row_idx pointers.
 	In case that viewport splitting was disabled, 0 is passed to the panel location index pointers.
 
 	Finally, the vp_width, vp_height, vp_center_x, and vp_center_y pointers are set to the viewport size
@@ -198,7 +199,7 @@ public:
 			x_other_ptr,y_other_ptr,vp_col_idx_ptr, vp_row_idx_ptr, vp_width_ptr, vp_height_ptr, 
 			vp_center_x_ptr, vp_center_y_ptr, vp_center_x_other_ptr, vp_center_y_other_ptr);
 	}
-	//! given a pixel location x,y return the window z-value from the depth buffer
+	//! given an opengl pixel location x,y return the window z-value from the depth buffer
 	/*! in case of stereo rendering two z-values exist that can be unprojected to two points in world
 	    coordinates. In this case the possibility with smaller z value is selected. */
 	virtual double get_z_and_unproject(context& ctx, int x, int y, dvec3& p);

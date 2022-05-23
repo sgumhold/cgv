@@ -158,6 +158,11 @@ bool fltk_base::set_void(fltk::Widget* w, cgv::base::named* nam, const std::stri
 				case 'r' :
 					flags |= fltk::ALIGN_INSIDE_RIGHT;
 					break;
+				case 'c':
+				case 'i':
+					flags |= fltk::ALIGN_INSIDE;
+					break;
+				default: break;
 			}
 		w->flags(flags);
 	}

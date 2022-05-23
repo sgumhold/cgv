@@ -321,7 +321,7 @@ Divider::Divider() : Widget(0,0,0,0) {
 }
 
 void Divider::draw() {
-	// TODO: MARK (choose other colors for non-legacy themes)
+	// choose other colors for non-legacy themes
 	Color C1 = GRAY33;
 	Color C2 = GRAY99;
 

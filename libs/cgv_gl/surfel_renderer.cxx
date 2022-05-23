@@ -191,7 +191,7 @@ namespace cgv {
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
 				bool show = p->begin_tree_node("splatting", srs_ptr->point_size, false, "options='w=60';level=3;align=''");
-				p->add_member_control(b, "point_size", srs_ptr->point_size, "value_slider", "label='';w=130;min=1;max=50;log=true;ticks=true", "");
+				p->add_member_control(b, "point_size", srs_ptr->point_size, "value_slider", "label='';w=130;min=0.01;max=50;log=true;ticks=true", "");
 				p->add_member_control(b, "px", srs_ptr->measure_point_size_in_pixel, "toggle", "w=16");
 				if (show) {
 					p->align("\a");

@@ -52,7 +52,6 @@ namespace stream_vis {
 		v = iter->second;
 		return true;
 	}
-
 	bool cgv_declaration_reader::parse_bool(const std::string& name, bool& b)
 	{
 		auto iter = pp.find(name);
@@ -491,6 +490,40 @@ namespace stream_vis {
 				}
 				tok_plot = toks[di];
 				construct_plot(name, dim);
+			}
+			// then check for plot declarations
+			else if (type.substr(0, 4) == "view") {
+				if (type.length() < 6 || type[5] != 'd') {
+					std::cout << "unknown type <" << type << ">" << std::endl;
+					ti += delta;
+					continue;
+				}
+				int dim = type[4] - '0';
+				if (dim < 2 || dim > 3) {
+					std::cout << "only support views of dim 2 or 3 but got " << dim << ":\n" << to_string(toks[ti + 2]) << std::endl;
+					ti += delta;
+					continue;
+				}
+				std::vector<cgv::utils::token> tokens;
+				std::vector<std::string> plot_refs;
+				cgv::utils::split_to_tokens(toks[di], tokens, ",", false);
+				size_t i = 0;
+				while (i < tokens.size()) {
+					plot_refs.push_back(cgv::utils::to_string(tokens[i]));
+					if (++i < tokens.size()) {
+						if (tokens[i] != ",") {
+							std::cerr << "expected plot references to be separated by ','" << std::endl;
+							break;
+						}
+						++i;
+					}
+				}
+				pp.clear();
+				if (has_params) {
+					parse_parameters(toks[ti + 3], pp);
+				}
+				tok_plot = toks[di];
+				construct_view(name, dim, plot_refs);
 			}
 			else {
 				std::vector<std::string> ts_names;

@@ -49,7 +49,7 @@ bool abst_image_reader::read_palette(unsigned int, const data_view&)
 }
 
 /// interfaces that allows to listen to registration events
-struct reader_listener : public cgv::base::base, public cgv::base::registration_listener
+struct reader_listener : public cgv::base::base, public cgv::base::server, public cgv::base::registration_listener
 {
 	static std::vector<base_ptr>& ref_readers()
 	{

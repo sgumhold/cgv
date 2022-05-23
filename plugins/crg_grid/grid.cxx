@@ -24,7 +24,7 @@ using namespace cgv::utils;
 grid::grid() : minX(-50),minZ(-50),maxX(50),maxZ(50) 
 {
 	view_ptr = 0;
-	set_name("grid");
+	set_name("Grid");
 	auto_hide_axis_threshold = 0.0f;
 	threshold = 5;
 	alpha = 0.5;
@@ -330,15 +330,15 @@ std::string grid::get_menu_path() const
 void grid::create_gui()
 {
 	add_decorator("Grid", "heading");
-	add_member_control(this, "grid", show_grid, "check");
-	add_member_control(this, "grid_lines", show_lines, "check");
-	add_member_control(this, "auto_hide_axis_threshold", auto_hide_axis_threshold, "value_slider", "min=0;max=0.1;log=true;ticks=true;step=0.0000001");
-	add_member_control(this, "adaptive", adaptive_grid, "check");
-	add_member_control(this, "threshold", threshold, "value_slider", "min=0;max=20;ticks=true;log=false");
-	add_member_control(this, "opacity", alpha, "value_slider", "min=0;max=1;ticks=true");
-	add_member_control(this, "axes", show_axes, "check");
-	add_member_control(this, "arrow_length", arrow_length, "value_slider", "min=0.001;max=1000;step=0.0001;log=true;ticks=true");
-	add_member_control(this, "arrow_aspect", arrow_aspect, "value_slider", "min=0.001;max=1;step=0.0005;log=true;ticks=true");
-	add_member_control(this, "arrow_rel_tip_radius", arrow_rel_tip_radius, "value_slider", "min=1;max=10;log=true;ticks=true");
-	add_member_control(this, "arrow_tip_aspect", arrow_tip_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+	add_member_control(this, "Grid", show_grid, "check");
+	add_member_control(this, "Grid Lines", show_lines, "check");
+	add_member_control(this, "Auto Hide Axis Threshold", auto_hide_axis_threshold, "value_slider", "min=0;max=0.1;log=true;ticks=true;step=0.0000001");
+	add_member_control(this, "Adaptive", adaptive_grid, "check");
+	add_member_control(this, "Threshold", threshold, "value_slider", "min=0;max=20;ticks=true;log=false");
+	add_member_control(this, "Opacity", alpha, "value_slider", "min=0;max=1;ticks=true");
+	add_member_control(this, "Axes", show_axes, "check");
+	add_member_control(this, "Arrow Length", arrow_length, "value_slider", "min=0.001;max=1000;step=0.0001;log=true;ticks=true");
+	add_member_control(this, "Arrow Aspect", arrow_aspect, "value_slider", "min=0.001;max=1;step=0.0005;log=true;ticks=true");
+	add_member_control(this, "Arrow Rel Tip Radius", arrow_rel_tip_radius, "value_slider", "min=1;max=10;log=true;ticks=true");
+	add_member_control(this, "Arrow Tip Aspect", arrow_tip_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 }

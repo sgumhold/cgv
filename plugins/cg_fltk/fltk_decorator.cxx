@@ -1,6 +1,7 @@
 #include "fltk_driver_registry.h"
 #include "fltk_base.h"
 #include <cgv/type/variant.h>
+#include <cgv/utils/scan.h>
 
 #ifdef WIN32
 #pragma warning (disable:4311)
@@ -56,9 +57,23 @@ struct fltk_heading_decorator : public cgv::base::named, public fltk_base
 			if (level > 3)
 				level = 3;
 			w->labelsize((float)(18-2*level));
-			return true;
+		} else if(property == "font_style") {
+			std::string value;
+			get_variant(value, value_type, value_ptr);
+			int ei = cgv::utils::get_element_index(value, "regular,bold,italic,bold_italic", ',');
+			if(ei == -1)
+				ei = 0;
+			fltk::Font* const fonts[] = {
+				fltk::HELVETICA,
+				fltk::HELVETICA_BOLD,
+				fltk::HELVETICA_ITALIC,
+				fltk::HELVETICA_BOLD_ITALIC
+			};
+			w->labelfont(fonts[ei]);
+		} else {
+			return false;
 		}
-		return false;
+		return true;
 	}
 	bool get_void(const std::string& property, const std::string& value_type, void* value_ptr)
 	{

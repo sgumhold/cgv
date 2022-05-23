@@ -419,6 +419,8 @@ void enable_registration()
 		if (object->get_interface<server>() == 0)
 			continue;
 		register_object_internal(object, ref_registration_events()[i].second);
+		if (object->get_interface<registration_listener>() != 0)
+			ref_listeners().push_back(object);
 	}
 
 	// next register all drivers
@@ -427,6 +429,8 @@ void enable_registration()
 		if (object->get_interface<driver>() == 0)
 			continue;
 		register_object_internal(object, ref_registration_events()[i].second);
+		if (object->get_interface<registration_listener>() != 0)
+			ref_listeners().push_back(object);
 	}
 
 	// next register all listeners
@@ -434,9 +438,10 @@ void enable_registration()
 		base_ptr object = ref_registration_events()[i].first;
 		if (object->get_interface<registration_listener>() == 0)
 			continue;
-		register_object_internal(object, ref_registration_events()[i].second);
-
-		ref_listeners().push_back(object);
+		if (object->get_interface<server>() == 0 && object->get_interface<driver>() == 0) {
+			register_object_internal(object, ref_registration_events()[i].second);
+			ref_listeners().push_back(object);
+		}
 		// send all buffered events
 		for (unsigned j = 0; j < i0; ++j)
 			object->get_interface<registration_listener>()->register_object(ref_registration_events()[j].first,

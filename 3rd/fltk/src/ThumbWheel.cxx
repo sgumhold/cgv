@@ -79,7 +79,7 @@ int ThumbWheel::handle(int event) {
 }
 
 void ThumbWheel::draw() {
-	// TODO: MARK (use a special draw method for flat themes)
+	// use a special draw method for flat themes
 	if(fltk::theme_idx_ > -1) {
 		draw_flat();
 		return;

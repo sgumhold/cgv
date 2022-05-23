@@ -27,6 +27,7 @@ struct shape2d_style : cgv::render::render_types {
 	// render options
 	bool use_fill_color = true;
 	bool use_texture = false;
+	bool use_texture_alpha = true;
 	bool use_blending = false;
 	bool use_smooth_feather = false;
 	bool apply_gamma = true; // TOOD: maybe move to global 2d uniforms
@@ -45,6 +46,7 @@ struct shape2d_style : cgv::render::render_types {
 
 		prog.set_uniform(ctx, "use_fill_color", use_fill_color);
 		prog.set_uniform(ctx, "use_texture", use_texture);
+		prog.set_uniform(ctx, "use_texture_alpha", use_texture_alpha);
 		prog.set_uniform(ctx, "use_blending", use_blending);
 		prog.set_uniform(ctx, "use_smooth_feather", use_smooth_feather);
 		prog.set_uniform(ctx, "apply_gamma", apply_gamma);

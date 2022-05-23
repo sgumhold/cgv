@@ -22,6 +22,7 @@
 //
 
 #include <fltk/Slider.h>
+#include <fltk/FillSlider.h>
 #include <fltk/events.h>
 #include <fltk/damage.h>
 #include <fltk/Box.h>
@@ -390,7 +391,8 @@ bool Slider::draw(const Rectangle& sr, Flags flags, bool slot)
   if (type()&16/*FILL*/) slider_size(0);
 
   Rectangle r = sr;
-  const int slot_size_ = fltk::theme_idx_ < 0 ? 3 : 5; // was 6, really should be a preference?
+  int slot_size_ = fltk::theme_idx_ < 0 ? 3 : 5; // was 6, really should be a preference?
+  slot_size_ += slider_size_ ? 0 : 4;
 
   // draw the tick marks and inset the slider drawing area to clear them:
   if (tick_size_ && (type()&TICK_BOTH)) {
@@ -427,8 +429,9 @@ bool Slider::draw(const Rectangle& sr, Flags flags, bool slot)
     draw_ticks(tr, (slider_size()+1)/2);
   }
 
+  Rectangle sl;
   if (slot) {
-    Rectangle sl;
+    //Rectangle sl;
     int dx = (slider_size_-slot_size_)/2; if (dx < 0) dx = 0;
     if (horizontal()) {
       sl.x(dx+r.x());
@@ -441,7 +444,7 @@ bool Slider::draw(const Rectangle& sr, Flags flags, bool slot)
       sl.x(r.x()+(r.w()-slot_size_+1)/2);
       sl.w(slot_size_);
     }
-	// TODO: MARK
+
 	if(fltk::theme_idx_ < 0) {
 		setbgcolor(BLACK);
 		THIN_DOWN_BOX->draw(sl);
@@ -468,13 +471,17 @@ bool Slider::draw(const Rectangle& sr, Flags flags, bool slot)
     s.w(slider_size_);
     if (!s.w()) { // fill slider
       s.w(s.x()-r.x());
+	  s.h(sl.h());
       s.x(r.x());
+	  s.y(sl.y());
       sglyph=ALIGN_CENTER; // stops it from drawing divider line
     }
   } else {
     s.y(r.y()+slider_position(value(),r.h()));
     s.h(slider_size_);
     if (!s.h()) { // fill slider
+	  s.x(sl.x());
+	  s.w(sl.w());
       s.h(r.b()-s.y());
       sglyph=ALIGN_CENTER; // stops it from drawing divider line
     }
@@ -586,7 +593,7 @@ public:
 
     Symbol* box = drawstyle()->buttonbox();
 	
-	// TODO: MARK (override some color settings in case of flat theme)
+	// override some color settings in case of flat theme
     box->draw(rr);
 
     Rectangle r = rr; box->inset(r);
@@ -642,6 +649,11 @@ Slider::Slider(int x, int y, int w, int h, const char* l)
   tick_size_ = 4;
   slider_size_ = 12;
   //set_vertical();
+}
+
+FillSlider::FillSlider(int x, int y, int w, int h, const char* l) : Slider(x, y, w, h, l) 
+{
+    slider_size(0); 
 }
 
 //
