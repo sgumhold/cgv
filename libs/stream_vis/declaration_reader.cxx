@@ -13,11 +13,13 @@ namespace stream_vis {
 		std::map<std::string, uint16_t>* _name2index_ptr,
 		std::vector<stream_vis::streaming_time_series*>* _typed_time_series_ptr,
 		std::vector<stream_vis::offset_info>* _offset_infos_ptr,
+		std::vector<stream_vis::view_info>* _view_infos_ptr,
 		std::vector<plot_info>* _plot_pool_ptr)
 	{
 		name2index_ptr = _name2index_ptr;
 		typed_time_series_ptr = _typed_time_series_ptr;
 		offset_infos_ptr = _offset_infos_ptr;
+		view_infos_ptr = _view_infos_ptr;
 		plot_pool_ptr = _plot_pool_ptr;
 	}
 
@@ -440,7 +442,6 @@ namespace stream_vis {
 		}
 		offset_infos_ptr->push_back(oi);
 	}
-
 	void declaration_reader::construct_plot(const std::string& name, int dim)
 	{
 		plot_info pi;
@@ -485,6 +486,7 @@ namespace stream_vis {
 				parse_bool("multi_1_axis_mode", plot2d_ptr->multi_axis_modes[3]);
 			pi.plot_ptr->set_extent(ext.to_vec());
 			pi.plot_ptr->get_domain_config_ptr()->reference_size = 0.003f;
+			parse_float("reference_size", pi.plot_ptr->get_domain_config_ptr()->reference_size);
 		}
 		else {
 			pi.plot_ptr = new cgv::plot::plot3d(unsigned(nr_attributes));
@@ -623,5 +625,42 @@ namespace stream_vis {
 		}
 		else
 			delete pi.plot_ptr;
+	}
+	void declaration_reader::construct_view(const std::string& name, int dim, const std::vector<std::string>& plot_refs)
+	{
+		view_info vi;
+		vi.dim = dim;
+		vi.name = name;
+		vi.current_view.set_y_view_angle(50);
+		vi.current_view.set_y_extent_at_focus(4);
+		vi.default_view.set_y_view_angle(50);
+		vi.default_view.set_y_extent_at_focus(4);
+		std::string toggle;
+		if (get_value("toggle", toggle) && toggle.size() > 0) {
+			vi.toggle = toggle[0];
+		}
+		parse_vec2("stretch", vi.stretch);
+		parse_vec2("offset", vi.offset);
+		parse_dvec3("focus", vi.current_view.ref_focus());
+		parse_dvec3("view_dir", vi.current_view.ref_view_dir());
+		parse_dvec3("view_up_dir", vi.current_view.ref_view_up_dir());
+		parse_double("y_extent_at_focus", vi.current_view.ref_y_extent_at_focus());
+		parse_double("y_view_angle", vi.current_view.ref_y_view_angle());
+		parse_double("z_near", vi.current_view.ref_z_near());
+		parse_double("z_far", vi.current_view.ref_z_far());
+		parse_dvec3("default_focus", vi.default_view.ref_focus());
+		parse_dvec3("default_view_dir", vi.default_view.ref_view_dir());
+		parse_dvec3("default_view_up_dir", vi.default_view.ref_view_up_dir());
+		parse_double("default_y_extent_at_focus", vi.default_view.ref_y_extent_at_focus());
+		parse_double("default_y_view_angle", vi.default_view.ref_y_view_angle());
+		for (auto pr : plot_refs) {
+			for (auto& pi : *plot_pool_ptr) {
+				if (pi.name == pr) {
+					pi.view_index = (int)view_infos_ptr->size();
+					break;
+				}
+			}
+		}
+		view_infos_ptr->push_back(vi);
 	}
 }

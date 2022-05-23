@@ -47,6 +47,8 @@ namespace stream_vis {
 	/// per plot information
 	struct plot_info : public cgv::render::render_types
 	{
+		/// store index of view which defaults to 0, which is main view
+		int view_index = 0;
 		/// plot dimension
 		int dim;
 		/// total number of axes including attribute axes

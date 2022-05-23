@@ -27,6 +27,7 @@ uniform vec2 tex_scaling = vec2(1.0);
 
 uniform bool use_fill_color = true;
 uniform bool use_texture = false;
+uniform bool use_texture_alpha = true;
 uniform bool use_blending = false;
 uniform bool use_smooth_feather = false;
 uniform bool apply_gamma = true;
@@ -106,11 +107,14 @@ void finish_sdf_fragment2d(in float signed_distance, in vec4 color) {
 		frag_color.a = 1.0;	
 }
 
-// output a fragment originating from a sdf with the color as set in shape2d or the color from the texture if use_color is disabled
+// output a fragment originating from a sdf with the color as set in shape2d or the color from the texture if use_texture is enabled
 void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords) {
 	
-	if(use_texture)
-		color = texture(tex, tex_scaling * texcoords);
+	if(use_texture) {
+		vec4 tex_color = texture(tex, tex_scaling * texcoords);
+		if(use_texture_alpha) color = tex_color;
+		else color.rgb = tex_color.rgb;
+	}
 
 	finish_sdf_fragment2d(signed_distance, color);
 }
@@ -127,11 +131,14 @@ void finish_fragment2d(in vec4 color) {
 		frag_color.a = 1.0;
 }
 
-// output a fragment with the final color as set in shape2d or the color from the texture if use_color is disabled
+// output a fragment with the final color as set in shape2d or the color from the texture if use_texture is enabled
 void finish_fragment2d(in vec4 color, in vec2 texcoords) {
 	
-	if(use_texture)
-		color = texture(tex, tex_scaling * texcoords);
+	if(use_texture) {
+		vec4 tex_color = texture(tex, tex_scaling * texcoords);
+		if(use_texture_alpha) color = tex_color;
+		else color.rgb = tex_color.rgb;
+	}
 
 	finish_fragment2d(color);
 }

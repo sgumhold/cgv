@@ -125,7 +125,6 @@ void* fltk_tab_group::get_user_data() const
 /// put default sizes into dimension fields and set inner_group to be active
 void fltk_tab_group::prepare_new_element(cgv::gui::gui_group_ptr ggp, int& x, int& y, int& w, int& h)
 {
-	// TODO: MARK (does not update after children have been added)
 	bool tabs_bottom = fltk::theme_idx_ < 0;
 	int tab_height = 24;
 	x = 0;

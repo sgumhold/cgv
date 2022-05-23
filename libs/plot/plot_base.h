@@ -38,6 +38,10 @@ struct domain_config : public cgv::render::render_types
 	bool fill;
 	/// plot title
 	std::string title;
+	/// whether to show the plot title
+	bool show_title;
+	/// whether to show the sub plot names
+	bool show_sub_plot_names;
 	/// position of title
 	vecn title_pos;
 	/// color of the domain fill

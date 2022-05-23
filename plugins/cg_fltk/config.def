@@ -1,0 +1,6 @@
+// *********** GUI theme *******************
+// change the appearance of the graphical user interface
+// 
+// possible theme values: legacy, light, mid, dark, darkest
+// "light" is default
+type(fltk_viewer_window):theme=light

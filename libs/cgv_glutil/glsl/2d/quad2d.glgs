@@ -6,7 +6,6 @@ uniform float feather_origin = 0.5;
 float get_feather_width();
 vec2 get_adjusted_size();
 vec4 get_color();
-void override_color(in vec4 color);
 vec4 transform_world_to_window_space(vec2 p);
 //***** end interface of shape2d.glsl ***********************************
 

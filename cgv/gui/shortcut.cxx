@@ -1,4 +1,4 @@
-﻿#include "shortcut.h"
+#include "shortcut.h"
 #include "event.h"
 #include <cgv/utils/scan.h>
 
@@ -137,9 +137,8 @@ bool shortcut::stream_in(std::istream& is)
 			case '^' :
 			case '<' :
 			case '\\' :
-			case -76 : //'´'
-			case ' ':
-				key = c;
+			case 0xB4 : // forward tick
+			case ' ' :				key = c;
 				modifiers = _modifiers;
 				return true;
 			}

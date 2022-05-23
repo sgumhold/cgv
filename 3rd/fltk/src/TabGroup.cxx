@@ -173,7 +173,8 @@ int TabGroup::handle(int event) {
   case DRAG:
   case RELEASE:
     i = which(event_x(), event_y());
-	// TODO: MARK (MenuTabPager will explicitly return -2 if the extension button was pressed)
+	// MenuTabPager will explicitly return -2 if the extension button was pressed
+	// in that case we hand the event down to the pager
 	if(i == -2)
 		pager_->handle(event);
     if (event == RELEASE && !pushed()) {
@@ -483,7 +484,7 @@ void TabGroup::draw_tab(int x1, int x2, int W, int H, Widget* o, int what) {
 }
 
 void TabGroup::draw_tab_flat(int x1, int x2, int W, int H, Widget* o, int what) {
-	// TODO: MARK
+	// special method to draw tabs in flat themes
   if (x2 <= x1) return; // ignore ones shrunk to zero width
   bool drawlabel = true;
   if (x2 < x1+W) {

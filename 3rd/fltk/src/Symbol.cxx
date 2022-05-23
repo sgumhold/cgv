@@ -478,8 +478,6 @@ static void draw_arrow1(Color col)
 
 static void draw_arrow2(Color col)
 {
-	// TODO: MARK
-  //setcolor(fltk::lerp(WHITE, col, 0.67f));
   BP; vv(-0.4f,1.0f); vv(0.6f,0.0f); vv(-0.4f,-1.0f); EF(col);
 }
 

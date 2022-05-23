@@ -38,7 +38,7 @@ namespace cgv {
 			RBM_SEPARATE = 0, // border_width.xy = percentual_border_width*extent.xy
 			RBM_WIDTH,        // border_width.xy = vec2(percentual_border_width*extent.x)
 			RBM_HEIGHT,       // border_width.xy = vec2(percentual_border_width*extent.y)
-			RBM_MIN           // border_width.xy = vec2(percentual_border_width*min(extent.x.extent.y))
+			RBM_MIN           // border_width.xy = vec2(percentual_border_width*min(extent.x, extent.y))
 		};
 		/// allow to use RectangleTextureMode in self reflection
 		extern CGV_API cgv::reflect::enum_reflection_traits<RectangleTextureMode> get_reflection_traits(const RectangleTextureMode&);

@@ -340,39 +340,31 @@ void stereo_view_interactor::disable_viewport_splitting()
 	do_viewport_splitting = false;
 }
 
-/// inside the drawing process activate the sub-viewport with the given column and row indices, always terminate an activated viewport with deactivate_split_viewport
-void stereo_view_interactor::activate_split_viewport(cgv::render::context& ctx, unsigned col_index, unsigned row_index)
+stereo_view_interactor::ivec4 stereo_view_interactor::split_viewport(const ivec4 vp, int col_idx, int row_idx) const
 {
-	if (!do_viewport_splitting)
-		return;
-	//glGetIntegerv(GL_VIEWPORT, current_vp);
-	//glGetIntegerv(GL_SCISSOR_BOX, current_sb);
-	//int new_vp[4], new_sb[4];
-	const ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
 	ivec4 new_vp;
-	new_vp[2] = current_vp[2] / nr_viewport_columns;
-	new_vp[0] = current_vp[0] + col_index * new_vp[2];
-	new_vp[3] = current_vp[3] / nr_viewport_rows;
-	new_vp[1] = current_vp[1] + (nr_viewport_rows - row_index - 1) * new_vp[3];
+	new_vp[2] = vp[2] / nr_viewport_columns;
+	new_vp[0] = vp[0] + col_idx * new_vp[2];
+	new_vp[3] = vp[3] / nr_viewport_rows;
+	new_vp[1] = vp[1] + row_idx * new_vp[3];
 	if (viewport_shrinkage > 0) {
 		new_vp[0] += viewport_shrinkage;
 		new_vp[2] -= 2 * viewport_shrinkage;
 		new_vp[1] += viewport_shrinkage;
 		new_vp[3] -= 2 * viewport_shrinkage;
 	}
-	/*
-	new_sb[2] = current_sb[2] / nr_viewport_columns;
-	new_sb[0] = current_sb[0] + col_index * new_sb[2];
-	new_sb[3] = current_sb[3] / nr_viewport_rows;
-	new_sb[1] = current_sb[1] + (nr_viewport_rows - row_index - 1) * new_sb[3];
+	return new_vp;
+}
 
-	glViewport(new_vp[0], new_vp[1], new_vp[2], new_vp[3]);
-	glScissor(new_sb[0], new_sb[1], new_sb[2], new_sb[3]);
-	*/
-
+/// inside the drawing process activate the sub-viewport with the given column and row indices, always terminate an activated viewport with deactivate_split_viewport
+void stereo_view_interactor::activate_split_viewport(cgv::render::context& ctx, unsigned col_index, unsigned row_index)
+{
+	if (!do_viewport_splitting)
+		return;
+	const ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
+	ivec4 new_vp = split_viewport(current_vp, col_index, row_index);
 	ctx.push_window_transformation_array();
 	ctx.set_viewport(new_vp);
-
 	double aspect = (double)new_vp[2] / new_vp[3];
 	unsigned view_index = get_viewport_index(col_index, row_index);
 	ensure_viewport_view_number(view_index + 1);
@@ -391,13 +383,7 @@ void stereo_view_interactor::deactivate_split_viewport(cgv::render::context& ctx
 {
 	if (!do_viewport_splitting)
 		return;
-
 	ctx.pop_window_transformation_array();
-	/*
-	glViewport(current_vp[0], current_vp[1], current_vp[2], current_vp[3]);
-	glScissor(current_sb[0], current_sb[1], current_sb[2], current_sb[3]);
-	*/
-
 	const ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
 	double aspect = (double)current_vp[2] / current_vp[3];
 	gl_set_projection_matrix(ctx, current_e, aspect);
@@ -476,20 +462,19 @@ int stereo_view_interactor::get_modelview_projection_window_matrices(int x, int 
 			break;
 		}
 	}
-
 	int vp_col_idx = 0;
 	int vp_row_idx = 0;
 	if (last_do_viewport_splitting) {
 		vp_width /= last_nr_viewport_columns;
 		vp_height /= last_nr_viewport_rows;
-		vp_width  -= 2 * viewport_shrinkage;
-		vp_height -= 2 * viewport_shrinkage;
 		vp_col_idx = (x - off_x) / vp_width;
 		vp_row_idx = (y - off_y) / vp_height;
 		off_x += vp_col_idx * vp_width + viewport_shrinkage;
 		off_y += vp_row_idx * vp_height + viewport_shrinkage;
 		off_x_other += vp_col_idx * vp_width + viewport_shrinkage;
 		off_y_other += vp_row_idx * vp_height + viewport_shrinkage;
+		vp_width -= 2 * viewport_shrinkage;
+		vp_height -= 2 * viewport_shrinkage;
 		int vp_idx = vp_row_idx * last_nr_viewport_columns + vp_col_idx;
 		if (eye_panel == 1) {
 			if (vp_idx < (int)MPWs_right.size())
@@ -762,12 +747,14 @@ bool stereo_view_interactor::handle(event& e)
 		}
 	}
 	else if (e.get_kind() == EID_MOUSE) {
-		cgv::gui::mouse_event me = (cgv::gui::mouse_event&) e;
+		cgv::gui::mouse_event me = (cgv::gui::mouse_event&)e;
+		int x_gl = me.get_x();
+		int y_gl = get_context()->get_height() - 1 - me.get_y();
 		if (me.get_action() == cgv::gui::MA_LEAVE)
 			last_x = -1;
 		else {
-			last_x = me.get_x();
-			last_y = me.get_y();
+			last_x = x_gl;
+			last_y = y_gl;
 		}
 		int width = 640, height = 480;
 		int center_x = 320, center_y = 240;
@@ -775,8 +762,7 @@ bool stereo_view_interactor::handle(event& e)
 		cgv::render::view* view_ptr = this;
 		const dmat4* MPW_ptr = 0;
 		if (get_context()) {
-			int eye = get_modelview_projection_window_matrices(
-				me.get_x(), me.get_y(),
+			int eye = get_modelview_projection_window_matrices(x_gl, y_gl,
 				get_context()->get_width(), get_context()->get_height(),
 				&MPW_ptr, 0, 0, 0, &vp_col_idx, &vp_row_idx, &width, &height, &center_x, &center_y);
 			unsigned view_index = get_viewport_index(vp_col_idx, vp_row_idx);
@@ -806,13 +792,13 @@ bool stereo_view_interactor::handle(event& e)
 					if (get_context()) {
 						cgv::render::context& ctx = *get_context();
 						dvec3 p;
-						double z = get_z_and_unproject(ctx, me.get_x(), me.get_y(), p);
+						double z = get_z_and_unproject(ctx, x_gl, y_gl, p);
 						if (z > 0 && z < 1) {
 							if (y_view_angle > 0.1) {
 								dvec3 e = view_ptr->get_eye();
 								double l_old = (e - view_ptr->get_focus()).length();
 								double l_new = dot(p - e, view_ptr->get_view_dir());
-
+								//std::cout << "e=(" << e << "), p=(" << p << "), vd=(" << view_ptr->get_view_dir() << ") l_old=" << l_old << ", l_new=" << l_new << std::endl;
 								cgv::gui::animate_with_geometric_blend(view_ptr->ref_y_extent_at_focus(), view_ptr->get_y_extent_at_focus() * l_new / l_old, 0.5)->set_base_ptr(this);
 							}
 							cgv::gui::animate_with_linear_blend(view_ptr->ref_focus(), p, 0.5)->configure(cgv::gui::APM_SIN_SQUARED, this);
@@ -835,7 +821,7 @@ bool stereo_view_interactor::handle(event& e)
 				if (get_context()) {
 					cgv::render::context& ctx = *get_context();
 					vec3 p;
-					double z_dev = get_z_and_unproject(ctx, me.get_x(), me.get_y(), p);
+					double z_dev = get_z_and_unproject(ctx, x_gl, y_gl, p);
 					double z_eyea = dot(view_dir, p - get_eye());
 					double z_eyeb = z_dev*(z_far_derived - z_near_derived) + z_near_derived;
 					double z0_eye = get_parallax_zero_depth();
@@ -923,7 +909,7 @@ bool stereo_view_interactor::handle(event& e)
 				if (get_context()) {
 					cgv::render::context& ctx = *get_context();
 					dvec3 p;
-					double z = get_z_and_unproject(ctx, me.get_x(), me.get_y(), p);
+					double z = get_z_and_unproject(ctx, x_gl, y_gl, p);
 					if (z > 0 && z < 1) {
 						view_ptr->set_focus(p + scale * (view_ptr->get_focus() - p));
 						update_vec_member(view::focus);
@@ -1393,7 +1379,6 @@ void stereo_view_interactor::draw_focus()
 /// return a path in the main menu to select the gui
 std::string stereo_view_interactor::get_menu_path() const
 {
-	// TODO: MARK
 	return "View/Stereo Interactor";
 }
 
@@ -1491,7 +1476,6 @@ void stereo_view_interactor::dir_gui_cb(dvec3& dir, int i)
 /// you must overload this for gui creation
 void stereo_view_interactor::create_gui()
 {
-	// TODO: MARK
 	if (begin_tree_node("View Configuration", zoom_sensitivity, false)) {
 		align("\a");
 		add_member_control(this, "Use Gamepad", use_gamepad, "toggle");

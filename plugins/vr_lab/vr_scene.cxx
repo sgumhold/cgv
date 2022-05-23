@@ -275,9 +275,12 @@ void vr_scene::on_set(void* member_ptr)
 	update_member(member_ptr);
 	post_redraw();
 }
+void vr_scene::resize(unsigned int w, unsigned int h)
+{
+	context_height = h;
+}
 bool vr_scene::init(cgv::render::context& ctx)
 {
-
 //	for (size_t li = 0; li < ctx.get_nr_default_light_sources(); ++li) {
 //		cgv::media::illum::light_source ls = ctx.get_default_light_source(li);
 //		ls.set_local_to_eye(false);
@@ -322,7 +325,8 @@ bool vr_scene::init(cgv::render::context& ctx)
 }
 void vr_scene::init_frame(cgv::render::context& ctx)
 {
-	set_coordinate_systems(vr_view_ptr ? vr_view_ptr->get_current_vr_state() : 0, table.empty() ? 0 : &mat34(4, 4, table->get_transform()));
+	mat34 table_pose(4, 4, table->get_transform());
+	set_coordinate_systems(vr_view_ptr ? vr_view_ptr->get_current_vr_state() : 0, table.empty() ? 0 : &table_pose);
 	label_drawable::init_frame(ctx);
 	if (environment_mode == EM_SKYBOX) {
 		static std::string last_file_names;

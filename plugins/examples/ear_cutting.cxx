@@ -549,12 +549,13 @@ public:
 		}
 		else if (e.get_kind() == EID_MOUSE) {
 			mouse_event& me = static_cast<mouse_event&>(e);
+			int y_gl = get_context()->get_height() - 1 - me.get_y();
 			switch (me.get_action()) {
 			case MA_MOVE :
 				if (view_ptr) {
 					float epsilon = (float)(prs.point_size * view_ptr->get_y_extent_at_focus() / get_context()->get_height());
 					dvec3 p_d;
-					if (get_world_location(me.get_x(), me.get_y(), *view_ptr, p_d)) {
+					if (get_world_location(me.get_x(), y_gl, *view_ptr, p_d)) {
 						vec2 p((float)p_d.x(),(float)p_d.y());
 						int min_index = -1;
 						float min_dist = 0;
@@ -625,7 +626,7 @@ public:
 				if (me.get_button_state() == MB_LEFT_BUTTON) {
 					if (selected_index != -1) {
 						dvec3 p_d;
-						if (get_world_location(me.get_x(), me.get_y(), *view_ptr, p_d)) {
+						if (get_world_location(me.get_x(), y_gl, *view_ptr, p_d)) {
 							vec2 new_pos((float)p_d.x(), (float)p_d.y());
 							vec2 diff = new_pos - last_pos;
 							polygon[selected_index] += diff;
@@ -640,13 +641,13 @@ public:
 				if (me.get_button() == MB_LEFT_BUTTON) {
 					if (selected_index != -1) {
 						dvec3 p_d;
-						if (get_world_location(me.get_x(), me.get_y(), *view_ptr, p_d)) {
+						if (get_world_location(me.get_x(), y_gl, *view_ptr, p_d)) {
 							last_pos = dvec2(p_d.x(), p_d.y());
 						}
 					}
 					else if (edge_index != -1) {
 						dvec3 p_d;
-						if (get_world_location(me.get_x(), me.get_y(), *view_ptr, p_d)) {
+						if (get_world_location(me.get_x(), y_gl, *view_ptr, p_d)) {
 							p_edge = last_pos = dvec2(p_d.x(), p_d.y());
 						}
 						else 

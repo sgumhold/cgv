@@ -77,13 +77,6 @@ public:
 
 	void set_resolution(cgv::render::context& ctx, const ivec2& resolution) {
 		this->resolution = resolution;
-
-		/*for(auto it = shaders.begin(); it != shaders.end(); ++it) {
-			auto& prog = it->second.prog;
-			prog.enable(ctx);
-			prog.set_uniform(ctx, "resolution", resolution);
-			prog.disable(ctx);
-		}*/
 	}
 
 	void set_feather_scale(float s) {

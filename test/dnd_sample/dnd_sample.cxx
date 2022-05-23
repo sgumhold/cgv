@@ -514,7 +514,7 @@ public:
 				case cgv::gui::MA_ENTER: // store drag and drop text on dnd enter event (it is not available in drag events)
 					dnd_text = me.get_dnd_text();
 				case cgv::gui::MA_DRAG: // during dragging check for drop side and update dnd_mode
-					dnd_pos = ivec2(me.get_x(), me.get_y());
+					dnd_pos = ivec2(me.get_x(), get_context()->get_height()-1-me.get_y());
 					post_redraw(); // ensure to redraw in case dnd_mode changes
 					return true;
 				case cgv::gui::MA_LEAVE: // when mouse leaves window, we cancel drag and drop 
@@ -522,7 +522,7 @@ public:
 					post_redraw(); // ensure to redraw to reflect change in dnd_mode 
 					return true;
 				case cgv::gui::MA_RELEASE: // release corresponds to drop
-					dnd_pos = ivec2(me.get_x(), me.get_y());
+					dnd_pos = ivec2(me.get_x(), get_context()->get_height() - 1 - me.get_y());
 					{
 						std::vector<cgv::utils::line> lines;
 						cgv::utils::split_to_lines(dnd_text, lines, true);
@@ -581,7 +581,7 @@ public:
 	{
 		check_futures();
 		ctx.push_pixel_coords();
-		ivec2 pos(10, 24);
+		ivec2 pos(10, ctx.get_height()-1-24);
 		for (size_t i = 0; i < file_names.size(); ++i) {
 			rgb col(1, 1, 1);
 			if (i == cursor_position)
@@ -591,7 +591,7 @@ public:
 			ctx.set_color(col);
 			ctx.set_cursor(pos[0], pos[1]);
 			ctx.output_stream() << file_names[i] << " " << durations[i] << std::endl;
-			pos[1] += 20;
+			pos[1] -= 20;
 		}
 		if (!dnd_text.empty()) {
 			rgb col(1, 0.5f, 0.5f);
@@ -606,21 +606,21 @@ public:
 			ivec2 draw_pos = dnd_pos;
 			if (ll_pos[0] > (int)ctx.get_width())
 				draw_pos[0] -= ll_pos[0] - ctx.get_width();
-			if (ll_pos[1] - s > (int)ctx.get_height())
-				draw_pos[1] -= int(ll_pos[1] - s - ctx.get_height());
-			int ipos = int((ll_pos[1] -  24) / 20);
+			if (ll_pos[1] > (int)ctx.get_height())
+				draw_pos[1] -= ll_pos[1] - ctx.get_height();
+			int ipos = int((ctx.get_height() - 5 - ll_pos[1]) / 20);
 			if (ipos < 0)
 				ipos = 0;
 			if (ipos > file_names.size())
 				ipos = int(file_names.size());
 			insert_position = ipos;
 			ctx.set_color(col);
-			ctx.set_cursor(vecn(float(draw_pos[0]), float(draw_pos[1])), "", cgv::render::TA_TOP_LEFT);
+			ctx.set_cursor(vecn(float(draw_pos[0]), float(draw_pos[1])), "", cgv::render::TA_BOTTOM_LEFT);
 			ctx.output_stream() << dnd_text << std::endl;
 		}
 		std::vector<vec3> P;
-		P.push_back(vec3(0.0f, 20.0f * insert_position + 10.0f, 0));
-		P.push_back(vec3(100.0f, 20.0f * insert_position + 10.0f, 0));
+		P.push_back(vec3(0.0f, ctx.get_height() - 1 - 12 - 20.0f * insert_position, 0));
+		P.push_back(vec3(100.0f, P.back()[1], 0));
 		auto& prog = ctx.ref_default_shader_program();
 		cgv::render::attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
 		cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);

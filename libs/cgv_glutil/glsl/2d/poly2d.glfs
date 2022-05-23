@@ -15,9 +15,10 @@ void finish_fragment2d(in vec4 color, in vec2 texcoords);
 //***** end interface of fragment2d.glfs ***********************************
 
 in vec4 col;
+in vec2 uv;
 
 void main() {
 
 	vec4 color = get_active_color(col);
-	finish_fragment2d(color);
+	finish_fragment2d(color, uv);
 }

@@ -6,9 +6,8 @@ addProjectDeps=[
 	"cgv_type", "cgv_utils", "cgv_base", "cgv_data", "cgv_signal", "cgv_reflect", "cgv_reflect_types", 
 	"cgv_render", "cgv_gui", "cg_ext", "glsu", "cgv_gl", "crg_stereo_view_lib", "vr", "cg_vr"];
 addProjectDirs=[
-	CGV_DIR."/libs/glsu", 
-	CGV_DIR."/libs/cgv_gl", 
-	CGV_DIR."/plugins/crg_stereo_view"
+	CGV_DIR."/libs", 
+	CGV_DIR."/plugins"
 ];
 addIncDirs=[
 	CGV_DIR."/libs", 

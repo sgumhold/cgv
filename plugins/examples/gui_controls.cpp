@@ -43,7 +43,7 @@ public:
 	}
 	/// overload to return the type name of this object
 	std::string get_type_name() const {
-		return "gui_controlsss";
+		return "gui_controls";
 	}
 	void on_set(void* member_ptr) {
 		if(member_ptr == &inactive || member_ptr == &colored)
@@ -93,8 +93,12 @@ public:
 		if(begin_tree_node("Tree Node", tree_node, true, opt)) {
 			align("\a");
 			add_button("Button", opt);
-			add_member_control(this, "Slider", tree_node.slider_value, "value_slider", "min=0.0;max=1.0;step=0.01;" + opt);
-			add_member_control(this, "Slider Ticks", tree_node.slider_value, "value_slider", "min=0.0;max=1.0;step=0.01;ticks=true" + opt);
+			add_member_control(this, "Value Slider", tree_node.slider_value, "value_slider", "min=0.0;max=1.0;step=0.01;" + opt);
+			add_member_control(this, "Value Slider (Ticks)", tree_node.slider_value, "value_slider", "min=0.0;max=1.0;step=0.01;ticks=true" + opt);
+			add_member_control(this, "Fill Slider", tree_node.slider_value, "fill_slider", "min=0.0;max=1.0;step=0.01;ticks=true" + opt);
+			add_member_control(this, "Vertical Slider", tree_node.slider_value, "vslider", "h=100;min=0.0;max=1.0;step=0.01;ticks=true" + opt);
+			add_member_control(this, "Vertical Value Slider", tree_node.slider_value, "vvalue_slider", "h=100;min=0.0;max=1.0;step=0.01;ticks=true" + opt);
+			add_member_control(this, "Vertical Fill Slider", tree_node.slider_value, "vfill_slider", "h=100;min=0.0;max=1.0;step=0.01;ticks=true" + opt);
 			align("\b");
 			end_tree_node(tree_node);
 		}

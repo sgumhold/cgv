@@ -19,22 +19,22 @@ class CGV_API application_plugin :
 	public cgv::gui::event_handler	// derive from event handler to be able to directly react to user interaction
 {
 protected:
-	std::vector<overlay*> overlays;
-	overlay* last_blocking_overlay_ptr;
-	overlay* blocking_overlay_ptr;
+	std::vector<overlay_ptr> overlays;
+	overlay_ptr last_blocking_overlay_ptr;
+	overlay_ptr blocking_overlay_ptr;
 
 public:
 	// TODO: unregister and destruct overlays when application plugin gets destroyed
 	application_plugin(const std::string& name);
 
 	template<class T>
-	T* register_overlay(const std::string& name) {
+	cgv::data::ref_ptr<T> register_overlay(const std::string& name) {
 		static_assert(std::is_base_of<overlay, T>::value, "T must inherit from overlay");
-		T* ptr = new T();
+		cgv::data::ref_ptr<T> ptr(new T());
 		ptr->set_name(name);
-		ptr->set_parent_handler(this);
+		//ptr->set_parent_handler(this);
 		//cgv::base::register_object(base_ptr(ptr));
-		cgv::base::group::append_child(base_ptr(ptr));
+		cgv::base::group::append_child(ptr);
 		overlays.push_back(ptr);
 		return ptr;
 	}

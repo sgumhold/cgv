@@ -357,7 +357,7 @@ void Menu::draw_in(Widget* widget, const int* indexes, int level,
       else if (this->children(array,level+1)>=0) {
 	// Use the item's fontsize for the size of the arrow, rather than h:
 	int nh = int(item->textsize());
-	// TODO: MARK (can be used to draw the arrow in another color if the entry is hovered)
+	// can be used to draw the arrow in another color if the entry is hovered
 	//if(flags & (SELECTED | HIGHLIGHT))
 	//	setcolor(RED);
 	draw_glyph(ALIGN_RIGHT, Rectangle(ir.r()-nh, ir.y()+((ir.h()-nh)>>1), nh, nh));
@@ -1010,7 +1010,7 @@ Widget* Menu::try_popup(const Rectangle& r, const char* title, bool menubar)
       int my = r.y();
       if (p.hmenubar) {my += r.h(); r.move_y(1); r.move_b(-1);}
       else mx += r.w();
-	  // TODO: MARK
+	  // open a popup menu when the tab menu button is clicked
       mw = new MWindow(&p, 1, Rectangle(mx, my - 1, 0, 0), 0, 0);
       *(Rectangle*)(mw->title) = r;
       mw->title->show(p.menus[0]->child_of());

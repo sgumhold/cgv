@@ -17,6 +17,7 @@ uniform vec2 tex_scaling = vec2(1.0);
 
 uniform bool use_fill_color = true;
 uniform bool use_texture = false;
+uniform bool use_texture_alpha = true;
 uniform bool use_blending = false;
 uniform bool use_smooth_feather = false;
 uniform bool apply_gamma = true;
@@ -46,6 +47,7 @@ uniform vec2 tex_scaling = vec2(1.0);
 // render options
 uniform bool use_fill_color = true;
 uniform bool use_texture = false;
+uniform bool use_texture_alpha = true;
 uniform bool use_blending = false;
 uniform bool use_smooth_feather = false;
 uniform bool apply_gamma = true;

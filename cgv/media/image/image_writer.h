@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv/base/base.h>
+#include <cgv/base/register.h>
 #include <cgv/data/data_view.h>
 
 #include "lib_begin.h"
@@ -14,7 +15,7 @@ namespace cgv {
 class CGV_API image_writer;
 
 /// abstract interface for image readers
-class CGV_API abst_image_writer : public cgv::base::base
+class CGV_API abst_image_writer : public cgv::base::base, public cgv::base::driver
 {
 public:
 	friend class image_writer;

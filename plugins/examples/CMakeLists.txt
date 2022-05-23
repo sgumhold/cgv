@@ -22,7 +22,8 @@ target_link_libraries(examples
         cgv_proc
         cgv_gl
         cgv_os
-        cgv_signal)
+        cgv_signal
+        cgv_glutil)
 
 add_dependencies(examples
         cgv_viewer
@@ -47,7 +48,7 @@ if (WIN32)
 endif ()
 
 set_plugin_execution_params(examples "plugin:cg_fltk \
-\"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl'\" \
+\"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl;${CGV_DIR}/libs/cgv_glutil/glsl'\" \
 plugin:cg_ext \
 plugin:cg_icons \
 plugin:crg_stereo_view \
@@ -85,6 +86,7 @@ if (MSVC)
             cgv_proc_static
             cg_fltk_static
             crg_stereo_view_static
+            cgv_glutil_static
 
             #        cg_ext_static
             #        cg_icons_static

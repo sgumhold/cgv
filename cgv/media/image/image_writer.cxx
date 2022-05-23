@@ -11,7 +11,7 @@ namespace cgv {
 		namespace image {
 
 /// interfaces that allows to listen to registration events
-struct writer_listener : public cgv::base::base, public cgv::base::registration_listener
+struct writer_listener : public cgv::base::base, public cgv::base::server, public cgv::base::registration_listener
 {
 	static std::vector<base_ptr>& ref_writers()
 	{
