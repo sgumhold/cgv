@@ -21,19 +21,19 @@ class CGV_API overlay :
 {
 public:
 	enum AlignmentOption {
-		AO_FREE,	// alignment solely controlled by margin
-		AO_START,	// left for horizontal, bottom for vertical direction
-		AO_CENTER,	// center of the viewport for both directions
-		AO_PERCENTUAL, // use percentual offset
-		AO_END,		// right for horizontal, top for vertical direction
+		AO_FREE,		// alignment solely controlled by margin
+		AO_START,		// left for horizontal, bottom for vertical direction
+		AO_CENTER,		// center of the viewport for both directions
+		AO_END,			// right for horizontal, top for vertical direction
+		AO_PERCENTUAL,	// use percentual offset
 	};
 
 	enum StretchOption {
 		SO_NONE,		// size is unchanged
 		SO_HORIZONTAL,	// width is stretched to cover viewport
 		SO_VERTICAL,	// height is stretched to cover viewport
+		SO_BOTH,		// width and height are stretched to cover viewport
 		SO_PERCENTUAL,  // use percentual size
-		SO_BOTH			// width and height are stretched to cover viewport
 	};
 
 protected:

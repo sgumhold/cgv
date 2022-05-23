@@ -155,12 +155,12 @@ void color_map_legend::draw(cgv::render::context& ctx) {
 	if(!show)
 		return;
 
-	if(has_damage)
-		draw_content(ctx);
-
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+	if(has_damage)
+		draw_content(ctx);
 
 	// draw frame buffer texture to screen
 	auto& blit_prog = overlay_canvas.enable_shader(ctx, "rectangle");
@@ -175,10 +175,6 @@ void color_map_legend::draw(cgv::render::context& ctx) {
 }
 
 void color_map_legend::draw_content(cgv::render::context& ctx) {
-
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	fbc.enable(ctx);
 
@@ -251,9 +247,6 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 	_canvas.pop_modelview_matrix(ctx);
 
 	fbc.disable(ctx);
-
-	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
 
 	has_damage = false;
 }
