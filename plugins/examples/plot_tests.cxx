@@ -104,6 +104,7 @@ protected:
 	// whether to use offscreen rendering
 	bool render_offscreen;
 
+ public:
 	test_plot2d() : cgv::base::node("2D Plot Test"), tex("[R,G,B,A]"), depth("[D]"), plot("trigonometry", 2)
 	{
 		// compute vector of vec3 with x coordinates and function values of cos and sin
@@ -179,15 +180,8 @@ protected:
 		plot.init_frame(ctx);
 		if (!fbo.is_created() || !render_offscreen)
 			return;
-		
+
 		auto ex = plot.get_extent();
-<<<<<<< .mine
-		plot.set_extent(vecn(1.8f, 1.8f));
-		// if fbo is created, perform offline rendering with world space in the range [-1,1]? and white background
-=======
-
-
->>>>>>> .theirs
 		fbo.enable(ctx);
 		fbo.push_viewport(ctx);
 		glClearColor(1, 1, 1, 1);
