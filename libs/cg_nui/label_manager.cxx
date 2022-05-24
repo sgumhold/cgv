@@ -136,9 +136,9 @@ namespace cgv {
 				dx = -3.0f;
 			return vec4(
 				(float)(R.get_min_pnt()(0) + safety_extension) / tex_width + dx,
-				(float)(tex_height - (R.get_max_pnt()(1) - safety_extension)) / tex_height,
+				(float)(R.get_min_pnt()(1) + safety_extension) / tex_height,
 				(float)(R.get_max_pnt()(0) - safety_extension) / tex_width,
-				(float)(tex_height - (R.get_min_pnt()(1) + safety_extension)) / tex_height
+				(float)(R.get_max_pnt()(1) - safety_extension) / tex_height
 			);
 		}
 		void label_manager::update_label_text(uint32_t i, const std::string& new_text)
@@ -238,10 +238,10 @@ namespace cgv {
 				}
 				ctx.set_cursor(
 					tr.get_min_pnt()(0) + safety_extension + labels[i].border_x,
-					tr.get_min_pnt()(1) + safety_extension + labels[i].border_y + (int)(0.75f * font_size));
+					tr.get_max_pnt()(1) - safety_extension - labels[i].border_y - (int)(0.75f * font_size));
 				glScissor(
 					tr.get_min_pnt()(0),
-					height - tr.get_max_pnt()(1) - 1,
+					tr.get_min_pnt()(1),
 					tr.get_extent()(0),
 					tr.get_extent()(1)
 				);
