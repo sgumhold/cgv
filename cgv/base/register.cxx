@@ -436,16 +436,24 @@ void enable_registration()
 	// next register all listeners
 	for (i = i0; i < ref_registration_events().size(); ++i) {
 		base_ptr object = ref_registration_events()[i].first;
-		if (object->get_interface<registration_listener>() == 0)
+		auto* listener = object->get_interface<registration_listener>();
+		if (listener == 0)
 			continue;
 		if (object->get_interface<server>() == 0 && object->get_interface<driver>() == 0) {
 			register_object_internal(object, ref_registration_events()[i].second);
 			ref_listeners().push_back(object);
 		}
-		// send all buffered events
-		for (unsigned j = 0; j < i0; ++j)
-			object->get_interface<registration_listener>()->register_object(ref_registration_events()[j].first,
-																			ref_registration_events()[j].second);
+		// send all buffered events 
+		unsigned j;
+		for (j = 0; j < i0; ++j)
+			listener->register_object(ref_registration_events()[j].first, ref_registration_events()[j].second);
+		// send all previous listener registration
+		for (j = i0; j < i; ++j) {
+			base_ptr prev_object = ref_registration_events()[j].first;
+			if (prev_object->get_interface<registration_listener>() == 0)
+				continue;
+			listener->register_object(ref_registration_events()[j].first, ref_registration_events()[j].second);
+		}
 	}
 
 	// next register all remaining objects
