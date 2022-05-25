@@ -17,11 +17,14 @@ public:
 	// be inherited again according to C++ spec
 	typedef render_types::vec3 vec3;
 
+	// Base class we're going to use virtual functions from
+	typedef render_data_base<ColorType> super;
+
 protected:
 	std::vector<float> rad;
 
 	bool transfer(context& ctx, cone_renderer& r) {
-		if(render_data_base<>::transfer(ctx, r)) {
+		if(super::transfer(ctx, r)) {
 			if(rad.size() == size())
 				r.set_radius_array(ctx, rad);
 			return true;
@@ -31,7 +34,7 @@ protected:
 
 public:
 	void clear() {
-		render_data_base<>::clear();
+		super::clear();
 		rad.clear();
 	}
 

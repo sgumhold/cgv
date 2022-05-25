@@ -18,12 +18,15 @@ public:
 	typedef render_types::vec3 vec3;
 	typedef render_types::quat quat;
 
+	// Base class we're going to use virtual functions from
+	typedef render_data_base<ColorType> super;
+
 protected:
 	std::vector<vec3> ext;
 	std::vector<quat> rot;
 
 	bool transfer(context& ctx, box_renderer& r) {
-		if(render_data_base<>::transfer(ctx, r)) {
+		if(super::transfer(ctx, r)) {
 			r.set_position_array(ctx, this->pos);
 			if(ext.size() == this->size())
 				r.set_extent_array(ctx, ext);
@@ -36,7 +39,7 @@ protected:
 
 public:
 	void clear() {
-		render_data_base<>::clear();
+		super::clear();
 		ext.clear();
 		rot.clear();
 	}

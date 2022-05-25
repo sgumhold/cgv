@@ -15,7 +15,7 @@ void early_transfer(context& ctx, RENDERER& r) { \
 } \
 
 #define RDB_ENABLE_FUNC_DEF(RENDERER, STYLE) \
-bool enable(context& ctx, RENDERER& r, STYLE& s) { \
+bool enable(context& ctx, RENDERER& r, const STYLE& s) { \
 	if(size() > 0) { \
 		r.set_render_style(s); \
 		r.enable_attribute_array_manager(ctx, aam); \
@@ -26,7 +26,7 @@ bool enable(context& ctx, RENDERER& r, STYLE& s) { \
 } \
 
 #define RDB_RENDER_FUNC_DEF(RENDERER, STYLE) \
-void render(context& ctx, RENDERER& r, STYLE& s, unsigned offset = 0, int count = -1) { \
+void render(context& ctx, RENDERER& r, const STYLE& s, unsigned offset = 0, int count = -1) { \
 	if(enable(ctx, r, s)) { \
 		draw(ctx, r, offset, count); \
 		disable(ctx, r); \
