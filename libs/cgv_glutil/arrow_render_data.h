@@ -41,21 +41,7 @@ public:
 
 	std::vector<vec3>& ref_dir() { return dir; }
 
-	void early_transfer(context& ctx, arrow_renderer& r) {
-		r.enable_attribute_array_manager(ctx, this->aam);
-		if(this->out_of_date) transfer(ctx, r);
-		r.disable_attribute_array_manager(ctx, this->aam);
-	}
-
-	void render(context& ctx, arrow_renderer& r, arrow_render_style& s, unsigned offset = 0, int count = -1) {
-		if(this->size() > 0) {
-			r.set_render_style(s);
-			r.enable_attribute_array_manager(ctx, this->aam);
-			if(this->out_of_date) transfer(ctx, r);
-			r.render(ctx, offset, count < 0 ? this->render_count() : count);
-			r.disable_attribute_array_manager(ctx, this->aam);
-		}
-	}
+	RDB_BASE_FUNC_DEF(arrow_renderer, arrow_render_style);
 
 	void add(const vec3& p, const vec3& d) {
 		this->pos.push_back(p);
