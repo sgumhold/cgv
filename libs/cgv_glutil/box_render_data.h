@@ -44,21 +44,7 @@ public:
 	std::vector<vec3>& ref_ext() { return ext; }
 	std::vector<quat>& ref_rot() { return rot; }
 
-	void early_transfer(context& ctx, box_renderer& r) {
-		r.enable_attribute_array_manager(ctx, this->aam);
-		if(this->out_of_date) transfer(ctx, r);
-		r.disable_attribute_array_manager(ctx, this->aam);
-	}
-
-	void render(context& ctx, box_renderer& r, box_render_style& s, unsigned offset = 0, int count = -1) {
-		if(this->size() > 0) {
-			r.set_render_style(s);
-			r.enable_attribute_array_manager(ctx, this->aam);
-			if(this->out_of_date) transfer(ctx, r);
-			r.render(ctx, offset, count < 0 ? this->render_count() : count);
-			r.disable_attribute_array_manager(ctx, this->aam);
-		}
-	}
+	RDB_BASE_FUNC_DEF(box_renderer, box_render_style);
 
 	void add(const vec3& p) {
 		this->pos.push_back(p);

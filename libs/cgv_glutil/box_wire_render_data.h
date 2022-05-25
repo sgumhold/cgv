@@ -12,6 +12,7 @@ namespace glutil {
 
 template <typename ColorType = render_types::rgb>
 class box_wire_render_data : public render_data_base<ColorType> {
+public:
 	// Repeat automatically inherited typedefs from parent class, as they can't
 	// be inherited again according to C++ spec
 	typedef render_types::vec3 vec3;
@@ -43,21 +44,7 @@ public:
 	std::vector<vec3>& ref_ext() { return ext; }
 	std::vector<quat>& ref_rot() { return rot; }
 
-	void early_transfer(context& ctx, box_wire_renderer& r) {
-		r.enable_attribute_array_manager(ctx, this->aam);
-		if(this->out_of_date) transfer(ctx, r);
-		r.disable_attribute_array_manager(ctx, this->aam);
-	}
-
-	void render(context& ctx, box_wire_renderer& r, const box_wire_render_style& s, unsigned offset = 0, int count = -1) {
-		if(this->size() > 0) {
-			r.set_render_style(s);
-			r.enable_attribute_array_manager(ctx, this->aam);
-			if(this->out_of_date) transfer(ctx, r);
-			r.render(ctx, offset, count < 0 ? this->render_count() : count);
-			r.disable_attribute_array_manager(ctx, this->aam);
-		}
-	}
+	RDB_BASE_FUNC_DEF(box_wire_renderer, box_wire_render_style);
 
 	void add(const vec3& p) {
 		this->pos.push_back(p);
