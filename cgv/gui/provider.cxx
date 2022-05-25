@@ -134,16 +134,26 @@ gui_group_ptr provider::add_object_gui(base_ptr object, const std::string& label
 }
 
 // inline the gui of another object that must be derived from provider.
+void provider::integrate_object_gui(base_ptr object)
+{
+	provider* p = object->get_interface<provider>();
+	if (!p)
+		return;
+	p->set_parent(parent_group);
+	p->parent_provider = this;
+}
+
+// inline the gui of another object that must be derived from provider.
 void provider::inline_object_gui(base_ptr object)
 {
 	provider* p = object->get_interface<provider>();
 	if (!p)
 		return;
-	//gui_group_ptr pg = p->get_parent_group();
-	p->set_parent(parent_group);
-	p->parent_provider = this;
+	if (p->get_parent_group() != parent_group) {
+		p->set_parent(parent_group);
+		p->parent_provider = this;
+	}
 	p->create_gui();
-	//p->set_parent(pg);
 }
 
 /// add a newly created subgroup to the group
