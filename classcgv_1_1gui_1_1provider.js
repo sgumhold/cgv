@@ -31,6 +31,7 @@ var classcgv_1_1gui_1_1provider =
     [ "get_parent_type", "classcgv_1_1gui_1_1provider.html#a9f68d3402bf77c9705f1fd010a4f6390", null ],
     [ "get_shortcut", "classcgv_1_1gui_1_1provider.html#ad662c36ff5c1e73c79a938c4adbab952", null ],
     [ "inline_object_gui", "classcgv_1_1gui_1_1provider.html#a6d293603edad6ffd9a84303f67d6060a", null ],
+    [ "integrate_object_gui", "classcgv_1_1gui_1_1provider.html#a3302fad2cb441f3c26c2979c2c064b51", null ],
     [ "is_tree_node_visible", "classcgv_1_1gui_1_1provider.html#aadb085cf7522a281e61dd30041654c8c", null ],
     [ "on_deselect", "classcgv_1_1gui_1_1provider.html#ac6d49da0a9a5f434b920c33d42139621", null ],
     [ "on_select", "classcgv_1_1gui_1_1provider.html#ac21e975a89b32dcbbe9bdb39b4f452ca", null ],
