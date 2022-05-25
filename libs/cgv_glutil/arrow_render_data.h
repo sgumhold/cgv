@@ -17,12 +17,15 @@ public:
 	// be inherited again according to C++ spec
 	typedef render_types::vec3 vec3;
 
+	// Base class we're going to use virtual functions from
+	typedef render_data_base<ColorType> super;
+
 protected:
 	bool direction_is_endpoint = false;
 	std::vector<vec3> dir;
 	
 	bool transfer(context& ctx, arrow_renderer& r) {
-		if(render_data_base<>::transfer(ctx, r)) {
+		if(super::transfer(ctx, r)) {
 			if(dir.size() == this->size())
 				if(direction_is_endpoint)
 					r.set_end_point_array(ctx, dir);
@@ -35,7 +38,7 @@ protected:
 
 public:
 	void clear() {
-		render_data_base<>::clear();
+		super::clear();
 		dir.clear();
 	}
 
