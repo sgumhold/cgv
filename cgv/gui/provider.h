@@ -96,8 +96,10 @@ public:
 	/// concatenate names in string to enum declaration and optionally prepend or append given additional names 
 	std::string concat_enum_def(const std::vector<std::string>& names, const std::string& additional_first_name = "", const std::string& additional_last_name = "");
 
-	gui_group_ptr add_object_gui(base_ptr object, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);
-	/// inline the gui of another object that must be derived from provider.
+	gui_group_ptr add_object_gui(base_ptr object, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);	
+	/// call this in create_gui() function to integrate gui of another provider object by setting the parent group and parent provider of the other object
+	void integrate_object_gui(base_ptr object);
+	/// integrate (if not explicitly done before) and inline the gui of another object that must be derived from provider
 	void inline_object_gui(base_ptr object);
 	/// add a newly created subgroup to the group
 	gui_group_ptr add_group(const std::string& label, const std::string& group_type, const std::string& options = "", const std::string& align = "\n");
