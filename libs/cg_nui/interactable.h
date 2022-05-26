@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_set>
 #include <cgv/base/group.h>
 #include <cgv/render/drawable.h>
 #include <cg_nui/focusable.h>
@@ -39,9 +40,9 @@ class CGV_API interactable : public cgv::base::group,
 {
 	cgv::nui::focus_configuration original_config;
 
-	vec3 focus_debug_point;
-	bool focus_debug_point_enabled { false };
-	rgb focus_debug_point_color{ rgb(0.5f, 0.5f, 0.5f) };
+	std::map<hid_identifier, vec3> focus_debug_points;
+	bool focus_debug_points_enabled { false };
+	rgb focus_debug_points_color{ rgb(0.5f, 0.5f, 0.5f) };
 	bool grab_debug_point_enabled{ false };
 	rgb grab_debug_point_color{ rgb(0.4f, 0.05f, 0.6f) };
 protected:
@@ -57,16 +58,22 @@ protected:
 		/// Orientation of the interacting hid at the moment of interaction
 		vec3 hid_direction;
 		/// Whether the interaction was by pointing (i.e. a ray-cast) or by closest-point-query
-		bool is_pointing;
+		bool is_pointing{};
 
+		interaction_info() {}
 		interaction_info(vec3 query_point, vec3 hid_position, vec3 hid_direction, bool is_pointing) :
 			query_point(query_point), hid_position(hid_position), hid_direction(hid_direction), is_pointing(is_pointing) {}
 	};
 
-	/// Interaction Info that is constantly updated as long as the interactable is focused by some hid (all states except idle)
-	interaction_info ii_during_focus;
+	/// Interaction Infos that are constantly updated as long as the interactable is focused by these HIDs (all states except idle).
+	/// The info for the HID that is currently grabbing (if any) can be retrieved by using activating_hid_id.
+	std::map<hid_identifier, interaction_info> ii_during_focus;
 	/// Interaction Info that is set once when transitioning to states grabbed or triggered
 	interaction_info ii_at_grab;
+
+	// Configuration
+	/// Whether to allow more than one HID to point at or be close to the interactable
+	bool allow_simultaneous_focus{ true };
 
 public:
 	// different possible object states
@@ -76,8 +83,10 @@ private:
 	void change_state(state_enum new_state);
 
 protected:
-	// hid with focus on object
-	cgv::nui::hid_identifier hid_id;
+	/// HIDs that are pointing at or close to interactable
+	std::set<cgv::nui::hid_identifier> selecting_hid_ids;
+	/// HID that triggered or grabbed the interactable
+	cgv::nui::hid_identifier activating_hid_id;
 	// state of object
 	state_enum state = state_enum::idle;
 	// index of focused primitive (always 0 in case of only one primitive)

@@ -52,11 +52,11 @@ void cgv::nui::scaling_gizmo::on_handle_drag()
 	vec3 closest_point;
 	if (ii_at_grab.is_pointing) {
 		if (!cgv::math::closest_point_on_line_to_line(ii_at_grab.query_point, axis,
-			ii_during_focus.hid_position, ii_during_focus.hid_direction, closest_point))
+			ii_during_focus[activating_hid_id].hid_position, ii_during_focus[activating_hid_id].hid_direction, closest_point))
 			return;
 	}
 	else {
-		closest_point = cgv::math::closest_point_on_line_to_point(ii_at_grab.query_point, axis, ii_during_focus.hid_position);
+		closest_point = cgv::math::closest_point_on_line_to_point(ii_at_grab.query_point, axis, ii_during_focus[activating_hid_id].hid_position);
 	}
 	float distance_at_grab = (ii_at_grab.query_point - current_anchor_position).length();
 	float current_distance = (closest_point - current_anchor_position).length();
