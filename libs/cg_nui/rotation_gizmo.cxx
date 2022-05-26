@@ -56,7 +56,7 @@ void cgv::nui::rotation_gizmo::on_handle_drag()
 
 	vec3 closest_point;
 	if (ii_at_grab.is_pointing) {
-		cgv::math::closest_point_on_line_to_circle(ii_during_focus.hid_position, ii_during_focus.hid_direction,
+		cgv::math::closest_point_on_line_to_circle(ii_during_focus[activating_hid_id].hid_position, ii_during_focus[activating_hid_id].hid_direction,
 			axis_origin, axis, ring_radius * max_value(current_anchor_scale / 2.0), closest_point);
 		//vec3 closest_point_on_line;
 		//cgv::math::closest_point_on_line_to_circle(ii_during_focus.hid_position, ii_during_focus.hid_direction,
@@ -67,7 +67,7 @@ void cgv::nui::rotation_gizmo::on_handle_drag()
 	}
 	else {
 		if (!cgv::math::closest_point_on_circle_to_point(axis_origin,axis, ring_radius,
-			ii_during_focus.hid_position, closest_point))
+			ii_during_focus[activating_hid_id].hid_position, closest_point))
 			return;
 	}
 
