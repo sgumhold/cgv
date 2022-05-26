@@ -147,7 +147,7 @@ namespace cgv {
 						cmd += "hflip ";
 					if (flip_t == FT_VERTICAL)
 						cmd += "vflip ";
-					if (flip_t == FT_HORIZONTAL)
+					if (flip_t == FT_VERTICAL_AND_HORIZONTAL)
 						cmd += "hflip vflip ";
 				}
 				cmd += " -f rawvideo -pix_fmt ";

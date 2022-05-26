@@ -6,6 +6,38 @@
 
 using namespace cgv::render;
 
+// define some macros to easily define recurring methods in derived classes
+#define RDB_EARLY_TRANSFER_FUNC_DEF(RENDERER) \
+void early_transfer(context& ctx, RENDERER& r) { \
+	r.enable_attribute_array_manager(ctx, aam); \
+	if(out_of_date) transfer(ctx, r); \
+	r.disable_attribute_array_manager(ctx, aam); \
+} \
+
+#define RDB_ENABLE_FUNC_DEF(RENDERER, STYLE) \
+bool enable(context& ctx, RENDERER& r, const STYLE& s) { \
+	if(size() > 0) { \
+		r.set_render_style(s); \
+		r.enable_attribute_array_manager(ctx, aam); \
+		if(out_of_date) transfer(ctx, r); \
+		return r.validate_and_enable(ctx); \
+	} \
+	return false; \
+} \
+
+#define RDB_RENDER_FUNC_DEF(RENDERER, STYLE) \
+void render(context& ctx, RENDERER& r, const STYLE& s, unsigned offset = 0, int count = -1) { \
+	if(enable(ctx, r, s)) { \
+		draw(ctx, r, offset, count); \
+		disable(ctx, r); \
+	} \
+} \
+
+#define RDB_BASE_FUNC_DEF(RENDERER, STYLE) \
+	RDB_EARLY_TRANSFER_FUNC_DEF(RENDERER) \
+	RDB_ENABLE_FUNC_DEF(RENDERER, STYLE) \
+	RDB_RENDER_FUNC_DEF(RENDERER, STYLE) \
+
 namespace cgv {
 namespace glutil {
 
@@ -19,7 +51,7 @@ protected:
 	std::vector<vec3> pos;
 	std::vector<ColorType> col;
 
-	bool transfer(context& ctx, renderer& r) {
+	virtual bool transfer(context& ctx, renderer& r) {
 		if(pos.size() > 0) {
 			r.set_position_array(ctx, pos);
 			if(col.size() == size())
@@ -66,6 +98,16 @@ public:
 			return pos.size();
 		else
 			return idx.size();
+	}
+
+	bool disable(context& ctx, renderer& r) {
+		bool res = r.disable(ctx);
+		r.disable_attribute_array_manager(ctx, aam);
+		return res;
+	}
+
+	void draw(context& ctx, renderer& r, unsigned offset = 0, int count = -1) {
+		r.draw(ctx, offset, count < 0 ? render_count() : count);
 	}
 
 	const attribute_array_manager& ref_aam() const { return aam; }

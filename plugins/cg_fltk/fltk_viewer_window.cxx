@@ -961,8 +961,10 @@ void fltk_viewer_window::register_object(base_ptr object, const std::string& opt
 		if (cgv::utils::is_element(get_name(),views))
 			view->append_child(object);
 	}
-	else
-		view->append_child(object);
+	else {
+		if (object->get_node() && !object->get_node()->get_parent())
+			view->append_child(object);
+	}
 
 	std::string parents;
 	if (has_property(options, "parents", parents, false))
