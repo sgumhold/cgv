@@ -97,7 +97,6 @@ protected:
 
 	// text appearance
 	float font_size = 12.0f;
-	cgv::render::TextAlignment text_align_h, text_align_v;
 
 	shape2d_style text_style;
 	msdf_font font;

@@ -257,3 +257,6 @@ struct terrain_render_style_gui_creator : public cgv::gui::gui_creator
 CGV_API cgv::gui::gui_creator_registration<terrain_render_style_gui_creator>
 terrain_rs_gc_reg("terrain_render_style_gui_creator");
 
+#ifdef REGISTER_SHADER_FILES
+#include <cgv_proc_shader_inc.h>
+#endif
