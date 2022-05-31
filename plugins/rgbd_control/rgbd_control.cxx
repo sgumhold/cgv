@@ -46,7 +46,7 @@ rgbd_control::rgbd_control(bool no_interactor)
 	depth_range(0.0f, 1.0f), no_interactor(no_interactor)
 {
 	set_name("rgbd_control");
-	do_protocol = false;
+	do_recording = false;
 	flip[0] = true;
 	flip[1] = flip[2] = false;
 	nr_depth_frames = 0;
@@ -102,7 +102,8 @@ bool rgbd_control::self_reflect(cgv::reflect::reflection_handler& rh)
 	return
 		rh.reflect_member("record_path", record_path) &&
 		rh.reflect_member("protocol_path", record_path) &&
-		rh.reflect_member("do_protocol", do_protocol) &&
+		rh.reflect_member("do_protocol", do_recording) &&
+		rh.reflect_member("do_recording", do_recording) &&
 		rh.reflect_member("vis_mode", (int&)vis_mode) &&
 		rh.reflect_member("color_scale", color_scale) &&
 		rh.reflect_member("depth_scale", depth_scale) &&
@@ -119,11 +120,11 @@ bool rgbd_control::self_reflect(cgv::reflect::reflection_handler& rh)
 ///
 void rgbd_control::on_set(void* member_ptr)
 {
-	if (member_ptr == &do_protocol) {
-		if (do_protocol) {
+	if (member_ptr == &do_recording) {
+		if (do_recording) {
 			//prevent reading and writing the log on the same path 
 			if (device_mode == DM_PROTOCOL) {
-				do_protocol = false;
+				do_recording = false;
 				rgbd_inp.disable_protocol();
 			}
 			bool path_exists = cgv::utils::dir::exists(record_path);
@@ -137,8 +138,8 @@ void rgbd_control::on_set(void* member_ptr)
 			if (path_exists)
 				rgbd_inp.enable_protocol(record_path);
 			else {
-				do_protocol = false;
-				update_member(&do_protocol);
+				do_recording = false;
+				update_member(&do_recording);
 			}
 		}
 		else
@@ -527,17 +528,17 @@ void rgbd_control::create_gui()
 		align("\b");
 		end_tree_node(nr_color_frames);
 	}
-	if (begin_tree_node("IO", do_protocol, true, "level=2")) {
+	if (begin_tree_node("IO", do_recording, true, "level=2")) {
 		align("\a");
 		add_gui("record_path", record_path, "directory", "w=150");
 		add_member_control(this, "write_async", rgbd_inp.protocol_write_async, "toggle");
-		add_member_control(this, "record", do_protocol, "toggle");
-		connect_copy(add_button("clear protocol")->click, rebind(this, &rgbd_control::on_clear_protocol_cb));
+		add_member_control(this, "record", do_recording, "toggle");
+		connect_copy(add_button("clear record")->click, rebind(this, &rgbd_control::on_clear_protocol_cb));
 		connect_copy(add_button("save")->click, rebind(this, &rgbd_control::on_save_cb));
 		connect_copy(add_button("save point cloud")->click, rebind(this, &rgbd_control::on_save_point_cloud_cb));
 		connect_copy(add_button("load")->click, rebind(this, &rgbd_control::on_load_cb));
 		align("\b");
-		end_tree_node(do_protocol);
+		end_tree_node(do_recording);
 	}
 	if (begin_tree_node("Base", pitch, false, "level=2")) {
 		align("\a");
@@ -1016,7 +1017,7 @@ void rgbd_control::on_pitch_cb()
 void rgbd_control::on_clear_protocol_cb()
 {
 	//delete previosly recorded data
-	if (!rgbd_inp.is_started() || (rgbd_inp.is_started() && !do_protocol)){
+	if (!rgbd_inp.is_started() || (rgbd_inp.is_started() && !do_recording)){
 		rgbd_inp.clear_protocol(record_path);
 	}
 }
