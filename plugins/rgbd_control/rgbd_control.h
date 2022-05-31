@@ -79,7 +79,7 @@ public:
 	/// members for rgbd input
 	rgbd::rgbd_input rgbd_inp;
 	std::string record_path;
-	bool do_protocol;
+	bool do_recording;
 	bool stream_color;
 	bool stream_depth;
 	bool stream_infrared;

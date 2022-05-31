@@ -1,2 +1,2 @@
 show all
-type(rgbd_control):protocol_path="C:\Users\Nico\Projects\cgv_data\rgbd_protocol"
+type(rgbd_control):record_path="C:\Users\Nico\Projects\cgv_data\rgbd_protocol"
