@@ -1,5 +1,6 @@
 var NAVTREEINDEX34 =
 {
+"classstl__reader_1_1StlMesh.html#a2bbe872729877a51865016ebe0529114":[11,0,2,0,6],
 "classstl__reader_1_1StlMesh.html#a2d0f581dd3572bead9621ba5adc4ccc8":[11,0,2,0,2],
 "classstl__reader_1_1StlMesh.html#a4463d33f7d1d24dd9551f2a7780d2ed0":[11,0,2,0,3],
 "classstl__reader_1_1StlMesh.html#a5371c2a774a7bdff65da44c571f15270":[11,0,2,0,16],
@@ -248,6 +249,5 @@ var NAVTREEINDEX34 =
 "convert__string_8h.html#a9584ae56050ff7dd2b881c2b60efd55b":[12,0,0,13,4,2],
 "convert__string_8h.html#a9a1535e8aa563c690fc1880c2842727d":[12,0,0,13,4,0],
 "convert__string_8h.html#abbede1a9f8eb142937b0fb8dfd43f059":[12,0,0,13,4,3],
-"convert__string_8h.html#af33afeb1f6c4584325695717d1300b44":[12,0,0,13,4,1],
-"convert__string_8h_source.html":[12,0,0,13,4]
+"convert__string_8h.html#af33afeb1f6c4584325695717d1300b44":[12,0,0,13,4,1]
 };
