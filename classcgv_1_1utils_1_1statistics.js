@@ -10,6 +10,7 @@ var classcgv_1_1utils_1_1statistics =
     [ "get_standard_deviation", "classcgv_1_1utils_1_1statistics.html#ad5dec3d8746e1591d76627d0e916e52f", null ],
     [ "get_sum", "classcgv_1_1utils_1_1statistics.html#af0224e1896dfbfbc760d80733fcce944", null ],
     [ "get_sum_of_squares", "classcgv_1_1utils_1_1statistics.html#a0c4b7cd054ab3c1579bdc462ba43136d", null ],
+    [ "get_variance", "classcgv_1_1utils_1_1statistics.html#afd4f8f5e544dad4d4c58a963267f5e81", null ],
     [ "init", "classcgv_1_1utils_1_1statistics.html#acca02c0564ca65f0c7afcf7ac697193f", null ],
     [ "init", "classcgv_1_1utils_1_1statistics.html#aaafef4fa8f5329bee7cbd7cb95aee8fd", null ],
     [ "init", "classcgv_1_1utils_1_1statistics.html#a54b6fb369c5e9db9188a0ad4eedd993d", null ],
