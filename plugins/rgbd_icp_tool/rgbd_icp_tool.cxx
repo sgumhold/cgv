@@ -335,13 +335,14 @@ void rgbd_icp_tool::on_reg_SICP_cb()
 	mat3 rotation;
 	sicp.register_point_cloud(sicp_computation_mode,rotation,translation);
 	cout << "SICP rot:\n " << rotation << "SICP t:\n" << translation << '\n';
-	vec3 mean = accumulate(&source_pc.pnt(0), &source_pc.pnt(0) + source_pc.get_nr_points(), vec3(0, 0, 0)) / ((float)source_pc.get_nr_points());
-	//need to de-mean for rotation
-	source_pc.translate(-mean);
+	//vec3 mean = accumulate(&source_pc.pnt(0), &source_pc.pnt(0) + source_pc.get_nr_points(), vec3(0, 0, 0)) / ((float)source_pc.get_nr_points());
 	//do rotation
-	source_pc.rotate(cgv::math::quaternion<float>(rotation));
+	//source_pc.rotate(cgv::math::quaternion<float>(rotation));
 	//do translation and reapply mean
-	source_pc.translate(translation+mean);
+	//source_pc.translate(rotation*(-mean) + translation + mean);
+	
+	source_pc.rotate(cgv::math::quaternion<float>(rotation));
+	source_pc.translate(translation);
 
 	post_redraw();
 }
