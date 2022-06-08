@@ -138,9 +138,13 @@ namespace cgv {
 			}
 			translation = Y_mean - rotation * X_mean;
 			
-			/// apply transformation
+			// apply transformation
 			for (int i = 0; i < size; ++i) {
-				X[i] = rotation*X[i]+translation+ X_mean;
+				X[i] = rotation * X[i] + translation;
+			}
+
+			for (int i = 0; i < size; ++i) {
+				X[i] += X_mean;
 			}
 		}
 
@@ -238,7 +242,7 @@ namespace cgv {
 						mat3 rot_up;
 						vec3 trans_up;
 						point_to_point(source_points.data(), U.data(), sourceCloud->get_nr_points(), rot_up,trans_up);
-						rotation *= rot_up;
+						rotation = rot_up * rotation;
 						translation += trans_up;
 
 						dual = -numeric_limits<float>::infinity();
@@ -272,6 +276,11 @@ namespace cgv {
 				Xo2 = source_points;
 				if (stop < parameters.stop) break;
 			}
+
+			vec3 mean =
+				  accumulate(&sourceCloud->pnt(0), &sourceCloud->pnt(0) + sourceCloud->get_nr_points(), vec3(0, 0, 0)) /
+				  ((float)sourceCloud->get_nr_points());
+			translation = rotation * (-mean) + translation + mean;
 		}
 
 		//unfinished
@@ -317,7 +326,7 @@ namespace cgv {
 						mat3 rot_up;
 						vec3 trans_up;
 						point_to_plane(source_points.data(), closest_points_position.data(), closest_points_normal.data(), U.data(), sourceCloud->get_nr_points(),rot_up,trans_up);
-						rotation *= rot_up;
+						rotation = rot_up * rotation;
 						translation += trans_up;
 
 						dual = -numeric_limits<float>::infinity();
@@ -352,6 +361,11 @@ namespace cgv {
 				Xo2 = source_points;
 				if (stop < parameters.stop) break;
 			}
+
+			vec3 mean =
+				  accumulate(&sourceCloud->pnt(0), &sourceCloud->pnt(0) + sourceCloud->get_nr_points(), vec3(0, 0, 0)) /
+				  ((float)sourceCloud->get_nr_points());
+			translation = rotation * (-mean) + translation + mean;
 		}
 
 		void SICP::register_point_cloud(ComputationMode cm, mat3& rotation, vec3& translation)
