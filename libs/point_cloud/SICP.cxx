@@ -182,7 +182,7 @@ namespace cgv {
 				BR.selfadjointView<Eigen::Upper>().rankUpdate(normal, 1);
 			}
 			for (int i = 0; i < C.cols(); i++) {
-				float dist_to_plane = -( dot(X[i] - (Y[i]- X_mean),N[i]) - u[i] )*1;
+				float dist_to_plane = -( dot(X[i] - (Y[i]- X_mean),N[i]) - u[i] )*1.f;
 				RHS.head<3>() += C.col(i)*dist_to_plane;
 				Eigen::Matrix<float, 3, 1> normal = Vec3(N[i].x(), N[i].y(), N[i].z());
 				RHS.tail<3>() += normal*dist_to_plane;
@@ -196,7 +196,9 @@ namespace cgv {
 				Eigen::AngleAxisf(RHS(1), Eigen::Vector3f::UnitY()) *
 				Eigen::AngleAxisf(RHS(2), Eigen::Vector3f::UnitZ());
 			transformation.translation() = RHS.tail<3>();
-			rotation= mat3(3,3, transformation.affine().data());
+			for (int i = 0; i < 3; ++i)
+				for (int j = 0; j < 3; ++j)
+					rotation(i, j) = transformation(i, j);
 			translation = vec3(transformation.translation()(0), transformation.translation()(1), transformation.translation()(2));
 
 			for (int i = 0; i < size; ++i) {
