@@ -35,6 +35,10 @@ void gl_performance_monitor::draw_bars(cgv::render::context& ctx, cgv::render::s
 	float h = ymax - ymin + 1;
 	int dy = (int)(h / nr_display_cycles);
 
+	std::swap(ymin, ymax);
+	ymin = ctx.get_height() - 1 - ymin;
+	ymax = ctx.get_height() - 1 - ymax;
+
 	if (data.empty())
 		return;
 	// draw history of frames and determine local frame index of min and max
@@ -45,7 +49,7 @@ void gl_performance_monitor::draw_bars(cgv::render::context& ctx, cgv::render::s
 		for (unsigned i = 0; i < data.size() - 1; ++i, ++x) {
 			const frame_data&  fdata = data[i];
 			compute_colors(fdata);
-			compute_positions(x, placement.get_max_pnt()(1), 0, -dy, fdata);
+			compute_positions(x, ymin, 0, dy, fdata);
 			draw_computed_bars(ctx, prog);
 			// check for min
 			if (min_i == -1 || data[i][data[i].size() - 2].time < data[min_i][data[min_i].size() - 2].time)
@@ -55,7 +59,7 @@ void gl_performance_monitor::draw_bars(cgv::render::context& ctx, cgv::render::s
 				max_i = i;
 		}
 		if (!bar_config.empty()) {
-			int y = placement.get_max_pnt()(1) + (bar_line_width + 4) / 2;
+			int y = ymin - (bar_line_width + 4) / 2 - 4;
 			glLineWidth((float)bar_line_width);
 			for (int c = 0; c < (int)bar_config.size(); ++c) {
 				switch (bar_config[c]) {
@@ -74,7 +78,7 @@ void gl_performance_monitor::draw_bars(cgv::render::context& ctx, cgv::render::s
 					std::cerr << "avg not yet supported" << std::endl;
 					break;
 				}
-				y += bar_line_width + 1;
+				y -= bar_line_width + 1;
 			}
 		}
 	}
@@ -116,6 +120,10 @@ void gl_performance_monitor::draw_lines(cgv::render::context& ctx, cgv::render::
 	float h = ymax - ymin + 1;
 	float dy = h / nr_display_cycles;
 
+	std::swap(ymin, ymax);
+	ymin = ctx.get_height() - 1 - ymin;
+	ymax = ctx.get_height() - 1 - ymax;
+
 	lines.push_back(vec2(xmin - 1, ymax + 1));
 	lines.push_back(vec2(xmax + 1, ymax + 1));
 	lines.push_back(vec2(xmax + 1, ymax + 1));
@@ -141,13 +149,13 @@ void gl_performance_monitor::draw_lines(cgv::render::context& ctx, cgv::render::
 
 void gl_performance_monitor::draw(cgv::render::context& ctx)
 {
-	int xmin     = placement.get_min_pnt()(0);
-	int ymin     = placement.get_min_pnt()(1);
-	int xmax     = placement.get_max_pnt()(0);
-	int ymax     = placement.get_max_pnt()(1);
-	int w        = xmax - xmin + 1;
-	int h        = ymax - ymin + 1;
-	int dy       = h/nr_display_cycles;
+	//int xmin     = placement.get_min_pnt()(0);
+	//int ymin     = placement.get_min_pnt()(1);
+	//int xmax     = placement.get_max_pnt()(0);
+	//int ymax     = placement.get_max_pnt()(1);
+	//int w        = xmax - xmin + 1;
+	//int h        = ymax - ymin + 1;
+	//int dy       = h/nr_display_cycles;
 
 	GLboolean is_depth = glIsEnabled(GL_DEPTH_TEST);
 	glDisable(GL_DEPTH_TEST);
