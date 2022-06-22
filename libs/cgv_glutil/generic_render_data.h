@@ -71,6 +71,7 @@ private:
 	
 protected:
 	bool state_out_of_date = true;
+	std::vector<unsigned> idx;
 
 	template <typename T>
 	bool set_attribute_array(const cgv::render::context& ctx, const cgv::render::shader_program& prog, const std::string& name, const T& array) {
@@ -78,6 +79,18 @@ protected:
 		if(loc > -1)
 			return aam.set_attribute_array(ctx, loc, array);
 		return false;
+	}
+
+	bool has_indices() {
+		return aam.has_index_buffer();
+	}
+
+	bool set_indices(const cgv::render::context& ctx) {
+		return aam.set_indices(ctx, idx);
+	}
+
+	void remove_indices(const cgv::render::context& ctx) {
+		return aam.remove_indices(ctx);
 	}
 
 	virtual bool transfer(cgv::render::context& ctx, cgv::render::shader_program& prog) = 0;
@@ -107,11 +120,15 @@ public:
 		return aam.init(ctx);
 	}
 
+	void add_idx(const unsigned int i) { idx.push_back(i); }
+
+	std::vector<unsigned>& ref_idx() { return idx; }
+
 	void set_out_of_date() {
 		state_out_of_date = true;
 	}
 
-	virtual size_t get_vertex_count() = 0;
+	virtual size_t get_render_count() = 0;
 };
 
 }
@@ -146,7 +163,7 @@ public:
 	protected:
 		bool transfer(context& ctx, shader_program& prog) {
 			bool success = true;
-			if(get_vertex_count() == 0) return false;\
+			if(get_render_count() == 0) return false;\
 			success &= set_attribute_array(ctx, prog, "position", positions);
 			success &= set_attribute_array(ctx, prog, "color", colors);
 			return success;
@@ -155,7 +172,10 @@ public:
 		std::vector<vec2> positions;
 		std::vector<rgb> colors;
 
-		size_t get_vertex_count() { return positions.size(); };
+		size_t get_render_count() {
+			if(idx.empty() return positions.size();
+			else return idx.size();
+		};
 
 		void clear() {
 			positions.clear();
@@ -169,19 +189,26 @@ public:
 		}
 	};
 */
+
 #define DEFINE_GENERIC_RENDER_DATA_CLASS(name, attrib_count, ...)\
 class name : public cgv::glutil::generic_render_data {\
 protected:\
 	bool transfer(cgv::render::context& ctx, cgv::render::shader_program& prog) {\
 		bool success = true;\
-		if(get_vertex_count() == 0) return false;\
+		if(get_render_count() == 0) return false;\
+		if(idx.size() > 0) set_indices(ctx);\
+		else remove_indices(ctx);\
 		GRD_APPLY_FUNC_N(attrib_count, GRD_SET_ATTRIB_ARRAY, GRD_SEP_NULL, __VA_ARGS__)\
 		return success;\
 	}\
 public:\
 	GRD_APPLY_FUNC_N(attrib_count, GRD_DECL_VEC_MEMBER, GRD_SEP_NULL, __VA_ARGS__)\
-	size_t get_vertex_count() { return GRD_GET_FIRST_PAIR(GRD_CALL_SIZE_FUNC, __VA_ARGS__) };\
+	size_t get_render_count() {\
+		if(idx.empty()) return GRD_GET_FIRST_PAIR(GRD_CALL_SIZE_FUNC, __VA_ARGS__)\
+		else return idx.size();\
+	}\
 	void clear() {\
+		idx.clear();\
 		GRD_APPLY_FUNC_N(attrib_count, GRD_CALL_CLEAR_FUNC, GRD_SEP_NULL, __VA_ARGS__)\
 		state_out_of_date = true;\
 	}\
