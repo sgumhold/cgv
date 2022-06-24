@@ -190,21 +190,37 @@ namespace cgv {
 			res = fvec<T,2>(tN, tF);
 			return 2;
 		}
+
+		template <typename T> struct RayBoxIntersectionResult {
+			bool hit = false;
+			T t_near = 0;
+			T t_far = 0;
+		};
 		template <typename T>
-		T first_ray_box_intersection(const fvec<T, 3>& ro, const fvec<T, 3>& rd, const fvec<T, 3>& b_min, const fvec<T, 3>& b_max, fvec<T, 3>& n)
-		{
-			fvec<T, 2> res;
-			fvec<T, 3> bc = T(0.5) * (b_min + b_max);
-			fvec<T, 3> be = b_max - b_min;
-			int k = ray_box_intersection(ro - bc, rd, be, res, n);
-			T param = std::numeric_limits<T>::max();
-			if (k == 1 || (k == 2 && res[0] > 0))
-				param = res[0];
-			else if (k == 2 && res[1] > 0)
-				param = res[1];
-			if (param < std::numeric_limits<float>::max())
-				n = normalize(ro + param * rd - bc);
-			return param;
+		RayBoxIntersectionResult<T> ray_box_intersection(
+			  const cgv::math::fvec<T, 3> &ray_origin,
+			  const cgv::math::fvec<T, 3> &ray_direction,
+			  const cgv::math::fvec<T, 3> &box_min,
+			  const cgv::math::fvec<T, 3> &box_max
+		) {
+			const auto t0 = (box_min - ray_origin) / ray_direction;
+			const auto t1 = (box_max - ray_origin) / ray_direction;
+
+			if (t0.x() > t1.y() || t0.y() > t1.x()) {
+				return {};
+			}
+
+			if (t0.x() > t1.z() || t0.z() > t1.x()) {
+				return {};
+			}
+
+			if (t0.z() > t1.y() || t0.y() > t1.z()) {
+				return {};
+			}
+
+			const auto t_near = std::max(std::max(t0.x(), t0.y()), t0.z());
+			const auto t_far = std::min(std::min(t1.x(), t1.y()), t1.z());
+			return {true, t_near, t_far};
 		}
 	}
 }
