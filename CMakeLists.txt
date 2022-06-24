@@ -37,6 +37,8 @@ if (NOT MSVC)
     add_compile_options(-Wno-dangling-else -Wno-switch)
 endif ()
 
+enable_testing()
+
 add_subdirectory(3rd)
 add_subdirectory(tool)
 add_subdirectory(cgv)
