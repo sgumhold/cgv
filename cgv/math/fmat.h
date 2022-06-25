@@ -2,6 +2,7 @@
 
 #include "fvec.h"
 #include <cassert>
+#include <initializer_list>
 
 namespace cgv {
 	/// namespace with classes and algorithms for mathematics
@@ -28,6 +29,10 @@ public:
 	typedef fmat<T,N,M> this_type;
 	///standard constructor 
 	fmat() {}
+	///construct from individual components using list-initialization syntax
+	fmat(std::initializer_list<T> components) : fvec((cgv::type::uint32_type)components.size(), components.begin()) {}
+	///construct from column vectors using list-initialization syntax
+	fmat(std::initializer_list<fvec<T,N>> cols) : fvec(M*(cgv::type::uint32_type)cols.size(), (T*)cols.begin()) {}
 	///construct a matrix with all elements set to c
 	fmat(const T& c) : base_type(c) {}
 	///creates a matrix from an array a of given dimensions - by default in column major format - and fills missing entries from identity matrix
@@ -284,6 +289,6 @@ const fmat<T, N, M> lerp(const fmat<T, N, M>& m1, const fmat<T, N, M>& m2, fmat<
 	return m;
 }
 
+// close namespaces
 	}
-
 }
