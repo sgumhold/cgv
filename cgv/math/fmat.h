@@ -67,9 +67,9 @@ public:
 				(*this)(i,j) = (T)(v(i)*w(j)); 
 	}
 	///number of rows
-	static unsigned nrows() { return N; }
+	constexpr static unsigned nrows() { return N; }
 	///number of columns
-	static unsigned ncols() { return M; }
+	constexpr static unsigned ncols() { return M; }
 	///assignment of a matrix with a different element type
 	template <typename S> 
 	fmat<T,N,M>& operator = (const fmat<S,N,M>& m) {
