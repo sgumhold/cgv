@@ -203,8 +203,25 @@ namespace cgv {
 			  const cgv::math::fvec<T, 3> &box_min,
 			  const cgv::math::fvec<T, 3> &box_max
 		) {
-			const auto t0 = (box_min - ray_origin) / ray_direction;
-			const auto t1 = (box_max - ray_origin) / ray_direction;
+			auto t0 = (box_min - ray_origin) / ray_direction;
+			auto t1 = (box_max - ray_origin) / ray_direction;
+
+#define SWAP(a, b)                                                                                                     \
+	auto tmp = a;                                                                                                      \
+	a = b;                                                                                                             \
+	b = tmp
+
+			if (t0.x() > t1.x()) {
+				SWAP(t0.x(), t1.x());
+			}
+			if (t0.y() > t1.y()) {
+				SWAP(t0.y(), t1.y());
+			}
+			if (t0.z() > t1.z()) {
+				SWAP(t0.z(), t1.z());
+			}
+
+#undef SWAP
 
 			if (t0.x() > t1.y() || t0.y() > t1.x()) {
 				return {};
@@ -220,7 +237,10 @@ namespace cgv {
 
 			const auto t_near = std::max(std::max(t0.x(), t0.y()), t0.z());
 			const auto t_far = std::min(std::min(t1.x(), t1.y()), t1.z());
-			return {true, t_near, t_far};
+			if (t_near < t_far) {
+				return {true, t_near, t_far};
+			}
+			return {true, t_far, t_near};
 		}
 	}
 }
