@@ -125,6 +125,14 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#a279504a4e937c457d60f03cd057a08f5">fmat</a> ()</td></tr>
 <tr class="memdesc:a279504a4e937c457d60f03cd057a08f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">standard constructor <br /></td></tr>
 <tr class="separator:a279504a4e937c457d60f03cd057a08f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b4f797e64a6be230a4adfa570cb7d69"><td class="memItemLeft" align="right" valign="top"><a id="a3b4f797e64a6be230a4adfa570cb7d69"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#a3b4f797e64a6be230a4adfa570cb7d69">fmat</a> (std::initializer_list&lt; T &gt; components)</td></tr>
+<tr class="memdesc:a3b4f797e64a6be230a4adfa570cb7d69"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct from individual components using list-initialization syntax <br /></td></tr>
+<tr class="separator:a3b4f797e64a6be230a4adfa570cb7d69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0053137c1eeb937228bc640963d70fd6"><td class="memItemLeft" align="right" valign="top"><a id="a0053137c1eeb937228bc640963d70fd6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#a0053137c1eeb937228bc640963d70fd6">fmat</a> (std::initializer_list&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt;&gt; cols)</td></tr>
+<tr class="memdesc:a0053137c1eeb937228bc640963d70fd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct from column vectors using list-initialization syntax <br /></td></tr>
+<tr class="separator:a0053137c1eeb937228bc640963d70fd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4052626c8fe8004a992e12c3e8792098"><td class="memItemLeft" align="right" valign="top"><a id="a4052626c8fe8004a992e12c3e8792098"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#a4052626c8fe8004a992e12c3e8792098">fmat</a> (const T &amp;c)</td></tr>
 <tr class="memdesc:a4052626c8fe8004a992e12c3e8792098"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a matrix with all elements set to c <br /></td></tr>
@@ -444,14 +452,14 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcg
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ab7e30ca4789e5503be7cab6e18279d81"><td class="memItemLeft" align="right" valign="top"><a id="ab7e30ca4789e5503be7cab6e18279d81"></a>
-static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#ab7e30ca4789e5503be7cab6e18279d81">nrows</a> ()</td></tr>
-<tr class="memdesc:ab7e30ca4789e5503be7cab6e18279d81"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of rows <br /></td></tr>
-<tr class="separator:ab7e30ca4789e5503be7cab6e18279d81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc7071e3642f03245c0865c5f762cbf1"><td class="memItemLeft" align="right" valign="top"><a id="adc7071e3642f03245c0865c5f762cbf1"></a>
-static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#adc7071e3642f03245c0865c5f762cbf1">ncols</a> ()</td></tr>
-<tr class="memdesc:adc7071e3642f03245c0865c5f762cbf1"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of columns <br /></td></tr>
-<tr class="separator:adc7071e3642f03245c0865c5f762cbf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3054b16e7e6d9dfdda32c0baa5015f3"><td class="memItemLeft" align="right" valign="top"><a id="ae3054b16e7e6d9dfdda32c0baa5015f3"></a>
+constexpr static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#ae3054b16e7e6d9dfdda32c0baa5015f3">nrows</a> ()</td></tr>
+<tr class="memdesc:ae3054b16e7e6d9dfdda32c0baa5015f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of rows <br /></td></tr>
+<tr class="separator:ae3054b16e7e6d9dfdda32c0baa5015f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab819ea1658db3ef2db3152333e676559"><td class="memItemLeft" align="right" valign="top"><a id="ab819ea1658db3ef2db3152333e676559"></a>
+constexpr static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#ab819ea1658db3ef2db3152333e676559">ncols</a> ()</td></tr>
+<tr class="memdesc:ab819ea1658db3ef2db3152333e676559"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of columns <br /></td></tr>
+<tr class="separator:ab819ea1658db3ef2db3152333e676559"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6deaaa9cc232afe687c0de21e0b01907"><td class="memItemLeft" align="right" valign="top"><a id="a6deaaa9cc232afe687c0de21e0b01907"></a>
 static <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fvec.html#a6deaaa9cc232afe687c0de21e0b01907">from_vec</a> (const <a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt; &amp;)</td></tr>
 <tr class="memdesc:a6deaaa9cc232afe687c0de21e0b01907"><td class="mdescLeft">&#160;</td><td class="mdescRight">conversion from vector <br /></td></tr>

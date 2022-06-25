@@ -1,5 +1,7 @@
 var NAVTREEINDEX35 =
 {
+"convert__string_8h.html#abbede1a9f8eb142937b0fb8dfd43f059":[12,0,0,13,4,3],
+"convert__string_8h.html#af33afeb1f6c4584325695717d1300b44":[12,0,0,13,4,1],
 "convert__string_8h_source.html":[12,0,0,13,4],
 "convex__polyhedron_8h_source.html":[12,0,0,6,3,0],
 "cpp__version_8h_source.html":[12,0,0,1,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX35 =
 "libs_2plot_2lib__begin_8h_source.html":[12,0,1,4,1],
 "libs_2vr_2lib__begin_8h_source.html":[12,0,1,5,1],
 "light__source_8hh_source.html":[12,0,0,6,1,1],
-"lin__solve_8h_source.html":[12,0,0,5,24],
-"line__break_8h_source.html":[12,0,0,7,6],
-"line__renderer_8h_source.html":[12,0,1,2,8]
+"lin__solve_8h_source.html":[12,0,0,5,24]
 };
