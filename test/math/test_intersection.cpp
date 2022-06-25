@@ -16,10 +16,14 @@ TEST(ray_box_intersection, computesHitAndMissCorrectly)
 		  {vec3(-1, 0.5, 0.5), vec3(1, 0, 0), {true, 1, 2}},		 // hit x
 		  {vec3(0.5, -1, 0.5), vec3(0, 1, 0), {true, 1, 2}},		 // hit y
 		  {vec3(0.5, 0.5, -1), vec3(0, 0, 1), {true, 1, 2}},		 // hit z
+		  {vec3(2, 0.5, 0.5), vec3(-1, 0, 0), {true, 1, 2}},		 // hit -x
+		  {vec3(0.5, 2, 0.5), vec3(0, -1, 0), {true, 1, 2}},		 // hit -y
+		  {vec3(0.5, 0.5, 2), vec3(0, 0, -1), {true, 1, 2}},		 // hit -z
 		  {vec3(-0.5, -0.5, -0.5), vec3(1, 1, 1), {true, 0.5, 1.5}}, // hit diagonal
 		  {vec3(-1, -0.5, -0.5), vec3(1, 0, 0), {false, 0, 0}},		 // miss x
 		  {vec3(-0.5, -1, -0.5), vec3(0, 1, 0), {false, 0, 0}},		 // miss y
 		  {vec3(-0.5, -0.5, -1), vec3(0, 0, 1), {false, 0, 0}},		 // miss z
+		  {vec3(-1.18034, 5.67467, 1.23563), vec3(0.0083086, -0.0362171, -0.00454671), {true, 142.06245, 156.68483}},
 	};
 	for (auto& param : params) {
 		auto result = cgv::math::ray_box_intersection<float>( //
