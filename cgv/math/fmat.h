@@ -30,7 +30,7 @@ public:
 	///standard constructor 
 	fmat() {}
 	///construct from individual components using list-initialization syntax
-	fmat(std::initializer_list<T> components) : fvec((cgv::type::uint32_type)components.size(), components.begin()) {}
+	fmat(std::initializer_list<T> components) : fvec<T,N*M>((cgv::type::uint32_type)components.size(), components.begin()) {}
 	///construct from column vectors using list-initialization syntax
 	fmat(std::initializer_list<fvec<T,N>> cols) : fvec<T,N*M>(N*(cgv::type::uint32_type)cols.size(), (T*)cols.begin()) {}
 	///construct a matrix with all elements set to c
