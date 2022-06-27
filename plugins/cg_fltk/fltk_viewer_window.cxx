@@ -962,7 +962,7 @@ void fltk_viewer_window::register_object(base_ptr object, const std::string& opt
 			view->append_child(object);
 	}
 	else {
-		if (object->get_node() && !object->get_node()->get_parent())
+		if ( (object->get_node() && !object->get_node()->get_parent()) || !object->get_node() )
 			view->append_child(object);
 	}
 
