@@ -48,15 +48,19 @@ void statistics::update(const double& v, unsigned int n) {
 }
 /// compute average of the considered values
 double statistics::get_average() const { return sum/cnt; }
-/// compute standard deviation of the considered value
+/// compute variance of the considered values
+double statistics::get_variance() const {
+	double E = get_average();
+	double E2 = sms / cnt;
+	return E2 - E*E;
+}
+/// compute standard deviation of the considered values
 double statistics::get_standard_deviation() const {
-	double E  = get_average();
-	double E2 = sms/cnt;
-	return sqrt(E2-E*E);
+	return sqrt(get_variance());
 }
 /// get the sum of the considered variables
 double statistics::get_sum() const { return sum; }
-/// get the sum of the considered variables
+/// get the sum of the squares of the considered variables
 double statistics::get_sum_of_squares() const { return sms; }
 /// get the minimum of the considered variables
 double statistics::get_min() const { return min; }

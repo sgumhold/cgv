@@ -15,7 +15,7 @@ class rectangle_render_data : public render_data_base<ColorType> {
 public:
 	// Repeat automatically inherited typedefs from parent class, as they can't
 	// be inherited again according to C++ spec
-	typedef render_types::vec3 vec2;
+	typedef render_types::vec2 vec2;
 	typedef render_types::vec3 vec3;
 	typedef render_types::quat quat;
 

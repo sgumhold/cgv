@@ -9,17 +9,17 @@ using namespace cgv::render;
 // define some macros to easily define recurring methods in derived classes
 #define RDB_EARLY_TRANSFER_FUNC_DEF(RENDERER) \
 void early_transfer(context& ctx, RENDERER& r) { \
-	r.enable_attribute_array_manager(ctx, aam); \
-	if(out_of_date) transfer(ctx, r); \
-	r.disable_attribute_array_manager(ctx, aam); \
+	r.enable_attribute_array_manager(ctx, this->aam); \
+	if(this->out_of_date) transfer(ctx, r); \
+	r.disable_attribute_array_manager(ctx, this->aam); \
 } \
 
 #define RDB_ENABLE_FUNC_DEF(RENDERER, STYLE) \
 bool enable(context& ctx, RENDERER& r, const STYLE& s) { \
-	if(size() > 0) { \
+	if(this->size() > 0) { \
 		r.set_render_style(s); \
-		r.enable_attribute_array_manager(ctx, aam); \
-		if(out_of_date) transfer(ctx, r); \
+		r.enable_attribute_array_manager(ctx, this->aam); \
+		if(this->out_of_date) transfer(ctx, r); \
 		return r.validate_and_enable(ctx); \
 	} \
 	return false; \
@@ -28,8 +28,8 @@ bool enable(context& ctx, RENDERER& r, const STYLE& s) { \
 #define RDB_RENDER_FUNC_DEF(RENDERER, STYLE) \
 void render(context& ctx, RENDERER& r, const STYLE& s, unsigned offset = 0, int count = -1) { \
 	if(enable(ctx, r, s)) { \
-		draw(ctx, r, offset, count); \
-		disable(ctx, r); \
+		this->draw(ctx, r, offset, count); \
+		this->disable(ctx, r); \
 	} \
 } \
 

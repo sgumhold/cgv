@@ -30,11 +30,13 @@ public:
 	void update(const double& v, unsigned int n);
 	/// compute average of the considered values
 	double get_average() const;
-	/// compute standard deviation of the considered value
+	/// compute variance of the considered values
+	double get_variance() const;
+	/// compute standard deviation of the considered values
 	double get_standard_deviation() const;
 	/// get the sum of the considered variables
 	double get_sum() const;
-	/// get the sum of the considered variables
+	/// get the sum of the squares of the considered variables
 	double get_sum_of_squares() const;
 	/// get the minimum of the considered variables
 	double get_min() const;
