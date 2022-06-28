@@ -2,6 +2,7 @@
 add_subdirectory(ANN)
 add_subdirectory(fltk)
 add_subdirectory(glew)
+add_subdirectory(googletest)
 add_subdirectory(jpeg)
 add_subdirectory(json)
 add_subdirectory(libtorch)

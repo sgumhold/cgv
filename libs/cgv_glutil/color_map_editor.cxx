@@ -318,7 +318,6 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 
 	// draw cursor decorators to show interaction hints
 	if(mouse_is_on_overlay && show_cursor) {
-		std::cout << cursor_pos << std::endl;
 		ivec2 pos = cursor_pos + ivec2(7, 4);
 
 		auto fntf_ptr = ctx.get_current_font_face();
