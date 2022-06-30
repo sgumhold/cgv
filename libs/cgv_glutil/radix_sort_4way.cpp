@@ -99,7 +99,8 @@ bool radix_sort_4way::init(context& ctx, size_t count) {
 	return true;
 }
 
-void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos, const vec3& view_dir, GLuint auxiliary_buffer) {
+//void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos, const vec3& view_dir, GLuint auxiliary_buffer) {
+double radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos, const vec3& view_dir, GLuint auxiliary_buffer) {
 
 	GLuint values_in_buffer = value_buffer;
 
@@ -147,7 +148,7 @@ void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer
 		std::swap(values_in_buffer, values_out_ssbo);
 	}
 
-	//end_time_query();
+	//double time = end_time_query();
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
@@ -156,6 +157,8 @@ void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, 0);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, 0);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, 0);
+
+	return -1.0;
 }
 
 }
