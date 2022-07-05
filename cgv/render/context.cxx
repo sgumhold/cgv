@@ -142,7 +142,7 @@ context::context()
 	cursor_y = y_offset;
 	nr_identations = 0;
 	at_line_begin = true;
-	enable_vsynch = true;
+	enable_vsync = true;
 	current_color = rgba(1, 1, 1, 1);
 	sRGB_framebuffer = true;
 	gamma = 2.2f;
