@@ -1,4 +1,16 @@
 #include "multi_transforming.h"
+#include <cgv/base/node.h>
+
+cgv::base::node* cgv::nui::multi_transforming::get_node()
+{
+	if (!tried_node_cast) {
+		_node = dynamic_cast<base::node*>(this);
+		tried_node_cast = true;
+		if (!_node)
+			throw std::exception("Objects implementing 'multi_transforming' have to inherit 'base::node'");
+	}
+	return _node;
+}
 
 void cgv::nui::multi_transforming::set_active_object(int primitive_index)
 {
@@ -71,24 +83,34 @@ const cgv::render::render_types::mat4& cgv::nui::multi_transforming::get_global_
 
 void cgv::nui::multi_transforming::set_model_transform(const mat4& _M)
 {
+	base::node* obj = get_node();
 	if (active_object == -1) {
 		M = _M;
 		iM = inv(_M);
+		obj->on_set(&M);
+		obj->on_set(&iM);
 	}
 	else {
 		sub_matrices[active_object] = _M;
 		inverse_sub_matrices[active_object] = inv(_M);
+		obj->on_set(&sub_matrices);
+		obj->on_set(&inverse_sub_matrices);
 	}
 }
 
 void cgv::nui::multi_transforming::set_model_transform(const mat4& _M, const mat4& _iM)
 {
+	base::node* obj = get_node();
 	if (active_object == -1) {
 		M = _M;
 		iM = _iM;
+		obj->on_set(&M);
+		obj->on_set(&iM);
 	} else {
 		sub_matrices[active_object] = _M;
 		inverse_sub_matrices[active_object] = _iM;
+		obj->on_set(&sub_matrices);
+		obj->on_set(&inverse_sub_matrices);
 	}
 }
 
@@ -97,8 +119,11 @@ void cgv::nui::multi_transforming::set_global_model_transform(const mat4& _M)
 	if (active_object == -1) {
 		transforming::set_global_model_transform(_M);
 	} else {
+		base::node* obj = get_node();
 		sub_matrices[active_object] = get_global_inverse_model_transform() * _M;
 		inverse_sub_matrices[active_object] = inv(M);
+		obj->on_set(&sub_matrices);
+		obj->on_set(&inverse_sub_matrices);
 	}
 }
 
@@ -108,8 +133,11 @@ void cgv::nui::multi_transforming::set_global_model_transform(const mat4& _M, co
 		transforming::set_global_model_transform(_M, _iM);
 	}
 	else {
+		base::node* obj = get_node();
 		sub_matrices[active_object] = get_global_inverse_model_transform() * _M;
 		inverse_sub_matrices[active_object] = get_global_model_transform() * _iM;
+		obj->on_set(&sub_matrices);
+		obj->on_set(&inverse_sub_matrices);
 	}
 }
 

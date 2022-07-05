@@ -12,7 +12,7 @@ namespace cgv {
 				_node = dynamic_cast<base::node*>(this);
 				tried_node_cast = true;
 				if (!_node)
-					std::cout << "Error: Objects implementing 'transforming' have to inherit 'base::node'" << std::endl;
+					throw std::exception("Objects implementing 'transforming' have to inherit 'base::node'");
 			}
 			return _node;
 		}
@@ -78,24 +78,36 @@ namespace cgv {
 		{
 			M = _M;
 			iM = inv(M);
+			base::node* obj = get_node();
+			obj->on_set(&M);
+			obj->on_set(&iM);
 		}
 		/// set model transform and inverse model transform
 		void transforming::set_model_transform(const mat4& _M, const mat4& _iM)
 		{
 			M = _M;
 			iM = _iM;
+			base::node* obj = get_node();
+			obj->on_set(&M);
+			obj->on_set(&iM);
 		}
 
 		void transforming::set_global_model_transform(const mat4& _M)
 		{
 			M = get_global_inverse_model_transform() * _M;
 			iM = inv(M);
+			base::node* obj = get_node();
+			obj->on_set(&M);
+			obj->on_set(&iM);
 		}
 
 		void transforming::set_global_model_transform(const mat4& _M, const mat4& _iM)
 		{
 			M = get_global_inverse_model_transform() * _M;
 			iM = get_global_model_transform() * _iM;
+			base::node* obj = get_node();
+			obj->on_set(&M);
+			obj->on_set(&iM);
 		}
 
 		/// transform a point
