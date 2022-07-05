@@ -37,7 +37,7 @@ void gpu_sorter::begin_time_query() {
 	glBeginQuery(GL_TIME_ELAPSED, time_query);
 }
 
-void gpu_sorter::end_time_query() {
+double gpu_sorter::end_time_query() {
 
 	glEndQuery(GL_TIME_ELAPSED);
 
@@ -52,11 +52,13 @@ void gpu_sorter::end_time_query() {
 	float alpha = 1.0f / static_cast<float>(measurements);
 	avg_time = (1.0f - alpha) * avg_time + alpha * (elapsed_time / 1000000.0f);
 
-	if(measurements == 32) {
-		std::cout << "Sorting done in " << avg_time << " ms -> " << static_cast<float>(n) / (1000.0f * avg_time) << " M/s" << std::endl;
-		measurements = 0;
-		avg_time = 0.0f;
-	}
+	//if(measurements == 32) {
+	//	std::cout << "Sorting done in " << avg_time << " ms -> " << static_cast<float>(n) / (1000.0f * avg_time) << " M/s" << std::endl;
+	//	measurements = 0;
+	//	avg_time = 0.0f;
+	//}
+
+	return static_cast<double>(elapsed_time) / 1000000.0;
 }
 
 void gpu_sorter::set_value_format(cgv::type::info::TypeId type, unsigned component_count) {

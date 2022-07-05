@@ -69,7 +69,7 @@ protected:
 
 	void begin_time_query();
 
-	void end_time_query();
+	double end_time_query();
 
 	template<typename T>
 	std::vector<T> read_ssbo(GLuint ssbo, unsigned int n) {
@@ -159,7 +159,7 @@ public:
 	void reset_key_definition_override() { key_definition = ""; }
 
 	virtual bool init(context& ctx, size_t count) = 0;
-	virtual void sort(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos, const vec3& view_dir, GLuint auxiliary_buffer = 0) = 0;
+	virtual double sort(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos, const vec3& view_dir, GLuint auxiliary_buffer = 0) = 0;
 };
 
 }
