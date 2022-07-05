@@ -11,6 +11,9 @@ namespace cgv {
 ///	Used to hide the existence of subobjects handled through primitive indices from classes relying on the transforming interface (e.g. posable or gizmos).
 class CGV_API multi_transforming : public transforming
 {
+	base::node* _node;
+	bool tried_node_cast{ false };
+	base::node* get_node();
 protected:
 	/// store model and inverse model matrices of sub-objects
 	std::vector<mat4> sub_matrices, inverse_sub_matrices;
@@ -18,11 +21,8 @@ protected:
 	///	Main object active if -1.
 	int active_object = { -1 };
 
-public:
 	/// set currently active (sub-)object by primitive index
 	void set_active_object(int primitive_index);
-	/// get currently active (sub-)object primitive index
-	int get_active_object() const;
 	/// add a transform for a new sub object to the end of the list
 	///	Returns the primitive index of the added transform.
 	int add_sub_object_transform(const mat4& transform);
@@ -35,7 +35,10 @@ public:
 	/// remove the sub object transform at the specified index
 	///	Adjusts the currently active object if necessary.
 	void remove_sub_object_transform(int index);
-
+public:
+	multi_transforming() {}
+	/// get currently active (sub-)object primitive index
+	int get_active_object() const;
 	/// read access to model transform (local)
 	const mat4& get_model_transform() const override;
 	/// read access to inverse model transform (local)
