@@ -227,7 +227,7 @@ var classcgv_1_1render_1_1context =
     [ "depth_buffer", "classcgv_1_1render_1_1context.html#afe52005a1741b6dc2f24359d4ae1429e", null ],
     [ "double_buffer", "classcgv_1_1render_1_1context.html#a5a98a8b1db44d80db60fe79b0eeda876", null ],
     [ "draw_in_compatibility_mode", "classcgv_1_1render_1_1context.html#ad3c1a4c03f50cdd513ba835445256dcf", null ],
-    [ "enable_vsynch", "classcgv_1_1render_1_1context.html#ab7132f6e79a7b94b0b52598c83d6545a", null ],
+    [ "enable_vsync", "classcgv_1_1render_1_1context.html#a2560a70c6de7a9b0ab8243203c90a843", null ],
     [ "enabled_light_source_handles", "classcgv_1_1render_1_1context.html#af3a47c9f35b3aef52fae967a3d68d10f", null ],
     [ "forward_compatible", "classcgv_1_1render_1_1context.html#a826c06a8030ff5239c4f34bc711c4440", null ],
     [ "frame_buffer_stack", "classcgv_1_1render_1_1context.html#aeb41e43ab76cb92f6c49c1884371be02", null ],

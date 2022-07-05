@@ -59,7 +59,7 @@ var searchData=
   ['enable_5fviewport_5findividual_5fview_732',['enable_viewport_individual_view',['../classcgv_1_1render_1_1view.html#ac8c272470384fcacd9ab123791575745',1,'cgv::render::view']]],
   ['enable_5fviewport_5fsplitting_733',['enable_viewport_splitting',['../classcgv_1_1render_1_1view.html#aba078260ea4e43714b47f85bbbeb34eb',1,'cgv::render::view']]],
   ['enable_5fvr_5fevent_5fdebugging_734',['enable_vr_event_debugging',['../classvr__view__interactor.html#a3a61d0219ff07ca030b7e04a79c48130',1,'vr_view_interactor']]],
-  ['enable_5fvsynch_735',['enable_vsynch',['../classcgv_1_1render_1_1context.html#ab7132f6e79a7b94b0b52598c83d6545a',1,'cgv::render::context']]],
+  ['enable_5fvsync_735',['enable_vsync',['../classcgv_1_1render_1_1context.html#a2560a70c6de7a9b0ab8243203c90a843',1,'cgv::render::context']]],
   ['enabled_736',['enabled',['../structgamepad_1_1driver__info.html#ac3a54effbd73ab474b2c73770763bef7',1,'gamepad::driver_info::enabled()'],['../structgamepad_1_1device__info.html#a7aaf963df8817b232178ae927d849b63',1,'gamepad::device_info::enabled()']]],
   ['enabled_5flight_5fsource_5fhandles_737',['enabled_light_source_handles',['../classcgv_1_1render_1_1context.html#af3a47c9f35b3aef52fae967a3d68d10f',1,'cgv::render::context']]],
   ['encode_5fbase64_738',['encode_base64',['../namespacecgv_1_1utils.html#a3c8a2e0c1f84101744cbdb8503968d48',1,'cgv::utils']]],

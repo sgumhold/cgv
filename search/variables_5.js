@@ -9,7 +9,7 @@ var searchData=
   ['enable_5flighting_6336',['enable_lighting',['../structcgv_1_1render_1_1volume__render__style.html#a1086664ce53ea03d65e8c2889fb8aedf',1,'cgv::render::volume_render_style']]],
   ['enable_5fnoise_5foffset_6337',['enable_noise_offset',['../structcgv_1_1render_1_1volume__render__style.html#a052d61d3fe887de64cc77e67b374480a',1,'cgv::render::volume_render_style']]],
   ['enable_5fscale_5fadjustment_6338',['enable_scale_adjustment',['../structcgv_1_1render_1_1volume__render__style.html#afb48f68ee68c20ed3cc60288bf70861d',1,'cgv::render::volume_render_style']]],
-  ['enable_5fvsynch_6339',['enable_vsynch',['../classcgv_1_1render_1_1context.html#ab7132f6e79a7b94b0b52598c83d6545a',1,'cgv::render::context']]],
+  ['enable_5fvsync_6339',['enable_vsync',['../classcgv_1_1render_1_1context.html#a2560a70c6de7a9b0ab8243203c90a843',1,'cgv::render::context']]],
   ['enabled_6340',['enabled',['../structgamepad_1_1driver__info.html#ac3a54effbd73ab474b2c73770763bef7',1,'gamepad::driver_info::enabled()'],['../structgamepad_1_1device__info.html#a7aaf963df8817b232178ae927d849b63',1,'gamepad::device_info::enabled()']]],
   ['enabled_5flight_5fsource_5fhandles_6341',['enabled_light_source_handles',['../classcgv_1_1render_1_1context.html#af3a47c9f35b3aef52fae967a3d68d10f',1,'cgv::render::context']]],
   ['end_5fsample_6342',['end_sample',['../structcgv_1_1plot_1_1plot__base__config.html#afae1e32c85f99d0c3cc322d5a9d7ca66',1,'cgv::plot::plot_base_config']]],
