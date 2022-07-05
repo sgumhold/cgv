@@ -311,9 +311,9 @@ void gl_context::init_render_pass()
 		}
 	}
 #ifdef WIN32
-	wglSwapIntervalEXT(enable_vsynch ? 1 : 0);
+	wglSwapIntervalEXT(enable_vsync ? 1 : 0);
 #else
-	glXSwapIntervalEXT(glXGetCurrentDisplay(), glXGetCurrentDrawable(), enable_vsynch ? 1 : 0);
+	glXSwapIntervalEXT(glXGetCurrentDisplay(), glXGetCurrentDrawable(), enable_vsync ? 1 : 0);
 #endif
 	if (sRGB_framebuffer)
 		glEnable(GL_FRAMEBUFFER_SRGB);
