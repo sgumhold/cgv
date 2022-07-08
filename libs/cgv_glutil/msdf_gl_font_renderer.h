@@ -16,7 +16,7 @@ protected:
 	cgv::render::shader_program prog;
 
 	bool build_shader_program(const cgv::render::context& ctx) {
-		return prog.build_program(ctx, "sdf_font2d.glpr", true);// , defines);
+		return prog.build_program(ctx, "sdf_font2d.glpr", true);
 	}
 
 public:
