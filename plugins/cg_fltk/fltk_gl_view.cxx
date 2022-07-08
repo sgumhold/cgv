@@ -91,7 +91,7 @@ bool fltk_gl_view::self_reflect(cgv::reflect::reflection_handler& srh)
 	return
 		context_config::self_reflect(srh) &&
 		srh.reflect_member("version", version) &&
-		srh.reflect_member("enable_vsynch", enable_vsynch) &&
+		srh.reflect_member("vsync", enable_vsync) &&
 		srh.reflect_member("instant_redraw", instant_redraw) &&
 		srh.reflect_member("sRGB_framebuffer", sRGB_framebuffer) &&
 		srh.reflect_member("show_help", show_help) &&
@@ -907,7 +907,7 @@ void fltk_gl_view::create_gui()
 		provider::align("\a");
 		add_view("FPS", fps, "", "w=72", " ");
 		add_member_control(this, "EWMA", fps_alpha, "value_slider", "min=0;max=1;ticks=true;w=120;align='B';tooltip='coefficient of exponentially weighted moving average'");
-		add_member_control(this, "VSync", enable_vsynch, "toggle", "w=92", " ");
+		add_member_control(this, "VSync", enable_vsync, "toggle", "w=92", " ");
 		add_member_control(this, "Instant Redraw", instant_redraw, "toggle", "w=100");
 		add_member_control(this, "Gamma", gamma, "value_slider", "min=0.2;max=5;ticks=true;log=true;tooltip='default gamma used for inverse gamma correction of fragment color'");
 		add_member_control(this, "sRGB Framebuffer", sRGB_framebuffer, "check");

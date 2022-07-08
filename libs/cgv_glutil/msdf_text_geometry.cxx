@@ -47,12 +47,18 @@ void msdf_text_geometry::set_alignment(unsigned i, const cgv::render::TextAlignm
 		texts[i].alignment = alignment;
 }
 
-void msdf_text_geometry::add_text(const std::string& str, const ivec2& position, const cgv::render::TextAlignment alignment) {
+void msdf_text_geometry::set_angle(unsigned i, const float angle) {
+	if(i < texts.size())
+		texts[i].angle = angle;
+}
+
+void msdf_text_geometry::add_text(const std::string& str, const ivec2& position, const cgv::render::TextAlignment alignment, float angle) {
 	text_info text;
 	text.str = str;
 	text.position = position;
 	text.size = vec2(compute_length(text.str), 1.0f);
 	text.alignment = alignment;
+	text.angle = angle;
 
 	end_text(text);
 	state_out_of_date = true;

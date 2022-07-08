@@ -297,7 +297,7 @@ void main()
 		float step_fac = -exp(-step_size) + 1.0;
 		color_in.a *= step_fac;
 #endif
-		// make sure the alpha alue does not exceed 1
+		// make sure the alpha value does not exceed 1
 		color_in.a = min(color_in.a, 1.0);
 
 		// premultiply alpha
