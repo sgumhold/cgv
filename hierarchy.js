@@ -2,6 +2,8 @@ var hierarchy =
 [
     [ "cgv::media::axis_aligned_box< cgv::type::int32_type, 2 >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
     [ "cgv::media::axis_aligned_box< double, 3 >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
+    [ "cgv::media::axis_aligned_box< float, 2 >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
+    [ "cgv::media::axis_aligned_box< float, 3 >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
     [ "cgv::media::axis_aligned_box< int, 2 >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
     [ "cgv::media::axis_aligned_box< T, 2 >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
     [ "cgv::base::action", "classcgv_1_1base_1_1action.html", [
@@ -302,12 +304,7 @@ var hierarchy =
     [ "cgv::os::web_server_provider_registration< T >", "structcgv_1_1os_1_1web__server__provider__registration.html", null ],
     [ "cgv::plot::attribute_source", "structcgv_1_1plot_1_1attribute__source.html", null ],
     [ "cgv::plot::attribute_source_array", "structcgv_1_1plot_1_1attribute__source__array.html", null ],
-    [ "cgv::plot::axis_config", "classcgv_1_1plot_1_1axis__config.html", null ],
     [ "cgv::plot::plot_base::label_info", "structcgv_1_1plot_1_1plot__base_1_1label__info.html", null ],
-    [ "cgv::plot::plot_base_config", "structcgv_1_1plot_1_1plot__base__config.html", [
-      [ "cgv::plot::plot2d_config", "structcgv_1_1plot_1_1plot2d__config.html", null ],
-      [ "cgv::plot::plot3d_config", "structcgv_1_1plot_1_1plot3d__config.html", null ]
-    ] ],
     [ "cgv::plot::tick_config", "structcgv_1_1plot_1_1tick__config.html", null ],
     [ "cgv::ppp::namespace_info", "structcgv_1_1ppp_1_1namespace__info.html", null ],
     [ "cgv::ppp::ph_processor", "classcgv_1_1ppp_1_1ph__processor.html", null ],
@@ -361,7 +358,6 @@ var hierarchy =
     [ "cgv::reflect::self_reflection_tag", "structcgv_1_1reflect_1_1self__reflection__tag.html", [
       [ "cgv::base::base", "classcgv_1_1base_1_1base.html", null ]
     ] ],
-    [ "cgv::render::a_buffer", "classcgv_1_1render_1_1a__buffer.html", null ],
     [ "cgv::render::attribute_array_manager", "classcgv_1_1render_1_1attribute__array__manager.html", null ],
     [ "cgv::render::context::light_source_status", "structcgv_1_1render_1_1context_1_1light__source__status.html", null ],
     [ "cgv::render::context::render_info", "structcgv_1_1render_1_1context_1_1render__info.html", null ],
@@ -396,45 +392,56 @@ var hierarchy =
         [ "cgv::render::vertex_buffer", "classcgv_1_1render_1_1vertex__buffer.html", null ]
       ] ]
     ] ],
-    [ "cgv::render::render_info", "classcgv_1_1render_1_1render__info.html", [
-      [ "cgv::render::mesh_render_info", "classcgv_1_1render_1_1mesh__render__info.html", null ]
-    ] ],
-    [ "cgv::render::render_style", "structcgv_1_1render_1_1render__style.html", [
-      [ "cgv::render::group_render_style", "structcgv_1_1render_1_1group__render__style.html", [
-        [ "cgv::render::line_render_style", "structcgv_1_1render_1_1line__render__style.html", [
-          [ "cgv::render::box_wire_render_style", "structcgv_1_1render_1_1box__wire__render__style.html", null ]
-        ] ],
-        [ "cgv::render::point_render_style", "structcgv_1_1render_1_1point__render__style.html", null ],
-        [ "cgv::render::slab_render_style", "structcgv_1_1render_1_1slab__render__style.html", null ],
-        [ "cgv::render::surface_render_style", "structcgv_1_1render_1_1surface__render__style.html", [
-          [ "cgv::render::arrow_render_style", "structcgv_1_1render_1_1arrow__render__style.html", null ],
-          [ "cgv::render::box_render_style", "structcgv_1_1render_1_1box__render__style.html", null ],
-          [ "cgv::render::rectangle_render_style", "structcgv_1_1render_1_1rectangle__render__style.html", null ],
-          [ "cgv::render::sphere_render_style", "structcgv_1_1render_1_1sphere__render__style.html", null ],
-          [ "cgv::render::surfel_render_style", "structcgv_1_1render_1_1surfel__render__style.html", null ]
-        ] ]
+    [ "cgv::render::render_types", "structcgv_1_1render_1_1render__types.html", [
+      [ "cgv::plot::axis_config", "classcgv_1_1plot_1_1axis__config.html", null ],
+      [ "cgv::plot::plot_base_config", "structcgv_1_1plot_1_1plot__base__config.html", [
+        [ "cgv::plot::plot2d_config", "structcgv_1_1plot_1_1plot2d__config.html", null ],
+        [ "cgv::plot::plot3d_config", "structcgv_1_1plot_1_1plot3d__config.html", null ]
       ] ],
-      [ "cgv::render::volume_render_style", "structcgv_1_1render_1_1volume__render__style.html", null ]
-    ] ],
-    [ "cgv::render::renderer", "classcgv_1_1render_1_1renderer.html", [
-      [ "cgv::render::group_renderer", "classcgv_1_1render_1_1group__renderer.html", [
-        [ "cgv::render::line_renderer", "classcgv_1_1render_1_1line__renderer.html", [
-          [ "cgv::render::box_wire_renderer", "classcgv_1_1render_1_1box__wire__renderer.html", null ],
-          [ "cgv::render::normal_renderer", "classcgv_1_1render_1_1normal__renderer.html", null ]
-        ] ],
-        [ "cgv::render::point_renderer", "classcgv_1_1render_1_1point__renderer.html", null ],
-        [ "cgv::render::slab_renderer", "classcgv_1_1render_1_1slab__renderer.html", null ],
-        [ "cgv::render::surface_renderer", "classcgv_1_1render_1_1surface__renderer.html", [
-          [ "cgv::render::arrow_renderer", "classcgv_1_1render_1_1arrow__renderer.html", null ],
-          [ "cgv::render::box_renderer", "classcgv_1_1render_1_1box__renderer.html", null ],
-          [ "cgv::render::cone_renderer", "classcgv_1_1render_1_1cone__renderer.html", null ],
-          [ "cgv::render::rectangle_renderer", "classcgv_1_1render_1_1rectangle__renderer.html", null ],
-          [ "cgv::render::sphere_renderer", "classcgv_1_1render_1_1sphere__renderer.html", null ],
-          [ "cgv::render::spline_tube_renderer", "classcgv_1_1render_1_1spline__tube__renderer.html", null ],
-          [ "cgv::render::surfel_renderer", "classcgv_1_1render_1_1surfel__renderer.html", null ]
-        ] ]
+      [ "cgv::render::a_buffer", "classcgv_1_1render_1_1a__buffer.html", null ],
+      [ "cgv::render::context", "classcgv_1_1render_1_1context.html", null ],
+      [ "cgv::render::drawable", "classcgv_1_1render_1_1drawable.html", null ],
+      [ "cgv::render::render_info", "classcgv_1_1render_1_1render__info.html", [
+        [ "cgv::render::mesh_render_info", "classcgv_1_1render_1_1mesh__render__info.html", null ]
       ] ],
-      [ "cgv::render::volume_renderer", "classcgv_1_1render_1_1volume__renderer.html", null ]
+      [ "cgv::render::render_style", "structcgv_1_1render_1_1render__style.html", [
+        [ "cgv::render::group_render_style", "structcgv_1_1render_1_1group__render__style.html", [
+          [ "cgv::render::line_render_style", "structcgv_1_1render_1_1line__render__style.html", [
+            [ "cgv::render::box_wire_render_style", "structcgv_1_1render_1_1box__wire__render__style.html", null ]
+          ] ],
+          [ "cgv::render::point_render_style", "structcgv_1_1render_1_1point__render__style.html", null ],
+          [ "cgv::render::slab_render_style", "structcgv_1_1render_1_1slab__render__style.html", null ],
+          [ "cgv::render::surface_render_style", "structcgv_1_1render_1_1surface__render__style.html", [
+            [ "cgv::render::arrow_render_style", "structcgv_1_1render_1_1arrow__render__style.html", null ],
+            [ "cgv::render::box_render_style", "structcgv_1_1render_1_1box__render__style.html", null ],
+            [ "cgv::render::rectangle_render_style", "structcgv_1_1render_1_1rectangle__render__style.html", null ],
+            [ "cgv::render::sphere_render_style", "structcgv_1_1render_1_1sphere__render__style.html", null ],
+            [ "cgv::render::surfel_render_style", "structcgv_1_1render_1_1surfel__render__style.html", null ]
+          ] ]
+        ] ],
+        [ "cgv::render::volume_render_style", "structcgv_1_1render_1_1volume__render__style.html", null ]
+      ] ],
+      [ "cgv::render::renderer", "classcgv_1_1render_1_1renderer.html", [
+        [ "cgv::render::group_renderer", "classcgv_1_1render_1_1group__renderer.html", [
+          [ "cgv::render::line_renderer", "classcgv_1_1render_1_1line__renderer.html", [
+            [ "cgv::render::box_wire_renderer", "classcgv_1_1render_1_1box__wire__renderer.html", null ],
+            [ "cgv::render::normal_renderer", "classcgv_1_1render_1_1normal__renderer.html", null ]
+          ] ],
+          [ "cgv::render::point_renderer", "classcgv_1_1render_1_1point__renderer.html", null ],
+          [ "cgv::render::slab_renderer", "classcgv_1_1render_1_1slab__renderer.html", null ],
+          [ "cgv::render::surface_renderer", "classcgv_1_1render_1_1surface__renderer.html", [
+            [ "cgv::render::arrow_renderer", "classcgv_1_1render_1_1arrow__renderer.html", null ],
+            [ "cgv::render::box_renderer", "classcgv_1_1render_1_1box__renderer.html", null ],
+            [ "cgv::render::cone_renderer", "classcgv_1_1render_1_1cone__renderer.html", null ],
+            [ "cgv::render::rectangle_renderer", "classcgv_1_1render_1_1rectangle__renderer.html", null ],
+            [ "cgv::render::sphere_renderer", "classcgv_1_1render_1_1sphere__renderer.html", null ],
+            [ "cgv::render::spline_tube_renderer", "classcgv_1_1render_1_1spline__tube__renderer.html", null ],
+            [ "cgv::render::surfel_renderer", "classcgv_1_1render_1_1surfel__renderer.html", null ]
+          ] ]
+        ] ],
+        [ "cgv::render::volume_renderer", "classcgv_1_1render_1_1volume__renderer.html", null ]
+      ] ],
+      [ "vr::vr_log", "classvr_1_1vr__log.html", null ]
     ] ],
     [ "cgv::render::textured_rectangle", "structcgv_1_1render_1_1textured__rectangle.html", null ],
     [ "cgv::render::type_descriptor", "structcgv_1_1render_1_1type__descriptor.html", null ],
@@ -513,6 +520,7 @@ var hierarchy =
       [ "cgv::math::fmat< float, 3, 4 >", "classcgv_1_1math_1_1fmat.html", null ],
       [ "cgv::math::fmat< float, 4, 4 >", "classcgv_1_1math_1_1fmat.html", null ]
     ] ],
+    [ "cgv::math::fvec< float, N >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int, N >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int32_t, 4 >", "classcgv_1_1math_1_1fvec.html", null ],

@@ -116,8 +116,8 @@ $(document).ready(function(){initNavTree('cone__renderer_8h_source.html',''); in
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                        } texture_blend_mode;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                        <span class="keywordtype">float</span> texture_blend_factor;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                        <span class="keywordtype">bool</span> texture_tile_from_center;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                        vec2 texture_offset;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                        vec2 texture_tiling;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                        <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a> texture_offset;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                        <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a> texture_tiling;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                        <span class="keywordtype">bool</span> texture_use_reference_length;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                        <span class="keywordtype">float</span> texture_reference_length;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
@@ -126,9 +126,9 @@ $(document).ready(function(){initNavTree('cone__renderer_8h_source.html',''); in
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                        <span class="keywordtype">float</span> ao_distance;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                        <span class="keywordtype">float</span> ao_strength;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                        vec3 tex_offset;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                        vec3 tex_scaling;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                        vec3 tex_coord_scaling;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                        <a class="code" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a> tex_offset;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                        <a class="code" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a> tex_scaling;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                        <a class="code" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a> tex_coord_scaling;</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                        <span class="keywordtype">float</span> texel_size;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                        <span class="keywordtype">float</span> cone_angle_factor;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                        std::vector&lt;vec3&gt; sample_dirs;</div>
@@ -192,11 +192,13 @@ $(document).ready(function(){initNavTree('cone__renderer_8h_source.html',''); in
 <div class="ttc" id="aclasscgv_1_1render_1_1shader__program_html"><div class="ttname"><a href="classcgv_1_1render_1_1shader__program.html">cgv::render::shader_program</a></div><div class="ttdef"><b>Definition:</b> shader_program.h:27</div></div>
 <div class="ttc" id="aclasscgv_1_1reflect_1_1reflection__handler_html"><div class="ttname"><a href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a></div><div class="ttdef"><b>Definition:</b> reflection_handler.h:62</div></div>
 <div class="ttc" id="anamespacecgv_1_1render_html_a41a6e252b09926b43b640b2141c8fb24"><div class="ttname"><a href="namespacecgv_1_1render.html#a41a6e252b09926b43b640b2141c8fb24">cgv::render::ref_cone_renderer</a></div><div class="ttdeci">cone_renderer &amp; ref_cone_renderer(context &amp;ctx, int ref_count_change)</div><div class="ttdoc">reference to a singleton cone renderer that is shared among drawables</div><div class="ttdef"><b>Definition:</b> cone_renderer.cxx:7</div></div>
+<div class="ttc" id="anamespacecgv_1_1render_html_a50cfdc8b08d298d7465d627cdf402590"><div class="ttname"><a href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">cgv::render::vec3</a></div><div class="ttdeci">cgv::math::fvec&lt; float, 3 &gt; vec3</div><div class="ttdoc">declare type of 3d vectors</div><div class="ttdef"><b>Definition:</b> render_types.h:25</div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1surface__renderer_html"><div class="ttname"><a href="classcgv_1_1render_1_1surface__renderer.html">cgv::render::surface_renderer</a></div><div class="ttdoc">base classes for renderers that support surface rendering</div><div class="ttdef"><b>Definition:</b> surface_renderer.h:44</div></div>
 <div class="ttc" id="astructcgv_1_1reflect_1_1extern__reflection__traits_html"><div class="ttname"><a href="structcgv_1_1reflect_1_1extern__reflection__traits.html">cgv::reflect::extern_reflection_traits</a></div><div class="ttdoc">this reflection traits implementation is used for external self_reflect implementations of instances ...</div><div class="ttdef"><b>Definition:</b> reflect_extern.h:27</div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1cone__renderer_html_a95ee9063dd292a0bd3dfef3edebb91a6"><div class="ttname"><a href="classcgv_1_1render_1_1cone__renderer.html#a95ee9063dd292a0bd3dfef3edebb91a6">cgv::render::cone_renderer::shader_defines</a></div><div class="ttdeci">shader_define_map shader_defines</div><div class="ttdoc">the shader defines used to build the shader, used to comapre against new defines to determine if the ...</div><div class="ttdef"><b>Definition:</b> cone_renderer.h:63</div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> vr_calib.cxx:9</div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdef"><b>Definition:</b> context.h:527</div></div>
+<div class="ttc" id="anamespacecgv_1_1render_html_a157618fc22b8c3f110211a4493680d42"><div class="ttname"><a href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">cgv::render::vec2</a></div><div class="ttdeci">cgv::math::fvec&lt; float, 2 &gt; vec2</div><div class="ttdoc">declare type of 2d vectors</div><div class="ttdef"><b>Definition:</b> render_types.h:23</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
