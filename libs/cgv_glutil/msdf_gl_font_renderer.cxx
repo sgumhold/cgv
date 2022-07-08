@@ -15,27 +15,32 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, const ivec2& viewpor
 	size_t end = count < 0 ? tg.size() : offset + static_cast<size_t>(count);
 	end = std::min(end, tg.size());
 
-	//for(const auto& text : tg.ref_texts()) {
 	for(size_t i = offset; i < end; ++i) {
 		const auto& text = tg.ref_texts()[i];
-		vec2 position(text.position);
-		vec2 size = text.size * tg.get_font_size();
 
-		position -= 0.5f * size;
+		ivec4 position_offset;
+		position_offset.x() = round(text.position.x());
+		position_offset.y() = round(text.position.y());
+
+		vec2 half_size = 0.5f * text.size * tg.get_font_size();
+		vec2 offset = -half_size;
 
 		if(text.alignment & cgv::render::TA_LEFT)
-			position.x() += 0.5f * size.x();
+			offset.x() += half_size.x();
 		else if(text.alignment & cgv::render::TA_RIGHT)
-			position.x() -= 0.5f * size.x();
+			offset.x() -= half_size.x();
 
 		if(text.alignment & cgv::render::TA_TOP)
-			position.y() -= 0.5f * size.y();
+			offset.y() -= half_size.y();
 		else if(text.alignment & cgv::render::TA_BOTTOM)
-			position.y() += 0.5f * size.y();
+			offset.y() += half_size.y();
 
+		position_offset.z() = round(offset.x());
+		position_offset.w() = round(offset.y());
 
-		prog.set_uniform(ctx, "position", ivec2(round(position)));
+		prog.set_uniform(ctx, "position_offset", position_offset);
 		prog.set_uniform(ctx, "font_size", tg.get_font_size());
+		prog.set_uniform(ctx, "angle", text.angle);
 
 		glDrawArraysInstancedBaseInstance(GL_TRIANGLE_STRIP, (GLint)0, (GLsizei)4, (GLsizei)text.str.size(), (GLuint)text.offset);
 	}

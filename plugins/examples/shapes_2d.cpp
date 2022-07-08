@@ -122,6 +122,7 @@ protected:
 	// text appearance
 	float font_size = 32.0f;
 	cgv::render::TextAlignment text_align_h, text_align_v;
+	float text_angle = 0.0f;
 
 	cgv::glutil::msdf_font msdf_font;
 	cgv::glutil::msdf_text_geometry texts;
@@ -234,6 +235,11 @@ public:
 		if(member_ptr == &text_align_h || member_ptr == &text_align_v) {
 			for(unsigned i=0; i<(unsigned)texts.size(); ++i)
 				texts.set_alignment(i, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
+		}
+
+		if(member_ptr == &text_angle) {
+			for(unsigned i = 0; i < (unsigned)texts.size(); ++i)
+				texts.set_angle(i, text_angle);
 		}
 
 		if(member_ptr == &font_size) {
@@ -648,6 +654,7 @@ public:
 			add_member_control(this, "Font Size", font_size, "value_slider", "min=1;max=256;step=0.5;ticks=true");
 			add_member_control(this, "Horizontal Alignment", text_align_h, "dropdown", "enums='Center=0,Left=1,Right=2'");
 			add_member_control(this, "Vertical Alignment", text_align_v, "dropdown", "enums='Center=0,Top=4,Botom=8'");
+			add_member_control(this, "Angle", text_angle, "value_slider", "min=0;max=360;step=0.1;ticks=true");
 			align("\b");
 			end_tree_node(text_style);
 		}

@@ -14,10 +14,10 @@ protected:
 	struct text_info {
 		std::string str;
 		int offset;
-		//int count;
 		ivec2 position;
 		vec2 size;
 		cgv::render::TextAlignment alignment;
+		float angle;
 	};
 
 	struct vertex_type {
@@ -69,11 +69,13 @@ public:
 
 	void set_alignment(unsigned i, const cgv::render::TextAlignment alignment);
 
+	void set_angle(unsigned i, const float angle);
+
 	size_t size() const { return texts.size(); }
 
 	const std::vector<text_info>& ref_texts() const { return texts; }
 
-	void add_text(const std::string& str, const ivec2& position, const cgv::render::TextAlignment alignment);
+	void add_text(const std::string& str, const ivec2& position = ivec2(0), const cgv::render::TextAlignment alignment = cgv::render::TA_NONE, float angle = 0.0f);
 
 	bool create(cgv::render::context& ctx);
 
