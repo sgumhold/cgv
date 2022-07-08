@@ -162,8 +162,10 @@ public:
 				prog.set_uniform(ctx,"tex", 0);
 				prog.set_uniform(ctx,"img_tex", 1);
 				prog.set_uniform(ctx, "map_color_to_material", 3);
+				
 				// draw scene
 				ctx.tesselate_unit_cube();
+
 			// disable shader program
 			prog.disable(ctx);
 			// and textures
