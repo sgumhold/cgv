@@ -139,10 +139,12 @@ var searchData=
   ['axis_5faligned_5fbox_140',['axis_aligned_box',['../classcgv_1_1media_1_1axis__aligned__box.html',1,'cgv::media::axis_aligned_box&lt; T, N &gt;'],['../classcgv_1_1media_1_1axis__aligned__box.html#a7728e0b4cbfddcd994c6a98a4fc85c80',1,'cgv::media::axis_aligned_box::axis_aligned_box()'],['../classcgv_1_1media_1_1axis__aligned__box.html#a5fa3fc58318b2ee8b9b8f9cc24879015',1,'cgv::media::axis_aligned_box::axis_aligned_box(const axis_aligned_box&lt; S, N &gt; &amp;B)'],['../classcgv_1_1media_1_1axis__aligned__box.html#a34c00f0cf3312e3e9fa16f0f27a6bd4d',1,'cgv::media::axis_aligned_box::axis_aligned_box(const fpnt_type &amp;_minp, const fpnt_type &amp;_maxp)'],['../classcgv_1_1media_1_1axis__aligned__box.html#a2127ea375003888a7aff669cd12de41e',1,'cgv::media::axis_aligned_box::axis_aligned_box(const pnt_type &amp;_minp, const pnt_type &amp;_maxp)']]],
   ['axis_5faligned_5fbox_3c_20cgv_3a_3atype_3a_3aint32_5ftype_2c_202_20_3e_141',['axis_aligned_box&lt; cgv::type::int32_type, 2 &gt;',['../classcgv_1_1media_1_1axis__aligned__box.html',1,'cgv::media']]],
   ['axis_5faligned_5fbox_3c_20double_2c_203_20_3e_142',['axis_aligned_box&lt; double, 3 &gt;',['../classcgv_1_1media_1_1axis__aligned__box.html',1,'cgv::media']]],
-  ['axis_5faligned_5fbox_3c_20int_2c_202_20_3e_143',['axis_aligned_box&lt; int, 2 &gt;',['../classcgv_1_1media_1_1axis__aligned__box.html',1,'cgv::media']]],
-  ['axis_5faligned_5fbox_3c_20t_2c_202_20_3e_144',['axis_aligned_box&lt; T, 2 &gt;',['../classcgv_1_1media_1_1axis__aligned__box.html',1,'cgv::media']]],
-  ['axis_5fangle_5f2_5fquat_145',['axis_angle_2_quat',['../namespacecgv_1_1math.html#a16ff4fb26f360378f4a2dce97875f671',1,'cgv::math']]],
-  ['axis_5fconfig_146',['axis_config',['../classcgv_1_1plot_1_1axis__config.html',1,'cgv::plot::axis_config'],['../classcgv_1_1plot_1_1axis__config.html#a40f4a778be42865e1a5255f014d6c9f8',1,'cgv::plot::axis_config::axis_config()']]],
-  ['axis_5ftype_147',['axis_type',['../structvr_1_1vr__controller__info.html#ac1a70cf307fe85cc2b103df08e26566d',1,'vr::vr_controller_info']]],
-  ['axisenum_148',['AxisEnum',['../classcgv_1_1math_1_1quaternion.html#a9e78d41a54a2ed4d2309b7e1068bcb09',1,'cgv::math::quaternion']]]
+  ['axis_5faligned_5fbox_3c_20float_2c_202_20_3e_143',['axis_aligned_box&lt; float, 2 &gt;',['../classcgv_1_1media_1_1axis__aligned__box.html',1,'cgv::media']]],
+  ['axis_5faligned_5fbox_3c_20float_2c_203_20_3e_144',['axis_aligned_box&lt; float, 3 &gt;',['../classcgv_1_1media_1_1axis__aligned__box.html',1,'cgv::media']]],
+  ['axis_5faligned_5fbox_3c_20int_2c_202_20_3e_145',['axis_aligned_box&lt; int, 2 &gt;',['../classcgv_1_1media_1_1axis__aligned__box.html',1,'cgv::media']]],
+  ['axis_5faligned_5fbox_3c_20t_2c_202_20_3e_146',['axis_aligned_box&lt; T, 2 &gt;',['../classcgv_1_1media_1_1axis__aligned__box.html',1,'cgv::media']]],
+  ['axis_5fangle_5f2_5fquat_147',['axis_angle_2_quat',['../namespacecgv_1_1math.html#a16ff4fb26f360378f4a2dce97875f671',1,'cgv::math']]],
+  ['axis_5fconfig_148',['axis_config',['../classcgv_1_1plot_1_1axis__config.html',1,'cgv::plot::axis_config'],['../classcgv_1_1plot_1_1axis__config.html#a40f4a778be42865e1a5255f014d6c9f8',1,'cgv::plot::axis_config::axis_config()']]],
+  ['axis_5ftype_149',['axis_type',['../structvr_1_1vr__controller__info.html#ac1a70cf307fe85cc2b103df08e26566d',1,'vr::vr_controller_info']]],
+  ['axisenum_150',['AxisEnum',['../classcgv_1_1math_1_1quaternion.html#a9e78d41a54a2ed4d2309b7e1068bcb09',1,'cgv::math::quaternion']]]
 ];
