@@ -44,23 +44,25 @@ namespace cgv {
 				}
 				return data;
 			}
-			size_t read_system_output(std::string cmd, uint8_t* buffer, size_t buffer_size, const char* progression_text = 0, bool use_cerr = false)
+			size_t read_system_output(std::string cmd, uint8_t* buffer, size_t buffer_size, const char* progression_text = 0, bool use_cerr = false, void (*on_progress_update)(int,void*) = 0, void* user_data = 0, size_t block_size = 4096)
 			{
-				static const unsigned BUFFER_SIZE = 4096;
 				cgv::utils::progression* prog_ptr = 0;
 				if (progression_text != 0)
-					prog_ptr = new cgv::utils::progression(progression_text, buffer_size/BUFFER_SIZE, 20);
+					prog_ptr = new cgv::utils::progression(progression_text, buffer_size/block_size, 20);
 				FILE* fp;
 				if (use_cerr)
 					cmd.append(" 2>&1");
 				fp = popen(cmd.c_str(), "rb");
 				size_t nr_bytes_read = 0;
+				int block_cnt = 0;
 				if (fp) {
 					while (nr_bytes_read < buffer_size && !feof(fp)) {
-						size_t nr_bytes = std::min(size_t(BUFFER_SIZE), buffer_size - nr_bytes_read);
+						size_t nr_bytes = std::min(block_size, buffer_size - nr_bytes_read);
 						size_t nr_read = fread(buffer + nr_bytes_read, 1, nr_bytes, fp);
 						if (prog_ptr)
 							prog_ptr->step();
+						if (on_progress_update)
+							on_progress_update(++block_cnt, user_data);
 						nr_bytes_read += nr_read;
 						if (nr_read < nr_bytes)
 							break;
@@ -72,7 +74,7 @@ namespace cgv {
 
 			bool read_volume_from_video_with_ffmpeg(volume& V, const std::string& file_name,
 				volume::dimension_type dims, volume::extent_type extent, const cgv::data::component_format& cf,
-				size_t offset, FlipType flip_t)
+				size_t offset, FlipType flip_t, void (*on_progress_update)(int,void*), void* user_data)
 			{
 				std::string fn_in_quotes = std::string("\"") + cgv::utils::file::platform_path(file_name) + "\"";
 				if (dims(0) == -1 || dims(1) == -1 || dims(2) == -1) {
@@ -175,10 +177,15 @@ namespace cgv {
 				}
 				cmd += " pipe:1";
 				std::cout << "COMMAND:\n" << cmd << "\n" << std::endl;
-				size_t bytes_read = read_system_output(cmd, V.get_data_ptr<uint8_t>(), V.get_size(), "reading video");
+				if (on_progress_update)
+					on_progress_update(0, user_data);
+				
+				size_t bytes_read = read_system_output(cmd, V.get_data_ptr<uint8_t>(), V.get_size(), "reading video", false, on_progress_update, user_data, V.get_slice_size());
 				if (bytes_read < V.get_size()) {
 					std::cerr << "Warning: could only read " << bytes_read << " of volume with size " << V.get_size() << std::endl;
 				}
+				if (on_progress_update)
+					on_progress_update(V.get_dimensions()(2) + 1, user_data);
 				return true;
 			}
 			bool read_from_sliced_volume(const std::string& file_name, volume& V)
