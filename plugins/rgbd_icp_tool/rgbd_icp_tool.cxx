@@ -189,6 +189,8 @@ void rgbd_icp_tool::create_gui()
 	connect_copy(add_button("ICP")->click, rebind(this, &rgbd_icp_tool::on_reg_ICP_cb));
 	connect_copy(add_button("SICP")->click, rebind(this, &rgbd_icp_tool::on_reg_SICP_cb));
 	connect_copy(add_button("GoICP")->click, rebind(this, &rgbd_icp_tool::on_reg_GoICP_cb));
+	connect_copy(add_button("MergePCs")->click, rebind(this, &rgbd_icp_tool::on_merge_pcs));
+	connect_copy(add_button("save pc")->click, rebind(this, &rgbd_icp_tool::on_save_pc));
 
 	add_decorator("point cloud", "heading", "level=2");
 	connect_copy(add_control("Point size", source_srs.point_size, "value_slider", "min=0.01;max=5.0;log=false;ticks=true")->value_change, rebind(this, &rgbd_icp_tool::on_point_cloud_style_cb));
@@ -432,6 +434,27 @@ void rgbd_icp_tool::on_reg_GoICP_cb()
 			"pointcloud rescale " << cloud_scale << '\n' <<
 			"final composit transform: \n" << transform << '\n';
 	post_redraw();
+}
+
+void rgbd_icp_tool::on_merge_pcs()
+{
+	if (target_pc.get_nr_points() == 0 || source_pc.get_nr_points() == 0)
+		return;
+	else {
+		std::cout << "target pc: " << target_pc.get_nr_points() << std::endl;
+		target_pc.append(source_pc);
+		std::cout << "merged pc: " << target_pc.get_nr_points() << std::endl;
+	}
+}
+
+void rgbd_icp_tool::on_save_pc() {
+	std::string fn = cgv::gui::file_save_dialog(
+		  "point cloud(*.obj;*.pobj;*.ply;*.bpc;*.lpc;*.xyz;*.pct;*.points;*.wrl;*.apc;*.pnt;*.txt)",
+		  "Point cloud files:*.obj;*.pobj;*.ply;*.bpc;*.lpc;*.xyz;*.pct;*.points;*.wrl;*.apc;*.pnt;*.txt;");
+	if (fn.empty())
+		return;
+	target_pc.write(fn);
+	std::cout << "saved!" << std::endl;
 }
 
 void rgbd_icp_tool::on_reg_find_point_cloud_cb()

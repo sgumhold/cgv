@@ -487,6 +487,8 @@ bool point_cloud::read(const string& _file_name)
 		success = read_ply(_file_name);
 	if (ext == "txt")
 		success = read_txt(_file_name);
+	if (ext == "e57")
+		success = read_e57(_file_name);
 	if (success) {
 		if (N.size() > 0)
 			has_nmls = true;
@@ -645,6 +647,8 @@ bool point_cloud::write(const string& _file_name)
 		return write_ply(_file_name);
 	if (ext == "txt")
 		return write_txt(_file_name);
+	if (ext == "e57")
+		return write_e57(_file_name);
 	cerr << "unknown extension <." << ext << ">." << endl;
 	return false;
 }
@@ -826,6 +830,11 @@ bool point_cloud::read_txt(const std::string& file_name)
 			cout << "read " << P.size() << " points" << endl;
 	}
 	watch.add_time();
+	return true;
+}
+/// read e57 file from leica scanner
+bool point_cloud::read_e57(const std::string& file_name) 
+{
 	return true;
 }
 
@@ -1369,6 +1378,11 @@ bool point_cloud::write_txt(const std::string& file_name) const
 	/*for (i = 0; i < N.size(); ++i)
 		os << "vn " << N[i][0] << " " << N[i][1] << " " << N[i][2] << endl;*/
 	return !os.fail();
+}
+
+bool point_cloud::write_e57(const std::string& file_name) const 
+{
+	return true;
 }
 
 bool point_cloud::read_ascii(const string& file_name)

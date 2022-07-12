@@ -221,6 +221,8 @@ protected:
 	bool read_ply(const std::string& file_name);
 	/// read txt file from leica scanner
 	bool read_txt(const std::string& file_name);
+	/// read e57 file from leica scanner
+	bool read_e57(const std::string& file_name);
 	/// write ascii format, see read_ascii for format description
 	bool write_ascii(const std::string& file_name, bool write_nmls = true) const;
 	/// write binary format, see read_bin for format description
@@ -233,6 +235,8 @@ protected:
 	bool write_lpc(const std::string& file_name);
 	/// write txt format, see read_txt for format description
 	bool write_txt(const std::string& file_name) const;
+	/// write e57 format, see read_txt for format description
+	bool write_e57(const std::string& file_name) const;
 	/// modifiy color for ground truth s3d
 	bool mdf_clr(const RGBA gt_clr, const Idx& id);
 
