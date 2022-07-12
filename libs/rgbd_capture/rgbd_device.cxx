@@ -9,10 +9,56 @@ using namespace std;
 
 namespace rgbd {
 
+	mesh_data_view::mesh_data_view(char* data, const size_t size) {
+		this->parse_data(data, size);
+	}
+
+	bool mesh_data_view::parse_data(char* data, const size_t size) {
+		auto lambda = [&]() {
+			if (size < sizeof(uint32_t)) {
+				return false;
+			}
+			this->points_size = 0;
+			this->triangles_size = 0;
+			this->uv_size = 0;
+			//how many points the mesh has
+			memcpy(&this->points_size, data, sizeof(uint32_t));
+			size_t offset = sizeof(uint32_t);
+			this->points = reinterpret_cast<Point*>(data + offset);
+
+			///the number of triangles is located behind the points array
+			offset += this->points_size * sizeof(Point);
+			if (size <= offset + sizeof(uint32_t)) {
+				return (size == offset); //in this case, data only has points
+			}
+			memcpy(&this->triangles_size, data + offset, sizeof(uint32_t));
+			offset += sizeof(uint32_t);
+			this->triangles = reinterpret_cast<Triangle*>(data + offset);
+
+			///the number of texture coordinates is located behind the triangles array
+			if (size <= offset + sizeof(uint32_t)) {
+				return (size == offset); //true if data only has points and triangles
+			}
+			offset += this->triangles_size * sizeof(Triangle);
+			memcpy(&this->uv_size, data + offset, sizeof(uint32_t));
+			offset += sizeof(uint32_t);
+			this->uv = reinterpret_cast<TextureCoord*>(data + offset);
+			//final size
+			offset += sizeof(TextureCoord)*this->uv_size;
+			return size >= offset;
+		};
+
+		if (!lambda()) {
+			points = nullptr;
+			return false;
+		}
+		return true;
+	}
+
 	std::string get_frame_extension(const frame_format& ff)
 	{
 		static const char* exts[] = {
-			"ir", "rgb", "bgr", "rgba", "bgra", "byr", "dep", "d_p"
+			"ir", "rgb", "bgr", "rgba", "bgra", "byr", "dep", "d_p", "p_tri"
 		};
 		return std::string(exts[ff.pixel_format]) + to_string(ff.nr_bits_per_pixel);
 	}
@@ -20,15 +66,23 @@ namespace rgbd {
 	string compose_file_name(const string& file_name, const frame_format& ff, unsigned idx)
 	{
 		string fn = file_name;
-		fn += cgv::utils::to_string(idx);
+
+		stringstream ss;
+		ss << setfill('0') << setw(10) << idx;
+
+		fn += ss.str();
 		return fn + '.' + get_frame_extension(ff);
+	}
+	/// return number of bytes per pixel (ceil(nr_bits_per_pixel/8))
+	unsigned frame_format::get_nr_bytes_per_pixel() const
+	{
+		return nr_bits_per_pixel / 8 + ((nr_bits_per_pixel & 7) == 0 ? 0 : 1);
 	}
 	/// standard computation of the buffer size member
 	void frame_format::compute_buffer_size()
 	{
-		buffer_size = width * height * nr_bits_per_pixel / 8;
+		buffer_size = width * height * get_nr_bytes_per_pixel();
 	}
-
 	/// check whether frame data is allocated
 	bool frame_type::is_allocated() const
 	{
@@ -48,7 +102,7 @@ namespace rgbd {
 	bool frame_type::read(const std::string& fn)
 	{
 		if (!cgv::utils::file::read(fn,
-			reinterpret_cast<char*>(this),
+			reinterpret_cast<char*>(static_cast<frame_format*>(this)),
 			sizeof(frame_format), false))
 			return false;
 		frame_data.resize(buffer_size);
@@ -136,6 +190,11 @@ namespace rgbd {
 		return info;
 	}
 	bool rgbd_device::put_IMU_measurement(IMU_measurement& m, unsigned time_out) const
+	{
+		return false;
+	}
+
+	bool rgbd_device::get_emulator_configuration(emulator_parameters& cfg) const
 	{
 		return false;
 	}
