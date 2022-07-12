@@ -73,6 +73,8 @@ public:
 	void on_reg_GoICP_cb();
 	void on_reg_find_point_cloud_cb();
 	void on_point_cloud_style_cb();
+	void on_merge_pcs();
+	void on_save_pc();
 
   private:
 	cgv::pointcloud::ICP icp;
