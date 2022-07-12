@@ -104,6 +104,8 @@ $(document).ready(function(){initNavTree('assert_8h_source.html',''); initResiza
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">      sizeof(::cgv::defines::STATIC_ASSERTION_FAILURE&lt; (bool)( __VA_ARGS__ ) &gt;)&gt;\</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">         CGV_DEFINES_JOIN(_static_assert_test_, __LINE__);</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">// use (void) to silence unused warnings</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#define assertm(exp, msg) assert(((void)msg, exp))</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> vr_calib.cxx:9</div></div>
