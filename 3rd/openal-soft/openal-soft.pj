@@ -1,0 +1,20 @@
+@=
+projectGUID = "10779BCA-52DE-40D3-A5B8-F6611CBABD49";
+projectType = "library";
+projectName = "openal-soft";
+addDefines = [
+	"_WIN32",
+	"NOMINMAX",
+	"RESTRICT=__restrict",
+	"_CRT_SECURE_NO_WARNINGS"
+];
+addStaticDefines = [
+	"ALC_API=",
+	[ "AL_LIBTYPE_STATIC", "all" ]
+];
+addSharedDefines = [
+	AL_BUILD_LIBRARY,
+	AL_ALEXT_PROTOTYPES,
+	"ALC_API=__declspec(dllexport)",
+	"AL_API=__declspec(dllexport)"
+]
