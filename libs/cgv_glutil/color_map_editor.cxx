@@ -35,7 +35,7 @@ color_map_editor::color_map_editor() {
 	canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
 	canvas.register_shader("circle", canvas::shaders_2d::circle);
 	canvas.register_shader("histogram", "hist2d.glpr");
-	canvas.register_shader("background", canvas::shaders_2d::background);
+	canvas.register_shader("background", "color_map_editor_bg.glpr");
 
 	overlay_canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
 
@@ -479,7 +479,7 @@ void color_map_editor::create_gui() {
 			for(unsigned i = 0; i < points.size(); ++i)
 				add_member_control(this, "#" + std::to_string(i), points[i].val[1], "", &points[i] == cmc.opacity_points.get_selected() ? "label_color=" + highlight_color_hex : "");
 			align("\b");
-			end_tree_node(cmc.color_points);
+			end_tree_node(cmc.opacity_points);
 		}
 	}
 }
