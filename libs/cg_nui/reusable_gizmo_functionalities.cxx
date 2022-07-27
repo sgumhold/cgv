@@ -1,36 +1,9 @@
 #include "reusable_gizmo_functionalities.h"
 
-void cgv::nui::gizmo_functionality_local_world_orientation::use_world_coordinate_system()
+bool cgv::nui::gizmo_functionality_configurable_axes::validate_axes()
 {
-	use_local_coords = false;
-	// TODO: Handle switching during use, update rendering?
-}
-
-void cgv::nui::gizmo_functionality_local_world_orientation::use_local_coordinate_system()
-{
-	use_local_coords = true;
-	// TODO: Handle switching during use, update rendering?
-}
-
-void cgv::nui::gizmo_functionality_configurable_axes::compute_absolute_axis_parameters(vec3 anchor_position,
-	quat anchor_rotation, vec3 anchor_scale, bool consider_local_rotation)
-{
-	absolute_axes_directions.clear();
-	absolute_axes_positions.clear();
-	for (int i = 0; i < axes_directions.size(); ++i) {
-		if (consider_local_rotation)
-		{
-			absolute_axes_positions.push_back(anchor_position + anchor_rotation.apply(
-				scale_dependent_axes_positions[i] * anchor_scale + scale_independent_axes_positions[i]
-			));
-			absolute_axes_directions.push_back(anchor_rotation.apply(axes_directions[i]));
-		}
-		else
-		{
-			absolute_axes_positions.push_back(anchor_position + scale_dependent_axes_positions[i] * anchor_scale + scale_independent_axes_positions[i]);
-			absolute_axes_directions.push_back(axes_directions[i]);
-		}
-	}
+	return axes_directions.size() == scale_dependent_axes_positions.size()
+		&& axes_directions.size() == scale_independent_axes_positions.size();
 }
 
 void cgv::nui::gizmo_functionality_configurable_axes::configure_axes_directions(std::vector<vec3> axes_directions)

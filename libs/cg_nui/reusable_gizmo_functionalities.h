@@ -21,17 +21,6 @@ void fill_with_last_value_if_not_full(std::vector<T>& to_fill, size_t required_s
 	}
 }
 
-class CGV_API gizmo_functionality_local_world_orientation
-{
-protected:
-	bool use_local_coords{ true };
-public:
-	/// Switch to interpreting the scaling axes in world coordinate system
-	void use_world_coordinate_system();
-	/// Switch to interpreting the scaling axes in local coordinate system
-	void use_local_coordinate_system();
-};
-
 
 class CGV_API gizmo_functionality_configurable_axes : public render::render_types
 {
@@ -40,13 +29,9 @@ protected:
 	std::vector<vec3> axes_directions;
 	std::vector<vec3> scale_dependent_axes_positions;
 	std::vector<vec3> scale_independent_axes_positions;
-	// derived from configuration and anchor state
-	std::vector<vec3> absolute_axes_directions;
-	std::vector<vec3> absolute_axes_positions;
 
-	/// Needs to be called once whenever the anchor values change (i.e. at the beginning of the compute_geometry function),
-	///	otherwise the absolute axis directions and positions are not valid.
-	void compute_absolute_axis_parameters(vec3 anchor_position, quat anchor_rotation = quat(), vec3 anchor_scale = vec3(0.0), bool consider_local_rotation = false);
+	/// Validate the configuration of the axes. Has to be called during validation at attach.
+	bool validate_axes();
 public:
 	// Configuration functions
 	/// Set axes directions
