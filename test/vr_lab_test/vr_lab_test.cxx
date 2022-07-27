@@ -3,7 +3,7 @@
 #include <cgv/gui/provider.h>
 
 #include <cg_nui/focusable.h>
-#include <cg_nui/transforming.h>
+#include <cg_nui/caching_transforming.h>
 
 #include <plugins/vr_lab/vr_tool.h>
 
@@ -19,7 +19,7 @@ class vr_lab_test :
 	public cgv::base::group,
 	public cgv::render::drawable,
 	public cgv::nui::focusable,
-	public cgv::nui::transforming,
+	public cgv::nui::caching_transforming,
 	public cgv::gui::provider,
 	public vr::vr_tool
 {
@@ -101,19 +101,19 @@ public:
 		plot.place_center(vec3(0, 0.5f * plot.get_extent()(1), -0.5f));
 	}
 public:
-	vr_lab_test() : cgv::base::group("vr lab test"), plot("trigonometry", 2)
+	vr_lab_test() : cgv::base::group("vr lab test"), plot("trigonometry", 2), caching_transforming()
 	{
 		li_help[0] = li_help[1] = -1;
 		li_stats = -1;
 		stats_bgclr = rgba(0.8f, 0.6f, 0.0f, 0.6f);
 		show_plot = false;
 		construct_plot();
-		objects.push_back(new simple_object("ruby", vec3(-0.5f, 0.2f, 0), rgb(0.6f, 0.3f, 0.1f)));
+		//objects.push_back(new simple_object("ruby", vec3(-0.5f, 0.2f, 0), rgb(0.6f, 0.3f, 0.1f)));
+		//append_child(objects.back());
+		objects.push_back(new simple_object("blue", vec3(0.5f, 0.0f, 0.0f), rgb(0.2f, 0.6f, 0.4f), vec3(1.0f, 1.0f, 1.0f)));
 		append_child(objects.back());
-		objects.push_back(new simple_object("blue", vec3(0.5f, 0.2f, 0), rgb(0.2f, 0.6f, 0.4f)));
-		append_child(objects.back());
-		container = new simple_primitive_container("spheres");
-		append_child(container);
+		//container = new simple_primitive_container("spheres");
+		//append_child(container);
 	}
 	void on_set(void* member_ptr)
 	{
