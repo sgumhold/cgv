@@ -4,6 +4,7 @@
 #include <cgv/render/render_types.h>
 #include <cgv/render/shader_program.h>
 #include <cgv_gl/gl/gl_context.h>
+#include <cgv_glutil/2d/rect.h>
 
 #include "../shader_library.h"
 
@@ -139,6 +140,10 @@ public:
 		}
 	}
 
+	void draw_shape(const cgv::render::context& ctx, const rect& r) {
+		draw_shape(ctx, r.pos(), r.size());
+	}
+
 	template<typename T>
 	void draw_shape(const cgv::render::context& ctx, const cgv::math::fvec<T, 2u>& position, const cgv::math::fvec<T, 2u>& size, const rgba& color) {
 		if(current_shader_program) {
@@ -149,6 +154,10 @@ public:
 		} else {
 			std::cerr << "canvas::draw_shape no canvas shader program enabled" << std::endl;
 		}
+	}
+
+	void draw_shape(const cgv::render::context& ctx, const rect& r, const rgba& color) {
+		draw_shape(ctx, r.pos(), r.size(), color);
 	}
 
 	template<typename T>

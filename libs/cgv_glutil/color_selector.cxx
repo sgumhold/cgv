@@ -38,11 +38,6 @@ color_selector::color_selector() {
 
 	hue_points.set_constraint(layout.hue_rect);
 	hue_points.set_drag_callback(std::bind(&color_selector::handle_hue_point_drag, this));
-
-	//color_handle_renderer = generic_renderer(canvas::shaders_2d::arrow);
-	//opacity_handle_renderer = generic_renderer(canvas::shaders_2d::rectangle);
-	//line_renderer = generic_renderer(canvas::shaders_2d::line);
-	//polygon_renderer = generic_renderer(canvas::shaders_2d::polygon);
 }
 
 void color_selector::clear(cgv::render::context& ctx) {
@@ -50,11 +45,6 @@ void color_selector::clear(cgv::render::context& ctx) {
 	content_canvas.destruct(ctx);
 	overlay_canvas.destruct(ctx);
 	fbc.clear(ctx);
-
-	//color_handle_renderer.destruct(ctx);
-	//opacity_handle_renderer.destruct(ctx);
-	//line_renderer.destruct(ctx);
-	//polygon_renderer.destruct(ctx);
 }
 
 bool color_selector::handle_event(cgv::gui::event& e) {
@@ -66,76 +56,40 @@ bool color_selector::handle_event(cgv::gui::event& e) {
 	if (!show)
 		return false;
 
-	if (et == cgv::gui::EID_KEY) {
-		cgv::gui::key_event& ke = (cgv::gui::key_event&)e;
-
-		/*if (ke.get_action() == cgv::gui::KA_PRESS) {
-			switch (ke.get_key()) {
-			case cgv::gui::KEY_Left_Ctrl:
-				show_cursor = true;
-				cursor_drawtext = "+";
-				post_redraw();
-				break;
-			case cgv::gui::KEY_Left_Alt:
-				show_cursor = true;
-				cursor_drawtext = "-";
-				post_redraw();
-				break;
-			}
-		}
-		else if (ke.get_action() == cgv::gui::KA_RELEASE) {
-			switch (ke.get_key()) {
-			case cgv::gui::KEY_Left_Ctrl:
-				show_cursor = false;
-				post_redraw();
-				break;
-			case cgv::gui::KEY_Left_Alt:
-				show_cursor = false;
-				post_redraw();
-				break;
-			}
-		}*/
-	}
-	else if (et == cgv::gui::EID_MOUSE) {
+	if (et == cgv::gui::EID_MOUSE) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&)e;
 		cgv::gui::MouseAction ma = me.get_action();
 
-		/*switch (ma) {
-		case cgv::gui::MA_ENTER:
-			mouse_is_on_overlay = true;
-			return true;
-		case cgv::gui::MA_LEAVE:
-			mouse_is_on_overlay = false;
-			post_redraw();
-			return true;
-		case cgv::gui::MA_MOVE:
-		case cgv::gui::MA_DRAG:
-			if(get_context())
-				cursor_pos = ivec2(me.get_x(), get_context()->get_height() - 1 - me.get_y());
-			if (show_cursor)
-				post_redraw();
-			break;
-		}
-
 		if (me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
-			if (ma == cgv::gui::MA_PRESS && modifiers > 0) {
+			if (ma == cgv::gui::MA_PRESS) {
 				ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
 
-				switch (modifiers) {
-				case cgv::gui::EM_CTRL:
-					if (!get_hit_point(mpos))
-						add_point(mpos);
-					break;
-				case cgv::gui::EM_ALT:
-				{
-					draggable* hit_point = get_hit_point(mpos);
-					if (hit_point)
-						remove_point(hit_point);
+				bool hit = false;
+
+				if(layout.color_rect.is_inside(mpos)) {
+					ivec2 local_mpos = mpos - layout.color_rect.pos();
+					vec2 val = static_cast<vec2>(local_mpos) / static_cast<vec2>(layout.color_rect.size());
+					color_points[0].val = val;
+					color_points[0].update_pos(layout);
+					hit = true;
 				}
-				break;
+
+				if(layout.hue_rect.is_inside(mpos)) {
+					ivec2 local_mpos = mpos - layout.color_rect.pos();
+					float val = static_cast<float>(local_mpos.y()) / static_cast<float>(layout.color_rect.size().y());
+					hue_points[0].val = val;
+					hue_points[0].update_pos(hue_points.get_constraint());
+					update_color_texture();
+					hit = true;
+				}
+
+				if(hit) {
+					update_color();
+					has_damage = true;
+					post_redraw();
 				}
 			}
-		}*/
+		}
 
 		if(color_points.handle(e, last_viewport_size, container))
 			return true;
@@ -147,11 +101,9 @@ bool color_selector::handle_event(cgv::gui::event& e) {
 
 void color_selector::on_set(void* member_ptr) {
 
-	//if(member_ptr == &layout.total_height) {
-	//	ivec2 size = get_overlay_size();
-	//	size.y() = layout.total_height;
-	//	set_overlay_size(size);
-	//}
+	if(member_ptr == &color) {
+		set_color(color);
+	}
 
 	has_damage = true;
 	update_member(member_ptr);
@@ -165,40 +117,19 @@ bool color_selector::init(cgv::render::context& ctx) {
 	success &= fbc.ensure(ctx);
 	success &= content_canvas.init(ctx);
 	success &= overlay_canvas.init(ctx);
-	//success &= color_handle_renderer.init(ctx);
-	//success &= opacity_handle_renderer.init(ctx);
-	//success &= line_renderer.init(ctx);
-	//success &= polygon_renderer.init(ctx);
 
 	if(success)
 		init_styles(ctx);
 	
-	init_texture(ctx);
-	//update_color_map(false);
-
-	/*rgb a(0.75f);
-	rgb b(0.9f);
-	std::vector<rgb> bg_data = { a, b, b, a };
+	init_textures(ctx);
 	
-	color_tex.destruct(ctx);
-	cgv::data::data_view bg_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, TI_FLT32, cgv::data::CF_RGB), bg_data.data());
-	color_tex = texture("flt32[R,G,B]", TF_NEAREST, TF_NEAREST, TW_REPEAT, TW_REPEAT);
-	success &= color_tex.create(ctx, bg_dv, 0);*/
+	color_point cp;
+	cp.val = vec2(0.0f);
+	color_points.add(cp);
 
-
-
-
-
-	color_point p;
-	p.pos = layout.color_rect.pos();
-	p.update_val(layout);
-	//p.col = cmc.cm->interpolate_color(p.val);
-	color_points.add(p);
-
-
-
-
-
+	hue_point hp;
+	hp.val = 0.0f;
+	hue_points.add(hp);
 
 	return success;
 }
@@ -216,11 +147,15 @@ void color_selector::init_frame(cgv::render::context& ctx) {
 		content_canvas.set_resolution(ctx, container_size);
 		overlay_canvas.set_resolution(ctx, get_viewport_size());
 
-		//update_point_positions();
-		//sort_points();
-		//update_geometry();
 		color_points.set_constraint(layout.color_rect);
-		hue_points.set_constraint(layout.hue_rect);
+
+		rect hue_constraint = layout.hue_rect;
+		hue_constraint.set_pos(ivec2(hue_constraint.pos().x(), hue_constraint.pos().y() - 5.0f));
+		hue_constraint.set_size(ivec2(0, hue_constraint.size().y()));
+		hue_points.set_constraint(hue_constraint);
+
+		color_points[0].update_pos(layout);
+		hue_points[0].update_pos(hue_constraint);
 
 		has_damage = true;
 	}
@@ -231,10 +166,10 @@ void color_selector::init_frame(cgv::render::context& ctx) {
 	if(last_theme_idx != theme_idx) {
 		last_theme_idx = theme_idx;
 		init_styles(ctx);
-		handle_color = rgba(ti.text(), 1.0f);
-		highlight_color = rgba(ti.highlight(), 1.0f);
-		highlight_color_hex = ti.highlight_hex();
-		//update_geometry();
+		//handle_color = rgba(ti.text(), 1.0f);
+		//highlight_color = rgba(ti.highlight(), 1.0f);
+		//highlight_color_hex = ti.highlight_hex();
+		has_damage = true;
 	}
 }
 
@@ -277,94 +212,45 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 
 	// draw inner border
 	border_style.apply(ctx, rect_prog);
-	content_canvas.draw_shape(ctx, ivec2(layout.padding), container_size - 2 * layout.padding);
 
-	texture_style.apply(ctx, rect_prog);
+	auto& ti = cgv::gui::theme_info::instance();
+	rgba border_color = rgba(ti.border(), 1.0f);
+	//content_canvas.draw_shape(ctx, ivec2(layout.padding), container_size - 2 * layout.padding, border_color);
+	content_canvas.draw_shape(ctx, layout.content_rect, border_color);
+
+	//content_canvas.draw_shape(ctx, layout.preview_rect.pos(), layout.preview_rect.size(), color);
+	content_canvas.draw_shape(ctx, layout.preview_rect, color);
+
+	color_texture_style.apply(ctx, rect_prog);
 	color_tex.enable(ctx, 0);
 	content_canvas.draw_shape(ctx, layout.color_rect.pos(), layout.color_rect.size());
 	color_tex.disable(ctx);
 
-	/*if(cmc.cm) {
-		// draw color scale texture
-		color_map_style.apply(ctx, rect_prog);
-		preview_tex.enable(ctx, 0);
-		content_canvas.draw_shape(ctx, layout.color_editor_rect.pos(), layout.color_editor_rect.size());
-		preview_tex.disable(ctx);
-		content_canvas.disable_current_shader(ctx);
+	hue_texture_style.apply(ctx, rect_prog);
+	hue_tex.enable(ctx, 0);
+	content_canvas.draw_shape(ctx, layout.hue_rect.pos(), layout.hue_rect.size());
+	hue_tex.disable(ctx);
 
-		if(supports_opacity) {
-			// draw opacity editor checkerboard background
-			auto& bg_prog = canvas.enable_shader(ctx, "background");
-			bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
-			bg_tex.enable(ctx, 0);
-			canvas.draw_shape(ctx, layout.opacity_editor_rect.pos(), layout.opacity_editor_rect.size());
-			bg_tex.disable(ctx);
-			canvas.disable_current_shader(ctx);
+	content_canvas.disable_current_shader(ctx);
 
-			// draw histogram texture
-			/*if(show_histogram && tfc.hist_tex.is_created()) {
-				hist_style.fill_color = histogram_color;
-				hist_style.border_color = histogram_border_color;
-				hist_style.border_width = float(histogram_border_width);
+	glEnable(GL_SCISSOR_TEST);
+	glScissor(layout.color_rect.x(), layout.color_rect.y(), layout.color_rect.w(), layout.color_rect.h());
 
-				auto& hist_prog = canvas.enable_shader(ctx, "histogram");
-				hist_prog.set_uniform(ctx, "max_value", tfc.hist_max);
-				hist_prog.set_uniform(ctx, "nearest_linear_mix", histogram_smoothing);
-				hist_style.apply(ctx, hist_prog);
+	const auto& cp = color_points[0];
+	auto& circle_prog = content_canvas.enable_shader(ctx, "circle");
+	color_handle_style.apply(ctx, circle_prog);
+	content_canvas.draw_shape(ctx, cp.get_render_position(), cp.get_render_size());
+	content_canvas.disable_current_shader(ctx);
 
-				tfc.hist_tex.enable(ctx, 1);
-				canvas.draw_shape(ctx, layout.editor_rect.pos(), layout.editor_rect.size());
-				tfc.hist_tex.disable(ctx);
-				canvas.disable_current_shader(ctx);
-			}*
+	glScissor(layout.hue_rect.x(), layout.hue_rect.y(), layout.hue_rect.w(), layout.hue_rect.h());
 
-			preview_tex.enable(ctx, 0);
-			// draw transfer function area polygon
-			auto& poly_prog = polygon_renderer.ref_prog();
-			poly_prog.enable(ctx);
-			canvas.set_view(ctx, poly_prog);
-			poly_prog.disable(ctx);
-			polygon_renderer.render(ctx, PT_TRIANGLE_STRIP, cmc.triangles);
-
-			// draw transfer function lines
-			auto& line_prog = line_renderer.ref_prog();
-			line_prog.enable(ctx);
-			canvas.set_view(ctx, line_prog);
-			line_prog.disable(ctx);
-			line_renderer.render(ctx, PT_LINE_STRIP, cmc.lines);
-			preview_tex.disable(ctx);
-
-			// draw separator line
-			rect_prog = canvas.enable_shader(ctx, "rectangle");
-			border_style.apply(ctx, rect_prog);
-			canvas.draw_shape(ctx,
-				ivec2(layout.color_editor_rect.pos().x(), layout.color_editor_rect.box.get_max_pnt().y()),
-				ivec2(container_size.x() - 2 * layout.padding, 1)
-			);
-			canvas.disable_current_shader(ctx);
-		}
-
-		// draw control points
-		// color handles
-		auto& color_handle_prog = color_handle_renderer.ref_prog();
-		color_handle_prog.enable(ctx);
-		canvas.set_view(ctx, color_handle_prog);
-		color_handle_prog.disable(ctx);
-		color_handle_renderer.render(ctx, PT_LINES, cmc.color_handles);
-
-		if(supports_opacity) {
-			// opacity handles
-			auto& opacity_handle_prog = opacity_handle_renderer.ref_prog();
-			opacity_handle_prog.enable(ctx);
-			canvas.set_view(ctx, opacity_handle_prog);
-			// size is constant for all points
-			opacity_handle_prog.set_attribute(ctx, "size", vec2(2.0f*6.0f));
-			opacity_handle_prog.disable(ctx);
-			opacity_handle_renderer.render(ctx, PT_POINTS, cmc.opacity_handles);
-		}
-	} else {
-		canvas.disable_current_shader(ctx);
-	}*/
+	const auto& hp = hue_points[0];
+	rect_prog = content_canvas.enable_shader(ctx, "rectangle");
+	hue_handle_style.apply(ctx, rect_prog);
+	content_canvas.draw_shape(ctx, hp.get_render_position(), hp.get_render_size());
+	content_canvas.disable_current_shader(ctx);
+	
+	glDisable(GL_SCISSOR_TEST);
 
 	glDisable(GL_BLEND);
 
@@ -389,7 +275,9 @@ void color_selector::create_gui() {
 		end_tree_node(layout);
 	}
 
-	if(begin_tree_node("Color Points", color_points, true)) {
+	add_member_control(this, "Color", color);
+
+	/*if(begin_tree_node("Color Points", color_points, true)) {
 		align("\a");
 		auto& points = color_points;
 		for(unsigned i = 0; i < points.size(); ++i)
@@ -405,7 +293,7 @@ void color_selector::create_gui() {
 			add_member_control(this, "#" + std::to_string(i), points[i].val[1], "", &points[i] == hue_points.get_selected() ? "label_color=" + highlight_color_hex : "");
 		align("\b");
 		end_tree_node(hue_points);
-	}
+	}*/
 }
 
 bool color_selector::was_updated() {
@@ -418,11 +306,20 @@ void color_selector::set_color(rgb color) {
 	
 	this->color = color;
 
-	//update_point_positions();
-	//update_color_map(false);
+	float h = color.H();
+	float v = v = color.S() * std::min(color.L(), 1.0f - color.L()) + color.L();
+	float s = v ? 2.0f - 2.0f * color.L() / v : 0.0f;
 
+	color_points[0].val = vec2(s, v);
+	hue_points[0].val = h;
+
+	color_points[0].update_pos(layout);
+	hue_points[0].update_pos(hue_points.get_constraint());
+
+	update_color_texture();
 	update_member(&color);
-	//post_recreate_gui();
+	has_damage = true;
+	post_redraw();
 }
 
 void color_selector::init_styles(context& ctx) {
@@ -441,42 +338,31 @@ void color_selector::init_styles(context& ctx) {
 	
 	// configure style for the border rectangles
 	border_style = container_style;
-	border_style.fill_color = border_color;
+	//border_style.fill_color = border_color;
 	border_style.border_width = 0.0f;
+	border_style.use_fill_color = false;
 	
-	// configure style for the color scale rectangle
-	texture_style = border_style;
-	texture_style.texcoord_scaling = vec2(0.5f);
-	texture_style.texcoord_offset = vec2(0.25f);
-	texture_style.use_texture = true;
-
-	// configure style for background
-	//bg_style.use_texture = true;
-	//bg_style.apply_gamma = false;
-	//bg_style.feather_width = 0.0f;
-
-	//auto& bg_prog = canvas.enable_shader(ctx, "background");
-	//bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
-	//bg_style.apply(ctx, bg_prog);
-	//canvas.disable_current_shader(ctx);
+	// configure style for the color and hue texture rectangles
+	color_texture_style = border_style;
+	color_texture_style.use_texture = true;
+	
+	hue_texture_style = color_texture_style;
+	color_texture_style.texcoord_scaling = vec2(0.5f);
+	color_texture_style.texcoord_offset = vec2(0.25f);
 
 	// configure style for color handle
-	cgv::glutil::arrow2d_style color_handle_style;
 	color_handle_style.use_blending = true;
 	color_handle_style.apply_gamma = false;
-	color_handle_style.use_fill_color = false;
+	color_handle_style.use_fill_color = true;
 	color_handle_style.position_is_center = true;
-	color_handle_style.border_color = rgba(ti.border(), 1.0f);
-	color_handle_style.border_width = 1.5f;
-	color_handle_style.border_radius = 2.0f;
-	color_handle_style.stem_width = 12.0f;
-	color_handle_style.head_width = 12.0f;
+	color_handle_style.border_color = rgba(rgb(1.0f), 0.75f);
+	color_handle_style.border_width = 1.0f;
+	color_handle_style.fill_color = rgba(rgb(0.0f), 1.0f);
+	color_handle_style.ring_width = 2.5f;
 
-	//auto& color_handle_prog = color_handle_renderer.ref_prog();
-	//color_handle_prog.enable(ctx);
-	//color_handle_style.apply(ctx, color_handle_prog);
-	//color_handle_prog.disable(ctx);
-
+	hue_handle_style = color_handle_style;
+	hue_handle_style.position_is_center = false;
+	
 	// configure style for hue handle
 	cgv::glutil::shape2d_style hue_handle_style;
 	hue_handle_style.use_blending = true;
@@ -485,11 +371,6 @@ void color_selector::init_styles(context& ctx) {
 	hue_handle_style.position_is_center = true;
 	hue_handle_style.border_color = rgba(ti.border(), 1.0f);
 	hue_handle_style.border_width = 1.5f;
-
-	//auto& opacity_handle_prog = opacity_handle_renderer.ref_prog();
-	//opacity_handle_prog.enable(ctx);
-	//opacity_handle_style.apply(ctx, opacity_handle_prog);
-	//opacity_handle_prog.disable(ctx);
 
 	// configure style for final blending of overlay into main frame buffer
 	cgv::glutil::shape2d_style overlay_style;
@@ -503,120 +384,106 @@ void color_selector::init_styles(context& ctx) {
 	overlay_canvas.disable_current_shader(ctx);
 }
 
-void color_selector::init_texture(context& ctx) {
+void color_selector::init_textures(context& ctx) {
 
-	std::vector<uint8_t> data(3*4);
-
-	data[0] = 0u;
-	data[1] = 0u;
-	data[2] = 0u;
-
-	data[3] = 0u;
-	data[4] = 0u;
-	data[5] = 0u;
+	std::vector<uint8_t> data(3*4, 0u);
 
 	data[6] = 255u;
 	data[7] = 255u;
 	data[8] = 255u;
-
 	data[9] = 255u;
-	data[10] = 0u;
-	data[11] = 0u;
-
+	
 	color_tex.destruct(ctx);
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(2, 2, TI_UINT8, cgv::data::CF_RGB), data.data());
-	color_tex = texture("uint8[R,G,B,A]", TF_LINEAR, TF_LINEAR);
-	color_tex.create(ctx, dv, 0);
+	cgv::data::data_view color_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, TI_UINT8, cgv::data::CF_RGB), data.data());
+	color_tex = texture("uint8[R,G,B]", TF_LINEAR, TF_LINEAR);
+	color_tex.create(ctx, color_dv, 0);
+
+	std::vector<uint8_t> hue_data(2*3*256);
+
+	for(size_t i = 0; i < 256; ++i) {
+		float hue = static_cast<float>(i) / 255.0f;
+		rgb color = cgv::media::color<float, cgv::media::HLS>(hue, 0.5f, 1.0f);
+
+		uint8_t col8[3];
+		col8[0] = static_cast<uint8_t>(round(color.R() * 255.0f));
+		col8[1] = static_cast<uint8_t>(round(color.G() * 255.0f));
+		col8[2] = static_cast<uint8_t>(round(color.B() * 255.0f));
+
+		hue_data[6 * i + 0] = col8[0];
+		hue_data[6 * i + 1] = col8[1];
+		hue_data[6 * i + 2] = col8[2];
+		hue_data[6 * i + 3] = col8[0];
+		hue_data[6 * i + 4] = col8[1];
+		hue_data[6 * i + 5] = col8[2];
+	}
+
+	hue_tex.destruct(ctx);
+	cgv::data::data_view hue_dv = cgv::data::data_view(new cgv::data::data_format(2, 256, TI_UINT8, cgv::data::CF_RGB), hue_data.data());
+	hue_tex = texture("uint8[R,G,B]", TF_LINEAR, TF_LINEAR);
+	hue_tex.create(ctx, hue_dv, 0);
+}
+
+void color_selector::update_color_texture() {
+
+	if(!color_tex.is_created())
+		return;
+	
+	std::vector<uint8_t> data(3 * 4, 0u);
+	data[6] = 255u;
+	data[7] = 255u;
+	data[8] = 255u;
+	
+	const auto& hp = hue_points[0];
+	rgb color = cgv::media::color<float, cgv::media::HLS>(hp.val, 0.5f, 1.0f);
+
+	data[9]  = static_cast<uint8_t>(round(color.R() * 255.0f));
+	data[10] = static_cast<uint8_t>(round(color.G() * 255.0f));
+	data[11] = static_cast<uint8_t>(round(color.B() * 255.0f));
+
+	cgv::data::data_view color_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, TI_UINT8, cgv::data::CF_RGB), data.data());
+
+	if(auto* ctx_ptr = get_context())
+		color_tex.replace(*ctx_ptr, 0, 0, color_dv);
+}
+
+void color_selector::update_color() {
+
+	const auto& hp = hue_points[0];
+	const auto& cp = color_points[0];
+	color = cgv::media::color<float, cgv::media::HLS>(hp.val, 0.5f, 1.0f);
+
+	float s = cp.val.x(); // saturation
+	float v = cp.val.y(); // value
+
+	color = v * color;
+	color = (1.0f - s)*rgb(v) + s * color;
+
+	update_member(&color);
+	has_updated = true;
 }
 
 void color_selector::handle_color_point_drag() {
 
-	color_points.get_dragged()->update_val(layout);
-	//update_color_map(true);
+	auto* p = color_points.get_dragged();
+	p->update_val(layout);
+	
+	update_color();
+
+	has_damage = true;
 	post_redraw();
 }
 
 void color_selector::handle_hue_point_drag() {
 
-	hue_points.get_dragged()->update_val(layout);
-	//update_color_map(true);
+	auto* p = hue_points.get_dragged();
+	p->update_val(hue_points.get_constraint());
+	
+	update_color();
+	update_color_texture();
+
+	has_damage = true;
 	post_redraw();
 }
-
-/*void color_selector::update_point_positions() {
-
-	for(unsigned i = 0; i < cmc.color_points.size(); ++i)
-		cmc.color_points[i].update_pos(layout);
-
-	for(unsigned i = 0; i < cmc.opacity_points.size(); ++i)
-		cmc.opacity_points[i].update_pos(layout, opacity_scale_exponent);
-}*/
-
-/*void color_selector::update_color_map(bool is_data_change) {
-	
-	context* ctx_ptr = get_context();
-	if(!ctx_ptr || !cmc.cm) return;
-	context& ctx = *ctx_ptr;
-
-	auto& cm = *cmc.cm;
-	auto& color_points = cmc.color_points;
-	auto& opacity_points = cmc.opacity_points;
-	
-	sort_points();
-
-	cm.clear();
-
-	for(unsigned i = 0; i < color_points.size(); ++i) {
-		const color_point& p = color_points[i];
-		cm.add_color_point(p.val, p.col);
-	}
-
-	if(supports_opacity) {
-		for(unsigned i = 0; i < opacity_points.size(); ++i) {
-			const opacity_point& p = opacity_points[i];
-			cm.add_opacity_point(p.val.x(), p.val.y());
-		}
-	} else {
-		// add one fully opaque point that will be removed later on
-		cm.add_opacity_point(0.0f, 1.0f);
-	}
-
-	size_t size = static_cast<size_t>(resolution);
-	std::vector<rgba> cs_data = cm.interpolate(size);
-
-	std::vector<uint8_t> data(4 * 2 * size);
-	for(size_t i = 0; i < size; ++i) {
-		rgba col = cs_data[i];
-		uint8_t r = static_cast<uint8_t>(255.0f * col.R());
-		uint8_t g = static_cast<uint8_t>(255.0f * col.G());
-		uint8_t b = static_cast<uint8_t>(255.0f * col.B());
-		uint8_t a = static_cast<uint8_t>(255.0f * col.alpha());
-
-		unsigned idx = 4 * i;
-		data[idx + 0] = r;
-		data[idx + 1] = g;
-		data[idx + 2] = b;
-		data[idx + 3] = a;
-		idx += 4*size;
-		data[idx + 0] = r;
-		data[idx + 1] = g;
-		data[idx + 2] = b;
-		data[idx + 3] = a;
-	}
-
-	preview_tex.destruct(ctx);
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, 2, TI_UINT8, cgv::data::CF_RGBA), data.data());
-	preview_tex = texture("uint8[R,G,B,A]", TF_LINEAR, TF_LINEAR, TW_CLAMP_TO_EDGE, TW_CLAMP_TO_EDGE);
-	preview_tex.create(ctx, dv, 0);
-
-	if(!supports_opacity)
-		cm.clear_opacity_points();
-
-	update_geometry();
-
-	has_updated = true;
-	has_damage = true;
-}*/
 
 }
 }
