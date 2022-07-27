@@ -11,6 +11,7 @@ namespace cgv {
 		struct proximity_info : public hit_info
 		{
 			vec3 query_point;
+			vec3 query_point_global;
 			float closest_distance = std::numeric_limits<float>::max();
 		};
 

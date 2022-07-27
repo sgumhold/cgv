@@ -13,7 +13,7 @@
 
 namespace cgv {
 	namespace nui {
-
+		using namespace render;
 /// Base class for objects that can have focus and be selected/activated by pointing or grabbing.
 ///	Provides a general implementation of different interaction states with event functions that can be overriden.
 ///	States are:
@@ -32,11 +32,11 @@ namespace cgv {
 ///	If enabled an additional debug point is drawn for the intersection/closest surface point at the start of
 ///	grabbing/triggering.
 class CGV_API interactable : public cgv::base::group,
-					  public cgv::render::drawable,
-					  public cgv::nui::focusable,
-					  public cgv::nui::grabable,
-					  public cgv::nui::pointable,
-					  public cgv::gui::provider
+							 public cgv::render::drawable,
+							 public cgv::nui::focusable,
+							 public cgv::nui::grabable,
+							 public cgv::nui::pointable,
+							 public cgv::gui::provider
 {
 	cgv::nui::focus_configuration original_config;
 
@@ -51,18 +51,27 @@ protected:
 	/// Collection of values that describe an interaction between a hid and an interactable at one moment in time.
 	struct interaction_info
 	{
-		/// Intersection or nearest point on surface that was used to determine the focus
+		/// Intersection or nearest point on surface that was used to determine the focus (in local space)
 		vec3 query_point;
-		/// Position of the interacting hid at the moment of interaction
+		/// Position of the interacting hid at the moment of interaction (in local space)
 		vec3 hid_position;
-		/// Orientation of the interacting hid at the moment of interaction
+		/// Orientation of the interacting hid at the moment of interaction (in local space)
 		vec3 hid_direction;
+		/// Intersection or nearest point on surface that was used to determine the focus (in global space)
+		vec3 query_point_global;
+		/// Position of the interacting hid at the moment of interaction (in global space)
+		vec3 hid_position_global;
+		/// Orientation of the interacting hid at the moment of interaction (in global space)
+		vec3 hid_direction_global;
 		/// Whether the interaction was by pointing (i.e. a ray-cast) or by closest-point-query
 		bool is_pointing{};
 
 		interaction_info() {}
-		interaction_info(vec3 query_point, vec3 hid_position, vec3 hid_direction, bool is_pointing) :
-			query_point(query_point), hid_position(hid_position), hid_direction(hid_direction), is_pointing(is_pointing) {}
+		interaction_info(vec3 query_point, vec3 hid_position, vec3 hid_direction,
+			vec3 query_point_global, vec3 hid_position_global, vec3 hid_direction_global, bool is_pointing) :
+			query_point(query_point), hid_position(hid_position), hid_direction(hid_direction),
+			query_point_global(query_point_global), hid_position_global(hid_position_global), hid_direction_global(hid_direction_global),
+			is_pointing(is_pointing) {}
 	};
 
 	/// Interaction Infos that are constantly updated as long as the interactable is focused by these HIDs (all states except idle).
@@ -114,7 +123,6 @@ public:
 	//@name cgv::base::base interface
 	//@{
 	std::string get_type_name() const override { return "interactable"; }
-	void on_set(void* member_ptr) override;
 	//@}
 
 	//@name cgv::nui::focusable interface
