@@ -24,6 +24,7 @@ struct shape2d_style : cgv::render::render_types {
 	float feather_width = 1.0f;
 	float feather_origin = 0.5f;
 	vec2 texcoord_scaling = vec2(1.0f);
+	vec2 texcoord_offset = vec2(0.0f);
 	// render options
 	bool use_fill_color = true;
 	bool use_texture = false;
@@ -43,6 +44,7 @@ struct shape2d_style : cgv::render::render_types {
 		prog.set_uniform(ctx, "feather_width", feather_width);
 		prog.set_uniform(ctx, "feather_origin", feather_origin);
 		prog.set_uniform(ctx, "tex_scaling", texcoord_scaling);
+		prog.set_uniform(ctx, "tex_offset", texcoord_offset);
 
 		prog.set_uniform(ctx, "use_fill_color", use_fill_color);
 		prog.set_uniform(ctx, "use_texture", use_texture);

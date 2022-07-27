@@ -92,6 +92,8 @@ public:
 			selected = get_ptr(draggables[i]);
 	}
 
+	const rect& get_constraint() const { return constraint_area; }
+	
 	void set_constraint(const rect& area) {
 		constraint_area = area;
 		has_constraint = true;
