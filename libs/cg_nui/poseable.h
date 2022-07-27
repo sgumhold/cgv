@@ -1,26 +1,34 @@
 #pragma once
 
 #include <cg_nui/interactable.h>
+#include <cg_nui/translatable.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
 	namespace nui {
 
-	/// Base class for interactable objects that can be moved while triggered/grabbed. The movement (and rotation)
-	///	is applied to variables provided in the constructor as either a pointer or a double pointer.
-	///	The double pointer can be used for an additional indirection to support the use of multiple primitives
-	///	(see simple_primitive_container in vr_lab_test for an example of this).
-	class CGV_API poseable : public interactable
+/// Base class for interactable objects that can be moved while triggered/grabbed. The movement (and rotation)
+///	is applied via the translatable (and rotatable) interfaces. These have to be implemented by the object
+///	implementing this interface. (This interface does not inherit them itself to avoid virtual inheritance.)
+///	(See simple_object and simple_primitive_container in vr_lab_test for examples of using this interface.)
+class CGV_API poseable : public interactable
 {
-protected:
-	vec3* position_ptr;
-	vec3** position_ptr_ptr;
-	// TODO: Implement change of rotation (with option to set rotation to nullptr if not needed)
-	quat* rotation_ptr;
-	quat** rotation_ptr_ptr;
+	translatable* _translatable{ nullptr };
+	bool tried_translatable_cast{ false };
+	translatable* get_translatable();
 
+	//rotatable* _rotatable{ nullptr };
+	//bool tried_rotatable_cast{ false };
+	//rotatable* get_rotatable();
+protected:
+	// TODO: Implement change of rotation
+
+	// TODO: Probably remove as they are not used
 	vec3 position_at_grab;
+	quat rotation_at_grab;
+
+	bool manipulate_rotation{ true };
 
 	void on_grabbed_start() override;
 	void on_grabbed_drag() override;
@@ -28,23 +36,7 @@ protected:
 	void on_triggered_drag() override;
 
 public:
-	poseable(vec3* position_ptr, quat* rotation_ptr, const std::string& name = "") :
-		interactable(name), position_ptr(position_ptr), position_ptr_ptr(nullptr), rotation_ptr(rotation_ptr), rotation_ptr_ptr(nullptr) {}
-
-	poseable(vec3* position_ptr, const std::string& name = "") :
-		interactable(name), position_ptr(position_ptr), position_ptr_ptr(nullptr), rotation_ptr(nullptr), rotation_ptr_ptr(nullptr) {}
-
-	poseable(quat* rotation_ptr, const std::string& name = "") :
-		interactable(name), position_ptr(nullptr), position_ptr_ptr(nullptr), rotation_ptr(rotation_ptr), rotation_ptr_ptr(nullptr) {}
-
-	poseable(vec3** position_ptr_ptr, quat** rotation_ptr_ptr, const std::string& name = "") :
-		interactable(name), position_ptr(nullptr), position_ptr_ptr(position_ptr_ptr), rotation_ptr(nullptr), rotation_ptr_ptr(rotation_ptr_ptr) {}
-
-	poseable(vec3** position_ptr_ptr, const std::string& name = "") :
-		interactable(name), position_ptr(nullptr), position_ptr_ptr(position_ptr_ptr), rotation_ptr(nullptr), rotation_ptr_ptr(nullptr) {}
-
-	poseable(quat** rotation_ptr_ptr, const std::string& name = "") :
-		interactable(name), position_ptr(nullptr), position_ptr_ptr(nullptr), rotation_ptr(nullptr), rotation_ptr_ptr(rotation_ptr_ptr) {}
+	poseable(const std::string& name = "", bool manipulate_rotation = true) : interactable(name), manipulate_rotation(manipulate_rotation) {}
 
 	// Used for drawing debug points
 	//@name cgv::render::drawable interface

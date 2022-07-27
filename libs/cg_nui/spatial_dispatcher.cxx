@@ -164,6 +164,10 @@ namespace cgv {
 					gi.inter_info.hid_position = gi.inter_info.ray_origin;
 					gi.inter_info.hid_direction = gi.inter_info.ray_direction;
 					gi.check_proximity = false;
+					gi.inter_info.ray_origin_global = gi.inter_info.ray_origin;
+					gi.inter_info.ray_direction_global = gi.inter_info.ray_direction;
+					gi.inter_info.hid_position_global = gi.inter_info.hid_position;
+					gi.inter_info.hid_direction_global = gi.inter_info.hid_direction;
 				}
 				else {
 					if (*rfi.dis_info_ptr_ptr && (*rfi.dis_info_ptr_ptr)->hid_id == hid_id) {
@@ -188,6 +192,13 @@ namespace cgv {
 						gi.check_proximity = rfi.foc_info_ptr->config.spatial.proximity && ctrl_infos[ci].grabbing;
 						gi.prox_info.query_point = gi.inter_info.ray_origin + max_grabbing_distance*gi.inter_info.ray_direction;
 						gi.inter_info.ray_origin += (ctrl_infos[ci].grabbing ? min_pointing_distance : 0.0f) * gi.inter_info.ray_direction;
+						gi.inter_info.ray_origin_global = gi.inter_info.ray_origin;
+						gi.inter_info.ray_direction_global = gi.inter_info.ray_direction;
+						gi.inter_info.hid_position_global = gi.inter_info.hid_position;
+						gi.inter_info.hid_direction_global = gi.inter_info.hid_direction;
+						gi.prox_info.hid_position_global = gi.prox_info.hid_position;
+						gi.prox_info.hid_direction_global = gi.prox_info.hid_direction;
+						gi.prox_info.query_point_global = gi.prox_info.query_point;
 						if (!gi.check_proximity && !gi.check_intersection)
 							return false;
 					}
@@ -209,6 +220,11 @@ namespace cgv {
 				// traverse all hierarchies to find closest object and first intersection
 				for (auto root_ptr : objects)
 					update_geometric_info_recursive(root_ptr, root_ptr, gi);
+
+			gi.inter_info.hit_point_global = gi.inter_info.hit_point;
+			gi.inter_info.hit_normal_global = gi.inter_info.hit_normal;
+			gi.prox_info.hit_point_global = gi.prox_info.hit_point;
+			gi.prox_info.hit_normal_global = gi.prox_info.hit_normal;
 
 			// remove checks where spatial analysis failed
 			if (rfi.foc_info_ptr->config.refocus.spatial) {
@@ -255,6 +271,11 @@ namespace cgv {
 						// what can fail if they are very close
 						pdi.hit_normal = vec3(0.0f);
 				}
+				pdi.query_point_global = pdi.query_point;
+				pdi.hid_position_global = pdi.hid_position;
+				pdi.hid_direction_global = pdi.hid_direction;
+				pdi.hit_point_global = pdi.hit_point;
+				pdi.hit_normal_global = pdi.hit_normal;
 				di_ptr = &pdi;
 				if (rfi.report_ptr) {
 					rfi.report_ptr->mode = dispatch_mode::proximity;
@@ -276,6 +297,12 @@ namespace cgv {
 				idi.ray_param = gi.local_inter_info.ray_param;
 				idi.hit_point = gi.local_inter_info.ray_origin + gi.local_inter_info.ray_param * gi.local_inter_info.ray_direction;
 				idi.hit_normal = gi.local_inter_info.hit_normal;
+				idi.ray_origin_global = idi.ray_origin;
+				idi.ray_direction_global = idi.ray_direction;
+				idi.hid_position_global = idi.hid_position;
+				idi.hid_direction_global = idi.hid_direction;
+				idi.hit_point_global = idi.hit_point;
+				idi.hit_normal_global = idi.hit_normal;
 				di_ptr = &idi;
 				if (rfi.report_ptr) {
 					rfi.report_ptr->mode = dispatch_mode::pointing;
