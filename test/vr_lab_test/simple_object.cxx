@@ -23,10 +23,12 @@ simple_object::rgb simple_object::get_modified_color(const rgb& color) const
 }
 
 simple_object::simple_object(const std::string& _name, const vec3& _position, const rgb& _color, const vec3& _extent, const quat& _rotation) :
-	cgv::nui::poseable(&position, &rotation, _name), position(_position), rotation(_rotation),
-	color(_color), extent(_extent)
+	cgv::nui::poseable(_name), translatable(), transforming(), rotation(_rotation), extent(_extent), color(_color)
 {
 	name = _name;
+
+	positions.push_back(_position);
+	set_position(_position);
 
 	//debug_point = position + 0.5f*extent;
 	brs.rounding = true;
@@ -69,36 +71,48 @@ std::string simple_object::get_type_name() const
 
 bool simple_object::compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx)
 {
-	vec3 p = point - position;
-	rotation.inverse_rotate(p);
 	for (int i = 0; i < 3; ++i)
-		p[i] = std::max(-0.5f * extent[i], std::min(0.5f * extent[i], p[i]));
-	rotation.rotate(p);
-	prj_point = p + position;
+		prj_point[i] = std::max(-0.5f * extent[i], std::min(0.5f * extent[i], prj_point[i]));
 	return true;
+
+	//vec3 p = point - position;
+	//rotation.inverse_rotate(p);
+	//for (int i = 0; i < 3; ++i)
+	//	p[i] = std::max(-0.5f * extent[i], std::min(0.5f * extent[i], p[i]));
+	//rotation.rotate(p);
+	//prj_point = p + position;
+	//return true;
 }
 
 bool simple_object::compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx)
 {
-	vec3 ro = ray_start - position;
-	vec3 rd = ray_direction;
-	rotation.inverse_rotate(ro);
-	rotation.inverse_rotate(rd);
-	vec3 n;
-	vec2 res;
-	if (cgv::math::ray_box_intersection(ro, rd, 0.5f*extent, res, n) == 0)
-		return false;
-	if (res[0] < 0) {
-		if (res[1] < 0)
-			return false;
-		hit_param = res[1];
+	auto result = cgv::math::ray_box_intersection(ray_start, ray_direction, -0.5f * extent, 0.5f * extent);
+	if (result.hit) {
+		hit_param = result.t_near;
+		return true;
 	}
-	else {
-		hit_param = res[0];
-	}
-	rotation.rotate(n);
-	hit_normal = n;
-	return true;
+	return false;
+
+	//vec3 ro = ray_start - position;
+	//vec3 ro = ray_start;
+	//vec3 rd = ray_direction;
+	//rotation.inverse_rotate(ro);
+	//rotation.inverse_rotate(rd);
+	//vec3 n;
+	//vec2 res;
+	//if (cgv::math::ray_box_intersection(ro, rd, 0.5f*extent, res, n) == 0)
+	//	return false;
+	//if (res[0] < 0) {
+	//	if (res[1] < 0)
+	//		return false;
+	//	hit_param = res[1];
+	//}
+	//else {
+	//	hit_param = res[0];
+	//}
+	//rotation.rotate(n);
+	//hit_normal = n;
+	//return true;
 }
 
 bool simple_object::init(cgv::render::context& ctx)
@@ -115,18 +129,25 @@ void simple_object::clear(cgv::render::context& ctx)
 }
 void simple_object::draw(cgv::render::context& ctx)
 {
+	ctx.push_modelview_matrix();
+	ctx.mul_modelview_matrix(get_model_transform());
+
 	poseable::draw(ctx);
 	// show box
 	auto& br = cgv::render::ref_box_renderer(ctx);
 	br.set_render_style(brs);
 	if (brs.rounding)
 		br.set_prog(prog);
-	br.set_position(ctx, position);
+	br.set_position(ctx, vec3(0.0f));
 	br.set_color_array(ctx, &color, 1);
 	br.set_secondary_color(ctx, get_modified_color(color));
 	br.set_extent(ctx, extent);
-	br.set_rotation_array(ctx, &rotation, 1);
 	br.render(ctx, 0, 1);
+}
+
+void simple_object::finish_draw(cgv::render::context& context)
+{
+	context.pop_modelview_matrix();
 }
 
 void simple_object::on_set(void* member_ptr)
@@ -167,4 +188,26 @@ void simple_object::create_gui()
 		end_tree_node(brs);
 	}
 	poseable::create_gui();
+}
+
+const cgv::render::render_types::mat4& simple_object::get_model_transform() const
+{
+	return transforming::construct_transform_from_components(get_position(), rotation, vec3(1.0f));
+}
+
+const cgv::render::render_types::mat4& simple_object::get_inverse_model_transform() const
+{
+	const mat4& transform = transforming::construct_transform_from_components(-1.0f * get_position(), rotation.inverse(), vec3(1.0f));
+	return transform;
+}
+
+
+cgv::render::render_types::vec3 simple_object::get_position() const
+{
+	return positions[0];
+}
+
+void simple_object::set_position(const vec3& position)
+{
+	positions[0] = position;
 }

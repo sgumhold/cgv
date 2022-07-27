@@ -7,8 +7,7 @@
 #include <cg_nui/scaling_gizmo.h>
 
 /// Example implementation of a single object that can be grabbed/triggered and then moved.
-class simple_object :
-	public cgv::nui::poseable
+class simple_object : public cgv::nui::poseable, public cgv::nui::translatable, public cgv::nui::transforming
 {
 	cgv::render::box_render_style brs;
 	static cgv::render::shader_program prog;
@@ -23,9 +22,11 @@ class simple_object :
 	ActiveGizmoOptions active_gizmo{ ActiveGizmoOptions::AGO_NONE };
 	ActiveGizmoOptions active_gizmo_ui{ ActiveGizmoOptions::AGO_NONE };
 
+	std::vector<vec3> positions;
+
 protected:
 	// geometry of box with color
-	vec3 position;
+	//vec3 position;
 	quat rotation;
 	vec3 extent;
 	rgb  color;
@@ -46,9 +47,19 @@ public:
 	bool init(cgv::render::context& ctx) override;
 	void clear(cgv::render::context& ctx) override;
 	void draw(cgv::render::context& ctx) override;
+	void finish_draw(cgv::render::context&) override;
 
 	void on_set(void* member_ptr) override;
 	void create_gui() override;
+
+	const mat4& get_model_transform() const override;
+	const mat4& get_inverse_model_transform() const override;
+
+	//@name cgv::nui::translatable interface
+	//@{
+	vec3 get_position() const override;
+	void set_position(const vec3& position) override;
+	//@}
 };
 
 typedef cgv::data::ref_ptr<simple_object> simple_object_ptr;
