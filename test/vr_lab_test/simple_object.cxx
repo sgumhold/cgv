@@ -35,30 +35,31 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 	active_gizmo_ui = active_gizmo;
 
 	trans_gizmo = new cgv::nui::translation_gizmo();
-	append_child(trans_gizmo);
+	trans_gizmo->set_anchor_object(this);
+	trans_gizmo->set_position_reference(this);
 	trans_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
 	trans_gizmo->configure_axes_positioning(
 		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
 		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
 	);
 	if (active_gizmo == ActiveGizmoOptions::AGO_TRANSLATION)
-		trans_gizmo->attach(this, &position, &rotation, &extent);
+		trans_gizmo->attach();
 
-	rot_gizmo = new cgv::nui::rotation_gizmo();
-	append_child(rot_gizmo);
-	rot_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
-	if (active_gizmo == ActiveGizmoOptions::AGO_ROTATION)
-		rot_gizmo->attach(this, &position, &rotation, &extent);
-
-	scale_gizmo = new cgv::nui::scaling_gizmo();
-	append_child(scale_gizmo);
-	scale_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
-	scale_gizmo->configure_axes_positioning(
-		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
-		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
-	);
-	if (active_gizmo == ActiveGizmoOptions::AGO_SCALING)
-		scale_gizmo->attach(this, &extent, &position, &rotation);
+	//rot_gizmo = new cgv::nui::rotation_gizmo();
+	//append_child(rot_gizmo);
+	//rot_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
+	//if (active_gizmo == ActiveGizmoOptions::AGO_ROTATION)
+	//	rot_gizmo->attach(this, &position, &rotation, &extent);
+	//
+	//scale_gizmo = new cgv::nui::scaling_gizmo();
+	//append_child(scale_gizmo);
+	//scale_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
+	//scale_gizmo->configure_axes_positioning(
+	//	{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
+	//	{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
+	//);
+	//if (active_gizmo == ActiveGizmoOptions::AGO_SCALING)
+	//	scale_gizmo->attach(this, &extent, &position, &rotation);
 }
 
 std::string simple_object::get_type_name() const
@@ -139,9 +140,9 @@ void simple_object::on_set(void* member_ptr)
 			case ActiveGizmoOptions::AGO_SCALING: scale_gizmo->detach(); break;
 			}
 			switch (active_gizmo_ui) {
-			case ActiveGizmoOptions::AGO_TRANSLATION: trans_gizmo->attach(this, &position, &rotation, &extent); break;
-			case ActiveGizmoOptions::AGO_ROTATION: rot_gizmo->attach(this, &position, &rotation, &extent); break;
-			case ActiveGizmoOptions::AGO_SCALING: scale_gizmo->attach(this, &extent, &position, &rotation); break;
+			case ActiveGizmoOptions::AGO_TRANSLATION: trans_gizmo->attach(); break;
+			//case ActiveGizmoOptions::AGO_ROTATION: rot_gizmo->attach(this, &position, &rotation, &extent); break;
+			//case ActiveGizmoOptions::AGO_SCALING: scale_gizmo->attach(this, &extent, &position, &rotation); break;
 			}
 			active_gizmo = active_gizmo_ui;
 		}

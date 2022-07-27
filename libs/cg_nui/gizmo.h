@@ -1,68 +1,54 @@
 #pragma once
 
 #include <cg_nui/interactable.h>
+#include <cg_nui/transforming.h>
+#include <cgv/math/ftransform.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
 	namespace nui {
-
 /// Abstract base class for gizmos.
 ///	A gizmo has an attach function that takes at least a base_ptr to the object this gizmo attaches to. The base_ptr is
 ///	used to call the on_set function when the gizmo modifies values.
 ///	Specific gizmo subclasses take additional pointers to to-be-manipulated values as arguments to attach.
 ///	A gizmo also has a detach function that clears the connection between object and gizmo.
-class CGV_API gizmo : public cgv::nui::interactable
+class CGV_API gizmo : public cgv::nui::interactable, public cgv::nui::transforming
 {
-	/// Readonly position this gizmo is anchored to (e.g. position of an object)
+	/// Readonly position this gizmo is anchored to (e.g. position of attached object)
 	const vec3* anchor_position_ptr;
-	/// Optional readonly rotation this gizmo is anchored to (e.g. rotation of an object) only needed
-	///	if the gizmo operates in a local coordinate system (e.g. the visual representation of the gizmo
-	///	follows the object's rotation).
+	/// Readonly rotation this gizmo is anchored to (e.g. rotation of attached object)
 	const quat* anchor_rotation_ptr;
-	/// Optional readonly scale this gizmo is anchored to only needed if the gizmo's visual representation
-	///	should change with the objects scale.
+	/// Readonly scale this gizmo is anchored to (e.g. scale of attached object)
 	const vec3* anchor_scale_ptr;
+	/// Readonly position this gizmo is anchored to (e.g. position of attached object)
+	const vec3** anchor_position_ptr_ptr;
+	/// Readonly rotation this gizmo is anchored to (e.g. rotation of attached object)
+	const quat** anchor_rotation_ptr_ptr;
+	/// Readonly scale this gizmo is anchored to (e.g. scale of attached object)
+	const vec3** anchor_scale_ptr_ptr;
+	/// Reference of object this gizmo is anchored to
+	cgv::base::node_ptr anchor_obj;
 
 protected:
-	base_ptr obj_ptr;
-	bool is_attached = false;
+	bool is_attached{ false };
+	bool use_absolute_rotation{ false };
 
-	// used to track if recomputation of geometry is needed
-	vec3 current_anchor_position{ vec3(0.0) };
-	quat current_anchor_rotation{ quat() };
-	vec3 current_anchor_scale{ vec3(1.0) };
+	/// Reference to the object that gets notified of changing values through the on_set function
+	cgv::base::base_ptr on_set_obj;
 
 	// Needed to call the two events on_handle_grabbed and on_handle_drag
-	void on_grabbed_start() override
-	{
-		on_handle_grabbed();
-	}
+	void on_grabbed_start() override { on_handle_grabbed();	}
 
-	void on_grabbed_drag() override
-	{
-		on_handle_drag();
-	}
+	void on_grabbed_drag() override	{ on_handle_drag();	}
 
-	void on_grabbed_stop() override
-	{
-		on_handle_released();
-	}
+	void on_grabbed_stop() override	{ on_handle_released();	}
 
-	void on_triggered_start() override
-	{
-		on_handle_grabbed();
-	}
+	void on_triggered_start() override { on_handle_grabbed(); }
 
-	void on_triggered_drag() override
-	{
-		on_handle_drag();
-	}
+	void on_triggered_drag() override { on_handle_drag(); }
 
-	void on_triggered_stop() override
-	{
-		on_handle_released();
-	}
+	void on_triggered_stop() override { on_handle_released(); }
 
 	/// Event that is called when a primitive/handle of the gizmo gets grabbed by a hid.
 	///	prim_idx is the primitive that was grabbed, start_position is the point it was grabbed at.
@@ -75,103 +61,101 @@ protected:
 	/// Event that is called when a primitive/handle of the gizmo gets released from grabbing by a hid.
 	virtual void on_handle_released() {}
 
-	// Update the gizmo's geometry for the current anchor position and rotation
-	virtual void compute_geometry() = 0;
+	/// Validate all configuration values. Return false if configuration is invalid in a way that the gizmo cannot be used or rendered.
+	virtual bool validate_configuration() = 0;
+
+	/// Compute constant values according to the configuration.
+	/// Called once on attach.
+	virtual void precompute_geometry() = 0;
+
+	/// Internal draw function in local coordinate system with scale (and possibly rotation) removed that has access to the camera transform
+	virtual void _draw(cgv::render::context& ctx, const vec3& scale, const mat4& view_matrix) {}
+
+	/// Internal compute_closest_point function in local coordinate system with scale (and possibly rotation) removed that has access to the camera transform
+	virtual bool _compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx, const vec3& scale,
+		const mat4& view_matrix) { return false; }
+	/// Internal compute_intersection function in local coordinate system with scale (and possibly rotation) removed that has access to the camera transform
+	virtual bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx,
+		const vec3& scale, const mat4& view_matrix) { return false; }
+
+private:
+	/// Compute transform that removes the anchor object's global scale (and possibly rotation).
+	mat4 compute_correction_transformation(vec3& scale);
+	/// Compute transform that adds the anchor object's global scale (and possibly rotation) back in.
+	/// (Used for the inversely transformed parameters of the intersection/proximity functions.)
+	mat4 compute_inverse_correction_transformation(vec3& scale);
 
 public:
 	gizmo(const std::string& name = "") : interactable(name) {}
 
-	void attach(base_ptr obj, const vec3* anchor_position_ptr, const quat* anchor_rotation_ptr = nullptr, const vec3* anchor_scale_ptr = nullptr)
-	{
-		obj_ptr = obj;
-		is_attached = true;
-		if (anchor_position_ptr != nullptr)
-			this->anchor_position_ptr = anchor_position_ptr;
-		else
-			this->anchor_position_ptr = new vec3(0.0);
-		if (anchor_rotation_ptr != nullptr)
-			this->anchor_rotation_ptr = anchor_rotation_ptr;
-		else
-			this->anchor_rotation_ptr = new quat();
-		if (anchor_scale_ptr != nullptr)
-			this->anchor_scale_ptr = anchor_scale_ptr;
-		else
-			this->anchor_scale_ptr = new vec3(1.0);
-		current_anchor_position = *this->anchor_position_ptr;
-		current_anchor_rotation = *this->anchor_rotation_ptr;
-		current_anchor_scale = *this->anchor_scale_ptr;
-		compute_geometry();
-	}
+	/// Validates current configuration and activates gizmo if correct.
+	void attach();
+	/// Deactivates gizmo
+	void detach();
 
-	void detach()
-	{
-		if (!is_attached)
-			return;
-		is_attached = false;
-		obj_ptr.clear();
-	}
+	// Configuration Functions
 
-
+	/// Sets the object as the parent of the gizmo. The gizmo will be positioned according to any transforming interfaces in the hierarchy.
+	///	Not setting this means the gizmo is positioned in the global coordinate system directly.
+	void set_anchor_object(cgv::base::node_ptr _anchor_obj);
+	/// Set an external position the gizmo will be attached to. This position will be added to the anchor object's position (if object was set).
+	///	This will only be used to position the gizmo and is NOT a value being manipulated by the gizmo.
+	void set_external_anchor_position(const vec3* _anchor_position_ptr);
+	/// Set an external rotation the gizmo will be attached to. This rotation will be added to the anchor object's rotation (if object was set).
+	///	This will only be used to position the gizmo's handles and is NOT a value being manipulated by the gizmo.
+	void set_external_anchor_rotation(const quat* _anchor_rotation_ptr);
+	/// Set an external scale the gizmo will be attached to. This scale will be added to the anchor objects scale (if object was set).
+	///	This will only be used to position the gizmo's handles and is NOT a value being manipulated by the gizmo.
+	void set_external_anchor_scale(const vec3* _anchor_scale_ptr);
+	/// Set an external position the gizmo will be attached to with an additional level of indirection. This position will be added to the anchor object's position (if object was set).
+	///	This will only be used to position the gizmo and is NOT a value being manipulated by the gizmo.
+	void set_external_anchor_position(const vec3** _anchor_position_ptr_ptr);
+	/// Set an external rotation the gizmo will be attached to with an additional level of indirection. This rotation will be added to the anchor object's rotation (if object was set).
+	///	This will only be used to position the gizmo's handles and is NOT a value being manipulated by the gizmo.
+	void set_external_anchor_rotation(const quat** _anchor_rotation_ptr_ptr);
+	/// Set an external scale the gizmo will be attached to with an additional level of indirection. This scale will be added to the anchor objects scale (if object was set).
+	///	This will only be used to position the gizmo's handles and is NOT a value being manipulated by the gizmo.
+	void set_external_anchor_scale(const vec3** _anchor_scale_ptr_ptr);
+	/// Set whether the gizmo should be rotated relative to the world as opposed to relative to its anchor object.
+	///	The anchor rotation (if set) will be applied regardless.
+	void set_use_absolute_rotation(bool value);
+protected:
+	/// Set the object to be notified of value changes. Should be called in subclasses of gizmo when setting the pointer to the manipulated value.
+	void set_on_set_object(cgv::base::base_ptr _on_set_obj);
+public:
 	//@name cgv::base::base interface
 	//@{
-	std::string get_type_name() const override
-	{
-		return "gizmo";
-	}
+	std::string get_type_name() const override { return "gizmo"; }
 	//@}
 
 	//@name cgv::nui::focusable interface
 	//@{
-	bool focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info) override
-	{
-		if (!is_attached)
-			return false;
-		return interactable::focus_change(action, rfa, demand, e, dis_info);
-	}
-	bool handle(const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info, cgv::nui::focus_request& request) override
-	{
-		if (!is_attached)
-			return false;
-		return interactable::handle(e, dis_info, request);
-	}
+	bool focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info) override;
+	bool handle(const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info, cgv::nui::focus_request& request) override;
+	//@}
+
+	//@name cgv::nui::grabable interface
+	//@{
+	bool compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx) override;
+	//@}
+	//@name cgv::nui::pointable interface
+	//@{
+	bool compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx) override;
 	//@}
 
 	//@name cgv::render::drawable interface
 	//@{
-	void draw(cgv::render::context& ctx) override
-	{
-		if (!is_attached)
-			return;
-		// Check if geometry has to be updated
-		if (current_anchor_position != *anchor_position_ptr ||
-			current_anchor_rotation != *anchor_rotation_ptr ||
-			current_anchor_scale != *anchor_scale_ptr)
-		{
-			compute_geometry();
-			current_anchor_position = *anchor_position_ptr;
-			current_anchor_rotation = *anchor_rotation_ptr;
-			current_anchor_scale = *anchor_scale_ptr;
-		}
-	}
+	void draw(cgv::render::context& ctx) override;
 	//@}
 
-protected:
-	vec3 relative_to_absolute_position(vec3 relative_position, bool consider_local_rotation = true, bool ignore_scale = false)
-	{
-		vec3 scale = ignore_scale ? vec3(1.0) : current_anchor_scale;
-		if (consider_local_rotation)
-			return current_anchor_position + current_anchor_rotation.apply(relative_position * scale);
-		else
-			return current_anchor_position + relative_position * scale;
-	}
-
-	vec3 relative_to_absolute_direction(vec3 relative_direction, bool consider_local_rotation = true)
-	{
-		if (consider_local_rotation)
-			return current_anchor_rotation.apply(relative_direction);
-		else
-			return relative_direction;
-	}
+	//@name cgv::nui::transforming interface
+	//@{
+	const mat4& get_model_transform() const override;
+	const mat4& get_inverse_model_transform() const override;
+	vec3 get_local_position() const override;
+	quat get_local_rotation() const override;
+	vec3 get_local_scale() const override;
+	//@}
 };
 
 	}

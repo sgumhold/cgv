@@ -14,7 +14,6 @@ namespace cgv {
 ///	Needs at least a scale to manipulate.
 ///	Optionally takes a position as an anchor point and a rotation to allow for scaling in the object coordinates.
 class CGV_API scaling_gizmo : public cgv::nui::gizmo,
-	public cgv::nui::gizmo_functionality_local_world_orientation,
 	public cgv::nui::gizmo_functionality_configurable_axes
 {
 	cgv::render::box_render_style brs;
@@ -24,13 +23,25 @@ class CGV_API scaling_gizmo : public cgv::nui::gizmo,
 	float spline_tube_radius{ 0.03f };
 	float cube_size{ 0.07f };
 
-	// only have to be recomputed if the position or rotation of the object changes
+	// geometry
 	std::vector<vec3> cube_positions;
 	std::vector<quat> cube_rotations;
 	typedef std::pair<std::vector<vec3>, std::vector<vec4>> spline_data_t;
 	std::vector<spline_data_t> splines;
+	std::vector<vec3> handle_positions;
+	std::vector<vec3> handle_directions;
 
+	float distance_at_grab;
 	vec3 scale_at_grab;
+
+	/// Compute the scale-dependent geometry
+	void compute_geometry(const vec3& scale);
+	/// Draw the handles
+	void _draw(cgv::render::context& ctx);
+	/// Do proximity check
+	bool _compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx);
+	/// Do intersection check
+	bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx);
 
 protected:
 	// pointers to properties of the object the gizmo is attached to
@@ -41,10 +52,20 @@ protected:
 	float scaling_axes_length{ 0.2f };
 	std::vector<vec3> scaling_axes_scale_ratios;
 
+	bool validate_configuration() override;
+
 	void on_handle_grabbed() override;
 	void on_handle_drag() override;
 
-	void compute_geometry() override;
+	void precompute_geometry() override;
+
+	//void _draw_local_orientation(cgv::render::context& ctx, const vec3& inverse_translation, const quat& inverse_rotation, const vec3& scale, const mat4& view_matrix) override;
+	//void _draw_global_orientation(cgv::render::context& ctx, const vec3& inverse_translation, const quat& rotation, const vec3& scale, const mat4& view_matrix) override;
+	//
+	//bool _compute_closest_point_local_orientation(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx, const vec3& inverse_translation, const quat& inverse_rotation, const vec3& scale, const mat4& view_matrix) override;
+	//bool _compute_closest_point_global_orientation(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx, const vec3& inverse_translation, const quat& rotation, const vec3& scale, const mat4& view_matrix) override;
+	//bool _compute_intersection_local_orientation(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx, const vec3& inverse_translation, const quat& inverse_rotation, const vec3& scale, const mat4& view_matrix) override;
+	//bool _compute_intersection_global_orientation(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx, const vec3& inverse_translation, const quat& rotation, const vec3& scale, const mat4& view_matrix) override;
 
 public:
 	scaling_gizmo() : gizmo("scaling_gizmo") {}
@@ -68,20 +89,10 @@ public:
 	///	Default value is that of the direction of the corresponding axis.
 	void configure_axes_scale_ratios(std::vector<vec3> scale_ratios);
 
-	//@name cgv::nui::grabable interface
-	//@{
-	bool compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx) override;
-	//@}
-	//@name cgv::nui::pointable interface
-	//@{
-	bool compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx) override;
-	//@}
-
 	//@name cgv::render::drawable interface
 	//@{
 	bool init(cgv::render::context& ctx) override;
 	void clear(cgv::render::context& ctx) override;
-	void draw(cgv::render::context& ctx) override;
 	//@}
 
 	//@name cgv::gui::provider interface
