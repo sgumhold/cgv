@@ -23,74 +23,76 @@ namespace glutil{
 class CGV_API color_selector : public overlay {
 protected:
 	int last_theme_idx = -1;
-	rgba handle_color = rgb(0.9f, 0.9f, 0.9f, 1.0f);
-	rgba highlight_color = rgb(0.5f, 0.5f, 0.5f, 1.0f);
-	std::string highlight_color_hex = "0x808080";
+	//rgba handle_color = rgb(0.9f, 0.9f, 0.9f, 1.0f);
+	//rgba highlight_color = rgb(0.5f, 0.5f, 0.5f, 1.0f);
+	//std::string highlight_color_hex = "0x808080";
 
 	cgv::glutil::frame_buffer_container fbc;
 
 	cgv::glutil::canvas content_canvas, overlay_canvas;
-	cgv::glutil::shape2d_style container_style, border_style, texture_style;
+	cgv::glutil::shape2d_style container_style, border_style, color_texture_style, hue_texture_style, color_handle_style, hue_handle_style;
 
-	bool mouse_is_on_overlay = false;
+	//bool mouse_is_on_overlay = false;
 	bool update_layout = false;
 	bool has_damage = true;
 	bool has_updated = false;
 
 	struct layout_attributes {
 		int padding;
-		//int total_height;
 		
 		// dependent members
-		//int color_editor_height;
-		//int opacity_editor_height;
+		rect content_rect;
 		rect color_rect;
 		rect hue_rect;
+		rect preview_rect;
 
 		void update(const ivec2& parent_size) {
 
 			const int hue_rect_width = 20;
 
-			ivec2 content_size = parent_size - 2 * padding;
-			hue_rect.set_pos(ivec2(padding, parent_size.x() - padding - hue_rect_width));
-			hue_rect.set_size(ivec2(hue_rect_width, content_size.y()));
+			content_rect = rect();
+			content_rect.set_pos(ivec2(padding));
+			content_rect.set_size(ivec2(parent_size - 2 * padding));
 
+			hue_rect = content_rect;
+			hue_rect.set_pos(content_rect.x1() - hue_rect_width, hue_rect.y());
+			hue_rect.set_size(hue_rect_width, content_rect.h());
+
+			color_rect = content_rect;
 			color_rect.set_pos(ivec2(padding));
-			color_rect.set_size(ivec2(content_size.x() - hue_rect.size().x() - 1, content_size.y()));
+			color_rect.set_size(content_rect.w() - hue_rect.w() - 1, content_rect.h());
+
+			color_rect.a() += ivec2(0, 23);
+			hue_rect.a() += ivec2(0, 23);
+
+			preview_rect = content_rect;
+			preview_rect.set_size(20, 20);
 		}
 	} layout;
 	
 	struct color_point : public draggable {
-		float val;
-		rgb col;
+		vec2 val;
 
 		color_point() {
-			size = vec2(12.0f, 18.0f);
+			size = vec2(16.0f);
 			position_is_center = true;
 			constraint_reference = CR_CENTER;
 		}
 
 		void update_val(const layout_attributes& la) {
-			vec2 p = pos - la.color_rect.pos();
-			val = p.x() / la.color_rect.size().x();
+			vec2 p = pos - static_cast<vec2>(la.color_rect.pos());
+			val = p / static_cast<vec2>(la.color_rect.size());
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
 		}
 
 		void update_pos(const layout_attributes& la) {
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
-			float t = val;
-			pos.x() = static_cast<float>(la.color_rect.pos().x()) + t * la.color_rect.size().x();
-			pos.y() = static_cast<float>(la.color_rect.pos().y());
-		}
-
-		float sd_rectangle(const vec2& p, const vec2& b) const {
-			vec2 d = abs(p) - b;
-			return length(cgv::math::max(d, 0.0f)) + std::min(std::max(d.x(), d.y()), 0.0f);
+			pos = static_cast<vec2>(la.color_rect.pos()) + val * la.color_rect.size();
 		}
 
 		bool is_inside(const vec2& mp) const {
-			// test if the given position is inside the handle shape (hit box is defined as a rectangle)
-			return sd_rectangle(mp - (pos + vec2(0.0f, 0.5f*size.y() + 2.0f)), 0.5f*size) < 0.0f;
+			const auto dist = length(mp - center());
+			return dist <= 0.5f*size.x();
 		}
 
 		ivec2 get_render_position() const {
@@ -98,47 +100,29 @@ protected:
 		}
 
 		ivec2 get_render_size() const {
-			return 2 * ivec2(size);
+			return ivec2(size);
 		}
 	};
 
-	struct opacity_point : public draggable {
-		vec2 val;
+	struct hue_point : public draggable {
+		float val;
 
-		opacity_point() {
-			size = vec2(6.0f);
-			position_is_center = true;
-			constraint_reference = CR_CENTER;
+		hue_point() {
+			size = vec2(20.0f, 10.0f);
+			position_is_center = false;
+			constraint_reference = CR_MIN_POINT;
 		}
 
-		void update_val(const layout_attributes& la, const float scale_exponent = 1.0f) {
-
-			vec2 p = pos - la.hue_rect.pos();
-			val = p / la.hue_rect.size();
-
+		void update_val(const rect& constraint) {
+			vec2 p = pos - static_cast<vec2>(constraint.pos());
+			val = p.y() / static_cast<float>(constraint.size().y());
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
-			val.y() = cgv::math::clamp(std::pow(val.y(), scale_exponent), 0.0f, 1.0f);
 		}
 
-		void update_pos(const layout_attributes& la, const float scale_exponent = 1.0f) {
-
+		void update_pos(const rect& constraint) {
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
-
-			vec2 t = val;
-
-			t.y() = cgv::math::clamp(std::pow(t.y(), 1.0f / scale_exponent), 0.0f, 1.0f);
-
-			pos = la.hue_rect.pos() + t * la.hue_rect.size();
-		}
-
-		float sd_rectangle(const vec2& p, const vec2& b) const {
-			vec2 d = abs(p) - b;
-			return length(cgv::math::max(d, 0.0f)) + std::min(std::max(d.x(), d.y()), 0.0f);
-		}
-
-		bool is_inside(const vec2& mp) const {
-
-			return sd_rectangle(mp - pos, size) < 0.0f;
+			pos = static_cast<float>(constraint.pos().x());
+			pos.y() = static_cast<float>(constraint.pos().y()) + val * static_cast<float>(constraint.size().y());
 		}
 
 		ivec2 get_render_position() const {
@@ -146,63 +130,26 @@ protected:
 		}
 
 		ivec2 get_render_size() const {
-			return 2 * ivec2(size);
+			return ivec2(size);
 		}
 	};
+
+	cgv::glutil::draggables_collection<color_point> color_points;
+	cgv::glutil::draggables_collection<hue_point> hue_points;
 
 	texture color_tex;
 	texture hue_tex;
 
-
-	rgb color;
-
-
-	cgv::glutil::draggables_collection<color_point> color_points;
-	cgv::glutil::draggables_collection<opacity_point> hue_points;
-
-
-
-	//generic_renderer color_handle_renderer, opacity_handle_renderer, line_renderer, polygon_renderer;
-	//DEFINE_GENERIC_RENDER_DATA_CLASS(custom_geometry, 2, vec2, position, rgba, color);
-	//DEFINE_GENERIC_RENDER_DATA_CLASS(line_geometry, 2, vec2, position, vec2, texcoord);
-
-	/*struct cm_container {
-		color_map* cm = nullptr;
-		cgv::glutil::draggables_collection<color_point> color_points;
-		cgv::glutil::draggables_collection<opacity_point> opacity_points;
-		
-		custom_geometry color_handles, opacity_handles;
-		line_geometry lines;
-		line_geometry triangles;
-
-		void reset() {
-			cm = nullptr;
-			color_points.clear();
-			opacity_points.clear();
-			color_handles.clear();
-			opacity_handles.clear();
-			lines.clear();
-			triangles.clear();
-		}
-	} cmc;*/
+	rgb color = rgb(0.0f);
 
 	void init_styles(context& ctx);
-	void init_texture(context& ctx);
+	void init_textures(context& ctx);
+	void update_color_texture();
+	void update_color();
 
-	//void add_point(const vec2& pos);
-	//void remove_point(const draggable* ptr);
-	//draggable* get_hit_point(const vec2& pos);
-	
 	void handle_color_point_drag();
 	void handle_hue_point_drag();
-	//void handle_drag_end();
-	//void sort_points();
-	//void sort_color_points();
-	//void sort_opacity_points();
-	//void update_point_positions();
-	//void update_color_map(bool is_data_change);
-	//bool update_geometry();
-
+	
 public:
 	color_selector();
 	std::string get_type_name() const { return "color_selector"; }
@@ -223,9 +170,8 @@ public:
 
 	bool was_updated();
 
-	//color_map* get_color_map() { return cmc.cm; }
-
 	void set_color(rgb color);
+	rgb get_color() const { return color; }
 };
 
 typedef cgv::data::ref_ptr<color_selector> color_selector_ptr;

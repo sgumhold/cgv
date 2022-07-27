@@ -296,6 +296,7 @@ void color_map_editor::init_frame(cgv::render::context& ctx) {
 		highlight_color = rgba(ti.highlight(), 1.0f);
 		highlight_color_hex = ti.highlight_hex();
 		update_geometry();
+		has_damage = true;
 	}
 }
 
