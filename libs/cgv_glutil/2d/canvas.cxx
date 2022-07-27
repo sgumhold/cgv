@@ -4,7 +4,6 @@ namespace cgv {
 namespace glutil {
 
 const std::string canvas::shaders_2d::arrow = "arrow2d.glpr";
-const std::string canvas::shaders_2d::background = "bg2d.glpr";
 const std::string canvas::shaders_2d::circle = "circle2d.glpr";
 const std::string canvas::shaders_2d::cubic_spline = "cubic_spline2d.glpr";
 const std::string canvas::shaders_2d::ellipse = "ellipse2d.glpr";
