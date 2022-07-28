@@ -18,7 +18,7 @@ void update_normal(inout vec3 normal, in int side);
 
 bool keep_this_side(in vec3 position, in vec3 normal, out int side)
 {
-	side = (dot(normal, position) < 0.0) ? 1 : 0;
+	side = gl_FrontFacing /*(dot(normal, position) < 0.0)*/ ? 1 : 0;
 	return (culling_mode == 0) || (side != culling_mode-1);
 }
 
