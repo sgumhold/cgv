@@ -1,9 +1,9 @@
 files:surfel
 vertex_file:group.glsl
 vertex_file:quaternion.glsl
-geometry_file:side.glsl
 geometry_file:view.glsl
 geometry_file:splat.glsl
+geometry_file:side.glsl
 fragment_file:fragment.glfs
 fragment_file:a_buffer_lib.glfs
 fragment_file:side.glsl
