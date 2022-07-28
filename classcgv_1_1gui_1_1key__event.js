@@ -1,6 +1,6 @@
 var classcgv_1_1gui_1_1key__event =
 [
-    [ "key_event", "classcgv_1_1gui_1_1key__event.html#a2421040a285448041c67b1ef83d11d5c", null ],
+    [ "key_event", "classcgv_1_1gui_1_1key__event.html#a259a9618aed694b01e175650f1c0637f", null ],
     [ "get_action", "classcgv_1_1gui_1_1key__event.html#acc59ba1e03d8497b4a72ab4a3b9399a6", null ],
     [ "get_char", "classcgv_1_1gui_1_1key__event.html#a03b47cc3a1d4968b52976ea643bb69ff", null ],
     [ "get_device_id", "classcgv_1_1gui_1_1key__event.html#a2cf741ae08d04f325553109e11d1c146", null ],
@@ -10,6 +10,8 @@ var classcgv_1_1gui_1_1key__event =
     [ "get_modifiers", "classcgv_1_1gui_1_1key__event.html#ada43c99e60a3a1cdb19f8a4b094c24be", null ],
     [ "get_time", "classcgv_1_1gui_1_1key__event.html#a1fcaac54b1f22358cbe828cc206f1f59", null ],
     [ "get_toggle_keys", "classcgv_1_1gui_1_1key__event.html#a559dc3c561b6cd9257913941a07cbd19", null ],
+    [ "get_x", "classcgv_1_1gui_1_1key__event.html#a04c38e03ff46f357f91fa0d757f6b3f2", null ],
+    [ "get_y", "classcgv_1_1gui_1_1key__event.html#a62f82f345454046068b6caeba42b2e01", null ],
     [ "set_action", "classcgv_1_1gui_1_1key__event.html#a2df87899308b12cabbf1aea68287e6fd", null ],
     [ "set_char", "classcgv_1_1gui_1_1key__event.html#a6526e390bf10cdd28f5a066005ace53a", null ],
     [ "set_flags", "classcgv_1_1gui_1_1key__event.html#af8c6041e3055dc0c6325dfed9a773dbb", null ],
@@ -27,5 +29,7 @@ var classcgv_1_1gui_1_1key__event =
     [ "kind", "classcgv_1_1gui_1_1key__event.html#a7bdfa88afd524c47eb91c02b6dcd141c", null ],
     [ "modifiers", "classcgv_1_1gui_1_1key__event.html#aa0c88b35dd8859e3d913f342b6db87a6", null ],
     [ "time", "classcgv_1_1gui_1_1key__event.html#ac31bd0c22ff8cd2fffbf5c17610fb9fd", null ],
-    [ "toggle_keys", "classcgv_1_1gui_1_1key__event.html#a85698ba126b46fee36cd6e31fdfe86b5", null ]
+    [ "toggle_keys", "classcgv_1_1gui_1_1key__event.html#a85698ba126b46fee36cd6e31fdfe86b5", null ],
+    [ "x", "classcgv_1_1gui_1_1key__event.html#a0749100719ee882dfd3c47cc9d9ff3be", null ],
+    [ "y", "classcgv_1_1gui_1_1key__event.html#afddd45569254b7e1c622841b42ea7552", null ]
 ];

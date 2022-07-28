@@ -108,10 +108,10 @@ Inheritance diagram for cgv::gui::key_event:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2421040a285448041c67b1ef83d11d5c"><td class="memItemLeft" align="right" valign="top"><a id="a2421040a285448041c67b1ef83d11d5c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1key__event.html#a2421040a285448041c67b1ef83d11d5c">key_event</a> (unsigned short _key=0, <a class="el" href="namespacecgv_1_1gui.html#a666fa03ad80594e9cdac05ecde1d7d71">KeyAction</a> _action=<a class="el" href="namespacecgv_1_1gui.html#a666fa03ad80594e9cdac05ecde1d7d71ad006e9a05fa5227dd35212bf4a0e4eb1">KA_PRESS</a>, unsigned char _char=0, unsigned char _modifiers=0, unsigned char _toggle_keys=0, double _time=0)</td></tr>
-<tr class="memdesc:a2421040a285448041c67b1ef83d11d5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a key event from its textual description <br /></td></tr>
-<tr class="separator:a2421040a285448041c67b1ef83d11d5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a259a9618aed694b01e175650f1c0637f"><td class="memItemLeft" align="right" valign="top"><a id="a259a9618aed694b01e175650f1c0637f"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1key__event.html#a259a9618aed694b01e175650f1c0637f">key_event</a> (unsigned short _key=0, <a class="el" href="namespacecgv_1_1gui.html#a666fa03ad80594e9cdac05ecde1d7d71">KeyAction</a> _action=<a class="el" href="namespacecgv_1_1gui.html#a666fa03ad80594e9cdac05ecde1d7d71ad006e9a05fa5227dd35212bf4a0e4eb1">KA_PRESS</a>, unsigned char _char=0, unsigned char _modifiers=0, unsigned char _toggle_keys=0, double _time=0, int _x=0, int _y=0)</td></tr>
+<tr class="memdesc:a259a9618aed694b01e175650f1c0637f"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a key event from its textual description <br /></td></tr>
+<tr class="separator:a259a9618aed694b01e175650f1c0637f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a888854b6e2f498e56b6c6c85bd66aec2"><td class="memItemLeft" align="right" valign="top"><a id="a888854b6e2f498e56b6c6c85bd66aec2"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1key__event.html#a888854b6e2f498e56b6c6c85bd66aec2">stream_out</a> (std::ostream &amp;os) const</td></tr>
 <tr class="memdesc:a888854b6e2f498e56b6c6c85bd66aec2"><td class="mdescLeft">&#160;</td><td class="mdescRight">write to stream <br /></td></tr>
@@ -144,6 +144,14 @@ unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1key__event.html#a6526e390bf10cdd28f5a066005ace53a">set_char</a> (unsigned char _char)</td></tr>
 <tr class="memdesc:a6526e390bf10cdd28f5a066005ace53a"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the alpha numeric character <br /></td></tr>
 <tr class="separator:a6526e390bf10cdd28f5a066005ace53a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04c38e03ff46f357f91fa0d757f6b3f2"><td class="memItemLeft" align="right" valign="top"><a id="a04c38e03ff46f357f91fa0d757f6b3f2"></a>
+short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1key__event.html#a04c38e03ff46f357f91fa0d757f6b3f2">get_x</a> () const</td></tr>
+<tr class="memdesc:a04c38e03ff46f357f91fa0d757f6b3f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">current mouse x position (origin is top-left of window) <br /></td></tr>
+<tr class="separator:a04c38e03ff46f357f91fa0d757f6b3f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62f82f345454046068b6caeba42b2e01"><td class="memItemLeft" align="right" valign="top"><a id="a62f82f345454046068b6caeba42b2e01"></a>
+short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1key__event.html#a62f82f345454046068b6caeba42b2e01">get_y</a> () const</td></tr>
+<tr class="memdesc:a62f82f345454046068b6caeba42b2e01"><td class="mdescLeft">&#160;</td><td class="mdescRight">current mouse y position (origin is top-left of window) <br /></td></tr>
+<tr class="separator:a62f82f345454046068b6caeba42b2e01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2cf741ae08d04f325553109e11d1c146"><td class="memItemLeft" align="right" valign="top"><a id="a2cf741ae08d04f325553109e11d1c146"></a>
 virtual void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event.html#a2cf741ae08d04f325553109e11d1c146">get_device_id</a> () const</td></tr>
 <tr class="memdesc:a2cf741ae08d04f325553109e11d1c146"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the device id, by default returns 0 <br /></td></tr>
@@ -202,6 +210,14 @@ unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1key__event.html#a3f77f5d874989d57736f5be06df62b59">character</a></td></tr>
 <tr class="memdesc:a3f77f5d874989d57736f5be06df62b59"><td class="mdescLeft">&#160;</td><td class="mdescRight">store the corresponding ascii character <br /></td></tr>
 <tr class="separator:a3f77f5d874989d57736f5be06df62b59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0749100719ee882dfd3c47cc9d9ff3be"><td class="memItemLeft" align="right" valign="top"><a id="a0749100719ee882dfd3c47cc9d9ff3be"></a>
+short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1key__event.html#a0749100719ee882dfd3c47cc9d9ff3be">x</a></td></tr>
+<tr class="memdesc:a0749100719ee882dfd3c47cc9d9ff3be"><td class="mdescLeft">&#160;</td><td class="mdescRight">x position of mouse pointer <br /></td></tr>
+<tr class="separator:a0749100719ee882dfd3c47cc9d9ff3be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afddd45569254b7e1c622841b42ea7552"><td class="memItemLeft" align="right" valign="top"><a id="afddd45569254b7e1c622841b42ea7552"></a>
+short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1key__event.html#afddd45569254b7e1c622841b42ea7552">y</a></td></tr>
+<tr class="memdesc:afddd45569254b7e1c622841b42ea7552"><td class="mdescLeft">&#160;</td><td class="mdescRight">y position of mouse pointer <br /></td></tr>
+<tr class="separator:afddd45569254b7e1c622841b42ea7552"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7bdfa88afd524c47eb91c02b6dcd141c"><td class="memItemLeft" align="right" valign="top"><a id="a7bdfa88afd524c47eb91c02b6dcd141c"></a>
 unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event.html#a7bdfa88afd524c47eb91c02b6dcd141c">kind</a></td></tr>
 <tr class="memdesc:a7bdfa88afd524c47eb91c02b6dcd141c"><td class="mdescLeft">&#160;</td><td class="mdescRight">store which kind of event we have <br /></td></tr>
