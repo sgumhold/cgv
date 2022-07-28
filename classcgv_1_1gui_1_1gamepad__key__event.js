@@ -12,6 +12,8 @@ var classcgv_1_1gui_1_1gamepad__key__event =
     [ "get_state", "classcgv_1_1gui_1_1gamepad__key__event.html#a9835a4250aa78945b5b536c873f02721", null ],
     [ "get_time", "classcgv_1_1gui_1_1gamepad__key__event.html#a1fcaac54b1f22358cbe828cc206f1f59", null ],
     [ "get_toggle_keys", "classcgv_1_1gui_1_1gamepad__key__event.html#a559dc3c561b6cd9257913941a07cbd19", null ],
+    [ "get_x", "classcgv_1_1gui_1_1gamepad__key__event.html#a04c38e03ff46f357f91fa0d757f6b3f2", null ],
+    [ "get_y", "classcgv_1_1gui_1_1gamepad__key__event.html#a62f82f345454046068b6caeba42b2e01", null ],
     [ "set_action", "classcgv_1_1gui_1_1gamepad__key__event.html#a2df87899308b12cabbf1aea68287e6fd", null ],
     [ "set_char", "classcgv_1_1gui_1_1gamepad__key__event.html#a6526e390bf10cdd28f5a066005ace53a", null ],
     [ "set_flags", "classcgv_1_1gui_1_1gamepad__key__event.html#af8c6041e3055dc0c6325dfed9a773dbb", null ],
@@ -31,5 +33,7 @@ var classcgv_1_1gui_1_1gamepad__key__event =
     [ "modifiers", "classcgv_1_1gui_1_1gamepad__key__event.html#aa0c88b35dd8859e3d913f342b6db87a6", null ],
     [ "state", "classcgv_1_1gui_1_1gamepad__key__event.html#a59a074b37ddf7cd86713bb1140bc96e4", null ],
     [ "time", "classcgv_1_1gui_1_1gamepad__key__event.html#ac31bd0c22ff8cd2fffbf5c17610fb9fd", null ],
-    [ "toggle_keys", "classcgv_1_1gui_1_1gamepad__key__event.html#a85698ba126b46fee36cd6e31fdfe86b5", null ]
+    [ "toggle_keys", "classcgv_1_1gui_1_1gamepad__key__event.html#a85698ba126b46fee36cd6e31fdfe86b5", null ],
+    [ "x", "classcgv_1_1gui_1_1gamepad__key__event.html#a0749100719ee882dfd3c47cc9d9ff3be", null ],
+    [ "y", "classcgv_1_1gui_1_1gamepad__key__event.html#afddd45569254b7e1c622841b42ea7552", null ]
 ];
