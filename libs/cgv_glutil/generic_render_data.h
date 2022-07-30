@@ -64,8 +64,10 @@ namespace glutil{
 
 /// forward declaration to give generic renderer access to protected members
 class generic_renderer;
+class generic_2d_renderer;
 class generic_render_data : public cgv::render::render_types {
 	friend class generic_renderer;
+	friend class generic_2d_renderer;
 private:
 	cgv::render::attribute_array_manager aam;
 	

@@ -1,57 +1,20 @@
 #pragma once
 
-#include <cgv/gui/event_handler.h>
-#include <cgv/gui/provider.h>
-#include <cgv/render/drawable.h>
 #include <cgv/render/texture.h>
+#include <cgv_glutil/canvas_overlay.h>
 #include <cgv_glutil/frame_buffer_container.h>
-#include <cgv_glutil/overlay.h>
+#include <cgv_glutil/generic_2d_renderer.h>
 
-#include "generic_render_data.h"
-#include "generic_renderer.h"
-#include "color_map.h"
 #include "2d/draggables_collection.h"
-
-#include "2d/canvas.h"
-#include "2d/shape2d_styles.h"
+#include "color_map.h"
 
 #include "lib_begin.h"
 
 namespace cgv {
 namespace glutil{
 
-class CGV_API color_map_editor : public overlay {
+class CGV_API color_map_editor : public canvas_overlay {
 protected:
-	int last_theme_idx = -1;
-	rgba handle_color = rgb(0.9f, 0.9f, 0.9f, 1.0f);
-	rgba highlight_color = rgb(0.5f, 0.5f, 0.5f, 1.0f);
-	std::string highlight_color_hex = "0x808080";
-
-	bool has_updated = false;
-
-	cgv::glutil::frame_buffer_container fbc;
-
-	cgv::glutil::canvas canvas, overlay_canvas;
-	cgv::glutil::shape2d_style container_style, border_style, color_map_style, bg_style, hist_style;
-
-	bool mouse_is_on_overlay;
-	bool show_cursor;
-	ivec2 cursor_pos;
-	std::string cursor_drawtext;
-	cgv::media::font::font_face_ptr cursor_font_face;
-
-	//bool show_histogram;
-	//rgba histogram_color;
-	//rgba histogram_border_color;
-	//unsigned histogram_border_width;
-	//float histogram_smoothing;
-	
-	cgv::type::DummyEnum resolution;
-	float opacity_scale_exponent;
-	bool supports_opacity;
-	bool update_layout = false;
-	bool has_damage = true;
-
 	struct layout_attributes {
 		int padding;
 		int total_height;
@@ -183,10 +146,35 @@ protected:
 		}
 	};
 
+	bool has_updated = false;
+	bool mouse_is_on_overlay;
+	bool show_cursor;
+	bool supports_opacity;
+
+	// general appearance
+	rgba handle_color = rgb(0.9f, 0.9f, 0.9f, 1.0f);
+	rgba highlight_color = rgb(0.5f, 0.5f, 0.5f, 1.0f);
+	std::string highlight_color_hex = "0x808080";
+	cgv::glutil::shape2d_style container_style, border_style, color_map_style, bg_style, hist_style;
+
+	// text appearance
+	ivec2 cursor_pos;
+	std::string cursor_drawtext;
+	cgv::media::font::font_face_ptr cursor_font_face;
+
+	//bool show_histogram;
+	//rgba histogram_color;
+	//rgba histogram_border_color;
+	//unsigned histogram_border_width;
+	//float histogram_smoothing;
+
+	cgv::type::DummyEnum resolution;
+	float opacity_scale_exponent;
+	
 	texture bg_tex;
 	texture preview_tex;
 
-	generic_renderer color_handle_renderer, opacity_handle_renderer, line_renderer, polygon_renderer;
+	generic_2d_renderer color_handle_renderer, opacity_handle_renderer, line_renderer, polygon_renderer;
 	DEFINE_GENERIC_RENDER_DATA_CLASS(custom_geometry, 2, vec2, position, rgba, color);
 	DEFINE_GENERIC_RENDER_DATA_CLASS(line_geometry, 2, vec2, position, vec2, texcoord);
 
@@ -244,7 +232,6 @@ public:
 	void draw_content(cgv::render::context& ctx);
 	
 	void create_gui();
-	void create_gui(cgv::gui::provider& p);
 
 	bool get_opacity_support() { return supports_opacity; }
 	void set_opacity_support(bool flag);
@@ -252,7 +239,6 @@ public:
 	bool was_updated();
 
 	color_map* get_color_map() { return cmc.cm; }
-
 	void set_color_map(color_map* cm);
 };
 
