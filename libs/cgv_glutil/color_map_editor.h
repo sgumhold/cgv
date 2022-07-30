@@ -163,16 +163,19 @@ protected:
 	cgv::media::font::font_face_ptr cursor_font_face;
 
 	//bool show_histogram;
+	std::vector<unsigned> histogram;
+	unsigned hist_max = 1;
 	//rgba histogram_color;
 	//rgba histogram_border_color;
-	//unsigned histogram_border_width;
-	//float histogram_smoothing;
+	float histogram_border_width = 0.0f;
+	float histogram_smoothing = 0.0f;
 
 	cgv::type::DummyEnum resolution;
 	float opacity_scale_exponent;
 	
 	texture bg_tex;
 	texture preview_tex;
+	texture hist_tex;
 
 	generic_2d_renderer color_handle_renderer, opacity_handle_renderer, line_renderer, polygon_renderer;
 	DEFINE_GENERIC_RENDER_DATA_CLASS(custom_geometry, 2, vec2, position, rgba, color);
@@ -215,6 +218,8 @@ protected:
 	void update_color_map(bool is_data_change);
 	bool update_geometry();
 
+	void reload_shaders();
+
 public:
 	color_map_editor();
 	std::string get_type_name() const { return "color_map_editor"; }
@@ -240,6 +245,8 @@ public:
 
 	color_map* get_color_map() { return cmc.cm; }
 	void set_color_map(color_map* cm);
+
+	void set_histogram_data(const std::vector<unsigned> data);
 };
 
 typedef cgv::data::ref_ptr<color_map_editor> color_map_editor_ptr;

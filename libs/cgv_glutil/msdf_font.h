@@ -8,6 +8,10 @@
 namespace cgv {
 namespace glutil {
 
+class CGV_API msdf_font;
+
+extern CGV_API msdf_font& ref_msdf_font(cgv::render::context& ctx, int ref_count_change = 0);
+
 class CGV_API msdf_font : public cgv::render::render_types {
 public:
 	struct glyph_info {
@@ -34,6 +38,8 @@ protected:
 
 public:
 	msdf_font();
+
+	void manage_singleton(cgv::render::context& ctx, int& ref_count, int ref_count_change);
 
 	void destruct(cgv::render::context& ctx);
 

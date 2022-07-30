@@ -39,7 +39,7 @@ void color_map_legend::clear(cgv::render::context& ctx) {
 	tex.clear();
 	tex.destruct(ctx);
 
-	font.destruct(ctx);
+	ref_msdf_font(ctx, -1);
 	font_renderer.destruct(ctx);
 
 	tick_renderer.destruct(ctx);
@@ -102,10 +102,12 @@ bool color_map_legend::init(cgv::render::context& ctx) {
 	success &= font_renderer.init(ctx);
 	success &= tick_renderer.init(ctx);
 
+	msdf_font& font = ref_msdf_font(ctx, 1);
+
 	if(success)
 		init_styles(ctx);
 
-	if(font.init(ctx)) {
+	if(font.is_initialized()) {
 		labels.set_msdf_font(&font);
 		labels.set_font_size(font_size);
 	}
@@ -173,23 +175,18 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 	tick_renderer.render(ctx, content_canvas, PT_POINTS, ticks);
 
 	// draw tick labels
-	auto& font_prog = font_renderer.ref_prog();
-	font_prog.enable(ctx);
-	text_style.apply(ctx, font_prog);
-	content_canvas.set_view(ctx, font_prog);
-	font_prog.disable(ctx);
-	font_renderer.render(ctx, get_overlay_size(), labels, 0, labels.size() - 1);
+	if(font_renderer.enable(ctx, content_canvas, labels)) {
+		font_renderer.draw(ctx, labels, 0, labels.size() - 1);
 
-	content_canvas.push_modelview_matrix();
-	content_canvas.mul_modelview_matrix(ctx, cgv::math::translate2h(layout.title_position));
-	content_canvas.mul_modelview_matrix(ctx, cgv::math::rotate2h(layout.title_angle));
+		content_canvas.push_modelview_matrix();
+		content_canvas.mul_modelview_matrix(ctx, cgv::math::translate2h(layout.title_position));
+		content_canvas.mul_modelview_matrix(ctx, cgv::math::rotate2h(layout.title_angle));
 
-	font_prog.enable(ctx);
-	content_canvas.set_view(ctx, font_prog);
-	font_prog.disable(ctx);
-	font_renderer.render(ctx, get_overlay_size(), labels, labels.size() - 1, 1);
+		font_renderer.draw(ctx, content_canvas, labels, labels.size() - 1, 1);
 
-	content_canvas.pop_modelview_matrix(ctx);
+		content_canvas.pop_modelview_matrix(ctx);
+		font_renderer.disable(ctx, labels);
+	}
 
 	end_content(ctx);
 }
@@ -323,6 +320,10 @@ void color_map_legend::init_styles(context& ctx) {
 	text_style.border_width = border_width;
 	text_style.feather_origin = 0.5f;
 	text_style.use_blending = true;
+
+	auto& font_prog = font_renderer.enable_prog(ctx);
+	text_style.apply(ctx, font_prog);
+	font_prog.disable(ctx);
 
 	// configure style for tick marks
 	shape2d_style tick_style;
