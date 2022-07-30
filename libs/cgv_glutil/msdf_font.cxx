@@ -6,9 +6,40 @@
 namespace cgv {
 namespace glutil {
 
+msdf_font& ref_msdf_font(cgv::render::context& ctx, int ref_count_change) {
+	static int ref_count = 0;
+	static msdf_font f;
+	f.manage_singleton(ctx, ref_count, ref_count_change);
+	return f;
+}
+
 msdf_font::msdf_font() {
 	initial_font_size = 0;
 	pixel_range = 0;
+}
+
+void msdf_font::manage_singleton(cgv::render::context& ctx, int& ref_count, int ref_count_change) {
+	switch(ref_count_change) {
+	case 1:
+		if(ref_count == 0) {
+			if(!init(ctx))
+				ctx.error(std::string("unable to initialize msdf_font singleton"));
+		}
+		++ref_count;
+		break;
+	case 0:
+		break;
+	case -1:
+		if(ref_count == 0)
+			ctx.error(std::string("attempt to decrease reference count of msdf_font singleton below 0"));
+		else {
+			if(--ref_count == 0)
+				destruct(ctx);
+		}
+		break;
+	default:
+		ctx.error(std::string("invalid change reference count outside {-1,0,1} for msdf_font singleton"));
+	}
 }
 
 void msdf_font::destruct(cgv::render::context& ctx) {

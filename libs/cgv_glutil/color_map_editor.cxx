@@ -348,6 +348,21 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 				tfc.hist_tex.disable(ctx);
 				canvas.disable_current_shader(ctx);
 			}*/
+			if(hist_tex.is_created()) {
+				hist_style.fill_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);// histogram_color;
+				hist_style.border_color = rgba(1.0f, 0.0f, 0.0f, 1.0f); //histogram_border_color;
+				hist_style.border_width = histogram_border_width;
+
+				auto& hist_prog = cc.enable_shader(ctx, "histogram");
+				hist_prog.set_uniform(ctx, "max_value", hist_max);
+				hist_prog.set_uniform(ctx, "nearest_linear_mix", histogram_smoothing);
+				hist_style.apply(ctx, hist_prog);
+
+				hist_tex.enable(ctx, 1);
+				cc.draw_shape(ctx, layout.opacity_editor_rect.pos(), layout.opacity_editor_rect.size());
+				hist_tex.disable(ctx);
+				cc.disable_current_shader(ctx);
+			}
 
 			preview_tex.enable(ctx, 0);
 			// draw transfer function area polygon
@@ -410,6 +425,7 @@ void color_map_editor::create_gui() {
 		align("\b");
 		end_tree_node(cmc.color_points);
 	}
+
 	if(supports_opacity) {
 		if(begin_tree_node("Opacity Points", cmc.opacity_points, true)) {
 			align("\a");
@@ -420,6 +436,10 @@ void color_map_editor::create_gui() {
 			end_tree_node(cmc.opacity_points);
 		}
 	}
+
+	add_member_control(this, "Smoothing", histogram_smoothing, "value_slider", "min=0;max=1;step=0.001");
+	add_member_control(this, "Border Width", histogram_border_width, "value_slider", "min=0;max=10;step=0.5");
+	connect_copy(add_button("reload shaders")->click, rebind(this, &color_map_editor::reload_shaders));
 }
 
 void color_map_editor::set_opacity_support(bool flag) {
@@ -460,6 +480,34 @@ void color_map_editor::set_color_map(color_map* cm) {
 		update_color_map(false);
 
 		post_recreate_gui();
+	}
+}
+
+void color_map_editor::set_histogram_data(const std::vector<unsigned> data) {
+	histogram = data;
+
+	std::vector<float> float_data(histogram.size(), 0.0f);
+	hist_max = 1;
+	for(size_t i = 0; i < histogram.size(); ++i) {
+		hist_max = std::max(hist_max, histogram[i]);
+		float_data[i] = static_cast<float>(histogram[i]);
+	}
+
+	if(auto ctx_ptr = get_context()) {
+		auto& ctx = *ctx_ptr;
+		hist_tex.destruct(ctx);
+
+		// TODO: should this take the type_id to set the component integer interpretation?
+		//cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(histogram.size(), TI_UINT32, cgv::data::CF_R), histogram.data());
+		//dv.get_format()->get_component_format().set_integer_interpretation(cgv::data::CII_INTEGER);
+		//hist_tex = texture("_uint32[R]", TF_NEAREST, TF_NEAREST);
+
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(histogram.size(), TI_FLT32, cgv::data::CF_R), float_data.data());
+		hist_tex = texture("flt32[R]");
+		hist_tex.create(ctx, dv, 0);
+
+		has_damage = true;
+		post_redraw();
 	}
 }
 
@@ -917,6 +965,14 @@ bool color_map_editor::update_geometry() {
 	}
 
 	return success;
+}
+
+void color_map_editor::reload_shaders() {
+	if(auto ctx_ptr = get_context()) {
+		content_canvas.reload_shaders(*ctx_ptr);
+		has_damage = true;
+		post_redraw();
+	}
 }
 
 }

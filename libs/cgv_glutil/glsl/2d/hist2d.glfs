@@ -50,14 +50,58 @@ float texture_smooth(in sampler1D tex, in float coord) {
 	return textureLod(tex, u, 0).r;
 }
 
+// cubic interpolation function
+float texture_cubic(in sampler1D tex, in float coord) {
+	// shift the coordinate from [0,1] to [-0.5, tex_size-0.5]
+	float tex_size = textureSize(tex, 0);
+	float coord_grid = coord * tex_size - 0.5;
+	float index = floor(coord_grid);
+	float fraction = coord_grid - index;
+	float one_frac = 1.0 - fraction;
+
+	float w0 = 1.0/6.0 * one_frac*one_frac*one_frac;
+	float w1 = 2.0/3.0 - 0.5 * fraction*fraction*(2.0-fraction);
+	float w2 = 2.0/3.0 - 0.5 * one_frac*one_frac*(2.0-one_frac);
+	float w3 = 1.0/6.0 * fraction*fraction*fraction;
+
+	float g0 = w0 + w1;
+	float g1 = w2 + w3;
+	float mult = 1.0 / tex_size;
+	float h0 = mult * ((w1 / g0) - 0.5 + index);
+	float h1 = mult * ((w3 / g1) + 1.5 + index);
+
+	// fetch the two linear interpolations
+	float tex000 = textureLod(tex, h0, 0).r;
+	float tex100 = textureLod(tex, h1, 0).r;
+	return mix(tex100, tex000, g0.x);
+}
+
 void main() {
 	
 	vec4 final_color = vec4(0.0);
 
 	float height_nearest = texture_nearest(hist_tex, tex_coord.x) / float(max_value);
 	float height_linear = texture(hist_tex, tex_coord.x).r / float(max_value);
+	float height_smooth = texture_smooth(hist_tex, tex_coord.x) / float(max_value);
+	float height_cubic = texture_cubic(hist_tex, tex_coord.x) / float(max_value);
 
-	float height = mix(height_nearest, height_linear, nearest_linear_mix);
+	float a = height_nearest;
+	float b = height_linear;
+	float t = nearest_linear_mix;
+	if(t > 0.666667) {
+		t -= 0.666667;
+		a = height_smooth;
+		b = height_cubic;
+	} else if(t > 0.333333) {
+		t -= 0.333333;
+		a = height_linear;
+		b = height_smooth;
+	}
+
+	t *= 3.0;
+	t = clamp(t, 0.0, 1.0);
+
+	float height = mix(a, b, t);
 
 	float border = 0.0f;
 
@@ -71,6 +115,8 @@ void main() {
 			final_color = fill_color;
 	}
 
+	//final_color = vec4(1.0, 0.0, 0.0, 0.5);
+	//final_color = vec4(texture(hist_tex, tex_coord.x).r > 0.0 ? 1.0 : 0.0, 0.0, 0.0, 1.0);
 	finish_fragment2d(final_color);
 
 	// Smoothstep

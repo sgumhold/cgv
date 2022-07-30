@@ -58,6 +58,10 @@ public:
 		shaders.add(name, filename, defines);
 	}
 
+	void reload_shaders(cgv::render::context& ctx) {
+		shaders.reload_all(ctx);
+	}
+
 	bool init(cgv::render::context& ctx) {
 		return shaders.load_shaders(ctx);
 	}
@@ -74,6 +78,10 @@ public:
 		if(current_shader_program)
 			current_shader_program->disable(ctx);
 		current_shader_program = nullptr;
+	}
+
+	ivec2 get_resolution() const {
+		return resolution;
 	}
 
 	void set_resolution(cgv::render::context& ctx, const ivec2& resolution) {

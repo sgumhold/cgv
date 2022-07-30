@@ -91,8 +91,7 @@ protected:
 	float font_size = 12.0f;
 
 	shape2d_style text_style;
-	msdf_font font;
-	msdf_gl_font_renderer font_renderer;
+	msdf_gl_canvas_font_renderer font_renderer;
 	msdf_text_geometry labels;
 
 	generic_2d_renderer tick_renderer;

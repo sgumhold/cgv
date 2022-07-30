@@ -135,6 +135,24 @@ void volume_viewer::create_volume(cgv::render::context& ctx)
 	// set the volume bounding box to later scale the rendering accordingly
 	volume_bounding_box.ref_min_pnt() = volume_bounding_box.ref_min_pnt();
 	volume_bounding_box.ref_max_pnt() = volume_bounding_box.ref_max_pnt();
+
+	// calculate a histogram
+	std::vector<unsigned> histogram(64, 0u);
+
+	for(size_t i = 0; i < vol_data.size(); ++i) {
+		size_t bucket = static_cast<size_t>(vol_data[i] * 64.0f);
+		bucket = cgv::math::clamp(bucket, 0ull, 64ull);
+		++histogram[bucket];
+	}
+
+	/*std::uniform_int_distribution<unsigned> udistr(0u, 1000u);
+
+	for(size_t i = 0; i < histogram.size(); ++i) {
+		histogram[i] = udistr(rng);
+	}*/
+
+	if(transfer_function_editor_ptr)
+		transfer_function_editor_ptr->set_histogram_data(histogram);
 }
 
 // splates n spheres of given radius into the volume, by adding the contribution to the covered voxel cells
