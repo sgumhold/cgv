@@ -145,11 +145,11 @@ void volume_viewer::create_volume(cgv::render::context& ctx)
 		++histogram[bucket];
 	}
 
-	/*std::uniform_int_distribution<unsigned> udistr(0u, 1000u);
+	std::uniform_int_distribution<unsigned> udistr(0u, 1000u);
 
 	for(size_t i = 0; i < histogram.size(); ++i) {
 		histogram[i] = udistr(rng);
-	}*/
+	}
 
 	if(transfer_function_editor_ptr)
 		transfer_function_editor_ptr->set_histogram_data(histogram);

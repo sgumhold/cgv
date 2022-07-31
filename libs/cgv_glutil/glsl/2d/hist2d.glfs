@@ -27,6 +27,8 @@ uniform float nearest_linear_mix = 1.0;
 
 uniform float A;
 
+flat in vec2 size;
+in vec2 pix_coord;
 in vec2 tex_coord;
 
 float texture_nearest(sampler1D tex, float coord) {
@@ -34,6 +36,10 @@ float texture_nearest(sampler1D tex, float coord) {
 	int u = int(coord * tex_size);
 
 	return texelFetch(tex, u, 0).r;
+}
+
+float texture_linear(sampler1D tex, float coord) {
+	return texture(tex, coord).r;
 }
 
 // smooth filtering from https://www.shadertoy.com/view/XsfGDn
@@ -76,11 +82,26 @@ float texture_cubic(in sampler1D tex, in float coord) {
 	return mix(tex100, tex000, g0.x);
 }
 
+
+float sd_line(in vec2 p, in vec2 a, in vec2 b) {
+    vec2 pa = p-a, ba = b-a;
+    float h = dot(pa,ba)/dot(ba,ba);
+    return length( pa - ba*h );
+}
+
 void main() {
 	
 	vec4 final_color = vec4(0.0);
 
-	float height_nearest = texture_nearest(hist_tex, tex_coord.x) / float(max_value);
+
+	//final_color = vec4(1.0, 0.0, 0.0, 0.5);
+	//final_color = vec4(texture(hist_tex, tex_coord.x).r > 0.0 ? 1.0 : 0.0, 0.0, 0.0, 1.0);
+	//finish_fragment2d(final_color);
+	
+
+	
+
+	/*float height_nearest = texture_nearest(hist_tex, tex_coord.x) / float(max_value);
 	float height_linear = texture(hist_tex, tex_coord.x).r / float(max_value);
 	float height_smooth = texture_smooth(hist_tex, tex_coord.x) / float(max_value);
 	float height_cubic = texture_cubic(hist_tex, tex_coord.x) / float(max_value);
@@ -101,9 +122,74 @@ void main() {
 	t *= 3.0;
 	t = clamp(t, 0.0, 1.0);
 
-	float height = mix(a, b, t);
+	float height = mix(a, b, t);*/
 
-	float border = 0.0f;
+	float off = 1.0 / size.x;
+	float y_step = 1.0 / size.y;
+
+#define TEX_FUNC texture_linear
+
+	float height = TEX_FUNC(hist_tex, tex_coord.x) / float(max_value);
+	float height_prev = TEX_FUNC(hist_tex, tex_coord.x - off) / float(max_value);
+	float height_next = TEX_FUNC(hist_tex, tex_coord.x + off) / float(max_value);
+	
+	float y = tex_coord.y;
+
+	float dist = sd_line(
+		vec2(1.0, size.y*y),
+		vec2(0.0, size.y*height_prev),
+		vec2(2.0, size.y*height_next)
+	);
+
+	//float mid = 0.5*(height_prev + height_next);
+	//if(y < mid)
+	//	dist = -dist;
+
+	final_color = fill_color;
+
+	if(y <= height) {
+		dist = - dist;
+		final_color = fill_color;
+		//float slope = 10.0*(height_next - height_prev);
+		//final_color.rgb = slope < 0.0 ? vec3(0.0, 0.0, -slope) : vec3(slope, 0.0, 0.0);
+	} else {
+		float dist = sd_line(
+			vec2(1.0, size.y*y),
+			vec2(0.0, size.y*height_prev),
+			vec2(2.0, size.y*height_next)
+		);
+
+		final_color = fill_color;
+
+		float feather_alpha = 1.0 - clamp((dist - 1.0) / 1.0, 0.0, 1.0);
+
+		final_color.rgb = vec3(dist*10.0*nearest_linear_mix, 0.0, 0.0);
+		//final_color.a *= feather_alpha;
+
+		//float slope = height_next - height_prev;
+		//final_color.rgb = slope < 0.0 ? vec3(0.0, 0.0, -slope) : vec3(slope, 0.0, 0.0);
+
+		/*if(y <= height_next) {
+			float dist = tex_coord.y - height;
+			dist /= height_next - height;
+			dist = 1.0 - clamp(dist, 0.0, 1.0);
+			final_color = fill_color;
+			final_color.a = dist;
+		}
+		if(y <= height_prev) {
+			float dist = tex_coord.y - height;
+			dist /= height_prev - height;
+			dist = 1.0 - clamp(dist, 0.0, 1.0);
+			final_color = fill_color;
+			final_color.a = dist;
+		}*/
+	}
+
+	//if(height_prev < height && height_next < height || height_prev > height && height_next > height)
+		//dist = size.y * (y - height);
+
+
+	/*float border = 0.0f;
 
 	if(border_width > 0.1)
 		border = border_width / resolution.y;
@@ -113,11 +199,12 @@ void main() {
 		
 		if(tex_coord.y <= height)
 			final_color = fill_color;
-	}
+	}*/
 
 	//final_color = vec4(1.0, 0.0, 0.0, 0.5);
 	//final_color = vec4(texture(hist_tex, tex_coord.x).r > 0.0 ? 1.0 : 0.0, 0.0, 0.0, 1.0);
-	finish_fragment2d(final_color);
+	//finish_fragment2d(final_color);
+	finish_sdf_fragment2d(dist, final_color);
 
 	// Smoothstep
 	/*int size = textureSize(tex, 0);
