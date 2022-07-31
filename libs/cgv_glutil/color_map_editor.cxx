@@ -550,7 +550,7 @@ void color_map_editor::init_styles(context& ctx) {
 	// configure style for histogram
 	hist_style.use_blending = true;
 	hist_style.apply_gamma = false;
-	hist_style.feather_width = 0.0f;
+	hist_style.feather_width = 1.0f;
 
 	auto& hist_prog = content_canvas.enable_shader(ctx, "histogram");
 	hist_style.apply(ctx, hist_prog);
