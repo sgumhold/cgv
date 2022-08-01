@@ -1,7 +1,5 @@
 #include "color_map_editor.h"
 
-#include <cgv/defines/quote.h>
-#include <cgv/gui/dialog.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/theme_info.h>

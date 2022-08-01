@@ -5,15 +5,11 @@
 #include <cgv/render/drawable.h>
 #include <cgv/render/texture.h>
 #include <cgv_glutil/frame_buffer_container.h>
+#include <cgv_glutil/msdf_gl_font_renderer.h>
 #include <cgv_glutil/overlay.h>
-
-#include "generic_render_data.h"
-#include "generic_renderer.h"
-#include "color_map.h"
-#include "2d/draggables_collection.h"
-
-#include "2d/canvas.h"
-#include "2d/shape2d_styles.h"
+#include <cgv_glutil/2d/canvas.h>
+#include <cgv_glutil/2d/draggables_collection.h>
+#include <cgv_glutil/2d/shape2d_styles.h>
 
 #include "lib_begin.h"
 
@@ -22,26 +18,11 @@ namespace glutil{
 
 class CGV_API color_selector : public overlay {
 protected:
-	int last_theme_idx = -1;
-	//rgba handle_color = rgb(0.9f, 0.9f, 0.9f, 1.0f);
-	//rgba highlight_color = rgb(0.5f, 0.5f, 0.5f, 1.0f);
-	//std::string highlight_color_hex = "0x808080";
-
-	cgv::glutil::frame_buffer_container fbc;
-
-	cgv::glutil::canvas content_canvas, overlay_canvas;
-	cgv::glutil::shape2d_style container_style, border_style, color_texture_style, hue_texture_style, color_handle_style, hue_handle_style;
-
-	//bool mouse_is_on_overlay = false;
-	bool update_layout = false;
-	bool has_damage = true;
-	bool has_updated = false;
-
 	struct layout_attributes {
 		int padding;
 		
 		// dependent members
-		rect content_rect;
+		rect border_rect;
 		rect color_rect;
 		rect hue_rect;
 		rect preview_rect;
@@ -50,23 +31,23 @@ protected:
 
 			const int hue_rect_width = 20;
 
-			content_rect = rect();
-			content_rect.set_pos(ivec2(padding));
-			content_rect.set_size(ivec2(parent_size - 2 * padding));
+			border_rect.set_pos(ivec2(padding));
+			border_rect.set_size(ivec2(parent_size - 2 * padding));
+			border_rect.a() += ivec2(0, 23);
 
-			hue_rect = content_rect;
-			hue_rect.set_pos(content_rect.x1() - hue_rect_width, hue_rect.y());
+			rect content_rect = border_rect;
+			content_rect.translate(1, 1);
+			content_rect.resize(-2, -2);
+
+			hue_rect.set_pos(content_rect.x1() - hue_rect_width, content_rect.y());
 			hue_rect.set_size(hue_rect_width, content_rect.h());
-
+			
 			color_rect = content_rect;
-			color_rect.set_pos(ivec2(padding));
-			color_rect.set_size(content_rect.w() - hue_rect.w() - 1, content_rect.h());
+			color_rect.resize(-21, 0);
 
-			color_rect.a() += ivec2(0, 23);
-			hue_rect.a() += ivec2(0, 23);
-
-			preview_rect = content_rect;
+			preview_rect.set_pos(ivec2(padding));
 			preview_rect.set_size(20, 20);
+
 		}
 	} layout;
 	
@@ -134,6 +115,21 @@ protected:
 		}
 	};
 
+	bool update_layout = false;
+	bool has_damage = true;
+	bool has_updated = false;
+
+	int last_theme_idx = -1;
+
+	msdf_font font;
+	msdf_gl_font_renderer font_renderer;
+	msdf_text_geometry texts;
+
+	cgv::glutil::frame_buffer_container fbc;
+
+	cgv::glutil::canvas content_canvas, overlay_canvas;
+	cgv::glutil::shape2d_style container_style, border_style, color_texture_style, hue_texture_style, color_handle_style, hue_handle_style, text_style;
+
 	cgv::glutil::draggables_collection<color_point> color_points;
 	cgv::glutil::draggables_collection<hue_point> hue_points;
 
@@ -146,6 +142,7 @@ protected:
 	void init_textures(context& ctx);
 	void update_color_texture();
 	void update_color();
+	void update_texts();
 
 	void handle_color_point_drag();
 	void handle_hue_point_drag();

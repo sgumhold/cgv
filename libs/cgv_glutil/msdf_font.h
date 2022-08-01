@@ -14,6 +14,12 @@ extern CGV_API msdf_font& ref_msdf_font(cgv::render::context& ctx, int ref_count
 
 class CGV_API msdf_font : public cgv::render::render_types {
 public:
+	enum FontFace {
+		FF_LIGHT = 0,
+		FF_REGULAR = 1,
+		FF_BOLD = 2,
+	};
+
 	struct glyph_info {
 		float advance;
 		vec4 plane_bounds;
@@ -26,6 +32,7 @@ public:
 protected:
 	float initial_font_size;
 	float pixel_range;
+	FontFace font_face = FF_REGULAR;
 
 	std::vector<glyph_info> glyphs;
 	cgv::render::texture atlas_texture;
@@ -46,6 +53,8 @@ public:
 	bool is_initialized() const;
 
 	bool init(cgv::render::context& ctx);
+
+	void set_font_face(FontFace ff) { font_face = ff; }
 
 	const glyph_info& get_glyph_info(unsigned char id) const { return glyphs[id]; }
 

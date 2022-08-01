@@ -45,6 +45,20 @@ struct rect : public cgv::render::render_types {
 		b().x() = a().x() + w;
 	}
 
+	void set_y(int y) {
+		int h = b().y() - a().y();
+		a().y() = y;
+		b().y() = a().y() + h;
+	}
+
+	void set_w(int w) {
+		b().x() = a().x() + w;
+	}
+
+	void set_h(int h) {
+		b().y() = a().y() + h;
+	}
+
 	void set_pos(int x, int y) {
 		set_pos(ivec2(x, y));
 	}

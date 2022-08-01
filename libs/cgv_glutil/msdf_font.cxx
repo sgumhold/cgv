@@ -53,8 +53,16 @@ bool msdf_font::is_initialized() const
 
 bool msdf_font::init(cgv::render::context& ctx) {
 	bool success = true;
-	success &= load_atlas_texture(ctx, "res://segoeui_atlas.png");
-	success &= load_atlas_metadata("res://segoeui_meta.png");
+
+	std::string font_name = "segoeui";
+	switch(font_face) {
+	case cgv::glutil::msdf_font::FF_LIGHT: font_name += "l"; break;
+	case cgv::glutil::msdf_font::FF_BOLD: font_name += "b"; break;
+	default: break;
+	}
+
+	success &= load_atlas_texture(ctx, "res://" + font_name + "_atlas.png");
+	success &= load_atlas_metadata("res://" + font_name + "_meta.png");
 	return success;
 }
 
