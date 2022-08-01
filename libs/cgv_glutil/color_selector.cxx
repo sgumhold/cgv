@@ -1,13 +1,7 @@
 #include "color_selector.h"
 
-#include <cgv/defines/quote.h>
-#include <cgv/gui/dialog.h>
-#include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/theme_info.h>
-//#include <cgv/math/ftransform.h>
-//#include <cgv/utils/advanced_scan.h>
-//#include <cgv/utils/file.h>
 #include <cgv_gl/gl/gl.h>
 
 namespace cgv {
@@ -45,6 +39,12 @@ void color_selector::clear(cgv::render::context& ctx) {
 	content_canvas.destruct(ctx);
 	overlay_canvas.destruct(ctx);
 	fbc.clear(ctx);
+
+	color_tex.destruct(ctx);
+	hue_tex.destruct(ctx);
+
+	font.destruct(ctx);
+	font_renderer.destruct(ctx);
 }
 
 bool color_selector::handle_event(cgv::gui::event& e) {
@@ -117,12 +117,25 @@ bool color_selector::init(cgv::render::context& ctx) {
 	success &= fbc.ensure(ctx);
 	success &= content_canvas.init(ctx);
 	success &= overlay_canvas.init(ctx);
+	success &= font_renderer.init(ctx);
 
 	if(success)
 		init_styles(ctx);
 	
 	init_textures(ctx);
 	
+	if(font.init(ctx)) {
+		texts.set_msdf_font(&font);
+		texts.set_font_size(14.0f);
+
+		texts.add_text("R: ", ivec2(0), TA_BOTTOM_LEFT);
+		texts.add_text("0", ivec2(0), TA_BOTTOM_RIGHT);
+		texts.add_text("G: ", ivec2(0), TA_BOTTOM_LEFT);
+		texts.add_text("0", ivec2(0), TA_BOTTOM_RIGHT);
+		texts.add_text("B: ", ivec2(0), TA_BOTTOM_LEFT);
+		texts.add_text("0", ivec2(0), TA_BOTTOM_RIGHT);
+	}
+
 	color_point cp;
 	cp.val = vec2(0.0f);
 	color_points.add(cp);
@@ -130,6 +143,8 @@ bool color_selector::init(cgv::render::context& ctx) {
 	hue_point hp;
 	hp.val = 0.0f;
 	hue_points.add(hp);
+
+	set_color(rgb(0.0f));
 
 	return success;
 }
@@ -157,6 +172,12 @@ void color_selector::init_frame(cgv::render::context& ctx) {
 		color_points[0].update_pos(layout);
 		hue_points[0].update_pos(hue_constraint);
 
+		ivec2 text_position = ivec2(layout.preview_rect.b().x() + 10, layout.preview_rect.y() + 5);
+		for(size_t i = 0; i < texts.size(); ++i) {
+			texts.set_position(i, text_position);
+			text_position.x() += i & 1 ? 15 : 40;
+		}
+
 		has_damage = true;
 	}
 
@@ -166,9 +187,6 @@ void color_selector::init_frame(cgv::render::context& ctx) {
 	if(last_theme_idx != theme_idx) {
 		last_theme_idx = theme_idx;
 		init_styles(ctx);
-		//handle_color = rgba(ti.text(), 1.0f);
-		//highlight_color = rgba(ti.highlight(), 1.0f);
-		//highlight_color_hex = ti.highlight_hex();
 		has_damage = true;
 	}
 }
@@ -215,11 +233,18 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 
 	auto& ti = cgv::gui::theme_info::instance();
 	rgba border_color = rgba(ti.border(), 1.0f);
-	//content_canvas.draw_shape(ctx, ivec2(layout.padding), container_size - 2 * layout.padding, border_color);
-	content_canvas.draw_shape(ctx, layout.content_rect, border_color);
-
-	//content_canvas.draw_shape(ctx, layout.preview_rect.pos(), layout.preview_rect.size(), color);
+	rgba background_color = rgba(ti.background(), 1.0f);
+	content_canvas.draw_shape(ctx, layout.border_rect, border_color);
 	content_canvas.draw_shape(ctx, layout.preview_rect, color);
+
+	if(texts.size() > 5) {
+		rect text_bg = layout.preview_rect;
+		text_bg.set_w(48);
+		for(size_t i = 0; i < 3; ++i) {
+			text_bg.set_x(texts.ref_texts()[2*i].position.x() - 4);
+			content_canvas.draw_shape(ctx, text_bg, background_color);
+		}
+	}
 
 	color_texture_style.apply(ctx, rect_prog);
 	color_tex.enable(ctx, 0);
@@ -251,6 +276,13 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	content_canvas.disable_current_shader(ctx);
 	
 	glDisable(GL_SCISSOR_TEST);
+
+	auto& font_prog = font_renderer.ref_prog();
+	font_prog.enable(ctx);
+	text_style.apply(ctx, font_prog);
+	content_canvas.set_view(ctx, font_prog);
+	font_prog.disable(ctx);
+	font_renderer.render(ctx, get_overlay_size(), texts);
 
 	glDisable(GL_BLEND);
 
@@ -317,6 +349,8 @@ void color_selector::set_color(rgb color) {
 	hue_points[0].update_pos(hue_points.get_constraint());
 
 	update_color_texture();
+	update_texts();
+
 	update_member(&color);
 	has_damage = true;
 	post_redraw();
@@ -371,6 +405,16 @@ void color_selector::init_styles(context& ctx) {
 	hue_handle_style.position_is_center = true;
 	hue_handle_style.border_color = rgba(ti.border(), 1.0f);
 	hue_handle_style.border_width = 1.5f;
+
+	// configure text style
+	float label_border_alpha = 0.0f;
+	float border_width = 0.25f;
+	
+	text_style.fill_color = rgba(ti.text(), 1.0f);
+	text_style.border_color = rgba(ti.text(), label_border_alpha);
+	text_style.border_width = border_width;
+	text_style.feather_origin = 0.5f;
+	text_style.use_blending = true;
 
 	// configure style for final blending of overlay into main frame buffer
 	cgv::glutil::shape2d_style overlay_style;
@@ -458,8 +502,26 @@ void color_selector::update_color() {
 	color = v * color;
 	color = (1.0f - s)*rgb(v) + s * color;
 
+	update_texts();
+
 	update_member(&color);
 	has_updated = true;
+}
+
+void color_selector::update_texts() {
+
+	ivec3 components;
+	components[0] = static_cast<int>(round(color.R() * 255.0f));
+	components[1] = static_cast<int>(round(color.G() * 255.0f));
+	components[2] = static_cast<int>(round(color.B() * 255.0f));
+
+	components = cgv::math::clamp(components, 0, 255);
+
+	if(texts.size() > 5) {
+		texts.set_text(1, std::to_string(components[0]));
+		texts.set_text(3, std::to_string(components[1]));
+		texts.set_text(5, std::to_string(components[2]));
+	}
 }
 
 void color_selector::handle_color_point_drag() {
