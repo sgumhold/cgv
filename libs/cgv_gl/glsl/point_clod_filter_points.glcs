@@ -89,7 +89,7 @@ float rand(float n){
 void main(){
 	uint inputIndex = gl_GlobalInvocationID.x;
 
-	if(inputIndex > batch_size){
+	if(inputIndex >= batch_size){
 		return;
 	}
 
