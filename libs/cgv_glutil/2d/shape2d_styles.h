@@ -31,7 +31,7 @@ struct shape2d_style : cgv::render::render_types {
 	bool use_smooth_feather = false;
 	bool apply_gamma = true; // TOOD: maybe move to global 2d uniforms
 
-	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) {
+	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
 		prog.set_uniform(ctx, "position_is_center", position_is_center);
 
 		prog.set_uniform(ctx, "fill_color", fill_color);
@@ -58,7 +58,7 @@ struct line2d_style : public shape2d_style {
 	float dash_length = 0.0f;
 	float dash_ratio = 0.5f;
 
-	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) {
+	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
 		shape2d_style::apply(ctx, prog);
 
 		prog.set_uniform(ctx, "width", width);
@@ -74,7 +74,7 @@ struct arrow2d_style : public shape2d_style {
 	float relative_head_length = 0.5f;
 	bool head_length_is_relative = true;
 
-	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) {
+	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
 		shape2d_style::apply(ctx, prog);
 
 		prog.set_uniform(ctx, "stem_width", stem_width);
@@ -93,7 +93,7 @@ struct grid2d_style : public shape2d_style {
 	GridPattern pattern = GP_GRID;
 	float scale = 0.5f;
 
-	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) {
+	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
 		shape2d_style::apply(ctx, prog);
 
 		prog.set_uniform(ctx, "pattern", static_cast<int>(pattern));

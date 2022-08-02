@@ -14,7 +14,7 @@
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/gl/gl_context.h>
 
-#include <cgv_glutil/msdf_gl_font_renderer.h>
+#include <cgv_glutil/msdf_gl_canvas_font_renderer.h>
 #include <cgv_glutil/generic_renderer.h>
 
 #include <cgv_glutil/2d/draggable.h>
@@ -126,7 +126,7 @@ protected:
 
 	cgv::glutil::msdf_font msdf_font;
 	cgv::glutil::msdf_text_geometry texts;
-	cgv::glutil::msdf_gl_font_renderer font_renderer;
+	cgv::glutil::msdf_gl_canvas_font_renderer font_renderer;
 
 	// test variables
 	struct {
@@ -407,13 +407,7 @@ public:
 
 		image_tex.disable(ctx);
 
-		// TODO: use style as a parameter in the font renderer render method
-		auto& font_prog = font_renderer.ref_prog();
-		font_prog.enable(ctx);
-		text_style.apply(ctx, font_prog);
-		canvas.set_view(ctx, font_prog);
-		font_prog.disable(ctx);
-		font_renderer.render(ctx, viewport_rect.size(), texts);
+		font_renderer.render(ctx, canvas, texts, text_style);
 		
 		draw_control_lines(ctx);
 		draw_draggables(ctx);

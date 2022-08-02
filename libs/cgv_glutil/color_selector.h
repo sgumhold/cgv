@@ -1,13 +1,9 @@
 #pragma once
 
-#include <cgv/gui/event_handler.h>
-#include <cgv/gui/provider.h>
-#include <cgv/render/drawable.h>
 #include <cgv/render/texture.h>
 #include <cgv_glutil/frame_buffer_container.h>
-#include <cgv_glutil/msdf_gl_font_renderer.h>
-#include <cgv_glutil/overlay.h>
-#include <cgv_glutil/2d/canvas.h>
+#include <cgv_glutil/canvas_overlay.h>
+#include <cgv_glutil/msdf_gl_canvas_font_renderer.h>
 #include <cgv_glutil/2d/draggables_collection.h>
 #include <cgv_glutil/2d/shape2d_styles.h>
 
@@ -16,7 +12,7 @@
 namespace cgv {
 namespace glutil{
 
-class CGV_API color_selector : public overlay {
+class CGV_API color_selector : public canvas_overlay {
 protected:
 	struct layout_attributes {
 		int padding;
@@ -115,19 +111,10 @@ protected:
 		}
 	};
 
-	bool update_layout = false;
-	bool has_damage = true;
 	bool has_updated = false;
 
-	int last_theme_idx = -1;
-
-	msdf_font font;
-	msdf_gl_font_renderer font_renderer;
 	msdf_text_geometry texts;
 
-	cgv::glutil::frame_buffer_container fbc;
-
-	cgv::glutil::canvas content_canvas, overlay_canvas;
 	cgv::glutil::shape2d_style container_style, border_style, color_texture_style, hue_texture_style, color_handle_style, hue_handle_style, text_style;
 
 	cgv::glutil::draggables_collection<color_point> color_points;
@@ -160,7 +147,6 @@ public:
 
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
-	void draw(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
 	
 	void create_gui();

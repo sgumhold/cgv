@@ -67,16 +67,6 @@ vec4 get_active_color(vec4 color) {
 	return use_fill_color ? fill_color : color;
 }
 
-// return the current alpha factor
-/*float get_alpha_factor() {
-	return alpha_factor;
-}
-
-// set a factor that will be multiplied with the final alpha value
-void set_alpha_factor(in float alpha) {
-	alpha_factor = alpha;
-}*/
-
 // transform a world space position into window space
 vec4 transform_world_to_window_space(vec2 p) {
 	// apply modelview transformation

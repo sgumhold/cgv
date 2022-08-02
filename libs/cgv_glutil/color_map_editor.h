@@ -165,8 +165,7 @@ protected:
 	//bool show_histogram;
 	std::vector<unsigned> histogram;
 	unsigned hist_max = 1;
-	// TODO: change to enum
-	float histogram_smoothing = 0.0f;
+	cgv::type::DummyEnum histogram_type = (cgv::type::DummyEnum)1;
 
 	cgv::type::DummyEnum resolution;
 	float opacity_scale_exponent;
