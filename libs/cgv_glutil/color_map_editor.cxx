@@ -347,9 +347,9 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 				canvas.disable_current_shader(ctx);
 			}*/
 			if(hist_tex.is_created()) {
-				hist_style.fill_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);// histogram_color;
-				hist_style.border_color = rgba(1.0f, 0.0f, 0.0f, 1.0f); //histogram_border_color;
-				hist_style.border_width = histogram_border_width;
+				//hist_style.fill_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);// histogram_color;
+				//hist_style.border_color = rgba(1.0f, 0.0f, 0.0f, 1.0f); //histogram_border_color;
+				//hist_style.border_width = histogram_border_width;
 
 				auto& hist_prog = cc.enable_shader(ctx, "histogram");
 				hist_prog.set_uniform(ctx, "max_value", hist_max);
@@ -436,7 +436,10 @@ void color_map_editor::create_gui() {
 	}
 
 	add_member_control(this, "Smoothing", histogram_smoothing, "value_slider", "min=0;max=1;step=0.001");
-	add_member_control(this, "Border Width", histogram_border_width, "value_slider", "min=0;max=10;step=0.5");
+
+	// TODO: only expose useful attributes
+	add_gui("histogram", hist_style);
+
 	connect_copy(add_button("reload shaders")->click, rebind(this, &color_map_editor::reload_shaders));
 }
 
@@ -550,9 +553,9 @@ void color_map_editor::init_styles(context& ctx) {
 	hist_style.apply_gamma = false;
 	hist_style.feather_width = 1.0f;
 
-	auto& hist_prog = content_canvas.enable_shader(ctx, "histogram");
-	hist_style.apply(ctx, hist_prog);
-	content_canvas.disable_current_shader(ctx);
+	//auto& hist_prog = content_canvas.enable_shader(ctx, "histogram");
+	//hist_style.apply(ctx, hist_prog);
+	//content_canvas.disable_current_shader(ctx);
 
 	// configure style for color handles
 	cgv::glutil::arrow2d_style color_handle_style;

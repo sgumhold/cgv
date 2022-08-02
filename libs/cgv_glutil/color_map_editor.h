@@ -165,9 +165,7 @@ protected:
 	//bool show_histogram;
 	std::vector<unsigned> histogram;
 	unsigned hist_max = 1;
-	//rgba histogram_color;
-	//rgba histogram_border_color;
-	float histogram_border_width = 0.0f;
+	// TODO: change to enum
 	float histogram_smoothing = 0.0f;
 
 	cgv::type::DummyEnum resolution;
