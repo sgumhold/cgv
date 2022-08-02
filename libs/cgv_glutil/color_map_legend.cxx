@@ -40,7 +40,7 @@ void color_map_legend::clear(cgv::render::context& ctx) {
 	tex.destruct(ctx);
 
 	ref_msdf_font(ctx, -1);
-	font_renderer.destruct(ctx);
+	ref_msdf_gl_canvas_font_renderer(ctx, -1);
 
 	tick_renderer.destruct(ctx);
 }
@@ -99,10 +99,10 @@ bool color_map_legend::init(cgv::render::context& ctx) {
 
 	bool success = canvas_overlay::init(ctx);
 
-	success &= font_renderer.init(ctx);
 	success &= tick_renderer.init(ctx);
 
 	msdf_font& font = ref_msdf_font(ctx, 1);
+	ref_msdf_gl_canvas_font_renderer(ctx, 1);
 
 	if(success)
 		init_styles(ctx);
@@ -175,7 +175,8 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 	tick_renderer.render(ctx, content_canvas, PT_POINTS, ticks);
 
 	// draw tick labels
-	if(font_renderer.enable(ctx, content_canvas, labels)) {
+	auto& font_renderer = ref_msdf_gl_canvas_font_renderer(ctx);
+	if(font_renderer.enable(ctx, content_canvas, labels, text_style)) {
 		font_renderer.draw(ctx, labels, 0, labels.size() - 1);
 
 		content_canvas.push_modelview_matrix();
@@ -320,10 +321,6 @@ void color_map_legend::init_styles(context& ctx) {
 	text_style.border_width = border_width;
 	text_style.feather_origin = 0.5f;
 	text_style.use_blending = true;
-
-	auto& font_prog = font_renderer.enable_prog(ctx);
-	text_style.apply(ctx, font_prog);
-	font_prog.disable(ctx);
 
 	// configure style for tick marks
 	shape2d_style tick_style;

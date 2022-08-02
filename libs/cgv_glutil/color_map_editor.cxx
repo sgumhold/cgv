@@ -29,7 +29,7 @@ color_map_editor::color_map_editor() {
 	
 	register_shader("rectangle", canvas::shaders_2d::rectangle);
 	register_shader("circle", canvas::shaders_2d::circle);
-	register_shader("histogram", "hist2d.glpr");
+	register_shader("histogram", "heightfield1d.glpr");
 	register_shader("background", "color_map_editor_bg.glpr");
 
 	mouse_is_on_overlay = false;
@@ -49,6 +49,10 @@ color_map_editor::color_map_editor() {
 	opacity_handle_renderer = generic_2d_renderer(canvas::shaders_2d::rectangle);
 	line_renderer = generic_2d_renderer(canvas::shaders_2d::line);
 	polygon_renderer = generic_2d_renderer(canvas::shaders_2d::polygon);
+
+	// init default_styles
+	hist_style.fill_color = rgba(rgb(0.5f), 1.0f);
+	hist_style.border_color = rgba(rgb(0.0f), 1.0f);
 }
 
 void color_map_editor::clear(cgv::render::context& ctx) {
@@ -330,30 +334,11 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 			bg_tex.disable(ctx);
 			cc.disable_current_shader(ctx);
 
-			// draw histogram texture
-			/*if(show_histogram && tfc.hist_tex.is_created()) {
-				hist_style.fill_color = histogram_color;
-				hist_style.border_color = histogram_border_color;
-				hist_style.border_width = float(histogram_border_width);
-
-				auto& hist_prog = canvas.enable_shader(ctx, "histogram");
-				hist_prog.set_uniform(ctx, "max_value", tfc.hist_max);
-				hist_prog.set_uniform(ctx, "nearest_linear_mix", histogram_smoothing);
-				hist_style.apply(ctx, hist_prog);
-
-				tfc.hist_tex.enable(ctx, 1);
-				canvas.draw_shape(ctx, layout.editor_rect.pos(), layout.editor_rect.size());
-				tfc.hist_tex.disable(ctx);
-				canvas.disable_current_shader(ctx);
-			}*/
-			if(hist_tex.is_created()) {
-				//hist_style.fill_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);// histogram_color;
-				//hist_style.border_color = rgba(1.0f, 0.0f, 0.0f, 1.0f); //histogram_border_color;
-				//hist_style.border_width = histogram_border_width;
-
+			// draw histogram
+			if(histogram_type != (cgv::type::DummyEnum)0 && hist_tex.is_created()) {
 				auto& hist_prog = cc.enable_shader(ctx, "histogram");
 				hist_prog.set_uniform(ctx, "max_value", hist_max);
-				hist_prog.set_uniform(ctx, "nearest_linear_mix", histogram_smoothing);
+				hist_prog.set_uniform(ctx, "sampling_type", cgv::math::clamp(static_cast<unsigned>(histogram_type) - 1, 0u, 2u));
 				hist_style.apply(ctx, hist_prog);
 
 				hist_tex.enable(ctx, 1);
@@ -413,6 +398,12 @@ void color_map_editor::create_gui() {
 		add_member_control(this, "Opacity Scale Exponent", opacity_scale_exponent, "value_slider", "min=1.0;max=5.0;step=0.001;ticks=true");
 		align("\b");
 		end_tree_node(layout);
+
+		add_decorator("Histogram", "heading", "level=4");
+		add_member_control(this, "Type", histogram_type, "dropdown", "enums='None,Nearest,Linear,Smooth'");
+		add_member_control(this, "Fill Color", hist_style.fill_color);
+		add_member_control(this, "Border Color", hist_style.border_color);
+		add_member_control(this, "Border Width", hist_style.border_width);
 	}
 
 	if(begin_tree_node("Color Points", cmc.color_points, true)) {
@@ -434,11 +425,6 @@ void color_map_editor::create_gui() {
 			end_tree_node(cmc.opacity_points);
 		}
 	}
-
-	add_member_control(this, "Smoothing", histogram_smoothing, "value_slider", "min=0;max=1;step=0.001");
-
-	// TODO: only expose useful attributes
-	add_gui("histogram", hist_style);
 
 	connect_copy(add_button("reload shaders")->click, rebind(this, &color_map_editor::reload_shaders));
 }
@@ -552,10 +538,7 @@ void color_map_editor::init_styles(context& ctx) {
 	hist_style.use_blending = true;
 	hist_style.apply_gamma = false;
 	hist_style.feather_width = 1.0f;
-
-	//auto& hist_prog = content_canvas.enable_shader(ctx, "histogram");
-	//hist_style.apply(ctx, hist_prog);
-	//content_canvas.disable_current_shader(ctx);
+	hist_style.feather_origin = 0.0f;
 
 	// configure style for color handles
 	cgv::glutil::arrow2d_style color_handle_style;

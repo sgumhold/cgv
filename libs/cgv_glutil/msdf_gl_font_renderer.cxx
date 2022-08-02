@@ -3,6 +3,77 @@
 namespace cgv {
 namespace glutil {
 
+msdf_gl_font_renderer& ref_msdf_gl_font_renderer(cgv::render::context& ctx, int ref_count_change) {
+	static int ref_count = 0;
+	static msdf_gl_font_renderer r;
+	r.manage_singleton(ctx, "msdf_gl_font_renderer", ref_count, ref_count_change);
+	return r;
+}
+
+bool msdf_gl_font_renderer::build_shader_program(const cgv::render::context& ctx) {
+	return prog.build_program(ctx, "sdf_font2d.glpr", true);
+}
+
+void msdf_gl_font_renderer::manage_singleton(cgv::render::context& ctx, const std::string& name, int& ref_count, int ref_count_change) {
+	switch(ref_count_change) {
+	case 1:
+		if(ref_count == 0) {
+			if(!init(ctx))
+				ctx.error(std::string("unable to initialize ") + name + " singleton");
+		}
+		++ref_count;
+		break;
+	case 0:
+		break;
+	case -1:
+		if(ref_count == 0)
+			ctx.error(std::string("attempt to decrease reference count of ") + name + " singleton below 0");
+		else {
+			if(--ref_count == 0)
+				destruct(ctx);
+		}
+		break;
+	default:
+		ctx.error(std::string("invalid change reference count outside {-1,0,1} for ") + name + " singleton");
+	}
+}
+
+void msdf_gl_font_renderer::destruct(cgv::render::context& ctx) {
+	prog.destruct(ctx);
+}
+
+bool msdf_gl_font_renderer::init(cgv::render::context& ctx) {
+	return build_shader_program(ctx);
+}
+
+cgv::render::shader_program& msdf_gl_font_renderer::ref_prog() {
+	return prog;
+}
+
+//cgv::render::shader_program& msdf_gl_font_renderer::enable_prog(cgv::render::context& ctx) {
+//	prog.enable(ctx);
+//	return prog;
+//}
+
+bool msdf_gl_font_renderer::enable(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg, const shape2d_style& style) {
+	bool res = prog.is_enabled() ? true : prog.enable(ctx);
+	res &= tg.enable(ctx);
+	if(res) {
+		prog.set_uniform(ctx, "resolution", viewport_resolution);
+		prog.set_uniform(ctx, "src_size", tg.get_msdf_font()->get_initial_font_size());
+		prog.set_uniform(ctx, "pixel_range", tg.get_msdf_font()->get_pixel_range());
+		prog.set_uniform(ctx, "true_sdf_mix_factor", 0.0f);
+		style.apply(ctx, prog);
+	}
+	return res;
+}
+
+bool msdf_gl_font_renderer::disable(cgv::render::context& ctx, msdf_text_geometry& tg) {
+	bool res = prog.disable(ctx);
+	tg.disable(ctx);
+	return res;
+}
+
 void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_text_geometry& tg, size_t offset, int count) {
 	if(offset >= tg.size())
 		return;
@@ -41,24 +112,8 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_text_geometry& 
 	}
 }
 
-bool msdf_gl_font_renderer::render(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg, size_t offset, int count) {
-	if(!enable(ctx, viewport_resolution, tg))
-		return false;
-	draw(ctx, tg, offset, count);
-	return disable(ctx, tg);
-}
-
-void msdf_gl_canvas_font_renderer::draw(cgv::render::context& ctx, msdf_text_geometry& tg, size_t offset, int count) {
-	msdf_gl_font_renderer::draw(ctx, tg, offset, count);
-}
-
-void msdf_gl_canvas_font_renderer::draw(cgv::render::context& ctx, canvas& cvs, msdf_text_geometry& tg, size_t offset, int count) {
-	cvs.set_view(ctx, prog);
-	draw(ctx, tg, offset, count);
-}
-
-bool msdf_gl_canvas_font_renderer::render(cgv::render::context& ctx, canvas& cvs, msdf_text_geometry& tg, size_t offset, int count) {
-	if(!enable(ctx, cvs, tg))
+bool msdf_gl_font_renderer::render(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg, const shape2d_style& style, size_t offset, int count) {
+	if(!enable(ctx, viewport_resolution, tg, style))
 		return false;
 	draw(ctx, tg, offset, count);
 	return disable(ctx, tg);

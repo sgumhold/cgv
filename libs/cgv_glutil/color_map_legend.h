@@ -5,7 +5,7 @@
 #include <cgv_glutil/canvas_overlay.h>
 #include <cgv_glutil/color_map.h>
 #include <cgv_glutil/generic_2d_renderer.h>
-#include <cgv_glutil/msdf_gl_font_renderer.h>
+#include <cgv_glutil/msdf_gl_canvas_font_renderer.h>
 
 #include "lib_begin.h"
 
@@ -89,9 +89,7 @@ protected:
 
 	// text appearance
 	float font_size = 12.0f;
-
 	shape2d_style text_style;
-	msdf_gl_canvas_font_renderer font_renderer;
 	msdf_text_geometry labels;
 
 	generic_2d_renderer tick_renderer;

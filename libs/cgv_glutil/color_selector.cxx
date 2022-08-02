@@ -12,21 +12,15 @@ color_selector::color_selector() {
 	set_name("Color Selector");
 
 	layout.padding = 13; // 10px plus 3px border
-	//layout.total_height = supports_opacity ? 200 : 60;
 
 	set_overlay_alignment(AO_END, AO_END);
 	set_overlay_stretch(SO_NONE);
 	set_overlay_margin(ivec2(-3));
 	set_overlay_size(ivec2(300, 280));
 	
-	fbc.add_attachment("color", "uint8[R,G,B,A]");
-	fbc.set_size(get_overlay_size());
-
-	content_canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
-	content_canvas.register_shader("circle", canvas::shaders_2d::circle);
+	register_shader("rectangle", canvas::shaders_2d::rectangle);
+	register_shader("circle", canvas::shaders_2d::circle);
 	
-	overlay_canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
-
 	color_points.set_constraint(layout.color_rect);
 	color_points.set_drag_callback(std::bind(&color_selector::handle_color_point_drag, this));
 
@@ -36,15 +30,13 @@ color_selector::color_selector() {
 
 void color_selector::clear(cgv::render::context& ctx) {
 
-	content_canvas.destruct(ctx);
-	overlay_canvas.destruct(ctx);
-	fbc.clear(ctx);
+	canvas_overlay::clear(ctx);
 
 	color_tex.destruct(ctx);
 	hue_tex.destruct(ctx);
 
-	font.destruct(ctx);
-	font_renderer.destruct(ctx);
+	ref_msdf_font(ctx, -1);
+	ref_msdf_gl_canvas_font_renderer(ctx, -1);
 }
 
 bool color_selector::handle_event(cgv::gui::event& e) {
@@ -112,19 +104,17 @@ void color_selector::on_set(void* member_ptr) {
 
 bool color_selector::init(cgv::render::context& ctx) {
 	
-	bool success = true;
+	bool success = canvas_overlay::init(ctx);
 
-	success &= fbc.ensure(ctx);
-	success &= content_canvas.init(ctx);
-	success &= overlay_canvas.init(ctx);
-	success &= font_renderer.init(ctx);
+	msdf_font& font = ref_msdf_font(ctx, 1);
+	ref_msdf_gl_canvas_font_renderer(ctx, 1);
 
 	if(success)
 		init_styles(ctx);
 	
 	init_textures(ctx);
 	
-	if(font.init(ctx)) {
+	if(font.is_initialized()) {
 		texts.set_msdf_font(&font);
 		texts.set_font_size(14.0f);
 
@@ -151,16 +141,9 @@ bool color_selector::init(cgv::render::context& ctx) {
 
 void color_selector::init_frame(cgv::render::context& ctx) {
 
-	if(ensure_overlay_layout(ctx) || update_layout) {
-		update_layout = false;
+	if(ensure_layout(ctx)) {
 		ivec2 container_size = get_overlay_size();
 		layout.update(container_size);
-
-		fbc.set_size(container_size);
-		fbc.ensure(ctx);
-
-		content_canvas.set_resolution(ctx, container_size);
-		overlay_canvas.set_resolution(ctx, get_viewport_size());
 
 		color_points.set_constraint(layout.color_rect);
 
@@ -177,49 +160,16 @@ void color_selector::init_frame(cgv::render::context& ctx) {
 			texts.set_position(i, text_position);
 			text_position.x() += i & 1 ? 15 : 40;
 		}
-
-		has_damage = true;
 	}
 
-	// TODO: move functionality of testing for theme changes to overlay? (or use observer pattern for theme info)
-	auto& ti = cgv::gui::theme_info::instance();
-	int theme_idx = ti.get_theme_idx();
-	if(last_theme_idx != theme_idx) {
-		last_theme_idx = theme_idx;
+	if(ensure_theme())
 		init_styles(ctx);
-		has_damage = true;
-	}
-}
-
-void color_selector::draw(cgv::render::context& ctx) {
-
-	if(!show)
-		return;
-
-	glDisable(GL_DEPTH_TEST);
-
-	if(has_damage)
-		draw_content(ctx);
-	
-	// draw frame buffer texture to screen
-	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
-	fbc.enable_attachment(ctx, "color", 0);
-	overlay_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());
-	fbc.disable_attachment(ctx, "color");
-	overlay_canvas.disable_current_shader(ctx);
-
-	glEnable(GL_DEPTH_TEST);
 }
 
 void color_selector::draw_content(cgv::render::context& ctx) {
 	
-	fbc.enable(ctx);
-
-	glEnable(GL_BLEND);
-	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	begin_content(ctx);
+	enable_blending();
 
 	ivec2 container_size = get_overlay_size();
 
@@ -277,18 +227,10 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	
 	glDisable(GL_SCISSOR_TEST);
 
-	auto& font_prog = font_renderer.ref_prog();
-	font_prog.enable(ctx);
-	text_style.apply(ctx, font_prog);
-	content_canvas.set_view(ctx, font_prog);
-	font_prog.disable(ctx);
-	font_renderer.render(ctx, get_overlay_size(), texts);
+	ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, content_canvas, texts, text_style);
 
-	glDisable(GL_BLEND);
-
-	fbc.disable(ctx);
-
-	has_damage = false;
+	disable_blending();
+	end_content(ctx);
 }
 
 void color_selector::create_gui() {
