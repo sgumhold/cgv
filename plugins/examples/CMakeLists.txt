@@ -49,6 +49,7 @@ endif ()
 
 set_plugin_execution_params(examples "plugin:cg_fltk \
 \"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl;${CGV_DIR}/libs/cgv_glutil/glsl'\" \
+plugin:cg_audio \
 plugin:cg_ext \
 plugin:cg_icons \
 plugin:crg_stereo_view \
