@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cgv/render/texture.h>
-#include <cgv_glutil/frame_buffer_container.h>
 #include <cgv_glutil/canvas_overlay.h>
 #include <cgv_glutil/msdf_gl_canvas_font_renderer.h>
 #include <cgv_glutil/2d/draggables_collection.h>

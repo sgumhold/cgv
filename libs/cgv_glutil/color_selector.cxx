@@ -357,17 +357,6 @@ void color_selector::init_styles(context& ctx) {
 	text_style.border_width = border_width;
 	text_style.feather_origin = 0.5f;
 	text_style.use_blending = true;
-
-	// configure style for final blending of overlay into main frame buffer
-	cgv::glutil::shape2d_style overlay_style;
-	overlay_style.fill_color = rgba(1.0f);
-	overlay_style.use_texture = true;
-	overlay_style.use_blending = false;
-	overlay_style.feather_width = 0.0f;
-
-	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
-	overlay_style.apply(ctx, overlay_prog);
-	overlay_canvas.disable_current_shader(ctx);
 }
 
 void color_selector::init_textures(context& ctx) {

@@ -403,7 +403,7 @@ void color_map_editor::create_gui() {
 		add_member_control(this, "Type", histogram_type, "dropdown", "enums='None,Nearest,Linear,Smooth'");
 		add_member_control(this, "Fill Color", hist_style.fill_color);
 		add_member_control(this, "Border Color", hist_style.border_color);
-		add_member_control(this, "Border Width", hist_style.border_width);
+		add_member_control(this, "Border Width", hist_style.border_width, "value_slider", "min=0;max=10;step=0.5;ticks=true");
 	}
 
 	if(begin_tree_node("Color Points", cmc.color_points, true)) {
@@ -580,17 +580,6 @@ void color_map_editor::init_styles(context& ctx) {
 	cgv::glutil::shape2d_style poly_style = static_cast<cgv::glutil::shape2d_style>(line_style);
 
 	polygon_renderer.set_style(ctx, poly_style);
-	
-	// configure style for final blending of overlay into main frame buffer
-	cgv::glutil::shape2d_style overlay_style;
-	overlay_style.fill_color = rgba(1.0f);
-	overlay_style.use_texture = true;
-	overlay_style.use_blending = false;
-	overlay_style.feather_width = 0.0f;
-
-	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
-	overlay_style.apply(ctx, overlay_prog);
-	overlay_canvas.disable_current_shader(ctx);
 }
 
 void color_map_editor::init_texture(context& ctx) {
