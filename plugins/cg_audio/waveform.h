@@ -1,0 +1,1 @@
+template <typename OutIt> void sine_wave(OutIt begin, OutIt end);
