@@ -10,7 +10,7 @@ addProjectDeps=[
 	"cgv_viewer",
 	"cg_fltk", "cg_ext", "crg_stereo_view", "crg_antialias", "crg_depth_of_field", 
 	"crg_light", "cg_meta", "cmi_io","cmv_avi", "crg_grid", "co_web", "cg_gamepad",
-	"cmf_tt_gl_font", "cgv_glutil"
+	"cmf_tt_gl_font", "cgv_glutil", "cg_audio"
 ];
 addCommandLineArguments=[
 	'gui:"'.CGV_DIR.'/plugins/examples/examples.gui"',
