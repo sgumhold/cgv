@@ -2,7 +2,6 @@
 
 #include <cgv/render/texture.h>
 #include <cgv_glutil/canvas_overlay.h>
-#include <cgv_glutil/frame_buffer_container.h>
 #include <cgv_glutil/generic_2d_renderer.h>
 
 #include "2d/draggables_collection.h"
