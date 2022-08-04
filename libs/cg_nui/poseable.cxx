@@ -3,6 +3,15 @@
 #include "cgv/math/proximity.h"
 #include "cgv/math/ftransform.h"
 
+cgv::nui::transforming* cgv::nui::poseable::get_transforming()
+{
+	if (!tried_transforming_cast) {
+		_transforming = dynamic_cast<transforming*>(this);
+		tried_transforming_cast = true;
+	}
+	return _transforming;
+}
+
 cgv::nui::translatable* cgv::nui::poseable::get_translatable()
 {
 	if (!tried_translatable_cast) {
@@ -33,14 +42,18 @@ void cgv::nui::poseable::on_grabbed_start()
 
 void cgv::nui::poseable::on_grabbed_drag()
 {
-	//get_translatable()->set_position(get_translatable()->get_position() + ii_during_focus[activating_hid_id].query_point - ii_at_grab.query_point);
-	get_translatable()->set_position(position_at_grab + (ii_during_focus[activating_hid_id].query_point_global - ii_at_grab.query_point_global));
+	if (get_transforming()) {
+		get_translatable()->set_position(get_translatable()->get_position() + ii_during_focus[activating_hid_id].query_point - ii_at_grab.query_point);
+	}
+	else {
+		get_translatable()->set_position(position_at_grab + (ii_during_focus[activating_hid_id].query_point - ii_at_grab.query_point));
+	}
+	
 }
 
 void cgv::nui::poseable::on_triggered_start()
 {
 	position_at_grab = get_translatable()->get_position();
-	std::cout << "grab: global: " << ii_at_grab.query_point_global << " local: " << ii_at_grab.query_point << std::endl;
 	//rotation_at_grab = get_rotatable()->get_rotation();
 }
 
@@ -48,12 +61,12 @@ void cgv::nui::poseable::on_triggered_drag()
 {
 	vec3 q = cgv::math::closest_point_on_line_to_point(ii_during_focus[activating_hid_id].hid_position_global,
 		ii_during_focus[activating_hid_id].hid_direction_global, ii_at_grab.query_point_global);
-	//get_translatable()->set_position(get_translatable()->get_position() + (q - ii_at_grab.query_point));
-	get_translatable()->set_position(position_at_grab + (q - ii_at_grab.query_point_global));
-	vec3 q2 = cgv::math::closest_point_on_line_to_point(ii_during_focus[activating_hid_id].hid_position,
-		ii_during_focus[activating_hid_id].hid_direction, ii_at_grab.query_point);
-	//std::cout << "drag: global: " << q - ii_at_grab.query_point_global << " local: " << q2 - ii_at_grab.query_point << std::endl;
-	std::cout << "drag: global: " << ii_at_grab.query_point_global << " local: " <<  ii_at_grab.query_point << std::endl;
+	if (get_transforming()) {
+		get_translatable()->set_position(get_translatable()->get_position() + (q - ii_at_grab.query_point));
+	}
+	else {
+		get_translatable()->set_position(position_at_grab + (q - ii_at_grab.query_point));
+	}
 }
 
 void cgv::nui::poseable::draw(cgv::render::context& ctx)

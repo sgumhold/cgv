@@ -2,6 +2,7 @@
 
 #include <cg_nui/interactable.h>
 #include <cg_nui/translatable.h>
+#include <cg_nui/transforming.h>
 
 #include "lib_begin.h"
 
@@ -14,6 +15,10 @@ namespace cgv {
 ///	(See simple_object and simple_primitive_container in vr_lab_test for examples of using this interface.)
 class CGV_API poseable : public interactable
 {
+	transforming* _transforming{ nullptr };
+	bool tried_transforming_cast{ false };
+	transforming* get_transforming();
+
 	translatable* _translatable{ nullptr };
 	bool tried_translatable_cast{ false };
 	translatable* get_translatable();
