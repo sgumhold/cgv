@@ -554,6 +554,7 @@ void color_selector::set_color(rgba color, bool opacity) {
 	update_color_texture();
 	update_texts();
 
+	post_recreate_layout();
 	post_recreate_gui();
 	post_damage();
 }
