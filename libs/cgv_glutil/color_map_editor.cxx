@@ -208,13 +208,12 @@ void color_map_editor::on_set(void* member_ptr) {
 			}
 		}
 
-		update_layout = true;
+		post_recreate_layout();
 		post_recreate_gui();
 	}
 
-	has_damage = true;
 	update_member(member_ptr);
-	post_redraw();
+	post_damage();
 }
 
 bool color_map_editor::init(cgv::render::context& ctx) {
@@ -493,8 +492,7 @@ void color_map_editor::set_histogram_data(const std::vector<unsigned> data) {
 		hist_tex = texture("flt32[R]");
 		hist_tex.create(ctx, dv, 0);
 
-		has_damage = true;
-		post_redraw();
+		post_damage();
 	}
 }
 
@@ -867,7 +865,7 @@ void color_map_editor::update_color_map(bool is_data_change) {
 	update_geometry();
 
 	has_updated = true;
-	has_damage = true;
+	post_damage();
 }
 
 bool color_map_editor::update_geometry() {
@@ -943,8 +941,7 @@ bool color_map_editor::update_geometry() {
 void color_map_editor::reload_shaders() {
 	if(auto ctx_ptr = get_context()) {
 		content_canvas.reload_shaders(*ctx_ptr);
-		has_damage = true;
-		post_redraw();
+		post_damage();
 	}
 }
 

@@ -12,6 +12,19 @@ draggable::vec2 draggable::center() const {
 		return pos + size;
 }
 
+void draggable::set_constraint(const rect* constraint) {
+	this->constraint = constraint;
+}
+
+const rect* draggable::get_constraint() const {
+	return constraint;
+}
+
+void draggable::apply_constraint() {
+	if(constraint)
+		apply_constraint(*constraint);
+}
+
 void draggable::apply_constraint(const rect& area) {
 	vec2 min_pnt = vec2(area.box.get_min_pnt());
 	vec2 max_pnt = vec2(area.box.get_max_pnt());

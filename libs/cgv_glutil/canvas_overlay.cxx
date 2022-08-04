@@ -86,8 +86,8 @@ void canvas_overlay::init_overlay_style(context& ctx) {
 
 bool canvas_overlay::ensure_layout(cgv::render::context& ctx) {
 
-	if(ensure_overlay_layout(ctx) || update_layout) {
-		update_layout = false;
+	if(ensure_overlay_layout(ctx) || recreate_layout) {
+		recreate_layout = false;
 		has_damage = true;
 
 		fbc.set_size(get_overlay_size());
@@ -98,6 +98,24 @@ bool canvas_overlay::ensure_layout(cgv::render::context& ctx) {
 		return true;
 	}
 	return false;
+}
+
+void canvas_overlay::post_recreate_layout() {
+	recreate_layout = true;
+}
+
+void canvas_overlay::post_damage(bool redraw) {
+	has_damage = true;
+	if(redraw)
+		post_redraw();
+}
+
+void canvas_overlay::clear_damage() {
+	has_damage = false;
+}
+
+bool canvas_overlay::is_damaged() const {
+	return has_damage;
 }
 
 bool canvas_overlay::ensure_theme() {

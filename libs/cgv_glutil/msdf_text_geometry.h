@@ -59,7 +59,7 @@ public:
 
 	float get_font_size() { return render_font_size; }
 
-	void set_msdf_font(msdf_font* ptr) { msdf_font_ptr = ptr; }
+	void set_msdf_font(msdf_font* ptr, bool update_texts = true);
 
 	void set_font_size(float size) { render_font_size = size; }
 

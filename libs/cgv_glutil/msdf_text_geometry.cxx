@@ -26,6 +26,15 @@ void msdf_text_geometry::clear() {
 	}
 }
 
+void msdf_text_geometry::set_msdf_font(msdf_font* ptr, bool update_texts) {
+	msdf_font_ptr = ptr;
+
+	if(msdf_font_ptr && update_texts) {
+		for(size_t i = 0; i < texts.size(); ++i)
+			set_text(i, texts[i].str);
+	}
+}
+
 void msdf_text_geometry::set_text(unsigned i, const std::string& text) {
 	if(i < texts.size()) {
 		texts[i].str = text;
