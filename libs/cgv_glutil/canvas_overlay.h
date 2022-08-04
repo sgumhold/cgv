@@ -12,6 +12,11 @@ namespace cgv {
 namespace glutil {
 
 class CGV_API canvas_overlay : public overlay {
+private:
+	bool has_damage = true;
+	bool recreate_layout = true;
+	GLboolean blending_was_enabled = false;
+
 protected:
 	int last_theme_idx = -1;
 
@@ -19,14 +24,19 @@ protected:
 
 	canvas content_canvas, overlay_canvas;
 
-	bool update_layout = false;
-	bool has_damage = true;
 	bool blend_overlay = false;
-	GLboolean blending_was_enabled = false;
-
+	
 	void init_overlay_style(cgv::render::context& ctx);
 
 	bool ensure_layout(cgv::render::context& ctx);
+
+	void post_recreate_layout();
+
+	void post_damage(bool redraw = true);
+
+	void clear_damage();
+
+	bool is_damaged() const;
 
 	bool ensure_theme();
 

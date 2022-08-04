@@ -67,6 +67,8 @@ public:
 	}
 
 	cgv::render::shader_program& enable_shader(cgv::render::context& ctx, const std::string& name) {
+		disable_current_shader(ctx);
+
 		auto& prog = shaders.get(name);
 		prog.enable(ctx);
 		set_view(ctx, prog);

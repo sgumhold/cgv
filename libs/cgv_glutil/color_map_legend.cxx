@@ -78,7 +78,7 @@ void color_map_legend::on_set(void* member_ptr) {
 
 	if(member_ptr == &title) {
 		layout.title_space = title == "" ? 0 : 12;
-		update_layout = true;
+		post_recreate_layout();
 	}
 
 	if(member_ptr == &layout.orientation ||
@@ -87,12 +87,11 @@ void color_map_legend::on_set(void* member_ptr) {
 		member_ptr == &num_ticks ||
 		member_ptr == &label_auto_precision ||
 		member_ptr == &label_precision) {
-		update_layout = true;
+		post_recreate_layout();
 	}
 
-	has_damage = true;
 	update_member(member_ptr);
-	post_redraw();
+	post_damage();
 }
 
 bool color_map_legend::init(cgv::render::context& ctx) {
@@ -239,8 +238,7 @@ void color_map_legend::set_color_map(cgv::render::context& ctx, color_map& cm) {
 		tex.create(ctx, dv, 0);
 	}
 
-	has_damage = true;
-	post_redraw();
+	post_damage();
 }
 
 void color_map_legend::set_width(size_t w) {
