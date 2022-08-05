@@ -21,7 +21,6 @@ struct shape2d_style_gui_creator : public gui_creator {
 		p->add_member_control(b, "Use Texture Alpha", s_ptr->use_texture_alpha, "check");
 		p->add_member_control(b, "Use Blending", s_ptr->use_blending, "check");
 		p->add_member_control(b, "Use Smooth Feather", s_ptr->use_smooth_feather, "check");
-		p->add_member_control(b, "Apply Gamma", s_ptr->apply_gamma, "check");
 
 		p->add_decorator("Appearance", "heading", "level=3");
 		p->add_member_control(b, "Fill Color", s_ptr->fill_color, "");

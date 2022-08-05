@@ -290,7 +290,6 @@ void color_map_legend::init_styles(context& ctx) {
 	}
 
 	// configure style for the container rectangle
-	container_style.apply_gamma = false;
 	container_style.fill_color = group_color;
 	container_style.border_color = background_color;
 	container_style.border_width = 3.0f;

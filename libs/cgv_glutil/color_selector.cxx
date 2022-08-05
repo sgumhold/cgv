@@ -355,7 +355,6 @@ void color_selector::init_styles(context& ctx) {
 	rgba border_color = rgba(ti.border(), 1.0f);
 
 	// configure style for the container rectangle
-	container_style.apply_gamma = false;
 	container_style.fill_color = group_color;
 	container_style.border_color = background_color;
 	container_style.border_width = 3.0f;
@@ -371,9 +370,7 @@ void color_selector::init_styles(context& ctx) {
 	opacity_bg_style.border_color = rgba(rgb(0.9f), 1.0f);
 	opacity_bg_style.pattern = cgv::glutil::grid2d_style::GP_CHECKER;
 	opacity_bg_style.scale = 0.5f;
-	opacity_bg_style.apply_gamma = false;
 	
-	opacity_color_style.apply_gamma = false;
 	opacity_color_style.use_blending = true;
 	opacity_color_style.feather_origin = 1.0f;
 	
@@ -387,7 +384,6 @@ void color_selector::init_styles(context& ctx) {
 
 	// configure style for color handle
 	color_handle_style.use_blending = true;
-	color_handle_style.apply_gamma = false;
 	color_handle_style.use_fill_color = true;
 	color_handle_style.position_is_center = true;
 	color_handle_style.border_color = rgba(rgb(1.0f), 0.75f);
@@ -402,7 +398,6 @@ void color_selector::init_styles(context& ctx) {
 	// configure style for hue handle
 	cgv::glutil::shape2d_style hue_handle_style;
 	hue_handle_style.use_blending = true;
-	hue_handle_style.apply_gamma = false;
 	hue_handle_style.use_fill_color = false;
 	hue_handle_style.position_is_center = true;
 	hue_handle_style.border_color = rgba(ti.border(), 1.0f);

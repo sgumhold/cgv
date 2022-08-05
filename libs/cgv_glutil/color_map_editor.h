@@ -151,8 +151,8 @@ protected:
 	bool supports_opacity;
 
 	// general appearance
-	rgba handle_color = rgb(0.9f, 0.9f, 0.9f, 1.0f);
-	rgba highlight_color = rgb(0.5f, 0.5f, 0.5f, 1.0f);
+	rgba handle_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
+	rgba highlight_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
 	std::string highlight_color_hex = "0x808080";
 	cgv::glutil::shape2d_style container_style, border_style, color_map_style, bg_style, hist_style;
 

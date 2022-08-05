@@ -29,7 +29,6 @@ struct shape2d_style : cgv::render::render_types {
 	bool use_texture_alpha = true;
 	bool use_blending = false;
 	bool use_smooth_feather = false;
-	bool apply_gamma = true; // TOOD: maybe move to global 2d uniforms
 
 	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
 		prog.set_uniform(ctx, "position_is_center", position_is_center);
@@ -49,7 +48,6 @@ struct shape2d_style : cgv::render::render_types {
 		prog.set_uniform(ctx, "use_texture_alpha", use_texture_alpha);
 		prog.set_uniform(ctx, "use_blending", use_blending);
 		prog.set_uniform(ctx, "use_smooth_feather", use_smooth_feather);
-		prog.set_uniform(ctx, "apply_gamma", apply_gamma);
 	}
 };
 
