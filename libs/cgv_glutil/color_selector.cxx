@@ -254,12 +254,12 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	if(has_opacity) {
 		glScissor(layout.opacity_rect.x(), layout.opacity_rect.y(), layout.opacity_rect.w(), layout.opacity_rect.h());
 		
-		const auto& or = layout.opacity_rect;
+		const auto& r = layout.opacity_rect;
 		content_canvas.enable_shader(ctx, "rectangle");
 		opacity_color_style.fill_color = rgba(rgb_color, 1.0f);
-		opacity_color_style.feather_width = or .h();
+		opacity_color_style.feather_width = r.h();
 		opacity_color_style.apply(ctx, rect_prog);
-		content_canvas.draw_shape(ctx, ivec2(or .x(), or .y1() - 1), ivec2(or .w(), 1));
+		content_canvas.draw_shape(ctx, ivec2(r.x(), r.y1() - 1), ivec2(r.w(), 1));
 
 		hue_handle_style.apply(ctx, rect_prog);
 		content_canvas.draw_shape(ctx, sh[2].pos, sh[2].size);

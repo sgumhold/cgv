@@ -82,7 +82,7 @@ protected:
 	texture color_tex;
 	texture hue_tex;
 
-	rgb rgb_color = rgba(0.0f);
+	rgb rgb_color = rgb(0.0f);
 	rgba rgba_color = rgba(0.0f);
 
 	void update_layout(const ivec2& parent_size);

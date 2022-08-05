@@ -111,7 +111,7 @@ protected:
 		
 		std::vector<uint8_t> data_8(3 * data.size());
 		for(unsigned i = 0; i < data.size(); ++i) {
-			rgba col = data[i];
+			rgb col = data[i];
 			data_8[3 * i + 0] = static_cast<uint8_t>(255.0f * col.R());
 			data_8[3 * i + 1] = static_cast<uint8_t>(255.0f * col.G());
 			data_8[3 * i + 2] = static_cast<uint8_t>(255.0f * col.B());
