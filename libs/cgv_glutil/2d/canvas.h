@@ -31,6 +31,7 @@ protected:
 	cgv::glutil::shader_library shaders;
 	ivec2 resolution;
 	float feather_scale;
+	bool apply_gamma;
 
 	std::stack<mat3> modelview_matrix_stack;
 
@@ -40,6 +41,7 @@ public:
 	canvas() {
 		resolution = ivec2(100);
 		feather_scale = 1.0f;
+		apply_gamma = true;
 		initialize_modelview_matrix_stack();
 		current_shader_program = nullptr;
 	}
@@ -94,6 +96,10 @@ public:
 		feather_scale = s;
 	}
 
+	void set_apply_gamma(bool flag) {
+		apply_gamma = flag;
+	}
+
 	void initialize_modelview_matrix_stack() {
 		mat3 I = mat3(0.0f);
 		I.identity();
@@ -137,6 +143,7 @@ public:
 		prog.set_uniform(ctx, "resolution", resolution);
 		prog.set_uniform(ctx, "modelview2d_matrix", modelview_matrix_stack.top());
 		prog.set_uniform(ctx, "feather_scale", feather_scale);
+		prog.set_uniform(ctx, "apply_gamma", apply_gamma);
 	}
 
 	template<typename T>

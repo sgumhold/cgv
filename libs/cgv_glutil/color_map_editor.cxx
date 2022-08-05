@@ -507,7 +507,6 @@ void color_map_editor::init_styles(context& ctx) {
 	rgba border_color = rgba(ti.border(), 1.0f);
 
 	// configure style for the container rectangle
-	container_style.apply_gamma = false;
 	container_style.fill_color = group_color;
 	container_style.border_color = background_color;
 	container_style.border_width = 3.0f;
@@ -524,7 +523,6 @@ void color_map_editor::init_styles(context& ctx) {
 
 	// configure style for background
 	bg_style.use_texture = true;
-	bg_style.apply_gamma = false;
 	bg_style.feather_width = 0.0f;
 
 	auto& bg_prog = content_canvas.enable_shader(ctx, "background");
@@ -534,14 +532,12 @@ void color_map_editor::init_styles(context& ctx) {
 
 	// configure style for histogram
 	hist_style.use_blending = true;
-	hist_style.apply_gamma = false;
 	hist_style.feather_width = 1.0f;
 	hist_style.feather_origin = 0.0f;
 
 	// configure style for color handles
 	cgv::glutil::arrow2d_style color_handle_style;
 	color_handle_style.use_blending = true;
-	color_handle_style.apply_gamma = false;
 	color_handle_style.use_fill_color = false;
 	color_handle_style.position_is_center = true;
 	color_handle_style.border_color = rgba(ti.border(), 1.0f);
@@ -555,7 +551,6 @@ void color_map_editor::init_styles(context& ctx) {
 	// configure style for opacity handles
 	cgv::glutil::shape2d_style opacity_handle_style;
 	opacity_handle_style.use_blending = true;
-	opacity_handle_style.apply_gamma = false;
 	opacity_handle_style.use_fill_color = false;
 	opacity_handle_style.position_is_center = true;
 	opacity_handle_style.border_color = rgba(ti.border(), 1.0f);
@@ -569,7 +564,6 @@ void color_map_editor::init_styles(context& ctx) {
 	line_style.use_fill_color = false;
 	line_style.use_texture = true;
 	line_style.use_texture_alpha = false;
-	line_style.apply_gamma = false;
 	line_style.width = 3.0f;
 
 	line_renderer.set_style(ctx, line_style);

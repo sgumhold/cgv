@@ -8,6 +8,8 @@ canvas_overlay::canvas_overlay() : overlay() {
 	fbc.add_attachment("color", "uint8[R,G,B,A]");
 	fbc.set_size(get_overlay_size());
 
+	content_canvas.set_apply_gamma(false);
+
 	overlay_canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
 }
 
