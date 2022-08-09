@@ -1,0 +1,13 @@
+#version 150
+
+in vec2 position;
+in vec2 size;
+in vec4 color;
+
+flat out vec4 color_gs;
+
+void main() {
+	
+	color_gs = color;
+	gl_Position = vec4(position, size);
+}
