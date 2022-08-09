@@ -10,6 +10,7 @@ const std::string canvas::shaders_2d::ellipse = "ellipse2d.glpr";
 const std::string canvas::shaders_2d::grid = "grid2d.glpr";
 const std::string canvas::shaders_2d::line = "line2d.glpr";
 const std::string canvas::shaders_2d::polygon = "poly2d.glpr";
+const std::string canvas::shaders_2d::quad = "quad2d.glpr";
 const std::string canvas::shaders_2d::rectangle = "rect2d.glpr";
 
 }
