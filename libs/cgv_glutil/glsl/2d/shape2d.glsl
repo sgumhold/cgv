@@ -5,6 +5,7 @@ The following interface is implemented in this shader:
 //***** begin interface of shape2d.glsl ***********************************
 uniform ivec2 resolution;
 uniform mat3 modelview2d_matrix = mat3(1.0);
+uniform float feather_scale = 1.0;
 
 uniform vec4 fill_color;
 uniform vec4 border_color = vec4(1.0);
