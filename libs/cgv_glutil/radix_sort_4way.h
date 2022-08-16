@@ -7,7 +7,7 @@
 namespace cgv {
 namespace glutil {
 
-/** GPU sorting routine implmented using a prefix-sum based radix sort. */
+/** GPU sorting routine implemented using a prefix-sum based radix sort. */
 class CGV_API radix_sort_4way : public gpu_sorter {
 protected:
 	bool load_shader_programs(context& ctx);
