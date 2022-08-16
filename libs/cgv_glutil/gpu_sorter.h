@@ -41,7 +41,7 @@ protected:
 	unsigned n = 0;
 	unsigned n_pad = 0;
 	unsigned group_size = 0;
-	unsigned num_blocksums = 0;
+	unsigned num_block_sums = 0;
 	unsigned num_groups = 0;
 	unsigned num_scan_groups = 0;
 
@@ -49,9 +49,9 @@ protected:
 	GLuint keys_in_ssbo = 0;
 	GLuint keys_out_ssbo = 0;
 	GLuint values_out_ssbo = 0;
-	GLuint prefix_sum_ssbo = 0;
-	GLuint blocksums_ssbo = 0;
-	GLuint scratch_ssbo = 0;
+	GLuint prefix_sums_ssbo = 0;
+	GLuint block_sums_ssbo = 0;
+	GLuint last_sum_ssbo = 0;
 
 	/// shader programs
 	shader_program distance_prog;
@@ -119,12 +119,12 @@ public:
 		This effectively defines the contents of a struct used to represent one array element.
 		The default value is "float x, y, z;" to map the buffer contents to an array of vec3, e.g.
 		positions.
-		Careful: vec3 cannot be used directly with a shader storage buffer, hence the three
+		Careful: vec3 max not be used directly with a shader storage buffer (due to a bug on some older drivers), hence the three
 		separate coordinates! However, vec4 works as expected. */
 	void set_data_type_override(const std::string& def);
 
 	/** Resets the data type definition to an empty string, which will not override the default
-		definition int the shader. */
+		definition in the shader. */
 	void reset_data_type_override() { data_type_def = ""; }
 
 	/** GLSL code to define the data type and structure of one element of the auxiliary data buffer.
@@ -155,7 +155,7 @@ public:
 	void set_key_definition_override(const std::string& def);
 
 	/** Resets the key definition to an empty string, which will not override the default
-		definition int the shader. */
+		definition in the shader. */
 	void reset_key_definition_override() { key_definition = ""; }
 
 	virtual bool init(context& ctx, size_t count) = 0;

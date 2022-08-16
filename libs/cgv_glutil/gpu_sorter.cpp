@@ -24,9 +24,9 @@ void gpu_sorter::delete_buffers() {
 	delete_buffer(keys_in_ssbo);
 	delete_buffer(keys_out_ssbo);
 	delete_buffer(values_out_ssbo);
-	delete_buffer(prefix_sum_ssbo);
-	delete_buffer(blocksums_ssbo);
-	delete_buffer(scratch_ssbo);
+	delete_buffer(prefix_sums_ssbo);
+	delete_buffer(block_sums_ssbo);
+	delete_buffer(last_sum_ssbo);
 }
 
 void gpu_sorter::begin_time_query() {
@@ -52,11 +52,11 @@ double gpu_sorter::end_time_query() {
 	float alpha = 1.0f / static_cast<float>(measurements);
 	avg_time = (1.0f - alpha) * avg_time + alpha * (elapsed_time / 1000000.0f);
 
-	//if(measurements == 32) {
-	//	std::cout << "Sorting done in " << avg_time << " ms -> " << static_cast<float>(n) / (1000.0f * avg_time) << " M/s" << std::endl;
-	//	measurements = 0;
-	//	avg_time = 0.0f;
-	//}
+	if(measurements == 32) {
+		std::cout << "Sorting done in " << avg_time << " ms -> " << static_cast<float>(n) / (1000.0f * avg_time) << " M/s" << std::endl;
+		measurements = 0;
+		avg_time = 0.0f;
+	}
 
 	return static_cast<double>(elapsed_time) / 1000000.0;
 }
