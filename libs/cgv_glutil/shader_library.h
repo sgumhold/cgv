@@ -61,7 +61,7 @@ public:
 		std::string function_context = where == "" ? "shader_library::load_shader()" : where;
 
 		if(!prog.is_created()) {
-			bool from_program_file = name.substr(name.length() - 5) == ".glpr";
+			bool from_program_file = name.length() > 4 && name.substr(name.length() - 5) == ".glpr";
 
 			if(from_program_file) {
 				if(!prog.build_program(ctx, name, true, defines)) {
