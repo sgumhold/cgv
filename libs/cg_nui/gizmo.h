@@ -98,24 +98,24 @@ public:
 	/// Sets the object as the parent of the gizmo. The gizmo will be positioned according to any transforming interfaces in the hierarchy.
 	///	Not setting this means the gizmo is positioned in the global coordinate system directly.
 	void set_anchor_object(cgv::base::node_ptr _anchor_obj);
-	/// Set an external position the gizmo will be attached to. This position will be added to the anchor object's position (if object was set).
+	/// Set a position offset that will be added to the anchor object's position (if object was set).
 	///	This will only be used to position the gizmo and is NOT a value being manipulated by the gizmo.
-	void set_external_anchor_position(const vec3* _anchor_position_ptr);
-	/// Set an external rotation the gizmo will be attached to. This rotation will be added to the anchor object's rotation (if object was set).
+	void set_anchor_offset_position(const vec3* _anchor_position_ptr);
+	/// Set a rotation offset that will be added to the anchor object's rotation (if object was set).
 	///	This will only be used to position the gizmo's handles and is NOT a value being manipulated by the gizmo.
-	void set_external_anchor_rotation(const quat* _anchor_rotation_ptr);
-	/// Set an external scale the gizmo will be attached to. This scale will be added to the anchor objects scale (if object was set).
+	void set_anchor_offset_rotation(const quat* _anchor_rotation_ptr);
+	/// Set a scale offset that will be added to the anchor object's scale (if object was set).
 	///	This will only be used to position the gizmo's handles and is NOT a value being manipulated by the gizmo.
-	void set_external_anchor_scale(const vec3* _anchor_scale_ptr);
-	/// Set an external position the gizmo will be attached to with an additional level of indirection. This position will be added to the anchor object's position (if object was set).
+	void set_anchor_offset_scale(const vec3* _anchor_scale_ptr);
+	/// Set a position offset with an additional level of indirection that will be added to the anchor object's position (if object was set).
 	///	This will only be used to position the gizmo and is NOT a value being manipulated by the gizmo.
-	void set_external_anchor_position(const vec3** _anchor_position_ptr_ptr);
-	/// Set an external rotation the gizmo will be attached to with an additional level of indirection. This rotation will be added to the anchor object's rotation (if object was set).
+	void set_anchor_offset_position(const vec3** _anchor_position_ptr_ptr);
+	/// Set a rotation offset with an additional level of indirection that will be added to the anchor object's rotation (if object was set).
 	///	This will only be used to position the gizmo's handles and is NOT a value being manipulated by the gizmo.
-	void set_external_anchor_rotation(const quat** _anchor_rotation_ptr_ptr);
-	/// Set an external scale the gizmo will be attached to with an additional level of indirection. This scale will be added to the anchor objects scale (if object was set).
+	void set_anchor_offset_rotation(const quat** _anchor_rotation_ptr_ptr);
+	/// Set a scale offset with an additional level of indirection that will be added to the anchor object's scale (if object was set).
 	///	This will only be used to position the gizmo's handles and is NOT a value being manipulated by the gizmo.
-	void set_external_anchor_scale(const vec3** _anchor_scale_ptr_ptr);
+	void set_anchor_offset_scale(const vec3** _anchor_scale_ptr_ptr);
 	/// Set whether the gizmo should be rotated relative to the world as opposed to relative to its anchor object.
 	///	The anchor rotation (if set) will be applied regardless.
 	void set_use_absolute_rotation(bool value);

@@ -94,32 +94,32 @@ void cgv::nui::gizmo::set_anchor_object(cgv::base::node_ptr _anchor_obj)
 	node::set_parent(anchor_obj);
 }
 
-void cgv::nui::gizmo::set_external_anchor_position(const vec3* _anchor_position_ptr)
+void cgv::nui::gizmo::set_anchor_offset_position(const vec3* _anchor_position_ptr)
 {
 	anchor_position_ptr = _anchor_position_ptr;
 }
 
-void cgv::nui::gizmo::set_external_anchor_rotation(const quat* _anchor_rotation_ptr)
+void cgv::nui::gizmo::set_anchor_offset_rotation(const quat* _anchor_rotation_ptr)
 {
 	anchor_rotation_ptr = _anchor_rotation_ptr;
 }
 
-void cgv::nui::gizmo::set_external_anchor_scale(const vec3* _anchor_scale_ptr)
+void cgv::nui::gizmo::set_anchor_offset_scale(const vec3* _anchor_scale_ptr)
 {
 	anchor_scale_ptr = _anchor_scale_ptr;
 }
 
-void cgv::nui::gizmo::set_external_anchor_position(const vec3** _anchor_position_ptr_ptr)
+void cgv::nui::gizmo::set_anchor_offset_position(const vec3** _anchor_position_ptr_ptr)
 {
 	anchor_position_ptr_ptr = _anchor_position_ptr_ptr;
 }
 
-void cgv::nui::gizmo::set_external_anchor_rotation(const quat** _anchor_rotation_ptr_ptr)
+void cgv::nui::gizmo::set_anchor_offset_rotation(const quat** _anchor_rotation_ptr_ptr)
 {
 	anchor_rotation_ptr_ptr = _anchor_rotation_ptr_ptr;
 }
 
-void cgv::nui::gizmo::set_external_anchor_scale(const vec3** _anchor_scale_ptr_ptr)
+void cgv::nui::gizmo::set_anchor_offset_scale(const vec3** _anchor_scale_ptr_ptr)
 {
 	anchor_scale_ptr_ptr = _anchor_scale_ptr_ptr;
 }

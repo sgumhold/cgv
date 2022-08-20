@@ -37,7 +37,7 @@ simple_primitive_container::simple_primitive_container(const std::string& _name,
 	active_gizmo_ui = active_gizmo;
 
 	trans_gizmo = new cgv::nui::translation_gizmo();
-	trans_gizmo->set_external_anchor_position(&active_position_ptr);
+	trans_gizmo->set_anchor_offset_position(&active_position_ptr);
 	trans_gizmo->set_position_reference(this);
 	trans_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
 	trans_gizmo->configure_axes_positioning(
