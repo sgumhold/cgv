@@ -11,6 +11,7 @@ add_subdirectory(png)
 add_subdirectory(tiff)
 add_subdirectory(zlib)
 add_subdirectory(screen_capture_lite)
+add_subdirectory(sndfile)
 
 if (WIN32)
     # FIXME webserver can only be built on Windows
