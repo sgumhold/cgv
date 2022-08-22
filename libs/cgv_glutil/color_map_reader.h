@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include <cgv/base/import.h>
 #include <cgv/render/render_types.h>
 #include <cgv/utils/file.h>
 #include <cgv/utils/xml.h>
@@ -150,11 +151,9 @@ public:
 	}
 
 	static bool read_from_xml(const std::string& file_name, result& entries, identifier_config& config = identifier_config()) {
-		if(!cgv::utils::file::exists(file_name) || cgv::utils::to_upper(cgv::utils::file::get_extension(file_name)) != "XML")
-			return false;
-
 		std::string content;
-		cgv::utils::file::read(file_name, content, true);
+		if(cgv::utils::to_upper(cgv::utils::file::get_extension(file_name)) != "XML" || cgv::base::read_data_file(file_name, content, true))
+			return false;
 
 		bool read = true;
 		size_t nl_pos = content.find_first_of("\n");
