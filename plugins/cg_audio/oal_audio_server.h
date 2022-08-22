@@ -1,7 +1,7 @@
-#include <AL/alc.h>
-
 #include <cgv/base/base.h>	 
 #include <cgv/base/register.h>
+
+#include <cgv_oal/al_context.h>
 
 class OALAudioServer : 
 	public cgv::base::base,
@@ -15,6 +15,5 @@ class OALAudioServer :
 	virtual bool on_exit_request() override;
 
   private:
-	ALCdevice* oal_device{nullptr};
-	ALCcontext* oal_context{nullptr};
+	cgv::audio::OALContext c;
 };

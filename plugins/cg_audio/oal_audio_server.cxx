@@ -9,47 +9,52 @@
 
 void OALAudioServer::on_register()
 {
-	// nullptr returns the default device
-	oal_device = alcOpenDevice(nullptr);
-	if (nullptr != oal_device) {
-		oal_context = alcCreateContext(oal_device, nullptr);
-		alcMakeContextCurrent(oal_context);
-	}
+	auto devs = c.enumerate_devices();
+	c.load_samples("C:/Windows/Media");
 
-	ALuint buffer;
-	alGenBuffers(1, &buffer);
+	//// nullptr returns the default device
+	//oal_device = alcOpenDevice(nullptr);
+	//if (nullptr != oal_device) {
+	//	oal_context = alcCreateContext(oal_device, nullptr);
+	//	alcMakeContextCurrent(oal_context);
+	//}
 
-	auto error = alcGetError(oal_device);
-	assert(AL_NO_ERROR == error);
+	//ALuint buffer;
+	//alGenBuffers(1, &buffer);
 
-	constexpr int sampling_rate = 48000;
-	constexpr float sine_freq = 1000.;
-	constexpr float sine_samples = sampling_rate / sine_freq;
-	// PCM samples need to have the sine zero crossings at offset 127
-	constexpr ALCubyte half_point = std::numeric_limits<ALCubyte>::max() / static_cast<ALCubyte>(2);
+	//auto error = alcGetError(oal_device);
+	//assert(AL_NO_ERROR == error);
 
-	std::array<ALCubyte, sampling_rate> sine;
-	std::generate(std::begin(sine), std::end(sine), [&, i = 0]() mutable -> ALCubyte {
-		const auto sin = std::sin(2 * 3.14159 * ((i++) / sine_samples));
-		return half_point * (1. + sin);
-	});
+	//constexpr int sampling_rate = 48000;
+	//constexpr float sine_freq = 1000.;
+	//constexpr float sine_samples = sampling_rate / sine_freq;
+	//// PCM samples need to have the sine zero crossings at offset 127
+	//constexpr ALCubyte half_point = std::numeric_limits<ALCubyte>::max() / static_cast<ALCubyte>(2);
 
-	alBufferData(buffer, AL_FORMAT_MONO8, sine.data(), sine.size() * sizeof(ALCubyte), static_cast<ALsizei>(sampling_rate));
-	error = alcGetError(oal_device);
-	assert(AL_NO_ERROR == error);
+	//std::array<ALCubyte, sampling_rate> sine;
+	//std::generate(std::begin(sine), std::end(sine), [&, i = 0]() mutable -> ALCubyte {
+	//	const auto sin = std::sin(2 * 3.14159 * ((i++) / sine_samples));
+	//	return half_point * (1. + sin);
+	//});
+
+	//alBufferData(buffer, AL_FORMAT_MONO8, sine.data(), sine.size() * sizeof(ALCubyte), static_cast<ALsizei>(sampling_rate));
+	//error = alcGetError(oal_device);
+	//assert(AL_NO_ERROR == error);
 
 	ALuint source;
 	alGenSources(1, &source);
-	error = alcGetError(oal_device);
+	auto error = alcGetError(c.get_native_device());
 	assert(AL_NO_ERROR == error);
 
-	alSourcei(source, AL_BUFFER, buffer);
+	assert(c.get_buffer_id("tada").has_value());
+
+	alSourcei(source, AL_BUFFER, c.get_buffer_id("tada").value());
 	alSource3f(source, AL_POSITION, 1., 1., 1.);
 	alSource3f(source, AL_VELOCITY, 0., 0., 0.);
 	alSourcef(source, AL_PITCH, 1.);
 	alSourcef(source, AL_GAIN, 1.);
 	alSourcei(source, AL_LOOPING, AL_TRUE);
-	error = alcGetError(oal_device);
+	error = alcGetError(c.get_native_device());
 	assert(AL_NO_ERROR == error);
 
 	std::array<ALfloat, 3> listenerPos = {0.0, 0.0, 0.0};
@@ -59,11 +64,11 @@ void OALAudioServer::on_register()
 	alListenerfv(AL_POSITION, listenerPos.data());
 	alListenerfv(AL_VELOCITY, listenerVel.data());
 	alListenerfv(AL_ORIENTATION, listenerOri.data());
-	error = alcGetError(oal_device);
+	error = alcGetError(c.get_native_device());
 	assert(AL_NO_ERROR == error);
 
 	alSourcePlay(source);
-	error = alcGetError(oal_device);
+	error = alcGetError(c.get_native_device());
 	assert(AL_NO_ERROR == error);
 }
 
