@@ -141,7 +141,9 @@ void volume_viewer::create_volume(cgv::render::context& ctx)
 
 	for(size_t i = 0; i < vol_data.size(); ++i) {
 		size_t bucket = static_cast<size_t>(vol_data[i] * 128.0f);
-		bucket = cgv::math::clamp(bucket, 0ull, 128ull);
+		size_t min = 0;
+		size_t max = 128;
+		bucket = cgv::math::clamp(bucket, min, max);
 		++histogram[bucket];
 	}
 
