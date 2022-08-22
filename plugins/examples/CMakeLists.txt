@@ -20,6 +20,7 @@ target_link_libraries(examples
         plot
         cg_gamepad
         cgv_proc
+        cgv_oal
         cgv_gl
         cgv_os
         cgv_signal
@@ -27,7 +28,7 @@ target_link_libraries(examples
 
 add_dependencies(examples
         cgv_viewer
-
+        cg_audio
         cg_ext
         cg_fltk
         cg_icons
