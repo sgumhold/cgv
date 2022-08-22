@@ -112,7 +112,7 @@ namespace cgv {
 					accumulated_transform = transforming_ptr->get_model_transform() * accumulated_transform;
 				}
 				parent = parent->get_parent();
-			} while (++nr_iters < 100);
+			} while (parent && ++nr_iters < 100);
 			return accumulated_transform;
 		}
 
@@ -128,7 +128,7 @@ namespace cgv {
 					accumulated_transform = transforming_ptr->get_inverse_model_transform() * accumulated_transform;
 				}
 				parent = parent->get_parent();
-			} while (++nr_iters < 100);
+			} while (parent && ++nr_iters < 100);
 			return accumulated_transform;
 		}
 
