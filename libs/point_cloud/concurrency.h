@@ -2,6 +2,11 @@
 #include <unordered_map>
 #include <thread>
 #include <vector>
+#include <functional>
+#include <atomic>
+#include <mutex>
+
+#include "lib_begin.h"
 
 namespace cgv {
 namespace pointcloud {
@@ -10,19 +15,16 @@ namespace utility {
 
 
 	//** concurrency classes *//
-	class SenseReversingBarrier
+class CGV_API SenseReversingBarrier
 	{
-		int remaining = 0;
-		int initial_count = 0;
-		bool barrier_sense = false;
+		int remaining;
+		int initial_count;
+		bool barrier_sense;
 		std::mutex barrier_mutex;
 		std::condition_variable condition;
 		std::unordered_map<std::thread::id, bool> thread_sense;
 	public:
-		inline SenseReversingBarrier(const int i) {
-			remaining = i;
-			initial_count = i;
-		}
+		SenseReversingBarrier(const int i);
 
 		inline bool sense() const {
 			return barrier_sense;
@@ -58,74 +60,55 @@ namespace utility {
 			thread_sense[id] = !sense;
 		}
 
-		void await() {
+		inline void await() {
 			await([]() {});
 		}
 	};
 	
-	class WorkerPool {
+	class CGV_API WorkerPool
+	{
 
+	public:
 		class PoolAccessException : public std::exception {
 			std::string msg;
-			const char* what() const throw () {
+			inline const char* what() const throw () {
 				return msg.c_str();
 			}
 		public:
-			PoolAccessException(const std::string& msg) : msg(msg) {}
+			inline PoolAccessException(const std::string& msg) : msg(msg) {}
 		};
 
 		struct PoolTask {
-			//Task* task;
 			std::function<void(int)> task;
 			std::atomic_int remaining; //threads not finished yet
-			PoolTask(const std::function<void(int)>& t, const int num_threads) : task(t), remaining(num_threads) {}
+			inline PoolTask::PoolTask(const std::function<void(int)>& t, const int num_threads)
+				: task(t), remaining(num_threads)
+			{
+			}
 		};
-
+	private:
 		SenseReversingBarrier barrier_pre;
 		//ab::SenseReversingBarrier barrier_post;
 
-		std::unique_ptr<PoolTask> current_task = nullptr;
+		std::unique_ptr<PoolTask> current_task;
 
 		std::vector<std::thread> threads;
 
 		bool stop_request = false;
 
 	public:
-		WorkerPool(unsigned i) : barrier_pre(i + 1)/*, barrier_post(i+1)*/ {
-			construct_threads(i);
-		}
-		~WorkerPool() {
-			join_all();
-		}
+		WorkerPool(unsigned i);
+
+		~WorkerPool();
 
 		//collectiv task execution, calling thread also runs the task
-		template<typename F>
-		void run(F func) {
-			if (is_busy()) {
-				throw PoolAccessException("tried to launch a computation on a already busy pool!");
-			}
-			//no lock required since the calling threads should be the only accessing thread
-			current_task = std::make_unique<PoolTask>(std::move(std::function<void(int)>(func)), (int)threads.size() + 1);
-			worker_kernel(current_task.get(), (int)threads.size(), false);
-		}
+		template<typename F> void run(F func);
 
 		//
-		template<typename F>
-		void launch(F func) {
-			if (is_busy()) {
-				throw PoolAccessException("tried to launch a computation on a already busy pool!");
-			}
-			current_task = std::make_unique<PoolTask>(std::move(std::function<void(int)>(func)), (int)threads.size());
-			launchpad_kernel();
-		}
+		template<typename F> void launch(F func);
 
 		// returns if the pools computation is completed
-		void sync() {
-			if (!is_busy()) {
-				return;
-			}
-			landing_kernel();
-		}
+		void sync();
 
 		inline bool is_busy() const noexcept {
 			return (current_task != nullptr);
@@ -143,78 +126,11 @@ namespace utility {
 			barrier_pre.await();
 		}
 		// wait for results, executed by one guest thread
-		inline void landing_kernel() {
-			//non of the pool threads will clear the task pointer so its safe to access
-			PoolTask* ptask = current_task.get();
-
-			if (ptask) {
-				//wait and clear task afterwards
-				{
-					//there should only be the thread who called run() in here
-					while (ptask->remaining.load(std::memory_order_relaxed) > 0) {
-						std::this_thread::yield();
-					};
-					current_task = nullptr;
-				}
-			}
-		}
+		void landing_kernel();
 
 		//add i threads to the pool (blocking)
-		inline void construct_threads(unsigned i) {
-			//create threads
-			while (i > 0) {
-				bool sense = !barrier_pre.sense();
-				threads.emplace_back(&WorkerPool::worker_kernel, this, nullptr, --i, true);
-			}
-		}
+		void construct_threads(unsigned i);
 	};
-
-
-	void WorkerPool::join_all()
-	{
-		{
-			{
-				stop_request = true;
-				current_task = nullptr;
-			}
-			worker_kernel(nullptr, -1, false);
-		}
-		for (auto& thread : threads) {
-			thread.join();
-		}
-		threads.clear();
-		stop_request = false;
-	}
-	void WorkerPool::worker_kernel(PoolTask* ptask, int thread_id, bool is_pool_member)
-	{
-		//individual jobs
-		bool clear_task = !is_pool_member;
-
-		do {
-			//std::printf("%d arrived\n", thread_id);
-			barrier_pre.await(); //usually threads wait on this barrier
-			//std::printf("%d passed barrier\n", thread_id);
-			ptask = current_task.get();
-			//terminate on request
-			if (stop_request) {
-				return;
-			}
-
-			//run any existing task
-			if (ptask) {
-				ptask->task(thread_id);
-				int rem = ptask->remaining.fetch_sub(1);
-
-				if (clear_task) {
-					//there should only be the thread who called run() in here
-					while (ptask->remaining.load(std::memory_order_relaxed) > 0) {
-						std::this_thread::yield();
-					};
-					current_task = nullptr;
-				}
-			}
-		} while (is_pool_member);
-	}
 	
 	template <typename TASK>
 	struct TaskPool {
@@ -238,6 +154,64 @@ namespace utility {
 		}
 	};
 
-} //utility namespace
+
+	// template definitions
+	template <typename F>
+	void WorkerPool::run(F func)
+	{
+		if (is_busy()) {
+			throw PoolAccessException("tried to launch a computation on a already busy pool!");
+		}
+		// no lock required since the calling threads should be the only accessing thread
+		current_task = std::make_unique<PoolTask>(std::move(std::function<void(int)>(func)), (int)threads.size() + 1);
+		worker_kernel(current_task.get(), (int)threads.size(), false);
+	}
+
+
+	template <typename F>
+	void WorkerPool::launch(F func)
+	{
+		if (is_busy()) {
+			throw PoolAccessException("tried to launch a computation on a already busy pool!");
+		}
+		current_task = std::make_unique<PoolTask>(std::move(std::function<void(int)>(func)), (int)threads.size());
+		launchpad_kernel();
+	}
+
+
+	inline void WorkerPool::worker_kernel(WorkerPool::PoolTask* ptask, int thread_id, bool is_pool_member)
+	{
+		// individual jobs
+		bool clear_task = !is_pool_member;
+
+		do {
+			// std::printf("%d arrived\n", thread_id);
+			barrier_pre.await(); // usually threads wait on this barrier
+			// std::printf("%d passed barrier\n", thread_id);
+			ptask = current_task.get();
+			// terminate on request
+			if (stop_request) {
+				return;
+			}
+
+			// run any existing task
+			if (ptask) {
+				ptask->task(thread_id);
+				int rem = ptask->remaining.fetch_sub(1);
+
+				if (clear_task) {
+					// there should only be the thread who called run() in here
+					while (ptask->remaining.load(std::memory_order_relaxed) > 0) {
+						std::this_thread::yield();
+					};
+					current_task = nullptr;
+				}
+			}
+		} while (is_pool_member);
+	}
+
+	} //utility namespace
 } //pointcloud namespace
 } //cgv namespaces
+
+#include <cgv/config/lib_end.h>
