@@ -22,11 +22,22 @@ layout (std430, binding = 0) readonly buffer data_buffer {
 	vertex in_data[];
 };
 
-uniform ivec2 position;
+uniform ivec4 position_offset;
 uniform float font_size = 32.0;
+uniform float angle;
 
 out vec2 pix_coord;
 out vec2 tex_coord;
+
+mat2 rotate(in float angle) {
+	float c = cos(angle);
+	float s = sin(angle);
+	mat2 M = mat2(
+		c, s,
+		-s, c
+	);
+	return M;
+}
 
 void main() {
 	int id = gl_VertexID;
@@ -35,13 +46,26 @@ void main() {
 	vertex v = in_data[gl_BaseInstance + gl_InstanceID];
 	v.position_size *= font_size;
 
+	mat2 R = rotate(radians(angle));
+
 	tex_coord = vec2(mix(v.texcoords.xy, v.texcoords.zw, corner));
 
-	vec2 final_position = position + v.position_size.xy;
+	// offset local glyph position by text alignment
+	vec2 final_position = v.position_size.xy + position_offset.zw;
+
+	// rotate local glyph position	
+	final_position = R * final_position;
+	
+	// move glyph to global position
+	final_position += position_offset.xy;
+
 	vec2 size = v.position_size.zw;
 	
 	// transform to pixel coordinates
 	corner *= size;
+
+	// rotate
+	corner = R * corner;
 
 	pix_coord = corner - 0.5*size;
 

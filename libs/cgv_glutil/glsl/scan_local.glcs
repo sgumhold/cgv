@@ -8,21 +8,21 @@ layout(std430, binding = 0) readonly buffer keys_buffer {
     uvec4 keys[];
 };
 
-layout(std430, binding = 4) writeonly buffer prefix_sum_buffer {
-    uint prefix_sum[];
+layout(std430, binding = 4) writeonly buffer prefix_sums_buffer {
+    uint prefix_sums[];
 };
 
-layout(std430, binding = 5) writeonly buffer blocksum_buffer {
-    uint blocksum[];
+layout(std430, binding = 5) writeonly buffer block_sums_buffer {
+    uint block_sums[];
 };
 
-layout(std430, binding = 6) writeonly buffer scratch_buffer {
-    uint scratch[];
+layout(std430, binding = 6) writeonly buffer last_sum_buffer {
+    uint last_sum[];
 };
 
 uniform uint n; // the total number of items to sort
 uniform uint n_scan_groups; // the total number of local scan groups
-uniform uint n_blocksums; // the total number of blocksums
+uniform uint n_block_sums; // the total number of blocksums
 
 shared uint scan_values[LOCAL_SIZE + 16]; // make room for all values plus some space for offset addresses
 
@@ -79,7 +79,7 @@ void main() {
         uint shift = tid<<3;
 		uint val = ((scan_values[addr(31)]>>shift)&0x000000FF) + ((scan_values[addr(63)]>>shift)&0x000000FF);
 
-        blocksum[n_blocksums * tid + gl_WorkGroupID.x] = val;
+        block_sums[n_block_sums * tid + gl_WorkGroupID.x] = val;
     }
 
     if(tid < 1) {
@@ -114,11 +114,10 @@ void main() {
 	val |= (((scan_value + k1)>>(b2<<3))&0x000000FF) << 16;
 	val |= (((scan_value + k2)>>(b3<<3))&0x000000FF) << 24;
 	
-	prefix_sum[thread_offset] = val;
+	prefix_sums[thread_offset] = val;
     
     if(tid == 63 && gl_WorkGroupID.x == n_scan_groups - 1) {
-		uint last_sum = scan_value + k2;
-		scratch[4] = last_sum;
-		scratch[5] = b3;
+		last_sum[0] = scan_value + k2;
+		last_sum[1] = b3;
 	}
 }

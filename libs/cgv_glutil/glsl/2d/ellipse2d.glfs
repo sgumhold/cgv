@@ -19,6 +19,11 @@ in vec2 tex_coord;
 flat in vec4 color_fs;
 
 // https://iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
+float sd_circle(in vec2 p, in float r )
+{
+    return length(p) - r;
+}
+
 float sd_ellipse(in vec2 p, in vec2 ab)
 {
     p = abs(p);
@@ -57,7 +62,8 @@ float sd_ellipse(in vec2 p, in vec2 ab)
 
 void main() {
 	
-	float dist = sd_ellipse(pix_coord, get_adjusted_size(size));
+	vec2 adjusted_size = get_adjusted_size(size);
+	float dist = abs(adjusted_size.x - adjusted_size.y) < 0.001 ? sd_circle(pix_coord, adjusted_size.x) : sd_ellipse(pix_coord, adjusted_size);
 	vec4 color = get_active_color(color_fs);
 	finish_sdf_fragment2d(dist, color, tex_coord);
 }

@@ -715,6 +715,7 @@ bool texture::replace_from_image(cgv::data::data_format& df, cgv::data::data_vie
 bool texture::destruct(const context& ctx)
 {
 	state_out_of_date = true;
+	internal_format = 0;
 	return ctx.texture_destruct(*this);
 }
 

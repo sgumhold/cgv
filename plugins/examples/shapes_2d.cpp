@@ -14,7 +14,7 @@
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/gl/gl_context.h>
 
-#include <cgv_glutil/msdf_gl_font_renderer.h>
+#include <cgv_glutil/msdf_gl_canvas_font_renderer.h>
 #include <cgv_glutil/generic_renderer.h>
 
 #include <cgv_glutil/2d/draggable.h>
@@ -62,7 +62,7 @@ protected:
 	cgv::glutil::rect viewport_rect;
 
 	cgv::glutil::canvas canvas;
-	cgv::glutil::shape2d_style bg_style, rect_style, circle_style, text_style, draggable_style;
+	cgv::glutil::shape2d_style bg_style, rect_style, circle_style, quad_style, text_style, draggable_style;
 	cgv::glutil::line2d_style line_style, control_line_style;
 	cgv::glutil::arrow2d_style arrow_style;
 	cgv::glutil::grid2d_style grid_style;
@@ -76,6 +76,7 @@ protected:
 	cgv::glutil::draggables_collection<point*> arrow_handles;
 	cgv::glutil::draggables_collection<point*> curve_handles;
 	cgv::glutil::draggables_collection<point*> text_handles;
+	cgv::glutil::draggables_collection<point*> quad_handles;
 
 	cgv::glutil::generic_renderer line_renderer, spline_renderer, point_renderer;
 	
@@ -122,10 +123,11 @@ protected:
 	// text appearance
 	float font_size = 32.0f;
 	cgv::render::TextAlignment text_align_h, text_align_v;
+	float text_angle = 0.0f;
 
 	cgv::glutil::msdf_font msdf_font;
 	cgv::glutil::msdf_text_geometry texts;
-	cgv::glutil::msdf_gl_font_renderer font_renderer;
+	cgv::glutil::msdf_gl_canvas_font_renderer font_renderer;
 
 	// test variables
 	struct {
@@ -135,7 +137,7 @@ protected:
 	} view_params, model_params;
 
 public:
-	shapes_2d() : cgv::base::node("shapes 2d test") {
+	shapes_2d() : cgv::base::node("Shapes 2D Test") {
 		viewport_rect.set_pos(ivec2(0));
 		viewport_rect.set_size(ivec2(-1));
 		
@@ -144,6 +146,7 @@ public:
 		canvas.register_shader("rectangle", cgv::glutil::canvas::shaders_2d::rectangle);
 		canvas.register_shader("circle", cgv::glutil::canvas::shaders_2d::circle);
 		canvas.register_shader("ellipse", cgv::glutil::canvas::shaders_2d::ellipse);
+		canvas.register_shader("quad", cgv::glutil::canvas::shaders_2d::quad);
 		canvas.register_shader("arrow", cgv::glutil::canvas::shaders_2d::arrow);
 		canvas.register_shader("grid", cgv::glutil::canvas::shaders_2d::grid);
 
@@ -169,11 +172,13 @@ public:
 		line_handles.set_transformation(M);
 		curve_handles.set_transformation(M);
 		text_handles.set_transformation(M);
+		quad_handles.set_transformation(M);
 
 		handled |= arrow_handles.handle(e, viewport_rect.size());
 		handled |= line_handles.handle(e, viewport_rect.size());
 		handled |= curve_handles.handle(e, viewport_rect.size());
 		handled |= text_handles.handle(e, viewport_rect.size());
+		handled |= quad_handles.handle(e, viewport_rect.size());
 
 		if(!handled) {
 			unsigned et = e.get_kind();
@@ -234,6 +239,11 @@ public:
 		if(member_ptr == &text_align_h || member_ptr == &text_align_v) {
 			for(unsigned i=0; i<(unsigned)texts.size(); ++i)
 				texts.set_alignment(i, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
+		}
+
+		if(member_ptr == &text_angle) {
+			for(unsigned i = 0; i < (unsigned)texts.size(); ++i)
+				texts.set_angle(i, text_angle);
 		}
 
 		if(member_ptr == &font_size) {
@@ -303,7 +313,10 @@ public:
 		points.push_back(point(vec2(800, 300)));
 		// add 2 control points for the texts
 		points.push_back(point(ivec2(750, 150)));
-		points.push_back(point(ivec2(500, 450)));
+		points.push_back(point(ivec2(500, 500)));
+		// add 2 control points for the quad
+		points.push_back(point(ivec2(350, 350)));
+		points.push_back(point(ivec2(550, 450)));
 		
 		// put pointers to the control points into their respective draggables collection
 		arrow_handles.add(&points[0]);
@@ -319,6 +332,9 @@ public:
 
 		text_handles.add(&points[8]);
 		text_handles.add(&points[9]);
+
+		quad_handles.add(&points[10]);
+		quad_handles.add(&points[11]);
 
 		create_line_render_data();
 		create_curve_render_data();
@@ -343,6 +359,7 @@ public:
 			line_handles.set_constraint(viewport_rect);
 			curve_handles.set_constraint(viewport_rect);
 			text_handles.set_constraint(viewport_rect);
+			quad_handles.set_constraint(viewport_rect);
 		}
 	}
 	void draw(cgv::render::context& ctx) {
@@ -377,7 +394,13 @@ public:
 		auto& ellipse_prog = canvas.enable_shader(ctx, "ellipse");
 		circle_style.apply(ctx, ellipse_prog);
 		// size defines the two diameters
-		canvas.draw_shape(ctx, ivec2(200, 300), ivec2(200, 100), rgba(0, 1, 1, 1));
+		canvas.draw_shape(ctx, ivec2(100, 300), ivec2(200, 100), rgba(0, 1, 1, 1));
+		canvas.disable_current_shader(ctx);
+
+		auto& quad_prog = canvas.enable_shader(ctx, "quad");
+		quad_style.apply(ctx, quad_prog);
+		// takes 4 positions (must be convex)
+		canvas.draw_shape4(ctx, ivec2(400, 300), ivec2(480, 300), points[10].get_render_position(), points[11].get_render_position(), rgba(1, 1, 0, 1));
 		canvas.disable_current_shader(ctx);
 
 		auto& arrow_prog = canvas.enable_shader(ctx, "arrow");
@@ -401,13 +424,7 @@ public:
 
 		image_tex.disable(ctx);
 
-		// TODO: use style as a parameter in the font renderer render method
-		auto& font_prog = font_renderer.ref_prog();
-		font_prog.enable(ctx);
-		text_style.apply(ctx, font_prog);
-		canvas.set_view(ctx, font_prog);
-		font_prog.disable(ctx);
-		font_renderer.render(ctx, viewport_rect.size(), texts);
+		font_renderer.render(ctx, canvas, texts, text_style);
 		
 		draw_control_lines(ctx);
 		draw_draggables(ctx);
@@ -419,24 +436,10 @@ public:
 		glEnable(GL_DEPTH_TEST);
 	}
 	void draw_background(cgv::render::context& ctx) {
-		/*auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
-		bg_style.texcoord_scaling = vec2(viewport_rect.size()) / 20.0f;
-		bg_style.apply(ctx, rect_prog);
-
-		background_tex.enable(ctx, 0);
-		canvas.draw_shape(ctx, ivec2(0), viewport_rect.size());
-		background_tex.disable(ctx);
-
-		canvas.disable_current_shader(ctx);*/
-
 		auto& grid_prog = canvas.enable_shader(ctx, "grid");
 		grid_style.texcoord_scaling = vec2(viewport_rect.size()) / 20.0f;
 		grid_style.apply(ctx, grid_prog);
-
-		//background_tex.enable(ctx, 0);
 		canvas.draw_shape(ctx, ivec2(0), viewport_rect.size());
-		//background_tex.disable(ctx);
-
 		canvas.disable_current_shader(ctx);
 	}
 	void draw_control_lines(cgv::render::context& ctx) {
@@ -562,6 +565,7 @@ public:
 		// set default style of all shapes
 		set_default_shape_style(rect_style);
 		set_default_shape_style(circle_style);
+		set_default_shape_style(quad_style);
 		set_default_shape_style(text_style);
 		set_default_shape_style(line_style);
 		set_default_shape_style(arrow_style);
@@ -628,6 +632,13 @@ public:
 			end_tree_node(circle_style);
 		}
 
+		if(begin_tree_node("Quad Style", quad_style, false)) {
+			align("\a");
+			add_gui("quad_style", quad_style);
+			align("\b");
+			end_tree_node(quad_style);
+		}
+
 		if(begin_tree_node("Line Style", line_style, false)) {
 			align("\a");
 			add_gui("line_style", line_style);
@@ -648,6 +659,7 @@ public:
 			add_member_control(this, "Font Size", font_size, "value_slider", "min=1;max=256;step=0.5;ticks=true");
 			add_member_control(this, "Horizontal Alignment", text_align_h, "dropdown", "enums='Center=0,Left=1,Right=2'");
 			add_member_control(this, "Vertical Alignment", text_align_v, "dropdown", "enums='Center=0,Top=4,Botom=8'");
+			add_member_control(this, "Angle", text_angle, "value_slider", "min=0;max=360;step=0.1;ticks=true");
 			align("\b");
 			end_tree_node(text_style);
 		}

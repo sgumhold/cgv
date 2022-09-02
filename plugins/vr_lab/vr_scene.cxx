@@ -298,33 +298,35 @@ bool vr_scene::init(cgv::render::context& ctx)
 
 	cgv::gui::connect_vr_server(true);
 
-	auto view_ptr = find_view_as_node();
-	if (view_ptr) {
-		// if the view points to a vr_view_interactor
-		vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
-		if (vr_view_ptr) {
-			// configure vr event processing
-			vr_view_ptr->set_event_type_flags(
-				cgv::gui::VREventTypeFlags(
-					cgv::gui::VRE_KEY +
-					cgv::gui::VRE_ONE_AXIS +
-					cgv::gui::VRE_ONE_AXIS_GENERATES_KEY +
-					cgv::gui::VRE_TWO_AXES +
-					cgv::gui::VRE_TWO_AXES_GENERATES_DPAD +
-					cgv::gui::VRE_POSE
-				));
-			// vr_view_ptr->enable_vr_event_debugging(false);
-			// configure vr rendering
-			// vr_view_ptr->draw_action_zone(false);
-			vr_view_ptr->draw_vr_kits(true);
-			// vr_view_ptr->enable_blit_vr_views(true);
-			// vr_view_ptr->set_blit_vr_view_width(200);
-		}
-	}
 	return label_drawable::init(ctx);
 }
 void vr_scene::init_frame(cgv::render::context& ctx)
 {
+	if (!vr_view_ptr) {
+		auto view_ptr = find_view_as_node();
+		if (view_ptr) {
+			// if the view points to a vr_view_interactor
+			vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
+			if (vr_view_ptr) {
+				// configure vr event processing
+				vr_view_ptr->set_event_type_flags(
+					cgv::gui::VREventTypeFlags(
+						cgv::gui::VRE_KEY +
+						cgv::gui::VRE_ONE_AXIS +
+						cgv::gui::VRE_ONE_AXIS_GENERATES_KEY +
+						cgv::gui::VRE_TWO_AXES +
+						cgv::gui::VRE_TWO_AXES_GENERATES_DPAD +
+						cgv::gui::VRE_POSE
+					));
+				// vr_view_ptr->enable_vr_event_debugging(false);
+				// configure vr rendering
+				// vr_view_ptr->draw_action_zone(false);
+				vr_view_ptr->draw_vr_kits(true);
+				// vr_view_ptr->enable_blit_vr_views(true);
+				// vr_view_ptr->set_blit_vr_view_width(200);
+			}
+		}
+	}
 	mat34 table_pose(4, 4, table->get_transform());
 	set_coordinate_systems(vr_view_ptr ? vr_view_ptr->get_current_vr_state() : 0, table.empty() ? 0 : &table_pose);
 	label_drawable::init_frame(ctx);
@@ -383,7 +385,7 @@ void vr_scene::draw(cgv::render::context& ctx)
 			glDepthFunc(prev_depth_func);
 		cubemap_prog.disable(ctx);
 	}
-	if (draw_controller_mode) {
+	if (vr_view_ptr && draw_controller_mode) {
 		auto* state_ptr = vr_view_ptr->get_current_vr_state();
 		if (state_ptr) {
 			sphere_positions.clear();

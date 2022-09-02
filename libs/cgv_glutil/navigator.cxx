@@ -230,7 +230,6 @@ bool navigator::init(cgv::render::context& ctx) {
 		blit_style.fill_color = rgba(1.0f);
 		blit_style.use_texture = true;
 		blit_style.use_blending = true;
-		blit_style.apply_gamma = false;
 		blit_style.feather_width = 0.0f;
 
 		auto& blit_prog = blit_canvas.enable_shader(ctx, "rectangle");

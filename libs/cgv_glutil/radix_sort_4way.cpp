@@ -59,24 +59,24 @@ bool radix_sort_4way::init(context& ctx, size_t count)
 
 	num_groups = (n + n_pad + group_size - 1) / group_size;
 	num_scan_groups = (n + n_pad + block_size - 1) / block_size;
-	unsigned int blocksum_offset_shift = static_cast<unsigned int>(log2f(float(block_size)));
+	unsigned int block_sum_offset_shift = static_cast<unsigned int>(log2f(float(block_size)));
 
-	num_blocksums = num_scan_groups;
+	num_block_sums = num_scan_groups;
 
 	unsigned int num = 1;
-	while (num_blocksums > num)
+	while (num_block_sums > num)
 		num <<= 1;
-	num_blocksums = num;
+	num_block_sums = num;
 
 	size_t data_size = (n + n_pad) * sizeof(unsigned int);
-	size_t blocksums_size = 4 * num_blocksums * sizeof(unsigned int);
+	size_t blocksums_size = 4 * num_block_sums * sizeof(unsigned int);
 
 	create_buffer(keys_in_ssbo, data_size);
 	create_buffer(keys_out_ssbo, data_size);
 	create_buffer(values_out_ssbo, value_component_count * data_size);
-	create_buffer(prefix_sum_ssbo, data_size / 4);
-	create_buffer(blocksums_ssbo, blocksums_size);
-	create_buffer(scratch_ssbo, 8 * sizeof(unsigned int));
+	create_buffer(prefix_sums_ssbo, data_size / 4);
+	create_buffer(block_sums_ssbo, blocksums_size);
+	create_buffer(last_sum_ssbo, 4 * sizeof(unsigned int));
 
 	distance_prog.enable(ctx);
 	distance_prog.set_uniform(ctx, "n", n);
@@ -86,29 +86,29 @@ bool radix_sort_4way::init(context& ctx, size_t count)
 	scan_local_prog.enable(ctx);
 	scan_local_prog.set_uniform(ctx, "n", n + n_pad);
 	scan_local_prog.set_uniform(ctx, "n_scan_groups", num_scan_groups);
-	scan_local_prog.set_uniform(ctx, "n_blocksums", num_blocksums);
+	scan_local_prog.set_uniform(ctx, "n_block_sums", num_block_sums);
 	scan_local_prog.disable(ctx);
 
 	scan_global_prog.enable(ctx);
-	scan_global_prog.set_uniform(ctx, "n", num_blocksums);
+	scan_global_prog.set_uniform(ctx, "n_block_sums", num_block_sums);
 	scan_global_prog.disable(ctx);
 
 	scatter_prog.enable(ctx);
 	scatter_prog.set_uniform(ctx, "n", n + n_pad);
-	scatter_prog.set_uniform(ctx, "n_blocksums", num_blocksums);
-	scatter_prog.set_uniform(ctx, "last_blocksum_idx", ((n + n_pad) >> blocksum_offset_shift) - 1);
+	scatter_prog.set_uniform(ctx, "n_block_sums", num_block_sums);
+	scatter_prog.set_uniform(ctx, "last_block_sum_idx", ((n + n_pad) >> block_sum_offset_shift) - 1);
 	scatter_prog.disable(ctx);
 
 	return true;
 }
 
-void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos,
-						   const vec3& view_dir, GLuint auxiliary_buffer)
+double radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos,
+							 const vec3& view_dir, GLuint auxiliary_buffer)
 {
 
 	GLuint values_in_buffer = value_buffer;
 
-	// begin_time_query();
+	begin_time_query();
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, data_buffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, keys_in_ssbo);
@@ -123,9 +123,9 @@ void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	distance_prog.disable(ctx);
 
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, prefix_sum_ssbo);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, blocksums_ssbo);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, scratch_ssbo);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, prefix_sums_ssbo);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, block_sums_ssbo);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, last_sum_ssbo);
 
 	for (unsigned int b = 0; b < 32; b += 2) {
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, keys_in_ssbo);
@@ -152,7 +152,7 @@ void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer
 		std::swap(values_in_buffer, values_out_ssbo);
 	}
 
-	// end_time_query();
+	double time = end_time_query();
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
@@ -161,6 +161,8 @@ void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, 0);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, 0);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, 0);
+
+	return -1.0;
 }
 
 } // namespace glutil
