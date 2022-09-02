@@ -6,21 +6,9 @@ addIncDirs    =[CGV_DIR."/3rd", CGV_DIR."/libs/rgbd_capture", CGV_BUILD_DIR."/rg
 addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd", CGV_DIR."/plugins"];
 addProjectDeps=["cgv_utils","cgv_type","cgv_data","cgv_base", "cgv_signal", "cgv_reflect", "cgv_media", "cgv_os", "cgv_gui", "cgv_render", 
                 "cgv_viewer","cgv_gl", "cg_fltk", "cg_ext", "crg_stereo_view", "cmi_io", "cmv_avi", "crg_grid", "glew",
-if (env::KINECTSDK10_DIR) {
-	addProjectDeps=addProjectDeps.["rgbd_kinect"];
-}
-if (env::KINECTSDK20_DIR) {
-	addProjectDeps=addProjectDeps.["rgbd_kinect2"];
-}
-if (env::AZURE_KINECT_SDK) {
-	addProjectDeps=addProjectDeps.["rgbd_kinect_azure"];
-}
-if (env::REALSENSE_DIR) {
-	addProjectDeps=addProjectDeps.["rgbd_realsense"];
-}
-if (env::ARTEC_SDK_HOME) {
-	addProjectDeps=addProjectDeps.["rgbd_spider"];
-}addDependencies=["opengl", "glu"];
+				 "rgbd_capture", "rgbd_kinect", "rgbd_realsense", "rgbd_kinect_azure", "point_cloud"];
+				
+addDependencies=["opengl", "glu"];
 addSharedDefines=["RGBD_CONTROL_EXPORTS"];
 addCommandLineArguments=[
 		after("type(rgbd_control):protocol_path='".INPUT_DIR."'", "rgbd_control"),
