@@ -4,6 +4,7 @@
 #include <cgv/render/render_types.h>
 #include <cgv/render/shader_program.h>
 #include <cgv_gl/gl/gl_context.h>
+#include <cgv_glutil/2d/rect.h>
 
 #include "../shader_library.h"
 
@@ -23,6 +24,7 @@ public:
 		static const std::string grid;
 		static const std::string line;
 		static const std::string polygon;
+		static const std::string quad;
 		static const std::string rectangle;
 	};
 
@@ -30,6 +32,7 @@ protected:
 	cgv::glutil::shader_library shaders;
 	ivec2 resolution;
 	float feather_scale;
+	bool apply_gamma;
 
 	std::stack<mat3> modelview_matrix_stack;
 
@@ -39,6 +42,7 @@ public:
 	canvas() {
 		resolution = ivec2(100);
 		feather_scale = 1.0f;
+		apply_gamma = true;
 		initialize_modelview_matrix_stack();
 		current_shader_program = nullptr;
 	}
@@ -57,11 +61,17 @@ public:
 		shaders.add(name, filename, defines);
 	}
 
+	void reload_shaders(cgv::render::context& ctx) {
+		shaders.reload_all(ctx);
+	}
+
 	bool init(cgv::render::context& ctx) {
 		return shaders.load_shaders(ctx);
 	}
 
 	cgv::render::shader_program& enable_shader(cgv::render::context& ctx, const std::string& name) {
+		disable_current_shader(ctx);
+
 		auto& prog = shaders.get(name);
 		prog.enable(ctx);
 		set_view(ctx, prog);
@@ -75,12 +85,20 @@ public:
 		current_shader_program = nullptr;
 	}
 
+	ivec2 get_resolution() const {
+		return resolution;
+	}
+
 	void set_resolution(cgv::render::context& ctx, const ivec2& resolution) {
 		this->resolution = resolution;
 	}
 
 	void set_feather_scale(float s) {
 		feather_scale = s;
+	}
+
+	void set_apply_gamma(bool flag) {
+		apply_gamma = flag;
 	}
 
 	void initialize_modelview_matrix_stack() {
@@ -122,10 +140,19 @@ public:
 		set_modelview_matrix(ctx, modelview_matrix_stack.top());
 	}
 
+	void warning(const std::string& what) {
+		std::cerr << "canvas::" + what + " no canvas shader program enabled" << std::endl;
+	}
+
 	void set_view(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 		prog.set_uniform(ctx, "resolution", resolution);
 		prog.set_uniform(ctx, "modelview2d_matrix", modelview_matrix_stack.top());
 		prog.set_uniform(ctx, "feather_scale", feather_scale);
+		prog.set_uniform(ctx, "apply_gamma", apply_gamma);
+	}
+
+	void draw_shape(const cgv::render::context& ctx, const rect& r) {
+		draw_shape(ctx, r.pos(), r.size());
 	}
 
 	template<typename T>
@@ -135,7 +162,7 @@ public:
 			current_shader_program->set_attribute(ctx, "size", static_cast<cgv::math::fvec<float, 2u>>(size));
 			glDrawArrays(GL_POINTS, 0, 1);
 		} else {
-			std::cerr << "canvas::draw_shape no canvas shader program enabled" << std::endl;
+			warning("draw_shape");
 		}
 	}
 
@@ -147,8 +174,12 @@ public:
 			current_shader_program->set_attribute(ctx, "color", color);
 			glDrawArrays(GL_POINTS, 0, 1);
 		} else {
-			std::cerr << "canvas::draw_shape no canvas shader program enabled" << std::endl;
+			warning("draw_shape");
 		}
+	}
+
+	void draw_shape(const cgv::render::context& ctx, const rect& r, const rgba& color) {
+		draw_shape(ctx, r.pos(), r.size(), color);
 	}
 
 	template<typename T>
@@ -158,7 +189,7 @@ public:
 			current_shader_program->set_attribute(ctx, "position1", static_cast<cgv::math::fvec<float, 2u>>(position1));
 			glDrawArrays(GL_POINTS, 0, 1);
 		} else {
-			std::cerr << "canvas::draw_shape no canvas shader program enabled" << std::endl;
+			warning("draw_shape2");
 		}
 	}
 
@@ -171,7 +202,34 @@ public:
 			current_shader_program->set_attribute(ctx, "color1", color1);
 			glDrawArrays(GL_POINTS, 0, 1);
 		} else {
-			std::cerr << "canvas::draw_shape no canvas shader program enabled" << std::endl;
+			warning("draw_shape2");
+		}
+	}
+
+	template<typename T>
+	void draw_shape4(const cgv::render::context& ctx, const cgv::math::fvec<T, 2u>& position0, const cgv::math::fvec<T, 2u>& position1, const cgv::math::fvec<T, 2u>& position2, const cgv::math::fvec<T, 2u>& position3) {
+		if(current_shader_program) {
+			current_shader_program->set_attribute(ctx, "position0", static_cast<cgv::math::fvec<float, 2u>>(position0));
+			current_shader_program->set_attribute(ctx, "position1", static_cast<cgv::math::fvec<float, 2u>>(position1));
+			current_shader_program->set_attribute(ctx, "position2", static_cast<cgv::math::fvec<float, 2u>>(position2));
+			current_shader_program->set_attribute(ctx, "position3", static_cast<cgv::math::fvec<float, 2u>>(position3));
+			glDrawArrays(GL_POINTS, 0, 1);
+		} else {
+			warning("draw_shape4");
+		}
+	}
+
+	template<typename T>
+	void draw_shape4(const cgv::render::context& ctx, const cgv::math::fvec<T, 2u>& position0, const cgv::math::fvec<T, 2u>& position1, const cgv::math::fvec<T, 2u>& position2, const cgv::math::fvec<T, 2u>& position3, const rgba& color) {
+		if(current_shader_program) {
+			current_shader_program->set_attribute(ctx, "position0", static_cast<cgv::math::fvec<float, 2u>>(position0));
+			current_shader_program->set_attribute(ctx, "position1", static_cast<cgv::math::fvec<float, 2u>>(position1));
+			current_shader_program->set_attribute(ctx, "position2", static_cast<cgv::math::fvec<float, 2u>>(position2));
+			current_shader_program->set_attribute(ctx, "position3", static_cast<cgv::math::fvec<float, 2u>>(position3));
+			current_shader_program->set_attribute(ctx, "color", color);
+			glDrawArrays(GL_POINTS, 0, 1);
+		} else {
+			warning("draw_shape4");
 		}
 	}
 };

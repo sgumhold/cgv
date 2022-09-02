@@ -42,7 +42,7 @@ public:
 	shader_lib_map::iterator begin() { return shaders.begin(); }
 	shader_lib_map::iterator end() { return shaders.end(); }
 	
-	bool load_shaders(cgv::render::context& ctx);
+	bool load_shaders(cgv::render::context& ctx, const std::string& where = "");
 
 	bool reload(cgv::render::context& ctx, const std::string& name, const cgv::render::shader_define_map& defines = {}, const std::string& where = "");
 
@@ -61,7 +61,7 @@ public:
 		std::string function_context = where == "" ? "shader_library::load_shader()" : where;
 
 		if(!prog.is_created()) {
-			bool from_program_file = name.substr(name.length() - 5) == ".glpr";
+			bool from_program_file = name.length() > 4 && name.substr(name.length() - 5) == ".glpr";
 
 			if(from_program_file) {
 				if(!prog.build_program(ctx, name, true, defines)) {
@@ -77,6 +77,8 @@ public:
 		}
 		return true;
 	}
+
+	bool reload_all(cgv::render::context& ctx, const std::string& where = "");
 };
 }
 }

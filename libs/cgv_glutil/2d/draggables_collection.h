@@ -25,6 +25,7 @@ protected:
 	ptr_type get_ptr(ptr_type obj) { return obj; }
 
 	bool has_constraint = false;
+	bool use_individual_constraints = false;
 	rect constraint_area;
 	mat3 inv_transformation;
 
@@ -92,6 +93,8 @@ public:
 			selected = get_ptr(draggables[i]);
 	}
 
+	const rect& get_constraint() const { return constraint_area; }
+	
 	void set_constraint(const rect& area) {
 		constraint_area = area;
 		has_constraint = true;
@@ -100,6 +103,10 @@ public:
 	void remove_constraint() {
 		constraint_area = rect();
 		has_constraint = false;
+	}
+
+	void set_use_individual_constraints(bool flag) {
+		use_individual_constraints = true;
 	}
 
 	void set_drag_start_callback(std::function<void(void)> func) {
@@ -149,8 +156,16 @@ public:
 			if(me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
 				if(dragged) {
 					dragged->pos = mpos + offset;
-					if(has_constraint)
-						dragged->apply_constraint(constraint_area);
+					if(use_individual_constraints) {
+						if(dragged->get_constraint())
+							dragged->apply_constraint();
+						else
+							if(has_constraint)
+								dragged->apply_constraint(constraint_area);
+					} else {
+						if(has_constraint)
+							dragged->apply_constraint(constraint_area);
+					}
 					if(drag_callback) drag_callback();
 					return true;
 				} else {

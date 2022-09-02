@@ -2,27 +2,18 @@
 
 #include <cgv/render/texture.h>
 #include <cgv/utils/convert_string.h>
+#include <cgv_glutil/canvas_overlay.h>
 #include <cgv_glutil/color_map.h>
-#include <cgv_glutil/frame_buffer_container.h>
-#include <cgv_glutil/generic_renderer.h>
-#include <cgv_glutil/msdf_gl_font_renderer.h>
-#include <cgv_glutil/overlay.h>
-#include <cgv_glutil/2d/canvas.h>
-#include <cgv_glutil/2d/shape2d_styles.h>
+#include <cgv_glutil/generic_2d_renderer.h>
+#include <cgv_glutil/msdf_gl_canvas_font_renderer.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
 namespace glutil {
 
-class CGV_API color_map_legend : public overlay {
+class CGV_API color_map_legend : public canvas_overlay {
 protected:
-	int last_theme_idx = -1;
-	frame_buffer_container fbc;
-
-	canvas _canvas, overlay_canvas;
-	shape2d_style container_style, border_style, color_map_style;
-
 	enum OrientationOption {
 		OO_HORIZONTAL,
 		OO_VERTICAL
@@ -81,8 +72,6 @@ protected:
 		}
 	} layout;
 
-	bool update_layout = false;
-	bool has_damage = true;
 	bool show_background = true;
 	bool invert_color = false;
 
@@ -95,21 +84,19 @@ protected:
 	unsigned label_precision;
 	AlignmentOption title_align;
 
+	// general appearance
+	shape2d_style container_style, border_style, color_map_style;
+
 	// text appearance
 	float font_size = 12.0f;
-	cgv::render::TextAlignment text_align_h, text_align_v;
-
 	shape2d_style text_style;
-	msdf_font font;
-	msdf_gl_font_renderer font_renderer;
 	msdf_text_geometry labels;
 
-	generic_renderer tick_renderer;
+	generic_2d_renderer tick_renderer;
 	DEFINE_GENERIC_RENDER_DATA_CLASS(tick_geometry, 2, vec2, position, vec2, size);
 
 	tick_geometry ticks;
 
-	void set_damaged();
 	void init_styles(context& ctx);
 	void create_labels();
 	void create_ticks();
@@ -128,11 +115,9 @@ public:
 
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
-	void draw(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
 
 	void create_gui();
-	void create_gui(cgv::gui::provider& p);
 
 	void set_color_map(cgv::render::context & ctx, color_map& cm);
 

@@ -1,7 +1,5 @@
 #include "color_map_editor.h"
 
-#include <cgv/defines/quote.h>
-#include <cgv/gui/dialog.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/theme_info.h>
@@ -29,15 +27,10 @@ color_map_editor::color_map_editor() {
 	set_overlay_margin(ivec2(-3));
 	set_overlay_size(ivec2(600u, layout.total_height));
 	
-	fbc.add_attachment("color", "flt32[R,G,B,A]");
-	fbc.set_size(get_overlay_size());
-
-	canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
-	canvas.register_shader("circle", canvas::shaders_2d::circle);
-	canvas.register_shader("histogram", "hist2d.glpr");
-	canvas.register_shader("background", canvas::shaders_2d::background);
-
-	overlay_canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
+	register_shader("rectangle", canvas::shaders_2d::rectangle);
+	register_shader("circle", canvas::shaders_2d::circle);
+	register_shader("histogram", "heightfield1d.glpr");
+	register_shader("background", "color_map_editor_bg.glpr");
 
 	mouse_is_on_overlay = false;
 	show_cursor = false;
@@ -52,17 +45,19 @@ color_map_editor::color_map_editor() {
 	cmc.opacity_points.set_drag_callback(std::bind(&color_map_editor::handle_opacity_point_drag, this));
 	cmc.opacity_points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
 
-	color_handle_renderer = generic_renderer(canvas::shaders_2d::arrow);
-	opacity_handle_renderer = generic_renderer(canvas::shaders_2d::rectangle);
-	line_renderer = generic_renderer(canvas::shaders_2d::line);
-	polygon_renderer = generic_renderer(canvas::shaders_2d::polygon);
+	color_handle_renderer = generic_2d_renderer(canvas::shaders_2d::arrow);
+	opacity_handle_renderer = generic_2d_renderer(canvas::shaders_2d::rectangle);
+	line_renderer = generic_2d_renderer(canvas::shaders_2d::line);
+	polygon_renderer = generic_2d_renderer(canvas::shaders_2d::polygon);
+
+	// init default_styles
+	hist_style.fill_color = rgba(rgb(0.5f), 1.0f);
+	hist_style.border_color = rgba(rgb(0.0f), 1.0f);
 }
 
 void color_map_editor::clear(cgv::render::context& ctx) {
 
-	canvas.destruct(ctx);
-	overlay_canvas.destruct(ctx);
-	fbc.clear(ctx);
+	canvas_overlay::clear(ctx);
 
 	color_handle_renderer.destruct(ctx);
 	opacity_handle_renderer.destruct(ctx);
@@ -213,28 +208,18 @@ void color_map_editor::on_set(void* member_ptr) {
 			}
 		}
 
-		update_layout = true;
+		post_recreate_layout();
 		post_recreate_gui();
 	}
 
-	has_damage = true;
 	update_member(member_ptr);
-	post_redraw();
+	post_damage();
 }
 
 bool color_map_editor::init(cgv::render::context& ctx) {
 	
-	// get a bold font face to use for the cursor
-	auto font = cgv::media::font::find_font("Arial");
-	if(!font.empty()) {
-		cursor_font_face = font->get_font_face(cgv::media::font::FFA_BOLD);
-	}
+	bool success = canvas_overlay::init(ctx);
 
-	bool success = true;
-
-	success &= fbc.ensure(ctx);
-	success &= canvas.init(ctx);
-	success &= overlay_canvas.init(ctx);
 	success &= color_handle_renderer.init(ctx);
 	success &= opacity_handle_renderer.init(ctx);
 	success &= line_renderer.init(ctx);
@@ -255,70 +240,47 @@ bool color_map_editor::init(cgv::render::context& ctx) {
 	bg_tex = texture("flt32[R,G,B]", TF_NEAREST, TF_NEAREST, TW_REPEAT, TW_REPEAT);
 	success &= bg_tex.create(ctx, bg_dv, 0);
 
+	// get a bold font face to use for the cursor
+	auto font = cgv::media::font::find_font("Arial");
+	if(!font.empty()) {
+		cursor_font_face = font->get_font_face(cgv::media::font::FFA_BOLD);
+	}
+
 	return success;
 }
 
 void color_map_editor::init_frame(cgv::render::context& ctx) {
 
-	if(ensure_overlay_layout(ctx) || update_layout) {
-		update_layout = false;
+	if(ensure_layout(ctx)) {
 		ivec2 container_size = get_overlay_size();
 		layout.update(container_size, supports_opacity);
 
-		fbc.set_size(container_size);
-		fbc.ensure(ctx);
-
-		canvas.set_resolution(ctx, container_size);
-		overlay_canvas.set_resolution(ctx, get_viewport_size());
-
-		auto& bg_prog = canvas.enable_shader(ctx, "background");
+		auto& bg_prog = content_canvas.enable_shader(ctx, "background");
 		float width_factor = static_cast<float>(layout.opacity_editor_rect.size().x()) / static_cast<float>(layout.opacity_editor_rect.size().y());
 		bg_style.texcoord_scaling = vec2(5.0f * width_factor, 5.0f);
 		bg_style.apply(ctx, bg_prog);
-		canvas.disable_current_shader(ctx);
+		content_canvas.disable_current_shader(ctx);
 
 		update_point_positions();
 		sort_points();
 		update_geometry();
 		cmc.color_points.set_constraint(layout.color_handles_rect);
 		cmc.opacity_points.set_constraint(layout.opacity_editor_rect);
-
-		has_damage = true;
 	}
 
-	// TODO: move functionality of testing for theme changes to overlay? (or use observer pattern for theme info)
-	auto& ti = cgv::gui::theme_info::instance();
-	int theme_idx = ti.get_theme_idx();
-	if(last_theme_idx != theme_idx) {
-		last_theme_idx = theme_idx;
+	if(ensure_theme()) {
 		init_styles(ctx);
-		handle_color = rgba(ti.text(), 1.0f);
-		highlight_color = rgba(ti.highlight(), 1.0f);
-		highlight_color_hex = ti.highlight_hex();
 		update_geometry();
+		post_recreate_gui();
 	}
 }
 
 void color_map_editor::draw(cgv::render::context& ctx) {
 
-	if(!show)
-		return;
-
-	glDisable(GL_DEPTH_TEST);
-
-	if(has_damage)
-		draw_content(ctx);
-	
-	// draw frame buffer texture to screen
-	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
-	fbc.enable_attachment(ctx, "color", 0);
-	overlay_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());
-	fbc.disable_attachment(ctx, "color");
-	overlay_canvas.disable_current_shader(ctx);
+	canvas_overlay::draw(ctx);
 
 	// draw cursor decorators to show interaction hints
 	if(mouse_is_on_overlay && show_cursor) {
-		std::cout << cursor_pos << std::endl;
 		ivec2 pos = cursor_pos + ivec2(7, 4);
 
 		auto fntf_ptr = ctx.get_current_font_face();
@@ -335,118 +297,90 @@ void color_map_editor::draw(cgv::render::context& ctx) {
 
 		ctx.enable_font_face(fntf_ptr, s);
 	}
-
-	glEnable(GL_DEPTH_TEST);
 }
 
 void color_map_editor::draw_content(cgv::render::context& ctx) {
 	
-	fbc.enable(ctx);
-
-	glEnable(GL_BLEND);
-	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
+	begin_content(ctx);
+	enable_blending();
+	
+	auto& cc = content_canvas;
 	ivec2 container_size = get_overlay_size();
 
 	// draw container
-	auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
+	auto& rect_prog = cc.enable_shader(ctx, "rectangle");
 	container_style.apply(ctx, rect_prog);
-	canvas.draw_shape(ctx, ivec2(0), container_size);
+	cc.draw_shape(ctx, ivec2(0), container_size);
 
 	// draw inner border
 	border_style.apply(ctx, rect_prog);
-	canvas.draw_shape(ctx, ivec2(layout.padding - 1) + ivec2(0, 10), container_size - 2 * layout.padding + 2 - ivec2(0, 10));
+	cc.draw_shape(ctx, ivec2(layout.padding - 1) + ivec2(0, 10), container_size - 2 * layout.padding + 2 - ivec2(0, 10));
 
 	if(cmc.cm) {
 		// draw color scale texture
 		color_map_style.apply(ctx, rect_prog);
 		preview_tex.enable(ctx, 0);
-		canvas.draw_shape(ctx, layout.color_editor_rect.pos(), layout.color_editor_rect.size());
+		cc.draw_shape(ctx, layout.color_editor_rect.pos(), layout.color_editor_rect.size());
 		preview_tex.disable(ctx);
-		canvas.disable_current_shader(ctx);
+		cc.disable_current_shader(ctx);
 
 		if(supports_opacity) {
 			// draw opacity editor checkerboard background
-			auto& bg_prog = canvas.enable_shader(ctx, "background");
+			auto& bg_prog = cc.enable_shader(ctx, "background");
 			bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
 			bg_tex.enable(ctx, 0);
-			canvas.draw_shape(ctx, layout.opacity_editor_rect.pos(), layout.opacity_editor_rect.size());
+			cc.draw_shape(ctx, layout.opacity_editor_rect.pos(), layout.opacity_editor_rect.size());
 			bg_tex.disable(ctx);
-			canvas.disable_current_shader(ctx);
+			cc.disable_current_shader(ctx);
 
-			// draw histogram texture
-			/*if(show_histogram && tfc.hist_tex.is_created()) {
-				hist_style.fill_color = histogram_color;
-				hist_style.border_color = histogram_border_color;
-				hist_style.border_width = float(histogram_border_width);
-
-				auto& hist_prog = canvas.enable_shader(ctx, "histogram");
-				hist_prog.set_uniform(ctx, "max_value", tfc.hist_max);
-				hist_prog.set_uniform(ctx, "nearest_linear_mix", histogram_smoothing);
+			// draw histogram
+			if(histogram_type != (cgv::type::DummyEnum)0 && hist_tex.is_created()) {
+				auto& hist_prog = cc.enable_shader(ctx, "histogram");
+				hist_prog.set_uniform(ctx, "max_value", hist_max);
+				hist_prog.set_uniform(ctx, "sampling_type", cgv::math::clamp(static_cast<unsigned>(histogram_type) - 1, 0u, 2u));
 				hist_style.apply(ctx, hist_prog);
 
-				tfc.hist_tex.enable(ctx, 1);
-				canvas.draw_shape(ctx, layout.editor_rect.pos(), layout.editor_rect.size());
-				tfc.hist_tex.disable(ctx);
-				canvas.disable_current_shader(ctx);
-			}*/
+				hist_tex.enable(ctx, 1);
+				cc.draw_shape(ctx, layout.opacity_editor_rect.pos(), layout.opacity_editor_rect.size());
+				hist_tex.disable(ctx);
+				cc.disable_current_shader(ctx);
+			}
 
 			preview_tex.enable(ctx, 0);
 			// draw transfer function area polygon
-			auto& poly_prog = polygon_renderer.ref_prog();
-			poly_prog.enable(ctx);
-			canvas.set_view(ctx, poly_prog);
-			poly_prog.disable(ctx);
-			polygon_renderer.render(ctx, PT_TRIANGLE_STRIP, cmc.triangles);
+			polygon_renderer.render(ctx, cc, PT_TRIANGLE_STRIP, cmc.triangles);
 
 			// draw transfer function lines
-			auto& line_prog = line_renderer.ref_prog();
-			line_prog.enable(ctx);
-			canvas.set_view(ctx, line_prog);
-			line_prog.disable(ctx);
-			line_renderer.render(ctx, PT_LINE_STRIP, cmc.lines);
+			line_renderer.render(ctx, cc, PT_LINE_STRIP, cmc.lines);
 			preview_tex.disable(ctx);
 
 			// draw separator line
-			rect_prog = canvas.enable_shader(ctx, "rectangle");
+			rect_prog = cc.enable_shader(ctx, "rectangle");
 			border_style.apply(ctx, rect_prog);
-			canvas.draw_shape(ctx,
+			cc.draw_shape(ctx,
 				ivec2(layout.color_editor_rect.pos().x(), layout.color_editor_rect.box.get_max_pnt().y()),
 				ivec2(container_size.x() - 2 * layout.padding, 1)
 			);
-			canvas.disable_current_shader(ctx);
+			cc.disable_current_shader(ctx);
 		}
 
 		// draw control points
 		// color handles
-		auto& color_handle_prog = color_handle_renderer.ref_prog();
-		color_handle_prog.enable(ctx);
-		canvas.set_view(ctx, color_handle_prog);
-		color_handle_prog.disable(ctx);
-		color_handle_renderer.render(ctx, PT_LINES, cmc.color_handles);
+		color_handle_renderer.render(ctx, cc, PT_LINES, cmc.color_handles);
 
+		// opacity handles
 		if(supports_opacity) {
-			// opacity handles
-			auto& opacity_handle_prog = opacity_handle_renderer.ref_prog();
-			opacity_handle_prog.enable(ctx);
-			canvas.set_view(ctx, opacity_handle_prog);
+			auto& opacity_handle_prog = opacity_handle_renderer.enable_prog(ctx);
 			// size is constant for all points
 			opacity_handle_prog.set_attribute(ctx, "size", vec2(2.0f*6.0f));
-			opacity_handle_prog.disable(ctx);
-			opacity_handle_renderer.render(ctx, PT_POINTS, cmc.opacity_handles);
+			opacity_handle_renderer.render(ctx, cc, PT_POINTS, cmc.opacity_handles);
 		}
 	} else {
-		canvas.disable_current_shader(ctx);
+		cc.disable_current_shader(ctx);
 	}
 
-	glDisable(GL_BLEND);
-
-	fbc.disable(ctx);
-
-	has_damage = false;
+	disable_blending();
+	end_content(ctx);
 }
 
 void color_map_editor::create_gui() {
@@ -463,6 +397,12 @@ void color_map_editor::create_gui() {
 		add_member_control(this, "Opacity Scale Exponent", opacity_scale_exponent, "value_slider", "min=1.0;max=5.0;step=0.001;ticks=true");
 		align("\b");
 		end_tree_node(layout);
+
+		add_decorator("Histogram", "heading", "level=4");
+		add_member_control(this, "Type", histogram_type, "dropdown", "enums='None,Nearest,Linear,Smooth'");
+		add_member_control(this, "Fill Color", hist_style.fill_color);
+		add_member_control(this, "Border Color", hist_style.border_color);
+		add_member_control(this, "Border Width", hist_style.border_width, "value_slider", "min=0;max=10;step=0.5;ticks=true");
 	}
 
 	if(begin_tree_node("Color Points", cmc.color_points, true)) {
@@ -473,6 +413,7 @@ void color_map_editor::create_gui() {
 		align("\b");
 		end_tree_node(cmc.color_points);
 	}
+
 	if(supports_opacity) {
 		if(begin_tree_node("Opacity Points", cmc.opacity_points, true)) {
 			align("\a");
@@ -480,14 +421,11 @@ void color_map_editor::create_gui() {
 			for(unsigned i = 0; i < points.size(); ++i)
 				add_member_control(this, "#" + std::to_string(i), points[i].val[1], "", &points[i] == cmc.opacity_points.get_selected() ? "label_color=" + highlight_color_hex : "");
 			align("\b");
-			end_tree_node(cmc.color_points);
+			end_tree_node(cmc.opacity_points);
 		}
 	}
-}
 
-void color_map_editor::create_gui(cgv::gui::provider& p) {
-
-	p.add_member_control(this, "Show", show, "check");
+	connect_copy(add_button("reload shaders")->click, rebind(this, &color_map_editor::reload_shaders));
 }
 
 void color_map_editor::set_opacity_support(bool flag) {
@@ -531,15 +469,44 @@ void color_map_editor::set_color_map(color_map* cm) {
 	}
 }
 
+void color_map_editor::set_histogram_data(const std::vector<unsigned> data) {
+	histogram = data;
+
+	std::vector<float> float_data(histogram.size(), 0.0f);
+	hist_max = 1;
+	for(size_t i = 0; i < histogram.size(); ++i) {
+		hist_max = std::max(hist_max, histogram[i]);
+		float_data[i] = static_cast<float>(histogram[i]);
+	}
+
+	if(auto ctx_ptr = get_context()) {
+		auto& ctx = *ctx_ptr;
+		hist_tex.destruct(ctx);
+
+		// TODO: should this take the type_id to set the component integer interpretation?
+		//cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(histogram.size(), TI_UINT32, cgv::data::CF_R), histogram.data());
+		//dv.get_format()->get_component_format().set_integer_interpretation(cgv::data::CII_INTEGER);
+		//hist_tex = texture("_uint32[R]", TF_NEAREST, TF_NEAREST);
+
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(histogram.size(), TI_FLT32, cgv::data::CF_R), float_data.data());
+		hist_tex = texture("flt32[R]");
+		hist_tex.create(ctx, dv, 0);
+
+		post_damage();
+	}
+}
+
 void color_map_editor::init_styles(context& ctx) {
 	// get theme colors
 	auto& ti = cgv::gui::theme_info::instance();
+	handle_color = rgba(ti.text(), 1.0f);
+	highlight_color = rgba(ti.highlight(), 1.0f);
+	highlight_color_hex = ti.highlight_hex();
 	rgba background_color = rgba(ti.background(), 1.0f);
 	rgba group_color = rgba(ti.group(), 1.0f);
 	rgba border_color = rgba(ti.border(), 1.0f);
 
 	// configure style for the container rectangle
-	container_style.apply_gamma = false;
 	container_style.fill_color = group_color;
 	container_style.border_color = background_color;
 	container_style.border_width = 3.0f;
@@ -556,27 +523,21 @@ void color_map_editor::init_styles(context& ctx) {
 
 	// configure style for background
 	bg_style.use_texture = true;
-	bg_style.apply_gamma = false;
 	bg_style.feather_width = 0.0f;
 
-	auto& bg_prog = canvas.enable_shader(ctx, "background");
+	auto& bg_prog = content_canvas.enable_shader(ctx, "background");
 	bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
 	bg_style.apply(ctx, bg_prog);
-	canvas.disable_current_shader(ctx);
+	content_canvas.disable_current_shader(ctx);
 
 	// configure style for histogram
 	hist_style.use_blending = true;
-	hist_style.apply_gamma = false;
-	hist_style.feather_width = 0.0f;
-
-	auto& hist_prog = canvas.enable_shader(ctx, "histogram");
-	hist_style.apply(ctx, hist_prog);
-	canvas.disable_current_shader(ctx);
+	hist_style.feather_width = 1.0f;
+	hist_style.feather_origin = 0.0f;
 
 	// configure style for color handles
 	cgv::glutil::arrow2d_style color_handle_style;
 	color_handle_style.use_blending = true;
-	color_handle_style.apply_gamma = false;
 	color_handle_style.use_fill_color = false;
 	color_handle_style.position_is_center = true;
 	color_handle_style.border_color = rgba(ti.border(), 1.0f);
@@ -585,57 +546,32 @@ void color_map_editor::init_styles(context& ctx) {
 	color_handle_style.stem_width = 12.0f;
 	color_handle_style.head_width = 12.0f;
 
-	auto& color_handle_prog = color_handle_renderer.ref_prog();
-	color_handle_prog.enable(ctx);
-	color_handle_style.apply(ctx, color_handle_prog);
-	color_handle_prog.disable(ctx);
+	color_handle_renderer.set_style(ctx, color_handle_style);
 
 	// configure style for opacity handles
 	cgv::glutil::shape2d_style opacity_handle_style;
 	opacity_handle_style.use_blending = true;
-	opacity_handle_style.apply_gamma = false;
 	opacity_handle_style.use_fill_color = false;
 	opacity_handle_style.position_is_center = true;
 	opacity_handle_style.border_color = rgba(ti.border(), 1.0f);
 	opacity_handle_style.border_width = 1.5f;
 
-	auto& opacity_handle_prog = opacity_handle_renderer.ref_prog();
-	opacity_handle_prog.enable(ctx);
-	opacity_handle_style.apply(ctx, opacity_handle_prog);
-	opacity_handle_prog.disable(ctx);
-
+	opacity_handle_renderer.set_style(ctx, opacity_handle_style);
+	
 	// configure style for the lines and polygon
 	cgv::glutil::line2d_style line_style;
 	line_style.use_blending = true;
 	line_style.use_fill_color = false;
 	line_style.use_texture = true;
 	line_style.use_texture_alpha = false;
-	line_style.apply_gamma = false;
 	line_style.width = 3.0f;
 
-	auto& line_prog = line_renderer.ref_prog();
-	line_prog.enable(ctx);
-	line_style.apply(ctx, line_prog);
-	line_prog.disable(ctx);
+	line_renderer.set_style(ctx, line_style);
 
 	line_style.use_texture_alpha = true;
-
-	auto& poly_prog = polygon_renderer.ref_prog();
-	poly_prog.enable(ctx);
 	cgv::glutil::shape2d_style poly_style = static_cast<cgv::glutil::shape2d_style>(line_style);
-	poly_style.apply(ctx, poly_prog);
-	poly_prog.disable(ctx);
 
-	// configure style for final blending of overlay into main frame buffer
-	cgv::glutil::shape2d_style overlay_style;
-	overlay_style.fill_color = rgba(1.0f);
-	overlay_style.use_texture = true;
-	overlay_style.use_blending = false;
-	overlay_style.feather_width = 0.0f;
-
-	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
-	overlay_style.apply(ctx, overlay_prog);
-	overlay_canvas.disable_current_shader(ctx);
+	polygon_renderer.set_style(ctx, poly_style);
 }
 
 void color_map_editor::init_texture(context& ctx) {
@@ -923,7 +859,7 @@ void color_map_editor::update_color_map(bool is_data_change) {
 	update_geometry();
 
 	has_updated = true;
-	has_damage = true;
+	post_damage();
 }
 
 bool color_map_editor::update_geometry() {
@@ -994,6 +930,13 @@ bool color_map_editor::update_geometry() {
 	}
 
 	return success;
+}
+
+void color_map_editor::reload_shaders() {
+	if(auto ctx_ptr = get_context()) {
+		content_canvas.reload_shaders(*ctx_ptr);
+		post_damage();
+	}
 }
 
 }

@@ -143,6 +143,11 @@ public:
 		on_visibility_change();
 	}
 
+	/// convenience method to toggle the visibility of the overlay
+	void toggle_visibility() {
+		set_visibility(!show);
+	}
+
 	/** Checks whether the viewport size has changed since the last call to
 		this method. Call this in the init_frame method of your overlay.
 		Returns true if the size changed.

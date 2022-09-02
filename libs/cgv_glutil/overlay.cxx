@@ -33,7 +33,7 @@ void overlay::on_layout_change() {
 
 overlay::ivec2 overlay::get_transformed_mouse_pos(ivec2 mouse_pos) {
 
-	mouse_pos.y() = last_viewport_size.y() - mouse_pos.y();
+	mouse_pos.y() = last_viewport_size.y() - mouse_pos.y() - 1;
 	return mouse_pos;
 }
 

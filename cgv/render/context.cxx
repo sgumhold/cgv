@@ -142,7 +142,7 @@ context::context()
 	cursor_y = y_offset;
 	nr_identations = 0;
 	at_line_begin = true;
-	enable_vsynch = true;
+	enable_vsync = true;
 	current_color = rgba(1, 1, 1, 1);
 	sRGB_framebuffer = true;
 	gamma = 2.2f;
@@ -233,7 +233,8 @@ void context::configure_new_child(base_ptr child)
 		traverser(sma, "nc", cgv::base::TS_DEPTH_FIRST, false, true).traverse(child);
 
 		single_method_action<cgv::render::drawable,bool,cgv::render::context&> sma1(*this, &drawable::init);
-		traverser(sma1, "nc", cgv::base::TS_DEPTH_FIRST, false, true).traverse(child);
+		if (!traverser(sma1, "nc", cgv::base::TS_DEPTH_FIRST, false, true).traverse(child)) 
+			error(child->get_type_name()+"::init(context&) failed");
 
 		post_redraw();
 	}
