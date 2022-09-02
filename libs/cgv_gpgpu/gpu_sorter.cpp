@@ -1,7 +1,7 @@
 #include "gpu_sorter.h"
 
 namespace cgv {
-namespace glutil {
+namespace gpgpu {
 
 void gpu_sorter::create_buffer(GLuint& buffer, size_t size) {
 

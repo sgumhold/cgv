@@ -1,10 +1,10 @@
 #pragma once
 
-#include "shader_library.h"
 #include <cgv/render/context.h>
 #include <cgv/render/render_types.h>
 #include <cgv/render/shader_program.h>
 #include <cgv_gl/gl/gl.h>
+#include <cgv_glutil/shader_library.h>
 
 #include <iostream>
 
@@ -13,7 +13,7 @@
 using namespace cgv::render;
 
 namespace cgv {
-namespace glutil {
+namespace gpgpu {
 
 /** Definition of an interface for highly parallel gpu sorting routines. */
 class CGV_API gpu_sorter : public render_types {
@@ -54,7 +54,7 @@ protected:
 	GLuint last_sum_ssbo = 0;
 
 	/// shader programs
-	shader_program distance_prog;
+	shader_program key_prog;
 	shader_program scan_local_prog;
 	shader_program scan_global_prog;
 	shader_program scatter_prog;
