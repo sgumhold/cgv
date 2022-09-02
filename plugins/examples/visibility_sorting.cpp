@@ -4,8 +4,9 @@
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
 #include <cgv_glutil/sphere_render_data.h>
-#include <cgv_glutil/gpu_sorter.h>
-#include <cgv_glutil/radix_sort_4way.h>
+#include <cgv_gpgpu/gpu_sorter.h>
+#include <cgv_gpgpu/radix_sort_4way.h>
+#include <cgv_gpgpu/visibility_sort.h>
 
 class visibility_sorting : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
 protected:
@@ -16,7 +17,7 @@ protected:
 	cgv::render::sphere_render_style sphere_style;
 	cgv::glutil::sphere_render_data<rgba> rd;
 
-	cgv::glutil::gpu_sorter* sorter;
+	cgv::gpgpu::visibility_sort visibility_sorter;
 	bool do_sort;
 
 public:
@@ -43,8 +44,7 @@ public:
 		cgv::render::ref_sphere_renderer(ctx, -1);
 		rd.destruct(ctx);
 
-		delete sorter;
-		sorter = nullptr;
+		visibility_sorter.destruct(ctx);
 	}
 	bool init(cgv::render::context& ctx)
 	{
@@ -52,8 +52,7 @@ public:
 		if(!rd.init(ctx))
 			return false;
 		
-		sorter = new cgv::glutil::radix_sort_4way();
-		sorter->set_sort_order(cgv::glutil::gpu_sorter::SO_DESCENDING);
+		visibility_sorter.set_sort_order(cgv::gpgpu::visibility_sort::SO_DESCENDING);
 
 		create_data();
 
@@ -87,7 +86,10 @@ public:
 		
 
 		if(pos_handle > 0 && idx_handle > 0 && do_sort) {
-			sorter->sort(ctx, pos_handle, idx_handle, view_ptr->get_eye(), view_ptr->get_view_dir());
+			visibility_sorter.begin_time_query();
+			visibility_sorter.execute(ctx, pos_handle, idx_handle, view_ptr->get_eye(), view_ptr->get_view_dir());
+			float time = visibility_sorter.end_time_query();
+			std::cout << "Sorting done in " << time << " ms -> " << static_cast<float>(n) / (1000.0f * time) << " M/s" << std::endl;
 		}
 
 		rd.render(ctx, sr, sphere_style);
@@ -144,7 +146,7 @@ public:
 
 		rd.ref_idx().resize(rd.ref_pos().size());
 
-		if(!sorter->init(ctx, rd.ref_idx().size()))
+		if(!visibility_sorter.init(ctx, rd.ref_idx().size()))
 			std::cout << "Could not initialize GPU sorter" << std::endl;
 
 		rd.set_out_of_date();

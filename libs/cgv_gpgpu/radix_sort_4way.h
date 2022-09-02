@@ -5,7 +5,7 @@
 #include "lib_begin.h"
 
 namespace cgv {
-namespace glutil {
+namespace gpgpu {
 
 /** GPU sorting routine implemented using a prefix-sum based radix sort. */
 class CGV_API radix_sort_4way : public gpu_sorter {
