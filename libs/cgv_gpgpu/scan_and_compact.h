@@ -31,6 +31,7 @@ protected:
 
 	std::string vote_prog_name = "";
 	std::string data_type_def = "";
+	std::string uniform_definition = "";
 	std::string vote_definition = "";
 
 	shader_program vote_prog;
@@ -62,6 +63,17 @@ public:
 	/** Resets the data type definition to an empty string, which will not override the default
 		definition in the shader. */
 	void reset_data_type_override() { data_type_def = ""; }
+
+	/** GLSL code to define the uniforms used in the vote shader.
+		Example: uniform float threshold;
+		Multiple uniforms are possible.
+		The default definition is empty, i.e. no uniforms are defined.
+		Reserved uniform names: n, n_padded (do not use!)
+		*/
+	void set_uniform_definition_override(const std::string& def) { uniform_definition = def; }
+
+	/** Resets the uniform definition for the vote shader. */
+	void reset_uniform_definition_override() { uniform_definition = ""; }
 
 	/** GLSL code to define the calculation of the vote value used to filter the data elements.
 		This defines the body of a method that takes a data element as input and returns a boolean vote.

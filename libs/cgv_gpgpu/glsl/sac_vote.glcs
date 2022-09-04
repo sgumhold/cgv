@@ -6,6 +6,7 @@
 #define DATA_TYPE_DEFINITION float x; float y; float z;
 
 #define VOTE_DEFINITION return false;
+#define UNIFORM_DEFINITION
 
 layout(local_size_x = 256) in;
 
@@ -20,6 +21,8 @@ layout(std430, binding = 0) readonly buffer data_buffer {
 layout(std430, binding = 2) writeonly buffer votes_buffer {
     uint votes[];
 };
+
+UNIFORM_DEFINITION
 
 uniform uint n;
 uniform uint n_padded;

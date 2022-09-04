@@ -11,6 +11,8 @@ void scan_and_compact::destruct(context& ctx) {
 	compact_prog.destruct(ctx);
 
 	delete_buffers();
+
+	_is_initialized = false;
 }
 
 bool scan_and_compact::load_shader_programs(context& ctx) {
@@ -24,9 +26,11 @@ bool scan_and_compact::load_shader_programs(context& ctx) {
 		vote_defines["DATA_TYPE_DEFINITION"] = data_type_def;
 		compact_defines = vote_defines;
 	}
+	if(uniform_definition != "")
+		vote_defines["UNIFORM_DEFINITION"] = uniform_definition;
 	if(vote_definition != "")
 		vote_defines["VOTE_DEFINITION"] = vote_definition;
-
+	
 	if(mode == M_CREATE_INDICES)
 		compact_defines["CREATE_INDICES"] = "1";
 
@@ -46,6 +50,8 @@ void scan_and_compact::delete_buffers() {
 }
 
 bool scan_and_compact::init(context& ctx, size_t count) {
+
+	_is_initialized = false;
 
 	if(!load_shader_programs(ctx))
 		return false;
@@ -101,6 +107,7 @@ bool scan_and_compact::init(context& ctx, size_t count) {
 	compact_prog.set_uniform(ctx, "n", n + n_pad);
 	compact_prog.disable(ctx);
 
+	_is_initialized = true;
 	return true;
 }
 

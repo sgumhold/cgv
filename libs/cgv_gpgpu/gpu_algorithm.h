@@ -22,6 +22,8 @@ private:
 	GLuint time_query = 0;
 
 protected:
+	bool _is_initialized = false;
+
 	void create_buffer(GLuint& buffer, size_t size, GLenum usage = GL_DYNAMIC_COPY);
 
 	void delete_buffer(GLuint& buffer);
@@ -43,9 +45,11 @@ public:
 	gpu_algorithm() {}
 	~gpu_algorithm() {}
 
-	void destruct(context& ctx) {}
+	void destruct(context& ctx);
 
 	bool init(context& ctx, size_t count);
+
+	bool is_initialized() const { return _is_initialized; }
 
 	void begin_time_query();
 
