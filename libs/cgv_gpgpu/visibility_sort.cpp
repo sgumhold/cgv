@@ -11,6 +11,8 @@ void visibility_sort::destruct(context& ctx) {
 	scatter_prog.destruct(ctx);
 
 	delete_buffers();
+
+	_is_initialized = false;
 }
 
 bool visibility_sort::load_shader_programs(context& ctx) {
@@ -50,6 +52,8 @@ void visibility_sort::delete_buffers() {
 }
 
 bool visibility_sort::init(context& ctx, size_t count) {
+
+	_is_initialized = false;
 
 	if(!load_shader_programs(ctx))
 		return false;
@@ -108,6 +112,7 @@ bool visibility_sort::init(context& ctx, size_t count) {
 	scatter_prog.set_uniform(ctx, "last_block_sum_idx", ((n + n_pad) >> block_sum_offset_shift) - 1);
 	scatter_prog.disable(ctx);
 
+	_is_initialized = true;
 	return true;
 }
 
