@@ -23,13 +23,23 @@ void cgv::nui::scaling_gizmo::precompute_geometry()
 		rot.set_normal(axis);
 		cube_rotations.push_back(rot);
 	}
-	for (int i = 0; i < scaling_axes_colors.size(); ++i) {
-		handle_colors.push_back(scaling_axes_colors[i]);
-	}
-	// Fill rest of axis colors with last configured color if not enough colors where configured
-	for (int i = 0; i < axes_directions.size() - scaling_axes_colors.size(); i++) {
-		handle_colors.push_back(scaling_axes_colors[scaling_axes_colors.size()]);
-	}
+}
+
+void cgv::nui::scaling_gizmo::set_scale_reference(vec3* _scale_ptr, cgv::base::base_ptr _on_set_obj)
+{
+	scale_ptr = _scale_ptr;
+	gizmo::set_on_set_object(_on_set_obj);
+}
+
+void cgv::nui::scaling_gizmo::set_scale_reference(vec3** _scale_ptr_ptr, cgv::base::base_ptr _on_set_obj)
+{
+	scale_ptr_ptr = _scale_ptr_ptr;
+	gizmo::set_on_set_object(_on_set_obj);
+}
+
+void cgv::nui::scaling_gizmo::set_scale_reference(scalable* _scalable_obj)
+{
+	scalable_obj = _scalable_obj;
 }
 
 void cgv::nui::scaling_gizmo::compute_geometry(const vec3& scale)
@@ -51,24 +61,57 @@ void cgv::nui::scaling_gizmo::compute_geometry(const vec3& scale)
 
 bool cgv::nui::scaling_gizmo::validate_configuration()
 {
-	// TODO: Add configuration validation
-	return true;
+	bool configuration_valid = true;
+
+	if (!(
+		scale_ptr ||
+		(scale_ptr_ptr && *scale_ptr_ptr) ||
+		scalable_obj
+		)) {
+		std::cout << "Scaling gizmo requires a valid pointer to a scale or a pointer to a pointer to a scale or a reference to an object implementing scalable" << std::endl;
+		configuration_valid = false;
+	}
+
+	configuration_valid = configuration_valid && validate_axes();
+	configuration_valid = configuration_valid && validate_handles(axes_directions.size());
+
+	return configuration_valid;
 }
 
 void cgv::nui::scaling_gizmo::on_handle_grabbed()
 {
-	if (scale_ptr != nullptr)
-		scale_at_grab = *scale_ptr;
-	//vec3 current_position = accumulate_transforming_hierarchy().col(3);
-	//distance_at_grab = (ii_at_grab.query_point - current_position).length();
+	scale_at_grab = get_scale();
+	vec3 obj_translation;
+	quat obj_rotation;
+	vec3 obj_scale;
+	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj), obj_translation, obj_rotation, obj_scale);
+	distance_at_grab = (ii_at_grab.query_point - obj_translation).length();
+	grab_handle(prim_idx);
+}
+
+void cgv::nui::scaling_gizmo::on_handle_released()
+{
+	release_handles();
 }
 
 void cgv::nui::scaling_gizmo::on_handle_drag()
 {
-	if (scale_ptr == nullptr)
-		return;
+	vec3 obj_translation;
+	quat obj_rotation;
+	vec3 obj_scale;
+	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj), obj_translation, obj_rotation, obj_scale);
 
-	vec3 axis = axes_directions[prim_idx];
+	vec3 axis;
+	if (!use_absolute_rotation) {
+		axis = axes_directions[prim_idx];
+	}
+	else {
+		axis = obj_rotation.inverse().get_homogeneous_matrix() * vec4(axes_directions[prim_idx], 0);
+	}
+	if (anchor_rotation_ptr)
+		axis = anchor_rotation_ptr->get_homogeneous_matrix() * vec4(axis, 0.0f);
+	else if (anchor_rotation_ptr_ptr)
+		axis = (*anchor_rotation_ptr_ptr)->get_homogeneous_matrix() * vec4(axis, 0.0f);
 
 	vec3 closest_point;
 	if (ii_at_grab.is_pointing) {
@@ -79,6 +122,20 @@ void cgv::nui::scaling_gizmo::on_handle_drag()
 	else {
 		closest_point = cgv::math::closest_point_on_line_to_point(ii_at_grab.query_point, axis, ii_during_focus[activating_hid_id].hid_position);
 	}
+
+	vec3 movement = closest_point - ii_at_grab.query_point;
+	vec3 scale_ratio = scaling_axes_scale_ratios[prim_idx];
+	float current_distance = (closest_point - obj_translation).length();
+	if (is_anchor_influenced_by_gizmo)
+	{
+		distance_at_grab = (ii_at_grab.query_point - obj_translation).length();
+		set_scale(get_scale() * (vec3(1.0f) - scale_ratio) + (get_scale() * current_distance / distance_at_grab) * scale_ratio);
+	}
+	else
+	{
+		set_scale(scale_at_grab * (vec3(1.0f) - scale_ratio) + (scale_at_grab * current_distance / distance_at_grab) * scale_ratio);
+	}
+
 	//vec3 current_position = accumulate_transforming_hierarchy().col(3);
 	//float distance_at_grab = (ii_at_grab.query_point - current_position).length();
 	//float current_distance = (closest_point - current_position).length();
@@ -87,38 +144,14 @@ void cgv::nui::scaling_gizmo::on_handle_drag()
 	//*scale_ptr = scale_at_grab * (vec3(1.0) - scale_ratio) +  (scale_at_grab * current_distance / distance_at_grab) * scale_ratio;
 }
 
-void cgv::nui::scaling_gizmo::attach(base_ptr obj, vec3* scale_ptr, vec3* position_ptr, quat* rotation_ptr)
+void cgv::nui::scaling_gizmo::set_axes_directions(std::vector<vec3> axes_directions)
 {
-	this->scale_ptr = scale_ptr;
-	//gizmo::attach(obj, position_ptr, rotation_ptr, scale_ptr);
-	//gizmo::attach(obj);
-}
-
-void cgv::nui::scaling_gizmo::detach()
-{
-	if (!is_attached)
-		return;
-	scale_ptr = nullptr;
-	gizmo::detach();
-	// TODO: Handle focus (release grabs and foci)
-}
-
-void cgv::nui::scaling_gizmo::configure_axes_directions(std::vector<vec3> axes_directions)
-{
-	gizmo_functionality_configurable_axes::configure_axes_directions(axes_directions);
+	gizmo_functionality_configurable_axes::set_axes_directions(axes_directions);
 	// Default configuration
 	for (int i = 0; i < this->axes_directions.size(); ++i) {
-		scaling_axes_colors.push_back(rgb(0.2f, 0.6f, 0.84f));
 		scaling_axes_scale_ratios.push_back(abs(axes_directions[i]));
 	}
 	configure_axes_geometry(0.015f, 0.2f, 0.035f);
-}
-
-void cgv::nui::scaling_gizmo::configure_axes_coloring(std::vector<rgb> colors)
-{
-	scaling_axes_colors = colors;
-	fill_with_last_value_if_not_full(scaling_axes_colors, axes_directions.size());
-	// TODO: Update rendering, Handle switching during use
 }
 
 void cgv::nui::scaling_gizmo::configure_axes_geometry(float radius, float length, float cube_size)
@@ -127,7 +160,6 @@ void cgv::nui::scaling_gizmo::configure_axes_geometry(float radius, float length
 	strs.radius = radius;
 	this->scaling_axes_length = length;
 	this->cube_size = cube_size;
-	// TODO: Update rendering, Handle switching during use
 }
 
 void cgv::nui::scaling_gizmo::configure_axes_scale_ratios(std::vector<vec3> scale_ratios)
@@ -138,9 +170,11 @@ void cgv::nui::scaling_gizmo::configure_axes_scale_ratios(std::vector<vec3> scal
 	}
 }
 
-bool cgv::nui::scaling_gizmo::_compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal,
-	size_t& primitive_idx)
+bool cgv::nui::scaling_gizmo::_compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx, const vec3& scale,
+	const mat4& view_matrix)
 {
+	compute_geometry(scale);
+
 	size_t idx = -1;
 	vec3 p, n;
 	float dist_min = std::numeric_limits<float>::max();
@@ -164,31 +198,11 @@ bool cgv::nui::scaling_gizmo::_compute_closest_point(const vec3& point, vec3& pr
 	return true;
 }
 
-//bool cgv::nui::scaling_gizmo::_compute_closest_point_local_orientation(const vec3& point, vec3& prj_point,
-//	vec3& prj_normal, size_t& primitive_idx, const vec3& inverse_translation, const quat& inverse_rotation,
-//	const vec3& scale, const mat4& view_matrix)
-//{
-//	if (use_global_orientation)
-//		return false;
-//
-//	compute_geometry(scale);
-//	return _compute_closest_point(point, prj_point, prj_normal, primitive_idx);
-//}
-//
-//bool cgv::nui::scaling_gizmo::_compute_closest_point_global_orientation(const vec3& point, vec3& prj_point,
-//	vec3& prj_normal, size_t& primitive_idx, const vec3& inverse_translation, const quat& rotation, const vec3& scale,
-//	const mat4& view_matrix)
-//{
-//	if (!use_global_orientation)
-//		return false;
-//
-//	compute_geometry(scale);
-//	return _compute_closest_point(point, prj_point, prj_normal, primitive_idx);
-//}
-
-bool cgv::nui::scaling_gizmo::_compute_intersection(const vec3& ray_start, const vec3& ray_direction,
-	float& hit_param, vec3& hit_normal, size_t& primitive_idx)
+bool cgv::nui::scaling_gizmo::_compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal,
+	size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
 {
+	compute_geometry(scale);
+
 	// TODO: Find out why the cylinder intersection doesn't work
 
 	//size_t idx = -1;
@@ -242,9 +256,35 @@ bool cgv::nui::scaling_gizmo::_compute_intersection(const vec3& ray_start, const
 		rot.rotate(n);
 		hit_normal = n;
 		primitive_idx = i;
+		highlight_handle(i);
 		return true;
 	}
+	dehighlight_handles();
 	return false;
+}
+
+cgv::render::render_types::vec3 cgv::nui::scaling_gizmo::get_scale()
+{
+	if (scalable_obj)
+		return scalable_obj->get_scale();
+	if (scale_ptr_ptr)
+		return **scale_ptr_ptr;
+	return *scale_ptr;
+}
+
+void cgv::nui::scaling_gizmo::set_scale(const vec3& scale)
+{
+	if (scalable_obj) {
+		scalable_obj->set_scale(scale);
+	}
+	else {
+		if (scale_ptr_ptr)
+			**scale_ptr_ptr = scale;
+		else
+			*scale_ptr = scale;
+		if (on_set_obj)
+			on_set_obj->on_set(scale_ptr);
+	}
 }
 
 //bool cgv::nui::scaling_gizmo::_compute_intersection_local_orientation(const vec3& ray_start,
@@ -274,7 +314,7 @@ bool cgv::nui::scaling_gizmo::init(cgv::render::context& ctx)
 	if (!gizmo::init(ctx))
 		return false;
 	cgv::render::ref_spline_tube_renderer(ctx, 1);
-	auto& br = cgv::render::ref_box_renderer(ctx, 1);
+	cgv::render::ref_box_renderer(ctx, 1);
 	return true;
 }
 
@@ -285,8 +325,10 @@ void cgv::nui::scaling_gizmo::clear(cgv::render::context& ctx)
 	gizmo::clear(ctx);
 }
 
-void cgv::nui::scaling_gizmo::_draw(cgv::render::context& ctx)
+void cgv::nui::scaling_gizmo::_draw(cgv::render::context& ctx, const vec3& scale, const mat4& view_matrix)
 {
+	compute_geometry(scale);
+
 	auto& str = cgv::render::ref_spline_tube_renderer(ctx);
 	str.set_render_style(strs);
 	for (auto spline : splines) {
@@ -306,26 +348,6 @@ void cgv::nui::scaling_gizmo::_draw(cgv::render::context& ctx)
 	br.set_rotation_array(ctx, &cube_rotations[0], cube_rotations.size());
 	br.render(ctx, 0, cube_positions.size());
 }
-
-//void cgv::nui::scaling_gizmo::_draw_local_orientation(cgv::render::context& ctx, const vec3& inverse_translation,
-//	const quat& inverse_rotation, const vec3& scale, const mat4& view_matrix)
-//{
-//	if (use_global_orientation)
-//		return;
-//
-//	compute_geometry(scale);
-//	_draw(ctx);
-//}
-//
-//void cgv::nui::scaling_gizmo::_draw_global_orientation(cgv::render::context& ctx, const vec3& inverse_translation,
-//	const quat& rotation, const vec3& scale, const mat4& view_matrix)
-//{
-//	if (!use_global_orientation)
-//		return;
-//
-//	compute_geometry(scale);
-//	_draw(ctx);
-//}
 
 void cgv::nui::scaling_gizmo::create_gui()
 {

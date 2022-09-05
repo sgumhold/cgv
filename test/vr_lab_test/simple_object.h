@@ -7,7 +7,8 @@
 #include <cg_nui/scaling_gizmo.h>
 
 /// Example implementation of a single object that can be grabbed/triggered and then moved.
-class simple_object : public cgv::nui::poseable, public cgv::nui::translatable, public cgv::nui::transforming
+class simple_object : public cgv::nui::poseable, public cgv::nui::transforming,
+	public cgv::nui::translatable, public cgv::nui::rotatable, public cgv::nui::scalable
 {
 	cgv::render::box_render_style brs;
 	static cgv::render::shader_program prog;
@@ -26,7 +27,7 @@ class simple_object : public cgv::nui::poseable, public cgv::nui::translatable, 
 
 protected:
 	// geometry of box with color
-	//vec3 position;
+	// position is provided by translatable interface
 	quat rotation;
 	vec3 extent;
 	rgb  color;
@@ -55,10 +56,16 @@ public:
 	const mat4& get_model_transform() const override;
 	const mat4& get_inverse_model_transform() const override;
 
-	//@name cgv::nui::translatable interface
+	//@name cgv::nui::rotatable interface
 	//@{
-	vec3 get_position() const override;
-	void set_position(const vec3& position) override;
+	quat get_rotation() const override;
+	void set_rotation(const quat& rotation) override;
+	//@}
+
+	//@name cgv::nui::scalable interface
+	//@{
+	vec3 get_scale() const override;
+	void set_scale(const vec3& scale) override;
 	//@}
 };
 
