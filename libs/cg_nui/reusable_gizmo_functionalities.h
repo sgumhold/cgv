@@ -7,6 +7,8 @@
 namespace cgv {
 	namespace nui {
 
+		using namespace render;
+
 // Common helper functions
 /// Fill given vector up with last value if too few values are contained in it
 template<typename T>
@@ -22,7 +24,7 @@ void fill_with_last_value_if_not_full(std::vector<T>& to_fill, size_t required_s
 }
 
 
-class CGV_API gizmo_functionality_configurable_axes : public render::render_types
+class CGV_API gizmo_functionality_configurable_axes
 {
 protected:
 	// configuration
@@ -30,16 +32,16 @@ protected:
 	std::vector<vec3> scale_dependent_axes_positions;
 	std::vector<vec3> scale_independent_axes_positions;
 
-	/// Validate the configuration of the axes. Has to be called during validation at attach.
+	/// Validate the configuration of the axes. Has to be called during validation at attach. Requires the number of axes that are supposed to exist.
 	bool validate_axes();
 public:
 	// Configuration functions
 	/// Set axes directions
-	virtual void configure_axes_directions(std::vector<vec3> axes_directions);
+	virtual void set_axes_directions(std::vector<vec3> axes_directions);
 	/// Set axes positions. Scale dependent positions are multiplied by the anchor scale, scale independent positions are added as is.
-	void configure_axes_positioning(std::vector<vec3> scale_dependent_axis_positions, std::vector<vec3> scale_independent_axis_positions);
-	void configure_axes_positioning_scale_dependent(std::vector<vec3> scale_dependent_axis_positions);
-	void configure_axes_positioning_scale_independent(std::vector<vec3> scale_independent_axis_positions);
+	void set_axes_positions(std::vector<vec3> scale_dependent_axis_positions, std::vector<vec3> scale_independent_axis_positions);
+	void set_axes_scale_dependent_positions(std::vector<vec3> scale_dependent_axis_positions);
+	void set_axes_scale_independent_positions(std::vector<vec3> scale_independent_axis_positions);
 };
 
 	}
