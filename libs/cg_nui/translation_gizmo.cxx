@@ -12,13 +12,6 @@ void cgv::nui::translation_gizmo::precompute_geometry()
 		arrow_positions.push_back(vec3(0.0f));
 		arrow_directions.push_back(axes_directions[i] * translation_axes_length);
 	}
-	for (int i = 0; i < translation_axes_colors.size(); ++i) {
-		arrow_colors.push_back(translation_axes_colors[i]);
-	}
-	// Fill rest of axis colors with last configured color if not enough colors where configured
-	for (int i = 0; i < axes_directions.size() - translation_axes_colors.size(); i++) {
-		arrow_colors.push_back(translation_axes_colors[translation_axes_colors.size()]);
-	}
 }
 
 void cgv::nui::translation_gizmo::compute_geometry(const vec3& scale)
@@ -31,26 +24,50 @@ void cgv::nui::translation_gizmo::compute_geometry(const vec3& scale)
 bool cgv::nui::translation_gizmo::validate_configuration()
 {
 	bool configuration_valid = true;
+
 	if (!(
 		position_ptr ||
 		(position_ptr_ptr && *position_ptr_ptr) ||
 		translatable_obj
 		)) {
-		std::cout << "Translation gizmo requires a valid pointer to a position or a pointer to a pointer to a position or an reference to an object implementing translatable" << std::endl;
+		std::cout << "Translation gizmo requires a valid pointer to a position or a pointer to a pointer to a position or a reference to an object implementing translatable" << std::endl;
 		configuration_valid = false;
 	}
-	// TODO: Add further configuration validation if necessary
+	
+	configuration_valid = configuration_valid && validate_axes();
+	configuration_valid = configuration_valid && validate_handles(axes_directions.size());
+
 	return configuration_valid;
 }
 
 void cgv::nui::translation_gizmo::on_handle_grabbed()
 {
 	position_at_grab = get_position();
+	grab_handle(prim_idx);
+}
+
+void cgv::nui::translation_gizmo::on_handle_released()
+{
+	release_handles();
 }
 
 void cgv::nui::translation_gizmo::on_handle_drag()
 {
-	vec3 axis = axes_directions[prim_idx];
+	vec3 axis;
+	if (!use_absolute_rotation) {
+		axis = axes_directions[prim_idx];
+	}
+	else {
+		vec3 obj_translation;
+		quat obj_rotation;
+		vec3 obj_scale;
+		transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj), obj_translation, obj_rotation, obj_scale);
+		axis = obj_rotation.inverse().get_homogeneous_matrix() * vec4(axes_directions[prim_idx], 0);
+	}
+	if (anchor_rotation_ptr)
+		axis = anchor_rotation_ptr->get_homogeneous_matrix() * vec4(axis, 0.0f);
+	else if (anchor_rotation_ptr_ptr)
+		axis = (*anchor_rotation_ptr_ptr)->get_homogeneous_matrix() * vec4(axis, 0.0f);
 
 	vec3 closest_point;
 	if (ii_at_grab.is_pointing) {
@@ -61,9 +78,12 @@ void cgv::nui::translation_gizmo::on_handle_drag()
 	else {
 		closest_point = cgv::math::closest_point_on_line_to_point(ii_at_grab.query_point, axis, ii_during_focus[activating_hid_id].hid_position);
 	}
-
+	
 	vec3 movement = closest_point - ii_at_grab.query_point;
-	set_position(position_at_grab + movement);
+	if (is_anchor_influenced_by_gizmo)
+		set_position(get_position() + movement);
+	else
+		set_position(position_at_grab + movement);
 }
 
 cgv::render::render_types::vec3 cgv::nui::translation_gizmo::get_position()
@@ -107,21 +127,12 @@ void cgv::nui::translation_gizmo::set_position_reference(translatable* _translat
 	translatable_obj = _translatable_obj;
 }
 
-void cgv::nui::translation_gizmo::configure_axes_directions(std::vector<vec3> axes)
+void cgv::nui::translation_gizmo::set_axes_directions(std::vector<vec3> axes)
 {
-	gizmo_functionality_configurable_axes::configure_axes_directions(axes);
+	gizmo_functionality_configurable_axes::set_axes_directions(axes);
 
 	// Default configuration
-	for (int i = 0; i < axes.size(); ++i) {
-		translation_axes_colors.push_back(rgb(0.2f, 0.6f, 0.84f));
-	}
 	configure_axes_geometry(0.015f, 0.2f);
-}
-
-void cgv::nui::translation_gizmo::configure_axes_coloring(std::vector<rgb> colors)
-{
-	translation_axes_colors = colors;
-	fill_with_last_value_if_not_full(translation_axes_colors, axes_directions.size());
 }
 
 void cgv::nui::translation_gizmo::configure_axes_geometry(float radius, float length)
@@ -185,33 +196,54 @@ bool cgv::nui::translation_gizmo::_compute_intersection(const vec3& ray_start, c
 	//primitive_idx = idx;
 	//return true;
 
-	// Intersection test with box as temporary replacement of not working cylinder intersection
 	for (int i = 0; i < arrow_positions.size(); ++i) {
 
-		vec3 ro = ray_start - (arrow_positions[i] + arrow_directions[i] / 2.0);
+		vec3 ro = ray_start - ((arrow_positions[i]) + (arrow_directions[i] / 2.0));
 		vec3 rd = ray_direction;
 		quat rot;
 		rot.set_normal(normalize(arrow_directions[i]));
 		rot.inverse_rotate(ro);
 		rot.inverse_rotate(rd);
-		vec3 n;
-		vec2 res;
-		if (cgv::math::ray_box_intersection(ro, rd, vec3(arrow_directions[i].length() / 2.0, arrow_radius, arrow_radius), res, n) == 0)
-			continue;
-		if (res[0] < 0) {
-			if (res[1] < 0)
-				continue;
-			hit_param = res[1];
+
+		vec3 box_size = vec3(arrow_directions[i].length() / 2.0, arrow_radius, arrow_radius);
+		auto result = cgv::math::ray_box_intersection(ro, rd, -0.5f * box_size, 0.5f * box_size);
+		if (result.hit) {
+			hit_param = result.t_near;
+			primitive_idx = i;
+			highlight_handle(i);
+			return true;
 		}
-		else {
-			hit_param = res[0];
-		}
-		rot.rotate(n);
-		hit_normal = n;
-		primitive_idx = i;
-		return true;
 	}
+	dehighlight_handles();
 	return false;
+
+	// Intersection test with box as temporary replacement of not working cylinder intersection
+	//for (int i = 0; i < arrow_positions.size(); ++i) {
+	//
+	//	vec3 ro = ray_start - (arrow_positions[i] + arrow_directions[i] / 2.0);
+	//	vec3 rd = ray_direction;
+	//	quat rot;
+	//	rot.set_normal(normalize(arrow_directions[i]));
+	//	rot.inverse_rotate(ro);
+	//	rot.inverse_rotate(rd);
+	//	vec3 n;
+	//	vec2 res;
+	//	if (cgv::math::ray_box_intersection(ro, rd, vec3(arrow_directions[i].length() / 2.0, arrow_radius, arrow_radius), res, n) == 0)
+	//		continue;
+	//	if (res[0] < 0) {
+	//		if (res[1] < 0)
+	//			continue;
+	//		hit_param = res[1];
+	//	}
+	//	else {
+	//		hit_param = res[0];
+	//	}
+	//	rot.rotate(n);
+	//	hit_normal = n;
+	//	primitive_idx = i;
+	//	return true;
+	//}
+	//return false;
 }
 
 bool cgv::nui::translation_gizmo::init(cgv::render::context& ctx)
@@ -238,7 +270,7 @@ void cgv::nui::translation_gizmo::_draw(cgv::render::context& ctx, const vec3& s
 
 		ar.set_position_array(ctx, arrow_positions);
 		ar.set_direction_array(ctx, arrow_directions);
-		ar.set_color_array(ctx, arrow_colors);
+		ar.set_color_array(ctx, handle_colors);
 		ar.render(ctx, 0, (GLsizei)arrow_positions.size());
 	}
 }

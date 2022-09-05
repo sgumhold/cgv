@@ -14,7 +14,8 @@ namespace cgv {
 ///	Needs at least a position to manipulate.
 ///	Optionally takes a rotation to allow for translation in the object coordinates.
 class CGV_API translation_gizmo : public cgv::nui::gizmo,
-	public cgv::nui::gizmo_functionality_configurable_axes
+	public cgv::nui::gizmo_functionality_configurable_axes,
+	public cgv::nui::gizmo_functionality_handle_states
 {
 	// pointers to properties of the object the gizmo is attached to
 	vec3* position_ptr{ nullptr };
@@ -23,7 +24,6 @@ class CGV_API translation_gizmo : public cgv::nui::gizmo,
 
 	cgv::render::arrow_render_style ars;
 
-	std::vector<rgb> arrow_colors;
 	float arrow_radius { 0.05f };
 
 	// only have to be recomputed if the position or rotation of the object changes
@@ -50,13 +50,13 @@ protected:
 	void set_position(const vec3& position);
 
 	// current configuration of the gizmo
-	std::vector<rgb> translation_axes_colors;
 	float translation_axes_length { 0.2f };
 
 	bool validate_configuration() override;
 
 	void on_handle_grabbed() override;
 	void on_handle_drag() override;
+	void on_handle_released() override;
 
 	void precompute_geometry() override;
 
@@ -74,11 +74,7 @@ public:
 	/// Set reference to the position that will be manipulated by this gizmo as a reference to an object implementing the translatable interface.
 	void set_position_reference(translatable* _translatable_obj);
 
-	void configure_axes_directions(std::vector<vec3> axes) override;
-	/// Set colors for the visual representation of the axes. If less colors then axes are given then the
-	///	last color will be repeated.
-	// TODO: Extend with configuration of selection/grab color change
-	void configure_axes_coloring(std::vector<rgb> colors);
+	void set_axes_directions(std::vector<vec3> axes) override;
 	/// Set various parameters of the individual arrow geometries.
 	// TODO: Add more parameters
 	void configure_axes_geometry(float radius, float length);

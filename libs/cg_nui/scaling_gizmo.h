@@ -4,6 +4,7 @@
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/spline_tube_renderer.h>
 #include <cg_nui/reusable_gizmo_functionalities.h>
+#include <cg_nui/scalable.h>
 
 #include "lib_begin.h"
 
@@ -14,12 +15,17 @@ namespace cgv {
 ///	Needs at least a scale to manipulate.
 ///	Optionally takes a position as an anchor point and a rotation to allow for scaling in the object coordinates.
 class CGV_API scaling_gizmo : public cgv::nui::gizmo,
-	public cgv::nui::gizmo_functionality_configurable_axes
+	public cgv::nui::gizmo_functionality_configurable_axes,
+	public cgv::nui::gizmo_functionality_handle_states
 {
+	// pointers to properties of the object the gizmo is attached to
+	vec3* scale_ptr{ nullptr };
+	vec3** scale_ptr_ptr{ nullptr };
+	scalable* scalable_obj{ nullptr };
+
 	cgv::render::box_render_style brs;
 	cgv::render::spline_tube_render_style strs;
 
-	std::vector<rgb> handle_colors;
 	float spline_tube_radius{ 0.03f };
 	float cube_size{ 0.07f };
 
@@ -37,15 +43,19 @@ class CGV_API scaling_gizmo : public cgv::nui::gizmo,
 	/// Compute the scale-dependent geometry
 	void compute_geometry(const vec3& scale);
 	/// Draw the handles
-	void _draw(cgv::render::context& ctx);
+	void _draw(cgv::render::context& ctx, const vec3& scale, const mat4& view_matrix) override;
 	/// Do proximity check
-	bool _compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx);
+	bool _compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx, const vec3& scale,
+		const mat4& view_matrix) override;
 	/// Do intersection check
-	bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx);
+	bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx,
+		const vec3& scale, const mat4& view_matrix) override;
 
 protected:
-	// pointers to properties of the object the gizmo is attached to
-	vec3* scale_ptr{ nullptr };
+	// Get the position of the attached object
+	vec3 get_scale();
+	// Set the position of the attached object
+	void set_scale(const vec3& scale);
 
 	// current configuration of the gizmo
 	std::vector<rgb> scaling_axes_colors;
@@ -55,33 +65,26 @@ protected:
 	bool validate_configuration() override;
 
 	void on_handle_grabbed() override;
+	void on_handle_released() override;
 	void on_handle_drag() override;
 
 	void precompute_geometry() override;
 
-	//void _draw_local_orientation(cgv::render::context& ctx, const vec3& inverse_translation, const quat& inverse_rotation, const vec3& scale, const mat4& view_matrix) override;
-	//void _draw_global_orientation(cgv::render::context& ctx, const vec3& inverse_translation, const quat& rotation, const vec3& scale, const mat4& view_matrix) override;
-	//
-	//bool _compute_closest_point_local_orientation(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx, const vec3& inverse_translation, const quat& inverse_rotation, const vec3& scale, const mat4& view_matrix) override;
-	//bool _compute_closest_point_global_orientation(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx, const vec3& inverse_translation, const quat& rotation, const vec3& scale, const mat4& view_matrix) override;
-	//bool _compute_intersection_local_orientation(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx, const vec3& inverse_translation, const quat& inverse_rotation, const vec3& scale, const mat4& view_matrix) override;
-	//bool _compute_intersection_global_orientation(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx, const vec3& inverse_translation, const quat& rotation, const vec3& scale, const mat4& view_matrix) override;
-
 public:
 	scaling_gizmo() : gizmo("scaling_gizmo") {}
 
-	/// Attach this gizmo to the given object. The given scale will be manipulated and used for the gizmo's
-	/// visual representation. The position will be used as the anchor for the visual representation. The
-	/// optional rotation is needed if the gizmo should operate in the local coordinate system.
-	void attach(base_ptr obj, vec3* scale_ptr, vec3* position_ptr, quat* rotation_ptr = nullptr);
-	void detach();
-
 	// Configuration functions
-	void configure_axes_directions(std::vector<vec3> axes_directions) override;
-	/// Set colors for the visual representation of the axes. If less colors then axes are given then the
-	///	last color will be repeated.
-	// TODO: Extend with configuration of selection/grab color change
-	void configure_axes_coloring(std::vector<rgb> colors);
+
+	/// Set reference to the scale that will be manipulated by this gizmo as a pointer.
+	///	If a base object reference is given it will be notified of value changes through on_set.
+	void set_scale_reference(vec3* _scale_ptr, cgv::base::base_ptr _on_set_obj = nullptr);
+	/// Set reference to the scale that will be manipulated by this gizmo as a pointer to a pointer.
+	///	If a base object reference is given it will be notified of value changes through on_set.
+	void set_scale_reference(vec3** _scale_ptr_ptr, cgv::base::base_ptr _on_set_obj = nullptr);
+	/// Set reference to the scale that will be manipulated by this gizmo as a reference to an object implementing the scalable interface.
+	void set_scale_reference(scalable* _scalable_obj);
+
+	void set_axes_directions(std::vector<vec3> axes_directions) override;
 	/// Set various parameters of the individual axis geometries.
 	// TODO: Add more parameters
 	void configure_axes_geometry(float radius, float length, float cube_size);

@@ -27,6 +27,23 @@ void cgv::nui::rotation_gizmo::precompute_geometry()
 	}
 }
 
+void cgv::nui::rotation_gizmo::set_rotation_reference(quat* _rotation_ptr, cgv::base::base_ptr _on_set_obj)
+{
+	rotation_ptr = _rotation_ptr;
+	gizmo::set_on_set_object(_on_set_obj);
+}
+
+void cgv::nui::rotation_gizmo::set_rotation_reference(quat** _rotation_ptr_ptr, cgv::base::base_ptr _on_set_obj)
+{
+	rotation_ptr_ptr = _rotation_ptr_ptr;
+	gizmo::set_on_set_object(_on_set_obj);
+}
+
+void cgv::nui::rotation_gizmo::set_rotation_reference(rotatable* _rotatable_obj)
+{
+	rotatable_obj = _rotatable_obj;
+}
+
 void cgv::nui::rotation_gizmo::compute_geometry(const vec3& scale)
 {
 	for (int i = 0; i < axes_directions.size(); ++i) {
@@ -40,16 +57,53 @@ void cgv::nui::rotation_gizmo::compute_geometry(const vec3& scale)
 	}
 }
 
+cgv::render::render_types::quat cgv::nui::rotation_gizmo::get_rotation()
+{
+	if (rotatable_obj)
+		return rotatable_obj->get_rotation();
+	if (rotation_ptr_ptr)
+		return **rotation_ptr_ptr;
+	return *rotation_ptr;
+}
+
+void cgv::nui::rotation_gizmo::set_rotation(const quat& rotation)
+{
+	if (rotatable_obj) {
+		rotatable_obj->set_rotation(rotation);
+	}
+	else {
+		if (rotation_ptr_ptr)
+			**rotation_ptr_ptr = rotation;
+		else
+			*rotation_ptr = rotation;
+		if (on_set_obj)
+			on_set_obj->on_set(rotation_ptr);
+	}
+}
+
 bool cgv::nui::rotation_gizmo::validate_configuration()
 {
-	// TODO: Add configuration validation
-	return true;
+	bool configuration_valid = true;
+
+	if (!(
+		rotation_ptr ||
+		(rotation_ptr_ptr && *rotation_ptr_ptr) ||
+		rotatable_obj
+		)) {
+		std::cout << "Rotation gizmo requires a valid pointer to a rotation or a pointer to a pointer to a rotation or a reference to an object implementing rotatable" << std::endl;
+		configuration_valid = false;
+	}
+
+	configuration_valid = configuration_valid && validate_axes();
+	configuration_valid = configuration_valid && validate_handles(axes_directions.size());
+
+	return configuration_valid;
 }
 
 void cgv::nui::rotation_gizmo::on_handle_grabbed()
 {
-	if (rotation_ptr != nullptr)
-		rotation_at_grab = *rotation_ptr;
+	rotation_at_grab = get_rotation();
+	grab_handle(prim_idx);
 
 	auto& dvh = ref_debug_visualization_helper();
 	//vec3 current_position = accumulate_transforming_hierarchy().col(3);
@@ -60,12 +114,29 @@ void cgv::nui::rotation_gizmo::on_handle_grabbed()
 	dvh.enable_debug_value_visualization(direction_currently_handle);
 }
 
+void cgv::nui::rotation_gizmo::on_handle_released()
+{
+	release_handles();
+}
+
 void cgv::nui::rotation_gizmo::on_handle_drag()
 {
-	if (rotation_ptr == nullptr)
-		return;
-	vec3 axis = axes_directions[prim_idx];
 	vec3 axis_origin = vec3(0.0f);
+	vec3 axis;
+	if (!use_absolute_rotation) {
+		axis = axes_directions[prim_idx];
+	}
+	else {
+		vec3 obj_translation;
+		quat obj_rotation;
+		vec3 obj_scale;
+		transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj), obj_translation, obj_rotation, obj_scale);
+		axis = obj_rotation.inverse().get_homogeneous_matrix() * vec4(axes_directions[prim_idx], 0);
+	}
+	if (anchor_rotation_ptr)
+		axis = anchor_rotation_ptr->get_homogeneous_matrix() * vec4(axis, 0.0f);
+	else if (anchor_rotation_ptr_ptr)
+		axis = (*anchor_rotation_ptr_ptr)->get_homogeneous_matrix() * vec4(axis, 0.0f);
 
 	auto& dvh = ref_debug_visualization_helper();
 
@@ -91,6 +162,7 @@ void cgv::nui::rotation_gizmo::on_handle_drag()
 
 	dvh.update_debug_value_position(projected_point_handle, closest_point);
 
+	// TODO: Rethink calculation (is_anchor_influenced_by_gizmo)
 	vec3 direction_at_grab = cross(cross(axis, ii_at_grab.query_point - axis_origin), axis);
 	vec3 direction_currently = cross(cross(axis, closest_point - axis_origin), axis);
 	//vec3 direction_at_grab = ii_at_grab.query_point - axis_origin;
@@ -103,46 +175,15 @@ void cgv::nui::rotation_gizmo::on_handle_drag()
 	float c = dot(direction_at_grab, direction_currently);
 	float da = atan2(s, c);
 	quat new_rotation = quat(axis, da);
-	*rotation_ptr = new_rotation * rotation_at_grab;
+	set_rotation(new_rotation * rotation_at_grab);
 }
 
-void cgv::nui::rotation_gizmo::attach(base_ptr obj, vec3* position_ptr, quat* rotation_ptr, vec3* scale_ptr)
+void cgv::nui::rotation_gizmo::set_axes_directions(std::vector<vec3> axes)
 {
-	this->rotation_ptr = rotation_ptr;
-	//gizmo::attach(obj, position_ptr, rotation_ptr, scale_ptr);
-	//gizmo::attach(obj);
-}
-
-void cgv::nui::rotation_gizmo::detach()
-{
-	if (!is_attached)
-		return;
-	rotation_ptr = nullptr;
-	gizmo::detach();
-	// TODO: Handle focus (release grabs and foci)
-
-	auto& dvh = ref_debug_visualization_helper();
-	dvh.disable_debug_value_visualization(projected_point_handle);
-	dvh.disable_debug_value_visualization(direction_at_grab_handle);
-	dvh.disable_debug_value_visualization(direction_currently_handle);
-}
-
-void cgv::nui::rotation_gizmo::configure_axes_directions(std::vector<vec3> axes)
-{
-	gizmo_functionality_configurable_axes::configure_axes_directions(axes);
+	gizmo_functionality_configurable_axes::set_axes_directions(axes);
 
 	// Default configuration
-	for (int i = 0; i < axes.size(); ++i) {
-		rotation_axes_colors.push_back(rgb(0.2f, 0.6f, 0.84f));
-	}
 	configure_axes_geometry(1.2f, 0.02f);
-}
-
-void cgv::nui::rotation_gizmo::configure_axes_coloring(std::vector<rgb> colors)
-{
-	rotation_axes_colors = colors;
-	fill_with_last_value_if_not_full(rotation_axes_colors, axes_directions.size());
-	// TODO: Update rendering, Handle switching during use
 }
 
 void cgv::nui::rotation_gizmo::configure_axes_geometry(float ring_radius, float ring_tube_radius)
@@ -153,9 +194,11 @@ void cgv::nui::rotation_gizmo::configure_axes_geometry(float ring_radius, float 
 	// TODO: Update rendering, Handle switching during use
 }
 
-bool cgv::nui::rotation_gizmo::_compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal,
-	size_t& primitive_idx)
+bool cgv::nui::rotation_gizmo::_compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx,
+	const vec3& scale, const mat4& view_matrix)
 {
+	compute_geometry(scale);
+
 	size_t idx = -1;
 	vec3 p, n;
 	float dist_min = std::numeric_limits<float>::max();
@@ -220,9 +263,11 @@ bool cgv::nui::rotation_gizmo::_compute_closest_point(const vec3& point, vec3& p
 //	return _compute_closest_point(point, prj_point, prj_normal, primitive_idx);
 //}
 
-bool cgv::nui::rotation_gizmo::_compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param,
-	vec3& hit_normal, size_t& primitive_idx)
+bool cgv::nui::rotation_gizmo::_compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal,
+	size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
 {
+	compute_geometry(scale);
+
 	//size_t idx = -1;
 	//float t = std::numeric_limits<float>::max();
 	//vec3 n;
@@ -273,9 +318,11 @@ bool cgv::nui::rotation_gizmo::_compute_intersection(const vec3& ray_start, cons
 			}
 			hit_normal = n;
 			primitive_idx = i;
+			highlight_handle(i);
 			return true;
 		}
 	}
+	dehighlight_handles();
 	return false;
 }
 
@@ -333,8 +380,10 @@ void cgv::nui::rotation_gizmo::clear(cgv::render::context& ctx)
 	gizmo::clear(ctx);
 }
 
-void cgv::nui::rotation_gizmo::_draw(cgv::render::context& ctx)
+void cgv::nui::rotation_gizmo::_draw(cgv::render::context& ctx, const vec3& scale, const mat4& view_matrix)
 {
+	compute_geometry(scale);
+
 	auto& str = cgv::render::ref_spline_tube_renderer(ctx);
 	str.set_render_style(strs);
 	for (auto ring_spline : ring_splines) {

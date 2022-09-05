@@ -38,30 +38,45 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 
 	trans_gizmo = new cgv::nui::translation_gizmo();
 	trans_gizmo->set_anchor_object(this);
+	//trans_gizmo->set_anchor_offset_position(vec3(0.0f, 0.5f, 0.0f));
+	quat rot;
+	vec3 n = vec3(1.0f, 0.0f, 1.0f);
+	n.normalize();
+	rot.set_normal(n);
+	rot.normalize();
+	//trans_gizmo->set_anchor_offset_rotation(rot);
 	trans_gizmo->set_position_reference(this);
-	trans_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
-	trans_gizmo->configure_axes_positioning(
+	trans_gizmo->set_is_anchor_influenced_by_gizmo(true);
+	trans_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
+	trans_gizmo->set_axes_positions(
 		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
 		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
 	);
+	trans_gizmo->set_use_absolute_rotation(false);
 	if (active_gizmo == ActiveGizmoOptions::AGO_TRANSLATION)
 		trans_gizmo->attach();
 
-	//rot_gizmo = new cgv::nui::rotation_gizmo();
-	//append_child(rot_gizmo);
-	//rot_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
-	//if (active_gizmo == ActiveGizmoOptions::AGO_ROTATION)
-	//	rot_gizmo->attach(this, &position, &rotation, &extent);
-	//
-	//scale_gizmo = new cgv::nui::scaling_gizmo();
-	//append_child(scale_gizmo);
-	//scale_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
-	//scale_gizmo->configure_axes_positioning(
-	//	{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
-	//	{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
-	//);
-	//if (active_gizmo == ActiveGizmoOptions::AGO_SCALING)
-	//	scale_gizmo->attach(this, &extent, &position, &rotation);
+	rot_gizmo = new cgv::nui::rotation_gizmo();
+	rot_gizmo->set_anchor_object(this);
+	rot_gizmo->set_rotation_reference(this);
+	rot_gizmo->set_is_anchor_influenced_by_gizmo(true);
+	rot_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
+	rot_gizmo->set_use_absolute_rotation(false);
+	if (active_gizmo == ActiveGizmoOptions::AGO_ROTATION)
+		rot_gizmo->attach();
+	
+	scale_gizmo = new cgv::nui::scaling_gizmo();
+	scale_gizmo->set_anchor_object(this);
+	scale_gizmo->set_scale_reference(this);
+	scale_gizmo->set_is_anchor_influenced_by_gizmo(true);
+	scale_gizmo->set_use_absolute_rotation(false);
+	scale_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
+	scale_gizmo->set_axes_positions(
+		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
+		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
+	);
+	if (active_gizmo == ActiveGizmoOptions::AGO_SCALING)
+		scale_gizmo->attach();
 }
 
 std::string simple_object::get_type_name() const
@@ -162,8 +177,8 @@ void simple_object::on_set(void* member_ptr)
 			}
 			switch (active_gizmo_ui) {
 			case ActiveGizmoOptions::AGO_TRANSLATION: trans_gizmo->attach(); break;
-			//case ActiveGizmoOptions::AGO_ROTATION: rot_gizmo->attach(this, &position, &rotation, &extent); break;
-			//case ActiveGizmoOptions::AGO_SCALING: scale_gizmo->attach(this, &extent, &position, &rotation); break;
+			case ActiveGizmoOptions::AGO_ROTATION: rot_gizmo->attach(); break;
+			case ActiveGizmoOptions::AGO_SCALING: scale_gizmo->attach(); break;
 			}
 			active_gizmo = active_gizmo_ui;
 		}
@@ -192,22 +207,31 @@ void simple_object::create_gui()
 
 const cgv::render::render_types::mat4& simple_object::get_model_transform() const
 {
-	return transforming::construct_transform_from_components(get_position(), rotation, vec3(1.0f));
+	return transforming::construct_transform_from_components(get_position(), get_rotation(), vec3(1.0f));
 }
 
 const cgv::render::render_types::mat4& simple_object::get_inverse_model_transform() const
 {
-	const mat4& transform = transforming::construct_transform_from_components(-1.0f * get_position(), rotation.inverse(), vec3(1.0f));
+	const mat4& transform = transforming::construct_transform_from_components(-1.0f * get_position(), get_rotation().inverse(), vec3(1.0f));
 	return transform;
 }
 
-
-cgv::render::render_types::vec3 simple_object::get_position() const
+cgv::render::render_types::quat simple_object::get_rotation() const
 {
-	return positions[0];
+	return rotation;
 }
 
-void simple_object::set_position(const vec3& position)
+void simple_object::set_rotation(const quat& rotation)
 {
-	positions[0] = position;
+	this->rotation = rotation;
+}
+
+cgv::render::render_types::vec3 simple_object::get_scale() const
+{
+	return extent;
+}
+
+void simple_object::set_scale(const vec3& scale)
+{
+	extent = scale;
 }
