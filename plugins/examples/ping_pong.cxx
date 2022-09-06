@@ -198,14 +198,10 @@ public:
 	{
 		if (!prog.build_program(ctx, "ping_pong.glpr", true))
 			return false;
-		T[0].create_from_image(ctx, "c:/Temp/dresden.png", &w, &h);
+		T[0].create_from_image(ctx, "res://alhambra.png", &w, &h);
 		T[0].set_wrap_s(cgv::render::TW_REPEAT);
 		T[0].set_wrap_t(cgv::render::TW_REPEAT);
-		//		T[0].create_from_image(ctx, "res://alhambra.png", &w, &h);
-//	    T[1].set_component_format(T[0].get_component_format());
-//		T[1].set_component_format(T[0].get_component_format());
-
-		T[1].set_component_format("[R,G,B,A]");
+		T[1].set_component_format(T[0].get_component_format());
 		T[1].set_wrap_s(cgv::render::TW_REPEAT);
 		T[1].set_wrap_t(cgv::render::TW_REPEAT);
 		T[1].create(ctx, TT_2D, w, h);
@@ -316,3 +312,4 @@ public:
 
 /// register a factory to create new cubes
 cgv::base::factory_registration<ping_pong> ping_pong_fac("New/Render/Ping Pong", 'W');
+

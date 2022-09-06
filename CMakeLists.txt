@@ -2,9 +2,10 @@ cmake_minimum_required(VERSION 3.15)
 
 project(cgv)
 
-set(BUILD_SHARED_LIBS ON)
 option(SHADER_DEVELOPER OFF)
+option(CGV_BUILD_TESTS ON)
 
+set(BUILD_SHARED_LIBS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED 14)
 
 set(CGV_DIR ${PROJECT_SOURCE_DIR})
@@ -36,6 +37,8 @@ endif ()
 if (NOT MSVC)
     add_compile_options(-Wno-dangling-else -Wno-switch)
 endif ()
+
+enable_testing()
 
 add_subdirectory(3rd)
 add_subdirectory(tool)

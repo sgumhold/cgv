@@ -561,8 +561,8 @@ protected:
 	bool draw_in_compatibility_mode;
 	/// whether to debug render passes
 	bool debug_render_passes;
-	/// whether vsynch should be enabled
-	bool enable_vsynch;
+	/// whether vsync should be enabled
+	bool enable_vsync;
 	/// current color value
 	rgba current_color;
 	/// whether to use opengl option to support sRGB framebuffer

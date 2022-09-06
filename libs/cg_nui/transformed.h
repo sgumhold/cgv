@@ -7,7 +7,7 @@
 
 namespace cgv {
 	namespace nui {
-		/// interface for objects that provides a modelview_projection_window_matrix
+		/// internal interface only used for spatial dispatcher to provide information from base class (e.g. vr_scene) for unprojecting pixels
 		class CGV_API transformed : public cgv::render::render_types
 		{
 		protected:

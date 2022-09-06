@@ -250,7 +250,7 @@ key_event cgv_key_event(KeyAction a)
 
 	unsigned short key = cgv_key(fltk::event_key());
 
-	return key_event(key, a, c, cgv_modifiers(fltk::event_state()), cgv_toggle_keys(fltk::event_state()), fltk::get_time_secs());
+	return key_event(key, a, c, cgv_modifiers(fltk::event_state()), cgv_toggle_keys(fltk::event_state()), fltk::get_time_secs(), fltk::event_x(), fltk::event_y());
 }
 
 cgv::gui::mouse_event cgv_mouse_event(MouseAction a, int dx, int dy)
