@@ -166,8 +166,9 @@ namespace cgv {
 			const volume_render_style& vrs = get_style<volume_render_style>();
 			if (!renderer::enable(ctx))
 				return false;
-
-			ref_prog().set_uniform(ctx, "viewport_dims", vec2(float(ctx.get_width()), float(ctx.get_height())));
+			int vp[4];
+			glGetIntegerv(GL_VIEWPORT, vp);
+			ref_prog().set_uniform(ctx, "viewport_dims", vec2(float(vp[2]-vp[0]), float(vp[3]-vp[1])));
 			ref_prog().set_uniform(ctx, "opacity_scale", vrs.opacity_scale);
 			ref_prog().set_uniform(ctx, "size_scale", vrs.size_scale);
 			ref_prog().set_uniform(ctx, "clip_box_min", vrs.clip_box.get_min_pnt());

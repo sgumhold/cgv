@@ -78,6 +78,8 @@ class vr_rgbd : public cgv::base::node,
 	bool zoom_out;
 	bool save_pointcloud;
 	int key_frame_step;
+	bool is_save_imgs;
+	int imgs_counter;
 	/// intermediate point cloud and to be rendered point cloud
 	std::vector<vertex> intermediate_pc, current_pc;
 	/// list of recorded point clouds
@@ -320,6 +322,9 @@ class vr_rgbd : public cgv::base::node,
 		max_nr_shown_recorded_pcs = 20;
 		counter_pc = 0;
 
+		is_save_imgs = false;
+		imgs_counter = 0;
+
 		pc_file_path = QUOTE_SYMBOL_VALUE(INPUT_DIR) " / .. / data";
 
 		connect(cgv::gui::get_animation_trigger().shoot, this, &vr_rgbd::timer_event);
@@ -332,6 +337,16 @@ class vr_rgbd : public cgv::base::node,
 
 		rgbd_inp.map_color_to_depth(depth_frame_2, color_frame_2, warped_color_frame_2);
 		colors = reinterpret_cast<const unsigned char*>(&warped_color_frame_2.frame_data.front());
+
+		if (is_save_imgs) {
+			std::string fn = "D:\\rgbd_imgs\\";
+			std::string fnc = fn + std::to_string(imgs_counter) + ".rgb";
+			std::string fnd = fn + std::to_string(imgs_counter) + ".dep";
+
+			depth_frame_2.write(fnd);
+			warped_color_frame_2.write(fnc);
+			imgs_counter++;
+		}
 
 		int i = 0;
 		for (int y = 0; y < depth_frame_2.height; ++y)
@@ -613,6 +628,7 @@ class vr_rgbd : public cgv::base::node,
 		add_member_control(this, "zoom_out", zoom_out, "check");
 		add_member_control(this, "save_pc", save_pointcloud, "check");
 		add_member_control(this, "register_pc", registration_started, "check");
+		add_member_control(this, "is_save_imgs", is_save_imgs, "check");
 		//connect_copy(add_button("SICP")->click, rebind(this, &vr_rgbd::on_reg_SICP_cb));
 
 		add_member_control(this, "rgbd_controller_index", rgbd_controller_index, "value_slider",
@@ -684,7 +700,8 @@ class vr_rgbd : public cgv::base::node,
 			   rh.reflect_member("record_frame", record_frame) &&
 			   rh.reflect_member("record_all_frames", record_all_frames) &&
 			   rh.reflect_member("clear_all_frames", clear_all_frames) &&
-			   rh.reflect_member("rgbd_started", rgbd_started) &&
+			   rh.reflect_member("rgbd_started", rgbd_started) && 
+			   rh.reflect_member("is_save_imgs", is_save_imgs) &&
 			   rh.reflect_member("rgbd_protocol_path", rgbd_protocol_path);
 	}
 	void on_set(void* member_ptr)

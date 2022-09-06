@@ -127,7 +127,7 @@ void volume_viewer::create_volume(cgv::render::context& ctx)
 		vol_data[i] = cgv::math::clamp(vol_data[i], 0.0f, 1.0f);
 
 	// transfer volume data into volume texture
-	//and compute mipmaps
+	// and compute mipmaps
 	cgv::data::data_format vol_df(vres[0], vres[1], vres[2], cgv::type::info::TypeId::TI_FLT32, cgv::data::ComponentFormat::CF_R);
 	cgv::data::const_data_view vol_dv(&vol_df, vol_data.data());
 	volume_tex.create(ctx, vol_dv, 0);
@@ -135,9 +135,23 @@ void volume_viewer::create_volume(cgv::render::context& ctx)
 	// set the volume bounding box to later scale the rendering accordingly
 	volume_bounding_box.ref_min_pnt() = volume_bounding_box.ref_min_pnt();
 	volume_bounding_box.ref_max_pnt() = volume_bounding_box.ref_max_pnt();
+
+	// calculate a histogram
+	std::vector<unsigned> histogram(128, 0u);
+
+	for(size_t i = 0; i < vol_data.size(); ++i) {
+		size_t bucket = static_cast<size_t>(vol_data[i] * 128.0f);
+		size_t min = 0;
+		size_t max = 128;
+		bucket = cgv::math::clamp(bucket, min, max);
+		++histogram[bucket];
+	}
+
+	if(transfer_function_editor_ptr)
+		transfer_function_editor_ptr->set_histogram_data(histogram);
 }
 
-// splates n spheres of given radius into the volume, by adding the contribution to the covered voxel cells
+// splats n spheres of given radius into the volume, by adding the contribution to the covered voxel cells
 void volume_viewer::splat_spheres(std::vector<float>& vol_data, float voxel_size, std::mt19937& rng, size_t n, float radius, float contribution) {
 	std::uniform_real_distribution<float> distr(0.0f, 1.0f);
 
@@ -153,7 +167,7 @@ void volume_viewer::splat_spheres(std::vector<float>& vol_data, float voxel_size
 	}
 }
 
-// spalts a single sphere of given radius into the volume by adding the contribution value to the voxel cells
+// splats a single sphere of given radius into the volume by adding the contribution value to the voxel cells
 void volume_viewer::splat_sphere(std::vector<float>& vol_data, float voxel_size, const vec3& pos, float radius, float contribution) {
 
 	// compute the spheres bounding box

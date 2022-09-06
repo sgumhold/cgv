@@ -24,9 +24,9 @@ void gpu_sorter::delete_buffers() {
 	delete_buffer(keys_in_ssbo);
 	delete_buffer(keys_out_ssbo);
 	delete_buffer(values_out_ssbo);
-	delete_buffer(prefix_sum_ssbo);
-	delete_buffer(blocksums_ssbo);
-	delete_buffer(scratch_ssbo);
+	delete_buffer(prefix_sums_ssbo);
+	delete_buffer(block_sums_ssbo);
+	delete_buffer(last_sum_ssbo);
 }
 
 void gpu_sorter::begin_time_query() {
@@ -37,7 +37,7 @@ void gpu_sorter::begin_time_query() {
 	glBeginQuery(GL_TIME_ELAPSED, time_query);
 }
 
-void gpu_sorter::end_time_query() {
+double gpu_sorter::end_time_query() {
 
 	glEndQuery(GL_TIME_ELAPSED);
 
@@ -57,6 +57,8 @@ void gpu_sorter::end_time_query() {
 		measurements = 0;
 		avg_time = 0.0f;
 	}
+
+	return static_cast<double>(elapsed_time) / 1000000.0;
 }
 
 void gpu_sorter::set_value_format(cgv::type::info::TypeId type, unsigned component_count) {

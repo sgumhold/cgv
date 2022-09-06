@@ -17,3 +17,5 @@ template<int x> struct static_assert_test{};
       sizeof(::cgv::defines::STATIC_ASSERTION_FAILURE< (bool)( __VA_ARGS__ ) >)>\
          CGV_DEFINES_JOIN(_static_assert_test_, __LINE__);
 
+// use (void) to silence unused warnings
+#define assertm(exp, msg) assert(((void)msg, exp))
