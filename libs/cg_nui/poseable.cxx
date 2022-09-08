@@ -43,7 +43,11 @@ void cgv::nui::poseable::on_grabbed_start()
 void cgv::nui::poseable::on_grabbed_drag()
 {
 	if (get_transforming()) {
-		get_translatable()->set_position(get_translatable()->get_position() + ii_during_focus[activating_hid_id].query_point - ii_at_grab.query_point);
+		vec3 movement = ii_during_focus[activating_hid_id].query_point - ii_at_grab.query_point;
+		// movement is in the local coordinate system of the transforming. Its position however is in it's parents coordinate system.
+		// Therefor movement needs to be transformed into the parents coordinate system.
+		_transforming->get_local_rotation().inverse_rotate(movement);
+		get_translatable()->set_position(get_translatable()->get_position() + movement);
 	}
 	else {
 		get_translatable()->set_position(position_at_grab + (ii_during_focus[activating_hid_id].query_point - ii_at_grab.query_point));
@@ -62,11 +66,36 @@ void cgv::nui::poseable::on_triggered_drag()
 	vec3 q = cgv::math::closest_point_on_line_to_point(ii_during_focus[activating_hid_id].hid_position_global,
 		ii_during_focus[activating_hid_id].hid_direction_global, ii_at_grab.query_point_global);
 	if (get_transforming()) {
-		get_translatable()->set_position(get_translatable()->get_position() + (q - ii_at_grab.query_point));
+		vec3 movement = q - ii_at_grab.query_point;
+		// movement is in the local coordinate system of the transforming. Its position however is in it's parents coordinate system.
+		// Therefor movement needs to be transformed into the parents coordinate system.
+		_transforming->get_local_rotation().rotate(movement);
+		get_translatable()->set_position(get_translatable()->get_position() + movement);
 	}
 	else {
 		get_translatable()->set_position(position_at_grab + (q - ii_at_grab.query_point));
 	}
+}
+
+bool cgv::nui::poseable::compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal,
+	size_t& primitive_idx)
+{
+	return _compute_closest_point(point, prj_point, prj_normal, primitive_idx);
+}
+
+bool cgv::nui::poseable::compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param,
+	vec3& hit_normal, size_t& primitive_idx)
+{
+	// Make sure there is still an intersection if the object is grabbed but the ray temporarily doesn't actually intersect it.
+	bool result = _compute_intersection(ray_start, ray_direction, hit_param, hit_normal, primitive_idx);
+	if (!result && state == state_enum::grabbed || state == state_enum::triggered) {
+		vec3 v = ii_during_focus[activating_hid_id].query_point - ray_start;
+		vec3 n = ray_direction;
+		hit_param = (math::dot(v, n) / math::dot(n, n) * n).length();
+		primitive_idx = prim_idx;
+		return true;
+	}
+	return result;
 }
 
 void cgv::nui::poseable::draw(cgv::render::context& ctx)

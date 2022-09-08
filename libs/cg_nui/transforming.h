@@ -74,8 +74,8 @@ namespace cgv {
 			static const mat4& get_global_inverse_model_transform(base::node_ptr obj);
 			/// Extract the translation, rotation and scale components of the given 4x4 tranformation matrix (assuming no shear, perspective or negative scale)
 			static void extract_transform_components(const mat4& transform, vec3& translation, quat& rotation, vec3& scale);
-			/// Extract the translation, rotation and scale components of the given 4x4 tranformation matrix (assuming no shear, perspective or negative scale)
 			static const mat4& construct_transform_from_components(const vec3& translation, const quat& rotation, const vec3& scale);
+			static const mat4& construct_inverse_transform_from_components(const vec3& inverse_translation, const quat& inverse_rotation, const vec3& inverse_scale);
 		};
 
 	}

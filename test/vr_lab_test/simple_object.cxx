@@ -84,7 +84,7 @@ std::string simple_object::get_type_name() const
 	return "simple_object";
 }
 
-bool simple_object::compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx)
+bool simple_object::_compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx)
 {
 	for (int i = 0; i < 3; ++i)
 		prj_point[i] = std::max(-0.5f * extent[i], std::min(0.5f * extent[i], prj_point[i]));
@@ -99,7 +99,7 @@ bool simple_object::compute_closest_point(const vec3& point, vec3& prj_point, ve
 	//return true;
 }
 
-bool simple_object::compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx)
+bool simple_object::_compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx)
 {
 	auto result = cgv::math::ray_box_intersection(ray_start, ray_direction, -0.5f * extent, 0.5f * extent);
 	if (result.hit) {
@@ -212,7 +212,7 @@ const cgv::render::render_types::mat4& simple_object::get_model_transform() cons
 
 const cgv::render::render_types::mat4& simple_object::get_inverse_model_transform() const
 {
-	const mat4& transform = transforming::construct_transform_from_components(-1.0f * get_position(), get_rotation().inverse(), vec3(1.0f));
+	const mat4& transform = transforming::construct_inverse_transform_from_components(-1.0f * get_position(), get_rotation().inverse(), vec3(1.0f));
 	return transform;
 }
 

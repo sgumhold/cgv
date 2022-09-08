@@ -150,6 +150,14 @@ namespace cgv {
 			transform = cgv::math::translate4<float>(translation) * rotation.get_homogeneous_matrix() * cgv::math::scale4<float>(scale);
 			return transform;
 		}
+
+		const mat4& transforming::construct_inverse_transform_from_components(const vec3& inverse_translation,
+			const quat& inverse_rotation, const vec3& inverse_scale)
+		{
+			mat4& transform = *(new mat4());
+			transform = cgv::math::scale4<float>(inverse_scale) * inverse_rotation.get_homogeneous_matrix() * cgv::math::translate4<float>(inverse_translation);
+			return transform;
+		}
 	}
 }
 #include <cgv/config/lib_end.h>
