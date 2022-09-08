@@ -31,7 +31,6 @@ protected:
 	/// Reference of object this gizmo is anchored to
 	cgv::base::node_ptr anchor_obj{ nullptr };
 
-protected:
 	bool is_attached{ false };
 	bool use_absolute_rotation{ false };
 	bool is_anchor_influenced_by_gizmo{ false };
