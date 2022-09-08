@@ -168,6 +168,14 @@ bool cgv::nui::gizmo::compute_intersection(const vec3& ray_start, const vec3& ra
 	// Reverse scale in the attached object's coordinate system so that the gizmo's handles aren't scaled
 	bool result = _compute_intersection(correction_transform * vec4(ray_start, 1), correction_transform * vec4(ray_direction, 0), hit_param,
 		hit_normal, primitive_idx, scale, view_matrix);
+	// Make sure there is still an intersection if a handle is grabbed but the ray temporarily doesn't actually intersect it.
+	if (!result && state == state_enum::grabbed || state == state_enum::triggered) {
+		vec3 v = ii_during_focus[activating_hid_id].query_point - ray_start;
+		vec3 n = ray_direction;
+		hit_param = (math::dot(v, n) / math::dot(n, n) * n).length();
+		primitive_idx = prim_idx;
+		return true;
+	}
 	return result;
 }
 
