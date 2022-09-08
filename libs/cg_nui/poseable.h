@@ -29,7 +29,6 @@ class CGV_API poseable : public interactable
 protected:
 	// TODO: Implement change of rotation
 
-	// TODO: Probably remove as they are not used
 	vec3 position_at_grab;
 	quat rotation_at_grab;
 
@@ -40,6 +39,11 @@ protected:
 	void on_triggered_start() override;
 	void on_triggered_drag() override;
 
+	// Override this instead of compute_clostest_point
+	virtual bool _compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx) = 0;
+	// Override this instead of compute_intersection
+	virtual bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx) = 0;
+
 public:
 	poseable(const std::string& name = "", bool manipulate_rotation = true) : interactable(name), manipulate_rotation(manipulate_rotation) {}
 
@@ -48,6 +52,9 @@ public:
 	//@{
 	void draw(cgv::render::context& ctx) override;
 	//@}
+
+	bool compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx) override;
+	bool compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx) override;
 
 	// Used for debug settings
 	//@name cgv::gui::provider interface

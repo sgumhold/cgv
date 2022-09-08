@@ -38,12 +38,12 @@ protected:
 	cgv::data::ref_ptr<cgv::nui::rotation_gizmo, true> rot_gizmo;
 	cgv::data::ref_ptr<cgv::nui::scaling_gizmo, true> scale_gizmo;
 
+	bool _compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx) override;
+	bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx) override;
+
 public:
 	simple_object(const std::string& _name, const vec3& _position, const rgb& _color = rgb(0.5f,0.5f,0.5f), const vec3& _extent = vec3(0.3f,0.2f,0.1f), const quat& _rotation = quat(1,0,0,0));
 	std::string get_type_name() const override;
-
-	bool compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx) override;
-	bool compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx) override;
 
 	bool init(cgv::render::context& ctx) override;
 	void clear(cgv::render::context& ctx) override;
