@@ -11,17 +11,35 @@ void cgv::nui::scaling_gizmo::precompute_geometry()
 	splines.clear();
 	handle_positions.clear();
 	handle_directions.clear();
-	for (int i = 0; i < axes_directions.size(); ++i) {
+	int handle_count = axes_directions.size();
+	cube_positions.resize(handle_count);
+	handle_positions.resize(handle_count);
+	for (int i = 0; i < handle_count; ++i) {
 		splines.push_back(spline_data_t());
-		cube_positions.push_back(vec3(0.0f));
-		handle_positions.push_back(vec3(0.0f));
-		handle_directions.push_back(vec3(1.0f, 0.0f, 0.0f));
+		splines.back().first.resize(2);
+		splines.back().second.resize(2);
+		handle_directions.push_back(axes_directions[i] * scaling_axes_length);
 		quat rot;
 		vec3 axis = axes_directions[i];
 		if (axis == vec3(-1.0, 0.0, 0.0))
 			axis = axis * -1.0f;
 		rot.set_normal(axis);
 		cube_rotations.push_back(rot);
+	}
+}
+
+void cgv::nui::scaling_gizmo::compute_geometry(const vec3& scale)
+{
+	for (int i = 0; i < axes_directions.size(); ++i) {
+		vec3 start_point = scale_dependent_axes_positions[i] * scale + scale_independent_axes_positions[i];
+		vec3 end_point = start_point + axes_directions[i] * scaling_axes_length;
+		vec3 axis = axes_directions[i];
+		splines[i].first[0] = start_point;
+		splines[i].second[0] = vec4(axis, 0.0);
+		splines[i].first[1] = end_point;
+		splines[i].second[1] = vec4(axis, 0.0);
+		cube_positions[i] = end_point;
+		handle_positions[i] = start_point;
 	}
 }
 
@@ -40,23 +58,6 @@ void cgv::nui::scaling_gizmo::set_scale_reference(vec3** _scale_ptr_ptr, cgv::ba
 void cgv::nui::scaling_gizmo::set_scale_reference(scalable* _scalable_obj)
 {
 	scalable_obj = _scalable_obj;
-}
-
-void cgv::nui::scaling_gizmo::compute_geometry(const vec3& scale)
-{
-	for (int i = 0; i < axes_directions.size(); ++i) {
-		vec3 start_point = scale_dependent_axes_positions[i] * scale + scale_independent_axes_positions[i];
-		vec3 end_point = start_point + axes_directions[i] * scaling_axes_length;
-		vec3 axis = axes_directions[i];
-		splines.push_back(spline_data_t());
-		splines[i].first.push_back(start_point);
-		splines[i].second.push_back(vec4(axis, 0.0));
-		splines[i].first.push_back(end_point);
-		splines[i].second.push_back(vec4(axis, 0.0));
-		cube_positions.push_back(end_point);
-		handle_positions[i] = start_point;
-		handle_directions[i] = end_point - start_point;
-	}
 }
 
 bool cgv::nui::scaling_gizmo::validate_configuration()
