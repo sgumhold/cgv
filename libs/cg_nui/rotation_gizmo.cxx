@@ -11,8 +11,10 @@
 void cgv::nui::rotation_gizmo::precompute_geometry()
 {
 	ring_splines.clear();
+	precomputed_ring_splines.clear();
 	for (int i = 0; i < axes_directions.size(); ++i) {
 		ring_splines.push_back(spline_data_t());
+		precomputed_ring_splines.push_back(spline_data_t());
 		quat rot;
 		rot.set_normal(axes_directions[i]);
 		for (unsigned j = 0; j <= ring_nr_spline_segments; ++j) {
@@ -21,10 +23,43 @@ void cgv::nui::rotation_gizmo::precompute_geometry()
 			float s = sin(a);
 			vec3 spline_position = rot.apply(ring_radius * vec3(0, c, s));
 			vec4 spline_tangent = vec4(rot.apply(6.6f * ring_radius / ring_nr_spline_segments * vec3(0, -s, c)),0);
+			precomputed_ring_splines.back().first.push_back(spline_position);
+			precomputed_ring_splines.back().second.push_back(spline_tangent);
 			ring_splines.back().first.push_back(spline_position);
 			ring_splines.back().second.push_back(spline_tangent);
 		}
 	}
+}
+
+void cgv::nui::rotation_gizmo::compute_geometry(const vec3& scale)
+{
+	// Scale precomputed rings and move them to the correct axis positions
+	for (int i = 0; i < axes_directions.size(); ++i) {
+		for (unsigned j = 0; j <= ring_nr_spline_segments; ++j) {
+			ring_splines[i].first[j] = precomputed_ring_splines[i].first[j] * max_value(scale)
+				+ (scale_dependent_axes_positions[i] * scale + scale_independent_axes_positions[i]);
+			ring_splines[i].second[j] = precomputed_ring_splines[i].second[j] * max_value(scale);
+		}
+	}
+}
+
+bool cgv::nui::rotation_gizmo::validate_configuration()
+{
+	bool configuration_valid = true;
+
+	if (!(
+		rotation_ptr ||
+		(rotation_ptr_ptr && *rotation_ptr_ptr) ||
+		rotatable_obj
+		)) {
+		std::cout << "Rotation gizmo requires a valid pointer to a rotation or a pointer to a pointer to a rotation or a reference to an object implementing rotatable" << std::endl;
+		configuration_valid = false;
+	}
+
+	configuration_valid = configuration_valid && validate_axes();
+	configuration_valid = configuration_valid && validate_handles(axes_directions.size());
+
+	return configuration_valid;
 }
 
 void cgv::nui::rotation_gizmo::set_rotation_reference(quat* _rotation_ptr, cgv::base::base_ptr _on_set_obj)
@@ -42,19 +77,6 @@ void cgv::nui::rotation_gizmo::set_rotation_reference(quat** _rotation_ptr_ptr, 
 void cgv::nui::rotation_gizmo::set_rotation_reference(rotatable* _rotatable_obj)
 {
 	rotatable_obj = _rotatable_obj;
-}
-
-void cgv::nui::rotation_gizmo::compute_geometry(const vec3& scale)
-{
-	for (int i = 0; i < axes_directions.size(); ++i) {
-		ring_splines.push_back(std::pair<std::vector<vec3>, std::vector<vec4>>());
-		quat rot;
-		rot.set_normal(axes_directions[i]);
-		for (unsigned j = 0; j <= ring_nr_spline_segments; ++j) {
-			ring_splines[i].first[j] *= max_value(scale / 2.0);
-			ring_splines[i].second[j] *= max_value(scale / 2.0);
-		}
-	}
 }
 
 cgv::render::render_types::quat cgv::nui::rotation_gizmo::get_rotation()
@@ -79,25 +101,6 @@ void cgv::nui::rotation_gizmo::set_rotation(const quat& rotation)
 		if (on_set_obj)
 			on_set_obj->on_set(rotation_ptr);
 	}
-}
-
-bool cgv::nui::rotation_gizmo::validate_configuration()
-{
-	bool configuration_valid = true;
-
-	if (!(
-		rotation_ptr ||
-		(rotation_ptr_ptr && *rotation_ptr_ptr) ||
-		rotatable_obj
-		)) {
-		std::cout << "Rotation gizmo requires a valid pointer to a rotation or a pointer to a pointer to a rotation or a reference to an object implementing rotatable" << std::endl;
-		configuration_valid = false;
-	}
-
-	configuration_valid = configuration_valid && validate_axes();
-	configuration_valid = configuration_valid && validate_handles(axes_directions.size());
-
-	return configuration_valid;
 }
 
 void cgv::nui::rotation_gizmo::on_handle_grabbed()

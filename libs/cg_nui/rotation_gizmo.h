@@ -29,6 +29,7 @@ class CGV_API rotation_gizmo : public cgv::nui::gizmo,
 
 	typedef std::pair<std::vector<vec3>, std::vector<vec4>> spline_data_t;
 	std::vector<spline_data_t> ring_splines;
+	std::vector<spline_data_t> precomputed_ring_splines;
 
 	quat rotation_at_grab;
 
