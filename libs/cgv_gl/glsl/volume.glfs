@@ -239,9 +239,8 @@ void main()
 	ray_start_pos += 0.5;
 #if ENABLE_NOISE_OFFSET == 1
 	// add a small offset noise to the ray start position to prevent ring artifacts
-	//ray_start_pos += (2.0 * ray_dir / NUM_STEPS) * texture(noise_tex, 5.0*texcoord_fs).r;
 	ivec2 ts = textureSize(noise_tex, 0);
-	ray_start_pos += (2.0 * ray_dir / NUM_STEPS) * texture(noise_tex, frag_tex_coords*ts).r;
+	ray_start_pos += (2.0 * ray_dir * step_size) * texture(noise_tex, frag_tex_coords*ts).r;
 #endif
 
 	vec4 color = vec4(0.0);
@@ -290,15 +289,11 @@ void main()
 		// scale the alpha channel based on the global opacity scale
 		color_in.a *= opacity_scale;
 
-#if ENABLE_SCALE_ADJUSTMENT == 1
-		// dont know if this is correct but it works for now
-		color_in.a *= size_scale;
-		
-		float step_fac = -exp(-step_size) + 1.0;
-		color_in.a *= step_fac;
-#endif
-		// make sure the alpha value does not exceed 1
-		color_in.a = min(color_in.a, 1.0);
+	#if ENABLE_SCALE_ADJUSTMENT == 1
+		color_in.a = -exp(-step_size * size_scale * color_in.a) + 1.0;
+	#else
+		color_in.a = -exp(-color_in.a) + 1.0;
+	#endif
 
 		// premultiply alpha
 		color_in.rgb *= color_in.a;
