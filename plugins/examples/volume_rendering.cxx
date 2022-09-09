@@ -7,6 +7,9 @@
 #include <cgv/math/ftransform.h>
 #include <cgv/reflect/reflect_enum.h>
 #include <cgv/signal/rebind.h>
+#include <cgv/utils/advanced_scan.h>
+#include <cgv/utils/file.h>
+#include <cgv/utils/big_binary_file.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_tools.h>
 
@@ -65,147 +68,64 @@ void volume_viewer::stream_help(std::ostream& os)
 
 bool volume_viewer::handle_event(cgv::gui::event& e) 
 {
-	if (e.get_kind() != cgv::gui::EID_KEY)
-		return false;
-	auto& ke = static_cast<cgv::gui::key_event&>(e);
-	if (ke.get_action() == cgv::gui::KA_RELEASE)
-		return false;
-	switch (ke.get_key()) {
-	case 'B': show_box = !show_box; on_set(&show_box); return true;
-	case 'T':
-		if(transfer_function_editor_ptr) {
-			transfer_function_editor_ptr->set_visibility(!transfer_function_editor_ptr->is_visible());
-			post_redraw();
+
+	if(e.get_kind() == cgv::gui::EID_MOUSE) {
+		auto& me = static_cast<cgv::gui::mouse_event&>(e);
+
+		if(me.get_flags() & cgv::gui::EF_DND) {
+			switch(me.get_action()) {
+			case cgv::gui::MA_ENTER:
+				return true;
+			case cgv::gui::MA_DRAG:
+				return true;
+			case cgv::gui::MA_LEAVE:
+				return true;
+			case cgv::gui::MA_RELEASE:
+				load_volume_from_file(me.get_dnd_text());
+				return true;
+			default: break;
+			}
 		}
-		return true;
-	default: break;
+	} else if(e.get_kind() == cgv::gui::EID_KEY) {
+		auto& ke = static_cast<cgv::gui::key_event&>(e);
+		if(ke.get_action() == cgv::gui::KA_RELEASE)
+			return false;
+
+		switch(ke.get_key()) {
+		case 'B':
+			show_box = !show_box;
+			on_set(&show_box);
+			return true;
+		case 'T':
+			if(transfer_function_editor_ptr) {
+				transfer_function_editor_ptr->set_visibility(!transfer_function_editor_ptr->is_visible());
+				post_redraw();
+			}
+			return true;
+		default: break;
+		}
 	}
+
 	return false;
 }
 
 void volume_viewer::on_set(void* member_ptr) 
 {
+	vec3& a = volume_bounding_box.ref_min_pnt();
+	vec3& b = volume_bounding_box.ref_max_pnt();
+
+	if (member_ptr == &a[0] ||
+		member_ptr == &a[1] ||
+		member_ptr == &a[2] ||
+		member_ptr == &b[0] ||
+		member_ptr == &b[1] ||
+		member_ptr == &b[2]) {
+		box_rd.clear();
+		box_rd.add(volume_bounding_box.get_center(), volume_bounding_box.get_extent());
+	}
+
 	update_member(member_ptr);
 	post_redraw();
-}
-
-void volume_viewer::create_volume(cgv::render::context& ctx)
-{
-	// destruct previous texture
-	volume_tex.destruct(ctx);
-
-	// calculate voxel size
-	float voxel_size = 1.0f / vres.x();
-
-	// generate volume data
-	std::vector<float> vol_data(vres[0] * vres[1] * vres[2], 0.0f);
-
-	std::mt19937 rng(42);
-	std::uniform_real_distribution<float> distr(0.0f, 1.0f);
-
-	const vec3& a = volume_bounding_box.ref_min_pnt();
-	const vec3& b = volume_bounding_box.ref_max_pnt();
-
-	// generate a single large sphere in the center of the volume
-	splat_sphere(vol_data, voxel_size, 0.5f*(a + b), 0.5f, 0.75f);
-
-	// add and subtract volumes of an increasing amount of randomly placed spheres of decreasing size
-	splat_spheres(vol_data, voxel_size, rng, 5, 0.2f, 0.5f);
-	splat_spheres(vol_data, voxel_size, rng, 5, 0.2f, -0.5f);
-
-	splat_spheres(vol_data, voxel_size, rng, 50, 0.1f, 0.25f);
-	splat_spheres(vol_data, voxel_size, rng, 50, 0.1f, -0.25f);
-
-	splat_spheres(vol_data, voxel_size, rng, 100, 0.05f, 0.1f);
-	splat_spheres(vol_data, voxel_size, rng, 100, 0.05f, -0.1f);
-
-	splat_spheres(vol_data, voxel_size, rng, 200, 0.025f, 0.1f);
-	splat_spheres(vol_data, voxel_size, rng, 200, 0.025f, -0.1f);
-
-	// make sure the volume values are in the range [0,1]
-	for(size_t i = 0; i < vol_data.size(); ++i)
-		vol_data[i] = cgv::math::clamp(vol_data[i], 0.0f, 1.0f);
-
-	// transfer volume data into volume texture
-	// and compute mipmaps
-	cgv::data::data_format vol_df(vres[0], vres[1], vres[2], cgv::type::info::TypeId::TI_FLT32, cgv::data::ComponentFormat::CF_R);
-	cgv::data::const_data_view vol_dv(&vol_df, vol_data.data());
-	volume_tex.create(ctx, vol_dv, 0);
-
-	// set the volume bounding box to later scale the rendering accordingly
-	volume_bounding_box.ref_min_pnt() = volume_bounding_box.ref_min_pnt();
-	volume_bounding_box.ref_max_pnt() = volume_bounding_box.ref_max_pnt();
-
-	// calculate a histogram
-	std::vector<unsigned> histogram(128, 0u);
-
-	for(size_t i = 0; i < vol_data.size(); ++i) {
-		size_t bucket = static_cast<size_t>(vol_data[i] * 128.0f);
-		size_t min = 0;
-		size_t max = 128;
-		bucket = cgv::math::clamp(bucket, min, max);
-		++histogram[bucket];
-	}
-
-	if(transfer_function_editor_ptr)
-		transfer_function_editor_ptr->set_histogram_data(histogram);
-}
-
-// splats n spheres of given radius into the volume, by adding the contribution to the covered voxel cells
-void volume_viewer::splat_spheres(std::vector<float>& vol_data, float voxel_size, std::mt19937& rng, size_t n, float radius, float contribution) {
-	std::uniform_real_distribution<float> distr(0.0f, 1.0f);
-
-	const vec3& a = volume_bounding_box.ref_min_pnt();
-	const vec3& b = volume_bounding_box.ref_max_pnt();
-
-	for(size_t i = 0; i < n; ++i) {
-		vec3 pos;
-		pos.x() = cgv::math::lerp(a.x(), b.x(), distr(rng));
-		pos.y() = cgv::math::lerp(a.y(), b.y(), distr(rng));
-		pos.z() = cgv::math::lerp(a.z(), b.z(), distr(rng));
-		splat_sphere(vol_data, voxel_size, pos, radius, contribution);
-	}
-}
-
-// splats a single sphere of given radius into the volume by adding the contribution value to the voxel cells
-void volume_viewer::splat_sphere(std::vector<float>& vol_data, float voxel_size, const vec3& pos, float radius, float contribution) {
-
-	// compute the spheres bounding box
-	box3 box(pos - radius, pos + radius);
-	box.ref_max_pnt() -= 0.005f * voxel_size;
-
-	// get voxel indices of bounding box minimum and maximum
-	ivec3 sidx((box.get_min_pnt() - volume_bounding_box.ref_min_pnt()) / voxel_size);
-	ivec3 eidx((box.get_max_pnt() - volume_bounding_box.ref_min_pnt()) / voxel_size);
-
-	const ivec3 res = static_cast<ivec3>(vres);
-
-	// make sure to stay inside the volume
-	sidx = cgv::math::clamp(sidx, ivec3(0), res - 1);
-	eidx = cgv::math::clamp(eidx, ivec3(0), res - 1);
-
-	// for each covered voxel...
-	for(int z = sidx.z(); z <= eidx.z(); ++z) {
-		for(int y = sidx.y(); y <= eidx.y(); ++y) {
-			for(int x = sidx.x(); x <= eidx.x(); ++x) {
-				// ...get its center location in world space
-				vec3 voxel_pos(
-					static_cast<float>(x),
-					static_cast<float>(y),
-					static_cast<float>(z)
-				);
-				voxel_pos *= voxel_size;
-				voxel_pos += volume_bounding_box.ref_min_pnt() + 0.5f*voxel_size;
-
-				// calculate the distance to the sphere center
-				float dist = length(voxel_pos - pos);
-				if(dist < radius) {
-					// add contribution to voxel if its center is inside the sphere
-					vol_data[x + vres.x()*y + vres.x()*vres.y()*z] += contribution;
-				}
-			}
-		}
-	}
 }
 
 void volume_viewer::clear(cgv::render::context& ctx)
@@ -227,9 +147,11 @@ bool volume_viewer::init(cgv::render::context& ctx)
 	// init a color map used as a transfer function
 	transfer_function.init(ctx);
 	// Preset 1
-	//transfer_function.add_color_point(0.0f, rgb(1.0f));
-	//transfer_function.add_opacity_point(0.0f, 0.0f);
-	//transfer_function.add_opacity_point(1.0f, 1.0f);
+	/*
+	transfer_function.add_color_point(0.0f, rgb(1.0f));
+	transfer_function.add_opacity_point(0.0f, 0.0f);
+	transfer_function.add_opacity_point(1.0f, 1.0f);
+	*/
 
 	// Preset 2
 	transfer_function.add_color_point(0.0f, rgb(0.0f, 0.0f, 1.0f));
@@ -247,6 +169,34 @@ bool volume_viewer::init(cgv::render::context& ctx)
 	transfer_function.add_opacity_point(0.6f, 0.0f);
 	transfer_function.add_opacity_point(0.8f, 0.0f);
 	transfer_function.add_opacity_point(0.95f, 0.5f);
+
+	// Preset 3 for Head256.vox
+	/*
+	transfer_function.add_color_point(0.332f, rgb(0.5f, 0.8f, 0.85f));
+	transfer_function.add_color_point(0.349f, rgb(0.85f, 0.5f, 0.85f));
+	transfer_function.add_color_point(0.370f, rgb(0.9f, 0.85f, 0.8f));
+	transfer_function.add_color_point(0.452f, rgb(0.9f, 0.85f, 0.8f));
+	transfer_function.add_color_point(0.715f, rgb(0.9f, 0.85f, 0.8f));
+	transfer_function.add_color_point(1.0f, rgb(1.0f, 0.0f, 0.0f));
+	
+	transfer_function.add_opacity_point(0.208f, 0.0f);
+	transfer_function.add_opacity_point(0.22f, 0.17f);
+	transfer_function.add_opacity_point(0.315f, 0.17f);
+	transfer_function.add_opacity_point(0.326f, 0.0f);
+	transfer_function.add_opacity_point(0.345f, 0.0f);
+	transfer_function.add_opacity_point(0.348f, 0.23f);
+	transfer_function.add_opacity_point(0.35f, 0.0f);
+	transfer_function.add_opacity_point(0.374f, 0.0f);
+	transfer_function.add_opacity_point(0.539f, 0.31f);
+	transfer_function.add_opacity_point(0.633f, 0.31f);
+	transfer_function.add_opacity_point(0.716f, 0.0f);
+	transfer_function.add_opacity_point(0.8f, 1.0f);
+	*/
+
+
+	// TODO: add compositing modes to volume renderer
+	// maximum intensity projection, average, first, blending (tf)
+
 
 	// generate the texture containing the interpolated color map values
 	transfer_function.generate_texture(ctx);
@@ -324,8 +274,227 @@ void volume_viewer::create_gui()
 		align("\b");
 		end_tree_node(transfer_function_legend_ptr);
 	}
+
+	vec3& a = volume_bounding_box.ref_min_pnt();
+	vec3& b = volume_bounding_box.ref_max_pnt();
+
+	add_member_control(this, "Min X", a.x(), "value_slider", "min=-1;max=1;step=0.05;");
+	add_member_control(this, "Min Y", a.y(), "value_slider", "min=-1;max=1;step=0.05;");
+	add_member_control(this, "Min Z", a.z(), "value_slider", "min=-1;max=1;step=0.05;");
+
+	add_member_control(this, "Max X", b.x(), "value_slider", "min=-1;max=1;step=0.05;");
+	add_member_control(this, "Max Y", b.y(), "value_slider", "min=-1;max=1;step=0.05;");
+	add_member_control(this, "Max Z", b.z(), "value_slider", "min=-1;max=1;step=0.05;");
+}
+
+void volume_viewer::create_volume(cgv::render::context& ctx) {
+	// destruct previous texture
+	volume_tex.destruct(ctx);
+
+	// calculate voxel size
+	float voxel_size = 1.0f / vres.x();
+
+	// generate volume data
+	vol_data.clear();
+	vol_data.resize(vres[0] * vres[1] * vres[2], 0.0f);
+
+	std::mt19937 rng(42);
+	std::uniform_real_distribution<float> distr(0.0f, 1.0f);
+
+	const vec3& a = volume_bounding_box.ref_min_pnt();
+	const vec3& b = volume_bounding_box.ref_max_pnt();
+
+	// generate a single large sphere in the center of the volume
+	splat_sphere(vol_data, voxel_size, 0.5f*(a + b), 0.5f, 0.75f);
+
+	// add and subtract volumes of an increasing amount of randomly placed spheres of decreasing size
+	splat_spheres(vol_data, voxel_size, rng, 5, 0.2f, 0.5f);
+	splat_spheres(vol_data, voxel_size, rng, 5, 0.2f, -0.5f);
+
+	splat_spheres(vol_data, voxel_size, rng, 50, 0.1f, 0.25f);
+	splat_spheres(vol_data, voxel_size, rng, 50, 0.1f, -0.25f);
+
+	splat_spheres(vol_data, voxel_size, rng, 100, 0.05f, 0.1f);
+	splat_spheres(vol_data, voxel_size, rng, 100, 0.05f, -0.1f);
+
+	splat_spheres(vol_data, voxel_size, rng, 200, 0.025f, 0.1f);
+	splat_spheres(vol_data, voxel_size, rng, 200, 0.025f, -0.1f);
+
+	// make sure the volume values are in the range [0,1]
+	for(size_t i = 0; i < vol_data.size(); ++i)
+		vol_data[i] = cgv::math::clamp(vol_data[i], 0.0f, 1.0f);
+
+	// transfer volume data into volume texture
+	// and compute mipmaps
+	cgv::data::data_format vol_df(vres[0], vres[1], vres[2], cgv::type::info::TypeId::TI_FLT32, cgv::data::ComponentFormat::CF_R);
+	cgv::data::const_data_view vol_dv(&vol_df, vol_data.data());
+	volume_tex.create(ctx, vol_dv, 0);
+
+	// set the volume bounding box to later scale the rendering accordingly
+	volume_bounding_box.ref_min_pnt() = volume_bounding_box.ref_min_pnt();
+	volume_bounding_box.ref_max_pnt() = volume_bounding_box.ref_max_pnt();
+
+	// calculate a histogram
+	create_histogram();
+}
+
+// splats n spheres of given radius into the volume, by adding the contribution to the covered voxel cells
+void volume_viewer::splat_spheres(std::vector<float>& vol_data, float voxel_size, std::mt19937& rng, size_t n, float radius, float contribution) {
+	std::uniform_real_distribution<float> distr(0.0f, 1.0f);
+
+	const vec3& a = volume_bounding_box.ref_min_pnt();
+	const vec3& b = volume_bounding_box.ref_max_pnt();
+
+	for(size_t i = 0; i < n; ++i) {
+		vec3 pos;
+		pos.x() = cgv::math::lerp(a.x(), b.x(), distr(rng));
+		pos.y() = cgv::math::lerp(a.y(), b.y(), distr(rng));
+		pos.z() = cgv::math::lerp(a.z(), b.z(), distr(rng));
+		splat_sphere(vol_data, voxel_size, pos, radius, contribution);
+	}
+}
+
+// splats a single sphere of given radius into the volume by adding the contribution value to the voxel cells
+void volume_viewer::splat_sphere(std::vector<float>& vol_data, float voxel_size, const vec3& pos, float radius, float contribution) {
+
+	// compute the spheres bounding box
+	box3 box(pos - radius, pos + radius);
+	box.ref_max_pnt() -= 0.005f * voxel_size;
+
+	// get voxel indices of bounding box minimum and maximum
+	ivec3 sidx((box.get_min_pnt() - volume_bounding_box.ref_min_pnt()) / voxel_size);
+	ivec3 eidx((box.get_max_pnt() - volume_bounding_box.ref_min_pnt()) / voxel_size);
+
+	const ivec3 res = static_cast<ivec3>(vres);
+
+	// make sure to stay inside the volume
+	sidx = cgv::math::clamp(sidx, ivec3(0), res - 1);
+	eidx = cgv::math::clamp(eidx, ivec3(0), res - 1);
+
+	// for each covered voxel...
+	for(int z = sidx.z(); z <= eidx.z(); ++z) {
+		for(int y = sidx.y(); y <= eidx.y(); ++y) {
+			for(int x = sidx.x(); x <= eidx.x(); ++x) {
+				// ...get its center location in world space
+				vec3 voxel_pos(
+					static_cast<float>(x),
+					static_cast<float>(y),
+					static_cast<float>(z)
+				);
+				voxel_pos *= voxel_size;
+				voxel_pos += volume_bounding_box.ref_min_pnt() + 0.5f*voxel_size;
+
+				// calculate the distance to the sphere center
+				float dist = length(voxel_pos - pos);
+				if(dist < radius) {
+					// add contribution to voxel if its center is inside the sphere
+					vol_data[x + vres.x()*y + vres.x()*vres.y()*z] += contribution;
+				}
+			}
+		}
+	}
+}
+
+void volume_viewer::load_volume_from_file(const std::string& file_name) {
+
+	std::string header_content;
+	char* vox_content;
+
+	std::string extension = cgv::utils::file::get_extension(file_name);
+	if(cgv::utils::to_upper(extension) != "HD")
+		return;
+		
+	std::string vox_file_name = file_name.substr(0, file_name.length() - 2) + "vox";
+
+	if(!cgv::utils::file::exists(file_name) || !cgv::utils::file::exists(vox_file_name))
+		return;
+
+	std::cout << file_name << std::endl;
+	std::cout << vox_file_name << std::endl;
+
+	if(!cgv::utils::file::read(file_name, header_content, true)) {
+		std::cout << "Error: failed to read header file <" << file_name << ">." << std::endl;
+		return;
+	}
+
+	
+
+	//size_t vox_content_size = 0;
+	//char* vox_content = cgv::utils::file::read(vox_file_name, false, vox_content_size, 0);
+
+	//if(!cgv::utils::file::read(vox_file_name, vox_content, false)) {
+	//	std::cout << "Error: failed to read volume file <" << vox_file_name << ">." << std::endl;
+	//	return;
+	//}
+	
+	std::vector<cgv::utils::token> tokens;
+	cgv::utils::split_to_tokens(header_content, tokens, "x", true, "", "", " x");
+
+	ivec3 resolution;
+
+	if(tokens.size() > 3) {
+		std::string x_res = to_string(tokens[1]);
+		std::string y_res = to_string(tokens[2]);
+		std::string z_res = to_string(tokens[3]);
+
+		resolution.x() = static_cast<int>(std::strtol(x_res.c_str(), nullptr, 10));
+		resolution.y() = static_cast<int>(std::strtol(y_res.c_str(), nullptr, 10));
+		resolution.z() = static_cast<int>(std::strtol(z_res.c_str(), nullptr, 10));
+	}
+
+	auto ctx_ptr = get_context();
+	if(ctx_ptr) {
+		auto& ctx = *ctx_ptr;
+
+		size_t num_voxels = resolution.x() * resolution.y() * resolution.z();
+
+		vol_data.clear();
+		vol_data.resize(num_voxels, 0.0f);
+
+		std::vector<unsigned char> raw_vol_data(num_voxels, 0u);
+
+		FILE* fp = fopen(vox_file_name.c_str(), "rb");
+		if(fp) {
+			// read data
+			std::size_t nr = fread(raw_vol_data.data(), 1, num_voxels, fp);
+			if(nr != num_voxels) {
+				std::cerr << "could not read the expected number " << num_voxels << " of voxels but only " << nr << std::endl;
+				fclose(fp);
+			}
+		}
+		// close and return success
+		fclose(fp);
+
+		for(size_t i = 0; i < num_voxels; ++i)
+			vol_data[i] = static_cast<float>(raw_vol_data[i] / 255.0f);
+
+		if(volume_tex.is_created())
+			volume_tex.destruct(ctx);
+
+		cgv::data::data_format vol_df(resolution[0], resolution[1], resolution[2], cgv::type::info::TypeId::TI_FLT32, cgv::data::ComponentFormat::CF_R);
+		cgv::data::const_data_view vol_dv(&vol_df, vol_data.data());
+		volume_tex.create(ctx, vol_dv, 0);
+	}
+
+	create_histogram();
+}
+
+void volume_viewer::create_histogram() {
+	std::vector<unsigned> histogram(128, 0u);
+
+	for(size_t i = 0; i < vol_data.size(); ++i) {
+		size_t bucket = static_cast<size_t>(vol_data[i] * 128.0f);
+		size_t min = 0;
+		size_t max = 127;
+		bucket = cgv::math::clamp(bucket, min, max);
+		++histogram[bucket];
+	}
+
+	if(transfer_function_editor_ptr)
+		transfer_function_editor_ptr->set_histogram_data(histogram);
 }
 
 #include <cgv/base/register.h>
 
 cgv::base::factory_registration<volume_viewer> volume_viewer_fac("New/Render/Volume Rendering");
+
