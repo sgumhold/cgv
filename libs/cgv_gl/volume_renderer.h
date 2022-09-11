@@ -45,12 +45,32 @@ namespace cgv { // @<
 			float size_scale;
 			/// opacity scaling parameter
 			float opacity_scale;
+			/// the compositing mode used
+			enum CompositingMode {
+				CM_MAXIMUM_INTENSITY_PROJECTION = 0,
+				CM_AVERAGE = 1,
+				CM_BLEND = 2 // using transfer function
+			} compositing_mode;
 			/// a bounding box used to define a subspace of the volume to be visualized
 			box3 clip_box;
 			/// whether to enable lighting (gradient texture must be supplied)
 			bool enable_lighting;
 			/// whether to enable depth testing by reading depth from a texture to allow geometry intersecting the volume (depth texture must be supplied)
 			bool enable_depth_test;
+
+
+			
+			
+			bool front_to_back;
+
+			bool enable_isosurface;
+			bool isosurface_color_from_transfer_function;
+			float isovalue;
+			rgb isosurface_color;
+
+
+
+
 			//}@
 			/// construct with default values
 			volume_render_style();

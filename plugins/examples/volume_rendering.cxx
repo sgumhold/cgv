@@ -124,6 +124,9 @@ void volume_viewer::on_set(void* member_ptr)
 		box_rd.add(volume_bounding_box.get_center(), volume_bounding_box.get_extent());
 	}
 
+	if(member_ptr == &transfer_function_preset_idx)
+		load_transfer_function_preset();
+
 	update_member(member_ptr);
 	post_redraw();
 }
@@ -146,60 +149,14 @@ bool volume_viewer::init(cgv::render::context& ctx)
 
 	// init a color map used as a transfer function
 	transfer_function.init(ctx);
-	// Preset 1
-	/*
-	transfer_function.add_color_point(0.0f, rgb(1.0f));
-	transfer_function.add_opacity_point(0.0f, 0.0f);
-	transfer_function.add_opacity_point(1.0f, 1.0f);
-	*/
-
-	// Preset 2
-	transfer_function.add_color_point(0.0f, rgb(0.0f, 0.0f, 1.0f));
-	transfer_function.add_color_point(0.5f, rgb(1.0f, 0.0f, 0.0f));
-	transfer_function.add_color_point(1.0f, rgb(1.0f, 1.0f, 0.0f));
-
-	transfer_function.add_opacity_point(0.05f, 0.0f);
-	transfer_function.add_opacity_point(0.1f, 0.1f);
-	transfer_function.add_opacity_point(0.3f, 0.1f);
-	transfer_function.add_opacity_point(0.35f, 0.0f);
-	transfer_function.add_opacity_point(0.35f, 0.0f);
-	transfer_function.add_opacity_point(0.45f, 0.0f);
-	transfer_function.add_opacity_point(0.5f, 0.15f);
-	transfer_function.add_opacity_point(0.55f, 0.15f);
-	transfer_function.add_opacity_point(0.6f, 0.0f);
-	transfer_function.add_opacity_point(0.8f, 0.0f);
-	transfer_function.add_opacity_point(0.95f, 0.5f);
-
-	// Preset 3 for Head256.vox
-	/*
-	transfer_function.add_color_point(0.332f, rgb(0.5f, 0.8f, 0.85f));
-	transfer_function.add_color_point(0.349f, rgb(0.85f, 0.5f, 0.85f));
-	transfer_function.add_color_point(0.370f, rgb(0.9f, 0.85f, 0.8f));
-	transfer_function.add_color_point(0.452f, rgb(0.9f, 0.85f, 0.8f));
-	transfer_function.add_color_point(0.715f, rgb(0.9f, 0.85f, 0.8f));
-	transfer_function.add_color_point(1.0f, rgb(1.0f, 0.0f, 0.0f));
-	
-	transfer_function.add_opacity_point(0.208f, 0.0f);
-	transfer_function.add_opacity_point(0.22f, 0.17f);
-	transfer_function.add_opacity_point(0.315f, 0.17f);
-	transfer_function.add_opacity_point(0.326f, 0.0f);
-	transfer_function.add_opacity_point(0.345f, 0.0f);
-	transfer_function.add_opacity_point(0.348f, 0.23f);
-	transfer_function.add_opacity_point(0.35f, 0.0f);
-	transfer_function.add_opacity_point(0.374f, 0.0f);
-	transfer_function.add_opacity_point(0.539f, 0.31f);
-	transfer_function.add_opacity_point(0.633f, 0.31f);
-	transfer_function.add_opacity_point(0.716f, 0.0f);
-	transfer_function.add_opacity_point(0.8f, 1.0f);
-	*/
+	load_transfer_function_preset();
 
 
 	// TODO: add compositing modes to volume renderer
 	// maximum intensity projection, average, first, blending (tf)
 
 
-	// generate the texture containing the interpolated color map values
-	transfer_function.generate_texture(ctx);
+	
 
 	create_volume(ctx);
 	return true;
@@ -261,30 +218,112 @@ void volume_viewer::create_gui()
 		end_tree_node(vstyle);
 	}
 
-	if(begin_tree_node("Transfer Function Editor", transfer_function_editor_ptr, false)) {
+	if(begin_tree_node("Bounding Box", volume_bounding_box, false)) {
+		vec3& a = volume_bounding_box.ref_min_pnt();
+		vec3& b = volume_bounding_box.ref_max_pnt();
+
+		add_member_control(this, "Min X", a.x(), "value_slider", "min=-1;max=1;step=0.05;");
+		add_member_control(this, "Y", a.y(), "value_slider", "min=-1;max=1;step=0.05;");
+		add_member_control(this, "Z", a.z(), "value_slider", "min=-1;max=1;step=0.05;");
+
+		add_member_control(this, "Max X", b.x(), "value_slider", "min=-1;max=1;step=0.05;");
+		add_member_control(this, "Y", b.y(), "value_slider", "min=-1;max=1;step=0.05;");
+		add_member_control(this, "Z", b.z(), "value_slider", "min=-1;max=1;step=0.05;");
+	}
+
+	add_decorator("Transfer Function", "heading", "level=3");
+	add_member_control(this, "Preset", transfer_function_preset_idx, "dropdown", "enums='#1 (White),#2,#3 (Aneurysm),#4 (Head)'");
+
+	if(begin_tree_node("Editor", transfer_function_editor_ptr, false)) {
 		align("\a");
 		inline_object_gui(transfer_function_editor_ptr);
 		align("\b");
 		end_tree_node(transfer_function_editor_ptr);
 	}
 
-	if(begin_tree_node("Transfer Function Legend", transfer_function_legend_ptr, false)) {
+	if(begin_tree_node("Legend", transfer_function_legend_ptr, false)) {
 		align("\a");
 		inline_object_gui(transfer_function_legend_ptr);
 		align("\b");
 		end_tree_node(transfer_function_legend_ptr);
 	}
+}
 
-	vec3& a = volume_bounding_box.ref_min_pnt();
-	vec3& b = volume_bounding_box.ref_max_pnt();
+void volume_viewer::load_transfer_function_preset() {
 
-	add_member_control(this, "Min X", a.x(), "value_slider", "min=-1;max=1;step=0.05;");
-	add_member_control(this, "Min Y", a.y(), "value_slider", "min=-1;max=1;step=0.05;");
-	add_member_control(this, "Min Z", a.z(), "value_slider", "min=-1;max=1;step=0.05;");
+	unsigned idx = static_cast<unsigned>(transfer_function_preset_idx);
+	idx = std::min(idx, 3u);
 
-	add_member_control(this, "Max X", b.x(), "value_slider", "min=-1;max=1;step=0.05;");
-	add_member_control(this, "Max Y", b.y(), "value_slider", "min=-1;max=1;step=0.05;");
-	add_member_control(this, "Max Z", b.z(), "value_slider", "min=-1;max=1;step=0.05;");
+	transfer_function.clear();
+
+	switch(idx) {
+	case 0:
+		// plain white with linear opacity ramp
+		transfer_function.add_color_point(0.0f, rgb(1.0f));
+		transfer_function.add_opacity_point(0.0f, 0.0f);
+		transfer_function.add_opacity_point(1.0f, 1.0f);
+		break;
+	case 1:
+		// blue -> red -> yellow, optimized for example volume
+		transfer_function.add_color_point(0.0f, rgb(0.0f, 0.0f, 1.0f));
+		transfer_function.add_color_point(0.5f, rgb(1.0f, 0.0f, 0.0f));
+		transfer_function.add_color_point(1.0f, rgb(1.0f, 1.0f, 0.0f));
+
+		transfer_function.add_opacity_point(0.05f, 0.0f);
+		transfer_function.add_opacity_point(0.1f, 0.1f);
+		transfer_function.add_opacity_point(0.3f, 0.1f);
+		transfer_function.add_opacity_point(0.35f, 0.0f);
+		transfer_function.add_opacity_point(0.35f, 0.0f);
+		transfer_function.add_opacity_point(0.45f, 0.0f);
+		transfer_function.add_opacity_point(0.5f, 0.15f);
+		transfer_function.add_opacity_point(0.55f, 0.15f);
+		transfer_function.add_opacity_point(0.6f, 0.0f);
+		transfer_function.add_opacity_point(0.8f, 0.0f);
+		transfer_function.add_opacity_point(0.95f, 0.5f);
+		break;
+	case 2:
+		// optimized for aneurysm.vox
+		transfer_function.add_color_point(0.0f, rgb(1.0f, 1.0f, 1.0f));
+		transfer_function.add_color_point(0.25f, rgb(0.95f, 1.0f, 0.8f));
+		transfer_function.add_color_point(1.0f, rgb(1.0f, 0.4f, 0.333f));
+
+		transfer_function.add_opacity_point(0.1f, 0.0f);
+		transfer_function.add_opacity_point(1.0f, 1.0f);
+		break;
+	case 3:
+		// optimized for head256.vox
+		transfer_function.add_color_point(0.332f, rgb(0.5f, 0.8f, 0.85f));
+		transfer_function.add_color_point(0.349f, rgb(0.85f, 0.5f, 0.85f));
+		transfer_function.add_color_point(0.370f, rgb(0.9f, 0.85f, 0.8f));
+		transfer_function.add_color_point(0.452f, rgb(0.9f, 0.85f, 0.8f));
+		transfer_function.add_color_point(0.715f, rgb(0.9f, 0.85f, 0.8f));
+		transfer_function.add_color_point(1.0f, rgb(1.0f, 0.0f, 0.0f));
+
+		transfer_function.add_opacity_point(0.208f, 0.0f);
+		transfer_function.add_opacity_point(0.22f, 0.17f);
+		transfer_function.add_opacity_point(0.315f, 0.17f);
+		transfer_function.add_opacity_point(0.326f, 0.0f);
+		transfer_function.add_opacity_point(0.345f, 0.0f);
+		transfer_function.add_opacity_point(0.348f, 0.23f);
+		transfer_function.add_opacity_point(0.35f, 0.0f);
+		transfer_function.add_opacity_point(0.374f, 0.0f);
+		transfer_function.add_opacity_point(0.539f, 0.31f);
+		transfer_function.add_opacity_point(0.633f, 0.31f);
+		transfer_function.add_opacity_point(0.716f, 0.0f);
+		transfer_function.add_opacity_point(0.8f, 1.0f);
+		break;
+	default: break;
+	}
+	
+	if(auto ctx_ptr = get_context()) {
+		// generate the texture containing the interpolated color map values
+		transfer_function.generate_texture(*ctx_ptr);
+
+		if(transfer_function_editor_ptr)
+			transfer_function_editor_ptr->set_color_map(&transfer_function);
+		if(transfer_function_legend_ptr)
+			transfer_function_legend_ptr->set_color_map(*ctx_ptr, transfer_function);
+	}
 }
 
 void volume_viewer::create_volume(cgv::render::context& ctx) {
@@ -400,33 +439,30 @@ void volume_viewer::load_volume_from_file(const std::string& file_name) {
 	std::string header_content;
 	char* vox_content;
 
+	std::string hd_file_name = "";
+	std::string vox_file_name = "";
+
 	std::string extension = cgv::utils::file::get_extension(file_name);
-	if(cgv::utils::to_upper(extension) != "HD")
-		return;
-		
-	std::string vox_file_name = file_name.substr(0, file_name.length() - 2) + "vox";
+	if(cgv::utils::to_upper(extension) == "HD") {
+		hd_file_name = file_name;
+		vox_file_name = file_name.substr(0, file_name.length() - 2) + "vox";
+	} else if(cgv::utils::to_upper(extension) == "VOX") {
+		hd_file_name = file_name.substr(0, file_name.length() - 3) + "hd";
+		vox_file_name = file_name;
+	}
 
-	if(!cgv::utils::file::exists(file_name) || !cgv::utils::file::exists(vox_file_name))
+	if(!cgv::utils::file::exists(hd_file_name) || !cgv::utils::file::exists(vox_file_name))
 		return;
 
-	std::cout << file_name << std::endl;
+	std::cout << "Loading volume from: ";
+	std::cout << hd_file_name << std::endl;
 	std::cout << vox_file_name << std::endl;
 
-	if(!cgv::utils::file::read(file_name, header_content, true)) {
-		std::cout << "Error: failed to read header file <" << file_name << ">." << std::endl;
+	if(!cgv::utils::file::read(hd_file_name, header_content, true)) {
+		std::cout << "Error: failed to read header file." << std::endl;
 		return;
 	}
 
-	
-
-	//size_t vox_content_size = 0;
-	//char* vox_content = cgv::utils::file::read(vox_file_name, false, vox_content_size, 0);
-
-	//if(!cgv::utils::file::read(vox_file_name, vox_content, false)) {
-	//	std::cout << "Error: failed to read volume file <" << vox_file_name << ">." << std::endl;
-	//	return;
-	//}
-	
 	std::vector<cgv::utils::token> tokens;
 	cgv::utils::split_to_tokens(header_content, tokens, "x", true, "", "", " x");
 
@@ -455,14 +491,14 @@ void volume_viewer::load_volume_from_file(const std::string& file_name) {
 
 		FILE* fp = fopen(vox_file_name.c_str(), "rb");
 		if(fp) {
-			// read data
 			std::size_t nr = fread(raw_vol_data.data(), 1, num_voxels, fp);
 			if(nr != num_voxels) {
-				std::cerr << "could not read the expected number " << num_voxels << " of voxels but only " << nr << std::endl;
+				std::cout << "Error: could not read the expected number " << num_voxels << " of voxels but only " << nr << "." << std::endl;
 				fclose(fp);
 			}
+		} else {
+			std::cout << "Error: failed to read voxel file." << std::endl;
 		}
-		// close and return success
 		fclose(fp);
 
 		for(size_t i = 0; i < num_voxels; ++i)

@@ -40,12 +40,16 @@ protected:
 	cgv::render::view* view_ptr;
 	/// render style for volume
 	cgv::render::volume_render_style vstyle;
+	/// index of the transfer function preset
+	cgv::type::DummyEnum transfer_function_preset_idx = (cgv::type::DummyEnum)1;
 	/// using a color map to define the volume transfer function
 	/// gl_color_map supports generation of a texture from its contents
 	cgv::glutil::gl_color_map transfer_function;
 	/// render data for wireframe box
 	cgv::glutil::box_wire_render_data<> box_rd;
 	
+	void load_transfer_function_preset();
+
 	void create_volume(cgv::render::context& ctx);
 	void splat_spheres(std::vector<float>& vol_data, float voxel_size, std::mt19937& rng, size_t n, float radius, float contribution);
 	void splat_sphere(std::vector<float>& vol_data, float voxel_size, const vec3& pos, float radius, float contribution);
