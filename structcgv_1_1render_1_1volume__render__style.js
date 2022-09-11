@@ -36,6 +36,7 @@ var structcgv_1_1render_1_1volume__render__style =
     [ "vec3", "structcgv_1_1render_1_1volume__render__style.html#a3850221d245b353028eca7e9306769aa", null ],
     [ "vec4", "structcgv_1_1render_1_1volume__render__style.html#a8f6fdf00ab6917209d081ffe691c75f3", null ],
     [ "vecn", "structcgv_1_1render_1_1volume__render__style.html#aa4274bbe9929cab87164fda32123be1a", null ],
+    [ "CompositingMode", "structcgv_1_1render_1_1volume__render__style.html#a13cc6cb79a6ba92f65c5de6685b87ec4", null ],
     [ "IntegrationQuality", "structcgv_1_1render_1_1volume__render__style.html#af489215bcca2772220c2f5e7993465a2", null ],
     [ "InterpolationMode", "structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7", null ],
     [ "volume_render_style", "structcgv_1_1render_1_1volume__render__style.html#aacc940494f593fa97d6e30cfd5839198", null ],

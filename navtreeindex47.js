@@ -1,5 +1,6 @@
 var NAVTREEINDEX47 =
 {
+"vr__state_8h.html#abcd8365da0a2174d6e6c9f1675e72421":[12,0,1,5,7,12],
 "vr__state_8h.html#ac6829b9be69fb66e4c969947090d27bb":[12,0,1,5,7,8],
 "vr__state_8h.html#aef3295070e29d71a25db0d6374da32ff":[12,0,1,5,7,3],
 "vr__state_8h.html#af21ee59fd7356a23f9176f098b5c9b24":[12,0,1,5,7,11],
