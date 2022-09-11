@@ -6,6 +6,17 @@
 #define ENABLE_SCALE_ADJUSTMENT 0
 #define ENABLE_LIGHTING 0
 #define ENABLE_DEPTH_TEST 0
+
+#define FRONT_TO_BACK 0
+
+// 0 - Maximum intensity projection
+// 1 - Average
+// 2 - Blend (transfer function)
+#define COMPOSITING_MODE 2
+
+#define ENABLE_ISOSURFACE 0
+#define ISOSURFACE_COLOR_MODE 0
+
 #define TRANSFER_FUNCTION_SAMPLER_DIMENSIONS 1
 
 //***** begin interface of fragment.glfs ***********************************
@@ -44,8 +55,12 @@ layout (binding = 4) uniform sampler2D depth_tex;
 uniform vec2 viewport_dims;
 uniform float opacity_scale;
 uniform float size_scale;
+
 uniform vec3 clip_box_min;
 uniform vec3 clip_box_max;
+
+uniform float isovalue;
+uniform vec3 isosurface_color;
 
 in vec4 position_fs;
 in vec3 position_object;
@@ -154,24 +169,28 @@ vec4 textureNearest(sampler3D tex, vec3 coord) {
 	return texelFetch(tex, uv, 0);
 }
 
-/*vec3 gradient(vec3 coords, int channel) {
+vec3 central_difference(vec3 coords) {
 
-	vec3 tex_size = vec3(textureSize(volume_tex, 0));
-	vec3 ts = 1.0 / tex_size;
+	float xr = textureOffset(volume_tex, coords, ivec3(+1, 0, 0)).r;
+	float xl = textureOffset(volume_tex, coords, ivec3(-1, 0, 0)).r;
+	float yr = textureOffset(volume_tex, coords, ivec3(0, +1, 0)).r;
+	float yl = textureOffset(volume_tex, coords, ivec3(0, -1, 0)).r;
+	float zr = textureOffset(volume_tex, coords, ivec3(0, 0, +1)).r;
+	float zl = textureOffset(volume_tex, coords, ivec3(0, 0, -1)).r;
 
-	float xr = texture(volume_tex, coords + ts * vec3(+1, 0, 0))[channel];
-	float xl = texture(volume_tex, coords + ts * vec3(-1, 0, 0))[channel];
-	float yr = texture(volume_tex, coords + ts * vec3(0, +1, 0))[channel];
-	float yl = texture(volume_tex, coords + ts * vec3(0, -1, 0))[channel];
-	float zr = texture(volume_tex, coords + ts * vec3(0, 0, +1))[channel];
-	float zl = texture(volume_tex, coords + ts * vec3(0, 0, -1))[channel];
 	return -0.5 * vec3(xr - xl, yr - yl, zr - zl);
-}*/
+}
 
 //vec3 object_space_eye_pos() {
 //
 //	return (get_inverse_modelview_matrix() * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
 //}
+
+vec3 safe_normalize(vec3 v) {
+
+	float len = length(v);
+	return len > 0.000001 ? v/len : vec3(0.0);
+}
 
 vec3 object_space_view_dir(vec3 v) {
 
@@ -179,8 +198,28 @@ vec3 object_space_view_dir(vec3 v) {
     return eye_fs - v;
 }
 
-vec3 calculate_lighting(vec3 col, vec3 normal, vec3 light_dir, vec3 eye_dir, float specular_intensity) {
+float get_density(in vec3 uvw) {
+#if (INTERPOLATION_MODE == 0)
+	return textureNearest(volume_tex, uvw).r;
+#elif (INTERPOLATION_MODE == 1)
+	return textureLod(volume_tex, uvw, 0).r;
+#elif (INTERPOLATION_MODE == 2)
+	return textureSmooth(volume_tex, uvw).r;
+#else
+	return textureCubic(volume_tex, uvw).r;
+#endif
+}
 
+vec4 apply_transfer_function(in float density) {
+#if TRANSFER_FUNCTION_SAMPLER_DIMENSIONS == 1
+	return texture(transfer_function_tex, density);
+#else
+	return texture(transfer_function_tex, vec2(density, 0.5f));
+#endif
+}
+
+#if ENABLE_LIGHTING == 1
+vec3 calculate_lighting(vec3 col, vec3 normal, vec3 light_dir, vec3 eye_dir, float specular_intensity) {
     float ndotl = max(mix(0.0f, 1.5f, dot(normal, light_dir)), 0.5f); // modified, to avoid volume becoming too dark
     vec3 diffuse = ndotl * col;
     vec3 v = eye_dir;
@@ -190,12 +229,252 @@ vec3 calculate_lighting(vec3 col, vec3 normal, vec3 light_dir, vec3 eye_dir, flo
     return diffuse + specular;
 }
 
-vec3 safe_normalize(vec3 v) {
+void apply_lighting(in vec3 uvw, in vec3 ray_dir, in vec3 light_dir, inout vec4 color_in) {
+	// get the normal from a precomputed texture as the average gradient over all 4 channels
+	vec3 normal = safe_normalize(central_difference(uvw));//(texture(gradient_tex, uvw).xyz);
+	// apply lighting to all input colors
+	color_in.rgb *= calculate_lighting(color_in.rgb, normal, -light_dir, ray_dir, 0.3);
+}
+#endif
 
-	float len = length(v);
-	return len > 0.000001 ? v/len : vec3(0.0);
+bool intersect_box(vec3 origin, vec3 direction, out float t_min, out float t_max) {
+
+	vec3 inv_dir = 1.0 / direction;
+
+	float t1 = (-0.5 - origin.x)*inv_dir.x;
+	float t2 = (+0.5 - origin.x)*inv_dir.x;
+
+	t_min = min(t1, t2);
+	t_max = max(t1, t2);
+
+	t1 = (-0.5 - origin.y)*inv_dir.y;
+	t2 = (+0.5 - origin.y)*inv_dir.y;
+
+	t_min = max(t_min, min(t1, t2));
+	t_max = min(t_max, max(t1, t2));
+
+	t1 = (-0.5 - origin.z)*inv_dir.z;
+	t2 = (+0.5 - origin.z)*inv_dir.z;
+
+	t_min = max(t_min, min(t1, t2));
+	t_max = min(t_max, max(t1, t2));
+
+	return t_max > max(t_min, 0.0f);
 }
 
+void main()
+{
+	const float step_size = 1.732051 / NUM_STEPS;
+	vec2 frag_tex_coords = gl_FragCoord.xy / viewport_dims;
+
+#if ENABLE_LIGHTING == 1
+	// TODO: make this use the framework lighting system?
+	// light is static to window
+	//const vec3 light_dir = normalize((get_inverse_modelview_matrix() * vec4(normalize(vec3(1.0, -1.0, -1.0)), 0.0)).xyz);
+
+	// light is static to scene
+	const vec3 light_dir = normalize(vec3(1.0, -1.0, -1.0));
+#endif
+
+	vec3 ray_org = position_object;
+	vec3 eye_pos = eye_fs;
+
+#if ENABLE_DEPTH_TEST == 0
+	ray_org = position_object;
+#else
+	float depth = texture(depth_tex, frag_tex_coords).r;
+	
+	vec4 clip_space_pos = vec4(2.0 * frag_tex_coords - 1.0, 2.0 * depth - 1.0, 1.0);
+
+	vec4 object_space_pos = get_inverse_modelview_projection_matrix() * clip_space_pos;
+	object_space_pos /= object_space_pos.w;
+
+	vec3 pos_to_eye = position_object - eye_pos;
+	vec3 depth_pos_to_eye = object_space_pos.xyz - eye_pos;
+
+	if(dot(pos_to_eye, pos_to_eye) >= dot(depth_pos_to_eye, depth_pos_to_eye))
+		ray_org = object_space_pos.xyz;
+#endif
+
+	vec3 ray_dir = normalize(object_space_view_dir(position_object));
+	
+	float t1, t2;
+	bool intersection = intersect_box(ray_org, ray_dir, t1, t2);
+
+	// test if ray intersects both boxes and return transparent fragment if not
+	if(!intersection) {
+		finish_fragment(vec4(0.0, 0.0, 0.0, 0.0));
+		return;
+	}
+
+	// ray end point may lie behind the eye position
+	// take the minimum of the distances to the eye and ray end position
+	float te = length(eye_pos - ray_org);
+	t2 = min(t2, te);
+
+	// make sure the ray origin is not moved further back (important when depth testing is enabled)
+	t1 = max(t1, 0.0);
+
+	// update the ray origin as it may have changed
+#if FRONT_TO_BACK == 0
+	// back-to-front
+	ray_org += t1*ray_dir;
+#else
+	// front-to-back
+	ray_org += t2*ray_dir;
+	ray_dir = -ray_dir;
+#endif
+
+	// transform position to texture coordinates: [-0.5,0.5] -> [0.0,1.0]
+	ray_org += 0.5;
+
+#if ENABLE_NOISE_OFFSET == 1
+	// add a small offset noise to the ray start position to prevent ring artifacts
+	ivec2 ts = textureSize(noise_tex, 0);
+	ray_org += (2.0 * ray_dir * step_size) * texture(noise_tex, frag_tex_coords*ts).r;
+#endif
+
+#if COMPOSITING_MODE == 0
+	float max_density = 0.0;
+#elif COMPOSITING_MODE == 1
+	float average_density = 0.0;
+#else
+	#if FRONT_TO_BACK == 0
+	// back-to-front
+	vec4 color = vec4(0.0);
+	#else
+	// front-to-back
+	vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+	#endif
+#endif
+
+	float dt = t2 - t1;
+
+	int istep = 0;
+	for(istep; istep < NUM_STEPS; ++istep) {
+		// calculate the current ray position
+		float t = istep * step_size;
+		vec3 pos = ray_org + t*ray_dir;
+
+		if(t >= dt)
+			break;
+
+		// transform pos from [0,1] to range given by [clip_box_min,clip_box_max] to allow rendering only part of the volume
+		vec3 uvw = mix(clip_box_min, clip_box_max, pos);
+
+		float density = get_density(uvw);
+
+#if COMPOSITING_MODE == 0
+
+		max_density = max(max_density, density * opacity_scale);
+
+#elif COMPOSITING_MODE == 1
+
+		average_density += density * opacity_scale;
+
+#else
+
+
+#if ENABLE_ISOSURFACE == 1
+		if(density >= isovalue) {
+			#if ISOSURFACE_COLOR_MODE == 0
+			vec4 color_in = vec4(isosurface_color, 1.0);
+			#else
+			vec4 color_in = apply_transfer_function(density);
+			#endif
+			
+			#if ENABLE_LIGHTING == 1
+			apply_lighting(uvw, ray_dir, light_dir, color_in);
+			#endif
+
+			color.rgb = color.a*color_in.rgb + color.rgb;
+			color.a = 0.0;
+
+			break;
+		}
+#endif
+
+		// apply the transfer function
+		vec4 color_in = apply_transfer_function(density);
+
+	#if ENABLE_LIGHTING == 1
+		apply_lighting(uvw, ray_dir, light_dir, color_in);
+	#endif
+
+		// scale the alpha channel based on the global opacity scale
+		color_in.a *= opacity_scale;
+
+	#if ENABLE_SCALE_ADJUSTMENT == 1
+		color_in.a = -exp(-step_size * size_scale * color_in.a) + 1.0;
+	#else
+		color_in.a = -exp(-color_in.a) + 1.0;
+	#endif
+
+		// premultiply alpha
+		color_in.rgb *= color_in.a;
+
+	#if FRONT_TO_BACK == 0
+		// blend back-to-front
+		color = color_in + (1.0 - color_in.a)*color;
+	#else
+		// blend front-to-back
+		color.rgb = color.a*color_in.rgb + color.rgb;
+		color.a = (1.0 - color_in.a)*color.a;
+
+		// early termination when alpha threshold is reached
+#if ENABLE_ISOSURFACE == 0
+		if(color.a < 0.05)
+			break;
+#endif
+	#endif
+#endif
+	}
+
+#if COMPOSITING_MODE == 0
+	finish_fragment(vec4(max_density));
+#elif COMPOSITING_MODE == 1
+	average_density /= float(istep);
+
+#if ENABLE_SCALE_ADJUSTMENT == 1
+	average_density  = -exp(-size_scale * average_density ) + 1.0;
+#endif
+
+	finish_fragment(vec4(average_density));
+#else
+
+	#if FRONT_TO_BACK == 1
+	color.a = 1.0 - color.a;
+	#endif
+
+	finish_fragment(color);
+#endif
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 void main()
 {
 	const float step_size = 1.732051 / NUM_STEPS;
@@ -221,7 +500,6 @@ void main()
 	vec4 object_space_pos = get_inverse_modelview_projection_matrix() * clip_space_pos;
 	object_space_pos /= object_space_pos.w;
 
-	//vec3 eye = object_space_eye_pos();
 	vec3 eye = eye_fs;
 
 	vec3 ray_start_pos;
@@ -243,9 +521,16 @@ void main()
 	ray_start_pos += (2.0 * ray_dir * step_size) * texture(noise_tex, frag_tex_coords*ts).r;
 #endif
 
+#if COMPOSITING_MODE == 0
+	float max_density = 0.0;
+#elif COMPOSITING_MODE == 1
+	float average_density = 0.0;
+#else
 	vec4 color = vec4(0.0);
+#endif
 
-	for(int istep = 0; istep < NUM_STEPS; ++istep) {
+	int istep = 0;
+	for(istep; istep < NUM_STEPS; ++istep) {
 		// calculate the current ray position
 		float t = istep * step_size;
 		vec3 pos = ray_start_pos + t*ray_dir;
@@ -261,31 +546,27 @@ void main()
 			break;
 
 		// transform pos from [0,1] to range given by [clip_box_min,clip_box_max] to allow rendering only part of the volume
-		vec3 uvw = pos;
-		uvw = mix(clip_box_min, clip_box_max, pos);
+		vec3 uvw = mix(clip_box_min, clip_box_max, pos);
 
-#if (INTERPOLATION_MODE == 0)
-		float density = textureNearest(volume_tex, uvw).r;
-#elif (INTERPOLATION_MODE == 1)
-		float density = textureLod(volume_tex, uvw, 0).r;
-#elif (INTERPOLATION_MODE == 2)
-		float density = textureSmooth(volume_tex, uvw).r;
+		float density = get_density(uvw);
+
+#if COMPOSITING_MODE == 0
+
+		max_density = max(max_density, density * opacity_scale);
+
+#elif COMPOSITING_MODE == 1
+
+		average_density += density * opacity_scale;
+
 #else
-		float density = textureCubic(volume_tex, uvw).r;
-#endif
+
 		// apply the transfer function
-#if TRANSFER_FUNCTION_SAMPLER_DIMENSIONS == 1
-		vec4 color_in = texture(transfer_function_tex, density);
-#else
-		vec4 color_in = texture(transfer_function_tex, vec2(density, 0.5f));
-#endif
-		
-#if ENABLE_LIGHTING == 1
-		// get the normal from a precomputed texture as the average gradient over all 4 channels
-		vec3 normal = -safe_normalize(texture(gradient_tex, uvw).xyz);
-		// apply lighting to all input colors
-		color_in.rgb *= calculate_lighting(color_in.rgb, normal, light_dir, ray_dir, 0.3);
-#endif
+		vec4 color_in = apply_transfer_function(density);
+
+	#if ENABLE_LIGHTING == 1
+		apply_lighting(uvw, ray_dir, light_dir, color_in);
+	#endif
+
 		// scale the alpha channel based on the global opacity scale
 		color_in.a *= opacity_scale;
 
@@ -300,7 +581,22 @@ void main()
 		
 		// blend back to front
 		color = color_in + (1.0 - color_in.a)*color;
+
+#endif
 	}
 
+#if COMPOSITING_MODE == 0
+	finish_fragment(vec4(max_density));
+#elif COMPOSITING_MODE == 1
+	average_density /= float(istep);
+
+#if ENABLE_SCALE_ADJUSTMENT == 1
+	average_density  = -exp(-size_scale * average_density ) + 1.0;
+#endif
+
+	finish_fragment(vec4(average_density));
+#else
 	finish_fragment(color);
+#endif
 }
+*/
