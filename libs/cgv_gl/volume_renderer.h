@@ -59,11 +59,22 @@ namespace cgv { // @<
 			bool enable_depth_test;
 
 
-			
+			bool light_static_to_scene;
+			vec3 light_direction;
+
+			float diffuse_strength;
+			float specular_strength;
+			float specular_power;
+			float ambient_strength;
 			
 			bool front_to_back;
 
-			bool enable_isosurface;
+			enum IsosurfaceMode{
+				IM_NONE = 0,
+				IM_ISOVALUE = 1,
+				IM_ALPHA_THRESHOLD = 2
+			} isosurface_mode;
+
 			bool isosurface_color_from_transfer_function;
 			float isovalue;
 			rgb isosurface_color;

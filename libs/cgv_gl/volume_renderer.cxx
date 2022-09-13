@@ -31,8 +31,17 @@ namespace cgv {
 			clip_box = box3(vec3(0.0f), vec3(1.0f));
 			enable_lighting = false;
 			enable_depth_test = true;
-			front_to_back = false;
-			enable_isosurface = false;
+			front_to_back = true;
+			
+			light_static_to_scene = true;
+			light_direction = normalize(vec3(1.0f, -1.0f, -1.0f));
+
+			diffuse_strength = 0.8f;
+			specular_strength = 0.4f;
+			specular_power = 32.0f;
+			ambient_strength = 0.3f;
+
+			isosurface_mode = IM_NONE;
 			isosurface_color_from_transfer_function = false;
 			isovalue = 0.5f;
 			isosurface_color = rgb(0.7f);
@@ -95,8 +104,8 @@ namespace cgv {
 			shader_code::set_define(defines, "ENABLE_LIGHTING", vrs.enable_lighting, false);
 			shader_code::set_define(defines, "ENABLE_DEPTH_TEST", vrs.enable_depth_test, false);
 			
-			shader_code::set_define(defines, "FRONT_TO_BACK", vrs.front_to_back || (vrs.enable_isosurface && vrs.compositing_mode == volume_render_style::CM_BLEND), false);
-			shader_code::set_define(defines, "ENABLE_ISOSURFACE", vrs.enable_isosurface, false);
+			shader_code::set_define(defines, "FRONT_TO_BACK", vrs.front_to_back || (vrs.isosurface_mode != volume_render_style::IM_NONE && vrs.compositing_mode == volume_render_style::CM_BLEND), false);
+			shader_code::set_define(defines, "ISOSURFACE_MODE", vrs.isosurface_mode, volume_render_style::IM_NONE);
 			shader_code::set_define(defines, "ISOSURFACE_COLOR_MODE", vrs.isosurface_color_from_transfer_function, false);
 
 			shader_code::set_define(defines, "COMPOSITING_MODE", vrs.compositing_mode, volume_render_style::CM_BLEND);
@@ -186,6 +195,10 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "clip_box_min", vrs.clip_box.get_min_pnt());
 			ref_prog().set_uniform(ctx, "clip_box_max", vrs.clip_box.get_max_pnt());
 
+			ref_prog().set_uniform(ctx, "light_static_to_scene", vrs.light_static_to_scene);
+			ref_prog().set_uniform(ctx, "light_direction", normalize(vrs.light_direction));
+			ref_prog().set_uniform(ctx, "light_parameters", vec4(vrs.diffuse_strength, vrs.specular_strength, vrs.specular_power, vrs.ambient_strength));
+
 			ref_prog().set_uniform(ctx, "isovalue", vrs.isovalue);
 			ref_prog().set_uniform(ctx, "isosurface_color", vrs.isosurface_color);
 
@@ -213,7 +226,6 @@ namespace cgv {
 
 			glDisable(GL_CULL_FACE);
 			glDisable(GL_BLEND);
-			glEnable(GL_DEPTH_TEST);
 
 			return renderer::disable(ctx);
 		}
@@ -253,43 +265,63 @@ namespace cgv {
 				cgv::render::volume_render_style* vrs_ptr = reinterpret_cast<cgv::render::volume_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-				p->add_member_control(b, "Quality", vrs_ptr->integration_quality, "dropdown", "enums='8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024'");
+				p->add_member_control(b, "Quality", vrs_ptr->integration_quality, "dropdown", "w=114;enums='8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024'", " ");
+				p->add_member_control(b, "Use Noise", vrs_ptr->enable_noise_offset, "check", "w=74");
 				p->add_member_control(b, "Interpolation", vrs_ptr->interpolation_mode, "dropdown", "enums=Nearest,Linear,Smooth,Cubic");
-				p->add_member_control(b, "Use Noise", vrs_ptr->enable_noise_offset, "check");
+
+				p->add_member_control(b, "Compositing Mode", vrs_ptr->compositing_mode, "dropdown", "enums='Maximum Intensity Projection, Average, Blend'");
+				p->add_member_control(b, "Front-to-Back", vrs_ptr->front_to_back, "check");
+
 				p->add_member_control(b, "Scale Adjustment", vrs_ptr->size_scale, "value_slider", "w=170;min=0.0;step=0.001;max=500.0;log=true;ticks=true", " ");
 				p->add_member_control(b, "", vrs_ptr->enable_scale_adjustment, "check", "w=30");
 				p->add_member_control(b, "Opacity Scale", vrs_ptr->opacity_scale, "value_slider", "min=0.0;step=0.001;max=1.0;ticks=true");
 				
-				p->add_member_control(b, "Lighting", vrs_ptr->enable_lighting, "check");
 				p->add_member_control(b, "Depth Test", vrs_ptr->enable_depth_test, "check");
+	
+				if(p->begin_tree_node("Lighting", vrs_ptr->enable_lighting, false)) {
+					p->align("/a");
+					p->add_member_control(b, "Enable", vrs_ptr->enable_lighting, "check", "w=88", " ");
+					p->add_member_control(b, "Static to Scene", vrs_ptr->light_static_to_scene, "check", "w=100");
+					p->add_member_control(b, "Direction", vrs_ptr->light_direction[0], "value", "w=58;min=-1;max=1", " ");
+					p->add_member_control(b, "", vrs_ptr->light_direction[1], "value", "w=58;min=-1;max=1", " ");
+					p->add_member_control(b, "", vrs_ptr->light_direction[2], "value", "w=58;min=-1;max=1");
+					p->add_member_control(b, "", vrs_ptr->light_direction[0], "slider", "w=58;min=-1;max=1;step=0.0001;ticks=true", " ");
+					p->add_member_control(b, "", vrs_ptr->light_direction[1], "slider", "w=58;min=-1;max=1;step=0.0001;ticks=true", " ");
+					p->add_member_control(b, "", vrs_ptr->light_direction[2], "slider", "w=58;min=-1;max=1;step=0.0001;ticks=true");
 
-				p->add_member_control(b, "Front-to-Back", vrs_ptr->front_to_back, "check");
-				p->add_member_control(b, "Compositing Mode", vrs_ptr->compositing_mode, "dropdown", "enums='Maximum Intensity Projection, Average, Blend'");
-				
-				if(p->begin_tree_node("Isosurface (Blend only)", vrs_ptr->enable_isosurface, false)) {
+					p->add_decorator("Light Parameters", "heading", "level=3");
+					p->add_member_control(b, "Diffuse", vrs_ptr->diffuse_strength, "value_slider", "min=0;max=1;step=0.001;ticks=true");
+					p->add_member_control(b, "Specular", vrs_ptr->specular_strength, "value_slider", "min=0;max=1;step=0.001;ticks=true");
+					p->add_member_control(b, "Specular Power", vrs_ptr->specular_power, "value_slider", "min=1;max=128;step=0.1;ticks=true;log=true");
+					p->add_member_control(b, "Ambient", vrs_ptr->ambient_strength, "value_slider", "min=0;max=1;step=0.001;ticks=true");
+					p->align("/b");
+				}
+
+				if(p->begin_tree_node("Isosurface (Blend only)", vrs_ptr->isosurface_mode, false)) {
 					p->align("\a");
-					p->add_member_control(b, "Enable", vrs_ptr->enable_isosurface, "check");
-					p->add_member_control(b, "Isovalue", vrs_ptr->isovalue, "value_slider", "min=0.0;max=1.0;step=0.001;ticks=true");
-					p->add_member_control(b, "Color", vrs_ptr->isosurface_color, "", "w=44", " ");
-					p->add_member_control(b, "from Transfer Function", vrs_ptr->isosurface_color_from_transfer_function, "check");
+					p->add_member_control(b, "", vrs_ptr->isosurface_mode, "dropdown", "enums='Disabled,Isovalue,Alpha Threshold'");
+
+					p->add_member_control(b, "Value", vrs_ptr->isovalue, "value_slider", "min=0.0;max=1.0;step=0.001;ticks=true");
+					p->add_member_control(b, "Color", vrs_ptr->isosurface_color, "", "w=42", " ");
+					p->add_member_control(b, "From Transfer Function", vrs_ptr->isosurface_color_from_transfer_function, "check");
 					p->align("\b");
 				}
 				
 				if(p->begin_tree_node("Clip Box", vrs_ptr->clip_box, false)) {
 					p->align("\a");
-					p->add_member_control(b, "Box Min", vrs_ptr->clip_box.ref_min_pnt()[0], "value", "w=55;min=0;max=1", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[1], "value", "w=55;min=0;max=1", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[2], "value", "w=55;min=0;max=1");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[0], "slider", "w=55;min=0;step=0.0001;max=1;ticks=true", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[1], "slider", "w=55;min=0;step=0.0001;max=1;ticks=true", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[2], "slider", "w=55;min=0;step=0.0001;max=1;ticks=true");
+					p->add_member_control(b, "Box Min", vrs_ptr->clip_box.ref_min_pnt()[0], "value", "w=58;min=0;max=1", " ");
+					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[1], "value", "w=58;min=0;max=1", " ");
+					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[2], "value", "w=58;min=0;max=1");
+					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[0], "slider", "w=58;min=0;max=1;step=0.0001;ticks=true", " ");
+					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[1], "slider", "w=58;min=0;max=1;step=0.0001;ticks=true", " ");
+					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[2], "slider", "w=58;min=0;max=1;step=0.0001;ticks=true");
 
-					p->add_member_control(b, "Box Max", vrs_ptr->clip_box.ref_max_pnt()[0], "value", "w=55;max=0;max=1", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[1], "value", "w=55;max=0;max=1", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[2], "value", "w=55;max=0;max=1");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[0], "slider", "w=55;max=0;step=0.0001;max=1;ticks=true", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[1], "slider", "w=55;max=0;step=0.0001;max=1;ticks=true", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[2], "slider", "w=55;max=0;step=0.0001;max=1;ticks=true");
+					p->add_member_control(b, "Box Max", vrs_ptr->clip_box.ref_max_pnt()[0], "value", "w=58;max=0;max=1", " ");
+					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[1], "value", "w=58;max=0;max=1", " ");
+					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[2], "value", "w=58;max=0;max=1");
+					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[0], "slider", "w=58;max=0;max=1;step=0.0001;ticks=true", " ");
+					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[1], "slider", "w=58;max=0;max=1;step=0.0001;ticks=true", " ");
+					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[2], "slider", "w=58;max=0;max=1;step=0.0001;ticks=true");
 					p->align("\b");
 				}
 

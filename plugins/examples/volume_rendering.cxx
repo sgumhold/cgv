@@ -151,13 +151,6 @@ bool volume_viewer::init(cgv::render::context& ctx)
 	transfer_function.init(ctx);
 	load_transfer_function_preset();
 
-
-	// TODO: add compositing modes to volume renderer
-	// maximum intensity projection, average, first, blending (tf)
-
-
-	
-
 	create_volume(ctx);
 	return true;
 }
