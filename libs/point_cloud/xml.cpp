@@ -6,10 +6,24 @@ namespace cgv {
 namespace pointcloud {
 namespace file_parser {
 
+class xml_parsing_error : public std::exception
+{
+	std::string msg;
+public:
+	inline xml_parsing_error() = default;
+
+	inline xml_parsing_error(const std::string& m) : msg(m) {}
+
+	inline const char* what() const noexcept
+	{
+		return msg.c_str();
+	}
+};
+
 std::unique_ptr<xml_node> read_xml(const std::string& xml_content)
 {
 
-	enum class XMLTokenType { TAG, CONTENT };
+	enum class XMLTokenType { TAG, CDATA, CONTENT };
 
 	struct XMLTokens
 	{
@@ -19,45 +33,64 @@ std::unique_ptr<xml_node> read_xml(const std::string& xml_content)
 
 	std::string::const_iterator str_iter = xml_content.cbegin();
 	bool found_tag_begin = false;
-	std::string::const_iterator tag_begin;
-	std::string::const_iterator tag_end;
+	size_t tag_begin;
+	size_t tag_end;
 	std::string content;
 	std::vector<XMLTokens> tokens;
+	bool is_cdata = false;
 
-	while (str_iter < xml_content.cend()) {
-		if (*str_iter == '<' && !found_tag_begin) {
-			tag_begin = str_iter;
+	int i = 0;
+
+	while (i < xml_content.size()) {
+		if (xml_content[i] == '<' && !found_tag_begin) {
+			tag_begin = i;
 			found_tag_begin = true;
+
+			if (i + 12 <= xml_content.size()) { //length of empty cdata tag = 12
+				std::string cdata = xml_content.substr(i, 9);
+				if (cdata.compare("<![CDATA[") == 0) {
+					//TODO find end
+					size_t it = xml_content.find("]]>", i + 8);
+					if (it != std::string::npos) {
+						found_tag_begin = false;
+						tokens.emplace_back();
+						tokens.back().type = XMLTokenType::CDATA;
+						tokens.back().content = xml_content.substr(i, it - i + 3);
+						i = it + 3;
+						continue;
+					}
+				}
+			}
+
 			if (content.size() > 0) {
-				// TODO store content
 				tokens.emplace_back();
 				tokens.back().content.swap(content);
 				tokens.back().type = XMLTokenType::CONTENT;
 			}
 		}
-		else if (*str_iter == '>') {
+		else if (xml_content[i] == '>') {
 			if (found_tag_begin) {
-				tag_end = str_iter + 1;
+				tag_end = i + 1;
 				found_tag_begin = false;
-				std::string str(tag_begin, tag_end);
+				std::string str = xml_content.substr(tag_begin, tag_end - tag_begin);
 				tokens.emplace_back();
 				tokens.back().content = str;
 				tokens.back().type = XMLTokenType::TAG;
 			}
 			else {
 				// error
-				throw xml_parsing_error{"unexpected >"};
+				throw xml_parsing_error("unexpected >");
 			}
 		}
 		else {
 			if (!found_tag_begin)
-				content.push_back(*str_iter);
-			else if (*str_iter == 0) {
+				content.push_back(xml_content[i]);
+			else if (xml_content[i] == 0) {
 				break;
 			}
 		}
 
-		++str_iter;
+		++i;
 	}
 
 	xml_tag preamble;
@@ -78,7 +111,7 @@ std::unique_ptr<xml_node> read_xml(const std::string& xml_content)
 					node_stack.push_back(xml_root.get());
 				}
 				else {
-					throw xml_parsing_error{"invalid root tag"};
+					throw xml_parsing_error("invalid root tag");
 				}
 			}
 			else {
@@ -96,10 +129,10 @@ std::unique_ptr<xml_node> read_xml(const std::string& xml_content)
 						node_stack.pop_back();
 					}
 					else {
-						xml_tag& parent_tag = node_stack[node_stack.size() - 2]->tag;
+						xml_tag& last_tag = node_stack[node_stack.size() - 1]->tag;
 						std::stringstream ss;
-						ss << "expected closign tag for" << parent_tag.name << ", but found tag.name";
-						throw xml_parsing_error{ss.str()};
+						ss << "expected closing tag for " << last_tag.name << ", but found " << tag.name;
+						throw xml_parsing_error(ss.str());
 					}
 					break;
 				}
@@ -109,10 +142,18 @@ std::unique_ptr<xml_node> read_xml(const std::string& xml_content)
 					break;
 				}
 				default: {
-					throw xml_parsing_error{"found unknown tag"};
+					throw xml_parsing_error("found unknown tag");
 				}
 				}
 			}
+		}
+		else if (token.type == XMLTokenType::CDATA) {
+			xml_tag tag;
+			tag.name = "CDATA";
+			tag.type = XMLTagType::XTT_CDATA;
+			auto* new_node = new xml_node(tag);
+			new_node->add_content(token.content.substr(9, token.content.size() - (9+3)));
+			node_stack.back()->add_child(new_node);
 		}
 		else if (token.type == XMLTokenType::CONTENT) {
 			if (node_stack.size() > 0) {
@@ -123,7 +164,7 @@ std::unique_ptr<xml_node> read_xml(const std::string& xml_content)
 				if (non_whitespace_content.size() > 0) {
 					std::stringstream ss;
 					ss << "found string  " << non_whitespace_content << " outside of tag ";
-					throw xml_parsing_error{ss.str()};
+					throw xml_parsing_error(ss.str());
 				}
 			}
 		}
@@ -132,7 +173,7 @@ std::unique_ptr<xml_node> read_xml(const std::string& xml_content)
 	if (node_stack.size() > 0) {
 		std::stringstream ss;
 		ss << "missing close tag for " << node_stack.back()->tag.name;
-		throw xml_parsing_error{ss.str()};
+		throw xml_parsing_error(ss.str());
 	}
 
 	return xml_root;
@@ -196,6 +237,22 @@ xml_tag xml_read_tag(const std::string& str)
 			tag.type = XTT_PREAMBLE;
 			l = 2;
 			r = 2;
+		}
+		else if (s[1] == '!') {
+			size_t it = s.find("<![CDATA[");
+			if (it == 0) {
+				tag.type = XTT_CDATA;
+				r = 2;
+
+				size_t len = s.length();
+				size_t cdata_end = s.find("]]>");
+
+				if (cdata_end != std::string::npos) {
+					tag.name = "CDATA";
+					tag.attributes.emplace("CDATA", s.substr(9,cdata_end-9));
+					return tag;
+				}
+			}
 		}
 		else {
 			size_t len = s.length();
