@@ -19,7 +19,8 @@ enum XMLTagType {
 	XTT_OPEN,	 // opening/starting tag
 	XTT_CLOSE,	 // closing tag
 	XTT_SINGLE,	 // singleton or self closing tag
-	XTT_PREAMBLE // preamble tag
+	XTT_PREAMBLE,// preamble tag
+	XTT_CDATA	 // cdata tag
 };
 
 struct xml_tag
@@ -44,10 +45,7 @@ struct CGV_API xml_node
 	void add_content(const std::string& c);
 };
 
-struct xml_parsing_error
-{
-	std::string msg;
-};
+
 
 extern CGV_API std::unique_ptr<xml_node> read_xml(const std::string& xml_content);
 
