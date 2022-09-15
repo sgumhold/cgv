@@ -27,6 +27,8 @@ protected:
 
 	/// resolution of the volume
 	uvec3 vres;
+	/// spacing of the voxels
+	vec3 vspacing;
 	/// whether to show bounding box
 	bool show_box;
 
@@ -34,6 +36,7 @@ protected:
 	std::vector<float> vol_data;
 	box3 volume_bounding_box;
 	cgv::render::texture volume_tex;
+	
 	
 	// Render members
 	/// store a pointer to the view
@@ -48,6 +51,8 @@ protected:
 	/// render data for wireframe box
 	cgv::glutil::box_wire_render_data<> box_rd;
 	
+	void update_bounding_box();
+
 	void load_transfer_function_preset();
 
 	void create_volume(cgv::render::context& ctx);
@@ -55,6 +60,10 @@ protected:
 	void splat_sphere(std::vector<float>& vol_data, float voxel_size, const vec3& pos, float radius, float contribution);
 
 	void load_volume_from_file(const std::string& file_name);
+
+	void fit_to_resolution();
+	void fit_to_spacing();
+	void fit_to_resolution_and_spacing();
 
 	void create_histogram();
 
