@@ -295,6 +295,7 @@ namespace cgv {
 					p->add_member_control(b, "Specular Power", vrs_ptr->specular_power, "value_slider", "min=1;max=128;step=0.1;ticks=true;log=true");
 					p->add_member_control(b, "Ambient", vrs_ptr->ambient_strength, "value_slider", "min=0;max=1;step=0.001;ticks=true");
 					p->align("/b");
+					p->end_tree_node(vrs_ptr->enable_lighting);
 				}
 
 				if(p->begin_tree_node("Isosurface (Blend only)", vrs_ptr->isosurface_mode, false)) {
@@ -305,6 +306,7 @@ namespace cgv {
 					p->add_member_control(b, "Color", vrs_ptr->isosurface_color, "", "w=42", " ");
 					p->add_member_control(b, "From Transfer Function", vrs_ptr->isosurface_color_from_transfer_function, "check");
 					p->align("\b");
+					p->end_tree_node(vrs_ptr->isosurface_mode);
 				}
 				
 				if(p->begin_tree_node("Clip Box", vrs_ptr->clip_box, false)) {
@@ -323,6 +325,7 @@ namespace cgv {
 					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[1], "slider", "w=58;max=0;max=1;step=0.0001;ticks=true", " ");
 					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[2], "slider", "w=58;max=0;max=1;step=0.0001;ticks=true");
 					p->align("\b");
+					p->end_tree_node(vrs_ptr->clip_box);
 				}
 
 				return true;

@@ -37,6 +37,7 @@ volume_viewer::volume_viewer() : application_plugin("Volume Viewer")
 	show_box = true;
 	
 	vres = uvec3(128);
+	vspacing = vec3(1.0f);
 
 	view_ptr = nullptr;
 
@@ -120,8 +121,7 @@ void volume_viewer::on_set(void* member_ptr)
 		member_ptr == &b[0] ||
 		member_ptr == &b[1] ||
 		member_ptr == &b[2]) {
-		box_rd.clear();
-		box_rd.add(volume_bounding_box.get_center(), volume_bounding_box.get_extent());
+		update_bounding_box();
 	}
 
 	if(member_ptr == &transfer_function_preset_idx)
@@ -204,7 +204,7 @@ void volume_viewer::create_gui()
 
 	add_member_control(this, "Show Box", show_box, "check");
 	
-	if(begin_tree_node("Volume Rendering", vstyle, false)) {
+	if(begin_tree_node("Volume Rendering", vstyle, true)) {
 		align("\a");
 		add_gui("vstyle", vstyle);
 		align("\b");
@@ -212,6 +212,7 @@ void volume_viewer::create_gui()
 	}
 
 	if(begin_tree_node("Bounding Box", volume_bounding_box, false)) {
+		align("/a");
 		vec3& a = volume_bounding_box.ref_min_pnt();
 		vec3& b = volume_bounding_box.ref_max_pnt();
 
@@ -222,7 +223,13 @@ void volume_viewer::create_gui()
 		add_member_control(this, "Max X", b.x(), "value_slider", "min=-1;max=1;step=0.05;");
 		add_member_control(this, "Y", b.y(), "value_slider", "min=-1;max=1;step=0.05;");
 		add_member_control(this, "Z", b.z(), "value_slider", "min=-1;max=1;step=0.05;");
+		align("/b");
+		end_tree_node(volume_bounding_box);
 	}
+	add_decorator("Scaling", "heading", "level=3");
+	connect_copy(add_button("Fit to Resolution")->click, cgv::signal::rebind(this, &volume_viewer::fit_to_resolution));
+	connect_copy(add_button("Fit to Spacing")->click, cgv::signal::rebind(this, &volume_viewer::fit_to_spacing));
+	connect_copy(add_button("Fit to Both")->click, cgv::signal::rebind(this, &volume_viewer::fit_to_resolution_and_spacing));
 
 	add_decorator("Transfer Function", "heading", "level=3");
 	add_member_control(this, "Preset", transfer_function_preset_idx, "dropdown", "enums='#1 (White),#2,#3 (Aneurysm),#4 (Head)'");
@@ -240,6 +247,24 @@ void volume_viewer::create_gui()
 		align("\b");
 		end_tree_node(transfer_function_legend_ptr);
 	}
+}
+
+void volume_viewer::update_bounding_box() {
+
+	box_rd.clear();
+	box_rd.add(volume_bounding_box.get_center(), volume_bounding_box.get_extent());
+
+	vec3& a = volume_bounding_box.ref_min_pnt();
+	vec3& b = volume_bounding_box.ref_max_pnt();
+
+	update_member(&a.x());
+	update_member(&a.y());
+	update_member(&a.z());
+	update_member(&b.x());
+	update_member(&b.y());
+	update_member(&b.z());
+	
+	post_redraw();
 }
 
 void volume_viewer::load_transfer_function_preset() {
@@ -448,7 +473,6 @@ void volume_viewer::load_volume_from_file(const std::string& file_name) {
 		return;
 
 	std::cout << "Loading volume from: ";
-	std::cout << hd_file_name << std::endl;
 	std::cout << vox_file_name << std::endl;
 
 	if(!cgv::utils::file::read(hd_file_name, header_content, true)) {
@@ -456,24 +480,78 @@ void volume_viewer::load_volume_from_file(const std::string& file_name) {
 		return;
 	}
 
-	std::vector<cgv::utils::token> tokens;
-	cgv::utils::split_to_tokens(header_content, tokens, "x", true, "", "", " x");
+	ivec3 resolution(-1);
+	vec3 spacing(1.0f);
 
-	ivec3 resolution;
+	std::vector<cgv::utils::line> lines;
+	cgv::utils::split_to_lines(header_content, lines);
 
-	if(tokens.size() > 3) {
-		std::string x_res = to_string(tokens[1]);
-		std::string y_res = to_string(tokens[2]);
-		std::string z_res = to_string(tokens[3]);
+	for(const auto& line : lines) {
+		std::vector<cgv::utils::token> tokens;
+		cgv::utils::split_to_tokens(line, tokens, "x", true, "", "", " x,");
 
-		resolution.x() = static_cast<int>(std::strtol(x_res.c_str(), nullptr, 10));
-		resolution.y() = static_cast<int>(std::strtol(y_res.c_str(), nullptr, 10));
-		resolution.z() = static_cast<int>(std::strtol(z_res.c_str(), nullptr, 10));
+		if(tokens.size() == 0)
+			continue;
+
+		std::string identifier = to_string(tokens[0]);
+		if(identifier.length() == 0)
+			continue;
+
+		if(identifier.back() == ':')
+			identifier = identifier.substr(0, identifier.length() - 1);
+
+		if(identifier == "Size" || identifier == "Dimension") {
+			int idx = 0;
+			for(size_t i = 1; i < tokens.size(); ++i) {
+				std::string str = to_string(tokens[i]);
+
+				char* p_end;
+				const long num = std::strtol(str.c_str(), &p_end, 10);
+				if(str.c_str() != p_end) {
+					resolution[idx] = static_cast<int>(num);
+					++idx;
+					if(idx > 2)
+						break;
+				}
+			}
+		} else if(identifier == "Spacing") {
+			int idx = 0;
+			for(size_t i = 1; i < tokens.size(); ++i) {
+				std::string str = to_string(tokens[i]);
+
+				char* p_end;
+				const float num = std::strtof(str.c_str(), &p_end);
+				if(str.c_str() != p_end) {
+					spacing[idx] = num;
+					++idx;
+					if(idx > 2)
+						break;
+				}
+			}
+		} else {
+			std::cout << "Warning: unknown identifier <" + identifier + ">" << std::endl;
+		}
+	}
+
+	std::cout << "[resolution] = " << resolution << std::endl;
+	std::cout << "[spacing]    = " << spacing << std::endl;
+
+	if(cgv::math::min_value(resolution) < 0) {
+		std::cout << "Error: could not read valid resolution." << std::endl;
+		return;
+	}
+
+	if(cgv::math::min_value(spacing) < 0.0f) {
+		std::cout << "Error: could not read valid spacing." << std::endl;
+		return;
 	}
 
 	auto ctx_ptr = get_context();
 	if(ctx_ptr) {
 		auto& ctx = *ctx_ptr;
+
+		vres = resolution;
+		vspacing = spacing;
 
 		size_t num_voxels = resolution.x() * resolution.y() * resolution.z();
 
@@ -503,9 +581,42 @@ void volume_viewer::load_volume_from_file(const std::string& file_name) {
 		cgv::data::data_format vol_df(resolution[0], resolution[1], resolution[2], cgv::type::info::TypeId::TI_FLT32, cgv::data::ComponentFormat::CF_R);
 		cgv::data::const_data_view vol_dv(&vol_df, vol_data.data());
 		volume_tex.create(ctx, vol_dv, 0);
+
+		fit_to_resolution();
 	}
 
 	create_histogram();
+}
+
+void volume_viewer::fit_to_resolution() {
+
+	unsigned max_resolution = max_value(vres);
+	vec3 scaling = static_cast<vec3>(vres) / static_cast<float>(max_resolution);
+
+	volume_bounding_box.ref_min_pnt() = vec3(-0.5f*scaling);
+	volume_bounding_box.ref_max_pnt() = vec3(+0.5f*scaling);
+
+	update_bounding_box();
+}
+
+void volume_viewer::fit_to_spacing() {
+
+	volume_bounding_box.ref_min_pnt() = vec3(-0.5f*vspacing);
+	volume_bounding_box.ref_max_pnt() = vec3(+0.5f*vspacing);
+
+	update_bounding_box();
+}
+
+void volume_viewer::fit_to_resolution_and_spacing() {
+
+	unsigned max_resolution = max_value(vres);
+	vec3 scaling = static_cast<vec3>(vres) / static_cast<float>(max_resolution);
+	scaling *= vspacing;
+
+	volume_bounding_box.ref_min_pnt() = vec3(-0.5f*scaling);
+	volume_bounding_box.ref_max_pnt() = vec3(+0.5f*scaling);
+
+	update_bounding_box();
 }
 
 void volume_viewer::create_histogram() {
