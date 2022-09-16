@@ -200,7 +200,7 @@ void volume_viewer::draw(cgv::render::context& ctx)
 
 void volume_viewer::create_gui() 
 {
-	add_decorator("Gradient Viewer", "heading", "level=2");
+	add_decorator("Volume Viewer", "heading", "level=2");
 
 	add_member_control(this, "Show Box", show_box, "check");
 	
