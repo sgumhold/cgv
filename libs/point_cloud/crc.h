@@ -6,6 +6,7 @@ namespace cgv {
 namespace pointcloud {
 namespace file_parser {
 
+std::array<uint32_t, 256> generate_crc32_table(uint32_t trunc_polynomial);
 
 template <uint32_t trunc_polynom, uint32_t initial_remainder = 0xFFFFFFFFu, uint32_t final_xor = 0xFFFFFFFFu>
 uint32_t crc32(const void* data, size_t data_length)
@@ -24,6 +25,6 @@ uint32_t crc32(const void* data, size_t data_length)
 	return crc32;
 }
 
-std::array<uint32_t, 256> generate_crc32_table(uint32_t trunc_polynomial);
+
 
 }}}
