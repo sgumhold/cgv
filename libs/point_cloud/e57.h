@@ -1,6 +1,8 @@
 #include <cstdint>
 #include <string>
 #include <istream>
+#include <cstdio>
+#include <fstream>
 #include "point_cloud.h"
 
 namespace cgv {
@@ -10,6 +12,7 @@ namespace file_parser {
 enum class e57_error_code { 
 	FILE_TO_SMALL, 
 	XML_ERROR,
+	BAD_CHECKSUM,
 	UNSUPPORTED_OPERATION
 };
 
@@ -53,9 +56,39 @@ class e57_data_set
 	e57_file_header header;
 
 public:
-	void read(const std::string& file_content); 
+	void read(const std::string& file_name); 
 
 	e57_file_header read_header(const char* data, const size_t data_length);
+};
+
+//file with build in error correction, has logical and physical pages that are protected by checksums
+class checked_file
+{
+  public:
+	static constexpr int physical_page_size = 1 << 10;
+	static constexpr int logical_page_size = physical_page_size-sizeof(uint32_t);
+
+  private:
+	std::unique_ptr<std::fstream> s_file;
+
+	std::array<uint8_t, physical_page_size> physical_page_buffer;
+
+  public:
+
+	checked_file();
+
+	void open(const char* filename, std::ios_base::openmode mode = std::fstream::binary | std::fstream::in | std::fstream::out);
+
+	inline size_t page_nr(size_t physical_offset) {
+		return physical_offset >> 10;
+	}
+
+	inline size_t page_offset(size_t page) {
+		return page << 10;
+	}
+
+	// reads next physical page in file, stores content in page_buffer, the page_buffer must have at least the size of a logical page
+	bool read_physical_page(char* page_buffer, const size_t page);
 };
 
 }}}
