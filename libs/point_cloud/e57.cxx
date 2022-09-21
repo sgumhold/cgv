@@ -1,7 +1,8 @@
 #include "e57.h"
 #include "xml.h"
-#include <cgv/utils/xml.h>
+#include "crc.h"
 #include <regex>
+#include <limits>
 #include <cstdint>
 namespace {
 
@@ -27,39 +28,6 @@ bool get_tag(const std::string& xml_data, int offset, int& start, int& end)
 	return i < xml_data.size();
 }
 
-std::array<uint32_t,256> generate_crc32_table(uint32_t trunc_polynomial)
-{
-	std::array<uint32_t, 256> table;
-	const uint32_t mask = (1 << (32 - 1));
-
-	for (int32_t i = 0; i < table.size(); i++) {
-		uint32_t crc = i << 24;
-		for (uint8_t bit = 0; bit < 8; bit++) {
-			if (crc & mask) // check for msb
-				crc = (crc << 1) ^ trunc_polynomial;
-			else
-				crc <<= 1;
-		}
-		table[i] = crc;
-	}
-	return table;
-}
-
-uint32_t crc32(const uint8_t* data, size_t data_length)
-{
-	std::array<uint32_t, 256> crc32_table = generate_crc32_table(0x1EDC6F41);
-	static constexpr uint32_t final_xor = 0xFFFFFFFFu;
-
-	uint32_t crc32 = 0xFFFFFFFFu;
-
-	for (size_t i = 0; i < data_length; i++) {
-		const uint32_t ix = (crc32 ^ data[i]) & 0xff;
-		crc32 = (crc32 >> 8) ^ crc32_table[ix];
-	}
-
-	crc32 ^= final_xor;
-	return crc32;
-}
 
 } // namespace
 namespace cgv {
@@ -142,7 +110,7 @@ bool checked_file::read_physical_page(char* page_buffer, const size_t page) {
 		//size_t read_bytes = s_file->tellg() - start;
 		good = (bool)*s_file;
 		memcpy(page_buffer, physical_page_buffer.data(), logical_page_size);
-		uint32_t crc_sum = crc32(physical_page_buffer.data(), logical_page_size);
+		uint32_t crc_sum = crc32<0x1EDC6F41, 0xFFFFFFFF, 0xFFFFFFFF>(physical_page_buffer.data(), logical_page_size);
 		uint32_t stored_sum = *reinterpret_cast<uint32_t*>(&page_buffer[logical_page_size]);
 		if (stored_sum != crc_sum) {
 			std::stringstream ss;
