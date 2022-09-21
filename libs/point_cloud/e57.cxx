@@ -14,18 +14,10 @@ bool is_big_endian()
 	return *first_byte;
 }
 
-bool get_tag(const std::string& xml_data, int offset, int& start, int& end)
+void reverse_byte_order(uint32_t& b)
 {
-	start = offset;
-	end = -1;
-	while (start < xml_data.size() && xml_data[start] != '<')
-		++start;
-
-	int i = start;
-	while (i < xml_data.size() && xml_data[i] != '>')
-		++i;
-	end = i;
-	return i < xml_data.size();
+	b = (b & 0xFFFF0000) >> 16 | (b & 0x0000FFFF) << 16;
+	b = (b & 0xFF00FF00) >> 8 | (b & 0x00FF00FF) << 8;
 }
 
 
@@ -33,6 +25,7 @@ bool get_tag(const std::string& xml_data, int offset, int& start, int& end)
 namespace cgv {
 namespace pointcloud {
 namespace file_parser {
+
 
 
 
@@ -98,6 +91,7 @@ void checked_file::open(const char* filename, std::ios_base::openmode mode)
 	s_file = std::make_unique<std::fstream>(filename, mode);
 }
 
+
 bool checked_file::read_physical_page(char* page_buffer, const size_t page) {
 	bool good = false;
 	if (s_file) {
@@ -111,7 +105,8 @@ bool checked_file::read_physical_page(char* page_buffer, const size_t page) {
 		good = (bool)*s_file;
 		memcpy(page_buffer, physical_page_buffer.data(), logical_page_size);
 		uint32_t crc_sum = crc32<0x1EDC6F41, 0xFFFFFFFF, 0xFFFFFFFF>(physical_page_buffer.data(), logical_page_size);
-		uint32_t stored_sum = *reinterpret_cast<uint32_t*>(&page_buffer[logical_page_size]);
+		uint32_t stored_sum = *reinterpret_cast<uint32_t*>(physical_page_buffer.data()+logical_page_size);
+		reverse_byte_order(stored_sum); //checksum is stored with big endian byteorder
 		if (stored_sum != crc_sum) {
 			std::stringstream ss;
 			ss << "bad checksum for page beginning at " << start;
