@@ -75,6 +75,7 @@ public:
 	void on_point_cloud_style_cb();
 	void on_merge_pcs();
 	void on_save_pc();
+	void compare_two_pcs();
 
   private:
 	cgv::pointcloud::ICP icp;
