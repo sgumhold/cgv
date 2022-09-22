@@ -191,6 +191,7 @@ void rgbd_icp_tool::create_gui()
 	connect_copy(add_button("GoICP")->click, rebind(this, &rgbd_icp_tool::on_reg_GoICP_cb));
 	connect_copy(add_button("MergePCs")->click, rebind(this, &rgbd_icp_tool::on_merge_pcs));
 	connect_copy(add_button("save pc")->click, rebind(this, &rgbd_icp_tool::on_save_pc));
+	connect_copy(add_button("compare_pcs")->click, rebind(this, &rgbd_icp_tool::compare_two_pcs));
 
 	add_decorator("point cloud", "heading", "level=2");
 	connect_copy(add_control("Point size", source_srs.point_size, "value_slider", "min=0.01;max=5.0;log=false;ticks=true")->value_change, rebind(this, &rgbd_icp_tool::on_point_cloud_style_cb));
@@ -467,6 +468,31 @@ void rgbd_icp_tool::on_point_cloud_style_cb()
 {
 	target_srs.point_size = source_srs.point_size;
 	post_redraw();
+}
+
+void rgbd_icp_tool::compare_two_pcs() 
+{
+	if (source_pc.get_nr_points() != target_pc.get_nr_points()) {
+		cout << "size is different" << endl;
+	}
+	else {
+		int k = 0;
+		int l = 0;
+		for (int i=0;i<source_pc.get_nr_points();++i)
+			for (int j=0;j <target_pc.get_nr_points();++j) {
+				if (source_pc.pnt(i) == target_pc.pnt(j)) {
+					++k;
+				}
+				if (source_pc.clr(i) == target_pc.clr(j)) {
+					++l;
+				}
+			}
+				
+		float ratio = k / source_pc.get_nr_points() * 100.0 / 100.0;
+		float ratio_clr = l / source_pc.get_nr_points() * 100.0 / 100.0;
+		cout << "ratio: " << ratio << endl;
+	}
+
 }
 
 

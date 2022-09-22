@@ -120,7 +120,7 @@ void main(){
 	float pointSpacing = scale * spacing / pow(2, level + aRandom);
 	
 	float d = distance(viewPos, pivot.xyz);
-	float dc = length((projected.xy/screenSize)-vec2(1.0,1.0)); //distance to center in device coordinates
+	float dc = length((projected.xy/screenSize)-vec2(1.0,1.0)); //distance to center in device coordinates, dc is zero at the center of the screen, and one at the border.
 
 	// targetSpacing dependant on camera distance
 	//float targetSpacing = (CLOD / 1000) * d;
