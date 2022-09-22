@@ -71,8 +71,13 @@ class checked_file
   private:
 	std::unique_ptr<std::fstream> s_file;
 
-	std::array<uint8_t, physical_page_size> physical_page_buffer;
+	std::array<char, physical_page_size> physical_page_buffer;
+	unsigned buffer_page_nr;
 
+	unsigned page_cursor;
+	unsigned page_offset_cursor;
+
+	size_t file_size;
   public:
 
 	checked_file();
@@ -87,8 +92,17 @@ class checked_file
 		return page << 10;
 	}
 
-	// reads next physical page in file, stores content in page_buffer, the page_buffer must have at least the size of a logical page
-	bool read_physical_page(char* page_buffer, const size_t page);
+	// reads logical page in file, stores content in page_buffer, the page_buffer must have at least the size of a logical page
+	bool read_page(char* page_buffer, const size_t page);
+
+	// copies next physical page into phys_page_buffer
+	bool peek_physical_page(char* phys_page_buffer);
+
+	// move cursor
+	void seek(size_t phys_offset);
+
+	// start reading from current cursor position, returns number of bytes read
+	size_t read(char* buffer, size_t bytes);
 };
 
 }}}
