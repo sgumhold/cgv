@@ -106,14 +106,22 @@ Inheritance diagram for cgv::render::volume_render_style:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:af489215bcca2772220c2f5e7993465a2"><td class="memItemLeft" align="right" valign="top"><a id="af489215bcca2772220c2f5e7993465a2"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#af489215bcca2772220c2f5e7993465a2">IntegrationQuality</a> </td></tr>
-<tr class="memdesc:af489215bcca2772220c2f5e7993465a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">quality measure for the number of steps used during raymarching <br /></td></tr>
+<tr class="memdesc:af489215bcca2772220c2f5e7993465a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">quality measure for the number of steps used during ray marching <br /></td></tr>
 <tr class="separator:af489215bcca2772220c2f5e7993465a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad280746a4e9d6301086e34e1bc7bd4e7"><td class="memItemLeft" align="right" valign="top"><a id="ad280746a4e9d6301086e34e1bc7bd4e7"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7">InterpolationMode</a> </td></tr>
-<tr class="memdesc:ad280746a4e9d6301086e34e1bc7bd4e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">the interpolation method used <br /></td></tr>
+<tr class="memitem:ad280746a4e9d6301086e34e1bc7bd4e7"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7">InterpolationMode</a> { , <a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7a990d59aa66646519c936d20e8ee541cd">IP_SMOOTHED</a> = 1, 
+<a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7ab7766e28b34d0001c4eab8631846c60e">IP_LINEAR</a> = 2, 
+<a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7a343b650cd41aa91be1617667f9737175">IP_CUBIC</a> = 3
+ }</td></tr>
+<tr class="memdesc:ad280746a4e9d6301086e34e1bc7bd4e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">the interpolation method used (supplied volume texture should be set to GL_LINEAR)  <a href="structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7">More...</a><br /></td></tr>
 <tr class="separator:ad280746a4e9d6301086e34e1bc7bd4e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13cc6cb79a6ba92f65c5de6685b87ec4"><td class="memItemLeft" align="right" valign="top"><a id="a13cc6cb79a6ba92f65c5de6685b87ec4"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a13cc6cb79a6ba92f65c5de6685b87ec4">CompositingMode</a> </td></tr>
 <tr class="memdesc:a13cc6cb79a6ba92f65c5de6685b87ec4"><td class="mdescLeft">&#160;</td><td class="mdescRight">the compositing mode used <br /></td></tr>
 <tr class="separator:a13cc6cb79a6ba92f65c5de6685b87ec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6da4b7646b01842871acc2e4981c89f7"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a6da4b7646b01842871acc2e4981c89f7">IsosurfaceMode</a> { , <a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a6da4b7646b01842871acc2e4981c89f7a635373527c10c077e9c1d3b456f956f2">IM_ISOVALUE</a> = 1, 
+<a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a6da4b7646b01842871acc2e4981c89f7a12765478f53594623c24bb776689f893">IM_ALPHA_THRESHOLD</a> = 2
+ }</td></tr>
+<tr class="memdesc:a6da4b7646b01842871acc2e4981c89f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">mode of a single supported isosurface  <a href="structcgv_1_1render_1_1volume__render__style.html#a6da4b7646b01842871acc2e4981c89f7">More...</a><br /></td></tr>
+<tr class="separator:a6da4b7646b01842871acc2e4981c89f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af36c04fdeb21290f87a81d9bfae4ad32"><td class="memItemLeft" align="right" valign="top"><a id="af36c04fdeb21290f87a81d9bfae4ad32"></a>
 typedef <a class="el" href="classcgv_1_1media_1_1color.html">cgv::media::color</a>&lt; float, cgv::media::RGB &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1render__types.html#af36c04fdeb21290f87a81d9bfae4ad32">rgb</a></td></tr>
 <tr class="memdesc:af36c04fdeb21290f87a81d9bfae4ad32"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare rgb color type <br /></td></tr>
@@ -272,6 +280,14 @@ Public Attributes</h2></td></tr>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a052d61d3fe887de64cc77e67b374480a">enable_noise_offset</a></td></tr>
 <tr class="memdesc:a052d61d3fe887de64cc77e67b374480a"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to use the noise texture to offset ray start positions in order to reduce sampling artifacts <br /></td></tr>
 <tr class="separator:a052d61d3fe887de64cc77e67b374480a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b0ec1dbb83ef922d9fb7b4f6cb07b7c"><td class="memItemLeft" align="right" valign="top"><a id="a4b0ec1dbb83ef922d9fb7b4f6cb07b7c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a4b0ec1dbb83ef922d9fb7b4f6cb07b7c">enable_depth_test</a></td></tr>
+<tr class="memdesc:a4b0ec1dbb83ef922d9fb7b4f6cb07b7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to enable depth testing by reading depth from a texture to allow geometry intersecting the volume (depth texture must be supplied) <br /></td></tr>
+<tr class="separator:a4b0ec1dbb83ef922d9fb7b4f6cb07b7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa52dd9f1b751ec6d8d4af35031d9ccf"><td class="memItemLeft" align="right" valign="top"><a id="aaa52dd9f1b751ec6d8d4af35031d9ccf"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#aaa52dd9f1b751ec6d8d4af35031d9ccf">front_to_back</a></td></tr>
+<tr class="memdesc:aaa52dd9f1b751ec6d8d4af35031d9ccf"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to march rays front-to-back from camera into scene (default setting) or from back of volume towards the camera <br /></td></tr>
+<tr class="separator:aaa52dd9f1b751ec6d8d4af35031d9ccf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb48f68ee68c20ed3cc60288bf70861d"><td class="memItemLeft" align="right" valign="top"><a id="afb48f68ee68c20ed3cc60288bf70861d"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#afb48f68ee68c20ed3cc60288bf70861d">enable_scale_adjustment</a></td></tr>
 <tr class="memdesc:afb48f68ee68c20ed3cc60288bf70861d"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to enable the scale adjustment <br /></td></tr>
@@ -284,22 +300,105 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="str
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a5835a37fdd8c840d705e3e1235c4b2e5">opacity_scale</a></td></tr>
 <tr class="memdesc:a5835a37fdd8c840d705e3e1235c4b2e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">opacity scaling parameter <br /></td></tr>
 <tr class="separator:a5835a37fdd8c840d705e3e1235c4b2e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1086664ce53ea03d65e8c2889fb8aedf"><td class="memItemLeft" align="right" valign="top"><a id="a1086664ce53ea03d65e8c2889fb8aedf"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a1086664ce53ea03d65e8c2889fb8aedf">enable_lighting</a></td></tr>
+<tr class="memdesc:a1086664ce53ea03d65e8c2889fb8aedf"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to enable lighting <br /></td></tr>
+<tr class="separator:a1086664ce53ea03d65e8c2889fb8aedf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad686a7aaa33dfb4177551aadb8c71a31"><td class="memItemLeft" align="right" valign="top"><a id="ad686a7aaa33dfb4177551aadb8c71a31"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ad686a7aaa33dfb4177551aadb8c71a31">light_static_to_scene</a></td></tr>
+<tr class="memdesc:ad686a7aaa33dfb4177551aadb8c71a31"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether the light is static to the scene or moves with the camera <br /></td></tr>
+<tr class="separator:ad686a7aaa33dfb4177551aadb8c71a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7496465448f83cbe24dcaca237f6b5a"><td class="memItemLeft" align="right" valign="top"><a id="ac7496465448f83cbe24dcaca237f6b5a"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ac7496465448f83cbe24dcaca237f6b5a">use_gradient_texture</a></td></tr>
+<tr class="memdesc:ac7496465448f83cbe24dcaca237f6b5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to use a supplied gradient texture or compute gradients on the fly via central differences (default) <br /></td></tr>
+<tr class="separator:ac7496465448f83cbe24dcaca237f6b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa86bd6e1c1575ffe22f52ac710f19fb2"><td class="memItemLeft" align="right" valign="top"><a id="aa86bd6e1c1575ffe22f52ac710f19fb2"></a>
+<a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#aa86bd6e1c1575ffe22f52ac710f19fb2">light_direction</a></td></tr>
+<tr class="memdesc:aa86bd6e1c1575ffe22f52ac710f19fb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">the direction of the directional light <br /></td></tr>
+<tr class="separator:aa86bd6e1c1575ffe22f52ac710f19fb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad85d5649fd5df48b0941888b91dd0502"><td class="memItemLeft" align="right" valign="top"><a id="ad85d5649fd5df48b0941888b91dd0502"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ad85d5649fd5df48b0941888b91dd0502">diffuse_strength</a></td></tr>
+<tr class="memdesc:ad85d5649fd5df48b0941888b91dd0502"><td class="mdescLeft">&#160;</td><td class="mdescRight">light/material diffuse component strength <br /></td></tr>
+<tr class="separator:ad85d5649fd5df48b0941888b91dd0502"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18f34a3724ce6a2ae8c9100f8ed01c9c"><td class="memItemLeft" align="right" valign="top"><a id="a18f34a3724ce6a2ae8c9100f8ed01c9c"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a18f34a3724ce6a2ae8c9100f8ed01c9c">specular_strength</a></td></tr>
+<tr class="memdesc:a18f34a3724ce6a2ae8c9100f8ed01c9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">light/material specular component strength <br /></td></tr>
+<tr class="separator:a18f34a3724ce6a2ae8c9100f8ed01c9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cd488239f23ad4126bc41ab2a7c1a59"><td class="memItemLeft" align="right" valign="top"><a id="a1cd488239f23ad4126bc41ab2a7c1a59"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a1cd488239f23ad4126bc41ab2a7c1a59">specular_power</a></td></tr>
+<tr class="memdesc:a1cd488239f23ad4126bc41ab2a7c1a59"><td class="mdescLeft">&#160;</td><td class="mdescRight">light/material specular component shininess <br /></td></tr>
+<tr class="separator:a1cd488239f23ad4126bc41ab2a7c1a59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a192582d878ccb7ce636f32eb519180f2"><td class="memItemLeft" align="right" valign="top"><a id="a192582d878ccb7ce636f32eb519180f2"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a192582d878ccb7ce636f32eb519180f2">ambient_strength</a></td></tr>
+<tr class="memdesc:a192582d878ccb7ce636f32eb519180f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">light/material ambient component strength <br /></td></tr>
+<tr class="separator:a192582d878ccb7ce636f32eb519180f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e3b47297fe84828605dd9034b52b730"><td class="memItemLeft" align="right" valign="top"><a id="a4e3b47297fe84828605dd9034b52b730"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a4e3b47297fe84828605dd9034b52b730">isovalue</a></td></tr>
+<tr class="memdesc:a4e3b47297fe84828605dd9034b52b730"><td class="mdescLeft">&#160;</td><td class="mdescRight">the value used to check for an isosurface <br /></td></tr>
+<tr class="separator:a4e3b47297fe84828605dd9034b52b730"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31ece20e4d115e7541a3ce2cbfb9a230"><td class="memItemLeft" align="right" valign="top"><a id="a31ece20e4d115e7541a3ce2cbfb9a230"></a>
+<a class="el" href="structcgv_1_1render_1_1render__types.html#af36c04fdeb21290f87a81d9bfae4ad32">rgb</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a31ece20e4d115e7541a3ce2cbfb9a230">isosurface_color</a></td></tr>
+<tr class="memdesc:a31ece20e4d115e7541a3ce2cbfb9a230"><td class="mdescLeft">&#160;</td><td class="mdescRight">the default constant isosurface color <br /></td></tr>
+<tr class="separator:a31ece20e4d115e7541a3ce2cbfb9a230"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61e23537b6d0702534cfbf945cc6dfd9"><td class="memItemLeft" align="right" valign="top"><a id="a61e23537b6d0702534cfbf945cc6dfd9"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a61e23537b6d0702534cfbf945cc6dfd9">isosurface_color_from_transfer_function</a></td></tr>
+<tr class="memdesc:a61e23537b6d0702534cfbf945cc6dfd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to color the isosurface based on the transfer function <br /></td></tr>
+<tr class="separator:a61e23537b6d0702534cfbf945cc6dfd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade3c6324e8ad62a764e67664511bbad0"><td class="memItemLeft" align="right" valign="top"><a id="ade3c6324e8ad62a764e67664511bbad0"></a>
 <a class="el" href="structcgv_1_1render_1_1render__types.html#a65daf724c16fb2e17b417a2b0d7a546d">box3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ade3c6324e8ad62a764e67664511bbad0">clip_box</a></td></tr>
 <tr class="memdesc:ade3c6324e8ad62a764e67664511bbad0"><td class="mdescLeft">&#160;</td><td class="mdescRight">a bounding box used to define a subspace of the volume to be visualized <br /></td></tr>
 <tr class="separator:ade3c6324e8ad62a764e67664511bbad0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1086664ce53ea03d65e8c2889fb8aedf"><td class="memItemLeft" align="right" valign="top"><a id="a1086664ce53ea03d65e8c2889fb8aedf"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a1086664ce53ea03d65e8c2889fb8aedf">enable_lighting</a></td></tr>
-<tr class="memdesc:a1086664ce53ea03d65e8c2889fb8aedf"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to enable lighting (gradient texture must be supplied) <br /></td></tr>
-<tr class="separator:a1086664ce53ea03d65e8c2889fb8aedf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b0ec1dbb83ef922d9fb7b4f6cb07b7c"><td class="memItemLeft" align="right" valign="top"><a id="a4b0ec1dbb83ef922d9fb7b4f6cb07b7c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a4b0ec1dbb83ef922d9fb7b4f6cb07b7c">enable_depth_test</a></td></tr>
-<tr class="memdesc:a4b0ec1dbb83ef922d9fb7b4f6cb07b7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to enable depth testing by reading depth from a texture to allow geometry intersecting the volume (depth texture must be supplied) <br /></td></tr>
-<tr class="separator:a4b0ec1dbb83ef922d9fb7b4f6cb07b7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>style of a volume </p>
-</div><hr/>The documentation for this struct was generated from the following files:<ul>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="ad280746a4e9d6301086e34e1bc7bd4e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad280746a4e9d6301086e34e1bc7bd4e7">&#9670;&nbsp;</a></span>InterpolationMode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7">cgv::render::volume_render_style::InterpolationMode</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>the interpolation method used (supplied volume texture should be set to GL_LINEAR) </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad280746a4e9d6301086e34e1bc7bd4e7a990d59aa66646519c936d20e8ee541cd"></a>IP_SMOOTHED&#160;</td><td class="fielddoc"><p>only the closest voxel is sampled </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad280746a4e9d6301086e34e1bc7bd4e7ab7766e28b34d0001c4eab8631846c60e"></a>IP_LINEAR&#160;</td><td class="fielddoc"><p>modification of the built-in trilinear interpolation to prevent triangular artifacts (results look blockier in the volume, mid way between nearest and linear) </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad280746a4e9d6301086e34e1bc7bd4e7a343b650cd41aa91be1617667f9737175"></a>IP_CUBIC&#160;</td><td class="fielddoc"><p>default built-in trilinear interpolation </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="a6da4b7646b01842871acc2e4981c89f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6da4b7646b01842871acc2e4981c89f7">&#9670;&nbsp;</a></span>IsosurfaceMode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a6da4b7646b01842871acc2e4981c89f7">cgv::render::volume_render_style::IsosurfaceMode</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>mode of a single supported isosurface </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a6da4b7646b01842871acc2e4981c89f7a635373527c10c077e9c1d3b456f956f2"></a>IM_ISOVALUE&#160;</td><td class="fielddoc"><p>not enabled </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6da4b7646b01842871acc2e4981c89f7a12765478f53594623c24bb776689f893"></a>IM_ALPHA_THRESHOLD&#160;</td><td class="fielddoc"><p>based on volume value (volume &gt;= isovalue) </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following files:<ul>
 <li>libs/cgv_gl/<a class="el" href="volume__renderer_8h_source.html">volume_renderer.h</a></li>
 <li>libs/cgv_gl/volume_renderer.cxx</li>
 </ul>
