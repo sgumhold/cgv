@@ -38,13 +38,32 @@ var structcgv_1_1render_1_1volume__render__style =
     [ "vecn", "structcgv_1_1render_1_1volume__render__style.html#aa4274bbe9929cab87164fda32123be1a", null ],
     [ "CompositingMode", "structcgv_1_1render_1_1volume__render__style.html#a13cc6cb79a6ba92f65c5de6685b87ec4", null ],
     [ "IntegrationQuality", "structcgv_1_1render_1_1volume__render__style.html#af489215bcca2772220c2f5e7993465a2", null ],
-    [ "InterpolationMode", "structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7", null ],
+    [ "InterpolationMode", "structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7", [
+      [ "IP_SMOOTHED", "structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7a990d59aa66646519c936d20e8ee541cd", null ],
+      [ "IP_LINEAR", "structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7ab7766e28b34d0001c4eab8631846c60e", null ],
+      [ "IP_CUBIC", "structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7a343b650cd41aa91be1617667f9737175", null ]
+    ] ],
+    [ "IsosurfaceMode", "structcgv_1_1render_1_1volume__render__style.html#a6da4b7646b01842871acc2e4981c89f7", [
+      [ "IM_ISOVALUE", "structcgv_1_1render_1_1volume__render__style.html#a6da4b7646b01842871acc2e4981c89f7a635373527c10c077e9c1d3b456f956f2", null ],
+      [ "IM_ALPHA_THRESHOLD", "structcgv_1_1render_1_1volume__render__style.html#a6da4b7646b01842871acc2e4981c89f7a12765478f53594623c24bb776689f893", null ]
+    ] ],
     [ "volume_render_style", "structcgv_1_1render_1_1volume__render__style.html#aacc940494f593fa97d6e30cfd5839198", null ],
+    [ "ambient_strength", "structcgv_1_1render_1_1volume__render__style.html#a192582d878ccb7ce636f32eb519180f2", null ],
     [ "clip_box", "structcgv_1_1render_1_1volume__render__style.html#ade3c6324e8ad62a764e67664511bbad0", null ],
+    [ "diffuse_strength", "structcgv_1_1render_1_1volume__render__style.html#ad85d5649fd5df48b0941888b91dd0502", null ],
     [ "enable_depth_test", "structcgv_1_1render_1_1volume__render__style.html#a4b0ec1dbb83ef922d9fb7b4f6cb07b7c", null ],
     [ "enable_lighting", "structcgv_1_1render_1_1volume__render__style.html#a1086664ce53ea03d65e8c2889fb8aedf", null ],
     [ "enable_noise_offset", "structcgv_1_1render_1_1volume__render__style.html#a052d61d3fe887de64cc77e67b374480a", null ],
     [ "enable_scale_adjustment", "structcgv_1_1render_1_1volume__render__style.html#afb48f68ee68c20ed3cc60288bf70861d", null ],
+    [ "front_to_back", "structcgv_1_1render_1_1volume__render__style.html#aaa52dd9f1b751ec6d8d4af35031d9ccf", null ],
+    [ "isosurface_color", "structcgv_1_1render_1_1volume__render__style.html#a31ece20e4d115e7541a3ce2cbfb9a230", null ],
+    [ "isosurface_color_from_transfer_function", "structcgv_1_1render_1_1volume__render__style.html#a61e23537b6d0702534cfbf945cc6dfd9", null ],
+    [ "isovalue", "structcgv_1_1render_1_1volume__render__style.html#a4e3b47297fe84828605dd9034b52b730", null ],
+    [ "light_direction", "structcgv_1_1render_1_1volume__render__style.html#aa86bd6e1c1575ffe22f52ac710f19fb2", null ],
+    [ "light_static_to_scene", "structcgv_1_1render_1_1volume__render__style.html#ad686a7aaa33dfb4177551aadb8c71a31", null ],
     [ "opacity_scale", "structcgv_1_1render_1_1volume__render__style.html#a5835a37fdd8c840d705e3e1235c4b2e5", null ],
-    [ "size_scale", "structcgv_1_1render_1_1volume__render__style.html#aaea56f5757c3d62891523f3256053393", null ]
+    [ "size_scale", "structcgv_1_1render_1_1volume__render__style.html#aaea56f5757c3d62891523f3256053393", null ],
+    [ "specular_power", "structcgv_1_1render_1_1volume__render__style.html#a1cd488239f23ad4126bc41ab2a7c1a59", null ],
+    [ "specular_strength", "structcgv_1_1render_1_1volume__render__style.html#a18f34a3724ce6a2ae8c9100f8ed01c9c", null ],
+    [ "use_gradient_texture", "structcgv_1_1render_1_1volume__render__style.html#ac7496465448f83cbe24dcaca237f6b5a", null ]
 ];
