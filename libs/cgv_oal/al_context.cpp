@@ -1,8 +1,10 @@
 #include "al_context.h"
 
+#include <algorithm>
 #include <cassert>
 #include <filesystem>
 #include <iostream>
+#include <stdexcept>
 
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -70,6 +72,82 @@ void cgv::audio::OALContext::load_sample(std::string filepath)
 
 	assert(path.has_filename());
 	sample_buffers.emplace(path.stem().string(), buffer);
+}
+
+void cgv::audio::OALContext::load_sample(std::string symbolic_name, const char* data, size_t data_length) {
+	if (symbolic_name.empty())
+		throw std::invalid_argument(__FUNCTION__ ": Symbolic file name can not be empty!");
+	if (std::end(sample_buffers) != sample_buffers.find(symbolic_name))
+		throw std::invalid_argument(__FUNCTION__ ": Symbolic name \"" + symbolic_name + "\" already present");
+	assert(data);
+
+	// The state describing a virtual file descriptor (as anonymous type)
+	struct VIO_state
+	{
+		const char* const data;
+		size_t data_length;
+		const char* current_byte_ptr;
+	} vio_state{data, data_length, data}; // and a concrete variable with list initialization performed
+
+	SF_VIRTUAL_IO sfvio;
+	sfvio.get_filelen = [](void* user_data) -> sf_count_t { return static_cast<const VIO_state*>(user_data)->data_length; };
+	sfvio.seek = [](sf_count_t offset, int whence, void* user_data) -> sf_count_t {
+		auto* state = static_cast<VIO_state*>(user_data);
+		switch (whence) {
+		case SEEK_CUR:
+			state->current_byte_ptr += offset;
+			return state->current_byte_ptr - state->data;
+		case SEEK_SET:
+			state->current_byte_ptr = state->data + offset;
+			return offset;
+		case SEEK_END:
+			state->current_byte_ptr = (state->data + state->data_length - 1) - offset;			
+			return state->current_byte_ptr - state->data;
+		default:
+			return 0;
+		}
+	};
+	sfvio.read = [](void* ptr, sf_count_t count, void* user_data) -> sf_count_t {
+		auto* state = static_cast<VIO_state*>(user_data);
+		memcpy(ptr, state->current_byte_ptr, count);
+		state->current_byte_ptr += count;
+		return count;
+	};
+	sfvio.write = [](const void* ptr, sf_count_t count, void* user_data) -> sf_count_t { return 0; };
+	sfvio.tell = [](void* user_data) -> sf_count_t {
+		auto* state = static_cast<const VIO_state*>(user_data);
+		return state->current_byte_ptr - state->data;
+	};
+
+	SndfileHandle soundfile(sfvio, &vio_state);
+	if (soundfile.error() != SF_ERR_NO_ERROR) {
+		std::cerr << soundfile.strError() << std::endl;
+		return;
+	}
+
+	assert(oal_context);
+	assert(oal_device);
+
+	ALuint buffer;
+	alGenBuffers(1, &buffer);
+	assert(AL_NO_ERROR == alcGetError(oal_device));
+
+	assert(soundfile.channels() == 1 || soundfile.channels() == 2);
+	const size_t num_bytes{soundfile.frames() * soundfile.channels() * sizeof(std::int16_t)};
+	const auto buf = std::make_unique<std::int16_t[]>(num_bytes);
+	// libsndfile documentation notes that reading from float files into int buffers could require scaling
+	soundfile.command(SFC_SET_SCALE_FLOAT_INT_READ, nullptr, SF_TRUE);
+	soundfile.readf(buf.get(), soundfile.frames());
+	if (soundfile.error() != SF_ERR_NO_ERROR) {
+		std::cerr << soundfile.strError() << std::endl;
+		return;
+	}
+
+	alBufferData(buffer, soundfile.channels() == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, buf.get(), num_bytes,
+				 soundfile.samplerate());
+	assert(AL_NO_ERROR == alcGetError(oal_device));
+
+	sample_buffers.emplace(symbolic_name, buffer);
 }
 
 void cgv::audio::OALContext::load_samples(std::string folder, bool recursive)
@@ -214,12 +292,28 @@ bool cgv::audio::OALSource::is_looping() const
 	return looping == AL_TRUE;
 }
 
+bool cgv::audio::OALSource::is_playing() const
+{
+	ALint playing;
+	alGetSourcei(src_id, AL_PLAYING, &playing);
+	return playing == AL_TRUE;
+}
+
 void cgv::audio::OALSource::play() {
 	alSourcePlay(src_id);
 }
 
 void cgv::audio::OALSource::pause() {
 	alSourcePause(src_id);
+}
+
+void cgv::audio::OALSource::play_pause(bool play) {
+	if (play) {
+		this->play();
+	}
+	else {
+		this->pause();
+	}
 }
 
 void cgv::audio::OALSource::stop() {
