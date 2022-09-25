@@ -22,29 +22,32 @@ namespace cgv {
 		volume_render_style::volume_render_style()
 		{
 			integration_quality = IQ_128;
-			interpolation_mode = IP_LINEAR;
 			enable_noise_offset = true;
-			opacity_scale = 1.0f;
+			interpolation_mode = IP_LINEAR;
+			enable_depth_test = true;
+
+			compositing_mode = CM_BLEND;
+			front_to_back = true;
+
 			enable_scale_adjustment = true;
 			size_scale = 100.0f;
-			compositing_mode = CM_BLEND;
-			clip_box = box3(vec3(0.0f), vec3(1.0f));
-			enable_lighting = false;
-			enable_depth_test = true;
-			front_to_back = true;
-			
-			light_static_to_scene = true;
-			light_direction = normalize(vec3(1.0f, -1.0f, -1.0f));
+			opacity_scale = 1.0f;
 
+			enable_lighting = false;
+			light_static_to_scene = true;
+			use_gradient_texture = false;
+			light_direction = normalize(vec3(1.0f, -1.0f, -1.0f));
 			diffuse_strength = 0.8f;
 			specular_strength = 0.4f;
 			specular_power = 32.0f;
 			ambient_strength = 0.3f;
 
 			isosurface_mode = IM_NONE;
-			isosurface_color_from_transfer_function = false;
 			isovalue = 0.5f;
 			isosurface_color = rgb(0.7f);
+			isosurface_color_from_transfer_function = false;
+
+			clip_box = box3(vec3(0.0f), vec3(1.0f));
 		}
 
 		volume_renderer::volume_renderer() : noise_texture("flt32[R]")
@@ -102,6 +105,7 @@ namespace cgv {
 			shader_code::set_define(defines, "ENABLE_NOISE_OFFSET", vrs.enable_noise_offset, true);
 			shader_code::set_define(defines, "ENABLE_SCALE_ADJUSTMENT", vrs.enable_scale_adjustment, false);
 			shader_code::set_define(defines, "ENABLE_LIGHTING", vrs.enable_lighting, false);
+			shader_code::set_define(defines, "USE_GRADIENT_TEXTURE", vrs.use_gradient_texture, false);
 			shader_code::set_define(defines, "ENABLE_DEPTH_TEST", vrs.enable_depth_test, false);
 			
 			shader_code::set_define(defines, "FRONT_TO_BACK", vrs.front_to_back || (vrs.isosurface_mode != volume_render_style::IM_NONE && vrs.compositing_mode == volume_render_style::CM_BLEND), false);
@@ -267,7 +271,9 @@ namespace cgv {
 
 				p->add_member_control(b, "Quality", vrs_ptr->integration_quality, "dropdown", "w=114;enums='8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024'", " ");
 				p->add_member_control(b, "Use Noise", vrs_ptr->enable_noise_offset, "check", "w=74");
-				p->add_member_control(b, "Interpolation", vrs_ptr->interpolation_mode, "dropdown", "enums=Nearest,Linear,Smooth,Cubic");
+				p->add_member_control(b, "Interpolation", vrs_ptr->interpolation_mode, "dropdown", "enums=Nearest,Smoothed,Linear,Cubic");
+
+				p->add_member_control(b, "Depth Test", vrs_ptr->enable_depth_test, "check");
 
 				p->add_member_control(b, "Compositing Mode", vrs_ptr->compositing_mode, "dropdown", "enums='Maximum Intensity Projection, Average, Blend'");
 				p->add_member_control(b, "Front-to-Back", vrs_ptr->front_to_back, "check");
@@ -276,12 +282,11 @@ namespace cgv {
 				p->add_member_control(b, "", vrs_ptr->enable_scale_adjustment, "check", "w=30");
 				p->add_member_control(b, "Opacity Scale", vrs_ptr->opacity_scale, "value_slider", "min=0.0;step=0.001;max=1.0;ticks=true");
 				
-				p->add_member_control(b, "Depth Test", vrs_ptr->enable_depth_test, "check");
-	
 				if(p->begin_tree_node("Lighting", vrs_ptr->enable_lighting, false)) {
 					p->align("/a");
 					p->add_member_control(b, "Enable", vrs_ptr->enable_lighting, "check", "w=88", " ");
 					p->add_member_control(b, "Static to Scene", vrs_ptr->light_static_to_scene, "check", "w=100");
+					p->add_member_control(b, "Normals from Gradient Texture", vrs_ptr->use_gradient_texture, "check");
 					p->add_member_control(b, "Direction", vrs_ptr->light_direction[0], "value", "w=58;min=-1;max=1", " ");
 					p->add_member_control(b, "", vrs_ptr->light_direction[1], "value", "w=58;min=-1;max=1", " ");
 					p->add_member_control(b, "", vrs_ptr->light_direction[2], "value", "w=58;min=-1;max=1");

@@ -19,7 +19,7 @@ namespace cgv { // @<
 		struct CGV_API volume_render_style : public render_style {
 			/*@name global volume rendering options*/
 			//@{
-			/// quality measure for the number of steps used during raymarching
+			/// quality measure for the number of steps used during ray marching
 			enum IntegrationQuality {
 				IQ_8 = 8,
 				IQ_16 = 16,
@@ -30,57 +30,66 @@ namespace cgv { // @<
 				IQ_512 = 512,
 				IQ_1024 = 1024,
 			} integration_quality;
-			/// the interpolation method used
-			enum InterpolationMode {
-				IP_NEAREST = 0,
-				IP_LINEAR = 1,
-				IP_SMOOTH = 2,
-				IP_CUBIC = 3
-			} interpolation_mode;
 			/// whether to use the noise texture to offset ray start positions in order to reduce sampling artifacts
 			bool enable_noise_offset;
-			/// whether to enable the scale adjustment
-			bool enable_scale_adjustment;
-			/// the coefficient used to adjust for volume scaling
-			float size_scale;
-			/// opacity scaling parameter
-			float opacity_scale;
+			/// the interpolation method used (supplied volume texture should be set to GL_LINEAR)
+			enum InterpolationMode {
+				IP_NEAREST = 0,		/// only the closest voxel is sampled
+				IP_SMOOTHED = 1,	/// modification of the built-in trilinear interpolation to prevent triangular artifacts (results look blockier in the volume, mid way between nearest and linear)
+				IP_LINEAR = 2,		/// default built-in trilinear interpolation
+				IP_CUBIC = 3		/// tricubic interpolation using 8 modified trlinear samples
+			} interpolation_mode;
+			/// whether to enable depth testing by reading depth from a texture to allow geometry intersecting the volume (depth texture must be supplied)
+			bool enable_depth_test;
+
 			/// the compositing mode used
 			enum CompositingMode {
 				CM_MAXIMUM_INTENSITY_PROJECTION = 0,
 				CM_AVERAGE = 1,
 				CM_BLEND = 2 // using transfer function
 			} compositing_mode;
-			/// a bounding box used to define a subspace of the volume to be visualized
-			box3 clip_box;
-			/// whether to enable lighting (gradient texture must be supplied)
-			bool enable_lighting;
-			/// whether to enable depth testing by reading depth from a texture to allow geometry intersecting the volume (depth texture must be supplied)
-			bool enable_depth_test;
-
-
-			bool light_static_to_scene;
-			vec3 light_direction;
-
-			float diffuse_strength;
-			float specular_strength;
-			float specular_power;
-			float ambient_strength;
-			
+			/// whether to march rays front-to-back from camera into scene (default setting) or from back of volume towards the camera
 			bool front_to_back;
 
+			/// whether to enable the scale adjustment
+			bool enable_scale_adjustment;
+			/// the coefficient used to adjust for volume scaling
+			float size_scale;
+			/// opacity scaling parameter
+			float opacity_scale;
+			
+			/// whether to enable lighting
+			bool enable_lighting;
+			/// whether the light is static to the scene or moves with the camera
+			bool light_static_to_scene;
+			/// whether to use a supplied gradient texture or compute gradients on the fly via central differences (default)
+			bool use_gradient_texture;
+			/// the direction of the directional light
+			vec3 light_direction;
+			/// light/material diffuse component strength
+			float diffuse_strength;
+			/// light/material specular component strength
+			float specular_strength;
+			/// light/material specular component shininess
+			float specular_power;
+			/// light/material ambient component strength
+			float ambient_strength;
+
+			/// mode of a single supported isosurface
 			enum IsosurfaceMode{
-				IM_NONE = 0,
-				IM_ISOVALUE = 1,
-				IM_ALPHA_THRESHOLD = 2
+				IM_NONE = 0,			/// not enabled
+				IM_ISOVALUE = 1,		/// based on volume value (volume >= isovalue)
+				IM_ALPHA_THRESHOLD = 2	/// based on opacity value from transfer function (tf(volume).a >= isovalue)
 			} isosurface_mode;
-
-			bool isosurface_color_from_transfer_function;
+			/// the value used to check for an isosurface
 			float isovalue;
+			/// the default constant isosurface color
 			rgb isosurface_color;
+			/// whether to color the isosurface based on the transfer function
+			bool isosurface_color_from_transfer_function;
 
-
-
+			/// a bounding box used to define a subspace of the volume to be visualized
+			box3 clip_box;
 
 			//}@
 			/// construct with default values
