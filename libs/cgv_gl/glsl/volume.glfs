@@ -1,10 +1,16 @@
 #version 430
 
 #define NUM_STEPS 128
-#define INTERPOLATION_MODE 1
+
+// 0 - Nearest
+// 1 - Smooth
+// 2 - Linear
+// 3 - Cubic
+#define INTERPOLATION_MODE 2
 #define ENABLE_NOISE_OFFSET 1
 #define ENABLE_SCALE_ADJUSTMENT 0
 #define ENABLE_LIGHTING 0
+#define USE_GRADIENT_TEXTURE 0
 #define ENABLE_DEPTH_TEST 0
 
 #define FRONT_TO_BACK 0
@@ -185,13 +191,8 @@ vec3 central_difference(vec3 coords) {
 	float zr = textureOffset(volume_tex, coords, ivec3(0, 0, +1)).r;
 	float zl = textureOffset(volume_tex, coords, ivec3(0, 0, -1)).r;
 
-	return -0.5 * vec3(xr - xl, yr - yl, zr - zl);
+	return 0.5 * vec3(xr - xl, yr - yl, zr - zl);
 }
-
-//vec3 object_space_eye_pos() {
-//
-//	return (get_inverse_modelview_matrix() * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-//}
 
 vec3 safe_normalize(vec3 v) {
 
@@ -201,7 +202,6 @@ vec3 safe_normalize(vec3 v) {
 
 vec3 object_space_view_dir(vec3 v) {
 
-    //return object_space_eye_pos() - v;
     return eye_fs - v;
 }
 
@@ -209,9 +209,9 @@ float get_density(in vec3 uvw) {
 #if (INTERPOLATION_MODE == 0)
 	return textureNearest(volume_tex, uvw).r;
 #elif (INTERPOLATION_MODE == 1)
-	return textureLod(volume_tex, uvw, 0).r;
-#elif (INTERPOLATION_MODE == 2)
 	return textureSmooth(volume_tex, uvw).r;
+#elif (INTERPOLATION_MODE == 2)
+	return textureLod(volume_tex, uvw, 0).r;
 #else
 	return textureCubic(volume_tex, uvw).r;
 #endif
@@ -236,10 +236,12 @@ float calculate_lighting(vec3 normal, vec3 light_dir, vec3 eye_dir) {
 
 float get_lighting_factor(in vec3 uvw, in vec3 ray_dir, in vec3 light_dir) {
 	// get the normal on-the-fly by calculating the gradient via central differences
-	vec3 normal = safe_normalize(central_difference(uvw));
-	
+	#if USE_GRADIENT_TEXTURE == 0
+	vec3 normal = -safe_normalize(central_difference(uvw));
+	#else
 	// get the normal from a precomputed gradient texture
-	//vec3 normal = safe_normalize(texture(gradient_tex, uvw).xyz);
+	vec3 normal = -safe_normalize(texture(gradient_tex, uvw).xyz);
+	#endif
 
 	// apply lighting to all input colors
 	return calculate_lighting(normal, -light_dir, ray_dir);
@@ -388,16 +390,25 @@ void main()
 		// apply the transfer function
 		vec4 color_in = apply_transfer_function(density);
 
+	#if ISOSURFACE_MODE > 0
+		#if ISOSURFACE_MODE == 1
+		bool is_isosurface = density >= isovalue;
+		#else
+		bool is_isosurface = color_in.a >= isovalue;
+		#endif
+	#endif
+
 	#if ENABLE_LIGHTING == 1
-		float illumination = get_lighting_factor(uvw, ray_dir, light_dir);
+		// only compute lighting if the sample passes the opacity threshold of is on an isosurface
+		#if ISOSURFACE_MODE > 0
+		float illumination = (color_in.a > 0.05 || is_isosurface) ? get_lighting_factor(uvw, ray_dir, light_dir) : 0.0;
+		#else
+		float illumination = color_in.a > 0.05 ? get_lighting_factor(uvw, ray_dir, light_dir) : 0.0;
+		#endif
 	#endif
 
 	#if ISOSURFACE_MODE > 0
-		#if ISOSURFACE_MODE == 1
-		if(density >= isovalue) {
-		#else
-		if(color_in.a >= isovalue) {
-		#endif
+		if(is_isosurface) {
 			#if ISOSURFACE_COLOR_MODE == 0
 			color_in = vec4(isosurface_color, 1.0);
 			#endif
