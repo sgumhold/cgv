@@ -25,6 +25,7 @@ class CGV_API OALContext
 	~OALContext();
 
 	void load_sample(std::string filepath);
+	void load_sample(std::string symbolic_name, const char* data, size_t data_length);
 	void load_samples(std::string folder, bool recursive = false);
 
 	std::optional<ALuint> get_buffer_id(std::string sound_name) const;
@@ -43,7 +44,7 @@ class CGV_API OALContext
 	std::map<std::string, ALuint> sample_buffers;
 };
 
-class OALListener final
+class CGV_API OALListener final
 {
   public:
 	OALListener() = delete;
@@ -58,7 +59,7 @@ class OALListener final
 	static void set_orientation(cgv::math::fmat<float, 3, 2> at_vec_then_up_vec);
 };
 
-class OALSource
+class CGV_API OALSource
 {
   public:
 	OALSource() = default;
@@ -81,9 +82,11 @@ class OALSource
 	float get_pitch() const;
 	float get_gain() const;
 	bool is_looping() const;
+	bool is_playing() const;
 
 	void play();
 	void pause();
+	void play_pause(bool);
 	void stop();
 	void rewind();
 
