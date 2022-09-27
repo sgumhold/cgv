@@ -1,4 +1,5 @@
 #include "al_context.h"
+#include "alext.h"
 
 #include <algorithm>
 #include <cassert>
@@ -10,19 +11,24 @@
 #include <AL/alc.h>
 
 #include <sndfile.hh>
+#include <vector>
 
-cgv::audio::OALContext::OALContext() : OALContext(""){};
+namespace cgv {
+namespace audio {
 
-cgv::audio::OALContext::OALContext(std::string device) {
-	// nullptr returns the default device
-	oal_device = alcOpenDevice(device.empty() ? nullptr : device.c_str());
+OALContext::OALContext() : OALContext(""){};
+
+OALContext::OALContext(const std::string& device)
+	: oal_device(alcOpenDevice(device.empty() ? nullptr : device.c_str()))
+{
 	if (oal_device) {
 		oal_context = alcCreateContext(oal_device, nullptr);
 		alcMakeContextCurrent(oal_context);
 	}
 }
 
-cgv::audio::OALContext::~OALContext() {
+OALContext::~OALContext()
+{
 	// TODO first, delete all sources
 
 	for (const auto& buf : sample_buffers) {
@@ -36,12 +42,12 @@ cgv::audio::OALContext::~OALContext() {
 	alcCloseDevice(device);
 }
 
-void cgv::audio::OALContext::load_sample(std::string filepath)
+void OALContext::load_sample(std::string filepath)
 {
 	std::filesystem::path path(filepath);
 	if (path.empty() || !std::filesystem::exists(path))
 		return;
-	
+
 	SndfileHandle soundfile(path.string().c_str());
 	if (soundfile.error() != SF_ERR_NO_ERROR) {
 		std::cerr << soundfile.strError() << std::endl;
@@ -74,7 +80,8 @@ void cgv::audio::OALContext::load_sample(std::string filepath)
 	sample_buffers.emplace(path.stem().string(), buffer);
 }
 
-void cgv::audio::OALContext::load_sample(std::string symbolic_name, const char* data, size_t data_length) {
+void OALContext::load_sample(std::string symbolic_name, const char* data, size_t data_length)
+{
 	if (symbolic_name.empty())
 		throw std::invalid_argument(__FUNCTION__ ": Symbolic file name can not be empty!");
 	if (std::end(sample_buffers) != sample_buffers.find(symbolic_name))
@@ -90,7 +97,9 @@ void cgv::audio::OALContext::load_sample(std::string symbolic_name, const char* 
 	} vio_state{data, data_length, data}; // and a concrete variable with list initialization performed
 
 	SF_VIRTUAL_IO sfvio;
-	sfvio.get_filelen = [](void* user_data) -> sf_count_t { return static_cast<const VIO_state*>(user_data)->data_length; };
+	sfvio.get_filelen = [](void* user_data) -> sf_count_t {
+		return static_cast<const VIO_state*>(user_data)->data_length;
+	};
 	sfvio.seek = [](sf_count_t offset, int whence, void* user_data) -> sf_count_t {
 		auto* state = static_cast<VIO_state*>(user_data);
 		switch (whence) {
@@ -101,7 +110,7 @@ void cgv::audio::OALContext::load_sample(std::string symbolic_name, const char* 
 			state->current_byte_ptr = state->data + offset;
 			return offset;
 		case SEEK_END:
-			state->current_byte_ptr = (state->data + state->data_length - 1) - offset;			
+			state->current_byte_ptr = (state->data + state->data_length - 1) - offset;
 			return state->current_byte_ptr - state->data;
 		default:
 			return 0;
@@ -135,6 +144,7 @@ void cgv::audio::OALContext::load_sample(std::string symbolic_name, const char* 
 	assert(soundfile.channels() == 1 || soundfile.channels() == 2);
 	const size_t num_bytes{soundfile.frames() * soundfile.channels() * sizeof(std::int16_t)};
 	const auto buf = std::make_unique<std::int16_t[]>(num_bytes);
+	const std::vector<std::int16_t> data_buffer(num_bytes, 0);
 	// libsndfile documentation notes that reading from float files into int buffers could require scaling
 	soundfile.command(SFC_SET_SCALE_FLOAT_INT_READ, nullptr, SF_TRUE);
 	soundfile.readf(buf.get(), soundfile.frames());
@@ -150,7 +160,7 @@ void cgv::audio::OALContext::load_sample(std::string symbolic_name, const char* 
 	sample_buffers.emplace(symbolic_name, buffer);
 }
 
-void cgv::audio::OALContext::load_samples(std::string folder, bool recursive)
+void OALContext::load_samples(std::string folder, bool recursive)
 {
 	std::filesystem::path f(folder);
 	if (!std::filesystem::is_directory(f)) {
@@ -175,13 +185,13 @@ void cgv::audio::OALContext::load_samples(std::string folder, bool recursive)
 	}
 }
 
-std::optional<ALuint> cgv::audio::OALContext::get_buffer_id(std::string sound_name) const
+ALuint OALContext::get_buffer_id(std::string sound_name) const
 {
 	auto buffer_id = sample_buffers.find(sound_name);
-	return buffer_id != sample_buffers.end() ? std::make_optional(buffer_id->second) : std::optional<ALuint>();
+	return buffer_id != sample_buffers.end() ? buffer_id->second : AL_NONE;
 }
 
-std::list<std::string> cgv::audio::OALContext::enumerate_devices()
+std::list<std::string> OALContext::enumerate_devices()
 {
 	assert(alcIsExtensionPresent(nullptr, "ALC_ENUMERATE_ALL_EXT"));
 	const ALCchar* dev_strings = alcGetString(nullptr, ALC_ALL_DEVICES_SPECIFIER);
@@ -198,116 +208,100 @@ std::list<std::string> cgv::audio::OALContext::enumerate_devices()
 	return device_names;
 }
 
-std::string cgv::audio::OALContext::get_error_string()
+std::string OALContext::get_error_string() { return {alGetString(alGetError())}; }
+
+bool OALContext::is_no_error() { return AL_NO_ERROR == alGetError(); }
+
+void OALContext::set_HRTF(bool active)
 {
-	return {alGetString(alGetError())};
+	auto* oal_device = get_native_device();
+	//assert(alcIsExtensionPresent(oal_device, "SOFT_HRTF"));
+
+	auto reset_function = (LPALCRESETDEVICESOFT)alcGetProcAddress(oal_device, "alcResetDeviceSOFT");
+
+	std::array<ALCint, 2> attribs = {ALC_OUTPUT_MODE_SOFT, active ? ALC_STEREO_HRTF_SOFT : ALC_STEREO_BASIC_SOFT};
+	reset_function(oal_device, attribs.data());
 }
 
-bool cgv::audio::OALContext::is_no_error()
-{
-	return AL_NO_ERROR == alGetError();
-}
+ALCdevice* OALContext::get_native_device() { return oal_device; }
 
-ALCdevice* cgv::audio::OALContext::get_native_device()
-{
-	return oal_device;
-}
+ALCcontext* OALContext::get_native_context() { return oal_context; }
 
-ALCcontext* cgv::audio::OALContext::get_native_context()
-{
-	return oal_context;
-}
+OALSource::~OALSource() { alDeleteSources(1, &src_id); }
 
-cgv::audio::OALSource::~OALSource() {
-	alDeleteSources(1, &src_id);
-}
-
-bool cgv::audio::OALSource::init(OALContext& ctx, std::string sound_name)
+bool OALSource::init(OALContext& ctx, std::string sound_name)
 {
 	this->ctx = &ctx;
 
 	alcMakeContextCurrent(ctx.get_native_context());
 	alGenSources(1, &src_id);
 
-	auto buf_id = ctx.get_buffer_id(sound_name);
-	alSourcei(src_id, AL_BUFFER, buf_id ? buf_id.value() : AL_NONE);
+	alSourcei(src_id, AL_BUFFER, ctx.get_buffer_id(sound_name));
 
 	return ctx.is_no_error();
 }
 
-void cgv::audio::OALSource::set_position(cgv::math::fvec<float, 3> pos)
+void OALSource::set_position(cgv::math::fvec<float, 3> pos) { alSourcefv(src_id, AL_POSITION, pos); }
+
+void OALSource::set_velocity(cgv::math::fvec<float, 3> vel) { alSourcefv(src_id, AL_VELOCITY, vel); }
+
+void OALSource::set_pitch(float pitch) { alSourcef(src_id, AL_PITCH, pitch); }
+
+void OALSource::set_gain(float gain) { alSourcef(src_id, AL_GAIN, gain); }
+
+void OALSource::set_looping(bool should_loop)
 {
-	alSourcefv(src_id, AL_POSITION, pos);
-}
-
-void cgv::audio::OALSource::set_velocity(cgv::math::fvec<float, 3> vel)
-{
-	alSourcefv(src_id, AL_VELOCITY, vel);
-}
-
-void cgv::audio::OALSource::set_pitch(float pitch) {
-	alSourcef(src_id, AL_PITCH, pitch);
-}
-
-void cgv::audio::OALSource::set_gain(float gain) {
-	alSourcef(src_id, AL_GAIN, gain);
-}
-
-void cgv::audio::OALSource::set_looping(bool should_loop) {
 	alSourcei(src_id, AL_LOOPING, should_loop ? AL_TRUE : AL_FALSE);
 }
 
-cgv::math::fvec<float, 3> cgv::audio::OALSource::get_position() const
+cgv::math::fvec<float, 3> OALSource::get_position() const
 {
 	cgv::math::fvec<float, 3> vec;
 	alGetSourcefv(src_id, AL_POSITION, vec);
 	return vec;
 }
 
-cgv::math::fvec<float, 3> cgv::audio::OALSource::get_velocity() const
+cgv::math::fvec<float, 3> OALSource::get_velocity() const
 {
 	cgv::math::fvec<float, 3> vec;
 	alGetSourcefv(src_id, AL_VELOCITY, vec);
 	return vec;
 }
 
-float cgv::audio::OALSource::get_pitch() const
+float OALSource::get_pitch() const
 {
 	float pitch;
 	alGetSourcef(src_id, AL_PITCH, &pitch);
 	return pitch;
 }
 
-float cgv::audio::OALSource::get_gain() const
+float OALSource::get_gain() const
 {
 	float gain;
 	alGetSourcef(src_id, AL_GAIN, &gain);
 	return gain;
 }
 
-bool cgv::audio::OALSource::is_looping() const
+bool OALSource::is_looping() const
 {
 	ALint looping;
 	alGetSourcei(src_id, AL_LOOPING, &looping);
 	return looping == AL_TRUE;
 }
 
-bool cgv::audio::OALSource::is_playing() const
+bool OALSource::is_playing() const
 {
 	ALint playing;
 	alGetSourcei(src_id, AL_PLAYING, &playing);
 	return playing == AL_TRUE;
 }
 
-void cgv::audio::OALSource::play() {
-	alSourcePlay(src_id);
-}
+void OALSource::play() { alSourcePlay(src_id); }
 
-void cgv::audio::OALSource::pause() {
-	alSourcePause(src_id);
-}
+void OALSource::pause() { alSourcePause(src_id); }
 
-void cgv::audio::OALSource::play_pause(bool play) {
+void OALSource::play_pause(bool play)
+{
 	if (play) {
 		this->play();
 	}
@@ -316,43 +310,40 @@ void cgv::audio::OALSource::play_pause(bool play) {
 	}
 }
 
-void cgv::audio::OALSource::stop() {
-	alSourceStop(src_id);
-}
+void OALSource::stop() { alSourceStop(src_id); }
 
-void cgv::audio::OALSource::rewind() {
-	alSourceRewind(src_id);
-}
+void OALSource::rewind() { alSourceRewind(src_id); }
 
-cgv::math::fvec<float, 3> cgv::audio::OALListener::get_position()
+cgv::math::fvec<float, 3> OALListener::get_position()
 {
 	cgv::math::fvec<float, 3> pos;
 	alGetListenerfv(AL_POSITION, pos);
 	return pos;
 }
 
-cgv::math::fvec<float, 3> cgv::audio::OALListener::get_velocity()
+cgv::math::fvec<float, 3> OALListener::get_velocity()
 {
 	cgv::math::fvec<float, 3> vel;
 	alGetListenerfv(AL_VELOCITY, vel);
 	return vel;
 }
 
-cgv::math::fmat<float, 3, 2> cgv::audio::OALListener::get_orientation()
+cgv::math::fmat<float, 3, 2> OALListener::get_orientation()
 {
 	cgv::math::fmat<float, 3, 2> orientation;
 	alGetListenerfv(AL_ORIENTATION, orientation);
 	return orientation;
 }
 
-void cgv::audio::OALListener::set_position(cgv::math::fvec<float, 3> pos) {
-	alListenerfv(AL_POSITION, pos);
+void OALListener::set_position(cgv::math::fvec<float, 3> pos) { alListenerfv(AL_POSITION, pos); }
+
+void OALListener::set_velocity(cgv::math::fvec<float, 3> vel) { alListenerfv(AL_VELOCITY, vel); }
+
+void OALListener::set_orientation(cgv::math::fvec<float, 3> at, cgv::math::fvec<float, 3> up)
+{
+	const std::array<float, 6> orientation = {at[0], at[1], at[2], up[0], up[1], up[2]};
+	alListenerfv(AL_ORIENTATION, orientation.data());
 }
 
-void cgv::audio::OALListener::set_velocity(cgv::math::fvec<float, 3> vel) {
-	alListenerfv(AL_VELOCITY, vel);
-}
-
-void cgv::audio::OALListener::set_orientation(cgv::math::fmat<float, 3, 2> at_vec_then_up_vec) {
-	alListenerfv(AL_ORIENTATION, at_vec_then_up_vec);
-}
+} // namespace cgv
+} // namespace audio
