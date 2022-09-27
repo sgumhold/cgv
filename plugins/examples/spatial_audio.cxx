@@ -1,3 +1,5 @@
+#include "cgv/math/fvec.h"
+#include "cgv/render/context.h"
 #include <cgv/base/base.h>
 #include <cgv/base/register.h>
 #include <cgv/gui/trigger.h>
@@ -21,14 +23,16 @@ class SpatialAudio : public cgv::base::node,
 
 	bool gui_node_toggle{true};
 
-	cgv::math::fvec<float, 3> angular_velocity{0., 1., 0.};
+	cgv::math::fvec<float, 3> axis{0., 1., 0.};
 	cgv::math::fvec<float, 3> position{
 		  10.,
 		  0.,
 		  0.,
 	};
 	float speed{1.};
+	float angle{1.};
 	bool animate{false};
+	bool enable_hrtf{false};
 
 	cgv::render::sphere_renderer sphere_renderer;
 	cgv::render::sphere_render_style sphere_style;
@@ -66,6 +70,9 @@ class SpatialAudio : public cgv::base::node,
 		if (&play_sound == member_ptr) {
 			source.play_pause(play_sound);
 		}
+		if (&enable_hrtf == member_ptr) {
+			oal_ctx.set_HRTF(enable_hrtf);
+		}
 		post_redraw();
 	}
 
@@ -84,7 +91,7 @@ class SpatialAudio : public cgv::base::node,
 
 	void timer_event(double, double dt) {
 		if (animate) {
-			const auto& rot = cgv::math::rotate3(speed * angular_velocity);
+			const auto& rot = cgv::math::rotate3(angle * speed, axis);
 			position = rot * position;
 			post_redraw();
 		}
@@ -95,16 +102,27 @@ class SpatialAudio : public cgv::base::node,
 		sphere_renderer.set_position(ctx, position);
 
 		source.set_position(position);
-		source.set_velocity(animate ? speed * angular_velocity : vec3{0.f, 0.f, 0.f});
+		static cgv::math::fvec<float, 3> old_pos = position;
+		source.set_velocity(position - old_pos);
+
+		auto view_node = find_view_as_node();
+		cgv::audio::OALListener::set_position(view_node->get_eye());
+		cgv::audio::OALListener::set_orientation(view_node->get_view_dir(), view_node->get_view_up_dir());
 
 		sphere_renderer.render(ctx, 0, 1);
+		ctx.ref_surface_shader_program().enable(ctx);
+		ctx.tesselate_arrow({0.,0.,0.}, axis);
+		ctx.ref_surface_shader_program().disable(ctx);
 	}
 
 	void create_gui() override {
 		add_decorator("Spatial Audio GUI", "heading");
 		add_member_control(this, "Animate", animate, "check");
 		add_member_control(this, "Play Sound", play_sound, "check");
-		add_member_control(this, "Speed", speed, "value_slider", "min=0;max=10");
+		add_member_control(this, "Enable HRTF", enable_hrtf, "check");
+		add_member_control(this, "Angle", angle, "value_slider", "min=0;max=360;ticks=true");
+		add_gui("axis", axis, "direction", "options='min=-1;max=1;ticks=true'");
+		add_member_control(this, "Speed", speed, "value_slider", "min=0;max=100;log=true;ticks=true");
 	}
 };
 

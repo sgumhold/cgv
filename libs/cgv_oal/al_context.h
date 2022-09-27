@@ -1,7 +1,6 @@
 #include <list>
 #include <map>
 #include <string>
-#include <optional>
 
 #include <cgv/math/fvec.h>
 #include <cgv/math/fmat.h>
@@ -19,20 +18,24 @@ class CGV_API OALContext
 {
   public:
 	OALContext();
-	explicit OALContext(std::string device);
+	explicit OALContext(const std::string& device);
 	OALContext(const OALContext& other) = delete;
+	OALContext(OALContext&& other) = default;
 	OALContext& operator=(const OALContext& other) = delete;
+	OALContext& operator=(OALContext&& other) = default;
 	~OALContext();
 
 	void load_sample(std::string filepath);
 	void load_sample(std::string symbolic_name, const char* data, size_t data_length);
 	void load_samples(std::string folder, bool recursive = false);
 
-	std::optional<ALuint> get_buffer_id(std::string sound_name) const;
+	ALuint get_buffer_id(std::string sound_name) const;
 
 	static std::list<std::string> enumerate_devices();
 	std::string get_error_string();
 	bool is_no_error();
+
+	void set_HRTF(bool active);
 
 	ALCdevice* get_native_device();
 	ALCcontext* get_native_context();
@@ -48,6 +51,10 @@ class CGV_API OALListener final
 {
   public:
 	OALListener() = delete;
+	OALListener(const OALListener& other) = delete;
+	OALListener(OALListener&& other) = delete;
+	OALListener& operator=(const OALListener& other) = delete;
+	OALListener& operator=(OALListener&& other) = delete;
 	~OALListener() = delete;
 
 	static cgv::math::fvec<float, 3> get_position();
@@ -56,7 +63,7 @@ class CGV_API OALListener final
 
 	static void set_position(cgv::math::fvec<float, 3> pos);
 	static void set_velocity(cgv::math::fvec<float, 3> vel);
-	static void set_orientation(cgv::math::fmat<float, 3, 2> at_vec_then_up_vec);
+	static void set_orientation(cgv::math::fvec<float, 3> at, cgv::math::fvec<float, 3> up);
 };
 
 class CGV_API OALSource
