@@ -80,6 +80,7 @@ if (MSVC)
     target_link_libraries(examples_static PRIVATE
             cgv_viewer_main
 
+            cgv_oal_static
             glew_static
             delaunay_static
             plot_static

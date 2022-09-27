@@ -4,7 +4,7 @@ cgv_create_lib(cgv_oal
         al_context.h
         al_context.cpp
     DEPENDENCIES
-        cgv_type
+        cgv_math
 )
 
 target_compile_features(cgv_oal PUBLIC cxx_std_17)
