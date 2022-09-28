@@ -29,6 +29,8 @@ public:
 		bool color_value_type_float = true;
 		bool opacity_value_type_float = true;
 		bool apply_gamma = false;
+
+		identifier_config() {}
 	};
 
 	// data structure of loaded color maps result
@@ -50,7 +52,7 @@ private:
 			return static_cast<float>(std::strtol(value.c_str(), nullptr, 10)) / 255.0f;
 	}
 
-	static point_info read_point(const cgv::utils::xml_tag& tag, identifier_config& config = identifier_config()) {
+	static point_info read_point(const cgv::utils::xml_tag& tag, const identifier_config& config = identifier_config()) {
 		point_info pi;
 		const auto end = tag.attributes.end();
 
@@ -68,7 +70,7 @@ private:
 		return pi;
 	}
 
-	static bool parse_xml(const std::vector<cgv::utils::xml_tag>& tags, result& entries, identifier_config& config = identifier_config()) {
+	static bool parse_xml(const std::vector<cgv::utils::xml_tag>& tags, result& entries, const identifier_config& config = identifier_config()) {
 		std::string name = "";
 		color_map cm;
 		bool read_cm = false;
@@ -136,13 +138,13 @@ private:
 	}
 
 public:
-	static bool read_from_xml(const std::vector<cgv::utils::xml_tag>& tags, result& entries, identifier_config& config = identifier_config()) {
+	static bool read_from_xml(const std::vector<cgv::utils::xml_tag>& tags, result& entries, const identifier_config& config = identifier_config()) {
 		// clear previous data
 		entries.clear();
 		return parse_xml(tags, entries, config);
 	}
 
-	static bool read_from_xml(const std::vector<std::string>& lines, result& entries, identifier_config& config = identifier_config()) {
+	static bool read_from_xml(const std::vector<std::string>& lines, result& entries, const identifier_config& config = identifier_config()) {
 		std::vector<cgv::utils::xml_tag> tags;
 		for(const auto& line : lines)
 			tags.push_back(cgv::utils::xml_read_tag(line));
@@ -150,7 +152,7 @@ public:
 		return read_from_xml(tags, entries, config);
 	}
 
-	static bool read_from_xml(const std::string& file_name, result& entries, identifier_config& config = identifier_config()) {
+	static bool read_from_xml(const std::string& file_name, result& entries, const identifier_config& config = identifier_config()) {
 		std::string content;
 		if(cgv::utils::to_upper(cgv::utils::file::get_extension(file_name)) != "XML" || !cgv::base::read_data_file(file_name, content, true))
 			return false;

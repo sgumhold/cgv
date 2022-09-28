@@ -49,10 +49,6 @@ color_map_editor::color_map_editor() {
 	opacity_handle_renderer = generic_2d_renderer(canvas::shaders_2d::rectangle);
 	line_renderer = generic_2d_renderer(canvas::shaders_2d::line);
 	polygon_renderer = generic_2d_renderer(canvas::shaders_2d::polygon);
-
-	// init default_styles
-	hist_style.fill_color = rgba(rgb(0.5f), 1.0f);
-	hist_style.border_color = rgba(rgb(0.0f), 1.0f);
 }
 
 void color_map_editor::clear(cgv::render::context& ctx) {
@@ -336,7 +332,8 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 			// draw histogram
 			if(histogram_type != (cgv::type::DummyEnum)0 && hist_tex.is_created()) {
 				auto& hist_prog = cc.enable_shader(ctx, "histogram");
-				hist_prog.set_uniform(ctx, "max_value", hist_max);
+				hist_prog.set_uniform(ctx, "max_value", hist_norm_ignore_zero ? hist_max_non_zero : hist_max);
+				hist_prog.set_uniform(ctx, "norm_gamma", hist_norm_gamma);
 				hist_prog.set_uniform(ctx, "sampling_type", cgv::math::clamp(static_cast<unsigned>(histogram_type) - 1, 0u, 2u));
 				hist_style.apply(ctx, hist_prog);
 
@@ -400,6 +397,8 @@ void color_map_editor::create_gui() {
 
 		add_decorator("Histogram", "heading", "level=4");
 		add_member_control(this, "Type", histogram_type, "dropdown", "enums='None,Nearest,Linear,Smooth'");
+		add_member_control(this, "Ignore Zero for Normalization", hist_norm_ignore_zero, "check");
+		add_member_control(this, "Gamma", hist_norm_gamma, "value_slider", "min=0.001;max=2;step=0.001;ticks=true");
 		add_member_control(this, "Fill Color", hist_style.fill_color);
 		add_member_control(this, "Border Color", hist_style.border_color);
 		add_member_control(this, "Border Width", hist_style.border_width, "value_slider", "min=0;max=10;step=0.5;ticks=true");
@@ -408,8 +407,19 @@ void color_map_editor::create_gui() {
 	if(begin_tree_node("Color Points", cmc.color_points, true)) {
 		align("\a");
 		auto& points = cmc.color_points;
-		for(unsigned i = 0; i < points.size(); ++i)
-			add_member_control(this, "#" + std::to_string(i), points[i].col, "", &points[i] == cmc.color_points.get_selected() ? "label_color=" + highlight_color_hex : "");
+		for(unsigned i = 0; i < points.size(); ++i) {
+			//add_member_control(this, "#" + std::to_string(i), points[i].col, "", &points[i] == cmc.color_points.get_selected() ? "label_color=" + highlight_color_hex : "");
+			
+			std::string label_prefix = "";
+			std::string options = "w=48";
+			if(&points[i] == cmc.color_points.get_selected()) {
+				label_prefix = "> ";
+				options += ";label_color=" + highlight_color_hex;
+			}
+
+			add_view(label_prefix + std::to_string(i), points[i].val, "", options, " ");
+			add_member_control(this, "", points[i].col, "", "w=140");
+		}
 		align("\b");
 		end_tree_node(cmc.color_points);
 	}
@@ -418,8 +428,19 @@ void color_map_editor::create_gui() {
 		if(begin_tree_node("Opacity Points", cmc.opacity_points, true)) {
 			align("\a");
 			auto& points = cmc.opacity_points;
-			for(unsigned i = 0; i < points.size(); ++i)
-				add_member_control(this, "#" + std::to_string(i), points[i].val[1], "", &points[i] == cmc.opacity_points.get_selected() ? "label_color=" + highlight_color_hex : "");
+			for(unsigned i = 0; i < points.size(); ++i) {
+				//add_member_control(this, "#" + std::to_string(i), points[i].val[1], "", &points[i] == cmc.opacity_points.get_selected() ? "label_color=" + highlight_color_hex : "");
+
+				std::string label_prefix = "";
+				std::string options = "w=48";
+				if(&points[i] == cmc.opacity_points.get_selected()) {
+					label_prefix = "> ";
+					options += ";label_color=" + highlight_color_hex;
+				}
+
+				add_view(label_prefix + std::to_string(i), points[i].val[0], "", options, " ");
+				add_member_control(this, "", points[i].val[1], "value", "w=140");
+			}
 			align("\b");
 			end_tree_node(cmc.opacity_points);
 		}
@@ -474,9 +495,13 @@ void color_map_editor::set_histogram_data(const std::vector<unsigned> data) {
 
 	std::vector<float> float_data(histogram.size(), 0.0f);
 	hist_max = 1;
+	hist_max_non_zero = 1;
 	for(size_t i = 0; i < histogram.size(); ++i) {
-		hist_max = std::max(hist_max, histogram[i]);
-		float_data[i] = static_cast<float>(histogram[i]);
+		unsigned count = histogram[i];
+		hist_max = std::max(hist_max, count);
+		if(i > 0)
+			hist_max_non_zero = std::max(hist_max_non_zero, count);
+		float_data[i] = static_cast<float>(count);
 	}
 
 	if(auto ctx_ptr = get_context()) {
@@ -534,6 +559,9 @@ void color_map_editor::init_styles(context& ctx) {
 	hist_style.use_blending = true;
 	hist_style.feather_width = 1.0f;
 	hist_style.feather_origin = 0.0f;
+	hist_style.fill_color = rgba(rgb(0.5f), 0.666f);
+	hist_style.border_color = rgba(rgb(0.0f), 0.666f);
+	hist_style.border_width = 1.0f;
 
 	// configure style for color handles
 	cgv::glutil::arrow2d_style color_handle_style;
