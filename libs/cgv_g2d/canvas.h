@@ -2,9 +2,8 @@
 
 #include <cgv/render/context.h>
 #include <cgv/render/render_types.h>
-#include <cgv/render/shader_program.h>
+#include <cgv/render/shader_library.h>
 #include <cgv_gl/gl/gl_context.h>
-#include "cgv_glutil/shader_library.h"
 #include <cgv_g2d/rect.h>
 
 #include "lib_begin.h"
@@ -28,7 +27,7 @@ public:
 	};
 
 protected:
-	cgv::glutil::shader_library shaders;
+	cgv::render::shader_library shaders;
 	ivec2 resolution;
 	float feather_scale;
 	bool apply_gamma;

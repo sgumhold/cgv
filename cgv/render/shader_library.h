@@ -1,20 +1,20 @@
 #pragma once
 
-#include <cgv/render/context.h>
-#include <cgv/render/shader_program.h>
+#include "context.h"
+#include "shader_program.h"
 
 #include "lib_begin.h"
 
 namespace cgv {
-namespace glutil {
+namespace render {
 
 /// provides a shader library that handles shader loading
 class CGV_API shader_library {
 protected:
 	struct shader_info {
 		std::string filename = "";
-		cgv::render::shader_program prog;
-		cgv::render::shader_define_map defines = {};
+		shader_program prog;
+		shader_define_map defines = {};
 	};
 
 	typedef std::map<std::string, shader_info> shader_lib_map;
@@ -24,11 +24,11 @@ public:
 	shader_library();
 	~shader_library();
 
-	void clear(cgv::render::context& ctx);
+	void clear(context& ctx);
 
-	bool add(const std::string& name, const std::string& file, const cgv::render::shader_define_map& defines = {});
+	bool add(const std::string& name, const std::string& file, const shader_define_map& defines = {});
 
-	cgv::render::shader_program& get(const std::string& name) {
+	shader_program& get(const std::string& name) {
 		if(shaders.find(name) != shaders.end()) {
 			return shaders.at(name).prog;
 		} else {
@@ -40,16 +40,16 @@ public:
 	shader_lib_map::iterator begin() { return shaders.begin(); }
 	shader_lib_map::iterator end() { return shaders.end(); }
 	
-	bool load_all(cgv::render::context& ctx, const std::string& where = "");
+	bool load_all(context& ctx, const std::string& where = "");
 
-	bool reload(cgv::render::context& ctx, const std::string& name, const cgv::render::shader_define_map& defines = {}, const std::string& where = "");
+	bool reload(context& ctx, const std::string& name, const shader_define_map& defines = {}, const std::string& where = "");
 
-	static bool load(cgv::render::context& ctx, cgv::render::shader_program& prog, const std::string& name, const bool reload = false, const std::string& where = "") {
+	static bool load(context& ctx, shader_program& prog, const std::string& name, const bool reload = false, const std::string& where = "") {
 
-		return load(ctx, prog, name, cgv::render::shader_define_map(), reload, where);
+		return load(ctx, prog, name, shader_define_map(), reload, where);
 	}
 
-	static bool load(cgv::render::context& ctx, cgv::render::shader_program& prog, const std::string& name, const cgv::render::shader_define_map& defines, const bool reload = false, const std::string& where = "") {
+	static bool load(context& ctx, shader_program& prog, const std::string& name, const shader_define_map& defines, const bool reload = false, const std::string& where = "") {
 
 		if(prog.is_created()) {
 			if(reload) prog.destruct(ctx);
@@ -76,7 +76,7 @@ public:
 		return true;
 	}
 
-	bool reload_all(cgv::render::context& ctx, const std::string& where = "");
+	bool reload_all(context& ctx, const std::string& where = "");
 };
 }
 }

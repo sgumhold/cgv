@@ -1,7 +1,7 @@
 #include "shader_library.h"
 
 namespace cgv {
-namespace glutil {
+namespace render {
 
 shader_library::shader_library() {
 
@@ -13,12 +13,12 @@ shader_library::~shader_library() {
 	shaders.clear();
 }
 
-void shader_library::clear(cgv::render::context& ctx) {
+void shader_library::clear(context& ctx) {
 
 	shaders.clear();
 }
 
-bool shader_library::add(const std::string& name, const std::string& file, const cgv::render::shader_define_map& defines) {
+bool shader_library::add(const std::string& name, const std::string& file, const shader_define_map& defines) {
 
 	if(shaders.find(name) == shaders.end()) {
 		shader_info elem;
@@ -30,7 +30,7 @@ bool shader_library::add(const std::string& name, const std::string& file, const
 	return false;
 }
 
-bool shader_library::load_all(cgv::render::context& ctx, const std::string& where) {
+bool shader_library::load_all(context& ctx, const std::string& where) {
 
 	bool success = true;
 	for(auto& elem : shaders) {
@@ -41,7 +41,7 @@ bool shader_library::load_all(cgv::render::context& ctx, const std::string& wher
 	return success;
 }
 
-bool shader_library::reload(cgv::render::context& ctx, const std::string& name, const cgv::render::shader_define_map& defines, const std::string& where) {
+bool shader_library::reload(context& ctx, const std::string& name, const shader_define_map& defines, const std::string& where) {
 	
 	auto it = shaders.find(name);
 	if(it != shaders.end()) {
@@ -52,7 +52,7 @@ bool shader_library::reload(cgv::render::context& ctx, const std::string& name, 
 	return false;
 }
 
-bool shader_library::reload_all(cgv::render::context& ctx, const std::string& where) {
+bool shader_library::reload_all(context& ctx, const std::string& where) {
 
 	bool success = true;
 	for(auto& elem : shaders) {

@@ -34,10 +34,10 @@ bool scan_and_compact::load_shader_programs(context& ctx) {
 	if(mode == M_CREATE_INDICES)
 		compact_defines["CREATE_INDICES"] = "1";
 
-	res = res && cgv::glutil::shader_library::load(ctx, vote_prog, vote_prog_name == "" ? "sac_vote" : vote_prog_name, vote_defines, true, where);
-	res = res && cgv::glutil::shader_library::load(ctx, scan_local_prog, "sac_scan_local", true, where);
-	res = res && cgv::glutil::shader_library::load(ctx, scan_global_prog, "sac_scan_global", true, where);
-	res = res && cgv::glutil::shader_library::load(ctx, compact_prog, "sac_compact", compact_defines, true, where);
+	res = res && cgv::render::shader_library::load(ctx, vote_prog, vote_prog_name == "" ? "sac_vote" : vote_prog_name, vote_defines, true, where);
+	res = res && cgv::render::shader_library::load(ctx, scan_local_prog, "sac_scan_local", true, where);
+	res = res && cgv::render::shader_library::load(ctx, scan_global_prog, "sac_scan_global", true, where);
+	res = res && cgv::render::shader_library::load(ctx, compact_prog, "sac_compact", compact_defines, true, where);
 
 	return res;
 }

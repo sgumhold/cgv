@@ -6,7 +6,7 @@ addSharedDefines=["CGV_GPGPU_EXPORTS"];
 addProjectDirs=[CGV_DIR."/libs"];
 addProjectDeps=[
 	"cgv_utils","cgv_type","cgv_reflect", "cgv_data","cgv_base",
-	"cgv_os", "cgv_render", "cgv_gl", "cgv_glutil"];
+	"cgv_os", "cgv_render", "cgv_gl"];
 addIncDirs=[CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName];
 if(SYSTEM=="windows") {
 	addStaticDefines=["REGISTER_SHADER_FILES"];
