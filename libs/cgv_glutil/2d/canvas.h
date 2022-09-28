@@ -66,7 +66,7 @@ public:
 	}
 
 	bool init(cgv::render::context& ctx) {
-		return shaders.load_shaders(ctx);
+		return shaders.load_all(ctx);
 	}
 
 	cgv::render::shader_program& enable_shader(cgv::render::context& ctx, const std::string& name) {
