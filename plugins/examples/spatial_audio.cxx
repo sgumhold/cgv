@@ -29,8 +29,9 @@ class SpatialAudio : public cgv::base::node,
 		  0.,
 		  0.,
 	};
+	cgv::math::fvec<float, 3> old_pos {0., 0., 0.};
 	float speed{1.};
-	float angle{1.};
+	float velocity_multiplier{1.};
 	bool animate{false};
 	bool enable_hrtf{false};
 
@@ -91,7 +92,7 @@ class SpatialAudio : public cgv::base::node,
 
 	void timer_event(double, double dt) {
 		if (animate) {
-			const auto& rot = cgv::math::rotate3(angle * speed, axis);
+			const auto& rot = cgv::math::rotate3(speed, axis);
 			position = rot * position;
 			post_redraw();
 		}
@@ -102,8 +103,8 @@ class SpatialAudio : public cgv::base::node,
 		sphere_renderer.set_position(ctx, position);
 
 		source.set_position(position);
-		static cgv::math::fvec<float, 3> old_pos = position;
-		source.set_velocity(position - old_pos);
+		source.set_velocity(velocity_multiplier * (position - old_pos));
+		old_pos = position;
 
 		auto view_node = find_view_as_node();
 		cgv::audio::OALListener::set_position(view_node->get_eye());
@@ -120,7 +121,7 @@ class SpatialAudio : public cgv::base::node,
 		add_member_control(this, "Animate", animate, "check");
 		add_member_control(this, "Play Sound", play_sound, "check");
 		add_member_control(this, "Enable HRTF", enable_hrtf, "check");
-		add_member_control(this, "Angle", angle, "value_slider", "min=0;max=360;ticks=true");
+		add_member_control(this, "Velocity Multiplier", velocity_multiplier, "value_slider", "min=0;max=100;log=true;ticks=true");
 		add_gui("axis", axis, "direction", "options='min=-1;max=1;ticks=true'");
 		add_member_control(this, "Speed", speed, "value_slider", "min=0;max=100;log=true;ticks=true");
 	}
