@@ -18,9 +18,9 @@ color_selector::color_selector() {
 	set_overlay_margin(ivec2(-3));
 	set_overlay_size(ivec2(layout.size));
 	
-	register_shader("rectangle", canvas::shaders_2d::rectangle);
-	register_shader("circle", canvas::shaders_2d::circle);
-	register_shader("grid", canvas::shaders_2d::grid);
+	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
+	register_shader("circle", cgv::g2d::canvas::shaders_2d::circle);
+	register_shader("grid", cgv::g2d::canvas::shaders_2d::grid);
 	
 	selector_handles.set_drag_callback(std::bind(&color_selector::handle_selector_drag, this));
 	selector_handles.set_use_individual_constraints(true);
@@ -33,8 +33,8 @@ void color_selector::clear(cgv::render::context& ctx) {
 	color_tex.destruct(ctx);
 	hue_tex.destruct(ctx);
 
-	ref_msdf_font(ctx, -1);
-	ref_msdf_gl_canvas_font_renderer(ctx, -1);
+	cgv::g2d::ref_msdf_font(ctx, -1);
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
 }
 
 bool color_selector::handle_event(cgv::gui::event& e) {
@@ -55,7 +55,7 @@ bool color_selector::handle_event(cgv::gui::event& e) {
 				ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
 
 				int hit_index = -1;
-				rect hit_rect;
+				cgv::g2d::rect hit_rect;
 
 				if(layout.color_rect.is_inside(mpos)) {
 					hit_index = 0;
@@ -118,8 +118,8 @@ bool color_selector::init(cgv::render::context& ctx) {
 	
 	bool success = canvas_overlay::init(ctx);
 
-	msdf_font& font = ref_msdf_font(ctx, 1);
-	ref_msdf_gl_canvas_font_renderer(ctx, 1);
+	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font(ctx, 1);
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
 
 	if(success)
 		init_styles(ctx);
@@ -149,7 +149,7 @@ bool color_selector::init(cgv::render::context& ctx) {
 	sh.is_rectangular = true;
 	sh.size = vec2(20.0f, 10.0f);
 	sh.position_is_center = false;
-	sh.constraint_reference = draggable::CR_MIN_POINT;
+	sh.constraint_reference = cgv::g2d::draggable::CR_MIN_POINT;
 	selector_handles.add(sh);
 
 	// opacity handle
@@ -213,7 +213,7 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	content_canvas.draw_shape(ctx, layout.border_rect, border_color);
 	content_canvas.draw_shape(ctx, layout.preview_rect, rgb_color);
 
-	rect text_bg = layout.preview_rect;
+	cgv::g2d::rect text_bg = layout.preview_rect;
 	text_bg.set_w(48);
 	int n_labels = has_opacity ? 4 : 3;
 	for(size_t i = 0; i < n_labels; ++i) {
@@ -270,7 +270,7 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	
 	glDisable(GL_SCISSOR_TEST);
 
-	ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, content_canvas, texts, text_style, 0, 2*n_labels);
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, content_canvas, texts, text_style, 0, 2*n_labels);
 
 	disable_blending();
 	end_content(ctx);
@@ -316,7 +316,7 @@ void color_selector::update_layout(const ivec2& parent_size) {
 	l.border_rect.set_size(ivec2(parent_size - 2 * l.padding));
 	l.border_rect.a() += ivec2(0, 23);
 
-	rect content_rect = l.border_rect;
+	cgv::g2d::rect content_rect = l.border_rect;
 	content_rect.translate(1, 1);
 	content_rect.resize(-2, -2);
 
@@ -368,7 +368,7 @@ void color_selector::init_styles(context& ctx) {
 	opacity_bg_style.feather_width = 0.0f;
 	opacity_bg_style.fill_color = rgba(rgb(0.75f), 1.0f);
 	opacity_bg_style.border_color = rgba(rgb(0.9f), 1.0f);
-	opacity_bg_style.pattern = cgv::glutil::grid2d_style::GP_CHECKER;
+	opacity_bg_style.pattern = cgv::g2d::grid2d_style::GP_CHECKER;
 	opacity_bg_style.scale = 0.5f;
 	
 	opacity_color_style.use_blending = true;
@@ -396,7 +396,7 @@ void color_selector::init_styles(context& ctx) {
 	hue_handle_style.position_is_center = false;
 	
 	// configure style for hue handle
-	cgv::glutil::shape2d_style hue_handle_style;
+	cgv::g2d::shape2d_style hue_handle_style;
 	hue_handle_style.use_blending = true;
 	hue_handle_style.use_fill_color = false;
 	hue_handle_style.position_is_center = true;

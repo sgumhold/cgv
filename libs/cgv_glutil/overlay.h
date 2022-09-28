@@ -5,8 +5,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/render/context.h>
 #include <cgv/render/drawable.h>
-
-#include "2d/rect.h"
+#include <cgv_g2d/rect.h>
 
 #include "lib_begin.h"
 
@@ -53,7 +52,7 @@ protected:
 	bool block_events; /// whether the overlay blocks events or lets them pass through to other handlers
 
 	/// rectangle area of this overlay is fully contained whithin
-	rect container;
+	cgv::g2d::rect container;
 	ivec2 last_size;
 
 	/// called when the overlay visibility is changed through the default gui

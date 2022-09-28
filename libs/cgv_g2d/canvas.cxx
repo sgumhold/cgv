@@ -1,7 +1,7 @@
 #include "canvas.h"
 
 namespace cgv {
-namespace glutil {
+namespace g2d {
 
 const std::string canvas::shaders_2d::arrow = "arrow2d.glpr";
 const std::string canvas::shaders_2d::circle = "circle2d.glpr";

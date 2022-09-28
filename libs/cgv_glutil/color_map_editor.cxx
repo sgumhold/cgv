@@ -27,8 +27,8 @@ color_map_editor::color_map_editor() {
 	set_overlay_margin(ivec2(-3));
 	set_overlay_size(ivec2(600u, layout.total_height));
 	
-	register_shader("rectangle", canvas::shaders_2d::rectangle);
-	register_shader("circle", canvas::shaders_2d::circle);
+	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
+	register_shader("circle", cgv::g2d::canvas::shaders_2d::circle);
 	register_shader("histogram", "heightfield1d.glpr");
 	register_shader("background", "color_map_editor_bg.glpr");
 
@@ -45,10 +45,10 @@ color_map_editor::color_map_editor() {
 	cmc.opacity_points.set_drag_callback(std::bind(&color_map_editor::handle_opacity_point_drag, this));
 	cmc.opacity_points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
 
-	color_handle_renderer = generic_2d_renderer(canvas::shaders_2d::arrow);
-	opacity_handle_renderer = generic_2d_renderer(canvas::shaders_2d::rectangle);
-	line_renderer = generic_2d_renderer(canvas::shaders_2d::line);
-	polygon_renderer = generic_2d_renderer(canvas::shaders_2d::polygon);
+	color_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::arrow);
+	opacity_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::rectangle);
+	line_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::line);
+	polygon_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::polygon);
 }
 
 void color_map_editor::clear(cgv::render::context& ctx) {
@@ -132,7 +132,7 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 					break;
 				case cgv::gui::EM_ALT:
 				{
-					draggable* hit_point = get_hit_point(mpos);
+					cgv::g2d::draggable* hit_point = get_hit_point(mpos);
 					if (hit_point)
 						remove_point(hit_point);
 				}
@@ -564,7 +564,7 @@ void color_map_editor::init_styles(context& ctx) {
 	hist_style.border_width = 1.0f;
 
 	// configure style for color handles
-	cgv::glutil::arrow2d_style color_handle_style;
+	cgv::g2d::arrow2d_style color_handle_style;
 	color_handle_style.use_blending = true;
 	color_handle_style.use_fill_color = false;
 	color_handle_style.position_is_center = true;
@@ -577,7 +577,7 @@ void color_map_editor::init_styles(context& ctx) {
 	color_handle_renderer.set_style(ctx, color_handle_style);
 
 	// configure style for opacity handles
-	cgv::glutil::shape2d_style opacity_handle_style;
+	cgv::g2d::shape2d_style opacity_handle_style;
 	opacity_handle_style.use_blending = true;
 	opacity_handle_style.use_fill_color = false;
 	opacity_handle_style.position_is_center = true;
@@ -587,7 +587,7 @@ void color_map_editor::init_styles(context& ctx) {
 	opacity_handle_renderer.set_style(ctx, opacity_handle_style);
 	
 	// configure style for the lines and polygon
-	cgv::glutil::line2d_style line_style;
+	cgv::g2d::line2d_style line_style;
 	line_style.use_blending = true;
 	line_style.use_fill_color = false;
 	line_style.use_texture = true;
@@ -597,7 +597,7 @@ void color_map_editor::init_styles(context& ctx) {
 	line_renderer.set_style(ctx, line_style);
 
 	line_style.use_texture_alpha = true;
-	cgv::glutil::shape2d_style poly_style = static_cast<cgv::glutil::shape2d_style>(line_style);
+	cgv::g2d::shape2d_style poly_style = static_cast<cgv::g2d::shape2d_style>(line_style);
 
 	polygon_renderer.set_style(ctx, poly_style);
 }
@@ -636,7 +636,7 @@ void color_map_editor::add_point(const vec2& pos) {
 	}
 }
 
-void color_map_editor::remove_point(const draggable* ptr) {
+void color_map_editor::remove_point(const cgv::g2d::draggable* ptr) {
 
 	int color_point_idx = -1;
 	int opacity_point_idx = -1;
@@ -675,9 +675,9 @@ void color_map_editor::remove_point(const draggable* ptr) {
 		update_color_map(true);
 }
 
-draggable* color_map_editor::get_hit_point(const color_map_editor::vec2& pos) {
+cgv::g2d::draggable* color_map_editor::get_hit_point(const color_map_editor::vec2& pos) {
 
-	draggable* hit = nullptr;
+	cgv::g2d::draggable* hit = nullptr;
 
 	for(unsigned i = 0; i < cmc.color_points.size(); ++i) {
 		color_point& p = cmc.color_points[i];

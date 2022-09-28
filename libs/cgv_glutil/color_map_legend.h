@@ -4,8 +4,8 @@
 #include <cgv/utils/convert_string.h>
 #include <cgv_glutil/canvas_overlay.h>
 #include <cgv_glutil/color_map.h>
-#include <cgv_glutil/generic_2d_renderer.h>
-#include <cgv_glutil/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/generic_2d_renderer.h>
+#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 
 #include "lib_begin.h"
 
@@ -32,7 +32,7 @@ protected:
 		AlignmentOption label_alignment = AO_END;
 
 		// dependent members
-		rect color_map_rect;
+		cgv::g2d::rect color_map_rect;
 		ivec2 title_position = ivec2(0);
 		float title_angle = 90.0f;
 
@@ -85,14 +85,14 @@ protected:
 	AlignmentOption title_align;
 
 	// general appearance
-	shape2d_style container_style, border_style, color_map_style;
+	cgv::g2d::shape2d_style container_style, border_style, color_map_style;
 
 	// text appearance
 	float font_size = 12.0f;
-	shape2d_style text_style;
-	msdf_text_geometry labels;
+	cgv::g2d::shape2d_style text_style;
+	cgv::g2d::msdf_text_geometry labels;
 
-	generic_2d_renderer tick_renderer;
+	cgv::g2d::generic_2d_renderer tick_renderer;
 	DEFINE_GENERIC_RENDER_DATA_CLASS(tick_geometry, 2, vec2, position, vec2, size);
 
 	tick_geometry ticks;

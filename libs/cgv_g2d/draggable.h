@@ -4,10 +4,10 @@
 
 #include "rect.h"
 
-#include "../lib_begin.h"
+#include "lib_begin.h"
 
 namespace cgv {
-namespace glutil {
+namespace g2d {
 
 struct CGV_API draggable : public cgv::render::render_types {
 	vec2 pos;

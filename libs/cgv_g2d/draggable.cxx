@@ -1,7 +1,7 @@
 #include "draggable.h"
 
 namespace cgv {
-namespace glutil {
+namespace g2d {
 
 draggable::draggable() : position_is_center(false), constraint_reference(CR_FULL_SIZE) {}
 

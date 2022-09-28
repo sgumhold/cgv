@@ -10,7 +10,7 @@ canvas_overlay::canvas_overlay() : overlay() {
 
 	content_canvas.set_apply_gamma(false);
 
-	overlay_canvas.register_shader("rectangle", canvas::shaders_2d::rectangle);
+	overlay_canvas.register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
 }
 
 void canvas_overlay::clear(cgv::render::context& ctx) {
@@ -76,7 +76,7 @@ void canvas_overlay::register_shader(const std::string& name, const std::string&
 void canvas_overlay::init_overlay_style(context& ctx) {
 
 	// configure style for final blending of overlay into main frame buffer
-	cgv::glutil::shape2d_style overlay_style;
+	cgv::g2d::shape2d_style overlay_style;
 	overlay_style.use_texture = true;
 	overlay_style.use_blending = blend_overlay;
 	overlay_style.feather_width = 0.0f;
