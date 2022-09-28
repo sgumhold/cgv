@@ -1,7 +1,7 @@
 #include "msdf_text_geometry.h"
 
 namespace cgv {
-namespace glutil {
+namespace g2d {
 
 msdf_text_geometry::msdf_text_geometry() {
 	msdf_font_ptr = nullptr;

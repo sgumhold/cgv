@@ -9,10 +9,10 @@ namespace gui {
 struct shape2d_style_gui_creator : public gui_creator {
 	/// attempt to create a gui and return whether this was successful
 	bool create(provider* p, const std::string& label, void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, bool*) {
-		if(value_type != cgv::type::info::type_name<glutil::shape2d_style>::get_name())
+		if(value_type != cgv::type::info::type_name<cgv::g2d::shape2d_style>::get_name())
 			return false;
 
-		glutil::shape2d_style* s_ptr = reinterpret_cast<glutil::shape2d_style*>(value_ptr);
+		cgv::g2d::shape2d_style* s_ptr = reinterpret_cast<cgv::g2d::shape2d_style*>(value_ptr);
 		cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
 		p->add_decorator("Render Options", "heading", "level=3");
@@ -44,13 +44,13 @@ struct shape2d_style_gui_creator : public gui_creator {
 struct line2d_style_gui_creator : public gui_creator {
 	/// attempt to create a gui and return whether this was successful
 	bool create(provider* p, const std::string& label, void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, bool*) {
-		if(value_type != cgv::type::info::type_name<glutil::line2d_style>::get_name())
+		if(value_type != cgv::type::info::type_name<cgv::g2d::line2d_style>::get_name())
 			return false;
 
-		glutil::line2d_style* s_ptr = reinterpret_cast<glutil::line2d_style*>(value_ptr);
+		cgv::g2d::line2d_style* s_ptr = reinterpret_cast<cgv::g2d::line2d_style*>(value_ptr);
 		cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-		p->add_gui("shape2d_style", *static_cast<glutil::shape2d_style*>(s_ptr));
+		p->add_gui("shape2d_style", *static_cast<cgv::g2d::shape2d_style*>(s_ptr));
 		p->add_member_control(b, "Width", s_ptr->width, "value_slider", "min=0;max=40;step=0.5;ticks=true");
 		p->add_member_control(b, "Dash Length", s_ptr->dash_length, "value_slider", "min=0;max=100;step=0.5;ticks=true");
 		p->add_member_control(b, "Dash Ratio", s_ptr->dash_ratio, "value_slider", "min=0;max=1;step=0.01;ticks=true");
@@ -63,13 +63,13 @@ struct line2d_style_gui_creator : public gui_creator {
 struct arrow2d_style_gui_creator : public gui_creator {
 	/// attempt to create a gui and return whether this was successful
 	bool create(provider* p, const std::string& label, void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, bool*) {
-		if(value_type != cgv::type::info::type_name<glutil::arrow2d_style>::get_name())
+		if(value_type != cgv::type::info::type_name<cgv::g2d::arrow2d_style>::get_name())
 			return false;
 
-		glutil::arrow2d_style* s_ptr = reinterpret_cast<glutil::arrow2d_style*>(value_ptr);
+		cgv::g2d::arrow2d_style* s_ptr = reinterpret_cast<cgv::g2d::arrow2d_style*>(value_ptr);
 		cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-		p->add_gui("shape2d_style", *static_cast<glutil::shape2d_style*>(s_ptr));
+		p->add_gui("shape2d_style", *static_cast<cgv::g2d::shape2d_style*>(s_ptr));
 		p->add_member_control(b, "Stem Width", s_ptr->stem_width, "value_slider", "min=0;max=100;step=0.5;ticks=true");
 		p->add_member_control(b, "Head Width", s_ptr->head_width, "value_slider", "min=0;max=100;step=0.5;ticks=true");
 		p->add_member_control(b, "Absolute Head Length", s_ptr->absolute_head_length, "value_slider", "min=0;max=200;step=0.5;ticks=true");
@@ -84,13 +84,13 @@ struct arrow2d_style_gui_creator : public gui_creator {
 struct grid2d_style_gui_creator : public gui_creator {
 	/// attempt to create a gui and return whether this was successful
 	bool create(provider* p, const std::string& label, void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, bool*) {
-		if(value_type != cgv::type::info::type_name<glutil::grid2d_style>::get_name())
+		if(value_type != cgv::type::info::type_name<cgv::g2d::grid2d_style>::get_name())
 			return false;
 
-		glutil::grid2d_style* s_ptr = reinterpret_cast<glutil::grid2d_style*>(value_ptr);
+		cgv::g2d::grid2d_style* s_ptr = reinterpret_cast<cgv::g2d::grid2d_style*>(value_ptr);
 		cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-		p->add_gui("shape2d_style", *static_cast<glutil::shape2d_style*>(s_ptr));
+		p->add_gui("shape2d_style", *static_cast<cgv::g2d::shape2d_style*>(s_ptr));
 		p->add_member_control(b, "Pattern", s_ptr->pattern, "dropdown", "enums='Grid,Squares,Checker'");
 		p->add_member_control(b, "Scale", s_ptr->scale, "value_slider", "min=0;max=1;step=0.001;ticks=true");
 
@@ -98,7 +98,7 @@ struct grid2d_style_gui_creator : public gui_creator {
 	}
 };
 
-#include "../lib_begin.h"
+#include "lib_begin.h"
 
 CGV_API cgv::gui::gui_creator_registration<shape2d_style_gui_creator> shape2d_s_gc_reg("shape2d_style_gui_creator");
 CGV_API cgv::gui::gui_creator_registration<line2d_style_gui_creator> line2d_s_gc_reg("line2d_style_gui_creator");

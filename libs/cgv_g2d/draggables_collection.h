@@ -7,10 +7,10 @@
 #include "rect.h"
 #include "draggable.h"
 
-#include "../lib_begin.h"
+#include "lib_begin.h"
 
 namespace cgv {
-namespace glutil {
+namespace g2d {
 
 template<class T>
 class draggables_collection : public cgv::render::render_types {

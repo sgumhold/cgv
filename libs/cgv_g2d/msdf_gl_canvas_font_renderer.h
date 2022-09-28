@@ -1,12 +1,12 @@
 #pragma once
 
 #include "msdf_gl_font_renderer.h"
-#include "2d/canvas.h"
+#include "canvas.h"
 
 #include "lib_begin.h"
 
 namespace cgv {
-namespace glutil {
+namespace g2d {
 
 class CGV_API msdf_gl_canvas_font_renderer;
 

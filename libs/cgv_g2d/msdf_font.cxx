@@ -4,7 +4,7 @@
 #include <cgv/utils/tokenizer.h>
 
 namespace cgv {
-namespace glutil {
+namespace g2d {
 
 msdf_font& ref_msdf_font(cgv::render::context& ctx, int ref_count_change) {
 	static int ref_count = 0;
@@ -56,8 +56,8 @@ bool msdf_font::init(cgv::render::context& ctx) {
 
 	std::string font_name = "segoeui";
 	switch(font_face) {
-	case cgv::glutil::msdf_font::FF_LIGHT: font_name += "l"; break;
-	case cgv::glutil::msdf_font::FF_BOLD: font_name += "b"; break;
+	case cgv::g2d::msdf_font::FF_LIGHT: font_name += "l"; break;
+	case cgv::g2d::msdf_font::FF_BOLD: font_name += "b"; break;
 	default: break;
 	}
 

@@ -6,8 +6,6 @@
 
 #include "piecewise_linear_interpolator.h"
 
-//#include "lib_begin.h"
-
 namespace cgv {
 namespace glutil{
 
@@ -210,5 +208,3 @@ public:
 
 }
 }
-
-//#include <cgv/config/lib_end.h>

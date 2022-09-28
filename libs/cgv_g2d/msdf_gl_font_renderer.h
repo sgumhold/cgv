@@ -6,12 +6,12 @@
 
 #include "msdf_font.h"
 #include "msdf_text_geometry.h"
-#include "2d/shape2d_styles.h"
+#include "shape2d_styles.h"
 
 #include "lib_begin.h"
 
 namespace cgv {
-namespace glutil {
+namespace g2d {
 
 class CGV_API msdf_gl_font_renderer;
 

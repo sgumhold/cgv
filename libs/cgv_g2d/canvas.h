@@ -4,14 +4,13 @@
 #include <cgv/render/render_types.h>
 #include <cgv/render/shader_program.h>
 #include <cgv_gl/gl/gl_context.h>
-#include <cgv_glutil/2d/rect.h>
+#include "cgv_glutil/shader_library.h"
+#include <cgv_g2d/rect.h>
 
-#include "../shader_library.h"
-
-#include "../lib_begin.h"
+#include "lib_begin.h"
 
 namespace cgv {
-namespace glutil {
+namespace g2d {
 
 class CGV_API canvas : public cgv::render::render_types {
 public:

@@ -7,7 +7,7 @@
 #include "lib_begin.h"
 
 namespace cgv {
-namespace glutil {
+namespace g2d {
 
 class CGV_API msdf_text_geometry : public cgv::render::render_types {
 protected:

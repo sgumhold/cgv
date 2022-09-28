@@ -2,10 +2,8 @@
 
 #include <cgv/render/render_types.h>
 
-#include "../lib_begin.h"
-
 namespace cgv {
-namespace glutil {
+namespace g2d {
 	/** A wrapper class for a 2d axis aligned bounding box with integer coordinates.
 		Abstracts the box min and max points to provide position and size member
 		functionality.
@@ -105,5 +103,3 @@ struct rect : public cgv::render::render_types {
 
 }
 }
-
-#include <cgv/config/lib_end.h>

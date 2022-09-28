@@ -1,7 +1,7 @@
 #include "msdf_gl_font_renderer.h"
 
 namespace cgv {
-namespace glutil {
+namespace g2d {
 
 msdf_gl_font_renderer& ref_msdf_gl_font_renderer(cgv::render::context& ctx, int ref_count_change) {
 	static int ref_count = 0;

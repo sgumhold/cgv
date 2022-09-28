@@ -6,7 +6,7 @@
 #include "lib_begin.h"
 
 namespace cgv {
-namespace glutil {
+namespace g2d {
 
 class CGV_API msdf_font;
 

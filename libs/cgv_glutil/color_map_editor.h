@@ -2,9 +2,9 @@
 
 #include <cgv/render/texture.h>
 #include <cgv_glutil/canvas_overlay.h>
-#include <cgv_glutil/generic_2d_renderer.h>
+#include <cgv_g2d/generic_2d_renderer.h>
+#include <cgv_g2d/draggables_collection.h>
 
-#include "2d/draggables_collection.h"
 #include "color_map.h"
 
 #include "lib_begin.h"
@@ -21,9 +21,9 @@ protected:
 		// dependent members
 		int color_editor_height;
 		int opacity_editor_height;
-		rect color_handles_rect;
-		rect color_editor_rect;
-		rect opacity_editor_rect;
+		cgv::g2d::rect color_handles_rect;
+		cgv::g2d::rect color_editor_rect;
+		cgv::g2d::rect opacity_editor_rect;
 
 		void update(const ivec2& parent_size, bool color_and_opacity) {
 
@@ -55,7 +55,7 @@ protected:
 		}
 	} layout;
 	
-	struct color_point : public draggable {
+	struct color_point : public cgv::g2d::draggable {
 		float val;
 		rgb col;
 
@@ -97,7 +97,7 @@ protected:
 		}
 	};
 
-	struct opacity_point : public draggable {
+	struct opacity_point : public cgv::g2d::draggable {
 		vec2 val;
 
 		opacity_point() {
@@ -154,7 +154,7 @@ protected:
 	rgba handle_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
 	rgba highlight_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
 	std::string highlight_color_hex = "0x808080";
-	cgv::glutil::shape2d_style container_style, border_style, color_map_style, bg_style, hist_style;
+	cgv::g2d::shape2d_style container_style, border_style, color_map_style, bg_style, hist_style;
 
 	// text appearance
 	ivec2 cursor_pos;
@@ -176,14 +176,14 @@ protected:
 	texture preview_tex;
 	texture hist_tex;
 
-	generic_2d_renderer color_handle_renderer, opacity_handle_renderer, line_renderer, polygon_renderer;
+	cgv::g2d::generic_2d_renderer color_handle_renderer, opacity_handle_renderer, line_renderer, polygon_renderer;
 	DEFINE_GENERIC_RENDER_DATA_CLASS(custom_geometry, 2, vec2, position, rgba, color);
 	DEFINE_GENERIC_RENDER_DATA_CLASS(line_geometry, 2, vec2, position, vec2, texcoord);
 
 	struct cm_container {
 		color_map* cm = nullptr;
-		cgv::glutil::draggables_collection<color_point> color_points;
-		cgv::glutil::draggables_collection<opacity_point> opacity_points;
+		cgv::g2d::draggables_collection<color_point> color_points;
+		cgv::g2d::draggables_collection<opacity_point> opacity_points;
 		
 		custom_geometry color_handles, opacity_handles;
 		line_geometry lines;
@@ -204,8 +204,8 @@ protected:
 	void init_texture(context& ctx);
 
 	void add_point(const vec2& pos);
-	void remove_point(const draggable* ptr);
-	draggable* get_hit_point(const vec2& pos);
+	void remove_point(const cgv::g2d::draggable* ptr);
+	cgv::g2d::draggable* get_hit_point(const vec2& pos);
 	
 	void handle_color_point_drag();
 	void handle_opacity_point_drag();

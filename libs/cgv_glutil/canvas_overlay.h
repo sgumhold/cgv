@@ -2,8 +2,8 @@
 
 #include <cgv_glutil/frame_buffer_container.h>
 #include <cgv_glutil/overlay.h>
-#include <cgv_glutil/2d/canvas.h>
-#include <cgv_glutil/2d/shape2d_styles.h>
+#include <cgv_g2d/canvas.h>
+#include <cgv_g2d/shape2d_styles.h>
 #include <cgv/gui/theme_info.h>
 
 #include "lib_begin.h"
@@ -22,7 +22,7 @@ protected:
 
 	frame_buffer_container fbc;
 
-	canvas content_canvas, overlay_canvas;
+	cgv::g2d::canvas content_canvas, overlay_canvas;
 
 	bool blend_overlay = false;
 	

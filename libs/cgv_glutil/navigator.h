@@ -9,9 +9,8 @@
 #include <cgv_glutil/sphere_render_data.h>
 #include <cgv_glutil/frame_buffer_container.h>
 #include <cgv_glutil/overlay.h>
-
-#include "2d/canvas.h"
-#include "2d/shape2d_styles.h"
+#include <cgv_g2d/canvas.h>
+#include <cgv_g2d/shape2d_styles.h>
 
 #include "lib_begin.h"
 
@@ -33,8 +32,8 @@ protected:
 
 	cgv::glutil::frame_buffer_container fbc;
 
-	cgv::glutil::canvas blit_canvas;
-	cgv::glutil::shape2d_style blit_style;
+	cgv::g2d::canvas blit_canvas;
+	cgv::g2d::shape2d_style blit_style;
 
 	int hit_axis;
 

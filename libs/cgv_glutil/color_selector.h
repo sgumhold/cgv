@@ -2,9 +2,9 @@
 
 #include <cgv/render/texture.h>
 #include <cgv_glutil/canvas_overlay.h>
-#include <cgv_glutil/msdf_gl_canvas_font_renderer.h>
-#include <cgv_glutil/2d/draggables_collection.h>
-#include <cgv_glutil/2d/shape2d_styles.h>
+#include <cgv_g2d/draggables_collection.h>
+#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/shape2d_styles.h>
 
 #include "lib_begin.h"
 
@@ -18,17 +18,17 @@ protected:
 		int size = 280;
 
 		// dependent members
-		rect border_rect;
-		rect color_rect;
-		rect hue_rect;
-		rect opacity_rect;
-		rect preview_rect;
+		cgv::g2d::rect border_rect;
+		cgv::g2d::rect color_rect;
+		cgv::g2d::rect hue_rect;
+		cgv::g2d::rect opacity_rect;
+		cgv::g2d::rect preview_rect;
 
-		rect hue_constraint;
-		rect opacity_constraint;
+		cgv::g2d::rect hue_constraint;
+		cgv::g2d::rect opacity_constraint;
 	} layout;
 	
-	struct selector_handle : public draggable {
+	struct selector_handle : public cgv::g2d::draggable {
 		vec2 val = vec2(0.0f);
 		bool is_rectangular = false;
 
@@ -40,7 +40,7 @@ protected:
 
 		void update_val() {
 			if(constraint) {
-				const rect& c = *constraint;
+				const cgv::g2d::rect& c = *constraint;
 				vec2 p = pos - static_cast<vec2>(c.pos());
 				ivec2 size = c.size();
 				val = p / static_cast<vec2>(size);
@@ -52,7 +52,7 @@ protected:
 
 		void update_pos() {
 			if(constraint) {
-				const rect& c = *constraint;
+				const cgv::g2d::rect& c = *constraint;
 				val = cgv::math::clamp(val, 0.0f, 1.0f);
 				pos = static_cast<vec2>(c.pos()) + val * c.size();
 			}
@@ -72,12 +72,12 @@ protected:
 	bool has_updated = false;
 	bool has_opacity = false;
 
-	msdf_text_geometry texts;
+	cgv::g2d::msdf_text_geometry texts;
 
-	cgv::glutil::shape2d_style container_style, border_style, color_texture_style, hue_texture_style, opacity_color_style, color_handle_style, hue_handle_style, text_style;
-	cgv::glutil::grid2d_style opacity_bg_style;
+	cgv::g2d::shape2d_style container_style, border_style, color_texture_style, hue_texture_style, opacity_color_style, color_handle_style, hue_handle_style, text_style;
+	cgv::g2d::grid2d_style opacity_bg_style;
 
-	cgv::glutil::draggables_collection<selector_handle> selector_handles;
+	cgv::g2d::draggables_collection<selector_handle> selector_handles;
 
 	texture color_tex;
 	texture hue_tex;

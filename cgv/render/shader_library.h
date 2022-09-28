@@ -17,8 +17,6 @@ protected:
 		cgv::render::shader_define_map defines = {};
 	};
 
-	//typedef std::pair<cgv::render::shader_program, std::string> shader_program_pair;
-	//std::map<std::string, shader_program_pair> shaders;
 	typedef std::map<std::string, shader_info> shader_lib_map;
 	shader_lib_map shaders;
 

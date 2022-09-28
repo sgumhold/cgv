@@ -20,9 +20,9 @@ color_map_legend::color_map_legend() {
 	set_overlay_margin(ivec2(-3));
 	set_overlay_size(layout.total_size);
 
-	register_shader("rectangle", canvas::shaders_2d::rectangle);
+	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
 
-	tick_renderer = generic_2d_renderer(canvas::shaders_2d::rectangle);
+	tick_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::rectangle);
 
 	title = "";
 	range = vec2(0.0f, 1.0f);
@@ -39,8 +39,8 @@ void color_map_legend::clear(cgv::render::context& ctx) {
 	tex.clear();
 	tex.destruct(ctx);
 
-	ref_msdf_font(ctx, -1);
-	ref_msdf_gl_canvas_font_renderer(ctx, -1);
+	cgv::g2d::ref_msdf_font(ctx, -1);
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
 
 	tick_renderer.destruct(ctx);
 }
@@ -100,8 +100,8 @@ bool color_map_legend::init(cgv::render::context& ctx) {
 
 	success &= tick_renderer.init(ctx);
 
-	msdf_font& font = ref_msdf_font(ctx, 1);
-	ref_msdf_gl_canvas_font_renderer(ctx, 1);
+	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font(ctx, 1);
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
 
 	if(success)
 		init_styles(ctx);
@@ -174,7 +174,7 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 	tick_renderer.render(ctx, content_canvas, PT_POINTS, ticks);
 
 	// draw tick labels
-	auto& font_renderer = ref_msdf_gl_canvas_font_renderer(ctx);
+	auto& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx);
 	if(font_renderer.enable(ctx, content_canvas, labels, text_style)) {
 		font_renderer.draw(ctx, labels, 0, labels.size() - 1);
 
@@ -320,7 +320,7 @@ void color_map_legend::init_styles(context& ctx) {
 	text_style.use_blending = true;
 
 	// configure style for tick marks
-	shape2d_style tick_style;
+	cgv::g2d::shape2d_style tick_style;
 	tick_style.position_is_center = true;
 	tick_style.fill_color = rgba(tick_color, 1.0f);
 	tick_style.feather_width = 0.0f;

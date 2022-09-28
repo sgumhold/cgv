@@ -69,14 +69,20 @@
 #define GRD_GET_FIRST_PAIR(f, ...) GRD_EXPAND( GRD_GET_FIRST_PAIR_(f, __VA_ARGS__) )
 
 namespace cgv {
-namespace glutil{
+
+/// forward declaration to give generic renderer access to protected members
+namespace g2d {
+class generic_2d_renderer;
+}
+
+namespace glutil {
 
 /// forward declaration to give generic renderer access to protected members
 class generic_renderer;
-class generic_2d_renderer;
+
 class generic_render_data : public cgv::render::render_types {
 	friend class generic_renderer;
-	friend class generic_2d_renderer;
+	friend class cgv::g2d::generic_2d_renderer;
 private:
 	cgv::render::attribute_array_manager aam;
 	
