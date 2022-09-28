@@ -14,9 +14,8 @@ void finish_fragment2d(in vec4 color, in vec2 texcoords);
 uniform layout(binding = 1) sampler1D hist_tex;
 
 uniform uint max_value = 1u;
+uniform float norm_gamma = 1.0;
 uniform uint sampling_type = 0;
-
-uniform float A;
 
 flat in vec2 size;
 in vec2 pix_coord;
@@ -85,6 +84,8 @@ void main() {
 
 	// normalize to [0,1]
 	heights /= float(max_value);
+
+	heights = pow(heights, vec3(norm_gamma));
 
 	// to pixel space
 	heights *= size.y;

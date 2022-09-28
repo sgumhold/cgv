@@ -42,7 +42,7 @@ public:
 	shader_lib_map::iterator begin() { return shaders.begin(); }
 	shader_lib_map::iterator end() { return shaders.end(); }
 	
-	bool load_shaders(cgv::render::context& ctx, const std::string& where = "");
+	bool load_all(cgv::render::context& ctx, const std::string& where = "");
 
 	bool reload(cgv::render::context& ctx, const std::string& name, const cgv::render::shader_define_map& defines = {}, const std::string& where = "");
 
