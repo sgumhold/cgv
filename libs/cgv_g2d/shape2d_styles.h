@@ -2,9 +2,8 @@
 
 #include <cgv/render/context.h>
 #include <cgv/render/render_types.h>
-#include <cgv/render/shader_program.h>
+#include <cgv/render/shader_library.h>
 #include <cgv_gl/gl/gl_context.h>
-#include <cgv_glutil/shader_library.h>
 
 namespace cgv {
 namespace g2d {

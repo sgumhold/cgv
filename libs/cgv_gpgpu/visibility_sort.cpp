@@ -33,10 +33,10 @@ bool visibility_sort::load_shader_programs(context& ctx) {
 	if(key_definition != "")
 		key_defines["KEY_DEFINITION"] = key_definition;
 
-	res = res && cgv::glutil::shader_library::load(ctx, key_prog, "rs4x_keys", key_defines, true, where);
-	res = res && cgv::glutil::shader_library::load(ctx, scan_local_prog, "rs4x_scan_local", true, where);
-	res = res && cgv::glutil::shader_library::load(ctx, scan_global_prog, "rs4x_scan_global", true, where);
-	res = res && cgv::glutil::shader_library::load(ctx, scatter_prog, "rs4x_scatter", { {"VALUE_TYPE_DEFINITION", value_type_def} }, true, where);
+	res = res && cgv::render::shader_library::load(ctx, key_prog, "rs4x_keys", key_defines, true, where);
+	res = res && cgv::render::shader_library::load(ctx, scan_local_prog, "rs4x_scan_local", true, where);
+	res = res && cgv::render::shader_library::load(ctx, scan_global_prog, "rs4x_scan_global", true, where);
+	res = res && cgv::render::shader_library::load(ctx, scatter_prog, "rs4x_scatter", { {"VALUE_TYPE_DEFINITION", value_type_def} }, true, where);
 
 	return res;
 }
