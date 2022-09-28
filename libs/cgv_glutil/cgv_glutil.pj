@@ -11,3 +11,4 @@ addIncDirs=[CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName];
 if(SYSTEM=="windows") {
 	addStaticDefines=["REGISTER_SHADER_FILES"];
 }
+addShaderPaths=[[INPUT_DIR,"all"]];

@@ -134,11 +134,6 @@ addProjectDeps = ["cgv","cgv_viewer","fltk"];
 
 referenceDeps = 0;
 
-// add additional command line arguments. The most common usage of this
-// is to add a default config file as in the given example
-
-addCommandLineArguments = ['config:"'.INPUT_DIR.'/my_config.def"'];
-
 
 // working directory in which the resulting program should be started
 // this defaults to the platform specific default directories
@@ -156,6 +151,30 @@ addIncDirs = [ INPUT_DIR."/my_include_subdir",
                [ env::CGV_SUPPORT_DIR."/libs/capture", "all"] 
              ];
 
+// define shader paths added by the current project.
+// To export a shader paths to projects that depend on this project, specify
+// the shader path in a list of two strings with the second entry equal to "all".
+// The list of all shader paths per project is computed after all dependent projects 
+// have been read. You can refer to this list in the addCommandLineArguments with the string "SHADER_PATHS".
+
+addShaderPaths = [ 
+	INPUT_DIR."/private_glsl", 
+	[ INPUT_DIR."/public_glsl", "all"] 
+];
+
+// add additional command line arguments. Use the predefined functions after(argument, plugin) 
+// and "before(argument,plugin)" to place an argument after or before the command line argument
+// reading the given plugin. The most common usage of this is to add a default config file and 
+// the shader paths after the ui plugin as in the given example. The shader path argument is of
+// the form "type(shader_config):shader_path='PATH1;PATH2;...;PATHN'" and automatically assembled
+// by concatenating the shader path lists added in the current project with 
+// addShaderPaths=["PATH1","PATH2",...] and the shader paths exported by dependent project with
+// addShaderPaths=[ ["PATH1","all"], ...].
+
+addCommandLineArguments = [
+	'config:"'.INPUT_DIR.'/my_config.def"',
+	after("SHADER_PATHS", "cg_fltk")
+];
 
 //additional preprocessor definitions for all configurations. By default the
 //following symbols are defined:
