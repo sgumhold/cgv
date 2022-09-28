@@ -365,11 +365,6 @@ Internal Makefiles (Windows only)</h1>
 <div class="line"> </div>
 <div class="line">referenceDeps = 0;</div>
 <div class="line"> </div>
-<div class="line">// add additional command line arguments. The most common usage of this</div>
-<div class="line">// is to add a default config file as in the given example</div>
-<div class="line"> </div>
-<div class="line">addCommandLineArguments = [&#39;config:&quot;&#39;.INPUT_DIR.&#39;/my_config.def&quot;&#39;];</div>
-<div class="line"> </div>
 <div class="line"> </div>
 <div class="line">// working directory in which the resulting program should be started</div>
 <div class="line">// this defaults to the platform specific default directories</div>
@@ -387,6 +382,30 @@ Internal Makefiles (Windows only)</h1>
 <div class="line">               [ env::CGV_SUPPORT_DIR.&quot;/libs/capture&quot;, &quot;all&quot;] </div>
 <div class="line">             ];</div>
 <div class="line"> </div>
+<div class="line">// define shader paths added by the current project.</div>
+<div class="line">// To export a shader paths to projects that depend on this project, specify</div>
+<div class="line">// the shader path in a list of two strings with the second entry equal to &quot;all&quot;.</div>
+<div class="line">// The list of all shader paths per project is computed after all dependent projects </div>
+<div class="line">// have been read. You can refer to this list in the addCommandLineArguments with the string &quot;SHADER_PATHS&quot;.</div>
+<div class="line"> </div>
+<div class="line">addShaderPaths = [ </div>
+<div class="line">        INPUT_DIR.&quot;/private_glsl&quot;, </div>
+<div class="line">        [ INPUT_DIR.&quot;/public_glsl&quot;, &quot;all&quot;] </div>
+<div class="line">];</div>
+<div class="line"> </div>
+<div class="line">// add additional command line arguments. Use the predefined functions after(argument, plugin) </div>
+<div class="line">// and &quot;before(argument,plugin)&quot; to place an argument after or before the command line argument</div>
+<div class="line">// reading the given plugin. The most common usage of this is to add a default config file and </div>
+<div class="line">// the shader paths after the ui plugin as in the given example. The shader path argument is of</div>
+<div class="line">// the form &quot;type(shader_config):shader_path=&#39;PATH1;PATH2;...;PATHN&#39;&quot; and automatically assembled</div>
+<div class="line">// by concatenating the shader path lists added in the current project with </div>
+<div class="line">// addShaderPaths=[&quot;PATH1&quot;,&quot;PATH2&quot;,...] and the shader paths exported by dependent project with</div>
+<div class="line">// addShaderPaths=[ [&quot;PATH1&quot;,&quot;all&quot;], ...].</div>
+<div class="line"> </div>
+<div class="line">addCommandLineArguments = [</div>
+<div class="line">        &#39;config:&quot;&#39;.INPUT_DIR.&#39;/my_config.def&quot;&#39;,</div>
+<div class="line">        after(&quot;SHADER_PATHS&quot;, &quot;cg_fltk&quot;)</div>
+<div class="line">];</div>
 <div class="line"> </div>
 <div class="line">//additional preprocessor definitions for all configurations. By default the</div>
 <div class="line">//following symbols are defined:</div>
