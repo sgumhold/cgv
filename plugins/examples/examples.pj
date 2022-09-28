@@ -12,8 +12,9 @@ addProjectDeps=[
 	"crg_light", "cg_meta", "cmi_io","cmv_avi", "crg_grid", "co_web", "cg_gamepad",
 	"cmf_tt_gl_font", "cgv_glutil"
 ];
+addShaderPaths=[INPUT_DIR];
 addCommandLineArguments=[
 	'gui:"'.CGV_DIR.'/plugins/examples/examples.gui"',
 	'config:"'.CGV_DIR.'/plugins/examples/config.def"',
-	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/libs/plot/glsl;".CGV_DIR."/libs/cgv_gl/glsl;".CGV_DIR."/libs/cgv_proc/glsl;".CGV_DIR."/libs/cgv_glutil/glsl'","cg_fltk")
+	after("SHADER_PATHS", "cg_fltk")
 ];

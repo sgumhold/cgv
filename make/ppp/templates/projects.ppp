@@ -23,6 +23,7 @@ func(read_project; :>pj_file = "", :>return = MAP)
 		:>addCommandLineArguments=[];
 		:>workingDirectory = "";
 		:>addIncDirs=[];
+		:>addShaderPaths=[];
 		:>addDefines=[];
 		:>addSharedDefines=[];
 		:>addStaticDefines=[];
@@ -620,6 +621,7 @@ func(inherit_variable; :>var_name="", :>exp_name="", :>add_name="", :>is_element
 func(inherit_all; :>return=0)
 {
 	inherit_variable("mapDeps", "expMapDeps", "addMapDeps", is_dep_map_element);
+	inherit_variable_config("shaderPaths", "expShaderPaths", "addShaderPaths");
 	inherit_variable_config("incDirs", "expIncDirs", "addIncDirs");
 	inherit_variable_config("libDirs", "expLibDirs", "addLibDirs");
 	inherit_variable_config(<:var_name =& "dependencies", <:exp_name =& "expDependencies", <:add_name = "addDependencies", <:config_map_name = "mapDeps");
@@ -687,18 +689,52 @@ func(::compute_referenced_projects; :>project_name = "", :>return = 1)
 	}
 }
 
+func(append_command_line_arg; :>pj = MAP, :>ci = 0, :>arg = "", :>args = "", :>return = "")
+{
+	//cout("append_command_line_arg(".pj::projectName.", ".arg.")\n");
+	if (arg == '"SHADER_PATHS"') {
+		if (pj::shaderPaths ~~ LIST) {
+			if (!pj::shaderPaths[ci%4] > 0) {
+				//cout("shader paths:\n");
+				//cout(pj::shaderPaths[ci]);
+				//cout("\n");
+				:>path_list = pj::shaderPaths[ci%4][0];
+				for(j=1; j<!pj::shaderPaths[ci%4]; ++j) {
+					path_list = path_list.';'.pj::shaderPaths[ci%4][j];
+				}
+				:>path_arg = '"'."type(shader_config):shader_path='".path_list."'".'"';
+				//cout(path_arg);
+				args = args." ".path_arg;
+			}
+			//else {
+			//	cout("path list empty?");
+			//}
+		}
+		//else {
+		//	cout("path list undefined?");
+		//}
+	}
+	else {
+		args = args.' '.arg;
+		//cout(arg);
+	}
+	//cout("\n");
+}
+
 func(get_command_line_args; :>pj = MAP, :>ci = 0, :>return = "")
 {
-	// cout("command_line_args(".pj::projectName.")\n");
+	//cout("command_line_args(".pj::projectName.")\n");
 	:>i=0;
 	:>j=0;
 	if (!pj::is_shared[ci]) {
 		for(j=0; j<!pj::addCommandLineArguments; ++j) {
 			if (before_or_after(pj::addCommandLineArguments[j]) == "") {
-				return = return.' '.pj::addCommandLineArguments[j];
+				//return = return.' '.pj::addCommandLineArguments[j];
+				append_command_line_arg(<:pj = &pj, <:ci=ci, <:arg=pj::addCommandLineArguments[j], <:args= &return);
 			}
 			else {
-				return = return.' '.pj::addCommandLineArguments[j][0];
+				//return = return.' '.pj::addCommandLineArguments[j][0];
+				append_command_line_arg(<:pj = &pj, <:ci=ci, <:arg=pj::addCommandLineArguments[j][0], <:args= &return);
 			}
 		}
 	}
@@ -727,7 +763,8 @@ func(get_command_line_args; :>pj = MAP, :>ci = 0, :>return = "")
 				// before using element add all elements of second list that should be before this one
 				for (j=0; j<!B; ++j) {
 					if (pj::plugin_list[i] == get_reference(B[j])) {
-						return = return.' '.B[j][0];
+						// return = return.' '.B[j][0];
+						append_command_line_arg(<:pj=&pj, <:ci=ci, <:arg=B[j][0], <:args=&return);
 					}
 				}
 				// append plugin
@@ -735,14 +772,16 @@ func(get_command_line_args; :>pj = MAP, :>ci = 0, :>return = "")
 				// append elements that should be after the current element next
 				for (j=0; j<!A; ++j) {
 					if (pj::plugin_list[i] == get_reference(A[j])) {
-						return = return.' '.A[j][0];
+						// return = return.' '.A[j][0];
+						append_command_line_arg(<:pj=&pj, <:ci=ci, <:arg=&A[j][0], <:args=&return);
 					}
 				}
 			}
 		}
 		// add elements without reference to the end
 		for (j=0; j<!E; ++j) {
-			return = return.' '.E[j];
+			// return = return.' '.E[j];
+			append_command_line_arg(<:pj=&pj, <:ci=ci, <:arg=E[j], <:args=&return);
 		}
 	}
 	//cout(return."\n\n");
