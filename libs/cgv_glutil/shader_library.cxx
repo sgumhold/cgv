@@ -30,7 +30,7 @@ bool shader_library::add(const std::string& name, const std::string& file, const
 	return false;
 }
 
-bool shader_library::load_shaders(cgv::render::context& ctx, const std::string& where) {
+bool shader_library::load_all(cgv::render::context& ctx, const std::string& where) {
 
 	bool success = true;
 	for(auto& elem : shaders) {

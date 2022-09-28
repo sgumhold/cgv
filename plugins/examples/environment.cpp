@@ -249,7 +249,7 @@ public:
 		ref_sphere_renderer(ctx, 1);
 
 		bool success = true;
-		success &= shaders.load_shaders(ctx);
+		success &= shaders.load_all(ctx);
 		
 		if(spheres.init(ctx)) {
 			spheres.add(vec3(0.0f, -50.0f, 0.0f), 50.0f);

@@ -164,7 +164,10 @@ protected:
 	//bool show_histogram;
 	std::vector<unsigned> histogram;
 	unsigned hist_max = 1;
-	cgv::type::DummyEnum histogram_type = (cgv::type::DummyEnum)1;
+	unsigned hist_max_non_zero = 1;
+	bool hist_norm_ignore_zero = true;
+	float hist_norm_gamma = 1.0f;
+	cgv::type::DummyEnum histogram_type = (cgv::type::DummyEnum)2;
 
 	cgv::type::DummyEnum resolution;
 	float opacity_scale_exponent;
