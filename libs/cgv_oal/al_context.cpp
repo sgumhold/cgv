@@ -300,9 +300,9 @@ void OALSource::play() { alSourcePlay(src_id); }
 
 void OALSource::pause() { alSourcePause(src_id); }
 
-void OALSource::play_pause(bool play)
+void OALSource::play_pause(bool should_play)
 {
-	if (play) {
+	if (should_play) {
 		this->play();
 	}
 	else {
