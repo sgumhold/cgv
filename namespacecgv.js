@@ -1,5 +1,10 @@
 var namespacecgv =
 [
+    [ "audio", null, [
+      [ "OALContext", "classcgv_1_1audio_1_1OALContext.html", "classcgv_1_1audio_1_1OALContext" ],
+      [ "OALListener", "classcgv_1_1audio_1_1OALListener.html", "classcgv_1_1audio_1_1OALListener" ],
+      [ "OALSource", "classcgv_1_1audio_1_1OALSource.html", "classcgv_1_1audio_1_1OALSource" ]
+    ] ],
     [ "base", "namespacecgv_1_1base.html", "namespacecgv_1_1base" ],
     [ "data", "namespacecgv_1_1data.html", "namespacecgv_1_1data" ],
     [ "gui", "namespacecgv_1_1gui.html", "namespacecgv_1_1gui" ],

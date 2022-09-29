@@ -6,6 +6,9 @@ var hierarchy =
     [ "cgv::media::axis_aligned_box< float, 3 >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
     [ "cgv::media::axis_aligned_box< int, 2 >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
     [ "cgv::media::axis_aligned_box< T, 2 >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
+    [ "cgv::audio::OALContext", "classcgv_1_1audio_1_1OALContext.html", null ],
+    [ "cgv::audio::OALListener", "classcgv_1_1audio_1_1OALListener.html", null ],
+    [ "cgv::audio::OALSource", "classcgv_1_1audio_1_1OALSource.html", null ],
     [ "cgv::base::action", "classcgv_1_1base_1_1action.html", [
       [ "cgv::base::base_method_action< X >", "classcgv_1_1base_1_1base__method__action.html", [
         [ "cgv::base::method_action< X, T1 >", "classcgv_1_1base_1_1method__action.html", [
