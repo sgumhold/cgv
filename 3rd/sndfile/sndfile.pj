@@ -2,13 +2,17 @@
 projectType="library";
 projectName="sndfile";
 projectGUID="23779AAA-52DD-41A6-A5B8-B6933CBABD51";
-defFile=INPUT_DIR."/sndfile.def";
-excludeSourceDirs=[INPUT_DIR."/libsndfile"];
-sourceDirs=[
-	INPUT_DIR, INPUT_DIR."/libsndfile/src"
+addProjectDirs=[INPUT_DIR];
+addProjectDeps=["sndfile-g72x"];
+addIncDirs=[
+	INPUT_DIR, [INPUT_DIR."/include", "all"],
+	[INPUT_DIR."/libsndfile/include", "all"],
+	INPUT_DIR."/libsndfile/src"
 ];
+addDefines=["_USE_MATH_DEFINES"];
+sourceDirs       =[INPUT_DIR,               INPUT_DIR."/libsndfile/src"];
+excludeSourceDirs=[INPUT_DIR."/libsndfile", INPUT_DIR."/libsndfile/src/G72x"];
 excludeSourceFiles=[
-	INPUT_DIR."/libsndfile/src/G72x/g72x_test.c",
 	INPUT_DIR."/libsndfile/src/test_audio_detect.c",
 	INPUT_DIR."/libsndfile/src/test_cart_var.c",
 	INPUT_DIR."/libsndfile/src/test_ima_oki_adpcm.c",
@@ -23,25 +27,4 @@ excludeSourceFiles=[
 	INPUT_DIR."/libsndfile/src/test_main.c",
 	INPUT_DIR."/libsndfile/src/test_strncpy_crlf.c"
 ];
-addIncDirs=[
-	INPUT_DIR, [INPUT_DIR."/include", "all"],
-	[INPUT_DIR."/libsndfile/include", "all"],
-	INPUT_DIR."/libsndfile/src"
-];
-addDefines=[
-	"_USE_MATH_DEFINES"
-];
-//	"_WIN32",
-//	"NOMINMAX",
-//	"RESTRICT=__restrict",
-//	"_CRT_SECURE_NO_WARNINGS"
-//];
-//addStaticDefines=[
-//	"ALC_API=", "AL_LIBTYPE_STATIC"
-//];
-//addSharedDefines=[
-//	"AL_BUILD_LIBRARY",
-//	"AL_ALEXT_PROTOTYPES",
-//	"ALC_API=__declspec(dllexport)",
-//	"AL_API=__declspec(dllexport)"
-//];
+defFile=INPUT_DIR."/sndfile.def";
