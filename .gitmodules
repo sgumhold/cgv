@@ -1,0 +1,6 @@
+[submodule "3rd/openal-soft/openal-soft"]
+	path = 3rd/openal-soft/openal-soft
+	url = https://github.com/kcat/openal-soft.git
+[submodule "3rd/sndfile/libsndfile"]
+	path = 3rd/sndfile/libsndfile
+	url = https://github.com/libsndfile/libsndfile.git

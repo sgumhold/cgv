@@ -111,7 +111,8 @@ $(CGV_DIR)/cgv/gui \
 $(CGV_DIR)/libs/cgv_gl \
 $(CGV_DIR)/libs/plot \
 $(CGV_DIR)/libs/gamepad \
-$(CGV_DIR)/libs/cg_gamepad
+$(CGV_DIR)/libs/cg_gamepad \
+$(CGV_DIR)/libs/cgv_oal
 INCLUDE_PATH = \
 $(CGV_DIR) \
 $(CGV_DIR)/libs \
