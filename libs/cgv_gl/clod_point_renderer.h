@@ -160,7 +160,6 @@ namespace cgv {
 
 			vec4 pivot_point_in_view_space;
 
-			mat4 model_matrix, view_matrix, projection_matrix;
 
 
 			/// default render style
@@ -200,6 +199,8 @@ namespace cgv {
 			/// sets most uniforms
 			bool enable(context& ctx);
 
+			bool enable(context& ctx, const mat4& reduction_model_view_matrix);
+
 			bool enable_buffer_manager(clod_point_buffer_manager& manager);
 
 			void disable_buffer_manager();
@@ -235,6 +236,8 @@ namespace cgv {
 			
 			//sets the pivot point in view space coordinates
 			void set_pivot_point(const vec4& pivot);
+
+			void set_reduction_model_view_matrix(const mat4& modelview);
 
 			void set_render_style(const render_style& rs);
 			
