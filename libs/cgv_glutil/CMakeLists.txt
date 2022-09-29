@@ -9,7 +9,7 @@ cgv_create_lib(cgv_glutil SOURCES ${SOURCES} PPP_SOURCES ${PPP_SOURCES} SHADER_S
 target_compile_definitions(cgv_glutil PRIVATE CGV_GLUTIL_EXPORTS)
 target_compile_definitions(cgv_glutil_static PRIVATE CGV_GLUTIL_FORCE_STATIC)
 if (WIN32)
-	target_compile_definitions(cgv_glutil PRIVATE REGISTER_SHADER_FILES)
+	#target_compile_definitions(cgv_glutil PRIVATE REGISTER_SHADER_FILES)
 	target_compile_definitions(cgv_glutil_static PRIVATE REGISTER_SHADER_FILES)
 endif ()
 if (APPLE)
