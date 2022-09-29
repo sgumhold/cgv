@@ -40,6 +40,7 @@ class SpatialAudio : public cgv::base::node,
 
   public:
 	SpatialAudio() {
+		set_name("SpatialAudio");
 		cgv::signal::connect(cgv::gui::get_animation_trigger().shoot, this, &SpatialAudio::timer_event);
 	}
 	~SpatialAudio() = default;
