@@ -1,5 +1,5 @@
 #include "al_context.h"
-#include "alext.h"
+#include <AL/alext.h>
 
 #include <algorithm>
 #include <cassert>
