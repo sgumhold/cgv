@@ -1,20 +1,36 @@
 @=
-projectGUID = "10779BCA-52DE-40D3-A5B8-F6611CBABD49";
-projectType = "library";
-projectName = "openal-soft";
-addDefines = [
+projectType="library";
+projectName="openal-soft";
+projectGUID="10779BCA-52DE-40D3-A5B8-F6611CBABD49";
+addProjectDirs=[INPUT_DIR];
+addProjectDeps=["openal-common", "openal-alc", "openal-alcfx"];
+addDependencies=[["winmm","all"]];
+excludeSourceDirs=[INPUT_DIR."/openal-soft", INPUT_DIR."/openal-soft/al/eax"];
+sourceDirs=[
+	INPUT_DIR, INPUT_DIR."/openal-soft/core",
+	INPUT_DIR."/openal-soft/al"
+];
+excludeSourceFiles=[
+	INPUT_DIR."/openal-soft/core/mixer/mixer_neon.cpp",
+	INPUT_DIR."/openal-soft/core/dbus_wrap.cpp", INPUT_DIR."/openal-soft/core/dbus_wrap.h",
+	INPUT_DIR."/openal-soft/core/rtkit.cpp", INPUT_DIR."/openal-soft/core/rtkit.h"
+];
+addIncDirs=[
+	INPUT_DIR, INPUT_DIR."/openal-soft",
+	INPUT_DIR."/openal-soft/common", INPUT_DIR."/openal-soft/include"
+];
+addDefines=[
 	"_WIN32",
 	"NOMINMAX",
 	"RESTRICT=__restrict",
 	"_CRT_SECURE_NO_WARNINGS"
 ];
-addStaticDefines = [
-	"ALC_API=",
-	[ "AL_LIBTYPE_STATIC", "all" ]
+addStaticDefines=[
+	"ALC_API=", "AL_LIBTYPE_STATIC"
 ];
-addSharedDefines = [
-	AL_BUILD_LIBRARY,
-	AL_ALEXT_PROTOTYPES,
+addSharedDefines=[
+	"AL_BUILD_LIBRARY",
+	"AL_ALEXT_PROTOTYPES",
 	"ALC_API=__declspec(dllexport)",
 	"AL_API=__declspec(dllexport)"
-]
+];
