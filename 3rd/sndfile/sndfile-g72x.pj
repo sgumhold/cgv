@@ -1,0 +1,10 @@
+@=
+projectType="library";
+projectName="sndfile-g72x";
+projectGUID="220E021B-5E6F-499E-8CEC-7B50F529BB1B";
+addDefines=["_USE_MATH_DEFINES"];
+addIncDirs=[INPUT_DIR, INPUT_DIR."/include", INPUT_DIR."/libsndfile/include", INPUT_DIR."/libsndfile/src/G72x"];
+excludeSourceDirs=[INPUT_DIR."/libsndfile"];
+sourceDirs=[INPUT_DIR, INPUT_DIR."/libsndfile/src/G72x"];
+excludeSourceFiles=[INPUT_DIR."/libsndfile/src/G72x/g72x_test.c"];
+
