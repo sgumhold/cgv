@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv_glutil/generic_renderer.h>
+#include <cgv_gl/generic_renderer.h>
 #include <cgv_g2d/canvas.h>
 #include <cgv_g2d/shape2d_styles.h>
 
@@ -9,10 +9,10 @@
 namespace cgv {
 namespace g2d {
 
-class generic_2d_renderer : public cgv::glutil::generic_renderer {
+class generic_2d_renderer : public cgv::render::generic_renderer {
 public:
-	generic_2d_renderer() : cgv::glutil::generic_renderer() {}
-	generic_2d_renderer(const std::string& prog_name) : cgv::glutil::generic_renderer(prog_name) {}
+	generic_2d_renderer() : cgv::render::generic_renderer() {}
+	generic_2d_renderer(const std::string& prog_name) : cgv::render::generic_renderer(prog_name) {}
 
 	void set_style(cgv::render::context& ctx, shape2d_style& style) {
 		bool is_enabled = prog.is_enabled();
@@ -28,7 +28,7 @@ public:
 			prog.disable(ctx);
 	}
 
-	bool enable(cgv::render::context& ctx, canvas& cvs, cgv::glutil::generic_render_data& geometry) {
+	bool enable(cgv::render::context& ctx, canvas& cvs, cgv::render::generic_render_data& geometry) {
 		bool res = prog.is_enabled() ? true : prog.enable(ctx);
 		if(res)
 			cvs.set_view(ctx, prog);
@@ -37,7 +37,7 @@ public:
 		return res;
 	}
 
-	bool enable(cgv::render::context& ctx, canvas& cvs, cgv::glutil::generic_render_data& geometry, shape2d_style& style) {
+	bool enable(cgv::render::context& ctx, canvas& cvs, cgv::render::generic_render_data& geometry, shape2d_style& style) {
 		if(enable(ctx, cvs, geometry)) {
 			style.apply(ctx, prog);
 			return true;
@@ -45,14 +45,14 @@ public:
 		return false;
 	}
 
-	bool render(cgv::render::context& ctx, canvas& cvs, cgv::render::PrimitiveType type, cgv::glutil::generic_render_data& geometry, size_t start = 0, size_t count = 0) {
+	bool render(cgv::render::context& ctx, canvas& cvs, cgv::render::PrimitiveType type, cgv::render::generic_render_data& geometry, size_t start = 0, size_t count = 0) {
 		if(!enable(ctx, cvs, geometry))
 			return false;
 		draw(ctx, type, start, count ? count : geometry.get_render_count());
 		return disable(ctx, geometry);
 	}
 
-	bool render(cgv::render::context& ctx, canvas& cvs, cgv::render::PrimitiveType type, cgv::glutil::generic_render_data& geometry, shape2d_style& style, size_t start = 0, size_t count = 0) {
+	bool render(cgv::render::context& ctx, canvas& cvs, cgv::render::PrimitiveType type, cgv::render::generic_render_data& geometry, shape2d_style& style, size_t start = 0, size_t count = 0) {
 		if(!enable(ctx, cvs, geometry, style))
 			return false;
 		draw(ctx, type, start, count ? count : geometry.get_render_count());
