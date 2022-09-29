@@ -1,0 +1,36 @@
+@=
+projectType="static_library";
+projectName="openal-alc";
+projectGUID="10779BCC-52DE-40D3-A5B8-F6611CBABB37";
+addProjectDirs=[INPUT_DIR];
+addProjectDeps=["openal-common", "openal-alcfx"];
+excludeSourceDirs=[INPUT_DIR."/openal-soft", INPUT_DIR."/openal-soft/alc/effects"];
+sourceDirs=[
+	INPUT_DIR, INPUT_DIR."/openal-soft/alc"
+];
+excludeSourceFiles=[
+	INPUT_DIR."/openal-soft/alc/backends/alsa.cpp", INPUT_DIR."/openal-soft/alc/backends/alsa.h",
+	INPUT_DIR."/openal-soft/alc/backends/coreaudio.cpp", INPUT_DIR."/openal-soft/alc/backends/coreaudio.h",
+	INPUT_DIR."/openal-soft/alc/backends/dsound.cpp", INPUT_DIR."/openal-soft/alc/backends/dsound.h",
+	INPUT_DIR."/openal-soft/alc/backends/jack.cpp", INPUT_DIR."/openal-soft/alc/backends/jack.h",
+	INPUT_DIR."/openal-soft/alc/backends/oboe.cpp", INPUT_DIR."/openal-soft/alc/backends/oboe.h",
+	INPUT_DIR."/openal-soft/alc/backends/opensl.cpp", INPUT_DIR."/openal-soft/alc/backends/opensl.h",
+	INPUT_DIR."/openal-soft/alc/backends/oss.cpp", INPUT_DIR."/openal-soft/alc/backends/oss.h",
+	INPUT_DIR."/openal-soft/alc/backends/pipewire.cpp", INPUT_DIR."/openal-soft/alc/backends/pipewire.h",
+	INPUT_DIR."/openal-soft/alc/backends/portaudio.cpp", INPUT_DIR."/openal-soft/alc/backends/portaudio.h",
+	INPUT_DIR."/openal-soft/alc/backends/pulseaudio.cpp", INPUT_DIR."/openal-soft/alc/backends/pulseaudio.h",
+	INPUT_DIR."/openal-soft/alc/backends/sdl2.cpp", INPUT_DIR."/openal-soft/alc/backends/sdl2.h",
+	INPUT_DIR."/openal-soft/alc/backends/sndio.cpp", INPUT_DIR."/openal-soft/alc/backends/sndio.h",
+	INPUT_DIR."/openal-soft/alc/backends/solaris.cpp", INPUT_DIR."/openal-soft/alc/backends/solaris.h"
+];
+addIncDirs=[
+	INPUT_DIR, INPUT_DIR."/openal-soft",
+	INPUT_DIR."/openal-soft/common", INPUT_DIR."/openal-soft/include"
+];
+addDefines=[
+	"_WIN32", "NOMINMAX", "_CRT_SECURE_NO_WARNINGS", "RESTRICT=__restrict",
+	"AL_BUILD_LIBRARY",
+	"AL_ALEXT_PROTOTYPES",
+	"ALC_API=__declspec(dllexport)",
+	"AL_API=__declspec(dllexport)"
+];

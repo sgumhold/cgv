@@ -1,0 +1,16 @@
+@=
+projectType="static_library";
+projectName="openal-common";
+projectGUID="10779BCB-52DE-40D3-A5B8-F6611CBABB39";
+excludeSourceDirs=[INPUT_DIR."/openal-soft"];
+sourceDirs=[
+	INPUT_DIR, INPUT_DIR."/openal-soft/common"
+];
+addIncDirs=[INPUT_DIR, INPUT_DIR."/openal-soft/include"];
+addDefines=[
+	"_WIN32", "NOMINMAX", "_CRT_SECURE_NO_WARNINGS", "RESTRICT=__restrict",
+	"AL_BUILD_LIBRARY",
+	"AL_ALEXT_PROTOTYPES",
+	"ALC_API=__declspec(dllexport)",
+	"AL_API=__declspec(dllexport)"
+];
