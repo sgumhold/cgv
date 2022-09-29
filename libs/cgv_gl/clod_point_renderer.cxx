@@ -206,7 +206,7 @@ namespace cgv {
 			return draw_prog.is_linked() && reduce_prog.is_linked();
 		}
 
-		bool clod_point_renderer::enable(context& ctx)
+		bool clod_point_renderer::enable(context& ctx, const mat4& reduction_model_view_matrix)
 		{
 			const clod_point_render_style& prs = get_style<clod_point_render_style>();
 
@@ -237,14 +237,15 @@ namespace cgv {
 			//view.glsl uniforms are set on draw_prog.enable(ctx) and  reduce_prog.enable(ctx)
 			mat4 modelview_matrix = ctx.get_modelview_matrix();
 			mat4 projection_matrix = ctx.get_projection_matrix();
+			mat4 reduction_mvp_matrix = projection_matrix * reduction_model_view_matrix;
 			mat4 mvp_matrix = projection_matrix * modelview_matrix;
 			draw_prog_ptr->set_uniform(ctx, "modelview", modelview_matrix);
 			draw_prog_ptr->set_uniform(ctx, "projection", projection_matrix);
 			//add precomputed model view projection matrix
 			draw_prog_ptr->set_uniform(ctx, "model_view_projection", mvp_matrix);
 			//
-			reduce_prog.set_uniform(ctx, "model_view_projection", mvp_matrix);
-			reduce_prog.set_uniform(ctx, "model_view", modelview_matrix);
+			reduce_prog.set_uniform(ctx, "model_view_projection", reduction_mvp_matrix);
+			reduce_prog.set_uniform(ctx, "model_view", reduction_model_view_matrix);
 
 			// compute shader
 			reduce_prog.set_uniform(ctx, uniforms.CLOD, prs.CLOD);
@@ -272,6 +273,12 @@ namespace cgv {
 			draw_prog_ptr->set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
 
 			return true;
+		}
+
+		bool clod_point_renderer::enable(context& ctx)
+		{
+			mat4 reduce_model_view = ctx.get_modelview_matrix();
+			return enable(ctx, reduce_model_view);
 		}
 
 		bool clod_point_renderer::disable(context& ctx)
