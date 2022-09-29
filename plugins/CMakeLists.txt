@@ -1,4 +1,4 @@
-
+add_subdirectory(cg_audio)
 add_subdirectory(cg_ext)
 add_subdirectory(cg_icons)
 add_subdirectory(cmf_tt_gl_font)

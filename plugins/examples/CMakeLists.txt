@@ -3,8 +3,10 @@ file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.gl*")
 file(GLOB_RECURSE IMAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.png" "*.bmp")
+file(GLOB_RECURSE AUDIO RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.wav")
 
 cgv_prepare_resources(${CMAKE_SOURCE_DIR} IMG_SOURCES ${IMAGES})
+cgv_prepare_resources(${CMAKE_SOURCE_DIR} AUDIO_SOURCES ${AUDIO})
 
 shader_test("${CGV_DIR}"
         ST_FILES
@@ -12,7 +14,7 @@ shader_test("${CGV_DIR}"
         ST_INSTALL_DIR
         ${SHADERS})
 
-set(ALL_SOURCES ${SOURCES} ${IMG_SOURCES} ${ST_FILES} ${SHADERS} ${IMAGES})
+set(ALL_SOURCES ${SOURCES} ${IMG_SOURCES} ${AUDIO_SOURCES} ${ST_FILES} ${SHADERS} ${IMAGES} ${AUDIO})
 
 add_library(examples ${ALL_SOURCES})
 target_link_libraries(examples
@@ -20,6 +22,7 @@ target_link_libraries(examples
         plot
         cg_gamepad
         cgv_proc
+        cgv_oal
         cgv_gl
         cgv_os
         cgv_signal
@@ -27,7 +30,7 @@ target_link_libraries(examples
 
 add_dependencies(examples
         cgv_viewer
-
+        cg_audio
         cg_ext
         cg_fltk
         cg_icons
@@ -49,6 +52,7 @@ endif ()
 
 set_plugin_execution_params(examples "plugin:cg_fltk \
 \"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl;${CGV_DIR}/libs/cgv_glutil/glsl'\" \
+plugin:cg_audio \
 plugin:cg_ext \
 plugin:cg_icons \
 plugin:crg_stereo_view \
@@ -76,6 +80,7 @@ if (MSVC)
     target_link_libraries(examples_static PRIVATE
             cgv_viewer_main
 
+            cgv_oal_static
             glew_static
             delaunay_static
             plot_static
