@@ -72,8 +72,8 @@ void OALContext::load_sample(std::string filepath)
 		return;
 	}
 
-	alBufferData(buffer, soundfile.channels() == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, buf.get(), num_bytes,
-				 soundfile.samplerate());
+	alBufferData(buffer, soundfile.channels() == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, buf.get(), (ALsizei)num_bytes,
+				 (ALsizei)soundfile.samplerate());
 	assert(AL_NO_ERROR == alcGetError(oal_device));
 
 	assert(path.has_filename());
@@ -153,8 +153,8 @@ void OALContext::load_sample(std::string symbolic_name, const char* data, size_t
 		return;
 	}
 
-	alBufferData(buffer, soundfile.channels() == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, buf.get(), num_bytes,
-				 soundfile.samplerate());
+	alBufferData(buffer, soundfile.channels() == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, buf.get(), (ALsizei)num_bytes,
+				 (ALsizei)soundfile.samplerate());
 	assert(AL_NO_ERROR == alcGetError(oal_device));
 
 	sample_buffers.emplace(symbolic_name, buffer);
