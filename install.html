@@ -310,6 +310,21 @@ Internal Makefiles (Windows only)</h1>
 <div class="line">excludeSourceFiles = [INPUT_PATH];</div>
 <div class="line"> </div>
 <div class="line"> </div>
+<div class="line">// Several source files with the same name (excluding extension) in a single project</div>
+<div class="line">// are auto asigned the same object file yielding linking problems. To avoid this one</div>
+<div class="line">// can rename the object file of sources files by defining the list renameObjectFiles</div>
+<div class="line">// of pairs of source file name (with extension) and object file name (without extension).</div>
+<div class="line">// In the following example the source files INPUT_DIR.&quot;/openal-soft/alc/backends/null.cpp&quot;</div>
+<div class="line">// and INPUT_DIR.&quot;/openal-soft/alc/effects/null.cpp&quot; are compiled to alc_backends_null.obj</div>
+<div class="line">// and alc_effects_null.obj instead of both to null.obj (in openal_soft there is a third</div>
+<div class="line">// source file null.cpp whose object file name is not changed):</div>
+<div class="line"> </div>
+<div class="line">renameObjectFiles=[</div>
+<div class="line">        [ INPUT_DIR.&quot;/openal-soft/alc/backends/null.cpp&quot;, &quot;alc_backends_null&quot; ],</div>
+<div class="line">        [ INPUT_DIR.&quot;/openal-soft/alc/effects/null.cpp&quot;, &quot;alc_effects_null&quot; ]</div>
+<div class="line">];</div>
+<div class="line"> </div>
+<div class="line"> </div>
 <div class="line">//list of directories that are scanned recursively for source files, </div>
 <div class="line">//defaults to empty list [] if sourceFiles are defined or to [INPUT_DIR] if </div>
 <div class="line">//sourceFiles is not defined</div>
