@@ -698,21 +698,21 @@ void color_map_editor::handle_color_point_drag() {
 
 	cmc.color_points.get_dragged()->update_val(layout);
 	update_color_map(true);
-	post_redraw();
+	post_damage();
 }
 
 void color_map_editor::handle_opacity_point_drag() {
 
 	cmc.opacity_points.get_dragged()->update_val(layout, opacity_scale_exponent);
 	update_color_map(true);
-	post_redraw();
+	post_damage();
 }
 
 void color_map_editor::handle_drag_end() {
 
 	update_geometry();
 	post_recreate_gui();
-	post_redraw();
+	post_damage();
 }
 
 void color_map_editor::sort_points() {
