@@ -34,6 +34,7 @@ var dir_eaf9d2518f1ede0a595228de81ad9d4d =
     [ "normal_estimation.h", "normal__estimation_8h_source.html", null ],
     [ "perm_mat.h", "perm__mat_8h_source.html", null ],
     [ "permute.h", "permute_8h_source.html", null ],
+    [ "piecewise_linear_interpolator.h", "piecewise__linear__interpolator_8h_source.html", null ],
     [ "plane.h", "math_2plane_8h_source.html", null ],
     [ "point_operations.h", "point__operations_8h_source.html", null ],
     [ "polar.h", "polar_8h_source.html", null ],

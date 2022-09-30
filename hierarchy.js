@@ -404,6 +404,7 @@ var hierarchy =
       [ "cgv::render::a_buffer", "classcgv_1_1render_1_1a__buffer.html", null ],
       [ "cgv::render::context", "classcgv_1_1render_1_1context.html", null ],
       [ "cgv::render::drawable", "classcgv_1_1render_1_1drawable.html", null ],
+      [ "cgv::render::managed_frame_buffer", "classcgv_1_1render_1_1managed__frame__buffer.html", null ],
       [ "cgv::render::render_info", "classcgv_1_1render_1_1render__info.html", [
         [ "cgv::render::mesh_render_info", "classcgv_1_1render_1_1mesh__render__info.html", null ]
       ] ],
@@ -446,6 +447,7 @@ var hierarchy =
       ] ],
       [ "vr::vr_log", "classvr_1_1vr__log.html", null ]
     ] ],
+    [ "cgv::render::shader_library", "classcgv_1_1render_1_1shader__library.html", null ],
     [ "cgv::render::textured_rectangle", "structcgv_1_1render_1_1textured__rectangle.html", null ],
     [ "cgv::render::type_descriptor", "structcgv_1_1render_1_1type__descriptor.html", null ],
     [ "cgv::render::view", "classcgv_1_1render_1_1view.html", [
@@ -526,6 +528,7 @@ var hierarchy =
     [ "cgv::math::fvec< float, N >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int, N >", "classcgv_1_1math_1_1fvec.html", null ],
+    [ "cgv::math::fvec< int32_t, 2 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int32_t, 4 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< T, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< T, 4 >", "classcgv_1_1math_1_1fvec.html", [
