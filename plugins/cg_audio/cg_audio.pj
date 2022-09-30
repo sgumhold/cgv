@@ -5,4 +5,3 @@ projectName = "cg_audio";
 addProjectDirs=[CGV_DIR."/libs"];
 cppLanguageStandard="stdcpp17";
 addProjectDeps=["cgv_base", "cgv_gui", "cgv_oal"];
-addIncDirs=[CGV_DIR."/libs", CGV_DIR."/3rd/openal-soft/openal-soft/include"];

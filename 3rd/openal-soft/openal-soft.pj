@@ -17,7 +17,8 @@ excludeSourceFiles=[
 ];
 addIncDirs=[
 	INPUT_DIR, INPUT_DIR."/openal-soft",
-	INPUT_DIR."/openal-soft/common", INPUT_DIR."/openal-soft/include"
+	INPUT_DIR."/openal-soft/common",
+	[INPUT_DIR."/openal-soft/include", "all"]
 ];
 addDefines=[
 	"_WIN32",
