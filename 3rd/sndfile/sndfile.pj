@@ -5,9 +5,9 @@ projectGUID="23779AAA-52DD-41A6-A5B8-B6933CBABD51";
 addProjectDirs=[INPUT_DIR];
 addProjectDeps=["sndfile-g72x"];
 addIncDirs=[
-	INPUT_DIR, [INPUT_DIR."/include", "all"],
-	[INPUT_DIR."/libsndfile/include", "all"],
-	INPUT_DIR."/libsndfile/src"
+	INPUT_DIR, INPUT_DIR."/libsndfile/src",
+	[INPUT_DIR."/include", "all"],
+	[INPUT_DIR."/libsndfile/include", "all"]
 ];
 addDefines=["_USE_MATH_DEFINES"];
 sourceDirs       =[INPUT_DIR,               INPUT_DIR."/libsndfile/src"];
