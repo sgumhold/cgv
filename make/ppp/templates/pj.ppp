@@ -79,6 +79,21 @@ sourceFiles = [INPUT_DIR."my_source.cxx", INPUT_DIR."my_resource.png"];
 excludeSourceFiles = [INPUT_PATH];
 
 
+// Several source files with the same name (excluding extension) in a single project
+// are auto asigned the same object file yielding linking problems. To avoid this one
+// can rename the object file of sources files by defining the list renameObjectFiles
+// of pairs of source file name (with extension) and object file name (without extension).
+// In the following example the source files INPUT_DIR."/openal-soft/alc/backends/null.cpp"
+// and INPUT_DIR."/openal-soft/alc/effects/null.cpp" are compiled to alc_backends_null.obj
+// and alc_effects_null.obj instead of both to null.obj (in openal_soft there is a third
+// source file null.cpp whose object file name is not changed):
+
+renameObjectFiles=[
+	[ INPUT_DIR."/openal-soft/alc/backends/null.cpp", "alc_backends_null" ],
+	[ INPUT_DIR."/openal-soft/alc/effects/null.cpp", "alc_effects_null" ]
+];
+
+
 //list of directories that are scanned recursively for source files, 
 //defaults to empty list [] if sourceFiles are defined or to [INPUT_DIR] if 
 //sourceFiles is not defined
