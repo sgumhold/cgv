@@ -26,7 +26,10 @@ target_link_libraries(examples
         cgv_gl
         cgv_os
         cgv_signal
-        cgv_glutil)
+        cgv_g2d
+        cgv_gpgpu
+		cgv_app
+		)
 
 add_dependencies(examples
         cgv_viewer
@@ -51,7 +54,7 @@ if (WIN32)
 endif ()
 
 set_plugin_execution_params(examples "plugin:cg_fltk \
-\"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl;${CGV_DIR}/libs/cgv_glutil/glsl'\" \
+\"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl;${CGV_DIR}/libs/cgv_g2d/glsl;${CGV_DIR}/libs/cgv_gpgpu/glsl;${CGV_DIR}/libs/cgv_app/glsl'\" \
 plugin:cg_audio \
 plugin:cg_ext \
 plugin:cg_icons \
@@ -91,7 +94,9 @@ if (MSVC)
             cgv_proc_static
             cg_fltk_static
             crg_stereo_view_static
-            cgv_glutil_static
+            cgv_g2d_static
+            cgv_gpgpu_static
+			cgv_app_static
 
             #        cg_ext_static
             #        cg_icons_static
