@@ -139,7 +139,7 @@ public:
 		sphere_style.radius = 0.01f;
 		sphere_style.use_group_color = true;
 		cone_style.radius = 0.01f;
-		cone_style.rounded_caps = true;
+		cone_style.rounded_caps = false;
 	}
 	std::string get_type_name() const
 	{
@@ -421,7 +421,7 @@ public:
 	void create_gui()
 	{
 		add_decorator("renderer tests", "heading");
-		add_member_control(this, "mode", mode, "dropdown", "enums='points,surfels,boxes,box wires,normals,arrows,spheres,rounded cones'");
+		add_member_control(this, "mode", mode, "dropdown", "enums='Points,Surfels,Boxes,Box Wires,Normals,Arrows,Spheres,Cones'");
 		if (begin_tree_node("transformation", lambda, true)) {
 			align("\a");
 			add_member_control(this, "lambda", lambda, "value_slider", "min=0;max=1;ticks=true");
