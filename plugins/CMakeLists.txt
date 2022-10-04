@@ -17,7 +17,7 @@ add_subdirectory(crg_vr_view)
 add_subdirectory(vr_lab)
 add_subdirectory(vr_test)
 
-if(BUILD_WITH_AUDIO)
+if(CGV_BUILD_WITH_AUDIO)
 	add_subdirectory(cg_audio)
 endif()
 if (WIN32)

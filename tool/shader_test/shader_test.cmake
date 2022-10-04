@@ -6,7 +6,7 @@ function(shader_test base outfiles_var outinclude_var outinstall_var)
 	list(APPEND o_includes ${ST_INCLUDE_DIR})
 
 	# Add a custom build rule for every file if SHADER_DEVELOPER option is set
-	if(SHADER_DEVELOPER)
+	if(CGV_SHADER_DEVELOPER)
 		foreach (infile ${ARGN})
 			shader_test_command_add("${ST_BASE}" "${infile}" outfile outinclude)
 			list(APPEND o_files ${outfile})

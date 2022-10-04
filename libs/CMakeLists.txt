@@ -17,7 +17,7 @@ add_subdirectory(rect_pack)
 add_subdirectory(tt_gl_font)
 add_subdirectory(stream_vis)
 add_subdirectory(vr)
-if(BUILD_WITH_AUDIO)
+if(CGV_BUILD_WITH_AUDIO)
 	add_subdirectory(cgv_oal)
 endif()
 
