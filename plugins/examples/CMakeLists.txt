@@ -6,7 +6,13 @@ file(GLOB_RECURSE IMAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.png" "*.bmp")
 file(GLOB_RECURSE AUDIO RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.wav")
 
 cgv_prepare_resources(${CMAKE_SOURCE_DIR} IMG_SOURCES ${IMAGES})
-cgv_prepare_resources(${CMAKE_SOURCE_DIR} AUDIO_SOURCES ${AUDIO})
+if(BUILD_WITH_AUDIO)
+    cgv_prepare_resources(${CMAKE_SOURCE_DIR} AUDIO_SOURCES ${AUDIO})
+else()
+    list(REMOVE_ITEM SOURCES "spatial_audio.cxx")
+    set(AUDIO_SOURCES "")
+    set(AUDIO "")
+endif()
 
 shader_test("${CGV_DIR}"
         ST_FILES
@@ -22,18 +28,16 @@ target_link_libraries(examples
         plot
         cg_gamepad
         cgv_proc
-        cgv_oal
         cgv_gl
         cgv_os
         cgv_signal
         cgv_g2d
         cgv_gpgpu
-		cgv_app
-		)
+        cgv_app
+        )
 
 add_dependencies(examples
         cgv_viewer
-        cg_audio
         cg_ext
         cg_fltk
         cg_icons
@@ -47,31 +51,24 @@ add_dependencies(examples
         crg_light
         crg_stereo_view)
 
-if (WIN32)
+if(BUILD_WITH_AUDIO)
+    target_link_libraries(examples cgv_oal)
+    add_dependencies(examples cg_audio)
+endif()
+
+if(WIN32)
     add_dependencies(examples
             cmv_avi
             co_web)
-endif ()
+endif()
 
-set_plugin_execution_params(examples "plugin:cg_fltk \
-\"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl;${CGV_DIR}/libs/cgv_g2d/glsl;${CGV_DIR}/libs/cgv_gpgpu/glsl;${CGV_DIR}/libs/cgv_app/glsl'\" \
-plugin:cg_audio \
-plugin:cg_ext \
-plugin:cg_icons \
-plugin:crg_stereo_view \
-plugin:crg_antialias \
-plugin:crg_depth_of_field \
-plugin:crg_light \
-plugin:cg_meta \
-plugin:cmi_io \
-plugin:cmv_avi \
-plugin:crg_grid \
-plugin:co_web \
-plugin:cmf_tt_gl_font \
-plugin:examples \
-gui:\"${CGV_DIR}/plugins/examples/examples.gui\" \
-config:\"${CGV_DIR}/plugins/examples/config.def\"\
-")
+if(BUILD_WITH_AUDIO)
+    set_plugin_execution_params(examples
+        "plugin:cg_fltk \"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl;${CGV_DIR}/libs/cgv_g2d/glsl;${CGV_DIR}/libs/cgv_gpgpu/glsl;${CGV_DIR}/libs/cgv_app/glsl;${CGV_DIR}/libs/plot/glsl'\" plugin:cg_audio plugin:cg_ext plugin:cg_icons plugin:crg_stereo_view plugin:crg_antialias plugin:crg_depth_of_field plugin:crg_light plugin:cg_meta plugin:cmi_io plugin:cmv_avi plugin:crg_grid plugin:co_web plugin:cmf_tt_gl_font plugin:examples gui:\"${CGV_DIR}/plugins/examples/examples.gui\" config:\"${CGV_DIR}/plugins/examples/config.def\"")
+else()
+    set_plugin_execution_params(examples
+        "plugin:cg_fltk \"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl;${CGV_DIR}/libs/cgv_g2d/glsl;${CGV_DIR}/libs/cgv_gpgpu/glsl;${CGV_DIR}/libs/cgv_app/glsl;${CGV_DIR}/libs/plot/glsl'\" plugin:cg_ext plugin:cg_icons plugin:crg_stereo_view plugin:crg_antialias plugin:crg_depth_of_field plugin:crg_light plugin:cg_meta plugin:cmi_io plugin:cmv_avi plugin:crg_grid plugin:co_web plugin:cmf_tt_gl_font plugin:examples gui:\"${CGV_DIR}/plugins/examples/examples.gui\" config:\"${CGV_DIR}/plugins/examples/config.def\"")
+endif()
 
 install(TARGETS examples EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
 install(FILES config.def examples.gui DESTINATION ${CGV_PLUGINS_INCLUDE_DEST}/examples)
@@ -83,7 +80,6 @@ if (MSVC)
     target_link_libraries(examples_static PRIVATE
             cgv_viewer_main
 
-            cgv_oal_static
             glew_static
             delaunay_static
             plot_static
@@ -96,7 +92,7 @@ if (MSVC)
             crg_stereo_view_static
             cgv_g2d_static
             cgv_gpgpu_static
-			cgv_app_static
+            cgv_app_static
 
             #        cg_ext_static
             #        cg_icons_static
@@ -108,5 +104,8 @@ if (MSVC)
             #        crg_grid_static
             #        crg_light_static
             )
+    if(BUILD_WITH_AUDIO)
+        target_link_libraries(examples_static PRIVATE cgv_oal_static)
+    endif()
     target_link_options(examples_static PRIVATE /WHOLEARCHIVE:cg_fltk_static.lib /WHOLEARCHIVE:crg_stereo_view_static.lib)
 endif ()

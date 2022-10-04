@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.15)
 
 project(cgv)
 
-option(SHADER_DEVELOPER OFF)
+option(SHADER_DEVELOPER "make shader_test throw errors that make the build process fail" OFF)
+option(BUILD_WITH_AUDIO "requires checking out the git submodules when building from the repository" OFF)
 option(CGV_BUILD_TESTS ON)
+
 
 set(BUILD_SHARED_LIBS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED 14)
