@@ -8,9 +8,9 @@ cgv_create_lib(cgv_gpgpu SOURCES ${SOURCES} PPP_SOURCES ${PPP_SOURCES} SHADER_SO
 	
 target_compile_definitions(cgv_gpgpu PRIVATE CGV_GPGPU_EXPORTS)
 target_compile_definitions(cgv_gpgpu_static PRIVATE CGV_GPGPU_FORCE_STATIC)
-if (WIN32)
-	target_compile_definitions(cgv_gpgpu_static PRIVATE REGISTER_SHADER_FILES)
-endif ()
+#if (WIN32)
+#	target_compile_definitions(cgv_gpgpu_static PRIVATE REGISTER_SHADER_FILES)
+#endif ()
 if (APPLE)
 	target_compile_definitions(cgv_gpgpu PRIVATE __APPLGLSU__ GL_SILENCE_DEPRECATION)
 	target_compile_definitions(cgv_gpgpu_static PRIVATE __APPLGLSU__ GL_SILENCE_DEPRECATION)

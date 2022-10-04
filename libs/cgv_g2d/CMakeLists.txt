@@ -8,9 +8,9 @@ cgv_create_lib(cgv_g2d SOURCES ${SOURCES} PPP_SOURCES ${PPP_SOURCES} SHADER_SOUR
 
 target_compile_definitions(cgv_g2d PRIVATE CGV_G2D_EXPORTS)
 target_compile_definitions(cgv_g2d_static PRIVATE CGV_G2D_FORCE_STATIC)
-if (WIN32)
-	target_compile_definitions(cgv_g2d_static PRIVATE REGISTER_SHADER_FILES)
-endif ()
+#if (WIN32)
+#	target_compile_definitions(cgv_g2d_static PRIVATE REGISTER_SHADER_FILES)
+#endif ()
 if (APPLE)
 	target_compile_definitions(cgv_g2d PRIVATE __APPLGLSU__ GL_SILENCE_DEPRECATION)
 	target_compile_definitions(cgv_g2d_static PRIVATE __APPLGLSU__ GL_SILENCE_DEPRECATION)

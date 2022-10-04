@@ -77,6 +77,9 @@ install(DIRECTORY . DESTINATION ${CGV_PLUGINS_INCLUDE_DEST}/examples FILES_MATCH
 if (MSVC)
     add_executable(examples_static ${ALL_SOURCES})
     target_compile_definitions(examples_static PRIVATE CGV_FORCE_STATIC)
+	#if (WIN32)
+	#	target_compile_definitions(examples_static PRIVATE REGISTER_SHADER_FILES)
+	#endif ()
     target_link_libraries(examples_static PRIVATE
             cgv_viewer_main
 
@@ -92,20 +95,20 @@ if (MSVC)
             crg_stereo_view_static
             cgv_g2d_static
             cgv_gpgpu_static
-            cgv_app_static
-
-            #        cg_ext_static
-            #        cg_icons_static
-            #        cg_meta_static
-            #        cmi_io_static
-            #        cmf_tt_gl_font_static
-            #        crg_antialias_static
-            #        crg_depth_of_field_static
-            #        crg_grid_static
-            #        crg_light_static
-            )
+            cgv_app_static)
     if(CGV_BUILD_WITH_AUDIO)
         target_link_libraries(examples_static PRIVATE cgv_oal_static)
     endif()
-    target_link_options(examples_static PRIVATE /WHOLEARCHIVE:cg_fltk_static.lib /WHOLEARCHIVE:crg_stereo_view_static.lib)
+    target_link_options(examples_static PRIVATE
+            /WHOLEARCHIVE:cg_fltk_static.lib
+            /WHOLEARCHIVE:crg_stereo_view_static.lib)
+            #/WHOLEARCHIVE:cg_ext_static.lib
+            #/WHOLEARCHIVE:cg_icons_static.lib
+            #/WHOLEARCHIVE:cg_meta_static.lib
+            #/WHOLEARCHIVE:cmi_io_static.lib
+            #/WHOLEARCHIVE:cmf_tt_gl_font_static.lib
+            #/WHOLEARCHIVE:crg_antialias_static.lib
+            #/WHOLEARCHIVE:crg_depth_of_field_static.lib
+            #/WHOLEARCHIVE:crg_grid_static.lib
+            #/WHOLEARCHIVE:crg_light_static.lib)
 endif ()
