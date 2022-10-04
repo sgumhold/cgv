@@ -6,7 +6,7 @@ file(GLOB_RECURSE IMAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.png" "*.bmp")
 file(GLOB_RECURSE AUDIO RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.wav")
 
 cgv_prepare_resources(${CMAKE_SOURCE_DIR} IMG_SOURCES ${IMAGES})
-if(BUILD_WITH_AUDIO)
+if(CGV_BUILD_WITH_AUDIO)
     cgv_prepare_resources(${CMAKE_SOURCE_DIR} AUDIO_SOURCES ${AUDIO})
 else()
     list(REMOVE_ITEM SOURCES "spatial_audio.cxx")
@@ -51,7 +51,7 @@ add_dependencies(examples
         crg_light
         crg_stereo_view)
 
-if(BUILD_WITH_AUDIO)
+if(CGV_BUILD_WITH_AUDIO)
     target_link_libraries(examples cgv_oal)
     add_dependencies(examples cg_audio)
 endif()
@@ -62,7 +62,7 @@ if(WIN32)
             co_web)
 endif()
 
-if(BUILD_WITH_AUDIO)
+if(CGV_BUILD_WITH_AUDIO)
     set_plugin_execution_params(examples
         "plugin:cg_fltk \"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl;${CGV_DIR}/libs/cgv_g2d/glsl;${CGV_DIR}/libs/cgv_gpgpu/glsl;${CGV_DIR}/libs/cgv_app/glsl;${CGV_DIR}/libs/plot/glsl'\" plugin:cg_audio plugin:cg_ext plugin:cg_icons plugin:crg_stereo_view plugin:crg_antialias plugin:crg_depth_of_field plugin:crg_light plugin:cg_meta plugin:cmi_io plugin:cmv_avi plugin:crg_grid plugin:co_web plugin:cmf_tt_gl_font plugin:examples gui:\"${CGV_DIR}/plugins/examples/examples.gui\" config:\"${CGV_DIR}/plugins/examples/config.def\"")
 else()
@@ -104,7 +104,7 @@ if (MSVC)
             #        crg_grid_static
             #        crg_light_static
             )
-    if(BUILD_WITH_AUDIO)
+    if(CGV_BUILD_WITH_AUDIO)
         target_link_libraries(examples_static PRIVATE cgv_oal_static)
     endif()
     target_link_options(examples_static PRIVATE /WHOLEARCHIVE:cg_fltk_static.lib /WHOLEARCHIVE:crg_stereo_view_static.lib)
