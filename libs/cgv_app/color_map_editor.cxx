@@ -508,11 +508,6 @@ void color_map_editor::set_histogram_data(const std::vector<unsigned> data) {
 		auto& ctx = *ctx_ptr;
 		hist_tex.destruct(ctx);
 
-		// TODO: should this take the type_id to set the component integer interpretation?
-		//cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(histogram.size(), TI_UINT32, cgv::data::CF_R), histogram.data());
-		//dv.get_format()->get_component_format().set_integer_interpretation(cgv::data::CII_INTEGER);
-		//hist_tex = texture("_uint32[R]", TF_NEAREST, TF_NEAREST);
-
 		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(histogram.size(), TI_FLT32, cgv::data::CF_R), float_data.data());
 		hist_tex = cgv::render::texture("flt32[R]");
 		hist_tex.create(ctx, dv, 0);
