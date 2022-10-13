@@ -1,5 +1,7 @@
 var NAVTREEINDEX47 =
 {
+"structvr_1_1vr__trackable__state.html#a36f426d15fcb6a52af1cbd7dfb5d31ea":[11,0,3,15,3],
+"structvr_1_1vr__trackable__state.html#a45bdee0f059c9ed99e545421be8baaf7":[11,0,3,15,2],
 "structvr_1_1vr__trackable__state.html#a4f4063946c3cd68488940172caf47c72":[11,0,3,15,1],
 "structvr_1_1vr__trackable__state.html#a50634af3a718afd15f6b63198ce6d2f6":[11,0,3,15,0],
 "structvr_1_1vr__tracking__reference__info.html":[11,0,3,16],
