@@ -7,6 +7,8 @@
 #include <cgv_gl/rectangle_renderer.h>
 #include <cgv_gl/arrow_render_data.h>
 #include <cgv_gl/box_render_data.h>
+#include <cgv_gl/box_wire_render_data.h>
+#include <cgv_gl/rectangle_render_data.h>
 #include <cgv_gl/sphere_render_data.h>
 #include <cgv_app/overlay.h>
 #include <cgv_g2d/canvas.h>
@@ -35,19 +37,18 @@ protected:
 	cgv::g2d::canvas blit_canvas;
 	cgv::g2d::shape2d_style blit_style;
 
+	int layout_size;
+	bool show_box;
+	bool show_wireframe;
+	bool use_perspective;
 	int hit_axis;
 
-	cgv::render::box_render_data<> box_data;
-	cgv::render::box_render_style box_style;
-
-	cgv::render::sphere_render_data<> sphere_data;
-	cgv::render::sphere_render_style sphere_style;
-
 	cgv::render::arrow_render_data<> arrow_data;
-	cgv::render::arrow_render_style arrow_style;
+	cgv::render::box_render_data<> box_data;
+	cgv::render::box_wire_render_data<> box_wire_data;
+	cgv::render::rectangle_render_data<> rectangle_data;
+	cgv::render::sphere_render_data<> sphere_data;
 
-	cgv::render::rectangle_render_style rectangle_style;
-	
 	mat4 get_model_matrix(cgv::render::context& ctx);
 	mat4 get_view_matrix(cgv::render::context& ctx);
 	mat4 get_projection_matrix();
@@ -67,12 +68,12 @@ public:
 
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
-	//void draw(cgv::render::context& ctx);
 	void finish_draw(cgv::render::context& ctx);
 	
 	void create_gui();
-	void create_gui(cgv::gui::provider& p);
 };
+
+typedef cgv::data::ref_ptr<navigator> navigator_ptr;
 
 }
 }
