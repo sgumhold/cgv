@@ -16,6 +16,9 @@ bool application_plugin::handle(cgv::gui::event& e)
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 		cgv::gui::MouseAction ma = me.get_action();
 
+		if(me.get_flags() & cgv::gui::EF_DND)
+			return handle_event(e);
+
 		if(ma == cgv::gui::MA_PRESS || ma == cgv::gui::MA_MOVE || ma == cgv::gui::MA_WHEEL) {
 			ivec2 mpos(me.get_x(), me.get_y());
 
