@@ -42,12 +42,12 @@ volume_viewer::volume_viewer() : application_plugin("Volume Viewer")
 	view_ptr = nullptr;
 
 	// instantiate a color map editor as an overlay for this viewer
-	transfer_function_editor_ptr = register_overlay<cgv::app::color_map_editor>("TF Editor");
+	transfer_function_editor_ptr = register_overlay<cgv::app::color_map_editor>("Editor");
 	transfer_function_editor_ptr->gui_options.show_heading = false;
 	// enable support for editing opacity values
 	transfer_function_editor_ptr->set_opacity_support(true);
 
-	transfer_function_legend_ptr = register_overlay<cgv::app::color_map_legend>("TF Legend");
+	transfer_function_legend_ptr = register_overlay<cgv::app::color_map_legend>("Legend");
 	transfer_function_legend_ptr->set_title("Density");
 }
 
@@ -234,19 +234,9 @@ void volume_viewer::create_gui()
 	add_decorator("Transfer Function", "heading", "level=3");
 	add_member_control(this, "Preset", transfer_function_preset_idx, "dropdown", "enums='#1 (White),#2,#3 (Aneurysm),#4 (Head)'");
 
-	if(begin_tree_node("Editor", transfer_function_editor_ptr, false)) {
-		align("\a");
-		inline_object_gui(transfer_function_editor_ptr);
-		align("\b");
-		end_tree_node(transfer_function_editor_ptr);
-	}
-
-	if(begin_tree_node("Legend", transfer_function_legend_ptr, false)) {
-		align("\a");
-		inline_object_gui(transfer_function_legend_ptr);
-		align("\b");
-		end_tree_node(transfer_function_legend_ptr);
-	}
+	inline_object_gui(transfer_function_editor_ptr);
+	
+	inline_object_gui(transfer_function_legend_ptr);
 }
 
 void volume_viewer::update_bounding_box() {
@@ -443,9 +433,12 @@ void volume_viewer::splat_sphere(std::vector<float>& vol_data, float voxel_size,
 
 				// calculate the distance to the sphere center
 				float dist = length(voxel_pos - pos);
+				// add contribution to voxel if its center is inside the sphere
 				if(dist < radius) {
-					// add contribution to voxel if its center is inside the sphere
-					vol_data[x + vres.x()*y + vres.x()*vres.y()*z] += contribution;
+					// modulate contribution by distance to sphere center
+					float dist_factor = 1.0f - (dist / radius);
+					dist_factor = sqrt(dist_factor);
+					vol_data[x + vres.x()*y + vres.x()*vres.y()*z] += contribution * dist_factor;
 				}
 			}
 		}
