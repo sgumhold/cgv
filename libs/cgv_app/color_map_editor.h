@@ -218,6 +218,8 @@ protected:
 
 	void reload_shaders();
 
+	virtual void create_gui_impl();
+
 public:
 	color_map_editor();
 	std::string get_type_name() const { return "color_map_editor"; }
@@ -234,8 +236,6 @@ public:
 	void draw(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
 	
-	void create_gui();
-
 	bool get_opacity_support() { return supports_opacity; }
 	void set_opacity_support(bool flag);
 

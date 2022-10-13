@@ -380,9 +380,7 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 	end_content(ctx);
 }
 
-void color_map_editor::create_gui() {
-
-	create_overlay_gui();
+void color_map_editor::create_gui_impl() {
 
 	if(begin_tree_node("Settings", layout, false)) {
 		align("\a");

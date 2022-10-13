@@ -96,6 +96,8 @@ protected:
 	void handle_selector_drag();
 
 	void set_color(rgba color, bool opacity);
+
+	virtual void create_gui_impl();
 	
 public:
 	color_selector();
@@ -111,8 +113,6 @@ public:
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
-	
-	void create_gui();
 
 	bool was_updated();
 

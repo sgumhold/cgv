@@ -191,22 +191,20 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 	end_content(ctx);
 }
 
-void color_map_legend::create_gui() {
+void color_map_legend::create_gui_impl() {
 
-	create_overlay_gui();
 	add_member_control(this, "Width", layout.total_size[0], "value_slider", "min=40;max=500;step=1;ticks=true");
 	add_member_control(this, "Height", layout.total_size[1], "value_slider", "min=40;max=500;step=1;ticks=true");
 
 	add_member_control(this, "Background", show_background, "check", "w=100", " ");
-	add_member_control(this, "Invert Color", invert_color, "check");
+	add_member_control(this, "Invert Color", invert_color, "check", "w=88");
 
 	add_member_control(this, "Orientation", layout.orientation, "dropdown", "enums='Horizontal,Vertical'");
 	add_member_control(this, "Label Alignment", layout.label_alignment, "dropdown", "enums='-,Before,Inside,After'");
 
 	add_member_control(this, "Ticks", num_ticks, "value", "min=2;max=10;step=1");
-	std::string options = "w=140;min=0;max=10;step=1";
-	add_member_control(this, "Number Precision", label_precision, "value", options, " ");
-	add_member_control(this, "Auto", label_auto_precision, "check");
+	add_member_control(this, "Number Precision", label_precision, "value", "w=140;min=0;max=10;step=1", " ");
+	add_member_control(this, "Auto", label_auto_precision, "check", "w=48");
 }
 
 void color_map_legend::set_color_map(cgv::render::context& ctx, cgv::render::color_map& cm) {

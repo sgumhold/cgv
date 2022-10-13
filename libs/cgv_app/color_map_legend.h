@@ -101,6 +101,8 @@ protected:
 	void create_labels();
 	void create_ticks();
 
+	virtual void create_gui_impl();
+
 public:
 	color_map_legend();
 	std::string get_type_name() const { return "color_map_legend"; }
@@ -116,8 +118,6 @@ public:
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
-
-	void create_gui();
 
 	void set_color_map(cgv::render::context & ctx, cgv::render::color_map& cm);
 

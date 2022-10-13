@@ -48,6 +48,8 @@ navigator::navigator() {
 	box_data.style.material.set_emission(rgb(0.35f));
 	box_data.style.surface_opacity = 0.35f;
 
+	box_wire_data.style.default_color = rgb(0.75f);
+
 	sphere_data.style.illumination_mode = cgv::render::IM_OFF;
 	sphere_data.style.radius = 0.04f;
 	sphere_data.style.surface_color = rgb(0.5f);
@@ -356,9 +358,7 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 	glEnable(GL_DEPTH_TEST);
 }
 
-void navigator::create_gui() {
-
-	create_overlay_gui();
+void navigator::create_gui_impl() {
 
 	add_member_control(this, "Size", layout_size, "value_slider", "min=50;max=300;step=1;ticks=true");
 	add_member_control(this, "Show Box", show_box, "check");
