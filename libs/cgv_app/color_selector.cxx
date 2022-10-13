@@ -276,9 +276,7 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	end_content(ctx);
 }
 
-void color_selector::create_gui() {
-
-	create_overlay_gui();
+void color_selector::create_gui_impl() {
 
 	if(begin_tree_node("Settings", layout, false)) {
 		align("\a");

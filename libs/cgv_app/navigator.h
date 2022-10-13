@@ -54,6 +54,8 @@ protected:
 	mat4 get_projection_matrix();
 	bool intersect_box(const vec3 &origin, const vec3& direction, float& t) const;
 
+	virtual void create_gui_impl();
+
 public:
 	navigator();
 	std::string get_type_name() const { return "navigator"; }
@@ -69,8 +71,6 @@ public:
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
 	void finish_draw(cgv::render::context& ctx);
-	
-	void create_gui();
 };
 
 typedef cgv::data::ref_ptr<navigator> navigator_ptr;
