@@ -11,6 +11,7 @@
 #define ENABLE_SCALE_ADJUSTMENT 0
 #define ENABLE_LIGHTING 0
 #define USE_GRADIENT_TEXTURE 0
+#define ENABLE_GRADIENT_MODULATION 0
 #define ENABLE_DEPTH_TEST 0
 
 #define FRONT_TO_BACK 0
@@ -54,7 +55,7 @@ layout (binding = 1) uniform sampler1D transfer_function_tex;
 layout (binding = 1) uniform sampler2D transfer_function_tex;
 #endif
 layout (binding = 2) uniform sampler2D noise_tex;
-#if ENABLE_LIGHTING == 1
+#if ENABLE_LIGHTING == 1 || ENABLE_GRADIENT_MODULATION == 1
 layout (binding = 3) uniform sampler3D gradient_tex;
 #endif
 #if ENABLE_DEPTH_TEST == 1
@@ -65,15 +66,17 @@ uniform vec2 viewport_dims;
 uniform float opacity_scale;
 uniform float size_scale;
 
-uniform bool light_static_to_scene;
+uniform bool light_local_to_eye;
 uniform vec3 light_direction;
 uniform vec4 light_parameters;
 
-uniform vec3 clip_box_min;
-uniform vec3 clip_box_max;
+uniform float gradient_lambda;
 
 uniform float isovalue;
 uniform vec3 isosurface_color;
+
+uniform vec3 clip_box_min;
+uniform vec3 clip_box_max;
 
 in vec4 position_fs;
 in vec3 position_object;
@@ -200,6 +203,11 @@ vec3 safe_normalize(vec3 v) {
 	return len > 0.000001 ? v/len : vec3(0.0);
 }
 
+vec3 safe_divide(vec3 v, float denom) {
+
+	return denom > 0.000001 ? v/denom : vec3(0.0);
+}
+
 vec3 object_space_view_dir(vec3 v) {
 
     return eye_fs - v;
@@ -225,26 +233,28 @@ vec4 apply_transfer_function(in float density) {
 #endif
 }
 
-#if ENABLE_LIGHTING == 1
-float calculate_lighting(vec3 normal, vec3 light_dir, vec3 eye_dir) {
-    float diffuse = max(dot(normal, light_dir), 0.0f);
-    vec3 r = normalize(reflect(light_dir, normal));
-    float rdotv = max(dot(r, eye_dir), 0.0);
-    float specular = pow(rdotv, light_parameters.z);
-    return light_parameters.x * diffuse + light_parameters.y * specular + light_parameters.w;
-}
-
-float get_lighting_factor(in vec3 uvw, in vec3 ray_dir, in vec3 light_dir) {
-	// get the normal on-the-fly by calculating the gradient via central differences
+#if ENABLE_LIGHTING == 1 || ENABLE_GRADIENT_MODULATION == 1
+vec3 get_gradient(in vec3 uvw) {
+	// calculate the gradient on-the-fly via central differences
 	#if USE_GRADIENT_TEXTURE == 0
-	vec3 normal = -safe_normalize(central_difference(uvw));
+	return central_difference(uvw);
 	#else
-	// get the normal from a precomputed gradient texture
-	vec3 normal = -safe_normalize(texture(gradient_tex, uvw).xyz);
+	// get the gradient from a precomputed gradient texture
+	return texture(gradient_tex, uvw).xyz;
 	#endif
+}
+#endif
 
-	// apply lighting to all input colors
-	return calculate_lighting(normal, -light_dir, ray_dir);
+#if ENABLE_LIGHTING == 1
+float calculate_lighting(vec3 view_dir, vec3 normal, vec3 light_dir) {
+
+    float diffuse = max(dot(normal, light_dir), 0.0);
+	
+	vec3 half_dir = normalize(light_dir + view_dir);
+	float specular = pow(max(dot(normal, half_dir), 0.0), light_parameters.w);
+	specular *= diffuse;
+	
+    return light_parameters.x + diffuse * light_parameters.y + specular * light_parameters.z;
 }
 #endif
 
@@ -284,8 +294,8 @@ void main()
 	// light is static to scene
 	vec3 light_dir = light_direction;
 
-	// light is static to window
-	if(!light_static_to_scene)
+	// light is local to eye position/static to window
+	if(light_local_to_eye)
 		light_dir = normalize((get_inverse_modelview_matrix() * vec4(light_direction, 0.0)).xyz);
 #endif
 
@@ -329,13 +339,13 @@ void main()
 	t1 = max(t1, 0.0);
 
 	// update the ray origin as it may have changed
-#if FRONT_TO_BACK == 0
-	// back-to-front
-	ray_org += t1*ray_dir;
-#else
+#if FRONT_TO_BACK == 1
 	// front-to-back
 	ray_org += t2*ray_dir;
 	ray_dir = -ray_dir;
+#else
+	// back-to-front
+	ray_org += t1*ray_dir;
 #endif
 
 	// transform position to texture coordinates: [-0.5,0.5] -> [0.0,1.0]
@@ -398,13 +408,37 @@ void main()
 		#endif
 	#endif
 
+	float opacity_modulation = 1.0;
+
+	#if ENABLE_LIGHTING == 1 || ENABLE_GRADIENT_MODULATION == 1
+	vec3 gradient = get_gradient(uvw);
+	float gradient_length = length(gradient);
+	#endif
+
 	#if ENABLE_LIGHTING == 1
-		// only compute lighting if the sample passes the opacity threshold of is on an isosurface
-		#if ISOSURFACE_MODE > 0
-		float illumination = (color_in.a > 0.05 || is_isosurface) ? get_lighting_factor(uvw, ray_dir, light_dir) : 0.0;
+		// get the normal as the reversed normalized gradient
+		vec3 normal = -safe_divide(gradient, gradient_length);
+
+		// get the view_direction based on the sampling direction
+		#if FRONT_TO_BACK == 1
+		vec3 view_dir = -ray_dir;
 		#else
-		float illumination = color_in.a > 0.05 ? get_lighting_factor(uvw, ray_dir, light_dir) : 0.0;
+		vec3 view_dir = ray_dir;
 		#endif
+
+		// only compute lighting if the sample passes the opacity threshold or is on an isosurface
+		
+		float illumination =
+			#if ISOSURFACE_MODE > 0
+			(color_in.a > 0.05 || is_isosurface) ?
+			#else
+			color_in.a > 0.05 ?
+			#endif
+			calculate_lighting(view_dir, normal, light_dir) : 0.0;
+	#endif
+
+	#if ENABLE_GRADIENT_MODULATION == 1
+	opacity_modulation = pow(gradient_length, gradient_lambda);
 	#endif
 
 	#if ISOSURFACE_MODE > 0
@@ -427,6 +461,9 @@ void main()
 	#if ENABLE_LIGHTING == 1
 		color_in.rgb *= illumination;
 	#endif
+
+		// apply opacity modulation as determined by gradient length if enabled
+		color_in.a *= opacity_modulation;
 
 		// scale the alpha channel based on the global opacity scale
 		color_in.a *= opacity_scale;

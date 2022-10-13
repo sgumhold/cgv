@@ -60,20 +60,25 @@ namespace cgv { // @<
 			
 			/// whether to enable lighting
 			bool enable_lighting;
-			/// whether the light is static to the scene or moves with the camera
-			bool light_static_to_scene;
+			/// whether the light is local to the eye position (moves with the eye) or is static to the scene
+			bool light_local_to_eye;
 			/// whether to use a supplied gradient texture or compute gradients on the fly via central differences (default)
 			bool use_gradient_texture;
 			/// the direction of the directional light
 			vec3 light_direction;
-			/// light/material diffuse component strength
-			float diffuse_strength;
-			/// light/material specular component strength
-			float specular_strength;
-			/// light/material specular component shininess
-			float specular_power;
-			/// light/material ambient component strength
+			/// light ambient component strength
 			float ambient_strength;
+			/// material diffuse component strength
+			float diffuse_strength;
+			/// material specular component strength
+			float specular_strength;
+			/// material roughness (inversely proportional to specular shininess)
+			float roughness;
+
+			/// whether to enable modulating the volume opacity by the gradient magnitude
+			bool enable_gradient_modulation;
+			///  influence scale for gradient-based opacity modulation
+			float gradient_lambda;
 
 			/// mode of a single supported isosurface
 			enum IsosurfaceMode{
@@ -99,11 +104,10 @@ namespace cgv { // @<
 		/// renderer that supports point splatting
 		class CGV_API volume_renderer : public renderer
 		{
+		private:
+			/// a private attribute array manager that holds position data that is constant for all volumes
+			cgv::render::attribute_array_manager position_aam;
 		protected:
-			// TODO: rename or use the one from the renderer base class?
-			cgv::render::attribute_array_manager aa_manager;
-
-
 			/// the 3D texture used for rendering
 			texture* volume_texture;
 			/// the 2D transfer function texture used for classification of the volume values
