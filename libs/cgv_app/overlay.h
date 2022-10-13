@@ -88,9 +88,6 @@ public:
 	/// overload to stream help information to the given output stream
 	virtual void stream_help(std::ostream& os) {};
 
-	// deprecated do not call
-	DEPRECATED("cgv_glutil::overlay::set_parent_handler() deprecated and ignored.") void set_parent_handler(cgv::gui::event_handler* parent_handler) { }
-
 	/// overload this method to handle events
 	virtual bool handle_event(cgv::gui::event& e) { return false; };
 
