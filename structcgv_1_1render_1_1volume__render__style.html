@@ -304,10 +304,10 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="str
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a1086664ce53ea03d65e8c2889fb8aedf">enable_lighting</a></td></tr>
 <tr class="memdesc:a1086664ce53ea03d65e8c2889fb8aedf"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to enable lighting <br /></td></tr>
 <tr class="separator:a1086664ce53ea03d65e8c2889fb8aedf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad686a7aaa33dfb4177551aadb8c71a31"><td class="memItemLeft" align="right" valign="top"><a id="ad686a7aaa33dfb4177551aadb8c71a31"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ad686a7aaa33dfb4177551aadb8c71a31">light_static_to_scene</a></td></tr>
-<tr class="memdesc:ad686a7aaa33dfb4177551aadb8c71a31"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether the light is static to the scene or moves with the camera <br /></td></tr>
-<tr class="separator:ad686a7aaa33dfb4177551aadb8c71a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0050c7a4742ce78f1e03ee5e377f37dd"><td class="memItemLeft" align="right" valign="top"><a id="a0050c7a4742ce78f1e03ee5e377f37dd"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a0050c7a4742ce78f1e03ee5e377f37dd">light_local_to_eye</a></td></tr>
+<tr class="memdesc:a0050c7a4742ce78f1e03ee5e377f37dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether the light is local to the eye position (moves with the eye) or is static to the scene <br /></td></tr>
+<tr class="separator:a0050c7a4742ce78f1e03ee5e377f37dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7496465448f83cbe24dcaca237f6b5a"><td class="memItemLeft" align="right" valign="top"><a id="ac7496465448f83cbe24dcaca237f6b5a"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ac7496465448f83cbe24dcaca237f6b5a">use_gradient_texture</a></td></tr>
 <tr class="memdesc:ac7496465448f83cbe24dcaca237f6b5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to use a supplied gradient texture or compute gradients on the fly via central differences (default) <br /></td></tr>
@@ -316,22 +316,30 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#aa86bd6e1c1575ffe22f52ac710f19fb2">light_direction</a></td></tr>
 <tr class="memdesc:aa86bd6e1c1575ffe22f52ac710f19fb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">the direction of the directional light <br /></td></tr>
 <tr class="separator:aa86bd6e1c1575ffe22f52ac710f19fb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a192582d878ccb7ce636f32eb519180f2"><td class="memItemLeft" align="right" valign="top"><a id="a192582d878ccb7ce636f32eb519180f2"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a192582d878ccb7ce636f32eb519180f2">ambient_strength</a></td></tr>
+<tr class="memdesc:a192582d878ccb7ce636f32eb519180f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">light ambient component strength <br /></td></tr>
+<tr class="separator:a192582d878ccb7ce636f32eb519180f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad85d5649fd5df48b0941888b91dd0502"><td class="memItemLeft" align="right" valign="top"><a id="ad85d5649fd5df48b0941888b91dd0502"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ad85d5649fd5df48b0941888b91dd0502">diffuse_strength</a></td></tr>
-<tr class="memdesc:ad85d5649fd5df48b0941888b91dd0502"><td class="mdescLeft">&#160;</td><td class="mdescRight">light/material diffuse component strength <br /></td></tr>
+<tr class="memdesc:ad85d5649fd5df48b0941888b91dd0502"><td class="mdescLeft">&#160;</td><td class="mdescRight">material diffuse component strength <br /></td></tr>
 <tr class="separator:ad85d5649fd5df48b0941888b91dd0502"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18f34a3724ce6a2ae8c9100f8ed01c9c"><td class="memItemLeft" align="right" valign="top"><a id="a18f34a3724ce6a2ae8c9100f8ed01c9c"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a18f34a3724ce6a2ae8c9100f8ed01c9c">specular_strength</a></td></tr>
-<tr class="memdesc:a18f34a3724ce6a2ae8c9100f8ed01c9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">light/material specular component strength <br /></td></tr>
+<tr class="memdesc:a18f34a3724ce6a2ae8c9100f8ed01c9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">material specular component strength <br /></td></tr>
 <tr class="separator:a18f34a3724ce6a2ae8c9100f8ed01c9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1cd488239f23ad4126bc41ab2a7c1a59"><td class="memItemLeft" align="right" valign="top"><a id="a1cd488239f23ad4126bc41ab2a7c1a59"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a1cd488239f23ad4126bc41ab2a7c1a59">specular_power</a></td></tr>
-<tr class="memdesc:a1cd488239f23ad4126bc41ab2a7c1a59"><td class="mdescLeft">&#160;</td><td class="mdescRight">light/material specular component shininess <br /></td></tr>
-<tr class="separator:a1cd488239f23ad4126bc41ab2a7c1a59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a192582d878ccb7ce636f32eb519180f2"><td class="memItemLeft" align="right" valign="top"><a id="a192582d878ccb7ce636f32eb519180f2"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a192582d878ccb7ce636f32eb519180f2">ambient_strength</a></td></tr>
-<tr class="memdesc:a192582d878ccb7ce636f32eb519180f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">light/material ambient component strength <br /></td></tr>
-<tr class="separator:a192582d878ccb7ce636f32eb519180f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3a1c304c9c6709b0c4f5ec534502a22"><td class="memItemLeft" align="right" valign="top"><a id="ab3a1c304c9c6709b0c4f5ec534502a22"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ab3a1c304c9c6709b0c4f5ec534502a22">roughness</a></td></tr>
+<tr class="memdesc:ab3a1c304c9c6709b0c4f5ec534502a22"><td class="mdescLeft">&#160;</td><td class="mdescRight">material roughness (inversely proportional to specular shininess) <br /></td></tr>
+<tr class="separator:ab3a1c304c9c6709b0c4f5ec534502a22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8a9f79eaf5a3b37c8d15de7a6138599"><td class="memItemLeft" align="right" valign="top"><a id="ad8a9f79eaf5a3b37c8d15de7a6138599"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ad8a9f79eaf5a3b37c8d15de7a6138599">enable_gradient_modulation</a></td></tr>
+<tr class="memdesc:ad8a9f79eaf5a3b37c8d15de7a6138599"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to enable modulating the volume opacity by the gradient magnitude <br /></td></tr>
+<tr class="separator:ad8a9f79eaf5a3b37c8d15de7a6138599"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a509ad8f9636e8b2eebf5ccddfb7bf4f6"><td class="memItemLeft" align="right" valign="top"><a id="a509ad8f9636e8b2eebf5ccddfb7bf4f6"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a509ad8f9636e8b2eebf5ccddfb7bf4f6">gradient_lambda</a></td></tr>
+<tr class="memdesc:a509ad8f9636e8b2eebf5ccddfb7bf4f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">influence scale for gradient-based opacity modulation <br /></td></tr>
+<tr class="separator:a509ad8f9636e8b2eebf5ccddfb7bf4f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e3b47297fe84828605dd9034b52b730"><td class="memItemLeft" align="right" valign="top"><a id="a4e3b47297fe84828605dd9034b52b730"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a4e3b47297fe84828605dd9034b52b730">isovalue</a></td></tr>
 <tr class="memdesc:a4e3b47297fe84828605dd9034b52b730"><td class="mdescLeft">&#160;</td><td class="mdescRight">the value used to check for an isosurface <br /></td></tr>
