@@ -20,46 +20,51 @@ navigator::navigator() {
 
 	check_for_click = -1;
 
+	layout_size = 150;
+
 	set_overlay_alignment(AO_END, AO_END);
 	set_overlay_stretch(SO_NONE);
 	set_overlay_margin(ivec2(0));
-	set_overlay_size(ivec2(150));
+	set_overlay_size(ivec2(layout_size));
 	
 	fbc.add_attachment("depth", "[D]");
 	fbc.add_attachment("color", "flt32[R,G,B,A]", cgv::render::TF_LINEAR);
 	fbc.set_size(2*get_overlay_size());
 
+	show_box = true;
+	show_wireframe = true;
+	use_perspective = true;
 	hit_axis = 0;
 
 	blit_canvas.register_shader("rectangle", "rect2d.glpr");
 
-	box_style.default_extent = vec3(1.0f);
-	box_style.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
-	box_style.surface_color = rgb(0.5f);
+	box_data.style.default_extent = vec3(1.0f);
+	box_data.style.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
+	box_data.style.surface_color = rgb(0.5f);
 
-	box_style.illumination_mode = cgv::render::IM_TWO_SIDED;
-	box_style.culling_mode = cgv::render::CM_OFF;
-	box_style.material.set_diffuse_reflectance(rgb(1.0f));
-	box_style.material.set_emission(rgb(0.35f));
-	box_style.surface_opacity = 0.35f;
+	box_data.style.illumination_mode = cgv::render::IM_TWO_SIDED;
+	box_data.style.culling_mode = cgv::render::CM_OFF;
+	box_data.style.material.set_diffuse_reflectance(rgb(1.0f));
+	box_data.style.material.set_emission(rgb(0.35f));
+	box_data.style.surface_opacity = 0.35f;
 
-	sphere_style.illumination_mode = cgv::render::IM_OFF;
-	sphere_style.radius = 0.04f;
-	sphere_style.surface_color = rgb(0.5f);
+	sphere_data.style.illumination_mode = cgv::render::IM_OFF;
+	sphere_data.style.radius = 0.04f;
+	sphere_data.style.surface_color = rgb(0.5f);
 
-	arrow_style.illumination_mode = cgv::render::IM_OFF;
-	arrow_style.radius_relative_to_length = 0.04f;
-	arrow_style.head_length_mode = cgv::render::AHLM_RELATIVE_TO_LENGTH;
-	arrow_style.head_length_relative_to_length = 0.3f;
-	arrow_style.head_radius_scale = 2.5f;
+	arrow_data.style.illumination_mode = cgv::render::IM_OFF;
+	arrow_data.style.radius_relative_to_length = 0.04f;
+	arrow_data.style.head_length_mode = cgv::render::AHLM_RELATIVE_TO_LENGTH;
+	arrow_data.style.head_length_relative_to_length = 0.3f;
+	arrow_data.style.head_radius_scale = 2.5f;
 
-	rectangle_style.illumination_mode = cgv::render::IM_OFF;
-	rectangle_style.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
-	rectangle_style.surface_color = rgb(0.25f, 0.5f, 1.0f);
-	rectangle_style.surface_opacity = 0.75f;
-	rectangle_style.pixel_blend = 0.0f;
-	rectangle_style.percentual_border_width = 0.111111f;
-	rectangle_style.default_border_color = rgba(0.15f, 0.4f, 0.9f, 0.75f);
+	rectangle_data.style.illumination_mode = cgv::render::IM_OFF;
+	rectangle_data.style.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
+	rectangle_data.style.surface_color = rgb(0.25f, 0.5f, 1.0f);
+	rectangle_data.style.surface_opacity = 0.75f;
+	rectangle_data.style.pixel_blend = 0.0f;
+	rectangle_data.style.percentual_border_width = 0.111111f;
+	rectangle_data.style.default_border_color = rgba(0.15f, 0.4f, 0.9f, 0.75f);
 }
 
 void navigator::clear(cgv::render::context& ctx) {
@@ -67,10 +72,17 @@ void navigator::clear(cgv::render::context& ctx) {
 	blit_canvas.destruct(ctx);
 	fbc.clear(ctx);
 
+	arrow_data.destruct(ctx);
+	box_data.destruct(ctx);
+	box_wire_data.destruct(ctx);
+	rectangle_data.destruct(ctx);
+	sphere_data.destruct(ctx);
+
 	ref_arrow_renderer(ctx, -1);
 	ref_box_renderer(ctx, -1);
-	ref_sphere_renderer(ctx, -1);
+	ref_box_wire_renderer(ctx, -1);
 	ref_rectangle_renderer(ctx, -1);
+	ref_sphere_renderer(ctx, -1);
 }
 
 bool navigator::self_reflect(cgv::reflect::reflection_handler& _rh) {
@@ -102,14 +114,19 @@ bool navigator::handle_event(cgv::gui::event& e) {
 			mpos = get_local_mouse_pos(mpos);
 			vec2 window_coord = vec2(mpos) * vec2(2.0f) / get_overlay_size() - vec2(1.0f);
 
-			mat4 MVP = get_projection_matrix() * get_view_matrix(ctx);
+			vec3 origin = vec3(window_coord, navigator_eye_pos.z());
+			vec3 direction = vec3(0.0f, 0.0f, -1.0f);
 
-			vec4 world_coord(window_coord.x(), window_coord.y(), 1.0f, 1.0f);
-			world_coord = inv(MVP) * world_coord;
-			world_coord /= world_coord.w();
+			if(use_perspective) {
+				mat4 MVP = get_projection_matrix() * get_view_matrix(ctx);
 
-			vec3 origin = navigator_eye_pos;
-			vec3 direction = normalize(vec3(world_coord) - origin);
+				vec4 world_coord(window_coord.x(), window_coord.y(), 1.0f, 1.0f);
+				world_coord = inv(MVP) * world_coord;
+				world_coord /= world_coord.w();
+
+				vec3 origin = navigator_eye_pos;
+				vec3 direction = normalize(vec3(world_coord) - origin);
+			}
 			
 			mat4 IM = inv(get_model_matrix(ctx));
 
@@ -156,9 +173,6 @@ bool navigator::handle_event(cgv::gui::event& e) {
 							if(axis_idx == 1)
 								view_up_dir = vec3(0.0f, 0.0f, hit_axis < 0 ? 1.0f : -1.0f);
 							
-							//view_ptr->set_eye_keep_extent(focus + dist * view_dir);
-							//view_ptr->set_view_up_dir(view_up_dir);
-							
 							dvec3 axis;
 							double angle;
 							view_ptr->compute_axis_and_angle(-view_dir, view_up_dir, axis, angle);
@@ -184,6 +198,11 @@ bool navigator::handle_event(cgv::gui::event& e) {
 
 void navigator::on_set(void* member_ptr) {
 
+	if(member_ptr == &layout_size) {
+		layout_size = cgv::math::clamp(layout_size, 10, 2000);
+		set_overlay_size(ivec2(layout_size));
+	}
+
 	update_member(member_ptr);
 	post_redraw();
 }
@@ -200,17 +219,22 @@ bool navigator::init(cgv::render::context& ctx) {
 
 	success &= fbc.ensure(ctx);
 	success &= blit_canvas.init(ctx);
-	success &= box_data.init(ctx);
-	success &= sphere_data.init(ctx);
+
 	success &= arrow_data.init(ctx);
+	success &= box_data.init(ctx);
+	success &= box_wire_data.init(ctx);
+	success &= rectangle_data.init(ctx);
+	success &= sphere_data.init(ctx);
 
 	ref_arrow_renderer(ctx, 1);
 	ref_box_renderer(ctx, 1);
-	ref_sphere_renderer(ctx, 1);
+	ref_box_wire_renderer(ctx, 1);
 	ref_rectangle_renderer(ctx, 1);
+	ref_sphere_renderer(ctx, 1);
 
 	if(success) {
 		box_data.add(vec3(0.0f));
+		box_wire_data.add(vec3(0.0f));
 
 		sphere_data.add(vec3(0.0f));
 
@@ -275,13 +299,17 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 	glEnable(GL_BLEND);
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-	box_data.render(ctx, ref_box_renderer(ctx), box_style);
+	if(show_box)
+		box_data.render(ctx, ref_box_renderer(ctx));
+
+	if(show_wireframe)
+		box_wire_data.render(ctx, ref_box_wire_renderer(ctx));
 
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 
-	sphere_data.render(ctx, ref_sphere_renderer(ctx), sphere_style);
-	arrow_data.render(ctx, ref_arrow_renderer(ctx), arrow_style);
+	sphere_data.render(ctx, ref_sphere_renderer(ctx));
+	arrow_data.render(ctx, ref_arrow_renderer(ctx));
 
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -291,9 +319,6 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 		vec3 position(0.0f);
 		position[axis_idx] = hit_axis < 0.0f ? -0.5f : 0.5f;
 
-		std::vector<vec3> positions;
-		positions.push_back(position);
-
 		const int mapping[3] = {1, 0, 2};
 
 		vec3 rotation_axis(0.0f);
@@ -301,14 +326,14 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 
 		std::vector<quat> rotations;
 		quat q(rotation_axis, cgv::math::deg2rad(90.0f));
-		rotations.push_back(q);
+
+		rectangle_data.clear();
+		rectangle_data.add(position);
+		rectangle_data.add(q);
 
 		auto& rectangle_renderer = ref_rectangle_renderer(ctx);
-		rectangle_renderer.set_render_style(rectangle_style);
 		rectangle_renderer.set_extent(ctx, vec2(0.9f));
-		rectangle_renderer.set_position_array(ctx, positions);
-		rectangle_renderer.set_rotation_array(ctx, rotations);
-		rectangle_renderer.render(ctx, 0, 1);
+		rectangle_data.render(ctx, rectangle_renderer);
 	}
 
 	ctx.pop_modelview_matrix();
@@ -334,11 +359,11 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 void navigator::create_gui() {
 
 	create_overlay_gui();
-}
 
-void navigator::create_gui(cgv::gui::provider& p) {
-
-	p.add_member_control(this, "Show", show, "check");
+	add_member_control(this, "Size", layout_size, "value_slider", "min=50;max=300;step=1;ticks=true");
+	add_member_control(this, "Show Box", show_box, "check");
+	add_member_control(this, "Show Wireframe", show_wireframe, "check");
+	add_member_control(this, "Use Perspective", use_perspective, "check");
 }
 
 navigator::mat4 navigator::get_model_matrix(cgv::render::context& ctx) {
@@ -360,10 +385,13 @@ navigator::mat4 navigator::get_view_matrix(cgv::render::context& ctx) {
 
 navigator::mat4 navigator::get_projection_matrix() {
 
-	ivec2 size = get_overlay_size();
-	float aspect = static_cast<float>(size.x()) / static_cast<float>(size.y());
-
-	return cgv::math::perspective4(45.0f, aspect, 0.1f, 10.0f);
+	vec2 size = static_cast<vec2>(get_overlay_size());
+	float aspect = size.x() / size.y();
+	
+	if(use_perspective)
+		return cgv::math::perspective4(45.0f, aspect, 0.1f, 10.0f);
+	else
+		return cgv::math::ortho4(-1.0f, 1.0f, -1.0f, 1.0f, 0.01f, 5.0f);
 }
 
 bool navigator::intersect_box(const vec3 &origin, const vec3& direction, float& t) const {
