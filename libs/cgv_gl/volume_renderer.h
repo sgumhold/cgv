@@ -1,6 +1,6 @@
 #pragma once
 
-#include "surface_renderer.h"
+#include "renderer.h"
 
 #include "gl/lib_begin.h"
 
