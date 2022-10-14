@@ -13,8 +13,7 @@ protected:
 	cgv::math::piecewise_linear_interpolator<rgb> color_interpolator;
 	cgv::math::piecewise_linear_interpolator<float> opacity_interpolator;
 
-	// TODO: make resolution adjustable by color_map_editor
-	/// resolution mostly used when generating textures from color maps
+	/// resolution of the sampled color map; mostly used when generating textures from color maps
 	unsigned resolution = 256u;
 
 public:
@@ -43,9 +42,7 @@ public:
 	}
 
 	void add_color_point(float t, rgb color) {
-		// TODO: do we need to keep it in the interval [0,1]?
-		// make sure t is in the interval [0,1]
-		//t = cgv::math::clamp(t, 0.0f, 1.0f);
+		t = cgv::math::clamp(t, 0.0f, 1.0f);
 		color_interpolator.add_control_point(t, color);
 	}
 
@@ -200,6 +197,10 @@ public:
 			generate_rgba_texture(ctx);
 		else
 			generate_rgb_texture(ctx);
+	}
+
+	void set_resolution(unsigned res) {
+		resolution = res;
 	}
 
 	texture& ref_texture() { return tex; }

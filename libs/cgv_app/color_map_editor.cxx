@@ -169,6 +169,8 @@ void color_map_editor::on_set(void* member_ptr) {
 		cgv::render::context* ctx_ptr = get_context();
 		if(ctx_ptr)
 			init_texture(*ctx_ptr);
+		if(cmc.cm)
+			cmc.cm->set_resolution(resolution);
 		update_color_map(false);
 	}
 
