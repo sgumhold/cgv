@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv/math/piecewise_linear_interpolator.h>
+#include <cgv/math/piecewise_nearest_interpolator.h>
 #include <cgv/render/context.h>
 #include <cgv/render/render_types.h>
 #include <cgv/render/texture.h>
@@ -10,81 +11,120 @@ namespace render {
 
 class color_map : public render_types {
 protected:
-	cgv::math::piecewise_linear_interpolator<rgb> color_interpolator;
-	cgv::math::piecewise_linear_interpolator<float> opacity_interpolator;
+	cgv::math::control_point_container<rgb> color_points;
+	cgv::math::control_point_container<float> opacity_points;
+
+	cgv::math::interpolator<rgb>* color_interpolator_ptr = nullptr;
+	cgv::math::interpolator<float>* opacity_interpolator_ptr = nullptr;
 
 	/// resolution of the sampled color map; mostly used when generating textures from color maps
 	unsigned resolution = 256u;
+	/// whether to use  interpolation between the samples or just take the nearest one
+	bool use_interpolation = true;
 
 public:
+	color_map() {
+		construct_interpolators();
+	}
+
+	virtual ~color_map() {
+		delete color_interpolator_ptr;
+		delete opacity_interpolator_ptr;
+	}
+
+	virtual bool has_texture_support() const {
+		return false;
+	}
+
+	void construct_interpolators() {
+		delete color_interpolator_ptr;
+		delete opacity_interpolator_ptr;
+
+		if(use_interpolation) {
+			color_interpolator_ptr = new cgv::math::piecewise_linear_interpolator<rgb>();
+			opacity_interpolator_ptr = new cgv::math::piecewise_linear_interpolator<float>();
+		} else {
+			color_interpolator_ptr = new cgv::math::piecewise_nearest_interpolator<rgb>();
+			opacity_interpolator_ptr = new cgv::math::piecewise_nearest_interpolator<float>();
+		}
+	}
+
 	void clear() {
-		color_interpolator.clear();
-		opacity_interpolator.clear();
+		color_points.clear();
+		opacity_points.clear();
 	}
 
 	void clear_color_points() {
-		color_interpolator.clear();
+		color_points.clear();
 	}
 
 	void clear_opacity_points() {
-		opacity_interpolator.clear();
+		opacity_points.clear();
 	}
 
-	bool empty() {
-		return color_interpolator.empty() && opacity_interpolator.empty();
+	bool empty() const {
+		return color_points.empty() && opacity_points.empty();
 	}
 
-	unsigned get_resolution() { return resolution; }
+	unsigned get_resolution() const { return resolution; }
 
 	void set_resolution(unsigned resolution) {
 
 		this->resolution = std::max(resolution, 2u);
 	}
 
+	bool is_interpolation_enabled() const { return use_interpolation; }
+
+	void enable_interpolation(bool enabled) {
+		use_interpolation = enabled;
+		construct_interpolators();
+	}
+
 	void add_color_point(float t, rgb color) {
 		t = cgv::math::clamp(t, 0.0f, 1.0f);
-		color_interpolator.add_control_point(t, color);
+		color_points.push_back(t, color);
 	}
 
 	void add_opacity_point(float t, float opacity) {
-		opacity_interpolator.add_control_point(t, opacity);
+		t = cgv::math::clamp(t, 0.0f, 1.0f);
+		opacity_points.push_back(t, opacity);
 	}
 
-	const std::vector<decltype(color_interpolator)::control_point>& ref_color_points() const { return color_interpolator.ref_control_points(); }
-	const std::vector<decltype(opacity_interpolator)::control_point>& ref_opacity_points() const { return opacity_interpolator.ref_control_points(); }
+	const std::vector<decltype(color_points)::control_point>& ref_color_points() const { return color_points.ref_points(); }
+	const std::vector<decltype(opacity_points)::control_point>& ref_opacity_points() const { return opacity_points.ref_points(); }
 
 	rgb interpolate_color(float t) const {
 
-		return color_interpolator.interpolate(t);
+		return color_interpolator_ptr->interpolate(color_points, t);
 	}
 
 	std::vector<rgb> interpolate_color(size_t n) const {
 
-		return color_interpolator.interpolate(n);
+		return color_interpolator_ptr->interpolate(color_points, n);
 	}
 
 	float interpolate_opacity(float t) const {
 
-		return opacity_interpolator.interpolate(t);
+		return opacity_interpolator_ptr->interpolate(opacity_points, t);
 	}
 
 	std::vector<float> interpolate_opacity(size_t n) const {
 
-		return opacity_interpolator.interpolate(n);
+		return opacity_interpolator_ptr->interpolate(opacity_points, n);
 	}
 
 	rgba interpolate(float t) const {
 
-		rgb color = color_interpolator.interpolate(t);
-		float opacity = opacity_interpolator.interpolate(t);
+		rgb color = interpolate_color(t);
+		float opacity = interpolate_opacity(t);
 
 		return rgba(color.R(), color.G(), color.B(), opacity);
 	}
 
 	std::vector<rgba> interpolate(size_t n) const {
 
-		std::vector<rgb> colors = color_interpolator.interpolate(n);
-		std::vector<float> opacities = opacity_interpolator.interpolate(n);
+		const std::vector<rgb>& colors = interpolate_color(n);
+		const std::vector<float>& opacities = interpolate_opacity(n);
 
 		std::vector<rgba> data(n);
 		for(size_t i = 0; i < n; ++i) {
@@ -98,8 +138,20 @@ public:
 
 class gl_color_map : public color_map {
 protected:
+	/// whether to use linear tekture filtering or nearest neighbour
+	bool use_linear_filtering = true;
 	texture tex;
 	
+	TextureFilter get_texture_filter() {
+		return use_linear_filtering ? TF_LINEAR : TF_NEAREST;
+	}
+
+	void setup_texture(bool use_opacity) {
+		std::string format = use_opacity ? "uint8[R,G,B,A]" : "uint8[R,G,B]";
+		TextureFilter filter = get_texture_filter();
+		tex = texture(format, filter, filter);
+	}
+
 	void generate_rgb_texture(context& ctx) {
 		std::vector<rgb> data = interpolate_color(static_cast<size_t>(resolution));
 		
@@ -116,12 +168,16 @@ protected:
 		unsigned width = tex.get_width();
 
 		bool replaced = false;
-		if(tex.is_created() && width == resolution && tex.get_nr_components() == 3)
+		if(tex.is_created() && width == resolution && tex.get_nr_components() == 3) {
+			TextureFilter filter = get_texture_filter();
+			tex.set_min_filter(filter);
+			tex.set_mag_filter(filter);
 			replaced = tex.replace(ctx, 0, dv);
+		}
 
 		if(!replaced) {
 			tex.destruct(ctx);
-			tex = texture("uint8[R,G,B]", TF_LINEAR, TF_LINEAR);
+			setup_texture(false);
 			tex.create(ctx, dv, 0);
 		}
 	}
@@ -143,37 +199,49 @@ protected:
 		unsigned width = tex.get_width();
 
 		bool replaced = false;
-		if(tex.is_created() && width == resolution && tex.get_nr_components() == 4)
+		if(tex.is_created() && width == resolution && tex.get_nr_components() == 4) {
+			TextureFilter filter = get_texture_filter();
+			tex.set_min_filter(filter);
+			tex.set_mag_filter(filter);
 			replaced = tex.replace(ctx, 0, dv);
+		}
 
 		if(!replaced) {
 			tex.destruct(ctx);
-			tex = texture("uint8[R,G,B,A]", TF_LINEAR, TF_LINEAR);
+			setup_texture(true);
 			tex.create(ctx, dv, 0);
 		}
 	}
 
 public:
-	gl_color_map() {}
+	gl_color_map() : color_map() {}
 
 	gl_color_map(unsigned resolution) : gl_color_map() {
 		resolution = std::max(resolution, 2u);
 	}
 	
 	gl_color_map(const color_map& cm) : gl_color_map() {
+		resolution = cm.get_resolution();
+		use_interpolation = cm.is_interpolation_enabled();
+		
+		construct_interpolators();
+
 		for(auto& p : cm.ref_color_points())
 			add_color_point(p.first, p.second);
 		for(auto& p : cm.ref_opacity_points())
 			add_opacity_point(p.first, p.second);
 	}
 
-	~gl_color_map() {
+	virtual ~gl_color_map() {
 		clear();
+	}
+
+	virtual bool has_texture_support() const {
+		return true;
 	}
 
 	void clear() {
 		color_map::clear();
-		tex.clear();
 	}
 
 	bool destruct(context& ctx) {
@@ -182,12 +250,19 @@ public:
 		return true;
 	}
 
+	bool is_linear_filtering_enabled() const { return use_linear_filtering; }
+
+	void enable_linear_filtering(bool enabled) {
+		use_linear_filtering = enabled;
+		construct_interpolators();
+	}
+
 	bool init(context& ctx) {
 		std::vector<uint8_t> data(3 * resolution);
 
 		tex.destruct(ctx);
 		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGB), data.data());
-		tex = texture("uint8[R,G,B]", TF_LINEAR, TF_LINEAR);
+		setup_texture(false);
 		return tex.create(ctx, dv, 0);
 	}
 
@@ -197,10 +272,6 @@ public:
 			generate_rgba_texture(ctx);
 		else
 			generate_rgb_texture(ctx);
-	}
-
-	void set_resolution(unsigned res) {
-		resolution = res;
 	}
 
 	texture& ref_texture() { return tex; }

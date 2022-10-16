@@ -6,7 +6,7 @@ namespace cgv {
 namespace math {
 
 template<typename T>
-class piecewise_linear_interpolator : public interpolator<T> {
+class piecewise_nearest_interpolator : public interpolator<T> {
 public:
 	T interpolate(control_point_container<T> control_points, float t) const {
 		size_t count = control_points.size();
@@ -35,9 +35,7 @@ public:
 				float t0 = n0.first;
 				float t1 = n1.first;
 
-				float a = (t - t0) / (t1 - t0);
-
-				return (T)((1.0f - a) * n0.second + a * n1.second);
+				return (t - t0) < (t1 - t) ? n0.second : n1.second;
 			} else {
 				return control_points[idx].second;
 			}
@@ -84,9 +82,7 @@ public:
 				float t0 = n0.first;
 				float t1 = n1.first;
 
-				float a = (t - t0) / (t1 - t0);
-
-				data[i] = (T)((1.0f - a) * n0.second + a * n1.second);
+				data[i] = (t - t0) < (t1 - t) ? n0.second : n1.second;
 			}
 		}
 
