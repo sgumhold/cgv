@@ -156,17 +156,17 @@ var NAVTREEINDEX =
 "classcgv_1_1render_1_1volume__renderer.html#ad6a3ea196ce42da08553f24fcc27846f",
 "classvr_1_1vr__log.html#aa43cb0dae0419ff4da7c26b4c0879ca6",
 "functions_vars_q.html",
-"overview.html#platforms",
-"structcgv_1_1base_1_1factory__impl.html#a6d2b95a4802d2a4fc33b556726e0656f",
-"structcgv_1_1math_1_1perm__mat.html#a061b7b8677b56ac73c8fa9399c08cf55",
-"structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a4572f0a3890c422042545b1c83e2b106",
-"structcgv_1_1plot_1_1plot2d__config.html#a9e9fa6f5b0278adc4943d4c3abc63e4b",
-"structcgv_1_1reflect_1_1enum__reflection__traits.html#a5afb2fbb78a19f75b4fa87b400ef3513",
-"structcgv_1_1render_1_1box__wire__render__style.html#a113f4aa88c33c892574038e0f2478a7a",
-"structcgv_1_1render_1_1line__render__style.html#ab3ed34e8e12b57fe744b2dc2e65b82f7",
-"structcgv_1_1render_1_1render__types.html#ab510d7e1706c6061a03086d28b9b33d3",
-"structcgv_1_1render_1_1volume__render__style.html#a64b31ef71f0d782df7416df1973a941a",
-"structvr_1_1vr__trackable__state.html#a36f426d15fcb6a52af1cbd7dfb5d31ea"
+"overview.html#directories",
+"structcgv_1_1base_1_1factory__impl.html#a67b5dba890a068acef62d9c026c05320",
+"structcgv_1_1math_1_1diag__mat.html#aff21a4977e49f756a657cdedd9cba448",
+"structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html",
+"structcgv_1_1plot_1_1plot2d__config.html#a959405bbca84dbaa7053759c6cfe3381",
+"structcgv_1_1reflect_1_1enum__reflection__traits.html#a548d66e9c999c0db0d5236db34856e39",
+"structcgv_1_1render_1_1box__wire__render__style.html#a0492ee8d0e1c7867d0a9bc01dfae38e4",
+"structcgv_1_1render_1_1line__render__style.html#aaeef17e385a1d3ae754742b2619bd55c",
+"structcgv_1_1render_1_1render__types.html#ab3ed34e8e12b57fe744b2dc2e65b82f7",
+"structcgv_1_1render_1_1volume__render__style.html#a5d02bba4f5c672593254a42cac89fcb1",
+"structvr_1_1vr__trackable__info.html#af60c8e4e6ca4eb993050a3b9b1a0c9ab"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
