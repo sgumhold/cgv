@@ -37,7 +37,6 @@ void color_map_legend::clear(cgv::render::context& ctx) {
 
 	canvas_overlay::clear(ctx);
 
-	tex.clear();
 	tex.destruct(ctx);
 
 	cgv::g2d::ref_msdf_font(ctx, -1);
@@ -212,6 +211,12 @@ void color_map_legend::create_gui_impl() {
 
 void color_map_legend::set_color_map(cgv::render::context& ctx, cgv::render::color_map& cm) {
 
+	cgv::render::TextureFilter filter = cgv::render::TF_LINEAR;
+	if(cm.has_texture_support()) {
+		cgv::render::gl_color_map* gl_cm_ptr = dynamic_cast<cgv::render::gl_color_map*>(&cm);
+		filter = gl_cm_ptr->is_linear_filtering_enabled() ? cgv::render::TF_LINEAR : cgv::render::TF_NEAREST;
+	}
+
 	unsigned resolution = cm.get_resolution();
 	std::vector<rgb> data = cm.interpolate_color(static_cast<size_t>(resolution));
 
@@ -230,12 +235,15 @@ void color_map_legend::set_color_map(cgv::render::context& ctx, cgv::render::col
 	unsigned width = tex.get_width();
 
 	bool replaced = false;
-	if(tex.is_created() && width == resolution && tex.get_nr_components() == 3)
+	if(tex.is_created() && width == resolution && tex.get_nr_components() == 3) {
+		tex.set_min_filter(filter);
+		tex.set_mag_filter(filter);
 		replaced = tex.replace(ctx, 0, 0, dv);
+	}
 
 	if(!replaced) {
 		tex.destruct(ctx);
-		tex = cgv::render::texture("uint8[R,G,B]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR);
+		tex = cgv::render::texture("uint8[R,G,B]", filter, filter);
 		tex.create(ctx, dv, 0);
 	}
 

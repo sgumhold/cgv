@@ -127,7 +127,7 @@ public:
 
 	void set_title(const std::string& t);
 
-	vec2 get_range() { return range; }
+	vec2 get_range() const { return range; }
 	void set_range(vec2 r);
 
 	unsigned get_num_ticks() { return num_ticks; }

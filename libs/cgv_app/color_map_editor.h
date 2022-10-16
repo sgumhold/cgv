@@ -3,8 +3,9 @@
 #include <cgv/render/color_map.h>
 #include <cgv/render/texture.h>
 #include <cgv_app/canvas_overlay.h>
-#include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/draggables_collection.h>
+#include <cgv_g2d/generic_2d_renderer.h>
+#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 
 #include "lib_begin.h"
 
@@ -146,21 +147,27 @@ protected:
 
 	bool has_updated = false;
 	bool mouse_is_on_overlay;
-	bool show_cursor;
 	bool supports_opacity;
+	bool use_interpolation;
+	bool use_linear_filtering;
+	vec2 range;
+
+	ivec2 cursor_pos;
+	int cursor_label_index;
+	bool show_value_label;
 
 	// general appearance
 	rgba handle_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
 	rgba highlight_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
 	std::string highlight_color_hex = "0x808080";
-	cgv::g2d::shape2d_style container_style, border_style, color_map_style, bg_style, hist_style;
+	cgv::g2d::shape2d_style container_style, border_style, color_map_style, bg_style, hist_style, label_box_style;
 
-	// text appearance
-	ivec2 cursor_pos;
-	std::string cursor_drawtext;
-	cgv::media::font::font_face_ptr cursor_font_face;
+	// label appearance
+	const float cursor_label_size = 16.0f;
+	const float value_label_size = 12.0f;
+	cgv::g2d::shape2d_style cursor_label_style, value_label_style;
+	cgv::g2d::msdf_text_geometry cursor_labels, value_labels;
 
-	//bool show_histogram;
 	std::vector<unsigned> histogram;
 	unsigned hist_max = 1;
 	unsigned hist_max_non_zero = 1;
@@ -197,10 +204,17 @@ protected:
 			lines.clear();
 			triangles.clear();
 		}
+
+		cgv::render::gl_color_map* get_gl_color_map() {
+			if(cm->has_texture_support())
+				return dynamic_cast<cgv::render::gl_color_map*>(cm);
+			return nullptr;
+		}
 	} cmc;
 
 	void init_styles(cgv::render::context& ctx);
-	void init_texture(cgv::render::context& ctx);
+	void setup_preview_texture(cgv::render::context& ctx);
+	void init_preview_texture(cgv::render::context& ctx);
 
 	void add_point(const vec2& pos);
 	void remove_point(const cgv::g2d::draggable* ptr);
@@ -209,6 +223,7 @@ protected:
 	void handle_color_point_drag();
 	void handle_opacity_point_drag();
 	void handle_drag_end();
+	std::string value_to_string(float value);
 	void sort_points();
 	void sort_color_points();
 	void sort_opacity_points();
@@ -233,11 +248,13 @@ public:
 
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
-	void draw(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
 	
 	bool get_opacity_support() { return supports_opacity; }
 	void set_opacity_support(bool flag);
+
+	vec2 get_range() const { return range; }
+	void set_range(vec2 r) { range = r; }
 
 	bool was_updated();
 
