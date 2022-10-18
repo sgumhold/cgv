@@ -95,7 +95,6 @@ protected:
 
 	cgv::g2d::generic_2d_renderer tick_renderer;
 	DEFINE_GENERIC_RENDER_DATA_CLASS(tick_geometry, 2, vec2, position, vec2, size);
-
 	tick_geometry ticks;
 
 	void init_styles(cgv::render::context& ctx);

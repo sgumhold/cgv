@@ -17,6 +17,11 @@ struct rect : public cgv::render::render_types {
 		box = ibox2(ivec2(0), ivec2(0));
 	}
 
+	rect(const ivec2& pos, const ivec2& size) : rect() {
+		set_pos(pos);
+		set_size(size);
+	}
+
 	// minimum point (bottom left)
 	ivec2& a() { return box.ref_min_pnt(); }
 	// maximum point (top right)
