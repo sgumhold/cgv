@@ -43,6 +43,7 @@ void color_map_legend::clear(cgv::render::context& ctx) {
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
 
 	tick_renderer.destruct(ctx);
+	ticks.destruct(ctx);
 }
 
 bool color_map_legend::self_reflect(cgv::reflect::reflection_handler& _rh) {

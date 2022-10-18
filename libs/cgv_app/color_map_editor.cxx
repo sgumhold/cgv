@@ -627,7 +627,6 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	label_box_style.border_width = 1.5f;
 	label_box_style.border_radius = 4.0f;
 
-
 	// configure style for opacity handles
 	cgv::g2d::shape2d_style opacity_handle_style;
 	opacity_handle_style.use_blending = true;
