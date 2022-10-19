@@ -3,6 +3,7 @@
 #include <cgv/render/color_map.h>
 #include <cgv/render/texture.h>
 #include <cgv_app/canvas_overlay.h>
+#include <cgv_app/color_selector.h>
 #include <cgv_g2d/draggables_collection.h>
 #include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
@@ -145,7 +146,6 @@ protected:
 		}
 	};
 
-	bool has_updated = false;
 	bool mouse_is_on_overlay;
 	bool supports_opacity;
 	bool use_interpolation;
@@ -231,7 +231,9 @@ protected:
 	void update_color_map(bool is_data_change);
 	bool update_geometry();
 
-	void reload_shaders();
+	std::function<void(void)> on_change_callback;
+	std::function<void(rgb)> on_color_point_select_callback;
+	std::function<void(void)> on_color_point_deselect_callback;
 
 	virtual void create_gui_impl();
 
@@ -256,15 +258,27 @@ public:
 	vec2 get_range() const { return range; }
 	void set_range(vec2 r) { range = r; }
 
-	bool was_updated();
-
 	cgv::render::color_map* get_color_map() { return cmc.cm; }
 	void set_color_map(cgv::render::color_map* cm);
 
 	void set_histogram_data(const std::vector<unsigned> data);
+
+	void set_selected_color(rgb color);
+
+	void set_on_change_callback(std::function<void(void)> cb) { on_change_callback = cb; }
+	void set_on_color_point_select_callback(std::function<void(rgb)> cb) { on_color_point_select_callback = cb; }
+	void set_on_color_point_deselect_callback(std::function<void(void)> cb) { on_color_point_deselect_callback = cb; }
 };
 
 typedef cgv::data::ref_ptr<color_map_editor> color_map_editor_ptr;
+
+static void connect_color_selector_to_color_map_editor(const color_map_editor_ptr cme_ptr, const color_selector_ptr cs_ptr) {
+	if(cme_ptr && cs_ptr) {
+		cme_ptr->set_on_color_point_select_callback(std::bind(&cgv::app::color_selector::set_rgb_color, cs_ptr, std::placeholders::_1));
+		cme_ptr->set_on_color_point_deselect_callback(std::bind(&cgv::app::color_selector::set_visibility, cs_ptr, false));
+		cs_ptr->set_on_change_rgb_callback(std::bind(&cgv::app::color_map_editor::set_selected_color, cme_ptr, std::placeholders::_1));
+	}
+}
 
 }
 }

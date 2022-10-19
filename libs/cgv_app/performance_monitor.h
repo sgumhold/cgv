@@ -52,7 +52,7 @@ protected:
 		double running_time = 0.0;
 		/// store the average frames per second
 		double avg_fps = 0.0;
-	} measuring;
+	} monitor;
 
 	bool show_background = true;
 	bool invert_color = false;
@@ -99,6 +99,8 @@ public:
 	void init_frame(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
 	void after_finish(cgv::render::context& ctx);
+
+	void enable_monitoring(bool enabled);
 };
 
 typedef cgv::data::ref_ptr<performance_monitor> performance_monitor_ptr;

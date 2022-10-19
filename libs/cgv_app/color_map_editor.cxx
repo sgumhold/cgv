@@ -484,20 +484,12 @@ void color_map_editor::create_gui_impl() {
 			end_tree_node(cmc.opacity_points);
 		}
 	}
-
-	connect_copy(add_button("reload shaders")->click, rebind(this, &color_map_editor::reload_shaders));
 }
 
 void color_map_editor::set_opacity_support(bool flag) {
 	
 	supports_opacity = flag;
 	on_set(&supports_opacity);
-}
-
-bool color_map_editor::was_updated() {
-	bool temp = has_updated;
-	has_updated = false;
-	return temp;
 }
 
 void color_map_editor::set_color_map(cgv::render::color_map* cm) {
@@ -561,6 +553,17 @@ void color_map_editor::set_histogram_data(const std::vector<unsigned> data) {
 		hist_tex = cgv::render::texture("flt32[R]");
 		hist_tex.create(ctx, dv, 0);
 
+		post_damage();
+	}
+}
+
+void color_map_editor::set_selected_color(rgb color) {
+	
+	auto selected_point = cmc.color_points.get_selected();
+	if(selected_point) {
+		selected_point->col = color;
+		update_color_map(true);
+		update_member(&selected_point->col);
 		post_damage();
 	}
 }
@@ -779,6 +782,9 @@ void color_map_editor::handle_color_point_drag() {
 	label_position.y() += 25;
 	value_labels.set_position(0, label_position);
 	
+	if(dragged_point && on_color_point_select_callback)
+		on_color_point_select_callback(dragged_point->col);
+
 	post_damage();
 }
 
@@ -808,6 +814,16 @@ void color_map_editor::handle_drag_end() {
 
 	show_value_label = false;
 	update_geometry();
+
+	auto selected_point = cmc.color_points.get_selected();
+	if(selected_point) {
+		if(on_color_point_select_callback)
+			on_color_point_select_callback(selected_point->col);
+	} else {
+		if(on_color_point_deselect_callback)
+			on_color_point_deselect_callback();
+	}
+
 	post_recreate_gui();
 	post_damage();
 }
@@ -997,7 +1013,9 @@ void color_map_editor::update_color_map(bool is_data_change) {
 
 	update_geometry();
 
-	has_updated = true;
+	if(on_change_callback)
+		on_change_callback();
+
 	post_damage();
 }
 
@@ -1039,7 +1057,6 @@ bool color_map_editor::update_geometry() {
 		opacity_handles.add(pos, col);
 	}
 
-	// TODO: handle case with only 1 opacity handle
 	if(opacity_points.size() > 0) {
 		const auto& pl = opacity_points[0];
 
@@ -1069,13 +1086,6 @@ bool color_map_editor::update_geometry() {
 	}
 
 	return success;
-}
-
-void color_map_editor::reload_shaders() {
-	if(auto ctx_ptr = get_context()) {
-		content_canvas.reload_shaders(*ctx_ptr);
-		post_damage();
-	}
 }
 
 }

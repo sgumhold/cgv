@@ -212,6 +212,8 @@ void fltk_viewer_window::theme_change_cb() {
 		ti.border(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_TEXT_COLOR), r, g, b);
 		ti.text(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_TEXT_BACKGROUND_COLOR), r, g, b);
+		ti.text_background(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_SELECTION_COLOR), r, g, b);
 		ti.selection(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_HIGHLIGHT_COLOR), r, g, b);
