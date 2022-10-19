@@ -14,8 +14,8 @@ protected:
 	cgv::math::control_point_container<rgb> color_points;
 	cgv::math::control_point_container<float> opacity_points;
 
-	cgv::math::interpolator<rgb>* color_interpolator_ptr = nullptr;
-	cgv::math::interpolator<float>* opacity_interpolator_ptr = nullptr;
+	std::shared_ptr<cgv::math::interpolator<rgb>> color_interpolator_ptr = nullptr;
+	std::shared_ptr<cgv::math::interpolator<float>> opacity_interpolator_ptr = nullptr;
 
 	/// resolution of the sampled color map; mostly used when generating textures from color maps
 	unsigned resolution = 256u;
@@ -27,25 +27,19 @@ public:
 		construct_interpolators();
 	}
 
-	virtual ~color_map() {
-		delete color_interpolator_ptr;
-		delete opacity_interpolator_ptr;
-	}
+	virtual ~color_map() {}
 
 	virtual bool has_texture_support() const {
 		return false;
 	}
 
 	void construct_interpolators() {
-		delete color_interpolator_ptr;
-		delete opacity_interpolator_ptr;
-
 		if(use_interpolation) {
-			color_interpolator_ptr = new cgv::math::piecewise_linear_interpolator<rgb>();
-			opacity_interpolator_ptr = new cgv::math::piecewise_linear_interpolator<float>();
+			color_interpolator_ptr = std::make_shared<cgv::math::piecewise_linear_interpolator<rgb>>();
+			opacity_interpolator_ptr = std::make_shared<cgv::math::piecewise_linear_interpolator<float>>();
 		} else {
-			color_interpolator_ptr = new cgv::math::piecewise_nearest_interpolator<rgb>();
-			opacity_interpolator_ptr = new cgv::math::piecewise_nearest_interpolator<float>();
+			color_interpolator_ptr = std::make_shared<cgv::math::piecewise_nearest_interpolator<rgb>>();
+			opacity_interpolator_ptr = std::make_shared<cgv::math::piecewise_nearest_interpolator<float>>();
 		}
 	}
 
