@@ -46,7 +46,10 @@ volume_viewer::volume_viewer() : application_plugin("Volume Viewer")
 	transfer_function_editor_ptr->gui_options.show_heading = false;
 	// enable support for editing opacity values
 	transfer_function_editor_ptr->set_opacity_support(true);
-
+	// connect a callback function to handle changes of the transfer function
+	transfer_function_editor_ptr->set_on_change_callback(std::bind(&volume_viewer::handle_transfer_function_change, this));
+	
+	// instantiate a color map legend to show the used transfer function
 	transfer_function_legend_ptr = register_overlay<cgv::app::color_map_legend>("Legend");
 	transfer_function_legend_ptr->set_title("Density");
 }
@@ -168,13 +171,6 @@ void volume_viewer::init_frame(cgv::render::context& ctx) {
 				transfer_function_legend_ptr->set_color_map(ctx, transfer_function);
 		}
 	}
-
-	// check for changes in transfer function and update texture if necessary
-	if(transfer_function_editor_ptr && transfer_function_editor_ptr->was_updated()) {
-		transfer_function.generate_texture(ctx);
-		if(transfer_function_legend_ptr)
-			transfer_function_legend_ptr->set_color_map(ctx, transfer_function);
-	}
 }
 
 void volume_viewer::draw(cgv::render::context& ctx) 
@@ -237,6 +233,18 @@ void volume_viewer::create_gui()
 	inline_object_gui(transfer_function_editor_ptr);
 	
 	inline_object_gui(transfer_function_legend_ptr);
+}
+
+void volume_viewer::handle_transfer_function_change() {
+
+	if(auto ctx_ptr = get_context()) {
+		auto& ctx = *ctx_ptr;
+		if(transfer_function_editor_ptr) {
+			transfer_function.generate_texture(ctx);
+			if(transfer_function_legend_ptr)
+				transfer_function_legend_ptr->set_color_map(ctx, transfer_function);
+		}
+	}
 }
 
 void volume_viewer::update_bounding_box() {

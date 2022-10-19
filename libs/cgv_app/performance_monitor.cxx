@@ -67,13 +67,13 @@ void performance_monitor::on_set(void* member_ptr) {
 			init_styles(*ctx_ptr);
 	}
 
-	if(member_ptr == &measuring.enabled) {
-		if(measuring.enabled) {
-			measuring.timer.restart();
-			measuring.total_frame_count = 0u;
-			measuring.interval_frame_count = 0u;
-			measuring.last_seconds_since_start = 0.0;
-			measuring.running_time = 0.0;
+	if(member_ptr == &monitor.enabled) {
+		if(monitor.enabled) {
+			monitor.timer.restart();
+			monitor.total_frame_count = 0u;
+			monitor.interval_frame_count = 0u;
+			monitor.last_seconds_since_start = 0.0;
+			monitor.running_time = 0.0;
 		}
 	}
 
@@ -126,7 +126,7 @@ void performance_monitor::init_frame(cgv::render::context& ctx) {
 	if(ensure_theme())
 		init_styles(ctx);
 
-	if(measuring.enabled) {
+	if(monitor.enabled) {
 		if(show_plot) {
 			update_plot();
 		}
@@ -182,35 +182,38 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 
 void performance_monitor::after_finish(cgv::render::context& ctx) {
 
-	if(measuring.enabled) {
-		++measuring.total_frame_count;
-		++measuring.interval_frame_count;
+	if(monitor.enabled) {
+		++monitor.total_frame_count;
+		++monitor.interval_frame_count;
 		
-		double seconds_since_start = measuring.timer.get_elapsed_time();
-		measuring.delta_time = seconds_since_start - measuring.last_seconds_since_start;
+		double seconds_since_start = monitor.timer.get_elapsed_time();
+		monitor.delta_time = seconds_since_start - monitor.last_seconds_since_start;
 		
-		measuring.running_time += measuring.delta_time;
+		monitor.running_time += monitor.delta_time;
 
-		measuring.last_seconds_since_start = seconds_since_start;
+		monitor.last_seconds_since_start = seconds_since_start;
 
-		if(measuring.running_time >= measuring.interval) {
-			measuring.avg_fps = (double)measuring.interval_frame_count / measuring.running_time;
-			measuring.running_time = 0.0;
-			measuring.interval_frame_count = 0u;
+		if(monitor.running_time >= monitor.interval) {
+			monitor.avg_fps = (double)monitor.interval_frame_count / monitor.running_time;
+			monitor.running_time = 0.0;
+			monitor.interval_frame_count = 0u;
 		}
 	}
 }
 
+void performance_monitor::enable_monitoring(bool enabled) {
+	monitor.enabled = enabled;
+	on_set(&monitor.enabled);
+}
+
 void performance_monitor::create_gui_impl() {
 
-	add_member_control(this, "Enable Measuring", measuring.enabled, "check");
-	add_member_control(this, "Measure Interval (s)", measuring.interval, "value_slider", "min=0.01;max=1;step=0.01;ticks=true");
-	add_member_control(this, "Show Plot", show_plot, "check");
-
+	add_member_control(this, "Enable", monitor.enabled, "check", "w=110", " ");
+	add_member_control(this, "Show Plot", show_plot, "check", "w=78");
+	add_member_control(this, "Measure Interval (s)", monitor.interval, "value_slider", "min=0.01;max=1;step=0.01;ticks=true");
+	
 	add_member_control(this, "Background", show_background, "check", "w=100", " ");
 	add_member_control(this, "Invert Color", invert_color, "check", "w=88");
-
-	add_gui("", label_style);
 }
 
 void performance_monitor::init_styles(cgv::render::context& ctx) {
@@ -234,7 +237,7 @@ void performance_monitor::init_styles(cgv::render::context& ctx) {
 
 	// configure style for the border rectangle
 	border_style = container_style;
-	border_style.fill_color = rgba(0.0f);
+	border_style.fill_color = show_background ? rgba(ti.text_background(), 1.0f) : rgba(0.0f);
 	border_style.border_color = rgba(border_color, 1.0);
 	border_style.border_width = 1.0f;
 	border_style.feather_width = 0.0f;
@@ -289,16 +292,16 @@ void performance_monitor::update_stats_texts() {
 		std::stringstream ss;
 		ss.precision(2);
 		ss << std::fixed;
-		ss << measuring.avg_fps;
+		ss << monitor.avg_fps;
 
 		std::string str = ss.str();
 		texts.set_text(2, ss.str());
 
 		ss.str(std::string());
-		if(measuring.avg_fps < 0.001f)
+		if(monitor.avg_fps < 0.001f)
 			ss << "-";
 		else
-			ss << 1000.0 / measuring.avg_fps;
+			ss << 1000.0 / monitor.avg_fps;
 
 		texts.set_text(3, ss.str());
 
@@ -322,7 +325,7 @@ void performance_monitor::update_plot() {
 
 	ivec2 plot_size = layout.plot_rect.size();
 
-	float a = static_cast<float>(1000.0 * measuring.delta_time / 33.333333333);
+	float a = static_cast<float>(1000.0 * monitor.delta_time / 33.333333333);
 	float b = std::min(a, 1.0f);
 	float bar_height = plot_size.y() * b;
 	bar_height = std::max(bar_height, 1.0f);
