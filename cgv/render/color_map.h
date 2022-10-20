@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory.h>
+
 #include <cgv/math/piecewise_linear_interpolator.h>
 #include <cgv/math/piecewise_nearest_interpolator.h>
 #include <cgv/render/context.h>
