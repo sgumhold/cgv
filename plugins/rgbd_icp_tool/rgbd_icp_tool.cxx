@@ -42,6 +42,9 @@ rgbd_icp_tool::rgbd_icp_tool() {
 	target_srs.blend_points = true;
 	target_srs.illumination_mode = cgv::render::IM_TWO_SIDED;
 
+	source_ars.length_scale = 0.003f;
+	target_ars.length_scale = 0.003f;
+
 	rot_intensity = 0.2f;
 	trans_intensity = 0.1;
 	//lrs.line_width = 1.0f;
@@ -79,7 +82,8 @@ void rgbd_icp_tool::unregister()
 bool rgbd_icp_tool::init(cgv::render::context & ctx)
 {
 	ctx.set_bg_clr_idx(3);
-	ctx.set_bg_color(0, 0, 0, 0.9);
+	//ctx.set_bg_color(0, 0, 0, 0.9);
+	ctx.set_bg_color(255, 255, 255, 0.9);
 	cgv::render::view* view_ptr = find_view_as_node();
 	if (view_ptr) {
 		view_ptr->set_view_up_dir(vec3(0, -1, 0));
@@ -88,6 +92,7 @@ bool rgbd_icp_tool::init(cgv::render::context & ctx)
 	//cgv::render::ref_point_renderer(ctx, 1);
 	cgv::render::ref_surfel_renderer(ctx, 1);
 	cgv::render::ref_cone_renderer(ctx, 1);
+	cgv::render::ref_arrow_renderer(ctx, 1);
 	return true;
 }
 
@@ -102,6 +107,23 @@ void draw_point_cloud(cgv::render::context & ctx, point_cloud & pc, surfel_rende
 		vector<cgv::math::fvec<float, 4>> color(num_points, color);
 		sr.set_color_array(ctx, color);
 		sr.render(ctx, 0, num_points);
+	}
+	ctx.pop_modelview_matrix();
+}
+
+void draw_normals(cgv::render::context& ctx, point_cloud& pc, arrow_render_style& ars,
+				  cgv::math::fvec<float, 4> color)
+{
+	ctx.push_modelview_matrix();
+	if (pc.has_normals()) {
+		int num_points = pc.get_nr_points();
+		cgv::render::arrow_renderer& ar = ref_arrow_renderer(ctx);
+		ar.set_render_style(ars);
+		ar.set_position_array(ctx, &pc.pnt(0), num_points);
+		ar.set_direction_array(ctx, &pc.nml(0), num_points);
+		vector<cgv::math::fvec<float, 4>> color(num_points, color);
+		ar.set_color_array(ctx, color);
+		ar.render(ctx, 0, num_points);
 	}
 	ctx.pop_modelview_matrix();
 }
@@ -135,7 +157,9 @@ void rgbd_icp_tool::draw(cgv::render::context & ctx)
 {
 	//ctx.push_modelview_matrix();
 	draw_point_cloud(ctx, source_pc, source_srs,vec4(1.0,0.0,0.0,0.8));
+	draw_normals(ctx, source_pc, source_ars, vec4(0.0, 0.0, 1.0, 0.8));
 	draw_point_cloud(ctx, target_pc, target_srs, vec4(0.0, 1.0, 0.0, 0.8));
+	draw_normals(ctx, target_pc, target_ars, vec4(1.0, 1.0, 0.0, 0.8));
 	if (crs_srs_pc.get_nr_points() > 0 && crs_tgt_pc.get_nr_points() > 0 && show_corresponding_lines)
 		draw_correspondences(ctx, crs_srs_pc, crs_tgt_pc, rcrs, vec4(0.0, 1.0, 1.0, 0.8));
 	//ctx.pop_modelview_matrix();
@@ -165,6 +189,7 @@ void rgbd_icp_tool::clear(cgv::render::context & ctx)
 	//cgv::render::ref_point_renderer(ctx, -1);
 	cgv::render::ref_surfel_renderer(ctx, -1);
 	cgv::render::ref_cone_renderer(ctx, -1);
+	cgv::render::ref_arrow_renderer(ctx, -1);
 }
 
 bool rgbd_icp_tool::handle(cgv::gui::event & e)
@@ -192,6 +217,7 @@ void rgbd_icp_tool::create_gui()
 	connect_copy(add_button("MergePCs")->click, rebind(this, &rgbd_icp_tool::on_merge_pcs));
 	connect_copy(add_button("save pc")->click, rebind(this, &rgbd_icp_tool::on_save_pc));
 	connect_copy(add_button("compare_pcs")->click, rebind(this, &rgbd_icp_tool::compare_two_pcs));
+	connect_copy(add_button("normals")->click, rebind(this, &rgbd_icp_tool::on_estimate_normals));
 
 	add_decorator("point cloud", "heading", "level=2");
 	connect_copy(add_control("Point size", source_srs.point_size, "value_slider", "min=0.01;max=5.0;log=false;ticks=true")->value_change, rebind(this, &rgbd_icp_tool::on_point_cloud_style_cb));
@@ -236,6 +262,13 @@ void rgbd_icp_tool::create_gui()
 		add_gui("surfel_style", source_srs);
 		align("\b");
 		end_tree_node(source_srs);
+	}
+	/// surfel_render
+	if (begin_tree_node("Arrow Rendering", source_ars, false)) {
+		align("\a");
+		add_gui("surfel_style", source_ars);
+		align("\b");
+		end_tree_node(source_ars);
 	}
 }
 
@@ -306,6 +339,7 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	if (!(source_pc.get_nr_points() && target_pc.get_nr_points())){
 		return;
 	}
+	
 	icp.set_source_cloud(source_pc);
 	icp.set_target_cloud(target_pc);
 	icp.set_iterations(icp_iterations);
@@ -493,6 +527,27 @@ void rgbd_icp_tool::compare_two_pcs()
 		cout << "ratio: " << ratio << endl;
 	}
 
+}
+
+void rgbd_icp_tool::on_estimate_normals()
+{
+	
+	if (source_pc.get_nr_points() > 0) {
+		tree_source = std::make_shared<ann_tree>();
+		tree_source->build(this->source_pc);
+		n_graph.build<ann_tree>(this->source_pc.get_nr_points(), 10, *tree_source);
+		n_estimator = new normal_estimator(this->source_pc, this->n_graph);
+		n_estimator->compute_bilateral_weighted_normals(false);
+		std::cout << "if there is normal: " << source_pc.has_normals() << std::endl;
+	}
+	if (target_pc.get_nr_points() > 0) {
+		tree_target = std::make_shared<ann_tree>();
+		tree_target->build(this->target_pc);
+		n_graph.build<ann_tree>(this->target_pc.get_nr_points(), 10, *tree_target);
+		n_estimator = new normal_estimator(this->target_pc, this->n_graph);
+		n_estimator->compute_bilateral_weighted_normals(false);
+		std::cout << "if there is normal: " << target_pc.has_normals() << std::endl;
+	}
 }
 
 

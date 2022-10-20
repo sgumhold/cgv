@@ -16,13 +16,13 @@ void feature_points_extractor::get_feature_points(const point_cloud& source_pc, 
 	std::vector<Idx> N;
 	ann_tree* tree = new ann_tree();
 	tree->build(source_pc);
-	for (int i = 0; i < source_pc.get_nr_points(); i++)
+	for (int i = 0; i < source_pc.get_nr_points(); ++i)
 	{
 		tree->extract_neighbors(i, n, N);
 		if (source_pc.has_normals())
 		{
 			float deviation = 0.0;
-			for (int j = 0; j < n; j++)
+			for (int j = 0; j < n; ++j)
 				deviation += get_nml_deviation(source_pc.nml(i), source_pc.nml(N.at(j)));
 			deviation /= n;
 			if (deviation < nml_threshold)
@@ -31,7 +31,6 @@ void feature_points_extractor::get_feature_points(const point_cloud& source_pc, 
 			}
 		}
 	}
-	output_cloud.create_normals();
 }
 
 float feature_points_extractor::get_nml_deviation(const Nml& a, const Nml& b)

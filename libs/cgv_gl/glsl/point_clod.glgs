@@ -34,7 +34,7 @@ void emit_corner(in vec3 corner, float u, float v)
 {
 	uv = vec2(u,v);
 	// compute position in clip space
-	gl_Position	   = get_projection_matrix() * vec4(corner,1.0);
+	gl_Position	= get_projection_matrix() * vec4(corner,1.0);
 	EmitVertex();
 }
 

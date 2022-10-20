@@ -325,8 +325,8 @@ class vr_rgbd : public cgv::base::node,
 		is_save_imgs = false;
 		imgs_counter = 0;
 
-		pc_file_path = QUOTE_SYMBOL_VALUE(INPUT_DIR) " / .. / data";
-
+		//pc_file_path = QUOTE_SYMBOL_VALUE(INPUT_DIR) " / .. / data";
+		pc_file_path = "D://data//";
 		connect(cgv::gui::get_animation_trigger().shoot, this, &vr_rgbd::timer_event);
 	}
 	size_t construct_point_cloud()
