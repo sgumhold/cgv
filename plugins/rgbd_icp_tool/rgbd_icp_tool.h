@@ -14,11 +14,13 @@
 #include <cgv_gl/line_renderer.h>
 #include <cgv_gl/cone_renderer.h>
 #include <cgv_gl/surfel_renderer.h>
+#include <cgv_gl/arrow_renderer.h>
 
 #include <point_cloud.h>
 #include <GoICP.h>
 #include <SICP.h>
 #include <ICP.h>
+#include <normal_estimator.h>
 
 #include <string>
 #include <mutex>
@@ -76,6 +78,7 @@ public:
 	void on_merge_pcs();
 	void on_save_pc();
 	void compare_two_pcs();
+	void on_estimate_normals();
 
   private:
 	cgv::pointcloud::ICP icp;
@@ -89,6 +92,7 @@ public:
 	cgv::render::surfel_render_style target_srs;
 	cgv::render::line_render_style lrs;
 	cgv::render::cone_render_style rcrs;
+	cgv::render::arrow_render_style source_ars, target_ars;
 	float rot_intensity;
 	float trans_intensity;
 	float icp_eps;
@@ -99,6 +103,9 @@ public:
 	bool show_corresponding_lines;
 	cgv::pointcloud::GoICP::DistanceComputationMode goicp_distance_computation_mode;
 	cgv::pointcloud::SICP::ComputationMode sicp_computation_mode;
+	normal_estimator* n_estimator;
+	neighbor_graph n_graph;
+	std::shared_ptr<ann_tree> tree_source, tree_target;
 };
 
 #include <cgv/config/lib_end.h>
