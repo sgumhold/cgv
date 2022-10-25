@@ -32,8 +32,6 @@ public:
 		static_assert(std::is_base_of<overlay, T>::value, "T must inherit from overlay");
 		cgv::data::ref_ptr<T> ptr(new T());
 		ptr->set_name(name);
-		//ptr->set_parent_handler(this);
-		//cgv::base::register_object(base_ptr(ptr));
 		cgv::base::group::append_child(ptr);
 		overlays.push_back(ptr);
 		return ptr;

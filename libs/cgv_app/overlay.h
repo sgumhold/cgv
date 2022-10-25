@@ -64,8 +64,13 @@ protected:
 	/// updates the layout of the overlay container
 	void update_overlay_layout();
 
+	/// virtual method to implement the derived class gui creation
+	virtual void create_gui_impl() {};
+
 public:
 	struct {
+		std::string heading = "";
+		bool create_default_tree_node = true;
 		bool show_heading = false;
 		bool show_layout_options = true;
 		bool allow_alignment = true;
@@ -82,9 +87,6 @@ public:
 	};
 	/// overload to stream help information to the given output stream
 	virtual void stream_help(std::ostream& os) {};
-
-	// deprecated do not call
-	DEPRECATED("cgv_glutil::overlay::set_parent_handler() deprecated and ignored.") void set_parent_handler(cgv::gui::event_handler* parent_handler) { }
 
 	/// overload this method to handle events
 	virtual bool handle_event(cgv::gui::event& e) { return false; };
@@ -156,13 +158,6 @@ public:
 	bool ensure_overlay_layout(cgv::render::context& ctx) {
 		bool ret = ensure_viewport(ctx);
 
-		/*ivec2 viewport_size(ctx.get_width(), ctx.get_height());
-		if(last_viewport_size != viewport_size) {
-			last_viewport_size = viewport_size;
-			update_overlay_layout();
-			ret = true;
-		}*/
-
 		ivec2 current_size = container.size();
 		if(last_size != current_size) {
 			last_size = current_size;
@@ -179,8 +174,37 @@ public:
 	*/
 	virtual bool is_hit(const ivec2& mouse_pos);
 
+	/// begins a tree node if create default tree node is set in the gui options; automatically creates the layout gui
+	bool begin_overlay_gui();
+	/// ends the tree node of the overlay gui
+	void end_overlay_gui();
+
 	/// provides a default gui implementation for private overlay layout members
-	void create_overlay_gui();
+	void create_layout_gui();
+
+	/** Creates a tree node containing the overlay layout options and the gui as specified by the derived overlay class.
+		If you don't need to extend the gui of the overlay in your own plugin, call this method via:
+
+			inline_object_gui(overlay_ptr)
+
+		in your create_gui() method.
+
+		If you want to extend the default gui inside the provided tree node:
+		1. Set overlay_ptr.gui_options.create_default_tree_node = false
+		2. In the plugin create_gui() method:
+
+			integrate_object_gui(overlay_ptr);
+			if(overlay_ptr->begin_overlay_gui()) {
+				overlay_ptr->create_gui();
+					
+				...add custom controls
+				
+				overlay_ptr->end_overlay_gui();
+			}
+
+		!!! Do not overwrite create_gui() in the derived class if you want the default behaviour. !!!
+	*/
+	void create_gui();
 };
 
 typedef cgv::data::ref_ptr<overlay> overlay_ptr;

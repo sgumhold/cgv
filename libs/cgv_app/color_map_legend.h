@@ -80,8 +80,9 @@ protected:
 	std::string title;
 	vec2 range;
 	unsigned num_ticks;
-	bool label_auto_precision;
 	unsigned label_precision;
+	bool label_auto_precision;
+	bool label_integer_mode;
 	AlignmentOption title_align;
 
 	// general appearance
@@ -94,12 +95,13 @@ protected:
 
 	cgv::g2d::generic_2d_renderer tick_renderer;
 	DEFINE_GENERIC_RENDER_DATA_CLASS(tick_geometry, 2, vec2, position, vec2, size);
-
 	tick_geometry ticks;
 
 	void init_styles(cgv::render::context& ctx);
 	void create_labels();
 	void create_ticks();
+
+	virtual void create_gui_impl();
 
 public:
 	color_map_legend();
@@ -117,8 +119,6 @@ public:
 	void init_frame(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
 
-	void create_gui();
-
 	void set_color_map(cgv::render::context & ctx, cgv::render::color_map& cm);
 
 	void set_width(size_t w);
@@ -126,14 +126,15 @@ public:
 
 	void set_title(const std::string& t);
 
-	vec2 get_range() { return range; }
+	vec2 get_range() const { return range; }
 	void set_range(vec2 r);
 
 	unsigned get_num_ticks() { return num_ticks; }
 	void set_num_ticks(unsigned n);
 
-	void set_label_auto_precision(bool enabled);
 	void set_label_precision(unsigned p);
+	void set_label_auto_precision(bool enabled);
+	void set_label_integer_mode(bool enabled);
 };
 
 typedef cgv::data::ref_ptr<color_map_legend> color_map_legend_ptr;

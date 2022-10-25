@@ -11,7 +11,7 @@
 #include <cgv/os/mutex.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/vertex_buffer.h>
-#include <cgv_glutil/application_plugin.h>
+#include <cgv_app/application_plugin.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <plot/plot2d.h>
@@ -43,7 +43,7 @@ namespace stream_vis {
 	};
 
 	class CGV_API stream_vis_context : 
-		public cgv::glutil::application_plugin,
+		public cgv::app::application_plugin,
 		public view_update_handler
 	{
 	protected:

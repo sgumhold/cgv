@@ -34,13 +34,16 @@ namespace cgv {
 			opacity_scale = 1.0f;
 
 			enable_lighting = false;
-			light_static_to_scene = true;
+			light_local_to_eye = true;
 			use_gradient_texture = false;
-			light_direction = normalize(vec3(1.0f, -1.0f, -1.0f));
+			light_direction = normalize(vec3(-1.0f, 1.0f, 1.0f));
+			ambient_strength = 0.3f;
 			diffuse_strength = 0.8f;
 			specular_strength = 0.4f;
-			specular_power = 32.0f;
-			ambient_strength = 0.3f;
+			roughness = 0.3f;
+
+			enable_gradient_modulation = false;
+			gradient_lambda = 0.0f;
 
 			isosurface_mode = IM_NONE;
 			isovalue = 0.5f;
@@ -106,6 +109,7 @@ namespace cgv {
 			shader_code::set_define(defines, "ENABLE_SCALE_ADJUSTMENT", vrs.enable_scale_adjustment, false);
 			shader_code::set_define(defines, "ENABLE_LIGHTING", vrs.enable_lighting, false);
 			shader_code::set_define(defines, "USE_GRADIENT_TEXTURE", vrs.use_gradient_texture, false);
+			shader_code::set_define(defines, "ENABLE_GRADIENT_MODULATION", vrs.enable_gradient_modulation, false);
 			shader_code::set_define(defines, "ENABLE_DEPTH_TEST", vrs.enable_depth_test, false);
 			
 			shader_code::set_define(defines, "FRONT_TO_BACK", vrs.front_to_back || (vrs.isosurface_mode != volume_render_style::IM_NONE && vrs.compositing_mode == volume_render_style::CM_BLEND), false);
@@ -119,9 +123,8 @@ namespace cgv {
 		bool volume_renderer::init(cgv::render::context& ctx)
 		{
 			bool res = renderer::init(ctx);
-			// TOOD: use aam from renderer base class
-			res = res && aa_manager.init(ctx);
-			enable_attribute_array_manager(ctx, aa_manager);
+			res = res && position_aam.init(ctx);
+			enable_attribute_array_manager(ctx, position_aam);
 
 			// use a single optimized triangle strip to define a cube
 			std::vector<vec3> positions = {
@@ -196,15 +199,19 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "viewport_dims", vec2(float(vp[2]-vp[0]), float(vp[3]-vp[1])));
 			ref_prog().set_uniform(ctx, "opacity_scale", vrs.opacity_scale);
 			ref_prog().set_uniform(ctx, "size_scale", vrs.size_scale);
-			ref_prog().set_uniform(ctx, "clip_box_min", vrs.clip_box.get_min_pnt());
-			ref_prog().set_uniform(ctx, "clip_box_max", vrs.clip_box.get_max_pnt());
-
-			ref_prog().set_uniform(ctx, "light_static_to_scene", vrs.light_static_to_scene);
+			
+			ref_prog().set_uniform(ctx, "light_local_to_eye", vrs.light_local_to_eye);
 			ref_prog().set_uniform(ctx, "light_direction", normalize(vrs.light_direction));
-			ref_prog().set_uniform(ctx, "light_parameters", vec4(vrs.diffuse_strength, vrs.specular_strength, vrs.specular_power, vrs.ambient_strength));
+			float specular_power = cgv::math::lerp(128.0f, 1.0f, cgv::math::clamp(vrs.roughness, 0.0f, 1.0f));
+			ref_prog().set_uniform(ctx, "light_parameters", vec4(vrs.ambient_strength, vrs.diffuse_strength, vrs.specular_strength, specular_power));
+
+			ref_prog().set_uniform(ctx, "gradient_lambda", std::max(vrs.gradient_lambda, 0.001f));
 
 			ref_prog().set_uniform(ctx, "isovalue", vrs.isovalue);
 			ref_prog().set_uniform(ctx, "isosurface_color", vrs.isosurface_color);
+
+			ref_prog().set_uniform(ctx, "clip_box_min", vrs.clip_box.get_min_pnt());
+			ref_prog().set_uniform(ctx, "clip_box_max", vrs.clip_box.get_max_pnt());
 
 			glDisable(GL_DEPTH_TEST);
 			glEnable(GL_BLEND);
@@ -228,6 +235,7 @@ namespace cgv {
 			if(gradient_texture) gradient_texture->disable(ctx);
 			if(depth_texture) depth_texture->disable(ctx);
 
+			glCullFace(GL_BACK);
 			glDisable(GL_CULL_FACE);
 			glDisable(GL_BLEND);
 
@@ -285,7 +293,7 @@ namespace cgv {
 				if(p->begin_tree_node("Lighting", vrs_ptr->enable_lighting, false)) {
 					p->align("/a");
 					p->add_member_control(b, "Enable", vrs_ptr->enable_lighting, "check", "w=88", " ");
-					p->add_member_control(b, "Static to Scene", vrs_ptr->light_static_to_scene, "check", "w=100");
+					p->add_member_control(b, "Local to Eye", vrs_ptr->light_local_to_eye, "check", "w=100");
 					p->add_member_control(b, "Normals from Gradient Texture", vrs_ptr->use_gradient_texture, "check");
 					p->add_member_control(b, "Direction", vrs_ptr->light_direction[0], "value", "w=58;min=-1;max=1", " ");
 					p->add_member_control(b, "", vrs_ptr->light_direction[1], "value", "w=58;min=-1;max=1", " ");
@@ -295,12 +303,20 @@ namespace cgv {
 					p->add_member_control(b, "", vrs_ptr->light_direction[2], "slider", "w=58;min=-1;max=1;step=0.0001;ticks=true");
 
 					p->add_decorator("Light Parameters", "heading", "level=3");
+					p->add_member_control(b, "Ambient", vrs_ptr->ambient_strength, "value_slider", "min=0;max=1;step=0.001;ticks=true");
 					p->add_member_control(b, "Diffuse", vrs_ptr->diffuse_strength, "value_slider", "min=0;max=1;step=0.001;ticks=true");
 					p->add_member_control(b, "Specular", vrs_ptr->specular_strength, "value_slider", "min=0;max=1;step=0.001;ticks=true");
-					p->add_member_control(b, "Specular Power", vrs_ptr->specular_power, "value_slider", "min=1;max=128;step=0.1;ticks=true;log=true");
-					p->add_member_control(b, "Ambient", vrs_ptr->ambient_strength, "value_slider", "min=0;max=1;step=0.001;ticks=true");
+					p->add_member_control(b, "Roughness", vrs_ptr->roughness, "value_slider", "min=0;max=1;step=0.001;ticks=true");
 					p->align("/b");
 					p->end_tree_node(vrs_ptr->enable_lighting);
+				}
+
+				if(p->begin_tree_node("Gradient Modulation", vrs_ptr->enable_gradient_modulation, false)) {
+					p->align("\a");
+					p->add_member_control(b, "Enable", vrs_ptr->enable_gradient_modulation, "check");
+					p->add_member_control(b, "Lambda", vrs_ptr->gradient_lambda, "value_slider", "min=0.001;max=10;step=0.001;ticks=true;log=true");
+					p->align("\b");
+					p->end_tree_node(vrs_ptr->enable_gradient_modulation);
 				}
 
 				if(p->begin_tree_node("Isosurface (Blend only)", vrs_ptr->isosurface_mode, false)) {

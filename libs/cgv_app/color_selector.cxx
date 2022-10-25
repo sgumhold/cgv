@@ -161,9 +161,9 @@ bool color_selector::init(cgv::render::context& ctx) {
 	selector_handles[2].set_constraint(&layout.opacity_constraint);
 
 	if(has_opacity)
-		set_rgba_color(rgba(0.0f, 0.0f, 0.0f, 1.0f));
+		set_color(rgba(0.0f, 0.0f, 0.0f, 1.0f), true, true);
 	else
-		set_rgb_color(rgb(0.0f));
+		set_color(rgb(0.0f), false, true);
 
 	return success;
 }
@@ -209,7 +209,7 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 
 	auto& ti = cgv::gui::theme_info::instance();
 	rgba border_color = rgba(ti.border(), 1.0f);
-	rgba background_color = rgba(ti.background(), 1.0f);
+	rgba text_background_color = rgba(ti.text_background(), 1.0f);
 	content_canvas.draw_shape(ctx, layout.border_rect, border_color);
 	content_canvas.draw_shape(ctx, layout.preview_rect, rgb_color);
 
@@ -218,7 +218,7 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	int n_labels = has_opacity ? 4 : 3;
 	for(size_t i = 0; i < n_labels; ++i) {
 		text_bg.set_x(texts.ref_texts()[2*i].position.x() - 4);
-		content_canvas.draw_shape(ctx, text_bg, background_color);
+		content_canvas.draw_shape(ctx, text_bg, text_background_color);
 	}
 	
 	color_texture_style.apply(ctx, rect_prog);
@@ -267,7 +267,6 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 
 	content_canvas.disable_current_shader(ctx);
 
-	
 	glDisable(GL_SCISSOR_TEST);
 
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, content_canvas, texts, text_style, 0, 2*n_labels);
@@ -276,9 +275,7 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	end_content(ctx);
 }
 
-void color_selector::create_gui() {
-
-	create_overlay_gui();
+void color_selector::create_gui_impl() {
 
 	if(begin_tree_node("Settings", layout, false)) {
 		align("\a");
@@ -291,12 +288,6 @@ void color_selector::create_gui() {
 		add_member_control(this, "Color", rgba_color);
 	else
 		add_member_control(this, "Color", rgb_color);
-}
-
-bool color_selector::was_updated() {
-	bool temp = has_updated;
-	has_updated = false;
-	return temp;
 }
 
 void color_selector::set_rgb_color(rgb color) {
@@ -493,8 +484,15 @@ void color_selector::update_color() {
 
 	update_texts();
 
+	if(has_opacity) {
+		if(on_change_rgba_callback)
+			on_change_rgba_callback(rgba_color);
+	} else {
+		if(on_change_rgb_callback)
+			on_change_rgb_callback(rgb_color);
+	}
+
 	update_member(&rgb_color);
-	has_updated = true;
 }
 
 void color_selector::update_texts() {
@@ -525,7 +523,7 @@ void color_selector::handle_selector_drag() {
 	post_damage();
 }
 
-void color_selector::set_color(rgba color, bool opacity) {
+void color_selector::set_color(rgba color, bool opacity, bool init) {
 
 	this->rgb_color.R() = color.R();
 	this->rgb_color.G() = color.G();
@@ -544,13 +542,19 @@ void color_selector::set_color(rgba color, bool opacity) {
 	selector_handles[1].update_pos();
 	selector_handles[2].update_pos();
 
-	has_opacity = opacity;
-
+	if(has_opacity != opacity) {
+		// need to recreate the layout and gui in case the opacity usage changed
+		post_recreate_layout();
+		post_recreate_gui();
+		has_opacity = opacity;
+	}
+	
 	update_color_texture();
 	update_texts();
 
-	post_recreate_layout();
-	post_recreate_gui();
+	if(!init && auto_show)
+		set_visibility(true);
+
 	post_damage();
 }
 

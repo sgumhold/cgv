@@ -209,7 +209,7 @@ namespace stream_vis {
 		projection_matrix = cgv::math::perspective4<float>((float)current_view.get_y_view_angle(), aspect, (float)current_view.get_z_near(), (float)current_view.get_z_far());
 		modelview_matrix = cgv::math::look_at4<float>(current_view.get_eye(), current_view.get_focus(), current_view.get_view_up_dir());
 	}
-	void view3d_overlay::create_gui()
+	void view3d_overlay::create_gui_impl()
 	{
 		add_decorator(std::string("View3D ")+get_name(), "heading", "level=1");
 		add_member_control(this, "Zoom Sensitivity", zoom_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
@@ -222,6 +222,5 @@ namespace stream_vis {
 		add_member_control(this, "y Extent at Focus", current_view.ref_y_extent_at_focus(), "value_slider", "min=0;max=100;ticks=true;log=true;step=0.0001");
 		add_member_control(this, "z Near", current_view.ref_z_near(), "value_slider", "min=0;max=100;log=true;step=0.00001");
 		add_member_control(this, "z Far", current_view.ref_z_far(), "value_slider", "min=0;max=10000;log=true;step=0.00001");
-		create_overlay_gui();
 	}
 }

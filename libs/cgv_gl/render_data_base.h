@@ -10,7 +10,19 @@ void early_transfer(context& ctx, RENDERER& r) { \
 	r.enable_attribute_array_manager(ctx, this->aam); \
 	if(this->out_of_date) transfer(ctx, r); \
 	r.disable_attribute_array_manager(ctx, this->aam); \
-} \
+}
+
+#define RDB_INIT_FUNC_DEF(RENDERER) \
+bool init(context& ctx) { \
+	ref_##RENDERER(ctx, 1); \
+	return super::init(ctx); \
+}
+
+#define RDB_DESTRUCT_FUNC_DEF(RENDERER) \
+void destruct(context& ctx) { \
+	ref_##RENDERER(ctx, -1); \
+	super::destruct(ctx); \
+}
 
 #define RDB_ENABLE_FUNC_DEF(RENDERER, STYLE) \
 bool enable(context& ctx, RENDERER& r, const STYLE& s) { \
@@ -21,20 +33,41 @@ bool enable(context& ctx, RENDERER& r, const STYLE& s) { \
 		return r.validate_and_enable(ctx); \
 	} \
 	return false; \
-} \
+}
 
-#define RDB_RENDER_FUNC_DEF(RENDERER, STYLE) \
+#define RDB_RENDER_FUNC3_DEF(RENDERER) \
+void render(context& ctx, unsigned offset = 0, int count = -1) { \
+	render(ctx, ref_##RENDERER(ctx), style, offset, count); \
+}
+
+#define RDB_RENDER_FUNC2_DEF(RENDERER, STYLE) \
+void render(context& ctx, const STYLE& s, unsigned offset = 0, int count = -1) { \
+	render(ctx, ref_##RENDERER(ctx), s, offset, count); \
+}
+
+#define RDB_RENDER_FUNC1_DEF(RENDERER) \
+void render(context& ctx, RENDERER& r, unsigned offset = 0, int count = -1) { \
+	render(ctx, r, style, offset, count); \
+}
+
+#define RDB_RENDER_FUNC0_DEF(RENDERER, STYLE) \
 void render(context& ctx, RENDERER& r, const STYLE& s, unsigned offset = 0, int count = -1) { \
 	if(enable(ctx, r, s)) { \
 		this->draw(ctx, r, offset, count); \
 		this->disable(ctx, r); \
 	} \
-} \
+}
 
 #define RDB_BASE_FUNC_DEF(RENDERER, STYLE) \
+	STYLE style; \
 	RDB_EARLY_TRANSFER_FUNC_DEF(RENDERER) \
+	RDB_INIT_FUNC_DEF(RENDERER) \
+	RDB_DESTRUCT_FUNC_DEF(RENDERER) \
 	RDB_ENABLE_FUNC_DEF(RENDERER, STYLE) \
-	RDB_RENDER_FUNC_DEF(RENDERER, STYLE) \
+	RDB_RENDER_FUNC3_DEF(RENDERER) \
+	RDB_RENDER_FUNC2_DEF(RENDERER, STYLE) \
+	RDB_RENDER_FUNC1_DEF(RENDERER) \
+	RDB_RENDER_FUNC0_DEF(RENDERER, STYLE) \
 
 namespace cgv {
 namespace render {
@@ -71,11 +104,11 @@ public:
 
 	~render_data_base() { clear(); }
 
-	bool init(context& ctx) {
+	virtual bool init(context& ctx) {
 		return aam.init(ctx);
 	}
 
-	void destruct(context& ctx) {
+	virtual void destruct(context& ctx) {
 		clear();
 		aam.destruct(ctx);
 	}

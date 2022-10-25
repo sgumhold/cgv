@@ -51,6 +51,8 @@ protected:
 	/// render data for wireframe box
 	cgv::render::box_wire_render_data<> box_rd;
 	
+	void handle_transfer_function_change();
+
 	void update_bounding_box();
 
 	void load_transfer_function_preset();
