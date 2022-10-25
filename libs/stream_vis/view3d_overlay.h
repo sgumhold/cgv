@@ -23,13 +23,13 @@ namespace stream_vis {
 		void set_modelview_projection(cgv::render::context& ctx);
 		void toggle_default_view(bool set_default);
 		bool handle_mouse_event(const cgv::gui::mouse_event& me);
+		void create_gui_impl();
 	public:
 		view3d_overlay();
 		void set_current_view(const cgv::render::clipped_view& _current_view);
 		void set_default_view(const cgv::render::view& _default_view);
 		std::string get_type_name() const { return "view3d_overlay"; }
 		void init_frame(cgv::render::context& ctx);
-		void create_gui();
 	};
 
 	typedef cgv::data::ref_ptr<view3d_overlay> view3d_overlay_ptr;

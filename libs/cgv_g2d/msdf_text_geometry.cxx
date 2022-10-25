@@ -61,6 +61,14 @@ void msdf_text_geometry::set_angle(unsigned i, const float angle) {
 		texts[i].angle = angle;
 }
 
+msdf_text_geometry::vec2 msdf_text_geometry::get_text_render_size(unsigned i) const {
+
+	if(i < texts.size())
+		return render_font_size * texts[i].size;
+
+	return vec2(0.0f);
+}
+
 void msdf_text_geometry::add_text(const std::string& str, const ivec2& position, const cgv::render::TextAlignment alignment, float angle) {
 	text_info text;
 	text.str = str;

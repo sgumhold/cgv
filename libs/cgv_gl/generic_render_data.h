@@ -181,28 +181,28 @@ public:
 		bool transfer(context& ctx, shader_program& prog) {
 			bool success = true;
 			if(get_render_count() == 0) return false;\
-			success &= set_attribute_array(ctx, prog, "position", positions);
-			success &= set_attribute_array(ctx, prog, "color", colors);
+			success &= set_attribute_array(ctx, prog, "position", position);
+			success &= set_attribute_array(ctx, prog, "color", color);
 			return success;
 		}
 	public:
-		std::vector<vec2> positions;
-		std::vector<rgb> colors;
+		std::vector<vec2> position;
+		std::vector<rgb> color;
 
 		size_t get_render_count() const {
-			if(idx.empty() return positions.size();
+			if(idx.empty() return position.size();
 			else return idx.size();
 		};
 
 		void clear() {
-			positions.clear();
-			colors.clear();
+			position.clear();
+			color.clear();
 			state_out_of_date = true;
 		}
 
 		void add(const vec2& pos, const rgb& col) {
-			positions.push_back(pos);
-			colors.push_back(col);
+			position.push_back(pos);
+			color.push_back(col);
 		}
 	};
 */

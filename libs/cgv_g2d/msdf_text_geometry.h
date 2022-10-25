@@ -75,6 +75,8 @@ public:
 
 	const std::vector<text_info>& ref_texts() const { return texts; }
 
+	vec2 get_text_render_size(unsigned i) const;
+
 	void add_text(const std::string& str, const ivec2& position = ivec2(0), const cgv::render::TextAlignment alignment = cgv::render::TA_NONE, float angle = 0.0f);
 
 	bool create(cgv::render::context& ctx);

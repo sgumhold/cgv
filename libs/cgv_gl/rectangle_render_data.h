@@ -26,10 +26,10 @@ protected:
 
 	bool transfer(context& ctx, rectangle_renderer& r) {
 		if(super::transfer(ctx, r)) {
-			r.set_position_array(ctx, pos);
-			if(ext.size() == size())
+			r.set_position_array(ctx, this->pos);
+			if(ext.size() == this->size())
 				r.set_extent_array(ctx, ext);
-			if(rot.size() == size())
+			if(rot.size() == this->size())
 				r.set_rotation_array(ctx, rot);
 			return true;
 		}
@@ -49,11 +49,11 @@ public:
 	RDB_BASE_FUNC_DEF(rectangle_renderer, rectangle_render_style);
 
 	void add(const vec3& p) {
-		pos.push_back(p);
+		this->pos.push_back(p);
 	}
 
 	void add(const vec3& p, const vec2& e) {
-		pos.push_back(p);
+		this->pos.push_back(p);
 		ext.push_back(e);
 	}
 
@@ -62,7 +62,7 @@ public:
 	}
 
 	void add(const ColorType& c) {
-		col.push_back(c);
+		this->col.push_back(c);
 	}
 
 	void add(const vec3& p, const vec2& e, const ColorType& c) {
@@ -86,8 +86,8 @@ public:
 	}
 
 	void fill(const ColorType& c) {
-		for(size_t i = col.size(); i < pos.size(); ++i)
-			col.push_back(c);
+		for(size_t i = this->col.size(); i < this->pos.size(); ++i)
+			this->col.push_back(c);
 	}
 };
 

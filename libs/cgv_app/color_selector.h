@@ -68,9 +68,8 @@ protected:
 		}
 	};
 
-
-	bool has_updated = false;
 	bool has_opacity = false;
+	bool auto_show = true;
 
 	cgv::g2d::msdf_text_geometry texts;
 
@@ -95,7 +94,12 @@ protected:
 
 	void handle_selector_drag();
 
-	void set_color(rgba color, bool opacity);
+	void set_color(rgba color, bool opacity, bool init = false);
+
+	std::function<void(rgb)> on_change_rgb_callback;
+	std::function<void(rgba)> on_change_rgba_callback;
+
+	virtual void create_gui_impl();
 	
 public:
 	color_selector();
@@ -111,15 +115,17 @@ public:
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
-	
-	void create_gui();
 
-	bool was_updated();
+	/// whether to automatically make the overlay visible if a color is set
+	void set_auto_show(bool enabled) { auto_show = enabled; }
 
 	void set_rgb_color(rgb color);
 	void set_rgba_color(rgba color);
 	rgb get_rgb_color() const { return rgb_color; }
 	rgba get_rgba_color() const { return rgba_color; }
+
+	void set_on_change_rgb_callback(std::function<void(rgb)> cb) { on_change_rgb_callback = cb; }
+	void set_on_change_rgba_callback(std::function<void(rgba)> cb) { on_change_rgba_callback = cb; }
 };
 
 typedef cgv::data::ref_ptr<color_selector> color_selector_ptr;
