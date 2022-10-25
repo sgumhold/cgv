@@ -174,16 +174,22 @@ Result cmp(const std::string& what, const std::string& with)
 
 size_t size(const std::string& file_name, bool ascii)
 {
-	void* handle = find_first(file_name);
-	if (handle == 0)
-		return (size_t)-1;
-	return find_size(handle);
+	//void* handle = find_first(file_name);
+	//if (handle == 0)
+	//	return (size_t)-1;
+	//return find_size(handle);
 #ifdef _WIN32
-	int fh = _open(file_name.c_str(), ascii ? _O_RDONLY : (_O_BINARY | _O_RDONLY) );
-	if (fh == -1) return (size_t)-1;
-	size_t l = _filelength(fh);
-	_close(fh);
-	return l;
+	FILE* fp = fopen(file_name.c_str(), ascii ? "r" : "rb");
+	if (fp == 0)
+		return 0;
+	size_t s = 0;
+	if (fseek(fp, 0, SEEK_END) == 0) {
+		fpos_t pos;
+		fgetpos(fp, &pos);
+		s = size_t(pos);
+	}
+	fclose(fp);
+	return ascii ? s-1 : s;
 #else
 	int fh = ::open(file_name.c_str(), O_RDONLY);
 	if (fh == -1)
@@ -200,7 +206,8 @@ bool read(const std::string& filename, char* ptr, size_t size, bool ascii, size_
 {
 	FILE* fp = ::fopen(filename.c_str(), ascii ? "r" : "rb");
 	if (file_offset != 0) {
-		if (::fseek(fp, (long)file_offset, SEEK_SET) != 0)
+		fpos_t fo = file_offset;
+		if (::fsetpos(fp, &fo) != 0)
 			return false;
 	}
 	size_t n = ::fread(ptr, 1, size, fp);
@@ -267,6 +274,23 @@ bool append(const std::string& file_name, const char* ptr, size_t size, bool asc
 	return res;
 }
 
+bool append(const std::string& file_name_1, const std::string& file_name_2, bool ascii)
+{
+	size_t N = cgv::utils::file::size(file_name_2, ascii);
+	char buffer[16384];
+	size_t off = 0;
+	while (off < N) {
+		size_t n = N - off;
+		if (n > 16384)
+			n = 16384;
+		if (!cgv::utils::file::read(file_name_2, buffer, n, ascii, off))
+			return false;
+		if (!cgv::utils::file::append(file_name_1, buffer, n, ascii))
+			return false;
+		off += n;
+	}
+	return true;
+}
 
 #ifdef _WIN32
 struct FileInfo
