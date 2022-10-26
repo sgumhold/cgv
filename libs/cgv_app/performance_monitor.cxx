@@ -275,12 +275,12 @@ void performance_monitor::create_texts() {
 
 	const int line_spacing = static_cast<int>(1.25f* text_font_size);
 
-	ivec2 caret_pos = ivec2(layout.content_rect.x(), layout.content_rect.y1() - text_font_size);
+	ivec2 caret_pos = ivec2(layout.content_rect.x(), layout.content_rect.y1() - (int)text_font_size);
 	texts.add_text("Frames per Second:", caret_pos, cgv::render::TA_BOTTOM_LEFT);
 	caret_pos.y() -= line_spacing;
 	texts.add_text("Frametime (ms):", caret_pos, cgv::render::TA_BOTTOM_LEFT);
 	
-	caret_pos = ivec2(layout.content_rect.x1(), layout.content_rect.y1() - text_font_size);
+	caret_pos = ivec2(layout.content_rect.x1(), layout.content_rect.y1() - (int)text_font_size);
 	texts.add_text("", caret_pos, cgv::render::TA_BOTTOM_RIGHT);
 	caret_pos.y() -= line_spacing;
 	texts.add_text("", caret_pos, cgv::render::TA_BOTTOM_RIGHT);

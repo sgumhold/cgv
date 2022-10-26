@@ -20,7 +20,7 @@ public:
 		t = cgv::math::clamp(t, control_points.min().first, control_points.max().first);
 
 		if(t > control_points[0].first) {
-			unsigned idx = 0;
+			size_t idx = 0;
 
 			for(size_t i = 1; i < count; ++i) {
 				if(control_points[idx].first <= t && control_points[i].first > t)

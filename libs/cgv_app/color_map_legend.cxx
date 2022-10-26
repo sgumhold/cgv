@@ -178,7 +178,7 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 	// draw tick labels
 	auto& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx);
 	if(font_renderer.enable(ctx, content_canvas, labels, text_style)) {
-		font_renderer.draw(ctx, labels, 0, labels.size() - 1);
+		font_renderer.draw(ctx, labels, 0, int(labels.size()) - 1);
 
 		content_canvas.push_modelview_matrix();
 		content_canvas.mul_modelview_matrix(ctx, cgv::math::translate2h(layout.title_position));
@@ -252,11 +252,11 @@ void color_map_legend::set_color_map(cgv::render::context& ctx, cgv::render::col
 }
 
 void color_map_legend::set_width(size_t w) {
-	layout.total_size.x() = w;
+	layout.total_size.x() = int(w);
 	on_set(&layout.total_size.x());
 }
 void color_map_legend::set_height(size_t h) {
-	layout.total_size.y() = h;
+	layout.total_size.y() = int(h);
 	on_set(&layout.total_size.y());
 }
 
@@ -391,7 +391,7 @@ void color_map_legend::create_labels() {
 		if(layout.orientation == OO_HORIZONTAL)
 			layout.x_label_size = std::max(labels.ref_texts().front().size.x(), labels.ref_texts().back().size.x()) * labels.get_font_size();
 		else
-			layout.x_label_size = max_length * labels.get_font_size();
+			layout.x_label_size = int(max_length * labels.get_font_size());
 	} else {
 		layout.x_label_size = 0;
 	}
@@ -501,14 +501,14 @@ void color_map_legend::create_ticks() {
 
 		ticks.add(tick_pos, tick_size);
 
-		labels.set_position(i, label_pos);
-		labels.set_alignment(i, alignment);
+		labels.set_position(int(i), label_pos);
+		labels.set_alignment(int(i), alignment);
 	}
 
 	layout.title_position = title_pos;
 
 	if(labels.size() > 0)
-		labels.set_alignment(labels.ref_texts().size() - 1, title_alignment);
+		labels.set_alignment(unsigned(labels.ref_texts().size() - 1), title_alignment);
 }
 
 }

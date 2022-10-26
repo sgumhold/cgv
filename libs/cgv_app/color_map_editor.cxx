@@ -549,7 +549,7 @@ void color_map_editor::set_histogram_data(const std::vector<unsigned> data) {
 		auto& ctx = *ctx_ptr;
 		hist_tex.destruct(ctx);
 
-		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(histogram.size(), TI_FLT32, cgv::data::CF_R), float_data.data());
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(unsigned(histogram.size()), TI_FLT32, cgv::data::CF_R), float_data.data());
 		hist_tex = cgv::render::texture("flt32[R]");
 		hist_tex.create(ctx, dv, 0);
 
@@ -691,7 +691,7 @@ void color_map_editor::add_point(const vec2& pos) {
 		if(layout.color_editor_rect.is_inside(test_pos)) {
 			// color point
 			color_point p;
-			p.pos = ivec2(pos.x(), layout.color_handles_rect.pos().y());
+			p.pos = ivec2(int(pos.x()), layout.color_handles_rect.pos().y());
 			p.update_val(layout);
 			p.col = cmc.cm->interpolate_color(p.val);
 			cmc.color_points.add(p);
@@ -992,7 +992,7 @@ void color_map_editor::update_color_map(bool is_data_change) {
 		uint8_t b = static_cast<uint8_t>(255.0f * col.B());
 		uint8_t a = static_cast<uint8_t>(255.0f * col.alpha());
 
-		unsigned idx = 4 * i;
+		size_t idx = 4 * i;
 		data[idx + 0] = r;
 		data[idx + 1] = g;
 		data[idx + 2] = b;
@@ -1005,7 +1005,7 @@ void color_map_editor::update_color_map(bool is_data_change) {
 	}
 
 	setup_preview_texture(ctx);
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, 2, TI_UINT8, cgv::data::CF_RGBA), data.data());
+	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(unsigned(size), 2, TI_UINT8, cgv::data::CF_RGBA), data.data());
 	preview_tex.create(ctx, dv, 0);
 
 	if(!supports_opacity)
