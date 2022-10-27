@@ -216,10 +216,15 @@ public:
 			cgv::render::gl::replace_texture(dv);
 		}
 	}
-	bool open_vox_volume(const std::string& _file_name)
+	bool open_volume(const std::string& _file_name, std::string ext)
 	{
 		cgv::media::volume::volume_info V;
-		if (!cgv::media::volume::read_vox_header(cgv::utils::file::drop_extension(_file_name)+".hd", V))
+		if (ext == "vox")
+			ext = "hd";
+		else if (ext == "qim")
+			ext = "qha";
+
+		if (!cgv::media::volume::read_header(cgv::utils::file::drop_extension(_file_name)+"."+ext, V))
 			return false;
 		size_t w = V.dimensions(0);
 		size_t h = V.dimensions(1);
@@ -234,7 +239,7 @@ public:
 			durations.clear();
 			tex_ids.clear();
 		}
-		durations.resize(V.dimensions(2), 0.01f);
+		durations.resize(V.dimensions(2), 0.05f);
 		tex_ids.resize(V.dimensions(2), cgv::render::gl::create_texture(dv, false));
 		W = int(w);
 		H = int(h);
@@ -259,11 +264,12 @@ public:
 			durations.clear();
 			tex_ids.clear();
 		}
-		std::string filter_string = image_reader::construct_filter_string()+";*.vox";
+		std::string filter_string = image_reader::construct_filter_string()+";*.vox;*.qim";
 		std::string file_name = cgv::gui::file_open_dialog("open image file", filter_string, cgv::base::ref_data_path_list().empty()?"":cgv::base::ref_data_path_list()[0]+"/Regular/Images");
 		if (!file_name.empty()) {
-			if (cgv::utils::to_lower(cgv::utils::file::get_extension(file_name)) == "vox") {
-				open_vox_volume(file_name);
+			std::string ext = cgv::utils::to_lower(cgv::utils::file::get_extension(file_name));
+			if (ext == "vox" || ext == "qim") {
+				open_volume(file_name, ext);
 			}
 			else {
 				bool success = read_image(file_name) || read_image("res://cgv_logo.png");
