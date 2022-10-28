@@ -16,6 +16,10 @@
 #include <glob.h>
 #endif
 
+#if __cplusplus >= 201703L
+#include <filesystem>
+#endif
+
 namespace cgv {
 	namespace utils {
 		namespace file {
@@ -174,22 +178,29 @@ Result cmp(const std::string& what, const std::string& with)
 
 size_t size(const std::string& file_name, bool ascii)
 {
-	//void* handle = find_first(file_name);
-	//if (handle == 0)
-	//	return (size_t)-1;
-	//return find_size(handle);
+#if __cplusplus >= 201703L
+	return std::filesytem::file_size(file_name);
+#else
 #ifdef _WIN32
-	FILE* fp = fopen(file_name.c_str(), ascii ? "r" : "rb");
-	if (fp == 0)
-		return 0;
-	size_t s = 0;
-	if (fseek(fp, 0, SEEK_END) == 0) {
-		fpos_t pos;
-		fgetpos(fp, &pos);
-		s = size_t(pos);
+	if (ascii) {
+		void* handle = find_first(file_name);
+		if (handle == 0)
+			return (size_t)-1;
+		return find_size(handle);
 	}
-	fclose(fp);
-	return ascii ? s-1 : s;
+	else {
+		FILE* fp = fopen(file_name.c_str(), ascii ? "r" : "rb");
+		if (fp == 0)
+			return 0;
+		size_t s = 0;
+		if (fseek(fp, 0, SEEK_END) == 0) {
+			fpos_t pos;
+			fgetpos(fp, &pos);
+			s = size_t(pos);
+		}
+		fclose(fp);
+		return s;
+	}
 #else
 	int fh = ::open(file_name.c_str(), O_RDONLY);
 	if (fh == -1)
@@ -198,6 +209,7 @@ size_t size(const std::string& file_name, bool ascii)
 	fstat(fh, &fileinfo);
 	close(fh);
 	return fileinfo.st_size;
+#endif
 #endif
 }
 
