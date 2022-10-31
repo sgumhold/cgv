@@ -43,6 +43,11 @@ class CGV_API translation_gizmo : public cgv::nui::gizmo,
 	bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx,
 		const vec3& scale, const mat4& view_matrix) override;
 
+	// DEBUG TO REMOVE
+	int debug_coord_system_handle0;
+	int debug_ray_handle0;
+	int debug_ray_handle1;
+
 protected:
 	// Get the position of the attached object
 	vec3 get_position();
