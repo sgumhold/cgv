@@ -2,6 +2,7 @@
 
 #include <cg_nui/interactable.h>
 #include <cg_nui/translatable.h>
+#include <cg_nui/rotatable.h>
 #include <cg_nui/transforming.h>
 
 #include "lib_begin.h"
@@ -23,9 +24,10 @@ class CGV_API poseable : public interactable
 	bool tried_translatable_cast{ false };
 	translatable* get_translatable();
 
-	//rotatable* _rotatable{ nullptr };
-	//bool tried_rotatable_cast{ false };
-	//rotatable* get_rotatable();
+	rotatable* _rotatable{ nullptr };
+	bool tried_rotatable_cast{ false };
+	rotatable* get_rotatable();
+
 protected:
 	// TODO: Implement change of rotation
 

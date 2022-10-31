@@ -16,17 +16,19 @@ mat4 cgv::nui::gizmo::compute_draw_correction_transformation(vec3& scale)
 	final_rotation.identity();
 	if (use_absolute_rotation)
 		final_rotation = obj_inverse_rotation.get_homogeneous_matrix();
-	if (anchor_rotation_ptr)
-		final_rotation = anchor_rotation_ptr->get_homogeneous_matrix() * final_rotation;
-	else if (anchor_rotation_ptr_ptr)
-		final_rotation = (*anchor_rotation_ptr_ptr)->get_homogeneous_matrix() * final_rotation;
+	// This should not be here as it is already used as the gizmo's transform.
+	//if (anchor_rotation_ptr)
+	//	final_rotation = anchor_rotation_ptr->get_homogeneous_matrix() * final_rotation;
+	//else if (anchor_rotation_ptr_ptr)
+	//	final_rotation = (*anchor_rotation_ptr_ptr)->get_homogeneous_matrix() * final_rotation;
 
 	mat4 final_translation;
 	final_translation.identity();
-	if (anchor_position_ptr)
-		final_translation = cgv::math::translate4(*anchor_position_ptr);
-	else if (anchor_rotation_ptr_ptr)
-		final_translation = cgv::math::translate4(**anchor_position_ptr_ptr);
+	// This should not be here as it is already used as the gizmo's transform.
+	//if (anchor_position_ptr)
+	//	final_translation = cgv::math::translate4(*anchor_position_ptr);
+	//else if (anchor_rotation_ptr_ptr)
+	//	final_translation = cgv::math::translate4(**anchor_position_ptr_ptr);
 
 	return final_translation * final_rotation * cgv::math::scale4(obj_inverse_scale);
 }
