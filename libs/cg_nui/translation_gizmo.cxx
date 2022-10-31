@@ -4,6 +4,8 @@
 #include <cgv/math/proximity.h>
 #include <cg_nui/translatable.h>
 
+#include <cg_nui/debug_visualization_helper.h>
+
 void cgv::nui::translation_gizmo::precompute_geometry()
 {
 	arrow_positions.clear();
@@ -251,11 +253,34 @@ bool cgv::nui::translation_gizmo::init(cgv::render::context& ctx)
 	if (!gizmo::init(ctx))
 		return false;
 	cgv::render::ref_arrow_renderer(ctx, 1);
+
+	auto& dvh = cgv::nui::ref_debug_visualization_helper(ctx, 1);
+	debug_coord_system_handle0 = dvh.register_debug_value_coordinate_system();
+	{
+		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle0);
+		config.show_translation = false;
+		config.position = vec3(1.0f, 1.4f, 0.0f);
+		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle0, config);
+	}
+	debug_ray_handle0 = dvh.register_debug_value_ray();
+	debug_ray_handle1 = dvh.register_debug_value_ray();
+	{
+		auto config = dvh.get_config_debug_value_ray(debug_ray_handle1);
+		config.ray_color = rgb(0.2f, 1.0f, 0.2f);
+		config.start_offset = 1.0f;
+		dvh.set_config_debug_value_ray(debug_ray_handle1, config);
+	}
+
 	return true;
 }
 
 void cgv::nui::translation_gizmo::clear(cgv::render::context& ctx)
 {
+	auto& dvh = ref_debug_visualization_helper();
+	dvh.deregister_debug_value(debug_coord_system_handle0);
+	dvh.deregister_debug_value(debug_ray_handle0);
+	dvh.deregister_debug_value(debug_ray_handle1);
+	cgv::nui::ref_debug_visualization_helper(ctx, -1);
 	cgv::render::ref_arrow_renderer(ctx, -1);
 	gizmo::clear(ctx);
 }
@@ -263,6 +288,14 @@ void cgv::nui::translation_gizmo::clear(cgv::render::context& ctx)
 void cgv::nui::translation_gizmo::_draw(cgv::render::context& ctx, const vec3& scale, const mat4& view_matrix)
 {
 	compute_geometry(scale);
+
+	// DEBUG TO REMOVE
+	vec3 anchor_obj_parent_global_translation;
+	quat anchor_obj_parent_global_rotation;
+	vec3 anchor_obj_parent_global_scale;
+	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj->get_parent()),
+		anchor_obj_parent_global_translation, anchor_obj_parent_global_rotation, anchor_obj_parent_global_scale);
+	ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle0, anchor_obj_parent_global_rotation.get_homogeneous_matrix());
 
 	if (!arrow_directions.empty()) {
 		auto& ar = cgv::render::ref_arrow_renderer(ctx);

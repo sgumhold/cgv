@@ -2,6 +2,8 @@
 #include <cgv/math/proximity.h>
 #include <cgv/math/intersection.h>
 
+#include <cg_nui/debug_visualization_helper.h>
+
 cgv::render::shader_program simple_object::prog;
 
 simple_object::rgb simple_object::get_modified_color(const rgb& color) const
@@ -133,6 +135,17 @@ bool simple_object::_compute_intersection(const vec3& ray_start, const vec3& ray
 bool simple_object::init(cgv::render::context& ctx)
 {
 	poseable::init(ctx);
+
+	auto& dvh = cgv::nui::ref_debug_visualization_helper(ctx, 1);
+	debug_coord_system_handle0 = dvh.register_debug_value_coordinate_system();
+	debug_coord_system_handle1 = dvh.register_debug_value_coordinate_system();
+	auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle0);
+	config.show_translation = false;
+	config.position = vec3(1.4f, 1.0f, 0.0f);
+	dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle0, config);
+	config.position = vec3(1.8f, 1.0f, 0.0f);
+	dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle1, config);
+
 	auto& br = cgv::render::ref_box_renderer(ctx, 1);
 	if (prog.is_linked())
 		return true;
@@ -140,10 +153,17 @@ bool simple_object::init(cgv::render::context& ctx)
 }
 void simple_object::clear(cgv::render::context& ctx)
 {
+	auto& dvh = cgv::nui::ref_debug_visualization_helper();
+	dvh.deregister_debug_value(debug_coord_system_handle0);
+	dvh.deregister_debug_value(debug_coord_system_handle1);
+	cgv::nui::ref_debug_visualization_helper(ctx, -1);
 	cgv::render::ref_box_renderer(ctx, -1);
 }
 void simple_object::draw(cgv::render::context& ctx)
 {
+	cgv::nui::ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle0, get_model_transform());
+	cgv::nui::ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle1, get_global_model_transform(this));
+
 	ctx.push_modelview_matrix();
 	ctx.mul_modelview_matrix(get_model_transform());
 

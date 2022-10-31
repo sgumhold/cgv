@@ -25,6 +25,10 @@ class simple_object : public cgv::nui::poseable, public cgv::nui::transforming,
 
 	std::vector<vec3> positions;
 
+	// DEBUG TO REMOVE
+	int debug_coord_system_handle0;
+	int debug_coord_system_handle1;
+
 protected:
 	// geometry of box with color
 	// position is provided by translatable interface
