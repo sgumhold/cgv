@@ -360,13 +360,22 @@ bool cgv::nui::rotation_gizmo::init(cgv::render::context& ctx)
 
 	auto& dvh = cgv::nui::ref_debug_visualization_helper();
 	projected_point_handle = dvh.register_debug_value_position(vec3(0.0));
-	dvh.configure_debug_value_position(projected_point_handle, 0.01f, rgb(1.0, 0.0, 0.0));
-	dvh.disable_debug_value_visualization(projected_point_handle);
+	{
+		auto config = dvh.get_config_debug_value_position(projected_point_handle);
+		config.color = rgb(1.0, 0.0, 0.0);
+		dvh.set_config_debug_value_position(projected_point_handle, config);
+	}
 	direction_at_grab_handle = dvh.register_debug_value_vector(vec3(1.0));
-	dvh.configure_debug_value_vector(direction_at_grab_handle, 0.01f, rgb(0.0, 1.0, 0.0));
-	dvh.disable_debug_value_visualization(direction_at_grab_handle);
 	direction_currently_handle = dvh.register_debug_value_vector(vec3(1.0));
-	dvh.configure_debug_value_vector(direction_currently_handle, 0.01f, rgb(0.0, 0.0, 1.0));
+	dvh.disable_debug_value_visualization(projected_point_handle);
+	{
+		auto config = dvh.get_config_debug_value_vector(direction_at_grab_handle);
+		config.color = rgb(0.0, 1.0, 0.0);
+		dvh.set_config_debug_value_vector(direction_at_grab_handle, config);
+		config.color = rgb(0.0, 0.0, 1.0);
+		dvh.set_config_debug_value_vector(direction_currently_handle, config);
+	}
+	dvh.disable_debug_value_visualization(direction_at_grab_handle);
 	dvh.disable_debug_value_visualization(direction_currently_handle);
 	return true;
 }
