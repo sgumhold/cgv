@@ -113,7 +113,7 @@ public:
 		construct_plot();
 		//objects.push_back(new simple_object("ruby", vec3(-0.5f, 0.2f, 0), rgb(0.6f, 0.3f, 0.1f)));
 		//append_child(objects.back());
-		objects.push_back(new simple_object("blue", vec3(0.5f, 0.0f, 0.0f), rgb(0.2f, 0.6f, 0.4f), vec3(1.0f, 1.0f, 1.0f)));
+		objects.push_back(new simple_object("blue", vec3(0.0f, 0.0f, 0.0f), rgb(0.2f, 0.6f, 0.4f), vec3(1.0f, 1.0f, 1.0f)));
 		append_child(objects.back());
 		//container = new simple_primitive_container("spheres");
 		//append_child(container);

@@ -79,7 +79,6 @@ protected:
 	virtual bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx,
 		const vec3& scale, const mat4& view_matrix) { return false; }
 
-private:
 	/// Compute transform that removes the anchor object's global scale (and possibly rotation) from the model-view matrix.
 	mat4 compute_draw_correction_transformation(vec3& scale);
 	/// Compute transform that removes the anchor object's global scale (and possibly rotation) from the parameters of the intersection/proximity functions.
