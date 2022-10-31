@@ -44,7 +44,10 @@ protected:
 	int hit_axis;
 
 	cgv::render::arrow_render_data<> arrow_data;
+	
+	cgv::render::box_renderer box_renderer;
 	cgv::render::box_render_data<> box_data;
+
 	cgv::render::box_wire_render_data<> box_wire_data;
 	cgv::render::rectangle_render_data<> rectangle_data;
 	cgv::render::sphere_render_data<> sphere_data;
