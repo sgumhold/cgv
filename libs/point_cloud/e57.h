@@ -74,7 +74,7 @@ class checked_file
 	std::array<char, physical_page_size> physical_page_buffer;
 	unsigned buffer_page_nr;
 
-	unsigned page_cursor;
+	size_t page_cursor;
 	unsigned page_offset_cursor;
 
 	size_t file_size;
