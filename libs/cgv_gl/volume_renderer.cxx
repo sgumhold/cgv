@@ -238,6 +238,7 @@ namespace cgv {
 			glCullFace(GL_BACK);
 			glDisable(GL_CULL_FACE);
 			glDisable(GL_BLEND);
+			glEnable(GL_DEPTH_TEST);
 
 			return renderer::disable(ctx);
 		}
