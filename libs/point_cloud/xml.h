@@ -35,19 +35,40 @@ struct CGV_API xml_node
 {
 	std::vector<xml_node*> childs;
 
-	xml_tag tag;
-	std::vector<std::string> non_tag_content;
+	//xml_tag tag;
+	//std::vector<std::string> non_tag_content;
 
-	xml_node(const xml_tag& tag);
+	//xml_node(const xml_tag& tag);
+
+	virtual bool has_tag() const;
+
+	virtual ~xml_node();
+
+	void free_childs();
 
 	void add_child(xml_node* node);
 
-	void add_content(const std::string& c);
+	//void add_content(const std::string& c);
+};
+
+struct CGV_API xml_string_node : public xml_node
+{
+	std::string content;
+
+	xml_string_node(const std::string& str);
 };
 
 
+struct CGV_API xml_tag_node : public xml_node
+{
+	xml_tag tag;
 
-extern CGV_API std::unique_ptr<xml_node> read_xml(const std::string& xml_content);
+	xml_tag_node(const xml_tag& tag);
+
+	bool has_tag() const;
+};
+
+extern CGV_API std::unique_ptr<xml_tag_node> read_xml(const std::string& xml_content);
 
 
 

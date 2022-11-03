@@ -4,6 +4,7 @@
 #include <regex>
 #include <limits>
 #include <cstdint>
+#include <algorithm>
 namespace {
 
 // check if machine uses the big endian byte order
@@ -21,11 +22,44 @@ void reverse_byte_order(uint32_t& b)
 }
 
 
+
+
 } // namespace
 namespace cgv {
 namespace pointcloud {
 namespace file_parser {
 
+namespace {
+
+class tag_finder
+{
+	std::string tag_name;
+
+public:
+	tag_finder(const std::string& name) : tag_name(name) {}
+
+	bool operator()(xml_node* node)
+	{
+		return (xml_tag_node*)node != nullptr && ((xml_tag_node*)node)->tag.name == tag_name;
+	}
+};
+//finds the first xml tag for that pred returns true
+template <typename Iterator, typename UnaryPredicate>
+xml_tag_node* find_tag_node_if(Iterator begin, Iterator end, UnaryPredicate pred)
+{
+	auto it = std::find_if(begin, end, pred);
+	if (it != end) {
+		return (xml_tag_node*)(*it);
+	}
+	return nullptr;
+}
+
+template <typename Container, typename UnaryPredicate> xml_tag_node* find_tag_node_if(Container c, UnaryPredicate pred)
+{
+	return find_tag_node_if(c.begin(), c.end(), pred);
+}
+
+} // namespace
 
 
 
@@ -55,8 +89,32 @@ void e57_data_set::read(const std::string& file_name)
 
 	std::string xml_content_str(xml_content.data());
 	std::cout << xml_content_str;
-	std::unique_ptr<xml_node> xml_root = read_xml(xml_content_str);
+	std::unique_ptr<xml_tag_node> xml_root = read_xml(xml_content_str);
+
 	//TODO interpret xml tree
+	if (xml_root->tag.name != "e57Root") {
+		// not critical, wrong name for root tag 
+	}
+	
+	//auto node_data_3d = std::find_if(xml_root->childs.begin(), xml_root->childs.end(), [](xml_node* node) {
+	//	return (xml_tag_node*)node != nullptr && ((xml_tag_node*)node)->tag.name == "data3D";
+	//});
+	//auto node_data_3d = std::find_if(xml_root->childs.begin(), xml_root->childs.end(), tag_finder("data3D"));
+	xml_tag_node* node_data_3d =
+		  find_tag_node_if(xml_root->childs, tag_finder("data3D"));
+	if (node_data_3d) {
+		//has 3d data
+		xml_tag_node* vector_child =
+			  find_tag_node_if(node_data_3d->childs, tag_finder("vectorChild"));
+		if (vector_child) {
+			xml_tag_node* points = find_tag_node_if(vector_child->childs, tag_finder("points"));
+			if (points) {
+				std::string type = points->tag.attributes["type"];
+				uint64_t offset = stoul(points->tag.attributes["fileOffset"]);
+				uint64_t recordCount = stoul(points->tag.attributes["recordCount"]);
+			}
+		}
+	}
 }
 
 e57_file_header cgv::pointcloud::file_parser::e57_data_set::read_header(const char* data, const size_t data_length)

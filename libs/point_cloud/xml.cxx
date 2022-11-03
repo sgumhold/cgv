@@ -20,7 +20,7 @@ public:
 	}
 };
 
-std::unique_ptr<xml_node> read_xml(const std::string& xml_content)
+std::unique_ptr<xml_tag_node> read_xml(const std::string& xml_content)
 {
 
 	enum class XMLTokenType { TAG, CDATA, CONTENT };
@@ -94,8 +94,8 @@ std::unique_ptr<xml_node> read_xml(const std::string& xml_content)
 	}
 
 	xml_tag preamble;
-	std::unique_ptr<xml_node> xml_root;
-	std::vector<xml_node*> node_stack;
+	std::unique_ptr<xml_tag_node> xml_root;
+	std::vector<xml_tag_node*> node_stack;
 
 	for (int i = 0; i < tokens.size(); ++i) {
 		auto token = tokens[i];
@@ -107,7 +107,7 @@ std::unique_ptr<xml_node> read_xml(const std::string& xml_content)
 			}
 			else if (xml_root == nullptr) {
 				if (tag.type == XMLTagType::XTT_OPEN) {
-					xml_root = std::make_unique<xml_node>(tag);
+					xml_root = std::make_unique<xml_tag_node>(tag);
 					node_stack.push_back(xml_root.get());
 				}
 				else {
@@ -118,13 +118,17 @@ std::unique_ptr<xml_node> read_xml(const std::string& xml_content)
 				switch (tag.type) {
 				case XMLTagType::XTT_OPEN: {
 
-					auto* new_node = new xml_node(tag);
+					auto* new_node = new xml_tag_node(tag);
 					node_stack.back()->add_child(new_node);
 					node_stack.push_back(new_node);
 					break;
 				}
 				case XMLTagType::XTT_CLOSE: {
-
+					if (node_stack.size() == 0) {
+						std::stringstream ss;
+						ss << "found closing tag" << tag.name <<" without opening tag";
+						throw xml_parsing_error(ss.str());
+					}
 					if (tag.name == node_stack.back()->tag.name) {
 						node_stack.pop_back();
 					}
@@ -137,7 +141,7 @@ std::unique_ptr<xml_node> read_xml(const std::string& xml_content)
 					break;
 				}
 				case XMLTagType::XTT_SINGLE: {
-					auto* new_node = new xml_node(tag);
+					auto* new_node = new xml_tag_node(tag);
 					node_stack.back()->add_child(new_node);
 					break;
 				}
@@ -151,13 +155,15 @@ std::unique_ptr<xml_node> read_xml(const std::string& xml_content)
 			xml_tag tag;
 			tag.name = "CDATA";
 			tag.type = XMLTagType::XTT_CDATA;
-			auto* new_node = new xml_node(tag);
-			new_node->add_content(token.content.substr(9, token.content.size() - (9+3)));
+			auto* new_node = new xml_string_node(token.content.substr(9, token.content.size() - (9 + 3)));
+			//new_node->add_content(token.content.substr(9, token.content.size() - (9+3)));
 			node_stack.back()->add_child(new_node);
 		}
 		else if (token.type == XMLTokenType::CONTENT) {
 			if (node_stack.size() > 0) {
-				node_stack.back()->add_content(token.content);
+				auto* new_node = new xml_string_node(token.content);
+				//node_stack.back()->add_content(token.content);
+				node_stack.back()->add_child(new_node);
 			}
 			else {
 				std::string non_whitespace_content = cgv::utils::trim(token.content);
@@ -179,16 +185,24 @@ std::unique_ptr<xml_node> read_xml(const std::string& xml_content)
 	return xml_root;
 }
 
-xml_node::xml_node(const xml_tag& tag) : tag(tag) {}
+//xml_node::xml_node(const xml_tag& tag) : tag(tag) {}
+
+void xml_node::free_childs() {
+	for (auto* ch : childs)
+		delete ch;
+}
 
 void xml_node::add_child(xml_node* node)
 {
 	childs.push_back(node);
 }
-void xml_node::add_content(const std::string& c){
+
+/* 
+void xml_node::add_content(const std::string& c)
+{
 	non_tag_content.push_back(c);
 }
-
+*/
 
 // modified copy from cgv/utils/xml.h
 xml_attribute xml_read_attribute(const std::string& attribute)
@@ -288,7 +302,24 @@ xml_tag xml_read_tag(const std::string& str)
 	return tag;
 }
 
+xml_string_node::xml_string_node(const std::string& str) : content (str) {}
+	
+xml_tag_node::xml_tag_node(const xml_tag& tag) : tag(tag) {}
 
+bool xml_node::has_tag() const
+{
+	return false;
 }
+
+xml_node::~xml_node() {
+	free_childs();
+}
+
+bool xml_tag_node::has_tag() const
+{
+	return true;
+}
+
+} // namespace file_parser
 }
 }
