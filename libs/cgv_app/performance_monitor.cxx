@@ -127,9 +127,8 @@ void performance_monitor::init_frame(cgv::render::context& ctx) {
 		init_styles(ctx);
 
 	if(monitor.enabled) {
-		if(show_plot) {
+		if(show_plot)
 			update_plot();
-		}
 		update_stats_texts();
 	}
 }
@@ -171,7 +170,6 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 
 		// draw labels
 		font_renderer.render(ctx, content_canvas, labels, label_style);
-
 	}
 
 	// draw text
@@ -352,6 +350,7 @@ void performance_monitor::update_plot() {
 	}
 
 	bars.set_out_of_date();
+	post_damage();
 }
 
 }
