@@ -131,7 +131,7 @@ void cgv::nui::rotation_gizmo::on_handle_drag()
 	auto& dvh = ref_debug_visualization_helper();
 
 	// Get actual ring radius from the already calculated splines
-	float radius = ring_splines.front().first.front().length();
+	float radius = ring_splines[prim_idx].first.front().length();
 	vec3 closest_point;
 	if (ii_at_grab.is_pointing) {
 		cgv::math::closest_point_on_line_to_circle(ii_during_focus[activating_hid_id].hid_position, ii_during_focus[activating_hid_id].hid_direction,
@@ -244,6 +244,8 @@ bool cgv::nui::rotation_gizmo::_compute_closest_point(const vec3& point, vec3& p
 	size_t idx = -1;
 	vec3 p, n;
 	float dist_min = std::numeric_limits<float>::max();
+	// Get actual ring radius from calculated spline points
+	float radius = ring_splines[prim_idx].first.front().length();
 
 	for (size_t i = 0; i < axes_directions.size(); ++i) {
 		vec3 origin = vec3(0.0f);
@@ -253,9 +255,9 @@ bool cgv::nui::rotation_gizmo::_compute_closest_point(const vec3& point, vec3& p
 		vec3 q0;
 		float r0 = d_xz.length();
 		if (r0 < 1e-6)
-			q0 = origin + (vec3(ring_radius, 0, 0));
+			q0 = origin + (vec3(radius, 0, 0));
 		else
-			q0 = origin + (ring_radius / r0) * d_xz;
+			q0 = origin + (radius / r0) * d_xz;
 		vec3 d_ry = point - q0;
 		float r1 = d_ry.length();
 		vec3 q1;
@@ -310,65 +312,32 @@ bool cgv::nui::rotation_gizmo::_compute_intersection(const vec3& ray_start, cons
 {
 	compute_geometry(scale);
 
-	//size_t idx = -1;
-	//float t = std::numeric_limits<float>::max();
-	//vec3 n;
-	//for (size_t i = 0; i < axes_directions.size(); ++i) {
-	//	vec3 n0;
-	//	float t0 = cgv::math::ray_torus_intersection(ray_start, ray_direction,
-	//		vec3(0.0),
-	//		axes_directions[i],
-	//		vec2(ring_radius, ring_spline_radius), n0);
-	//	if (t0 < t) {
-	//		t = t0;
-	//		n = n0;
-	//		idx = i;
-	//	}
-	//}
-	//if (t == std::numeric_limits<float>::max()) {
-	//	dehighlight_handles();
-	//	return false;
-	//}
-	//hit_param = t;
-	//hit_normal = n;
-	//primitive_idx = idx;
-	//highlight_handle(idx);
-	//return true;
-
-	// TODO: Find out why torus intersection is not working
-	// Temporary intersection approximation by multiple cubes along the ring
-	int nr_ring_boxes = 40;
-	float radius = ring_splines.front().first.front().length();
-	for (int i = 0; i < axes_directions.size(); ++i) {
-		for (int j = 0; j < nr_ring_boxes; ++j) {
-			float a = 2.0 * M_PI * j * (1.0 / nr_ring_boxes);
-			vec3 relative_position = radius * vec3(0.0, cos(a), sin(a));
-			quat rot;
-			rot.set_normal(axes_directions[i]);
-			rot.rotate(relative_position);
-			vec3 ro = ray_start - relative_position;
-			vec3 rd = ray_direction;
-			vec3 n;
-			vec2 res;
-	
-			if (cgv::math::ray_box_intersection(ro, rd, vec3(ring_spline_radius), res, n) == 0)
-				continue;
-			if (res[0] < 0) {
-				if (res[1] < 0)
-					continue;
-				hit_param = res[1];
-			}
-			else {
-				hit_param = res[0];
-			}
-			hit_normal = n;
-			primitive_idx = i;
-			highlight_handle(i);
-			return true;
+	// Get actual ring radius from calculated spline points
+	float radius = ring_splines[prim_idx].first.front().length();
+	size_t idx = -1;
+	float t = std::numeric_limits<float>::max();
+	vec3 n;
+	for (size_t i = 0; i < axes_directions.size(); ++i) {
+		vec3 n0;
+		float t0 = cgv::math::ray_torus_intersection(ray_start, ray_direction,
+			vec3(0.0),
+			axes_directions[i],
+			vec2(radius, ring_spline_radius), n0);
+		if (t0 < t) {
+			t = t0;
+			n = n0;
+			idx = i;
 		}
 	}
-	dehighlight_handles();
-	return false;
+	if (t == std::numeric_limits<float>::max()) {
+		dehighlight_handles();
+		return false;
+	}
+	hit_param = t;
+	hit_normal = n;
+	primitive_idx = idx;
+	highlight_handle(idx);
+	return true;
 }
 
 //bool cgv::nui::rotation_gizmo::_compute_intersection_local_orientation(const vec3& ray_start,
@@ -440,12 +409,16 @@ void cgv::nui::rotation_gizmo::_draw(cgv::render::context& ctx, const vec3& scal
 
 	auto& str = cgv::render::ref_spline_tube_renderer(ctx);
 	str.set_render_style(strs);
+	int i = 0;
 	for (auto ring_spline : ring_splines) {
 		if (ring_spline.first.empty())
 			continue;
 		str.set_position_array(ctx, ring_spline.first);
 		str.set_tangent_array(ctx, ring_spline.second);
+		std::vector<rgb> colors(ring_spline.first.size(), handle_colors[i]);
+		str.set_color_array(ctx, colors);
 		str.render(ctx, 0, ring_spline.first.size(), true);
+		++i;
 	}
 
 	// Debug visualization of approximated torus intersection with cubes
