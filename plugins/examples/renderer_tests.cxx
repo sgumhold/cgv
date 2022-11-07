@@ -420,12 +420,12 @@ public:
 	}
 	void create_gui()
 	{
-		add_decorator("renderer tests", "heading");
+		add_decorator("Renderer Tests", "heading");
 		add_member_control(this, "mode", mode, "dropdown", "enums='Points,Surfels,Boxes,Box Wires,Normals,Arrows,Spheres,Cones'");
-		if (begin_tree_node("transformation", lambda, true)) {
+		if (begin_tree_node("Transformation", lambda, true)) {
 			align("\a");
-			add_member_control(this, "lambda", lambda, "value_slider", "min=0;max=1;ticks=true");
-			add_member_control(this, "translation", t[0], "value", "w=100", " ");
+			add_member_control(this, "Lambda", lambda, "value_slider", "min=0;max=1;ticks=true");
+			add_member_control(this, "Translation", t[0], "value", "w=100", " ");
 			add_member_control(this, "", t[1], "value", "w=100", " ");
 			add_member_control(this, "", t[2], "value", "w=100");
 			add_member_control(this, "", t[0], "slider", "w=100;min=-2;max=2;ticks=true", " ");
@@ -437,15 +437,15 @@ public:
 				for (unsigned j = 0; j < 4; ++j)
 					add_member_control(this, "", T(i, j), "slider", "min=-1;max=1;w=100;ticks=true", j == 3 ? "\n" : " ");
 			}
-			add_member_control(this, "transform points only", transform_points_only, "check");
+			add_member_control(this, "Transform Points Only", transform_points_only, "check");
 			align("\b");
 			end_tree_node(lambda);
 		}
 
-		if (begin_tree_node("geometry and groups", mode, true)) {
+		if (begin_tree_node("Geometry and Groups", mode, true)) {
 			align("\a");
-			add_member_control(this, "interleaved_mode", interleaved_mode, "check");
-			if (begin_tree_node("group colors", group_colors, false)) {
+			add_member_control(this, "Interleaved Mode", interleaved_mode, "check");
+			if (begin_tree_node("Group Colors", group_colors, false)) {
 				align("\a");
 				for (unsigned i = 0; i < group_colors.size(); ++i) {
 					add_member_control(this, std::string("C") + cgv::utils::to_string(i), reinterpret_cast<rgba&>(group_colors[i]));
@@ -453,7 +453,7 @@ public:
 				align("\b");
 				end_tree_node(group_colors);
 			}
-			if (begin_tree_node("group transformations", group_translations, false)) {
+			if (begin_tree_node("Group Transformations", group_translations, false)) {
 				align("\a");
 				for (unsigned i = 0; i < group_translations.size(); ++i) {
 					add_gui(std::string("T") + cgv::utils::to_string(i), group_translations[i]);
@@ -465,9 +465,9 @@ public:
 			align("\b");
 			end_tree_node(mode);
 		}
-		add_member_control(this, "sort_points", sort_points, "toggle");
-		add_member_control(this, "disable_depth", disable_depth, "toggle");
-		add_member_control(this, "blend", blend, "toggle");
+		add_member_control(this, "Sort Points", sort_points, "toggle");
+		add_member_control(this, "Disable Depth", disable_depth, "toggle");
+		add_member_control(this, "Blend", blend, "toggle");
 		if (begin_tree_node("Point Rendering", point_style, false)) {
 			align("\a");
 			add_gui("point_style", point_style);
@@ -482,14 +482,14 @@ public:
 		}
 		if (begin_tree_node("Box Rendering", box_style, false)) {
 			align("\a");
-			add_member_control(this, "use_box_array", use_box_array, "toggle");
+			add_member_control(this, "Use Box Array", use_box_array, "toggle");
 			add_gui("box_style", box_style);
 			align("\b");
 			end_tree_node(box_style);
 		}
 		if (begin_tree_node("Box Wire Rendering", box_wire_style, false)) {
 			align("\a");
-			add_member_control(this, "use_box_array", use_box_array, "toggle");
+			add_member_control(this, "Use Box Array", use_box_array, "toggle");
 			add_gui("box_wire_style", box_wire_style);
 			align("\b");
 			end_tree_node(box_wire_style);

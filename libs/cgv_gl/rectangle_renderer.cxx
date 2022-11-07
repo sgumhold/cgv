@@ -254,24 +254,24 @@ namespace cgv {
 				cgv::render::rectangle_render_style* prs_ptr = reinterpret_cast<cgv::render::rectangle_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-				p->add_member_control(b, "default_secondary_color", prs_ptr->default_secondary_color);
+				p->add_member_control(b, "Default Secondary Color", prs_ptr->default_secondary_color);
 
-				p->add_member_control(b, "default_border_color", prs_ptr->default_border_color);
-				p->add_member_control(b, "border_width_in_pixel", prs_ptr->border_width_in_pixel, "value_slider", "min=-10;max=10;ticks=true");
-				p->add_member_control(b, "percentual_border_width", prs_ptr->percentual_border_width, "value_slider", "min=-0.5;max=0.5;ticks=true");
-				p->add_member_control(b, "border_mode", (cgv::type::DummyEnum&)prs_ptr->border_mode, "dropdown", 
-					"enums='separate=0,width,height,min(width height)'");
+				p->add_member_control(b, "Default Border Color", prs_ptr->default_border_color);
+				p->add_member_control(b, "Border Width in Pixel", prs_ptr->border_width_in_pixel, "value_slider", "min=-10;max=10;ticks=true");
+				p->add_member_control(b, "Percentual Border Width", prs_ptr->percentual_border_width, "value_slider", "min=-0.5;max=0.5;ticks=true");
+				p->add_member_control(b, "Border Mode", (cgv::type::DummyEnum&)prs_ptr->border_mode, "dropdown", 
+					"enums='Separate=0,Width,Height,Minimum (Width, Height)'");
 
-				p->add_member_control(b, "pixel_blend", prs_ptr->pixel_blend, "value_slider", "min=0.0;max=2;ticks=true");
-				p->add_member_control(b, "texture_mode", (cgv::type::DummyEnum&)prs_ptr->texture_mode, "dropdown",
-					"enums='replace,replace alpha,multiply color,multiply secondary color,multiply border color,"
-					"mix color and secondary color,mix color and border color,mix secondary color and color,mix border color and color,"
-					"red mix color and secondary color,red mix color and border color,red mix secondary color and color,red mix border color and color'");
-				p->add_member_control(b, "blend", prs_ptr->blend_rectangles, "toggle");
-				p->add_member_control(b, "default_depth_offset", prs_ptr->default_depth_offset, "value_slider", "min=0.000001;max=0.1;step=0.0000001;log=true;ticks=true");
-				p->add_member_control(b, "position_is_center", prs_ptr->position_is_center, "toggle");
+				p->add_member_control(b, "Pixel Blend", prs_ptr->pixel_blend, "value_slider", "min=0.0;max=2;ticks=true");
+				p->add_member_control(b, "Texture Mode", (cgv::type::DummyEnum&)prs_ptr->texture_mode, "dropdown",
+					"enums='Replace,Replace Alpha,Multiply Color,Multiply Secondary Color,Multiply Border Color,"
+					"Mix Color and Secondary Color,Mix Color and Border Color,Mix Secondary Color and Color,Mix Border Color and Color,"
+					"Red Mix Color and Secondary Color,Red Mix Color and Border Color,Red Mix Secondary Color and Color,Red Mix Border Color and Color'");
+				p->add_member_control(b, "Blend", prs_ptr->blend_rectangles, "toggle");
+				p->add_member_control(b, "Default Depth Offset", prs_ptr->default_depth_offset, "value_slider", "min=0.000001;max=0.1;step=0.0000001;log=true;ticks=true");
+				p->add_member_control(b, "Position is Center", prs_ptr->position_is_center, "toggle");
 				
-				if (p->begin_tree_node("surface", prs_ptr->use_group_color, false, "level=3")) {
+				if (p->begin_tree_node("Surface", prs_ptr->use_group_color, false, "level=3")) {
 					p->align("\a");
 					p->add_gui("surface_render_style", *static_cast<cgv::render::surface_render_style*>(prs_ptr));
 					p->align("\b");
