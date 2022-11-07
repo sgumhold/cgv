@@ -169,17 +169,18 @@ $(document).ready(function(){initNavTree('cone__renderer_8h_source.html',''); in
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                        <span class="keywordtype">bool</span> disable(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx);</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                        <span class="keywordtype">void</span> draw(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx, <span class="keywordtype">size_t</span> start, <span class="keywordtype">size_t</span> count,</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                                <span class="keywordtype">bool</span> use_strips = <span class="keyword">false</span>, <span class="keywordtype">bool</span> use_adjacency = <span class="keyword">false</span>, uint32_t strip_restart_index = -1);</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                };</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                <span class="keyword">struct </span>CGV_API cone_render_style_reflect : <span class="keyword">public</span> cone_render_style</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                {</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                        <span class="keywordtype">bool</span> self_reflect(<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a>&amp; rh);</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                };</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                <span class="keyword">extern</span> CGV_API <a class="code" href="structcgv_1_1reflect_1_1extern__reflection__traits.html">cgv::reflect::extern_reflection_traits&lt;cone_render_style, cone_render_style_reflect&gt;</a> get_reflection_traits(<span class="keyword">const</span> cone_render_style&amp;);</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        }</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;}</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                        <span class="keyword">virtual</span> <span class="keywordtype">void</span> clear(<span class="keyword">const</span> <a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                };</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                <span class="keyword">struct </span>CGV_API cone_render_style_reflect : <span class="keyword">public</span> cone_render_style</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                {</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                        <span class="keywordtype">bool</span> self_reflect(<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a>&amp; rh);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                };</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                <span class="keyword">extern</span> CGV_API <a class="code" href="structcgv_1_1reflect_1_1extern__reflection__traits.html">cgv::reflect::extern_reflection_traits&lt;cone_render_style, cone_render_style_reflect&gt;</a> get_reflection_traits(<span class="keyword">const</span> cone_render_style&amp;);</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        }</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;}</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="astructcgv_1_1render_1_1render__style_html"><div class="ttname"><a href="structcgv_1_1render_1_1render__style.html">cgv::render::render_style</a></div><div class="ttdoc">base class for all render styles</div><div class="ttdef"><b>Definition:</b> renderer.h:15</div></div>
