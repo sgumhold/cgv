@@ -143,14 +143,14 @@ namespace cgv {
 					return false;
 				cgv::render::box_render_style* brs_ptr = reinterpret_cast<cgv::render::box_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
-				p->add_member_control(b, "default_extent.x", brs_ptr->default_extent[0], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
-				p->add_member_control(b, "default_extent.y", brs_ptr->default_extent[1], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
-				p->add_member_control(b, "default_extent.z", brs_ptr->default_extent[2], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
-				p->add_member_control(b, "relative_anchor.x", brs_ptr->relative_anchor[0], "value_slider", "min=-1;max=1;ticks=true");
-				p->add_member_control(b, "relative_anchor.y", brs_ptr->relative_anchor[1], "value_slider", "min=-1;max=1;ticks=true");
-				p->add_member_control(b, "relative_anchor.z", brs_ptr->relative_anchor[2], "value_slider", "min=-1;max=1;ticks=true");
-				p->add_member_control(b, "rounding", brs_ptr->rounding, "toggle");
-				p->add_member_control(b, "default_radius", brs_ptr->default_radius, "value_slider", "min=0.0;max=10;step=0.0001;log=true;ticks=true");
+				p->add_member_control(b, "Default Extent X", brs_ptr->default_extent[0], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
+				p->add_member_control(b, "Default Extent Y", brs_ptr->default_extent[1], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
+				p->add_member_control(b, "Default Extent Z", brs_ptr->default_extent[2], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
+				p->add_member_control(b, "Relative Anchor X", brs_ptr->relative_anchor[0], "value_slider", "min=-1;max=1;ticks=true");
+				p->add_member_control(b, "Relative Anchor Y", brs_ptr->relative_anchor[1], "value_slider", "min=-1;max=1;ticks=true");
+				p->add_member_control(b, "Relative Anchor Z", brs_ptr->relative_anchor[2], "value_slider", "min=-1;max=1;ticks=true");
+				p->add_member_control(b, "Rounding", brs_ptr->rounding, "toggle");
+				p->add_member_control(b, "Default Radius", brs_ptr->default_radius, "value_slider", "min=0.0;max=10;step=0.0001;log=true;ticks=true");
 				p->add_gui("surface_render_style", *static_cast<cgv::render::surface_render_style*>(brs_ptr));
 				return true;
 			}

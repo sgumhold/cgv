@@ -125,12 +125,12 @@ namespace cgv {
 					return false;
 				cgv::render::box_wire_render_style* brs_ptr = reinterpret_cast<cgv::render::box_wire_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
-				p->add_member_control(b, "default_extent.x", brs_ptr->default_extent[0], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
-				p->add_member_control(b, "default_extent.y", brs_ptr->default_extent[1], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
-				p->add_member_control(b, "default_extent.z", brs_ptr->default_extent[2], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
-				p->add_member_control(b, "relative_anchor.x", brs_ptr->relative_anchor[0], "value_slider", "min=-1;max=1;ticks=true");
-				p->add_member_control(b, "relative_anchor.y", brs_ptr->relative_anchor[1], "value_slider", "min=-1;max=1;ticks=true");
-				p->add_member_control(b, "relative_anchor.z", brs_ptr->relative_anchor[2], "value_slider", "min=-1;max=1;ticks=true");
+				p->add_member_control(b, "Default Eextent X", brs_ptr->default_extent[0], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
+				p->add_member_control(b, "Default Eextent Y", brs_ptr->default_extent[1], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
+				p->add_member_control(b, "Default Eextent Z", brs_ptr->default_extent[2], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
+				p->add_member_control(b, "Relative Anchor X", brs_ptr->relative_anchor[0], "value_slider", "min=-1;max=1;ticks=true");
+				p->add_member_control(b, "Relative Anchor Y", brs_ptr->relative_anchor[1], "value_slider", "min=-1;max=1;ticks=true");
+				p->add_member_control(b, "Relative Anchor Z", brs_ptr->relative_anchor[2], "value_slider", "min=-1;max=1;ticks=true");
 				p->add_gui("line_render_style", *static_cast<cgv::render::line_render_style*>(brs_ptr));
 				return true;
 			}
