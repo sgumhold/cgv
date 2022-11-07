@@ -1,18 +1,17 @@
 #include "file.h"
 
 #include <cgv/type/standard_types.h>
-
+#include <string.h>
+#include <vector>
 #ifdef _WIN32
 #include <io.h>
 #include <fcntl.h>
-#include <string.h>
 #else
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <iostream>
-#include <string.h>
 #include <glob.h>
 #endif
 
@@ -288,16 +287,17 @@ bool append(const std::string& file_name, const char* ptr, size_t size, bool asc
 
 bool append(const std::string& file_name_1, const std::string& file_name_2, bool ascii)
 {
+	const size_t buffer_size = 10000000;
 	size_t N = cgv::utils::file::size(file_name_2, ascii);
-	char buffer[16384];
+	std::vector<char> buffer(buffer_size, 0);
 	size_t off = 0;
 	while (off < N) {
 		size_t n = N - off;
-		if (n > 16384)
-			n = 16384;
-		if (!cgv::utils::file::read(file_name_2, buffer, n, ascii, off))
+		if (n > buffer_size)
+			n = buffer_size;
+		if (!cgv::utils::file::read(file_name_2, &buffer.front(), n, ascii, off))
 			return false;
-		if (!cgv::utils::file::append(file_name_1, buffer, n, ascii))
+		if (!cgv::utils::file::append(file_name_1, &buffer.front(), n, ascii))
 			return false;
 		off += n;
 	}

@@ -229,8 +229,8 @@ public:
 		size_t w = V.dimensions(0);
 		size_t h = V.dimensions(1);
 		size_t voxel_size = cgv::type::info::get_type_size(V.type_id);
-		new (&df) cgv::data::data_format(unsigned(w), unsigned(h), V.type_id, cgv::data::CF_L);
-		new (&dv) cgv::data::data_view(&df);
+		df = cgv::data::data_format(unsigned(w), unsigned(h), V.type_id, cgv::data::CF_L);
+		dv = cgv::data::data_view(&df);
 		if (!cgv::utils::file::read(_file_name, dv.get_ptr<char>(), w * h * voxel_size))
 			return false;
 		get_context()->make_current();
