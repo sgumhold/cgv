@@ -20,8 +20,6 @@ void canvas_overlay::clear(cgv::render::context& ctx) {
 	fbc.clear(ctx);
 }
 
-//void on_set(void* member_ptr);
-
 bool canvas_overlay::init(cgv::render::context& ctx) {
 
 	bool success = true;
@@ -35,8 +33,6 @@ bool canvas_overlay::init(cgv::render::context& ctx) {
 
 	return success;
 }
-
-//void canvas_overlay::init_frame(cgv::render::context& ctx) {}
 
 void canvas_overlay::draw(cgv::render::context& ctx) {
 

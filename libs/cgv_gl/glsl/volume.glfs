@@ -78,7 +78,6 @@ uniform vec3 isosurface_color;
 uniform vec3 clip_box_min;
 uniform vec3 clip_box_max;
 
-in vec4 position_fs;
 in vec3 position_object;
 in vec3 eye_fs;
 
