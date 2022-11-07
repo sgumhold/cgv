@@ -80,11 +80,13 @@ void navigator::clear(cgv::render::context& ctx) {
 	rectangle_data.destruct(ctx);
 	sphere_data.destruct(ctx);
 
-	ref_arrow_renderer(ctx, -1);
-	ref_box_renderer(ctx, -1);
-	ref_box_wire_renderer(ctx, -1);
-	ref_rectangle_renderer(ctx, -1);
-	ref_sphere_renderer(ctx, -1);
+	box_renderer.clear(ctx);
+
+	//ref_arrow_renderer(ctx, -1);
+	//ref_box_renderer(ctx, -1);
+	//ref_box_wire_renderer(ctx, -1);
+	//ref_rectangle_renderer(ctx, -1);
+	//ref_sphere_renderer(ctx, -1);
 }
 
 bool navigator::self_reflect(cgv::reflect::reflection_handler& _rh) {
@@ -228,11 +230,13 @@ bool navigator::init(cgv::render::context& ctx) {
 	success &= rectangle_data.init(ctx);
 	success &= sphere_data.init(ctx);
 
-	ref_arrow_renderer(ctx, 1);
-	ref_box_renderer(ctx, 1);
-	ref_box_wire_renderer(ctx, 1);
-	ref_rectangle_renderer(ctx, 1);
-	ref_sphere_renderer(ctx, 1);
+	success &= box_renderer.init(ctx);
+
+	//ref_arrow_renderer(ctx, 1);
+	//ref_box_renderer(ctx, 1);
+	//ref_box_wire_renderer(ctx, 1);
+	//ref_rectangle_renderer(ctx, 1);
+	//ref_sphere_renderer(ctx, 1);
 
 	if(success) {
 		box_data.add(vec3(0.0f));
@@ -302,16 +306,16 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	if(show_box)
-		box_data.render(ctx, ref_box_renderer(ctx));
+		box_data.render(ctx, box_renderer);
 
 	if(show_wireframe)
-		box_wire_data.render(ctx, ref_box_wire_renderer(ctx));
+		box_wire_data.render(ctx);
 
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 
-	sphere_data.render(ctx, ref_sphere_renderer(ctx));
-	arrow_data.render(ctx, ref_arrow_renderer(ctx));
+	sphere_data.render(ctx);
+	arrow_data.render(ctx);
 
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
