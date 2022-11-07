@@ -31,15 +31,16 @@ echo choose whether to proceed interactively and
 echo which compiler to choose:
 echo.
 echo interactive mode:
-echo [1] ... Microsoft Visual Studio 2005 
-echo [2] ... Microsoft Visual Studio 2008 
-echo [3] ... Microsoft Visual Studio 2008 Express
-echo [4] ... Microsoft Visual Studio 2010
-echo [5] ... Microsoft Visual Studio 2012
-echo [6] ... Microsoft Visual Studio 2013
-echo [7] ... Microsoft Visual Studio 2015
-echo [8] ... Microsoft Visual Studio 2017
-echo [9] ... Microsoft Visual Studio 2019
+echo [0] ... Microsoft Visual Studio 2005 
+echo [1] ... Microsoft Visual Studio 2008 
+echo [2] ... Microsoft Visual Studio 2008 Express
+echo [3] ... Microsoft Visual Studio 2010
+echo [4] ... Microsoft Visual Studio 2012
+echo [5] ... Microsoft Visual Studio 2013
+echo [6] ... Microsoft Visual Studio 2015
+echo [7] ... Microsoft Visual Studio 2017
+echo [8] ... Microsoft Visual Studio 2019
+echo [9] ... Microsoft Visual Studio 2022
 echo.
 echo automatic mode:
 echo [a] ... Microsoft Visual Studio 2005 
@@ -51,13 +52,14 @@ echo [f] ... Microsoft Visual Studio 2013
 echo [g] ... Microsoft Visual Studio 2015
 echo [h] ... Microsoft Visual Studio 2017
 echo [i] ... Microsoft Visual Studio 2019
+echo [j] ... Microsoft Visual Studio 2022
 echo.
 echo [q] ... quit script
 echo.
 :ask_again
-set /P selection=choose 1-9 or a-i or q^>
+set /P selection=choose 0-9 or a-j or q^>
 if [%selection%] == [] (
-   echo please enter a number in [1-9] or a letter in [a-i] or q for quit
+   echo please enter a number in [0-9] or a letter in [a-j] or q for quit
    goto:ask_again
 )
 if "%selection%" == "q" (
@@ -93,9 +95,13 @@ if "%selection%" == "a" (
 							  if "%selection%" == "i" (
 								 call set /A selection=18
 							  ) else (
+								  if "%selection%" == "j" (
+									 call set /A selection=19
+								  ) else (
 	call set /A selection=%selection%
-	if %selection% LSS 1 (set valid_number=false)
+	if %selection% LSS 0 (set valid_number=false)
 	if %selection% GTR 9 (set valid_number=false)
+								  )
 							  )
 						  )
 					  )
@@ -106,33 +112,35 @@ if "%selection%" == "a" (
    )
 )
 if %valid_number% == false (
-   echo invalid number outside range [1-9,a-i], please try again
+   echo invalid number outside range [0-9,a-j], please try again
    goto:ask_again
 )
 set interactive_mode=true
 if %selection% GTR 9 (
    set interactive_mode=false
-   set /A selection=selection-9
+   set /A selection=selection-10
 )
 set cgvcompiler=undefined
-call set condition=%selection%==1
+call set condition=%selection%==0
 if %condition% (set cgvcompiler=vs8)
+call set condition=%selection%==1
+if %condition% (set cgvcompiler=vs9)
 call set condition=%selection%==2
 if %condition% (set cgvcompiler=vs9)
 call set condition=%selection%==3
-if %condition% (set cgvcompiler=vs9)
-call set condition=%selection%==4
 if %condition% (set cgvcompiler=vs10)
-call set condition=%selection%==5
+call set condition=%selection%==4
 if %condition% (set cgvcompiler=vs11)
-call set condition=%selection%==6
+call set condition=%selection%==5
 if %condition% (set cgvcompiler=vs12)
-call set condition=%selection%==7
+call set condition=%selection%==6
 if %condition% (set cgvcompiler=vs14)
-call set condition=%selection%==8
+call set condition=%selection%==7
 if %condition% (set cgvcompiler=vs141)
-call set condition=%selection%==9
+call set condition=%selection%==8
 if %condition% (set cgvcompiler=vs142)
+call set condition=%selection%==9
+if %condition% (set cgvcompiler=vs143)
 if %interactive_mode%==true (
    echo.
    echo selected interactive mode
