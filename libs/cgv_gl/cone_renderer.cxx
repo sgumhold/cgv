@@ -176,6 +176,13 @@ namespace cgv {
 			draw_impl(ctx, PT_LINES, start, count, use_strips, use_adjacency, strip_restart_index);
 		}
 
+		void cone_renderer::clear(const context& ctx)
+		{
+			renderer::clear(ctx);
+			albedo_texture = nullptr;
+			density_texture = nullptr;
+		}
+
 		cgv::reflect::extern_reflection_traits<cone_render_style, cone_render_style_reflect> get_reflection_traits(const cone_render_style&)
 		{
 			return cgv::reflect::extern_reflection_traits<cone_render_style, cone_render_style_reflect>();
