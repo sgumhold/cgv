@@ -54,8 +54,8 @@ protected:
 
 	// configuration
 	std::vector<rgb> handle_base_colors{ rgb(0.11f, 0.35f, 0.62f) };
-	std::vector<rgb> handle_highlight_colors{ rgb(0.0f, 0.47f, 1.0f) };
-	std::vector<rgb> handle_grab_colors{ rgb(0.0f, 0.47f, 1.0f) };
+	std::vector<rgb> handle_highlight_colors{ rgb(0.255f, 0.980f, 0.714f) };
+	std::vector<rgb> handle_grab_colors{ rgb(0.255f, 0.980f, 0.3f) };
 
 	/// Validate the configuration of the axes. Has to be called during validation at attach. Requires the number of handles that are supposed to exist.
 	bool validate_handles(int handle_count);
