@@ -37,13 +37,13 @@ if(env::CGV_SUPPORT_DIR !~ UNDEF) {
 }
 //define CGV_COMPILER from environment or system specific defaults, which
 //are vs9 under windows and gcc under linux. Finally, set the compiler version
-//number, i.e. 8, 9, 10, 11, 12, 14, 141 for vs8, vs9, vs10, vs11, vs12, vs14, vs141, vs142
+//number, i.e. 8, 9, 10, 11, 12, 14, 141 for vs8, vs9, vs10, vs11, vs12, vs14, vs141, vs142, vs143
 if(CGV_COMPILER ~~ UNDEF) {
 	if(env::CGV_COMPILER) {
 		CGV_COMPILER=env::CGV_COMPILER
 	} else {
 		if (SYSTEM == "windows") {
-			CGV_COMPILER="vs142"
+			CGV_COMPILER="vs143"
 		} else {
 			CGV_COMPILER="gcc"
 		}
@@ -61,9 +61,13 @@ if(CGV_IDE ~~ UNDEF) {
 	}
 }
 // default windows sdk version to latest version
-if(CGV_COMPILER=="vs142") {
+if(CGV_COMPILER=="vs143") {
+	CGV_WINDOWS_SDK="10.0";
+}
+elif(CGV_COMPILER=="vs142") {
 	CGV_WINDOWS_SDK="10.0.18362.0";
-} else {
+}
+else {
 	CGV_WINDOWS_SDK="10.0.17763.0";
 }
 if (env::CGV_WINDOWS_SDK !~ UNDEF) {
@@ -160,10 +164,16 @@ elif (CGV_COMPILER == "vs142") {
 	vs_version = "Version 16";
 	vs_file_format = 12;
 }
+elif (CGV_COMPILER == "vs143") {
+	cgv_compiler_version = 143;
+	project_folder_support=1;
+	vs_version = "Version 16";
+	vs_file_format = 12;
+}
 
 rules = [
 	MAP.[ 
-		["extensions",["bmp","jpg","jpeg","png","tif","tiff","avi","gif","ani"]],
+		["extensions",["bmp","jpg","jpeg","png","tif","tiff","avi","gif","ani","wav"]],
 		["folder","resources"],
 		["tool","res_prep"],
 		["rules", 

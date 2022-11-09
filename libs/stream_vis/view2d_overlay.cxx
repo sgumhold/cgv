@@ -107,7 +107,7 @@ namespace stream_vis {
 		}
 		return false;
 	}
-	void view2d_overlay::create_gui()
+	void view2d_overlay::create_gui_impl()
 	{
 		add_decorator(std::string("View2D ")+get_name(), "heading", "level=1");
 		add_member_control(this, "view_width", view_width, "value_slider", "min=0.2;max=5;log=true;ticks=true");
@@ -115,6 +115,5 @@ namespace stream_vis {
 		add_member_control(this, "zoom_factor", zoom_factor, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 		add_member_control(this, "pan_x", pan_pos(0), "value_slider", "min=-5;max=5;ticks=true");
 		add_member_control(this, "pan_y", pan_pos(1), "value_slider", "min=-5;max=5;ticks=true");
-		create_overlay_gui();
 	}
 }

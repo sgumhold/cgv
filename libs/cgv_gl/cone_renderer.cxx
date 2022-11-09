@@ -176,6 +176,13 @@ namespace cgv {
 			draw_impl(ctx, PT_LINES, start, count, use_strips, use_adjacency, strip_restart_index);
 		}
 
+		void cone_renderer::clear(const context& ctx)
+		{
+			renderer::clear(ctx);
+			albedo_texture = nullptr;
+			density_texture = nullptr;
+		}
+
 		cgv::reflect::extern_reflection_traits<cone_render_style, cone_render_style_reflect> get_reflection_traits(const cone_render_style&)
 		{
 			return cgv::reflect::extern_reflection_traits<cone_render_style, cone_render_style_reflect>();
@@ -198,45 +205,45 @@ namespace cgv {
 				cgv::render::cone_render_style* crs_ptr = reinterpret_cast<cgv::render::cone_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-				p->add_member_control(b, "default radius", crs_ptr->radius, "value_slider", "min=0.001;step=0.0001;max=10.0;log=true;ticks=true");
-				p->add_member_control(b, "radius scale", crs_ptr->radius_scale, "value_slider", "min=0.01;step=0.0001;max=100.0;log=true;ticks=true");
+				p->add_member_control(b, "Default Radius", crs_ptr->radius, "value_slider", "min=0.001;step=0.0001;max=10.0;log=true;ticks=true");
+				p->add_member_control(b, "Radius Scale", crs_ptr->radius_scale, "value_slider", "min=0.01;step=0.0001;max=100.0;log=true;ticks=true");
 
-				p->add_member_control(b, "show caps", crs_ptr->show_caps, "check");
-				p->add_member_control(b, "rounded caps", crs_ptr->rounded_caps, "check");
+				p->add_member_control(b, "Show Caps", crs_ptr->show_caps, "check");
+				p->add_member_control(b, "Rounded Caps", crs_ptr->rounded_caps, "check");
 
-				if(p->begin_tree_node("texturing", crs_ptr->enable_texturing, false)) {
+				if(p->begin_tree_node("Texturing", crs_ptr->enable_texturing, false, "level=3")) {
 					p->align("\a");
-					p->add_member_control(b, "enable", crs_ptr->enable_texturing, "check");
-					p->add_member_control(b, "blend mode", crs_ptr->texture_blend_mode, "dropdown", "enums='mix,tint,multiply,inverse multiply,add'");
-					p->add_member_control(b, "blend factor", crs_ptr->texture_blend_factor, "value_slider", "min=0.0;step=0.0001;max=1.0;ticks=true");
-					//p->add_member_control(b, "texcoord offset", crs_ptr->texcoord_offset, "value_slider", "min=-1.0;step=0.0001;max=1.0;ticks=true");
-					//p->add_member_control(b, "texcoord scale", crs_ptr->texcoord_scale, "value_slider", "min=-10.0;step=0.0001;max=10.0;ticks=true");
+					p->add_member_control(b, "Enable", crs_ptr->enable_texturing, "check");
+					p->add_member_control(b, "Blend Mode", crs_ptr->texture_blend_mode, "dropdown", "enums='Mix,Tint,Multiply,Inverse Multiply,Add'");
+					p->add_member_control(b, "Blend Factor", crs_ptr->texture_blend_factor, "value_slider", "min=0.0;step=0.0001;max=1.0;ticks=true");
+					//p->add_member_control(b, "Texcoord Offset", crs_ptr->texcoord_offset, "value_slider", "min=-1.0;step=0.0001;max=1.0;ticks=true");
+					//p->add_member_control(b, "Texcoord Scale", crs_ptr->texcoord_scale, "value_slider", "min=-10.0;step=0.0001;max=10.0;ticks=true");
 
-					p->add_member_control(b, "tile from center", crs_ptr->texture_tile_from_center, "check");
+					p->add_member_control(b, "Tile from Center", crs_ptr->texture_tile_from_center, "check");
 
-					p->add_member_control(b, "offset", crs_ptr->texture_offset[0], "value", "w=95;min=-1;max=1;step=0.001", " ");
+					p->add_member_control(b, "Offset", crs_ptr->texture_offset[0], "value", "w=95;min=-1;max=1;step=0.001", " ");
 					p->add_member_control(b, "", crs_ptr->texture_offset[1], "value", "w=95;min=-1;max=1;step=0.001");
 					p->add_member_control(b, "", crs_ptr->texture_offset[0], "slider", "w=95;min=-1;max=1;step=0.001;ticks=true", " ");
 					p->add_member_control(b, "", crs_ptr->texture_offset[1], "slider", "w=95;min=-1;max=1;step=0.001;ticks=true");
 
-					p->add_member_control(b, "tiling", crs_ptr->texture_tiling[0], "value", "w=95;min=-5;max=5;step=0.001", " ");
+					p->add_member_control(b, "Tiling", crs_ptr->texture_tiling[0], "value", "w=95;min=-5;max=5;step=0.001", " ");
 					p->add_member_control(b, "", crs_ptr->texture_tiling[1], "value", "w=95;min=-5;max=5;step=0.001");
 					p->add_member_control(b, "", crs_ptr->texture_tiling[0], "slider", "w=95;min=-5;max=5;step=0.001;ticks=true", " ");
 					p->add_member_control(b, "", crs_ptr->texture_tiling[1], "slider", "w=95;min=-5;max=5;step=0.001;ticks=true");
 					
-					p->add_member_control(b, "use reference length", crs_ptr->texture_use_reference_length, "check");
-					p->add_member_control(b, "reference length", crs_ptr->texture_reference_length, "value_slider", "min=0.0;step=0.0001;max=5.0;log=true;ticks=true");
+					p->add_member_control(b, "Use Reference Length", crs_ptr->texture_use_reference_length, "check");
+					p->add_member_control(b, "Reference Length", crs_ptr->texture_reference_length, "value_slider", "min=0.0;step=0.0001;max=5.0;log=true;ticks=true");
 
 					p->align("\b");
 					p->end_tree_node(crs_ptr->enable_texturing);
 				}
 
-				if(p->begin_tree_node("ambient occlusion", crs_ptr->enable_ambient_occlusion, false)) {
+				if(p->begin_tree_node("Ambient Occlusion", crs_ptr->enable_ambient_occlusion, false, "level=3")) {
 					p->align("\a");
-					p->add_member_control(b, "enable", crs_ptr->enable_ambient_occlusion, "check");
-					p->add_member_control(b, "offset", crs_ptr->ao_offset, "value_slider", "min=0.0;step=0.0001;max=0.2;log=true;ticks=true");
-					p->add_member_control(b, "distance", crs_ptr->ao_distance, "value_slider", "min=0.0;step=0.0001;max=1.0;log=true;ticks=true");
-					p->add_member_control(b, "strength", crs_ptr->ao_strength, "value_slider", "min=0.0;step=0.0001;max=10.0;log=true;ticks=true");
+					p->add_member_control(b, "Enable", crs_ptr->enable_ambient_occlusion, "check");
+					p->add_member_control(b, "Offset", crs_ptr->ao_offset, "value_slider", "min=0.0;step=0.0001;max=0.2;log=true;ticks=true");
+					p->add_member_control(b, "Distance", crs_ptr->ao_distance, "value_slider", "min=0.0;step=0.0001;max=1.0;log=true;ticks=true");
+					p->add_member_control(b, "Strength", crs_ptr->ao_strength, "value_slider", "min=0.0;step=0.0001;max=10.0;log=true;ticks=true");
 					p->align("\b");
 				}
 				

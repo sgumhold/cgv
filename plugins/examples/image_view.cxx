@@ -6,6 +6,9 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/file_dialog.h>
+#include <cgv/utils/file.h>
+#include <cgv/utils/scan.h>
+#include <cgv/media/volume/volume_io.h>
 #include <cgv/render/drawable.h>
 #include <cgv/utils/ostream_printf.h>
 #include <cgv/media/image/image_reader.h>
@@ -32,6 +35,10 @@ class image_view :
 {
 protected:
 	vec2 range;
+	size_t slice_size = 0;
+	cgv::data::data_format df;
+	cgv::data::data_view dv;
+	bool view_vox_file = false;
 public:
 	image_view() : node("image view"), range(0,1)
 	{
@@ -42,7 +49,7 @@ public:
 		unsigned old_current_image = current_image;
 		image_drawable::timer_event(t, dt);
 		if (old_current_image != current_image) {
-			update_member(&current_image);
+			on_set(&current_image);
 			post_redraw();
 		}
 	}
@@ -73,6 +80,12 @@ public:
 		}
 		switch (ke.get_key()) {
 		case 'S': spherical = !spherical; on_set(&spherical); return true;
+		case 'O' :
+			if (ke.get_modifiers() == cgv::gui::EM_CTRL) {
+				open();
+				return true;
+			}
+			break;
 		case KEY_Left:  pan_tilt[0] -= scale * 0.1f; on_set(&pan_tilt[0]); return true;
 		case KEY_Right: pan_tilt[0] += scale * 0.1f; on_set(&pan_tilt[0]); return true;
 		case KEY_Down:  pan_tilt[1] += scale * 0.1f; on_set(&pan_tilt[1]); return true;
@@ -99,6 +112,9 @@ public:
 					find_control(max_value[i])->set("max", range[1]);
 				}
 			}
+		}
+		if (view_vox_file && member_ptr == &current_image) {
+			vox_read_slice(current_image);
 		}
 		update_member(member_ptr);
 		post_redraw();
@@ -192,6 +208,54 @@ public:
 	{
 		os << "image_drawable: open new image with 'O', save current image with 'S'\n\n";
 	}
+	void vox_read_slice(unsigned slide)
+	{
+		get_context()->make_current();
+		if (cgv::utils::file::read(file_name, dv.get_ptr<char>(), slice_size, false, current_image*slice_size)) {
+			glBindTexture(GL_TEXTURE_2D, tex_ids.front());
+			cgv::render::gl::replace_texture(dv);
+		}
+	}
+	bool open_volume(const std::string& _file_name, std::string ext)
+	{
+		cgv::media::volume::volume_info V;
+		if (ext == "vox")
+			ext = "hd";
+		else if (ext == "qim")
+			ext = "qha";
+
+		if (!cgv::media::volume::read_header(cgv::utils::file::drop_extension(_file_name)+"."+ext, V))
+			return false;
+		size_t w = V.dimensions(0);
+		size_t h = V.dimensions(1);
+		size_t voxel_size = cgv::type::info::get_type_size(V.type_id);
+		df = cgv::data::data_format(unsigned(w), unsigned(h), V.type_id, cgv::data::CF_L);
+		dv = cgv::data::data_view(&df);
+		if (!cgv::utils::file::read(_file_name, dv.get_ptr<char>(), w * h * voxel_size))
+			return false;
+		get_context()->make_current();
+		if (tex_ids.size() > 0) {
+			glDeleteTextures(GLsizei(tex_ids.size()), &tex_ids.front());
+			durations.clear();
+			tex_ids.clear();
+		}
+		durations.resize(V.dimensions(2), 0.05f);
+		tex_ids.resize(V.dimensions(2), cgv::render::gl::create_texture(dv, false));
+		W = int(w);
+		H = int(h);
+		aspect = float(W) / H;
+		slice_size = w*h*voxel_size;
+		selection.invalidate();
+		selection.add_point(vec2i(0, 0));
+		selection.add_point(vec2i(W, H));
+		current_image = 0;
+		start_time = -2;
+		file_name = _file_name;
+		files.clear();
+		view_vox_file = true;
+		post_redraw();
+		return true;
+	}
 	void open()
 	{
 		get_context()->make_current();
@@ -200,10 +264,18 @@ public:
 			durations.clear();
 			tex_ids.clear();
 		}
-		std::string file_name = cgv::gui::file_open_dialog("open image file", image_reader::construct_filter_string(), cgv::base::ref_data_path_list().empty()?"":cgv::base::ref_data_path_list()[0]+"/Regular/Images");
+		std::string filter_string = image_reader::construct_filter_string()+";*.vox;*.qim";
+		std::string file_name = cgv::gui::file_open_dialog("open image file", filter_string, cgv::base::ref_data_path_list().empty()?"":cgv::base::ref_data_path_list()[0]+"/Regular/Images");
 		if (!file_name.empty()) {
-			if (!read_image(file_name))
-				read_image("res://cgv_logo.png");
+			std::string ext = cgv::utils::to_lower(cgv::utils::file::get_extension(file_name));
+			if (ext == "vox" || ext == "qim") {
+				open_volume(file_name, ext);
+			}
+			else {
+				bool success = read_image(file_name) || read_image("res://cgv_logo.png");
+				if (success)
+					view_vox_file = false;
+			}
 			configure_gui();
 			post_redraw();
 		}
@@ -217,11 +289,13 @@ public:
 			tex_ids.clear();
 		}
 		std::vector<std::string> file_names;
-		std::string file_path = cgv::gui::files_open_dialog(file_names, "open image files as animation", image_reader::construct_filter_string(), cgv::base::ref_data_path_list().empty()?"":cgv::base::ref_data_path_list()[0]+"/Regular/Images");
+		std::string filter_string = image_reader::construct_filter_string();
+		std::string file_path = cgv::gui::files_open_dialog(file_names, "open image files as animation", filter_string, cgv::base::ref_data_path_list().empty()?"":cgv::base::ref_data_path_list()[0]+"/Regular/Images");
 //		std::cout << "path = " << file_path << std::endl;
 //		for (unsigned i=0; i<file_names.size(); ++i)
 //			std::cout << "  file " << i << " = " << file_names[i] << std::endl;
 		read_images(file_path, file_names);
+		view_vox_file = false;
 		configure_gui();
 		post_redraw();
 	}
@@ -240,5 +314,5 @@ public:
 
 #include <cgv/base/register.h>
 
-factory_registration<image_view> image_drawable_factory_registration("New/Media/Image View", 'I', true);
+factory_registration<image_view> image_drawable_factory_registration("New/Media/Image View", "shortcut='Alt-Ctrl-I'", true);
 
