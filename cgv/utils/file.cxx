@@ -216,8 +216,6 @@ size_t size(const std::string& file_name, bool ascii)
 bool read(const std::string& filename, char* ptr, size_t size, bool ascii, size_t file_offset)
 {
 	FILE* fp = ::fopen(filename.c_str(), ascii ? "r" : "rb");
-	if (fp == 0)
-		return false;
 	if (file_offset != 0) {
 		fpos_t fo = file_offset;
 		if (::fsetpos(fp, &fo) != 0)
@@ -558,6 +556,9 @@ char to_lower(char c)
 	if (c >= 'A' && c <= 'Z')
 		return (c-'A')+'a';
 	switch (c) {
+		case 0xD6 : return (char) 0xF6; // Oe -> oe
+		case 0xDC : return (char) 0xFC; // Ue -> ue
+		case 0xC4 : return (char) 0xE4; // Ae -> ae
 		default: return c;
 	}
 }
