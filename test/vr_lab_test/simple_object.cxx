@@ -54,7 +54,7 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
 		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
 	);
-	trans_gizmo->set_use_absolute_rotation(true);
+	trans_gizmo->set_use_absolute_rotation(false);
 	if (active_gizmo == ActiveGizmoOptions::AGO_TRANSLATION)
 		trans_gizmo->attach();
 
