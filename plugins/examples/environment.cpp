@@ -11,11 +11,11 @@
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv/media/illum/textured_surface_material.h>
 #include <cgv/render/drawable.h>
+#include <cgv/render/frame_buffer.h>
+#include <cgv/render/shader_library.h>
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv_gl/gl/mesh_render_info.h>
-#include <cgv_glutil/sphere_render_data.h>
-#include <cgv_glutil/frame_buffer_container.h>
-#include <cgv_glutil/shader_library.h>
+#include <cgv_gl/sphere_render_data.h>
 
 using namespace cgv::render;
 
@@ -30,7 +30,7 @@ protected:
 
 	view* view_ptr;
 
-	cgv::glutil::shader_library shaders;
+	shader_library shaders;
 
 	unsigned shadow_map_resolution = 4*256u;
 	texture depth_map;
@@ -39,7 +39,7 @@ protected:
 
 	vec2 sun_position;
 
-	cgv::glutil::sphere_render_data<> spheres;
+	sphere_render_data<> spheres;
 	sphere_render_style sphere_style;
 
 	texture environment_map;
@@ -249,7 +249,7 @@ public:
 		ref_sphere_renderer(ctx, 1);
 
 		bool success = true;
-		success &= shaders.load_shaders(ctx);
+		success &= shaders.load_all(ctx);
 		
 		if(spheres.init(ctx)) {
 			spheres.add(vec3(0.0f, -50.0f, 0.0f), 50.0f);

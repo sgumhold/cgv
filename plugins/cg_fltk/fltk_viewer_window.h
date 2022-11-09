@@ -51,6 +51,7 @@ class CGV_API fltk_viewer_window :
 {
 protected:
 	void on_tab_group_selection_change(base_ptr, bool);
+	void set_fullscreen(MonitorSelection ms);
 public:
 	/// construct application
 	fltk_viewer_window(int w, int h, const std::string& _title);

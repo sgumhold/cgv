@@ -25,7 +25,7 @@ namespace cgv {
 				const std::string& sub_dir = "");  // sub directory to which search in paths is restricted
 			/// copy file
 			CGV_API bool copy(const std::string& from, const std::string& to);
-			/// receive the length of a file in bytes
+			/// receive the length of a file in bytes (works for files larger than 4GB)
 			CGV_API size_t size(const std::string& file_name, bool ascii = false);
 			/// read the file into the content string
 			CGV_API bool read(const std::string& file_name, std::string& content, bool ascii = false);
@@ -39,6 +39,8 @@ namespace cgv {
 			CGV_API bool write(const std::string& filename, const char* ptr, size_t size, bool ascii = false);
 			/// append a memory block to a given file or create new file, the optional argument \c ascii tells whether to write in ascii or binary (default) mode
 			CGV_API bool append(const std::string& filename, const char* ptr, size_t size, bool ascii = false);
+			/// append second file at the end of first file (works for files larger than 4GB)
+			CGV_API bool append(const std::string& file_name_1, const std::string& file_name_2, bool ascii = false);
 			/// result type of file comparison
 			enum Result { EQUAL, DIFFERENT, FILE_ERROR };
 			/// binary comparison of two files
@@ -63,7 +65,7 @@ namespace cgv {
 			CGV_API bool find_archive(const void* handle);
 			/// check if normal file
 			CGV_API bool find_normal(const void* handle);
-			/// return file size
+			/// return file size, but careful, this does not work for file sizes larger than 2GB. To support large files use cgv::utils::file::size(path+"/"+cgv::utils::file::find_name(h)) instead.
 			CGV_API size_t find_size(void* handle);
 			/// return the time of last write of a given file
 			CGV_API long long get_last_write_time(const std::string& file_path);

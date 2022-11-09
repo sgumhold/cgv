@@ -15,3 +15,5 @@ addIncDirs=[
 	[ CGV_DIR."/libs/vr", "all" ]
 ];
 addSharedDefines=["CGV_VR_VIEW_EXPORTS"];
+addShaderPaths=[[INPUT_DIR,"all"]];
+
