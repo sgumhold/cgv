@@ -4,6 +4,7 @@
 #include <regex>
 #include <limits>
 #include <cstdint>
+#include <algorithm>
 namespace {
 
 // check if machine uses the big endian byte order
@@ -14,11 +15,17 @@ bool is_big_endian()
 	return *first_byte;
 }
 
-void reverse_byte_order(uint32_t& b)
+void reverse_byte_order_32(uint32_t& b)
 {
 	b = (b & 0xFFFF0000) >> 16 | (b & 0x0000FFFF) << 16;
 	b = (b & 0xFF00FF00) >> 8 | (b & 0x00FF00FF) << 8;
 }
+
+void reverse_byte_order_16(uint16_t& b)
+{
+	b = (b & 0xFF00) >> 8 | (b & 0x00FF) << 8;
+}
+
 
 
 } // namespace
@@ -26,25 +33,57 @@ namespace cgv {
 namespace pointcloud {
 namespace file_parser {
 
+namespace {
+
+class tag_finder
+{
+	std::string tag_name;
+
+public:
+	tag_finder(const std::string& name) : tag_name(name) {}
+
+	bool operator()(xml_node* node)
+	{
+		return (xml_tag_node*)node != nullptr && ((xml_tag_node*)node)->tag.name == tag_name;
+	}
+};
+//finds the first xml tag for that pred returns true
+template <typename Iterator, typename UnaryPredicate>
+xml_tag_node* find_tag_node_if(Iterator begin, Iterator end, UnaryPredicate pred)
+{
+	auto it = std::find_if(begin, end, pred);
+	if (it != end) {
+		return dynamic_cast<xml_tag_node*>(*it);
+	}
+	return nullptr;
+}
+
+template <typename Container, typename UnaryPredicate> xml_tag_node* find_tag_node_if(Container c, UnaryPredicate pred)
+{
+	return find_tag_node_if(c.begin(), c.end(), pred);
+}
+
+} // namespace
 
 
 
 void e57_data_set::read(const std::string& file_name)
 {
-
-	checked_file file;
+	// e57 files are protected by crc checksums
+	e57::checked_file file;
 	file.open(file_name.c_str(), std::fstream::binary | std::fstream::in);
 	
-	std::array<char, checked_file::logical_page_size> header_page;
+	//read the header
+	std::array<char, e57::checked_file::logical_page_size> header_page;
 	if (!file.read_page(header_page.data(), 0)) {
 		throw e57_parsing_error(e57_error_code::FILE_TO_SMALL,
 								"can't read header");
 	}
 
-	this->header = read_header(header_page.data(), checked_file::logical_page_size);
+	this->header = read_header(header_page.data(), e57::checked_file::logical_page_size);
 	
 	
-
+	// get the xml data
 	std::vector<char> xml_content(this->header.xml_logical_length+1,'\0');
 	file.seek(this->header.xml_physical_offset);
 	if (!file.read(xml_content.data(), this->header.xml_logical_length)) {
@@ -54,9 +93,48 @@ void e57_data_set::read(const std::string& file_name)
 
 
 	std::string xml_content_str(xml_content.data());
-	std::cout << xml_content_str;
-	std::unique_ptr<xml_node> xml_root = read_xml(xml_content_str);
-	//TODO interpret xml tree
+	//std::cout << xml_content_str;
+	std::unique_ptr<xml_tag_node> xml_root = read_xml(xml_content_str);
+
+	//interpret xml tree
+	if (xml_root->tag.name != "e57Root") {
+		// not critical, wrong name for root tag 
+	}
+	
+	// find the 3d point data
+	xml_tag_node* node_data_3d = find_tag_node_if(xml_root->childs, tag_finder("data3D"));
+	if (node_data_3d) {
+		//has 3d data
+		xml_tag_node* vector_child =
+			  find_tag_node_if(node_data_3d->childs, tag_finder("vectorChild"));
+		if (vector_child) {
+			xml_tag_node* points = find_tag_node_if(vector_child->childs, tag_finder("points"));
+			if (points == nullptr) {
+				throw e57_parsing_error(e57_error_code::XML_STRUCTURE_ERROR, "missing points tag");
+			}
+			std::string type = points->tag.attributes["type"];
+			uint64_t offset = stoul(points->tag.attributes["fileOffset"]);
+			uint64_t record_count = stoul(points->tag.attributes["recordCount"]);
+
+			if (type == "CompressedVector") {
+				xml_tag_node* prototype_xml_node = find_tag_node_if(points->childs, tag_finder("prototype"));
+				if (prototype_xml_node == nullptr) {
+					throw e57_parsing_error(e57_error_code::XML_STRUCTURE_ERROR, "missing prototype tag");
+				}
+				e57::structure_node prototype(prototype_xml_node);
+				// read compressed vector header
+
+				file.seek(offset);
+				e57::compressed_vector_section_header section_header;
+				file.read(&section_header, sizeof(e57::compressed_vector_section_header));
+
+				//TODO setup data structures based on prototype
+				// 
+				//TODO read packets
+			}
+
+		}
+	}
 }
 
 e57_file_header cgv::pointcloud::file_parser::e57_data_set::read_header(const char* data, const size_t data_length)
@@ -79,7 +157,9 @@ cgv::pointcloud::file_parser::e57_parsing_error::e57_parsing_error(const e57_err
 {
 }
 
-checked_file::checked_file() : s_file(nullptr){}
+namespace e57 {
+
+checked_file::checked_file() : s_file(nullptr) {}
 
 void checked_file::open(const char* filename, std::ios_base::openmode mode)
 {
@@ -93,17 +173,16 @@ void checked_file::open(const char* filename, std::ios_base::openmode mode)
 	page_cursor = 0;
 }
 
-
 bool checked_file::read_page(char* page_buffer, const size_t page)
 {
 	bool good = false;
 	if (s_file) {
-		//reposition cursor if needed
+		// reposition cursor if needed
 		std::streamsize start = s_file->tellg();
 		if (start != page_offset(page)) {
 			s_file->seekg(page_offset(page));
 		}
-		//read physical page
+		// read physical page
 		good = peek_physical_page((char*)physical_page_buffer.data());
 		buffer_page_nr = page;
 		// copy to buffer
@@ -125,7 +204,7 @@ bool checked_file::peek_physical_page(char* phys_page_buffer)
 		good = (bool)*s_file;
 		uint32_t crc_sum = crc32<0x1EDC6F41, 0xFFFFFFFF, 0xFFFFFFFF>(physical_page_buffer.data(), logical_page_size);
 		uint32_t stored_sum = *reinterpret_cast<uint32_t*>(physical_page_buffer.data() + logical_page_size);
-		reverse_byte_order(stored_sum); // checksum is stored with big endian byteorder
+		reverse_byte_order_32(stored_sum); // checksum is stored with big endian byteorder
 		if (stored_sum != crc_sum) {
 			std::stringstream ss;
 			ss << "bad checksum for page " << page_cursor;
@@ -167,6 +246,60 @@ size_t checked_file::read(char* buffer, size_t bytes)
 	return logical_bytes_read;
 }
 
+size_t checked_file::read(void* buffer, size_t bytes)
+{
+	return read((char*)buffer, bytes);
+}
+
+compressed_vector_section_header::compressed_vector_section_header()
+{
+	memset(this, 0, sizeof(compressed_vector_section_header));
+}
+
+
+structure_node::structure_node(xml_tag_node* xml) {
+	if (xml) {
+		parse_xml_node(xml);
+	}
+}
+
+void structure_node::parse_xml_node(xml_tag_node* node)
+{
+	elements.clear();
+	for (auto& ch : node->childs) {
+		xml_tag_node* tch = dynamic_cast<xml_tag_node*>(ch);
+		if (tch) {
+			elements.emplace_back();
+			structure_element& element = elements.back();
+			auto& tag_attrs = tch->tag.attributes;
+			element.name = tch->tag.name;
+			element.type = tag_attrs["type"];
+			if (tag_attrs["type"] == "Float") { // any floats
+				element.type = "Float";
+				auto precision_attr = tag_attrs.find("precision");
+				if (precision_attr != tag_attrs.end() && precision_attr->second == "double") {
+					element.size = 8;
+				}
+				else if (precision_attr != tag_attrs.end() && precision_attr->second == "single") {
+					element.size = 4;
+				}
+				else {
+					element.size = 4;
+				}
+			}
+			else { //default case
+				element.size = -1;
+			}
+			if (ch->childs.size() == 1 && (xml_string_node*)ch->childs[0]) {
+				element.value = ((xml_string_node*)ch->childs[0])->content;
+			}
+			
+			
+		}
+	}
+}
+structure_element::structure_element() : size(0){}
+} // namespace e57
 } // namespace file_parser
 } // namespace pointcloud
 } // namespace cgv

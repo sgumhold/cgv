@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <fstream>
 #include "point_cloud.h"
+#include "xml.h"
 
 namespace cgv {
 namespace pointcloud {
@@ -13,6 +14,7 @@ enum class e57_error_code {
 	FILE_TO_SMALL, 
 	XML_ERROR,
 	BAD_CHECKSUM,
+	XML_STRUCTURE_ERROR,
 	UNSUPPORTED_OPERATION
 };
 
@@ -61,6 +63,8 @@ public:
 	e57_file_header read_header(const char* data, const size_t data_length);
 };
 
+namespace e57 {
+
 //file with build in error correction, has logical and physical pages that are protected by checksums
 class checked_file
 {
@@ -74,7 +78,7 @@ class checked_file
 	std::array<char, physical_page_size> physical_page_buffer;
 	unsigned buffer_page_nr;
 
-	unsigned page_cursor;
+	size_t page_cursor;
 	unsigned page_offset_cursor;
 
 	size_t file_size;
@@ -103,6 +107,65 @@ class checked_file
 
 	// start reading from current cursor position, returns number of bytes read
 	size_t read(char* buffer, size_t bytes);
+
+	size_t read(void* buffer, size_t bytes);
 };
 
+
+struct structure_element
+{
+	std::string type;
+	std::string name;
+	std::string value;
+	int size; //unused
+
+	structure_element();
+};
+
+// structure of multiple data types
+struct structure_node
+{
+	std::vector<structure_element> elements;
+  public:
+	structure_node(xml_tag_node* xml = nullptr);
+	void parse_xml_node(xml_tag_node* node);
+};
+
+enum packet_types {
+	INDEX_PACKET = 0,
+	DATA_PACKET = 1,
+	EMPTY_PACKET = 2
+};
+
+//compressed data is packet based
+struct data_packet_header
+{
+	uint8_t packet_type;
+	uint8_t packet_flags;
+	uint16_t packet_logical_length; //real logical length-1
+	uint16_t bytestream_count;
+	
+	void read_from(void* data, size_t data_length) {
+		if (data_length < sizeof(4))
+		packet_type = *((uint8_t*)data);
+		packet_flags = *((uint8_t*)data+1);
+		packet_logical_length = *((uint16_t*)data + 2);
+		if (packet_type == packet_types::DATA_PACKET) {
+			bytestream_count = *((uint16_t*)data + 4);
+		}
+	}
+};
+
+struct compressed_vector_section_header
+{
+	uint8_t section_id;
+	uint8_t reserved[7];
+	uint64_t section_logical_length; // byte length of whole section
+	uint64_t data_physical_offset;	 // offset of first data packet
+	uint64_t index_physical_offset;	 // offset of first index packet
+
+	compressed_vector_section_header();
+};
+
+} // namespace e57
 }}}
