@@ -97,6 +97,9 @@ class vr_rgbd : public cgv::base::node,
 	/// registration
 	bool registration_started;
 
+	/// merged point cloud 
+	
+
 	int rgbd_controller_index;
 	/// current pose of the controller
 	mat3 controller_orientation;
@@ -180,6 +183,8 @@ class vr_rgbd : public cgv::base::node,
 	cgv::pointcloud::SICP::ComputationMode sicp_computation_mode;
 	cgv::pointcloud::SICP sicp;
 
+	point_cloud merged_pc;
+
 	// compute intersection points of controller ray with movable boxes
 	void compute_intersections(const vec3& origin, const vec3& direction, int ci, const rgb& color)
 	{
@@ -253,6 +258,8 @@ class vr_rgbd : public cgv::base::node,
 			pc.push_back(v);
 		}
 	}
+	///merge all recorded pcs
+	void on_merge_all_pcs_cb();
 	/// start the rgbd device
 	void start_rgbd()
 	{
@@ -384,18 +391,22 @@ class vr_rgbd : public cgv::base::node,
 	/// cast vertex to point_cloud
 	void copy_pointcloud(const std::vector<vertex> input, point_cloud& output)
 	{
-		for (unsigned int i = 0; i < input.size(); i++) {
-			point_cloud_types::Pnt temp;
-			temp[0] = input.at(i).point[0];
-			temp[1] = input.at(i).point[1];
-			temp[2] = input.at(i).point[2];
-			point_cloud_types::Clr tempcolor;
-			tempcolor[0] = input.at(i).color[0];
-			tempcolor[1] = input.at(i).color[1];
-			tempcolor[2] = input.at(i).color[2];
-			output.P.push_back(temp);
-			output.C.push_back(tempcolor);
-		}
+		//if(!output.has_colors()) {
+			//output.has_clrs = true;
+			for (unsigned int i = 0; i < input.size(); i++) {
+				point_cloud_types::Pnt temp;
+				temp[0] = input.at(i).point[0];
+				temp[1] = input.at(i).point[1];
+				temp[2] = input.at(i).point[2];
+				point_cloud_types::Clr tempcolor;
+				tempcolor[0] = input.at(i).color[0];
+				tempcolor[1] = input.at(i).color[1];
+				tempcolor[2] = input.at(i).color[2];
+				output.P.push_back(temp);
+				output.C.push_back(tempcolor);
+			}
+		//}
+		
 	}
 	/// cast point_cloud to vertex
 	void pc2vertex(const point_cloud& input, std::vector<vertex>& output)
@@ -630,7 +641,7 @@ class vr_rgbd : public cgv::base::node,
 		add_member_control(this, "register_pc", registration_started, "check");
 		add_member_control(this, "is_save_imgs", is_save_imgs, "check");
 		//connect_copy(add_button("SICP")->click, rebind(this, &vr_rgbd::on_reg_SICP_cb));
-
+		connect_copy(add_button("merge_all_pcs")->click, rebind(this, &vr_rgbd::on_merge_all_pcs_cb));
 		add_member_control(this, "rgbd_controller_index", rgbd_controller_index, "value_slider",
 						   "min=0;max=3;ticks=true");
 
@@ -1189,6 +1200,20 @@ void vr_rgbd::construct_movable_boxes(float tw, float td, float th, float tW, si
 				 signed_distribution(generator));
 		rot.normalize();
 		movable_box_rotations.push_back(rot);
+	}
+}
+
+void vr_rgbd::on_merge_all_pcs_cb()
+{
+	if(!recorded_pcs.empty()) {
+		for (unsigned int i = 0; i < recorded_pcs.size();++i) {
+			point_cloud temp;
+			copy_pointcloud(recorded_pcs.at(i), temp);
+			merged_pc.append(temp);
+		}
+		std::cout << "start writing to files" << std::endl;
+		merged_pc.write("D:\\data\\merged_pc.obj");
+		std::cout << "merge finish" << std::endl;
 	}
 }
 
