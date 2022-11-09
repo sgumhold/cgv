@@ -309,22 +309,16 @@ namespace cgv {
 				for (uint32_t i : rotated_labels) {
 					if (!all && ((label_states[i] & (LS_NEW_TEXT | LS_NEW_COLOR)) == 0))
 						continue;
+					// first compute pixel position and pixel extend in unrotated texture 
 					ibox2 tr = tex_ranges[i];
 					vec3 pos((float)tr.get_center()(0), (float)tr.get_center()(1), 0.0f);
 					vec2 ext((float)tr.get_extent()(1), (float)tr.get_extent()(0));
-					vec4 tc(
-						(float)tr.get_min_pnt()(0) / tex_width,
-						(float)(tex_height - tr.get_min_pnt()(1)) / tex_height,
-						(float)tr.get_max_pnt()(0) / tex_width,
-						(float)(tex_height - tr.get_max_pnt()(1)) / tex_height);
-					std::swap(tc[0], tc[1]);
-					std::swap(tc[2], tc[3]);
-					tc[0] = 1.0f - tc[0];
-					tc[2] = 1.0f - tc[2];
-					tc[1] = 1.0f - tc[1];
-					tc[3] = 1.0f - tc[3];
-					std::swap(tc[0], tc[2]);
-					std::swap(tc[1], tc[3]);
+					// then convert texture pixel range to rotated texture
+					std::swap(tr.ref_min_pnt()(0), tr.ref_min_pnt()(1));
+					std::swap(tr.ref_max_pnt()(0), tr.ref_max_pnt()(1));
+					// finally convert texture pixel range to texture coordinate range with swapped width and height
+					vec4 tc( (float)tr.get_min_pnt()(0) / tex_height, (float)tr.get_min_pnt()(1) / tex_width,
+						     (float)tr.get_max_pnt()(0) / tex_height, (float)tr.get_max_pnt()(1) / tex_width);
 					positions.push_back(pos);
 					extents.push_back(ext);
 					colors.push_back(labels[i].background_color);

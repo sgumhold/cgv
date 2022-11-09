@@ -5,15 +5,23 @@ projectGUID="4f8c8790-fab4-11dd-87af-0800200c9a66";
 addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
 addIncDirs=[CGV_DIR."/libs", CGV_DIR."/libs/delaunay"];
 addProjectDeps=[
-	"cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal", "cgv_base", "cgv_media", 
-	"cgv_gui", "cgv_render","cgv_os", "fltk", "delaunay","cgv_gl", "cgv_proc", "plot", "glew", 
-	"cgv_viewer",
-	"cg_fltk", "cg_ext", "crg_stereo_view", "crg_antialias", "crg_depth_of_field", 
-	"crg_light", "cg_meta", "cmi_io","cmv_avi", "crg_grid", "co_web", "cg_gamepad",
-	"cmf_tt_gl_font", "cgv_glutil"
-];
+		"cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal", "cgv_base", "cgv_media", 
+		"cgv_gui", "cgv_render","cgv_os", "fltk", "delaunay","cgv_gl", "cgv_proc", "plot", "glew", 
+		"cgv_viewer",
+		"cg_fltk", "cg_ext", "crg_stereo_view", "crg_antialias", "crg_depth_of_field", 
+		"crg_light", "cg_meta", "cmi_io","cmv_avi", "crg_grid", "co_web", "cg_gamepad",
+		"cmf_tt_gl_font", "cgv_g2d", "cgv_gpgpu", "cgv_app"
+	];
+if (cgv_options::BUILD_WITH_AUDIO) {
+	addProjectDeps=addProjectDeps.["cgv_oal", "cg_audio"];
+}
+else
+{
+	excludeSourceFiles=[INPUT_DIR."/spatial_audio.cxx"];
+}
+addShaderPaths=[INPUT_DIR];
 addCommandLineArguments=[
 	'gui:"'.CGV_DIR.'/plugins/examples/examples.gui"',
 	'config:"'.CGV_DIR.'/plugins/examples/config.def"',
-	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/libs/plot/glsl;".CGV_DIR."/libs/cgv_gl/glsl;".CGV_DIR."/libs/cgv_proc/glsl;".CGV_DIR."/libs/cgv_glutil/glsl'","cg_fltk")
+	after("SHADER_PATHS", "cg_fltk")
 ];

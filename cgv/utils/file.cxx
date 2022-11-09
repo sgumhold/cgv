@@ -1,19 +1,22 @@
 #include "file.h"
 
 #include <cgv/type/standard_types.h>
-
+#include <string.h>
+#include <vector>
 #ifdef _WIN32
 #include <io.h>
 #include <fcntl.h>
-#include <string.h>
 #else
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <iostream>
-#include <string.h>
 #include <glob.h>
+#endif
+
+#if __cplusplus >= 201703L
+#include <filesystem>
 #endif
 
 namespace cgv {
@@ -174,16 +177,29 @@ Result cmp(const std::string& what, const std::string& with)
 
 size_t size(const std::string& file_name, bool ascii)
 {
-	void* handle = find_first(file_name);
-	if (handle == 0)
-		return (size_t)-1;
-	return find_size(handle);
+#if __cplusplus >= 201703L
+	return std::filesytem::file_size(file_name);
+#else
 #ifdef _WIN32
-	int fh = _open(file_name.c_str(), ascii ? _O_RDONLY : (_O_BINARY | _O_RDONLY) );
-	if (fh == -1) return (size_t)-1;
-	size_t l = _filelength(fh);
-	_close(fh);
-	return l;
+	if (ascii) {
+		void* handle = find_first(file_name);
+		if (handle == 0)
+			return (size_t)-1;
+		return find_size(handle);
+	}
+	else {
+		FILE* fp = fopen(file_name.c_str(), ascii ? "r" : "rb");
+		if (fp == 0)
+			return 0;
+		size_t s = 0;
+		if (fseek(fp, 0, SEEK_END) == 0) {
+			fpos_t pos;
+			fgetpos(fp, &pos);
+			s = size_t(pos);
+		}
+		fclose(fp);
+		return s;
+	}
 #else
 	int fh = ::open(file_name.c_str(), O_RDONLY);
 	if (fh == -1)
@@ -192,6 +208,7 @@ size_t size(const std::string& file_name, bool ascii)
 	fstat(fh, &fileinfo);
 	close(fh);
 	return fileinfo.st_size;
+#endif
 #endif
 }
 
@@ -202,7 +219,8 @@ bool read(const std::string& filename, char* ptr, size_t size, bool ascii, size_
 	if (fp == 0)
 		return false;
 	if (file_offset != 0) {
-		if (::fseek(fp, (long)file_offset, SEEK_SET) != 0)
+		fpos_t fo = file_offset;
+		if (::fsetpos(fp, &fo) != 0)
 			return false;
 	}
 	size_t n = ::fread(ptr, 1, size, fp);
@@ -269,6 +287,24 @@ bool append(const std::string& file_name, const char* ptr, size_t size, bool asc
 	return res;
 }
 
+bool append(const std::string& file_name_1, const std::string& file_name_2, bool ascii)
+{
+	const size_t buffer_size = 10000000;
+	size_t N = cgv::utils::file::size(file_name_2, ascii);
+	std::vector<char> buffer(buffer_size, 0);
+	size_t off = 0;
+	while (off < N) {
+		size_t n = N - off;
+		if (n > buffer_size)
+			n = buffer_size;
+		if (!cgv::utils::file::read(file_name_2, &buffer.front(), n, ascii, off))
+			return false;
+		if (!cgv::utils::file::append(file_name_1, &buffer.front(), n, ascii))
+			return false;
+		off += n;
+	}
+	return true;
+}
 
 #ifdef _WIN32
 struct FileInfo
@@ -522,9 +558,7 @@ char to_lower(char c)
 	if (c >= 'A' && c <= 'Z')
 		return (c-'A')+'a';
 	switch (c) {
-        case 0xD6 : return 0xF6; // Oe -> oe
-		case 0xDC : return 0xFC; // Ue -> ue
-		case 0xC4 : return 0xE4; // Ae -> ae		default: return c;
+		default: return c;
 	}
 }
 

@@ -8,13 +8,13 @@
 #include <cgv/media/image/image_reader.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/texture.h>
-#include <cgv_glutil/cone_render_data.h>
-#include <cgv_glutil/sphere_render_data.h>
+#include <cgv_gl/cone_render_data.h>
+#include <cgv_gl/sphere_render_data.h>
 
 class cone_texturing : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
 protected:
 	cgv::render::cone_render_style cone_style;
-	cgv::glutil::cone_render_data<> rd;
+	cgv::render::cone_render_data<> rd;
 
 	cgv::render::texture tex;
 public:
@@ -92,9 +92,9 @@ public:
 class cone_tree : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
 protected:
 	cgv::render::cone_render_style stem_style;
-	cgv::glutil::cone_render_data<> stems;
+	cgv::render::cone_render_data<> stems;
 	cgv::render::sphere_render_style leave_style;
-	cgv::glutil::sphere_render_data<> leaves;
+	cgv::render::sphere_render_data<> leaves;
 	
 	cgv::render::texture tex;
 

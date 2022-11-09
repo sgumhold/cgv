@@ -13,16 +13,13 @@
 #include <cgv/render/vertex_buffer.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/gl/gl_context.h>
-
-#include <cgv_glutil/msdf_gl_canvas_font_renderer.h>
-#include <cgv_glutil/generic_renderer.h>
-
-#include <cgv_glutil/2d/draggable.h>
-#include <cgv_glutil/2d/draggables_collection.h>
-#include <cgv_glutil/2d/rect.h>
-
-#include <cgv_glutil/2d/canvas.h>
-#include <cgv_glutil/2d/shape2d_styles.h>
+#include <cgv_gl/generic_renderer.h>
+#include <cgv_g2d/canvas.h>
+#include <cgv_g2d/draggable.h>
+#include <cgv_g2d/draggables_collection.h>
+#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/rect.h>
+#include <cgv_g2d/shape2d_styles.h>
 
 using namespace cgv::render;
 
@@ -35,7 +32,7 @@ class shapes_2d :
 private:
 	/** Define a helper struct for a circle-shaped draggable control point.
 	*/
-	struct point : public cgv::glutil::draggable {
+	struct point : public cgv::g2d::draggable {
 		point(const ivec2& pos) {
 			this->pos = pos;
 			size = vec2(8.0f);
@@ -59,26 +56,26 @@ private:
 	};
 
 protected:
-	cgv::glutil::rect viewport_rect;
+	cgv::g2d::rect viewport_rect;
 
-	cgv::glutil::canvas canvas;
-	cgv::glutil::shape2d_style bg_style, rect_style, circle_style, quad_style, text_style, draggable_style;
-	cgv::glutil::line2d_style line_style, control_line_style;
-	cgv::glutil::arrow2d_style arrow_style;
-	cgv::glutil::grid2d_style grid_style;
+	cgv::g2d::canvas canvas;
+	cgv::g2d::shape2d_style bg_style, rect_style, circle_style, quad_style, text_style, draggable_style;
+	cgv::g2d::line2d_style line_style, control_line_style;
+	cgv::g2d::arrow2d_style arrow_style;
+	cgv::g2d::grid2d_style grid_style;
 
 	bool show_background;
 	cgv::render::texture background_tex;
 	cgv::render::texture image_tex;
 	
 	std::vector<point> points;
-	cgv::glutil::draggables_collection<point*> line_handles;
-	cgv::glutil::draggables_collection<point*> arrow_handles;
-	cgv::glutil::draggables_collection<point*> curve_handles;
-	cgv::glutil::draggables_collection<point*> text_handles;
-	cgv::glutil::draggables_collection<point*> quad_handles;
+	cgv::g2d::draggables_collection<point*> line_handles;
+	cgv::g2d::draggables_collection<point*> arrow_handles;
+	cgv::g2d::draggables_collection<point*> curve_handles;
+	cgv::g2d::draggables_collection<point*> text_handles;
+	cgv::g2d::draggables_collection<point*> quad_handles;
 
-	cgv::glutil::generic_renderer line_renderer, spline_renderer, point_renderer;
+	cgv::render::generic_renderer line_renderer, spline_renderer, point_renderer;
 	
 	// TODO: find way to use ivec2 and vec2 as attribs
 	DEFINE_GENERIC_RENDER_DATA_CLASS(point_geometry, 1, vec2, position);
@@ -125,9 +122,9 @@ protected:
 	cgv::render::TextAlignment text_align_h, text_align_v;
 	float text_angle = 0.0f;
 
-	cgv::glutil::msdf_font msdf_font;
-	cgv::glutil::msdf_text_geometry texts;
-	cgv::glutil::msdf_gl_canvas_font_renderer font_renderer;
+	cgv::g2d::msdf_font msdf_font;
+	cgv::g2d::msdf_text_geometry texts;
+	cgv::g2d::msdf_gl_canvas_font_renderer font_renderer;
 
 	// test variables
 	struct {
@@ -143,16 +140,16 @@ public:
 		
 		show_background = true;
 
-		canvas.register_shader("rectangle", cgv::glutil::canvas::shaders_2d::rectangle);
-		canvas.register_shader("circle", cgv::glutil::canvas::shaders_2d::circle);
-		canvas.register_shader("ellipse", cgv::glutil::canvas::shaders_2d::ellipse);
-		canvas.register_shader("quad", cgv::glutil::canvas::shaders_2d::quad);
-		canvas.register_shader("arrow", cgv::glutil::canvas::shaders_2d::arrow);
-		canvas.register_shader("grid", cgv::glutil::canvas::shaders_2d::grid);
+		canvas.register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
+		canvas.register_shader("circle", cgv::g2d::canvas::shaders_2d::circle);
+		canvas.register_shader("ellipse", cgv::g2d::canvas::shaders_2d::ellipse);
+		canvas.register_shader("quad", cgv::g2d::canvas::shaders_2d::quad);
+		canvas.register_shader("arrow", cgv::g2d::canvas::shaders_2d::arrow);
+		canvas.register_shader("grid", cgv::g2d::canvas::shaders_2d::grid);
 
-		line_renderer = cgv::glutil::generic_renderer(cgv::glutil::canvas::shaders_2d::line);
-		spline_renderer = cgv::glutil::generic_renderer(cgv::glutil::canvas::shaders_2d::cubic_spline);
-		point_renderer = cgv::glutil::generic_renderer(cgv::glutil::canvas::shaders_2d::circle);
+		line_renderer = cgv::render::generic_renderer(cgv::g2d::canvas::shaders_2d::line);
+		spline_renderer = cgv::render::generic_renderer(cgv::g2d::canvas::shaders_2d::cubic_spline);
+		point_renderer = cgv::render::generic_renderer(cgv::g2d::canvas::shaders_2d::circle);
 
 		text_align_h = text_align_v = cgv::render::TA_NONE;
 
@@ -544,7 +541,7 @@ public:
 
 		grid_style.fill_color = rgba(1.0f);
 		grid_style.border_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
-		grid_style.pattern = cgv::glutil::grid2d_style::GP_CHECKER;
+		grid_style.pattern = cgv::g2d::grid2d_style::GP_CHECKER;
 		grid_style.scale = 0.5f;
 
 		// set control line style
@@ -575,7 +572,7 @@ public:
 		arrow_style.head_width = 40.0f;
 		arrow_style.use_fill_color = false;
 	}
-	void set_default_shape_style(cgv::glutil::shape2d_style& s) {
+	void set_default_shape_style(cgv::g2d::shape2d_style& s) {
 		s.fill_color = light_blue;
 		s.border_color = blue;
 		s.border_width = 5.0f;

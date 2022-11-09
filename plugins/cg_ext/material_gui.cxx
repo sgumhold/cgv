@@ -69,40 +69,40 @@ struct surface_material_gui_creator : public gui_creator
 			surface_mat = reinterpret_cast<surface_material*>(value_ptr);
 
 		cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
-		p->add_member_control(b, "brdf_type", surface_mat->ref_brdf_type(), "dropdown", "enums='Lambert,OrenNayar,Strauss,undef,\
-Lambert+Phong,OrenNayar+Phong,Strauss+Phong,+Phong,\
-Lambert+Blinn,OrenNayar+Blinn,Strauss+Blinn,+Blinn,\
-Lambert+CookTorrance,OrenNayar+CookTorrance,Strauss+CookTorrance,+CookTorrance,\
-Lambert+Strauss,OrenNayar+Strauss,Strauss+Strauss,+Strauss'");
-		p->add_member_control(b, "diffuse_reflectance", surface_mat->ref_diffuse_reflectance(), "color<float,RGB>");
-		p->add_member_control(b, "roughness", surface_mat->ref_roughness(), "value_slider", "min=0;max=1;ticks=true");
-		p->add_member_control(b, "metalness", surface_mat->ref_metalness(), "value_slider", "min=0;max=1;ticks=true");
-		p->add_member_control(b, "ambient_occlusion", surface_mat->ref_ambient_occlusion(), "value_slider", "min=0;max=1;ticks=true");
-		p->add_member_control(b, "emission", surface_mat->ref_emission(), "color<float,RGB>");
-		p->add_member_control(b, "transparency", surface_mat->ref_transparency(), "value_slider", "min=0;max=1;ticks=true");
-		p->add_member_control(b, "propagation_slow_down_re", reinterpret_cast<float(&)[2]>(surface_mat->ref_propagation_slow_down())[0], "value_slider", "min=1;max=10;ticks=true;log=true");
-		p->add_member_control(b, "propagation_slow_down_im", reinterpret_cast<float(&)[2]>(surface_mat->ref_propagation_slow_down())[1], "value_slider", "min=0;max=10;ticks=true;log=true");
-		p->add_member_control(b, "roughness_anisotropy", surface_mat->ref_roughness_anisotropy(), "value_slider", "min=0;max=1;ticks=true");
-		p->add_member_control(b, "roughness_orientation", surface_mat->ref_roughness_orientation(), "value_slider", "min=0;max=1;ticks=true");
-		p->add_member_control(b, "specular_reflectance", surface_mat->ref_specular_reflectance(), "color<float,RGB>");
+		p->add_member_control(b, "BRDF Type", surface_mat->ref_brdf_type(), "dropdown", "enums='Lambert,Oren-Nayar,Strauss,Undefined,\
+Lambert + Phong,Oren-Nayar + Phong,Strauss + Phong,+ Phong,\
+Lambert + Blinn,Oren-Nayar + Blinn,Strauss + Blinn,+ Blinn,\
+Lambert + Cook-Torrance,Oren-Nayar + Cook-Torrance,Strauss + Cook-Torrance,+ Cook-Torrance,\
+Lambert + Strauss,Oren-Nayar + Strauss,Strauss + Strauss,+ Strauss'");
+		p->add_member_control(b, "Diffuse Reflectance", surface_mat->ref_diffuse_reflectance(), "color<float,RGB>");
+		p->add_member_control(b, "Specular Reflectance", surface_mat->ref_specular_reflectance(), "color<float,RGB>");
+		p->add_member_control(b, "Roughness", surface_mat->ref_roughness(), "value_slider", "min=0;max=1;ticks=true");
+		p->add_member_control(b, "Metalness", surface_mat->ref_metalness(), "value_slider", "min=0;max=1;ticks=true");
+		p->add_member_control(b, "Ambient Occlusion", surface_mat->ref_ambient_occlusion(), "value_slider", "min=0;max=1;ticks=true");
+		p->add_member_control(b, "Emission", surface_mat->ref_emission(), "color<float,RGB>");
+		p->add_member_control(b, "Transparency", surface_mat->ref_transparency(), "value_slider", "min=0;max=1;ticks=true");
+		p->add_member_control(b, "Propagation Slowdown Re", reinterpret_cast<float(&)[2]>(surface_mat->ref_propagation_slow_down())[0], "value_slider", "min=1;max=10;ticks=true;log=true");
+		p->add_member_control(b, "Propagation Slowdown Im", reinterpret_cast<float(&)[2]>(surface_mat->ref_propagation_slow_down())[1], "value_slider", "min=0;max=10;ticks=true;log=true");
+		p->add_member_control(b, "Roughness Anisotropy", surface_mat->ref_roughness_anisotropy(), "value_slider", "min=0;max=1;ticks=true");
+		p->add_member_control(b, "Roughness Orientation", surface_mat->ref_roughness_orientation(), "value_slider", "min=0;max=1;ticks=true");
 		if (textured_mat) {
 			for (unsigned i=0; i<textured_mat->get_nr_image_files(); ++i)
 				p->add_view("image", textured_mat->get_image_file_name(i));
-			p->add_member_control(b, "sRGB textures", textured_mat->ref_sRGBA_textures(), "check");
+			p->add_member_control(b, "sRGB Textures", textured_mat->ref_sRGBA_textures(), "check");
 			std::string opt = "min=-1;max=";
 			opt += cgv::utils::to_string((int)textured_mat->get_nr_textures() - 1);
 			opt += ";ticks=true";
-			p->add_member_control(b, "diffuse_index", textured_mat->ref_diffuse_index(), "value_slider", opt);
-			p->add_member_control(b, "roughness_index", textured_mat->ref_roughness_index(), "value_slider", opt);
-			p->add_member_control(b, "metalness_index", textured_mat->ref_metalness_index(), "value_slider", opt);
-			p->add_member_control(b, "ambient_index", textured_mat->ref_ambient_index(), "value_slider", opt);
-			p->add_member_control(b, "emission_index", textured_mat->ref_emission_index(), "value_slider", opt);
-			p->add_member_control(b, "transparency_index", textured_mat->ref_transparency_index(), "value_slider", opt);
-//			p->add_member_control(b, "propagation_slow_down_index", textured_mat->ref_propagation_slow_down(), "value_slider", opt);
-			p->add_member_control(b, "specular_index", textured_mat->ref_specular_index(), "value_slider", opt);
-			p->add_member_control(b, "normal_index", textured_mat->ref_normal_index(), "value_slider", opt);
-			p->add_member_control(b, "bump_index", textured_mat->ref_bump_index(), "value_slider", opt);
-			p->add_member_control(b, "bump_scale", textured_mat->ref_bump_scale(), "value_slider", "min=0;max=10;log=true;ticks=true");
+			p->add_member_control(b, "Diffuse Index", textured_mat->ref_diffuse_index(), "value_slider", opt);
+			p->add_member_control(b, "Roughness Index", textured_mat->ref_roughness_index(), "value_slider", opt);
+			p->add_member_control(b, "Metalness Index", textured_mat->ref_metalness_index(), "value_slider", opt);
+			p->add_member_control(b, "Ambient Index", textured_mat->ref_ambient_index(), "value_slider", opt);
+			p->add_member_control(b, "Emission Index", textured_mat->ref_emission_index(), "value_slider", opt);
+			p->add_member_control(b, "Transparency Index", textured_mat->ref_transparency_index(), "value_slider", opt);
+//			p->add_member_control(b, "Propagation Slowdown Index", textured_mat->ref_propagation_slow_down(), "value_slider", opt);
+			p->add_member_control(b, "Specular Index", textured_mat->ref_specular_index(), "value_slider", opt);
+			p->add_member_control(b, "Normal Index", textured_mat->ref_normal_index(), "value_slider", opt);
+			p->add_member_control(b, "Bump Index", textured_mat->ref_bump_index(), "value_slider", opt);
+			p->add_member_control(b, "Bump Scale", textured_mat->ref_bump_scale(), "value_slider", "min=0;max=10;log=true;ticks=true");
 		}
 		return true;
 	}

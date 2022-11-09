@@ -2,8 +2,6 @@
 
 #include <cgv/render/context.h>
 #include <cgv/render/shader_program.h>
-//#include <cgv/render/vertex_buffer.h>
-//#include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/gl/gl_context.h>
 
 #include "attribute_array_manager.h"

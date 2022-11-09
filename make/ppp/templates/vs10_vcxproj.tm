@@ -6,9 +6,14 @@
   <ItemGroup>
 @for(:>j=0; j<!F[F[i]]; ++j)@{@//
 @if(F[F[i]][j] ~~ STRING)@{@//
-    <@(F[i]) Include=@"F[F[i]][j]*clean_path" />
-@}
-	@else@{@//
+    @define(fp = F[F[i]][j]*clean_path)@//
+    @if(pj::objectFileMap[fp]~~UNDEF)@{@//
+    <@(F[i]) Include=@"fp" />
+@}@else@{@//
+    <@(F[i]) Include=@"fp">
+        <ObjectFileName>$(IntDir)\@(pj::objectFileMap[fp]).obj</ObjectFileName>
+    </@(F[i])>
+@}@}@else@{@//
     <@(F[i]) Include=@"F[F[i]][j][0]*clean_path">
 @for(:>k=0; k<!F[F[i]][j][1]; ++k)@{@//
       <ExcludedFromBuild Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='".config_name[F[F[i]][j][1][k]]."|".vs_platform."'".'"')>true</ExcludedFromBuild>

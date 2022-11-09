@@ -212,6 +212,8 @@ void fltk_viewer_window::theme_change_cb() {
 		ti.border(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_TEXT_COLOR), r, g, b);
 		ti.text(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_TEXT_BACKGROUND_COLOR), r, g, b);
+		ti.text_background(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_SELECTION_COLOR), r, g, b);
 		ti.selection(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_HIGHLIGHT_COLOR), r, g, b);
@@ -662,84 +664,150 @@ void fltk_viewer_window::remove_all_children()
 		remove_child(get_child(--i));
 }
 
+void fltk_viewer_window::set_fullscreen(MonitorSelection ms)
+{
+	const fltk::Monitor* mons;
+	int n = fltk::Monitor::list(&mons);
+	cgv::media::axis_aligned_box<int, 2> rect;
+	if ((ms & MS_MONITOR_1) != 0)
+		rect.add_axis_aligned_box(cgv::media::axis_aligned_box<int, 2>(
+			cgv::math::fvec<int, 2>(mons[0].work.x(), mons[0].work.y()),
+			cgv::math::fvec<int, 2>(mons[0].work.x() + mons[0].work.w(), mons[0].work.y() + mons[0].work.h())));
+	if ((ms & MS_MONITOR_2) != 0)
+		rect.add_axis_aligned_box(cgv::media::axis_aligned_box<int, 2>(
+			cgv::math::fvec<int, 2>(mons[1].work.x(), mons[1].work.y()),
+			cgv::math::fvec<int, 2>(mons[1].work.x() + mons[1].work.w(), mons[1].work.y() + mons[1].work.h())));
+	if ((ms & MS_MONITOR_3) != 0)
+		rect.add_axis_aligned_box(cgv::media::axis_aligned_box<int, 2>(
+			cgv::math::fvec<int, 2>(mons[2].work.x(), mons[2].work.y()),
+			cgv::math::fvec<int, 2>(mons[2].work.x() + mons[2].work.w(), mons[2].work.y() + mons[2].work.h())));
+	if ((ms & MS_MONITOR_4) != 0)
+		rect.add_axis_aligned_box(cgv::media::axis_aligned_box<int, 2>(
+			cgv::math::fvec<int, 2>(mons[3].work.x(), mons[3].work.y()),
+			cgv::math::fvec<int, 2>(mons[3].work.x() + mons[3].work.w(), mons[3].work.y() + mons[3].work.h())));
+	if (rect.is_valid()) {
+		fltk::Monitor my_mon;
+		my_mon.x(rect.get_min_pnt()[0]);
+		my_mon.y(rect.get_min_pnt()[1]);
+		my_mon.w(rect.get_extent()[0]);
+		my_mon.h(rect.get_extent()[1]);
+		fullscreen(my_mon);
+	}
+	else
+		fullscreen();
+}
 
 /// set a different window state
 void fltk_viewer_window::set_window_state(WindowState ws, MonitorSelection ms, bool update_control)
 {
 	if (ws == window_state && ms == fullscreen_monitors)
 		return;
-	if (!(ws == window_state && ws != WS_FULLSCREEN)) {
-		switch (window_state) {
-		case WS_REGULAR:
-			break;
-		case WS_MINIMIZED:
-			show(false);
-			break;
-		case WS_MAXIMIZED:
-			resize(old_x, old_y, old_w, old_h);
-			break;
-		case WS_FULLSCREEN:
-			fullscreen_off(old_x, old_y, old_w, old_h);
-			break;
-		}
-
-		switch (ws) {
-		case WS_REGULAR :
-			break;
-		case WS_MINIMIZED :
-			iconize();
-			break;
-		case WS_MAXIMIZED :
-			old_x = x();
-			old_y = y();
-			old_w = w();
-			old_h = h();
-			{
-				fltk::Rectangle r;
-				borders(&r);
-				const fltk::Monitor& m = fltk::Monitor::find(x(),y());
-				resize(-r.x(),-r.y(),m.w()-r.w(),m.h()-r.h());
-			}
-			break;
-		case WS_FULLSCREEN:
-			old_x = x();
-			old_y = y();
-			old_w = w();
-			old_h = h();
-			{
-				const fltk::Monitor* mons;
-				int n = fltk::Monitor::list(&mons);
-				cgv::media::axis_aligned_box<int, 2> rect;
-				if ((ms & MS_MONITOR_1) != 0)
-					rect.add_axis_aligned_box(cgv::media::axis_aligned_box<int, 2>(
-						cgv::math::fvec<int, 2>(mons[0].work.x(), mons[0].work.y()),
-						cgv::math::fvec<int, 2>(mons[0].work.x() + mons[0].work.w(), mons[0].work.y() + mons[0].work.h())));
-				if ((ms & MS_MONITOR_2) != 0)
-					rect.add_axis_aligned_box(cgv::media::axis_aligned_box<int, 2>(
-						cgv::math::fvec<int, 2>(mons[1].work.x(), mons[1].work.y()),
-						cgv::math::fvec<int, 2>(mons[1].work.x() + mons[1].work.w(), mons[1].work.y() + mons[1].work.h())));
-				if ((ms & MS_MONITOR_3) != 0)
-					rect.add_axis_aligned_box(cgv::media::axis_aligned_box<int, 2>(
-						cgv::math::fvec<int, 2>(mons[2].work.x(), mons[2].work.y()),
-						cgv::math::fvec<int, 2>(mons[2].work.x() + mons[2].work.w(), mons[2].work.y() + mons[2].work.h())));
-				if ((ms & MS_MONITOR_4) != 0)
-					rect.add_axis_aligned_box(cgv::media::axis_aligned_box<int, 2>(
-						cgv::math::fvec<int, 2>(mons[3].work.x(), mons[3].work.y()),
-						cgv::math::fvec<int, 2>(mons[3].work.x() + mons[3].work.w(), mons[3].work.y() + mons[3].work.h())));
-				if (rect.is_valid()) {
-					fltk::Monitor my_mon;
-					my_mon.x(rect.get_min_pnt()[0]);
-					my_mon.y(rect.get_min_pnt()[1]);
-					my_mon.w(rect.get_extent()[0] );
-					my_mon.h(rect.get_extent()[1] );
-					fullscreen(my_mon);
-				}
-				else
-					fullscreen();
-			}
-			break;
-		}
+	// in case of previously minimized, recover window state before minimization
+	if (window_state == WS_MINIMIZED) {
+		fltk::Window::show();
+		window_state = old_window_state;
+		old_window_state = WS_REGULAR;
 	}
+	// in case of turning off fullscreen, recover window size and state before
+	if ((window_state == WS_FULLSCREEN) && (ws != WS_FULLSCREEN)) {
+		fullscreen_off(old_x, old_y, old_w, old_h);
+		window_state = old_window_state;
+	}
+	if (window_state == WS_REGULAR) {
+		old_x = x();
+		old_y = y();
+		old_w = w();
+		old_h = h();
+	}
+	// finally switch to new window state
+	switch (ws) {
+	case WS_REGULAR:
+		if (window_state != WS_REGULAR)
+			resize(old_x, old_y, old_w, old_h);
+		break;
+	case WS_MINIMIZED:
+		fltk::Window::iconize();
+		break;
+	case WS_MAXIMIZED:
+		fltk::Window::maximize();
+		break;
+	case WS_FULLSCREEN :
+		set_fullscreen(ms);
+		break;
+	}
+//		switch (window_state) {
+//		case WS_REGULAR:
+//			break;
+//		case WS_MINIMIZED:
+//			show(false);
+//			break;
+//		case WS_MAXIMIZED:
+//			resize(old_x, old_y, old_w, old_h);
+//			break;
+//		case WS_FULLSCREEN:
+//			fullscreen_off(old_x, old_y, old_w, old_h);
+//			break;
+//		}
+
+//		switch (ws) {
+//		case WS_REGULAR :
+//			show();
+//			break;
+//		case WS_MINIMIZED :
+//			iconize();
+//			break;
+//		case WS_MAXIMIZED :
+//			old_x = x();
+//			old_y = y();
+//			old_w = w();
+//			old_h = h();
+//			{
+//				maximize();
+//				//fltk::Rectangle r;
+//				//borders(&r);
+//				//const fltk::Monitor& m = fltk::Monitor::find(x(),y());
+//				//resize(-r.x(),-r.y(),m.w()-r.w(),m.h()-r.h());
+//			}
+//			break;
+//		case WS_FULLSCREEN:
+//			old_x = x();
+//			old_y = y();
+//			old_w = w();
+//			old_h = h();
+//			{
+//				const fltk::Monitor* mons;
+//				int n = fltk::Monitor::list(&mons);
+//				cgv::media::axis_aligned_box<int, 2> rect;
+//				if ((ms & MS_MONITOR_1) != 0)
+//					rect.add_axis_aligned_box(cgv::media::axis_aligned_box<int, 2>(
+//						cgv::math::fvec<int, 2>(mons[0].work.x(), mons[0].work.y()),
+//						cgv::math::fvec<int, 2>(mons[0].work.x() + mons[0].work.w(), mons[0].work.y() + mons[0].work.h())));
+//				if ((ms & MS_MONITOR_2) != 0)
+//					rect.add_axis_aligned_box(cgv::media::axis_aligned_box<int, 2>(
+//						cgv::math::fvec<int, 2>(mons[1].work.x(), mons[1].work.y()),
+//						cgv::math::fvec<int, 2>(mons[1].work.x() + mons[1].work.w(), mons[1].work.y() + mons[1].work.h())));
+//				if ((ms & MS_MONITOR_3) != 0)
+//					rect.add_axis_aligned_box(cgv::media::axis_aligned_box<int, 2>(
+//						cgv::math::fvec<int, 2>(mons[2].work.x(), mons[2].work.y()),
+//						cgv::math::fvec<int, 2>(mons[2].work.x() + mons[2].work.w(), mons[2].work.y() + mons[2].work.h())));
+//				if ((ms & MS_MONITOR_4) != 0)
+//					rect.add_axis_aligned_box(cgv::media::axis_aligned_box<int, 2>(
+//						cgv::math::fvec<int, 2>(mons[3].work.x(), mons[3].work.y()),
+//						cgv::math::fvec<int, 2>(mons[3].work.x() + mons[3].work.w(), mons[3].work.y() + mons[3].work.h())));
+//				if (rect.is_valid()) {
+//					fltk::Monitor my_mon;
+//					my_mon.x(rect.get_min_pnt()[0]);
+//					my_mon.y(rect.get_min_pnt()[1]);
+//					my_mon.w(rect.get_extent()[0] );
+//					my_mon.h(rect.get_extent()[1] );
+//					fullscreen(my_mon);
+//				}
+//				else
+//					fullscreen();
+//			}
+//			break;
+//		}
+//	}
 	window_state = ws;
 	fullscreen_monitors = ms;
 	if (update_control) {

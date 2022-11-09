@@ -11,10 +11,14 @@ add_subdirectory(png)
 add_subdirectory(tiff)
 add_subdirectory(zlib)
 add_subdirectory(screen_capture_lite)
+if(CGV_BUILD_WITH_AUDIO)
+	add_subdirectory(openal-soft)
+	add_subdirectory(sndfile)
+endif()
 
-if (WIN32)
-    # FIXME webserver can only be built on Windows
-    add_subdirectory(webserver)
-endif ()
+if(WIN32)
+	# FIXME webserver can only be built on Windows
+	add_subdirectory(webserver)
+endif()
 
 install(EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
