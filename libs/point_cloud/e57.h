@@ -5,6 +5,7 @@
 #include <fstream>
 #include "point_cloud.h"
 #include "xml.h"
+#include <type_traits>
 
 namespace cgv {
 namespace pointcloud {
@@ -15,6 +16,7 @@ enum class e57_error_code {
 	XML_ERROR,
 	BAD_CHECKSUM,
 	XML_STRUCTURE_ERROR,
+	TYPE_MISMATCH_ERROR,
 	UNSUPPORTED_OPERATION
 };
 
@@ -117,17 +119,19 @@ struct structure_element
 	std::string type;
 	std::string name;
 	std::string value;
-	int size; //unused
+	xml_tag_node* node_ptr;
 
 	structure_element();
 };
 
 // structure of multiple data types
-struct structure_node
+struct structure_node_adapter
 {
-	std::vector<structure_element> elements;
+	xml_tag_node* struct_node_ptr;
+	std::vector<structure_element> elements_cache;
   public:
-	structure_node(xml_tag_node* xml = nullptr);
+	structure_node_adapter(xml_tag_node* xml = nullptr);
+	const std::vector<structure_element>& members();
 	void parse_xml_node(xml_tag_node* node);
 };
 
@@ -165,6 +169,45 @@ struct compressed_vector_section_header
 	uint64_t index_physical_offset;	 // offset of first index packet
 
 	compressed_vector_section_header();
+};
+
+enum class data_type {
+	FLOAT,
+	DOUBLE,
+	INT,
+	NONE
+};
+
+struct data_channel
+{
+	void* vector_ptr; //points to a std::vector<> object
+	unsigned element_size;
+	data_type type; // data type stored in this channel
+
+	data_channel(data_type type);
+
+	template <typename T>
+	bool check_type() {
+		switch (type) {
+		case data_type::FLOAT:
+			return std::is_same<T, float>::value;
+		case data_type::INT:
+			return std::is_same<T, int32_t>::value;
+		case data_type::DOUBLE:
+			return std::is_same<T, double>::value;
+		case data_type::NONE:
+			return std::is_same<T, void>::value;
+		default:
+			return false;
+		}
+	}
+
+	template<typename T>
+	std::vector<T>& as_vector() {
+		if (!check_type()) //dynamic type check
+			throw e57_parsing_error(e57_error_code::TYPE_MISMATCH_ERROR);
+		return static_cast<std::vector<T>*>(vector_ptr);
+	}
 };
 
 } // namespace e57
