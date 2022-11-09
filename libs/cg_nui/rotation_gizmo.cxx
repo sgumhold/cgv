@@ -124,6 +124,13 @@ void cgv::nui::rotation_gizmo::on_handle_released()
 
 void cgv::nui::rotation_gizmo::on_handle_drag()
 {
+	vec3 anchor_obj_parent_global_translation;
+	quat anchor_obj_parent_global_rotation;
+	vec3 anchor_obj_parent_global_scale;
+	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj->get_parent()),
+		anchor_obj_parent_global_translation, anchor_obj_parent_global_rotation, anchor_obj_parent_global_scale);
+
+
 	vec3 axis_origin = vec3(0.0f);
 	vec3 axis;
 	axis = axes_directions[prim_idx];
@@ -143,6 +150,24 @@ void cgv::nui::rotation_gizmo::on_handle_drag()
 
 	vec3 direction_at_grab = cross(cross(axis, ii_at_grab.query_point - axis_origin), axis);
 	vec3 direction_currently = cross(cross(axis, closest_point - axis_origin), axis);
+
+	if (use_absolute_rotation) {
+		direction_at_grab = anchor_obj_parent_global_rotation.apply(direction_at_grab);
+		direction_currently = anchor_obj_parent_global_rotation.apply(direction_currently);
+		axis = anchor_obj_parent_global_rotation.apply(axis);
+	}
+	else
+	{
+		vec3 anchor_obj_global_translation;
+		quat anchor_obj_global_rotation;
+		vec3 anchor_obj_global_scale;
+		transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj),
+			anchor_obj_global_translation, anchor_obj_global_rotation, anchor_obj_global_scale);
+		quat anchor_obj_local_rotation = anchor_obj_parent_global_rotation.inverse() * anchor_obj_global_rotation;
+		direction_at_grab = anchor_obj_local_rotation.apply(direction_at_grab);
+		direction_currently = anchor_obj_local_rotation.apply(direction_currently);
+		axis = anchor_obj_local_rotation.apply(axis);
+	}
 
 	float s = dot(cross(direction_at_grab, direction_currently), axis);
 	float c = dot(direction_at_grab, direction_currently);
