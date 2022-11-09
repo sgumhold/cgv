@@ -1,0 +1,69 @@
+#version 150
+
+//***** begin interface of shape2d.glsl ***********************************
+vec2 get_adjusted_size(vec2 size);
+vec4 get_active_color(vec4 color);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+//***** begin interface of fragment2d.glfs ***********************************
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
+void finish_fragment2d(in vec4 color);
+void finish_fragment2d(in vec4 color, in vec2 texcoords);
+//***** end interface of fragment2d.glfs ***********************************
+
+flat in vec2 size;
+in vec2 pix_coord;
+in vec2 tex_coord;
+flat in vec4 color_fs;
+
+// https://iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
+float sd_circle(in vec2 p, in float r )
+{
+    return length(p) - r;
+}
+
+float sd_ellipse(in vec2 p, in vec2 ab)
+{
+    p = abs(p);
+	if(p.x > p.y) {
+		p = p.yx;
+		ab = ab.yx;
+	}
+
+    float l = ab.y*ab.y - ab.x*ab.x;
+    float m = ab.x*p.x/l;      float m2 = m*m; 
+    float n = ab.y*p.y/l;      float n2 = n*n; 
+    float c = (m2+n2-1.0)/3.0; float c3 = c*c*c;
+    float q = c3 + m2*n2*2.0;
+    float d = c3 + m2*n2;
+    float g = m + m*n2;
+    float co;
+    if(d < 0.0) {
+        float h = acos(q/c3)/3.0;
+        float s = cos(h);
+        float t = sin(h)*sqrt(3.0);
+        float rx = sqrt(-c*(s + t + 2.0) + m2);
+        float ry = sqrt(-c*(s - t + 2.0) + m2);
+        co = (ry+sign(l)*rx+abs(g)/(rx*ry)- m)/2.0;
+    } else {
+        float h = 2.0*m*n*sqrt(d);
+        float s = sign(q+h)*pow(abs(q+h), 1.0/3.0);
+        float u = sign(q-h)*pow(abs(q-h), 1.0/3.0);
+        float rx = -s - u - c*4.0 + 2.0*m2;
+        float ry = (s - u)*sqrt(3.0);
+        float rm = sqrt(rx*rx + ry*ry);
+        co = (ry/sqrt(rm-rx)+2.0*g/rm-m)/2.0;
+    }
+    vec2 r = ab * vec2(co, sqrt(1.0-co*co));
+    return length(r-p) * sign(p.y-r.y);
+}
+
+void main() {
+	
+	vec2 adjusted_size = get_adjusted_size(size);
+	float dist = abs(adjusted_size.x - adjusted_size.y) < 0.001 ? sd_circle(pix_coord, adjusted_size.x) : sd_ellipse(pix_coord, adjusted_size);
+	vec4 color = get_active_color(color_fs);
+	finish_sdf_fragment2d(dist, color, tex_coord);
+}

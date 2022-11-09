@@ -398,7 +398,7 @@ bool read_data_file(const std::string& file_name, std::string& content, bool asc
 		return file::read(file_name, content, ascii);
 	unsigned int n = data_file_size(file_name);
 	content.resize(n);
-	FILE* fp = open_data_file(file_name, ascii?"ra":"rb");
+	FILE* fp = open_data_file(file_name, ascii?"r":"rb");
 	if (!fp)
 		return false;
 	if (!fread(&content[0], 1, n, fp)) {

@@ -136,8 +136,8 @@ namespace cgv {
 				cgv::render::group_render_style* grs_ptr = reinterpret_cast<cgv::render::group_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-				p->add_member_control(b, "use_group_color", grs_ptr->use_group_color);
-				p->add_member_control(b, "use_group_transformation", grs_ptr->use_group_transformation);
+				p->add_member_control(b, "Use Group Color", grs_ptr->use_group_color);
+				p->add_member_control(b, "Use Group Transformation", grs_ptr->use_group_transformation);
 				return true;
 			}
 		};

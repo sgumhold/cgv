@@ -9,6 +9,22 @@
 using namespace cgv::utils;
 using namespace cgv::utils::file;
 
+void emit_fn_as_cvar(std::ostream &fout, const std::string &fn)
+{
+	for (unsigned i=0; i<fn.size(); ++i) {
+		switch (fn[i]) {
+			case '.':
+			case '\\':
+			case ':' :
+			case '/' :
+				fout << '_';
+				break;
+			default:
+				fout << fn[i];
+		}
+	}
+}
+
 bool ensure_output_dir(const char* dst)
 {
 	std::string path = get_path(dst);
@@ -55,34 +71,22 @@ int dump_to_cxx(const char* src, const char* dst)
 		return -1;
 	}
 	std::string fn(cgv::utils::file::get_file_name(src));
-	fout << "#include <cgv/base/register.h>\n\n//" << src << " ==> " << fn.c_str() << "\nstatic char resource_file[] = { " << fn.size();
+	fout << "#include <cgv/base/register.h>\n\nnamespace resource_";
+	emit_fn_as_cvar(fout, fn);
+	fout << " {\n\n\t//" << src << " ==> " << fn.c_str() << "\n\tstatic char file[] = { " << fn.size();
 	unsigned int i;
 	for (i=0; i<fn.size(); ++i) {
 		fout << "," << (int)fn[i];
 	}
-	fout << ",\n   -1,-1,-1,-1, ";
+	fout << ",\n\t   -1,-1,-1,-1, ";
 	fout << (int)(char)(size&255) << "," << (int)(char)((size>>8)&255) << "," << (int)(char)((size>>16)&255) << "," << (int)(char)((size>>24)&255);
 	for (i=0; i<size; ++i) {
 		fout << ',';
 		if (i % 20 == 0)
-			fout << "\n   ";
+			fout << "\n\t   ";
 		fout << (int) data[i];
 	}
-	fout << "\n};\n\ncgv::base::resource_file_registration resource_file_";
-	for (i=0; i<fn.size(); ++i) {
-		switch (fn[i]) {
-			case '.':
-			case '\\':
-			case ':' :
-			case '/' :
-				fout << '_';
-				break;
-			default:
-				fout << fn[i];
-		}
-	}
-
-	fout << "(resource_file);\n";
+	fout << "\n\t};\n\n\tcgv::base::resource_file_registration registration(file);\n\n} // namespace close\n";
 	return 0;
 }
 

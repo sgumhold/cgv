@@ -17,8 +17,8 @@ std::string get_key_action_string(KeyAction action)
 }
 
 // construct a key event from its textual description 
-key_event::key_event(unsigned short _key, KeyAction _action, unsigned char _char, unsigned char _modifiers, unsigned char _toggle_keys, double _time) 
-	: event(EID_KEY,_modifiers, _toggle_keys, _time), key(_key), action(_action), character(_char)
+key_event::key_event(unsigned short _key, KeyAction _action, unsigned char _char, unsigned char _modifiers, unsigned char _toggle_keys, double _time, int _x, int _y) 
+	: event(EID_KEY,_modifiers, _toggle_keys, _time), key(_key), action(_action), character(_char), x(_x), y(_y)
 {
 }
 
@@ -76,6 +76,16 @@ KeyAction key_event::get_action() const
 void key_event::set_action(KeyAction _action)
 {
 	action = _action;
+}
+// 
+short key_event::get_x() const
+{
+	return x;
+}
+// 
+short key_event::get_y() const
+{
+	return y;
 }
 
 	}

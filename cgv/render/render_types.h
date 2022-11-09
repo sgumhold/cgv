@@ -84,6 +84,7 @@ namespace cgv {
 		/// declare type of 4d unsigned integer vectors
 		typedef cgv::math::fvec<uint32_t, 4> uvec4;
 
+		/// this is DEPRECATED
 		struct render_types
 		{
 			/// declare rgb color type
@@ -161,7 +162,7 @@ namespace cgv {
 		};
 
 		/// simple helper class to store rectangles with texture coordinates
-		struct textured_rectangle : public cgv::render::render_types
+		struct textured_rectangle
 		{
 			box2 rectangle;
 			vec4 texcoords;

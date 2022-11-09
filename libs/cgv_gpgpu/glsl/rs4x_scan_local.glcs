@@ -1,0 +1,123 @@
+#version 430
+
+#define LOCAL_SIZE 64
+
+layout(local_size_x = LOCAL_SIZE) in;
+
+layout(std430, binding = 0) readonly buffer keys_buffer {
+    uvec4 keys[];
+};
+
+layout(std430, binding = 4) writeonly buffer prefix_sums_buffer {
+    uint prefix_sums[];
+};
+
+layout(std430, binding = 5) writeonly buffer block_sums_buffer {
+    uint block_sums[];
+};
+
+layout(std430, binding = 6) writeonly buffer last_sum_buffer {
+    uint last_sum[];
+};
+
+uniform uint n; // the total number of items to sort
+uniform uint n_scan_groups; // the total number of local scan groups
+uniform uint n_block_sums; // the total number of blocksums
+
+shared uint scan_values[LOCAL_SIZE + 16]; // make room for all values plus some space for offset addresses
+
+/*
+	Returns the address offset by 1 for every 32 steps to avoid bank conflicts.
+*/
+uint addr(uint i) {
+
+	return i + (i>>5);
+}
+
+void main() {
+
+    uint tid = gl_LocalInvocationID.x;
+	uint block_offset = LOCAL_SIZE*gl_WorkGroupID.x;
+    uint thread_offset = tid + block_offset; // thread offset in global memory
+
+	uint b0, b1, b2, b3; // bit values
+    uint k0, k1, k2; // pre scanned keys
+
+	// Each thread loads and scans 4 values
+	uvec4 key = keys[thread_offset];
+
+	b0 = key.x&3;
+    k0 = 1<<(b0<<3);
+    
+	b1 = key.y&3;
+    k1 = (1<<(b1<<3)) + k0;
+    
+	b2 = key.z&3;
+    k2 = (1<<(b2<<3)) + k1;
+    
+	b3 = key.w&3;
+    scan_values[addr(tid)] = (1<<(b3<<3)) + k2;
+
+	uint offset = 1; // start offset for prefix sum calculation
+
+	barrier();
+
+    for(uint d = LOCAL_SIZE>>1; d > 1; d >>= 1) {
+        //barrier(); // no need for barriers inside the loop because only 32 (a warp) threads at most are doing work concurrently
+
+        if(tid < d) {
+			uint to = tid * offset;
+			uint ai = to + to + offset - 1;
+			uint bi = ai + offset;
+
+            scan_values[addr(bi)] += scan_values[addr(ai)];
+        }
+        offset += offset;
+    }
+
+    if(tid < 4) {
+        uint shift = tid<<3;
+		uint val = ((scan_values[addr(31)]>>shift)&0x000000FF) + ((scan_values[addr(63)]>>shift)&0x000000FF);
+
+        block_sums[n_block_sums * tid + gl_WorkGroupID.x] = val;
+    }
+
+    if(tid < 1) {
+        scan_values[addr(63)] = scan_values[addr(31)];
+        scan_values[addr(31)] = 0;
+    }
+
+    for(uint d = 2; d < LOCAL_SIZE; d <<= 1) {
+        offset >>= 1;
+        //barrier(); // no need for barriers inside the loop because only 32 (a warp) threads at most are doing work concurrently
+
+        if(tid < d) {
+			uint to = tid * offset;
+			uint ai = to + to + offset - 1;
+			uint bi = ai + offset;
+
+			ai = addr(ai);
+			bi = addr(bi);
+
+            uint t = scan_values[ai];
+            scan_values[ai] = scan_values[bi];
+            scan_values[bi] += t;
+        }
+    }
+
+    barrier();
+
+    uint scan_value = scan_values[addr(tid)];
+
+	uint val = (scan_value>>(b0<<3))&0x000000FF;
+	val |= (((scan_value + k0)>>(b1<<3))&0x000000FF) << 8;
+	val |= (((scan_value + k1)>>(b2<<3))&0x000000FF) << 16;
+	val |= (((scan_value + k2)>>(b3<<3))&0x000000FF) << 24;
+	
+	prefix_sums[thread_offset] = val;
+    
+    if(tid == 63 && gl_WorkGroupID.x == n_scan_groups - 1) {
+		last_sum[0] = scan_value + k2;
+		last_sum[1] = b3;
+	}
+}

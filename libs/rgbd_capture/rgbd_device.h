@@ -2,11 +2,13 @@
 
 #include <string>
 #include <vector>
+#include <cgv/math/fvec.h>
 
 #include "lib_begin.h"
 
 namespace rgbd {
 
+	// deprecated enum now split into pixel format and frame  different frame formats
 	/*
 	/// different frame formats
 	enum FrameFormat {
@@ -25,6 +27,40 @@ namespace rgbd {
 	};
 	*/
 
+
+	struct camera_intrinsics {
+		double fx, fy; //focal length, width in pixel
+		double cx, cy; //principal point;
+		double sk; //skew
+		unsigned image_width, image_height;
+	};
+
+	///struct for representing parameters used in the device emulator
+	struct emulator_parameters {
+		camera_intrinsics intrinsics;
+		double depth_scale;
+	};
+
+	/// helper object for parsing dynamic sized frames of type PF_POINTS_AND_TRIANGLES. 
+	struct CGV_API mesh_data_view {
+		typedef cgv::math::fvec<float, 3>  Point;
+		typedef cgv::math::fvec<float, 2>  TextureCoord;
+		typedef cgv::math::fvec<uint32_t, 3>  Triangle;
+		//pointers to continous sequences of objects
+		Point* points;
+		Triangle* triangles;
+		TextureCoord *uv;
+		//number of objects
+		size_t points_size, triangles_size, uv_size;
+
+		mesh_data_view(char* data, const size_t size);
+
+		bool parse_data(char* data, const size_t size);
+		
+		inline bool is_valid() {
+			return points != nullptr;
+		}
+	};
 	/// frame size in pixels
 	struct frame_size
 	{
@@ -48,6 +84,7 @@ namespace rgbd {
 
 		PF_DEPTH,
 		PF_DEPTH_AND_PLAYER,
+		PF_POINTS_AND_TRIANGLES,
 		PF_CONFIDENCE
 	};
 
@@ -58,7 +95,9 @@ namespace rgbd {
 		PixelFormat pixel_format;
 		// total number of bits per pixel
 		unsigned nr_bits_per_pixel; 
-		/// buffer size (normally width*height*bits_per_pixel)
+		/// return number of bytes per pixel (ceil(nr_bits_per_pixel/8))
+		unsigned get_nr_bytes_per_pixel() const;
+		/// buffer size; returns width*height*get_nr_bytes_per_pixel()
 		unsigned buffer_size;
 		/// standard computation of the buffer size member
 		void compute_buffer_size();
@@ -106,11 +145,12 @@ namespace rgbd {
 		IS_INFRARED = 8,
 		IS_PLAYER_INDEX = 16,
 		IS_SKELETON = 32,
+		IS_MESH = 64,
 
 		IS_COLOR_AND_DEPTH = IS_COLOR | IS_DEPTH,
 		IS_DEPTH_AND_PLAYER_INDEX = IS_DEPTH | IS_PLAYER_INDEX,
-
-		IS_ALL = 63
+		
+		IS_ALL = 127
 	};
 
 	/// info on view finder capabilities
@@ -203,6 +243,10 @@ namespace rgbd {
 		/// map a color frame to the image coordinates of the depth image
 		virtual void map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame, 
 			frame_type& warped_color_frame) const = 0;
+		/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
+		virtual bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const = 0;
+		/// get the camera parameters
+		virtual bool get_emulator_configuration(emulator_parameters& parameters) const;
 	};
 }
 
