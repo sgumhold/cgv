@@ -5,6 +5,9 @@
 #include <limits>
 #include <cstdint>
 #include <algorithm>
+#include <unordered_map>
+#include <functional>
+
 namespace {
 
 // check if machine uses the big endian byte order
@@ -25,6 +28,7 @@ void reverse_byte_order_16(uint16_t& b)
 {
 	b = (b & 0xFF00) >> 8 | (b & 0x00FF) << 8;
 }
+
 
 
 
@@ -63,6 +67,28 @@ template <typename Container, typename UnaryPredicate> xml_tag_node* find_tag_no
 	return find_tag_node_if(c.begin(), c.end(), pred);
 }
 
+//maps types to channel setup code
+const std::unordered_map<std::string, std::function<e57::data_channel(const e57::structure_element& element_ptr)>> type_parser_map{
+	{"Float", [](const e57::structure_element& element) {
+		size_t float_size = 4;
+		auto precision_attr = element.node_ptr->tag.attributes.find("precision");
+		if (precision_attr != element.node_ptr->tag.attributes.end()) {
+			if (precision_attr->second == "double") {
+				return e57::data_channel(e57::data_type::DOUBLE);
+			}
+			else if (precision_attr->second == "single") {
+				return e57::data_channel(e57::data_type::FLOAT);
+			}
+			else {
+				std::cerr << "e57_data_set::read ignored unknown precision " << precision_attr->second
+							<< " using default precision for" << element.name << "\n";
+			}
+		}
+		return e57::data_channel(e57::data_type::FLOAT);
+	}},
+	{"Integer", [](const e57::structure_element& element) {
+		return e57::data_channel(e57::data_type::INT);
+	}}};
 } // namespace
 
 
@@ -121,15 +147,27 @@ void e57_data_set::read(const std::string& file_name)
 				if (prototype_xml_node == nullptr) {
 					throw e57_parsing_error(e57_error_code::XML_STRUCTURE_ERROR, "missing prototype tag");
 				}
-				e57::structure_node prototype(prototype_xml_node);
+				e57::structure_node_adapter prototype(prototype_xml_node);
 				// read compressed vector header
 
 				file.seek(offset);
 				e57::compressed_vector_section_header section_header;
 				file.read(&section_header, sizeof(e57::compressed_vector_section_header));
 
-				//TODO setup data structures based on prototype
-				// 
+				// setup data structures based on prototype
+
+				std::unordered_map<std::string, e57::data_channel> channels; // name -> vector,type
+				// create channels
+				for (auto& e : prototype.members()) {
+					auto tfm_it = type_parser_map.find(e.type);
+					if (tfm_it != type_parser_map.end()) {
+						channels.emplace(e.name, type_parser_map.at(e.type)(e));
+					}
+					else  {
+						std::cerr << "e57_data_set::read ignored unknown type " << e.type << "\n";	
+					}
+				}
+
 				//TODO read packets
 			}
 
@@ -257,48 +295,58 @@ compressed_vector_section_header::compressed_vector_section_header()
 }
 
 
-structure_node::structure_node(xml_tag_node* xml) {
+structure_node_adapter::structure_node_adapter(xml_tag_node* xml)
+{
 	if (xml) {
 		parse_xml_node(xml);
 	}
 }
 
-void structure_node::parse_xml_node(xml_tag_node* node)
+const std::vector<structure_element>& structure_node_adapter::members()
 {
-	elements.clear();
+	return elements_cache;
+}
+
+void structure_node_adapter::parse_xml_node(xml_tag_node* node)
+{
+	this->elements_cache.clear();
+	this->struct_node_ptr = node;
+
 	for (auto& ch : node->childs) {
-		xml_tag_node* tch = dynamic_cast<xml_tag_node*>(ch);
-		if (tch) {
-			elements.emplace_back();
-			structure_element& element = elements.back();
-			auto& tag_attrs = tch->tag.attributes;
-			element.name = tch->tag.name;
+		xml_tag_node* struct_member = dynamic_cast<xml_tag_node*>(ch);
+		if (struct_member) {
+			elements_cache.emplace_back();
+			structure_element& element = elements_cache.back();
+			auto& tag_attrs = struct_member->tag.attributes;
+			element.name = struct_member->tag.name;
 			element.type = tag_attrs["type"];
-			if (tag_attrs["type"] == "Float") { // any floats
-				element.type = "Float";
-				auto precision_attr = tag_attrs.find("precision");
-				if (precision_attr != tag_attrs.end() && precision_attr->second == "double") {
-					element.size = 8;
-				}
-				else if (precision_attr != tag_attrs.end() && precision_attr->second == "single") {
-					element.size = 4;
-				}
-				else {
-					element.size = 4;
-				}
-			}
-			else { //default case
-				element.size = -1;
-			}
+			element.node_ptr = struct_member;
 			if (ch->childs.size() == 1 && (xml_string_node*)ch->childs[0]) {
 				element.value = ((xml_string_node*)ch->childs[0])->content;
 			}
-			
-			
 		}
 	}
 }
-structure_element::structure_element() : size(0){}
+structure_element::structure_element() : node_ptr(nullptr) {}
+data_channel::data_channel(e57::data_type type) : type(type) {
+	switch (type) {
+	case e57::data_type::FLOAT:
+		element_size = 4;
+		vector_ptr = new std::vector<float>();
+		break;
+	case e57::data_type::INT:
+		element_size = 4;
+		vector_ptr = new std::vector<int32_t>();
+		break;
+	case e57::data_type::DOUBLE:
+		element_size = 8;
+		vector_ptr = new std::vector<double>();
+		break;
+	default:
+		element_size = 0;
+	}
+}
+
 } // namespace e57
 } // namespace file_parser
 } // namespace pointcloud
