@@ -1,0 +1,46 @@
+#version 430
+
+layout(local_size_x = 512) in;
+
+layout(std430, binding = 5) buffer block_sums_buffer {
+    uint block_sums[];
+};
+
+uniform uint n_block_sums; // the total number of blocksums
+
+void main() {
+
+	uint tid = gl_LocalInvocationID.x;
+	uint bucket_offset = n_block_sums * gl_WorkGroupID.x - 1;
+    int offset = 1;
+
+    for(uint d = n_block_sums>>1; d > 0; d >>= 1) {
+        barrier();
+
+        for(uint idx = tid; idx < d; idx += gl_WorkGroupSize.x) {
+            uint ai = offset*(idx+idx+1) + bucket_offset;
+            uint bi = offset*(idx+idx+2) + bucket_offset;
+
+            block_sums[bi] += block_sums[ai];
+        }
+        offset += offset;
+    }
+
+    if(tid == 0) {
+        block_sums[n_block_sums + bucket_offset] = 0;
+	}
+
+    for(uint d = 1; d < n_block_sums; d <<= 1) {
+        offset >>= 1;
+        barrier();
+
+        for(uint idx = tid; idx < d; idx += gl_WorkGroupSize.x) {
+            uint ai = offset*(idx+idx+1) + bucket_offset;
+            uint bi = offset*(idx+idx+2) + bucket_offset;
+            
+            uint t = block_sums[ai];
+            block_sums[ai] = block_sums[bi];
+            block_sums[bi] += t;
+        }
+    }
+}

@@ -160,20 +160,20 @@ namespace cgv {
 					return false;
 				cgv::render::surface_render_style* srs_ptr = reinterpret_cast<cgv::render::surface_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
-				if (p->begin_tree_node("color_mapping", srs_ptr->map_color_to_material, false, "level=3")) {
+				if (p->begin_tree_node("Color Mapping", srs_ptr->map_color_to_material, false, "level=3")) {
 					p->align("\a");
-					p->add_gui("map_color_to_material", srs_ptr->map_color_to_material, "bit_field_control",
-						"enums='COLOR_FRONT=1,COLOR_BACK=2,OPACITY_FRONT=4,OPACITY_BACK=8'");
+					p->add_gui("Map Color to Material", srs_ptr->map_color_to_material, "bit_field_control",
+						"enums='Color Front=1,Color Back=2,Opacity Front=4,Opacity Back=8'");
 					p->align("\b");
 					p->end_tree_node(srs_ptr->map_color_to_material);
 				}
-				p->add_member_control(b, "illumination_mode", srs_ptr->illumination_mode, "dropdown", "enums='off,onesided,twosided'");
-				p->add_member_control(b, "culling_mode", srs_ptr->culling_mode, "dropdown", "enums='off,backface,frontface'");
-				if (p->begin_tree_node("color and materials", srs_ptr->surface_color, false, "level=3")) {
+				p->add_member_control(b, "Illumination Mode", srs_ptr->illumination_mode, "dropdown", "enums='Off,One-Sided,Two-Sided'");
+				p->add_member_control(b, "Culling Mode", srs_ptr->culling_mode, "dropdown", "enums='Off,Backface,Frontface'");
+				if (p->begin_tree_node("Color and Materials", srs_ptr->surface_color, false, "level=3")) {
 					p->align("\a");
-					p->add_member_control(b, "surface_color", srs_ptr->surface_color);
-					p->add_member_control(b, "surface_opacity", srs_ptr->surface_opacity, "value_slider", "min=0.0;step=0.01;max=1.0;log=false;ticks=true");
-					if (p->begin_tree_node("material", srs_ptr->material, false, "level=3")) {
+					p->add_member_control(b, "Surface Color", srs_ptr->surface_color);
+					p->add_member_control(b, "Surface Opacity", srs_ptr->surface_opacity, "value_slider", "min=0.0;step=0.01;max=1.0;log=false;ticks=true");
+					if (p->begin_tree_node("Material", srs_ptr->material, false, "level=3")) {
 						p->align("\a");
 						p->add_gui("front_material", srs_ptr->material);
 						p->align("\b");
@@ -182,7 +182,7 @@ namespace cgv {
 					p->align("\b");
 					p->end_tree_node(srs_ptr->surface_color);
 				}
-				if (p->begin_tree_node("use of group information", srs_ptr->illumination_mode, false, "level=3")) {
+				if (p->begin_tree_node("Use of Group Information", srs_ptr->illumination_mode, false, "level=3")) {
 					p->align("\a");
 					p->add_gui("group render style", *static_cast<cgv::render::group_render_style*>(srs_ptr));
 					p->align("\b");

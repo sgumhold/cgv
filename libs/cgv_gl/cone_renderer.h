@@ -103,6 +103,8 @@ namespace cgv { // @<
 			/// convenience function to render with default settings
 			void draw(context& ctx, size_t start, size_t count,
 				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
+			/// the clear function destructs the shader program and resets the texture pointers
+			virtual void clear(const context& ctx);
 		};
 
 		struct CGV_API cone_render_style_reflect : public cone_render_style

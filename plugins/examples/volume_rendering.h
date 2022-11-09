@@ -8,46 +8,66 @@
 #include <cgv/render/drawable.h>
 #include <cgv/render/render_types.h>
 #include <cgv_gl/volume_renderer.h>
-#include <cgv_glutil/application_plugin.h>
-#include <cgv_glutil/box_wire_render_data.h>
-#include <cgv_glutil/color_map.h>
-#include <cgv_glutil/color_map_editor.h>
-#include <cgv_glutil/color_map_legend.h>
+#include <cgv_app/application_plugin.h>
+#include <cgv_gl/box_wire_render_data.h>
+#include <cgv/render/color_map.h>
+#include <cgv_app/color_map_editor.h>
+#include <cgv_app/color_map_legend.h>
 
 class volume_viewer :
-	public cgv::glutil::application_plugin // inherit from application plugin to enable overlay support
+	public cgv::app::application_plugin // inherit from application plugin to enable overlay support
 {
 private:
 	bool do_calculate_gradients;
 
 protected:
 	/// store a pointer to the color map editor overlay which is used to edit the volume transfer function
-	cgv::glutil::color_map_editor_ptr transfer_function_editor_ptr;
-	cgv::glutil::color_map_legend_ptr transfer_function_legend_ptr;
+	cgv::app::color_map_editor_ptr transfer_function_editor_ptr;
+	cgv::app::color_map_legend_ptr transfer_function_legend_ptr;
 
 	/// resolution of the volume
 	uvec3 vres;
+	/// spacing of the voxels
+	vec3 vspacing;
 	/// whether to show bounding box
 	bool show_box;
 
 	// Volume data
+	std::vector<float> vol_data;
 	box3 volume_bounding_box;
 	cgv::render::texture volume_tex;
+	
 	
 	// Render members
 	/// store a pointer to the view
 	cgv::render::view* view_ptr;
 	/// render style for volume
 	cgv::render::volume_render_style vstyle;
+	/// index of the transfer function preset
+	cgv::type::DummyEnum transfer_function_preset_idx = (cgv::type::DummyEnum)1;
 	/// using a color map to define the volume transfer function
 	/// gl_color_map supports generation of a texture from its contents
-	cgv::glutil::gl_color_map transfer_function;
+	cgv::render::gl_color_map transfer_function;
 	/// render data for wireframe box
-	cgv::glutil::box_wire_render_data<> box_rd;
+	cgv::render::box_wire_render_data<> box_rd;
 	
+	void handle_transfer_function_change();
+
+	void update_bounding_box();
+
+	void load_transfer_function_preset();
+
 	void create_volume(cgv::render::context& ctx);
 	void splat_spheres(std::vector<float>& vol_data, float voxel_size, std::mt19937& rng, size_t n, float radius, float contribution);
 	void splat_sphere(std::vector<float>& vol_data, float voxel_size, const vec3& pos, float radius, float contribution);
+
+	void load_volume_from_file(const std::string& file_name);
+
+	void fit_to_resolution();
+	void fit_to_spacing();
+	void fit_to_resolution_and_spacing();
+
+	void create_histogram();
 
 public:
 	// default constructor

@@ -25,10 +25,12 @@ namespace cgv {
 			/// <param name="extent">spatial extent of volume in each dimension with negative value for dimensions i where dims(i) == -1; these extent dimensions are multiplied with dims(i) after determined from file </param>
 			/// <param name="cf">component format of volume into which video is converted automatically</param>
 			/// <param name="offset">frame offset after which to start reading; offset == 0 has no effect, offset == 1 skips first frame</param>
+			/// <param name="flip_t">allows to flip frames vertically and or horizontally, defaults to no flipping</param>
+			/// <param name="on_progress_update">callback function to reports on progress updates starting 0 after volume dimensions and extent is set and then counting read slices up to total number of slices in volume, what marks termination</param>
 			/// <returns>returns whether volume reading was successful </returns>
 			extern CGV_API bool read_volume_from_video_with_ffmpeg(volume& V, const std::string& file_name,
 				volume::dimension_type dims, volume::extent_type extent, const cgv::data::component_format& cf,
-				size_t offset = 0, FlipType flip_t = FT_NO_FLIP);
+				size_t offset = 0, FlipType flip_t = FT_NO_FLIP, void (*on_progress_update)(int,void*) = 0, void* user_data = 0);
 			/// <summary>
 			/// read volume from .svx header in which dimensions, extent, file name pattern and frame offset are specified; uses read_volume_from_video_with_ffmpeg in case file name pattern corresponds to video format for which no video reader has been registered
 			/// </summary>

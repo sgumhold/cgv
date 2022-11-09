@@ -33,6 +33,7 @@ protected:
 	rgb control_col;
 	rgb border_col;
 	rgb text_col;
+	rgb text_background_col;
 	rgb selection_col;
 	rgb highlight_col;
 	rgb warning_col;
@@ -72,6 +73,7 @@ public:
 	col_functions(control);
 	col_functions(border);
 	col_functions(text);
+	col_functions(text_background);
 	col_functions(selection);
 	col_functions(highlight);
 	col_functions(warning);

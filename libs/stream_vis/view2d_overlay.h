@@ -22,11 +22,11 @@ namespace stream_vis {
 		void set_modelview_projection(cgv::render::context& ctx);
 		void toggle_default_view(bool set_default);
 		bool handle_mouse_event(const cgv::gui::mouse_event& me);
+		void create_gui_impl();
 	public:
 		view2d_overlay();
 		std::string get_type_name() const { return "view2d_overlay"; }
 		void on_set(void* member_ptr);
-		void create_gui();
 	};
 
 	typedef cgv::data::ref_ptr<view2d_overlay> view2d_overlay_ptr;

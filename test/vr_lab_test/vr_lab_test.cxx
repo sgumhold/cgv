@@ -31,6 +31,7 @@ class vr_lab_test :
 	rgba stats_bgclr;
 	/// labels to show help on controllers
 	uint32_t li_help[2];
+	uint32_t test_labels[10];
 
 	// whether to show plot
 	bool show_plot;
@@ -165,6 +166,12 @@ public:
 					ci == 1 ? label_alignment::right : label_alignment::left, 0.2f);
 				scene_ptr->hide_label(li_help[ci]);
 			}
+			for (uint32_t i = 0; i < 10; ++i) {
+
+				test_labels[i] = scene_ptr->add_label(std::string("hellowejiopwejdfweiojdfwiopjdfwopjdfqwpodkjqwopxklöqwkxöclkdw").substr(0,5+25*rand()/RAND_MAX) + cgv::utils::to_string(i, 3, '_'), rgba(1, 0, 1, 1));
+				scene_ptr->fix_label_size(test_labels[i]);
+				scene_ptr->place_label(test_labels[i], vec3(0.0f, 0.1f+i*0.1f, 0.0f), quat(vec3(0.0f), 1.0f), coordinate_system::table);
+			}
 		}
 		// always update visibility of visibility changing labels
 		vr_view_interactor* vr_view_ptr = get_view_ptr();
@@ -179,10 +186,10 @@ public:
 			vec3 controller_pos = reinterpret_cast<const vec3&>(state_ptr->controller[ci].pose[9]);
 			float controller_depth = dot(view_dir, controller_pos - view_pos);
 			float controller_dist = (view_pos + controller_depth * view_dir - controller_pos).length();
-			if (view_dir.y() < -0.25f && controller_depth / controller_dist > 1.0f)
+//			if (view_dir.y() < -0.25f && controller_depth / controller_dist > 1.0f)
 				scene_ptr->show_label(li_help[ci]);
-			else
-				scene_ptr->hide_label(li_help[ci]);
+//			else
+//				scene_ptr->hide_label(li_help[ci]);
 		}
 	}
 	void clear(cgv::render::context& ctx)
