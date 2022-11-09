@@ -128,8 +128,6 @@ void cgv::nui::rotation_gizmo::on_handle_drag()
 	vec3 axis;
 	axis = axes_directions[prim_idx];
 
-	auto& dvh = ref_debug_visualization_helper();
-
 	// Get actual ring radius from the already calculated splines
 	float radius = ring_splines[prim_idx].first.front().length();
 	vec3 closest_point;
@@ -143,11 +141,8 @@ void cgv::nui::rotation_gizmo::on_handle_drag()
 			return;
 	}
 
-	// TODO: Rethink calculation (is_anchor_influenced_by_gizmo)
 	vec3 direction_at_grab = cross(cross(axis, ii_at_grab.query_point - axis_origin), axis);
 	vec3 direction_currently = cross(cross(axis, closest_point - axis_origin), axis);
-	//vec3 direction_at_grab = ii_at_grab.query_point - axis_origin;
-	//vec3 direction_currently = closest_point - axis_origin;
 
 	float s = dot(cross(direction_at_grab, direction_currently), axis);
 	float c = dot(direction_at_grab, direction_currently);
@@ -158,67 +153,6 @@ void cgv::nui::rotation_gizmo::on_handle_drag()
 	else
 		set_rotation(new_rotation * rotation_at_grab);
 }
-
-/*
-void cgv::nui::rotation_gizmo::on_handle_drag()
-{
-	vec3 axis_origin = vec3(0.0f);
-	vec3 axis;
-	if (!use_absolute_rotation) {
-		axis = axes_directions[prim_idx];
-	}
-	else {
-		vec3 obj_translation;
-		quat obj_rotation;
-		vec3 obj_scale;
-		transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj), obj_translation, obj_rotation, obj_scale);
-		axis = obj_rotation.inverse().get_homogeneous_matrix() * vec4(axes_directions[prim_idx], 0);
-	}
-	if (anchor_rotation_ptr)
-		axis = anchor_rotation_ptr->get_homogeneous_matrix() * vec4(axis, 0.0f);
-	else if (anchor_rotation_ptr_ptr)
-		axis = (*anchor_rotation_ptr_ptr)->get_homogeneous_matrix() * vec4(axis, 0.0f);
-
-	auto& dvh = ref_debug_visualization_helper();
-
-
-	// Get actual ring radius from the already calculated splines
-	float radius = ring_splines.front().first.front().length();
-	vec3 closest_point;
-	if (ii_at_grab.is_pointing) {
-		cgv::math::closest_point_on_line_to_circle(ii_during_focus[activating_hid_id].hid_position, ii_during_focus[activating_hid_id].hid_direction,
-			axis_origin, axis, radius, closest_point);
-		//vec3 closest_point_on_line;
-		//cgv::math::closest_point_on_line_to_circle(ii_during_focus.hid_position, ii_during_focus.hid_direction,
-		//	axis_origin, axis, ring_radius, closest_point_on_line);
-		//if (!cgv::math::closest_point_on_circle_to_point(axis_origin, axis, ring_radius,
-		//	closest_point_on_line, closest_point))
-		//	return;
-	}
-	else {
-		if (!cgv::math::closest_point_on_circle_to_point(axis_origin,axis, radius,
-			ii_during_focus[activating_hid_id].hid_position, closest_point))
-			return;
-	}
-
-	dvh.update_debug_value_position(projected_point_handle, closest_point);
-
-	// TODO: Rethink calculation (is_anchor_influenced_by_gizmo)
-	vec3 direction_at_grab = cross(cross(axis, ii_at_grab.query_point - axis_origin), axis);
-	vec3 direction_currently = cross(cross(axis, closest_point - axis_origin), axis);
-	//vec3 direction_at_grab = ii_at_grab.query_point - axis_origin;
-	//vec3 direction_currently = closest_point - axis_origin;
-
-	dvh.update_debug_value_vector_direction(direction_at_grab_handle, direction_at_grab);
-	dvh.update_debug_value_vector_direction(direction_currently_handle, direction_currently);
-
-	float s = dot(cross(direction_at_grab, direction_currently), axis);
-	float c = dot(direction_at_grab, direction_currently);
-	float da = atan2(s, c);
-	quat new_rotation = quat(axis, da);
-	set_rotation(new_rotation * rotation_at_grab);
-}
-*/
 
 void cgv::nui::rotation_gizmo::set_axes_directions(std::vector<vec3> axes)
 {
@@ -285,28 +219,6 @@ bool cgv::nui::rotation_gizmo::_compute_closest_point(const vec3& point, vec3& p
 	return true;
 }
 
-//bool cgv::nui::rotation_gizmo::_compute_closest_point_local_orientation(const vec3& point, vec3& prj_point,
-//	vec3& prj_normal, size_t& primitive_idx, const vec3& inverse_translation, const quat& inverse_rotation,
-//	const vec3& scale, const mat4& view_matrix)
-//{
-//	if (use_global_orientation)
-//		return false;
-//
-//	compute_geometry(scale);
-//	return _compute_closest_point(point, prj_point, prj_normal, primitive_idx);
-//}
-//
-//bool cgv::nui::rotation_gizmo::_compute_closest_point_global_orientation(const vec3& point, vec3& prj_point,
-//	vec3& prj_normal, size_t& primitive_idx, const vec3& inverse_translation, const quat& rotation, const vec3& scale,
-//	const mat4& view_matrix)
-//{
-//	if (!use_global_orientation)
-//		return false;
-//
-//	compute_geometry(scale);
-//	return _compute_closest_point(point, prj_point, prj_normal, primitive_idx);
-//}
-
 bool cgv::nui::rotation_gizmo::_compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal,
 	size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
 {
@@ -339,28 +251,6 @@ bool cgv::nui::rotation_gizmo::_compute_intersection(const vec3& ray_start, cons
 	highlight_handle(idx);
 	return true;
 }
-
-//bool cgv::nui::rotation_gizmo::_compute_intersection_local_orientation(const vec3& ray_start,
-//	const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx,
-//	const vec3& inverse_translation, const quat& inverse_rotation, const vec3& scale, const mat4& view_matrix)
-//{
-//	if (use_global_orientation)
-//		return false;
-//
-//	compute_geometry(scale);
-//	return _compute_intersection(ray_start, ray_direction, hit_param, hit_normal, primitive_idx);
-//}
-//
-//bool cgv::nui::rotation_gizmo::_compute_intersection_global_orientation(const vec3& ray_start,
-//	const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx,
-//	const vec3& inverse_translation, const quat& rotation, const vec3& scale, const mat4& view_matrix)
-//{
-//	if (!use_global_orientation)
-//		return false;
-//
-//	compute_geometry(scale);
-//	return _compute_intersection(ray_start, ray_direction, hit_param, hit_normal, primitive_idx);
-//}
 
 bool cgv::nui::rotation_gizmo::init(cgv::render::context& ctx)
 {
@@ -420,55 +310,7 @@ void cgv::nui::rotation_gizmo::_draw(cgv::render::context& ctx, const vec3& scal
 		str.render(ctx, 0, ring_spline.first.size(), true);
 		++i;
 	}
-
-	// Debug visualization of approximated torus intersection with cubes
-	auto& br = cgv::render::ref_box_renderer(ctx);
-	auto brs = cgv::render::box_render_style();
-	brs.rounding = false;
-	for (int i = 0; i < axes_directions.size(); ++i)
-	{
-		std::vector<vec3> ps;
-		std::vector<vec3> bs;
-		std::vector<quat> rs;
-		int nr_ring_boxes = 40;
-		for (int j = 0; j < nr_ring_boxes; ++j) {
-			float a = 2.0 * M_PI * j * (1.0 / nr_ring_boxes);
-			vec3 relative_position = ring_radius * max_value(scale) * vec3(0.0, cos(a), sin(a));
-			quat rot;
-			rot.set_normal(axes_directions[i]);
-			rot.rotate(relative_position);
-			vec3 extent = vec3(ring_spline_radius * 2.0);
-			ps.push_back(relative_position);
-			bs.push_back(extent);
-			rs.push_back(quat());
-		}
-		br.set_render_style(brs);
-		br.set_position_array(ctx, ps);
-		br.set_extent_array(ctx, bs);
-		br.set_rotation_array(ctx, rs);
-		br.render(ctx, 0, ps.size());
-	}
 }
-
-//void cgv::nui::rotation_gizmo::_draw_local_orientation(cgv::render::context& ctx, const vec3& inverse_translation,
-//	const quat& inverse_rotation, const vec3& scale, const mat4& view_matrix)
-//{
-//	if (use_global_orientation)
-//		return;
-//
-//	compute_geometry(scale);
-//	_draw(ctx);
-//}
-//
-//void cgv::nui::rotation_gizmo::_draw_global_orientation(cgv::render::context& ctx, const vec3& inverse_translation,
-//	const quat& rotation, const vec3& scale, const mat4& view_matrix)
-//{
-//	if (!use_global_orientation)
-//		return;
-//
-//	compute_geometry(scale);
-//	_draw(ctx);
-//}
 
 void cgv::nui::rotation_gizmo::create_gui()
 {
