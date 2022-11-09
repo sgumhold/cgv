@@ -146,17 +146,17 @@ namespace cgv {
 				cgv::render::sphere_render_style* srs_ptr = reinterpret_cast<cgv::render::sphere_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-				p->add_member_control(b, "default radius", srs_ptr->radius, "value_slider", "min=0.01;max=100;log=true;ticks=true");
-				p->add_member_control(b, "use_group_radius", srs_ptr->use_group_radius, "check");
-				p->add_member_control(b, "radius_scale", srs_ptr->radius_scale, "value_slider", "min=0.01;max=100;log=true;ticks=true");
-				bool show = p->begin_tree_node("halo", srs_ptr->halo_color, false, "options='w=120';level=3;align=''");
-				p->add_member_control(b, "color", srs_ptr->halo_color, "", "w=50");
+				p->add_member_control(b, "Default Radius", srs_ptr->radius, "value_slider", "min=0.01;max=100;log=true;ticks=true");
+				p->add_member_control(b, "Use Group Radius", srs_ptr->use_group_radius, "check");
+				p->add_member_control(b, "Radius Scale", srs_ptr->radius_scale, "value_slider", "min=0.01;max=100;log=true;ticks=true");
+				bool show = p->begin_tree_node("Halo", srs_ptr->halo_color, false, "options='w=120';level=3;align=''");
+				p->add_member_control(b, "Color", srs_ptr->halo_color, "", "w=50");
 				if (show) {
 					p->align("\a");
-					p->add_member_control(b, "halo_color_strength", srs_ptr->halo_color_strength, "value_slider", "min=0;max=1;ticks=true");
-					p->add_member_control(b, "halo_width_in_pixel", srs_ptr->halo_width_in_pixel, "value_slider", "min=-10;max=10;ticks=true");
-					p->add_member_control(b, "percentual_halo_width", srs_ptr->percentual_halo_width, "value_slider", "min=-100;max=100;ticks=true");
-					p->add_member_control(b, "blend_width_in_pixel", srs_ptr->blend_width_in_pixel, "value_slider", "min=0;max=3;ticks=true");
+					p->add_member_control(b, "Halo Color Strength", srs_ptr->halo_color_strength, "value_slider", "min=0;max=1;ticks=true");
+					p->add_member_control(b, "Halo Width in Pixel", srs_ptr->halo_width_in_pixel, "value_slider", "min=-10;max=10;ticks=true");
+					p->add_member_control(b, "Percentual Halo Width", srs_ptr->percentual_halo_width, "value_slider", "min=-100;max=100;ticks=true");
+					p->add_member_control(b, "Blend Width in Pixel", srs_ptr->blend_width_in_pixel, "value_slider", "min=0;max=3;ticks=true");
 					p->align("\b");
 					p->end_tree_node(srs_ptr->halo_color);
 				}

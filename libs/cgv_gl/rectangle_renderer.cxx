@@ -173,8 +173,7 @@ namespace cgv {
 			const rectangle_render_style& rrs = get_style<rectangle_render_style>();
 			if (!has_depth_offsets)
 				ref_prog().set_attribute(ctx, "depth_offset", rrs.default_depth_offset);
-			if (!has_secondary_colors)
-                ref_prog().set_attribute(ctx, "secondary_color", rrs.default_secondary_color);
+				ref_prog().set_attribute(ctx, "secondary_color", rrs.default_secondary_color);
 			if (!has_border_colors)
 				ref_prog().set_attribute(ctx, "border_color", rrs.default_border_color);
 			if (!has_border_infos)
@@ -266,24 +265,10 @@ namespace cgv {
 				cgv::render::rectangle_render_style* prs_ptr = reinterpret_cast<cgv::render::rectangle_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-				
 				p->add_member_control(b, "default_secondary_color", prs_ptr->default_secondary_color);
 
-				p->add_member_control(b, "default_border_color", prs_ptr->default_border_color);
-				p->add_member_control(b, "border_width_in_pixel", prs_ptr->border_width_in_pixel, "value_slider", "min=-10;max=10;ticks=true");
-				p->add_member_control(b, "percentual_border_width", prs_ptr->percentual_border_width, "value_slider", "min=-0.5;max=0.5;ticks=true");
-				p->add_member_control(b, "border_mode", (cgv::type::DummyEnum&)prs_ptr->border_mode, "dropdown", 
-					"enums='separate=0,width,height,min(width height)'");
-
-				p->add_member_control(b, "pixel_blend", prs_ptr->pixel_blend, "value_slider", "min=0.0;max=2;ticks=true");
-				p->add_member_control(b, "texture_mode", (cgv::type::DummyEnum&)prs_ptr->texture_mode, "dropdown",
-					"enums='replace,replace alpha,multiply color,multiply secondary color,multiply border color,"
-					"mix color and secondary color,mix color and border color,mix secondary color and color,mix border color and color,"
-					"red mix color and secondary color,red mix color and border color,red mix secondary color and color,red mix border color and color'");
-				p->add_member_control(b, "blend", prs_ptr->blend_rectangles, "toggle");
 				
-				p->add_member_control(b, "default_depth_offset", prs_ptr->default_depth_offset, "value_slider", "min=0.000001;max=0.1;step=0.0000001;log=true;ticks=true");
-				p->add_member_control(b, "position_is_center", prs_ptr->position_is_center, "toggle");
+
 				
 				if (p->begin_tree_node("surface", prs_ptr->use_group_color, false, "level=3")) {
 					p->align("\a");

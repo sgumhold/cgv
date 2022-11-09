@@ -189,26 +189,26 @@ namespace cgv {
 					return false;
 				cgv::render::line_render_style* lrs_ptr = reinterpret_cast<cgv::render::line_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
-				p->add_gui("default_normal", lrs_ptr->default_normal, "direction", "options='min=-1;max=1;ticks=true'");
-				p->add_member_control(b, "default_color", lrs_ptr->default_color);
-				p->add_member_control(b, "screen_aligned", lrs_ptr->screen_aligned, "toggle");
-				p->add_member_control(b, "default_line_width", lrs_ptr->default_line_width, "value_slider", "min=1;max=20;log=true;ticks=true;w=130", "");
+				p->add_gui("Default Normal", lrs_ptr->default_normal, "direction", "options='min=-1;max=1;ticks=true'");
+				p->add_member_control(b, "Default Color", lrs_ptr->default_color);
+				p->add_member_control(b, "Screen Aligned", lrs_ptr->screen_aligned, "toggle");
+				p->add_member_control(b, "Default Line Width", lrs_ptr->default_line_width, "value_slider", "min=1;max=20;log=true;ticks=true;w=130", "");
 				p->add_member_control(b, "px", lrs_ptr->measure_line_width_in_pixel, "toggle", "w=16", "");
-				p->add_member_control(b, "blend", lrs_ptr->blend_lines, "toggle", "w=50");				
-				p->add_member_control(b, "reference_line_width", lrs_ptr->reference_line_width, "value_slider", "min=0.0000001;max=1;step=0.00000001;log=true;ticks=true");
-				p->add_member_control(b, "default_depth_offset", lrs_ptr->default_depth_offset, "value_slider", "min=-0.001;max=0.001;step=0.00000001;log=true;ticks=true");
-				bool show = p->begin_tree_node("halo", lrs_ptr->halo_color, false, "options='w=120';level=3;align=''");
-				p->add_member_control(b, "color", lrs_ptr->halo_color, "", "w=50");
+				p->add_member_control(b, "Blend", lrs_ptr->blend_lines, "toggle", "w=50");				
+				p->add_member_control(b, "Reference Line Width", lrs_ptr->reference_line_width, "value_slider", "min=0.0000001;max=1;step=0.00000001;log=true;ticks=true");
+				p->add_member_control(b, "Default Depth Offset", lrs_ptr->default_depth_offset, "value_slider", "min=-0.001;max=0.001;step=0.00000001;log=true;ticks=true");
+				bool show = p->begin_tree_node("Halo", lrs_ptr->halo_color, false, "options='w=120';level=3;align=''");
+				p->add_member_control(b, "Color", lrs_ptr->halo_color, "", "w=50");
 				if (show) {
 					p->align("\a");
-					p->add_member_control(b, "halo_color_strength", lrs_ptr->halo_color_strength, "value_slider", "min=0;max=1;ticks=true");
-					p->add_member_control(b, "halo_width_in_pixel", lrs_ptr->halo_width_in_pixel, "value_slider", "min=-10;max=10;ticks=true");
-					p->add_member_control(b, "percentual_halo_width", lrs_ptr->percentual_halo_width, "value_slider", "min=-100;max=100;ticks=true");
-					p->add_member_control(b, "blend_width_in_pixel", lrs_ptr->blend_width_in_pixel, "value_slider", "min=0;max=3;ticks=true");
+					p->add_member_control(b, "Halo Color Strength", lrs_ptr->halo_color_strength, "value_slider", "min=0;max=1;ticks=true");
+					p->add_member_control(b, "Halo Width in Pixel", lrs_ptr->halo_width_in_pixel, "value_slider", "min=-10;max=10;ticks=true");
+					p->add_member_control(b, "Percentual Halo Width", lrs_ptr->percentual_halo_width, "value_slider", "min=-100;max=100;ticks=true");
+					p->add_member_control(b, "Blend Width in Pixel", lrs_ptr->blend_width_in_pixel, "value_slider", "min=0;max=3;ticks=true");
 					p->align("\b");
 					p->end_tree_node(lrs_ptr->halo_color);
 				}
-				if (p->begin_tree_node("group", lrs_ptr->use_group_color, false, "level=3")) {
+				if (p->begin_tree_node("Use of Group Information", lrs_ptr->use_group_color, false, "level=3")) {
 					p->align("\a");
 					p->add_gui("group render style", *static_cast<cgv::render::group_render_style*>(lrs_ptr));
 					p->align("\b");

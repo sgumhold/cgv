@@ -1,0 +1,11 @@
+@=
+projectName="cgv_oal";
+projectType="library";
+projectGUID="3C5ECD9D-1EA0-4EE9-8830-00B0B2815953";
+cppLanguageStandard="stdcpp17";
+addProjectDirs=[CGV_DIR."/3rd"];
+addProjectDeps=["openal-soft", "sndfile"];
+addIncDirs=[[CGV_DIR."/libs", "all"]];
+addSharedDefines=["CGV_OAL_EXPORTS"];
+addStaticDefines=[ ["AL_LIBTYPE_STATIC","all"] ];
+
