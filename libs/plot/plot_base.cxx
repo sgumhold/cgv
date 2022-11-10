@@ -1332,8 +1332,8 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 		p.end_tree_node(center_location);
 	}
 	bool open = p.begin_tree_node("Domain", get_domain_config_ptr()->show_domain, false, "level=3;options='w=107';align=' '");
-	p.add_member_control(bp, "Show", get_domain_config_ptr()->show_domain, "toggle", "w=40", "%x+=1");
-	p.add_member_control(bp, "Fill", get_domain_config_ptr()->fill, "toggle", "w=40");
+	p.add_member_control(bp, "Fill", get_domain_config_ptr()->fill, "toggle", "w=40", "%x+=1");
+	p.add_member_control(bp, "Show", get_domain_config_ptr()->show_domain, "toggle", "w=40");
 	if (open) {
 		p.align("\a");
 		p.add_member_control(bp, "Out of Range Mode X", (cgv::type::DummyEnum&)out_of_range_mode[0], "dropdown", "enums='Keep,Discard,Clamp'");
