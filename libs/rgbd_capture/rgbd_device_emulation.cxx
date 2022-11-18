@@ -80,7 +80,8 @@ namespace rgbd {
 		}
 
 		string data;
-		if (cgv::utils::file::read(path_name + "/emulator_parameters", data, false)) {
+		string emulator_parameters_file_name = path_name + "/emulator_parameters";
+		if (cgv::utils::file::exists(emulator_parameters_file_name) && cgv::utils::file::read(path_name + "/emulator_parameters", data, false)) {
 			if (data.size() * sizeof(char) == sizeof(emulator_parameters)) {
 				memcpy(&parameters, data.data(), sizeof(emulator_parameters));
 			} else {
