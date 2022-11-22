@@ -1,6 +1,6 @@
 var scan_8h =
 [
-    [ "cutoff_spaces", "scan_8h.html#a1e4f67c342b03a61e6fcd3e735afcd7f", null ],
+    [ "cutoff_spaces", "scan_8h.html#ad395e58106935ab83b2d1e08438c5455", null ],
     [ "escape_special", "scan_8h.html#a30fa77c0e7120e34b287dee015c9be51", null ],
     [ "find_name", "scan_8h.html#a8a31d2792f8f93b046c38aa6f387fd5f", null ],
     [ "from_hex", "scan_8h.html#add0a6017402a8aec581af77f4f81b452", null ],
@@ -37,7 +37,7 @@ var scan_8h =
     [ "replace_special", "scan_8h.html#a97032f8b8a5544a118c84ff2346b5bfe", null ],
     [ "rtrim", "scan_8h.html#aa9ae735d0f4b701a6d3635053097a23c", null ],
     [ "rtrim", "scan_8h.html#a275e5d68df06a511c2f9b41c1f9f4c28", null ],
-    [ "skip_spaces", "scan_8h.html#a09d4dbe74933b21d153e5e4b4441b518", null ],
+    [ "skip_spaces", "scan_8h.html#aef60ecad72389715873e5b998f037aa8", null ],
     [ "to_hex", "scan_8h.html#a155b5e0a440b5d442d41187cc8d41695", null ],
     [ "to_lower", "scan_8h.html#a6b682be2fdbb130c91a3bd8bd7936ff8", null ],
     [ "to_lower", "scan_8h.html#a7807eab90c69363c21cc7ef34a2dadf1", null ],

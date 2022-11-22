@@ -1,24 +1,26 @@
 /*
-@licstart  The following is the entire license notice for the
-JavaScript code in this file.
+ @licstart  The following is the entire license notice for the JavaScript code in this file.
 
-Copyright (C) 1997-2019 by Dimitri van Heesch
+ The MIT License (MIT)
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of version 2 of the GNU General Public License as published by
-the Free Software Foundation
+ Copyright (C) 1997-2020 by Dimitri van Heesch
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ and associated documentation files (the "Software"), to deal in the Software without restriction,
+ including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ The above copyright notice and this permission notice shall be included in all copies or
+ substantial portions of the Software.
 
-@licend  The above is the entire license notice
-for the JavaScript code in this file
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+ @licend  The above is the entire license notice for the JavaScript code in this file
 */
 var NAVTREE =
 [
@@ -119,54 +121,59 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-".html",
-"classcgv_1_1base_1_1console.html#a3e1dd0ff6fa2baf3dc2149d3acfecd45",
-"classcgv_1_1base_1_1single__method__action__2.html#ae9412f7845490c9c287063a2ae154d00",
-"classcgv_1_1data_1_1component__format.html#af65d9b1ced3acce3d296cf691b03bb23",
-"classcgv_1_1data_1_1io__reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291",
-"classcgv_1_1gui_1_1control.html#a6401d6fb8aa227bd28cacc7e42b39e2b",
-"classcgv_1_1gui_1_1gui__driver.html#adf7021d86bffbfb66f443dbf1689aa90",
-"classcgv_1_1gui_1_1provider.html#a79595103df6c363aba76db5ce49312ce",
-"classcgv_1_1gui_1_1vr__key__event.html#a5d67565e65a2213fdc0278bc9ee2a880",
-"classcgv_1_1gui_1_1window.html#af186b91996e3428848e80e4f4e0d62cb",
-"classcgv_1_1math_1_1mat.html#a6e1693bb32c0cf4a656b98ffd74c22ec",
-"classcgv_1_1math_1_1sparse__les.html",
-"classcgv_1_1media_1_1font_1_1font.html",
-"classcgv_1_1media_1_1image_1_1abst__image__reader.html#a21741f88130baa3224809472f69df8b5",
-"classcgv_1_1media_1_1image_1_1image__writer.html#a313232084b52192201cecaf4ae257ee8",
-"classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#a1c0703b4fe37e072d5fc1aad6c55de4b",
-"classcgv_1_1media_1_1video_1_1abst__video__reader.html#ad121ecb072de62a4ab4a180bc9d183bb",
-"classcgv_1_1os_1_1socket__server.html#a8816c56b547badebf08513034081edd0",
-"classcgv_1_1plot_1_1plot2d.html#aa43cb0dae0419ff4da7c26b4c0879ca6",
-"classcgv_1_1plot_1_1plot__base.html#a2cbc2d153ca9c43ac08891f10ef2d2d5",
-"classcgv_1_1render_1_1a__buffer.html#a1cad3d9016b0839b7c7ca6c442ad51ba",
-"classcgv_1_1render_1_1box__renderer.html#a65daf724c16fb2e17b417a2b0d7a546d",
-"classcgv_1_1render_1_1clipped__view.html#af33407ff31ac9f1b14ec840552fdd5d8",
-"classcgv_1_1render_1_1context.html#a8b5a7a96135b5be888b96f350d461623",
-"classcgv_1_1render_1_1gl_1_1gl__context.html#a224c67c3098fa44f517a44ef47f73e73",
-"classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a4932360d577126a9fba1e73c63d0dc0a",
-"classcgv_1_1render_1_1gl_1_1mesh__drawable.html#af36c04fdeb21290f87a81d9bfae4ad32",
-"classcgv_1_1render_1_1mesh__render__info.html#a13b4d88ab86e51eb72366ade5c3397b5",
-"classcgv_1_1render_1_1normal__renderer.html#aecb36a2425963ed10456f952cfffeb4f",
-"classcgv_1_1render_1_1rectangle__renderer.html#ad8df8e7534367065317220c33d4fe47d",
-"classcgv_1_1render_1_1shader__program.html#a0b0e6699585838112467e557f362fd47",
-"classcgv_1_1render_1_1sphere__renderer.html#ac0dbf6b3b6681408a28e6c1888fd2a08",
-"classcgv_1_1render_1_1surface__renderer.html#a80b014437e13646d13f5b2bababda520",
-"classcgv_1_1render_1_1texture.html#ac8592fc24f701e8daa02b3d0ee46206a",
-"classcgv_1_1render_1_1volume__renderer.html#ad6a3ea196ce42da08553f24fcc27846f",
-"classvr_1_1vr__log.html#aa43cb0dae0419ff4da7c26b4c0879ca6",
-"functions_vars_q.html",
-"overview.html#directories",
-"structcgv_1_1base_1_1factory__impl.html#a67b5dba890a068acef62d9c026c05320",
-"structcgv_1_1math_1_1diag__mat.html#aff21a4977e49f756a657cdedd9cba448",
-"structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html",
-"structcgv_1_1plot_1_1plot2d__config.html#a959405bbca84dbaa7053759c6cfe3381",
-"structcgv_1_1reflect_1_1enum__reflection__traits.html#a548d66e9c999c0db0d5236db34856e39",
-"structcgv_1_1render_1_1box__wire__render__style.html#a0492ee8d0e1c7867d0a9bc01dfae38e4",
-"structcgv_1_1render_1_1line__render__style.html#aaeef17e385a1d3ae754742b2619bd55c",
-"structcgv_1_1render_1_1render__types.html#ab3ed34e8e12b57fe744b2dc2e65b82f7",
-"structcgv_1_1render_1_1volume__render__style.html#a5d02bba4f5c672593254a42cac89fcb1",
-"structvr_1_1vr__trackable__info.html#af60c8e4e6ca4eb993050a3b9b1a0c9ab"
+"",
+"classcgv_1_1base_1_1console.html#a122730d2bac682abd6213b355f7d95b5",
+"classcgv_1_1base_1_1single__method__action__2.html#a7161e1becf22e45d312904eeb1b22e5d",
+"classcgv_1_1data_1_1component__format.html#acedea4bd86acdaa66860c7842e473074",
+"classcgv_1_1data_1_1io__reflection__handler.html#aab3baa8fe1069e24bcf58c204e66a68f",
+"classcgv_1_1gui_1_1control.html#a4735f33dd4214fae002e7de35b73aaeb",
+"classcgv_1_1gui_1_1gui__driver.html#ac0701ad49dd0df7e3916f85f8ee76150",
+"classcgv_1_1gui_1_1provider.html#a37a0e7b3023b00762456b7b8c5480328",
+"classcgv_1_1gui_1_1vr__key__event.html#a1fcaac54b1f22358cbe828cc206f1f59",
+"classcgv_1_1gui_1_1window.html#ae340ce8bfe07e8967e3852fc53c49f80",
+"classcgv_1_1math_1_1mat.html#a3acc2b8a790fa79570a7ead199bb7c0d",
+"classcgv_1_1math_1_1rigid__transform.html#a953007e5e9ade849b3043b6248d32451",
+"classcgv_1_1media_1_1colored__model.html#a21dc960d749c8c30a0ab9fe2ad463fe3",
+"classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a7529be0d530eb882e8fa37bd30dfd578",
+"classcgv_1_1media_1_1image_1_1image__reader.html#abd1b6b56455165d769b580d4006eba17",
+"classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a7721a08b8dfdb2a8568d8852d51c3c92",
+"classcgv_1_1media_1_1video_1_1abst__video__reader.html#a6401d6fb8aa227bd28cacc7e42b39e2b",
+"classcgv_1_1os_1_1socket__client.html#a6fd1408164cd99d04b2868e602e6318f",
+"classcgv_1_1plot_1_1plot2d.html#a842fb7a1ffc695030cc9ef909d144a0d",
+"classcgv_1_1plot_1_1plot__base.html#a0e5d5763ab039e35d000f7e663bae896",
+"classcgv_1_1reflect_1_1reflection__handler.html#a92f0e084cf00bcbe52294cad98a41767",
+"classcgv_1_1render_1_1box__renderer.html#a3563b70772c201cb2bd6533c31a3930e",
+"classcgv_1_1render_1_1clipped__view.html#ab795efa5bd6776d687c214f6887b7101",
+"classcgv_1_1render_1_1context.html#a78a2661b853fdfbdb43b9a00a59c6b6d",
+"classcgv_1_1render_1_1gl_1_1gl__context.html#a1133ec85222b9e8ade29c4e4ee39878d",
+"classcgv_1_1render_1_1gl_1_1gl__cursor.html#a405e50fb294a53f4649cae5dd8e81b6b",
+"classcgv_1_1render_1_1gl_1_1mesh__drawable.html#ab5691212b9bf00ff65d0304801608f55",
+"classcgv_1_1render_1_1managed__frame__buffer.html#ab4d9c32401403aab72ca0d21ae276c4c",
+"classcgv_1_1render_1_1normal__renderer.html#ab9dec72a3e70241c8d69d5e17c30105d",
+"classcgv_1_1render_1_1rectangle__renderer.html#ab9dec72a3e70241c8d69d5e17c30105d",
+"classcgv_1_1render_1_1shader__code.html#a77134a4a792e98d63f894474baec24e0",
+"classcgv_1_1render_1_1sphere__renderer.html#a97673b9b5d2fff1411ad7806ef536d2d",
+"classcgv_1_1render_1_1surface__renderer.html#a578f6e55cc442d2dde7ee083e808688a",
+"classcgv_1_1render_1_1texture.html#aae6626211ffee92c2dadf3f9326acfaa",
+"classcgv_1_1render_1_1volume__renderer.html#ab30de78655fba045823d9e81badaef87",
+"classvr_1_1vr__log.html#a3563b70772c201cb2bd6533c31a3930e",
+"file_8cxx.html#a29fa3a9b12c07832be75aa337ac3ba22",
+"list_8h_source.html",
+"namespacecgv_1_1gui.html#a8c92a55911d18de7ab802b3be6d65df1a6d29bdfc45ddcbc3df9c0c2fa655448f",
+"namespacecgv_1_1math.html#a69a062bc927d2831ed28939db3703480",
+"namespacecgv_1_1render.html#a78e11768aff9997a87ccb9c6a275b85d",
+"namespacemembers_e.html",
+"reflection__traits__info_8h_source.html",
+"structcgv_1_1base_1_1factory__impl__1.html#abd1b6b56455165d769b580d4006eba17",
+"structcgv_1_1math_1_1random.html#ad6f4fa2bd6bc48f9ba1c245a91001e2a",
+"structcgv_1_1media_1_1video_1_1video__reader__listener.html#aec86a78e596c9c4fb203fcad98fb6afd",
+"structcgv_1_1plot_1_1plot3d__config.html#a5d02bba4f5c672593254a42cac89fcb1",
+"structcgv_1_1reflect_1_1reflection__traits.html#ae4c9d972068da0cd4bfb5a9df27ad482",
+"structcgv_1_1render_1_1callback__drawable.html#a95bafefa81ebfa3206014eb198e49459",
+"structcgv_1_1render_1_1rectangle__render__style.html#aa43cb0dae0419ff4da7c26b4c0879ca6",
+"structcgv_1_1render_1_1sphere__render__style.html#ad6cd67abc2b77e76500d387bb85ce300",
+"structcgv_1_1utils_1_1progression.html#a97291b0999220dfa38c69b09036a3300",
+"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657a5db1266c78cb5ba15487f1d404ee0894"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
