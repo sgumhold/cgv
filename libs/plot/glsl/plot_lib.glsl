@@ -80,24 +80,24 @@ uniform float feature_offset;
 
 // color mapping
 const int MAX_NR_COLOR_MAPPINGS = 2;
-uniform int   color_mapping[MAX_NR_COLOR_MAPPINGS] = { -1, -1 };
-uniform float color_scale_gamma[MAX_NR_COLOR_MAPPINGS] = { 1.0, 1.0 };
+uniform int   color_mapping[MAX_NR_COLOR_MAPPINGS] = int[MAX_NR_COLOR_MAPPINGS]( -1, -1 );
+uniform float color_scale_gamma[MAX_NR_COLOR_MAPPINGS] = float[MAX_NR_COLOR_MAPPINGS](1.0, 1.0 );
 
 // opacity mapping
 const int MAX_NR_OPACITY_MAPPINGS = 2;
-uniform int   opacity_mapping[MAX_NR_OPACITY_MAPPINGS] = { -1, -1 };
-uniform float opacity_gamma[MAX_NR_OPACITY_MAPPINGS] = { 1.0, 1.0 };
-uniform int  opacity_is_bipolar[MAX_NR_OPACITY_MAPPINGS] = { 0, 0 };
-uniform float opacity_window_zero_position[MAX_NR_OPACITY_MAPPINGS] = { 0.5, 0.5 };
-uniform float opacity_min[MAX_NR_OPACITY_MAPPINGS] = { 0.1, 0.1 };
-uniform float opacity_max[MAX_NR_OPACITY_MAPPINGS] = { 1.0, 1.0 };
+uniform int   opacity_mapping[MAX_NR_OPACITY_MAPPINGS] = int[MAX_NR_OPACITY_MAPPINGS]( -1, -1 );
+uniform float opacity_gamma[MAX_NR_OPACITY_MAPPINGS] = float[MAX_NR_OPACITY_MAPPINGS]( 1.0, 1.0 );
+uniform int  opacity_is_bipolar[MAX_NR_OPACITY_MAPPINGS] = int[MAX_NR_OPACITY_MAPPINGS]( 0, 0 );
+uniform float opacity_window_zero_position[MAX_NR_OPACITY_MAPPINGS] = float[MAX_NR_OPACITY_MAPPINGS]( 0.5, 0.5 );
+uniform float opacity_min[MAX_NR_OPACITY_MAPPINGS] = float[MAX_NR_OPACITY_MAPPINGS]( 0.1, 0.1 );
+uniform float opacity_max[MAX_NR_OPACITY_MAPPINGS] = float[MAX_NR_OPACITY_MAPPINGS]( 1.0, 1.0 );
 
 // size mapping
 const int MAX_NR_SIZE_MAPPINGS = 2;
-uniform int   size_mapping[MAX_NR_SIZE_MAPPINGS] = { -1, -1 };
-uniform float size_gamma[MAX_NR_SIZE_MAPPINGS] = { 1.0, 1.0 };
-uniform float size_max[MAX_NR_SIZE_MAPPINGS] = { 1.0, 1.0 };
-uniform float size_min[MAX_NR_SIZE_MAPPINGS] = { 0.2, 0.2 };
+uniform int   size_mapping[MAX_NR_SIZE_MAPPINGS] = int[MAX_NR_SIZE_MAPPINGS]( -1, -1 );
+uniform float size_gamma[MAX_NR_SIZE_MAPPINGS] = float[MAX_NR_SIZE_MAPPINGS]( 1.0, 1.0 );
+uniform float size_max[MAX_NR_SIZE_MAPPINGS] = float[MAX_NR_SIZE_MAPPINGS]( 1.0, 1.0 );
+uniform float size_min[MAX_NR_SIZE_MAPPINGS] = float[MAX_NR_SIZE_MAPPINGS]( 0.2, 0.2 );
 
 bool discard_vertex(inout float attributes[8])
 {

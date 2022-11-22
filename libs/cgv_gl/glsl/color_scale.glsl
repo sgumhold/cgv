@@ -1,10 +1,10 @@
 #version 330 core
 
-uniform int    color_scale_index[2] = { 7, 7 };
+uniform int    color_scale_index[2] = int[2]( 7, 7 );
 uniform vec3   color_scale_samples[64];
 uniform int    nr_color_scale_samples[2];
-uniform int    color_scale_is_bipolar[2] = { 0, 0 };
-uniform float  window_zero_position[2] = { 0.5, 0.5 };
+uniform int    color_scale_is_bipolar[2] = int[2]( 0, 0 );
+uniform float  window_zero_position[2] = float[2]( 0.5, 0.5 );
 
 /*
 The following interface is implemented in this shader:
