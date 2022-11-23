@@ -85,7 +85,7 @@ void main()
 	// compute extent of a pixel at point depth in eye coordinates
 	float pixel_extent = pixel_extent_per_depth * depth;
 	// compute point radius from input point size
-	float reference_point_radius = 0.5 * gl_PointSizeIn[0] * (measure_point_size_in_pixel ? pixel_extent : reference_point_size);
+	float reference_point_radius = 0.5 * gl_in[0].gl_PointSize * (measure_point_size_in_pixel ? pixel_extent : reference_point_size);
 	// compute splat parameters for fragment shader
 	prepare_splat(reference_point_radius, pixel_extent,
 	    blend_width_in_pixel, halo_width_in_pixel, percentual_halo_width,
