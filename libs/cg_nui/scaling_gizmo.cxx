@@ -258,28 +258,6 @@ void cgv::nui::scaling_gizmo::set_scale(const vec3& scale)
 	}
 }
 
-//bool cgv::nui::scaling_gizmo::_compute_intersection_local_orientation(const vec3& ray_start,
-//	const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx,
-//	const vec3& inverse_translation, const quat& inverse_rotation, const vec3& scale, const mat4& view_matrix)
-//{
-//	if (use_global_orientation)
-//		return false;
-//
-//	compute_geometry(scale);
-//	return _compute_intersection(ray_start, ray_direction, hit_param, hit_normal, primitive_idx);
-//}
-//
-//bool cgv::nui::scaling_gizmo::_compute_intersection_global_orientation(const vec3& ray_start,
-//	const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx,
-//	const vec3& inverse_translation, const quat& rotation, const vec3& scale, const mat4& view_matrix)
-//{
-//	if (!use_global_orientation)
-//		return false;
-//
-//	compute_geometry(scale);
-//	return _compute_intersection(ray_start, ray_direction, hit_param, hit_normal, primitive_idx);
-//}
-
 bool cgv::nui::scaling_gizmo::init(cgv::render::context& ctx)
 {
 	if (!gizmo::init(ctx))
@@ -302,13 +280,16 @@ void cgv::nui::scaling_gizmo::_draw(cgv::render::context& ctx, const vec3& scale
 
 	auto& str = cgv::render::ref_spline_tube_renderer(ctx);
 	str.set_render_style(strs);
+	int i = 0;
 	for (auto spline : splines) {
 		if (spline.first.empty())
 			continue;
 		str.set_position_array(ctx, spline.first);
 		str.set_tangent_array(ctx, spline.second);
-		str.set_color_array(ctx, &handle_colors[0], handle_colors.size());
+		std::vector<rgb> colors(spline.first.size(), handle_colors[i]);
+		str.set_color_array(ctx, colors);
 		str.render(ctx, 0, spline.first.size(), true);
+		++i;
 	}
 
 	auto& br = cgv::render::ref_box_renderer(ctx);
