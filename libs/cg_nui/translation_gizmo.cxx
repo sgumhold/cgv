@@ -189,76 +189,29 @@ bool cgv::nui::translation_gizmo::_compute_intersection(const vec3& ray_start, c
 {
 	compute_geometry(scale);
 
-	// TODO: Find out why the cylinder intersection doesn't work
-
-	//size_t idx = -1;
-	//float t = std::numeric_limits<float>::max();
-	//vec3 n;
-	//for (size_t i = 0; i < arrow_positions.size(); ++i) {
-	//	vec3 n0;
-	//	float t0 = cgv::math::ray_cylinder_intersection(ray_start, ray_direction, arrow_positions[i], arrow_directions[i], arrow_radius, n0);
-	//	if (t0 < t) {
-	//		t = t0;
-	//		n = n0;
-	//		idx = i;
-	//	}
-	//}
-	//
-	//if (t == std::numeric_limits<float>::max())
-	//	return false;
-	//hit_param = t;
-	//hit_normal = n;
-	//primitive_idx = idx;
-	//return true;
-
-	for (int i = 0; i < arrow_positions.size(); ++i) {
-
-		vec3 ro = ray_start - ((arrow_positions[i]) + (arrow_directions[i] / 2.0));
-		vec3 rd = ray_direction;
-		quat rot;
-		rot.set_normal(normalize(arrow_directions[i]));
-		rot.inverse_rotate(ro);
-		rot.inverse_rotate(rd);
-
-		vec3 box_size = vec3(arrow_directions[i].length() / 2.0, arrow_radius, arrow_radius);
-		auto result = cgv::math::ray_box_intersection(ro, rd, -0.5f * box_size, 0.5f * box_size);
-		if (result.hit) {
-			hit_param = result.t_near;
-			primitive_idx = i;
-			highlight_handle(i);
-			return true;
+	size_t idx = -1;
+	float t = std::numeric_limits<float>::max();
+	vec3 n;
+	for (size_t i = 0; i < arrow_positions.size(); ++i) {
+		vec3 n0;
+		float t0 = cgv::math::ray_cylinder_intersection(ray_start, ray_direction, arrow_positions[i], arrow_directions[i], arrow_radius, n0);
+		if (t0 < t) {
+			t = t0;
+			n = n0;
+			idx = i;
 		}
 	}
-	dehighlight_handles();
-	return false;
-
-	// Intersection test with box as temporary replacement of not working cylinder intersection
-	//for (int i = 0; i < arrow_positions.size(); ++i) {
-	//
-	//	vec3 ro = ray_start - (arrow_positions[i] + arrow_directions[i] / 2.0);
-	//	vec3 rd = ray_direction;
-	//	quat rot;
-	//	rot.set_normal(normalize(arrow_directions[i]));
-	//	rot.inverse_rotate(ro);
-	//	rot.inverse_rotate(rd);
-	//	vec3 n;
-	//	vec2 res;
-	//	if (cgv::math::ray_box_intersection(ro, rd, vec3(arrow_directions[i].length() / 2.0, arrow_radius, arrow_radius), res, n) == 0)
-	//		continue;
-	//	if (res[0] < 0) {
-	//		if (res[1] < 0)
-	//			continue;
-	//		hit_param = res[1];
-	//	}
-	//	else {
-	//		hit_param = res[0];
-	//	}
-	//	rot.rotate(n);
-	//	hit_normal = n;
-	//	primitive_idx = i;
-	//	return true;
-	//}
-	//return false;
+	
+	if (t == std::numeric_limits<float>::max())
+	{
+		dehighlight_handles();
+		return false;
+	}
+	hit_param = t;
+	hit_normal = n;
+	primitive_idx = idx;
+	highlight_handle(idx);
+	return true;
 }
 
 bool cgv::nui::translation_gizmo::init(cgv::render::context& ctx)

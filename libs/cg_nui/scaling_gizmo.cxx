@@ -205,64 +205,33 @@ bool cgv::nui::scaling_gizmo::_compute_intersection(const vec3& ray_start, const
 {
 	compute_geometry(scale);
 
-	// TODO: Find out why the cylinder intersection doesn't work
-
-	//size_t idx = -1;
-	//float t = std::numeric_limits<float>::max();
-	//vec3 n;
-	//for (size_t i = 0; i < absolute_axes_directions.size(); ++i) {
-	//	vec3 n0;
-	//	float t0 = cgv::math::ray_cylinder_intersection(
-	//		ray_start, ray_direction,
-	//		absolute_axes_positions[i],
-	//		absolute_axes_directions[i],
-	//		spline_tube_radius, n0);
-	//	if (t0 < t) {
-	//		t = t0;
-	//		n = n0;
-	//		idx = i;
-	//	}
-	//}
-	//
-	//if (t == std::numeric_limits<float>::max())
-	//	return false;
-	//hit_param = t;
-	//hit_normal = n;
-	//primitive_idx = idx;
-	//return true;
-
-	// Intersection test with box as temporary replacement of not working cylinder intersection
-	for (int i = 0; i < axes_directions.size(); ++i) {
-
-		vec3 ro = ray_start - (handle_positions[i] + handle_directions[i] / 2.0);
-		vec3 rd = ray_direction;
-		quat rot;
-		if (axes_directions[i] == vec3(-1.0, 0.0, 0.0))
-			rot.set_normal(axes_directions[i] * -1.0f);
-		else
-			rot.set_normal(axes_directions[i]);
-		rot.inverse_rotate(ro);
-		rot.inverse_rotate(rd);
-		vec3 n;
-		vec2 res;
-		if (cgv::math::ray_box_intersection(ro, rd, vec3(scaling_axes_length / 2.0, cube_size / 2.0, cube_size / 2.0), res, n) == 0)
-			continue;
-		if (res[0] < 0) {
-			if (res[1] < 0)
-				continue;
-			hit_param = res[1];
+	size_t idx = -1;
+	float t = std::numeric_limits<float>::max();
+	vec3 n;
+	for (size_t i = 0; i < axes_directions.size(); ++i) {
+		vec3 n0;
+		float t0 = cgv::math::ray_cylinder_intersection(
+			ray_start, ray_direction,
+			handle_positions[i],
+			handle_directions[i],
+			spline_tube_radius, n0);
+		if (t0 < t) {
+			t = t0;
+			n = n0;
+			idx = i;
 		}
-		else {
-			hit_param = res[0];
-		}
-		rot.rotate(n);
-		hit_normal = n;
-		primitive_idx = i;
-		highlight_handle(i);
-		return true;
 	}
-	dehighlight_handles();
-	return false;
+	
+	if (t == std::numeric_limits<float>::max())
+	{
+		dehighlight_handles();
+		return false;
+	}
+	hit_param = t;
+	hit_normal = n;
+	primitive_idx = idx;
+	highlight_handle(idx);
+	return true;
 }
 
 cgv::render::render_types::vec3 cgv::nui::scaling_gizmo::get_scale()
