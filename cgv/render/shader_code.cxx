@@ -296,6 +296,10 @@ bool shader_code::read_code(const context& ctx, const std::string &file_name, Sh
 		set_defines(source, defines);
 	}
 
+	if (st == ST_VERTEX && ctx.get_gpu_vendor_id() == GPUVendorID::GPU_VENDOR_AMD) {
+		set_vertex_attrib_locations(source);
+	}
+
 	if (source.empty())
 		return false;
 	return set_code(ctx, source, st);
@@ -335,6 +339,181 @@ void shader_code::set_defines(std::string& source, const shader_define_map& defi
 			std::string second_part = source.substr(new_line_pos);
 			source = first_part + (offset == 0 ? " " : "") + value + second_part;
 			source += "";
+		}
+	}
+}
+
+/// set shader code vertex attribute locations (a hotfix for AMD driver behaviour on vertex shaders)
+void shader_code::set_vertex_attrib_locations(std::string& source)
+{
+	struct vertex_attribute {
+		cgv::utils::token tok;
+		int location = -1;
+		std::string type = "";
+		std::string name = "";
+
+		vertex_attribute(const cgv::utils::token& tok) : tok(tok) {}
+
+		std::string to_string() {
+			std::string str = "layout (location = ";
+			str += std::to_string(location);
+			str += ") in ";
+			str += type + " ";
+			str += name + ";";
+			return str;
+		}
+	};
+
+	std::vector<cgv::utils::token> parts;
+	std::vector<vertex_attribute> attribs;
+	std::vector<bool> attrib_flags;
+	//cgv::utils::token version_token;
+	size_t version_idx = 0;
+	int version_number = 0;
+	bool is_core = false;
+
+	source = cgv::utils::strip_cpp_comments(source);
+
+	cgv::utils::split_to_tokens(source, parts, "", true, "", "", ";\n");
+
+	attrib_flags.resize(parts.size(), false);
+
+	size_t part_idx = 0;
+
+	// first find version statement
+	for(part_idx; part_idx < parts.size(); ++part_idx) {
+		std::vector<cgv::utils::token> tokens;
+		cgv::utils::split_to_tokens(parts[part_idx], tokens, "", true, "", "", " \t");
+
+		if(tokens.size() == 2 || tokens.size() == 3) {
+			if(tokens[0] == "#version") {
+				version_idx = part_idx;
+				//version_token = parts[0];
+
+				std::string number_str = to_string(tokens[1]);
+				char* p_end;
+				const long num = std::strtol(number_str.c_str(), &p_end, 10);
+				if(number_str.c_str() != p_end)
+					version_number = static_cast<int>(num);
+
+				if(tokens.size() == 3 && tokens[2] == "core")
+					is_core = true;
+
+				break;
+			}
+		}
+	}
+
+	// now filter all vertex attributes
+	for(part_idx; part_idx < parts.size(); ++part_idx) {
+		auto& tok = parts[part_idx];
+
+		while(tok.begin < tok.end && cgv::utils::is_space(*tok.begin))
+			++tok.begin;
+
+		if(tok.size() > 2) {
+			int parentheses_count = 0;
+			bool is_new_word = true;
+			bool was_new_word = true;
+
+			for(size_t i = 0; i < tok.size() - 2; ++i) {
+				char c = tok[i];
+
+				if(c == '(')
+					++parentheses_count;
+
+				if(c == ')')
+					--parentheses_count;
+
+				is_new_word = cgv::utils::is_space(c) || c == ')';
+
+				if(c == 'i' && tok[i + 1] == 'n' && tok[i + 2] == ' ') {
+					if(was_new_word && parentheses_count == 0) {
+						attribs.push_back(vertex_attribute(tok));
+						attrib_flags[part_idx] = true;
+						break;
+					}
+				}
+
+				was_new_word = is_new_word;
+			}
+		}
+	}
+
+	int max_location = -1;
+	for(size_t i = 0; i < attribs.size(); ++i) {
+		auto& attrib = attribs[i];
+
+		std::vector<cgv::utils::token> tokens;
+		cgv::utils::split_to_tokens(attrib.tok, tokens, "", true, "", "", " \t()");
+
+		size_t size = tokens.size();
+
+		if(tokens.size() > 2) {
+			// last two entries must be type and name
+			attrib.type = to_string(tokens[size - 2]);
+			attrib.name = to_string(tokens[size - 1]);
+
+			// find location if present
+			size_t equals_idx = -1;
+			for(size_t j = 0; j < size; ++j) {
+				auto& tok = tokens[j];
+				if(tok.size() == 1 && tok[0] == '=')
+					equals_idx = j;
+			}
+
+			if(equals_idx != -1 && equals_idx > 0 && equals_idx < size - 1) {
+				if(to_string(tokens[equals_idx - 1]) == "location") {
+					std::string val_str = to_string(tokens[equals_idx + 1]);
+					char* p_end;
+					const long num = std::strtol(val_str.c_str(), &p_end, 10);
+					if(val_str.c_str() != p_end) {
+						attrib.location = static_cast<int>(num);
+						max_location = std::max(max_location, attrib.location);
+					}
+				}
+			}
+		}
+	}
+
+	for(size_t i = 0; i < attribs.size(); ++i) {
+		auto& attrib = attribs[i];
+		if(attrib.location < 0)
+			attrib.location = ++max_location;
+	}
+
+	size_t attrib_idx = 0;
+	size_t accumulate_offset = 0;
+	size_t content_offset = reinterpret_cast<size_t>(source.data());
+
+	for(size_t i = 0; i < parts.size(); ++i) {
+		auto& tok = parts[i];
+
+		if(i == version_idx || attrib_flags[i]) {
+			size_t token_begin = reinterpret_cast<size_t>(tok.begin);
+			size_t token_end = reinterpret_cast<size_t>(tok.end);
+
+			size_t offset = token_begin - content_offset;
+			size_t length = token_end - token_begin;
+
+			std::string str = "";
+
+			if(attrib_flags[i]) {
+				auto& attrib = attribs[attrib_idx];
+				++attrib_idx;
+				str = attrib.to_string() + "\n";
+			} else {
+				version_number = std::max(version_number, 330);
+				str = "#version " + std::to_string(version_number) + (is_core ? " core" : "");
+			}
+
+			offset += accumulate_offset;
+			accumulate_offset += str.length() - length - 1;
+
+			std::string first_part = source.substr(0, offset);
+			std::string second_part = source.substr(offset + length + 1);
+
+			source = first_part + str + second_part;
 		}
 	}
 }

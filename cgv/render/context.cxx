@@ -125,6 +125,8 @@ context::context()
 {
 	*static_cast<context_config*>(this) = *get_render_config();
 
+	gpu_vendor = GPU_VENDOR_UNKNOWN;
+
 	static frame_buffer_base fbb;
 	frame_buffer_stack.push(&fbb);
 	modelview_matrix_stack.push(cgv::math::identity4<double>());
@@ -190,6 +192,11 @@ void context::error(const std::string& message, const render_component* rc) cons
 		abort();
 }
 
+/// device information
+GPUVendorID context::get_gpu_vendor_id() const
+{
+	return gpu_vendor;
+}
 
 /// virtual destructor
 context::~context()
