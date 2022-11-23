@@ -97,6 +97,7 @@ var classcgv_1_1render_1_1gl_1_1gl__context =
     [ "get_default_render_pass_flags", "classcgv_1_1render_1_1gl_1_1gl__context.html#adac3feb6febead0c79dd48fbefaa046f", null ],
     [ "get_enabled_light_source_handle", "classcgv_1_1render_1_1gl_1_1gl__context.html#af99fb0be61f22be89fa8633851b94878", null ],
     [ "get_gamma", "classcgv_1_1render_1_1gl_1_1gl__context.html#a51a7f29f3dbad8a4b6e75e0904fc1f14", null ],
+    [ "get_gpu_vendor_id", "classcgv_1_1render_1_1gl_1_1gl__context.html#a1fd8b8f12182657098d3243561c9eace", null ],
     [ "get_height", "classcgv_1_1render_1_1gl_1_1gl__context.html#a6dde896fc37726e3ec39e7d450f1e168", null ],
     [ "get_light_eye_position", "classcgv_1_1render_1_1gl_1_1gl__context.html#acd126f165c4c3f08de7a0d98ba060da9", null ],
     [ "get_light_eye_spot_direction", "classcgv_1_1render_1_1gl_1_1gl__context.html#ab2de923a5bd4ac180d2b2bbb2204ec35", null ],
