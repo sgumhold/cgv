@@ -1,6 +1,15 @@
 #include "gizmo.h"
 using namespace cgv::render;
 
+bool cgv::nui::gizmo::validate_configuration()
+{
+	if (!anchor_obj) {
+		std::cout << "Invalid Configuration: A gizmo has to have a valid anchor object" << std::endl;
+		return false;
+	}
+	return true;
+}
+
 mat4 cgv::nui::gizmo::compute_draw_correction_transformation(vec3& scale)
 {
 	vec3 obj_translation;

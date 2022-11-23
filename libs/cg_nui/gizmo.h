@@ -88,7 +88,7 @@ protected:
 	virtual void on_handle_released() {}
 
 	/// Validate all configuration values. Return false if configuration is invalid in a way that the gizmo cannot be used or rendered.
-	virtual bool validate_configuration() = 0;
+	virtual bool validate_configuration();
 
 	/// Compute constant values according to the configuration.
 	/// Called once on attach.
