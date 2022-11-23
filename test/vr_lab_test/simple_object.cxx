@@ -99,14 +99,6 @@ bool simple_object::_compute_closest_point(const vec3& point, vec3& prj_point, v
 	for (int i = 0; i < 3; ++i)
 		prj_point[i] = std::max(-0.5f * extent[i], std::min(0.5f * extent[i], prj_point[i]));
 	return true;
-
-	//vec3 p = point - position;
-	//rotation.inverse_rotate(p);
-	//for (int i = 0; i < 3; ++i)
-	//	p[i] = std::max(-0.5f * extent[i], std::min(0.5f * extent[i], p[i]));
-	//rotation.rotate(p);
-	//prj_point = p + position;
-	//return true;
 }
 
 bool simple_object::_compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx)
@@ -117,27 +109,6 @@ bool simple_object::_compute_intersection(const vec3& ray_start, const vec3& ray
 		return true;
 	}
 	return false;
-
-	//vec3 ro = ray_start - position;
-	//vec3 ro = ray_start;
-	//vec3 rd = ray_direction;
-	//rotation.inverse_rotate(ro);
-	//rotation.inverse_rotate(rd);
-	//vec3 n;
-	//vec2 res;
-	//if (cgv::math::ray_box_intersection(ro, rd, 0.5f*extent, res, n) == 0)
-	//	return false;
-	//if (res[0] < 0) {
-	//	if (res[1] < 0)
-	//		return false;
-	//	hit_param = res[1];
-	//}
-	//else {
-	//	hit_param = res[0];
-	//}
-	//rotation.rotate(n);
-	//hit_normal = n;
-	//return true;
 }
 
 bool simple_object::init(cgv::render::context& ctx)
