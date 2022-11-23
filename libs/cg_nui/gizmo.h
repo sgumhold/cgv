@@ -43,27 +43,32 @@ protected:
 protected:
 	/// Fixed position offset to the anchor position (added to position of anchor or root object). Do not use directly (use through anchor_position_ptr).
 	vec3 anchor_position;
-	/// Fixed rotation offset to the anchor rotation (added to rotation of anchor object). Do not use directly (use through anchor_rotation_ptr).
+	/// Fixed rotation offset to the anchor rotation (added to rotation of anchor or root object). Do not use directly (use through anchor_rotation_ptr).
 	quat anchor_rotation;
-	/// Readonly position offset to the anchor position (added to position of anchor object)
+	/// Readonly position offset to the anchor position (added to position of anchor or root object)
 	const vec3* anchor_position_ptr{ nullptr };
-	/// Readonly rotation offset to the anchor rotation (added to rotation of anchor object)
+	/// Readonly rotation offset to the anchor rotation (added to rotation of anchor or root object)
 	const quat* anchor_rotation_ptr{ nullptr };
-	/// Readonly position offset to the anchor position (added to position of anchor object)
+	/// Readonly position offset to the anchor position (added to position of anchor or root object)
 	const vec3** anchor_position_ptr_ptr{ nullptr };
-	/// Readonly rotation offset to the anchor rotation (added to rotation of anchor object)
+	/// Readonly rotation offset to the anchor rotation (added to rotation of anchor or root object)
 	const quat** anchor_rotation_ptr_ptr{ nullptr };
 	/// Reference of object this gizmo is anchored to
 	cgv::base::node_ptr anchor_obj{ nullptr };
+	/// Reference of object that acts as the root coordinate system for this gizmo
+	cgv::base::node_ptr root_obj{ nullptr };
 
+	/// Whether this gizmo is currently attached (all configuration validated and gizmo active)
 	bool is_attached{ false };
 	/// Whether the anchor object's transform is changed by the value manipulated by this gizmo
 	bool is_anchor_influenced_by_gizmo{ false };
+	/// Whether the root object's transform is changed by the value manipulated by this gizmo
+	bool is_root_influenced_by_gizmo{ false };
 
 	/// Reference to the object that gets notified of changing values through the on_set function
 	cgv::base::base_ptr on_set_obj{ nullptr };
 
-	// Needed to call the two events on_handle_grabbed and on_handle_drag
+	// Needed to call the wrapper events on_handle_grabbed, on_handle_drag and on_handle_released
 	void on_grabbed_start() override { on_handle_grabbed();	}
 
 	void on_grabbed_drag() override	{ on_handle_drag();	}
@@ -120,32 +125,36 @@ public:
 	// Configuration Functions
 
 	/// Sets the object as the parent of the gizmo. The gizmo will be positioned according to any transforming interfaces in the hierarchy.
-	///	Not setting this means the gizmo is positioned in the global coordinate system directly.
+	///	This is required.
 	void set_anchor_object(cgv::base::node_ptr _anchor_obj);
-	/// Set a fixed position offset that will be added to the anchor object's position (if object was set).
+	/// Sets the object to act as the root coordinate system of the gizmo. This object has to be somewhere above the anchor object in the hierarchy.
+	/// It will act like a world coordinate system to allow e.g for removing the scaling of the gizmo handles.
+	///	This is required.
+	void set_root_object(cgv::base::node_ptr _root_obj);
+	/// Set a fixed position offset that will be added to the anchor position (anchor or root object, depending on config).
 	///	This will only be used to position the gizmo and is NOT a value being manipulated by the gizmo.
 	void set_anchor_offset_position(vec3 _anchor_position);
-	/// Set a fixed rotation offset that will be added to the anchor object's rotation (if object was set).
+	/// Set a fixed rotation offset that will be added to the anchor rotation (anchor or root object, depending on config).
 	///	This will only be used to position the gizmo's handles and is NOT a value being manipulated by the gizmo.
 	void set_anchor_offset_rotation(quat _anchor_rotation);
-	/// Set a variable (readonly) position offset that will be added to the anchor object's position (if object was set).
+	/// Set a variable (readonly) position offset that will be added to the anchor position (anchor or root object, depending on config).
 	///	This will only be used to position the gizmo and is NOT a value being manipulated by the gizmo.
 	void set_anchor_offset_position(const vec3* _anchor_position_ptr);
-	/// Set a variable (readonly) rotation offset that will be added to the anchor object's rotation (if object was set).
+	/// Set a variable (readonly) rotation offset that will be added to the anchor rotation (anchor or root object, depending on config).
 	///	This will only be used to position the gizmo's handles and is NOT a value being manipulated by the gizmo.
 	void set_anchor_offset_rotation(const quat* _anchor_rotation_ptr);
-	/// Set a variable (readonly) position offset with an additional level of indirection that will be added to the anchor object's position (if object was set).
+	/// Set a variable (readonly) position offset with an additional level of indirection that will be added to the anchor position (anchor or root object, depending on config).
 	///	This will only be used to position the gizmo and is NOT a value being manipulated by the gizmo.
 	void set_anchor_offset_position(const vec3** _anchor_position_ptr_ptr);
-	/// Set a variable (readonly) rotation offset with an additional level of indirection that will be added to the anchor object's rotation (if object was set).
+	/// Set a variable (readonly) rotation offset with an additional level of indirection that will be added to the anchor rotation (anchor or root object, depending on config).
 	///	This will only be used to position the gizmo's handles and is NOT a value being manipulated by the gizmo.
 	void set_anchor_offset_rotation(const quat** _anchor_rotation_ptr_ptr);
-	/// Set whether the gizmo should be rotated relative to the world as opposed to relative to its anchor object.
-	///	The anchor rotation (if set) will be applied regardless.
-	void set_use_absolute_rotation(bool value);
-	/// Set whether this gizmos anchor will change with the value manipulated by this gizmo.
+	/// Set whether this gizmo's anchor object's transform will change with the value manipulated by this gizmo.
 	/// It is important to set this correctly for certain behaviours to work as expected.
 	void set_is_anchor_influenced_by_gizmo(bool value);
+	/// Set whether this gizmo's root object's transform will change with the value manipulated by this gizmo.
+	/// It is important to set this correctly for certain behaviours to work as expected.
+	void set_is_root_influenced_by_gizmo(bool value);
 protected:
 	/// Set the object to be notified of value changes. Should be called in subclasses of gizmo when setting the pointer to the manipulated value.
 	void set_on_set_object(cgv::base::base_ptr _on_set_obj);

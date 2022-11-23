@@ -132,8 +132,52 @@ namespace cgv {
 			return accumulated_transform;
 		}
 
+		const mat4& transforming::get_partial_model_transform(base::node_ptr obj, base::node_ptr root)
+		{
+			mat4& accumulated_transform = *(new mat4());
+			accumulated_transform.identity();
+			base::node_ptr parent = obj;
+			int nr_iters = 0;
+			bool root_found = false;
+			do {
+				auto* transforming_ptr = parent->get_interface<transforming>();
+				if (transforming_ptr) {
+					accumulated_transform = transforming_ptr->get_model_transform() * accumulated_transform;
+				}
+				parent = parent->get_parent();
+				if (parent == root)
+					root_found = true;
+			} while (parent && !root_found && ++nr_iters < 100);
+			// Return identity if root was not found in the hierarchy above obj
+			if (!root_found)
+				accumulated_transform.identity();
+			return accumulated_transform;
+		}
+
+		const mat4& transforming::get_partial_inverse_model_transform(base::node_ptr obj, base::node_ptr root)
+		{
+			mat4& accumulated_transform = *(new mat4());
+			accumulated_transform.identity();
+			base::node_ptr parent = obj;
+			int nr_iters = 0;
+			bool root_found = false;
+			do {
+				auto* transforming_ptr = parent->get_interface<transforming>();
+				if (transforming_ptr) {
+					accumulated_transform = transforming_ptr->get_inverse_model_transform() * accumulated_transform;
+				}
+				parent = parent->get_parent();
+				if (parent == root)
+					root_found = true;
+			} while (parent && !root_found && ++nr_iters < 100);
+			// Return identity if root was not found in the hierarchy above obj
+			if (!root_found)
+				accumulated_transform.identity();
+			return accumulated_transform;
+		}
+
 		void cgv::nui::transforming::extract_transform_components(const mat4& transform, vec3& translation, quat& rotation,
-			vec3& scale)
+		                                                          vec3& scale)
 		{
 			// calculation from https://math.stackexchange.com/q/1463487 (lookup 28.06.2022)
 			// assuming no perspective transformation, no shear, no negative scaling factors

@@ -68,10 +68,14 @@ namespace cgv {
 
 			// Static Helper functions
 
-			/// Accumulate model transforms over hierarchy (global transform of object)
+			/// Accumulate model transforms over entire hierarchy (global transform of object)
 			static const mat4& get_global_model_transform(base::node_ptr obj);
-			/// Accumulate inverse model transforms over hierarchy (global inverse transform of object)
+			/// Accumulate inverse model transforms over entire hierarchy (global inverse transform of object)
 			static const mat4& get_global_inverse_model_transform(base::node_ptr obj);
+			/// Accumulate model transforms from obj to root
+			static const mat4& get_partial_model_transform(base::node_ptr obj, base::node_ptr root);
+			/// Accumulate inverse model transforms from obj to root
+			static const mat4& get_partial_inverse_model_transform(base::node_ptr obj, base::node_ptr root);
 			/// Extract the translation, rotation and scale components of the given 4x4 tranformation matrix (assuming no shear, perspective or negative scale)
 			static void extract_transform_components(const mat4& transform, vec3& translation, quat& rotation, vec3& scale);
 			static const mat4& construct_transform_from_components(const vec3& translation, const quat& rotation, const vec3& scale);

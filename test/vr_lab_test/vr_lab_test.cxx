@@ -129,6 +129,12 @@ public:
 	}
 	bool init(cgv::render::context& ctx)
 	{
+		// Initialize the gizmos of the simple_objects. This has to happen outside of the constructors so that the hierarchy can be traversed.
+		vr::vr_scene* scene_ptr = get_scene_ptr();
+		for (auto object : objects) {
+			//object->initialize_gizmos(scene_ptr);
+		}
+
 		cgv::render::ref_sphere_renderer(ctx, 1);
 		cgv::render::ref_cone_renderer(ctx, 1);
 
