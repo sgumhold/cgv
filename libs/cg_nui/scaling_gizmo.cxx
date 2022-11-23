@@ -76,7 +76,7 @@ bool cgv::nui::scaling_gizmo::validate_configuration()
 	configuration_valid = configuration_valid && validate_axes();
 	configuration_valid = configuration_valid && validate_handles(axes_directions.size());
 
-	return configuration_valid;
+	return configuration_valid && gizmo::validate_configuration();
 }
 
 void cgv::nui::scaling_gizmo::on_handle_grabbed()
