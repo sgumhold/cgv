@@ -111,6 +111,7 @@ var namespacecgv_1_1render =
     [ "CullingMode", "namespacecgv_1_1render.html#a0b2ec1d0f6ff0852f53654cb8e6fab57", null ],
     [ "ElementType", "namespacecgv_1_1render.html#a6f68d5e423e96440b1c6121905e08b3e", null ],
     [ "FrameBufferType", "namespacecgv_1_1render.html#a6a9c2282e6df914ff013f5a587bbd49c", null ],
+    [ "GPUVendorID", "namespacecgv_1_1render.html#af832c0efcb92dc65a54ccce773869086", null ],
     [ "IlluminationMode", "namespacecgv_1_1render.html#a83bae24a57983501b2c07712314e461e", null ],
     [ "MaterialSide", "namespacecgv_1_1render.html#a6d228fe5151b5fca590320445c9e9139", null ],
     [ "PerformanceMonitoringBar", "namespacecgv_1_1render.html#a79b40c1e022fe70b55c592f296dd5e29", null ],
