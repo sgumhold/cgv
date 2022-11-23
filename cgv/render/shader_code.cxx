@@ -296,6 +296,18 @@ bool shader_code::read_code(const context& ctx, const std::string &file_name, Sh
 		set_defines(source, defines);
 	}
 
+	
+
+
+
+	bool is_amd = true;
+	if(is_amd && st == ST_VERTEX) {
+		set_vertex_attrib_locations(source);
+	}
+
+
+
+
 	if (source.empty())
 		return false;
 	return set_code(ctx, source, st);
@@ -338,6 +350,188 @@ void shader_code::set_defines(std::string& source, const shader_define_map& defi
 		}
 	}
 }
+
+
+
+
+
+
+/// set shader code vertex attribute locations (a hotfix for AMD driver behaviour on vertex shaders)
+void shader_code::set_vertex_attrib_locations(std::string& source)
+{
+	struct vertex_attribute {
+		cgv::utils::token tok;
+		int location = -1;
+		std::string type = "";
+		std::string name = "";
+
+		vertex_attribute(const cgv::utils::token& tok) : tok(tok) {}
+
+		std::string to_string() {
+			std::string str = "layout (location = ";
+			str += std::to_string(location);
+			str += ") in ";
+			str += type + " ";
+			str += name + ";";
+			return str;
+		}
+	};
+
+	std::vector<cgv::utils::token> instructions;
+	std::vector<vertex_attribute> attribs;
+	std::vector<bool> attrib_flags;
+	
+	cgv::utils::split_to_tokens(source, instructions, "", true, "", "", ";\n");
+
+	cgv::utils::token version_token;
+	int version_number = 0;
+	bool is_core = false;
+
+	if(instructions.size() > 0) {
+		std::vector<cgv::utils::token> tokens;
+		cgv::utils::split_to_tokens(instructions[0], tokens, "", true, "", "", " \t");
+
+		if(tokens.size() == 2 || tokens.size() == 3) {
+			if(tokens[0] == "#version")
+				version_token = instructions[0];
+
+			std::string number_str = to_string(tokens[1]);
+			char* p_end;
+			const long num = std::strtol(number_str.c_str(), &p_end, 10);
+			if(number_str.c_str() != p_end)
+				version_number = static_cast<int>(num);
+
+			if(tokens.size() == 3)
+				if(tokens[2] == "core")
+					is_core = true;
+		}
+	}
+
+	version_number = std::max(version_number, 330);
+	std::string version_str = "#version " + std::to_string(version_number) + (is_core ? " core" : "");
+
+	// filter all vertex attributes
+	for(size_t i = 0; i < instructions.size(); ++i) {
+		auto& tok = instructions[i];
+		bool is_attrib = false;
+
+		while(tok.begin < tok.end && cgv::utils::is_space(*tok.begin))
+			++tok.begin;
+
+		if(tok.size() > 2) {
+			int parentheses_count = 0;
+			bool is_new_word = true;
+			bool was_new_word = true;
+
+			for(size_t j = 0; j < tok.size() - 2; ++j) {
+				char c = tok[j];
+
+				if(tok[j] == '(')
+					++parentheses_count;
+
+				if(tok[j] == ')')
+					--parentheses_count;
+
+				is_new_word = cgv::utils::is_space(tok[j]) || tok[j] == ')';
+
+				if(tok[j] == 'i' && tok[j + 1] == 'n' && tok[j + 2] == ' ') {
+					if(was_new_word && parentheses_count == 0) {
+						attribs.push_back(vertex_attribute(tok));
+						is_attrib = true;
+						break;
+					}
+				}
+
+				was_new_word = is_new_word;
+			}
+		}
+
+		attrib_flags.push_back(is_attrib);
+	}
+
+	int max_location = -1;
+	for(size_t i = 0; i < attribs.size(); ++i) {
+		auto& attrib = attribs[i];
+
+		std::vector<cgv::utils::token> tokens;
+		cgv::utils::split_to_tokens(attrib.tok, tokens, "", true, "", "", " \t()");
+
+		size_t size = tokens.size();
+
+		if(tokens.size() > 2) {
+			// last two entries must be type and name
+			attrib.type = to_string(tokens[size - 2]);
+			attrib.name = to_string(tokens[size - 1]);
+
+			// find location if present
+			size_t equals_idx = -1;
+			for(size_t j = 0; j < size; ++j) {
+				auto& tok = tokens[j];
+				if(tok.size() == 1 && tok[0] == '=')
+					equals_idx = j;
+			}
+
+			if(equals_idx != -1 && equals_idx > 0 && equals_idx < size - 1) {
+				if(to_string(tokens[equals_idx - 1]) == "location") {
+					std::string val_str = to_string(tokens[equals_idx + 1]);
+					char* p_end;
+					const long num = std::strtol(val_str.c_str(), &p_end, 10);
+					if(val_str.c_str() != p_end) {
+						attrib.location = static_cast<int>(num);
+						max_location = std::max(max_location, attrib.location);
+					}
+				}
+			}
+		}
+	}
+
+	for(size_t i = 0; i < attribs.size(); ++i) {
+		auto& attrib = attribs[i];
+		if(attrib.location < 0)
+			attrib.location = ++max_location;
+	}
+
+	size_t attrib_idx = 0;
+	size_t accumulate_offset = 0;
+	size_t content_offset = reinterpret_cast<size_t>(source.data());
+
+	for(size_t i = 0; i < instructions.size(); ++i) {
+		auto& tok = instructions[i];
+
+		if(i == 0 && !version_token.empty() || attrib_flags[i]) {
+			size_t token_begin = reinterpret_cast<size_t>(tok.begin);
+			size_t token_end = reinterpret_cast<size_t>(tok.end);
+
+			size_t offset = token_begin - content_offset;
+			size_t length = token_end - token_begin;
+
+			std::string str = "";
+
+			if(attrib_flags[i]) {
+				auto& attrib = attribs[attrib_idx];
+				++attrib_idx;
+				str = attrib.to_string() + "\n";
+			} else {
+				str = version_str + "\n";
+			}
+
+			offset += accumulate_offset;
+			accumulate_offset += str.length() - length - 1;
+
+			std::string first_part = source.substr(0, offset);
+			std::string second_part = source.substr(offset + length + 1);
+
+			source = first_part + str + second_part;
+		}
+	}
+}
+
+
+
+
+
+
+
 
 ///compile attached source; returns true if successful
 bool shader_code::compile(const context& ctx)
