@@ -296,17 +296,9 @@ bool shader_code::read_code(const context& ctx, const std::string &file_name, Sh
 		set_defines(source, defines);
 	}
 
-	
-
-
-
-	bool is_amd = true;
-	if(is_amd && st == ST_VERTEX) {
+	if (st == ST_VERTEX && ctx.get_gpu_vendor_id() == GPUVendorID::GPU_VENDOR_AMD) {
 		set_vertex_attrib_locations(source);
 	}
-
-
-
 
 	if (source.empty())
 		return false;

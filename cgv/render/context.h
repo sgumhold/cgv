@@ -24,6 +24,14 @@ namespace cgv {
 class CGV_API drawable;
 class CGV_API textured_material;
 
+/// IDs for GPU vendors
+enum GPUVendorID {
+	GPU_VENDOR_UNKNOWN,
+	GPU_VENDOR_AMD,
+	GPU_VENDOR_INTEL,
+	GPU_VENDOR_NVIDIA
+};
+
 /// different compond types for data elements
 enum ElementType {
 	ET_VALUE,
@@ -526,6 +534,9 @@ struct window_transformation
 /** base class for all drawables, which is independent of the used rendering API. */
 class CGV_API context : public render_types, public context_config
 {
+protected:
+	// store the GPU vendor id
+	GPUVendorID gpu_vendor;
 public:
 	friend class CGV_API attribute_array_manager;
 	friend class CGV_API render_component;
@@ -723,6 +734,8 @@ public:
 	virtual ~context();
 	/// error handling
 	virtual void error(const std::string& message, const render_component* rc = 0) const;
+	/// device information
+	virtual GPUVendorID get_gpu_vendor_id() const;
 
 	/**@name interface for implementation of specific contexts*/
 	//@{
