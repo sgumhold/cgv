@@ -103,7 +103,8 @@ void cgv::nui::scaling_gizmo::on_handle_drag()
 	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj), obj_translation, obj_rotation, obj_scale);
 
 	vec3 axis;
-	if (!use_absolute_rotation) {
+	if (get_functionality_absolute_axes_rotation() &&
+		_functionality_absolute_axes_rotation->get_use_absolute_rotation()) {
 		axis = axes_directions[prim_idx];
 	}
 	else {

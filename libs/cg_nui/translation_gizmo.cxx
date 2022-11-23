@@ -85,7 +85,8 @@ void cgv::nui::translation_gizmo::on_handle_drag()
 
 	vec3 movement = closest_point - ii_at_grab.query_point;
 
-	if (use_absolute_rotation) {
+	if (get_functionality_absolute_axes_rotation() &&
+		_functionality_absolute_axes_rotation->get_use_absolute_rotation()) {
 		// The position is in the local coordinate system of the parent and the movement should be along the global axes.
 		// Therefor the anchor object parent's global inverse rotation has to be applied to the movement vector.
 		movement = anchor_obj_parent_global_rotation.inverse().apply(movement);

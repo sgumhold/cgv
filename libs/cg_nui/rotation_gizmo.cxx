@@ -151,7 +151,8 @@ void cgv::nui::rotation_gizmo::on_handle_drag()
 	vec3 direction_at_grab = cross(cross(axis, ii_at_grab.query_point - axis_origin), axis);
 	vec3 direction_currently = cross(cross(axis, closest_point - axis_origin), axis);
 
-	if (use_absolute_rotation) {
+	if (get_functionality_absolute_axes_rotation() &&
+		_functionality_absolute_axes_rotation->get_use_absolute_rotation()) {
 		direction_at_grab = anchor_obj_parent_global_rotation.apply(direction_at_grab);
 		direction_currently = anchor_obj_parent_global_rotation.apply(direction_currently);
 		axis = anchor_obj_parent_global_rotation.apply(axis);

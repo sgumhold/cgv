@@ -16,7 +16,8 @@ namespace cgv {
 ///	Optionally takes a position as an anchor point and a rotation to allow for scaling in the object coordinates.
 class CGV_API scaling_gizmo : public cgv::nui::gizmo,
 	public cgv::nui::gizmo_functionality_configurable_axes,
-	public cgv::nui::gizmo_functionality_handle_states
+	public cgv::nui::gizmo_functionality_handle_states,
+	public cgv::nui::gizmo_functionality_absolute_axes_rotation
 {
 	// pointers to properties of the object the gizmo is attached to
 	vec3* scale_ptr{ nullptr };

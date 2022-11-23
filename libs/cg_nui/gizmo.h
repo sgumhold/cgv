@@ -3,6 +3,7 @@
 #include <cg_nui/interactable.h>
 #include <cg_nui/transforming.h>
 #include <cgv/math/ftransform.h>
+#include <libs/cg_nui/reusable_gizmo_functionalities.h>
 
 #include "lib_begin.h"
 
@@ -16,7 +17,31 @@ namespace cgv {
 class CGV_API gizmo : public cgv::nui::interactable, public cgv::nui::transforming
 {
 protected:
-	/// Fixed position offset to the anchor position (added to position of anchor object). Do not use directly (use through anchor_position_ptr).
+	// Used to determine whether a gizmo subclass uses the absolute axes rotation functionality.
+	gizmo_functionality_absolute_axes_rotation* _functionality_absolute_axes_rotation{ nullptr };
+	bool tried_functionality_absolute_axes_rotation_cast{ false };
+	gizmo_functionality_absolute_axes_rotation* get_functionality_absolute_axes_rotation()
+	{
+		if (!_functionality_absolute_axes_rotation && !tried_functionality_absolute_axes_rotation_cast) {
+			_functionality_absolute_axes_rotation = dynamic_cast<gizmo_functionality_absolute_axes_rotation*>(this);
+			tried_functionality_absolute_axes_rotation_cast = true;
+		}
+		return _functionality_absolute_axes_rotation;
+	}
+
+	// Used to determine whether a gizmo subclass uses the absolute axes position functionality.
+	gizmo_functionality_absolute_axes_position* _functionality_absolute_axes_position{ nullptr };
+	bool tried_functionality_absolute_axes_position_cast{ false };
+	gizmo_functionality_absolute_axes_position* get_functionality_absolute_axes_position()
+	{
+		if (!_functionality_absolute_axes_position && !tried_functionality_absolute_axes_position_cast) {
+			_functionality_absolute_axes_position = dynamic_cast<gizmo_functionality_absolute_axes_position*>(this);
+			tried_functionality_absolute_axes_position_cast = true;
+		}
+		return _functionality_absolute_axes_position;
+	}
+protected:
+	/// Fixed position offset to the anchor position (added to position of anchor or root object). Do not use directly (use through anchor_position_ptr).
 	vec3 anchor_position;
 	/// Fixed rotation offset to the anchor rotation (added to rotation of anchor object). Do not use directly (use through anchor_rotation_ptr).
 	quat anchor_rotation;
@@ -32,7 +57,7 @@ protected:
 	cgv::base::node_ptr anchor_obj{ nullptr };
 
 	bool is_attached{ false };
-	bool use_absolute_rotation{ false };
+	/// Whether the anchor object's transform is changed by the value manipulated by this gizmo
 	bool is_anchor_influenced_by_gizmo{ false };
 
 	/// Reference to the object that gets notified of changing values through the on_set function
