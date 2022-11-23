@@ -15,7 +15,8 @@ namespace cgv {
 ///	Optionally takes a rotation to allow for translation in the object coordinates.
 class CGV_API translation_gizmo : public cgv::nui::gizmo,
 	public cgv::nui::gizmo_functionality_configurable_axes,
-	public cgv::nui::gizmo_functionality_handle_states
+	public cgv::nui::gizmo_functionality_handle_states,
+	public cgv::nui::gizmo_functionality_absolute_axes_rotation
 {
 	// pointers to properties of the object the gizmo is attached to
 	vec3* position_ptr{ nullptr };
