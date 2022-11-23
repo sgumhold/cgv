@@ -231,17 +231,28 @@ bool gl_context::configure_gl()
 	}
 	else
 		core_profile = false;
+
+	const GLubyte* vendor_c_string = glGetString(GL_VENDOR);
+	std::string vendor_string(reinterpret_cast<const char*>(vendor_c_string));
+	vendor_string = cgv::utils::to_upper(vendor_string);
+	
+	if (vendor_string.find("AMD") || vendor_string.find("ATI"))
+		gpu_vendor = GPU_VENDOR_AMD;
+	else if (vendor_string.find("INTEL"))
+		gpu_vendor = GPU_VENDOR_INTEL;
+	else if (vendor_string.find("NVIDIA"))
+		gpu_vendor = GPU_VENDOR_NVIDIA;
+
 #ifdef _DEBUG
 	std::cout << "OpenGL version " << version_major << "." << version_minor << (core_profile?" (core)":"") << (debug?" (debug)":"") << (forward_compatible?" (forward_compatible)":"") << std::endl;
-	const GLubyte* vendor_string = glGetString(GL_VENDOR);
-	const GLubyte* renderer_string = glGetString(GL_RENDERER);
-	const GLubyte* glslversion_string = glGetString(GL_SHADING_LANGUAGE_VERSION);
-	if (vendor_string)
-		std::cout << "   vendor     : " << vendor_string << std::endl;
-	if (renderer_string)
-		std::cout << "   renderer   : " << renderer_string << std::endl;
-	if (glslversion_string)
-		std::cout << "   glslversion: " << glslversion_string << std::endl;
+	const GLubyte* renderer_c_string = glGetString(GL_RENDERER);
+	const GLubyte* glslversion_c_string = glGetString(GL_SHADING_LANGUAGE_VERSION);
+	if (vendor_c_string)
+		std::cout << "   vendor     : " << vendor_c_string << std::endl;
+	if (renderer_c_string)
+		std::cout << "   renderer   : " << renderer_c_string << std::endl;
+	if (glslversion_c_string)
+		std::cout << "   glslversion: " << glslversion_c_string << std::endl;
 #endif
 	if (debug) {
 		glEnable(GL_DEBUG_OUTPUT);
