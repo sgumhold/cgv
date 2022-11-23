@@ -63,16 +63,6 @@ void cgv::nui::translation_gizmo::on_handle_drag()
 
 	vec3 axis = axes_directions[prim_idx];
 
-	// This seems to fix the mouse following but only for pure table rotations, local rotations still break.
-	//if (use_absolute_rotation) {
-	//	axis = anchor_obj_parent_global_rotation.inverse().apply(axis);
-	//}
-
-	// Makes everything worse
-	//vec3 scale;
-	//mat4 correction_transform = compute_interaction_correction_transformation(scale);
-	//vec3 corrected_hid_direction = correction_transform * vec4(ii_during_focus[activating_hid_id].hid_direction, 0.0);
-
 	vec3 closest_point;
 	if (ii_at_grab.is_pointing) {
 		if (!cgv::math::closest_point_on_line_to_line(ii_at_grab.query_point, axis,
@@ -110,74 +100,6 @@ void cgv::nui::translation_gizmo::on_handle_drag()
 	else
 		set_position(position_at_grab + movement);
 }
-
-/*
-void cgv::nui::translation_gizmo::on_handle_drag()
-{
-	vec3 anchor_obj_global_translation;
-	quat anchor_obj_global_rotation;
-	vec3 anchor_obj_global_scale;
-	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj), anchor_obj_global_translation, anchor_obj_global_rotation, anchor_obj_global_scale);
-	vec3 anchor_obj_parent_global_translation;
-	quat anchor_obj_parent_global_rotation;
-	vec3 anchor_obj_parent_global_scale;
-	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj->get_parent()),
-		anchor_obj_parent_global_translation, anchor_obj_parent_global_rotation, anchor_obj_parent_global_scale);
-	quat anchor_obj_local_rotation = anchor_obj_parent_global_rotation.inverse() * anchor_obj_global_rotation;
-	
-	vec3 axis;
-	if (!use_absolute_rotation) {
-		// This only works for the local object rotations, not the table rotations
-		//axis = anchor_obj_global_rotation.get_homogeneous_matrix() * vec4(axes_directions[prim_idx], 0);
-		axis = anchor_obj_local_rotation.apply(axes_directions[prim_idx]);
-	}
-	else {
-		// This seems to correctly calculate the axis direction
-		// (this is unexpected, it's like the local anchor obj rotation is inverse to the rest of the rotations).
-		// However it doesn't function correctly together with the calculation of the of the movement distance / mouse position projection.
-	
-		axis = anchor_obj_parent_global_rotation.inverse().get_homogeneous_matrix() * vec4(axes_directions[prim_idx], 0);
-		//axis = axes_directions[prim_idx];
-	}
-	if (anchor_rotation_ptr)
-		axis = anchor_rotation_ptr->get_homogeneous_matrix() * vec4(axis, 0.0f);
-	else if (anchor_rotation_ptr_ptr)
-		axis = (*anchor_rotation_ptr_ptr)->get_homogeneous_matrix() * vec4(axis, 0.0f);
-	
-	vec3 corrected_hid_position = ii_during_focus[activating_hid_id].hid_position;
-	//vec3 corrected_hid_position = anchor_obj_local_rotation.apply(ii_during_focus[activating_hid_id].hid_position);
-	vec3 corrected_hid_direction = ii_during_focus[activating_hid_id].hid_direction;
-	//vec3 corrected_hid_direction = anchor_obj_local_rotation.apply(ii_during_focus[activating_hid_id].hid_direction);
-	
-	vec3 closest_point;
-	if (ii_at_grab.is_pointing) {
-		if (!cgv::math::closest_point_on_line_to_line(ii_at_grab.query_point, axis,
-			corrected_hid_position, corrected_hid_direction, closest_point))
-			return;
-	}
-	else {
-		closest_point = cgv::math::closest_point_on_line_to_point(ii_at_grab.query_point, axis, ii_during_focus[activating_hid_id].hid_position);
-	}
-	
-	// DEBUG TO REMOVE
-	mat4 transform_matrix;
-	transform_matrix.identity();
-	transform_matrix = get_global_model_transform(anchor_obj->get_parent());
-	//transform_matrix = get_global_model_transform(this);
-	vec3 ray_start_global0 = transform_matrix * vec4(ii_at_grab.query_point, 1.0f);
-	vec3 ray_direction_global0 = transform_matrix * vec4(axis, 0.0f);
-	ref_debug_visualization_helper().update_debug_value_ray(debug_ray_handle0, ray_start_global0, ray_direction_global0);
-	//vec3 ray_start_global1 = transform_matrix * vec4(corrected_hid_position, 1.0f);
-	//vec3 ray_direction_global1 = transform_matrix * vec4(corrected_hid_direction, 0.0f);
-	//ref_debug_visualization_helper().update_debug_value_ray(debug_ray_handle1, ray_start_global1, ray_direction_global1);
-	
-	vec3 movement = closest_point - ii_at_grab.query_point;
-	if (is_anchor_influenced_by_gizmo)
-		set_position(get_position() + movement);
-	else
-		set_position(position_at_grab + movement);
-}
-*/
 
 cgv::render::render_types::vec3 cgv::nui::translation_gizmo::get_position()
 {

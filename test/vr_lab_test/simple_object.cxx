@@ -38,8 +38,19 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 
 	active_gizmo_ui = active_gizmo;
 
+	initialize_gizmos(nullptr);
+}
+
+std::string simple_object::get_type_name() const
+{
+	return "simple_object";
+}
+
+void simple_object::initialize_gizmos(cgv::base::node_ptr root)
+{
 	trans_gizmo = new cgv::nui::translation_gizmo();
 	trans_gizmo->set_anchor_object(this);
+	trans_gizmo->set_root_object(root);
 	//trans_gizmo->set_anchor_offset_position(vec3(0.0f, 0.5f, 0.0f));
 	quat rot;
 	vec3 n = vec3(1.0f, 0.0f, 1.0f);
@@ -60,30 +71,27 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 
 	rot_gizmo = new cgv::nui::rotation_gizmo();
 	rot_gizmo->set_anchor_object(this);
+	trans_gizmo->set_root_object(root);
 	rot_gizmo->set_rotation_reference(this);
 	rot_gizmo->set_is_anchor_influenced_by_gizmo(true);
 	rot_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
 	rot_gizmo->set_use_absolute_rotation(false);
 	if (active_gizmo == ActiveGizmoOptions::AGO_ROTATION)
 		rot_gizmo->attach();
-	
+
 	scale_gizmo = new cgv::nui::scaling_gizmo();
 	scale_gizmo->set_anchor_object(this);
+	trans_gizmo->set_root_object(root);
 	scale_gizmo->set_scale_reference(this);
 	scale_gizmo->set_is_anchor_influenced_by_gizmo(true);
-	scale_gizmo->set_use_absolute_rotation(false);
 	scale_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
 	scale_gizmo->set_axes_positions(
 		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
 		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
 	);
+	scale_gizmo->set_use_absolute_rotation(false);
 	if (active_gizmo == ActiveGizmoOptions::AGO_SCALING)
 		scale_gizmo->attach();
-}
-
-std::string simple_object::get_type_name() const
-{
-	return "simple_object";
 }
 
 bool simple_object::_compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx)

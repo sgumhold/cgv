@@ -7,56 +7,71 @@ bool cgv::nui::gizmo::validate_configuration()
 		std::cout << "Invalid Configuration: A gizmo has to have a valid anchor object" << std::endl;
 		return false;
 	}
+	//if (!root_obj) {
+	//	std::cout << "Invalid Configuration: A gizmo has to have a valid root object" << std::endl;
+	//	return false;
+	//}
 	return true;
 }
 
 mat4 cgv::nui::gizmo::compute_draw_correction_transformation(vec3& scale)
 {
-	vec3 obj_translation;
-	quat obj_rotation;
-	vec3 obj_scale;
-	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj), obj_translation, obj_rotation, obj_scale);
-	quat obj_inverse_rotation = obj_rotation.inverse();
-	vec3 obj_inverse_scale = vec3(1.0f / obj_scale.x(), 1.0f / obj_scale.y(), 1.0f / obj_scale.z());
+	// DEBUG: Only for testing until root obj is set correctly
+	if (!root_obj) {
+		root_obj = anchor_obj->get_parent()->get_parent();
+	}
 
-	scale = obj_scale;
-
-	mat4 final_rotation;
-	final_rotation.identity();
-	if (use_absolute_rotation)
-		final_rotation = obj_inverse_rotation.get_homogeneous_matrix();
-	// This should not be here as it is already used as the gizmo's transform.
-	//if (anchor_rotation_ptr)
-	//	final_rotation = anchor_rotation_ptr->get_homogeneous_matrix() * final_rotation;
-	//else if (anchor_rotation_ptr_ptr)
-	//	final_rotation = (*anchor_rotation_ptr_ptr)->get_homogeneous_matrix() * final_rotation;
-
-	mat4 final_translation;
-	final_translation.identity();
-	// This should not be here as it is already used as the gizmo's transform.
-	//if (anchor_position_ptr)
-	//	final_translation = cgv::math::translate4(*anchor_position_ptr);
-	//else if (anchor_rotation_ptr_ptr)
-	//	final_translation = cgv::math::translate4(**anchor_position_ptr_ptr);
-
-	return final_translation * final_rotation * cgv::math::scale4(obj_inverse_scale);
+	vec3 root_to_anchor_translation;
+	quat root_to_anchor_rotation;
+	vec3 root_to_anchor_scale;
+	transforming::extract_transform_components(transforming::get_partial_model_transform(anchor_obj, root_obj),
+		root_to_anchor_translation, root_to_anchor_rotation, root_to_anchor_scale);
+	
+	scale = root_to_anchor_scale;
+	
+	mat4 rotation_correction;
+	rotation_correction.identity();
+	if (get_functionality_absolute_axes_rotation() && 
+		_functionality_absolute_axes_rotation->get_use_absolute_rotation())
+		rotation_correction = root_to_anchor_rotation.inverse().get_homogeneous_matrix();
+	
+	mat4 translation_correction;
+	translation_correction.identity();
+	if (get_functionality_absolute_axes_position() &&
+		_functionality_absolute_axes_position->get_use_absolute_position())
+		translation_correction = cgv::math::translate4(root_to_anchor_translation * -1.0f);
+	
+	return translation_correction * rotation_correction * cgv::math::scale4(vec3(1.0f, 1.0f, 1.0f) / root_to_anchor_scale);
 }
 
 mat4 cgv::nui::gizmo::compute_interaction_correction_transformation(vec3& scale)
 {
-	vec3 obj_translation;
-	quat obj_rotation;
-	vec3 obj_scale;
-	transforming::extract_transform_components(transforming::get_global_model_transform(this), obj_translation, obj_rotation, obj_scale);
+	// DEBUG: Only for testing until root obj is set correctly
+	if (!root_obj) {
+		root_obj = anchor_obj->get_parent()->get_parent();
+	}
 
-	scale = obj_scale;
-
-	mat4 final_inverse_rotation;
-	final_inverse_rotation.identity();
-	if (use_absolute_rotation)
-		final_inverse_rotation = obj_rotation.get_homogeneous_matrix();
-
-	return final_inverse_rotation * cgv::math::scale4(obj_scale);
+	vec3 root_to_gizmo_translation;
+	quat root_to_gizmo_rotation;
+	vec3 root_to_gizmo_scale;
+	transforming::extract_transform_components(transforming::get_partial_model_transform(this, root_obj),
+		root_to_gizmo_translation, root_to_gizmo_rotation, root_to_gizmo_scale);
+	
+	scale = root_to_gizmo_scale;
+	
+	mat4 rotation_correction;
+	rotation_correction.identity();
+	if (get_functionality_absolute_axes_rotation() && 
+		_functionality_absolute_axes_rotation->get_use_absolute_rotation())
+		rotation_correction = root_to_gizmo_rotation.get_homogeneous_matrix();
+	
+	mat4 translation_correction;
+	translation_correction.identity();
+	if (get_functionality_absolute_axes_position() &&
+		_functionality_absolute_axes_position->get_use_absolute_position())
+			translation_correction = cgv::math::translate4(root_to_gizmo_translation);
+	
+	return translation_correction * rotation_correction * cgv::math::scale4(root_to_gizmo_scale);
 }
 
 void cgv::nui::gizmo::attach()
@@ -86,6 +101,11 @@ void cgv::nui::gizmo::set_anchor_object(cgv::base::node_ptr _anchor_obj)
 	cgv::base::group_ptr grp = anchor_obj->cast<group>();
 	if (grp)
 		grp->append_child(this);
+}
+
+void cgv::nui::gizmo::set_root_object(cgv::base::node_ptr _root_obj)
+{
+	root_obj = _root_obj;
 }
 
 void cgv::nui::gizmo::set_anchor_offset_position(vec3 _anchor_position)
@@ -120,14 +140,14 @@ void cgv::nui::gizmo::set_anchor_offset_rotation(const quat** _anchor_rotation_p
 	anchor_rotation_ptr_ptr = _anchor_rotation_ptr_ptr;
 }
 
-void cgv::nui::gizmo::set_use_absolute_rotation(bool value)
-{
-	use_absolute_rotation = value;
-}
-
 void cgv::nui::gizmo::set_is_anchor_influenced_by_gizmo(bool value)
 {
 	is_anchor_influenced_by_gizmo = value;
+}
+
+void cgv::nui::gizmo::set_is_root_influenced_by_gizmo(bool value)
+{
+	is_root_influenced_by_gizmo = value;
 }
 
 void cgv::nui::gizmo::set_on_set_object(cgv::base::base_ptr _on_set_obj)
