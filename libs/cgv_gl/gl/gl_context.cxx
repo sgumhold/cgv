@@ -1490,9 +1490,25 @@ cgv::data::component_format gl_context::texture_find_best_format(
 	return best_cf;
 }
 
+std::string gl_error_to_string(GLenum eid) {
+	switch (eid) {
+	case GL_NO_ERROR: return "";
+	case GL_INVALID_ENUM: return "invalid enum";
+	case GL_INVALID_VALUE: return "invalid value";
+	case GL_INVALID_OPERATION: return "invalid operation";
+	case GL_INVALID_FRAMEBUFFER_OPERATION: return "invalid framebuffe";
+	case GL_OUT_OF_MEMORY: return "out of memory";
+	case GL_STACK_UNDERFLOW: return "stack underflow";
+	case GL_STACK_OVERFLOW: return "stack overflow";
+	default: 
+		return "undefined error (id: " + std::to_string(eid) + ")";
+	}
+	//return std::string((const char*)gluErrorString(eid));
+}
+
 std::string gl_error() {
 	GLenum eid = glGetError();
-	return std::string((const char*)gluErrorString(eid));
+	return gl_error_to_string(eid);
 }
 
 bool gl_context::check_gl_error(const std::string& where, const cgv::render::render_component* rc) const
@@ -1500,12 +1516,7 @@ bool gl_context::check_gl_error(const std::string& where, const cgv::render::ren
 	GLenum eid = glGetError();
 	if (eid == GL_NO_ERROR)
 		return false;
-	const GLubyte* raw_error_string = gluErrorString(eid);
-	std::string error_string = where + ": ";
-	if(raw_error_string)
-		error_string += std::string((const char*)raw_error_string);
-	else
-		error_string += "undefined error (id: " + std::to_string(eid) + ")";
+	std::string error_string = where + ": " + gl_error_to_string(eid);
 	error(error_string, rc);
 	return true;
 }
@@ -1778,7 +1789,7 @@ bool gl_context::texture_create_from_buffer(
 		error_string += "glCopyTexImage2D was called between a call to glBegin and the corresponding call to glEnd.";
 		break;
 	default:
-		error_string += (const char*)gluErrorString(glGetError());
+		error_string += gl_error_to_string(glGetError());
 		break;
 	}
 	texture_unbind(tb.tt, tmp_id);
