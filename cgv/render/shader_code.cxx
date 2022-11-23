@@ -351,11 +351,6 @@ void shader_code::set_defines(std::string& source, const shader_define_map& defi
 	}
 }
 
-
-
-
-
-
 /// set shader code vertex attribute locations (a hotfix for AMD driver behaviour on vertex shaders)
 void shader_code::set_vertex_attrib_locations(std::string& source)
 {
@@ -377,43 +372,49 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 		}
 	};
 
-	std::vector<cgv::utils::token> instructions;
+	std::vector<cgv::utils::token> parts;
 	std::vector<vertex_attribute> attribs;
 	std::vector<bool> attrib_flags;
-	
-	cgv::utils::split_to_tokens(source, instructions, "", true, "", "", ";\n");
-
-	cgv::utils::token version_token;
+	//cgv::utils::token version_token;
+	size_t version_idx = 0;
 	int version_number = 0;
 	bool is_core = false;
 
-	if(instructions.size() > 0) {
+	source = cgv::utils::strip_cpp_comments(source);
+
+	cgv::utils::split_to_tokens(source, parts, "", true, "", "", ";\n");
+
+	attrib_flags.resize(parts.size(), false);
+
+	size_t part_idx = 0;
+
+	// first find version statement
+	for(part_idx; part_idx < parts.size(); ++part_idx) {
 		std::vector<cgv::utils::token> tokens;
-		cgv::utils::split_to_tokens(instructions[0], tokens, "", true, "", "", " \t");
+		cgv::utils::split_to_tokens(parts[part_idx], tokens, "", true, "", "", " \t");
 
 		if(tokens.size() == 2 || tokens.size() == 3) {
-			if(tokens[0] == "#version")
-				version_token = instructions[0];
+			if(tokens[0] == "#version") {
+				version_idx = part_idx;
+				//version_token = parts[0];
 
-			std::string number_str = to_string(tokens[1]);
-			char* p_end;
-			const long num = std::strtol(number_str.c_str(), &p_end, 10);
-			if(number_str.c_str() != p_end)
-				version_number = static_cast<int>(num);
+				std::string number_str = to_string(tokens[1]);
+				char* p_end;
+				const long num = std::strtol(number_str.c_str(), &p_end, 10);
+				if(number_str.c_str() != p_end)
+					version_number = static_cast<int>(num);
 
-			if(tokens.size() == 3)
-				if(tokens[2] == "core")
+				if(tokens.size() == 3 && tokens[2] == "core")
 					is_core = true;
+
+				break;
+			}
 		}
 	}
 
-	version_number = std::max(version_number, 330);
-	std::string version_str = "#version " + std::to_string(version_number) + (is_core ? " core" : "");
-
-	// filter all vertex attributes
-	for(size_t i = 0; i < instructions.size(); ++i) {
-		auto& tok = instructions[i];
-		bool is_attrib = false;
+	// now filter all vertex attributes
+	for(part_idx; part_idx < parts.size(); ++part_idx) {
+		auto& tok = parts[part_idx];
 
 		while(tok.begin < tok.end && cgv::utils::is_space(*tok.begin))
 			++tok.begin;
@@ -423,21 +424,21 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 			bool is_new_word = true;
 			bool was_new_word = true;
 
-			for(size_t j = 0; j < tok.size() - 2; ++j) {
-				char c = tok[j];
+			for(size_t i = 0; i < tok.size() - 2; ++i) {
+				char c = tok[i];
 
-				if(tok[j] == '(')
+				if(c == '(')
 					++parentheses_count;
 
-				if(tok[j] == ')')
+				if(c == ')')
 					--parentheses_count;
 
-				is_new_word = cgv::utils::is_space(tok[j]) || tok[j] == ')';
+				is_new_word = cgv::utils::is_space(c) || c == ')';
 
-				if(tok[j] == 'i' && tok[j + 1] == 'n' && tok[j + 2] == ' ') {
+				if(c == 'i' && tok[i + 1] == 'n' && tok[i + 2] == ' ') {
 					if(was_new_word && parentheses_count == 0) {
 						attribs.push_back(vertex_attribute(tok));
-						is_attrib = true;
+						attrib_flags[part_idx] = true;
 						break;
 					}
 				}
@@ -445,8 +446,6 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 				was_new_word = is_new_word;
 			}
 		}
-
-		attrib_flags.push_back(is_attrib);
 	}
 
 	int max_location = -1;
@@ -495,10 +494,10 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 	size_t accumulate_offset = 0;
 	size_t content_offset = reinterpret_cast<size_t>(source.data());
 
-	for(size_t i = 0; i < instructions.size(); ++i) {
-		auto& tok = instructions[i];
+	for(size_t i = 0; i < parts.size(); ++i) {
+		auto& tok = parts[i];
 
-		if(i == 0 && !version_token.empty() || attrib_flags[i]) {
+		if(i == version_idx || attrib_flags[i]) {
 			size_t token_begin = reinterpret_cast<size_t>(tok.begin);
 			size_t token_end = reinterpret_cast<size_t>(tok.end);
 
@@ -512,7 +511,8 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 				++attrib_idx;
 				str = attrib.to_string() + "\n";
 			} else {
-				str = version_str + "\n";
+				version_number = std::max(version_number, 330);
+				str = "#version " + std::to_string(version_number) + (is_core ? " core" : "");
 			}
 
 			offset += accumulate_offset;
@@ -525,13 +525,6 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 		}
 	}
 }
-
-
-
-
-
-
-
 
 ///compile attached source; returns true if successful
 bool shader_code::compile(const context& ctx)
