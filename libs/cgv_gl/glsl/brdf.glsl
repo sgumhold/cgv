@@ -95,8 +95,8 @@ vec3 cooktorrance_specular_brdf(vec3 n, vec3 l, vec3 v, float roughness, vec3 f0
 float G_strauss(float a)
 {
 	float kg = 1.01;
-	float t0 = 1.0 / pow(   1.0   - kg, 2.0);
-	float t1 = 1.0 / pow(2.0*a/PI - kg, 2.0);
+	float t0 = 1.0 / pow(abs(   1.0   - kg), 2.0);
+	float t1 = 1.0 / pow(abs(2.0*a/PI - kg), 2.0);
 	float t2 = 1.0 / pow(kg, 2.0);
 	return (t0 - t1) / (t0 - t2);
 }
@@ -119,8 +119,10 @@ vec3 strauss_specular_brdf(vec3 N, vec3 L, vec3 V, float roughness, float metaln
 	float G_L = G_strauss(theta_L);
 	float G_V = G_strauss(theta_V);
 	float kf = 1.12;
-	float F = (1.0/pow(2.0 * theta_L / PI - kf, 2.0) - 1.0/pow(kf,2.0)) /
-		      (1.0/pow(       1.0         - kf, 2.0) - 1.0/pow(kf,2.0));
+	float inv_sqr_kf = 1.0 / (kf*kf);
+
+	float F = (1.0/pow((2.0 * theta_L / PI - kf), 2.0) - inv_sqr_kf) /
+		      (1.0/pow((        1.0        - kf), 2.0) - inv_sqr_kf);
 	float j = F*G_L*G_V;
 	float s = 1.0 - roughness;
 	float o = 1.0 - transparency;
