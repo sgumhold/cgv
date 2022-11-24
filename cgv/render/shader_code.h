@@ -127,6 +127,8 @@ public:
 	bool set_code(const context& ctx, const std::string &source, ShaderType st);
 	/// set shader code defines
 	void set_defines(std::string& source, const shader_define_map& defines);
+	/// set shader code vertex attribute locations (a hotfix for AMD driver behaviour on vertex shaders)
+	void set_vertex_attrib_locations(std::string& source);
 	/// return the shader type of this code
 	ShaderType get_shader_type() const;
 	///compile attached source; returns true if successful
