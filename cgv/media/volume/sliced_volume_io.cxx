@@ -44,7 +44,7 @@ namespace cgv {
 				}
 				return data;
 			}
-			size_t read_system_output(std::string cmd, uint8_t* buffer, size_t buffer_size, const char* progression_text = 0, bool use_cerr = false, void (*on_progress_update)(int,void*) = 0, void* user_data = 0, size_t block_size = 4096)
+			size_t read_system_output(std::string cmd, uint8_t* buffer, size_t buffer_size, const char* progression_text = 0, bool use_cerr = false, void (*on_progress_update)(int,void*) = 0, void* user_data = 0, size_t block_size = 4096, bool cycle_till_eof = false)
 			{
 				cgv::utils::progression* prog_ptr = 0;
 				if (progression_text != 0)
@@ -56,9 +56,12 @@ namespace cgv {
 				size_t nr_bytes_read = 0;
 				int block_cnt = 0;
 				if (fp) {
-					while (nr_bytes_read < buffer_size && !feof(fp)) {
-						size_t nr_bytes = std::min(block_size, buffer_size - nr_bytes_read);
-						size_t nr_read = fread(buffer + nr_bytes_read, 1, nr_bytes, fp);
+					while ((nr_bytes_read < buffer_size || cycle_till_eof) && !feof(fp)) {
+						size_t nr_bytes = block_size;
+						if (!cycle_till_eof)
+							nr_bytes = std::min(nr_bytes, buffer_size - nr_bytes_read);
+						size_t offset = nr_bytes_read % buffer_size;
+						size_t nr_read = fread(buffer + offset, 1, nr_bytes, fp);
 						if (prog_ptr)
 							prog_ptr->step();
 						if (on_progress_update)
@@ -74,7 +77,7 @@ namespace cgv {
 
 			bool read_volume_from_video_with_ffmpeg(volume& V, const std::string& file_name,
 				volume::dimension_type dims, volume::extent_type extent, const cgv::data::component_format& cf,
-				size_t offset, FlipType flip_t, void (*on_progress_update)(int,void*), void* user_data)
+				size_t offset, FlipType flip_t, void (*on_progress_update)(int,void*), void* user_data, bool cycle_till_eof)
 			{
 				std::string fn_in_quotes = std::string("\"") + cgv::utils::file::platform_path(file_name) + "\"";
 				if (dims(0) == -1 || dims(1) == -1 || dims(2) == -1) {
@@ -135,7 +138,10 @@ namespace cgv {
 				V.ref_extent() = extent;
 				std::string cmd = "ffmpeg -i ";
 				cmd += fn_in_quotes;
-				cmd += " -frames:v "; cmd += cgv::utils::to_string(dims(2));
+				if (!cycle_till_eof) {
+					cmd += " -frames:v ";
+					cmd += cgv::utils::to_string(dims(2));
+				}
 				if (offset > 0) {
 					cmd += " -vf \"select=gte(n\\,";
 					cmd += cgv::utils::to_string(offset);
@@ -180,7 +186,8 @@ namespace cgv {
 				if (on_progress_update)
 					on_progress_update(0, user_data);
 				
-				size_t bytes_read = read_system_output(cmd, V.get_data_ptr<uint8_t>(), V.get_size(), "reading video", false, on_progress_update, user_data, V.get_slice_size());
+				size_t bytes_read = read_system_output(cmd, V.get_data_ptr<uint8_t>(), V.get_size(),
+					"reading video", false, on_progress_update, user_data, V.get_slice_size(), cycle_till_eof);
 				if (bytes_read < V.get_size()) {
 					std::cerr << "Warning: could only read " << bytes_read << " of volume with size " << V.get_size() << std::endl;
 				}
