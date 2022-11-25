@@ -36,7 +36,7 @@ void main()
 
     // calculate the viewing ray in object space
     vec3 eye_pos = get_eye_world();
-    vec3 ray = normalize(invert?eye_pos - coord.xyz:coord.xyz-eye_pos);
+    vec3 ray = normalize(invert ? (eye_pos - coord.xyz) : (coord.xyz - eye_pos));
 
 	finish_fragment(texture(environment_map, ray));
 }

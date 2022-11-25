@@ -443,6 +443,22 @@ const fvec<T, N> lerp(const fvec<T, N>& v1, const fvec<T, N>& v2, const fvec<T, 
 	return (fvec<T, N>(1) - t)*v1 + t * v2;
 }
 
+/// spherical linear interpolation
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> slerp(const fvec<T, N> &v0, const fvec<T, N> &v1, T t) {
+	T dotv0v1 = dot(v0, v1);
+	// clamp between [-1,1]
+	if (dotv0v1 < -1)
+		dotv0v1 = -1;
+
+	if (dotv0v1 > 1)
+		dotv0v1 = 1;
+
+	T theta = acos(dotv0v1) * t;
+	auto v2 = normalize(v1 - (dotv0v1)*v0);
+	return T(cos(theta)) * v0 + T(sin(theta)) * v2;
+}
+
 ///return a vector containing the minimum value of each component of v and the scalar t
 template <typename T, cgv::type::uint32_type N>
 const fvec<T, N> min(const fvec<T, N>& v, T t) {
