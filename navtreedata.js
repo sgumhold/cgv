@@ -161,19 +161,19 @@ var NAVTREEINDEX =
 "line__break_8cxx.html#a401d2b057181318b340afe1bc0d1fb23",
 "namespacecgv_1_1gui.html#a8c92a55911d18de7ab802b3be6d65df1a5fde8bc7aeeb08b06e5470f110883254",
 "namespacecgv_1_1math.html#a68d05b83aafda5042f9413b6e6c80199",
-"namespacecgv_1_1render.html#a7119f6c28a063b3cc9958b9db5ccde77",
+"namespacecgv_1_1render.html#a70f8fa845a248470de8b176c778b3e32",
 "namespacemembers.html",
-"reflect__enum_8h_source.html",
-"structcgv_1_1base_1_1factory__impl__1.html#aa4d907250a697d6c8368140133c9d719",
-"structcgv_1_1math_1_1random.html#acfc2fcff24078efe4ca29b6ff91299f6",
-"structcgv_1_1media_1_1video_1_1video__reader__listener.html#ad121ecb072de62a4ab4a180bc9d183bb",
-"structcgv_1_1plot_1_1plot3d__config.html#a491bbb83c3e99f0f768ac9dd87d03294",
-"structcgv_1_1reflect_1_1reflection__traits.html#a76eea3d77e998158156233202ca1fb37",
-"structcgv_1_1render_1_1callback__drawable.html#a8a5acbe912fb04ad0abac9689882f0e4",
-"structcgv_1_1render_1_1rectangle__render__style.html#a9b434663a78486375cb52eaa33342922",
-"structcgv_1_1render_1_1sphere__render__style.html#abbf94aae29d615b8b7688f7180cf92c7",
-"structcgv_1_1utils_1_1line.html#aa8e06c57774bb6d34436ff2e0ea22442",
-"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657a1782838f0991efbbb7f22ddabe6b5c3d"
+"reflect__config_8h_source.html",
+"structcgv_1_1base_1_1factory__impl__1.html#aa2b866151a23c63b3e8029849e71a796",
+"structcgv_1_1math_1_1random.html#accd40622a9843fdf657062d95f8737a5",
+"structcgv_1_1media_1_1video_1_1video__reader__listener.html#acd6c94f5eb8784c955f687984cbb70ae",
+"structcgv_1_1plot_1_1plot3d__config.html#a4205e87abb505a3ba6806c2752fc5f6c",
+"structcgv_1_1reflect_1_1reflection__traits.html#a56e22e34752afcc0e2652707b84472bd",
+"structcgv_1_1render_1_1callback__drawable.html#a87034fc60b5826249e209d9cfc7ccbb2",
+"structcgv_1_1render_1_1rectangle__render__style.html#a99991cb58c4a3a142c06f2a59cf2c642",
+"structcgv_1_1render_1_1sphere__render__style.html#ab9e51ddef8a68db550e09b61fe6129c4",
+"structcgv_1_1utils_1_1line.html#a9a2121933f46f315734a1994eafeff2b",
+"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657a0492f7863ac0b4b3c6e5d9f4787f3b0b"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

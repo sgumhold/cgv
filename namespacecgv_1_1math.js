@@ -300,6 +300,7 @@ var namespacecgv_1_1math =
     [ "sign", "namespacecgv_1_1math.html#aff39c6d79c7591eda807d9a5b9e08995", null ],
     [ "sign", "namespacecgv_1_1math.html#a2eb93f97516015984f2581e7ff178b3f", null ],
     [ "sign", "namespacecgv_1_1math.html#aa64c1694fe2203ab12c82d0ef202873f", null ],
+    [ "slerp", "namespacecgv_1_1math.html#a9ce04f60bc6efa4a280d7fa69cb3151b", null ],
     [ "slerp", "namespacecgv_1_1math.html#a106cc64d2bdc02a0c169d79901eea313", null ],
     [ "solve", "namespacecgv_1_1math.html#a944f8054ed5b163753b2be3da53535d4", null ],
     [ "solve", "namespacecgv_1_1math.html#a14c0b1e4eef5446ab6a31bb7e568a301", null ],
