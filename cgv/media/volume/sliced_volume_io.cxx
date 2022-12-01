@@ -52,7 +52,12 @@ namespace cgv {
 				FILE* fp;
 				if (use_cerr)
 					cmd.append(" 2>&1");
-				fp = popen(cmd.c_str(), "rb");
+#ifdef WIN32
+				const char* mode = "rb";
+#else
+				const char* mode = "r";
+#endif
+				fp = popen(cmd.c_str(), mode);
 				size_t nr_bytes_read = 0;
 				int block_cnt = 0;
 				if (fp) {
