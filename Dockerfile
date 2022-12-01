@@ -1,5 +1,8 @@
 FROM henne90gen/opengl:3.1
 
+RUN mkdir /app
+WORKDIR /app
+
 RUN git config --global http.sslverify false
 RUN echo "#!/usr/bin/env bash \n\
 set -e \n\
