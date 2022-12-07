@@ -236,13 +236,13 @@ bool gl_context::configure_gl()
 	std::string vendor_string(reinterpret_cast<const char*>(vendor_c_string));
 	vendor_string = cgv::utils::to_upper(vendor_string);
 	
-	if (vendor_string.find("AMD") || vendor_string.find("ATI"))
-		gpu_vendor = GPU_VENDOR_AMD;
+	if (vendor_string.find("NVIDIA"))
+		gpu_vendor = GPU_VENDOR_NVIDIA;
 	else if (vendor_string.find("INTEL"))
 		gpu_vendor = GPU_VENDOR_INTEL;
-	else if (vendor_string.find("NVIDIA"))
-		gpu_vendor = GPU_VENDOR_NVIDIA;
-
+	else if (vendor_string.find("AMD") || vendor_string.find("ATI"))
+		gpu_vendor = GPU_VENDOR_AMD;
+	
 #ifdef _DEBUG
 	std::cout << "OpenGL version " << version_major << "." << version_minor << (core_profile?" (core)":"") << (debug?" (debug)":"") << (forward_compatible?" (forward_compatible)":"") << std::endl;
 	const GLubyte* renderer_c_string = glGetString(GL_RENDERER);
