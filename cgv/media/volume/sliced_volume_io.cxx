@@ -85,13 +85,15 @@ namespace cgv {
 				size_t offset, FlipType flip_t, void (*on_progress_update)(int,void*), void* user_data, bool cycle_till_eof)
 			{
 				std::string fn_in_quotes = std::string("\"") + cgv::utils::file::platform_path(file_name) + "\"";
-				if (dims(0) == -1 || dims(1) == -1 || dims(2) == -1) {
+				if (dims(0) == -1 || dims(1) == -1 || dims(2) < 0) {
 					std::string cmd = "ffprobe -v error ";
-					if (dims(2) == -1)
+					if (dims(2) == -2)
 						cmd += "-count_frames ";
 					cmd += "-select_streams v:0 -show_entries stream=width,height";
-					if (dims(2) == -1)
+					if (dims(2) == -2)
 						cmd += ",nb_read_frames";
+					else
+						cmd += ",nb_frames";
 					cmd += " -of default=nokey=1:noprint_wrappers=1 ";
 					cmd += fn_in_quotes;
 					std::cout << "Analyze Video with " << cmd << std::endl;
@@ -99,13 +101,13 @@ namespace cgv {
 					std::stringstream ss(video_info);
 					int w, h, n = dims(2);
 					ss >> w >> h;
-					if (dims(2) == -1)
+					if (dims(2) < 0)
 						ss >> n;
 					if (ss.fail()) {
 						std::cerr << "Error: could not analyze video file <" << file_name << "> with ffprobe" << std::endl;
 						return false;
 					}
-					if (dims(2) == -1 && offset > n) {
+					if (dims(2) < 0 && offset > n) {
 						std::cerr << "Error: frame offset " << offset << " larger than frame count of video file <" << file_name << "> with ffprobe" << std::endl;
 						return false;
 					}
@@ -127,7 +129,7 @@ namespace cgv {
 							<< dims(1) << " in svx file '" << file_name << "' vs "
 							<< h << " in video file '" << file_name << "'" << std::endl;
 					}
-					if (dims(2) == -1) {
+					if (dims(2) < 0) {
 						dims(2) = int(n - offset);
 						extent(2) *= -dims(2);
 					}
@@ -139,6 +141,12 @@ namespace cgv {
 					//}
 				}
 				V.get_format().set_component_format(cf);
+				V.get_format().set_width(dims(0));
+				V.get_format().set_height(dims(1));
+				V.get_format().set_depth(dims(2));
+				if (on_progress_update)
+					on_progress_update(-1, user_data);
+				dims(2) = V.get_format().get_depth();
 				V.resize(dims);
 				V.ref_extent() = extent;
 				std::string cmd = "ffmpeg -i ";
