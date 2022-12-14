@@ -65,6 +65,8 @@ public:
 	
 	bool show_grayscale;
 
+	bool do_bilateral_filter;
+
 	bool no_interactor = false;
   protected:
 	///
@@ -76,6 +78,10 @@ public:
 	void update_texture_from_frame(cgv::render::context& ctx, cgv::render::texture& tex, const rgbd::frame_type& frame, bool recreate, bool replace);
 	///
 	void convert_to_grayscale(const rgbd::frame_type& color_frame, rgbd::frame_type& gray_frame);
+
+	void bilateral_filter(const rgbd::frame_type& color_frame, rgbd::frame_type& bf_frame, int d, double sigma_clr, double sigma_space, int border_type);
+
+	void value_compute(const char& current_pixel, const char& center_pixel, char& output);
 	/// members for rgbd input
 	rgbd::rgbd_input rgbd_inp;
 	std::string record_path;
@@ -141,7 +147,7 @@ public:
 
 	/// internal members used for data storage
 	rgbd::frame_type color_frame, depth_frame, ir_frame, warped_color_frame,mesh_frame;
-	rgbd::frame_type color_frame_2, depth_frame_2, ir_frame_2, warped_color_frame_2, gray_frame_2;
+	rgbd::frame_type color_frame_2, depth_frame_2, ir_frame_2, warped_color_frame_2, gray_frame_2, bilateral_filter_frame_2;
 	std::vector<fast::xy> corners;
 	std::future<size_t> future_handle;
 	size_t construct_point_cloud();
