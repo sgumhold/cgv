@@ -58,7 +58,7 @@ namespace pointcloud {
 		}
 	};
 
-	// LOD point with color as additional attribute
+	// LOD point with color as additional attribute, assume color info is the second(std::get<1>) info in the tuple
 	struct SimpleLODPoint : public GenericLODPoint<0, 2, cgv::render::render_types::vec3, cgv::render::render_types::rgb8, uint8_t> {
 		inline rgb8& color() {
 			return std::get<1>(data);
@@ -154,7 +154,7 @@ namespace pointcloud {
 		}
 
 	};
-
+	// Define an ensemble of chunks including many chunk info and min and max extents
 	template <typename point_t>
 	struct Chunks : public cgv::render::render_types{
 		std::vector<ChunkNode<point_t>> nodes;
@@ -698,6 +698,7 @@ struct SamplerRandom : public Sampler<point_t> {
 		cgv::pointcloud::utility::TaskPool<Task> tasks;
 
 		{
+			// obtain the number of chunks
 			int max_num_tasks = (num_points / max_chunk_size) + 1;
 			tasks.pool.resize(max_num_tasks);
 			auto it = tasks.pool.begin();

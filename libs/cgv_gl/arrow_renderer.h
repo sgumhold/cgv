@@ -54,7 +54,7 @@ namespace cgv {
 			///
 			//float inner_outer_lambda;
 			/// 
-			//int nr_subdivisions;
+			int nr_subdivisions;
 			//@}
 			/// construct with default values
 			arrow_render_style();

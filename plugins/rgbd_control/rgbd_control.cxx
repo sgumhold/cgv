@@ -84,7 +84,8 @@ rgbd_control::rgbd_control(bool no_interactor)
 	ir_stream_format_idx = -1;
 
 	show_grayscale = false;
-	
+	do_bilateral_filter = false;
+
 	color_frame_changed = false;
 	depth_frame_changed = false;
 	infrared_frame_changed = false;
@@ -111,6 +112,7 @@ bool rgbd_control::self_reflect(cgv::reflect::reflection_handler& rh)
 		rh.reflect_member("device_mode", (int&)device_mode) &&
 		rh.reflect_member("device_idx", device_idx) &&
 		rh.reflect_member("show_grayscale", show_grayscale) &&
+		rh.reflect_member("do_bf", do_bilateral_filter) &&
 		rh.reflect_member("always_acquire_next", always_acquire_next) &&
 		rh.reflect_member("remap_color", remap_color) &&
 		rh.reflect_member("visualisation_enabled", visualisation_enabled);
@@ -255,13 +257,7 @@ void rgbd_control::init_frame(context& ctx)
 		rgbd_prog.build_program(ctx, "rgbd_shader.glpr");
 
 	if (device_mode != DM_DETACHED) {
-		if (show_grayscale) {
-			convert_to_grayscale(color_frame, gray_frame_2);
-			update_texture_from_frame(ctx, color, gray_frame_2, color_attachment_changed, color_frame_changed);
-		}
-		else {
-			update_texture_from_frame(ctx, color, color_frame, color_attachment_changed, color_frame_changed);
-		}
+		update_texture_from_frame(ctx, color, color_frame, color_attachment_changed, color_frame_changed);
 		update_texture_from_frame(ctx, depth, depth_frame, depth_attachment_changed, depth_frame_changed);
 		update_texture_from_frame(ctx, infrared, ir_frame, infrared_attachment_changed, infrared_frame_changed);
 		update_texture_from_frame(ctx, warped_color, warped_color_frame, color_attachment_changed, (color_frame_changed|| depth_frame_changed) &&remap_color);
@@ -598,7 +594,8 @@ size_t rgbd_control::construct_point_cloud()
 	const unsigned char* colors = reinterpret_cast<const unsigned char*>(&color_frame_2.frame_data.front());
 	if (remap_color) {
 		rgbd_inp.map_color_to_depth(depth_frame_2, color_frame_2, warped_color_frame_2);
-		if (show_grayscale) {
+		/* if (show_grayscale)
+		{
 			// convert to grayscale
 			convert_to_grayscale(warped_color_frame_2, gray_frame_2);
 			// TODO extract FAST or ORB features
@@ -606,6 +603,9 @@ size_t rgbd_control::construct_point_cloud()
 			fast::xy* corners;
 			corners = fast::fast10_detect_nonmax(reinterpret_cast<const unsigned char*>(&gray_frame_2.frame_data.front()), gray_frame_2.width, gray_frame_2.height, gray_frame_2.width, 20,
 			ret_num); 
+		}*/
+		if (do_bilateral_filter) {
+			//bilatral_filter();
 		}
 		colors = reinterpret_cast<const unsigned char*>(&warped_color_frame_2.frame_data.front());
 	}
@@ -693,7 +693,7 @@ void rgbd_control::timer_event(double t, double dt)
 				new_frame = false;
 				if (stream_color) {
 					bool new_color_frame_changed = rgbd_inp.get_frame(IS_COLOR, color_frame, 0);
-					if (new_color_frame_changed) {
+					if (new_color_frame_changed && !show_grayscale) {
 						++nr_color_frames;
 						color_frame_changed = new_color_frame_changed;
 						new_frame = true;
@@ -1022,21 +1022,21 @@ void rgbd_control::on_clear_protocol_cb()
 	}
 }
 
-void rgbd_control::convert_to_grayscale(const frame_type& color_frame2, frame_type& gray_frame2)
+void rgbd_control::convert_to_grayscale(const frame_type& color_frame, frame_type& gray_frame)
 {
 	unsigned bytes_per_pixel = color_frame.nr_bits_per_pixel / 8;
 	int i = 0;
 
 	// prepare grayscale frame
-	static_cast<frame_size&>(gray_frame2) = color_frame2;
-	gray_frame2.pixel_format = color_frame2.pixel_format;
-	gray_frame2.nr_bits_per_pixel = color_frame2.nr_bits_per_pixel;
-	gray_frame2.compute_buffer_size();
-	gray_frame2.frame_data.resize(gray_frame2.buffer_size);
+	static_cast<frame_size&>(gray_frame) = color_frame;
+	gray_frame.pixel_format = color_frame.pixel_format;
+	gray_frame.nr_bits_per_pixel = color_frame.nr_bits_per_pixel;
+	gray_frame.compute_buffer_size();
+	gray_frame.frame_data.resize(gray_frame.buffer_size);
 
-	char* dest = &gray_frame2.frame_data.front();
-	for (int y = 0; y < color_frame2.height; ++y)
-		for (int x = 0; x < color_frame2.width; ++x) {
+	char* dest = &gray_frame.frame_data.front();
+	for (int y = 0; y < color_frame.height; ++y)
+		for (int x = 0; x < color_frame.width; ++x) {
 			//traverse all pixel
 			static char zeros_1[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 			char* src = zeros_1;
@@ -1045,49 +1045,49 @@ void rgbd_control::convert_to_grayscale(const frame_type& color_frame2, frame_ty
 			int b = i * bytes_per_pixel + 1;
 			int c = i * bytes_per_pixel + 2;
 			int d = i * bytes_per_pixel + 3;
-			switch (color_frame2.pixel_format) {
+			switch (color_frame.pixel_format) {
 			case PF_BGR:
 			case PF_BGRA:
-					if (color_frame2.nr_bits_per_pixel == 32) {
-						s.emplace_back(color_frame2.frame_data.at(c) * 0.114 + color_frame2.frame_data.at(b) * 0.587 +
-								   color_frame2.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame2.frame_data.at(c) * 0.114 + color_frame2.frame_data.at(b) * 0.587 +
-									   color_frame2.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame2.frame_data.at(c) * 0.114 + color_frame2.frame_data.at(b) * 0.587 +
-								   color_frame2.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame2.frame_data.at(d));
+					if (color_frame.nr_bits_per_pixel == 32) {
+						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
+								   color_frame.frame_data.at(a) * 0.299);
+						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(a) * 0.299);
+						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
+								   color_frame.frame_data.at(a) * 0.299);
+						s.emplace_back(color_frame.frame_data.at(d));
 						src = &s.front();
  					}
 					else {
-						s.emplace_back(color_frame2.frame_data.at(c) * 0.114 + color_frame2.frame_data.at(b) * 0.587 +
-									   color_frame2.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame2.frame_data.at(c) * 0.114 + color_frame2.frame_data.at(b) * 0.587 +
-									   color_frame2.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame2.frame_data.at(c) * 0.114 + color_frame2.frame_data.at(b) * 0.587 +
-									   color_frame2.frame_data.at(a) * 0.299);
+						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(a) * 0.299);
+						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(a) * 0.299);
+						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(a) * 0.299);
 						src = &s.front();
 					}
 					break;
 			case PF_RGB:
 			case PF_RGBA:
-					if (color_frame2.nr_bits_per_pixel == 32) {
+					if (color_frame.nr_bits_per_pixel == 32) {
 						int a = i * bytes_per_pixel;
-						s.emplace_back(color_frame2.frame_data.at(a) * 0.299 + color_frame2.frame_data.at(b) * 0.587 +
-									   color_frame2.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame2.frame_data.at(a) * 0.299 + color_frame2.frame_data.at(b) * 0.587 +
-									   color_frame2.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame2.frame_data.at(a) * 0.299 + color_frame2.frame_data.at(b) * 0.587 +
-									   color_frame2.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame2.frame_data.at(d));
+						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(c) * 0.114);
+						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(c) * 0.114);
+						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(c) * 0.114);
+						s.emplace_back(color_frame.frame_data.at(d));
 						src = &s.front();
 					}
 					else {
-						s.emplace_back(color_frame2.frame_data.at(a) * 0.299 + color_frame2.frame_data.at(b) * 0.587 +
-									   color_frame2.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame2.frame_data.at(a) * 0.299 + color_frame2.frame_data.at(b) * 0.587 +
-									   color_frame2.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame2.frame_data.at(a) * 0.299 + color_frame2.frame_data.at(b) * 0.587 +
-									   color_frame2.frame_data.at(c) * 0.114);
+						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(c) * 0.114);
+						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(c) * 0.114);
+						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(c) * 0.114);
 						src = &s.front();
 					}
 					break;
@@ -1098,6 +1098,92 @@ void rgbd_control::convert_to_grayscale(const frame_type& color_frame2, frame_ty
 			dest += bytes_per_pixel;
 			++i;
 			}
+}
+
+void rgbd_control::bilateral_filter(const frame_type& color_frame, frame_type& bf_frame, int d, double sigma_clr,
+									double sigma_space, int border_type)
+{
+	unsigned bytes_per_pixel = color_frame.nr_bits_per_pixel / 8;
+	int i = 0;
+
+	// prepare filtered frame
+	static_cast<frame_size&>(bf_frame) = color_frame;
+	bf_frame.pixel_format = color_frame.pixel_format;
+	bf_frame.nr_bits_per_pixel = color_frame.nr_bits_per_pixel;
+	bf_frame.compute_buffer_size();
+	bf_frame.frame_data.resize(bf_frame.buffer_size);
+
+	char* dest = &bf_frame.frame_data.front();
+	for (int y = 0; y < color_frame.height; ++y)
+			for (int x = 0; x < color_frame.width; ++x) {
+			// traverse all pixel
+			static char zeros_1[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+			char* src = zeros_1;
+			std::vector<char> s;
+			int a = i * bytes_per_pixel;
+			int b = i * bytes_per_pixel + 1;
+			int c = i * bytes_per_pixel + 2;
+			int d = i * bytes_per_pixel + 3;
+
+			double weight_sum = 0;
+			double filter_value = 0;
+			switch (color_frame.pixel_format) {
+			case PF_BGR:
+			case PF_BGRA:
+					if (color_frame.nr_bits_per_pixel == 32) {
+						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(a) * 0.299);
+						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(a) * 0.299);
+						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(a) * 0.299);
+						s.emplace_back(color_frame.frame_data.at(d));
+						src = &s.front();
+					}
+					else {
+						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(a) * 0.299);
+						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(a) * 0.299);
+						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(a) * 0.299);
+						src = &s.front();
+					}
+					break;
+			case PF_RGB:
+			case PF_RGBA:
+					if (color_frame.nr_bits_per_pixel == 32) {
+						int a = i * bytes_per_pixel;
+						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(c) * 0.114);
+						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(c) * 0.114);
+						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(c) * 0.114);
+						s.emplace_back(color_frame.frame_data.at(d));
+						src = &s.front();
+					}
+					else {
+						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(c) * 0.114);
+						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(c) * 0.114);
+						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
+									   color_frame.frame_data.at(c) * 0.114);
+						src = &s.front();
+					}
+					break;
+			case PF_BAYER:
+					break;
+			}
+			std::copy(src, src + bytes_per_pixel, dest);
+			dest += bytes_per_pixel;
+			++i;
+			}
+}
+
+void rgbd_control::value_compute(const char& current_pixel, const char& center_pixel, char& output) {
+	output = current_pixel - center_pixel;
 }
 
 #include "lib_begin.h"
