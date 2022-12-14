@@ -30,7 +30,7 @@ namespace cgv {
 			/// <returns>returns whether volume reading was successful </returns>
 			extern CGV_API bool read_volume_from_video_with_ffmpeg(volume& V, const std::string& file_name,
 				volume::dimension_type dims, volume::extent_type extent, const cgv::data::component_format& cf,
-				size_t offset = 0, FlipType flip_t = FT_NO_FLIP, void (*on_progress_update)(int,void*) = 0, void* user_data = 0);
+				size_t offset = 0, FlipType flip_t = FT_NO_FLIP, void (*on_progress_update)(int,void*) = 0, void* user_data = 0, bool cycle_till_eof = false);
 			/// <summary>
 			/// read volume from .svx header in which dimensions, extent, file name pattern and frame offset are specified; uses read_volume_from_video_with_ffmpeg in case file name pattern corresponds to video format for which no video reader has been registered
 			/// </summary>
