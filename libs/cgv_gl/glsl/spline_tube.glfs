@@ -1,4 +1,4 @@
-#version 460
+#version 420
 
 #define ITERATION_COUNT 10
 #define FLT_EPS 1.19209290e-07

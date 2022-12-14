@@ -78,8 +78,8 @@ void main()
 	vec3 dx_eye = 0.5*gi[0].extent.x*gi[0].modelview[0].xyz;
 	vec3 dy_eye = 0.5*gi[0].extent.y*gi[0].modelview[1].xyz;
 	vec2 extent_eye;
-	extent_eye.x = 2.0*dx_eye.length();
-	extent_eye.y = 2.0*dy_eye.length();
+	extent_eye.x = 2.0*length(dx_eye);
+	extent_eye.y = 2.0*length(dy_eye);
 	extent_eye = gi[0].extent;
 	// determine side in eye space and check for culling
 	if (!keep_this_side(position_eye.xyz, fo.normal_eye, fo.side))

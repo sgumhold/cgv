@@ -193,7 +193,7 @@ protected:
 	float normal_map_scale = 1.0f;
 
 public:
-	environment_demo() : cgv::base::node("environment demo") {
+	environment_demo() : cgv::base::node("Environment Demo") {
 		view_ptr = nullptr;
 		shaders.add("cubemap", "cubemap.glpr");
 		shaders.add("sky_cubemap_gen", "sky_cubemap_gen.glpr");
@@ -774,6 +774,6 @@ public:
 
 #include <cgv/base/register.h>
 
-/// register a factory to create new rounded cone texturing tests
+/// register a factory to create new environment demos
 cgv::base::factory_registration<environment_demo> environment_demo_fac("New/Demo/Environment Demo");
 //cgv::base::object_registration<environment_demo> environment_demo_fac("New/Demo/Environment Demo");
