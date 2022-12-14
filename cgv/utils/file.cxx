@@ -178,7 +178,7 @@ Result cmp(const std::string& what, const std::string& with)
 size_t size(const std::string& file_name, bool ascii)
 {
 #if __cplusplus >= 201703L
-	return std::filesytem::file_size(file_name);
+	return std::filesystem::file_size(file_name);
 #else
 #ifdef _WIN32
 	if (ascii) {
@@ -217,9 +217,14 @@ bool read(const std::string& filename, char* ptr, size_t size, bool ascii, size_
 {
 	FILE* fp = ::fopen(filename.c_str(), ascii ? "r" : "rb");
 	if (file_offset != 0) {
-		fpos_t fo = file_offset;
-		if (::fsetpos(fp, &fo) != 0)
-			return false;
+		if ( 
+#ifdef _WIN32
+			_fseeki64			
+#else
+			fseeko64
+#endif
+			(fp, file_offset, SEEK_SET) != 0)
+		return false;
 	}
 	size_t n = ::fread(ptr, 1, size, fp);
 	fclose(fp);
@@ -556,9 +561,9 @@ char to_lower(char c)
 	if (c >= 'A' && c <= 'Z')
 		return (c-'A')+'a';
 	switch (c) {
-		case 0xD6 : return (char) 0xF6; // Oe -> oe
-		case 0xDC : return (char) 0xFC; // Ue -> ue
-		case 0xC4 : return (char) 0xE4; // Ae -> ae
+		case (char) 0xD6 : return (char) 0xF6; // Oe -> oe
+		case (char) 0xC4 : return (char) 0xE4; // Ae -> ae
+		case (char) 0xDC : return (char) 0xFC; // Ue -> ue
 		default: return c;
 	}
 }

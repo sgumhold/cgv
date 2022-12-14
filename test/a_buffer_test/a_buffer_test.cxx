@@ -53,6 +53,7 @@ protected:
 	sphere_render_style srs;
 	attribute_array_manager sphere_aam;
 	sphere_renderer sr;
+	cgv::render::view* view_ptr = 0;
 
 	// a buffer instance
 	a_buffer a_b;
@@ -178,6 +179,8 @@ public:
 	}
 	void init_frame(context& ctx)
 	{
+		if (!view_ptr)
+			view_ptr = find_view_as_node();
 		// rebuild triangle program if defines changes
 		shader_define_map new_triangle_defines = build_defines(use_a_buffer_for_triangles);
 		if (new_triangle_defines != triangle_defines) {
@@ -188,6 +191,9 @@ public:
 		}
 		// update defines for sphere renderer
 		sr.ref_defines() = build_defines(use_a_buffer_for_spheres);
+		if (view_ptr)
+			sr.set_y_view_angle(float(view_ptr->get_y_view_angle()));
+
 		// init frame for a buffer
 		if (use_a_buffer_for_triangles || use_a_buffer_for_spheres)
 			a_b.init_frame(ctx);
