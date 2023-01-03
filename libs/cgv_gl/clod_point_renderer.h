@@ -237,8 +237,6 @@ namespace cgv {
 			//sets the pivot point in view space coordinates
 			void set_pivot_point(const vec4& pivot);
 
-			void set_reduction_model_view_matrix(const mat4& modelview);
-
 			void set_render_style(const render_style& rs);
 			
 			void manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change);
