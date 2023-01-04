@@ -365,12 +365,13 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 	};
 
 	std::vector<cgv::utils::token> parts;
+	std::vector<cgv::utils::token> tokens;
 	std::vector<vertex_attribute> attribs;
 	std::vector<bool> attrib_flags;
-	//cgv::utils::token version_token;
 	size_t version_idx = 0;
 	int version_number = 0;
 	bool is_core = false;
+	bool no_upgrade = false;
 
 	source = cgv::utils::strip_cpp_comments(source);
 
@@ -380,31 +381,41 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 
 	size_t part_idx = 0;
 
-	// first find version statement
-	for(part_idx; part_idx < parts.size(); ++part_idx) {
-		std::vector<cgv::utils::token> tokens;
-		cgv::utils::split_to_tokens(parts[part_idx], tokens, "", true, "", "", " \t");
+	// First read the version. The only thing allowed before the version statement is comments and empty lines.
+	// Both get removed bevore splitting the source into parts, so the first part must be the version.
+	cgv::utils::split_to_tokens(parts[part_idx], tokens, "", true, "", "", " \t");
 
-		if(tokens.size() == 2 || tokens.size() == 3) {
-			if(tokens[0] == "#version") {
-				version_idx = part_idx;
-				//version_token = parts[0];
+	if(tokens.size() > 1 && tokens[0] == "#version") {
+		version_idx = part_idx;
 
-				std::string number_str = to_string(tokens[1]);
-				char* p_end;
-				const long num = std::strtol(number_str.c_str(), &p_end, 10);
-				if(number_str.c_str() != p_end)
-					version_number = static_cast<int>(num);
+		std::string number_str = to_string(tokens[1]);
+		char* p_end;
+		const long num = std::strtol(number_str.c_str(), &p_end, 10);
+		if(number_str.c_str() != p_end)
+			version_number = static_cast<int>(num);
 
-				if(tokens.size() == 3 && tokens[2] == "core")
-					is_core = true;
+		if(tokens.size() == 3 && tokens[2] == "core")
+			is_core = true;
+	}
 
-				break;
-			}
+	++part_idx;
+
+	// Search for the optional NO_UPGRADE define, which must come directly after the version statement.
+	tokens.clear();
+	cgv::utils::split_to_tokens(parts[part_idx], tokens, "", true, "", "", " \t");
+
+	if(tokens.size() > 1 && tokens[0] == "#define") {
+		if(tokens[1] == "NO_UPGRADE") {
+			no_upgrade = true;
+			++part_idx;
 		}
 	}
 
-	// now filter all vertex attributes
+	// return if the shader shall not be upgraded
+	if(no_upgrade)
+		return;
+
+	// now get all vertex attributes
 	for(part_idx; part_idx < parts.size(); ++part_idx) {
 		auto& tok = parts[part_idx];
 
@@ -440,11 +451,15 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 		}
 	}
 
+	// return if no vertex attributes were found
+	if(attribs.size() == 0)
+		return;
+
 	int max_location = -1;
 	for(size_t i = 0; i < attribs.size(); ++i) {
 		auto& attrib = attribs[i];
 
-		std::vector<cgv::utils::token> tokens;
+		tokens.clear();
 		cgv::utils::split_to_tokens(attrib.tok, tokens, "", true, "", "", " \t()");
 
 		size_t size = tokens.size();
