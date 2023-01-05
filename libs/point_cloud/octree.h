@@ -12,6 +12,8 @@
 #include <chrono>
 #include <unordered_map>
 #include <sstream>
+#include <exception>
+#include <typeinfo>
 
 #include "concurrency.h"
 #include "morton.h"
@@ -264,6 +266,7 @@ class octree_lod_generator : public cgv::render::render_types {
 		inline int64_t grid_index(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const;
 		inline cgv::render::render_types::ivec3 grid_index_vec(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const;
 
+
 	public:
 		// allow or disallow duplicate elimination to take place
 		inline bool& allow_dedup() {
@@ -281,15 +284,39 @@ class octree_lod_generator : public cgv::render::render_types {
 		//splits points into chunks
 		inline Chunks<point_t> chunking(const point_t* vertices, const size_t num_points, const vec3& min, const vec3& max, const float& size);
 
-		octree_lod_generator(){
+		octree_lod_generator(bool init_pool = true){
 			//create a thread pool
-			pool_ptr = std::make_unique<cgv::pointcloud::utility::WorkerPool>((std::thread::hardware_concurrency() - 1));
+			if (init_pool) {
+				init();
+			}
 		}
+
+		bool init() {
+			pool_ptr =
+				  std::make_unique<cgv::pointcloud::utility::WorkerPool>((std::thread::hardware_concurrency() - 1));
+			return pool_ptr != nullptr;
+		}
+
+		void clear() { 
+			pool_ptr = nullptr;
+		}
+
+		//helper method for managing the singleton in ref_octree_lod_generator
+		void manage_singelton(int& ref_count, int ref_count_change);
 
 	private:
 		std::unique_ptr<cgv::pointcloud::utility::WorkerPool> pool_ptr;
 		bool allow_duplicate_elimination = true;
 };
+
+//returns a reference to a singelton
+template <typename point_t> 
+octree_lod_generator<point_t>& ref_octree_lod_generator(int count_change = 0) {
+	static octree_lod_generator<point_t> octree_gen(false);
+	static int ref_count;
+	octree_gen.manage_singelton(ref_count, count_change);
+	return octree_gen;
+}
 
 /// This point sampler does bottom up sampling on nodes choosing points randomly from the child nodes
 /// This is a modified version of SamplerRandom from PotreeConverter/Converter/include/sampler_random.h
@@ -1477,11 +1504,42 @@ struct SamplerRandom : public Sampler<point_t> {
 		current->children[index] = descendant;
 	}
 
+
+	template <typename point_t>
+	void octree_lod_generator<point_t>::manage_singelton(int& ref_count, int ref_count_change)
+	{
+		switch (ref_count_change) {
+		case 1:
+			if (ref_count == 0) {
+				if (!init())
+					throw std::runtime_error(std::string("unable to initialize octree_lod_generator<") + typeid(point_t).name() +
+											 "> singelton");
+			}
+			++ref_count;
+			break;
+		case 0:
+			break;
+		case -1:
+			if (ref_count == 0)
+				throw std::runtime_error(std::string("attempt to decrease reference count of octree_lod_generator<") +
+										 typeid(point_t).name() + "> singelton below 0");
+			else {
+				if (--ref_count == 0)
+					clear();
+			}
+			break;
+		default:
+			throw std::runtime_error(std::string("invalid change reference count outside {-1,0,1} for octree_lod_generator<") + 
+									 typeid(point_t).name() + "> singelton");
+		}
+	}
+
 	} //octree namespace
 	//make classes avaiable in pointcloud namespace
 	using cgv::pointcloud::octree::octree_lod_generator;
 	using cgv::pointcloud::octree::SimpleLODPoint;
 	using cgv::pointcloud::octree::GenericLODPoint;
+	using cgv::pointcloud::octree::ref_octree_lod_generator;
 } //pointcloud namespace
 } //cgv namespace
 
