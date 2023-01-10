@@ -20,13 +20,17 @@ class background : public node, public drawable, public provider, public event_h
 protected:
 	shader_program prog;
 	bool enable = true;
-	rgba color_2 = rgba(1.0, 1.0, 1.0, 1.0);
-	rgba color_1 = rgba(0.7, 0.7, 0.7, 1.0);
+	rgba color_1 = rgba(0.7f, 0.7f, 0.7f, 1.0f);
+	rgba color_2 = rgba(1.0f, 1.0f, 1.0f, 1.0f);
 	int mode = 0;
 	int checker_step = 16;
 public:
-	background() : node("background")
+	background() : node("Background")
 	{
+	}
+	std::string get_type_name() const
+	{
+		return "background";
 	}
 	bool self_reflect(reflection_handler& rh)
 	{
@@ -114,7 +118,7 @@ public:
 	}
 	void create_gui()
 	{
-		add_decorator("background", "heading");
+		add_decorator("Background", "heading");
 		add_member_control(this, "enable", enable, "toggle");
 		add_member_control(this, "mode", (cgv::type::DummyEnum&)mode, "dropdown", "enums='const,horiz,vert,checker,gamma'");
 		add_member_control(this, "color_1", color_1);
