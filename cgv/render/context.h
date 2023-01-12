@@ -578,8 +578,8 @@ protected:
 	rgba current_color;
 	/// whether to use opengl option to support sRGB framebuffer
 	bool sRGB_framebuffer;
-	/// gamma value passed to shader programs that have gamma uniform
-	float gamma;
+	/// per color channel gamma value passed to shader programs that have gamma uniform
+	vec3 gamma3;
 	/// keep two matrix stacks for model view and projection matrices
 	std::stack<dmat4> modelview_matrix_stack, projection_matrix_stack;
 	/// keep stack of window transformations
@@ -898,10 +898,14 @@ public:
 	DEPRECATED("deprecated and ignored.") virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material());
 	DEPRECATED("deprecated, use enable_material(textured_surface_material) instead.") virtual void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
 	//DEPRECATED("deprecated, use disable_material(textured_surface_material) instead.") virtual void disable_material(const textured_material& mat) = 0;
-	/// set the current gamma values
-	virtual void set_gamma(float _gamma);
-	/// query current gamma
-	float get_gamma() const { return gamma; }
+	/// set the current per channel gamma values to single value
+	void set_gamma(float _gamma);
+	/// set the current per channel gamma values to single value
+	virtual void set_gamma3(const vec3& _gamma3);
+	/// query current gamma computed as average over gamma3 per channel values
+	float get_gamma() const { return gamma3.length(); }
+	/// query current per color channel gamma 
+	vec3 get_gamma3() const { return gamma3; }
 	/// enable or disable sRGB framebuffer
 	virtual void enable_sRGB_framebuffer(bool do_enable = true);
 	/// check whether sRGB framebuffer is enabled
@@ -922,6 +926,8 @@ public:
 	virtual void enable_material(textured_material& mat) = 0;
 	/// disable a material with textures
 	virtual void disable_material(textured_material& mat) = 0;
+	/// set the shader program gamma values
+	void set_current_gamma(shader_program& prog) const;
 	/// set the shader program view matrices to the currently enabled view matrices
 	void set_current_view(shader_program& prog, bool modelview_deps = true, bool projection_deps = true) const;
 	/// set the shader program material to the currently enabled material

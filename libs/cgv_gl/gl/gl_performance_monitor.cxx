@@ -49,7 +49,7 @@ void gl_performance_monitor::draw_bars(cgv::render::context& ctx, cgv::render::s
 		for (unsigned i = 0; i < data.size() - 1; ++i, ++x) {
 			const frame_data&  fdata = data[i];
 			compute_colors(fdata);
-			compute_positions(x, ymin, 0, dy, fdata);
+			compute_positions(x, int(ymin), 0, dy, fdata);
 			draw_computed_bars(ctx, prog);
 			// check for min
 			if (min_i == -1 || data[i][data[i].size() - 2].time < data[min_i][data[min_i].size() - 2].time)
@@ -59,7 +59,7 @@ void gl_performance_monitor::draw_bars(cgv::render::context& ctx, cgv::render::s
 				max_i = i;
 		}
 		if (!bar_config.empty()) {
-			int y = ymin - (bar_line_width + 4) / 2 - 4;
+			int y = int(ymin - (bar_line_width + 4) / 2 - 4);
 			glLineWidth((float)bar_line_width);
 			for (int c = 0; c < (int)bar_config.size(); ++c) {
 				switch (bar_config[c]) {
