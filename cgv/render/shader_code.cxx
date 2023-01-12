@@ -427,7 +427,7 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 			bool is_new_word = true;
 			bool was_new_word = true;
 
-			for(size_t i = 0; i < tok.size() - 2; ++i) {
+			for(unsigned i = 0; i < tok.size() - 2; ++i) {
 				char c = tok[i];
 
 				if(c == '(')

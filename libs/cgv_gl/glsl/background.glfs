@@ -27,7 +27,7 @@ const vec4 panel_colors[4] = vec4[4](
 
 vec4 gamma_pattern(int x, int y)
 {
-	float y_float = float(y)/float(h);
+	float y_float = 1.0-float(y)/float(h);
 	int panel = int(floor(4.0*y_float));
 	float x_float = float(x)/float(w);
 	float y_local = 4.0*(y_float - 0.25*float(panel));
