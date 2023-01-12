@@ -97,7 +97,7 @@ Introduction to VR Support in CGV Framework</h1>
 </li>
 <li><p class="startli"><b><code>&lt;cgv/plugins/openvr_driver&gt;</code></b></p>
 <p class="startli">implements the vr interface for the openvr api. The only thing that needs to be done is to add the <code>openvr_driver</code> plugin as dependent project in the .pj-file.</p>
-<p class="startli">Currently, under windows steam vr changes the framebuffer type to non sRGB. Then the gamma correction needs to be set to 1.0f with <a class="el" href="classcgv_1_1render_1_1context.html#ade244b3b056257e5350de3d07f40560c" title="set the current gamma values">cgv::render::context::set_gamma</a>(1.0f) instead of the standard value of 2.2f. As this happens even if no vr device is attached.</p>
+<p class="startli">Currently, under windows steam vr changes the framebuffer type to non sRGB. Then the gamma correction needs to be set to 1.0f with <a class="el" href="classcgv_1_1render_1_1context.html#ade244b3b056257e5350de3d07f40560c" title="set the current per channel gamma values to single value">cgv::render::context::set_gamma</a>(1.0f) instead of the standard value of 2.2f. As this happens even if no vr device is attached.</p>
 <p class="startli">One can define the option <code>CGV_OPTIONS=NO_OPENVR</code> when one is not using a vr kit. Then openvr is not initialized by the openvr driver.</p>
 </li>
 <li><p class="startli"><b><code>&lt;cgv/test/vr&gt;</code></b></p>
