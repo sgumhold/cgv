@@ -717,10 +717,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ad8d21729c0e2707e8aaba214e98c55c4">sRGB_framebuffer</a></td></tr>
 <tr class="memdesc:ad8d21729c0e2707e8aaba214e98c55c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to use opengl option to support sRGB framebuffer <br /></td></tr>
 <tr class="separator:ad8d21729c0e2707e8aaba214e98c55c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3521c7fd3ab6fc3039f54200a14e81c"><td class="memItemLeft" align="right" valign="top"><a id="ad3521c7fd3ab6fc3039f54200a14e81c"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ad3521c7fd3ab6fc3039f54200a14e81c">gamma</a></td></tr>
-<tr class="memdesc:ad3521c7fd3ab6fc3039f54200a14e81c"><td class="mdescLeft">&#160;</td><td class="mdescRight">gamma value passed to shader programs that have gamma uniform <br /></td></tr>
-<tr class="separator:ad3521c7fd3ab6fc3039f54200a14e81c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0eefe0f67d74ebdcf1abea3f4af8bfda"><td class="memItemLeft" align="right" valign="top"><a id="a0eefe0f67d74ebdcf1abea3f4af8bfda"></a>
+<a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a0eefe0f67d74ebdcf1abea3f4af8bfda">gamma3</a></td></tr>
+<tr class="memdesc:a0eefe0f67d74ebdcf1abea3f4af8bfda"><td class="mdescLeft">&#160;</td><td class="mdescRight">per color channel gamma value passed to shader programs that have gamma uniform <br /></td></tr>
+<tr class="separator:a0eefe0f67d74ebdcf1abea3f4af8bfda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77c4c4d8db1cc97b1c52baf92d7f3021"><td class="memItemLeft" align="right" valign="top"><a id="a77c4c4d8db1cc97b1c52baf92d7f3021"></a>
 std::stack&lt; <a class="el" href="structcgv_1_1render_1_1render__types.html#a64b31ef71f0d782df7416df1973a941a">dmat4</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a77c4c4d8db1cc97b1c52baf92d7f3021">modelview_matrix_stack</a></td></tr>
 <tr class="memdesc:a77c4c4d8db1cc97b1c52baf92d7f3021"><td class="mdescLeft">&#160;</td><td class="mdescRight">keep two matrix stacks for model view and projection matrices <br /></td></tr>
@@ -847,13 +847,21 @@ DEPRECATED(&quot;deprecated, use <a class="el" href="classcgv_1_1render_1_1conte
 &#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated and ignored.&quot;) virtual void disable_phong_shading()</td></tr>
 <tr class="separator:a8cef2bca927c2d5173ec1249ba89302c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade244b3b056257e5350de3d07f40560c"><td class="memItemLeft" align="right" valign="top"><a id="ade244b3b056257e5350de3d07f40560c"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ade244b3b056257e5350de3d07f40560c">set_gamma</a> (float _gamma)</td></tr>
-<tr class="memdesc:ade244b3b056257e5350de3d07f40560c"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current gamma values <br /></td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ade244b3b056257e5350de3d07f40560c">set_gamma</a> (float _gamma)</td></tr>
+<tr class="memdesc:ade244b3b056257e5350de3d07f40560c"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current per channel gamma values to single value <br /></td></tr>
 <tr class="separator:ade244b3b056257e5350de3d07f40560c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a153ca24f76c849e83b0a6db0982daa72"><td class="memItemLeft" align="right" valign="top"><a id="a153ca24f76c849e83b0a6db0982daa72"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a153ca24f76c849e83b0a6db0982daa72">set_gamma3</a> (const <a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a> &amp;_gamma3)</td></tr>
+<tr class="memdesc:a153ca24f76c849e83b0a6db0982daa72"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current per channel gamma values to single value <br /></td></tr>
+<tr class="separator:a153ca24f76c849e83b0a6db0982daa72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51a7f29f3dbad8a4b6e75e0904fc1f14"><td class="memItemLeft" align="right" valign="top"><a id="a51a7f29f3dbad8a4b6e75e0904fc1f14"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a51a7f29f3dbad8a4b6e75e0904fc1f14">get_gamma</a> () const</td></tr>
-<tr class="memdesc:a51a7f29f3dbad8a4b6e75e0904fc1f14"><td class="mdescLeft">&#160;</td><td class="mdescRight">query current gamma <br /></td></tr>
+<tr class="memdesc:a51a7f29f3dbad8a4b6e75e0904fc1f14"><td class="mdescLeft">&#160;</td><td class="mdescRight">query current gamma computed as average over gamma3 per channel values <br /></td></tr>
 <tr class="separator:a51a7f29f3dbad8a4b6e75e0904fc1f14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6dea8be1f0551ed0ce15758b2edf414b"><td class="memItemLeft" align="right" valign="top"><a id="a6dea8be1f0551ed0ce15758b2edf414b"></a>
+<a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a6dea8be1f0551ed0ce15758b2edf414b">get_gamma3</a> () const</td></tr>
+<tr class="memdesc:a6dea8be1f0551ed0ce15758b2edf414b"><td class="mdescLeft">&#160;</td><td class="mdescRight">query current per color channel gamma <br /></td></tr>
+<tr class="separator:a6dea8be1f0551ed0ce15758b2edf414b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16057a9f7c3026c594624951aac4e70a"><td class="memItemLeft" align="right" valign="top"><a id="a16057a9f7c3026c594624951aac4e70a"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a16057a9f7c3026c594624951aac4e70a">enable_sRGB_framebuffer</a> (bool do_enable=true)</td></tr>
 <tr class="memdesc:a16057a9f7c3026c594624951aac4e70a"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable or disable sRGB framebuffer <br /></td></tr>
@@ -894,6 +902,10 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ac60e7fa8f7e00d8bdbd9305acee29545">disable_material</a> (<a class="el" href="classcgv_1_1render_1_1textured__material.html">textured_material</a> &amp;mat)=0</td></tr>
 <tr class="memdesc:ac60e7fa8f7e00d8bdbd9305acee29545"><td class="mdescLeft">&#160;</td><td class="mdescRight">disable a material with textures <br /></td></tr>
 <tr class="separator:ac60e7fa8f7e00d8bdbd9305acee29545"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94c82c8025fe32c6a9c1b14d6886145a"><td class="memItemLeft" align="right" valign="top"><a id="a94c82c8025fe32c6a9c1b14d6886145a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a94c82c8025fe32c6a9c1b14d6886145a">set_current_gamma</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog) const</td></tr>
+<tr class="memdesc:a94c82c8025fe32c6a9c1b14d6886145a"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the shader program gamma values <br /></td></tr>
+<tr class="separator:a94c82c8025fe32c6a9c1b14d6886145a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21ef3da6c0e31c98cc41528ba95cb74a"><td class="memItemLeft" align="right" valign="top"><a id="a21ef3da6c0e31c98cc41528ba95cb74a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a21ef3da6c0e31c98cc41528ba95cb74a">set_current_view</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, bool modelview_deps=true, bool projection_deps=true) const</td></tr>
 <tr class="memdesc:a21ef3da6c0e31c98cc41528ba95cb74a"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the shader program view matrices to the currently enabled view matrices <br /></td></tr>
