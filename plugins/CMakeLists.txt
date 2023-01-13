@@ -8,6 +8,7 @@ add_subdirectory(crg_antialias)
 add_subdirectory(crg_depth_of_field)
 add_subdirectory(crg_grid)
 add_subdirectory(crg_light)
+add_subdirectory(crg_bg)
 add_subdirectory(crg_stereo_view)
 add_subdirectory(examples)
 
