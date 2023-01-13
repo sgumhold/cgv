@@ -2405,7 +2405,7 @@ bool gl_context::shader_program_enable(shader_program_base& spb)
 	if (auto_set_view_in_current_shader_program && spb.does_use_view())
 		set_current_view(prog);
 	if (auto_set_gamma_in_current_shader_program && spb.does_use_gamma())
-		prog.set_uniform(*this, "gamma", gamma);
+		set_current_gamma(prog);
 	if (prog.does_context_set_color() && prog.get_color_index() >= 0)
 		prog.set_attribute(*this, prog.get_color_index(), current_color);
 	return true;
