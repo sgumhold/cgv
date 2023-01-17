@@ -1,9 +1,10 @@
 var searchData=
 [
-  ['sa_5fdrag_7162',['SA_DRAG',['../namespacecgv_1_1gui.html#a7f6413c952cec27ea2f560faf278bceea0019c772533e243b9ef15697a8f066fd',1,'cgv::gui']]],
-  ['sa_5fmove_7163',['SA_MOVE',['../namespacecgv_1_1gui.html#a7f6413c952cec27ea2f560faf278bceeae96813b8bb9c543c972cedfde000d42b',1,'cgv::gui']]],
-  ['sa_5fpress_7164',['SA_PRESS',['../namespacecgv_1_1gui.html#a7f6413c952cec27ea2f560faf278bceea1caa345db8fc6ab68a78f9053aa19682',1,'cgv::gui']]],
-  ['sa_5frelease_7165',['SA_RELEASE',['../namespacecgv_1_1gui.html#a7f6413c952cec27ea2f560faf278bceea0af1db606a1d997d75bbaff3018decac',1,'cgv::gui']]],
-  ['sa_5ftouch_7166',['SA_TOUCH',['../namespacecgv_1_1gui.html#a7f6413c952cec27ea2f560faf278bceea25b66c8996d819d374070a55a741f82f',1,'cgv::gui']]],
-  ['sa_5funpress_7167',['SA_UNPRESS',['../namespacecgv_1_1gui.html#a7f6413c952cec27ea2f560faf278bceea9aa56f3d418705f30d93ec4ba569b3b6',1,'cgv::gui']]]
+  ['rp_5fopaque_5fsurfaces_7169',['RP_OPAQUE_SURFACES',['../namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393ba69336a28028ef0e9bda0c8e5a7f42a27',1,'cgv::render']]],
+  ['rp_5fpick_7170',['RP_PICK',['../namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393bac279b5b109a772a7d76883988bd7e546',1,'cgv::render']]],
+  ['rp_5fshadow_5fmap_7171',['RP_SHADOW_MAP',['../namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393bafb8f35b06de6a7f0720e54f6f4020d3c',1,'cgv::render']]],
+  ['rp_5fshadow_5fvolume_7172',['RP_SHADOW_VOLUME',['../namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393ba1ab646a5afbde7deea6d6d59cba8acdd',1,'cgv::render']]],
+  ['rp_5fstereo_7173',['RP_STEREO',['../namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393ba3bdeec44042e17855372e1c422f524f9',1,'cgv::render']]],
+  ['rp_5ftransparent_5fsurfaces_7174',['RP_TRANSPARENT_SURFACES',['../namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393ba96ac3415ee1a245182d011282b7003c4',1,'cgv::render']]],
+  ['rp_5fuser_5fdefined_7175',['RP_USER_DEFINED',['../namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393ba415d18aeb4ec08758e2cbe6ce9b0fe0f',1,'cgv::render']]]
 ];

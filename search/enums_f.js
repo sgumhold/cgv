@@ -1,16 +1,13 @@
 var searchData=
 [
-  ['vertexbuffertype_7020',['VertexBufferType',['../namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3',1,'cgv::render']]],
-  ['vertexbufferusage_7021',['VertexBufferUsage',['../namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9',1,'cgv::render']]],
-  ['vraxistype_7022',['VRAxisType',['../namespacevr.html#a8be3a79163636c51336c9515beea1ba3',1,'vr']]],
-  ['vrbuttonstateflags_7023',['VRButtonStateFlags',['../namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657',1,'vr']]],
-  ['vrcontrollerrole_7024',['VRControllerRole',['../namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4',1,'vr']]],
-  ['vrcontrollertype_7025',['VRControllerType',['../namespacevr.html#a2d6d327cdc06b4abac3e02e6f74ba57f',1,'vr']]],
-  ['vreventtypeflags_7026',['VREventTypeFlags',['../namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cd',1,'cgv::gui']]],
-  ['vrfocus_7027',['VRFocus',['../namespacecgv_1_1gui.html#aaefc169b4e9eeb6e2668447c661b22bd',1,'cgv::gui']]],
-  ['vrinputtype_7028',['VRInputType',['../namespacevr.html#ae5690db873471f4275d4f2a842dbb7b8',1,'vr']]],
-  ['vrkeys_7029',['VRKeys',['../namespacevr.html#afad282ce40f31e065f752f2216eb7f04',1,'vr']]],
-  ['vrkitvistype_7030',['VRkitVisType',['../group__VR.html#ga785410ea03ccab5a21dfa1dbf16c380d',1,'vr_view_interactor.h']]],
-  ['vrmeshid_7031',['VRMeshId',['../namespacevr.html#a665837299018b23cf40411e8603afcb5',1,'vr']]],
-  ['vrstatus_7032',['VRStatus',['../namespacevr.html#a97f62fa341bd860ba107738084e5cc08',1,'vr']]]
+  ['textalignment_7020',['TextAlignment',['../namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457',1,'cgv::render']]],
+  ['texturecubesides_7021',['TextureCubeSides',['../namespacecgv_1_1render.html#a823bdd4ce16042cd5b74f70d5483c1ba',1,'cgv::render']]],
+  ['texturefilter_7022',['TextureFilter',['../namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea',1,'cgv::render']]],
+  ['texturesampling_7023',['TextureSampling',['../namespacecgv_1_1render.html#a6ddc63c9f76935e53fab79b373077832',1,'cgv::render']]],
+  ['texturetype_7024',['TextureType',['../classcgv_1_1media_1_1illum_1_1obj__material.html#ae5602c975089f4aa1b89d68e00bcf6df',1,'cgv::media::illum::obj_material::TextureType()'],['../namespacecgv_1_1render.html#ae3c8d596bb12c0538a8bbbb125b657d3',1,'cgv::render::TextureType()']]],
+  ['texturewrap_7025',['TextureWrap',['../namespacecgv_1_1render.html#a4b3eb5abd80954194b0b60848fad0f2a',1,'cgv::render']]],
+  ['token_5ftype_7026',['token_type',['../namespacecgv_1_1utils.html#a065a09a703ff8a7a3ab31b387f1c0468',1,'cgv::utils']]],
+  ['traversepolicy_7027',['TraversePolicy',['../namespacecgv_1_1base.html#a746925f26d076c26742b2dc558cbae36',1,'cgv::base']]],
+  ['traversestrategy_7028',['TraverseStrategy',['../namespacecgv_1_1base.html#a2e996b7f5a3a74779d9cee38497ba673',1,'cgv::base']]],
+  ['typeid_7029',['TypeId',['../namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752',1,'cgv::type::info']]]
 ];

@@ -5,6 +5,8 @@ var classcgv_1_1render_1_1frame__buffer =
     [ "attach", "classcgv_1_1render_1_1frame__buffer.html#a4db99a9ecc2a1dfe61b4ed743f141b86", null ],
     [ "attach", "classcgv_1_1render_1_1frame__buffer.html#a163609828e1d3f8c6e28c379957d391d", null ],
     [ "attach", "classcgv_1_1render_1_1frame__buffer.html#af88f1f3dcc3b8cb7a0bf7c6f2d72ba4c", null ],
+    [ "blit_from", "classcgv_1_1render_1_1frame__buffer.html#af30b156c69a3fc0875b9970a55d20a8c", null ],
+    [ "blit_to", "classcgv_1_1render_1_1frame__buffer.html#ab6b63b3efcee1209a37cf112bcb559f2", null ],
     [ "create", "classcgv_1_1render_1_1frame__buffer.html#a061eb8de0786f323024824ae6d9a8f51", null ],
     [ "destruct", "classcgv_1_1render_1_1frame__buffer.html#a4b61d78398a7aa0079d69686be7e6be3", null ],
     [ "disable", "classcgv_1_1render_1_1frame__buffer.html#a7887a6f8c9ed500f46381602d8f92547", null ],

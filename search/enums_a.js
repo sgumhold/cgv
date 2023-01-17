@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['namingconvention_6996',['NamingConvention',['../namespacecgv_1_1data.html#a23911e7b468889249037adbd0ca557dc',1,'cgv::data']]],
-  ['normalcomputationtype_6997',['NormalComputationType',['../namespacecgv_1_1render_1_1gl.html#a8c140d7306b9d60bad353c642640e0b0',1,'cgv::render::gl']]]
+  ['materialside_7003',['MaterialSide',['../namespacecgv_1_1render.html#a6d228fe5151b5fca590320445c9e9139',1,'cgv::render']]],
+  ['mouseaction_7004',['MouseAction',['../namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203',1,'cgv::gui']]],
+  ['mousebutton_7005',['MouseButton',['../namespacecgv_1_1gui.html#a7641aee24f715d0496c3e23c68faec81',1,'cgv::gui']]]
 ];

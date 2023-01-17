@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['performancemonitoringbar_6998',['PerformanceMonitoringBar',['../namespacecgv_1_1render.html#a79b40c1e022fe70b55c592f296dd5e29',1,'cgv::render']]],
-  ['primitivetype_6999',['PrimitiveType',['../namespacecgv_1_1render.html#ad09ce7c1f1275e31a8fbc3a85efbb1b6',1,'cgv::render']]],
-  ['programinterface_7000',['ProgramInterface',['../namespacecgv_1_1render_1_1gl.html#ac4adb01b5f3ef97bb3edcdd1ba82e0ee',1,'cgv::render::gl']]]
+  ['namingconvention_7006',['NamingConvention',['../namespacecgv_1_1data.html#a23911e7b468889249037adbd0ca557dc',1,'cgv::data']]],
+  ['normalcomputationtype_7007',['NormalComputationType',['../namespacecgv_1_1render_1_1gl.html#a8c140d7306b9d60bad353c642640e0b0',1,'cgv::render::gl']]]
 ];
