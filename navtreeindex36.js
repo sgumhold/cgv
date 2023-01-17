@@ -1,5 +1,7 @@
 var NAVTREEINDEX36 =
 {
+"file_8cxx.html#a5bce3360f71288a5bea153c659432ea0":[10,0,0,14,1,35],
+"file_8cxx.html#a64423f3df0dac617cf2f6d7830a74c27":[10,0,0,14,1,2],
 "file_8cxx.html#a69cf4bcb34ceeceb2f62f15eda5cc66c":[10,0,0,14,1,25],
 "file_8cxx.html#a78fca859af38b07bd4c5671ddb325cfa":[10,0,0,14,1,34],
 "file_8cxx.html#a7974cecec12e3576dbbe7b5c9c4985c8":[10,0,0,14,1,9],
@@ -247,7 +249,5 @@ var NAVTREEINDEX36 =
 "low__tri__mat_8h_source.html":[12,0,0,5,26],
 "lu_8h_source.html":[12,0,0,5,27],
 "make__argument_8h_source.html":[12,0,0,12,2,4],
-"make__const_8h_source.html":[12,0,0,12,2,5],
-"make__ref_8h_source.html":[12,0,0,12,2,6],
-"make__return_8h_source.html":[12,0,0,12,2,7]
+"make__const_8h_source.html":[12,0,0,12,2,5]
 };

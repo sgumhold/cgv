@@ -105,6 +105,12 @@ var namespacecgv_1_1render =
     [ "vec4", "namespacecgv_1_1render.html#a091ed7d82bda1371fe5339a19bd75ea0", null ],
     [ "vecn", "namespacecgv_1_1render.html#a86fddd200daf4c62b5a2f64634b14be4", null ],
     [ "ArrowHeadLengthMode", "namespacecgv_1_1render.html#aa9c3365c98b31f0efbc535d46c455f98", null ],
+    [ "BufferTypeBits", "namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab", [
+      [ "BTB_DEPTH_BIT", "namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abab93a33913d4a4383e4ee9477de95d2ca", null ],
+      [ "BTB_COLOR_AND_DEPTH_BITS", "namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaafc4ddb9da0f009c1dab4c43e1ba5527", null ],
+      [ "BTB_STENCIL_BIT", "namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833aba6ba7d7f4cdadd1ea367d79e90c7da932", null ],
+      [ "BTB_ALL_BITS", "namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c", null ]
+    ] ],
     [ "ColorMapping", "namespacecgv_1_1render.html#ac3a0958b054cad0eef18a3b461e1b543", null ],
     [ "CompareFunction", "namespacecgv_1_1render.html#af1b1b5ee6ada2ce3649637247799b929", null ],
     [ "ContextIntegerConstant", "namespacecgv_1_1render.html#aa73a722ecf766e22ec05e85f8a35b9b9", null ],
