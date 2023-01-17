@@ -141,7 +141,7 @@ public:
 		power of two dimensions. */  
 	bool create_from_images(const context& ctx, const std::string& file_names, int level = -1);
 	/// write the content of the texture to a file. This method needs support for frame buffer objects.
-	bool write_to_file(context& ctx, const std::string& file_name, unsigned int z_or_cube_side = -1, float depth_map_gamma = 1.0f) const;
+	bool write_to_file(context& ctx, const std::string& file_name, unsigned int z_or_cube_side = -1, float depth_map_gamma = 1.0f, const std::string& options = "") const;
 	/** generate mipmaps automatically, only supported if 
 	    framebuffer objects are supported by the GPU */
 	bool generate_mipmaps(const context& ctx);
