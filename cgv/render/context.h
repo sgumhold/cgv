@@ -382,6 +382,14 @@ public:
 	vertex_buffer_base();
 };
 
+/// bits for the selection of different buffer types
+enum BufferTypeBits { 
+	BTB_COLOR_BIT = 1, /// color buffer type
+	BTB_DEPTH_BIT = 2, /// depth buffer type
+	BTB_COLOR_AND_DEPTH_BITS = 3, /// color and depth buffer types
+	BTB_STENCIL_BIT = 4, /// stencil buffer type
+	BTB_ALL_BITS = 7   /// all buffer types 
+};
 
 /// base interface for framebuffer
 class CGV_API frame_buffer_base : public render_component
@@ -690,7 +698,8 @@ protected:
 	virtual bool frame_buffer_is_complete(const frame_buffer_base& fbb) const = 0;
 	virtual bool frame_buffer_enable		   (frame_buffer_base& fbb);
 	virtual bool frame_buffer_disable		   (frame_buffer_base& fbb);
-	virtual bool frame_buffer_destruct		   (frame_buffer_base& fbb) const;
+	virtual bool frame_buffer_destruct(frame_buffer_base& fbb) const;
+	virtual void frame_buffer_blit(const frame_buffer_base* src_fbb_ptr, const ivec4& S, frame_buffer_base* dst_fbb_ptr, const ivec4& _D, BufferTypeBits btbs, bool interpolate) const = 0;
 	virtual int frame_buffer_get_max_nr_color_attachments() const = 0;
 	virtual int frame_buffer_get_max_nr_draw_buffers() const = 0;
 

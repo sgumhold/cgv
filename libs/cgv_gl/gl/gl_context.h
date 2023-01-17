@@ -79,6 +79,7 @@ protected:
 	bool frame_buffer_enable(frame_buffer_base& fbb);
 	bool frame_buffer_disable(frame_buffer_base& fbb);
 	bool frame_buffer_destruct(frame_buffer_base& fbb) const;
+	void frame_buffer_blit(const frame_buffer_base* src_fbb_ptr, const ivec4& S, frame_buffer_base* dst_fbb_ptr, const ivec4& _D, BufferTypeBits btbs, bool interpolate) const;
 	int frame_buffer_get_max_nr_color_attachments() const;
 	int frame_buffer_get_max_nr_draw_buffers() const;
 
