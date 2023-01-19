@@ -67,6 +67,20 @@ public:
 	void pop_viewport(context& ctx);
 	/// disable the framebuffer object
 	bool disable(context& ctx);
+	/// different variants of blitting rectangle src_rect of this frame buffer into rectangle dest_rect of destination frame buffer
+	void blit_to(context& ctx, BufferTypeBits btbs = BTB_ALL_BITS, bool interpolate = false) const { blit_to(ctx, ivec4(0, 0, width, height), ivec4(-1), btbs, interpolate); }
+	void blit_to(context& ctx, const ivec4& src_rect, BufferTypeBits btbs = BTB_ALL_BITS, bool interpolate = false) const { blit_to(ctx, src_rect, ivec4(-1), btbs, interpolate); }
+	void blit_to(context& ctx, const ivec4& src_rect, const ivec4& dst_rect, BufferTypeBits btbs = BTB_ALL_BITS, bool interpolate = false) const;
+	void blit_to(context& ctx, frame_buffer& dst_fbo, BufferTypeBits btbs = BTB_ALL_BITS, bool interpolate = false) const { blit_to(ctx, dst_fbo, ivec4(0, 0, width, height), ivec4(0, 0, dst_fbo.width, dst_fbo.height), btbs, interpolate); }
+	void blit_to(context& ctx, frame_buffer& dst_fbo, const ivec4& src_rect, BufferTypeBits btbs = BTB_ALL_BITS, bool interpolate = false) const { blit_to(ctx, dst_fbo, src_rect, ivec4(0, 0, dst_fbo.width, dst_fbo.height), btbs, interpolate); }
+	void blit_to(context& ctx, frame_buffer& dst_fbo, const ivec4& src_rect, const ivec4& dst_rect, BufferTypeBits btbs = BTB_ALL_BITS, bool interpolate = false) const;
+	/// different variants of blitting to rectangle dst_rect of this frame buffer from rectangle src_rect of source frame buffer
+	void blit_from(context& ctx, BufferTypeBits btbs = BTB_ALL_BITS, bool interpolate = false) { blit_from(ctx, ivec4(0, 0, width, height), ivec4(-1), btbs, interpolate); }
+	void blit_from(context& ctx, const ivec4& dst_rect, BufferTypeBits btbs = BTB_ALL_BITS, bool interpolate = false) { blit_from(ctx, dst_rect, ivec4(-1), btbs, interpolate); }
+	void blit_from(context& ctx, const ivec4& dst_rect, const ivec4& src_rect, BufferTypeBits btbs = BTB_ALL_BITS, bool interpolate = false);
+	void blit_from(context& ctx, frame_buffer& src_fbo, BufferTypeBits btbs = BTB_ALL_BITS, bool interpolate = false) { blit_from(ctx, src_fbo, ivec4(0, 0, width, height), ivec4(0, 0, src_fbo.width, src_fbo.height), btbs, interpolate); }
+	void blit_from(context& ctx, frame_buffer& src_fbo, const ivec4& dst_rect, BufferTypeBits btbs = BTB_ALL_BITS, bool interpolate = false) { blit_to(ctx, src_fbo, dst_rect, ivec4(0, 0, src_fbo.width, src_fbo.height), btbs, interpolate); }
+	void blit_from(context& ctx, frame_buffer& src_fbo, const ivec4& dst_rect, const ivec4& src_rect, BufferTypeBits btbs = BTB_ALL_BITS, bool interpolate = false);
 };
 
 	}

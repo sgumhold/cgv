@@ -2156,6 +2156,59 @@ bool gl_context::frame_buffer_destruct(frame_buffer_base& fbb) const
 	return true;
 }
 
+void complete_rect_from_vp(gl_context::ivec4& D, GLint vp[4])
+{
+	if (D(0) == -1)
+		D(0) = vp[0];
+	if (D(1) == -1)
+		D(1) = vp[1];
+	if (D(2) == -1)
+		D(2) = vp[0] + vp[2];
+	if (D(3) == -1)
+		D(3) = vp[1] + vp[3];
+}
+
+void gl_context::frame_buffer_blit(
+	const frame_buffer_base* src_fbb_ptr, const ivec4& _S,
+	frame_buffer_base* dst_fbb_ptr, const ivec4& _D, BufferTypeBits btbs, bool interpolate) const
+{
+	static const GLenum masks[8]{
+		0,
+		GL_COLOR_BUFFER_BIT,
+		GL_DEPTH_BUFFER_BIT,
+		GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT,
+		GL_STENCIL_BUFFER_BIT,
+		GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
+		GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT,
+		GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT
+	};
+	ivec4 S = _S;
+	ivec4 D = _D;
+	if ((src_fbb_ptr == 0 && (S(0) == -1 || S(1) == -1 || S(2) == -1 || S(3) == -1)) ||
+		(dst_fbb_ptr == 0 && (D(0) == -1 || D(1) == -1 || D(2) == -1 || D(3) == -1))) {
+		GLint vp[4];
+		glGetIntegerv(GL_VIEWPORT, vp);
+		if (src_fbb_ptr == 0)
+			complete_rect_from_vp(S, vp);
+		if (dst_fbb_ptr == 0)
+			complete_rect_from_vp(D, vp);
+	}
+	GLint old_draw_fbo, old_read_fbo;
+	if (src_fbb_ptr) {
+		glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &old_read_fbo);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, get_gl_id(src_fbb_ptr->handle));
+	}
+	if (dst_fbb_ptr) {
+		glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &old_draw_fbo);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, get_gl_id(dst_fbb_ptr->handle));
+	}
+	glBlitFramebuffer(S(0), S(1), S(2), S(3), D(0), D(1), D(2), D(3), masks[btbs], interpolate ? GL_LINEAR : GL_NEAREST);
+	if (src_fbb_ptr) 
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, old_read_fbo);
+	if (dst_fbb_ptr)
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, old_draw_fbo);
+}
+
 bool gl_context::frame_buffer_attach(frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) const
 {
 	if (!context::frame_buffer_attach(fbb, rb, is_depth, i))
