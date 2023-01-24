@@ -604,7 +604,7 @@ void volume_viewer::fit_to_spacing() {
 
 	volume_bounding_box.ref_min_pnt() = vec3(-0.5f*vspacing);
 	volume_bounding_box.ref_max_pnt() = vec3(+0.5f*vspacing);
-
+	
 	update_bounding_box();
 }
 
