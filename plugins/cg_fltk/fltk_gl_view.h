@@ -30,7 +30,7 @@ class CGV_API fltk_gl_view :
 {
 protected:
 	friend class fltk_driver;
-
+	float gamma = 2.2f;
 	void process_text_1(const std::string& text);
 	void configure_opengl_controls();
 
