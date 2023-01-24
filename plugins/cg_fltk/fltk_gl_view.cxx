@@ -917,7 +917,7 @@ void fltk_gl_view::create_gui()
 		add_member_control(this, "EWMA", fps_alpha, "value_slider", "min=0;max=1;ticks=true;w=120;align='B';tooltip='coefficient of exponentially weighted moving average'");
 		add_member_control(this, "VSync", enable_vsync, "toggle", "w=92", " ");
 		add_member_control(this, "Instant Redraw", instant_redraw, "toggle", "w=100");
-		add_gui("Gamma", gamma3, "vector", "gui_type='value_slider';components='rgb';options='min=0.2;max=5;ticks=true;log=true'");
+		add_gui("Gamma", gamma3, "vector", "gui_type='value_slider';components='RGB';options='min=0.2;max=5;ticks=true;log=true'");
 		find_control(gamma3[0])->set("tooltip", "default gamma used for inverse gamma correction of red fragment channel");
 		find_control(gamma3[1])->set("tooltip", "default gamma used for inverse gamma correction of green fragment channel");
 		find_control(gamma3[2])->set("tooltip", "default gamma used for inverse gamma correction of blue fragment channel");
