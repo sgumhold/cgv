@@ -119,12 +119,12 @@ public:
 	void create_gui()
 	{
 		add_decorator("Background", "heading");
-		add_member_control(this, "enable", enable, "toggle");
-		add_member_control(this, "mode", (cgv::type::DummyEnum&)mode, "dropdown", "enums='const,horiz,vert,checker,gamma'");
-		add_member_control(this, "color_1", color_1);
-		add_member_control(this, "color_2", color_2);
-		connect_copy(add_button("swap_colors")->click, rebind(this, &background::swap_colors));
-		add_member_control(this, "checker_step", checker_step, "value_slider", "min=1;max=128;log=true;ticks=true");
+		add_member_control(this, "Enable", enable, "toggle");
+		add_member_control(this, "Mode", (cgv::type::DummyEnum&)mode, "dropdown", "enums='Constant,Horizontal,Vertical,Checkerboard,Gamma Test'");
+		add_member_control(this, "Color 1", color_1);
+		add_member_control(this, "Color 2", color_2);
+		connect_copy(add_button("Swap Colors")->click, rebind(this, &background::swap_colors));
+		add_member_control(this, "Checkerboard Step", checker_step, "value_slider", "min=1;max=128;log=true;ticks=true");
 	}
 };
 
