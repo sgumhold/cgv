@@ -1,4 +1,5 @@
 
+add_subdirectory(cgv_reflect_types)
 add_subdirectory(ann_wrapper)
 add_subdirectory(cg_gamepad)
 add_subdirectory(cgv_proc)
@@ -8,7 +9,6 @@ add_subdirectory(cg_nui)
 add_subdirectory(cgv_gl)
 add_subdirectory(cgv_g2d)
 add_subdirectory(cgv_gpgpu)
-add_subdirectory(cgv_reflect_types)
 add_subdirectory(delaunay)
 add_subdirectory(gamepad)
 add_subdirectory(glsu)
