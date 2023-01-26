@@ -5,24 +5,34 @@ file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.gl*")
 file(GLOB_RECURSE IMAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.png" "*.bmp")
 file(GLOB_RECURSE AUDIO RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.wav")
 
-cgv_prepare_resources(${CMAKE_SOURCE_DIR} IMG_SOURCES ${IMAGES})
-if(CGV_BUILD_WITH_AUDIO)
-    cgv_prepare_resources(${CMAKE_SOURCE_DIR} AUDIO_SOURCES ${AUDIO})
-else()
-    list(REMOVE_ITEM SOURCES "spatial_audio.cxx")
-    set(AUDIO_SOURCES "")
-    set(AUDIO "")
-endif()
+#cgv_prepare_resources(${CMAKE_SOURCE_DIR} IMG_SOURCES ${IMAGES})
+#if(CGV_BUILD_WITH_AUDIO)
+#    cgv_prepare_resources(${CMAKE_SOURCE_DIR} AUDIO_SOURCES ${AUDIO})
+#else()
+#    list(REMOVE_ITEM SOURCES "spatial_audio.cxx")
+#    set(AUDIO_SOURCES "")
+#    set(AUDIO "")
+#endif()
 
-shader_test("${CGV_DIR}"
-        ST_FILES
-        ST_INCLUDES
-        ST_INSTALL_DIR
-        ${SHADERS})
+#shader_test("${CGV_DIR}"
+#        ST_FILES
+#        ST_INCLUDES
+#        ST_INSTALL_DIR
+#        ${SHADERS})
 
-set(ALL_SOURCES ${SOURCES} ${IMG_SOURCES} ${AUDIO_SOURCES} ${ST_FILES} ${SHADERS} ${IMAGES} ${AUDIO})
+#set(ALL_SOURCES ${SOURCES} ${IMG_SOURCES} ${AUDIO_SOURCES} ${ST_FILES} ${SHADERS} ${IMAGES} ${AUDIO})
 
-add_library(examples ${ALL_SOURCES})
+cgv_add_target(examples
+    TYPE plugin
+    SOURCES ${SOURCES}
+    PPP_SOURCES ${PPP_SOURCES}
+    HEADERS ${HEADERS}
+    SHADER_SOURCES ${SHADERS}
+    RESOURCES ${IMG_SOURCES}
+    AUDIO_RESOURCES ${AUDIO_SOURCES}
+    DEPENDENCIES delaunay plot cg_gamepad cgv_proc cgv_gl cgv_os cgv_signal cgv_g2d cgv_gpgpu cgv_app
+)
+#add_library(examples ${ALL_SOURCES})
 target_link_libraries(examples
         delaunay
         plot

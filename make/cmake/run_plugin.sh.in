@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+'@CMAKE_BUILD_DIR@/bin/cgv_viewer' @CGV_VIEWER_ARGS_PLUGIN_LIST@ @CGV_VIEWER_ARGS_CONFIG_FILE_LIST@
