@@ -1,6 +1,6 @@
 # TODO old-style targets are temporarily decorated with the CGV-defined type property, remove when
 # converting them to the new system
-add_subdirectory(ann)
+add_subdirectory(ANN)
 set_target_properties(ann PROPERTIES CGVPROP_TYPE "library")
 set_target_properties(annf PROPERTIES CGVPROP_TYPE "library")
 add_subdirectory(fltk)
