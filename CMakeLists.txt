@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.20)
 
 project(cgv)
 
@@ -8,7 +8,7 @@ option(CGV_BUILD_TESTS OFF)
 
 
 set(BUILD_SHARED_LIBS ON)
-set(CMAKE_CXX_STANDARD_REQUIRED 14)
+set(CMAKE_CXX_STANDARD_REQUIRED 17)
 
 set(CGV_DIR ${PROJECT_SOURCE_DIR})
 set(CGV_BIN_DEST bin)
@@ -17,7 +17,7 @@ set(CGV_3RD_INCLUDE_DEST include/cgv-3rd)
 set(CGV_LIBS_INCLUDE_DEST include/cgv-libs)
 set(CGV_PLUGINS_INCLUDE_DEST include/cgv-plugins)
 
-# setting up correct RPATH as per: https://gitlab.kitware.com/cmake/community/-/wikis/doc/cmake/RPATH-handling
+# setup correct RPATH as per: https://gitlab.kitware.com/cmake/community/-/wikis/doc/cmake/RPATH-handling
 set(CMAKE_SKIP_BUILD_RPATH FALSE)
 set(CMAKE_BUILD_RPATH_USE_ORIGIN TRUE)
 set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
@@ -39,6 +39,11 @@ endif ()
 if (NOT MSVC)
     add_compile_options(-Wno-dangling-else -Wno-switch)
 endif ()
+
+# setup custom properties
+define_property(TARGET PROPERTY CGVPROP_TYPE BRIEF_DOCS "Indicates the type of component the target represents (e.g. core lib, plugin etc.).")
+define_property(TARGET PROPERTY CGVPROP_SHADERPATHS BRIEF_DOCS "The list of absolute paths where shaders used by the component are located.")
+define_property(TARGET PROPERTY CGVPROP_REQUESTED_PLUGINS BRIEF_DOCS "The list of other plugins requested by plugin target.")
 
 enable_testing()
 
