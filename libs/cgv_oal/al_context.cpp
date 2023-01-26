@@ -83,9 +83,9 @@ void OALContext::load_sample(std::string filepath)
 void OALContext::load_sample(std::string symbolic_name, const char* data, size_t data_length)
 {
 	if (symbolic_name.empty())
-		throw std::invalid_argument(__FUNCTION__ ": Symbolic file name can not be empty!");
+		throw std::invalid_argument("Symbolic file name can not be empty!");
 	if (std::end(sample_buffers) != sample_buffers.find(symbolic_name))
-		throw std::invalid_argument(__FUNCTION__ ": Symbolic name \"" + symbolic_name + "\" already present");
+		throw std::invalid_argument("Symbolic name \"" + symbolic_name + "\" already present");
 	assert(data);
 
 	// The state describing a virtual file descriptor (as anonymous type)
