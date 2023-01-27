@@ -65,7 +65,7 @@ cgv_add_target(examples
 #)
 
 if(CGV_BUILD_WITH_AUDIO)
-	target_link_libraries(examples cgv_oal)
+	target_link_libraries(examples PRIVATE cgv_oal)
 	add_dependencies(examples cg_audio)
 endif()
 
