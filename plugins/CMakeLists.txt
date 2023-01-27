@@ -1,4 +1,9 @@
-# TODO old-style targets are temporarily decorated with the CGV-defined type property, remove when
+
+if(CGV_BUILD_WITH_AUDIO)
+	add_subdirectory(cg_audio)
+endif()
+
+# ToDo: old-style targets are temporarily decorated with the CGV-defined type property, remove when
 # converting them to the new system
 add_subdirectory(cg_ext)
 set_target_properties(cg_ext PROPERTIES CGVPROP_TYPE "plugin")
@@ -38,13 +43,12 @@ set_target_properties(vr_test PROPERTIES CGVPROP_TYPE "plugin")
 
 add_subdirectory(examples)
 
-if(CGV_BUILD_WITH_AUDIO)
-	add_subdirectory(cg_audio)
-endif()
 if (WIN32)
     # FIXME these plugins can only be compiled under Windows for now
     add_subdirectory(cmv_avi)
+    set_target_properties(cmv_avi PROPERTIES CGVPROP_TYPE "plugin")
     add_subdirectory(co_web)
+    set_target_properties(co_web PROPERTIES CGVPROP_TYPE "plugin")
 endif ()
 
 install(EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
