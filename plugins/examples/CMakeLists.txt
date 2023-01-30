@@ -34,6 +34,8 @@ cgv_add_target(examples
 		delaunay plot cg_gamepad cgv_proc cgv_gl cgv_os cgv_signal cgv_g2d cgv_gpgpu cgv_app
 		cgv_viewer cg_ext cg_fltk cg_icons cg_meta cmi_io cgv_proc cmf_tt_gl_font crg_antialias
 		crg_depth_of_field crg_grid crg_light crg_stereo_view
+	ADDITIONAL_CMDLINE_ARGS
+		"gui:\"${CMAKE_CURRENT_LIST_DIR}/examples.gui\"" "config:\"${CMAKE_CURRENT_LIST_DIR}/config.def\""
 )
 #add_library(examples ${ALL_SOURCES})
 #target_link_libraries(examples
@@ -75,13 +77,13 @@ if(WIN32)
             co_web)
 endif()
 
-if(CGV_BUILD_WITH_AUDIO)
-    set_plugin_execution_params(examples
-        "plugin:cg_fltk \"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl;${CGV_DIR}/libs/cgv_g2d/glsl;${CGV_DIR}/libs/cgv_gpgpu/glsl;${CGV_DIR}/libs/cgv_app/glsl;${CGV_DIR}/libs/plot/glsl'\" plugin:cg_audio plugin:cg_ext plugin:cg_icons plugin:crg_stereo_view plugin:crg_antialias plugin:crg_depth_of_field plugin:crg_light plugin:cg_meta plugin:cmi_io plugin:cmv_avi plugin:crg_grid plugin:co_web plugin:cmf_tt_gl_font plugin:examples gui:\"${CGV_DIR}/plugins/examples/examples.gui\" config:\"${CGV_DIR}/plugins/examples/config.def\"")
-else()
-    set_plugin_execution_params(examples
-        "plugin:cg_fltk \"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl;${CGV_DIR}/libs/cgv_g2d/glsl;${CGV_DIR}/libs/cgv_gpgpu/glsl;${CGV_DIR}/libs/cgv_app/glsl;${CGV_DIR}/libs/plot/glsl'\" plugin:cg_ext plugin:cg_icons plugin:crg_stereo_view plugin:crg_antialias plugin:crg_depth_of_field plugin:crg_light plugin:cg_meta plugin:cmi_io plugin:cmv_avi plugin:crg_grid plugin:co_web plugin:cmf_tt_gl_font plugin:examples gui:\"${CGV_DIR}/plugins/examples/examples.gui\" config:\"${CGV_DIR}/plugins/examples/config.def\"")
-endif()
+#if(CGV_BUILD_WITH_AUDIO)
+#    set_plugin_execution_params(examples
+#        "plugin:cg_fltk \"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl;${CGV_DIR}/libs/cgv_g2d/glsl;${CGV_DIR}/libs/cgv_gpgpu/glsl;${CGV_DIR}/libs/cgv_app/glsl;${CGV_DIR}/libs/plot/glsl'\" plugin:cg_audio plugin:cg_ext plugin:cg_icons plugin:crg_stereo_view plugin:crg_antialias plugin:crg_depth_of_field plugin:crg_light plugin:cg_meta plugin:cmi_io plugin:cmv_avi plugin:crg_grid plugin:co_web plugin:cmf_tt_gl_font plugin:examples gui:\"${CGV_DIR}/plugins/examples/examples.gui\" config:\"${CGV_DIR}/plugins/examples/config.def\"")
+#else()
+#    set_plugin_execution_params(examples
+#        "plugin:cg_fltk \"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl;${CGV_DIR}/libs/cgv_g2d/glsl;${CGV_DIR}/libs/cgv_gpgpu/glsl;${CGV_DIR}/libs/cgv_app/glsl;${CGV_DIR}/libs/plot/glsl'\" plugin:cg_ext plugin:cg_icons plugin:crg_stereo_view plugin:crg_antialias plugin:crg_depth_of_field plugin:crg_light plugin:cg_meta plugin:cmi_io plugin:cmv_avi plugin:crg_grid plugin:co_web plugin:cmf_tt_gl_font plugin:examples gui:\"${CGV_DIR}/plugins/examples/examples.gui\" config:\"${CGV_DIR}/plugins/examples/config.def\"")
+#endif()
 
 install(TARGETS examples EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
 install(FILES config.def examples.gui DESTINATION ${CGV_PLUGINS_INCLUDE_DEST}/examples)

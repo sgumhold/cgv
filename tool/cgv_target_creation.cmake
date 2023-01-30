@@ -1,46 +1,37 @@
 
-# helper function for properties: formats a string representing the property value that will say "<none>" if the property is empty
-function(cgv_format_property_value OUTPUT_VAR TARGET_NAME)
-	cmake_parse_arguments(
-		PARSE_ARGV 2 CGVARG_ "" "PROPERTY" ""
-	)
-	if (NOT CGVARG__PROPERTY)
-		message(FATAL_ERROR "cgv_format_property_value(): no property specified!")
-	endif()
 
-	get_target_property(PROPVAL ${TARGET_NAME} ${CGVARG__PROPERTY})
+# helper function for lists: formats a string representing the list contents that will say "<none>" if empty
+function(cgv_format_list OUTPUT_VAR LIST_VAR)
+	set(${OUTPUT_VAR} "<none>" PARENT_SCOPE)
+	if (LIST_VAR)
+		set(${OUTPUT_VAR} "${LIST_VAR}" PARENT_SCOPE)
+	endif()
+endfunction()
+
+# helper function for properties: formats a string representing the property value that will say "<none>" if the property is empty
+function(cgv_format_property_value OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
+	get_target_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
 	set(${OUTPUT_VAR} "<none>" PARENT_SCOPE)
 	if (PROPVAL)
 		set(${OUTPUT_VAR} "${PROPVAL}" PARENT_SCOPE)
 	endif()
 endfunction()
 
-
-# internal helper function for recursively gathering transitive CGV Framework component dependencies of a target
-function(cgv_gather_dependencies DEPS_LIST_OUT TARGET_NAME PROCESSED_DEPS)
-	# break early if TARGET_NAME is not a target known to CMake so we don't try to process explicit linker objects
-	if (NOT TARGET ${TARGET_NAME})
-		message("     ...not a CMake target")
-		return()
+# helper function that retrieves a CGV-specific property and returns its content if any, otherwise returns something that evaluates
+# to FALSE under CMake's rules
+function(cgv_query_property OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
+	get_target_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
+	if (PROPVAL AND NOT PROPVAL STREQUAL "PROPVAL-NOTFOUND")
+		set(${OUTPUT_VAR} "${PROPVAL}" PARENT_SCOPE)
+	else()
+		set(${OUTPUT_VAR} FALSE PARENT_SCOPE)
 	endif()
+endfunction()
 
-	# break early if TARGET_NAME is not a CGV Framework target und thus won't provide any information we're interested in
-	get_target_property(TARGET_TYPE ${TARGET_NAME} CGVPROP_TYPE)
-	if (TARGET_TYPE STREQUAL "TARGET_TYPE-NOTFOUND")
-		message("   ...not a CGV target")
-		return()
-	endif()
-
-	# make sure already-processed dependencies can be propagated, and break the recursion
-	# cycle for this target by adding it to the list
-	set(DEPS_LIST_LOCAL "${${DEPS_LIST_OUT}}")
-	set(PROCESSED_DEPS_LOCAL "${${PROCESSED_DEPS}}")
-	message("# PROCESSED_DEPS before: ${PROCESSED_DEPS_LOCAL}")
-	list(APPEND PROCESSED_DEPS_LOCAL ${TARGET_NAME})
-	message("# PROCESSED_DEPS   now : ${PROCESSED_DEPS_LOCAL}")
-
-	# gather direct dependencies (TODO: may contain generator expressions - we currently ignore those)
-	message("- gathering dependencies for '${TARGET_NAME}'")
+# helper function that gathers all direct dependencies of a target from all related properties
+function(cgv_list_dependencies DEPS_LIST_OUT TARGET_NAME)
+	# check each property storing dependencies in order
+	# (TODO: may contain generator expressions - we currently ignore those)
 	get_target_property(DEPS ${TARGET_NAME} LINK_LIBRARIES)
 	if (DEPS STREQUAL "DEPS-NOTFOUND")
 		set(DEPS "")
@@ -57,47 +48,80 @@ function(cgv_gather_dependencies DEPS_LIST_OUT TARGET_NAME PROCESSED_DEPS)
 		list(APPEND DEPS "${GENERIC_DEPS}")
 	endif()
 	list(REMOVE_DUPLICATES DEPS) # <-- this is intentionally not inside the above else()-clause
-	message(" = [${DEPS}]")
+
+	# return result
+	set(${DEPS_LIST_OUT} "${DEPS}" PARENT_SCOPE)
+endfunction()
+
+# internal helper function for checking if some target name refers to a vaild CGV Framework component
+function(cgv_is_cgvtarget CHECK_RESULT_OUT TARGET_NAME)
+	if (TARGET ${TARGET_NAME})
+		get_target_property(TARGET_TYPE ${TARGET_NAME} CGVPROP_TYPE)
+		if (NOT TARGET_TYPE STREQUAL "TARGET_TYPE-NOTFOUND")
+			set(${CHECK_RESULT_OUT} TRUE PARENT_SCOPE)
+		endif()
+	else()
+		set(${CHECK_RESULT_OUT} FALSE PARENT_SCOPE)
+	endif()
+endfunction()
+
+# internal helper function for recursively gathering transitive CGV Framework component dependencies of a target
+function(cgv_gather_dependencies DEPS_LIST_OUT TARGET_NAME PROCESSED_DEPS)
+	# break early if TARGET_NAME is not a CGV Framework target und thus won't provide any information we're interested in
+	cgv_is_cgvtarget(IS_CGV_TARGET ${TARGET_NAME})
+	if (NOT IS_CGV_TARGET)
+		return()
+	endif()
+
+	# make sure already-processed dependencies can be propagated, and break the recursion
+	# cycle for this target by adding it to the list
+	set(DEPS_LIST_LOCAL "${${DEPS_LIST_OUT}}")
+	set(PROCESSED_DEPS_LOCAL "${${PROCESSED_DEPS}}")
+	list(APPEND PROCESSED_DEPS_LOCAL ${TARGET_NAME})
+
+	# gather direct dependencies
+	cgv_list_dependencies(DEPS ${TARGET_NAME})
 
 	# recursive expansion
 	foreach (DEPENDENCY ${DEPS})
-		message("   + considering '${DEPENDENCY}'")
-		if (NOT ${DEPENDENCY} IN_LIST PROCESSED_DEPS_LOCAL)
+		cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY})
+		if (IS_CGV_TARGET AND NOT ${DEPENDENCY} IN_LIST PROCESSED_DEPS_LOCAL)
 			list(APPEND DEPS_LIST_LOCAL ${DEPENDENCY})
 			cgv_gather_dependencies(DEPS_LIST_LOCAL ${DEPENDENCY} PROCESSED_DEPS_LOCAL)
 		endif()
 	endforeach()
 	list(REMOVE_DUPLICATES DEPS_LIST_LOCAL)
 
-	# propagate processed dependencies upwards
+	# propagate results upwards
 	set(${DEPS_LIST_OUT} "${DEPS_LIST_LOCAL}" PARENT_SCOPE)
 	set(${PROCESSED_DEPS} "${PROCESSED_DEPS_LOCAL}" PARENT_SCOPE)
 endfunction()
 
-# internal helper function for recursively gathering transitively requested plugins of a target
-function(cgv_gather_requested_plugins PLUGIN_LIST_OUT TARGET_NAME PROCESSED_PLUGINS)
-	# break recursion cycle for this plugin
-	set(PROCESSED_PLUGINS_LIST ${PROCESSED_PLUGINS})
-	list(APPEND PROCESSED_PLUGINS_LIST ${TARGET_NAME})
+# internal helper function for filtering out all non-plugins from a list of targets
+function(cgv_filter_for_plugins PLUGIN_LIST_OUT GUI_PROVIDER_PLUGIN_OUT TARGET_NAMES)
+	# Make sure the variable requested to contain the GUI provider will evaluate to the FALSE value when no GUI provider is among
+	# the given list of dependencies
+	set(GUI_PROVIDER_PLUGIN_LOCAL FALSE)
 
-	# gather plugins requested by this plugin
-	#message(" - gathering requested plugins for '${TARGET_NAME}'")
-	get_target_property(PLUGINS ${TARGET_NAME} CGVPROP_REQUESTED_PLUGINS)
-	if (PLUGINS STREQUAL "PLUGINS-NOTFOUND")
-		#message("   <none>")
-	else()
-		#message("   [${PLUGINS}]")
-		foreach (PLUGIN ${PLUGINS})
-			#message("   + considering '${PLUGIN}'")
-			if (NOT ${PLUGIN} IN_LIST PROCESSED_PLUGINS_LIST)
-				list(APPEND PLUGIN_LIST_OUT ${PLUGIN})
-				cgv_gather_requested_plugins(PLUGIN_LIST_OUT ${PLUGIN} ${PROCESSED_PLUGINS_LIST})
+	# check TYPE property of each target
+	foreach (TARGET_NAME ${TARGET_NAMES})
+		get_target_property(TARGET_TYPE ${TARGET_NAME} CGVPROP_TYPE)
+		if (TARGET_TYPE STREQUAL "plugin")
+			# TODO: hard-coded to cg_fltk for now, more flexible and robust strategies are possible
+			if (TARGET_NAME STREQUAL "cg_fltk")
+				set(GUI_PROVIDER_PLUGIN_LOCAL "${TARGET_NAME}")
+			else()
+				list(APPEND PLUGIN_LIST_LOCAL ${TARGET_NAME})
 			endif()
-		endforeach()
-	endif()
+		endif()
+	endforeach()
+
+	# return filtered list
+	set(${PLUGIN_LIST_OUT} "${PLUGIN_LIST_LOCAL}" PARENT_SCOPE)
+	set(${GUI_PROVIDER_PLUGIN_OUT} "${GUI_PROVIDER_PLUGIN_LOCAL}" PARENT_SCOPE)
 endfunction()
 
-# internal helper function that takes over deferred computations that require other targets to have already been declared
+# internal helper function that takes over deferred computations that require other targets to have already been fully defined
 function(cgv_do_deferred_ops TARGET_NAME)
 	# output notification of deferred operation
 	get_target_property(TARGET_TYPE ${TARGET_NAME} CGVPROP_TYPE)
@@ -105,36 +129,76 @@ function(cgv_do_deferred_ops TARGET_NAME)
 
 	# compile command line for launching plugins
 	if (TARGET_TYPE MATCHES "plugin$")
-
-		# (1) gather all dependencies
+		# (1) gather all dependencies and compile shaderpath
 		cgv_gather_dependencies(DEPENDENCIES ${TARGET_NAME} RECURSION_CONVERGENCE_HELPER)
-		# DEBUG: check for duplicates
-		message(" --------------------------")
-		message("DEPENDENCIES (a): ${DEPENDENCIES}")
-		list(REMOVE_DUPLICATES DEPENDENCIES)
-		message("DEPENDENCIES (b): ${DEPENDENCIES}")
-		message("  -----")
-		message("RECURSION LIST (a): ${RECURSION_CONVERGENCE_HELPER}")
-		list(REMOVE_DUPLICATES RECURSION_CONVERGENCE_HELPER)
-		message("RECURSION LIST (b): ${RECURSION_CONVERGENCE_HELPER}")
-		message("################################")
-		message("################################")
-		cgv_gather_requested_plugins(REQUESTED_PLUGINS ${TARGET_NAME} RECURSION_CONVERGENCE_HELPER)
-
-		# (2) compile command line arguments
-		set(CMD_ARGS "")
-		foreach(PLUGIN ${REQUESTED_PLUGINS})
-			list(APPEND CMD_ARGS "plugin:${PLUGIN}")
+		message("- DEPENDENCIES: ${DEPENDENCIES}")
+		set(SHADER_PATHS "")
+		foreach(DEPENDENCY ${DEPENDENCIES})
+			#message("- extracting from '${DEPENDENCY}'")
+			cgv_query_property(DEP_SHADER_PATH ${DEPENDENCY} CGVPROP_SHADERPATH)
+			if (DEP_SHADER_PATH)
+				#message("  + found ${DEP_SHADER_PATH}")
+				list(APPEND SHADER_PATHS "${DEP_SHADER_PATH}")
+			endif()
 		endforeach()
+		cgv_query_property(MY_SHADER_PATH ${TARGET_NAME} CGVPROP_SHADERPATH)
+		if (MY_SHADER_PATH)
+			#message("- adding own: ${MY_SHADER_PATH}")
+			list(APPEND SHADER_PATHS "${MY_SHADER_PATH}")
+		endif()
+		if (NOT SHADER_PATHS STREQUAL "")
+			list(REMOVE_DUPLICATES SHADER_PATHS)
+			#message("- SHADERPATH: ${SHADER_PATHS}")
+		else()
+			set(SHADER_PATHS FALSE)
+		endif()
+
+		# (2) extract list of plugins to load
+		cgv_filter_for_plugins(REQUESTED_PLUGINS GUI_PROVIDER_PLUGIN "${DEPENDENCIES}")
+		#message("- REQUESTED PLUGINS: ${REQUESTED_PLUGINS}")
+		if (GUI_PROVIDER_PLUGIN)
+			#message("- GUI PROVIDER: ${GUI_PROVIDER_PLUGIN}")
+		endif()
+
+		# (3) compile command line arguments
+		# --- if we have a GUI provider, it will be loaded first, followed by the shader path
+		if (GUI_PROVIDER_PLUGIN)
+			set(CMD_LINE_ARGS "plugin:${GUI_PROVIDER_PLUGIN}")
+			if (SHADER_PATHS)
+				set(CMD_LINE_ARGS "${CMD_LINE_ARGS} \"type(shader_config):shader_path='${SHADER_PATHS}'\"")
+			endif()
+		endif()
+		# --- append remaining plugins
+		foreach(PLUGIN ${REQUESTED_PLUGINS})
+			set(CMD_LINE_ARGS "${CMD_LINE_ARGS} plugin:${PLUGIN}")
+		endforeach()
+		set(CMD_LINE_ARGS "${CMD_LINE_ARGS} plugin:${TARGET_NAME}")
+		# --- append custom args (if any)
+		cgv_query_property(ADDITIONAL_ARGS ${TARGET_NAME} CGVPROP_ADDITIONAL_CMDLINE_ARGS)
+		if (ADDITIONAL_ARGS)
+			foreach(ARG ${ADDITIONAL_ARGS})
+				set(CMD_LINE_ARGS "${CMD_LINE_ARGS} ${ARG}")
+			endforeach()
+		endif()
+		# --- done!
+		message("- command line: ${CMD_LINE_ARGS}")
 	endif()
 
 	# create a launch script in case of Make- and Ninja-based generators
 	if (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja")
 		configure_file(
-			"${CGV_DIR}/make/cmake/run_plugin.sh.in" "${CMAKE_BINARY_DIR}/run_${NAME}.sh"
+			"${CGV_DIR}/make/cmake/run_plugin.sh.in" "${CMAKE_BINARY_DIR}/run_${TARGET_NAME}.sh"
 			FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 			@ONLY
 		)
+		file(
+			GENERATE OUTPUT "${CMAKE_BINARY_DIR}/run_${TARGET_NAME}.sh"
+			INPUT "${CMAKE_BINARY_DIR}/run_${TARGET_NAME}.sh" TARGET ${TARGET_NAME}
+			USE_SOURCE_PERMISSIONS
+		)
+	else()
+		# try to set relevant options for all known generators in the hopes of ending up with a valid launch/debug configuration
+		set_plugin_execution_params(${NAME} "${CMD_LINE_ARGS}")
 	endif()
 endfunction()
 
@@ -144,7 +208,7 @@ function(cgv_add_target NAME)
 	cmake_parse_arguments(
 		PARSE_ARGV 1 CGVARG_
 		"" "TYPE"
-		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;DEPENDENCIES"
+		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;DEPENDENCIES;ADDITIONAL_CMDLINE_ARGS"
 	)
 
 	# prelude
@@ -247,11 +311,6 @@ function(cgv_add_target NAME)
 			target_link_libraries(${NAME} PUBLIC ${DEPENDENCY})
 		# handle remaining types of dependencies
 		else()
-			# if we are a plugin, check all dependencies whether they are also a plugin and if yes, note them
-			# down as a plugin dependency (used e.g. for launch/debug command line generation)
-			if (IS_PLUGIN AND DEPENDENCY_TYPE MATCHES "plugin$")
-				set_property(TARGET ${NAME} APPEND PROPERTY CGVPROP_REQUESTED_PLUGINS ${DEPENDENCY})
-			endif()
 			add_dependencies(${NAME} ${DEPENDENCY})
 		endif()
 	endforeach()
@@ -290,23 +349,31 @@ function(cgv_add_target NAME)
 	if (NOT IS_CORELIB)
 		target_include_directories(${NAME_STATIC} PUBLIC $<BUILD_INTERFACE:${CGV_DIR}/libs>)
 	endif ()
+	if (IS_PLUGIN)
+		set_target_properties(${NAME} PROPERTIES CGVPROP_ADDITIONAL_CMDLINE_ARGS "${CGVARG__ADDITIONAL_CMDLINE_ARGS}")
+	endif()
 
 	# /BEGIN DEBUG OUTPUT
 	get_target_property(PROPVAL_TYPE ${NAME} CGVPROP_TYPE)
 	message(STATUS "CGV TARGET: ${NAME} (${PROPVAL_TYPE})")
-	cgv_format_property_value(PROPVAL_SP ${NAME} PROPERTY CGVPROP_SHADERPATH)
+	cgv_format_property_value(PROPVAL_SP ${NAME} CGVPROP_SHADERPATH)
 	message(STATUS " [ shaderpath ]  ${PROPVAL_SP}")
 	if (IS_PLUGIN)
-		cgv_format_property_value(PROPVAL_RP ${NAME} PROPERTY CGVPROP_REQUESTED_PLUGINS)
-		message(STATUS " [req. plugins]  ${PROPVAL_RP}")
+		cgv_list_dependencies(DEPENDENCIES ${NAME})
+		cgv_filter_for_plugins(REQUESTED_PLUGINS GUI_PROVIDER_PLUGIN "${DEPENDENCIES}")
+		if (GUI_PROVIDER_PLUGIN)
+			list(PREPEND REQUESTED_PLUGINS "${GUI_PROVIDER_PLUGIN}")
+		endif()
+		cgv_format_list(REQUESTED_PLUGINS "${REQUESTED_PLUGINS}")
+		message(STATUS " [req. plugins]  ${REQUESTED_PLUGINS}")
 	endif()
-	cgv_format_property_value(PROPVAL_LDEPS ${NAME} PROPERTY LINK_LIBRARIES)
+	cgv_format_property_value(PROPVAL_LDEPS ${NAME} LINK_LIBRARIES)
 	message(STATUS " [ linked libs]  ${PROPVAL_LDEPS}")
-	cgv_format_property_value(PROPVAL_CDEFS ${NAME} PROPERTY COMPILE_DEFINITIONS)
+	cgv_format_property_value(PROPVAL_CDEFS ${NAME} COMPILE_DEFINITIONS)
 	message(STATUS " [compile defs]  ${PROPVAL_CDEFS}")
 	# /END DEBUG OUTPUT
 
-	# schedule generating deferred ops for plugins
+	# schedule deferred ops for plugins
 	if (IS_PLUGIN)
 		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
 	endif()
