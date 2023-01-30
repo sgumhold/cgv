@@ -51,6 +51,7 @@ var structcgv_1_1render_1_1surfel__render__style =
     [ "percentual_halo_width", "structcgv_1_1render_1_1surfel__render__style.html#a063c8e45a69cf091442d872cc33dd328", null ],
     [ "point_size", "structcgv_1_1render_1_1surfel__render__style.html#a0736e6323efbd9fe0eed151b089854be", null ],
     [ "surface_color", "structcgv_1_1render_1_1surfel__render__style.html#ad8f48464b480e9ecfc40ca2ab1532b69", null ],
+    [ "surface_offset", "structcgv_1_1render_1_1surfel__render__style.html#a505fe2369a5b54f5b2b54329520134c9", null ],
     [ "surface_opacity", "structcgv_1_1render_1_1surfel__render__style.html#a52caec9a8363a35db51d863033978d2c", null ],
     [ "use_group_color", "structcgv_1_1render_1_1surfel__render__style.html#aaeef17e385a1d3ae754742b2619bd55c", null ],
     [ "use_group_point_size", "structcgv_1_1render_1_1surfel__render__style.html#a7d36f503553b1e9719b7753ff483a70f", null ],
