@@ -325,8 +325,14 @@ std::ostream& operator<<(std::ostream& out, const fvec<T,N>& v)
 template<typename T, cgv::type::uint32_type N>
 std::istream& operator>>(std::istream& in, fvec<T,N>& v)
 {
-	for (unsigned i=0;i<N;++i)
-		in >> v(i);	
+	for (unsigned i = 0; i < N; ++i) {
+		in >> v(i);
+		if (in.fail() && i == 1) {
+			for (unsigned i = 1; i < N; ++i)
+				v(i) = v(0);
+			break;
+		}
+	}
 	return in;
 }
 
