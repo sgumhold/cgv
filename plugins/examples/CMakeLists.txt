@@ -28,8 +28,8 @@ cgv_add_target(examples
 	PPP_SOURCES ${PPP_SOURCES}
 	HEADERS ${HEADERS}
 	SHADER_SOURCES ${SHADERS}
-	RESOURCES ${IMG_SOURCES}
-	AUDIO_RESOURCES ${AUDIO_SOURCES}
+	RESOURCES ${IMAGES}
+	AUDIO_RESOURCES ${AUDIO}
 	DEPENDENCIES
 		delaunay plot cg_gamepad cgv_proc cgv_gl cgv_os cgv_signal cgv_g2d cgv_gpgpu cgv_app
 		cgv_viewer cg_ext cg_fltk cg_icons cg_meta cmi_io cgv_proc cmf_tt_gl_font crg_antialias
