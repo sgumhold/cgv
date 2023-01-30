@@ -42,8 +42,8 @@ endif ()
 
 # setup custom properties
 define_property(TARGET PROPERTY CGVPROP_TYPE BRIEF_DOCS "Indicates the type of component the target represents (e.g. core lib, plugin etc.).")
-define_property(TARGET PROPERTY CGVPROP_SHADERPATHS BRIEF_DOCS "The list of absolute paths where shaders used by the component are located.")
-define_property(TARGET PROPERTY CGVPROP_REQUESTED_PLUGINS BRIEF_DOCS "The list of other plugins requested by plugin target.")
+define_property(TARGET PROPERTY CGVPROP_SHADERPATH BRIEF_DOCS "The list of absolute paths where shaders used by the component are located.")
+define_property(TARGET PROPERTY CGVPROP_ADDITIONAL_CMDLINE_ARGS BRIEF_DOCS "A list of additional command line arguments for launching the plugin (ignored for non-plugin targets).")
 
 enable_testing()
 
