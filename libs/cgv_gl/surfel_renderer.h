@@ -14,9 +14,15 @@ namespace cgv {
 			counter decreases to 0, singleton renderer is destructed. */
 		extern CGV_API surfel_renderer& ref_surfel_renderer(context& ctx, int ref_count_change = 0);
 
-		/** style of a point */
+		/** style of a surfel */
 		struct CGV_API surfel_render_style : public surface_render_style
 		{
+			/*@name surfel rendering attributes*/
+			//@{
+			/// position offset in normal direction to prevent z-figthing if surfels are placed directly on flat surfaces
+			float surface_offset;
+			//@}
+
 			/*@name point rendering attributes*/
 			//@{
 			/// default value assigned to point size attribute in \c enable method of point renderer, set to 1 in constructor
