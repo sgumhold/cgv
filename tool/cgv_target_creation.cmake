@@ -165,7 +165,7 @@ function(cgv_do_deferred_ops TARGET_NAME)
 		if (GUI_PROVIDER_PLUGIN)
 			set(CMD_LINE_ARGS "plugin:${GUI_PROVIDER_PLUGIN}")
 			if (SHADER_PATHS)
-				set(CMD_LINE_ARGS "${CMD_LINE_ARGS} type(shader_config):shader_path=\"${SHADER_PATHS}\"")
+				set(CMD_LINE_ARGS "${CMD_LINE_ARGS} \"type(shader_config):shader_path=\'${SHADER_PATHS}'\"")
 			endif()
 		endif()
 		# --- append remaining plugins
