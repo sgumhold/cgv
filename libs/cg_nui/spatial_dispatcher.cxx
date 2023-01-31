@@ -133,7 +133,7 @@ namespace cgv {
 				if (gi.check_intersection) {
 					gi.inter_info.ray_origin = transforming_ptr->transform_point(gi.inter_info.ray_origin);
 					gi.inter_info.ray_direction = transforming_ptr->transform_vector(gi.inter_info.ray_direction);
-					gi.inter_info.hid_position = transforming_ptr->transform_vector(gi.inter_info.hid_position);
+					gi.inter_info.hid_position = transforming_ptr->transform_point(gi.inter_info.hid_position);
 					gi.inter_info.hid_direction = transforming_ptr->transform_vector(gi.inter_info.hid_direction);
 					gi.inter_info.hit_point = transforming_ptr->transform_point(gi.inter_info.hit_point);
 					gi.inter_info.hit_normal = transforming_ptr->transform_normal(gi.inter_info.hit_normal);
@@ -141,7 +141,7 @@ namespace cgv {
 				if (gi.check_proximity) {
 					gi.prox_info.query_point = transforming_ptr->transform_point(gi.prox_info.query_point);
 					gi.prox_info.hid_position = transforming_ptr->transform_point(gi.prox_info.hid_position);
-					gi.prox_info.hid_direction = transforming_ptr->transform_point(gi.prox_info.hid_direction);
+					gi.prox_info.hid_direction = transforming_ptr->transform_vector(gi.prox_info.hid_direction);
 					gi.prox_info.hit_point = transforming_ptr->transform_point(gi.prox_info.hit_point);
 					gi.prox_info.hit_normal = transforming_ptr->transform_normal(gi.prox_info.hit_normal);
 				}
@@ -181,13 +181,13 @@ namespace cgv {
 					if (ci >= 0 && ci <= 1) {
 						gi.check_intersection = rfi.foc_info_ptr->config.spatial.pointing && ctrl_infos[ci].pointing;
 						vrpe.get_state().controller[ci].put_ray(gi.inter_info.ray_origin, gi.inter_info.ray_direction);
+						gi.check_proximity = rfi.foc_info_ptr->config.spatial.proximity && ctrl_infos[ci].grabbing;
+						gi.prox_info.query_point = gi.inter_info.ray_origin + max_grabbing_distance*gi.inter_info.ray_direction;
+						gi.inter_info.ray_origin += (ctrl_infos[ci].grabbing ? min_pointing_distance : 0.0f) * gi.inter_info.ray_direction;
 						gi.inter_info.hid_position = gi.inter_info.ray_origin;
 						gi.inter_info.hid_direction = gi.inter_info.ray_direction;
 						gi.prox_info.hid_position = gi.inter_info.ray_origin;
 						gi.prox_info.hid_direction = gi.inter_info.ray_direction;
-						gi.check_proximity = rfi.foc_info_ptr->config.spatial.proximity && ctrl_infos[ci].grabbing;
-						gi.prox_info.query_point = gi.inter_info.ray_origin + max_grabbing_distance*gi.inter_info.ray_direction;
-						gi.inter_info.ray_origin += (ctrl_infos[ci].grabbing ? min_pointing_distance : 0.0f) * gi.inter_info.ray_direction;
 						if (!gi.check_proximity && !gi.check_intersection)
 							return false;
 					}
