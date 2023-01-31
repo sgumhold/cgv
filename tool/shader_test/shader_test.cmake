@@ -1,3 +1,4 @@
+
 function(shader_test base outfiles_var outinclude_var outinstall_var)
 	set(ST_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/st")
 	file(RELATIVE_PATH ST_INSTALL_POSTFIX ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
@@ -5,14 +6,12 @@ function(shader_test base outfiles_var outinclude_var outinstall_var)
 
 	list(APPEND o_includes ${ST_INCLUDE_DIR})
 
-	# Add a custom build rule for every file if SHADER_DEVELOPER option is set
-	if(CGV_SHADER_DEVELOPER)
-		foreach (infile ${ARGN})
-			shader_test_command_add("${ST_BASE}" "${infile}" outfile outinclude)
-			list(APPEND o_files ${outfile})
-			list(APPEND o_includes ${outinclude})
-		endforeach ()
-	endif()
+	# Add a custom build rule for every file
+	foreach (infile ${ARGN})
+		shader_test_command_add("${ST_BASE}" "${infile}" outfile outinclude)
+		list(APPEND o_files ${outfile})
+		list(APPEND o_includes ${outinclude})
+	endforeach ()
 
 	set(${outfiles_var} ${o_files} PARENT_SCOPE)
 	set(${outinclude_var} ${o_includes} PARENT_SCOPE)
@@ -39,7 +38,7 @@ function(shader_test_command_add base infile outfile_var outinclude_var)
 
 	# Add the build rule
 	add_custom_command(OUTPUT ${OUTPUT_FILE}
-		COMMAND ${CMAKE_COMMAND} -E env CGV_OPTIONS=$<$<BOOL:${SHADER_DEVELOPER}>:SHADER_DEVELOPER> $<TARGET_FILE:shader_test>
+		COMMAND ${CMAKE_COMMAND} -E env CGV_OPTIONS=${CGV_OPTIONS} $<TARGET_FILE:shader_test>
 		ARGS "${INPUT_FILE}" "${OUTPUT_FILE}"
 		DEPENDS "${INPUT_FILE}")
 	set(${outfile_var} ${OUTPUT_FILE} PARENT_SCOPE)
