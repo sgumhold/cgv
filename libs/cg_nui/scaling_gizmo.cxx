@@ -103,8 +103,7 @@ void cgv::nui::scaling_gizmo::on_handle_drag()
 	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj), obj_translation, obj_rotation, obj_scale);
 
 	vec3 axis;
-	if (get_functionality_absolute_axes_rotation() &&
-		_functionality_absolute_axes_rotation->get_use_absolute_rotation()) {
+	if (use_root_rotation) {
 		axis = axes_directions[prim_idx];
 	}
 	else {
@@ -173,7 +172,7 @@ void cgv::nui::scaling_gizmo::configure_axes_scale_ratios(std::vector<vec3> scal
 }
 
 bool cgv::nui::scaling_gizmo::_compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx, const vec3& scale,
-	const mat4& view_matrix)
+                                                     const mat4& view_matrix)
 {
 	compute_geometry(scale);
 
@@ -201,7 +200,7 @@ bool cgv::nui::scaling_gizmo::_compute_closest_point(const vec3& point, vec3& pr
 }
 
 bool cgv::nui::scaling_gizmo::_compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal,
-	size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
+                                                    size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
 {
 	compute_geometry(scale);
 

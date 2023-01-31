@@ -43,10 +43,10 @@ class CGV_API rotation_gizmo : public cgv::nui::gizmo,
 	void _draw(cgv::render::context& ctx, const vec3& scale, const mat4& view_matrix) override;
 	/// Do proximity check
 	bool _compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx, const vec3& scale,
-		const mat4& view_matrix) override;
+	                            const mat4& view_matrix) override;
 	/// Do intersection check
 	bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx,
-		const vec3& scale, const mat4& view_matrix) override;
+	                           const vec3& scale, const mat4& view_matrix) override;
 
 protected:
 	// Get the rotation of the attached object

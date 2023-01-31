@@ -61,7 +61,25 @@ void cgv::nui::translation_gizmo::on_handle_drag()
 	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj->get_parent()),
 		anchor_obj_parent_global_translation, anchor_obj_parent_global_rotation, anchor_obj_parent_global_scale);
 
+	vec3 anchor_obj_global_translation;
+	quat anchor_obj_global_rotation;
+	vec3 anchor_obj_global_scale;
+	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj),
+		anchor_obj_global_translation, anchor_obj_global_rotation, anchor_obj_global_scale);
+
+	vec3 root_obj_global_translation;
+	quat root_obj_global_rotation;
+	vec3 root_obj_global_scale;
+	transforming::extract_transform_components(transforming::get_global_model_transform(root_obj),
+		root_obj_global_translation, root_obj_global_rotation, root_obj_global_scale);
+
+	quat anchor_root_diff = root_obj_global_rotation.inverse() * anchor_obj_global_rotation;
+	quat anchor_parent_root_diff = root_obj_global_rotation.inverse() * anchor_obj_parent_global_rotation;
+
 	vec3 axis = axes_directions[prim_idx];
+	if (use_root_rotation) {
+		axis = anchor_root_diff.inverse().apply(axis);
+	}
 
 	vec3 closest_point;
 	if (ii_at_grab.is_pointing) {
@@ -75,23 +93,22 @@ void cgv::nui::translation_gizmo::on_handle_drag()
 
 	vec3 movement = closest_point - ii_at_grab.query_point;
 
-	if (get_functionality_absolute_axes_rotation() &&
-		_functionality_absolute_axes_rotation->get_use_absolute_rotation()) {
-		// The position is in the local coordinate system of the parent and the movement should be along the global axes.
-		// Therefor the anchor object parent's global inverse rotation has to be applied to the movement vector.
-		movement = anchor_obj_parent_global_rotation.inverse().apply(movement);
+	if (use_root_rotation) {
+		movement = anchor_root_diff.apply(movement);
+		movement = anchor_parent_root_diff.inverse().apply(movement);
 	}
 	else {
 		// The position is in the local coordinate system of the parent of the anchor object.
 		// Therefor the anchor object's local rotation has to be applied to the movement vector.
-		vec3 anchor_obj_global_translation;
-		quat anchor_obj_global_rotation;
-		vec3 anchor_obj_global_scale;
-		transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj),
-			anchor_obj_global_translation, anchor_obj_global_rotation, anchor_obj_global_scale);
 		quat anchor_obj_local_rotation = anchor_obj_parent_global_rotation.inverse() * anchor_obj_global_rotation;
 		movement = anchor_obj_local_rotation.apply(movement);
 	}
+
+	//std::cout << get_position() << std::endl;
+	//std::cout << get_position() + movement << std::endl;
+	std::cout << "Hid Position: " << ii_during_focus[activating_hid_id].hid_position << std::endl;
+	std::cout << "Hid Direction: " << ii_during_focus[activating_hid_id].hid_direction << std::endl;
+	std::cout << "Movement: " << movement << std::endl;
 
 	// If the position that this gizmo changes influences the anchor of this gizmo, then the movement is an incremental update.
 	// Otherwise the movement is relative to the original position of the anchor at the time of grabbing.
@@ -159,7 +176,7 @@ void cgv::nui::translation_gizmo::configure_axes_geometry(float radius, float le
 }
 
 bool cgv::nui::translation_gizmo::_compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal,
-	size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
+                                                         size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
 {
 	compute_geometry(scale);
 
@@ -185,7 +202,7 @@ bool cgv::nui::translation_gizmo::_compute_closest_point(const vec3& point, vec3
 }
 
 bool cgv::nui::translation_gizmo::_compute_intersection(const vec3& ray_start, const vec3& ray_direction,
-	float& hit_param, vec3& hit_normal, size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
+                                                        float& hit_param, vec3& hit_normal, size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
 {
 	compute_geometry(scale);
 
