@@ -217,6 +217,7 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 int g_argc;
 char** g_argv;
 context* g_ctx_ptr;
+bool g_shader_developer;
 
 void stream_out_prog(std::ostream& os, const std::string& fn, const cgv::render::shader_define_map& defines)
 {
@@ -228,7 +229,6 @@ void stream_out_prog(std::ostream& os, const std::string& fn, const cgv::render:
 
 int perform_test()
 {
-	bool shader_developer = cgv::utils::has_option("SHADER_DEVELOPER");
 	int exit_code = 0;
 	// check input file extension
 	std::string ext = to_lower(get_extension(g_argv[1]));
@@ -239,7 +239,7 @@ int perform_test()
 		for (auto defines : define_maps) {
 			// in case of shader program, build it from the file
 			shader_program prog(true);
-			if (prog.build_program(*g_ctx_ptr, g_argv[1], shader_developer, defines)) {
+			if (prog.build_program(*g_ctx_ptr, g_argv[1], g_shader_developer, defines)) {
 				convert_to_string(g_argv[1], g_argv[2]);
 				//write(g_argv[2], "ok", 2, true);
 				std::cout << "shader program ok (";
@@ -247,7 +247,7 @@ int perform_test()
 				std::cout << ")" << std::endl;
 			}
 			else {
-				if (!shader_developer)
+				if (!g_shader_developer)
 					convert_to_string(g_argv[1], g_argv[2]);
 				else {
 					std::cout << "error:";
@@ -260,13 +260,14 @@ int perform_test()
 	}
 	else {
 		shader_code code;
-		if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, shader_developer)) {
+		if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, g_shader_developer)) {
 			// convert the input file to a string declaration with the string
 			convert_to_string(g_argv[1], g_argv[2]);
 			// write(g_argv[2], "ok", 2, true);
 			std::cout << "shader code ok (" << g_argv[1] << ")" << std::endl;
-		} else {
-			if (!shader_developer)
+		}
+		else {
+			if (!g_shader_developer)
 				convert_to_string(g_argv[1], g_argv[2]);
 			else
 				exit_code = 1;
@@ -285,14 +286,21 @@ int main(int argc, char** argv)
 		return -1;
 	}
 	// create a context without window
+	g_shader_developer = cgv::utils::has_option("SHADER_DEVELOPER");
 #ifdef WIN32
 	context* ctx_ptr = create_context();
 #else
-	context* ctx_ptr = new fltk_gl_context(200,200);
+	context* ctx_ptr = nullptr;
+	if (g_shader_developer)
+		ctx_ptr = new fltk_gl_context(200, 200);
 #endif
 	if (!ctx_ptr) {
-		std::cout << "error: could not create context!" << std::endl;
-		return -1;
+		if (g_shader_developer) {
+			std::cout << "error: could not create context!" << std::endl;
+			return -1;
+		}
+		convert_to_string(argv[1], argv[2]);
+		return exit_code;
 	}
 	g_argc = argc;
 	g_argv = argv;
