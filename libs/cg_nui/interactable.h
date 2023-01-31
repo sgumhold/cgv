@@ -39,15 +39,7 @@ class CGV_API interactable : public cgv::base::group,
 							 public cgv::gui::provider
 {
 	cgv::nui::focus_configuration original_config;
-
-	std::map<hid_identifier, vec3> focus_debug_points;
-	bool focus_debug_points_enabled { false };
-	rgb focus_debug_points_color{ rgb(0.5f, 0.5f, 0.5f) };
-	bool grab_debug_point_enabled{ false };
-	rgb grab_debug_point_color{ rgb(0.4f, 0.05f, 0.6f) };
 protected:
-	cgv::render::sphere_render_style debug_sphere_rs;
-
 	/// Collection of values that describe an interaction between a hid and an interactable at one moment in time.
 	struct interaction_info
 	{
@@ -57,20 +49,12 @@ protected:
 		vec3 hid_position;
 		/// Orientation of the interacting hid at the moment of interaction (in local space)
 		vec3 hid_direction;
-		/// Intersection or nearest point on surface that was used to determine the focus (in global space)
-		vec3 query_point_global;
-		/// Position of the interacting hid at the moment of interaction (in global space)
-		vec3 hid_position_global;
-		/// Orientation of the interacting hid at the moment of interaction (in global space)
-		vec3 hid_direction_global;
 		/// Whether the interaction was by pointing (i.e. a ray-cast) or by closest-point-query
 		bool is_pointing{};
 
 		interaction_info() {}
-		interaction_info(vec3 query_point, vec3 hid_position, vec3 hid_direction,
-			vec3 query_point_global, vec3 hid_position_global, vec3 hid_direction_global, bool is_pointing) :
+		interaction_info(vec3 query_point, vec3 hid_position, vec3 hid_direction, bool is_pointing) :
 			query_point(query_point), hid_position(hid_position), hid_direction(hid_direction),
-			query_point_global(query_point_global), hid_position_global(hid_position_global), hid_direction_global(hid_direction_global),
 			is_pointing(is_pointing) {}
 	};
 

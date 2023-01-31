@@ -48,10 +48,8 @@ void cgv::nui::interactable::change_state(state_enum new_state)
 }
 
 cgv::nui::interactable::interactable(const std::string& name) : group(name),
-	ii_at_grab(vec3(0.0), vec3(0.0),vec3(1.0, 0.0, 0.0),
-		vec3(0.0), vec3(0.0), vec3(1.0, 0.0, 0.0), true)
+	ii_at_grab(vec3(0.0), vec3(0.0),vec3(1.0, 0.0, 0.0), true)
 {
-	debug_sphere_rs.radius = 0.01f;
 }
 
 void cgv::nui::interactable::stream_help(std::ostream& os)
@@ -83,7 +81,6 @@ bool cgv::nui::interactable::focus_change(cgv::nui::focus_change_action action, 
 		// if so, remove it from the list
 		if (selecting_hid_ids.find(dis_info.hid_id) != selecting_hid_ids.end()) {
 			selecting_hid_ids.erase(dis_info.hid_id);
-			focus_debug_points.erase(dis_info.hid_id);
 			// if the list is now empty, change state back to idle
 			if (state != state_enum::idle && selecting_hid_ids.empty()) {
 				change_state(state_enum::idle);
@@ -127,26 +124,18 @@ bool cgv::nui::interactable::handle(const cgv::gui::event& e, const cgv::nui::di
 	if (is_grabbing(e, dis_info)) {
 		const auto& prox_info = get_proximity_info(dis_info);
 		if (state == state_enum::close) {
-			focus_debug_points[dis_info.hid_id] = prox_info.hit_point;
 			ii_during_focus[dis_info.hid_id].query_point = prox_info.query_point;
 			ii_during_focus[dis_info.hid_id].hid_position = prox_info.hid_position;
 			ii_during_focus[dis_info.hid_id].hid_direction = prox_info.hid_direction;
-			ii_during_focus[dis_info.hid_id].query_point_global = prox_info.query_point_global;
-			ii_during_focus[dis_info.hid_id].hid_position_global = prox_info.hid_position_global;
-			ii_during_focus[dis_info.hid_id].hid_direction_global = prox_info.hid_direction_global;
 			ii_during_focus[dis_info.hid_id].is_pointing = false;
 			prim_idx = int(prox_info.primitive_index);
 			on_set(&prim_idx);
 		}
 		// Only the HID that grabbed can drag
 		else if (state == state_enum::grabbed && activating_hid_id == dis_info.hid_id) {
-			focus_debug_points[dis_info.hid_id] = prox_info.hit_point;
 			ii_during_focus[dis_info.hid_id].query_point = prox_info.query_point;
 			ii_during_focus[dis_info.hid_id].hid_position = prox_info.hid_position;
 			ii_during_focus[dis_info.hid_id].hid_direction = prox_info.hid_direction;
-			ii_during_focus[dis_info.hid_id].query_point_global = prox_info.query_point_global;
-			ii_during_focus[dis_info.hid_id].hid_position_global = prox_info.hid_position_global;
-			ii_during_focus[dis_info.hid_id].hid_direction_global = prox_info.hid_direction_global;
 			ii_during_focus[dis_info.hid_id].is_pointing = false;
 			on_grabbed_drag();
 		}
@@ -172,28 +161,22 @@ bool cgv::nui::interactable::handle(const cgv::gui::event& e, const cgv::nui::di
 	if (is_pointing(e, dis_info)) {
 		const auto& inter_info = get_intersection_info(dis_info);
 		if (state == state_enum::pointed) {
-			focus_debug_points[dis_info.hid_id] = inter_info.hit_point_global;
 			ii_during_focus[dis_info.hid_id].query_point = inter_info.hit_point;
 			ii_during_focus[dis_info.hid_id].hid_position = inter_info.hid_position;
+			// TODO: DEBUG
+			//std::cout << "pointed:  " << inter_info.hid_position << std::endl;
 			ii_during_focus[dis_info.hid_id].hid_direction = inter_info.hid_direction;
-			ii_during_focus[dis_info.hid_id].query_point_global = inter_info.hit_point_global;
-			ii_during_focus[dis_info.hid_id].hid_position_global = inter_info.hid_position_global;
-			ii_during_focus[dis_info.hid_id].hid_direction_global = inter_info.hid_direction_global;
 			ii_during_focus[dis_info.hid_id].is_pointing = true;
 			prim_idx = int(inter_info.primitive_index);
 			on_set(&prim_idx);
 		}
 		// Only the HID that triggered can drag
 		else if (state == state_enum::triggered && activating_hid_id == dis_info.hid_id) {
-			// if we still have an intersection point, use as debug point
-			if (inter_info.ray_param != std::numeric_limits<float>::max())
-				focus_debug_points[dis_info.hid_id] = inter_info.hit_point_global;
 			ii_during_focus[dis_info.hid_id].query_point = inter_info.hit_point;
 			ii_during_focus[dis_info.hid_id].hid_position = inter_info.hid_position;
+			// TODO: DEBUG
+			//std::cout << "triggered:" << inter_info.hid_position << std::endl;
 			ii_during_focus[dis_info.hid_id].hid_direction = inter_info.hid_direction;
-			ii_during_focus[dis_info.hid_id].query_point_global = inter_info.hit_point_global;
-			ii_during_focus[dis_info.hid_id].hid_position_global = inter_info.hid_position_global;
-			ii_during_focus[dis_info.hid_id].hid_direction_global = inter_info.hid_direction_global;
 			ii_during_focus[dis_info.hid_id].is_pointing = true;
 			on_triggered_drag();
 		}
@@ -218,38 +201,15 @@ void cgv::nui::interactable::draw(cgv::render::context& ctx)
 {
 	if (state == state_enum::idle)
 		return;
-	auto& sr = cgv::render::ref_sphere_renderer(ctx);
-	sr.set_render_style(debug_sphere_rs);
-	if (state != state_enum::idle && focus_debug_points_enabled)
-	{
-		std::vector<vec3> positions;
-		std::vector<rgb> colors;
-		for (const auto& focus_debug_point : focus_debug_points) {
-			positions.push_back(focus_debug_point.second);
-			colors.push_back(focus_debug_points_color);
-		}
-		sr.set_position_array(ctx, positions);
-		sr.set_color_array(ctx, colors);
-		sr.render(ctx, 0, positions.size());
-	}
-	if ((state == state_enum::grabbed || state == state_enum::triggered) && grab_debug_point_enabled)
-	{
-		sr.set_position(ctx, ii_at_grab.query_point);
-		sr.set_color_array(ctx, &grab_debug_point_color, 1);
-		sr.render(ctx, 0, 1);
-	}
+	
 }
 
 void cgv::nui::interactable::create_gui()
 {
-	if (begin_tree_node("interactable", focus_debug_points_enabled)) {
+	if (begin_tree_node("interactable", allow_simultaneous_focus)) {
 		align("\a");
 		add_member_control(this, "allow simultaneous focus", allow_simultaneous_focus, "check");
-		add_member_control(this, "enable focus debug points", focus_debug_points_enabled, "check");
-		add_member_control(this, "focus debug points color", focus_debug_points_color);
-		add_member_control(this, "enable grab debug point at grab", grab_debug_point_enabled, "check");
-		add_member_control(this, "grab debug point color", grab_debug_point_color);
 		align("\b");
-		end_tree_node(focus_debug_points_enabled);
+		end_tree_node(allow_simultaneous_focus);
 	}
 }
