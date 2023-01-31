@@ -12,9 +12,7 @@ namespace cgv {
 		struct intersection_info : public hit_info
 		{
 			vec3  ray_origin;
-			vec3  ray_origin_global;
 			vec3  ray_direction;
-			vec3  ray_direction_global;
 			float ray_param = std::numeric_limits<float>::max();
 		};
 
