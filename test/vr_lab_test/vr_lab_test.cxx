@@ -112,10 +112,16 @@ public:
 		stats_bgclr = rgba(0.8f, 0.6f, 0.0f, 0.6f);
 		show_plot = false;
 		construct_plot();
-		//objects.push_back(new simple_object("ruby", vec3(-0.5f, 0.2f, 0), rgb(0.6f, 0.3f, 0.1f)));
-		//append_child(objects.back());
-		objects.push_back(new simple_object("blue", vec3(0.0f, 0.0f, 0.0f), rgb(0.2f, 0.6f, 0.4f), vec3(1.0f, 1.0f, 1.0f)));
+
+		objects.push_back(new simple_object("blue", vec3(-1.0f, 0.0f, 0.0f), rgb(0.2f, 0.6f, 0.4f), vec3(1.0f, 1.0f, 1.0f)));
 		append_child(objects.back());
+		objects.push_back(new simple_object("ruby", vec3(0.0f, 0.0f, -1.0f), rgb(0.6f, 0.3f, 0.1f), vec3(1.0f, 1.0f, 1.0f)));
+		append_child(objects.back());
+		objects.push_back(new simple_object("green", vec3(2.0f, 0.0f, 0), rgb(0.2f, 0.7f, 0.2f), vec3(1.0f, 1.0f, 1.0f)));
+		append_child(objects.back());
+		//objects.push_back(new simple_object("blue", vec3(0.0f, 0.0f, 0.0f), rgb(0.2f, 0.6f, 0.4f), vec3(1.0f, 1.0f, 1.0f)));
+		//append_child(objects.back());
+
 		//container = new simple_primitive_container("spheres");
 		//append_child(container);
 	}
@@ -130,10 +136,18 @@ public:
 	bool init(cgv::render::context& ctx)
 	{
 		// Initialize the gizmos of the simple_objects. This has to happen outside of the constructors so that the hierarchy can be traversed.
-		vr::vr_scene* scene_ptr = get_scene_ptr();
-		for (auto object : objects) {
-			//object->initialize_gizmos(scene_ptr);
-		}
+		//for (auto object : objects) {
+		//	
+		//}
+
+		// Tests
+		//objects[0]->initialize_gizmos(this->get_parent(), objects[1]); // Funktioniert, aber springt beim Anfassen
+		//objects[1]->initialize_gizmos(this->get_parent(), objects[0]);
+		//objects[0]->initialize_gizmos(this->get_parent(), objects[0]); // Funktioniert.
+		//objects[0]->initialize_gizmos(objects[0], objects[0]); // Keine Interaktion möglich.
+		//objects[0]->initialize_gizmos(objects[1], objects[0]); // Keine Interaktion möglich. Root-Rotation nicht rein.
+		objects[0]->initialize_gizmos(this, objects[0]); // Keine Interaktion möglich.
+		
 
 		cgv::render::ref_sphere_renderer(ctx, 1);
 		cgv::render::ref_cone_renderer(ctx, 1);

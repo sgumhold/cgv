@@ -36,8 +36,8 @@ void cgv::nui::rotation_gizmo::compute_geometry(const vec3& scale)
 	// Scale precomputed rings and move them to the correct axis positions
 	for (int i = 0; i < axes_directions.size(); ++i) {
 		for (unsigned j = 0; j <= ring_nr_spline_segments; ++j) {
-			ring_splines[i].first[j] = precomputed_ring_splines[i].first[j] * max_value(scale)
-				+ (scale_dependent_axes_positions[i] * scale + scale_independent_axes_positions[i]);
+			vec3 axis_position = scale_dependent_axes_positions[i] * scale + scale_independent_axes_positions[i];
+			ring_splines[i].first[j] = precomputed_ring_splines[i].first[j] * max_value(scale) + axis_position;
 			ring_splines[i].second[j] = precomputed_ring_splines[i].second[j] * max_value(scale);
 		}
 	}
@@ -151,8 +151,7 @@ void cgv::nui::rotation_gizmo::on_handle_drag()
 	vec3 direction_at_grab = cross(cross(axis, ii_at_grab.query_point - axis_origin), axis);
 	vec3 direction_currently = cross(cross(axis, closest_point - axis_origin), axis);
 
-	if (get_functionality_absolute_axes_rotation() &&
-		_functionality_absolute_axes_rotation->get_use_absolute_rotation()) {
+	if (use_root_rotation) {
 		direction_at_grab = anchor_obj_parent_global_rotation.apply(direction_at_grab);
 		direction_currently = anchor_obj_parent_global_rotation.apply(direction_currently);
 		axis = anchor_obj_parent_global_rotation.apply(axis);
@@ -197,7 +196,7 @@ void cgv::nui::rotation_gizmo::configure_axes_geometry(float ring_radius, float 
 }
 
 bool cgv::nui::rotation_gizmo::_compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx,
-	const vec3& scale, const mat4& view_matrix)
+                                                      const vec3& scale, const mat4& view_matrix)
 {
 	compute_geometry(scale);
 
@@ -246,7 +245,7 @@ bool cgv::nui::rotation_gizmo::_compute_closest_point(const vec3& point, vec3& p
 }
 
 bool cgv::nui::rotation_gizmo::_compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal,
-	size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
+                                                     size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
 {
 	compute_geometry(scale);
 

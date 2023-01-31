@@ -15,8 +15,8 @@ namespace cgv {
 ///	Optionally takes a rotation to allow for translation in the object coordinates.
 class CGV_API translation_gizmo : public cgv::nui::gizmo,
 	public cgv::nui::gizmo_functionality_configurable_axes,
-	public cgv::nui::gizmo_functionality_handle_states,
-	public cgv::nui::gizmo_functionality_absolute_axes_rotation
+	public cgv::nui::gizmo_functionality_handle_states
+	//public cgv::nui::gizmo_functionality_absolute_axes_rotation
 {
 	// pointers to properties of the object the gizmo is attached to
 	vec3* position_ptr{ nullptr };
@@ -39,10 +39,10 @@ class CGV_API translation_gizmo : public cgv::nui::gizmo,
 	void _draw(cgv::render::context& ctx, const vec3& scale, const mat4& view_matrix) override;
 	/// Do proximity check
 	bool _compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx, const vec3& scale,
-		const mat4& view_matrix) override;
+	                            const mat4& view_matrix) override;
 	/// Do intersection check
 	bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx,
-		const vec3& scale, const mat4& view_matrix) override;
+	                           const vec3& scale, const mat4& view_matrix) override;
 
 	// DEBUG TO REMOVE
 	int debug_coord_system_handle0;

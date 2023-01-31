@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/gui/gui_creator.h>
 #include <cg_nui/interactable.h>
 #include <cg_nui/transforming.h>
 #include <cgv/math/ftransform.h>
@@ -16,30 +17,6 @@ namespace cgv {
 ///	A gizmo also has a detach function that clears the connection between object and gizmo.
 class CGV_API gizmo : public cgv::nui::interactable, public cgv::nui::transforming
 {
-protected:
-	// Used to determine whether a gizmo subclass uses the absolute axes rotation functionality.
-	gizmo_functionality_absolute_axes_rotation* _functionality_absolute_axes_rotation{ nullptr };
-	bool tried_functionality_absolute_axes_rotation_cast{ false };
-	gizmo_functionality_absolute_axes_rotation* get_functionality_absolute_axes_rotation()
-	{
-		if (!_functionality_absolute_axes_rotation && !tried_functionality_absolute_axes_rotation_cast) {
-			_functionality_absolute_axes_rotation = dynamic_cast<gizmo_functionality_absolute_axes_rotation*>(this);
-			tried_functionality_absolute_axes_rotation_cast = true;
-		}
-		return _functionality_absolute_axes_rotation;
-	}
-
-	// Used to determine whether a gizmo subclass uses the absolute axes position functionality.
-	gizmo_functionality_absolute_axes_position* _functionality_absolute_axes_position{ nullptr };
-	bool tried_functionality_absolute_axes_position_cast{ false };
-	gizmo_functionality_absolute_axes_position* get_functionality_absolute_axes_position()
-	{
-		if (!_functionality_absolute_axes_position && !tried_functionality_absolute_axes_position_cast) {
-			_functionality_absolute_axes_position = dynamic_cast<gizmo_functionality_absolute_axes_position*>(this);
-			tried_functionality_absolute_axes_position_cast = true;
-		}
-		return _functionality_absolute_axes_position;
-	}
 protected:
 	/// Fixed position offset to the anchor position (added to position of anchor or root object). Do not use directly (use through anchor_position_ptr).
 	vec3 anchor_position;
@@ -61,10 +38,13 @@ protected:
 	/// Whether this gizmo is currently attached (all configuration validated and gizmo active)
 	bool is_attached{ false };
 	/// Whether the anchor object's transform is changed by the value manipulated by this gizmo
-	bool is_anchor_influenced_by_gizmo{ false };
+	bool is_anchor_influenced_by_gizmo{ true };
 	/// Whether the root object's transform is changed by the value manipulated by this gizmo
 	bool is_root_influenced_by_gizmo{ false };
-
+public:
+	/// Whether this gizmo's orientation is based on that of the root object (as opposed to that of the anchor object).
+	bool use_root_rotation{ false };
+protected:
 	/// Reference to the object that gets notified of changing values through the on_set function
 	cgv::base::base_ptr on_set_obj{ nullptr };
 
@@ -99,19 +79,24 @@ protected:
 	/// Called once on attach.
 	virtual void precompute_geometry() = 0;
 
-	/// Internal draw function in local coordinate system with scale (and possibly rotation) removed that has access to the camera transform
+	/// Internal draw function in local coordinate system with some transform components (according to configuration) removed that has access to the camera transform.
+	///	The alternative_scale is set to unmodified anchor object scale if use_root_scale is true and to the root scale if use_root_scale is false.
 	virtual void _draw(cgv::render::context& ctx, const vec3& scale, const mat4& view_matrix) {}
 
-	/// Internal compute_closest_point function in local coordinate system with scale (and possibly rotation) removed that has access to the camera transform
+	/// Internal compute_closest_point function in local coordinate system with some transform components (according to configuration) removed that has access to the camera transform.
+	///	The alternative_scale is set to unmodified anchor object scale if use_root_scale is true and to the root scale if use_root_scale is false.
 	virtual bool _compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx, const vec3& scale,
-		const mat4& view_matrix) { return false; }
-	/// Internal compute_intersection function in local coordinate system with scale (and possibly rotation) removed that has access to the camera transform
+	                                    const mat4& view_matrix) { return false; }
+	/// Internal compute_intersection function in local coordinate system with some transform components (according to configuration) removed that has access to the camera transform.
+	/// The alternative_scale is set to unmodified anchor object scale if use_root_scale is true and to the root scale if use_root_scale is false.
 	virtual bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx,
-		const vec3& scale, const mat4& view_matrix) { return false; }
+	                                   const vec3& scale, const mat4& view_matrix) { return false; }
 
-	/// Compute transform that removes the anchor object's global scale (and possibly rotation) from the model-view matrix.
+	/// Compute transform that removes the anchor object's global transform components (according to configuration) from the model-view matrix.
+	/// The alternative_scale gets set to unmodified anchor object scale if use_root_scale is true and to the root scale if use_root_scale is false.
 	mat4 compute_draw_correction_transformation(vec3& scale);
-	/// Compute transform that removes the anchor object's global scale (and possibly rotation) from the parameters of the intersection/proximity functions.
+	/// Compute transform that removes the anchor object's global transform components (according to configuration) from the parameters of the intersection/proximity functions.
+	///	The alternative_scale gets set to unmodified anchor object scale if use_root_scale is true and to the root scale if use_root_scale is false.
 	mat4 compute_interaction_correction_transformation(vec3& scale);
 
 public:
@@ -155,6 +140,9 @@ public:
 	/// Set whether this gizmo's root object's transform will change with the value manipulated by this gizmo.
 	/// It is important to set this correctly for certain behaviours to work as expected.
 	void set_is_root_influenced_by_gizmo(bool value);
+	/// Set whether this gizmo's rotation should be based on that of the root object (as opposed to that of the anchor object).
+	///	The default value is false.
+	void set_use_root_rotation(bool value);
 protected:
 	/// Set the object to be notified of value changes. Should be called in subclasses of gizmo when setting the pointer to the manipulated value.
 	void set_on_set_object(cgv::base::base_ptr _on_set_obj);
