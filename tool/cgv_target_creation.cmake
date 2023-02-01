@@ -387,9 +387,6 @@ function(cgv_add_target NAME)
 			# special handling for the viewer, as the static build variants of the viewer app is called differently
 			if (DEPENDENCY STREQUAL "cgv_viewer")
 				target_link_libraries(${NAME_EXE} PRIVATE cgv_viewer_main)
-				if (MSVC)
-					target_link_options(${NAME_EXE} PRIVATE /WHOLEARCHIVE:cgv_viewer_main.lib)
-				endif()
 			else()
 				# for all other dependencies, we check if it is a CGV component and act appropriately
 				cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY} GET_TYPE DEPENDENCY_TYPE)
