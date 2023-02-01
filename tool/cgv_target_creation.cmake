@@ -350,15 +350,6 @@ function(cgv_add_target NAME)
 			# this branch should currently trigger only if it's a CGV plugin or app
 			add_dependencies(${NAME} ${DEPENDENCY})
 		endif()
-		# handle linker dependencies:
-		# link in all libraries, and also blanket-include them as transitive link dependencies (for now... this
-		# is not ideal and might be changed later)
-		#if (DEPENDENCY_TYPE STREQUAL "library" OR DEPENDENCY_TYPE STREQUAL "corelib")
-		#	target_link_libraries(${NAME} PUBLIC ${DEPENDENCY})
-		# handle remaining types of dependencies
-		#else()
-		#	add_dependencies(${NAME} ${DEPENDENCY})
-		#endif()
 	endforeach()
 
 	target_include_directories(${NAME} PUBLIC
@@ -389,6 +380,9 @@ function(cgv_add_target NAME)
 			"$<BUILD_INTERFACE:${CGV_DIR}>" "$<BUILD_INTERFACE:${CGV_DIR}/libs>" "$<BUILD_INTERFACE:${PPP_INCLUDES}>"
 			"$<BUILD_INTERFACE:${ST_INCLUDE}>" $<INSTALL_INTERFACE:include>
 		)
+		if (NOT MSVC)
+			target_link_options(${NAME_EXE} PRIVATE -Wl,--copy-dt-needed-entries)
+		endif()
 		foreach (DEPENDENCY ${CGVARG__DEPENDENCIES})
 			# special handling for the viewer, as the static build variants of the viewer app is called differently
 			if (DEPENDENCY STREQUAL "cgv_viewer")
@@ -404,16 +398,20 @@ function(cgv_add_target NAME)
 					target_link_libraries(${NAME_EXE} PRIVATE ${DEPENDENCY})
 				elseif (NOT DEPENDENCY_TYPE STREQUAL "app")
 					# this branch should trigger for all CGV libraries and plugins
-					target_link_libraries(${NAME_EXE} PRIVATE ${DEPENDENCY}_static)
-					cgv_query_property(NO_WHOLE_ARCH ${DEPENDENCY} CGVPROP_NO_WHOLE_ARCH)
-					if (NO_WHOLE_ARCH)
-						message("'${NAME_EXE}': not WHOLE-ARCHIVE linking '${DEPENDENCY}_static'") 
-					endif()
-					if (NOT NO_WHOLE_ARCH AND MSVC)
-						target_link_options(${NAME_EXE} PRIVATE /WHOLEARCHIVE:${DEPENDENCY}_static.lib)
-					else()
-						# do UNIX-specific whole-archive stuff
-					endif()
+					#cgv_query_property(NO_WHOLE_ARCH ${DEPENDENCY} CGVPROP_NO_WHOLE_ARCH)
+					#if (NO_WHOLE_ARCH)
+					#	message("'${NAME_EXE}': not WHOLE-ARCHIVE linking '${DEPENDENCY}_static'") 
+					#endif()
+					#if (NOT NO_WHOLE_ARCH AND MSVC)
+						target_link_libraries(${NAME_EXE} PRIVATE ${DEPENDENCY}_static)
+					#	target_link_options(${NAME_EXE} PRIVATE /WHOLEARCHIVE:${DEPENDENCY}_static.lib)
+					#else()
+					#	target_link_libraries(${NAME_EXE} PRIVATE
+					#		-Wl,--whole-archive
+					#		${DEPENDENCY}_static
+					#		-Wl,--no-whole-archive
+					#	)
+					#endif()
 				else()
 					# this branch should currently trigger only if it's a CGV app
 					# ...nothing to do here!
@@ -421,12 +419,15 @@ function(cgv_add_target NAME)
 			endif()
 		endforeach()
 	endif()
-	add_library(${NAME_STATIC} STATIC ${ALL_SOURCES})
+	add_library(${NAME_STATIC} OBJECT ${ALL_SOURCES})
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_TYPE "${CGVARG__TYPE}")
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_SHADERPATH "${SHADER_PATH}")
 	
 	target_compile_definitions(${NAME_STATIC} PRIVATE "${FORCE_STATIC_DEFINE}" "REGISTER_SHADER_FILES")
 	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC")
+	if (NOT MSVC)
+		target_link_options(${NAME_STATIC} PUBLIC -Wl,--copy-dt-needed-entries)
+	endif()
 	foreach (DEPENDENCY ${CGVARG__DEPENDENCIES})
 		# for all other dependencies, we check if it is a CGV component and act appropriately
 		cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY} GET_TYPE DEPENDENCY_TYPE)
@@ -435,16 +436,20 @@ function(cgv_add_target NAME)
 			target_link_libraries(${NAME_STATIC} PUBLIC ${DEPENDENCY})
 		elseif (NOT DEPENDENCY_TYPE STREQUAL "app")
 			# this branch should trigger for all CGV libraries and plugins
-			target_link_libraries(${NAME_STATIC} PUBLIC ${DEPENDENCY}_static)
-			cgv_query_property(NO_WHOLE_ARCH ${DEPENDENCY} CGVPROP_NO_WHOLE_ARCH)
-			if (NO_WHOLE_ARCH)
-				message("'${NAME_STATIC}': not WHOLE-ARCHIVE linking '${DEPENDENCY}_static'") 
-			endif()
-			if (NOT NO_WHOLE_ARCH AND MSVC)
-				target_link_options(${NAME_STATIC} PUBLIC /WHOLEARCHIVE:${DEPENDENCY}_static.lib)
-			else()
-				# do UNIX-specific whole-archive stuff
-			endif()
+			#cgv_query_property(NO_WHOLE_ARCH ${DEPENDENCY} CGVPROP_NO_WHOLE_ARCH)
+			#if (NO_WHOLE_ARCH)
+			#	message("'${NAME_STATIC}': not WHOLE-ARCHIVE linking '${DEPENDENCY}_static'") 
+			#endif()
+			#if (NOT NO_WHOLE_ARCH AND MSVC)
+				target_link_libraries(${NAME_STATIC} PUBLIC ${DEPENDENCY}_static)
+			#	target_link_options(${NAME_STATIC} PUBLIC /WHOLEARCHIVE:${DEPENDENCY}_static.lib)
+			#else()
+			#	target_link_libraries(${NAME_STATIC} PUBLIC
+			#		-Wl,--whole-archive
+			#		${DEPENDENCY}_static
+			#		-Wl,--no-whole-archive
+			#	)
+			#endif()
 		else()
 			# this branch should currently trigger only if it's a CGV app
 			# ...nothing to do here!
