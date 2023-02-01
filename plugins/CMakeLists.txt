@@ -33,15 +33,13 @@ set_target_properties(vr_lab PROPERTIES CGVPROP_TYPE "plugin")
 add_subdirectory(vr_test)
 set_target_properties(vr_test PROPERTIES CGVPROP_TYPE "plugin")
 
-add_subdirectory(examples)
-
 if (WIN32)
     # FIXME these plugins can only be compiled under Windows for now
     add_subdirectory(cmv_avi)
-    set_target_properties(cmv_avi PROPERTIES CGVPROP_TYPE "plugin")
     add_subdirectory(co_web)
-    set_target_properties(co_web PROPERTIES CGVPROP_TYPE "plugin")
 endif ()
+
+add_subdirectory(examples)
 
 install(EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
 install(DIRECTORY . DESTINATION ${CGV_PLUGINS_INCLUDE_DEST} FILES_MATCHING PATTERN "*.h")

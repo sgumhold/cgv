@@ -1,19 +1,9 @@
 
-
 # helper function for lists: formats a string representing the list contents that will say "<none>" if empty
 function(cgv_format_list OUTPUT_VAR LIST_VAR)
 	set(${OUTPUT_VAR} "<none>" PARENT_SCOPE)
 	if (LIST_VAR)
 		set(${OUTPUT_VAR} "${LIST_VAR}" PARENT_SCOPE)
-	endif()
-endfunction()
-
-# helper function for properties: formats a string representing the property value that will say "<none>" if the property is empty
-function(cgv_format_property_value OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
-	get_target_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
-	set(${OUTPUT_VAR} "<none>" PARENT_SCOPE)
-	if (PROPVAL)
-		set(${OUTPUT_VAR} "${PROPVAL}" PARENT_SCOPE)
 	endif()
 endfunction()
 
@@ -26,6 +16,13 @@ function(cgv_query_property OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
 	else()
 		set(${OUTPUT_VAR} FALSE PARENT_SCOPE)
 	endif()
+endfunction()
+
+# helper function for properties: formats a string representing the property value that will say "<none>" if the property is empty
+function(cgv_format_property_value OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
+	cgv_query_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
+	cgv_format_list(PROPVAL_FORMATTED "${PROPVAL}")
+	set(${OUTPUT_VAR} "${PROPVAL_FORMATTED}" PARENT_SCOPE)
 endfunction()
 
 # gathers all direct dependencies of a target from all related properties
@@ -140,13 +137,13 @@ endfunction()
 function(cgv_do_deferred_ops TARGET_NAME)
 	# output notification of deferred operation
 	get_target_property(TARGET_TYPE ${TARGET_NAME} CGVPROP_TYPE)
-	message("Performing deferred operations for ${TARGET_TYPE} '${TARGET_NAME}'")
+	message(STATUS "Performing deferred operations for ${TARGET_TYPE} '${TARGET_NAME}'")
 
 	# compile command line for launching plugins
 	if (TARGET_TYPE MATCHES "plugin$")
 		# (1) gather all dependencies and compile shaderpath
 		cgv_gather_dependencies(DEPENDENCIES ${TARGET_NAME} RECURSION_CONVERGENCE_HELPER)
-		message("- DEPENDENCIES: ${DEPENDENCIES}")
+		#message("- DEPENDENCIES: ${DEPENDENCIES}")
 		set(SHADER_PATHS "")
 		foreach(DEPENDENCY ${DEPENDENCIES})
 			#message("- extracting from '${DEPENDENCY}'")
@@ -196,7 +193,7 @@ function(cgv_do_deferred_ops TARGET_NAME)
 			endforeach()
 		endif()
 		# --- done!
-		message("- command line: ${CMD_LINE_ARGS}")
+		#message("- command line: ${CMD_LINE_ARGS}")
 	endif()
 
 	# create a launch script in case of Make- and Ninja-based generators
@@ -222,7 +219,7 @@ endfunction()
 function(cgv_add_target NAME)
 	cmake_parse_arguments(
 		PARSE_ARGV 1 CGVARG_
-		"NO_EXECUTABLE" "SHARED_EXPORT_DEFINE;TYPE"
+		"NO_EXECUTABLE" "TYPE;OVERRIDE_SHARED_EXPORT_DEFINE;OVERRIDE_FORCE_STATIC_DEFINE"
 		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;DEPENDENCIES;ADDITIONAL_CMDLINE_ARGS"
 	)
 
@@ -277,11 +274,17 @@ function(cgv_add_target NAME)
 		list(REMOVE_DUPLICATES SHADER_PATH)
 
 		# perform shader test
-		shader_test("${CGV_DIR}"
+		# TODO: Currently relies on the hardcoded default shaderpath of the framework. Move to deferred ops
+		#       so the exact shaderpath calculated from the transitive dependencies can be used
+		shader_test(${NAME} "${CGV_DIR}"
 				ST_FILES
-				ST_INCLUDES
+				ST_INCLUDE
 				ST_INSTALL_DIR
 				${CGVARG__SHADER_SOURCES})
+		#message("from SHADER_SOURCES: ${CGVARG__SHADER_SOURCES}")
+		#message("ST_FILES: ${ST_FILES}")
+		#message("ST_INCLUDE: ${ST_INCLUDE}")
+		#message("ST_INSTALL_DIR: ${ST_INSTALL_DIR}")
 
 		install(DIRECTORY ${ST_INSTALL_DIR} DESTINATION ${HEADER_INSTALL_DIR} FILES_MATCHING PATTERN "*.h")
 	endif ()
@@ -318,7 +321,7 @@ function(cgv_add_target NAME)
 		# depends on are loaded at runtime. Static libraries however do not have a shared version, so the target
 		# with non-static name IS STILL A STATIC LIBRARY - it just provides the necessary information for shared
 		# builds to be able to (statically) link to them.
-		add_library(${NAME} ${ALL_SOURCES})
+		add_library(${NAME} STATIC ${ALL_SOURCES})
 	else()
 		add_library(${NAME} SHARED ${ALL_SOURCES})
 	endif()
@@ -327,23 +330,35 @@ function(cgv_add_target NAME)
 	set_target_properties(${NAME} PROPERTIES CGVPROP_SHADERPATH "${SHADER_PATH}")
 	set_target_properties(${NAME} PROPERTIES DEFINE_SYMBOL "") # <-- disable CMake's automatic definition of "_EXPORTS" defines for shared libraries
 	# set the _EXPORTS define to the given custom name if any, othewise use the default convention
-	if (CGVARG__SHARED_EXPORT_DEFINE)
-		target_compile_definitions(${NAME} PRIVATE "${CGVARG__SHARED_EXPORT_DEFINE}")
+	if (CGVARG__OVERRIDE_SHARED_EXPORT_DEFINE)
+		target_compile_definitions(${NAME} PRIVATE "${CGVARG__OVERRIDE_SHARED_EXPORT_DEFINE}")
 	else()
 		target_compile_definitions(${NAME} PRIVATE "${NAME_UPPER}_EXPORTS")
 	endif()
 	foreach (DEPENDENCY ${CGVARG__DEPENDENCIES})
 		# find out dependency type
-		get_target_property(DEPENDENCY_TYPE ${DEPENDENCY} CGVPROP_TYPE)
+		cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY} GET_TYPE DEPENDENCY_TYPE)
+		#if (IS_CGV_TARGET)
+		#	message("DEP '${DEPENDENCY}' is a CGV-TARGET of type '${DEPENDENCY_TYPE}'")
+		#else()
+		#	message("DEP '${DEPENDENCY}' is NOT A CGV-TARGET")
+		#endif()
+		if (NOT IS_CGV_TARGET OR DEPENDENCY_TYPE STREQUAL "library" OR DEPENDENCY_TYPE STREQUAL "corelib")
+			# this branch should trigger whenever it's some generic, non-CGV dependency or if it's a CGV library
+			target_link_libraries(${NAME} PUBLIC ${DEPENDENCY})
+		else()
+			# this branch should currently trigger only if it's a CGV plugin or app
+			add_dependencies(${NAME} ${DEPENDENCY})
+		endif()
 		# handle linker dependencies:
 		# link in all libraries, and also blanket-include them as transitive link dependencies (for now... this
 		# is not ideal and might be changed later)
-		if (DEPENDENCY_TYPE STREQUAL "library" OR DEPENDENCY_TYPE STREQUAL "corelib")
-			target_link_libraries(${NAME} PUBLIC ${DEPENDENCY})
+		#if (DEPENDENCY_TYPE STREQUAL "library" OR DEPENDENCY_TYPE STREQUAL "corelib")
+		#	target_link_libraries(${NAME} PUBLIC ${DEPENDENCY})
 		# handle remaining types of dependencies
-		else()
-			add_dependencies(${NAME} ${DEPENDENCY})
-		endif()
+		#else()
+		#	add_dependencies(${NAME} ${DEPENDENCY})
+		#endif()
 	endforeach()
 
 	target_include_directories(${NAME} PUBLIC
@@ -361,21 +376,20 @@ function(cgv_add_target NAME)
 	install(TARGETS ${NAME} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 
 	# for single executable builds
+	set(FORCE_STATIC_DEFINE "${NAME_UPPER}_FORCE_STATIC")
+	if (CGVARG__OVERRIDE_FORCE_STATIC_DEFINE)
+		set(FORCE_STATIC_DEFINE "${CGVARG__OVERRIDE_FORCE_STATIC_DEFINE}")
+	endif()
 	if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
 		add_executable(${NAME_EXE} ${ALL_SOURCES})
 		set_target_properties(${NAME_EXE} PROPERTIES OUTPUT_NAME "${NAME}")
-		target_compile_definitions(${NAME_EXE} PRIVATE "CGV_FORCE_STATIC" "REGISTER_SHADER_FILES")
+		target_compile_definitions(${NAME_EXE} PRIVATE "${FORCE_STATIC_DEFINE}" "CGV_FORCE_STATIC" "REGISTER_SHADER_FILES")
 		target_include_directories(
 			${NAME_EXE} PUBLIC
 			"$<BUILD_INTERFACE:${CGV_DIR}>" "$<BUILD_INTERFACE:${CGV_DIR}/libs>" "$<BUILD_INTERFACE:${PPP_INCLUDES}>"
-			"$<BUILD_INTERFACE:${ST_INCLUDES}>" $<INSTALL_INTERFACE:include>
+			"$<BUILD_INTERFACE:${ST_INCLUDE}>" $<INSTALL_INTERFACE:include>
 		)
 		foreach (DEPENDENCY ${CGVARG__DEPENDENCIES})
-			# exclude the system-level dynamic loader
-			# TODO: Why??? Invenstigate...
-			if (${DEPENDENCY} STREQUAL "${CMAKE_DL_LIBS}")
-				continue()
-			endif()
 			# special handling for the viewer, as the static build variants of the viewer app is called differently
 			if (DEPENDENCY STREQUAL "cgv_viewer")
 				target_link_libraries(${NAME_EXE} PRIVATE cgv_viewer_main)
@@ -383,9 +397,26 @@ function(cgv_add_target NAME)
 					target_link_options(${NAME_EXE} PRIVATE /WHOLEARCHIVE:cgv_viewer_main.lib)
 				endif()
 			else()
-				target_link_libraries(${NAME_EXE} PRIVATE ${DEPENDENCY}_static)
-				if (MSVC)
-					target_link_options(${NAME_EXE} PRIVATE /WHOLEARCHIVE:${DEPENDENCY}_static.lib)
+				# for all other dependencies, we check if it is a CGV component and act appropriately
+				cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY} GET_TYPE DEPENDENCY_TYPE)
+				if (NOT IS_CGV_TARGET)
+					# this branch should trigger for all non-CGV link dependencies
+					target_link_libraries(${NAME_EXE} PRIVATE ${DEPENDENCY})
+				elseif (NOT DEPENDENCY_TYPE STREQUAL "app")
+					# this branch should trigger for all CGV libraries and plugins
+					target_link_libraries(${NAME_EXE} PRIVATE ${DEPENDENCY}_static)
+					cgv_query_property(NO_WHOLE_ARCH ${DEPENDENCY} CGVPROP_NO_WHOLE_ARCH)
+					if (NO_WHOLE_ARCH)
+						message("'${NAME_EXE}': not WHOLE-ARCHIVE linking '${DEPENDENCY}_static'") 
+					endif()
+					if (NOT NO_WHOLE_ARCH AND MSVC)
+						target_link_options(${NAME_EXE} PRIVATE /WHOLEARCHIVE:${DEPENDENCY}_static.lib)
+					else()
+						# do UNIX-specific whole-archive stuff
+					endif()
+				else()
+					# this branch should currently trigger only if it's a CGV app
+					# ...nothing to do here!
 				endif()
 			endif()
 		endforeach()
@@ -393,18 +424,37 @@ function(cgv_add_target NAME)
 	add_library(${NAME_STATIC} STATIC ${ALL_SOURCES})
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_TYPE "${CGVARG__TYPE}")
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_SHADERPATH "${SHADER_PATH}")
+	
+	target_compile_definitions(${NAME_STATIC} PRIVATE "${FORCE_STATIC_DEFINE}" "REGISTER_SHADER_FILES")
 	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC")
 	foreach (DEPENDENCY ${CGVARG__DEPENDENCIES})
-		if (${DEPENDENCY} STREQUAL "${CMAKE_DL_LIBS}")
-			continue()
+		# for all other dependencies, we check if it is a CGV component and act appropriately
+		cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY} GET_TYPE DEPENDENCY_TYPE)
+		if (NOT IS_CGV_TARGET)
+			# this branch should trigger for all non-CGV link dependencies
+			target_link_libraries(${NAME_STATIC} PUBLIC ${DEPENDENCY})
+		elseif (NOT DEPENDENCY_TYPE STREQUAL "app")
+			# this branch should trigger for all CGV libraries and plugins
+			target_link_libraries(${NAME_STATIC} PUBLIC ${DEPENDENCY}_static)
+			cgv_query_property(NO_WHOLE_ARCH ${DEPENDENCY} CGVPROP_NO_WHOLE_ARCH)
+			if (NO_WHOLE_ARCH)
+				message("'${NAME_STATIC}': not WHOLE-ARCHIVE linking '${DEPENDENCY}_static'") 
+			endif()
+			if (NOT NO_WHOLE_ARCH AND MSVC)
+				target_link_options(${NAME_STATIC} PUBLIC /WHOLEARCHIVE:${DEPENDENCY}_static.lib)
+			else()
+				# do UNIX-specific whole-archive stuff
+			endif()
+		else()
+			# this branch should currently trigger only if it's a CGV app
+			# ...nothing to do here!
 		endif()
-		target_link_libraries(${NAME_STATIC} PUBLIC ${DEPENDENCY}_static)
 	endforeach()
 
 	target_include_directories(${NAME_STATIC} PUBLIC
 		$<BUILD_INTERFACE:${CGV_DIR}>
 		"$<BUILD_INTERFACE:${PPP_INCLUDES}>"
-		"$<BUILD_INTERFACE:${ST_INCLUDES}>"
+		"$<BUILD_INTERFACE:${ST_INCLUDE}>"
 		$<INSTALL_INTERFACE:include>)
 	if (NOT IS_CORELIB)
 		target_include_directories(${NAME_STATIC} PUBLIC $<BUILD_INTERFACE:${CGV_DIR}/libs>)
@@ -414,23 +464,23 @@ function(cgv_add_target NAME)
 	endif()
 
 	# /BEGIN DEBUG OUTPUT
-	get_target_property(PROPVAL_TYPE ${NAME} CGVPROP_TYPE)
-	message(STATUS "CGV TARGET: ${NAME} (${PROPVAL_TYPE})")
-	cgv_format_property_value(PROPVAL_SP ${NAME} CGVPROP_SHADERPATH)
-	message(STATUS " [ shaderpath ]  ${PROPVAL_SP}")
-	if (IS_PLUGIN)
-		cgv_list_dependencies(DEPENDENCIES ${NAME})
-		cgv_filter_for_plugins(REQUESTED_PLUGINS GUI_PROVIDER_PLUGIN "${DEPENDENCIES}")
-		if (GUI_PROVIDER_PLUGIN)
-			list(PREPEND REQUESTED_PLUGINS "${GUI_PROVIDER_PLUGIN}")
-		endif()
-		cgv_format_list(REQUESTED_PLUGINS "${REQUESTED_PLUGINS}")
-		message(STATUS " [req. plugins]  ${REQUESTED_PLUGINS}")
-	endif()
-	cgv_format_property_value(PROPVAL_LDEPS ${NAME} LINK_LIBRARIES)
-	message(STATUS " [ linked libs]  ${PROPVAL_LDEPS}")
-	cgv_format_property_value(PROPVAL_CDEFS ${NAME} COMPILE_DEFINITIONS)
-	message(STATUS " [compile defs]  ${PROPVAL_CDEFS}")
+	#get_target_property(PROPVAL_TYPE ${NAME} CGVPROP_TYPE)
+	#message(STATUS "CGV TARGET: ${NAME} (${PROPVAL_TYPE})")
+	#cgv_format_property_value(PROPVAL_SP ${NAME} CGVPROP_SHADERPATH)
+	#message(STATUS " [ shaderpath ]  ${PROPVAL_SP}")
+	#if (IS_PLUGIN)
+	#	cgv_list_dependencies(DEPENDENCIES ${NAME})
+	#	cgv_filter_for_plugins(REQUESTED_PLUGINS GUI_PROVIDER_PLUGIN "${DEPENDENCIES}")
+	#	if (GUI_PROVIDER_PLUGIN)
+	#		list(PREPEND REQUESTED_PLUGINS "${GUI_PROVIDER_PLUGIN}")
+	#	endif()
+	#	cgv_format_list(REQUESTED_PLUGINS "${REQUESTED_PLUGINS}")
+	#	message(STATUS " [req. plugins]  ${REQUESTED_PLUGINS}")
+	#endif()
+	#cgv_format_property_value(PROPVAL_LDEPS ${NAME} LINK_LIBRARIES)
+	#message(STATUS " [ linked libs]  ${PROPVAL_LDEPS}")
+	#cgv_format_property_value(PROPVAL_CDEFS ${NAME} COMPILE_DEFINITIONS)
+	#message(STATUS " [compile defs]  ${PROPVAL_CDEFS}")
 	# /END DEBUG OUTPUT
 
 	# schedule deferred ops for plugins
@@ -443,6 +493,7 @@ function(cgv_add_target NAME)
 		install(TARGETS ${NAME_EXE} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 	endif()
 endfunction()
+
 
 
 # DEPRECATED - kept for backwards compatibility. To-be-removed!
@@ -480,7 +531,7 @@ function(cgv_create_lib NAME)
 			list(APPEND LIB_SHADER_PATH ${SHADER_SOURCE_PARENT_PATH})
 		endforeach()
 		list(REMOVE_DUPLICATES LIB_SHADER_PATH)
-		shader_test("${CGV_DIR}"
+		shader_test(${NAME} "${CGV_DIR}"
 				ST_FILES
 				ST_INCLUDES
 				ST_INSTALL_DIR

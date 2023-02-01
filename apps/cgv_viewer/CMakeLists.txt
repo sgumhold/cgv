@@ -7,6 +7,7 @@ target_link_libraries(cgv_viewer PRIVATE
         cgv_base
         cgv_gui
         cgv_render)
+set_target_properties(cgv_viewer PROPERTIES CGVPROP_TYPE "app")
 install(TARGETS cgv_viewer EXPORT cgv_viewer DESTINATION ${CGV_BIN_DEST})
 
 add_library(cgv_viewer_main STATIC main.cxx ${IMG_SOURCES})
