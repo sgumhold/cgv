@@ -119,6 +119,11 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 	std::string content = shader_code::read_code_file(in_fn);
 	if (content.empty())
 		return false;
+	/* make sure we never have DOS line endings to deal with */ {
+		unsigned num_repl = replace(content, "\r\n", "\n");
+		while (num_repl > 0)
+			num_repl = replace(content, "\r\n", "\n");
+	}
 	if (to_upper(get_extension(in_fn)[0]) == 'P')
 		write(drop_extension(out_fn)+"."+get_extension(in_fn).substr(1), content.c_str(), content.length(), true);
 	// try to open output file
