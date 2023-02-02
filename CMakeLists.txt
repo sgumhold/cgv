@@ -66,7 +66,7 @@ endif ()
 
 # setup custom properties
 define_property(TARGET PROPERTY CGVPROP_TYPE BRIEF_DOCS "Indicates the type of component the target represents (e.g. corelib, plugin etc.).")
-define_property(TARGET PROPERTY CGVPROP_NO_WHOLE_ARCH BRIEF_DOCS "Indicates whether single-exec builds need to link in this target as a whole-archive.") # <-- FIXME: UGLY WORKAROUND HACK. CONVERT TO CMAKE OBJECT LIBRARIES TO MAKE THIS UNECESSARY
+define_property(TARGET PROPERTY CGVPROP_NO_EXECUTABLE BRIEF_DOCS "For plugins, indicates that no single executable version should be generated.")
 define_property(TARGET PROPERTY CGVPROP_SHADERPATH BRIEF_DOCS "The list of absolute paths where shaders used by the component are located.")
 define_property(TARGET PROPERTY CGVPROP_ADDITIONAL_CMDLINE_ARGS BRIEF_DOCS "A list of additional command line arguments for launching the plugin (ignored for non-plugin targets).")
 

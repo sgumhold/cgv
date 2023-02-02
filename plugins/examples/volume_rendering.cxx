@@ -638,4 +638,3 @@ void volume_viewer::create_histogram() {
 #include <cgv/base/register.h>
 
 cgv::base::factory_registration<volume_viewer> volume_viewer_fac("New/Render/Volume Rendering");
-
