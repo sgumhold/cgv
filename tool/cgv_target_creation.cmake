@@ -298,11 +298,7 @@ function(cgv_add_target NAME)
 		# perform shader test
 		# TODO: Currently relies on the hardcoded default shaderpath of the framework. Move to deferred ops
 		#       so the exact shaderpath calculated from the transitive dependencies can be used
-		shader_test(${NAME} "${CGV_DIR}"
-				ST_FILES
-				ST_INCLUDE
-				ST_INSTALL_DIR
-				${CGVARG__SHADER_SOURCES})
+		shader_test(${NAME}  ST_FILES ST_INCLUDE ST_INSTALL_DIR ${CGVARG__SHADER_SOURCES})
 
 		install(DIRECTORY ${ST_INSTALL_DIR} DESTINATION ${HEADER_INSTALL_DIR} FILES_MATCHING PATTERN "*.h")
 	endif ()
@@ -481,7 +477,7 @@ function(cgv_create_lib NAME)
 			list(APPEND LIB_SHADER_PATH ${SHADER_SOURCE_PARENT_PATH})
 		endforeach()
 		list(REMOVE_DUPLICATES LIB_SHADER_PATH)
-		shader_test(${NAME} "${CGV_DIR}"
+		shader_test(${NAME}
 				ST_FILES
 				ST_INCLUDES
 				ST_INSTALL_DIR
