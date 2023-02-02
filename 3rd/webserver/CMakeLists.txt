@@ -9,11 +9,11 @@ cgv_add_target(webserver
 	TYPE library
 	SOURCES ${SOURCES}
 	HEADERS ${HEADERS}
-	DEPENDENCIES msimg32 cgv_os
+	DEPENDENCIES ws2_32 msimg32 cgv_os
 	OVERRIDE_SHARED_EXPORT_DEFINE WEBSERVER_EXPORT
 )
 
-# TODO: investigate why this is necessary and how to best handle it automatically within the CGV CMake infrastructure
+# TODO: investigate what this does, if it is necessary and if yes, how to best handle it automatically within the CGV CMake infrastructure
 target_include_directories(webserver PUBLIC $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/webserver>)
 
 #install(TARGETS webserver EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
