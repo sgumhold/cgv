@@ -173,7 +173,8 @@ function(cgv_do_deferred_ops TARGET_NAME)
 				if (DEPENDENCY STREQUAL "cgv_viewer")
 					target_link_libraries(${NAME_EXE} PRIVATE cgv_viewer_main)
 				# what follows is a list of external alias targets that randomly ended up with CGV-specific metadata, probably due to CMake bug
-				elseif(DEPENDENCY STREQUAL "OpenAL::OpenAL" OR DEPENDENCY STREQUAL "SndFile::sndfile"  OR DEPENDENCY STREQUAL "common")
+				elseif(   DEPENDENCY STREQUAL "OpenAL::OpenAL" OR DEPENDENCY STREQUAL "SndFile::sndfile"  OR DEPENDENCY STREQUAL "common"
+				       OR DEPENDENCY STREQUAL "glm")
 					message("- applying CMake bug workaround when linking to ${DEPENDENCY}")
 					target_link_libraries(${NAME_EXE} PRIVATE ${DEPENDENCY})
 				else()
