@@ -32,7 +32,7 @@ function(shader_test TARGET_NAME outfiles_var outinclude_var outinstall_var)
 
 	# generate the ..._shader_inc.h file
 	configure_file(
-		"${CGV_DIR}/make/cmake/shader_inc.h.in" "${ST_INCLUDE_DIR}/${TARGET_NAME}_shader_inc.h" @ONLY
+		"${CMAKE_SOURCE_DIR}/make/cmake/shader_inc.h.in" "${ST_INCLUDE_DIR}/${TARGET_NAME}_shader_inc.h" @ONLY
 	)
 
 	# propagate results upwards
