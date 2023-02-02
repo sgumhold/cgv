@@ -383,21 +383,12 @@ function(cgv_add_target NAME)
 	if (CGVARG__OVERRIDE_FORCE_STATIC_DEFINE)
 		set(FORCE_STATIC_DEFINE "${CGVARG__OVERRIDE_FORCE_STATIC_DEFINE}")
 	endif()
-	if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
-		add_executable(${NAME_EXE} ${ALL_SOURCES})
-		set_target_properties(${NAME_EXE} PROPERTIES OUTPUT_NAME "${NAME}")
-		target_compile_definitions(${NAME_EXE} PRIVATE "${FORCE_STATIC_DEFINE}" "CGV_FORCE_STATIC" "REGISTER_SHADER_FILES")
-		target_include_directories(
-			${NAME_EXE} PUBLIC
-			"$<BUILD_INTERFACE:${CGV_DIR}>" "$<BUILD_INTERFACE:${CGV_DIR}/libs>" "$<BUILD_INTERFACE:${PPP_INCLUDES}>"
-			"$<BUILD_INTERFACE:${ST_INCLUDE}>" $<INSTALL_INTERFACE:include>
-		)
-	endif()
+	set(PRIVATE_STATIC_TARGET_DEFINES "${FORCE_STATIC_DEFINE}" "REGISTER_SHADER_FILES")
 	add_library(${NAME_STATIC} OBJECT ${ALL_SOURCES})
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_TYPE "${CGVARG__TYPE}")
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_SHADERPATH "${SHADER_PATH}")
 	
-	target_compile_definitions(${NAME_STATIC} PRIVATE "${FORCE_STATIC_DEFINE}" "REGISTER_SHADER_FILES")
+	target_compile_definitions(${NAME_STATIC} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
 	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC")
 	if (NOT MSVC)
 		target_link_options(${NAME_STATIC} PUBLIC -Wl,--copy-dt-needed-entries)
@@ -425,6 +416,20 @@ function(cgv_add_target NAME)
 	if (NOT IS_CORELIB)
 		target_include_directories(${NAME_STATIC} PUBLIC $<BUILD_INTERFACE:${CGV_DIR}/libs>)
 	endif ()
+
+	# add single executable version if not disabled for this target
+	if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
+		add_executable(${NAME_EXE})
+		set_target_properties(${NAME_EXE} PROPERTIES OUTPUT_NAME "${NAME}")
+		target_compile_definitions(${NAME_EXE} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES} "CGV_FORCE_STATIC")
+		target_include_directories(
+			${NAME_EXE} PUBLIC
+			"$<BUILD_INTERFACE:${CGV_DIR}>" "$<BUILD_INTERFACE:${CGV_DIR}/libs>" "$<BUILD_INTERFACE:${PPP_INCLUDES}>"
+			"$<BUILD_INTERFACE:${ST_INCLUDE}>" $<INSTALL_INTERFACE:include>
+		)
+		target_link_libraries(${NAME_EXE} PRIVATE ${NAME_STATIC})
+	endif()
+
 	if (IS_PLUGIN)
 		set_target_properties(${NAME} PROPERTIES CGVPROP_ADDITIONAL_CMDLINE_ARGS "${CGVARG__ADDITIONAL_CMDLINE_ARGS}")
 	endif()
