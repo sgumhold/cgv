@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED 17)
 # setup relevant directories
 # - "the" CGV directory
 set(CGV_DIR ${PROJECT_SOURCE_DIR})
+set(CGV_DIR ${PROJECT_SOURCE_DIR} PARENT_SCOPE) # <-- make sure projects including the CGV Framework also see this
 # - install-related directories
 set(CGV_BIN_DEST bin)
 set(CGV_INCLUDE_DEST include/cgv)
