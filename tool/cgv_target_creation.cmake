@@ -218,8 +218,8 @@ function(cgv_do_deferred_ops TARGET_NAME)
 		endif()
 	endif()
 
-	# create a launch script in case of Make- and Ninja-based generators
-	if (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja")
+	# create a launch script in case of Make- and Ninja-based generators when the plugin is executable
+	if (NOT NO_EXECUTABLE AND (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
 		configure_file(
 			"${CGV_DIR}/make/cmake/run_plugin.sh.in" "${CMAKE_BINARY_DIR}/run_${TARGET_NAME}.sh"
 			FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
