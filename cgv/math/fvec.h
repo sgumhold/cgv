@@ -1,6 +1,10 @@
 #pragma once
 
-#define _USE_MATH_DEFINES
+// Make sure this is the first thing the compiler sees, while preventing warnings if
+// it happened to already be defined by something else including this header
+#ifndef _USE_MATH_DEFINES
+	#define _USE_MATH_DEFINES 1
+#endif
 #include <array>
 #include <limits>
 #include <algorithm>
