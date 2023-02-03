@@ -10,7 +10,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED 17)
 # setup relevant directories
 # - "the" CGV directory
 set(CGV_DIR ${PROJECT_SOURCE_DIR})
-set(CGV_DIR ${PROJECT_SOURCE_DIR} PARENT_SCOPE) # <-- make sure projects including the CGV Framework also see this
 # - install-related directories
 set(CGV_BIN_DEST bin)
 set(CGV_INCLUDE_DEST include/cgv)
@@ -44,25 +43,27 @@ cgv_define_option(
 # - handle advanced initialization of CGV options declared above
 cgv_init_cgvoptions()
 # - CMake-only CGV-related options
-option(CGV_BUILD_TESTS OFF)
+option(CGV_BUILD_EXAMPLES "Whether to build the 'examples' plugin which demonstrates various components of the CGV Framework" ON)
+option(CGV_BUILD_TESTS "NOTE: CURRENTLY NOT MAINTAINED!!! Whether to build the tests" OFF)
+
+# preset 3rd-party lib options
+option(BUILD_GMOCK OFF)
+option(INSTALL_GTEST OFF)
 
 # customize build directory
 # - customize executable/DLL/SO and link library locations
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-# - make sure these (and earlier ones) are propagated to would-be parent CMake build processes targeting
-#   the CGV Framework
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
+# - make sure these, the CGV_DIR and the CGV_OPTIONS are propagated to would-be parent CMake build processes
+#   that reference the CGV Framework
 get_directory_property(hasParent PARENT_DIRECTORY)
 if (hasParent)
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} PARENT_SCOPE)
 	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} PARENT_SCOPE)
 	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} PARENT_SCOPE)
+	set(CGV_DIR ${CGV_DIR} PARENT_SCOPE)
 	set(CGV_OPTIONS ${CGV_OPTIONS} PARENT_SCOPE)
-endif ()
-
-if (NOT MSVC)
-    add_compile_options(-Wno-dangling-else -Wno-switch)
 endif ()
 
 # setup custom properties
@@ -71,8 +72,15 @@ define_property(TARGET PROPERTY CGVPROP_NO_EXECUTABLE BRIEF_DOCS "For plugins, i
 define_property(TARGET PROPERTY CGVPROP_SHADERPATH BRIEF_DOCS "The list of absolute paths where shaders used by the component are located.")
 define_property(TARGET PROPERTY CGVPROP_ADDITIONAL_CMDLINE_ARGS BRIEF_DOCS "A list of additional command line arguments for launching the plugin (ignored for non-plugin targets).")
 
+# general compiler options
+if (NOT MSVC)
+    add_compile_options(-Wno-dangling-else -Wno-switch)
+endif ()
+
+# testing stuff - TODO: find out what it actually does currently
 enable_testing()
 
+# configure each individual part of the framework
 add_subdirectory(tool)
 add_subdirectory(3rd)
 add_subdirectory(cgv)
@@ -82,6 +90,5 @@ add_subdirectory(plugins)
 add_subdirectory(test)
 add_subdirectory(doc)
 
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT examples)
-
+# install stuff - TODO: found out how the current install system works
 install(FILES cgv-config.cmake DESTINATION .)
