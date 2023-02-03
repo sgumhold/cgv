@@ -365,15 +365,16 @@ function(cgv_add_target NAME)
 	endif()
 
 	target_include_directories(${NAME} PUBLIC
-			$<BUILD_INTERFACE:${CGV_DIR}>
+			"$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>"
+			"$<BUILD_INTERFACE:${CGV_DIR}>"
 			"$<BUILD_INTERFACE:${PPP_INCLUDES}>"
 			"$<BUILD_INTERFACE:${ST_INCLUDES}>")
 	if (IS_CORELIB)
-		target_include_directories(${NAME} PUBLIC $<INSTALL_INTERFACE:include>)
+		target_include_directories(${NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 	else ()
 		target_include_directories(${NAME} PUBLIC
-				$<BUILD_INTERFACE:${CGV_DIR}/libs>
-				$<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}>)
+				"$<BUILD_INTERFACE:${CGV_DIR}/libs>"
+				"$<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}>")
 	endif ()
 
 	install(TARGETS ${NAME} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
@@ -409,10 +410,11 @@ function(cgv_add_target NAME)
 	endforeach()
 
 	target_include_directories(${NAME_STATIC} PUBLIC
-		$<BUILD_INTERFACE:${CGV_DIR}>
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>"
+		"$<BUILD_INTERFACE:${CGV_DIR}>"
 		"$<BUILD_INTERFACE:${PPP_INCLUDES}>"
 		"$<BUILD_INTERFACE:${ST_INCLUDE}>"
-		$<INSTALL_INTERFACE:include>)
+		"$<INSTALL_INTERFACE:include>")
 	if (NOT IS_CORELIB)
 		target_include_directories(${NAME_STATIC} PUBLIC $<BUILD_INTERFACE:${CGV_DIR}/libs>)
 	endif ()
@@ -425,7 +427,7 @@ function(cgv_add_target NAME)
 		target_include_directories(
 			${NAME_EXE} PUBLIC
 			"$<BUILD_INTERFACE:${CGV_DIR}>" "$<BUILD_INTERFACE:${CGV_DIR}/libs>" "$<BUILD_INTERFACE:${PPP_INCLUDES}>"
-			"$<BUILD_INTERFACE:${ST_INCLUDE}>" $<INSTALL_INTERFACE:include>
+			"$<BUILD_INTERFACE:${ST_INCLUDE}>" "$<INSTALL_INTERFACE:include>"
 		)
 		target_link_libraries(${NAME_EXE} PRIVATE ${NAME_STATIC})
 	endif()
