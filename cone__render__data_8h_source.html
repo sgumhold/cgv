@@ -110,7 +110,7 @@ $(document).ready(function(){initNavTree('cone__render__data_8h_source.html','')
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keywordtype">bool</span> transfer(context&amp; ctx, cone_renderer&amp; r) {</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                <span class="keywordflow">if</span>(super::transfer(ctx, r)) {</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                        <span class="keywordflow">if</span>(rad.size() == size())</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                        <span class="keywordflow">if</span>(rad.size() == super::size())</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                                r.set_radius_array(ctx, rad);</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                }</div>
@@ -128,12 +128,12 @@ $(document).ready(function(){initNavTree('cone__render__data_8h_source.html','')
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        RDB_BASE_FUNC_DEF(cone_renderer, cone_render_style);</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordtype">void</span> adds(<span class="keyword">const</span> <a class="code" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a>&amp; p) {</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                pos.push_back(p);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                super::pos.push_back(p);</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        }</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordtype">void</span> add(<span class="keyword">const</span> <a class="code" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a>&amp; p0, <span class="keyword">const</span> <a class="code" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a>&amp; p1) {</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                pos.push_back(p0);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                pos.push_back(p1);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                super::pos.push_back(p0);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                super::pos.push_back(p1);</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        }</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordtype">void</span> adds(<span class="keyword">const</span> <span class="keywordtype">float</span> r) {</div>
@@ -151,17 +151,17 @@ $(document).ready(function(){initNavTree('cone__render__data_8h_source.html','')
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        }</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordtype">void</span> adds(<span class="keyword">const</span> ColorType&amp; c) {</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                col.push_back(c);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                super::col.push_back(c);</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        }</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordtype">void</span> add(<span class="keyword">const</span> ColorType&amp; c) {</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                col.push_back(c);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                col.push_back(c);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                super::col.push_back(c);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                super::col.push_back(c);</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        }</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keywordtype">void</span> add(<span class="keyword">const</span> ColorType&amp; c0, <span class="keyword">const</span> ColorType&amp; c1) {</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                col.push_back(c0);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                col.push_back(c1);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                super::col.push_back(c0);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                super::col.push_back(c1);</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        }</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keywordtype">void</span> add(<span class="keyword">const</span> <a class="code" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a>&amp; p0, <span class="keyword">const</span> <a class="code" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a>&amp; p1, <span class="keyword">const</span> <span class="keywordtype">float</span> r, <span class="keyword">const</span> ColorType&amp; c) {</div>
@@ -171,13 +171,13 @@ $(document).ready(function(){initNavTree('cone__render__data_8h_source.html','')
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        }</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordtype">void</span> fill(<span class="keyword">const</span> <span class="keywordtype">float</span>&amp; r) {</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = rad.size(); i &lt; pos.size(); ++i)</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = rad.size(); i &lt; super::pos.size(); ++i)</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                        rad.push_back(r);</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        }</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordtype">void</span> fill(<span class="keyword">const</span> ColorType&amp; c) {</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = col.size(); i &lt; pos.size(); ++i)</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                        col.push_back(c);</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = super::col.size(); i &lt; super::pos.size(); ++i)</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                        super::col.push_back(c);</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        }</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;};</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
