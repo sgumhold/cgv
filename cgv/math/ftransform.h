@@ -245,9 +245,9 @@ namespace cgv {
 				return M;
 			}
 
-		/// return perspective projection for given eye (-1 ... left / 1 ... right) without translation
+		/// return perspective projection for given eye (from -1 ... left most to 1 ... right most) without translation
 		template <typename T> fmat<T, 4, 4>
-			stereo_frustum_screen4(int eye, const T& eyeSeparation, const T& screenWidth, const T& screenHeight,
+			stereo_frustum_screen4(T eye, const T& eyeSeparation, const T& screenWidth, const T& screenHeight,
 									const T& zZeroParallax, const T& zNear, const T& zFar) {
 				T aspect = screenWidth / screenHeight;
 				T top = 0.5*screenHeight*zNear / zZeroParallax;
@@ -258,29 +258,29 @@ namespace cgv {
 				return frustum4<T>(left, right, bottom, top, zNear, zFar);
 			}
 
-		/// return translation from center to eye (-1 ... left / 1 ... right)
+		/// return translation from center to eye (from -1 ... left most to 1 ... right most)
 		template <typename T> fmat<T, 4, 4>
-			stereo_translate_screen4(int eye, const T& eyeSeparation, const T& screenWidth) {
+			stereo_translate_screen4(T eye, const T& eyeSeparation, const T& screenWidth) {
 				return translate4<T>(-T(0.5)*eyeSeparation*eye*screenWidth, 0, 0);
 			}
 
-		/// return translation from center to eye (-1 ... left / 1 ... right)
+		/// return translation from center to eye (from -1 ... left most to 1 ... right most)
 		template <typename T> fmat<T, 4, 4>
-			stereo_translate4(int eye, const T& eyeSeparation, const T& fovy, const T& aspect, const T& zZeroParallax) {
+			stereo_translate4(T eye, const T& eyeSeparation, const T& fovy, const T& aspect, const T& zZeroParallax) {
 				return stereo_translate_screen4(eye, eyeSeparation, T(2)*tan(T(.8726646262e-2)*fovy)*zZeroParallax * aspect);
 			}
 
-		/// return perspective projection for given eye (-1 ... left / 1 ... right) including translation
+		/// return perspective projection for given eye (from -1 ... left most to 1 ... right most) including translation
 		template <typename T> fmat<T, 4, 4>
-			stereo_perspective_screen4(int eye, const T& eyeSeparation,	const T& screenWidth, const T& screenHeight,
+			stereo_perspective_screen4(T eye, const T& eyeSeparation,	const T& screenWidth, const T& screenHeight,
 										const T& zZeroParallax, const T& zNear, const T& zFar) {
 				return stereo_frustum_screen4(eye, eyeSeparation, screenWidth, screenHeight, zZeroParallax, zNear, zFar) *
 				       stereo_translate_screen4(eye, eyeSeparation, screenWidth);
 			}
 
-		/// return perspective projection for given eye (-1 ... left / 1 ... right) including translation
+		/// return perspective projection for given eye (from -1 ... left most to 1 ... right most) including translation
 		template <typename T> fmat<T, 4, 4>
-			stereo_perspective4(int eye, const T& eyeSeparation, const T& fovy, const T& aspect,
+			stereo_perspective4(T eye, const T& eyeSeparation, const T& fovy, const T& aspect,
 							    const T& zZeroParallax, const T& zNear, const T& zFar) {
 				T screenHeight = T(2)*tan(T(.8726646262e-2)*fovy)*zZeroParallax;;
 				return stereo_perspective_screen4<double>(eye, eyeSeparation, screenHeight*aspect, screenHeight, zZeroParallax, zNear, zFar);

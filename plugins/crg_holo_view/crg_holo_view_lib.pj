@@ -1,0 +1,12 @@
+@=
+projectType="library";
+projectName="crg_holo_view_lib";
+projectGUID="A3C2F4E6-0331-48E8-850B-F6C7AF71190E";
+addProjectDeps=[
+	"cgv_render", "cgv_gui", "cgv_reflect", "cgv_utils", "cgv_gl", "cgv_type", "glsu","cgv_data",
+	"cgv_base","cgv_signal"
+];
+addProjectDirs=[CGV_DIR."/libs"];
+addIncDirs=[ [CGV_DIR."/libs/glsu", "all"], [INPUT_DIR, "all"] ];
+addSharedDefines=["CGV_RENDER_HOLO_VIEW_EXPORTS"];
+addDefines=["NO_HOLO_VIEW_INTERACTOR"];
