@@ -4,7 +4,7 @@ add_library(vr_lab_test ${SOURCES})
 target_link_libraries(vr_lab_test vr_lab plot)
 add_dependencies(vr_lab_test cg_fltk cmf_tt_gl_font crg_grid cg_ext cmi_io crg_vr_view vr_lab vr_emulator openvr_driver)
 
-set_plugin_execution_params(vr_lab_test "plugin:cg_fltk \
+set_plugin_execution_params(vr_lab_test ARGUMENTS "plugin:cg_fltk \
 \"type(shader_config):shader_path='${CGV_DIR}/test/vr_lab_test;${CGV_DIR}/plugins/crg_vr_view;${CGV_DIR}/plugins/crg_vr_lab;${CGV_DIR}/libs/cgv_gl/glsl;${CGV_DIR}/libs/cgv_proc/glsl;${CGV_DIR}/libs/plot/glsl'\" \
 plugin:cmf_tt_gl_font \
 plugin:crg_grid \

@@ -20,7 +20,7 @@ add_dependencies(vr_test
         crg_vr_wall
         cg_vr vr_emulator openvr_driver)
 
-set_plugin_execution_params(vr_test "plugin:cmi_io \
+set_plugin_execution_params(vr_test ARGUMENTS "plugin:cmi_io \
 plugin:cg_fltk \
 \"type(shader_config):shader_path='${CGV_DIR}/plugins/vr_test;${CGV_DIR}/plugins/crg_vr_view;${CGV_DIR}/libs/cgv_gl/glsl'\" \
 plugin:crg_grid \
