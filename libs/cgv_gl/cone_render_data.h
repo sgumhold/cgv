@@ -23,7 +23,7 @@ protected:
 
 	bool transfer(context& ctx, cone_renderer& r) {
 		if(super::transfer(ctx, r)) {
-			if(rad.size() == size())
+			if(rad.size() == super::size())
 				r.set_radius_array(ctx, rad);
 			return true;
 		}
@@ -41,12 +41,12 @@ public:
 	RDB_BASE_FUNC_DEF(cone_renderer, cone_render_style);
 
 	void adds(const vec3& p) {
-		pos.push_back(p);
+		super::pos.push_back(p);
 	}
 
 	void add(const vec3& p0, const vec3& p1) {
-		pos.push_back(p0);
-		pos.push_back(p1);
+		super::pos.push_back(p0);
+		super::pos.push_back(p1);
 	}
 
 	void adds(const float r) {
@@ -64,17 +64,17 @@ public:
 	}
 
 	void adds(const ColorType& c) {
-		col.push_back(c);
+		super::col.push_back(c);
 	}
 
 	void add(const ColorType& c) {
-		col.push_back(c);
-		col.push_back(c);
+		super::col.push_back(c);
+		super::col.push_back(c);
 	}
 
 	void add(const ColorType& c0, const ColorType& c1) {
-		col.push_back(c0);
-		col.push_back(c1);
+		super::col.push_back(c0);
+		super::col.push_back(c1);
 	}
 
 	void add(const vec3& p0, const vec3& p1, const float r, const ColorType& c) {
@@ -84,13 +84,13 @@ public:
 	}
 
 	void fill(const float& r) {
-		for(size_t i = rad.size(); i < pos.size(); ++i)
+		for(size_t i = rad.size(); i < super::pos.size(); ++i)
 			rad.push_back(r);
 	}
 
 	void fill(const ColorType& c) {
-		for(size_t i = col.size(); i < pos.size(); ++i)
-			col.push_back(c);
+		for(size_t i = super::col.size(); i < super::pos.size(); ++i)
+			super::col.push_back(c);
 	}
 };
 
