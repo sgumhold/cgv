@@ -3,6 +3,9 @@
 #include <cgv/base/base.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/stereo_view.h>
+#include <cgv/render/texture.h>
+#include <cgv/render/shader_program.h>
+#include <cgv/render/frame_buffer.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/provider.h>
@@ -22,7 +25,67 @@ enum StereoMousePointer {
 	SMP_ARROW
 };
 
+namespace cgv {
+	namespace math {
+		///return a vector containing the component-wise modulo value
+		template <typename T, uint32_t N>
+		const fvec<T, N> mod(const fvec<T, N>& v, const fvec<T, N>& t) {
+			fvec<T, N> c;
+			for (unsigned i = 0; i < N; ++i)
+				c(i) = v(i) % t(i);
+			return c;
+		}
+		template <uint32_t N>
+		const fvec<float, N> mod(const fvec<float, N>& v, const fvec<float, N>& t) {
+			fvec<float, N> c;
+			for (unsigned i = 0; i < N; ++i)
+				c(i) = std::fmod(v(i), t(i));
+			return c;
+		}
+		template <uint32_t N>
+		const fvec<double, N> mod(const fvec<double, N>& v, const fvec<double, N>& t) {
+			fvec<double, N> c;
+			for (unsigned i = 0; i < N; ++i)
+				c(i) = std::fmod(v(i), t(i));
+			return c;
+		}
+	}
+}
+
 extern CGV_API cgv::reflect::enum_reflection_traits<StereoMousePointer> get_reflection_traits(const StereoMousePointer&);
+
+struct holo_display_calibration : public cgv::render::render_types
+{
+	unsigned width = 3840;
+	unsigned height = 2160;
+
+	vec3 x_min = vec3(0.01f);
+	vec3 x_max = vec3(0.99f);
+
+	vec3 y_min = vec3(0.01f);
+	vec3 y_max = vec3(0.99f);
+
+	float length = 42.8996f;
+	float step_x = 35.3762f;
+	float step_y = 1.0f;
+	vec3 offset = vec3(42.4f, 39.8f, 37.2f);
+
+	vec3 compute_subpixel_base_line_coordinates(ivec2 pixel)
+	{
+		vec3 bl_crd_0 = vec3(step_x * float(pixel.x()) + step_y * float(int(height) - pixel.y() - 1)) + offset;
+		vec3 bl_crd_1 = mod(bl_crd_0, vec3(length));
+		vec3 bl_crd_2 = bl_crd_1 / length;
+		return bl_crd_2;
+	}
+	vec3 compute_subpixel_x_coordinates(ivec2 pixel)
+	{
+		return float(pixel.x()) * (x_max-x_min) + x_min;
+	}
+	vec3 compute_subpixel_y_coordinates(ivec2 pixel)
+	{
+		return float(pixel.y()) * (y_max - y_min) + y_min;
+	}
+};
 
 /// class that manages a stereoscopic view
 class CGV_API holo_view_interactor : 
@@ -45,12 +108,41 @@ protected:
 
 	unsigned nr_views = 45;
 	unsigned view_index = 22;
+
+	unsigned view_width = 1638;
+	unsigned view_height = 910;
+
+	unsigned quilt_width = 8192;
+	unsigned quilt_height = 8192;
 	unsigned quilt_nr_cols = 5;
 	unsigned quilt_nr_rows = 9;
-	unsigned quilt_panel_width = 120;
-	unsigned quilt_panel_height = 100;
-	unsigned vi = 0, vx = 0, vy = 0;
+	bool quilt_use_offline_texture = true;
+
+	// iterators for 
+	unsigned vi = 0, quilt_col = 0, quilt_row = 0;
+
 	enum HoloMode { HM_SINGLE, HM_QUILT, HM_VOLUME } holo_mode = HM_SINGLE;
+
+	bool generate_hologram = true;
+	holo_display_calibration display_calib;
+	int blit_offset_x = 0, blit_offset_y = 0;
+	cgv::render::texture display_tex;
+	cgv::render::frame_buffer display_fbo;
+	bool display_write_to_file = false;
+
+	rgb quilt_bg_color = rgb(0.5f, 0.5f, 0.5f);
+	cgv::render::texture quilt_tex;
+	cgv::render::frame_buffer quilt_fbo;
+	cgv::render::render_buffer quilt_depth_buffer;
+	cgv::render::shader_program quilt_prog;
+	bool quilt_write_to_file = false;
+
+	cgv::render::texture volume_tex;
+	cgv::render::frame_buffer volume_fbo;
+	cgv::render::render_buffer volume_depth_buffer;
+	cgv::render::shader_program volume_prog;
+
+
 public:
 	void set_default_values();
 protected:
@@ -119,6 +211,12 @@ protected:
 	void timer_event(double t, double dt);
 	ivec4 split_viewport(const ivec4 vp, int col_idx, int row_idx) const;
 	//@}
+
+
+	/// surface manager stuff
+	void enable_surface(cgv::render::context& ctx);
+	void disable_surface(cgv::render::context& ctx);
+	void post_process_surface(cgv::render::context& ctx);
 public:
 	///
 	holo_view_interactor(const char* name);
@@ -172,6 +270,8 @@ public:
 	bool handle(cgv::gui::event& e);
 	/// overload to stream help information to the given output stream
 	void stream_help(std::ostream& os);
+	/// build shader programs
+	bool init(cgv::render::context&);
 	/// this method is called in one pass over all drawables before the draw method
 	void init_frame(cgv::render::context&);
 	/// 

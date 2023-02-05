@@ -1,0 +1,8 @@
+#version 150
+
+uniform sampler3D volume_tex;
+
+vec4 sample_color(vec3 tc)
+{
+	return texture(volume_tex, tc);
+}
