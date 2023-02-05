@@ -175,7 +175,7 @@ void holo_view_interactor::timer_event(double t, double dt)
 }
 
 ///
-holo_view_interactor::holo_view_interactor(const char* name) : node(name)
+holo_view_interactor::holo_view_interactor(const char* name) : node(name), quilt_depth_buffer("[D]")
 {
 	enable_messages = true;
 	use_gamepad = true;
@@ -209,6 +209,9 @@ holo_view_interactor::holo_view_interactor(const char* name) : node(name)
 	check_for_click = -1;
 	pan_sensitivity = zoom_sensitivity = rotate_sensitivity = 1;
 	last_x = last_y = -1;
+
+	quilt_tex.set_mag_filter(cgv::render::TF_LINEAR);
+	volume_tex.set_mag_filter(cgv::render::TF_LINEAR);
 }
 /// return the type name 
 std::string holo_view_interactor::get_type_name() const
@@ -676,6 +679,27 @@ bool holo_view_interactor::handle(event& e)
 			case gamepad::GPK_RIGHT_BUMPER:
 				set_view_orientation("Zy");
 				return true;
+			case 'S':
+				if (ke.get_modifiers() == cgv::gui::EM_SHIFT + cgv::gui::EM_CTRL) {
+					holo_mode = HM_SINGLE;
+					on_set(&holo_mode);
+					return true;
+				}
+				break;
+			case 'Q':
+				if (ke.get_modifiers() == cgv::gui::EM_SHIFT+cgv::gui::EM_CTRL) {
+					holo_mode = HM_QUILT;
+					on_set(&holo_mode);
+					return true;
+				}
+				break;
+			case 'V':
+				if (ke.get_modifiers() == cgv::gui::EM_SHIFT + cgv::gui::EM_CTRL) {
+					holo_mode = HM_VOLUME;
+					on_set(&holo_mode);
+					return true;
+				}
+				break;
 			case 'X':
 				if (ke.get_modifiers() == (cgv::gui::EM_SHIFT | cgv::gui::EM_CTRL))
 					set_view_orientation("Xy");
@@ -1165,47 +1189,70 @@ void holo_view_interactor::ensure_viewport_view_number(unsigned nr)
 	}
 }
 
+bool holo_view_interactor::init(cgv::render::context& ctx)
+{
+	if (!quilt_prog.build_program(ctx, "quilt_finish.glpr", true))
+		return false;
+	if (!volume_prog.build_program(ctx, "volume_finish.glpr", true))
+		return false;
+	return true;
+}
+
 /// this method is called in one pass over all drawables before the draw method
 void holo_view_interactor::init_frame(context& ctx)
 {
 	cgv::render::RenderPassFlags rpf = ctx.get_render_pass_flags();
 
-	// determine the current eye and store last viewport splitting
-
 	// check mono rendering case 
 	switch (holo_mode) {
 	case HM_SINGLE :
-	case HM_VOLUME :
 		current_e = (2.0f*view_index) / (nr_views-1) - 1.0f;
 		last_do_viewport_splitting = do_viewport_splitting;
 		last_nr_viewport_columns = nr_viewport_columns;
 		last_nr_viewport_rows = nr_viewport_rows;
 		break;
 	case HM_QUILT :
+	case HM_VOLUME:
 		if (initiate_render_pass_recursion(ctx)) {
+			enable_surface(ctx);
 			last_do_viewport_splitting = do_viewport_splitting;
 			last_nr_viewport_columns = nr_viewport_columns;
 			last_nr_viewport_rows = nr_viewport_rows;
-			vi = 0;
-			quilt_panel_width = ctx.get_width() / quilt_nr_cols;
-			quilt_panel_height = ctx.get_height() / quilt_nr_rows;
-			for (vy = 0; vy < quilt_nr_rows; ++vy) {
-				for (vx = 0; vx < quilt_nr_cols; ++vx) {
-					perform_render_pass(ctx, vi, RP_STEREO);
-					if (++vi == nr_views - 1)
+			if (holo_mode == HM_QUILT) {
+				glClearColor(quilt_bg_color.R(), quilt_bg_color.G(), quilt_bg_color.B(), 1.0f);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+				//view_width = ctx.get_width() / quilt_nr_cols;
+				//view_height = ctx.get_height() / quilt_nr_rows;
+				vi = 0;
+				for (quilt_row = 0; quilt_row < quilt_nr_rows; ++quilt_row) {
+					for (quilt_col = 0; quilt_col < quilt_nr_cols; ++quilt_col) {
+
+						volume_fbo.attach(ctx, volume_tex, view_index, 0, 0);
+						perform_render_pass(ctx, vi, RP_STEREO);
+						if (++vi == nr_views)
+							break;
+					}
+					if (vi == nr_views)
 						break;
 				}
-				if (vi == nr_views - 1)
-					break;
+			}
+			else {
+				for (vi = 0; vi < nr_views; ++vi) {
+					volume_fbo.attach(ctx, volume_tex, vi, 0, 0);
+					perform_render_pass(ctx, vi, RP_STEREO);
+				}
 			}
 			initiate_terminal_render_pass(nr_views - 1);
 		}
 		if (!multi_pass_ignore_finish(ctx)) {
 			current_e = (2.0f * vi) / (nr_views - 1) - 1.0f;
-			ivec4 vp(vx * quilt_panel_width, vy * quilt_panel_height, quilt_panel_width, quilt_panel_height);
-			glViewport(vp[0], vp[1], vp[2], vp[3]);
-			glScissor(vp[0], vp[1], vp[2], vp[3]);
-			glEnable(GL_SCISSOR_TEST);
+			if (holo_mode == HM_QUILT) {
+				ivec4 vp(quilt_col * view_width, quilt_row * view_height, view_width, view_height);
+				glViewport(vp[0], vp[1], vp[2], vp[3]);
+				glScissor(vp[0], vp[1], vp[2], vp[3]);
+				glEnable(GL_SCISSOR_TEST);
+			}
 		}
 		break;
 	}
@@ -1238,12 +1285,132 @@ void holo_view_interactor::init_frame(context& ctx)
 /// this method is called in one pass over all drawables after finish frame
 void holo_view_interactor::after_finish(cgv::render::context& ctx)
 {
-	if (holo_mode == HM_QUILT && !multi_pass_ignore_finish(ctx) && multi_pass_terminate(ctx)) {
-		glViewport(0, 0, ctx.get_width(), ctx.get_height());
+	if (holo_mode != HM_SINGLE && !multi_pass_ignore_finish(ctx) && multi_pass_terminate(ctx)) {
+		disable_surface(ctx);
 		glScissor(0, 0, ctx.get_width(), ctx.get_height());
 		glDisable(GL_SCISSOR_TEST);
+		post_process_surface(ctx);
 	}
 }
+
+void holo_view_interactor::enable_surface(cgv::render::context& ctx)
+{
+	if (holo_mode == HM_QUILT) {
+		if (!quilt_use_offline_texture)
+			return;
+		if (!quilt_fbo.is_created() || quilt_fbo.get_width() != quilt_width || quilt_fbo.get_height() != quilt_height) {
+			quilt_tex.destruct(ctx);
+			quilt_depth_buffer.destruct(ctx);
+			quilt_fbo.destruct(ctx);
+			quilt_fbo.create(ctx, quilt_width, quilt_height);
+			quilt_tex.create(ctx, TT_2D, quilt_width, quilt_height);
+			quilt_depth_buffer.create(ctx, quilt_width, quilt_height);
+			quilt_fbo.attach(ctx, quilt_tex, 0);
+			quilt_fbo.attach(ctx, quilt_depth_buffer);
+		}
+		quilt_fbo.enable(ctx, 0);
+		quilt_fbo.push_viewport(ctx);
+	}
+	else {
+		if (!volume_fbo.is_created() || volume_fbo.get_width() != view_width || volume_fbo.get_height() != view_height || volume_tex.get_depth() != nr_views) {
+			volume_fbo.destruct(ctx);
+			volume_fbo.create(ctx, view_width, view_height);
+			volume_tex.destruct(ctx);
+			volume_tex.create(ctx, TT_3D, view_width, view_height, nr_views);
+			volume_depth_buffer.destruct(ctx);
+			volume_depth_buffer.create(ctx, view_width, view_height);
+			volume_fbo.attach(ctx, volume_tex, 0, 0, 0);
+			volume_fbo.attach(ctx, volume_depth_buffer);
+		}
+		volume_fbo.enable(ctx, 0);
+		volume_fbo.push_viewport(ctx);
+	}
+}
+
+void holo_view_interactor::disable_surface(cgv::render::context& ctx)
+{
+	if (holo_mode == HM_QUILT) {
+		quilt_fbo.pop_viewport(ctx);
+		quilt_fbo.disable(ctx);
+		if (quilt_write_to_file) {
+			quilt_tex.write_to_file(ctx, "d:/temp/quilt.png");
+			quilt_write_to_file = false;
+			on_set(&quilt_write_to_file);
+		}
+	}
+	else {
+		volume_fbo.pop_viewport(ctx);
+		volume_fbo.disable(ctx);
+	}
+	glViewport(0, 0, ctx.get_width(), ctx.get_height());
+}
+
+void holo_view_interactor::post_process_surface(cgv::render::context& ctx)
+{
+	if (generate_hologram) {
+		if (!display_fbo.is_created() || display_fbo.get_width() != display_calib.width || display_fbo.get_height() != display_calib.height) {
+			display_tex.destruct(ctx);
+			display_fbo.destruct(ctx);
+			display_fbo.create(ctx, display_calib.width, display_calib.height);
+			display_tex.create(ctx, cgv::render::TT_2D, display_calib.width, display_calib.height);
+			display_fbo.attach(ctx, display_tex);
+		}
+		cgv::render::shader_program& prog = holo_mode == HM_QUILT ? quilt_prog : volume_prog;
+		display_fbo.enable(ctx);
+		display_fbo.push_viewport(ctx);
+		if (holo_mode == HM_QUILT) {
+			prog.set_uniform(ctx, "width", display_calib.width);
+			prog.set_uniform(ctx, "nr_views", nr_views);
+			prog.set_uniform(ctx, "view_width", view_width);
+			prog.set_uniform(ctx, "view_height", view_height);
+			prog.set_uniform(ctx, "quilt_nr_cols", quilt_nr_cols);
+			prog.set_uniform(ctx, "quilt_nr_rows", quilt_nr_rows);
+			prog.set_uniform(ctx, "quilt_width", quilt_width);
+			prog.set_uniform(ctx, "quilt_height", quilt_height);
+			quilt_tex.enable(ctx, 0);
+			prog.set_uniform(ctx, "quilt_tex", 0);
+		}
+		else {
+			volume_tex.enable(ctx, 0);
+			prog.set_uniform(ctx, "volume_tex", 0);
+		}
+		prog.set_uniform(ctx, "width",  display_calib.width);
+		prog.set_uniform(ctx, "height", display_calib.height);
+		prog.set_uniform(ctx, "length", display_calib.length);
+		prog.set_uniform(ctx, "step_x", display_calib.step_x);
+		prog.set_uniform(ctx, "step_y", display_calib.step_y);
+		prog.set_uniform(ctx, "offset", display_calib.offset);
+		prog.set_uniform(ctx, "x_min",  display_calib.x_min);
+		prog.set_uniform(ctx, "x_max",  display_calib.x_max);
+		prog.set_uniform(ctx, "y_min",  display_calib.y_min);
+		prog.set_uniform(ctx, "y_max",  display_calib.y_max);
+		prog.enable(ctx);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		prog.disable(ctx);
+		glDisable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
+		glDepthMask(GL_TRUE);
+		glEnable(GL_DEPTH_TEST);
+		display_fbo.pop_viewport(ctx);
+		display_fbo.disable(ctx);
+		if (display_write_to_file) {
+			display_tex.write_to_file(ctx, "d:/temp/display.png");
+			display_write_to_file = false;
+			on_set(&display_write_to_file);
+		}
+		vec4 src_rect(float(blit_offset_x), float(blit_offset_y), float(blit_offset_x+ctx.get_width()), float(blit_offset_y+ctx.get_height()));
+		display_fbo.blit_to(ctx, src_rect, cgv::render::BTB_COLOR_BIT, false);
+	}
+	else {
+		if (holo_mode == HM_QUILT)
+			quilt_fbo.blit_to(ctx, BTB_COLOR_BIT, true);
+		else {
+			volume_fbo.attach(ctx, volume_tex, view_index, 0, 0);
+			volume_fbo.blit_to(ctx, BTB_COLOR_BIT, true);
+		}
+	}
+}
+
 
 /// 
 void holo_view_interactor::draw(cgv::render::context& ctx)
@@ -1320,17 +1487,53 @@ void holo_view_interactor::create_gui()
 	}
 	if (begin_tree_node("Holo Parameters", holo_mode, true)) {
 		align("\a");
-		//connect_copy(add_control("Holo", stereo_enabled, "check")->value_change, rebind(this, &holo_view_interactor::on_stereo_change));
-//		add_member_control(this, "Mono Mode", mono_mode, "dropdown", "enums='left=-1,center,right'");
-		add_member_control(this, "Holo Mode", holo_mode, "dropdown", "enums='single,quilt,volume'");
-		add_member_control(this, "Number Views", nr_views, "value_slider", "min=3;max=100;ticks=true");
-		add_member_control(this, "View Index", view_index, "value_slider", "min=0;max=44;ticks=true");
-		add_member_control(this, "Quilt Columns", quilt_nr_cols, "value_slider", "min=0;max=10;ticks=true");
-		add_member_control(this, "Quilt Rows", quilt_nr_rows, "value_slider", "min=0;max=20;ticks=true");
-		add_member_control(this, "Eye Distance", eye_distance, "value_slider", "min=0.01;max=5;ticks=true;step=0.00001;log=true");
-		add_member_control(this, "Parallax Zero Scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");
-		add_member_control(this, "Stereo Translate in Model View", stereo_translate_in_model_view, "check");
-		add_member_control(this, "Stereo Mouse Pointer", stereo_mouse_pointer, "dropdown", "enums='" SMP_ENUMS "'");
+		if (begin_tree_node("Stereo", eye_distance, false)) {
+			align("\a");
+			add_member_control(this, "Eye Distance", eye_distance, "value_slider", "min=0.01;max=5;ticks=true;step=0.00001;log=true");
+			add_member_control(this, "Parallax Zero Scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");
+			add_member_control(this, "Stereo Translate in Model View", stereo_translate_in_model_view, "check");
+			add_member_control(this, "Stereo Mouse Pointer", stereo_mouse_pointer, "dropdown", "enums='" SMP_ENUMS "'");
+			align("\b");
+			end_tree_node(eye_distance);
+		}
+		if (begin_tree_node("Display", display_calib, false)) {
+			align("\a");			
+			add_member_control(this, "Holo Mode", holo_mode, "dropdown", "enums='single view,quilt,volume'");
+			add_member_control(this, "Width", display_calib.width, "value_slider", "min=1920;max=8192;ticks=true");
+			add_member_control(this, "Height", display_calib.height, "value_slider", "min=1080;max=4096;ticks=true");
+			add_gui("X_min", display_calib.x_min, "", "options='min=0;max=0.1;ticks=true'");
+			add_gui("X_max", display_calib.x_max, "", "options='min=0.9;max=1;ticks=true'");
+			add_gui("Y_min", display_calib.y_min, "", "options='min=0;max=0.1;ticks=true'");
+			add_gui("Y_max", display_calib.y_max, "", "options='min=0.9;max=1;ticks=true'");
+			add_member_control(this, "Length", display_calib.length, "value_slider", "min=42;max=43;ticks=true");
+			add_member_control(this, "Step_x", display_calib.step_x, "value_slider", "min=35;max=36;ticks=true");
+			add_member_control(this, "Step_y", display_calib.step_y, "value_slider", "min=0.9;max=1.1;ticks=true");
+			add_gui("Offset", display_calib.offset, "", "options='min=37;max=43;ticks=true'");
+			end_tree_node(display_calib);
+		}
+		if (begin_tree_node("Rendering", holo_mode, true)) {
+			align("\a");
+			add_member_control(this, "Holo Mode", holo_mode, "dropdown", "enums='single view,quilt,volume'");
+			add_member_control(this, "View Width", view_width, "value_slider", "min=640;max=2000;ticks=true");
+			add_member_control(this, "View Height", view_height, "value_slider", "min=480;max=1000;ticks=true");
+			add_member_control(this, "Number Views", nr_views, "value_slider", "min=3;max=100;ticks=true");
+			add_member_control(this, "View Index", view_index, "value_slider", "min=0;max=44;ticks=true");
+			add_member_control(this, "Blit Offset x", blit_offset_x, "value_slider", "min=0;max=1000;ticks=true");
+			add_member_control(this, "Blit Offset y", blit_offset_y, "value_slider", "min=0;max=1000;ticks=true");
+			add_member_control(this, "Generate Hologram", generate_hologram, "toggle");
+			add_member_control(this, "Write To File", display_write_to_file, "toggle");
+			end_tree_node(holo_mode);
+		}
+		if (begin_tree_node("Quilt", quilt_bg_color, true)) {
+			align("\a");
+			add_member_control(this, "Background", quilt_bg_color);
+			add_member_control(this, "Use Offline Texture", quilt_use_offline_texture, "toggle");
+			add_member_control(this, "Columns", quilt_nr_cols, "value_slider", "min=0;max=10;ticks=true");
+			add_member_control(this, "Rows", quilt_nr_rows, "value_slider", "min=0;max=20;ticks=true");
+			add_member_control(this, "Write To File", quilt_write_to_file, "toggle");
+			align("\b");
+			end_tree_node(quilt_bg_color);
+		}
 		align("\b");
 		end_tree_node(holo_mode);
 	}
@@ -1433,6 +1636,10 @@ bool holo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("clip_relative_to_extent", clip_relative_to_extent);
 }
 
+#ifdef REGISTER_SHADER_FILES
+#include <cgv/base/register.h>
+#include <crg_holo_view_shader_inc.h>
+#endif
 
 #ifndef NO_HOLO_VIEW_INTERACTOR
 
