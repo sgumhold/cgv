@@ -1,0 +1,7 @@
+@=
+projectName="cg_msdf";
+projectType="plugin";
+projectGUID="707E28C1-4268-4280-B0AD-417F4EA808E3";
+addProjectDirs=[CGV_DIR."/plugins"];
+addProjectDeps=["cgv_base"];
+addSharedDefines=["MSDF_EXPORTS"];
