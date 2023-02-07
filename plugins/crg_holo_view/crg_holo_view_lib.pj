@@ -1,0 +1,6 @@
+@=
+include "crg_holo_view.pj"
+projectType="library";
+projectName="crg_holo_view_lib";
+projectGUID="A3C2F4E6-0331-48E8-850B-F6C7AF71190E";
+addDefines=["NO_HOLO_VIEW_INTERACTOR"];
