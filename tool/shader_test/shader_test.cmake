@@ -25,7 +25,7 @@ function(shader_test TARGET_NAME outfiles_var outinclude_var outinstall_var)
 
 		# add the build rule
 		add_custom_command(OUTPUT ${OFILE_FULL_PATH}
-			COMMAND ${CMAKE_COMMAND} -E env CGV_DIR=${CGV_DIR} CGV_OPTIONS=${CGV_OPTIONS} $<TARGET_FILE:shader_test>
+			COMMAND ${CMAKE_COMMAND} -E env CGV_DIR="${CGV_DIR}" CGV_OPTIONS="${CGV_OPTIONS}" $<TARGET_FILE:shader_test>
 			ARGS "${IFILE_FULL_PATH}" "${OFILE_FULL_PATH}"
 			DEPENDS "${IFILE_FULL_PATH}")
 	endforeach()
