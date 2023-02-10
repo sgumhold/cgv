@@ -118,6 +118,8 @@ public:
 
 	float get_jitter_scale() const { return jitter_scale; }
 
+	size_t get_jitter_sample_count() const { return jitter_sample_count; }
+	
 	void set_fxaa_enabled(bool enable) { enable_fxaa = enable; }
 
 	void set_taa_enabled(bool enable) { enable_taa = enable; }
@@ -129,6 +131,8 @@ public:
 	void set_fxaa_mix_factor(float value) { fxaa_mix_factor = std::min(std::max(value, 0.0f), 1.0f); }
 
 	void set_jitter_scale(float value) { fxaa_mix_factor = std::min(std::max(value, 0.0f), 2.0f); }
+
+	void set_jitter_sample_count(size_t count) { jitter_sample_count = std::min(std::max(count, 1ull), 128ull); }
 
 	const std::vector<vec2> ref_jitter_offsets() const {
 		return jitter_offsets;
