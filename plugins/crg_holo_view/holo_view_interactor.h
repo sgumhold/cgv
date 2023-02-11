@@ -52,8 +52,6 @@ namespace cgv {
 	}
 }
 
-extern CGV_API cgv::reflect::enum_reflection_traits<StereoMousePointer> get_reflection_traits(const StereoMousePointer&);
-
 struct holo_display_calibration : public cgv::render::render_types
 {
 	unsigned width = 3840;
@@ -102,45 +100,55 @@ public:
 	typedef cgv::math::fmat<double, 4, 4> dmat4;
 	typedef cgv::media::axis_aligned_box<double, 3> dbox3;
 protected:
-	bool stereo_translate_in_model_view;
+	// interaction
 	bool two_d_enabled;
 	bool fix_view_up_dir;
 
-	unsigned nr_views = 45;
-	unsigned view_index = 22;
+	// stereo
+	bool stereo_translate_in_model_view;
 
+	// display
+	holo_display_calibration display_calib;
+
+	// rendering
+public:
+	enum HoloMode { HM_SINGLE, HM_QUILT, HM_VOLUME } holo_mode = HM_SINGLE;
+protected:
 	unsigned view_width = 1638;
 	unsigned view_height = 910;
-
+	unsigned nr_views = 45;
+	unsigned view_index = 22;
+	int blit_offset_x = 0, blit_offset_y = 0;
+	bool generate_hologram = true;
+	bool display_write_to_file = false;
+private:
+	cgv::render::texture display_tex;
+	cgv::render::frame_buffer display_fbo;
+protected:
+	// quilt
+	rgb quilt_bg_color = rgb(0.5f, 0.5f, 0.5f);
+	bool quilt_use_offline_texture = true;
 	unsigned quilt_width = 8192;
 	unsigned quilt_height = 8192;
 	unsigned quilt_nr_cols = 5;
 	unsigned quilt_nr_rows = 9;
-	bool quilt_use_offline_texture = true;
-
-	// iterators for 
+	bool quilt_interpolate = true;
+	bool quilt_write_to_file = false;
+private:
+	// internal parameters used during multipass rendering
 	unsigned vi = 0, quilt_col = 0, quilt_row = 0;
-
-	enum HoloMode { HM_SINGLE, HM_QUILT, HM_VOLUME } holo_mode = HM_SINGLE;
-
-	bool generate_hologram = true;
-	holo_display_calibration display_calib;
-	int blit_offset_x = 0, blit_offset_y = 0;
-	cgv::render::texture display_tex;
-	cgv::render::frame_buffer display_fbo;
-	bool display_write_to_file = false;
-
-	rgb quilt_bg_color = rgb(0.5f, 0.5f, 0.5f);
 	cgv::render::texture quilt_tex;
 	cgv::render::frame_buffer quilt_fbo;
 	cgv::render::render_buffer quilt_depth_buffer;
 	cgv::render::shader_program quilt_prog;
-	bool quilt_write_to_file = false;
 
-	cgv::render::texture volume_tex;
+protected:
+
 	cgv::render::frame_buffer volume_fbo;
 	cgv::render::render_buffer volume_depth_buffer;
 	cgv::render::shader_program volume_prog;
+
+	cgv::render::texture volume_tex;
 
 
 public:
@@ -313,5 +321,8 @@ private:
 
 	int last_x, last_y;
 };
+
+extern CGV_API cgv::reflect::enum_reflection_traits<StereoMousePointer> get_reflection_traits(const StereoMousePointer&);
+extern CGV_API cgv::reflect::enum_reflection_traits<holo_view_interactor::HoloMode> get_reflection_traits(const holo_view_interactor::HoloMode&);
 
 #include <cgv/config/lib_end.h>
