@@ -1,0 +1,14 @@
+#version 420
+
+uniform vec4 color;
+uniform float depth = 1.0;
+
+in vec2 texcoord_fs;
+
+out layout(location = 0) vec4 frag_color;
+
+void main()
+{
+	frag_color = color;
+	gl_FragDepth = depth;
+}
