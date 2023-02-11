@@ -225,7 +225,7 @@ function(cgv_do_deferred_ops TARGET_NAME)
 				@ONLY
 			)
 			file(
-				GENERATE OUTPUT "${CMAKE_BINARY_DIR}/run_${TARGET_NAME}.sh"
+				GENERATE OUTPUT "${CMAKE_BINARY_DIR}/run_${TARGET_NAME}$<$<CONFIG:Debug,RelWithDebInfo,MinSizeRel>:-$<CONFIG>>.sh"
 				INPUT "${CMAKE_BINARY_DIR}/run_${TARGET_NAME}.sh" TARGET ${TARGET_NAME}
 				USE_SOURCE_PERMISSIONS
 			)
