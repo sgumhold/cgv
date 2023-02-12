@@ -9,6 +9,7 @@
 #include <cgv/render/drawable.h>
 #include <cgv_gl/sphere_renderer.h>
 
+#undef CGV_OAL_EXPORTS
 #include <libs/cgv_oal/al_context.h>
 
 class SpatialAudio : public cgv::base::node,

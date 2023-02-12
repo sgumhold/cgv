@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+( cd @WORKING_DIR@ ; $<TARGET_FILE:cgv_viewer> @CMD_LINE_ARGS@ )
