@@ -118,21 +118,38 @@ void tacker::tack(signal_base* s) const
 }
 void tacker::untack(signal_base* s) const
 {
-	// TODO: this check for singals.empty() should not be necessary and is caused by some other bug
-	//       (likely in stereo_view_interactor) corrupting design contract guarantees
-	if (!signals.empty() && --signals[s] <= 0)
-		signals.erase(signals.find(s));
+	// some bug somewhere (probably in the stereo_view_interactor) causes internal state corruption
+	// to the "signals" container on non-Windows platforms, the non-Windows branch does some additional
+	// diagnostics (although the bug is not being worked around)
+	#ifdef _WIN32
+		if (--signals[s] <= 0)
+			signals.erase(signals.find(s));
+	#else
+		// TODO: signals.empty() and signals.size() return corrupted values after the stereo_view_interactor
+		//       attempted to clean up its signals, necessitating a particularily nasty hack to work around
+		//       a crash here
+		const auto sempty = signals.empty();
+		const auto ssize  = signals.size();
+		constexpr std::size_t sanity_threshold = (unsigned short)-1;
+		if (sempty || ssize < 1 || ssize > sanity_threshold)
+			return;
+		const auto s_it = signals.find(s);
+		if (s_it != signals.end())
+			if (--(s_it->second) <= 0)
+				signals.erase(s_it);
+	#endif
 }
 
 void tacker::untack_all() const
 {
-	// Some bug somewhere (probably in the stereo_view_interactor) causes
+	// some bug somewhere (probably in the stereo_view_interactor) causes
 	// this to be an infinite loop on non-Windows platforms
 	#ifdef _WIN32
 		while (!signals.empty())
 			signals.begin()->first->disconnect(this);
 	#else
-		// TODO: Incredibly hacky workaraound, fix underling issue ASAP
+		// TODO: incredibly hacky workaraound, could break any time for any sort of non-trivial usage
+		//       of signals - fix underling issue ASAP!
 		unsigned num_signals = signals.size();
 		while (!signals.empty()) {
 			signals.begin()->first->disconnect(this);
