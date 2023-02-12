@@ -68,7 +68,8 @@ void signal_base::disconnect(const tacker* c)
 {
 	unsigned int i;
 	for (i=0; i<functors.size(); ++i) {
-		if (functors[i]->get_tacker() == c) {
+		const auto tacker = functors[i]->get_tacker();
+		if (tacker == c) {
 			unlink(functors[i]);
 			functors.erase(functors.begin()+i);
 			--i;
@@ -123,8 +124,23 @@ void tacker::untack(signal_base* s) const
 
 void tacker::untack_all() const
 {
-	while (!signals.empty())
-		signals.begin()->first->disconnect(this);
+	// Some bug somewhere (probably in the stereo_view_interactor) causes
+	// this to be an infinite loop on non-Windows platforms
+	#ifdef _WIN32
+		while (!signals.empty())
+			signals.begin()->first->disconnect(this);
+	#else
+		// TODO: Incredibly hacky workaraound, fix underling issue ASAP
+		unsigned num_signals = signals.size();
+		while (!signals.empty()) {
+			signals.begin()->first->disconnect(this);
+			if (signals.size() >= num_signals)
+				// unregistering failed, break loop and leave all remaining registered
+				// objects in limbo
+				break;
+			num_signals = signals.size();
+		}
+	#endif
 }
 
 tacker::~tacker()
