@@ -453,6 +453,12 @@ function(cgv_add_target NAME)
 		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
 	endif()
 
+	# in case of Debug config, set _DEBUG and DEBUG defines for both targets
+	# (for historic reasons, CGV targets expect these instead of relying on NDEBUG)
+	set(DEBUG_COMPILE_DEFS $<$<CONFIG:Debug>:_DEBUG> $<$<CONFIG:Debug>:DEBUG>)
+	target_compile_definitions(${NAME} PRIVATE ${DEBUG_COMPILE_DEFS})
+	target_compile_definitions(${NAME_STATIC} PRIVATE ${DEBUG_COMPILE_DEFS})
+
 	install(TARGETS ${NAME_STATIC} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 	if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
 		install(TARGETS ${NAME_EXE} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
