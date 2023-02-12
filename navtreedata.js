@@ -161,19 +161,19 @@ var NAVTREEINDEX =
 "libs_2cgv__gl_2gl_2lib__begin_8h_source.html",
 "namespacecgv_1_1gui.html#a8c92a55911d18de7ab802b3be6d65df1a4e231b2a6892a3d6b4234440a376868b",
 "namespacecgv_1_1math.html#a627d83610f33d7bbff7d122e789aef12",
-"namespacecgv_1_1render.html#a61032957d1ebbec2abf7260ee4c522c5",
-"namespacecgv_1_1utils.html#adcdb4408e94a15f0337146b18058c79e",
-"qem_8h_source.html",
-"structcgv_1_1base_1_1factory__impl__1.html#a5978e45464c3fdd3083426c4b21ed28a",
-"structcgv_1_1math_1_1random.html#a8a42931c3a8a08ea59ec4054c61e91a8",
-"structcgv_1_1media_1_1video_1_1video__reader__listener.html#a6746cd9f70fefe5a4f2b72534869fcc3",
-"structcgv_1_1plot_1_1plot3d__config.html#a115cfd532b3c0aaa4fb3b5ded65411db",
-"structcgv_1_1reflect_1_1extern__string__reflection__traits.html#ae4c9d972068da0cd4bfb5a9df27ad482",
-"structcgv_1_1render_1_1callback__drawable.html#a6401d6fb8aa227bd28cacc7e42b39e2b",
-"structcgv_1_1render_1_1rectangle__render__style.html#a504ebbfcde6eab98d4111e9a2b68b844",
-"structcgv_1_1render_1_1sphere__render__style.html#a8a5acbe912fb04ad0abac9689882f0e4",
-"structcgv_1_1type_1_1traits_1_1one__fct.html",
-"vr__driver_8h.html#a848c5ddba64a8edf61f153c9660ef1ad"
+"namespacecgv_1_1render.html#a60cae24902e07af051054d86030ef6b0",
+"namespacecgv_1_1utils.html#ad395e58106935ab83b2d1e08438c5455",
+"proximity_8h_source.html",
+"structcgv_1_1base_1_1factory__impl__1.html#a43a20e1a6323f634c51762ad21dbed62",
+"structcgv_1_1math_1_1random.html#a834fc798921301a82a16b50c022a85be",
+"structcgv_1_1media_1_1video_1_1video__reader__listener.html#a6401d6fb8aa227bd28cacc7e42b39e2b",
+"structcgv_1_1plot_1_1plot3d__config.html#a10744f61185783e6879372cf58022e79",
+"structcgv_1_1reflect_1_1extern__string__reflection__traits.html#aba3230fb990b2cc5e6fe21c993cb9a36",
+"structcgv_1_1render_1_1callback__drawable.html#a62d3cd5ae49c3e261f5c0e52bc59bd4f",
+"structcgv_1_1render_1_1rectangle__render__style.html#a43fd3557f1f44c04ad3df7549129af1d",
+"structcgv_1_1render_1_1sphere__render__style.html#a87034fc60b5826249e209d9cfc7ccbb2",
+"structcgv_1_1type_1_1traits_1_1one.html",
+"vr__driver_8h.html#a79801f1f8d60a2fa8b4c57f057035d0f"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

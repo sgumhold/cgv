@@ -129,10 +129,12 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a1e4663cbf69db4df186482045f888406"><td class="memItemLeft" align="right" valign="top"><a id="a1e4663cbf69db4df186482045f888406"></a>
-<a class="el" href="namespacecgv_1_1media_1_1font.html#ac5151bb36a5366f021affc1726149e28">font_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1media_1_1font.html#a1e4663cbf69db4df186482045f888406">find_font</a> (const std::string &amp;font_name)</td></tr>
-<tr class="memdesc:a1e4663cbf69db4df186482045f888406"><td class="mdescLeft">&#160;</td><td class="mdescRight">find an installed font by name <br /></td></tr>
+<tr class="memitem:a1e4663cbf69db4df186482045f888406"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecgv_1_1media_1_1font.html#ac5151bb36a5366f021affc1726149e28">font_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1media_1_1font.html#a1e4663cbf69db4df186482045f888406">find_font</a> (const std::string &amp;font_name)</td></tr>
+<tr class="memdesc:a1e4663cbf69db4df186482045f888406"><td class="mdescLeft">&#160;</td><td class="mdescRight">find an installed font by name  <a href="namespacecgv_1_1media_1_1font.html#a1e4663cbf69db4df186482045f888406">More...</a><br /></td></tr>
 <tr class="separator:a1e4663cbf69db4df186482045f888406"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab57fb7a3ceaa9e7bfb658810a66c1212"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecgv_1_1media_1_1font.html#ac5151bb36a5366f021affc1726149e28">font_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1media_1_1font.html#ab57fb7a3ceaa9e7bfb658810a66c1212">find_font_or_default</a> (const std::string &amp;font_name, bool default_font_mono_space)</td></tr>
+<tr class="memdesc:ab57fb7a3ceaa9e7bfb658810a66c1212"><td class="mdescLeft">&#160;</td><td class="mdescRight">find an installed font by name  <a href="namespacecgv_1_1media_1_1font.html#ab57fb7a3ceaa9e7bfb658810a66c1212">More...</a><br /></td></tr>
+<tr class="separator:ab57fb7a3ceaa9e7bfb658810a66c1212"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56c0acc1f8ec62e79f3efca8f3a61e60"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecgv_1_1media_1_1font.html#ac5151bb36a5366f021affc1726149e28">font_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1media_1_1font.html#a56c0acc1f8ec62e79f3efca8f3a61e60">default_font</a> (bool mono_space)</td></tr>
 <tr class="memdesc:a56c0acc1f8ec62e79f3efca8f3a61e60"><td class="mdescLeft">&#160;</td><td class="mdescRight">return platform dependend default font  <a href="namespacecgv_1_1media_1_1font.html#a56c0acc1f8ec62e79f3efca8f3a61e60">More...</a><br /></td></tr>
 <tr class="separator:a56c0acc1f8ec62e79f3efca8f3a61e60"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -169,7 +171,59 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 </div><div class="memdoc">
 
 <p>return platform dependend default font </p>
-<p>return potentially font driver and platform specific default font </p>
+<p>return potentially font driver and platform-specific default font </p>
+
+</div>
+</div>
+<a id="a1e4663cbf69db4df186482045f888406"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e4663cbf69db4df186482045f888406">&#9670;&nbsp;</a></span>find_font()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CGV_API <a class="el" href="namespacecgv_1_1media_1_1font.html#ac5151bb36a5366f021affc1726149e28">font_ptr</a> cgv::media::font::find_font </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>font_name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>find an installed font by name </p>
+<p>find an installed font by name (returns a null pointer if font could not be found) </p>
+
+</div>
+</div>
+<a id="ab57fb7a3ceaa9e7bfb658810a66c1212"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab57fb7a3ceaa9e7bfb658810a66c1212">&#9670;&nbsp;</a></span>find_font_or_default()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CGV_API <a class="el" href="namespacecgv_1_1media_1_1font.html#ac5151bb36a5366f021affc1726149e28">font_ptr</a> cgv::media::font::find_font_or_default </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>font_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>default_font_mono_space</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>find an installed font by name </p>
+<p>find an installed font by name or return platform-specific default font if no font with that name exists </p>
 
 </div>
 </div>
