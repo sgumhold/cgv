@@ -248,7 +248,7 @@ function(cgv_add_target NAME)
 	cmake_parse_arguments(
 		PARSE_ARGV 1 CGVARG_
 		"NO_EXECUTABLE" "TYPE;OVERRIDE_SHARED_EXPORT_DEFINE;OVERRIDE_FORCE_STATIC_DEFINE"
-		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;DEPENDENCIES;ADDITIONAL_CMDLINE_ARGS"
+		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;DEPENDENCIES;LINKTIME_PLUGIN_DEPENDENCIES;ADDITIONAL_CMDLINE_ARGS"
 	)
 
 	# prelude
@@ -303,7 +303,7 @@ function(cgv_add_target NAME)
 
 		# perform shader test
 		# TODO: Currently relies on the hardcoded default shaderpath of the framework. Move to deferred ops
-		#       so the exact shaderpath calculated from the transitive dependencies can be used
+		#       so the exact shaderpath computed from the transitive dependencies can be used
 		shader_test(${NAME}  ST_FILES ST_INCLUDE ST_INSTALL_DIR ${CGVARG__SHADER_SOURCES})
 
 		install(DIRECTORY ${ST_INSTALL_DIR} DESTINATION ${HEADER_INSTALL_DIR} FILES_MATCHING PATTERN "*.h")
@@ -363,7 +363,13 @@ function(cgv_add_target NAME)
 			target_link_libraries(${NAME} PUBLIC ${DEPENDENCY})
 		else()
 			# this branch should currently trigger only if it's a CGV plugin or app
-			add_dependencies(${NAME} ${DEPENDENCY})
+			if (DEPENDENCY_TYPE STREQUAL "plugin" AND ${DEPENDENCY} IN_LIST CGVARG__LINKTIME_PLUGIN_DEPENDENCIES)
+				# We need to actually link to the DLL/shared object of this plugin
+				target_link_libraries(${NAME} PRIVATE ${DEPENDENCY})
+			else()
+				# We only need this dependency to be present (for its shaders, resources, independent functionality etc.)
+				add_dependencies(${NAME} ${DEPENDENCY})
+			endif()
 		endif()
 	endforeach()
 	if (IS_PLUGIN AND CGVARG__NO_EXECUTABLE)
