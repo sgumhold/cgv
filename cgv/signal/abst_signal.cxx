@@ -118,7 +118,9 @@ void tacker::tack(signal_base* s) const
 }
 void tacker::untack(signal_base* s) const
 {
-	if (--signals[s] <= 0)
+	// TODO: this check for singals.empty() should not be necessary and is caused by some other bug
+	//       (likely in stereo_view_interactor) corrupting design contract guarantees
+	if (!signals.empty() && --signals[s] <= 0)
 		signals.erase(signals.find(s));
 }
 
