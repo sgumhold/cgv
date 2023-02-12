@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cgv/defines/assert.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/context.h>
@@ -132,7 +133,7 @@ public:
 
 	void set_jitter_scale(float value) { fxaa_mix_factor = std::min(std::max(value, 0.0f), 2.0f); }
 
-	void set_jitter_sample_count(size_t count) { jitter_sample_count = std::min(std::max(count, 1ull), 128ull); }
+	void set_jitter_sample_count(size_t count) { jitter_sample_count = std::min(std::max(count, size_t(1)), size_t(128)); }
 
 	const std::vector<vec2> ref_jitter_offsets() const {
 		return jitter_offsets;

@@ -8,7 +8,7 @@ echo -------------------------------------------
 echo CGV_OPTIONS=%CGV_OPTIONS%
 echo -------------------------------------------
 echo [1] ... toggle NO_OPENVR (allows to avoid the start of openvr during development)
-echo [2] ... toggle SHADER_DEVELOPER (make shader_test throw errors that make the build process fail)
+echo [2] ... toggle SHADER_DEVELOPER (make shader_test throw errors that cause the build process to fail)
 echo [3] ... toggle ENCODE_SHADER_BASE64 (encode shader codes in base64 before embedding)
 echo [4] ... toggle BUILD_WITH_AUDIO (requires checking out the git submodules when building from the repository)
 echo [5] ... toggle custom option
