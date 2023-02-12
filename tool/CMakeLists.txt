@@ -1,5 +1,5 @@
 include(set_plugin_execution_params.cmake)
-include(create_lib.cmake)
+include(cgv_target_creation.cmake)
 
 add_subdirectory(ppp_tool)
 add_subdirectory(shader_test)

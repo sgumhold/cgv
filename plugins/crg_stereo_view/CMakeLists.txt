@@ -30,7 +30,7 @@ target_compile_definitions(crg_stereo_view_lib PRIVATE CGV_RENDER_STEREO_VIEW_EX
 install(TARGETS crg_stereo_view_lib EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
 
 # Static Library
-add_library(crg_stereo_view_static STATIC stereo_view_interactor.cxx)
+add_library(crg_stereo_view_static OBJECT stereo_view_interactor.cxx)
 target_link_libraries(crg_stereo_view_static
         cgv_render_static
         cgv_gui_static
