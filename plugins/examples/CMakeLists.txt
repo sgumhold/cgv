@@ -29,6 +29,7 @@ cgv_add_target(examples
 		cgv_viewer delaunay plot cg_gamepad cgv_proc cgv_gl cgv_os cgv_signal cgv_g2d cgv_gpgpu cgv_app
 		cg_ext cg_fltk cg_icons cg_meta cmi_io cgv_proc cmf_tt_gl_font crg_antialias crg_depth_of_field
 		crg_grid crg_light crg_bg crg_stereo_view ${AUDIO_DEPENDENCIES} ${WINDOWS_DEPENDENCIES}
+
 	ADDITIONAL_CMDLINE_ARGS
 		"gui:\"${CMAKE_CURRENT_LIST_DIR}/examples.gui\"" "config:\"${CMAKE_CURRENT_LIST_DIR}/config.def\""
 

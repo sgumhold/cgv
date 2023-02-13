@@ -1,5 +1,9 @@
 
-function(shader_test TARGET_NAME outfiles_var outinclude_var outinstall_var)
+function(shader_test TARGET_NAME outfiles_var outinclude_var outinstall_var shader_reg_inc_filepath_var)
+	#cmake_parse_arguments(
+	#	PARSE_ARGV 4 CGVARG_ "" "SHADER_REG_INC_FILEPATH_VAR" ""
+	#)
+
 	# decide directories
 	set(ST_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/st")
 	file(RELATIVE_PATH ST_INSTALL_POSTFIX ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
@@ -31,12 +35,14 @@ function(shader_test TARGET_NAME outfiles_var outinclude_var outinstall_var)
 	endforeach()
 
 	# generate the ..._shader_inc.h file
-	configure_file(
-		"${CGV_DIR}/make/cmake/shader_inc.h.in" "${ST_INCLUDE_DIR}/${TARGET_NAME}_shader_inc.h" @ONLY
-	)
+	set(SHADER_INC_FILEPATH "${ST_INCLUDE_DIR}/${TARGET_NAME}_shader_inc.h")
+	configure_file("${CGV_DIR}/make/cmake/shader_inc.h.in" "${SHADER_INC_FILEPATH}" @ONLY)
 
 	# propagate results upwards
 	set(${outfiles_var} ${OFILES} PARENT_SCOPE)
 	set(${outinclude_var} ${ST_INCLUDE_DIR} PARENT_SCOPE)
 	set(${outinstall_var} ${ST_INCLUDE_DIR}/${ST_INSTALL_POSTFIX}/. PARENT_SCOPE)
+	if (shader_reg_inc_filepath_var)
+		set(${shader_reg_inc_filepath_var} ${SHADER_INC_FILEPATH} PARENT_SCOPE)
+	endif()
 endfunction()
