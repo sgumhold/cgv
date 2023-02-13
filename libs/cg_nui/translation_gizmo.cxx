@@ -104,12 +104,6 @@ void cgv::nui::translation_gizmo::on_handle_drag()
 		movement = anchor_obj_local_rotation.apply(movement);
 	}
 
-	//std::cout << get_position() << std::endl;
-	//std::cout << get_position() + movement << std::endl;
-	std::cout << "Hid Position: " << ii_during_focus[activating_hid_id].hid_position << std::endl;
-	std::cout << "Hid Direction: " << ii_during_focus[activating_hid_id].hid_direction << std::endl;
-	std::cout << "Movement: " << movement << std::endl;
-
 	// If the position that this gizmo changes influences the anchor of this gizmo, then the movement is an incremental update.
 	// Otherwise the movement is relative to the original position of the anchor at the time of grabbing.
 	if (is_anchor_influenced_by_gizmo)

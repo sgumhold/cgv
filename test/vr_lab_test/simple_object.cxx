@@ -44,7 +44,7 @@ std::string simple_object::get_type_name() const
 	return "simple_object";
 }
 
-void simple_object::initialize_gizmos(cgv::base::node_ptr root, cgv::base::node_ptr anchor)
+void simple_object::initialize_gizmos(cgv::base::node_ptr root, cgv::base::node_ptr anchor, bool anchor_influenced_by_gizmo, bool root_influenced_by_gizmo)
 {
 	trans_gizmo = new cgv::nui::translation_gizmo();
 	// As the gizmo is created after the hierarchy was traversed the context has to be set manually
@@ -59,8 +59,8 @@ void simple_object::initialize_gizmos(cgv::base::node_ptr root, cgv::base::node_
 	rot.normalize();
 	//trans_gizmo->set_anchor_offset_rotation(rot);
 	trans_gizmo->set_position_reference(this);
-	trans_gizmo->set_is_anchor_influenced_by_gizmo(false);
-	trans_gizmo->set_is_root_influenced_by_gizmo(false);
+	trans_gizmo->set_is_anchor_influenced_by_gizmo(anchor_influenced_by_gizmo);
+	trans_gizmo->set_is_root_influenced_by_gizmo(root_influenced_by_gizmo);
 	trans_gizmo->set_use_root_rotation(false);
 	trans_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
 	trans_gizmo->set_axes_positions(
@@ -74,9 +74,10 @@ void simple_object::initialize_gizmos(cgv::base::node_ptr root, cgv::base::node_
 	// As the gizmo is created after the hierarchy was traversed the context has to be set manually
 	rot_gizmo->set_context(this->get_context());
 	rot_gizmo->set_anchor_object(this);
-	trans_gizmo->set_root_object(root);
+	rot_gizmo->set_root_object(root);
 	rot_gizmo->set_rotation_reference(this);
-	rot_gizmo->set_is_anchor_influenced_by_gizmo(true);
+	rot_gizmo->set_is_anchor_influenced_by_gizmo(anchor_influenced_by_gizmo);
+	rot_gizmo->set_is_root_influenced_by_gizmo(root_influenced_by_gizmo);
 	rot_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
 	if (active_gizmo == ActiveGizmoOptions::AGO_ROTATION)
 		rot_gizmo->attach();
@@ -85,9 +86,10 @@ void simple_object::initialize_gizmos(cgv::base::node_ptr root, cgv::base::node_
 	// As the gizmo is created after the hierarchy was traversed the context has to be set manually
 	scale_gizmo->set_context(this->get_context());
 	scale_gizmo->set_anchor_object(this);
-	trans_gizmo->set_root_object(root);
+	scale_gizmo->set_root_object(root);
 	scale_gizmo->set_scale_reference(this);
-	scale_gizmo->set_is_anchor_influenced_by_gizmo(true);
+	scale_gizmo->set_is_anchor_influenced_by_gizmo(anchor_influenced_by_gizmo);
+	scale_gizmo->set_is_root_influenced_by_gizmo(root_influenced_by_gizmo);
 	scale_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
 	scale_gizmo->set_axes_positions(
 		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
