@@ -1956,6 +1956,7 @@ bool context::shader_program_link(shader_program_base& spb) const
 		spb.uses_view =
 			get_uniform_location(spb, "modelview_matrix") != -1 ||
 			get_uniform_location(spb, "projection_matrix") != -1 ||
+			get_uniform_location(spb, "inverse_projection_matrix") != -1 ||
 			get_uniform_location(spb, "normal_matrix") != -1 ||
 			get_uniform_location(spb, "inverse_modelview_matrix") != -1 ||
 			get_uniform_location(spb, "inverse_normal_matrix") != -1;
