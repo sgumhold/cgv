@@ -23,7 +23,7 @@ vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color
 
 vec4 my_color_transform(in vec4 c);
 
-void main() 
+void main()
 {
 	vec4 c = col;
 	if (show_tex)

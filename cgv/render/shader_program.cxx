@@ -628,6 +628,8 @@ void shader_program::destruct(const context& ctx)
 	}
 	linked = false;
 	state_out_of_date = true;
+	auto_detect_uniforms = true;
+	auto_detect_vertex_attributes = true;
 	nr_attached_geometry_shaders = 0;
 }
 

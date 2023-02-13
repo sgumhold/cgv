@@ -1,6 +1,9 @@
 
-add_library(crg_antialias antialias.cxx)
-target_link_libraries(crg_antialias cgv_base cgv_gl)
-target_compile_definitions(crg_antialias PRIVATE CGV_RENDER_ANTIALIAS_EXPORTS)
+cgv_add_target(crg_antialias
+	TYPE plugin NO_EXECUTABLE
+	SOURCES antialias.cxx
+	DEPENDENCIES cgv_base cgv_gl
+	OVERRIDE_SHARED_EXPORT_DEFINE CGV_RENDER_ANTIALIAS_EXPORTS
+)
 
 install(TARGETS crg_antialias EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})

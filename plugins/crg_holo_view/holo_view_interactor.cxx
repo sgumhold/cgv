@@ -4,6 +4,7 @@
 #include <cgv/gui/dialog.h>
 #include <libs/cg_gamepad/gamepad_server.h>
 #include <cgv_reflect_types/math/fvec.h>
+#include <cgv_reflect_types/media/color.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/scan_enum.h>
@@ -15,7 +16,6 @@
 #include <cgv/gui/mouse_event.h>
 #include <cgv/media/image/image_writer.h>
 #include <cgv/type/variant.h>
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include <stdio.h>
 
@@ -34,10 +34,15 @@ cgv::reflect::enum_reflection_traits<StereoMousePointer> get_reflection_traits(c
 	return cgv::reflect::enum_reflection_traits<StereoMousePointer>(SMP_ENUMS);
 }
 
+cgv::reflect::enum_reflection_traits<holo_view_interactor::HoloMode> get_reflection_traits(const holo_view_interactor::HoloMode&)
+{
+	return cgv::reflect::enum_reflection_traits<holo_view_interactor::HoloMode>("single,quilt,volume");
+}
+
 void holo_view_interactor::set_default_values()
 {
 	stereo_view::set_default_values();
-	eye_distance = 1;
+	eye_distance = 0.3f;
 	two_d_enabled = false;
 }
 
@@ -175,7 +180,7 @@ void holo_view_interactor::timer_event(double t, double dt)
 }
 
 ///
-holo_view_interactor::holo_view_interactor(const char* name) : node(name), quilt_depth_buffer("[D]")
+holo_view_interactor::holo_view_interactor(const char* name) : node(name), quilt_depth_buffer("[D]"), volume_depth_buffer("[D]")
 {
 	enable_messages = true;
 	use_gamepad = true;
@@ -679,6 +684,13 @@ bool holo_view_interactor::handle(event& e)
 			case gamepad::GPK_RIGHT_BUMPER:
 				set_view_orientation("Zy");
 				return true;
+			case 'I':
+				if (ke.get_modifiers() == cgv::gui::EM_SHIFT + cgv::gui::EM_CTRL) {
+					quilt_interpolate = !quilt_interpolate;
+					on_set(&quilt_interpolate);
+					return true;
+				}
+				break;
 			case 'S':
 				if (ke.get_modifiers() == cgv::gui::EM_SHIFT + cgv::gui::EM_CTRL) {
 					holo_mode = HM_SINGLE;
@@ -1240,6 +1252,7 @@ void holo_view_interactor::init_frame(context& ctx)
 			else {
 				for (vi = 0; vi < nr_views; ++vi) {
 					volume_fbo.attach(ctx, volume_tex, vi, 0, 0);
+					glClear(GL_DEPTH_BUFFER_BIT);
 					perform_render_pass(ctx, vi, RP_STEREO);
 				}
 			}
@@ -1367,6 +1380,7 @@ void holo_view_interactor::post_process_surface(cgv::render::context& ctx)
 			prog.set_uniform(ctx, "quilt_nr_rows", quilt_nr_rows);
 			prog.set_uniform(ctx, "quilt_width", quilt_width);
 			prog.set_uniform(ctx, "quilt_height", quilt_height);
+			prog.set_uniform(ctx, "quilt_interpolate", quilt_interpolate);
 			quilt_tex.enable(ctx, 0);
 			prog.set_uniform(ctx, "quilt_tex", 0);
 		}
@@ -1498,7 +1512,6 @@ void holo_view_interactor::create_gui()
 		}
 		if (begin_tree_node("Display", display_calib, false)) {
 			align("\a");			
-			add_member_control(this, "Holo Mode", holo_mode, "dropdown", "enums='single view,quilt,volume'");
 			add_member_control(this, "Width", display_calib.width, "value_slider", "min=1920;max=8192;ticks=true");
 			add_member_control(this, "Height", display_calib.height, "value_slider", "min=1080;max=4096;ticks=true");
 			add_gui("X_min", display_calib.x_min, "", "options='min=0;max=0.1;ticks=true'");
@@ -1528,8 +1541,11 @@ void holo_view_interactor::create_gui()
 			align("\a");
 			add_member_control(this, "Background", quilt_bg_color);
 			add_member_control(this, "Use Offline Texture", quilt_use_offline_texture, "toggle");
+			add_member_control(this, "Width", quilt_width, "value");
+			add_member_control(this, "Height", quilt_height, "value");
 			add_member_control(this, "Columns", quilt_nr_cols, "value_slider", "min=0;max=10;ticks=true");
 			add_member_control(this, "Rows", quilt_nr_rows, "value_slider", "min=0;max=20;ticks=true");
+			add_member_control(this, "Interpolate", quilt_interpolate, "check");
 			add_member_control(this, "Write To File", quilt_write_to_file, "toggle");
 			align("\b");
 			end_tree_node(quilt_bg_color);
@@ -1602,7 +1618,7 @@ void holo_view_interactor::set_default_view()
 /// you must overload this for gui creation
 bool holo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 {
-	return		
+	return
 		srh.reflect_member("enable_messages", enable_messages) &&
 		srh.reflect_member("use_gamepad", use_gamepad) &&
 		srh.reflect_member("gamepad_emulation", gamepad_emulation) &&
@@ -1633,7 +1649,33 @@ bool holo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("two_d_enabled", two_d_enabled) &&
 		srh.reflect_member("show_focus", show_focus) &&
 		srh.reflect_member("stereo_mouse_pointer", stereo_mouse_pointer) &&
-		srh.reflect_member("clip_relative_to_extent", clip_relative_to_extent);
+		srh.reflect_member("clip_relative_to_extent", clip_relative_to_extent) &&
+
+		srh.reflect_member("display_width", display_calib.width) &&
+		srh.reflect_member("display_height", display_calib.height) &&
+		srh.reflect_member("display_x_min", display_calib.x_min) &&
+		srh.reflect_member("display_x_max", display_calib.x_max) &&
+		srh.reflect_member("display_y_min", display_calib.y_min) &&
+		srh.reflect_member("display_y_max", display_calib.y_max) &&
+		srh.reflect_member("display_length", display_calib.length) &&
+		srh.reflect_member("display_step_x", display_calib.step_x) &&
+		srh.reflect_member("display_step_y", display_calib.step_y) &&
+		srh.reflect_member("display_offset", display_calib.offset) &&
+		srh.reflect_member("holo_mode", holo_mode) &&
+		srh.reflect_member("view_width", view_width) &&
+		srh.reflect_member("view_height", view_height) &&
+		srh.reflect_member("nr_views", nr_views) &&
+		srh.reflect_member("view_index", view_index) &&
+		srh.reflect_member("blit_offset_x", blit_offset_x) &&
+		srh.reflect_member("blit_offset_y", blit_offset_y) &&
+		srh.reflect_member("generate_hologram", generate_hologram) &&
+		srh.reflect_member("quilt_bg_color", quilt_bg_color) &&
+		srh.reflect_member("quilt_use_offline_texture", quilt_use_offline_texture) &&
+		srh.reflect_member("quilt_width", quilt_width) &&
+		srh.reflect_member("quilt_height", quilt_height) &&
+		srh.reflect_member("quilt_nr_cols", quilt_nr_cols) &&
+		srh.reflect_member("quilt_nr_rows", quilt_nr_rows) &&
+		srh.reflect_member("quilt_interpolate", quilt_interpolate);
 }
 
 #ifdef REGISTER_SHADER_FILES
