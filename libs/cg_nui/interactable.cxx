@@ -163,8 +163,6 @@ bool cgv::nui::interactable::handle(const cgv::gui::event& e, const cgv::nui::di
 		if (state == state_enum::pointed) {
 			ii_during_focus[dis_info.hid_id].query_point = inter_info.hit_point;
 			ii_during_focus[dis_info.hid_id].hid_position = inter_info.hid_position;
-			// TODO: DEBUG
-			//std::cout << "pointed:  " << inter_info.hid_position << std::endl;
 			ii_during_focus[dis_info.hid_id].hid_direction = inter_info.hid_direction;
 			ii_during_focus[dis_info.hid_id].is_pointing = true;
 			prim_idx = int(inter_info.primitive_index);
@@ -174,8 +172,6 @@ bool cgv::nui::interactable::handle(const cgv::gui::event& e, const cgv::nui::di
 		else if (state == state_enum::triggered && activating_hid_id == dis_info.hid_id) {
 			ii_during_focus[dis_info.hid_id].query_point = inter_info.hit_point;
 			ii_during_focus[dis_info.hid_id].hid_position = inter_info.hid_position;
-			// TODO: DEBUG
-			//std::cout << "triggered:" << inter_info.hid_position << std::endl;
 			ii_during_focus[dis_info.hid_id].hid_direction = inter_info.hid_direction;
 			ii_during_focus[dis_info.hid_id].is_pointing = true;
 			on_triggered_drag();

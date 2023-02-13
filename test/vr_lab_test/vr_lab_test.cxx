@@ -136,17 +136,23 @@ public:
 	bool init(cgv::render::context& ctx)
 	{
 		// Initialize the gizmos of the simple_objects. This has to happen outside of the constructors so that the hierarchy can be traversed.
-		//for (auto object : objects) {
-		//	
-		//}
-
+		
 		// Tests
-		//objects[0]->initialize_gizmos(this->get_parent(), objects[1]); // Funktioniert, aber springt beim Anfassen
-		//objects[1]->initialize_gizmos(this->get_parent(), objects[0]);
-		//objects[0]->initialize_gizmos(this->get_parent(), objects[0]); // Funktioniert.
-		//objects[0]->initialize_gizmos(objects[0], objects[0]); // Keine Interaktion möglich.
-		//objects[0]->initialize_gizmos(objects[1], objects[0]); // Keine Interaktion möglich. Root-Rotation nicht rein.
-		objects[0]->initialize_gizmos(this, objects[0]); // Keine Interaktion möglich.
+
+		// Funktioniert
+		objects[0]->initialize_gizmos(this->get_parent(), objects[0]);
+		//objects[1]->initialize_gizmos(this->get_parent(), objects[1]);
+		//objects[2]->initialize_gizmos(this->get_parent(), objects[2]);
+
+		 // Funktioniert
+		//objects[0]->initialize_gizmos(this->get_parent(), objects[1], false);
+		objects[1]->initialize_gizmos(this->get_parent(), objects[2], false);
+		objects[2]->initialize_gizmos(this->get_parent(), objects[1], false);
+
+		// Keine Interaktion möglich
+		//objects[0]->initialize_gizmos(objects[0], objects[0]);
+		//objects[0]->initialize_gizmos(objects[1], objects[0]); // Root-Rotation nicht rein.
+		//objects[0]->initialize_gizmos(this, objects[0]); // Root ist table
 		
 
 		cgv::render::ref_sphere_renderer(ctx, 1);
