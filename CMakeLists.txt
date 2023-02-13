@@ -67,10 +67,26 @@ if (hasParent)
 endif ()
 
 # setup custom properties
-define_property(TARGET PROPERTY CGVPROP_TYPE BRIEF_DOCS "Indicates the type of component the target represents (e.g. corelib, plugin etc.).")
-define_property(TARGET PROPERTY CGVPROP_NO_EXECUTABLE BRIEF_DOCS "For plugins, indicates that no single executable version should be generated.")
-define_property(TARGET PROPERTY CGVPROP_SHADERPATH BRIEF_DOCS "The list of absolute paths where shaders used by the component are located.")
-define_property(TARGET PROPERTY CGVPROP_ADDITIONAL_CMDLINE_ARGS BRIEF_DOCS "A list of additional command line arguments for launching the plugin (ignored for non-plugin targets).")
+define_property(TARGET
+	PROPERTY CGVPROP_TYPE
+	BRIEF_DOCS "Indicates target component type"
+	FULL_DOCS "Indicates the type of component the target represents (e.g. corelib, plugin etc.)."
+)
+define_property(TARGET
+	PROPERTY CGVPROP_NO_EXECUTABLE
+	BRIEF_DOCS "Disables generating a single executable target for plugins"
+	FULL_DOCS "For plugins, indicates that no single executable version should be generated."
+)
+define_property(TARGET
+	PROPERTY CGVPROP_SHADERPATH
+	BRIEF_DOCS "The shaderpath for this target"
+	FULL_DOCS "The list of absolute paths where shaders used by the component are located."
+)
+define_property(TARGET
+	PROPERTY CGVPROP_ADDITIONAL_CMDLINE_ARGS
+	BRIEF_DOCS "Custom command line arguments for plugins"
+	FULL_DOCS "A list of additional command line arguments for launching the plugin (ignored for non-plugin targets)."
+)
 
 # general compiler options
 if (NOT MSVC)

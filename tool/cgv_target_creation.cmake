@@ -473,7 +473,6 @@ endfunction()
 
 
 
-
 # DEPRECATED - kept for backwards compatibility. To-be-removed!
 function(cgv_create_lib NAME)
 	cmake_parse_arguments(ARGS "CORE_LIB" "" "SOURCES;PPP_SOURCES;SHADER_SOURCES;DEPENDENCIES" ${ARGN})
