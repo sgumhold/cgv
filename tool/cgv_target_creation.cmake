@@ -304,7 +304,7 @@ function(cgv_add_target NAME)
 		# perform shader test
 		# TODO: Currently relies on the hardcoded default shaderpath of the framework. Move to deferred ops
 		#       so the exact shaderpath computed from the transitive dependencies can be used
-		shader_test(${NAME}  ST_FILES ST_INCLUDE ST_INSTALL_DIR ${CGVARG__SHADER_SOURCES})
+		shader_test(${NAME}  ST_FILES ST_INCLUDE ST_INSTALL_DIR SHADER_REG_INCLUDE_FILE ${CGVARG__SHADER_SOURCES})
 
 		install(DIRECTORY ${ST_INSTALL_DIR} DESTINATION ${HEADER_INSTALL_DIR} FILES_MATCHING PATTERN "*.h")
 	endif ()
@@ -397,7 +397,7 @@ function(cgv_add_target NAME)
 		set(FORCE_STATIC_DEFINE "${CGVARG__OVERRIDE_FORCE_STATIC_DEFINE}")
 	endif()
 	set(PRIVATE_STATIC_TARGET_DEFINES "${FORCE_STATIC_DEFINE}" "REGISTER_SHADER_FILES")
-	add_library(${NAME_STATIC} OBJECT ${ALL_SOURCES})
+	add_library(${NAME_STATIC} OBJECT ${ALL_SOURCES} ${SHADER_REG_INCLUDE_FILE})
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_TYPE "${CGVARG__TYPE}")
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_SHADERPATH "${SHADER_PATH}")
 	
@@ -448,16 +448,22 @@ function(cgv_add_target NAME)
 		set_target_properties(${NAME} PROPERTIES CGVPROP_ADDITIONAL_CMDLINE_ARGS "${CGVARG__ADDITIONAL_CMDLINE_ARGS}")
 	endif()
 
-	# schedule deferred ops for plugins
-	if (IS_PLUGIN)
-		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
-	endif()
+	# bin each source file into appropriate IDE filter category
+	source_group(Sources FILES ${CGVARG__SOURCES} ${CGVARG__HEADERS} ${SHADER_REG_INCLUDE_FILE} ${CGVARG__PPP_SOURCES})
+	source_group(Sources/generated FILES ${PPP_FILES})
+	source_group(Shaders FILES ${CGVARG__SHADER_SOURCES})
+	source_group(Shaders/converted FILES ${ST_FILES})
+	source_group(Resources FILES ${CGVARG__RESOURCES} ${CGVARG__AUDIO_RESOURCES})
+	source_group(Resources/converted FILES ${RESOURCE_SRCFILES} ${AUDIO_RESOURCE_SRCFILES})
 
 	# in case of Debug config, set _DEBUG and DEBUG defines for both targets
 	# (for historic reasons, CGV targets expect these instead of relying on NDEBUG)
 	set(DEBUG_COMPILE_DEFS $<$<CONFIG:Debug>:_DEBUG> $<$<CONFIG:Debug>:DEBUG>)
 	target_compile_definitions(${NAME} PRIVATE ${DEBUG_COMPILE_DEFS})
 	target_compile_definitions(${NAME_STATIC} PRIVATE ${DEBUG_COMPILE_DEFS})
+
+	# schedule deferred ops
+	cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
 
 	install(TARGETS ${NAME_STATIC} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 	if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
@@ -507,6 +513,7 @@ function(cgv_create_lib NAME)
 				ST_FILES
 				ST_INCLUDES
 				ST_INSTALL_DIR
+				SHADER_REG_INCLUDE_FILE
 				${ARGS_SHADER_SOURCES})
 
 		install(DIRECTORY ${ST_INSTALL_DIR} DESTINATION ${HEADER_INSTALL_DIR} FILES_MATCHING PATTERN "*.h")
@@ -544,7 +551,7 @@ function(cgv_create_lib NAME)
 	install(TARGETS ${NAME} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 
 	# Static Library
-	add_library(${NAME_STATIC} OBJECT ${ALL_SOURCES})
+	add_library(${NAME_STATIC} OBJECT ${ALL_SOURCES} ${SHADER_REG_INCLUDE_FILE})
 	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC" "REGISTER_SHADER_FILES")
 	foreach (DEPENDENCY ${ARGS_DEPENDENCIES})
 		if (${DEPENDENCY} STREQUAL "${CMAKE_DL_LIBS}")
