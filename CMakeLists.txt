@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
+# CGV Framework top-level project declaration
 project(cgv)
 
 # prelude
@@ -86,7 +87,7 @@ define_property(TARGET
 
 # general compiler options
 if (NOT MSVC)
-    add_compile_options(-Wno-dangling-else -Wno-switch)
+	add_compile_options(-Wno-dangling-else -Wno-switch)
 endif ()
 
 # testing stuff - TODO: find out what it actually does currently
@@ -104,3 +105,8 @@ add_subdirectory(doc)
 
 # install stuff - TODO: found out how the current install system works
 install(FILES cgv-config.cmake DESTINATION .)
+
+# make sure the CGV targets folder structure for IDEs is preserved in including projects
+if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+	set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+endif()
