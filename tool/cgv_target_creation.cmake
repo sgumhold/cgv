@@ -489,7 +489,9 @@ function(cgv_add_target NAME)
 		else()
 			set_target_properties(${NAME} PROPERTIES FOLDER "Lib")
 		endif()
-	elseif (IS_PLUGIN)
+	elseif (IS_PLUGIN AND CGV_IS_CONFIGURING)
+		# we only assign CGV-internal plugins to the plugins filter so application targets
+		# from including projects are immediatly visible
 		if (CGVARG__NO_EXECUTABLE)
 			set_target_properties(${NAME} PROPERTIES FOLDER "Plugin")
 		else()
