@@ -1,13 +1,4 @@
 
-#cgv_create_lib(cgv_oal
-#    SOURCES
-#        lib_begin.h
-#        al_context.h
-#        al_context.cpp
-#    DEPENDENCIES
-#        cgv_math
-#)
-
 cgv_add_target(cgv_oal
 	TYPE library
 	SOURCES
@@ -17,6 +8,7 @@ cgv_add_target(cgv_oal
     DEPENDENCIES
 		cgv_math
 )
+
 # TODO: investigate how to best integrate linking to these imported libs using the CGV CMake pipeline
 target_link_libraries(cgv_oal PUBLIC OpenAL::OpenAL SndFile::sndfile)
 target_link_libraries(cgv_oal_static PUBLIC OpenAL::OpenAL SndFile::sndfile)
