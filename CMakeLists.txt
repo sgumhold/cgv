@@ -46,10 +46,6 @@ cgv_init_cgvoptions()
 option(CGV_BUILD_EXAMPLES "Whether to build the 'examples' plugin which demonstrates various components of the CGV Framework" ON)
 option(CGV_BUILD_TESTS "NOTE: CURRENTLY NOT MAINTAINED!!! Whether to build the tests" OFF)
 
-# preset 3rd-party lib options
-option(BUILD_GMOCK OFF)
-option(INSTALL_GTEST OFF)
-
 # customize build directory
 # - customize executable/DLL/SO and link library locations
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)

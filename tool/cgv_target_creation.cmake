@@ -50,6 +50,22 @@ function(cgv_list_dependencies DEPS_LIST_OUT TARGET_NAME)
 	set(${DEPS_LIST_OUT} "${DEPS}" PARENT_SCOPE)
 endfunction()
 
+# lists all targets defined in the given directory, optionally including subdirectories
+function(cgv_get_all_directory_targets TARGETS_VAR DIRECTORY)
+	cmake_parse_arguments(PARSE_ARGV 2 CGVARG_ "RECURSIVE" "" "")
+
+	set(SUBDIR_TARGETS "")
+	if (CGVARG__RECURSIVE)
+		get_property(SUBDIRS DIRECTORY ${DIRECTORY} PROPERTY SUBDIRECTORIES)
+		foreach(SUBDIR ${SUBDIRS})
+			cgv_get_all_directory_targets(SUBDIR_TARGETS ${SUBDIR} RECURSIVE)
+		endforeach()
+	endif()
+
+	get_property(DIR_TARGETS DIRECTORY ${DIRECTORY} PROPERTY BUILDSYSTEM_TARGETS)
+	set(${TARGETS_VAR} ${SUBDIR_TARGETS} ${DIR_TARGETS} PARENT_SCOPE)
+endfunction()
+
 # checks if the given target is some kind of CGV Framework component, and if yes, optionally returns the type of the component
 function(cgv_is_cgvtarget CHECK_RESULT_OUT TARGET_NAME)
 	cmake_parse_arguments(
@@ -248,7 +264,7 @@ function(cgv_add_target NAME)
 	cmake_parse_arguments(
 		PARSE_ARGV 1 CGVARG_
 		"NO_EXECUTABLE" "TYPE;OVERRIDE_SHARED_EXPORT_DEFINE;OVERRIDE_FORCE_STATIC_DEFINE"
-		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;DEPENDENCIES;LINKTIME_PLUGIN_DEPENDENCIES;ADDITIONAL_CMDLINE_ARGS"
+		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;ADDITIONAL_PRIVATE_DEFINES;ADDITIONAL_PUBLIC_DEFINES;DEPENDENCIES;LINKTIME_PLUGIN_DEPENDENCIES;ADDITIONAL_CMDLINE_ARGS"
 	)
 
 	# prelude
@@ -350,11 +366,14 @@ function(cgv_add_target NAME)
 	set_target_properties(${NAME} PROPERTIES CGVPROP_SHADERPATH "${SHADER_PATH}")
 	set_target_properties(${NAME} PROPERTIES DEFINE_SYMBOL "") # <-- disable CMake's automatic definition of "_EXPORTS" defines for shared libraries
 	# set the _EXPORTS define to the given custom name if any, othewise use the default convention
-	if (CGVARG__OVERRIDE_SHARED_EXPORT_DEFINE)
+	if (NOT IS_STATIC AND CGVARG__OVERRIDE_SHARED_EXPORT_DEFINE)
 		target_compile_definitions(${NAME} PRIVATE "${CGVARG__OVERRIDE_SHARED_EXPORT_DEFINE}")
 	else()
 		target_compile_definitions(${NAME} PRIVATE "${NAME_UPPER}_EXPORTS")
 	endif()
+	# set custom defines
+	target_compile_definitions(${NAME} PRIVATE ${CGVARG__ADDITIONAL_PRIVATE_DEFINES})
+	target_compile_definitions(${NAME} PUBLIC  ${CGVARG__ADDITIONAL_PUBLIC_DEFINES})
 	foreach (DEPENDENCY ${CGVARG__DEPENDENCIES})
 		# find out dependency type
 		cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY} GET_TYPE DEPENDENCY_TYPE)
@@ -396,13 +415,14 @@ function(cgv_add_target NAME)
 	if (CGVARG__OVERRIDE_FORCE_STATIC_DEFINE)
 		set(FORCE_STATIC_DEFINE "${CGVARG__OVERRIDE_FORCE_STATIC_DEFINE}")
 	endif()
-	set(PRIVATE_STATIC_TARGET_DEFINES "${FORCE_STATIC_DEFINE}" "REGISTER_SHADER_FILES")
+	set(PRIVATE_STATIC_TARGET_DEFINES "${FORCE_STATIC_DEFINE}" "REGISTER_SHADER_FILES" "${CGVARG__ADDITIONAL_PRIVATE_DEFINES}")
 	add_library(${NAME_STATIC} OBJECT ${ALL_SOURCES} ${SHADER_REG_INCLUDE_FILE})
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_TYPE "${CGVARG__TYPE}")
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_SHADERPATH "${SHADER_PATH}")
-	
+
 	target_compile_definitions(${NAME_STATIC} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
-	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC")
+	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC" ${CGVARG__ADDITIONAL_PUBLIC_DEFINES})
+
 	if (NOT MSVC)
 		target_link_options(${NAME_STATIC} PUBLIC -Wl,--copy-dt-needed-entries)
 	endif()
@@ -435,7 +455,7 @@ function(cgv_add_target NAME)
 	if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
 		add_executable(${NAME_EXE})
 		set_target_properties(${NAME_EXE} PROPERTIES OUTPUT_NAME "${NAME}")
-		target_compile_definitions(${NAME_EXE} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES} "CGV_FORCE_STATIC")
+		target_compile_definitions(${NAME_EXE} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
 		target_include_directories(
 			${NAME_EXE} PUBLIC
 			"$<BUILD_INTERFACE:${CGV_DIR}>" "$<BUILD_INTERFACE:${CGV_DIR}/libs>" "$<BUILD_INTERFACE:${PPP_INCLUDES}>"
@@ -448,13 +468,36 @@ function(cgv_add_target NAME)
 		set_target_properties(${NAME} PROPERTIES CGVPROP_ADDITIONAL_CMDLINE_ARGS "${CGVARG__ADDITIONAL_CMDLINE_ARGS}")
 	endif()
 
-	# bin each source file into appropriate IDE filter category
+	# IDE fluff
+	# - bin each source file into appropriate IDE filter category
 	source_group(Sources FILES ${CGVARG__SOURCES} ${CGVARG__HEADERS} ${SHADER_REG_INCLUDE_FILE} ${CGVARG__PPP_SOURCES})
 	source_group(Sources/generated FILES ${PPP_FILES})
 	source_group(Shaders FILES ${CGVARG__SHADER_SOURCES})
 	source_group(Shaders/converted FILES ${ST_FILES})
 	source_group(Resources FILES ${CGVARG__RESOURCES} ${CGVARG__AUDIO_RESOURCES})
 	source_group(Resources/converted FILES ${RESOURCE_SRCFILES} ${AUDIO_RESOURCE_SRCFILES})
+	# - assign project-level filter
+	if (IS_CORELIB)
+		if (IS_STATIC)
+			set_target_properties(${NAME} PROPERTIES FOLDER "Core/static")
+		else()
+			set_target_properties(${NAME} PROPERTIES FOLDER "Core")
+		endif()
+	elseif (IS_LIBRARY)
+		if (IS_STATIC)
+			set_target_properties(${NAME} PROPERTIES FOLDER "Lib/static")
+		else()
+			set_target_properties(${NAME} PROPERTIES FOLDER "Lib")
+		endif()
+	elseif (IS_PLUGIN)
+		if (CGVARG__NO_EXECUTABLE)
+			set_target_properties(${NAME} PROPERTIES FOLDER "Plugin")
+		else()
+			set_target_properties(${NAME} PROPERTIES FOLDER "Application Plugin")
+			set_target_properties(${NAME_EXE} PROPERTIES FOLDER "Application Plugin")
+		endif()
+	endif()
+	set_target_properties(${NAME_STATIC} PROPERTIES FOLDER "_obj")
 
 	# in case of Debug config, set _DEBUG and DEBUG defines for both targets
 	# (for historic reasons, CGV targets expect these instead of relying on NDEBUG)
@@ -547,7 +590,6 @@ function(cgv_create_lib NAME)
 				$<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}>)
 	endif ()
 
-	install(TARGETS ${NAME} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 
 	# Static Library
 	add_library(${NAME_STATIC} OBJECT ${ALL_SOURCES} ${SHADER_REG_INCLUDE_FILE})
@@ -568,5 +610,15 @@ function(cgv_create_lib NAME)
 		target_include_directories(${NAME_STATIC} PUBLIC $<BUILD_INTERFACE:${CGV_DIR}/libs>)
 	endif ()
 
+
+	# IDE fluff
+	if (ARGS_CORE_LIB)
+		set_target_properties(${NAME} PROPERTIES FOLDER "Core")
+	else()
+		set_target_properties(${NAME} PROPERTIES FOLDER "Lib")
+	endif()
+	set_target_properties(${NAME_STATIC} PROPERTIES FOLDER "_obj")
+
+	install(TARGETS ${NAME} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 	install(TARGETS ${NAME_STATIC} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 endfunction()
