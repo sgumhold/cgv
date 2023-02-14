@@ -1,8 +1,10 @@
-# preset options
-#option(BUILD_PROGRAMS "" OFF)
-#option(BUILD_EXAMPLES "" OFF)
-#option(BUILD_TESTING "" OFF)
 
+# preset options
+option(BUILD_PROGRAMS "" OFF)
+option(BUILD_EXAMPLES "" OFF)
+option(BUILD_TESTING "" OFF)
+
+# include the libsndfile build tree
 add_subdirectory(libsndfile)
 
 # tack on IDE fluff
