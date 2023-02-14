@@ -130,7 +130,7 @@ endif()
 
 install(TARGETS screen_capture_lite EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 
-add_library(screen_capture_lite_static STATIC
+add_library(screen_capture_lite_static OBJECT
 	include/ScreenCapture.h 
 	include/internal/SCCommon.h 
 	include/internal/ThreadManager.h 
@@ -139,5 +139,6 @@ add_library(screen_capture_lite_static STATIC
 	src/ThreadManager.cpp
 	${SCREEN_CAPTURE_PLATFORM_SRC}
 )
+target_link_libraries(screen_capture_lite_static PUBLIC ${COMMON_LIBRARIES}  Dwmapi)
 
 install(TARGETS screen_capture_lite_static EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})

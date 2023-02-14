@@ -9,7 +9,7 @@
 #include <cgv_proc/terrain_renderer.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
-#include <vr_view_interactor.h>
+#include <plugins/crg_vr_view/vr_view_interactor.h>
 #include <3rd/screen_capture_lite/include/ScreenCapture.h>
 #include <cg_nui/label_manager.h>
 #include <cg_nui/spatial_dispatcher.h>
