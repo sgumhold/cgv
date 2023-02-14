@@ -39,13 +39,10 @@ void* open(const std::string& file_name, const std::string& mode, void* buf, int
 bool exists(const std::string& file_name)
 {
 	void* handle = find_first(file_name);
-	return handle != 0;
-	/*
-	FILE* fp = fopen(file_name.c_str(), "r");
-	if (fp) 
-		fclose(fp);
-	return fp != NULL;
-	*/
+	if (handle == 0)
+		return false;
+	find_quit(handle);
+	return true;
 }
 
 std::string find_recursive(const std::string& path, const std::string& file_name)
@@ -56,8 +53,10 @@ std::string find_recursive(const std::string& path, const std::string& file_name
 	while (h) {
 		if (find_directory(h) && find_name(h) != "." && find_name(h) != "..") {
 			std::string res = find_recursive(path+'/'+find_name(h), file_name);
-			if (!res.empty())
+			if (!res.empty()) {
+				find_quit(h);
 				return res;
+			}
 		}
 		h = find_next(h);
 	}
@@ -185,7 +184,9 @@ size_t size(const std::string& file_name, bool ascii)
 		void* handle = find_first(file_name);
 		if (handle == 0)
 			return (size_t)-1;
-		return find_size(handle);
+		size_t s = find_size(handle);
+		find_quit(handle);
+		return s;
 	}
 	else {
 		FILE* fp = fopen(file_name.c_str(), ascii ? "r" : "rb");
@@ -348,8 +349,7 @@ long long get_last_write_time(const std::string& file_path)
 	if (!handle)
 		return -1;
 	long long time = find_last_write_time(handle);
-	// make sure that internal data structure is removed
-	find_next(handle);
+	find_quit(handle);
 	return time;
 }
 
@@ -393,11 +393,29 @@ void* find_next(void* handle)
 	return fi;
 #else
 	fi->index+=1;
-	if(fi->globResults->gl_pathc > fi->index) return fi;
+	if(fi->globResults->gl_pathc > fi->index)
+		return fi;
+	delete fi->globResults;
+	delete fi;
 	//std::cerr << "Not Implemented" << std::endl;
 	return NULL;
 #endif
 }
+
+///  quit a find procedure and delete heap instance
+void find_quit(void* handle)
+{
+	if (handle == 0)
+		return;
+	FileInfo* fi = (FileInfo*)handle;
+#ifdef _WIN32
+	delete fi;
+#else
+	delete fi->globResults;
+	delete fi;
+#endif
+}
+
 /// return name of currently found file without path
 std::string find_name(void* handle)
 {
