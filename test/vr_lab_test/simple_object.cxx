@@ -102,13 +102,15 @@ void simple_object::initialize_gizmos(cgv::base::node_ptr root, cgv::base::node_
 bool simple_object::_compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx)
 {
 	for (int i = 0; i < 3; ++i)
-		prj_point[i] = std::max(-0.5f * extent[i], std::min(0.5f * extent[i], prj_point[i]));
+		//prj_point[i] = std::max(-0.5f * extent[i], std::min(0.5f * extent[i], prj_point[i]));
+		prj_point[i] = std::max(-0.5f, std::min(0.5f, prj_point[i]));
 	return true;
 }
 
 bool simple_object::_compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx)
 {
-	auto result = cgv::math::ray_box_intersection(ray_start, ray_direction, -0.5f * extent, 0.5f * extent);
+	//auto result = cgv::math::ray_box_intersection(ray_start, ray_direction, -0.5f * extent, 0.5f * extent);
+	auto result = cgv::math::ray_box_intersection(ray_start, ray_direction, vec3(-0.5f), vec3(0.5f));
 	if (result.hit) {
 		hit_param = result.t_near;
 		return true;
@@ -160,7 +162,8 @@ void simple_object::draw(cgv::render::context& ctx)
 	br.set_position(ctx, vec3(0.0f));
 	br.set_color_array(ctx, &color, 1);
 	br.set_secondary_color(ctx, get_modified_color(color));
-	br.set_extent(ctx, extent);
+	//br.set_extent(ctx, extent);
+	br.set_extent(ctx, vec3(1.0));
 	br.render(ctx, 0, 1);
 }
 
@@ -211,11 +214,13 @@ void simple_object::create_gui()
 
 const cgv::render::render_types::mat4& simple_object::get_model_transform() const
 {
+	//return transforming::construct_transform_from_components(get_position(), get_rotation(), vec3(1.0f));
 	return transforming::construct_transform_from_components(get_position(), get_rotation(), get_scale());
 }
 
 const cgv::render::render_types::mat4& simple_object::get_inverse_model_transform() const
 {
+	//const mat4& transform = transforming::construct_inverse_transform_from_components(-1.0f * get_position(), get_rotation().inverse(), vec3(1.0));
 	const mat4& transform = transforming::construct_inverse_transform_from_components(-1.0f * get_position(), get_rotation().inverse(), vec3(1.0) / get_scale());
 	return transform;
 }
