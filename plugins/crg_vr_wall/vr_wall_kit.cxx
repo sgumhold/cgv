@@ -1,7 +1,7 @@
 #include "vr_wall_kit.h"
 #include <cgv/math/ftransform.h>
 #include <cgv_gl/gl/gl.h>
-#include <vr_driver.h>
+#include <libs/vr/vr_driver.h>
 ///
 namespace vr {
 	void vr_wall_kit::detach()
