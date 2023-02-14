@@ -8,6 +8,9 @@ include(cgv-options.cmake)
 set(BUILD_SHARED_LIBS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED 17)
 
+# make sure we know that we are currently configuring the CGV Framework
+set(CGV_IS_CONFIGURING TRUE)
+
 # setup relevant directories
 # - "the" CGV directory
 set(CGV_DIR ${PROJECT_SOURCE_DIR})
@@ -105,6 +108,9 @@ add_subdirectory(doc)
 
 # install stuff - TODO: found out how the current install system works
 install(FILES cgv-config.cmake DESTINATION .)
+
+# we're done configuring the CGV Framework
+unset(CGV_IS_CONFIGURING)
 
 # make sure the CGV targets folder structure for IDEs is preserved in including projects
 if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
