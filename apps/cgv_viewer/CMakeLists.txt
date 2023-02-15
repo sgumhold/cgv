@@ -7,15 +7,18 @@ target_link_libraries(cgv_viewer PRIVATE
         cgv_base
         cgv_gui
         cgv_render)
+set_target_properties(cgv_viewer PROPERTIES CGVPROP_TYPE "app")
+set_target_properties(cgv_viewer PROPERTIES FOLDER "App")
 install(TARGETS cgv_viewer EXPORT cgv_viewer DESTINATION ${CGV_BIN_DEST})
 
-add_library(cgv_viewer_main STATIC main.cxx ${IMG_SOURCES})
+add_library(cgv_viewer_main OBJECT main.cxx ${IMG_SOURCES})
 target_compile_definitions(cgv_viewer_main PRIVATE CGV_FORCE_STATIC)
 target_link_libraries(cgv_viewer_main PRIVATE
         cgv_signal_static
         cgv_base_static
         cgv_gui_static
         cgv_render_static)
+set_target_properties(cgv_viewer_main PROPERTIES FOLDER "_obj")
 install(TARGETS cgv_viewer_main EXPORT cgv_viewer DESTINATION ${CGV_BIN_DEST})
 
 install(EXPORT cgv_viewer DESTINATION ${CGV_BIN_DEST})
