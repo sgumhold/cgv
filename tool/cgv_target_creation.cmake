@@ -490,9 +490,14 @@ function(cgv_add_target NAME)
 			set_target_properties(${NAME} PROPERTIES FOLDER "Lib")
 		endif()
 	elseif (IS_PLUGIN AND CGV_IS_CONFIGURING)
-		# we only assign CGV-internal plugins to the plugins filter so application targets
-		# from including projects are immediatly visible
-		if (CGVARG__NO_EXECUTABLE)
+		# we only assign CGV-internal plugins to the plugins (or tests, for that matter) filter so
+		# application targets from external projects that use the framework are immediatly visible
+		if (CGV_CONFIGURING_TESTS)
+			set_target_properties(${NAME} PROPERTIES FOLDER "Tests")
+			if (NOT CGVARG__NO_EXECUTABLE)
+				set_target_properties(${NAME_EXE} PROPERTIES FOLDER "Tests")
+			endif()
+		elseif (CGVARG__NO_EXECUTABLE)
 			set_target_properties(${NAME} PROPERTIES FOLDER "Plugin")
 		else()
 			set_target_properties(${NAME} PROPERTIES FOLDER "Application Plugin")
@@ -515,6 +520,7 @@ function(cgv_add_target NAME)
 		install(TARGETS ${NAME_EXE} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 	endif()
 endfunction()
+
 
 
 
