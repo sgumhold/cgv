@@ -12,6 +12,10 @@ using namespace cgv::utils;
 namespace cgv {
 	namespace render {
 
+static bool use_cache = false;
+cgv::utils::simple_cache<std::string, std::vector<std::string>> shader_program::files_cache;
+cgv::utils::simple_cache<std::string, std::string> shader_program::program_file_cache;
+
 /// attach a list of files
 bool shader_program::attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_define_map& defines)
 {
@@ -26,16 +30,52 @@ bool shader_program::attach_files(const context& ctx, const std::vector<std::str
 
 bool shader_program::collect_file(const std::string& file_name, std::vector<std::string>& file_names)
 {
+	if(use_cache) {
+		auto it = files_cache.find(file_name);
+		if(files_cache.valid(it)) {
+			const std::vector<std::string>& cached_file_names = files_cache.value(it);
+			for(size_t i = 0; i < cached_file_names.size(); ++i)
+				file_names.push_back(cached_file_names[i]);
+
+			return !cached_file_names.empty();
+		}
+	}
+
+	std::vector<std::string> collected_file_names;
+
 	std::string fn = shader_code::find_file(file_name);
+	bool found = false;
+
 	if (!fn.empty()) {
 		file_names.push_back(fn);
-		return true;
+		if(use_cache) {
+			collected_file_names.push_back(fn);
+		}
+		found = true;
 	}
-	return false;
+
+	if(use_cache) {
+		files_cache.cache(file_name, collected_file_names);
+	}
+
+	return found;
 }
 
 bool shader_program::collect_files(const std::string& base_name, std::vector<std::string>& file_names)
 {
+	if(use_cache) {
+		auto it = files_cache.find(base_name);
+		if(files_cache.valid(it)) {
+			const std::vector<std::string>& cached_file_names = files_cache.value(it);
+			for(size_t i = 0; i < cached_file_names.size(); ++i)
+				file_names.push_back(cached_file_names[i]);
+
+			return !cached_file_names.empty();
+		}
+	}
+
+	std::vector<std::string> collected_file_names;
+	
 	const char* exts[] = { "glvs", "glgs", "glfs", "glcs", "gltc", "glte", "pglvs", "pglfs", "pglgs", "pglcs", "pgltc", "pglte", 0 };
 	const char** iter = exts;
 	bool added_file = false;
@@ -43,12 +83,22 @@ bool shader_program::collect_files(const std::string& base_name, std::vector<std
 		std::string fn = shader_code::find_file(base_name+"."+*iter);
 		if (!fn.empty()) {
 			file_names.push_back(fn);
+			
+			if(use_cache) {
+				collected_file_names.push_back(fn);
+			}
+
 			added_file = true;
 		}
 		++iter;
 	}
 	if(!added_file)
 		std::cerr << "could not find shader file " << base_name.c_str() << std::endl;
+
+	if(use_cache) {
+		files_cache.cache(base_name, collected_file_names);
+	}
+
 	return added_file;
 }
 
@@ -233,7 +283,20 @@ bool shader_program::attach_dir(const context& ctx, const std::string& dir_name,
 }
 bool shader_program::open_program_file(std::string& file_name, std::string& content, std::vector<line>& lines, std::string* last_error_ptr)
 {
-	std::string fn = shader_code::find_file(file_name);
+	std::string fn = "";
+
+	if(use_cache) {
+		auto it = program_file_cache.find(file_name);
+		if(program_file_cache.valid(it)) {	
+			fn = program_file_cache.value(it);
+		} else {
+			fn = shader_code::find_file(file_name);
+			program_file_cache.cache(file_name, fn);
+		}
+	} else {
+		fn = shader_code::find_file(file_name);
+	}
+
 	if (fn.empty()) {
 		if (last_error_ptr)
 			*last_error_ptr = "could not find shader program file " + file_name;
@@ -422,8 +485,10 @@ bool shader_program::build_program(const context& ctx, const std::string& file_n
 {
 	if (!(is_created() || create(ctx)))
 		return false;
+
 	if (!attach_program(ctx, file_name, show_error, defines))
 		return false;
+
 	if (!link(ctx, show_error)) {
 		if (show_error) {
 			std::string fn = shader_code::find_file(file_name);
@@ -437,6 +502,7 @@ bool shader_program::build_program(const context& ctx, const std::string& file_n
 		}
 		return false;
 	}
+
 	return true;
 }
 
