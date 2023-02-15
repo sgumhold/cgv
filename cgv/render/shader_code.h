@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv/render/context.h>
+#include <cgv/utils/simple_cache.h>
 
 #include "lib_begin.h"
 
@@ -88,6 +89,8 @@ public:
 	}
 
 protected:
+	static cgv::utils::simple_cache<std::string, std::string> shader_code_cache;
+
 	/// store the shader type
 	ShaderType st;
 

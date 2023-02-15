@@ -20,6 +20,9 @@ using namespace cgv::base;
 namespace cgv {
 	namespace render {
 
+static bool use_cache = false;
+cgv::utils::simple_cache<std::string, std::string> shader_code::shader_code_cache;
+
 shader_config::shader_config()
 {
 	trace_file_names = false;
@@ -290,12 +293,25 @@ bool shader_code::read_code(const context& ctx, const std::string &file_name, Sh
 	if (st == ST_DETECT)
 		st = detect_shader_type(file_name);
 
-	std::string source = read_code_file(file_name, &last_error);
+	std::string source = "";
+
+	if(use_cache) {
+		auto it = shader_code_cache.find(file_name);
+
+		if(shader_code_cache.valid(it)) {
+			source = shader_code_cache.value(it);
+		} else {
+			source = read_code_file(file_name, &last_error);
+			shader_code_cache.cache(file_name, source);
+		}
+	} else {
+		source = read_code_file(file_name, &last_error);
+	}
 
 	if(!defines.empty()) {
 		set_defines(source, defines);
 	}
-
+	
 	if (st == ST_VERTEX && ctx.get_gpu_vendor_id() == GPUVendorID::GPU_VENDOR_AMD) {
 		set_vertex_attrib_locations(source);
 	}
@@ -411,7 +427,7 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 		}
 	}
 
-	// return if the shader shall not be upgraded
+	// return if the shader should not be upgraded
 	if(no_upgrade)
 		return;
 
@@ -550,11 +566,13 @@ bool shader_code::read_and_compile(const context& ctx, const std::string &file_n
 {
 	if (!read_code(ctx,file_name,st,defines))
 		return false;
+
 	if (!compile(ctx)) {
 		if (show_error)
 			std::cerr << get_last_error(file_name, last_error).c_str() << std::endl;
 		return false;
 	}
+
 	return true;
 }
 
