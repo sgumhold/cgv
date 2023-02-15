@@ -7,7 +7,6 @@
 #include <cgv/gui/mouse_event.h>
 #include <cgv/render/view.h>
 #include <cgv/type/variant.h>
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include <cgv_gl/gl/gl.h>
 #include <stdio.h>

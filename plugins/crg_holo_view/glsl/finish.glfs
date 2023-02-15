@@ -9,7 +9,7 @@ uniform vec3 y_min = vec3(10.0f);
 uniform vec3 y_max = vec3(2150.0f);
 
 uniform float length = 42.8996f;
-uniform float step_x = 35.3762;
+uniform float step_x = 35.3762f;
 uniform float step_y = 1.0f;
 uniform vec3 offset = vec3(42.4, 39.8f, 37.2f);
 
