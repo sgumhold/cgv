@@ -182,7 +182,7 @@ void color_selector::init_frame(cgv::render::context& ctx) {
 		opacity_bg_style.texcoord_scaling = vec2(1.0f, static_cast<float>(h) / static_cast<float>(w));
 
 		ivec2 text_position = ivec2(layout.preview_rect.b().x() + 10, layout.preview_rect.y() + 5);
-		for(size_t i = 0; i < texts.size(); ++i) {
+		for(unsigned i = 0; i < texts.size(); ++i) {
 			texts.set_position(i, text_position);
 			text_position.x() += i & 1 ? 15 : 40;
 		}

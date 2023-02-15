@@ -1865,6 +1865,10 @@ void render_component::put_id_void(void* ptr) const
 	ctx_ptr->put_id(handle, ptr);
 }
 
+render_buffer_base::render_buffer_base()
+{
+}
+
 /// initialize members
 texture_base::texture_base(TextureType _tt)
 {
@@ -2139,7 +2143,7 @@ bool context::frame_buffer_create(frame_buffer_base& fbb) const
 	return true;
 }
 
-bool context::frame_buffer_attach(frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) const
+bool context::frame_buffer_attach(frame_buffer_base& fbb, const render_buffer_base& rb, bool is_depth, int i) const
 {
 	if (fbb.handle == 0) {
 		error("gl_context::frame_buffer_attach: attempt to attach to frame buffer that is not created", &fbb);
