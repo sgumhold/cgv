@@ -94,7 +94,7 @@ protected:
 	bool shader_program_enable(shader_program_base& spb);
 	bool shader_program_disable(shader_program_base& spb);
 	void shader_program_detach(shader_program_base& spb, const render_component& sc) const;
-	bool shader_program_destruct(shader_program_base& spb);
+	bool shader_program_destruct(shader_program_base& spb) const;
 
 	int  get_uniform_location(const shader_program_base& spb, const std::string& name) const;
 	bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const;

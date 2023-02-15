@@ -2478,7 +2478,7 @@ bool gl_context::shader_program_disable(shader_program_base& spb)
 	return true;
 }
 
-bool gl_context::shader_program_destruct(shader_program_base& spb)
+bool gl_context::shader_program_destruct(shader_program_base& spb) const
 {
 	if (!context::shader_program_destruct(spb))
 		return false;
