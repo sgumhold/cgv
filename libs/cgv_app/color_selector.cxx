@@ -18,10 +18,6 @@ color_selector::color_selector() {
 	set_overlay_margin(ivec2(-3));
 	set_overlay_size(ivec2(layout.size));
 	
-	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
-	register_shader("circle", cgv::g2d::canvas::shaders_2d::circle);
-	register_shader("grid", cgv::g2d::canvas::shaders_2d::grid);
-	
 	selector_handles.set_drag_callback(std::bind(&color_selector::handle_selector_drag, this));
 	selector_handles.set_use_individual_constraints(true);
 }
@@ -115,6 +111,10 @@ void color_selector::on_set(void* member_ptr) {
 }
 
 bool color_selector::init(cgv::render::context& ctx) {
+	
+	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
+	register_shader("circle", cgv::g2d::canvas::shaders_2d::circle);
+	register_shader("grid", cgv::g2d::canvas::shaders_2d::grid);
 	
 	bool success = canvas_overlay::init(ctx);
 

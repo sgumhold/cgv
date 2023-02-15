@@ -20,8 +20,6 @@ color_map_legend::color_map_legend() {
 	set_overlay_margin(ivec2(-3));
 	set_overlay_size(layout.total_size);
 
-	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
-
 	tick_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::rectangle);
 
 	title = "";
@@ -97,6 +95,8 @@ void color_map_legend::on_set(void* member_ptr) {
 }
 
 bool color_map_legend::init(cgv::render::context& ctx) {
+
+	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
 
 	bool success = canvas_overlay::init(ctx);
 
