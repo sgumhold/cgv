@@ -88,7 +88,7 @@ add_library(screen_capture_lite SHARED
  )
 set_target_properties(screen_capture_lite PROPERTIES DEFINE_SYMBOL SC_LITE_DLL)
 if(WIN32) 
-	target_link_libraries(screen_capture_lite ${COMMON_LIBRARIES}  Dwmapi)
+	target_link_libraries(screen_capture_lite PRIVATE ${COMMON_LIBRARIES}  Dwmapi)
 	install (FILES $<TARGET_PDB_FILE:screen_capture_lite> DESTINATION bin OPTIONAL)
 elseif(APPLE)
 	find_package(Threads REQUIRED)
@@ -100,7 +100,7 @@ elseif(APPLE)
     find_library(corevideo_lib CoreVideo REQUIRED)
 
     target_link_libraries(
-        screen_capture_lite
+        screen_capture_lite PRIVATE
         ${CMAKE_THREAD_LIBS_INIT}
         ${corefoundation_lib}
         ${cocoa_lib}
@@ -124,11 +124,9 @@ else()
 		${X11_XTest_LIB}
 		${X11_Xinerama_LIB}
 		${CMAKE_THREAD_LIBS_INIT}
-	)	
-	target_link_libraries(screen_capture_lite ${COMMON_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} dl)
+	)
+	target_link_libraries(screen_capture_lite PRIVATE dl ${COMMON_LIBRARIES} ${screen_capture_lite_PLATFORM_LIBS})
 endif()
-
-install(TARGETS screen_capture_lite EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 
 add_library(screen_capture_lite_static OBJECT
 	include/ScreenCapture.h 
@@ -139,6 +137,22 @@ add_library(screen_capture_lite_static OBJECT
 	src/ThreadManager.cpp
 	${SCREEN_CAPTURE_PLATFORM_SRC}
 )
-target_link_libraries(screen_capture_lite_static PUBLIC ${COMMON_LIBRARIES}  Dwmapi)
+if(WIN32)
+	target_link_libraries(screen_capture_lite_static PUBLIC ${COMMON_LIBRARIES} Dwmapi)
+elseif(APPLE)
+   target_link_libraries(
+        screen_capture_lite_static PUBLIC
+        ${CMAKE_THREAD_LIBS_INIT}
+        ${corefoundation_lib}
+        ${cocoa_lib}
+        ${coremedia_lib}
+        ${avfoundation_lib}
+        ${coregraphics_lib}
+        ${corevideo_lib}
+    )
+else()
+	target_link_libraries(screen_capture_lite_static PRIVATE dl ${COMMON_LIBRARIES} ${screen_capture_lite_PLATFORM_LIBS})
+endif()
 
+install(TARGETS screen_capture_lite EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 install(TARGETS screen_capture_lite_static EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
