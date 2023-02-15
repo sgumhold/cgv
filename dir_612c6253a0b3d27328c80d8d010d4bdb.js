@@ -14,6 +14,7 @@ var dir_612c6253a0b3d27328c80d8d010d4bdb =
     [ "progression.h", "progression_8h_source.html", null ],
     [ "scan.h", "scan_8h.html", "scan_8h" ],
     [ "scan_enum.h", "scan__enum_8h.html", "scan__enum_8h" ],
+    [ "simple_cache.h", "simple__cache_8h.html", null ],
     [ "statistics.h", "utils_2statistics_8h_source.html", null ],
     [ "stopwatch.h", "stopwatch_8h_source.html", null ],
     [ "token.h", "token_8h_source.html", null ],
