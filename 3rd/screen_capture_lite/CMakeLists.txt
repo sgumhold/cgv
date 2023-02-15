@@ -121,7 +121,6 @@ else()
 	set(screen_capture_lite_PLATFORM_LIBS
 		${X11_LIBRARIES}
 		${X11_Xfixes_LIB}
-		${X11_XTest_LIB}
 		${X11_Xinerama_LIB}
 		${CMAKE_THREAD_LIBS_INIT}
 	)
