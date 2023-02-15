@@ -1,7 +1,12 @@
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 file(GLOB_RECURSE IMAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.png")
-cgv_prepare_resources(${CMAKE_SOURCE_DIR} IMG_SOURCES ${IMAGES})
-add_library(cg_msdf ${SOURCES} ${IMG_SOURCES} ${IMAGES})
-target_compile_definitions(cg_msdf PUBLIC MSDF_EXPORTS)
-target_link_libraries(cg_msdf cgv_base)
+
+cgv_add_target(cg_msdf
+	TYPE plugin NO_EXECUTABLE
+	SOURCES ${SOURCES}
+	RESOURCES ${IMAGES}
+	DEPENDENCIES cgv_base
+	OVERRIDE_SHARED_EXPORT_DEFINE MSDF_EXPORTS
+)
+
 install(TARGETS cg_msdf EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
