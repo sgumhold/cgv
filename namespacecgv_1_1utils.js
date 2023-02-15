@@ -26,6 +26,7 @@ var namespacecgv_1_1utils =
       [ "find_name", "file_8cxx.html#a4a49559bf8aaf0ff345d08caea69baf4", null ],
       [ "find_next", "file_8cxx.html#abf4eaee45adba8557d98435c44a005d8", null ],
       [ "find_normal", "file_8cxx.html#a926217dc8dd947505474357f67194cd5", null ],
+      [ "find_quit", "file_8cxx.html#a22d3fb8539b0e941ea4df29b9d230595", null ],
       [ "find_read_only", "file_8cxx.html#aed8726dd7fa13d48ecb5a38205ef504d", null ],
       [ "find_size", "file_8cxx.html#a25bb4f840de4ef7ac8a23b34288a20e7", null ],
       [ "find_system", "file_8cxx.html#ae987e08d19bc6242fa14615c74cc39a1", null ],

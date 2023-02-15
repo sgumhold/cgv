@@ -390,7 +390,9 @@ var hierarchy =
       [ "cgv::render::frame_buffer_base", "classcgv_1_1render_1_1frame__buffer__base.html", [
         [ "cgv::render::frame_buffer", "classcgv_1_1render_1_1frame__buffer.html", null ]
       ] ],
-      [ "cgv::render::render_buffer", "classcgv_1_1render_1_1render__buffer.html", null ],
+      [ "cgv::render::render_buffer_base", "classcgv_1_1render_1_1render__buffer__base.html", [
+        [ "cgv::render::render_buffer", "classcgv_1_1render_1_1render__buffer.html", null ]
+      ] ],
       [ "cgv::render::shader_code", "classcgv_1_1render_1_1shader__code.html", null ],
       [ "cgv::render::shader_program_base", "classcgv_1_1render_1_1shader__program__base.html", [
         [ "cgv::render::shader_program", "classcgv_1_1render_1_1shader__program.html", null ]
