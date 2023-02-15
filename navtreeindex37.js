@@ -1,7 +1,5 @@
 var NAVTREEINDEX37 =
 {
-"libs_2cgv__gl_2gl_2lib__begin_8h_source.html":[12,0,1,2,0,11],
-"libs_2cgv__oal_2lib__begin_8h_source.html":[12,0,1,3,1],
 "libs_2gamepad_2lib__begin_8h_source.html":[12,0,1,4,2],
 "libs_2plot_2lib__begin_8h_source.html":[12,0,1,5,1],
 "libs_2vr_2lib__begin_8h_source.html":[12,0,1,6,1],
@@ -249,5 +247,7 @@ var NAVTREEINDEX37 =
 "namespacecgv_1_1gui.html#a8c92a55911d18de7ab802b3be6d65df1a3e057dbf8bce2eb06f36cabf0528a1d7":[10,0,0,4,62,41],
 "namespacecgv_1_1gui.html#a8c92a55911d18de7ab802b3be6d65df1a47b2f532adb6f734c26c7fa5d457c703":[10,0,0,4,62,8],
 "namespacecgv_1_1gui.html#a8c92a55911d18de7ab802b3be6d65df1a4830e6b5f3a6b5c8f49ed8f2ebcb8153":[10,0,0,4,62,43],
-"namespacecgv_1_1gui.html#a8c92a55911d18de7ab802b3be6d65df1a4a152402fb5cd277437c48f5c904deb6":[10,0,0,4,62,7]
+"namespacecgv_1_1gui.html#a8c92a55911d18de7ab802b3be6d65df1a4a152402fb5cd277437c48f5c904deb6":[10,0,0,4,62,7],
+"namespacecgv_1_1gui.html#a8c92a55911d18de7ab802b3be6d65df1a4e231b2a6892a3d6b4234440a376868b":[10,0,0,4,62,44],
+"namespacecgv_1_1gui.html#a8c92a55911d18de7ab802b3be6d65df1a4fc56dffcabd85b198929c38f3868952":[10,0,0,4,62,56]
 };

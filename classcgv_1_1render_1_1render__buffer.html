@@ -100,9 +100,10 @@ Inheritance diagram for cgv::render::render_buffer:</div>
  <div class="center">
   <img src="classcgv_1_1render_1_1render__buffer.png" usemap="#cgv::render::render_5Fbuffer_map" alt=""/>
   <map id="cgv::render::render_5Fbuffer_map" name="cgv::render::render_5Fbuffer_map">
-<area href="classcgv_1_1render_1_1render__component.html" title="base interface for all render components" alt="cgv::render::render_component" shape="rect" coords="0,56,189,80"/>
-<area href="classcgv_1_1data_1_1component__format.html" alt="cgv::data::component_format" shape="rect" coords="199,56,388,80"/>
-<area href="classcgv_1_1data_1_1packing__info.html" alt="cgv::data::packing_info" shape="rect" coords="199,0,388,24"/>
+<area href="classcgv_1_1render_1_1render__buffer__base.html" title="base interface for a render_buffer" alt="cgv::render::render_buffer_base" shape="rect" coords="0,56,196,80"/>
+<area href="classcgv_1_1data_1_1component__format.html" alt="cgv::data::component_format" shape="rect" coords="206,56,402,80"/>
+<area href="classcgv_1_1render_1_1render__component.html" title="base interface for all render components" alt="cgv::render::render_component" shape="rect" coords="0,0,196,24"/>
+<area href="classcgv_1_1data_1_1packing__info.html" alt="cgv::data::packing_info" shape="rect" coords="206,0,402,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -112,6 +113,10 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__buffer.html#a36c6cf8e12ab3605a838d94ebe2961bb">render_buffer</a> (const std::string &amp;description=&quot;[R,G,B,A]&quot;)</td></tr>
 <tr class="memdesc:a36c6cf8e12ab3605a838d94ebe2961bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct from description of component format, where the default format specifies a color buffer with alpha channel <br /></td></tr>
 <tr class="separator:a36c6cf8e12ab3605a838d94ebe2961bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5136ed68024528d8b0c40292f454004f"><td class="memItemLeft" align="right" valign="top"><a id="a5136ed68024528d8b0c40292f454004f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__buffer.html#a5136ed68024528d8b0c40292f454004f">set_nr_multi_samples</a> (unsigned _nr_samples)</td></tr>
+<tr class="memdesc:a5136ed68024528d8b0c40292f454004f"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the number of multi samples, which should be done before create <br /></td></tr>
+<tr class="separator:a5136ed68024528d8b0c40292f454004f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca34e60aa09b5b16ff81451648dc1c28"><td class="memItemLeft" align="right" valign="top"><a id="aca34e60aa09b5b16ff81451648dc1c28"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__buffer.html#aca34e60aa09b5b16ff81451648dc1c28">destruct</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:aca34e60aa09b5b16ff81451648dc1c28"><td class="mdescLeft">&#160;</td><td class="mdescRight">destruct the render buffer <br /></td></tr>
@@ -134,6 +139,14 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__buffer.html#a74a67ca9c56a4f4d9c0d7910a67e7f17">get_height</a> () const</td></tr>
 <tr class="memdesc:a74a67ca9c56a4f4d9c0d7910a67e7f17"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the height in pixels of the buffer <br /></td></tr>
 <tr class="separator:a74a67ca9c56a4f4d9c0d7910a67e7f17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a834dd99743ce8c8c34f6888b44da1f35"><td class="memItemLeft" align="right" valign="top"><a id="a834dd99743ce8c8c34f6888b44da1f35"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__buffer.html#a834dd99743ce8c8c34f6888b44da1f35">is_multi_buffer</a> () const</td></tr>
+<tr class="memdesc:a834dd99743ce8c8c34f6888b44da1f35"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether this buffer is a multi sample buffer <br /></td></tr>
+<tr class="separator:a834dd99743ce8c8c34f6888b44da1f35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf37a36e3dc09cc41971f7a9f48e333f"><td class="memItemLeft" align="right" valign="top"><a id="abf37a36e3dc09cc41971f7a9f48e333f"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__buffer.html#abf37a36e3dc09cc41971f7a9f48e333f">get_nr_multi_samples</a> () const</td></tr>
+<tr class="memdesc:abf37a36e3dc09cc41971f7a9f48e333f"><td class="mdescLeft">&#160;</td><td class="mdescRight">return number of multi samples <br /></td></tr>
+<tr class="separator:abf37a36e3dc09cc41971f7a9f48e333f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d24d7ec742116fe2c934f196d656e2c"><td class="memItemLeft" align="right" valign="top"><a id="a3d24d7ec742116fe2c934f196d656e2c"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__buffer.html#a3d24d7ec742116fe2c934f196d656e2c">is_depth_buffer</a> () const</td></tr>
 <tr class="memdesc:a3d24d7ec742116fe2c934f196d656e2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether the component format corresponds to a depth buffer format <br /></td></tr>

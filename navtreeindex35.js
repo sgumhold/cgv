@@ -1,8 +1,5 @@
 var NAVTREEINDEX35 =
 {
-"classvr_1_1vr__kit.html#af302f93d6029234bf2b0b8dd603e58da":[11,0,3,13,27],
-"classvr_1_1vr__kit.html#af4bb32f982be8eeebaeb6b7b95cb6159":[11,0,3,13,22],
-"classvr_1_1vr__log.html":[11,0,3,14],
 "classvr_1_1vr__log.html#a0492ee8d0e1c7867d0a9bc01dfae38e4":[11,0,3,14,14],
 "classvr_1_1vr__log.html#a0552924c9c708e0b6eaa2ffc667fb5d7":[11,0,3,14,18],
 "classvr_1_1vr__log.html#a084f4505cdb9967f3ee9a3d4aa572767":[11,0,3,14,37],
@@ -249,5 +246,8 @@ var NAVTREEINDEX35 =
 "drawable_8h_source.html":[12,0,0,10,6],
 "drop__const_8h_source.html":[12,0,0,12,2,1],
 "drop__pointer_8h_source.html":[12,0,0,12,2,2],
-"drop__ref_8h_source.html":[12,0,0,12,2,3]
+"drop__ref_8h_source.html":[12,0,0,12,2,3],
+"dual__contouring_8h_source.html":[12,0,0,6,3,2],
+"dynamic__priority__queue_8h_source.html":[12,0,0,2,5],
+"eig_8h_source.html":[12,0,0,5,10]
 };

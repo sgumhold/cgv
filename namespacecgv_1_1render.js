@@ -6,6 +6,7 @@ var namespacecgv_1_1render =
     [ "clipped_view", "classcgv_1_1render_1_1clipped__view.html", "classcgv_1_1render_1_1clipped__view" ],
     [ "type_descriptor", "structcgv_1_1render_1_1type__descriptor.html", "structcgv_1_1render_1_1type__descriptor" ],
     [ "render_component", "classcgv_1_1render_1_1render__component.html", "classcgv_1_1render_1_1render__component" ],
+    [ "render_buffer_base", "classcgv_1_1render_1_1render__buffer__base.html", "classcgv_1_1render_1_1render__buffer__base" ],
     [ "texture_base", "classcgv_1_1render_1_1texture__base.html", "classcgv_1_1render_1_1texture__base" ],
     [ "shader_program_base", "classcgv_1_1render_1_1shader__program__base.html", "classcgv_1_1render_1_1shader__program__base" ],
     [ "attribute_array_binding_base", "classcgv_1_1render_1_1attribute__array__binding__base.html", "classcgv_1_1render_1_1attribute__array__binding__base" ],
