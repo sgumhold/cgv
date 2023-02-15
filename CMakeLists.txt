@@ -48,7 +48,7 @@ cgv_define_option(
 cgv_init_cgvoptions()
 # - CMake-only CGV-related options
 option(CGV_BUILD_EXAMPLES "Whether to build the 'examples' plugin which demonstrates various components of the CGV Framework" ON)
-option(CGV_BUILD_TESTS "NOTE: CURRENTLY NOT MAINTAINED!!! Whether to build the tests" OFF)
+option(CGV_BUILD_TESTS "Whether to build the test plugins" OFF)
 
 # customize build directory
 # - customize executable/DLL/SO and link library locations
