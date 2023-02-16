@@ -30,15 +30,19 @@ cgv_add_target(examples
 		cg_ext cg_fltk cg_icons cg_meta cmi_io cgv_proc cmf_tt_gl_font crg_antialias crg_depth_of_field
 		crg_grid crg_light crg_bg crg_stereo_view ${AUDIO_DEPENDENCIES} ${WINDOWS_DEPENDENCIES}
 
+	# we are not using symbols from other plugins directly anywhere in the examples code, but if we did, we could specify them
+	# here so the linker would know to look for these symbols in the import libs / shared objects of the listed plugins
+	# LINKTIME_PLUGIN_DEPENDENCIES crg_bg
+
 	ADDITIONAL_CMDLINE_ARGS
 		"gui:\"${CMAKE_CURRENT_LIST_DIR}/examples.gui\"" "config:\"${CMAKE_CURRENT_LIST_DIR}/config.def\""
 
-	# we are not overriding the default preprocesser define indicating that the shared library is being
-	# build and symbols should be exported, but if we wanted to, we could
+	# we are not overriding the default preprocesser define that indicates we are building the shared library and symbols
+	# should be exported (in this case, the default is EXAMPLES_EXPORTS), but if we wanted to, we could
 	# OVERRIDE_SHARED_EXPORT_DEFINE I_AM_EXPORTING
 
-	# we are not overriding the default preprocesser define indicating that we are building the static
-	# version for use by single executables, but if we wanted to, we could
+	# we are not overriding the default preprocesser define that indicates we are building the static version for use by
+	# single executables (in this case, the default is EXAMPLES_FORCE_STATIC), but if we wanted to, we could
 	# OVERRIDE_FORCE_STATIC_DEFINE  I_AM_STATIC
 
 	# we don't need any additional defines private or public to the build of the 'examples' plugin, but if we did,
