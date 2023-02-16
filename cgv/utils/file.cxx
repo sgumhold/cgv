@@ -60,8 +60,8 @@ std::string find_recursive(const std::string& path, const std::string& file_name
 	for(const std::filesystem::directory_entry& dir_entry : std::filesystem::recursive_directory_iterator(path)) {
 		if(dir_entry.is_regular_file() && !dir_entry.is_symlink()) {
 			if(dir_entry.path().filename() == target_file_name) {
-				if(cgv::utils::file::exists(dir_entry_path.string())) {
-					return dir_entry_path.string();
+				if(cgv::utils::file::exists(dir_entry.path().string())) {
+					return dir_entry.path().string();
 				}
 			}
 		}
