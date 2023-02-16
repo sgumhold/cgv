@@ -41,6 +41,10 @@ cgv_define_option(
 	DOC "encode shader codes in base64 before embedding"
 )
 cgv_define_option(
+	"STDCPP17" DEFAULT ON
+	DOC "later makes cgv::utils use std::filesystem"
+)
+cgv_define_option(
 	"BUILD_WITH_AUDIO" DEFAULT OFF
 	DOC "requires checking out the git submodules when building from the repository"
 )

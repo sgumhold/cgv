@@ -464,6 +464,19 @@ function(cgv_add_target NAME)
 		target_link_libraries(${NAME_EXE} PRIVATE ${NAME_STATIC})
 	endif()
 
+	# observe STDCPP17 option
+	if (CGV_STDCPP17)
+		target_compile_features(${NAME} PRIVATE cxx_std_17)
+		target_compile_features(${NAME_STATIC} PUBLIC cxx_std_17)
+		set_target_properties(${NAME} ${NAME_STATIC} PROPERTIES CXX_STANDARD 17)
+		set_target_properties(${NAME} ${NAME_STATIC} PROPERTIES CXX_STANDARD_REQUIRED ON)
+		if (MSVC)
+			target_compile_options(${NAME} PRIVATE "/Zc:__cplusplus")
+			target_compile_options(${NAME_STATIC} PUBLIC "/Zc:__cplusplus")
+		endif()
+	endif()
+
+	# commit additional command line args for the subsequent generation phase
 	if (IS_PLUGIN)
 		set_target_properties(${NAME} PROPERTIES CGVPROP_ADDITIONAL_CMDLINE_ARGS "${CGVARG__ADDITIONAL_CMDLINE_ARGS}")
 	endif()
@@ -520,7 +533,6 @@ function(cgv_add_target NAME)
 		install(TARGETS ${NAME_EXE} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 	endif()
 endfunction()
-
 
 
 
@@ -618,6 +630,18 @@ function(cgv_create_lib NAME)
 		target_include_directories(${NAME_STATIC} PUBLIC $<BUILD_INTERFACE:${CGV_DIR}/libs>)
 	endif ()
 
+
+	# observe STDCPP17 option
+	if (CGV_STDCPP17)
+		target_compile_features(${NAME} PRIVATE cxx_std_17)
+		target_compile_features(${NAME_STATIC} PUBLIC cxx_std_17)
+		set_target_properties(${NAME} ${NAME_STATIC} PROPERTIES CXX_STANDARD 17)
+		set_target_properties(${NAME} ${NAME_STATIC} PROPERTIES CXX_STANDARD_REQUIRED ON)
+		if (MSVC)
+			target_compile_options(${NAME} PRIVATE "/Zc:__cplusplus")
+			target_compile_options(${NAME_STATIC} PUBLIC "/Zc:__cplusplus")
+		endif()
+	endif()
 
 	# IDE fluff
 	if (ARGS_CORE_LIB)
