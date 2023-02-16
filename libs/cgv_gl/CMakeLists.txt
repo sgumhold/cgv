@@ -7,11 +7,13 @@ file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "glsl/*.gl*")
 cgv_add_target(cgv_gl
 	TYPE library
 	SOURCES ${SOURCES}
+	HEADERS ${HEADERS}
 	PPP_SOURCES ${PPP_SOURCES}
 	SHADER_SOURCES ${SHADERS}
-	HEADERS ${HEADERS}
 	DEPENDENCIES
-		${OPENGL_LIBRARIES} cgv_utils cgv_type cgv_data cgv_base cgv_signal cgv_math cgv_media cgv_render cgv_gui cgv_reflect_types json glew
+		${OPENGL_LIBRARIES} glew json cgv_utils cgv_type cgv_data cgv_base cgv_signal cgv_math
+		cgv_media cgv_render cgv_gui cgv_reflect_types
+
 	OVERRIDE_SHARED_EXPORT_DEFINE CGV_RENDER_GL_EXPORTS
 	OVERRIDE_FORCE_STATIC_DEFINE  CGV_RENDER_GL_FORCE_STATIC
 )

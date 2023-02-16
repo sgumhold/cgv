@@ -53,8 +53,8 @@ function(cgv_init_cgvoptions)
 	# print summary of options applied from system-wide configuration, if any
 	if (CGV_OPTIONS_FROM_SYSTEM)
 		message("---------------------------------------------------------")
-		message(" Following CGV options were not set and had values from")
-		message(" the system-wide CGV configuration applied:")
+		message(" Following CGV options were initialized with values")
+		message(" from the system-wide CGV configuration:")
 		foreach(CGV_OPTION ${CGV_OPTIONS_LOCAL})
 			# print enabled options in default color, and disabled ones in highlight color
 			if (CGV_${CGV_OPTION} MATCHES "[oO][nN]$")
