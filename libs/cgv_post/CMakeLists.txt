@@ -8,28 +8,15 @@ cgv_add_target(cgv_post
 	SOURCES ${SOURCES}
 	SHADER_SOURCES ${SHADERS}
 	HEADERS ${HEADERS}
+
 	DEPENDENCIES
 		${OPENGL_LIBRARIES} glew cgv_utils cgv_type cgv_data cgv_base cgv_signal
 		cgv_media cgv_render cgv_gui cgv_reflect_types cgv_gl
-
-	OVERRIDE_SHARED_EXPORT_DEFINE CGV_POST_EXPORTS
-	OVERRIDE_FORCE_STATIC_DEFINE  CGV_POST_FORCE_STATIC
 )
 
-#cgv_create_lib(cgv_post SOURCES ${SOURCES} PPP_SOURCES ${PPP_SOURCES} SHADER_SOURCES ${SHADERS}
-#	DEPENDENCIES cgv_utils cgv_type cgv_data cgv_base cgv_signal cgv_media cgv_render cgv_gui cgv_reflect_types cgv_gl glew)
-
-#target_compile_definitions(cgv_post PRIVATE CGV_POST_EXPORTS)
-#target_compile_definitions(cgv_post_static PRIVATE CGV_POST_FORCE_STATIC)
-#if (WIN32)
-#	target_compile_definitions(cgv_post_static PRIVATE REGISTER_SHADER_FILES)
-#endif ()
 if (APPLE)
 	target_compile_definitions(cgv_post PRIVATE __APPLGLSU__ GL_SILENCE_DEPRECATION)
 	target_compile_definitions(cgv_post_static PRIVATE __APPLGLSU__ GL_SILENCE_DEPRECATION)
 endif ()
-
-#target_link_libraries(cgv_post PUBLIC ${OPENGL_LIBRARIES})
-#target_link_libraries(cgv_post_static PUBLIC ${OPENGL_LIBRARIES})
 
 install(DIRECTORY glsl/. DESTINATION ${CGV_LIBS_INCLUDE_DEST}/cgv_post/glsl)
