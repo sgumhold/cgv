@@ -105,7 +105,6 @@ struct mapped_rgba : public cgv::render::render_types
 	int color_idx;
 	int opacity_idx;
 	mapped_rgba(const rgba& c = rgba(1, 1, 1, 1)) : color(c), color_idx(-1), opacity_idx(-1) {}
-
 };
 
 extern CGV_API void add_mapped_size_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_size& ms, std::string options = "");
