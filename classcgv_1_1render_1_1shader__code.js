@@ -21,5 +21,6 @@ var classcgv_1_1render_1_1shader__code =
     [ "set_vertex_attrib_locations", "classcgv_1_1render_1_1shader__code.html#ade42b24d937fc63102250ecb1e35908c", null ],
     [ "ctx_ptr", "classcgv_1_1render_1_1shader__code.html#a738cb1064e1c6fc606c018191a53f23e", null ],
     [ "last_error", "classcgv_1_1render_1_1shader__code.html#a95f40a817168467d5a0d3fdbb09e0b79", null ],
+    [ "shader_code_cache", "classcgv_1_1render_1_1shader__code.html#a75292addc9883628ff6f6a502756d211", null ],
     [ "st", "classcgv_1_1render_1_1shader__code.html#aa6b747b1b10960f15fc573a3a0bdd8da", null ]
 ];

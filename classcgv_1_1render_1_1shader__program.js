@@ -46,5 +46,6 @@ var classcgv_1_1render_1_1shader__program =
     [ "set_uniform_array", "classcgv_1_1render_1_1shader__program.html#aee0c43db29be8ed42c07940123cffeb5", null ],
     [ "update_state", "classcgv_1_1render_1_1shader__program.html#a88e2480f41b18f91f0b13b072a0587ae", null ],
     [ "ctx_ptr", "classcgv_1_1render_1_1shader__program.html#a738cb1064e1c6fc606c018191a53f23e", null ],
-    [ "last_error", "classcgv_1_1render_1_1shader__program.html#a95f40a817168467d5a0d3fdbb09e0b79", null ]
+    [ "last_error", "classcgv_1_1render_1_1shader__program.html#a95f40a817168467d5a0d3fdbb09e0b79", null ],
+    [ "program_file_cache", "classcgv_1_1render_1_1shader__program.html#a136af580100935a0751f226655b295ee", null ]
 ];
