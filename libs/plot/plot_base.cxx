@@ -261,7 +261,7 @@ plot_base::vec3 plot_base::transform_to_world(const vecn& pnt_attr) const
 	unsigned n = pnt_attr.size();
 	vecn pnt_plot(n);
 	const auto& acs = get_domain_config_ptr()->axis_configs;
-	unsigned m = acs.size() < n ? acs.size() : n;
+	unsigned m = acs.size() < n ? unsigned(acs.size()) : n;
 	for (unsigned ai = 0; ai < m; ++ai) {
 		pnt_plot(ai) =
 			acs[ai].plot_space_from_window_space(
