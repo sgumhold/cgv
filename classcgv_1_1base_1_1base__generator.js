@@ -1,5 +1,6 @@
 var classcgv_1_1base_1_1base__generator =
 [
+    [ "~base_generator", "classcgv_1_1base_1_1base__generator.html#a4e1e05d8a09e354331bb253e72bd3113", null ],
     [ "add", "classcgv_1_1base_1_1base__generator.html#afe603ac4fd757dc92231142c66c58807", null ],
     [ "add_void", "classcgv_1_1base_1_1base__generator.html#aa45d072ac0165d352c80ede36f15a3f1", null ],
     [ "call_void", "classcgv_1_1base_1_1base__generator.html#a6746cd9f70fefe5a4f2b72534869fcc3", null ],
