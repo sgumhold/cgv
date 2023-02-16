@@ -85,13 +85,15 @@ add_library(screen_capture_lite SHARED
 	src/SCCommon.cpp 
 	src/ThreadManager.cpp
 	${SCREEN_CAPTURE_PLATFORM_SRC}
- )
+)
 set_target_properties(screen_capture_lite PROPERTIES DEFINE_SYMBOL SC_LITE_DLL)
 if(WIN32) 
-	target_link_libraries(screen_capture_lite PRIVATE ${COMMON_LIBRARIES}  Dwmapi)
-	install (FILES $<TARGET_PDB_FILE:screen_capture_lite> DESTINATION bin OPTIONAL)
+    target_link_libraries(screen_capture_lite PRIVATE ${COMMON_LIBRARIES}  Dwmapi)
+    if(MSVC)
+        install (FILES $<TARGET_PDB_FILE:screen_capture_lite> DESTINATION bin OPTIONAL)
+    endif()
 elseif(APPLE)
-	find_package(Threads REQUIRED)
+    find_package(Threads REQUIRED)
     find_library(corefoundation_lib CoreFoundation REQUIRED)
     find_library(cocoa_lib Cocoa REQUIRED)
     find_library(coremedia_lib CoreMedia REQUIRED)
