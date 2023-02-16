@@ -15,8 +15,9 @@
 #include <glob.h>
 #endif
 
-#if __cplusplus >= 201703L
+#if __cplusplus >= 201703L || _MSVC_LANG >= 201703L
 #include <filesystem>
+#define USE_STD_FILESYSTEM
 #endif
 
 namespace cgv {
@@ -38,15 +39,36 @@ void* open(const std::string& file_name, const std::string& mode, void* buf, int
 
 bool exists(const std::string& file_name)
 {
+#ifdef USE_STD_FILESYSTEM
+	return std::filesystem::exists(file_name);
+#else
 	void* handle = find_first(file_name);
-	if (handle == 0)
-		return false;
-	find_quit(handle);
-	return true;
+	bool ret = (bool)handle;
+	find_close(handle);
+	return ret;
+#endif
 }
 
 std::string find_recursive(const std::string& path, const std::string& file_name)
 {
+#ifdef USE_STD_FILESYSTEM
+	if(cgv::utils::file::exists(path + '/' + file_name))
+		return path + '/' + file_name;
+
+	std::filesystem::path target_file_name = file_name;
+
+	for(const std::filesystem::directory_entry& dir_entry : std::filesystem::recursive_directory_iterator(path)) {
+		if(dir_entry.is_regular_file() && !dir_entry.is_symlink()) {
+			if(dir_entry.path().filename() == target_file_name) {
+				if(cgv::utils::file::exists(dir_entry_path.string())) {
+					return dir_entry_path.string();
+				}
+			}
+		}
+	}
+
+	return "";
+#else
 	if (cgv::utils::file::exists(path+'/'+file_name))
 		return path+'/'+file_name;
 	void* h = find_first(path+"/*");
@@ -54,13 +76,15 @@ std::string find_recursive(const std::string& path, const std::string& file_name
 		if (find_directory(h) && find_name(h) != "." && find_name(h) != "..") {
 			std::string res = find_recursive(path+'/'+find_name(h), file_name);
 			if (!res.empty()) {
-				find_quit(h);
+				//find_quit(h);
+				find_close(h);
 				return res;
 			}
 		}
 		h = find_next(h);
 	}
 	return "";
+#endif
 }
 
 /// find a file in the given paths
@@ -176,16 +200,16 @@ Result cmp(const std::string& what, const std::string& with)
 
 size_t size(const std::string& file_name, bool ascii)
 {
-#if __cplusplus >= 201703L
+#ifdef USE_STD_FILESYSTEM
 	return std::filesystem::file_size(file_name);
 #else
 #ifdef _WIN32
 	if (ascii) {
 		void* handle = find_first(file_name);
-		if (handle == 0)
-			return (size_t)-1;
-		size_t s = find_size(handle);
-		find_quit(handle);
+		size_t s = (size_t)-1;
+		if(handle)
+			s = find_size(handle);
+		find_close(handle);
 		return s;
 	}
 	else {
@@ -346,10 +370,10 @@ long long find_last_write_time(const void* handle)
 long long get_last_write_time(const std::string& file_path)
 {
 	void* handle = find_first(file_path);
-	if (!handle)
-		return -1;
-	long long time = find_last_write_time(handle);
-	find_quit(handle);
+	long long time = -1;
+	if(handle)
+		time = find_last_write_time(handle);
+	find_close(handle);
 	return time;
 }
 
@@ -376,8 +400,6 @@ void* find_first(const std::string& filter)
 	//printf("filter: %s",filter.c_str());
 	//for(int i=0;i<fi->globResults->gl_pathc;i++) printf("file: %s\n",get_file_name(fi->globResults->gl_pathv[i]).c_str());
 	return fi;
-//	std::cerr << "Not Implemented" << std::endl;
-//	return NULL;
 #endif
 }
 
@@ -387,7 +409,7 @@ void* find_next(void* handle)
 	FileInfo *fi = (FileInfo*) handle;
 #ifdef _WIN32
 	if (_findnext(fi->handle, &fi->fileinfo) == -1) {
-		delete fi;
+		find_close(handle);
 		return 0;
 	}
 	return fi;
@@ -397,19 +419,19 @@ void* find_next(void* handle)
 		return fi;
 	delete fi->globResults;
 	delete fi;
-	//std::cerr << "Not Implemented" << std::endl;
 	return NULL;
 #endif
 }
 
-///  quit a find procedure and delete heap instance
-void find_quit(void* handle)
-{
-	if (handle == 0)
+/// close a find procedure and free FileInfo resources
+void find_close(void* handle) {
+	if(handle == 0)
 		return;
 	FileInfo* fi = (FileInfo*)handle;
 #ifdef _WIN32
+	_findclose(fi->handle);
 	delete fi;
+	handle = 0;
 #else
 	delete fi->globResults;
 	delete fi;
@@ -425,7 +447,7 @@ std::string find_name(void* handle)
 #else
 	if(fi->globResults->gl_pathc > fi->index)
 		return get_file_name(std::string(fi->globResults->gl_pathv[fi->index]));
-//	std::cerr << "Not Implemented" << std::endl;
+
 	return std::string("");
 #endif
 }

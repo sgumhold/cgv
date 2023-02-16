@@ -21,7 +21,7 @@ namespace cgv {
 	namespace render {
 
 static bool use_cache = false;
-cgv::utils::simple_cache<std::string, std::string> shader_code::shader_code_cache;
+std::map<std::string, std::string> shader_code::shader_code_cache;
 
 shader_config::shader_config()
 {
@@ -298,11 +298,11 @@ bool shader_code::read_code(const context& ctx, const std::string &file_name, Sh
 	if(use_cache) {
 		auto it = shader_code_cache.find(file_name);
 
-		if(shader_code_cache.valid(it)) {
-			source = shader_code_cache.value(it);
+		if(it != shader_code_cache.end()) {
+			source = it->second;
 		} else {
 			source = read_code_file(file_name, &last_error);
-			shader_code_cache.cache(file_name, source);
+			shader_code_cache.emplace(file_name, source);
 		}
 	} else {
 		source = read_code_file(file_name, &last_error);

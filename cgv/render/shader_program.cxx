@@ -13,8 +13,8 @@ namespace cgv {
 	namespace render {
 
 static bool use_cache = false;
-cgv::utils::simple_cache<std::string, std::vector<std::string>> shader_program::files_cache;
-cgv::utils::simple_cache<std::string, std::string> shader_program::program_file_cache;
+std::map<std::string, std::string> shader_program::program_file_cache;
+std::map<std::string, std::vector<std::string>> shader_program::files_cache;
 
 /// attach a list of files
 bool shader_program::attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_define_map& defines)
@@ -32,8 +32,8 @@ bool shader_program::collect_file(const std::string& file_name, std::vector<std:
 {
 	if(use_cache) {
 		auto it = files_cache.find(file_name);
-		if(files_cache.valid(it)) {
-			const std::vector<std::string>& cached_file_names = files_cache.value(it);
+		if(it != files_cache.end()) {
+			const std::vector<std::string>& cached_file_names = it->second;
 			for(size_t i = 0; i < cached_file_names.size(); ++i)
 				file_names.push_back(cached_file_names[i]);
 
@@ -55,7 +55,7 @@ bool shader_program::collect_file(const std::string& file_name, std::vector<std:
 	}
 
 	if(use_cache) {
-		files_cache.cache(file_name, collected_file_names);
+		files_cache.emplace(file_name, collected_file_names);
 	}
 
 	return found;
@@ -65,8 +65,8 @@ bool shader_program::collect_files(const std::string& base_name, std::vector<std
 {
 	if(use_cache) {
 		auto it = files_cache.find(base_name);
-		if(files_cache.valid(it)) {
-			const std::vector<std::string>& cached_file_names = files_cache.value(it);
+		if(it != files_cache.end()) {
+			const std::vector<std::string>& cached_file_names = it->second;
 			for(size_t i = 0; i < cached_file_names.size(); ++i)
 				file_names.push_back(cached_file_names[i]);
 
@@ -96,7 +96,7 @@ bool shader_program::collect_files(const std::string& base_name, std::vector<std
 		std::cerr << "could not find shader file " << base_name.c_str() << std::endl;
 
 	if(use_cache) {
-		files_cache.cache(base_name, collected_file_names);
+		files_cache.emplace(base_name, collected_file_names);
 	}
 
 	return added_file;
@@ -287,11 +287,11 @@ bool shader_program::open_program_file(std::string& file_name, std::string& cont
 
 	if(use_cache) {
 		auto it = program_file_cache.find(file_name);
-		if(program_file_cache.valid(it)) {	
-			fn = program_file_cache.value(it);
+		if(it != program_file_cache.end()) {	
+			fn = it->second;
 		} else {
 			fn = shader_code::find_file(file_name);
-			program_file_cache.cache(file_name, fn);
+			program_file_cache.emplace(file_name, fn);
 		}
 	} else {
 		fn = shader_code::find_file(file_name);

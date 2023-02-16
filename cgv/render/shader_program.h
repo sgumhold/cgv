@@ -27,9 +27,9 @@ namespace cgv {
 class CGV_API shader_program : public shader_program_base
 {
 protected:
-	
-	static cgv::utils::simple_cache<std::string, std::vector<std::string>> files_cache;
-	static cgv::utils::simple_cache<std::string, std::string> program_file_cache;
+	/// maps used to cache program file contents and valid file names indexed by their respective file name
+	static std::map<std::string, std::string> program_file_cache;
+	static std::map<std::string, std::vector<std::string>> files_cache;
 
 	bool show_code_errors : 1;
 	bool linked : 1;
