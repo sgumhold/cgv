@@ -30,11 +30,6 @@ color_map_editor::color_map_editor() {
 	set_overlay_margin(ivec2(-3));
 	set_overlay_size(ivec2(600u, layout.total_height));
 	
-	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
-	register_shader("circle", cgv::g2d::canvas::shaders_2d::circle);
-	register_shader("histogram", "heightfield1d.glpr");
-	register_shader("background", "color_map_editor_bg.glpr");
-
 	mouse_is_on_overlay = false;
 	cursor_pos = ivec2(-100);
 	cursor_label_index = -1;
@@ -236,6 +231,11 @@ void color_map_editor::on_set(void* member_ptr) {
 
 bool color_map_editor::init(cgv::render::context& ctx) {
 	
+	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
+	register_shader("circle", cgv::g2d::canvas::shaders_2d::circle);
+	register_shader("histogram", "heightfield1d.glpr");
+	register_shader("background", "color_map_editor_bg.glpr");
+
 	bool success = canvas_overlay::init(ctx);
 
 	success &= color_handle_renderer.init(ctx);

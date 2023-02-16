@@ -21,9 +21,6 @@ performance_monitor::performance_monitor() {
 	set_overlay_margin(ivec2(-3));
 	set_overlay_size(layout.total_size);
 
-	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
-	register_shader("line", cgv::g2d::canvas::shaders_2d::line);
-
 	bar_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::rectangle);
 }
 
@@ -82,6 +79,9 @@ void performance_monitor::on_set(void* member_ptr) {
 }
 
 bool performance_monitor::init(cgv::render::context& ctx) {
+
+	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
+	register_shader("line", cgv::g2d::canvas::shaders_2d::line);
 
 	bool success = canvas_overlay::init(ctx);
 

@@ -5,22 +5,7 @@
 namespace cgv {
 namespace post {
 
-temporal_anti_aliasing::temporal_anti_aliasing() {
-	const std::string color_format = "flt32[R,G,B,A]";
-
-	fbc_draw.add_attachment("depth", "[D]");
-	fbc_draw.add_attachment("color", color_format, cgv::render::TF_LINEAR);
-
-	fbc_post.add_attachment("color", color_format);
-
-	fbc_hist.add_attachment("color", color_format, cgv::render::TF_LINEAR);
-
-	fbc_resolve.add_attachment("color", color_format);
-
-	shaders.add("screen", "screen_quad.glpr");
-	shaders.add("resolve", "taa_resolve.glpr");
-	shaders.add("fxaa", "fxaa3.glpr");
-}
+temporal_anti_aliasing::temporal_anti_aliasing() {}
 
 void temporal_anti_aliasing::clear(cgv::render::context& ctx) {
 	fbc_draw.clear(ctx);
@@ -32,6 +17,22 @@ void temporal_anti_aliasing::clear(cgv::render::context& ctx) {
 }
 
 bool temporal_anti_aliasing::init(cgv::render::context& ctx) {
+
+	const std::string color_format = "flt32[R,G,B,A]";
+
+	fbc_draw.add_attachment("depth", "[D]");
+	fbc_draw.add_attachment("color", color_format, cgv::render::TF_LINEAR);
+
+	fbc_post.add_attachment("color", color_format);
+
+	fbc_hist.add_attachment("color", color_format, cgv::render::TF_LINEAR);
+
+	fbc_resolve.add_attachment("color", color_format);
+	
+	shaders.add("screen", "screen_quad.glpr");
+	shaders.add("resolve", "taa_resolve.glpr");
+	shaders.add("fxaa", "fxaa3.glpr");
+
 	is_initialized = shaders.load_all(ctx);
 
 	return is_initialized;
