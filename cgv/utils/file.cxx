@@ -76,7 +76,6 @@ std::string find_recursive(const std::string& path, const std::string& file_name
 		if (find_directory(h) && find_name(h) != "." && find_name(h) != "..") {
 			std::string res = find_recursive(path+'/'+find_name(h), file_name);
 			if (!res.empty()) {
-				//find_quit(h);
 				find_close(h);
 				return res;
 			}
