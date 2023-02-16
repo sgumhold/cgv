@@ -85,8 +85,8 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_text_geometry& 
 		const auto& text = tg.ref_texts()[i];
 
 		ivec4 position_offset;
-		position_offset.x() = round(text.position.x());
-		position_offset.y() = round(text.position.y());
+		position_offset.x() = int32_t(round(text.position.x()));
+		position_offset.y() = int32_t(round(text.position.y()));
 
 		vec2 half_size = 0.5f * text.size * tg.get_font_size();
 		vec2 offset = -half_size;
@@ -101,8 +101,8 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_text_geometry& 
 		else if(text.alignment & cgv::render::TA_BOTTOM)
 			offset.y() += half_size.y();
 
-		position_offset.z() = round(offset.x());
-		position_offset.w() = round(offset.y());
+		position_offset.z() = int32_t(round(offset.x()));
+		position_offset.w() = int32_t(round(offset.y()));
 
 		prog.set_uniform(ctx, "position_offset", position_offset);
 		prog.set_uniform(ctx, "font_size", tg.get_font_size());

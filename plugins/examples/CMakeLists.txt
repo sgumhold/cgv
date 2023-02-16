@@ -18,7 +18,7 @@ endif()
 
 # add our target to the CGV CMake build system
 cgv_add_target(examples
-	TYPE plugin
+	TYPE plugin     # if we didn't want a single executable target to be generated, we could add the NO_EXECUTABLE flag
 	SOURCES         ${SOURCES}
 	PPP_SOURCES     ${PPP_SOURCES}
 	HEADERS         ${HEADERS}
@@ -40,7 +40,15 @@ cgv_add_target(examples
 	# we are not overriding the default preprocesser define indicating that we are building the static
 	# version for use by single executables, but if we wanted to, we could
 	# OVERRIDE_FORCE_STATIC_DEFINE  I_AM_STATIC
+
+	# we don't need any additional defines private or public to the build of the 'examples' plugin, but if we did,
+	# we could declare them here
+	# ADDITIONAL_PRIVATE_DEFINES  SOME_INTERNAL_PREPROCESSOR_MACRO
+	# ADDITIONAL_PUBLIC_DEFINES   SOME_PUBLICALLY_VISIBLE_PREPROCESSER_MACRO
 )
+
+# Visual Studio fluff
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT examples)
 
 # FIXME: CMake installs are currently still unsupported and need updating for the new CMake build system
 install(TARGETS examples EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})

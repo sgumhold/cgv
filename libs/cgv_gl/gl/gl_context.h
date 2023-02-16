@@ -69,11 +69,11 @@ protected:
 	bool texture_enable(texture_base& tb, int tex_unit, unsigned int nr_dims) const;
 	bool texture_disable(texture_base& tb, int tex_unit, unsigned int nr_dims) const;
 
-	bool render_buffer_create(render_component& rc, cgv::data::component_format& cf, int& _width, int& _height) const;
-	bool render_buffer_destruct(render_component& rc) const;
+	bool render_buffer_create(render_buffer_base& rc, cgv::data::component_format& cf, int& _width, int& _height) const;
+	bool render_buffer_destruct(render_buffer_base& rc) const;
 
 	bool frame_buffer_create(frame_buffer_base& fbb) const;
-	bool frame_buffer_attach(frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) const;
+	bool frame_buffer_attach(frame_buffer_base& fbb, const render_buffer_base& rb, bool is_depth, int i) const;
 	bool frame_buffer_attach(frame_buffer_base& fbb, const texture_base& t, bool is_depth, int level, int i, int z) const;
 	bool frame_buffer_is_complete(const frame_buffer_base& fbb) const;
 	bool frame_buffer_enable(frame_buffer_base& fbb);
@@ -94,7 +94,7 @@ protected:
 	bool shader_program_enable(shader_program_base& spb);
 	bool shader_program_disable(shader_program_base& spb);
 	void shader_program_detach(shader_program_base& spb, const render_component& sc) const;
-	bool shader_program_destruct(shader_program_base& spb);
+	bool shader_program_destruct(shader_program_base& spb) const;
 
 	int  get_uniform_location(const shader_program_base& spb, const std::string& name) const;
 	bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const;

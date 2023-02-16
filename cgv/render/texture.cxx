@@ -218,11 +218,21 @@ bool texture::create(const context& ctx, TextureType _tt, unsigned width, unsign
 		set_width(width);
 	if (height != -1)
 		set_height(height);
-	if (depth != -1)
+	if (depth != -1)			
 		set_depth(depth);
 	if (!internal_format)
 		find_best_format(ctx);
 	return complete_create(ctx, ctx.texture_create(*this, *this));
+}
+
+void texture::set_nr_multi_samples(unsigned _nr_samples)
+{
+	nr_multi_samples = _nr_samples;
+}
+
+void texture::set_fixed_sample_locations(bool use)
+{
+	fixed_sample_locations = use; 
 }
 
 bool is_power_of_two(unsigned int i)

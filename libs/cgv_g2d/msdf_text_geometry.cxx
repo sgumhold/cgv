@@ -30,7 +30,7 @@ void msdf_text_geometry::set_msdf_font(msdf_font* ptr, bool update_texts) {
 	msdf_font_ptr = ptr;
 
 	if(msdf_font_ptr && update_texts) {
-		for(size_t i = 0; i < texts.size(); ++i)
+		for(unsigned i = 0; i < texts.size(); ++i)
 			set_text(i, texts[i].str);
 	}
 }

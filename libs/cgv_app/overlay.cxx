@@ -95,7 +95,7 @@ void overlay::update_overlay_layout() {
 		pos.x() = last_viewport_size.x() - size.x() - margin.x();
 		break;
 	case AO_PERCENTUAL:
-		pos.x() = margin.x() + percentual_offset.x() * max_size.x();
+		pos.x() = int32_t(margin.x() + percentual_offset.x() * max_size.x());
 		break;
 	case AO_START:
 	case AO_FREE:
@@ -112,7 +112,7 @@ void overlay::update_overlay_layout() {
 		pos.y() = last_viewport_size.y() - size.y() - margin.y();
 		break;
 	case AO_PERCENTUAL:
-		pos.y() = margin.y() + percentual_offset.y() * max_size.y();
+		pos.y() = int32_t(margin.y() + percentual_offset.y() * max_size.y());
 		break;
 	case AO_START:
 	case AO_FREE:

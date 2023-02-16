@@ -1040,4 +1040,9 @@ bool vr_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 extern cgv::base::object_registration_1<vr_view_interactor,const char*> 
  obj1("vr interactor", "registration of vr interactor");
 
+// make sure shaders are embedded for single executable builds
+#ifdef REGISTER_SHADER_FILES
+#include <crg_vr_view_shader_inc.h>
+#endif
+
 #endif

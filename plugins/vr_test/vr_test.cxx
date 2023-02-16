@@ -297,19 +297,6 @@ vr_test::vr_test()
 	label_size = 20.0f;
 	label_color = rgb(1, 1, 1);
 
-	cgv::media::font::enumerate_font_names(font_names);
-	font_enum_decl = "enums='";
-	for (unsigned i = 0; i < font_names.size(); ++i) {
-		if (i>0)
-			font_enum_decl += ";";
-		std::string fn(font_names[i]);
-		if (cgv::utils::to_lower(fn) == "calibri") {
-			label_font_face = cgv::media::font::find_font(fn)->get_font_face(label_face_type);
-			label_font_idx = i;
-		}
-		font_enum_decl += std::string(fn);
-	}
-	font_enum_decl += "'";
 	state[0] = state[1] = state[2] = state[3] = IS_NONE;
 }
 	
@@ -469,6 +456,20 @@ bool vr_test::handle(cgv::gui::event& e)
 
 bool vr_test::init(cgv::render::context& ctx)
 {
+	cgv::media::font::enumerate_font_names(font_names);
+	font_enum_decl = "enums='";
+	for (unsigned i = 0; i < font_names.size(); ++i) {
+		if (i > 0)
+			font_enum_decl += ";";
+		std::string fn(font_names[i]);
+		if (cgv::utils::to_lower(fn) == "calibri") {
+			label_font_face = cgv::media::font::find_font(fn)->get_font_face(label_face_type);
+			label_font_idx = i;
+		}
+		font_enum_decl += std::string(fn);
+	}
+	font_enum_decl += "'";
+
 	if (!cgv::utils::has_option("NO_OPENVR"))
 		ctx.set_gamma(1.0f);
 

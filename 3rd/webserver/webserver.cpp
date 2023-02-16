@@ -64,7 +64,7 @@ unsigned webserver::Request(void* _ws) {
 
 		if (line.empty()) break;
 
-		unsigned int pos_cr_lf = line.find_first_of("\x0a\x0d");
+		unsigned pos_cr_lf = unsigned(line.find_first_of("\x0a\x0d"));
 		if (pos_cr_lf == 0) break;
 
 		line = line.substr(0,pos_cr_lf);
@@ -74,7 +74,7 @@ unsigned webserver::Request(void* _ws) {
 			std::string encoded = line.substr(authorization.size());
 			std::string decoded = base64_decode(encoded);
 
-			unsigned int pos_colon = decoded.find(":");
+			unsigned pos_colon = unsigned(decoded.find(":"));
 
 			req.username = decoded.substr(0, pos_colon);
 			req.password = decoded.substr(pos_colon+1 );
