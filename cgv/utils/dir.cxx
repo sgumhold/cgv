@@ -22,10 +22,10 @@ bool exists(const std::string& dir_name)
 {
 #ifdef _WIN32
 	void* handle = file::find_first(dir_name+"\\*.*");
-	if (handle == 0)
-		return false;
-	file::find_quit(handle);
-	return true;
+	bool ret = (bool)handle;
+	if (handle)
+		file::find_close(handle);
+	return ret;
 #else
 	struct stat myStat;
 	return ((stat(dir_name.c_str(), &myStat) == 0) && (((myStat.st_mode) & S_IFMT) == S_IFDIR));
