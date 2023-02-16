@@ -21,8 +21,8 @@
 // these are the vr specific headers
 #include <vr/vr_driver.h>
 #include <cg_vr/vr_server.h>
-#include <vr_view_interactor.h>
-#include <vr_render_helpers.h>
+#include <plugins/crg_vr_view/vr_view_interactor.h>
+#include <plugins/crg_vr_view/vr_render_helpers.h>
 
 class vr_test :
 	public cgv::base::node,

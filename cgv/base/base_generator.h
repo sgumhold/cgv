@@ -92,6 +92,8 @@ protected:
 	/// store the properties as map from property name to type and pointer to instance
 	map_type property_map;
 public:
+	/// during destruction free all memory allocated on heap
+	~base_generator();
 	/// overload to return the type name of this object. By default the type interface is queried over get_type.
 	std::string get_type_name() const;
 	/// add a new property

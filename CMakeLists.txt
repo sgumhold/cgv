@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 3.20)
 
+# CGV Framework top-level project declaration
 project(cgv)
 
 # prelude
 include(cgv-options.cmake)
 set(BUILD_SHARED_LIBS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED 17)
+
+# make sure we know that we are currently configuring the CGV Framework
+set(CGV_IS_CONFIGURING TRUE)
 
 # setup relevant directories
 # - "the" CGV directory
@@ -44,11 +48,7 @@ cgv_define_option(
 cgv_init_cgvoptions()
 # - CMake-only CGV-related options
 option(CGV_BUILD_EXAMPLES "Whether to build the 'examples' plugin which demonstrates various components of the CGV Framework" ON)
-option(CGV_BUILD_TESTS "NOTE: CURRENTLY NOT MAINTAINED!!! Whether to build the tests" OFF)
-
-# preset 3rd-party lib options
-option(BUILD_GMOCK OFF)
-option(INSTALL_GTEST OFF)
+option(CGV_BUILD_TESTS "Whether to build the test plugins" OFF)
 
 # customize build directory
 # - customize executable/DLL/SO and link library locations
@@ -90,7 +90,7 @@ define_property(TARGET
 
 # general compiler options
 if (NOT MSVC)
-    add_compile_options(-Wno-dangling-else -Wno-switch)
+	add_compile_options(-Wno-dangling-else -Wno-switch)
 endif ()
 
 # testing stuff - TODO: find out what it actually does currently
@@ -108,3 +108,11 @@ add_subdirectory(doc)
 
 # install stuff - TODO: found out how the current install system works
 install(FILES cgv-config.cmake DESTINATION .)
+
+# we're done configuring the CGV Framework
+unset(CGV_IS_CONFIGURING)
+
+# make sure the CGV targets folder structure for IDEs is preserved in including projects
+if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+	set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+endif()

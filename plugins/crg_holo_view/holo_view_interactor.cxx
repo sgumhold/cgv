@@ -1518,9 +1518,9 @@ void holo_view_interactor::create_gui()
 			add_gui("X_max", display_calib.x_max, "", "options='min=0.9;max=1;ticks=true'");
 			add_gui("Y_min", display_calib.y_min, "", "options='min=0;max=0.1;ticks=true'");
 			add_gui("Y_max", display_calib.y_max, "", "options='min=0.9;max=1;ticks=true'");
-			add_member_control(this, "Length", display_calib.length, "value_slider", "min=42;max=43;ticks=true");
-			add_member_control(this, "Step_x", display_calib.step_x, "value_slider", "min=35;max=36;ticks=true");
-			add_member_control(this, "Step_y", display_calib.step_y, "value_slider", "min=0.9;max=1.1;ticks=true");
+			add_member_control(this, "Length", display_calib.length, "value_slider", "min=42;max=43;ticks=true;step=0.000001");
+			add_member_control(this, "Step_x", display_calib.step_x, "value_slider", "min=35;max=36;ticks=true;step=0.000001");
+			add_member_control(this, "Step_y", display_calib.step_y, "value_slider", "min=0.9;max=1.1;ticks=true;step=0.000001");
 			add_gui("Offset", display_calib.offset, "", "options='min=37;max=43;ticks=true'");
 			end_tree_node(display_calib);
 		}

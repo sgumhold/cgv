@@ -172,6 +172,8 @@ enum TextureType {
 	TT_1D_ARRAY,
 	TT_2D_ARRAY,
 	TT_CUBEMAP,
+	TT_MULTISAMPLE_2D,
+	TT_MULTISAMPLE_2D_ARRAY,
 	TT_BUFFER
 };
 
@@ -276,6 +278,14 @@ public:
 	void put_id(T& id) const { put_id_void(&id); }
 };
 
+/// base interface for a render_buffer
+class CGV_API render_buffer_base : public render_component
+{
+public:
+	unsigned nr_multi_samples = 0;
+	render_buffer_base();
+};
+
 /// base interface for a texture 
 class CGV_API texture_base : public render_component
 {
@@ -292,6 +302,8 @@ public:
 	bool use_compare_function;
 	TextureType  tt;
 	bool have_mipmaps;
+	unsigned nr_multi_samples = 5;
+	bool fixed_sample_locations = true;
 	/// initialize members
 	texture_base(TextureType _tt = TT_UNDEF);
 };
@@ -692,12 +704,12 @@ protected:
 	virtual bool texture_enable				(texture_base& tb, int tex_unit, unsigned int nr_dims) const = 0;
 	virtual bool texture_disable			(texture_base& tb, int tex_unit, unsigned int nr_dims) const = 0;
 
-	virtual bool render_buffer_create       (render_component& rc, cgv::data::component_format& cf, int& _width, int& _height) const = 0;
-	virtual bool render_buffer_destruct     (render_component& rc) const = 0;
+	virtual bool render_buffer_create       (render_buffer_base& rc, cgv::data::component_format& cf, int& _width, int& _height) const = 0;
+	virtual bool render_buffer_destruct     (render_buffer_base& rc) const = 0;
 
 	static void get_buffer_list(frame_buffer_base& fbb, bool& depth_buffer, std::vector<int>& buffers, int offset = 0);
 	virtual bool frame_buffer_create		   (frame_buffer_base& fbb) const;
-	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) const;
+	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const render_buffer_base& rb, bool is_depth, int i) const;
 	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const texture_base& t, bool is_depth, int level, int i, int z) const;
 	virtual bool frame_buffer_is_complete(const frame_buffer_base& fbb) const = 0;
 	virtual bool frame_buffer_enable		   (frame_buffer_base& fbb);
