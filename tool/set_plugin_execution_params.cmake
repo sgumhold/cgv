@@ -1,7 +1,27 @@
 
+function(format_vscode_launch_json_args CONTENT_VAR)
+	cmake_parse_arguments(PARSE_ARGV 1 CGVARG_ "" "" "ARGUMENT_LIST")
+
+	if (CGVARG__ARGUMENT_LIST)
+		set(LIST_CONTROL_HELPER TRUE) # <-- for distinguishing the first iteration within a foreach()
+		# generate JSON list of command line arguments
+		set(LOCAL_JSON_STRING "			\"args\": [")
+		foreach(ARG IS_FIRST IN ZIP_LISTS CGVARG__ARGUMENT_LIST LIST_CONTROL_HELPER)
+			string(REGEX REPLACE "\"" "\\\\\"" ARG_QE ${ARG})
+			if (IS_FIRST)
+				set(LOCAL_JSON_STRING "${LOCAL_JSON_STRING}\n				\"${ARG_QE}\"")
+			else()
+				set(LOCAL_JSON_STRING "${LOCAL_JSON_STRING},\n				\"${ARG_QE}\"")
+			endif()
+		endforeach()
+		# append to output variable
+		set(${CONTENT_VAR} "${${CONTENT_VAR}},\n${LOCAL_JSON_STRING}\n			]" PARENT_SCOPE)
+	endif()
+endfunction()
+
 function(add_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 	cmake_parse_arguments(
-		PARSE_ARGV 2 CGVARG_ "" "WORKING_DIR" "CMD_LINE_ARGS"
+		PARSE_ARGV 2 CGVARG_ "" "WORKING_DIR" "PLUGIN_ARGS;EXE_ARGS"
 	)
 
 	# determine target names
@@ -14,8 +34,9 @@ function(add_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 			\"name\": \"Debug '${TARGET_NAME}' (cppdbg)\",
 			\"type\": \"cppdbg\",
 			\"request\": \"launch\",
-			\"program\": \"$<TARGET_FILE:cgv_viewer>\",
-			\"args\": [\"${CGVARG__CMD_LINE_ARGS}\"],
+			\"program\": \"$<TARGET_FILE:cgv_viewer>\"")
+	format_vscode_launch_json_args(CONTENT_LOCAL ARGUMENT_LIST ${CGVARG__PLUGIN_ARGS})
+	set(CONTENT_LOCAL "${CONTENT_LOCAL},
 			\"cwd\": \"${CGVARG__WORKING_DIR}\",
 			\"MIMode\": \"gdb\",
 			\"setupCommands\": [
@@ -38,9 +59,10 @@ function(add_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 			\"name\": \"Debug '${TARGET_NAME}' (CodeLLDB)\",
 			\"type\": \"lldb\",
 			\"request\": \"launch\",
-			\"program\": \"$<TARGET_FILE:cgv_viewer>\",
-			\"args\": [\"${CGVARG__CMD_LINE_ARGS}\"],
-			\"cwd\": \"${CGVARG__WORKING_DIR}\",
+			\"program\": \"$<TARGET_FILE:cgv_viewer>\"")
+	format_vscode_launch_json_args(CONTENT_LOCAL ARGUMENT_LIST ${CGVARG__PLUGIN_ARGS})
+	set(CONTENT_LOCAL "${CONTENT_LOCAL},
+			\"cwd\": \"${CGVARG__WORKING_DIR}\"
 		}"
 	)
 	# - single executable build, standard VS Code C++ debugging
@@ -49,8 +71,9 @@ function(add_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 			\"name\": \"Debug '${NAME_EXE}' (cppdbg)\",
 			\"type\": \"cppdbg\",
 			\"request\": \"launch\",
-			\"program\": \"$<TARGET_FILE:cgv_viewer>\",
-			\"args\": [\"${CGVARG__CMD_LINE_ARGS}\"],
+			\"program\": \"$<TARGET_FILE:${NAME_EXE}>\"")
+	format_vscode_launch_json_args(CONTENT_LOCAL ARGUMENT_LIST ${CGVARG__EXE_ARGS})
+	set(CONTENT_LOCAL "${CONTENT_LOCAL},
 			\"cwd\": \"${CGVARG__WORKING_DIR}\",
 			\"MIMode\": \"gdb\",
 			\"setupCommands\": [
@@ -73,9 +96,10 @@ function(add_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 			\"name\": \"Debug '${NAME_EXE}' (CodeLLDB)\",
 			\"type\": \"lldb\",
 			\"request\": \"launch\",
-			\"program\": \"$<TARGET_FILE:cgv_viewer>\",
-			\"args\": [\"${CGVARG__CMD_LINE_ARGS}\"],
-			\"cwd\": \"${CGVARG__WORKING_DIR}\",
+			\"program\": \"$<TARGET_FILE:${NAME_EXE}>\"")
+	format_vscode_launch_json_args(CONTENT_LOCAL ARGUMENT_LIST ${CGVARG__EXE_ARGS})
+	set(CONTENT_LOCAL "${CONTENT_LOCAL},
+			\"cwd\": \"${CGVARG__WORKING_DIR}\"
 		}"
 	)
 
