@@ -264,7 +264,7 @@ function(cgv_do_deferred_ops TARGET_NAME)
 				USE_SOURCE_PERMISSIONS
 			)
 
-			add_vscode_launch_json_content(
+			concat_vscode_launch_json_content(
 				VSCODE_TARGET_LAUNCH_JSON_CONFIGS
 				${TARGET_NAME} PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS} EXE_ARGS ${ADDITIONAL_ARGS} WORKING_DIR ${WORKING_DIR}
 			)

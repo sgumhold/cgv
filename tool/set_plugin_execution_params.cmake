@@ -19,7 +19,60 @@ function(format_vscode_launch_json_args CONTENT_VAR)
 	endif()
 endfunction()
 
-function(add_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
+function(format_vscode_launch_json_entry CONTENT_VAR TARGET_NAME)
+	cmake_parse_arguments(
+		PARSE_ARGV 2 CGVARG_ "" "DEBUGGER_TYPE;LAUNCH_PROGRAM;WORKING_DIR" "CMD_ARGS"
+	)
+
+	# format JSON list entry
+	# - check if we're generating the first entry
+	if (${CONTENT_VAR} AND NOT ${CONTENT_VAR} STREQUAL "")
+		set(CONTENT_LOCAL ",\n")
+	endif()
+	# - generate entry content
+	if (CGVARG__DEBUGGER_TYPE STREQUAL "cppdbg")
+		set(CONTENT_LOCAL "${CONTENT_LOCAL}		{
+			\"name\": \"Debug '${TARGET_NAME}' (cppdbg)\",
+			\"type\": \"cppdbg\",
+			\"request\": \"launch\",
+			\"program\": \"${CGVARG__LAUNCH_PROGRAM}\"")
+		format_vscode_launch_json_args(CONTENT_LOCAL ARGUMENT_LIST ${CGVARG__CMD_ARGS})
+		set(CONTENT_LOCAL "${CONTENT_LOCAL},
+			\"cwd\": \"${CGVARG__WORKING_DIR}\",
+			\"externalConsole\": false,
+			\"MIMode\": \"gdb\",
+			\"setupCommands\": [
+				{
+					\"description\": \"Use pretty printing of variables and containers\",
+					\"text\": \"-enable-pretty-printing\",
+					\"ignoreFailures\": true
+				},
+				{
+					\"description\": \"Use Intel-style disassembly\",
+					\"text\": \"-gdb-set disassembly-flavor intel\",
+					\"ignoreFailures\": true
+				}
+			]
+		}")
+	elseif (CGVARG__DEBUGGER_TYPE STREQUAL "CodeLLDB")
+		set(CONTENT_LOCAL "${CONTENT_LOCAL}		{
+			\"name\": \"Debug '${TARGET_NAME}' (CodeLLDB)\",
+			\"type\": \"lldb\",
+			\"request\": \"launch\",
+			\"program\": \"${CGVARG__LAUNCH_PROGRAM}\"")
+		format_vscode_launch_json_args(CONTENT_LOCAL ARGUMENT_LIST ${CGVARG__CMD_ARGS})
+		set(CONTENT_LOCAL "${CONTENT_LOCAL},
+			\"cwd\": \"${CGVARG__WORKING_DIR}\"
+		}")
+	else()
+		message(FATAL_ERROR "format_vscode_launch_json_entry(): unknown debugger type \"${CGVARG__DEBUGGER_TYPE}\"")
+	endif()
+
+	# propagate result
+	set(${CONTENT_VAR} "${${CONTENT_VAR}}${CONTENT_LOCAL}" PARENT_SCOPE)
+endfunction()
+
+function(concat_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 	cmake_parse_arguments(
 		PARSE_ARGV 2 CGVARG_ "" "WORKING_DIR" "PLUGIN_ARGS;EXE_ARGS"
 	)
@@ -29,82 +82,32 @@ function(add_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 
 	# compose JSON list for both plugin and executable variants
 	# - plugin build, standard VS Code C++ debugging
-	set(CONTENT_LOCAL
-"		{
-			\"name\": \"Debug '${TARGET_NAME}' (cppdbg)\",
-			\"type\": \"cppdbg\",
-			\"request\": \"launch\",
-			\"program\": \"$<TARGET_FILE:cgv_viewer>\"")
-	format_vscode_launch_json_args(CONTENT_LOCAL ARGUMENT_LIST ${CGVARG__PLUGIN_ARGS})
-	set(CONTENT_LOCAL "${CONTENT_LOCAL},
-			\"cwd\": \"${CGVARG__WORKING_DIR}\",
-			\"MIMode\": \"gdb\",
-			\"setupCommands\": [
-			{\n
-				\"description\": \"Use pretty printing of variables and containers\",
-				\"text\": \"-enable-pretty-printing\",
-				\"ignoreFailures\": true
-			},
-			{
-				\"description\": \"Use Intel-style disassembly\",
-				\"text\": \"-gdb-set disassembly-flavor intel\",
-				\"ignoreFailures\": true
-				}
-			]
-		}"
+	format_vscode_launch_json_entry(JSON_LIST_STRING
+		${TARGET_NAME} DEBUGGER_TYPE cppdbg
+		LAUNCH_PROGRAM $<TARGET_FILE:cgv_viewer> CMD_ARGS ${CGVARG__PLUGIN_ARGS}
+		WORKING_DIR ${CGVARG__WORKING_DIR}
 	)
 	# - plugin build, CodeLLDB debugging
-	set(CONTENT_LOCAL "${CONTENT_LOCAL},
-		{
-			\"name\": \"Debug '${TARGET_NAME}' (CodeLLDB)\",
-			\"type\": \"lldb\",
-			\"request\": \"launch\",
-			\"program\": \"$<TARGET_FILE:cgv_viewer>\"")
-	format_vscode_launch_json_args(CONTENT_LOCAL ARGUMENT_LIST ${CGVARG__PLUGIN_ARGS})
-	set(CONTENT_LOCAL "${CONTENT_LOCAL},
-			\"cwd\": \"${CGVARG__WORKING_DIR}\"
-		}"
+	format_vscode_launch_json_entry(JSON_LIST_STRING
+		${TARGET_NAME} DEBUGGER_TYPE CodeLLDB
+		LAUNCH_PROGRAM $<TARGET_FILE:cgv_viewer> CMD_ARGS ${CGVARG__PLUGIN_ARGS}
+		WORKING_DIR ${CGVARG__WORKING_DIR}
 	)
 	# - single executable build, standard VS Code C++ debugging
-	set(CONTENT_LOCAL "${CONTENT_LOCAL},
-		{
-			\"name\": \"Debug '${NAME_EXE}' (cppdbg)\",
-			\"type\": \"cppdbg\",
-			\"request\": \"launch\",
-			\"program\": \"$<TARGET_FILE:${NAME_EXE}>\"")
-	format_vscode_launch_json_args(CONTENT_LOCAL ARGUMENT_LIST ${CGVARG__EXE_ARGS})
-	set(CONTENT_LOCAL "${CONTENT_LOCAL},
-			\"cwd\": \"${CGVARG__WORKING_DIR}\",
-			\"MIMode\": \"gdb\",
-			\"setupCommands\": [
-			{\n
-				\"description\": \"Use pretty printing of variables and containers\",
-				\"text\": \"-enable-pretty-printing\",
-				\"ignoreFailures\": true
-			},
-			{
-				\"description\": \"Use Intel-style disassembly\",
-				\"text\": \"-gdb-set disassembly-flavor intel\",
-				\"ignoreFailures\": true
-				}
-			]
-		}"
+	format_vscode_launch_json_entry(JSON_LIST_STRING
+		${NAME_EXE} DEBUGGER_TYPE cppdbg
+		LAUNCH_PROGRAM $<TARGET_FILE:${NAME_EXE}> CMD_ARGS ${CGVARG__EXE_ARGS}
+		WORKING_DIR ${CGVARG__WORKING_DIR}
 	)
 	# - single executable build, CodeLLDB debugging
-	set(CONTENT_LOCAL "${CONTENT_LOCAL},
-		{
-			\"name\": \"Debug '${NAME_EXE}' (CodeLLDB)\",
-			\"type\": \"lldb\",
-			\"request\": \"launch\",
-			\"program\": \"$<TARGET_FILE:${NAME_EXE}>\"")
-	format_vscode_launch_json_args(CONTENT_LOCAL ARGUMENT_LIST ${CGVARG__EXE_ARGS})
-	set(CONTENT_LOCAL "${CONTENT_LOCAL},
-			\"cwd\": \"${CGVARG__WORKING_DIR}\"
-		}"
+	format_vscode_launch_json_entry(JSON_LIST_STRING
+		${NAME_EXE} DEBUGGER_TYPE CodeLLDB
+		LAUNCH_PROGRAM $<TARGET_FILE:${NAME_EXE}> CMD_ARGS ${CGVARG__EXE_ARGS}
+		WORKING_DIR ${CGVARG__WORKING_DIR}
 	)
 
 	# write to target variable
-	set(${LAUNCH_JSON_CONFIG_VAR} ${CONTENT_LOCAL} PARENT_SCOPE)
+	set(${LAUNCH_JSON_CONFIG_VAR} ${JSON_LIST_STRING} PARENT_SCOPE)
 endfunction()
 
 function(set_plugin_execution_params target_name)
