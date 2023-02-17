@@ -152,6 +152,9 @@ function(cgv_get_static_or_exe_name STATIC_NAME_OUT EXE_NAME_OUT TARGET_NAME IS_
 endfunction()
 
 # internal helper function that takes over deferred computations that require other targets to have already been fully defined
+# - global state the function can modify
+set(VSCODE_LAUNCH_JSON_CONFIG_LIST "")
+# - the actual function
 function(cgv_do_deferred_ops TARGET_NAME)
 	# output notification of deferred operation
 	get_target_property(TARGET_TYPE ${TARGET_NAME} CGVPROP_TYPE)
@@ -215,7 +218,7 @@ function(cgv_do_deferred_ops TARGET_NAME)
 		if (GUI_PROVIDER_PLUGIN)
 			set(CMD_LINE_ARGS "plugin:${GUI_PROVIDER_PLUGIN}")
 			if (SHADER_PATHS)
-				set(CMD_LINE_ARGS "${CMD_LINE_ARGS} \"type(shader_config):shader_path=\'${SHADER_PATHS}'\"")
+				set(CMD_LINE_ARGS "${CMD_LINE_ARGS} \"type(shader_config):shader_path='${SHADER_PATHS}'\"")
 			endif()
 		endif()
 		# --- append remaining plugins
@@ -231,8 +234,10 @@ function(cgv_do_deferred_ops TARGET_NAME)
 			endforeach()
 			set(CMD_LINE_ARGS "${CMD_LINE_ARGS} ${ADDITIONAL_ARGS_STRING}")
 		endif()
+		# -- create a copy with all double quotation marks escaped
+		string(REGEX REPLACE "\"" "\\\\\"" CMD_LINE_ARGS_QE ${CMD_LINE_ARGS})
 
-		# create a launch script in case of Make- and Ninja-based generators when the plugin is executable
+		# create launch script and .vscode config in case of Make- and Ninja-based generators when the plugin is executable
 		if (NOT NO_EXECUTABLE AND (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
 			set(WORKING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 			configure_file(
@@ -245,8 +250,20 @@ function(cgv_do_deferred_ops TARGET_NAME)
 				INPUT "${CMAKE_BINARY_DIR}/run_${TARGET_NAME}.sh" TARGET ${TARGET_NAME}
 				USE_SOURCE_PERMISSIONS
 			)
+
+			add_vscode_launch_json_content(
+				VSCODE_TARGET_LAUNCH_JSON_CONFIGS
+				${TARGET_NAME} CMD_LINE_ARGS ${CMD_LINE_ARGS_QE} WORKING_DIR ${WORKING_DIR}
+			)
+			if (NOT VSCODE_LAUNCH_JSON_CONFIG_LIST OR VSCODE_LAUNCH_JSON_CONFIG_LIST STREQUAL "")
+				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS}" PARENT_SCOPE)
+			elseif (CGV_IS_CONFIGURING)
+				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_LAUNCH_JSON_CONFIG_LIST},\n${VSCODE_TARGET_LAUNCH_JSON_CONFIGS}" PARENT_SCOPE)
+			else()
+				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS},\n${VSCODE_LAUNCH_JSON_CONFIG_LIST}" PARENT_SCOPE)
+			endif()
 		else()
-			# try to set relevant options for all known generators in the hopes of ending up with a valid launch/debug configuration
+			# try to set relevant options for all other generators in the hopes of ending up with a valid launch/debug configuration
 			if (NOT NO_EXECUTABLE)
 				cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
 				set_plugin_execution_params(${TARGET_NAME} ARGUMENTS ${CMD_LINE_ARGS})
@@ -255,6 +272,30 @@ function(cgv_do_deferred_ops TARGET_NAME)
 				set_plugin_execution_working_dir(${NAME_EXE} ${CMAKE_CURRENT_SOURCE_DIR})
 			endif()
 		endif()
+	endif()
+endfunction()
+
+# internal helper function that will perform final deferred operations after the very last cgv target has been
+# added either by the Framework itself or by any other projects that use the Framework from the outside
+function(cgv_do_final_operations)
+	message(STATUS "Performing final operations")
+
+	# prelude
+	get_property(IS_MULTICONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+
+	# generate VS Code launch.json
+	if (VSCODE_LAUNCH_JSON_CONFIG_LIST AND NOT VSCODE_LAUNCH_JSON_CONFIG_LIST STREQUAL "")
+		configure_file("${CGV_DIR}/make/cmake/launch.json.in" "${CMAKE_SOURCE_DIR}/.vscode/launch.json" @ONLY)
+		if (IS_MULTICONFIG)
+			set(VSCODE_LAUNCH_JSON_CONDITION $<CONFIG:Debug>)
+		else()
+			set(VSCODE_LAUNCH_JSON_CONDITION  $<BOOL:TRUE>)
+		endif()
+		file(
+			GENERATE OUTPUT "${CMAKE_SOURCE_DIR}/.vscode/launch.json"
+			INPUT "${CMAKE_SOURCE_DIR}/.vscode/launch.json"
+			USE_SOURCE_PERMISSIONS CONDITION ${VSCODE_LAUNCH_JSON_CONDITION}
+		)
 	endif()
 endfunction()
 
@@ -526,13 +567,18 @@ function(cgv_add_target NAME)
 	target_compile_definitions(${NAME_STATIC} PRIVATE ${DEBUG_COMPILE_DEFS})
 
 	# schedule deferred ops
+	# - for the created target
 	cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
+	# - update final pass
+	cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CANCEL_CALL "_999_FINALOPS")
+	cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} ID "_999_FINALOPS" CALL cgv_do_final_operations)
 
 	install(TARGETS ${NAME_STATIC} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 	if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
 		install(TARGETS ${NAME_EXE} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 	endif()
 endfunction()
+
 
 
 
