@@ -437,6 +437,7 @@ namespace cgv {
 		glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
 		glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&blend_src));
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		GLboolean depth = glIsEnabled(GL_DEPTH_TEST);
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
 		rr.render(*ctx_ptr, 0, (GLsizei)Q.size());
@@ -445,7 +446,8 @@ namespace cgv {
 		glDepthMask(GL_TRUE);
 		if (!blend)
 			glDisable(GL_BLEND);
-		glEnable(GL_DEPTH_TEST);
+		if (depth)
+			glEnable(GL_DEPTH_TEST);
 		ref_texture(*ctx_ptr).disable(*ctx_ptr);
 	}
 	unsigned tt_gl_font_face::get_nr_glyphs() const { return f.numGlyphs; }
