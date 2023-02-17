@@ -1,5 +1,5 @@
 #include "file.h"
-
+#include <cgv/utils/dir.h>
 #include <cgv/type/standard_types.h>
 #include <string.h>
 #include <vector>
@@ -52,6 +52,8 @@ bool exists(const std::string& file_name)
 std::string find_recursive(const std::string& path, const std::string& file_name)
 {
 #ifdef USE_STD_FILESYSTEM
+	if (!cgv::utils::dir::exists(path))
+		return "";
 	if(cgv::utils::file::exists(path + '/' + file_name))
 		return path + '/' + file_name;
 
