@@ -279,7 +279,7 @@ function(cgv_do_deferred_ops TARGET_NAME)
 			# try to set relevant options for all other generators in the hopes of ending up with a valid launch/debug configuration
 			if (NOT NO_EXECUTABLE)
 				cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
-				set_plugin_execution_params(${TARGET_NAME} ARGUMENTS ${CMD_LINE_ARGS})
+				set_plugin_execution_params(${TARGET_NAME} ARGUMENTS ${CMD_LINE_ARGS_STRING})
 				set_plugin_execution_params(${NAME_EXE} ARGUMENTS ${ADDITIONAL_ARGS_STRING} ALTERNATIVE_COMMAND $<TARGET_FILE:${NAME_EXE}>)
 				set_plugin_execution_working_dir(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 				set_plugin_execution_working_dir(${NAME_EXE} ${CMAKE_CURRENT_SOURCE_DIR})
