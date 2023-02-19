@@ -285,6 +285,18 @@ Public Member Functions</h2></td></tr>
 <a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a1b5ab6d2d426475347b612994a014bb9">get_current_program</a> () const</td></tr>
 <tr class="memdesc:a1b5ab6d2d426475347b612994a014bb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">check for current program, prepare it for rendering and return pointer to it <br /></td></tr>
 <tr class="separator:a1b5ab6d2d426475347b612994a014bb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0239e0a93479919aba25b9b58c132a06"><td class="memItemLeft" align="right" valign="top"><a id="a0239e0a93479919aba25b9b58c132a06"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a0239e0a93479919aba25b9b58c132a06">enable_shader_file_cache</a> ()</td></tr>
+<tr class="memdesc:a0239e0a93479919aba25b9b58c132a06"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable the usage of the shader file caches <br /></td></tr>
+<tr class="separator:a0239e0a93479919aba25b9b58c132a06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6cd14dc116b08ec7946e3121c629fdd"><td class="memItemLeft" align="right" valign="top"><a id="aa6cd14dc116b08ec7946e3121c629fdd"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa6cd14dc116b08ec7946e3121c629fdd">disable_shader_file_cache</a> ()</td></tr>
+<tr class="memdesc:aa6cd14dc116b08ec7946e3121c629fdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">disable the usage of the shader file caches <br /></td></tr>
+<tr class="separator:aa6cd14dc116b08ec7946e3121c629fdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1cee724fe70db7ddd6c1cf897935bb5"><td class="memItemLeft" align="right" valign="top"><a id="ab1cee724fe70db7ddd6c1cf897935bb5"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ab1cee724fe70db7ddd6c1cf897935bb5">is_shader_file_cache_enabled</a> () const</td></tr>
+<tr class="memdesc:ab1cee724fe70db7ddd6c1cf897935bb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether the shader file caches are enabled <br /></td></tr>
+<tr class="separator:ab1cee724fe70db7ddd6c1cf897935bb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36ad56f3d69e34b56ffbc45c8f511a8f"><td class="memItemLeft" align="right" valign="top"><a id="a36ad56f3d69e34b56ffbc45c8f511a8f"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a36ad56f3d69e34b56ffbc45c8f511a8f">context</a> ()</td></tr>
 <tr class="memdesc:a36ad56f3d69e34b56ffbc45c8f511a8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">init the cursor position to (0,0) <br /></td></tr>
@@ -677,6 +689,10 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
+<tr class="memitem:a80306fb1d08f59cdb7d540ae13a88e22"><td class="memItemLeft" align="right" valign="top"><a id="a80306fb1d08f59cdb7d540ae13a88e22"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a80306fb1d08f59cdb7d540ae13a88e22">use_shader_file_cache</a></td></tr>
+<tr class="memdesc:a80306fb1d08f59cdb7d540ae13a88e22"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to use the caching facilities of <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> and <a class="el" href="classcgv_1_1render_1_1shader__code.html">shader_code</a> to store loaded shader file contents as strings for faster loading <br /></td></tr>
+<tr class="separator:a80306fb1d08f59cdb7d540ae13a88e22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af16fecce14eda62b7b17b264722110f6"><td class="memItemLeft" align="right" valign="top"><a id="af16fecce14eda62b7b17b264722110f6"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#af16fecce14eda62b7b17b264722110f6">auto_set_view_in_current_shader_program</a></td></tr>
 <tr class="memdesc:af16fecce14eda62b7b17b264722110f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to automatically set viewing matrixes in current shader program, defaults to true <br /></td></tr>
