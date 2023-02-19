@@ -256,16 +256,20 @@ template&lt;typename T &gt; </td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a81375b0561dda1f2c332e62edf165de2"><td class="memItemLeft" align="right" valign="top"><a id="a81375b0561dda1f2c332e62edf165de2"></a>
-static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a81375b0561dda1f2c332e62edf165de2">collect_file</a> (const std::string &amp;file_name, std::vector&lt; std::string &gt; &amp;file_names)</td></tr>
-<tr class="memdesc:a81375b0561dda1f2c332e62edf165de2"><td class="mdescLeft">&#160;</td><td class="mdescRight">resolve file name with <a class="el" href="classcgv_1_1render_1_1shader__code.html#a67a995a8da53b28c0a250d685642e61b">shader_code::find_file</a> and add file to list if found <br /></td></tr>
-<tr class="separator:a81375b0561dda1f2c332e62edf165de2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3824107098b8dcaf191f8707fb287f8"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#af3824107098b8dcaf191f8707fb287f8">collect_files</a> (const std::string &amp;base_name, std::vector&lt; std::string &gt; &amp;file_names)</td></tr>
-<tr class="separator:af3824107098b8dcaf191f8707fb287f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a347d701dbfbd011109cba546d1faca0a"><td class="memItemLeft" align="right" valign="top"><a id="a347d701dbfbd011109cba546d1faca0a"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a347d701dbfbd011109cba546d1faca0a">collect_files_from_cache</a> (const std::string &amp;name, std::vector&lt; std::string &gt; &amp;file_names, bool &amp;added_files)</td></tr>
+<tr class="memdesc:a347d701dbfbd011109cba546d1faca0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">resolve file name with <a class="el" href="classcgv_1_1render_1_1shader__code.html#a67a995a8da53b28c0a250d685642e61b">shader_code::find_file</a> and add file to list if found <br /></td></tr>
+<tr class="separator:a347d701dbfbd011109cba546d1faca0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b67eb5729d31a2a0bf39d22798ada0e"><td class="memItemLeft" align="right" valign="top"><a id="a0b67eb5729d31a2a0bf39d22798ada0e"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a0b67eb5729d31a2a0bf39d22798ada0e">collect_file</a> (const std::string &amp;file_name, bool use_cache, std::vector&lt; std::string &gt; &amp;file_names)</td></tr>
+<tr class="memdesc:a0b67eb5729d31a2a0bf39d22798ada0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">resolve file name with <a class="el" href="classcgv_1_1render_1_1shader__code.html#a67a995a8da53b28c0a250d685642e61b">shader_code::find_file</a> and add file to list if found <br /></td></tr>
+<tr class="separator:a0b67eb5729d31a2a0bf39d22798ada0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a784eef71ad129bb2ddddf6dcb1e2aa7f"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a784eef71ad129bb2ddddf6dcb1e2aa7f">collect_files</a> (const std::string &amp;base_name, bool use_cache, std::vector&lt; std::string &gt; &amp;file_names)</td></tr>
+<tr class="separator:a784eef71ad129bb2ddddf6dcb1e2aa7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6d8a2698cf090b7e0acef29084b845c"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#aa6d8a2698cf090b7e0acef29084b845c">collect_dir</a> (const std::string &amp;dir_name, bool recursive, std::vector&lt; std::string &gt; &amp;file_names)</td></tr>
 <tr class="separator:aa6d8a2698cf090b7e0acef29084b845c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c9490ea1c47db77bb13fd615c12c44a"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a5c9490ea1c47db77bb13fd615c12c44a">collect_program</a> (const std::string &amp;file_name, std::vector&lt; std::string &gt; &amp;file_names)</td></tr>
-<tr class="separator:a5c9490ea1c47db77bb13fd615c12c44a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9a7fd41a56482415afc37940efffb00"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#af9a7fd41a56482415afc37940efffb00">collect_program</a> (const std::string &amp;file_name, bool use_cache, std::vector&lt; std::string &gt; &amp;file_names)</td></tr>
+<tr class="separator:af9a7fd41a56482415afc37940efffb00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a284d348185df93093343912db7d1a497"><td class="memItemLeft" align="right" valign="top"><a id="a284d348185df93093343912db7d1a497"></a>
 static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a284d348185df93093343912db7d1a497">get_max_nr_geometry_shader_output_vertices</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:a284d348185df93093343912db7d1a497"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the maximum number of output vertices of a geometry shader <br /></td></tr>
@@ -299,10 +303,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-methods"></a>
 Static Protected Member Functions</h2></td></tr>
-<tr class="memitem:a83f8ebf3a11a6439177816650161b87d"><td class="memItemLeft" align="right" valign="top"><a id="a83f8ebf3a11a6439177816650161b87d"></a>
-static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a83f8ebf3a11a6439177816650161b87d">open_program_file</a> (std::string &amp;file_name, std::string &amp;content, std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1line.html">cgv::utils::line</a> &gt; &amp;lines, std::string *last_error_ptr=0)</td></tr>
-<tr class="memdesc:a83f8ebf3a11a6439177816650161b87d"><td class="mdescLeft">&#160;</td><td class="mdescRight">common code necessary to open file <br /></td></tr>
-<tr class="separator:a83f8ebf3a11a6439177816650161b87d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ade1a394896158b6b0605e40b6e5305"><td class="memItemLeft" align="right" valign="top"><a id="a5ade1a394896158b6b0605e40b6e5305"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a5ade1a394896158b6b0605e40b6e5305">open_program_file</a> (std::string &amp;file_name, bool use_cache, std::string &amp;content, std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1line.html">cgv::utils::line</a> &gt; &amp;lines, std::string *last_error_ptr=0)</td></tr>
+<tr class="memdesc:a5ade1a394896158b6b0605e40b6e5305"><td class="mdescLeft">&#160;</td><td class="mdescRight">common code necessary to open file <br /></td></tr>
+<tr class="separator:a5ade1a394896158b6b0605e40b6e5305"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
 Static Protected Attributes</h2></td></tr>
@@ -379,8 +383,8 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 
 </div>
 </div>
-<a id="af3824107098b8dcaf191f8707fb287f8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af3824107098b8dcaf191f8707fb287f8">&#9670;&nbsp;</a></span>collect_files()</h2>
+<a id="a784eef71ad129bb2ddddf6dcb1e2aa7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a784eef71ad129bb2ddddf6dcb1e2aa7f">&#9670;&nbsp;</a></span>collect_files()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -393,6 +397,12 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>base_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>use_cache</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -416,8 +426,8 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 
 </div>
 </div>
-<a id="a5c9490ea1c47db77bb13fd615c12c44a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c9490ea1c47db77bb13fd615c12c44a">&#9670;&nbsp;</a></span>collect_program()</h2>
+<a id="af9a7fd41a56482415afc37940efffb00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9a7fd41a56482415afc37940efffb00">&#9670;&nbsp;</a></span>collect_program()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -430,6 +440,12 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>file_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>use_cache</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

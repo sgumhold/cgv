@@ -16,11 +16,13 @@ var classcgv_1_1render_1_1shader__code =
     [ "read_and_compile", "classcgv_1_1render_1_1shader__code.html#af65768a52747adf9bbcedf1e050c4c4b", null ],
     [ "read_code", "classcgv_1_1render_1_1shader__code.html#a74e842fc0080dbe5f0a7b2782721e445", null ],
     [ "read_code_file", "classcgv_1_1render_1_1shader__code.html#a39711ac1195b385dd71f4f05208886a1", null ],
+    [ "resolve_includes", "classcgv_1_1render_1_1shader__code.html#a009cf970399f81fa1aa2a6233297acc3", null ],
+    [ "retrieve_code", "classcgv_1_1render_1_1shader__code.html#aa2bf52fcc6a50e7d03806f7b7d7ac74b", null ],
     [ "set_code", "classcgv_1_1render_1_1shader__code.html#ad14d84ad78fddf201e8683fa4ab85b62", null ],
     [ "set_defines", "classcgv_1_1render_1_1shader__code.html#a7cc5ce879c1174c4b9dd1c5d0a2fc2b8", null ],
     [ "set_vertex_attrib_locations", "classcgv_1_1render_1_1shader__code.html#ade42b24d937fc63102250ecb1e35908c", null ],
+    [ "code_cache", "classcgv_1_1render_1_1shader__code.html#a4f473cd5a071f98f40da5514c2ca476a", null ],
     [ "ctx_ptr", "classcgv_1_1render_1_1shader__code.html#a738cb1064e1c6fc606c018191a53f23e", null ],
     [ "last_error", "classcgv_1_1render_1_1shader__code.html#a95f40a817168467d5a0d3fdbb09e0b79", null ],
-    [ "shader_code_cache", "classcgv_1_1render_1_1shader__code.html#a75292addc9883628ff6f6a502756d211", null ],
     [ "st", "classcgv_1_1render_1_1shader__code.html#aa6b747b1b10960f15fc573a3a0bdd8da", null ]
 ];
