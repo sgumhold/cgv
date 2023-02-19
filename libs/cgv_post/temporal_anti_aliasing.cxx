@@ -29,11 +29,19 @@ bool temporal_anti_aliasing::init(cgv::render::context& ctx) {
 
 	fbc_resolve.add_attachment("color", color_format);
 	
-	shaders.add("screen", "screen_quad.glpr");
+	shaders.add("screen", "screen_texture.glpr");
 	shaders.add("resolve", "taa_resolve.glpr");
 	shaders.add("fxaa", "fxaa3.glpr");
 
 	is_initialized = shaders.load_all(ctx);
+
+	if(is_initialized) {
+		auto& screen_prog = shaders.get("screen");
+		screen_prog.enable(ctx);
+		screen_prog.set_uniform(ctx, "color_tex", 0);
+		screen_prog.set_uniform(ctx, "depth_tex", 1);
+		screen_prog.disable(ctx);
+	}
 
 	return is_initialized;
 }
@@ -189,7 +197,7 @@ bool temporal_anti_aliasing::end(cgv::render::context& ctx) {
 
 	auto& screen_prog = shaders.get("screen");
 	screen_prog.enable(ctx);
-
+	
 	color_src_fbc.enable_attachment(ctx, "color", 0);
 	fbc_draw.enable_attachment(ctx, "depth", 1);
 
