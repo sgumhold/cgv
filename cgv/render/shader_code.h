@@ -122,8 +122,13 @@ public:
 		 - glcs ... ST_COMPUTE
 	*/
 	static ShaderType detect_shader_type(const std::string& file_name);
+	/// search for include directives in the given source code, replace them by the included file contents and return the full source code as well as the set of all included files
+	static std::string resolve_includes(const std::string& source, bool use_cache, std::set<std::string>& included_file_names, std::string* _last_error = 0);
 	/// search for include directives in the given source code, replace them by the included file contents and return the full source code
-	static std::string resolve_includes(const std::string& source, bool use_cache, std::set<std::string>& included_file_names = std::set<std::string>(), std::string* _last_error = 0);
+	inline static std::string resolve_includes(const std::string& source, bool use_cache, std::string* _last_error = 0) {
+		std::set<std::string> dummy;
+		return resolve_includes(source, use_cache, dummy, _last_error);
+	}
 	/// destruct shader code
 	void destruct(const context& ctx);
 	/** read shader code from file that is searched for with find_file.
