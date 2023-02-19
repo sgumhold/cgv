@@ -1,5 +1,6 @@
 var NAVTREEINDEX37 =
 {
+"index.html":[],
 "install.html":[1],
 "install.html#cmake":[1,1],
 "install.html#makegen":[1,6],
@@ -248,6 +249,5 @@ var NAVTREEINDEX37 =
 "namespacecgv_1_1gui.html#a7641aee24f715d0496c3e23c68faec81a68f4ae0ffeae71fac7c64c9c07c0c590":[10,0,0,4,65,3],
 "namespacecgv_1_1gui.html#a7641aee24f715d0496c3e23c68faec81afcd7ad9adb7983df368ce9c5f7639433":[10,0,0,4,65,1],
 "namespacecgv_1_1gui.html#a769cfeab149d6dc2e1ff1b0cfb48ee31":[10,0,0,4,58],
-"namespacecgv_1_1gui.html#a769cfeab149d6dc2e1ff1b0cfb48ee31a1a6a5feec8d636bc6d63a2a73e1ef0c5":[10,0,0,4,58,0],
-"namespacecgv_1_1gui.html#a769cfeab149d6dc2e1ff1b0cfb48ee31a2a40f1fcaab6769649cd9c2773a3aeaa":[10,0,0,4,58,1]
+"namespacecgv_1_1gui.html#a769cfeab149d6dc2e1ff1b0cfb48ee31a1a6a5feec8d636bc6d63a2a73e1ef0c5":[10,0,0,4,58,0]
 };
