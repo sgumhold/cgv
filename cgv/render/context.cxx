@@ -162,6 +162,7 @@ context::context()
 	do_screen_shot = false;
 	light_source_handle = 1;
 
+	use_shader_file_cache = true;
 	auto_set_view_in_current_shader_program = true;
 	auto_set_gamma_in_current_shader_program = true;
 	auto_set_lights_in_current_shader_program = true;
@@ -400,6 +401,24 @@ shader_program_base* context::get_current_program() const
 	}
 	shader_program_base& prog = *shader_program_stack.top();
 	return &prog;
+}
+
+/// enable the usage of the shader file caches
+void context::enable_shader_file_cache()
+{
+	use_shader_file_cache = true;
+}
+
+/// disable the usage of the shader file caches
+void context::disable_shader_file_cache()
+{
+	use_shader_file_cache = false;
+}
+
+/// whether the shader file caches are enabled
+bool context::is_shader_file_cache_enabled() const
+{
+	return use_shader_file_cache;
 }
 
 /// return the number of light sources
