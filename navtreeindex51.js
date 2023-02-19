@@ -1,5 +1,6 @@
 var NAVTREEINDEX51 =
 {
+"structcgv_1_1type_1_1func_1_1drop__const_3_01T_01_6_01_4.html#afcf7c4c5226571911e93c80eea180ca9":[11,0,0,12,2,5,0],
 "structcgv_1_1type_1_1func_1_1drop__const_3_01const_01T_01_4.html":[11,0,0,12,2,4],
 "structcgv_1_1type_1_1func_1_1drop__const_3_01const_01T_01_4.html#adfb5f6a73d0554a6d776951d0c1b9121":[11,0,0,12,2,4,0],
 "structcgv_1_1type_1_1func_1_1drop__pointer.html":[11,0,0,12,2,6],
@@ -248,6 +249,5 @@ var NAVTREEINDEX51 =
 "type__ptr_8h_source.html":[12,0,0,12,3,3],
 "up__tri__mat_8h_source.html":[12,0,0,5,60],
 "utils_2statistics_8h_source.html":[12,0,0,13,14],
-"variables_8cxx.html#a2c64345691984eed5a18aecd527c39e9":[10,0,0,9,6],
-"variables_8cxx.html#a546e4ef20160b1b3f5c68f9efd33d05c":[10,0,0,9,11]
+"variables_8cxx.html#a2c64345691984eed5a18aecd527c39e9":[10,0,0,9,6]
 };
