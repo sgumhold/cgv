@@ -80,6 +80,9 @@ void temporal_anti_aliasing::begin(cgv::render::context& ctx, cgv::render::view*
 
 	assertm(is_initialized, "Error: TAA has not been initialized.");
 
+	if(!(enable_taa || enable_fxaa))
+		return;
+
 	current_view.eye_pos = view_ptr->get_eye();
 	current_view.view_dir = view_ptr->get_view_dir();
 	current_view.view_up_dir = view_ptr->get_view_up_dir();
@@ -109,6 +112,9 @@ void temporal_anti_aliasing::begin(cgv::render::context& ctx, cgv::render::view*
 bool temporal_anti_aliasing::end(cgv::render::context& ctx) {
 
 	assertm(is_initialized, "Error: TAA has not been initialized.");
+
+	if(!(enable_taa || enable_fxaa))
+		return false;
 
 	fbc_draw.disable(ctx);
 
