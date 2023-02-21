@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cgv/render/context.h>
-#include <cgv/utils/simple_cache.h>
+#include <set>
 
 #include "lib_begin.h"
 
@@ -89,8 +89,8 @@ public:
 	}
 
 protected:
-	static cgv::utils::simple_cache<std::string, std::string> shader_code_cache;
-
+	/// map used to cache shader file contents indexed by their file name
+	static std::map<std::string, std::string> code_cache;
 	/// store the shader type
 	ShaderType st;
 
@@ -112,14 +112,23 @@ public:
 	static std::string get_last_error(const std::string& file_name, const std::string& last_error);
 	/// read shader code from file and return string with content or empty string if read failed
 	static std::string read_code_file(const std::string &file_name, std::string* _last_error = 0);
+	/// retreive shader code either by reading the file from disk or from the cache if enabled
+	static std::string retrieve_code(const std::string& file_name, bool use_cache, std::string* _last_error);
 	/** detect the shader type from the extension of the given
-		 file_name, i.e.		 
+		 file_name, i.e.
 		 - glvs ... ST_VERTEX
 		 - glgs ... ST_GEOMETRY
 		 - glfs ... ST_FRAGMENT
 		 - glcs ... ST_COMPUTE
 	*/
 	static ShaderType detect_shader_type(const std::string& file_name);
+	/// search for include directives in the given source code, replace them by the included file contents and return the full source code as well as the set of all included files
+	static std::string resolve_includes(const std::string& source, bool use_cache, std::set<std::string>& included_file_names, std::string* _last_error = 0);
+	/// search for include directives in the given source code, replace them by the included file contents and return the full source code
+	inline static std::string resolve_includes(const std::string& source, bool use_cache, std::string* _last_error = 0) {
+		std::set<std::string> dummy;
+		return resolve_includes(source, use_cache, dummy, _last_error);
+	}
 	/// destruct shader code
 	void destruct(const context& ctx);
 	/** read shader code from file that is searched for with find_file.
