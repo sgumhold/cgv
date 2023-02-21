@@ -618,6 +618,7 @@ void vr_view_interactor::render_vr_kits(cgv::render::context& ctx)
 	if (rendered_display_ptr && kit_states[rendered_display_index].hmd.status != vr::VRS_DETACHED) {
 		void* fbo_handle;
 		ivec4 cgv_viewport;
+		//rendered_eye: 0...monitor,1...left eye,2...right eye
 		for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
 			rendered_display_ptr->enable_fbo(rendered_eye);
 			ctx.announce_external_frame_buffer_change(fbo_handle);

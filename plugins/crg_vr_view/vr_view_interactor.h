@@ -146,6 +146,7 @@ protected:
 	/// selection of view of current hmd used in case of no separate view (1 ... left, 2 ... right, 3 ... both)
 	int none_separate_view;
 	int head_tracker;
+	/// rendered_eye: 0...monitor,1...left eye,2...right eye
 	int rendered_eye;
 	vr::gl_vr_display* rendered_display_ptr;
 	int rendered_display_index;
