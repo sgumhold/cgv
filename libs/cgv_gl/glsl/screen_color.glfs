@@ -1,11 +1,9 @@
-#version 420
+#version 150
 
 uniform vec4 color;
-uniform float depth = 1.0;
+uniform float depth = 0.0;
 
-in vec2 texcoord_fs;
-
-out layout(location = 0) vec4 frag_color;
+out vec4 frag_color;
 
 void main()
 {

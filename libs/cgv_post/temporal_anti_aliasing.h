@@ -92,9 +92,6 @@ protected:
 	/// generate <jitter_sample_count> number of pseudo-random 2d samples
 	void generate_jitter_offsets();
 
-	/// return the 2d jitter offset according to the current accumulation count
-	vec2 get_current_jitter_offset() const;
-
 	/// returns true if the view appears to be unchanged since the last frame (tests eye position, view direction and view up direction)
 	bool is_static_view() const;
 
@@ -120,6 +117,15 @@ public:
 	float get_jitter_scale() const { return jitter_scale; }
 
 	size_t get_jitter_sample_count() const { return jitter_sample_count; }
+
+	/// return the 2d jitter offset according to the current accumulation count (warning: viewport dependent)
+	vec2 get_current_jitter_offset() const;
+
+	/// return the normalized 2d jitter offset according to the current accumulation count
+	vec2 get_normalized_current_jitter_offset() const { return get_current_jitter_offset() * viewport_size; }
+
+	/// return the current accumulation count
+	unsigned int get_current_accumulation_count() const { return accumulate_count; }
 	
 	void set_fxaa_enabled(bool enable) { enable_fxaa = enable; }
 

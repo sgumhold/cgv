@@ -47,10 +47,10 @@ namespace cgv {
 			CGV_API Result cmp(const std::string& what, const std::string& with);
 			/// find first matching file, return 0 if non found - if not 0, pointer corresponds to instance on heap that is deleted in find_next after search terminates or with find_quit
 			CGV_API void* find_first(const std::string& filter);
-			///  find next and return 0 if no next exists
+			/// find next and return 0 if no next exists
 			CGV_API void* find_next(void* handle);
-			///  quit a find procedure and delete heap instance
-			CGV_API void find_quit(void* handle);
+			/// close a find procedure and free FileInfo resources
+			CGV_API void find_close(void* handle);
 			/// return name of currently found file without path
 			CGV_API std::string find_name(void* handle);
 			/// return the time of the last write time

@@ -67,6 +67,8 @@ namespace cgv {
 
 			bounding_box = box3(vec3(0.0f), vec3(1.0f));
 			apply_bounding_box_transformation = false;
+
+			noise_offset = vec2(0.0f);
 		}
 
 		void volume_renderer::init_noise_texture(context& ctx)
@@ -188,6 +190,11 @@ namespace cgv {
 		{
 			apply_bounding_box_transformation = flag;
 		}
+		
+		void volume_renderer::set_noise_offset(const vec2& offset)
+		{
+			noise_offset = offset;
+		}
 
 		bool volume_renderer::enable(context& ctx)
 		{
@@ -197,6 +204,10 @@ namespace cgv {
 			int vp[4];
 			glGetIntegerv(GL_VIEWPORT, vp);
 			ref_prog().set_uniform(ctx, "viewport_dims", vec2(float(vp[2]-vp[0]), float(vp[3]-vp[1])));
+			ref_prog().set_uniform(ctx, "noise_offset", noise_offset);
+
+			std::cout << noise_offset << std::endl;
+
 			ref_prog().set_uniform(ctx, "opacity_scale", vrs.opacity_scale);
 			ref_prog().set_uniform(ctx, "size_scale", vrs.size_scale);
 			

@@ -20,8 +20,7 @@ using namespace cgv::base;
 namespace cgv {
 	namespace render {
 
-static bool use_cache = false;
-cgv::utils::simple_cache<std::string, std::string> shader_code::shader_code_cache;
+std::map<std::string, std::string> shader_code::code_cache;
 
 shader_config::shader_config()
 {
@@ -221,6 +220,26 @@ std::string shader_code::find_file(const std::string& file_name)
 	return find_in_paths(file_name, get_shader_config()->shader_path, true);
 }
 
+std::string shader_code::retrieve_code(const std::string& file_name, bool use_cache, std::string* _last_error) {
+
+	std::string source = "";
+
+	if(use_cache) {
+		auto it = code_cache.find(file_name);
+		if(it != code_cache.end()) {
+			source = it->second;
+		}
+	}
+
+	if(source.empty())
+		source = read_code_file(file_name, _last_error);
+
+	if(use_cache)
+		code_cache.emplace(file_name, source);
+
+	return source;
+}
+
 ShaderType shader_code::detect_shader_type(const std::string& file_name)
 {
 	std::string ext = to_lower(get_extension(file_name));
@@ -236,6 +255,52 @@ ShaderType shader_code::detect_shader_type(const std::string& file_name)
 	else if (ext == "glte" || ext == "pglte")
 		st = ST_TESS_EVALUATION;
 	return st;
+}
+
+std::string shader_code::resolve_includes(const std::string& source, bool use_cache, std::set<std::string>& included_file_names, std::string* _last_error)
+{
+	const std::string identifier = "#include ";
+
+	std::string resolved_source = "";
+
+	std::vector<cgv::utils::line> lines;
+	cgv::utils::split_to_lines(source, lines);
+
+	for(size_t i = 0; i < lines.size(); ++i) {
+		std::string line = cgv::utils::to_string(lines[i]);
+
+		// search for the include identifier
+		size_t identifier_pos = line.find(identifier);
+		if(identifier_pos != std::string::npos) {
+			// remove identifier and all content before; an include directive must be the first and only statement on a line
+			line.erase(0, identifier_pos + identifier.length());
+			
+			// trim whitespace
+			cgv::utils::trim(line);
+
+			if(line.length() > 0) {
+				// remove quotation marks, leaving only the include path
+				std::string include_file_name = line.substr(1, line.length() - 2);
+				std::string include_source = retrieve_code(include_file_name, use_cache, _last_error);
+
+				// check whether this file was already included and skip if this is the case
+				if(included_file_names.find(include_file_name) == included_file_names.end()) {
+					included_file_names.insert(include_file_name);
+					line = resolve_includes(include_source, use_cache, included_file_names, _last_error);
+				} else {
+					line = "";
+				}
+			}
+
+			// skip this line if nothing needs to be included (removes the include statement from the code)
+			if(line == "")
+				continue;
+		}
+
+		resolved_source += line + '\n';
+	}
+
+	return resolved_source;
 }
 
 /// return the shader type of this code
@@ -293,31 +358,20 @@ bool shader_code::read_code(const context& ctx, const std::string &file_name, Sh
 	if (st == ST_DETECT)
 		st = detect_shader_type(file_name);
 
-	std::string source = "";
+	// get source code from cache or read file
+	std::string source = retrieve_code(file_name, ctx.is_shader_file_cache_enabled(), &last_error);
 
-	if(use_cache) {
-		auto it = shader_code_cache.find(file_name);
+	source = resolve_includes(source, ctx.is_shader_file_cache_enabled());
 
-		if(shader_code_cache.valid(it)) {
-			source = shader_code_cache.value(it);
-		} else {
-			source = read_code_file(file_name, &last_error);
-			shader_code_cache.cache(file_name, source);
-		}
-	} else {
-		source = read_code_file(file_name, &last_error);
-	}
-
-	if(!defines.empty()) {
+	if(!defines.empty())
 		set_defines(source, defines);
-	}
 	
-	if (st == ST_VERTEX && ctx.get_gpu_vendor_id() == GPUVendorID::GPU_VENDOR_AMD) {
+	if (st == ST_VERTEX && ctx.get_gpu_vendor_id() == GPUVendorID::GPU_VENDOR_AMD)
 		set_vertex_attrib_locations(source);
-	}
 
 	if (source.empty())
 		return false;
+
 	return set_code(ctx, source, st);
 }
 

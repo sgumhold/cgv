@@ -10,36 +10,55 @@
 using namespace cgv::utils;
 
 namespace cgv {
-namespace render {
+	namespace render {
 
-static bool use_cache = false;
-cgv::utils::simple_cache<std::string, std::vector<std::string>> shader_program::files_cache;
-cgv::utils::simple_cache<std::string, std::string> shader_program::program_file_cache;
+std::map<std::string, std::string> shader_program::program_file_cache;
+std::map<std::string, std::vector<std::string>> shader_program::files_cache;
 
 /// attach a list of files
-bool shader_program::attach_files(const context& ctx, const std::vector<std::string>& file_names,
-								  const shader_define_map& defines)
+bool shader_program::attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_define_map& defines)
 {
 	bool no_error = true;
-	for (unsigned int i = 0; i < file_names.size(); ++i) {
+	for(unsigned int i = 0; i < file_names.size(); ++i) {
 		no_error = attach_file(ctx, file_names[i], ST_DETECT, defines) && no_error;
-		if (!no_error)
+		if(!no_error)
 			std::cout << last_error << std::endl;
 	}
 	return no_error;
 }
 
-bool shader_program::collect_file(const std::string& file_name, std::vector<std::string>& file_names)
-{
-	if (use_cache) {
-		auto it = files_cache.find(file_name);
-		if (files_cache.valid(it)) {
-			const std::vector<std::string>& cached_file_names = files_cache.value(it);
-			for (size_t i = 0; i < cached_file_names.size(); ++i)
-				file_names.push_back(cached_file_names[i]);
+bool shader_program::collect_files_from_cache(const std::string& name, std::vector<std::string>& file_names, bool& added_files) {
 
-			return !cached_file_names.empty();
-		}
+	auto it = files_cache.find(name);
+	if(it != files_cache.end()) {
+		const std::vector<std::string>& cached_file_names = it->second;
+		for(size_t i = 0; i < cached_file_names.size(); ++i)
+			file_names.push_back(cached_file_names[i]);
+
+		 added_files = !cached_file_names.empty();
+		 return true;
+	}
+
+	added_files = false;
+	return false;
+}
+
+bool shader_program::collect_file(const std::string& file_name, bool use_cache, std::vector<std::string>& file_names)
+{
+	if(use_cache) {
+
+		bool added_files = false;
+		if(collect_files_from_cache(file_name, file_names, added_files))
+			return added_files;
+
+		//auto it = files_cache.find(file_name);
+		//if(it != files_cache.end()) {
+		//	const std::vector<std::string>& cached_file_names = it->second;
+		//	for(size_t i = 0; i < cached_file_names.size(); ++i)
+		//		file_names.push_back(cached_file_names[i]);
+		//
+		//	return !cached_file_names.empty();
+		//}
 	}
 
 	std::vector<std::string> collected_file_names;
@@ -49,57 +68,57 @@ bool shader_program::collect_file(const std::string& file_name, std::vector<std:
 
 	if (!fn.empty()) {
 		file_names.push_back(fn);
-		if (use_cache) {
+		if(use_cache)
 			collected_file_names.push_back(fn);
-		}
 		found = true;
 	}
 
-	if (use_cache) {
-		files_cache.cache(file_name, collected_file_names);
-	}
+	if(use_cache)
+		files_cache.emplace(file_name, collected_file_names);
 
 	return found;
 }
 
-bool shader_program::collect_files(const std::string& base_name, std::vector<std::string>& file_names)
+bool shader_program::collect_files(const std::string& base_name, bool use_cache, std::vector<std::string>& file_names)
 {
-	if (use_cache) {
-		auto it = files_cache.find(base_name);
-		if (files_cache.valid(it)) {
-			const std::vector<std::string>& cached_file_names = files_cache.value(it);
-			for (size_t i = 0; i < cached_file_names.size(); ++i)
-				file_names.push_back(cached_file_names[i]);
+	if(use_cache) {
 
-			return !cached_file_names.empty();
-		}
+		bool added_files = false;
+		if(collect_files_from_cache(base_name, file_names, added_files))
+			return added_files;
+
+		//auto it = files_cache.find(base_name);
+		//if(it != files_cache.end()) {
+		//	const std::vector<std::string>& cached_file_names = it->second;
+		//	for(size_t i = 0; i < cached_file_names.size(); ++i)
+		//		file_names.push_back(cached_file_names[i]);
+		//
+		//	return !cached_file_names.empty();
+		//}
 	}
 
 	std::vector<std::string> collected_file_names;
-
-	const char* exts[] = {"glvs",  "glgs",	"glfs",	 "glcs",  "gltc",  "glte", "pglvs",
-						  "pglfs", "pglgs", "pglcs", "pgltc", "pglte", 0};
+	
+	const char* exts[] = { "glvs", "glgs", "glfs", "glcs", "gltc", "glte", "pglvs", "pglfs", "pglgs", "pglcs", "pgltc", "pglte", 0 };
 	const char** iter = exts;
 	bool added_file = false;
 	while (*iter) {
-		std::string fn = shader_code::find_file(base_name + "." + *iter);
+		std::string fn = shader_code::find_file(base_name+"."+*iter);
 		if (!fn.empty()) {
 			file_names.push_back(fn);
-
-			if (use_cache) {
+			
+			if(use_cache)
 				collected_file_names.push_back(fn);
-			}
 
 			added_file = true;
 		}
 		++iter;
 	}
-	if (!added_file)
+	if(!added_file)
 		std::cerr << "could not find shader file " << base_name.c_str() << std::endl;
 
-	if (use_cache) {
-		files_cache.cache(base_name, collected_file_names);
-	}
+	if(use_cache)
+		files_cache.emplace(base_name, collected_file_names);
 
 	return added_file;
 }
@@ -116,17 +135,17 @@ bool shader_program::collect_dir(const std::string& dir_name, bool recursive, st
 			return false;
 		}
 	}
-	void* handle = file::find_first(dn + "/*.gl*");
+	void* handle = file::find_first(dn+"/*.gl*");
 	if (!handle)
 		return false;
 	while (handle) {
-		file_names.push_back(dir_name + "/" + file::find_name(handle));
+		file_names.push_back(dir_name+"/"+file::find_name(handle));
 		handle = file::find_next(handle);
 	}
 	return true;
 }
 
-bool shader_program::collect_program(const std::string& file_name, std::vector<std::string>& file_names)
+bool shader_program::collect_program(const std::string& file_name, bool use_cache, std::vector<std::string>& file_names)
 {
 	std::string fn = shader_code::find_file(file_name);
 	if (fn.empty())
@@ -143,37 +162,37 @@ bool shader_program::collect_program(const std::string& file_name, std::vector<s
 	std::string old_shader_path = get_shader_config()->shader_path;
 	std::string path = file::get_path(file_name);
 	if (!path.empty())
-		get_shader_config()->shader_path = path + ";" + get_shader_config()->shader_path;
+		get_shader_config()->shader_path = path+";"+get_shader_config()->shader_path;
 
 	for (auto line : lines) {
 		std::string l = to_string((const token&)line);
-		if (l.substr(0, 5) == "file:")
-			added_file = collect_file(l.substr(5), file_names) || added_file;
-		else if (l.substr(0, 12) == "vertex_file:")
-			added_file = collect_file(l.substr(12), file_names) || added_file;
+		if (l.substr(0,5) == "file:")
+			added_file = collect_file(l.substr(5), use_cache, file_names) || added_file;
+		else if (l.substr(0,12) == "vertex_file:")
+			added_file = collect_file(l.substr(12), use_cache, file_names) || added_file;
 		else if (l.substr(0, 14) == "geometry_file:")
-			added_file = collect_file(l.substr(14), file_names) || added_file;
+			added_file = collect_file(l.substr(14), use_cache, file_names) || added_file;
 		else if (l.substr(0, 26) == "tessellation_control_file:")
-			added_file = collect_file(l.substr(26), file_names) || added_file;
+			added_file = collect_file(l.substr(26), use_cache, file_names) || added_file;
 		else if (l.substr(0, 29) == "tessellation_evaluation_file:")
-			added_file = collect_file(l.substr(29), file_names) || added_file;
-		else if (l.substr(0, 14) == "fragment_file:")
-			added_file = collect_file(l.substr(14), file_names) || added_file;
-		else if (l.substr(0, 6) == "files:")
-			added_file = collect_files(l.substr(6), file_names) || added_file;
-		else if (l.substr(0, 4) == "dir:")
+			added_file = collect_file(l.substr(29), use_cache, file_names) || added_file;
+		else if (l.substr(0,14) == "fragment_file:")
+			added_file = collect_file(l.substr(14), use_cache, file_names) || added_file;
+		else if (l.substr(0,6) == "files:")
+			added_file = collect_files(l.substr(6), use_cache, file_names) || added_file;
+		else if (l.substr(0,4) == "dir:")
 			added_file = collect_dir(l.substr(4), false, file_names) || added_file;
-		else if (l.substr(0, 8) == "rec_dir:")
+		else if (l.substr(0,8) == "rec_dir:")
 			added_file = collect_dir(l.substr(8), true, file_names) || added_file;
-		else if (l.substr(0, 8) == "program:")
-			added_file = collect_program(l.substr(8), file_names) || added_file;
+		else if (l.substr(0,8) == "program:")
+			added_file = collect_program(l.substr(8), use_cache, file_names) || added_file;
 	}
 
 	get_shader_config()->shader_path = old_shader_path;
 	return added_file;
 }
 
-/// create empty shader program
+///create empty shader program
 shader_program::shader_program(bool _show_code_errors)
 {
 	show_code_errors = _show_code_errors;
@@ -187,8 +206,9 @@ shader_program::~shader_program()
 {
 	if (ctx_ptr && ctx_ptr->make_current())
 		destruct(*ctx_ptr);
-	else if (handle != 0)
-		std::cerr << "could not destruct shader program properly" << std::endl;
+	else
+		if (handle != 0)
+			std::cerr << "could not destruct shader program properly" << std::endl;
 }
 
 /// create the shader program
@@ -198,8 +218,9 @@ bool shader_program::create(const context& ctx)
 	nr_attached_geometry_shaders = 0;
 	if (ctx_ptr)
 		destruct(*ctx_ptr);
-	else if (handle)
-		destruct(ctx);
+	else
+		if (handle)
+			destruct(ctx);
 	ctx_ptr = &ctx;
 	return ctx.shader_program_create(*this);
 }
@@ -215,38 +236,37 @@ bool shader_program::attach_code(const context& ctx, const shader_code& code)
 		last_error = "attempt to attach_code that is not created to shader program";
 		return false;
 	}
-	if (!code.is_compiled()) {
+	if(!code.is_compiled()) {
 		last_error = "attempt to attach_code that is not compiled to shader program";
 		return false;
 	}
 	ctx.shader_program_attach(*this, code);
-	if (code.get_shader_type() == ST_GEOMETRY)
+	if(code.get_shader_type() == ST_GEOMETRY)
 		++nr_attached_geometry_shaders;
 	return true;
 }
 
 /// detach a shader code
-bool shader_program::detach_code(const context& ctx, const shader_code& code)
-{
-	if (!handle) {
+bool shader_program::detach_code(const context& ctx, const shader_code& code) {
+	if(!handle) {
 		last_error = "detach_code from shader program that was not created";
 		return false;
 	}
-	if (!code.handle) {
+	if(!code.handle) {
 		last_error = "attempt to detach_code that is not created to shader program";
 		return false;
 	}
 	ctx.shader_program_detach(*this, code);
-	if (code.get_shader_type() == ST_GEOMETRY)
+	if(code.get_shader_type() == ST_GEOMETRY)
 		--nr_attached_geometry_shaders;
 	return true;
 }
 
+
 /// attach a shader code given as string and managed the created shader code object
-bool shader_program::attach_code(const context& ctx, const std::string& source, ShaderType st)
-{
+bool shader_program::attach_code(const context& ctx, const std::string& source, ShaderType st) {
 	shader_code* code_ptr = new shader_code;
-	if (code_ptr->set_code(ctx, source, st) && code_ptr->compile(ctx)) {
+	if(code_ptr->set_code(ctx, source, st) && code_ptr->compile(ctx)) {
 		managed_codes.push_back(code_ptr);
 		return attach_code(ctx, *code_ptr);
 	}
@@ -255,12 +275,11 @@ bool shader_program::attach_code(const context& ctx, const std::string& source, 
 	return false;
 }
 
+
 /// read shader code from file, compile and attach to program
-bool shader_program::attach_file(const context& ctx, const std::string& file_name, ShaderType st,
-								 const shader_define_map& defines)
-{
+bool shader_program::attach_file(const context& ctx, const std::string& file_name, ShaderType st, const shader_define_map& defines) {
 	shader_code* code_ptr = new shader_code;
-	if (!code_ptr->read_and_compile(ctx, file_name, st, show_code_errors, defines)) {
+	if(!code_ptr->read_and_compile(ctx, file_name, st, show_code_errors, defines)) {
 		last_error = code_ptr->last_error;
 		delete code_ptr;
 		return false;
@@ -270,39 +289,35 @@ bool shader_program::attach_file(const context& ctx, const std::string& file_nam
 }
 
 /// read shader code from files with the given base name, compile and attach them
-bool shader_program::attach_files(const context& ctx, const std::string& base_name, const shader_define_map& defines)
-{
+bool shader_program::attach_files(const context& ctx, const std::string& base_name, const shader_define_map& defines) {
 	std::vector<std::string> file_names;
-	if (!collect_files(base_name, file_names))
+	if(!collect_files(base_name, ctx.is_shader_file_cache_enabled(), file_names))
 		return false;
 	return attach_files(ctx, file_names, defines);
 }
 /// collect shader code files from directory, compile and attach.
-bool shader_program::attach_dir(const context& ctx, const std::string& dir_name, bool recursive)
-{
+bool shader_program::attach_dir(const context& ctx, const std::string& dir_name, bool recursive) {
 	std::vector<std::string> file_names;
-	if (!collect_dir(dir_name, recursive, file_names))
+	if(!collect_dir(dir_name, recursive, file_names))
 		return false;
 	return attach_files(ctx, file_names);
 }
-bool shader_program::open_program_file(std::string& file_name, std::string& content, std::vector<line>& lines,
-									   std::string* last_error_ptr)
+bool shader_program::open_program_file(std::string& file_name, bool use_cache, std::string& content, std::vector<line>& lines, std::string* last_error_ptr)
 {
 	std::string fn = "";
 
-	if (use_cache) {
+	if(use_cache) {
 		auto it = program_file_cache.find(file_name);
-		if (program_file_cache.valid(it)) {
-			fn = program_file_cache.value(it);
-		}
-		else {
-			fn = shader_code::find_file(file_name);
-			program_file_cache.cache(file_name, fn);
+		if(it != program_file_cache.end()) {	
+			fn = it->second;
 		}
 	}
-	else {
+
+	if(fn.empty())
 		fn = shader_code::find_file(file_name);
-	}
+
+	if(use_cache)
+		program_file_cache.emplace(file_name, fn);
 
 	if (fn.empty()) {
 		if (last_error_ptr)
@@ -326,7 +341,7 @@ std::vector<shader_define_map> shader_program::extract_instances(std::string fil
 	std::string content;
 	std::vector<line> lines;
 	std::vector<shader_define_map> result;
-	if (!open_program_file(file_name, content, lines))
+	if (!open_program_file(file_name, false, content, lines))
 		return result;
 	for (unsigned int i = 0; i < lines.size(); ++i) {
 		token tok = lines[i];
@@ -337,7 +352,7 @@ std::vector<shader_define_map> shader_program::extract_instances(std::string fil
 			continue;
 		if (l.substr(0, 9) != "instance:")
 			continue;
-		std::string defs = l.substr(9);
+		std::string defs=l.substr(9);
 		std::vector<token> toks;
 		split_to_tokens(defs, toks, "", false, "", "", ";");
 		shader_define_map defines;
@@ -361,12 +376,11 @@ std::vector<shader_define_map> shader_program::extract_instances(std::string fil
 	return result;
 }
 
-bool shader_program::attach_program(const context& ctx, std::string file_name, bool show_error,
-									const shader_define_map& defines)
+bool shader_program::attach_program(const context& ctx, std::string file_name, bool show_error, const shader_define_map& defines) 
 {
 	std::string content;
 	std::vector<line> lines;
-	if (!open_program_file(file_name, content, lines, &last_error)) {
+	if (!open_program_file(file_name, ctx.is_shader_file_cache_enabled(), content, lines, &last_error)) {
 		std::cerr << last_error << std::endl;
 		return false;
 	}
@@ -375,11 +389,11 @@ bool shader_program::attach_program(const context& ctx, std::string file_name, b
 	std::string old_shader_path = get_shader_config()->shader_path;
 	std::string path = file::get_path(file_name);
 	if (!path.empty())
-		get_shader_config()->shader_path = path + ";" + get_shader_config()->shader_path;
+		get_shader_config()->shader_path = path+";"+get_shader_config()->shader_path;
 
 	bool no_error = true;
 	std::string error = "2 : attach command failed";
-	for (unsigned int i = 0; i < lines.size(); ++i) {
+	for (unsigned int i=0; i<lines.size(); ++i) {
 		token tok = lines[i];
 		while (tok.begin < tok.end && cgv::utils::is_space(*tok.begin))
 			++tok.begin;
@@ -392,36 +406,36 @@ bool shader_program::attach_program(const context& ctx, std::string file_name, b
 		// ignore comments
 		if (l[0] == '/')
 			continue;
-		if (l.substr(0, 5) == "file:")
+		if (l.substr(0,5) == "file:")
 			success = attach_file(ctx, l.substr(5), ST_DETECT, defines);
-		else if (l.substr(0, 12) == "vertex_file:")
+		else if (l.substr(0,12) == "vertex_file:")
 			success = attach_file(ctx, l.substr(12), ST_VERTEX, defines);
-		else if (l.substr(0, 14) == "geometry_file:")
+		else if (l.substr(0,14) == "geometry_file:")
 			success = attach_file(ctx, l.substr(14), ST_GEOMETRY, defines);
 		else if (l.substr(0, 26) == "tessellation_control_file:")
 			success = attach_file(ctx, l.substr(26), ST_TESS_CONTROL, defines);
 		else if (l.substr(0, 29) == "tessellation_evaluation_file:")
 			success = attach_file(ctx, l.substr(29), ST_TESS_EVALUATION, defines);
-		else if (l.substr(0, 14) == "fragment_file:")
+		else if (l.substr(0,14) == "fragment_file:")
 			success = attach_file(ctx, l.substr(14), ST_FRAGMENT, defines);
-		else if (l.substr(0, 13) == "compute_file:")
+		else if(l.substr(0, 13) == "compute_file:")
 			success = attach_file(ctx, l.substr(13), ST_COMPUTE, defines);
-		else if (l.substr(0, 6) == "files:")
+		else if (l.substr(0,6) == "files:")
 			success = attach_files(ctx, l.substr(6), defines);
-		else if (l.substr(0, 4) == "dir:")
+		else if (l.substr(0,4) == "dir:")
 			success = attach_dir(ctx, l.substr(4), false);
-		else if (l.substr(0, 8) == "rec_dir:")
+		else if (l.substr(0,8) == "rec_dir:")
 			success = attach_dir(ctx, l.substr(8), true);
-		else if (l.substr(0, 8) == "program:")
+		else if (l.substr(0,8) == "program:")
 			success = attach_program(ctx, l.substr(8));
-		else if (l.substr(0, 21) == "geometry_shader_info:") {
+		else if (l.substr(0,21) == "geometry_shader_info:") {
 			std::vector<token> toks;
 			std::string l1 = l.substr(21);
 			tokenizer(l1).set_ws(";").bite_all(toks);
 			if (toks.size() == 3) {
 				PrimitiveType i_pt = PT_UNDEF, o_pt = PT_UNDEF;
 				int pi, count = 0;
-				for (pi = PT_UNDEF + 1; pi < PT_LAST; ++pi) {
+				for (pi = PT_UNDEF+1; pi < PT_LAST; ++pi) {
 					PrimitiveType pt = (PrimitiveType)pi;
 					std::string s = to_string(pt);
 					if (s == to_string(toks[0]))
@@ -431,17 +445,17 @@ bool shader_program::attach_program(const context& ctx, std::string file_name, b
 				}
 				if (i_pt == PT_UNDEF) {
 					error = "4 : unknown input_type for geometry shader <";
-					error += to_string(toks[0]) + ">";
+					error += to_string(toks[0])+">";
 					success = false;
 				}
 				else if (i_pt == PT_UNDEF) {
 					error = "5 : unknown ouput_type for geometry shader <";
-					error += to_string(toks[1]) + ">";
+					error += to_string(toks[1])+">";
 					success = false;
 				}
-				else if (!is_integer(toks[2].begin, toks[2].end, count)) {
+				else if (!is_integer(toks[2].begin,toks[2].end,count)) {
 					error = "6 : max_output_count of geometry shader must be an integer but received <";
-					error += to_string(toks[2]) + ">";
+					error += to_string(toks[2])+">";
 					success = false;
 				}
 				else {
@@ -456,12 +470,14 @@ bool shader_program::attach_program(const context& ctx, std::string file_name, b
 		else if (l.substr(0, 9) == "instance:") {
 		}
 		else if (show_error) {
-			std::cerr << file_name.c_str() << " (" << i + 1 << "): warning G0001 : syntax error in line '" << l.c_str()
-					  << "'" << std::endl;
-		}
+			std::cerr << file_name.c_str() << " (" << i + 1
+				<< "): warning G0001 : syntax error in line '"
+				<< l.c_str() << "'" << std::endl;
+		}		
 		if (!success) {
 			if (show_error) {
-				std::cerr << file_name.c_str() << " (" << i + 1 << "): error G000" << error.c_str() << std::endl;
+				std::cerr << file_name.c_str() << " (" << i+1
+					       << "): error G000" << error.c_str() << std::endl;
 			}
 			no_error = false;
 		}
@@ -474,20 +490,20 @@ bool shader_program::attach_program(const context& ctx, std::string file_name, b
 }
 
 /// successively calls create, attach_files and link.
-bool shader_program::build_files(const context& ctx, const std::string& base_name, bool show_error,
-								 const shader_define_map& defines)
+bool shader_program::build_files(const context& ctx, const std::string& base_name, bool show_error, const shader_define_map& defines)
 {
-	return (is_created() || create(ctx)) && attach_files(ctx, base_name, defines) && link(ctx, show_error);
+	return (is_created() || create(ctx)) &&
+		    attach_files(ctx, base_name, defines) && link(ctx, show_error);
 }
 /// successively calls create, attach_dir and link.
 bool shader_program::build_dir(const context& ctx, const std::string& dir_name, bool recursive, bool show_error)
 {
-	return (is_created() || create(ctx)) && attach_dir(ctx, dir_name, recursive) && link(ctx, show_error);
+	return (is_created() || create(ctx)) &&
+			 attach_dir(ctx, dir_name, recursive) && link(ctx, show_error);
 }
 
 /// successively calls create, attach_program and link.
-bool shader_program::build_program(const context& ctx, const std::string& file_name, bool show_error,
-								   const shader_define_map& defines)
+bool shader_program::build_program(const context& ctx, const std::string& file_name, bool show_error, const shader_define_map& defines)
 {
 	if (!(is_created() || create(ctx)))
 		return false;
@@ -530,7 +546,7 @@ void shader_program::update_state(const context& ctx)
 		state_out_of_date = false;
 	}
 }
-/// link shaders to an executable program
+///link shaders to an executable program
 bool shader_program::link(const context& ctx, bool show_error)
 {
 	update_state(ctx);
@@ -546,7 +562,10 @@ bool shader_program::link(const context& ctx, bool show_error)
 	}
 }
 /// return whether program is linked
-bool shader_program::is_linked() const { return linked; }
+bool shader_program::is_linked() const
+{
+	return linked;
+}
 
 /// configure the geometry shader
 void shader_program::set_geometry_shader_info(PrimitiveType input_type, PrimitiveType output_type, int max_output_count)
@@ -597,48 +616,48 @@ int shader_program::get_uniform_location(const context& ctx, const std::string& 
 	return ctx.get_uniform_location(*this, name);
 }
 /// set a uniform of type material
-bool shader_program::set_material_uniform(const context& ctx, const std::string& name,
-										  const cgv::media::illum::surface_material& material, bool generate_error)
+bool shader_program::set_material_uniform(const context& ctx, const std::string& name, const cgv::media::illum::surface_material& material, bool generate_error)
 {
-	return set_uniform(ctx, name + ".brdf_type", (int)material.get_brdf_type(), generate_error) &&
-		   set_uniform(ctx, name + ".diffuse_reflectance", material.get_diffuse_reflectance(), generate_error) &&
-		   set_uniform(ctx, name + ".roughness", material.get_roughness(), generate_error) &&
-		   set_uniform(ctx, name + ".ambient_occlusion", material.get_ambient_occlusion(), generate_error) &&
-		   set_uniform(ctx, name + ".emission", material.get_emission(), generate_error) &&
-		   set_uniform(ctx, name + ".specular_reflectance", material.get_specular_reflectance(), generate_error) &&
-		   set_uniform(ctx, name + ".roughness_anisotropy", material.get_roughness_anisotropy(), generate_error) &&
-		   set_uniform(ctx, name + ".roughness_orientation", material.get_roughness_orientation(), generate_error) &&
-		   set_uniform(ctx, name + ".propagation_slow_down",
-					   cgv::math::fvec<float, 2>(material.get_propagation_slow_down().real(),
-												 material.get_propagation_slow_down().imag()),
-					   generate_error) &&
-		   set_uniform(ctx, name + ".transparency", material.get_transparency(), generate_error) &&
-		   set_uniform(ctx, name + ".metalness", material.get_metalness(), generate_error);
+	return
+		set_uniform(ctx, name + ".brdf_type", (int)material.get_brdf_type(), generate_error) &&
+		set_uniform(ctx, name + ".diffuse_reflectance", material.get_diffuse_reflectance(), generate_error) &&
+		set_uniform(ctx, name + ".roughness", material.get_roughness(), generate_error) &&
+		set_uniform(ctx, name + ".ambient_occlusion", material.get_ambient_occlusion(), generate_error) &&
+		set_uniform(ctx, name + ".emission", material.get_emission(), generate_error) &&
+		set_uniform(ctx, name + ".specular_reflectance", material.get_specular_reflectance(), generate_error) &&
+		set_uniform(ctx, name + ".roughness_anisotropy", material.get_roughness_anisotropy(), generate_error) &&
+		set_uniform(ctx, name + ".roughness_orientation", material.get_roughness_orientation(), generate_error) &&
+		set_uniform(ctx, name + ".propagation_slow_down", cgv::math::fvec<float, 2>(material.get_propagation_slow_down().real(), material.get_propagation_slow_down().imag()), generate_error) &&
+		set_uniform(ctx, name + ".transparency", material.get_transparency(), generate_error) &&
+		set_uniform(ctx, name + ".metalness", material.get_metalness(), generate_error);
 }
 
 /// set a uniform of type textured_material
-bool shader_program::set_textured_material_uniform(const context& ctx, const std::string& name,
-												   const textured_material& material, bool generate_error)
+bool shader_program::set_textured_material_uniform(const context& ctx, const std::string& name, const textured_material& material, bool generate_error)
 {
-	const char* texture_names[] = {"tex0", "tex1", "tex2", "tex3"};
+	const char* texture_names[] = {
+		"tex0", "tex1", "tex2", "tex3"
+	};
 	for (int i = 0; i < (int)material.get_nr_image_files(); ++i)
 		if (!set_uniform(ctx, texture_names[i], i, generate_error))
 			return false;
-	return set_material_uniform(ctx, name, material, generate_error) &&
-		   set_uniform(ctx, "sRGBA_textures", material.get_sRGBA_textures(), generate_error) &&
-		   set_uniform(ctx, "diffuse_index", material.get_diffuse_index(), generate_error) &&
-		   set_uniform(ctx, "roughness_index", material.get_roughness_index(), generate_error) &&
-		   set_uniform(ctx, "metalness_index", material.get_metalness_index(), generate_error) &&
-		   set_uniform(ctx, "ambient_index", material.get_ambient_index(), generate_error) &&
-		   set_uniform(ctx, "emission_index", material.get_emission_index(), generate_error) &&
-		   set_uniform(ctx, "transparency_index", material.get_transparency_index(), generate_error) &&
-		   set_uniform(ctx, "bump_index", material.get_bump_index(), generate_error) &&
-		   set_uniform(ctx, "specular_index", material.get_specular_index(), generate_error);
+	return
+		set_material_uniform(ctx, name, material, generate_error) &&
+		set_uniform(ctx, "sRGBA_textures", material.get_sRGBA_textures(), generate_error) &&
+		set_uniform(ctx, "diffuse_index", material.get_diffuse_index(), generate_error) &&
+		set_uniform(ctx, "roughness_index", material.get_roughness_index(), generate_error) &&
+		set_uniform(ctx, "metalness_index", material.get_metalness_index(), generate_error) &&
+		set_uniform(ctx, "ambient_index", material.get_ambient_index(), generate_error) &&
+		set_uniform(ctx, "emission_index", material.get_emission_index(), generate_error) &&
+		set_uniform(ctx, "transparency_index", material.get_transparency_index(), generate_error) &&
+		set_uniform(ctx, "bump_index", material.get_bump_index(), generate_error) &&
+		set_uniform(ctx, "specular_index", material.get_specular_index(), generate_error);
 }
 
+
+
 /// set a uniform of type light source
-bool shader_program::set_light_uniform(const context& ctx, const std::string& name,
-									   const cgv::media::illum::light_source& L, bool generate_error)
+bool shader_program::set_light_uniform(const context& ctx, const std::string& name, const cgv::media::illum::light_source& L, bool generate_error)
 {
 	if (!set_uniform(ctx, name + ".light_source_type", static_cast<int>(L.get_type()), generate_error))
 		return false;
@@ -652,7 +671,7 @@ bool shader_program::set_light_uniform(const context& ctx, const std::string& na
 		return false;
 	if (!set_uniform(ctx, name + ".spot_exponent", L.get_spot_exponent(), generate_error))
 		return false;
-	if (!set_uniform(ctx, name + ".spot_cos_cutoff", cos(0.01745329252f * L.get_spot_cutoff()), generate_error))
+	if (!set_uniform(ctx, name + ".spot_cos_cutoff", cos(0.01745329252f*L.get_spot_cutoff()), generate_error))
 		return false;
 	if (!set_uniform(ctx, name + ".constant_attenuation", L.get_constant_attenuation(), generate_error))
 		return false;
@@ -687,5 +706,5 @@ void shader_program::destruct(const context& ctx)
 	nr_attached_geometry_shaders = 0;
 }
 
-} // namespace render
-} // namespace cgv
+	}
+}
