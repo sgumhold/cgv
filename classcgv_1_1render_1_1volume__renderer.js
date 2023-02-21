@@ -94,6 +94,7 @@ var classcgv_1_1render_1_1volume__renderer =
     [ "gradient_texture", "classcgv_1_1render_1_1volume__renderer.html#a09f8fc2a62b764b6e757a33463be0da5", null ],
     [ "has_colors", "classcgv_1_1render_1_1volume__renderer.html#a89daadf6757c440ad97b20f3f5e00ad8", null ],
     [ "has_positions", "classcgv_1_1render_1_1volume__renderer.html#a8dc91474133a744cfe2667c9cc517cbe", null ],
+    [ "noise_offset", "classcgv_1_1render_1_1volume__renderer.html#aa410b3cecee0dcb292fe7e816f9d836e", null ],
     [ "noise_texture", "classcgv_1_1render_1_1volume__renderer.html#ae603a80a42facf41d3c09c4cefa7252a", null ],
     [ "transfer_function_texture", "classcgv_1_1render_1_1volume__renderer.html#a4fc90fb932d742397d9cd8f8992c66a5", null ],
     [ "volume_texture", "classcgv_1_1render_1_1volume__renderer.html#ad1c939fab9bfd4c78c17e1e84db52425", null ]
