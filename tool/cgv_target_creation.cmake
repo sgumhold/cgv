@@ -604,7 +604,11 @@ function(cgv_add_target NAME)
 
 	# schedule deferred ops
 	# - for the created target
-	cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
+	if (CGV_IS_CONFIGURING)
+		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CGV_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
+	else()
+		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
+	endif()
 	# - update final pass
 	cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CANCEL_CALL "_999_FINALOPS")
 	cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} ID "_999_FINALOPS" CALL cgv_do_final_operations)
