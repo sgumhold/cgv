@@ -54,16 +54,18 @@ endfunction()
 function(cgv_get_all_directory_targets TARGETS_VAR DIRECTORY)
 	cmake_parse_arguments(PARSE_ARGV 2 CGVARG_ "RECURSIVE" "" "")
 
-	set(SUBDIR_TARGETS "")
+	set(MY_TARGETS "")
 	if (CGVARG__RECURSIVE)
 		get_property(SUBDIRS DIRECTORY ${DIRECTORY} PROPERTY SUBDIRECTORIES)
 		foreach(SUBDIR ${SUBDIRS})
 			cgv_get_all_directory_targets(SUBDIR_TARGETS ${SUBDIR} RECURSIVE)
+			list(APPEND MY_TARGETS ${SUBDIR_TARGETS})
 		endforeach()
 	endif()
 
 	get_property(DIR_TARGETS DIRECTORY ${DIRECTORY} PROPERTY BUILDSYSTEM_TARGETS)
-	set(${TARGETS_VAR} ${SUBDIR_TARGETS} ${DIR_TARGETS} PARENT_SCOPE)
+	list(APPEND MY_TARGETS ${DIR_TARGETS})
+	set(${TARGETS_VAR} ${MY_TARGETS} PARENT_SCOPE)
 endfunction()
 
 # checks if the given target is some kind of CGV Framework component, and if yes, optionally returns the type of the component
@@ -89,9 +91,12 @@ endfunction()
 
 # recursively gathers transitive dependencies on CGV Framework components for the given target
 function(cgv_gather_dependencies DEPS_LIST_OUT TARGET_NAME PROCESSED_DEPS)
-	# break early if TARGET_NAME is not a CGV Framework target und thus won't provide any information we're interested in
+	cmake_parse_arguments(PARSE_ARGV 3 CGVARG_ "CGV_TARGETS_ONLY" "" "")
+
+	# when gathering only cgv dependencies, break early if TARGET_NAME is not a CGV Framework target
+	# and thus won't provide any information we're interested in
 	cgv_is_cgvtarget(IS_CGV_TARGET ${TARGET_NAME})
-	if (NOT IS_CGV_TARGET)
+	if (NOT TARGET ${TARGET_NAME} OR (CGVARG__CGV_TARGETS_ONLY AND NOT IS_CGV_TARGET))
 		return()
 	endif()
 
@@ -107,7 +112,8 @@ function(cgv_gather_dependencies DEPS_LIST_OUT TARGET_NAME PROCESSED_DEPS)
 	# recursive expansion
 	foreach (DEPENDENCY ${DEPS})
 		cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY})
-		if (IS_CGV_TARGET AND NOT ${DEPENDENCY} IN_LIST PROCESSED_DEPS_LOCAL)
+		if (    (TARGET ${DEPENDENCY} AND NOT ${DEPENDENCY} IN_LIST PROCESSED_DEPS_LOCAL)
+		    AND (NOT CGVARG__CGV_TARGETS_ONLY OR IS_CGV_TARGET))
 			list(APPEND DEPS_LIST_LOCAL ${DEPENDENCY})
 			cgv_gather_dependencies(DEPS_LIST_LOCAL ${DEPENDENCY} PROCESSED_DEPS_LOCAL)
 		endif()
@@ -162,8 +168,8 @@ function(cgv_do_deferred_ops TARGET_NAME)
 
 	# do plugin-specific deferred operations
 	if (TARGET_TYPE MATCHES "plugin$")
-		# (1) gather all dependencies and compile shaderpath
-		cgv_gather_dependencies(DEPENDENCIES ${TARGET_NAME} RECURSION_CONVERGENCE_HELPER)
+		# (1) gather all cgv dependencies and compile shaderpath
+		cgv_gather_dependencies(DEPENDENCIES ${TARGET_NAME} RECURSION_CONVERGENCE_HELPER CGV_TARGETS_ONLY)
 		set(SHADER_PATHS "")
 		set(SHADER_PATHS_NOSC "")
 		foreach(DEPENDENCY ${DEPENDENCIES})
@@ -299,17 +305,28 @@ function(cgv_do_final_operations)
 	# prelude
 	get_property(IS_MULTICONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
-	# prune unused targets if requested
-	if (CGV_PRUNE_UNUSED_TARGETS)
-		cgv_get_all_directory_targets(ALL_TARGETS ${CMAKE_SOURCE_DIR} RECURSIVE)
-		message("  ALL TARGETS IN THE BUILD SYSTEM:")
-		message("  - ${ALL_TARGETS}")
-		message("  USER TARGETS:")
-		if (NOT USER_TARGETS OR USER_TARGETS STREQUAL "")
-			message("  - <none>")
-		else()
-			message("  - ${USER_TARGETS}")
-		endif()
+	# prune unused CGV targets if requested
+	if (CGV_EXCLUDE_UNUSED_TARGETS)
+		cgv_get_all_directory_targets(CGV_FRAMEWORK_TARGETS ${CGV_DIR} RECURSIVE)
+		set(ALL_USER_DEPENDENCIES "")
+		foreach(USER_TARGET ${USER_TARGETS})
+			cgv_gather_dependencies(DEPENDENCIES ${USER_TARGET} RECURSION_CONVERGENCE_HELPER)
+			list(APPEND ALL_USER_DEPENDENCIES ${DEPENDENCIES})
+		endforeach()
+		list(REMOVE_DUPLICATES ALL_USER_DEPENDENCIES)
+		# TODO: populate the list of build tools automatically when transitioning EVERYTHING to the new system
+		set(CGV_BUILD_TOOLS "ppp;shader_test;res_prep")
+		set(EXCLUDED_CGV_FRAMEWORK_TARGETS "")
+		foreach(CGV_FRAMEWORK_TARGET ${CGV_FRAMEWORK_TARGETS})
+			if (    NOT ${CGV_FRAMEWORK_TARGET} IN_LIST CGV_BUILD_TOOLS
+			    AND NOT ${CGV_FRAMEWORK_TARGET} IN_LIST ALL_USER_DEPENDENCIES)
+				list(APPEND EXCLUDED_CGV_FRAMEWORK_TARGETS ${CGV_FRAMEWORK_TARGET})
+				set_target_properties(${CGV_FRAMEWORK_TARGET} PROPERTIES EXCLUDE_FROM_ALL TRUE)
+				set_target_properties(${CGV_FRAMEWORK_TARGET} PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD TRUE)
+			endif()
+		endforeach()
+		message("Excluding the following unused CGV Framework targets:")
+		message("  - ${EXCLUDED_CGV_FRAMEWORK_TARGETS}")
 	endif()
 
 	# generate VS Code launch.json
@@ -492,14 +509,6 @@ function(cgv_add_target NAME)
 	target_compile_definitions(${NAME_STATIC} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
 	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC" ${CGVARG__ADDITIONAL_PUBLIC_DEFINES})
 
-	# record whether this target is added by the CGV Framework itself or by another project using it
-	if (NOT CGV_IS_CONFIGURING)
-		list(APPEND USER_TARGETS ${NAME} ${NAME_STATIC})
-		if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
-			list(APPEND USER_TARGETS ${NAME_EXE})
-		endif()
-	endif()
-
 	if (NOT MSVC)
 		target_link_options(${NAME_STATIC} PUBLIC -Wl,--copy-dt-needed-entries)
 	endif()
@@ -553,9 +562,25 @@ function(cgv_add_target NAME)
 		endif()
 	endif()
 
+	# in case of Debug config, set _DEBUG and DEBUG defines for both targets
+	# (for historic reasons, CGV targets expect these instead of relying on NDEBUG)
+	set(DEBUG_COMPILE_DEFS $<$<CONFIG:Debug>:_DEBUG> $<$<CONFIG:Debug>:DEBUG>)
+	target_compile_definitions(${NAME} PRIVATE ${DEBUG_COMPILE_DEFS})
+	target_compile_definitions(${NAME_STATIC} PRIVATE ${DEBUG_COMPILE_DEFS})
+
 	# commit additional command line args for the subsequent generation phase
 	if (IS_PLUGIN)
 		set_target_properties(${NAME} PROPERTIES CGVPROP_ADDITIONAL_CMDLINE_ARGS "${CGVARG__ADDITIONAL_CMDLINE_ARGS}")
+	endif()
+
+	# record whether this target is added by the CGV Framework itself or by another project using it
+	if (NOT CGV_IS_CONFIGURING)
+		set(USER_TARGETS_LOCAL ${USER_TARGETS})
+		list(APPEND USER_TARGETS_LOCAL ${NAME} ${NAME_STATIC})
+		if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
+			list(APPEND USER_TARGETS_LOCAL ${NAME_EXE})
+		endif()
+		set(USER_TARGETS "${USER_TARGETS_LOCAL}" PARENT_SCOPE)
 	endif()
 
 	# IDE fluff
@@ -596,12 +621,6 @@ function(cgv_add_target NAME)
 	endif()
 	set_target_properties(${NAME_STATIC} PROPERTIES FOLDER "_obj")
 
-	# in case of Debug config, set _DEBUG and DEBUG defines for both targets
-	# (for historic reasons, CGV targets expect these instead of relying on NDEBUG)
-	set(DEBUG_COMPILE_DEFS $<$<CONFIG:Debug>:_DEBUG> $<$<CONFIG:Debug>:DEBUG>)
-	target_compile_definitions(${NAME} PRIVATE ${DEBUG_COMPILE_DEFS})
-	target_compile_definitions(${NAME_STATIC} PRIVATE ${DEBUG_COMPILE_DEFS})
-
 	# schedule deferred ops
 	# - for the created target
 	if (CGV_IS_CONFIGURING)
@@ -618,7 +637,6 @@ function(cgv_add_target NAME)
 		install(TARGETS ${NAME_EXE} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 	endif()
 endfunction()
-
 
 
 
