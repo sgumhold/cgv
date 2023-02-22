@@ -33,6 +33,10 @@ endif ()
 # - option declaration
 #   MAINTAINER NOTE: keep in sync with options declared in /define_options.bat
 cgv_define_option(
+	"NO_OPENVR" DEFAULT OFF
+	DOC "allows to avoid the start of openvr during development"
+)
+cgv_define_option(
 	"SHADER_DEVELOPER" DEFAULT OFF
 	DOC "make shader_test throw errors that cause the build process to fail"
 )
