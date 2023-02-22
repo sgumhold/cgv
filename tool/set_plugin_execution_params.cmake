@@ -39,6 +39,10 @@ function(format_vscode_launch_json_entry CONTENT_VAR TARGET_NAME)
 		format_vscode_launch_json_args(CONTENT_LOCAL ARGUMENT_LIST ${CGVARG__CMD_ARGS})
 		set(CONTENT_LOCAL "${CONTENT_LOCAL},
 			\"cwd\": \"${CGVARG__WORKING_DIR}\",
+			\"environment\": [
+				{ \"name\": \"CGV_DIR\", \"value\": \"${CGV_DIR}\" },
+				{ \"name\": \"CGV_OPTIONS\", \"value\": \"${CGV_OPTIONS}\" }
+			],
 			\"externalConsole\": false,
 			\"MIMode\": \"gdb\",
 			\"setupCommands\": [
@@ -62,7 +66,8 @@ function(format_vscode_launch_json_entry CONTENT_VAR TARGET_NAME)
 			\"program\": \"${CGVARG__LAUNCH_PROGRAM}\"")
 		format_vscode_launch_json_args(CONTENT_LOCAL ARGUMENT_LIST ${CGVARG__CMD_ARGS})
 		set(CONTENT_LOCAL "${CONTENT_LOCAL},
-			\"cwd\": \"${CGVARG__WORKING_DIR}\"
+			\"cwd\": \"${CGVARG__WORKING_DIR}\",
+			\"env\": { \"CGV_DIR\": \"${CGV_DIR}\", \"CGV_OPTIONS\": \"${CGV_OPTIONS}\" }
 		}")
 	else()
 		message(FATAL_ERROR "format_vscode_launch_json_entry(): unknown debugger type \"${CGVARG__DEBUGGER_TYPE}\"")
@@ -126,7 +131,9 @@ function(set_plugin_execution_params target_name)
 
 	# command arguments
 	set_target_properties(${target_name} PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "${CGVARG__ARGUMENTS}")
+	set_target_properties(${target_name} PROPERTIES VS_DEBUGGER_ENVIRONMENT "CGV_DIR=\"${CGV_DIR}\";CGV_OPTIONS=\"${CGV_OPTIONS}\"")
 	set_target_properties(${target_name} PROPERTIES XCODE_SCHEME_ARGUMENTS "${CGVARG__ARGUMENTS}")
+	set_target_properties(${target_name} PROPERTIES XCODE_SCHEME_ENVIRONMENT "CGV_DIR=\"${CGV_DIR}\";CGV_OPTIONS=\"${CGV_OPTIONS}\"")
 endfunction()
 
 function(set_plugin_execution_working_dir target_name path)
