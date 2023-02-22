@@ -290,11 +290,27 @@ endfunction()
 
 # internal helper function that will perform final deferred operations after the very last cgv target has been
 # added either by the Framework itself or by any other projects that use the Framework from the outside
+# - global state the function will access
+set(USER_TARGETS "")
+# - the actual function
 function(cgv_do_final_operations)
 	message(STATUS "Performing final operations")
 
 	# prelude
 	get_property(IS_MULTICONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+
+	# prune unused targets if requested
+	if (CGV_PRUNE_UNUSED_TARGETS)
+		cgv_get_all_directory_targets(ALL_TARGETS ${CMAKE_SOURCE_DIR} RECURSIVE)
+		message("  ALL TARGETS IN THE BUILD SYSTEM:")
+		message("  - ${ALL_TARGETS}")
+		message("  USER TARGETS:")
+		if (NOT USER_TARGETS OR USER_TARGETS STREQUAL "")
+			message("  - <none>")
+		else()
+			message("  - ${USER_TARGETS}")
+		endif()
+	endif()
 
 	# generate VS Code launch.json
 	if (VSCODE_LAUNCH_JSON_CONFIG_LIST AND NOT VSCODE_LAUNCH_JSON_CONFIG_LIST STREQUAL "")
@@ -473,9 +489,16 @@ function(cgv_add_target NAME)
 	add_library(${NAME_STATIC} OBJECT ${ALL_SOURCES} ${SHADER_REG_INCLUDE_FILE})
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_TYPE "${CGVARG__TYPE}")
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_SHADERPATH "${SHADER_PATH}")
-
 	target_compile_definitions(${NAME_STATIC} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
 	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC" ${CGVARG__ADDITIONAL_PUBLIC_DEFINES})
+
+	# record whether this target is added by the CGV Framework itself or by another project using it
+	if (NOT CGV_IS_CONFIGURING)
+		list(APPEND USER_TARGETS ${NAME} ${NAME_STATIC})
+		if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
+			list(APPEND USER_TARGETS ${NAME_EXE})
+		endif()
+	endif()
 
 	if (NOT MSVC)
 		target_link_options(${NAME_STATIC} PUBLIC -Wl,--copy-dt-needed-entries)

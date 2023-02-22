@@ -53,6 +53,12 @@ cgv_init_cgvoptions()
 # - CMake-only CGV-related options
 option(CGV_BUILD_EXAMPLES "Whether to build the 'examples' plugin which demonstrates various components of the CGV Framework" ON)
 option(CGV_BUILD_TESTS "Whether to build the test plugins" OFF)
+if (NOT CMAKE_SOURCE_DIR STREQUAL CGV_DIR)
+	option(CGV_PRUNE_UNUSED_TARGETS "When the CGV Framework is used as a dependency from an external project, this option will prune all CGV targets not needed by the external project form the build system" ON)
+else()
+	# this option makes no sense when stand-alone building the CGV Framework directly
+	set(CGV_PRUNE_UNUSED_TARGETS OFF CACHE INTERNAL "" FORCE)
+endif()
 
 # customize build directory
 # - customize executable/DLL/SO and link library locations
