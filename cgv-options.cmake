@@ -68,7 +68,7 @@ function(cgv_init_cgvoptions)
 
 	# schedule an info message about enabled options after first configuration pass is done
 	cmake_language(
-		DEFER DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		DEFER DIRECTORY ${CGV_DIR}
 		CALL message STATUS "Using CGV_OPTIONS string: \"${CGV_OPTIONS}\""
 	)
 endfunction()
