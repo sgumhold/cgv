@@ -345,6 +345,40 @@ function(cgv_do_final_operations)
 	endif()
 endfunction()
 
+# set the platform-specific link-time optimization compiler and linker flags for the given CMake target
+function(cgv_set_ltoflags TARGET_NAME)
+	if (MSVC)
+		set(LTO_CL_FLAGS $<$<CONFIG:Release,MinSizeRel>:/GL>)
+		set(LTO_LD_FLAGS $<$<CONFIG:Release,MinSizeRel>:/LTCG>)
+		target_compile_options(${TARGET_NAME} PUBLIC "${LTO_CL_FLAGS}")
+		target_link_options(${TARGET_NAME} PUBLIC "${LTO_LD_FLAGS}")
+	else()
+		set(LTO_FLAGS $<$<CONFIG:Debug>:-flto -fwhole-program>)
+		target_compile_options(${TARGET_NAME} PUBLIC "${LTO_FLAGS}")
+		target_link_options(${TARGET_NAME} PUBLIC "${LTO_FLAGS}")
+	endif()
+endfunction()
+
+# enable link-time optimization for the given CGV component
+function(cgv_enable_lto TARGET_NAME)
+	cgv_set_ltoflags(${TARGET_NAME})
+	cgv_is_cgvtarget(IS_CGV_TARGET ${TARGET_NAME} GET_TYPE TARGET_TYPE)
+	if (IS_CGV_TARGET)
+		set(IS_PLUGIN FALSE)
+		if (TARGET_TYPE MATCHES "plugin$")
+			set(IS_PLUGIN TRUE)
+		endif()
+		cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} ${IS_PLUGIN})
+		cgv_set_ltoflags(${NAME_STATIC})
+		if (IS_PLUGIN)
+			cgv_query_property(NO_EXECUTABLE ${TARGET_NAME} "CGVPROP_NO_EXECUTABLE")
+			if (NOT NO_EXECUTABLE)
+				cgv_set_ltoflags(${NAME_EXE})
+			endif()
+		endif()
+	endif()
+endfunction()
+
 # add a target to the build system that is decorated with several CGV Framework-specific custom properties, allowing for
 # advanced features like automatic launch/debug command line generation, auto-configured single executable builds etc.
 function(cgv_add_target NAME)
@@ -562,6 +596,11 @@ function(cgv_add_target NAME)
 		endif()
 	endif()
 
+	# handle whole-program / link-time optimization
+	if (CGV_LTO_ON_RELEASE)
+		cgv_enable_lto(${NAME})
+	endif()
+
 	# in case of Debug config, set _DEBUG and DEBUG defines for both targets
 	# (for historic reasons, CGV targets expect these instead of relying on NDEBUG)
 	set(DEBUG_COMPILE_DEFS $<$<CONFIG:Debug>:_DEBUG> $<$<CONFIG:Debug>:DEBUG>)
@@ -734,6 +773,11 @@ function(cgv_create_lib NAME)
 		target_include_directories(${NAME_STATIC} PUBLIC $<BUILD_INTERFACE:${CGV_DIR}/libs>)
 	endif ()
 
+
+	# handle whole-program / link-time optimization
+	if (CGV_LTO_ON_RELEASE)
+		cgv_enable_lto(${NAME})
+	endif()
 
 	# observe STDCPP17 option
 	if (CGV_STDCPP17)
