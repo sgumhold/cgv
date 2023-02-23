@@ -4,9 +4,11 @@ cmake_minimum_required(VERSION 3.20)
 project(cgv)
 
 # prelude
+include(CheckIPOSupported)
 include(cgv-options.cmake)
 set(BUILD_SHARED_LIBS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED 17)
+check_ipo_supported(RESULT IS_IPO_SUPPORTED)
 
 # make sure we know that we are currently configuring the CGV Framework
 set(CGV_IS_CONFIGURING TRUE)
@@ -57,6 +59,12 @@ cgv_init_cgvoptions()
 # - CMake-only CGV-related options
 option(CGV_BUILD_EXAMPLES "Whether to build the 'examples' plugin which demonstrates various components of the CGV Framework" ON)
 option(CGV_BUILD_TESTS "Whether to build the test plugins" OFF)
+if (IS_IPO_SUPPORTED)
+	option(CGV_LTO_ON_RELEASE "Whether to compile release builds with whole-program / link-time optimization enabled" ON)
+else()
+	# make sure we can't set this option when unsupported
+	set(CGV_LTO_ON_RELEASE OFF CACHE INTERNAL "" FORCE)
+endif()
 if (NOT CMAKE_SOURCE_DIR STREQUAL CGV_DIR)
 	option(CGV_EXCLUDE_UNUSED_TARGETS "When the CGV Framework is used as a dependency from an external project, this option will exclude all CGV targets not needed by the external project form the \"build all\" operation" ON)
 else()
