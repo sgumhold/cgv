@@ -59,7 +59,7 @@ cgv_init_cgvoptions()
 # - CMake-only CGV-related options
 option(CGV_BUILD_EXAMPLES "Whether to build the 'examples' plugin which demonstrates various components of the CGV Framework" ON)
 option(CGV_BUILD_TESTS "Whether to build the test plugins" OFF)
-if (IS_IPO_SUPPORTED AND NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+if (IS_IPO_SUPPORTED)
 	option(CGV_LTO_ON_RELEASE "Whether to compile release builds with whole-program / link-time optimization enabled" ON)
 else()
 	# make sure we can't set this option when unsupported
