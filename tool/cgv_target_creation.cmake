@@ -90,6 +90,8 @@ function(cgv_is_cgvtarget CHECK_RESULT_OUT TARGET_NAME)
 endfunction()
 
 # recursively gathers transitive dependencies on CGV Framework components for the given target
+# NOTE: when CGV_TARGETS_ONLY flag is not set, this will return UTILITY and other kind of unlinkable targets as
+#       as well when they happen to appear in the dependency tree. TODO: consider filtering them out by default
 function(cgv_gather_dependencies DEPS_LIST_OUT TARGET_NAME PROCESSED_DEPS)
 	cmake_parse_arguments(PARSE_ARGV 3 CGVARG_ "CGV_TARGETS_ONLY" "" "")
 
@@ -110,12 +112,17 @@ function(cgv_gather_dependencies DEPS_LIST_OUT TARGET_NAME PROCESSED_DEPS)
 	cgv_list_dependencies(DEPS ${TARGET_NAME})
 
 	# recursive expansion
+	# - prepare cgv-only flag
+	if (CGVARG__CGV_TARGETS_ONLY)
+		set(CGV_TARGETS_ONLY_FLAG CGV_TARGETS_ONLY)
+	endif()
+	# - recurse for every direct dependency
 	foreach (DEPENDENCY ${DEPS})
 		cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY})
 		if (    (TARGET ${DEPENDENCY} AND NOT ${DEPENDENCY} IN_LIST PROCESSED_DEPS_LOCAL)
 		    AND (NOT CGVARG__CGV_TARGETS_ONLY OR IS_CGV_TARGET))
 			list(APPEND DEPS_LIST_LOCAL ${DEPENDENCY})
-			cgv_gather_dependencies(DEPS_LIST_LOCAL ${DEPENDENCY} PROCESSED_DEPS_LOCAL)
+			cgv_gather_dependencies(DEPS_LIST_LOCAL ${DEPENDENCY} PROCESSED_DEPS_LOCAL ${CGV_TARGETS_ONLY_FLAG})
 		endif()
 	endforeach()
 	list(REMOVE_DUPLICATES DEPS_LIST_LOCAL)
