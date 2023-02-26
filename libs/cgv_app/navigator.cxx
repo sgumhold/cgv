@@ -66,7 +66,7 @@ navigator::navigator() {
 void navigator::clear(cgv::render::context& ctx) {
 
 	blit_canvas.destruct(ctx);
-	fbc.clear(ctx);
+	fbc.destruct(ctx);
 
 	arrow_data.destruct(ctx);
 	box_data.destruct(ctx);

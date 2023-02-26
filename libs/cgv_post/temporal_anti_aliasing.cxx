@@ -8,10 +8,10 @@ namespace post {
 temporal_anti_aliasing::temporal_anti_aliasing() {}
 
 void temporal_anti_aliasing::clear(cgv::render::context& ctx) {
-	fbc_draw.clear(ctx);
-	fbc_post.clear(ctx);
-	fbc_hist.clear(ctx);
-	fbc_resolve.clear(ctx);
+	fbc_draw.destruct(ctx);
+	fbc_post.destruct(ctx);
+	fbc_hist.destruct(ctx);
+	fbc_resolve.destruct(ctx);
 
 	shaders.clear(ctx);
 }

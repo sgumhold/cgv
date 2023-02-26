@@ -9,7 +9,7 @@ void canvas_overlay::clear(cgv::render::context& ctx) {
 
 	content_canvas.destruct(ctx);
 	overlay_canvas.destruct(ctx);
-	fbc.clear(ctx);
+	fbc.destruct(ctx);
 }
 
 bool canvas_overlay::init(cgv::render::context& ctx) {
