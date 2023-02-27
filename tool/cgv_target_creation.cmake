@@ -54,16 +54,18 @@ endfunction()
 function(cgv_get_all_directory_targets TARGETS_VAR DIRECTORY)
 	cmake_parse_arguments(PARSE_ARGV 2 CGVARG_ "RECURSIVE" "" "")
 
-	set(SUBDIR_TARGETS "")
+	set(MY_TARGETS "")
 	if (CGVARG__RECURSIVE)
 		get_property(SUBDIRS DIRECTORY ${DIRECTORY} PROPERTY SUBDIRECTORIES)
 		foreach(SUBDIR ${SUBDIRS})
 			cgv_get_all_directory_targets(SUBDIR_TARGETS ${SUBDIR} RECURSIVE)
+			list(APPEND MY_TARGETS ${SUBDIR_TARGETS})
 		endforeach()
 	endif()
 
 	get_property(DIR_TARGETS DIRECTORY ${DIRECTORY} PROPERTY BUILDSYSTEM_TARGETS)
-	set(${TARGETS_VAR} ${SUBDIR_TARGETS} ${DIR_TARGETS} PARENT_SCOPE)
+	list(APPEND MY_TARGETS ${DIR_TARGETS})
+	set(${TARGETS_VAR} ${MY_TARGETS} PARENT_SCOPE)
 endfunction()
 
 # checks if the given target is some kind of CGV Framework component, and if yes, optionally returns the type of the component
@@ -88,10 +90,15 @@ function(cgv_is_cgvtarget CHECK_RESULT_OUT TARGET_NAME)
 endfunction()
 
 # recursively gathers transitive dependencies on CGV Framework components for the given target
+# NOTE: when CGV_TARGETS_ONLY flag is not set, this will return UTILITY and other kind of unlinkable targets as
+#       as well when they happen to appear in the dependency tree. TODO: consider filtering them out by default
 function(cgv_gather_dependencies DEPS_LIST_OUT TARGET_NAME PROCESSED_DEPS)
-	# break early if TARGET_NAME is not a CGV Framework target und thus won't provide any information we're interested in
+	cmake_parse_arguments(PARSE_ARGV 3 CGVARG_ "CGV_TARGETS_ONLY" "" "")
+
+	# when gathering only cgv dependencies, break early if TARGET_NAME is not a CGV Framework target
+	# and thus won't provide any information we're interested in
 	cgv_is_cgvtarget(IS_CGV_TARGET ${TARGET_NAME})
-	if (NOT IS_CGV_TARGET)
+	if (NOT TARGET ${TARGET_NAME} OR (CGVARG__CGV_TARGETS_ONLY AND NOT IS_CGV_TARGET))
 		return()
 	endif()
 
@@ -105,11 +112,17 @@ function(cgv_gather_dependencies DEPS_LIST_OUT TARGET_NAME PROCESSED_DEPS)
 	cgv_list_dependencies(DEPS ${TARGET_NAME})
 
 	# recursive expansion
+	# - prepare cgv-only flag
+	if (CGVARG__CGV_TARGETS_ONLY)
+		set(CGV_TARGETS_ONLY_FLAG CGV_TARGETS_ONLY)
+	endif()
+	# - recurse for every direct dependency
 	foreach (DEPENDENCY ${DEPS})
 		cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY})
-		if (IS_CGV_TARGET AND NOT ${DEPENDENCY} IN_LIST PROCESSED_DEPS_LOCAL)
+		if (    (TARGET ${DEPENDENCY} AND NOT ${DEPENDENCY} IN_LIST PROCESSED_DEPS_LOCAL)
+		    AND (NOT CGVARG__CGV_TARGETS_ONLY OR IS_CGV_TARGET))
 			list(APPEND DEPS_LIST_LOCAL ${DEPENDENCY})
-			cgv_gather_dependencies(DEPS_LIST_LOCAL ${DEPENDENCY} PROCESSED_DEPS_LOCAL)
+			cgv_gather_dependencies(DEPS_LIST_LOCAL ${DEPENDENCY} PROCESSED_DEPS_LOCAL ${CGV_TARGETS_ONLY_FLAG})
 		endif()
 	endforeach()
 	list(REMOVE_DUPLICATES DEPS_LIST_LOCAL)
@@ -162,8 +175,8 @@ function(cgv_do_deferred_ops TARGET_NAME)
 
 	# do plugin-specific deferred operations
 	if (TARGET_TYPE MATCHES "plugin$")
-		# (1) gather all dependencies and compile shaderpath
-		cgv_gather_dependencies(DEPENDENCIES ${TARGET_NAME} RECURSION_CONVERGENCE_HELPER)
+		# (1) gather all cgv dependencies and compile shaderpath
+		cgv_gather_dependencies(DEPENDENCIES ${TARGET_NAME} RECURSION_CONVERGENCE_HELPER CGV_TARGETS_ONLY)
 		set(SHADER_PATHS "")
 		set(SHADER_PATHS_NOSC "")
 		foreach(DEPENDENCY ${DEPENDENCIES})
@@ -290,11 +303,38 @@ endfunction()
 
 # internal helper function that will perform final deferred operations after the very last cgv target has been
 # added either by the Framework itself or by any other projects that use the Framework from the outside
+# - global state the function will access
+set(USER_TARGETS "")
+# - the actual function
 function(cgv_do_final_operations)
 	message(STATUS "Performing final operations")
 
 	# prelude
 	get_property(IS_MULTICONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+
+	# prune unused CGV targets if requested
+	if (CGV_EXCLUDE_UNUSED_TARGETS)
+		cgv_get_all_directory_targets(CGV_FRAMEWORK_TARGETS ${CGV_DIR} RECURSIVE)
+		set(ALL_USER_DEPENDENCIES "")
+		foreach(USER_TARGET ${USER_TARGETS})
+			cgv_gather_dependencies(DEPENDENCIES ${USER_TARGET} RECURSION_CONVERGENCE_HELPER)
+			list(APPEND ALL_USER_DEPENDENCIES ${DEPENDENCIES})
+		endforeach()
+		list(REMOVE_DUPLICATES ALL_USER_DEPENDENCIES)
+		# TODO: populate the list of build tools automatically when transitioning EVERYTHING to the new system
+		set(CGV_BUILD_TOOLS "ppp;shader_test;res_prep")
+		set(EXCLUDED_CGV_FRAMEWORK_TARGETS "")
+		foreach(CGV_FRAMEWORK_TARGET ${CGV_FRAMEWORK_TARGETS})
+			if (    NOT ${CGV_FRAMEWORK_TARGET} IN_LIST CGV_BUILD_TOOLS
+			    AND NOT ${CGV_FRAMEWORK_TARGET} IN_LIST ALL_USER_DEPENDENCIES)
+				list(APPEND EXCLUDED_CGV_FRAMEWORK_TARGETS ${CGV_FRAMEWORK_TARGET})
+				set_target_properties(${CGV_FRAMEWORK_TARGET} PROPERTIES EXCLUDE_FROM_ALL TRUE)
+				set_target_properties(${CGV_FRAMEWORK_TARGET} PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD TRUE)
+			endif()
+		endforeach()
+		message("Excluding the following unused CGV Framework targets:")
+		message("- ${EXCLUDED_CGV_FRAMEWORK_TARGETS}")
+	endif()
 
 	# generate VS Code launch.json
 	if (VSCODE_LAUNCH_JSON_CONFIG_LIST AND NOT VSCODE_LAUNCH_JSON_CONFIG_LIST STREQUAL "")
@@ -309,6 +349,45 @@ function(cgv_do_final_operations)
 			INPUT "${CMAKE_SOURCE_DIR}/.vscode/launch.json"
 			USE_SOURCE_PERMISSIONS CONDITION ${VSCODE_LAUNCH_JSON_CONDITION}
 		)
+	endif()
+endfunction()
+
+# set the platform-specific link-time optimization compiler and linker flags for the given CMake target
+function(cgv_set_ltoflags TARGET_NAME)
+	if (MSVC)
+		set(LTO_CL_FLAGS $<$<CONFIG:Release,MinSizeRel>:/GL>)
+		set(LTO_LD_FLAGS $<$<CONFIG:Release,MinSizeRel>:/LTCG>)
+		target_compile_options(${TARGET_NAME} PUBLIC ${LTO_CL_FLAGS})
+		target_link_options(${TARGET_NAME} PUBLIC ${LTO_LD_FLAGS})
+	else()
+		set(LTO_CL_FLAGS $<$<CONFIG:Release,MinSizeRel>:-flto$<$<CXX_COMPILER_ID:GNU>:=auto> $<$<CXX_COMPILER_ID:Clang>:-fwhole-program-vtables>>)
+		set(LTO_LD_FLAGS $<$<CONFIG:Release,MinSizeRel>:-flto$<$<CXX_COMPILER_ID:GNU>:=auto> $<$<CXX_COMPILER_ID:Clang>:-fwhole-program-vtables>>)
+		get_target_property(TARGET_TYPE ${TARGET_NAME} TYPE)
+		if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND TARGET_TYPE STREQUAL "EXECUTABLE")
+			set(LTO_LD_FLAGS ${LTO_LD_FLAGS} $<$<CONFIG:Release,MinSizeRel>:-fwhole-program>)
+		endif()
+		target_compile_options(${TARGET_NAME} PUBLIC ${LTO_CL_FLAGS})
+		target_link_options(${TARGET_NAME} PUBLIC ${LTO_LD_FLAGS})
+	endif()
+endfunction()
+
+# enable link-time optimization for the given CGV component
+function(cgv_enable_lto TARGET_NAME)
+	cgv_set_ltoflags(${TARGET_NAME})
+	cgv_is_cgvtarget(IS_CGV_TARGET ${TARGET_NAME} GET_TYPE TARGET_TYPE)
+	if (IS_CGV_TARGET)
+		set(IS_PLUGIN FALSE)
+		if (TARGET_TYPE MATCHES "plugin$")
+			set(IS_PLUGIN TRUE)
+		endif()
+		cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} ${IS_PLUGIN})
+		cgv_set_ltoflags(${NAME_STATIC})
+		if (IS_PLUGIN)
+			cgv_query_property(NO_EXECUTABLE ${TARGET_NAME} "CGVPROP_NO_EXECUTABLE")
+			if (NOT NO_EXECUTABLE)
+				cgv_set_ltoflags(${NAME_EXE})
+			endif()
+		endif()
 	endif()
 endfunction()
 
@@ -473,7 +552,6 @@ function(cgv_add_target NAME)
 	add_library(${NAME_STATIC} OBJECT ${ALL_SOURCES} ${SHADER_REG_INCLUDE_FILE})
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_TYPE "${CGVARG__TYPE}")
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_SHADERPATH "${SHADER_PATH}")
-
 	target_compile_definitions(${NAME_STATIC} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
 	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC" ${CGVARG__ADDITIONAL_PUBLIC_DEFINES})
 
@@ -530,9 +608,30 @@ function(cgv_add_target NAME)
 		endif()
 	endif()
 
+	# handle whole-program / link-time optimization
+	if (CGV_LTO_ON_RELEASE)
+		cgv_enable_lto(${NAME})
+	endif()
+
+	# in case of Debug config, set _DEBUG and DEBUG defines for both targets
+	# (for historic reasons, CGV targets expect these instead of relying on NDEBUG)
+	set(DEBUG_COMPILE_DEFS $<$<CONFIG:Debug>:_DEBUG> $<$<CONFIG:Debug>:DEBUG>)
+	target_compile_definitions(${NAME} PRIVATE ${DEBUG_COMPILE_DEFS})
+	target_compile_definitions(${NAME_STATIC} PRIVATE ${DEBUG_COMPILE_DEFS})
+
 	# commit additional command line args for the subsequent generation phase
 	if (IS_PLUGIN)
 		set_target_properties(${NAME} PROPERTIES CGVPROP_ADDITIONAL_CMDLINE_ARGS "${CGVARG__ADDITIONAL_CMDLINE_ARGS}")
+	endif()
+
+	# record whether this target is added by the CGV Framework itself or by another project using it
+	if (NOT CGV_IS_CONFIGURING)
+		set(USER_TARGETS_LOCAL ${USER_TARGETS})
+		list(APPEND USER_TARGETS_LOCAL ${NAME} ${NAME_STATIC})
+		if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
+			list(APPEND USER_TARGETS_LOCAL ${NAME_EXE})
+		endif()
+		set(USER_TARGETS "${USER_TARGETS_LOCAL}" PARENT_SCOPE)
 	endif()
 
 	# IDE fluff
@@ -573,15 +672,13 @@ function(cgv_add_target NAME)
 	endif()
 	set_target_properties(${NAME_STATIC} PROPERTIES FOLDER "_obj")
 
-	# in case of Debug config, set _DEBUG and DEBUG defines for both targets
-	# (for historic reasons, CGV targets expect these instead of relying on NDEBUG)
-	set(DEBUG_COMPILE_DEFS $<$<CONFIG:Debug>:_DEBUG> $<$<CONFIG:Debug>:DEBUG>)
-	target_compile_definitions(${NAME} PRIVATE ${DEBUG_COMPILE_DEFS})
-	target_compile_definitions(${NAME_STATIC} PRIVATE ${DEBUG_COMPILE_DEFS})
-
 	# schedule deferred ops
 	# - for the created target
-	cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
+	if (CGV_IS_CONFIGURING)
+		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CGV_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
+	else()
+		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
+	endif()
 	# - update final pass
 	cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CANCEL_CALL "_999_FINALOPS")
 	cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} ID "_999_FINALOPS" CALL cgv_do_final_operations)
@@ -591,7 +688,6 @@ function(cgv_add_target NAME)
 		install(TARGETS ${NAME_EXE} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 	endif()
 endfunction()
-
 
 
 
@@ -689,6 +785,11 @@ function(cgv_create_lib NAME)
 		target_include_directories(${NAME_STATIC} PUBLIC $<BUILD_INTERFACE:${CGV_DIR}/libs>)
 	endif ()
 
+
+	# handle whole-program / link-time optimization
+	if (CGV_LTO_ON_RELEASE)
+		cgv_enable_lto(${NAME})
+	endif()
 
 	# observe STDCPP17 option
 	if (CGV_STDCPP17)

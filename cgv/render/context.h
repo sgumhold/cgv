@@ -582,6 +582,8 @@ public:
 protected:
 	friend class shader_program_base;
 
+	/// whether to use the caching facilities of shader_program and shader_code to store loaded shader file contents as strings for faster loading
+	bool use_shader_file_cache;
 	/// whether to automatically set viewing matrixes in current shader program, defaults to true 
 	bool auto_set_view_in_current_shader_program;
 	/// whether to automatically set lights in current shader program, defaults to true 
@@ -615,6 +617,12 @@ protected:
 public:
 	/// check for current program, prepare it for rendering and return pointer to it
 	shader_program_base* get_current_program() const;
+	/// enable the usage of the shader file caches
+	void enable_shader_file_cache();
+	/// disable the usage of the shader file caches
+	void disable_shader_file_cache();
+	/// whether the shader file caches are enabled
+	bool is_shader_file_cache_enabled() const;
 protected:
 	/// stack of currently enabled attribute array binding
 	std::stack<attribute_array_binding_base*> attribute_array_binding_stack;
