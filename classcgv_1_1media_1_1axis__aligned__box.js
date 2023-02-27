@@ -17,6 +17,7 @@ var classcgv_1_1media_1_1axis__aligned__box =
     [ "get_max_pnt", "classcgv_1_1media_1_1axis__aligned__box.html#ab9defb9f7625ed727808d35c6ed96522", null ],
     [ "get_min_pnt", "classcgv_1_1media_1_1axis__aligned__box.html#a15da541e92cbacc680f7b1cbc44a7a0f", null ],
     [ "inside", "classcgv_1_1media_1_1axis__aligned__box.html#a6391e4ae7c324d058111e8bfa6eacadc", null ],
+    [ "intersect", "classcgv_1_1media_1_1axis__aligned__box.html#a740053fa8e3d7170aacca2b0096fca01", null ],
     [ "invalidate", "classcgv_1_1media_1_1axis__aligned__box.html#a147cf684bc35aa99ed1dc779930a1fc4", null ],
     [ "is_valid", "classcgv_1_1media_1_1axis__aligned__box.html#af6685654bb0ac752ee8551e79658737d", null ],
     [ "ref_max_pnt", "classcgv_1_1media_1_1axis__aligned__box.html#a78f1160d42a073fdb40b240f3de0108f", null ],
