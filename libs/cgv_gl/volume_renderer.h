@@ -122,6 +122,8 @@ namespace cgv { // @<
 			box3 bounding_box;
 			/// whether to translate and scale the volume to the given bounding box during rendering
 			bool apply_bounding_box_transformation;
+			/// offset applied to the noise texture (can be used in conjunction with temporal anti aliasing)
+			vec2 noise_offset;
 			/// overload to allow instantiation of volume_renderer
 			render_style* create_render_style() const;
 			/// update shader defines based on render style
@@ -147,6 +149,8 @@ namespace cgv { // @<
 			void set_bounding_box(const box3& bbox);
 			///
 			void transform_to_bounding_box(bool flag);
+			///
+			void set_noise_offset(const vec2& offset);
 			///
 			bool enable(context& ctx);
 			///

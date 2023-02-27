@@ -63,6 +63,7 @@ layout (binding = 4) uniform sampler2D depth_tex;
 #endif
 
 uniform vec2 viewport_dims;
+uniform vec2 noise_offset;
 uniform float opacity_scale;
 uniform float size_scale;
 
@@ -222,6 +223,7 @@ float get_density(in vec3 uvw) {
 #else
 	return textureCubic(volume_tex, uvw).r;
 #endif
+	return textureLod(volume_tex, uvw, 0).r;
 }
 
 vec4 apply_transfer_function(in float density) {
@@ -352,8 +354,8 @@ void main()
 
 #if ENABLE_NOISE_OFFSET == 1
 	// add a small offset noise to the ray start position to prevent ring artifacts
-	ivec2 ts = textureSize(noise_tex, 0);
-	ray_org += (2.0 * ray_dir * step_size) * texture(noise_tex, frag_tex_coords*ts).r;
+	vec2 noise_uv = (frag_tex_coords + noise_offset) * textureSize(noise_tex, 0);
+	ray_org += (2.0 * ray_dir * step_size) * (texture(noise_tex, noise_uv).r + (noise_offset.x * noise_offset.y));
 #endif
 
 #if COMPOSITING_MODE == 0

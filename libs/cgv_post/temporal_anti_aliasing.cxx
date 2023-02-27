@@ -8,10 +8,10 @@ namespace post {
 temporal_anti_aliasing::temporal_anti_aliasing() {}
 
 void temporal_anti_aliasing::clear(cgv::render::context& ctx) {
-	fbc_draw.clear(ctx);
-	fbc_post.clear(ctx);
-	fbc_hist.clear(ctx);
-	fbc_resolve.clear(ctx);
+	fbc_draw.destruct(ctx);
+	fbc_post.destruct(ctx);
+	fbc_hist.destruct(ctx);
+	fbc_resolve.destruct(ctx);
 
 	shaders.clear(ctx);
 }
@@ -29,11 +29,19 @@ bool temporal_anti_aliasing::init(cgv::render::context& ctx) {
 
 	fbc_resolve.add_attachment("color", color_format);
 	
-	shaders.add("screen", "screen_quad.glpr");
+	shaders.add("screen", "screen_texture.glpr");
 	shaders.add("resolve", "taa_resolve.glpr");
 	shaders.add("fxaa", "fxaa3.glpr");
 
 	is_initialized = shaders.load_all(ctx);
+
+	if(is_initialized) {
+		auto& screen_prog = shaders.get("screen");
+		screen_prog.enable(ctx);
+		screen_prog.set_uniform(ctx, "color_tex", 0);
+		screen_prog.set_uniform(ctx, "depth_tex", 1);
+		screen_prog.disable(ctx);
+	}
 
 	return is_initialized;
 }
@@ -72,6 +80,9 @@ void temporal_anti_aliasing::begin(cgv::render::context& ctx, cgv::render::view*
 
 	assertm(is_initialized, "Error: TAA has not been initialized.");
 
+	if(!(enable_taa || enable_fxaa))
+		return;
+
 	current_view.eye_pos = view_ptr->get_eye();
 	current_view.view_dir = view_ptr->get_view_dir();
 	current_view.view_up_dir = view_ptr->get_view_up_dir();
@@ -101,6 +112,9 @@ void temporal_anti_aliasing::begin(cgv::render::context& ctx, cgv::render::view*
 bool temporal_anti_aliasing::end(cgv::render::context& ctx) {
 
 	assertm(is_initialized, "Error: TAA has not been initialized.");
+
+	if(!(enable_taa || enable_fxaa))
+		return false;
 
 	fbc_draw.disable(ctx);
 
@@ -189,7 +203,7 @@ bool temporal_anti_aliasing::end(cgv::render::context& ctx) {
 
 	auto& screen_prog = shaders.get("screen");
 	screen_prog.enable(ctx);
-
+	
 	color_src_fbc.enable_attachment(ctx, "color", 0);
 	fbc_draw.enable_attachment(ctx, "depth", 1);
 
@@ -213,14 +227,14 @@ bool temporal_anti_aliasing::end(cgv::render::context& ctx) {
 void temporal_anti_aliasing::create_gui(cgv::gui::provider* p) {
 	cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 	
-	p->add_member_control(b, "Enable FXAA", enable_fxaa, "toggle");
-	p->add_member_control(b, "FXAA Mix Factor", fxaa_mix_factor, "value_slider", "min=0;max=1;step=0.0001");
-
-	p->add_member_control(b, "Enable TAA", enable_taa, "toggle");
-	p->add_member_control(b, "# Jitter Samples", jitter_sample_count, "value_slider", "min=1;max=32;step=1");
+	p->add_member_control(b, "Enable", enable_taa, "toggle");
+	p->add_member_control(b, "Jitter Samples", jitter_sample_count, "value_slider", "min=1;max=32;step=1");
 	p->add_member_control(b, "Jitter Scale", jitter_scale, "value_slider", "min=0;max=2;step=0.0001");
 	p->add_member_control(b, "Mix Factor", mix_factor, "value_slider", "min=0;max=1;step=0.0001");
 	p->add_member_control(b, "Use Velocity", use_velocity, "check");
+
+	p->add_member_control(b, "FXAA", enable_fxaa, "toggle");
+	p->add_member_control(b, "Mix Factor", fxaa_mix_factor, "value_slider", "min=0;max=1;step=0.0001");
 }
 
 float temporal_anti_aliasing::van_der_corput(int n, int base) const {

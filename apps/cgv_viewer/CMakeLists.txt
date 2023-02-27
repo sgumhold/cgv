@@ -7,6 +7,9 @@ target_link_libraries(cgv_viewer PRIVATE
         cgv_base
         cgv_gui
         cgv_render)
+if (CGV_LTO_ON_RELEASE)
+        cgv_set_ltoflags(cgv_viewer)
+endif()
 set_target_properties(cgv_viewer PROPERTIES CGVPROP_TYPE "app")
 set_target_properties(cgv_viewer PROPERTIES FOLDER "App")
 install(TARGETS cgv_viewer EXPORT cgv_viewer DESTINATION ${CGV_BIN_DEST})
@@ -18,6 +21,9 @@ target_link_libraries(cgv_viewer_main PRIVATE
         cgv_base_static
         cgv_gui_static
         cgv_render_static)
+if (CGV_LTO_ON_RELEASE)
+        cgv_set_ltoflags(cgv_viewer_main)
+endif()
 set_target_properties(cgv_viewer_main PROPERTIES FOLDER "_obj")
 install(TARGETS cgv_viewer_main EXPORT cgv_viewer DESTINATION ${CGV_BIN_DEST})
 
