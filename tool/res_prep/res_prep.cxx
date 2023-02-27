@@ -87,6 +87,7 @@ int dump_to_cxx(const char* src, const char* dst)
 		fout << (int) data[i];
 	}
 	fout << "\n\t};\n\n\tcgv::base::resource_file_registration registration(file);\n\n} // namespace close\n";
+	delete[] data;
 	return 0;
 }
 

@@ -1445,12 +1445,12 @@ static const char* color_buffer_formats[] =
 
 
 GLuint get_tex_dim(TextureType tt) {
-	static GLuint tex_dim[] = { 0, GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP };
+	static GLuint tex_dim[] = { 0, GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_2D_MULTISAMPLE_ARRAY };
 	return tex_dim[tt];
 }
 
 GLuint get_tex_bind(TextureType tt) {
-	static GLuint tex_bind[] = { 0, GL_TEXTURE_BINDING_1D, GL_TEXTURE_BINDING_2D, GL_TEXTURE_BINDING_3D, GL_TEXTURE_BINDING_1D_ARRAY, GL_TEXTURE_BINDING_2D_ARRAY, GL_TEXTURE_BINDING_CUBE_MAP, GL_TEXTURE_BUFFER };
+	static GLuint tex_bind[] = { 0, GL_TEXTURE_BINDING_1D, GL_TEXTURE_BINDING_2D, GL_TEXTURE_BINDING_3D, GL_TEXTURE_BINDING_1D_ARRAY, GL_TEXTURE_BINDING_2D_ARRAY, GL_TEXTURE_BINDING_CUBE_MAP, GL_TEXTURE_BUFFER, GL_TEXTURE_BINDING_2D_MULTISAMPLE, GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY };
 	return tex_bind[tt];
 }
 
@@ -1660,12 +1660,16 @@ bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df) co
 			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_2D :
-		glTexImage2D(GL_TEXTURE_2D, 0, 
-			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		break;
+	case TT_MULTISAMPLE_2D:
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, tb.nr_multi_samples, gl_format, df.get_width(), df.get_height(), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
 		break;
 	case TT_2D_ARRAY :
-		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0,
-			gl_format, df.get_width(), df.get_height(), df.get_depth(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, gl_format, df.get_width(), df.get_height(), df.get_depth(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		break;
+	case TT_MULTISAMPLE_2D_ARRAY:
+		glTexStorage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, tb.nr_multi_samples, gl_format, df.get_width(), df.get_height(), df.get_depth(), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
 		break;
 	case TT_3D :
 		glTexImage3D(GL_TEXTURE_3D, 0,
@@ -1725,7 +1729,7 @@ bool gl_context::texture_create(
 			switch(tb.tt) {
 			case TT_1D: tb.tt = TT_1D_ARRAY; break;
 			case TT_2D: tb.tt = TT_2D_ARRAY; break;
-			case TT_3D: tb.tt = TT_2D_ARRAY; 
+			case TT_3D: tb.tt = TT_2D_ARRAY; break;
 			default: 
 				break;
 			}
@@ -1954,32 +1958,32 @@ bool gl_context::texture_set_state(const texture_base& tb) const
 	}
 	GLint tmp_id = texture_bind(tb.tt, tex_id);
 
-	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_MIN_FILTER, map_to_gl(tb.min_filter));
-	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_MAG_FILTER, map_to_gl(tb.mag_filter));
-	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_COMPARE_FUNC, map_to_gl(tb.compare_function));
-	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_COMPARE_MODE, (tb.use_compare_function ? GL_COMPARE_REF_TO_TEXTURE : GL_NONE));
-	if (!core_profile)
-		glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_PRIORITY, tb.priority);
-	if (tb.min_filter == TF_ANISOTROP)
-		glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_MAX_ANISOTROPY_EXT, tb.anisotropy);
-	else
-		glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
-//	if (tb.border_color[0] >= 0.0f)
-	glTexParameterfv(get_tex_dim(tb.tt), GL_TEXTURE_BORDER_COLOR, tb.border_color);
-	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_WRAP_S, map_to_gl(tb.wrap_s));
-	if (tb.tt > TT_1D)
-		glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_WRAP_T, map_to_gl(tb.wrap_t));
-	if (tb.tt == TT_3D)
-		glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_WRAP_R, map_to_gl(tb.wrap_r));
+	if (tb.tt != TT_MULTISAMPLE_2D && tb.tt != TT_MULTISAMPLE_2D_ARRAY) {
+		glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_MIN_FILTER, map_to_gl(tb.min_filter));
+		glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_MAG_FILTER, map_to_gl(tb.mag_filter));
+		if (tb.min_filter == TF_ANISOTROP)
+			glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_MAX_ANISOTROPY_EXT, tb.anisotropy);
+		else
+			glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
+		glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_COMPARE_FUNC, map_to_gl(tb.compare_function));
+		glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_COMPARE_MODE, (tb.use_compare_function ? GL_COMPARE_REF_TO_TEXTURE : GL_NONE));
+		if (!core_profile)
+			glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_PRIORITY, tb.priority);
+		glTexParameterfv(get_tex_dim(tb.tt), GL_TEXTURE_BORDER_COLOR, tb.border_color);
+		//	if (tb.border_color[0] >= 0.0f)
+		glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_WRAP_S, map_to_gl(tb.wrap_s));
+		if (tb.tt > TT_1D)
+			glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_WRAP_T, map_to_gl(tb.wrap_t));
+		if (tb.tt == TT_3D)
+			glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_WRAP_R, map_to_gl(tb.wrap_r));
+	}
 
 	bool result = !check_gl_error("gl_context::texture_set_state", &tb);
 	texture_unbind(tb.tt, tmp_id);
 	return result;
 }
 
-bool gl_context::texture_enable(
-						texture_base& tb, 
-						int tex_unit, unsigned int dim) const
+bool gl_context::texture_enable(texture_base& tb, int tex_unit, unsigned int dim) const
 {
 	if (dim < 1 || dim > 3) {
 		error("gl_context::texture_enable: invalid texture dimension", &tb);
@@ -2036,13 +2040,10 @@ bool gl_context::texture_disable(
 	return result;
 }
 
-bool gl_context::render_buffer_create(
-	render_component& rc,
-	cgv::data::component_format& cf,
-	int& _width, int& _height) const
+bool gl_context::render_buffer_create(render_buffer_base& rb, cgv::data::component_format& cf, int& _width, int& _height) const
 {
 	if (!GLEW_VERSION_3_0) {
-		error("gl_context::render_buffer_create: frame buffer objects not supported", &rc);
+		error("gl_context::render_buffer_create: frame buffer objects not supported", &rb);
 		return false;
 	}
 	if (_width == -1)
@@ -2054,7 +2055,7 @@ bool gl_context::render_buffer_create(
 	glGenRenderbuffers(1, &rb_id);
 	glBindRenderbuffer(GL_RENDERBUFFER, rb_id);
 
-	GLuint& gl_format = (GLuint&)rc.internal_format;
+	GLuint& gl_format = (GLuint&)rb.internal_format;
 	unsigned i = find_best_match(cf, color_buffer_formats);
 	cgv::data::component_format best_cf(color_buffer_formats[i]);
 	gl_format = gl_color_buffer_format_ids[i];
@@ -2066,16 +2067,18 @@ bool gl_context::render_buffer_create(
 	}
 
 	cf = best_cf;
+	if (rb.nr_multi_samples == 0)
+		glRenderbufferStorage(GL_RENDERBUFFER, gl_format, _width, _height);
+	else
+		glRenderbufferStorageMultisample(GL_RENDERBUFFER, rb.nr_multi_samples, gl_format, _width, _height);
 
-	glRenderbufferStorage(GL_RENDERBUFFER, gl_format, _width, _height);
-
-	if (check_gl_error("gl_context::render_buffer_create", &rc))
+	if (check_gl_error("gl_context::render_buffer_create", &rb))
 		return false;
-	rc.handle = get_handle(rb_id);
+	rb.handle = get_handle(rb_id);
 	return true;
 }
 
-bool gl_context::render_buffer_destruct(render_component& rc) const
+bool gl_context::render_buffer_destruct(render_buffer_base& rc) const
 {
 	if (!GLEW_VERSION_3_0) {
 		error("gl_context::render_buffer_destruct: frame buffer objects not supported", &rc);
@@ -2156,7 +2159,60 @@ bool gl_context::frame_buffer_destruct(frame_buffer_base& fbb) const
 	return true;
 }
 
-bool gl_context::frame_buffer_attach(frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) const
+void complete_rect_from_vp(gl_context::ivec4& D, GLint vp[4])
+{
+	if (D(0) == -1)
+		D(0) = vp[0];
+	if (D(1) == -1)
+		D(1) = vp[1];
+	if (D(2) == -1)
+		D(2) = vp[0] + vp[2];
+	if (D(3) == -1)
+		D(3) = vp[1] + vp[3];
+}
+
+void gl_context::frame_buffer_blit(
+	const frame_buffer_base* src_fbb_ptr, const ivec4& _S,
+	frame_buffer_base* dst_fbb_ptr, const ivec4& _D, BufferTypeBits btbs, bool interpolate) const
+{
+	static const GLenum masks[8]{
+		0,
+		GL_COLOR_BUFFER_BIT,
+		GL_DEPTH_BUFFER_BIT,
+		GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT,
+		GL_STENCIL_BUFFER_BIT,
+		GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
+		GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT,
+		GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT
+	};
+	ivec4 S = _S;
+	ivec4 D = _D;
+	if ((src_fbb_ptr == 0 && (S(0) == -1 || S(1) == -1 || S(2) == -1 || S(3) == -1)) ||
+		(dst_fbb_ptr == 0 && (D(0) == -1 || D(1) == -1 || D(2) == -1 || D(3) == -1))) {
+		GLint vp[4];
+		glGetIntegerv(GL_VIEWPORT, vp);
+		if (src_fbb_ptr == 0)
+			complete_rect_from_vp(S, vp);
+		if (dst_fbb_ptr == 0)
+			complete_rect_from_vp(D, vp);
+	}
+	GLint old_draw_fbo, old_read_fbo;
+	if (src_fbb_ptr) {
+		glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &old_read_fbo);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, get_gl_id(src_fbb_ptr->handle));
+	}
+	if (dst_fbb_ptr) {
+		glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &old_draw_fbo);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, get_gl_id(dst_fbb_ptr->handle));
+	}
+	glBlitFramebuffer(S(0), S(1), S(2), S(3), D(0), D(1), D(2), D(3), masks[btbs], interpolate ? GL_LINEAR : GL_NEAREST);
+	if (src_fbb_ptr) 
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, old_read_fbo);
+	if (dst_fbb_ptr)
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, old_draw_fbo);
+}
+
+bool gl_context::frame_buffer_attach(frame_buffer_base& fbb, const render_buffer_base& rb, bool is_depth, int i) const
 {
 	if (!context::frame_buffer_attach(fbb, rb, is_depth, i))
 		return false;
@@ -2185,7 +2241,7 @@ bool gl_context::frame_buffer_attach(frame_buffer_base& fbb,
 	if (z_or_cube_side == -1) {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, 
 			is_depth ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0+i,
-			GL_TEXTURE_2D, get_gl_id(t.handle), level);
+			t.tt == TT_2D ? GL_TEXTURE_2D : GL_TEXTURE_2D_MULTISAMPLE, get_gl_id(t.handle), level);
 	}
 	else {
 		if (t.tt == TT_CUBEMAP) {
@@ -2196,7 +2252,7 @@ bool gl_context::frame_buffer_attach(frame_buffer_base& fbb,
 		else {
 			glFramebufferTexture3D(GL_FRAMEBUFFER, 
 				GL_COLOR_ATTACHMENT0+i, 
-				GL_TEXTURE_3D, get_gl_id(t.handle), level, z_or_cube_side);
+				t.tt == TT_3D ? GL_TEXTURE_3D : GL_TEXTURE_2D_MULTISAMPLE_ARRAY , get_gl_id(t.handle), level, z_or_cube_side);
 		}
 	}
 	bool result = !check_gl_error("gl_context::frame_buffer_attach", &fbb);
@@ -2405,7 +2461,7 @@ bool gl_context::shader_program_enable(shader_program_base& spb)
 	if (auto_set_view_in_current_shader_program && spb.does_use_view())
 		set_current_view(prog);
 	if (auto_set_gamma_in_current_shader_program && spb.does_use_gamma())
-		prog.set_uniform(*this, "gamma", gamma);
+		set_current_gamma(prog);
 	if (prog.does_context_set_color() && prog.get_color_index() >= 0)
 		prog.set_attribute(*this, prog.get_color_index(), current_color);
 	return true;
@@ -2422,7 +2478,7 @@ bool gl_context::shader_program_disable(shader_program_base& spb)
 	return true;
 }
 
-bool gl_context::shader_program_destruct(shader_program_base& spb)
+bool gl_context::shader_program_destruct(shader_program_base& spb) const
 {
 	if (!context::shader_program_destruct(spb))
 		return false;

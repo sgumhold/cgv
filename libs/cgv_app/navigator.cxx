@@ -27,16 +27,10 @@ navigator::navigator() {
 	set_overlay_margin(ivec2(0));
 	set_overlay_size(ivec2(layout_size));
 	
-	fbc.add_attachment("depth", "[D]");
-	fbc.add_attachment("color", "flt32[R,G,B,A]", cgv::render::TF_LINEAR);
-	fbc.set_size(2*get_overlay_size());
-
 	show_box = true;
 	show_wireframe = true;
 	use_perspective = true;
 	hit_axis = 0;
-
-	blit_canvas.register_shader("rectangle", "rect2d.glpr");
 
 	box_data.style.default_extent = vec3(1.0f);
 	box_data.style.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
@@ -72,7 +66,7 @@ navigator::navigator() {
 void navigator::clear(cgv::render::context& ctx) {
 
 	blit_canvas.destruct(ctx);
-	fbc.clear(ctx);
+	fbc.destruct(ctx);
 
 	arrow_data.destruct(ctx);
 	box_data.destruct(ctx);
@@ -81,12 +75,6 @@ void navigator::clear(cgv::render::context& ctx) {
 	sphere_data.destruct(ctx);
 
 	box_renderer.clear(ctx);
-
-	//ref_arrow_renderer(ctx, -1);
-	//ref_box_renderer(ctx, -1);
-	//ref_box_wire_renderer(ctx, -1);
-	//ref_rectangle_renderer(ctx, -1);
-	//ref_sphere_renderer(ctx, -1);
 }
 
 bool navigator::self_reflect(cgv::reflect::reflection_handler& _rh) {
@@ -219,6 +207,10 @@ bool navigator::init(cgv::render::context& ctx) {
 		cursor_font_face = font->get_font_face(cgv::media::font::FFA_BOLD);
 	}
 
+	fbc.add_attachment("depth", "[D]");
+	fbc.add_attachment("color", "flt32[R,G,B,A]", cgv::render::TF_LINEAR);
+	fbc.set_size(2 * get_overlay_size());
+	
 	bool success = true;
 
 	success &= fbc.ensure(ctx);
@@ -232,11 +224,7 @@ bool navigator::init(cgv::render::context& ctx) {
 
 	success &= box_renderer.init(ctx);
 
-	//ref_arrow_renderer(ctx, 1);
-	//ref_box_renderer(ctx, 1);
-	//ref_box_wire_renderer(ctx, 1);
-	//ref_rectangle_renderer(ctx, 1);
-	//ref_sphere_renderer(ctx, 1);
+	blit_canvas.register_shader("rectangle", "rect2d.glpr");
 
 	if(success) {
 		box_data.add(vec3(0.0f));

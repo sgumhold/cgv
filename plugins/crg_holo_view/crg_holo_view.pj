@@ -1,0 +1,12 @@
+@=
+projectType="plugin";
+projectName="crg_holo_view";
+projectGUID="F8F1902D-47BA-4D67-90C7-500DC0E99E38";
+addProjectDeps=["cgv_render", "cgv_gui", "cgv_utils", "cgv_type", "cgv_reflect", "cgv_data","cgv_base", "cgv_signal", "cgv_gl"];
+addProjectDirs=[CGV_DIR."/libs/glsu", CGV_DIR."/libs/cgv_gl"];
+addIncDirs=[CGV_DIR."/libs", [ CGV_DIR."/libs/glsu", "all" ], [INPUT_DIR, "all"] ];
+addShaderPaths=[[INPUT_DIR,"all"]];
+if(SYSTEM=="windows") {
+	addStaticDefines=["REGISTER_SHADER_FILES"];
+}
+addSharedDefines=["CGV_RENDER_HOLO_VIEW_EXPORTS"];

@@ -7,7 +7,7 @@
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/gl/mesh_render_info.h>
-#include <stereo_view_interactor.h>
+#include <plugins/crg_stereo_view/stereo_view_interactor.h>
 
 #include "lib_begin.h"
 

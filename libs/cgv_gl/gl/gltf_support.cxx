@@ -304,7 +304,7 @@ bool build_render_info(const std::string& file_name, const fx::gltf::Document& d
 					std::cerr << "index component type must be unsigned integer type" << std::endl;
 					return false;
 				}
-				dc.indices = (void*)(accessor.byteOffset + bufferView.byteOffset);
+				dc.indices = (void*)(unsigned long long)(accessor.byteOffset + bufferView.byteOffset);
 			}
 			dc.primitive_type = map_gl_to_primitive_type(GLenum(p.mode));
 			if (p.material >= 0) {

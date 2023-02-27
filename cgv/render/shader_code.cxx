@@ -20,6 +20,8 @@ using namespace cgv::base;
 namespace cgv {
 	namespace render {
 
+std::map<std::string, std::string> shader_code::code_cache;
+
 shader_config::shader_config()
 {
 	trace_file_names = false;
@@ -218,6 +220,26 @@ std::string shader_code::find_file(const std::string& file_name)
 	return find_in_paths(file_name, get_shader_config()->shader_path, true);
 }
 
+std::string shader_code::retrieve_code(const std::string& file_name, bool use_cache, std::string* _last_error) {
+
+	std::string source = "";
+
+	if(use_cache) {
+		auto it = code_cache.find(file_name);
+		if(it != code_cache.end()) {
+			source = it->second;
+		}
+	}
+
+	if(source.empty())
+		source = read_code_file(file_name, _last_error);
+
+	if(use_cache)
+		code_cache.emplace(file_name, source);
+
+	return source;
+}
+
 ShaderType shader_code::detect_shader_type(const std::string& file_name)
 {
 	std::string ext = to_lower(get_extension(file_name));
@@ -233,6 +255,52 @@ ShaderType shader_code::detect_shader_type(const std::string& file_name)
 	else if (ext == "glte" || ext == "pglte")
 		st = ST_TESS_EVALUATION;
 	return st;
+}
+
+std::string shader_code::resolve_includes(const std::string& source, bool use_cache, std::set<std::string>& included_file_names, std::string* _last_error)
+{
+	const std::string identifier = "#include ";
+
+	std::string resolved_source = "";
+
+	std::vector<cgv::utils::line> lines;
+	cgv::utils::split_to_lines(source, lines);
+
+	for(size_t i = 0; i < lines.size(); ++i) {
+		std::string line = cgv::utils::to_string(lines[i]);
+
+		// search for the include identifier
+		size_t identifier_pos = line.find(identifier);
+		if(identifier_pos != std::string::npos) {
+			// remove identifier and all content before; an include directive must be the first and only statement on a line
+			line.erase(0, identifier_pos + identifier.length());
+			
+			// trim whitespace
+			cgv::utils::trim(line);
+
+			if(line.length() > 0) {
+				// remove quotation marks, leaving only the include path
+				std::string include_file_name = line.substr(1, line.length() - 2);
+				std::string include_source = retrieve_code(include_file_name, use_cache, _last_error);
+
+				// check whether this file was already included and skip if this is the case
+				if(included_file_names.find(include_file_name) == included_file_names.end()) {
+					included_file_names.insert(include_file_name);
+					line = resolve_includes(include_source, use_cache, included_file_names, _last_error);
+				} else {
+					line = "";
+				}
+			}
+
+			// skip this line if nothing needs to be included (removes the include statement from the code)
+			if(line == "")
+				continue;
+		}
+
+		resolved_source += line + '\n';
+	}
+
+	return resolved_source;
 }
 
 /// return the shader type of this code
@@ -290,18 +358,20 @@ bool shader_code::read_code(const context& ctx, const std::string &file_name, Sh
 	if (st == ST_DETECT)
 		st = detect_shader_type(file_name);
 
-	std::string source = read_code_file(file_name, &last_error);
+	// get source code from cache or read file
+	std::string source = retrieve_code(file_name, ctx.is_shader_file_cache_enabled(), &last_error);
 
-	if(!defines.empty()) {
+	source = resolve_includes(source, ctx.is_shader_file_cache_enabled());
+
+	if(!defines.empty())
 		set_defines(source, defines);
-	}
-
-	if (st == ST_VERTEX && ctx.get_gpu_vendor_id() == GPUVendorID::GPU_VENDOR_AMD) {
+	
+	if (st == ST_VERTEX && ctx.get_gpu_vendor_id() == GPUVendorID::GPU_VENDOR_AMD)
 		set_vertex_attrib_locations(source);
-	}
 
 	if (source.empty())
 		return false;
+
 	return set_code(ctx, source, st);
 }
 
@@ -365,12 +435,13 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 	};
 
 	std::vector<cgv::utils::token> parts;
+	std::vector<cgv::utils::token> tokens;
 	std::vector<vertex_attribute> attribs;
 	std::vector<bool> attrib_flags;
-	//cgv::utils::token version_token;
 	size_t version_idx = 0;
 	int version_number = 0;
 	bool is_core = false;
+	bool no_upgrade = false;
 
 	source = cgv::utils::strip_cpp_comments(source);
 
@@ -380,31 +451,41 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 
 	size_t part_idx = 0;
 
-	// first find version statement
-	for(part_idx; part_idx < parts.size(); ++part_idx) {
-		std::vector<cgv::utils::token> tokens;
-		cgv::utils::split_to_tokens(parts[part_idx], tokens, "", true, "", "", " \t");
+	// First read the version. The only thing allowed before the version statement is comments and empty lines.
+	// Both get removed bevore splitting the source into parts, so the first part must be the version.
+	cgv::utils::split_to_tokens(parts[part_idx], tokens, "", true, "", "", " \t");
 
-		if(tokens.size() == 2 || tokens.size() == 3) {
-			if(tokens[0] == "#version") {
-				version_idx = part_idx;
-				//version_token = parts[0];
+	if(tokens.size() > 1 && tokens[0] == "#version") {
+		version_idx = part_idx;
 
-				std::string number_str = to_string(tokens[1]);
-				char* p_end;
-				const long num = std::strtol(number_str.c_str(), &p_end, 10);
-				if(number_str.c_str() != p_end)
-					version_number = static_cast<int>(num);
+		std::string number_str = to_string(tokens[1]);
+		char* p_end;
+		const long num = std::strtol(number_str.c_str(), &p_end, 10);
+		if(number_str.c_str() != p_end)
+			version_number = static_cast<int>(num);
 
-				if(tokens.size() == 3 && tokens[2] == "core")
-					is_core = true;
+		if(tokens.size() == 3 && tokens[2] == "core")
+			is_core = true;
+	}
 
-				break;
-			}
+	++part_idx;
+
+	// Search for the optional NO_UPGRADE define, which must come directly after the version statement.
+	tokens.clear();
+	cgv::utils::split_to_tokens(parts[part_idx], tokens, "", true, "", "", " \t");
+
+	if(tokens.size() > 1 && tokens[0] == "#define") {
+		if(tokens[1] == "NO_UPGRADE") {
+			no_upgrade = true;
+			++part_idx;
 		}
 	}
 
-	// now filter all vertex attributes
+	// return if the shader should not be upgraded
+	if(no_upgrade)
+		return;
+
+	// now get all vertex attributes
 	for(part_idx; part_idx < parts.size(); ++part_idx) {
 		auto& tok = parts[part_idx];
 
@@ -416,7 +497,7 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 			bool is_new_word = true;
 			bool was_new_word = true;
 
-			for(size_t i = 0; i < tok.size() - 2; ++i) {
+			for(unsigned i = 0; i < tok.size() - 2; ++i) {
 				char c = tok[i];
 
 				if(c == '(')
@@ -440,11 +521,15 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 		}
 	}
 
+	// return if no vertex attributes were found
+	if(attribs.size() == 0)
+		return;
+
 	int max_location = -1;
 	for(size_t i = 0; i < attribs.size(); ++i) {
 		auto& attrib = attribs[i];
 
-		std::vector<cgv::utils::token> tokens;
+		tokens.clear();
 		cgv::utils::split_to_tokens(attrib.tok, tokens, "", true, "", "", " \t()");
 
 		size_t size = tokens.size();
@@ -535,11 +620,13 @@ bool shader_code::read_and_compile(const context& ctx, const std::string &file_n
 {
 	if (!read_code(ctx,file_name,st,defines))
 		return false;
+
 	if (!compile(ctx)) {
 		if (show_error)
 			std::cerr << get_last_error(file_name, last_error).c_str() << std::endl;
 		return false;
 	}
+
 	return true;
 }
 

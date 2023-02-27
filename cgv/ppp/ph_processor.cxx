@@ -1644,8 +1644,11 @@ namespace cgv {
 					}
 
 					std::string directory = v1.get_str();
-					void* fh = cgv::utils::file::find_first(directory + "/*");
-					if (fh == 0) {
+					//void* fh = cgv::utils::file::find_first(directory + "/*");
+					//if (fh == 0) {
+					//	error("path \"" + directory + "\" does not exist", commands[i]);
+					//}
+					if(!cgv::utils::file::exists(directory + "/*")) {
 						error("path \"" + directory + "\" does not exist", commands[i]);
 					}
 

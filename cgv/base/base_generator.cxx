@@ -28,6 +28,15 @@ void base_generator::add_void(const std::string& name, abst_property_access* apa
 		property_map[name] = apa;
 }
 
+base_generator::~base_generator()
+{
+	for (auto& p : property_map) {
+		delete p.second;
+		p.second = 0;
+	}
+}
+
+
 /// remove a property
 void base_generator::del(const std::string& name)
 {

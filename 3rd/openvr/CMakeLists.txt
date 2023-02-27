@@ -19,6 +19,7 @@ install(DIRECTORY ./headers DESTINATION ${CGV_3RD_INCLUDE_DEST}/openvr FILES_MAT
 add_library(openvr SHARED ${SOURCES})
 target_compile_definitions(openvr PRIVATE
         VR_API_PUBLIC
+        OPENVR_API_EXPORTS
         $<$<PLATFORM_ID:Linux>:LINUX>
         $<$<PLATFORM_ID:Linux>:POSIX>)
 target_include_directories(openvr PUBLIC
@@ -30,9 +31,10 @@ target_include_directories(openvr PUBLIC
 install(TARGETS openvr EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 
 # Static Library
-add_library(openvr_static STATIC ${SOURCES})
+add_library(openvr_static OBJECT ${SOURCES})
 target_compile_definitions(openvr_static PRIVATE
         VR_API_PUBLIC
+        OPENVR_BUILD_STATIC
         $<$<PLATFORM_ID:Linux>:LINUX>
         $<$<PLATFORM_ID:Linux>:POSIX>)
 target_include_directories(openvr_static PUBLIC

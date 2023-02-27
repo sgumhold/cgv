@@ -1,0 +1,99 @@
+// *********** gamepad *******************
+// (only works if lib/cg_gamepad is dependent project and only under windows)
+// 
+// button mappings:
+// - start ... set default view
+// - A ... toggle show focus
+// - DPAD_Left/Right/Up/Down ... set view direction along x/-x/y/-y axes
+// - left/right BUMPER ... set view direction along z/-z axes
+//
+// left and right stick work with two modes which can be toggled individually by pressing 
+// the corresponding stick
+// - left stick mode 0:  rotate in plane orthogonal to view direction
+// - left stick mode 1:  pan in plane orthogonal to view direction
+// - right stick mode 0: left/right to roll, up/down to zoom
+// - right stick mode 1: left/right to change field of view angle, up/down to move forward/backward
+//
+// gamepad configuration:
+//
+// whether to allow navigation with gamepad 
+type(holo_view_interactor):use_gamepad=true
+// gamepad deadzone percentage
+type(holo_view_interactor):deadzone=0.03
+// sensitivity for panning with gamepad
+type(holo_view_interactor):pan_sensitivity=1.0
+// sensitivity for rotation with gamepad
+type(holo_view_interactor):rotate_sensitivity=1.0
+// sensitivity for zooming with gamepad
+type(holo_view_interactor):zoom_sensitivity=1.0
+
+// *********** gamepad emulation ************
+
+// whether to emulate gamepad with A,D,W,X for left and H,K,U,M for right stick 
+// (emulation currently does not support gamepad buttons or pressing of sticks)
+type(holo_view_interactor):gamepad_emulation=false
+
+
+// ********** view configuration ************
+type(holo_view_interactor):focus_x=0.0
+type(holo_view_interactor):focus_y=0.0
+type(holo_view_interactor):focus_z=0.0
+type(holo_view_interactor):view_dir_x=0.0
+type(holo_view_interactor):view_dir_y=0.0
+type(holo_view_interactor):view_dir_z=-1.0
+type(holo_view_interactor):up_dir_x=0.0
+type(holo_view_interactor):up_dir_y=1.0
+type(holo_view_interactor):up_dir_z=0.0
+// field of view angle in y direction in degrees
+type(holo_view_interactor):y_view_angle=45
+// y extent in world space at focus point (changes to this will move eye point correspondingly)
+type(holo_view_interactor):extent=2.0
+type(holo_view_interactor):z_near=0.0001
+type(holo_view_interactor):z_far=100
+
+// ********** navigation configuration ************
+// whether dialog boxes with messages should be provided to user (defaults to true)
+// currently a message is produced only in case that quad buffer stereo cannot be enabled
+type(holo_view_interactor):enable_messages=true
+// whether to fix view up direction (effectively prohibits rolling)
+type(holo_view_interactor):fix_view_up_dir=false
+// whether to restrict rotation to roll (effectively results in 2D navigation)
+type(holo_view_interactor):two_d_enabled=false
+
+// ********** stereo configuration ************
+// eye distance in percent to y-extent of screen
+type(holo_view_interactor):eye_distance=0.3
+// stereo rendering mode
+// distance to parallax 0 plane 
+type(holo_view_interactor):parallax_zero_scale=0.5
+// whether to incorporate translation from center eye to left and right eyes into model view transformation
+// this will provide physically correct lighting which makes it harder for viewer to fuse left and rigth 
+// images. Therefore this is turned off by default 
+type(holo_view_interactor):stereo_translate_in_model_view=false
+type(holo_view_interactor):show_focus=false
+type(holo_view_interactor):clip_relative_to_extent=true
+
+// ********** holo configuration ************
+type(holo_view_interactor):display_width=3840,display_height=2160
+type(holo_view_interactor):display_x_min="0.01 0.01 0.01"
+type(holo_view_interactor):display_x_max="0.99 0.99 0.99"
+type(holo_view_interactor):display_y_min="0.01 0.01 0.01"
+type(holo_view_interactor):display_y_max="0.99 0.99 0.99"
+type(holo_view_interactor):display_length=42.8996
+type(holo_view_interactor):display_step_x=35.3762
+type(holo_view_interactor):display_step_y=1
+type(holo_view_interactor):display_offset="42.4 39.8 37.2"
+// holo_mode is one out of single,quilt,volume
+type(holo_view_interactor):holo_mode=single
+type(holo_view_interactor):view_width=1638
+type(holo_view_interactor):view_height=910
+type(holo_view_interactor):nr_views=45
+type(holo_view_interactor):view_index=22
+type(holo_view_interactor):blit_offset_x=0
+type(holo_view_interactor):blit_offset_y=0
+type(holo_view_interactor):generate_hologram=true
+type(holo_view_interactor):quilt_bg_color="0.5 0.5 0.5"
+type(holo_view_interactor):quilt_use_offline_texture=true
+type(holo_view_interactor):quilt_width=8192;quilt_height=8192
+type(holo_view_interactor):quilt_nr_cols=5;quilt_nr_rows=9
+type(holo_view_interactor):quilt_interpolate=true

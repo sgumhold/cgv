@@ -83,6 +83,14 @@ public:
 	CompareFunction get_compare_function() const;
 	/// check whether mipmaps have been created
 	bool mipmaps_created() const;
+	/// set the number of multi samples for textures of type TT_MULTISAMPLE_2D and TT_MULTISAMPLE_2D_ARRAY
+	void set_nr_multi_samples(unsigned _nr_samples);
+	/// return number of multi samples for textures of type TT_MULTISAMPLE_2D and TT_MULTISAMPLE_2D_ARRAY
+	unsigned get_nr_multi_samples() const { return nr_multi_samples; }
+	/// whether multi sampling uses fixed sample locations
+	bool use_fixed_sample_locations() const { return fixed_sample_locations; }
+	/// set whether multi sampling uses fixed sample locations
+	void set_fixed_sample_locations(bool use);
 	/// ensure the the texture state is synchronized with the GPU settings
 	void ensure_state(const context& ctx) const;
 	/// check whether textue is enabled
@@ -141,7 +149,7 @@ public:
 		power of two dimensions. */  
 	bool create_from_images(const context& ctx, const std::string& file_names, int level = -1);
 	/// write the content of the texture to a file. This method needs support for frame buffer objects.
-	bool write_to_file(context& ctx, const std::string& file_name, unsigned int z_or_cube_side = -1, float depth_map_gamma = 1.0f) const;
+	bool write_to_file(context& ctx, const std::string& file_name, unsigned int z_or_cube_side = -1, float depth_map_gamma = 1.0f, const std::string& options = "") const;
 	/** generate mipmaps automatically, only supported if 
 	    framebuffer objects are supported by the GPU */
 	bool generate_mipmaps(const context& ctx);

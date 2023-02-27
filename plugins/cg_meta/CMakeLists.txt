@@ -1,6 +1,9 @@
 
-add_library(cg_meta object_browser.cxx)
-target_link_libraries(cg_meta cgv_base cgv_gui)
-target_compile_definitions(cg_meta PRIVATE CGV_GUI_META_EXPORTS)
+cgv_add_target(cg_meta
+	TYPE plugin NO_EXECUTABLE
+	SOURCES object_browser.cxx
+	DEPENDENCIES cgv_base cgv_gui
+	OVERRIDE_SHARED_EXPORT_DEFINE CGV_GUI_META_EXPORTS
+)
 
 install(TARGETS cg_meta EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})

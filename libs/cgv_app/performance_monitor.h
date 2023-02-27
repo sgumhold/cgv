@@ -36,6 +36,8 @@ protected:
 	struct {
 		/// whether measuring is enabled
 		bool enabled = true;
+		/// whether to enable monitoring only if the overlay is visible (uses state of enabled)
+		bool enabled_only_when_visible = false;
 		/// timer to count elapsed time
 		cgv::utils::stopwatch timer;
 		/// counter for rendered frames since start of measurements
@@ -52,12 +54,20 @@ protected:
 		double running_time = 0.0;
 		/// store the average frames per second
 		double avg_fps = 0.0;
+
+		void reset() {
+			timer.restart();
+			total_frame_count = 0u;
+			interval_frame_count = 0u;
+			last_seconds_since_start = 0.0;
+			running_time = 0.0;
+		}
 	} monitor;
 
 	bool show_background = true;
 	bool invert_color = false;
 	bool show_plot = true;
-
+	
 	cgv::g2d::generic_2d_renderer bar_renderer;
 	DEFINE_GENERIC_RENDER_DATA_CLASS(bar_geometry, 3, vec2, position, vec2, size, rgb, color);
 	bar_geometry bars;
@@ -81,7 +91,8 @@ protected:
 	void create_labels();
 	void update_plot();
 
-	virtual void create_gui_impl();
+	void on_visibility_change();
+	void create_gui_impl();
 
 public:
 	performance_monitor();
@@ -100,7 +111,11 @@ public:
 	void draw_content(cgv::render::context& ctx);
 	void after_finish(cgv::render::context& ctx);
 
+	void set_show_background(bool flag);
+	void set_invert_color(bool flag);
+
 	void enable_monitoring(bool enabled);
+	void enable_monitoring_only_when_visible(bool enabled);
 };
 
 typedef cgv::data::ref_ptr<performance_monitor> performance_monitor_ptr;

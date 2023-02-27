@@ -6,7 +6,10 @@
 /*
 The following interface is implemented in this shader:
 //***** begin interface of fragment.glfs ***********************************
+// scalar gamma is not used anymore in fragment.glfs but set to average(gamma3[0..2]) for convenience
 uniform float gamma = 2.2;
+// per channel gamma value
+uniform vec3 gamma3 = vec3(2.2);
 void finish_fragment(vec4 color);
 void finish_fragment(vec4 color, float depth);
 //***** end interface of fragment.glfs ***********************************
@@ -16,7 +19,7 @@ uniform bool alpha_test = false;
 uniform float alpha_cutoff = 0.1;
 
 #if USE_A_BUFFER == 0
-uniform float gamma = 2.2;
+uniform vec3 gamma3 = vec3(2.2);
 out vec4 frag_color;
 #else
 //***** begin interface of a_buffer.glsl ***********************************
@@ -33,7 +36,7 @@ void finish_fragment(vec4 color)
 #if USE_A_BUFFER == 0
 	frag_color = color;
 	// perform inverse gamma correction and clamp to avoid problems with on laptop screens
-	frag_color.rgb = clamp(pow(frag_color.rgb, vec3(gamma)),0.0,0.9999999);
+	frag_color.rgb = clamp(pow(frag_color.rgb, gamma3),0.0,0.9999999);
 #else
 	a_buffer_insert_fragment(gl_FragCoord.xyz, color);
 #endif
@@ -47,7 +50,7 @@ void finish_fragment(vec4 color, float depth)
 #if USE_A_BUFFER == 0
 	frag_color = color;
 	// perform inverse gamma correction and clamp to avoid problems with on laptop screens
-	frag_color.rgb = clamp(pow(frag_color.rgb, vec3(gamma)),0.0,0.9999999);
+	frag_color.rgb = clamp(pow(frag_color.rgb, gamma3),0.0,0.9999999);
 	gl_FragDepth = depth;
 #else
 	a_buffer_insert_fragment(vec3(gl_FragCoord.xy, depth), color);

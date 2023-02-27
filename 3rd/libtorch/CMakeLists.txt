@@ -20,6 +20,8 @@ if (Torch_FOUND)
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/include>
             )
     target_link_libraries(libtorch PRIVATE "${TORCH_LIBRARIES}")
+    set_target_properties(libtorch PROPERTIES CGVPROP_TYPE "library")
+    set_target_properties(libtorch PROPERTIES FOLDER "Lib")
 else ()
     message(STATUS "Looking for Torch - not found")
 endif ()

@@ -16,7 +16,7 @@ float color_scale_gamma_mapping(in float v, in float gamma, int idx);
 /// map value with color scale selected in uniform color_scale_index[idx=0|1] to rgb color
 vec3 color_scale(in float v, int idx);
 /// map value with color scale selected in uniform color_scale_index[0] to rgb color
-vec3 color_scale(in float v, int idx);
+vec3 color_scale(in float v);
 //***** end interface of color_scale.glsl ***********************************
 */
 

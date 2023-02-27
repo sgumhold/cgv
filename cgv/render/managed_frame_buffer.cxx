@@ -14,7 +14,7 @@ managed_frame_buffer::~managed_frame_buffer() {
 	attachments.clear();
 }
 
-void managed_frame_buffer::clear(context& ctx) {
+void managed_frame_buffer::destruct(const context& ctx) {
 
 	fb.destruct(ctx);
 
@@ -105,7 +105,7 @@ bool managed_frame_buffer::ensure(context& ctx) {
 	ivec2 actual_size = get_actual_size(ctx);
 
 	if(!fb.is_created() || fb.get_width() != actual_size.x() || fb.get_height() != actual_size.y()) {
-		clear(ctx);
+		destruct(ctx);
 		if(!create_and_validate(ctx, actual_size)) {
 			std::cerr << "Error: fbo not complete" << std::endl;
 			abort();

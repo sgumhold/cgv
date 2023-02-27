@@ -3,29 +3,27 @@
 namespace cgv {
 namespace app {
 
-canvas_overlay::canvas_overlay() : overlay() {
-
-	fbc.add_attachment("color", "uint8[R,G,B,A]");
-	fbc.set_size(get_overlay_size());
-
-	content_canvas.set_apply_gamma(false);
-
-	overlay_canvas.register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
-}
+canvas_overlay::canvas_overlay() : overlay() {}
 
 void canvas_overlay::clear(cgv::render::context& ctx) {
 
 	content_canvas.destruct(ctx);
 	overlay_canvas.destruct(ctx);
-	fbc.clear(ctx);
+	fbc.destruct(ctx);
 }
 
 bool canvas_overlay::init(cgv::render::context& ctx) {
-
+	
 	bool success = true;
 
+	fbc.add_attachment("color", "uint8[R,G,B,A]");
+	fbc.set_size(get_overlay_size());
 	success &= fbc.ensure(ctx);
+
+	content_canvas.set_apply_gamma(false);
 	success &= content_canvas.init(ctx);
+
+	overlay_canvas.register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
 	success &= overlay_canvas.init(ctx);
 
 	if(success)

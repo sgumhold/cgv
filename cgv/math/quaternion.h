@@ -1,5 +1,10 @@
 #pragma once
 
+// make sure this is the first thing the compiler sees, while preventing warnings if
+// it happened to already be defined by something else including this header
+#ifndef _USE_MATH_DEFINES
+	#define _USE_MATH_DEFINES 1
+#endif
 #include "fvec.h"
 #include "fmat.h"
 #include "functions.h"
@@ -7,6 +12,7 @@
 namespace cgv {
 	namespace math {
 
+// floating point comparison epsilon
 #define EPSILON 1e-6
 
 /** implements a quaternion.*/

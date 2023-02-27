@@ -218,11 +218,21 @@ bool texture::create(const context& ctx, TextureType _tt, unsigned width, unsign
 		set_width(width);
 	if (height != -1)
 		set_height(height);
-	if (depth != -1)
+	if (depth != -1)			
 		set_depth(depth);
 	if (!internal_format)
 		find_best_format(ctx);
 	return complete_create(ctx, ctx.texture_create(*this, *this));
+}
+
+void texture::set_nr_multi_samples(unsigned _nr_samples)
+{
+	nr_multi_samples = _nr_samples;
+}
+
+void texture::set_fixed_sample_locations(bool use)
+{
+	fixed_sample_locations = use; 
 }
 
 bool is_power_of_two(unsigned int i)
@@ -416,7 +426,7 @@ bool texture::create_from_images(const context& ctx, const std::string& file_nam
 }
 
 /// write the content of the texture to a file. This method needs support for frame buffer objects.
-bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned int z_or_cube_size, float depth_map_gamma) const
+bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned int z_or_cube_size, float depth_map_gamma, const std::string& options) const
 {
 	std::string& last_error = static_cast<const cgv::render::texture_base*>(this)->last_error;
 	if (!is_created()) {
@@ -486,6 +496,7 @@ bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned
 		return true;
 	}
 	image_writer w(file_name);
+	w.multi_set(options);
 	if (!w.write_image(dv)) {
 		last_error = "could not write image file ";
 		last_error += file_name;

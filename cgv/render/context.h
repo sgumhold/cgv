@@ -1,6 +1,10 @@
 #pragma once
 
-#define _USE_MATH_DEFINES
+// make sure this is the first thing the compiler sees, while preventing warnings if
+// it happened to already be defined by something else including this header
+#ifndef _USE_MATH_DEFINES
+	#define _USE_MATH_DEFINES 1
+#endif
 #include <cgv/defines/deprecated.h>
 #include <cgv/data/data_view.h>
 #include <cgv/media/font/font.h>
@@ -168,6 +172,8 @@ enum TextureType {
 	TT_1D_ARRAY,
 	TT_2D_ARRAY,
 	TT_CUBEMAP,
+	TT_MULTISAMPLE_2D,
+	TT_MULTISAMPLE_2D_ARRAY,
 	TT_BUFFER
 };
 
@@ -272,6 +278,14 @@ public:
 	void put_id(T& id) const { put_id_void(&id); }
 };
 
+/// base interface for a render_buffer
+class CGV_API render_buffer_base : public render_component
+{
+public:
+	unsigned nr_multi_samples = 0;
+	render_buffer_base();
+};
+
 /// base interface for a texture 
 class CGV_API texture_base : public render_component
 {
@@ -288,6 +302,8 @@ public:
 	bool use_compare_function;
 	TextureType  tt;
 	bool have_mipmaps;
+	unsigned nr_multi_samples = 5;
+	bool fixed_sample_locations = true;
 	/// initialize members
 	texture_base(TextureType _tt = TT_UNDEF);
 };
@@ -382,6 +398,14 @@ public:
 	vertex_buffer_base();
 };
 
+/// bits for the selection of different buffer types
+enum BufferTypeBits { 
+	BTB_COLOR_BIT = 1, /// color buffer type
+	BTB_DEPTH_BIT = 2, /// depth buffer type
+	BTB_COLOR_AND_DEPTH_BITS = 3, /// color and depth buffer types
+	BTB_STENCIL_BIT = 4, /// stencil buffer type
+	BTB_ALL_BITS = 7   /// all buffer types 
+};
 
 /// base interface for framebuffer
 class CGV_API frame_buffer_base : public render_component
@@ -558,6 +582,8 @@ public:
 protected:
 	friend class shader_program_base;
 
+	/// whether to use the caching facilities of shader_program and shader_code to store loaded shader file contents as strings for faster loading
+	bool use_shader_file_cache;
 	/// whether to automatically set viewing matrixes in current shader program, defaults to true 
 	bool auto_set_view_in_current_shader_program;
 	/// whether to automatically set lights in current shader program, defaults to true 
@@ -578,8 +604,8 @@ protected:
 	rgba current_color;
 	/// whether to use opengl option to support sRGB framebuffer
 	bool sRGB_framebuffer;
-	/// gamma value passed to shader programs that have gamma uniform
-	float gamma;
+	/// per color channel gamma value passed to shader programs that have gamma uniform
+	vec3 gamma3;
 	/// keep two matrix stacks for model view and projection matrices
 	std::stack<dmat4> modelview_matrix_stack, projection_matrix_stack;
 	/// keep stack of window transformations
@@ -591,6 +617,12 @@ protected:
 public:
 	/// check for current program, prepare it for rendering and return pointer to it
 	shader_program_base* get_current_program() const;
+	/// enable the usage of the shader file caches
+	void enable_shader_file_cache();
+	/// disable the usage of the shader file caches
+	void disable_shader_file_cache();
+	/// whether the shader file caches are enabled
+	bool is_shader_file_cache_enabled() const;
 protected:
 	/// stack of currently enabled attribute array binding
 	std::stack<attribute_array_binding_base*> attribute_array_binding_stack;
@@ -680,17 +712,18 @@ protected:
 	virtual bool texture_enable				(texture_base& tb, int tex_unit, unsigned int nr_dims) const = 0;
 	virtual bool texture_disable			(texture_base& tb, int tex_unit, unsigned int nr_dims) const = 0;
 
-	virtual bool render_buffer_create       (render_component& rc, cgv::data::component_format& cf, int& _width, int& _height) const = 0;
-	virtual bool render_buffer_destruct     (render_component& rc) const = 0;
+	virtual bool render_buffer_create       (render_buffer_base& rc, cgv::data::component_format& cf, int& _width, int& _height) const = 0;
+	virtual bool render_buffer_destruct     (render_buffer_base& rc) const = 0;
 
 	static void get_buffer_list(frame_buffer_base& fbb, bool& depth_buffer, std::vector<int>& buffers, int offset = 0);
 	virtual bool frame_buffer_create		   (frame_buffer_base& fbb) const;
-	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) const;
+	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const render_buffer_base& rb, bool is_depth, int i) const;
 	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const texture_base& t, bool is_depth, int level, int i, int z) const;
 	virtual bool frame_buffer_is_complete(const frame_buffer_base& fbb) const = 0;
 	virtual bool frame_buffer_enable		   (frame_buffer_base& fbb);
 	virtual bool frame_buffer_disable		   (frame_buffer_base& fbb);
-	virtual bool frame_buffer_destruct		   (frame_buffer_base& fbb) const;
+	virtual bool frame_buffer_destruct(frame_buffer_base& fbb) const;
+	virtual void frame_buffer_blit(const frame_buffer_base* src_fbb_ptr, const ivec4& S, frame_buffer_base* dst_fbb_ptr, const ivec4& _D, BufferTypeBits btbs, bool interpolate) const = 0;
 	virtual int frame_buffer_get_max_nr_color_attachments() const = 0;
 	virtual int frame_buffer_get_max_nr_draw_buffers() const = 0;
 
@@ -898,10 +931,14 @@ public:
 	DEPRECATED("deprecated and ignored.") virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material());
 	DEPRECATED("deprecated, use enable_material(textured_surface_material) instead.") virtual void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
 	//DEPRECATED("deprecated, use disable_material(textured_surface_material) instead.") virtual void disable_material(const textured_material& mat) = 0;
-	/// set the current gamma values
-	virtual void set_gamma(float _gamma);
-	/// query current gamma
-	float get_gamma() const { return gamma; }
+	/// set the current per channel gamma values to single value
+	void set_gamma(float _gamma);
+	/// set the current per channel gamma values to single value
+	virtual void set_gamma3(const vec3& _gamma3);
+	/// query current gamma computed as average over gamma3 per channel values
+	float get_gamma() const { return gamma3.length(); }
+	/// query current per color channel gamma 
+	vec3 get_gamma3() const { return gamma3; }
 	/// enable or disable sRGB framebuffer
 	virtual void enable_sRGB_framebuffer(bool do_enable = true);
 	/// check whether sRGB framebuffer is enabled
@@ -922,6 +959,8 @@ public:
 	virtual void enable_material(textured_material& mat) = 0;
 	/// disable a material with textures
 	virtual void disable_material(textured_material& mat) = 0;
+	/// set the shader program gamma values
+	void set_current_gamma(shader_program& prog) const;
 	/// set the shader program view matrices to the currently enabled view matrices
 	void set_current_view(shader_program& prog, bool modelview_deps = true, bool projection_deps = true) const;
 	/// set the shader program material to the currently enabled material

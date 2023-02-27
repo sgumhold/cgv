@@ -33,7 +33,7 @@ func(read_project; :>pj_file = "", :>return = MAP)
 		:>addDependencies=[];
 		:>defFile = "";
 		:>useOpenMP = 0;
-		:>cppLanguageStandard = "";
+		:>cppLanguageStandard = CGV_STDCPP;
 		:>charset = CGV_CHARSET;
 		:>subsystem = "Console";
 		:>addRuleFiles=[];
