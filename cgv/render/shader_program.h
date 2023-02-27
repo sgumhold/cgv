@@ -27,6 +27,10 @@ namespace cgv {
 class CGV_API shader_program : public shader_program_base
 {
 protected:
+	/// maps used to cache program file contents and valid file names indexed by their respective file name
+	static std::map<std::string, std::string> program_file_cache;
+	static std::map<std::string, std::vector<std::string>> files_cache;
+
 	bool show_code_errors : 1;
 	bool linked : 1;
 	bool state_out_of_date : 1;
@@ -38,13 +42,19 @@ protected:
 	/// ensure that the state has been set in the context
 	void update_state(const context& ctx);
 	/// common code necessary to open file
-	static bool open_program_file(std::string& file_name, std::string& content, std::vector<cgv::utils::line>& lines, std::string* last_error_ptr = 0);
+	static bool open_program_file(std::string& file_name, bool use_cache, std::string& content, std::vector<cgv::utils::line>& lines, std::string* last_error_ptr = 0);
 public:
+	
+	
 	/// resolve file name with shader_code::find_file and add file to list if found
-	static bool collect_file(const std::string& file_name, std::vector<std::string>& file_names);
+	static bool collect_files_from_cache(const std::string& name, std::vector<std::string>& file_names, bool& added_files);
+
+
+	/// resolve file name with shader_code::find_file and add file to list if found
+	static bool collect_file(const std::string& file_name, bool use_cache, std::vector<std::string>& file_names);
 	/** collect shader code files that extent the given base name. 
 	    Returns true if at least one shader code file has been collected.*/
-	static bool collect_files(const std::string& base_name, std::vector<std::string>& file_names);
+	static bool collect_files(const std::string& base_name, bool use_cache, std::vector<std::string>& file_names);
 	/** collect shader code files from directory. If the directory does not exist
 		 search it in the shader path of the shader configuration returned
 		 by get_shader_config(). Returns true if at least one shader code 
@@ -68,7 +78,7 @@ public:
 					  triangles,triangles_adjacency,triangle_strip,triangle_strip_adjacency,triangle_fan,
 					  quads,quad_strip,polygon.
 		 Returns true if at least one shader code file has been collected.*/
-	static bool collect_program(const std::string& file_name, std::vector<std::string>& file_names);
+	static bool collect_program(const std::string& file_name, bool use_cache, std::vector<std::string>& file_names);
 	/// return the maximum number of output vertices of a geometry shader
 	static unsigned int get_max_nr_geometry_shader_output_vertices(const context& ctx);
 	/** create empty shader program and set the option whether errors during 

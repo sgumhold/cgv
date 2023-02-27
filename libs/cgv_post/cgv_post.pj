@@ -1,0 +1,12 @@
+@=
+projectType="library";
+projectName="cgv_post";
+projectGUID="50E60436-523F-456D-B8B8-AAEF36686F72";
+addProjectDirs=[CGV_DIR."/libs"];
+addIncDirs=[CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_signal", "cgv_media", "cgv_render", "cgv_gui", "cgv_reflect_types", "cgv_gl", "glew"];
+addSharedDefines=["CGV_POST_EXPORTS"];
+if(SYSTEM=="windows") {
+	addStaticDefines=["REGISTER_SHADER_FILES"];
+}
+addShaderPaths=[[INPUT_DIR,"all"]];

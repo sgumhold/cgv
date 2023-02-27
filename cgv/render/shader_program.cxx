@@ -12,6 +12,9 @@ using namespace cgv::utils;
 namespace cgv {
 	namespace render {
 
+std::map<std::string, std::string> shader_program::program_file_cache;
+std::map<std::string, std::vector<std::string>> shader_program::files_cache;
+
 /// attach a list of files
 bool shader_program::attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_define_map& defines)
 {
@@ -24,18 +27,78 @@ bool shader_program::attach_files(const context& ctx, const std::vector<std::str
 	return no_error;
 }
 
-bool shader_program::collect_file(const std::string& file_name, std::vector<std::string>& file_names)
-{
-	std::string fn = shader_code::find_file(file_name);
-	if (!fn.empty()) {
-		file_names.push_back(fn);
-		return true;
+bool shader_program::collect_files_from_cache(const std::string& name, std::vector<std::string>& file_names, bool& added_files) {
+
+	auto it = files_cache.find(name);
+	if(it != files_cache.end()) {
+		const std::vector<std::string>& cached_file_names = it->second;
+		for(size_t i = 0; i < cached_file_names.size(); ++i)
+			file_names.push_back(cached_file_names[i]);
+
+		 added_files = !cached_file_names.empty();
+		 return true;
 	}
+
+	added_files = false;
 	return false;
 }
 
-bool shader_program::collect_files(const std::string& base_name, std::vector<std::string>& file_names)
+bool shader_program::collect_file(const std::string& file_name, bool use_cache, std::vector<std::string>& file_names)
 {
+	if(use_cache) {
+
+		bool added_files = false;
+		if(collect_files_from_cache(file_name, file_names, added_files))
+			return added_files;
+
+		//auto it = files_cache.find(file_name);
+		//if(it != files_cache.end()) {
+		//	const std::vector<std::string>& cached_file_names = it->second;
+		//	for(size_t i = 0; i < cached_file_names.size(); ++i)
+		//		file_names.push_back(cached_file_names[i]);
+		//
+		//	return !cached_file_names.empty();
+		//}
+	}
+
+	std::vector<std::string> collected_file_names;
+
+	std::string fn = shader_code::find_file(file_name);
+	bool found = false;
+
+	if (!fn.empty()) {
+		file_names.push_back(fn);
+		if(use_cache)
+			collected_file_names.push_back(fn);
+		found = true;
+	}
+
+	if(use_cache)
+		files_cache.emplace(file_name, collected_file_names);
+
+	return found;
+}
+
+bool shader_program::collect_files(const std::string& base_name, bool use_cache, std::vector<std::string>& file_names)
+{
+	if(use_cache) {
+
+		bool added_files = false;
+		if(collect_files_from_cache(base_name, file_names, added_files))
+			return added_files;
+
+		//auto it = files_cache.find(base_name);
+		//if(it != files_cache.end()) {
+		//	const std::vector<std::string>& cached_file_names = it->second;
+		//	for(size_t i = 0; i < cached_file_names.size(); ++i)
+		//		file_names.push_back(cached_file_names[i]);
+		//
+		//	return !cached_file_names.empty();
+		//}
+	}
+
+	std::vector<std::string> collected_file_names;
+	
 	const char* exts[] = { "glvs", "glgs", "glfs", "glcs", "gltc", "glte", "pglvs", "pglfs", "pglgs", "pglcs", "pgltc", "pglte", 0 };
 	const char** iter = exts;
 	bool added_file = false;
@@ -43,12 +106,20 @@ bool shader_program::collect_files(const std::string& base_name, std::vector<std
 		std::string fn = shader_code::find_file(base_name+"."+*iter);
 		if (!fn.empty()) {
 			file_names.push_back(fn);
+			
+			if(use_cache)
+				collected_file_names.push_back(fn);
+
 			added_file = true;
 		}
 		++iter;
 	}
 	if(!added_file)
 		std::cerr << "could not find shader file " << base_name.c_str() << std::endl;
+
+	if(use_cache)
+		files_cache.emplace(base_name, collected_file_names);
+
 	return added_file;
 }
 
@@ -74,7 +145,7 @@ bool shader_program::collect_dir(const std::string& dir_name, bool recursive, st
 	return true;
 }
 
-bool shader_program::collect_program(const std::string& file_name, std::vector<std::string>& file_names)
+bool shader_program::collect_program(const std::string& file_name, bool use_cache, std::vector<std::string>& file_names)
 {
 	std::string fn = shader_code::find_file(file_name);
 	if (fn.empty())
@@ -96,25 +167,25 @@ bool shader_program::collect_program(const std::string& file_name, std::vector<s
 	for (auto line : lines) {
 		std::string l = to_string((const token&)line);
 		if (l.substr(0,5) == "file:")
-			added_file = collect_file(l.substr(5), file_names) || added_file;
+			added_file = collect_file(l.substr(5), use_cache, file_names) || added_file;
 		else if (l.substr(0,12) == "vertex_file:")
-			added_file = collect_file(l.substr(12), file_names) || added_file;
+			added_file = collect_file(l.substr(12), use_cache, file_names) || added_file;
 		else if (l.substr(0, 14) == "geometry_file:")
-			added_file = collect_file(l.substr(14), file_names) || added_file;
+			added_file = collect_file(l.substr(14), use_cache, file_names) || added_file;
 		else if (l.substr(0, 26) == "tessellation_control_file:")
-			added_file = collect_file(l.substr(26), file_names) || added_file;
+			added_file = collect_file(l.substr(26), use_cache, file_names) || added_file;
 		else if (l.substr(0, 29) == "tessellation_evaluation_file:")
-			added_file = collect_file(l.substr(29), file_names) || added_file;
+			added_file = collect_file(l.substr(29), use_cache, file_names) || added_file;
 		else if (l.substr(0,14) == "fragment_file:")
-			added_file = collect_file(l.substr(14), file_names) || added_file;
+			added_file = collect_file(l.substr(14), use_cache, file_names) || added_file;
 		else if (l.substr(0,6) == "files:")
-			added_file = collect_files(l.substr(6), file_names) || added_file;
+			added_file = collect_files(l.substr(6), use_cache, file_names) || added_file;
 		else if (l.substr(0,4) == "dir:")
 			added_file = collect_dir(l.substr(4), false, file_names) || added_file;
 		else if (l.substr(0,8) == "rec_dir:")
 			added_file = collect_dir(l.substr(8), true, file_names) || added_file;
 		else if (l.substr(0,8) == "program:")
-			added_file = collect_program(l.substr(8), file_names) || added_file;
+			added_file = collect_program(l.substr(8), use_cache, file_names) || added_file;
 	}
 
 	get_shader_config()->shader_path = old_shader_path;
@@ -220,7 +291,7 @@ bool shader_program::attach_file(const context& ctx, const std::string& file_nam
 /// read shader code from files with the given base name, compile and attach them
 bool shader_program::attach_files(const context& ctx, const std::string& base_name, const shader_define_map& defines) {
 	std::vector<std::string> file_names;
-	if(!collect_files(base_name, file_names))
+	if(!collect_files(base_name, ctx.is_shader_file_cache_enabled(), file_names))
 		return false;
 	return attach_files(ctx, file_names, defines);
 }
@@ -231,9 +302,23 @@ bool shader_program::attach_dir(const context& ctx, const std::string& dir_name,
 		return false;
 	return attach_files(ctx, file_names);
 }
-bool shader_program::open_program_file(std::string& file_name, std::string& content, std::vector<line>& lines, std::string* last_error_ptr)
+bool shader_program::open_program_file(std::string& file_name, bool use_cache, std::string& content, std::vector<line>& lines, std::string* last_error_ptr)
 {
-	std::string fn = shader_code::find_file(file_name);
+	std::string fn = "";
+
+	if(use_cache) {
+		auto it = program_file_cache.find(file_name);
+		if(it != program_file_cache.end()) {	
+			fn = it->second;
+		}
+	}
+
+	if(fn.empty())
+		fn = shader_code::find_file(file_name);
+
+	if(use_cache)
+		program_file_cache.emplace(file_name, fn);
+
 	if (fn.empty()) {
 		if (last_error_ptr)
 			*last_error_ptr = "could not find shader program file " + file_name;
@@ -256,7 +341,7 @@ std::vector<shader_define_map> shader_program::extract_instances(std::string fil
 	std::string content;
 	std::vector<line> lines;
 	std::vector<shader_define_map> result;
-	if (!open_program_file(file_name, content, lines))
+	if (!open_program_file(file_name, false, content, lines))
 		return result;
 	for (unsigned int i = 0; i < lines.size(); ++i) {
 		token tok = lines[i];
@@ -295,7 +380,7 @@ bool shader_program::attach_program(const context& ctx, std::string file_name, b
 {
 	std::string content;
 	std::vector<line> lines;
-	if (!open_program_file(file_name, content, lines, &last_error)) {
+	if (!open_program_file(file_name, ctx.is_shader_file_cache_enabled(), content, lines, &last_error)) {
 		std::cerr << last_error << std::endl;
 		return false;
 	}
@@ -422,8 +507,10 @@ bool shader_program::build_program(const context& ctx, const std::string& file_n
 {
 	if (!(is_created() || create(ctx)))
 		return false;
+
 	if (!attach_program(ctx, file_name, show_error, defines))
 		return false;
+
 	if (!link(ctx, show_error)) {
 		if (show_error) {
 			std::string fn = shader_code::find_file(file_name);
@@ -437,6 +524,7 @@ bool shader_program::build_program(const context& ctx, const std::string& file_n
 		}
 		return false;
 	}
+
 	return true;
 }
 
@@ -613,6 +701,8 @@ void shader_program::destruct(const context& ctx)
 	}
 	linked = false;
 	state_out_of_date = true;
+	auto_detect_uniforms = true;
+	auto_detect_vertex_attributes = true;
 	nr_attached_geometry_shaders = 0;
 }
 

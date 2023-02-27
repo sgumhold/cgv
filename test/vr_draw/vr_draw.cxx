@@ -12,7 +12,7 @@
 #include <vr/vr_kit.h>
 #include <vr/vr_driver.h>
 #include <cg_vr/vr_events.h>
-#include <vr_view_interactor.h>
+#include <plugins/crg_vr_view/vr_view_interactor.h>
 #include <cgv/utils/dir.h>
 #include <cgv/utils/file.h>
 #include <cgv/media/color_scale.h>

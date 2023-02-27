@@ -21,9 +21,6 @@ performance_monitor::performance_monitor() {
 	set_overlay_margin(ivec2(-3));
 	set_overlay_size(layout.total_size);
 
-	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
-	register_shader("line", cgv::g2d::canvas::shaders_2d::line);
-
 	bar_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::rectangle);
 }
 
@@ -69,11 +66,7 @@ void performance_monitor::on_set(void* member_ptr) {
 
 	if(member_ptr == &monitor.enabled) {
 		if(monitor.enabled) {
-			monitor.timer.restart();
-			monitor.total_frame_count = 0u;
-			monitor.interval_frame_count = 0u;
-			monitor.last_seconds_since_start = 0.0;
-			monitor.running_time = 0.0;
+			monitor.reset();
 		}
 	}
 
@@ -82,6 +75,9 @@ void performance_monitor::on_set(void* member_ptr) {
 }
 
 bool performance_monitor::init(cgv::render::context& ctx) {
+
+	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
+	register_shader("line", cgv::g2d::canvas::shaders_2d::line);
 
 	bool success = canvas_overlay::init(ctx);
 
@@ -126,7 +122,11 @@ void performance_monitor::init_frame(cgv::render::context& ctx) {
 	if(ensure_theme())
 		init_styles(ctx);
 
-	if(monitor.enabled) {
+	bool enabled = monitor.enabled;
+	if(monitor.enabled_only_when_visible && !show) {
+		enabled = false;
+	}
+	if(enabled) {
 		if(show_plot)
 			update_plot();
 		update_stats_texts();
@@ -180,7 +180,11 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 
 void performance_monitor::after_finish(cgv::render::context& ctx) {
 
-	if(monitor.enabled) {
+	bool enabled = monitor.enabled;
+	if(monitor.enabled_only_when_visible && !show) {
+		enabled = false;
+	}
+	if(enabled) {
 		++monitor.total_frame_count;
 		++monitor.interval_frame_count;
 		
@@ -199,9 +203,34 @@ void performance_monitor::after_finish(cgv::render::context& ctx) {
 	}
 }
 
+void performance_monitor::set_show_background(bool flag) {
+
+	show_background = flag;
+	on_set(&show_background);
+}
+
+void performance_monitor::set_invert_color(bool flag) {
+
+	invert_color = flag;
+	on_set(&invert_color);
+}
+
 void performance_monitor::enable_monitoring(bool enabled) {
 	monitor.enabled = enabled;
 	on_set(&monitor.enabled);
+}
+
+void performance_monitor::enable_monitoring_only_when_visible(bool enabled) {
+	monitor.enabled_only_when_visible = enabled;
+}
+
+void performance_monitor::on_visibility_change() {
+
+	if(monitor.enabled_only_when_visible && show) {
+		if(monitor.enabled) {
+			monitor.reset();
+		}
+	}
 }
 
 void performance_monitor::create_gui_impl() {

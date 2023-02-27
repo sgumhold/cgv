@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES 
 #include "stereo_view_interactor.h"
 #include <cgv/math/geom.h>
 #include <cgv/math/ftransform.h>
@@ -15,7 +16,6 @@
 #include <cgv/gui/mouse_event.h>
 #include <cgv/media/image/image_writer.h>
 #include <cgv/type/variant.h>
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include <stdio.h>
 

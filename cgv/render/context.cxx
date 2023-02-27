@@ -147,7 +147,7 @@ context::context()
 	enable_vsync = true;
 	current_color = rgba(1, 1, 1, 1);
 	sRGB_framebuffer = true;
-	gamma = 2.2f;
+	gamma3 = vec3(2.2f);
 
 	default_render_flags = RenderPassFlags(RPF_DEFAULT);
 	current_background = 0;
@@ -162,6 +162,7 @@ context::context()
 	do_screen_shot = false;
 	light_source_handle = 1;
 
+	use_shader_file_cache = true;
 	auto_set_view_in_current_shader_program = true;
 	auto_set_gamma_in_current_shader_program = true;
 	auto_set_lights_in_current_shader_program = true;
@@ -400,6 +401,24 @@ shader_program_base* context::get_current_program() const
 	}
 	shader_program_base& prog = *shader_program_stack.top();
 	return &prog;
+}
+
+/// enable the usage of the shader file caches
+void context::enable_shader_file_cache()
+{
+	use_shader_file_cache = true;
+}
+
+/// disable the usage of the shader file caches
+void context::disable_shader_file_cache()
+{
+	use_shader_file_cache = false;
+}
+
+/// whether the shader file caches are enabled
+bool context::is_shader_file_cache_enabled() const
+{
+	return use_shader_file_cache;
 }
 
 /// return the number of light sources
@@ -1503,7 +1522,22 @@ void context::tesselate_unit_icosahedron(bool flip_normals, bool edges)
 
 void context::set_gamma(float _gamma)
 {
-	gamma = _gamma;
+	set_gamma3(vec3(_gamma));
+}
+/// set the shader program gamma values
+void context::set_current_gamma(shader_program& prog) const
+{
+	int gi = prog.get_uniform_location(*this, "gamma");
+	if (gi != -1)
+		prog.set_uniform(*this, gi, get_gamma());
+	int gi3 = prog.get_uniform_location(*this, "gamma3");
+	if (gi3 != -1)
+		prog.set_uniform(*this, gi3, get_gamma3());
+}
+
+void context::set_gamma3(const vec3& _gamma3)
+{
+	gamma3 = _gamma3;
 	if (!auto_set_gamma_in_current_shader_program)
 		return;
 
@@ -1511,10 +1545,8 @@ void context::set_gamma(float _gamma)
 		return;
 
 	cgv::render::shader_program& prog = *static_cast<cgv::render::shader_program*>(shader_program_stack.top());
-	if (!prog.does_use_gamma())
-		return;
-
-	prog.set_uniform(*this, "gamma", gamma);
+	if (prog.does_use_gamma())
+		set_current_gamma(prog);
 }
 
 /// return pointer to current material or nullptr if no current material is available
@@ -1852,6 +1884,10 @@ void render_component::put_id_void(void* ptr) const
 	ctx_ptr->put_id(handle, ptr);
 }
 
+render_buffer_base::render_buffer_base()
+{
+}
+
 /// initialize members
 texture_base::texture_base(TextureType _tt)
 {
@@ -1943,10 +1979,11 @@ bool context::shader_program_link(shader_program_base& spb) const
 		spb.uses_view =
 			get_uniform_location(spb, "modelview_matrix") != -1 ||
 			get_uniform_location(spb, "projection_matrix") != -1 ||
+			get_uniform_location(spb, "inverse_projection_matrix") != -1 ||
 			get_uniform_location(spb, "normal_matrix") != -1 ||
 			get_uniform_location(spb, "inverse_modelview_matrix") != -1 ||
 			get_uniform_location(spb, "inverse_normal_matrix") != -1;
-		spb.uses_gamma = get_uniform_location(spb, "gamma") != -1;
+		spb.uses_gamma = get_uniform_location(spb, "gamma3") != -1 || get_uniform_location(spb, "gamma") != -1;
 		spb.auto_detect_uniforms = false;
 	}
 	return true;
@@ -2126,7 +2163,7 @@ bool context::frame_buffer_create(frame_buffer_base& fbb) const
 	return true;
 }
 
-bool context::frame_buffer_attach(frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) const
+bool context::frame_buffer_attach(frame_buffer_base& fbb, const render_buffer_base& rb, bool is_depth, int i) const
 {
 	if (fbb.handle == 0) {
 		error("gl_context::frame_buffer_attach: attempt to attach to frame buffer that is not created", &fbb);

@@ -9,7 +9,7 @@
 #include <cgv/utils/xml.h>
 
 namespace cgv {
-namespace glutil {
+namespace app {
 
 class color_map_reader : cgv::render::render_types {
 public:

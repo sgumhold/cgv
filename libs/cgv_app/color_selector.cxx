@@ -18,10 +18,6 @@ color_selector::color_selector() {
 	set_overlay_margin(ivec2(-3));
 	set_overlay_size(ivec2(layout.size));
 	
-	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
-	register_shader("circle", cgv::g2d::canvas::shaders_2d::circle);
-	register_shader("grid", cgv::g2d::canvas::shaders_2d::grid);
-	
 	selector_handles.set_drag_callback(std::bind(&color_selector::handle_selector_drag, this));
 	selector_handles.set_use_individual_constraints(true);
 }
@@ -116,6 +112,10 @@ void color_selector::on_set(void* member_ptr) {
 
 bool color_selector::init(cgv::render::context& ctx) {
 	
+	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
+	register_shader("circle", cgv::g2d::canvas::shaders_2d::circle);
+	register_shader("grid", cgv::g2d::canvas::shaders_2d::grid);
+	
 	bool success = canvas_overlay::init(ctx);
 
 	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font(ctx, 1);
@@ -182,7 +182,7 @@ void color_selector::init_frame(cgv::render::context& ctx) {
 		opacity_bg_style.texcoord_scaling = vec2(1.0f, static_cast<float>(h) / static_cast<float>(w));
 
 		ivec2 text_position = ivec2(layout.preview_rect.b().x() + 10, layout.preview_rect.y() + 5);
-		for(size_t i = 0; i < texts.size(); ++i) {
+		for(unsigned i = 0; i < texts.size(); ++i) {
 			texts.set_position(i, text_position);
 			text_position.x() += i & 1 ? 15 : 40;
 		}

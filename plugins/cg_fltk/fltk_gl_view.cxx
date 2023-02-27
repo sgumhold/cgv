@@ -5,6 +5,7 @@
 #include <cgv/render/drawable.h>
 #include <cgv/base/register.h>
 #include <cgv/utils/ostream_printf.h>
+#include <libs/cgv_reflect_types/math/fvec.h>
 #include <cgv/utils/scan.h>
 #include <cgv/type/variant.h>
 #include <cgv/gui/key_event.h>
@@ -105,6 +106,7 @@ bool fltk_gl_view::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("bg_a", bg_a) &&
 		srh.reflect_member("bg_index", current_background) &&
 		srh.reflect_member("gamma", gamma) &&
+		srh.reflect_member("gamma3", gamma3) &&
 		srh.reflect_member("nr_display_cycles", nr_display_cycles) &&
 		srh.reflect_member("bar_line_width", bar_line_width) &&
 		srh.reflect_member("file_name", file_name);
@@ -133,6 +135,12 @@ void fltk_gl_view::on_set(void* member_ptr)
 	if (member_ptr == &current_background) {
 		set_bg_clr_idx(current_background);
 		update_member(&bg_r);
+	}
+	if (member_ptr == &gamma) {
+		set_gamma(gamma);
+		update_member(&gamma3[0]);
+		update_member(&gamma3[1]);
+		update_member(&gamma3[2]);
 	}
 	update_member(member_ptr);
 	if (member_ptr == &bg_g || member_ptr == &bg_b)
@@ -909,7 +917,10 @@ void fltk_gl_view::create_gui()
 		add_member_control(this, "EWMA", fps_alpha, "value_slider", "min=0;max=1;ticks=true;w=120;align='B';tooltip='coefficient of exponentially weighted moving average'");
 		add_member_control(this, "VSync", enable_vsync, "toggle", "w=92", " ");
 		add_member_control(this, "Instant Redraw", instant_redraw, "toggle", "w=100");
-		add_member_control(this, "Gamma", gamma, "value_slider", "min=0.2;max=5;ticks=true;log=true;tooltip='default gamma used for inverse gamma correction of fragment color'");
+		add_gui("Gamma", gamma3, "vector", "gui_type='value_slider';components='RGB';options='min=0.2;max=5;ticks=true;log=true'");
+		find_control(gamma3[0])->set("tooltip", "default gamma used for inverse gamma correction of red fragment channel");
+		find_control(gamma3[1])->set("tooltip", "default gamma used for inverse gamma correction of green fragment channel");
+		find_control(gamma3[2])->set("tooltip", "default gamma used for inverse gamma correction of blue fragment channel");
 		add_member_control(this, "sRGB Framebuffer", sRGB_framebuffer, "check");
 		provider::align("\b");
 		end_tree_node(fps);
