@@ -24,11 +24,12 @@ protected:
 	
 	bool transfer(context& ctx, arrow_renderer& r) {
 		if(super::transfer(ctx, r)) {
-			if(dir.size() == this->size())
+			if(dir.size() == this->size()) {
 				if(direction_is_endpoint)
 					r.set_end_point_array(ctx, dir);
 				else
 					r.set_direction_array(ctx, dir);
+			}
 			return true;
 		}
 		return false;
