@@ -6,6 +6,7 @@
 #include <cgv/utils/scan.h>
 #include <cgv/utils/file.h>
 #include <cgv/utils/progression.h>
+#include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/dir.h>
 #include <cgv/media/video/video_reader.h>
 #include <cgv/media/image/image_reader.h>
@@ -96,12 +97,24 @@ namespace cgv {
 							cmd += ",nb_read_frames";
 						else
 							cmd += ",nb_frames";
-						cmd += " -of default=nokey=1:noprint_wrappers=1 ";
+						cmd += " -show_entries side_data=rotation -of default=nokey=1:noprint_wrappers=1 ";
 						cmd += fn_in_quotes;
 						std::cout << "Analyze Video with " << cmd << std::endl;
 						std::string video_info = query_system_output(cmd, false);
+						std::vector<cgv::utils::line> lines;
+						cgv::utils::split_to_lines(video_info, lines, true);
+						bool do_swap_sides = false;
+						if (lines.size() >= 4) {
+							int rot;
+							if (cgv::utils::is_integer(lines[3].begin, lines[3].end, rot)) {
+								if (rot == 90 || rot == -90)
+									do_swap_sides = true;
+							}
+						}
 						std::stringstream ss(video_info);
 						ss >> w >> h;
+						if (do_swap_sides)
+							std::swap(w, h);
 						if (dims(2) < 0)
 							ss >> n;
 						// reattempt if nb_frames not supported by video format
