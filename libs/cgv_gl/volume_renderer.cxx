@@ -206,8 +206,6 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "viewport_dims", vec2(float(vp[2]-vp[0]), float(vp[3]-vp[1])));
 			ref_prog().set_uniform(ctx, "noise_offset", noise_offset);
 
-			std::cout << noise_offset << std::endl;
-
 			ref_prog().set_uniform(ctx, "opacity_scale", vrs.opacity_scale);
 			ref_prog().set_uniform(ctx, "size_scale", vrs.size_scale);
 			
