@@ -26,8 +26,8 @@ public:
 	/// create vertex buffer and copy data from CPU array \c array into buffer memory
 	template <typename T>
 	bool create(const context& ctx, const T& array) {
-		size_in_bytes = array_descriptor_traits < T>::get_size(array);
-		return ctx.vertex_buffer_create(*this, array_descriptor_traits < T>::get_address(array), size_in_bytes);
+		size_in_bytes = array_descriptor_traits<T>::get_size(array);
+		return ctx.vertex_buffer_create(*this, array_descriptor_traits<T>::get_address(array), size_in_bytes);
 	}
 	/// create vertex buffer and copy data from CPU array \c array_ptr into buffer memory
 	template <typename T>
@@ -39,6 +39,20 @@ public:
 	bool is_created() const;
 	/// return size in bytes
 	size_t get_size_in_bytes() const;
+	/// resize vertex buffer to size \c size given in bytes clearing all data
+	bool resize(const context& ctx, size_t size_in_bytes);
+	/// resize vertex buffer and copy data from CPU array \c array into buffer memory
+	template <typename T>
+	bool resize(const context& ctx, const T& array) {
+		size_in_bytes = array_descriptor_traits<T>::get_size(array);
+		return ctx.vertex_buffer_resize(*this, array_descriptor_traits<T>::get_address(array), size_in_bytes);
+	}
+	/// resize vertex buffer and copy data from CPU array \c array_ptr into buffer memory
+	template <typename T>
+	bool resize(const context& ctx, const T* array_ptr, size_t nr_elements) {
+		size_in_bytes = nr_elements * sizeof(T);
+		return ctx.vertex_buffer_resize(*this, array_ptr, size_in_bytes);
+	}
 	/// replace part (starting at byte offset \c buffer_offset_in_bytes) or whole vertex buffer content from \c nr_elements of CPU array \c array_ptr
 	template <typename T>
 	bool replace(const context& ctx, size_t buffer_offset_in_bytes, const T* array_ptr, size_t nr_elements) {
