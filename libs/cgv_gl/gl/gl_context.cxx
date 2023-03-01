@@ -3155,6 +3155,18 @@ bool gl_context::vertex_buffer_create(vertex_buffer_base& vbb, const void* array
 	return !check_gl_error("gl_context::vertex_buffer_create", &vbb);
 }
 
+bool gl_context::vertex_buffer_resize(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const {
+	if(!vbb.handle) {
+		error("gl_context::vertex_buffer_resize() vertex buffer object must be created before", &vbb);
+		return false;
+	}
+	GLuint b_id = get_gl_id(vbb.handle);
+	glBindBuffer(buffer_target(vbb.type), b_id);
+	glBufferData(buffer_target(vbb.type), size_in_bytes, array_ptr, buffer_usage(vbb.usage));
+	glBindBuffer(buffer_target(vbb.type), 0);
+	return !check_gl_error("gl_context::vertex_buffer_resize", &vbb);
+}
+
 bool gl_context::vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) const
 {
 	if (!vbb.handle) {
