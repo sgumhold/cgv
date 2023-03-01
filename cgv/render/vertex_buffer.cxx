@@ -51,6 +51,13 @@ bool vertex_buffer::is_created() const
 	return handle != 0;
 }
 
+/// resize vertex buffer to size \c size given in bytes clearing all data
+bool vertex_buffer::resize(const context& ctx, size_t _size_in_bytes)
+{
+	size_in_bytes = _size_in_bytes;
+	return ctx.vertex_buffer_resize(*this, 0, size_in_bytes);
+}
+
 /// copy \c size_in_bytes number bytes from this vertex buffer starting at byte offset \c start_offset_in_bytes to vertex buffer \c dst starting at offest \c dst_offset_in_bytes
 bool vertex_buffer::copy(const context& ctx, size_t src_offset_in_bytes, size_t size_in_bytes, vertex_buffer& dst, size_t dst_offset_in_bytes) const
 {
