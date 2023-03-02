@@ -332,6 +332,7 @@ var annotated_dup =
         [ "box_renderer", "classcgv_1_1render_1_1box__renderer.html", "classcgv_1_1render_1_1box__renderer" ],
         [ "box_wire_render_style", "structcgv_1_1render_1_1box__wire__render__style.html", "structcgv_1_1render_1_1box__wire__render__style" ],
         [ "box_wire_renderer", "classcgv_1_1render_1_1box__wire__renderer.html", "classcgv_1_1render_1_1box__wire__renderer" ],
+        [ "clod_point_render_style", "structcgv_1_1render_1_1clod__point__render__style.html", "structcgv_1_1render_1_1clod__point__render__style" ],
         [ "cone_renderer", "classcgv_1_1render_1_1cone__renderer.html", "classcgv_1_1render_1_1cone__renderer" ],
         [ "mesh_render_info", "classcgv_1_1render_1_1mesh__render__info.html", "classcgv_1_1render_1_1mesh__render__info" ],
         [ "render_info", "classcgv_1_1render_1_1render__info.html", "classcgv_1_1render_1_1render__info" ],

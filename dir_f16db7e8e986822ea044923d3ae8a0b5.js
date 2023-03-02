@@ -9,6 +9,7 @@ var dir_f16db7e8e986822ea044923d3ae8a0b5 =
     [ "box_renderer.h", "box__renderer_8h_source.html", null ],
     [ "box_wire_render_data.h", "box__wire__render__data_8h_source.html", null ],
     [ "box_wire_renderer.h", "box__wire__renderer_8h_source.html", null ],
+    [ "clod_point_renderer.h", "clod__point__renderer_8h_source.html", null ],
     [ "cone_render_data.h", "cone__render__data_8h_source.html", null ],
     [ "cone_renderer.h", "cone__renderer_8h_source.html", null ],
     [ "generic_render_data.h", "generic__render__data_8h_source.html", null ],

@@ -245,6 +245,7 @@ var hierarchy =
       [ "cgv::media::color< float, RGB, OPACITY >", "classcgv_1_1media_1_1color.html", null ],
       [ "cgv::media::color< float, RGB >", "classcgv_1_1media_1_1color.html", null ],
       [ "cgv::media::color< float, cgv::media::RGB, cgv::media::OPACITY >", "classcgv_1_1media_1_1color.html", null ],
+      [ "cgv::media::color< cgv::type::uint8_type, cgv::media::RGB >", "classcgv_1_1media_1_1color.html", null ],
       [ "cgv::media::color< float, cgv::media::RGB >", "classcgv_1_1media_1_1color.html", null ]
     ] ],
     [ "cgv::media::fourcc", "structcgv_1_1media_1_1fourcc.html", null ],
@@ -418,6 +419,7 @@ var hierarchy =
         [ "cgv::render::mesh_render_info", "classcgv_1_1render_1_1mesh__render__info.html", null ]
       ] ],
       [ "cgv::render::render_style", "structcgv_1_1render_1_1render__style.html", [
+        [ "cgv::render::clod_point_render_style", "structcgv_1_1render_1_1clod__point__render__style.html", null ],
         [ "cgv::render::group_render_style", "structcgv_1_1render_1_1group__render__style.html", [
           [ "cgv::render::line_render_style", "structcgv_1_1render_1_1line__render__style.html", [
             [ "cgv::render::box_wire_render_style", "structcgv_1_1render_1_1box__wire__render__style.html", null ]

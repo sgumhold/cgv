@@ -1,5 +1,6 @@
 var namespacecgv_1_1render =
 [
+    [ "anonymous_namespace{clod_point_renderer.cxx}", "namespacecgv_1_1render_1_1anonymous__namespace_02clod__point__renderer_8cxx_03.html", null ],
     [ "gl", "namespacecgv_1_1render_1_1gl.html", "namespacecgv_1_1render_1_1gl" ],
     [ "attribute_array_binding", "classcgv_1_1render_1_1attribute__array__binding.html", "classcgv_1_1render_1_1attribute__array__binding" ],
     [ "callback_drawable", "structcgv_1_1render_1_1callback__drawable.html", "structcgv_1_1render_1_1callback__drawable" ],
@@ -40,6 +41,7 @@ var namespacecgv_1_1render =
     [ "box_renderer", "classcgv_1_1render_1_1box__renderer.html", "classcgv_1_1render_1_1box__renderer" ],
     [ "box_wire_render_style", "structcgv_1_1render_1_1box__wire__render__style.html", "structcgv_1_1render_1_1box__wire__render__style" ],
     [ "box_wire_renderer", "classcgv_1_1render_1_1box__wire__renderer.html", "classcgv_1_1render_1_1box__wire__renderer" ],
+    [ "clod_point_render_style", "structcgv_1_1render_1_1clod__point__render__style.html", "structcgv_1_1render_1_1clod__point__render__style" ],
     [ "cone_renderer", "classcgv_1_1render_1_1cone__renderer.html", "classcgv_1_1render_1_1cone__renderer" ],
     [ "mesh_render_info", "classcgv_1_1render_1_1mesh__render__info.html", "classcgv_1_1render_1_1mesh__render__info" ],
     [ "render_info", "classcgv_1_1render_1_1render__info.html", "classcgv_1_1render_1_1render__info" ],

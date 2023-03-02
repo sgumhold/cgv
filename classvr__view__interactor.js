@@ -47,6 +47,7 @@ var classvr__view__interactor =
     [ "head_tracker_position", "classvr__view__interactor.html#a8b637c28ada606d671d505189a50180e", null ],
     [ "none_separate_view", "classvr__view__interactor.html#adc76791b208758c1463c9a0239579ffd", null ],
     [ "pose_query", "classvr__view__interactor.html#a6a118f98cfbbc8ab3e3ad29bf2d0a477", null ],
+    [ "rendered_eye", "classvr__view__interactor.html#aed3d9ea37cfb8cd259a2092a0e8c34cf", null ],
     [ "separate_view", "classvr__view__interactor.html#a61de97a1f3e1f388ba2db52722a4f002", null ],
     [ "tracking_origin", "classvr__view__interactor.html#a794c51d45446cd10a9113f96b346a560", null ],
     [ "tracking_rotation", "classvr__view__interactor.html#a373cb884553f9488d4a7a832a26f5899", null ],
