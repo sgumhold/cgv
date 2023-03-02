@@ -11,11 +11,12 @@
 
 class test_plot3d : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider
 {
-protected:
+  protected:
 	cgv::plot::plot3d plot;
 	// persistent vector with plot data
 	std::vector<vec4> P1, P2;
-public:
+
+  public:
 	test_plot3d() : cgv::base::node("3D Plot Test"), plot(1)
 	{
 		unsigned i, j;
@@ -48,7 +49,8 @@ public:
 		plot.set_sub_plot_colors(0, rgb(1.0f, 0.0f, 0.1f));
 		plot.set_sub_plot_colors(1, rgb(0.1f, 0.0f, 1.0f));
 
-		plot.legend_components = cgv::plot::LegendComponent(cgv::plot::LC_PRIMARY_COLOR + cgv::plot::LC_PRIMARY_OPACITY);
+		plot.legend_components =
+			  cgv::plot::LegendComponent(cgv::plot::LC_PRIMARY_COLOR + cgv::plot::LC_PRIMARY_OPACITY);
 		plot.color_mapping[0] = 3;
 		plot.opacity_mapping[0] = 3;
 
@@ -62,7 +64,7 @@ public:
 	}
 	void on_set(void* member_ptr)
 	{
-		//if ((member_ptr >= &plot.ref_domain_min()(0) && member_ptr < &plot.ref_domain_min()(0) + plot.get_dim()) ||
+		// if ((member_ptr >= &plot.ref_domain_min()(0) && member_ptr < &plot.ref_domain_min()(0) + plot.get_dim()) ||
 		//	(member_ptr >= &plot.ref_domain_max()(0) && member_ptr < &plot.ref_domain_max()(0) + plot.get_dim())) {
 		//	plot.adjust_tick_marks();
 		//}
@@ -101,20 +103,21 @@ protected:
 	cgv::render::frame_buffer fbo;
 	// whether to use offscreen rendering
 	bool render_offscreen;
-public:
+
+ public:
 	test_plot2d() : cgv::base::node("2D Plot Test"), tex("[R,G,B,A]"), depth("[D]"), plot("trigonometry", 2)
 	{
 		// compute vector of vec3 with x coordinates and function values of cos and sin
 		unsigned i;
 		for (i = 1; i < 50; ++i) {
 			float x = 0.1f * i;
-			P.push_back(vec4(x, cos(x), sin(x), cos(x)*cos(x)));
+
 		}
 		// create two sub plots and configure their colors
 		unsigned p1 = plot.add_sub_plot("cos");
 		unsigned p2 = plot.add_sub_plot("sin");
 		unsigned p3 = plot.add_sub_plot("cos²");
-		//plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f));	// will be set later to the attribute with index 2
+
 		plot.set_sub_plot_colors(p2, rgb(0.1f, 0.0f, 1.0f));
 		plot.set_sub_plot_colors(p3, rgb(0.0f, 1.0f, 0.1f));
 
@@ -133,7 +136,7 @@ public:
 		plot.set_sub_plot_attribute(p3, 2, &P[0][1], P.size(), sizeof(vec4));
 		plot.set_sub_plot_attribute(p3, 3, &P[0][2], P.size(), sizeof(vec4));
 
-		plot.legend_components = cgv::plot::LegendComponent(cgv::plot::LC_PRIMARY_COLOR + cgv::plot::LC_PRIMARY_OPACITY);
+
 		plot.color_mapping[0] = 2;
 		plot.color_scale_index[0] = cgv::media::CS_HUE;
 		plot.opacity_mapping[0] = 3;
@@ -146,11 +149,8 @@ public:
 		plot.adjust_tick_marks();
 		plot.adjust_extent_to_domain_aspect_ratio();
 		// scale up extent in y-direction where we want to use half the texture resolution
-		//vecn ex = plot.get_extent();
-		//ex(1) *= 2.0f;
-		//plot.set_extent(ex);
+
 		render_offscreen = false;
-		
 	}
 	void on_set(void* member_ptr)
 	{
@@ -180,7 +180,7 @@ public:
 		plot.init_frame(ctx);
 		if (!fbo.is_created() || !render_offscreen)
 			return;
-		
+
 		auto ex = plot.get_extent();
 		fbo.enable(ctx);
 		fbo.push_viewport(ctx);
@@ -189,6 +189,7 @@ public:
 		ctx.push_modelview_matrix();
 		ctx.set_modelview_matrix(cgv::math::identity4<double>());
 		ctx.push_projection_matrix();
+
 		ctx.set_projection_matrix(cgv::math::ortho4<double>(-ex[0]/2, ex[0]/2, -ex[1]/2, ex[1]/2, -1, 1));
 		glDepthMask(GL_FALSE);
 		plot.draw(ctx);
@@ -225,7 +226,7 @@ public:
 	}
 	void create_gui()
 	{
-		add_decorator("plot2d Test", "heading");
+		add_decorator("plot2d test", "heading");
 		add_member_control(this, "render_offscreen", render_offscreen, "toggle");
 		plot.create_gui(this, *this);
 	}

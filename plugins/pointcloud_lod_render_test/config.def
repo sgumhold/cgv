@@ -1,0 +1,46 @@
+show all
+
+initial
+type(vr_emulator):current_kit_index=0
+type(vr_emulator):tracker_1_attachment=1
+type(vr_emulator):tracker_1_position.coords[0]=0
+type(vr_emulator):tracker_1_position.coords[1]=0.2
+type(vr_emulator):tracker_1_position.coords[2]=-0.1
+type(vr_emulator):tracker_1_orientation.coords[0]=1
+type(vr_emulator):tracker_1_orientation.coords[1]=0
+type(vr_emulator):tracker_1_orientation.coords[2]=0
+type(vr_emulator):tracker_1_orientation.coords[3]=0
+type(vr_emulator):body_position.coords[0]=0.0
+type(vr_emulator):body_position.coords[1]=0.0
+type(vr_emulator):body_position.coords[2]=1.1
+type(vr_emulator):right_hand_position.coords[0]=-0.575
+type(vr_emulator):right_hand_position.coords[1]=0.249
+type(vr_emulator):right_hand_position.coords[2]=-0.2391
+type(vr_emulator):right_hand_orientation.coords[0]=0.49
+type(vr_emulator):right_hand_orientation.coords[1]=0
+type(vr_emulator):right_hand_orientation.coords[2]=0
+type(vr_emulator):right_hand_orientation.coords[3]=0.8717
+type(vr_emulator):left_hand_position.coords[0]=0.575
+type(vr_emulator):left_hand_position.coords[1]=0.249
+type(vr_emulator):left_hand_position.coords[2]=-0.2391
+type(vr_emulator):left_hand_orientation.coords[0]=0.49
+type(vr_emulator):left_hand_orientation.coords[1]=0
+type(vr_emulator):left_hand_orientation.coords[2]=0
+type(vr_emulator):left_hand_orientation.coords[3]=0.8717
+
+name(vr interactor):blit_vr_views=true;blit_width=400;blit_aspect_scale=1.3
+
+name(vr interactor):hmd_scale=1.0;hmd_mesh_file_name="generic_hmd.obj"
+name(vr interactor):controller_scale=1.0;controller_mesh_file_name="vr_controller_vive_1_5.obj"
+
+persistent
+type(pointcloud_lod_render_test):model_position_x=-1.2
+type(pointcloud_lod_render_test):model_position_y=0.97
+type(pointcloud_lod_render_test):model_position_z=1
+type(pointcloud_lod_render_test):model_rotation_x=270
+type(pointcloud_lod_render_test):model_rotation_y=10
+type(pointcloud_lod_render_test):model_rotation_z=0
+type(pointcloud_lod_render_test):model_put_on_table=false
+type(pointcloud_lod_render_test):model_scale=1
+type(pointcloud_lod_render_test):pointcloud_fit_table=false
+type(pointcloud_lod_render_test):point_color_based_on_lod=false

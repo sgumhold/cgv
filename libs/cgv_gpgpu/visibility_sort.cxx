@@ -1,9 +1,11 @@
+
 #include "visibility_sort.h"
 
 namespace cgv {
 namespace gpgpu {
 
-void visibility_sort::destruct(context& ctx) {
+void visibility_sort::destruct(context& ctx)
+{
 
 	key_prog.destruct(ctx);
 	scan_local_prog.destruct(ctx);
@@ -15,7 +17,8 @@ void visibility_sort::destruct(context& ctx) {
 	_is_initialized = false;
 }
 
-bool visibility_sort::load_shader_programs(context& ctx) {
+bool visibility_sort::load_shader_programs(context& ctx)
+{
 
 	bool res = true;
 	std::string where = "radix_sort_4way::load_shader_programs()";
@@ -26,22 +29,23 @@ bool visibility_sort::load_shader_programs(context& ctx) {
 	shader_code::set_define(key_defines, "USE_AUXILIARY_BUFFER", auxiliary_type_def != "", false);
 	shader_code::set_define(key_defines, "VALUE_TYPE_DEFINITION", value_type_def, std::string("uint"));
 
-	if(data_type_def != "")
-		key_defines["DATA_TYPE_DEFINITION"] = data_type_def;
-	if(auxiliary_type_def != "")
-		key_defines["AUXILIARY_TYPE_DEFINITION"] = auxiliary_type_def;
-	if(key_definition != "")
-		key_defines["KEY_DEFINITION"] = key_definition;
+	key_defines["DATA_TYPE_DEFINITION"] = data_type_def;
+
+	key_defines["AUXILIARY_TYPE_DEFINITION"] = auxiliary_type_def;
+
+	key_defines["KEY_DEFINITION"] = key_definition;
 
 	res = res && cgv::render::shader_library::load(ctx, key_prog, "rs4x_keys", key_defines, true, where);
 	res = res && cgv::render::shader_library::load(ctx, scan_local_prog, "rs4x_scan_local", true, where);
 	res = res && cgv::render::shader_library::load(ctx, scan_global_prog, "rs4x_scan_global", true, where);
-	res = res && cgv::render::shader_library::load(ctx, scatter_prog, "rs4x_scatter", { {"VALUE_TYPE_DEFINITION", value_type_def} }, true, where);
+	res = res && cgv::render::shader_library::load(ctx, scatter_prog, "rs4x_scatter",
+												   {{"VALUE_TYPE_DEFINITION", value_type_def}}, true, where);
 
 	return res;
 }
 
-void visibility_sort::delete_buffers() {
+void visibility_sort::delete_buffers()
+{
 
 	delete_buffer(keys_in_ssbo);
 	delete_buffer(keys_out_ssbo);
@@ -51,11 +55,12 @@ void visibility_sort::delete_buffers() {
 	delete_buffer(last_sum_ssbo);
 }
 
-bool visibility_sort::init(context& ctx, size_t count) {
+bool visibility_sort::init(context& ctx, size_t count)
+{
 
 	_is_initialized = false;
 
-	if(!load_shader_programs(ctx))
+	if (!load_shader_programs(ctx))
 		return false;
 
 	delete_buffers();
@@ -67,7 +72,7 @@ bool visibility_sort::init(context& ctx, size_t count) {
 
 	// Calculate padding for n to next multiple of blocksize.
 	n_pad = block_size - (n % (block_size));
-	if(n % block_size == 0)
+	if (n % block_size == 0)
 		n_pad = 0;
 
 	num_groups = (n + n_pad + group_size - 1) / group_size;
@@ -77,7 +82,7 @@ bool visibility_sort::init(context& ctx, size_t count) {
 	num_block_sums = num_scan_groups;
 
 	unsigned int num = 1;
-	while(num_block_sums > num)
+	while (num_block_sums > num)
 		num <<= 1;
 	num_block_sums = num;
 
@@ -86,7 +91,7 @@ bool visibility_sort::init(context& ctx, size_t count) {
 
 	create_buffer(keys_in_ssbo, data_size);
 	create_buffer(keys_out_ssbo, data_size);
-	create_buffer(values_out_ssbo, value_component_count*data_size);
+	create_buffer(values_out_ssbo, value_component_count * data_size);
 	create_buffer(prefix_sums_ssbo, data_size / 4);
 	create_buffer(block_sums_ssbo, blocksums_size);
 	create_buffer(last_sum_ssbo, 4 * sizeof(unsigned int));
@@ -116,14 +121,16 @@ bool visibility_sort::init(context& ctx, size_t count) {
 	return true;
 }
 
-void visibility_sort::execute(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos, const vec3& view_dir, GLuint auxiliary_buffer) {
+void visibility_sort::execute(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos,
+							  const vec3& view_dir, GLuint auxiliary_buffer)
+{
 
 	GLuint values_in_buffer = value_buffer;
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, data_buffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, keys_in_ssbo);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, values_in_buffer);
-	if(auxiliary_type_def != "" && auxiliary_buffer > 0)
+	if (auxiliary_type_def != "" && auxiliary_buffer > 0)
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, auxiliary_buffer);
 
 	key_prog.enable(ctx);
@@ -137,7 +144,7 @@ void visibility_sort::execute(context& ctx, GLuint data_buffer, GLuint value_buf
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, block_sums_ssbo);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, last_sum_ssbo);
 
-	for(unsigned int b = 0; b < 32; b += 2) {
+	for (unsigned int b = 0; b < 32; b += 2) {
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, keys_in_ssbo);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, keys_out_ssbo);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, values_in_buffer);
@@ -171,15 +178,17 @@ void visibility_sort::execute(context& ctx, GLuint data_buffer, GLuint value_buf
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, 0);
 }
 
-void visibility_sort::set_value_format(cgv::type::info::TypeId type, unsigned component_count) {
+void visibility_sort::set_value_format(cgv::type::info::TypeId type, unsigned component_count)
+{
 
-	if(component_count < 1) {
+	if (component_count < 1) {
 		std::cout << "gpu_sorter::set_value_format() ... cannot have 0 components, using 1 as default" << std::endl;
 		component_count = 1;
 	}
 
-	if(component_count > 4) {
-		std::cout << "gpu_sorter::set_value_format() ... cannot have more than 4 components, using 4 as default" << std::endl;
+	if (component_count > 4) {
+		std::cout << "gpu_sorter::set_value_format() ... cannot have more than 4 components, using 4 as default"
+				  << std::endl;
 		component_count = 4;
 	}
 
@@ -188,7 +197,7 @@ void visibility_sort::set_value_format(cgv::type::info::TypeId type, unsigned co
 	std::string scalar_type = "uint";
 	std::string vec_type = "uvec";
 
-	switch(type) {
+	switch (type) {
 	case TI_UINT32:
 		scalar_type = "uint";
 		vec_type = "uvec";
@@ -202,31 +211,37 @@ void visibility_sort::set_value_format(cgv::type::info::TypeId type, unsigned co
 		vec_type = "vec";
 		break;
 	default:
-		std::cout << "gpu_sorter::set_value_format() ... value type not supported, using unsigned int (uint or uvec)" << std::endl;
+		std::cout << "gpu_sorter::set_value_format() ... value type not supported, using unsigned int (uint or uvec)"
+				  << std::endl;
 		type = TI_UINT32;
 		break;
 	}
 
-	if(component_count > 1) value_type_def = vec_type + std::to_string(component_count);
-	else value_type_def = scalar_type;
+	if (component_count > 1)
+		value_type_def = vec_type + std::to_string(component_count);
+	else
+		value_type_def = scalar_type;
 
 	value_type = type;
 }
 
-void visibility_sort::set_auxiliary_type_override(const std::string& def) {
+void visibility_sort::set_auxiliary_type_override(const std::string& def)
+{
 
 	auxiliary_type_def = def;
 }
 
-void visibility_sort::set_data_type_override(const std::string& def) {
+void visibility_sort::set_data_type_override(const std::string& def)
+{
 
 	data_type_def = def;
 }
 
-void visibility_sort::set_key_definition_override(const std::string& def) {
+void visibility_sort::set_key_definition_override(const std::string& def)
+{
 
 	key_definition = def;
 }
 
-}
+} // namespace gpgpu
 }

@@ -1,0 +1,12 @@
+@=
+projectType="plugin";
+projectGUID="A1B2C8D9-FF33-1B5C-B0DD-6DD2E564988F";
+projectName="rgbd_kinect_azure";
+addIncDirs=[CGV_DIR."/libs/rgbd_capture",env::AZURE_KINECT_SDK."/include"];
+addLibDirs=[env::AZURE_KINECT_SDK."/windows-desktop/amd64/release/bin",env::AZURE_KINECT_SDK."/windows-desktop/amd64/release/lib"];
+addMapDeps = [ ["kinect_azure_lib", ["k4a","k4a","k4a","k4a"] ] ];
+addProjectDirs=[CGV_DIR."/libs/rgbd_capture"];
+addProjectDeps=["rgbd_capture"];
+addDependencies=["kinect_azure_lib"];
+addSharedDefines=["RGBD_KINECT_AZURE_EXPORTS"];
+

@@ -7,7 +7,6 @@
 #define TEXTURE_TILE_FROM_CENTER 0
 #define TEXTURE_USE_REFERENCE_LENGTH 0
 #define ENABLE_AMBIENT_OCCLUSION 0
-
 #define M_PI 3.14159265359
 
 //***** begin interface of view.glsl ***********************************
@@ -250,6 +249,7 @@ void main()
 	// Intersection is performed in object space.
 	// eye position is at vec3(0.0) and this fragment is located at "position"
 	// By moving the eye position closer to the fragment position we can improve the numerical accuracy of the resulting
+
 	// transformed vectors and directions.
 	//vec3 org = (get_inverse_modelview_matrix() * vec4(0.98*position, 1.0)).xyz;
 	//vec3 dir = normalize((get_inverse_modelview_matrix() * vec4(normalize(position), 0.0)).xyz);
@@ -333,9 +333,13 @@ void main()
 		color *= ao_factor;
 #endif
 	
+		
 		vec3 hit_pos_eye = (get_modelview_matrix() * vec4(hit_pos, 1.0)).xyz;
 		vec3 normal_eye = normalize(get_normal_matrix() * normal);
+		
+	
 		vec4 v_eye = vec4(hit_pos_eye, 1.0);
+		
 		vec4 depth = get_projection_matrix() * v_eye;
 		//finish_fragment(vec4(compute_reflected_appearance(hit_pos_eye, normal_eye, vec4(color.xyz, 1.0), 1).rgb, color.a), 0.5*(depth.z / depth.w) + 0.5);
 		

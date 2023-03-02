@@ -1,0 +1,13 @@
+@=
+projectName="rgbd_control_no_interactor";
+projectType="application_plugin";
+projectGUID="25119F75-89DD-4695-9691-6175AF72F795";
+addIncDirs    =[CGV_DIR."/3rd", CGV_DIR."/libs/rgbd_capture", CGV_BUILD_DIR."/rgbd_control"];
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd", CGV_DIR."/plugins"];
+addProjectDeps=["cgv_utils","cgv_type","cgv_data","cgv_base", "cgv_signal", "cgv_reflect", "cgv_media", "cgv_os", "cgv_gui", "cgv_render", 
+                "cgv_viewer","cgv_gl", "cg_fltk", "cg_ext", "cmi_io", "cmv_avi", "crg_grid", "glew",
+                "rgbd_capture","point_cloud","rgbd_kinect_azure"
+];
+addDependencies=["opengl", "glu"];
+addSharedDefines=["RGBD_CONTROL_EXPORTS"];
+addDefines=["NO_VR_VIEW_INTERACTOR"];

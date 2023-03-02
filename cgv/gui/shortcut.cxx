@@ -138,8 +138,7 @@ bool shortcut::stream_in(std::istream& is)
 			case '<' :
 			case '\\' :
 			case 0xB4 : // forward tick
-			case ' ' :
-				key = c;
+			case ' ' :				key = c;
 				modifiers = _modifiers;
 				return true;
 			}

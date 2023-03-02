@@ -1,0 +1,42 @@
+#version 150
+
+uniform vec4 halo_color;
+uniform float halo_color_strength;
+uniform bool draw_circles;
+
+in vec4 color_fs;
+in vec2 uv;
+
+in float percentual_blend_width;
+in float percentual_splat_size;
+in float percentual_core_size;
+in float percentual_point_size;
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+//***** begin interface of splat.glsl ***********************************
+vec4 compute_blended_color_with_halo(
+	in float percentual_radial_position,
+	in vec4 core_color, in float percentual_core_size,
+	in vec4 halo_color, in float percentual_point_size,
+	in float percentual_blend_width);
+//***** end interface of surface.glsl ***********************************
+
+void main()
+{
+	vec4 fragment_color = color_fs;
+	
+	if(draw_circles){
+		float percentual_radial_position = length(uv);
+		if (percentual_radial_position > percentual_splat_size)
+			discard;
+		fragment_color = compute_blended_color_with_halo(
+			percentual_radial_position, fragment_color, percentual_core_size,
+			vec4(mix(color_fs.rgb, halo_color.rgb, halo_color_strength), halo_color.a), percentual_point_size, percentual_blend_width);
+		fragment_color.a = percentual_radial_position;
+	}
+	finish_fragment(fragment_color);
+}
