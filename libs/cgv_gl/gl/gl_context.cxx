@@ -3116,7 +3116,7 @@ bool gl_context::is_attribute_array_enabled(const attribute_array_binding_base* 
 GLenum buffer_target(VertexBufferType vbt)
 {
 	static GLenum buffer_targets[] = {
-		GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_TEXTURE_BUFFER, GL_UNIFORM_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER, GL_SHADER_STORAGE_BUFFER
+		GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_TEXTURE_BUFFER, GL_UNIFORM_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER, GL_SHADER_STORAGE_BUFFER, GL_ATOMIC_COUNTER_BUFFER
 	};
 	return buffer_targets[vbt];
 }
@@ -3134,6 +3134,14 @@ bool gl_context::vertex_buffer_bind(const vertex_buffer_base& vbb, VertexBufferT
 	else
 		glBindBufferBase(buffer_target(_type), _idx, get_gl_id(vbb.handle));
 	return !check_gl_error("gl_context::vertex_buffer_bind", &vbb);
+}
+
+bool gl_context::vertex_buffer_unbind(const vertex_buffer_base& vbb, VertexBufferType _type, unsigned _idx) const {
+	if(_idx == unsigned(-1))
+		glBindBuffer(buffer_target(_type), 0);
+	else
+		glBindBufferBase(buffer_target(_type), _idx, 0);
+	return !check_gl_error("gl_context::vertex_buffer_unbind", &vbb);
 }
 
 bool gl_context::vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const
