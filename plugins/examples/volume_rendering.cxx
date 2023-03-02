@@ -456,7 +456,6 @@ void volume_viewer::splat_sphere(std::vector<float>& vol_data, float voxel_size,
 void volume_viewer::load_volume_from_file(const std::string& file_name) {
 
 	std::string header_content;
-	char* vox_content;
 
 	std::string hd_file_name = "";
 	std::string vox_file_name = "";
