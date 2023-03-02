@@ -136,7 +136,13 @@ namespace rgbd {
 	extern CGV_API std::ostream& operator << (std::ostream& os, const frame_format& ff);
 	extern CGV_API std::ostream& operator << (std::ostream& os, const stream_format& sf);
 
-	/// different roles in a synchronized multi-rgbd-device setting
+	//! different roles to support synchronized multi-rgbd-device setting
+	/** One role per rgbd device or rgbd input. Only kinect azur driver supports leader
+	    and follower role. As with the kinect Azure viewer one can start rgbd_control 
+		plugin once per attached device and configure leader role for the device that 
+		is used as master and has synch cable plugged into the Synch Out plug only, and 
+		the follower role for all other devices. All followers need to be started first
+		and actually stream data as soons as the leader has been started. */
 	enum MultiDeviceRole
 	{
 		MDR_STANDALONE, /// device used without synchronization
