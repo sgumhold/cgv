@@ -36,13 +36,17 @@ const unsigned char ss = static_cast<unsigned char>(225);
 char to_lower(char c)
 {
 	if (c >= 'A' && c <= 'Z')
-		return (c-'A')+'a';
+		return (c - 'A') + 'a';
 	unsigned char uc = c;
 	switch (uc) {
-		case OE : return (char)oe;
-		case UE : return (char)ue;
-		case AE : return (char)ae;
-		default: return c;
+	case OE:
+		return (char)oe;
+	case UE:
+		return (char)ue;
+	case AE:
+		return (char)ae;
+	default:
+		return c;
 	}
 }
 
@@ -95,7 +99,7 @@ std::vector<uint8_t> parse_hex_bytes(const std::string& byte_str)
 std::string to_lower(const std::string& _s)
 {
 	std::string s(_s);
-	for (unsigned int i=0; i<s.size(); ++i)
+	for (unsigned int i = 0; i < s.size(); ++i)
 		s[i] = to_lower(s[i]);
 	return s;
 }
@@ -103,20 +107,24 @@ std::string to_lower(const std::string& _s)
 char to_upper(char c)
 {
 	if (c >= 'a' && c <= 'z')
-		return (c-'a')+'A';
+		return (c - 'a') + 'A';
 	unsigned char uc = c;
 	switch (uc) {
-		case oe: return (char)OE;
-		case ue: return (char)UE;
-		case ae: return (char)AE;
-		default: return c;
+	case oe:
+		return (char)OE;
+	case ue:
+		return (char)UE;
+	case ae:
+		return (char)AE;
+	default:
+		return c;
 	}
 }
 
 std::string to_upper(const std::string& _s)
 {
 	std::string s(_s);
-	for (unsigned int i=0; i<s.size(); ++i)
+	for (unsigned int i = 0; i < s.size(); ++i)
 		s[i] = to_upper(s[i]);
 	return s;
 }

@@ -1,0 +1,31 @@
+#version 150
+
+uniform vec4 halo_color;
+uniform float halo_color_strength;
+uniform bool draw_circles;
+
+in vec4 color_fs;
+in vec2 uv;
+
+in float percentual_blend_width;
+in float percentual_splat_size;
+in float percentual_core_size;
+in float percentual_point_size;
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+
+void main()
+{
+	vec4 fragment_color = color_fs;
+	
+	if(draw_circles){
+		float percentual_radial_position = length(uv);
+		if (percentual_radial_position > 1.0)
+			discard;
+	}
+	finish_fragment(fragment_color);
+}

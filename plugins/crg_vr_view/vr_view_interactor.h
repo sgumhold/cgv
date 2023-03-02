@@ -115,12 +115,14 @@ protected:
 public:
 	void set_tracking_rotation(float tr) {
 		tracking_rotation = tr;
+		calibrate_driver();
 	}
 	float get_tracking_rotation() {
 		return tracking_rotation;
 	}
 	void set_tracking_origin(vec3 ori) {
 		tracking_origin = ori;
+		calibrate_driver();
 	}
 	vec3 get_tracking_origin() {
 		return tracking_origin;
@@ -144,6 +146,7 @@ protected:
 	/// selection of view of current hmd used in case of no separate view (1 ... left, 2 ... right, 3 ... both)
 	int none_separate_view;
 	int head_tracker;
+	/// rendered_eye: 0...monitor,1...left eye,2...right eye
 	int rendered_eye;
 	vr::gl_vr_display* rendered_display_ptr;
 	int rendered_display_index;

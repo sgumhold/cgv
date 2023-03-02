@@ -1,0 +1,55 @@
+#version 450
+
+//this shader assigns labels to points within a sphere given by the radius and position uniforms
+//datastructures and buffer binding points are based on the clod_point_renderer
+//this shader can run after the reduce step
+
+//run in groups of 128
+layout(local_size_x = 128, local_size_y = 1) in;
+
+// point format
+struct Vertex{
+	float x;
+	float y;
+	float z;
+	uint colors;
+};
+
+// the index buffer uses the same bindings as the point reduction shader (point_clod_filter_points.glcs)
+layout(std430, binding = 1) buffer ssTargetBuffer{
+	Vertex reduced_points[];
+};
+layout(std430, binding = 2) readonly buffer ssTargetIndexBuffer{
+	uint point_index[];
+};
+
+// same binding point as the custom label shader
+layout(std430, binding = 6) buffer ssLabels
+{
+    int labels[];
+};
+
+layout(location = 21) uniform int batch_offset;
+layout(location = 22) uniform int batch_size;
+
+//point selection sphere
+layout(location = 23) uniform vec3 sphere_position;
+layout(location = 24) uniform float sphere_radius;
+
+layout(location = 25) uniform int point_label;
+
+uniform mat4 model_transform;
+
+void main() {
+	if (gl_GlobalInvocationID.x >= batch_size)
+		return;
+	uint pnt_nr = gl_GlobalInvocationID.x+batch_offset;
+	Vertex pnt = reduced_points[pnt_nr];
+	
+	vec4 pos = model_transform*vec4(pnt.x,pnt.y,pnt.z,1.0);
+	vec3 pv = sphere_position-pos.xyz;
+
+	if ( dot(pv,pv) < sphere_radius*sphere_radius ){
+		labels[point_index[pnt_nr]] = point_label;
+	}
+}
