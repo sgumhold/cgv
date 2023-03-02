@@ -32,10 +32,20 @@ void vertex_buffer::bind(context& ctx, VertexBufferType _type) const
 {
 	ctx.vertex_buffer_bind(*this, _type == VBT_UNDEF ? this->type : _type);
 }
+/// unbind buffer potentially overwriting buffer type
+void vertex_buffer::unbind(context& ctx, VertexBufferType _type) const
+{
+	ctx.vertex_buffer_unbind(*this, _type == VBT_UNDEF ? this->type : _type);
+}
 /// bind uniform, feedback, storage or atomic counter buffer to an indexed buffer target
 void vertex_buffer::bind(context& ctx, unsigned index) const
 {
 	ctx.vertex_buffer_bind(*this, this->type, index);
+}
+/// bind uniform, feedback, storage or atomic counter buffer to an indexed buffer target overwriting buffer type
+void vertex_buffer::bind(context& ctx, VertexBufferType _type, unsigned index) const
+{
+	ctx.vertex_buffer_bind(*this, _type, index);
 }
 
 /// create empty vertex buffer of size \c size given in bytes
