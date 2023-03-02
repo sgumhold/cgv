@@ -304,7 +304,7 @@ namespace rgbd {
 		}
 
 		double inv_fps = 1000.f / stream->fps;
-		double current_frame_time = chrono::duration_cast<milliseconds>(chrono::steady_clock::now().time_since_epoch()).count();
+		double current_frame_time = (double)chrono::duration_cast<milliseconds>(chrono::steady_clock::now().time_since_epoch()).count();
 		
 		//limit fps
 		if (current_frame_time < *last_frame_time+inv_fps) {
@@ -340,7 +340,7 @@ namespace rgbd {
 			return false;
 		}
 
-		frame.buffer_size = data.size();
+		frame.buffer_size = (unsigned)data.size();
 		if (frame.frame_data.size() != frame.buffer_size) {
 			frame.frame_data.resize(frame.buffer_size);
 		}

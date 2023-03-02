@@ -40,6 +40,7 @@ public:
 	~rgbd_input();
 	/// create a rgbd input device object and attach to device with given serial
 	rgbd_input(const std::string& serial);
+
 	/// attach to the rgbd input device of the given serial
 	bool attach(const std::string& serial);
 	/// return the serial of the device
@@ -76,6 +77,12 @@ public:
 
 	/**@name camera control*/
 	//@{
+	/// check whether a multi-device role is supported
+	bool is_supported(MultiDeviceRole mdr) const;
+	/// configure device for a multi-device role and return whether this was successful (do this before starting)
+	bool configure_role(MultiDeviceRole mdr);
+	/// return the multi-device role of the device
+	MultiDeviceRole get_role() const;
 	/// check whether the device supports the given combination of input streams
 	bool check_input_stream_configuration(InputStreams is) const;
 	/// query the stream formats available for a given stream configuration

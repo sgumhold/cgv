@@ -136,6 +136,14 @@ namespace rgbd {
 	extern CGV_API std::ostream& operator << (std::ostream& os, const frame_format& ff);
 	extern CGV_API std::ostream& operator << (std::ostream& os, const stream_format& sf);
 
+	/// different roles in a synchronized multi-rgbd-device setting
+	enum MultiDeviceRole
+	{
+		MDR_STANDALONE, /// device used without synchronization
+		MDR_LEADER,     /// device that sends synchronization signals
+		MDR_FOLLOWER    /// device that retrieves synchronization signals
+	};
+
 	/// different input streams
 	enum InputStreams {
 		IS_NONE = 0,
@@ -193,6 +201,9 @@ namespace rgbd {
 	/// interface for rgbd devices provided by a driver (this class is used by driver implementors)
 	class CGV_API rgbd_device
 	{
+	protected:
+		/// store role for starting the device
+		MultiDeviceRole multi_device_role = MDR_STANDALONE;
 	public:
 		/// virtual destructor
 		virtual ~rgbd_device();
@@ -202,6 +213,13 @@ namespace rgbd {
 		virtual bool is_attached() const = 0;
 		/// detach from serial (done automatically in constructor
 		virtual bool detach() = 0;
+
+		/// check whether a multi-device role is supported
+		virtual bool is_supported(MultiDeviceRole mdr) const;
+		/// configure device for a multi-device role and return whether this was successful (do this before starting)
+		virtual bool configure_role(MultiDeviceRole mdr);
+		/// return the multi-device role of the device
+		MultiDeviceRole get_role() const { return multi_device_role; }
 
 		/// return whether rgbd device has support for view finding actuator
 		virtual bool has_view_finder() const;

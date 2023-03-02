@@ -51,7 +51,7 @@ bool rgbd_input::write_frame(const string& file_name,const frame_type& frame)
 	// ensure buffer size set
 	if (frame.buffer_size != frame.frame_data.size()) {
 		std::cerr << "UPS frame buffer size not set correctly" << std::endl;
-		const_cast<frame_type&>(frame).buffer_size = frame.frame_data.size();
+		const_cast<frame_type&>(frame).buffer_size = (unsigned) frame.frame_data.size();
 	}
 	return 
 		cgv::utils::file::write(file_name, reinterpret_cast<const char*>(&frame), sizeof(frame_info), false) &&
@@ -123,6 +123,28 @@ bool rgbd_input::attach(const string& serial)
 const std::string& rgbd_input::get_serial() const
 {
 	return serial;
+}
+
+/// check whether a multi-device role is supported
+bool rgbd_input::is_supported(MultiDeviceRole mdr) const
+{
+	if (!is_attached())
+		return true;
+	return rgbd->is_supported(mdr);
+}
+/// configure device for a multi-device role and return whether this was successful (do this before starting)
+bool rgbd_input::configure_role(MultiDeviceRole mdr)
+{
+	if (!is_attached())
+		return false;
+	return rgbd->configure_role(mdr);
+}
+/// return the multi-device role of the device
+MultiDeviceRole rgbd_input::get_role() const
+{
+	if (!is_attached())
+		return MDR_STANDALONE;
+	return rgbd->get_role();
 }
 
 bool rgbd_input::attach_path(const string& path)

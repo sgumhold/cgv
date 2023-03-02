@@ -178,6 +178,19 @@ namespace rgbd {
 	{
 		return false;
 	}
+	/// check whether a multi-device role is supported
+	bool rgbd_device::is_supported(MultiDeviceRole mdr) const
+	{
+		return mdr == MDR_STANDALONE;
+	}
+	/// configure device for a multi-device role and return whether this was successful (do this before starting)
+	bool rgbd_device::configure_role(MultiDeviceRole mdr)
+	{
+		if (!is_supported(mdr))
+			return false;
+		multi_device_role = mdr;
+		return true;
+	}
 
 	bool rgbd_device::has_IMU() const
 	{
