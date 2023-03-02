@@ -52,6 +52,12 @@ namespace rgbd {
 		bool is_attached() const;
 		/// detach from serial (done automatically in constructor
 		bool detach();
+
+		/// check whether a multi-device role is supported
+		bool is_supported(MultiDeviceRole mdr) const;
+		/// configure device for a multi-device role and return whether this was successful (do this before starting)
+		bool configure_role(MultiDeviceRole mdr);
+
 		/// check whether rgbd device has inertia measurement unit
 		bool has_IMU() const;
 		/// return additional information on inertia measurement unit

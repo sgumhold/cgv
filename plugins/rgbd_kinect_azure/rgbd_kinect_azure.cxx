@@ -169,6 +169,18 @@ namespace rgbd {
 			return true;
 		return start_device(stream_formats);
 	}
+	/// check whether a multi-device role is supported
+	bool rgbd_kinect_azure::is_supported(MultiDeviceRole mdr) const
+	{
+		return true;
+	}
+	/// configure device for a multi-device role and return whether this was successful (do this before starting)
+	bool rgbd_kinect_azure::configure_role(MultiDeviceRole mdr)
+	{
+		multi_device_role = mdr;
+		return true;
+	}
+
 	/// start the rgbd device with given stream formats 
 	bool rgbd_kinect_azure::start_device(const std::vector<stream_format>& stream_formats)
 	{
@@ -185,7 +197,11 @@ namespace rgbd {
 		cfg.color_resolution = K4A_COLOR_RESOLUTION_OFF;
 		cfg.color_format = K4A_IMAGE_FORMAT_COLOR_BGRA32;
 		cfg.depth_mode = K4A_DEPTH_MODE_OFF;
-		cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_STANDALONE; //set syncronization mode to standalone
+		switch (multi_device_role) {
+		case MDR_LEADER: cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_MASTER; break;
+		case MDR_FOLLOWER: cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_SUBORDINATE; break;
+		default : cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_STANDALONE; break;
+		}
 		cfg.depth_delay_off_color_usec = 0;
 		cfg.subordinate_delay_off_master_usec = 0;
 		cfg.disable_streaming_indicator = false;

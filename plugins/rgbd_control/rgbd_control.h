@@ -85,6 +85,7 @@ public:
 	/// members for rgbd input
 	rgbd::rgbd_input rgbd_inp;
 	std::string record_path;
+	rgbd::MultiDeviceRole multi_device_role = rgbd::MDR_STANDALONE;
 	bool do_recording;
 	bool stream_color;
 	bool stream_depth;

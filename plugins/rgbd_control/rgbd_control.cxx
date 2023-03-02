@@ -122,6 +122,14 @@ bool rgbd_control::self_reflect(cgv::reflect::reflection_handler& rh)
 ///
 void rgbd_control::on_set(void* member_ptr)
 {
+	if (member_ptr == &multi_device_role) {
+		if (rgbd_inp.is_attached()) {
+			if (!rgbd_inp.configure_role(multi_device_role)) {
+				multi_device_role = rgbd_inp.get_role();
+				update_member(&multi_device_role);
+			}
+		}
+	}
 	if (member_ptr == &do_recording) {
 		if (do_recording) {
 			//prevent reading and writing the log on the same path 
@@ -511,6 +519,7 @@ void rgbd_control::create_gui()
 
 	if (begin_tree_node("Device", nr_color_frames, true, "level=2")) {
 		align("\a");
+		add_member_control(this, "multi_device_role", multi_device_role, "dropdown", "enums='standalone,leader,follower'");
 		add_member_control(this, "stream_color", stream_color, "check");
 		add_member_control(this, "stream_depth", stream_depth, "check");
 		add_member_control(this, "stream_infrared", stream_infrared, "check");
