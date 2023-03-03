@@ -22,19 +22,14 @@ bool scan_and_compact::load_shader_programs(cgv::render::context& ctx) {
 	bool res = true;
 	std::string where = "scan_and_compact::load_shader_programs()";
 
-	cgv::render::shader_define_map vote_defines, compact_defines;
+	cgv::render::shader_define_map vote_defines;
+	cgv::render::shader_code::set_define(vote_defines, "DATA_TYPE_DEFINITION", data_type_def, "");
+	cgv::render::shader_define_map compact_defines = vote_defines;
 
-	if(data_type_def != "") {
-		vote_defines["DATA_TYPE_DEFINITION"] = data_type_def;
-		compact_defines = vote_defines;
-	}
-	if(uniform_definition != "")
-		vote_defines["UNIFORM_DEFINITION"] = uniform_definition;
-	if(vote_definition != "")
-		vote_defines["VOTE_DEFINITION"] = vote_definition;
-	
-	if(mode == M_CREATE_INDICES)
-		compact_defines["CREATE_INDICES"] = "1";
+	cgv::render::shader_code::set_define(vote_defines, "UNIFORM_DEFINITION", uniform_definition, "");
+	cgv::render::shader_code::set_define(vote_defines, "VOTE_DEFINITION", vote_definition, "");
+
+	cgv::render::shader_code::set_define(compact_defines, "MODE", mode, M_COPY_DATA);
 
 	res = res && cgv::render::shader_library::load(ctx, vote_prog, vote_prog_name == "" ? "sac_vote" : vote_prog_name, vote_defines, true, where);
 	res = res && cgv::render::shader_library::load(ctx, scan_local_prog, "sac_scan_local", true, where);
@@ -146,5 +141,5 @@ unsigned scan_and_compact::execute(cgv::render::context& ctx, const cgv::render:
 	return count;
 }
 
-}
-}
+} // namespace gpgpu
+} // namespace cgv

@@ -33,12 +33,12 @@ protected:
 	unsigned num_scan_groups = 0;
 
 	/// buffer objects
-	GLuint keys_in_ssbo = 0;
-	GLuint keys_out_ssbo = 0;
-	GLuint values_out_ssbo = 0;
-	GLuint prefix_sums_ssbo = 0;
-	GLuint block_sums_ssbo = 0;
-	GLuint last_sum_ssbo = 0;
+	cgv::render::vertex_buffer keys_in_buffer;
+	cgv::render::vertex_buffer keys_out_buffer;
+	cgv::render::vertex_buffer values_out_buffer;
+	cgv::render::vertex_buffer prefix_sums_buffer;
+	cgv::render::vertex_buffer block_sums_buffer;
+	cgv::render::vertex_buffer last_sum_buffer;
 
 	/// shader programs
 	cgv::render::shader_program key_prog;
@@ -48,8 +48,6 @@ protected:
 
 	bool load_shader_programs(cgv::render::context& ctx);
 
-	void delete_buffers(const cgv::render::context& ctx);
-
 public:
 	visibility_sort() : gpu_algorithm() {}
 
@@ -57,7 +55,6 @@ public:
 
 	bool init(cgv::render::context& ctx, size_t count);
 
-	void execute(cgv::render::context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos, const vec3& view_dir, GLuint auxiliary_buffer = 0);
 	void execute(cgv::render::context& ctx, const cgv::render::vertex_buffer& data_buffer, const cgv::render::vertex_buffer& value_buffer, const vec3& eye_pos, const vec3& view_dir, const cgv::render::vertex_buffer* auxiliary_buffer = nullptr);
 
 	/// returns the number of padding elements used to make the total count a multiple of group size

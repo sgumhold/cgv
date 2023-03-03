@@ -25,7 +25,7 @@ protected:
 	bool do_sort;
 
 public:
-	scan_and_compact_test() : cgv::base::node("scan and compact test")
+	scan_and_compact_test() : cgv::base::node("Scan and Compact Test")
 	{
 		view_ptr = nullptr;
 		n = 10000;
