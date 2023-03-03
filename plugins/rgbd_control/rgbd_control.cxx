@@ -603,16 +603,6 @@ size_t rgbd_control::construct_point_cloud()
 	const unsigned char* colors = reinterpret_cast<const unsigned char*>(&color_frame_2.frame_data.front());
 	if (remap_color) {
 		rgbd_inp.map_color_to_depth(depth_frame_2, color_frame_2, warped_color_frame_2);
-		/* if (show_grayscale)
-		{
-			// convert to grayscale
-			convert_to_grayscale(warped_color_frame_2, gray_frame_2);
-			// TODO extract FAST or ORB features
-			int* ret_num = new int;
-			fast::xy* corners;
-			corners = fast::fast10_detect_nonmax(reinterpret_cast<const unsigned char*>(&gray_frame_2.frame_data.front()), gray_frame_2.width, gray_frame_2.height, gray_frame_2.width, 20,
-			ret_num); 
-		}*/
 		if (do_bilateral_filter) {
 			//bilatral_filter();
 		}
