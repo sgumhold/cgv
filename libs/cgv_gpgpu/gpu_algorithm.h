@@ -22,11 +22,7 @@ private:
 protected:
 	bool _is_initialized = false;
 
-	void create_buffer(GLuint& buffer, size_t size, GLenum usage = GL_DYNAMIC_COPY);
-
 	void ensure_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer, size_t size, cgv::render::VertexBufferType type = cgv::render::VertexBufferType::VBT_STORAGE, cgv::render::VertexBufferUsage usage = cgv::render::VertexBufferUsage::VBU_STREAM_COPY);
-
-	void delete_buffer(GLuint& buffer);
 
 	void delete_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer);
 
@@ -47,9 +43,9 @@ public:
 	gpu_algorithm() {}
 	~gpu_algorithm() {}
 
-	void destruct(const cgv::render::context& ctx);
+	virtual void destruct(const cgv::render::context& ctx) = 0;
 
-	bool init(cgv::render::context& ctx, size_t count);
+	virtual bool init(cgv::render::context& ctx, size_t count) = 0;
 
 	bool is_initialized() const { return _is_initialized; }
 
@@ -77,4 +73,3 @@ public:
 }
 
 #include <cgv/config/lib_end.h>
-

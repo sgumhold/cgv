@@ -1,6 +1,10 @@
 #version 430
 
-#define CREATE_INDICES 0
+/*
+	0 : COPY_DATA (rearranges the data buffer while compacting)
+	1 : CREATE_INDICES (creates indices that point to the compacted data elements)
+*/
+#define MODE 0
 #define DATA_TYPE_DEFINITION float x; float y; float z;
 
 layout(local_size_x = 256) in;
@@ -14,7 +18,7 @@ layout(std430, binding = 0) readonly buffer data_in_buffer {
 };
 
 layout(std430, binding = 1) writeonly buffer data_out_buffer {
-#if CREATE_INDICES == 0
+#if MODE == 0
     data_type data_out[];
 #else
 	uint data_out[];
@@ -54,7 +58,7 @@ void main() {
 			uint block_sum_value = block_sums[bid];
 			uint addr = prefix_sum_value + block_sum_value;
         
-			#if CREATE_INDICES == 0
+			#if MODE == 0
 			data_out[addr] = data_in[idx];
 			#else
 			data_out[addr] = idx;

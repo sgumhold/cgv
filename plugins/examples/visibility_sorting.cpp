@@ -19,7 +19,7 @@ protected:
 	bool do_sort;
 
 public:
-	visibility_sorting() : cgv::base::node("visibility sorting test")
+	visibility_sorting() : cgv::base::node("Visibility Sorting Test")
 	{
 		view_ptr = nullptr;
 		n = 10000;
@@ -75,19 +75,13 @@ public:
 		auto& sr = ref_sphere_renderer(ctx);
 		spheres.early_transfer(ctx, sr);
 
-		//int pos_handle = 0;
-		//int idx_handle = 0;
 		auto& aam = spheres.ref_aam();
-		//pos_handle = sr.get_vbo_handle(ctx, aam, "position");
-		//idx_handle = sr.get_index_buffer_handle(aam);
 		const cgv::render::vertex_buffer* position_buffer_ptr = sr.get_vertex_buffer_ptr(ctx, aam, "position");
 		const cgv::render::vertex_buffer* index_buffer_ptr = sr.get_index_buffer_ptr(aam);
 		
 		if(visibility_sorter.is_initialized()) {
-			//if(pos_handle > 0 && idx_handle > 0 && do_sort) {
 			if(position_buffer_ptr && index_buffer_ptr && do_sort) {
 				visibility_sorter.begin_time_query();
-				//visibility_sorter.execute(ctx, pos_handle, idx_handle, view_ptr->get_eye(), view_ptr->get_view_dir());
 				visibility_sorter.execute(ctx, *position_buffer_ptr, *index_buffer_ptr, view_ptr->get_eye(), view_ptr->get_view_dir());
 				float time = visibility_sorter.end_time_query();
 				std::cout << "Sorting done in " << time << " ms -> " << static_cast<float>(n) / (1000.0f * time) << " M/s" << std::endl;
