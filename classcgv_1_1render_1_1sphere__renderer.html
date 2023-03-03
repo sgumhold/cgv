@@ -478,10 +478,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#af910ff47d6ef0aff86aa3cfa73056fef">remove_indices</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:af910ff47d6ef0aff86aa3cfa73056fef"><td class="mdescLeft">&#160;</td><td class="mdescRight">remove previously set indices <br /></td></tr>
 <tr class="separator:af910ff47d6ef0aff86aa3cfa73056fef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8df8e7534367065317220c33d4fe47d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#ad8df8e7534367065317220c33d4fe47d">get_vbo_handle</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="classcgv_1_1render_1_1attribute__array__manager.html">attribute_array_manager</a> &amp;aam, const std::string &amp;attr_name)</td></tr>
-<tr class="separator:ad8df8e7534367065317220c33d4fe47d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80b014437e13646d13f5b2bababda520"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a80b014437e13646d13f5b2bababda520">get_index_buffer_handle</a> (const <a class="el" href="classcgv_1_1render_1_1attribute__array__manager.html">attribute_array_manager</a> &amp;aam)</td></tr>
-<tr class="separator:a80b014437e13646d13f5b2bababda520"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf21fd4652d8e0c81d2e0bc24d74d430"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#adf21fd4652d8e0c81d2e0bc24d74d430">get_vertex_buffer_ptr</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="classcgv_1_1render_1_1attribute__array__manager.html">attribute_array_manager</a> &amp;aam, const std::string &amp;attr_name)</td></tr>
+<tr class="separator:adf21fd4652d8e0c81d2e0bc24d74d430"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa903611abb7f608e088cd8ae10f5ec01"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#aa903611abb7f608e088cd8ae10f5ec01">get_index_buffer_ptr</a> (const <a class="el" href="classcgv_1_1render_1_1attribute__array__manager.html">attribute_array_manager</a> &amp;aam)</td></tr>
+<tr class="separator:aa903611abb7f608e088cd8ae10f5ec01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2c0837f4a22a9dfec615f9865f8142de"><td class="memItemLeft" align="right" valign="top"><a id="a2c0837f4a22a9dfec615f9865f8142de"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a2c0837f4a22a9dfec615f9865f8142de">validate_and_enable</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:a2c0837f4a22a9dfec615f9865f8142de"><td class="mdescLeft">&#160;</td><td class="mdescRight">validate attributes and if successful, enable renderer <br /></td></tr>
@@ -637,8 +637,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="a80b014437e13646d13f5b2bababda520"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a80b014437e13646d13f5b2bababda520">&#9670;&nbsp;</a></span>get_index_buffer_handle()</h2>
+<a id="aa903611abb7f608e088cd8ae10f5ec01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa903611abb7f608e088cd8ae10f5ec01">&#9670;&nbsp;</a></span>get_index_buffer_ptr()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -647,7 +647,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int cgv::render::renderer::get_index_buffer_handle </td>
+          <td class="memname">const <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a>* cgv::render::renderer::get_index_buffer_ptr </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1attribute__array__manager.html">attribute_array_manager</a> &amp;&#160;</td>
           <td class="paramname"><em>aam</em></td><td>)</td>
@@ -660,12 +660,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the OpenGL handle to the element buffer holding the indices for indexed rendering as managed by the attribute array manager. Returns -1 if the buffer or attribute array manager does not exist. Take caution when manipulating the buffer. </p>
+<p>Returns a pointer to the vertex buffer of type element buffer holding the indices for indexed rendering as managed by the attribute array manager. Returns nullptr if the buffer or attribute array manager does not exist. Take caution when manipulating the buffer. </p>
 
 </div>
 </div>
-<a id="ad8df8e7534367065317220c33d4fe47d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad8df8e7534367065317220c33d4fe47d">&#9670;&nbsp;</a></span>get_vbo_handle()</h2>
+<a id="adf21fd4652d8e0c81d2e0bc24d74d430"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf21fd4652d8e0c81d2e0bc24d74d430">&#9670;&nbsp;</a></span>get_vertex_buffer_ptr()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -674,7 +674,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int cgv::render::renderer::get_vbo_handle </td>
+          <td class="memname">const <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a>* cgv::render::renderer::get_vertex_buffer_ptr </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
@@ -703,7 +703,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the OpenGL handle to the buffer of the given attribute name as managed by the attribute array manager. Returns -1 if the buffer or attribute array manager does not exist. Take caution when manipulating the buffer. </p>
+<p>Returns a pointer to the vertex buffer of the given attribute name as managed by the attribute array manager. Returns nullptr if the buffer or attribute array manager does not exist. Take caution when manipulating the buffer. </p>
 
 </div>
 </div>
