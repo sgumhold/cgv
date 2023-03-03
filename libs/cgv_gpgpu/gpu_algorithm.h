@@ -3,19 +3,18 @@
 #include <cgv/render/context.h>
 #include <cgv/render/render_types.h>
 #include <cgv/render/shader_library.h>
+#include <cgv/render/vertex_buffer.h>
 #include <cgv_gl/gl/gl.h>
 
 #include <iostream>
 
 #include "lib_begin.h"
 
-using namespace cgv::render;
-
 namespace cgv {
 namespace gpgpu {
 
 /** Definition of base functionality for highly parallel gpu algorithms. */
-class CGV_API gpu_algorithm : public render_types {
+class CGV_API gpu_algorithm : public cgv::render::render_types {
 private:
 	/// members for timing measurements
 	GLuint time_query = 0;
@@ -25,9 +24,13 @@ protected:
 
 	void create_buffer(GLuint& buffer, size_t size, GLenum usage = GL_DYNAMIC_COPY);
 
+	void ensure_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer, size_t size, cgv::render::VertexBufferType type = cgv::render::VertexBufferType::VBT_STORAGE, cgv::render::VertexBufferUsage usage = cgv::render::VertexBufferUsage::VBU_STREAM_COPY);
+
 	void delete_buffer(GLuint& buffer);
 
-	virtual bool load_shader_programs(context& ctx) = 0;
+	void delete_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer);
+
+	virtual bool load_shader_programs(cgv::render::context& ctx) = 0;
 
 	unsigned calculate_padding(unsigned num_elements, unsigned num_elements_per_group) {
 		unsigned n_pad = num_elements_per_group - (num_elements % num_elements_per_group);
@@ -44,9 +47,9 @@ public:
 	gpu_algorithm() {}
 	~gpu_algorithm() {}
 
-	void destruct(context& ctx);
+	void destruct(const cgv::render::context& ctx);
 
-	bool init(context& ctx, size_t count);
+	bool init(cgv::render::context& ctx, size_t count);
 
 	bool is_initialized() const { return _is_initialized; }
 

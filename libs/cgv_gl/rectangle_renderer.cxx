@@ -48,24 +48,16 @@ namespace cgv {
 
 		rectangle_render_style::rectangle_render_style()
 		{
-			
 			position_is_center = true;
-
 			default_secondary_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
-
 			default_border_color = rgba(0.0f, 0.0f, 0.0f, 1.0f);
 			border_width_in_pixel = 0.0f;
 			percentual_border_width = 0.0f;
-			
 			border_mode = RBM_MIN;
-
 			pixel_blend = 0.0f;
 			texture_mode = RTM_REPLACE;
 			default_depth_offset = 0.0f;
-		
-			
 			blend_rectangles = false;
-
 			is_blend = GL_FALSE;
 			blend_src = blend_dst = 0;
 		}
@@ -149,7 +141,6 @@ namespace cgv {
 		bool rectangle_renderer::init(context& ctx)
 		{
 			bool res = renderer::init(ctx);
-			
 			return res;
 		}
 		void rectangle_renderer::set_position_is_center(bool _position_is_center)
@@ -173,6 +164,8 @@ namespace cgv {
 			const rectangle_render_style& rrs = get_style<rectangle_render_style>();
 			if (!has_depth_offsets)
 				ref_prog().set_attribute(ctx, "depth_offset", rrs.default_depth_offset);
+			int sci = ref_prog().get_attribute_location(ctx, "secondary_color");
+			if(!has_secondary_colors && sci != -1)
 				ref_prog().set_attribute(ctx, "secondary_color", rrs.default_secondary_color);
 			if (!has_border_colors)
 				ref_prog().set_attribute(ctx, "border_color", rrs.default_border_color);
@@ -191,12 +184,10 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "position_is_center", get_style<rectangle_render_style>().position_is_center);
 			ref_prog().set_uniform(ctx, "use_texture", has_texcoords);
 			ref_prog().set_uniform(ctx, "viewport_height", (float)ctx.get_height());
-			
 			ref_prog().set_uniform(ctx, "texture_mode", (const int&)rrs.texture_mode);
 			ref_prog().set_uniform(ctx, "pixel_blend", rrs.pixel_blend);
 			ref_prog().set_uniform(ctx, "border_width_in_pixel", rrs.border_width_in_pixel);
 			ref_prog().set_uniform(ctx, "percentual_border_width", rrs.percentual_border_width);
-			
 			ref_prog().set_uniform(ctx, "border_mode", (const int&)rrs.border_mode);
 			return true;
 		}
@@ -232,10 +223,8 @@ namespace cgv {
 				rh.reflect_member("blend_rectangles", blend_rectangles) &&
 				rh.reflect_member("border_width_in_pixel", border_width_in_pixel) &&
 				rh.reflect_member("percentual_border_width", percentual_border_width) &&
-			
 				rh.reflect_member("border_mode", border_mode) &&
 				rh.reflect_member("default_depth_offset", default_depth_offset) &&
-
 				rh.reflect_member("default_secondary_color", default_secondary_color) &&
 				rh.reflect_member("default_border_color", default_border_color);
 		}
@@ -265,12 +254,23 @@ namespace cgv {
 				cgv::render::rectangle_render_style* prs_ptr = reinterpret_cast<cgv::render::rectangle_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-				p->add_member_control(b, "default_secondary_color", prs_ptr->default_secondary_color);
+				p->add_member_control(b, "Default Secondary Color", prs_ptr->default_secondary_color);
 
-				
+				p->add_member_control(b, "Default Border Color", prs_ptr->default_border_color);
+				p->add_member_control(b, "Border Width in Pixel", prs_ptr->border_width_in_pixel, "value_slider", "min=-10;max=10;ticks=true");
+				p->add_member_control(b, "Percentual Border Width", prs_ptr->percentual_border_width, "value_slider", "min=-0.5;max=0.5;ticks=true");
+				p->add_member_control(b, "Border Mode", (cgv::type::DummyEnum&)prs_ptr->border_mode, "dropdown",
+					"enums='Separate=0,Width,Height,Minimum (Width, Height)'");
+				p->add_member_control(b, "Pixel Blend", prs_ptr->pixel_blend, "value_slider", "min=0.0;max=2;ticks=true");
+				p->add_member_control(b, "Texture Mode", (cgv::type::DummyEnum&)prs_ptr->texture_mode, "dropdown",
+					"enums='Replace,Replace Alpha,Multiply Color,Multiply Secondary Color,Multiply Border Color,"
+					"Mix Color and Secondary Color,Mix Color and Border Color,Mix Secondary Color and Color,Mix Border Color and Color,"
+					"Red Mix Color and Secondary Color,Red Mix Color and Border Color,Red Mix Secondary Color and Color,Red Mix Border Color and Color'");
+				p->add_member_control(b, "Blend", prs_ptr->blend_rectangles, "toggle");
+				p->add_member_control(b, "Default Depth Offset", prs_ptr->default_depth_offset, "value_slider", "min=0.000001;max=0.1;step=0.0000001;log=true;ticks=true");
+				p->add_member_control(b, "Position is Center", prs_ptr->position_is_center, "toggle");
 
-				
-				if (p->begin_tree_node("surface", prs_ptr->use_group_color, false, "level=3")) {
+				if(p->begin_tree_node("Surface", prs_ptr->use_group_color, false, "level=3")) {
 					p->align("\a");
 					p->add_gui("surface_render_style", *static_cast<cgv::render::surface_render_style*>(prs_ptr));
 					p->align("\b");

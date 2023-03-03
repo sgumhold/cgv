@@ -515,23 +515,15 @@ int fltk_driver::question(const std::string& _question, const std::vector<std::s
 		answer_ptrs[default_answer] = default_answer_string.c_str();
 	}
 
-	switch (answers.size()) {
-	case 0:
-		return fltk::ask(_question.c_str());
-	case 1:
-		return fltk::ask(_question.c_str());
-	case 2:
-		return fltk::ask(_question.c_str(), answer_ptrs[0], answer_ptrs[1]);
-	case 3:
-		return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2]);
-	case 4:
-		return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3]);
-	case 5:
-		return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3],
-							answer_ptrs[4]);
-	case 6:
-		return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3],
-							answer_ptrs[4], answer_ptrs[5]);
+	switch(answers.size()) {
+	case 0: return fltk::ask(_question.c_str());
+	case 1: return fltk::ask(_question.c_str());
+	case 2: return fltk::ask(_question.c_str(), answer_ptrs[0], answer_ptrs[1]);
+	case 3: return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2]);
+	case 4: return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3]);
+	case 5: return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3], answer_ptrs[4]);
+	case 6: return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3], answer_ptrs[4], answer_ptrs[5]);
+	default: break;
 	}
 	return -1;
 }

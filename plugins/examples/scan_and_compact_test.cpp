@@ -30,7 +30,7 @@ public:
 		view_ptr = nullptr;
 		n = 10000;
 		sphere_style.surface_color = rgb(0.5f);
-		sphere_style.map_color_to_material = CM_COLOR;
+		sphere_style.map_color_to_material = cgv::render::CM_COLOR;
 		do_sort = true;
 	}
 	void on_set(void* member_ptr)
@@ -78,23 +78,19 @@ public:
 		auto& sr = ref_sphere_renderer(ctx);
 		spheres.early_transfer(ctx, sr);
 
-		int rad_handle = 0;
-		int idx_handle = 0;
 		auto& aam = spheres.ref_aam();
-		
-		rad_handle = sr.get_vbo_handle(ctx, aam, "radius");
-		idx_handle = sr.get_index_buffer_handle(aam);
-		
+		const cgv::render::vertex_buffer* radius_buffer_ptr = sr.get_vertex_buffer_ptr(ctx, aam, "radius");
+		const cgv::render::vertex_buffer* index_buffer_ptr = sr.get_index_buffer_ptr(aam);
+
 		if(sac.is_initialized()) {
-			if(rad_handle > 0 && idx_handle > 0) {
+			if(radius_buffer_ptr && index_buffer_ptr) {
 				auto& vote_prog = sac.ref_vote_prog();
 				vote_prog.enable(ctx);
 				vote_prog.set_uniform(ctx, "threshold_min", threshold_min);
 				vote_prog.set_uniform(ctx, "threshold_max", threshold_max);
 
-
 				sac.begin_time_query();
-				unsigned count = sac.execute(ctx, rad_handle, idx_handle);
+				unsigned count = sac.execute(ctx, *radius_buffer_ptr, *index_buffer_ptr);
 				float time = sac.end_time_query();
 				std::cout << "Filtering done in " << time << " ms. Drawing " << count << " of " << spheres.ref_pos().size() << " spheres." << std::endl;
 
