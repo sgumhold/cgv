@@ -2,7 +2,7 @@ var classcgv_1_1render_1_1attribute__array__manager =
 [
     [ "attribute_array_manager", "classcgv_1_1render_1_1attribute__array__manager.html#a1fe37c471986adee279538bb23aee4b7", null ],
     [ "~attribute_array_manager", "classcgv_1_1render_1_1attribute__array__manager.html#ace4dc21616049be80371eb5ff5a044b2", null ],
-    [ "get_buffer_handle", "classcgv_1_1render_1_1attribute__array__manager.html#af7a7f53f12dce273fc120285ea45494a", null ],
+    [ "get_buffer_ptr", "classcgv_1_1render_1_1attribute__array__manager.html#af7ba9b16cc01135ddd992d48e5b3a717", null ],
     [ "has_attribute", "classcgv_1_1render_1_1attribute__array__manager.html#a7f8161533c44933d23359069a4e71567", null ],
     [ "has_index_buffer", "classcgv_1_1render_1_1attribute__array__manager.html#a2f73be4383228a3ef3f6ab5b62762abe", null ],
     [ "renderer", "classcgv_1_1render_1_1attribute__array__manager.html#ac1d7b7c76c80ffc9d15121d463d9b8ae", null ],
