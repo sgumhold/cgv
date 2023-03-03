@@ -39,14 +39,10 @@ char to_lower(char c)
 		return (c - 'A') + 'a';
 	unsigned char uc = c;
 	switch (uc) {
-	case OE:
-		return (char)oe;
-	case UE:
-		return (char)ue;
-	case AE:
-		return (char)ae;
-	default:
-		return c;
+	case OE: return (char)oe;
+	case UE: return (char)ue;
+	case AE: return (char)ae;
+	default: return c;
 	}
 }
 
@@ -110,14 +106,10 @@ char to_upper(char c)
 		return (c - 'a') + 'A';
 	unsigned char uc = c;
 	switch (uc) {
-	case oe:
-		return (char)OE;
-	case ue:
-		return (char)UE;
-	case ae:
-		return (char)AE;
-	default:
-		return c;
+	case oe: return (char)OE;
+	case ue: return (char)UE;
+	case ae: return (char)AE;
+	default: return c;
 	}
 }
 

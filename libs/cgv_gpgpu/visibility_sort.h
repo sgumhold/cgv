@@ -1,7 +1,6 @@
 #pragma once
 
 #include "gpu_algorithm.h"
-//#include "gpu_sorter.h"
 
 #include "lib_begin.h"
 
@@ -42,23 +41,24 @@ protected:
 	GLuint last_sum_ssbo = 0;
 
 	/// shader programs
-	shader_program key_prog;
-	shader_program scan_local_prog;
-	shader_program scan_global_prog;
-	shader_program scatter_prog;
+	cgv::render::shader_program key_prog;
+	cgv::render::shader_program scan_local_prog;
+	cgv::render::shader_program scan_global_prog;
+	cgv::render::shader_program scatter_prog;
 
-	bool load_shader_programs(context& ctx);
+	bool load_shader_programs(cgv::render::context& ctx);
 
-	void delete_buffers();
+	void delete_buffers(const cgv::render::context& ctx);
 
 public:
 	visibility_sort() : gpu_algorithm() {}
 
-	void destruct(context& ctx);
+	void destruct(const cgv::render::context& ctx);
 
-	bool init(context& ctx, size_t count);
+	bool init(cgv::render::context& ctx, size_t count);
 
-	void execute(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos, const vec3& view_dir, GLuint auxiliary_buffer = 0);
+	void execute(cgv::render::context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos, const vec3& view_dir, GLuint auxiliary_buffer = 0);
+	void execute(cgv::render::context& ctx, const cgv::render::vertex_buffer& data_buffer, const cgv::render::vertex_buffer& value_buffer, const vec3& eye_pos, const vec3& view_dir, const cgv::render::vertex_buffer* auxiliary_buffer = nullptr);
 
 	/// returns the number of padding elements used to make the total count a multiple of group size
 	unsigned int get_padding() { return n_pad; }

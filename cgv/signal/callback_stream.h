@@ -13,7 +13,7 @@ struct callback_streambuf : public std::streambuf
 {
 	cgv::signal::signal<const std::string&>& write;
 
-	callback_streambuf(cgv::signal::signal<const std::string&>& _write) : write(_write) 
+	callback_streambuf(cgv::signal::signal<const std::string&>& _write) : write(_write)
 	{
 	}
 	std::streambuf *setbuf(char_type *buf, std::streamsize n)

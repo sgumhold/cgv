@@ -25,32 +25,30 @@ protected:
 	unsigned num_scan_groups = 0;
 	unsigned num_block_sums = 0;
 
-	GLuint votes_ssbo = 0;
-	GLuint prefix_sums_ssbo = 0;
-	GLuint block_sums_ssbo = 0;
+	cgv::render::vertex_buffer votes_buffer;
+	cgv::render::vertex_buffer prefix_sums_buffer;
+	cgv::render::vertex_buffer block_sums_buffer;
 
 	std::string vote_prog_name = "";
 	std::string data_type_def = "";
 	std::string uniform_definition = "";
 	std::string vote_definition = "";
 
-	shader_program vote_prog;
-	shader_program scan_local_prog;
-	shader_program scan_global_prog;
-	shader_program compact_prog;
+	cgv::render::shader_program vote_prog;
+	cgv::render::shader_program scan_local_prog;
+	cgv::render::shader_program scan_global_prog;
+	cgv::render::shader_program compact_prog;
 
-	bool load_shader_programs(context& ctx);
-
-	void delete_buffers();
+	bool load_shader_programs(cgv::render::context& ctx);
 
 public:
 	scan_and_compact() : gpu_algorithm() {}
 
-	void destruct(context& ctx);
+	void destruct(const cgv::render::context& ctx);
 
-	bool init(context& ctx, size_t count);
+	bool init(cgv::render::context& ctx, size_t count);
 
-	unsigned execute(context& ctx, GLuint in_buffer, GLuint out_buffer, bool return_count = true);
+	unsigned execute(cgv::render::context& ctx, const cgv::render::vertex_buffer& in_buffer, const cgv::render::vertex_buffer& out_buffer, bool return_count = true);
 	
 	/** GLSL code to define the data type and structure of one element of the input data buffer.
 		This effectively defines the contents of a struct used to represent one array element.
@@ -97,7 +95,7 @@ public:
 
 	void set_mode(Mode mode) { this->mode = mode; }
 
-	shader_program& ref_vote_prog() { return vote_prog; }
+	cgv::render::shader_program& ref_vote_prog() { return vote_prog; }
 };
 
 }
