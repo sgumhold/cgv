@@ -33,6 +33,7 @@ bool visibility_sort::load_shader_programs(cgv::render::context& ctx) {
 	cgv::render::shader_code::set_define(key_defines, "DATA_TYPE_DEFINITION", data_type_def, "");
 	cgv::render::shader_code::set_define(key_defines, "AUXILIARY_TYPE_DEFINITION", auxiliary_type_def, "");
 	cgv::render::shader_code::set_define(key_defines, "KEY_DEFINITION", key_definition, "");
+	cgv::render::shader_code::set_define(key_defines, "UNIFORM_DEFINITION", uniform_definition, "");
 	
 	cgv::render::shader_define_map scatter_defines;
 	cgv::render::shader_code::set_define(scatter_defines, "VALUE_TYPE_DEFINITION", value_type_def, "uint");
@@ -199,21 +200,6 @@ void visibility_sort::set_value_format(cgv::type::info::TypeId type, unsigned co
 		value_type_def = scalar_type;
 
 	value_type = type;
-}
-
-void visibility_sort::set_auxiliary_type_override(const std::string& def) {
-
-	auxiliary_type_def = def;
-}
-
-void visibility_sort::set_data_type_override(const std::string& def) {
-
-	data_type_def = def;
-}
-
-void visibility_sort::set_key_definition_override(const std::string& def) {
-
-	key_definition = def;
 }
 
 } // namespace gpgpu
