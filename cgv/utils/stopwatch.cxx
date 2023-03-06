@@ -28,10 +28,11 @@ void stopwatch::init()
 		queried_perfcounter = true;
 	}
 	QueryPerformanceCounter((LARGE_INTEGER*) &start);
-#endif
+#else
 	timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
 	start = ((long long)ts.tv_sec)*S_TO_NS + (long long)ts.tv_nsec;
+#endif
 }
 
 //standard constructor starts time measurement
