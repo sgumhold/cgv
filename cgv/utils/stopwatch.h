@@ -10,8 +10,6 @@ namespace cgv {
 * On Win32 the perfomance counter with a resolution of 0,313 microseconds is used, if available.
 * If the performance counter is not available and on other systems the std::clock() function with 
 * a resolution of 0,055 milliseconds is used.
-*
-* TODO: Better implementation for Linux (with higher resolution)
 * 
 * Example 1:
 *
