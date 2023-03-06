@@ -92,32 +92,32 @@ $(document).ready(function(){initNavTree('stopwatch_8h_source.html',''); initRes
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="keyword">namespace </span>utils {</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classcgv_1_1utils_1_1stopwatch.html">   36</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1utils_1_1stopwatch.html">stopwatch</a></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;{</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="comment">//standard constructor starts time measurement; if silent is true the stopwatch does not print time upon destruction</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <a class="code" href="classcgv_1_1utils_1_1stopwatch.html">stopwatch</a>(<span class="keywordtype">bool</span> silent = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="comment">//start counting time</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <a class="code" href="classcgv_1_1utils_1_1stopwatch.html">stopwatch</a>(<span class="keywordtype">double</span> *result, <span class="keywordtype">bool</span> silent = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="comment">// add_time adds the time ellapsed thus far</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">void</span> add_time();</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="comment">//destructor stops time measurement and puts the result into cout</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        ~<a class="code" href="classcgv_1_1utils_1_1stopwatch.html">stopwatch</a>();</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordtype">double</span> get_elapsed_time() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordtype">double</span> restart();</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordtype">void</span> init();</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordtype">double</span> get_current_time(<span class="keywordtype">long</span> <span class="keywordtype">long</span>&amp; end) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordtype">long</span> <span class="keywordtype">long</span> start;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordtype">double</span> *resultd;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordtype">bool</span> silent;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;};</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;}</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
-<div class="ttc" id="aclasscgv_1_1utils_1_1stopwatch_html"><div class="ttname"><a href="classcgv_1_1utils_1_1stopwatch.html">cgv::utils::stopwatch</a></div><div class="ttdef"><b>Definition:</b> stopwatch.h:37</div></div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classcgv_1_1utils_1_1stopwatch.html">   34</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1utils_1_1stopwatch.html">stopwatch</a></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;{</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="comment">//standard constructor starts time measurement; if silent is true the stopwatch does not print time upon destruction</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <a class="code" href="classcgv_1_1utils_1_1stopwatch.html">stopwatch</a>(<span class="keywordtype">bool</span> silent = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="comment">//start counting time</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <a class="code" href="classcgv_1_1utils_1_1stopwatch.html">stopwatch</a>(<span class="keywordtype">double</span> *result, <span class="keywordtype">bool</span> silent = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="comment">// add_time adds the time ellapsed thus far</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordtype">void</span> add_time();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="comment">//destructor stops time measurement and puts the result into cout</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        ~<a class="code" href="classcgv_1_1utils_1_1stopwatch.html">stopwatch</a>();</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordtype">double</span> get_elapsed_time() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordtype">double</span> restart();</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordtype">void</span> init();</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordtype">double</span> get_current_time(<span class="keywordtype">long</span> <span class="keywordtype">long</span>&amp; end) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordtype">long</span> <span class="keywordtype">long</span> start;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordtype">double</span> *resultd;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordtype">bool</span> silent;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        }</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="ttc" id="aclasscgv_1_1utils_1_1stopwatch_html"><div class="ttname"><a href="classcgv_1_1utils_1_1stopwatch.html">cgv::utils::stopwatch</a></div><div class="ttdef"><b>Definition:</b> stopwatch.h:35</div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> vr_calib.cxx:9</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
