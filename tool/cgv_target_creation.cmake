@@ -507,6 +507,9 @@ function(cgv_add_target NAME)
 	# set custom defines
 	target_compile_definitions(${NAME} PRIVATE ${CGVARG__ADDITIONAL_PRIVATE_DEFINES})
 	target_compile_definitions(${NAME} PUBLIC  ${CGVARG__ADDITIONAL_PUBLIC_DEFINES})
+	# set compile options
+	target_compile_options(${NAME} PRIVATE ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS})
+	# handle dependencies
 	foreach (DEPENDENCY ${CGVARG__DEPENDENCIES})
 		# find out dependency type
 		cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY} GET_TYPE DEPENDENCY_TYPE)
@@ -554,6 +557,7 @@ function(cgv_add_target NAME)
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_SHADERPATH "${SHADER_PATH}")
 	target_compile_definitions(${NAME_STATIC} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
 	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC" ${CGVARG__ADDITIONAL_PUBLIC_DEFINES})
+	target_compile_options(${NAME_STATIC} PUBLIC ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS})
 
 	if (NOT MSVC)
 		target_link_options(${NAME_STATIC} PUBLIC -Wl,--copy-dt-needed-entries)
@@ -749,6 +753,7 @@ function(cgv_create_lib NAME)
 	endif()
 	set_target_properties(${NAME} PROPERTIES CGVPROP_SHADERPATH "${LIB_SHADER_PATH}")
 	target_compile_definitions(${NAME} PRIVATE "${NAME_UPPER}_EXPORTS")
+	target_compile_options(${NAME} PRIVATE ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS})
 	foreach (DEPENDENCY ${ARGS_DEPENDENCIES})
 		target_link_libraries(${NAME} PUBLIC ${DEPENDENCY})
 	endforeach ()
@@ -769,6 +774,7 @@ function(cgv_create_lib NAME)
 	# Static Library
 	add_library(${NAME_STATIC} OBJECT ${ALL_SOURCES} ${SHADER_REG_INCLUDE_FILE})
 	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC" "REGISTER_SHADER_FILES")
+	target_compile_options(${NAME} PUBLIC ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS})
 	foreach (DEPENDENCY ${ARGS_DEPENDENCIES})
 		if (${DEPENDENCY} STREQUAL "${CMAKE_DL_LIBS}")
 			continue()
