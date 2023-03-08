@@ -119,10 +119,6 @@ if (NOT MSVC)
 	endif()
 endif()
 
-	if (CMAKE_C_COMPILER_ID MATCHES "Clang" OR MAKE_CXX_COMPILER_ID MATCHES "Clang")
-		set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${CLANG_SPECIFIC_DEBUG_FLAGS})
-	endif()
-
 # testing stuff - TODO: find out what it actually does currently
 enable_testing()
 
