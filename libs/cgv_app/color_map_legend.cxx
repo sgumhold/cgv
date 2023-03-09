@@ -255,6 +255,7 @@ void color_map_legend::set_width(size_t w) {
 	layout.total_size.x() = int(w);
 	on_set(&layout.total_size.x());
 }
+
 void color_map_legend::set_height(size_t h) {
 	layout.total_size.y() = int(h);
 	on_set(&layout.total_size.y());
@@ -466,7 +467,6 @@ void color_map_legend::create_ticks() {
 		break;
 	case AO_END:
 		title_alignment = title_alignment_2;
-
 		title_pos[1 - axis] += color_rect_size[1 - axis] + 4;
 		tick_start[1 - axis] -= 3;
 		label_offset = -label_offset;

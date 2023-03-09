@@ -40,8 +40,25 @@ struct shape2d_style_gui_creator : public gui_creator {
 	}
 };
 
-/// define a gui creator for the line2d style struct
+/// define a gui creator for the circle2d style struct
 struct line2d_style_gui_creator : public gui_creator {
+	/// attempt to create a gui and return whether this was successful
+	bool create(provider* p, const std::string& label, void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, bool*) {
+		if(value_type != cgv::type::info::type_name<cgv::g2d::circle2d_style>::get_name())
+			return false;
+
+		cgv::g2d::circle2d_style* s_ptr = reinterpret_cast<cgv::g2d::circle2d_style*>(value_ptr);
+		cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
+
+		p->add_gui("shape2d_style", *static_cast<cgv::g2d::shape2d_style*>(s_ptr));
+		p->add_member_control(b, "Use Polar Texcoords", s_ptr->use_polar_texcoords, "check");
+		
+		return true;
+	}
+};
+
+/// define a gui creator for the line2d style struct
+struct circle2d_style_gui_creator : public gui_creator {
 	/// attempt to create a gui and return whether this was successful
 	bool create(provider* p, const std::string& label, void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, bool*) {
 		if(value_type != cgv::type::info::type_name<cgv::g2d::line2d_style>::get_name())
