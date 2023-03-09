@@ -275,6 +275,8 @@ namespace rgbd {
 		camera_calibration = device.get_calibration(cfg.depth_mode, cfg.color_resolution);
 		camera_transform = k4a::transformation(camera_calibration);
 		intrinsics = &camera_calibration.depth_camera_calibration.intrinsics.parameters;
+		camera_calibration_t = &camera_calibration.depth_camera_calibration;
+		intrinsics_t = &camera_calibration.depth_camera_calibration.intrinsics;
 
 		try { device.start_cameras(&cfg); }
 		catch (runtime_error e) {
@@ -390,7 +392,8 @@ namespace rgbd {
 	/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 	bool rgbd_kinect_azure::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
-		k4a_float2_t p;
+		// call function from sdk
+		/*k4a_float2_t p;
 		k4a_float3_t ray;
 		int valid;
 
@@ -412,8 +415,218 @@ namespace rgbd {
 			point_ptr[1] = nanf("");
 			point_ptr[2] = nanf("");
 		}
+		return true;*/
+		// 
+		auto& p = intrinsics->param;
+
+		double fx_d = 1.0 / p.fx;
+		double fy_d = 1.0 / p.fy;
+		double cx_d = p.cx;
+		double cy_d = p.cy;
+		// set 0.001 for current vr_rgbd
+		double d = 0.001 * depth * 1.000;
+		double x_d = (x - cx_d) * fx_d;
+		double y_d = (y - cy_d) * fy_d;
+
+		float uv[2], xy[2];
+		uv[0] = float(x_d);
+		uv[1] = float(y_d);
+		bool valid = true;
 		
-		return true;
+		if (transformation_unproject_internal(camera_calibration_t, uv, xy, valid)) {
+			point_ptr[0] = -1.f * xy[0] * d;
+			point_ptr[1] = xy[1] * d;
+			point_ptr[2] = float(d);
+			return true;
+		}
+	}
+
+	bool rgbd_kinect_azure::transformation_iterative_unproject(const float *uv, float *xy, bool valid, unsigned int max_passes) const
+	{
+		float Jinv[2 * 2];
+		float best_xy[2] = {0.f, 0.f};
+		float best_err = FLT_MAX;
+
+		for (unsigned int pass = 0; pass < max_passes; pass++) {
+			float p[2];
+			float J[2 * 2];
+			if (!transformation_project_internal(camera_calibration_t, xy, p, valid, J))
+			{
+				return K4A_RESULT_FAILED;
+			}
+			if (valid)
+			{
+				return K4A_RESULT_SUCCEEDED;
+			}
+
+			float err_x = uv[0] - p[0];
+			float err_y = uv[1] - p[1];
+			float err = err_x * err_x + err_y * err_y;
+			if (err >= best_err) {
+				xy[0] = best_xy[0];
+				xy[1] = best_xy[1];
+				break;
+			}
+
+			best_err = err;
+			best_xy[0] = xy[0];
+			best_xy[1] = xy[1];
+			invert_2x2(J, Jinv);
+			if (pass + 1 == max_passes || best_err < 1e-22f) {
+				break;
+			}
+
+			float dx = Jinv[0] * err_x + Jinv[1] * err_y;
+			float dy = Jinv[2] * err_x + Jinv[3] * err_y;
+
+			xy[0] += dx;
+			xy[1] += dy;
+		}
+		if (best_err > 1e-6f)
+		{
+			valid = true;
+		}
+		return K4A_RESULT_SUCCEEDED;
+	}
+
+	bool rgbd_kinect_azure::transformation_project_internal(const k4a_calibration_camera_t* camera_calibration_tt,
+															const float xy[2], float point2d[2], bool valid,
+															float J_xy[2 * 2]) const
+	{
+		auto* p = &intrinsics->param;
+		float max_radius_for_projection = camera_calibration_tt->metric_radius;
+		valid = false;
+
+		float xp = xy[0] - p->codx;
+		float yp = xy[1] - p->cody;
+
+		float xp2 = xp * xp;
+		float yp2 = yp * yp;
+		float xyp = xp * yp;
+		float rs = xp2 + yp2;
+		float rm = max_radius_for_projection * max_radius_for_projection;
+		if (rs > rm) {
+			valid = true;
+			return K4A_RESULT_SUCCEEDED;
+		}
+		float rss = rs * rs;
+		float rsc = rss * rs;
+		float a = 1.f + p->k1 * rs + p->k2 * rss + p->k3 * rsc;
+		float b = 1.f + p->k4 * rs + p->k5 * rss + p->k6 * rsc;
+		float bi;
+		if (b != 0.f) {
+			bi = 1.f / b;
+		}
+		else {
+			bi = 1.f;
+		}
+		float d = a * bi;
+
+		float xp_d = xp * d;
+		float yp_d = yp * d;
+
+		float rs_2xp2 = rs + 2.f * xp2;
+		float rs_2yp2 = rs + 2.f * yp2;
+
+		if (intrinsics_t->type == K4A_CALIBRATION_LENS_DISTORTION_MODEL_RATIONAL_6KT) {
+			xp_d += rs_2xp2 * p->p2 + xyp * p->p1;
+			yp_d += rs_2yp2 * p->p1 + xyp * p->p2;
+		}
+		else {
+			// the only difference from Rational6ktCameraModel is 2 multiplier for the tangential coefficient term
+			// xyp*p1 and xyp*p2
+			xp_d += rs_2xp2 * p->p2 + 2.f * xyp * p->p1;
+			yp_d += rs_2yp2 * p->p1 + 2.f * xyp * p->p2;
+		}
+
+		float xp_d_cx = xp_d + p->codx;
+		float yp_d_cy = yp_d + p->cody;
+
+		point2d[0] = xp_d_cx * p->fx + p->cx;
+		point2d[1] = yp_d_cy * p->fy + p->cy;
+
+		if (J_xy == 0) {
+			return K4A_RESULT_SUCCEEDED;
+		}
+
+		// compute Jacobian matrix
+		float dudrs = p->k1 + 2.f * p->k2 * rs + 3.f * p->k3 * rss;
+		// compute d(b)/d(r^2)
+		float dvdrs = p->k4 + 2.f * p->k5 * rs + 3.f * p->k6 * rss;
+		float bis = bi * bi;
+		float dddrs = (dudrs * b - a * dvdrs) * bis;
+
+		float dddrs_2 = dddrs * 2.f;
+		float xp_dddrs_2 = xp * dddrs_2;
+		float yp_xp_dddrs_2 = yp * xp_dddrs_2;
+		// compute d(u)/d(xp)
+		if (intrinsics_t->type == K4A_CALIBRATION_LENS_DISTORTION_MODEL_RATIONAL_6KT) {
+			J_xy[0] = p->fx * (d + xp * xp_dddrs_2 + 6.f * xp * p->p2 + yp * p->p1);
+			J_xy[1] = p->fx * (yp_xp_dddrs_2 + 2.f * yp * p->p2 + xp * p->p1);
+			J_xy[2] = p->fy * (yp_xp_dddrs_2 + 2.f * xp * p->p1 + yp * p->p2);
+			J_xy[3] = p->fy * (d + yp * yp * dddrs_2 + 6.f * yp * p->p1 + xp * p->p2);
+		}
+		else {
+			J_xy[0] = p->fx * (d + xp * xp_dddrs_2 + 6.f * xp * p->p2 + 2.f * yp * p->p1);
+			J_xy[1] = p->fx * (yp_xp_dddrs_2 + 2.f * yp * p->p2 + 2.f * xp * p->p1);
+			J_xy[2] = p->fy * (yp_xp_dddrs_2 + 2.f * xp * p->p1 + 2.f * yp * p->p2);
+			J_xy[3] = p->fy * (d + yp * yp * dddrs_2 + 6.f * yp * p->p1 + 2.f * xp * p->p2);
+		}
+		return K4A_RESULT_SUCCEEDED;
+	}
+
+	void rgbd_kinect_azure::invert_2x2(const float J[2 * 2], float Jinv[2 * 2]) const
+	{
+		float detJ = J[0] * J[3] - J[1] * J[2];
+		float inv_detJ = 1.f / detJ;
+
+		Jinv[0] = inv_detJ * J[3];
+		Jinv[3] = inv_detJ * J[0];
+		Jinv[1] = -inv_detJ * J[1];
+		Jinv[2] = -inv_detJ * J[2];
+	}
+
+	bool rgbd_kinect_azure::transformation_unproject_internal(const k4a_calibration_camera_t* camera_calibration,
+															  const float uv[2], float xy[2], bool valid) const
+	{
+		auto& p = camera_calibration->intrinsics.parameters.param;
+		double xp_d = uv[0] - p.codx;
+		double yp_d = uv[1] - p.cody;
+
+		double r2 = xp_d * xp_d + yp_d * yp_d;
+		double r4 = r2 * r2;
+		double r6 = r2 * r4;
+		double r8 = r4 * r4;
+		double a = 1 + p.k1 * r2 + p.k2 * r4 + p.k3 * r6;
+		double b = 1 + p.k4 * r2 + p.k5 * r4 + p.k6 * r6;
+		double ai;
+		if (a != 0.f) {
+			ai = 1.f / a;
+		}
+		else {
+			ai = 1.f;
+		}
+		float di = ai * b;
+		// solve the radial and tangential distortion
+		double x_u = xp_d * di;
+		double y_u = yp_d * di;
+
+		// approximate correction for tangential params
+		float two_xy = 2.f * x_u * y_u;
+		float xx = x_u * x_u;
+		float yy = y_u * y_u;
+
+		x_u -= (yy + 3.f * xx) * p.p2 + two_xy * p.p1;
+		y_u -= (xx + 3.f * yy) * p.p1 + two_xy * p.p2;
+
+		x_u += p.codx;
+		y_u += p.cody;
+
+		xy[0] = float(x_u);
+		xy[1] = float(y_u);
+		if (transformation_iterative_unproject(uv, xy, valid, 20)) {
+			return true;
+		}
 	}
 
 	bool rgbd_kinect_azure::get_emulator_configuration(emulator_parameters& parameters) const
