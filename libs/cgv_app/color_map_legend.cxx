@@ -44,16 +44,6 @@ void color_map_legend::clear(cgv::render::context& ctx) {
 	ticks.destruct(ctx);
 }
 
-bool color_map_legend::self_reflect(cgv::reflect::reflection_handler& _rh) {
-
-	return false;
-}
-
-bool color_map_legend::handle_event(cgv::gui::event& e) {
-
-	return false;
-}
-
 void color_map_legend::on_set(void* member_ptr) {
 
 	if(member_ptr == &layout.total_size[0] || member_ptr == &layout.total_size[1]) {

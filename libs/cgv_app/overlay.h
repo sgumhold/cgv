@@ -81,12 +81,16 @@ public:
 	/// creates an overlay in the bottom left corner with zero size
 	overlay();
 
+	/// overload to reflect members of derived classes
+	virtual bool self_reflect(cgv::reflect::reflection_handler& _rh) { return false; }
+
+	/// overload to stream help information to the given output stream
+	virtual void stream_help(std::ostream& os) {};
+
 	/// finalize the handle method to prevent overloading in implementations of this class, use handle_events instead
 	virtual bool handle(cgv::gui::event& e) final {
 		return false;
 	};
-	/// overload to stream help information to the given output stream
-	virtual void stream_help(std::ostream& os) {};
 
 	/// overload this method to handle events
 	virtual bool handle_event(cgv::gui::event& e) { return false; };
