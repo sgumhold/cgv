@@ -107,8 +107,6 @@ public:
 
 	void clear(cgv::render::context& ctx);
 
-	void stream_help(std::ostream& os) {}
-
 	bool handle_event(cgv::gui::event& e);
 	void on_set(void* member_ptr);
 

@@ -108,10 +108,6 @@ public:
 
 	void clear(cgv::render::context& ctx);
 
-	bool self_reflect(cgv::reflect::reflection_handler& _rh);
-	void stream_help(std::ostream& os) {}
-
-	bool handle_event(cgv::gui::event& e);
 	void on_set(void* member_ptr);
 
 	bool init(cgv::render::context& ctx);
