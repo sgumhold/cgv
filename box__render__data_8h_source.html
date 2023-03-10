@@ -135,11 +135,11 @@ $(document).ready(function(){initNavTree('box__render__data_8h_source.html','');
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        RDB_BASE_FUNC_DEF(box_renderer, box_render_style);</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordtype">void</span> add(<span class="keyword">const</span> <a class="code" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a>&amp; p) {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                this-&gt;pos.push_back(p);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                super::pos.push_back(p);</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        }</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordtype">void</span> add(<span class="keyword">const</span> <a class="code" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a>&amp; p, <span class="keyword">const</span> <a class="code" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a>&amp; e) {</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                this-&gt;pos.push_back(p);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                super::pos.push_back(p);</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                ext.push_back(e);</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        }</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
@@ -148,7 +148,7 @@ $(document).ready(function(){initNavTree('box__render__data_8h_source.html','');
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        }</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keywordtype">void</span> add(<span class="keyword">const</span> ColorType&amp; c) {</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                this-&gt;col.push_back(c);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                super::col.push_back(c);</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        }</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordtype">void</span> add(<span class="keyword">const</span> <a class="code" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a>&amp; p, <span class="keyword">const</span> <a class="code" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a>&amp; e, <span class="keyword">const</span> ColorType&amp; c) {</div>
@@ -162,18 +162,18 @@ $(document).ready(function(){initNavTree('box__render__data_8h_source.html','');
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        }</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keywordtype">void</span> fill(<span class="keyword">const</span> <a class="code" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a>&amp; e) {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = ext.size(); i &lt; ext.size(); ++i)</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = ext.size(); i &lt; super::pos.size(); ++i)</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                        ext.push_back(e);</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        }</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordtype">void</span> fill(<span class="keyword">const</span> <a class="code" href="namespacecgv_1_1render.html#a77116d5f5700b4c2edfb0e3c663a8a94">quat</a>&amp; r) {</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = rot.size(); i &lt; rot.size(); ++i)</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = rot.size(); i &lt; super::pos.size(); ++i)</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                        rot.push_back(r);</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        }</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordtype">void</span> fill(<span class="keyword">const</span> ColorType&amp; c) {</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = this-&gt;col.size(); i &lt; this-&gt;pos.size(); ++i)</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                        this-&gt;col.push_back(c);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = super::col.size(); i &lt; super::pos.size(); ++i)</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                        super::col.push_back(c);</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        }</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;};</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
