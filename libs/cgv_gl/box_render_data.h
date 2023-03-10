@@ -48,11 +48,11 @@ public:
 	RDB_BASE_FUNC_DEF(box_renderer, box_render_style);
 
 	void add(const vec3& p) {
-		this->pos.push_back(p);
+		super::pos.push_back(p);
 	}
 
 	void add(const vec3& p, const vec3& e) {
-		this->pos.push_back(p);
+		super::pos.push_back(p);
 		ext.push_back(e);
 	}
 
@@ -61,7 +61,7 @@ public:
 	}
 
 	void add(const ColorType& c) {
-		this->col.push_back(c);
+		super::col.push_back(c);
 	}
 
 	void add(const vec3& p, const vec3& e, const ColorType& c) {
@@ -75,18 +75,18 @@ public:
 	}
 
 	void fill(const vec3& e) {
-		for(size_t i = ext.size(); i < ext.size(); ++i)
+		for(size_t i = ext.size(); i < super::pos.size(); ++i)
 			ext.push_back(e);
 	}
 
 	void fill(const quat& r) {
-		for(size_t i = rot.size(); i < rot.size(); ++i)
+		for(size_t i = rot.size(); i < super::pos.size(); ++i)
 			rot.push_back(r);
 	}
 
 	void fill(const ColorType& c) {
-		for(size_t i = this->col.size(); i < this->pos.size(); ++i)
-			this->col.push_back(c);
+		for(size_t i = super::col.size(); i < super::pos.size(); ++i)
+			super::col.push_back(c);
 	}
 };
 
