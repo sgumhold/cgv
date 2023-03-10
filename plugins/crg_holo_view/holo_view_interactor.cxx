@@ -214,6 +214,7 @@ holo_view_interactor::holo_view_interactor(const char* name) : node(name), quilt
 	check_for_click = -1;
 	pan_sensitivity = zoom_sensitivity = rotate_sensitivity = 1;
 	last_x = last_y = -1;
+	stereo_translate_in_model_view = true;
 
 	quilt_tex.set_mag_filter(cgv::render::TF_LINEAR);
 	volume_tex.set_mag_filter(cgv::render::TF_LINEAR);
