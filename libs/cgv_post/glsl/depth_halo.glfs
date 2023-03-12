@@ -1,0 +1,94 @@
+#version 430
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_inverse_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+layout (binding = 0) uniform sampler2D depth_tex;
+layout (binding = 1) uniform sampler2D color_tex;
+
+uniform float strength;
+uniform float radius;
+uniform float threshold;
+
+in vec2 texcoord_fs;
+
+out vec4 frag_color;
+
+float sample_depth(vec2 coord) {
+	return texture(depth_tex, coord).r;
+}
+
+float unproject_depth(float d) {
+	mat4 P = get_projection_matrix();
+
+	float z_ndc = 2.0 * d - 1.0;
+
+	float A = P[2][2];
+	float B = P[3][2];
+	float z_eye = B / (A + z_ndc);
+	return z_eye;
+}
+
+float compute_halo(float depth) {
+
+	float unprojected_depth = unproject_depth(depth);
+	
+	vec2 texel_size = 1.0 / textureSize(depth_tex, 0);
+
+	int num_samples = 4;
+	float norm = 1.0 / float(num_samples);
+
+	float max_length = num_samples * num_samples;
+	max_length = sqrt(max_length + max_length);
+
+	float depth_factor = 1.0  / unprojected_depth;
+
+	float halo = 0.0;
+	float sum = 0.0;
+
+	for(int y = -num_samples; y <= num_samples; ++y) {
+		for(int x = -num_samples; x <= num_samples; ++x) {
+			float scale = radius * depth_factor * norm;
+			scale = max(scale, 0.2);
+			vec2 sample_pos = texcoord_fs + texel_size * scale * vec2(x, y);
+
+			float current_depth = sample_depth(sample_pos);
+			
+			current_depth = unproject_depth(current_depth);
+
+			float diff = abs(unprojected_depth - current_depth);
+			diff = clamp(diff, 0.0, 1.0);
+			
+			float len = length(vec2(x, y));
+			float weight = (max_length - len) / max_length;
+			
+			weight *= exp(-diff/threshold);
+
+			halo += weight *diff;
+			sum += weight;
+		}
+	}
+
+	halo /= sum;
+	return clamp(halo, 0.0, 1.0);
+}
+
+void main()
+{
+	float depth = sample_depth(texcoord_fs);
+	vec4 color = texture(color_tex, texcoord_fs);
+	
+	float halo = compute_halo(depth);
+	color.rgb *= 1.0 - 10.0 * halo * strength;
+	
+	frag_color = color;
+	gl_FragDepth = depth;
+}
