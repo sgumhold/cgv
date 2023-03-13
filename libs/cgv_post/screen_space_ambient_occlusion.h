@@ -21,6 +21,8 @@ protected:
 	float radius = 0.5f;
 	/// depth difference bias to prevent false occlusion
 	float bias = 0.025f;
+	/// generate random samples and noise texture
+	void generate_samples_and_noise_texture(cgv::render::context& ctx);
 
 public:
 	screen_space_ambient_occlusion() : post_process_effect("SSAO") {}
