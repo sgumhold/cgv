@@ -938,7 +938,7 @@ public:
 	/// set the current per channel gamma values to single value
 	virtual void set_gamma3(const vec3& _gamma3);
 	/// query current gamma computed as average over gamma3 per channel values
-	float get_gamma() const { return gamma3.length(); }
+	float get_gamma() const { return (gamma3.x() + gamma3.y() + gamma3.z()) / 3.0f; }
 	/// query current per color channel gamma 
 	vec3 get_gamma3() const { return gamma3; }
 	/// enable or disable sRGB framebuffer
