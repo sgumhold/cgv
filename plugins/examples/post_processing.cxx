@@ -1,26 +1,4 @@
 #include <random>
-/*#include <unordered_map>
-
-#include <cgv/base/node.h>
-#include <cgv/gui/event_handler.h>
-#include <cgv/gui/mouse_event.h>
-#include <cgv/gui/provider.h>
-#include <cgv/math/ftransform.h>
-#include <cgv/media/image/image.h>
-#include <cgv/media/image/image_reader.h>
-#include <cgv/render/drawable.h>
-#include <cgv/render/texture.h>
-#include <cgv/render/vertex_buffer.h>
-#include <cgv/render/attribute_array_binding.h>
-#include <cgv_gl/gl/gl_context.h>
-#include <cgv_gl/generic_renderer.h>
-#include <cgv_g2d/canvas.h>
-#include <cgv_g2d/draggable.h>
-#include <cgv_g2d/draggables_collection.h>
-#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
-#include <cgv_g2d/rect.h>
-#include <cgv_g2d/shape2d_styles.h>
-*/
 
 #include <cgv/base/node.h>
 #include <cgv/gui/event_handler.h>
@@ -61,6 +39,12 @@ protected:
 
 	bool use_colors;
 	bool use_illumination;
+	
+	
+	
+	float scale = 1.0f;
+
+
 
 public:
 	post_processing() : cgv::base::node("Post Processing Demo") {
@@ -143,6 +127,10 @@ public:
 		if(success)
 			generate_geometry();
 
+		// setup some scene specific parameters
+		dh.set_strength(2.0f);
+		dh.set_depth_scale(0.3f);
+
 		return success;
 	}
 
@@ -167,6 +155,16 @@ public:
 		dh.begin(ctx);
 		ssao.begin(ctx);
 
+		ctx.push_modelview_matrix();
+
+		mat4 M(0.0f);
+		M(0, 0) = scale;
+		M(1, 1) = scale;
+		M(2, 2) = scale;
+		M(3, 3) = 1.0f;
+
+		ctx.mul_modelview_matrix(M);
+
 		// Now draw geometry
 		if(show_boxes)
 			boxes.render(ctx);
@@ -176,6 +174,8 @@ public:
 			cones.render(ctx);
 		if(show_spheres)
 			spheres.render(ctx);
+
+		ctx.pop_modelview_matrix();
 
 		// Call end() when rendering is finished to apply the effect and blit the result to the main framebuffer
 		// Attention! When using multiple effects they must be ended in reverse order.
@@ -249,6 +249,8 @@ public:
 
 		add_member_control(this, "Color", use_colors, "toggle");
 		add_member_control(this, "Illumination", use_illumination, "toggle");
+
+		add_member_control(this, "Scene Scale", scale, "value_slider", "min=0;max=10;step=0.01");
 
 		// TODO: add gui creators
 		if(begin_tree_node("TAA", taa, false)) {
