@@ -15,6 +15,10 @@ protected:
 	float radius = 10.0f;
 	/// depth difference threshold
 	float threshold = 0.5f;
+	/// provides random offsets for depth samples
+	cgv::render::texture noise_tex;
+	/// generate random samples and noise texture
+	void generate_noise_texture(cgv::render::context& ctx);
 
 public:
 	depth_halos() : post_process_effect("Depth Halos") {}
