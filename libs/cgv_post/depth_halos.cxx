@@ -58,6 +58,7 @@ void depth_halos::end(cgv::render::context& ctx) {
 	depth_halo_prog.set_uniform(ctx, "strength", strength);
 	depth_halo_prog.set_uniform(ctx, "radius", radius);
 	depth_halo_prog.set_uniform(ctx, "threshold", threshold);
+	depth_halo_prog.set_uniform(ctx, "depth_scale", depth_scale);
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
@@ -75,12 +76,13 @@ void depth_halos::create_gui(cgv::gui::provider* p) {
 	p->add_member_control(b, "Strength", strength, "value_slider", "min=0;step=0.001;max=5");
 	p->add_member_control(b, "Radius", radius, "value_slider", "min=0;step=0.001;max=20");
 	p->add_member_control(b, "Threshold", threshold, "value_slider", "min=0;step=0.001;max=1");
+	p->add_member_control(b, "Depth Scale", depth_scale, "value_slider", "min=0.1;step=0.001;max=100;log=true;ticks=true");
 }
 
 void depth_halos::generate_noise_texture(cgv::render::context& ctx) {
 
 	std::default_random_engine rng;
-	std::uniform_real_distribution<float> distr(-1.0, 1.0);
+	std::uniform_real_distribution<float> distr(-0.5, 0.5);
 
 	std::vector<vec3> offsets;
 	for(unsigned i = 0; i < 64; ++i) {

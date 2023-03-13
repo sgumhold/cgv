@@ -15,6 +15,8 @@ protected:
 	float radius = 10.0f;
 	/// depth difference threshold
 	float threshold = 0.5f;
+	/// used to scale the depth value to adjust the effect to different scene extents
+	float depth_scale = 1.0f;
 	/// provides random offsets for depth samples
 	cgv::render::texture noise_tex;
 	/// generate random samples and noise texture
@@ -41,11 +43,15 @@ public:
 
 	float get_radius() const { return radius; }
 
-	void set_radius(float s) { radius = s; }
+	void set_radius(float r) { radius = r; }
 
 	float get_threshold() const { return threshold; }
 
-	void set_threshold(float s) { threshold = s; }
+	void set_threshold(float t) { threshold = t; }
+
+	float get_depth_scale() const { return depth_scale; }
+
+	void set_depth_scale(float s) { depth_scale = s; }
 };
 
 }

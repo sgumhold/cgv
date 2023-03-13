@@ -18,6 +18,7 @@ layout (binding = 2) uniform sampler2D noise_tex;
 uniform float strength;
 uniform float radius;
 uniform float threshold;
+uniform float depth_scale;
 
 in vec2 texcoord_fs;
 
@@ -38,7 +39,7 @@ float unproject_depth(float d) {
 	return z_eye;
 }
 
-float get_eye_z(vec2 pos_window_norm, float depth) {
+float get_scaled_eye_z(vec2 pos_window_norm, float depth) {
 	
 	vec3 pos_ndc = vec3(pos_window_norm, depth);
 	pos_ndc = 2.0 * pos_ndc - 1.0;
@@ -52,10 +53,11 @@ float get_eye_z(vec2 pos_window_norm, float depth) {
 
 	vec4 pos_eye = iPM * pos_clip;
 
-	return -pos_eye.z;
+	return -depth_scale * pos_eye.z;
 }
 
-float compute_halo(float depth) {
+// old implementation
+/*float compute_halo(float depth) {
 
 	float unprojected_depth = unproject_depth(depth);
 	
@@ -100,57 +102,47 @@ float compute_halo(float depth) {
 
 	halo /= sum;
 	return clamp(halo, 0.0, 1.0);
-}
+}*/
 
-float compute_halo2(float depth) {
+float compute_halo(float depth) {
 
-	float unprojected_depth = get_eye_z(texcoord_fs, depth);
+	float eye_z_center = get_scaled_eye_z(texcoord_fs, depth);
 	
-	vec2 offset = texture(noise_tex, texcoord_fs * 0.125 * textureSize(depth_tex, 0)).rg;
-
-	//float offset = 2.0 * random(texcoord_fs) - 1.0;
-
-	vec2 texel_size = 1.0 / textureSize(depth_tex, 0);
+	vec2 texture_size = textureSize(depth_tex, 0);
+	vec2 texel_size = 1.0 / texture_size;
 
 	int num_samples = 4;
-	float norm = 1.0 / float(num_samples);
 
-	float max_length = num_samples * num_samples;
-	max_length = sqrt(max_length + max_length);
+	vec2 offset = texture(noise_tex, texcoord_fs * 0.125 * texture_size).rg;
+	offset *= 1.0 - clamp(0.5*eye_z_center, 0.0, 1.0);
 
-	float depth_factor = 1.0  / unprojected_depth;
+	vec2 scale = texel_size * radius / (eye_z_center * num_samples);
 
 	float halo = 0.0;
 	float sum = 0.0;
-
-	float scale = radius / (unprojected_depth * num_samples);
-
+	
 	for(int y = -num_samples; y <= num_samples; ++y) {
 		for(int x = -num_samples; x <= num_samples; ++x) {
-			vec2 sample_pos = texcoord_fs + texel_size * scale * (vec2(x, y) + 1.0*offset);
+			vec2 sample_pos = vec2(x, y) + offset;
+			vec2 sample_coord = texcoord_fs + scale * sample_pos;
 
-			float current_depth = sample_depth(sample_pos);
-			
-			current_depth = get_eye_z(sample_pos, current_depth);
+			float eye_z = get_scaled_eye_z(sample_coord, sample_depth(sample_coord));
 
 			// behind (outside)
-			//float diff = max(unprojected_depth - current_depth, 0.0);
+			float diff = max(eye_z_center - eye_z, 0.0);
 			// front (inside)
-			//float diff = -min(unprojected_depth - current_depth, 0.0);
+			//float diff = -min(eye_z_center - eye_z, 0.0);
 			// both sides
-			float diff = abs(unprojected_depth - current_depth);
+			//float diff = abs(eye_z_center - eye_z);
 			diff = clamp(diff, 0.0, 1.0);
 			
-			float len = length(vec2(x, y) + offset);
-			//float weight = 1.0;
-			//float weight = (max_length - len) / max_length;
-			//float weight = max((num_samples - len) / num_samples, 0.0);
-			float weight = smoothstep(float(num_samples), 0.0, len);
+			float len = length(sample_pos);
+			float weight = max((num_samples - len) / num_samples, 0.0);
 			
 			//weight *= 1.0 - smoothstep(0.0, (1.0 - threshold), diff);
 			weight *= exp(-diff/(1.0 - threshold));
 			
-			halo += weight *diff;
+			halo += weight * diff;
 			sum += weight;
 		}
 	}
@@ -159,13 +151,44 @@ float compute_halo2(float depth) {
 	return clamp(halo, 0.0, 1.0);
 }
 
+float compute_outline(float depth) {
+
+	float eye_z_center = get_scaled_eye_z(texcoord_fs, depth);
+	
+	vec2 texel_size = 1.0 / textureSize(depth_tex, 0);
+
+	int num_samples = 1;
+
+	float outline = 0.0;
+	
+	for(int y = -num_samples; y <= num_samples; ++y) {
+		for(int x = -num_samples; x <= num_samples; ++x) {
+			vec2 sample_pos = vec2(x, y);
+			vec2 sample_coord = texcoord_fs + texel_size * sample_pos;
+
+			float eye_z = get_scaled_eye_z(sample_coord, sample_depth(sample_coord));
+
+			float diff = abs(eye_z_center - eye_z);
+			
+			if(diff > threshold)
+				outline += 1.0;
+		}
+	}
+
+	outline /= (num_samples + 1) * (num_samples + 1);
+	return clamp(outline, 0.0, 1.0);
+}
+
 void main()
 {
 	float depth = sample_depth(texcoord_fs);
 	vec4 color = texture(color_tex, texcoord_fs);
 	
-	float halo = compute_halo2(depth);
+	float halo = compute_halo(depth);
 	color.rgb *= 1.0 - 10.0 * halo * strength;
+
+	//float outline = compute_outline(depth);
+	//color.rgb *= 1.0 - outline * strength;
 	
 	frag_color = color;
 	gl_FragDepth = depth;
