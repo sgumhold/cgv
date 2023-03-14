@@ -291,24 +291,6 @@ public:
 			align("\b");
 			end_tree_node(ol);
 		}
-
-		connect_copy(add_button("Reload Shaders")->click, cgv::signal::rebind(this, &post_processing::reload_shaders));
-	}
-
-	void reload_shaders() {
-		if(auto ctx_ptr = get_context()) {
-			auto& ctx = *ctx_ptr;
-
-			ctx.disable_shader_file_cache();
-			dh.destruct(ctx);
-			dh.init(ctx);
-			ssao.destruct(ctx);
-			ssao.init(ctx);
-			ctx.enable_shader_file_cache();
-
-			taa.reset();
-			post_redraw();
-		}
 	}
 };
 
