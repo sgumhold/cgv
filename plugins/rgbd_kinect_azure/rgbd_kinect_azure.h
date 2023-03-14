@@ -9,6 +9,7 @@
 #include <mutex>
 #include <atomic>
 #include <k4a/k4a.hpp>
+#include <k4a/k4atypes.h>
 #define INVALID INT32_MIN
 
 namespace rgbd {
@@ -84,6 +85,14 @@ namespace rgbd {
 		/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 
+
+		void invert_2x2(const float J[2 * 2], float Jinv[2 * 2]) const; 
+		bool transformation_iterative_unproject(const float* uv, float* xy, bool valid, unsigned int max_passes) const;
+		bool transformation_project_internal(const k4a_calibration_camera_t* camera_calibration_tt, const float xy[2],
+											 float uv[2], bool valid, float J_xy[2 * 2]) const;
+		bool transformation_unproject_internal(const k4a_calibration_camera_t* camera_calibration, const float uv[2],
+											   float xy[2], bool valid) const;
+
 		virtual bool get_emulator_configuration(emulator_parameters& parameters) const override;
 		// undistort
 		void compute_xy_range(const k4a_calibration_t* calibration,
@@ -126,6 +135,9 @@ namespace rgbd {
 		k4a::calibration camera_calibration;
 		k4a::transformation camera_transform;
 		k4a_calibration_intrinsic_parameters_t* intrinsics;
+		k4a_calibration_intrinsics_t* intrinsics_t;
+		k4a_calibration_camera_t* camera_calibration_t;
+		k4a_calibration_t* calibration_t;
 
 		int returnCode = 1;
 		k4a_device_t device_t = NULL;

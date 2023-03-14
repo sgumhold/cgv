@@ -2,18 +2,20 @@
 
 #include "temporal_anti_aliasing.h"
 
+#include <cgv/render/view.h>
+
 namespace cgv {
 namespace post {
 
-temporal_anti_aliasing::temporal_anti_aliasing() {}
+void temporal_anti_aliasing::destruct(cgv::render::context& ctx) {
 
-void temporal_anti_aliasing::clear(cgv::render::context& ctx) {
-	fbc_draw.destruct(ctx);
 	fbc_post.destruct(ctx);
 	fbc_hist.destruct(ctx);
 	fbc_resolve.destruct(ctx);
 
-	shaders.clear(ctx);
+	view_ptr = nullptr;
+
+	post_process_effect::destruct(ctx);
 }
 
 bool temporal_anti_aliasing::init(cgv::render::context& ctx) {
@@ -33,7 +35,7 @@ bool temporal_anti_aliasing::init(cgv::render::context& ctx) {
 	shaders.add("resolve", "taa_resolve.glpr");
 	shaders.add("fxaa", "fxaa3.glpr");
 
-	is_initialized = shaders.load_all(ctx);
+	post_process_effect::init(ctx);
 
 	if(is_initialized) {
 		auto& screen_prog = shaders.get("screen");
@@ -46,24 +48,14 @@ bool temporal_anti_aliasing::init(cgv::render::context& ctx) {
 	return is_initialized;
 }
 
-bool temporal_anti_aliasing::ensure(cgv::render::context& ctx, bool force_update) {
+bool temporal_anti_aliasing::ensure(cgv::render::context& ctx) {
 
-	assertm(is_initialized, "Error: TAA has not been initialized.");
+	fbc_post.ensure(ctx);
+	fbc_hist.ensure(ctx);
+	fbc_resolve.ensure(ctx);
 
-	bool update = false;
-	if(fbc_draw.ensure(ctx)) update = true;
-	if(fbc_post.ensure(ctx)) update = true;
-	if(fbc_hist.ensure(ctx)) update = true;
-	if(fbc_resolve.ensure(ctx)) update = true;
-
-	if(update || jitter_sample_count != jitter_offsets.size() || force_update) {
-		reset();
-
-		viewport_size.x() = static_cast<float>(fbc_draw.ref_frame_buffer().get_width());
-		viewport_size.y() = static_cast<float>(fbc_draw.ref_frame_buffer().get_height());
-
+	if(post_process_effect::ensure(ctx) || jitter_sample_count != jitter_offsets.size()) {
 		generate_jitter_offsets();
-
 		return true;
 	}
 
@@ -76,11 +68,11 @@ void temporal_anti_aliasing::reset() {
 	static_frame_count = 0;
 }
 
-void temporal_anti_aliasing::begin(cgv::render::context& ctx, cgv::render::view* view_ptr) {
+void temporal_anti_aliasing::begin(cgv::render::context& ctx) {
 
-	assertm(is_initialized, "Error: TAA has not been initialized.");
-
-	if(!(enable_taa || enable_fxaa))
+	assert_init();
+	
+	if(!(enable || enable_fxaa) || !view_ptr)
 		return;
 
 	current_view.eye_pos = view_ptr->get_eye();
@@ -94,7 +86,7 @@ void temporal_anti_aliasing::begin(cgv::render::context& ctx, cgv::render::view*
 
 	ctx.push_projection_matrix();
 
-	if(enable_taa && accumulate) {
+	if(enable && accumulate) {
 		dmat4 m;
 		m.identity();
 
@@ -109,12 +101,12 @@ void temporal_anti_aliasing::begin(cgv::render::context& ctx, cgv::render::view*
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-bool temporal_anti_aliasing::end(cgv::render::context& ctx) {
+void temporal_anti_aliasing::end(cgv::render::context& ctx) {
 
-	assertm(is_initialized, "Error: TAA has not been initialized.");
+	assert_init();
 
-	if(!(enable_taa || enable_fxaa))
-		return false;
+	if(!(enable || enable_fxaa))
+		return; // return false;
 
 	fbc_draw.disable(ctx);
 
@@ -181,14 +173,13 @@ bool temporal_anti_aliasing::end(cgv::render::context& ctx) {
 			accumulate_count = 0;
 
 		if(static_frame_count < jitter_sample_count) {
-			// TODO: add auto post redraw mode and return bool if a redraw shall be requested
 			++static_frame_count;
 			if(auto_redraw)
 				ctx.post_redraw();
 			redraw = true;
 		}
 	} else {
-		accumulate = enable_taa;
+		accumulate = enable;
 		accumulate_count = 0;
 		if(accumulate) {
 			if(auto_redraw)
@@ -221,13 +212,13 @@ bool temporal_anti_aliasing::end(cgv::render::context& ctx) {
 	glDepthFunc(GL_LESS);
 
 	previous_view = current_view;
-	return redraw;
+	return; // return redraw;
 }
 
 void temporal_anti_aliasing::create_gui(cgv::gui::provider* p) {
 	cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 	
-	p->add_member_control(b, "Enable", enable_taa, "toggle");
+	post_process_effect::create_gui(p);
 	p->add_member_control(b, "Jitter Samples", jitter_sample_count, "value_slider", "min=1;max=32;step=1");
 	p->add_member_control(b, "Jitter Scale", jitter_scale, "value_slider", "min=0;max=2;step=0.0001");
 	p->add_member_control(b, "Mix Factor", mix_factor, "value_slider", "min=0;max=1;step=0.0001");

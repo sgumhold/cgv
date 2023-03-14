@@ -10,7 +10,7 @@ addProjectDeps=[
 		"cgv_viewer",
 		"cg_fltk", "cg_ext", "crg_holo_view", "crg_antialias", "crg_depth_of_field", 
 		"crg_light", "crg_bg", "cg_meta", "cmi_io","cmv_avi", "crg_grid", "co_web", "cg_gamepad",
-		"cmf_tt_gl_font", "cgv_g2d", "cgv_gpgpu", "cgv_app"
+		"cmf_tt_gl_font", "cgv_g2d", "cgv_gpgpu", "cgv_app", "cgv_post"
 	];
 if (cgv_options::BUILD_WITH_AUDIO) {
 	addProjectDeps=addProjectDeps.["cgv_oal", "cg_audio"];

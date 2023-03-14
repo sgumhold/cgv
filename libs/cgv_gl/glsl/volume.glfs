@@ -412,8 +412,8 @@ void main()
 	float opacity_modulation = 1.0;
 
 	#if ENABLE_LIGHTING == 1 || ENABLE_GRADIENT_MODULATION == 1
-	vec3 gradient = get_gradient(uvw);
-	float gradient_length = length(gradient);
+		vec3 gradient = get_gradient(uvw);
+		float gradient_length = length(gradient);
 	#endif
 
 	#if ENABLE_LIGHTING == 1
@@ -439,7 +439,7 @@ void main()
 	#endif
 
 	#if ENABLE_GRADIENT_MODULATION == 1
-	opacity_modulation = pow(gradient_length, gradient_lambda);
+		opacity_modulation = pow(gradient_length, gradient_lambda);
 	#endif
 
 	#if ISOSURFACE_MODE > 0
@@ -488,7 +488,7 @@ void main()
 
 		// early termination when alpha threshold is reached
 #if ENABLE_ISOSURFACE == 0
-		if(color.a < 0.05) {
+		if(color.a < 0.003) {
 			color.a = 0.0;
 			break;
 		}
