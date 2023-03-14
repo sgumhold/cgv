@@ -8,7 +8,20 @@ namespace cgv {
 namespace post {
 
 class CGV_API depth_halos : public post_process_effect {
+public:
+	enum class Mode {
+		Inside,
+		Outside,
+		Center
+	};
+
 protected:
+	/// provides random offsets for depth samples
+	cgv::render::texture noise_tex;
+	/// whether to reload the depth halo shader
+	bool do_reload_shader = false;
+	/// halo mode
+	Mode mode = Mode::Outside;
 	/// strength scale of the halo darkening
 	float strength = 1.0f;
 	/// halo radius in pixel
@@ -17,8 +30,10 @@ protected:
 	float threshold = 0.5f;
 	/// used to scale the depth value to adjust the effect to different scene extents
 	float depth_scale = 1.0f;
-	/// provides random offsets for depth samples
-	cgv::render::texture noise_tex;
+	/// return shader defines dependent on current settings
+	cgv::render::shader_define_map get_shader_defines();
+	/// mode change callback handler
+	void on_change_mode();
 	/// generate random samples and noise texture
 	void generate_noise_texture(cgv::render::context& ctx);
 
@@ -37,6 +52,11 @@ public:
 
 	void create_gui(cgv::gui::provider* p);
 
+	/// accessors
+	Mode get_mode() const { return mode; }
+
+	void set_mode(Mode m) { mode = m; on_change_mode(); }
+	
 	float get_strength() const { return strength; }
 
 	void set_strength(float s) { strength = s; }
