@@ -539,7 +539,8 @@ void rgbd_control::create_gui()
 		add_member_control(this, "write_async", rgbd_inp.protocol_write_async, "toggle");
 		add_member_control(this, "record", do_recording, "toggle");
 		connect_copy(add_button("clear record")->click, rebind(this, &rgbd_control::on_clear_protocol_cb));
-		connect_copy(add_button("save")->click, rebind(this, &rgbd_control::on_save_cb));
+		connect_copy(add_button("save", "w=108", " ")->click, rebind(this, &rgbd_control::on_save_cb));
+		add_member_control(this, "incl pc", also_save_pc, "toggle", "w=80;tooltip='if on also save point cloud together with frames'");
 		connect_copy(add_button("save point cloud")->click, rebind(this, &rgbd_control::on_save_point_cloud_cb));
 		connect_copy(add_button("load")->click, rebind(this, &rgbd_control::on_load_cb));
 		align("\b");
@@ -835,7 +836,7 @@ void rgbd_control::on_start_cb()
 		aspect = float(color_stream_formats[color_stream_format_idx].width) / color_stream_formats[color_stream_format_idx].height;
 	if (stream_depth)
 		aspect = float(depth_stream_formats[depth_stream_format_idx].width) / depth_stream_formats[depth_stream_format_idx].height;
-
+	//std::cout << "size of header: " << sizeof(frame_format) << std::endl;
 	stopped = false;
 
 	post_redraw();
@@ -860,20 +861,27 @@ void rgbd_control::on_save_cb()
 	if (fn.empty())
 		return;
 	std::string fnc = fn+".rgb";
+	std::string fnwc = fn+".wrgb";
 	std::string fnd = fn + ".dep";
 	std::string fni = fn + ".ir";
 	if (stream_color && color_frame.is_allocated()) {
 		if (!color_frame.write(fnc))
 			std::cerr << "could not write " << fnc << std::endl;
 	}
-	if (stream_depth&& depth_frame.is_allocated()) {
+	if (stream_depth && depth_frame.is_allocated()) {
 		if (!depth_frame.write(fnd))
+			std::cerr << "could not write " << fnd << std::endl;
+	}
+	if (stream_depth && stream_color && warped_color_frame.is_allocated()) {
+		if (!warped_color_frame.write(fnwc))
 			std::cerr << "could not write " << fnd << std::endl;
 	}
 	if (stream_infrared && ir_frame.is_allocated()) {
 		if (!ir_frame.write(fni))
 			std::cerr << "could not write " << fni << std::endl;
 	}
+	if (also_save_pc)
+		on_save_point_cloud_cb();
 }
 
 void rgbd_control::on_save_point_cloud_cb()
