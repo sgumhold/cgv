@@ -29,6 +29,8 @@ namespace cgv {
 		typedef cgv::math::vec<float> vecn;
 		/// declare type of 2x2 matrices
 		typedef cgv::math::fmat<float, 2, 2> mat2;
+		/// declare type of 2x3 matrices used to store camera matrix
+		typedef cgv::math::fmat<float, 2, 3> mat23;
 		/// declare type of 3x3 matrices
 		typedef cgv::math::fmat<float, 3, 3> mat3;
 		/// declare type of 4x4 matrices

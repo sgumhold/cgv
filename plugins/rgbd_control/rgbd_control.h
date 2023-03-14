@@ -96,6 +96,7 @@ public:
 	int color_stream_format_idx;
 	int depth_stream_format_idx;
 	int ir_stream_format_idx;
+	bool also_save_pc = false;
 
 	void rgbd_control::update_stream_formats();
 	/// members for rgbd mouse

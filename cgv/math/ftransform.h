@@ -8,6 +8,12 @@ namespace cgv {
 		/// construct 4x4 zero matrix
 		template <typename T> fmat<T, 4, 4>
 			zero4() { fmat<T, 4, 4> M; M.zeros(); return M; }
+		/// construct 2x2 identity matrix
+		template <typename T> fmat<T, 2, 2>
+			identity2() { fmat<T, 2, 2> M; M.identity(); return M; }
+		/// construct 3x3 identity matrix
+		template <typename T> fmat<T, 3, 3>
+			identity3() { fmat<T, 3, 3> M; M.identity(); return M; }
 		/// construct 4x4 identity matrix
 		template <typename T> fmat<T, 4, 4>
 			identity4() { fmat<T, 4, 4> M; M.identity(); return M; }
