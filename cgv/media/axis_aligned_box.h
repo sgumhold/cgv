@@ -129,8 +129,8 @@ public:
 			return axis_aligned_box<T, N>(min_p, max_p);
 		
 		for (unsigned int c = 0; c<N; ++c) {
-			if (aab.maxp(c) < maxp(c)) min_p = aab.maxp(c);
-			if (aab.minp(c) > minp(c)) max_p = aab.minp(c);
+			if (aab.maxp(c) < maxp(c)) max_p(c) = aab.maxp(c);
+			if (aab.minp(c) > minp(c)) min_p(c) = aab.minp(c);
 		}
 		return axis_aligned_box<T, N>(min_p, max_p);
 	}
