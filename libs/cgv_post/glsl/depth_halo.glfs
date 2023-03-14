@@ -1,5 +1,8 @@
 #version 430
 
+// 0 = Inside, 1 = Outside, 2 = Center
+#define MODE 1
+
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
 mat4 get_projection_matrix();
@@ -28,18 +31,15 @@ float sample_depth(vec2 coord) {
 	return texture(depth_tex, coord).r;
 }
 
-float unproject_depth(float d) {
+float get_scaled_eye_z(float d) {
 	mat4 P = get_projection_matrix();
-
 	float z_ndc = 2.0 * d - 1.0;
+	float z_eye = P[3][2] / (P[2][2] + z_ndc);
 
-	float A = P[2][2];
-	float B = P[3][2];
-	float z_eye = B / (A + z_ndc);
-	return z_eye;
+	return depth_scale * z_eye;
 }
 
-float get_scaled_eye_z(vec2 pos_window_norm, float depth) {
+/*float get_scaled_eye_z(vec2 pos_window_norm, float depth) {
 	
 	vec3 pos_ndc = vec3(pos_window_norm, depth);
 	pos_ndc = 2.0 * pos_ndc - 1.0;
@@ -54,7 +54,7 @@ float get_scaled_eye_z(vec2 pos_window_norm, float depth) {
 	vec4 pos_eye = iPM * pos_clip;
 
 	return -depth_scale * pos_eye.z;
-}
+}*/
 
 // old implementation
 /*float compute_halo(float depth) {
@@ -106,7 +106,7 @@ float get_scaled_eye_z(vec2 pos_window_norm, float depth) {
 
 float compute_halo(float depth) {
 
-	float eye_z_center = get_scaled_eye_z(texcoord_fs, depth);
+	float eye_z_center = get_scaled_eye_z(depth);
 	
 	vec2 texture_size = textureSize(depth_tex, 0);
 	vec2 texel_size = 1.0 / texture_size;
@@ -124,16 +124,19 @@ float compute_halo(float depth) {
 	for(int y = -num_samples; y <= num_samples; ++y) {
 		for(int x = -num_samples; x <= num_samples; ++x) {
 			vec2 sample_pos = vec2(x, y) + offset;
-			vec2 sample_coord = texcoord_fs + scale * sample_pos;
+			float eye_z = get_scaled_eye_z(sample_depth(texcoord_fs + scale * sample_pos));
 
-			float eye_z = get_scaled_eye_z(sample_coord, sample_depth(sample_coord));
-
-			// behind (outside)
+			#if MODE == 0
+			// inside (in front of geometry)
+			float diff = -min(eye_z_center - eye_z, 0.0);
+			#elif MODE == 1
+			// outside (behind geometry)
 			float diff = max(eye_z_center - eye_z, 0.0);
-			// front (inside)
-			//float diff = -min(eye_z_center - eye_z, 0.0);
-			// both sides
-			//float diff = abs(eye_z_center - eye_z);
+			#else
+			// center (inside and outside)
+			float diff = abs(eye_z_center - eye_z);
+			#endif
+			
 			diff = clamp(diff, 0.0, 1.0);
 			
 			float len = length(sample_pos);
@@ -151,45 +154,13 @@ float compute_halo(float depth) {
 	return clamp(halo, 0.0, 1.0);
 }
 
-float compute_outline(float depth) {
-
-	float eye_z_center = get_scaled_eye_z(texcoord_fs, depth);
-	
-	vec2 texel_size = 1.0 / textureSize(depth_tex, 0);
-
-	int num_samples = 1;
-
-	float outline = 0.0;
-	
-	for(int y = -num_samples; y <= num_samples; ++y) {
-		for(int x = -num_samples; x <= num_samples; ++x) {
-			vec2 sample_pos = vec2(x, y);
-			vec2 sample_coord = texcoord_fs + texel_size * sample_pos;
-
-			float eye_z = get_scaled_eye_z(sample_coord, sample_depth(sample_coord));
-
-			float diff = abs(eye_z_center - eye_z);
-			
-			if(diff > threshold)
-				outline += 1.0;
-		}
-	}
-
-	outline /= (num_samples + 1) * (num_samples + 1);
-	return clamp(outline, 0.0, 1.0);
-}
-
 void main()
 {
 	float depth = sample_depth(texcoord_fs);
 	vec4 color = texture(color_tex, texcoord_fs);
 	
-	float halo = compute_halo(depth);
-	color.rgb *= 1.0 - 10.0 * halo * strength;
+	color.rgb *= 1.0 - 10.0 * compute_halo(depth) * strength;
 
-	//float outline = compute_outline(depth);
-	//color.rgb *= 1.0 - outline * strength;
-	
 	frag_color = color;
 	gl_FragDepth = depth;
 }
