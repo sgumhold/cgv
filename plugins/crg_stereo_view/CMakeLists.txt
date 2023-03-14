@@ -1,6 +1,6 @@
 
 set(SOURCES stereo_view_interactor.cxx)
-set(HEADERS stereo_view_interactor.h)
+set(HEADERS lib_begin.h stereo_view_interactor.h)
 
 cgv_add_target(crg_stereo_view
 	TYPE plugin NO_EXECUTABLE
