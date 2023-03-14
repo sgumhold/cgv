@@ -192,8 +192,8 @@ $(document).ready(function(){initNavTree('axis__aligned__box_8h_source.html','')
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                        <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html">axis_aligned_box&lt;T, N&gt;</a>(min_p, max_p);</div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                </div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> c = 0; c&lt;N; ++c) {</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                        <span class="keywordflow">if</span> (aab.maxp(c) &lt; maxp(c)) min_p = aab.maxp(c);</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                        <span class="keywordflow">if</span> (aab.minp(c) &gt; minp(c)) max_p = aab.minp(c);</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                        <span class="keywordflow">if</span> (aab.maxp(c) &lt; maxp(c)) max_p(c) = aab.maxp(c);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                        <span class="keywordflow">if</span> (aab.minp(c) &gt; minp(c)) min_p(c) = aab.minp(c);</div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;                }</div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html">axis_aligned_box&lt;T, N&gt;</a>(min_p, max_p);</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        }</div>
