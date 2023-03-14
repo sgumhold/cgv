@@ -18,6 +18,7 @@ add_subdirectory(crg_grid)
 add_subdirectory(crg_light)
 add_subdirectory(crg_bg)
 add_subdirectory(crg_stereo_view)
+add_subdirectory(crg_holo_view)
 
 add_subdirectory(crg_vr_wall)
 add_subdirectory(openvr_driver)
