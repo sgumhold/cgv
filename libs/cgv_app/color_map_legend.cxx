@@ -44,16 +44,6 @@ void color_map_legend::clear(cgv::render::context& ctx) {
 	ticks.destruct(ctx);
 }
 
-bool color_map_legend::self_reflect(cgv::reflect::reflection_handler& _rh) {
-
-	return false;
-}
-
-bool color_map_legend::handle_event(cgv::gui::event& e) {
-
-	return false;
-}
-
 void color_map_legend::on_set(void* member_ptr) {
 
 	if(member_ptr == &layout.total_size[0] || member_ptr == &layout.total_size[1]) {
@@ -255,6 +245,7 @@ void color_map_legend::set_width(size_t w) {
 	layout.total_size.x() = int(w);
 	on_set(&layout.total_size.x());
 }
+
 void color_map_legend::set_height(size_t h) {
 	layout.total_size.y() = int(h);
 	on_set(&layout.total_size.y());
@@ -466,7 +457,6 @@ void color_map_legend::create_ticks() {
 		break;
 	case AO_END:
 		title_alignment = title_alignment_2;
-
 		title_pos[1 - axis] += color_rect_size[1 - axis] + 4;
 		tick_start[1 - axis] -= 3;
 		label_offset = -label_offset;

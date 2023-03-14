@@ -11,6 +11,9 @@ in SPHERE_FS {
 	float percentual_splat_size;
 } fi;
 
+out layout(location = 1) vec4 frag_position;
+out layout(location = 2) vec3 frag_normal;
+
 //***** begin interface of sphere_lib.glfs ***********************************
 bool computer_ray_sphere_intersection(out vec3 p_eye, out vec3 n_eye, out vec2 splat_tc, out float clip_depth, out int side);
 bool computer_ray_sphere_intersection(in float percentual_splat_size, out vec3 p_eye, out vec3 n_eye, out vec2 splat_tc, out float clip_depth, out int side, out float percentual_radial_position);
@@ -65,4 +68,6 @@ void main()
 	vec4 halo_color = vec4(mix(fi.color.rgb, fi.halo_color.rgb, halo_color_strength), fi.halo_color.a);
 	vec4 blend_color = compute_blended_color_with_halo(percentual_radial_position, color, fi.percentual_core_size, halo_color, fi.percentual_point_size, fi.percentual_blend_width);
 	finish_fragment(blend_color, depth);
+	frag_position = vec4(p_eye, 1.0);
+	frag_normal = n_eye;
 }

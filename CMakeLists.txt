@@ -113,7 +113,11 @@ define_property(TARGET
 # general compiler options
 if (NOT MSVC)
 	add_compile_options(-Wno-dangling-else -Wno-switch)
-endif ()
+	if (CMAKE_C_COMPILER_ID MATCHES "Clang" OR MAKE_CXX_COMPILER_ID MATCHES "Clang")
+		set(CGV_CLANG_SPECIFIC_DEBUG_FLAGS $<$<CONFIG:Debug,RelWithDebInfo>:-fstandalone-debug -fno-limit-debug-info>)
+		set(CGV_CLANG_SPECIFIC_DEBUG_FLAGS ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS} PARENT_SCOPE)
+	endif()
+endif()
 
 # testing stuff - TODO: find out what it actually does currently
 enable_testing()

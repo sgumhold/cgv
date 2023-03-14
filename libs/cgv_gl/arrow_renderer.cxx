@@ -167,7 +167,7 @@ namespace cgv {
 					p->add_member_control(b, "Head Length Mode", ars_ptr->head_length_mode, "dropdown", "enums='Relative to Radius=1,Relative to Length=2,Minimum of Radius and Length=3'");
 					p->add_member_control(b, "Head Length Relative to Radius", ars_ptr->head_length_relative_to_radius, "value_slider", "min=0.1;max=5;ticks=true");
 					p->add_member_control(b, "Head Length Relative to Length", ars_ptr->head_length_relative_to_length, "value_slider", "min=0;max=1;ticks=true");
-					p->add_member_control(b, "Head Ladius Scale", ars_ptr->head_radius_scale, "value_slider", "min=1;max=3;ticks=true");
+					p->add_member_control(b, "Head Radius Scale", ars_ptr->head_radius_scale, "value_slider", "min=1;max=3;ticks=true");
 					p->align("\b");
 					p->end_tree_node(ars_ptr->head_radius_scale);
 				}

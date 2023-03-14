@@ -1,5 +1,7 @@
 #version 150
 
+#define M_PI 3.14159265359
+
 //***** begin interface of shape2d.glsl ***********************************
 vec2 get_adjusted_size(vec2 size);
 vec4 get_active_color(vec4 color);
@@ -7,11 +9,16 @@ vec4 transform_world_to_window_space(vec2 p);
 //***** end interface of shape2d.glsl ***********************************
 
 //***** begin interface of fragment2d.glfs ***********************************
+uniform vec2 tex_scaling = vec2(1.0);
+uniform vec2 tex_offset = vec2(0.0);
+
 void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
 void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
 void finish_fragment2d(in vec4 color);
 void finish_fragment2d(in vec4 color, in vec2 texcoords);
 //***** end interface of fragment2d.glfs ***********************************
+
+uniform bool use_polar_texcoords = false;
 
 flat in vec2 size;
 in vec2 pix_coord;
@@ -24,9 +31,38 @@ float sd_circle(vec2 p, float r)
     return length(p) - r;
 }
 
+vec2 to_polar(in vec2 cartesian) {
+
+	float phi = (atan(cartesian.y, cartesian.x) + M_PI) / (2.0*M_PI);
+	float r = length(cartesian);
+	return vec2(phi, r);
+}
+
 void main() {
 	
 	float dist = sd_circle(pix_coord, get_adjusted_size(size).x);
 	vec4 color = get_active_color(color_fs);
-	finish_sdf_fragment2d(dist, color, tex_coord);
+
+	vec2 uv = tex_coord;
+
+	if(use_polar_texcoords) {
+		// move tex coords from [0,1] to [-1,1]
+		uv -= 0.5;
+		uv *= 2.0;
+		// convert cartesian to polar coordinates
+		uv = to_polar(uv);
+
+		// apply texture offset to rotate the angle coordinate (phi)
+		uv.x += tex_offset.x;
+		uv.x = fract(uv.x);
+		// scale the radius coordinate
+		uv.y *= tex_scaling.x;
+		// flip angle coordinate depending on texture scale sign
+		uv.x = tex_scaling.y < 0.0 ? 1.0 - uv.x : uv.x;
+
+		// apply inverse tex coord transform to counteract transformation applied in finish_sdf_fragment2d
+		uv = (uv - tex_offset) / tex_scaling;
+	}
+
+	finish_sdf_fragment2d(dist, color, uv);
 }

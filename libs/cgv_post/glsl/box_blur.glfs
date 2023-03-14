@@ -1,0 +1,29 @@
+#version 430
+
+#define RADIUS 2
+#define SIZE (RADIUS + RADIUS + 1)
+#define NORMALIZATION_FACTOR (1.0 / (SIZE * SIZE))
+
+layout (binding = 0) uniform sampler2D input_tex;
+
+in vec2 texcoord_fs;
+
+out float frag_color;
+
+void main()
+{
+	vec2 texel_size = 1.0 / textureSize(input_tex, 0);
+
+	float result = 0.0;
+
+	float norm = 0.0;
+
+	for(int y = -RADIUS; y <= RADIUS; ++y) {
+		for(int x = -RADIUS; x <= RADIUS; ++x) {
+			vec2 offset = texel_size * vec2(x, y);
+			result += texture(input_tex, texcoord_fs + offset).r;
+		}
+	}
+	
+	frag_color = result * NORMALIZATION_FACTOR;
+}
