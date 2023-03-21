@@ -7,8 +7,8 @@ function(cgv_format_list OUTPUT_VAR LIST_VAR)
 	endif()
 endfunction()
 
-# retrieves a CGV-specific property and returns its content if any, otherwise returns something that evaluates to FALSE under
-# CMake's rules
+# retrieves a CGV-specific property and returns its content if any, otherwise returns something that evaluates to FALSE
+# under CMake's rules
 function(cgv_query_property OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
 	get_target_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
 	if (PROPVAL AND NOT PROPVAL STREQUAL "PROPVAL-NOTFOUND")
@@ -18,7 +18,8 @@ function(cgv_query_property OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
 	endif()
 endfunction()
 
-# helper function for properties: formats a string representing the property value that will say "<none>" if the property is empty
+# helper function for properties: formats a string representing the property value that will say "<none>" if the property
+# is empty
 function(cgv_format_property_value OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
 	cgv_query_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
 	cgv_format_list(PROPVAL_FORMATTED "${PROPVAL}")
@@ -68,7 +69,8 @@ function(cgv_get_all_directory_targets TARGETS_VAR DIRECTORY)
 	set(${TARGETS_VAR} ${MY_TARGETS} PARENT_SCOPE)
 endfunction()
 
-# checks if the given target is some kind of CGV Framework component, and if yes, optionally returns the type of the component
+# checks if the given target is some kind of CGV Framework component, and if yes, optionally returns the type of the
+# component
 function(cgv_is_cgvtarget CHECK_RESULT_OUT TARGET_NAME)
 	cmake_parse_arguments(
 		PARSE_ARGV 2 CGVARG_ "" "GET_TYPE" ""
@@ -134,8 +136,8 @@ endfunction()
 
 # filters all plugins from a list of targets
 function(cgv_filter_for_plugins PLUGIN_LIST_OUT GUI_PROVIDER_PLUGIN_OUT TARGET_NAMES)
-	# Make sure the variable requested to contain the GUI provider will evaluate to the FALSE value when no GUI provider is among
-	# the given list of dependencies
+	# Make sure the variable requested to contain the GUI provider will evaluate to the FALSE value when no GUI provider
+	# is among the given list of dependencies
 	set(GUI_PROVIDER_PLUGIN_LOCAL FALSE)
 
 	# check TYPE property of each target
@@ -164,7 +166,8 @@ function(cgv_get_static_or_exe_name STATIC_NAME_OUT EXE_NAME_OUT TARGET_NAME IS_
 	set(${STATIC_NAME_OUT} "${TARGET_NAME}_static" PARENT_SCOPE)
 endfunction()
 
-# internal helper function that takes over deferred computations that require other targets to have already been fully defined
+# internal helper function that takes over deferred computations that require other targets to have already been fully
+# defined
 # - global state the function can modify
 set(VSCODE_LAUNCH_JSON_CONFIG_LIST "")
 # - the actual function
@@ -289,7 +292,8 @@ function(cgv_do_deferred_ops TARGET_NAME)
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS},\n${VSCODE_LAUNCH_JSON_CONFIG_LIST}" PARENT_SCOPE)
 			endif()
 		else()
-			# try to set relevant options for all other generators in the hopes of ending up with a valid launch/debug configuration
+			# try to set relevant options for all other generators in the hopes of ending up with a valid launch/debug
+			# configuration
 			if (NOT NO_EXECUTABLE)
 				cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
 				set_plugin_execution_params(${TARGET_NAME} ARGUMENTS ${CMD_LINE_ARGS_STRING})
@@ -397,7 +401,7 @@ function(cgv_add_target NAME)
 	cmake_parse_arguments(
 		PARSE_ARGV 1 CGVARG_
 		"NO_EXECUTABLE" "TYPE;OVERRIDE_SHARED_EXPORT_DEFINE;OVERRIDE_FORCE_STATIC_DEFINE"
-		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;ADDITIONAL_PRIVATE_DEFINES;ADDITIONAL_PUBLIC_DEFINES;DEPENDENCIES;LINKTIME_PLUGIN_DEPENDENCIES;ADDITIONAL_CMDLINE_ARGS"
+		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;ADDITIONAL_PRIVATE_DEFINES;ADDITIONAL_PUBLIC_DEFINES;DEPENDENCIES;LINKTIME_PLUGIN_DEPENDENCIES;ADDITIONAL_INCLUDE_PATHS;ADDITIONAL_LINKER_PATHS;ADDITIONAL_CMDLINE_ARGS"
 	)
 
 	# prelude
@@ -468,7 +472,7 @@ function(cgv_add_target NAME)
 		set(CGVARG__AUDIO_RESOURCES "")
 	endif()
 
-	# prepare all files for inclusion in the target 	 	 	 cgv_viewer
+	# prepare all files for inclusion in the target
 	set(ALL_SOURCES
 		${CGVARG__SOURCES} ${PPP_FILES} ${CGVARG__PPP_SOURCES} ${CGVARG__HEADERS} ${ST_FILES} ${SHADERS}
 		${RESOURCE_SRCFILES} ${CGVARG__RESOURCES}
@@ -483,7 +487,7 @@ function(cgv_add_target NAME)
 
 	# for plugin builds
 	if (IS_STATIC)
-		# Moreso than indicating the type of object that will be generated from the target, the static suffix
+		# Moreso than indicating the type of object that will be generated from the target, the _static suffix
 		# indicates in what type of build the target will be used. The framework knows plugin builds and single
 		# executable builds - the latter one links the static variants of all targets it depends on into an
 		# executable, while the former will use the non-static versions of all library targets (usually, those
@@ -510,6 +514,7 @@ function(cgv_add_target NAME)
 	# set compile options
 	target_compile_options(${NAME} PRIVATE ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS})
 	# handle dependencies
+	target_link_directories(${NAME} PRIVATE ${CGVARG__ADDITIONAL_LINKER_PATHS})
 	foreach (DEPENDENCY ${CGVARG__DEPENDENCIES})
 		# find out dependency type
 		cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY} GET_TYPE DEPENDENCY_TYPE)
@@ -532,6 +537,7 @@ function(cgv_add_target NAME)
 	endif()
 
 	target_include_directories(${NAME} PUBLIC
+			${CGVARG__ADDITIONAL_INCLUDE_PATHS}
 			"$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>"
 			"$<BUILD_INTERFACE:${CGV_DIR}>"
 			"$<BUILD_INTERFACE:${PPP_INCLUDES}>"
@@ -559,6 +565,7 @@ function(cgv_add_target NAME)
 	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC" ${CGVARG__ADDITIONAL_PUBLIC_DEFINES})
 	target_compile_options(${NAME_STATIC} PUBLIC ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS})
 
+	target_link_directories(${NAME_STATIC} PUBLIC ${CGVARG__ADDITIONAL_LINKER_PATHS})
 	if (NOT MSVC)
 		target_link_options(${NAME_STATIC} PUBLIC -Wl,--copy-dt-needed-entries)
 	endif()
@@ -578,6 +585,7 @@ function(cgv_add_target NAME)
 	endforeach()
 
 	target_include_directories(${NAME_STATIC} PUBLIC
+		${CGVARG__ADDITIONAL_INCLUDE_PATHS}
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>"
 		"$<BUILD_INTERFACE:${CGV_DIR}>"
 		"$<BUILD_INTERFACE:${PPP_INCLUDES}>"
@@ -594,8 +602,8 @@ function(cgv_add_target NAME)
 		target_compile_definitions(${NAME_EXE} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
 		target_include_directories(
 			${NAME_EXE} PUBLIC
-			"$<BUILD_INTERFACE:${CGV_DIR}>" "$<BUILD_INTERFACE:${CGV_DIR}/libs>" "$<BUILD_INTERFACE:${PPP_INCLUDES}>"
-			"$<BUILD_INTERFACE:${ST_INCLUDE}>" "$<INSTALL_INTERFACE:include>"
+			${CGVARG__ADDITIONAL_INCLUDE_PATHS} "$<BUILD_INTERFACE:${CGV_DIR}>" "$<BUILD_INTERFACE:${CGV_DIR}/libs>"
+			"$<BUILD_INTERFACE:${PPP_INCLUDES}>" "$<BUILD_INTERFACE:${ST_INCLUDE}>" "$<INSTALL_INTERFACE:include>"
 		)
 		target_link_libraries(${NAME_EXE} PRIVATE ${NAME_STATIC})
 	endif()
@@ -691,6 +699,107 @@ function(cgv_add_target NAME)
 	if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
 		install(TARGETS ${NAME_EXE} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 	endif()
+endfunction()
+
+# add a source of a custom type with an associated build rule to the given CGV Framework component
+# NOTES:
+#	(1) when specifying the build output filename, every occurence of <<<FN>>> will be replaced by the pure name without
+#	    path and without the file extension (after the last dot) of the input source file, and every occurence of <<<EXT>>>
+#	    will be replaced with the original file extension (without the preceding dot) of the original input source file
+#	(2) when specifying the tool command arguments, every occurence of <<<INFILE>>> will be replaced with the fully
+#	    qualified path to your source file, every occurence of <<<OUTFILE>>> will be replaced with the qualified path
+#	    to your target file build from the source file, and every occurence of <<<INFILE_PATH>>> will be replaced with the
+#	    fully qualified path to the directory containing the source file
+#	(3) by default, the rule is added to both normal (shared) and static variants of the component - you can select to
+#	    add it to only one or the other (or explicitly both) by specifying the SHARED and/or STATIC flags
+function(cgv_add_custom_source TARGET_NAME SOURCE)
+	cmake_parse_arguments(
+		PARSE_ARGV 2 CGVARG_ "SHARED;STATIC" "OUTFILE_TEMPLATE;BUILD_TOOL;BUILD_SUBDIR" "BUILD_TOOL_ARGS"
+	)
+
+	# preprocess filenames
+	get_filename_component(SRC_FULLPATH ${SOURCE} ABSOLUTE) # <-- evaluates with respect to CMAKE_CURRENT_SOURCE_DIR
+	get_filename_component(SRC_PATH_ONLY ${SRC_FULLPATH} DIRECTORY)
+	get_filename_component(SRC_FILE ${SOURCE} NAME)
+	get_filename_component(SRC_FILE_WITHOUT_EXT ${SOURCE} NAME_WLE)
+	get_filename_component(SRC_FILE_EXT ${SOURCE} LAST_EXT)
+	string(REGEX REPLACE ".(.*)" "\\1" SRC_FILE_EXT_WITHOUT_DOT ${SRC_FILE_EXT})
+	string(REGEX REPLACE "\\<\\<\\<FN>>>" "${SRC_FILE_WITHOUT_EXT}" OFILE_PROCESSED ${CGVARG__OUTFILE_TEMPLATE})
+	string(REGEX REPLACE "\\<\\<\\<EXT>>>" "${SRC_FILE_EXT_WITHOUT_DOT}" OFILE ${OFILE_PROCESSED})
+	set(OFILE_FULLPATH "${CMAKE_CURRENT_BINARY_DIR}/${CGVARG__BUILD_SUBDIR}/${OFILE}")
+	#message("----------------------------------------------------")
+	#message(" SOURCE:               ${SOURCE}")
+	#message(" SOURCE resolved path: ${SRC_FULLPATH}")
+	#message(" SOURCE file:          ${SRC_FILE}")
+	#message(" SOURCE file ext:      ${SRC_FILE_EXT_WITHOUT_DOT} (w/ dot: ${SRC_FILE_EXT})")
+	#message("  -------------------------------------------------")
+	#message(" OUTFILE template:     ${CGVARG__OUTFILE_TEMPLATE}")
+	#message(" OUTFILE instantiated: ${OFILE}")
+	#message(" OUTFILE full path:    ${OFILE_FULLPATH}")
+
+	# determine which variants of the component to add the custom source to
+	if (NOT CGVARG__SHARED AND NOT CGVARG__STATIC)
+		set(NO_VARIANT_FLAGS TRUE)
+	endif()
+	if (NO_VARIANT_FLAGS OR CGVARG__SHARED)
+		set(ADD_TO_SHARED TRUE)
+	endif()
+	if (NO_VARIANT_FLAGS OR CGVARG__STATIC)
+		set(ADD_TO_STATIC TRUE)
+	endif()
+	#message("  -------------------------------------------------")
+	#if (ADD_TO_SHARED)
+	#	message(" add to shared: yes")
+	#else()
+	#	message(" add to shared: no")
+	#endif()
+	#if (ADD_TO_STATIC)
+	#	message(" add to static: yes")
+	#else()
+	#	message(" add to static: no")
+	#endif()
+
+	# add custom build rule for the specified sources
+	#set(BUILD_TOOL "$<IF:$<TARGET_EXISTS:${CGVARG__BUILD_TOOL}>,$<TARGET_FILE:${CGVARG__BUILD_TOOL}>,${CGVARG__BUILD_TOOL}>")
+	# - instantiate argument templates
+	#message("  -------------------------------------------------")
+	#message(" instantiating tool argument templates...")
+	set(TOOL_ARGS "")
+	set(TOOL_CMD_LINE ${CGVARG__BUILD_TOOL})
+	foreach(TOOL_ARG ${CGVARG__BUILD_TOOL_ARGS})
+		string(REGEX REPLACE "\\<\\<\\<INFILE>>>" "${SRC_FULLPATH}" TOOL_ARG_PROCESSED0 ${TOOL_ARG})
+		string(REGEX REPLACE "\\<\\<\\<OUTFILE>>>" "${OFILE_FULLPATH}" TOOL_ARG_PROCESSED1 ${TOOL_ARG_PROCESSED0})
+		string(REGEX REPLACE "\\<\\<\\<INFILE_PATH>>>" "${SRC_PATH_ONLY}" TOOL_ARG_PROCESSED ${TOOL_ARG_PROCESSED1})
+		#message(" - arg template: ${TOOL_ARG}")
+		#message("   instantiated: ${TOOL_ARG_PROCESSED}")
+		list(APPEND TOOL_ARGS ${TOOL_ARG_PROCESSED})
+		set(TOOL_CMD_LINE "${TOOL_CMD_LINE} ${TOOL_ARG_PROCESSED}")
+	endforeach()
+	#message("  -------------------------------------------------")
+	#message(" RESULTING TOOL COMMAND LINE:")
+	#message("   ${TOOL_CMD_LINE}")
+	#message("----------------------------------------------------")
+	# - add the actual build rule
+	add_custom_command(
+		OUTPUT ${OFILE_FULLPATH}
+		COMMAND ${CMAKE_COMMAND} -E env CGV_DIR="${CGV_DIR}" CGV_OPTIONS="${CGV_OPTIONS}" ${CGVARG__BUILD_TOOL}
+		ARGS ${TOOL_ARGS}
+		DEPENDS "${SRC_FULLPATH}"
+	)
+	# - tie the rule to the appropriate targets
+	cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
+	if (ADD_TO_SHARED)
+		target_sources(${TARGET_NAME} PRIVATE "${OFILE_FULLPATH}" "${SRC_FULLPATH}")
+	endif()
+	if (ADD_TO_STATIC)
+		target_sources(${NAME_STATIC} PRIVATE "${OFILE_FULLPATH}" "${SRC_FULLPATH}")
+	endif()
+	# - IDE fluff
+	string(SUBSTRING ${CGVARG__BUILD_SUBDIR} 0 1 FIRST_LETTER)
+	string(TOUPPER ${FIRST_LETTER} FIRST_LETTER)
+	string(REGEX REPLACE "^.(.*)" "${FIRST_LETTER}\\1" SOURCE_GROUP_BASE "${CGVARG__BUILD_SUBDIR}")
+	source_group("${SOURCE_GROUP_BASE}" FILES ${SRC_FULLPATH})
+	source_group("${SOURCE_GROUP_BASE}/processed" FILES ${OFILE_FULLPATH})
 endfunction()
 
 
