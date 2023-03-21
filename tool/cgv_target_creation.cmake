@@ -762,12 +762,12 @@ function(cgv_add_custom_sources TARGET_NAME)
 		#endif()
 
 		# add custom build rule for the specified sources
-		#set(BUILD_TOOL "$<IF:$<TARGET_EXISTS:${CGVARG__BUILD_TOOL}>,$<TARGET_FILE:${CGVARG__BUILD_TOOL}>,${CGVARG__BUILD_TOOL}>")
+		set(BUILD_TOOL "$<IF:$<TARGET_EXISTS:${CGVARG__BUILD_TOOL}>,$<TARGET_FILE:${CGVARG__BUILD_TOOL}>,${CGVARG__BUILD_TOOL}>")
 		# - instantiate argument templates
 		#message("  -------------------------------------------------")
 		#message(" instantiating tool argument templates...")
 		set(TOOL_ARGS "")
-		#set(TOOL_CMD_LINE ${CGVARG__BUILD_TOOL})
+		#set(TOOL_CMD_LINE ${BUILD_TOOL})
 		foreach(TOOL_ARG ${CGVARG__BUILD_TOOL_ARGS})
 			string(REGEX REPLACE "\\<\\<\\<INFILE>>>" "${SRC_FULLPATH}" TOOL_ARG_PROCESSED0 ${TOOL_ARG})
 			string(REGEX REPLACE "\\<\\<\\<OUTFILE>>>" "${OFILE_FULLPATH}" TOOL_ARG_PROCESSED1 ${TOOL_ARG_PROCESSED0})
@@ -784,7 +784,7 @@ function(cgv_add_custom_sources TARGET_NAME)
 		# - add the actual build rule
 		add_custom_command(
 			OUTPUT ${OFILE_FULLPATH}
-			COMMAND ${CMAKE_COMMAND} -E env CGV_DIR="${CGV_DIR}" CGV_OPTIONS="${CGV_OPTIONS}" ${CGVARG__BUILD_TOOL}
+			COMMAND ${CMAKE_COMMAND} -E env CGV_DIR="${CGV_DIR}" CGV_OPTIONS="${CGV_OPTIONS}" ${BUILD_TOOL}
 			ARGS ${TOOL_ARGS}
 			DEPENDS "${SRC_FULLPATH}"
 		)
