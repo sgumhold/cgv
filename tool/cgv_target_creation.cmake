@@ -712,94 +712,97 @@ endfunction()
 #	    fully qualified path to the directory containing the source file
 #	(3) by default, the rule is added to both normal (shared) and static variants of the component - you can select to
 #	    add it to only one or the other (or explicitly both) by specifying the SHARED and/or STATIC flags
-function(cgv_add_custom_source TARGET_NAME SOURCE)
+function(cgv_add_custom_sources TARGET_NAME)
 	cmake_parse_arguments(
-		PARSE_ARGV 2 CGVARG_ "SHARED;STATIC" "OUTFILE_TEMPLATE;BUILD_TOOL;BUILD_SUBDIR" "BUILD_TOOL_ARGS"
+		PARSE_ARGV 1 CGVARG_ "SHARED;STATIC" "OUTFILE_TEMPLATE;BUILD_TOOL;BUILD_SUBDIR" "SOURCES;BUILD_TOOL_ARGS"
 	)
 
-	# preprocess filenames
-	get_filename_component(SRC_FULLPATH ${SOURCE} ABSOLUTE) # <-- evaluates with respect to CMAKE_CURRENT_SOURCE_DIR
-	get_filename_component(SRC_PATH_ONLY ${SRC_FULLPATH} DIRECTORY)
-	get_filename_component(SRC_FILE ${SOURCE} NAME)
-	get_filename_component(SRC_FILE_WITHOUT_EXT ${SOURCE} NAME_WLE)
-	get_filename_component(SRC_FILE_EXT ${SOURCE} LAST_EXT)
-	string(REGEX REPLACE ".(.*)" "\\1" SRC_FILE_EXT_WITHOUT_DOT ${SRC_FILE_EXT})
-	string(REGEX REPLACE "\\<\\<\\<FN>>>" "${SRC_FILE_WITHOUT_EXT}" OFILE_PROCESSED ${CGVARG__OUTFILE_TEMPLATE})
-	string(REGEX REPLACE "\\<\\<\\<EXT>>>" "${SRC_FILE_EXT_WITHOUT_DOT}" OFILE ${OFILE_PROCESSED})
-	set(OFILE_FULLPATH "${CMAKE_CURRENT_BINARY_DIR}/${CGVARG__BUILD_SUBDIR}/${OFILE}")
-	#message("----------------------------------------------------")
-	#message(" SOURCE:               ${SOURCE}")
-	#message(" SOURCE resolved path: ${SRC_FULLPATH}")
-	#message(" SOURCE file:          ${SRC_FILE}")
-	#message(" SOURCE file ext:      ${SRC_FILE_EXT_WITHOUT_DOT} (w/ dot: ${SRC_FILE_EXT})")
-	#message("  -------------------------------------------------")
-	#message(" OUTFILE template:     ${CGVARG__OUTFILE_TEMPLATE}")
-	#message(" OUTFILE instantiated: ${OFILE}")
-	#message(" OUTFILE full path:    ${OFILE_FULLPATH}")
+	# loop through every source file and add it to the build system using the provided custom rule
+	foreach(SOURCE ${CGVARG__SOURCES})
+		# preprocess filenames
+		get_filename_component(SRC_FULLPATH ${SOURCE} ABSOLUTE) # <-- evaluates with respect to CMAKE_CURRENT_SOURCE_DIR
+		get_filename_component(SRC_PATH_ONLY ${SRC_FULLPATH} DIRECTORY)
+		get_filename_component(SRC_FILE ${SOURCE} NAME)
+		get_filename_component(SRC_FILE_WITHOUT_EXT ${SOURCE} NAME_WLE)
+		get_filename_component(SRC_FILE_EXT ${SOURCE} LAST_EXT)
+		string(REGEX REPLACE ".(.*)" "\\1" SRC_FILE_EXT_WITHOUT_DOT ${SRC_FILE_EXT})
+		string(REGEX REPLACE "\\<\\<\\<FN>>>" "${SRC_FILE_WITHOUT_EXT}" OFILE_PROCESSED ${CGVARG__OUTFILE_TEMPLATE})
+		string(REGEX REPLACE "\\<\\<\\<EXT>>>" "${SRC_FILE_EXT_WITHOUT_DOT}" OFILE ${OFILE_PROCESSED})
+		set(OFILE_FULLPATH "${CMAKE_CURRENT_BINARY_DIR}/${CGVARG__BUILD_SUBDIR}/${OFILE}")
+		#message("----------------------------------------------------")
+		#message(" SOURCE:               ${SOURCE}")
+		#message(" SOURCE resolved path: ${SRC_FULLPATH}")
+		#message(" SOURCE file:          ${SRC_FILE}")
+		#message(" SOURCE file ext:      ${SRC_FILE_EXT_WITHOUT_DOT} (w/ dot: ${SRC_FILE_EXT})")
+		#message("  -------------------------------------------------")
+		#message(" OUTFILE template:     ${CGVARG__OUTFILE_TEMPLATE}")
+		#message(" OUTFILE instantiated: ${OFILE}")
+		#message(" OUTFILE full path:    ${OFILE_FULLPATH}")
 
-	# determine which variants of the component to add the custom source to
-	if (NOT CGVARG__SHARED AND NOT CGVARG__STATIC)
-		set(NO_VARIANT_FLAGS TRUE)
-	endif()
-	if (NO_VARIANT_FLAGS OR CGVARG__SHARED)
-		set(ADD_TO_SHARED TRUE)
-	endif()
-	if (NO_VARIANT_FLAGS OR CGVARG__STATIC)
-		set(ADD_TO_STATIC TRUE)
-	endif()
-	#message("  -------------------------------------------------")
-	#if (ADD_TO_SHARED)
-	#	message(" add to shared: yes")
-	#else()
-	#	message(" add to shared: no")
-	#endif()
-	#if (ADD_TO_STATIC)
-	#	message(" add to static: yes")
-	#else()
-	#	message(" add to static: no")
-	#endif()
+		# determine which variants of the component to add the custom source to
+		if (NOT CGVARG__SHARED AND NOT CGVARG__STATIC)
+			set(NO_VARIANT_FLAGS TRUE)
+		endif()
+		if (NO_VARIANT_FLAGS OR CGVARG__SHARED)
+			set(ADD_TO_SHARED TRUE)
+		endif()
+		if (NO_VARIANT_FLAGS OR CGVARG__STATIC)
+			set(ADD_TO_STATIC TRUE)
+		endif()
+		#message("  -------------------------------------------------")
+		#if (ADD_TO_SHARED)
+		#	message(" add to shared: yes")
+		#else()
+		#	message(" add to shared: no")
+		#endif()
+		#if (ADD_TO_STATIC)
+		#	message(" add to static: yes")
+		#else()
+		#	message(" add to static: no")
+		#endif()
 
-	# add custom build rule for the specified sources
-	#set(BUILD_TOOL "$<IF:$<TARGET_EXISTS:${CGVARG__BUILD_TOOL}>,$<TARGET_FILE:${CGVARG__BUILD_TOOL}>,${CGVARG__BUILD_TOOL}>")
-	# - instantiate argument templates
-	#message("  -------------------------------------------------")
-	#message(" instantiating tool argument templates...")
-	set(TOOL_ARGS "")
-	set(TOOL_CMD_LINE ${CGVARG__BUILD_TOOL})
-	foreach(TOOL_ARG ${CGVARG__BUILD_TOOL_ARGS})
-		string(REGEX REPLACE "\\<\\<\\<INFILE>>>" "${SRC_FULLPATH}" TOOL_ARG_PROCESSED0 ${TOOL_ARG})
-		string(REGEX REPLACE "\\<\\<\\<OUTFILE>>>" "${OFILE_FULLPATH}" TOOL_ARG_PROCESSED1 ${TOOL_ARG_PROCESSED0})
-		string(REGEX REPLACE "\\<\\<\\<INFILE_PATH>>>" "${SRC_PATH_ONLY}" TOOL_ARG_PROCESSED ${TOOL_ARG_PROCESSED1})
-		#message(" - arg template: ${TOOL_ARG}")
-		#message("   instantiated: ${TOOL_ARG_PROCESSED}")
-		list(APPEND TOOL_ARGS ${TOOL_ARG_PROCESSED})
-		set(TOOL_CMD_LINE "${TOOL_CMD_LINE} ${TOOL_ARG_PROCESSED}")
+		# add custom build rule for the specified sources
+		#set(BUILD_TOOL "$<IF:$<TARGET_EXISTS:${CGVARG__BUILD_TOOL}>,$<TARGET_FILE:${CGVARG__BUILD_TOOL}>,${CGVARG__BUILD_TOOL}>")
+		# - instantiate argument templates
+		#message("  -------------------------------------------------")
+		#message(" instantiating tool argument templates...")
+		set(TOOL_ARGS "")
+		#set(TOOL_CMD_LINE ${CGVARG__BUILD_TOOL})
+		foreach(TOOL_ARG ${CGVARG__BUILD_TOOL_ARGS})
+			string(REGEX REPLACE "\\<\\<\\<INFILE>>>" "${SRC_FULLPATH}" TOOL_ARG_PROCESSED0 ${TOOL_ARG})
+			string(REGEX REPLACE "\\<\\<\\<OUTFILE>>>" "${OFILE_FULLPATH}" TOOL_ARG_PROCESSED1 ${TOOL_ARG_PROCESSED0})
+			string(REGEX REPLACE "\\<\\<\\<INFILE_PATH>>>" "${SRC_PATH_ONLY}" TOOL_ARG_PROCESSED ${TOOL_ARG_PROCESSED1})
+			#message(" - arg template: ${TOOL_ARG}")
+			#message("   instantiated: ${TOOL_ARG_PROCESSED}")
+			list(APPEND TOOL_ARGS ${TOOL_ARG_PROCESSED})
+			#set(TOOL_CMD_LINE "${TOOL_CMD_LINE} ${TOOL_ARG_PROCESSED}")
+		endforeach()
+		#message("  -------------------------------------------------")
+		#message(" RESULTING TOOL COMMAND LINE:")
+		#message("   ${TOOL_CMD_LINE}")
+		#message("----------------------------------------------------")
+		# - add the actual build rule
+		add_custom_command(
+			OUTPUT ${OFILE_FULLPATH}
+			COMMAND ${CMAKE_COMMAND} -E env CGV_DIR="${CGV_DIR}" CGV_OPTIONS="${CGV_OPTIONS}" ${CGVARG__BUILD_TOOL}
+			ARGS ${TOOL_ARGS}
+			DEPENDS "${SRC_FULLPATH}"
+		)
+		# - tie the rule to the appropriate targets
+		cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
+		if (ADD_TO_SHARED)
+			target_sources(${TARGET_NAME} PRIVATE "${OFILE_FULLPATH}" "${SRC_FULLPATH}")
+		endif()
+		if (ADD_TO_STATIC)
+			target_sources(${NAME_STATIC} PRIVATE "${OFILE_FULLPATH}" "${SRC_FULLPATH}")
+		endif()
+		# - IDE fluff
+		string(SUBSTRING ${CGVARG__BUILD_SUBDIR} 0 1 FIRST_LETTER)
+		string(TOUPPER ${FIRST_LETTER} FIRST_LETTER)
+		string(REGEX REPLACE "^.(.*)" "${FIRST_LETTER}\\1" SOURCE_GROUP_BASE "${CGVARG__BUILD_SUBDIR}")
+		source_group("${SOURCE_GROUP_BASE}" FILES ${SRC_FULLPATH})
+		source_group("${SOURCE_GROUP_BASE}/processed" FILES ${OFILE_FULLPATH})
 	endforeach()
-	#message("  -------------------------------------------------")
-	#message(" RESULTING TOOL COMMAND LINE:")
-	#message("   ${TOOL_CMD_LINE}")
-	#message("----------------------------------------------------")
-	# - add the actual build rule
-	add_custom_command(
-		OUTPUT ${OFILE_FULLPATH}
-		COMMAND ${CMAKE_COMMAND} -E env CGV_DIR="${CGV_DIR}" CGV_OPTIONS="${CGV_OPTIONS}" ${CGVARG__BUILD_TOOL}
-		ARGS ${TOOL_ARGS}
-		DEPENDS "${SRC_FULLPATH}"
-	)
-	# - tie the rule to the appropriate targets
-	cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
-	if (ADD_TO_SHARED)
-		target_sources(${TARGET_NAME} PRIVATE "${OFILE_FULLPATH}" "${SRC_FULLPATH}")
-	endif()
-	if (ADD_TO_STATIC)
-		target_sources(${NAME_STATIC} PRIVATE "${OFILE_FULLPATH}" "${SRC_FULLPATH}")
-	endif()
-	# - IDE fluff
-	string(SUBSTRING ${CGVARG__BUILD_SUBDIR} 0 1 FIRST_LETTER)
-	string(TOUPPER ${FIRST_LETTER} FIRST_LETTER)
-	string(REGEX REPLACE "^.(.*)" "${FIRST_LETTER}\\1" SOURCE_GROUP_BASE "${CGVARG__BUILD_SUBDIR}")
-	source_group("${SOURCE_GROUP_BASE}" FILES ${SRC_FULLPATH})
-	source_group("${SOURCE_GROUP_BASE}/processed" FILES ${OFILE_FULLPATH})
 endfunction()
 
 
