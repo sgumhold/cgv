@@ -729,15 +729,6 @@ function(cgv_add_custom_sources TARGET_NAME)
 		string(REGEX REPLACE "\\<\\<\\<FN>>>" "${SRC_FILE_WITHOUT_EXT}" OFILE_PROCESSED ${CGVARG__OUTFILE_TEMPLATE})
 		string(REGEX REPLACE "\\<\\<\\<EXT>>>" "${SRC_FILE_EXT_WITHOUT_DOT}" OFILE ${OFILE_PROCESSED})
 		set(OFILE_FULLPATH "${CMAKE_CURRENT_BINARY_DIR}/${CGVARG__BUILD_SUBDIR}/${OFILE}")
-		#message("----------------------------------------------------")
-		#message(" SOURCE:               ${SOURCE}")
-		#message(" SOURCE resolved path: ${SRC_FULLPATH}")
-		#message(" SOURCE file:          ${SRC_FILE}")
-		#message(" SOURCE file ext:      ${SRC_FILE_EXT_WITHOUT_DOT} (w/ dot: ${SRC_FILE_EXT})")
-		#message("  -------------------------------------------------")
-		#message(" OUTFILE template:     ${CGVARG__OUTFILE_TEMPLATE}")
-		#message(" OUTFILE instantiated: ${OFILE}")
-		#message(" OUTFILE full path:    ${OFILE_FULLPATH}")
 
 		# determine which variants of the component to add the custom source to
 		if (NOT CGVARG__SHARED AND NOT CGVARG__STATIC)
@@ -749,43 +740,23 @@ function(cgv_add_custom_sources TARGET_NAME)
 		if (NO_VARIANT_FLAGS OR CGVARG__STATIC)
 			set(ADD_TO_STATIC TRUE)
 		endif()
-		#message("  -------------------------------------------------")
-		#if (ADD_TO_SHARED)
-		#	message(" add to shared: yes")
-		#else()
-		#	message(" add to shared: no")
-		#endif()
-		#if (ADD_TO_STATIC)
-		#	message(" add to static: yes")
-		#else()
-		#	message(" add to static: no")
-		#endif()
 
 		# add custom build rule for the specified sources
 		set(BUILD_TOOL "$<IF:$<TARGET_EXISTS:${CGVARG__BUILD_TOOL}>,$<TARGET_FILE:${CGVARG__BUILD_TOOL}>,${CGVARG__BUILD_TOOL}>")
 		# - instantiate argument templates
-		#message("  -------------------------------------------------")
-		#message(" instantiating tool argument templates...")
 		set(TOOL_ARGS "")
-		#set(TOOL_CMD_LINE ${BUILD_TOOL})
 		foreach(TOOL_ARG ${CGVARG__BUILD_TOOL_ARGS})
 			string(REGEX REPLACE "\\<\\<\\<INFILE>>>" "${SRC_FULLPATH}" TOOL_ARG_PROCESSED0 ${TOOL_ARG})
 			string(REGEX REPLACE "\\<\\<\\<OUTFILE>>>" "${OFILE_FULLPATH}" TOOL_ARG_PROCESSED1 ${TOOL_ARG_PROCESSED0})
 			string(REGEX REPLACE "\\<\\<\\<INFILE_PATH>>>" "${SRC_PATH_ONLY}" TOOL_ARG_PROCESSED ${TOOL_ARG_PROCESSED1})
-			#message(" - arg template: ${TOOL_ARG}")
-			#message("   instantiated: ${TOOL_ARG_PROCESSED}")
 			list(APPEND TOOL_ARGS ${TOOL_ARG_PROCESSED})
-			#set(TOOL_CMD_LINE "${TOOL_CMD_LINE} ${TOOL_ARG_PROCESSED}")
 		endforeach()
-		#message("  -------------------------------------------------")
-		#message(" RESULTING TOOL COMMAND LINE:")
-		#message("   ${TOOL_CMD_LINE}")
-		#message("----------------------------------------------------")
 		# - add the actual build rule
 		add_custom_command(
 			OUTPUT ${OFILE_FULLPATH}
 			COMMAND ${CMAKE_COMMAND} -E env CGV_DIR="${CGV_DIR}" CGV_OPTIONS="${CGV_OPTIONS}" ${BUILD_TOOL}
 			ARGS ${TOOL_ARGS}
+			WORKING_DIRECTORY $<PATH:GET_PARENT_PATH,${BUILD_TOOL}>
 			DEPENDS "${SRC_FULLPATH}"
 		)
 		# - tie the rule to the appropriate targets
@@ -804,6 +775,7 @@ function(cgv_add_custom_sources TARGET_NAME)
 		source_group("${SOURCE_GROUP_BASE}/processed" FILES ${OFILE_FULLPATH})
 	endforeach()
 endfunction()
+
 
 
 
