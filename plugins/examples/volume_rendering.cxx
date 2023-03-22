@@ -72,7 +72,6 @@ void volume_viewer::stream_help(std::ostream& os)
 
 bool volume_viewer::handle_event(cgv::gui::event& e) 
 {
-
 	if(e.get_kind() == cgv::gui::EID_MOUSE) {
 		auto& me = static_cast<cgv::gui::mouse_event&>(e);
 

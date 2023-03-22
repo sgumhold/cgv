@@ -1,0 +1,272 @@
+#version 430
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_inverse_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of fragment.glfs ***********************************
+void finish_fragment(vec4 color);
+void finish_fragment(vec4 color, float depth);
+//***** end interface of fragment.glfs ***********************************
+
+uniform vec2 viewport_dims;
+uniform vec2 mouse_pos;
+
+// Looking Glass calibration variables
+uniform float pitch  = 673.46088569750157;
+uniform float slope  = -0.074780801514116493;
+uniform float center = 0.076352536678314209;
+
+in vec2 texcoord_fs;
+
+/*
+ * Adjusted version of original demo from https://www.shadertoy.com/view/ttXSDN
+ */
+
+float screenSize = 2.0; // Just do everything in screenSizes
+
+// A single view will _converge_ on a point about two screen-heights 
+// from the device. Assume focalDist is ~2 screenSizehs backwards, 
+// and from ~-0.22222 to 2 screenSizes on the x axis (use mouse.xy 
+// to control these)
+void calcRayForPixel(vec2 pix, out vec3 rayOrigin, out vec3 rayDir) {
+    // Mouse controlled focal distance and viewpoint spread
+    float screenWidth = (viewport_dims.x / viewport_dims.y) * screenSize;
+    float focalLeft   = -((mouse_pos.x / viewport_dims.x) - 0.45) * 2.0;
+    float focalRight  = screenWidth - focalLeft;
+    float focalDist   = -1.0 - (mouse_pos.y / viewport_dims.y) * 5.0; // -2.0 is a good default
+    
+    // Normalized pixel coordinates (from 0 to 1)
+    vec2 screenCoord = pix / viewport_dims.xy;
+    
+    // Get the current view for this subpixel
+    float view = screenCoord.x;
+	view += screenCoord.y * slope;
+	view *= pitch;
+	view -= center;
+	view = 1.0 - mod(view + ceil(abs(view)), 1.0);
+    
+    // Calculate the ray dir assuming pixels of a given view converge
+    // at points along a line segment floating "focalDist" above the display.
+    // TODO: Take into account the refraction of the acrylic, which changes
+    // the rays' angle of attack as they converge on pxFoc
+    vec3 pxPos = vec3(screenCoord.x * screenWidth, screenCoord.y * screenSize, 0.0);
+    vec3 pxFoc = vec3(mix(focalLeft, focalRight, view), 0.5, focalDist);
+    vec3 pxDir = pxFoc - pxPos; pxDir /= length(pxDir);
+    vec3 pxOri = pxPos + (1.0 * pxDir); // <- Increase for protruding objects
+    rayOrigin  = pxOri; rayDir = -pxDir;
+    
+    // Offset and Swizzle for IQ's Coordinate System
+    rayOrigin = vec3(-rayOrigin.z, rayOrigin.y, rayOrigin.x) + vec3(3.2,0.0,-0.9);
+    rayDir = vec3(-rayDir.z, rayDir.y, rayDir.x);
+}
+
+// The MIT License
+// Copyright © 2019 Inigo Quilez
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+const float N = 2.0; // grid ratio
+
+float gridTexture(in vec2 p) {
+    // coordinates
+    vec2 i = step(fract(p), vec2(1.0 / N));
+    //pattern
+    //return (1.0-i.x)*(1.0-i.y);   // grid (N=10)
+    
+    // other possible patterns are these
+    //return 1.0-i.x*i.y;           // squares (N=4)
+    return 1.0-i.x-i.y+2.0*i.x*i.y; // checker (N=2)
+}
+
+//===============================================================================================
+//===============================================================================================
+// sphere implementation
+//===============================================================================================
+//===============================================================================================
+
+float iSphere(in vec3 ro, in vec3 rd, in vec4 sph) {
+    float t = -1.0;
+	vec3  ce = ro - sph.xyz;
+	float b = dot(rd, ce);
+	float c = dot(ce, ce) - sph.w*sph.w;
+	float h = b*b - c;
+	if(h > 0.0) {
+		t = -b - sqrt(h);
+	}
+	return t;
+}
+
+//===============================================================================================
+//===============================================================================================
+// scene
+//===============================================================================================
+//===============================================================================================
+
+// spheres
+const vec4 sc0 = vec4(  3.0, 0.5, 0.0, 0.5 );
+const vec4 sc1 = vec4( -4.0, 2.0,-5.0, 2.0 );
+const vec4 sc2 = vec4( -4.0, 2.0, 5.0, 2.0 );
+const vec4 sc3 = vec4(-30.0, 8.0, 0.0, 8.0 );
+
+float intersect( vec3 ro, vec3 rd, out vec3 pos, out vec3 nor, out int matid )
+{
+    // raytrace
+	float tmin = 10000.0;
+	nor = vec3(0.0);
+	pos = vec3(0.0);
+    matid = -1;
+	
+	// raytrace-plane
+	float h = (0.01-ro.y)/rd.y;
+	if( h>0.0 ) {
+		tmin = h;
+		nor = vec3(0.0,1.0,0.0);
+		pos = ro + h*rd;
+		matid = 0;
+	}
+
+	// raytrace-sphere
+	h = iSphere( ro, rd, sc0 );
+	if( h>0.0 && h<tmin ) {
+		tmin = h;
+        pos = ro + h*rd;
+		nor = normalize(pos-sc0.xyz);
+		matid = 1;
+	}
+
+	h = iSphere( ro, rd, sc1 );
+	if( h>0.0 && h<tmin ) {
+		tmin = h;
+        pos = ro + tmin*rd;
+		nor = normalize(pos-sc1.xyz);
+		matid = 2;
+	}
+
+	h = iSphere( ro, rd, sc2 );
+	if( h>0.0 && h<tmin ) {
+		tmin = h;
+        pos = ro + tmin*rd;
+		nor = normalize(pos-sc2.xyz);
+		matid = 3;
+	}
+
+	h = iSphere( ro, rd, sc3 );
+	if( h>0.0 && h<tmin ) {
+		tmin = h;
+        pos = ro + tmin*rd;
+		nor = normalize(pos-sc3.xyz);
+		matid = 4;
+	}
+
+	return tmin;
+}
+
+vec2 texCoords(in vec3 pos, int mid) {
+    vec2 matuv;
+    
+    if( mid==0 ) {
+        matuv = pos.xz;
+    } else if( mid==1 ) {
+        vec3 q = normalize( pos - sc0.xyz );
+        matuv = vec2( atan(q.x,q.z), acos(q.y ) )*sc0.w;
+    } else if( mid==2 ) {
+        vec3 q = normalize( pos - sc1.xyz );
+        matuv = vec2( atan(q.x,q.z), acos(q.y ) )*sc1.w;
+    } else if( mid==3 ) {
+        vec3 q = normalize( pos - sc2.xyz );
+        matuv = vec2( atan(q.x,q.z), acos(q.y ) )*sc2.w;
+    } else if( mid==4 ) {
+        vec3 q = normalize( pos - sc3.xyz );
+        matuv = vec2( atan(q.x,q.z), acos(q.y ) )*sc3.w;
+    }
+
+	return matuv;
+}
+
+vec4 get_color( in int mid )
+{
+    vec4 col;
+    
+    if( mid==0 ) {
+        col = vec4(1.0, 1.0, 1.0, 1.0);
+    } else if( mid==1 ) {
+        col = vec4(0.2, 0.2, 0.2, 0.0);
+    } else if( mid==2 ) {
+        col = vec4(1.0, 0.0, 0.0, 0.0);
+    } else if( mid==3 ) {
+        col = vec4(0.0, 1.0, 0.0, 0.0);
+    } else if( mid==4 ) {
+        col = vec4(0.0, 0.0, 1.0, 0.0);
+    }
+
+	return col;
+}
+
+vec3 doLighting( in vec3 pos, in vec3 nor, in vec3 rd )
+{
+	float dif = clamp(dot(nor,vec3(0.57703)),0.0,1.0);
+	float bac = clamp(0.5+0.5*dot(nor,vec3(-0.707,0.0,-0.707)),0.0,1.0);
+    vec3 lin  = dif*vec3(1.50,1.40,1.30);
+	     lin += 0.1;
+    return lin;
+}
+
+//===============================================================================================
+//===============================================================================================
+// render
+//===============================================================================================
+//===============================================================================================
+
+vec3 rayTraceSubPixel(vec2 fragCoord) {
+    vec3 ro, rd;
+	calcRayForPixel(fragCoord, ro, rd);
+		
+    // trace
+	vec3 pos, nor;
+    int mid;
+    float t = intersect( ro, rd, pos, nor, mid );
+
+	vec3 col = vec3(0.9);
+	if( mid!=-1 ) {
+		vec2 uv = texCoords(pos, mid);
+		
+		vec4 surface_color = get_color(mid);
+
+		// shading		
+		vec3 mate = vec3(0.0);
+        mate = vec3(1.0)*gridTexture( uv );
+        
+        // lighting	
+		vec3 lin = doLighting( pos, nor, rd );
+		if(surface_color.w < 1.0)
+			mate = surface_color.xyz;
+
+        // combine lighting with material		
+		col = mate * lin;
+		
+        // fog		
+        col = mix( col, vec3(0.9), 1.0-exp( -0.00001*t*t ) );
+	}
+	
+	return col;
+}
+
+void main()
+{
+	vec2 frag_coord = gl_FragCoord.xy;
+
+	vec3 col = vec3(
+		rayTraceSubPixel(frag_coord).r,
+		rayTraceSubPixel(frag_coord + vec2(1.0/3.0, 0.0)).g, 
+		rayTraceSubPixel(frag_coord + vec2(2.0/3.0, 0.0)).b
+	);
+
+	finish_fragment(vec4(col, 1.0));
+}
