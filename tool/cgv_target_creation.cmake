@@ -701,21 +701,30 @@ function(cgv_add_target NAME)
 	endif()
 endfunction()
 
-# add a source of a custom type with an associated build rule to the given CGV Framework component
+# add sources of a custom type with an associated build rule to the given CGV Framework component
 # NOTES:
 #	(1) when specifying the build output filename, every occurence of <<<FN>>> will be replaced by the pure name without
-#	    path and without the file extension (after the last dot) of the input source file, and every occurence of <<<EXT>>>
-#	    will be replaced with the original file extension (without the preceding dot) of the original input source file
+#	    path and without the file extension (starting from the last dot) of the input source file, and every occurence of
+#	    <<<EXT>>> will be replaced with the original file extension (without the preceding dot) of the original input
+#	    source file
 #	(2) when specifying the tool command arguments, every occurence of <<<INFILE>>> will be replaced with the fully
-#	    qualified path to your source file, every occurence of <<<OUTFILE>>> will be replaced with the qualified path
-#	    to your target file build from the source file, and every occurence of <<<INFILE_PATH>>> will be replaced with the
-#	    fully qualified path to the directory containing the source file
+#	    qualified path to your source file, every occurence of <<<OUTFILE>>> will be replaced with the fully qualified
+#	    path to your target file build from the source file, and every occurence of <<<INFILE_PATH>>> will be replaced
+#	    with the fully qualified path to the directory containing the source file
 #	(3) by default, the rule is added to both normal (shared) and static variants of the component - you can select to
 #	    add it to only one or the other (or explicitly both) by specifying the SHARED and/or STATIC flags
+#	(4) secondary files included by the sources that can not be compiled by themselves (e.g. headers of some sort) can be
+#	    declared for inclusion in IDEs by listing them as HEADERS
 function(cgv_add_custom_sources TARGET_NAME)
 	cmake_parse_arguments(
-		PARSE_ARGV 1 CGVARG_ "SHARED;STATIC" "OUTFILE_TEMPLATE;BUILD_TOOL;BUILD_SUBDIR" "SOURCES;BUILD_TOOL_ARGS"
+		PARSE_ARGV 1 CGVARG_ "SHARED;STATIC" "OUTFILE_TEMPLATE;BUILD_TOOL;BUILD_SUBDIR" "SOURCES;HEADERS;BUILD_TOOL_ARGS"
 	)
+
+	# preliminaries
+	cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
+	string(SUBSTRING ${CGVARG__BUILD_SUBDIR} 0 1 FIRST_LETTER)
+	string(TOUPPER ${FIRST_LETTER} FIRST_LETTER)
+	string(REGEX REPLACE "^.(.*)" "${FIRST_LETTER}\\1" SOURCE_GROUP_BASE "${CGVARG__BUILD_SUBDIR}")
 
 	# loop through every source file and add it to the build system using the provided custom rule
 	foreach(SOURCE ${CGVARG__SOURCES})
@@ -760,22 +769,41 @@ function(cgv_add_custom_sources TARGET_NAME)
 			DEPENDS "${SRC_FULLPATH}"
 		)
 		# - tie the rule to the appropriate targets
-		cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
 		if (ADD_TO_SHARED)
 			target_sources(${TARGET_NAME} PRIVATE "${OFILE_FULLPATH}" "${SRC_FULLPATH}")
+		elseif (NOT (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
+			# in case of IDE generators we still want to display the files even if they're not going to be build
+			target_sources(${TARGET_NAME} PRIVATE "${SRC_FULLPATH}")
+			set_source_files_properties(
+				"${SRC_FULLPATH}" TARGET_DIRECTORY ${TARGET_NAME}
+				PROPERTIES HEADER_FILE_ONLY TRUE
+			)
 		endif()
 		if (ADD_TO_STATIC)
 			target_sources(${NAME_STATIC} PRIVATE "${OFILE_FULLPATH}" "${SRC_FULLPATH}")
+		elseif (NOT (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
+			# in case of IDE generators we still want to display the files even if they're not going to be build
+			target_sources(${NAME_STATIC} PRIVATE "${SRC_FULLPATH}")
+			set_source_files_properties(
+				"${SRC_FULLPATH}" TARGET_DIRECTORY ${NAME_STATIC}
+				PROPERTIES HEADER_FILE_ONLY TRUE
+			)
 		endif()
 		# - IDE fluff
-		string(SUBSTRING ${CGVARG__BUILD_SUBDIR} 0 1 FIRST_LETTER)
-		string(TOUPPER ${FIRST_LETTER} FIRST_LETTER)
-		string(REGEX REPLACE "^.(.*)" "${FIRST_LETTER}\\1" SOURCE_GROUP_BASE "${CGVARG__BUILD_SUBDIR}")
 		source_group("${SOURCE_GROUP_BASE}" FILES ${SRC_FULLPATH})
 		source_group("${SOURCE_GROUP_BASE}/processed" FILES ${OFILE_FULLPATH})
 	endforeach()
-endfunction()
 
+	# loop through every header and make them show up in IDEs
+	if (NOT (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
+		foreach(HEADER ${CGVARG__HEADERS})
+			target_sources(${TARGET_NAME} PRIVATE ${HEADER})
+			target_sources(${NAME_STATIC} PRIVATE ${HEADER})
+			set_source_files_properties(${HEADER} PROPERTIES HEADER_FILE_ONLY TRUE)
+			source_group("${SOURCE_GROUP_BASE}" FILES ${HEADER})
+		endforeach()
+	endif()
+endfunction()
 
 
 
