@@ -16,7 +16,7 @@ void main()
 	vec4 color = texture(color_tex, texcoord_fs);
 	float occlusion = texture(occlusion_tex, texcoord_fs).r;
 	
-	color.rgb *= 1.0 - (1.0 - occlusion) * strength;
+	color.rgb *= 1.0 - clamp(occlusion * strength, 0.0, 1.0);
 	frag_color = color;
 
 	// write the frag depth to enable the framework view to work properly

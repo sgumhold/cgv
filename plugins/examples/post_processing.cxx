@@ -4,11 +4,12 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
-#include <cgv_post/depth_halos.h>
 #include <cgv_gl/box_render_data.h>
 #include <cgv_gl/box_wire_render_data.h>
 #include <cgv_gl/cone_render_data.h>
 #include <cgv_gl/sphere_render_data.h>
+#include <cgv_post/depth_halos.h>
+#include <cgv_post/outline.h>
 #include <cgv_post/screen_space_ambient_occlusion.h>
 #include <cgv_post/temporal_anti_aliasing.h>
 
@@ -24,6 +25,7 @@ protected:
 	view* view_ptr = nullptr;
 	
 	cgv::post::depth_halos dh;
+	cgv::post::outline ol;
 	cgv::post::screen_space_ambient_occlusion ssao;
 	cgv::post::temporal_anti_aliasing taa;
 
@@ -106,6 +108,7 @@ public:
 	void clear(cgv::render::context& ctx) {
 		// post processing effects need to be destructed to free created resources
 		dh.destruct(ctx);
+		ol.destruct(ctx);
 		ssao.destruct(ctx);
 		taa.destruct(ctx);
 	}
@@ -115,6 +118,7 @@ public:
 
 		// all post_processing effects need to be initialized to create internally used objects and buffers
 		success &= dh.init(ctx);
+		success &= ol.init(ctx);
 		success &= ssao.init(ctx);
 		success &= taa.init(ctx);
 
@@ -142,6 +146,7 @@ public:
 
 		// call ensure in init_frame on post processing effects to make sure the internal buffers are created and sized accordingly
 		dh.ensure(ctx);
+		ol.ensure(ctx);
 		ssao.ensure(ctx);
 		taa.ensure(ctx);
 	}
@@ -153,6 +158,7 @@ public:
 		// Call begin() before drawing the main geometry to enable the post process framebuffers.
 		taa.begin(ctx);
 		dh.begin(ctx);
+		ol.begin(ctx);
 		ssao.begin(ctx);
 
 		ctx.push_modelview_matrix();
@@ -180,6 +186,7 @@ public:
 		// Call end() when rendering is finished to apply the effect and blit the result to the main framebuffer
 		// Attention! When using multiple effects they must be ended in reverse order.
 		ssao.end(ctx);
+		ol.end(ctx);
 		dh.end(ctx);
 		taa.end(ctx);
 	}
@@ -277,22 +284,12 @@ public:
 			end_tree_node(dh);
 		}
 
-		connect_copy(add_button("Reload Shaders")->click, cgv::signal::rebind(this, &post_processing::reload_shaders));
-	}
-
-	void reload_shaders() {
-		if(auto ctx_ptr = get_context()) {
-			auto& ctx = *ctx_ptr;
-
-			ctx.disable_shader_file_cache();
-			dh.destruct(ctx);
-			dh.init(ctx);
-			ssao.destruct(ctx);
-			ssao.init(ctx);
-			ctx.enable_shader_file_cache();
-
-			taa.reset();
-			post_redraw();
+		if(begin_tree_node("Outline", ol, false)) {
+			align("\a");
+			//add_gui("", dh);
+			ol.create_gui(this);
+			align("\b");
+			end_tree_node(ol);
 		}
 	}
 };

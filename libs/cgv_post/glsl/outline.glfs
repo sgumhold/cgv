@@ -1,0 +1,73 @@
+#version 430
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_inverse_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+layout (binding = 0) uniform sampler2D depth_tex;
+layout (binding = 1) uniform sampler2D color_tex;
+
+uniform float strength;
+uniform float threshold;
+
+in vec2 texcoord_fs;
+
+out vec4 frag_color;
+
+float sample_depth(vec2 coord) {
+	return texture(depth_tex, coord).r;
+}
+
+float get_eye_z(float d) {
+	mat4 P = get_projection_matrix();
+	float z_ndc = 2.0 * d - 1.0;
+	float z_eye = P[3][2] / (P[2][2] + z_ndc);
+
+	return z_eye;
+}
+
+float compute_outline(float depth) {
+
+	float eye_z_center = get_eye_z(depth);
+	
+	vec2 texel_size = 1.0 / textureSize(depth_tex, 0);
+
+	int num_samples = 1;
+
+	float outline = 0.0;
+	
+	for(int y = -num_samples; y <= num_samples; ++y) {
+		for(int x = -num_samples; x <= num_samples; ++x) {
+			vec2 sample_pos = vec2(x, y);
+			vec2 sample_coord = texcoord_fs + texel_size * sample_pos;
+
+			float eye_z = get_eye_z(sample_depth(sample_coord));
+
+			float diff = abs(eye_z_center - eye_z);
+			
+			if(diff > threshold)
+				outline += 1.0;
+		}
+	}
+
+	outline /= (num_samples + 1) * (num_samples + 1);
+	return clamp(outline, 0.0, 1.0);
+}
+
+void main()
+{
+	float depth = sample_depth(texcoord_fs);
+	vec4 color = texture(color_tex, texcoord_fs);
+	
+	color.rgb *= 1.0 - compute_outline(depth) * strength;
+
+	frag_color = color;
+	gl_FragDepth = depth;
+}

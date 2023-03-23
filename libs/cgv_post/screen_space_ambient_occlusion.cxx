@@ -29,7 +29,7 @@ bool screen_space_ambient_occlusion::init(cgv::render::context& ctx) {
 
 	shaders.add("ssao", "ssao.glpr");
 	shaders.add("ssao_resolve", "ssao_resolve.glpr");
-	shaders.add("blur", "box_blur.glpr");
+	shaders.add("blur", "box_blur.glpr", { { "CHANNELS", "1" }, { "RADIUS", "2" } });
 
 	generate_samples_and_noise_texture(ctx);
 	
@@ -66,6 +66,7 @@ void screen_space_ambient_occlusion::end(cgv::render::context& ctx) {
 	// use position, normal and depth information to compute the ambient occlussion term in screen space
 	fbc_post.enable(ctx);
 
+	fbc_draw.enable_attachment(ctx, "depth", 3);
 	fbc_draw.enable_attachment(ctx, "position", 0);
 	fbc_draw.enable_attachment(ctx, "normal", 1);
 	noise_tex.enable(ctx, 2);
@@ -84,6 +85,7 @@ void screen_space_ambient_occlusion::end(cgv::render::context& ctx) {
 	fbc_draw.disable_attachment(ctx, "position");
 	fbc_draw.disable_attachment(ctx, "normal");
 	noise_tex.disable(ctx);
+	fbc_draw.disable_attachment(ctx, "depth");
 
 	fbc_post.disable(ctx);
 
