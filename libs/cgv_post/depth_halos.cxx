@@ -17,14 +17,19 @@ bool depth_halos::init(cgv::render::context& ctx) {
 	fbc_draw.add_attachment("depth", "[D]");
 	fbc_draw.add_attachment("color", "flt32[R,G,B,A]");
 
-	shaders.add("depth_halo", "depth_halo.glpr");
-	
+	shaders.add("depth_halo", "depth_halo.glpr", get_shader_defines());
+
 	generate_noise_texture(ctx);
 
 	return post_process_effect::init(ctx);
 }
 
 bool depth_halos::ensure(cgv::render::context& ctx) {
+
+	if(do_reload_shader) {
+		do_reload_shader = false;
+		shaders.reload(ctx, "depth_halo", get_shader_defines());
+	}
 
 	return post_process_effect::ensure(ctx);
 }
@@ -73,10 +78,25 @@ void depth_halos::create_gui(cgv::gui::provider* p) {
 	cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
 	post_process_effect::create_gui(p);
+	connect_copy(
+		p->add_member_control(b, "Mode", mode, "dropdown", "enums='Inside,Outside;Center'")->value_change,
+		cgv::signal::rebind(this, &depth_halos::on_change_mode));
 	p->add_member_control(b, "Strength", strength, "value_slider", "min=0;step=0.001;max=5");
 	p->add_member_control(b, "Radius", radius, "value_slider", "min=0;step=0.001;max=20");
 	p->add_member_control(b, "Threshold", threshold, "value_slider", "min=0;step=0.001;max=1");
 	p->add_member_control(b, "Depth Scale", depth_scale, "value_slider", "min=0.1;step=0.001;max=100;log=true;ticks=true");
+}
+
+cgv::render::shader_define_map depth_halos::get_shader_defines() {
+
+	cgv::render::shader_define_map defines;
+	cgv::render::shader_code::set_define(defines, "MODE", mode, Mode::Outside);
+	return defines;
+}
+
+void depth_halos::on_change_mode() {
+
+	do_reload_shader = true;
 }
 
 void depth_halos::generate_noise_texture(cgv::render::context& ctx) {

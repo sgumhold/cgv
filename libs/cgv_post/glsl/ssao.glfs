@@ -57,5 +57,5 @@ void main()
 
 	occlusion *= (1.0/64.0);
 
-	frag_color = clamp(1.0 - occlusion, 0.0, 1.0);
+	frag_color = clamp(occlusion, 0.0, 1.0);
 }
