@@ -104,6 +104,7 @@ var namespacecgv_1_1utils =
     [ "is_url_special", "namespacecgv_1_1utils.html#a643f3fe18654ef2a7be7b78d5f82dada", null ],
     [ "is_year", "namespacecgv_1_1utils.html#a5e16eed75c4f654d7295f4505ad7e697", null ],
     [ "is_year", "namespacecgv_1_1utils.html#a2923901da5517a748563914debe34838", null ],
+    [ "join", "namespacecgv_1_1utils.html#a07474e4aecaf06a8ecca7aba033d5475", null ],
     [ "ltrim", "namespacecgv_1_1utils.html#a612b9004a640fd424d7ed20ba2104e74", null ],
     [ "ltrim", "namespacecgv_1_1utils.html#a6111552f6d6592cb0a9bec7939f4e236", null ],
     [ "operator<<", "namespacecgv_1_1utils.html#aedceed3128644dd33226f3c1a561c264", null ],
