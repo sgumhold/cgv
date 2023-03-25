@@ -84,4 +84,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubemap demos
-cgv::base::factory_registration<cubemap_demo> environment_demo_fac("New/Demo/Cubemap Demo");
+cgv::base::factory_registration<cubemap_demo> cubemap_demo_fac("New/Demo/Cubemap Demo");
