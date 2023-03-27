@@ -166,7 +166,7 @@ public:
 
 	void stream_help (std::ostream &os) {
 		os << "holo_raycast:" << std::endl
-		   << "\teye_separation_multiplier[left|right], frustum_shear_factor[,|.], reload shader [R]" << std::endl;
+		   << "\teye_separation_mult[left|right], frustum_shear_factor[,|.], reload shader[R]" << std::endl;
 	}
 
 	void on_set (void *member_ptr) {
@@ -291,7 +291,7 @@ public:
 
 	void create_gui() {
 		add_decorator(name, "heading");
-		add_member_control(this, "eye_separation_factor", test[0], "value_slider", "min=0;max=2;step=0.0625");
+		add_member_control(this, "eye_separation_mult", test[0], "value_slider", "min=0;max=2;step=0.0625");
 		add_member_control(this, "frustum_shear_factor", test[1], "value_slider", "min=0;max=1;step=0.0625");
 		add_member_control(this, "C", test[2], "value_slider", "min=0;max=2;step=0.0625");
 		add_member_control(this, "D", test[3], "value_slider", "min=0;max=2;step=0.0625");
