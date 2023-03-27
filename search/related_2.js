@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['gui_5fgroup_7355',['gui_group',['../classcgv_1_1gui_1_1provider.html#ac301065501736a49cc5ac35b06c05e0f',1,'cgv::gui::provider']]]
+  ['gui_5fgroup_7361',['gui_group',['../classcgv_1_1gui_1_1provider.html#ac301065501736a49cc5ac35b06c05e0f',1,'cgv::gui::provider']]]
 ];

@@ -101,6 +101,8 @@ var namespacecgv_1_1math =
     [ "geometric_median", "namespacecgv_1_1math.html#ab47423e8f43fdf220cc4baea42c5360c", null ],
     [ "hom", "namespacecgv_1_1math.html#ac62eea7ce2b3664181282b42f3de50d8", null ],
     [ "homog", "namespacecgv_1_1math.html#a740272723e8fd8a035b306d85b0b1e3f", null ],
+    [ "identity2", "namespacecgv_1_1math.html#a09b72ce41a65bef43ff53d97f7fd594c", null ],
+    [ "identity3", "namespacecgv_1_1math.html#a37b4de5b808b7aac948cc91a10881ffc", null ],
     [ "identity4", "namespacecgv_1_1math.html#a8a3e99019bd391ea3404126e830929ad", null ],
     [ "inf_norm", "namespacecgv_1_1math.html#af8d1188e252c04e6abccec35eed56d8f", null ],
     [ "inv", "namespacecgv_1_1math.html#ad173e82d952d395213d5ab62378e79d8", null ],

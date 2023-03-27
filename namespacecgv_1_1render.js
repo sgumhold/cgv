@@ -88,6 +88,7 @@ var namespacecgv_1_1render =
     [ "ivec3", "namespacecgv_1_1render.html#aa1c30dc02cbfdaefd131377691ea986b", null ],
     [ "ivec4", "namespacecgv_1_1render.html#a89e7a34fcdf2c4bfe98ecbddb2dffa8d", null ],
     [ "mat2", "namespacecgv_1_1render.html#a748ea60e64be3d59f0bc998da00a01e2", null ],
+    [ "mat23", "namespacecgv_1_1render.html#a8d88419209b12a87344d27465b69a719", null ],
     [ "mat3", "namespacecgv_1_1render.html#ac953a3cb849db985f1bfd86b4851aa13", null ],
     [ "mat34", "namespacecgv_1_1render.html#a09299973d8a3624c221d117732238747", null ],
     [ "mat4", "namespacecgv_1_1render.html#a80e5de4907c26239414021586635fe1a", null ],
