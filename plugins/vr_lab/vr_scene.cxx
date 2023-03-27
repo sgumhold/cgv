@@ -173,6 +173,7 @@ bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 	return 		
 		rh.reflect_member("invert_skybox", invert_skybox) &&
 		rh.reflect_member("skybox_file_names", skybox_file_names) &&
+		rh.reflect_member("auto_grab_focus", auto_grab_focus) &&
 		rh.reflect_member("draw_room", draw_room) &&
 		rh.reflect_member("room_width", room_width) &&
 		rh.reflect_member("room_depth", room_depth) &&
@@ -545,7 +546,7 @@ bool vr_scene::handle(cgv::gui::event& e)
 	}
 	cgv::nui::dispatch_report report;
 	bool ret = dispatch(e, &report);
-	if (report.action != cgv::nui::refocus_action::none)
+	if (report.action != cgv::nui::refocus_action::none && auto_grab_focus)
 		grab_focus();
 	return ret;
 }
@@ -554,6 +555,7 @@ void vr_scene::create_gui()
 	add_decorator("vr_scene", "heading");
 	if (begin_tree_node("hids", ctrl_infos)) {
 		align("\a");
+		add_member_control(this, "auto_grab_focus", auto_grab_focus, "toggle");
 		add_member_control(this, "dispatch_mouse_spatial", dispatch_mouse_spatial, "toggle");
 		add_member_control(this, "ctrl_pointing_animation_duration", ctrl_pointing_animation_duration, "value_slider", "min=0;max=2;ticks=true");
 		add_member_control(this, "draw_controller_mode", draw_controller_mode, "check");
