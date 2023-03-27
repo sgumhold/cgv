@@ -1132,3 +1132,7 @@ void vr_test::clear_frame_boxes()
 #include <cgv/base/register.h>
 
 cgv::base::object_registration<vr_test> vr_test_reg("vr_test");
+
+#ifdef CGV_FORCE_STATIC
+cgv::base::registration_order_definition ro_def("vr_view_interactor;vr_emulator;vr_wall;vr_scene;vr_test");
+#endif

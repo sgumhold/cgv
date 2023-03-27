@@ -202,6 +202,8 @@ namespace vr {
 		bool handle(cgv::gui::event&);
 		///
 		void stream_help(std::ostream& os);
+		///
+		void stream_stats(std::ostream& os);
 	};
 }
 

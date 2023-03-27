@@ -74,6 +74,7 @@ namespace vr {
 			break;
 		}
 		generate_screen_calib_points();
+		post_recreate_gui();
 	}
 
 	void vr_wall::generate_screen_calib_points()
@@ -141,6 +142,7 @@ namespace vr {
 		window_height = 1080;
 		window_x = 0;
 		window_y = 0;
+		calib_index = -1;
 		prs.halo_color = rgba(0, 0, 0, 0.9f);
 		prs.halo_width_in_pixel = -2.0f;
 		prs.point_size = 15.0f;
@@ -363,7 +365,7 @@ namespace vr {
 		add_member_control(this, "vr_wall_hmd_index", vr_wall_hmd_index, "value_slider", "min=-1;max=3;ticks=true");
 		add_member_control(this, "stereo_shader_mode", stereo_shader_mode, "dropdown", "enums='left only,right only,side by side,top bottom,column interleaved,row interleaved,red|cyan anaglyph,color anaglyph,half-color anaglyph,Dubois anaglyph'");
 
-		if (begin_tree_node("screen calibration", screen_center, false, "level=2")) {
+		if (calib_points_screen.size() >= 4 && begin_tree_node("screen calibration", screen_center, false, "level=2")) {
 			align("\a");
 			add_gui("cp0", calib_points_screen[0], "", "options='min=-2;max=2;step=0.0001;ticks=true'");
 			add_gui("cp1", calib_points_screen[1], "", "options='min=-2;max=2;step=0.0001;ticks=true'");
@@ -520,6 +522,10 @@ namespace vr {
 			wall_state = WS_SCREEN_CALIB;
 			on_set(&wall_state);
 			return true;
+		case 'E':
+			wall_state = WS_EYES_CALIB;
+			on_set(&wall_state);
+			return true;
 		case 'H':
 			wall_state = WS_HMD;
 			on_set(&wall_state);
@@ -551,6 +557,41 @@ namespace vr {
 			<< "  Screen calib: touch green points with controller front\n"
 			<< "  Eye calib: aim with left|right eye through left|right controller ring to red|blue dot" << std::endl;
 	}
+	void vr_wall::stream_stats(std::ostream& os)
+	{
+		os << "vr_wall: WM=";
+		switch (stereo_window_mode) {
+		case SWM_SINGLE: os << "single"; break;
+		case SWM_DOUBLE: os << "double"; break;
+		case SWM_TWO: os << "two"; break;
+		}
+		os << ",kit=" << vr_wall_kit_index << ",hmd=" << vr_wall_hmd_index << ",state=";
+		switch (wall_state) {
+		case WS_SCREEN_CALIB: os << "screen"; break;
+		case WS_EYES_CALIB: os << "eye"; break;
+		case WS_HMD: os << "hmd"; break;
+		}
+		os << ",idx=" << calib_index << ",IPD=" << IPD << ",stereo=";
+		switch (stereo_shader_mode) {
+		case SSM_LEFT_ONLY: os << "L"; break;
+		case SSM_RIGHT_ONLY: os << "R"; break;
+		case SSM_SIDE_BY_SIDE: os << "SbS"; break;
+		case SSM_TOP_BOTTOM: os << "B"; break;
+		case SSM_COLUMN_INTERLEAVED: os << "CI"; break;
+		case SSM_ROW_INTERLEAVED: os << "RI"; break;
+		case SSM_ANAGLYPH_RED_CYAN: os << "ARC"; break;
+		case SSM_ANAGLYPH_COLOR: os << "ACol"; break;
+		case SSM_ANAGLYPH_HALF_COLOR: os << "AHCol"; break;
+		case SSM_ANAGLYPH_DUBOID: os << "ADub"; break;
+		}
+		os << ",eye=";
+		if (eye_calibrated[0])
+			os << "L";
+		if (eye_calibrated[1])
+			os << "R";
+		os << "\n";
+	}
+
 	///
 	bool vr_wall::init_cbd(cgv::render::context& ctx, bool is_right)
 	{
