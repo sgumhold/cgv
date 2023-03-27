@@ -229,7 +229,7 @@ public:
 		for(unsigned i = 0; i < n; ++i) {
 			for(unsigned j = 0; j < sentence.length(); ++j) {
 				char c = sentence[j];
-				auto& it = rules.find(c);
+				auto it = rules.find(c);
 				if(it != rules.end()) {
 					auto& r = (*it);
 					next_sentence += r.second;
