@@ -692,5 +692,16 @@ std::string trim(const std::string& str, const std::string& chars)
 	return ltrim(rtrim(str, chars), chars);
 }
 
+std::string join(const std::vector<std::string>& strs, const std::string& sep, bool trailing_sep)
+{
+	std::string res = "";
+	for(size_t i = 0; i < strs.size(); ++i) {
+		res += strs[i];
+		if(i < strs.size() - 1 || trailing_sep)
+			res += sep;
+	}
+	return res;
+}
+
 	}
 }
