@@ -16,73 +16,83 @@ void finish_fragment(vec4 color);
 void finish_fragment(vec4 color, float depth);
 //***** end interface of fragment.glfs ***********************************
 
-uniform vec2 viewport_dims;
-uniform vec2 mouse_pos;
-
-// Looking Glass calibration variables
+// looking Glass calibration values
 uniform float pitch  = 673.46088569750157;
 uniform float slope  = -0.074780801514116493;
 uniform float center = 0.076352536678314209;
 
+// stereoscopy parameters
+uniform vec2 viewport_dims;
+uniform vec3 eye_pos;
+uniform float eye_separation;
+uniform float screen_width;
+uniform float screen_height;
+uniform float parallax_zero_depth;
+uniform float z_near;
+uniform float z_far;
+
+// our test parameters (TODO: use proper named uniforms)
+uniform vec4 test;
+
+// width of one subpixel as a fraction of full viewport width
+const float subpixel_width = 1./(3*viewport_dims.x);
+
+// input from screen_quad vertex shader (we ignore this)
 in vec2 texcoord_fs;
 
-/*
- * Adjusted version of original demo from https://www.shadertoy.com/view/ttXSDN
- */
 
-float screenSize = 2.0; // Just do everything in screenSizes
-
-// A single view will _converge_ on a point about two screen-heights 
-// from the device. Assume focalDist is ~2 screenSizehs backwards, 
-// and from ~-0.22222 to 2 screenSizes on the x axis (use mouse.xy 
-// to control these)
-void calcRayForPixel(vec2 pix, out vec3 rayOrigin, out vec3 rayDir) {
-    // Mouse controlled focal distance and viewpoint spread
-    float screenWidth = (viewport_dims.x / viewport_dims.y) * screenSize;
-    float focalLeft   = -((mouse_pos.x / viewport_dims.x) - 0.45) * 2.0;
-    float focalRight  = screenWidth - focalLeft;
-    float focalDist   = -1.0 - (mouse_pos.y / viewport_dims.y) * 5.0; // -2.0 is a good default
-    
-    // Normalized pixel coordinates (from 0 to 1)
-    vec2 screenCoord = pix / viewport_dims.xy;
-    
-    // Get the current view for this subpixel
-    float view = screenCoord.x;
-	view += screenCoord.y * slope;
-	view *= pitch;
-	view -= center;
-	view = 1.0 - mod(view + ceil(abs(view)), 1.0);
-    
-    // Calculate the ray dir assuming pixels of a given view converge
-    // at points along a line segment floating "focalDist" above the display.
-    // TODO: Take into account the refraction of the acrylic, which changes
-    // the rays' angle of attack as they converge on pxFoc
-    vec3 pxPos = vec3(screenCoord.x * screenWidth, screenCoord.y * screenSize, 0.0);
-    vec3 pxFoc = vec3(mix(focalLeft, focalRight, view), 0.5, focalDist);
-    vec3 pxDir = pxFoc - pxPos; pxDir /= length(pxDir);
-    vec3 pxOri = pxPos + (1.0 * pxDir); // <- Increase for protruding objects
-    rayOrigin  = pxOri; rayDir = -pxDir;
-    
-    // Offset and Swizzle for IQ's Coordinate System
-    rayOrigin = vec3(-rayOrigin.z, rayOrigin.y, rayOrigin.x) + vec3(3.2,0.0,-0.9);
-    rayDir = vec3(-rayDir.z, rayDir.y, rayDir.x);
-}
+// demo from https://www.shadertoy.com/view/ttXSDN
+//float screenSize = 2.0; // Just do everything in screenSizes
 
 // The MIT License
-// Copyright © 2019 Inigo Quilez
+// Copyright ï¿½ 2019 Inigo Quilez
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-const float N = 2.0; // grid ratio
 
-float gridTexture(in vec2 p) {
-    // coordinates
-    vec2 i = step(fract(p), vec2(1.0 / N));
-    //pattern
-    //return (1.0-i.x)*(1.0-i.y);   // grid (N=10)
-    
-    // other possible patterns are these
-    //return 1.0-i.x*i.y;           // squares (N=4)
-    return 1.0-i.x-i.y+2.0*i.x*i.y; // checker (N=2)
+// A filtered xor pattern. Since an xor patterns is a series of checkerboard
+// patterns, I derived this one from https://www.shadertoy.com/view/XlcSz2
+
+// Other filterable simple procedural patterns:
+//
+// checker, 2D, box filter: https://www.shadertoy.com/view/XlcSz2
+// checker, 3D, box filter: https://www.shadertoy.com/view/XlXBWs
+// checker, 3D, tri filter: https://www.shadertoy.com/view/llffWs
+// grid,    2D, box filter: https://www.shadertoy.com/view/XtBfzz
+// xor,     2D, box filter: https://www.shadertoy.com/view/tdBXRW
+//
+// Article: https://iquilezles.org/articles/filterableprocedurals
+
+
+// --- analytically box-filtered grid ---
+
+const float N = 2.0; // grid ratio
+float gridTextureGradBox( in vec2 p, in vec2 ddx, in vec2 ddy )
+{
+	// filter kernel
+	vec2 w = max(abs(ddx), abs(ddy)) + 0.01;
+
+	// analytic (box) filtering
+	vec2 a = p + 0.5*w;                        
+	vec2 b = p - 0.5*w;           
+	vec2 i = (floor(a)+min(fract(a)*N,1.0)-
+				floor(b)-min(fract(b)*N,1.0))/(N*w);
+	//pattern
+	//return (1.0-i.x)*(1.0-i.y);
+	return 1.0-i.x-i.y+2.0*i.x*i.y;
+}
+
+// --- unfiltered grid ---
+
+float gridTexture( in vec2 p )
+{
+	// coordinates
+	vec2 i = step( fract(p), vec2(1.0/N) );
+	//pattern
+	//return (1.0-i.x)*(1.0-i.y);   // grid (N=10)
+
+	// other possible patterns are these
+	//return 1.0-i.x*i.y;           // squares (N=4)
+	return 1.0-i.x-i.y+2.0*i.x*i.y; // checker (N=2)
 }
 
 //===============================================================================================
@@ -91,15 +101,15 @@ float gridTexture(in vec2 p) {
 //===============================================================================================
 //===============================================================================================
 
-float iSphere(in vec3 ro, in vec3 rd, in vec4 sph) {
+float iSphere( in vec3 ro, in vec3 rd, in vec4 sph )
+{
     float t = -1.0;
 	vec3  ce = ro - sph.xyz;
-	float b = dot(rd, ce);
-	float c = dot(ce, ce) - sph.w*sph.w;
+	float b = dot( rd, ce );
+	float c = dot( ce, ce ) - sph.w*sph.w;
 	float h = b*b - c;
-	if(h > 0.0) {
+	if (h > 0)
 		t = -b - sqrt(h);
-	}
 	return t;
 }
 
@@ -109,102 +119,111 @@ float iSphere(in vec3 ro, in vec3 rd, in vec4 sph) {
 //===============================================================================================
 //===============================================================================================
 
+
 // spheres
-const vec4 sc0 = vec4(  3.0, 0.5, 0.0, 0.5 );
-const vec4 sc1 = vec4( -4.0, 2.0,-5.0, 2.0 );
-const vec4 sc2 = vec4( -4.0, 2.0, 5.0, 2.0 );
-const vec4 sc3 = vec4(-30.0, 8.0, 0.0, 8.0 );
+const vec4 sc0 = vec4(  0.0, 0.5, 0.0, 0.5 );
+const vec4 sc1 = vec4( 1.0, 0.5, 0.0, 0.5 );
+const vec4 sc2 = vec4( 0.0, 1.5, 0.0, 0.5 );
+const vec4 sc3 = vec4( 0.0, 0.5, 1.0, 0.5 );
 
 float intersect( vec3 ro, vec3 rd, out vec3 pos, out vec3 nor, out int matid )
 {
-    // raytrace
-	float tmin = 10000.0;
+	// raytrace
+	float tmin = 1000000.0;
 	nor = vec3(0.0);
-	pos = vec3(0.0);
-    matid = -1;
-	
+	pos = ro + tmin*rd;
+	matid = -1;
+
 	// raytrace-plane
 	float h = (0.01-ro.y)/rd.y;
-	if( h>0.0 ) {
-		tmin = h;
-		nor = vec3(0.0,1.0,0.0);
+	if( h>0.0 ) 
+	{ 
+		tmin = h; 
+		nor = vec3(0.0,1.0,0.0); 
 		pos = ro + h*rd;
 		matid = 0;
 	}
 
 	// raytrace-sphere
 	h = iSphere( ro, rd, sc0 );
-	if( h>0.0 && h<tmin ) {
-		tmin = h;
-        pos = ro + h*rd;
-		nor = normalize(pos-sc0.xyz);
+	if( h>0.0 && h<tmin ) 
+	{ 
+		tmin = h; 
+		pos = ro + h*rd;
+		nor = normalize(pos-sc0.xyz); 
 		matid = 1;
 	}
 
 	h = iSphere( ro, rd, sc1 );
-	if( h>0.0 && h<tmin ) {
-		tmin = h;
-        pos = ro + tmin*rd;
-		nor = normalize(pos-sc1.xyz);
+	if( h>0.0 && h<tmin ) 
+	{ 
+		tmin = h; 
+		pos = ro + tmin*rd;
+		nor = normalize(pos-sc1.xyz); 
 		matid = 2;
 	}
 
 	h = iSphere( ro, rd, sc2 );
-	if( h>0.0 && h<tmin ) {
-		tmin = h;
-        pos = ro + tmin*rd;
-		nor = normalize(pos-sc2.xyz);
+	if( h>0.0 && h<tmin ) 
+	{ 
+		tmin = h; 
+		pos = ro + tmin*rd;
+		nor = normalize(pos-sc2.xyz); 
 		matid = 3;
 	}
 
 	h = iSphere( ro, rd, sc3 );
-	if( h>0.0 && h<tmin ) {
-		tmin = h;
-        pos = ro + tmin*rd;
-		nor = normalize(pos-sc3.xyz);
+	if( h>0.0 && h<tmin ) 
+	{ 
+		tmin = h; 
+		pos = ro + tmin*rd;
+		nor = normalize(pos-sc3.xyz); 
 		matid = 4;
 	}
 
 	return tmin;
 }
 
-vec2 texCoords(in vec3 pos, int mid) {
-    vec2 matuv;
-    
-    if( mid==0 ) {
-        matuv = pos.xz;
-    } else if( mid==1 ) {
-        vec3 q = normalize( pos - sc0.xyz );
-        matuv = vec2( atan(q.x,q.z), acos(q.y ) )*sc0.w;
-    } else if( mid==2 ) {
-        vec3 q = normalize( pos - sc1.xyz );
-        matuv = vec2( atan(q.x,q.z), acos(q.y ) )*sc1.w;
-    } else if( mid==3 ) {
-        vec3 q = normalize( pos - sc2.xyz );
-        matuv = vec2( atan(q.x,q.z), acos(q.y ) )*sc2.w;
-    } else if( mid==4 ) {
-        vec3 q = normalize( pos - sc3.xyz );
-        matuv = vec2( atan(q.x,q.z), acos(q.y ) )*sc3.w;
-    }
+vec2 texCoords( in vec3 pos, int mid )
+{
+	vec2 matuv;
+
+	if( mid==0 )
+		matuv = pos.xz;
+	else if (mid==1) {
+		vec3 q = normalize( pos - sc0.xyz );
+		matuv = vec2( atan(q.x,q.z), acos(q.y ) )*sc0.w;
+	}
+	else if (mid==2) {
+		vec3 q = normalize( pos - sc1.xyz );
+		matuv = vec2( atan(q.x,q.z), acos(q.y ) )*sc1.w;
+	}
+	else if (mid==3) {
+		vec3 q = normalize( pos - sc2.xyz );
+		matuv = vec2( atan(q.x,q.z), acos(q.y ) )*sc2.w;
+	}
+	else if (mid==4) {
+		vec3 q = normalize( pos - sc3.xyz );
+		matuv = vec2( atan(q.x,q.z), acos(q.y ) )*sc3.w;
+	}
 
 	return matuv;
 }
 
 vec4 get_color( in int mid )
 {
-    vec4 col;
-    
-    if( mid==0 ) {
-        col = vec4(1.0, 1.0, 1.0, 1.0);
-    } else if( mid==1 ) {
-        col = vec4(0.2, 0.2, 0.2, 0.0);
-    } else if( mid==2 ) {
-        col = vec4(1.0, 0.0, 0.0, 0.0);
-    } else if( mid==3 ) {
-        col = vec4(0.0, 1.0, 0.0, 0.0);
-    } else if( mid==4 ) {
-        col = vec4(0.0, 0.0, 1.0, 0.0);
-    }
+	vec4 col;
+
+	if (mid==0)
+		col = vec4(1.0, 1.0, 1.0, 1.0);
+	else if (mid==1)
+		col = vec4(0.2, 0.2, 0.2, 0.0);
+	else if (mid==2)
+		col = vec4(1.0, 0.0, 0.0, 0.0);
+	else if (mid==3)
+		col = vec4(0.0, 1.0, 0.0, 0.0);
+	else if (mid==4)
+		col = vec4(0.0, 0.0, 1.0, 0.0);
 
 	return col;
 }
@@ -213,9 +232,9 @@ vec3 doLighting( in vec3 pos, in vec3 nor, in vec3 rd )
 {
 	float dif = clamp(dot(nor,vec3(0.57703)),0.0,1.0);
 	float bac = clamp(0.5+0.5*dot(nor,vec3(-0.707,0.0,-0.707)),0.0,1.0);
-    vec3 lin  = dif*vec3(1.50,1.40,1.30);
-	     lin += 0.1;
-    return lin;
+	vec3 lin  = dif*vec3(1.50,1.40,1.30);
+		lin += 0.1;
+	return lin;
 }
 
 //===============================================================================================
@@ -224,49 +243,122 @@ vec3 doLighting( in vec3 pos, in vec3 nor, in vec3 rd )
 //===============================================================================================
 //===============================================================================================
 
-vec3 rayTraceSubPixel(vec2 fragCoord) {
-    vec3 ro, rd;
-	calcRayForPixel(fragCoord, ro, rd);
-		
-    // trace
+vec3 rayTracePixel(vec3 ro, vec3 rd, out float depth)
+{
+	// trace
 	vec3 pos, nor;
-    int mid;
-    float t = intersect( ro, rd, pos, nor, mid );
+	int mid;
+	float t = intersect(ro, rd, pos, nor, mid);
 
 	vec3 col = vec3(0.9);
-	if( mid!=-1 ) {
-		vec2 uv = texCoords(pos, mid);
+	if( mid != -1)
+	{
+		// calc texture sampling footprint
+		vec2     uv = texCoords(     pos, mid );
 		
-		vec4 surface_color = get_color(mid);
+		vec4 cool = get_color(mid);
 
-		// shading		
+		// shading
 		vec3 mate = vec3(0.0);
-        mate = vec3(1.0)*gridTexture( uv );
-        
-        // lighting	
-		vec3 lin = doLighting( pos, nor, rd );
-		if(surface_color.w < 1.0)
-			mate = surface_color.xyz;
+		mate = vec3(1.0)*gridTexture( uv );
 
-        // combine lighting with material		
+		// lighting
+		vec3 lin = doLighting( pos, nor, rd );
+		if(cool.w < 1.0)
+			mate = cool.xyz;
+
+		// combine lighting with material
 		col = mate * lin;
-		
-        // fog		
-        col = mix( col, vec3(0.9), 1.0-exp( -0.00001*t*t ) );
 	}
 	
-	return col;
+	// gamma correction	
+	col = pow( col, vec3(0.4545) );
+
+	vec4 pos_clip = get_modelview_projection_matrix() * vec4(pos, 1.0);
+	depth = 0.5*(pos_clip.z / pos_clip.w) + 0.5;
+	
+	// line
+	return col; // * smoothstep( 1.0, 2.0, abs(fragCoord.x-iResolution.x/2.0) );
+}
+
+mat4 compute_frustum(float l, float r, float b, float t, float n, float f)
+{
+	mat4 M = mat4(0.0);
+	M[0][0] = 2.0 * n / (r - l);
+	M[2][0] = (r + l) / (r - l);
+	M[1][1] = 2.0 * n / (t - b);
+	M[2][1] = (t + b) / (t - b);
+	M[2][2] = (n + f) / (n - f);
+	M[3][2] = 2.0 * n * f / (n - f);
+	M[2][3] = -1.0;
+	return M;
+}
+
+// eye from left to right / -1 to 1
+mat4 compute_stereo_frustum_screen(in float eye)
+{
+	float aspect = screen_width / screen_height;
+	float top = 0.5*screen_height*z_near / parallax_zero_depth;
+	float bottom = -top;
+	float delta = 0.5*eye_separation*eye*screen_width*z_near / parallax_zero_depth;
+	float left = bottom * aspect - delta;
+	float right = top * aspect - delta;
+	return compute_frustum(left, right, bottom, top, z_near, z_far);
+}
+
+// eye from left to right / -1 to 1
+void stereo_translate_modelview_matrix(in float eye, in out mat4 M) {
+	M[3].x += -0.5 * eye_separation * eye * screen_width;
+}
+
+float view_from_fragment_component (const vec2 frag, const int component) {
+	float z = (frag.x + subpixel_width*float(component) + slope*frag.y) * pitch - center;
+	z = 1. - mod(z + ceil(abs(z)), 1.);
+	return z+z - 1.;
 }
 
 void main()
 {
-	vec2 frag_coord = gl_FragCoord.xy;
+	const vec2 uv = gl_FragCoord.xy / viewport_dims;
 
-	vec3 col = vec3(
-		rayTraceSubPixel(frag_coord).r,
-		rayTraceSubPixel(frag_coord + vec2(1.0/3.0, 0.0)).g, 
-		rayTraceSubPixel(frag_coord + vec2(2.0/3.0, 0.0)).b
-	);
+	vec3 rgb, depth;
+	for (int c=0; c<3; c++)
+	{
+		// determine which view the subpixel belongs to
+		float view = view_from_fragment_component(uv, c);
 
-	finish_fragment(vec4(col, 1.0));
+		// transform fragment coordinates from clip coordinates to object coordinates
+		mat4 P = get_projection_matrix();
+		mat4 MV = get_modelview_matrix();
+		mat4 P_ = compute_stereo_frustum_screen(view);
+		P[0] = mix(P[0], P_[0], test.y);
+		P[1] = mix(P[1], P_[1], test.y);
+		P[2] = mix(P[2], P_[2], test.y);
+		P[3] = mix(P[3], P_[3], test.y);
+
+		stereo_translate_modelview_matrix(view, MV);
+		//MV[3].x += -0.5 * (test.x * eye_separation) * view * screen_width;
+
+		// transform texcoord to clip coordinates
+		vec4 coord = vec4(uv, 0.0, 1.0) * vec4(2.0, 2.0, 2.0, 0.0) + vec4(-1.0, -1.0, -1.0, 1.0);
+		//vec4 coord = vec4(2.0 * uv - 1.0, -1.0, 1.0);
+
+		//coord = get_inverse_modelview_projection_matrix() * coord;
+		coord = inverse(P * MV) * coord;
+		coord /= coord.w;
+
+		vec3 obj_space_eye_pos = (inverse(MV) * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+
+		vec3 ray = normalize(coord.xyz - obj_space_eye_pos);
+
+		vec3 col = rayTracePixel(obj_space_eye_pos, ray, depth[c]);
+
+		rgb[c] = col[c];
+	}
+
+	// FIXME: find proper way to discard subpixels (perhaps init frag color to set background color?)
+	if (depth.r < 1 || depth.g < 1 || depth.b < 1)
+		finish_fragment(vec4(rgb, 1.0), min(min(depth.r, depth.g), depth.b));
+	else
+		discard;
 }
