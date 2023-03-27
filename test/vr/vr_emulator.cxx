@@ -94,6 +94,10 @@ void vr_emulated_kit::compute_state_poses()
 	set_pose_matrix(T_body*T_hip*T_head, state.hmd.pose);
 	set_pose_matrix(T_body*T_hip*T_left, state.controller[0].pose);
 	set_pose_matrix(T_body*T_hip*T_right, state.controller[1].pose);
+	static unsigned ts = 1;
+	++ts;
+	state.controller[0].time_stamp = ts;
+	state.controller[1].time_stamp = ts;
 	for (int i = 0; i < 4; ++i) {
 		if (!tracker_enabled[i]) {
 			state.controller[2 + i].status = vr::VRS_DETACHED;
@@ -107,6 +111,7 @@ void vr_emulated_kit::compute_state_poses()
 		}
 		set_pose_matrix(T, state.controller[2 + i].pose);
 		state.controller[2 + i].status = vr::VRS_TRACKED;
+		state.controller[2 + i].time_stamp = ts;
 	}
 }
 
