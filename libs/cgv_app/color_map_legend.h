@@ -31,7 +31,7 @@ protected:
 		AlignmentOption label_alignment = AO_END;
 
 		// dependent members
-		cgv::g2d::rect color_map_rect;
+		cgv::g2d::irect color_map_rect;
 		ivec2 title_position = ivec2(0);
 		float title_angle = 90.0f;
 
