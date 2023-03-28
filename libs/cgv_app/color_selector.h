@@ -18,14 +18,14 @@ protected:
 		int size = 280;
 
 		// dependent members
-		cgv::g2d::rect border_rect;
-		cgv::g2d::rect color_rect;
-		cgv::g2d::rect hue_rect;
-		cgv::g2d::rect opacity_rect;
-		cgv::g2d::rect preview_rect;
+		cgv::g2d::irect border_rect;
+		cgv::g2d::irect color_rect;
+		cgv::g2d::irect hue_rect;
+		cgv::g2d::irect opacity_rect;
+		cgv::g2d::irect preview_rect;
 
-		cgv::g2d::rect hue_constraint;
-		cgv::g2d::rect opacity_constraint;
+		cgv::g2d::irect hue_constraint;
+		cgv::g2d::irect opacity_constraint;
 	} layout;
 	
 	struct selector_handle : public cgv::g2d::draggable {
@@ -40,7 +40,7 @@ protected:
 
 		void update_val() {
 			if(constraint) {
-				const cgv::g2d::rect& c = *constraint;
+				const cgv::g2d::irect& c = *constraint;
 				vec2 p = pos - static_cast<vec2>(c.pos());
 				ivec2 size = c.size();
 				val = p / static_cast<vec2>(size);
@@ -52,7 +52,7 @@ protected:
 
 		void update_pos() {
 			if(constraint) {
-				const cgv::g2d::rect& c = *constraint;
+				const cgv::g2d::irect& c = *constraint;
 				val = cgv::math::clamp(val, 0.0f, 1.0f);
 				pos = static_cast<vec2>(c.pos()) + val * c.size();
 			}

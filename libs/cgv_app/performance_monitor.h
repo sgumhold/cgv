@@ -19,8 +19,8 @@ protected:
 		ivec2 total_size;
 
 		// dependent members
-		cgv::g2d::rect content_rect;
-		cgv::g2d::rect plot_rect;
+		cgv::g2d::irect content_rect;
+		cgv::g2d::irect plot_rect;
 		
 		void update(const ivec2& parent_size) {
 			

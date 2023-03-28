@@ -35,31 +35,23 @@ private:
 	struct point : public cgv::g2d::draggable {
 		point(const ivec2& pos) {
 			this->pos = pos;
-			size = vec2(8.0f);
+			size = vec2(16.0f);
 			position_is_center = true;
 			constraint_reference = CR_FULL_SIZE;
 		}
 
 		bool is_inside(const vec2& mp) const {
-
 			float dist = length(mp - center());
-			return dist <= size.x();
-		}
-
-		ivec2 get_render_position() const {
-			return ivec2(pos + 0.5f);
-		}
-
-		ivec2 get_render_size() const {
-			return 2 * ivec2(size);
+			return dist <= 0.5f*size.x();
 		}
 	};
 
 protected:
-	cgv::g2d::rect viewport_rect;
+	cgv::g2d::irect viewport_rect;
 
 	cgv::g2d::canvas canvas;
-	cgv::g2d::shape2d_style bg_style, rect_style, circle_style, quad_style, text_style, draggable_style;
+	cgv::g2d::shape2d_style bg_style, rect_style, quad_style, text_style, draggable_style;
+	cgv::g2d::circle2d_style circle_style;
 	cgv::g2d::line2d_style line_style, control_line_style;
 	cgv::g2d::arrow2d_style arrow_style;
 	cgv::g2d::grid2d_style grid_style;
@@ -397,7 +389,7 @@ public:
 		auto& quad_prog = canvas.enable_shader(ctx, "quad");
 		quad_style.apply(ctx, quad_prog);
 		// takes 4 positions (must be convex)
-		canvas.draw_shape4(ctx, ivec2(400, 300), ivec2(480, 300), points[10].get_render_position(), points[11].get_render_position(), rgba(1, 1, 0, 1));
+		canvas.draw_shape4(ctx, ivec2(400, 300), ivec2(480, 300), points[10].ipos(), points[11].ipos(), rgba(1, 1, 0, 1));
 		canvas.disable_current_shader(ctx);
 
 		auto& arrow_prog = canvas.enable_shader(ctx, "arrow");
@@ -454,8 +446,8 @@ public:
 
 		for(unsigned i = 0; i < points.size(); ++i) {
 			const point& p = points[i];
-			draggable_points.add(p.get_render_position());
-			render_size = p.get_render_size();
+			draggable_points.add(p.pos);
+			render_size = p.size;
 		}
 		
 		draggable_points.set_out_of_date();

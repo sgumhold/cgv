@@ -51,7 +51,7 @@ bool color_selector::handle_event(cgv::gui::event& e) {
 				ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
 
 				int hit_index = -1;
-				cgv::g2d::rect hit_rect;
+				cgv::g2d::irect hit_rect;
 
 				if(layout.color_rect.is_inside(mpos)) {
 					hit_index = 0;
@@ -213,7 +213,7 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	content_canvas.draw_shape(ctx, layout.border_rect, border_color);
 	content_canvas.draw_shape(ctx, layout.preview_rect, rgb_color);
 
-	cgv::g2d::rect text_bg = layout.preview_rect;
+	cgv::g2d::irect text_bg = layout.preview_rect;
 	text_bg.set_w(48);
 	int n_labels = has_opacity ? 4 : 3;
 	for(size_t i = 0; i < n_labels; ++i) {
@@ -307,7 +307,7 @@ void color_selector::update_layout(const ivec2& parent_size) {
 	l.border_rect.set_size(ivec2(parent_size - 2 * l.padding));
 	l.border_rect.a() += ivec2(0, 23);
 
-	cgv::g2d::rect content_rect = l.border_rect;
+	cgv::g2d::irect content_rect = l.border_rect;
 	content_rect.translate(1, 1);
 	content_rect.resize(-2, -2);
 
