@@ -44,26 +44,22 @@ namespace cgv{
 
 int solve_linear(double c[2],double s[1])
 {
-	if(c[0] == 0)
+	if(IsZero(c[1]))
 		return 0;
-	s[0]=-c[1]/c[0];
+	s[0]=-c[0]/c[1];
 	return 1;
 }
 
 int solve_quadric(double c[3], double s[2], bool replicate_multiple_solutions)
 {
     double p, q, D;
-	if(c[2] == 0)
-		return solve_linear(c,s);
 
     /* normal form: x^2 + px + q = 0 */
 
-	if (IsZero(c[2])) {
-		if (IsZero(c[1])) return 0;
-		s[0] = -c[0]/c[1];
-		return 1;
-	}
-    p = c[ 1 ] / (2 * c[ 2 ]);
+	if (IsZero(c[2]))
+		return solve_linear(c, s);
+
+	p = c[ 1 ] / (2 * c[ 2 ]);
     q = c[ 0 ] / c[ 2 ];
 
     D = p * p - q;
@@ -81,7 +77,6 @@ int solve_quadric(double c[3], double s[2], bool replicate_multiple_solutions)
     }
     else {
 		double sqrt_D = sqrt(D);
-
 		s[ 0 ] =   sqrt_D - p;
 		s[ 1 ] = - sqrt_D - p;
 		return 2;
