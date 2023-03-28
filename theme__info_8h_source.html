@@ -95,7 +95,7 @@ $(document).ready(function(){initNavTree('theme__info_8h_source.html',''); initR
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="namespacecgv_1_1gui.html#a121dd848cd8a6123b1676b1ed5c88552">   10</a></span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float, cgv::media::RGB&gt;</a> <a class="code" href="namespacecgv_1_1gui.html#a121dd848cd8a6123b1676b1ed5c88552">rgb</a>;</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#define col_functions(FIELD) \</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#define DEF_COLOR_MEMBER_METHODS(FIELD) \</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">void FIELD(unsigned char r, unsigned char g, unsigned char b) { \</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">        FIELD##_col = rgb( \</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">                static_cast&lt;float&gt;(r) / 255.0f, \</span></div>
@@ -152,18 +152,18 @@ $(document).ready(function(){initNavTree('theme__info_8h_source.html',''); initR
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordtype">void</span> set_theme_idx(<span class="keywordtype">int</span> idx);</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keywordtype">int</span> get_theme_idx();</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        col_functions(background);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        col_functions(group);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        col_functions(<a class="code" href="classcgv_1_1gui_1_1control.html">control</a>);</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        col_functions(border);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        col_functions(text);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        col_functions(text_background);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        col_functions(selection);</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        col_functions(highlight);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        col_functions(warning);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        DEF_COLOR_MEMBER_METHODS(background)</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        DEF_COLOR_MEMBER_METHODS(group)</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        DEF_COLOR_MEMBER_METHODS(<a class="code" href="classcgv_1_1gui_1_1control.html">control</a>)</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        DEF_COLOR_MEMBER_METHODS(border)</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        DEF_COLOR_MEMBER_METHODS(text)</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        DEF_COLOR_MEMBER_METHODS(text_background)</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        DEF_COLOR_MEMBER_METHODS(selection)</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        DEF_COLOR_MEMBER_METHODS(highlight)</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        DEF_COLOR_MEMBER_METHODS(warning)</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;};</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">#undef col_functions</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">#undef DEF_COLOR_MEMBER_METHODS</span></div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;}</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;}</div>
