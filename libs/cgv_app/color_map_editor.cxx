@@ -11,6 +11,11 @@
 namespace cgv {
 namespace app {
 
+const float color_map_editor::color_point::default_width = 12.0f;
+const float color_map_editor::color_point::default_height = 18.0f;
+
+const float color_map_editor::opacity_point::default_size = 12.0f;
+
 color_map_editor::color_map_editor() {
 
 	set_name("Color Scale Editor");
@@ -377,7 +382,7 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 		if(supports_opacity) {
 			auto& opacity_handle_prog = opacity_handle_renderer.enable_prog(ctx);
 			// size is constant for all points
-			opacity_handle_prog.set_attribute(ctx, "size", vec2(2.0f*6.0f));
+			opacity_handle_prog.set_attribute(ctx, "size", vec2(opacity_point::default_size));
 			opacity_handle_renderer.render(ctx, cc, cgv::render::PT_POINTS, cmc.opacity_handles);
 		}
 	} else {
@@ -618,8 +623,8 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	color_handle_style.border_color = rgba(ti.border(), 1.0f);
 	color_handle_style.border_width = 1.5f;
 	color_handle_style.border_radius = 2.0f;
-	color_handle_style.stem_width = 12.0f;
-	color_handle_style.head_width = 12.0f;
+	color_handle_style.stem_width = color_point::default_width;
+	color_handle_style.head_width = color_point::default_width;
 
 	color_handle_renderer.set_style(ctx, color_handle_style);
 
@@ -1041,12 +1046,14 @@ bool color_map_editor::update_geometry() {
 	bool success = color_points.size() > 0 && opacity_points.size() > 0;
 
 	// create color handles
+	vec2 pos_offset = vec2(0.0f, 0.5f * color_point::default_height);
+
 	for(unsigned i = 0; i < color_points.size(); ++i) {
 		const auto& p = color_points[i];
 		vec2 pos = p.center();
 		rgba col = color_points.get_selected() == &p ? highlight_color : handle_color;
-		color_handles.add(pos + vec2(0.0f, 2.0f),  col);
-		color_handles.add(pos + vec2(0.0f, 20.0f), col);
+		color_handles.add(pos - pos_offset, col);
+		color_handles.add(pos + pos_offset, col);
 	}
 
 	// create opacity handles

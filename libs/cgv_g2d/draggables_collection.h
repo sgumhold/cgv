@@ -26,7 +26,7 @@ protected:
 
 	bool has_constraint = false;
 	bool use_individual_constraints = false;
-	rect constraint_area;
+	irect constraint_area;
 	mat3 inv_transformation;
 
 	std::vector<T> draggables;
@@ -93,15 +93,15 @@ public:
 			selected = get_ptr(draggables[i]);
 	}
 
-	const rect& get_constraint() const { return constraint_area; }
+	const irect& get_constraint() const { return constraint_area; }
 	
-	void set_constraint(const rect& area) {
+	void set_constraint(const irect& area) {
 		constraint_area = area;
 		has_constraint = true;
 	}
 
 	void remove_constraint() {
-		constraint_area = rect();
+		constraint_area = irect();
 		has_constraint = false;
 	}
 
@@ -125,7 +125,7 @@ public:
 		inv_transformation = cgv::math::inv(matrix);
 	}
 
-	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const rect& container = rect()) {
+	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const irect& container = irect()) {
 		unsigned et = e.get_kind();
 		unsigned char modifiers = e.get_modifiers();
 
