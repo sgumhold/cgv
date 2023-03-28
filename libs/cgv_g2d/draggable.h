@@ -1,19 +1,15 @@
 #pragma once
 
-#include <cgv/render/render_types.h>
-
 #include "rect.h"
+#include "shape.h"
 
 #include "lib_begin.h"
 
 namespace cgv {
 namespace g2d {
 
-struct CGV_API draggable : public cgv::render::render_types {
-	vec2 pos;
-	vec2 size;
-	bool position_is_center;
-	const rect* constraint = nullptr;
+struct CGV_API draggable : public shape_base {
+	const irect* constraint = nullptr;
 
 	enum ConstraintReference {
 		CR_CENTER,
@@ -24,17 +20,13 @@ struct CGV_API draggable : public cgv::render::render_types {
 
 	draggable();
 
-	vec2 center() const;
+	void set_constraint(const irect* area);
 
-	void set_constraint(const rect* constraint);
-
-	const rect* get_constraint() const;
+	const irect* get_constraint() const;
 
 	void apply_constraint();
 
-	void apply_constraint(const rect& area);
-
-	virtual bool is_inside(const ivec2& p) const;
+	void apply_constraint(const irect& area);
 };
 
 }

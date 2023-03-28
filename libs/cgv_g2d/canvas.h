@@ -13,6 +13,7 @@ namespace g2d {
 
 class CGV_API canvas : public cgv::render::render_types {
 public:
+	// TODO: rename to shader2d_name
 	struct CGV_API shaders_2d {
 		static const std::string arrow;
 		static const std::string background;
@@ -149,7 +150,8 @@ public:
 		prog.set_uniform(ctx, "apply_gamma", apply_gamma);
 	}
 
-	void draw_shape(const cgv::render::context& ctx, const rect& r) {
+	template<typename T>
+	void draw_shape(const cgv::render::context& ctx, const rect2d<T>& r) {
 		draw_shape(ctx, r.pos(), r.size());
 	}
 
@@ -176,7 +178,8 @@ public:
 		}
 	}
 
-	void draw_shape(const cgv::render::context& ctx, const rect& r, const rgba& color) {
+	template<typename T>
+	void draw_shape(const cgv::render::context& ctx, const rect2d<T>& r, const rgba& color) {
 		draw_shape(ctx, r.pos(), r.size(), color);
 	}
 

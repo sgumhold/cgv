@@ -22,9 +22,9 @@ protected:
 		// dependent members
 		int color_editor_height;
 		int opacity_editor_height;
-		cgv::g2d::rect color_handles_rect;
-		cgv::g2d::rect color_editor_rect;
-		cgv::g2d::rect opacity_editor_rect;
+		cgv::g2d::irect color_handles_rect;
+		cgv::g2d::irect color_editor_rect;
+		cgv::g2d::irect opacity_editor_rect;
 
 		void update(const ivec2& parent_size, bool color_and_opacity) {
 
@@ -40,7 +40,7 @@ protected:
 
 			int y_off = padding;
 
-			color_handles_rect.set_pos(ivec2(padding, 8));
+			color_handles_rect.set_pos(ivec2(padding, 20));
 			color_handles_rect.set_size(ivec2(parent_size.x() - 2 * padding, 0));
 
 			// move 10px up to clear some space for the color handles rect
@@ -57,11 +57,13 @@ protected:
 	} layout;
 	
 	struct color_point : public cgv::g2d::draggable {
+		static const float default_width;
+		static const float default_height;
 		float val;
 		rgb col;
 
 		color_point() {
-			size = vec2(12.0f, 18.0f);
+			size = vec2(default_width, default_height);
 			position_is_center = true;
 			constraint_reference = CR_CENTER;
 		}
@@ -78,37 +80,19 @@ protected:
 			pos.x() = static_cast<float>(la.color_handles_rect.pos().x()) + t * la.color_handles_rect.size().x();
 			pos.y() = static_cast<float>(la.color_handles_rect.pos().y());
 		}
-
-		float sd_rectangle(const vec2& p, const vec2& b) const {
-			vec2 d = abs(p) - b;
-			return length(cgv::math::max(d, 0.0f)) + std::min(std::max(d.x(), d.y()), 0.0f);
-		}
-
-		bool is_inside(const vec2& mp) const {
-			// test if the given position is inside the handle shape (hit box is defined as a rectangle)
-			return sd_rectangle(mp - (pos + vec2(0.0f, 0.5f*size.y() + 2.0f)), 0.5f*size) < 0.0f;
-		}
-
-		ivec2 get_render_position() const {
-			return ivec2(pos + 0.5f);
-		}
-
-		ivec2 get_render_size() const {
-			return 2 * ivec2(size);
-		}
 	};
 
 	struct opacity_point : public cgv::g2d::draggable {
+		static const float default_size;
 		vec2 val;
 
 		opacity_point() {
-			size = vec2(6.0f);
+			size = vec2(default_size);
 			position_is_center = true;
 			constraint_reference = CR_CENTER;
 		}
 
 		void update_val(const layout_attributes& la, const float scale_exponent) {
-
 			vec2 p = pos - la.opacity_editor_rect.pos();
 			val = p / la.opacity_editor_rect.size();
 
@@ -117,32 +101,12 @@ protected:
 		}
 
 		void update_pos(const layout_attributes& la, const float scale_exponent) {
-
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
 
 			vec2 t = val;
-
 			t.y() = cgv::math::clamp(std::pow(t.y(), 1.0f / scale_exponent), 0.0f, 1.0f);
 
 			pos = la.opacity_editor_rect.pos() + t * la.opacity_editor_rect.size();
-		}
-
-		float sd_rectangle(const vec2& p, const vec2& b) const {
-			vec2 d = abs(p) - b;
-			return length(cgv::math::max(d, 0.0f)) + std::min(std::max(d.x(), d.y()), 0.0f);
-		}
-
-		bool is_inside(const vec2& mp) const {
-
-			return sd_rectangle(mp - pos, size) < 0.0f;
-		}
-
-		ivec2 get_render_position() const {
-			return ivec2(pos + 0.5f);
-		}
-
-		ivec2 get_render_size() const {
-			return 2 * ivec2(size);
 		}
 	};
 
