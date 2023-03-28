@@ -670,4 +670,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new rounded cone texturing tests
-cgv::base::object_registration<shapes_2d> shapes_2d_fac("New/Demo/2D Shapes");
+cgv::base::factory_registration<shapes_2d> shapes_2d_fac("New/Demo/2D Shapes");
