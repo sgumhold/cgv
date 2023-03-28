@@ -11,14 +11,15 @@ theme_info& theme_info::instance() {
 theme_info::theme_info() {
 	theme_idx = -1;
 
-	background_col = rgb(0.0f);
-	group_col = rgb(0.0f);
-	control_col = rgb(0.0f);
-	border_col = rgb(0.0f);
-	text_col = rgb(0.0f);
-	selection_col = rgb(0.0f);
-	highlight_col = rgb(0.0f);
-	warning_col = rgb(0.0f);
+	background(240, 240, 240);
+	group(240, 240, 240);
+	control(225, 225, 225);
+	border(98, 98, 98);
+	text(0, 0, 0);
+	text_background(255, 255, 255);
+	selection(0, 120, 215);
+	highlight(0, 120, 215);
+	warning(255, 0, 0);
 }
 
 void theme_info::set_theme_idx(int idx) {

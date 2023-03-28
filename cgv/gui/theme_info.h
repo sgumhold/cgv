@@ -9,7 +9,7 @@ namespace gui {
 /// declare rgb color type
 typedef cgv::media::color<float, cgv::media::RGB> rgb;
 
-#define col_functions(FIELD) \
+#define DEF_COLOR_MEMBER_METHODS(FIELD) \
 void FIELD(unsigned char r, unsigned char g, unsigned char b) { \
 	FIELD##_col = rgb( \
 		static_cast<float>(r) / 255.0f, \
@@ -68,18 +68,18 @@ public:
 	void set_theme_idx(int idx);
 	int get_theme_idx();
 
-	col_functions(background);
-	col_functions(group);
-	col_functions(control);
-	col_functions(border);
-	col_functions(text);
-	col_functions(text_background);
-	col_functions(selection);
-	col_functions(highlight);
-	col_functions(warning);
+	DEF_COLOR_MEMBER_METHODS(background)
+	DEF_COLOR_MEMBER_METHODS(group)
+	DEF_COLOR_MEMBER_METHODS(control)
+	DEF_COLOR_MEMBER_METHODS(border)
+	DEF_COLOR_MEMBER_METHODS(text)
+	DEF_COLOR_MEMBER_METHODS(text_background)
+	DEF_COLOR_MEMBER_METHODS(selection)
+	DEF_COLOR_MEMBER_METHODS(highlight)
+	DEF_COLOR_MEMBER_METHODS(warning)
 };
 
-#undef col_functions
+#undef DEF_COLOR_MEMBER_METHODS
 
 }
 }
