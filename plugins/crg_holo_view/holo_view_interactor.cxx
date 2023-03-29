@@ -1240,8 +1240,6 @@ void holo_view_interactor::init_frame(context& ctx)
 				vi = 0;
 				for (quilt_row = 0; quilt_row < quilt_nr_rows; ++quilt_row) {
 					for (quilt_col = 0; quilt_col < quilt_nr_cols; ++quilt_col) {
-
-						volume_fbo.attach(ctx, volume_tex, view_index, 0, 0);
 						perform_render_pass(ctx, vi, RP_STEREO);
 						if (++vi == nr_views)
 							break;
