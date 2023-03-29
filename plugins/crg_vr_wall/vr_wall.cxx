@@ -504,6 +504,19 @@ namespace vr {
 	///
 	bool vr_wall::handle(cgv::gui::event& e)
 	{
+		if (e.get_kind() == cgv::gui::EID_KEY) {
+			auto& ke = dynamic_cast<cgv::gui::key_event&>(e);
+			if (ke.get_action() != cgv::gui::KA_RELEASE) {
+				if (ke.get_key() == 'W' && ke.get_modifiers() == (cgv::gui::EM_ALT + cgv::gui::EM_CTRL)) {
+					if (vr_wall_kit_index == -1)
+						vr_wall_kit_index = 0;
+					else
+						vr_wall_kit_index = -1;
+					on_set(&vr_wall_kit_index);
+					return true;
+				}
+			}
+		}
 		if (wall_kit_ptr == 0)
 			return false;
 
@@ -541,14 +554,20 @@ namespace vr {
 		// handle common keys
 		switch (ke.get_key()) {
 		case 'S':
+			if (ke.get_modifiers() != (cgv::gui::EM_ALT + cgv::gui::EM_CTRL))
+				return false;
 			wall_state = WS_SCREEN_CALIB;
 			on_set(&wall_state);
 			return true;
 		case 'E':
+			if (ke.get_modifiers() != (cgv::gui::EM_ALT + cgv::gui::EM_CTRL))
+				return false;
 			wall_state = WS_EYES_CALIB;
 			on_set(&wall_state);
 			return true;
 		case 'H':
+			if (ke.get_modifiers() != (cgv::gui::EM_ALT + cgv::gui::EM_CTRL))
+				return false;
 			wall_state = WS_HMD;
 			on_set(&wall_state);
 			return true;
