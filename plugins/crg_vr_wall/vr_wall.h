@@ -121,6 +121,8 @@ namespace vr {
 		//@{
 		/// current state of wall display
 		WallState wall_state;
+		/// whether to automatically switch to eyes calibration
+		bool auto_eyes_calib;
 		/// index of to be calibrated point or eye
 		int calib_index;
 		/// position of peek point in controller coordinate system that is used to define 3d calibration points
