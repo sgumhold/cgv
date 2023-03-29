@@ -214,8 +214,7 @@ bool navigator::init(cgv::render::context& ctx) {
 	bool success = true;
 
 	success &= fbc.ensure(ctx);
-	success &= blit_canvas.init(ctx);
-
+	
 	success &= arrow_data.init(ctx);
 	success &= box_data.init(ctx);
 	success &= box_wire_data.init(ctx);
@@ -224,7 +223,8 @@ bool navigator::init(cgv::render::context& ctx) {
 
 	success &= box_renderer.init(ctx);
 
-	blit_canvas.register_shader("rectangle", "rect2d.glpr");
+	blit_canvas.register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
+	success &= blit_canvas.init(ctx);
 
 	if(success) {
 		box_data.add(vec3(0.0f));
