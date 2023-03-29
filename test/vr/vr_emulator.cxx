@@ -555,8 +555,10 @@ bool vr_emulator::check_for_button_toggle(cgv::gui::key_event& ke, int controlle
 		kits[current_kit_index]->state.controller[controller_index].axes[0] = touch_x;
 		kits[current_kit_index]->state.controller[controller_index].axes[1] = touch_y;
 	}
-	else
+	else if (ke.get_modifiers() == 0)
 		kits[current_kit_index]->state.controller[controller_index].button_flags ^= button;
+	else
+		return false;
 	update_all_members();
 	return true;
 }
