@@ -505,8 +505,9 @@ bool vr_emulator::replace_by_pointer(vr::vr_kit* old_kit_ptr, vr::vr_kit* new_ki
 {
 	if (!is_installed())
 		return false;
+
 	for (auto kit_ptr : kits) {
-		if (kit_ptr == old_kit_ptr) {
+		if (kit_ptr == old_kit_ptr || vr::get_vr_kit(kit_ptr->get_handle()) == old_kit_ptr) {
 			replace_vr_kit(kit_ptr->get_handle(), new_kit_ptr);
 			return true;
 		}
