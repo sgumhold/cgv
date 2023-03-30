@@ -571,12 +571,18 @@ namespace vr {
 			wall_state = WS_HMD;
 			on_set(&wall_state);
 			return true;
-		case vr::VR_DPAD_LEFT:
-			if (wall_state > WS_SCREEN_CALIB) {
-				wall_state = WallState(wall_state - 1);
-				on_set(&wall_state);
-			}
-			break;
+		case 'A':
+			if (ke.get_modifiers() != (cgv::gui::EM_ALT + cgv::gui::EM_CTRL))
+				return false;
+			auto_eyes_calib = !auto_eyes_calib;
+			on_set(&auto_eyes_calib);
+			return true;
+//		case vr::VR_DPAD_LEFT:
+//			if (wall_state > WS_SCREEN_CALIB) {
+//				wall_state = WallState(wall_state - 1);
+//				on_set(&wall_state);
+//			}
+//			break;
 		}
 		// for calibration specific keys we are only interested in vr keys
 		if ((ke.get_flags() & cgv::gui::EF_VR) == 0)
@@ -593,10 +599,10 @@ namespace vr {
 	void vr_wall::stream_help(std::ostream& os)
 	{
 		os << "vr_wall:\n"
-			<< "  <S|E|H> .. select mode <Screen calib|Eye calib|Hmd>\n"
+			<< "  <C+A-S|E|H> .. select mode <Screen calib|Eye calib|Hmd>, <A+C-A> toggle auto eye calib\n"
 			<< "  <left|right VR Controller Grip> .. define point\n"
 			<< "  Screen calib: touch green points with controller front\n"
-			<< "  Eye calib: aim with left|right eye through left|right controller ring to red|blue dot" << std::endl;
+			<< "  Eye calib: point with upside-down controller in between your eyes and press grip" << std::endl;
 	}
 	void vr_wall::stream_stats(std::ostream& os)
 	{
@@ -625,7 +631,10 @@ namespace vr {
 		case SSM_ANAGLYPH_HALF_COLOR: os << "AHCol"; break;
 		case SSM_ANAGLYPH_DUBOID: os << "ADub"; break;
 		}
-		os << ",eye=";
+		os << ",eye";
+		if (auto_eyes_calib)
+			os << "*";
+		os << "=";
 		if (eye_calibrated[0])
 			os << "L";
 		if (eye_calibrated[1])
