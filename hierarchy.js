@@ -415,6 +415,11 @@ var hierarchy =
       [ "cgv::render::context", "classcgv_1_1render_1_1context.html", null ],
       [ "cgv::render::drawable", "classcgv_1_1render_1_1drawable.html", null ],
       [ "cgv::render::managed_frame_buffer", "classcgv_1_1render_1_1managed__frame__buffer.html", null ],
+      [ "cgv::render::pinhole", "structcgv_1_1render_1_1pinhole.html", [
+        [ "cgv::render::distorted_pinhole", "structcgv_1_1render_1_1distorted__pinhole.html", [
+          [ "cgv::render::camera", "structcgv_1_1render_1_1camera.html", null ]
+        ] ]
+      ] ],
       [ "cgv::render::render_info", "classcgv_1_1render_1_1render__info.html", [
         [ "cgv::render::mesh_render_info", "classcgv_1_1render_1_1mesh__render__info.html", null ]
       ] ],
