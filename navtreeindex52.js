@@ -1,17 +1,5 @@
 var NAVTREEINDEX52 =
 {
-"structcgv_1_1utils_1_1typed__token.html#a36887dce50ff1ef44d8f6341ce99b387":[11,0,0,13,1,3],
-"structcgv_1_1utils_1_1typed__token.html#a4da075532aa3e381c677a10941e2fc7c":[11,0,0,13,1,5],
-"structcgv_1_1utils_1_1typed__token.html#a69a63af3bc04b79c5ac4312aa6912729":[11,0,0,13,1,1],
-"structcgv_1_1utils_1_1typed__token.html#a76c686c3345b275faa5bacb0245a1af9":[11,0,0,13,1,6],
-"structcgv_1_1utils_1_1typed__token.html#a8795f9f939f15d61b4114c370a670344":[11,0,0,13,1,10],
-"structcgv_1_1utils_1_1typed__token.html#a9a2121933f46f315734a1994eafeff2b":[11,0,0,13,1,2],
-"structcgv_1_1utils_1_1typed__token.html#aa8e06c57774bb6d34436ff2e0ea22442":[11,0,0,13,1,8],
-"structcgv_1_1utils_1_1typed__token.html#ab31c4e3c695ed4ad2ce0b69d09c2cf45":[11,0,0,13,1,7],
-"structgamepad_1_1device__info.html":[11,0,1,1],
-"structgamepad_1_1device__info.html#a0498dbd34f0f14ad1906077744346bce":[11,0,1,1,1],
-"structgamepad_1_1device__info.html#a146899103026a05bb5c12c2d6c61bb1c":[11,0,1,1,4],
-"structgamepad_1_1device__info.html#a2aea5df56a4500c03f2fd52b09d1c89b":[11,0,1,1,0],
 "structgamepad_1_1device__info.html#a3661dad12c7fedbc4072cc015e760be1":[11,0,1,1,7],
 "structgamepad_1_1device__info.html#a426415e64ffae0d5f34e3340f9a6c720":[11,0,1,1,6],
 "structgamepad_1_1device__info.html#a7aaf963df8817b232178ae927d849b63":[11,0,1,1,2],
@@ -249,5 +237,17 @@ var NAVTREEINDEX52 =
 "vr__state_8h.html#a97f62fa341bd860ba107738084e5cc08af01479505eec67088351309d34ab6395":[12,0,1,6,7,6,1],
 "vr__state_8h.html#a97f62fa341bd860ba107738084e5cc08af027023fd5b9ca3e27fc8e445f069889":[12,0,1,6,7,6,0],
 "vr__state_8h.html#abcd8365da0a2174d6e6c9f1675e72421":[12,0,1,6,7,12],
-"vr__state_8h.html#ac6829b9be69fb66e4c969947090d27bb":[12,0,1,6,7,8]
+"vr__state_8h.html#ac6829b9be69fb66e4c969947090d27bb":[12,0,1,6,7,8],
+"vr__state_8h.html#aef3295070e29d71a25db0d6374da32ff":[12,0,1,6,7,3],
+"vr__state_8h.html#af21ee59fd7356a23f9176f098b5c9b24":[12,0,1,6,7,11],
+"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04":[12,0,1,6,7,5],
+"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a103c5c0a92f9f9d0d628b88b1ef3257c":[12,0,1,6,7,5,21],
+"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a14e3fc591ae21f90bb5a46984d424f37":[12,0,1,6,7,5,8],
+"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a172fb32588649862db8e59e95a58d219":[12,0,1,6,7,5,3],
+"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a1f92ec973e420bff0e37bc1e1c91f7a0":[12,0,1,6,7,5,5],
+"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a247882a0c048d2cced0a6d00dc153775":[12,0,1,6,7,5,18],
+"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a4235008df030062f39ab181441210759":[12,0,1,6,7,5,22],
+"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a54ecafff866aab607fcc666ae4ea1fee":[12,0,1,6,7,5,7],
+"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a5b63a6bdf25e291dcd06214e7dfa9b72":[12,0,1,6,7,5,16],
+"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a5c969a92c8e8b42856b02c27b59c764a":[12,0,1,6,7,5,14]
 };
