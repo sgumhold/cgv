@@ -20,7 +20,7 @@ color_map_legend::color_map_legend() {
 	set_overlay_margin(ivec2(-3));
 	set_overlay_size(layout.total_size);
 
-	tick_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::rectangle);
+	tick_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
 
 	title = "";
 	range = vec2(0.0f, 1.0f);
@@ -37,7 +37,7 @@ void color_map_legend::clear(cgv::render::context& ctx) {
 
 	tex.destruct(ctx);
 
-	cgv::g2d::ref_msdf_font(ctx, -1);
+	cgv::g2d::ref_msdf_font_regular(ctx, -1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
 
 	tick_renderer.destruct(ctx);
@@ -86,22 +86,20 @@ void color_map_legend::on_set(void* member_ptr) {
 
 bool color_map_legend::init(cgv::render::context& ctx) {
 
-	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
+	register_shader("rectangle", cgv::g2d::shaders::rectangle);
 
 	bool success = canvas_overlay::init(ctx);
 
 	success &= tick_renderer.init(ctx);
 
-	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font(ctx, 1);
+	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font_regular(ctx, 1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
 
 	if(success)
 		init_styles(ctx);
 
-	if(font.is_initialized()) {
+	if(font.is_initialized())
 		labels.set_msdf_font(&font);
-		labels.set_font_size(font_size);
-	}
 
 	return success;
 }
@@ -114,9 +112,6 @@ void color_map_legend::init_frame(cgv::render::context& ctx) {
 		layout.update(container_size);
 		create_ticks();
 	}
-
-	if(ensure_theme())
-		init_styles(ctx);
 }
 
 void color_map_legend::draw_content(cgv::render::context& ctx) {
@@ -324,6 +319,7 @@ void color_map_legend::init_styles(cgv::render::context& ctx) {
 	text_style.border_width = border_width;
 	text_style.feather_origin = 0.5f;
 	text_style.use_blending = true;
+	text_style.font_size = 12.0f;
 
 	// configure style for tick marks
 	cgv::g2d::shape2d_style tick_style;
@@ -380,9 +376,9 @@ void color_map_legend::create_labels() {
 
 	if(labels.size() > 1) {
 		if(layout.orientation == OO_HORIZONTAL)
-			layout.x_label_size = std::max(labels.ref_texts().front().size.x(), labels.ref_texts().back().size.x()) * labels.get_font_size();
+			layout.x_label_size = static_cast<int>(std::max(labels.ref_texts().front().size.x(), labels.ref_texts().back().size.x()) * text_style.font_size);
 		else
-			layout.x_label_size = int(max_length * labels.get_font_size());
+			layout.x_label_size = static_cast<int>(max_length * text_style.font_size);
 	} else {
 		layout.x_label_size = 0;
 	}

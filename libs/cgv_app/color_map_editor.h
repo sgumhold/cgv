@@ -4,13 +4,14 @@
 #include <cgv/render/texture.h>
 #include <cgv_app/canvas_overlay.h>
 #include <cgv_app/color_selector.h>
-#include <cgv_g2d/draggables_collection.h>
+#include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
+
 namespace app {
 
 class CGV_API color_map_editor : public canvas_overlay {
@@ -127,9 +128,7 @@ protected:
 	cgv::g2d::shape2d_style container_style, border_style, color_map_style, bg_style, hist_style, label_box_style;
 
 	// label appearance
-	const float cursor_label_size = 16.0f;
-	const float value_label_size = 12.0f;
-	cgv::g2d::shape2d_style cursor_label_style, value_label_style;
+	cgv::g2d::text2d_style cursor_label_style, value_label_style;
 	cgv::g2d::msdf_text_geometry cursor_labels, value_labels;
 
 	std::vector<unsigned> histogram;
@@ -152,8 +151,8 @@ protected:
 
 	struct cm_container {
 		cgv::render::color_map* cm = nullptr;
-		cgv::g2d::draggables_collection<color_point> color_points;
-		cgv::g2d::draggables_collection<opacity_point> opacity_points;
+		cgv::g2d::draggable_collection<color_point> color_points;
+		cgv::g2d::draggable_collection<opacity_point> opacity_points;
 		
 		custom_geometry color_handles, opacity_handles;
 		line_geometry lines;
@@ -214,6 +213,8 @@ public:
 	void init_frame(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
 	
+	void handle_theme_change(const cgv::gui::theme_info& theme) override;
+
 	bool get_opacity_support() { return supports_opacity; }
 	void set_opacity_support(bool flag);
 

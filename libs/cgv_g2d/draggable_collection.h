@@ -13,7 +13,7 @@ namespace cgv {
 namespace g2d {
 
 template<class T>
-class draggables_collection : public cgv::render::render_types {
+class draggable_collection : public cgv::render::render_types {
 protected:
 	typedef typename std::remove_pointer<T>::type raw_type;
 	typedef          raw_type* ptr_type;
@@ -52,7 +52,7 @@ protected:
 	}
 
 public:
-	draggables_collection() {
+	draggable_collection() {
 		clear();
 	}
 
@@ -134,7 +134,7 @@ public:
 			cgv::gui::MouseAction ma = me.get_action();
 
 			ivec2 mpos(me.get_x(), me.get_y());
-			mpos.y() = viewport_size.y() - mpos.y();
+			mpos.y() = viewport_size.y() - mpos.y() - 1;
 			mpos -= container.pos();
 
 			vec3 tmp = inv_transformation * vec3(mpos, 1.0f);

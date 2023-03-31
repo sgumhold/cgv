@@ -3,13 +3,6 @@
 namespace cgv {
 namespace g2d {
 
-msdf_gl_font_renderer& ref_msdf_gl_font_renderer(cgv::render::context& ctx, int ref_count_change) {
-	static int ref_count = 0;
-	static msdf_gl_font_renderer r;
-	r.manage_singleton(ctx, "msdf_gl_font_renderer", ref_count, ref_count_change);
-	return r;
-}
-
 bool msdf_gl_font_renderer::build_shader_program(const cgv::render::context& ctx) {
 	return prog.build_program(ctx, "sdf_font2d.glpr", true);
 }
@@ -50,12 +43,7 @@ cgv::render::shader_program& msdf_gl_font_renderer::ref_prog() {
 	return prog;
 }
 
-//cgv::render::shader_program& msdf_gl_font_renderer::enable_prog(cgv::render::context& ctx) {
-//	prog.enable(ctx);
-//	return prog;
-//}
-
-bool msdf_gl_font_renderer::enable(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg, const shape2d_style& style) {
+bool msdf_gl_font_renderer::enable(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg, const text2d_style& style) {
 	bool res = prog.is_enabled() ? true : prog.enable(ctx);
 	res &= tg.enable(ctx);
 	if(res) {
@@ -84,39 +72,45 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_text_geometry& 
 	for(size_t i = offset; i < end; ++i) {
 		const auto& text = tg.ref_texts()[i];
 
-		ivec4 position_offset;
-		position_offset.x() = int32_t(round(text.position.x()));
-		position_offset.y() = int32_t(round(text.position.y()));
+		vec2 position_offset = static_cast<vec2>(text.position);
+		
+		vec2 alignment_offset_factors(-0.5f);
 
-		vec2 half_size = 0.5f * text.size * tg.get_font_size();
-		vec2 offset = -half_size;
+		alignment_offset_factors.x() = -0.5f;
+		alignment_offset_factors.y() = -0.5f;
 
 		if(text.alignment & cgv::render::TA_LEFT)
-			offset.x() += half_size.x();
+			alignment_offset_factors.x() = 0.0f;
 		else if(text.alignment & cgv::render::TA_RIGHT)
-			offset.x() -= half_size.x();
+			alignment_offset_factors.x() = -1.0f;
 
 		if(text.alignment & cgv::render::TA_TOP)
-			offset.y() -= half_size.y();
+			alignment_offset_factors.y() = -1.0f;
 		else if(text.alignment & cgv::render::TA_BOTTOM)
-			offset.y() += half_size.y();
-
-		position_offset.z() = int32_t(round(offset.x()));
-		position_offset.w() = int32_t(round(offset.y()));
+			alignment_offset_factors.y() = 0.0f;
 
 		prog.set_uniform(ctx, "position_offset", position_offset);
-		prog.set_uniform(ctx, "font_size", tg.get_font_size());
+		prog.set_uniform(ctx, "alignment_offset_factors", alignment_offset_factors);
+		prog.set_uniform(ctx, "text_size", text.size);
+		//prog.set_uniform(ctx, "font_size", tg.get_font_size());
 		prog.set_uniform(ctx, "angle", text.angle);
 
 		glDrawArraysInstancedBaseInstance(GL_TRIANGLE_STRIP, (GLint)0, (GLsizei)4, (GLsizei)text.str.size(), (GLuint)text.offset);
 	}
 }
 
-bool msdf_gl_font_renderer::render(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg, const shape2d_style& style, size_t offset, int count) {
+bool msdf_gl_font_renderer::render(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_text_geometry& tg, const text2d_style& style, size_t offset, int count) {
 	if(!enable(ctx, viewport_resolution, tg, style))
 		return false;
 	draw(ctx, tg, offset, count);
 	return disable(ctx, tg);
+}
+
+msdf_gl_font_renderer& ref_msdf_gl_font_renderer(cgv::render::context& ctx, int ref_count_change) {
+	static int ref_count = 0;
+	static msdf_gl_font_renderer r;
+	r.manage_singleton(ctx, "msdf_gl_font_renderer", ref_count, ref_count_change);
+	return r;
 }
 
 }
