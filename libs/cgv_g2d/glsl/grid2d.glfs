@@ -35,7 +35,9 @@ float grid_texture(in vec2 p) {
 	// squares
 	case 1: return 1.0-i.x*i.y;
 	// checker
-	case 2:return 1.0-i.x-i.y+2.0*i.x*i.y;
+	case 2: return 1.0-i.x-i.y+2.0*i.x*i.y;
+	// no pattern
+	default: return 0.0;
 	}
 }
 

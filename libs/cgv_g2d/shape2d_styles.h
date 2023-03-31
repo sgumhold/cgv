@@ -107,5 +107,22 @@ struct grid2d_style : public shape2d_style {
 	}
 };
 
+struct text2d_style : public shape2d_style {
+	enum ClearTypeMode {
+		CT_NONE,
+		CT_BLACK_ON_WHITE,
+		CT_WHITE_ON_BLACK
+	};
+	ClearTypeMode clear_type_mode = CT_NONE;
+	float font_size = 32.0f;
+
+	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
+		shape2d_style::apply(ctx, prog);
+
+		prog.set_uniform(ctx, "clear_type_mode", static_cast<int>(clear_type_mode));
+		prog.set_uniform(ctx, "font_size", font_size);
+	}
+};
+
 }
 }

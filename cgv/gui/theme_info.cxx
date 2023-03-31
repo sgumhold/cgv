@@ -23,10 +23,13 @@ theme_info::theme_info() {
 }
 
 void theme_info::set_theme_idx(int idx) {
-	theme_idx = idx;
+	if(idx != theme_idx) {
+		theme_idx = idx;
+		on_change(instance());
+	}
 }
 
-int theme_info::get_theme_idx() {
+int theme_info::get_theme_idx() const {
 	return theme_idx;
 }
 

@@ -1,8 +1,6 @@
 #version 460
 
 //***** begin interface of shape2d.glsl ***********************************
-vec2 get_shape_size();
-vec4 get_color();
 vec4 transform_world_to_window_space(vec2 p);
 //***** end interface of shape2d.glsl ***********************************
 
@@ -22,7 +20,9 @@ layout (std430, binding = 0) readonly buffer data_buffer {
 	vertex in_data[];
 };
 
-uniform ivec4 position_offset;
+uniform vec2 position_offset;
+uniform vec2 alignment_offset_factors;
+uniform vec2 text_size;
 uniform float font_size = 32.0;
 uniform float angle;
 
@@ -51,13 +51,13 @@ void main() {
 	tex_coord = vec2(mix(v.texcoords.xy, v.texcoords.zw, corner));
 
 	// offset local glyph position by text alignment
-	vec2 final_position = v.position_size.xy + position_offset.zw;
+	vec2 final_position = v.position_size.xy + (text_size * font_size * alignment_offset_factors);
 
 	// rotate local glyph position	
 	final_position = R * final_position;
 	
 	// move glyph to global position
-	final_position += position_offset.xy;
+	final_position += position_offset;
 
 	vec2 size = v.position_size.zw;
 	

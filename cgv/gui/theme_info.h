@@ -1,5 +1,7 @@
 #pragma once
+
 #include <cgv/media/color.h>
+#include <cgv/signal/signal.h>
 
 #include "lib_begin.h"
 
@@ -20,7 +22,7 @@ void FIELD(unsigned char r, unsigned char g, unsigned char b) { \
 rgb FIELD() const { \
 	return FIELD##_col; \
 }\
-std::string FIELD##_hex() { \
+std::string FIELD##_hex() const { \
 	return rgb_to_hex(FIELD##_col); \
 }
 
@@ -38,7 +40,7 @@ protected:
 	rgb highlight_col;
 	rgb warning_col;
 
-	std::string char_to_hex(unsigned char c) {
+	static std::string char_to_hex(unsigned char c) {
 		static const char hex_chars[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 		std::string s = "00";
 		s[0] = hex_chars[(c & 0xF0) >> 4];
@@ -46,7 +48,7 @@ protected:
 		return s;
 	}
 
-	std::string rgb_to_hex(const rgb& c) {
+	static std::string rgb_to_hex(const rgb& c) {
 		unsigned char r = static_cast<unsigned char>(255.0f * c.R());
 		unsigned char g = static_cast<unsigned char>(255.0f * c.G());
 		unsigned char b = static_cast<unsigned char>(255.0f * c.B());
@@ -66,7 +68,7 @@ public:
 	~theme_info() {}
 
 	void set_theme_idx(int idx);
-	int get_theme_idx();
+	int get_theme_idx() const;
 
 	DEF_COLOR_MEMBER_METHODS(background)
 	DEF_COLOR_MEMBER_METHODS(group)
@@ -77,9 +79,22 @@ public:
 	DEF_COLOR_MEMBER_METHODS(selection)
 	DEF_COLOR_MEMBER_METHODS(highlight)
 	DEF_COLOR_MEMBER_METHODS(warning)
+
+	cgv::signal::signal<const theme_info&> on_change;
 };
 
 #undef DEF_COLOR_MEMBER_METHODS
+
+class CGV_API theme_observer : virtual public cgv::signal::tacker {
+public:
+	theme_observer() {
+		cgv::gui::theme_info& theme = cgv::gui::theme_info::instance();
+		cgv::signal::connect(theme.on_change, this, &theme_observer::handle_theme_change);
+	}
+
+	/// override in your class to handle theme changes
+	virtual void handle_theme_change(const cgv::gui::theme_info& theme) {}
+};
 
 }
 }

@@ -75,7 +75,7 @@ void finish_sdf_fragment2d(in float signed_distance, in vec4 color) {
 	float delta = dx + dy;
 	float antialias_alpha = 1.0 - smoothstep(0.5 - delta, 0.5, signed_distance);*/
 	
-	// calcualte an alpha factor for feathered shape borders
+	// calculate an alpha factor for feathered shape borders
 	float fw = get_feather_width();
 	float inv_feather = 1.0/fw;
 

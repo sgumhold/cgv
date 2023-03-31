@@ -48,10 +48,10 @@ color_map_editor::color_map_editor() {
 	cmc.opacity_points.set_drag_callback(std::bind(&color_map_editor::handle_opacity_point_drag, this));
 	cmc.opacity_points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
 
-	color_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::arrow);
-	opacity_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::rectangle);
-	line_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::line);
-	polygon_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::polygon);
+	color_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::arrow);
+	opacity_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
+	line_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::line);
+	polygon_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::polygon);
 }
 
 void color_map_editor::clear(cgv::render::context& ctx) {
@@ -67,7 +67,7 @@ void color_map_editor::clear(cgv::render::context& ctx) {
 	preview_tex.destruct(ctx);
 	hist_tex.destruct(ctx);
 
-	cgv::g2d::ref_msdf_font(ctx, -1);
+	cgv::g2d::ref_msdf_font_regular(ctx, -1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
 }
 
@@ -236,8 +236,8 @@ void color_map_editor::on_set(void* member_ptr) {
 
 bool color_map_editor::init(cgv::render::context& ctx) {
 	
-	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
-	register_shader("circle", cgv::g2d::canvas::shaders_2d::circle);
+	register_shader("rectangle", cgv::g2d::shaders::rectangle);
+	register_shader("circle", cgv::g2d::shaders::circle);
 	register_shader("histogram", "heightfield1d.glpr");
 	register_shader("background", "color_map_editor_bg.glpr");
 
@@ -248,18 +248,18 @@ bool color_map_editor::init(cgv::render::context& ctx) {
 	success &= line_renderer.init(ctx);
 	success &= polygon_renderer.init(ctx);
 
-	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font(ctx, 1);
+	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font_regular(ctx, 1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
 
 	if(font.is_initialized()) {
 		cursor_labels.set_msdf_font(&font);
-		cursor_labels.set_font_size(cursor_label_size);
+		//cursor_labels.set_font_size(cursor_label_size);
 
 		cursor_labels.add_text("-");
 		cursor_labels.add_text("+");
 
 		value_labels.set_msdf_font(&font);
-		value_labels.set_font_size(value_label_size);
+		//value_labels.set_font_size(value_label_size);
 
 		value_labels.add_text("", ivec2(0), cgv::render::TA_BOTTOM);
 	}
@@ -299,12 +299,6 @@ void color_map_editor::init_frame(cgv::render::context& ctx) {
 		update_geometry();
 		cmc.color_points.set_constraint(layout.color_handles_rect);
 		cmc.opacity_points.set_constraint(layout.opacity_editor_rect);
-	}
-
-	if(ensure_theme()) {
-		init_styles(ctx);
-		update_geometry();
-		post_recreate_gui();
 	}
 }
 
@@ -398,7 +392,7 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 
 		ivec2 position = value_labels.ref_texts()[0].position;
 		position.y() += 5;
-		ivec2 size = static_cast<ivec2>(value_labels.get_text_render_size(0));
+		ivec2 size = static_cast<ivec2>(value_labels.get_text_render_size(0, value_label_style.font_size));
 		size += ivec2(10, 6);
 
 		cc.draw_shape(ctx, position, size);
@@ -423,6 +417,14 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 
 	disable_blending();
 	end_content(ctx);
+}
+
+void color_map_editor::handle_theme_change(const cgv::gui::theme_info& theme) {
+
+	init_styles(*get_context());
+	update_geometry();
+	post_recreate_gui();
+	post_damage();
 }
 
 void color_map_editor::create_gui_impl() {
@@ -663,11 +665,13 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	// label style
 	cursor_label_style.fill_color = rgba(rgb(0.0f), 1.0f);
 	cursor_label_style.use_blending = true;
+	cursor_label_style.font_size = 16.0f;
 
 	value_label_style.fill_color = rgba(group_color, 1.0f);
 	value_label_style.border_color = rgba(group_color, 0.0f);
 	value_label_style.border_width = 0.25f;
 	value_label_style.use_blending = true;
+	value_label_style.font_size = 12.0f;
 }
 
 void color_map_editor::setup_preview_texture(cgv::render::context& ctx) {
@@ -780,7 +784,7 @@ void color_map_editor::handle_color_point_drag() {
 	std::string value_label = value_to_string(dragged_point->val);
 	value_labels.set_text(0, value_label);
 
-	float width = value_labels.get_text_render_size(0).x();
+	float width = value_labels.get_text_render_size(0, value_label_style.font_size).x();
 	int padding = static_cast<int>(ceil(0.5f*width)) + 4;
 	ivec2 label_position = dragged_point->pos;
 	label_position.x() = cgv::math::clamp(label_position.x(), layout.color_editor_rect.x() + padding, layout.color_editor_rect.x1() - padding);
@@ -805,7 +809,7 @@ void color_map_editor::handle_opacity_point_drag() {
 	std::string value_label = x_label + ", " + y_label;
 	value_labels.set_text(0, value_label);
 
-	float width = value_labels.get_text_render_size(0).x();
+	float width = value_labels.get_text_render_size(0, value_label_style.font_size).x();
 	int padding = static_cast<int>(ceil(0.5f*width)) + 4;
 	ivec2 label_position = dragged_point->pos;
 	label_position.x() = cgv::math::clamp(label_position.x(), layout.opacity_editor_rect.x() + padding, layout.opacity_editor_rect.x1() - padding);
