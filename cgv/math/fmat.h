@@ -149,13 +149,30 @@ public:
 	}
 
 	///matrix vector multiplication
-	template < typename S>
-	const fvec<T,N> operator * (const fvec<S,M>& v) const {
-		fvec<T,N> r;
+	template <typename S>
+	const fvec<S,N> operator * (const fvec<S,M>& v) const {
+		fvec<S,N> r;
 		for(unsigned i = 0; i < N; i++)
 			r(i) = dot(row(i),v);
 		return r;
 	}
+	///multiplication with M-1 dimensional position vector which will be implicitly homogenized
+	template <typename S>
+	const fvec<S,N> mul_pos (const fvec<S,M-1>& v) const {
+		fvec<S,N> r;
+		for(unsigned i = 0; i < N; i++)
+			r(i) = dot_pos(row(i), v);
+		return r;
+	}
+	///multiplication with M-1 dimensional direction vector which will be implicitly homogenized
+	template <typename S>
+	const fvec<S,N> mul_dir (const fvec<S,M-1>& v) const {
+		fvec<S,N> r;
+		for(unsigned i = 0; i < N; i++)
+			r(i) = dot_dir(row(i), v);
+		return r;
+	}
+
 	///extract a row from the matrix as a vector, this is done by a type cast
 	const fvec<T,M> row(unsigned i) const {
 		fvec<T,M> r;

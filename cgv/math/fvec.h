@@ -345,13 +345,35 @@ template <typename T, cgv::type::uint32_type N>
 fvec<T,N> operator * (const T& s, const fvec<T,N>& v) {	fvec<T,N> r = v; r *= s; return r; }
 
 ///returns the dot product of vector v and w
-template <typename T, cgv::type::uint32_type N>
-inline T dot(const fvec<T,N>& v, const fvec<T,N>& w)
+template <typename T, typename S, cgv::type::uint32_type N>
+inline T dot(const fvec<T,N>& v, const fvec<S,N>& w)
 { 
-	T r = 0; 
+	T r = 0;
 	for (unsigned i=0;i<N;++i)
-		r += v(i)*w(i); 
-	return r; 
+		r += v(i)*w(i);
+	return r;
+}
+
+///returns the dot product of N-dimensional vector v and N-1-dimensional position vector w which
+///will be implicitly homogenized
+template <typename T, typename S, cgv::type::uint32_type N>
+inline S dot_pos(const fvec<T,N>& v, const fvec<S,N-1>& w)
+{ 
+	T r = 0;
+	for (unsigned i=0;i<N-1;++i)
+		r += v(i)*w(i);
+	return r+v(N-1);
+}
+
+///returns the dot product of N-dimensional vector v and N-1-dimensional direction vector w which
+///will be implicitly homogenized
+template <typename T, typename S, cgv::type::uint32_type N>
+inline S dot_dir(const fvec<T,N>& v, const fvec<S,N-1>& w)
+{ 
+	T r = 0;
+	for (unsigned i=0;i<N-1;++i)
+		r += v(i)*w(i);
+	return r;
 }
 
 ///returns the length of vector v 
