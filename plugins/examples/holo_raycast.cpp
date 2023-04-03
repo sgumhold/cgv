@@ -3,6 +3,7 @@
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/provider.h>
+#include <cgv/math/ftransform.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_library.h>
 #include <cgv/render/stereo_view.h>
@@ -15,23 +16,26 @@ class holo_raycast :
 	public cgv::gui::provider,
 	public cgv::gui::event_handler {
 protected:
-	cgv::render::shader_program raycast_prog;
-
+	cgv::render::shader_library shaders;
+	
 	struct Calibration {
 		float pitch;
 		float slope;
 		float center;
 	} calibration;
 
-	vec4 test = vec4(
-		/* eye_separation_factor */ 1.0f,
-		/* frustum_shear_factor */  1.0f,
-		0, 0 // as-of-yet unused
-	);
+	int scene_index = 1;
+
+	float eye_separation_factor = 1.0f;
+	vec3 light_direction;
+	bool enable_shadows = true;
+	vec4 test = vec4(0.0f);
 
 public:
 	holo_raycast() : cgv::base::node("Holographic Raycast Demo")
 	{
+		light_direction = normalize(vec3(1.0f, 1.5f, 1.0f));
+
 		/* Example calibration file (visual.json)
 		{
 			"configVersion": "1.0",
@@ -170,6 +174,12 @@ public:
 	}
 
 	void on_set (void *member_ptr) {
+
+		if(member_ptr == &light_direction[0] || member_ptr == &light_direction[1] || member_ptr == &light_direction[2]) {
+			light_direction.normalize();
+			update_member(&light_direction);
+		}
+
 		update_member(member_ptr);
 		post_redraw();
 	}
@@ -181,7 +191,7 @@ public:
 			const auto &me = static_cast<cgv::gui::mouse_event&>(e);
 			const auto ma = me.get_action();
 
-			if (   me.get_button_state() & cgv::gui::MouseButton::MB_LEFT_BUTTON
+			/*if (   me.get_button_state() & cgv::gui::MouseButton::MB_LEFT_BUTTON
 			    && me.get_modifiers() & cgv::gui::EventModifier::EM_CTRL)
 			{
 				switch(ma)
@@ -195,9 +205,9 @@ public:
 						return true;
 					}
 					default:
-						/* DoNothing() */;
+						/* DoNothing() *;
 				}
-			}
+			}*/
 		}
 		else if (e.get_kind() == cgv::gui::EID_KEY)
 		{
@@ -208,23 +218,23 @@ public:
 			{
 				case 'R': if (ka == cgv::gui::KeyAction::KA_PRESS) {
 					std::cout << "reload" << std::endl;
-					reload_shader();
+					reload_shaders();
 					post_redraw();
 					return true;
 				}
 				case cgv::gui::KEY_Left: if (ka != cgv::gui::KeyAction::KA_RELEASE) {
-					test.x() -= 0.0625f;
-					std::cout << "eye_separation_factor: "<<test.x() << std::endl;
-					on_set(&test.x());
+					eye_separation_factor -= 0.0625f;
+					std::cout << "eye_separation_factor: "<< eye_separation_factor << std::endl;
+					on_set(&eye_separation_factor);
 					return true;
 				}
 				case cgv::gui::KEY_Right: if (ka != cgv::gui::KeyAction::KA_RELEASE) {
-					test.x() += 0.0625f;
-					std::cout << "eye_separation_factor: " << test.x() << std::endl;
-					on_set(&test.x());
+					eye_separation_factor += 0.0625f;
+					std::cout << "eye_separation_factor: " << eye_separation_factor << std::endl;
+					on_set(&eye_separation_factor);
 					return true;
 				}
-				case '.': if (ka != cgv::gui::KeyAction::KA_RELEASE) {
+				/*case '.': if (ka != cgv::gui::KeyAction::KA_RELEASE) {
 					test.y() = std::min(1.f, test.y()+0.0625f);
 					std::cout << "frustum_shear_factor: "<<test.y() << std::endl;
 					on_set(&test.y());
@@ -235,7 +245,7 @@ public:
 					std::cout << "frustum_shear_factor: "<<test.y() << std::endl;
 					on_set(&test.y());
 					return true;
-				}
+				}*/
 				default:
 					/* DoNothing() */;
 			}
@@ -249,16 +259,39 @@ public:
 	}
 
 	void clear (cgv::render::context &ctx) {
-		raycast_prog.destruct(ctx);
+		shaders.clear(ctx);
 	}
 
 	bool init (cgv::render::context &ctx) {
-		return load_shader(ctx);
+		shaders.add("raycast_scene0", "holo_raycast.glpr");
+		shaders.add("raycast_scene1", "holo_raycast2.glpr");
+
+		return shaders.load_all(ctx, "holo_raycast::init()");
+	}
+
+	mat4 compute_stereo_frustum_screen(float eye, float eye_separation, vec2 screen_dim, vec2 z_planes, float parallax_zero_depth) {
+
+		float aspect = screen_dim.x() / screen_dim.y();
+		float top = 0.5*screen_dim.y()*z_planes.x() / parallax_zero_depth;
+		float bottom = -top;
+		float delta = 0.5*eye_separation*eye*screen_dim.x()*z_planes.x() / parallax_zero_depth;
+		float left = bottom * aspect - delta;
+		float right = top * aspect - delta;
+
+		return cgv::math::frustum4(left, right, bottom, top, z_planes.x(), z_planes.y());
+	}
+
+	void stereo_translate_modelview_matrix(float eye, float eye_separation, float screen_width, mat4& M) {
+		M(3, 0) += -0.5 * eye_separation * eye * screen_width;
 	}
 
 	void draw (cgv::render::context &ctx)
 	{
+		cgv::render::shader_program& raycast_prog = shaders.get(scene_index == 0 ? "raycast_scene0" : "raycast_scene1");
 		raycast_prog.enable(ctx);
+		raycast_prog.set_uniform(ctx, "pitch", calibration.pitch);
+		raycast_prog.set_uniform(ctx, "slope", calibration.slope);
+		raycast_prog.set_uniform(ctx, "center", calibration.center);
 
 		vec2 viewport_dims = vec2(static_cast<float>(ctx.get_width()), static_cast<float>(ctx.get_height()));
 
@@ -275,14 +308,31 @@ public:
 		float z_near = static_cast<float>(sview_ptr->get_z_near());
 		float z_far = static_cast<float>(sview_ptr->get_z_far());
 
+
+		float screen_width = y_extent_at_focus * aspect;
+		mat4 P0 = compute_stereo_frustum_screen(-1.0f, eye_separation, vec2(y_extent_at_focus * aspect, y_extent_at_focus), vec2(z_near, z_far), parallax_zero_depth);
+		mat4 P1 = compute_stereo_frustum_screen(1.0f, eye_separation, vec2(y_extent_at_focus * aspect, y_extent_at_focus), vec2(z_near, z_far), parallax_zero_depth);
+		
+		mat4 MV0 = ctx.get_modelview_matrix();
+		mat4 MV1 = ctx.get_modelview_matrix();
+		stereo_translate_modelview_matrix(-1.0f, eye_separation, screen_width, MV0);
+		stereo_translate_modelview_matrix(1.0f, eye_separation, screen_width, MV1);
+
+		mat4 MVP0 = P0 * MV0;
+		mat4 MVP1 = P1 * MV1;
+
+
 		raycast_prog.set_uniform(ctx, "viewport_dims", viewport_dims);
 		raycast_prog.set_uniform(ctx, "eye_pos", eye_pos);
-		raycast_prog.set_uniform(ctx, "eye_separation", test.x() * eye_separation);
+		raycast_prog.set_uniform(ctx, "eye_separation", eye_separation_factor * eye_separation);
 		raycast_prog.set_uniform(ctx, "screen_width", y_extent_at_focus * aspect);
 		raycast_prog.set_uniform(ctx, "screen_height", y_extent_at_focus);
 		raycast_prog.set_uniform(ctx, "parallax_zero_depth", parallax_zero_depth);
 		raycast_prog.set_uniform(ctx, "z_near", z_near);
 		raycast_prog.set_uniform(ctx, "z_far", z_far);
+
+		raycast_prog.set_uniform(ctx, "light_direction", light_direction);
+		raycast_prog.set_uniform(ctx, "enable_shadows", enable_shadows);
 		raycast_prog.set_uniform(ctx, "test", test);
 
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -291,32 +341,29 @@ public:
 
 	void create_gui() {
 		add_decorator(name, "heading");
-		add_member_control(this, "eye_separation_mult", test[0], "value_slider", "min=0;max=2;step=0.0625");
-		add_member_control(this, "frustum_shear_factor", test[1], "value_slider", "min=0;max=1;step=0.0625");
+
+		add_member_control(this, "Scene", reinterpret_cast<cgv::type::DummyEnum&>(scene_index), "dropdown", "enums='Coordinate System Spheres, Hanging Object'");
+		
+		add_member_control(this, "Eye Separation Factor", eye_separation_factor, "value_slider", "min=0;max=2;step=0.0625");
+
+		add_decorator("Light Direction", "separator");
+		add_member_control(this, "X", light_direction[0], "value_slider", "min=-1;max=1;step=0.0625");
+		add_member_control(this, "Y", light_direction[1], "value_slider", "min=-1;max=1;step=0.0625");
+		add_member_control(this, "Z", light_direction[2], "value_slider", "min=-1;max=1;step=0.0625");
+
+		add_member_control(this, "Shadows", enable_shadows, "check");
+
+		add_member_control(this, "A", test[0], "value_slider", "min=0;max=2;step=0.0625");
+		add_member_control(this, "B", test[1], "value_slider", "min=0;max=2;step=0.0625");
 		add_member_control(this, "C", test[2], "value_slider", "min=0;max=2;step=0.0625");
 		add_member_control(this, "D", test[3], "value_slider", "min=0;max=2;step=0.0625");
 	}
 
-	bool load_shader(cgv::render::context& ctx)
-	{
-		bool success = cgv::render::shader_library::load(
-			ctx, raycast_prog, "holo_raycast.glpr", true, "holo_raycast::init()"
-		);
-
-		if (success) {
-			raycast_prog.set_uniform(ctx, "pitch", calibration.pitch);
-			raycast_prog.set_uniform(ctx, "slope", calibration.slope);
-			raycast_prog.set_uniform(ctx, "center", calibration.center);
-		}
-
-		return success;
-	}
-
-	void reload_shader() {
+	void reload_shaders() {
 		if(auto ctx_ptr = get_context()) {
 			auto& ctx = *ctx_ptr;
 			ctx.disable_shader_file_cache();
-			load_shader(ctx);
+			shaders.reload_all(ctx, "holo_raycast::init()");
 			ctx.enable_shader_file_cache();
 		}
 	}
@@ -325,4 +372,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new holographic raycast demos
-cgv::base::factory_registration<holo_raycast> holo_raycast2_fac("New/Demo/Holographic Raycast Demo");
+cgv::base::object_registration<holo_raycast> holo_raycast2_fac("New/Demo/Holographic Raycast Demo");
