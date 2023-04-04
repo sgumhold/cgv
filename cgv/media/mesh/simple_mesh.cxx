@@ -29,6 +29,20 @@ simple_mesh_base::simple_mesh_base(const simple_mesh_base& smb) :
 	materials(smb.materials)
 {
 }
+/// move constructor
+simple_mesh_base::simple_mesh_base(simple_mesh_base&& smb) :
+	colored_model(std::move(smb)),
+	position_indices(std::move(smb.position_indices)),
+	normal_indices(std::move(smb.normal_indices)),
+	tex_coord_indices(std::move(smb.tex_coord_indices)),
+	faces(std::move(smb.faces)),
+	group_indices(std::move(smb.group_indices)),
+	group_names(std::move(smb.group_names)),
+	material_indices(std::move(smb.material_indices)),
+	materials(std::move(smb.materials))
+{
+}
+
 /// assignment operator
 simple_mesh_base& simple_mesh_base::operator=(const simple_mesh_base& smb)
 {
@@ -41,6 +55,21 @@ simple_mesh_base& simple_mesh_base::operator=(const simple_mesh_base& smb)
 	group_names=smb.group_names;
 	material_indices=smb.material_indices;
 	materials = smb.materials;
+	return *this;
+}
+
+/// move assignment operator
+simple_mesh_base& simple_mesh_base::operator=(simple_mesh_base&& smb)
+{
+	colored_model::operator=(std::move(smb));
+	position_indices=std::move(smb.position_indices);
+	normal_indices=std::move(smb.normal_indices);
+	tex_coord_indices=std::move(smb.tex_coord_indices);
+	faces=std::move(smb.faces);
+	group_indices=std::move(smb.group_indices);
+	group_names=std::move(smb.group_names);
+	material_indices=std::move(smb.material_indices);
+	materials = std::move(smb.materials);
 	return *this;
 }
 
@@ -366,13 +395,22 @@ public:
 };
 
 
-/// construct from string corresponding to Conway notation (defaults to empty mesh)
+/// copy constructor
 template <typename T>
-simple_mesh<T>::simple_mesh(const simple_mesh<T>& sm) : simple_mesh_base(sm), positions(sm.positions), normals(sm.normals), tex_coords(sm.tex_coords)
+simple_mesh<T>::simple_mesh(const simple_mesh<T>& sm)
+	: simple_mesh_base(sm), positions(sm.positions), normals(sm.normals), tex_coords(sm.tex_coords)
 {
 }
 
-/// construct from string corresponding to Conway notation (defaults to empty mesh)
+/// move constructor
+template <typename T>
+simple_mesh<T>::simple_mesh(simple_mesh<T>&& sm)
+	: simple_mesh_base(std::move(sm)), positions(std::move(sm.positions)), normals(std::move(sm.normals)),
+	  tex_coords(std::move(sm.tex_coords))
+{
+}
+
+/// assignment operator
 template <typename T>
 simple_mesh<T>& simple_mesh<T>::operator = (const simple_mesh<T>& sm)
 {
@@ -381,6 +419,18 @@ simple_mesh<T>& simple_mesh<T>::operator = (const simple_mesh<T>& sm)
 	normals = sm.normals;
 	tangents = sm.tangents;
 	tex_coords = sm.tex_coords;
+	return *this;
+}
+
+/// move assignment operator
+template <typename T>
+simple_mesh<T>& simple_mesh<T>::operator = (simple_mesh<T>&& sm)
+{
+	simple_mesh_base::operator = (std::move(sm));
+	positions = std::move(sm.positions);
+	normals = std::move(sm.normals);
+	tangents = std::move(sm.tangents);
+	tex_coords = std::move(sm.tex_coords);
 	return *this;
 }
 
