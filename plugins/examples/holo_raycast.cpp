@@ -480,4 +480,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new holographic raycast demos
-cgv::base::object_registration<holo_raycast> holo_raycast2_fac("New/Demo/Holographic Raycast Demo");
+cgv::base::factory_registration<holo_raycast> holo_raycast2_fac("New/Demo/Holographic Raycast Demo");
