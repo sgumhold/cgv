@@ -1,5 +1,6 @@
 var NAVTREEINDEX52 =
 {
+"structcgv_1_1utils_1_1typed__token.html#a9a2121933f46f315734a1994eafeff2b":[11,0,0,13,1,2],
 "structcgv_1_1utils_1_1typed__token.html#aa8e06c57774bb6d34436ff2e0ea22442":[11,0,0,13,1,8],
 "structcgv_1_1utils_1_1typed__token.html#ab31c4e3c695ed4ad2ce0b69d09c2cf45":[11,0,0,13,1,7],
 "structgamepad_1_1device__info.html":[11,0,1,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX52 =
 "vr__state_8h.html#af21ee59fd7356a23f9176f098b5c9b24":[12,0,1,6,7,11],
 "vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04":[12,0,1,6,7,5],
 "vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a103c5c0a92f9f9d0d628b88b1ef3257c":[12,0,1,6,7,5,21],
-"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a14e3fc591ae21f90bb5a46984d424f37":[12,0,1,6,7,5,8],
-"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a172fb32588649862db8e59e95a58d219":[12,0,1,6,7,5,3]
+"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a14e3fc591ae21f90bb5a46984d424f37":[12,0,1,6,7,5,8]
 };

@@ -1,5 +1,6 @@
 var NAVTREEINDEX49 =
 {
+"structcgv_1_1render_1_1distorted__pinhole.html#aefe4161943c1abac1a582f2745c13698":[11,0,0,10,4,7],
 "structcgv_1_1render_1_1distorted__pinhole.html#af36c04fdeb21290f87a81d9bfae4ad32":[11,0,0,10,4,25],
 "structcgv_1_1render_1_1gl_1_1gl__traits.html":[11,0,0,10,0,0],
 "structcgv_1_1render_1_1group__render__style.html":[11,0,0,10,47],
@@ -248,6 +249,5 @@ var NAVTREEINDEX49 =
 "structcgv_1_1render_1_1render__config.html#a1ff38549b7f5c57918898543e78a416d":[11,0,0,10,16,28],
 "structcgv_1_1render_1_1render__config.html#a29bcff8dff9b613d9d9a8df2b67fdd78":[11,0,0,10,16,54],
 "structcgv_1_1render_1_1render__config.html#a2f074aea5bf4b0bfeb00845750d27623":[11,0,0,10,16,25],
-"structcgv_1_1render_1_1render__config.html#a313232084b52192201cecaf4ae257ee8":[11,0,0,10,16,24],
-"structcgv_1_1render_1_1render__config.html#a322bdd4891db870dafaba22e40d99bff":[11,0,0,10,16,7]
+"structcgv_1_1render_1_1render__config.html#a313232084b52192201cecaf4ae257ee8":[11,0,0,10,16,24]
 };
