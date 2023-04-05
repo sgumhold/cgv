@@ -47,6 +47,9 @@ namespace cgv {
 		/// construct 4x4 scale matrix from xyz scales
 		template <typename T> fmat<T, 4, 4>
 			scale4(const T& sx, const T& sy, const T& sz) { return scale4(fvec<T, 3>(sx, sy, sz)); }
+		/// construct 4x4 uniform scale matrix
+		template <typename T> fmat<T, 4, 4>
+			scale4(const T& s) { return scale4(fvec<T, 3>(s, s, s)); }
 		/// construct 2x2 rotation matrix from angle in degrees
 		template <typename T> fmat<T, 2, 2>
 			rotate2(const T& A) {
