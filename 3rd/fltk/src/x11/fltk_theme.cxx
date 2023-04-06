@@ -21,29 +21,14 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
-// This is the default fltk_theme() function for fltk on X. It
-// reads the "INI" style files written by KDE 1,2,3 and extracts some
-// appearance information for fltk from them. It also installs a
-// handler for KDE style change messages and calls fltk::reload_theme
-// when they come in.
-
-// Original KDE theme code by Carl Thompson (clip@home.net)
-// Rewritten to single source file by Bill Spitzak
-
-// At the bottom of the file are the commented-out remains of all the
-// Xresources reading code. It is all obsolete, nobody writes useful
-// information there anymore.
-
-/*
-  This attempts to read information from the KDE files
-  "~/.kde/share/config/kdeglobals" and "/usr/share/config/kdeglobals".
-  If these exist it also installs an event handler to listen for KDE
-  style-change events and call fltk::reload_theme() on them. Fltk does
-  not even bother trying to look at the xrdb databases, nobody seems
-  to use that any more.
-*/
+// This is the adjusted default fltk_theme() function for fltk on X. It
+// mimics the Windows95 fltk_theme() function by using hardcoded default
+// values for colors that resemble the windows colors. The old X
+// fltk_theme implementation can be found under fltk_theme.bkp.
 
 #include <fltk/Widget.h>
+#include <fltk/Button.h>
+#include <fltk/TabGroup.h>
 #include <fltk/draw.h>
 #include <fltk/Monitor.h>
 #include <fltk/events.h>
@@ -54,612 +39,276 @@
 #if USE_X11
 # include <fltk/x.h>
 #endif
-#ifndef PATH_MAX
-# define PATH_MAX 1024
-#endif
 
 using namespace fltk;
 
-//kdewin_menu_text_box("kde windows menu window", "2AAUUIIXX", &fltk::downBox);
-
-////////////////////////////////////////////////////////////////
-#if USE_X11
-// this function handles KDE style change messages:
-
-// I think these are for KDE1:
-static Atom ChangeGeneral, /*ChangeStyle,*/ ChangePalette;
-
-// For KDE2:
-static Atom KIPC;
-enum KIPCMessage {
-  PaletteChanged=0, FontChanged, StyleChanged, BackgroundChanged,
-  SettingsChanged, IconChanged, UserMessage=32
-};
-
-static int x_event_handler(int,Window*) {
-  if (fltk::xevent.type != ClientMessage) return 0; // not a Client message
-  XClientMessageEvent* cm = (XClientMessageEvent*)&fltk::xevent;
-  static bool sawKIPC = false;
-  if (cm->message_type == KIPC) {
-    sawKIPC = true;
-    if (cm->data.l[0] == PaletteChanged) ;
-    else if (cm->data.l[0] == FontChanged) ;
-    //else if (cm->data.l[0] == StyleChanged) ; // only if Motif is used
-    else return 0;
-  } else if (sawKIPC) return 0;
-  else if (cm->message_type == ChangeGeneral) ;
-  else if (cm->message_type == ChangePalette) ;
-  //else if (cm->message_type == ChangeStyle) ;
-  else return 0;
-  fltk::reload_theme();
-
-  return 1;
-}
-
-static void add_event_handler() {
-  static bool done;
-  if (!done) {
-    done = true;
-    open_display();
-    Atom kde_atom = XInternAtom(xdisplay, "KDE_DESKTOP_WINDOW", false);
-    long data = 1;
-    XChangeProperty(xdisplay, message_window, kde_atom, kde_atom, 32,
-		    PropModeReplace, (unsigned char *)&data, 1);
-
-    ChangeGeneral = XInternAtom(xdisplay, "KDEChangeGeneral", false);
-    //ChangeStyle = XInternAtom(xdisplay, "KDEChangeStyle", false);
-    ChangePalette = XInternAtom(xdisplay, "KDEChangePalette", false);
-    KIPC = XInternAtom(xdisplay, "KIPC_COMM_ATOM", false);
-    fltk::add_event_handler(x_event_handler);
-  }
-}
-
-#endif
-
-#ifndef R_OK
-#define R_OK 4
-#endif
-////////////////////////////////////////////////////////////////
-// Mini INI file reader:
-// You can load several files. The first occurance of a name takes
-// precedence, so load the files "backwards", with the user's local
-// one first.
-
-class INIFile {
-  struct Entry {
-    const char* section;
-    const char* name;
-    const char* value;
-    int serial;
-  };
-  Entry** entries;
-  unsigned count;
-  unsigned array_size;
-  static int compare(const void*, const void*);
-public:
-  INIFile() : entries(0), count(0), array_size(0) {}
-  bool load(const char* filename);
-  void clear();
-  ~INIFile() {clear();}
-  const char* get(const char* section, const char* name);
-};
-
-int INIFile::compare(const void* ap, const void* bp) {
-  Entry* a = *(Entry**)ap;
-  Entry* b = *(Entry**)bp;
-  int n = strcasecmp(a->section, b->section);
-  if (!n) n = strcasecmp(a->name, b->name);
-  if (!n) n = a->serial - b->serial;
-  return n;
-}
-
-bool INIFile::load(const char* filename) {
-  FILE* file = fopen(filename, "r");
-  if (!file) return false;
-  char buffer[1024];
-  char section[128];
-  for (;;) {
-    if (!fgets(buffer, 1024, file)) break;
-    char* p = buffer;
-    while (isspace(*p)) p++;
-    if (*p == '[') {
-      // it's a section title
-      char* q = ++p;
-      while (*q && *q != ']') q++;
-      if (*q == ']' && q-p < 128) {
-	*q = 0;
-	strcpy(section, p);
-      }
-    } else if (isalnum(*p)) {
-      // it's a name or name=value
-      char* q = p+1;
-      while (*q && *q != '=' && *q != '\n') q++;
-      char* r = q; // point at end
-      while (r>p && isspace(*(r-1))) r--;
-      if (*q=='=') q++; else q = 0; // remember if = was found
-      *r = 0;
-      const char* name = newstring(p);
-      const char* value = "";
-      if (q) {
-	while (isspace(*q)) q++;
-	for (r = q; *r && *r != '\n'; ) r++;
-	while (r>q && isspace(*(r-1))) r--;
-	if (r > q) {*r = 0; value = newstring(q);}
-      }
-      Entry* entry = new Entry();
-      entry->section = newstring(section);
-      entry->name = name;
-      entry->value = value;
-      entry->serial = count;
-      if (count >= array_size) {
-	array_size = array_size ? 2*array_size : 100;
-	Entry** newarray = new Entry*[array_size];
-	if (count) memcpy(newarray, entries, count*sizeof(*entries));
-	delete[] entries;
-	entries = newarray;
-      }
-      entries[count++] = entry;
-    }
-  }
-  fclose(file);
-  qsort(entries, count, sizeof(*entries), compare);
-  return true;
-}
-
-// Does binary search for the item:
-const char* INIFile::get(const char* section, const char* name) {
-  if (!section) section = "";
-  if (!name) name = "";
-  int a = 0;
-  int b = count;
-  while (a < b) {
-    int c = (a+b)/2;
-    Entry* e = entries[c];
-    int n = strcasecmp(e->section, section);
-    if (!n) n = strcasecmp(e->name, name);
-    if (n < 0) a = c+1;
-    else if (n > 0) b = c;
-    else {
-      // search backwards for earliest one read:
-      while (c>0) {
-	Entry* e1 = entries[--c];
-	if (strcasecmp(e1->section, section)) break;
-	if (strcasecmp(e1->name, name)) break;
-	e = e1;
-      }
-      return e->value;
-    }
-  }
-  return 0;
-}
-
-void INIFile::clear() {
-  for (int i = count; i--;) {
-    Entry* e = entries[i];
-    delete[] e->section;
-    delete[] e->name;
-    if (e->value[0]) free((void*)(e->value));
-    delete e;
-  }
-  delete[] entries;
-  entries = 0;
-  count = 0;
-  array_size = 0;
-}
-
-////////////////////////////////////////////////////////////////
-
-// Fonts have been seen defined several ways in the .kderc files:
-//
-// name,ptsize,pxlsize?,encoding?,weight,slant,<up to 4 mystery numbers>
-//
-// pxlsize?: some files have ptsize==-1, in this case this appears to be
-// a size in pixels, but I am unsure. When ptsize is greater than 0 this
-// seems to be some mystery number.
-//
-// encoding? early versions had the iso8859-1 type name here as text. Now
-// there is a number that may be the Windows number, or x from iso8859-x?
-// Sometimes it is zero. Currently I ignore this.
-
-static fltk::Font* grok_font(const char* s, float& fontsize, char* fontencoding)
-{
-  char* sv; // to save strtok_r() state
-  const char* p;
-
-  // get the name:
-  char fontname[64] = "";
-  if ( (p = strtok_r((char*)s, ",", &sv)) ) {
-    // Turn "adobe-foobar" into just "foobar":
-    char* q = strchr(p, '-');
-    if (q) p = q+1;
-    strncpy(fontname, p, sizeof(fontname));
-  }
-
-  // Read point size field:
-  fontsize = 12;
-  p = strtok_r(0, ",", &sv);
-  if (p) {
-    fontsize = atoi(p) * Monitor::all().dpi()/72;
-  }
-
-  // If it is bad, guess that the next is pixelsize:
-  p = strtok_r(0, ",", &sv);
-  if (fontsize < 5 || fontsize > 64) {
-    if (p) fontsize = atoi(p);
-    // go back to default if it looks completely messed up:
-    if (fontsize < 5 || fontsize > 64) fontsize = 12;
-  }
-
-  // next field may be the encoding?
-  // In KDE 1 it was the name of encoding, now it is a number.
-  p = strtok_r(0, ",", &sv);
-  fontencoding[0] = 0;
-  if (p) {
-    strncpy(fontencoding, p, sizeof(fontencoding));
-    // remove dash between iso and rest of text:
-    if (!strncasecmp(fontencoding, "iso-", 4))
-      memmove(fontencoding+3,fontencoding+4, strlen(fontencoding+4)+1);
-  }
-
-  int attrib = 0;
-  // Next is the weight. Not clear where the cutoff is between normal
-  // and bold. I have not seen any fonts with more than 2 weights, this
-  // seems to be betweem the apparently random values KDE chooses:
-  p = strtok_r(0, ",", &sv);
-  if (p && atoi(p) > 60 ) attrib = BOLD;
-
-  // Next is the slant/italics flag.
-  p = strtok_r(0, ",", &sv);
-  if (p && atoi(p) > 0 ) attrib |= ITALIC;
-
-  return fltk::font(fontname, attrib);
-}
-
 ////////////////////////////////////////////////////////////////
 
 extern "C" bool fltk_theme() {
 
-  const char* home = getenv("HOME");
-  if (!home) return false;
-  char kderc[PATH_MAX];
-  //int kde1 = 0;
-  snprintf(kderc, sizeof(kderc), "%s/.kde/share/config/kdeglobals", home);
+	// Use same default colors as received on Windows95 systems
+	Color background = 4042321920u;
+	Color foreground = 56u;
+	Color select_background = 7919360u;
+	Color select_foreground = 4294967040u;
+	Color text_background = 4294967040u;
+	Color text_foreground = 56u;
+	Color tooltip_background = 4294959360u;
+	Color tooltip_foreground = 56u;
 
-  INIFile f;
-  if (!f.load(kderc)) {
-    snprintf(kderc, sizeof(kderc), "%s/.kderc", home);
-    //kde1 = 1;
-    // skip it if it looks like user is not using kde:
-    if (!f.load(kderc)) return false;
-  }
-  // skip it if it looks like kde is not installed:
-  if (!f.load("/usr/share/config/kdeglobals")) return false;
+	int theme_idx = theme_idx_;
+	Style* style;
 
-  const char* s;
+	fltk::reset_indexed_colors();
 
-#if 0
-  int motif_style = 0;
-  s = f.get("General", "widgetStyle");
-  if (!s) s = f.get("KDE","widgetStyle");
-  if (s && !strcasecmp(s, "Motif")) motif_style = 1;
-  if (motif_style) {
-    // load the motif.theme to set it to motif appearance:
-    Theme f = Style::load_theme("motif");
-    if (f) f();
-    else {
-      fprintf(stderr,"Unable to load motif theme as part of kde\n");
-      motif_style = 0;
-    }
-    // see below for modifications to the motif/windows themes
-  }
-#endif
+	// set colors and styling based on selected theme
+	if(theme_idx < 0) {
+		// original
+		fltk::set_background(background);
+		Widget::default_style->labelcolor_ = foreground;
+		Widget::default_style->highlight_textcolor_ = foreground;
+		Widget::default_style->color_ = text_background;
+		Widget::default_style->textcolor_ = text_foreground;
+		Widget::default_style->selection_color_ = select_background;
+		Widget::default_style->selection_textcolor_ = select_foreground;
 
-  Color foreground = NO_COLOR;
-  if ((s=f.get("General", "foreground")))
-    foreground = color(s);
+		TabGroup::flat_tabs(false);
 
-  Color background = NO_COLOR;
-  if ((s=f.get("General", "background")))
-    background = color(s);
+		if((style = Style::find("Tooltip"))) {
+			style->color_ = tooltip_background;
+			style->labelcolor_ = tooltip_foreground;
+		}
 
-  Color select_foreground = NO_COLOR;
-  if ((s=f.get("General", "selectForeground")))
-    select_foreground = color(s);
+		fltk::set_theme_color(THEME_BACKGROUND_COLOR, GRAY75);
+		fltk::set_theme_color(THEME_GROUP_COLOR, GRAY75);
+		fltk::set_theme_color(THEME_CONTROL_COLOR, GRAY70);
+		fltk::set_theme_color(THEME_BORDER_COLOR, GRAY33);
+		fltk::set_theme_color(THEME_TEXT_COLOR, text_foreground);
+		fltk::set_theme_color(THEME_TEXT_BACKGROUND_COLOR, text_background);
+		fltk::set_theme_color(THEME_SELECTION_COLOR, select_background);
+		fltk::set_theme_color(THEME_HIGHLIGHT_COLOR, select_background);
+		fltk::set_theme_color(THEME_WARNING_COLOR, RED);
+	} else {
+		Color highlight_textcolor = foreground;
 
-  Color select_background = NO_COLOR;
-  if ((s=f.get("General", "selectBackground")))
-    select_background = color(s);
+		// See corporate design 07/2021
+		// "Auszeichnungsfarbe 1"
+		const Color tud_marking1_blue = color(0, 105, 180);
+		// "Auszeichnungsfarbe 2"
+		const Color tud_marking2_blue = color(0, 159, 227);
+		// "TUD-Web-Interface" - colors for web or other digital media
+		// TU-Dresden blue
+		const Color tud_blue = color(0, 37, 87);
+		// dark red
+		const Color tud_dark_red = color(181, 28, 28);
+		// light red
+		const Color tud_light_red = color(221, 39, 39);
 
-  // this one seems to do absolutely nothing
-  Color window_foreground = NO_COLOR;
-  if ((s=f.get("General", "windowForeground")))
-    window_foreground = color(s);
+		Color window_color = BLACK;
+		// GRAY30 is set to a darker shade of c0 (darkening depending on the brightness: less darkening for brighter c0): used for the shadowing effect on SHADOW_UP_BOX
+		Color c0 = WHITE; // set as GRAY33: the window background color (shall be the darkest color in the theme, except black and text colors)
+		Color c1 = WHITE; // set as GRAY75: the background color for gui groups
+		Color c2 = WHITE; // set as GRAY80: lighter than c1, used for controls
+		Color c3 = WHITE; // set as GRAY85: lighter or darker shade than c1, used for border frames
+		Color text_symbol_color = WHITE; // set as GRAY95: used for some labels (like slider handle markings)
+		Color dial_color = WHITE;
+		Color warning_color = RED;
 
-  Color window_background = NO_COLOR;
-  if ((s=f.get("General", "windowBackground")))
-    window_background = color(s);
+		switch(theme_idx) {
+		case 0:
+			c0 = color(0.70f);
+			c1 = color(0.90f);
+			c2 = color(0.98f);
+			c3 = color(0.80f);
+			text_symbol_color = color(0.19f);
 
-  Color button_foreground = NO_COLOR;
-  if ((s=f.get("General", "buttonForeground")))
-    button_foreground = color(s);
+			foreground = color(0.16f);
+			text_foreground = text_symbol_color;
+			text_background = c2;
+			highlight_textcolor = tud_marking1_blue;
+			select_background = tud_marking2_blue;
+			select_foreground = GRAY99;
+			window_color = GRAY33;
+			dial_color = c2;
+			warning_color = tud_light_red;
 
-  Color button_background = NO_COLOR;
-  if ((s=f.get("General", "buttonBackground")))
-    button_background = color(s);
+			break;
+		case 1:
+			c0 = color(0.42f);
+			c1 = color(0.64f);
+			c2 = color(0.78f);
+			c3 = color(0.58f);
+			text_symbol_color = color(0.04f);
 
-  if ((s=f.get("General", "font"))) {
-    float fontsize; static char fontencoding[32];
-    fltk::Font* font = grok_font(s, fontsize, fontencoding);
-    if (font) {
-// CET - FIXME    if (*fontencoding) fltk::encoding(fontencoding);
-      Widget::default_style->labelfont(font);
-      Widget::default_style->textfont(font);
-    }
-    Widget::default_style->labelsize(fontsize);
-    Widget::default_style->textsize(fontsize);
-  }
+			foreground = text_symbol_color;
+			text_foreground = text_symbol_color;
+			text_background = c2;
+			highlight_textcolor = tud_marking1_blue;
+			select_background = tud_marking2_blue;
+			select_foreground = GRAY99;
+			window_color = GRAY33;
+			dial_color = c2;
+			warning_color = tud_light_red;
 
-  if ((s=f.get("General", "menuFont"))) {
-    float fontsize; static char fontencoding[32];
-    fltk::Font* font = grok_font(s, fontsize, fontencoding);
-    Style* style;
-    if ((style = Style::find("Menu"))) {
-      if (font) style->textfont(font);
-      style->textsize(fontsize);
-    }
-  }
+			break;
+		case 2:
+			c0 = color(0.16f);
+			c1 = color(0.22f);
+			c2 = color(0.30f);
+			c3 = color(0.40f);
+			text_symbol_color = color(0.86f);
 
-  Style* style = Widget::default_style;
+			foreground = text_symbol_color;
+			text_foreground = text_symbol_color;
+			text_background = c0;
+			highlight_textcolor = tud_marking2_blue;
+			select_background = tud_marking1_blue;
+			select_foreground = GRAY99;
+			window_color = GRAY33;
+			dial_color = c3;
+			warning_color = tud_dark_red;
 
-  // turn off highlighting:
-//    style->highlight_color(NO_COLOR);
-//    style->highlight_textcolor(NO_COLOR);
+			break;
+		case 3:
+			c0 = color(0.10f);
+			c1 = color(0.15f);
+			c2 = color(0.20f);
+			c3 = color(0.28f);
+			text_symbol_color = color(0.74f);
 
-  if (background)
-    fltk::set_background(background);
+			foreground = text_symbol_color;
+			text_foreground = text_symbol_color;
+			text_background = c0;
+			highlight_textcolor = tud_marking2_blue;
+			select_background = tud_marking1_blue;
+			select_foreground = GRAY99;
+			window_color = GRAY33;
+			dial_color = c3;
+			warning_color = tud_dark_red;
 
-  if (foreground) {
-    style->labelcolor(foreground);
-    style->textcolor(foreground);
-    style->selection_textcolor(foreground);
-  }
+			break;
+		}
 
-  if (button_background && button_background != background)
-    style->buttoncolor(button_background);
+		fltk::set_theme_color(THEME_BACKGROUND_COLOR, c0);
+		fltk::set_theme_color(THEME_GROUP_COLOR, c1);
+		fltk::set_theme_color(THEME_CONTROL_COLOR, c2);
+		fltk::set_theme_color(THEME_BORDER_COLOR, c3);
+		fltk::set_theme_color(THEME_TEXT_COLOR, text_foreground);
+		fltk::set_theme_color(THEME_TEXT_BACKGROUND_COLOR, text_background);
+		fltk::set_theme_color(THEME_SELECTION_COLOR, select_background);
+		fltk::set_theme_color(THEME_HIGHLIGHT_COLOR, highlight_textcolor);
+		fltk::set_theme_color(THEME_WARNING_COLOR, warning_color);
 
-  if (window_background && window_background != background)
-    style->color(window_background);
+		fltk::set_main_gui_colors(c0, c1, c2, c3, text_symbol_color);
+		//fltk::shift_background(background);
+		Widget::default_style->labelcolor_ = foreground;
+		Widget::default_style->highlight_textcolor_ = highlight_textcolor;
+		Widget::default_style->color_ = text_background;
+		Widget::default_style->textcolor_ = text_foreground;
+		Widget::default_style->selection_color_ = select_background;
+		Widget::default_style->selection_textcolor_ = select_foreground;
 
-  if (window_foreground)
-    style->textcolor(window_foreground);
+		Widget::default_style->box_ = BORDER_BOX;
+		Widget::default_style->buttonbox_ = FLAT_BOX;
 
-  if (select_background)
-    style->selection_color(select_background);
 
-  if (select_foreground)
-    style->selection_textcolor(select_foreground);
+		TabGroup::flat_tabs(true);
 
-  if (button_foreground && button_foreground != foreground &&
-      (style = Style::find("button"))) {
-    style->labelcolor(button_foreground);
-  }
+		if((style = Style::find("Window"))) {
+			style->color_ = window_color;
+		}
 
-// Don't bother.  KDE gets it wrong.
-//  if ((style = Style::find("scrollbar"))) {
-//    if (background && window_background)
-//      style->color(fltk::lerp(background, window_background, 0.5));
-//  }
+		if((style = Style::find("MenuBar"))) {
+			style->buttonbox_ = MENU_BOX;
+		}
 
-/* looks better for dark backgrounds
-  if ((style = Style::find("scrollbar"))) {
-    if (foreground) style->color(48);
-  }
+		if((style = Style::find("MenuWindow"))) {
+			style->box_ = BORDER_BOX;
+		}
 
-  if ((style = Style::find("slider"))) {
-    if (foreground) style->color(48);
-  }
+		// use FLAT_UP_BOX if you dont want the thin shadow around the box
+		Box* default_buttonbox = SHADOW_UP_BOX;
+		Button::default_style->box_ = default_buttonbox;
+		Button::default_style->buttonbox_ = default_buttonbox;
+		/*if((style = Style::find("Button"))) {
+			style->box_ = SHADOW_UP_BOX;
+		}*/
 
-  if ((style = Style::find("value slider"))) {
-    if (foreground) style->color(48);
-  }
-*/
+		/*
+		FLAT_BOX: no border, only the background color
+		BORDER_BOX: background color framed in a 1px thick broder
+		*/
+		Box* input_frame_box = FLAT_BOX;
+		//Box* input_frame_box = BORDER_BOX;
+		/*
+		NO_BOX: buttons of inputs are not highlighted and have the same background color as the input itself
+		FLAT_UP_BOX: the buttons have a different background color than the input itself
+		*/
+		Box* input_button_box = NO_BOX;
+		//Box* input_button_box = FLAT_UP_BOX;
 
-#if 0
-  if (motif_style) {
-//  setcolor(GRAY90, GRAY85); // looks better for dark backgrounds
-    if ((style = Style::find("menu"))) {
-      style->leading(4);
-    }
-    if ((style = Style::find("check button"))) {
-      style->selection_color(GRAY66);
-      style->buttoncolor(GRAY75);
-    }
-  } else {
+		if((style = Style::find("Choice"))) {
+			style->box_ = input_frame_box;
+			style->buttonbox_ = input_button_box;
+		}
 
-//  if ((style = Style::find("menu"))) {
-//    style->leading(8);
-//    style->box(&kdewin_menu_text_box);
-//  }
+		if((style = Style::find("Dial"))) {
+			style->color_ = GRAY80;
+			style->textcolor_ = GRAY33;
+			style->color_ = dial_color;
+		}
 
-//  if ((style = Style::find("scrollbar"))) {
-//    style->box(&kdewin_menu_text_box);
-//  }
-  }
-#endif
+		if((style = Style::find("Output"))) {
+			style->box_ = input_frame_box;
+		}
 
-#if USE_X11
-  add_event_handler();
-#endif
-  return true;
-}
+		if((style = Style::find("ValueOutput"))) {
+			style->box_ = input_frame_box;
+		}
 
-////////////////////////////////////////////////////////////////
-#if USE_XRDB
-// OBSOLETE X-resource-reading stuff
+		if((style = Style::find("Input"))) {
+			style->box_ = input_frame_box;
+			//style->buttonbox_ = input_button_box;
+		}
 
-// Set this to 1 to get my attempt to improve XGetDefault:
-#define MY_GET_DEFAULT 0
+		if((style = Style::find("ValueInput"))) {
+			style->box_ = input_frame_box;
+			style->buttonbox_ = input_button_box;
+		}
 
-#if MY_GET_DEFAULT
+		if((style = Style::find("Check_Button"))) {
+			style->box_ = input_frame_box;
+		}
 
-// Simplified resource search that understands periods in the names.
-// Matches class.a:, class*a:, *.a:, *a:, and a:
-// Ignores case on everything.
-// Strips whitespace from both sides of the value
-// An empty value returns null.
-// Also understands = instead of :
-// Comments start with ! or ;
-// No quoting of any kind on the values!
+		if((style = Style::find("Slider"))) {
+			style->box_ = FLAT_BOX; // set to NO_BOX, to make color changes only affect the tickmarks
+			style->buttonbox_ = FLAT_BOX;
+			style->buttoncolor_ = GRAY80;
+			//style->selection_color_ = RED; / can change color of slider handle
+		}
 
-// case independent compare, r advanced to point after match:
-static int match(char* & rr, const char* a) {
-  for (char* r = rr; ; a++, r++) {
-    if (!*a) {rr = r; return 1;}
-    if (tolower(*r) != tolower(*a)) return 0;
-  }
-}
+		if((style = Style::find("ThumbWheel"))) {
+			style->box_ = input_frame_box;
+			style->buttonbox_ = NO_BOX;
+			style->color_ = GRAY80; // set this if you want a light background
+		}
 
-// return true if this character is the end of line:
-static int iseol(char c) {return !c || c=='\n' || c=='!' ||c==';';}
+		if((style = Style::find("Scrollbar"))) {
+			style->color_ = GRAY33;
+			style->buttoncolor_ = GRAY80;
+			style->box_ = NO_BOX;
+			style->buttonbox_ = FLAT_BOX;
+		}
 
-// like strtok, this mangles the string temporarily using these:
-static char* resourcestring;
-static char* clobbered;
-static char clobbered_value;
-
-static const char* get_default(const char* a) {
-  if (clobbered) {*clobbered = clobbered_value; clobbered = 0;}
-  if (!resourcestring) resourcestring = XResourceManagerString(xdisplay);
-  char* r = resourcestring;
-  char* found = 0;
-  for (;;) { // for each line in r
-    // skip leading whitespace (and also all blank lines):
-    while (isspace(*r)) r++;
-    if (!*r) break;
-    // exact is true if the program name is matched:
-    int exact = 0;
-    if (*r == '*') {
-      // checked for * or *.:
-      r++;
-      if (*r == '.') r++;
-    } else if (match(r, Window::xclass()) && (*r == '.' || *r == '*')) {
-      // matched the program name:
-      r++;
-      exact = 1;
-    } // otherwise try just 'a':
-    if (match(r, a)) {
-      while (*r != '\n' && isspace(*r)) r++;
-      if (*r == ':' || *r == '=') {
-	r++;
-	while (*r != '\n' && isspace(*r)) r++;
-	if (iseol(*r)) { // blank attribute
-	  if (exact) return 0;
-	  goto SKIP;
+		if((style = Style::find("Tooltip"))) {
+			style->box_ = BORDER_BOX;
+			style->color_ = text_background;
+			style->textcolor_ = text_symbol_color;
+		}
 	}
-	// find the end of the word (point to first whitespace at eol or \n):
-	char* e = r; while (!iseol(*e)) e++;
-	while (e > r && isspace(*(e-1))) e--;
-	// remove anything for previous find
-	if (clobbered) *clobbered = clobbered_value;
-	// replace the end with a null, which we will put back later:
-	clobbered = e;
-	clobbered_value = *e;
-	*e = 0;
-	if (exact || !clobbered_value) return r;
-	found = r; r = e+1;
-      } else {
-	// check for blank attribute name with no : or = sign:
-	if (exact && iseol(*r)) return 0;
-      }
-    }
-  SKIP:
-    while (*r && *r++ != '\n'); // go to next line
-  }
-  return found;
+
+	return true;
 }
-
-#else
-
-static inline const char* get_default(const char* a) {
-  return XGetDefault(xdisplay, Window::xclass(), a);
-}
-
-static inline const char* get_default(const char* a, const char* b) {
-  return XGetDefault(xdisplay, a, b);
-}
-
-#endif
-
-static Color to_color(const char* p) {
-  return p ? color(p) : 0;
-}
-
-extern "C" bool fltk_theme() {
-  open_display();
-
-  Color color;
-
-  color = to_color(get_default("background"));
-  if (color) set_background(color);
-
-  color = to_color(get_default("foreground"));
-  if (color) {
-    Widget::default_style->labelcolor(color);
-    Widget::default_style->highlight_textcolor(color);
-  }
-
-#if MY_GET_DEFAULT
-  color = to_color(get_default("Text.background"));
-  if (color) Widget::default_style->color(color);
-
-  color = to_color(get_default("Text.foreground"));
-  if (color) Widget::default_style->textcolor(color);
-
-  color = to_color(get_default("Text.selectBackground"));
-  if (color) Widget::default_style->selection_color(color);
-
-  color = to_color(get_default("Text.selectForeground"));
-  if (color) Widget::default_style->selection_textcolor(color);
-#else
-  color = to_color(get_default("Text","background"));
-  if (color) Widget::default_style->color(color);
-
-  color = to_color(get_default("Text","foreground"));
-  if (color) Widget::default_style->textcolor(color);
-
-  color = to_color(get_default("Text","selectBackground"));
-  if (color) Widget::default_style->selection_color(color);
-
-  color = to_color(get_default("Text","selectForeground"));
-  if (color) Widget::default_style->selection_textcolor(color);
-#endif
-
-  // also Scrollbar,width
-  // does not appear to be anything there for setting the tooltips...
-  // Maybe I should just add Tooltip,back/foreground.
-
-  // Mousewheel stuff is read from the XDefaults database but there
-  // are no standards for these. We should change these to match any
-  // standards that arise:
-
-  const char* w = get_default("wheel_scroll_lines");
-  if (w) Widget::default_style->wheel_scroll_lines(atoi(w));
-
-  w = get_default("wheel_up_button");
-  if (w) wheel_up_button = atoi(w);
-
-  w = get_default("wheel_down_button");
-  if (w) wheel_down_button = atoi(w);
-
-#if MY_GET_DEFAULT
-  // undo my mangling of the x resource string:
-  if (clobbered) {*clobbered = clobbered_value; clobbered = 0;}
-#endif
-
-  return true;
-}
-
-#endif
 
 //
 // End of "$Id: fltk_theme.cxx 5456 2006-09-19 02:41:42Z spitzak $".
