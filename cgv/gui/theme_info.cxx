@@ -22,15 +22,19 @@ theme_info::theme_info() {
 	warning(255, 0, 0);
 }
 
-void theme_info::set_theme_idx(int idx) {
+void theme_info::set_index(int idx) {
 	if(idx != theme_idx) {
 		theme_idx = idx;
 		on_change(instance());
 	}
 }
 
-int theme_info::get_theme_idx() const {
+int theme_info::get_index() const {
 	return theme_idx;
+}
+
+bool theme_info::is_dark() const {
+	return theme_idx > 1;
 }
 
 }

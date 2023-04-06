@@ -219,9 +219,9 @@ public:
 		label_style.fill_color = rgba(ti.text(), 1.0f);
 		label_style.use_blending = true;
 		label_style.font_size = 12.0f;
-		label_style.clear_type_mode = ti.get_theme_idx() < 2 ?
-			text2d_style::ClearTypeMode::CT_BLACK_ON_WHITE :
-			text2d_style::ClearTypeMode::CT_WHITE_ON_BLACK;
+		label_style.clear_type_mode = ti.is_dark() ?
+			text2d_style::ClearTypeMode::CT_WHITE_ON_BLACK :
+			text2d_style::ClearTypeMode::CT_BLACK_ON_WHITE;
 
 		btn_style.use_fill_color = false;
 		btn_style.border_color = rgba(ti.border(), 1.0f);
