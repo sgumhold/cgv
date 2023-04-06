@@ -1,9 +1,9 @@
 #version 150
 
 //***** begin interface of shape2d.glsl ***********************************
-uniform vec2 tex_scaling = vec2(1.0);
-
 uniform vec4 border_color = vec4(1.0);
+uniform vec2 tex_scaling = vec2(1.0);
+uniform vec2 tex_offset = vec2(0.0);
 
 vec2 get_adjusted_size(vec2 size);
 vec4 get_active_color(vec4 color);
@@ -15,6 +15,8 @@ void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texc
 void finish_fragment2d(in vec4 color);
 void finish_fragment2d(in vec4 color, in vec2 texcoords);
 //***** end interface of fragment2d.glfs ***********************************
+
+//layout(pixel_center_integer) in vec4 gl_FragCoord;
 
 uniform int pattern;
 uniform float scale;
@@ -28,6 +30,7 @@ flat in vec4 color_fs;
 float grid_texture(in vec2 p) {
     // coordinates
     vec2 i = step(fract(p), vec2(scale));
+	
     //pattern
 	switch(pattern) {
 	// grid
@@ -63,17 +66,6 @@ float grid_texture_grad_box(in vec2 p, in vec2 ddx, in vec2 ddy) {
 	}
 }
 
-// https://www.shadertoy.com/view/4tj3DG
-float grid_d(vec2 uv, vec2 scale, float line_width) {
-    uv += line_width / 2.0;
-    uv = mod(uv, scale);
-    vec2 halfRemainingSpace = (scale - line_width) / 2.0;
-    uv -= halfRemainingSpace + line_width;
-    uv = abs(uv);
-    uv = -(uv - halfRemainingSpace);
-    return min(uv.x, uv.y);
-}
-
 // https://iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
 float sd_box(in vec2 p, in vec2 b)
 {
@@ -86,13 +78,13 @@ void main() {
 	float dist = sd_box(pix_coord, get_adjusted_size(size));
 	vec4 color = get_active_color(color_fs);
 
-	vec2 uv = tex_scaling * tex_coord;
-
-	float grid_factor = grid_texture(uv);
-
-	//vec2 ddx_uv = dFdx(uv);
-	//vec2 ddy_uv = dFdy(uv);
-	//float grid_factor = grid_texture_grad_box(uv, ddx_uv, ddy_uv);
+	vec2 uv = tex_scaling * tex_coord - tex_offset;
+	
+	//float grid_factor = grid_texture(uv);
+	
+	vec2 ddx_uv = dFdx(uv);
+	vec2 ddy_uv = dFdy(uv);
+	float grid_factor = grid_texture_grad_box(uv, ddx_uv, ddy_uv);
 
 	color = mix(color, border_color, grid_factor);
 

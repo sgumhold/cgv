@@ -67,8 +67,9 @@ public:
 	/// destruct
 	~theme_info() {}
 
-	void set_theme_idx(int idx);
-	int get_theme_idx() const;
+	void set_index(int idx);
+	int get_index() const;
+	bool is_dark() const;
 
 	DEF_COLOR_MEMBER_METHODS(background)
 	DEF_COLOR_MEMBER_METHODS(group)

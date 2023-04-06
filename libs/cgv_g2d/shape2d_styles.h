@@ -99,6 +99,11 @@ struct grid2d_style : public shape2d_style {
 	GridPattern pattern = GP_GRID;
 	float scale = 0.5f;
 
+	grid2d_style() {
+		feather_width = 0.0f;
+		feather_origin = 0.0f;
+	}
+
 	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
 		shape2d_style::apply(ctx, prog);
 

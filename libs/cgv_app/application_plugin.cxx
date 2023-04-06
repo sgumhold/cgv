@@ -80,5 +80,17 @@ bool application_plugin::handle(cgv::gui::event& e)
 	}
 }
 
+void application_plugin::on_set(void* member_ptr)
+{
+	on_set(on_set_evaluator(member_ptr));
+	update_member(member_ptr);
+	post_redraw();
+}
+
+bool application_plugin::initialize_view_ptr()
+{
+	return !view_ptr && (view_ptr = find_view_as_node());
+}
+
 }
 }
