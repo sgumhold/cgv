@@ -253,14 +253,10 @@ bool color_map_editor::init(cgv::render::context& ctx) {
 
 	if(font.is_initialized()) {
 		cursor_labels.set_msdf_font(&font);
-		//cursor_labels.set_font_size(cursor_label_size);
-
-		cursor_labels.add_text("-");
-		cursor_labels.add_text("+");
+		cursor_labels.add_text("-", vec2(0.0f));
+		cursor_labels.add_text("+", vec2(0.0f));
 
 		value_labels.set_msdf_font(&font);
-		//value_labels.set_font_size(value_label_size);
-
 		value_labels.add_text("", ivec2(0), cgv::render::TA_BOTTOM);
 	}
 
@@ -403,16 +399,13 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 
 	// draw cursor decorators to show interaction hints
 	if(mouse_is_on_overlay && cursor_label_index > -1) {
-		if(font_renderer.enable(ctx, content_canvas, cursor_labels, cursor_label_style)) {
-			ivec2 pos = cursor_pos + ivec2(14, 10);
-			content_canvas.push_modelview_matrix();
-			content_canvas.mul_modelview_matrix(ctx, cgv::math::translate2h(pos));
+		ivec2 pos = cursor_pos + ivec2(14, 10);
+		content_canvas.push_modelview_matrix();
+		content_canvas.mul_modelview_matrix(ctx, cgv::math::translate2h(pos));
 
-			font_renderer.draw(ctx, content_canvas, cursor_labels, cursor_label_index, 1);
-			
-			content_canvas.pop_modelview_matrix(ctx);
-			font_renderer.disable(ctx, cursor_labels);
-		}
+		font_renderer.render(ctx, content_canvas, cursor_labels, cursor_label_style,  cursor_label_index, 1);
+
+		content_canvas.pop_modelview_matrix(ctx);
 	}
 
 	disable_blending();

@@ -72,7 +72,7 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_text_geometry& 
 	for(size_t i = offset; i < end; ++i) {
 		const auto& text = tg.ref_texts()[i];
 
-		vec2 position_offset = static_cast<vec2>(text.position);
+		vec2 position_offset = text.position;
 		
 		vec2 alignment_offset_factors(-0.5f);
 
@@ -89,10 +89,12 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_text_geometry& 
 		else if(text.alignment & cgv::render::TA_BOTTOM)
 			alignment_offset_factors.y() = 0.0f;
 
+		vec2 size_scale = text.size;
+		size_scale.x() *= text.size.y();
+
 		prog.set_uniform(ctx, "position_offset", position_offset);
 		prog.set_uniform(ctx, "alignment_offset_factors", alignment_offset_factors);
-		prog.set_uniform(ctx, "text_size", text.size);
-		//prog.set_uniform(ctx, "font_size", tg.get_font_size());
+		prog.set_uniform(ctx, "text_size", size_scale);
 		prog.set_uniform(ctx, "angle", text.angle);
 
 		glDrawArraysInstancedBaseInstance(GL_TRIANGLE_STRIP, (GLint)0, (GLsizei)4, (GLsizei)text.str.size(), (GLuint)text.offset);
