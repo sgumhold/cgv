@@ -38,15 +38,10 @@ void msdf_text_geometry::set_text(unsigned i, const std::string& text) {
 		texts[i].str = text;
 		texts[i].size.x() = compute_length(text);
 
-		update_offsets_and_counts();
+		update_offsets(i);
 
 		state_out_of_date = true;
 	}
-}
-
-void msdf_text_geometry::set_position(unsigned i, const ivec2& position) {
-	if(i < texts.size())
-		texts[i].position = position;
 }
 
 void msdf_text_geometry::set_alignment(unsigned i, const cgv::render::TextAlignment alignment) {
@@ -61,22 +56,12 @@ void msdf_text_geometry::set_angle(unsigned i, const float angle) {
 
 msdf_text_geometry::vec2 msdf_text_geometry::get_text_render_size(unsigned i, float font_size) const {
 
-	if(i < texts.size())
-		return font_size * texts[i].size;
+	if(i < texts.size()) {
+		const text_info& text = texts[i];
+		return font_size * vec2(text.size.x() * text.size.y(), 1.0f);
+	}
 
 	return vec2(0.0f);
-}
-
-void msdf_text_geometry::add_text(const std::string& str, const ivec2& position, const cgv::render::TextAlignment alignment, float angle) {
-	text_info text;
-	text.str = str;
-	text.position = position;
-	text.size = vec2(compute_length(text.str), 1.0f);
-	text.alignment = alignment;
-	text.angle = angle;
-
-	end_text(text);
-	state_out_of_date = true;
 }
 
 bool msdf_text_geometry::create(cgv::render::context& ctx) {
@@ -130,21 +115,15 @@ float msdf_text_geometry::compute_length(const std::string& str) const {
 	return length;
 }
 
-void msdf_text_geometry::end_text(text_info text) {
-	text.offset = 0;
-	if(texts.size() > 0) {
-		const text_info& last_text = *texts.rbegin();
-		text.offset = int(last_text.offset + last_text.str.size());
-	}
-	texts.push_back(text);
-}
+void msdf_text_geometry::update_offsets(size_t begin) {
+	if(begin < texts.size()) {
+		int offset = texts[begin].offset + static_cast<int>(texts[begin].str.size());
 
-void msdf_text_geometry::update_offsets_and_counts() {
-	int offset = 0;
-
-	for(text_info& text : texts) {
-		text.offset = offset;
-		offset += int(text.str.size());
+		for(size_t i = begin + 1; i < texts.size(); ++i) {
+			text_info& text = texts[i];
+			text.offset = offset;
+			offset += int(text.str.size());
+		}
 	}
 }
 

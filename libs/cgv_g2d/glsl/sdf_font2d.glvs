@@ -44,7 +44,7 @@ void main() {
 	vec2 corner = corners[id];
 
 	vertex v = in_data[gl_BaseInstance + gl_InstanceID];
-	v.position_size *= font_size;
+	v.position_size *= font_size * text_size.y;
 
 	mat2 R = rotate(radians(angle));
 

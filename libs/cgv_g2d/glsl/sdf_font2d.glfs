@@ -23,6 +23,7 @@ void finish_fragment2d(in vec4 color, in vec2 texcoords);
 uniform float src_size = 32.0;
 uniform float pixel_range = 2.0;
 uniform int clear_type_mode = 0;
+uniform vec2 text_size;
 uniform float font_size = 32.0;
 uniform float true_sdf_mix_factor = 0.0;
 
@@ -34,7 +35,7 @@ float median(float r, float g, float b) {
 }
 
 float screen_pixel_range() {
-	float screen_size = font_size;
+	float screen_size = font_size * text_size.y;
 	return max((screen_size/src_size) * pixel_range, 1.0);
 }
 
