@@ -10,11 +10,30 @@ endfunction()
 # retrieves a CGV-specific property and returns its content if any, otherwise returns something that evaluates to FALSE
 # under CMake's rules
 function(cgv_query_property OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
-	get_target_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
+	if (NOT TARGET_NAME STREQUAL "GLOBAL")
+		get_target_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
+	else()
+		get_property(PROPVAL GLOBAL PROPERTY ${PROPERTY_NAME})
+	endif()
 	if (PROPVAL AND NOT PROPVAL STREQUAL "PROPVAL-NOTFOUND")
 		set(${OUTPUT_VAR} "${PROPVAL}" PARENT_SCOPE)
 	else()
 		set(${OUTPUT_VAR} FALSE PARENT_SCOPE)
+	endif()
+endfunction()
+
+# retrieves a CGV-specific property that is suppposed to be a list and returns its content if any, otherwise returns
+# something that evaluates to and empty list under CMake's rules
+function(cgv_query_listproperty OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
+	if (NOT TARGET_NAME STREQUAL "GLOBAL")
+		get_target_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
+	else()
+		get_property(PROPVAL GLOBAL PROPERTY ${PROPERTY_NAME})
+	endif()
+	if (PROPVAL AND NOT PROPVAL STREQUAL "PROPVAL-NOTFOUND")
+		set(${OUTPUT_VAR} "${PROPVAL}" PARENT_SCOPE)
+	else()
+		set(${OUTPUT_VAR} "" PARENT_SCOPE)
 	endif()
 endfunction()
 
@@ -312,8 +331,6 @@ endfunction()
 
 # internal helper function that will perform final deferred operations after the very last cgv target has been
 # added either by the Framework itself or by any other projects that use the Framework from the outside
-# - global state the function will access
-set(USER_TARGETS "")
 # - the actual function
 function(cgv_do_final_operations)
 	message(STATUS "Performing final operations")
@@ -325,6 +342,7 @@ function(cgv_do_final_operations)
 	if (CGV_EXCLUDE_UNUSED_TARGETS)
 		cgv_get_all_directory_targets(CGV_FRAMEWORK_TARGETS ${CGV_DIR} RECURSIVE)
 		set(ALL_USER_DEPENDENCIES "")
+		cgv_query_listproperty(USER_TARGETS GLOBAL "CGVPROP_USER_TARGETS")
 		foreach(USER_TARGET ${USER_TARGETS})
 			cgv_gather_dependencies(DEPENDENCIES ${USER_TARGET} RECURSION_CONVERGENCE_HELPER)
 			list(APPEND ALL_USER_DEPENDENCIES ${DEPENDENCIES})
@@ -335,7 +353,7 @@ function(cgv_do_final_operations)
 		set(EXCLUDED_CGV_FRAMEWORK_TARGETS "")
 		foreach(CGV_FRAMEWORK_TARGET ${CGV_FRAMEWORK_TARGETS})
 			if (    NOT ${CGV_FRAMEWORK_TARGET} IN_LIST CGV_BUILD_TOOLS
-			    AND NOT ${CGV_FRAMEWORK_TARGET} IN_LIST ALL_USER_DEPENDENCIES)
+				AND NOT ${CGV_FRAMEWORK_TARGET} IN_LIST ALL_USER_DEPENDENCIES)
 				list(APPEND EXCLUDED_CGV_FRAMEWORK_TARGETS ${CGV_FRAMEWORK_TARGET})
 				set_target_properties(${CGV_FRAMEWORK_TARGET} PROPERTIES EXCLUDE_FROM_ALL TRUE)
 				set_target_properties(${CGV_FRAMEWORK_TARGET} PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD TRUE)
@@ -648,12 +666,11 @@ function(cgv_add_target NAME)
 
 	# record whether this target is added by the CGV Framework itself or by another project using it
 	if (NOT CGV_IS_CONFIGURING)
-		set(USER_TARGETS_LOCAL ${USER_TARGETS})
-		list(APPEND USER_TARGETS_LOCAL ${NAME} ${NAME_STATIC})
+		list(APPEND MY_TARGETS ${NAME} ${NAME_STATIC})
 		if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
-			list(APPEND USER_TARGETS_LOCAL ${NAME_EXE})
+			list(APPEND MY_TARGETS ${NAME_EXE})
 		endif()
-		set(USER_TARGETS "${USER_TARGETS_LOCAL}" PARENT_SCOPE)
+		set_property(GLOBAL APPEND PROPERTY "CGVPROP_USER_TARGETS" ${MY_TARGETS})
 	endif()
 
 	# IDE fluff
@@ -814,6 +831,7 @@ function(cgv_add_custom_sources TARGET_NAME)
 		endforeach()
 	endif()
 endfunction()
+
 
 
 
