@@ -267,8 +267,13 @@ function(cgv_do_deferred_ops TARGET_NAME)
 		endif()
 
 		# create launch script and .vscode config in case of Make- and Ninja-based generators when the plugin is executable
-		if (NOT NO_EXECUTABLE AND (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
+		# - check if a specific working directory was requested
+		cgv_query_property(WORKING_DIR ${TARGET_NAME} CGVPROP_WORKING_DIR)
+		if (NOT WORKING_DIR)
 			set(WORKING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+		endif()
+		# - create actual launch/debug config
+		if (NOT NO_EXECUTABLE AND (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
 			configure_file(
 				"${CGV_DIR}/make/cmake/run_plugin.sh.in" "${CMAKE_BINARY_DIR}/run_${TARGET_NAME}.sh"
 				FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
@@ -298,7 +303,7 @@ function(cgv_do_deferred_ops TARGET_NAME)
 				cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
 				set_plugin_execution_params(${TARGET_NAME} ARGUMENTS ${CMD_LINE_ARGS_STRING})
 				set_plugin_execution_params(${NAME_EXE} ARGUMENTS ${ADDITIONAL_ARGS_STRING} ALTERNATIVE_COMMAND $<TARGET_FILE:${NAME_EXE}>)
-				set_plugin_execution_working_dir(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
+				set_plugin_execution_working_dir(${TARGET_NAME} ${WORKING_DIR})
 				set_plugin_execution_working_dir(${NAME_EXE} ${CMAKE_CURRENT_SOURCE_DIR})
 			endif()
 		endif()
@@ -400,7 +405,7 @@ endfunction()
 function(cgv_add_target NAME)
 	cmake_parse_arguments(
 		PARSE_ARGV 1 CGVARG_
-		"NO_EXECUTABLE" "TYPE;OVERRIDE_SHARED_EXPORT_DEFINE;OVERRIDE_FORCE_STATIC_DEFINE"
+		"NO_EXECUTABLE" "TYPE;OVERRIDE_SHARED_EXPORT_DEFINE;OVERRIDE_FORCE_STATIC_DEFINE;WORKING_DIR"
 		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;ADDITIONAL_PRIVATE_DEFINES;ADDITIONAL_PUBLIC_DEFINES;DEPENDENCIES;LINKTIME_PLUGIN_DEPENDENCIES;ADDITIONAL_INCLUDE_PATHS;ADDITIONAL_LINKER_PATHS;ADDITIONAL_CMDLINE_ARGS"
 	)
 
@@ -634,6 +639,11 @@ function(cgv_add_target NAME)
 	# commit additional command line args for the subsequent generation phase
 	if (IS_PLUGIN)
 		set_target_properties(${NAME} PROPERTIES CGVPROP_ADDITIONAL_CMDLINE_ARGS "${CGVARG__ADDITIONAL_CMDLINE_ARGS}")
+	endif()
+
+	# commit custom run/debug working directory if requested
+	if (IS_PLUGIN AND CGVARG__WORKING_DIR)
+		set_target_properties(${NAME} PROPERTIES CGVPROP_WORKING_DIR "${CGVARG__WORKING_DIR}")
 	endif()
 
 	# record whether this target is added by the CGV Framework itself or by another project using it
