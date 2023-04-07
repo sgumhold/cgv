@@ -190,7 +190,7 @@ endfunction()
 # - global state the function can modify
 set(VSCODE_LAUNCH_JSON_CONFIG_LIST "")
 # - the actual function
-function(cgv_do_deferred_ops TARGET_NAME)
+function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 	# output notification of deferred operation
 	get_target_property(TARGET_TYPE ${TARGET_NAME} CGVPROP_TYPE)
 	message(STATUS "Performing deferred operations for ${TARGET_TYPE} '${TARGET_NAME}'")
@@ -293,7 +293,7 @@ function(cgv_do_deferred_ops TARGET_NAME)
 		endif()
 		# - create actual launch/debug config
 		set(DO_CREATE_LAUNCH_CONFIG TRUE)
-		if (CGV_IS_CONFIGURING AND NO_EXECUTABLE)
+		if (CONFIGURING_CGV AND NO_EXECUTABLE)
 			set(DO_CREATE_LAUNCH_CONFIG FALSE)
 		endif()
 		if (DO_CREATE_LAUNCH_CONFIG AND (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
@@ -318,7 +318,7 @@ function(cgv_do_deferred_ops TARGET_NAME)
 			)
 			if (NOT VSCODE_LAUNCH_JSON_CONFIG_LIST OR VSCODE_LAUNCH_JSON_CONFIG_LIST STREQUAL "")
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS}" PARENT_SCOPE)
-			elseif (CGV_IS_CONFIGURING)
+			elseif (CONFIGURING_CGV)
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_LAUNCH_JSON_CONFIG_LIST},\n${VSCODE_TARGET_LAUNCH_JSON_CONFIGS}" PARENT_SCOPE)
 			else()
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS},\n${VSCODE_LAUNCH_JSON_CONFIG_LIST}" PARENT_SCOPE)
@@ -722,9 +722,9 @@ function(cgv_add_target NAME)
 	# schedule deferred ops
 	# - for the created target
 	if (CGV_IS_CONFIGURING)
-		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CGV_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
+		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CGV_DIR} CALL cgv_do_deferred_ops [[${NAME}]] TRUE)")
 	else()
-		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
+		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]] FALSE)")
 	endif()
 	# - update final pass
 	cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CANCEL_CALL "_999_FINALOPS")
