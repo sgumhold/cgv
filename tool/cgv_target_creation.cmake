@@ -292,7 +292,11 @@ function(cgv_do_deferred_ops TARGET_NAME)
 			set(WORKING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 		endif()
 		# - create actual launch/debug config
-		if (NOT NO_EXECUTABLE AND (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
+		set(DO_CREATE_LAUNCH_CONFIG TRUE)
+		if (CGV_IS_CONFIGURING AND NO_EXECUTABLE)
+			set(DO_CREATE_LAUNCH_CONFIG FALSE)
+		endif()
+		if (DO_CREATE_LAUNCH_CONFIG AND (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
 			configure_file(
 				"${CGV_DIR}/make/cmake/run_plugin.sh.in" "${CMAKE_BINARY_DIR}/run_${TARGET_NAME}.sh"
 				FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
@@ -304,9 +308,13 @@ function(cgv_do_deferred_ops TARGET_NAME)
 				USE_SOURCE_PERMISSIONS
 			)
 
+			set(NO_EXE_FLAG "")
+			if (NO_EXECUTABLE)
+				set(NO_EXE_FLAG "NO_EXECUTABLE")
+			endif()
 			concat_vscode_launch_json_content(
-				VSCODE_TARGET_LAUNCH_JSON_CONFIGS
-				${TARGET_NAME} PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS} EXE_ARGS ${ADDITIONAL_ARGS} WORKING_DIR ${WORKING_DIR}
+				VSCODE_TARGET_LAUNCH_JSON_CONFIGS ${TARGET_NAME} ${NO_EXE_FLAG} WORKING_DIR ${WORKING_DIR}
+				PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS} EXE_ARGS ${ADDITIONAL_ARGS}
 			)
 			if (NOT VSCODE_LAUNCH_JSON_CONFIG_LIST OR VSCODE_LAUNCH_JSON_CONFIG_LIST STREQUAL "")
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS}" PARENT_SCOPE)
@@ -315,14 +323,14 @@ function(cgv_do_deferred_ops TARGET_NAME)
 			else()
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS},\n${VSCODE_LAUNCH_JSON_CONFIG_LIST}" PARENT_SCOPE)
 			endif()
-		else()
+		elseif(DO_CREATE_LAUNCH_CONFIG)
 			# try to set relevant options for all other generators in the hopes of ending up with a valid launch/debug
 			# configuration
+			cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
+			set_plugin_execution_params(${TARGET_NAME} ARGUMENTS ${CMD_LINE_ARGS_STRING})
+			set_plugin_execution_working_dir(${TARGET_NAME} ${WORKING_DIR})
 			if (NOT NO_EXECUTABLE)
-				cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
-				set_plugin_execution_params(${TARGET_NAME} ARGUMENTS ${CMD_LINE_ARGS_STRING})
 				set_plugin_execution_params(${NAME_EXE} ARGUMENTS ${ADDITIONAL_ARGS_STRING} ALTERNATIVE_COMMAND $<TARGET_FILE:${NAME_EXE}>)
-				set_plugin_execution_working_dir(${TARGET_NAME} ${WORKING_DIR})
 				set_plugin_execution_working_dir(${NAME_EXE} ${CMAKE_CURRENT_SOURCE_DIR})
 			endif()
 		endif()

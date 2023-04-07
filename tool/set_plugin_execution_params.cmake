@@ -26,6 +26,7 @@ function(format_vscode_launch_json_entry CONTENT_VAR TARGET_NAME)
 
 	# format JSON list entry
 	# - check if we're generating the first entry
+	set(CONTENT_LOCAL "")
 	if (${CONTENT_VAR} AND NOT ${CONTENT_VAR} STREQUAL "")
 		set(CONTENT_LOCAL ",\n")
 	endif()
@@ -79,7 +80,7 @@ endfunction()
 
 function(concat_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 	cmake_parse_arguments(
-		PARSE_ARGV 2 CGVARG_ "" "WORKING_DIR" "PLUGIN_ARGS;EXE_ARGS"
+		PARSE_ARGV 2 CGVARG_ "NO_EXECUTABLE" "WORKING_DIR" "PLUGIN_ARGS;EXE_ARGS"
 	)
 
 	# determine target names
@@ -98,18 +99,21 @@ function(concat_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 		LAUNCH_PROGRAM $<TARGET_FILE:cgv_viewer> CMD_ARGS ${CGVARG__PLUGIN_ARGS}
 		WORKING_DIR ${CGVARG__WORKING_DIR}
 	)
-	# - single executable build, standard VS Code C++ debugging
-	format_vscode_launch_json_entry(JSON_LIST_STRING
-		${NAME_EXE} DEBUGGER_TYPE cppdbg
-		LAUNCH_PROGRAM $<TARGET_FILE:${NAME_EXE}> CMD_ARGS ${CGVARG__EXE_ARGS}
-		WORKING_DIR ${CGVARG__WORKING_DIR}
-	)
-	# - single executable build, CodeLLDB debugging
-	format_vscode_launch_json_entry(JSON_LIST_STRING
-		${NAME_EXE} DEBUGGER_TYPE CodeLLDB
-		LAUNCH_PROGRAM $<TARGET_FILE:${NAME_EXE}> CMD_ARGS ${CGVARG__EXE_ARGS}
-		WORKING_DIR ${CGVARG__WORKING_DIR}
-	)
+	# - single executable build if not disabled
+	if(NOT CGVARG__NO_EXECUTABLE)
+		# standard VS Code C++ debugging
+		format_vscode_launch_json_entry(JSON_LIST_STRING
+			${NAME_EXE} DEBUGGER_TYPE cppdbg
+			LAUNCH_PROGRAM $<TARGET_FILE:${NAME_EXE}> CMD_ARGS ${CGVARG__EXE_ARGS}
+			WORKING_DIR ${CGVARG__WORKING_DIR}
+		)
+		# CodeLLDB debugging
+		format_vscode_launch_json_entry(JSON_LIST_STRING
+			${NAME_EXE} DEBUGGER_TYPE CodeLLDB
+			LAUNCH_PROGRAM $<TARGET_FILE:${NAME_EXE}> CMD_ARGS ${CGVARG__EXE_ARGS}
+			WORKING_DIR ${CGVARG__WORKING_DIR}
+		)
+	endif()
 
 	# write to target variable
 	set(${LAUNCH_JSON_CONFIG_VAR} ${JSON_LIST_STRING} PARENT_SCOPE)
