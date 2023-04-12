@@ -370,6 +370,10 @@ var namespacecgv_1_1math =
     [ "xyz_2_rgb", "namespacecgv_1_1math.html#a298492e84c1a1e16cf57c3130a5e250e", null ],
     [ "zero4", "namespacecgv_1_1math.html#a94c775fdb3417e4bab2f32bd5e76a9e2", null ],
     [ "zeros", "namespacecgv_1_1math.html#a769b0239ad7921d1debc13210eed9f1d", null ],
+    [ "zfar_from_invproj", "namespacecgv_1_1math.html#a22cb94fe39d94fba0ea4cd18751f0b08", null ],
+    [ "zfar_from_proj", "namespacecgv_1_1math.html#ab89c84112c8d5cb4e84e6858851b2985", null ],
+    [ "znear_from_invproj", "namespacecgv_1_1math.html#a11358087f6004e60c9a8acd542414a84", null ],
+    [ "znear_from_proj", "namespacecgv_1_1math.html#a4739473ab56839a7c288da1f74f93dd0", null ],
     [ "WGS84_a", "namespacecgv_1_1math.html#a586480b4ea85b19aef8d6a1b752f9815", null ],
     [ "WGS84_e", "namespacecgv_1_1math.html#ac9d04164120bee6630b604a2a0f6a4ee", null ]
 ];
