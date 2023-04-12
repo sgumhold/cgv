@@ -6,9 +6,9 @@ var searchData=
   ['zero_3520',['zero',['../structcgv_1_1type_1_1traits_1_1zero.html',1,'cgv::type::traits::zero&lt; T &gt;'],['../structcgv_1_1math_1_1diag__mat.html#a49293128243b9cd0d169f1ecc099afca',1,'cgv::math::diag_mat::zero()']]],
   ['zero4_3521',['zero4',['../namespacecgv_1_1math.html#a94c775fdb3417e4bab2f32bd5e76a9e2',1,'cgv::math']]],
   ['zeros_3522',['zeros',['../classcgv_1_1math_1_1fvec.html#af492aff2f4dcc61d70b1eeecfcb5b618',1,'cgv::math::fvec::zeros()'],['../namespacecgv_1_1math.html#a769b0239ad7921d1debc13210eed9f1d',1,'cgv::math::zeros()'],['../classcgv_1_1math_1_1vec.html#a678a42f6d02ad99889c55548c79ec7cd',1,'cgv::math::vec::zeros(unsigned n)'],['../classcgv_1_1math_1_1vec.html#a773ce76abac576757dfd3122d5cdb565',1,'cgv::math::vec::zeros()'],['../classcgv_1_1math_1_1mat.html#a7a1775a71bb94d385f62f976ed5cc8d1',1,'cgv::math::mat::zeros(unsigned rows, unsigned cols)'],['../classcgv_1_1math_1_1mat.html#ab9f9d6987f1c6271117a43467e057436',1,'cgv::math::mat::zeros()'],['../structcgv_1_1math_1_1diag__mat.html#ae18fea34b0a4acfa139fc3a7c21118f3',1,'cgv::math::diag_mat::zeros()']]],
-  ['zfar_5ffrom_5finvproj_3523',['zfar_from_invproj',['../namespacecgv_1_1math.html#a22cb94fe39d94fba0ea4cd18751f0b08',1,'cgv::math']]],
-  ['zfar_5ffrom_5fproj_3524',['zfar_from_proj',['../namespacecgv_1_1math.html#ab89c84112c8d5cb4e84e6858851b2985',1,'cgv::math']]],
-  ['znear_5ffrom_5finvproj_3525',['znear_from_invproj',['../namespacecgv_1_1math.html#a11358087f6004e60c9a8acd542414a84',1,'cgv::math']]],
-  ['znear_5ffrom_5fproj_3526',['znear_from_proj',['../namespacecgv_1_1math.html#a4739473ab56839a7c288da1f74f93dd0',1,'cgv::math']]],
+  ['zfar_5ffrom_5finvproj4_3523',['zfar_from_invproj4',['../namespacecgv_1_1math.html#a276e2f77d1b78f20cf6de8a259c9ac39',1,'cgv::math']]],
+  ['zfar_5ffrom_5fproj4_3524',['zfar_from_proj4',['../namespacecgv_1_1math.html#ac11e57e9b8a4102f0a42cc5e679af49a',1,'cgv::math']]],
+  ['znear_5ffrom_5finvproj4_3525',['znear_from_invproj4',['../namespacecgv_1_1math.html#aabcaa20776a303341d70e278f831476a',1,'cgv::math']]],
+  ['znear_5ffrom_5fproj4_3526',['znear_from_proj4',['../namespacecgv_1_1math.html#ae0c53909db56a33ab337098bb7ca0c2f',1,'cgv::math']]],
   ['zoom_3527',['zoom',['../classcgv_1_1render_1_1view.html#afc364adffa256f9dda26ba0253ef99db',1,'cgv::render::view']]]
 ];
