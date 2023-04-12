@@ -255,22 +255,22 @@ namespace cgv {
 
 		/// extract distance of near clipping plane from a 4x4 projection matrix (ortho or perspective)
 		template <typename T>
-			inline T znear_from_proj(const fmat<T, 4, 4>& proj) {
+			inline T znear_from_proj4(const fmat<T, 4, 4>& proj) {
 				return (proj[14] + proj[15]) / (proj[10] + proj[11]);
 		}
 		/// extract distance of far clipping plane from a 4x4 projection matrix (ortho or perspective)
 		template <typename T>
-			inline T zfar_from_proj(const fmat<T, 4, 4>& proj) {
+			inline T zfar_from_proj4(const fmat<T, 4, 4>& proj) {
 				return (proj[14] - proj[15]) / (proj[10] - proj[11]);
 		}
 		/// extract distance of near clipping plane from given inverse of a 4x4 projection matrix (ortho or perspective)
 		template <typename T>
-			inline T znear_from_invproj(const fmat<T, 4, 4>& invproj) {
+			inline T znear_from_invproj4(const fmat<T, 4, 4>& invproj) {
 				return -(invproj[14] - invproj[10]) / (invproj[15] - invproj[11]);
 		}
 		/// extract distance of far clipping plane from given inverse of a 4x4 projection matrix (ortho or perspective)
 		template <typename T>
-			inline T zfar_from_invproj(const fmat<T, 4, 4>& invproj) {
+			inline T zfar_from_invproj4(const fmat<T, 4, 4>& invproj) {
 				return -(invproj[10] + invproj[14]) / (invproj[11] + invproj[15]);
 		}
 
