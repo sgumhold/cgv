@@ -238,7 +238,6 @@ namespace cgv {
 				M(3, 2) = -T(1);
 				return M;
 			}
-
 		/// construct 4x4 perspective frustum matrix
 		template <typename T> fmat<T, 4, 4>
 			perspective4(const T& fovy, const T& aspect, const T& zNear, const T& zFar) {
@@ -253,6 +252,27 @@ namespace cgv {
 				M(3, 2) = -T(1);
 				return M;
 			}
+
+		/// extract distance of near clipping plane from a 4x4 projection matrix (ortho or perspective)
+		template <typename T>
+			inline T znear_from_proj(const fmat<T, 4, 4>& proj) {
+				return (proj[14] + proj[15]) / (proj[10] + proj[11]);
+		}
+		/// extract distance of far clipping plane from a 4x4 projection matrix (ortho or perspective)
+		template <typename T>
+			inline T zfar_from_proj(const fmat<T, 4, 4>& proj) {
+				return (proj[14] - proj[15]) / (proj[10] - proj[11]);
+		}
+		/// extract distance of near clipping plane from given inverse of a 4x4 projection matrix (ortho or perspective)
+		template <typename T>
+			inline T znear_from_invproj(const fmat<T, 4, 4>& invproj) {
+				return -(invproj[14] - invproj[10]) / (invproj[15] - invproj[11]);
+		}
+		/// extract distance of far clipping plane from given inverse of a 4x4 projection matrix (ortho or perspective)
+		template <typename T>
+			inline T zfar_from_invproj(const fmat<T, 4, 4>& invproj) {
+				return -(invproj[10] + invproj[14]) / (invproj[11] + invproj[15]);
+		}
 
 		/// return perspective projection for given eye (from -1 ... left most to 1 ... right most) without translation
 		template <typename T> fmat<T, 4, 4>
