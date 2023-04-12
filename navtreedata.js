@@ -160,7 +160,7 @@ var NAVTREEINDEX =
 "dir_b280b219e0e22e40ead44012f0a4ee29.html",
 "image__writer_8h_source.html",
 "namespacecgv_1_1gui.html#a7641aee24f715d0496c3e23c68faec81afcd7ad9adb7983df368ce9c5f7639433",
-"namespacecgv_1_1math.html#a4191d37dabc43d6cbc7e5da4dc8f3edd",
+"namespacecgv_1_1math.html#a41efc72e1a7aad03a48a289c7fad23c8",
 "namespacecgv_1_1media_1_1font.html#ab57fb7a3ceaa9e7bfb658810a66c1212",
 "namespacecgv_1_1utils.html#a368148a2c0ea1d7feded535e8d325b24",
 "plot3d_8h_source.html",
