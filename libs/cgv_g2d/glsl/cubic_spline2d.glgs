@@ -1,5 +1,7 @@
 #version 430
 
+#define MODE 1
+
 //***** begin interface of shape2d.glsl ***********************************
 float get_feather_width();
 vec2 get_shape_size();
@@ -7,7 +9,11 @@ vec4 get_color();
 vec4 transform_world_to_window_space(vec2 p);
 //***** end interface of shape2d.glsl ***********************************
 
+#if MODE == 0
+layout(points) in;
+#else
 layout(lines) in;
+#endif
 layout(triangle_strip, max_vertices = 8) out;
 
 struct cubic_node {
@@ -35,7 +41,10 @@ const vec2 corners[4] = vec2[](
 
 uniform float width = 1.0;
 
-in vec4 color_gs[];
+#if MODE == 0
+flat in vec4 position23_gs[];
+#endif
+flat in vec4 color_gs[];
 
 out flat vec4 color0_fs;
 out flat vec4 color1_fs;
@@ -63,7 +72,6 @@ void split_curve(T v0, T d0, T v1, T d1,		\
 	v11_out = v1;								\
 }
 
-//DEF_SplitCurve(float)
 DEF_split_curve(vec2)
 
 #define SPLIT_CURVE(TUBE, MEM_V, MEM_D, QTUBE0, QTUBE1)		\
@@ -114,8 +122,13 @@ void emit_bounding_box(in quadratic_segment qseg0, in quadratic_segment qseg1) {
 	box.xy = min(box0.xy, box1.xy);
 	box.zw = max(box0.zw, box1.zw);
 
+#if MODE == 0
+	color0_fs = color_gs[0];
+	color1_fs = color_gs[0];
+#else
 	color0_fs = color_gs[0];
 	color1_fs = color_gs[1];
+#endif
 
 	float final_width = width + get_feather_width();
 
@@ -185,10 +198,18 @@ void emit_bounding_box(in quadratic_segment qseg0, in quadratic_segment qseg1) {
 void main() {
 	
 	cubic_segment cseg;
+
+#if MODE == 0
+	cseg.s.position = gl_in[0].gl_Position.xy;
+	cseg.s.tangent = gl_in[0].gl_Position.zw;
+	cseg.e.position = position23_gs[0].xy;
+	cseg.e.tangent = position23_gs[0].zw;
+#else
 	cseg.s.position = gl_in[0].gl_Position.xy;
 	cseg.s.tangent = gl_in[0].gl_Position.zw;
 	cseg.e.position = gl_in[1].gl_Position.xy;
 	cseg.e.tangent = gl_in[1].gl_Position.zw;
+#endif
 
 	quadratic_segment qseg0, qseg1;
 	split_cubic_segment(cseg, qseg0, qseg1);
