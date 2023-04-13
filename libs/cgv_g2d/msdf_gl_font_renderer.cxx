@@ -52,6 +52,21 @@ bool msdf_gl_font_renderer::enable(cgv::render::context& ctx, const ivec2& viewp
 		prog.set_uniform(ctx, "pixel_range", tg.get_msdf_font()->get_pixel_range());
 		prog.set_uniform(ctx, "true_sdf_mix_factor", 0.0f);
 		style.apply(ctx, prog);
+
+		use_clear_type = static_cast<unsigned>(style.clear_type_mode) > 0;
+		if(use_clear_type) {
+			glGetBooleanv(GL_BLEND, &blending_was_enabled);
+			glGetIntegerv(GL_BLEND_SRC_RGB, &blend_src_color);
+			glGetIntegerv(GL_BLEND_SRC_ALPHA, &blend_src_alpha);
+			glGetIntegerv(GL_BLEND_DST_RGB, &blend_dst_color);
+			glGetIntegerv(GL_BLEND_DST_ALPHA, &blend_dst_alpha);
+
+			if(!blending_was_enabled)
+				glEnable(GL_BLEND);
+
+			glBlendFuncSeparate(GL_CONSTANT_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+			glBlendColor(style.fill_color.R(), style.fill_color.G(), style.fill_color.B(), 1.0f);
+		}
 	}
 	return res;
 }
@@ -59,6 +74,16 @@ bool msdf_gl_font_renderer::enable(cgv::render::context& ctx, const ivec2& viewp
 bool msdf_gl_font_renderer::disable(cgv::render::context& ctx, msdf_text_geometry& tg) {
 	bool res = prog.disable(ctx);
 	tg.disable(ctx);
+
+	if(res) {
+		if(use_clear_type) {
+			if(!blending_was_enabled)
+				glDisable(GL_BLEND);
+
+			glBlendFuncSeparate(blend_src_color, blend_dst_color, blend_src_alpha, blend_dst_alpha);
+		}
+	}
+
 	return res;
 }
 

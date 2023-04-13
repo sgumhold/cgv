@@ -66,18 +66,7 @@ void main() {
 		float coverage_g = compute_coverage(tex_coord);
 		float coverage_b = compute_coverage(tex_coord + vec2(subpixel_offset.x, 0.0));
 
-		vec3 mask = vec3(coverage_r, coverage_g, coverage_b);
-
-		vec4 color = get_active_color(fill_color);
-
-		if(clear_type_mode == 1)
-			color.rgb = 1.0 - (1.0 - color.rgb) * mask; // black on white
-		else
-			color.rgb = color.rgb * mask; // white on black
-
-		color.a = coverage_g;
-
-		finish_fragment2d(color);
+		finish_fragment2d(vec4(coverage_r, coverage_g, coverage_b, coverage_g));
 	} else {
 		vec4 mtsd = texture(tex, tex_coord).rgba;
 		float sd = median(mtsd.r, mtsd.g, mtsd.b) * mix(1.0, mtsd.a, true_sdf_mix_factor);
