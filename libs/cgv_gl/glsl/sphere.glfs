@@ -11,8 +11,8 @@ in SPHERE_FS {
 	float percentual_splat_size;
 } fi;
 
-out layout(location = 1) vec4 frag_position;
-out layout(location = 2) vec3 frag_normal;
+layout(location = 1) out vec4 frag_position;
+layout(location = 2) out vec3 frag_normal;
 
 //***** begin interface of sphere_lib.glfs ***********************************
 bool computer_ray_sphere_intersection(out vec3 p_eye, out vec3 n_eye, out vec2 splat_tc, out float clip_depth, out int side);
