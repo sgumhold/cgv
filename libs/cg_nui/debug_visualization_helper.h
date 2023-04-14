@@ -53,6 +53,14 @@ struct debug_value_config_ray
 	rgb ray_color{ rgb(1.0f, 0.2f, 0.2f) };
 	bool show_origin{ true };
 };
+struct debug_value_config_cylinder
+{
+	rgb color{ 0.355f, 0.728f, 0.960f };
+};
+struct debug_value_config_box
+{
+	rgb color{ 0.355f, 0.728f, 0.960f };
+};
 
 /// Singleton that can visualize different types of values (e.g. vectors or positions) for debugging purposes.
 ///	Values are registered and later addressed by the returned handle and can have individual settings (e.g. color or size) set.
@@ -99,6 +107,23 @@ private:
 		debug_value_config_ray config;
 		debug_value_ray(vec3 origin, vec3 direction) : origin(origin), direction(direction) {}
 	};
+	struct debug_value_cylinder : debug_value
+	{
+		vec3 origin;
+		vec3 direction;
+		float radius;
+		int spline_geometry_idx{ -1 };
+		debug_value_config_cylinder config;
+		debug_value_cylinder(vec3 origin, vec3 direction, float radius) : origin(origin), direction(direction), radius(radius) {}
+	};
+	struct debug_value_box : debug_value
+	{
+		vec3 origin;
+		vec3 extent;
+		int box_geometry_idx{ -1 };
+		debug_value_config_box config;
+		debug_value_box(vec3 origin, vec3 extent) : origin(origin), extent(extent) {}
+	};
 
 	std::vector<int> unused_handles;
 
@@ -119,6 +144,11 @@ private:
 	std::vector<rgb> sphere_colors;
 	cgv::render::sphere_render_style srs;
 
+	std::vector<vec3> box_positions;
+	std::vector<vec3> box_extents;
+	std::vector<rgb> box_colors;
+	cgv::render::box_render_style brs;
+
 	typedef std::pair<std::vector<vec3>, std::vector<vec4>> spline_data_t;
 	std::vector<spline_data_t> splines;
 	std::vector<float> spline_radii;
@@ -129,11 +159,16 @@ private:
 
 	void construct_arrow(int& idx, vec3 position, vec3 direction, float shaft_radius, rgb color);
 	void construct_sphere(int& idx, vec3 position, float radius, rgb color);
+	void construct_box(int& idx, vec3 position, vec3 extent, rgb color);
 	void construct_spline(int& idx, std::vector<vec3> positions, std::vector<vec4> tangents, float radius, rgb color);
+
 	void construct_position_geometry(debug_value_position* debug_value);
 	void construct_vector_geometry(debug_value_vector* debug_value);
 	void construct_coordinate_system_geometry(debug_value_coordinate_system* debug_value);
 	void construct_ray_geometry(debug_value_ray* debug_value);
+	void construct_cylinder_geometry(debug_value_cylinder* debug_value);
+	void construct_box_geometry(debug_value_box* debug_value);
+
 	void reconstruct_geometry();
 public:
 	void manage_singleton(render::context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change);
@@ -154,6 +189,14 @@ public:
 	int register_debug_value_ray(vec3 origin, vec3 direction);
 	/// Register a ray value, returns handle to the value.
 	int register_debug_value_ray();
+	/// Register a cylinder value, returns handle to the value.
+	int register_debug_value_cylinder(vec3 origin, vec3 direction, float radius);
+	/// Register a cylinder value, returns handle to the value.
+	int register_debug_value_cylinder();
+	/// Register a box value, returns handle to the value.
+	int register_debug_value_box(vec3 origin, vec3 extent);
+	/// Register a box value, returns handle to the value.
+	int register_debug_value_box();
 
 	void deregister_debug_value(int handle);
 
@@ -173,6 +216,14 @@ public:
 	debug_value_config_ray get_config_debug_value_ray(int handle);
 	/// Set config of ray value to given config.
 	void set_config_debug_value_ray(int handle, debug_value_config_ray config);
+	/// Get current config of cylinder value. Change, then call the corresponding set config function with the changed config.
+	debug_value_config_cylinder get_config_debug_value_cylinder(int handle);
+	/// Set config of cylinder value to given config.
+	void set_config_debug_value_cylinder(int handle, debug_value_config_cylinder config);
+	/// Get current config of box value. Change, then call the corresponding set config function with the changed config.
+	debug_value_config_box get_config_debug_value_box(int handle);
+	/// Set config of box value to given config.
+	void set_config_debug_value_box(int handle, debug_value_config_box config);
 
 	void enable_debug_value_visualization(int handle);
 	void disable_debug_value_visualization(int handle);
@@ -184,6 +235,13 @@ public:
 	void update_debug_value_ray(int handle, vec3 origin, vec3 direction);
 	void update_debug_value_ray_origin(int handle, vec3 origin);
 	void update_debug_value_ray_direction(int handle, vec3 direction);
+	void update_debug_value_cylinder(int handle, vec3 origin, vec3 direction, float radius);
+	void update_debug_value_cylinder_origin(int handle, vec3 origin);
+	void update_debug_value_cylinder_direction(int handle, vec3 direction);
+	void update_debug_value_cylinder_radius(int handle, float radius);
+	void update_debug_value_box(int handle, vec3 origin, vec3 extent);
+	void update_debug_value_box_origin(int handle, vec3 origin);
+	void update_debug_value_box_extent(int handle, vec3 extent);
 
 	bool init(render::context& ctx);
 	void clear(render::context& ctx);
