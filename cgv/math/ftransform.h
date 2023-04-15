@@ -41,6 +41,12 @@ namespace cgv {
 		/// construct 2x2 scale matrix from xy scales
 		template <typename T> fmat<T, 2, 2>
 			scale2(const T& sx, const T& sy) { return scale2(fvec<T, 2>(sx, sy)); }
+		/// construct 3x3 scale matrix from xy scales
+		template <typename T> fmat<T, 3, 3>
+			scale3(const fvec<T, 3>& s) { fmat<T, 3, 3> M; M.identity(); M(0, 0) = s(0); M(1, 1) = s(1); M(2, 2) = s(2); return M; }
+		/// construct 3x3 scale matrix from xy scales
+		template <typename T> fmat<T, 3, 3>
+			scale3(const T& sx, const T& sy, const T& sz) { return scale3(fvec<T, 3>(sx, sy, sz)); }
 		/// construct 4x4 scale matrix from xyz scales
 		template <typename T> fmat<T, 4, 4>
 			scale4(const fvec<T, 3>& s) { fmat<T, 4, 4> M; M.identity(); M(0, 0) = s(0); M(1, 1) = s(1); M(2, 2) = s(2); return M; }
