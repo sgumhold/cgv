@@ -119,20 +119,28 @@ public:
 	fvec & operator = (const T &a) { std::fill(v, v+N, a); return *this; }	
 	/// set to the contents of the given std::array with same size
 	fvec & operator = (const std::array<T, N>& arr) { std::copy(arr.cbegin(), arr.cend(), v); return *this; }
-	///set the first two components
+	/// set the first two components
 	void set(const T &x, const T &y) { v[0] = x; v[1] = y; }
-	///set the first three components
+	/// set the first three components
 	void set(const T &x, const T &y, const T &z) { v[0] = x; v[1] = y; v[2] = z; }
-	///set the first four components
+	/// set the first four components
 	void set(const T &x, const T &y, const T &z, const T &w) { v[0] = x; v[1] = y; v[2] = z; v[3] = w; }
-	///fill elements of vector with scalar v
+	/// fill elements of vector with scalar v
 	void fill(const T& a) { std::fill(v, v+N, a); }
-	///fill the vector with zeros
+	/// fill the vector with zeros
 	void zeros() { fill((T)0); }
-	///fill the vector with ones
+	/// fill the vector with zeros except for the last component, which will be set to one
+	void zerosh() { std::fill(v, v+N-1, (T)0); v[N-1] = (T)1; }
+	/// fill the vector with ones
 	void ones() { fill((T)1); }
 	/// convert to homogeneous version by adding a 1
 	fvec<T,N+1> lift() const { fvec<T,N+1> h_v; (fvec<T,N>&)h_v=*this; h_v(N) = 1; return h_v; }
+	/// creates a homogeneous zero-vector (yields same result as calling fvec<T,N-1>(0).lift() but is faster)
+	static fvec<T,N> zeroh() {
+		fvec<T,N> r;
+		std::fill(r.v, r.v+N-1, (T)0); r.v[N-1] = (T)1;
+		return r;
+	}
 	/// conversion to vector type
 	vec<T> to_vec() const;
 	/// conversion from vector
