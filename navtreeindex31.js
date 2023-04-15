@@ -1,5 +1,12 @@
 var NAVTREEINDEX31 =
 {
+"classcgv_1_1render_1_1sphere__renderer.html#a38863e19ba391222d8ab4dc71e3f4000":[11,0,0,10,61,23],
+"classcgv_1_1render_1_1sphere__renderer.html#a38dd03f0b24790b4f25dd4c23bddc11c":[11,0,0,10,61,16],
+"classcgv_1_1render_1_1sphere__renderer.html#a3b86e875524318c8e1bd8c2b5592f29f":[11,0,0,10,61,79],
+"classcgv_1_1render_1_1sphere__renderer.html#a3bf1a0f5d32ed0c6b44728595f6c8201":[11,0,0,10,61,21],
+"classcgv_1_1render_1_1sphere__renderer.html#a3d32da2c98f4d937a6b859758310dd79":[11,0,0,10,61,75],
+"classcgv_1_1render_1_1sphere__renderer.html#a3f4c54c23e849fa07adeca68dd718966":[11,0,0,10,61,2],
+"classcgv_1_1render_1_1sphere__renderer.html#a4a2d7ec910f589aaaf436f1df09c1ab9":[11,0,0,10,61,60],
 "classcgv_1_1render_1_1sphere__renderer.html#a5197e3fceefa155374b62bf32b336b35":[11,0,0,10,61,59],
 "classcgv_1_1render_1_1sphere__renderer.html#a53ba5f01dc260a7640bf9848c3b687d1":[11,0,0,10,61,102],
 "classcgv_1_1render_1_1sphere__renderer.html#a5b4e20a5f9376cbf20820a3b2ae3ddc7":[11,0,0,10,61,72],
@@ -242,12 +249,5 @@ var NAVTREEINDEX31 =
 "classcgv_1_1render_1_1stereo__view.html#af5d9a49b2e481ccc3f99d450b0057aee":[11,0,0,10,30,45],
 "classcgv_1_1render_1_1stereo__view.html#af64a6bcbcae1030a1837ad2b1502ec1b":[11,0,0,10,30,43],
 "classcgv_1_1render_1_1stereo__view.html#afad077636e4d11dd96024723c7e0f542":[11,0,0,10,30,49],
-"classcgv_1_1render_1_1stereo__view.html#afc364adffa256f9dda26ba0253ef99db":[11,0,0,10,30,63],
-"classcgv_1_1render_1_1stereo__view.html#afcd08c08a89cda47c0077c2ae8277da9":[11,0,0,10,30,59],
-"classcgv_1_1render_1_1stereo__view.html#aff24e76e995557a0b2e1c9871bc5fe45":[11,0,0,10,30,30],
-"classcgv_1_1render_1_1surface__renderer.html":[11,0,0,10,64],
-"classcgv_1_1render_1_1surface__renderer.html#a0492ee8d0e1c7867d0a9bc01dfae38e4":[11,0,0,10,64,14],
-"classcgv_1_1render_1_1surface__renderer.html#a05278277d5068970525f0b7b79f0ea11":[11,0,0,10,64,76],
-"classcgv_1_1render_1_1surface__renderer.html#a0552924c9c708e0b6eaa2ffc667fb5d7":[11,0,0,10,64,18],
-"classcgv_1_1render_1_1surface__renderer.html#a06347854ea6ca483f982a58e22820a4a":[11,0,0,10,64,96]
+"classcgv_1_1render_1_1stereo__view.html#afc364adffa256f9dda26ba0253ef99db":[11,0,0,10,30,63]
 };

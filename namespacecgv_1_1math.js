@@ -285,6 +285,8 @@ var namespacecgv_1_1math =
     [ "scale2", "namespacecgv_1_1math.html#a02471f3347c3e55f2fd1aa6ed811c172", null ],
     [ "scale2h", "namespacecgv_1_1math.html#a136599724e3fb02e07b8c2be0bb1eaa8", null ],
     [ "scale2h", "namespacecgv_1_1math.html#aa150c7fd8e574cd201dcf467074245b7", null ],
+    [ "scale3", "namespacecgv_1_1math.html#a533f02b2328b0937e19caaa3484c5a3f", null ],
+    [ "scale3", "namespacecgv_1_1math.html#ad3c9b1ecbfcbac14a4005e04879e5f1b", null ],
     [ "scale4", "namespacecgv_1_1math.html#a3f6d917ec383078fb72e44889b438c20", null ],
     [ "scale4", "namespacecgv_1_1math.html#a8d11a062a233029cc2ec04af3deb727b", null ],
     [ "scale4", "namespacecgv_1_1math.html#adfc22f50716b36e15f4e1dd011dabdee", null ],

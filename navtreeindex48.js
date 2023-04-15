@@ -1,5 +1,14 @@
 var NAVTREEINDEX48 =
 {
+"structcgv_1_1render_1_1box__wire__render__style.html#ab510d7e1706c6061a03086d28b9b33d3":[11,0,0,10,41,27],
+"structcgv_1_1render_1_1box__wire__render__style.html#ab584be50f617ba32284119734dec8ba3":[11,0,0,10,41,46],
+"structcgv_1_1render_1_1box__wire__render__style.html#ab6528a9e9a2c84bcc913c1271f9dc0b2":[11,0,0,10,41,48],
+"structcgv_1_1render_1_1box__wire__render__style.html#ab8dbe5f7f3acaf75a1f1a9a48b5b0dcc":[11,0,0,10,41,50],
+"structcgv_1_1render_1_1box__wire__render__style.html#ab9dec72a3e70241c8d69d5e17c30105d":[11,0,0,10,41,32],
+"structcgv_1_1render_1_1box__wire__render__style.html#ab9e51ddef8a68db550e09b61fe6129c4":[11,0,0,10,41,0],
+"structcgv_1_1render_1_1box__wire__render__style.html#abcd4a3a1ac9d67a85d9b38956b943dad":[11,0,0,10,41,15],
+"structcgv_1_1render_1_1box__wire__render__style.html#abd786e7db60f6ea70f54ee2b4cd452e8":[11,0,0,10,41,44],
+"structcgv_1_1render_1_1box__wire__render__style.html#acbbd4166ce26167c5f143eff371aff6d":[11,0,0,10,41,47],
 "structcgv_1_1render_1_1box__wire__render__style.html#ad4dd35d4fafc71b4aedfb032e92335f6":[11,0,0,10,41,36],
 "structcgv_1_1render_1_1box__wire__render__style.html#ad55c8cf5d87080cc934b6d9ee364e704":[11,0,0,10,41,6],
 "structcgv_1_1render_1_1box__wire__render__style.html#ad6cd67abc2b77e76500d387bb85ce300":[11,0,0,10,41,17],
@@ -240,14 +249,5 @@ var NAVTREEINDEX48 =
 "structcgv_1_1render_1_1distorted__pinhole.html#a9ca3090f2e5ce4fca48a1945308c96f3":[11,0,0,10,4,26],
 "structcgv_1_1render_1_1distorted__pinhole.html#aa4274bbe9929cab87164fda32123be1a":[11,0,0,10,4,35],
 "structcgv_1_1render_1_1distorted__pinhole.html#aa43cb0dae0419ff4da7c26b4c0879ca6":[11,0,0,10,4,4],
-"structcgv_1_1render_1_1distorted__pinhole.html#ab30de78655fba045823d9e81badaef87":[11,0,0,10,4,30],
-"structcgv_1_1render_1_1distorted__pinhole.html#ab3ed34e8e12b57fe744b2dc2e65b82f7":[11,0,0,10,4,8],
-"structcgv_1_1render_1_1distorted__pinhole.html#ab4d9c32401403aab72ca0d21ae276c4c":[11,0,0,10,4,20],
-"structcgv_1_1render_1_1distorted__pinhole.html#ab510d7e1706c6061a03086d28b9b33d3":[11,0,0,10,4,27],
-"structcgv_1_1render_1_1distorted__pinhole.html#ab9dec72a3e70241c8d69d5e17c30105d":[11,0,0,10,4,32],
-"structcgv_1_1render_1_1distorted__pinhole.html#ab9e51ddef8a68db550e09b61fe6129c4":[11,0,0,10,4,0],
-"structcgv_1_1render_1_1distorted__pinhole.html#abcd4a3a1ac9d67a85d9b38956b943dad":[11,0,0,10,4,15],
-"structcgv_1_1render_1_1distorted__pinhole.html#acbce27ac3236ddeccc91a752f8c51996":[11,0,0,10,4,39],
-"structcgv_1_1render_1_1distorted__pinhole.html#ad55c8cf5d87080cc934b6d9ee364e704":[11,0,0,10,4,6],
-"structcgv_1_1render_1_1distorted__pinhole.html#ad6cd67abc2b77e76500d387bb85ce300":[11,0,0,10,4,17]
+"structcgv_1_1render_1_1distorted__pinhole.html#ab30de78655fba045823d9e81badaef87":[11,0,0,10,4,30]
 };

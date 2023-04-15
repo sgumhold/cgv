@@ -66,5 +66,7 @@ var classcgv_1_1math_1_1fvec =
     [ "y", "classcgv_1_1math_1_1fvec.html#a586095bca4ba908c60997c08d9814739", null ],
     [ "z", "classcgv_1_1math_1_1fvec.html#a37ec1163fda9dd3f48f863333d2bfa19", null ],
     [ "z", "classcgv_1_1math_1_1fvec.html#afc3554068914f06d45fbac8fdd919725", null ],
-    [ "zeros", "classcgv_1_1math_1_1fvec.html#af492aff2f4dcc61d70b1eeecfcb5b618", null ]
+    [ "zeroh", "classcgv_1_1math_1_1fvec.html#a2b1ff385c069ec40507e5869b61939bb", null ],
+    [ "zeros", "classcgv_1_1math_1_1fvec.html#af492aff2f4dcc61d70b1eeecfcb5b618", null ],
+    [ "zerosh", "classcgv_1_1math_1_1fvec.html#abe1f915d916163265c57c1626224747c", null ]
 ];
