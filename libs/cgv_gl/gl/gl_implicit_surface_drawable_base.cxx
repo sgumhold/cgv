@@ -567,13 +567,13 @@ void gl_implicit_surface_drawable_base::finish_frame(context& ctx)
 
 void gl_implicit_surface_drawable_base::draw_implicit_surface(context& ctx)
 {
-	if (show_vertices) {
+	if (show_vertices && mesh.get_nr_positions() > 0) {
 		sphere_renderer& sr = ref_sphere_renderer(ctx);
 		sr.set_render_style(srs);
 		sr.set_position_array(ctx, mesh.get_positions());
 		sr.render(ctx, 0, mesh.get_nr_positions());
 	}
-	if (show_wireframe) {
+	if (show_wireframe && mesh.get_nr_faces() > 0) {
 		cone_renderer& cr = ref_cone_renderer(ctx);
 		cr.set_render_style(crs);
 		if (cr.enable(ctx)) {
