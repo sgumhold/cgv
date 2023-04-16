@@ -383,12 +383,12 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a533f02b2328b0937e19caaa3484c5a3f"><td class="memTemplParams" colspan="2"><a id="a533f02b2328b0937e19caaa3484c5a3f"></a>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a533f02b2328b0937e19caaa3484c5a3f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, 3, 3 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a533f02b2328b0937e19caaa3484c5a3f">scale3</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;s)</td></tr>
-<tr class="memdesc:a533f02b2328b0937e19caaa3484c5a3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct 3x3 scale matrix from xy scales <br /></td></tr>
+<tr class="memdesc:a533f02b2328b0937e19caaa3484c5a3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct 3x3 scale matrix from xyz scales <br /></td></tr>
 <tr class="separator:a533f02b2328b0937e19caaa3484c5a3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3c9b1ecbfcbac14a4005e04879e5f1b"><td class="memTemplParams" colspan="2"><a id="ad3c9b1ecbfcbac14a4005e04879e5f1b"></a>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ad3c9b1ecbfcbac14a4005e04879e5f1b"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, 3, 3 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#ad3c9b1ecbfcbac14a4005e04879e5f1b">scale3</a> (const T &amp;sx, const T &amp;sy, const T &amp;sz)</td></tr>
-<tr class="memdesc:ad3c9b1ecbfcbac14a4005e04879e5f1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct 3x3 scale matrix from xy scales <br /></td></tr>
+<tr class="memdesc:ad3c9b1ecbfcbac14a4005e04879e5f1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct 3x3 scale matrix from xyz scales <br /></td></tr>
 <tr class="separator:ad3c9b1ecbfcbac14a4005e04879e5f1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f6d917ec383078fb72e44889b438c20"><td class="memTemplParams" colspan="2"><a id="a3f6d917ec383078fb72e44889b438c20"></a>
 template&lt;typename T &gt; </td></tr>
@@ -631,12 +631,18 @@ template&lt;typename T , typename S , cgv::type::uint32_type N&gt; </td></tr>
 <tr class="memitem:ab9371e75b15a6adc349b95b4e523c6a6"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;v, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N &gt; &amp;w)</td></tr>
 <tr class="memdesc:ab9371e75b15a6adc349b95b4e523c6a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the dot product of vector v and w <br /></td></tr>
 <tr class="separator:ab9371e75b15a6adc349b95b4e523c6a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a023c9225c8e381061c2faabfc39df7df"><td class="memTemplParams" colspan="2">template&lt;typename T , typename S , cgv::type::uint32_type N&gt; </td></tr>
-<tr class="memitem:a023c9225c8e381061c2faabfc39df7df"><td class="memTemplItemLeft" align="right" valign="top">S&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a023c9225c8e381061c2faabfc39df7df">dot_pos</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;v, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N-1 &gt; &amp;w)</td></tr>
-<tr class="separator:a023c9225c8e381061c2faabfc39df7df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0d577bb1f6259cb93f1994ba3f9e7f3"><td class="memTemplParams" colspan="2">template&lt;typename T , typename S , cgv::type::uint32_type N&gt; </td></tr>
-<tr class="memitem:aa0d577bb1f6259cb93f1994ba3f9e7f3"><td class="memTemplItemLeft" align="right" valign="top">S&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#aa0d577bb1f6259cb93f1994ba3f9e7f3">dot_dir</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;v, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N-1 &gt; &amp;w)</td></tr>
-<tr class="separator:aa0d577bb1f6259cb93f1994ba3f9e7f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a651e46cb3504dc30dd03178f6a6062f8"><td class="memTemplParams" colspan="2">template&lt;typename T , typename S , cgv::type::uint32_type N&gt; </td></tr>
+<tr class="memitem:a651e46cb3504dc30dd03178f6a6062f8"><td class="memTemplItemLeft" align="right" valign="top">S&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a651e46cb3504dc30dd03178f6a6062f8">dot_pos</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;v, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N+1 &gt; &amp;w)</td></tr>
+<tr class="separator:a651e46cb3504dc30dd03178f6a6062f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca5de6ab07865b921e5e3b48a4ebccc4"><td class="memTemplParams" colspan="2">template&lt;typename T , typename S , cgv::type::uint32_type N&gt; </td></tr>
+<tr class="memitem:aca5de6ab07865b921e5e3b48a4ebccc4"><td class="memTemplItemLeft" align="right" valign="top">S&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#aca5de6ab07865b921e5e3b48a4ebccc4">dot_pos</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N+1 &gt; &amp;v, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N &gt; &amp;w)</td></tr>
+<tr class="separator:aca5de6ab07865b921e5e3b48a4ebccc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94254cd737145b54c5af46755df85964"><td class="memTemplParams" colspan="2">template&lt;typename T , typename S , cgv::type::uint32_type N&gt; </td></tr>
+<tr class="memitem:a94254cd737145b54c5af46755df85964"><td class="memTemplItemLeft" align="right" valign="top">S&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a94254cd737145b54c5af46755df85964">dot_dir</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;v, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N+1 &gt; &amp;w)</td></tr>
+<tr class="separator:a94254cd737145b54c5af46755df85964"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4170aac96f765f232fb262016e8aed36"><td class="memTemplParams" colspan="2">template&lt;typename T , typename S , cgv::type::uint32_type N&gt; </td></tr>
+<tr class="memitem:a4170aac96f765f232fb262016e8aed36"><td class="memTemplItemLeft" align="right" valign="top">S&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a4170aac96f765f232fb262016e8aed36">dot_dir</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N+1 &gt; &amp;v, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N &gt; &amp;w)</td></tr>
+<tr class="separator:a4170aac96f765f232fb262016e8aed36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a319fcf5471db921fa80eedf62c03ff02"><td class="memTemplParams" colspan="2"><a id="a319fcf5471db921fa80eedf62c03ff02"></a>
 template&lt;typename T , cgv::type::uint32_type N&gt; </td></tr>
 <tr class="memitem:a319fcf5471db921fa80eedf62c03ff02"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;v)</td></tr>
@@ -3059,8 +3065,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="aa0d577bb1f6259cb93f1994ba3f9e7f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa0d577bb1f6259cb93f1994ba3f9e7f3">&#9670;&nbsp;</a></span>dot_dir()</h2>
+<a id="a94254cd737145b54c5af46755df85964"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94254cd737145b54c5af46755df85964">&#9670;&nbsp;</a></span>dot_dir() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3079,7 +3085,7 @@ template&lt;typename T , typename S , cgv::type::uint32_type N&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N-1 &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N+1 &gt; &amp;&#160;</td>
           <td class="paramname"><em>w</em>&#160;</td>
         </tr>
         <tr>
@@ -3094,12 +3100,51 @@ template&lt;typename T , typename S , cgv::type::uint32_type N&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>returns the dot product of N-dimensional vector v and N-1-dimensional direction vector w which will be implicitly homogenized </p>
+<p>returns the dot product of N-dimensional vector v and (N+1)-dimensional direction vector w, implicitly homogenizing the first operand </p>
 
 </div>
 </div>
-<a id="a023c9225c8e381061c2faabfc39df7df"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a023c9225c8e381061c2faabfc39df7df">&#9670;&nbsp;</a></span>dot_pos()</h2>
+<a id="a4170aac96f765f232fb262016e8aed36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4170aac96f765f232fb262016e8aed36">&#9670;&nbsp;</a></span>dot_dir() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename S , cgv::type::uint32_type N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">S cgv::math::dot_dir </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N+1 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>v</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N &gt; &amp;&#160;</td>
+          <td class="paramname"><em>w</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>returns the dot product of (N+1)-dimensional vector v and N-dimensional direction vector w, implicitly homogenizing the second operand </p>
+
+</div>
+</div>
+<a id="a651e46cb3504dc30dd03178f6a6062f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a651e46cb3504dc30dd03178f6a6062f8">&#9670;&nbsp;</a></span>dot_pos() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3118,7 +3163,7 @@ template&lt;typename T , typename S , cgv::type::uint32_type N&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N-1 &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N+1 &gt; &amp;&#160;</td>
           <td class="paramname"><em>w</em>&#160;</td>
         </tr>
         <tr>
@@ -3133,7 +3178,46 @@ template&lt;typename T , typename S , cgv::type::uint32_type N&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>returns the dot product of N-dimensional vector v and N-1-dimensional position vector w which will be implicitly homogenized </p>
+<p>returns the dot product of N-dimensional vector v and (N+1)-dimensional position vector w, implicitly homogenizing the first operand </p>
+
+</div>
+</div>
+<a id="aca5de6ab07865b921e5e3b48a4ebccc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca5de6ab07865b921e5e3b48a4ebccc4">&#9670;&nbsp;</a></span>dot_pos() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename S , cgv::type::uint32_type N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">S cgv::math::dot_pos </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N+1 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>v</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N &gt; &amp;&#160;</td>
+          <td class="paramname"><em>w</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>returns the dot product of (N+1)-dimensional vector v and N-dimensional position vector w, implicitly homogenizing the second operand </p>
 
 </div>
 </div>
