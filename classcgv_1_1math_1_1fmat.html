@@ -240,9 +240,9 @@ template&lt;typename S , cgv::type::uint32_type L&gt; </td></tr>
 <tr class="memitem:a79853d71eff8abfd83cd8da48ecc0f8f"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, N, L &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#a79853d71eff8abfd83cd8da48ecc0f8f">operator*</a> (const <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; S, M, L &gt; &amp;m2) const</td></tr>
 <tr class="memdesc:a79853d71eff8abfd83cd8da48ecc0f8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">multiplication with a ncols x M matrix m2 <br /></td></tr>
 <tr class="separator:a79853d71eff8abfd83cd8da48ecc0f8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9920ff74d05e628a01d14d0916a5893"><td class="memTemplParams" colspan="2">template&lt;typename S &gt; </td></tr>
-<tr class="memitem:ae9920ff74d05e628a01d14d0916a5893"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, N, M &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#ae9920ff74d05e628a01d14d0916a5893">mul_h</a> (const <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; S, N-1, M-1 &gt; &amp;m2) const</td></tr>
-<tr class="separator:ae9920ff74d05e628a01d14d0916a5893"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e46280b8c81e98d750da3afe48b5dc0"><td class="memTemplParams" colspan="2">template&lt;typename S &gt; </td></tr>
+<tr class="memitem:a0e46280b8c81e98d750da3afe48b5dc0"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, N, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#a0e46280b8c81e98d750da3afe48b5dc0">mul_h</a> (const <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; S, N-1, N-1 &gt; &amp;m2) const</td></tr>
+<tr class="separator:a0e46280b8c81e98d750da3afe48b5dc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb42da2020f4b17ca5ffea72a2286ea9"><td class="memTemplParams" colspan="2"><a id="adb42da2020f4b17ca5ffea72a2286ea9"></a>
 template&lt;typename S &gt; </td></tr>
 <tr class="memitem:adb42da2020f4b17ca5ffea72a2286ea9"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#adb42da2020f4b17ca5ffea72a2286ea9">operator*</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, M &gt; &amp;v) const</td></tr>
@@ -502,8 +502,8 @@ class cgv::math::fmat&lt; T, N, M &gt;</h3>
 </ul>
 <p>The matrix inherits the functionality of a <code>N*M</code> dimensional vector and is stored in column major format. This means that <code>A(i,j)=A</code>(j*M+i). </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="ae9920ff74d05e628a01d14d0916a5893"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae9920ff74d05e628a01d14d0916a5893">&#9670;&nbsp;</a></span>mul_h()</h2>
+<a id="a0e46280b8c81e98d750da3afe48b5dc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e46280b8c81e98d750da3afe48b5dc0">&#9670;&nbsp;</a></span>mul_h()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -516,9 +516,9 @@ template&lt;typename S &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt;T,N,M&gt; <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; T, N, M &gt;::mul_h </td>
+          <td class="memname">const <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt;T,N,N&gt; <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; T, N, M &gt;::mul_h </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; S, N-1, M-1 &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; S, N-1, N-1 &gt; &amp;&#160;</td>
           <td class="paramname"><em>m2</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -529,7 +529,7 @@ template&lt;typename S &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>multiplication with (ncols-1)x(ncols-1) matrix, which assumes the first operand represents an affine or perspective transformation to be combined with the linear transformation represented by the second operand (which will be implicitly homogenized) </p>
+<p>multiplication with (ncols-1)x(ncols-1) matrix, assuming the first operand represents an affine or perspective transformation to be combined with the linear transformation represented by the second operand (which will be treated as if lifted to a homogenous transformation matrix) </p>
 
 </div>
 </div>

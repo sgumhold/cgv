@@ -22,7 +22,7 @@ var classcgv_1_1math_1_1fmat =
     [ "length", "classcgv_1_1math_1_1fmat.html#a68f4c962a48bde5bf2b65494c6e89985", null ],
     [ "lift", "classcgv_1_1math_1_1fmat.html#a4ee22fc08e1e775657e053d9ee759777", null ],
     [ "mul_dir", "classcgv_1_1math_1_1fmat.html#a34b7db4b5f45c26fe751a6fcf622dfde", null ],
-    [ "mul_h", "classcgv_1_1math_1_1fmat.html#ae9920ff74d05e628a01d14d0916a5893", null ],
+    [ "mul_h", "classcgv_1_1math_1_1fmat.html#a0e46280b8c81e98d750da3afe48b5dc0", null ],
     [ "mul_pos", "classcgv_1_1math_1_1fmat.html#af0d9a40807c6ed13405358e7f6e88da6", null ],
     [ "ncols", "classcgv_1_1math_1_1fmat.html#ab819ea1658db3ef2db3152333e676559", null ],
     [ "normalize", "classcgv_1_1math_1_1fmat.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b", null ],
