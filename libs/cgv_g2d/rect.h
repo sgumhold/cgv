@@ -55,8 +55,14 @@ struct rect : public cgv::render::render_types {
 	}
 
 	// center position
+	template<typename coord_type_ = coord_type, typename std::enable_if_t<std::is_integral<coord_type_>::value, bool> = true>
 	point_type center() const {
-		return pos() + 0.5f * size();
+		return pos() + size() / coord_type_(2);
+	}
+
+	template<typename coord_type_ = coord_type, typename std::enable_if_t<std::is_floating_point<coord_type_>::value, bool> = true>
+	point_type center() const {
+		return pos() + coord_type_(0.5) * size();
 	}
 
 	// set x position (pivot horizontal)

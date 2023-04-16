@@ -11,15 +11,13 @@
 namespace cgv {
 namespace app {
 
-class CGV_API canvas_overlay : public overlay {
+class CGV_API canvas_overlay : public overlay, public cgv::gui::theme_observer {
 private:
 	bool has_damage = true;
 	bool recreate_layout = true;
 	GLboolean blending_was_enabled = false;
 
 protected:
-	int last_theme_idx = -1;
-
 	cgv::render::managed_frame_buffer fbc;
 
 	cgv::g2d::canvas content_canvas, overlay_canvas;
@@ -38,8 +36,6 @@ protected:
 
 	bool is_damaged() const;
 
-	bool ensure_theme();
-
 	void begin_content(cgv::render::context& ctx, bool clear_frame_buffer = true);
 	
 	void end_content(cgv::render::context& ctx, bool keep_damage = false);
@@ -47,6 +43,8 @@ protected:
 	void enable_blending();
 
 	void disable_blending();
+
+	virtual void init_styles(cgv::render::context& ctx) {}
 
 public:
 	/// creates an overlay in the bottom left corner with zero size using a canvas for 2d drawing
@@ -59,6 +57,8 @@ public:
 	virtual void draw_content(cgv::render::context& ctx) = 0;
 
 	void register_shader(const std::string& name, const std::string& filename);
+
+	virtual void handle_theme_change(const cgv::gui::theme_info& theme) override;
 };
 
 typedef cgv::data::ref_ptr<canvas_overlay> canvas_overlay_ptr;

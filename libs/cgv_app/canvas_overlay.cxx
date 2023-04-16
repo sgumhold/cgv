@@ -23,7 +23,7 @@ bool canvas_overlay::init(cgv::render::context& ctx) {
 	content_canvas.set_apply_gamma(false);
 	success &= content_canvas.init(ctx);
 
-	overlay_canvas.register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
+	overlay_canvas.register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	success &= overlay_canvas.init(ctx);
 
 	if(success)
@@ -65,6 +65,15 @@ void canvas_overlay::draw(cgv::render::context& ctx) {
 void canvas_overlay::register_shader(const std::string& name, const std::string& filename) {
 
 	content_canvas.register_shader(name, filename);
+}
+
+void canvas_overlay::handle_theme_change(const cgv::gui::theme_info& theme) {
+	
+	cgv::render::context* ctx_ptr = get_context();
+	if(ctx_ptr)
+		init_styles(*ctx_ptr);
+
+	post_damage(false);
 }
 
 void canvas_overlay::init_overlay_style(cgv::render::context& ctx) {
@@ -112,18 +121,6 @@ void canvas_overlay::clear_damage() {
 
 bool canvas_overlay::is_damaged() const {
 	return has_damage;
-}
-
-bool canvas_overlay::ensure_theme() {
-	
-	auto& ti = cgv::gui::theme_info::instance();
-	int theme_idx = ti.get_theme_idx();
-	if(last_theme_idx != theme_idx) {
-		last_theme_idx = theme_idx;
-		has_damage = true;
-		return true;
-	}
-	return false;
 }
 
 void canvas_overlay::begin_content(cgv::render::context& ctx, bool clear_frame_buffer) {

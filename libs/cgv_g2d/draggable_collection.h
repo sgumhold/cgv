@@ -13,7 +13,7 @@ namespace cgv {
 namespace g2d {
 
 template<class T>
-class draggables_collection : public cgv::render::render_types {
+class draggable_collection : public cgv::render::render_types {
 protected:
 	typedef typename std::remove_pointer<T>::type raw_type;
 	typedef          raw_type* ptr_type;
@@ -52,7 +52,7 @@ protected:
 	}
 
 public:
-	draggables_collection() {
+	draggable_collection() {
 		clear();
 	}
 
@@ -134,15 +134,23 @@ public:
 			cgv::gui::MouseAction ma = me.get_action();
 
 			ivec2 mpos(me.get_x(), me.get_y());
-			mpos.y() = viewport_size.y() - mpos.y();
+			mpos.y() = viewport_size.y() - mpos.y() - 1;
 			mpos -= container.pos();
 
 			vec3 tmp = inv_transformation * vec3(mpos, 1.0f);
-			mpos.x() = int(tmp.x());
-			mpos.y() = int(tmp.y());
+			mpos.x() = static_cast<int>(tmp.x());
+			mpos.y() = static_cast<int>(tmp.y());
 
 			if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
-				if(ma == cgv::gui::MA_RELEASE) {
+				if(ma == cgv::gui::MA_PRESS) {
+					dragged = get_hit_draggable(mpos);
+					selected = dragged;
+					if(dragged) {
+						offset = dragged->pos - mpos;
+						if(drag_start_callback) drag_start_callback();
+						return true;
+					}
+				} else if(ma == cgv::gui::MA_RELEASE) {
 					if(dragged) {
 						selected = dragged;
 						dragged = nullptr;
@@ -168,16 +176,6 @@ public:
 					}
 					if(drag_callback) drag_callback();
 					return true;
-				} else {
-					if(ma == cgv::gui::MA_PRESS) {
-						dragged = get_hit_draggable(mpos);
-						selected = dragged;
-						if(dragged) {
-							offset = dragged->pos - mpos;
-							if(drag_start_callback) drag_start_callback();
-							return true;
-						}
-					}
 				}
 			}
 

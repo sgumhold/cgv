@@ -78,14 +78,11 @@ protected:
 	cgv::render::color_map plot_color_map;
 
 	// text appearance
-	float text_font_size = 12.0f;
-	float label_font_size = 10.0f;
-	cgv::g2d::shape2d_style text_style, label_style;
+	cgv::g2d::text2d_style text_style, label_style;
 	cgv::g2d::msdf_text_geometry texts;
-	cgv::g2d::msdf_font label_font;
 	cgv::g2d::msdf_text_geometry labels;
 
-	void init_styles(cgv::render::context& ctx);
+	void init_styles(cgv::render::context& ctx) override;
 	void create_texts();
 	void update_stats_texts();
 	void create_labels();

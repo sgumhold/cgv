@@ -88,15 +88,14 @@ protected:
 	cgv::g2d::shape2d_style container_style, border_style, color_map_style;
 
 	// text appearance
-	float font_size = 12.0f;
-	cgv::g2d::shape2d_style text_style;
+	cgv::g2d::text2d_style text_style;
 	cgv::g2d::msdf_text_geometry labels;
 
 	cgv::g2d::generic_2d_renderer tick_renderer;
 	DEFINE_GENERIC_RENDER_DATA_CLASS(tick_geometry, 2, vec2, position, vec2, size);
 	tick_geometry ticks;
 
-	void init_styles(cgv::render::context& ctx);
+	void init_styles(cgv::render::context& ctx) override;
 	void create_labels();
 	void create_ticks();
 

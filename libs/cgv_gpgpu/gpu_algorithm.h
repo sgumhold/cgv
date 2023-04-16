@@ -20,7 +20,7 @@ private:
 	GLuint time_query = 0;
 
 protected:
-	bool _is_initialized = false;
+	bool is_initialized_ = false;
 
 	void ensure_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer, size_t size, cgv::render::VertexBufferType type = cgv::render::VertexBufferType::VBT_STORAGE, cgv::render::VertexBufferUsage usage = cgv::render::VertexBufferUsage::VBU_STREAM_COPY);
 
@@ -47,7 +47,7 @@ public:
 
 	virtual bool init(cgv::render::context& ctx, size_t count) = 0;
 
-	bool is_initialized() const { return _is_initialized; }
+	bool is_initialized() const { return is_initialized_; }
 
 	void begin_time_query();
 

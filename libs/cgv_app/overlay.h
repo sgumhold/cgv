@@ -48,8 +48,10 @@ protected:
 	vec2 percentual_offset = vec2(0.0f);
 	vec2 percentual_size = vec2(1.0f);
 
-	bool show; /// whether the overlay is visible
-	bool block_events; /// whether the overlay blocks events or lets them pass through to other handlers
+	/// whether the overlay is visible
+	bool show;
+	/// whether the overlay blocks events or lets them pass through to other handlers
+	bool block_events;
 
 	/// rectangle area of this overlay is fully contained whithin
 	cgv::g2d::irect container;

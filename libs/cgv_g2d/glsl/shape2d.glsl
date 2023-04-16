@@ -44,6 +44,7 @@ uniform float ring_width = 0.0;
 uniform float feather_width = 1.0;
 uniform float feather_origin = 0.5;
 uniform vec2 tex_scaling = vec2(1.0);
+uniform vec2 tex_offset = vec2(0.0);
 
 // render options
 uniform bool use_fill_color = true;

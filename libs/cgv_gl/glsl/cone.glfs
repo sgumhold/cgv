@@ -61,8 +61,8 @@ in flat vec3 binormal_fs;
 in flat vec4 color_start_fs;
 in flat vec4 color_end_fs;
 
-out layout(location = 1) vec4 frag_position;
-out layout(location = 2) vec3 frag_normal;
+layout(location = 1) out vec4 frag_position;
+layout(location = 2) out vec3 frag_normal;
 
 float dot2(vec3 v) {
 	return dot(v, v);
