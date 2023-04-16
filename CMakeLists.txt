@@ -109,6 +109,16 @@ define_property(TARGET
 	BRIEF_DOCS "Custom command line arguments for plugins"
 	FULL_DOCS "A list of additional command line arguments for launching the plugin (ignored for non-plugin targets)."
 )
+define_property(TARGET
+	PROPERTY CGVPROP_WORKING_DIR
+	BRIEF_DOCS "Custom working directory used in plugin launch/debug configurations"
+	FULL_DOCS "The working directory to use when creating launch/debug configurations for the target (ignored for non-plugin targets)."
+)
+define_property(GLOBAL
+	PROPERTY CGVPROP_USER_TARGETS
+	BRIEF_DOCS "List of CGV component targets added by a user of the CGV Framework"
+	FULL_DOCS "List of all CGV components known to the build system that were not added by the Framework itself, but an external project."
+)
 
 # general compiler options
 if (NOT MSVC)

@@ -6,24 +6,17 @@
 namespace cgv {
 namespace g2d {
 
-msdf_font& ref_msdf_font(cgv::render::context& ctx, int ref_count_change) {
-	static int ref_count = 0;
-	static msdf_font f;
-	f.manage_singleton(ctx, ref_count, ref_count_change);
-	return f;
-}
-
 msdf_font::msdf_font() {
 	initial_font_size = 0;
 	pixel_range = 0;
 }
 
-void msdf_font::manage_singleton(cgv::render::context& ctx, int& ref_count, int ref_count_change) {
+void msdf_font::manage_singleton(cgv::render::context& ctx, const std::string& class_name, int& ref_count, int ref_count_change) {
 	switch(ref_count_change) {
 	case 1:
 		if(ref_count == 0) {
 			if(!init(ctx))
-				ctx.error(std::string("unable to initialize msdf_font singleton"));
+				ctx.error(std::string("unable to initialize " + class_name + " singleton"));
 		}
 		++ref_count;
 		break;
@@ -31,14 +24,14 @@ void msdf_font::manage_singleton(cgv::render::context& ctx, int& ref_count, int 
 		break;
 	case -1:
 		if(ref_count == 0)
-			ctx.error(std::string("attempt to decrease reference count of msdf_font singleton below 0"));
+			ctx.error(std::string("attempt to decrease reference count of " + class_name + " singleton below 0"));
 		else {
 			if(--ref_count == 0)
 				destruct(ctx);
 		}
 		break;
 	default:
-		ctx.error(std::string("invalid change reference count outside {-1,0,1} for msdf_font singleton"));
+		ctx.error(std::string("invalid change reference count outside {-1,0,1} for " + class_name + " singleton"));
 	}
 }
 
@@ -165,6 +158,27 @@ void msdf_font::compute_derived_glyph_attributes() {
 		glyph.size = pb - pa;
 		glyph.texcoords = glyph.atlas_bounds * inv_dimensions;
 	}
+}
+
+msdf_font_regular& ref_msdf_font_regular(cgv::render::context& ctx, int ref_count_change) {
+	static int ref_count = 0;
+	static msdf_font_regular f;
+	f.manage_singleton(ctx, "msdf_font_regular", ref_count, ref_count_change);
+	return f;
+}
+
+msdf_font_light& ref_msdf_font_light(cgv::render::context& ctx, int ref_count_change) {
+	static int ref_count = 0;
+	static msdf_font_light f;
+	f.manage_singleton(ctx, "msdf_font_light", ref_count, ref_count_change);
+	return f;
+}
+
+msdf_font_bold& ref_msdf_font_bold(cgv::render::context& ctx, int ref_count_change) {
+	static int ref_count = 0;
+	static msdf_font_bold f;
+	f.manage_singleton(ctx, "msdf_font_bold", ref_count, ref_count_change);
+	return f;
 }
 
 }

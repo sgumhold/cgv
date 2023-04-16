@@ -119,20 +119,28 @@ public:
 	fvec & operator = (const T &a) { std::fill(v, v+N, a); return *this; }	
 	/// set to the contents of the given std::array with same size
 	fvec & operator = (const std::array<T, N>& arr) { std::copy(arr.cbegin(), arr.cend(), v); return *this; }
-	///set the first two components
+	/// set the first two components
 	void set(const T &x, const T &y) { v[0] = x; v[1] = y; }
-	///set the first three components
+	/// set the first three components
 	void set(const T &x, const T &y, const T &z) { v[0] = x; v[1] = y; v[2] = z; }
-	///set the first four components
+	/// set the first four components
 	void set(const T &x, const T &y, const T &z, const T &w) { v[0] = x; v[1] = y; v[2] = z; v[3] = w; }
-	///fill elements of vector with scalar v
+	/// fill elements of vector with scalar v
 	void fill(const T& a) { std::fill(v, v+N, a); }
-	///fill the vector with zeros
+	/// fill the vector with zeros
 	void zeros() { fill((T)0); }
-	///fill the vector with ones
+	/// fill the vector with zeros except for the last component, which will be set to one
+	void zerosh() { std::fill(v, v+N-1, (T)0); v[N-1] = (T)1; }
+	/// fill the vector with ones
 	void ones() { fill((T)1); }
 	/// convert to homogeneous version by adding a 1
 	fvec<T,N+1> lift() const { fvec<T,N+1> h_v; (fvec<T,N>&)h_v=*this; h_v(N) = 1; return h_v; }
+	/// creates a homogeneous zero-vector (yields same result as calling fvec<T,N-1>(0).lift() but is faster)
+	static fvec<T,N> zeroh() {
+		fvec<T,N> r;
+		std::fill(r.v, r.v+N-1, (T)0); r.v[N-1] = (T)1;
+		return r;
+	}
 	/// conversion to vector type
 	vec<T> to_vec() const;
 	/// conversion from vector
@@ -345,13 +353,55 @@ template <typename T, cgv::type::uint32_type N>
 fvec<T,N> operator * (const T& s, const fvec<T,N>& v) {	fvec<T,N> r = v; r *= s; return r; }
 
 ///returns the dot product of vector v and w
-template <typename T, cgv::type::uint32_type N>
-inline T dot(const fvec<T,N>& v, const fvec<T,N>& w)
+template <typename T, typename S, cgv::type::uint32_type N>
+inline T dot(const fvec<T,N>& v, const fvec<S,N>& w)
 { 
-	T r = 0; 
+	T r = 0;
 	for (unsigned i=0;i<N;++i)
-		r += v(i)*w(i); 
-	return r; 
+		r += v(i)*w(i);
+	return r;
+}
+
+///returns the dot product of N-dimensional vector v and (N+1)-dimensional position vector w, implicitly
+///homogenizing the first operand
+template <typename T, typename S, cgv::type::uint32_type N>
+inline S dot_pos(const fvec<T,N>& v, const fvec<S,N+1>& w)
+{ 
+	T r = 0;
+	for (unsigned i=0;i<N;++i)
+		r += v(i)*w(i);
+	return r+w(N);
+}
+///returns the dot product of (N+1)-dimensional vector v and N-dimensional position vector w, implicitly
+///homogenizing the second operand
+template <typename T, typename S, cgv::type::uint32_type N>
+inline S dot_pos(const fvec<T,N+1>& v, const fvec<S,N>& w)
+{ 
+	T r = 0;
+	for (unsigned i=0;i<N;++i)
+		r += v(i)*w(i);
+	return r+v(N);
+}
+
+///returns the dot product of N-dimensional vector v and (N+1)-dimensional direction vector w, implicitly
+///homogenizing the first operand
+template <typename T, typename S, cgv::type::uint32_type N>
+inline S dot_dir(const fvec<T,N>& v, const fvec<S,N+1>& w)
+{ 
+	T r = 0;
+	for (unsigned i=0;i<N;++i)
+		r += v(i)*w(i);
+	return r;
+}
+///returns the dot product of (N+1)-dimensional vector v and N-dimensional direction vector w, implicitly
+///homogenizing the second operand
+template <typename T, typename S, cgv::type::uint32_type N>
+inline S dot_dir(const fvec<T,N+1>& v, const fvec<S,N>& w)
+{ 
+	T r = 0;
+	for (unsigned i=0;i<N;++i)
+		r += v(i)*w(i);
+	return r;
 }
 
 ///returns the length of vector v 

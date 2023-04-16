@@ -5,6 +5,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
 
+#include "on_set_evaluator.h"
 #include "overlay.h"
 
 #include "lib_begin.h"
@@ -19,6 +20,8 @@ class CGV_API application_plugin :
 	public cgv::gui::event_handler	// derive from event handler to be able to directly react to user interaction
 {
 protected:
+	cgv::render::view* view_ptr;
+
 	std::vector<overlay_ptr> overlays;
 	overlay_ptr last_blocking_overlay_ptr;
 	overlay_ptr blocking_overlay_ptr;
@@ -40,6 +43,12 @@ public:
 	virtual bool handle(cgv::gui::event& e) final;
 
 	virtual bool handle_event(cgv::gui::event& e) = 0;
+
+	virtual void on_set(void* member_ptr);
+
+	virtual void on_set(const on_set_evaluator& m) {}
+
+	virtual bool initialize_view_ptr() final;
 };
 
 }

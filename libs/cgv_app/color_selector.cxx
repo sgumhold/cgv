@@ -29,7 +29,7 @@ void color_selector::clear(cgv::render::context& ctx) {
 	color_tex.destruct(ctx);
 	hue_tex.destruct(ctx);
 
-	cgv::g2d::ref_msdf_font(ctx, -1);
+	cgv::g2d::ref_msdf_font_regular(ctx, -1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
 }
 
@@ -112,13 +112,13 @@ void color_selector::on_set(void* member_ptr) {
 
 bool color_selector::init(cgv::render::context& ctx) {
 	
-	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
-	register_shader("circle", cgv::g2d::canvas::shaders_2d::circle);
-	register_shader("grid", cgv::g2d::canvas::shaders_2d::grid);
+	register_shader("rectangle", cgv::g2d::shaders::rectangle);
+	register_shader("circle", cgv::g2d::shaders::circle);
+	register_shader("grid", cgv::g2d::shaders::grid);
 	
 	bool success = canvas_overlay::init(ctx);
 
-	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font(ctx, 1);
+	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font_regular(ctx, 1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
 
 	if(success)
@@ -128,7 +128,7 @@ bool color_selector::init(cgv::render::context& ctx) {
 	
 	if(font.is_initialized()) {
 		texts.set_msdf_font(&font);
-		texts.set_font_size(14.0f);
+		//texts.set_font_size(14.0f);
 
 		texts.add_text("R: ", ivec2(0), cgv::render::TA_BOTTOM_LEFT);
 		texts.add_text("0", ivec2(0), cgv::render::TA_BOTTOM_RIGHT);
@@ -187,9 +187,6 @@ void color_selector::init_frame(cgv::render::context& ctx) {
 			text_position.x() += i & 1 ? 15 : 40;
 		}
 	}
-
-	if(ensure_theme())
-		init_styles(ctx);
 }
 
 void color_selector::draw_content(cgv::render::context& ctx) {
@@ -257,7 +254,7 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 		const auto& r = layout.opacity_rect;
 		content_canvas.enable_shader(ctx, "rectangle");
 		opacity_color_style.fill_color = rgba(rgb_color, 1.0f);
-		opacity_color_style.feather_width = r.h();
+		opacity_color_style.feather_width = static_cast<float>(r.h());
 		opacity_color_style.apply(ctx, rect_prog);
 		content_canvas.draw_shape(ctx, ivec2(r.x(), r.y1() - 1), ivec2(r.w(), 1));
 
@@ -403,6 +400,7 @@ void color_selector::init_styles(cgv::render::context& ctx) {
 	text_style.border_width = border_width;
 	text_style.feather_origin = 0.5f;
 	text_style.use_blending = true;
+	text_style.font_size = 14.0f;
 }
 
 void color_selector::init_textures(cgv::render::context& ctx) {

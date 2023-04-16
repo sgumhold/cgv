@@ -223,7 +223,7 @@ bool navigator::init(cgv::render::context& ctx) {
 
 	success &= box_renderer.init(ctx);
 
-	blit_canvas.register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
+	blit_canvas.register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	success &= blit_canvas.init(ctx);
 
 	if(success) {

@@ -16,8 +16,8 @@ in mat3 NM_fs;
 in vec4 secondary_color;
 #endif
 
-out layout(location = 1) vec4 frag_position;
-out layout(location = 2) vec3 frag_normal;
+layout(location = 1) out vec4 frag_position;
+layout(location = 2) out vec3 frag_normal;
 
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;

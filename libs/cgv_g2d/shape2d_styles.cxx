@@ -51,7 +51,7 @@ struct circle2d_style_gui_creator : public gui_creator {
 		cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
 		p->add_gui("shape2d_style", *static_cast<cgv::g2d::shape2d_style*>(s_ptr));
-		p->add_member_control(b, "Use Polar Texcoords", s_ptr->use_polar_texcoords, "check");
+		p->add_member_control(b, "Polar Texture Coordinates", s_ptr->use_polar_texcoords, "check");
 
 		return true;
 	}
@@ -115,6 +115,24 @@ struct grid2d_style_gui_creator : public gui_creator {
 	}
 };
 
+/// define a gui creator for the text2d style struct
+struct text2d_style_gui_creator : public gui_creator {
+	/// attempt to create a gui and return whether this was successful
+	bool create(provider* p, const std::string& label, void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, bool*) {
+		if(value_type != cgv::type::info::type_name<cgv::g2d::text2d_style>::get_name())
+			return false;
+
+		cgv::g2d::text2d_style* s_ptr = reinterpret_cast<cgv::g2d::text2d_style*>(value_ptr);
+		cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
+
+		p->add_gui("shape2d_style", *static_cast<cgv::g2d::shape2d_style*>(s_ptr));
+		p->add_member_control(b, "Font Size", s_ptr->font_size, "value_slider", "min=1;max=256;step=0.5;ticks=true");
+		p->add_member_control(b, "Clear Type", s_ptr->clear_type_mode, "dropdown", "enums='Disabled,Black on White, White on Black'");
+
+		return true;
+	}
+};
+
 #include "lib_begin.h"
 
 CGV_API cgv::gui::gui_creator_registration<shape2d_style_gui_creator> shape2d_s_gc_reg("shape2d_style_gui_creator");
@@ -122,6 +140,7 @@ CGV_API cgv::gui::gui_creator_registration<circle2d_style_gui_creator> circle2d_
 CGV_API cgv::gui::gui_creator_registration<line2d_style_gui_creator> line2d_s_gc_reg("line2d_style_gui_creator");
 CGV_API cgv::gui::gui_creator_registration<arrow2d_style_gui_creator> arrow2d_s_gc_reg("arrow2d_style_gui_creator");
 CGV_API cgv::gui::gui_creator_registration<grid2d_style_gui_creator> grid2d_s_gc_reg("grid2d_style_gui_creator");
+CGV_API cgv::gui::gui_creator_registration<text2d_style_gui_creator> text2d_s_gc_reg("text2d_style_gui_creator");
 
 }
 }

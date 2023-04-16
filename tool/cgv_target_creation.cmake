@@ -10,11 +10,30 @@ endfunction()
 # retrieves a CGV-specific property and returns its content if any, otherwise returns something that evaluates to FALSE
 # under CMake's rules
 function(cgv_query_property OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
-	get_target_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
+	if (NOT TARGET_NAME STREQUAL "GLOBAL")
+		get_target_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
+	else()
+		get_property(PROPVAL GLOBAL PROPERTY ${PROPERTY_NAME})
+	endif()
 	if (PROPVAL AND NOT PROPVAL STREQUAL "PROPVAL-NOTFOUND")
 		set(${OUTPUT_VAR} "${PROPVAL}" PARENT_SCOPE)
 	else()
 		set(${OUTPUT_VAR} FALSE PARENT_SCOPE)
+	endif()
+endfunction()
+
+# retrieves a CGV-specific property that is suppposed to be a list and returns its content if any, otherwise returns
+# something that evaluates to and empty list under CMake's rules
+function(cgv_query_listproperty OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
+	if (NOT TARGET_NAME STREQUAL "GLOBAL")
+		get_target_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
+	else()
+		get_property(PROPVAL GLOBAL PROPERTY ${PROPERTY_NAME})
+	endif()
+	if (PROPVAL AND NOT PROPVAL STREQUAL "PROPVAL-NOTFOUND")
+		set(${OUTPUT_VAR} "${PROPVAL}" PARENT_SCOPE)
+	else()
+		set(${OUTPUT_VAR} "" PARENT_SCOPE)
 	endif()
 endfunction()
 
@@ -171,7 +190,7 @@ endfunction()
 # - global state the function can modify
 set(VSCODE_LAUNCH_JSON_CONFIG_LIST "")
 # - the actual function
-function(cgv_do_deferred_ops TARGET_NAME)
+function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 	# output notification of deferred operation
 	get_target_property(TARGET_TYPE ${TARGET_NAME} CGVPROP_TYPE)
 	message(STATUS "Performing deferred operations for ${TARGET_TYPE} '${TARGET_NAME}'")
@@ -267,8 +286,17 @@ function(cgv_do_deferred_ops TARGET_NAME)
 		endif()
 
 		# create launch script and .vscode config in case of Make- and Ninja-based generators when the plugin is executable
-		if (NOT NO_EXECUTABLE AND (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
+		# - check if a specific working directory was requested
+		cgv_query_property(WORKING_DIR ${TARGET_NAME} CGVPROP_WORKING_DIR)
+		if (NOT WORKING_DIR)
 			set(WORKING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+		endif()
+		# - create actual launch/debug config
+		set(DO_CREATE_LAUNCH_CONFIG TRUE)
+		if (CONFIGURING_CGV AND NO_EXECUTABLE)
+			set(DO_CREATE_LAUNCH_CONFIG FALSE)
+		endif()
+		if (DO_CREATE_LAUNCH_CONFIG AND (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
 			configure_file(
 				"${CGV_DIR}/make/cmake/run_plugin.sh.in" "${CMAKE_BINARY_DIR}/run_${TARGET_NAME}.sh"
 				FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
@@ -280,25 +308,29 @@ function(cgv_do_deferred_ops TARGET_NAME)
 				USE_SOURCE_PERMISSIONS
 			)
 
+			set(NO_EXE_FLAG "")
+			if (NO_EXECUTABLE)
+				set(NO_EXE_FLAG "NO_EXECUTABLE")
+			endif()
 			concat_vscode_launch_json_content(
-				VSCODE_TARGET_LAUNCH_JSON_CONFIGS
-				${TARGET_NAME} PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS} EXE_ARGS ${ADDITIONAL_ARGS} WORKING_DIR ${WORKING_DIR}
+				VSCODE_TARGET_LAUNCH_JSON_CONFIGS ${TARGET_NAME} ${NO_EXE_FLAG} WORKING_DIR ${WORKING_DIR}
+				PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS} EXE_ARGS ${ADDITIONAL_ARGS}
 			)
 			if (NOT VSCODE_LAUNCH_JSON_CONFIG_LIST OR VSCODE_LAUNCH_JSON_CONFIG_LIST STREQUAL "")
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS}" PARENT_SCOPE)
-			elseif (CGV_IS_CONFIGURING)
+			elseif (CONFIGURING_CGV)
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_LAUNCH_JSON_CONFIG_LIST},\n${VSCODE_TARGET_LAUNCH_JSON_CONFIGS}" PARENT_SCOPE)
 			else()
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS},\n${VSCODE_LAUNCH_JSON_CONFIG_LIST}" PARENT_SCOPE)
 			endif()
-		else()
+		elseif(DO_CREATE_LAUNCH_CONFIG)
 			# try to set relevant options for all other generators in the hopes of ending up with a valid launch/debug
 			# configuration
+			cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
+			set_plugin_execution_params(${TARGET_NAME} ARGUMENTS ${CMD_LINE_ARGS_STRING})
+			set_plugin_execution_working_dir(${TARGET_NAME} ${WORKING_DIR})
 			if (NOT NO_EXECUTABLE)
-				cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
-				set_plugin_execution_params(${TARGET_NAME} ARGUMENTS ${CMD_LINE_ARGS_STRING})
 				set_plugin_execution_params(${NAME_EXE} ARGUMENTS ${ADDITIONAL_ARGS_STRING} ALTERNATIVE_COMMAND $<TARGET_FILE:${NAME_EXE}>)
-				set_plugin_execution_working_dir(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 				set_plugin_execution_working_dir(${NAME_EXE} ${CMAKE_CURRENT_SOURCE_DIR})
 			endif()
 		endif()
@@ -307,8 +339,6 @@ endfunction()
 
 # internal helper function that will perform final deferred operations after the very last cgv target has been
 # added either by the Framework itself or by any other projects that use the Framework from the outside
-# - global state the function will access
-set(USER_TARGETS "")
 # - the actual function
 function(cgv_do_final_operations)
 	message(STATUS "Performing final operations")
@@ -320,6 +350,7 @@ function(cgv_do_final_operations)
 	if (CGV_EXCLUDE_UNUSED_TARGETS)
 		cgv_get_all_directory_targets(CGV_FRAMEWORK_TARGETS ${CGV_DIR} RECURSIVE)
 		set(ALL_USER_DEPENDENCIES "")
+		cgv_query_listproperty(USER_TARGETS GLOBAL "CGVPROP_USER_TARGETS")
 		foreach(USER_TARGET ${USER_TARGETS})
 			cgv_gather_dependencies(DEPENDENCIES ${USER_TARGET} RECURSION_CONVERGENCE_HELPER)
 			list(APPEND ALL_USER_DEPENDENCIES ${DEPENDENCIES})
@@ -330,7 +361,7 @@ function(cgv_do_final_operations)
 		set(EXCLUDED_CGV_FRAMEWORK_TARGETS "")
 		foreach(CGV_FRAMEWORK_TARGET ${CGV_FRAMEWORK_TARGETS})
 			if (    NOT ${CGV_FRAMEWORK_TARGET} IN_LIST CGV_BUILD_TOOLS
-			    AND NOT ${CGV_FRAMEWORK_TARGET} IN_LIST ALL_USER_DEPENDENCIES)
+				AND NOT ${CGV_FRAMEWORK_TARGET} IN_LIST ALL_USER_DEPENDENCIES)
 				list(APPEND EXCLUDED_CGV_FRAMEWORK_TARGETS ${CGV_FRAMEWORK_TARGET})
 				set_target_properties(${CGV_FRAMEWORK_TARGET} PROPERTIES EXCLUDE_FROM_ALL TRUE)
 				set_target_properties(${CGV_FRAMEWORK_TARGET} PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD TRUE)
@@ -400,7 +431,7 @@ endfunction()
 function(cgv_add_target NAME)
 	cmake_parse_arguments(
 		PARSE_ARGV 1 CGVARG_
-		"NO_EXECUTABLE" "TYPE;OVERRIDE_SHARED_EXPORT_DEFINE;OVERRIDE_FORCE_STATIC_DEFINE"
+		"NO_EXECUTABLE" "TYPE;OVERRIDE_SHARED_EXPORT_DEFINE;OVERRIDE_FORCE_STATIC_DEFINE;WORKING_DIR"
 		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;ADDITIONAL_PRIVATE_DEFINES;ADDITIONAL_PUBLIC_DEFINES;DEPENDENCIES;LINKTIME_PLUGIN_DEPENDENCIES;ADDITIONAL_INCLUDE_PATHS;ADDITIONAL_LINKER_PATHS;ADDITIONAL_CMDLINE_ARGS"
 	)
 
@@ -636,14 +667,18 @@ function(cgv_add_target NAME)
 		set_target_properties(${NAME} PROPERTIES CGVPROP_ADDITIONAL_CMDLINE_ARGS "${CGVARG__ADDITIONAL_CMDLINE_ARGS}")
 	endif()
 
+	# commit custom run/debug working directory if requested
+	if (IS_PLUGIN AND CGVARG__WORKING_DIR)
+		set_target_properties(${NAME} PROPERTIES CGVPROP_WORKING_DIR "${CGVARG__WORKING_DIR}")
+	endif()
+
 	# record whether this target is added by the CGV Framework itself or by another project using it
 	if (NOT CGV_IS_CONFIGURING)
-		set(USER_TARGETS_LOCAL ${USER_TARGETS})
-		list(APPEND USER_TARGETS_LOCAL ${NAME} ${NAME_STATIC})
+		list(APPEND MY_TARGETS ${NAME} ${NAME_STATIC})
 		if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
-			list(APPEND USER_TARGETS_LOCAL ${NAME_EXE})
+			list(APPEND MY_TARGETS ${NAME_EXE})
 		endif()
-		set(USER_TARGETS "${USER_TARGETS_LOCAL}" PARENT_SCOPE)
+		set_property(GLOBAL APPEND PROPERTY "CGVPROP_USER_TARGETS" ${MY_TARGETS})
 	endif()
 
 	# IDE fluff
@@ -687,9 +722,9 @@ function(cgv_add_target NAME)
 	# schedule deferred ops
 	# - for the created target
 	if (CGV_IS_CONFIGURING)
-		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CGV_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
+		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CGV_DIR} CALL cgv_do_deferred_ops [[${NAME}]] TRUE)")
 	else()
-		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
+		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]] FALSE)")
 	endif()
 	# - update final pass
 	cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CANCEL_CALL "_999_FINALOPS")
@@ -804,6 +839,7 @@ function(cgv_add_custom_sources TARGET_NAME)
 		endforeach()
 	endif()
 endfunction()
+
 
 
 

@@ -36,7 +36,7 @@ bool managed_frame_buffer::set_size(const ivec2& size) {
 	//GLint max_render_buffer_size;
 	//glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &max_render_buffer_size);
 
-	int max_render_buffer_size = 4096;
+	int max_render_buffer_size = 12288;
 
 	// TODO: in static builds (exe) the max render buffer size does not return useful values when this method is called in a drawable constructor
 	if(max_render_buffer_size > 0) {

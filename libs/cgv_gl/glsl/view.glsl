@@ -55,7 +55,7 @@ vec3 get_eye_world()
 
 mat4 get_inverse_modelview_projection_matrix()
 {
-	return inverse(get_modelview_projection_matrix());
+	return inverse_modelview_matrix * inverse_projection_matrix;
 }
 
 mat3 get_normal_matrix()
