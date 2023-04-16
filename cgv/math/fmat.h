@@ -147,25 +147,25 @@ public:
 					r(i,j) += operator()(i,k) * (T)(m2(k,j)); 
 		return r;
 	}
-	///multiplication with (ncols-1)x(ncols-1) matrix, which assumes the first operand represents an
-	///affine or perspective transformation to be combined with the linear transformation represented
-	///by the second operand (which will be implicitly homogenized)
+	///multiplication with (ncols-1)x(ncols-1) matrix, assuming the first operand represents an affine
+	///or perspective transformation to be combined with the linear transformation represented by the
+	///second operand (which will be treated as if lifted to a homogenous transformation matrix)
 	template <typename S>
-	const fmat<T,N,M> mul_h (const fmat<S,N-1,M-1>& m2) const
+	const fmat<T,N,N> mul_h (const fmat<S,N-1,N-1>& m2) const
 	{
-		assert(N == M);
-		static const auto v0h = fvec<T, N>::zeroh();
+		static_assert(N == M);
+		static const auto vzero = fvec<T, N-1>(0);
 		fvec<T,N> rows[N]; // extracting rows takes linear time so we only want to do it once for each row
 		for (unsigned i=0; i<N; i++)
 			rows[i] = row(i);
 		fmat<T,N,N> r;
-		// (1) multiply with implicit nrows x (ncols-1) matrix that is assumed to have an all-zero last row
+		// (1) multiply with implied nrows x (ncols-1) matrix that is assumed to have an all-zero last row
 		for (unsigned j=0; j<N-1; j++)
 			for (unsigned i=0; i<N; i++)
 				r(i,j) = dot_dir(rows[i], m2.col(j));
-		// (2) calculate final column by assuming second operand as homogeneous 0-vector in last column
+		// (2) assume homogeneous zero position vector in last column of 2nd operand for calculating last result column
 		for (unsigned i=0; i<N; i++)
-			r(i,N-1) = dot_pos(rows[i], v0h);
+			r(i,N-1) = dot_pos(rows[i], vzero);
 		return r;
 	}
 
