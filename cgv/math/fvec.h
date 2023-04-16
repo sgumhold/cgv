@@ -362,24 +362,44 @@ inline T dot(const fvec<T,N>& v, const fvec<S,N>& w)
 	return r;
 }
 
-///returns the dot product of N-dimensional vector v and N-1-dimensional position vector w which
-///will be implicitly homogenized
+///returns the dot product of N-dimensional vector v and (N+1)-dimensional position vector w, implicitly
+///homogenizing the first operand
 template <typename T, typename S, cgv::type::uint32_type N>
-inline S dot_pos(const fvec<T,N>& v, const fvec<S,N-1>& w)
+inline S dot_pos(const fvec<T,N>& v, const fvec<S,N+1>& w)
 { 
 	T r = 0;
-	for (unsigned i=0;i<N-1;++i)
+	for (unsigned i=0;i<N;++i)
 		r += v(i)*w(i);
-	return r+v(N-1);
+	return r+w(N);
+}
+///returns the dot product of (N+1)-dimensional vector v and N-dimensional position vector w, implicitly
+///homogenizing the second operand
+template <typename T, typename S, cgv::type::uint32_type N>
+inline S dot_pos(const fvec<T,N+1>& v, const fvec<S,N>& w)
+{ 
+	T r = 0;
+	for (unsigned i=0;i<N;++i)
+		r += v(i)*w(i);
+	return r+v(N);
 }
 
-///returns the dot product of N-dimensional vector v and N-1-dimensional direction vector w which
-///will be implicitly homogenized
+///returns the dot product of N-dimensional vector v and (N+1)-dimensional direction vector w, implicitly
+///homogenizing the first operand
 template <typename T, typename S, cgv::type::uint32_type N>
-inline S dot_dir(const fvec<T,N>& v, const fvec<S,N-1>& w)
+inline S dot_dir(const fvec<T,N>& v, const fvec<S,N+1>& w)
 { 
 	T r = 0;
-	for (unsigned i=0;i<N-1;++i)
+	for (unsigned i=0;i<N;++i)
+		r += v(i)*w(i);
+	return r;
+}
+///returns the dot product of (N+1)-dimensional vector v and N-dimensional direction vector w, implicitly
+///homogenizing the second operand
+template <typename T, typename S, cgv::type::uint32_type N>
+inline S dot_dir(const fvec<T,N+1>& v, const fvec<S,N>& w)
+{ 
+	T r = 0;
+	for (unsigned i=0;i<N;++i)
 		r += v(i)*w(i);
 	return r;
 }
