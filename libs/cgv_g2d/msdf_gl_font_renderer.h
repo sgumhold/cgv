@@ -17,7 +17,7 @@ class CGV_API msdf_gl_font_renderer : public cgv::render::render_types {
 protected:
 	cgv::render::shader_program prog;
 
-	bool use_clear_type;
+	bool use_subpixel_rendering;
 	GLboolean blending_was_enabled;
 
 	GLint blend_src_color;

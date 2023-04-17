@@ -556,6 +556,8 @@ public:
 		set_default_shape_style(text_style);
 		set_default_shape_style(line_style);
 		set_default_shape_style(arrow_style);
+
+		text_style.feather_origin = 0.5f;
 		line_style.width = 20.0f;
 		line_style.use_fill_color = false;
 		arrow_style.stem_width = 20.0f;
