@@ -22,10 +22,9 @@ void finish_fragment2d(in vec4 color, in vec2 texcoords);
 
 uniform float src_size = 32.0;
 uniform float pixel_range = 2.0;
-uniform int clear_type_mode = 0;
 uniform vec2 text_size;
 uniform float font_size = 32.0;
-uniform float true_sdf_mix_factor = 0.0;
+uniform bool enable_subpixel_rendering = false;
 
 in vec2 pix_coord;
 in vec2 tex_coord;
@@ -36,13 +35,14 @@ float median(float r, float g, float b) {
 
 float screen_pixel_range() {
 	float screen_size = font_size * text_size.y;
-	return max((screen_size/src_size) * pixel_range, 1.0);
+	//return max((screen_size/src_size) * pixel_range, 1.0);
+	return (screen_size/src_size) * pixel_range;
 }
 
 float compute_coverage(in vec2 uv) {
 
 	vec4 mtsd = texture(tex, uv).rgba;
-	float sd = median(mtsd.r, mtsd.g, mtsd.b) * mix(1.0, mtsd.a, true_sdf_mix_factor);
+	float sd = median(mtsd.r, mtsd.g, mtsd.b);
 	
 	if(sd <= 0.0)
 		return 0.0;
@@ -58,7 +58,7 @@ float compute_coverage(in vec2 uv) {
 
 void main() {
 	
-	if(clear_type_mode != 0) {
+	if(enable_subpixel_rendering) {
 		vec2 pixel_offset = dFdx(tex_coord);
 		vec2 subpixel_offset = pixel_offset / 3.0;
 
@@ -69,7 +69,7 @@ void main() {
 		finish_fragment2d(vec4(coverage_r, coverage_g, coverage_b, coverage_g));
 	} else {
 		vec4 mtsd = texture(tex, tex_coord).rgba;
-		float sd = median(mtsd.r, mtsd.g, mtsd.b) * mix(1.0, mtsd.a, true_sdf_mix_factor);
+		float sd = median(mtsd.r, mtsd.g, mtsd.b);
 	
 		if(sd <= 0.0)
 			discard;

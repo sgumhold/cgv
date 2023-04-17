@@ -395,11 +395,8 @@ void color_selector::init_styles(cgv::render::context& ctx) {
 	float label_border_alpha = 0.0f;
 	float border_width = 0.25f;
 	
-	text_style.fill_color = rgba(ti.text(), 1.0f);
-	text_style.border_color = rgba(ti.text(), label_border_alpha);
-	text_style.border_width = border_width;
-	text_style.feather_origin = 0.5f;
-	text_style.use_blending = true;
+	text_style = cgv::g2d::text2d_style::preset_stylized(ti.text());
+	text_style.feather_origin = 0.25f;
 	text_style.font_size = 14.0f;
 }
 
