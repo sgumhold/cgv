@@ -115,7 +115,10 @@ void cgv::nui::debug_visualization_helper::draw(render::context& ctx)
 			continue;
 		str.set_position_array(ctx, splines[i].first);
 		str.set_tangent_array(ctx, splines[i].second);
-		std::vector<rgb> col = { spline_colors[i] };
+		std::vector<rgb> col;
+		for (int j = 0; j < splines[i].first.size(); ++j) {
+			col.push_back(spline_colors[i]);
+		}
 		str.set_color_array(ctx, col);
 		str.render(ctx, 0, splines[i].first.size(), true);
 	}
