@@ -43,7 +43,7 @@ public:
 
 		shaders.clear(ctx);
 
-		ref_msdf_font_light(ctx, -1);
+		ref_msdf_font_regular(ctx, -1);
 		ref_msdf_gl_canvas_font_renderer(ctx, -1);
 
 		buttons.clear();
@@ -61,7 +61,7 @@ public:
 		shaders.add("rectangle", shaders::rectangle);
 		success &= shaders.load_all(ctx, "button_collection::init()");
 
-		msdf_font_light& font = ref_msdf_font_light(ctx, 1);
+		msdf_font_regular& font = ref_msdf_font_regular(ctx, 1);
 		ref_msdf_gl_canvas_font_renderer(ctx, 1);
 
 		success &= font.is_initialized();
@@ -180,6 +180,11 @@ public:
 			move_label(1);
 	}
 
+	size_t size() const {
+
+		return buttons.size();
+	}
+
 	void add(const std::string& label, const irect& rect, std::function<void(const std::string&)> callback) {
 
 		buttons.push_back({ label, rect, callback });
@@ -219,10 +224,8 @@ public:
 		label_style.fill_color = rgba(ti.text(), 1.0f);
 		label_style.use_blending = true;
 		label_style.font_size = 12.0f;
-		label_style.clear_type_mode = ti.is_dark() ?
-			text2d_style::ClearTypeMode::CT_WHITE_ON_BLACK :
-			text2d_style::ClearTypeMode::CT_BLACK_ON_WHITE;
-
+		label_style.enable_subpixel_rendering = true;
+		
 		btn_style.use_fill_color = false;
 		btn_style.border_color = rgba(ti.border(), 1.0f);
 		btn_style.feather_width = 0.0f;

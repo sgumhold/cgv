@@ -53,8 +53,8 @@ bool msdf_gl_font_renderer::enable(cgv::render::context& ctx, const ivec2& viewp
 		prog.set_uniform(ctx, "true_sdf_mix_factor", 0.0f);
 		style.apply(ctx, prog);
 
-		use_clear_type = static_cast<unsigned>(style.clear_type_mode) > 0;
-		if(use_clear_type) {
+		use_subpixel_rendering = style.enable_subpixel_rendering;
+		if(use_subpixel_rendering) {
 			glGetBooleanv(GL_BLEND, &blending_was_enabled);
 			glGetIntegerv(GL_BLEND_SRC_RGB, &blend_src_color);
 			glGetIntegerv(GL_BLEND_SRC_ALPHA, &blend_src_alpha);
@@ -76,7 +76,7 @@ bool msdf_gl_font_renderer::disable(cgv::render::context& ctx, msdf_text_geometr
 	tg.disable(ctx);
 
 	if(res) {
-		if(use_clear_type) {
+		if(use_subpixel_rendering) {
 			if(!blending_was_enabled)
 				glDisable(GL_BLEND);
 
