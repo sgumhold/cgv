@@ -314,13 +314,10 @@ void color_map_legend::init_styles(cgv::render::context& ctx) {
 		border_width = 0.0f;
 	}
 
-	text_style.fill_color = rgba(tick_color, 1.0f);
-	text_style.border_color = rgba(tick_color, label_border_alpha);
-	text_style.border_width = border_width;
-	text_style.feather_origin = 0.5f;
-	text_style.use_blending = true;
+	text_style = cgv::g2d::text2d_style::preset_stylized(tick_color);
+	text_style.feather_origin = 0.25f;
 	text_style.font_size = 12.0f;
-
+	
 	// configure style for tick marks
 	cgv::g2d::shape2d_style tick_style;
 	tick_style.position_is_center = true;

@@ -656,14 +656,10 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	polygon_renderer.set_style(ctx, poly_style);
 
 	// label style
-	cursor_label_style.fill_color = rgba(rgb(0.0f), 1.0f);
-	cursor_label_style.use_blending = true;
+	cursor_label_style = cgv::g2d::text2d_style::preset_clear(rgb(0.0f));
 	cursor_label_style.font_size = 16.0f;
 
-	value_label_style.fill_color = rgba(group_color, 1.0f);
-	value_label_style.border_color = rgba(group_color, 0.0f);
-	value_label_style.border_width = 0.25f;
-	value_label_style.use_blending = true;
+	value_label_style = cgv::g2d::text2d_style::preset_clear(group_color);
 	value_label_style.font_size = 12.0f;
 }
 

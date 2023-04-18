@@ -127,7 +127,7 @@ struct text2d_style_gui_creator : public gui_creator {
 
 		p->add_gui("shape2d_style", *static_cast<cgv::g2d::shape2d_style*>(s_ptr));
 		p->add_member_control(b, "Font Size", s_ptr->font_size, "value_slider", "min=1;max=256;step=0.5;ticks=true");
-		p->add_member_control(b, "Clear Type", s_ptr->clear_type_mode, "dropdown", "enums='Disabled,Black on White, White on Black'");
+		p->add_member_control(b, "Subpixel Rendering", s_ptr->enable_subpixel_rendering, "check");
 
 		return true;
 	}
