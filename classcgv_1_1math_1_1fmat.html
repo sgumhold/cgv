@@ -258,17 +258,21 @@ template&lt;typename S &gt; </td></tr>
 <tr class="memitem:a34b7db4b5f45c26fe751a6fcf622dfde"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#a34b7db4b5f45c26fe751a6fcf622dfde">mul_dir</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, M-1 &gt; &amp;v) const</td></tr>
 <tr class="memdesc:a34b7db4b5f45c26fe751a6fcf622dfde"><td class="mdescLeft">&#160;</td><td class="mdescRight">multiplication with M-1 dimensional direction vector which will be implicitly homogenized <br /></td></tr>
 <tr class="separator:a34b7db4b5f45c26fe751a6fcf622dfde"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a705e7c5b75bb84eb20850d6807c53f4e"><td class="memItemLeft" align="right" valign="top"><a id="a705e7c5b75bb84eb20850d6807c53f4e"></a>
-const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, M &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#a705e7c5b75bb84eb20850d6807c53f4e">row</a> (unsigned i) const</td></tr>
-<tr class="memdesc:a705e7c5b75bb84eb20850d6807c53f4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract a row from the matrix as a vector, this is done by a type cast <br /></td></tr>
-<tr class="separator:a705e7c5b75bb84eb20850d6807c53f4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2507ab07f6b3615ce9d585b167c2089b"><td class="memItemLeft" align="right" valign="top"><a id="a2507ab07f6b3615ce9d585b167c2089b"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, M &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#a2507ab07f6b3615ce9d585b167c2089b">row</a> (unsigned i) const</td></tr>
+<tr class="memdesc:a2507ab07f6b3615ce9d585b167c2089b"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract a row from the matrix as a vector, this takes time linear in the number of columns <br /></td></tr>
+<tr class="separator:a2507ab07f6b3615ce9d585b167c2089b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8d7fd7f3ce8ec07957a19a05b27e69a"><td class="memItemLeft" align="right" valign="top"><a id="ac8d7fd7f3ce8ec07957a19a05b27e69a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#ac8d7fd7f3ce8ec07957a19a05b27e69a">set_row</a> (unsigned i, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, M &gt; &amp;v)</td></tr>
 <tr class="memdesc:ac8d7fd7f3ce8ec07957a19a05b27e69a"><td class="mdescLeft">&#160;</td><td class="mdescRight">set row i of the matrix to vector v <br /></td></tr>
 <tr class="separator:ac8d7fd7f3ce8ec07957a19a05b27e69a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cb9412542731c4eb5b2c2133043e281"><td class="memItemLeft" align="right" valign="top"><a id="a1cb9412542731c4eb5b2c2133043e281"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#a1cb9412542731c4eb5b2c2133043e281">col</a> (unsigned j)</td></tr>
+<tr class="memdesc:a1cb9412542731c4eb5b2c2133043e281"><td class="mdescLeft">&#160;</td><td class="mdescRight">reference a column of the matrix as a vector <br /></td></tr>
+<tr class="separator:a1cb9412542731c4eb5b2c2133043e281"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a228568ebddfd50ef5637ac6366715f3c"><td class="memItemLeft" align="right" valign="top"><a id="a228568ebddfd50ef5637ac6366715f3c"></a>
 const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#a228568ebddfd50ef5637ac6366715f3c">col</a> (unsigned j) const</td></tr>
-<tr class="memdesc:a228568ebddfd50ef5637ac6366715f3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract a column of the matrix as a vector <br /></td></tr>
+<tr class="memdesc:a228568ebddfd50ef5637ac6366715f3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">read-only reference a column of the matrix as a vector <br /></td></tr>
 <tr class="separator:a228568ebddfd50ef5637ac6366715f3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61dc8be04288445175a30b15864121c7"><td class="memItemLeft" align="right" valign="top"><a id="a61dc8be04288445175a30b15864121c7"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fmat.html#a61dc8be04288445175a30b15864121c7">set_col</a> (unsigned j, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;v)</td></tr>
