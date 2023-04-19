@@ -32,10 +32,12 @@ mat4 cgv::nui::gizmo::compute_draw_correction_transformation(vec3& scale)
 	mat4 scale_correction = cgv::math::scale4(root_scale_component / anchor_scale_component);
 
 	mat4 rotation_correction;
-	if (use_root_rotation)
-		rotation_correction = (root_rotation_component * anchor_rotation_component.inverse()).get_homogeneous_matrix();
-	else 
+	if (use_root_rotation) {
+		rotation_correction = (root_rotation_component.inverse() * anchor_rotation_component).inverse().get_homogeneous_matrix();
+	}
+	else {
 		rotation_correction.identity();
+	}
 	
 	return rotation_correction * scale_correction;
 }
@@ -56,13 +58,15 @@ mat4 cgv::nui::gizmo::compute_interaction_correction_transformation(vec3& scale)
 
 	scale = anchor_scale_component;
 	mat4 scale_correction = cgv::math::scale4(anchor_scale_component / root_scale_component);
-
-	mat4 rotation_correction;
-	if (use_root_rotation)
-		rotation_correction = (anchor_rotation_component * root_rotation_component.inverse()).get_homogeneous_matrix();
-	else
-		rotation_correction.identity();
 	
+	mat4 rotation_correction;
+	if (use_root_rotation) {
+		rotation_correction = (anchor_rotation_component.inverse() * root_rotation_component).inverse().get_homogeneous_matrix();
+	}
+	else {
+		rotation_correction.identity();
+	}
+
 	return rotation_correction * scale_correction;
 }
 
