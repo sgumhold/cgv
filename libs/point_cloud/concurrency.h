@@ -5,6 +5,7 @@
 #include <functional>
 #include <atomic>
 #include <mutex>
+#include <condition_variable>
 
 #include "lib_begin.h"
 
@@ -30,8 +31,8 @@ class CGV_API SenseReversingBarrier
 			return barrier_sense;
 		}
 
-		// post_once is run by one thread whith following condition, 
-		//	-- run after all threads reached the phase synchronization point 
+		// post_once is run by one thread whith following condition,
+		//	-- run after all threads reached the phase synchronization point
 		//  -- before any thread is notified in the current phase
 		template <typename F>
 		void await(F post_once) {
@@ -64,7 +65,7 @@ class CGV_API SenseReversingBarrier
 			await([]() {});
 		}
 	};
-	
+
 	class CGV_API WorkerPool
 	{
 
@@ -81,7 +82,7 @@ class CGV_API SenseReversingBarrier
 		struct PoolTask {
 			std::function<void(int)> task;
 			std::atomic_int remaining; //threads not finished yet
-			inline PoolTask::PoolTask(const std::function<void(int)>& t, const int num_threads)
+			PoolTask(const std::function<void(int)>& t, const int num_threads)
 				: task(t), remaining(num_threads)
 			{
 			}
@@ -131,7 +132,7 @@ class CGV_API SenseReversingBarrier
 		//add i threads to the pool (blocking)
 		void construct_threads(unsigned i);
 	};
-	
+
 	template <typename TASK>
 	struct TaskPool {
 		std::vector<TASK> pool;
