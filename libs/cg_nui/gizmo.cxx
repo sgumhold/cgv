@@ -28,7 +28,7 @@ mat4 cgv::nui::gizmo::compute_draw_correction_transformation(vec3& scale)
 	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj),
 		anchor_translation_component, anchor_rotation_component, anchor_scale_component);
 
-	scale = anchor_scale_component;
+	scale = anchor_scale_component / root_scale_component;
 	mat4 scale_correction = cgv::math::scale4(root_scale_component / anchor_scale_component);
 
 	mat4 rotation_correction;
