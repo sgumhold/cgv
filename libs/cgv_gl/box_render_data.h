@@ -21,6 +21,7 @@ public:
 
 protected:
 	std::vector<vec3> ext;
+	std::vector<vec3> transl;
 	std::vector<quat> rot;
 
 	bool transfer(context& ctx, box_renderer& r) {
@@ -28,6 +29,8 @@ protected:
 			r.set_position_array(ctx, this->pos);
 			if(ext.size() == this->size())
 				r.set_extent_array(ctx, ext);
+			if(transl.size() == this->size())
+				r.set_translation_array(ctx, transl);
 			if(rot.size() == this->size())
 				r.set_rotation_array(ctx, rot);
 			return true;
@@ -39,10 +42,12 @@ public:
 	void clear() {
 		super::clear();
 		ext.clear();
+		transl.clear();
 		rot.clear();
 	}
 
 	std::vector<vec3>& ref_ext() { return ext; }
+	std::vector<vec3>& ref_transl() { return transl; }
 	std::vector<quat>& ref_rot() { return rot; }
 
 	RDB_BASE_FUNC_DEF(box_renderer, box_render_style);
@@ -57,6 +62,11 @@ public:
 	}
 
 	void add(const quat& r) {
+		rot.push_back(r);
+	}
+
+	void add(const vec3& t, const quat& r) {
+		transl.push_back(t);
 		rot.push_back(r);
 	}
 
