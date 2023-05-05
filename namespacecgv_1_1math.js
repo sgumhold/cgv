@@ -1,6 +1,9 @@
 var namespacecgv_1_1math =
 [
     [ "adjacency_list", "classcgv_1_1math_1_1adjacency__list.html", "classcgv_1_1math_1_1adjacency__list" ],
+    [ "pinhole", "classcgv_1_1math_1_1pinhole.html", null ],
+    [ "distorted_pinhole", "classcgv_1_1math_1_1distorted__pinhole.html", "classcgv_1_1math_1_1distorted__pinhole" ],
+    [ "camera", "classcgv_1_1math_1_1camera.html", "classcgv_1_1math_1_1camera" ],
     [ "diag_mat", "structcgv_1_1math_1_1diag__mat.html", "structcgv_1_1math_1_1diag__mat" ],
     [ "fibo_heap", "classcgv_1_1math_1_1fibo__heap.html", "classcgv_1_1math_1_1fibo__heap" ],
     [ "fmat", "classcgv_1_1math_1_1fmat.html", "classcgv_1_1math_1_1fmat" ],

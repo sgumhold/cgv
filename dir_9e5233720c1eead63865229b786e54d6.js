@@ -2,7 +2,6 @@ var dir_9e5233720c1eead63865229b786e54d6 =
 [
     [ "attribute_array_binding.h", "attribute__array__binding_8h_source.html", null ],
     [ "callback_drawable.h", "callback__drawable_8h_source.html", null ],
-    [ "camera.h", "camera_8h_source.html", null ],
     [ "clipped_view.h", "clipped__view_8h_source.html", null ],
     [ "color_map.h", "color__map_8h_source.html", null ],
     [ "color_scale.h", "render_2color__scale_8h_source.html", null ],

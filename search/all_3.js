@@ -14,7 +14,7 @@ var searchData=
   ['callback_5fdrawable_257',['callback_drawable',['../structcgv_1_1render_1_1callback__drawable.html',1,'cgv::render']]],
   ['callback_5fstream_258',['callback_stream',['../classcgv_1_1signal_1_1callback__stream.html#ac290c41fd2728ed72dfdaeaf539edce3',1,'cgv::signal::callback_stream::callback_stream()'],['../classcgv_1_1signal_1_1callback__stream.html',1,'cgv::signal::callback_stream']]],
   ['callback_5fstreambuf_259',['callback_streambuf',['../structcgv_1_1signal_1_1callback__streambuf.html',1,'cgv::signal']]],
-  ['camera_260',['camera',['../classvr_1_1vr__kit.html#ad52f53b3ed8d58254f2e98ae960b5e93',1,'vr::vr_kit::camera()'],['../structcgv_1_1render_1_1camera.html',1,'cgv::render::camera']]],
+  ['camera_260',['camera',['../classvr_1_1vr__kit.html#ad52f53b3ed8d58254f2e98ae960b5e93',1,'vr::vr_kit::camera()'],['../classcgv_1_1math_1_1camera.html',1,'cgv::math::camera&lt; T &gt;']]],
   ['cameraframeformat_261',['CameraFrameFormat',['../namespacevr.html#aa7ff189a9f487df57ab41daf2a8b5214',1,'vr']]],
   ['cameraframesplit_262',['CameraFrameSplit',['../namespacevr.html#a4d435c9cc7df8e3d66348f2eca4fd18a',1,'vr']]],
   ['camerastate_263',['CameraState',['../namespacevr.html#a61f728d7ccfe3b3871e6c66d0855aea1',1,'vr']]],
