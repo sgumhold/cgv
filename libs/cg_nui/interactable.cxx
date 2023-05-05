@@ -110,6 +110,7 @@ bool cgv::nui::interactable::handle(const cgv::gui::event& e, const cgv::nui::di
 		if (state == state_enum::close && pressed) {
 			activating_hid_id = dis_info.hid_id;
 			ii_at_grab = ii_during_focus[activating_hid_id];
+			on_ii_at_grab_changed();
 			change_state(state_enum::grabbed);
 			drag_begin(request, false, original_config);
 		}
@@ -128,6 +129,7 @@ bool cgv::nui::interactable::handle(const cgv::gui::event& e, const cgv::nui::di
 			ii_during_focus[dis_info.hid_id].hid_position = prox_info.hid_position;
 			ii_during_focus[dis_info.hid_id].hid_direction = prox_info.hid_direction;
 			ii_during_focus[dis_info.hid_id].is_pointing = false;
+			on_ii_during_focus_changed(dis_info.hid_id);
 			prim_idx = int(prox_info.primitive_index);
 			on_set(&prim_idx);
 		}
@@ -137,6 +139,7 @@ bool cgv::nui::interactable::handle(const cgv::gui::event& e, const cgv::nui::di
 			ii_during_focus[dis_info.hid_id].hid_position = prox_info.hid_position;
 			ii_during_focus[dis_info.hid_id].hid_direction = prox_info.hid_direction;
 			ii_during_focus[dis_info.hid_id].is_pointing = false;
+			on_ii_during_focus_changed(dis_info.hid_id);
 			on_grabbed_drag();
 		}
 		post_redraw();
@@ -147,6 +150,7 @@ bool cgv::nui::interactable::handle(const cgv::gui::event& e, const cgv::nui::di
 		if (state == state_enum::pointed && pressed) {
 			activating_hid_id = dis_info.hid_id;
 			ii_at_grab = ii_during_focus[activating_hid_id];
+			on_ii_at_grab_changed();
 			change_state(state_enum::triggered);
 			drag_begin(request, true, original_config);
 		}
@@ -165,6 +169,7 @@ bool cgv::nui::interactable::handle(const cgv::gui::event& e, const cgv::nui::di
 			ii_during_focus[dis_info.hid_id].hid_position = inter_info.hid_position;
 			ii_during_focus[dis_info.hid_id].hid_direction = inter_info.hid_direction;
 			ii_during_focus[dis_info.hid_id].is_pointing = true;
+			on_ii_during_focus_changed(dis_info.hid_id);
 			prim_idx = int(inter_info.primitive_index);
 			on_set(&prim_idx);
 		}
@@ -174,6 +179,7 @@ bool cgv::nui::interactable::handle(const cgv::gui::event& e, const cgv::nui::di
 			ii_during_focus[dis_info.hid_id].hid_position = inter_info.hid_position;
 			ii_during_focus[dis_info.hid_id].hid_direction = inter_info.hid_direction;
 			ii_during_focus[dis_info.hid_id].is_pointing = true;
+			on_ii_during_focus_changed(dis_info.hid_id);
 			on_triggered_drag();
 		}
 		post_redraw();

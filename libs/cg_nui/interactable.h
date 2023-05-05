@@ -88,6 +88,13 @@ protected:
 
 	// State change events that can be overriden
 
+	/// Called whenever ii_during_focus changes
+	///	Always called before any of the state change events
+	virtual void on_ii_during_focus_changed(hid_identifier changed_key) {}
+	/// Called whenever ii_at_grab changes
+	///	Always called before any of the state change events
+	virtual void on_ii_at_grab_changed() {}
+
 	/// Called when entering the 'close' state
 	virtual void on_close_start() {}
 	/// Called when exiting the 'close' state
