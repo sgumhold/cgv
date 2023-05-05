@@ -73,6 +73,7 @@ public:
 	enum class state_enum { idle, close, pointed, grabbed, triggered };
 
 private:
+	// helper function that handles switching object states
 	void change_state(state_enum new_state);
 
 protected:
@@ -87,18 +88,32 @@ protected:
 
 	// State change events that can be overriden
 
+	/// Called when entering the 'close' state
 	virtual void on_close_start() {}
+	/// Called when exiting the 'close' state
+	///	Called before the entering event of the next state
 	virtual void on_close_stop() {}
 
+	/// Called when entering the 'pointed' state
 	virtual void on_pointed_start() {}
+	/// Called when exiting the 'pointed' state
+	///	Called before the entering event of the next state
 	virtual void on_pointed_stop() {}
 
+	/// Called when entering the 'grabbed' state
 	virtual void on_grabbed_start() {}
+	/// Called each pose-update while in the 'grabbed' state
 	virtual void on_grabbed_drag() {}
+	/// Called when exiting the 'grabbed' state
+	///	Called before the entering event of the next state
 	virtual void on_grabbed_stop() {}
 
+	/// Called when entering the 'triggered' state
 	virtual void on_triggered_start() {}
+	/// Called each pose-update while in the 'triggered' state
 	virtual void on_triggered_drag() {}
+	/// Called when exiting the 'triggered' state
+	///	Called before the entering event of the next state
 	virtual void on_triggered_stop() {}
 
 public:
