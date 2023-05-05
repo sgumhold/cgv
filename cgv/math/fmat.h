@@ -194,8 +194,8 @@ public:
 		return r;
 	}
 
-	///extract a row from the matrix as a vector, this is done by a type cast
-	const fvec<T,M> row(unsigned i) const {
+	///extract a row from the matrix as a vector, this takes time linear in the number of columns
+	fvec<T,M> row(unsigned i) const {
 		fvec<T,M> r;
 		for(unsigned j = 0; j < M; j++) 
 			r(j)=operator()(i,j);
@@ -206,15 +206,19 @@ public:
 		for(unsigned j = 0; j < M;j++) 
 			operator()(i,j)=v(j);		
 	}
-	///extract a column of the matrix as a vector
+	///reference a column of the matrix as a vector
+	fvec<T,N>& col(unsigned j) {	
+		return reinterpret_cast<fvec<T,N>*>(this)[j];
+	}
+	///read-only reference a column of the matrix as a vector
 	const fvec<T,N>& col(unsigned j) const {	
-		return *(const fvec<T,N>*)(&operator()(0,j));
+		return reinterpret_cast<const fvec<T,N>*>(this)[j];
 	}
-	///set  column j of the matrix to vector v
+	///set column j of the matrix to vector v
 	void set_col(unsigned j,const fvec<T,N>& v) {
-		for(unsigned i = 0; i < N;i++) 
-			operator()(i,j)=v(i);		
+		reinterpret_cast<fvec<T,N>*>(this)[j] = v;
 	}
+
 	///returns the trace 
 	T trace() const {
 		assert(N == M);

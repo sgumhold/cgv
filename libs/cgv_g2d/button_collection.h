@@ -26,8 +26,9 @@ public:
 	cgv::render::shader_library shaders;
 
 	struct button {
-		std::string label;
 		irect rect;
+		std::string label;
+		cgv::render::TextAlignment label_alignment;
 		std::function<void(const std::string&)> callback;
 	};
 
@@ -185,16 +186,15 @@ public:
 		return buttons.size();
 	}
 
-	void add(const std::string& label, const irect& rect, std::function<void(const std::string&)> callback) {
+	void add(const std::string& label, const irect& rect, std::function<void(const std::string&)> callback, cgv::render::TextAlignment label_alignment = cgv::render::TextAlignment::TA_NONE) {
 
-		buttons.push_back({ label, rect, callback });
+		buttons.push_back({ rect, label, label_alignment, callback });
 		state_out_of_date = true;
 	}
 
-	void add(const std::string& label, const ivec2& pos, const ivec2& size, std::function<void(const std::string&)> callback) {
+	void add(const std::string& label, const ivec2& pos, const ivec2& size, std::function<void(const std::string&)> callback, cgv::render::TextAlignment label_alignment = cgv::render::TextAlignment::TA_NONE) {
 
-		buttons.push_back({ label, irect(pos, size), callback });
-		state_out_of_date = true;
+		add(label, irect(pos, size), callback, label_alignment);
 	}
 
 	void create_labels() {
@@ -204,7 +204,13 @@ public:
 		for(auto& btn : buttons) {
 			ivec2 pos = btn.rect.center();
 			pos.y() += 2;
-			labels.add_text(btn.label, pos, cgv::render::TextAlignment::TA_NONE);
+
+			if(btn.label_alignment & cgv::render::TextAlignment::TA_LEFT)
+				pos.x() = 4;
+			else if(btn.label_alignment & cgv::render::TextAlignment::TA_RIGHT)
+				pos.x() = btn.rect.w() - 4;
+
+			labels.add_text(btn.label, pos, btn.label_alignment);
 		}
 
 		state_out_of_date = false;
