@@ -403,7 +403,7 @@ public:
 		xu[1] = f * od[1] + 2.0f * xyd * p[1] + (xd2 + 3.0f * yd2) * p[0];
 		if (J_ptr) {
 			fmat<T,2,2>& J = *J_ptr;
-			T df = 2.0f * rd2 * ((k[0] + rd2 * (2.0f * k[1] + 3.0f * rd2 * k[2])) * inv_v - (k[3] + rd2 * (2.0f * k[4] + 3.0f * rd2 * k[5])) * (u * inv_v)) * inv_v;
+			T df = 2.0f * sqrt(rd2) * ((k[0] + rd2 * (2.0f * k[1] + 3.0f * rd2 * k[2]))*v - (k[3] + rd2 * (2.0f * k[4] + 3.0f * rd2 * k[5])) * u) * (inv_v * inv_v);
 			J(0, 0) = f + df * xd2 + 2.0f * od[1] * p[0] + 6.0f * od[0] * p[1];
 			J(1, 1) = f + df * yd2 + 6.0f * od[1] * p[0] + 2.0f * od[0] * p[1];
 			J(1, 0) = J(0, 1) = df * xyd + 2.0f * (od[0] * p[0] + od[1] * p[1]);
@@ -415,20 +415,22 @@ public:
 		Non convergence can be checked if return value is equal to max_nr_iterations. In case of divergence (increase of error
 		during iteration) the iteration is also terminated and the return value is max_nr_iterations plus the number of
 		iterations taken.*/
-	unsigned invert_distortion_model(const fvec<T,2>& xu, fvec<T,2>& xd, T beta = 1.0f, unsigned max_nr_iterations = standard_max_nr_iterations, T epsilon = standard_epsilon) {
+	unsigned invert_distortion_model(const fvec<T,2>& xu, fvec<T,2>& xd, T beta = 1.0f, bool use_initial_guess = false, bool use_num_J = true, unsigned max_nr_iterations = standard_max_nr_iterations, T epsilon = standard_epsilon) {
 		// start with approximate inversion
-		fvec<T,2> od = xu - dc;
-		T xd2 = od[0] * od[0];
-		T yd2 = od[1] * od[1];
-		T xyd = od[0] * od[1];
-		T rd2 = xd2 + yd2;
-		T inverse_radial = 1.0f + rd2 * (k[3] + rd2 * (k[4] + rd2 * k[5]));
-		T enumerator = 1.0f + rd2 * (k[0] + rd2 * (k[1] + rd2 * k[2]));
-		if (fabs(enumerator) >= epsilon)
-			inverse_radial /= enumerator;
-		od *= inverse_radial;
-		od -= fvec<T,2>((yd2 + 3 * xd2) * p[1] + 2 * xyd * p[0], (xd2 + 3 * yd2) * p[0] + 2 * xyd * p[1]);
-		xd = od + dc;
+		if (!use_initial_guess) {
+			fvec<T, 2> od = xu - dc;
+			T xd2 = od[0] * od[0];
+			T yd2 = od[1] * od[1];
+			T xyd = od[0] * od[1];
+			T rd2 = xd2 + yd2;
+			T inverse_radial = 1.0f + rd2 * (k[3] + rd2 * (k[4] + rd2 * k[5]));
+			T enumerator = 1.0f + rd2 * (k[0] + rd2 * (k[1] + rd2 * k[2]));
+			if (fabs(enumerator) >= epsilon)
+				inverse_radial /= enumerator;
+			od *= inverse_radial;
+			od -= fvec<T, 2>((yd2 + 3 * xd2) * p[1] + 2 * xyd * p[0], (xd2 + 3 * yd2) * p[0] + 2 * xyd * p[1]);
+			xd = od + dc;
+		}
 		// iteratively improve approximation
 		fvec<T,2> xd_best(0.0f);
 		T err_best = std::numeric_limits<T>::max();
@@ -437,6 +439,20 @@ public:
 			fvec<T,2> xu_i;
 			if (!apply_distortion_model(xd, xu_i, epsilon, &J))
 				return i + 2*max_nr_iterations + 1;
+			if (use_num_J) {
+				fvec<T, 2> xu_x, xu_y;
+				apply_distortion_model(xd + fvec<T, 2>(epsilon, T(0)), xu_x);
+				apply_distortion_model(xd + fvec<T, 2>(T(0), epsilon), xu_y);
+				fvec<T, 2> Jx = (T(1) / epsilon) * (xu_x - xu_i);
+				fvec<T, 2> Jy = (T(1) / epsilon) * (xu_y - xu_i);
+				fmat<T, 2, 2> J_num;
+				J_num(0, 0) = Jx(0);
+				J_num(1, 0) = Jx(1);
+				J_num(0, 1) = Jy(0);
+				J_num(1, 1) = Jy(1);
+				J = J_num;
+
+			}
 			// check for convergence
 			fvec<T,2> dxu = xu - xu_i;
 			T err = dxu.sqr_length();
@@ -450,7 +466,12 @@ public:
 			// improve approximation before the last iteration
 			xd_best = xd;
 			err_best = err;
-			xd += beta * inv(J) * dxu;
+
+			fvec<T, 2> dxd = inv(J) * dxu;
+			// attempt to use NLLS did not help at all
+			// fvec<T, 2> dxd = inv(transpose(J)*J+sqrt(err)*cgv::math::identity2<T>()) *transpose(J)*dxu;
+
+			xd += beta * dxd;
 		}
 		return max_nr_iterations;
 	}
