@@ -403,7 +403,7 @@ public:
 		xu[1] = f * od[1] + 2.0f * xyd * p[1] + (xd2 + 3.0f * yd2) * p[0];
 		if (J_ptr) {
 			fmat<T,2,2>& J = *J_ptr;
-			T df = 2.0f * sqrt(rd2) * ((k[0] + rd2 * (2.0f * k[1] + 3.0f * rd2 * k[2]))*v - (k[3] + rd2 * (2.0f * k[4] + 3.0f * rd2 * k[5])) * u) * (inv_v * inv_v);
+			T df = 2.0f * ((k[0] + rd2 * (2.0f * k[1] + 3.0f * rd2 * k[2]))*v - (k[3] + rd2 * (2.0f * k[4] + 3.0f * rd2 * k[5])) * u) * (inv_v * inv_v);
 			J(0, 0) = f + df * xd2 + 2.0f * od[1] * p[0] + 6.0f * od[0] * p[1];
 			J(1, 1) = f + df * yd2 + 6.0f * od[1] * p[0] + 2.0f * od[0] * p[1];
 			J(1, 0) = J(0, 1) = df * xyd + 2.0f * (od[0] * p[0] + od[1] * p[1]);
@@ -450,6 +450,9 @@ public:
 				J_num(1, 0) = Jx(1);
 				J_num(0, 1) = Jy(0);
 				J_num(1, 1) = Jy(1);
+				//if ((J - J_num).length() > T(0.00001)) {
+				//	std::cout << J << " <-> " << J_num << std::endl;
+				//}
 				J = J_num;
 
 			}
