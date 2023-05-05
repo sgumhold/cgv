@@ -215,6 +215,11 @@ var hierarchy =
       [ "cgv::math::v3_func< X, T >", "classcgv_1_1math_1_1v3__func.html", null ]
     ] ],
     [ "cgv::math::perm_mat", "structcgv_1_1math_1_1perm__mat.html", null ],
+    [ "cgv::math::pinhole< T >", "classcgv_1_1math_1_1pinhole.html", [
+      [ "cgv::math::distorted_pinhole< T >", "classcgv_1_1math_1_1distorted__pinhole.html", [
+        [ "cgv::math::camera< T >", "classcgv_1_1math_1_1camera.html", null ]
+      ] ]
+    ] ],
     [ "cgv::math::random", "structcgv_1_1math_1_1random.html", null ],
     [ "cgv::math::register_sparse_les_factory< T >", "structcgv_1_1math_1_1register__sparse__les__factory.html", null ],
     [ "cgv::math::rigid_transform< T >", "classcgv_1_1math_1_1rigid__transform.html", null ],
@@ -415,11 +420,6 @@ var hierarchy =
       [ "cgv::render::context", "classcgv_1_1render_1_1context.html", null ],
       [ "cgv::render::drawable", "classcgv_1_1render_1_1drawable.html", null ],
       [ "cgv::render::managed_frame_buffer", "classcgv_1_1render_1_1managed__frame__buffer.html", null ],
-      [ "cgv::render::pinhole", "structcgv_1_1render_1_1pinhole.html", [
-        [ "cgv::render::distorted_pinhole", "structcgv_1_1render_1_1distorted__pinhole.html", [
-          [ "cgv::render::camera", "structcgv_1_1render_1_1camera.html", null ]
-        ] ]
-      ] ],
       [ "cgv::render::render_info", "classcgv_1_1render_1_1render__info.html", [
         [ "cgv::render::mesh_render_info", "classcgv_1_1render_1_1mesh__render__info.html", null ]
       ] ],
@@ -533,11 +533,13 @@ var hierarchy =
     [ "cgv::math::fvec< int, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int32_t, 2 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int32_t, 4 >", "classcgv_1_1math_1_1fvec.html", null ],
+    [ "cgv::math::fvec< T, 2 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< T, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< T, 4 >", "classcgv_1_1math_1_1fvec.html", [
       [ "cgv::math::quaternion< T >", "classcgv_1_1math_1_1quaternion.html", null ]
     ] ],
     [ "cgv::math::fvec< T, N *M >", "classcgv_1_1math_1_1fvec.html", [
+      [ "cgv::math::fmat< T, 3, 4 >", "classcgv_1_1math_1_1fmat.html", null ],
       [ "cgv::math::fmat< T, N, M >", "classcgv_1_1math_1_1fmat.html", null ]
     ] ],
     [ "cgv::math::fvec< T, TCDim >", "classcgv_1_1math_1_1fvec.html", null ],

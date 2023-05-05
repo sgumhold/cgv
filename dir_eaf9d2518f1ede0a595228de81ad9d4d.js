@@ -4,6 +4,7 @@ var dir_eaf9d2518f1ede0a595228de81ad9d4d =
     [ "align.h", "align_8h_source.html", null ],
     [ "bi_polynomial.h", "bi__polynomial_8h_source.html", null ],
     [ "bucket_sort.h", "bucket__sort_8h_source.html", null ],
+    [ "camera.h", "camera_8h_source.html", null ],
     [ "chol.h", "chol_8h_source.html", null ],
     [ "color_operations.h", "color__operations_8h_source.html", null ],
     [ "constants.h", "constants_8h_source.html", null ],
