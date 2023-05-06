@@ -93,6 +93,8 @@ public:
 	bool start(InputStreams, std::vector<stream_format>& stream_formats);
 	/// start the rgbd input with given stream formats 
 	bool start(const std::vector<stream_format>& stream_formats);
+	/// query the calibration information and return whether this was successful
+	bool query_calibration(InputStreams is, cgv::math::camera<double>& cam);
 	/// check whether device is started
 	bool is_started() const;
 	/// stop the rgbd input device

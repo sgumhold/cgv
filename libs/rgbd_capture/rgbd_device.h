@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <cgv/math/fvec.h>
+#include <cgv/math/camera.h>
 
 #include "lib_begin.h"
 
@@ -256,6 +257,8 @@ namespace rgbd {
 		virtual void query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const = 0;
 		/// start the rgbd device with standard stream formats returned in second parameter
 		virtual bool start_device(InputStreams is, std::vector<stream_format>& stream_formats) = 0;
+		/// query the calibration information and return whether this was successful
+		virtual bool query_calibration(InputStreams is, cgv::math::camera<double>& cam);
 		/// start the rgbd device with given stream formats 
 		virtual bool start_device(const std::vector<stream_format>& stream_formats) = 0;
 		/// stop the rgbd device

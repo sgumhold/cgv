@@ -214,7 +214,7 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	text_bg.set_w(48);
 	int n_labels = has_opacity ? 4 : 3;
 	for(size_t i = 0; i < n_labels; ++i) {
-		text_bg.set_x(texts.ref_texts()[2*i].position.x() - 4);
+		text_bg.set_x(texts.ref_texts()[2*i].position.x() - 4.0f);
 		content_canvas.draw_shape(ctx, text_bg, text_background_color);
 	}
 	

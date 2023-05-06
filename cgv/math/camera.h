@@ -373,51 +373,70 @@ template <typename T>
 class distorted_pinhole : public pinhole<T>
 {
 public:
-	/// default epsilon used to check for zero denominator or in case of inversion zero enumerator
-	inline static T standard_epsilon = T(1e-6f);
+	/// default epsilon used to check for zero denominator and during inversion also for convergence
+	inline static T standard_epsilon = T(1e-8);
 	/// default maximum number of iterations used for inversion of distortion models
 	inline static unsigned standard_max_nr_iterations = 20;
+	/// slow down factor [0,1] to decrease step size during inverse Jacobian stepping
+	inline static T standard_slow_down = T(1);
 	// distortion center
 	fvec<T,2> dc;
 	// internal calibration
 	T k[6], p[2];
 	// maximum radius allowed for projection
 	T max_radius_for_projection = T(10);
+	/// possible results of applying distortion model
+	enum class distortion_result { success, out_of_bounds, division_by_zero };
 	//! apply distortion model from distorted to undistorted image coordinates used in projection direction and return whether successful
 	/*! Failure cases are zero denominator in distortion formula or radius larger than max projection radius. */
-	bool apply_distortion_model(const fvec<T, 2>& xd, fvec<T, 2>& xu, T epsilon = standard_epsilon, fmat<T, 2, 2>* J_ptr = 0) {
+	distortion_result apply_distortion_model(const fvec<T, 2>& xd, fvec<T, 2>& xu, fmat<T, 2, 2>* J_ptr = 0, T epsilon = standard_epsilon) {
 		fvec<T,2> od = xd - dc;
-		T xd2 = od[0] * od[0];
-		T yd2 = od[1] * od[1];
-		T xyd = od[0] * od[1];
+		T xd2 = od[0]*od[0];
+		T yd2 = od[1]*od[1];
+		T xyd = od[0]*od[1];
 		T rd2 = xd2 + yd2;
+		// ensure to be within valid projection radius
 		if (rd2 > max_radius_for_projection * max_radius_for_projection)
-			return false;
-		T v = 1.0f + rd2 * (k[3] + rd2 * (k[4] + rd2 * k[5]));
-		if (fabs(v) < epsilon)
-			return false;
-		T inv_v = 1.0f / v;
-		T u = 1.0f + rd2 * (k[0] + rd2 * (k[1] + rd2 * k[2]));
+			return distortion_result::out_of_bounds;
+		T v = T(1) + rd2 * (k[3] + rd2 * (k[4] + rd2 * k[5]));
+		T u = T(1) + rd2 * (k[0] + rd2 * (k[1] + rd2 * k[2]));
+		// check for division by very small number or zero
+		if (fabs(v) < epsilon*fabs(u))
+			return distortion_result::division_by_zero;
+		T inv_v = T(1) / v;
 		T f = u * inv_v;
-		xu[0] = f * od[0] + 2.0f * xyd * p[0] + (3.0f * xd2 + yd2) * p[1];
-		xu[1] = f * od[1] + 2.0f * xyd * p[1] + (xd2 + 3.0f * yd2) * p[0];
+		xu[0] = f*od[0] + T(2)*xyd*p[0] + (T(3)*xd2 + yd2)*p[1];
+		xu[1] = f*od[1] + T(2)*xyd*p[1] + (xd2 + T(3)*yd2)*p[0];
 		if (J_ptr) {
 			fmat<T,2,2>& J = *J_ptr;
-			T df = 2.0f * ((k[0] + rd2 * (2.0f * k[1] + 3.0f * rd2 * k[2]))*v - (k[3] + rd2 * (2.0f * k[4] + 3.0f * rd2 * k[5])) * u) * (inv_v * inv_v);
-			J(0, 0) = f + df * xd2 + 2.0f * od[1] * p[0] + 6.0f * od[0] * p[1];
-			J(1, 1) = f + df * yd2 + 6.0f * od[1] * p[0] + 2.0f * od[0] * p[1];
-			J(1, 0) = J(0, 1) = df * xyd + 2.0f * (od[0] * p[0] + od[1] * p[1]);
+			T du = k[0] + rd2*(T(2)*k[1] + T(3)*rd2*k[2]);
+			T dv = k[3] + rd2*(T(2)*k[4] + T(3)*rd2*k[5]);
+			T df = (du*v - dv*u)*inv_v*inv_v;
+			J(0, 0) =       f + T(2)*(df*xd2 +      od[1]*p[0] + T(3)*od[0]*p[1]);
+			J(1, 1) =       f + T(2)*(df*yd2 + T(3)*od[1]*p[0] +      od[0]*p[1]);
+			J(1, 0) = J(0, 1) = T(2)*(df*xyd +      od[0]*p[0] +      od[1]*p[1]);
 		}
-		return true;
+		return distortion_result::success;
 	}
-	//! invert model for image coordinate inversion and in case of success return positive number of iterations (see details below) and 0 otherwise
-	/*! Failure can only be due to failure of applying the distortion model (outside max projection radius or zero denominator)
-		Non convergence can be checked if return value is equal to max_nr_iterations. In case of divergence (increase of error
-		during iteration) the iteration is also terminated and the return value is max_nr_iterations plus the number of
-		iterations taken.*/
-	unsigned invert_distortion_model(const fvec<T,2>& xu, fvec<T,2>& xd, T beta = 1.0f, bool use_initial_guess = false, bool use_num_J = true, unsigned max_nr_iterations = standard_max_nr_iterations, T epsilon = standard_epsilon) {
+	/// possible results of inverting distortion model
+	enum class distortion_inversion_result { convergence, max_iterations_reached, divergence, out_of_bounds, division_by_zero };
+	/// <summary>
+	/// invert model for image coordinate inversion
+	/// </summary>
+	/// <param name="xu">input ... undistorted image coordinates</param>
+	/// <param name="xd">output ... distorted image coordinates</param>
+	/// <param name="use_xd_as_initial_guess">if true the passed values in xd are used as initial guess, 
+	/// otherwise a pseudo inversion of the distortion model is used as initial guess</param>
+	/// <param name="iteration_ptr">if provided, the passed index is used as iteration counter and 
+	/// indicates after the call how many iterations have been performed</param>
+	/// <param name="epsilon">epsilon used to detect division by zero and convergence</param>
+	/// <param name="max_nr_iterations">maximum number of to be taken iterations</param>
+	/// <param name="slow_down">factor in [0,1] to decrease step estimated by Jacobian inverse</param>
+	/// <returns>reason of termination where in all case a best guess for xd is provided</returns>
+	distortion_inversion_result invert_distortion_model(const fvec<T,2>& xu, fvec<T,2>& xd, bool use_xd_as_initial_guess = false,
+		unsigned* iteration_ptr = 0, T epsilon = standard_epsilon, unsigned max_nr_iterations = standard_max_nr_iterations, T slow_down = standard_slow_down) {
 		// start with approximate inversion
-		if (!use_initial_guess) {
+		if (!use_xd_as_initial_guess) {
 			fvec<T, 2> od = xu - dc;
 			T xd2 = od[0] * od[0];
 			T yd2 = od[1] * od[1];
@@ -432,51 +451,40 @@ public:
 			xd = od + dc;
 		}
 		// iteratively improve approximation
-		fvec<T,2> xd_best(0.0f);
+		fvec<T,2> xd_best = xd;
 		T err_best = std::numeric_limits<T>::max();
-		for (unsigned i = 0; i < max_nr_iterations; ++i) {
+		unsigned i;
+		if (iteration_ptr == 0)
+			iteration_ptr = &i;
+		for (*iteration_ptr = 0; *iteration_ptr < max_nr_iterations; ++(*iteration_ptr)) {
 			fmat<T,2,2> J;
 			fvec<T,2> xu_i;
-			if (!apply_distortion_model(xd, xu_i, epsilon, &J))
-				return i + 2*max_nr_iterations + 1;
-			if (use_num_J) {
-				fvec<T, 2> xu_x, xu_y;
-				apply_distortion_model(xd + fvec<T, 2>(epsilon, T(0)), xu_x);
-				apply_distortion_model(xd + fvec<T, 2>(T(0), epsilon), xu_y);
-				fvec<T, 2> Jx = (T(1) / epsilon) * (xu_x - xu_i);
-				fvec<T, 2> Jy = (T(1) / epsilon) * (xu_y - xu_i);
-				fmat<T, 2, 2> J_num;
-				J_num(0, 0) = Jx(0);
-				J_num(1, 0) = Jx(1);
-				J_num(0, 1) = Jy(0);
-				J_num(1, 1) = Jy(1);
-				//if ((J - J_num).length() > T(0.00001)) {
-				//	std::cout << J << " <-> " << J_num << std::endl;
-				//}
-				J = J_num;
-
+			distortion_result dr = apply_distortion_model(xd, xu_i, &J, epsilon);
+			if (dr == distortion_result::division_by_zero) {
+				xd = xd_best;
+				return distortion_inversion_result::division_by_zero;
+			}
+			if (dr == distortion_result::out_of_bounds) {
+				xd = xd_best;
+				return distortion_inversion_result::out_of_bounds;
 			}
 			// check for convergence
 			fvec<T,2> dxu = xu - xu_i;
 			T err = dxu.sqr_length();
 			if (err < epsilon * epsilon)
-				return i + 1;
+				return distortion_inversion_result::convergence;
 			// check for divergence
 			if (err > err_best) {
 				xd = xd_best;
-				return i + max_nr_iterations + 1;
+				return distortion_inversion_result::divergence;
 			}
 			// improve approximation before the last iteration
 			xd_best = xd;
 			err_best = err;
-
 			fvec<T, 2> dxd = inv(J) * dxu;
-			// attempt to use NLLS did not help at all
-			// fvec<T, 2> dxd = inv(transpose(J)*J+sqrt(err)*cgv::math::identity2<T>()) *transpose(J)*dxu;
-
-			xd += beta * dxd;
+			xd += slow_down * dxd;
 		}
-		return max_nr_iterations;
+		return distortion_inversion_result::max_iterations_reached;
 	}
 };
 
