@@ -1,6 +1,7 @@
 #include <iostream>
 #include "rgbd_kinect_azure.h"
 #include <cgv/utils/convert.h>
+#include <cgv/math/pose.h>
 
 
 using namespace std;
@@ -300,6 +301,36 @@ namespace rgbd {
 		capture_thread = make_unique<thread>(&rgbd_kinect_azure::capture,this,is);
 		return true;
 	}
+	
+	/// query the calibration information and return whether this was successful
+	bool rgbd_kinect_azure::query_calibration(InputStreams is, cgv::math::camera<double>& cam)
+	{
+		if (!(is == IS_DEPTH || is == IS_COLOR))
+			return false;
+		const auto& C = (is == IS_DEPTH) ? camera_calibration.depth_camera_calibration :
+			camera_calibration.color_camera_calibration;
+		const auto& P = C.intrinsics.parameters.param;
+		cam.w = C.resolution_width;
+		cam.h = C.resolution_height;
+		cam.max_radius_for_projection = P.metric_radius;
+		cam.s = cgv::math::fvec<double, 2>(P.fx, P.fy);
+		cam.c = cgv::math::fvec<double, 2>(P.cx, P.cy);
+		cam.dc = cgv::math::fvec<double, 2>(P.codx, P.cody);
+		cam.skew = 0.0;
+		cam.k[0] = P.k1;
+		cam.k[1] = P.k2;
+		cam.k[2] = P.k3;
+		cam.k[3] = P.k4;
+		cam.k[4] = P.k5;
+		cam.k[5] = P.k6;
+		cam.p[0] = P.p1;
+		cam.p[1] = P.p2;
+		cam.pose = pose_construct(
+			cgv::math::fmat<float, 3, 3>(3,3,&C.extrinsics.rotation[0]), 
+			cgv::math::fvec<float, 3>(3, &C.extrinsics.translation[0]));
+		return true;
+	}
+
 	/// stop the camera
 	bool rgbd_kinect_azure::stop_device()
 	{

@@ -211,6 +211,11 @@ namespace rgbd {
 	{
 		return false;
 	}
+	/// query the calibration information and return whether this was successful
+	bool rgbd_device::query_calibration(InputStreams is, cgv::math::camera<double>& cam)
+	{
+		return false;
+	}
 
 	std::ostream& operator << (std::ostream& os, const frame_size& fs)
 	{
