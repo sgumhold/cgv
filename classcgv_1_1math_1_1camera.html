@@ -82,6 +82,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1camera.html',''); 
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="classcgv_1_1math_1_1camera-members.html">List of all members</a>  </div>
@@ -105,25 +106,38 @@ Inheritance diagram for cgv::math::camera&lt; T &gt;:</div>
   </map>
 </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a896243376c84a05bad9e5029a845a62b"><td class="memItemLeft" align="right" valign="top"><a id="a896243376c84a05bad9e5029a845a62b"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a896243376c84a05bad9e5029a845a62b">distortion_result</a> </td></tr>
+<tr class="memdesc:a896243376c84a05bad9e5029a845a62b"><td class="mdescLeft">&#160;</td><td class="mdescRight">possible results of applying distortion model <br /></td></tr>
+<tr class="separator:a896243376c84a05bad9e5029a845a62b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0deb18691c830f28fecf182a915aeb2"><td class="memItemLeft" align="right" valign="top"><a id="ab0deb18691c830f28fecf182a915aeb2"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#ab0deb18691c830f28fecf182a915aeb2">distortion_inversion_result</a> </td></tr>
+<tr class="memdesc:ab0deb18691c830f28fecf182a915aeb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">possible results of inverting distortion model <br /></td></tr>
+<tr class="separator:ab0deb18691c830f28fecf182a915aeb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9145b8b739cb3a8a1f70041e3b23e0b5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a9145b8b739cb3a8a1f70041e3b23e0b5">apply_distortion_model</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xd, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xu, T epsilon=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a6bb467f48083f598b3834d531589befb">standard_epsilon</a>, <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, 2, 2 &gt; *J_ptr=0)</td></tr>
-<tr class="memdesc:a9145b8b739cb3a8a1f70041e3b23e0b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">apply distortion model from distorted to undistorted image coordinates used in projection direction and return whether successful  <a href="classcgv_1_1math_1_1distorted__pinhole.html#a9145b8b739cb3a8a1f70041e3b23e0b5">More...</a><br /></td></tr>
-<tr class="separator:a9145b8b739cb3a8a1f70041e3b23e0b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac9bb9cb2172c03c3e9706f8594a516f"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#aac9bb9cb2172c03c3e9706f8594a516f">invert_distortion_model</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xu, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xd, T beta=1.0f, bool use_initial_guess=false, bool use_num_J=true, unsigned max_nr_iterations=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#aee0eb8f63cd2fc39361236156d5cac43">standard_max_nr_iterations</a>, T epsilon=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a6bb467f48083f598b3834d531589befb">standard_epsilon</a>)</td></tr>
-<tr class="memdesc:aac9bb9cb2172c03c3e9706f8594a516f"><td class="mdescLeft">&#160;</td><td class="mdescRight">invert model for image coordinate inversion and in case of success return positive number of iterations (see details below) and 0 otherwise  <a href="classcgv_1_1math_1_1distorted__pinhole.html#aac9bb9cb2172c03c3e9706f8594a516f">More...</a><br /></td></tr>
-<tr class="separator:aac9bb9cb2172c03c3e9706f8594a516f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4fcdddd8dd23cfff6ba74fb014a149e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a896243376c84a05bad9e5029a845a62b">distortion_result</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#ae4fcdddd8dd23cfff6ba74fb014a149e">apply_distortion_model</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xd, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xu, <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, 2, 2 &gt; *J_ptr=0, T epsilon=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a6bb467f48083f598b3834d531589befb">standard_epsilon</a>)</td></tr>
+<tr class="memdesc:ae4fcdddd8dd23cfff6ba74fb014a149e"><td class="mdescLeft">&#160;</td><td class="mdescRight">apply distortion model from distorted to undistorted image coordinates used in projection direction and return whether successful  <a href="classcgv_1_1math_1_1distorted__pinhole.html#ae4fcdddd8dd23cfff6ba74fb014a149e">More...</a><br /></td></tr>
+<tr class="separator:ae4fcdddd8dd23cfff6ba74fb014a149e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5da6f72feaa343e1325e62889fdb9e4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#ab0deb18691c830f28fecf182a915aeb2">distortion_inversion_result</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#ac5da6f72feaa343e1325e62889fdb9e4">invert_distortion_model</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xu, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xd, bool use_xd_as_initial_guess=false, unsigned *iteration_ptr=0, T epsilon=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a6bb467f48083f598b3834d531589befb">standard_epsilon</a>, unsigned max_nr_iterations=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#aee0eb8f63cd2fc39361236156d5cac43">standard_max_nr_iterations</a>, T slow_down=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#aef2d055e2642073d963c16df5c43eaee">standard_slow_down</a>)</td></tr>
+<tr class="memdesc:ac5da6f72feaa343e1325e62889fdb9e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">invert model for image coordinate inversion  <a href="classcgv_1_1math_1_1distorted__pinhole.html#ac5da6f72feaa343e1325e62889fdb9e4">More...</a><br /></td></tr>
+<tr class="separator:ac5da6f72feaa343e1325e62889fdb9e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a6bb467f48083f598b3834d531589befb"><td class="memItemLeft" align="right" valign="top"><a id="a6bb467f48083f598b3834d531589befb"></a>
-static T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a6bb467f48083f598b3834d531589befb">standard_epsilon</a> = T(1e-6f)</td></tr>
-<tr class="memdesc:a6bb467f48083f598b3834d531589befb"><td class="mdescLeft">&#160;</td><td class="mdescRight">default epsilon used to check for zero denominator or in case of inversion zero enumerator <br /></td></tr>
+static T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a6bb467f48083f598b3834d531589befb">standard_epsilon</a> = T(1e-8)</td></tr>
+<tr class="memdesc:a6bb467f48083f598b3834d531589befb"><td class="mdescLeft">&#160;</td><td class="mdescRight">default epsilon used to check for zero denominator and during inversion also for convergence <br /></td></tr>
 <tr class="separator:a6bb467f48083f598b3834d531589befb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee0eb8f63cd2fc39361236156d5cac43"><td class="memItemLeft" align="right" valign="top"><a id="aee0eb8f63cd2fc39361236156d5cac43"></a>
 static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#aee0eb8f63cd2fc39361236156d5cac43">standard_max_nr_iterations</a> = 20</td></tr>
 <tr class="memdesc:aee0eb8f63cd2fc39361236156d5cac43"><td class="mdescLeft">&#160;</td><td class="mdescRight">default maximum number of iterations used for inversion of distortion models <br /></td></tr>
 <tr class="separator:aee0eb8f63cd2fc39361236156d5cac43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef2d055e2642073d963c16df5c43eaee"><td class="memItemLeft" align="right" valign="top"><a id="aef2d055e2642073d963c16df5c43eaee"></a>
+static T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#aef2d055e2642073d963c16df5c43eaee">standard_slow_down</a> = T(1)</td></tr>
+<tr class="memdesc:aef2d055e2642073d963c16df5c43eaee"><td class="mdescLeft">&#160;</td><td class="mdescRight">slow down factor [0,1] to decrease step size during inverse Jacobian stepping <br /></td></tr>
+<tr class="separator:aef2d055e2642073d963c16df5c43eaee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
@@ -131,8 +145,8 @@ class cgv::math::camera&lt; T &gt;</h3>
 
 <p>extend distorted pinhole with external calibration </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a9145b8b739cb3a8a1f70041e3b23e0b5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9145b8b739cb3a8a1f70041e3b23e0b5">&#9670;&nbsp;</a></span>apply_distortion_model()</h2>
+<a id="ae4fcdddd8dd23cfff6ba74fb014a149e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4fcdddd8dd23cfff6ba74fb014a149e">&#9670;&nbsp;</a></span>apply_distortion_model()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -143,7 +157,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html">cgv::math::distorted_pinhole</a>&lt; T &gt;::apply_distortion_model </td>
+          <td class="memname"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a896243376c84a05bad9e5029a845a62b">distortion_result</a> <a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html">cgv::math::distorted_pinhole</a>&lt; T &gt;::apply_distortion_model </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;&#160;</td>
           <td class="paramname"><em>xd</em>, </td>
@@ -153,83 +167,12 @@ template&lt;typename T &gt; </div>
           <td></td>
           <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;&#160;</td>
           <td class="paramname"><em>xu</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>epsilon</em> = <code><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a6bb467f48083f598b3834d531589befb">standard_epsilon</a></code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, 2, 2 &gt; *&#160;</td>
-          <td class="paramname"><em>J_ptr</em> = <code>0</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">inherited</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>apply distortion model from distorted to undistorted image coordinates used in projection direction and return whether successful </p>
-<p>Failure cases are zero denominator in distortion formula or radius larger than max projection radius. </p>
-
-</div>
-</div>
-<a id="aac9bb9cb2172c03c3e9706f8594a516f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aac9bb9cb2172c03c3e9706f8594a516f">&#9670;&nbsp;</a></span>invert_distortion_model()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">unsigned <a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html">cgv::math::distorted_pinhole</a>&lt; T &gt;::invert_distortion_model </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>xu</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>xd</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>beta</em> = <code>1.0f</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>use_initial_guess</em> = <code>false</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>use_num_J</em> = <code>true</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned&#160;</td>
-          <td class="paramname"><em>max_nr_iterations</em> = <code><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#aee0eb8f63cd2fc39361236156d5cac43">standard_max_nr_iterations</a></code>, </td>
+          <td class="paramname"><em>J_ptr</em> = <code>0</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -250,8 +193,91 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>invert model for image coordinate inversion and in case of success return positive number of iterations (see details below) and 0 otherwise </p>
-<p>Failure can only be due to failure of applying the distortion model (outside max projection radius or zero denominator) Non convergence can be checked if return value is equal to max_nr_iterations. In case of divergence (increase of error during iteration) the iteration is also terminated and the return value is max_nr_iterations plus the number of iterations taken. </p>
+<p>apply distortion model from distorted to undistorted image coordinates used in projection direction and return whether successful </p>
+<p>Failure cases are zero denominator in distortion formula or radius larger than max projection radius. </p>
+
+</div>
+</div>
+<a id="ac5da6f72feaa343e1325e62889fdb9e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5da6f72feaa343e1325e62889fdb9e4">&#9670;&nbsp;</a></span>invert_distortion_model()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#ab0deb18691c830f28fecf182a915aeb2">distortion_inversion_result</a> <a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html">cgv::math::distorted_pinhole</a>&lt; T &gt;::invert_distortion_model </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>xu</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>xd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>use_xd_as_initial_guess</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned *&#160;</td>
+          <td class="paramname"><em>iteration_ptr</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>epsilon</em> = <code><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a6bb467f48083f598b3834d531589befb">standard_epsilon</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>max_nr_iterations</em> = <code><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#aee0eb8f63cd2fc39361236156d5cac43">standard_max_nr_iterations</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>slow_down</em> = <code><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#aef2d055e2642073d963c16df5c43eaee">standard_slow_down</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">inherited</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>invert model for image coordinate inversion </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">xu</td><td>input ... undistorted image coordinates</td></tr>
+    <tr><td class="paramname">xd</td><td>output ... distorted image coordinates</td></tr>
+    <tr><td class="paramname">use_xd_as_initial_guess</td><td>if true the passed values in xd are used as initial guess, otherwise a pseudo inversion of the distortion model is used as initial guess</td></tr>
+    <tr><td class="paramname">iteration_ptr</td><td>if provided, the passed index is used as iteration counter and indicates after the call how many iterations have been performed</td></tr>
+    <tr><td class="paramname">epsilon</td><td>epsilon used to detect division by zero and convergence</td></tr>
+    <tr><td class="paramname">max_nr_iterations</td><td>maximum number of to be taken iterations</td></tr>
+    <tr><td class="paramname">slow_down</td><td>factor in [0,1] to decrease step estimated by Jacobian inverse</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>reason of termination where in all case a best guess for xd is provided</dd></dl>
 
 </div>
 </div>

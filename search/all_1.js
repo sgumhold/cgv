@@ -92,7 +92,7 @@ var searchData=
   ['application_93',['application',['../classcgv_1_1gui_1_1application.html',1,'cgv::gui']]],
   ['apply_94',['apply',['../classcgv_1_1math_1_1quaternion.html#a8f03fd04e375363e722b222d8e8b04de',1,'cgv::math::quaternion']]],
   ['apply_5fbounding_5fbox_5ftransformation_95',['apply_bounding_box_transformation',['../classcgv_1_1render_1_1volume__renderer.html#a64bff9397a371bf8d9120424b3ff24ea',1,'cgv::render::volume_renderer']]],
-  ['apply_5fdistortion_5fmodel_96',['apply_distortion_model',['../classcgv_1_1math_1_1distorted__pinhole.html#a9145b8b739cb3a8a1f70041e3b23e0b5',1,'cgv::math::distorted_pinhole']]],
+  ['apply_5fdistortion_5fmodel_96',['apply_distortion_model',['../classcgv_1_1math_1_1distorted__pinhole.html#ae4fcdddd8dd23cfff6ba74fb014a149e',1,'cgv::math::distorted_pinhole']]],
   ['apply_5fnonrigid_5ftransformation_97',['apply_nonrigid_transformation',['../namespacecgv_1_1math.html#a9716f3d02a56270fbad9174562bec242',1,'cgv::math::apply_nonrigid_transformation(const thin_plate_spline&lt; T &gt; &amp;s, mat&lt; T &gt; &amp;points)'],['../namespacecgv_1_1math.html#adfb844540e70f134515a6e5114f163da',1,'cgv::math::apply_nonrigid_transformation(const thin_hyper_plate_spline&lt; T &gt; &amp;s, mat&lt; T &gt; &amp;points)']]],
   ['argument_5fhandler_98',['argument_handler',['../structcgv_1_1base_1_1argument__handler.html',1,'cgv::base']]],
   ['arrow_5frender_5fstyle_99',['arrow_render_style',['../structcgv_1_1render_1_1arrow__render__style.html#a6f8eb543c0ee98f2334fef06a44d7ad7',1,'cgv::render::arrow_render_style::arrow_render_style()'],['../structcgv_1_1render_1_1arrow__render__style.html',1,'cgv::render::arrow_render_style']]],
