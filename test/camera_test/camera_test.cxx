@@ -160,9 +160,9 @@ struct rgbd_kinect_azure
 		}
 
 		// compute Jacobian matrix
-		float dudrs = c.k[0] + 2.f * c.k[1] * rs + 3.f * c.k[2] * rss;
+		float dudrs = float(c.k[0] + 2.f * c.k[1] * rs + 3.f * c.k[2] * rss);
 		// compute d(b)/d(r^2)
-		float dvdrs = c.k[3] + 2.f * c.k[4] * rs + 3.f * c.k[5] * rss;
+		float dvdrs = float(c.k[3] + 2.f * c.k[4] * rs + 3.f * c.k[5] * rss);
 		float bis = bi * bi;
 		float dddrs = (dudrs * b - a * dvdrs) * bis;
 
@@ -205,15 +205,15 @@ struct rgbd_kinect_azure
 		else {
 			ai = 1.f;
 		}
-		float di = ai * b;
+		float di = float(ai * b);
 		// solve the radial and tangential distortion
 		double x_u = xp_d * di;
 		double y_u = yp_d * di;
 
 		// approximate correction for tangential params
-		float two_xy = 2.f * x_u * y_u;
-		float xx = x_u * x_u;
-		float yy = y_u * y_u;
+		float two_xy = float(2.f * x_u * y_u);
+		float xx = float(x_u * x_u);
+		float yy = float(y_u * y_u);
 
 		x_u -= (yy + 3.f * xx) * c.p[1] + two_xy * c.p[0];
 		y_u -= (xx + 3.f * yy) * c.p[0] + two_xy * c.p[1];
@@ -351,6 +351,8 @@ protected:
 	rgbd_kinect_azure rka;
 	point_render_style prs;
 
+	enum class precision { float_precision, double_precision };
+	precision prec = precision::double_precision;
 	bool use_azure_impl = false;
 	float slow_down = 1.0f;
 	unsigned sub_sample = 1;
@@ -364,6 +366,8 @@ protected:
 	float depth_lambda = 1.0f;
 	double error_threshold = 0.0001;
 	double error_scale = 1000;
+	double epsilon = cgv::math::camera<double>::standard_epsilon;
+	bool use_standard_epsilon = true;
 	bool debug_colors = true;
 	float random_offset = 0.001f;
 
@@ -395,10 +399,24 @@ protected:
 	}
 	void construct_point_clouds()
 	{
-		P.clear(); 
+		P.clear();
 		C.clear();
-		float sx = 1.0f / depth_frame.width;
-		float sy = 1.0f / depth_frame.height;
+		switch (prec) {
+		case precision::float_precision:
+			construct_point_clouds_precision(cgv::math::camera<float>(depth_calib));
+			break;
+		default:
+			construct_point_clouds_precision(depth_calib);
+			break;
+		}
+	} 
+
+	template <typename T>
+	void construct_point_clouds_precision(const cgv::math::camera<T>& depth_calib)
+	{
+		T eps = use_standard_epsilon ? cgv::math::camera<T>::standard_epsilon : T(epsilon);
+		T sx = T(1) / depth_frame.width;
+		T sy = T(1) / depth_frame.height;
 		for (int y = 0; y < depth_frame.height; y += sub_sample) {
 			for (int x = 0; x < depth_frame.width; x += sub_sample) {
 				if (((x % sub_line_sample) != 0) && ((y % sub_line_sample) != 0))
@@ -409,28 +427,28 @@ protected:
 					continue;
 				//if (pix_ptr[0] + pix_ptr[1] + pix_ptr[2] < 16)
 				//	continue;
-				cgv::math::camera<double>::distortion_inversion_result dir;
+				cgv::math::camera<T>::distortion_inversion_result dir;
 				unsigned iterations = 1;
-				dvec2 xu, xd;
+				cgv::math::fvec<T,2> xu, xd;
 				if (debug_xu0) {
-					xd = xu0_rad * vec2(sx * x - 0.5f, sy * y - 0.5f);
+					xd = T(xu0_rad) * cgv::math::fvec<T, 2>(sx * x - T(0.5), sy * y - T(0.5));
 					depth_calib.apply_distortion_model(xd, xu);
 					std::default_random_engine g;
-					std::uniform_real_distribution<double> d(-0.5, 0.5);
-					xd += double(random_offset)*dvec2(d(g), d(g));
-					dir= depth_calib.invert_distortion_model(xu, xd, false, &iterations, cgv::math::camera<double>::standard_epsilon, nr_iterations, slow_down);
+					std::uniform_real_distribution<T> d(-0.5, 0.5);
+					xd += T(random_offset)* cgv::math::fvec<T, 2>(d(g), d(g));
+					dir = depth_calib.invert_distortion_model(xu, xd, false, &iterations, eps, nr_iterations, slow_down);
 				}
 				else {
-					xu = depth_calib.pixel_to_image_coordinates(dvec2(x, y));
+					xu = depth_calib.pixel_to_image_coordinates(cgv::math::fvec<T, 2>(T(x), T(y)));
 					xd = xu;
 					if (!use_azure_impl)
-						dir = depth_calib.invert_distortion_model(xu, xd, true, &iterations, cgv::math::camera<double>::standard_epsilon, nr_iterations, slow_down);
+						dir = depth_calib.invert_distortion_model(xu, xd, true, &iterations, eps, nr_iterations, slow_down);
 					else {
 						vec3 p;
 						if (rka.map_depth_to_point(x, y, 0, &p[0])) {
 							xd[0] = p[0];
 							xd[1] = p[1];
-							dir = cgv::math::camera<double>::distortion_inversion_result::convergence;
+							dir = cgv::math::camera<T>::distortion_inversion_result::convergence;
 							/*double err = sqrt((xd[0] - p[0]) * (xd[0] - p[0]) + (xd[1] - p[1]) * (xd[1] - p[1]));
 							if (err > 0.1f) {
 								rka.map_depth_to_point(x, y, 0, &p[0]);
@@ -438,35 +456,35 @@ protected:
 							}*/
 						}
 						else
-							dir = cgv::math::camera<double>::distortion_inversion_result::divergence;
+							dir = cgv::math::camera<T>::distortion_inversion_result::divergence;
 					}
 				}
-				vec3 p(vec2((1.0 - xu_xd_lambda) * xu + xu_xd_lambda * xd), 1.0);
+				vec3 p(vec2(T(T(1) - xu_xd_lambda) * xu + T(xu_xd_lambda) * xd), 1.0f);
 				p *= float((1 - depth_lambda) + depth_lambda * 0.001 * depth);
 				P.push_back(p);
 
-				dvec2 xu_rec;
-				dmat2 J;
+				cgv::math::fvec<T, 2> xu_rec;
+				cgv::math::fmat<T, 2, 2> J;
 				depth_calib.apply_distortion_model(xd, xu_rec, &J);
-				double error = (xu_rec - xu).length();
+				T error = (xu_rec - xu).length();
 				if (!debug_colors)
 					C.push_back(rgb8(pix_ptr[2], pix_ptr[1], pix_ptr[0]));
 				else {
 					switch (dir) {
-					case cgv::math::camera<double>::distortion_inversion_result::divergence:
+					case cgv::math::camera<T>::distortion_inversion_result::divergence:
 						C.push_back(rgb8(255, 0, 255));
 						break;
-					case cgv::math::camera<double>::distortion_inversion_result::division_by_zero:
+					case cgv::math::camera<T>::distortion_inversion_result::division_by_zero:
 						C.push_back(rgb8(0, 255, 255));
 						break;
-					case cgv::math::camera<double>::distortion_inversion_result::max_iterations_reached:
+					case cgv::math::camera<T>::distortion_inversion_result::max_iterations_reached:
 						if (error > error_threshold)
 							C.push_back(rgb8(cgv::media::color_scale(error_scale * error)));
 						else {
 							C.push_back(rgb8(pix_ptr[2], pix_ptr[1], pix_ptr[0]));
 						}
 						break;
-					case cgv::math::camera<double>::distortion_inversion_result::out_of_bounds:
+					case cgv::math::camera<T>::distortion_inversion_result::out_of_bounds:
 						C.push_back(rgb8(128, 128, 255));
 						break;
 					default:
@@ -508,7 +526,10 @@ public:
 		if (member_ptr == &sub_sample || member_ptr == &nr_iterations || member_ptr == &slow_down ||
 			member_ptr == & sub_line_sample ||
 			member_ptr == & xu0_rad ||
+			member_ptr == & prec ||
 			member_ptr == &random_offset ||
+			member_ptr == &use_standard_epsilon ||
+			member_ptr == & epsilon ||
 			member_ptr == & scale ||
 			member_ptr == & use_azure_impl ||
 			member_ptr == & debug_colors ||
@@ -532,7 +553,10 @@ public:
 		add_member_control(this, "sub_line_sample", sub_line_sample, "value_slider", "min=1;max=16;ticks=true");
 		add_member_control(this, "use_azure_impl", use_azure_impl, "toggle");
 		add_member_control(this, "slow_down", slow_down, "value_slider", "min=0;max=1;ticks=true");
+		add_member_control(this, "precision", prec, "dropdown", "enums='float,double'");
 		add_member_control(this, "nr_iterations", nr_iterations, "value_slider", "min=0;max=30;ticks=true");
+		add_member_control(this, "use_standard_epsilon", use_standard_epsilon, "check");
+		add_member_control(this, "epsilon", epsilon, "value_slider", "min=0.000000001;step=0.00000000001;max=0.001;ticks=true;log=true");
 		add_member_control(this, "debug_colors", debug_colors, "toggle");
 		add_member_control(this, "scale", scale, "value_slider", "min=0.5;max=10;ticks=true");
 		add_member_control(this, "max_radius_for_projection", depth_calib.max_radius_for_projection, "value_slider", "min=0.5;max=10;ticks=true");
