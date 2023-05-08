@@ -41,9 +41,9 @@ public:
 	int get_active_object() const;
 
 	/// read access to model transform (local)
-	const mat4& get_model_transform() const override;
+	mat4 get_model_transform() const override;
 	/// read access to inverse model transform (local)
-	const mat4& get_inverse_model_transform() const override;
+	mat4 get_inverse_model_transform() const override;
 
 	/// set model transform and compute inverse model transform (local)
 	void set_model_transform(const mat4& _M) override;

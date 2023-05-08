@@ -233,9 +233,9 @@ void cgv::nui::gizmo::draw(cgv::render::context& ctx)
 	ctx.pop_modelview_matrix();
 }
 
-const mat4& cgv::nui::gizmo::get_model_transform() const
+mat4 cgv::nui::gizmo::get_model_transform() const
 {
-	mat4& transform = *(new mat4());
+	mat4 transform;
 	transform.identity();
 	if (anchor_rotation_ptr)
 		transform = anchor_rotation_ptr->get_homogeneous_matrix() * transform;
@@ -248,9 +248,9 @@ const mat4& cgv::nui::gizmo::get_model_transform() const
 	return transform;
 }
 
-const mat4& cgv::nui::gizmo::get_inverse_model_transform() const
+mat4 cgv::nui::gizmo::get_inverse_model_transform() const
 {
-	mat4& transform = *(new mat4());
+	mat4 transform;
 	transform.identity();
 	if (anchor_rotation_ptr)
 		transform = anchor_rotation_ptr->inverse().get_homogeneous_matrix() * transform;

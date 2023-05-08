@@ -22,7 +22,7 @@ namespace cgv {
 
 		}
 
-		const mat4& transforming::get_inverse_model_transform() const
+		mat4 transforming::get_inverse_model_transform() const
 		{
 			return inv(get_model_transform());
 		}
@@ -100,9 +100,9 @@ namespace cgv {
 			return vec4(n, 0.0f) * get_model_transform();
 		}
 
-		const mat4& transforming::get_global_model_transform(base::node_ptr obj)
+		mat4 transforming::get_global_model_transform(base::node_ptr obj)
 		{
-			mat4& accumulated_transform = *(new mat4());
+			mat4 accumulated_transform;
 			accumulated_transform.identity();
 			base::node_ptr parent = obj;
 			int nr_iters = 0;
@@ -116,9 +116,9 @@ namespace cgv {
 			return accumulated_transform;
 		}
 
-		const mat4& transforming::get_global_inverse_model_transform(base::node_ptr obj)
+		mat4 transforming::get_global_inverse_model_transform(base::node_ptr obj)
 		{
-			mat4& accumulated_transform = *(new mat4());
+			mat4 accumulated_transform;
 			accumulated_transform.identity();
 			base::node_ptr parent = obj;
 			int nr_iters = 0;
@@ -132,9 +132,9 @@ namespace cgv {
 			return accumulated_transform;
 		}
 
-		const mat4& transforming::get_partial_model_transform(base::node_ptr obj, base::node_ptr root)
+		mat4 transforming::get_partial_model_transform(base::node_ptr obj, base::node_ptr root)
 		{
-			mat4& accumulated_transform = *(new mat4());
+			mat4 accumulated_transform;
 			accumulated_transform.identity();
 			base::node_ptr parent = obj;
 			int nr_iters = 0;
@@ -154,9 +154,9 @@ namespace cgv {
 			return accumulated_transform;
 		}
 
-		const mat4& transforming::get_partial_inverse_model_transform(base::node_ptr obj, base::node_ptr root)
+		mat4 transforming::get_partial_inverse_model_transform(base::node_ptr obj, base::node_ptr root)
 		{
-			mat4& accumulated_transform = *(new mat4());
+			mat4 accumulated_transform;
 			accumulated_transform.identity();
 			base::node_ptr parent = obj;
 			int nr_iters = 0;
@@ -187,20 +187,17 @@ namespace cgv {
 			rotation.normalize();
 		}
 
-		const mat4& transforming::construct_transform_from_components(const vec3& translation,
+		mat4 transforming::construct_transform_from_components(const vec3& translation,
 			const quat& rotation, const vec3& scale)
 		{
-			mat4& transform = *(new mat4());
-			transform = cgv::math::translate4<float>(translation) * rotation.get_homogeneous_matrix() * cgv::math::scale4<float>(scale);
-			return transform;
+			return cgv::math::translate4<float>(translation) * rotation.get_homogeneous_matrix() * cgv::math::scale4<float>(scale);
 		}
 
-		const mat4& transforming::construct_inverse_transform_from_components(const vec3& inverse_translation,
+		mat4 transforming::construct_inverse_transform_from_components(const vec3& inverse_translation,
 			const quat& inverse_rotation, const vec3& inverse_scale)
 		{
-			mat4& transform = *(new mat4());
-			transform = cgv::math::scale4<float>(inverse_scale) * inverse_rotation.get_homogeneous_matrix() * cgv::math::translate4<float>(inverse_translation);
-			return transform;
+			return cgv::math::scale4<float>(inverse_scale) * inverse_rotation.get_homogeneous_matrix() *
+			       cgv::math::translate4<float>(inverse_translation);
 		}
 	}
 }

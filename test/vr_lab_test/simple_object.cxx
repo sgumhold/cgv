@@ -212,13 +212,13 @@ void simple_object::create_gui()
 	poseable::create_gui();
 }
 
-const cgv::render::render_types::mat4& simple_object::get_model_transform() const
+cgv::render::render_types::mat4 simple_object::get_model_transform() const
 {
 	//return transforming::construct_transform_from_components(get_position(), get_rotation(), vec3(1.0f));
 	return transforming::construct_transform_from_components(get_position(), get_rotation(), get_scale());
 }
 
-const cgv::render::render_types::mat4& simple_object::get_inverse_model_transform() const
+cgv::render::render_types::mat4 simple_object::get_inverse_model_transform() const
 {
 	//const mat4& transform = transforming::construct_inverse_transform_from_components(-1.0f * get_position(), get_rotation().inverse(), vec3(1.0));
 	const mat4& transform = transforming::construct_inverse_transform_from_components(-1.0f * get_position(), get_rotation().inverse(), vec3(1.0) / get_scale());

@@ -174,8 +174,8 @@ public:
 
 	//@name cgv::nui::transforming interface
 	//@{
-	const mat4& get_model_transform() const override;
-	const mat4& get_inverse_model_transform() const override;
+	mat4 get_model_transform() const override;
+	mat4 get_inverse_model_transform() const override;
 	vec3 get_local_position() const override;
 	quat get_local_rotation() const override;
 	vec3 get_local_scale() const override;
