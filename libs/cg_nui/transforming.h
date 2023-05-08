@@ -25,9 +25,9 @@ namespace cgv {
 			// Public interface methods. The global transform is calculated using the getter functions for the local transforms.
 
 			/// read access to model transform (local)
-			virtual const mat4& get_model_transform() const = 0;
+			virtual mat4 get_model_transform() const = 0;
 			/// read access to inverse model transform (local)
-			virtual const mat4& get_inverse_model_transform() const;
+			virtual mat4 get_inverse_model_transform() const;
 			/// read access to the translation component (local)
 			virtual vec3 get_local_position() const;
 			/// read access to the rotation component (local)
@@ -69,17 +69,17 @@ namespace cgv {
 			// Static Helper functions
 
 			/// Accumulate model transforms over entire hierarchy (global transform of object)
-			static const mat4& get_global_model_transform(base::node_ptr obj);
+			static mat4 get_global_model_transform(base::node_ptr obj);
 			/// Accumulate inverse model transforms over entire hierarchy (global inverse transform of object)
-			static const mat4& get_global_inverse_model_transform(base::node_ptr obj);
+			static mat4 get_global_inverse_model_transform(base::node_ptr obj);
 			/// Accumulate model transforms from obj to root
-			static const mat4& get_partial_model_transform(base::node_ptr obj, base::node_ptr root);
+			static mat4 get_partial_model_transform(base::node_ptr obj, base::node_ptr root);
 			/// Accumulate inverse model transforms from obj to root
-			static const mat4& get_partial_inverse_model_transform(base::node_ptr obj, base::node_ptr root);
+			static mat4 get_partial_inverse_model_transform(base::node_ptr obj, base::node_ptr root);
 			/// Extract the translation, rotation and scale components of the given 4x4 tranformation matrix (assuming no shear, perspective or negative scale)
 			static void extract_transform_components(const mat4& transform, vec3& translation, quat& rotation, vec3& scale);
-			static const mat4& construct_transform_from_components(const vec3& translation, const quat& rotation, const vec3& scale);
-			static const mat4& construct_inverse_transform_from_components(const vec3& inverse_translation, const quat& inverse_rotation, const vec3& inverse_scale);
+			static mat4 construct_transform_from_components(const vec3& translation, const quat& rotation, const vec3& scale);
+			static mat4 construct_inverse_transform_from_components(const vec3& inverse_translation, const quat& inverse_rotation, const vec3& inverse_scale);
 		};
 
 	}

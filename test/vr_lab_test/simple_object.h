@@ -59,8 +59,8 @@ public:
 	void on_set(void* member_ptr) override;
 	void create_gui() override;
 
-	const mat4& get_model_transform() const override;
-	const mat4& get_inverse_model_transform() const override;
+	mat4 get_model_transform() const override;
+	mat4 get_inverse_model_transform() const override;
 
 	//@name cgv::nui::rotatable interface
 	//@{

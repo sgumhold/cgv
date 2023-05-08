@@ -25,9 +25,9 @@ namespace cgv {
 			/// init to identity matrix
 			caching_transforming();
 			/// read access to model transform (local)
-			const mat4& get_model_transform() const override;
+			mat4 get_model_transform() const override;
 			/// read access to inverse model transform (local)
-			const mat4& get_inverse_model_transform() const override;
+			mat4 get_inverse_model_transform() const override;
 			/// read access to the translation component (local)
 			vec3 get_local_position() const override;
 			/// read access to the rotation component (local)

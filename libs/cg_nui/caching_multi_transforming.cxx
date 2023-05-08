@@ -42,14 +42,14 @@ void cgv::nui::caching_multi_transforming::remove_sub_object_transform(int index
 		active_object -= 1;
 }
 
-const cgv::render::render_types::mat4& cgv::nui::caching_multi_transforming::get_model_transform() const
+cgv::render::render_types::mat4 cgv::nui::caching_multi_transforming::get_model_transform() const
 {
 	if (active_object == -1)
 		return M;
 	return sub_matrices[active_object];
 }
 
-const cgv::render::render_types::mat4& cgv::nui::caching_multi_transforming::get_inverse_model_transform() const
+cgv::render::render_types::mat4 cgv::nui::caching_multi_transforming::get_inverse_model_transform() const
 {
 	if (active_object == -1)
 		return iM;

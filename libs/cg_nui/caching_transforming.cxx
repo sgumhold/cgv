@@ -13,12 +13,12 @@ namespace cgv {
 		}
 
 		/// read access to model transform
-		const mat4& caching_transforming::get_model_transform() const
+		mat4 caching_transforming::get_model_transform() const
 		{
 			return M;
 		}
 		/// read access to inverse model transform
-		const mat4& caching_transforming::get_inverse_model_transform() const
+		mat4 caching_transforming::get_inverse_model_transform() const
 		{
 			return iM;
 		}
