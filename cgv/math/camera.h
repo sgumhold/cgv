@@ -4,6 +4,7 @@
 #include <cgv/math/fvec.h>
 #include <cgv/math/fmat.h>
 #include <cgv/math/mat.h>
+#include <cgv/math/pose.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/math/inv.h>
 #include "lib_begin.h"
@@ -279,7 +280,17 @@ public:
 	fvec<T,2> c;
 	// skew strength;
 	T skew = 0.0f;
-
+	/// standard constructor
+	pinhole() : w(640), h(480), s(T(500)), c(T(0)) {}
+	/// copy constructor
+	template <typename S>
+	pinhole(const pinhole<S>& ph) {
+		w = ph.w;
+		h = ph.h;
+		s = ph.s;
+		c = ph.c;
+		skew = T(ph.skew);
+	}
 	fmat<T,2,3> get_camera_matrix() const {
 		return { s[0], 0.0f, skew, s[1], c[0], c[1] };
 	}
@@ -289,10 +300,10 @@ public:
 	fmat<T,4,4> get_homogeneous_camera_matrix() const {
 		return { s[0], 0.0f, 0.0f, 0.0f, skew, s[1], 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, c[0], c[1], 0.0f, 1.0f };
 	}
-	fvec<T,2> image_to_pixel_coordinates(const fvec<T,2>& x) {
+	fvec<T,2> image_to_pixel_coordinates(const fvec<T,2>& x) const {
 		return vec2(s[0] * x[0] + skew * x[1] + c[0], s[1] * x[1] + c[1]);
 	}
-	fvec<T,2> pixel_to_image_coordinates(const fvec<T,2>& p) {
+	fvec<T,2> pixel_to_image_coordinates(const fvec<T,2>& p) const {
 		T y = (p[1] - c[1]) / s[1]; return fvec<T, 2>((p[0] - c[0] - skew*y)/s[0], y);
 	}
 	// estimate pinhole parameters from at least 3 homographies
@@ -368,13 +379,30 @@ public:
 	// todo: minimize reprojection error 
 };
 
+/// <summary>
+/// type declarations independent of template parameter
+/// </summary>
+class distorted_pinhole_types
+{
+public:
+	/// possible results of applying distortion model
+	enum class distortion_result { success, out_of_bounds, division_by_zero };
+	/// possible results of inverting distortion model
+	enum class distortion_inversion_result { convergence, max_iterations_reached, divergence, out_of_bounds, division_by_zero };
+};
+
+/// type specific epsilon providing function
+template <typename T> inline T distortion_inversion_epsilon() { return 1e-12; }
+/// specialization to float
+template <> inline float distortion_inversion_epsilon() { return 1e-6f; }
+
 /// extension of pinhole to distorted pinhole
 template <typename T>
-class distorted_pinhole : public pinhole<T>
+class distorted_pinhole : public pinhole<T>, public distorted_pinhole_types
 {
 public:
 	/// default epsilon used to check for zero denominator and during inversion also for convergence
-	inline static T standard_epsilon = T(1e-8);
+	inline static T standard_epsilon = distortion_inversion_epsilon<T>();
 	/// default maximum number of iterations used for inversion of distortion models
 	inline static unsigned standard_max_nr_iterations = 20;
 	/// slow down factor [0,1] to decrease step size during inverse Jacobian stepping
@@ -385,11 +413,24 @@ public:
 	T k[6], p[2];
 	// maximum radius allowed for projection
 	T max_radius_for_projection = T(10);
-	/// possible results of applying distortion model
-	enum class distortion_result { success, out_of_bounds, division_by_zero };
+	/// standard constructor
+	distorted_pinhole() : dc(T(0)) {
+		k[0] = k[1] = k[2] = k[3] = k[4] = k[5] = p[0] = p[1] = T(0);
+	}
+	/// copy constructor
+	template <typename S>
+	distorted_pinhole(const distorted_pinhole<S>& dp) : pinhole<T>(dp) {
+		dc = dp.dc;
+		unsigned i;
+		for (i = 0; i < 6; ++i)
+			k[i] = T(dp.k[i]);
+		for (i = 0; i < 2; ++i)
+			p[i] = T(dp.p[i]);
+		max_radius_for_projection = T(dp.max_radius_for_projection);
+	}
 	//! apply distortion model from distorted to undistorted image coordinates used in projection direction and return whether successful
 	/*! Failure cases are zero denominator in distortion formula or radius larger than max projection radius. */
-	distortion_result apply_distortion_model(const fvec<T, 2>& xd, fvec<T, 2>& xu, fmat<T, 2, 2>* J_ptr = 0, T epsilon = standard_epsilon) {
+	distortion_result apply_distortion_model(const fvec<T, 2>& xd, fvec<T, 2>& xu, fmat<T, 2, 2>* J_ptr = 0, T epsilon = standard_epsilon) const {
 		fvec<T,2> od = xd - dc;
 		T xd2 = od[0]*od[0];
 		T yd2 = od[1]*od[1];
@@ -418,8 +459,6 @@ public:
 		}
 		return distortion_result::success;
 	}
-	/// possible results of inverting distortion model
-	enum class distortion_inversion_result { convergence, max_iterations_reached, divergence, out_of_bounds, division_by_zero };
 	/// <summary>
 	/// invert model for image coordinate inversion
 	/// </summary>
@@ -434,7 +473,7 @@ public:
 	/// <param name="slow_down">factor in [0,1] to decrease step estimated by Jacobian inverse</param>
 	/// <returns>reason of termination where in all case a best guess for xd is provided</returns>
 	distortion_inversion_result invert_distortion_model(const fvec<T,2>& xu, fvec<T,2>& xd, bool use_xd_as_initial_guess = false,
-		unsigned* iteration_ptr = 0, T epsilon = standard_epsilon, unsigned max_nr_iterations = standard_max_nr_iterations, T slow_down = standard_slow_down) {
+		unsigned* iteration_ptr = 0, T epsilon = standard_epsilon, unsigned max_nr_iterations = standard_max_nr_iterations, T slow_down = standard_slow_down) const {
 		// start with approximate inversion
 		if (!use_xd_as_initial_guess) {
 			fvec<T, 2> od = xu - dc;
@@ -493,8 +532,17 @@ template <typename T>
 class camera : public distorted_pinhole<T>
 {
 public:
-	// external calibration
+	/// external calibration
 	fmat<T,3,4> pose;
+	/// standard constructor
+	camera() {
+		pose = pose_construct(identity3<T>(), fvec<T, 3>(T(0)));
+	}
+	/// copy constructor
+	template <typename S>
+	camera(const camera<S>& cam) : distorted_pinhole<T>(cam) {
+		pose = cam.pose;
+	}
 };
 
 	}
