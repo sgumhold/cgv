@@ -146,9 +146,9 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 			}
 		}
 
-		if(cmc.color_points.handle(e, last_viewport_size, container))
+		if(cmc.color_points.handle(e, get_viewport_size(), get_overlay_rectangle()))
 			return true;
-		if(cmc.opacity_points.handle(e, last_viewport_size, container))
+		if(cmc.opacity_points.handle(e, get_viewport_size(), get_overlay_rectangle()))
 			return true;
 	}
 	return false;

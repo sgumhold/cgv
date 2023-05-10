@@ -31,17 +31,6 @@ void overlay::on_layout_change() {
 	post_redraw();
 }
 
-overlay::ivec2 overlay::get_transformed_mouse_pos(ivec2 mouse_pos) {
-
-	mouse_pos.y() = last_viewport_size.y() - mouse_pos.y() - 1;
-	return mouse_pos;
-}
-
-overlay::ivec2 overlay::get_local_mouse_pos(ivec2 mouse_pos) {
-
-	return get_transformed_mouse_pos(mouse_pos) - container.pos();
-}
-
 void overlay::set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 _percentual_offset)
 {
 	horizontal_alignment = horizontal;
@@ -136,9 +125,9 @@ bool overlay::ensure_viewport(cgv::render::context& ctx) {
 	return false;
 }
 
-bool overlay::is_hit(const ivec2& mouse_pos) {
+bool overlay::is_hit(const ivec2& mouse_pos) const {
 
-	ivec2 test_pos = get_transformed_mouse_pos(mouse_pos);
+	ivec2 test_pos = get_transformed_mouse_pos(mouse_pos, last_viewport_size);
 	return container.is_inside(test_pos);
 };
 
