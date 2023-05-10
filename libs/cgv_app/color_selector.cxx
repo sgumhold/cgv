@@ -86,7 +86,7 @@ bool color_selector::handle_event(cgv::gui::event& e) {
 			}
 		}
 
-		if(selector_handles.handle(e, last_viewport_size, container))
+		if(selector_handles.handle(e, get_viewport_size(), get_overlay_rectangle()))
 			return true;
 	}
 	return false;
