@@ -12,19 +12,11 @@
 namespace cgv {
 namespace g2d {
 
-class button_collection : public cgv::render::render_types, cgv::gui::theme_observer {
+// TODO: split to header and source, encapsulate members
+class button_collection : cgv::gui::theme_observer {
 public:
-	text2d_style label_style;
-	msdf_text_geometry labels;
-
-	shape2d_style btn_style;
-	rgba button_color;
-	rgba button_press_color;
-
-	bool update_styles = false;
-
 	cgv::render::shader_library shaders;
-
+	
 	struct button {
 		irect rect;
 		std::string label;
@@ -33,12 +25,26 @@ public:
 	};
 
 	std::vector<button> buttons;
+
+	cgv::render::ivec2 default_button_size;
+
+	text2d_style label_style;
+	msdf_text_geometry labels;
+
+	shape2d_style btn_style;
+	cgv::render::rgba button_color;
+	cgv::render::rgba button_press_color;
+
 	size_t pressed_button_index = static_cast<size_t>(-1);
 	bool hovers_pressed_button = false;
 
 	bool state_out_of_date = true;
+	bool style_out_of_date = false;
 
-	button_collection() {}
+	button_collection() {
+	
+		default_button_size = cgv::render::ivec2(120, 24);
+	}
 
 	void destruct(cgv::render::context& ctx) {
 
@@ -51,6 +57,7 @@ public:
 	}
 
 	void clear() {
+
 		buttons.clear();
 		state_out_of_date = true;
 	}
@@ -75,14 +82,16 @@ public:
 		return success;
 	}
 
-	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const irect& container = irect()) {
+	bool handle(cgv::gui::event& e, const cgv::render::ivec2& viewport_size, const irect& container = irect()) {
+
 		unsigned et = e.get_kind();
 
 		if(et == cgv::gui::EID_MOUSE) {
 			cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 			cgv::gui::MouseAction ma = me.get_action();
 
-			ivec2 mpos(me.get_x(), me.get_y());
+			// TODO: use static method from overlay
+			cgv::render::ivec2 mpos(me.get_x(), me.get_y());
 			mpos.y() = viewport_size.y() - mpos.y() - 1;
 			mpos -= container.pos();
 
@@ -132,8 +141,9 @@ public:
 	}
 
 	void move_label(int offset) {
+
 		if(pressed_button_index >= 0 && pressed_button_index < labels.size()) {
-			ivec2 pos = labels.ref_texts()[pressed_button_index].position;
+			cgv::render::ivec2 pos = labels.ref_texts()[pressed_button_index].position;
 			pos.y() += offset;
 			labels.set_position(static_cast<int>(pressed_button_index), pos);
 		}
@@ -141,10 +151,8 @@ public:
 
 	void draw(cgv::render::context& ctx, cgv::g2d::canvas& cnvs) {
 
-		if(update_styles) {
-			update_styles = false;
+		if(style_out_of_date)
 			init_styles(ctx);
-		}
 
 		if(state_out_of_date)
 			create_labels();
@@ -192,9 +200,18 @@ public:
 		state_out_of_date = true;
 	}
 
-	void add(const std::string& label, const ivec2& pos, const ivec2& size, std::function<void(const std::string&)> callback, cgv::render::TextAlignment label_alignment = cgv::render::TextAlignment::TA_NONE) {
+	void add(const std::string& label, const cgv::render::ivec2& pos, const cgv::render::ivec2& size, std::function<void(const std::string&)> callback, cgv::render::TextAlignment label_alignment = cgv::render::TextAlignment::TA_NONE) {
 
-		add(label, irect(pos, size), callback, label_alignment);
+		cgv::render::ivec2 button_size = size;
+		if(size.x() < 0 || size.y() < 0)
+			button_size = default_button_size;
+
+		add(label, irect(pos, button_size), callback, label_alignment);
+	}
+
+	void add(const std::string& label, const cgv::render::ivec2& pos, std::function<void(const std::string&)> callback, cgv::render::TextAlignment label_alignment = cgv::render::TextAlignment::TA_NONE) {
+
+		add(label, irect(pos, default_button_size), callback, label_alignment);
 	}
 
 	void create_labels() {
@@ -202,7 +219,7 @@ public:
 		labels.clear();
 
 		for(auto& btn : buttons) {
-			ivec2 pos = btn.rect.center();
+			cgv::render::ivec2 pos = btn.rect.center();
 			pos.y() += 2;
 
 			if(btn.label_alignment & cgv::render::TextAlignment::TA_LEFT)
@@ -217,25 +234,28 @@ public:
 	}
 
 	void handle_theme_change(const cgv::gui::theme_info& theme) override {
-		update_styles = true;
+
+		style_out_of_date = true;
 	}
 
 	void init_styles(cgv::render::context& ctx) {
 
 		auto& ti = cgv::gui::theme_info::instance();
 
-		button_color = rgba(ti.control(), 1.0f);
-		button_press_color = rgba(ti.background(), 1.0f);
+		button_color = ti.control();
+		button_press_color = ti.background();
 
-		label_style.fill_color = rgba(ti.text(), 1.0f);
+		label_style.fill_color = ti.text();
 		label_style.use_blending = true;
 		label_style.font_size = 12.0f;
 		label_style.enable_subpixel_rendering = true;
 		
 		btn_style.use_fill_color = false;
-		btn_style.border_color = rgba(ti.border(), 1.0f);
+		btn_style.border_color = ti.border();
 		btn_style.feather_width = 0.0f;
 		btn_style.border_width = 0.0f;
+		
+		style_out_of_date = false;
 	}
 };
 
