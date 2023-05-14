@@ -6,6 +6,7 @@
 #include <cgv/render/context.h>
 #include <cgv/render/drawable.h>
 #include <cgv_g2d/rect.h>
+#include <cgv_g2d/utils2d.h>
 
 #include "lib_begin.h"
 
@@ -106,29 +107,10 @@ public:
 		return last_viewport_size;
 	}
 
-	/** Returns the mouse position transformed from FLTK window to OpenGL
-		viewport space defined by viewport_size. The OpenGL viewport
-		origin is in the bottom left while the FLTK origin is in the top left.
-	*/
-	static inline ivec2 get_transformed_mouse_pos(ivec2 mouse_pos, ivec2 viewport_size) {
-
-		mouse_pos.y() = viewport_size.y() - mouse_pos.y() - 1;
-		return mouse_pos;
-	}
-
-	/** Returns the mouse position in OpenGL viewport space local to the
-		given container.
-	*/
-	static inline ivec2 get_local_mouse_pos(ivec2 mouse_pos, ivec2 viewport_size, cgv::g2d::irect container) {
-
-		return get_transformed_mouse_pos(mouse_pos, viewport_size) - container.pos();
-	}
-
-	/** Returns the mouse position local to the container of this overlay.
-	*/
+	/// returns the mouse position local to the container of this overlay
 	inline ivec2 get_local_mouse_pos(ivec2 mouse_pos) const {
 
-		return get_transformed_mouse_pos(mouse_pos, last_viewport_size) - container.pos();
+		return cgv::g2d::get_transformed_mouse_pos(mouse_pos, last_viewport_size) - container.position;
 	}
 
 	/// sets the alignment options
@@ -150,10 +132,10 @@ public:
 	cgv::g2d::irect get_overlay_rectangle() const { return container; }
 
 	/// returns the position of the overlay with origin at the bottom left
-	ivec2 get_overlay_position() const { return container.pos(); }
+	ivec2 get_overlay_position() const { return container.position; }
 
 	/// returns the current size of the overlay taking strech layout into account
-	ivec2 get_overlay_size() const { return container.size(); }
+	ivec2 get_overlay_size() const { return container.size; }
 
 	/// sets the default size of the overlay before stretch gets applied
 	void set_overlay_size(const ivec2& s) {
@@ -184,7 +166,7 @@ public:
 	bool ensure_overlay_layout(cgv::render::context& ctx) {
 		bool ret = ensure_viewport(ctx);
 
-		ivec2 current_size = container.size();
+		ivec2 current_size = container.size;
 		if(last_size != current_size) {
 			last_size = current_size;
 			ret = true;
