@@ -41,19 +41,19 @@ protected:
 
 			int y_off = padding;
 
-			color_handles_rect.set_pos(ivec2(padding, 20));
-			color_handles_rect.set_size(ivec2(parent_size.x() - 2 * padding, 0));
+			color_handles_rect.position = ivec2(padding, 20);
+			color_handles_rect.size = ivec2(parent_size.x() - 2 * padding, 0);
 
 			// move 10px up to clear some space for the color handles rect
 			y_off += 10;
 
-			color_editor_rect.set_pos(ivec2(padding, y_off));
-			color_editor_rect.set_size(ivec2(parent_size.x() - 2 * padding, color_editor_height));
+			color_editor_rect.position = ivec2(padding, y_off);
+			color_editor_rect.size = ivec2(parent_size.x() - 2 * padding, color_editor_height);
 
 			y_off += color_editor_height + 1; // plus 1px border
 
-			opacity_editor_rect.set_pos(ivec2(padding, y_off));
-			opacity_editor_rect.set_size(ivec2(parent_size.x() - 2 * padding, opacity_editor_height));
+			opacity_editor_rect.position = ivec2(padding, y_off);
+			opacity_editor_rect.size = ivec2(parent_size.x() - 2 * padding, opacity_editor_height);
 		}
 	} layout;
 	
@@ -70,16 +70,16 @@ protected:
 		}
 
 		void update_val(const layout_attributes& la) {
-			vec2 p = pos - la.color_handles_rect.pos();
-			val = p.x() / la.color_handles_rect.size().x();
+			vec2 p = position - la.color_handles_rect.position;
+			val = p.x() / la.color_handles_rect.size.x();
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
 		}
 
 		void update_pos(const layout_attributes& la) {
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
 			float t = val;
-			pos.x() = static_cast<float>(la.color_handles_rect.pos().x()) + t * la.color_handles_rect.size().x();
-			pos.y() = static_cast<float>(la.color_handles_rect.pos().y());
+			position.x() = static_cast<float>(la.color_handles_rect.position.x()) + t * la.color_handles_rect.size.x();
+			position.y() = static_cast<float>(la.color_handles_rect.position.y());
 		}
 	};
 
@@ -94,8 +94,8 @@ protected:
 		}
 
 		void update_val(const layout_attributes& la, const float scale_exponent) {
-			vec2 p = pos - la.opacity_editor_rect.pos();
-			val = p / la.opacity_editor_rect.size();
+			vec2 p = position - la.opacity_editor_rect.position;
+			val = p / la.opacity_editor_rect.size;
 
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
 			val.y() = cgv::math::clamp(std::pow(val.y(), scale_exponent), 0.0f, 1.0f);
@@ -107,7 +107,7 @@ protected:
 			vec2 t = val;
 			t.y() = cgv::math::clamp(std::pow(t.y(), 1.0f / scale_exponent), 0.0f, 1.0f);
 
-			pos = la.opacity_editor_rect.pos() + t * la.opacity_editor_rect.size();
+			position = la.opacity_editor_rect.position + t * la.opacity_editor_rect.size;
 		}
 	};
 

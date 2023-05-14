@@ -7,26 +7,19 @@
 namespace cgv {
 namespace g2d {
 
-struct CGV_API shape_base : public cgv::render::render_types {
-	vec2 pos;
-	vec2 size;
+struct CGV_API shape_base : public frect {
 	bool position_is_center = false;
 
-	ivec2 ipos() const { return static_cast<ivec2>(pos); }
+	inline cgv::render::ivec2 int_position() const { return static_cast<cgv::render::ivec2>(position); }
 
-	ivec2 isize() const { return static_cast<ivec2>(size); }
+	template<typename T>
+	inline cgv::render::ivec2 int_size() const { return static_cast<cgv::render::ivec2>(size); }
 
-	vec2 center() const {
-		return position_is_center ? pos : pos + 0.5f * size;
-	}
+	inline cgv::render::vec2 center() const { return position_is_center ? position : frect::center(); }
 
-	virtual bool is_inside(const vec2& query_pos) const {
-		vec2 a = position_is_center ? pos - 0.5f * size : pos;
-		vec2 b = a + size;
-		
-		return
-			query_pos.x() >= a.x() && query_pos.x() <= b.x() &&
-			query_pos.y() >= a.y() && query_pos.y() <= b.y();
+	virtual bool is_inside(const cgv::render::vec2& query_pos) const {
+
+		return frect::is_inside(position_is_center ? query_pos + frect::center() - position : query_pos);
 	}
 };
 
