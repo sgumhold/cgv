@@ -14,4 +14,3 @@ addCommandLineArguments=[
 		after("type(rgbd_control):protocol_path='".INPUT_DIR."'", "rgbd_control"),
 		'config:"'.INPUT_DIR.'/config.def"',
 		after("type(shader_config):shader_path='".CGV_DIR."/libs/cgv_gl/glsl;".INPUT_DIR."'", "cg_fltk")];
-cppLanguageStandard = "stdcpp17";
