@@ -1,7 +1,8 @@
 var namespacecgv_1_1math =
 [
     [ "adjacency_list", "classcgv_1_1math_1_1adjacency__list.html", "classcgv_1_1math_1_1adjacency__list" ],
-    [ "pinhole", "classcgv_1_1math_1_1pinhole.html", null ],
+    [ "pinhole", "classcgv_1_1math_1_1pinhole.html", "classcgv_1_1math_1_1pinhole" ],
+    [ "distorted_pinhole_types", "classcgv_1_1math_1_1distorted__pinhole__types.html", "classcgv_1_1math_1_1distorted__pinhole__types" ],
     [ "distorted_pinhole", "classcgv_1_1math_1_1distorted__pinhole.html", "classcgv_1_1math_1_1distorted__pinhole" ],
     [ "camera", "classcgv_1_1math_1_1camera.html", "classcgv_1_1math_1_1camera" ],
     [ "diag_mat", "structcgv_1_1math_1_1diag__mat.html", "structcgv_1_1math_1_1diag__mat" ],
@@ -80,6 +81,8 @@ var namespacecgv_1_1math =
     [ "decompose_rotation", "namespacecgv_1_1math.html#ad13d980b9726467aeb59b55256fedda0", null ],
     [ "decompose_rotation_to_axis_and_angle", "namespacecgv_1_1math.html#ab5a5bdaef42e636106d43ad1273d6534", null ],
     [ "dist_transf_2d", "namespacecgv_1_1math.html#a6fb7ef1ba387bc69a8ee0eedd008b140", null ],
+    [ "distortion_inversion_epsilon", "namespacecgv_1_1math.html#abf3e38779f899fbd4ec9b0c86b3aca3c", null ],
+    [ "distortion_inversion_epsilon", "namespacecgv_1_1math.html#a36c30190cfd6bcece90c27f4f3fb0f5b", null ],
     [ "dot", "namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6", null ],
     [ "dot", "namespacecgv_1_1math.html#ad04bd0d69da4c57797eb232aca3b0d6b", null ],
     [ "dot_dir", "namespacecgv_1_1math.html#a94254cd737145b54c5af46755df85964", null ],

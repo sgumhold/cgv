@@ -1,12 +1,5 @@
 var NAVTREEINDEX30 =
 {
-"classcgv_1_1render_1_1renderer.html#a661123bb90dc6a04e590e54cbf767914":[11,0,0,10,54,77],
-"classcgv_1_1render_1_1renderer.html#a6de4a9420782e2117ede9db2a646c020":[11,0,0,10,54,39],
-"classcgv_1_1render_1_1renderer.html#a6df7e73f1bc789680b749d1a9da21f1b":[11,0,0,10,54,50],
-"classcgv_1_1render_1_1renderer.html#a723a0a3000a8117c13c8682adb72df39":[11,0,0,10,54,11],
-"classcgv_1_1render_1_1renderer.html#a7264fd5effbc1beb4cc03be79c501b3c":[11,0,0,10,54,55],
-"classcgv_1_1render_1_1renderer.html#a78cd29d5497c8a9d3c554266e7b171ee":[11,0,0,10,54,41],
-"classcgv_1_1render_1_1renderer.html#a79f6ef6d03e7f4b4d90577f22be2f592":[11,0,0,10,54,78],
 "classcgv_1_1render_1_1renderer.html#a7b8f6d80876c3f364470b414583feead":[11,0,0,10,54,36],
 "classcgv_1_1render_1_1renderer.html#a7ec27e7f56aa1a03d9db1a659d9c8b09":[11,0,0,10,54,65],
 "classcgv_1_1render_1_1renderer.html#a8089202eec1e378ee65bc3c7b2e677a4":[11,0,0,10,54,31],
@@ -249,5 +242,12 @@ var NAVTREEINDEX30 =
 "classcgv_1_1render_1_1slab__renderer.html#ae7ad80376b8aad17791972a347afa839":[11,0,0,10,56,63],
 "classcgv_1_1render_1_1slab__renderer.html#aecb36a2425963ed10456f952cfffeb4f":[11,0,0,10,56,22],
 "classcgv_1_1render_1_1slab__renderer.html#aefe4161943c1abac1a582f2745c13698":[11,0,0,10,56,7],
-"classcgv_1_1render_1_1slab__renderer.html#af36c04fdeb21290f87a81d9bfae4ad32":[11,0,0,10,56,25]
+"classcgv_1_1render_1_1slab__renderer.html#af36c04fdeb21290f87a81d9bfae4ad32":[11,0,0,10,56,25],
+"classcgv_1_1render_1_1slab__renderer.html#af474017914a1210284db2f8a6dcc39df":[11,0,0,10,56,44],
+"classcgv_1_1render_1_1slab__renderer.html#af90dd5e90bd6dd04e126d7e1d8363e0b":[11,0,0,10,56,80],
+"classcgv_1_1render_1_1slab__renderer.html#af910ff47d6ef0aff86aa3cfa73056fef":[11,0,0,10,56,62],
+"classcgv_1_1render_1_1slab__renderer.html#afd80a4ee698f6e40194f849aacaa225f":[11,0,0,10,56,102],
+"classcgv_1_1render_1_1sphere__renderer.html":[11,0,0,10,58],
+"classcgv_1_1render_1_1sphere__renderer.html#a0492ee8d0e1c7867d0a9bc01dfae38e4":[11,0,0,10,58,14],
+"classcgv_1_1render_1_1sphere__renderer.html#a05278277d5068970525f0b7b79f0ea11":[11,0,0,10,58,76]
 };

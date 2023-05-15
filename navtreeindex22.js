@@ -1,12 +1,5 @@
 var NAVTREEINDEX22 =
 {
-"classcgv_1_1render_1_1box__wire__renderer.html#af910ff47d6ef0aff86aa3cfa73056fef":[11,0,0,10,39,61],
-"classcgv_1_1render_1_1box__wire__renderer.html#afd80a4ee698f6e40194f849aacaa225f":[11,0,0,10,39,109],
-"classcgv_1_1render_1_1clipped__view.html":[11,0,0,10,3],
-"classcgv_1_1render_1_1clipped__view.html#a08a9518be1c7167117e3f7e589535ae3":[11,0,0,10,3,36],
-"classcgv_1_1render_1_1clipped__view.html#a14e2bffa5f6eacfbbf493eab2413e7ef":[11,0,0,10,3,44],
-"classcgv_1_1render_1_1clipped__view.html#a16fb974c50ebb30be0fa136937167322":[11,0,0,10,3,15],
-"classcgv_1_1render_1_1clipped__view.html#a1a6d1500ba0e2e1dd3d77f541ce6baa7":[11,0,0,10,3,38],
 "classcgv_1_1render_1_1clipped__view.html#a1fdec242b33c278e364946d609e03947":[11,0,0,10,3,18],
 "classcgv_1_1render_1_1clipped__view.html#a25ed5930a8b8620fbf67634cb2bd5c05":[11,0,0,10,3,28],
 "classcgv_1_1render_1_1clipped__view.html#a261eb5fef54e000bff3ed7e894a538f4":[11,0,0,10,3,47],
@@ -249,5 +242,12 @@ var NAVTREEINDEX22 =
 "classcgv_1_1render_1_1context.html#a3f3095f1511792b9ee39f7f45d9d9775":[11,0,0,10,15,230],
 "classcgv_1_1render_1_1context.html#a3f4c54c23e849fa07adeca68dd718966":[11,0,0,10,15,4],
 "classcgv_1_1render_1_1context.html#a41596bc900c29f4ea25e04d9e1fc3207":[11,0,0,10,15,61],
-"classcgv_1_1render_1_1context.html#a41fcc1d3e8f858b9e77fc6d050e4b9ac":[11,0,0,10,15,86]
+"classcgv_1_1render_1_1context.html#a41fcc1d3e8f858b9e77fc6d050e4b9ac":[11,0,0,10,15,86],
+"classcgv_1_1render_1_1context.html#a4300512864301b79346e685d62babdc9":[11,0,0,10,15,89],
+"classcgv_1_1render_1_1context.html#a46ae3f8f230b9067079644bb815ac1d4":[11,0,0,10,15,156],
+"classcgv_1_1render_1_1context.html#a473170ee5d7651a063695574f4b9f91f":[11,0,0,10,15,124],
+"classcgv_1_1render_1_1context.html#a474747a5273553522a4a8e946b12fe80":[11,0,0,10,15,90],
+"classcgv_1_1render_1_1context.html#a47d1cf071d77d6a79b5013362798f506":[11,0,0,10,15,215],
+"classcgv_1_1render_1_1context.html#a4c0a4b03a769586eca312ee39ba796ad":[11,0,0,10,15,115],
+"classcgv_1_1render_1_1context.html#a4ed6e1a7bcdf8407623ab14485670742":[11,0,0,10,15,162]
 };

@@ -202,6 +202,11 @@ var hierarchy =
     [ "cgv::gui::with_index_struct< T >", "structcgv_1_1gui_1_1with__index__struct.html", null ],
     [ "cgv::math::adjacency_list< v_type >", "classcgv_1_1math_1_1adjacency__list.html", null ],
     [ "cgv::math::diag_mat< T >", "structcgv_1_1math_1_1diag__mat.html", null ],
+    [ "cgv::math::distorted_pinhole_types", "classcgv_1_1math_1_1distorted__pinhole__types.html", [
+      [ "cgv::math::distorted_pinhole< T >", "classcgv_1_1math_1_1distorted__pinhole.html", [
+        [ "cgv::math::camera< T >", "classcgv_1_1math_1_1camera.html", null ]
+      ] ]
+    ] ],
     [ "cgv::math::fibo_heap< key_type, value_type, max_degrees >", "classcgv_1_1math_1_1fibo__heap.html", null ],
     [ "cgv::math::fvec< T, N >", "classcgv_1_1math_1_1fvec.html", [
       [ "cgv::math::fmat< volume::coord_type, 3, 3 >", "classcgv_1_1math_1_1fmat.html", null ],
@@ -216,9 +221,7 @@ var hierarchy =
     ] ],
     [ "cgv::math::perm_mat", "structcgv_1_1math_1_1perm__mat.html", null ],
     [ "cgv::math::pinhole< T >", "classcgv_1_1math_1_1pinhole.html", [
-      [ "cgv::math::distorted_pinhole< T >", "classcgv_1_1math_1_1distorted__pinhole.html", [
-        [ "cgv::math::camera< T >", "classcgv_1_1math_1_1camera.html", null ]
-      ] ]
+      [ "cgv::math::distorted_pinhole< T >", "classcgv_1_1math_1_1distorted__pinhole.html", null ]
     ] ],
     [ "cgv::math::random", "structcgv_1_1math_1_1random.html", null ],
     [ "cgv::math::register_sparse_les_factory< T >", "structcgv_1_1math_1_1register__sparse__les__factory.html", null ],

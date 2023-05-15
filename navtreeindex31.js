@@ -1,12 +1,5 @@
 var NAVTREEINDEX31 =
 {
-"classcgv_1_1render_1_1slab__renderer.html#af474017914a1210284db2f8a6dcc39df":[11,0,0,10,56,44],
-"classcgv_1_1render_1_1slab__renderer.html#af90dd5e90bd6dd04e126d7e1d8363e0b":[11,0,0,10,56,80],
-"classcgv_1_1render_1_1slab__renderer.html#af910ff47d6ef0aff86aa3cfa73056fef":[11,0,0,10,56,62],
-"classcgv_1_1render_1_1slab__renderer.html#afd80a4ee698f6e40194f849aacaa225f":[11,0,0,10,56,102],
-"classcgv_1_1render_1_1sphere__renderer.html":[11,0,0,10,58],
-"classcgv_1_1render_1_1sphere__renderer.html#a0492ee8d0e1c7867d0a9bc01dfae38e4":[11,0,0,10,58,14],
-"classcgv_1_1render_1_1sphere__renderer.html#a05278277d5068970525f0b7b79f0ea11":[11,0,0,10,58,76],
 "classcgv_1_1render_1_1sphere__renderer.html#a0552924c9c708e0b6eaa2ffc667fb5d7":[11,0,0,10,58,18],
 "classcgv_1_1render_1_1sphere__renderer.html#a06347854ea6ca483f982a58e22820a4a":[11,0,0,10,58,97],
 "classcgv_1_1render_1_1sphere__renderer.html#a0d35b6084aee64b3926b1132a7f29be1":[11,0,0,10,58,40],
@@ -249,5 +242,12 @@ var NAVTREEINDEX31 =
 "classcgv_1_1render_1_1stereo__view.html#a87ae2ec9533afd47e23618d3fe8442fb":[11,0,0,10,27,56],
 "classcgv_1_1render_1_1stereo__view.html#a8f8d3fb0daa80b4a763bcaa51ae20553":[11,0,0,10,27,50],
 "classcgv_1_1render_1_1stereo__view.html#a901c9a7fa596c6b0485a3f2f7f9fb284":[11,0,0,10,27,66],
-"classcgv_1_1render_1_1stereo__view.html#a9036241fbececf55302051ea79d3ee0b":[11,0,0,10,27,38]
+"classcgv_1_1render_1_1stereo__view.html#a9036241fbececf55302051ea79d3ee0b":[11,0,0,10,27,38],
+"classcgv_1_1render_1_1stereo__view.html#a91d1d95906739c841fe0b7f8d2d7625b":[11,0,0,10,27,54],
+"classcgv_1_1render_1_1stereo__view.html#a9624a54ab12b50eeb23ac464c4c73aff":[11,0,0,10,27,34],
+"classcgv_1_1render_1_1stereo__view.html#a9755d9c8de88e76e3d8cec015b74c3bc":[11,0,0,10,27,6],
+"classcgv_1_1render_1_1stereo__view.html#aa045de1ed6464338278f1cee34899cd7":[11,0,0,10,27,18],
+"classcgv_1_1render_1_1stereo__view.html#aafad49fb7a84eea1a08f20354b129ed8":[11,0,0,10,27,62],
+"classcgv_1_1render_1_1stereo__view.html#ab1c9a216ba1ed5b691c2ea62c29ecee8":[11,0,0,10,27,26],
+"classcgv_1_1render_1_1stereo__view.html#ab3e3e675f3deac15d2d1baab9b4d698c":[11,0,0,10,27,0]
 };
