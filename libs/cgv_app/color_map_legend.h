@@ -66,8 +66,8 @@ protected:
 			default: break;
 			}
 
-			color_map_rect.set_pos(offset + padding);
-			color_map_rect.set_size(size - 2 * padding);
+			color_map_rect.position = offset + padding;
+			color_map_rect.size = size - 2 * padding;
 		}
 	} layout;
 

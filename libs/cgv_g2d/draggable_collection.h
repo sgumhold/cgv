@@ -135,7 +135,7 @@ public:
 
 			ivec2 mpos(me.get_x(), me.get_y());
 			mpos.y() = viewport_size.y() - mpos.y() - 1;
-			mpos -= container.pos();
+			mpos -= container.position;
 
 			vec3 tmp = inv_transformation * vec3(mpos, 1.0f);
 			mpos.x() = static_cast<int>(tmp.x());
@@ -146,7 +146,7 @@ public:
 					dragged = get_hit_draggable(mpos);
 					selected = dragged;
 					if(dragged) {
-						offset = dragged->pos - mpos;
+						offset = dragged->position - mpos;
 						if(drag_start_callback) drag_start_callback();
 						return true;
 					}
@@ -163,7 +163,7 @@ public:
 
 			if(me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
 				if(dragged) {
-					dragged->pos = mpos + offset;
+					dragged->position = mpos + offset;
 					if(use_individual_constraints) {
 						if(dragged->get_constraint())
 							dragged->apply_constraint();

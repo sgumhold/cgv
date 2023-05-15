@@ -1,5 +1,7 @@
 #include "draggable.h"
 
+using namespace cgv::render;
+
 namespace cgv {
 namespace g2d {
 
@@ -19,8 +21,8 @@ void draggable::apply_constraint() {
 }
 
 void draggable::apply_constraint(const irect& area) {
-	vec2 min_pnt = vec2(area.box.get_min_pnt());
-	vec2 max_pnt = vec2(area.box.get_max_pnt());
+	vec2 min_pnt = vec2(area.a());
+	vec2 max_pnt = vec2(area.b());
 
 	vec2 s = size;
 
@@ -52,7 +54,7 @@ void draggable::apply_constraint(const irect& area) {
 		break;
 	}
 
-	pos = cgv::math::clamp(pos, min_pnt, max_pnt);
+	position = cgv::math::clamp(position, min_pnt, max_pnt);
 }
 
 }
