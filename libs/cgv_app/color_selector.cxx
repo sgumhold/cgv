@@ -69,8 +69,8 @@ bool color_selector::handle_event(cgv::gui::event& e) {
 				}
 
 				if(hit_index > -1 && hit_index < 4) {
-					vec2 local_mpos = static_cast<vec2>(mpos - hit_rect.pos());
-					vec2 val = local_mpos / static_cast<vec2>(hit_rect.size());
+					vec2 local_mpos = static_cast<vec2>(mpos - hit_rect.position);
+					vec2 val = local_mpos / static_cast<vec2>(hit_rect.size);
 					if(hit_index > 0)
 						val.x() = 0.0f;
 					selector_handles[hit_index].val = val;
@@ -86,7 +86,7 @@ bool color_selector::handle_event(cgv::gui::event& e) {
 			}
 		}
 
-		if(selector_handles.handle(e, last_viewport_size, container))
+		if(selector_handles.handle(e, get_viewport_size(), get_overlay_rectangle()))
 			return true;
 	}
 	return false;
@@ -211,10 +211,10 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	content_canvas.draw_shape(ctx, layout.preview_rect, rgb_color);
 
 	cgv::g2d::irect text_bg = layout.preview_rect;
-	text_bg.set_w(48);
+	text_bg.size.y() = 48;
 	int n_labels = has_opacity ? 4 : 3;
 	for(size_t i = 0; i < n_labels; ++i) {
-		text_bg.set_x(texts.ref_texts()[2*i].position.x() - 4.0f);
+		text_bg.position.x() = static_cast<int>(texts.ref_texts()[2 * i].position.x() - 4.0f);
 		content_canvas.draw_shape(ctx, text_bg, text_background_color);
 	}
 	
@@ -241,12 +241,12 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	auto& circle_prog = content_canvas.enable_shader(ctx, "circle");
 	color_handle_style.apply(ctx, circle_prog);
 	glScissor(layout.color_rect.x(), layout.color_rect.y(), layout.color_rect.w(), layout.color_rect.h());
-	content_canvas.draw_shape(ctx, sh[0].pos + 0.5f, sh[0].size);
+	content_canvas.draw_shape(ctx, sh[0].position + 0.5f, sh[0].size);
 
 	rect_prog = content_canvas.enable_shader(ctx, "rectangle");
 	hue_handle_style.apply(ctx, rect_prog);
 	glScissor(layout.hue_rect.x(), layout.hue_rect.y(), layout.hue_rect.w(), layout.hue_rect.h());
-	content_canvas.draw_shape(ctx, sh[1].pos, sh[1].size);
+	content_canvas.draw_shape(ctx, sh[1]);
 	
 	if(has_opacity) {
 		glScissor(layout.opacity_rect.x(), layout.opacity_rect.y(), layout.opacity_rect.w(), layout.opacity_rect.h());
@@ -259,7 +259,7 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 		content_canvas.draw_shape(ctx, ivec2(r.x(), r.y1() - 1), ivec2(r.w(), 1));
 
 		hue_handle_style.apply(ctx, rect_prog);
-		content_canvas.draw_shape(ctx, sh[2].pos, sh[2].size);
+		content_canvas.draw_shape(ctx, sh[2]);
 	}
 
 	content_canvas.disable_current_shader(ctx);
@@ -300,8 +300,8 @@ void color_selector::update_layout(const ivec2& parent_size) {
 	auto& l = layout;
 	const int slider_width = 20;
 
-	l.border_rect.set_pos(ivec2(l.padding));
-	l.border_rect.set_size(ivec2(parent_size - 2 * l.padding));
+	l.border_rect.position = ivec2(l.padding);
+	l.border_rect.size = ivec2(parent_size - 2 * l.padding);
 	l.border_rect.a() += ivec2(0, 23);
 
 	cgv::g2d::irect content_rect = l.border_rect;
@@ -310,8 +310,8 @@ void color_selector::update_layout(const ivec2& parent_size) {
 
 	int mult = has_opacity ? 2 : 1;
 	
-	l.hue_rect.set_pos(content_rect.x1() - mult* slider_width - (mult-1), content_rect.y());
-	l.hue_rect.set_size(slider_width, content_rect.h());
+	l.hue_rect.position = content_rect.x1() - mult* slider_width - (mult-1), content_rect.y();
+	l.hue_rect.size = slider_width, content_rect.h();
 
 	if(has_opacity) {
 		l.opacity_rect = l.hue_rect;
@@ -321,17 +321,17 @@ void color_selector::update_layout(const ivec2& parent_size) {
 	l.color_rect = content_rect;
 	l.color_rect.resize(-21 * mult, 0);
 
-	l.preview_rect.set_pos(ivec2(l.padding));
-	l.preview_rect.set_size(20, 20);
+	l.preview_rect.position = ivec2(l.padding);
+	l.preview_rect.size = ivec2(20, 20);
 
 
 	l.hue_constraint = l.hue_rect;
 	l.hue_constraint.translate(0, -5);
-	l.hue_constraint.set_w(0);
+	l.hue_constraint.size.y() = 0;
 
 	l.opacity_constraint = l.opacity_rect;
 	l.opacity_constraint.translate(0, -5);
-	l.opacity_constraint.set_w(0);
+	l.opacity_constraint.size.y() = 0;
 
 }
 

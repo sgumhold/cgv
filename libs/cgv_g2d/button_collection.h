@@ -12,16 +12,10 @@
 namespace cgv {
 namespace g2d {
 
-class button_collection : public cgv::render::render_types, cgv::gui::theme_observer {
-public:
-	text2d_style label_style;
-	msdf_text_geometry labels;
-
-	shape2d_style btn_style;
-	rgba button_color;
-	rgba button_press_color;
-
-	bool update_styles = false;
+class CGV_API button_collection : cgv::gui::theme_observer {
+protected:
+	bool state_out_of_date = true;
+	bool style_out_of_date = false;
 
 	cgv::render::shader_library shaders;
 
@@ -33,210 +27,57 @@ public:
 	};
 
 	std::vector<button> buttons;
+	msdf_text_geometry labels;
+
+	cgv::render::ivec2 default_button_size;
+	std::function<void(const std::string&)> default_callback;
+
+	text2d_style label_style;
+
+	shape2d_style btn_style;
+	cgv::render::rgba button_color;
+	cgv::render::rgba button_press_color;
+
 	size_t pressed_button_index = static_cast<size_t>(-1);
 	bool hovers_pressed_button = false;
 
-	bool state_out_of_date = true;
+	void init_styles(cgv::render::context& ctx);
 
-	button_collection() {}
+	void handle_theme_change(const cgv::gui::theme_info& theme) override;
 
-	void destruct(cgv::render::context& ctx) {
+	void create_labels();
 
-		shaders.clear(ctx);
+	void move_label(int offset);
 
-		ref_msdf_font_regular(ctx, -1);
-		ref_msdf_gl_canvas_font_renderer(ctx, -1);
+public:
 
-		buttons.clear();
-	}
+	button_collection();
 
-	void clear() {
-		buttons.clear();
-		state_out_of_date = true;
-	}
+	void destruct(cgv::render::context& ctx);
 
-	bool init(cgv::render::context& ctx) {
+	void clear();
 
-		bool success = true;
+	bool init(cgv::render::context& ctx);
 
-		shaders.add("rectangle", shaders::rectangle);
-		success &= shaders.load_all(ctx, "button_collection::init()");
+	bool handle(cgv::gui::event& e, const cgv::render::ivec2& viewport_size, const irect& container = irect());
 
-		msdf_font_regular& font = ref_msdf_font_regular(ctx, 1);
-		ref_msdf_gl_canvas_font_renderer(ctx, 1);
+	void draw(cgv::render::context& ctx, cgv::g2d::canvas& cnvs);
 
-		success &= font.is_initialized();
+	size_t size() const { return buttons.size(); }
 
-		if(success) {
-			labels.set_msdf_font(&font);
-			init_styles(ctx);
-		}
+	void set_default_button_size(const cgv::render::ivec2& size) { default_button_size = size; }
 
-		return success;
-	}
+	cgv::render::ivec2 get_default_button_size() const { return default_button_size; }
 
-	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const irect& container = irect()) {
-		unsigned et = e.get_kind();
+	void set_default_callback(std::function<void(const std::string&)> func) { default_callback = func; }
 
-		if(et == cgv::gui::EID_MOUSE) {
-			cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
-			cgv::gui::MouseAction ma = me.get_action();
+	void add(const std::string& label, const cgv::render::ivec2& pos, std::function<void(const std::string&)> callback = nullptr);
 
-			ivec2 mpos(me.get_x(), me.get_y());
-			mpos.y() = viewport_size.y() - mpos.y() - 1;
-			mpos -= container.pos();
+	void add(const std::string& label, const cgv::render::ivec2& pos, cgv::render::TextAlignment label_alignment, std::function<void(const std::string&)> callback = nullptr);
 
-			if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
-				if(ma == cgv::gui::MouseAction::MA_PRESS) {
-					for(size_t i = 0; i < buttons.size(); ++i) {
-						const button& btn = buttons[i];
+	void add(const std::string& label, const irect& rect, std::function<void(const std::string&)> callback = nullptr);
 
-						if(btn.rect.is_inside(mpos)) {
-							pressed_button_index = i;
-							hovers_pressed_button = true;
-							break;
-						}
-					}
-
-					if(pressed_button_index != static_cast<size_t>(-1)) {
-						return true;
-					}
-				} else if(ma == cgv::gui::MouseAction::MA_RELEASE) {
-					if(pressed_button_index < buttons.size()) {
-						const button& btn = buttons[pressed_button_index];
-
-						if(btn.rect.is_inside(mpos)) {
-							if(btn.callback)
-								btn.callback(btn.label);
-						}
-
-						pressed_button_index = static_cast<size_t>(-1);
-						hovers_pressed_button = false;
-
-						return true;
-					}
-				}
-			}
-
-			if(me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
-				if(pressed_button_index < buttons.size()) {
-					hovers_pressed_button = buttons[pressed_button_index].rect.is_inside(mpos);
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		return false;
-	}
-
-	void move_label(int offset) {
-		if(pressed_button_index >= 0 && pressed_button_index < labels.size()) {
-			ivec2 pos = labels.ref_texts()[pressed_button_index].position;
-			pos.y() += offset;
-			labels.set_position(static_cast<int>(pressed_button_index), pos);
-		}
-	}
-
-	void draw(cgv::render::context& ctx, cgv::g2d::canvas& cnvs) {
-
-		if(update_styles) {
-			update_styles = false;
-			init_styles(ctx);
-		}
-
-		if(state_out_of_date)
-			create_labels();
-
-		auto& rect_prog = shaders.get("rectangle");
-		cnvs.enable_shader(ctx, rect_prog);
-
-		btn_style.apply(ctx, rect_prog);
-
-		for(size_t i = 0; i < buttons.size(); ++i)
-			cnvs.draw_shape(ctx, buttons[i].rect, button_press_color);
-
-		for(size_t i = 0; i < buttons.size(); ++i) {
-			irect rect = buttons[i].rect;
-			rect.resize(0, -1);
-
-			bool active = i == pressed_button_index && hovers_pressed_button;
-
-			if(!active)
-				rect.translate(0, 1);
-
-			cnvs.draw_shape(ctx, rect, active ? button_press_color : button_color);
-		}
-
-		cnvs.disable_current_shader(ctx);
-
-		if(hovers_pressed_button)
-			move_label(-1);
-
-		auto& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
-		font_renderer.render(ctx, cnvs, labels, label_style);
-
-		if(hovers_pressed_button)
-			move_label(1);
-	}
-
-	size_t size() const {
-
-		return buttons.size();
-	}
-
-	void add(const std::string& label, const irect& rect, std::function<void(const std::string&)> callback, cgv::render::TextAlignment label_alignment = cgv::render::TextAlignment::TA_NONE) {
-
-		buttons.push_back({ rect, label, label_alignment, callback });
-		state_out_of_date = true;
-	}
-
-	void add(const std::string& label, const ivec2& pos, const ivec2& size, std::function<void(const std::string&)> callback, cgv::render::TextAlignment label_alignment = cgv::render::TextAlignment::TA_NONE) {
-
-		add(label, irect(pos, size), callback, label_alignment);
-	}
-
-	void create_labels() {
-
-		labels.clear();
-
-		for(auto& btn : buttons) {
-			ivec2 pos = btn.rect.center();
-			pos.y() += 2;
-
-			if(btn.label_alignment & cgv::render::TextAlignment::TA_LEFT)
-				pos.x() = 4;
-			else if(btn.label_alignment & cgv::render::TextAlignment::TA_RIGHT)
-				pos.x() = btn.rect.w() - 4;
-
-			labels.add_text(btn.label, pos, btn.label_alignment);
-		}
-
-		state_out_of_date = false;
-	}
-
-	void handle_theme_change(const cgv::gui::theme_info& theme) override {
-		update_styles = true;
-	}
-
-	void init_styles(cgv::render::context& ctx) {
-
-		auto& ti = cgv::gui::theme_info::instance();
-
-		button_color = rgba(ti.control(), 1.0f);
-		button_press_color = rgba(ti.background(), 1.0f);
-
-		label_style.fill_color = rgba(ti.text(), 1.0f);
-		label_style.use_blending = true;
-		label_style.font_size = 12.0f;
-		label_style.enable_subpixel_rendering = true;
-		
-		btn_style.use_fill_color = false;
-		btn_style.border_color = rgba(ti.border(), 1.0f);
-		btn_style.feather_width = 0.0f;
-		btn_style.border_width = 0.0f;
-	}
+	void add(const std::string& label, const irect& rect, cgv::render::TextAlignment label_alignment, std::function<void(const std::string&)> callback = nullptr);
 };
 
 }

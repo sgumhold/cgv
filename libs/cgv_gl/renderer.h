@@ -29,10 +29,12 @@ namespace cgv { // @<
 			shader_define_map defines;
 			/// last shader define maps
 			shader_define_map last_defines;
-#ifdef _DEBUG
+//#ifdef _DEBUG
+			/* TODO: FIXME: Find out why _DEBUG is sometimes not set in CMake Ninja builds under Linux, causing crashes
+			                due to inconsistent object layout in memory between different modules using the renderers */
 			/// count of render calls with current program configuration (used to detect frequent rebuilds)
 			int current_prog_render_count;
-#endif
+//#endif
 			/// otherwise keep track of enabled arrays
 			std::set<int> enabled_attribute_arrays;
 			/// default render style
