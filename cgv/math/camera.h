@@ -389,6 +389,8 @@ public:
 	enum class distortion_result { success, out_of_bounds, division_by_zero };
 	/// possible results of inverting distortion model
 	enum class distortion_inversion_result { convergence, max_iterations_reached, divergence, out_of_bounds, division_by_zero };
+	/// default maximum number of iterations used for inversion of distortion models
+	static unsigned get_standard_max_nr_iterations() { return 20; }
 };
 
 /// type specific epsilon providing function
@@ -401,12 +403,8 @@ template <typename T>
 class distorted_pinhole : public pinhole<T>, public distorted_pinhole_types
 {
 public:
-	/// default epsilon used to check for zero denominator and during inversion also for convergence
-	inline static T standard_epsilon = distortion_inversion_epsilon<T>();
-	/// default maximum number of iterations used for inversion of distortion models
-	inline static unsigned standard_max_nr_iterations = 20;
 	/// slow down factor [0,1] to decrease step size during inverse Jacobian stepping
-	inline static T standard_slow_down = T(1);
+	static T get_standard_slow_down() { return T(1); }
 	// distortion center
 	fvec<T,2> dc;
 	// internal calibration
@@ -430,7 +428,7 @@ public:
 	}
 	//! apply distortion model from distorted to undistorted image coordinates used in projection direction and return whether successful
 	/*! Failure cases are zero denominator in distortion formula or radius larger than max projection radius. */
-	distortion_result apply_distortion_model(const fvec<T, 2>& xd, fvec<T, 2>& xu, fmat<T, 2, 2>* J_ptr = 0, T epsilon = standard_epsilon) const {
+	distortion_result apply_distortion_model(const fvec<T, 2>& xd, fvec<T, 2>& xu, fmat<T, 2, 2>* J_ptr = 0, T epsilon = distortion_inversion_epsilon<T>()) const {
 		fvec<T,2> od = xd - dc;
 		T xd2 = od[0]*od[0];
 		T yd2 = od[1]*od[1];
@@ -473,7 +471,7 @@ public:
 	/// <param name="slow_down">factor in [0,1] to decrease step estimated by Jacobian inverse</param>
 	/// <returns>reason of termination where in all case a best guess for xd is provided</returns>
 	distortion_inversion_result invert_distortion_model(const fvec<T,2>& xu, fvec<T,2>& xd, bool use_xd_as_initial_guess = false,
-		unsigned* iteration_ptr = 0, T epsilon = standard_epsilon, unsigned max_nr_iterations = standard_max_nr_iterations, T slow_down = standard_slow_down) const {
+		unsigned* iteration_ptr = 0, T epsilon = distortion_inversion_epsilon<T>(), unsigned max_nr_iterations = get_standard_max_nr_iterations(), T slow_down = get_standard_slow_down()) const {
 		// start with approximate inversion
 		if (!use_xd_as_initial_guess) {
 			fvec<T, 2> od = xu - dc;
