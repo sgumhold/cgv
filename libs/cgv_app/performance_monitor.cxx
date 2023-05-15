@@ -141,7 +141,7 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 	if(show_plot) {
 		// draw plot border
 		border_style.apply(ctx, rect_prog);
-		content_canvas.draw_shape(ctx, layout.plot_rect.pos() - 1, layout.plot_rect.size() + 2);
+		content_canvas.draw_shape(ctx, layout.plot_rect.position - 1, layout.plot_rect.size + 2);
 
 		// draw plot bars
 		bar_renderer.render(ctx, content_canvas, cgv::render::PT_POINTS, bars, bar_style);
@@ -150,7 +150,7 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 		auto& line_prog = content_canvas.enable_shader(ctx, "line");
 
 		const auto& r = layout.plot_rect;
-		ivec2 a(r.x() + 12, r.box.get_center().y());
+		ivec2 a(r.x() + 12, r.center().y());
 		ivec2 b = a;
 		b.x() = r.x1();
 
@@ -334,7 +334,7 @@ void performance_monitor::create_labels() {
 
 	ivec2 caret_pos = ivec2(layout.plot_rect.x(), layout.plot_rect.y1() + 2);
 	labels.add_text("30", caret_pos, cgv::render::TA_TOP_LEFT);
-	caret_pos.y() = layout.plot_rect.box.get_center().y() + 1;
+	caret_pos.y() = layout.plot_rect.center().y() + 1;
 	labels.add_text("60", caret_pos, cgv::render::TA_LEFT);
 	caret_pos.y() = layout.plot_rect.y();
 	labels.add_text("120", caret_pos, cgv::render::TA_BOTTOM_LEFT);
@@ -342,7 +342,7 @@ void performance_monitor::create_labels() {
 
 void performance_monitor::update_plot() {
 
-	ivec2 plot_size = layout.plot_rect.size();
+	ivec2 plot_size = layout.plot_rect.size;
 
 	float a = static_cast<float>(1000.0 * monitor.delta_time / 33.333333333);
 	float b = std::min(a, 1.0f);

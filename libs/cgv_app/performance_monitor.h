@@ -24,11 +24,11 @@ protected:
 		
 		void update(const ivec2& parent_size) {
 			
-			content_rect.set_pos(padding, padding);
-			content_rect.set_size(total_size - 2 * padding);
+			content_rect.position = ivec2(padding, padding);
+			content_rect.size = total_size - 2 * padding;
 
 			plot_rect = content_rect;
-			plot_rect.set_h(30);
+			plot_rect.size.y() = 30;
 		}
 	} layout;
 
