@@ -25,6 +25,10 @@ using namespace cgv::render;
 using namespace rgbd;
 
 
+#include "../../3rd/json/nlohmann/json.hpp"
+#include "../../3rd/json/cgv_json/math.h"
+#include <fstream>
+
 std::string get_stream_format_enum(const std::vector<rgbd::stream_format>& sfs)
 {
 	std::string enum_def = "enums='default=-1";
@@ -93,6 +97,17 @@ rgbd_control::rgbd_control(bool no_interactor)
 	prs.measure_point_size_in_pixel = true;
 	prs.point_size = 3.0f;
 	visualisation_enabled = true;
+
+	/*
+	cgv::math::camera<double> color_calib, depth_calib;
+	nlohmann::json j;
+	std::ifstream is("D:/kinect.json");
+	is >> j;
+	std::string serial;
+	j.at("serial").get_to(serial);
+	j.at("color_calib").get_to(color_calib);
+	j.at("depth_calib").get_to(depth_calib);
+	*/
 
 	connect(get_animation_trigger().shoot, this, &rgbd_control::timer_event);
 }
@@ -838,6 +853,18 @@ void rgbd_control::on_start_cb()
 		aspect = float(depth_stream_formats[depth_stream_format_idx].width) / depth_stream_formats[depth_stream_format_idx].height;
 	//std::cout << "size of header: " << sizeof(frame_format) << std::endl;
 	stopped = false;
+
+	/*
+	cgv::math::camera<double> color_calib, depth_calib;
+	rgbd_inp.query_calibration(IS_COLOR, color_calib);
+	rgbd_inp.query_calibration(IS_DEPTH, depth_calib);
+	nlohmann::json j;
+	j["serial"] = rgbd_inp.get_serial();
+	j["color_calib"] = color_calib;
+	j["depth_calib"] = depth_calib;
+	std::ofstream os("D:/kinect.json");
+	os << std::setw(4) << j;
+	*/
 
 	post_redraw();
 }

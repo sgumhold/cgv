@@ -10,6 +10,7 @@
 #include <cgv/render/frame_buffer.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <point_cloud/point_cloud.h>
+#include <rgbd_capture/frame.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/point_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
@@ -227,119 +228,6 @@ struct rgbd_kinect_azure
 	}
 };
 
-/// frame size in pixels
-struct frame_size
-{
-	/// width of frame in pixel
-	int width;
-	/// height of frame in pixel 
-	int height;
-};
-/// format of individual pixels
-enum PixelFormat {
-	PF_I, // infrared
-
-	/* TODO: add color formats in other color spaces like YUV */
-
-	PF_RGB,   // 24 or 32 bit rgb format with byte alignment
-	PF_BGR,   // 24 or 24 bit bgr format with byte alignment
-	PF_RGBA,  // 32 bit rgba format
-	PF_BGRA,  // 32 bit brga format
-	PF_BAYER, // 8 bit per pixel, raw bayer pattern values
-
-	PF_DEPTH,
-	PF_DEPTH_AND_PLAYER,
-	PF_POINTS_AND_TRIANGLES,
-	PF_CONFIDENCE
-};
-/// format of a frame
-struct frame_format : public frame_size
-{
-	/// format of pixels
-	PixelFormat pixel_format;
-	// total number of bits per pixel
-	unsigned nr_bits_per_pixel;
-	/// return number of bytes per pixel (ceil(nr_bits_per_pixel/8))
-	unsigned get_nr_bytes_per_pixel() const;
-	/// buffer size; returns width*height*get_nr_bytes_per_pixel()
-	unsigned buffer_size;
-	/// standard computation of the buffer size member
-	void compute_buffer_size();
-};
-/// struct to store single frame
-struct frame_info : public frame_format
-{
-	///
-	unsigned frame_index;
-	/// 
-	double time;
-};
-/// struct to store single frame
-struct frame_type : public frame_info
-{
-	/// vector with RAW frame data 
-	std::vector<uint8_t> frame_data;
-	/// check whether frame data is allocated
-	bool is_allocated() const;
-	/// write to file
-	bool write(const std::string& fn) const;
-	/// read from file
-	bool read(const std::string& fn);
-};
-std::string get_frame_extension(const frame_format& ff)
-{
-	static const char* exts[] = {
-		"ir", "rgb", "bgr", "rgba", "bgra", "byr", "dep", "d_p", "p_tri"
-	};
-	return std::string(exts[ff.pixel_format]) + to_string(ff.nr_bits_per_pixel);
-}
-std::string compose_file_name(const std::string& file_name, const frame_format& ff, unsigned idx)
-{
-	std::string fn = file_name;
-
-	std::stringstream ss;
-	ss << std::setfill('0') << std::setw(10) << idx;
-
-	fn += ss.str();
-	return fn + '.' + get_frame_extension(ff);
-}
-/// return number of bytes per pixel (ceil(nr_bits_per_pixel/8))
-unsigned frame_format::get_nr_bytes_per_pixel() const
-{
-	return nr_bits_per_pixel / 8 + ((nr_bits_per_pixel & 7) == 0 ? 0 : 1);
-}
-/// standard computation of the buffer size member
-void frame_format::compute_buffer_size()
-{
-	buffer_size = width * height * get_nr_bytes_per_pixel();
-}
-/// check whether frame data is allocated
-bool frame_type::is_allocated() const
-{
-	return !frame_data.empty();
-}
-/// write to file
-bool frame_type::write(const std::string& fn) const
-{
-	assert(buffer_size == frame_data.size());
-	return
-		cgv::utils::file::write(fn, reinterpret_cast<const char*>(this), sizeof(frame_format), false) &&
-		cgv::utils::file::append(fn, reinterpret_cast<const char*>(&frame_data.front()), frame_data.size(), false);
-}
-/// read from file
-bool frame_type::read(const std::string& fn)
-{
-	if (!cgv::utils::file::read(fn,
-		reinterpret_cast<char*>(static_cast<frame_format*>(this)),
-		sizeof(frame_format), false))
-		return false;
-	frame_data.resize(buffer_size);
-	return
-		cgv::utils::file::read(fn,
-			reinterpret_cast<char*>(&frame_data.front()), buffer_size, false,
-			sizeof(frame_format));
-}
-
 class camera_test :
 	public node,
 	public drawable,
@@ -353,6 +241,7 @@ protected:
 
 	enum class precision { float_precision, double_precision };
 	precision prec = precision::double_precision;
+	bool use_pc_shader_prog = true;
 	bool use_azure_impl = false;
 	float slow_down = 1.0f;
 	unsigned sub_sample = 1;
@@ -366,7 +255,7 @@ protected:
 	float depth_lambda = 1.0f;
 	double error_threshold = 0.0001;
 	double error_scale = 1000;
-	double epsilon = cgv::math::camera<double>::standard_epsilon;
+	double epsilon = cgv::math::distortion_inversion_epsilon<double>();
 	bool use_standard_epsilon = true;
 	bool debug_colors = true;
 	float random_offset = 0.001f;
@@ -374,8 +263,8 @@ protected:
 	std::vector<vec3> P;
 	std::vector<rgb8> C;
 
-	frame_type warped_color_frame;
-	frame_type depth_frame;
+	rgbd::frame_type warped_color_frame;
+	rgbd::frame_type depth_frame;
 	point_cloud pc;
 
 	bool read_frames()
@@ -414,14 +303,14 @@ protected:
 	template <typename T>
 	void construct_point_clouds_precision(const cgv::math::camera<T>& depth_calib)
 	{
-		T eps = use_standard_epsilon ? cgv::math::camera<T>::standard_epsilon : T(epsilon);
+		T eps = use_standard_epsilon ? cgv::math::distortion_inversion_epsilon<T>() : T(epsilon);
 		T sx = T(1) / depth_frame.width;
 		T sy = T(1) / depth_frame.height;
 		for (int y = 0; y < depth_frame.height; y += sub_sample) {
 			for (int x = 0; x < depth_frame.width; x += sub_sample) {
 				if (((x % sub_line_sample) != 0) && ((y % sub_line_sample) != 0))
 					continue;
-				uint8_t* pix_ptr = &warped_color_frame.frame_data[(y * depth_frame.width + x) * warped_color_frame.get_nr_bytes_per_pixel()];
+				uint8_t* pix_ptr = reinterpret_cast<uint8_t*>(&warped_color_frame.frame_data[(y * depth_frame.width + x) * warped_color_frame.get_nr_bytes_per_pixel()]);
 				uint16_t depth = reinterpret_cast<const uint16_t&>(depth_frame.frame_data[(y * depth_frame.width + x) * depth_frame.get_nr_bytes_per_pixel()]);
 				if (depth == 0)
 					continue;
@@ -512,6 +401,7 @@ protected:
 		return true;
 	}
 	attribute_array_manager pc_aam;
+	cgv::render::shader_program pc_prog;
 	cgv::render::view* view_ptr = 0;
 public:
 	camera_test()
@@ -549,6 +439,7 @@ public:
 	void create_gui()
 	{
 		add_decorator("a_buffer", "heading", "level=1");
+		add_member_control(this, "use_pc_shader_prog", use_pc_shader_prog, "toggle");
 		add_member_control(this, "sub_sample", sub_sample, "value_slider", "min=1;max=16;ticks=true");
 		add_member_control(this, "sub_line_sample", sub_line_sample, "value_slider", "min=1;max=16;ticks=true");
 		add_member_control(this, "use_azure_impl", use_azure_impl, "toggle");
@@ -582,11 +473,12 @@ public:
 		ref_point_renderer(ctx, 1);
 		read_calibs();
 		read_frames();
-		return true;
+		return pc_prog.build_program(ctx, "rgbd_pc.glpr", true);
 	}
 	void destruct(context& ctx)
 	{
 		ref_point_renderer(ctx, -1);
+		pc_prog.destruct(ctx);
 	}
 	void init_frame(context& ctx)
 	{
@@ -596,15 +488,21 @@ public:
 	}
 	void draw_points(context& ctx, size_t nr_elements, const vec3* P, const rgb8* C)
 	{
-		auto& pr = ref_point_renderer(ctx);
-		if (view_ptr)
-			pr.set_y_view_angle(float(view_ptr->get_y_view_angle()));
-		pr.set_render_style(prs);
-		pr.enable_attribute_array_manager(ctx, pc_aam);
-		pr.set_position_array(ctx, P, nr_elements);
-		pr.set_color_array(ctx, C, nr_elements);
 		glDisable(GL_CULL_FACE);
-		pr.render(ctx, 0, nr_elements);
+		if (use_pc_shader_prog && pc_prog.is_linked()) {
+			pc_prog.enable(ctx);
+			pc_prog.disable(ctx);
+		}
+		else {
+			auto& pr = ref_point_renderer(ctx);
+			if (view_ptr)
+				pr.set_y_view_angle(float(view_ptr->get_y_view_angle()));
+			pr.set_render_style(prs);
+			pr.enable_attribute_array_manager(ctx, pc_aam);
+			pr.set_position_array(ctx, P, nr_elements);
+			pr.set_color_array(ctx, C, nr_elements);
+			pr.render(ctx, 0, nr_elements);
+		}
 		glEnable(GL_CULL_FACE);
 	}
 	void draw(context& ctx)
