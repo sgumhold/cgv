@@ -46,7 +46,7 @@ namespace rgbd {
 			}
 		}
 		//find device with given serial
-		for (int i = 0; i < k4a::device::get_installed_count();++i) {
+		for (int i = 0; i < int(k4a::device::get_installed_count());++i) {
 			string dev_serial;
 			try {
 				device = k4a::device::open(i);
@@ -118,7 +118,7 @@ namespace rgbd {
 	/// query the stream formats available for a given stream configuration
 	void rgbd_kinect_azure::query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const
 	{
-		const static int fps[] = { 5,15,30 };
+		const static float fps[] = { 5.0f,15.0f,30.0f };
 		constexpr int fps_size = sizeof(fps) / sizeof(int);
 		if ((is & IS_COLOR) != 0) {
 			

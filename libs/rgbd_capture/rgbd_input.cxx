@@ -304,6 +304,7 @@ bool rgbd_input::query_calibration(InputStreams is, cgv::math::camera<double>& c
 		return false;
 	}
 	rgbd->query_calibration(is, cam);
+	return true;
 }
 
 bool rgbd_input::start(const std::vector<stream_format>& stream_formats)
