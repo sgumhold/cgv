@@ -428,7 +428,7 @@ bool shader_program::attach_program(const context& ctx, std::string file_name, b
 					error += to_string(toks[0])+">";
 					success = false;
 				}
-				else if (i_pt == PT_UNDEF) {
+				else if (o_pt == PT_UNDEF) {
 					error = "5 : unknown ouput_type for geometry shader <";
 					error += to_string(toks[1])+">";
 					success = false;

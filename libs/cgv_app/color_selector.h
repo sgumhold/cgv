@@ -41,8 +41,8 @@ protected:
 		void update_val() {
 			if(constraint) {
 				const cgv::g2d::irect& c = *constraint;
-				vec2 p = pos - static_cast<vec2>(c.pos());
-				ivec2 size = c.size();
+				vec2 p = position - static_cast<vec2>(c.position);
+				ivec2 size = c.size;
 				val = p / static_cast<vec2>(size);
 				if(size.x() == 0) val.x() = 0.0f;
 				if(size.y() == 0) val.y() = 0.0f;
@@ -54,7 +54,7 @@ protected:
 			if(constraint) {
 				const cgv::g2d::irect& c = *constraint;
 				val = cgv::math::clamp(val, 0.0f, 1.0f);
-				pos = static_cast<vec2>(c.pos()) + val * c.size();
+				position = static_cast<vec2>(c.position) + val * c.size;
 			}
 		}
 

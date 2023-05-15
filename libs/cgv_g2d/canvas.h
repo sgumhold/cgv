@@ -68,7 +68,7 @@ public:
 
 	template<typename T>
 	void draw_shape(const cgv::render::context& ctx, const rect<T>& r) {
-		draw_shape(ctx, r.pos(), r.size());
+		draw_shape(ctx, r.position, r.size);
 	}
 
 	template<typename T>
@@ -96,7 +96,7 @@ public:
 
 	template<typename T>
 	void draw_shape(const cgv::render::context& ctx, const rect<T>& r, const rgba& color) {
-		draw_shape(ctx, r.pos(), r.size(), color);
+		draw_shape(ctx, r.position, r.size, color);
 	}
 
 	template<typename T>

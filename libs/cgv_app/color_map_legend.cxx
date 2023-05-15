@@ -130,16 +130,16 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 
 	// draw inner border
 	border_style.apply(ctx, rect_prog);
-	content_canvas.draw_shape(ctx, layout.color_map_rect.pos() - 1, layout.color_map_rect.size() + 2);
+	content_canvas.draw_shape(ctx, layout.color_map_rect.position - 1, layout.color_map_rect.size + 2);
 
 	if(tex.is_created()) {
 		content_canvas.push_modelview_matrix();
-		ivec2 pos = layout.color_map_rect.pos();
-		ivec2 size = layout.color_map_rect.size();
+		ivec2 pos = layout.color_map_rect.position;
+		ivec2 size = layout.color_map_rect.size;
 		float angle = 0.0f;
 
 		if(layout.orientation == OO_VERTICAL) {
-			pos.x() += layout.color_map_rect.size().x();
+			pos.x() += layout.color_map_rect.size.x();
 			std::swap(size.x(), size.y());
 			angle = 90.0f;
 		}
@@ -422,8 +422,8 @@ void color_map_legend::create_ticks() {
 		layout.title_angle = 90.0f;
 	}
 
-	ivec2 color_rect_pos = layout.color_map_rect.pos();
-	ivec2 color_rect_size = layout.color_map_rect.size();
+	ivec2 color_rect_pos = layout.color_map_rect.position;
+	ivec2 color_rect_size = layout.color_map_rect.size;
 
 	int length = color_rect_size[axis];
 	float step = static_cast<float>(length + 1) / static_cast<float>(num_ticks - 1);

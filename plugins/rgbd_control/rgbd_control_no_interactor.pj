@@ -11,3 +11,4 @@ addProjectDeps=["cgv_utils","cgv_type","cgv_data","cgv_base", "cgv_signal", "cgv
 addDependencies=["opengl", "glu"];
 addSharedDefines=["RGBD_CONTROL_EXPORTS"];
 addDefines=["NO_VR_VIEW_INTERACTOR"];
+cppLanguageStandard = "stdcpp17";

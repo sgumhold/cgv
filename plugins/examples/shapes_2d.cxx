@@ -34,7 +34,7 @@ private:
 	*/
 	struct point : public cgv::g2d::draggable {
 		point(const ivec2& pos) {
-			this->pos = pos;
+			position = pos;
 			size = vec2(16.0f);
 			position_is_center = true;
 			constraint_reference = CR_FULL_SIZE;
@@ -125,8 +125,8 @@ protected:
 
 public:
 	shapes_2d() : cgv::base::node("Shapes 2D Test") {
-		viewport_rect.set_pos(ivec2(0));
-		viewport_rect.set_size(ivec2(-1));
+		viewport_rect.position = ivec2(0);
+		viewport_rect.size = ivec2(-1);
 		
 		show_background = true;
 
@@ -161,11 +161,11 @@ public:
 		text_handles.set_transformation(M);
 		quad_handles.set_transformation(M);
 
-		handled |= arrow_handles.handle(e, viewport_rect.size());
-		handled |= line_handles.handle(e, viewport_rect.size());
-		handled |= curve_handles.handle(e, viewport_rect.size());
-		handled |= text_handles.handle(e, viewport_rect.size());
-		handled |= quad_handles.handle(e, viewport_rect.size());
+		handled |= arrow_handles.handle(e, viewport_rect.size);
+		handled |= line_handles.handle(e, viewport_rect.size);
+		handled |= curve_handles.handle(e, viewport_rect.size);
+		handled |= text_handles.handle(e, viewport_rect.size);
+		handled |= quad_handles.handle(e, viewport_rect.size);
 
 		if(!handled) {
 			unsigned et = e.get_kind();
@@ -181,9 +181,9 @@ public:
 
 				if(ma == cgv::gui::MA_WHEEL) {
 					ivec2 mpos(me.get_x(), me.get_y());
-					mpos.y() = viewport_rect.size().y() - mpos.y();
+					mpos.y() = viewport_rect.h() - mpos.y() - 1;
 
-					vec2 origin = viewport_rect.box.get_center();
+					vec2 origin = viewport_rect.center();
 					vec2 offset = origin - mpos + view_params.translation;
 
 					float scale = view_params.scale;
@@ -331,10 +331,10 @@ public:
 	void init_frame(cgv::render::context& ctx) {
 		ivec2 viewport_resolution(ctx.get_width(), ctx.get_height());
 
-		if(viewport_resolution != viewport_rect.size()) {
-			viewport_rect.set_size(viewport_resolution);
+		if(viewport_resolution != viewport_rect.size) {
+			viewport_rect.size = viewport_resolution;
 
-			canvas.set_resolution(ctx, viewport_rect.size());
+			canvas.set_resolution(ctx, viewport_rect.size);
 
 			set_resolution_uniform(ctx, line_renderer.ref_prog());
 			set_resolution_uniform(ctx, spline_renderer.ref_prog());
@@ -386,12 +386,12 @@ public:
 		auto& quad_prog = canvas.enable_shader(ctx, "quad");
 		quad_style.apply(ctx, quad_prog);
 		// takes 4 positions (must be convex)
-		canvas.draw_shape4(ctx, ivec2(400, 300), ivec2(480, 300), points[10].ipos(), points[11].ipos(), rgba(1, 1, 0, 1));
+		canvas.draw_shape4(ctx, ivec2(400, 300), ivec2(480, 300), points[10].int_position(), points[11].int_position(), rgba(1, 1, 0, 1));
 		canvas.disable_current_shader(ctx);
 
 		auto& arrow_prog = canvas.enable_shader(ctx, "arrow");
 		arrow_style.apply(ctx, arrow_prog);
-		canvas.draw_shape2(ctx, arrow_handles[0]->pos, arrow_handles[1]->pos, rgba(1.0f, 0.0f, 1.0f, 1.0f), rgba(0.0f, 0.0f, 1.0f, 1.0f));
+		canvas.draw_shape2(ctx, arrow_handles[0]->position, arrow_handles[1]->position, rgba(1.0f, 0.0f, 1.0f, 1.0f), rgba(0.0f, 0.0f, 1.0f, 1.0f));
 		canvas.disable_current_shader(ctx);
 
 		shader_program& line_prog = line_renderer.ref_prog();
@@ -424,9 +424,9 @@ public:
 	}
 	void draw_background(cgv::render::context& ctx) {
 		auto& grid_prog = canvas.enable_shader(ctx, "grid");
-		grid_style.texcoord_scaling = vec2(viewport_rect.size()) / 20.0f;
+		grid_style.texcoord_scaling = vec2(viewport_rect.size) / 20.0f;
 		grid_style.apply(ctx, grid_prog);
-		canvas.draw_shape(ctx, ivec2(0), viewport_rect.size());
+		canvas.draw_shape(ctx, ivec2(0), viewport_rect.size);
 		canvas.disable_current_shader(ctx);
 	}
 	void draw_control_lines(cgv::render::context& ctx) {
@@ -444,7 +444,7 @@ public:
 
 		for(unsigned i = 0; i < points.size(); ++i) {
 			const point& p = points[i];
-			draggable_points.add(p.pos);
+			draggable_points.add(p.position);
 			render_size = p.size;
 		}
 		
@@ -462,7 +462,7 @@ public:
 		lines.clear();
 		for(unsigned  i = 0; i < 2; ++i) {
 			float brightness = static_cast<float>(i) / 1;
-			lines.add(line_handles[i]->pos, brightness * color);
+			lines.add(line_handles[i]->position, brightness * color);
 		}
 		lines.set_out_of_date();
 	}
@@ -481,11 +481,11 @@ public:
 			unsigned si = idx;
 			unsigned ei = idx + 1;
 			unsigned pi = (i % 2) ? ei : si;
-			vec2 tangent = 3.0f * (control_points[ei]->pos - control_points[si]->pos);
+			vec2 tangent = 3.0f * (control_points[ei]->position - control_points[si]->position);
 			
-			curves.add(control_points[pi]->pos, tangent, colors[i]);
-			control_lines.add(control_points[si]->pos, rgba(0.7f, 0.2f, 0.2f, 1.0f));
-			control_lines.add(control_points[ei]->pos, rgba(0.7f, 0.2f, 0.2f, 1.0f));
+			curves.add(control_points[pi]->position, tangent, colors[i]);
+			control_lines.add(control_points[si]->position, rgba(0.7f, 0.2f, 0.2f, 1.0f));
+			control_lines.add(control_points[ei]->position, rgba(0.7f, 0.2f, 0.2f, 1.0f));
 		}
 		curves.set_out_of_date();
 		control_lines.set_out_of_date();
@@ -503,14 +503,14 @@ public:
 		texts.clear();
 		for(unsigned i=0; i<2; ++i) {
 			std::string str = labels[i];
-			texts.add_text(str, text_handles[i]->pos, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
+			texts.add_text(str, text_handles[i]->position, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
 		}
 	}
 	void set_text_positions() {
 		for(unsigned i=0; i<2; ++i)
-			texts.set_position(i, text_handles[i]->pos);
+			texts.set_position(i, text_handles[i]->position);
 
-		ivec2 p(text_handles[0]->pos);
+		ivec2 p(text_handles[0]->position);
 		std::string pos_str = "(";
 		pos_str += std::to_string(p.x());
 		pos_str += ", ";
@@ -520,7 +520,7 @@ public:
 	}
 	void set_resolution_uniform(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 		prog.enable(ctx);
-		prog.set_uniform(ctx, "resolution", viewport_rect.size());
+		prog.set_uniform(ctx, "resolution", viewport_rect.size);
 		prog.disable(ctx);
 	}
 	void set_default_styles() {
@@ -571,8 +571,8 @@ public:
 		s.use_blending = true;
 	}
 	mat3 get_view_matrix() {
-		mat3 T0 = cgv::math::translate2h(vec2(-viewport_rect.box.get_center()));
-		mat3 T1 = cgv::math::translate2h(vec2(viewport_rect.box.get_center()));
+		mat3 T0 = cgv::math::translate2h(vec2(-viewport_rect.center()));
+		mat3 T1 = cgv::math::translate2h(vec2(viewport_rect.center()));
 		mat3 T = cgv::math::translate2h(vec2(view_params.translation));
 		mat3 S = cgv::math::scale2h(vec2(view_params.scale));
 		mat3 R = cgv::math::rotate2h(view_params.angle);

@@ -10,8 +10,8 @@ overlay::overlay() {
 	stretch = SO_NONE;
 
 	margin = ivec2(0);
-	container.set_pos(ivec2(0));
-	container.set_size(ivec2(0));
+	container.position = ivec2(0);
+	container.size = ivec2(0);
 
 	last_size = ivec2(-1);
 
@@ -29,17 +29,6 @@ void overlay::on_layout_change() {
 
 	update_overlay_layout();
 	post_redraw();
-}
-
-overlay::ivec2 overlay::get_transformed_mouse_pos(ivec2 mouse_pos) {
-
-	mouse_pos.y() = last_viewport_size.y() - mouse_pos.y() - 1;
-	return mouse_pos;
-}
-
-overlay::ivec2 overlay::get_local_mouse_pos(ivec2 mouse_pos) {
-
-	return get_transformed_mouse_pos(mouse_pos) - container.pos();
 }
 
 void overlay::set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 _percentual_offset)
@@ -121,8 +110,8 @@ void overlay::update_overlay_layout() {
 		break;
 	}
 
-	container.set_pos(pos);
-	container.set_size(size);
+	container.position = pos;
+	container.size = size;
 }
 
 bool overlay::ensure_viewport(cgv::render::context& ctx) {
@@ -136,9 +125,9 @@ bool overlay::ensure_viewport(cgv::render::context& ctx) {
 	return false;
 }
 
-bool overlay::is_hit(const ivec2& mouse_pos) {
+bool overlay::is_hit(const ivec2& mouse_pos) const {
 
-	ivec2 test_pos = get_transformed_mouse_pos(mouse_pos);
+	ivec2 test_pos = cgv::g2d::get_transformed_mouse_pos(mouse_pos, last_viewport_size);
 	return container.is_inside(test_pos);
 };
 
