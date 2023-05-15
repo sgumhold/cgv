@@ -13,4 +13,4 @@ addProjectDirs=[CGV_DIR."/libs/rgbd_capture"];
 addProjectDeps=["rgbd_capture"];
 addDependencies=["spider_base_lib","spider_capture_lib","spider_scan_lib"];
 addSharedDefines=["RGBD_SPIDER_EXPORTS"];
-
+cppLanguageStandard = "stdcpp17";

@@ -9,4 +9,4 @@ addProjectDirs=[CGV_DIR."/libs/rgbd_capture"];
 addProjectDeps=["rgbd_capture"];
 addDependencies=["realsense2_lib"];
 addSharedDefines=["RGBD_REALSENSE_EXPORTS"];
-
+cppLanguageStandard = "stdcpp17";
