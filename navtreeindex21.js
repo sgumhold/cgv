@@ -1,12 +1,5 @@
 var NAVTREEINDEX21 =
 {
-"classcgv_1_1render_1_1attribute__array__manager.html#a7f8161533c44933d23359069a4e71567":[11,0,0,10,35,3],
-"classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27":[11,0,0,10,35,6],
-"classcgv_1_1render_1_1attribute__array__manager.html#ac1d7b7c76c80ffc9d15121d463d9b8ae":[11,0,0,10,35,5],
-"classcgv_1_1render_1_1attribute__array__manager.html#ace4dc21616049be80371eb5ff5a044b2":[11,0,0,10,35,1],
-"classcgv_1_1render_1_1attribute__array__manager.html#ad78801d4ae5d2ad7711d39301a894676":[11,0,0,10,35,7],
-"classcgv_1_1render_1_1attribute__array__manager.html#af7ba9b16cc01135ddd992d48e5b3a717":[11,0,0,10,35,2],
-"classcgv_1_1render_1_1box__renderer.html":[11,0,0,10,37],
 "classcgv_1_1render_1_1box__renderer.html#a0492ee8d0e1c7867d0a9bc01dfae38e4":[11,0,0,10,37,14],
 "classcgv_1_1render_1_1box__renderer.html#a05278277d5068970525f0b7b79f0ea11":[11,0,0,10,37,83],
 "classcgv_1_1render_1_1box__renderer.html#a0552924c9c708e0b6eaa2ffc667fb5d7":[11,0,0,10,37,18],
@@ -249,5 +242,12 @@ var NAVTREEINDEX21 =
 "classcgv_1_1render_1_1box__wire__renderer.html#aefe4161943c1abac1a582f2745c13698":[11,0,0,10,39,7],
 "classcgv_1_1render_1_1box__wire__renderer.html#af36c04fdeb21290f87a81d9bfae4ad32":[11,0,0,10,39,25],
 "classcgv_1_1render_1_1box__wire__renderer.html#af8cec9f198453b278457fc435bcb9201":[11,0,0,10,39,92],
-"classcgv_1_1render_1_1box__wire__renderer.html#af90dd5e90bd6dd04e126d7e1d8363e0b":[11,0,0,10,39,83]
+"classcgv_1_1render_1_1box__wire__renderer.html#af90dd5e90bd6dd04e126d7e1d8363e0b":[11,0,0,10,39,83],
+"classcgv_1_1render_1_1box__wire__renderer.html#af910ff47d6ef0aff86aa3cfa73056fef":[11,0,0,10,39,61],
+"classcgv_1_1render_1_1box__wire__renderer.html#afd80a4ee698f6e40194f849aacaa225f":[11,0,0,10,39,109],
+"classcgv_1_1render_1_1clipped__view.html":[11,0,0,10,3],
+"classcgv_1_1render_1_1clipped__view.html#a08a9518be1c7167117e3f7e589535ae3":[11,0,0,10,3,36],
+"classcgv_1_1render_1_1clipped__view.html#a14e2bffa5f6eacfbbf493eab2413e7ef":[11,0,0,10,3,44],
+"classcgv_1_1render_1_1clipped__view.html#a16fb974c50ebb30be0fa136937167322":[11,0,0,10,3,15],
+"classcgv_1_1render_1_1clipped__view.html#a1a6d1500ba0e2e1dd3d77f541ce6baa7":[11,0,0,10,3,38]
 };

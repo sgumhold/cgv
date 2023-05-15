@@ -116,7 +116,8 @@ var annotated_dup =
       ] ],
       [ "math", "namespacecgv_1_1math.html", [
         [ "adjacency_list", "classcgv_1_1math_1_1adjacency__list.html", "classcgv_1_1math_1_1adjacency__list" ],
-        [ "pinhole", "classcgv_1_1math_1_1pinhole.html", null ],
+        [ "pinhole", "classcgv_1_1math_1_1pinhole.html", "classcgv_1_1math_1_1pinhole" ],
+        [ "distorted_pinhole_types", "classcgv_1_1math_1_1distorted__pinhole__types.html", "classcgv_1_1math_1_1distorted__pinhole__types" ],
         [ "distorted_pinhole", "classcgv_1_1math_1_1distorted__pinhole.html", "classcgv_1_1math_1_1distorted__pinhole" ],
         [ "camera", "classcgv_1_1math_1_1camera.html", "classcgv_1_1math_1_1camera" ],
         [ "diag_mat", "structcgv_1_1math_1_1diag__mat.html", "structcgv_1_1math_1_1diag__mat" ],
