@@ -9,4 +9,4 @@ addProjectDirs=[CGV_DIR."/libs/rgbd_capture"];
 addProjectDeps=["rgbd_capture"];
 addDependencies=["kinect2_lib"];
 addSharedDefines=["RGBD_KINECT2_EXPORTS"];
-cppLanguageStandard = "stdcpp17";
+

@@ -54,7 +54,7 @@ public:
 
 	bool is_enabled() const { return enable; }
 
-	void set_enabled(bool enable) { enable = enable; }
+	void set_enabled(bool enable) { this->enable = enable; }
 };
 
 }
