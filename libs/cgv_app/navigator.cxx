@@ -78,8 +78,7 @@ void navigator::clear(cgv::render::context& ctx) {
 }
 
 bool navigator::self_reflect(cgv::reflect::reflection_handler& _rh) {
-
-	return true;
+	return _rh.reflect_member("layout_size", layout_size);
 }
 
 bool navigator::handle_event(cgv::gui::event& e) {
