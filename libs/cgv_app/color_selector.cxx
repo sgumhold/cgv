@@ -211,7 +211,7 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	content_canvas.draw_shape(ctx, layout.preview_rect, rgb_color);
 
 	cgv::g2d::irect text_bg = layout.preview_rect;
-	text_bg.size.y() = 48;
+	text_bg.size.x() = 48;
 	int n_labels = has_opacity ? 4 : 3;
 	for(size_t i = 0; i < n_labels; ++i) {
 		text_bg.position.x() = static_cast<int>(texts.ref_texts()[2 * i].position.x() - 4.0f);
@@ -302,7 +302,8 @@ void color_selector::update_layout(const ivec2& parent_size) {
 
 	l.border_rect.position = ivec2(l.padding);
 	l.border_rect.size = ivec2(parent_size - 2 * l.padding);
-	l.border_rect.a() += ivec2(0, 23);
+	l.border_rect.position.y() += 23;
+	l.border_rect.size.y() -= 23;
 
 	cgv::g2d::irect content_rect = l.border_rect;
 	content_rect.translate(1, 1);
@@ -310,8 +311,8 @@ void color_selector::update_layout(const ivec2& parent_size) {
 
 	int mult = has_opacity ? 2 : 1;
 	
-	l.hue_rect.position = content_rect.x1() - mult* slider_width - (mult-1), content_rect.y();
-	l.hue_rect.size = slider_width, content_rect.h();
+	l.hue_rect.position = ivec2(content_rect.x1() - mult* slider_width - (mult-1), content_rect.y());
+	l.hue_rect.size = ivec2(slider_width, content_rect.h());
 
 	if(has_opacity) {
 		l.opacity_rect = l.hue_rect;
@@ -324,14 +325,13 @@ void color_selector::update_layout(const ivec2& parent_size) {
 	l.preview_rect.position = ivec2(l.padding);
 	l.preview_rect.size = ivec2(20, 20);
 
-
 	l.hue_constraint = l.hue_rect;
 	l.hue_constraint.translate(0, -5);
-	l.hue_constraint.size.y() = 0;
+	l.hue_constraint.size.x() = 0;
 
 	l.opacity_constraint = l.opacity_rect;
 	l.opacity_constraint.translate(0, -5);
-	l.opacity_constraint.size.y() = 0;
+	l.opacity_constraint.size.x() = 0;
 
 }
 
@@ -377,20 +377,12 @@ void color_selector::init_styles(cgv::render::context& ctx) {
 	color_handle_style.border_color = rgba(rgb(1.0f), 0.75f);
 	color_handle_style.border_width = 1.0f;
 	color_handle_style.fill_color = rgba(rgb(0.0f), 1.0f);
-	color_handle_style.ring_width = 2.5f;
+	color_handle_style.ring_width = 4.0f;
 
+	// configure style for hue handle
 	hue_handle_style = color_handle_style;
-	hue_handle_style.border_color = rgba(rgb(1.0f), 0.6f);
 	hue_handle_style.position_is_center = false;
 	
-	// configure style for hue handle
-	cgv::g2d::shape2d_style hue_handle_style;
-	hue_handle_style.use_blending = true;
-	hue_handle_style.use_fill_color = false;
-	hue_handle_style.position_is_center = true;
-	hue_handle_style.border_color = rgba(ti.border(), 1.0f);
-	hue_handle_style.border_width = 1.5f;
-
 	// configure text style
 	float label_border_alpha = 0.0f;
 	float border_width = 0.25f;
