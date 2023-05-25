@@ -73,7 +73,8 @@ protected:
 
 	cgv::g2d::msdf_text_geometry texts;
 
-	cgv::g2d::text2d_style container_style, border_style, color_texture_style, hue_texture_style, opacity_color_style, color_handle_style, hue_handle_style, text_style;
+	cgv::g2d::shape2d_style container_style, border_style, color_texture_style, hue_texture_style, opacity_color_style, color_handle_style, hue_handle_style;
+	cgv::g2d::text2d_style text_style;
 	cgv::g2d::grid2d_style opacity_bg_style;
 
 	cgv::g2d::draggable_collection<selector_handle> selector_handles;
