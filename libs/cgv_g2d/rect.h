@@ -64,6 +64,17 @@ struct rect {
 		position += o;
 	}
 
+	// scale from center by given size difference (delta);
+	inline void scale(coord_type dx, coord_type dy) {
+		scale(point_type(dx, dy));
+	}
+
+	// scale from center by given size difference (delta);
+	inline void scale(point_type d) {
+		position -= d;
+		size += coord_type(2) * d;
+	}
+
 	// resize by given size difference (delta); pivot unchanged
 	inline void resize(coord_type dx, coord_type dy) {
 		resize(point_type(dx, dy));
