@@ -76,6 +76,12 @@ void canvas_overlay::handle_theme_change(const cgv::gui::theme_info& theme) {
 	post_damage(false);
 }
 
+void canvas_overlay::post_damage(bool redraw) {
+	has_damage = true;
+	if(redraw)
+		post_redraw();
+}
+
 void canvas_overlay::init_overlay_style(cgv::render::context& ctx) {
 
 	// configure style for final blending of overlay into main frame buffer
@@ -107,12 +113,6 @@ bool canvas_overlay::ensure_layout(cgv::render::context& ctx) {
 
 void canvas_overlay::post_recreate_layout() {
 	recreate_layout = true;
-}
-
-void canvas_overlay::post_damage(bool redraw) {
-	has_damage = true;
-	if(redraw)
-		post_redraw();
 }
 
 void canvas_overlay::clear_damage() {

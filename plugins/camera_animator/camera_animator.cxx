@@ -40,6 +40,7 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 	paths_rd.style.blend_lines = true;
 	
 	keyframe_editor_ptr = register_overlay<keyframe_editor_overlay>("Keyframe Editor");
+	keyframe_editor_ptr->set_on_change_callback(std::bind(&camera_animator::handle_editor_change, this));
 
 	connect(cgv::gui::get_animation_trigger().shoot, this, &camera_animator::handle_timer_event);
 
@@ -159,23 +160,30 @@ bool camera_animator::handle_event(cgv::gui::event& e) {
 void camera_animator::handle_timer_event(double t, double dt) {
 
 	if(animate && !record) {
-		set_animation_time();
-		animation->time += dt;
+		if(set_animation_state(true)) {
+			animation->time += dt;
+			animation->frame = static_cast<size_t>(static_cast<float>(animation->timecode) * animation->time);
+		} else {
+			animate = false;
+		}
 	}
 }
 
 void camera_animator::on_set(const cgv::app::on_set_evaluator& m) {
 
-	if(m.is(record))
+	if(m.is(record)) {
 		get_context()->set_gamma(record ? 1.0f : 2.2f);
-
-	if(m.is(animation->frame)) {
-		set_animation_frame();
+		animation->use_continuous_time = !record;
 	}
 
-	if(m.is(animation->time)) {
-		set_animation_time();
-	}
+	if(m.is(animation->frame))
+		set_animation_state(false);
+
+	if(m.is(animation->time))
+		set_animation_state(true);
+
+	if(m.is(apply))
+		set_animation_state(false);
 }
 
 bool camera_animator::on_exit_request() {
@@ -245,9 +253,17 @@ void camera_animator::finish_frame(context& ctx) {
 void camera_animator::after_finish(context& ctx) {
 
 	if(view_ptr && animate && record) {
-		//write_image("rec/frame" + std::to_string(camera_animation.frame) + ".bmp");
-		set_animation_frame();
-		animation->frame += 1;
+		std::string frame_number = std::to_string(animation->frame);
+		if(frame_number.length() == 1)
+			frame_number = "00" + frame_number;
+		else if(frame_number.length() == 2)
+			frame_number = "0" + frame_number;
+
+		write_image("rec/" + frame_number + ".bmp");
+		if(set_animation_state(false))
+			animation->frame += 1;
+		else
+			animate = false;
 	}
 }
 
@@ -260,11 +276,14 @@ void camera_animator::create_gui() {
 	add_member_control(this, "", animation->time, "wheel", "min=0;max=4;step=0.001");
 
 	add_member_control(this, "Record", record, "check");
-	connect_copy(add_button("Start Animation")->click, rebind(this, &camera_animator::start_animation));
+	add_member_control(this, "Apply", apply, "check");
+	add_member_control(this, "Show Path", show, "check");
+	connect_copy(add_button("Play Animation")->click, rebind(this, &camera_animator::play_animation));
+	connect_copy(add_button("Pause Animation")->click, rebind(this, &camera_animator::pause_animation));
 	connect_copy(add_button("Reset Animation")->click, rebind(this, &camera_animator::reset_animation));
 	connect_copy(add_button("Print Info")->click, rebind(this, &camera_animator::print_view_information));
 	
-	//connect_copy(add_button("Save Image")->click, rebind(this, &camera_animator::write_image));
+	connect_copy(add_button("Save Image")->click, rebind(this, &camera_animator::write_single_image));
 
 	inline_object_gui(keyframe_editor_ptr);
 }

@@ -83,7 +83,7 @@ struct animation_data {
 		k.camera_state = { cgv::render::vec3(0.0f, 0.8f, -1.3f), cgv::render::vec3(0.0f), normalize(cgv::render::vec3(0.0f, -0.851069f, -0.524985f)) };
 		keyframes.insert({ i, k });
 			
-		i += 29;
+		i += 30;
 		k.camera_state.eye_position = cgv::render::vec3(-0.75f, 0.679759f, -0.957661f);
 		keyframes.insert({ i, k });
 
@@ -98,6 +98,7 @@ struct animation_data {
 		i += 15;
 		keyframes.insert({ i, k });
 
+		// 48hr_A
 		i += 4*30;
 		k.camera_state = {
 			cgv::render::vec3(0.164111f, 0.121793f, -0.139523f),
@@ -116,6 +117,51 @@ struct animation_data {
 			cgv::render::vec3(-0.519882f, -0.360074f, -0.774641f)
 		};
 		keyframes.insert({ i, k });
+
+		
+		
+		// 40hr_A1
+		/*i += 4*30;
+		k.camera_state = {
+			cgv::render::vec3(-0.170842f, 0.0539438f, -0.0832538f),
+			cgv::render::vec3(-0.237523f, -0.02731f, -0.0136831f),
+			cgv::render::vec3(-0.393336f, -0.388872f, -0.833106f)
+		};
+		keyframes.insert({ i, k });
+
+		i += 30;
+		keyframes.insert({ i, k });
+
+		i += 4 * 30;
+		k.camera_state = {
+			cgv::render::vec3(-0.341674f, 0.000596929f, -0.0789718f),
+			cgv::render::vec3(-0.237523f, -0.02731f, -0.0136831f),
+			cgv::render::vec3(0.4766f, -0.212322f, -0.853095f)
+		};
+		keyframes.insert({ i, k });*/
+
+		
+			
+			
+		// 40hr_C1
+		/*i += 4 * 30;
+		k.camera_state = {
+			cgv::render::vec3(0.0899829f, -0.190682f, -0.113816f),
+			cgv::render::vec3(0.135027f, -0.232518, -0.0337936f),
+			cgv::render::vec3(0.395473f, -0.545062f, -0.739262f)
+		};
+		keyframes.insert({ i, k });
+
+		i += 30;
+		keyframes.insert({ i, k });
+
+		i += 4 * 30;
+		k.camera_state = {
+			cgv::render::vec3(0.188692f, -0.171772f, -0.0939006f),
+			cgv::render::vec3(0.135027f, -0.232518f, -0.0337936f),
+			cgv::render::vec3(-0.261154f, -0.353045f, -0.89842f)
+		};
+		keyframes.insert({ i, k });*/
 	}
 
 	std::map<size_t, keyframe>::iterator lower_keyframe(size_t frame) {
