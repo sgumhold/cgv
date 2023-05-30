@@ -32,17 +32,20 @@ protected:
 
 	bool animate = false;
 	bool record = false;
+	bool apply = false;
+	bool show = false;
 
 	void reset_animation() {
 
 		animation->reset();
 		animate = false;
 
-		animation->apply(view_ptr);
+		set_animation_state(false);
+
 		post_redraw();
 	}
 
-	void start_animation() {
+	void play_animation() {
 
 		animate = true;
 		post_redraw();
@@ -62,26 +65,17 @@ protected:
 		std::cout << "Up Dir = " << view_ptr->get_view_up_dir() << std::endl;
 	}
 
-	void set_animation_frame() {
+	bool set_animation_state(bool use_continuous_time) {
 
-		animation->use_continuous_time = false;
-		animation->apply(view_ptr);
+		animation->use_continuous_time = use_continuous_time;
+		// TODO: replace true with get valid frame from animation
+		bool run = apply ? animation->apply(view_ptr) : true;
 
 		if(keyframe_editor_ptr)
-			keyframe_editor_ptr->set_frame(animation->frame);
+			keyframe_editor_ptr->update();
 
 		post_redraw();
-	}
-
-	void set_animation_time() {
-
-		animation->use_continuous_time = true;
-		animation->apply(view_ptr);
-
-		//if(keyframe_editor_ptr)
-		//	keyframe_editor_ptr->set_frame(frame);
-
-		post_redraw();
+		return run;
 	}
 
 	void write_image(const std::string& file_name) {
@@ -95,6 +89,16 @@ protected:
 			std::cout << "Successfully wrote: " << file_name << std::endl;
 		else
 			std::cout << "Error while writing: " << file_name << std::endl;
+	}
+
+	void write_single_image() {
+
+		write_image("output.bmp");
+	}
+
+	void handle_editor_change() {
+
+		set_animation_state(false);
 	}
 
 public:

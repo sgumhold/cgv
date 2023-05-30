@@ -30,8 +30,6 @@ protected:
 
 	void post_recreate_layout();
 
-	void post_damage(bool redraw = true);
-
 	void clear_damage();
 
 	bool is_damaged() const;
@@ -59,6 +57,8 @@ public:
 	void register_shader(const std::string& name, const std::string& filename);
 
 	virtual void handle_theme_change(const cgv::gui::theme_info& theme) override;
+
+	void post_damage(bool redraw = true);
 };
 
 typedef cgv::data::ref_ptr<canvas_overlay> canvas_overlay_ptr;
