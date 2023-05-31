@@ -68,6 +68,15 @@ protected:
 	bool set_animation_state(bool use_continuous_time) {
 
 		animation->use_continuous_time = use_continuous_time;
+
+		if(use_continuous_time) {
+			animation->frame = static_cast<size_t>(animation->timecode * animation->time);
+			update_member(&animation->frame);
+		} else {
+			animation->time = static_cast<float>(animation->frame) / static_cast<float>(animation->timecode);
+			update_member(&animation->time);
+		}
+
 		// TODO: replace true with get valid frame from animation
 		bool run = apply ? animation->apply(view_ptr) : true;
 
@@ -98,7 +107,59 @@ protected:
 
 	void handle_editor_change() {
 
+		update_gui_time_limits(get_max_frame_and_time());
+
+		update_member(&animation->frame);
 		set_animation_state(false);
+	}
+
+	std::pair<size_t, float> get_max_frame_and_time() {
+
+		std::pair<size_t, float> pair;
+
+		pair.first = 0;
+		pair.second = 0.0f;
+
+		//size_t max_frame = 0;
+		//float max_time = 0.0f;
+		if(animation) {
+			pair.first = animation->frame_count();
+			pair.second = static_cast<float>(pair.first) / static_cast<float>(animation->timecode);
+		}
+
+		return pair;
+	}
+
+	template<typename T>
+	void set_control_property(T& control_value, const std::string& name, const std::string& value) {
+
+		int idx = 0;
+		auto control_ptr = find_control(control_value, &idx);
+
+		while(control_ptr) {
+			++idx;
+			control_ptr->set(name, value);
+			control_ptr = find_control(control_value, &idx);
+		}
+	}
+
+	void update_gui_time_limits(const std::pair<size_t, float>& limits) {
+
+		set_control_property(animation->frame, "max", std::to_string(limits.first));
+		set_control_property(animation->time, "max", std::to_string(limits.second));
+
+		/*auto control_ptr = find_control(animation->frame);
+		if(control_ptr)
+			control_ptr->set("max", limits.first);
+
+		int idx = 0;
+		auto control_ptr = find_control(animation->time, &idx);
+		if(control_ptr2)
+			control_ptr2->set("max", limits.second);
+		++idx;
+		//control_ptr = find_control(animation->time, &idx);
+		//if(control_ptr)
+		//	control_ptr->set("max", limits.second);*/
 	}
 
 public:
