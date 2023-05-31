@@ -31,6 +31,11 @@ bool canvas::init(cgv::render::context& ctx) {
 	return shaders.load_all(ctx);
 }
 
+bool canvas::has_shader(const std::string& name) const {
+
+	return shaders.contains(name);
+}
+
 cgv::render::shader_program& canvas::enable_shader(cgv::render::context& ctx, const std::string& name) {
 	auto& prog = shaders.get(name);
 	return enable_shader(ctx, prog);
