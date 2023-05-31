@@ -123,9 +123,9 @@ struct animation_data {
 		// 40hr_A1
 		/*i += 4*30;
 		k.camera_state = {
-			cgv::render::vec3(-0.170842f, 0.0539438f, -0.0832538f),
+			cgv::render::vec3(-0.195507f, 0.0609891f, -0.0932227f),
 			cgv::render::vec3(-0.237523f, -0.02731f, -0.0136831f),
-			cgv::render::vec3(-0.393336f, -0.388872f, -0.833106f)
+			cgv::render::vec3(-0.357586f, -0.524408f, -0.772741f)
 		};
 		keyframes.insert({ i, k });
 

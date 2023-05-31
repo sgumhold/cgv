@@ -154,10 +154,11 @@ public:
 					if(dragged) {
 						selected = dragged;
 						dragged = nullptr;
+
+						if(drag_end_callback) drag_end_callback();
 					} else {
 						selected = get_hit_draggable(mpos);
 					}
-					if(drag_end_callback) drag_end_callback();
 				}
 			}
 

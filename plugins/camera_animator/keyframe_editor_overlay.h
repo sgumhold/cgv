@@ -35,6 +35,7 @@ protected:
 		const int frame_width = 16;
 		const int scrollbar_height = 6;
 		int timeline_offset = 0;
+		size_t timeline_frames = 0;
 
 		cgv::g2d::irect container;
 		cgv::g2d::irect timeline;
@@ -43,14 +44,16 @@ protected:
 
 		void update(const ivec2& container_size, size_t frames) {
 
+			timeline_frames = frames + 120;
+
 			container.position = ivec2(0);
 			container.size = container_size;
 
 			timeline.position = ivec2(padding, container_size.y() - timeline_height - marker_height - padding);
 			
-			timeline.size.x() = frames == 0 ?
+			timeline.size.x() = timeline_frames == 0 ?
 				container_size.x() - 2 * padding :
-				frame_width * static_cast<int>(frames + 1);
+				frame_width * static_cast<int>(timeline_frames + 1);
 			timeline.size.y() = timeline_height;
 
 			scrollbar_constraint.position = ivec2(padding, 8);
@@ -92,6 +95,14 @@ protected:
 	cgv::g2d::draggable_collection<cgv::g2d::draggable> scrollbar;
 	cgv::g2d::draggable_collection<cgv::g2d::draggable> marker;
 
+	struct keyframe_draggable : public cgv::g2d::draggable {
+		size_t frame;
+
+		keyframe_draggable() : draggable() {}
+	};
+
+	cgv::g2d::draggable_collection<keyframe_draggable> keyframes;
+
 	size_t selected_frame = -1;
 
 	void handle_scrollbar_drag() {
@@ -109,7 +120,62 @@ protected:
 
 		const auto dragged = marker.get_dragged();
 		if(dragged)
-			set_frame(get_frame_from_position(static_cast<int>(round(dragged->position.x()))));
+			set_frame(get_frame_from_position(static_cast<int>(round(dragged->position.x()) + layout.padding / 2)));
+
+		post_damage();
+	}
+
+	void handle_keyframe_drag() {
+
+		const auto dragged = keyframes.get_dragged();
+
+		if(dragged) {
+			size_t frame = get_frame_from_position(static_cast<int>(round(dragged->position.x() + 0.5f * dragged->size.x())));
+			dragged->position.x() = frame * layout.frame_width + layout.padding;
+		}
+
+		post_damage();
+	}
+
+	void handle_keyframe_drag_end() {
+
+		const auto selected = keyframes.get_selected();
+
+		if(selected) {
+			size_t frame = get_frame_from_position(static_cast<int>(round(selected->position.x() + 0.5f * selected->size.x())));
+			selected->position.x() = selected->frame * layout.frame_width + layout.padding;
+
+			bool was_selected = selected->frame == selected_frame;
+
+			if(selected->frame != frame && data_ptr) {
+				auto target_it = data_ptr->keyframes.find(frame);
+
+				if(target_it == data_ptr->keyframes.end()) {
+
+					auto source_it = data_ptr->keyframes.find(selected->frame);
+					if(source_it != data_ptr->keyframes.end()) {
+						keyframe keyframe_copy = source_it->second;
+
+						data_ptr->keyframes.erase(source_it);
+						data_ptr->keyframes.insert({ frame, keyframe_copy });
+						selected->position.x() = frame * layout.frame_width + layout.padding;
+
+						post_recreate_layout();
+
+						if(on_change_callback)
+							on_change_callback();
+					}
+				}
+			} else {
+				selected_frame = frame;
+				set_frame(frame);
+			}
+			if(was_selected)
+				selected_frame = frame;
+		} else {
+			std::cout << "foo" << std::endl;
+			selected_frame = -1;
+		}
 
 		post_damage();
 	}
@@ -140,6 +206,25 @@ protected:
 		}
 	}
 	
+	void create_keyframe_draggables() {
+
+		if(data_ptr) {
+			const auto& kfs = data_ptr->keyframes;
+
+			keyframes.clear();
+			for(const auto& kf : kfs) {
+				keyframe_draggable d;
+
+				d.frame = kf.first;
+				d.position.x() = layout.padding + layout.frame_width * static_cast<int>(kf.first);
+				d.position.y() = layout.timeline.y();
+				d.size.x() = layout.frame_width;
+				d.size.y() = layout.timeline_height;
+				keyframes.add(d);
+			}
+		}
+	}
+
 	void init_styles(cgv::render::context& ctx) override;
 	
 	virtual void create_gui_impl();
@@ -165,11 +250,12 @@ public:
 	void set_data(std::shared_ptr<animation_data> data) {
 		
 		this->data_ptr = data;
-		post_damage();
+		update();
 	}
 
 	void update() {
 
+		create_keyframe_draggables();
 		set_marker_position_from_frame();
 		post_damage();
 	}

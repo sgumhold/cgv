@@ -41,6 +41,7 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 	
 	keyframe_editor_ptr = register_overlay<keyframe_editor_overlay>("Keyframe Editor");
 	keyframe_editor_ptr->set_on_change_callback(std::bind(&camera_animator::handle_editor_change, this));
+	keyframe_editor_ptr->set_visibility(show);
 
 	connect(cgv::gui::get_animation_trigger().shoot, this, &camera_animator::handle_timer_event);
 
@@ -184,6 +185,11 @@ void camera_animator::on_set(const cgv::app::on_set_evaluator& m) {
 
 	if(m.is(apply))
 		set_animation_state(false);
+
+	if(m.is(show)) {
+		if(keyframe_editor_ptr)
+			keyframe_editor_ptr->set_visibility(show);
+	}
 }
 
 bool camera_animator::on_exit_request() {
@@ -246,8 +252,10 @@ void camera_animator::init_frame(context& ctx) {
 
 void camera_animator::finish_frame(context& ctx) {
 
-	keyframes_rd.render(ctx, keyframe_renderer);
-	paths_rd.render(ctx, path_renderer);
+	if(show) {
+		keyframes_rd.render(ctx, keyframe_renderer);
+		paths_rd.render(ctx, path_renderer);
+	}
 }
 
 void camera_animator::after_finish(context& ctx) {
@@ -271,13 +279,22 @@ void camera_animator::create_gui() {
 
 	add_decorator("Camera Animator", "heading", "level=2");
 
-	add_member_control(this, "Frame", animation->frame, "value_slider", "min=0;max=120;step=1");
-	add_member_control(this, "Time", animation->time, "value_slider", "min=0;max=4;step=0.01");
-	add_member_control(this, "", animation->time, "wheel", "min=0;max=4;step=0.001");
+	auto limits = get_max_frame_and_time();
+
+	//size_t max_frame = 0;
+	//float max_time = 0.0f;
+	//if(animation) {
+	//	max_frame = animation->frame_count();
+	//	max_time = static_cast<float>(max_frame) / static_cast<float>(animation->timecode);
+	//}
+
+	add_member_control(this, "Frame", animation->frame, "value_slider", "min=0;max=" + std::to_string(limits.first) + ";step=1");
+	add_member_control(this, "Time", animation->time, "value_slider", "min=0;max=" + std::to_string(limits.second) + ";step=0.01");
+	add_member_control(this, "", animation->time, "wheel", "min=0;max=4" + std::to_string(limits.second) + ";step=0.005");
 
 	add_member_control(this, "Record", record, "check");
 	add_member_control(this, "Apply", apply, "check");
-	add_member_control(this, "Show Path", show, "check");
+	add_member_control(this, "Show", show, "check");
 	connect_copy(add_button("Play Animation")->click, rebind(this, &camera_animator::play_animation));
 	connect_copy(add_button("Pause Animation")->click, rebind(this, &camera_animator::pause_animation));
 	connect_copy(add_button("Reset Animation")->click, rebind(this, &camera_animator::reset_animation));
