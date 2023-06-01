@@ -217,6 +217,20 @@ bool fltk_base::set_void(fltk::Widget* w, cgv::base::named* nam, const std::stri
 		cursor = cursors[ei];
 		w->cursor(cursor);
 	}
+	else if(property == "font_style") {
+		std::string value;
+		get_variant(value, value_type, value_ptr);
+		int ei = cgv::utils::get_element_index(value, "regular,bold,italic,bold_italic", ',');
+		if(ei == -1)
+			ei = 0;
+		fltk::Font* const fonts[] = {
+			fltk::HELVETICA,
+			fltk::HELVETICA_BOLD,
+			fltk::HELVETICA_ITALIC,
+			fltk::HELVETICA_BOLD_ITALIC
+		};
+		w->labelfont(fonts[ei]);
+	}
 	else
 		return false;
 	w->redraw();
