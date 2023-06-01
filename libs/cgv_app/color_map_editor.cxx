@@ -43,10 +43,12 @@ color_map_editor::color_map_editor() {
 	cmc.color_points.set_constraint(layout.color_handles_rect);
 	cmc.color_points.set_drag_callback(std::bind(&color_map_editor::handle_color_point_drag, this));
 	cmc.color_points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
+	cmc.color_points.set_selection_change_callback(std::bind(&color_map_editor::handle_drag_end, this));
 
 	cmc.opacity_points.set_constraint(layout.opacity_editor_rect);
 	cmc.opacity_points.set_drag_callback(std::bind(&color_map_editor::handle_opacity_point_drag, this));
 	cmc.opacity_points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
+	cmc.opacity_points.set_selection_change_callback(std::bind(&color_map_editor::handle_drag_end, this));
 
 	color_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::arrow);
 	opacity_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
