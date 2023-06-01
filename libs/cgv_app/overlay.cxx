@@ -141,7 +141,6 @@ bool overlay::begin_overlay_gui() {
 
 	if(node_is_open) {
 		align("\a");
-		create_layout_gui();
 		return true;
 	}
 
@@ -208,10 +207,12 @@ void overlay::create_gui() {
 
 	if(gui_options.create_default_tree_node) {
 		if(begin_overlay_gui()) {
+			create_layout_gui();
 			create_gui_impl();
 			end_overlay_gui();
 		}
 	} else {
+		create_layout_gui();
 		create_gui_impl();
 	}
 }
