@@ -39,6 +39,7 @@ protected:
 	std::function<void(void)> drag_start_callback;
 	std::function<void(void)> drag_callback;
 	std::function<void(void)> drag_end_callback;
+	std::function<void(void)> selection_change_callback;
 
 	ptr_type get_hit_draggable(const ivec2& pos) {
 		ptr_type hit = nullptr;
@@ -65,6 +66,11 @@ public:
 
 	void add(T obj) {
 		draggables.push_back(obj);
+	}
+
+	bool empty() const {
+
+		return draggables.empty();
 	}
 
 	size_t size() const { return draggables.size(); }
@@ -120,6 +126,10 @@ public:
 	void set_drag_end_callback(std::function<void(void)> func) {
 		drag_end_callback = func;
 	}
+	
+	void set_selection_change_callback(std::function<void(void)> func) {
+		selection_change_callback = func;
+	}
 
 	void set_transformation(const mat3& matrix) {
 		inv_transformation = cgv::math::inv(matrix);
@@ -159,6 +169,7 @@ public:
 					} else {
 						selected = get_hit_draggable(mpos);
 					}
+					if(selection_change_callback) selection_change_callback();
 				}
 			}
 
