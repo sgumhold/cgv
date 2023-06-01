@@ -6,6 +6,118 @@
 
 
 
+template<class key_type, class value_type>
+class interval_map {
+private:
+	typedef typename std::map<key_type, value_type> map_type;
+	typedef typename map_type::size_type size_type;
+	typedef typename map_type::iterator iterator_type;
+	typedef typename map_type::const_iterator const_iterator_type;
+	typedef typename map_type::reverse_iterator reverse_iterator_type;
+	typedef typename map_type::const_reverse_iterator const_reverse_iterator_type;
+
+	map_type data;
+
+public:
+	void clear() {
+		data.clear();
+	}
+
+	bool empty() const {
+
+		return data.empty();
+	}
+
+	size_type size() const {
+
+		return data.size();
+	}
+
+	void insert(key_type key, const value_type& value) {
+
+		data.insert({ key, value });
+	}
+
+	size_type erase(key_type frame) {
+
+		return data.erase(frame);
+	}
+
+	iterator_type erase(iterator_type it) {
+
+		return data.erase(it);
+	}
+
+	iterator_type find(key_type key) {
+
+		return data.find(key);
+	}
+
+	bool move(key_type source_key, key_type target_key) {
+
+		auto target_it = data.find(target_key);
+
+		if(target_it == data.end()) {
+			auto source_it = data.find(source_key);
+
+			if(source_it != data.end()) {
+				value_type value_copy = source_it->second;
+
+				data.erase(source_it);
+				data.insert({ target_key, value_copy });
+
+				return true;
+			}
+		}
+		return false;
+	}
+
+	iterator_type begin() { return data.begin(); }
+
+	iterator_type end() { return data.end(); }
+
+	const_iterator_type begin() const { return data.cbegin(); }
+
+	const_iterator_type end() const { return data.cend(); }
+
+	reverse_iterator_type rbegin() { return data.rbegin(); }
+
+	reverse_iterator_type rend() { return data.rend(); }
+
+	const_reverse_iterator_type rbegin() const { return data.crbegin(); }
+
+	const_reverse_iterator_type rend() const { return data.crend(); }
+
+	// Returns an iterator pointing to the first element in the container whose key is equivalent or smaller than the given key. If no such element exists, returns end().
+	iterator_type lower_bound(key_type key) {
+
+		auto it = data.lower_bound(key);
+
+		if(it == data.end())
+			return data.empty() ? data.end() : std::prev(it);
+		else if(it->first == key)
+			return it;
+		else if(it == data.begin())
+			return data.end();
+		else
+			return std::prev(it);
+	}
+
+	// Returns an iterator pointing to the first element in the container whose key is greater than the given key. If no such element exists, returns end().
+	iterator_type upper_bound(key_type key) {
+
+		return data.upper_bound(key);
+	}
+
+	// Returns a pair of iterators pointing to the lower and upper bounds of the given key.
+	// The lower bound is defined as the greatest key <= than the given key.
+	// The upper bound is defined as the smallest key > than the given key.
+	std::pair<iterator_type, iterator_type> bounds(key_type key) {
+
+		return { lower_bound(key), upper_bound(key) };
+	}
+};
+
 struct view_parameters {
 	cgv::render::vec3 eye_position = cgv::render::vec3(0.0f, 0.0f, 1.0f);
 	cgv::render::vec3 focus_position = cgv::render::vec3(0.0f);
@@ -73,7 +185,7 @@ struct animation_data {
 	size_t frame = 0;
 	bool use_continuous_time = false;
 
-	std::map<size_t, keyframe> keyframes;
+	interval_map <size_t, keyframe> keyframes;
 
 	animation_data() {
 
@@ -81,22 +193,22 @@ struct animation_data {
 		keyframe k;
 		k.easing_function = &easing_functions::smoothstep7;
 		k.camera_state = { cgv::render::vec3(0.0f, 0.8f, -1.3f), cgv::render::vec3(0.0f), normalize(cgv::render::vec3(0.0f, -0.851069f, -0.524985f)) };
-		keyframes.insert({ i, k });
+		keyframes.insert(i, k);
 			
 		i += 30;
 		k.camera_state.eye_position = cgv::render::vec3(-0.75f, 0.679759f, -0.957661f);
-		keyframes.insert({ i, k });
+		keyframes.insert(i, k);
 
 		i += 60;
 		k.camera_state.eye_position = cgv::render::vec3(0.75f, 0.679759f, -0.957661f);
-		keyframes.insert({ i, k });
+		keyframes.insert(i, k);
 
 		i += 30;
 		k.camera_state.eye_position = cgv::render::vec3(0.0f, 0.8f, -1.3f);
-		keyframes.insert({ i, k });
+		keyframes.insert(i, k);
 
 		i += 15;
-		keyframes.insert({ i, k });
+		keyframes.insert(i, k);
 
 		// 48hr_A
 		i += 4*30;
@@ -105,10 +217,10 @@ struct animation_data {
 			cgv::render::vec3(0.227631f, 0.0562004f, -0.0379729f),
 			cgv::render::vec3(0.276855f, -0.718945f, -0.63755f)
 		};
-		keyframes.insert({ i, k });
+		keyframes.insert(i, k);
 
 		i += 30;
-		keyframes.insert({ i, k });
+		keyframes.insert(i, k);
 
 		i += 4 * 30;
 		k.camera_state = {
@@ -116,7 +228,7 @@ struct animation_data {
 			cgv::render::vec3(0.227631f, 0.0562004f, -0.0379729f),
 			cgv::render::vec3(-0.519882f, -0.360074f, -0.774641f)
 		};
-		keyframes.insert({ i, k });
+		keyframes.insert(i, k);
 
 		
 		
@@ -164,45 +276,28 @@ struct animation_data {
 		keyframes.insert({ i, k });*/
 	}
 
-	std::map<size_t, keyframe>::iterator lower_keyframe(size_t frame) {
-			
-		if(keyframes.empty())
-			return keyframes.end();
+	static std::function<float(float)> default_easing_function() {
 
-		auto it = keyframes.lower_bound(frame);
-
-		if(it == keyframes.end())
-			return std::prev(it);
-		else if(it->first == frame || it == keyframes.begin())
-			return it;
-		else
-			return std::prev(it);
-	}
-
-	std::map<size_t, keyframe>::iterator upper_keyframe(size_t frame) {
-
-		if(keyframes.empty())
-			return keyframes.end();
-
-		auto it = keyframes.upper_bound(frame);
-
-		if(it == keyframes.end())
-			return std::prev(it);
-		return it;
+		return &easing_functions::linear;
 	}
 
 	bool find_tween(size_t frame, tween_data& tween) {
 
-		auto it_lower = lower_keyframe(frame);
-		auto it_upper = upper_keyframe(frame);
+		auto pair = keyframes.bounds(frame);
 
-		if(it_lower == keyframes.end() || it_upper == keyframes.end())
+		if(pair.first == keyframes.end() && pair.second == keyframes.end())
 			return false;
 
-		tween.start_frame = it_lower->first;
-		tween.start_key = it_lower->second;
-		tween.end_frame = it_upper->first;
-		tween.end_key = it_upper->second;
+		if(pair.first == keyframes.end())
+			pair.first = pair.second;
+
+		if(pair.second == keyframes.end())
+			pair.second = pair.first;
+
+		tween.start_frame = pair.first->first;
+		tween.start_key = pair.first->second;
+		tween.end_frame = pair.second->first;
+		tween.end_key = pair.second->second;
 
 		return true;
 	}
@@ -221,62 +316,33 @@ struct animation_data {
 		frame = 0;
 	}
 
-	/*bool apply(cgv::render::view* view_ptr) {
+	view_parameters current_view() {
+
+		view_parameters view;
 
 		float tc = static_cast<float>(timecode);
-		size_t f = record ? frame : round(tc * elapsed_time);
+		size_t f = use_continuous_time ? round(tc * time) : frame;
 
-		bool valid = get_tween(f);
+		tween_data tween;
+		if(!find_tween(f, tween))
+			return view;
 
-		if(!valid) {
-			run = false;
-			return;
-		}
-
-		view_parameters camera_state;
-		if(record)
-			camera_state = current_tween.interpolate_by_frame(f);
-		else
-			camera_state = current_tween.interpolate_by_time(elapsed_time, tc);
-
-		view_ptr->set_view_up_dir(camera_state.up_direction);
-		view_ptr->set_focus(camera_state.focus_position);
-		view_ptr->set_eye_keep_view_angle(camera_state.eye_position);
-
-		return f < frame_count())
-	}*/
+		return use_continuous_time ? tween.interpolate_by_time(time, tc) : tween.interpolate_by_frame(f);
+	}
 
 	bool apply(cgv::render::view* view_ptr) {
 
+		float tc = static_cast<float>(timecode);
+		size_t f = use_continuous_time ? round(tc * time) : frame;
+
+		tween_data tween;
+		if(!find_tween(frame, tween))
+			return false;
+
 		if(use_continuous_time)
-			return apply(view_ptr, time);
+			set_view(view_ptr, tween.interpolate_by_time(time, tc));
 		else
-			return apply(view_ptr, frame);
-	}
-
-	bool apply(cgv::render::view* view_ptr, size_t frame) {
-
-		float tc = static_cast<float>(timecode);
-		
-		tween_data tween;
-		if(!find_tween(frame, tween))
-			return false;
-
-		set_view(view_ptr, tween.interpolate_by_frame(frame));
-		
-		return frame < frame_count();
-	}
-
-	bool apply(cgv::render::view* view_ptr, float time) {
-
-		float tc = static_cast<float>(timecode);
-		size_t frame = round(tc * time);
-
-		tween_data tween;
-		if(!find_tween(frame, tween))
-			return false;
-
-		set_view(view_ptr, tween.interpolate_by_time(time, tc));
+			set_view(view_ptr, tween.interpolate_by_frame(frame));
 
 		return frame < frame_count();
 	}
