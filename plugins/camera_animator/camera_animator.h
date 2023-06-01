@@ -16,29 +16,41 @@
 
 class CGV_API camera_animator : public cgv::app::application_plugin {
 protected:
-	
 	/// store a pointer to the view
 	cgv::render::view* view_ptr = nullptr;
 	
 	keyframe_editor_overlay_ptr keyframe_editor_ptr;
 
-	cgv::render::point_renderer keyframe_renderer;
-	cgv::render::line_renderer path_renderer;
+	cgv::render::point_renderer local_point_renderer;
+	cgv::render::line_renderer local_line_renderer;
 
+	cgv::render::point_render_data<> eye_rd;
 	cgv::render::point_render_data<> keyframes_rd;
 	cgv::render::line_render_data<> paths_rd;
+
+	cgv::render::rgb eye_color;
+	cgv::render::rgb focus_color;
 
 	std::shared_ptr<animation_data> animation;
 
 	bool animate = false;
 	bool record = false;
 	bool apply = false;
-	bool show = false;
+	bool show = true;
+
+	cgv::gui::button_ptr play_pause_btn;
+
+	void set_animate(bool flag) {
+
+		animate = flag;
+		play_pause_btn->set_name(animate ? "@pause" : "@play");
+		play_pause_btn->update();
+	}
 
 	void reset_animation() {
 
 		animation->reset();
-		animate = false;
+		set_animate(false);
 
 		set_animation_state(false);
 
@@ -47,38 +59,82 @@ protected:
 
 	void play_animation() {
 
-		animate = true;
+		set_animate(true);
 		post_redraw();
 	}
 
 	void pause_animation() {
 
-		animate = false;
+		set_animate(false);
 		post_redraw();
 	}
 
-	void print_view_information() {
+	void toggle_animation() {
+
+		set_animate(!animate);
+		post_redraw();
+	}
+
+	void skip_to_start() {
 		
-		std::cout << "View:" << std::endl;
-		std::cout << "Eye    = " << view_ptr->get_eye() << std::endl;
-		std::cout << "Focus  = " << view_ptr->get_focus() << std::endl;
-		std::cout << "Up Dir = " << view_ptr->get_view_up_dir() << std::endl;
+		animation->frame = 0;
+		set_animation_state(false);
+		post_redraw();
+	}
+
+	void skip_to_end() {
+
+		animation->frame = animation->frame_count();
+		set_animation_state(false);
+		set_animate(false);
+		post_redraw();
+	}
+
+	void skip_frame(bool reverse) {
+
+		if(reverse) {
+			if(animation->frame > 0)
+				animation->frame--;
+		} else {
+			if(animation->frame < animation->frame_count())
+				animation->frame++;
+		}
+
+		set_animation_state(false);
+		post_redraw();
 	}
 
 	bool set_animation_state(bool use_continuous_time) {
 
 		animation->use_continuous_time = use_continuous_time;
 
-		if(use_continuous_time) {
+		if(use_continuous_time)
 			animation->frame = static_cast<size_t>(animation->timecode * animation->time);
-			update_member(&animation->frame);
-		} else {
+		else
 			animation->time = static_cast<float>(animation->frame) / static_cast<float>(animation->timecode);
-			update_member(&animation->time);
-		}
 
-		// TODO: replace true with get valid frame from animation
-		bool run = apply ? animation->apply(view_ptr) : true;
+		update_member(&animation->frame);
+		update_member(&animation->time);
+
+		bool run = apply ? animation->apply(view_ptr) : animation->frame < animation->frame_count();
+
+
+
+
+		view_parameters view = animation->current_view();
+
+		if(eye_rd.render_count() == 2) {
+			eye_rd.ref_pos()[0] = view.eye_position;
+			eye_rd.ref_pos()[1] = view.focus_position;
+			eye_rd.set_out_of_date();
+		} else {
+			eye_rd.clear();
+			eye_rd.add(view.eye_position, 16.0f, eye_color);
+			eye_rd.add(view.focus_position, 12.0f, focus_color);
+		}
+	
+
+
 
 		if(keyframe_editor_ptr)
 			keyframe_editor_ptr->update();
@@ -106,6 +162,8 @@ protected:
 	}
 
 	void handle_editor_change() {
+
+		create_render_data();
 
 		update_gui_time_limits(get_max_frame_and_time());
 
@@ -147,19 +205,39 @@ protected:
 
 		set_control_property(animation->frame, "max", std::to_string(limits.first));
 		set_control_property(animation->time, "max", std::to_string(limits.second));
+	}
 
-		/*auto control_ptr = find_control(animation->frame);
-		if(control_ptr)
-			control_ptr->set("max", limits.first);
+	void create_render_data() {
 
-		int idx = 0;
-		auto control_ptr = find_control(animation->time, &idx);
-		if(control_ptr2)
-			control_ptr2->set("max", limits.second);
-		++idx;
-		//control_ptr = find_control(animation->time, &idx);
-		//if(control_ptr)
-		//	control_ptr->set("max", limits.second);*/
+		auto& theme = cgv::gui::theme_info::instance();
+
+		keyframes_rd.clear();
+		paths_rd.clear();
+
+		if(!animation)
+			return;
+
+		for(const auto& keyframe : animation->keyframes)
+			keyframes_rd.add(keyframe.second.camera_state.eye_position, 12.0f, theme.highlight());
+
+		for(const auto& keyframe : animation->keyframes)
+			keyframes_rd.add(keyframe.second.camera_state.focus_position, 8.0f, theme.warning());
+
+		for(size_t i = 1; i < keyframes_rd.ref_pos().size() / 2; ++i) {
+			const auto& position0 = keyframes_rd.ref_pos()[i - 1];
+			const auto& position1 = keyframes_rd.ref_pos()[i];
+
+			paths_rd.add(position0, position1);
+			paths_rd.add(theme.highlight());
+		}
+
+		for(size_t i = 1 + keyframes_rd.ref_pos().size() / 2; i < keyframes_rd.ref_pos().size(); ++i) {
+			const auto& position0 = keyframes_rd.ref_pos()[i - 1];
+			const auto& position1 = keyframes_rd.ref_pos()[i];
+
+			paths_rd.add(position0, position1);
+			paths_rd.add(theme.warning());
+		}
 	}
 
 public:

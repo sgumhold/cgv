@@ -4,6 +4,7 @@
 //#include <cgv/render/color_map.h>
 //#include <cgv/render/texture.h>
 //#include <cgv/utils/convert_string.h>
+#include <cgv/gui/dialog.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/math/ftransform.h>
@@ -36,6 +37,7 @@ protected:
 		const int scrollbar_height = 6;
 		int timeline_offset = 0;
 		size_t timeline_frames = 0;
+		rgb keyframe_color = rgb(0.5f);
 
 		cgv::g2d::irect container;
 		cgv::g2d::irect timeline;
@@ -71,7 +73,7 @@ protected:
 		}
 	} layout;
 
-	cgv::g2d::shape2d_style container_style, border_style, line_style, key_rect_style, marker_style, scrollbar_style;
+	cgv::g2d::shape2d_style container_style, border_style, rectangle_style, line_style, key_rect_style, scrollbar_style;
 	cgv::g2d::circle2d_style key_circle_style;
 	cgv::g2d::arrow2d_style marker_handle_style;
 	cgv::g2d::grid2d_style grid_style;
@@ -89,8 +91,57 @@ protected:
 		}
 	}
 
+	void erase_selected_keyframe() {
 
-	std::shared_ptr<animation_data> data_ptr;
+		if(data) {
+			data->keyframes.erase(selected_frame);
+
+			set_selected_frame(-1);
+
+			if(on_change_callback)
+				on_change_callback();
+		}
+	}
+
+	void add_keyframe() {
+
+		if(view_ptr && data) {
+			view_parameters view;
+			view.eye_position = view_ptr->get_eye();
+			view.focus_position = view_ptr->get_focus();
+			view.up_direction = view_ptr->get_view_up_dir();
+
+			auto it = data->keyframes.find(data->frame);
+			if(it == data->keyframes.end()) {
+				keyframe k;
+				k.camera_state = view;
+				k.easing_function = data->default_easing_function();
+
+				data->keyframes.insert(data->frame, k);
+			} else {
+				it->second.camera_state = view;
+			}
+
+			set_selected_frame(data->frame);
+
+			if(on_change_callback)
+				on_change_callback();
+		}
+	}
+
+	void show_help() {
+
+		std::string message =
+			">\tClick on a keyframe to select it.\n"
+			">\tDrag a keyframe to change its time. Dragging onto another keyframe will revert the drag.\n"
+			">\tClick \"Set\" to add a new keyframe or change the existing keyframe at the current time.";
+
+		cgv::gui::message(message);
+	}
+
+	cgv::render::view* view_ptr;
+
+	std::shared_ptr<animation_data> data;
 
 	cgv::g2d::draggable_collection<cgv::g2d::draggable> scrollbar;
 	cgv::g2d::draggable_collection<cgv::g2d::draggable> marker;
@@ -107,20 +158,26 @@ protected:
 
 	void handle_scrollbar_drag() {
 
-		const auto dragged = scrollbar.get_dragged();
-		if(dragged) {
-			float t = static_cast<float>(dragged->position.x() - layout.scrollbar_constraint.x()) / static_cast<float>(layout.scrollbar_constraint.w() - dragged->size.x());
-			layout.timeline_offset = static_cast<int>(t * (layout.timeline.w() - layout.scrollbar_constraint.w()));
-		}
+		if(scrollbar.get_dragged())
+			set_timeline_offset();
 
 		post_damage();
+	}
+
+	void set_timeline_offset() {
+
+		if(!scrollbar.empty()) {
+			const auto& handle = scrollbar[0];
+			float t = static_cast<float>(handle.x() - layout.scrollbar_constraint.x()) / static_cast<float>(layout.scrollbar_constraint.w() - handle.w());
+			layout.timeline_offset = static_cast<int>(t * (layout.timeline.w() - layout.scrollbar_constraint.w()));
+		}
 	}
 
 	void handle_marker_drag() {
 
 		const auto dragged = marker.get_dragged();
 		if(dragged)
-			set_frame(get_frame_from_position(static_cast<int>(round(dragged->position.x()) + layout.padding / 2)));
+			set_frame(position_to_frame(static_cast<int>(round(dragged->position.x()) + layout.padding / 2)));
 
 		post_damage();
 	}
@@ -130,7 +187,7 @@ protected:
 		const auto dragged = keyframes.get_dragged();
 
 		if(dragged) {
-			size_t frame = get_frame_from_position(static_cast<int>(round(dragged->position.x() + 0.5f * dragged->size.x())));
+			size_t frame = position_to_frame(static_cast<int>(round(dragged->position.x() + 0.5f * dragged->size.x())));
 			dragged->position.x() = frame * layout.frame_width + layout.padding;
 		}
 
@@ -142,53 +199,57 @@ protected:
 		const auto selected = keyframes.get_selected();
 
 		if(selected) {
-			size_t frame = get_frame_from_position(static_cast<int>(round(selected->position.x() + 0.5f * selected->size.x())));
+			size_t frame = position_to_frame(static_cast<int>(round(selected->position.x() + 0.5f * selected->size.x())));
 			selected->position.x() = selected->frame * layout.frame_width + layout.padding;
 
 			bool was_selected = selected->frame == selected_frame;
 
-			if(selected->frame != frame && data_ptr) {
-				auto target_it = data_ptr->keyframes.find(frame);
+			if(selected->frame != frame && data) {
 
-				if(target_it == data_ptr->keyframes.end()) {
+				if(data->keyframes.move(selected->frame, frame)) {
+					selected->position.x() = frame * layout.frame_width + layout.padding;
 
-					auto source_it = data_ptr->keyframes.find(selected->frame);
-					if(source_it != data_ptr->keyframes.end()) {
-						keyframe keyframe_copy = source_it->second;
+					post_recreate_layout();
 
-						data_ptr->keyframes.erase(source_it);
-						data_ptr->keyframes.insert({ frame, keyframe_copy });
-						selected->position.x() = frame * layout.frame_width + layout.padding;
-
-						post_recreate_layout();
-
-						if(on_change_callback)
-							on_change_callback();
-					}
+					if(on_change_callback)
+						on_change_callback();
 				}
 			} else {
-				selected_frame = frame;
-				set_frame(frame);
+				set_selected_frame(frame);
 			}
+
 			if(was_selected)
-				selected_frame = frame;
+				set_selected_frame(frame);
 		} else {
-			std::cout << "foo" << std::endl;
-			selected_frame = -1;
+			set_selected_frame(-1);
 		}
 
 		post_damage();
 	}
 
-	size_t get_frame_from_position(int position) {
+	void handle_keyframe_selection_change() {
+
+		const auto selected = keyframes.get_selected();
+		
+		set_selected_frame(selected ? selected->frame : -1);
+		
+		post_damage();
+	}
+	void set_selected_frame(size_t frame) {
+
+		selected_frame = frame;
+		post_recreate_gui();
+	}
+
+	size_t position_to_frame(int position) {
 
 		return (position - layout.padding) / layout.frame_width;
 	}
 
 	void set_frame(size_t frame) {
 
-		if(data_ptr) {
-			data_ptr->frame = static_cast<size_t>(frame);
+		if(data) {
+			data->frame = static_cast<size_t>(frame);
 			if(on_change_callback)
 				on_change_callback();
 
@@ -200,16 +261,16 @@ protected:
 
 	void set_marker_position_from_frame() {
 
-		if(data_ptr && marker.size()) {
-			marker[0].position.x() = data_ptr->frame * layout.frame_width + layout.padding;
+		if(data && !marker.empty()) {
+			marker[0].position.x() = data->frame * layout.frame_width + layout.padding;
 			post_damage();
 		}
 	}
 	
 	void create_keyframe_draggables() {
 
-		if(data_ptr) {
-			const auto& kfs = data_ptr->keyframes;
+		if(data) {
+			const auto& kfs = data->keyframes;
 
 			keyframes.clear();
 			for(const auto& kf : kfs) {
@@ -223,6 +284,12 @@ protected:
 				keyframes.add(d);
 			}
 		}
+	}
+
+	int frame_to_scrollbar_position(size_t frame) {
+
+		float t = static_cast<float>(frame) / static_cast<float>(layout.timeline_frames);
+		return static_cast<int>(layout.scrollbar_constraint.x() + t * layout.scrollbar_constraint.w());
 	}
 
 	void init_styles(cgv::render::context& ctx) override;
@@ -246,10 +313,14 @@ public:
 	void init_frame(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
 
-	
+	void set_view(cgv::render::view* view_ptr) {
+
+		this->view_ptr = view_ptr;
+	}
+
 	void set_data(std::shared_ptr<animation_data> data) {
 		
-		this->data_ptr = data;
+		this->data = data;
 		update();
 	}
 

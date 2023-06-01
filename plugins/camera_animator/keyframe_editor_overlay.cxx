@@ -23,8 +23,7 @@ keyframe_editor_overlay::keyframe_editor_overlay() {
 	marker.set_drag_callback(std::bind(&keyframe_editor_overlay::handle_marker_drag, this));
 	keyframes.set_drag_callback(std::bind(&keyframe_editor_overlay::handle_keyframe_drag, this));
 	keyframes.set_drag_end_callback(std::bind(&keyframe_editor_overlay::handle_keyframe_drag_end, this));
-
-	// TODO: add separate select callback
+	keyframes.set_selection_change_callback(std::bind(&keyframe_editor_overlay::handle_keyframe_selection_change, this));
 }
 
 void keyframe_editor_overlay::clear(context& ctx) {
@@ -137,42 +136,42 @@ bool keyframe_editor_overlay::handle_event(cgv::gui::event& e) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 		cgv::gui::MouseAction ma = me.get_action();
 
+		
 		if(me.get_button() == cgv::gui::MB_LEFT_BUTTON && ma == cgv::gui::MA_PRESS) {
 			ivec2 local_mouse_position = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
 
-			bool hit_marker_area = layout.marker_constraint.is_inside(local_mouse_position);
-			bool hit_timeline = layout.timeline.is_inside(local_mouse_position);
+			if(layout.marker_constraint.is_inside(local_mouse_position))
+				set_frame(position_to_frame(local_mouse_position.x() + layout.timeline_offset));
+			
+			if(!scrollbar.empty()) {
+				auto& handle = scrollbar[0];
 
-			size_t frame = get_frame_from_position(local_mouse_position.x() + layout.timeline_offset);
+				if(layout.scrollbar_constraint.is_inside(local_mouse_position) && !handle.is_inside(local_mouse_position)) {
+					handle.position = local_mouse_position.x() - 0.5f * handle.w();
+					handle.apply_constraint(layout.scrollbar_constraint);
 
-			//if(hit_timeline) {
-			//	auto it = data_ptr->keyframes.find(frame);
-			//	if(it != data_ptr->keyframes.end())
-			//		selected_frame = frame;
-			//}
-
-			if(hit_marker_area || hit_timeline)
-				set_frame(frame);
-			//else
-			//	selected_frame = -1;
+					set_timeline_offset();
+				}
+			}
 
 			post_damage();
 		}
 
-		//if(ma == cgv::gui::MA_PRESS && )
+		if(ma == cgv::gui::MA_WHEEL) {
+			if(!scrollbar.empty()) {
+				auto& handle = scrollbar[0];
 
-		/*
-		ma is one of:
-			cgv::gui::[
-				MA_DRAG,
-				MA_ENTER,
-				MA_LEAVE,
-				MA_MOVE,
-				MA_PRESS,
-				MA_RELEASE,
-				MA_WHEEL
-			]
-		*/
+				float frames_per_pixel = static_cast<float>(layout.timeline_frames) / layout.scrollbar_constraint.w();
+
+				handle.position += 5.0f * me.get_dy() / frames_per_pixel;
+				handle.apply_constraint(layout.scrollbar_constraint);
+
+				set_timeline_offset();
+				post_damage();
+				return true;
+			}
+		}
+
 		if(scrollbar.handle(e, get_viewport_size(), get_overlay_rectangle()))
 			return true;
 
@@ -214,9 +213,9 @@ bool keyframe_editor_overlay::init(context& ctx) {
 void keyframe_editor_overlay::init_frame(context& ctx) {
 
 	if(ensure_layout(ctx)) {
-		layout.update(get_overlay_size(), data_ptr ? data_ptr->frame_count() : 0);
+		layout.update(get_overlay_size(), data ? data->frame_count() : 0);
 
-		if(!scrollbar.size()) {
+		if(scrollbar.empty()) {
 			cgv::g2d::draggable handle;
 			handle.position = static_cast<vec2>(layout.scrollbar_constraint.position);
 			handle.size = vec2(16.0f, layout.scrollbar_height);
@@ -229,7 +228,7 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 
 		scrollbar.set_constraint(layout.scrollbar_constraint);
 
-		if(!marker.size()) {
+		if(marker.empty()) {
 			cgv::g2d::draggable handle;
 			handle.position = static_cast<vec2>(layout.marker_constraint.position);
 			// TODO: adjust width based on frame number
@@ -250,9 +249,9 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 		create_keyframe_draggables();
 		keyframes.set_constraint(layout.timeline);
 
-		if(data_ptr) {
-			if(data_ptr->frame > layout.timeline_frames) {
-				data_ptr->frame = layout.timeline_frames;
+		if(data) {
+			if(data->frame > layout.timeline_frames) {
+				data->frame = layout.timeline_frames;
 				if(on_change_callback)
 					on_change_callback();
 			}
@@ -271,14 +270,39 @@ void keyframe_editor_overlay::draw_content(context& ctx) {
 	container_style.apply(ctx, rect_prog);
 	content_canvas.draw_shape(ctx, layout.container);
 
+	// draw scrollbar
 	cgv::g2d::irect scrollbar_rect = layout.scrollbar_constraint;
 	scrollbar_rect.scale(1);
 
 	scrollbar_style.apply(ctx, rect_prog);
 	content_canvas.draw_shape(ctx, scrollbar_rect, theme.background());
-	content_canvas.draw_shape(ctx, scrollbar[0].position, scrollbar[0].size, theme.control());
+	content_canvas.draw_shape(ctx, scrollbar[0], theme.control());
 
-	if(data_ptr) {
+	if(data) {
+		rectangle_style.apply(ctx, rect_prog);
+
+		cgv::g2d::irect line_rect = scrollbar_rect;
+		line_rect.position.x() = frame_to_scrollbar_position(data->frame) - 1;
+		line_rect.size.x() = 3;
+		content_canvas.draw_shape(ctx, line_rect, theme.selection());
+
+		for(size_t i = 0; i < keyframes.size(); ++i) {
+			const auto& keyframe = keyframes[i];
+
+			line_rect = scrollbar_rect;
+			line_rect.position.x() = frame_to_scrollbar_position(keyframe.frame);
+			line_rect.size.x() = 1;
+
+			if(i > 0 && i < keyframes.size() - 1)
+				line_rect.scale(0, -3);
+
+			content_canvas.draw_shape(ctx, line_rect, layout.keyframe_color);
+		}
+
+		
+
+
+	
 		content_canvas.push_modelview_matrix();
 		content_canvas.mul_modelview_matrix(ctx, cgv::math::translate2h(vec2(-layout.timeline_offset, 0.0f)));
 
@@ -306,9 +330,10 @@ void keyframe_editor_overlay::draw_content(context& ctx) {
 		// draw time marker line
 		int marker_x = static_cast<int>(marker[0].position.x()) + 7;
 
-		marker_style.apply(ctx, rect_prog);
-		content_canvas.draw_shape(ctx, ivec2(marker_x, rectangle.y() + 1), ivec2(3, rectangle.h() + 4));
+		rectangle_style.apply(ctx, rect_prog);
+		content_canvas.draw_shape(ctx, ivec2(marker_x, rectangle.y() + 1), ivec2(3, rectangle.h() + 4), theme.selection());
 
+		
 
 
 		// draw keyframes
@@ -317,39 +342,11 @@ void keyframe_editor_overlay::draw_content(context& ctx) {
 		rectangle.size.y() = layout.timeline_height - 6;
 
 		key_rect_style.apply(ctx, rect_prog);
-		/*for(const auto& keyframe : data_ptr->keyframes) {
-			size_t index = keyframe.first;
-			rectangle.position.x() = layout.padding + layout.frame_width * static_cast<int>(index) + 3;
-
-			rgb color = rgb(theme.is_dark() ? 0.75f : 0.25f);
-			if(selected_frame == index)
-				color = theme.selection();
-
-			content_canvas.draw_shape(ctx, rectangle, color);
-		}
-
-		auto& circle_prog = content_canvas.enable_shader(ctx, "circle");
-
-		rectangle.size = 7;
-		rectangle.position.y() += layout.timeline_height - 15;
-
-		key_circle_style.apply(ctx, circle_prog);
-		for(const auto& keyframe : data_ptr->keyframes) {
-			size_t index = keyframe.first;
-			rectangle.position.x() = layout.padding + layout.frame_width * static_cast<int>(index) + 5;
-
-			content_canvas.draw_shape(ctx, rectangle);
-		}
-		*/
-
+		
 		for(size_t i = 0; i < keyframes.size(); ++i) {
 			const auto& keyframe = keyframes[i];
 			rectangle.position.x() = static_cast<int>(keyframe.position.x()) + 3;
-
-			rgb color = rgb(theme.is_dark() ? 0.75f : 0.25f);
-			if(selected_frame == keyframe.frame)
-				color = theme.highlight();
-
+			rgb color = selected_frame == keyframe.frame ? theme.highlight() : layout.keyframe_color;
 			content_canvas.draw_shape(ctx, rectangle, color);
 		}
 
@@ -362,7 +359,6 @@ void keyframe_editor_overlay::draw_content(context& ctx) {
 		for(size_t i = 0; i < keyframes.size(); ++i) {
 			const auto& keyframe = keyframes[i];
 			rectangle.position.x() = static_cast<int>(keyframe.position.x()) + 5;
-
 			content_canvas.draw_shape(ctx, rectangle);
 		}
 
@@ -396,7 +392,7 @@ void keyframe_editor_overlay::draw_content(context& ctx) {
 			return digits;
 		};
 
-		float marker_handle_width = static_cast<float>(layout.marker_width) + num_digits(data_ptr->frame) * 5.0f;
+		float marker_handle_width = static_cast<float>(layout.marker_width) + num_digits(data->frame) * 5.0f;
 
 		marker_handle_style.stem_width = marker_handle_width;
 		marker_handle_style.head_width = marker_handle_width;
@@ -406,7 +402,8 @@ void keyframe_editor_overlay::draw_content(context& ctx) {
 		//content_canvas.draw_shape2(ctx, ivec2(time_marker_position_x, padding), ivec2(time_marker_position_x, rectangle.y()));
 		content_canvas.draw_shape2(ctx, pos0, pos1);
 
-		labels.set_text(0, std::to_string(data_ptr->frame));
+		// draw frame labels
+		labels.set_text(0, std::to_string(data->frame));
 		labels.set_position(0, vec2(pos0.x(), pos1.y() + 7));
 		font_renderer.render(ctx, content_canvas, labels, label_style, 0, 1);
 
@@ -425,16 +422,12 @@ void keyframe_editor_overlay::draw_content(context& ctx) {
 	end_content(ctx);
 }
 
-/*void keyframe_editor_overlay::handle_node_editor_update() {
-
-	post_damage();
-}*/
-
 void keyframe_editor_overlay::init_styles(context& ctx) {
 	
 	// get theme info and colors
 	auto& theme = cgv::gui::theme_info::instance();
-	
+	layout.keyframe_color = rgb(theme.is_dark() ? 0.75f : 0.25f);
+
 	// configure style for the container rectangle
 	container_style.fill_color = theme.group();
 	container_style.border_color = theme.background();
@@ -446,11 +439,13 @@ void keyframe_editor_overlay::init_styles(context& ctx) {
 	border_style.fill_color = theme.border();
 	border_style.border_width = 1.0f;
 
+	rectangle_style.use_fill_color = false;
+	rectangle_style.feather_width = 0.0f;
+
 	line_style.fill_color = theme.background();
 	line_style.feather_width = 0.0f;
 
 	key_rect_style.use_fill_color = false;
-	//key_rect_style.fill_color = rgb(theme.is_dark() ? 0.75f : 0.25f);
 	key_rect_style.border_radius = 6.0f;
 	key_rect_style.feather_width = 1.0f;
 	key_rect_style.use_blending = true;
@@ -458,9 +453,6 @@ void keyframe_editor_overlay::init_styles(context& ctx) {
 	key_circle_style.fill_color = theme.border();
 	key_circle_style.border_width = 0.0f;
 	key_circle_style.use_blending = true;
-
-	marker_style.fill_color = theme.selection();
-	marker_style.feather_width = 0.0f;
 
 	marker_handle_style.fill_color = theme.selection();
 	marker_handle_style.border_radius = 3.0f;
@@ -480,21 +472,13 @@ void keyframe_editor_overlay::init_styles(context& ctx) {
 
 void keyframe_editor_overlay::create_gui_impl() {
 
-	//inline_object_gui(editor);
+	add_decorator("Keyframes", "heading", "w=168;level=4", " ");
+	connect_copy(add_button("?", "w=20;font_style='bold'")->click, rebind(this, &keyframe_editor_overlay::show_help));
 
-	//add_gui("", test_style);
-
-	/*add_member_control(this, "Width", layout.total_size[0], "value_slider", "min=40;max=500;step=1;ticks=true");
-	add_member_control(this, "Height", layout.total_size[1], "value_slider", "min=40;max=500;step=1;ticks=true");
-
-	add_member_control(this, "Background", show_background, "check", "w=100", " ");
-	add_member_control(this, "Invert Color", invert_color, "check", "w=88");
-
-	add_member_control(this, "Orientation", layout.orientation, "dropdown", "enums='Horizontal,Vertical'");
-	add_member_control(this, "Label Alignment", layout.label_alignment, "dropdown", "enums='-,Before,Inside,After'");
-
-	add_member_control(this, "Ticks", num_ticks, "value", "min=2;max=10;step=1");
-	add_member_control(this, "Number Precision", label_precision, "value", "w=60;min=0;max=10;step=1", " ");
-	add_member_control(this, "Auto", label_auto_precision, "check", "w=44", " ");
-	add_member_control(this, "Integers", label_integer_mode, "check", "w=72");*/
+	if(selected_frame != -1) {
+		add_decorator("Frame " + std::to_string(selected_frame), "heading", "level=4");
+		connect_copy(add_button("Remove", "tooltip='Remove the selected keyframe'")->click, rebind(this, &keyframe_editor_overlay::erase_selected_keyframe));
+	} else {
+		connect_copy(add_button("Set", "tooltip='Add or update keyframe at the current time'")->click, rebind(this, &keyframe_editor_overlay::add_keyframe));
+	}
 }

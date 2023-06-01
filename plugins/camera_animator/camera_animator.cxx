@@ -28,9 +28,11 @@ using namespace cgv::render;
 
 camera_animator::camera_animator() : application_plugin("Camera Animator") {
 
-	keyframes_rd.style.measure_point_size_in_pixel = true;
-	keyframes_rd.style.percentual_halo_width = 33.3f;
+	eye_rd.style.measure_point_size_in_pixel = true;
+	eye_rd.style.percentual_halo_width = 33.3f;
 
+	keyframes_rd.style = eye_rd.style;
+	
 	paths_rd.style.measure_line_width_in_pixel = true;
 	paths_rd.style.default_line_width = 2.0f;
 	paths_rd.style.halo_color = rgb(1.0f);
@@ -42,6 +44,8 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 	keyframe_editor_ptr = register_overlay<keyframe_editor_overlay>("Keyframe Editor");
 	keyframe_editor_ptr->set_on_change_callback(std::bind(&camera_animator::handle_editor_change, this));
 	keyframe_editor_ptr->set_visibility(show);
+	keyframe_editor_ptr->gui_options.create_default_tree_node = false;
+	keyframe_editor_ptr->gui_options.show_layout_options = false;
 
 	connect(cgv::gui::get_animation_trigger().shoot, this, &camera_animator::handle_timer_event);
 
@@ -50,9 +54,10 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 
 void camera_animator::clear(context& ctx) {
 
-	keyframe_renderer.clear(ctx);
-	path_renderer.clear(ctx);
+	local_point_renderer.clear(ctx);
+	local_line_renderer.clear(ctx);
 
+	eye_rd.destruct(ctx);
 	keyframes_rd.destruct(ctx);
 	paths_rd.destruct(ctx);
 }
@@ -165,7 +170,7 @@ void camera_animator::handle_timer_event(double t, double dt) {
 			animation->time += dt;
 			animation->frame = static_cast<size_t>(static_cast<float>(animation->timecode) * animation->time);
 		} else {
-			animate = false;
+			set_animate(false);
 		}
 	}
 }
@@ -209,52 +214,39 @@ bool camera_animator::init(context& ctx) {
 
 	bool success = true;
 
-	success &= keyframe_renderer.init(ctx);
-	success &= path_renderer.init(ctx);
+	success &= local_point_renderer.init(ctx);
+	success &= local_line_renderer.init(ctx);
 
+	success &= eye_rd.init(ctx);
 	success &= keyframes_rd.init(ctx);
 	success &= paths_rd.init(ctx);
 
 	auto& theme = cgv::gui::theme_info::instance();
+	eye_color = 0.5f * theme.highlight();
+	focus_color = 0.5f * theme.warning();
 
-	for(const auto& keyframe : animation->keyframes)
-		keyframes_rd.add(keyframe.second.camera_state.eye_position, 12.0f, theme.highlight());
-
-	for(const auto& keyframe : animation->keyframes)
-		keyframes_rd.add(keyframe.second.camera_state.focus_position, 8.0f, theme.warning());
-
-	for(size_t i = 1; i < keyframes_rd.ref_pos().size() / 2; ++i) {
-		const auto& position0 = keyframes_rd.ref_pos()[i - 1];
-		const auto& position1 = keyframes_rd.ref_pos()[i];
-
-		paths_rd.add(position0, position1);
-		paths_rd.add(theme.highlight());
-	}
-
-	for(size_t i = 1 + keyframes_rd.ref_pos().size() / 2; i < keyframes_rd.ref_pos().size(); ++i) {
-		const auto& position0 = keyframes_rd.ref_pos()[i - 1];
-		const auto& position1 = keyframes_rd.ref_pos()[i];
-
-		paths_rd.add(position0, position1);
-		paths_rd.add(theme.warning());
-	}
-	
 	if(keyframe_editor_ptr)
 		keyframe_editor_ptr->set_data(animation);
+
+	create_render_data();
 
 	return success;
 }
 
 void camera_animator::init_frame(context& ctx) {
 
-	if(!view_ptr && (view_ptr = find_view_as_node())) {}
+	if(!view_ptr && (view_ptr = find_view_as_node())) {
+		if(keyframe_editor_ptr)
+			keyframe_editor_ptr->set_view(view_ptr);
+	}
 }
 
 void camera_animator::finish_frame(context& ctx) {
 
 	if(show) {
-		keyframes_rd.render(ctx, keyframe_renderer);
-		paths_rd.render(ctx, path_renderer);
+		eye_rd.render(ctx, local_point_renderer);
+		keyframes_rd.render(ctx, local_point_renderer);
+		paths_rd.render(ctx, local_line_renderer);
 	}
 }
 
@@ -271,7 +263,7 @@ void camera_animator::after_finish(context& ctx) {
 		if(set_animation_state(false))
 			animation->frame += 1;
 		else
-			animate = false;
+			set_animate(false);
 	}
 }
 
@@ -279,28 +271,36 @@ void camera_animator::create_gui() {
 
 	add_decorator("Camera Animator", "heading", "level=2");
 
-	auto limits = get_max_frame_and_time();
+	add_member_control(this, "Show Controls", show, "check");
+	add_member_control(this, "Apply Animation", apply, "check");
 
-	//size_t max_frame = 0;
-	//float max_time = 0.0f;
-	//if(animation) {
-	//	max_frame = animation->frame_count();
-	//	max_time = static_cast<float>(max_frame) / static_cast<float>(animation->timecode);
-	//}
+	add_decorator("Playback", "heading", "level=4");
+
+	auto limits = get_max_frame_and_time();
 
 	add_member_control(this, "Frame", animation->frame, "value_slider", "min=0;max=" + std::to_string(limits.first) + ";step=1");
 	add_member_control(this, "Time", animation->time, "value_slider", "min=0;max=" + std::to_string(limits.second) + ";step=0.01");
 	add_member_control(this, "", animation->time, "wheel", "min=0;max=4" + std::to_string(limits.second) + ";step=0.005");
 
-	add_member_control(this, "Record", record, "check");
-	add_member_control(this, "Apply", apply, "check");
-	add_member_control(this, "Show", show, "check");
-	connect_copy(add_button("Play Animation")->click, rebind(this, &camera_animator::play_animation));
-	connect_copy(add_button("Pause Animation")->click, rebind(this, &camera_animator::pause_animation));
-	connect_copy(add_button("Reset Animation")->click, rebind(this, &camera_animator::reset_animation));
-	connect_copy(add_button("Print Info")->click, rebind(this, &camera_animator::print_view_information));
+	std::string options = "w=25;tooltip=";
+	constexpr char* align = "%x+=10";
+
+	connect_copy(add_button("@|<", options + "'Rewind to start (keep playing)'", align)->click, rebind(this, &camera_animator::skip_to_start));
+	connect_copy(add_button("@square", options + "'Stop playback'", align)->click, rebind(this, &camera_animator::reset_animation));
+	connect_copy(add_button("@<|", options + "'Previous frame'", align)->click, rebind(this, &camera_animator::skip_frame, cgv::signal::const_expression<bool>(true)));
+	play_pause_btn = add_button(animate ? "@pause" : "@play", options + "'Play/Pause'", align);
+	connect_copy(play_pause_btn->click, rebind(this, &camera_animator::toggle_animation));
+	connect_copy(add_button("@|>", options + "'Next frame'", align)->click, rebind(this, &camera_animator::skip_frame, cgv::signal::const_expression<bool>(false)));
+	connect_copy(add_button("@>|", options + "'Skip to end'")->click, rebind(this, &camera_animator::skip_to_end));
 	
-	connect_copy(add_button("Save Image")->click, rebind(this, &camera_animator::write_single_image));
+	add_decorator("", "separator");
+
+	// TODO: add field to define output folder
+
+	add_member_control(this, "Record to Disk", record, "check");
+	connect_copy(add_button("Save Current View")->click, rebind(this, &camera_animator::write_single_image));
+
+	add_decorator("", "separator");
 
 	inline_object_gui(keyframe_editor_ptr);
 }
