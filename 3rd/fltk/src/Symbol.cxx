@@ -782,6 +782,15 @@ static void draw_menu(Color col)
 	rectangle(-w, +0.70f, w, +0.55f, col);
 }
 
+static void draw_play(Color col) {
+	BP; vv(-1.0f, 1.0f); vv(-1.0f, -1.0f); vv(1.0f, 0.0f); EF(col);
+}
+
+static void draw_pause(Color col) {
+	rectangle(-1.0f, -1.0f, -0.5f, 1.0f, col);
+	rectangle(0.5f, -1.0f, 1.0f, 1.0f, col);
+}
+
 // These last two are probably obsolete:
 // static void draw_arrow(Color col)
 // {
@@ -833,6 +842,8 @@ static void init_symbols(void) {
   add_symbol("fileopen",	draw_fileopen,		1);
   add_symbol("filesave",	draw_filesave,		1);
   add_symbol("edit",		draw_edit,			1);
+  add_symbol("play",		draw_play,			1);
+  add_symbol("pause",		draw_pause,			1);
 }
 
 //
