@@ -27,24 +27,21 @@ struct on_set_evaluator {
 		return false;
 	}
 
-	template <typename T0, typename T1>
-	bool one_of(const T0& ref0, const T1& ref1) const {
-		return is(ref0) || is(ref1);
+	bool one_of() const {
+		return false;
 	}
 
-	template <typename T0, typename T1, typename T2>
-	bool one_of(const T0& ref0, const T1& ref1, const T2& ref2) const {
-		return is(ref0) || is(ref1) || is(ref2);
-	}
+	template <typename T, typename... Ts>
+	bool one_of(const T& ref, const Ts&... refs) const {
 
-	template <typename T0, typename T1, typename T2, typename T3>
-	bool one_of(const T0& ref0, const T1& ref1, const T2& ref2, const T3& ref3) const {
-		return is(ref0) || is(ref1) || is(ref2) || is(ref3);
-	}
+		/* C++ 17
+		if constexpr(sizeof...(refs))
+			return is(ref) || one_of(refs...);
+		else
+			return is(ref);
+		*/
 
-	template <typename T0, typename T1, typename T2, typename T3, typename T4>
-	bool one_of(const T0& ref0, const T1& ref1, const T2& ref2, const T3& ref3, const T4& ref4) const {
-		return is(ref0) || is(ref1) || is(ref2) || is(ref3) || is(ref4);
+		return is(ref) || one_of(refs...);
 	}
 
 	template <typename T, cgv::type::uint32_type N>
