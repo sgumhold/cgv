@@ -31,6 +31,13 @@ void overlay::on_layout_change() {
 	post_redraw();
 }
 
+void overlay::on_set(void* member_ptr) {
+
+	handle_on_set(on_set_evaluator(member_ptr));
+	update_member(member_ptr);
+	post_redraw();
+}
+
 void overlay::set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 _percentual_offset)
 {
 	horizontal_alignment = horizontal;

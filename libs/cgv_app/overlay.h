@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv_app/on_set_evaluator.h>
 #include <cgv/defines/deprecated.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
@@ -93,23 +94,24 @@ public:
 	virtual void stream_help(std::ostream& os) {};
 
 	/// finalize the handle method to prevent overloading in implementations of this class, use handle_events instead
-	virtual bool handle(cgv::gui::event& e) final {
-		return false;
-	};
+	virtual bool handle(cgv::gui::event& e) final { return false; };
 
 	/// overload this method to handle events
 	virtual bool handle_event(cgv::gui::event& e) { return false; };
 
+	/// default implementation of that calls handle_on_set and afterwards upates the member in the gui and post a redraw
+	virtual void on_set(void* member_ptr);
+
+	/// implement to handle member changes
+	virtual void handle_on_set(const on_set_evaluator& m) {}
+
 	bool blocks_events() const { return block_events; }
 
 	/// returns the current viewport size
-	ivec2 get_viewport_size() const {
-		return last_viewport_size;
-	}
+	ivec2 get_viewport_size() const { return last_viewport_size; }
 
 	/// returns the mouse position local to the container of this overlay
 	inline ivec2 get_local_mouse_pos(ivec2 mouse_pos) const {
-
 		return cgv::g2d::get_transformed_mouse_pos(mouse_pos, last_viewport_size) - container.position;
 	}
 

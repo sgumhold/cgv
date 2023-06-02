@@ -22,6 +22,8 @@ protected:
 
 	cgv::g2d::canvas content_canvas, overlay_canvas;
 
+	bool draw_in_finish_frame = false;
+
 	bool blend_overlay = false;
 	
 	void init_overlay_style(cgv::render::context& ctx);
@@ -42,6 +44,8 @@ protected:
 
 	void disable_blending();
 
+	void draw_impl(cgv::render::context& ctx);
+
 	virtual void init_styles(cgv::render::context& ctx) {}
 
 public:
@@ -50,8 +54,15 @@ public:
 
 	void clear(cgv::render::context& ctx);
 
+	/// default implementation of that calls handle_on_set and afterwards upates the member in the gui and post damage to the canvas overlay
+	virtual void on_set(void* member_ptr);
+
+	/// implement to handle member changes
+	virtual void handle_on_set(const on_set_evaluator& m) {}
+
 	bool init(cgv::render::context& ctx);
 	void draw(cgv::render::context& ctx);
+	void finish_frame(cgv::render::context&);
 	virtual void draw_content(cgv::render::context& ctx) = 0;
 
 	void register_shader(const std::string& name, const std::string& filename);
