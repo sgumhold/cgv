@@ -46,7 +46,7 @@ public:
 
 	virtual void on_set(void* member_ptr);
 
-	virtual void on_set(const on_set_evaluator& m) {}
+	virtual void handle_on_set(const on_set_evaluator& m) {}
 
 	virtual bool initialize_view_ptr() final;
 };

@@ -32,34 +32,23 @@ bool canvas_overlay::init(cgv::render::context& ctx) {
 	return success;
 }
 
+void canvas_overlay::on_set(void* member_ptr) {
+
+	handle_on_set(on_set_evaluator(member_ptr));
+	update_member(member_ptr);
+	post_damage();
+}
+
 void canvas_overlay::draw(cgv::render::context& ctx) {
 
-	if(!show)
-		return;
+	if(!draw_in_finish_frame && show)
+		draw_impl(ctx);
+}
 
-	GLboolean depth_test_was_enabled = false;
-	glGetBooleanv(GL_DEPTH_TEST, &depth_test_was_enabled);
-	if(depth_test_was_enabled)
-		glDisable(GL_DEPTH_TEST);
+void canvas_overlay::finish_frame(cgv::render::context& ctx) {
 
-	if(blend_overlay)
-		enable_blending();
-
-	if(has_damage)
-		draw_content(ctx);
-
-	// draw frame buffer texture to screen
-	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
-	fbc.enable_attachment(ctx, "color", 0);
-	overlay_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());
-	fbc.disable_attachment(ctx, "color");
-	overlay_canvas.disable_current_shader(ctx);
-
-	if(depth_test_was_enabled)
-		glEnable(GL_DEPTH_TEST);
-
-	if(blend_overlay)
-		disable_blending();
+	if(draw_in_finish_frame && show)
+		draw_impl(ctx);
 }
 
 void canvas_overlay::register_shader(const std::string& name, const std::string& filename) {
@@ -150,6 +139,33 @@ void canvas_overlay::disable_blending() {
 
 	if(!blending_was_enabled)
 		glDisable(GL_BLEND);
+}
+
+void canvas_overlay::draw_impl(cgv::render::context& ctx) {
+
+	GLboolean depth_test_was_enabled = false;
+	glGetBooleanv(GL_DEPTH_TEST, &depth_test_was_enabled);
+	if(depth_test_was_enabled)
+		glDisable(GL_DEPTH_TEST);
+
+	if(blend_overlay)
+		enable_blending();
+
+	if(has_damage)
+		draw_content(ctx);
+
+	// draw frame buffer texture to screen
+	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
+	fbc.enable_attachment(ctx, "color", 0);
+	overlay_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());
+	fbc.disable_attachment(ctx, "color");
+	overlay_canvas.disable_current_shader(ctx);
+
+	if(depth_test_was_enabled)
+		glEnable(GL_DEPTH_TEST);
+
+	if(blend_overlay)
+		disable_blending();
 }
 
 }
