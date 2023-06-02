@@ -31,6 +31,7 @@ protected:
 
 	std::vector<T> draggables;
 
+	bool press_inside;
 	ptr_type dragged;
 	ptr_type selected;
 
@@ -69,7 +70,6 @@ public:
 	}
 
 	bool empty() const {
-
 		return draggables.empty();
 	}
 
@@ -92,6 +92,10 @@ public:
 
 	ptr_type get_selected() {
 		return selected;
+	}
+
+	void clear_selected() {
+		selected = nullptr;
 	}
 
 	void set_selected(int i) {
@@ -143,49 +147,45 @@ public:
 			cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 			cgv::gui::MouseAction ma = me.get_action();
 
-			ivec2 mpos(me.get_x(), me.get_y());
-			mpos.y() = viewport_size.y() - mpos.y() - 1;
-			mpos -= container.position;
+			ivec2 mpos = cgv::g2d::get_local_mouse_pos(ivec2(me.get_x(), me.get_y()), viewport_size, container);
 
-			vec3 tmp = inv_transformation * vec3(mpos, 1.0f);
-			mpos.x() = static_cast<int>(tmp.x());
-			mpos.y() = static_cast<int>(tmp.y());
+			mpos = static_cast<ivec2>(inv_transformation * vec3(mpos, 1.0f));
 
 			if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
 				if(ma == cgv::gui::MA_PRESS) {
+					press_inside = has_constraint && !use_individual_constraints ? constraint_area.is_inside(mpos) : true;
 					dragged = get_hit_draggable(mpos);
-					selected = dragged;
-					if(dragged) {
-						offset = dragged->position - mpos;
-						if(drag_start_callback) drag_start_callback();
-						return true;
+
+					press_inside = press_inside || dragged;
+
+					if(press_inside) {
+						selected = dragged;
+						if(dragged) {
+							offset = dragged->position - mpos;
+							if(drag_start_callback) drag_start_callback();
+							return true;
+						}
 					}
 				} else if(ma == cgv::gui::MA_RELEASE) {
 					if(dragged) {
-						selected = dragged;
 						dragged = nullptr;
-
 						if(drag_end_callback) drag_end_callback();
-					} else {
+					} else if(press_inside) {
 						selected = get_hit_draggable(mpos);
+						if(selection_change_callback) selection_change_callback();
 					}
-					if(selection_change_callback) selection_change_callback();
 				}
 			}
 
 			if(me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
 				if(dragged) {
 					dragged->position = mpos + offset;
-					if(use_individual_constraints) {
-						if(dragged->get_constraint())
-							dragged->apply_constraint();
-						else
-							if(has_constraint)
-								dragged->apply_constraint(constraint_area);
-					} else {
-						if(has_constraint)
-							dragged->apply_constraint(constraint_area);
-					}
+					
+					if(use_individual_constraints && dragged->get_constraint())
+						dragged->apply_constraint();
+					else if(has_constraint)
+						dragged->apply_constraint(constraint_area);
+					
 					if(drag_callback) drag_callback();
 					return true;
 				}
