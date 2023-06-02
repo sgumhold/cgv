@@ -21,22 +21,25 @@ protected:
 	
 	keyframe_editor_overlay_ptr keyframe_editor_ptr;
 
+	cgv::render::rgb eye_color;
+	cgv::render::rgb focus_color;
+
 	cgv::render::point_renderer local_point_renderer;
 	cgv::render::line_renderer local_line_renderer;
 
-	cgv::render::point_render_data<> eye_rd;
-	cgv::render::point_render_data<> keyframes_rd;
-	cgv::render::line_render_data<> paths_rd;
+	cgv::render::point_render_data<> eye_rd, keyframes_rd;
+	cgv::render::line_render_data<> view_rd, paths_rd;
 
-	cgv::render::rgb eye_color;
-	cgv::render::rgb focus_color;
+	cgv::render::mat4 view_transformation;
 
 	std::shared_ptr<animation_data> animation;
 
 	bool animate = false;
 	bool record = false;
 	bool apply = false;
-	bool show = true;
+	bool show_camera = true;
+	bool show_path = true;
+	bool show_editor = true;
 
 	cgv::gui::button_ptr play_pause_btn;
 
@@ -116,12 +119,11 @@ protected:
 		update_member(&animation->frame);
 		update_member(&animation->time);
 
-		bool run = apply ? animation->apply(view_ptr) : animation->frame < animation->frame_count();
+		view_parameters view;
+		bool run = animation->current_view(view);
 
-
-
-
-		view_parameters view = animation->current_view();
+		if(run && apply)
+			view.apply(view_ptr);
 
 		if(eye_rd.render_count() == 2) {
 			eye_rd.ref_pos()[0] = view.eye_position;
@@ -132,9 +134,49 @@ protected:
 			eye_rd.add(view.eye_position, 16.0f, eye_color);
 			eye_rd.add(view.focus_position, 12.0f, focus_color);
 		}
-	
 
+		if(!view_rd.render_count()) {
+			view_rd.clear();
+			const vec3 org(0.0f);
+			const vec3 x_axis(1.0f, 0.0f, 0.0f);
+			const vec3 y_axis(0.0f, 1.0f, 0.0f);
+			const vec3 z_axis(0.0f, 0.0f, 1.0f);
 
+			view_rd.add(org, x_axis);
+			view_rd.add(org, y_axis);
+			view_rd.add(org, z_axis);
+			view_rd.add(rgb(1.0f, 0.0f, 0.0f));
+			view_rd.add(rgb(0.0f, 1.0f, 0.0f));
+			view_rd.add(rgb(0.0f, 0.0f, 1.0f));
+			
+			float a = view_ptr->get_tan_of_half_of_fovy(true);
+			
+			vec3 corner[4];
+			corner[0] = z_axis - a * x_axis - a * y_axis;
+			corner[1] = z_axis - a * x_axis + a * y_axis;
+			corner[2] = z_axis + a * x_axis - a * y_axis;
+			corner[3] = z_axis + a * x_axis + a * y_axis;
+
+			view_rd.add(org, corner[0]);
+			view_rd.add(org, corner[1]);
+			view_rd.add(org, corner[2]);
+			view_rd.add(org, corner[3]);
+			
+			view_rd.add(corner[0], corner[1]);
+			view_rd.add(corner[1], corner[3]);
+			view_rd.add(corner[3], corner[2]);
+			view_rd.add(corner[2], corner[0]);
+			
+			view_rd.fill(rgb(0.5f));
+		}
+
+		const float scale = 0.1f;
+
+		view_transformation.identity();
+		view_transformation.set_col(0, scale * vec4(view.side_direction(), 0.0f));
+		view_transformation.set_col(1, scale * vec4(view.up_direction, 0.0f));
+		view_transformation.set_col(2, scale * vec4(view.view_direction(), 0.0f));
+		view_transformation.set_col(3, vec4(view.eye_position, 1.0f));
 
 		if(keyframe_editor_ptr)
 			keyframe_editor_ptr->update();
@@ -253,7 +295,7 @@ public:
 	bool handle_event(cgv::gui::event& e);
 	void handle_timer_event(double t, double dt);
 	
-	void on_set(const cgv::app::on_set_evaluator& m);
+	void handle_on_set(const cgv::app::on_set_evaluator& m);
 	bool on_exit_request();
 
 	bool init(cgv::render::context& ctx);

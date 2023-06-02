@@ -122,13 +122,54 @@ struct view_parameters {
 	cgv::render::vec3 eye_position = cgv::render::vec3(0.0f, 0.0f, 1.0f);
 	cgv::render::vec3 focus_position = cgv::render::vec3(0.0f);
 	cgv::render::vec3 up_direction = cgv::render::vec3(0.0f, 1.0f, 0.0f);
+
+	void extract(const cgv::render::view* view_ptr) {
+
+		eye_position = view_ptr->get_eye();
+		focus_position = view_ptr->get_focus();
+		up_direction = view_ptr->get_view_up_dir();
+	}
+
+	void apply(cgv::render::view* view_ptr) const {
+
+		view_ptr->set_view_up_dir(up_direction);
+		view_ptr->set_focus(focus_position);
+		view_ptr->set_eye_keep_view_angle(eye_position);
+	}
+
+	cgv::render::vec3 view_direction() const {
+
+		return normalize(focus_position - eye_position);
+	}
+
+	cgv::render::vec3 side_direction() const {
+
+		return cross(view_direction(), up_direction);
+	}
 };
 
-struct keyframe {
+class keyframe {
+private:
+	easing_functions::Id _easing_id = easing_functions::Id::kNone;
+	std::function<float(float)> _easing_function = nullptr;
+
+public:
 	view_parameters camera_state;
-	std::function<float(float)> easing_function = nullptr;
 
 	keyframe() {}
+
+	void ease(easing_functions::Id id) {
+
+		_easing_id = id;
+		_easing_function = easing_functions::from_id(id);
+	}
+
+	easing_functions::Id easing_id() const { return _easing_id; }
+
+	std::function<float(float)> easing_function() const {
+
+		return _easing_function;
+	}
 };
 
 struct tween_data {
@@ -139,7 +180,7 @@ struct tween_data {
 
 	view_parameters interpolate(float t) {
 
-		auto ease = start_key.easing_function;
+		auto ease = start_key.easing_function();
 		t = ease ? ease(t) : t;
 
 		view_parameters state;
@@ -191,8 +232,9 @@ struct animation_data {
 
 		size_t i = 0;
 		keyframe k;
-		k.easing_function = &easing_functions::smoothstep7;
+		
 		k.camera_state = { cgv::render::vec3(0.0f, 0.8f, -1.3f), cgv::render::vec3(0.0f), normalize(cgv::render::vec3(0.0f, -0.851069f, -0.524985f)) };
+		k.ease(easing_functions::Id::kLinear);
 		keyframes.insert(i, k);
 			
 		i += 30;
@@ -276,10 +318,7 @@ struct animation_data {
 		keyframes.insert({ i, k });*/
 	}
 
-	static std::function<float(float)> default_easing_function() {
-
-		return &easing_functions::linear;
-	}
+	
 
 	bool find_tween(size_t frame, tween_data& tween) {
 
@@ -316,41 +355,16 @@ struct animation_data {
 		frame = 0;
 	}
 
-	view_parameters current_view() {
-
-		view_parameters view;
+	 bool current_view(view_parameters& parameters) {
 
 		float tc = static_cast<float>(timecode);
 		size_t f = use_continuous_time ? round(tc * time) : frame;
 
 		tween_data tween;
 		if(!find_tween(f, tween))
-			return view;
-
-		return use_continuous_time ? tween.interpolate_by_time(time, tc) : tween.interpolate_by_frame(f);
-	}
-
-	bool apply(cgv::render::view* view_ptr) {
-
-		float tc = static_cast<float>(timecode);
-		size_t f = use_continuous_time ? round(tc * time) : frame;
-
-		tween_data tween;
-		if(!find_tween(frame, tween))
 			return false;
 
-		if(use_continuous_time)
-			set_view(view_ptr, tween.interpolate_by_time(time, tc));
-		else
-			set_view(view_ptr, tween.interpolate_by_frame(frame));
-
-		return frame < frame_count();
-	}
-
-	void set_view(cgv::render::view* view_ptr, const view_parameters& parameters) {
-
-		view_ptr->set_view_up_dir(parameters.up_direction);
-		view_ptr->set_focus(parameters.focus_position);
-		view_ptr->set_eye_keep_view_angle(parameters.eye_position);
+		parameters = use_continuous_time ? tween.interpolate_by_time(time, tc) : tween.interpolate_by_frame(f);
+		return f <= frame_count();
 	}
 };

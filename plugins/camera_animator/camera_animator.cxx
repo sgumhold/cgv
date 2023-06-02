@@ -1,26 +1,7 @@
 #include "camera_animator.h"
 
-//#include <filesystem>
-//#include <random>
-//
-//#include <omp.h>
-//
-//#include <cgv/base/find_action.h>
-//#include <cgv/defines/quote.h>
-//#include <cgv/gui/dialog.h>
-//#include <cgv/gui/key_event.h>
-//#include <cgv/gui/mouse_event.h>
-//#include <cgv/gui/theme_info.h>
 #include <cgv/gui/theme_info.h>
 #include <cgv/gui/trigger.h>
-//#include <cgv/math/ftransform.h>
-//#include <cgv/media/image/image.h>
-//#include <cgv/media/image/image_reader.h>
-//#include <cgv/utils/advanced_scan.h>
-//#include <cgv/utils/file.h>
-//#include <cgv/utils/stopwatch.h>
-//#include <cgv_app/color_map_reader.h>
-//#include <cgv_app/color_map_writer.h>
 
 
 
@@ -40,10 +21,16 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 	paths_rd.style.percentual_halo_width = -100.0f;
 	paths_rd.style.blend_width_in_pixel = 1.0f;
 	paths_rd.style.blend_lines = true;
+
+	view_rd.style = paths_rd.style;
+	view_rd.style.default_line_width = 1.0f;
+	view_rd.style.percentual_halo_width = 0.0f;
 	
+	view_transformation.identity();
+
 	keyframe_editor_ptr = register_overlay<keyframe_editor_overlay>("Keyframe Editor");
 	keyframe_editor_ptr->set_on_change_callback(std::bind(&camera_animator::handle_editor_change, this));
-	keyframe_editor_ptr->set_visibility(show);
+	keyframe_editor_ptr->set_visibility(show_editor);
 	keyframe_editor_ptr->gui_options.create_default_tree_node = false;
 	keyframe_editor_ptr->gui_options.show_layout_options = false;
 
@@ -58,6 +45,7 @@ void camera_animator::clear(context& ctx) {
 	local_line_renderer.clear(ctx);
 
 	eye_rd.destruct(ctx);
+	view_rd.destruct(ctx);
 	keyframes_rd.destruct(ctx);
 	paths_rd.destruct(ctx);
 }
@@ -71,94 +59,34 @@ bool camera_animator::self_reflect(cgv::reflect::reflection_handler& rh) {
 bool camera_animator::handle_event(cgv::gui::event& e) {
 
 	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
-	/*unsigned et = e.get_kind();
+	unsigned et = e.get_kind();
 
 	if(et == cgv::gui::EID_KEY) {
 		cgv::gui::key_event& ke = (cgv::gui::key_event&)e;
 		cgv::gui::KeyAction ka = ke.get_action();
 
-		/* ka is one of:
-			cgv::gui::[
-				KA_PRESS,
-				KA_RELEASE,
-				KA_REPEAT
-			]
-		*
 		if(ka == cgv::gui::KA_PRESS) {
 			unsigned short key = ke.get_key();
 
-			bool handled = false;
-
 			switch(ke.get_key()) {
-			case 'T':
-				if(transfer_function_mode == TransferFunctionMode::k4Channel) {
-					if(tf_editor_ptr) {
-						tf_editor_ptr->toggle_visibility();
-						handled = true;
-					}
-				} else {
-					if(m_editor_lines_ptr) {
-						m_editor_lines_ptr->toggle_visibility();
-
-						set_tree_node_visibility(m_editor_lines_ptr, m_editor_lines_ptr->is_visible());
-						handled = true;
-					}
-				}
-				break;
-			case 'S':
-				if(m_editor_scatterplot_ptr) {
-					m_editor_scatterplot_ptr->toggle_visibility();
-
-					set_tree_node_visibility(m_editor_scatterplot_ptr, m_editor_scatterplot_ptr->is_visible());
-					handled = true;
-				}
-				break;
-			case 'P':
-				add_primitive();
-				if(!is_tree_node_visible(m_shared_data_ptr)) {
-					set_tree_node_visibility(m_shared_data_ptr, true);
-				}
-				break;
-			case 'R':
-				if(m_shared_data_ptr->is_primitive_selected) {
-					remove_primitive(m_shared_data_ptr->selected_primitive_id);
-					handled = true;
-				}
-				break;
-			case cgv::gui::KEY_Space:
-				is_peak_mode = !is_peak_mode;
-				handled = true;
-				break;
-			default: break;
-			}
-
-			if(handled) {
-				post_redraw();
+			case 'C':
+				show_camera = !show_camera;
+				on_set(&show_camera);
 				return true;
+			case 'T':
+				show_editor = !show_editor;
+				on_set(&show_editor);
+				return true;
+			case 'P':
+				show_path = !show_path;
+				on_set(&show_path);
+				return true;
+			default: break;
 			}
 		}
 
 		return false;
-	} else if(et == cgv::gui::EID_MOUSE) {
-		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&)e;
-		cgv::gui::MouseAction ma = me.get_action();
-
-		/* ma is one of:
-			cgv::gui::[
-				MA_DRAG,
-				MA_ENTER,
-				MA_LEAVE,
-				MA_MOVE,
-				MA_PRESS,
-				MA_RELEASE,
-				MA_WHEEL
-			]
-		*
-
-		return false;
-	} else {
-		return false;
-	}*/
+	}
 
 	return false;
 }
@@ -175,7 +103,7 @@ void camera_animator::handle_timer_event(double t, double dt) {
 	}
 }
 
-void camera_animator::on_set(const cgv::app::on_set_evaluator& m) {
+void camera_animator::handle_on_set(const cgv::app::on_set_evaluator& m) {
 
 	if(m.is(record)) {
 		get_context()->set_gamma(record ? 1.0f : 2.2f);
@@ -191,19 +119,17 @@ void camera_animator::on_set(const cgv::app::on_set_evaluator& m) {
 	if(m.is(apply))
 		set_animation_state(false);
 
-	if(m.is(show)) {
+	if(m.is(show_editor)) {
 		if(keyframe_editor_ptr)
-			keyframe_editor_ptr->set_visibility(show);
+			keyframe_editor_ptr->set_visibility(show_editor);
 	}
 }
 
 bool camera_animator::on_exit_request() {
-	/*// TODO: does not seem to fire when window is maximized?
-#ifndef _DEBUG
+	/*
 	if(fh.has_unsaved_changes) {
 		return cgv::gui::question("The transfer function has unsaved changes. Are you sure you want to quit?");
 	}
-#endif
 
 	save_data_set_meta_file(dataset.meta_fn);
 	*/
@@ -218,6 +144,7 @@ bool camera_animator::init(context& ctx) {
 	success &= local_line_renderer.init(ctx);
 
 	success &= eye_rd.init(ctx);
+	success &= view_rd.init(ctx);
 	success &= keyframes_rd.init(ctx);
 	success &= paths_rd.init(ctx);
 
@@ -243,8 +170,16 @@ void camera_animator::init_frame(context& ctx) {
 
 void camera_animator::finish_frame(context& ctx) {
 
-	if(show) {
+	if(show_camera) {
 		eye_rd.render(ctx, local_point_renderer);
+
+		ctx.push_modelview_matrix();
+		ctx.mul_modelview_matrix(view_transformation);
+		view_rd.render(ctx, local_line_renderer);
+		ctx.pop_modelview_matrix();
+	}
+
+	if(show_path) {
 		keyframes_rd.render(ctx, local_point_renderer);
 		paths_rd.render(ctx, local_line_renderer);
 	}
@@ -271,7 +206,9 @@ void camera_animator::create_gui() {
 
 	add_decorator("Camera Animator", "heading", "level=2");
 
-	add_member_control(this, "Show Controls", show, "check");
+	add_member_control(this, "Show Camera", show_camera, "check");
+	add_member_control(this, "Show Path", show_path, "check");
+	add_member_control(this, "Show Timeline", show_editor, "check");
 	add_member_control(this, "Apply Animation", apply, "check");
 
 	add_decorator("Playback", "heading", "level=4");
