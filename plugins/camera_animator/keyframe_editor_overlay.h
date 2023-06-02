@@ -1,9 +1,5 @@
 #pragma once
 
-//#include <cgv/math/ftransform.h>
-//#include <cgv/render/color_map.h>
-//#include <cgv/render/texture.h>
-//#include <cgv/utils/convert_string.h>
 #include <cgv/gui/dialog.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
@@ -11,16 +7,7 @@
 #include <cgv_app/canvas_overlay.h>
 #include <cgv_app/on_set_evaluator.h>
 #include <cgv_g2d/draggable_collection.h>
-//#include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
-
-
-//#include <cgv/base/node.h>
-//#include <cgv/gui/event_handler.h>
-//#include <cgv/gui/provider.h>
-//#include <cgv/render/drawable.h>
-//#include <cgv_app/application_plugin.h>
-//#include <cgv_app/on_set_evaluator.h>
 
 #include "animation_data.h"
 
@@ -81,16 +68,6 @@ protected:
 
 	cgv::g2d::msdf_text_geometry labels;
 	
-	//cgv::g2d::button_collection buttons;
-
-	void handle_button_click(const std::string& label) {
-
-		if(label == "") {
-			//stretch = stretch != StretchOption::SO_NONE ? StretchOption::SO_NONE : StretchOption::SO_BOTH;
-			//on_layout_change();
-		}
-	}
-
 	void erase_selected_keyframe() {
 
 		if(data) {
@@ -107,15 +84,13 @@ protected:
 
 		if(view_ptr && data) {
 			view_parameters view;
-			view.eye_position = view_ptr->get_eye();
-			view.focus_position = view_ptr->get_focus();
-			view.up_direction = view_ptr->get_view_up_dir();
-
+			view.extract(view_ptr);
+			
 			auto it = data->keyframes.find(data->frame);
 			if(it == data->keyframes.end()) {
 				keyframe k;
 				k.camera_state = view;
-				k.easing_function = data->default_easing_function();
+				k.ease(easing_functions::Id::kLinear);
 
 				data->keyframes.insert(data->frame, k);
 			} else {
@@ -238,6 +213,13 @@ protected:
 	void set_selected_frame(size_t frame) {
 
 		selected_frame = frame;
+
+		if(data) {
+			auto it = data->keyframes.find(selected_frame);
+			if(it != data->keyframes.end())
+				easing_function_id = it->second.easing_id();
+		}
+
 		post_recreate_gui();
 	}
 
@@ -298,14 +280,21 @@ protected:
 
 	std::function<void(void)> on_change_callback;
 
+
+
+	
+	easing_functions::Id easing_function_id = easing_functions::Id::kLinear;
+	
+
+
+
 public:
 	keyframe_editor_overlay();
 	std::string get_type_name() const { return "keyframe_editor_overlay"; }
 
 	void clear(cgv::render::context& ctx);
 
-	void on_set(void* member_ptr);
-	void on_set(const cgv::app::on_set_evaluator& m);
+	void handle_on_set(const cgv::app::on_set_evaluator& m);
 
 	bool handle_event(cgv::gui::event& e);
 

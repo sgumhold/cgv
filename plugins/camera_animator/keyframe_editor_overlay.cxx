@@ -10,6 +10,7 @@ keyframe_editor_overlay::keyframe_editor_overlay() {
 
 	set_name("Keyframe Editor");
 	block_events = true;
+	draw_in_finish_frame = true;
 	blend_overlay = true;
 	gui_options.allow_stretch = false;
 	gui_options.allow_margin = false;
@@ -34,68 +35,25 @@ void keyframe_editor_overlay::clear(context& ctx) {
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
 }
 
-void keyframe_editor_overlay::on_set(void* member_ptr) {
+void keyframe_editor_overlay::handle_on_set(const cgv::app::on_set_evaluator& m) {
 
-	on_set(cgv::app::on_set_evaluator(member_ptr));
-	update_member(member_ptr);
-	post_damage();
-}
+	if(m.is(easing_function_id)) {
+		// TODO: refactor to method
+		if(data) {
+			auto it = data->keyframes.find(selected_frame);
+			if(it != data->keyframes.end())
+				it->second.ease(easing_function_id);
 
-void keyframe_editor_overlay::on_set(const cgv::app::on_set_evaluator& m) {
-
-	/*if(m.component_of(layout.total_size)) {
-		vec2 size = get_overlay_size();
-
-		// TODO: minimum width and height depend on other layout parameters
-		layout.total_size.y() = std::max(layout.total_size.y(), 2 * layout.padding + 4 + layout.label_space);
-
-		set_overlay_size(layout.total_size);
-	}*/
-
-	/*if(m.is(show_background, invert_color)) {
-		auto ctx_ptr = get_context();
-		if(ctx_ptr)
-			init_styles(*ctx_ptr);
-	}*/
-
-	/*if(member_ptr == &layout.orientation ||
-		member_ptr == &layout.label_alignment ||
-		member_ptr == &range ||
-		member_ptr == &num_ticks ||
-		member_ptr == &label_precision ||
-		member_ptr == &label_auto_precision ||
-		member_ptr == &label_integer_mode) {
-		post_recreate_layout();
-	}*/
+			if(on_change_callback)
+				on_change_callback();
+		}
+	}
 }
 
 bool keyframe_editor_overlay::handle_event(cgv::gui::event& e) {
 
 	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
 	unsigned et = e.get_kind();
-
-	/*auto damage = [this]() {
-		post_damage();
-		return true;
-	};
-
-	cgv::g2d::irect button_container = get_overlay_rectangle();
-
-	button_container.translate(button_container.size - buttons.get_default_button_size() - padding);
-
-	if(buttons.handle(e, get_viewport_size(), button_container)) {
-		return damage();
-	}
-
-	if(editor->handle(e, get_viewport_size(), get_overlay_rectangle())) {
-		return damage();
-	}
-
-	//if(node_draggables.handle(e, get_overlay_size(), container)) {
-	//	post_damage();
-	//	return true;
-	//}
-	*/
 
 	cgv::g2d::irect container = get_overlay_rectangle();
 	container.position.x() -= layout.timeline_offset;
@@ -174,7 +132,7 @@ bool keyframe_editor_overlay::handle_event(cgv::gui::event& e) {
 
 		if(scrollbar.handle(e, get_viewport_size(), get_overlay_rectangle()))
 			return true;
-
+		
 		if(marker.handle(e, get_viewport_size(), container))
 			return true;
 
@@ -198,11 +156,6 @@ bool keyframe_editor_overlay::init(context& ctx) {
 
 	if(font.is_initialized())
 		labels.set_msdf_font(&font);
-
-	//buttons.init(ctx);
-	//buttons.set_default_button_size(ivec2(24));
-	//buttons.set_default_callback(std::bind(&node_editor_overlay::handle_button_click, this, std::placeholders::_1));
-	//buttons.add("[   ]", ivec2(0));
 
 	if(success)
 		init_styles(ctx);
@@ -231,7 +184,6 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 		if(marker.empty()) {
 			cgv::g2d::draggable handle;
 			handle.position = static_cast<vec2>(layout.marker_constraint.position);
-			// TODO: adjust width based on frame number
 			handle.size = vec2(layout.marker_height, layout.marker_width);
 			marker.add(handle);
 		}
@@ -477,6 +429,9 @@ void keyframe_editor_overlay::create_gui_impl() {
 
 	if(selected_frame != -1) {
 		add_decorator("Frame " + std::to_string(selected_frame), "heading", "level=4");
+
+		add_member_control(this, "Easing Function", easing_function_id, "dropdown", "enums='" + easing_functions::names_string() + "'");
+
 		connect_copy(add_button("Remove", "tooltip='Remove the selected keyframe'")->click, rebind(this, &keyframe_editor_overlay::erase_selected_keyframe));
 	} else {
 		connect_copy(add_button("Set", "tooltip='Add or update keyframe at the current time'")->click, rebind(this, &keyframe_editor_overlay::add_keyframe));
