@@ -6,6 +6,7 @@
 
 #include "rect.h"
 #include "draggable.h"
+#include "utils2d.h"
 
 #include "lib_begin.h"
 
