@@ -49,8 +49,6 @@ void finish_sdf_fragment2d(in float signed_distance, in vec4 color) {
 	signed_distance -= border_radius;
 
 	if(ring_width > 0.01)
-		// TODO: enable to control ring origin with "+ ring_width"
-		// --> needs to enlarge quad
 		signed_distance = abs(signed_distance + 0.5*ring_width) - 0.5*ring_width;
 
 	if(signed_distance > 0.0 && !use_blending)
