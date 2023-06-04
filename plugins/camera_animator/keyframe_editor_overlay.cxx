@@ -25,6 +25,10 @@ keyframe_editor_overlay::keyframe_editor_overlay() {
 	keyframes.set_drag_callback(std::bind(&keyframe_editor_overlay::handle_keyframe_drag, this));
 	keyframes.set_drag_end_callback(std::bind(&keyframe_editor_overlay::handle_keyframe_drag_end, this));
 	keyframes.set_selection_change_callback(std::bind(&keyframe_editor_overlay::handle_keyframe_selection_change, this));
+
+	help.add_bullet_point("Click on a keyframe to select it.");
+	help.add_bullet_point("Drag a keyframe to change its time. Dragging onto another keyframe will revert the drag.");
+	help.add_bullet_point("Click \"Set\" to add a new keyframe or change the existing keyframe at the current time.");
 }
 
 void keyframe_editor_overlay::clear(context& ctx) {
@@ -33,21 +37,6 @@ void keyframe_editor_overlay::clear(context& ctx) {
 
 	cgv::g2d::ref_msdf_font_regular(ctx, -1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
-}
-
-void keyframe_editor_overlay::handle_on_set(const cgv::app::on_set_evaluator& m) {
-
-	if(m.is(easing_function_id)) {
-		// TODO: refactor to method
-		if(data) {
-			auto it = data->keyframes.find(selected_frame);
-			if(it != data->keyframes.end())
-				it->second.ease(easing_function_id);
-
-			if(on_change_callback)
-				on_change_callback();
-		}
-	}
 }
 
 bool keyframe_editor_overlay::handle_event(cgv::gui::event& e) {
@@ -135,10 +124,22 @@ bool keyframe_editor_overlay::handle_event(cgv::gui::event& e) {
 		
 		if(marker.handle(e, get_viewport_size(), container))
 			return true;
+	}
+	
+	return false;
+}
 
-		return false;
-	} else {
-		return false;
+void keyframe_editor_overlay::handle_on_set(const cgv::app::on_set_evaluator& m) {
+
+	if(m.is(easing_function_id)) {
+		if(data) {
+			if(keyframe* k = data->keyframe_at(selected_frame)) {
+				k->ease(easing_function_id);
+
+				if(on_change_callback)
+					on_change_callback();
+			}
+		}
 	}
 }
 
@@ -171,7 +172,7 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 		if(scrollbar.empty()) {
 			cgv::g2d::draggable handle;
 			handle.position = static_cast<vec2>(layout.scrollbar_constraint.position);
-			handle.size = vec2(16.0f, layout.scrollbar_height);
+			handle.size = vec2(16.0f, static_cast<float>(layout.scrollbar_height));
 			scrollbar.add(handle);
 		}
 
@@ -184,7 +185,7 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 		if(marker.empty()) {
 			cgv::g2d::draggable handle;
 			handle.position = static_cast<vec2>(layout.marker_constraint.position);
-			handle.size = vec2(layout.marker_height, layout.marker_width);
+			handle.size = vec2(static_cast<float>(layout.marker_height), static_cast<float>(layout.marker_width));
 			marker.add(handle);
 		}
 
@@ -256,7 +257,7 @@ void keyframe_editor_overlay::draw_content(context& ctx) {
 
 	
 		content_canvas.push_modelview_matrix();
-		content_canvas.mul_modelview_matrix(ctx, cgv::math::translate2h(vec2(-layout.timeline_offset, 0.0f)));
+		content_canvas.mul_modelview_matrix(ctx, cgv::math::translate2h(vec2(static_cast<float>(-layout.timeline_offset), 0.0f)));
 
 		// draw inner border
 		border_style.apply(ctx, rect_prog);
@@ -374,6 +375,211 @@ void keyframe_editor_overlay::draw_content(context& ctx) {
 	end_content(ctx);
 }
 
+void keyframe_editor_overlay::set_view(cgv::render::view* view_ptr) {
+
+	this->view_ptr = view_ptr;
+}
+
+void keyframe_editor_overlay::set_data(std::shared_ptr<animation_data> data) {
+
+	this->data = data;
+	update();
+}
+
+void keyframe_editor_overlay::update() {
+
+	create_keyframe_draggables();
+	set_marker_position_from_frame();
+	post_damage();
+}
+
+void keyframe_editor_overlay::add_keyframe() {
+
+	if(view_ptr && data) {
+		view_parameters view;
+		view.extract(view_ptr);
+
+		if(keyframe* k = data->keyframe_at(data->frame))
+			k->camera_state = view;
+		else
+			data->keyframes.insert(data->frame, keyframe(view, easing_functions::Id::kLinear));
+
+		set_selected_frame(data->frame);
+
+		if(on_change_callback)
+			on_change_callback();
+	}
+}
+
+void keyframe_editor_overlay::erase_selected_keyframe() {
+
+	if(data) {
+		data->keyframes.erase(selected_frame);
+
+		set_selected_frame(-1);
+
+		if(on_change_callback)
+			on_change_callback();
+	}
+}
+
+size_t keyframe_editor_overlay::position_to_frame(int position) {
+
+	return (position - layout.padding) / layout.frame_width;
+}
+
+int keyframe_editor_overlay::frame_to_position(size_t frame) {
+
+	return static_cast<int>(frame) * layout.frame_width + layout.padding;
+}
+
+int keyframe_editor_overlay::frame_to_scrollbar_position(size_t frame) {
+
+	float t = static_cast<float>(frame) / static_cast<float>(layout.timeline_frames);
+	return static_cast<int>(layout.scrollbar_constraint.x() + t * layout.scrollbar_constraint.w());
+}
+
+void keyframe_editor_overlay::set_marker_position_from_frame() {
+
+	if(data && !marker.empty()) {
+		marker[0].x() = static_cast<float>(frame_to_position(data->frame));
+		post_damage();
+	}
+}
+
+void keyframe_editor_overlay::set_timeline_offset() {
+
+	if(!scrollbar.empty()) {
+		const auto& handle = scrollbar[0];
+		float t = static_cast<float>(handle.x() - layout.scrollbar_constraint.x()) / static_cast<float>(layout.scrollbar_constraint.w() - handle.w());
+		layout.timeline_offset = static_cast<int>(t * (layout.timeline.w() - layout.scrollbar_constraint.w()));
+	}
+}
+
+void keyframe_editor_overlay::set_frame(size_t frame) {
+
+	if(data) {
+		data->frame = frame;
+		if(on_change_callback)
+			on_change_callback();
+
+		set_marker_position_from_frame();
+
+		post_damage();
+	}
+}
+
+void keyframe_editor_overlay::set_selected_frame(size_t frame) {
+
+	selected_frame = frame;
+
+	if(data) {
+		if(keyframe* k = data->keyframe_at(selected_frame))
+			easing_function_id = k->easing_id();
+	}
+
+	post_recreate_gui();
+}
+
+void keyframe_editor_overlay::create_keyframe_draggables() {
+
+	if(data) {
+		const auto& kfs = data->keyframes;
+
+		keyframes.clear();
+		for(const auto& kf : kfs) {
+			keyframe_draggable d;
+
+			d.frame = kf.first;
+			d.x() = static_cast<float>(frame_to_position(kf.first));
+			d.y() = static_cast<float>(layout.timeline.y());
+			d.size = vec2(static_cast<float>(layout.frame_width), static_cast<float>(layout.timeline_height));
+			keyframes.add(d);
+		}
+	}
+}
+
+void keyframe_editor_overlay::handle_scrollbar_drag() {
+
+	if(scrollbar.get_dragged())
+		set_timeline_offset();
+
+	post_damage();
+}
+
+void keyframe_editor_overlay::handle_marker_drag() {
+
+	const auto dragged = marker.get_dragged();
+	if(dragged)
+		set_frame(position_to_frame(static_cast<int>(round(dragged->position.x()) + layout.padding / 2)));
+
+	post_damage();
+}
+
+void keyframe_editor_overlay::handle_keyframe_drag() {
+
+	const auto dragged = keyframes.get_dragged();
+
+	if(dragged) {
+		size_t frame = position_to_frame(static_cast<int>(round(dragged->position.x() + 0.5f * dragged->size.x())));
+		dragged->x() = static_cast<float>(frame_to_position(frame));
+	}
+
+	post_damage();
+}
+
+void keyframe_editor_overlay::handle_keyframe_drag_end() {
+
+	const auto selected = keyframes.get_selected();
+
+	if(selected) {
+		size_t frame = position_to_frame(static_cast<int>(round(selected->position.x() + 0.5f * selected->size.x())));
+		selected->x() = static_cast<float>(frame_to_position(selected->frame));
+
+		bool was_selected = selected->frame == selected_frame;
+
+		if(selected->frame != frame && data) {
+
+			if(data->keyframes.move(selected->frame, frame)) {
+				selected->x() = static_cast<float>(frame_to_position(frame));
+
+				post_recreate_layout();
+
+				if(on_change_callback)
+					on_change_callback();
+			}
+		} else {
+			set_selected_frame(frame);
+		}
+
+		if(was_selected)
+			set_selected_frame(frame);
+	} else {
+		set_selected_frame(-1);
+	}
+
+	post_damage();
+}
+
+void keyframe_editor_overlay::handle_keyframe_selection_change() {
+
+	const auto selected = keyframes.get_selected();
+
+	set_selected_frame(selected ? selected->frame : -1);
+
+	post_damage();
+}
+
+
+
+
+
+
+
+
+
+
+
 void keyframe_editor_overlay::init_styles(context& ctx) {
 	
 	// get theme info and colors
@@ -425,15 +631,16 @@ void keyframe_editor_overlay::init_styles(context& ctx) {
 void keyframe_editor_overlay::create_gui_impl() {
 
 	add_decorator("Keyframes", "heading", "w=168;level=4", " ");
-	connect_copy(add_button("?", "w=20;font_style='bold'")->click, rebind(this, &keyframe_editor_overlay::show_help));
-
+	help.create_button(this);
+	
 	if(selected_frame != -1) {
 		add_decorator("Frame " + std::to_string(selected_frame), "heading", "level=4");
 
 		add_member_control(this, "Easing Function", easing_function_id, "dropdown", "enums='" + easing_functions::names_string() + "'");
 
-		connect_copy(add_button("Remove", "tooltip='Remove the selected keyframe'")->click, rebind(this, &keyframe_editor_overlay::erase_selected_keyframe));
-	} else {
-		connect_copy(add_button("Set", "tooltip='Add or update keyframe at the current time'")->click, rebind(this, &keyframe_editor_overlay::add_keyframe));
+		connect_copy(add_button("Remove Selected", "tooltip='Remove the selected keyframe'")->click, rebind(this, &keyframe_editor_overlay::erase_selected_keyframe));
 	}
+
+	add_decorator("", "separator");
+	connect_copy(add_button("Set", "tooltip='Add or update keyframe at the current time'")->click, rebind(this, &keyframe_editor_overlay::add_keyframe));
 }

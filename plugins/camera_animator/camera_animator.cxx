@@ -3,8 +3,6 @@
 #include <cgv/gui/theme_info.h>
 #include <cgv/gui/trigger.h>
 
-
-
 using namespace cgv::render;
 
 camera_animator::camera_animator() : application_plugin("Camera Animator") {
@@ -95,8 +93,8 @@ void camera_animator::handle_timer_event(double t, double dt) {
 
 	if(animate && !record) {
 		if(set_animation_state(true)) {
-			animation->time += dt;
-			animation->frame = static_cast<size_t>(static_cast<float>(animation->timecode) * animation->time);
+			animation->time += static_cast<float>(dt);
+			animation->frame = animation->time_to_frame();
 		} else {
 			set_animate(false);
 		}
@@ -155,7 +153,10 @@ bool camera_animator::init(context& ctx) {
 	if(keyframe_editor_ptr)
 		keyframe_editor_ptr->set_data(animation);
 
-	create_render_data();
+	view_parameters view;
+	animation->current_view(view);
+	create_camera_render_data(view);
+	create_path_render_data();
 
 	return success;
 }
@@ -240,6 +241,211 @@ void camera_animator::create_gui() {
 	add_decorator("", "separator");
 
 	inline_object_gui(keyframe_editor_ptr);
+}
+
+void camera_animator::set_animate(bool flag) {
+
+	animate = flag;
+	play_pause_btn->set_name(animate ? "@pause" : "@play");
+	play_pause_btn->update();
+	post_redraw();
+}
+
+void camera_animator::reset_animation() {
+
+	animation->reset();
+	set_animate(false);
+	set_animation_state(false);
+}
+
+void camera_animator::toggle_animation() {
+
+	set_animate(!animate);
+}
+
+void camera_animator::skip_to_start() {
+
+	animation->frame = 0;
+	set_animation_state(false);
+}
+
+void camera_animator::skip_to_end() {
+
+	animation->frame = animation->frame_count();
+	set_animation_state(false);
+	set_animate(false);
+}
+
+void camera_animator::skip_frame(bool reverse) {
+
+	if(reverse) {
+		if(animation->frame > 0)
+			animation->frame--;
+	} else {
+		if(animation->frame < animation->frame_count())
+			animation->frame++;
+	}
+
+	set_animation_state(false);
+}
+
+bool camera_animator::set_animation_state(bool use_continuous_time) {
+
+	animation->use_continuous_time = use_continuous_time;
+
+	if(use_continuous_time)
+		animation->frame = static_cast<size_t>(animation->timecode * animation->time);
+	else
+		animation->time = static_cast<float>(animation->frame) / static_cast<float>(animation->timecode);
+
+	update_member(&animation->frame);
+	update_member(&animation->time);
+
+	view_parameters view;
+	bool run = animation->current_view(view);
+
+	if(run && apply)
+		view.apply(view_ptr);
+
+	create_camera_render_data(view);
+
+	if(keyframe_editor_ptr)
+		keyframe_editor_ptr->update();
+
+	post_redraw();
+	return run;
+}
+
+std::pair<size_t, float> camera_animator::get_max_frame_and_time() {
+
+	if(animation)
+		return { animation->frame_count(), animation->duration() };
+	return { 0ull, 0.0f };
+}
+
+void camera_animator::create_camera_render_data(const view_parameters& view) {
+
+	if(!view_ptr)
+		return;
+
+	if(eye_rd.render_count() == 2) {
+		eye_rd.ref_pos()[0] = view.eye_position;
+		eye_rd.ref_pos()[1] = view.focus_position;
+		eye_rd.set_out_of_date();
+	} else {
+		eye_rd.clear();
+		eye_rd.add(view.eye_position, 16.0f, eye_color);
+		eye_rd.add(view.focus_position, 12.0f, focus_color);
+	}
+
+	if(!view_rd.render_count()) {
+		view_rd.clear();
+		const vec3 org(0.0f);
+		const vec3 x_axis(1.0f, 0.0f, 0.0f);
+		const vec3 y_axis(0.0f, 1.0f, 0.0f);
+		const vec3 z_axis(0.0f, 0.0f, 1.0f);
+
+		view_rd.add(org, x_axis);
+		view_rd.add(org, y_axis);
+		view_rd.add(org, z_axis);
+		view_rd.add(rgb(1.0f, 0.0f, 0.0f));
+		view_rd.add(rgb(0.0f, 1.0f, 0.0f));
+		view_rd.add(rgb(0.0f, 0.0f, 1.0f));
+
+		float a = static_cast<float>(view_ptr->get_tan_of_half_of_fovy(true));
+
+		vec3 corner[4];
+		corner[0] = z_axis - a * x_axis - a * y_axis;
+		corner[1] = z_axis - a * x_axis + a * y_axis;
+		corner[2] = z_axis + a * x_axis - a * y_axis;
+		corner[3] = z_axis + a * x_axis + a * y_axis;
+
+		view_rd.add(org, corner[0]);
+		view_rd.add(org, corner[1]);
+		view_rd.add(org, corner[2]);
+		view_rd.add(org, corner[3]);
+
+		view_rd.add(corner[0], corner[1]);
+		view_rd.add(corner[1], corner[3]);
+		view_rd.add(corner[3], corner[2]);
+		view_rd.add(corner[2], corner[0]);
+
+		view_rd.fill(rgb(0.5f));
+	}
+
+	const float scale = 0.1f;
+
+	view_transformation.identity();
+	view_transformation.set_col(0, scale * vec4(view.side_direction(), 0.0f));
+	view_transformation.set_col(1, scale * vec4(view.up_direction, 0.0f));
+	view_transformation.set_col(2, scale * vec4(view.view_direction(), 0.0f));
+	view_transformation.set_col(3, vec4(view.eye_position, 1.0f));
+}
+
+void camera_animator::create_path_render_data() {
+
+	auto& theme = cgv::gui::theme_info::instance();
+
+	keyframes_rd.clear();
+	paths_rd.clear();
+
+	if(!animation)
+		return;
+
+	for(const auto& keyframe : animation->keyframes)
+		keyframes_rd.add(keyframe.second.camera_state.eye_position, 12.0f, theme.highlight());
+
+	for(const auto& keyframe : animation->keyframes)
+		keyframes_rd.add(keyframe.second.camera_state.focus_position, 8.0f, theme.warning());
+
+	for(size_t i = 1; i < keyframes_rd.ref_pos().size() / 2; ++i) {
+		const auto& position0 = keyframes_rd.ref_pos()[i - 1];
+		const auto& position1 = keyframes_rd.ref_pos()[i];
+
+		paths_rd.add(position0, position1);
+		paths_rd.add(theme.highlight());
+	}
+
+	for(size_t i = 1 + keyframes_rd.ref_pos().size() / 2; i < keyframes_rd.ref_pos().size(); ++i) {
+		const auto& position0 = keyframes_rd.ref_pos()[i - 1];
+		const auto& position1 = keyframes_rd.ref_pos()[i];
+
+		paths_rd.add(position0, position1);
+		paths_rd.add(theme.warning());
+	}
+}
+
+void camera_animator::handle_editor_change() {
+
+	create_path_render_data();
+
+	auto limits = get_max_frame_and_time();
+
+	set_control_property(animation->frame, "max", std::to_string(limits.first));
+	set_control_property(animation->time, "max", std::to_string(limits.second));
+
+	update_member(&animation->frame);
+	set_animation_state(false);
+}
+
+void camera_animator::write_image(const std::string& file_name) {
+
+	std::string folder_path = cgv::utils::file::get_path(file_name);
+
+	if(!cgv::utils::dir::exists(folder_path))
+		cgv::utils::dir::mkdir(folder_path);
+
+	std::cout << "Writing " << file_name << " ...";
+	if(get_context()->write_frame_buffer_to_image(file_name, cgv::data::CF_RGB, cgv::render::FB_FRONT))
+		std::cout << "OK" << std::endl;
+	else
+		std::cout << "Error" << std::endl;
+}
+
+// TODO: use specified output path (plus frame number if animation is defined)
+void camera_animator::write_single_image() {
+
+	write_image("output.bmp");
 }
 
 #include <cgv/base/register.h>

@@ -5,13 +5,12 @@
 #include <cgv/gui/mouse_event.h>
 #include <cgv/math/ftransform.h>
 #include <cgv_app/canvas_overlay.h>
+#include <cgv_app/help_message.h>
 #include <cgv_app/on_set_evaluator.h>
 #include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 
 #include "animation_data.h"
-
-
 
 class keyframe_editor_overlay : public cgv::app::canvas_overlay {
 protected:
@@ -60,233 +59,68 @@ protected:
 		}
 	} layout;
 
-	cgv::g2d::shape2d_style container_style, border_style, rectangle_style, line_style, key_rect_style, scrollbar_style;
-	cgv::g2d::circle2d_style key_circle_style;
-	cgv::g2d::arrow2d_style marker_handle_style;
-	cgv::g2d::grid2d_style grid_style;
-	cgv::g2d::text2d_style label_style;
-
-	cgv::g2d::msdf_text_geometry labels;
-	
-	void erase_selected_keyframe() {
-
-		if(data) {
-			data->keyframes.erase(selected_frame);
-
-			set_selected_frame(-1);
-
-			if(on_change_callback)
-				on_change_callback();
-		}
-	}
-
-	void add_keyframe() {
-
-		if(view_ptr && data) {
-			view_parameters view;
-			view.extract(view_ptr);
-			
-			auto it = data->keyframes.find(data->frame);
-			if(it == data->keyframes.end()) {
-				keyframe k;
-				k.camera_state = view;
-				k.ease(easing_functions::Id::kLinear);
-
-				data->keyframes.insert(data->frame, k);
-			} else {
-				it->second.camera_state = view;
-			}
-
-			set_selected_frame(data->frame);
-
-			if(on_change_callback)
-				on_change_callback();
-		}
-	}
-
-	void show_help() {
-
-		std::string message =
-			">\tClick on a keyframe to select it.\n"
-			">\tDrag a keyframe to change its time. Dragging onto another keyframe will revert the drag.\n"
-			">\tClick \"Set\" to add a new keyframe or change the existing keyframe at the current time.";
-
-		cgv::gui::message(message);
-	}
-
-	cgv::render::view* view_ptr;
-
-	std::shared_ptr<animation_data> data;
-
-	cgv::g2d::draggable_collection<cgv::g2d::draggable> scrollbar;
-	cgv::g2d::draggable_collection<cgv::g2d::draggable> marker;
-
 	struct keyframe_draggable : public cgv::g2d::draggable {
 		size_t frame;
 
 		keyframe_draggable() : draggable() {}
 	};
 
-	cgv::g2d::draggable_collection<keyframe_draggable> keyframes;
+	cgv::render::view* view_ptr;
+
+	std::shared_ptr<animation_data> data;
 
 	size_t selected_frame = -1;
+	easing_functions::Id easing_function_id = easing_functions::Id::kLinear;
 
-	void handle_scrollbar_drag() {
-
-		if(scrollbar.get_dragged())
-			set_timeline_offset();
-
-		post_damage();
-	}
-
-	void set_timeline_offset() {
-
-		if(!scrollbar.empty()) {
-			const auto& handle = scrollbar[0];
-			float t = static_cast<float>(handle.x() - layout.scrollbar_constraint.x()) / static_cast<float>(layout.scrollbar_constraint.w() - handle.w());
-			layout.timeline_offset = static_cast<int>(t * (layout.timeline.w() - layout.scrollbar_constraint.w()));
-		}
-	}
-
-	void handle_marker_drag() {
-
-		const auto dragged = marker.get_dragged();
-		if(dragged)
-			set_frame(position_to_frame(static_cast<int>(round(dragged->position.x()) + layout.padding / 2)));
-
-		post_damage();
-	}
-
-	void handle_keyframe_drag() {
-
-		const auto dragged = keyframes.get_dragged();
-
-		if(dragged) {
-			size_t frame = position_to_frame(static_cast<int>(round(dragged->position.x() + 0.5f * dragged->size.x())));
-			dragged->position.x() = frame * layout.frame_width + layout.padding;
-		}
-
-		post_damage();
-	}
-
-	void handle_keyframe_drag_end() {
-
-		const auto selected = keyframes.get_selected();
-
-		if(selected) {
-			size_t frame = position_to_frame(static_cast<int>(round(selected->position.x() + 0.5f * selected->size.x())));
-			selected->position.x() = selected->frame * layout.frame_width + layout.padding;
-
-			bool was_selected = selected->frame == selected_frame;
-
-			if(selected->frame != frame && data) {
-
-				if(data->keyframes.move(selected->frame, frame)) {
-					selected->position.x() = frame * layout.frame_width + layout.padding;
-
-					post_recreate_layout();
-
-					if(on_change_callback)
-						on_change_callback();
-				}
-			} else {
-				set_selected_frame(frame);
-			}
-
-			if(was_selected)
-				set_selected_frame(frame);
-		} else {
-			set_selected_frame(-1);
-		}
-
-		post_damage();
-	}
-
-	void handle_keyframe_selection_change() {
-
-		const auto selected = keyframes.get_selected();
-		
-		set_selected_frame(selected ? selected->frame : -1);
-		
-		post_damage();
-	}
-	void set_selected_frame(size_t frame) {
-
-		selected_frame = frame;
-
-		if(data) {
-			auto it = data->keyframes.find(selected_frame);
-			if(it != data->keyframes.end())
-				easing_function_id = it->second.easing_id();
-		}
-
-		post_recreate_gui();
-	}
-
-	size_t position_to_frame(int position) {
-
-		return (position - layout.padding) / layout.frame_width;
-	}
-
-	void set_frame(size_t frame) {
-
-		if(data) {
-			data->frame = static_cast<size_t>(frame);
-			if(on_change_callback)
-				on_change_callback();
-
-			set_marker_position_from_frame();
-
-			post_damage();
-		}
-	}
-
-	void set_marker_position_from_frame() {
-
-		if(data && !marker.empty()) {
-			marker[0].position.x() = data->frame * layout.frame_width + layout.padding;
-			post_damage();
-		}
-	}
+	cgv::g2d::draggable_collection<cgv::g2d::draggable> scrollbar;
+	cgv::g2d::draggable_collection<cgv::g2d::draggable> marker;
+	cgv::g2d::draggable_collection<keyframe_draggable> keyframes;
 	
-	void create_keyframe_draggables() {
+	cgv::g2d::msdf_text_geometry labels;
 
-		if(data) {
-			const auto& kfs = data->keyframes;
+	cgv::g2d::shape2d_style container_style, border_style, rectangle_style, line_style, key_rect_style, scrollbar_style;
+	cgv::g2d::circle2d_style key_circle_style;
+	cgv::g2d::arrow2d_style marker_handle_style;
+	cgv::g2d::grid2d_style grid_style;
+	cgv::g2d::text2d_style label_style;
 
-			keyframes.clear();
-			for(const auto& kf : kfs) {
-				keyframe_draggable d;
+	cgv::app::help_message help;
 
-				d.frame = kf.first;
-				d.position.x() = layout.padding + layout.frame_width * static_cast<int>(kf.first);
-				d.position.y() = layout.timeline.y();
-				d.size.x() = layout.frame_width;
-				d.size.y() = layout.timeline_height;
-				keyframes.add(d);
-			}
-		}
-	}
+	std::function<void(void)> on_change_callback;
 
-	int frame_to_scrollbar_position(size_t frame) {
+	void add_keyframe();
 
-		float t = static_cast<float>(frame) / static_cast<float>(layout.timeline_frames);
-		return static_cast<int>(layout.scrollbar_constraint.x() + t * layout.scrollbar_constraint.w());
-	}
+	void erase_selected_keyframe();
+
+	size_t position_to_frame(int position);
+
+	int frame_to_position(size_t frame);
+
+	int frame_to_scrollbar_position(size_t frame);
+
+	void set_marker_position_from_frame();
+
+	void set_timeline_offset();
+
+	void set_frame(size_t frame);
+
+	void set_selected_frame(size_t frame);
+
+	void create_keyframe_draggables();
+
+	void handle_scrollbar_drag();
+
+	void handle_marker_drag();
+
+	void handle_keyframe_drag();
+
+	void handle_keyframe_drag_end();
+
+	void handle_keyframe_selection_change();
 
 	void init_styles(cgv::render::context& ctx) override;
 	
 	virtual void create_gui_impl();
-
-	std::function<void(void)> on_change_callback;
-
-
-
-	
-	easing_functions::Id easing_function_id = easing_functions::Id::kLinear;
-	
-
-
 
 public:
 	keyframe_editor_overlay();
@@ -294,31 +128,17 @@ public:
 
 	void clear(cgv::render::context& ctx);
 
-	void handle_on_set(const cgv::app::on_set_evaluator& m);
-
 	bool handle_event(cgv::gui::event& e);
+	void handle_on_set(const cgv::app::on_set_evaluator& m);
 
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
 
-	void set_view(cgv::render::view* view_ptr) {
+	void set_view(cgv::render::view* view_ptr);
+	void set_data(std::shared_ptr<animation_data> data);
 
-		this->view_ptr = view_ptr;
-	}
-
-	void set_data(std::shared_ptr<animation_data> data) {
-		
-		this->data = data;
-		update();
-	}
-
-	void update() {
-
-		create_keyframe_draggables();
-		set_marker_position_from_frame();
-		post_damage();
-	}
+	void update();
 
 	void set_on_change_callback(std::function<void(void)> cb) { on_change_callback = cb; }
 };
