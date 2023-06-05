@@ -32,6 +32,9 @@ protected:
 
 	std::shared_ptr<animation_data> animation;
 
+	std::string input_path;
+	std::string output_path;
+
 	bool animate = false;
 	bool record = false;
 	bool apply = false;
@@ -57,11 +60,15 @@ protected:
 
 	std::pair<size_t, float> get_max_frame_and_time();
 
+	void udpate_animation_member_limits();
+
 	void create_camera_render_data(const view_parameters& view);
 
 	void create_path_render_data();
 
 	void handle_editor_change();
+
+	bool load_animation(const std::string& file_name);
 
 	void write_image(const std::string& file_name);
 
