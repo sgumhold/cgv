@@ -2,6 +2,9 @@
 
 #include <cgv/gui/theme_info.h>
 #include <cgv/gui/trigger.h>
+#include <cgv/utils/advanced_scan.h>
+
+#include <tinyxml2.h>
 
 using namespace cgv::render;
 
@@ -103,9 +106,23 @@ void camera_animator::handle_timer_event(double t, double dt) {
 
 void camera_animator::handle_on_set(const cgv::app::on_set_evaluator& m) {
 
+	if(m.is(input_path)) {
+		if(!load_animation(input_path))
+			std::cout << "Error: Could not load animation from " << input_path << std::endl;
+	}
+
 	if(m.is(record)) {
 		get_context()->set_gamma(record ? 1.0f : 2.2f);
 		animation->use_continuous_time = !record;
+		
+		show_path = false;
+		update_member(&show_path);
+		show_camera = false;
+		update_member(&show_camera);
+		show_editor = false;
+		on_set(&show_editor);
+		apply = true;
+		on_set(&apply);
 	}
 
 	if(m.is(animation->frame))
@@ -207,6 +224,9 @@ void camera_animator::create_gui() {
 
 	add_decorator("Camera Animator", "heading", "level=2");
 
+	std::string filter = "Camera Animation (xml):*.xml";
+	add_gui("Animation File", input_path, "file_name", "title='Open Camera Animation';filter='" + filter + "';save=false;w=168;small_icon=true");
+
 	add_member_control(this, "Show Camera", show_camera, "check");
 	add_member_control(this, "Show Path", show_path, "check");
 	add_member_control(this, "Show Timeline", show_editor, "check");
@@ -233,8 +253,12 @@ void camera_animator::create_gui() {
 	
 	add_decorator("", "separator");
 
-	// TODO: add field to define output folder
+	
+	
 
+
+	// TODO: add field to define output folder
+	//add_member_control(this, "Output Path", output_path, "string");
 	add_member_control(this, "Record to Disk", record, "check");
 	connect_copy(add_button("Save Current View")->click, rebind(this, &camera_animator::write_single_image));
 
@@ -321,6 +345,14 @@ std::pair<size_t, float> camera_animator::get_max_frame_and_time() {
 	if(animation)
 		return { animation->frame_count(), animation->duration() };
 	return { 0ull, 0.0f };
+}
+
+void camera_animator::udpate_animation_member_limits() {
+
+	auto limits = get_max_frame_and_time();
+
+	set_control_property(animation->frame, "max", std::to_string(limits.first));
+	set_control_property(animation->time, "max", std::to_string(limits.second));
 }
 
 void camera_animator::create_camera_render_data(const view_parameters& view) {
@@ -419,13 +451,113 @@ void camera_animator::handle_editor_change() {
 
 	create_path_render_data();
 
-	auto limits = get_max_frame_and_time();
-
-	set_control_property(animation->frame, "max", std::to_string(limits.first));
-	set_control_property(animation->time, "max", std::to_string(limits.second));
+	udpate_animation_member_limits();
 
 	update_member(&animation->frame);
 	set_animation_state(false);
+}
+
+bool camera_animator::load_animation(const std::string& file_name) {
+
+	auto str2vec3 = [](const std::string& str, vec3& val) {
+		std::vector<cgv::utils::token> tokens;
+		cgv::utils::split_to_tokens(str, tokens, "", true, "", "", ",");
+
+		if(tokens.size() != 3)
+			return false;
+
+		vec3 v(0.0f);
+
+		if(!cgv::utils::from_string(v[0], to_string(tokens[0])))
+			return false;
+		if(!cgv::utils::from_string(v[1], to_string(tokens[1])))
+			return false;
+		if(!cgv::utils::from_string(v[2], to_string(tokens[2])))
+			return false;
+
+		val = v;
+		return true;
+	};
+
+	bool success = false;
+	int timecode = 30;
+	std::vector<std::tuple<int, std::string, view_parameters>> keyframes;
+
+	tinyxml2::XMLDocument doc;
+	if(doc.LoadFile(file_name.c_str()) == tinyxml2::XML_SUCCESS) {
+		auto root = doc.RootElement();
+		if(root && strcmp(root->Name(), "CameraAnimation") == 0) {
+			//std::string timecode_str = root->Attribute("timecode");
+
+			int timecode = 30;
+			root->QueryIntAttribute("timecode", &timecode);
+
+			cgv::math::clamp(timecode, 1, 120);
+
+			if(auto keyframe_elements = root->FirstChildElement("Keyframes")) {
+				auto keyframe_element = keyframe_elements->FirstChildElement();
+
+				while(keyframe_element) {
+					int frame = -1;
+					keyframe_element->QueryIntAttribute("frame", &frame);
+
+					if(frame > -1) {
+						std::string ease = keyframe_element->Attribute("ease");
+						std::string eye_str = keyframe_element->Attribute("eye");
+						std::string focus_str = keyframe_element->Attribute("focus");
+						std::string up_str = keyframe_element->Attribute("up");
+
+						bool success = true;
+						view_parameters view;
+						success &= str2vec3(eye_str, view.eye_position);
+						success &= str2vec3(focus_str, view.focus_position);
+						success &= str2vec3(up_str, view.up_direction);
+
+						if(success) {
+							keyframes.push_back({ frame, ease, view });
+						} else {
+							// TODO: error message
+						}
+					}
+
+					//std::cout << keyframe_element->Attribute("frame") << std::endl;
+					keyframe_element = keyframe_element->NextSiblingElement();
+				}
+				/*if(auto timecode = properties->FirstChildElement("Timecode")) {
+					std::cout << "Timecode: " << timecode->Name() << std::endl;
+					std::cout << "Timecode: " << timecode->GetText() << std::endl;
+				}*/
+
+				success = true;
+			}
+		}
+	} else {
+		//std::cout << "Could not load xml" << std::endl;
+	}
+
+	if(success) {
+		animation->timecode = timecode;
+		animation->keyframes.clear();
+		
+		for(auto tuple : keyframes) {
+			keyframe k;
+			k.ease(easing_functions::to_id(std::get<1>(tuple)));
+			k.camera_state = std::get<2>(tuple);
+			animation->keyframes.insert(std::get<0>(tuple), k);
+		}
+	} else {
+		animation->keyframes.clear();
+	}
+
+	udpate_animation_member_limits();
+
+	reset_animation();
+	create_path_render_data();
+
+	if(keyframe_editor_ptr)
+		keyframe_editor_ptr->update();
+
+	return success;
 }
 
 void camera_animator::write_image(const std::string& file_name) {

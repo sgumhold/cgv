@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv/math/interpolator.h>
+#include <cgv/utils/scan.h>
 
 namespace easing_functions {
 
@@ -81,6 +82,8 @@ enum class Id {
 	kSmoothestStep
 };
 
+
+
 static std::function<float(float)> from_id(Id id) {
 
 	switch(id) {
@@ -100,13 +103,56 @@ static std::function<float(float)> from_id(Id id) {
 	}
 }
 
+static std::vector<std::pair<std::string, Id>> name_id_mapping = {
+		{"None", Id::kNone},
+		{"First", Id::kFirst},
+		{"Last", Id::kLast},
+		{"Nearest", Id::kNearest},
+		{"Linear", Id::kLinear},
+		{"SmoothStart", Id::kSmoothStart},
+		{"SmootherStart", Id::kSmootherStart},
+		{"SmoothStop", Id::kSmoothStop},
+		{"SmootherStop", Id::kSmootherStop},
+		{"SmoothStep", Id::kSmoothStep},
+		{"SmootherStep", Id::kSmootherStep},
+		{"SmoothestStep", Id::kSmoothestStep}
+};
+
+static Id to_id(const std::string& name) {
+
+	std::string query_name = cgv::utils::to_lower(name);
+
+	for(auto pair : name_id_mapping) {
+		std::string element_name = cgv::utils::to_lower(pair.first);
+		if(element_name == query_name)
+			return pair.second;
+	}
+
+	return Id::kNone;
+}
+
 static std::string names_string() {
+
+	std::vector<std::string> names;
+	std::transform(name_id_mapping.cbegin(), name_id_mapping.cend(), std::back_inserter(names),
+		[](auto& pair) { return pair.first; });
+
+	
+
+	return cgv::utils::join(names, ",");
+	/*std::string str = cgv::utils::join(names, ",");
+	
+	for(size_t i = 0; i < name_id_mapping.size(); ++i) {
+
+		if(i < name_id_mapping.size() - 1)
+			names += ",";
+	}
 
 	return
 		"None,First,Last,Nearest,Linear,"
 		"SmoothStart,SmootherStart,"
 		"SmoothStop,SmootherStop,"
-		"SmoothStep,SmootherStep,SmoothestStep";
+		"SmoothStep,SmootherStep,SmoothestStep";*/
 }
 
 }
