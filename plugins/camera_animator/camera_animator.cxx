@@ -29,15 +29,28 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 	
 	view_transformation.identity();
 
-	keyframe_editor_ptr = register_overlay<keyframe_editor_overlay>("Keyframe Editor");
-	keyframe_editor_ptr->set_on_change_callback(std::bind(&camera_animator::handle_editor_change, this));
-	keyframe_editor_ptr->set_visibility(show_editor);
-	keyframe_editor_ptr->gui_options.create_default_tree_node = false;
-	keyframe_editor_ptr->gui_options.show_layout_options = false;
+	timeline_ptr = register_overlay<keyframe_editor_overlay>("Keyframe Editor");
+	timeline_ptr->set_on_change_callback(std::bind(&camera_animator::handle_editor_change, this));
+	timeline_ptr->set_visibility(show_timeline);
+	timeline_ptr->gui_options.create_default_tree_node = false;
+	timeline_ptr->gui_options.show_layout_options = false;
 
 	connect(cgv::gui::get_animation_trigger().shoot, this, &camera_animator::handle_timer_event);
 
 	animation = std::make_shared<animation_data>();
+
+	input_file_helper = cgv::app::file_gui_helper(this, "Open/Save Camera Animation", cgv::app::file_gui_helper::Mode::kOpenAndSave);
+	input_file_helper.add_filter("Camera Animation", "xml");
+
+	output_directory_helper = cgv::app::directory_gui_helper(this, "Select Output Folder", cgv::app::directory_gui_helper::Mode::kOpen);
+	output_directory_helper.directory_name = "./output";
+	
+	help.add_line("Keybindings:");
+	help.add_bullet_point("A : Toggle apply animation to camera");
+	help.add_bullet_point("C : Toggle camera visibility");
+	help.add_bullet_point("P : Toggle camera path visibility");
+	help.add_bullet_point("R : Toggle record mode");
+	help.add_bullet_point("T : Toggle timeline visibility");
 }
 
 void camera_animator::clear(context& ctx) {
@@ -53,8 +66,8 @@ void camera_animator::clear(context& ctx) {
 
 bool camera_animator::self_reflect(cgv::reflect::reflection_handler& rh) {
 
-	return false;
-		//rh.reflect_member("input_path", input_path);
+	//return rh.reflect_member("input_path", input_path);
+	return rh.reflect_member("input_path", input_file_helper.file_name);
 }
 
 bool camera_animator::handle_event(cgv::gui::event& e) {
@@ -70,18 +83,27 @@ bool camera_animator::handle_event(cgv::gui::event& e) {
 			unsigned short key = ke.get_key();
 
 			switch(ke.get_key()) {
+			case 'A':
+				apply = !apply;
+				on_set(&apply);
+				return true;
 			case 'C':
 				show_camera = !show_camera;
 				on_set(&show_camera);
-				return true;
-			case 'T':
-				show_editor = !show_editor;
-				on_set(&show_editor);
 				return true;
 			case 'P':
 				show_path = !show_path;
 				on_set(&show_path);
 				return true;
+			case 'R':
+				record = !record;
+				on_set(&record);
+				return true;
+			case 'T':
+				show_timeline = !show_timeline;
+				on_set(&show_timeline);
+				return true;
+			
 			default: break;
 			}
 		}
@@ -106,9 +128,24 @@ void camera_animator::handle_timer_event(double t, double dt) {
 
 void camera_animator::handle_on_set(const cgv::app::on_set_evaluator& m) {
 
-	if(m.is(input_path)) {
-		if(!load_animation(input_path))
-			std::cout << "Error: Could not load animation from " << input_path << std::endl;
+	if(m.is(input_file_helper.file_name)) {
+		const std::string& file_name = input_file_helper.file_name;
+		if(input_file_helper.save()) {
+			// force the file name to have a xml extension if not already present
+			input_file_helper.ensure_extension("xml", true);
+
+			if(save_animation(file_name)) {
+				input_file_helper.update();
+				// TODO: implement note on unsaved changes
+				//has_unsaved_changes = false;
+				//on_set(&has_unsaved_changes);
+			} else {
+				std::cout << "Error: Could not write animation to " << file_name << std::endl;
+			}
+		} else {
+			if(!load_animation(file_name))
+				std::cout << "Error: Could not load animation from " << file_name << std::endl;
+		}
 	}
 
 	if(m.is(record)) {
@@ -119,8 +156,8 @@ void camera_animator::handle_on_set(const cgv::app::on_set_evaluator& m) {
 		update_member(&show_path);
 		show_camera = false;
 		update_member(&show_camera);
-		show_editor = false;
-		on_set(&show_editor);
+		show_timeline = false;
+		on_set(&show_timeline);
 		apply = true;
 		on_set(&apply);
 	}
@@ -134,9 +171,9 @@ void camera_animator::handle_on_set(const cgv::app::on_set_evaluator& m) {
 	if(m.is(apply))
 		set_animation_state(false);
 
-	if(m.is(show_editor)) {
-		if(keyframe_editor_ptr)
-			keyframe_editor_ptr->set_visibility(show_editor);
+	if(m.one_of(show_timeline, hide_all)) {
+		if(timeline_ptr)
+			timeline_ptr->set_visibility(hide_all ? false : show_timeline);
 	}
 }
 
@@ -149,6 +186,18 @@ bool camera_animator::on_exit_request() {
 	save_data_set_meta_file(dataset.meta_fn);
 	*/
 	return true;
+}
+
+void camera_animator::on_select() {
+
+	hide_all = false;
+	on_set(&hide_all);
+}
+
+void camera_animator::on_deselect() {
+
+	hide_all = true;
+	on_set(&hide_all);
 }
 
 bool camera_animator::init(context& ctx) {
@@ -167,8 +216,8 @@ bool camera_animator::init(context& ctx) {
 	eye_color = 0.5f * theme.highlight();
 	focus_color = 0.5f * theme.warning();
 
-	if(keyframe_editor_ptr)
-		keyframe_editor_ptr->set_data(animation);
+	if(timeline_ptr)
+		timeline_ptr->set_data(animation);
 
 	view_parameters view;
 	animation->current_view(view);
@@ -181,25 +230,27 @@ bool camera_animator::init(context& ctx) {
 void camera_animator::init_frame(context& ctx) {
 
 	if(!view_ptr && (view_ptr = find_view_as_node())) {
-		if(keyframe_editor_ptr)
-			keyframe_editor_ptr->set_view(view_ptr);
+		if(timeline_ptr)
+			timeline_ptr->set_view(view_ptr);
 	}
 }
 
 void camera_animator::finish_frame(context& ctx) {
 
-	if(show_camera) {
-		eye_rd.render(ctx, local_point_renderer);
+	if(!hide_all) {
+		if(show_camera) {
+			eye_rd.render(ctx, local_point_renderer);
 
-		ctx.push_modelview_matrix();
-		ctx.mul_modelview_matrix(view_transformation);
-		view_rd.render(ctx, local_line_renderer);
-		ctx.pop_modelview_matrix();
-	}
+			ctx.push_modelview_matrix();
+			ctx.mul_modelview_matrix(view_transformation);
+			view_rd.render(ctx, local_line_renderer);
+			ctx.pop_modelview_matrix();
+		}
 
-	if(show_path) {
-		keyframes_rd.render(ctx, local_point_renderer);
-		paths_rd.render(ctx, local_line_renderer);
+		if(show_path) {
+			keyframes_rd.render(ctx, local_point_renderer);
+			paths_rd.render(ctx, local_line_renderer);
+		}
 	}
 }
 
@@ -212,7 +263,7 @@ void camera_animator::after_finish(context& ctx) {
 		else if(frame_number.length() == 2)
 			frame_number = "0" + frame_number;
 
-		write_image("rec/" + frame_number + ".bmp");
+		write_image(output_directory_helper.directory_name + "/" + frame_number + ".bmp");
 		if(set_animation_state(false))
 			animation->frame += 1;
 		else
@@ -222,14 +273,14 @@ void camera_animator::after_finish(context& ctx) {
 
 void camera_animator::create_gui() {
 
-	add_decorator("Camera Animator", "heading", "level=2");
+	add_decorator("Camera Animator", "heading", "w=168;level=2", " ");
+	help.create_gui(this);
 
-	std::string filter = "Camera Animation (xml):*.xml";
-	add_gui("Animation File", input_path, "file_name", "title='Open Camera Animation';filter='" + filter + "';save=false;w=168;small_icon=true");
+	input_file_helper.create_gui("Animation File");
 
 	add_member_control(this, "Show Camera", show_camera, "check");
 	add_member_control(this, "Show Path", show_path, "check");
-	add_member_control(this, "Show Timeline", show_editor, "check");
+	add_member_control(this, "Show Timeline", show_timeline, "check");
 	add_member_control(this, "Apply Animation", apply, "check");
 
 	add_decorator("Playback", "heading", "level=4");
@@ -253,18 +304,13 @@ void camera_animator::create_gui() {
 	
 	add_decorator("", "separator");
 
-	
-	
-
-
-	// TODO: add field to define output folder
-	//add_member_control(this, "Output Path", output_path, "string");
+	output_directory_helper.create_gui("Output Folder");
 	add_member_control(this, "Record to Disk", record, "check");
 	connect_copy(add_button("Save Current View")->click, rebind(this, &camera_animator::write_single_image));
 
 	add_decorator("", "separator");
 
-	inline_object_gui(keyframe_editor_ptr);
+	inline_object_gui(timeline_ptr);
 }
 
 void camera_animator::set_animate(bool flag) {
@@ -326,15 +372,15 @@ bool camera_animator::set_animation_state(bool use_continuous_time) {
 	update_member(&animation->time);
 
 	view_parameters view;
-	bool run = animation->current_view(view);
+	bool run = animation->current_view(view) && animation->frame < animation->frame_count();
 
 	if(run && apply)
 		view.apply(view_ptr);
 
 	create_camera_render_data(view);
 
-	if(keyframe_editor_ptr)
-		keyframe_editor_ptr->update();
+	if(timeline_ptr)
+		timeline_ptr->update();
 
 	post_redraw();
 	return run;
@@ -487,15 +533,13 @@ bool camera_animator::load_animation(const std::string& file_name) {
 	if(doc.LoadFile(file_name.c_str()) == tinyxml2::XML_SUCCESS) {
 		auto root = doc.RootElement();
 		if(root && strcmp(root->Name(), "CameraAnimation") == 0) {
-			//std::string timecode_str = root->Attribute("timecode");
-
 			int timecode = 30;
 			root->QueryIntAttribute("timecode", &timecode);
 
 			cgv::math::clamp(timecode, 1, 120);
 
-			if(auto keyframe_elements = root->FirstChildElement("Keyframes")) {
-				auto keyframe_element = keyframe_elements->FirstChildElement();
+			if(auto keyframes_element = root->FirstChildElement("Keyframes")) {
+				auto keyframe_element = keyframes_element->FirstChildElement();
 
 				while(keyframe_element) {
 					int frame = -1;
@@ -554,10 +598,41 @@ bool camera_animator::load_animation(const std::string& file_name) {
 	reset_animation();
 	create_path_render_data();
 
-	if(keyframe_editor_ptr)
-		keyframe_editor_ptr->update();
+	if(timeline_ptr)
+		timeline_ptr->update();
 
 	return success;
+}
+
+bool camera_animator::save_animation(const std::string& file_name) {
+
+	auto vec32str = [](vec3& val) {
+		return std::to_string(val[0]) + ", " + std::to_string(val[1]) + ", " + std::to_string(val[2]);
+	};
+
+	tinyxml2::XMLDocument doc;
+
+	auto root = doc.NewElement("CameraAnimation");
+	root->SetAttribute("timecode", animation->timecode);
+	doc.InsertFirstChild(root);
+
+	auto keyframes_element = doc.NewElement("Keyframes");
+	root->InsertEndChild(keyframes_element);
+
+	for(const auto& pair : animation->keyframes) {
+		keyframe k = pair.second;
+
+		auto keyframe_element = doc.NewElement("Keyframe");
+		keyframe_element->SetAttribute("frame", pair.first);
+		keyframe_element->SetAttribute("ease", easing_functions::to_string(k.easing_id()).c_str());
+		keyframe_element->SetAttribute("eye", vec32str(k.camera_state.eye_position).c_str());
+		keyframe_element->SetAttribute("focus", vec32str(k.camera_state.focus_position).c_str());
+		keyframe_element->SetAttribute("up", vec32str(k.camera_state.up_direction).c_str());
+
+		keyframes_element->InsertEndChild(keyframe_element);
+	}
+
+	return doc.SaveFile(file_name.c_str()) == tinyxml2::XML_SUCCESS;
 }
 
 void camera_animator::write_image(const std::string& file_name) {
@@ -574,10 +649,9 @@ void camera_animator::write_image(const std::string& file_name) {
 		std::cout << "Error" << std::endl;
 }
 
-// TODO: use specified output path (plus frame number if animation is defined)
 void camera_animator::write_single_image() {
 
-	write_image("output.bmp");
+	write_image(output_directory_helper.directory_name + "/frame" + std::to_string(animation->frame) + ".bmp");
 }
 
 #include <cgv/base/register.h>

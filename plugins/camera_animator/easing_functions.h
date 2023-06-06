@@ -82,8 +82,6 @@ enum class Id {
 	kSmoothestStep
 };
 
-
-
 static std::function<float(float)> from_id(Id id) {
 
 	switch(id) {
@@ -123,12 +121,21 @@ static Id to_id(const std::string& name) {
 	std::string query_name = cgv::utils::to_lower(name);
 
 	for(auto pair : name_id_mapping) {
-		std::string element_name = cgv::utils::to_lower(pair.first);
-		if(element_name == query_name)
+		if(cgv::utils::to_lower(pair.first) == query_name)
 			return pair.second;
 	}
 
 	return Id::kNone;
+}
+
+static std::string to_string(Id id) {
+
+	for(auto pair : name_id_mapping) {
+		if(pair.second == id)
+			return pair.first;
+	}
+
+	return "undefined";
 }
 
 static std::string names_string() {
@@ -137,22 +144,7 @@ static std::string names_string() {
 	std::transform(name_id_mapping.cbegin(), name_id_mapping.cend(), std::back_inserter(names),
 		[](auto& pair) { return pair.first; });
 
-	
-
 	return cgv::utils::join(names, ",");
-	/*std::string str = cgv::utils::join(names, ",");
-	
-	for(size_t i = 0; i < name_id_mapping.size(); ++i) {
-
-		if(i < name_id_mapping.size() - 1)
-			names += ",";
-	}
-
-	return
-		"None,First,Last,Nearest,Linear,"
-		"SmoothStart,SmootherStart,"
-		"SmoothStop,SmootherStop,"
-		"SmoothStep,SmootherStep,SmoothestStep";*/
 }
 
 }

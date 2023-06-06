@@ -3,6 +3,8 @@
 #include <cgv/utils/file.h>
 #include <cgv/utils/dir.h>
 #include <cgv_app/application_plugin.h>
+#include <cgv_app/file_gui_helper.h>
+#include <cgv_app/help_message.h>
 #include <cgv_gl/line_render_data.h>
 #include <cgv_gl/point_render_data.h>
 
@@ -14,10 +16,12 @@
 
 class CGV_API camera_animator : public cgv::app::application_plugin {
 protected:
+	cgv::app::help_message help;
+
 	/// store a pointer to the view
 	cgv::render::view* view_ptr = nullptr;
 	
-	keyframe_editor_overlay_ptr keyframe_editor_ptr;
+	keyframe_editor_overlay_ptr timeline_ptr;
 
 	cgv::render::rgb eye_color;
 	cgv::render::rgb focus_color;
@@ -32,15 +36,16 @@ protected:
 
 	std::shared_ptr<animation_data> animation;
 
-	std::string input_path;
-	std::string output_path;
+	cgv::app::file_gui_helper input_file_helper;
+	cgv::app::directory_gui_helper output_directory_helper;
 
 	bool animate = false;
 	bool record = false;
 	bool apply = false;
 	bool show_camera = true;
 	bool show_path = true;
-	bool show_editor = true;
+	bool show_timeline = true;
+	bool hide_all = true;
 
 	cgv::gui::button_ptr play_pause_btn;
 
@@ -70,6 +75,8 @@ protected:
 
 	bool load_animation(const std::string& file_name);
 
+	bool save_animation(const std::string& file_name);
+
 	void write_image(const std::string& file_name);
 
 	void write_single_image();
@@ -88,6 +95,9 @@ public:
 	void handle_timer_event(double t, double dt);
 	void handle_on_set(const cgv::app::on_set_evaluator& m);
 	bool on_exit_request();
+
+	void on_select();
+	void on_deselect();
 
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
