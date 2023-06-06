@@ -631,7 +631,7 @@ void keyframe_editor_overlay::init_styles(context& ctx) {
 void keyframe_editor_overlay::create_gui_impl() {
 
 	add_decorator("Keyframes", "heading", "w=168;level=4", " ");
-	help.create_button(this);
+	help.create_gui(this);
 	
 	if(selected_frame != -1) {
 		add_decorator("Frame " + std::to_string(selected_frame), "heading", "level=4");

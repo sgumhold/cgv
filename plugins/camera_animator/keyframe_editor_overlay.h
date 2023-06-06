@@ -65,6 +65,8 @@ protected:
 		keyframe_draggable() : draggable() {}
 	};
 
+	cgv::app::help_message help;
+
 	cgv::render::view* view_ptr;
 
 	std::shared_ptr<animation_data> data;
@@ -83,8 +85,6 @@ protected:
 	cgv::g2d::arrow2d_style marker_handle_style;
 	cgv::g2d::grid2d_style grid_style;
 	cgv::g2d::text2d_style label_style;
-
-	cgv::app::help_message help;
 
 	std::function<void(void)> on_change_callback;
 
