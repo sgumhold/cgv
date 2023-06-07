@@ -356,9 +356,9 @@ fvec<T,N> operator * (const T& s, const fvec<T,N>& v) {	fvec<T,N> r = v; r *= s;
 template <typename T, cgv::type::uint32_type N>
 fvec<T,N> operator / (const T& s, const fvec<T,N>& v)
 { 
-	T r;
+	fvec<T,N> r;
 	for (unsigned i=0;i<N;++i)
-		r = s/v(i);
+		r(i) = s/v(i);
 	return r;
 }
 
