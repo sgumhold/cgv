@@ -4,7 +4,7 @@ file(GLOB_RECURSE PPP_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.ph")
 file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "glsl/*.gl*")
 
 cgv_create_lib(cgv_app SOURCES ${SOURCES} PPP_SOURCES ${PPP_SOURCES} SHADER_SOURCES ${SHADERS}
-	DEPENDENCIES cgv_type cgv_data cgv_base cgv_signal cgv_math cgv_media cgv_render cgv_gui cgv_reflect_types cgv_gl cgv_g2d glew)
+	DEPENDENCIES cgv_type cgv_data cgv_base cgv_signal cgv_math cgv_media cgv_render cgv_gui cgv_reflect_types cgv_gl cgv_g2d tinyxml glew)
 
 target_compile_definitions(cgv_app PRIVATE CGV_APP_EXPORTS)
 target_compile_definitions(cgv_app_static PRIVATE CGV_APP_FORCE_STATIC)
