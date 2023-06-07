@@ -1,5 +1,6 @@
 var NAVTREEINDEX44 =
 {
+"structcgv_1_1gui_1_1text__editor__callback__handler.html#a00b508f73412e64e5396b3224c8194ed":[11,0,0,3,30,0],
 "structcgv_1_1gui_1_1text__editor__callback__handler.html#a420a4244bacbce16976c99afc01ec8e5":[11,0,0,3,30,1],
 "structcgv_1_1gui_1_1text__editor__callback__handler.html#a8a37fa24b42aea887b3140ecc02c616b":[11,0,0,3,30,5],
 "structcgv_1_1gui_1_1text__editor__callback__handler.html#a90e6fb528a5c4f92d33707e14add801f":[11,0,0,3,30,4],
@@ -248,6 +249,5 @@ var NAVTREEINDEX44 =
 "structcgv_1_1media_1_1image_1_1writer__listener.html#afbfaded48bb322a4b77350ca73c9e1a2":[11,0,0,5,2,5,22],
 "structcgv_1_1media_1_1mesh_1_1c__slice__info.html":[11,0,0,5,3,1],
 "structcgv_1_1media_1_1mesh_1_1cell__info.html":[11,0,0,5,3,3],
-"structcgv_1_1media_1_1mesh_1_1convex__polyhedron_1_1vertex__type.html":[11,0,0,5,3,0,0],
-"structcgv_1_1media_1_1mesh_1_1dc__slice__info.html":[11,0,0,5,3,4]
+"structcgv_1_1media_1_1mesh_1_1convex__polyhedron_1_1vertex__type.html":[11,0,0,5,3,0,0]
 };

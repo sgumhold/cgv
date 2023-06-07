@@ -195,6 +195,7 @@ var namespacecgv_1_1math =
     [ "operator*", "namespacecgv_1_1math.html#a1b1134ce876e614d9d0484700d45bb0e", null ],
     [ "operator*", "namespacecgv_1_1math.html#a0587d310c6306b8bde844d11bac48504", null ],
     [ "operator*", "namespacecgv_1_1math.html#a3184ae8911e141826cfb582cffe2fc98", null ],
+    [ "operator/", "namespacecgv_1_1math.html#adb1c5592458b2b53ca2beb55636f23dd", null ],
     [ "operator<<", "namespacecgv_1_1math.html#a959d852b32d156d183107537cc965ca7", null ],
     [ "operator<<", "namespacecgv_1_1math.html#a3e5761c72337c6456a9e5830a88e845c", null ],
     [ "operator<<", "namespacecgv_1_1math.html#ad5ddde9beff4b995998d2bb2d24b24ba", null ],
