@@ -352,6 +352,16 @@ std::istream& operator>>(std::istream& in, fvec<T,N>& v)
 template <typename T, cgv::type::uint32_type N>
 fvec<T,N> operator * (const T& s, const fvec<T,N>& v) {	fvec<T,N> r = v; r *= s; return r; }
 
+///returns a vector containing the quotients of a scalar s with each component of v
+template <typename T, cgv::type::uint32_type N>
+fvec<T,N> operator / (const T& s, const fvec<T,N>& v)
+{ 
+	T r;
+	for (unsigned i=0;i<N;++i)
+		r = s/v(i);
+	return r;
+}
+
 ///returns the dot product of vector v and w
 template <typename T, typename S, cgv::type::uint32_type N>
 inline T dot(const fvec<T,N>& v, const fvec<S,N>& w)
