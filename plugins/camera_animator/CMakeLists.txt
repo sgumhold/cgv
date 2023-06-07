@@ -8,7 +8,7 @@ cgv_add_target(camera_animator
 	HEADERS        ${HEADERS}
 	DEPENDENCIES
 		vr cgv_type cgv_utils cgv_base cgv_data cgv_signal cgv_reflect cgv_reflect_types cgv_render
-		cgv_gl cgv_g2d cgv_app cgv_gui cg_ext
+		cgv_gl cgv_g2d cgv_app tinyxml cgv_gui cg_ext
  
 	OVERRIDE_SHARED_EXPORT_DEFINE CGV_CAMERA_ANIMATOR_EXPORTS
 )
