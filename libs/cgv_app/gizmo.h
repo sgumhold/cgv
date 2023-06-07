@@ -114,7 +114,7 @@ protected:
 	cgv::render::vec3 get_flip_factors();
 
 public:
-	class gizmo();
+	gizmo();
 
 	void destruct(cgv::render::context& ctx);
 
