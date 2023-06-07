@@ -151,7 +151,8 @@ struct animation_data {
 
 	float duration() {
 
-		return static_cast<float>(frame_count()) / static_cast<float>(timecode);
+		return frame_to_time(frame_count());
+		//return static_cast<float>(frame_count()) / static_cast<float>(timecode);
 	}
 
 	size_t frame_count() {
@@ -162,7 +163,12 @@ struct animation_data {
 		return keyframes.rbegin()->first;
 	}
 
-	size_t time_to_frame() const {
+	float frame_to_time(size_t frame) const {
+
+		return static_cast<float>(frame) / static_cast<float>(timecode);
+	}
+
+	size_t time_to_frame(float time) const {
 
 		return static_cast<size_t>(static_cast<float>(timecode) * time);
 	}
@@ -176,7 +182,7 @@ struct animation_data {
 	 bool current_view(view_parameters& parameters) {
 
 		float tc = static_cast<float>(timecode);
-		size_t f = use_continuous_time ? time_to_frame() : frame;
+		size_t f = use_continuous_time ? time_to_frame(time) : frame;
 
 		tween_data tween;
 		if(!find_tween(f, tween))
@@ -185,4 +191,59 @@ struct animation_data {
 		parameters = use_continuous_time ? tween.interpolate_by_time(time, tc) : tween.interpolate_by_frame(f);
 		return f <= frame_count();
 	}
+
+	 void change_duration_after(size_t frame, size_t frames) {
+
+		 if(frame != -1 && frames == 0ull)
+			 return;
+
+		 int delta = 0;
+		 std::vector<std::pair<int, int>> moves;
+
+		 if(frame == -1) {
+
+			 auto curr_it = keyframes.begin();
+
+			 size_t current_frames = curr_it->first;
+
+			 delta = static_cast<int>(frames) - static_cast<int>(current_frames);
+
+			 if(delta < 0)
+				 delta = std::max(delta, -static_cast<int>(current_frames));
+
+			 if(delta != 0) {
+				 for(curr_it; curr_it != keyframes.end(); ++curr_it) {
+					 int it_frame = static_cast<int>(curr_it->first);
+					 moves.push_back({ it_frame, it_frame + delta });
+				 }
+			 }
+		 } else {
+			 auto curr_it = keyframes.find(frame);
+			 if(curr_it != keyframes.end()) {
+				 auto next_it = std::next(curr_it);
+				 if(next_it != keyframes.end()) {
+					 size_t current_frames = next_it->first - curr_it->first;
+
+					 delta = static_cast<int>(frames) - static_cast<int>(current_frames);
+
+					 if(delta != 0) {
+						 for(next_it; next_it != keyframes.end(); ++next_it) {
+							 int it_frame = static_cast<int>(next_it->first);
+							 moves.push_back({ it_frame, it_frame + delta });
+						 }
+					 }
+				 }
+			 }
+		 }
+
+		 
+
+		 if(delta > 0) {
+			 for(auto it = moves.rbegin(); it != moves.rend(); ++it)
+				 keyframes.move(it->first, it->second);
+		 } else {
+			 for(auto it = moves.begin(); it != moves.end(); ++it)
+				 keyframes.move(it->first, it->second);
+		 }
+	 }
 };

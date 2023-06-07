@@ -13,6 +13,18 @@
 #include "animation_data.h"
 
 class keyframe_editor_overlay : public cgv::app::canvas_overlay {
+public:
+	enum class Event {
+		kUndefined,
+		kTimeChange,
+		kKeyCreate,
+		kKeyDelete,
+		kKeyMove,
+		kKeyChange,
+		kKeySelect,
+		kKeyDeselect
+	};
+
 protected:
 	struct {
 		const int padding = 13; // 10px plus 3px border
@@ -73,6 +85,8 @@ protected:
 
 	size_t selected_frame = -1;
 	easing_functions::Id easing_function_id = easing_functions::Id::kLinear;
+	size_t new_frame_count = 30ull;
+	float new_duration = 1.0f;
 
 	cgv::g2d::draggable_collection<cgv::g2d::draggable> scrollbar;
 	cgv::g2d::draggable_collection<cgv::g2d::draggable> marker;
@@ -86,7 +100,7 @@ protected:
 	cgv::g2d::grid2d_style grid_style;
 	cgv::g2d::text2d_style label_style;
 
-	std::function<void(void)> on_change_callback;
+	std::function<void(Event)> on_change_callback;
 
 	void add_keyframe();
 
@@ -106,6 +120,8 @@ protected:
 
 	void set_selected_frame(size_t frame);
 
+	void change_duration(bool before);
+
 	void create_keyframe_draggables();
 
 	void handle_scrollbar_drag();
@@ -117,6 +133,8 @@ protected:
 	void handle_keyframe_drag_end();
 
 	void handle_keyframe_selection_change();
+
+	void invoke_callback(Event e);
 
 	void init_styles(cgv::render::context& ctx) override;
 	
@@ -135,12 +153,14 @@ public:
 	void init_frame(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
 
-	void set_view(cgv::render::view* view_ptr);
+	void set_view_ptr(cgv::render::view* view_ptr);
 	void set_data(std::shared_ptr<animation_data> data);
 
 	void update();
 
-	void set_on_change_callback(std::function<void(void)> cb) { on_change_callback = cb; }
+	size_t get_selected_frame() { return selected_frame; }
+
+	void set_on_change_callback(std::function<void(Event)> cb) { on_change_callback = cb; }
 };
 
 typedef cgv::data::ref_ptr<keyframe_editor_overlay> keyframe_editor_overlay_ptr;
