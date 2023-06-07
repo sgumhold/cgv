@@ -29,8 +29,14 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 	
 	view_transformation.identity();
 
+	eye_gizmo.set_move_callback(std::bind(&camera_animator::handle_eye_gizmo_move, this));
+	eye_gizmo.set_scale(0.5f);
+
+	focus_gizmo.set_move_callback(std::bind(&camera_animator::handle_focus_gizmo_move, this));
+	focus_gizmo.set_scale(0.5f);
+
 	timeline_ptr = register_overlay<keyframe_editor_overlay>("Keyframe Editor");
-	timeline_ptr->set_on_change_callback(std::bind(&camera_animator::handle_editor_change, this));
+	timeline_ptr->set_on_change_callback(std::bind(&camera_animator::handle_editor_change, this, std::placeholders::_1));
 	timeline_ptr->set_visibility(show_timeline);
 	timeline_ptr->gui_options.create_default_tree_node = false;
 	timeline_ptr->gui_options.show_layout_options = false;
@@ -55,6 +61,9 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 
 void camera_animator::clear(context& ctx) {
 
+	eye_gizmo.destruct(ctx);
+	focus_gizmo.destruct(ctx);
+
 	local_point_renderer.clear(ctx);
 	local_line_renderer.clear(ctx);
 
@@ -74,6 +83,13 @@ bool camera_animator::handle_event(cgv::gui::event& e) {
 
 	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
 	unsigned et = e.get_kind();
+
+	auto& ctx = *get_context();
+
+	if(eye_gizmo.handle(e, ctx) || focus_gizmo.handle(e, ctx)) {
+		post_redraw();
+		return true;
+	}
 
 	if(et == cgv::gui::EID_KEY) {
 		cgv::gui::key_event& ke = (cgv::gui::key_event&)e;
@@ -119,7 +135,7 @@ void camera_animator::handle_timer_event(double t, double dt) {
 	if(animate && !record) {
 		if(set_animation_state(true)) {
 			animation->time += static_cast<float>(dt);
-			animation->frame = animation->time_to_frame();
+			animation->frame = animation->time_to_frame(animation->time);
 		} else {
 			set_animate(false);
 		}
@@ -204,6 +220,9 @@ bool camera_animator::init(context& ctx) {
 
 	bool success = true;
 
+	success &= eye_gizmo.init(ctx);
+	success &= focus_gizmo.init(ctx);
+
 	success &= local_point_renderer.init(ctx);
 	success &= local_line_renderer.init(ctx);
 
@@ -219,9 +238,6 @@ bool camera_animator::init(context& ctx) {
 	if(timeline_ptr)
 		timeline_ptr->set_data(animation);
 
-	view_parameters view;
-	animation->current_view(view);
-	create_camera_render_data(view);
 	create_path_render_data();
 
 	return success;
@@ -230,8 +246,15 @@ bool camera_animator::init(context& ctx) {
 void camera_animator::init_frame(context& ctx) {
 
 	if(!view_ptr && (view_ptr = find_view_as_node())) {
+		eye_gizmo.set_view_ptr(view_ptr);
+		focus_gizmo.set_view_ptr(view_ptr);
+
 		if(timeline_ptr)
-			timeline_ptr->set_view(view_ptr);
+			timeline_ptr->set_view_ptr(view_ptr);
+
+		view_parameters view;
+		animation->current_view(view);
+		create_camera_render_data(view);
 	}
 }
 
@@ -250,6 +273,11 @@ void camera_animator::finish_frame(context& ctx) {
 		if(show_path) {
 			keyframes_rd.render(ctx, local_point_renderer);
 			paths_rd.render(ctx, local_line_renderer);
+		}
+
+		if(selected_keyframe) {
+			eye_gizmo.draw(ctx);
+			focus_gizmo.draw(ctx);
 		}
 	}
 }
@@ -493,14 +521,51 @@ void camera_animator::create_path_render_data() {
 	}
 }
 
-void camera_animator::handle_editor_change() {
+void camera_animator::handle_eye_gizmo_move() {
 
-	create_path_render_data();
+	if(selected_keyframe) {
+		selected_keyframe->camera_state.eye_position = eye_gizmo.get_position();
+		create_path_render_data();
+		set_animation_state(false);
+	}
+}
 
-	udpate_animation_member_limits();
+void camera_animator::handle_focus_gizmo_move() {
 
-	update_member(&animation->frame);
-	set_animation_state(false);
+	if(selected_keyframe) {
+		selected_keyframe->camera_state.focus_position = focus_gizmo.get_position();
+		create_path_render_data();
+		set_animation_state(false);
+	}
+}
+
+void camera_animator::handle_editor_change(keyframe_editor_overlay::Event e) {
+
+	switch(e) {
+	case keyframe_editor_overlay::Event::kTimeChange:
+		set_animation_state(false);
+		break;
+	case keyframe_editor_overlay::Event::kKeyMove:
+		udpate_animation_member_limits(); // no break
+	case keyframe_editor_overlay::Event::kKeyCreate:
+	case keyframe_editor_overlay::Event::kKeyDelete:
+	case keyframe_editor_overlay::Event::kKeyChange:
+		create_path_render_data();
+		set_animation_state(false);
+		break;
+	case keyframe_editor_overlay::Event::kKeySelect:
+		if(timeline_ptr) {
+			if(selected_keyframe = animation->keyframe_at(timeline_ptr->get_selected_frame())) {
+				eye_gizmo.set_position(selected_keyframe->camera_state.eye_position);
+				focus_gizmo.set_position(selected_keyframe->camera_state.focus_position);
+			}
+		}
+		break;
+	case keyframe_editor_overlay::Event::kKeyDeselect:
+		selected_keyframe = nullptr;
+		break;
+	default: break;
+	}
 }
 
 bool camera_animator::load_animation(const std::string& file_name) {

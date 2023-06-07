@@ -108,8 +108,8 @@ public:
 	}
 
 	// Returns a pair of iterators pointing to the lower and upper bounds of the given key.
-	// The lower bound is defined as the greatest key <= than the given key.
-	// The upper bound is defined as the smallest key > than the given key.
+	// The lower bound is defined as the greatest stored key less than or equal to the given key.
+	// The upper bound is defined as the smallest stored key greater than the given key.
 	std::pair<iterator_type, iterator_type> bounds(key_type key) {
 
 		return { lower_bound(key), upper_bound(key) };

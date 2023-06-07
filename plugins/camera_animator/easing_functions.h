@@ -82,6 +82,21 @@ enum class Id {
 	kSmoothestStep
 };
 
+static std::vector<std::pair<std::string, Id>> name_id_mapping = {
+		{"None", Id::kNone},
+		{"First", Id::kFirst},
+		{"Last", Id::kLast},
+		{"Nearest", Id::kNearest},
+		{"Linear", Id::kLinear},
+		{"SmoothStart", Id::kSmoothStart},
+		{"SmootherStart", Id::kSmootherStart},
+		{"SmoothStop", Id::kSmoothStop},
+		{"SmootherStop", Id::kSmootherStop},
+		{"SmoothStep", Id::kSmoothStep},
+		{"SmootherStep", Id::kSmootherStep},
+		{"SmoothestStep", Id::kSmoothestStep}
+};
+
 static std::function<float(float)> from_id(Id id) {
 
 	switch(id) {
@@ -100,21 +115,6 @@ static std::function<float(float)> from_id(Id id) {
 	default: return nullptr;
 	}
 }
-
-static std::vector<std::pair<std::string, Id>> name_id_mapping = {
-		{"None", Id::kNone},
-		{"First", Id::kFirst},
-		{"Last", Id::kLast},
-		{"Nearest", Id::kNearest},
-		{"Linear", Id::kLinear},
-		{"SmoothStart", Id::kSmoothStart},
-		{"SmootherStart", Id::kSmootherStart},
-		{"SmoothStop", Id::kSmoothStop},
-		{"SmootherStop", Id::kSmootherStop},
-		{"SmoothStep", Id::kSmoothStep},
-		{"SmootherStep", Id::kSmootherStep},
-		{"SmoothestStep", Id::kSmoothestStep}
-};
 
 static Id to_id(const std::string& name) {
 

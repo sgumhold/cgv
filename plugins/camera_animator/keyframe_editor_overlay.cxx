@@ -3,6 +3,7 @@
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/utils/convert_string.h>
 
 using namespace cgv::render;
 
@@ -136,9 +137,24 @@ void keyframe_editor_overlay::handle_on_set(const cgv::app::on_set_evaluator& m)
 			if(keyframe* k = data->keyframe_at(selected_frame)) {
 				k->ease(easing_function_id);
 
-				if(on_change_callback)
-					on_change_callback();
+				invoke_callback(Event::kKeyChange);
 			}
+		}
+	}
+
+	if(m.is(new_frame_count)) {
+		new_frame_count = cgv::math::clamp(new_frame_count, 0ull, 9000ull);
+		if(data) {
+			new_duration = data->frame_to_time(new_frame_count);
+			update_member(&new_duration);
+		}
+	}
+
+	if(m.is(new_duration)) {
+		new_duration = cgv::math::clamp(new_duration, 0.0f, 300.0f);
+		if(data) {
+			new_frame_count = data->time_to_frame(new_duration);
+			update_member(&new_frame_count);
 		}
 	}
 }
@@ -205,8 +221,8 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 		if(data) {
 			if(data->frame > layout.timeline_frames) {
 				data->frame = layout.timeline_frames;
-				if(on_change_callback)
-					on_change_callback();
+
+				invoke_callback(Event::kTimeChange);
 			}
 		}
 	}
@@ -375,7 +391,7 @@ void keyframe_editor_overlay::draw_content(context& ctx) {
 	end_content(ctx);
 }
 
-void keyframe_editor_overlay::set_view(cgv::render::view* view_ptr) {
+void keyframe_editor_overlay::set_view_ptr(cgv::render::view* view_ptr) {
 
 	this->view_ptr = view_ptr;
 }
@@ -383,6 +399,12 @@ void keyframe_editor_overlay::set_view(cgv::render::view* view_ptr) {
 void keyframe_editor_overlay::set_data(std::shared_ptr<animation_data> data) {
 
 	this->data = data;
+
+	new_frame_count = data->timecode;
+	new_duration = data->frame_to_time(data->timecode);
+	update_member(&new_frame_count);
+	update_member(&new_duration);
+
 	update();
 }
 
@@ -399,15 +421,15 @@ void keyframe_editor_overlay::add_keyframe() {
 		view_parameters view;
 		view.extract(view_ptr);
 
-		if(keyframe* k = data->keyframe_at(data->frame))
+		if(keyframe* k = data->keyframe_at(data->frame)) {
 			k->camera_state = view;
-		else
+			invoke_callback(Event::kKeyChange);
+		} else {
 			data->keyframes.insert(data->frame, keyframe(view, easing_functions::Id::kLinear));
+			invoke_callback(Event::kKeyCreate);
+		}
 
 		set_selected_frame(data->frame);
-
-		if(on_change_callback)
-			on_change_callback();
 	}
 }
 
@@ -415,11 +437,9 @@ void keyframe_editor_overlay::erase_selected_keyframe() {
 
 	if(data) {
 		data->keyframes.erase(selected_frame);
-
 		set_selected_frame(-1);
 
-		if(on_change_callback)
-			on_change_callback();
+		invoke_callback(Event::kKeyDelete);
 	}
 }
 
@@ -460,8 +480,7 @@ void keyframe_editor_overlay::set_frame(size_t frame) {
 
 	if(data) {
 		data->frame = frame;
-		if(on_change_callback)
-			on_change_callback();
+		invoke_callback(Event::kTimeChange);
 
 		set_marker_position_from_frame();
 
@@ -474,11 +493,49 @@ void keyframe_editor_overlay::set_selected_frame(size_t frame) {
 	selected_frame = frame;
 
 	if(data) {
-		if(keyframe* k = data->keyframe_at(selected_frame))
+		if(keyframe* k = data->keyframe_at(selected_frame)) {
 			easing_function_id = k->easing_id();
+
+			invoke_callback(Event::kKeySelect);
+		}
 	}
 
+	if(selected_frame == -1)
+		invoke_callback(Event::kKeyDeselect);
+
 	post_recreate_gui();
+}
+
+void keyframe_editor_overlay::change_duration(bool before) {
+
+	bool change = true;
+	size_t frame = selected_frame;
+	size_t new_selected_frame = selected_frame;
+
+	if(before) {
+		auto it = data->keyframes.lower_bound(selected_frame);
+
+		if(it != data->keyframes.end()) {
+			if(it == data->keyframes.begin()) {
+				frame = -1;
+				new_selected_frame = new_frame_count;
+			} else {
+				it = std::prev(it);
+				frame = it->first;
+				new_selected_frame = frame + new_frame_count;
+			}
+		} else {
+			change = false;
+		}
+	}
+
+	if(change) {
+		data->change_duration_after(frame, new_frame_count);
+		invoke_callback(Event::kKeyMove);
+		
+		if(selected_frame != new_selected_frame)
+			set_selected_frame(new_selected_frame);
+	}
 }
 
 void keyframe_editor_overlay::create_keyframe_draggables() {
@@ -545,8 +602,7 @@ void keyframe_editor_overlay::handle_keyframe_drag_end() {
 
 				post_recreate_layout();
 
-				if(on_change_callback)
-					on_change_callback();
+				invoke_callback(Event::kKeyMove);
 			}
 		} else {
 			set_selected_frame(frame);
@@ -570,15 +626,11 @@ void keyframe_editor_overlay::handle_keyframe_selection_change() {
 	post_damage();
 }
 
+void keyframe_editor_overlay::invoke_callback(Event e) {
 
-
-
-
-
-
-
-
-
+	if(on_change_callback)
+		on_change_callback(e);
+}
 
 void keyframe_editor_overlay::init_styles(context& ctx) {
 	
@@ -633,10 +685,52 @@ void keyframe_editor_overlay::create_gui_impl() {
 	add_decorator("Keyframes", "heading", "w=168;level=4", " ");
 	help.create_gui(this);
 	
-	if(selected_frame != -1) {
+	if(data && selected_frame != -1) {
 		add_decorator("Frame " + std::to_string(selected_frame), "heading", "level=4");
 
-		add_member_control(this, "Easing Function", easing_function_id, "dropdown", "enums='" + easing_functions::names_string() + "'");
+		add_member_control(this, "Easing Function", easing_function_id, "dropdown", "enums='" + easing_functions::names_string() + "';tooltip='Change the easing function of the selected keyframe'");
+
+		auto curr_pair = data->keyframes.bounds(selected_frame);
+
+		size_t delta_before = -1;
+		std::string duration_before = "-";
+		std::string duration_after = "-";
+
+		if(curr_pair.first != data->keyframes.end() && curr_pair.second != data->keyframes.end()) {
+			size_t delta = curr_pair.second->first - curr_pair.first->first;
+			duration_after = cgv::utils::to_string(data->frame_to_time(delta), -1u, 3u) + " s   (" + std::to_string(delta) + " frames)";
+		}
+		
+		if(curr_pair.first != data->keyframes.end() && curr_pair.first->first > 0) {
+			auto prev_pair = data->keyframes.bounds(curr_pair.first->first - 1);
+
+			if(prev_pair.second != data->keyframes.end())
+				delta_before = prev_pair.second->first;
+
+			if(prev_pair.first != data->keyframes.end())
+				delta_before -= prev_pair.first->first;
+		} else {
+			delta_before = 0ull;
+		}
+
+		if(delta_before != -1)
+			duration_before = cgv::utils::to_string(data->frame_to_time(delta_before), -1u, 3u) + " s   (" + std::to_string(delta_before) + " frames)";
+
+		add_view("Duration Before", duration_before);
+		add_view("Duration After", duration_after);
+
+		add_decorator("Change Duration", "heading", "level=4;font_style='regular'");
+		
+		add_member_control(this, "", new_frame_count, "value", "w=64;min=0;max=120;step=1", "");
+		add_decorator(" frames", "heading", "w=58;level=4;font_style='regular'", "");
+		
+		add_member_control(this, "", new_duration, "value", "w=64;min=0;max=4;step=0.01", "");
+		add_decorator(" s", "heading", "w=14;level=4;font_style='regular'");
+
+		connect_copy(add_button("Change Before", "w=94;tooltip='Set the transition duration to the next keyframe'", " ")->click, rebind(this, &keyframe_editor_overlay::change_duration, cgv::signal::const_expression<bool>(true)));
+		connect_copy(add_button("Change After", "w=94;tooltip='Set the transition duration from the previous keyframe'")->click, rebind(this, &keyframe_editor_overlay::change_duration, cgv::signal::const_expression<bool>(false)));
+
+		add_decorator("", "separator");
 
 		connect_copy(add_button("Remove Selected", "tooltip='Remove the selected keyframe'")->click, rebind(this, &keyframe_editor_overlay::erase_selected_keyframe));
 	}
