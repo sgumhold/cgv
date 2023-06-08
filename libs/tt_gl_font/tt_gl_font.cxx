@@ -369,7 +369,7 @@ namespace cgv {
 	}
 	///
 	bool tt_gl_font_face::is_valid() const {
-		return ttf_buffer != 0;
+		return ttf_buffer != nullptr;
 	}
 	/// construct font face
 	tt_gl_font_face::tt_gl_font_face(const std::string name, const stbtt_fontinfo& _f, float _font_size, unsigned char* _ttf_buffer, int ffa) :
@@ -577,12 +577,20 @@ namespace cgv {
 		return font_name.c_str();
 	}
 	/// check whether the given font includes a face that include the possibly or-ed together selection of font face attributes
-	bool tt_gl_font::supports_font_face(int ffa) const {
-		return !font_faces[ffa].empty();
+	bool tt_gl_font::supports_font_face(cgv::media::font::FontFaceAttributes ffa) const
+	{
+		return ffa <= font_faces.size() && !font_faces[ffa].empty();
 	}
 	/// return a pointer to a font face
-	cgv::media::font::font_face_ptr tt_gl_font::get_font_face(int ffa) const {
-		return font_faces[ffa];
+	cgv::media::font::font_face_ptr tt_gl_font::get_font_face(cgv::media::font::FontFaceAttributes ffa) const {
+		bool font_face_valid = font_faces.at(ffa) != nullptr && font_faces[ffa]->is_valid();
+#ifndef NDEBUG
+		if (!font_face_valid) {
+			std::cout << __func__ << ": Attribute not in font face! Fallback to normal font ..." << std::endl;
+			assert(font_faces[cgv::media::font::FFA_REGULAR]->is_valid() && "Not even the regular font face is valid?!");
+		}
+#endif // !NDEBUG
+		return font_face_valid ? font_faces.at(ffa) : font_faces.at(cgv::media::font::FFA_REGULAR);
 	}
 	/// enumerate the supported font sizes
 	void tt_gl_font::enumerate_sizes(std::vector<int>& supported_sizes) const {
