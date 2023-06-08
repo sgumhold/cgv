@@ -7,7 +7,8 @@
 #include <cgv/render/render_types.h>
 #include <cgv/utils/file.h>
 
-#include <tinyxml2.h>
+#include <tinyxml2/tinyxml2.h>
+#include <cgv_xml/query.h>
 
 namespace cgv {
 namespace app {
@@ -42,42 +43,6 @@ private:
 		float g = -1.0f;
 		float b = -1.0f;
 	};
-
-
-
-	class FindElementByNameVisitor : public tinyxml2::XMLVisitor {
-	private:
-		std::string name = "";
-		const tinyxml2::XMLElement* result = nullptr;
-
-	public:
-		FindElementByNameVisitor() {}
-
-		FindElementByNameVisitor(const std::string& name) : name(name) {}
-
-		void SetQueryName(const std::string& name) {
-
-			this->name = name;
-		}
-
-		const tinyxml2::XMLElement* Result() const {
-
-			return result;
-		}
-
-		bool VisitEnter(const tinyxml2::XMLElement& element, const tinyxml2::XMLAttribute* attribute) override {
-
-			if(strcmp(element.Name(), name.c_str()) == 0) {
-				result = &element;
-				return false;
-			}
-
-			return true;
-		}
-	};
-
-
-
 
 	static void extract_value(const tinyxml2::XMLElement& elem, const std::string& name, bool as_float, float& value) {
 
@@ -143,7 +108,7 @@ private:
 
 	static void extract_color_maps(const tinyxml2::XMLDocument& doc, result& entries, const identifier_config& config) {
 
-		FindElementByNameVisitor findElementByName("ColorMaps");
+		cgv::xml::FindElementByNameVisitor findElementByName("ColorMaps");
 		doc.Accept(&findElementByName);
 
 		if(auto color_maps_elem = findElementByName.Result()) {
@@ -159,7 +124,7 @@ private:
 
 public:
 	static void read_from_xml(const tinyxml2::XMLDocument& doc, result& entries, const identifier_config& config = identifier_config()) {
-		// clear previous data
+		
 		entries.clear();
 		extract_color_maps(doc, entries, config);
 	}
@@ -177,7 +142,6 @@ public:
 
 	static bool read_from_xml_file(const std::string& file_name, result& entries, const identifier_config& config = identifier_config()) {
 		
-		// TODO: move to source file and use namespace tinyxml?
 		tinyxml2::XMLDocument doc;
 		if(doc.LoadFile(file_name.c_str()) == tinyxml2::XML_SUCCESS) {
 			read_from_xml(doc, entries, config);
