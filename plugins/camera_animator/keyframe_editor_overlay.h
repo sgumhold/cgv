@@ -8,6 +8,7 @@
 #include <cgv_app/help_message.h>
 #include <cgv_app/on_set_evaluator.h>
 #include <cgv_g2d/draggable_collection.h>
+#include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 
 #include "animation_data.h"
@@ -36,6 +37,8 @@ protected:
 		int timeline_offset = 0;
 		size_t timeline_frames = 0;
 		rgb keyframe_color = rgb(0.5f);
+		rgb selected_keyframe_color = rgb(0.0f, 0.0f, 1.0f);
+		rgb time_marker_color = rgb(0.0f, 0.0f, 1.0f);
 
 		cgv::g2d::irect container;
 		cgv::g2d::irect timeline;
@@ -51,18 +54,18 @@ protected:
 
 			timeline.position = ivec2(padding, container_size.y() - timeline_height - marker_height - padding);
 			
-			timeline.size.x() = timeline_frames == 0 ?
+			timeline.w() = timeline_frames == 0 ?
 				container_size.x() - 2 * padding :
 				frame_width * static_cast<int>(timeline_frames + 1);
-			timeline.size.y() = timeline_height;
+			timeline.h() = timeline_height;
 
 			scrollbar_constraint.position = ivec2(padding, 8);
-			scrollbar_constraint.size.x() = container_size.x() - 2 * padding;
-			scrollbar_constraint.size.y() = scrollbar_height;
+			scrollbar_constraint.w() = container_size.x() - 2 * padding;
+			scrollbar_constraint.h() = scrollbar_height;
 
 			marker_constraint = timeline;
-			marker_constraint.position.y() += timeline_height + 2;
-			marker_constraint.size.y() = marker_height;
+			marker_constraint.y() += timeline_height + 2;
+			marker_constraint.h() = marker_height;
 		}
 
 		int total_height() const {
@@ -87,6 +90,10 @@ protected:
 	easing_functions::Id easing_function_id = easing_functions::Id::kLinear;
 	size_t new_frame_count = 30ull;
 	float new_duration = 1.0f;
+
+	cgv::g2d::generic_2d_renderer line_renderer;
+	DEFINE_GENERIC_RENDER_DATA_CLASS(line_geometry, 1, vec2, position);
+	line_geometry lines;
 
 	cgv::g2d::draggable_collection<cgv::g2d::draggable> scrollbar;
 	cgv::g2d::draggable_collection<cgv::g2d::draggable> marker;
@@ -135,6 +142,10 @@ protected:
 	void handle_keyframe_selection_change();
 
 	void invoke_callback(Event e);
+
+	void draw_keyframes(cgv::render::context& ctx, cgv::g2d::canvas& cnvs);
+
+	void draw_time_marker_and_labels(cgv::render::context& ctx, cgv::g2d::canvas& cnvs);
 
 	void init_styles(cgv::render::context& ctx) override;
 	
