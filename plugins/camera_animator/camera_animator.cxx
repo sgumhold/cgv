@@ -4,7 +4,7 @@
 #include <cgv/gui/trigger.h>
 #include <cgv/utils/advanced_scan.h>
 
-#include <tinyxml2.h>
+#include <tinyxml2/tinyxml2.h>
 
 using namespace cgv::render;
 
@@ -624,24 +624,15 @@ bool camera_animator::load_animation(const std::string& file_name) {
 
 						if(success) {
 							keyframes.push_back({ frame, ease, view });
-						} else {
-							// TODO: error message
 						}
 					}
 
-					//std::cout << keyframe_element->Attribute("frame") << std::endl;
 					keyframe_element = keyframe_element->NextSiblingElement();
 				}
-				/*if(auto timecode = properties->FirstChildElement("Timecode")) {
-					std::cout << "Timecode: " << timecode->Name() << std::endl;
-					std::cout << "Timecode: " << timecode->GetText() << std::endl;
-				}*/
-
+				
 				success = true;
 			}
 		}
-	} else {
-		//std::cout << "Could not load xml" << std::endl;
 	}
 
 	if(success) {

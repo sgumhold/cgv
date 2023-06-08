@@ -1,6 +1,6 @@
 @=
-projectName="tinyxml";
+projectName="xml";
 projectType="library";
 projectGUID="FC87875E-A470-415C-9E58-9B5D643215BE";
-addIncDirs=[ [CGV_DIR."/3rd/tinyxml","all"] ];
+addIncDirs=[ [CGV_DIR."/3rd/xml","all"] ];
 addSharedDefines=["TINYXML2_EXPORT"];

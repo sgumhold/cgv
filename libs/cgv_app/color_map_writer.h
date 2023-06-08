@@ -6,7 +6,7 @@
 #include <cgv/render/render_types.h>
 #include <cgv/utils/file.h>
 
-//#include <tinyxml2.h>
+#include <tinyxml2/tinyxml2.h>
 
 namespace cgv {
 namespace app {
@@ -55,7 +55,7 @@ private:
 	}
 
 public:
-	static std::string to_xml(const std::string& name, const cgv::render::color_map& cm, bool put_parent_tag = true) {
+	/*static std::string to_xml(const std::string& name, const cgv::render::color_map& cm, bool put_parent_tag = true) {
 		/*std::string content = "";
 		std::string end = "";
 		bool tab = false;
@@ -66,7 +66,7 @@ public:
 			tab = true;
 		}
 
-		return content + stringify(name, cm, tab) + end;*/
+		return content + stringify(name, cm, tab) + end;*
 		return "";
 	}
 
@@ -88,18 +88,32 @@ public:
 			}
 		}
 
-		return content + end;*/
+		return content + end;*
 		return "";
+	}*/
+
+	static bool write_to_xml_file(const std::string& file_name, const std::string& name, const cgv::render::color_map& color_map, bool put_parent_tag = true) {
+	
+		std::vector<std::string> names = { name };
+		std::vector<cgv::render::color_map> color_maps = { color_map };
+
+		return write_to_xml_file(file_name, names, color_maps, put_parent_tag);
 	}
 
-	static bool write_to_xml(const std::string& file_name, const std::string& name, const cgv::render::color_map& cm, bool put_parent_tag = true) {
+	static bool write_to_xml_file(const std::string& file_name, const std::vector<std::string>& names, const std::vector<cgv::render::color_map>& color_maps, bool put_parent_tag = true) {
+
+		tinyxml2::XMLPrinter printer;
+		if(put_parent_tag)
+			printer.OpenElement("ColorMaps");
+
+		// TODO: write individual color maps
+
+		if(put_parent_tag)
+			printer.CloseElement();
+
+		std::string xml = printer.CStr();
 		
-		return true;// cgv::utils::file::write(file_name, to_xml(name, cm, put_parent_tag), true);
-	}
-
-	static bool write_to_xml(const std::string& file_name, const std::vector<std::string>& names, const std::vector<cgv::render::color_map>& color_maps, bool put_parent_tag = true) {
-
-		return true;// cgv::utils::file::write(file_name, to_xml(names, color_maps, put_parent_tag), true);
+		return false;// cgv::utils::file::write(file_name, to_xml(names, color_maps, put_parent_tag), true);
 	}
 };
 
