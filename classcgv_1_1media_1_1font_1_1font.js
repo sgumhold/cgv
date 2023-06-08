@@ -9,7 +9,7 @@ var classcgv_1_1media_1_1font_1_1font =
     [ "get", "classcgv_1_1media_1_1font_1_1font.html#a5978e45464c3fdd3083426c4b21ed28a", null ],
     [ "get_const_interface", "classcgv_1_1media_1_1font_1_1font.html#a322bdd4891db870dafaba22e40d99bff", null ],
     [ "get_default_options", "classcgv_1_1media_1_1font_1_1font.html#a79a9ca57ee7e6364153cda52223b8501", null ],
-    [ "get_font_face", "classcgv_1_1media_1_1font_1_1font.html#a16725d67697249c7c54260e32244da0d", null ],
+    [ "get_font_face", "classcgv_1_1media_1_1font_1_1font.html#ac8feadad9291dba272676b2ca06f5802", null ],
     [ "get_group", "classcgv_1_1media_1_1font_1_1font.html#acd6c94f5eb8784c955f687984cbb70ae", null ],
     [ "get_group_const", "classcgv_1_1media_1_1font_1_1font.html#a8229995c361dc313cecd1ca42ded82ae", null ],
     [ "get_interface", "classcgv_1_1media_1_1font_1_1font.html#aa2b866151a23c63b3e8029849e71a796", null ],
@@ -35,7 +35,7 @@ var classcgv_1_1media_1_1font_1_1font =
     [ "set_ref_count", "classcgv_1_1media_1_1font_1_1font.html#abceffe95f08d3fc13cf9286cf360e705", null ],
     [ "set_void", "classcgv_1_1media_1_1font_1_1font.html#a62d3cd5ae49c3e261f5c0e52bc59bd4f", null ],
     [ "stream_stats", "classcgv_1_1media_1_1font_1_1font.html#a95bafefa81ebfa3206014eb198e49459", null ],
-    [ "supports_font_face", "classcgv_1_1media_1_1font_1_1font.html#a4767c986d164fcd4b9330274fab16444", null ],
+    [ "supports_font_face", "classcgv_1_1media_1_1font_1_1font.html#a40eb1988958ae37cf66042f93c9c5fd4", null ],
     [ "unregister", "classcgv_1_1media_1_1font_1_1font.html#a0b3db0f57373229e66422eeeb6750ebc", null ],
     [ "update", "classcgv_1_1media_1_1font_1_1font.html#a3e1dd0ff6fa2baf3dc2149d3acfecd45", null ]
 ];
