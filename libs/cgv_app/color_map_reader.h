@@ -6,7 +6,6 @@
 #include <cgv/render/color_map.h>
 #include <cgv/render/render_types.h>
 #include <cgv/utils/file.h>
-#include <cgv/utils/xml.h>
 
 #include <tinyxml2.h>
 
