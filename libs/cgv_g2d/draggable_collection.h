@@ -82,6 +82,14 @@ public:
 		return draggables[i];
 	}
 
+	typename std::vector<T>::iterator begin() { return draggables.begin(); }
+
+	typename std::vector<T>::iterator end() { return draggables.end(); }
+
+	typename std::vector<T>::const_iterator cbegin() { return draggables.cbegin(); }
+
+	typename std::vector<T>::const_iterator cend() { return draggables.cend(); }
+
 	ptr_type get_dragged() {
 		return dragged;
 	}
