@@ -147,7 +147,7 @@ var searchData=
   ['get_5ffloor_5flevel_1130',['get_floor_level',['../classvr_1_1vr__driver.html#ab08d52d42886ebbd99ba2c6379a5a52a',1,'vr::vr_driver']]],
   ['get_5ffocus_1131',['get_focus',['../classcgv_1_1render_1_1view.html#a2c7e200a5a2689a83989347f2e03cc82',1,'cgv::render::view']]],
   ['get_5ffocused_5fchild_1132',['get_focused_child',['../classcgv_1_1base_1_1traverse__policy.html#ae075e6b19833e43e3d0908c8a1cfc69f',1,'cgv::base::traverse_policy']]],
-  ['get_5ffont_5fface_1133',['get_font_face',['../classcgv_1_1media_1_1font_1_1font.html#a16725d67697249c7c54260e32244da0d',1,'cgv::media::font::font']]],
+  ['get_5ffont_5fface_1133',['get_font_face',['../classcgv_1_1media_1_1font_1_1font.html#ac8feadad9291dba272676b2ca06f5802',1,'cgv::media::font::font']]],
   ['get_5ffont_5fserver_1134',['get_font_server',['../namespacecgv_1_1media_1_1font.html#a27f5fb0f90d77406f74b262d17911348',1,'cgv::media::font']]],
   ['get_5fformat_1135',['get_format',['../classcgv_1_1data_1_1data__view__base.html#a56de8ff84ed9b5f87f4ab742191a69b5',1,'cgv::data::data_view_base']]],
   ['get_5ffps_1136',['get_fps',['../classcgv_1_1media_1_1video_1_1video__reader.html#ab6e03228c86f9cd42c540e4ebc356e10',1,'cgv::media::video::video_reader']]],
