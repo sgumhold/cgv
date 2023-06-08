@@ -42,6 +42,9 @@ cgv::render::shader_program& canvas::enable_shader(cgv::render::context& ctx, co
 }
 
 cgv::render::shader_program& canvas::enable_shader(cgv::render::context& ctx, cgv::render::shader_program& prog) {
+	if(current_shader_program == &prog)
+		return prog;
+
 	disable_current_shader(ctx);
 
 	prog.enable(ctx);
