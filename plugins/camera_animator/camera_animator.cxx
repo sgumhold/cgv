@@ -45,10 +45,10 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 
 	animation = std::make_shared<animation_data>();
 
-	input_file_helper = cgv::app::file_gui_helper(this, "Open/Save Camera Animation", cgv::app::file_gui_helper::Mode::kOpenAndSave);
+	input_file_helper = cgv::gui::file_helper(this, "Open/Save Camera Animation", cgv::gui::file_helper::Mode::kOpenAndSave);
 	input_file_helper.add_filter("Camera Animation", "xml");
 
-	output_directory_helper = cgv::app::directory_gui_helper(this, "Select Output Folder", cgv::app::directory_gui_helper::Mode::kOpen);
+	output_directory_helper = cgv::gui::directory_helper(this, "Select Output Folder", cgv::gui::directory_helper::Mode::kOpen);
 	output_directory_helper.directory_name = "./output";
 	
 	help.add_line("Keybindings:");
@@ -142,7 +142,7 @@ void camera_animator::handle_timer_event(double t, double dt) {
 	}
 }
 
-void camera_animator::handle_on_set(const cgv::app::on_set_evaluator& m) {
+void camera_animator::handle_member_change(const cgv::utils::pointer_test& m) {
 
 	if(m.is(input_file_helper.file_name)) {
 		const std::string& file_name = input_file_helper.file_name;
@@ -301,7 +301,7 @@ void camera_animator::after_finish(context& ctx) {
 
 void camera_animator::create_gui() {
 
-	add_decorator("Camera Animator", "heading", "w=168;level=2", " ");
+	add_decorator("Camera Animator", "heading", "level=2");
 	help.create_gui(this);
 
 	input_file_helper.create_gui("Animation File");

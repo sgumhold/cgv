@@ -1,12 +1,11 @@
 #pragma once
 
 #include <cgv/gui/dialog.h>
+#include <cgv/gui/help_message.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/math/ftransform.h>
 #include <cgv_app/canvas_overlay.h>
-#include <cgv_app/help_message.h>
-#include <cgv_app/on_set_evaluator.h>
 #include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
@@ -80,7 +79,7 @@ protected:
 		keyframe_draggable() : draggable() {}
 	};
 
-	cgv::app::help_message help;
+	cgv::gui::help_message help;
 
 	cgv::render::view* view_ptr;
 
@@ -158,7 +157,7 @@ public:
 	void clear(cgv::render::context& ctx);
 
 	bool handle_event(cgv::gui::event& e);
-	void handle_on_set(const cgv::app::on_set_evaluator& m);
+	void handle_member_change(const cgv::utils::pointer_test& m);
 
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);

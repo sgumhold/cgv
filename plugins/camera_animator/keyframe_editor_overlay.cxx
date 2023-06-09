@@ -30,6 +30,7 @@ keyframe_editor_overlay::keyframe_editor_overlay() {
 	help.add_bullet_point("Click on a keyframe to select it.");
 	help.add_bullet_point("Drag a keyframe to change its time. Dragging onto another keyframe will revert the drag.");
 	help.add_bullet_point("Click \"Set\" to add a new keyframe or change the existing keyframe at the current time.");
+	help.add_bullet_point("Press [Del] or Click \"Remove Selected\" to remove the selected keyframe.");
 
 	line_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
 }
@@ -120,7 +121,7 @@ bool keyframe_editor_overlay::handle_event(cgv::gui::event& e) {
 	return false;
 }
 
-void keyframe_editor_overlay::handle_on_set(const cgv::app::on_set_evaluator& m) {
+void keyframe_editor_overlay::handle_member_change(const cgv::utils::pointer_test& m) {
 
 	if(m.is(easing_function_id)) {
 		if(data) {
@@ -672,7 +673,7 @@ void keyframe_editor_overlay::init_styles(context& ctx) {
 
 void keyframe_editor_overlay::create_gui_impl() {
 
-	add_decorator("Keyframes", "heading", "w=168;level=4", " ");
+	add_decorator("Keyframes", "heading", "level=4");
 	help.create_gui(this);
 	
 	if(data && selected_frame != -1) {
