@@ -5,9 +5,9 @@
 #include <cgv/utils/scan.h>
 
 namespace cgv {
-namespace app {
+namespace gui {
 
-class file_gui_helper {
+class file_helper {
 public:
 	enum class Mode {
 		kOpen,
@@ -24,9 +24,9 @@ public:
 	bool allow_all_files = true;
 	std::string file_name = "";
 
-	file_gui_helper() {}
+	file_helper() {}
 
-	file_gui_helper(cgv::gui::provider* p, const std::string& title, Mode mode) : provider_ptr(p), title(title), mode(mode) {}
+	file_helper(cgv::gui::provider* p, const std::string& title, Mode mode) : provider_ptr(p), title(title), mode(mode) {}
 
 	void clear_filter() {
 
@@ -86,7 +86,7 @@ public:
 	}
 };
 
-class directory_gui_helper {
+class directory_helper {
 public:
 	enum class Mode {
 		kOpen,
@@ -100,9 +100,9 @@ protected:
 public:
 	std::string directory_name = "";
 
-	directory_gui_helper() {}
+	directory_helper() {}
 
-	directory_gui_helper(cgv::gui::provider* p, const std::string& title, Mode mode) : provider_ptr(p), title(title), mode(mode) {}
+	directory_helper(cgv::gui::provider* p, const std::string& title, Mode mode) : provider_ptr(p), title(title), mode(mode) {}
 
 	void update() {
 

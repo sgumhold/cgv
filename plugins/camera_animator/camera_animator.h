@@ -1,11 +1,11 @@
 #pragma once
 
+#include <cgv/gui/file_helper.h>
+#include <cgv/gui/help_message.h>
 #include <cgv/utils/file.h>
 #include <cgv/utils/dir.h>
 #include <cgv_app/application_plugin.h>
-#include <cgv_app/file_gui_helper.h>
 #include <cgv_app/gizmo.h>
-#include <cgv_app/help_message.h>
 #include <cgv_gl/line_render_data.h>
 #include <cgv_gl/point_render_data.h>
 
@@ -17,7 +17,7 @@
 
 class CGV_API camera_animator : public cgv::app::application_plugin {
 protected:
-	cgv::app::help_message help;
+	cgv::gui::help_message help;
 
 	/// store a pointer to the view
 	cgv::render::view* view_ptr = nullptr;
@@ -38,8 +38,8 @@ protected:
 
 	std::shared_ptr<animation_data> animation;
 
-	cgv::app::file_gui_helper input_file_helper;
-	cgv::app::directory_gui_helper output_directory_helper;
+	cgv::gui::file_helper input_file_helper;
+	cgv::gui::directory_helper output_directory_helper;
 
 	bool animate = false;
 	bool record = false;
@@ -99,7 +99,7 @@ public:
 
 	bool handle_event(cgv::gui::event& e);
 	void handle_timer_event(double t, double dt);
-	void handle_on_set(const cgv::app::on_set_evaluator& m);
+	void handle_member_change(const cgv::utils::pointer_test& m);
 	bool on_exit_request();
 
 	void on_select();
