@@ -1,11 +1,11 @@
 #pragma once
 
-#include <cgv_app/on_set_evaluator.h>
 #include <cgv/defines/deprecated.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/context.h>
 #include <cgv/render/drawable.h>
+#include <cgv/utils/pointer_test.h>
 #include <cgv_g2d/rect.h>
 #include <cgv_g2d/utils2d.h>
 
@@ -99,11 +99,11 @@ public:
 	/// overload this method to handle events
 	virtual bool handle_event(cgv::gui::event& e) { return false; };
 
+	/// implement to handle member changes
+	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
+
 	/// default implementation of that calls handle_on_set and afterwards upates the member in the gui and post a redraw
 	virtual void on_set(void* member_ptr);
-
-	/// implement to handle member changes
-	virtual void handle_on_set(const on_set_evaluator& m) {}
 
 	bool blocks_events() const { return block_events; }
 

@@ -34,7 +34,7 @@ bool canvas_overlay::init(cgv::render::context& ctx) {
 
 void canvas_overlay::on_set(void* member_ptr) {
 
-	handle_on_set(on_set_evaluator(member_ptr));
+	handle_member_change(cgv::utils::pointer_test(member_ptr));
 	update_member(member_ptr);
 	post_damage();
 }
