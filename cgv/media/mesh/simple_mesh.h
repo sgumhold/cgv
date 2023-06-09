@@ -129,7 +129,7 @@ template <typename T = float>
 class CGV_API simple_mesh : public simple_mesh_base
 {
 public:
-	using value_type = T;
+	using numeric_type = T;
 
 	/// type of axis aligned 3d box
 	typedef simple_mesh<T> mesh_type;
