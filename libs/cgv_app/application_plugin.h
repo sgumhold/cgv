@@ -4,8 +4,8 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
+#include <cgv/utils/pointer_test.h>
 
-#include "on_set_evaluator.h"
 #include "overlay.h"
 
 #include "lib_begin.h"
@@ -44,9 +44,9 @@ public:
 
 	virtual bool handle_event(cgv::gui::event& e) = 0;
 
-	virtual void on_set(void* member_ptr);
+	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
 
-	virtual void handle_on_set(const on_set_evaluator& m) {}
+	virtual void on_set(void* member_ptr);
 
 	virtual bool initialize_view_ptr() final;
 };

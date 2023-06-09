@@ -54,11 +54,11 @@ public:
 
 	void clear(cgv::render::context& ctx);
 
+	/// implement to handle member changes
+	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
+
 	/// default implementation of that calls handle_on_set and afterwards upates the member in the gui and post damage to the canvas overlay
 	virtual void on_set(void* member_ptr);
-
-	/// implement to handle member changes
-	virtual void handle_on_set(const on_set_evaluator& m) {}
 
 	bool init(cgv::render::context& ctx);
 	void draw(cgv::render::context& ctx);
