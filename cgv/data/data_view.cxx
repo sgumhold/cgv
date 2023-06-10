@@ -378,13 +378,13 @@ bool data_view::compose(data_view& composed_dv, const std::vector<data_view>& dv
 		unsigned char* dst_ptr = composed_dv.get_ptr<unsigned char>();
 		unsigned wrong_format_count = 0;
 
-		unsigned bytes_per_slice = composed_df->get_nr_bytes() / dvs.size();
+		size_t bytes_per_slice = composed_df->get_nr_bytes() / dvs.size();
 
 		for(size_t i = 0; i < dvs.size(); ++i) {
 			const data_view& dv = dvs[i];
 			const data_format* df_ptr = dv.get_format();
 			unsigned char* src_ptr = dv.get_ptr<unsigned char>();
-			unsigned n_bytes = df_ptr->get_nr_bytes();
+			size_t n_bytes = df_ptr->get_nr_bytes();
 
 			if(*src_df_ptr != *df_ptr || n_bytes != bytes_per_slice) {
 				++wrong_format_count;

@@ -52,7 +52,7 @@ public:
 		return cgv::utils::to_upper(cgv::utils::file::get_extension(file_name)) == cgv::utils::to_upper(extension);
 	}
 
-	const std::string& ensure_extension(const std::string& extension, bool force = false) {
+	const std::string ensure_extension(const std::string& extension, bool force = false) {
 
 		std::string current_extension = cgv::utils::file::get_extension(file_name);
 
