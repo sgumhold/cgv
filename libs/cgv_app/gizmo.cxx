@@ -147,7 +147,7 @@ void gizmo::draw(context& ctx) {
 		create_geometry();
 
 	if(!active || scale < 0.0f)
-		scale = 0.3f * scale_coefficient * view_ptr->get_tan_of_half_of_fovy(true) * dot(position - view_ptr->get_eye(), view_ptr->get_view_dir());
+		scale = 0.3f * scale_coefficient * static_cast<float>(view_ptr->get_tan_of_half_of_fovy(true)) * dot(position - view_ptr->get_eye(), view_ptr->get_view_dir());
 
 	if(!active && align_to_view)
 		flip_factors = get_flip_factors();
@@ -306,7 +306,7 @@ bool gizmo::intersect_sphere(const ray& r, float rad, float& t) const {
 	float B = dot(r.dir, dist);
 	float D = B * B - dot(dist, dist) + rad * rad;
 
-	if(D < 0.0)
+	if(D < 0.0f)
 		return false;
 
 	t = B - sqrt(D);
@@ -328,7 +328,7 @@ bool gizmo::intersect_cylinder(const ray& r, const vec3& pa, const vec3& pb, flo
 
 	float h = k1 * k1 - k2 * k0;
 
-	if(h < 0.0)
+	if(h < 0.0f)
 		return false;
 
 	h = sqrt(h);
@@ -336,11 +336,11 @@ bool gizmo::intersect_cylinder(const ray& r, const vec3& pa, const vec3& pb, flo
 
 	// body
 	float y = baoc + t * bard;
-	if(y > 0.0 && y < baba)
+	if(y > 0.0f && y < baba)
 		return true;
 
 	// caps
-	t = (((y < 0.0) ? 0.0 : baba) - baoc) / bard;
+	t = (((y < 0.0f) ? 0.0f : baba) - baoc) / bard;
 	if(abs(k1 + k2 * t) < h) {
 		return true;
 	}

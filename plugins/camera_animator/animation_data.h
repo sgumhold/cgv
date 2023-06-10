@@ -120,7 +120,11 @@ struct animation_data {
 
 	interval_map <size_t, keyframe> keyframes;
 
-	animation_data() {}
+	void reset() {
+
+		time = 0.0f;
+		frame = 0;
+	}
 
 	keyframe* keyframe_at(size_t frame) {
 
@@ -152,7 +156,6 @@ struct animation_data {
 	float duration() {
 
 		return frame_to_time(frame_count());
-		//return static_cast<float>(frame_count()) / static_cast<float>(timecode);
 	}
 
 	size_t frame_count() {
@@ -173,13 +176,7 @@ struct animation_data {
 		return static_cast<size_t>(static_cast<float>(timecode) * time);
 	}
 
-	void reset() {
-
-		time = 0.0f;
-		frame = 0;
-	}
-
-	 bool current_view(view_parameters& parameters) {
+	bool current_view(view_parameters& parameters) {
 
 		float tc = static_cast<float>(timecode);
 		size_t f = use_continuous_time ? time_to_frame(time) : frame;
@@ -192,58 +189,50 @@ struct animation_data {
 		return f <= frame_count();
 	}
 
-	 void change_duration_after(size_t frame, size_t frames) {
+	std::vector<std::pair<int, int>> compute_keyframe_moves(std::map<size_t, keyframe>::iterator& it, int frame_delta) {
 
-		 if(frame != -1 && frames == 0ull)
-			 return;
+		std::vector<std::pair<int, int>> moves;
 
-		 int delta = 0;
-		 std::vector<std::pair<int, int>> moves;
+		for(it; it != keyframes.end(); ++it) {
+			int it_frame = static_cast<int>(it->first);
+			moves.push_back({ it_frame, it_frame + frame_delta });
+		}
 
-		 if(frame == -1) {
+		return moves;
+	}
 
-			 auto curr_it = keyframes.begin();
+	void change_duration_after(size_t frame, size_t frames) {
 
-			 size_t current_frames = curr_it->first;
+		if(frame != -1 && frames == 0ull || keyframes.empty())
+			return;
 
-			 delta = static_cast<int>(frames) - static_cast<int>(current_frames);
+		auto it = keyframes.begin();
+		int delta = static_cast<int>(frames);
+		std::vector<std::pair<int, int>> moves;
 
-			 if(delta < 0)
-				 delta = std::max(delta, -static_cast<int>(current_frames));
+		if(frame == -1) {
+			if(it != keyframes.end()) {
+				int current_frames = static_cast<int>(it->first);
+				delta = std::max(delta - current_frames, -current_frames);
+			}
+		} else {
+			auto bounds = keyframes.bounds(frame);
 
-			 if(delta != 0) {
-				 for(curr_it; curr_it != keyframes.end(); ++curr_it) {
-					 int it_frame = static_cast<int>(curr_it->first);
-					 moves.push_back({ it_frame, it_frame + delta });
-				 }
-			 }
-		 } else {
-			 auto curr_it = keyframes.find(frame);
-			 if(curr_it != keyframes.end()) {
-				 auto next_it = std::next(curr_it);
-				 if(next_it != keyframes.end()) {
-					 size_t current_frames = next_it->first - curr_it->first;
+			if(bounds.first != keyframes.end() && bounds.second != keyframes.end()) {
+				it = bounds.second;
+				delta -= static_cast<int>(bounds.second->first - bounds.first->first);
+			}
+		}
 
-					 delta = static_cast<int>(frames) - static_cast<int>(current_frames);
+		if(delta != 0)
+			moves = compute_keyframe_moves(it, delta);
 
-					 if(delta != 0) {
-						 for(next_it; next_it != keyframes.end(); ++next_it) {
-							 int it_frame = static_cast<int>(next_it->first);
-							 moves.push_back({ it_frame, it_frame + delta });
-						 }
-					 }
-				 }
-			 }
-		 }
-
-		 
-
-		 if(delta > 0) {
-			 for(auto it = moves.rbegin(); it != moves.rend(); ++it)
-				 keyframes.move(it->first, it->second);
-		 } else {
-			 for(auto it = moves.begin(); it != moves.end(); ++it)
-				 keyframes.move(it->first, it->second);
-		 }
-	 }
+		if(delta > 0) {
+			for(auto it = moves.rbegin(); it != moves.rend(); ++it)
+				keyframes.move(it->first, it->second);
+		} else {
+			for(auto it = moves.begin(); it != moves.end(); ++it)
+				keyframes.move(it->first, it->second);
+		}
+	}
 };

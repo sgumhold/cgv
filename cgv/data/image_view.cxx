@@ -107,7 +107,7 @@ const void* image_view::get_void(int i, int j) const
 
 void image_view::clear(double v)
 {
-	unsigned int n = df.get_nr_entries()*df.get_nr_components();
+	size_t n = df.get_nr_entries()*df.get_nr_components();
 	switch (df.get_component_type()) {
 	case TI_INT8 :  
 		std::fill(dv.get_ptr<int8_type>(), dv.get_ptr<int8_type>()+n, (int8_type)(v*127));

@@ -203,8 +203,13 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 		labels.add_text("0", vec2(0.0f), TA_BOTTOM);
 
 		for(size_t i = 0; i <= layout.timeline_frames; ++i) {
-			if(i % 5 == 0)
-				labels.add_text(std::to_string(i), vec2(layout.padding + layout.frame_width * i + layout.frame_width / 2, layout.total_height() - 10 - layout.marker_height + 7), TA_BOTTOM);
+			if(i % 5 == 0) {
+				vec2 position = vec2(
+					static_cast<float>(layout.padding + layout.frame_width * i + layout.frame_width / 2),
+					static_cast<float>(layout.total_height() - 10 - layout.marker_height + 7)
+				);
+				labels.add_text(std::to_string(i), position, TA_BOTTOM);
+			}
 		}
 		
 		create_keyframe_draggables();
@@ -237,42 +242,16 @@ void keyframe_editor_overlay::draw_content(context& ctx) {
 	container_style.apply(ctx, rect_prog);
 	content_canvas.draw_shape(ctx, layout.container);
 
-	// draw scrollbar
-	cgv::g2d::irect scrollbar_rect = layout.scrollbar_constraint;
-	scrollbar_rect.scale(1);
-
-	scrollbar_style.apply(ctx, rect_prog);
-	content_canvas.draw_shape(ctx, scrollbar_rect, theme.background());
-	content_canvas.draw_shape(ctx, scrollbar[0], theme.control());
-
 	if(data) {
-		// draw current frame marker on scrollbar
-		rectangle_style.apply(ctx, rect_prog);
-		
-		cgv::g2d::irect line_rect = scrollbar_rect;
-		line_rect.x() = frame_to_scrollbar_position(data->frame) - 1;
-		line_rect.w() = 3;
-		content_canvas.draw_shape(ctx, line_rect, theme.selection());
-
-		// draw keyframe markers on scrollbar
-		for(size_t i = 0; i < keyframes.size(); ++i) {
-			const auto& keyframe = keyframes[i];
-
-			line_rect = scrollbar_rect;
-			line_rect.x() = frame_to_scrollbar_position(keyframe.frame);
-			line_rect.w() = 1;
-
-			if(i > 0 && i < keyframes.size() - 1)
-				line_rect.scale(0, -3);
-
-			content_canvas.draw_shape(ctx, line_rect, layout.keyframe_color);
-		}
+		// draw scrollbar
+		draw_scrollbar(ctx, content_canvas);
 
 		// offset timeline based on scrollbar position
 		content_canvas.push_modelview_matrix();
 		content_canvas.mul_modelview_matrix(ctx, cgv::math::translate2h(vec2(static_cast<float>(-layout.timeline_offset), 0.0f)));
 
 		// draw inner border
+		content_canvas.enable_shader(ctx, rect_prog);
 		border_style.apply(ctx, rect_prog);
 		content_canvas.draw_shape(ctx, layout.timeline);
 
@@ -537,6 +516,44 @@ void keyframe_editor_overlay::invoke_callback(Event e) {
 		on_change_callback(e);
 }
 
+void keyframe_editor_overlay::draw_scrollbar(cgv::render::context& ctx, cgv::g2d::canvas& cnvs) {
+
+	auto& rect_prog = content_canvas.enable_shader(ctx, "rectangle");
+
+	cgv::g2d::irect scrollbar_rect = layout.scrollbar_constraint;
+	scrollbar_rect.scale(1);
+
+	scrollbar_style.apply(ctx, rect_prog);
+	// draw scrollbar track
+	content_canvas.draw_shape(ctx, scrollbar_rect, layout.background_color);
+	// draw scrollbar handle
+	content_canvas.draw_shape(ctx, scrollbar[0], layout.control_color);
+
+	// draw current frame marker on scrollbar
+	rectangle_style.apply(ctx, rect_prog);
+
+	cgv::g2d::irect line_rect = scrollbar_rect;
+	line_rect.x() = frame_to_scrollbar_position(data->frame) - 1;
+	line_rect.w() = 3;
+	content_canvas.draw_shape(ctx, line_rect, layout.selection_color);
+
+	// draw keyframe markers on scrollbar
+	for(size_t i = 0; i < keyframes.size(); ++i) {
+		const auto& keyframe = keyframes[i];
+
+		line_rect = scrollbar_rect;
+		line_rect.x() = frame_to_scrollbar_position(keyframe.frame);
+		line_rect.w() = 1;
+
+		if(i > 0 && i < keyframes.size() - 1)
+			line_rect.scale(0, -3);
+
+		content_canvas.draw_shape(ctx, line_rect, layout.keyframe_color);
+	}
+
+	content_canvas.disable_current_shader(ctx);
+}
+
 void keyframe_editor_overlay::draw_keyframes(context& ctx, cgv::g2d::canvas& cnvs) {
 
 	auto& rect_prog = content_canvas.enable_shader(ctx, "rectangle");
@@ -549,7 +566,7 @@ void keyframe_editor_overlay::draw_keyframes(context& ctx, cgv::g2d::canvas& cnv
 
 	for(const auto& keyframe : keyframes) {
 		r.x() = static_cast<int>(keyframe.x()) + 3;
-		rgb color = selected_frame == keyframe.frame ? layout.selected_keyframe_color : layout.keyframe_color;
+		rgb color = selected_frame == keyframe.frame ? layout.highlight_color : layout.keyframe_color;
 		content_canvas.draw_shape(ctx, r, color);
 	}
 
@@ -596,11 +613,11 @@ void keyframe_editor_overlay::draw_time_marker_and_labels(cgv::render::context& 
 	auto& rect_prog = content_canvas.enable_shader(ctx, "rectangle");
 	rectangle_style.apply(ctx, rect_prog);
 
-	content_canvas.draw_shape(ctx, ivec2(marker_x, r.y() + 1), ivec2(3, r.h() + 4), layout.time_marker_color);
+	content_canvas.draw_shape(ctx, ivec2(marker_x, r.y() + 1), ivec2(3, r.h() + 4), layout.selection_color);
 
 	// draw time marker handle
 	vec2 pos0 = static_cast<vec2>(ivec2(marker_x, layout.total_height() - 10));
-	vec2 pos1 = static_cast<vec2>(ivec2(marker_x, pos0.y() - layout.marker_height));
+	vec2 pos1 = vec2(pos0.x(), pos0.y() - layout.marker_height);
 	pos0.x() += 1.5f;
 	pos1.x() += 1.5f;
 
@@ -626,8 +643,10 @@ void keyframe_editor_overlay::init_styles(context& ctx) {
 	// get theme info and colors
 	auto& theme = cgv::gui::theme_info::instance();
 	layout.keyframe_color = rgb(theme.is_dark() ? 0.75f : 0.25f);
-	layout.selected_keyframe_color = theme.highlight();
-	layout.time_marker_color = theme.selection();
+	layout.highlight_color = theme.highlight();
+	layout.selection_color = theme.selection();
+	layout.background_color = theme.background();
+	layout.control_color = theme.control();
 
 	// configure style for the container rectangle
 	container_style.fill_color = theme.group();
@@ -689,7 +708,7 @@ void keyframe_editor_overlay::create_gui_impl() {
 
 		if(curr_pair.first != data->keyframes.end() && curr_pair.second != data->keyframes.end()) {
 			size_t delta = curr_pair.second->first - curr_pair.first->first;
-			duration_after = cgv::utils::to_string(data->frame_to_time(delta), -1u, 3u) + " s   (" + std::to_string(delta) + " frames)";
+			duration_after = cgv::utils::to_string(data->frame_to_time(delta), static_cast<unsigned>(-1), 3u) + " s   (" + std::to_string(delta) + " frames)";
 		}
 		
 		if(curr_pair.first != data->keyframes.end() && curr_pair.first->first > 0) {
@@ -705,7 +724,7 @@ void keyframe_editor_overlay::create_gui_impl() {
 		}
 
 		if(delta_before != -1)
-			duration_before = cgv::utils::to_string(data->frame_to_time(delta_before), -1u, 3u) + " s   (" + std::to_string(delta_before) + " frames)";
+			duration_before = cgv::utils::to_string(data->frame_to_time(delta_before), static_cast<unsigned>(-1), 3u) + " s   (" + std::to_string(delta_before) + " frames)";
 
 		add_view("Duration Before", duration_before);
 		add_view("Duration After", duration_after);

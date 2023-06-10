@@ -36,8 +36,10 @@ protected:
 		int timeline_offset = 0;
 		size_t timeline_frames = 0;
 		rgb keyframe_color = rgb(0.5f);
-		rgb selected_keyframe_color = rgb(0.0f, 0.0f, 1.0f);
-		rgb time_marker_color = rgb(0.0f, 0.0f, 1.0f);
+		rgb highlight_color = rgb(0.0f, 0.0f, 1.0f);
+		rgb selection_color = rgb(0.0f, 0.0f, 1.0f);
+		rgb background_color = rgb(0.0f);
+		rgb control_color = rgb(0.0f);
 
 		cgv::g2d::irect container;
 		cgv::g2d::irect timeline;
@@ -141,6 +143,8 @@ protected:
 	void handle_keyframe_selection_change();
 
 	void invoke_callback(Event e);
+
+	void draw_scrollbar(cgv::render::context& ctx, cgv::g2d::canvas& cnvs);
 
 	void draw_keyframes(cgv::render::context& ctx, cgv::g2d::canvas& cnvs);
 
