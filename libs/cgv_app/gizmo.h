@@ -3,6 +3,7 @@
 #include <cgv/gui/event.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
+#include <cgv/math/ray.h>
 #include <cgv/render/render_types.h>
 #include <cgv/render/view.h>
 #include <cgv_gl/arrow_render_data.h>
@@ -28,7 +29,7 @@ protected:
 		kCenter = 7
 	} feature = InteractionFeature::kNone;
 
-	struct ray {
+	/*struct ray {
 		cgv::render::vec3 org;
 		cgv::render::vec3 dir;
 
@@ -40,7 +41,7 @@ protected:
 
 			return org + t * dir;
 		}
-	};
+	};*/
 
 	cgv::render::view* view_ptr = nullptr;
 
@@ -99,17 +100,11 @@ protected:
 		return axis;
 	}
 
-	bool intersect_plane(const ray& r, const cgv::render::vec3& p, const cgv::render::vec3& n, float& t) const;
+	bool intersect_axis_aligned_rectangle(const cgv::math::ray3& r, int axis, const cgv::render::vec3& p, float scale, float& t) const;
 
-	bool intersect_axis_aligned_rectangle(const ray& r, int axis, const cgv::render::vec3& p, float scale, float& t) const;
+	bool intersect(const cgv::math::ray3& r);
 
-	bool intersect_sphere(const ray& r, float rad, float& t) const;
-
-	bool intersect_cylinder(const ray& r, const cgv::render::vec3& pa, const cgv::render::vec3& pb, float rad, float& t) const;
-
-	bool intersect(const ray& r);
-
-	bool handle_drag(const ray& r, const cgv::render::vec3& view_dir, bool drag_start);
+	bool handle_drag(const cgv::math::ray3& r, const cgv::render::vec3& view_dir, bool drag_start);
 
 	cgv::render::vec3 get_flip_factors();
 

@@ -75,7 +75,6 @@ void camera_animator::clear(context& ctx) {
 
 bool camera_animator::self_reflect(cgv::reflect::reflection_handler& rh) {
 
-	//return rh.reflect_member("input_path", input_path);
 	return rh.reflect_member("input_path", input_file_helper.file_name);
 }
 
@@ -91,7 +90,21 @@ bool camera_animator::handle_event(cgv::gui::event& e) {
 		return true;
 	}
 
-	if(et == cgv::gui::EID_KEY) {
+	if(et == cgv::gui::EID_MOUSE) {
+		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
+		cgv::gui::MouseAction ma = me.get_action();
+
+		ivec2 viewport_size(ctx.get_width(), ctx.get_height());
+		ivec2 mpos(
+			static_cast<int>(me.get_x()),
+			viewport_size.y() - static_cast<int>(me.get_y()) - 1
+		);
+
+		cgv::math::ray3 ray(static_cast<vec2>(mpos), static_cast<vec2>(viewport_size), view_ptr->get_eye(), ctx.get_projection_matrix() * ctx.get_modelview_matrix());
+
+		// TODO: implement picking
+
+	} else if(et == cgv::gui::EID_KEY) {
 		cgv::gui::key_event& ke = (cgv::gui::key_event&)e;
 		cgv::gui::KeyAction ka = ke.get_action();
 

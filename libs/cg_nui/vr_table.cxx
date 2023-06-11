@@ -99,13 +99,14 @@ namespace cgv {
 	bool vr_table::compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx)
 	{
 		vec3 n;
-		float t = cgv::math::ray_cylinder_intersection(ray_start, ray_direction, vec3(0, height - leg_width, 0), vec3(0, leg_width, 0), 0.5f * scale, n);
-		if (t == std::numeric_limits<float>::max())
-			return false;
+		float t;
 		//t = intersection::ray_cylinder_intersection(ray_start, ray_direction, vec3(0, height - leg_width, 0), vec3(0, leg_width, 0), 0.5f * scale, n);
-		hit_param = t;
-		hit_normal = n;
-		return true;
+		if (cgv::math::ray_cylinder_intersection({ ray_start, ray_direction }, vec3(0, height - leg_width, 0), vec3(0, leg_width, 0), 0.5f * scale, t, &n)) {
+			hit_param = t;
+			hit_normal = n;
+			return true;
+		}
+		return false;
 	}
 	vr_table::rgb vr_table::get_table_color() const
 	{
