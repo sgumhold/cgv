@@ -3,6 +3,7 @@
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/math/intersection.h>
 
 using namespace cgv::render;
 
@@ -61,20 +62,12 @@ bool gizmo::handle(cgv::gui::event& e, context& ctx) {
 		cgv::gui::MouseAction ma = me.get_action();
 
 		ivec2 viewport_size(ctx.get_width(), ctx.get_height());
-
-		ivec2 mpos(static_cast<int>(me.get_x()), static_cast<int>(me.get_y()));
-		mpos.y() = viewport_size.y() - mpos.y() - 1;
-		vec2 window_coord = static_cast<vec2>(mpos) * vec2(2.0f) / static_cast<vec2>(viewport_size) - vec2(1.0f);
-
-		mat4 MVP = ctx.get_projection_matrix() * ctx.get_modelview_matrix();
-
-		vec4 world_coord(window_coord.x(), window_coord.y(), 1.0f, 1.0f);
-		world_coord = inv(MVP) * world_coord;
-		world_coord /= world_coord.w();
-
-		ray r;
-		r.org = view_ptr->get_eye();
-		r.dir = normalize(vec3(world_coord) - r.org);
+		ivec2 mpos(
+			static_cast<int>(me.get_x()),
+			viewport_size.y() - static_cast<int>(me.get_y()) - 1
+		);
+		
+		cgv::math::ray3 ray(static_cast<vec2>(mpos), static_cast<vec2>(viewport_size), view_ptr->get_eye(), ctx.get_projection_matrix() * ctx.get_modelview_matrix());
 
 		switch(ma) {
 		case cgv::gui::MA_MOVE:
@@ -85,7 +78,7 @@ bool gizmo::handle(cgv::gui::event& e, context& ctx) {
 			bool last_hover = hover;
 			InteractionFeature last_feature = feature;
 
-			hover = intersect(r);
+			hover = intersect(ray);
 
 			if(last_hover != hover || last_feature != feature) {
 				geometry_out_of_date = true;
@@ -95,7 +88,7 @@ bool gizmo::handle(cgv::gui::event& e, context& ctx) {
 		case cgv::gui::MA_PRESS:
 		{
 			if(hover && feature != InteractionFeature::kNone) {
-				if(handle_drag(r, view_dir, true)) {
+				if(handle_drag(ray, view_dir, true)) {
 					active = true;
 					return true;
 				}
@@ -112,7 +105,7 @@ bool gizmo::handle(cgv::gui::event& e, context& ctx) {
 		case cgv::gui::MA_DRAG:
 		{
 			if(active) {
-				if(handle_drag(r, view_dir, false))
+				if(handle_drag(ray, view_dir, false))
 					return true;
 			}
 		} break;
@@ -251,24 +244,15 @@ void gizmo::create_geometry() {
 	geometry_out_of_date = false;
 }
 
-bool gizmo::intersect_plane(const ray& r, const vec3& p, const vec3& n, float& t) const {
-
-	float denom = dot(n, r.dir);
-	if(abs(denom) < 0.0001f)
-		return false;
-	t = dot(p - r.org, n) / denom;
-	return true;
-};
-
-bool gizmo::intersect_axis_aligned_rectangle(const ray& r, int axis, const vec3& p, float size, float& t) const {
+bool gizmo::intersect_axis_aligned_rectangle(const cgv::math::ray3& r, int axis, const vec3& p, float size, float& t) const {
 
 	vec3 nml(0.0f);
 	nml[axis] = 1.0f;
 
 	float ext = size;
 
-	if(intersect_plane(r, p, nml, t)) {
-		vec3 hp = r.pos_at(t);
+	if(cgv::math::ray_plane_intersection(r, p, nml, t)) {
+		vec3 hp = r.position(t);
 		hp -= p;
 
 		vec2 uv;
@@ -300,55 +284,7 @@ bool gizmo::intersect_axis_aligned_rectangle(const ray& r, int axis, const vec3&
 	return false;
 }
 
-bool gizmo::intersect_sphere(const ray& r, float rad, float& t) const {
-
-	vec3 dist = position - r.org;
-	float B = dot(r.dir, dist);
-	float D = B * B - dot(dist, dist) + rad * rad;
-
-	if(D < 0.0f)
-		return false;
-
-	t = B - sqrt(D);
-	return true;
-}
-
-bool gizmo::intersect_cylinder(const ray& r, const vec3& pa, const vec3& pb, float rad, float& t) const {
-
-	vec3 ba = pb - pa;
-	vec3 oc = r.org - pa;
-
-	float baba = dot(ba, ba);
-	float bard = dot(ba, r.dir);
-	float baoc = dot(ba, oc);
-
-	float k2 = baba - bard * bard;
-	float k1 = baba * dot(oc, r.dir) - baoc * bard;
-	float k0 = baba * dot(oc, oc) - baoc * baoc - rad * rad*baba;
-
-	float h = k1 * k1 - k2 * k0;
-
-	if(h < 0.0f)
-		return false;
-
-	h = sqrt(h);
-	t = (-k1 - h) / k2;
-
-	// body
-	float y = baoc + t * bard;
-	if(y > 0.0f && y < baba)
-		return true;
-
-	// caps
-	t = (((y < 0.0f) ? 0.0f : baba) - baoc) / bard;
-	if(abs(k1 + k2 * t) < h) {
-		return true;
-	}
-
-	return false;
-}
-
-bool gizmo::intersect(const ray& r) {
+bool gizmo::intersect(const cgv::math::ray3& r) {
 
 	float min_t = std::numeric_limits<float>::max();
 
@@ -358,7 +294,7 @@ bool gizmo::intersect(const ray& r) {
 		pb[i] += 1.0f * scale * flip_factors[i];
 
 		float t = std::numeric_limits<float>::max();
-		if(intersect_cylinder(r, pa, pb, 0.05f * scale, t)) {
+		if(cgv::math::ray_cylinder_intersection2(r, pa, pb, 0.05f * scale, t)) {
 			if(t >= 0.0f && t < min_t) {
 				min_t = t;
 				feature = static_cast<InteractionFeature>(i + 1);
@@ -379,10 +315,10 @@ bool gizmo::intersect(const ray& r) {
 		}
 	}
 
-	float t = std::numeric_limits<float>::max();
-	if(intersect_sphere(r, 0.1f * scale, t)) {
-		if(t >= 0.0f && t < min_t) {
-			min_t = t;
+	vec2 ts(std::numeric_limits<float>::max());	
+	if(cgv::math::ray_sphere_intersection(r, position, 0.1f * scale, ts)) {
+		if(ts.x() >= 0.0f && ts.x() < min_t) {
+			min_t = ts.x();
 			feature = InteractionFeature::kCenter;
 		}
 	}
@@ -390,7 +326,7 @@ bool gizmo::intersect(const ray& r) {
 	return min_t > 0.0f && min_t < std::numeric_limits<float>::max();
 }
 
-bool gizmo::handle_drag(const ray& r, const vec3& view_dir, bool drag_start) {
+bool gizmo::handle_drag(const cgv::math::ray3& r, const vec3& view_dir, bool drag_start) {
 
 	int axis_idx = get_axis_idx(feature);
 	vec3 axis = get_axis(feature);
@@ -420,21 +356,21 @@ bool gizmo::handle_drag(const ray& r, const vec3& view_dir, bool drag_start) {
 	}
 
 	float t = -1.0f;
-	if(intersect_plane(r, plane_origin, plane_normal, t)) {
+	if(cgv::math::ray_plane_intersection(r, plane_origin, plane_normal, t)) {
 		if(drag_start) {
 			last_position = position;
 
 			if(is_axis(feature))
-				offset[0] = dot(axis, r.pos_at(t) - position);
+				offset[0] = dot(axis, r.position(t) - position);
 			else
-				offset = r.pos_at(t) - position;
+				offset = r.position(t) - position;
 		} else {
 			vec3 new_position = position;
 
 			if(is_axis(feature)) {
-				new_position[axis_idx] = dot(axis, r.pos_at(t)) - offset[0];
+				new_position[axis_idx] = dot(axis, r.position(t)) - offset[0];
 			} else {
-				new_position = r.pos_at(t) - offset;
+				new_position = r.position(t) - offset;
 			}
 
 			set_position(new_position, true);
