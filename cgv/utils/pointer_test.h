@@ -55,8 +55,8 @@ public:
 
 	/// Test if the stored pointer points inside the address range of the given object instance.
 	template <typename T>
-	bool member_of(const T* ptr) const {
-		const void* addr_begin = reinterpret_cast<const void*>(ptr);
+	bool member_of(const T& ref) const {
+		const void* addr_begin = reinterpret_cast<const void*>(&ref);
 		const void* addr_end = reinterpret_cast<const void*>(reinterpret_cast<size_t>(addr_begin) + sizeof(T));
 		return member_ptr >= addr_begin && member_ptr < addr_end;
 	}
