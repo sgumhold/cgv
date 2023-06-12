@@ -94,15 +94,19 @@ bool camera_animator::handle_event(cgv::gui::event& e) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 		cgv::gui::MouseAction ma = me.get_action();
 
-		ivec2 viewport_size(ctx.get_width(), ctx.get_height());
-		ivec2 mpos(
-			static_cast<int>(me.get_x()),
-			viewport_size.y() - static_cast<int>(me.get_y()) - 1
-		);
+		if(me.get_button() == cgv::gui::MB_LEFT_BUTTON && ma == cgv::gui::MA_PRESS) {
+			if(view_ptr) {
+				ivec2 viewport_size(ctx.get_width(), ctx.get_height());
+				ivec2 mpos(
+					static_cast<int>(me.get_x()),
+					viewport_size.y() - static_cast<int>(me.get_y()) - 1
+				);
 
-		cgv::math::ray3 ray(static_cast<vec2>(mpos), static_cast<vec2>(viewport_size), view_ptr->get_eye(), ctx.get_projection_matrix() * ctx.get_modelview_matrix());
+				cgv::math::ray3 ray(static_cast<vec2>(mpos), static_cast<vec2>(viewport_size), view_ptr->get_eye(), ctx.get_projection_matrix() * ctx.get_modelview_matrix());
 
-		// TODO: implement picking
+				// TODO: implement picking
+			}
+		}
 
 	} else if(et == cgv::gui::EID_KEY) {
 		cgv::gui::key_event& ke = (cgv::gui::key_event&)e;
