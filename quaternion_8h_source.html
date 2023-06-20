@@ -148,7 +148,7 @@ $(document).ready(function(){initNavTree('quaternion_8h_source.html',''); initRe
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                <span class="comment">// compile-time check that matrix layout is supported</span></div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                static_assert(</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                           (rot_mat_type::nrows() == 3 &amp;&amp; (rot_mat_type::ncols()==3 || rot_mat_type::ncols()==4))</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                        || (rot_mat_type::nrows() == 4 &amp;&amp; rot_mat_type::ncols() == 4)</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                        || (rot_mat_type::nrows() == 4 &amp;&amp; rot_mat_type::ncols() == 4), <span class="stringliteral">&quot;matrix layout not supported&quot;</span></div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                );</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                <span class="comment">// convenience constant</span></div>
