@@ -22,9 +22,7 @@ protected:
 
 	cgv::g2d::canvas content_canvas, overlay_canvas;
 
-	bool draw_in_finish_frame = false;
-
-	bool blend_overlay = false;
+	bool blend_overlay;
 	
 	void init_overlay_style(cgv::render::context& ctx);
 
