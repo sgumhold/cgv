@@ -7,6 +7,7 @@
 #include "cgv_gl/box_renderer.h"
 #include "cgv_gl/arrow_renderer.h"
 #include "cgv_gl/spline_tube_renderer.h"
+#include "cgv/base/node.h"
 
 #include "lib_begin.h"
 
@@ -246,6 +247,11 @@ public:
 	bool init(render::context& ctx);
 	void clear(render::context& ctx);
 	void draw(render::context& ctx);
+
+	/// Print sub-hierarchy with given node as root
+	static void print_hierarchy(base::node_ptr node);
+	/// Print entire hierarchy by first traversing upwards as far as possible
+	static void print_full_hierarchy(base::node_ptr node);
 };
 
 template <typename T>

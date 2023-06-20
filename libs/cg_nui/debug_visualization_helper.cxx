@@ -1,4 +1,6 @@
 #include "debug_visualization_helper.h"
+#include "cgv/base/group.h"
+
 
 void cgv::nui::ref_debug_visualization_helper(cgv::nui::debug_visualization_helper** instance, int** reference_count)
 {
@@ -122,6 +124,80 @@ void cgv::nui::debug_visualization_helper::draw(render::context& ctx)
 		str.set_color_array(ctx, col);
 		str.render(ctx, 0, splines[i].first.size(), true);
 	}
+}
+
+void cgv::nui::debug_visualization_helper::print_hierarchy(base::node_ptr node)
+{
+	std::cout << "Printing Hierarchy:" << std::endl;
+	std::stack<cgv::base::node_ptr> stack;
+	std::stack<int> indentation_stack;
+	stack.push(node);
+	indentation_stack.push(0);
+	while (!stack.empty()) {
+		cgv::base::node_ptr n = stack.top();
+		stack.pop();
+		int indentation = indentation_stack.top();
+		indentation_stack.pop();
+		std::string s_indent;
+		for (int i = 0; i < indentation; ++i)
+			s_indent += "-";
+		std::cout << s_indent << n->get_type_name();
+		cgv::base::named_ptr nmdp = n->cast<base::named>();
+		if (nmdp && nmdp->get_name() != "")
+			std::cout << " (" << nmdp->get_name() << ")" << std::endl;
+		else
+			std::cout << std::endl;
+		cgv::base::group_ptr grp = n->cast<base::group>();
+		if (grp) {
+			for (int i = 0; i < grp->get_nr_children(); ++i) {
+				cgv::base::node_ptr child = grp->get_child(i)->cast<base::node>();
+				if (child) {
+					stack.push(child);
+					indentation_stack.push(indentation + 1);
+				}
+			}
+		}
+	}
+	std::cout << "------------End-------------" << std::endl;
+}
+
+void cgv::nui::debug_visualization_helper::print_full_hierarchy(base::node_ptr node)
+{
+	std::cout << "Printing Full Hierarchy:" << std::endl;
+	cgv::base::node_ptr parent = node;
+	while (parent->get_parent()) {
+		parent = parent->get_parent();
+	}
+	std::stack<cgv::base::node_ptr> stack;
+	std::stack<int> indentation_stack;
+	stack.push(parent);
+	indentation_stack.push(0);
+	while (!stack.empty()) {
+		cgv::base::node_ptr n = stack.top();
+		stack.pop();
+		int indentation = indentation_stack.top();
+		indentation_stack.pop();
+		std::string s_indent;
+		for (int i = 0; i < indentation; ++i)
+			s_indent += "-";
+		std::cout << s_indent << n->get_type_name();
+		cgv::base::named_ptr nmdp = n->cast<base::named>();
+		if (nmdp && nmdp->get_name() != "")
+			std::cout << " (" << nmdp->get_name() << ")" << std::endl;
+		else
+			std::cout << std::endl;
+		cgv::base::group_ptr grp = n->cast<base::group>();
+		if (grp) {
+			for (int i = 0; i < grp->get_nr_children(); ++i) {
+				cgv::base::node_ptr child = grp->get_child(i)->cast<base::node>();
+				if (child) {
+					stack.push(child);
+					indentation_stack.push(indentation + 1);
+				}
+			}
+		}
+	}
+	std::cout << "------------End-------------" << std::endl;
 }
 
 int cgv::nui::debug_visualization_helper::register_debug_value(debug_value* value)
