@@ -136,7 +136,7 @@ void cgv::nui::scaling_gizmo::on_handle_drag()
 	//	axis = (*anchor_rotation_ptr_ptr)->get_homogeneous_matrix() * vec4(axis, 0.0f);
 
 	vec3 axis = axes_directions[prim_idx];
-	if (use_root_rotation) {
+	if (use_root_for_rotation) {
 		axis = anchor_root_diff.inverse().apply(axis);
 	}
 
@@ -151,7 +151,7 @@ void cgv::nui::scaling_gizmo::on_handle_drag()
 	}
 
 	vec3 movement = closest_point - ii_at_grab.query_point;
-	if (use_root_rotation) {
+	if (use_root_for_rotation) {
 		movement = anchor_root_diff.apply(movement);
 		movement = anchor_parent_root_diff.inverse().apply(movement);
 	}

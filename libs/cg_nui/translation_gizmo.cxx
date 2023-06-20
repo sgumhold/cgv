@@ -32,10 +32,10 @@ bool cgv::nui::translation_gizmo::validate_configuration()
 		(position_ptr_ptr && *position_ptr_ptr) ||
 		translatable_obj
 		)) {
-		std::cout << "Translation gizmo requires a valid pointer to a position or a pointer to a pointer to a position or a reference to an object implementing translatable" << std::endl;
+		std::cout << "Translation gizmo requires a valid pointer to a position, or a pointer to a pointer to a position, or a reference to an object implementing translatable" << std::endl;
 		configuration_valid = false;
 	}
-	
+
 	configuration_valid = configuration_valid && validate_axes();
 	configuration_valid = configuration_valid && validate_handles(axes_directions.size());
 
@@ -55,32 +55,8 @@ void cgv::nui::translation_gizmo::on_handle_released()
 
 void cgv::nui::translation_gizmo::on_handle_drag()
 {
-	vec3 anchor_obj_parent_global_translation;
-	quat anchor_obj_parent_global_rotation;
-	vec3 anchor_obj_parent_global_scale;
-	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj->get_parent()),
-		anchor_obj_parent_global_translation, anchor_obj_parent_global_rotation, anchor_obj_parent_global_scale);
-	
-	vec3 anchor_obj_global_translation;
-	quat anchor_obj_global_rotation;
-	vec3 anchor_obj_global_scale;
-	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj),
-		anchor_obj_global_translation, anchor_obj_global_rotation, anchor_obj_global_scale);
-	
-	vec3 root_obj_global_translation;
-	quat root_obj_global_rotation;
-	vec3 root_obj_global_scale;
-	transforming::extract_transform_components(transforming::get_global_model_transform(root_obj),
-		root_obj_global_translation, root_obj_global_rotation, root_obj_global_scale);
-	
-	quat anchor_root_diff = root_obj_global_rotation.inverse() * anchor_obj_global_rotation;
-	quat anchor_parent_root_diff = root_obj_global_rotation.inverse() * anchor_obj_parent_global_rotation;
-	
 	vec3 axis = axes_directions[prim_idx];
-	//if (use_root_rotation) {
-	//	axis = anchor_root_diff.inverse().apply(axis);
-	//}
-	
+
 	vec3 closest_point;
 	if (ii_at_grab.is_pointing) {
 		if (!cgv::math::closest_point_on_line_to_line(ii_at_grab.query_point, axis,
@@ -90,20 +66,12 @@ void cgv::nui::translation_gizmo::on_handle_drag()
 	else {
 		closest_point = cgv::math::closest_point_on_line_to_point(ii_at_grab.query_point, axis, ii_during_focus[activating_hid_id].hid_position);
 	}
-	
+
 	vec3 movement = closest_point - ii_at_grab.query_point;
-	
-	if (use_root_rotation) {
-		//movement = anchor_root_diff.apply(movement);
-		//movement = anchor_parent_root_diff.inverse().apply(movement);
-	}
-	else {
-		// The position is in the local coordinate system of the parent of the anchor object.
-		// Therefor the anchor object's local rotation has to be applied to the movement vector.
-		quat anchor_obj_local_rotation = anchor_obj_parent_global_rotation.inverse() * anchor_obj_global_rotation;
-		movement = anchor_obj_local_rotation.apply(movement);
-	}
-	
+
+	// Transform movement into value object' parent coordinate system
+	movement = gizmo_to_value_parent_transform_vector(movement);
+
 	// If the position that this gizmo changes influences the anchor of this gizmo, then the movement is an incremental update.
 	// Otherwise the movement is relative to the original position of the anchor at the time of grabbing.
 	if (is_anchor_influenced_by_gizmo)
@@ -170,7 +138,7 @@ void cgv::nui::translation_gizmo::configure_axes_geometry(float radius, float le
 }
 
 bool cgv::nui::translation_gizmo::_compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal,
-                                                         size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
+	size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
 {
 	compute_geometry(scale);
 
@@ -196,7 +164,7 @@ bool cgv::nui::translation_gizmo::_compute_closest_point(const vec3& point, vec3
 }
 
 bool cgv::nui::translation_gizmo::_compute_intersection(const vec3& ray_start, const vec3& ray_direction,
-                                                        float& hit_param, vec3& hit_normal, size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
+	float& hit_param, vec3& hit_normal, size_t& primitive_idx, const vec3& scale, const mat4& view_matrix)
 {
 	compute_geometry(scale);
 
@@ -254,7 +222,7 @@ bool cgv::nui::translation_gizmo::_compute_intersection(const vec3& ray_start, c
 		//	idx = i;
 		//}
 	}
-	
+
 	if (t == std::numeric_limits<float>::max())
 	{
 		dehighlight_handles();
@@ -278,8 +246,36 @@ bool cgv::nui::translation_gizmo::init(cgv::render::context& ctx)
 	{
 		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle0);
 		config.show_translation = false;
-		config.position = vec3(1.0f, 1.4f, 0.0f);
+		config.position = vec3(0.8f, 2.0f, 0.0f);
 		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle0, config);
+	}
+	debug_coord_system_handle1 = dvh.register_debug_value_coordinate_system();
+	{
+		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle1);
+		config.show_translation = false;
+		config.position = vec3(1.2f, 2.0f, 0.0f);
+		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle1, config);
+	}
+	debug_coord_system_handle2 = dvh.register_debug_value_coordinate_system();
+	{
+		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle2);
+		config.show_translation = false;
+		config.position = vec3(1.2f, 3.2f, 0.0f);
+		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle2, config);
+	}
+	debug_coord_system_handle3 = dvh.register_debug_value_coordinate_system();
+	{
+		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle3);
+		config.show_translation = false;
+		config.position = vec3(1.2f, 2.8f, 0.0f);
+		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle3, config);
+	}
+	debug_coord_system_handle4 = dvh.register_debug_value_coordinate_system();
+	{
+		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle4);
+		config.show_translation = false;
+		config.position = vec3(1.2f, 2.4f, 0.0f);
+		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle4, config);
 	}
 	debug_ray_handle0 = dvh.register_debug_value_ray();
 	debug_ray_handle1 = dvh.register_debug_value_ray();
@@ -307,6 +303,10 @@ void cgv::nui::translation_gizmo::clear(cgv::render::context& ctx)
 {
 	auto& dvh = ref_debug_visualization_helper();
 	dvh.deregister_debug_value(debug_coord_system_handle0);
+	dvh.deregister_debug_value(debug_coord_system_handle1);
+	dvh.deregister_debug_value(debug_coord_system_handle2);
+	dvh.deregister_debug_value(debug_coord_system_handle3);
+	dvh.deregister_debug_value(debug_coord_system_handle4);
 	dvh.deregister_debug_value(debug_ray_handle0);
 	dvh.deregister_debug_value(debug_ray_handle1);
 	dvh.deregister_debug_value(debug_cylinder_handle0);
@@ -325,7 +325,25 @@ void cgv::nui::translation_gizmo::_draw(cgv::render::context& ctx, const vec3& s
 	vec3 anchor_obj_parent_global_scale;
 	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj->get_parent()),
 		anchor_obj_parent_global_translation, anchor_obj_parent_global_rotation, anchor_obj_parent_global_scale);
-	ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle0, anchor_obj_parent_global_rotation.get_homogeneous_matrix());
+	ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle0, get_global_model_transform(this));
+
+	mat4 gtoo_transform = get_global_model_transform(this);
+	gtoo_transform = gtoo_transform * get_inverse_model_transform();
+	ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle2, gtoo_transform);
+	gtoo_transform = gtoo_transform
+		* anchor_obj->get_interface<transforming>()->get_inverse_model_transform();
+	ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle3, gtoo_transform);
+	gtoo_transform = gtoo_transform
+		* anchor_obj->get_parent()->get_interface<transforming>()->get_inverse_model_transform();
+	ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle4, gtoo_transform);
+	gtoo_transform = gtoo_transform
+		* get_global_model_transform(value_obj->get_parent());
+
+	ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle1, gtoo_transform);
+
+	//ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle1, get_global_model_transform(this) * gizmo_to_other_object_transform(value_obj->get_parent()));
+
+
 
 	if (!arrow_directions.empty()) {
 		auto& ar = cgv::render::ref_arrow_renderer(ctx);

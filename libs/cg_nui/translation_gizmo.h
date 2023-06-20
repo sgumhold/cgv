@@ -16,7 +16,6 @@ namespace cgv {
 class CGV_API translation_gizmo : public cgv::nui::gizmo,
 	public cgv::nui::gizmo_functionality_configurable_axes,
 	public cgv::nui::gizmo_functionality_handle_states
-	//public cgv::nui::gizmo_functionality_absolute_axes_rotation
 {
 	// pointers to properties of the object the gizmo is attached to
 	vec3* position_ptr{ nullptr };
@@ -25,7 +24,7 @@ class CGV_API translation_gizmo : public cgv::nui::gizmo,
 
 	cgv::render::arrow_render_style ars;
 
-	float arrow_radius { 0.05f };
+	float arrow_radius{ 0.05f };
 
 	// only have to be recomputed if the position or rotation of the object changes
 	std::vector<vec3> arrow_positions;
@@ -39,13 +38,17 @@ class CGV_API translation_gizmo : public cgv::nui::gizmo,
 	void _draw(cgv::render::context& ctx, const vec3& scale, const mat4& view_matrix) override;
 	/// Do proximity check
 	bool _compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx, const vec3& scale,
-	                            const mat4& view_matrix) override;
+		const mat4& view_matrix) override;
 	/// Do intersection check
 	bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx,
-	                           const vec3& scale, const mat4& view_matrix) override;
+		const vec3& scale, const mat4& view_matrix) override;
 
 	// DEBUG TO REMOVE
 	int debug_coord_system_handle0;
+	int debug_coord_system_handle1;
+	int debug_coord_system_handle2;
+	int debug_coord_system_handle3;
+	int debug_coord_system_handle4;
 	int debug_ray_handle0;
 	int debug_ray_handle1;
 	int debug_cylinder_handle0;
@@ -59,7 +62,7 @@ protected:
 	void set_position(const vec3& position);
 
 	// current configuration of the gizmo
-	float translation_axes_length { 0.2f };
+	float translation_axes_length{ 0.2f };
 
 	bool validate_configuration() override;
 
