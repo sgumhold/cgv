@@ -60,6 +60,8 @@ protected:
 	bool show;
 	/// whether the overlay blocks events or lets them pass through to other handlers
 	bool block_events;
+	/// whether the overlay is
+	bool draw_in_finish_frame;
 
 	/// called when the overlay visibility is changed through the default gui
 	virtual void on_visibility_change();
@@ -157,6 +159,12 @@ public:
 	/// convenience method to toggle the visibility of the overlay
 	void toggle_visibility() {
 		set_visibility(!show);
+	}
+
+	/// Set the draw_in_finish_frame flag.
+	/// If true, the the contents of this overlay are drawn in finish frame. Per default, the contents are drawn in draw.
+	void set_draw_in_finish_frame(bool flag) {
+		draw_in_finish_frame = flag;
 	}
 
 	/** Checks whether the viewport size has changed since the last call to

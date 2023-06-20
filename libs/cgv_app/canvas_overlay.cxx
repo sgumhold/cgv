@@ -3,7 +3,10 @@
 namespace cgv {
 namespace app {
 
-canvas_overlay::canvas_overlay() : overlay() {}
+canvas_overlay::canvas_overlay() : overlay() {
+
+	blend_overlay = false;
+}
 
 void canvas_overlay::clear(cgv::render::context& ctx) {
 

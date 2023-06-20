@@ -111,38 +111,101 @@ struct tween_data {
 	}
 };
 
-struct animation_data {
-	
+class animation_data {
+public:
+	using keyframe_map = interval_map<size_t, keyframe>;
+
+private:
+	/// Stores keyframes indexed by their frame number.
+	keyframe_map keyframes;
+
+public:
 	size_t timecode = 30; // fps
 	float time = 0.0f;
 	size_t frame = 0;
 	bool use_continuous_time = false;
 
-	interval_map <size_t, keyframe> keyframes;
+	animation_data() {}
 
+	/**
+	 Clears the content of this animation and resets it.
+	*/
+	void clear() {
+
+		reset();
+		keyframes.clear();
+	}
+
+	/**
+	 Resets the current frame and time to zero.
+	*/
 	void reset() {
 
 		time = 0.0f;
 		frame = 0;
 	}
 
+	const keyframe_map& ref_keyframes() const {
+
+		return keyframes;
+	};
+
+	/**
+	 Returns a pointer to the keyframe at the given frame. If such a keyframe does not exist, returns a null pointer.
+	*/
 	keyframe* keyframe_at(size_t frame) {
 
 		auto it = keyframes.find(frame);
 		return it != keyframes.end() ? &it->second : nullptr;
 	}
 
-	bool find_tween(size_t frame, tween_data& tween) {
+	bool insert_keyframe(size_t frame, keyframe key) {
 
+		auto ret = keyframes.insert(frame, key);
+		return ret.second;
+	}
+
+	bool erase_keyframe(size_t frame) {
+
+		return keyframes.erase(frame);
+	}
+
+	bool move_keyframe(size_t source_frame, size_t target_frame) {
+
+		auto target_it = keyframes.find(target_frame);
+
+		if(target_it == keyframes.end()) {
+			auto source_it = keyframes.find(source_frame);
+
+			if(source_it != keyframes.end()) {
+				keyframe value_copy = source_it->second;
+
+				keyframes.erase(source_it);
+				keyframes.insert(target_frame, value_copy);
+
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 Find the tween covering the given frame. The tween is defined by a start keyframe located before or at the given
+	 frame and an end keyframe located after the given frame. Returns true for a valid tween where at least one keyframe
+	 is found. If the start/end keyframe is missing, it is duplicated from the end/start keyframe. Returns false for an
+	 invalid tween where both the start an end keyframes are undefined.
+	*/
+	bool find_tween(size_t frame, tween_data& tween) const {
+	
 		auto pair = keyframes.bounds(frame);
 
-		if(pair.first == keyframes.end() && pair.second == keyframes.end())
+		if(pair.first == keyframes.cend() && pair.second == keyframes.cend())
 			return false;
 
-		if(pair.first == keyframes.end())
+		if(pair.first == keyframes.cend())
 			pair.first = pair.second;
 
-		if(pair.second == keyframes.end())
+		if(pair.second == keyframes.cend())
 			pair.second = pair.first;
 
 		tween.start_frame = pair.first->first;
@@ -153,30 +216,47 @@ struct animation_data {
 		return true;
 	}
 
-	float duration() {
+	/**
+	 Returns the total duration in seconds using the stored timecode.
+	*/
+	float duration() const {
 
 		return frame_to_time(frame_count());
 	}
 
-	size_t frame_count() {
+	/**
+	 Returns the total frame count defined by the keyframe with the highest frame number.
+	*/
+	size_t frame_count() const {
 
 		if(keyframes.empty())
 			return 0;
 		
-		return keyframes.rbegin()->first;
+		return keyframes.crbegin()->first;
 	}
 
+	/**
+	 Returns the time in seconds of the given frame using the stored timecode.
+	*/
 	float frame_to_time(size_t frame) const {
 
 		return static_cast<float>(frame) / static_cast<float>(timecode);
 	}
 
+	/**
+	 Returns the nearest frame number (rounded down) of the given time in seconds using the stored timecode.
+	*/
 	size_t time_to_frame(float time) const {
 
 		return static_cast<size_t>(static_cast<float>(timecode) * time);
 	}
 
-	bool current_view(view_parameters& parameters) {
+	/**
+	 Gets interpolated view parameters for the currently set frame. Return true if the interpolated view is
+	 defined by a valid tween, false otherwise. If the use_continuous_time flag is set, uses the currently
+	 set time for interpolation instead.
+	*/
+	bool current_view(view_parameters& parameters) const {
 
 		float tc = static_cast<float>(timecode);
 		size_t f = use_continuous_time ? time_to_frame(time) : frame;
@@ -189,18 +269,11 @@ struct animation_data {
 		return f <= frame_count();
 	}
 
-	std::vector<std::pair<int, int>> compute_keyframe_moves(std::map<size_t, keyframe>::iterator& it, int frame_delta) {
-
-		std::vector<std::pair<int, int>> moves;
-
-		for(it; it != keyframes.end(); ++it) {
-			int it_frame = static_cast<int>(it->first);
-			moves.push_back({ it_frame, it_frame + frame_delta });
-		}
-
-		return moves;
-	}
-
+	/**
+	 Changes the duration after the given frame to the number of given frames. All subsequent frames are moved
+	 to preserve their durations. The minimum allowed duration in frames is 1. No changes are made if a duration
+	 of 0 frames is given. If -1 if given for the frame, the duration before the first frame is changed.
+	*/
 	void change_duration_after(size_t frame, size_t frames) {
 
 		if(frame != -1 && frames == 0ull || keyframes.empty())
@@ -224,15 +297,21 @@ struct animation_data {
 			}
 		}
 
-		if(delta != 0)
-			moves = compute_keyframe_moves(it, delta);
+		if(delta != 0) {
+			std::vector<std::pair<int, int>> moves;
 
-		if(delta > 0) {
-			for(auto it = moves.rbegin(); it != moves.rend(); ++it)
-				keyframes.move(it->first, it->second);
-		} else {
-			for(auto it = moves.begin(); it != moves.end(); ++it)
-				keyframes.move(it->first, it->second);
+			for(it; it != keyframes.end(); ++it) {
+				int it_frame = static_cast<int>(it->first);
+				moves.push_back({ it_frame, it_frame + delta });
+			}
+
+			if(delta > 0) {
+				for(auto it = moves.rbegin(); it != moves.rend(); ++it)
+					move_keyframe(it->first, it->second);
+			} else {
+				for(auto it = moves.begin(); it != moves.end(); ++it)
+					move_keyframe(it->first, it->second);
+			}
 		}
 	}
 };

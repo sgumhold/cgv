@@ -309,7 +309,7 @@ void keyframe_editor_overlay::add_keyframe() {
 			k->camera_state = view;
 			invoke_callback(Event::kKeyChange);
 		} else {
-			data->keyframes.insert(data->frame, keyframe(view, easing_functions::Id::kLinear));
+			data->insert_keyframe(data->frame, keyframe(view, easing_functions::Id::kLinear));
 			invoke_callback(Event::kKeyCreate);
 		}
 
@@ -320,7 +320,7 @@ void keyframe_editor_overlay::add_keyframe() {
 void keyframe_editor_overlay::erase_selected_keyframe() {
 
 	if(data) {
-		data->keyframes.erase(selected_frame);
+		data->erase_keyframe(selected_frame);
 		set_selected_frame(-1);
 
 		invoke_callback(Event::kKeyDelete);
@@ -397,10 +397,10 @@ void keyframe_editor_overlay::change_duration(bool before) {
 	size_t new_selected_frame = selected_frame;
 
 	if(before) {
-		auto it = data->keyframes.lower_bound(selected_frame);
+		auto it = data->ref_keyframes().lower_bound(selected_frame);
 
-		if(it != data->keyframes.end()) {
-			if(it == data->keyframes.begin()) {
+		if(it != data->ref_keyframes().end()) {
+			if(it == data->ref_keyframes().begin()) {
 				frame = -1;
 				new_selected_frame = new_frame_count;
 			} else {
@@ -425,14 +425,12 @@ void keyframe_editor_overlay::change_duration(bool before) {
 void keyframe_editor_overlay::create_keyframe_draggables() {
 
 	if(data) {
-		const auto& kfs = data->keyframes;
-
 		keyframes.clear();
-		for(const auto& kf : kfs) {
+		for(const auto& pair : data->ref_keyframes()) {
 			keyframe_draggable d;
 
-			d.frame = kf.first;
-			d.x() = static_cast<float>(frame_to_position(kf.first));
+			d.frame = pair.first;
+			d.x() = static_cast<float>(frame_to_position(pair.first));
 			d.y() = static_cast<float>(layout.timeline.y());
 			d.size = vec2(static_cast<float>(layout.frame_width), static_cast<float>(layout.timeline_height));
 			keyframes.add(d);
@@ -481,7 +479,7 @@ void keyframe_editor_overlay::handle_keyframe_drag_end() {
 
 		if(selected->frame != frame && data) {
 
-			if(data->keyframes.move(selected->frame, frame)) {
+			if(data->move_keyframe(selected->frame, frame)) {
 				selected->x() = static_cast<float>(frame_to_position(frame));
 
 				post_recreate_layout();
@@ -700,24 +698,24 @@ void keyframe_editor_overlay::create_gui_impl() {
 
 		add_member_control(this, "Easing Function", easing_function_id, "dropdown", "enums='" + easing_functions::names_string() + "';tooltip='Change the easing function of the selected keyframe'");
 
-		auto curr_pair = data->keyframes.bounds(selected_frame);
+		auto curr_pair = data->ref_keyframes().bounds(selected_frame);
 
 		size_t delta_before = -1;
 		std::string duration_before = "-";
 		std::string duration_after = "-";
 
-		if(curr_pair.first != data->keyframes.end() && curr_pair.second != data->keyframes.end()) {
+		if(curr_pair.first != data->ref_keyframes().end() && curr_pair.second != data->ref_keyframes().end()) {
 			size_t delta = curr_pair.second->first - curr_pair.first->first;
 			duration_after = cgv::utils::to_string(data->frame_to_time(delta), static_cast<unsigned>(-1), 3u) + " s   (" + std::to_string(delta) + " frames)";
 		}
 		
-		if(curr_pair.first != data->keyframes.end() && curr_pair.first->first > 0) {
-			auto prev_pair = data->keyframes.bounds(curr_pair.first->first - 1);
+		if(curr_pair.first != data->ref_keyframes().end() && curr_pair.first->first > 0) {
+			auto prev_pair = data->ref_keyframes().bounds(curr_pair.first->first - 1);
 
-			if(prev_pair.second != data->keyframes.end())
+			if(prev_pair.second != data->ref_keyframes().end())
 				delta_before = prev_pair.second->first;
 
-			if(prev_pair.first != data->keyframes.end())
+			if(prev_pair.first != data->ref_keyframes().end())
 				delta_before -= prev_pair.first->first;
 		} else {
 			delta_before = 0ull;

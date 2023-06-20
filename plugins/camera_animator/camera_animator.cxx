@@ -515,12 +515,12 @@ void camera_animator::create_path_render_data() {
 	if(!animation)
 		return;
 
-	for(const auto& keyframe : animation->keyframes)
-		keyframes_rd.add(keyframe.second.camera_state.eye_position, 12.0f, theme.highlight());
-
-	for(const auto& keyframe : animation->keyframes)
-		keyframes_rd.add(keyframe.second.camera_state.focus_position, 8.0f, theme.warning());
-
+	for(const auto& pair : animation->ref_keyframes())
+		keyframes_rd.add(pair.second.camera_state.eye_position, 12.0f, theme.highlight());
+	
+	for(const auto& pair : animation->ref_keyframes())
+		keyframes_rd.add(pair.second.camera_state.focus_position, 8.0f, theme.warning());
+	
 	for(size_t i = 1; i < keyframes_rd.ref_pos().size() / 2; ++i) {
 		const auto& position0 = keyframes_rd.ref_pos()[i - 1];
 		const auto& position1 = keyframes_rd.ref_pos()[i];
@@ -652,18 +652,17 @@ bool camera_animator::load_animation(const std::string& file_name) {
 		}
 	}
 
+	animation->clear();
+
 	if(success) {
 		animation->timecode = timecode;
-		animation->keyframes.clear();
 		
 		for(auto tuple : keyframes) {
 			keyframe k;
 			k.ease(easing_functions::to_id(std::get<1>(tuple)));
 			k.camera_state = std::get<2>(tuple);
-			animation->keyframes.insert(std::get<0>(tuple), k);
+			animation->insert_keyframe(std::get<0>(tuple), k);
 		}
-	} else {
-		animation->keyframes.clear();
 	}
 
 	udpate_animation_member_limits();
@@ -692,7 +691,18 @@ bool camera_animator::save_animation(const std::string& file_name) {
 	auto keyframes_element = doc.NewElement("Keyframes");
 	root->InsertEndChild(keyframes_element);
 
-	for(const auto& pair : animation->keyframes) {
+
+	std::map<int, int> m;
+	for(const auto& pair : m) {
+		std::cout << pair.first << std::endl;
+	}
+
+	const interval_map<int, int> im;
+	for(const auto& pair : im) {
+		std::cout << pair.first << std::endl;
+	}
+
+	for(const auto& pair : animation->ref_keyframes()) {
 		keyframe k = pair.second;
 
 		auto keyframe_element = doc.NewElement("Keyframe");

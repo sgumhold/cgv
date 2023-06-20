@@ -17,6 +17,7 @@ overlay::overlay() {
 
 	show = true;
 	block_events = true;
+	draw_in_finish_frame = false;
 }
 
 void overlay::on_visibility_change() 

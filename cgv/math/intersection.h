@@ -7,19 +7,19 @@
 #include <limits>
 
 /**
-*	This header provides implementation for intersection routines between a ray and common primitives.
-*/
+ * This header provides implementation for intersection routines between a ray and common primitives.
+ */
 namespace cgv {
 	namespace math {
 
-		/*
-		  Computes the intersection between a ray and axis aligned box located at the origin and returns the number of intersections.
-		  Differentiates between 0 or 2 intersections.
-		  \param [in] ray the incomming ray.
-		  \param [in] extent the total box extent/size.
-		  \param [out] out_ts the distances to the intersection points.
-		  \param [out] out_normal optional surface normal at the first intersection point.
-		  \return The number of intersections
+		/**
+		 Computes the intersection between a ray and axis aligned box located at the origin and returns the number of intersections.
+		 Differentiates between 0 or 2 intersections.
+		 \param [in] ray the incomming ray.
+		 \param [in] extent the total box extent/size.
+		 \param [out] out_ts the distances to the intersection points.
+		 \param [out] out_normal optional surface normal at the first intersection point.
+		 \return The number of intersections
 		*/
 		template <typename T>
 		int ray_box_intersection(const ray<T, 3>& ray, fvec<T, 3> extent, fvec<T, 2>& out_ts, fvec<T, 3>* out_normal = nullptr) {
@@ -46,14 +46,14 @@ namespace cgv {
 			return 2;
 		}
 
-		/*
-		  Computes the intersection between a ray and axis aligned box and returns the number of intersections.
-		  Differentiates between 0 or 2 intersections.
-		  \param [in] ray the incomming ray.
-		  \param [in] min the minimum box point.
-		  \param [in] max the maximum box point.
-		  \param [out] out_ts the distances to the intersection points.
-		  \return The number of intersections
+		/**
+		 Computes the intersection between a ray and axis aligned box and returns the number of intersections.
+		 Differentiates between 0 or 2 intersections.
+		 \param [in] ray the incomming ray.
+		 \param [in] min the minimum box point.
+		 \param [in] max the maximum box point.
+		 \param [out] out_ts the distances to the intersection points.
+		 \return The number of intersections
 		*/
 		template <typename T>
 		int ray_box_intersection(const ray<T, 3> &ray, const fvec<T, 3> &min, const fvec<T, 3> &max, fvec<T, 2>& out_ts) {
@@ -87,15 +87,15 @@ namespace cgv {
 			return 2;
 		}
 
-		/*
-		  Computes the intersection between a ray and oriented cylinder defined by base center and axis and returns the number of intersections.
-		  Differentiates between 0 or 1 intersections.
-		  \param [in] ray the incomming ray.
-		  \param [in] position the cylinder base center position.
-		  \param [in] axis the cylinder main axis and length.
-		  \param [out] out_t the distance to the intersection point.
-		  \param [out] out_normal optional surface normal at the intersection point.
-		  \return The number of intersections
+		/**
+		 Computes the intersection between a ray and oriented cylinder defined by base center and axis and returns the number of intersections.
+		 Differentiates between 0 or 1 intersections.
+		 \param [in] ray the incomming ray.
+		 \param [in] position the cylinder base center position.
+		 \param [in] axis the cylinder main axis and length.
+		 \param [out] out_t the distance to the intersection point.
+		 \param [out] out_normal optional surface normal at the intersection point.
+		 \return The number of intersections
 		*/
 		template <typename T>
 		int ray_cylinder_intersection(const ray<T, 3>& ray, const fvec<T, 3>& position, const fvec<T, 3>& axis, T radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
@@ -134,15 +134,15 @@ namespace cgv {
 			return 0;
 		}
 
-		/*
-		  Computes the intersection between a ray and oriented cylinder defined by start and end position and returns the number of intersections.
-		  Differentiates between 0 or 1 intersections.
-		  \param [in] ray the incomming ray.
-		  \param [in] start_position the cylinder base center position.
-		  \param [in] end_position the cylinder top center position.
-		  \param [out] out_t the distance to the intersection point.
-		  \param [out] out_normal optional surface normal at the intersection point.
-		  \return The number of intersections
+		/**
+		 Computes the intersection between a ray and oriented cylinder defined by start and end position and returns the number of intersections.
+		 Differentiates between 0 or 1 intersections.
+		 \param [in] ray the incomming ray.
+		 \param [in] start_position the cylinder base center position.
+		 \param [in] end_position the cylinder top center position.
+		 \param [out] out_t the distance to the intersection point.
+		 \param [out] out_normal optional surface normal at the intersection point.
+		 \return The number of intersections
 		*/
 		template <typename T>
 		int ray_cylinder_intersection2(const ray<T, 3>& ray, const fvec<T, 3>& start_position, const fvec<T, 3>& end_position, T radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
@@ -150,14 +150,14 @@ namespace cgv {
 			return ray_cylinder_intersection(ray, start_position, end_position - start_position, radius, out_t, out_normal);
 		}
 
-		/*
-		  Computes the intersection between a ray and infinite plane and returns the number of intersections.
-		  Differentiates between 0 or 1 intersections.
-		  \param [in] ray the incomming ray.
-		  \param [in] origin the plane origin position.
-		  \param [in] normal the plane surface normal.
-		  \param [out] out_t the distance to the intersection point.
-		  \return The number of intersections
+		/**
+		 Computes the intersection between a ray and infinite plane and returns the number of intersections.
+		 Differentiates between 0 or 1 intersections.
+		 \param [in] ray the incomming ray.
+		 \param [in] origin the plane origin position.
+		 \param [in] normal the plane surface normal.
+		 \param [out] out_t the distance to the intersection point.
+		 \return The number of intersections
 		*/
 		template <typename T>
 		int ray_plane_intersection(const ray<T, 3>& ray, const fvec<T, 3>& origin, const fvec<T, 3>& normal, T& out_t) {
@@ -170,14 +170,14 @@ namespace cgv {
 			return 1;
 		};
 
-		/*
-		  Computes the intersection between a ray and sphere and returns the number of intersections.
-		  Differentiates between 0, 1 or 2 intersections.
-		  \param [in] ray the incomming ray.
-		  \param [in] center the sphere center position.
-		  \param [in] radius the sphere radius.
-		  \param [out] out_ts the distances to the intersection points.
-		  \return The number of intersections
+		/**
+		 Computes the intersection between a ray and sphere and returns the number of intersections.
+		 Differentiates between 0, 1 or 2 intersections.
+		 \param [in] ray the incomming ray.
+		 \param [in] center the sphere center position.
+		 \param [in] radius the sphere radius.
+		 \param [out] out_ts the distances to the intersection points.
+		 \return The number of intersections
 		*/
 		template <typename T>
 		int ray_sphere_intersection(const ray<T, 3>& ray, const fvec<T, 3>& center, T radius, fvec<T, 2>& out_ts) {
@@ -203,15 +203,15 @@ namespace cgv {
 			return 2;
 		}
 
-		/*
-		  Computes the first intersection between a ray and sphere and returns the number of intersections.
-		  Differentiates between 0 or 1 intersections.
-		  \param [in] ray the incomming ray.
-		  \param [in] center the sphere center position.
-		  \param [in] radius the sphere radius.
-		  \param [out] out_ts the distances to the intersection points.
-		  \param [out] out_normal optional surface normal at the intersection point.
-		  \return The number of intersections
+		/**
+		 Computes the first intersection between a ray and sphere and returns the number of intersections.
+		 Differentiates between 0 or 1 intersections.
+		 \param [in] ray the incomming ray.
+		 \param [in] center the sphere center position.
+		 \param [in] radius the sphere radius.
+		 \param [out] out_ts the distances to the intersection points.
+		 \param [out] out_normal optional surface normal at the intersection point.
+		 \return The number of intersections
 		*/
 		template <typename T>
 		int first_ray_sphere_intersection(const ray<T, 3>& ray, const fvec<T, 3>& center, T radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
@@ -232,15 +232,15 @@ namespace cgv {
 			return 1;
 		}
 
-		/*
-		  Computes the intersection between a ray and axis aligned torus with medial axis equal to the y-axis and returns the number of intersections.
-		  Differentiates between 0 or 1 intersections.
-		  \param [in] ray the incomming ray.
-		  \param [in] large_radius the torus ring radius (R).
-		  \param [in] small_radius the radial torus tube radius (r).
-		  \param [out] out_t the distance to the intersection point.
-		  \param [out] out_normal optional surface normal at the intersection point.
-		  \return The number of intersections
+		/**
+		 Computes the intersection between a ray and axis aligned torus with medial axis equal to the y-axis and returns the number of intersections.
+		 Differentiates between 0 or 1 intersections.
+		 \param [in] ray the incomming ray.
+		 \param [in] large_radius the torus ring radius (R).
+		 \param [in] small_radius the radial torus tube radius (r).
+		 \param [out] out_t the distance to the intersection point.
+		 \param [out] out_normal optional surface normal at the intersection point.
+		 \return The number of intersections
 		*/
 		template <typename T>
 		int ray_torus_intersection(const ray<T, 3>& ray, T large_radius, T small_radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
@@ -327,17 +327,17 @@ namespace cgv {
 			return 1; // 4
 		}
 
-		/*
-		  Computes the intersection between a ray and oriented torus defined by origin and medial axis and returns the number of intersections.
-		  Differentiates between 0 or 1 intersections.
-		  \param [in] ray the incomming ray.
-		  \param [in] center the torus center position.
-		  \param [in] normal the torus medial axis direction.
-		  \param [in] large_radius the torus ring radius (R).
-		  \param [in] small_radius the radial torus tube radius (r).
-		  \param [out] out_t the distance to the intersection point.
-		  \param [out] out_normal optional surface normal at the intersection point.
-		  \return The number of intersections
+		/**
+		 Computes the intersection between a ray and oriented torus defined by origin and medial axis and returns the number of intersections.
+		 Differentiates between 0 or 1 intersections.
+		 \param [in] ray the incomming ray.
+		 \param [in] center the torus center position.
+		 \param [in] normal the torus medial axis direction.
+		 \param [in] large_radius the torus ring radius (R).
+		 \param [in] small_radius the radial torus tube radius (r).
+		 \param [out] out_t the distance to the intersection point.
+		 \param [out] out_normal optional surface normal at the intersection point.
+		 \return The number of intersections
 		*/
 		template <typename T>
 		int ray_torus_intersection(const ray<T, 3>& ray, const fvec<T, 3>& center, const fvec<T, 3>& normal, T large_radius, T small_radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
