@@ -88,7 +88,7 @@ public:
 		// compile-time check that matrix layout is supported
 		static_assert(
 			   (rot_mat_type::nrows() == 3 && (rot_mat_type::ncols()==3 || rot_mat_type::ncols()==4))
-			|| (rot_mat_type::nrows() == 4 && rot_mat_type::ncols() == 4)
+			|| (rot_mat_type::nrows() == 4 && rot_mat_type::ncols() == 4), "matrix layout not supported"
 		);
 
 		// convenience constant

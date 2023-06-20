@@ -58,10 +58,10 @@ public:
 	virtual void on_set(void* member_ptr) {
 		application_plugin_base::on_set(on_set_evaluator(member_ptr));
 		update_member(member_ptr);
-		post_redraw();
+		base_drawable::post_redraw();
 	}
 	virtual bool initialize_view_ptr() final {
-		return !application_plugin_base::view_ptr && (application_plugin_base::view_ptr = find_view_as_node());
+		return !application_plugin_base::view_ptr && (application_plugin_base::view_ptr = base_drawable::find_view_as_node());
 	}
 };
 
