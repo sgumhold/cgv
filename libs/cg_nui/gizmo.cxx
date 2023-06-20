@@ -1,6 +1,28 @@
 #include "gizmo.h"
 using namespace cgv::render;
 
+
+void cgv::nui::gizmo::on_ii_during_focus_changed(hid_identifier changed_key)
+{
+	vec3 scale;
+	mat4 correction_transform = compute_interaction_correction_transformation(scale);
+	ii_at_grab.hid_position = correction_transform * vec4(interactable::ii_at_grab.hid_position, 1.0);
+	ii_at_grab.hid_direction = correction_transform * vec4(interactable::ii_at_grab.hid_direction, 0.0);
+	ii_at_grab.query_point = correction_transform * vec4(interactable::ii_at_grab.query_point, 1.0);
+	ii_during_focus[changed_key].hid_position = correction_transform * vec4(interactable::ii_during_focus[changed_key].hid_position, 1.0);
+	ii_during_focus[changed_key].hid_direction = correction_transform * vec4(interactable::ii_during_focus[changed_key].hid_direction, 0.0);
+	ii_during_focus[changed_key].query_point = correction_transform * vec4(interactable::ii_during_focus[changed_key].query_point, 1.0);
+}
+
+void cgv::nui::gizmo::on_ii_at_grab_changed()
+{
+	vec3 scale;
+	mat4 correction_transform = compute_interaction_correction_transformation(scale);
+	ii_at_grab.hid_position = correction_transform * vec4(interactable::ii_at_grab.hid_position, 1.0);
+	ii_at_grab.hid_direction = correction_transform * vec4(interactable::ii_at_grab.hid_direction, 0.0);
+	ii_at_grab.query_point = correction_transform * vec4(interactable::ii_at_grab.query_point, 1.0);
+}
+
 bool cgv::nui::gizmo::validate_configuration()
 {
 	if (!anchor_obj) {
@@ -28,8 +50,15 @@ mat4 cgv::nui::gizmo::compute_draw_correction_transformation(vec3& scale)
 	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj),
 		anchor_translation_component, anchor_rotation_component, anchor_scale_component);
 
-	scale = anchor_scale_component / root_scale_component;
-	mat4 scale_correction = cgv::math::scale4(root_scale_component / anchor_scale_component);
+	mat4 scale_correction;
+	//if (!use_root_position) {
+		scale = anchor_scale_component / root_scale_component;
+		scale_correction = cgv::math::scale4(root_scale_component / anchor_scale_component);
+	//}
+	//else {
+	//	scale_correction.identity();
+	//	scale = vec3(1.0f);
+	//}
 
 	mat4 rotation_correction;
 	if (use_root_rotation) {
@@ -38,8 +67,20 @@ mat4 cgv::nui::gizmo::compute_draw_correction_transformation(vec3& scale)
 	else {
 		rotation_correction.identity();
 	}
+
+	mat4 position_correction;
+	if (use_root_position) {
+		position_correction = cgv::math::translate4(root_translation_component - anchor_translation_component);
+	}
+	else {
+		position_correction.identity();
+	}
+	//if (anchor_position_ptr)
+	//	position_correction = cgv::math::translate4(*anchor_position_ptr) * position_correction;
+	//else if (anchor_position_ptr_ptr)
+	//	position_correction = cgv::math::translate4(**anchor_position_ptr_ptr) * position_correction;
 	
-	return rotation_correction * scale_correction;
+	return rotation_correction * scale_correction * position_correction;
 }
 
 mat4 cgv::nui::gizmo::compute_interaction_correction_transformation(vec3& scale)
@@ -56,8 +97,15 @@ mat4 cgv::nui::gizmo::compute_interaction_correction_transformation(vec3& scale)
 	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj),
 		anchor_translation_component, anchor_rotation_component, anchor_scale_component);
 
-	scale = anchor_scale_component;
-	mat4 scale_correction = cgv::math::scale4(anchor_scale_component / root_scale_component);
+	mat4 scale_correction;
+	//if (!use_root_position) {
+		scale = anchor_scale_component;
+		scale_correction = cgv::math::scale4(anchor_scale_component / root_scale_component);
+	//}
+	//else {
+	//	scale_correction.identity();
+	//	scale = vec3(1.0f);
+	//}
 	
 	mat4 rotation_correction;
 	if (use_root_rotation) {
@@ -67,7 +115,19 @@ mat4 cgv::nui::gizmo::compute_interaction_correction_transformation(vec3& scale)
 		rotation_correction.identity();
 	}
 
-	return rotation_correction * scale_correction;
+	mat4 position_correction;
+	if (use_root_position) {
+		position_correction = cgv::math::translate4(anchor_translation_component - root_translation_component);
+	}
+	else {
+		position_correction.identity();
+	}
+	//if (anchor_position_ptr)
+	//	position_correction = cgv::math::translate4(-*anchor_position_ptr) * position_correction;
+	//else if (anchor_position_ptr_ptr)
+	//	position_correction = cgv::math::translate4(-**anchor_position_ptr_ptr) * position_correction;
+
+	return rotation_correction * scale_correction * position_correction;
 }
 
 void cgv::nui::gizmo::attach()
@@ -150,6 +210,11 @@ void cgv::nui::gizmo::set_use_root_rotation(bool value)
 	use_root_rotation = value;
 }
 
+void cgv::nui::gizmo::set_use_root_position(bool value)
+{
+	use_root_position = value;
+}
+
 void cgv::nui::gizmo::set_on_set_object(cgv::base::base_ptr _on_set_obj)
 {
 	on_set_obj = _on_set_obj;
@@ -166,6 +231,7 @@ bool cgv::nui::gizmo::handle(const cgv::gui::event& e, const cgv::nui::dispatch_
 {
 	if (!is_attached)
 		return false;
+
 	return interactable::handle(e, dis_info, request);
 }
 
@@ -228,7 +294,9 @@ void cgv::nui::gizmo::draw(cgv::render::context& ctx)
 	// Apply correction transformation to match the configuration
 	ctx.push_modelview_matrix();
 	ctx.mul_modelview_matrix(get_model_transform());
+
 	ctx.mul_modelview_matrix(correction_transform);
+
 	_draw(ctx, anchor_scale, view_matrix);
 	ctx.pop_modelview_matrix();
 }
@@ -237,14 +305,14 @@ mat4 cgv::nui::gizmo::get_model_transform() const
 {
 	mat4 transform;
 	transform.identity();
-	if (anchor_rotation_ptr)
-		transform = anchor_rotation_ptr->get_homogeneous_matrix() * transform;
-	else if (anchor_rotation_ptr_ptr)
-		transform = (*anchor_rotation_ptr_ptr)->get_homogeneous_matrix() * transform;
-	if (anchor_position_ptr)
-		transform = cgv::math::translate4(*anchor_position_ptr) * transform;
-	else if (anchor_position_ptr_ptr)
-		transform = cgv::math::translate4(**anchor_position_ptr_ptr) * transform;
+	//if (anchor_rotation_ptr)
+	//	transform = anchor_rotation_ptr->get_homogeneous_matrix() * transform;
+	//else if (anchor_rotation_ptr_ptr)
+	//	transform = (*anchor_rotation_ptr_ptr)->get_homogeneous_matrix() * transform;
+	//if (anchor_position_ptr)
+	//	transform = cgv::math::translate4(*anchor_position_ptr) * transform;
+	//else if (anchor_position_ptr_ptr)
+	//	transform = cgv::math::translate4(**anchor_position_ptr_ptr) * transform;
 	return transform;
 }
 
@@ -252,32 +320,32 @@ mat4 cgv::nui::gizmo::get_inverse_model_transform() const
 {
 	mat4 transform;
 	transform.identity();
-	if (anchor_rotation_ptr)
-		transform = anchor_rotation_ptr->inverse().get_homogeneous_matrix() * transform;
-	else if (anchor_rotation_ptr_ptr)
-		transform = (*anchor_rotation_ptr_ptr)->inverse().get_homogeneous_matrix() * transform;
-	if (anchor_position_ptr)
-		transform = cgv::math::translate4(-1.0f * (*anchor_position_ptr)) * transform;
-	else if (anchor_position_ptr_ptr)
-		transform = cgv::math::translate4(-1.0f * (**anchor_position_ptr_ptr)) * transform;
+	//if (anchor_rotation_ptr)
+	//	transform = anchor_rotation_ptr->inverse().get_homogeneous_matrix() * transform;
+	//else if (anchor_rotation_ptr_ptr)
+	//	transform = (*anchor_rotation_ptr_ptr)->inverse().get_homogeneous_matrix() * transform;
+	//if (anchor_position_ptr)
+	//	transform = cgv::math::translate4(-1.0f * (*anchor_position_ptr)) * transform;
+	//else if (anchor_position_ptr_ptr)
+	//	transform = cgv::math::translate4(-1.0f * (**anchor_position_ptr_ptr)) * transform;
 	return transform;
 }
 
 vec3 cgv::nui::gizmo::get_local_position() const
 {
-	if (anchor_position_ptr)
-		return *anchor_position_ptr;
-	else if (anchor_position_ptr_ptr)
-		return **anchor_position_ptr_ptr;
+	//if (anchor_position_ptr)
+	//	return *anchor_position_ptr;
+	//else if (anchor_position_ptr_ptr)
+	//	return **anchor_position_ptr_ptr;
 	return vec3(0.0f);
 }
 
 quat cgv::nui::gizmo::get_local_rotation() const
 {
-	if (anchor_rotation_ptr)
-		return *anchor_rotation_ptr;
-	else if (anchor_rotation_ptr_ptr)
-		return **anchor_rotation_ptr_ptr;
+	//if (anchor_rotation_ptr)
+	//	return *anchor_rotation_ptr;
+	//else if (anchor_rotation_ptr_ptr)
+	//	return **anchor_rotation_ptr_ptr;
 	return quat();
 }
 vec3 cgv::nui::gizmo::get_local_scale() const

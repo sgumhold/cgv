@@ -41,15 +41,22 @@ protected:
 	bool is_anchor_influenced_by_gizmo{ true };
 	/// Whether the root object's transform is changed by the value manipulated by this gizmo
 	bool is_root_influenced_by_gizmo{ false };
+
+	/// Shadowed variant of ii_during_focus from interactable that has correction transform applied.
+	std::map<hid_identifier, interaction_info> ii_during_focus;
+	/// Shadowed variant of ii_at_grab from interactable that has correction transform applied.
+	interaction_info ii_at_grab;
 public:
 	/// Whether this gizmo's orientation is based on that of the root object (as opposed to that of the anchor object).
 	bool use_root_rotation{ false };
+	/// Whether this gizmo's position is based on that of the root object (as opposed to that of the anchor object).
+	bool use_root_position{ false };
 protected:
 	/// Reference to the object that gets notified of changing values through the on_set function
 	cgv::base::base_ptr on_set_obj{ nullptr };
 
 	// Needed to call the wrapper events on_handle_grabbed, on_handle_drag and on_handle_released
-	void on_grabbed_start() override { on_handle_grabbed();	}
+	void on_grabbed_start() override { on_handle_grabbed(); }
 
 	void on_grabbed_drag() override	{ on_handle_drag();	}
 
@@ -60,6 +67,11 @@ protected:
 	void on_triggered_drag() override { on_handle_drag(); }
 
 	void on_triggered_stop() override { on_handle_released(); }
+
+	// Use the interaction info change events to correct the shadowed versions of the corresponding variables
+
+	void on_ii_during_focus_changed(hid_identifier changed_key) override;
+	void on_ii_at_grab_changed() override;
 
 	/// Event that is called when a primitive/handle of the gizmo gets grabbed by a hid.
 	///	prim_idx is the primitive that was grabbed, start_position is the point it was grabbed at.
@@ -143,6 +155,9 @@ public:
 	/// Set whether this gizmo's rotation should be based on that of the root object (as opposed to that of the anchor object).
 	///	The default value is false.
 	void set_use_root_rotation(bool value);
+	/// Set whether this gizmo's position should be based on that of the root object (as opposed to that of the anchor object).
+	///	The default value is false.
+	void set_use_root_position(bool value);
 protected:
 	/// Set the object to be notified of value changes. Should be called in subclasses of gizmo when setting the pointer to the manipulated value.
 	void set_on_set_object(cgv::base::base_ptr _on_set_obj);

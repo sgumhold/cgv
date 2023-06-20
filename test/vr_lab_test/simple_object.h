@@ -20,8 +20,8 @@ class simple_object : public cgv::nui::poseable, public cgv::nui::transforming,
 		AGO_SCALING,
 		AGO_ROTATION
 	};
-	ActiveGizmoOptions active_gizmo{ ActiveGizmoOptions::AGO_NONE };
-	ActiveGizmoOptions active_gizmo_ui{ ActiveGizmoOptions::AGO_NONE };
+	ActiveGizmoOptions active_gizmo{ ActiveGizmoOptions::AGO_TRANSLATION };
+	ActiveGizmoOptions active_gizmo_ui{ ActiveGizmoOptions::AGO_TRANSLATION };
 
 	std::vector<vec3> positions;
 
@@ -61,18 +61,6 @@ public:
 
 	mat4 get_model_transform() const override;
 	mat4 get_inverse_model_transform() const override;
-
-	//@name cgv::nui::rotatable interface
-	//@{
-	quat get_rotation() const override;
-	void set_rotation(const quat& rotation) override;
-	//@}
-
-	//@name cgv::nui::scalable interface
-	//@{
-	vec3 get_scale() const override;
-	void set_scale(const vec3& scale) override;
-	//@}
 };
 
 typedef cgv::data::ref_ptr<simple_object> simple_object_ptr;

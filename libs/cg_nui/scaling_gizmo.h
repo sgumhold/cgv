@@ -57,11 +57,15 @@ protected:
 	vec3 get_scale();
 	// Set the position of the attached object
 	void set_scale(const vec3& scale);
+	// Constrain scale to the configured minimum and maximum
+	void ensure_scale_constraints(vec3& scale);
 
 	// current configuration of the gizmo
 	std::vector<rgb> scaling_axes_colors;
 	float scaling_axes_length{ 0.2f };
 	std::vector<vec3> scaling_axes_scale_ratios;
+	vec3 minimum_scale{ std::numeric_limits<float>::min() };
+	vec3 maximum_scale{ std::numeric_limits<float>::max() };
 
 	bool validate_configuration() override;
 
@@ -92,6 +96,12 @@ public:
 	/// Set ratios between x, y and z that are used to scale with each axis.
 	///	Default value is that of the direction of the corresponding axis.
 	void configure_axes_scale_ratios(std::vector<vec3> scale_ratios);
+	/// Set minimal and maximal scale that can be set via the gizmo.
+	void configure_scale_limits(vec3 minimum_scale, vec3 maximum_scale);
+	/// Set minimal scale that can be set via the gizmo.
+	void configure_scale_limit_minimum(vec3 minimum_scale);
+	/// Set maximal scale that can be set via the gizmo.
+	void configure_scale_limit_maximum(vec3 maximum_scale);
 
 	//@name cgv::render::drawable interface
 	//@{

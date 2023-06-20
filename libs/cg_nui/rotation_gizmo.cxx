@@ -130,10 +130,26 @@ void cgv::nui::rotation_gizmo::on_handle_drag()
 	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj->get_parent()),
 		anchor_obj_parent_global_translation, anchor_obj_parent_global_rotation, anchor_obj_parent_global_scale);
 
+	vec3 anchor_obj_global_translation;
+	quat anchor_obj_global_rotation;
+	vec3 anchor_obj_global_scale;
+	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj),
+		anchor_obj_global_translation, anchor_obj_global_rotation, anchor_obj_global_scale);
+
+	vec3 root_obj_global_translation;
+	quat root_obj_global_rotation;
+	vec3 root_obj_global_scale;
+	transforming::extract_transform_components(transforming::get_global_model_transform(root_obj),
+		root_obj_global_translation, root_obj_global_rotation, root_obj_global_scale);
+
+	quat anchor_root_diff = root_obj_global_rotation.inverse() * anchor_obj_global_rotation;
+	quat anchor_parent_root_diff = root_obj_global_rotation.inverse() * anchor_obj_parent_global_rotation;
 
 	vec3 axis_origin = vec3(0.0f);
-	vec3 axis;
-	axis = axes_directions[prim_idx];
+	vec3 axis = axes_directions[prim_idx];
+	if (use_root_rotation) {
+		axis = anchor_root_diff.inverse().apply(axis);
+	}
 
 	// Get actual ring radius from the already calculated splines
 	float radius = ring_splines[prim_idx].first.front().length();
@@ -152,21 +168,25 @@ void cgv::nui::rotation_gizmo::on_handle_drag()
 	vec3 direction_currently = cross(cross(axis, closest_point - axis_origin), axis);
 
 	if (use_root_rotation) {
-		direction_at_grab = anchor_obj_parent_global_rotation.apply(direction_at_grab);
-		direction_currently = anchor_obj_parent_global_rotation.apply(direction_currently);
-		axis = anchor_obj_parent_global_rotation.apply(axis);
+		//direction_at_grab = anchor_obj_parent_global_rotation.apply(direction_at_grab);
+		//direction_currently = anchor_obj_parent_global_rotation.apply(direction_currently);
+		//axis = anchor_obj_parent_global_rotation.apply(axis);
+		direction_at_grab = anchor_root_diff.apply(direction_at_grab);
+		direction_at_grab = anchor_parent_root_diff.inverse().apply(direction_at_grab);
+		direction_currently = anchor_root_diff.apply(direction_currently);
+		direction_currently = anchor_parent_root_diff.inverse().apply(direction_currently);
 	}
 	else
 	{
-		vec3 anchor_obj_global_translation;
-		quat anchor_obj_global_rotation;
-		vec3 anchor_obj_global_scale;
-		transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj),
-			anchor_obj_global_translation, anchor_obj_global_rotation, anchor_obj_global_scale);
-		quat anchor_obj_local_rotation = anchor_obj_parent_global_rotation.inverse() * anchor_obj_global_rotation;
-		direction_at_grab = anchor_obj_local_rotation.apply(direction_at_grab);
-		direction_currently = anchor_obj_local_rotation.apply(direction_currently);
-		axis = anchor_obj_local_rotation.apply(axis);
+		//vec3 anchor_obj_global_translation;
+		//quat anchor_obj_global_rotation;
+		//vec3 anchor_obj_global_scale;
+		//transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj),
+		//	anchor_obj_global_translation, anchor_obj_global_rotation, anchor_obj_global_scale);
+		//quat anchor_obj_local_rotation = anchor_obj_parent_global_rotation.inverse() * anchor_obj_global_rotation;
+		//direction_at_grab = anchor_obj_local_rotation.apply(direction_at_grab);
+		//direction_currently = anchor_obj_local_rotation.apply(direction_currently);
+		//axis = anchor_obj_local_rotation.apply(axis);
 	}
 
 	float s = dot(cross(direction_at_grab, direction_currently), axis);

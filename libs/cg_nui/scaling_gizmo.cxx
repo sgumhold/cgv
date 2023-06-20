@@ -97,22 +97,48 @@ void cgv::nui::scaling_gizmo::on_handle_released()
 
 void cgv::nui::scaling_gizmo::on_handle_drag()
 {
-	vec3 obj_translation;
-	quat obj_rotation;
-	vec3 obj_scale;
-	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj), obj_translation, obj_rotation, obj_scale);
+	//vec3 obj_translation;
+	//quat obj_rotation;
+	//vec3 obj_scale;
+	//transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj), obj_translation, obj_rotation, obj_scale);
 
-	vec3 axis;
+	vec3 anchor_obj_parent_global_translation;
+	quat anchor_obj_parent_global_rotation;
+	vec3 anchor_obj_parent_global_scale;
+	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj->get_parent()),
+		anchor_obj_parent_global_translation, anchor_obj_parent_global_rotation, anchor_obj_parent_global_scale);
+
+	vec3 anchor_obj_global_translation;
+	quat anchor_obj_global_rotation;
+	vec3 anchor_obj_global_scale;
+	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj),
+		anchor_obj_global_translation, anchor_obj_global_rotation, anchor_obj_global_scale);
+
+	vec3 root_obj_global_translation;
+	quat root_obj_global_rotation;
+	vec3 root_obj_global_scale;
+	transforming::extract_transform_components(transforming::get_global_model_transform(root_obj),
+		root_obj_global_translation, root_obj_global_rotation, root_obj_global_scale);
+
+	quat anchor_root_diff = root_obj_global_rotation.inverse() * anchor_obj_global_rotation;
+	quat anchor_parent_root_diff = root_obj_global_rotation.inverse() * anchor_obj_parent_global_rotation;
+
+	//vec3 axis;
+	//if (use_root_rotation) {
+	//	axis = axes_directions[prim_idx];
+	//}
+	//else {
+	//	axis = obj_rotation.inverse().get_homogeneous_matrix() * vec4(axes_directions[prim_idx], 0);
+	//}
+	//if (anchor_rotation_ptr)
+	//	axis = anchor_rotation_ptr->get_homogeneous_matrix() * vec4(axis, 0.0f);
+	//else if (anchor_rotation_ptr_ptr)
+	//	axis = (*anchor_rotation_ptr_ptr)->get_homogeneous_matrix() * vec4(axis, 0.0f);
+
+	vec3 axis = axes_directions[prim_idx];
 	if (use_root_rotation) {
-		axis = axes_directions[prim_idx];
+		axis = anchor_root_diff.inverse().apply(axis);
 	}
-	else {
-		axis = obj_rotation.inverse().get_homogeneous_matrix() * vec4(axes_directions[prim_idx], 0);
-	}
-	if (anchor_rotation_ptr)
-		axis = anchor_rotation_ptr->get_homogeneous_matrix() * vec4(axis, 0.0f);
-	else if (anchor_rotation_ptr_ptr)
-		axis = (*anchor_rotation_ptr_ptr)->get_homogeneous_matrix() * vec4(axis, 0.0f);
 
 	vec3 closest_point;
 	if (ii_at_grab.is_pointing) {
@@ -125,17 +151,29 @@ void cgv::nui::scaling_gizmo::on_handle_drag()
 	}
 
 	vec3 movement = closest_point - ii_at_grab.query_point;
+	if (use_root_rotation) {
+		movement = anchor_root_diff.apply(movement);
+		movement = anchor_parent_root_diff.inverse().apply(movement);
+	}
+
 	vec3 scale_ratio = scaling_axes_scale_ratios[prim_idx];
-	float current_distance = (closest_point - obj_translation).length();
+	float movement_distance = dot(movement, normalize(axis));
+	//float current_distance = (closest_point - obj_translation).length();
+	//std::cout << "Movement Distance: " << movement_distance << std::endl;
+	vec3 new_scale;
 	if (is_anchor_influenced_by_gizmo)
 	{
-		distance_at_grab = (ii_at_grab.query_point - obj_translation).length();
-		set_scale(get_scale() * (vec3(1.0f) - scale_ratio) + (get_scale() * current_distance / distance_at_grab) * scale_ratio);
+		//distance_at_grab = (ii_at_grab.query_point - obj_translation).length();
+		//set_scale(get_scale() * (vec3(1.0f) - scale_ratio) + (get_scale() * current_distance / distance_at_grab) * scale_ratio);
+		new_scale = get_scale() + movement_distance * scale_ratio;
 	}
 	else
 	{
-		set_scale(scale_at_grab * (vec3(1.0f) - scale_ratio) + (scale_at_grab * current_distance / distance_at_grab) * scale_ratio);
+		//set_scale(scale_at_grab * (vec3(1.0f) - scale_ratio) + (scale_at_grab * current_distance / distance_at_grab) * scale_ratio);
+		new_scale = scale_at_grab + movement_distance * scale_ratio;
 	}
+	ensure_scale_constraints(new_scale);
+	set_scale(new_scale);
 
 	//vec3 current_position = accumulate_transforming_hierarchy().col(3);
 	//float distance_at_grab = (ii_at_grab.query_point - current_position).length();
@@ -169,6 +207,22 @@ void cgv::nui::scaling_gizmo::configure_axes_scale_ratios(std::vector<vec3> scal
 	for (auto scale_ratio : scale_ratios) {
 		scaling_axes_scale_ratios.push_back(abs(scale_ratio));
 	}
+}
+
+void cgv::nui::scaling_gizmo::configure_scale_limits(vec3 minimum_scale, vec3 maximum_scale)
+{
+	this->minimum_scale = minimum_scale;
+	this->maximum_scale = maximum_scale;
+}
+
+void cgv::nui::scaling_gizmo::configure_scale_limit_minimum(vec3 minimum_scale)
+{
+	this->minimum_scale = minimum_scale;
+}
+
+void cgv::nui::scaling_gizmo::configure_scale_limit_maximum(vec3 maximum_scale)
+{
+	this->maximum_scale = maximum_scale;
 }
 
 bool cgv::nui::scaling_gizmo::_compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx, const vec3& scale,
@@ -255,6 +309,22 @@ void cgv::nui::scaling_gizmo::set_scale(const vec3& scale)
 		if (on_set_obj)
 			on_set_obj->on_set(scale_ptr);
 	}
+}
+
+void cgv::nui::scaling_gizmo::ensure_scale_constraints(vec3& scale)
+{
+	if (scale[0] < minimum_scale[0])
+		scale[0] = minimum_scale[0];
+	if (scale[1] < minimum_scale[1])
+		scale[1] = minimum_scale[1];
+	if (scale[2] < minimum_scale[2])
+		scale[2] = minimum_scale[2];
+	if (scale[0] > maximum_scale[0])
+		scale[0] = maximum_scale[0];
+	if (scale[1] > maximum_scale[1])
+		scale[1] = maximum_scale[1];
+	if (scale[2] > maximum_scale[2])
+		scale[2] = maximum_scale[2];
 }
 
 bool cgv::nui::scaling_gizmo::init(cgv::render::context& ctx)

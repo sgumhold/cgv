@@ -10,7 +10,9 @@ namespace cgv {
 		/// Interface for objects that have a scale that can be changed
 		class CGV_API scalable
 		{
+		protected:
 			vec3 internal_scale{ 0.0f };
+		private:
 			vec3* scale_ptr{ nullptr };
 			vec3** scale_ptr_ptr{ nullptr };
 
@@ -55,6 +57,8 @@ namespace cgv {
 				}
 				else {
 					internal_scale = scale;
+					if (get_base())
+						_base->on_set(&internal_scale);
 				}
 			}
 		};

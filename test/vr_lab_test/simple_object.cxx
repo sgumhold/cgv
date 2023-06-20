@@ -25,7 +25,7 @@ simple_object::rgb simple_object::get_modified_color(const rgb& color) const
 }
 
 simple_object::simple_object(const std::string& _name, const vec3& _position, const rgb& _color, const vec3& _extent, const quat& _rotation) :
-	cgv::nui::poseable(_name), translatable(), transforming(), rotation(_rotation), extent(_extent), color(_color)
+	cgv::nui::poseable(_name), transforming(), translatable(), rotatable(&rotation), scalable(&extent), rotation(_rotation), extent(_extent), color(_color)
 {
 	name = _name;
 
@@ -51,17 +51,24 @@ void simple_object::initialize_gizmos(cgv::base::node_ptr root, cgv::base::node_
 	trans_gizmo->set_context(this->get_context());
 	trans_gizmo->set_anchor_object(anchor);
 	trans_gizmo->set_root_object(root);
-	//trans_gizmo->set_anchor_offset_position(vec3(0.0f, 0.5f, 0.0f));
+	//trans_gizmo->set_anchor_offset_position(vec3(0.0f, 0.0f, 0.0f));
+	//trans_gizmo->set_root_offset_position(vec3(0.0f, 0.0f, 0.0f));
 	quat rot;
 	vec3 n = vec3(1.0f, 0.0f, 1.0f);
 	n.normalize();
 	rot.set_normal(n);
 	rot.normalize();
 	//trans_gizmo->set_anchor_offset_rotation(rot);
+	n = vec3(1.0f, 0.0f, 1.0f);
+	n.normalize();
+	rot.set_normal(n);
+	rot.normalize();
+	//trans_gizmo->set_root_offset_rotation(rot);
 	trans_gizmo->set_position_reference(this);
 	trans_gizmo->set_is_anchor_influenced_by_gizmo(anchor_influenced_by_gizmo);
 	trans_gizmo->set_is_root_influenced_by_gizmo(root_influenced_by_gizmo);
 	trans_gizmo->set_use_root_rotation(false);
+	trans_gizmo->set_use_root_position(false);
 	trans_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
 	trans_gizmo->set_axes_positions(
 		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
@@ -73,11 +80,13 @@ void simple_object::initialize_gizmos(cgv::base::node_ptr root, cgv::base::node_
 	rot_gizmo = new cgv::nui::rotation_gizmo();
 	// As the gizmo is created after the hierarchy was traversed the context has to be set manually
 	rot_gizmo->set_context(this->get_context());
-	rot_gizmo->set_anchor_object(this);
+	rot_gizmo->set_anchor_object(anchor);
 	rot_gizmo->set_root_object(root);
 	rot_gizmo->set_rotation_reference(this);
 	rot_gizmo->set_is_anchor_influenced_by_gizmo(anchor_influenced_by_gizmo);
 	rot_gizmo->set_is_root_influenced_by_gizmo(root_influenced_by_gizmo);
+	rot_gizmo->set_use_root_rotation(false);
+	rot_gizmo->set_use_root_position(false);
 	rot_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
 	if (active_gizmo == ActiveGizmoOptions::AGO_ROTATION)
 		rot_gizmo->attach();
@@ -85,7 +94,7 @@ void simple_object::initialize_gizmos(cgv::base::node_ptr root, cgv::base::node_
 	scale_gizmo = new cgv::nui::scaling_gizmo();
 	// As the gizmo is created after the hierarchy was traversed the context has to be set manually
 	scale_gizmo->set_context(this->get_context());
-	scale_gizmo->set_anchor_object(this);
+	scale_gizmo->set_anchor_object(anchor);
 	scale_gizmo->set_root_object(root);
 	scale_gizmo->set_scale_reference(this);
 	scale_gizmo->set_is_anchor_influenced_by_gizmo(anchor_influenced_by_gizmo);
@@ -95,6 +104,7 @@ void simple_object::initialize_gizmos(cgv::base::node_ptr root, cgv::base::node_
 		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
 		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
 	);
+	scale_gizmo->configure_scale_limits(vec3(0.05f), vec3(2.0f));
 	if (active_gizmo == ActiveGizmoOptions::AGO_SCALING)
 		scale_gizmo->attach();
 }
@@ -122,15 +132,14 @@ bool simple_object::init(cgv::render::context& ctx)
 {
 	poseable::init(ctx);
 
-	auto& dvh = cgv::nui::ref_debug_visualization_helper(ctx, 1);
-	debug_coord_system_handle0 = dvh.register_debug_value_coordinate_system();
-	debug_coord_system_handle1 = dvh.register_debug_value_coordinate_system();
-	auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle0);
-	config.show_translation = false;
-	config.position = vec3(1.4f, 1.0f, 0.0f);
-	dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle0, config);
-	config.position = vec3(1.8f, 1.0f, 0.0f);
-	dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle1, config);
+	if (get_name() == "blue") {
+		auto& dvh = cgv::nui::ref_debug_visualization_helper(ctx, 1);
+		debug_coord_system_handle0 = dvh.register_debug_value_coordinate_system();
+		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle0);
+		config.show_translation = false;
+		config.position = vec3(0.4f, 2.0f, 0.0f);
+		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle0, config);
+	}
 
 	auto& br = cgv::render::ref_box_renderer(ctx, 1);
 	if (prog.is_linked())
@@ -140,15 +149,17 @@ bool simple_object::init(cgv::render::context& ctx)
 void simple_object::clear(cgv::render::context& ctx)
 {
 	auto& dvh = cgv::nui::ref_debug_visualization_helper();
-	dvh.deregister_debug_value(debug_coord_system_handle0);
-	dvh.deregister_debug_value(debug_coord_system_handle1);
+	if (get_name() == "blue") {
+		dvh.deregister_debug_value(debug_coord_system_handle0);
+	}
 	cgv::nui::ref_debug_visualization_helper(ctx, -1);
 	cgv::render::ref_box_renderer(ctx, -1);
 }
 void simple_object::draw(cgv::render::context& ctx)
 {
-	cgv::nui::ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle0, get_model_transform());
-	cgv::nui::ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle1, get_global_model_transform(this));
+	if (get_name() == "blue") {
+		cgv::nui::ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle0, get_global_model_transform(this));
+	}
 
 	ctx.push_modelview_matrix();
 	ctx.mul_modelview_matrix(get_model_transform());
@@ -190,6 +201,11 @@ void simple_object::on_set(void* member_ptr)
 			active_gizmo = active_gizmo_ui;
 		}
 	}
+	if (member_ptr == &extent) {
+		if (extent.y() < 0.1) {
+			extent[1] = 0.1;
+		}
+	}
 	update_member(member_ptr);
 	post_redraw();
 }
@@ -221,26 +237,5 @@ cgv::render::render_types::mat4 simple_object::get_model_transform() const
 cgv::render::render_types::mat4 simple_object::get_inverse_model_transform() const
 {
 	//const mat4& transform = transforming::construct_inverse_transform_from_components(-1.0f * get_position(), get_rotation().inverse(), vec3(1.0));
-	const mat4& transform = transforming::construct_inverse_transform_from_components(-1.0f * get_position(), get_rotation().inverse(), vec3(1.0) / get_scale());
-	return transform;
-}
-
-cgv::render::render_types::quat simple_object::get_rotation() const
-{
-	return rotation;
-}
-
-void simple_object::set_rotation(const quat& rotation)
-{
-	this->rotation = rotation;
-}
-
-cgv::render::render_types::vec3 simple_object::get_scale() const
-{
-	return extent;
-}
-
-void simple_object::set_scale(const vec3& scale)
-{
-	extent = scale;
+	return transforming::construct_inverse_transform_from_components(-1.0f * get_position(), get_rotation().inverse(), vec3(1.0) / get_scale());
 }
