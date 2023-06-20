@@ -4,13 +4,15 @@
 #include <cgv/gui/mouse_event.h>
 
 namespace cgv {
-namespace app {
+	namespace app {
 
-application_plugin::application_plugin(const std::string& name) : group(name) 
+
+application_plugin_base::application_plugin_base(const std::string& name) : group(name)
 {
+		view_ptr = 0;
 }
 
-bool application_plugin::handle(cgv::gui::event& e) 
+bool application_plugin_base::handle(cgv::gui::event& e)
 {
 	if(e.get_kind() == cgv::gui::EID_MOUSE) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
@@ -20,7 +22,7 @@ bool application_plugin::handle(cgv::gui::event& e)
 			return handle_event(e);
 
 		if(ma == cgv::gui::MA_PRESS || ma == cgv::gui::MA_MOVE || ma == cgv::gui::MA_WHEEL) {
-			ivec2 mpos(me.get_x(), me.get_y());
+			cgv::render::render_types::ivec2 mpos(me.get_x(), me.get_y());
 
 			blocking_overlay_ptr = nullptr;
 			for(auto it = overlays.rbegin(); it != overlays.rend(); ++it) {
@@ -80,16 +82,8 @@ bool application_plugin::handle(cgv::gui::event& e)
 	}
 }
 
-void application_plugin::on_set(void* member_ptr)
+application_plugin::application_plugin(const std::string& name) : application_plugin_flex(name)
 {
-	on_set(on_set_evaluator(member_ptr));
-	update_member(member_ptr);
-	post_redraw();
-}
-
-bool application_plugin::initialize_view_ptr()
-{
-	return !view_ptr && (view_ptr = find_view_as_node());
 }
 
 }
