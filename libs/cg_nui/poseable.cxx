@@ -42,15 +42,15 @@ void cgv::nui::poseable::on_grabbed_start()
 
 void cgv::nui::poseable::on_grabbed_drag()
 {
+	vec3 movement = ii_during_focus[activating_hid_id].query_point - ii_at_grab.query_point;
 	if (get_transforming()) {
-		vec3 movement = ii_during_focus[activating_hid_id].query_point - ii_at_grab.query_point;
 		// movement is in the local coordinate system of the transforming. Its position however is in it's parents coordinate system.
 		// Therefor movement needs to be transformed into the parents coordinate system.
 		_transforming->get_local_rotation().inverse_rotate(movement);
 		get_translatable()->set_position(get_translatable()->get_position() + movement);
 	}
 	else {
-		get_translatable()->set_position(position_at_grab + (ii_during_focus[activating_hid_id].query_point - ii_at_grab.query_point));
+		get_translatable()->set_position(position_at_grab + movement);
 	}
 	
 }
@@ -65,15 +65,15 @@ void cgv::nui::poseable::on_triggered_drag()
 {
 	vec3 q = cgv::math::closest_point_on_line_to_point(ii_during_focus[activating_hid_id].hid_position,
 		ii_during_focus[activating_hid_id].hid_direction, ii_at_grab.query_point);
+	vec3 movement = q - ii_at_grab.query_point;
 	if (get_transforming()) {
-		vec3 movement = q - ii_at_grab.query_point;
 		// movement is in the local coordinate system of the transforming. Its position however is in it's parents coordinate system.
 		// Therefor movement needs to be transformed into the parents coordinate system.
 		_transforming->get_local_rotation().rotate(movement);
 		get_translatable()->set_position(get_translatable()->get_position() + movement);
 	}
 	else {
-		get_translatable()->set_position(position_at_grab + (q - ii_at_grab.query_point));
+		get_translatable()->set_position(position_at_grab + movement);
 	}
 }
 

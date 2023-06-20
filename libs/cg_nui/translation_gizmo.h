@@ -48,6 +48,9 @@ class CGV_API translation_gizmo : public cgv::nui::gizmo,
 	int debug_coord_system_handle0;
 	int debug_ray_handle0;
 	int debug_ray_handle1;
+	int debug_cylinder_handle0;
+	int debug_box_handle0;
+	vec3 intersection_debug_position{ 0.5f, 2.0f, 0.0f };
 
 protected:
 	// Get the position of the attached object

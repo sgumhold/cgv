@@ -10,7 +10,9 @@ namespace cgv {
 		/// Interface for objects that have a rotation that can be changed
 		class CGV_API rotatable
 		{
+		protected:
 			quat internal_rotation{ };
+		private:
 			quat* rotation_ptr{ nullptr };
 			quat** rotation_ptr_ptr{ nullptr };
 
@@ -55,6 +57,8 @@ namespace cgv {
 				}
 				else {
 					internal_rotation = rotation;
+					if (get_base())
+						_base->on_set(&internal_rotation);
 				}
 			}
 		};

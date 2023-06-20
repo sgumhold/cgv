@@ -60,27 +60,27 @@ void cgv::nui::translation_gizmo::on_handle_drag()
 	vec3 anchor_obj_parent_global_scale;
 	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj->get_parent()),
 		anchor_obj_parent_global_translation, anchor_obj_parent_global_rotation, anchor_obj_parent_global_scale);
-
+	
 	vec3 anchor_obj_global_translation;
 	quat anchor_obj_global_rotation;
 	vec3 anchor_obj_global_scale;
 	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj),
 		anchor_obj_global_translation, anchor_obj_global_rotation, anchor_obj_global_scale);
-
+	
 	vec3 root_obj_global_translation;
 	quat root_obj_global_rotation;
 	vec3 root_obj_global_scale;
 	transforming::extract_transform_components(transforming::get_global_model_transform(root_obj),
 		root_obj_global_translation, root_obj_global_rotation, root_obj_global_scale);
-
+	
 	quat anchor_root_diff = root_obj_global_rotation.inverse() * anchor_obj_global_rotation;
 	quat anchor_parent_root_diff = root_obj_global_rotation.inverse() * anchor_obj_parent_global_rotation;
-
+	
 	vec3 axis = axes_directions[prim_idx];
-	if (use_root_rotation) {
-		axis = anchor_root_diff.inverse().apply(axis);
-	}
-
+	//if (use_root_rotation) {
+	//	axis = anchor_root_diff.inverse().apply(axis);
+	//}
+	
 	vec3 closest_point;
 	if (ii_at_grab.is_pointing) {
 		if (!cgv::math::closest_point_on_line_to_line(ii_at_grab.query_point, axis,
@@ -90,12 +90,12 @@ void cgv::nui::translation_gizmo::on_handle_drag()
 	else {
 		closest_point = cgv::math::closest_point_on_line_to_point(ii_at_grab.query_point, axis, ii_during_focus[activating_hid_id].hid_position);
 	}
-
+	
 	vec3 movement = closest_point - ii_at_grab.query_point;
-
+	
 	if (use_root_rotation) {
-		movement = anchor_root_diff.apply(movement);
-		movement = anchor_parent_root_diff.inverse().apply(movement);
+		//movement = anchor_root_diff.apply(movement);
+		//movement = anchor_parent_root_diff.inverse().apply(movement);
 	}
 	else {
 		// The position is in the local coordinate system of the parent of the anchor object.
@@ -103,7 +103,7 @@ void cgv::nui::translation_gizmo::on_handle_drag()
 		quat anchor_obj_local_rotation = anchor_obj_parent_global_rotation.inverse() * anchor_obj_global_rotation;
 		movement = anchor_obj_local_rotation.apply(movement);
 	}
-
+	
 	// If the position that this gizmo changes influences the anchor of this gizmo, then the movement is an incremental update.
 	// Otherwise the movement is relative to the original position of the anchor at the time of grabbing.
 	if (is_anchor_influenced_by_gizmo)
@@ -200,17 +200,59 @@ bool cgv::nui::translation_gizmo::_compute_intersection(const vec3& ray_start, c
 {
 	compute_geometry(scale);
 
+	// DEBUG TO REMOVE
+	auto& dvh = ref_debug_visualization_helper();
+	//dvh.update_debug_value_cylinder(debug_cylinder_handle0, arrow_positions[0] + intersection_debug_position, arrow_directions[0], arrow_radius);
+	//dvh.update_debug_value_ray(debug_ray_handle0, ray_start + intersection_debug_position, ray_direction);
+
 	size_t idx = -1;
 	float t = std::numeric_limits<float>::max();
 	vec3 n;
 	for (size_t i = 0; i < arrow_positions.size(); ++i) {
 		vec3 n0;
-		float t0 = cgv::math::ray_cylinder_intersection(ray_start, ray_direction, arrow_positions[i], arrow_directions[i], arrow_radius, n0);
-		if (t0 < t) {
-			t = t0;
-			n = n0;
+		// DEBUG TO REMOVE - Box version (working)
+		vec3 ro = ray_start - arrow_positions[i] - (arrow_directions[i] / 2.0f);
+		vec3 norm_arrow_direction = arrow_directions[i];
+		norm_arrow_direction.normalize();
+		vec3 orth_arrow_direction_mask = vec3(1.0f) - norm_arrow_direction;
+		vec3 box_extent_half = (vec3(arrow_radius) * orth_arrow_direction_mask + arrow_directions[i]) / 2.0f;
+		if (i == 0) {
+			dvh.update_debug_value_box(debug_box_handle0, intersection_debug_position, box_extent_half * 2.0f);
+			dvh.update_debug_value_ray(debug_ray_handle0, ro + intersection_debug_position, ray_direction);
+		}
+		auto res = cgv::math::ray_box_intersection(ro, ray_direction, -box_extent_half, box_extent_half);
+		if (res.hit && res.t_near < t) {
+			t = res.t_near;
+			n = vec3(1.0f, 0.0f, 0.0f);
 			idx = i;
 		}
+
+		// Using simplified ray cylinder intersection (funktioniert gar nicht)
+		//quat arrow_rot;
+		//arrow_rot.set_normal(normalize(arrow_directions[i]));
+		//quat correction_rot = arrow_rot.inverse();
+		//vec3 ro = ray_start - arrow_positions[i];
+		//correction_rot.rotate(ro);
+		//vec3 rd = ray_direction;
+		//correction_rot.rotate(rd);
+		//if (i == 0) {
+		//	dvh.update_debug_value_cylinder(debug_cylinder_handle0, intersection_debug_position, vec3(arrow_directions[i].length(), 0.0, 0.0), arrow_radius);
+		//	dvh.update_debug_value_ray(debug_ray_handle0, ro + intersection_debug_position, rd);
+		//}
+		//auto res = cgv::math::ray_cylinder_intersection(ro, ray_direction, arrow_directions[i].length(), arrow_radius);
+		//if (res.hit && res.t_near < t) {
+		//	t = res.t_near;
+		//	n = vec3(1.0f, 0.0f, 0.0f);
+		//	idx = i;
+		//}
+
+		// Old ray cylinder intersection (not working for the case of root = table for unknown reasons)
+		//float t0 = cgv::math::ray_cylinder_intersection(ray_start, ray_direction, arrow_positions[i], arrow_directions[i], arrow_radius, n0);
+		//if (t0 < t) {
+		//	t = t0;
+		//	n = n0;
+		//	idx = i;
+		//}
 	}
 	
 	if (t == std::numeric_limits<float>::max())
@@ -247,6 +289,16 @@ bool cgv::nui::translation_gizmo::init(cgv::render::context& ctx)
 		config.start_offset = 1.0f;
 		dvh.set_config_debug_value_ray(debug_ray_handle1, config);
 	}
+	debug_cylinder_handle0 = dvh.register_debug_value_cylinder();
+	{
+		auto config = dvh.get_config_debug_value_cylinder(debug_cylinder_handle0);
+		dvh.set_config_debug_value_cylinder(debug_cylinder_handle0, config);
+	}
+	debug_box_handle0 = dvh.register_debug_value_box();
+	{
+		auto config = dvh.get_config_debug_value_box(debug_box_handle0);
+		dvh.set_config_debug_value_box(debug_box_handle0, config);
+	}
 
 	return true;
 }
@@ -257,6 +309,7 @@ void cgv::nui::translation_gizmo::clear(cgv::render::context& ctx)
 	dvh.deregister_debug_value(debug_coord_system_handle0);
 	dvh.deregister_debug_value(debug_ray_handle0);
 	dvh.deregister_debug_value(debug_ray_handle1);
+	dvh.deregister_debug_value(debug_cylinder_handle0);
 	cgv::nui::ref_debug_visualization_helper(ctx, -1);
 	cgv::render::ref_arrow_renderer(ctx, -1);
 	gizmo::clear(ctx);

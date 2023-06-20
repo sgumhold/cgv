@@ -113,13 +113,11 @@ public:
 		show_plot = false;
 		construct_plot();
 
-		objects.push_back(new simple_object("blue", vec3(-1.0f, 0.0f, 0.0f), rgb(0.2f, 0.6f, 0.4f), vec3(1.0f, 1.0f, 1.0f)));
+		objects.push_back(new simple_object("blue", vec3(-2.0f, 0.0f, 0.0f), rgb(0.2f, 0.6f, 0.4f), vec3(1.0f, 1.0f, 1.0f)));
 		append_child(objects.back());
-		objects.push_back(new simple_object("ruby", vec3(0.0f, 0.0f, -1.0f), rgb(0.6f, 0.3f, 0.1f), vec3(1.0f, 1.0f, 1.0f)));
-		append_child(objects.back());
-		//objects.push_back(new simple_object("green", vec3(2.0f, 0.0f, 0), rgb(0.2f, 0.7f, 0.2f), vec3(1.0f, 1.0f, 1.0f)));
+		//objects.push_back(new simple_object("ruby", vec3(-1.0f, 0.0f, 0.0f), rgb(0.6f, 0.3f, 0.1f), vec3(1.0f, 1.0f, 1.0f)));
 		//append_child(objects.back());
-		//objects.push_back(new simple_object("blue", vec3(0.0f, 0.0f, 0.0f), rgb(0.2f, 0.6f, 0.4f), vec3(1.0f, 1.0f, 1.0f)));
+		//objects.push_back(new simple_object("green", vec3(1.0f, 0.0f, 0), rgb(0.2f, 0.7f, 0.2f), vec3(1.0f, 1.0f, 1.0f)));
 		//append_child(objects.back());
 
 		//container = new simple_primitive_container("spheres");
@@ -144,7 +142,7 @@ public:
 		//objects[1]->initialize_gizmos(this->get_parent(), objects[1]);
 		//objects[2]->initialize_gizmos(this->get_parent(), objects[2]);
 
-		 // Funktioniert
+		// Funktioniert
 		//objects[0]->initialize_gizmos(this->get_parent(), objects[1], false);
 		//objects[1]->initialize_gizmos(this->get_parent(), objects[2], false);
 		//objects[2]->initialize_gizmos(this->get_parent(), objects[1], false);
@@ -157,16 +155,25 @@ public:
 		// Funktioniert
 		//objects[0]->initialize_gizmos(this, objects[1], false);
 		//objects[0]->initialize_gizmos(objects[0], objects[1], false);
-		
+
+		//objects[0]->initialize_gizmos(objects[0], this->get_parent(), false);
+		//objects[0]->initialize_gizmos(this->get_parent(), objects[0], true);
+		//objects[0]->initialize_gizmos(objects[2], objects[1], false);
+
+
+		// DEBUG TO REMOVE
+		//cgv::nui::debug_visualization_helper::print_hierarchy(this);
+
 
 		cgv::render::ref_sphere_renderer(ctx, 1);
 		cgv::render::ref_cone_renderer(ctx, 1);
 
+		// DEBUG TO REMOVE
 		auto& dvh = cgv::nui::ref_debug_visualization_helper(ctx, 1);
 		debug_coord_system_handle = dvh.register_debug_value_coordinate_system();
 		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle);
 		config.show_translation = false;
-		config.position = vec3(1.0f, 1.0f, 0.0f);
+		config.position = vec3(0.0f, 2.0f, 0.0f);
 		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle, config);
 
 		plot.set_view_ptr(find_view_as_node());
