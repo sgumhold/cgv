@@ -691,17 +691,6 @@ bool camera_animator::save_animation(const std::string& file_name) {
 	auto keyframes_element = doc.NewElement("Keyframes");
 	root->InsertEndChild(keyframes_element);
 
-
-	std::map<int, int> m;
-	for(const auto& pair : m) {
-		std::cout << pair.first << std::endl;
-	}
-
-	const interval_map<int, int> im;
-	for(const auto& pair : im) {
-		std::cout << pair.first << std::endl;
-	}
-
 	for(const auto& pair : animation->ref_keyframes()) {
 		keyframe k = pair.second;
 
