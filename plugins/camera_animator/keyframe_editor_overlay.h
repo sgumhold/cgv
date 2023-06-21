@@ -76,7 +76,7 @@ protected:
 	} layout;
 
 	struct keyframe_draggable : public cgv::g2d::draggable {
-		size_t frame;
+		size_t frame = 0;
 
 		keyframe_draggable() : draggable() {}
 	};
