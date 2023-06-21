@@ -50,6 +50,7 @@ var dir_eaf9d2518f1ede0a595228de81ad9d4d =
     [ "quaternion.h", "quaternion_8h_source.html", null ],
     [ "random.h", "random_8h_source.html", null ],
     [ "ransac.h", "ransac_8h_source.html", null ],
+    [ "ray.h", "math_2ray_8h_source.html", null ],
     [ "rigid_transform.h", "rigid__transform_8h_source.html", null ],
     [ "solve_polynom.h", "solve__polynom_8h_source.html", null ],
     [ "sparse_les.h", "sparse__les_8h_source.html", null ],

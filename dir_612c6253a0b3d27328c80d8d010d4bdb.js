@@ -8,8 +8,10 @@ var dir_612c6253a0b3d27328c80d8d010d4bdb =
     [ "date_time.h", "date__time_8h_source.html", null ],
     [ "dir.h", "dir_8h_source.html", null ],
     [ "file.h", "file_8h_source.html", null ],
+    [ "interval_map.h", "interval__map_8h_source.html", null ],
     [ "lib_begin.h", "cgv_2utils_2lib__begin_8h_source.html", null ],
     [ "options.h", "options_8h.html", "options_8h" ],
+    [ "pointer_test.h", "pointer__test_8h_source.html", null ],
     [ "profiler.h", "profiler_8h_source.html", null ],
     [ "progression.h", "progression_8h_source.html", null ],
     [ "scan.h", "scan_8h.html", "scan_8h" ],
@@ -17,6 +19,5 @@ var dir_612c6253a0b3d27328c80d8d010d4bdb =
     [ "statistics.h", "utils_2statistics_8h_source.html", null ],
     [ "stopwatch.h", "stopwatch_8h_source.html", null ],
     [ "token.h", "token_8h_source.html", null ],
-    [ "tokenizer.h", "tokenizer_8h_source.html", null ],
-    [ "xml.h", "xml_8h.html", null ]
+    [ "tokenizer.h", "tokenizer_8h_source.html", null ]
 ];
