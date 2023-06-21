@@ -76,7 +76,7 @@ public:
 	virtual void on_set(void* member_ptr) = 0;
 
 	/// @brief Implement this method to handle member changes from GUI interactions or manual calls to on_set()
-	/// provided by a convenient evaluation interface.
+	/// provided through a convenient evaluation interface.
 	/// 
 	/// @param m the pointer_test interface used to conveniently evaluate the affected member.
 	virtual void handle_member_change(const cgv::utils::pointer_test& m) = 0;
@@ -104,6 +104,12 @@ public:
 		update_member(member_ptr);
 		base_drawable::post_redraw();
 	}
+
+	/// @brief Empty default implementation to handle member changes from GUI interactions or manual calls to on_set()
+	/// provided through a convenient evaluation interface.
+	/// 
+	/// @param m the pointer_test interface used to conveniently evaluate the affected member.
+	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
 
 	/// @brief Initializes the view pointer using drawable::find_view_as_node.
 	///
