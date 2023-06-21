@@ -22,15 +22,13 @@ protected:
 
 	cgv::g2d::canvas content_canvas, overlay_canvas;
 
-	bool blend_overlay = false;
+	bool blend_overlay;
 	
 	void init_overlay_style(cgv::render::context& ctx);
 
 	bool ensure_layout(cgv::render::context& ctx);
 
 	void post_recreate_layout();
-
-	void post_damage(bool redraw = true);
 
 	void clear_damage();
 
@@ -44,6 +42,8 @@ protected:
 
 	void disable_blending();
 
+	void draw_impl(cgv::render::context& ctx);
+
 	virtual void init_styles(cgv::render::context& ctx) {}
 
 public:
@@ -52,13 +52,22 @@ public:
 
 	void clear(cgv::render::context& ctx);
 
+	/// implement to handle member changes
+	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
+
+	/// default implementation of that calls handle_on_set and afterwards upates the member in the gui and post damage to the canvas overlay
+	virtual void on_set(void* member_ptr);
+
 	bool init(cgv::render::context& ctx);
 	void draw(cgv::render::context& ctx);
+	void finish_frame(cgv::render::context&);
 	virtual void draw_content(cgv::render::context& ctx) = 0;
 
 	void register_shader(const std::string& name, const std::string& filename);
 
 	virtual void handle_theme_change(const cgv::gui::theme_info& theme) override;
+
+	void post_damage(bool redraw = true);
 };
 
 typedef cgv::data::ref_ptr<canvas_overlay> canvas_overlay_ptr;

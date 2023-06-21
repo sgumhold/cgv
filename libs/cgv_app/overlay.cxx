@@ -17,6 +17,7 @@ overlay::overlay() {
 
 	show = true;
 	block_events = true;
+	draw_in_finish_frame = false;
 }
 
 void overlay::on_visibility_change() 
@@ -28,6 +29,13 @@ void overlay::on_visibility_change()
 void overlay::on_layout_change() {
 
 	update_overlay_layout();
+	post_redraw();
+}
+
+void overlay::on_set(void* member_ptr) {
+
+	handle_member_change(cgv::utils::pointer_test(member_ptr));
+	update_member(member_ptr);
 	post_redraw();
 }
 
@@ -141,7 +149,6 @@ bool overlay::begin_overlay_gui() {
 
 	if(node_is_open) {
 		align("\a");
-		create_layout_gui();
 		return true;
 	}
 
@@ -208,10 +215,12 @@ void overlay::create_gui() {
 
 	if(gui_options.create_default_tree_node) {
 		if(begin_overlay_gui()) {
+			create_layout_gui();
 			create_gui_impl();
 			end_overlay_gui();
 		}
 	} else {
+		create_layout_gui();
 		create_gui_impl();
 	}
 }
