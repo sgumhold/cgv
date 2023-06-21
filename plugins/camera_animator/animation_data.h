@@ -1,9 +1,9 @@
 #pragma once
 
 #include <cgv/render/render_types.h>
+#include <cgv/utils/interval_map.h>
 
 #include "easing_functions.h"
-#include "interval_map.h"
 
 struct view_parameters {
 	cgv::render::vec3 eye_position = cgv::render::vec3(0.0f, 0.0f, 1.0f);
@@ -113,7 +113,7 @@ struct tween_data {
 
 class animation_data {
 public:
-	using keyframe_map = interval_map<size_t, keyframe>;
+	using keyframe_map = cgv::utils::interval_map<size_t, keyframe>;
 
 private:
 	/// Stores keyframes indexed by their frame number.
@@ -127,18 +127,14 @@ public:
 
 	animation_data() {}
 
-	/**
-	 Clears the content of this animation and resets it.
-	*/
+	/// Clears the content of this animation and resets it.
 	void clear() {
 
 		reset();
 		keyframes.clear();
 	}
 
-	/**
-	 Resets the current frame and time to zero.
-	*/
+	/// Resets the current frame and time to zero.
 	void reset() {
 
 		time = 0.0f;
@@ -150,9 +146,7 @@ public:
 		return keyframes;
 	};
 
-	/**
-	 Returns a pointer to the keyframe at the given frame. If such a keyframe does not exist, returns a null pointer.
-	*/
+	/// Returns a pointer to the keyframe at the given frame. If such a keyframe does not exist, returns a null pointer.
 	keyframe* keyframe_at(size_t frame) {
 
 		auto it = keyframes.find(frame);
@@ -189,12 +183,10 @@ public:
 		return false;
 	}
 
-	/**
-	 Find the tween covering the given frame. The tween is defined by a start keyframe located before or at the given
-	 frame and an end keyframe located after the given frame. Returns true for a valid tween where at least one keyframe
-	 is found. If the start/end keyframe is missing, it is duplicated from the end/start keyframe. Returns false for an
-	 invalid tween where both the start an end keyframes are undefined.
-	*/
+	/// Find the tween covering the given frame. The tween is defined by a start keyframe located before or at the given
+	/// frame and an end keyframe located after the given frame. Returns true for a valid tween where at least one keyframe
+	/// is found. If the start/end keyframe is missing, it is duplicated from the end/start keyframe. Returns false for an
+	/// invalid tween where both the start an end keyframes are undefined.
 	bool find_tween(size_t frame, tween_data& tween) const {
 	
 		auto pair = keyframes.bounds(frame);
@@ -216,17 +208,13 @@ public:
 		return true;
 	}
 
-	/**
-	 Returns the total duration in seconds using the stored timecode.
-	*/
+	/// Returns the total duration in seconds using the stored timecode.
 	float duration() const {
 
 		return frame_to_time(frame_count());
 	}
 
-	/**
-	 Returns the total frame count defined by the keyframe with the highest frame number.
-	*/
+	/// Returns the total frame count defined by the keyframe with the highest frame number.
 	size_t frame_count() const {
 
 		if(keyframes.empty())
@@ -235,27 +223,21 @@ public:
 		return keyframes.crbegin()->first;
 	}
 
-	/**
-	 Returns the time in seconds of the given frame using the stored timecode.
-	*/
+	/// Returns the time in seconds of the given frame using the stored timecode.
 	float frame_to_time(size_t frame) const {
 
 		return static_cast<float>(frame) / static_cast<float>(timecode);
 	}
 
-	/**
-	 Returns the nearest frame number (rounded down) of the given time in seconds using the stored timecode.
-	*/
+	/// Returns the nearest frame number (rounded down) of the given time in seconds using the stored timecode.
 	size_t time_to_frame(float time) const {
 
 		return static_cast<size_t>(static_cast<float>(timecode) * time);
 	}
 
-	/**
-	 Gets interpolated view parameters for the currently set frame. Return true if the interpolated view is
-	 defined by a valid tween, false otherwise. If the use_continuous_time flag is set, uses the currently
-	 set time for interpolation instead.
-	*/
+	/// Gets interpolated view parameters for the currently set frame. Return true if the interpolated view is
+	/// defined by a valid tween, false otherwise. If the use_continuous_time flag is set, uses the currently
+	/// set time for interpolation instead.
 	bool current_view(view_parameters& parameters) const {
 
 		float tc = static_cast<float>(timecode);
@@ -269,11 +251,9 @@ public:
 		return f <= frame_count();
 	}
 
-	/**
-	 Changes the duration after the given frame to the number of given frames. All subsequent frames are moved
-	 to preserve their durations. The minimum allowed duration in frames is 1. No changes are made if a duration
-	 of 0 frames is given. If -1 if given for the frame, the duration before the first frame is changed.
-	*/
+	/// Changes the duration after the given frame to the number of given frames. All subsequent frames are moved
+	/// to preserve their durations. The minimum allowed duration in frames is 1. No changes are made if a duration
+	/// of 0 frames is given. If -1 if given for the frame, the duration before the first frame is changed.
 	void change_duration_after(size_t frame, size_t frames) {
 
 		if(frame != -1 && frames == 0ull || keyframes.empty())

@@ -2,9 +2,12 @@
 
 #include <map>
 
-/**
- Extension of a standard map container that allows easy retreival of lower and upper bounds given a key.
-*/
+namespace cgv {
+namespace utils {
+
+/// @brief Extension of a standard map container that allows easy retreival of lower and upper bounds given a key.
+/// @tparam Key the key type
+/// @tparam T the value type
 template<class Key, class T>
 class interval_map {
 public:
@@ -92,56 +95,47 @@ public:
 		return base.find(key);
 	}
 
-	/**
-	 Returns an iterator pointing to the first element in the container whose key is equivalent or smaller than the given key. If no such element exists, returns end().
-	*/
+	/// Returns an iterator pointing to the first element in the container whose key is equivalent or smaller than the given key. If no such element exists, returns end().
 	iterator lower_bound(key_type key) {
 
 		const_iterator it = lower_bound_impl(key);
 		return it == base.end() ? base.end() : base.find(it->first);
 	}
 
-	/**
-	 Returns a const iterator pointing to the first element in the container whose key is equivalent or smaller than the given key. If no such element exists, returns end().
-	*/
+	/// Returns a const iterator pointing to the first element in the container whose key is equivalent or smaller than the given key. If no such element exists, returns end().
 	const_iterator lower_bound(key_type key) const {
 
 		return lower_bound_impl(key);
 	}
 
-	/**
-	 Returns an iterator pointing to the first element in the container whose key is greater than the given key. If no such element exists, returns end().
-	*/
+	/// Returns an iterator pointing to the first element in the container whose key is greater than the given key. If no such element exists, returns end().
 	iterator upper_bound(key_type key) {
 
 		return base.upper_bound(key);
 	}
 
-	/**
-	 Returns a const iterator pointing to the first element in the container whose key is greater than the given key. If no such element exists, returns end().
-	*/
+	/// Returns a const iterator pointing to the first element in the container whose key is greater than the given key. If no such element exists, returns end().
 	const_iterator upper_bound(key_type key) const {
 
 		return base.upper_bound(key);
 	}
 
-	/**
-	 Returns a pair of iterators pointing to the lower and upper bounds of the given key.
-	 The lower bound is defined as the greatest stored key less than or equal to the given key.
-	 The upper bound is defined as the smallest stored key greater than the given key.
-	*/
+	/// Returns a pair of iterators pointing to the lower and upper bounds of the given key.
+	/// The lower bound is defined as the greatest stored key less than or equal to the given key.
+	/// The upper bound is defined as the smallest stored key greater than the given key.
 	std::pair<iterator, iterator> bounds(key_type key) {
 
 		return { lower_bound(key), upper_bound(key) };
 	}
 
-	/**
-	 Returns a pair of const iterators pointing to the lower and upper bounds of the given key.
-	 The lower bound is defined as the greatest stored key less than or equal to the given key.
-	 The upper bound is defined as the smallest stored key greater than the given key.
-	*/
+	/// Returns a pair of const iterators pointing to the lower and upper bounds of the given key.
+	/// The lower bound is defined as the greatest stored key less than or equal to the given key.
+	/// The upper bound is defined as the smallest stored key greater than the given key.
 	std::pair<const_iterator, const_iterator> bounds(key_type key) const {
 
 		return { lower_bound(key), upper_bound(key) };
 	}
 };
+
+} // namespace utils
+} // namespace cgv
