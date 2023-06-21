@@ -43,10 +43,12 @@ color_map_editor::color_map_editor() {
 	cmc.color_points.set_constraint(layout.color_handles_rect);
 	cmc.color_points.set_drag_callback(std::bind(&color_map_editor::handle_color_point_drag, this));
 	cmc.color_points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
+	cmc.color_points.set_selection_change_callback(std::bind(&color_map_editor::handle_drag_end, this));
 
 	cmc.opacity_points.set_constraint(layout.opacity_editor_rect);
 	cmc.opacity_points.set_drag_callback(std::bind(&color_map_editor::handle_opacity_point_drag, this));
 	cmc.opacity_points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
+	cmc.opacity_points.set_selection_change_callback(std::bind(&color_map_editor::handle_drag_end, this));
 
 	color_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::arrow);
 	opacity_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
@@ -326,6 +328,7 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 		if(supports_opacity) {
 			// draw opacity editor checkerboard background
 			auto& bg_prog = cc.enable_shader(ctx, "background");
+			bg_style.apply(ctx, bg_prog);
 			bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
 			bg_tex.enable(ctx, 0);
 			cc.draw_shape(ctx, layout.opacity_editor_rect);
@@ -348,10 +351,10 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 
 			preview_tex.enable(ctx, 0);
 			// draw transfer function area polygon
-			polygon_renderer.render(ctx, cc, cgv::render::PT_TRIANGLE_STRIP, cmc.triangles);
+			polygon_renderer.render(ctx, cc, cgv::render::PT_TRIANGLE_STRIP, cmc.triangles, polygon_style);
 
 			// draw transfer function lines
-			line_renderer.render(ctx, cc, cgv::render::PT_LINE_STRIP, cmc.lines);
+			line_renderer.render(ctx, cc, cgv::render::PT_LINE_STRIP, cmc.lines, line_style);
 			preview_tex.disable(ctx);
 
 			// draw separator line
@@ -366,14 +369,14 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 
 		// draw control points
 		// color handles
-		color_handle_renderer.render(ctx, cc, cgv::render::PT_LINES, cmc.color_handles);
+		color_handle_renderer.render(ctx, cc, cgv::render::PT_LINES, cmc.color_handles, color_handle_style);
 
 		// opacity handles
 		if(supports_opacity) {
 			auto& opacity_handle_prog = opacity_handle_renderer.enable_prog(ctx);
 			// size is constant for all points
 			opacity_handle_prog.set_attribute(ctx, "size", vec2(opacity_point::default_size));
-			opacity_handle_renderer.render(ctx, cc, cgv::render::PT_POINTS, cmc.opacity_handles);
+			opacity_handle_renderer.render(ctx, cc, cgv::render::PT_POINTS, cmc.opacity_handles, opacity_handle_style);
 		}
 	} else {
 		cc.disable_current_shader(ctx);
@@ -489,6 +492,7 @@ void color_map_editor::create_gui_impl() {
 void color_map_editor::set_opacity_support(bool flag) {
 	
 	supports_opacity = flag;
+	set_color_map(cmc.cm);
 	on_set(&supports_opacity);
 }
 
@@ -597,11 +601,6 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	bg_style.use_texture = true;
 	bg_style.feather_width = 0.0f;
 
-	auto& bg_prog = content_canvas.enable_shader(ctx, "background");
-	bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
-	bg_style.apply(ctx, bg_prog);
-	content_canvas.disable_current_shader(ctx);
-
 	// configure style for histogram
 	hist_style.use_blending = true;
 	hist_style.feather_width = 1.0f;
@@ -611,7 +610,6 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	hist_style.border_width = 1.0f;
 
 	// configure style for color handles
-	cgv::g2d::arrow2d_style color_handle_style;
 	color_handle_style.use_blending = true;
 	color_handle_style.use_fill_color = false;
 	color_handle_style.position_is_center = true;
@@ -621,8 +619,6 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	color_handle_style.stem_width = color_point::default_width;
 	color_handle_style.head_width = color_point::default_width;
 
-	color_handle_renderer.set_style(ctx, color_handle_style);
-
 	label_box_style.position_is_center = true;
 	label_box_style.use_blending = true;
 	label_box_style.fill_color = handle_color;
@@ -631,29 +627,21 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	label_box_style.border_radius = 4.0f;
 
 	// configure style for opacity handles
-	cgv::g2d::shape2d_style opacity_handle_style;
 	opacity_handle_style.use_blending = true;
 	opacity_handle_style.use_fill_color = false;
 	opacity_handle_style.position_is_center = true;
 	opacity_handle_style.border_color = rgba(ti.border(), 1.0f);
 	opacity_handle_style.border_width = 1.5f;
 
-	opacity_handle_renderer.set_style(ctx, opacity_handle_style);
-	
 	// configure style for the lines and polygon
-	cgv::g2d::line2d_style line_style;
 	line_style.use_blending = true;
 	line_style.use_fill_color = false;
 	line_style.use_texture = true;
 	line_style.use_texture_alpha = false;
 	line_style.width = 3.0f;
 
-	line_renderer.set_style(ctx, line_style);
-
 	line_style.use_texture_alpha = true;
-	cgv::g2d::shape2d_style poly_style = static_cast<cgv::g2d::shape2d_style>(line_style);
-
-	polygon_renderer.set_style(ctx, poly_style);
+	polygon_style = static_cast<cgv::g2d::shape2d_style>(line_style);
 
 	// label style
 	cursor_label_style = cgv::g2d::text2d_style::preset_clear(rgb(0.0f));

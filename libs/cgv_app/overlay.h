@@ -5,6 +5,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/render/context.h>
 #include <cgv/render/drawable.h>
+#include <cgv/utils/pointer_test.h>
 #include <cgv_g2d/rect.h>
 #include <cgv_g2d/utils2d.h>
 
@@ -59,6 +60,8 @@ protected:
 	bool show;
 	/// whether the overlay blocks events or lets them pass through to other handlers
 	bool block_events;
+	/// whether the overlay is
+	bool draw_in_finish_frame;
 
 	/// called when the overlay visibility is changed through the default gui
 	virtual void on_visibility_change();
@@ -93,23 +96,24 @@ public:
 	virtual void stream_help(std::ostream& os) {};
 
 	/// finalize the handle method to prevent overloading in implementations of this class, use handle_events instead
-	virtual bool handle(cgv::gui::event& e) final {
-		return false;
-	};
+	virtual bool handle(cgv::gui::event& e) final { return false; };
 
 	/// overload this method to handle events
 	virtual bool handle_event(cgv::gui::event& e) { return false; };
 
+	/// implement to handle member changes
+	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
+
+	/// default implementation of that calls handle_on_set and afterwards upates the member in the gui and post a redraw
+	virtual void on_set(void* member_ptr);
+
 	bool blocks_events() const { return block_events; }
 
 	/// returns the current viewport size
-	ivec2 get_viewport_size() const {
-		return last_viewport_size;
-	}
+	ivec2 get_viewport_size() const { return last_viewport_size; }
 
 	/// returns the mouse position local to the container of this overlay
 	inline ivec2 get_local_mouse_pos(ivec2 mouse_pos) const {
-
 		return cgv::g2d::get_transformed_mouse_pos(mouse_pos, last_viewport_size) - container.position;
 	}
 
@@ -155,6 +159,12 @@ public:
 	/// convenience method to toggle the visibility of the overlay
 	void toggle_visibility() {
 		set_visibility(!show);
+	}
+
+	/// Set the draw_in_finish_frame flag.
+	/// If true, the the contents of this overlay are drawn in finish frame. Per default, the contents are drawn in draw.
+	void set_draw_in_finish_frame(bool flag) {
+		draw_in_finish_frame = flag;
 	}
 
 	/** Checks whether the viewport size has changed since the last call to

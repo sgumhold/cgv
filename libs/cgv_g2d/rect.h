@@ -30,8 +30,10 @@ struct rect {
 
 	// minimum x position (left)
 	inline coord_type x() const { return position.x(); }
+	inline coord_type& x() { return position.x(); }
 	// minimum y position (bottom)
 	inline coord_type y() const { return position.y(); }
+	inline coord_type& y() { return position.y(); }
 
 	// maximum x position (right)
 	inline coord_type x1() const { return position.x() + size.x(); }
@@ -40,8 +42,10 @@ struct rect {
 
 	// width
 	inline coord_type w() const { return size.x(); }
+	inline coord_type& w() { return size.x(); }
 	// height
 	inline coord_type h() const { return size.y(); }
+	inline coord_type& h() { return size.y(); }
 
 	// center position
 	template<typename coord_type_ = coord_type, typename std::enable_if_t<std::is_integral<coord_type_>::value, bool> = true>
@@ -62,6 +66,17 @@ struct rect {
 	// translate (move) whole rectangle by offset
 	inline void translate(point_type o) {
 		position += o;
+	}
+
+	// scale from center by given size difference (delta);
+	inline void scale(coord_type dx, coord_type dy) {
+		scale(point_type(dx, dy));
+	}
+
+	// scale from center by given size difference (delta);
+	inline void scale(point_type d) {
+		position -= d;
+		size += coord_type(2) * d;
 	}
 
 	// resize by given size difference (delta); pivot unchanged

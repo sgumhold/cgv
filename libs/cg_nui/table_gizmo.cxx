@@ -457,8 +457,8 @@ bool table_gizmo::compute_intersection(const vec3& ray_start, const vec3& ray_di
 	vec3 n;
 	for (size_t i = 0; i < arrow_positions.size(); ++i) {
 		vec3 n0;
-		float t0 = cgv::math::ray_cylinder_intersection(ray_start, ray_direction, arrow_positions[i], arrow_directions[i], radius, n0);
-		if (t0 < t) {
+		float t0;
+		if(cgv::math::ray_cylinder_intersection({ ray_start, ray_direction }, arrow_positions[i], arrow_directions[i], radius, t0, &n0) && t0 < t) {
 			t = t0;
 			n = n0;
 			idx = i + 1;
@@ -466,8 +466,8 @@ bool table_gizmo::compute_intersection(const vec3& ray_start, const vec3& ray_di
 	}
 	// then check torus
 	vec3 n0;
-	float t0 = cgv::math::ray_torus_intersection(ray_start, ray_direction, origin, vec3(0, 1, 0), vec2(r, radius), n0);
-	if (t0 < t) {
+	float t0;
+	if (cgv::math::ray_torus_intersection({ ray_start, ray_direction }, origin, vec3(0, 1, 0), r, radius, t0, &n0) && t0 < t) {
 		t = t0;
 		n = n0;
 		idx = 0;

@@ -36,6 +36,8 @@ public:
 
 	bool init(cgv::render::context& ctx);
 
+	bool has_shader(const std::string& name) const;
+
 	cgv::render::shader_program& enable_shader(cgv::render::context& ctx, const std::string& name);
 
 	cgv::render::shader_program& enable_shader(cgv::render::context& ctx, cgv::render::shader_program& prog);

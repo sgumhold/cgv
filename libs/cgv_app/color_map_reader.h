@@ -6,7 +6,9 @@
 #include <cgv/render/color_map.h>
 #include <cgv/render/render_types.h>
 #include <cgv/utils/file.h>
-#include <cgv/utils/xml.h>
+
+#include <tinyxml2/tinyxml2.h>
+#include <cgv_xml/query.h>
 
 namespace cgv {
 namespace app {
@@ -28,8 +30,6 @@ public:
 		bool color_value_type_float = true;
 		bool opacity_value_type_float = true;
 		bool apply_gamma = false;
-
-		identifier_config() {}
 	};
 
 	// data structure of loaded color maps result
@@ -44,141 +44,111 @@ private:
 		float b = -1.0f;
 	};
 
-	static float parse_value(const std::string& value, bool as_float) {
-		if(as_float)
-			return std::strtof(value.c_str(), nullptr);
-		else
-			return static_cast<float>(std::strtol(value.c_str(), nullptr, 10)) / 255.0f;
+	static void extract_value(const tinyxml2::XMLElement& elem, const std::string& name, bool as_float, float& value) {
+
+		if(as_float) {
+			elem.QueryFloatAttribute(name.c_str(), &value);
+		} else {
+			int temp;
+			if(elem.QueryIntAttribute(name.c_str(), &temp) == tinyxml2::XML_SUCCESS)
+				value = static_cast<float>(temp) / 255.0f;
+		}
 	}
 
-	static point_info read_point(const cgv::utils::xml_tag& tag, const identifier_config& config = identifier_config()) {
-		point_info pi;
-		const auto end = tag.attributes.end();
+	static point_info extract_control_point(const tinyxml2::XMLElement& elem, const identifier_config& config) {
 
-		auto it = tag.attributes.find(config.position_value_id);
-		if(it != end) pi.x = parse_value((*it).second, true);
-		it = tag.attributes.find(config.opactiy_value_id);
-		if(it != end) pi.o = parse_value((*it).second, config.opacity_value_type_float);
-		it = tag.attributes.find(config.red_value_id);
-		if(it != end) pi.r = parse_value((*it).second, config.color_value_type_float);
-		it = tag.attributes.find(config.green_value_id);
-		if(it != end) pi.g = parse_value((*it).second, config.color_value_type_float);
-		it = tag.attributes.find(config.blue_value_id);
-		if(it != end) pi.b = parse_value((*it).second, config.color_value_type_float);
-		
+		point_info pi;
+		extract_value(elem, config.position_value_id, true, pi.x);
+		extract_value(elem, config.opactiy_value_id, config.opacity_value_type_float, pi.o);
+		extract_value(elem, config.red_value_id, config.color_value_type_float, pi.r);
+		extract_value(elem, config.green_value_id, config.color_value_type_float, pi.g);
+		extract_value(elem, config.blue_value_id, config.color_value_type_float, pi.b);
 		return pi;
 	}
 
-	static bool parse_xml(const std::vector<cgv::utils::xml_tag>& tags, result& entries, const identifier_config& config = identifier_config()) {
-		std::string name = "";
+	static void extract_color_map(const tinyxml2::XMLElement& elem, result& entries, const identifier_config& config) {
+
+		std::string name = elem.Attribute("name");
 		cgv::render::color_map cm;
-		bool read_cm = false;
 
-		for(const auto& tag : tags) {
-			if(tag.name == "")
-				continue;
+		auto child = elem.FirstChildElement();
+		while(child) {
+			if(strcmp(child->Name(), config.point_tag_id.c_str()) == 0 ||
+				strcmp(child->Name(), config.color_point_tag_id.c_str()) == 0 ||
+				strcmp(child->Name(), config.opacity_point_tag_id.c_str()) == 0) {
+				point_info pi = extract_control_point(*child, config);
 
-			const auto end = tag.attributes.end();
-
-			if(tag.name == "ColorMaps") {
-				// is probably a color map file
-			} else if(tag.name == config.color_map_tag_id) {
-				if(tag.type == cgv::utils::XTT_OPEN) {
-					if(read_cm) {
-						if(!cm.empty())
-							entries.push_back({ name, cm });
-						name = "";
-						cm = cgv::render::color_map();
-					}
-					// a new color map
-					auto it = tag.attributes.find(config.name_value_id);
-					if(it != end) {
-						name = (*it).second;
-					}
-					read_cm = true;
-				} else if(tag.type == cgv::utils::XTT_CLOSE) {
-					// a new color map
-					if(read_cm) {
-						if(!cm.empty())
-							entries.push_back({ name, cm });
-						name = "";
-						cm = cgv::render::color_map();
-						read_cm = false;
-					}
-				}
-			} else if(tag.name == config.point_tag_id || tag.name == config.color_point_tag_id || tag.name == config.opacity_point_tag_id) {
-				if(read_cm) {
-					point_info pi = read_point(tag, config);
-
-					if(!(pi.x < 0.0f)) {
-						if(!(pi.r < 0.0f || pi.g < 0.0f || pi.b < 0.0f)) {
-							rgb col(0.0f);
-							col[0] = cgv::math::clamp(pi.r, 0.0f, 1.0f);
-							col[1] = cgv::math::clamp(pi.g, 0.0f, 1.0f);
-							col[2] = cgv::math::clamp(pi.b, 0.0f, 1.0f);
-							// apply gamma correction if requested
-							if(config.apply_gamma) {
-								col[0] = pow(col[0], 2.2f);
-								col[1] = pow(col[1], 2.2f);
-								col[2] = pow(col[2], 2.2f);
-							}
-							cm.add_color_point(pi.x, col);
+				if(!(pi.x < 0.0f)) {
+					if(!(pi.r < 0.0f || pi.g < 0.0f || pi.b < 0.0f)) {
+						rgb col(0.0f);
+						col[0] = std::min(pi.r, 1.0f);
+						col[1] = std::min(pi.g, 1.0f);
+						col[2] = std::min(pi.b, 1.0f);
+						// apply gamma correction if requested
+						if(config.apply_gamma) {
+							col[0] = pow(col[0], 2.2f);
+							col[1] = pow(col[1], 2.2f);
+							col[2] = pow(col[2], 2.2f);
 						}
+						cm.add_color_point(pi.x, col);
+					}
 
-						if(!(pi.o < 0.0f)) {
-							cm.add_opacity_point(pi.x, cgv::math::clamp(pi.o, 0.0f, 1.0f));
-						}
+					if(!(pi.o < 0.0f)) {
+						cm.add_opacity_point(pi.x, cgv::math::clamp(pi.o, 0.0f, 1.0f));
 					}
 				}
 			}
+
+			child = child->NextSiblingElement();
 		}
 
-		return true;
+		if(!cm.empty())
+			entries.push_back({ name, cm });
+	}
+
+	static void extract_color_maps(const tinyxml2::XMLDocument& doc, result& entries, const identifier_config& config) {
+
+		cgv::xml::FindElementByNameVisitor findElementByName("ColorMaps");
+		doc.Accept(&findElementByName);
+
+		if(auto color_maps_elem = findElementByName.Result()) {
+			auto color_map_elem = color_maps_elem->FirstChildElement();
+
+			while(color_map_elem) {
+				if(strcmp(color_map_elem->Name(), config.color_map_tag_id.c_str()) == 0)
+					extract_color_map(*color_map_elem, entries, config);
+				color_map_elem = color_map_elem->NextSiblingElement();
+			}
+		}
 	}
 
 public:
-	static bool read_from_xml(const std::vector<cgv::utils::xml_tag>& tags, result& entries, const identifier_config& config = identifier_config()) {
-		// clear previous data
+	static void read_from_xml(const tinyxml2::XMLDocument& doc, result& entries, const identifier_config& config = identifier_config()) {
+		
 		entries.clear();
-		return parse_xml(tags, entries, config);
+		extract_color_maps(doc, entries, config);
 	}
 
-	static bool read_from_xml(const std::vector<std::string>& lines, result& entries, const identifier_config& config = identifier_config()) {
-		std::vector<cgv::utils::xml_tag> tags;
-		for(const auto& line : lines)
-			tags.push_back(cgv::utils::xml_read_tag(line));
-			
-		return read_from_xml(tags, entries, config);
-	}
-
-	static bool read_from_xml(const std::string& file_name, result& entries, const identifier_config& config = identifier_config()) {
-		std::string content;
-		if(cgv::utils::to_upper(cgv::utils::file::get_extension(file_name)) != "XML" || !cgv::base::read_data_file(file_name, content, true))
-			return false;
-
-		bool read = true;
-		size_t nl_pos = content.find_first_of("\n");
-		size_t line_offset = 0;
-
-		std::vector<cgv::utils::xml_tag> tags;
-
-		while(read) {
-			std::string line = "";
-
-			if(nl_pos == std::string::npos) {
-				read = false;
-				line = content.substr(line_offset, std::string::npos);
-			} else {
-				size_t next_line_offset = nl_pos;
-				line = content.substr(line_offset, next_line_offset - line_offset);
-				line_offset = next_line_offset + 1;
-				nl_pos = content.find_first_of('\n', line_offset);
-			}
-
-			tags.push_back(cgv::utils::xml_read_tag(line));
+	static bool read_from_xml_string(const std::string& xml, result& entries, const identifier_config& config = identifier_config()) {
+		
+		tinyxml2::XMLDocument doc;
+		if(doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS) {
+			read_from_xml(doc, entries, config);
+			return true;
 		}
 
-		return read_from_xml(tags, entries, config);
+		return false;
+	}
+
+	static bool read_from_xml_file(const std::string& file_name, result& entries, const identifier_config& config = identifier_config()) {
+		
+		tinyxml2::XMLDocument doc;
+		if(doc.LoadFile(file_name.c_str()) == tinyxml2::XML_SUCCESS) {
+			read_from_xml(doc, entries, config);
+			return true;
+		}
+
+		return false;
 	}
 };
 

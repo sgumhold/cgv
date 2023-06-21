@@ -73,31 +73,28 @@ struct file_name_gui_creator : public cgv::gui::gui_creator
 		std::string align_gui = "\n";
 		cgv::base::has_property(options, "align_gui", align_gui, true);
 
+		std::string control_options = options;
+		int control_width = open && save ? 148 : (open ||save ? 174 : -1);
+		if(control_width > 0)
+			control_options += ";w=" + std::to_string(control_width);
+
 		if (control) {
 			if (b)
-				p->add_member_control(b, label, v, "", options, " ");
+				p->add_member_control(b, label, v, "", control_options, "%x+=6");
 			else
-				p->add_control(label, v, "", options, " ");
+				p->add_control(label, v, "", control_options, "%x+=6");
 		}
 
-		std::string image_size = "32";
-		std::string button_size = "32";
-		bool small_icon = false;
-		if(cgv::base::has_property(options, "small_icon", small_icon, true) && small_icon) {
-			image_size = "18";
-			button_size = "20";
-		}
+		// legacy option of using an image in the button: "image='res://open32.png'"
 
 		if (open)
 			connect_copy(
-				//p->add_button(label, "image='res://open" + image_size + ".png';w=" + button_size + ";h=" + button_size + ";label=''", save ? std::string(" ") : align_gui)->click,
-				p->add_button("@fileopen", "w=" + button_size + ";h=" + button_size, save ? std::string(" ") : align_gui)->click,
+				p->add_button("@fileopen", "w=20;h=20", save ? "%x+=6" : align_gui)->click,
 				rebind(this, &file_name_gui_creator::button_cb, &v, b, options, false)
 			);
 		if (save)
 			connect_copy(
-				//p->add_button(label, "image='res://save" + image_size + ".png';w=" + button_size + ";h=" + button_size + ";label=''", align_gui)->click,
-				p->add_button("@filesave", "w=" + button_size + ";h=" + button_size, align_gui)->click,
+				p->add_button("@filesave", "w=20;h=20", align_gui)->click,
 				rebind(this, &file_name_gui_creator::button_cb, &v, b, options, true)
 			);
 		if (!open && !save)
@@ -147,15 +144,17 @@ struct directory_gui_creator : public cgv::gui::gui_creator
 		std::string& v = *((std::string*)value_ptr);
 		bool save = false;
 		cgv::base::has_property(options, "save", save, true);
-		std::string opts = "image='res://open32.png';w=32;h=32;label=''";
-		if (save)
-			opts = "image='res://save32.png';w=32;h=32;label=''";
-		if (b)
-			p->add_member_control(b, label, v, "", options, " ");
+
+		std::string control_options = options + ";w=174";
+		
+		if(b)
+			p->add_member_control(b, label, v, "", control_options, "%x+=6");
 		else
-			p->add_control(label, v, "", options, " ");
-		connect_copy(p->add_button(label, opts)->click,
+			p->add_control(label, v, "", control_options, "%x+=6");
+
+		connect_copy(p->add_button(save ? "@filesave" : "@fileopen", "w=20;h=20")->click,
 			rebind(this, &directory_gui_creator::open, &v, b, options));
+
 		return true;
 	}
 };
