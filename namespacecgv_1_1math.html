@@ -142,6 +142,10 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1random.html">random</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1ray.html">ray</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html">ray&lt; T, 3 &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1rigid__transform.html">rigid_transform</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1sparse__les__factory.html">sparse_les_factory</a></td></tr>
@@ -837,6 +841,42 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ae603218d7efcd704cd6e26a753aa1f98"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; T, 3, 3 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#ae603218d7efcd704cd6e26a753aa1f98">build_orthogonal_frame</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; T, 3 &gt; &amp;v0, const <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; T, 3 &gt; &amp;v1)</td></tr>
 <tr class="memdesc:ae603218d7efcd704cd6e26a753aa1f98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given two vectors v0 and v1 extend to orthonormal frame and return 3x3 matrix containing frame vectors in the columns.  <a href="namespacecgv_1_1math.html#ae603218d7efcd704cd6e26a753aa1f98">More...</a><br /></td></tr>
 <tr class="separator:ae603218d7efcd704cd6e26a753aa1f98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0233918261c3cf7f8a433e3e6511f10"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ad0233918261c3cf7f8a433e3e6511f10"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#ad0233918261c3cf7f8a433e3e6511f10">ray_box_intersection</a> (const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;<a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; extent, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;out_ts, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; *out_normal=nullptr)</td></tr>
+<tr class="memdesc:ad0233918261c3cf7f8a433e3e6511f10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the intersection between a ray and axis aligned box located at the origin and returns the number of intersections. Differentiates between 0 or 2 intersections.  <a href="namespacecgv_1_1math.html#ad0233918261c3cf7f8a433e3e6511f10">More...</a><br /></td></tr>
+<tr class="separator:ad0233918261c3cf7f8a433e3e6511f10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab082b1f85d6c8a0223d62a0d5491da15"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ab082b1f85d6c8a0223d62a0d5491da15"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#ab082b1f85d6c8a0223d62a0d5491da15">ray_box_intersection</a> (const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;<a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;<a class="el" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;<a class="el" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;out_ts)</td></tr>
+<tr class="memdesc:ab082b1f85d6c8a0223d62a0d5491da15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the intersection between a ray and axis aligned box and returns the number of intersections. Differentiates between 0 or 2 intersections.  <a href="namespacecgv_1_1math.html#ab082b1f85d6c8a0223d62a0d5491da15">More...</a><br /></td></tr>
+<tr class="separator:ab082b1f85d6c8a0223d62a0d5491da15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb95bc20c76e28a4f330fbc4459cb5b1"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:acb95bc20c76e28a4f330fbc4459cb5b1"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#acb95bc20c76e28a4f330fbc4459cb5b1">ray_cylinder_intersection</a> (const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;<a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;position, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;axis, T radius, T &amp;out_t, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; *out_normal=nullptr)</td></tr>
+<tr class="memdesc:acb95bc20c76e28a4f330fbc4459cb5b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the intersection between a ray and oriented cylinder defined by base center and axis and returns the number of intersections. Differentiates between 0 or 1 intersections.  <a href="namespacecgv_1_1math.html#acb95bc20c76e28a4f330fbc4459cb5b1">More...</a><br /></td></tr>
+<tr class="separator:acb95bc20c76e28a4f330fbc4459cb5b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b29101809f91572afdfb3349c7fa943"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a0b29101809f91572afdfb3349c7fa943"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a0b29101809f91572afdfb3349c7fa943">ray_cylinder_intersection2</a> (const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;<a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;start_position, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;end_position, T radius, T &amp;out_t, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; *out_normal=nullptr)</td></tr>
+<tr class="memdesc:a0b29101809f91572afdfb3349c7fa943"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the intersection between a ray and oriented cylinder defined by start and end position and returns the number of intersections. Differentiates between 0 or 1 intersections.  <a href="namespacecgv_1_1math.html#a0b29101809f91572afdfb3349c7fa943">More...</a><br /></td></tr>
+<tr class="separator:a0b29101809f91572afdfb3349c7fa943"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac940672f781e5135fdde91c8e1ac3043"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ac940672f781e5135fdde91c8e1ac3043"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#ac940672f781e5135fdde91c8e1ac3043">ray_plane_intersection</a> (const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;<a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;origin, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;normal, T &amp;out_t)</td></tr>
+<tr class="memdesc:ac940672f781e5135fdde91c8e1ac3043"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the intersection between a ray and infinite plane and returns the number of intersections. Differentiates between 0 or 1 intersections.  <a href="namespacecgv_1_1math.html#ac940672f781e5135fdde91c8e1ac3043">More...</a><br /></td></tr>
+<tr class="separator:ac940672f781e5135fdde91c8e1ac3043"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b9d4d1815a621c4a3b7d3632671d524"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a2b9d4d1815a621c4a3b7d3632671d524"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a2b9d4d1815a621c4a3b7d3632671d524">ray_sphere_intersection</a> (const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;<a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;center, T radius, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;out_ts)</td></tr>
+<tr class="memdesc:a2b9d4d1815a621c4a3b7d3632671d524"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the intersection between a ray and sphere and returns the number of intersections. Differentiates between 0, 1 or 2 intersections.  <a href="namespacecgv_1_1math.html#a2b9d4d1815a621c4a3b7d3632671d524">More...</a><br /></td></tr>
+<tr class="separator:a2b9d4d1815a621c4a3b7d3632671d524"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a094390494484e1f786fe835c1820d630"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a094390494484e1f786fe835c1820d630"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a094390494484e1f786fe835c1820d630">first_ray_sphere_intersection</a> (const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;<a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;center, T radius, T &amp;out_t, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; *out_normal=nullptr)</td></tr>
+<tr class="memdesc:a094390494484e1f786fe835c1820d630"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the first intersection between a ray and sphere and returns the number of intersections. Differentiates between 0 or 1 intersections.  <a href="namespacecgv_1_1math.html#a094390494484e1f786fe835c1820d630">More...</a><br /></td></tr>
+<tr class="separator:a094390494484e1f786fe835c1820d630"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2d772c970e1107e36343bb3caf57165"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ab2d772c970e1107e36343bb3caf57165"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#ab2d772c970e1107e36343bb3caf57165">ray_torus_intersection</a> (const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;<a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>, T large_radius, T small_radius, T &amp;out_t, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; *out_normal=nullptr)</td></tr>
+<tr class="memdesc:ab2d772c970e1107e36343bb3caf57165"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the intersection between a ray and axis aligned torus with medial axis equal to the y-axis and returns the number of intersections. Differentiates between 0 or 1 intersections.  <a href="namespacecgv_1_1math.html#ab2d772c970e1107e36343bb3caf57165">More...</a><br /></td></tr>
+<tr class="separator:ab2d772c970e1107e36343bb3caf57165"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ddd4907f3139db3c3a62b74202d3241"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a7ddd4907f3139db3c3a62b74202d3241"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a7ddd4907f3139db3c3a62b74202d3241">ray_torus_intersection</a> (const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;<a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;center, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;normal, T large_radius, T small_radius, T &amp;out_t, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; *out_normal=nullptr)</td></tr>
+<tr class="memdesc:a7ddd4907f3139db3c3a62b74202d3241"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the intersection between a ray and oriented torus defined by origin and medial axis and returns the number of intersections. Differentiates between 0 or 1 intersections.  <a href="namespacecgv_1_1math.html#a7ddd4907f3139db3c3a62b74202d3241">More...</a><br /></td></tr>
+<tr class="separator:a7ddd4907f3139db3c3a62b74202d3241"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad173e82d952d395213d5ab62378e79d8"><td class="memTemplParams" colspan="2"><a id="ad173e82d952d395213d5ab62378e79d8"></a>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ad173e82d952d395213d5ab62378e79d8"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1math_1_1diag__mat.html">diag_mat</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#ad173e82d952d395213d5ab62378e79d8">inv</a> (const <a class="el" href="structcgv_1_1math_1_1diag__mat.html">diag_mat</a>&lt; T &gt; &amp;m)</td></tr>
@@ -3426,6 +3466,67 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="a094390494484e1f786fe835c1820d630"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a094390494484e1f786fe835c1820d630">&#9670;&nbsp;</a></span>first_ray_sphere_intersection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int cgv::math::first_ray_sphere_intersection </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>center</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>radius</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>out_t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; *&#160;</td>
+          <td class="paramname"><em>out_normal</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the first intersection between a ray and sphere and returns the number of intersections. Differentiates between 0 or 1 intersections. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ray</td><td>the incomming ray. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">center</td><td>the sphere center position. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">radius</td><td>the sphere radius. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_ts</td><td>the distances to the intersection points. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_normal</td><td>optional surface normal at the intersection point. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of intersections. </dd></dl>
+
+</div>
+</div>
 <a id="afc42005ee85cb4bf30107636abfe7d6f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afc42005ee85cb4bf30107636abfe7d6f">&#9670;&nbsp;</a></span>gaussj() <span class="overload">[1/2]</span></h2>
 
@@ -4069,6 +4170,512 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>ransac plane fit p_out... outlier prob d_max... threshold distance p_surety... surety to compute number needed samples if m_sac flag is true m-estimator cost function is used if loransac flag is true <br  />
  </p>
+
+</div>
+</div>
+<a id="ab082b1f85d6c8a0223d62a0d5491da15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab082b1f85d6c8a0223d62a0d5491da15">&#9670;&nbsp;</a></span>ray_box_intersection() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int cgv::math::ray_box_intersection </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>out_ts</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the intersection between a ray and axis aligned box and returns the number of intersections. Differentiates between 0 or 2 intersections. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>the numeric type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ray</td><td>the incomming ray. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">min</td><td>the minimum box point. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">max</td><td>the maximum box point. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_ts</td><td>the distances to the intersection points. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of intersections. </dd></dl>
+
+</div>
+</div>
+<a id="ad0233918261c3cf7f8a433e3e6511f10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0233918261c3cf7f8a433e3e6511f10">&#9670;&nbsp;</a></span>ray_box_intersection() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int cgv::math::ray_box_intersection </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt;&#160;</td>
+          <td class="paramname"><em>extent</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>out_ts</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; *&#160;</td>
+          <td class="paramname"><em>out_normal</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the intersection between a ray and axis aligned box located at the origin and returns the number of intersections. Differentiates between 0 or 2 intersections. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>the numeric type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ray</td><td>the incomming ray. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">extent</td><td>the total box extent/size. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_ts</td><td>the distances to the intersection points. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_normal</td><td>optional surface normal at the first intersection point. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of intersections. </dd></dl>
+
+</div>
+</div>
+<a id="acb95bc20c76e28a4f330fbc4459cb5b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb95bc20c76e28a4f330fbc4459cb5b1">&#9670;&nbsp;</a></span>ray_cylinder_intersection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int cgv::math::ray_cylinder_intersection </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>axis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>radius</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>out_t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; *&#160;</td>
+          <td class="paramname"><em>out_normal</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the intersection between a ray and oriented cylinder defined by base center and axis and returns the number of intersections. Differentiates between 0 or 1 intersections. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>the numeric type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ray</td><td>the incomming ray. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">position</td><td>the cylinder center position. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">axis</td><td>the cylinder main axis and length. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">radius</td><td>the cylinder base radius. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_t</td><td>the distance to the intersection point. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_normal</td><td>optional surface normal at the intersection point. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of intersections. </dd></dl>
+
+</div>
+</div>
+<a id="a0b29101809f91572afdfb3349c7fa943"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b29101809f91572afdfb3349c7fa943">&#9670;&nbsp;</a></span>ray_cylinder_intersection2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int cgv::math::ray_cylinder_intersection2 </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>start_position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>end_position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>radius</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>out_t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; *&#160;</td>
+          <td class="paramname"><em>out_normal</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the intersection between a ray and oriented cylinder defined by start and end position and returns the number of intersections. Differentiates between 0 or 1 intersections. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ray</td><td>the incomming ray. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">start_position</td><td>the cylinder base center position. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">end_position</td><td>the cylinder top center position. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">radius</td><td>the cylinder radius. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_t</td><td>the distance to the intersection point. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_normal</td><td>optional surface normal at the intersection point. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of intersections. </dd></dl>
+
+</div>
+</div>
+<a id="ac940672f781e5135fdde91c8e1ac3043"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac940672f781e5135fdde91c8e1ac3043">&#9670;&nbsp;</a></span>ray_plane_intersection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int cgv::math::ray_plane_intersection </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>origin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>normal</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>out_t</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the intersection between a ray and infinite plane and returns the number of intersections. Differentiates between 0 or 1 intersections. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ray</td><td>the incomming ray. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">origin</td><td>the plane origin position. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">normal</td><td>the plane surface normal. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_t</td><td>the distance to the intersection point. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of intersections. </dd></dl>
+
+</div>
+</div>
+<a id="a2b9d4d1815a621c4a3b7d3632671d524"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b9d4d1815a621c4a3b7d3632671d524">&#9670;&nbsp;</a></span>ray_sphere_intersection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int cgv::math::ray_sphere_intersection </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>center</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>radius</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>out_ts</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the intersection between a ray and sphere and returns the number of intersections. Differentiates between 0, 1 or 2 intersections. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ray</td><td>the incomming ray. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">center</td><td>the sphere center position. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">radius</td><td>the sphere radius. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_ts</td><td>the distances to the intersection points. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of intersections. </dd></dl>
+
+</div>
+</div>
+<a id="a7ddd4907f3139db3c3a62b74202d3241"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ddd4907f3139db3c3a62b74202d3241">&#9670;&nbsp;</a></span>ray_torus_intersection() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int cgv::math::ray_torus_intersection </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>center</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>normal</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>large_radius</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>small_radius</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>out_t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; *&#160;</td>
+          <td class="paramname"><em>out_normal</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the intersection between a ray and oriented torus defined by origin and medial axis and returns the number of intersections. Differentiates between 0 or 1 intersections. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ray</td><td>the incomming ray. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">center</td><td>the torus center position. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">normal</td><td>the torus medial axis direction. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">large_radius</td><td>the torus ring radius (R). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">small_radius</td><td>the radial torus tube radius (r). </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_t</td><td>the distance to the intersection point. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_normal</td><td>optional surface normal at the intersection point. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of intersections. </dd></dl>
+
+</div>
+</div>
+<a id="ab2d772c970e1107e36343bb3caf57165"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2d772c970e1107e36343bb3caf57165">&#9670;&nbsp;</a></span>ray_torus_intersection() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int cgv::math::ray_torus_intersection </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1ray.html">ray</a>&lt; T, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>large_radius</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>small_radius</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>out_t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; *&#160;</td>
+          <td class="paramname"><em>out_normal</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the intersection between a ray and axis aligned torus with medial axis equal to the y-axis and returns the number of intersections. Differentiates between 0 or 1 intersections. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ray</td><td>the incomming ray. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">large_radius</td><td>the torus ring radius (R). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">small_radius</td><td>the radial torus tube radius (r). </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_t</td><td>the distance to the intersection point. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">out_normal</td><td>optional surface normal at the intersection point. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of intersections. </dd></dl>
 
 </div>
 </div>

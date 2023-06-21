@@ -41,6 +41,7 @@ var classcgv_1_1gui_1_1provider =
     [ "remove_all_elements", "classcgv_1_1gui_1_1provider.html#a0e328fb6f5cf42f38194d0be355f4db1", null ],
     [ "remove_element", "classcgv_1_1gui_1_1provider.html#aeebc6429f63628979eaf49422f43af28", null ],
     [ "selection_change_cb", "classcgv_1_1gui_1_1provider.html#af30ecc2b9412b158cbe774babaacd402", null ],
+    [ "set_control_property", "classcgv_1_1gui_1_1provider.html#a9bfa89eb56c3302073b170ff24325773", null ],
     [ "set_parent", "classcgv_1_1gui_1_1provider.html#aa6f6cb9fa8994a14fdb5bf70cba90093", null ],
     [ "set_tree_node_visibility", "classcgv_1_1gui_1_1provider.html#a3bb70e048faeac605a62847f681c201b", null ],
     [ "update_all_members", "classcgv_1_1gui_1_1provider.html#a54f205b0f9fb19663ded86d329a88678", null ],

@@ -224,6 +224,8 @@ var hierarchy =
       [ "cgv::math::distorted_pinhole< T >", "classcgv_1_1math_1_1distorted__pinhole.html", null ]
     ] ],
     [ "cgv::math::random", "structcgv_1_1math_1_1random.html", null ],
+    [ "cgv::math::ray< T, N >", "classcgv_1_1math_1_1ray.html", null ],
+    [ "cgv::math::ray< T, 3 >", "classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html", null ],
     [ "cgv::math::register_sparse_les_factory< T >", "structcgv_1_1math_1_1register__sparse__les__factory.html", null ],
     [ "cgv::math::rigid_transform< T >", "classcgv_1_1math_1_1rigid__transform.html", null ],
     [ "cgv::math::thin_hyper_plate_spline< T >", "structcgv_1_1math_1_1thin__hyper__plate__spline.html", null ],
@@ -515,6 +517,7 @@ var hierarchy =
     [ "cgv::type::traits::zero< T >", "structcgv_1_1type_1_1traits_1_1zero.html", null ],
     [ "cgv::type::variant< T >", "structcgv_1_1type_1_1variant.html", null ],
     [ "cgv::utils::big_binary_file", "classcgv_1_1utils_1_1big__binary__file.html", null ],
+    [ "cgv::utils::interval_map< Key, T >", "classcgv_1_1utils_1_1interval__map.html", null ],
     [ "cgv::utils::Profiler< T >", "classcgv_1_1utils_1_1Profiler.html", null ],
     [ "cgv::utils::progression", "structcgv_1_1utils_1_1progression.html", null ],
     [ "cgv::utils::statistics", "classcgv_1_1utils_1_1statistics.html", null ],

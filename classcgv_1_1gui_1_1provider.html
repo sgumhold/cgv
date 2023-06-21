@@ -128,6 +128,10 @@ base_ptr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <a class="el" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1provider.html#a37a0e7b3023b00762456b7b8c5480328">find_view_void</a> (void *value_ptr, int *idx_ptr)</td></tr>
 <tr class="memdesc:a37a0e7b3023b00762456b7b8c5480328"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to view of untyped member pointer <br /></td></tr>
 <tr class="separator:a37a0e7b3023b00762456b7b8c5480328"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9bfa89eb56c3302073b170ff24325773"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a9bfa89eb56c3302073b170ff24325773"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1provider.html#a9bfa89eb56c3302073b170ff24325773">set_control_property</a> (T &amp;value, const std::string &amp;property_name, const std::string &amp;property_value)</td></tr>
+<tr class="memdesc:a9bfa89eb56c3302073b170ff24325773"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the property value of all controls of a given class member.  <a href="classcgv_1_1gui_1_1provider.html#a9bfa89eb56c3302073b170ff24325773">More...</a><br /></td></tr>
+<tr class="separator:a9bfa89eb56c3302073b170ff24325773"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader">interface used by the parent gui</h2></td></tr>
 <tr class="memitem:afffb2e23a58a488448a175e6275c9e7b"><td class="memItemLeft" align="right" valign="top"><a id="afffb2e23a58a488448a175e6275c9e7b"></a>
@@ -914,6 +918,53 @@ template&lt;typename T &gt; </div>
 
 <p>return a reference to the boolean flag, that tells whether the tree node for the passed value is visible </p>
 <p>T can be with_index(v,i) as in the begin_tree_node function. You typically need this function in an on_set callback to check whether the user has toggled a tree node </p>
+
+</div>
+</div>
+<a id="a9bfa89eb56c3302073b170ff24325773"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9bfa89eb56c3302073b170ff24325773">&#9670;&nbsp;</a></span>set_control_property()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::gui::provider::set_control_property </td>
+          <td>(</td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>property_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>property_value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the property value of all controls of a given class member. </p>
+<p>Use this method to loop over all controls of the given value and set their named property to the specified property value. </p>
 
 </div>
 </div>
