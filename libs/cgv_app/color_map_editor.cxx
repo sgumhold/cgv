@@ -640,8 +640,8 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	line_style.use_texture_alpha = false;
 	line_style.width = 3.0f;
 
-	line_style.use_texture_alpha = true;
 	polygon_style = static_cast<cgv::g2d::shape2d_style>(line_style);
+	polygon_style.use_texture_alpha = true;
 
 	// label style
 	cursor_label_style = cgv::g2d::text2d_style::preset_clear(rgb(0.0f));
@@ -1048,27 +1048,34 @@ bool color_map_editor::update_geometry() {
 	if(opacity_points.size() > 0) {
 		const auto& pl = opacity_points[0];
 
-		lines.add(vec2(float(layout.opacity_editor_rect.x()), pl.center().y()), vec2(0.0f, 0.5f));
+		vec2 tex_coord(0.0f, 0.5f);
 
-		triangles.add(vec2(float(layout.opacity_editor_rect.x()), pl.center().y()), vec2(0.0f, 0.5f));
-		triangles.add(layout.opacity_editor_rect.position, vec2(0.0f, 0.5f));
+		lines.add(vec2(float(layout.opacity_editor_rect.x()), pl.center().y()), tex_coord);
+		
+		triangles.add(vec2(float(layout.opacity_editor_rect.x()), pl.center().y()), tex_coord);
+		triangles.add(layout.opacity_editor_rect.position, tex_coord);
 
 		for(unsigned i = 0; i < opacity_points.size(); ++i) {
 			const auto& p = opacity_points[i];
 			vec2 pos = p.center();
 
-			lines.add(pos, vec2(p.val.x(), 0.5f));
-			triangles.add(pos, vec2(p.val.x(), 0.5f));
-			triangles.add(vec2(pos.x(), (float)layout.opacity_editor_rect.y()), vec2(p.val.x(), 0.5f));
+			tex_coord.x() = p.val.x();
+
+			lines.add(pos, tex_coord);
+
+			triangles.add(pos, tex_coord);
+			triangles.add(vec2(pos.x(), (float)layout.opacity_editor_rect.y()), tex_coord);
 		}
 
 		const auto& pr = opacity_points[opacity_points.size() - 1];
 		vec2 max_pos = layout.opacity_editor_rect.position + vec2(1.0f, 0.0f) * layout.opacity_editor_rect.size;
 
-		lines.add(vec2(max_pos.x(), pr.center().y()), vec2(1.0f, 0.5f));
+		tex_coord.x() = 1.0f;
 
-		triangles.add(vec2(max_pos.x(), pr.center().y()), vec2(1.0f, 0.5f));
-		triangles.add(max_pos, vec2(1.0f, 0.5f));
+		lines.add(vec2(max_pos.x(), pr.center().y()), tex_coord);
+
+		triangles.add(vec2(max_pos.x(), pr.center().y()), tex_coord);
+		triangles.add(max_pos, tex_coord);
 	} else {
 		success = false;
 	}
