@@ -131,6 +131,7 @@ var classcgv_1_1render_1_1context =
     [ "in_render_process", "classcgv_1_1render_1_1context.html#a0f20020f4820dd4659d0106efd488b59", null ],
     [ "is_created", "classcgv_1_1render_1_1context.html#a1133ec85222b9e8ade29c4e4ee39878d", null ],
     [ "is_current", "classcgv_1_1render_1_1context.html#a31c887a332575fe4f4014ff2b9541fdc", null ],
+    [ "is_light_source_enabled", "classcgv_1_1render_1_1context.html#a3e085c473450dea57eff81a0de0a5c38", null ],
     [ "is_shader_file_cache_enabled", "classcgv_1_1render_1_1context.html#ab1cee724fe70db7ddd6c1cf897935bb5", null ],
     [ "is_stereo_buffer_supported", "classcgv_1_1render_1_1context.html#a5b8f1b6a5ddb37bce8a71ade2ff783b2", null ],
     [ "make_current", "classcgv_1_1render_1_1context.html#ad351a2dc1c1e0343b17738053a981816", null ],
