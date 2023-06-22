@@ -1009,6 +1009,8 @@ public:
 	size_t get_nr_enabled_light_sources() const;
 	/// access to handle of i-th light source
 	void* get_enabled_light_source_handle(size_t i) const;
+	/// check whether light source is enabled
+	bool is_light_source_enabled(void* handle);
 	/// enable a given light source and return whether there existed a light source with given handle
 	bool enable_light_source(void* handle);
 	/// disable a given light source and return whether there existed a light source with given handle
