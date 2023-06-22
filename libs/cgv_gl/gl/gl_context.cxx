@@ -332,17 +332,24 @@ void gl_context::init_render_pass()
 		glDisable(GL_FRAMEBUFFER_SRGB);
 
 //	glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-	if (get_render_pass_flags()&RPF_SET_LIGHTS) {
+	static cgv::render::RenderPassFlags last_render_pass_flags = get_default_render_pass_flags();
+	cgv::render::RenderPassFlags current_render_pass_flags = get_render_pass_flags();
+	if (current_render_pass_flags & RPF_SET_LIGHTS) {
 		for (unsigned i = 0; i < nr_default_light_sources; ++i)
 			set_light_source(default_light_source_handles[i], default_light_source[i], false);
 
 		for (unsigned i = 0; i < nr_default_light_sources; ++i)
-			if (get_render_pass_flags() & RPF_SET_LIGHTS_ON)
+			if (current_render_pass_flags & RPF_SET_LIGHTS_ON)
 				enable_light_source(default_light_source_handles[i]);
 			else
 				disable_light_source(default_light_source_handles[i]);
 	}
+	else if ((last_render_pass_flags & RPF_SET_LIGHTS) == 0) {
+		for (unsigned i = 0; i < nr_default_light_sources; ++i)
+			if (is_light_source_enabled(default_light_source_handles[i]))
+				disable_light_source(default_light_source_handles[i]);
+	}
+	last_render_pass_flags = current_render_pass_flags;
 
 	if (get_render_pass_flags()&RPF_SET_MATERIAL) {
 		set_material(default_material);
