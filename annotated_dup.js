@@ -71,6 +71,17 @@ var annotated_dup =
         [ "ref_ptr", "classcgv_1_1data_1_1ref__ptr.html", "classcgv_1_1data_1_1ref__ptr" ],
         [ "ref_ptr_tag", "classcgv_1_1data_1_1ref__ptr__tag.html", "classcgv_1_1data_1_1ref__ptr__tag" ]
       ] ],
+      [ "g2d", "namespacecgv_1_1g2d.html", [
+        [ "generic_render_data_vec2", "classcgv_1_1g2d_1_1generic__render__data__vec2.html", "classcgv_1_1g2d_1_1generic__render__data__vec2" ],
+        [ "generic_render_data_vec2_rgb", "classcgv_1_1g2d_1_1generic__render__data__vec2__rgb.html", "classcgv_1_1g2d_1_1generic__render__data__vec2__rgb" ],
+        [ "generic_render_data_vec2_rgba", "classcgv_1_1g2d_1_1generic__render__data__vec2__rgba.html", "classcgv_1_1g2d_1_1generic__render__data__vec2__rgba" ],
+        [ "generic_render_data_vec2_vec2", "classcgv_1_1g2d_1_1generic__render__data__vec2__vec2.html", "classcgv_1_1g2d_1_1generic__render__data__vec2__vec2" ],
+        [ "generic_render_data_vec2_vec2_rgb", "classcgv_1_1g2d_1_1generic__render__data__vec2__vec2__rgb.html", "classcgv_1_1g2d_1_1generic__render__data__vec2__vec2__rgb" ],
+        [ "generic_render_data_vec2_vec2_rgba", "classcgv_1_1g2d_1_1generic__render__data__vec2__vec2__rgba.html", "classcgv_1_1g2d_1_1generic__render__data__vec2__vec2__rgba" ],
+        [ "generic_render_data_vec3", "classcgv_1_1g2d_1_1generic__render__data__vec3.html", "classcgv_1_1g2d_1_1generic__render__data__vec3" ],
+        [ "generic_render_data_vec3_rgb", "classcgv_1_1g2d_1_1generic__render__data__vec3__rgb.html", "classcgv_1_1g2d_1_1generic__render__data__vec3__rgb" ],
+        [ "generic_render_data_vec3_rgba", "classcgv_1_1g2d_1_1generic__render__data__vec3__rgba.html", "classcgv_1_1g2d_1_1generic__render__data__vec3__rgba" ]
+      ] ],
       [ "gui", "namespacecgv_1_1gui.html", [
         [ "vr_calibration", "classcgv_1_1gui_1_1vr__calibration.html", "classcgv_1_1gui_1_1vr__calibration" ],
         [ "vr_event_extension", "classcgv_1_1gui_1_1vr__event__extension.html", "classcgv_1_1gui_1_1vr__event__extension" ],
