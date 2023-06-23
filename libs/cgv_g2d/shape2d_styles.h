@@ -127,18 +127,21 @@ struct text2d_style : public shape2d_style {
 		prog.set_uniform(ctx, "font_size", font_size);
 	}
 
-	static text2d_style preset_clear(const rgb& fill_color = rgb(0.0f)) {
+	static text2d_style preset_default(const rgb& fill_color = rgb(0.0f)) {
 		text2d_style s;
 		s.fill_color = rgba(fill_color, 1.0f);
 		s.use_blending = true;
+		return s;
+	}
+
+	static text2d_style preset_clear(const rgb& fill_color = rgb(0.0f)) {
+		text2d_style s = preset_default(fill_color);
 		s.enable_subpixel_rendering = true;
 		return s;
 	}
 
 	static text2d_style preset_stylized(const rgb& fill_color = rgb(0.0f)) {
-		text2d_style s;
-		s.fill_color = rgba(fill_color, 1.0f);
-		s.use_blending = true;
+		text2d_style s = preset_default(fill_color);
 		s.feather_origin = 0.5f;
 		return s;
 	}

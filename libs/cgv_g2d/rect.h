@@ -5,10 +5,8 @@
 namespace cgv {
 namespace g2d {
 
-/** A wrapper class for a templated 2d axis aligned bounding box.
-	Abstracts the box min and max points to provide position and size member
-	functionality.
-*/
+/// @brief A rectangle class that stores 2D position and size members and provides convenient accessors and member methods.
+/// @tparam coord_type the coordinate type
 template<typename coord_type>
 struct rect {
 	typedef cgv::math::fvec<coord_type, 2> point_type;
@@ -53,6 +51,7 @@ struct rect {
 		return position + size / coord_type_(2);
 	}
 
+	// center position
 	template<typename coord_type_ = coord_type, typename std::enable_if_t<std::is_floating_point<coord_type_>::value, bool> = true>
 	inline point_type center() const {
 		return position + coord_type_(0.5) * size;
