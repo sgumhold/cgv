@@ -151,11 +151,12 @@ public:
 }
 }
 
-/** This macro provides a shortcut to define a class that inherits from the abstract generic render data base class,
-	that can be used with a generic renderer.
+/** This macro provides a shortcut to define a class that inherits from the abstract generic render data base class
+	and can be used with a generic renderer.
 	Arguments taken are (class name, attribute count, [type, name], [...])
-	Omit square brackets when caling the macro, see example.
+	Omit square brackets when calling the macro, see example.
 	Up to 8 attributes are supported. Attribute count must match the number of [type, name] pairs.
+	Attribute type and name must be comma separated.
 
 	The macro generates:
 		> a class inheriting from generic_render_data
@@ -206,7 +207,6 @@ public:
 		}
 	};
 */
-
 #define DEFINE_GENERIC_RENDER_DATA_CLASS(name, attrib_count, ...)\
 class name : public cgv::render::generic_render_data {\
 protected:\
@@ -234,3 +234,55 @@ public:\
 		GRD_APPLY_FUNC_N(attrib_count, GRD_CALL_PUSH_BACK_FUNC, GRD_SEP_NULL, __VA_ARGS__)\
 	}\
 };
+
+/* Define some presets */
+namespace cgv {
+namespace g2d {
+
+/// Defines a generic render data class using attributes:
+/// vec2 position
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec2, 1, vec2, position);
+
+/// Defines a generic render data class using attributes:
+/// vec2 position
+/// rgb color
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec2_rgb, 2, vec2, position, rgb, color);
+
+/// Defines a generic render data class using attributes:
+/// vec2 position
+/// rgba color
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec2_rgba, 2, vec2, position, rgba, color);
+
+/// Defines a generic render data class using attributes:
+/// vec2 position
+/// vec2 size
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec2_vec2, 2, vec2, position, vec2, size);
+
+/// Defines a generic render data class using attributes:
+/// vec2 position
+/// vec2 size
+/// rgb color
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec2_vec2_rgb, 3, vec2, position, vec2, size, rgb, color);
+
+/// Defines a generic render data class using attributes:
+/// vec2 position
+/// vec2 size
+/// rgba color
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec2_vec2_rgba, 3, vec2, position, vec2, size, rgba, color);
+
+/// Defines a generic render data class using attributes:
+/// vec3 position
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec3, 1, vec3, position);
+
+/// Defines a generic render data class using attributes:
+/// vec3 position
+/// rgb color
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec3_rgb, 2, vec3, position, rgb, color);
+
+/// Defines a generic render data class using attributes:
+/// vec3 position
+/// rgba color
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec3_rgba, 2, vec3, position, rgba, color);
+
+} // namespace cgv
+} // namespace g2d
