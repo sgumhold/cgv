@@ -7,7 +7,7 @@ var namespacecgv =
     ] ],
     [ "base", "namespacecgv_1_1base.html", "namespacecgv_1_1base" ],
     [ "data", "namespacecgv_1_1data.html", "namespacecgv_1_1data" ],
-    [ "g2d", "namespacecgv_1_1g2d.html", null ],
+    [ "g2d", "namespacecgv_1_1g2d.html", "namespacecgv_1_1g2d" ],
     [ "gui", "namespacecgv_1_1gui.html", "namespacecgv_1_1gui" ],
     [ "math", "namespacecgv_1_1math.html", "namespacecgv_1_1math" ],
     [ "media", null, [
