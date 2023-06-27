@@ -30,7 +30,7 @@ extern CGV_API std::string ltrim(const std::string& str, const std::string& char
 extern CGV_API std::string rtrim(const std::string& str, const std::string& chars = "\t\n\v\f\r ");
 /// trim white space or other characters from start and end of string
 extern CGV_API std::string trim(const std::string& str, const std::string& chars = "\t\n\v\f\r ");
-/// joins a given list of strings, separatig them by the given separator; if trailing-sep is true, also puts a separator at the end
+/// joins a given list of strings, separating them by the given separator; if trailing_sep is true, also puts a separator at the end
 extern CGV_API std::string join(const std::vector<std::string>& strs, const std::string& sep, bool trailing_sep = false);
 /// check if char is a whitespace
 extern CGV_API bool is_space(char c);
