@@ -96,17 +96,19 @@ extern CGV_API bool is_month(const char* begin, const char* end, unsigned char& 
 /// check and extract month from string \c s
 extern CGV_API bool is_month(const std::string& s, unsigned char& month);
 /// check and extract time from string token [\c begin, \c end]
-extern CGV_API bool is_time(const std::string& s, cgv::utils::time& t, const char **new_end = 0);
-/// check and extract time from string \c s
 extern CGV_API bool is_time(const char* begin, const char* end, cgv::utils::time& t, const char **new_end = 0);
+/// check and extract time from string \c s
+extern CGV_API bool is_time(const std::string& s, cgv::utils::time& t, const char** new_end = 0);
 /// check and extract date from string token [\c begin, \c end]
-extern CGV_API bool is_date(const std::string& s, cgv::utils::date& d, const char **new_end = 0);
-/// check and extract date from string \c s
 extern CGV_API bool is_date(const char* begin, const char* end, cgv::utils::date& d, const char **new_end = 0);
-/// check and extract end of valid url from string \c s
-extern CGV_API bool is_url(const std::string& s, const char** end = 0);
+/// check and extract date from string \c s
+extern CGV_API bool is_date(const std::string& s, cgv::utils::date& d, const char **new_end = 0);
 /// check and extract end of valid url from string token [\c begin, \c end]
 extern CGV_API bool is_url(const char* begin, const char* end, const char** new_end = 0);
+/// check and extract end of valid url from string \c s
+extern CGV_API bool is_url(const std::string& s, const char** end = 0);
+/// compute the levenshtein distance between two strings \c s1 and \c s2
+extern CGV_API unsigned int levenshtein_distance(const std::string& s1, const std::string& s2);
 
 	}
 }
