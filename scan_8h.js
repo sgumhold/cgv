@@ -30,6 +30,7 @@ var scan_8h =
     [ "is_year", "scan_8h.html#a5e16eed75c4f654d7295f4505ad7e697", null ],
     [ "is_year", "scan_8h.html#a2923901da5517a748563914debe34838", null ],
     [ "join", "scan_8h.html#a07474e4aecaf06a8ecca7aba033d5475", null ],
+    [ "levenshtein_distance", "scan_8h.html#af5d2ef4e3e59ecb0d7545a7c8bc65364", null ],
     [ "ltrim", "scan_8h.html#a612b9004a640fd424d7ed20ba2104e74", null ],
     [ "ltrim", "scan_8h.html#a6111552f6d6592cb0a9bec7939f4e236", null ],
     [ "parse_hex_bytes", "scan_8h.html#af218cd40bc285058a5168f28bfaf277a", null ],
