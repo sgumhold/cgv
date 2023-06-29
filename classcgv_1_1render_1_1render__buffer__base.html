@@ -90,7 +90,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1render__buffer__
 </div><!--header-->
 <div class="contents">
 
-<p>base interface for a <a class="el" href="classcgv_1_1render_1_1render__buffer.html">render_buffer</a>  
+<p>base interface for a <a class="el" href="classcgv_1_1render_1_1render__buffer.html" title="this class encapsulate render buffers that live on the GPU which must support frame buffer objects fo...">render_buffer</a>  
  <a href="classcgv_1_1render_1_1render__buffer__base.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="context_8h_source.html">context.h</a>&gt;</code></p>
@@ -101,7 +101,7 @@ Inheritance diagram for cgv::render::render_buffer_base:</div>
   <img src="classcgv_1_1render_1_1render__buffer__base.png" usemap="#cgv::render::render_5Fbuffer_5Fbase_map" alt=""/>
   <map id="cgv::render::render_5Fbuffer_5Fbase_map" name="cgv::render::render_5Fbuffer_5Fbase_map">
 <area href="classcgv_1_1render_1_1render__component.html" title="base interface for all render components" alt="cgv::render::render_component" shape="rect" coords="0,0,196,24"/>
-<area href="classcgv_1_1render_1_1render__buffer.html" alt="cgv::render::render_buffer" shape="rect" coords="0,112,196,136"/>
+<area href="classcgv_1_1render_1_1render__buffer.html" title="this class encapsulate render buffers that live on the GPU which must support frame buffer objects fo..." alt="cgv::render::render_buffer" shape="rect" coords="0,112,196,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -112,6 +112,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a4c896d2654616448824f5f2f759b8947"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether component has been created <br /></td></tr>
 <tr class="separator:a4c896d2654616448824f5f2f759b8947"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">put_id_void</a> (void *ptr) const</td></tr>
+<tr class="memdesc:aa5404b2aec4bbe8fd4eff1959b627709"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the rendering api specific id the component to the memory location of the given pointer.  <a href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">More...</a><br /></td></tr>
 <tr class="separator:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06ff3003af849b32a76ec5be29bd89dc"><td class="memTemplParams" colspan="2"><a id="a06ff3003af849b32a76ec5be29bd89dc"></a>
 template&lt;typename T &gt; </td></tr>
@@ -131,7 +132,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:a95f40a817168467d5a0d3fdbb09e0b79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>base interface for a <a class="el" href="classcgv_1_1render_1_1render__buffer.html">render_buffer</a> </p>
+<div class="textblock"><p>base interface for a <a class="el" href="classcgv_1_1render_1_1render__buffer.html" title="this class encapsulate render buffers that live on the GPU which must support frame buffer objects fo...">render_buffer</a> </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="aa5404b2aec4bbe8fd4eff1959b627709"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa5404b2aec4bbe8fd4eff1959b627709">&#9670;&nbsp;</a></span>put_id_void()</h2>
@@ -156,7 +157,9 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </tr>
 </table>
 </div><div class="memdoc">
-<p>copy the rendering api specific id the component to the memory location of the given pointer. For opengl this the passed pointer should be of type GLint or GLuint. </p>
+
+<p>copy the rendering api specific id the component to the memory location of the given pointer. </p>
+<p>For opengl this the passed pointer should be of type GLint or GLuint. </p>
 
 </div>
 </div>

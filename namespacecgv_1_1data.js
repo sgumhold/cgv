@@ -47,7 +47,7 @@ var namespacecgv_1_1data =
     [ "ComponentIntegerInterpretation", "namespacecgv_1_1data.html#a7b03b31810d6f81c766bde1f7638cd61", null ],
     [ "IOReflectionError", "namespacecgv_1_1data.html#a63cf0db0b8ed4093e9e129385cfa44a5", null ],
     [ "NamingConvention", "namespacecgv_1_1data.html#a23911e7b468889249037adbd0ca557dc", null ],
-    [ "find_best_match", "namespacecgv_1_1data.html#a186214ca27be96bd7e48521007743dcd", null ],
+    [ "find_best_match", "namespacecgv_1_1data.html#a72746e597b531caf780c41d81d4151e7", null ],
     [ "fmt1_compares_better", "namespacecgv_1_1data.html#ac3e8fa9c9e306979feb1f4dfd3b20830", null ],
     [ "operator<<", "namespacecgv_1_1data.html#a35a6f7270f64a7cd8197c0733bbf4d7d", null ],
     [ "operator<<", "namespacecgv_1_1data.html#adbbf5162b8aa15daa93023b37169b165", null ]

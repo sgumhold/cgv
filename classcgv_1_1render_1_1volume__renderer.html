@@ -317,10 +317,10 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a99b440d8a1ae28052f772c74d6ca971a">disable_attribute_array_manager</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1attribute__array__manager.html">attribute_array_manager</a> &amp;aam)</td></tr>
 <tr class="memdesc:a99b440d8a1ae28052f772c74d6ca971a"><td class="mdescLeft">&#160;</td><td class="mdescRight">call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager <br /></td></tr>
 <tr class="separator:a99b440d8a1ae28052f772c74d6ca971a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96be3314e74db7d1d0ac320efae71047"><td class="memItemLeft" align="right" valign="top"><a id="a96be3314e74db7d1d0ac320efae71047"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a96be3314e74db7d1d0ac320efae71047">DEPRECATED</a> (&quot;deprecated, use <a class="el" href="classcgv_1_1render_1_1renderer.html#a6df7e73f1bc789680b749d1a9da21f1b">enable_attribute_array_manager</a>() paired with disable_attribute_manager instead().&quot;) virtual void set_attribute_array_manager(const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx</td></tr>
-<tr class="memdesc:a96be3314e74db7d1d0ac320efae71047"><td class="mdescLeft">&#160;</td><td class="mdescRight">this function is deprecated, please use <a class="el" href="classcgv_1_1render_1_1renderer.html#a6df7e73f1bc789680b749d1a9da21f1b" title="call this before setting attribute arrays to manage attribute array in given manager">enable_attribute_array_manager()</a> and disable_attribute_manager() instead <br /></td></tr>
-<tr class="separator:a96be3314e74db7d1d0ac320efae71047"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2c8b9a65b969c338f194dc63a9e786a"><td class="memItemLeft" align="right" valign="top"><a id="ac2c8b9a65b969c338f194dc63a9e786a"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#ac2c8b9a65b969c338f194dc63a9e786a">set_attribute_array_manager</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1attribute__array__manager.html">attribute_array_manager</a> *_aam_ptr=0)</td></tr>
+<tr class="memdesc:ac2c8b9a65b969c338f194dc63a9e786a"><td class="mdescLeft">&#160;</td><td class="mdescRight">this function is deprecated, please use <a class="el" href="classcgv_1_1render_1_1renderer.html#a6df7e73f1bc789680b749d1a9da21f1b" title="call this before setting attribute arrays to manage attribute array in given manager">enable_attribute_array_manager()</a> and disable_attribute_manager() instead <br /></td></tr>
+<tr class="separator:ac2c8b9a65b969c338f194dc63a9e786a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6695b268a77fb5e369308ffa7e06c03"><td class="memItemLeft" align="right" valign="top"><a id="ab6695b268a77fb5e369308ffa7e06c03"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#ab6695b268a77fb5e369308ffa7e06c03">set_render_style</a> (const <a class="el" href="structcgv_1_1render_1_1render__style.html">render_style</a> &amp;rs)</td></tr>
 <tr class="memdesc:ab6695b268a77fb5e369308ffa7e06c03"><td class="mdescLeft">&#160;</td><td class="mdescRight">reference given render style <br /></td></tr>
@@ -379,15 +379,15 @@ template&lt;typename T &gt; </td></tr>
 <tr class="separator:ade7417226c12567e59a482bd50df701e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b86e875524318c8e1bd8c2b5592f29f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a3b86e875524318c8e1bd8c2b5592f29f"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a3b86e875524318c8e1bd8c2b5592f29f">set_indices</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::vector&lt; T &gt; &amp;indices, bool keep_on_cpu=false)</td></tr>
-<tr class="memdesc:a3b86e875524318c8e1bd8c2b5592f29f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the indices for indexed rendering from a vector. If an attribute array manager is enabled and keep_on_cpu is false (default), create GPU index buffer and transfer indices into it.  <a href="classcgv_1_1render_1_1renderer.html#a3b86e875524318c8e1bd8c2b5592f29f">More...</a><br /></td></tr>
+<tr class="memdesc:a3b86e875524318c8e1bd8c2b5592f29f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the indices for indexed rendering from a vector.  <a href="classcgv_1_1render_1_1renderer.html#a3b86e875524318c8e1bd8c2b5592f29f">More...</a><br /></td></tr>
 <tr class="separator:a3b86e875524318c8e1bd8c2b5592f29f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a135f62497fe2190c79c41c133a8dcd28"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a135f62497fe2190c79c41c133a8dcd28"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a135f62497fe2190c79c41c133a8dcd28">set_indices</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const T *indices, size_t nr_indices, bool keep_on_cpu=false)</td></tr>
-<tr class="memdesc:a135f62497fe2190c79c41c133a8dcd28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the indices for indexed rendering from an array given as a pointer. If an attribute array manager is enabled and keep_on_cpu is false (default), create GPU index buffer and transfer indices into it.  <a href="classcgv_1_1render_1_1renderer.html#a135f62497fe2190c79c41c133a8dcd28">More...</a><br /></td></tr>
+<tr class="memdesc:a135f62497fe2190c79c41c133a8dcd28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the indices for indexed rendering from an array given as a pointer.  <a href="classcgv_1_1render_1_1renderer.html#a135f62497fe2190c79c41c133a8dcd28">More...</a><br /></td></tr>
 <tr class="separator:a135f62497fe2190c79c41c133a8dcd28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a024e0f15ac802e6278bfe492beb6b5"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a1a024e0f15ac802e6278bfe492beb6b5"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a1a024e0f15ac802e6278bfe492beb6b5">set_indices</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a> &amp;vbo, size_t count)</td></tr>
-<tr class="memdesc:a1a024e0f15ac802e6278bfe492beb6b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the indices for indexed rendering from a GPU buffer. If an attribute array manager is enabled its index buffer is removed through this call.  <a href="classcgv_1_1render_1_1renderer.html#a1a024e0f15ac802e6278bfe492beb6b5">More...</a><br /></td></tr>
+<tr class="memdesc:a1a024e0f15ac802e6278bfe492beb6b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the indices for indexed rendering from a GPU buffer.  <a href="classcgv_1_1render_1_1renderer.html#a1a024e0f15ac802e6278bfe492beb6b5">More...</a><br /></td></tr>
 <tr class="separator:a1a024e0f15ac802e6278bfe492beb6b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6a3ea196ce42da08553f24fcc27846f"><td class="memItemLeft" align="right" valign="top"><a id="ad6a3ea196ce42da08553f24fcc27846f"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#ad6a3ea196ce42da08553f24fcc27846f">has_indices</a> () const</td></tr>
@@ -800,7 +800,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Set the indices for indexed rendering from a vector. If an attribute array manager is enabled and keep_on_cpu is false (default), create GPU index buffer and transfer indices into it. </p>
+<p>Set the indices for indexed rendering from a vector. </p>
+<p>If an attribute array manager is enabled and keep_on_cpu is false (default), create GPU index buffer and transfer indices into it.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>index type must be uint8_t, uint16_t, or uint32_t</td></tr>
@@ -867,7 +868,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Set the indices for indexed rendering from an array given as a pointer. If an attribute array manager is enabled and keep_on_cpu is false (default), create GPU index buffer and transfer indices into it. </p>
+<p>Set the indices for indexed rendering from an array given as a pointer. </p>
+<p>If an attribute array manager is enabled and keep_on_cpu is false (default), create GPU index buffer and transfer indices into it.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>index type must be uint8_t, uint16_t, or uint32_t</td></tr>
@@ -929,7 +931,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Set the indices for indexed rendering from a GPU buffer. If an attribute array manager is enabled its index buffer is removed through this call. </p>
+<p>Set the indices for indexed rendering from a GPU buffer. </p>
+<p>If an attribute array manager is enabled its index buffer is removed through this call.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>index type must be uint8_t, uint16_t, or uint32_t</td></tr>

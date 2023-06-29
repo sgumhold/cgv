@@ -103,16 +103,16 @@ Inheritance diagram for cgv::render::render_component:</div>
 <area href="classcgv_1_1render_1_1attribute__array__binding__base.html" title="base class for attribute_array_bindings" alt="cgv::render::attribute_array_binding_base" shape="rect" coords="0,56,248,80"/>
 <area href="classcgv_1_1render_1_1frame__buffer__base.html" title="base interface for framebuffer" alt="cgv::render::frame_buffer_base" shape="rect" coords="258,56,506,80"/>
 <area href="classcgv_1_1render_1_1render__buffer__base.html" title="base interface for a render_buffer" alt="cgv::render::render_buffer_base" shape="rect" coords="516,56,764,80"/>
-<area href="classcgv_1_1render_1_1shader__code.html" alt="cgv::render::shader_code" shape="rect" coords="774,56,1022,80"/>
+<area href="classcgv_1_1render_1_1shader__code.html" title="a shader code object holds a code fragment of a geometry vertex or fragment shader and can be added t..." alt="cgv::render::shader_code" shape="rect" coords="774,56,1022,80"/>
 <area href="classcgv_1_1render_1_1shader__program__base.html" title="base interface for shader programs" alt="cgv::render::shader_program_base" shape="rect" coords="1032,56,1280,80"/>
 <area href="classcgv_1_1render_1_1texture__base.html" title="base interface for a texture" alt="cgv::render::texture_base" shape="rect" coords="1290,56,1538,80"/>
 <area href="classcgv_1_1render_1_1vertex__buffer__base.html" title="base interface for a vertex buffer" alt="cgv::render::vertex_buffer_base" shape="rect" coords="1548,56,1796,80"/>
-<area href="classcgv_1_1render_1_1attribute__array__binding.html" alt="cgv::render::attribute_array_binding" shape="rect" coords="0,112,248,136"/>
-<area href="classcgv_1_1render_1_1frame__buffer.html" alt="cgv::render::frame_buffer" shape="rect" coords="258,112,506,136"/>
-<area href="classcgv_1_1render_1_1render__buffer.html" alt="cgv::render::render_buffer" shape="rect" coords="516,112,764,136"/>
-<area href="classcgv_1_1render_1_1shader__program.html" alt="cgv::render::shader_program" shape="rect" coords="1032,112,1280,136"/>
-<area href="classcgv_1_1render_1_1texture.html" alt="cgv::render::texture" shape="rect" coords="1290,112,1538,136"/>
-<area href="classcgv_1_1render_1_1vertex__buffer.html" alt="cgv::render::vertex_buffer" shape="rect" coords="1548,112,1796,136"/>
+<area href="classcgv_1_1render_1_1attribute__array__binding.html" title="the attribute_array_binding allows to define vertex attributes (i.e." alt="cgv::render::attribute_array_binding" shape="rect" coords="0,112,248,136"/>
+<area href="classcgv_1_1render_1_1frame__buffer.html" title="this class encapsulate frame buffers that live on the GPU and can be used as destination for the rend..." alt="cgv::render::frame_buffer" shape="rect" coords="258,112,506,136"/>
+<area href="classcgv_1_1render_1_1render__buffer.html" title="this class encapsulate render buffers that live on the GPU which must support frame buffer objects fo..." alt="cgv::render::render_buffer" shape="rect" coords="516,112,764,136"/>
+<area href="classcgv_1_1render_1_1shader__program.html" title="a shader program combines several shader code fragments to a complete definition of the shading pipel..." alt="cgv::render::shader_program" shape="rect" coords="1032,112,1280,136"/>
+<area href="classcgv_1_1render_1_1texture.html" title="the texture class encapsulates all functionality independent of the rendering api." alt="cgv::render::texture" shape="rect" coords="1290,112,1538,136"/>
+<area href="classcgv_1_1render_1_1vertex__buffer.html" title="a vertex buffer is an unstructured memory block on the GPU." alt="cgv::render::vertex_buffer" shape="rect" coords="1548,112,1796,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -127,6 +127,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a4c896d2654616448824f5f2f759b8947"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether component has been created <br /></td></tr>
 <tr class="separator:a4c896d2654616448824f5f2f759b8947"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">put_id_void</a> (void *ptr) const</td></tr>
+<tr class="memdesc:aa5404b2aec4bbe8fd4eff1959b627709"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the rendering api specific id the component to the memory location of the given pointer.  <a href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">More...</a><br /></td></tr>
 <tr class="separator:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06ff3003af849b32a76ec5be29bd89dc"><td class="memTemplParams" colspan="2"><a id="a06ff3003af849b32a76ec5be29bd89dc"></a>
 template&lt;typename T &gt; </td></tr>
@@ -163,7 +164,9 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
         </tr>
       </table>
 </div><div class="memdoc">
-<p>copy the rendering api specific id the component to the memory location of the given pointer. For opengl this the passed pointer should be of type GLint or GLuint. </p>
+
+<p>copy the rendering api specific id the component to the memory location of the given pointer. </p>
+<p>For opengl this the passed pointer should be of type GLint or GLuint. </p>
 
 </div>
 </div>

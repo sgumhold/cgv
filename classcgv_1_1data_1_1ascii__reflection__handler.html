@@ -91,6 +91,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1data_1_1ascii__reflection_
 </div><!--header-->
 <div class="contents">
 
+<p>read from ascii file  
+ <a href="classcgv_1_1data_1_1ascii__reflection__handler.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="ascii__io__reflection__handlers_8h_source.html">ascii_io_reflection_handlers.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::data::ascii_reflection_handler:</div>
@@ -98,17 +101,17 @@ Inheritance diagram for cgv::data::ascii_reflection_handler:</div>
  <div class="center">
   <img src="classcgv_1_1data_1_1ascii__reflection__handler.png" usemap="#cgv::data::ascii_5Freflection_5Fhandler_map" alt=""/>
   <map id="cgv::data::ascii_5Freflection_5Fhandler_map" name="cgv::data::ascii_5Freflection_5Fhandler_map">
-<area href="classcgv_1_1data_1_1io__reflection__handler.html" alt="cgv::data::io_reflection_handler" shape="rect" coords="124,56,363,80"/>
-<area href="classcgv_1_1reflect_1_1reflection__handler.html" alt="cgv::reflect::reflection_handler" shape="rect" coords="124,0,363,24"/>
-<area href="classcgv_1_1data_1_1ascii__read__reflection__handler.html" alt="cgv::data::ascii_read_reflection_handler" shape="rect" coords="0,168,239,192"/>
-<area href="classcgv_1_1data_1_1ascii__write__reflection__handler.html" alt="cgv::data::ascii_write_reflection_handler" shape="rect" coords="249,168,488,192"/>
+<area href="classcgv_1_1data_1_1io__reflection__handler.html" title="common base for all io reflection handlers" alt="cgv::data::io_reflection_handler" shape="rect" coords="124,56,363,80"/>
+<area href="classcgv_1_1reflect_1_1reflection__handler.html" title="the self reflection handler is passed to the virtual self_reflect() method of cgv::base::base." alt="cgv::reflect::reflection_handler" shape="rect" coords="124,0,363,24"/>
+<area href="classcgv_1_1data_1_1ascii__read__reflection__handler.html" title="read from ascii file" alt="cgv::data::ascii_read_reflection_handler" shape="rect" coords="0,168,239,192"/>
+<area href="classcgv_1_1data_1_1ascii__write__reflection__handler.html" title="read from ascii file" alt="cgv::data::ascii_write_reflection_handler" shape="rect" coords="249,168,488,192"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:ac5fe7ea78f53d522b4ebec8fc2c6308d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html#ac5fe7ea78f53d522b4ebec8fc2c6308d">GroupTraversal</a> </td></tr>
-<tr class="memdesc:ac5fe7ea78f53d522b4ebec8fc2c6308d"><td class="mdescLeft">&#160;</td><td class="mdescRight">different values for group traversal strategy  <a href="classcgv_1_1reflect_1_1reflection__handler.html#ac5fe7ea78f53d522b4ebec8fc2c6308d">More...</a><br /></td></tr>
+<tr class="memdesc:ac5fe7ea78f53d522b4ebec8fc2c6308d"><td class="mdescLeft">&#160;</td><td class="mdescRight">@ basic types with helper functions  <a href="classcgv_1_1reflect_1_1reflection__handler.html#ac5fe7ea78f53d522b4ebec8fc2c6308d">More...</a><br /></td></tr>
 <tr class="separator:ac5fe7ea78f53d522b4ebec8fc2c6308d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab19ae36b12102985f9a41293f4a6adfa"><td class="memItemLeft" align="right" valign="top"><a id="ab19ae36b12102985f9a41293f4a6adfa"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html#ab19ae36b12102985f9a41293f4a6adfa">GroupKind</a> </td></tr>
 <tr class="memdesc:ab19ae36b12102985f9a41293f4a6adfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">different support group types <br /></td></tr>
@@ -123,13 +126,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:aa9bdc0252dcbfe3386a4a7e3a182e834"><td class="mdescLeft">&#160;</td><td class="mdescRight">abstract interface to terminate reflection of a group of members  <a href="classcgv_1_1data_1_1ascii__reflection__handler.html#aa9bdc0252dcbfe3386a4a7e3a182e834">More...</a><br /></td></tr>
 <tr class="separator:aa9bdc0252dcbfe3386a4a7e3a182e834"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53c8bd646c2d6919da4d81764912963f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1io__reflection__handler.html#a53c8bd646c2d6919da4d81764912963f">reflect_method_void</a> (const std::string &amp;method_name, <a class="el" href="structcgv_1_1reflect_1_1method__interface.html">cgv::reflect::method_interface</a> *mi_ptr, <a class="el" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">cgv::reflect::abst_reflection_traits</a> *return_traits, const std::vector&lt; <a class="el" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">cgv::reflect::abst_reflection_traits</a> * &gt; &amp;param_value_traits)</td></tr>
+<tr class="memdesc:a53c8bd646c2d6919da4d81764912963f"><td class="mdescLeft">&#160;</td><td class="mdescRight">abstract interface to reflect a method, where return and parameter types are specified as strings.  <a href="classcgv_1_1data_1_1io__reflection__handler.html#a53c8bd646c2d6919da4d81764912963f">More...</a><br /></td></tr>
 <tr class="separator:a53c8bd646c2d6919da4d81764912963f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">interface used by reflect and self_reflect functions</div></td></tr>
 <tr class="memitem:a0ef7d09f854967e8768a69ac4158df08"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html#a0ef7d09f854967e8768a69ac4158df08">is_creative</a> () const</td></tr>
-<tr class="memdesc:a0ef7d09f854967e8768a69ac4158df08"><td class="mdescLeft">&#160;</td><td class="mdescRight">give information on whether <a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html">reflection_handler</a> creates object (defaults to false)  <a href="classcgv_1_1reflect_1_1reflection__handler.html#a0ef7d09f854967e8768a69ac4158df08">More...</a><br /></td></tr>
+<tr class="memdesc:a0ef7d09f854967e8768a69ac4158df08"><td class="mdescLeft">&#160;</td><td class="mdescRight">give information on whether <a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html" title="the self reflection handler is passed to the virtual self_reflect() method of cgv::base::base.">reflection_handler</a> creates object (defaults to false)  <a href="classcgv_1_1reflect_1_1reflection__handler.html#a0ef7d09f854967e8768a69ac4158df08">More...</a><br /></td></tr>
 <tr class="separator:a0ef7d09f854967e8768a69ac4158df08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae10eef5e76075a7eb676d8ba40839291"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ae10eef5e76075a7eb676d8ba40839291"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">reflect_member</a> (const std::string &amp;member_name, T &amp;member_ref, bool hard_cast=false)</td></tr>
+<tr class="memdesc:ae10eef5e76075a7eb676d8ba40839291"><td class="mdescLeft">&#160;</td><td class="mdescRight">call this to reflect a member by member name and reference to the member.  <a href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">More...</a><br /></td></tr>
 <tr class="separator:ae10eef5e76075a7eb676d8ba40839291"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeff20e670623ad44451b72a7d20c9e96"><td class="memTemplParams" colspan="2"><a id="aeff20e670623ad44451b72a7d20c9e96"></a>
 template&lt;typename T , unsigned n&gt; </td></tr>
@@ -147,6 +152,7 @@ template&lt;typename T &gt; </td></tr>
 <tr class="separator:a904d1f09eb4f316b00d2be658472635e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38dca49ce52abd11c27540995a0790bb"><td class="memTemplParams" colspan="2">template&lt;typename M &gt; </td></tr>
 <tr class="memitem:a38dca49ce52abd11c27540995a0790bb"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html#a38dca49ce52abd11c27540995a0790bb">reflect_method</a> (const std::string &amp;method_name, M m)</td></tr>
+<tr class="memdesc:a38dca49ce52abd11c27540995a0790bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">call this to reflect a method by method name and reference to the member.  <a href="classcgv_1_1reflect_1_1reflection__handler.html#a38dca49ce52abd11c27540995a0790bb">More...</a><br /></td></tr>
 <tr class="separator:a38dca49ce52abd11c27540995a0790bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22ea9f48246cc1f995716d1cb7e14df3"><td class="memTemplParams" colspan="2"><a id="a22ea9f48246cc1f995716d1cb7e14df3"></a>
 template&lt;typename B &gt; </td></tr>
@@ -196,6 +202,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr class="separator:a04716997f42e86b866de9564ab8a046f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">interface to be implemented by derived reflection handlers</div></td></tr>
 <tr class="memitem:ab3cf3ba8896a7187e71d23e5bfcd1292"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html#ab3cf3ba8896a7187e71d23e5bfcd1292">reflect_member_void</a> (const std::string &amp;member_name, void *member_ptr, abst_reflection_traits *rt)=0</td></tr>
+<tr class="memdesc:ab3cf3ba8896a7187e71d23e5bfcd1292"><td class="mdescLeft">&#160;</td><td class="mdescRight">abstract interface to reflect a member variable, where the member type is specified as a string.  <a href="classcgv_1_1reflect_1_1reflection__handler.html#ab3cf3ba8896a7187e71d23e5bfcd1292">More...</a><br /></td></tr>
 <tr class="separator:ab3cf3ba8896a7187e71d23e5bfcd1292"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
@@ -229,8 +236,8 @@ std::vector&lt; <a class="el" href="structcgv_1_1reflect_1_1reflection__handler_
 </table>
 </div><div class="memdoc">
 
-<p>different values for group traversal strategy </p>
 <p>@ basic types with helper functions </p>
+<p>different values for group traversal strategy </p>
 
 </div>
 </div>
@@ -412,7 +419,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>call this to reflect a member by member name and reference to the member. The member type is deduced from the reference via templates. The method uses reflect_member_impl to dispath types with implementation of a self_reflect method and types without. For polymorphic objects with a polymorphic self_reflect() method the parameter <code>hard_cast</code> steers whether the concrete implementation T::self_reflect() is used or the overloaded function member_ref.self_reflect(). This is important for self reflection of base classes in polymorphic objects where hard_cast is set to true. In most other cases one can use the default argument false. </p>
+
+<p>call this to reflect a member by member name and reference to the member. </p>
+<p>The member type is deduced from the reference via templates. The method uses reflect_member_impl to dispath types with implementation of a self_reflect method and types without. For polymorphic objects with a polymorphic self_reflect() method the parameter <code>hard_cast</code> steers whether the concrete implementation T::self_reflect() is used or the overloaded function member_ref.self_reflect(). This is important for self reflection of base classes in polymorphic objects where hard_cast is set to true. In most other cases one can use the default argument false. </p>
 
 </div>
 </div>
@@ -496,7 +505,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>abstract interface to reflect a member variable, where the member type is specified as a string. Returns whether to continue the reflection. </p>
+
+<p>abstract interface to reflect a member variable, where the member type is specified as a string. </p>
+<p>Returns whether to continue the reflection. </p>
 
 <p>Implemented in <a class="el" href="classcgv_1_1data_1_1binary__write__reflection__handler.html#ac7dd4e7e482082a3305664502ccbf245">cgv::data::binary_write_reflection_handler</a>, <a class="el" href="classcgv_1_1data_1_1binary__read__reflection__handler.html#a7dd515b1ac839a34888dd7a8e3d33ec7">cgv::data::binary_read_reflection_handler</a>, <a class="el" href="classcgv_1_1data_1_1ascii__write__reflection__handler.html#a9701c59121a25d82cc987a2045b4d826">cgv::data::ascii_write_reflection_handler</a>, <a class="el" href="classcgv_1_1data_1_1ascii__read__reflection__handler.html#a4bd091a57ba827f7c4b3db64337847f7">cgv::data::ascii_read_reflection_handler</a>, <a class="el" href="classcgv_1_1reflect_1_1find__reflection__handler.html#adecaff1146783441adcf225bfce98797">cgv::reflect::find_reflection_handler</a>, and <a class="el" href="classcgv_1_1reflect_1_1debug__reflection__handler.html#adc4e9bd8dca32a1d6e416387160a736b">cgv::reflect::debug_reflection_handler</a>.</p>
 
@@ -537,7 +548,9 @@ template&lt;typename M &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>call this to reflect a method by method name and reference to the member. The method type is deduced from the reference via templates. This only works, if you additionally include the header &lt;cgv/reflect/method_interface_impl.h&gt;, where the template code is located. This header is not included automatically, because of its length.</p>
+
+<p>call this to reflect a method by method name and reference to the member. </p>
+<p>The method type is deduced from the reference via templates. This only works, if you additionally include the header &lt;cgv/reflect/method_interface_impl.h&gt;, where the template code is located. This header is not included automatically, because of its length.</p>
 <p>To give names to the parameters, append them to the name enclosed in parenthesis, i.e. "sin(x)" or "dot_prod(p,q)". </p>
 
 </div>
@@ -587,7 +600,9 @@ template&lt;typename M &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>abstract interface to reflect a method, where return and parameter types are specified as strings. Returns whether to continue the reflection. </p>
+
+<p>abstract interface to reflect a method, where return and parameter types are specified as strings. </p>
+<p>Returns whether to continue the reflection. </p>
 
 <p>Implements <a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html#a0503fef23264c80cb35047551d3ace5b">cgv::reflect::reflection_handler</a>.</p>
 

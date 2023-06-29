@@ -90,6 +90,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1utils_1_1tokenizer.html','
 </div><!--header-->
 <div class="contents">
 
+<p>the tokenizer allows to split text into tokens in a convenient way.  
+ <a href="classcgv_1_1utils_1_1tokenizer.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="tokenizer_8h_source.html">tokenizer.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::utils::tokenizer:</div>
@@ -97,7 +100,7 @@ Inheritance diagram for cgv::utils::tokenizer:</div>
  <div class="center">
   <img src="classcgv_1_1utils_1_1tokenizer.png" usemap="#cgv::utils::tokenizer_map" alt=""/>
   <map id="cgv::utils::tokenizer_map" name="cgv::utils::tokenizer_map">
-<area href="structcgv_1_1utils_1_1token.html" alt="cgv::utils::token" shape="rect" coords="0,0,118,24"/>
+<area href="structcgv_1_1utils_1_1token.html" title="representation of a token in a text by two pointers begin and end, that point to the first character ..." alt="cgv::utils::token" shape="rect" coords="0,0,118,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -219,7 +222,8 @@ const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="separator:a8795f9f939f15d61b4114c370a670344"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>the tokenizer allows to split text into tokens in a convenient way. It supports splitting at white spaces and single or multi charactor separators. Furthermore, it supports enclosing character pairs like parantheses or string separators that skip white spaces and separators between enclosing pairs.</p>
+<div class="textblock"><p>the tokenizer allows to split text into tokens in a convenient way. </p>
+<p>It supports splitting at white spaces and single or multi charactor separators. Furthermore, it supports enclosing character pairs like parantheses or string separators that skip white spaces and separators between enclosing pairs.</p>
 <p>By default white spaces are set to space, tab, newline. The list of separators and skip character pairs is empty by default.</p>
 <p>A tokenizer can be constructed from a string, a cont char* or a token. The resulting tokens are stored as two pointers to the begin and after the end of the token. No new memory is allocated and the tokens are only valid as long as the string or const char* is valid from which the tokenizer has been construct.</p>
 <p>In the simplest usage, the tokenizer generates a vector of tokens through the bite_all function. Suppose you want to split the string str="Hello tokenizer." at the white spaces into two tokens &lt;Hello&gt; and &lt;tokenizer.&gt;. Notice that no token contains the white space separating the tokens. The following code performs this task: </p><div class="fragment"><div class="line">std::vector&lt;token&gt; toks;</div>

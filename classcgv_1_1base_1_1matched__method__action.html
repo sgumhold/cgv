@@ -89,6 +89,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1base_1_1matched__method__a
 </div><!--header-->
 <div class="contents">
 
+<p>complete implementation of method actions that call a begin and end method when entering and leaving a node  
+ <a href="classcgv_1_1base_1_1matched__method__action.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="action_8h_source.html">action.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::base::matched_method_action&lt; X, R1, R2, T1 &gt;:</div>
@@ -96,9 +99,9 @@ Inheritance diagram for cgv::base::matched_method_action&lt; X, R1, R2, T1 &gt;:
  <div class="center">
   <img src="classcgv_1_1base_1_1matched__method__action.png" usemap="#cgv::base::matched_5Fmethod_5Faction_3C_20X_2C_20R1_2C_20R2_2C_20T1_20_3E_map" alt=""/>
   <map id="cgv::base::matched_5Fmethod_5Faction_3C_20X_2C_20R1_2C_20R2_2C_20T1_20_3E_map" name="cgv::base::matched_5Fmethod_5Faction_3C_20X_2C_20R1_2C_20R2_2C_20T1_20_3E_map">
-<area href="classcgv_1_1base_1_1method__action.html" alt="cgv::base::method_action&lt; X, T1 &gt;" shape="rect" coords="0,112,311,136"/>
-<area href="classcgv_1_1base_1_1base__method__action.html" alt="cgv::base::base_method_action&lt; X &gt;" shape="rect" coords="0,56,311,80"/>
-<area href="classcgv_1_1base_1_1action.html" alt="cgv::base::action" shape="rect" coords="0,0,311,24"/>
+<area href="classcgv_1_1base_1_1method__action.html" title="base class for all method actions that take a single argument of type T1 in their signature" alt="cgv::base::method_action&lt; X, T1 &gt;" shape="rect" coords="0,112,311,136"/>
+<area href="classcgv_1_1base_1_1base__method__action.html" title="base class for all actions that use methods of class X" alt="cgv::base::base_method_action&lt; X &gt;" shape="rect" coords="0,56,311,80"/>
+<area href="classcgv_1_1base_1_1action.html" title="The action class is used in tree traversals together with the traverser." alt="cgv::base::action" shape="rect" coords="0,0,311,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -110,11 +113,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9fa3acf4c84e7174b02cc247cef867f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37013211e690b751e792cc63f2718bfa"><td class="memItemLeft" align="right" valign="top"><a id="a37013211e690b751e792cc63f2718bfa"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1matched__method__action.html#a37013211e690b751e792cc63f2718bfa">begin</a> ()</td></tr>
-<tr class="memdesc:a37013211e690b751e792cc63f2718bfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">uses call_method of base class <a class="el" href="classcgv_1_1base_1_1method__action.html">method_action</a> to call the method refered to by the stored method pointer <br /></td></tr>
+<tr class="memdesc:a37013211e690b751e792cc63f2718bfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">uses call_method of base class <a class="el" href="classcgv_1_1base_1_1method__action.html" title="base class for all method actions that take a single argument of type T1 in their signature">method_action</a> to call the method refered to by the stored method pointer <br /></td></tr>
 <tr class="separator:a37013211e690b751e792cc63f2718bfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a145fbc97a446ed621a45c0fd794e91bd"><td class="memItemLeft" align="right" valign="top"><a id="a145fbc97a446ed621a45c0fd794e91bd"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1matched__method__action.html#a145fbc97a446ed621a45c0fd794e91bd">end</a> ()</td></tr>
-<tr class="memdesc:a145fbc97a446ed621a45c0fd794e91bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">uses call_method of base class <a class="el" href="classcgv_1_1base_1_1method__action.html">method_action</a> to call the method refered to by the stored method pointer <br /></td></tr>
+<tr class="memdesc:a145fbc97a446ed621a45c0fd794e91bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">uses call_method of base class <a class="el" href="classcgv_1_1base_1_1method__action.html" title="base class for all method actions that take a single argument of type T1 in their signature">method_action</a> to call the method refered to by the stored method pointer <br /></td></tr>
 <tr class="separator:a145fbc97a446ed621a45c0fd794e91bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e85ebbdf428b5618655a9a7ee5e9612"><td class="memItemLeft" align="right" valign="top"><a id="a6e85ebbdf428b5618655a9a7ee5e9612"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1method__action.html#a6e85ebbdf428b5618655a9a7ee5e9612">set_signature</a> (T1 _v1)</td></tr>

@@ -92,6 +92,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1gl_1_1gl__transp
 </div><!--header-->
 <div class="contents">
 
+<p>OpenGL helper class to simplify transparent rendering.  
+ <a href="classcgv_1_1render_1_1gl_1_1gl__transparent__renderer.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="gl__transparent__renderer_8h_source.html">gl_transparent_renderer.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::render::gl::gl_transparent_renderer:</div>
@@ -99,7 +102,7 @@ Inheritance diagram for cgv::render::gl::gl_transparent_renderer:</div>
  <div class="center">
   <img src="classcgv_1_1render_1_1gl_1_1gl__transparent__renderer.png" usemap="#cgv::render::gl::gl_5Ftransparent_5Frenderer_map" alt=""/>
   <map id="cgv::render::gl::gl_5Ftransparent_5Frenderer_map" name="cgv::render::gl::gl_5Ftransparent_5Frenderer_map">
-<area href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html" alt="cgv::render::gl::gl_depth_peeler" shape="rect" coords="0,0,237,24"/>
+<area href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html" title="OpenGL helper class to simplify depth peeling." alt="cgv::render::gl::gl_depth_peeler" shape="rect" coords="0,0,237,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -202,7 +205,8 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:adb5ce179c42c311acb56922ef33c192c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>OpenGL helper class to simplify transparent rendering. It is derived from a depth peeler whose functionality is used for the visibility sorting according to the approach described in the "order independent transparency" paper of Cass Everit. Call the init method after your OpenGL context has been created. Transparent rendering is done such that the rendered objects are blended over the rendered scene in the current color and depth buffer. Rendering of transparent objects should be done in the finish_frame method of a drawable. A sample implementation looks like this: </p><div class="fragment"><div class="line"><span class="comment">// in init</span></div>
+<div class="textblock"><p>OpenGL helper class to simplify transparent rendering. </p>
+<p>It is derived from a depth peeler whose functionality is used for the visibility sorting according to the approach described in the "order independent transparency" paper of Cass Everit. Call the init method after your OpenGL context has been created. Transparent rendering is done such that the rendered objects are blended over the rendered scene in the current color and depth buffer. Rendering of transparent objects should be done in the finish_frame method of a drawable. A sample implementation looks like this: </p><div class="fragment"><div class="line"><span class="comment">// in init</span></div>
 </div><!-- fragment --> </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a4b6347f61fbcc87358912bec06350ab8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4b6347f61fbcc87358912bec06350ab8">&#9670;&nbsp;</a></span>end_layer()</h2>

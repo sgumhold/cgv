@@ -90,6 +90,9 @@ $(document).ready(function(){initNavTree('advanced__scan_8h.html',''); initResiz
 <div class="title">advanced_scan.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>More advanced text processing for splitting text into lines or tokens.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;token.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="scan_8h_source.html">scan.h</a>&quot;</code><br />
@@ -101,8 +104,10 @@ $(document).ready(function(){initNavTree('advanced__scan_8h.html',''); initResiz
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1utils_1_1line.html">cgv::utils::line</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">a line in a text is simply represented as a token  <a href="structcgv_1_1utils_1_1line.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1utils_1_1typed__token.html">cgv::utils::typed_token</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">a typed token also stores the type and value of a parsed token.  <a href="structcgv_1_1utils_1_1typed__token.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -122,8 +127,9 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ae4162fc13f546dbaba3661b771e1e727"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#ae4162fc13f546dbaba3661b771e1e727">cgv::utils::split_to_tokens</a> (const char *begin, const char *end, std::vector&lt; token &gt; &amp;tokens, const std::string &amp;separators, bool merge_separators, const std::string &amp;open_parenthesis, const std::string &amp;close_parenthesis, const std::string &amp;whitespaces, unsigned int max_nr_tokens)</td></tr>
-<tr class="separator:ae4162fc13f546dbaba3661b771e1e727"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cce71c6163b28d05cb6ca217d7a8910"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a0cce71c6163b28d05cb6ca217d7a8910">cgv::utils::split_to_tokens</a> (const char *begin, const char *end, std::vector&lt; token &gt; &amp;tokens, const std::string &amp;separators, bool merge_separators=true, const std::string &amp;open_parenthesis=&quot;&quot;, const std::string &amp;close_parenthesis=&quot;&quot;, const std::string &amp;whitespaces=&quot; \t\n&quot;, unsigned int max_nr_tokens=-1)</td></tr>
+<tr class="memdesc:a0cce71c6163b28d05cb6ca217d7a8910"><td class="mdescLeft">&#160;</td><td class="mdescRight">this function splits a text range into tokens.  <a href="namespacecgv_1_1utils.html#a0cce71c6163b28d05cb6ca217d7a8910">More...</a><br /></td></tr>
+<tr class="separator:a0cce71c6163b28d05cb6ca217d7a8910"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4b71707e6790fc2c35ca52f8a04ad44"><td class="memItemLeft" align="right" valign="top"><a id="aa4b71707e6790fc2c35ca52f8a04ad44"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#aa4b71707e6790fc2c35ca52f8a04ad44">cgv::utils::split_to_tokens</a> (const token &amp;tok, std::vector&lt; token &gt; &amp;tokens, const std::string &amp;separators, bool merge_separators=true, const std::string &amp;open_parenthesis=&quot;&quot;, const std::string &amp;close_parenthesis=&quot;&quot;, const std::string &amp;whitespaces=&quot; \t\n&quot;, unsigned int=-1)</td></tr>
 <tr class="memdesc:aa4b71707e6790fc2c35ca52f8a04ad44"><td class="mdescLeft">&#160;</td><td class="mdescRight">text range given as token <br /></td></tr>
@@ -132,8 +138,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#aa5974d68ba0d5ff0f7572f5736492ebf">cgv::utils::split_to_tokens</a> (const std::string &amp;s, std::vector&lt; token &gt; &amp;tokens, const std::string &amp;separators, bool merge_separators=true, const std::string &amp;open_parenthesis=&quot;&quot;, const std::string &amp;close_parenthesis=&quot;&quot;, const std::string &amp;whitespaces=&quot; \t\n&quot;, unsigned int=(unsigned int) -1)</td></tr>
 <tr class="memdesc:aa5974d68ba0d5ff0f7572f5736492ebf"><td class="mdescLeft">&#160;</td><td class="mdescRight">text range given as string <br /></td></tr>
 <tr class="separator:aa5974d68ba0d5ff0f7572f5736492ebf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a368148a2c0ea1d7feded535e8d325b24"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a368148a2c0ea1d7feded535e8d325b24">cgv::utils::split_to_lines</a> (const char *global_begin, const char *global_end, std::vector&lt; line &gt; &amp;lines, bool truncate_trailing_spaces)</td></tr>
-<tr class="separator:a368148a2c0ea1d7feded535e8d325b24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a485f1ad0eee5a254282231fd7c2f10d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a485f1ad0eee5a254282231fd7c2f10d9">cgv::utils::split_to_lines</a> (const char *begin, const char *end, std::vector&lt; line &gt; &amp;lines, bool truncate_trailing_spaces=true)</td></tr>
+<tr class="memdesc:a485f1ad0eee5a254282231fd7c2f10d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">this function splits a text range at the newline characters into single lines.  <a href="namespacecgv_1_1utils.html#a485f1ad0eee5a254282231fd7c2f10d9">More...</a><br /></td></tr>
+<tr class="separator:a485f1ad0eee5a254282231fd7c2f10d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2dfa4155639ce028b6b01bbb1b49b67"><td class="memItemLeft" align="right" valign="top"><a id="ac2dfa4155639ce028b6b01bbb1b49b67"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#ac2dfa4155639ce028b6b01bbb1b49b67">cgv::utils::split_to_lines</a> (const token &amp;tok, std::vector&lt; line &gt; &amp;lines, bool truncate_trailing_spaces=true)</td></tr>
 <tr class="memdesc:ac2dfa4155639ce028b6b01bbb1b49b67"><td class="mdescLeft">&#160;</td><td class="mdescRight">text range given as token <br /></td></tr>
@@ -143,13 +150,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <tr class="memdesc:ac46ae8318b80b45b97fedd75a6c48dd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">text range given as string <br /></td></tr>
 <tr class="separator:ac46ae8318b80b45b97fedd75a6c48dd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6db9d2c2746d9ad3e380c5ff689b64b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#ac6db9d2c2746d9ad3e380c5ff689b64b">cgv::utils::balanced_find_content</a> (const char *begin, const char *end, token &amp;content, char open_parenthesis, char close_parenthesis)</td></tr>
+<tr class="memdesc:ac6db9d2c2746d9ad3e380c5ff689b64b"><td class="mdescLeft">&#160;</td><td class="mdescRight">the input range must begin with an open parenthesis.  <a href="namespacecgv_1_1utils.html#ac6db9d2c2746d9ad3e380c5ff689b64b">More...</a><br /></td></tr>
 <tr class="separator:ac6db9d2c2746d9ad3e380c5ff689b64b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88174e77ea4ee1dbaef45334df8d5333"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a88174e77ea4ee1dbaef45334df8d5333">cgv::utils::strip_cpp_comments</a> (const std::string &amp;source, bool correct_new_lines=true)</td></tr>
 <tr class="memdesc:a88174e77ea4ee1dbaef45334df8d5333"><td class="mdescLeft">&#160;</td><td class="mdescRight">remove cpp-style comments from string  <a href="namespacecgv_1_1utils.html#a88174e77ea4ee1dbaef45334df8d5333">More...</a><br /></td></tr>
 <tr class="separator:a88174e77ea4ee1dbaef45334df8d5333"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>More advanced text processing for splitting text into lines or tokens </p>
+<div class="textblock"><p>More advanced text processing for splitting text into lines or tokens. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

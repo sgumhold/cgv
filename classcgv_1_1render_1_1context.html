@@ -94,6 +94,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1context.html',''
 </div><!--header-->
 <div class="contents">
 
+<p>base class for all drawables, which is independent of the used rendering API.  
+ <a href="classcgv_1_1render_1_1context.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="context_8h_source.html">context.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::render::context:</div>
@@ -102,8 +105,8 @@ Inheritance diagram for cgv::render::context:</div>
   <img src="classcgv_1_1render_1_1context.png" usemap="#cgv::render::context_map" alt=""/>
   <map id="cgv::render::context_map" name="cgv::render::context_map">
 <area href="structcgv_1_1render_1_1render__types.html" title="this is DEPRECATED" alt="cgv::render::render_types" shape="rect" coords="0,0,165,24"/>
-<area href="structcgv_1_1render_1_1context__config.html" alt="cgv::render::context_config" shape="rect" coords="175,0,340,24"/>
-<area href="classcgv_1_1render_1_1gl_1_1gl__context.html" alt="cgv::render::gl::gl_context" shape="rect" coords="87,112,252,136"/>
+<area href="structcgv_1_1render_1_1context__config.html" title="configuration object used to define context parameters that need to be set already at creation time" alt="cgv::render::context_config" shape="rect" coords="175,0,340,24"/>
+<area href="classcgv_1_1render_1_1gl_1_1gl__context.html" title="implementation of the context API for the OpenGL API excluding methods for font selection,..." alt="cgv::render::gl::gl_context" shape="rect" coords="87,112,252,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -435,9 +438,10 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a5ff9997d981e9d584b77da256adfa4e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize the context to the given dimensions <br /></td></tr>
 <tr class="separator:a5ff9997d981e9d584b77da256adfa4e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88aa49f624a197b3af2e79c0e8a8c8d4"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a88aa49f624a197b3af2e79c0e8a8c8d4">read_frame_buffer</a> (<a class="el" href="classcgv_1_1data_1_1data__view.html">data::data_view</a> &amp;dv, unsigned int x=0, unsigned int y=0, <a class="el" href="namespacecgv_1_1render.html#a6a9c2282e6df914ff013f5a587bbd49c">FrameBufferType</a> buffer_type=FB_BACK, <a class="el" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752">TypeId</a> type=<a class="el" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752a60aaeda29715a39905dd9cbfbd0130ca">type::info::TI_UINT8</a>, <a class="el" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979">data::ComponentFormat</a> cf=<a class="el" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a5e0a20ab9e288dea753eade67973a28d">data::CF_RGB</a>, int w=-1, int h=-1)=0</td></tr>
+<tr class="memdesc:a88aa49f624a197b3af2e79c0e8a8c8d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the current frame buffer or a rectangular region of it into the given data view.  <a href="classcgv_1_1render_1_1context.html#a88aa49f624a197b3af2e79c0e8a8c8d4">More...</a><br /></td></tr>
 <tr class="separator:a88aa49f624a197b3af2e79c0e8a8c8d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a642c497988f59727f1bf683277800ee1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a642c497988f59727f1bf683277800ee1">write_frame_buffer_to_image</a> (const std::string &amp;file_name, <a class="el" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979">data::ComponentFormat</a> cf=<a class="el" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a5e0a20ab9e288dea753eade67973a28d">data::CF_RGB</a>, <a class="el" href="namespacecgv_1_1render.html#a6a9c2282e6df914ff013f5a587bbd49c">FrameBufferType</a> buffer_type=FB_BACK, unsigned int x=0, unsigned int y=0, int w=-1, int h=-1, float depth_offset=0.9f, float depth_scale=10.0f)</td></tr>
-<tr class="memdesc:a642c497988f59727f1bf683277800ee1"><td class="mdescLeft">&#160;</td><td class="mdescRight">write the content of a buffer to an image file  <a href="classcgv_1_1render_1_1context.html#a642c497988f59727f1bf683277800ee1">More...</a><br /></td></tr>
+<tr class="memdesc:a642c497988f59727f1bf683277800ee1"><td class="mdescLeft">&#160;</td><td class="mdescRight">write the content of the frame buffer to an image file.  <a href="classcgv_1_1render_1_1context.html#a642c497988f59727f1bf683277800ee1">More...</a><br /></td></tr>
 <tr class="separator:a642c497988f59727f1bf683277800ee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad00c328cf6c34336ac8b479100c18378"><td class="memItemLeft" align="right" valign="top"><a id="ad00c328cf6c34336ac8b479100c18378"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ad00c328cf6c34336ac8b479100c18378">set_bg_color</a> (float r, float g, float b, float a)</td></tr>
@@ -519,16 +523,128 @@ virtual float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 virtual <a class="el" href="namespacecgv_1_1media_1_1font.html#a64ce756a8996bfd2245707fe4418456c">media::font::font_face_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ab6335a7803ff8805c2fdb0498a34ccc7">get_current_font_face</a> () const</td></tr>
 <tr class="memdesc:ab6335a7803ff8805c2fdb0498a34ccc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the currently enabled font face <br /></td></tr>
 <tr class="separator:ab6335a7803ff8805c2fdb0498a34ccc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">surface rendering and material management</div></td></tr>
+<tr class="memitem:afaa8739e1961482dab338e4d24386acf"><td class="memItemLeft" align="right" valign="top"><a id="afaa8739e1961482dab338e4d24386acf"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#afaa8739e1961482dab338e4d24386acf">enable_phong_shading</a> ()</td></tr>
+<tr class="memdesc:afaa8739e1961482dab338e4d24386acf"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable phong shading with the help of a shader (enabled by default) <br /></td></tr>
+<tr class="separator:afaa8739e1961482dab338e4d24386acf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba3dfb84306087a6e0cee96406e3b879"><td class="memItemLeft" align="right" valign="top"><a id="aba3dfb84306087a6e0cee96406e3b879"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>disable_phong_shading</b> ()</td></tr>
+<tr class="separator:aba3dfb84306087a6e0cee96406e3b879"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a126a30c4cec6f7fd49cd15c517336091"><td class="memItemLeft" align="right" valign="top"><a id="a126a30c4cec6f7fd49cd15c517336091"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enable_material</b> (const <a class="el" href="classcgv_1_1media_1_1illum_1_1phong__material.html">cgv::media::illum::phong_material</a> &amp;mat=cgv::media::illum::default_material(), <a class="el" href="namespacecgv_1_1render.html#a6d228fe5151b5fca590320445c9e9139">MaterialSide</a> ms=MS_FRONT_AND_BACK, float alpha=1)</td></tr>
+<tr class="separator:a126a30c4cec6f7fd49cd15c517336091"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a390eed4b1cace7aadd831f6068a71bb1"><td class="memItemLeft" align="right" valign="top"><a id="a390eed4b1cace7aadd831f6068a71bb1"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>disable_material</b> (const <a class="el" href="classcgv_1_1media_1_1illum_1_1phong__material.html">cgv::media::illum::phong_material</a> &amp;mat=cgv::media::illum::default_material())</td></tr>
+<tr class="separator:a390eed4b1cace7aadd831f6068a71bb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67e78fb20bd879617a5b1b0faf59a82a"><td class="memItemLeft" align="right" valign="top"><a id="a67e78fb20bd879617a5b1b0faf59a82a"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enable_material</b> (const <a class="el" href="classcgv_1_1render_1_1textured__material.html">textured_material</a> &amp;mat, <a class="el" href="namespacecgv_1_1render.html#a6d228fe5151b5fca590320445c9e9139">MaterialSide</a> ms=MS_FRONT_AND_BACK, float alpha=1)</td></tr>
+<tr class="separator:a67e78fb20bd879617a5b1b0faf59a82a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade244b3b056257e5350de3d07f40560c"><td class="memItemLeft" align="right" valign="top"><a id="ade244b3b056257e5350de3d07f40560c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ade244b3b056257e5350de3d07f40560c">set_gamma</a> (float _gamma)</td></tr>
+<tr class="memdesc:ade244b3b056257e5350de3d07f40560c"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current per channel gamma values to single value <br /></td></tr>
+<tr class="separator:ade244b3b056257e5350de3d07f40560c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a153ca24f76c849e83b0a6db0982daa72"><td class="memItemLeft" align="right" valign="top"><a id="a153ca24f76c849e83b0a6db0982daa72"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a153ca24f76c849e83b0a6db0982daa72">set_gamma3</a> (const <a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a> &amp;_gamma3)</td></tr>
+<tr class="memdesc:a153ca24f76c849e83b0a6db0982daa72"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current per channel gamma values to single value <br /></td></tr>
+<tr class="separator:a153ca24f76c849e83b0a6db0982daa72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51a7f29f3dbad8a4b6e75e0904fc1f14"><td class="memItemLeft" align="right" valign="top"><a id="a51a7f29f3dbad8a4b6e75e0904fc1f14"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a51a7f29f3dbad8a4b6e75e0904fc1f14">get_gamma</a> () const</td></tr>
+<tr class="memdesc:a51a7f29f3dbad8a4b6e75e0904fc1f14"><td class="mdescLeft">&#160;</td><td class="mdescRight">query current gamma computed as average over gamma3 per channel values <br /></td></tr>
+<tr class="separator:a51a7f29f3dbad8a4b6e75e0904fc1f14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6dea8be1f0551ed0ce15758b2edf414b"><td class="memItemLeft" align="right" valign="top"><a id="a6dea8be1f0551ed0ce15758b2edf414b"></a>
+<a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a6dea8be1f0551ed0ce15758b2edf414b">get_gamma3</a> () const</td></tr>
+<tr class="memdesc:a6dea8be1f0551ed0ce15758b2edf414b"><td class="mdescLeft">&#160;</td><td class="mdescRight">query current per color channel gamma <br /></td></tr>
+<tr class="separator:a6dea8be1f0551ed0ce15758b2edf414b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16057a9f7c3026c594624951aac4e70a"><td class="memItemLeft" align="right" valign="top"><a id="a16057a9f7c3026c594624951aac4e70a"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a16057a9f7c3026c594624951aac4e70a">enable_sRGB_framebuffer</a> (bool do_enable=true)</td></tr>
+<tr class="memdesc:a16057a9f7c3026c594624951aac4e70a"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable or disable sRGB framebuffer <br /></td></tr>
+<tr class="separator:a16057a9f7c3026c594624951aac4e70a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac51519c45cf41db96ae0962b8ff483ba"><td class="memItemLeft" align="right" valign="top"><a id="ac51519c45cf41db96ae0962b8ff483ba"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ac51519c45cf41db96ae0962b8ff483ba">sRGB_framebuffer_enabled</a> ()</td></tr>
+<tr class="memdesc:ac51519c45cf41db96ae0962b8ff483ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">check whether sRGB framebuffer is enabled <br /></td></tr>
+<tr class="separator:ac51519c45cf41db96ae0962b8ff483ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fe914f2dca2a44f66009b442c191e0b"><td class="memItemLeft" align="right" valign="top"><a id="a2fe914f2dca2a44f66009b442c191e0b"></a>
+const <a class="el" href="structcgv_1_1render_1_1render__types.html#ab510d7e1706c6061a03086d28b9b33d3">rgba</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a2fe914f2dca2a44f66009b442c191e0b">get_color</a> () const</td></tr>
+<tr class="memdesc:a2fe914f2dca2a44f66009b442c191e0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">return current color <br /></td></tr>
+<tr class="separator:a2fe914f2dca2a44f66009b442c191e0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10629d270c8f8023b525a58d795e08d1"><td class="memItemLeft" align="right" valign="top"><a id="a10629d270c8f8023b525a58d795e08d1"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a10629d270c8f8023b525a58d795e08d1">set_color</a> (const <a class="el" href="structcgv_1_1render_1_1render__types.html#ab510d7e1706c6061a03086d28b9b33d3">rgba</a> &amp;clr)</td></tr>
+<tr class="memdesc:a10629d270c8f8023b525a58d795e08d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current color <br /></td></tr>
+<tr class="separator:a10629d270c8f8023b525a58d795e08d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50a7e4169312b8cbf017ed529835e6eb"><td class="memItemLeft" align="right" valign="top"><a id="a50a7e4169312b8cbf017ed529835e6eb"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a50a7e4169312b8cbf017ed529835e6eb">set_color</a> (const <a class="el" href="structcgv_1_1render_1_1render__types.html#af36c04fdeb21290f87a81d9bfae4ad32">rgb</a> &amp;clr, float opacity=1.0f)</td></tr>
+<tr class="memdesc:a50a7e4169312b8cbf017ed529835e6eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current color <br /></td></tr>
+<tr class="separator:a50a7e4169312b8cbf017ed529835e6eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8283f97a24b91e174bdfef936bd6760b"><td class="memItemLeft" align="right" valign="top"><a id="a8283f97a24b91e174bdfef936bd6760b"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a8283f97a24b91e174bdfef936bd6760b">set_material</a> (const <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html">cgv::media::illum::surface_material</a> &amp;mat)</td></tr>
+<tr class="memdesc:a8283f97a24b91e174bdfef936bd6760b"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current material <br /></td></tr>
+<tr class="separator:a8283f97a24b91e174bdfef936bd6760b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a474747a5273553522a4a8e946b12fe80"><td class="memItemLeft" align="right" valign="top"><a id="a474747a5273553522a4a8e946b12fe80"></a>
+const <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html">cgv::media::illum::surface_material</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a474747a5273553522a4a8e946b12fe80">get_current_material</a> () const</td></tr>
+<tr class="memdesc:a474747a5273553522a4a8e946b12fe80"><td class="mdescLeft">&#160;</td><td class="mdescRight">return pointer to current material or nullptr if no current material is available <br /></td></tr>
+<tr class="separator:a474747a5273553522a4a8e946b12fe80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace5958c58c8a6aac359069feae2c9e48"><td class="memItemLeft" align="right" valign="top"><a id="ace5958c58c8a6aac359069feae2c9e48"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ace5958c58c8a6aac359069feae2c9e48">set_textured_material</a> (const <a class="el" href="classcgv_1_1render_1_1textured__material.html">textured_material</a> &amp;mat)</td></tr>
+<tr class="memdesc:ace5958c58c8a6aac359069feae2c9e48"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current material <br /></td></tr>
+<tr class="separator:ace5958c58c8a6aac359069feae2c9e48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee5bb26587b000deb35461eb15db55f7"><td class="memItemLeft" align="right" valign="top"><a id="aee5bb26587b000deb35461eb15db55f7"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aee5bb26587b000deb35461eb15db55f7">enable_material</a> (<a class="el" href="classcgv_1_1render_1_1textured__material.html">textured_material</a> &amp;mat)=0</td></tr>
+<tr class="memdesc:aee5bb26587b000deb35461eb15db55f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable a material with textures <br /></td></tr>
+<tr class="separator:aee5bb26587b000deb35461eb15db55f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a256a30c8837de0614e5d8bd462acc635"><td class="memItemLeft" align="right" valign="top"><a id="a256a30c8837de0614e5d8bd462acc635"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a256a30c8837de0614e5d8bd462acc635">disable_material</a> (<a class="el" href="classcgv_1_1render_1_1textured__material.html">textured_material</a> &amp;mat)=0</td></tr>
+<tr class="memdesc:a256a30c8837de0614e5d8bd462acc635"><td class="mdescLeft">&#160;</td><td class="mdescRight">disable a material with textures <br /></td></tr>
+<tr class="separator:a256a30c8837de0614e5d8bd462acc635"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94c82c8025fe32c6a9c1b14d6886145a"><td class="memItemLeft" align="right" valign="top"><a id="a94c82c8025fe32c6a9c1b14d6886145a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a94c82c8025fe32c6a9c1b14d6886145a">set_current_gamma</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog) const</td></tr>
+<tr class="memdesc:a94c82c8025fe32c6a9c1b14d6886145a"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the shader program gamma values <br /></td></tr>
+<tr class="separator:a94c82c8025fe32c6a9c1b14d6886145a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21ef3da6c0e31c98cc41528ba95cb74a"><td class="memItemLeft" align="right" valign="top"><a id="a21ef3da6c0e31c98cc41528ba95cb74a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a21ef3da6c0e31c98cc41528ba95cb74a">set_current_view</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, bool modelview_deps=true, bool projection_deps=true) const</td></tr>
+<tr class="memdesc:a21ef3da6c0e31c98cc41528ba95cb74a"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the shader program view matrices to the currently enabled view matrices <br /></td></tr>
+<tr class="separator:a21ef3da6c0e31c98cc41528ba95cb74a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae03abd4efb79222529fa605a0f1362cb"><td class="memItemLeft" align="right" valign="top"><a id="ae03abd4efb79222529fa605a0f1362cb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ae03abd4efb79222529fa605a0f1362cb">set_current_material</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog) const</td></tr>
+<tr class="memdesc:ae03abd4efb79222529fa605a0f1362cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the shader program material to the currently enabled material <br /></td></tr>
+<tr class="separator:ae03abd4efb79222529fa605a0f1362cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a89351b9ca179155687eaa47db14b97ab"><td class="memItemLeft" align="right" valign="top"><a id="a89351b9ca179155687eaa47db14b97ab"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a89351b9ca179155687eaa47db14b97ab">set_current_lights</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog) const</td></tr>
+<tr class="memdesc:a89351b9ca179155687eaa47db14b97ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the shader program lights to the currently enabled lights <br /></td></tr>
+<tr class="separator:a89351b9ca179155687eaa47db14b97ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd126f165c4c3f08de7a0d98ba060da9"><td class="memItemLeft" align="right" valign="top"><a id="acd126f165c4c3f08de7a0d98ba060da9"></a>
+<a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#acd126f165c4c3f08de7a0d98ba060da9">get_light_eye_position</a> (const <a class="el" href="classcgv_1_1media_1_1illum_1_1light__source.html">cgv::media::illum::light_source</a> &amp;light, bool place_now) const</td></tr>
+<tr class="memdesc:acd126f165c4c3f08de7a0d98ba060da9"><td class="mdescLeft">&#160;</td><td class="mdescRight">helper function to place lights <br /></td></tr>
+<tr class="separator:acd126f165c4c3f08de7a0d98ba060da9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2de923a5bd4ac180d2b2bbb2204ec35"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ab2de923a5bd4ac180d2b2bbb2204ec35">get_light_eye_spot_direction</a> (const <a class="el" href="classcgv_1_1media_1_1illum_1_1light__source.html">cgv::media::illum::light_source</a> &amp;light, bool place_now) const</td></tr>
+<tr class="memdesc:ab2de923a5bd4ac180d2b2bbb2204ec35"><td class="mdescLeft">&#160;</td><td class="mdescRight">helper function to place spot lights  <a href="classcgv_1_1render_1_1context.html#ab2de923a5bd4ac180d2b2bbb2204ec35">More...</a><br /></td></tr>
+<tr class="separator:ab2de923a5bd4ac180d2b2bbb2204ec35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46ae3f8f230b9067079644bb815ac1d4"><td class="memItemLeft" align="right" valign="top"><a id="a46ae3f8f230b9067079644bb815ac1d4"></a>
+virtual <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a46ae3f8f230b9067079644bb815ac1d4">ref_default_shader_program</a> (bool texture_support=false)=0</td></tr>
+<tr class="memdesc:a46ae3f8f230b9067079644bb815ac1d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a reference to a shader program used to render without illumination <br /></td></tr>
+<tr class="separator:a46ae3f8f230b9067079644bb815ac1d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a26ce9b9278534c75ca4a90b9456961"><td class="memItemLeft" align="right" valign="top"><a id="a6a26ce9b9278534c75ca4a90b9456961"></a>
+virtual <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a6a26ce9b9278534c75ca4a90b9456961">ref_surface_shader_program</a> (bool texture_support=false)=0</td></tr>
+<tr class="memdesc:a6a26ce9b9278534c75ca4a90b9456961"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a reference to the default shader program used to render surfaces <br /></td></tr>
+<tr class="separator:a6a26ce9b9278534c75ca4a90b9456961"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d09e7c44e18eb96ea76fda2e9829d6b"><td class="memItemLeft" align="right" valign="top"><a id="a1d09e7c44e18eb96ea76fda2e9829d6b"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a1d09e7c44e18eb96ea76fda2e9829d6b">enumerate_program_uniforms</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, std::vector&lt; std::string &gt; &amp;names, std::vector&lt; int &gt; *locations_ptr=0, std::vector&lt; int &gt; *sizes_ptr=0, std::vector&lt; int &gt; *types_ptr=0, bool show=false) const =0</td></tr>
+<tr class="memdesc:a1d09e7c44e18eb96ea76fda2e9829d6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">get list of program uniforms <br /></td></tr>
+<tr class="separator:a1d09e7c44e18eb96ea76fda2e9829d6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb2581c0b04da895beebf73bf17c5115"><td class="memItemLeft" align="right" valign="top"><a id="adb2581c0b04da895beebf73bf17c5115"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#adb2581c0b04da895beebf73bf17c5115">enumerate_program_attributes</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, std::vector&lt; std::string &gt; &amp;names, std::vector&lt; int &gt; *locations_ptr=0, std::vector&lt; int &gt; *sizes_ptr=0, std::vector&lt; int &gt; *types_ptr=0, bool show=false) const =0</td></tr>
+<tr class="memdesc:adb2581c0b04da895beebf73bf17c5115"><td class="mdescLeft">&#160;</td><td class="mdescRight">get list of program attributes <br /></td></tr>
+<tr class="separator:adb2581c0b04da895beebf73bf17c5115"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">lights</div></td></tr>
-<tr class="memitem:a966273ecfa065b09280ec77b28ee0ce1"><td class="memItemLeft" align="right" valign="top"><a id="a966273ecfa065b09280ec77b28ee0ce1"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated, use <a class="el" href="classcgv_1_1render_1_1context.html#a010d727c540762b45fc455903da396ab">add_light_source</a> instead.&quot;) void *enable_light(const cgv</td></tr>
-<tr class="separator:a966273ecfa065b09280ec77b28ee0ce1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acec6e9c78ffbe2943cc7880fe9b099e5"><td class="memItemLeft" align="right" valign="top"><a id="acec6e9c78ffbe2943cc7880fe9b099e5"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated, use <a class="el" href="classcgv_1_1render_1_1context.html#a8b5a7a96135b5be888b96f350d461623">enable_light_source</a> instead.&quot;) void disable_light(void *handle)</td></tr>
-<tr class="separator:acec6e9c78ffbe2943cc7880fe9b099e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c2edb028df1353b5956eb9e8992cdad"><td class="memItemLeft" align="right" valign="top"><a id="a1c2edb028df1353b5956eb9e8992cdad"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated, use <a class="el" href="classcgv_1_1render_1_1context.html#a7ae31270b2db696ee920f2167d25855e">get_max_nr_enabled_light_sources</a> instead.&quot;) unsigned get_max_nr_lights() const</td></tr>
-<tr class="separator:a1c2edb028df1353b5956eb9e8992cdad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f112afe7c4fc41c896f3e295bc57120"><td class="memItemLeft" align="right" valign="top"><a id="a3f112afe7c4fc41c896f3e295bc57120"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>enable_light</b> (const <a class="el" href="classcgv_1_1media_1_1illum_1_1light__source.html">cgv::media::illum::light_source</a> &amp;light)</td></tr>
+<tr class="separator:a3f112afe7c4fc41c896f3e295bc57120"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57368303cb77fc02aecc71aef8568408"><td class="memItemLeft" align="right" valign="top"><a id="a57368303cb77fc02aecc71aef8568408"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>disable_light</b> (void *handle)</td></tr>
+<tr class="separator:a57368303cb77fc02aecc71aef8568408"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec6992ff2e1d2c175af29cacc1a1e294"><td class="memItemLeft" align="right" valign="top"><a id="aec6992ff2e1d2c175af29cacc1a1e294"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>get_max_nr_lights</b> () const</td></tr>
+<tr class="separator:aec6992ff2e1d2c175af29cacc1a1e294"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee2094788bb0f70fa740d27e2211025b"><td class="memItemLeft" align="right" valign="top"><a id="aee2094788bb0f70fa740d27e2211025b"></a>
 size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aee2094788bb0f70fa740d27e2211025b">get_nr_light_sources</a> () const</td></tr>
 <tr class="memdesc:aee2094788bb0f70fa740d27e2211025b"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the number of light sources <br /></td></tr>
@@ -595,7 +711,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:a6e5f69461e946beb176b2cb4449aa2d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">text output</div></td></tr>
 <tr class="memitem:a03beeb4fe67b39c6cb28690b90faa771"><td class="memItemLeft" align="right" valign="top">virtual std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a03beeb4fe67b39c6cb28690b90faa771">output_stream</a> ()</td></tr>
-<tr class="memdesc:a03beeb4fe67b39c6cb28690b90faa771"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns an output stream whose output is printed at the current cursor location  <a href="classcgv_1_1render_1_1context.html#a03beeb4fe67b39c6cb28690b90faa771">More...</a><br /></td></tr>
+<tr class="memdesc:a03beeb4fe67b39c6cb28690b90faa771"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns an output stream whose output is printed at the current cursor location, which is managed by the context.  <a href="classcgv_1_1render_1_1context.html#a03beeb4fe67b39c6cb28690b90faa771">More...</a><br /></td></tr>
 <tr class="separator:a03beeb4fe67b39c6cb28690b90faa771"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf424006a714c67a218012b647941561"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#abf424006a714c67a218012b647941561">set_cursor</a> (int x, int y)</td></tr>
 <tr class="memdesc:abf424006a714c67a218012b647941561"><td class="mdescLeft">&#160;</td><td class="mdescRight">flush the output_stream and set a new cursor position given in opengl coordinates with (0,0) in lower left corner  <a href="classcgv_1_1render_1_1context.html#abf424006a714c67a218012b647941561">More...</a><br /></td></tr>
@@ -604,10 +720,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a2be5c3c627f04df5ca23abf39d944867"><td class="mdescLeft">&#160;</td><td class="mdescRight">return current cursor location in opengl coordinates with (0,0) in lower left corner  <a href="classcgv_1_1render_1_1context.html#a2be5c3c627f04df5ca23abf39d944867">More...</a><br /></td></tr>
 <tr class="separator:a2be5c3c627f04df5ca23abf39d944867"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d519025b26de272642278d128226f1b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a5d519025b26de272642278d128226f1b">put_cursor_coords</a> (const <a class="el" href="classcgv_1_1render_1_1context.html#af71f86e1bbcdbe9fb33b11378425a0f1">vec_type</a> &amp;p, int &amp;x, int &amp;y) const</td></tr>
-<tr class="memdesc:a5d519025b26de272642278d128226f1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">transform point p into cursor coordinates and put x and y coordinates into the passed variables  <a href="classcgv_1_1render_1_1context.html#a5d519025b26de272642278d128226f1b">More...</a><br /></td></tr>
+<tr class="memdesc:a5d519025b26de272642278d128226f1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">transform point p in current world coordinates into opengl coordinates with (0,0) in lower left corner and put x and y coordinates into the passed variables  <a href="classcgv_1_1render_1_1context.html#a5d519025b26de272642278d128226f1b">More...</a><br /></td></tr>
 <tr class="separator:a5d519025b26de272642278d128226f1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0753863e8f7dd51a4271f8f3c5a2ce1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa0753863e8f7dd51a4271f8f3c5a2ce1">set_cursor</a> (const <a class="el" href="classcgv_1_1render_1_1context.html#af71f86e1bbcdbe9fb33b11378425a0f1">vec_type</a> &amp;pos, const std::string &amp;text=&quot;&quot;, <a class="el" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">TextAlignment</a> ta=TA_BOTTOM_LEFT, int <a class="el" href="classcgv_1_1render_1_1context.html#acad150548a8c385d5500de242cba3282">x_offset</a>=0, int y_offset=0)</td></tr>
-<tr class="memdesc:aa0753863e8f7dd51a4271f8f3c5a2ce1"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the current text ouput position  <a href="classcgv_1_1render_1_1context.html#aa0753863e8f7dd51a4271f8f3c5a2ce1">More...</a><br /></td></tr>
+<tr class="memdesc:aa0753863e8f7dd51a4271f8f3c5a2ce1"><td class="mdescLeft">&#160;</td><td class="mdescRight">flush output_stream and set the current text position from a 3D or 4D location in current world coordinates.  <a href="classcgv_1_1render_1_1context.html#aa0753863e8f7dd51a4271f8f3c5a2ce1">More...</a><br /></td></tr>
 <tr class="separator:aa0753863e8f7dd51a4271f8f3c5a2ce1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">drawing</div></td></tr>
 <tr class="memitem:a17ead29513ecdf9c56dd86c757c0286c"><td class="memItemLeft" align="right" valign="top"><a id="a17ead29513ecdf9c56dd86c757c0286c"></a>
@@ -695,7 +811,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a80306fb1d08f59cdb7d540ae13a88e22"><td class="memItemLeft" align="right" valign="top"><a id="a80306fb1d08f59cdb7d540ae13a88e22"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a80306fb1d08f59cdb7d540ae13a88e22">use_shader_file_cache</a></td></tr>
-<tr class="memdesc:a80306fb1d08f59cdb7d540ae13a88e22"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to use the caching facilities of <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> and <a class="el" href="classcgv_1_1render_1_1shader__code.html">shader_code</a> to store loaded shader file contents as strings for faster loading <br /></td></tr>
+<tr class="memdesc:a80306fb1d08f59cdb7d540ae13a88e22"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to use the caching facilities of <a class="el" href="classcgv_1_1render_1_1shader__program.html" title="a shader program combines several shader code fragments to a complete definition of the shading pipel...">shader_program</a> and <a class="el" href="classcgv_1_1render_1_1shader__code.html" title="a shader code object holds a code fragment of a geometry vertex or fragment shader and can be added t...">shader_code</a> to store loaded shader file contents as strings for faster loading <br /></td></tr>
 <tr class="separator:a80306fb1d08f59cdb7d540ae13a88e22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af16fecce14eda62b7b17b264722110f6"><td class="memItemLeft" align="right" valign="top"><a id="af16fecce14eda62b7b17b264722110f6"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#af16fecce14eda62b7b17b264722110f6">auto_set_view_in_current_shader_program</a></td></tr>
@@ -853,168 +969,39 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 <tr class="memdesc:ab6ee7800f8ab16091dc24376de9f2572"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of default light sources <br /></td></tr>
 <tr class="separator:ab6ee7800f8ab16091dc24376de9f2572"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader">surface rendering and material management</h2></td></tr>
-<tr class="memitem:ade6648f21aba0e8e57fd1339b2f87a24"><td class="memItemLeft" align="right" valign="top"><a id="ade6648f21aba0e8e57fd1339b2f87a24"></a>
-DEPRECATED(&quot;deprecated, use <a class="el" href="classcgv_1_1render_1_1context.html#a8283f97a24b91e174bdfef936bd6760b">set_material</a> instead.&quot;) virtual void <a class="el" href="classcgv_1_1render_1_1context.html#a51d42f008706da889141ab8572cef6cf">enable_material</a>(const cgv DEPRECATED(&quot;deprecated and ignored.&quot;) virtual void <a class="el" href="classcgv_1_1render_1_1context.html#ac60e7fa8f7e00d8bdbd9305acee29545">disable_material</a>(const cgv <a class="el" href="namespacecgv_1_1render.html#a6d228fe5151b5fca590320445c9e9139">MaterialSide</a>&#160;</td><td class="memItemRight" valign="bottom"><b>ms</b> = MS_FRONT_AND_BACK</td></tr>
-<tr class="separator:ade6648f21aba0e8e57fd1339b2f87a24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a521760aa5f5ad15963cd573468b96b9a"><td class="memItemLeft" align="right" valign="top"><a id="a521760aa5f5ad15963cd573468b96b9a"></a>
-DEPRECATED(&quot;deprecated, use <a class="el" href="classcgv_1_1render_1_1context.html#a8283f97a24b91e174bdfef936bd6760b">set_material</a> instead.&quot;) virtual void <a class="el" href="classcgv_1_1render_1_1context.html#a51d42f008706da889141ab8572cef6cf">enable_material</a>(const cgv DEPRECATED(&quot;deprecated and ignored.&quot;) virtual void <a class="el" href="classcgv_1_1render_1_1context.html#ac60e7fa8f7e00d8bdbd9305acee29545">disable_material</a>(const cgv <a class="el" href="namespacecgv_1_1render.html#a6d228fe5151b5fca590320445c9e9139">MaterialSide</a> float&#160;</td><td class="memItemRight" valign="bottom"><b>alpha</b> = 1)</td></tr>
-<tr class="separator:a521760aa5f5ad15963cd573468b96b9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a41a4245adc31eebce8bdc86359d03fd3"><td class="memItemLeft" align="right" valign="top"><a id="a41a4245adc31eebce8bdc86359d03fd3"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated and ignored.&quot;) virtual void enable_phong_shading()</td></tr>
-<tr class="separator:a41a4245adc31eebce8bdc86359d03fd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8cef2bca927c2d5173ec1249ba89302c"><td class="memItemLeft" align="right" valign="top"><a id="a8cef2bca927c2d5173ec1249ba89302c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated and ignored.&quot;) virtual void disable_phong_shading()</td></tr>
-<tr class="separator:a8cef2bca927c2d5173ec1249ba89302c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade244b3b056257e5350de3d07f40560c"><td class="memItemLeft" align="right" valign="top"><a id="ade244b3b056257e5350de3d07f40560c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ade244b3b056257e5350de3d07f40560c">set_gamma</a> (float _gamma)</td></tr>
-<tr class="memdesc:ade244b3b056257e5350de3d07f40560c"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current per channel gamma values to single value <br /></td></tr>
-<tr class="separator:ade244b3b056257e5350de3d07f40560c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a153ca24f76c849e83b0a6db0982daa72"><td class="memItemLeft" align="right" valign="top"><a id="a153ca24f76c849e83b0a6db0982daa72"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a153ca24f76c849e83b0a6db0982daa72">set_gamma3</a> (const <a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a> &amp;_gamma3)</td></tr>
-<tr class="memdesc:a153ca24f76c849e83b0a6db0982daa72"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current per channel gamma values to single value <br /></td></tr>
-<tr class="separator:a153ca24f76c849e83b0a6db0982daa72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51a7f29f3dbad8a4b6e75e0904fc1f14"><td class="memItemLeft" align="right" valign="top"><a id="a51a7f29f3dbad8a4b6e75e0904fc1f14"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a51a7f29f3dbad8a4b6e75e0904fc1f14">get_gamma</a> () const</td></tr>
-<tr class="memdesc:a51a7f29f3dbad8a4b6e75e0904fc1f14"><td class="mdescLeft">&#160;</td><td class="mdescRight">query current gamma computed as average over gamma3 per channel values <br /></td></tr>
-<tr class="separator:a51a7f29f3dbad8a4b6e75e0904fc1f14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6dea8be1f0551ed0ce15758b2edf414b"><td class="memItemLeft" align="right" valign="top"><a id="a6dea8be1f0551ed0ce15758b2edf414b"></a>
-<a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a6dea8be1f0551ed0ce15758b2edf414b">get_gamma3</a> () const</td></tr>
-<tr class="memdesc:a6dea8be1f0551ed0ce15758b2edf414b"><td class="mdescLeft">&#160;</td><td class="mdescRight">query current per color channel gamma <br /></td></tr>
-<tr class="separator:a6dea8be1f0551ed0ce15758b2edf414b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a16057a9f7c3026c594624951aac4e70a"><td class="memItemLeft" align="right" valign="top"><a id="a16057a9f7c3026c594624951aac4e70a"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a16057a9f7c3026c594624951aac4e70a">enable_sRGB_framebuffer</a> (bool do_enable=true)</td></tr>
-<tr class="memdesc:a16057a9f7c3026c594624951aac4e70a"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable or disable sRGB framebuffer <br /></td></tr>
-<tr class="separator:a16057a9f7c3026c594624951aac4e70a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac51519c45cf41db96ae0962b8ff483ba"><td class="memItemLeft" align="right" valign="top"><a id="ac51519c45cf41db96ae0962b8ff483ba"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ac51519c45cf41db96ae0962b8ff483ba">sRGB_framebuffer_enabled</a> ()</td></tr>
-<tr class="memdesc:ac51519c45cf41db96ae0962b8ff483ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">check whether sRGB framebuffer is enabled <br /></td></tr>
-<tr class="separator:ac51519c45cf41db96ae0962b8ff483ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2fe914f2dca2a44f66009b442c191e0b"><td class="memItemLeft" align="right" valign="top"><a id="a2fe914f2dca2a44f66009b442c191e0b"></a>
-const <a class="el" href="structcgv_1_1render_1_1render__types.html#ab510d7e1706c6061a03086d28b9b33d3">rgba</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a2fe914f2dca2a44f66009b442c191e0b">get_color</a> () const</td></tr>
-<tr class="memdesc:a2fe914f2dca2a44f66009b442c191e0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">return current color <br /></td></tr>
-<tr class="separator:a2fe914f2dca2a44f66009b442c191e0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10629d270c8f8023b525a58d795e08d1"><td class="memItemLeft" align="right" valign="top"><a id="a10629d270c8f8023b525a58d795e08d1"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a10629d270c8f8023b525a58d795e08d1">set_color</a> (const <a class="el" href="structcgv_1_1render_1_1render__types.html#ab510d7e1706c6061a03086d28b9b33d3">rgba</a> &amp;clr)</td></tr>
-<tr class="memdesc:a10629d270c8f8023b525a58d795e08d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current color <br /></td></tr>
-<tr class="separator:a10629d270c8f8023b525a58d795e08d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50a7e4169312b8cbf017ed529835e6eb"><td class="memItemLeft" align="right" valign="top"><a id="a50a7e4169312b8cbf017ed529835e6eb"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a50a7e4169312b8cbf017ed529835e6eb">set_color</a> (const <a class="el" href="structcgv_1_1render_1_1render__types.html#af36c04fdeb21290f87a81d9bfae4ad32">rgb</a> &amp;clr, float opacity=1.0f)</td></tr>
-<tr class="memdesc:a50a7e4169312b8cbf017ed529835e6eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current color <br /></td></tr>
-<tr class="separator:a50a7e4169312b8cbf017ed529835e6eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8283f97a24b91e174bdfef936bd6760b"><td class="memItemLeft" align="right" valign="top"><a id="a8283f97a24b91e174bdfef936bd6760b"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a8283f97a24b91e174bdfef936bd6760b">set_material</a> (const <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html">cgv::media::illum::surface_material</a> &amp;mat)</td></tr>
-<tr class="memdesc:a8283f97a24b91e174bdfef936bd6760b"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current material <br /></td></tr>
-<tr class="separator:a8283f97a24b91e174bdfef936bd6760b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a474747a5273553522a4a8e946b12fe80"><td class="memItemLeft" align="right" valign="top"><a id="a474747a5273553522a4a8e946b12fe80"></a>
-const <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html">cgv::media::illum::surface_material</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a474747a5273553522a4a8e946b12fe80">get_current_material</a> () const</td></tr>
-<tr class="memdesc:a474747a5273553522a4a8e946b12fe80"><td class="mdescLeft">&#160;</td><td class="mdescRight">return pointer to current material or nullptr if no current material is available <br /></td></tr>
-<tr class="separator:a474747a5273553522a4a8e946b12fe80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace5958c58c8a6aac359069feae2c9e48"><td class="memItemLeft" align="right" valign="top"><a id="ace5958c58c8a6aac359069feae2c9e48"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ace5958c58c8a6aac359069feae2c9e48">set_textured_material</a> (const <a class="el" href="classcgv_1_1render_1_1textured__material.html">textured_material</a> &amp;mat)</td></tr>
-<tr class="memdesc:ace5958c58c8a6aac359069feae2c9e48"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the current material <br /></td></tr>
-<tr class="separator:ace5958c58c8a6aac359069feae2c9e48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51d42f008706da889141ab8572cef6cf"><td class="memItemLeft" align="right" valign="top"><a id="a51d42f008706da889141ab8572cef6cf"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a51d42f008706da889141ab8572cef6cf">enable_material</a> (<a class="el" href="classcgv_1_1render_1_1textured__material.html">textured_material</a> &amp;mat)=0</td></tr>
-<tr class="memdesc:a51d42f008706da889141ab8572cef6cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable a material with textures <br /></td></tr>
-<tr class="separator:a51d42f008706da889141ab8572cef6cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac60e7fa8f7e00d8bdbd9305acee29545"><td class="memItemLeft" align="right" valign="top"><a id="ac60e7fa8f7e00d8bdbd9305acee29545"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ac60e7fa8f7e00d8bdbd9305acee29545">disable_material</a> (<a class="el" href="classcgv_1_1render_1_1textured__material.html">textured_material</a> &amp;mat)=0</td></tr>
-<tr class="memdesc:ac60e7fa8f7e00d8bdbd9305acee29545"><td class="mdescLeft">&#160;</td><td class="mdescRight">disable a material with textures <br /></td></tr>
-<tr class="separator:ac60e7fa8f7e00d8bdbd9305acee29545"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94c82c8025fe32c6a9c1b14d6886145a"><td class="memItemLeft" align="right" valign="top"><a id="a94c82c8025fe32c6a9c1b14d6886145a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a94c82c8025fe32c6a9c1b14d6886145a">set_current_gamma</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog) const</td></tr>
-<tr class="memdesc:a94c82c8025fe32c6a9c1b14d6886145a"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the shader program gamma values <br /></td></tr>
-<tr class="separator:a94c82c8025fe32c6a9c1b14d6886145a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21ef3da6c0e31c98cc41528ba95cb74a"><td class="memItemLeft" align="right" valign="top"><a id="a21ef3da6c0e31c98cc41528ba95cb74a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a21ef3da6c0e31c98cc41528ba95cb74a">set_current_view</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, bool modelview_deps=true, bool projection_deps=true) const</td></tr>
-<tr class="memdesc:a21ef3da6c0e31c98cc41528ba95cb74a"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the shader program view matrices to the currently enabled view matrices <br /></td></tr>
-<tr class="separator:a21ef3da6c0e31c98cc41528ba95cb74a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae03abd4efb79222529fa605a0f1362cb"><td class="memItemLeft" align="right" valign="top"><a id="ae03abd4efb79222529fa605a0f1362cb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ae03abd4efb79222529fa605a0f1362cb">set_current_material</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog) const</td></tr>
-<tr class="memdesc:ae03abd4efb79222529fa605a0f1362cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the shader program material to the currently enabled material <br /></td></tr>
-<tr class="separator:ae03abd4efb79222529fa605a0f1362cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89351b9ca179155687eaa47db14b97ab"><td class="memItemLeft" align="right" valign="top"><a id="a89351b9ca179155687eaa47db14b97ab"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a89351b9ca179155687eaa47db14b97ab">set_current_lights</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog) const</td></tr>
-<tr class="memdesc:a89351b9ca179155687eaa47db14b97ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the shader program lights to the currently enabled lights <br /></td></tr>
-<tr class="separator:a89351b9ca179155687eaa47db14b97ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd126f165c4c3f08de7a0d98ba060da9"><td class="memItemLeft" align="right" valign="top"><a id="acd126f165c4c3f08de7a0d98ba060da9"></a>
-<a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#acd126f165c4c3f08de7a0d98ba060da9">get_light_eye_position</a> (const <a class="el" href="classcgv_1_1media_1_1illum_1_1light__source.html">cgv::media::illum::light_source</a> &amp;light, bool place_now) const</td></tr>
-<tr class="memdesc:acd126f165c4c3f08de7a0d98ba060da9"><td class="mdescLeft">&#160;</td><td class="mdescRight">helper function to place lights <br /></td></tr>
-<tr class="separator:acd126f165c4c3f08de7a0d98ba060da9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2de923a5bd4ac180d2b2bbb2204ec35"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ab2de923a5bd4ac180d2b2bbb2204ec35">get_light_eye_spot_direction</a> (const <a class="el" href="classcgv_1_1media_1_1illum_1_1light__source.html">cgv::media::illum::light_source</a> &amp;light, bool place_now) const</td></tr>
-<tr class="memdesc:ab2de923a5bd4ac180d2b2bbb2204ec35"><td class="mdescLeft">&#160;</td><td class="mdescRight">helper function to place spot lights  <a href="classcgv_1_1render_1_1context.html#ab2de923a5bd4ac180d2b2bbb2204ec35">More...</a><br /></td></tr>
-<tr class="separator:ab2de923a5bd4ac180d2b2bbb2204ec35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46ae3f8f230b9067079644bb815ac1d4"><td class="memItemLeft" align="right" valign="top"><a id="a46ae3f8f230b9067079644bb815ac1d4"></a>
-virtual <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a46ae3f8f230b9067079644bb815ac1d4">ref_default_shader_program</a> (bool texture_support=false)=0</td></tr>
-<tr class="memdesc:a46ae3f8f230b9067079644bb815ac1d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a reference to a shader program used to render without illumination <br /></td></tr>
-<tr class="separator:a46ae3f8f230b9067079644bb815ac1d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a26ce9b9278534c75ca4a90b9456961"><td class="memItemLeft" align="right" valign="top"><a id="a6a26ce9b9278534c75ca4a90b9456961"></a>
-virtual <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a6a26ce9b9278534c75ca4a90b9456961">ref_surface_shader_program</a> (bool texture_support=false)=0</td></tr>
-<tr class="memdesc:a6a26ce9b9278534c75ca4a90b9456961"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a reference to the default shader program used to render surfaces <br /></td></tr>
-<tr class="separator:a6a26ce9b9278534c75ca4a90b9456961"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d09e7c44e18eb96ea76fda2e9829d6b"><td class="memItemLeft" align="right" valign="top"><a id="a1d09e7c44e18eb96ea76fda2e9829d6b"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a1d09e7c44e18eb96ea76fda2e9829d6b">enumerate_program_uniforms</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, std::vector&lt; std::string &gt; &amp;names, std::vector&lt; int &gt; *locations_ptr=0, std::vector&lt; int &gt; *sizes_ptr=0, std::vector&lt; int &gt; *types_ptr=0, bool show=false) const =0</td></tr>
-<tr class="memdesc:a1d09e7c44e18eb96ea76fda2e9829d6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">get list of program uniforms <br /></td></tr>
-<tr class="separator:a1d09e7c44e18eb96ea76fda2e9829d6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb2581c0b04da895beebf73bf17c5115"><td class="memItemLeft" align="right" valign="top"><a id="adb2581c0b04da895beebf73bf17c5115"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#adb2581c0b04da895beebf73bf17c5115">enumerate_program_attributes</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, std::vector&lt; std::string &gt; &amp;names, std::vector&lt; int &gt; *locations_ptr=0, std::vector&lt; int &gt; *sizes_ptr=0, std::vector&lt; int &gt; *types_ptr=0, bool show=false) const =0</td></tr>
-<tr class="memdesc:adb2581c0b04da895beebf73bf17c5115"><td class="mdescLeft">&#160;</td><td class="mdescRight">get list of program attributes <br /></td></tr>
-<tr class="separator:adb2581c0b04da895beebf73bf17c5115"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader">transformations</h2></td></tr>
-<tr class="memitem:a39a96f4f23ab3e9fc2b17df0cba8ddec"><td class="memItemLeft" align="right" valign="top"><a id="a39a96f4f23ab3e9fc2b17df0cba8ddec"></a>
-int y_D&#160;</td><td class="memItemRight" valign="bottom"><b>const</b> { return <a class="el" href="classcgv_1_1render_1_1context.html#a81ec9afc26401ea90bc20990fcd6d54d">get_window_z</a>(x_D, y_D)</td></tr>
-<tr class="separator:a39a96f4f23ab3e9fc2b17df0cba8ddec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e6b9639ba70688afccce083d83df890"><td class="memItemLeft" align="right" valign="top"><a id="a6e6b9639ba70688afccce083d83df890"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>y_D</b></td></tr>
-<tr class="separator:a6e6b9639ba70688afccce083d83df890"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c7959b89c4cb3def124dc8af9fefebb"><td class="memItemLeft" align="right" valign="top"><a id="a7c7959b89c4cb3def124dc8af9fefebb"></a>
-int const <a class="el" href="structcgv_1_1render_1_1render__types.html#a64b31ef71f0d782df7416df1973a941a">dmat4</a> &amp;MPD&#160;</td><td class="memItemRight" valign="bottom"><b>const</b> { return <a class="el" href="classcgv_1_1render_1_1context.html#a1a63339acab384f44577c890f5107f80">get_model_point</a>(x_D, y_D, MPD)</td></tr>
-<tr class="separator:a7c7959b89c4cb3def124dc8af9fefebb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a418d9ada520178bbc167c64c99682e05"><td class="memItemLeft" align="right" valign="top"><a id="a418d9ada520178bbc167c64c99682e05"></a>
-int double z_D&#160;</td><td class="memItemRight" valign="bottom"><b>const</b> { return <a class="el" href="classcgv_1_1render_1_1context.html#a1a63339acab384f44577c890f5107f80">get_model_point</a>(x_D, y_D, z_D)</td></tr>
-<tr class="separator:a418d9ada520178bbc167c64c99682e05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e58bdc8e0ee2769dec4769a751d1f86"><td class="memItemLeft" align="right" valign="top"><a id="a9e58bdc8e0ee2769dec4769a751d1f86"></a>
-int double&#160;</td><td class="memItemRight" valign="bottom"><b>z_D</b></td></tr>
-<tr class="separator:a9e58bdc8e0ee2769dec4769a751d1f86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afda03924cccb06373a95b82b7464305f"><td class="memItemLeft" align="right" valign="top"><a id="afda03924cccb06373a95b82b7464305f"></a>
-int double const <a class="el" href="structcgv_1_1render_1_1render__types.html#a64b31ef71f0d782df7416df1973a941a">dmat4</a> &amp;MPD&#160;</td><td class="memItemRight" valign="bottom"><b>const</b> { return <a class="el" href="classcgv_1_1render_1_1context.html#a1a63339acab384f44577c890f5107f80">get_model_point</a>(x_D, y_D, z_D, MPD)</td></tr>
-<tr class="separator:afda03924cccb06373a95b82b7464305f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22bc3309b0dbebadd33cc871d2896837"><td class="memItemLeft" align="right" valign="top"><a id="a22bc3309b0dbebadd33cc871d2896837"></a>
-const <a class="el" href="structcgv_1_1render_1_1render__types.html#a64b31ef71f0d782df7416df1973a941a">dmat4</a> &amp;MPD&#160;</td><td class="memItemRight" valign="bottom"><b>const</b> { return <a class="el" href="classcgv_1_1render_1_1context.html#a1a63339acab384f44577c890f5107f80">get_model_point</a>(p_D, MPD)</td></tr>
-<tr class="separator:a22bc3309b0dbebadd33cc871d2896837"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63c65b21723ec2ed29314a7b11d29550"><td class="memItemLeft" align="right" valign="top"><a id="a63c65b21723ec2ed29314a7b11d29550"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated: use <a class="el" href="classcgv_1_1render_1_1context.html#adf6b241cf3e57c435ef50cbb21427194">get_modelview_matrix</a>() instead.&quot;) dmat_type get_V() const</td></tr>
-<tr class="separator:a63c65b21723ec2ed29314a7b11d29550"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a07c6cdc43095911b7a3db85f2645046e"><td class="memItemLeft" align="right" valign="top"><a id="a07c6cdc43095911b7a3db85f2645046e"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated: use <a class="el" href="classcgv_1_1render_1_1context.html#af80eb72358a8c7e3c1132f997fe0a572">set_modelview_matrix</a>() instead.&quot;) void set_V(const <a class="el" href="classcgv_1_1render_1_1context.html#ab945d1bd4d1a1ec1db994161d9cb1caf">dmat_type</a> &amp;V) const</td></tr>
-<tr class="separator:a07c6cdc43095911b7a3db85f2645046e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8ec2bbdb119f3a1dba290fe22c23418"><td class="memItemLeft" align="right" valign="top"><a id="af8ec2bbdb119f3a1dba290fe22c23418"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated: use <a class="el" href="classcgv_1_1render_1_1context.html#ae8e533212813f66b5930a62fdc327170">push_modelview_matrix</a>() instead.&quot;) void push_V()</td></tr>
-<tr class="separator:af8ec2bbdb119f3a1dba290fe22c23418"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53ca9391824302191a59b0474979ee6b"><td class="memItemLeft" align="right" valign="top"><a id="a53ca9391824302191a59b0474979ee6b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated: use <a class="el" href="classcgv_1_1render_1_1context.html#ae4af0abc9021c483180187b32d11cd7a">pop_modelview_matrix</a>() instead.&quot;) void pop_V()</td></tr>
-<tr class="separator:a53ca9391824302191a59b0474979ee6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60b2c4a37fb768cf0041789a93358697"><td class="memItemLeft" align="right" valign="top"><a id="a60b2c4a37fb768cf0041789a93358697"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated: use <a class="el" href="classcgv_1_1render_1_1context.html#abafe76b5658543e94b2bbe0114fbe72d">get_projection_matrix</a>() instead.&quot;) dmat_type get_P() const</td></tr>
-<tr class="separator:a60b2c4a37fb768cf0041789a93358697"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa2b49e6c3cbf58671acb1715e40b7a15"><td class="memItemLeft" align="right" valign="top"><a id="aa2b49e6c3cbf58671acb1715e40b7a15"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated: use <a class="el" href="classcgv_1_1render_1_1context.html#ab655262a94e1e751c8a37ffbb96f6f38">set_projection_matrix</a>() instead.&quot;) void set_P(const <a class="el" href="classcgv_1_1render_1_1context.html#ab945d1bd4d1a1ec1db994161d9cb1caf">dmat_type</a> &amp;P) const</td></tr>
-<tr class="separator:aa2b49e6c3cbf58671acb1715e40b7a15"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53453784b46e99404066c095a4947f32"><td class="memItemLeft" align="right" valign="top"><a id="a53453784b46e99404066c095a4947f32"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated: use <a class="el" href="classcgv_1_1render_1_1context.html#aaf95e59c03293af3f537d64720d03bf4">push_projection_matrix</a>() instead.&quot;) void push_P()</td></tr>
-<tr class="separator:a53453784b46e99404066c095a4947f32"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1dfb259cea9acc07949c691bd1cd075b"><td class="memItemLeft" align="right" valign="top"><a id="a1dfb259cea9acc07949c691bd1cd075b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated: use <a class="el" href="classcgv_1_1render_1_1context.html#a971b6a264f18a0a614c902519541ec3d">pop_projection_matrix</a>() instead.&quot;) void pop_P()</td></tr>
-<tr class="separator:a1dfb259cea9acc07949c691bd1cd075b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0757f26a68ea747ba9f75018a2261506"><td class="memItemLeft" align="right" valign="top"><a id="a0757f26a68ea747ba9f75018a2261506"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated: use get_device_matrix() instead.&quot;) dmat_type get_D() const</td></tr>
-<tr class="separator:a0757f26a68ea747ba9f75018a2261506"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84d98b4ec0ab42b9afd373f8b7bc9e62"><td class="memItemLeft" align="right" valign="top"><a id="a84d98b4ec0ab42b9afd373f8b7bc9e62"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated: use get_modelview_projection_device_matrix() instead.&quot;) mat_type get_DPV() const</td></tr>
-<tr class="separator:a84d98b4ec0ab42b9afd373f8b7bc9e62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a08641e14e33372226f2183dc111532"><td class="memItemLeft" align="right" valign="top"><a id="a5a08641e14e33372226f2183dc111532"></a>
+<a class="el" href="classcgv_1_1render_1_1context.html#ab945d1bd4d1a1ec1db994161d9cb1caf">dmat_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_V</b> () const</td></tr>
+<tr class="separator:a5a08641e14e33372226f2183dc111532"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9dbd2fc9f1efcb19404f52069c1191a9"><td class="memItemLeft" align="right" valign="top"><a id="a9dbd2fc9f1efcb19404f52069c1191a9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_V</b> (const <a class="el" href="classcgv_1_1render_1_1context.html#ab945d1bd4d1a1ec1db994161d9cb1caf">dmat_type</a> &amp;V) const</td></tr>
+<tr class="separator:a9dbd2fc9f1efcb19404f52069c1191a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade086ea78c8ba284f1856740ab14e39b"><td class="memItemLeft" align="right" valign="top"><a id="ade086ea78c8ba284f1856740ab14e39b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>push_V</b> ()</td></tr>
+<tr class="separator:ade086ea78c8ba284f1856740ab14e39b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b036160efd135073f525850027dd269"><td class="memItemLeft" align="right" valign="top"><a id="a2b036160efd135073f525850027dd269"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>pop_V</b> ()</td></tr>
+<tr class="separator:a2b036160efd135073f525850027dd269"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab66eb3f1121c8265faf83177c10287bf"><td class="memItemLeft" align="right" valign="top"><a id="ab66eb3f1121c8265faf83177c10287bf"></a>
+<a class="el" href="classcgv_1_1render_1_1context.html#ab945d1bd4d1a1ec1db994161d9cb1caf">dmat_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_P</b> () const</td></tr>
+<tr class="separator:ab66eb3f1121c8265faf83177c10287bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae374586d24de49cebf47e342352a6213"><td class="memItemLeft" align="right" valign="top"><a id="ae374586d24de49cebf47e342352a6213"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_P</b> (const <a class="el" href="classcgv_1_1render_1_1context.html#ab945d1bd4d1a1ec1db994161d9cb1caf">dmat_type</a> &amp;P) const</td></tr>
+<tr class="separator:ae374586d24de49cebf47e342352a6213"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad939902d713fb0873d91ff3e0c153ca5"><td class="memItemLeft" align="right" valign="top"><a id="ad939902d713fb0873d91ff3e0c153ca5"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>push_P</b> ()</td></tr>
+<tr class="separator:ad939902d713fb0873d91ff3e0c153ca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf89f80a0583267c4b05676de5eec1b7"><td class="memItemLeft" align="right" valign="top"><a id="aaf89f80a0583267c4b05676de5eec1b7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>pop_P</b> ()</td></tr>
+<tr class="separator:aaf89f80a0583267c4b05676de5eec1b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a666ac1f61612535a7674b984e3359193"><td class="memItemLeft" align="right" valign="top"><a id="a666ac1f61612535a7674b984e3359193"></a>
+<a class="el" href="classcgv_1_1render_1_1context.html#ab945d1bd4d1a1ec1db994161d9cb1caf">dmat_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_D</b> () const</td></tr>
+<tr class="separator:a666ac1f61612535a7674b984e3359193"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13ba136cb83cdad958cc2eedd00e373b"><td class="memItemLeft" align="right" valign="top"><a id="a13ba136cb83cdad958cc2eedd00e373b"></a>
+<a class="el" href="classcgv_1_1render_1_1context.html#a25e9178c25eb438b1dd6ae9175f1bac2">mat_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_DPV</b> () const</td></tr>
+<tr class="separator:a13ba136cb83cdad958cc2eedd00e373b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac2c6df494de9a642d8ea3f4dcbcd2a6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aac2c6df494de9a642d8ea3f4dcbcd2a6">push_pixel_coords</a> ()=0</td></tr>
+<tr class="memdesc:aac2c6df494de9a642d8ea3f4dcbcd2a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">use this to push new modelview and new projection matrices onto the transformation stacks such that x and y coordinates correspond to opengl coordinates with (0,0) in lower left corner.  <a href="classcgv_1_1render_1_1context.html#aac2c6df494de9a642d8ea3f4dcbcd2a6">More...</a><br /></td></tr>
 <tr class="separator:aac2c6df494de9a642d8ea3f4dcbcd2a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec099af0ba402c7b3dad4d192adb8c47"><td class="memItemLeft" align="right" valign="top"><a id="aec099af0ba402c7b3dad4d192adb8c47"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aec099af0ba402c7b3dad4d192adb8c47">pop_pixel_coords</a> ()=0</td></tr>
@@ -1111,42 +1098,41 @@ virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <tr class="memitem:a720876149d0608e8fff666d7484b1e24"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a720876149d0608e8fff666d7484b1e24">get_model_point</a> (const <a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a> &amp;p_window) const</td></tr>
 <tr class="memdesc:a720876149d0608e8fff666d7484b1e24"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given window space point  <a href="classcgv_1_1render_1_1context.html#a720876149d0608e8fff666d7484b1e24">More...</a><br /></td></tr>
 <tr class="separator:a720876149d0608e8fff666d7484b1e24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7f8ae13132d046bf343d5402790c321"><td class="memItemLeft" align="right" valign="top"><a id="aa7f8ae13132d046bf343d5402790c321"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa7f8ae13132d046bf343d5402790c321">DEPRECATED</a> (&quot;use <a class="el" href="classcgv_1_1render_1_1context.html#a0e7aa4f692200dc64ee2ad0ca91ae975">get_window_matrix</a>() instead.&quot;) dmat4 get_device_matrix() const</td></tr>
-<tr class="memdesc:aa7f8ae13132d046bf343d5402790c321"><td class="mdescLeft">&#160;</td><td class="mdescRight">return homogeneous 4x4 projection matrix, which transforms from clip to device space <br /></td></tr>
-<tr class="separator:aa7f8ae13132d046bf343d5402790c321"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a41596bc900c29f4ea25e04d9e1fc3207"><td class="memItemLeft" align="right" valign="top"><a id="a41596bc900c29f4ea25e04d9e1fc3207"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a41596bc900c29f4ea25e04d9e1fc3207">DEPRECATED</a> (&quot;use <a class="el" href="classcgv_1_1render_1_1context.html#a1299f6ec69d22c4fdec75e8f31b4031c">get_modelview_projection_window_matrix</a>() instead.&quot;) dmat4 get_modelview_projection_device_matrix() const</td></tr>
-<tr class="memdesc:a41596bc900c29f4ea25e04d9e1fc3207"><td class="mdescLeft">&#160;</td><td class="mdescRight">return matrix to transfrom from model to device coordinates, i.e. the product of modelview, projection and device matrix in reversed order (device_matrix*projection_matrix*modelview_matrix) <br /></td></tr>
-<tr class="separator:a41596bc900c29f4ea25e04d9e1fc3207"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae95db1df2b808b7ba3b5df67c6d7c26a"><td class="memItemLeft" align="right" valign="top"><a id="ae95db1df2b808b7ba3b5df67c6d7c26a"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ae95db1df2b808b7ba3b5df67c6d7c26a">DEPRECATED</a> (&quot;use <a class="el" href="classcgv_1_1render_1_1context.html#a81ec9afc26401ea90bc20990fcd6d54d">get_window_z</a>()&quot;) double get_z_D(int x_D</td></tr>
-<tr class="memdesc:ae95db1df2b808b7ba3b5df67c6d7c26a"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the window z-coordinate from the z-buffer for the given device x- and y-coordinates <br /></td></tr>
-<tr class="separator:ae95db1df2b808b7ba3b5df67c6d7c26a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13c2f394cd659441640380d54f7f90a0"><td class="memItemLeft" align="right" valign="top"><a id="a13c2f394cd659441640380d54f7f90a0"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a13c2f394cd659441640380d54f7f90a0">DEPRECATED</a> (&quot;use <a class="el" href="classcgv_1_1render_1_1context.html#a1a63339acab384f44577c890f5107f80">get_model_point</a>()&quot;) vec3 get_point_W(int x_D</td></tr>
-<tr class="memdesc:a13c2f394cd659441640380d54f7f90a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute the location in world space of a device x/y-location. For this the device point is extended with the device z-coordinate currently stored in the displayed depth buffer. <br /></td></tr>
-<tr class="separator:a13c2f394cd659441640380d54f7f90a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13c2f394cd659441640380d54f7f90a0"><td class="memItemLeft" align="right" valign="top"><a id="a13c2f394cd659441640380d54f7f90a0"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a13c2f394cd659441640380d54f7f90a0">DEPRECATED</a> (&quot;use <a class="el" href="classcgv_1_1render_1_1context.html#a1a63339acab384f44577c890f5107f80">get_model_point</a>()&quot;) vec3 get_point_W(int x_D</td></tr>
-<tr class="memdesc:a13c2f394cd659441640380d54f7f90a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute the location in world space of a device x/y-location by inversion of the given transformation from world to device space. For this the device point is extended with the device z-coordinate currently stored in the displayed depth buffer. <br /></td></tr>
-<tr class="separator:a13c2f394cd659441640380d54f7f90a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13c2f394cd659441640380d54f7f90a0"><td class="memItemLeft" align="right" valign="top"><a id="a13c2f394cd659441640380d54f7f90a0"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a13c2f394cd659441640380d54f7f90a0">DEPRECATED</a> (&quot;use <a class="el" href="classcgv_1_1render_1_1context.html#a1a63339acab384f44577c890f5107f80">get_model_point</a>()&quot;) vec3 get_point_W(int x_D</td></tr>
-<tr class="memdesc:a13c2f394cd659441640380d54f7f90a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute the location in world space of a device point. For this the current world to device transformation is inverted. <br /></td></tr>
-<tr class="separator:a13c2f394cd659441640380d54f7f90a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13c2f394cd659441640380d54f7f90a0"><td class="memItemLeft" align="right" valign="top"><a id="a13c2f394cd659441640380d54f7f90a0"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a13c2f394cd659441640380d54f7f90a0">DEPRECATED</a> (&quot;use <a class="el" href="classcgv_1_1render_1_1context.html#a1a63339acab384f44577c890f5107f80">get_model_point</a>()&quot;) vec3 get_point_W(int x_D</td></tr>
-<tr class="memdesc:a13c2f394cd659441640380d54f7f90a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute the location in world space of a device point by inversion of the given world to device transformation. <br /></td></tr>
-<tr class="separator:a13c2f394cd659441640380d54f7f90a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afeae007a226a88e12e9e28f3b1eb7f41"><td class="memItemLeft" align="right" valign="top"><a id="afeae007a226a88e12e9e28f3b1eb7f41"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#afeae007a226a88e12e9e28f3b1eb7f41">DEPRECATED</a> (&quot;use <a class="el" href="classcgv_1_1render_1_1context.html#a1a63339acab384f44577c890f5107f80">get_model_point</a>()&quot;) vec3 get_point_W(const <a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a> &amp;p_D) const</td></tr>
-<tr class="memdesc:afeae007a226a88e12e9e28f3b1eb7f41"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute a the location in world space of a device point. <br /></td></tr>
-<tr class="separator:afeae007a226a88e12e9e28f3b1eb7f41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab05cfa4a481eb47ddde2baa2fc1caf05"><td class="memItemLeft" align="right" valign="top"><a id="ab05cfa4a481eb47ddde2baa2fc1caf05"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ab05cfa4a481eb47ddde2baa2fc1caf05">DEPRECATED</a> (&quot;use <a class="el" href="classcgv_1_1render_1_1context.html#a1a63339acab384f44577c890f5107f80">get_model_point</a>()&quot;) vec3 get_point_W(const <a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a> &amp;p_D</td></tr>
-<tr class="memdesc:ab05cfa4a481eb47ddde2baa2fc1caf05"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute a the location in world space of a device point. <br /></td></tr>
-<tr class="separator:ab05cfa4a481eb47ddde2baa2fc1caf05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7828fb45580cced3b1caa0e9fefe5c9e"><td class="memItemLeft" align="right" valign="top"><a id="a7828fb45580cced3b1caa0e9fefe5c9e"></a>
+<a class="el" href="structcgv_1_1render_1_1render__types.html#a64b31ef71f0d782df7416df1973a941a">dmat4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a7828fb45580cced3b1caa0e9fefe5c9e">get_device_matrix</a> () const</td></tr>
+<tr class="memdesc:a7828fb45580cced3b1caa0e9fefe5c9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">return homogeneous 4x4 projection matrix, which transforms from clip to device space <br /></td></tr>
+<tr class="separator:a7828fb45580cced3b1caa0e9fefe5c9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a669788b23f1f0c1c7fc98431403a600e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1render_1_1render__types.html#a64b31ef71f0d782df7416df1973a941a">dmat4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a669788b23f1f0c1c7fc98431403a600e">get_modelview_projection_device_matrix</a> () const</td></tr>
+<tr class="memdesc:a669788b23f1f0c1c7fc98431403a600e"><td class="mdescLeft">&#160;</td><td class="mdescRight">return matrix to transfrom from model to device coordinates, i.e. the product of modelview, projection and device matrix in reversed order (device_matrix*projection_matrix*modelview_matrix)  <a href="classcgv_1_1render_1_1context.html#a669788b23f1f0c1c7fc98431403a600e">More...</a><br /></td></tr>
+<tr class="separator:a669788b23f1f0c1c7fc98431403a600e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52d7b775b772d05f2d9705c138914164"><td class="memItemLeft" align="right" valign="top"><a id="a52d7b775b772d05f2d9705c138914164"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a52d7b775b772d05f2d9705c138914164">get_z_D</a> (int x_D, int y_D) const</td></tr>
+<tr class="memdesc:a52d7b775b772d05f2d9705c138914164"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the window z-coordinate from the z-buffer for the given device x- and y-coordinates <br /></td></tr>
+<tr class="separator:a52d7b775b772d05f2d9705c138914164"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a413294693fa8d035480e1ed2e6be5ca8"><td class="memItemLeft" align="right" valign="top"><a id="a413294693fa8d035480e1ed2e6be5ca8"></a>
+<a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a413294693fa8d035480e1ed2e6be5ca8">get_point_W</a> (int x_D, int y_D) const</td></tr>
+<tr class="memdesc:a413294693fa8d035480e1ed2e6be5ca8"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute the location in world space of a device x/y-location. For this the device point is extended with the device z-coordinate currently stored in the displayed depth buffer. <br /></td></tr>
+<tr class="separator:a413294693fa8d035480e1ed2e6be5ca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0680085fbcae8ff6ce1ccf09abd4b5b4"><td class="memItemLeft" align="right" valign="top"><a id="a0680085fbcae8ff6ce1ccf09abd4b5b4"></a>
+<a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a0680085fbcae8ff6ce1ccf09abd4b5b4">get_point_W</a> (int x_D, int y_D, const <a class="el" href="structcgv_1_1render_1_1render__types.html#a64b31ef71f0d782df7416df1973a941a">dmat4</a> &amp;MPD) const</td></tr>
+<tr class="memdesc:a0680085fbcae8ff6ce1ccf09abd4b5b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute the location in world space of a device x/y-location by inversion of the given transformation from world to device space. For this the device point is extended with the device z-coordinate currently stored in the displayed depth buffer. <br /></td></tr>
+<tr class="separator:a0680085fbcae8ff6ce1ccf09abd4b5b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab94b2ac3f642dbe6cca626e6f3fa8bf9"><td class="memItemLeft" align="right" valign="top"><a id="ab94b2ac3f642dbe6cca626e6f3fa8bf9"></a>
+<a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ab94b2ac3f642dbe6cca626e6f3fa8bf9">get_point_W</a> (int x_D, int y_D, double z_D) const</td></tr>
+<tr class="memdesc:ab94b2ac3f642dbe6cca626e6f3fa8bf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute the location in world space of a device point. For this the current world to device transformation is inverted. <br /></td></tr>
+<tr class="separator:ab94b2ac3f642dbe6cca626e6f3fa8bf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6270fe116e1f045a9651a668d5d56c5f"><td class="memItemLeft" align="right" valign="top"><a id="a6270fe116e1f045a9651a668d5d56c5f"></a>
+<a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a6270fe116e1f045a9651a668d5d56c5f">get_point_W</a> (int x_D, int y_D, double z_D, const <a class="el" href="structcgv_1_1render_1_1render__types.html#a64b31ef71f0d782df7416df1973a941a">dmat4</a> &amp;MPD) const</td></tr>
+<tr class="memdesc:a6270fe116e1f045a9651a668d5d56c5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute the location in world space of a device point by inversion of the given world to device transformation. <br /></td></tr>
+<tr class="separator:a6270fe116e1f045a9651a668d5d56c5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a572e1c3bb09d6f029ffceea59d00413e"><td class="memItemLeft" align="right" valign="top"><a id="a572e1c3bb09d6f029ffceea59d00413e"></a>
+<a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a572e1c3bb09d6f029ffceea59d00413e">get_point_W</a> (const <a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a> &amp;p_D) const</td></tr>
+<tr class="memdesc:a572e1c3bb09d6f029ffceea59d00413e"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute a the location in world space of a device point. <br /></td></tr>
+<tr class="separator:a572e1c3bb09d6f029ffceea59d00413e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae524fe6a015256bfb4499bd0d0a7e28f"><td class="memItemLeft" align="right" valign="top"><a id="ae524fe6a015256bfb4499bd0d0a7e28f"></a>
+<a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ae524fe6a015256bfb4499bd0d0a7e28f">get_point_W</a> (const <a class="el" href="structcgv_1_1render_1_1render__types.html#a3850221d245b353028eca7e9306769aa">vec3</a> &amp;p_D, const <a class="el" href="structcgv_1_1render_1_1render__types.html#a64b31ef71f0d782df7416df1973a941a">dmat4</a> &amp;MPD) const</td></tr>
+<tr class="memdesc:ae524fe6a015256bfb4499bd0d0a7e28f"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute a the location in world space of a device point. <br /></td></tr>
+<tr class="separator:ae524fe6a015256bfb4499bd0d0a7e28f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7092cfe8d92f1b2217368d5fa145c76b"><td class="memItemLeft" align="right" valign="top"><a id="a7092cfe8d92f1b2217368d5fa145c76b"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transformation_index</b> (int &amp;array_index)</td></tr>
 <tr class="separator:a7092cfe8d92f1b2217368d5fa145c76b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1158,6 +1144,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
 <tr class="separator:a85841c5a4bbec518e80458f85d642f60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader">context creation parameters</h2></td></tr>
+<tr class="memitem:ab389a641bd6b1560719e4513af2bbfab"><td class="memItemLeft" align="right" valign="top"><a id="ab389a641bd6b1560719e4513af2bbfab"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#ab389a641bd6b1560719e4513af2bbfab">self_reflect</a> (<a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a> &amp;srh)</td></tr>
+<tr class="memdesc:ab389a641bd6b1560719e4513af2bbfab"><td class="mdescLeft">&#160;</td><td class="mdescRight">reflect the shader_path member <br /></td></tr>
+<tr class="separator:ab389a641bd6b1560719e4513af2bbfab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe52005a1741b6dc2f24359d4ae1429e"><td class="memItemLeft" align="right" valign="top"><a id="afe52005a1741b6dc2f24359d4ae1429e"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#afe52005a1741b6dc2f24359d4ae1429e">depth_buffer</a></td></tr>
 <tr class="memdesc:afe52005a1741b6dc2f24359d4ae1429e"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: true <br /></td></tr>
@@ -1222,10 +1212,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#abc1a5f04f585d5427e3027fdba361382">core_profile</a></td></tr>
 <tr class="memdesc:abc1a5f04f585d5427e3027fdba361382"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
 <tr class="separator:abc1a5f04f585d5427e3027fdba361382"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab389a641bd6b1560719e4513af2bbfab"><td class="memItemLeft" align="right" valign="top"><a id="ab389a641bd6b1560719e4513af2bbfab"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#ab389a641bd6b1560719e4513af2bbfab">self_reflect</a> (<a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a> &amp;srh)</td></tr>
-<tr class="memdesc:ab389a641bd6b1560719e4513af2bbfab"><td class="mdescLeft">&#160;</td><td class="mdescRight">reflect the shader_path member <br /></td></tr>
-<tr class="separator:ab389a641bd6b1560719e4513af2bbfab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>base class for all drawables, which is independent of the used rendering API. </p>
@@ -1601,6 +1587,26 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 
 </div>
 </div>
+<a id="a669788b23f1f0c1c7fc98431403a600e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a669788b23f1f0c1c7fc98431403a600e">&#9670;&nbsp;</a></span>get_modelview_projection_device_matrix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structcgv_1_1render_1_1render__types.html#a64b31ef71f0d782df7416df1973a941a">context::dmat4</a> cgv::render::context::get_modelview_projection_device_matrix </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>return matrix to transfrom from model to device coordinates, i.e. the product of modelview, projection and device matrix in reversed order (device_matrix*projection_matrix*modelview_matrix) </p>
+<p>return homogeneous 4x4 matrix, which transforms from world to device space </p>
+
+</div>
+</div>
 <a id="afdd4010bda00e3f35b985574b48a0835"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afdd4010bda00e3f35b985574b48a0835">&#9670;&nbsp;</a></span>get_render_pass_recursion_depth()</h2>
 
@@ -1666,8 +1672,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 </table>
 </div><div class="memdoc">
 
-<p>returns an output stream whose output is printed at the current cursor location </p>
-<p>returns an output stream whose output is printed at the current cursor location, which is managed by the context. The coordinate system of the cursor location corresponds to opengl coordinates with (0,0) in lower left corner. The cursor position is updated during text drawing also by special characters like tab or new line and can be read back with the get_cursor method. Use the flush method of the output_stream to ensure that text has been drawn to the context. </p>
+<p>returns an output stream whose output is printed at the current cursor location, which is managed by the context. </p>
+<p>returns an output stream whose output is printed at the current cursor location</p>
+<p>The coordinate system of the cursor location corresponds to opengl coordinates with (0,0) in lower left corner. The cursor position is updated during text drawing also by special characters like tab or new line and can be read back with the get_cursor method. Use the flush method of the output_stream to ensure that text has been drawn to the context. </p>
 
 </div>
 </div>
@@ -1744,7 +1751,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
   </tr>
 </table>
 </div><div class="memdoc">
-<p>use this to push new modelview and new projection matrices onto the transformation stacks such that x and y coordinates correspond to opengl coordinates with (0,0) in lower left corner. To transform mouse pointer coordinates to opengl coordinates use get_context()-&gt;<a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168" title="return the height of the window">get_height()</a>-1-mouse_y. </p>
+
+<p>use this to push new modelview and new projection matrices onto the transformation stacks such that x and y coordinates correspond to opengl coordinates with (0,0) in lower left corner. </p>
+<p>To transform mouse pointer coordinates to opengl coordinates use get_context()-&gt;<a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168" title="return the height of the window">get_height()</a>-1-mouse_y. </p>
 
 <p>Implemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a1906f71b925fe9b670cf610e8929146f">cgv::render::gl::gl_context</a>.</p>
 
@@ -1790,8 +1799,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 </table>
 </div><div class="memdoc">
 
-<p>transform point p into cursor coordinates and put x and y coordinates into the passed variables </p>
 <p>transform point p in current world coordinates into opengl coordinates with (0,0) in lower left corner and put x and y coordinates into the passed variables </p>
+<p>transform point p into cursor coordinates and put x and y coordinates into the passed variables </p>
 
 </div>
 </div>
@@ -1864,7 +1873,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
   </tr>
 </table>
 </div><div class="memdoc">
-<p>read the current frame buffer or a rectangular region of it into the given data view. If no format is associated with the data view, a new format is created and assigned to the data view.</p>
+
+<p>read the current frame buffer or a rectangular region of it into the given data view. </p>
+<p>If no format is associated with the data view, a new format is created and assigned to the data view.</p>
 <p>If width and height are not specified in the format associated with the data view or in the parameters, they are determined from the current viewport size.</p>
 <p>x and y specify the pixel offset of the region measured from the left upper corner.</p>
 <p>The parameter buffer_type is only used in case of reading color or alpha components and specifies from which color buffer to read the data. </p>
@@ -2092,8 +2103,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 </table>
 </div><div class="memdoc">
 
-<p>sets the current text ouput position </p>
-<p>flush output_stream and set the current text position from a 3D or 4D location in current world coordinates. These are transformed to opengl coordinates opengl coordinates with (0,0) in lower left corner using the put_cursor_coords method. If the optional parameters are given, update the cursor location such that the given text alignment is achieved. x_offset and y_offset are in pixel and y points upward. </p>
+<p>flush output_stream and set the current text position from a 3D or 4D location in current world coordinates. </p>
+<p>sets the current text ouput position</p>
+<p>These are transformed to opengl coordinates opengl coordinates with (0,0) in lower left corner using the put_cursor_coords method. If the optional parameters are given, update the cursor location such that the given text alignment is achieved. x_offset and y_offset are in pixel and y points upward. </p>
 
 </div>
 </div>
@@ -2812,8 +2824,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
       </table>
 </div><div class="memdoc">
 
-<p>write the content of a buffer to an image file </p>
-<p>write the content of the frame buffer to an image file. In case of writing a depth buffer a the depth offset is subtracted from the value and scaled by the depth scale before conversion to an unsigned int of bit depth 8 is performed. </p>
+<p>write the content of the frame buffer to an image file. </p>
+<p>write the content of a buffer to an image file</p>
+<p>In case of writing a depth buffer a the depth offset is subtracted from the value and scaled by the depth scale before conversion to an unsigned int of bit depth 8 is performed. </p>
 
 </div>
 </div>

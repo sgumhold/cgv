@@ -90,6 +90,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1media_1_1mesh_1_1obj__read
 </div><!--header-->
 <div class="contents">
 
+<p>implements the pure reading of an obj file and calls virtual callback functions to allow a derived class to handle the read information.  
+ <a href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="obj__reader_8h_source.html">obj_reader.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::media::mesh::obj_reader_generic&lt; T &gt;:</div>
@@ -97,8 +100,8 @@ Inheritance diagram for cgv::media::mesh::obj_reader_generic&lt; T &gt;:</div>
  <div class="center">
   <img src="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.png" usemap="#cgv::media::mesh::obj_5Freader_5Fgeneric_3C_20T_20_3E_map" alt=""/>
   <map id="cgv::media::mesh::obj_5Freader_5Fgeneric_3C_20T_20_3E_map" name="cgv::media::mesh::obj_5Freader_5Fgeneric_3C_20T_20_3E_map">
-<area href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html" alt="cgv::media::mesh::obj_reader_base" shape="rect" coords="0,0,256,24"/>
-<area href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html" alt="cgv::media::mesh::obj_loader_generic&lt; T &gt;" shape="rect" coords="0,112,256,136"/>
+<area href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html" title="base class for obj reader with implementation that is independent of coordinate type." alt="cgv::media::mesh::obj_reader_base" shape="rect" coords="0,0,256,24"/>
+<area href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html" title="implements the virtual interface of the obj_reader and stores all read information." alt="cgv::media::mesh::obj_loader_generic&lt; T &gt;" shape="rect" coords="0,112,256,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -266,7 +269,8 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
 class cgv::media::mesh::obj_reader_generic&lt; T &gt;</h3>
 
-<p>implements the pure reading of an obj file and calls virtual callback functions to allow a derived class to handle the read information. The default implementations of the processing methods are implemented to simply ignore the read information. </p>
+<p>implements the pure reading of an obj file and calls virtual callback functions to allow a derived class to handle the read information. </p>
+<p>The default implementations of the processing methods are implemented to simply ignore the read information. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a7676c49c293db67c507fdc97d2aefc8f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7676c49c293db67c507fdc97d2aefc8f">&#9670;&nbsp;</a></span>process_color()</h2>

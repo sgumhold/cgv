@@ -35,7 +35,7 @@ var classcgv_1_1media_1_1mesh_1_1simple__mesh =
     [ "dual", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#af83e9d1812f7cd899c9fbff880f7bafd", null ],
     [ "end_corner", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a105455b6c44ad341321cc9dfbe2710c3", null ],
     [ "ensure_colors", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#ab9b78630e5ce68fb0e47f2c518f34570", null ],
-    [ "extract_triangle_element_buffer", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a5bfb7f7643b995826ee349c95e12a37c", null ],
+    [ "extract_triangle_element_buffer", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a116d992457d26966664db28542b423ea", null ],
     [ "extract_vertex_attribute_buffer", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a908151d28ae5c788388f72bfc8d22f7f", null ],
     [ "extract_wireframe_element_buffer", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a91dfd37d08cbcb2762767f0fd30913a6", null ],
     [ "face_degree", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#af831a1f8b50bf42b2121a78bfb545f6a", null ],

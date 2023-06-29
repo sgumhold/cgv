@@ -94,6 +94,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1data_1_1component__format.
 </div><!--header-->
 <div class="contents">
 
+<p>the component format inherits the information of a <a class="el" href="classcgv_1_1data_1_1packing__info.html" title="the packing_info class stores information about packed integers structures.">packing_info</a> and adds information on the component type, which components are present in the data and in which order they appear  
+ <a href="classcgv_1_1data_1_1component__format.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="component__format_8h_source.html">component_format.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::data::component_format:</div>
@@ -101,10 +104,10 @@ Inheritance diagram for cgv::data::component_format:</div>
  <div class="center">
   <img src="classcgv_1_1data_1_1component__format.png" usemap="#cgv::data::component_5Fformat_map" alt=""/>
   <map id="cgv::data::component_5Fformat_map" name="cgv::data::component_5Fformat_map">
-<area href="classcgv_1_1data_1_1packing__info.html" alt="cgv::data::packing_info" shape="rect" coords="91,0,263,24"/>
-<area href="classcgv_1_1data_1_1data__format.html" alt="cgv::data::data_format" shape="rect" coords="0,112,172,136"/>
-<area href="classcgv_1_1render_1_1render__buffer.html" alt="cgv::render::render_buffer" shape="rect" coords="182,112,354,136"/>
-<area href="classcgv_1_1render_1_1texture.html" alt="cgv::render::texture" shape="rect" coords="0,168,172,192"/>
+<area href="classcgv_1_1data_1_1packing__info.html" title="the packing_info class stores information about packed integers structures." alt="cgv::data::packing_info" shape="rect" coords="91,0,263,24"/>
+<area href="classcgv_1_1data_1_1data__format.html" title="A data_format describes a multidimensional data block of data entries." alt="cgv::data::data_format" shape="rect" coords="0,112,172,136"/>
+<area href="classcgv_1_1render_1_1render__buffer.html" title="this class encapsulate render buffers that live on the GPU which must support frame buffer objects fo..." alt="cgv::render::render_buffer" shape="rect" coords="182,112,354,136"/>
+<area href="classcgv_1_1render_1_1texture.html" title="the texture class encapsulates all functionality independent of the rendering api." alt="cgv::render::texture" shape="rect" coords="0,168,172,192"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -114,14 +117,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a1594bbea3458a0a3f492a2daaff0fb1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct from description string, see set_component_format for docu  <a href="classcgv_1_1data_1_1component__format.html#a1594bbea3458a0a3f492a2daaff0fb1f">More...</a><br /></td></tr>
 <tr class="separator:a1594bbea3458a0a3f492a2daaff0fb1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f378a1f73f5a195fafcaa4382110cef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1component__format.html#a0f378a1f73f5a195fafcaa4382110cef">set_component_format</a> (const std::string &amp;description)</td></tr>
-<tr class="memdesc:a0f378a1f73f5a195fafcaa4382110cef"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the component format from a description string  <a href="classcgv_1_1data_1_1component__format.html#a0f378a1f73f5a195fafcaa4382110cef">More...</a><br /></td></tr>
+<tr class="memdesc:a0f378a1f73f5a195fafcaa4382110cef"><td class="mdescLeft">&#160;</td><td class="mdescRight">set component format from description string, which has the following syntax.  <a href="classcgv_1_1data_1_1component__format.html#a0f378a1f73f5a195fafcaa4382110cef">More...</a><br /></td></tr>
 <tr class="separator:a0f378a1f73f5a195fafcaa4382110cef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6c76c071b0951591bc930b4a34f8db3"><td class="memItemLeft" align="right" valign="top"><a id="ab6c76c071b0951591bc930b4a34f8db3"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1component__format.html#ab6c76c071b0951591bc930b4a34f8db3">set_components</a> (const std::string &amp;_components)</td></tr>
 <tr class="memdesc:ab6c76c071b0951591bc930b4a34f8db3"><td class="mdescLeft">&#160;</td><td class="mdescRight">comma separated list of component descriptors, for example "R,G,B" <br /></td></tr>
 <tr class="separator:ab6c76c071b0951591bc930b4a34f8db3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd6a4d3da31e461997c79536f2c34f7d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1component__format.html#abd6a4d3da31e461997c79536f2c34f7d">component_format</a> (<a class="el" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752">TypeId</a> _component_type=TI_UNDEF, const std::string &amp;_component_name_list=&quot;&quot;, unsigned int <a class="el" href="classcgv_1_1data_1_1packing__info.html#a3d2868685e5680021a30e9a5131082af">align</a>=1, unsigned int d0=0, unsigned int d1=0, unsigned int d2=0, unsigned int d3=0)</td></tr>
-<tr class="memdesc:abd6a4d3da31e461997c79536f2c34f7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct packed component format from component type, component sequence, and common component bit depth  <a href="classcgv_1_1data_1_1component__format.html#abd6a4d3da31e461997c79536f2c34f7d">More...</a><br /></td></tr>
+<tr class="memdesc:abd6a4d3da31e461997c79536f2c34f7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct component format from component type, comma or colon separated list of component names, component alignment and bit depths for packed formats  <a href="classcgv_1_1data_1_1component__format.html#abd6a4d3da31e461997c79536f2c34f7d">More...</a><br /></td></tr>
 <tr class="separator:abd6a4d3da31e461997c79536f2c34f7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66cf7f0dc43633f7a64d703e652f1cb4"><td class="memItemLeft" align="right" valign="top"><a id="a66cf7f0dc43633f7a64d703e652f1cb4"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1component__format.html#a66cf7f0dc43633f7a64d703e652f1cb4">component_format</a> (<a class="el" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752">TypeId</a> _component_type, <a class="el" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979">ComponentFormat</a> cf, unsigned int <a class="el" href="classcgv_1_1data_1_1packing__info.html#a3d2868685e5680021a30e9a5131082af">align</a>=1, unsigned int d0=0, unsigned int d1=0, unsigned int d2=0, unsigned int d3=0)</td></tr>
@@ -301,7 +304,7 @@ Friends</h2></td></tr>
 <tr class="separator:a9223fc6e1e2c1f40df3db01b243357da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>the component format inherits the information of a <a class="el" href="classcgv_1_1data_1_1packing__info.html">packing_info</a> and adds information on the component type, which components are present in the data and in which order they appear </p>
+<div class="textblock"><p>the component format inherits the information of a <a class="el" href="classcgv_1_1data_1_1packing__info.html" title="the packing_info class stores information about packed integers structures.">packing_info</a> and adds information on the component type, which components are present in the data and in which order they appear </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1594bbea3458a0a3f492a2daaff0fb1f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1594bbea3458a0a3f492a2daaff0fb1f">&#9670;&nbsp;</a></span>component_format() <span class="overload">[1/2]</span></h2>
@@ -388,8 +391,8 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>construct packed component format from component type, component sequence, and common component bit depth </p>
 <p>construct component format from component type, comma or colon separated list of component names, component alignment and bit depths for packed formats </p>
+<p>construct packed component format from component type, component sequence, and common component bit depth </p>
 
 </div>
 </div>
@@ -499,8 +502,9 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>set the component format from a description string </p>
-<p>set component format from description string, which has the following syntax. If a parse error arises, return false and set the static last_error member, which can be queried with <a class="el" href="classcgv_1_1data_1_1component__format.html#acedea4bd86acdaa66860c7842e473074" title="returns an error string after parsing of description string has failed">get_last_error()</a>:</p>
+<p>set component format from description string, which has the following syntax. </p>
+<p>set the component format from a description string</p>
+<p>If a parse error arises, return false and set the static last_error member, which can be queried with <a class="el" href="classcgv_1_1data_1_1component__format.html#acedea4bd86acdaa66860c7842e473074" title="returns an error string after parsing of description string has failed">get_last_error()</a>:</p>
 <pre class="fragment">component_format &lt;- [type] [attributes] '[' component [',' component]* ']'
 
 component &lt;- component_name [attributes]
@@ -565,7 +569,7 @@ alignment : unsigned int ... number of bits to which a component is aligned
 </div><div class="memdoc">
 
 <p>define stream out operator </p>
-<p>stream out operator writes the component format in the syntax of description strings as defined in the docu of <a class="el" href="classcgv_1_1data_1_1component__format.html#a0f378a1f73f5a195fafcaa4382110cef" title="set the component format from a description string">set_component_format()</a>. </p>
+<p>stream out operator writes the component format in the syntax of description strings as defined in the docu of <a class="el" href="classcgv_1_1data_1_1component__format.html#a0f378a1f73f5a195fafcaa4382110cef" title="set component format from description string, which has the following syntax.">set_component_format()</a>. </p>
 
 </div>
 </div>

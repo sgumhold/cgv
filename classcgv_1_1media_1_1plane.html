@@ -89,6 +89,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1media_1_1plane.html',''); 
 </div><!--header-->
 <div class="contents">
 
+<p>A plane of arbitrary dimension stored as a homogeneous vector that defines the coefficients of the plane equation.  
+ <a href="classcgv_1_1media_1_1plane.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="media_2plane_8h_source.html">plane.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -97,7 +100,9 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1plane.html#ab00ac42a9d4796b8aa5d2b80b338eb41">plane</a> (int dim=3)</td></tr>
 <tr class="memdesc:ab00ac42a9d4796b8aa5d2b80b338eb41"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct plane of give dimension allocating a homogenous vector of one dimension mor <br /></td></tr>
 <tr class="separator:ab00ac42a9d4796b8aa5d2b80b338eb41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4dd7d3136f3b989245fd33668d1dc778"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1plane.html#a4dd7d3136f3b989245fd33668d1dc778">plane</a> (const <a class="el" href="classcgv_1_1math_1_1vec.html">cgv::math::vec</a>&lt; T &gt; &amp;n, const T &amp;distance)</td></tr>
+<tr class="memitem:a4dd7d3136f3b989245fd33668d1dc778"><td class="memItemLeft" align="right" valign="top"><a id="a4dd7d3136f3b989245fd33668d1dc778"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1plane.html#a4dd7d3136f3b989245fd33668d1dc778">plane</a> (const <a class="el" href="classcgv_1_1math_1_1vec.html">cgv::math::vec</a>&lt; T &gt; &amp;n, const T &amp;distance)</td></tr>
+<tr class="memdesc:a4dd7d3136f3b989245fd33668d1dc778"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct from normal vector and distance of plane to origin, which is negated before it is copied to the last component of the stored homogenous vector <br /></td></tr>
 <tr class="separator:a4dd7d3136f3b989245fd33668d1dc778"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8b75f8d779ca1958aaad920297c1f54"><td class="memItemLeft" align="right" valign="top"><a id="aa8b75f8d779ca1958aaad920297c1f54"></a>
 <a class="el" href="classcgv_1_1math_1_1vec.html">cgv::math::vec</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1plane.html#aa8b75f8d779ca1958aaad920297c1f54">get_normal</a> () const</td></tr>
@@ -113,47 +118,7 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcg
 class cgv::media::plane&lt; T &gt;</h3>
 
 <p>A plane of arbitrary dimension stored as a homogeneous vector that defines the coefficients of the plane equation. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a4dd7d3136f3b989245fd33668d1dc778"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4dd7d3136f3b989245fd33668d1dc778">&#9670;&nbsp;</a></span>plane()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1media_1_1plane.html">cgv::media::plane</a>&lt; T &gt;::<a class="el" href="classcgv_1_1media_1_1plane.html">plane</a> </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1vec.html">cgv::math::vec</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>n</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const T &amp;&#160;</td>
-          <td class="paramname"><em>distance</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>construct from normal vector and distance of plane to origin, which is negated before it is copied to the last component of the stored homogenous vector </p>
-
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>cgv/media/<a class="el" href="media_2plane_8h_source.html">plane.h</a></li>
 </ul>
 </div><!-- contents -->

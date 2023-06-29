@@ -91,6 +91,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1data_1_1data__view__impl.h
 </div><!--header-->
 <div class="contents">
 
+<p>template class implementing the part of the view that depends on whether the pointer is const or not and manages the data pointer itself.  
+ <a href="classcgv_1_1data_1_1data__view__impl.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="data__view_8h_source.html">data_view.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::data::data_view_impl&lt; D, P &gt;:</div>
@@ -98,7 +101,7 @@ Inheritance diagram for cgv::data::data_view_impl&lt; D, P &gt;:</div>
  <div class="center">
   <img src="classcgv_1_1data_1_1data__view__impl.png" usemap="#cgv::data::data_5Fview_5Fimpl_3C_20D_2C_20P_20_3E_map" alt=""/>
   <map id="cgv::data::data_5Fview_5Fimpl_3C_20D_2C_20P_20_3E_map" name="cgv::data::data_5Fview_5Fimpl_3C_20D_2C_20P_20_3E_map">
-<area href="classcgv_1_1data_1_1data__view__base.html" alt="cgv::data::data_view_base" shape="rect" coords="0,0,205,24"/>
+<area href="classcgv_1_1data_1_1data__view__base.html" title="base class of both implementations of the data view managing the component format,..." alt="cgv::data::data_view_base" shape="rect" coords="0,0,205,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -179,6 +182,7 @@ D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcg
 <tr class="memdesc:a418424d73300b10f393cff045d7781ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to entry at (i,j,k,l) <br /></td></tr>
 <tr class="separator:a418424d73300b10f393cff045d7781ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69c95d6e1ccfe03f4f13af1f42db19c9"><td class="memItemLeft" align="right" valign="top">D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view__impl.html#a69c95d6e1ccfe03f4f13af1f42db19c9">permute</a> (const std::string &amp;permutation) const</td></tr>
+<tr class="memdesc:a69c95d6e1ccfe03f4f13af1f42db19c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">permute the order of the indices, where the permutation argument "kji" implies that after the permutation the operator (i,j,k) returns the same as the operator (k,j,i) before the call to permute.  <a href="classcgv_1_1data_1_1data__view__impl.html#a69c95d6e1ccfe03f4f13af1f42db19c9">More...</a><br /></td></tr>
 <tr class="separator:a69c95d6e1ccfe03f4f13af1f42db19c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a541dc747e8faaea9cdaad1e1b34158b6"><td class="memItemLeft" align="right" valign="top"><a id="a541dc747e8faaea9cdaad1e1b34158b6"></a>
 D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view__impl.html#a541dc747e8faaea9cdaad1e1b34158b6">transpose</a> () const</td></tr>
@@ -266,7 +270,9 @@ template&lt;class D , typename P &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>permute the order of the indices, where the permutation argument "kji" implies that after the permutation the operator (i,j,k) returns the same as the operator (k,j,i) before the call to permute. The permutation string must have at least two entries. If it has n entries it must contain each of the first n letters of "ijkl" exactly once, i.e. "ik" would be invalid, whereas "ikj" is a valid permutation. </p>
+
+<p>permute the order of the indices, where the permutation argument "kji" implies that after the permutation the operator (i,j,k) returns the same as the operator (k,j,i) before the call to permute. </p>
+<p>The permutation string must have at least two entries. If it has n entries it must contain each of the first n letters of "ijkl" exactly once, i.e. "ik" would be invalid, whereas "ikj" is a valid permutation. </p>
 
 </div>
 </div>

@@ -92,6 +92,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1base_1_1base.html',''); in
 </div><!--header-->
 <div class="contents">
 
+<p>base class for all classes that can be registered with support for dynamic properties (see also section <a class="el" href="baseNS.html#baseSEC">Base Hierarchy</a> of page <a class="el" href="baseNS.html">Namespace cgv::base</a>).  
+ <a href="classcgv_1_1base_1_1base.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="base_8h_source.html">base.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::base::base:</div>
@@ -99,12 +102,12 @@ Inheritance diagram for cgv::base::base:</div>
  <div class="center">
   <img src="classcgv_1_1base_1_1base.png" usemap="#cgv::base::base_map" alt=""/>
   <map id="cgv::base::base_map" name="cgv::base::base_map">
-<area href="classcgv_1_1data_1_1ref__counted.html" alt="cgv::data::ref_counted" shape="rect" coords="0,0,239,24"/>
+<area href="classcgv_1_1data_1_1ref__counted.html" title="if you derive your class from this class, a ref_ptr will do reference counting in the inhereted ref_c..." alt="cgv::data::ref_counted" shape="rect" coords="0,0,239,24"/>
 <area href="structcgv_1_1reflect_1_1self__reflection__tag.html" title="Derive from this class to announce implementation of the method self_reflect." alt="cgv::reflect::self_reflection_tag" shape="rect" coords="249,0,488,24"/>
-<area href="classcgv_1_1base_1_1base__generator.html" alt="cgv::base::base_generator" shape="rect" coords="373,112,612,136"/>
-<area href="classcgv_1_1base_1_1console.html" alt="cgv::base::console" shape="rect" coords="373,168,612,192"/>
+<area href="classcgv_1_1base_1_1base__generator.html" title="implements a dynamic object, that can be composed of independent variables, which are handled as prop..." alt="cgv::base::base_generator" shape="rect" coords="373,112,612,136"/>
+<area href="classcgv_1_1base_1_1console.html" title="interface to the console of the application with implementation of the property interface" alt="cgv::base::console" shape="rect" coords="373,168,612,192"/>
 <area href="structcgv_1_1base_1_1factory.html" title="interface for a factory that allows to create objects derived from cgv::base::base" alt="cgv::base::factory" shape="rect" coords="373,224,612,248"/>
-<area href="classcgv_1_1base_1_1named.html" alt="cgv::base::named" shape="rect" coords="373,280,612,304"/>
+<area href="classcgv_1_1base_1_1named.html" title="base class for all gui types" alt="cgv::base::named" shape="rect" coords="373,280,612,304"/>
 <area href="structcgv_1_1base_1_1object__constructor.html" title="abstract base class of helpers to perform delayed registration and creation of objects in case that t..." alt="cgv::base::object_constructor" shape="rect" coords="373,336,612,360"/>
 <area href="classcgv_1_1base_1_1test.html" title="structure used to register a test function" alt="cgv::base::test" shape="rect" coords="373,392,612,416"/>
 <area href="classcgv_1_1gui_1_1gui__driver.html" title="abstract base class for gui drivers" alt="cgv::gui::gui_driver" shape="rect" coords="373,448,612,472"/>
@@ -113,7 +116,7 @@ Inheritance diagram for cgv::base::base:</div>
 <area href="classcgv_1_1media_1_1font_1_1font__server.html" title="provides the methods to create and search for fonts" alt="cgv::media::font::font_server" shape="rect" coords="373,616,612,640"/>
 <area href="classcgv_1_1media_1_1image_1_1abst__image__reader.html" title="abstract interface for image readers" alt="cgv::media::image::abst_image_reader" shape="rect" coords="373,672,612,696"/>
 <area href="classcgv_1_1media_1_1image_1_1abst__image__writer.html" title="abstract interface for image readers" alt="cgv::media::image::abst_image_writer" shape="rect" coords="373,728,612,752"/>
-<area href="classcgv_1_1media_1_1image_1_1image__reader.html" alt="cgv::media::image::image_reader" shape="rect" coords="373,784,612,808"/>
+<area href="classcgv_1_1media_1_1image_1_1image__reader.html" title="the image reader chooses a specific reader automatically based on the extension of the given file nam..." alt="cgv::media::image::image_reader" shape="rect" coords="373,784,612,808"/>
 <area href="classcgv_1_1media_1_1image_1_1image__writer.html" title="the image writer chooses a specific writer automatically based on the extension of the given file nam..." alt="cgv::media::image::image_writer" shape="rect" coords="373,840,612,864"/>
 <area href="structcgv_1_1media_1_1image_1_1reader__listener.html" title="interfaces that allows to listen to registration events" alt="cgv::media::image::reader_listener" shape="rect" coords="373,896,612,920"/>
 <area href="structcgv_1_1media_1_1image_1_1writer__listener.html" title="interfaces that allows to listen to registration events" alt="cgv::media::image::writer_listener" shape="rect" coords="373,952,612,976"/>
@@ -123,7 +126,7 @@ Inheritance diagram for cgv::base::base:</div>
 <area href="structcgv_1_1media_1_1video_1_1video__reader__listener.html" title="interfaces that allows to listen to registration events" alt="cgv::media::video::video_reader_listener" shape="rect" coords="373,1176,612,1200"/>
 <area href="classcgv_1_1media_1_1video_1_1video__writer.html" title="the image writer chooses a specific writer automatically based on the extension of the given file nam..." alt="cgv::media::video::video_writer" shape="rect" coords="373,1232,612,1256"/>
 <area href="structcgv_1_1media_1_1video_1_1video__writer__listener.html" title="interfaces that allows to listen to registration events" alt="cgv::media::video::video_writer_listener" shape="rect" coords="373,1288,612,1312"/>
-<area href="structcgv_1_1render_1_1render__config.html" alt="cgv::render::render_config" shape="rect" coords="373,1344,612,1368"/>
+<area href="structcgv_1_1render_1_1render__config.html" title="configuration object used to define render view creation parameters including error handling configur..." alt="cgv::render::render_config" shape="rect" coords="373,1344,612,1368"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -138,7 +141,7 @@ virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class=
 <tr class="separator:a79a9ca57ee7e6364153cda52223b8501"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec86a78e596c9c4fb203fcad98fb6afd"><td class="memItemLeft" align="right" valign="top"><a id="aec86a78e596c9c4fb203fcad98fb6afd"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#aec86a78e596c9c4fb203fcad98fb6afd">get_name_or_type_name</a> () const</td></tr>
-<tr class="memdesc:aec86a78e596c9c4fb203fcad98fb6afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">determine name of instance by checking <a class="el" href="classcgv_1_1base_1_1named.html">cgv::base::named</a> interface and in failure fallback to <a class="el" href="classcgv_1_1base_1_1base.html#a6e64a898476591f7246e522652abfa4c" title="overload to return the type name of this object. By default the type interface is queried over get_ty...">get_type_name()</a> <br /></td></tr>
+<tr class="memdesc:aec86a78e596c9c4fb203fcad98fb6afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">determine name of instance by checking <a class="el" href="classcgv_1_1base_1_1named.html" title="base class for all gui types">cgv::base::named</a> interface and in failure fallback to <a class="el" href="classcgv_1_1base_1_1base.html#a6e64a898476591f7246e522652abfa4c" title="overload to return the type name of this object. By default the type interface is queried over get_ty...">get_type_name()</a> <br /></td></tr>
 <tr class="separator:aec86a78e596c9c4fb203fcad98fb6afd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f074aea5bf4b0bfeb00845750d27623"><td class="memItemLeft" align="right" valign="top"><a id="a2f074aea5bf4b0bfeb00845750d27623"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#a2f074aea5bf4b0bfeb00845750d27623">on_register</a> ()</td></tr>

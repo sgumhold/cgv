@@ -90,11 +90,16 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1adjacency__list.ht
 </div><!--header-->
 <div class="contents">
 
+<p>A graph represented in an adjacency list.  
+ <a href="classcgv_1_1math_1_1adjacency__list.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a6ec1e1bcbdd5e50b438bb2980a43b98d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1adjacency__list.html#a6ec1e1bcbdd5e50b438bb2980a43b98d">adjacency_list</a> (const unsigned vnum, bool <a class="el" href="classcgv_1_1math_1_1adjacency__list.html#acb7f114d57ab95ee6529209658780f80">directed</a>=true)</td></tr>
+<tr class="memitem:a6ec1e1bcbdd5e50b438bb2980a43b98d"><td class="memItemLeft" align="right" valign="top"><a id="a6ec1e1bcbdd5e50b438bb2980a43b98d"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1adjacency__list.html#a6ec1e1bcbdd5e50b438bb2980a43b98d">adjacency_list</a> (const unsigned vnum, bool <a class="el" href="classcgv_1_1math_1_1adjacency__list.html#acb7f114d57ab95ee6529209658780f80">directed</a>=true)</td></tr>
+<tr class="memdesc:a6ec1e1bcbdd5e50b438bb2980a43b98d"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a graph with vnum vertices and zero edges the graph is directed if the flag directed is true <br /></td></tr>
 <tr class="separator:a6ec1e1bcbdd5e50b438bb2980a43b98d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc84db4e56ddfa0b465b22b8456986d6"><td class="memItemLeft" align="right" valign="top"><a id="adc84db4e56ddfa0b465b22b8456986d6"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1adjacency__list.html#adc84db4e56ddfa0b465b22b8456986d6">adjacency_list</a> (const <a class="el" href="classcgv_1_1math_1_1adjacency__list.html">adjacency_list</a> &amp;al)</td></tr>
@@ -106,7 +111,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4758b5a1c8e2a659eeb5b0543211bdf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1dacb51c2ac9f460c392f926649f55ba"><td class="memItemLeft" align="right" valign="top"><a id="a1dacb51c2ac9f460c392f926649f55ba"></a>
 virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1adjacency__list.html#a1dacb51c2ac9f460c392f926649f55ba">~adjacency_list</a> ()</td></tr>
-<tr class="memdesc:a1dacb51c2ac9f460c392f926649f55ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">destructor of <a class="el" href="classcgv_1_1math_1_1adjacency__list.html">adjacency_list</a> <br /></td></tr>
+<tr class="memdesc:a1dacb51c2ac9f460c392f926649f55ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">destructor of <a class="el" href="classcgv_1_1math_1_1adjacency__list.html" title="A graph represented in an adjacency list.">adjacency_list</a> <br /></td></tr>
 <tr class="separator:a1dacb51c2ac9f460c392f926649f55ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf5f61715568c3aee19af4d7f4d55bea"><td class="memItemLeft" align="right" valign="top"><a id="aaf5f61715568c3aee19af4d7f4d55bea"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1adjacency__list.html#aaf5f61715568c3aee19af4d7f4d55bea">resize</a> (const unsigned &amp;vnum)</td></tr>
@@ -164,54 +169,14 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div class="textblock"><h3>template&lt;typename v_type&gt;<br />
 class cgv::math::adjacency_list&lt; v_type &gt;</h3>
 
-<p>A graph represented in an adjacency list.</p>
+<p>A graph represented in an adjacency list. </p>
 <p>To create a basic graph without extra information stored per vertex or edge use the predefined type cgv::math::graph: cgv::math::graph g;</p>
 <p>To create a basic weighted graph with an additional weight attribute per edge use the predefined type cgv::math::weighted_graph; cgv::math::weighted_graph wg;</p>
 <p>To create a graph with extra attributes per edge and vertex:</p>
 <p>struct my_edge: public cgv::math::edge { double my_extra_edge_attr; };</p>
 <p>struct my_vertex : public cgv::math::vertex&lt;my_edge&gt; { int my_extra_vertex_attr; };</p>
 <p>typedef cgv::math::adjacency_list&lt; my_vertex &gt; my_graph; my_graph g; ... </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a6ec1e1bcbdd5e50b438bb2980a43b98d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ec1e1bcbdd5e50b438bb2980a43b98d">&#9670;&nbsp;</a></span>adjacency_list()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename v_type &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1math_1_1adjacency__list.html">cgv::math::adjacency_list</a>&lt; v_type &gt;::<a class="el" href="classcgv_1_1math_1_1adjacency__list.html">adjacency_list</a> </td>
-          <td>(</td>
-          <td class="paramtype">const unsigned&#160;</td>
-          <td class="paramname"><em>vnum</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>directed</em> = <code>true</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>creates a graph with vnum vertices and zero edges the graph is directed if the flag directed is true </p>
-
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>cgv/math/<a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a></li>
 </ul>
 </div><!-- contents -->

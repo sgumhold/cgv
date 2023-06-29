@@ -93,6 +93,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1data_1_1data__view.html','
 </div><!--header-->
 <div class="contents">
 
+<p>the data view gives access to a data array of one, two, three or four dimensions.  
+ <a href="classcgv_1_1data_1_1data__view.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="data__view_8h_source.html">data_view.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::data::data_view:</div>
@@ -101,7 +104,7 @@ Inheritance diagram for cgv::data::data_view:</div>
   <img src="classcgv_1_1data_1_1data__view.png" usemap="#cgv::data::data_5Fview_map" alt=""/>
   <map id="cgv::data::data_5Fview_map" name="cgv::data::data_5Fview_map">
 <area href="classcgv_1_1data_1_1data__view__impl.html" alt="cgv::data::data_view_impl&lt; data_view, unsigned char * &gt;" shape="rect" coords="0,56,339,80"/>
-<area href="classcgv_1_1data_1_1data__view__base.html" alt="cgv::data::data_view_base" shape="rect" coords="0,0,339,24"/>
+<area href="classcgv_1_1data_1_1data__view__base.html" title="base class of both implementations of the data view managing the component format,..." alt="cgv::data::data_view_base" shape="rect" coords="0,0,339,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -116,20 +119,32 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a23f74d03314029bc782981676e83eb17"><td class="mdescLeft">&#160;</td><td class="mdescRight">destruct view and delete data pointer if it is owned by the view <br /></td></tr>
 <tr class="separator:a23f74d03314029bc782981676e83eb17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3643286f907cf51f7b85192b9241ece4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view.html#a3643286f907cf51f7b85192b9241ece4">data_view</a> (const <a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> *_format)</td></tr>
+<tr class="memdesc:a3643286f907cf51f7b85192b9241ece4"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a data view from the given format.  <a href="classcgv_1_1data_1_1data__view.html#a3643286f907cf51f7b85192b9241ece4">More...</a><br /></td></tr>
 <tr class="separator:a3643286f907cf51f7b85192b9241ece4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a510ed68bc68e1614e1e9f4cfc2799a1b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view.html#a510ed68bc68e1614e1e9f4cfc2799a1b">data_view</a> (const <a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> *_format, void *_data_ptr)</td></tr>
+<tr class="memdesc:a510ed68bc68e1614e1e9f4cfc2799a1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a data view from the given format, viewing the complete data set.  <a href="classcgv_1_1data_1_1data__view.html#a510ed68bc68e1614e1e9f4cfc2799a1b">More...</a><br /></td></tr>
 <tr class="separator:a510ed68bc68e1614e1e9f4cfc2799a1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59703d3be8e84215de3ab562c160f1d4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view.html#a59703d3be8e84215de3ab562c160f1d4">data_view</a> (const <a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> *_format, unsigned char *_data_ptr, bool manage_ptr)</td></tr>
+<tr class="memdesc:a59703d3be8e84215de3ab562c160f1d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a data view from the given format, viewing the complete data set.  <a href="classcgv_1_1data_1_1data__view.html#a59703d3be8e84215de3ab562c160f1d4">More...</a><br /></td></tr>
 <tr class="separator:a59703d3be8e84215de3ab562c160f1d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1c1d3a7a09a53fec25c42eae5cea4c9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view.html#ad1c1d3a7a09a53fec25c42eae5cea4c9">data_view</a> (const <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;other)</td></tr>
+<tr class="memdesc:ad1c1d3a7a09a53fec25c42eae5cea4c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a data view as a copy of the given data view.  <a href="classcgv_1_1data_1_1data__view.html#ad1c1d3a7a09a53fec25c42eae5cea4c9">More...</a><br /></td></tr>
 <tr class="separator:ad1c1d3a7a09a53fec25c42eae5cea4c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a318e8840c10a63e3f1beb5b6662c7e23"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view.html#a318e8840c10a63e3f1beb5b6662c7e23">operator=</a> (const <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;dv)</td></tr>
+<tr class="memitem:a318e8840c10a63e3f1beb5b6662c7e23"><td class="memItemLeft" align="right" valign="top"><a id="a318e8840c10a63e3f1beb5b6662c7e23"></a>
+<a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view.html#a318e8840c10a63e3f1beb5b6662c7e23">operator=</a> (const <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;dv)</td></tr>
+<tr class="memdesc:a318e8840c10a63e3f1beb5b6662c7e23"><td class="mdescLeft">&#160;</td><td class="mdescRight">the assignment operator takes over the data format and data pointers in case they are managed by the source data view <br /></td></tr>
 <tr class="separator:a318e8840c10a63e3f1beb5b6662c7e23"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62d19e9180dba52e0f1447f702125188"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view.html#a62d19e9180dba52e0f1447f702125188">copy</a> ()</td></tr>
+<tr class="memitem:a62d19e9180dba52e0f1447f702125188"><td class="memItemLeft" align="right" valign="top"><a id="a62d19e9180dba52e0f1447f702125188"></a>
+<a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view.html#a62d19e9180dba52e0f1447f702125188">copy</a> ()</td></tr>
+<tr class="memdesc:a62d19e9180dba52e0f1447f702125188"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a copy of this <a class="el" href="classcgv_1_1data_1_1data__view.html" title="the data view gives access to a data array of one, two, three or four dimensions.">data_view</a> and tha data via the copy constructor <br /></td></tr>
 <tr class="separator:a62d19e9180dba52e0f1447f702125188"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8ac25003c5ddefb41d7401753c95cd1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view.html#aa8ac25003c5ddefb41d7401753c95cd1">set_ptr</a> (unsigned char *ptr, bool manage_ptr)</td></tr>
+<tr class="memitem:aa8ac25003c5ddefb41d7401753c95cd1"><td class="memItemLeft" align="right" valign="top"><a id="aa8ac25003c5ddefb41d7401753c95cd1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view.html#aa8ac25003c5ddefb41d7401753c95cd1">set_ptr</a> (unsigned char *ptr, bool manage_ptr)</td></tr>
+<tr class="memdesc:aa8ac25003c5ddefb41d7401753c95cd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a different data pointer that will be deleted with the delete [] operator of type (unsigned char*) on destruction if the manage_ptr flag is true <br /></td></tr>
 <tr class="separator:aa8ac25003c5ddefb41d7401753c95cd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d51c667e776b88796410599a6e00620"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view.html#a0d51c667e776b88796410599a6e00620">set_ptr</a> (void *ptr)</td></tr>
+<tr class="memitem:a0d51c667e776b88796410599a6e00620"><td class="memItemLeft" align="right" valign="top"><a id="a0d51c667e776b88796410599a6e00620"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view.html#a0d51c667e776b88796410599a6e00620">set_ptr</a> (void *ptr)</td></tr>
+<tr class="memdesc:a0d51c667e776b88796410599a6e00620"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a different data pointer that is not owned by the data view and will not be deleted on destruction. <br /></td></tr>
 <tr class="separator:a0d51c667e776b88796410599a6e00620"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6663d91d3af21d0c935d42b2229528e"><td class="memTemplParams" colspan="2"><a id="ad6663d91d3af21d0c935d42b2229528e"></a>
 template&lt;typename T &gt; </td></tr>
@@ -200,6 +215,7 @@ S&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcg
 <tr class="memdesc:a418424d73300b10f393cff045d7781ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to entry at (i,j,k,l) <br /></td></tr>
 <tr class="separator:a418424d73300b10f393cff045d7781ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69c95d6e1ccfe03f4f13af1f42db19c9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view__impl.html#a69c95d6e1ccfe03f4f13af1f42db19c9">permute</a> (const std::string &amp;permutation) const</td></tr>
+<tr class="memdesc:a69c95d6e1ccfe03f4f13af1f42db19c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">permute the order of the indices, where the permutation argument "kji" implies that after the permutation the operator (i,j,k) returns the same as the operator (k,j,i) before the call to permute.  <a href="classcgv_1_1data_1_1data__view__impl.html#a69c95d6e1ccfe03f4f13af1f42db19c9">More...</a><br /></td></tr>
 <tr class="separator:a69c95d6e1ccfe03f4f13af1f42db19c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a541dc747e8faaea9cdaad1e1b34158b6"><td class="memItemLeft" align="right" valign="top"><a id="a541dc747e8faaea9cdaad1e1b34158b6"></a>
 <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view__impl.html#a541dc747e8faaea9cdaad1e1b34158b6">transpose</a> () const</td></tr>
@@ -283,7 +299,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <tr class="separator:a4aed604c3f66ccb193c6369d8730a90c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>the data view gives access to a data array of one, two, three or four dimensions. Each data entry can consist of several components as defined in the referenced component format. It allows to permute the dimensions, construct views of lower dimension with the ()-operators defined in the <a class="el" href="classcgv_1_1data_1_1data__view__impl.html">data_view_impl</a> and to access the data components with the get- and set-method of <a class="el" href="classcgv_1_1data_1_1data__view__impl.html">data_view_impl</a>. It keeps a flag that tells whether the data pointer belongs to the data view and therefore needs to be deleted on destruction. </p>
+<div class="textblock"><p>the data view gives access to a data array of one, two, three or four dimensions. </p>
+<p>Each data entry can consist of several components as defined in the referenced component format. It allows to permute the dimensions, construct views of lower dimension with the ()-operators defined in the <a class="el" href="classcgv_1_1data_1_1data__view__impl.html" title="template class implementing the part of the view that depends on whether the pointer is const or not ...">data_view_impl</a> and to access the data components with the get- and set-method of <a class="el" href="classcgv_1_1data_1_1data__view__impl.html" title="template class implementing the part of the view that depends on whether the pointer is const or not ...">data_view_impl</a>. It keeps a flag that tells whether the data pointer belongs to the data view and therefore needs to be deleted on destruction. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a3643286f907cf51f7b85192b9241ece4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3643286f907cf51f7b85192b9241ece4">&#9670;&nbsp;</a></span>data_view() <span class="overload">[1/4]</span></h2>
@@ -300,7 +317,9 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
         </tr>
       </table>
 </div><div class="memdoc">
-<p>construct a data view from the given format. Allocate a new data pointer with the new [] operator of type (unsigned char) and own the pointer. The <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> will view the complete data set as defined in the format. </p>
+
+<p>construct a data view from the given format. </p>
+<p>Allocate a new data pointer with the new [] operator of type (unsigned char) and own the pointer. The <a class="el" href="classcgv_1_1data_1_1data__view.html" title="the data view gives access to a data array of one, two, three or four dimensions.">data_view</a> will view the complete data set as defined in the format. </p>
 
 </div>
 </div>
@@ -329,7 +348,9 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
         </tr>
       </table>
 </div><div class="memdoc">
-<p>construct a data view from the given format, viewing the complete data set. The passed pointer will not be owned by the view. </p>
+
+<p>construct a data view from the given format, viewing the complete data set. </p>
+<p>The passed pointer will not be owned by the view. </p>
 
 </div>
 </div>
@@ -364,7 +385,9 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
         </tr>
       </table>
 </div><div class="memdoc">
-<p>construct a data view from the given format, viewing the complete data set. The passed pointer will be owned by the view if the manage_ptr flag is true. In this case the pointer is deleted on destruction with the delete [] operator of type (unsigned char*). </p>
+
+<p>construct a data view from the given format, viewing the complete data set. </p>
+<p>The passed pointer will be owned by the view if the manage_ptr flag is true. In this case the pointer is deleted on destruction with the delete [] operator of type (unsigned char*). </p>
 
 </div>
 </div>
@@ -391,56 +414,13 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   </tr>
 </table>
 </div><div class="memdoc">
-<p>construct a data view as a copy of the given data view. Copy the data and own the pointer. The <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> will view the complete data set as defined in the format. </p>
+
+<p>construct a data view as a copy of the given data view. </p>
+<p>Copy the data and own the pointer. The <a class="el" href="classcgv_1_1data_1_1data__view.html" title="the data view gives access to a data array of one, two, three or four dimensions.">data_view</a> will view the complete data set as defined in the format. </p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a62d19e9180dba52e0f1447f702125188"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62d19e9180dba52e0f1447f702125188">&#9670;&nbsp;</a></span>copy()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> cgv::data::data_view::copy </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>return a copy of this <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> and tha data via the copy constructor </p>
-
-</div>
-</div>
-<a id="a318e8840c10a63e3f1beb5b6662c7e23"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a318e8840c10a63e3f1beb5b6662c7e23">&#9670;&nbsp;</a></span>operator=()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp; cgv::data::data_view::operator= </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;&#160;</td>
-          <td class="paramname"><em>dv</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>the assignment operator takes over the data format and data pointers in case they are managed by the source data view </p>
-
-</div>
-</div>
 <a id="a69c95d6e1ccfe03f4f13af1f42db19c9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a69c95d6e1ccfe03f4f13af1f42db19c9">&#9670;&nbsp;</a></span>permute()</h2>
 
@@ -464,7 +444,9 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   </tr>
 </table>
 </div><div class="memdoc">
-<p>permute the order of the indices, where the permutation argument "kji" implies that after the permutation the operator (i,j,k) returns the same as the operator (k,j,i) before the call to permute. The permutation string must have at least two entries. If it has n entries it must contain each of the first n letters of "ijkl" exactly once, i.e. "ik" would be invalid, whereas "ikj" is a valid permutation. </p>
+
+<p>permute the order of the indices, where the permutation argument "kji" implies that after the permutation the operator (i,j,k) returns the same as the operator (k,j,i) before the call to permute. </p>
+<p>The permutation string must have at least two entries. If it has n entries it must contain each of the first n letters of "ijkl" exactly once, i.e. "ik" would be invalid, whereas "ikj" is a valid permutation. </p>
 
 </div>
 </div>
@@ -485,54 +467,6 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 <p>reflect 2D data view at horizontal axis </p>
 <p>reflect image at horizontal axis </p>
-
-</div>
-</div>
-<a id="aa8ac25003c5ddefb41d7401753c95cd1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa8ac25003c5ddefb41d7401753c95cd1">&#9670;&nbsp;</a></span>set_ptr() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::data::data_view::set_ptr </td>
-          <td>(</td>
-          <td class="paramtype">unsigned char *&#160;</td>
-          <td class="paramname"><em>ptr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>manage_ptr</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>set a different data pointer that will be deleted with the delete [] operator of type (unsigned char*) on destruction if the manage_ptr flag is true </p>
-
-</div>
-</div>
-<a id="a0d51c667e776b88796410599a6e00620"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0d51c667e776b88796410599a6e00620">&#9670;&nbsp;</a></span>set_ptr() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::data::data_view::set_ptr </td>
-          <td>(</td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>ptr</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>set a different data pointer that is not owned by the data view and will not be deleted on destruction. </p>
 
 </div>
 </div>

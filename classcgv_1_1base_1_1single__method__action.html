@@ -89,6 +89,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1base_1_1single__method__ac
 </div><!--header-->
 <div class="contents">
 
+<p>complete implementation of method actions that only call one method when entering a node  
+ <a href="classcgv_1_1base_1_1single__method__action.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="action_8h_source.html">action.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::base::single_method_action&lt; X, R, T1 &gt;:</div>
@@ -96,9 +99,9 @@ Inheritance diagram for cgv::base::single_method_action&lt; X, R, T1 &gt;:</div>
  <div class="center">
   <img src="classcgv_1_1base_1_1single__method__action.png" usemap="#cgv::base::single_5Fmethod_5Faction_3C_20X_2C_20R_2C_20T1_20_3E_map" alt=""/>
   <map id="cgv::base::single_5Fmethod_5Faction_3C_20X_2C_20R_2C_20T1_20_3E_map" name="cgv::base::single_5Fmethod_5Faction_3C_20X_2C_20R_2C_20T1_20_3E_map">
-<area href="classcgv_1_1base_1_1method__action.html" alt="cgv::base::method_action&lt; X, T1 &gt;" shape="rect" coords="0,112,266,136"/>
-<area href="classcgv_1_1base_1_1base__method__action.html" alt="cgv::base::base_method_action&lt; X &gt;" shape="rect" coords="0,56,266,80"/>
-<area href="classcgv_1_1base_1_1action.html" alt="cgv::base::action" shape="rect" coords="0,0,266,24"/>
+<area href="classcgv_1_1base_1_1method__action.html" title="base class for all method actions that take a single argument of type T1 in their signature" alt="cgv::base::method_action&lt; X, T1 &gt;" shape="rect" coords="0,112,266,136"/>
+<area href="classcgv_1_1base_1_1base__method__action.html" title="base class for all actions that use methods of class X" alt="cgv::base::base_method_action&lt; X &gt;" shape="rect" coords="0,56,266,80"/>
+<area href="classcgv_1_1base_1_1action.html" title="The action class is used in tree traversals together with the traverser." alt="cgv::base::action" shape="rect" coords="0,0,266,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -110,7 +113,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a21641ba827d708e0a0c1f537863b786f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aceb961b1262d5756dfa2bacbb0c8d331"><td class="memItemLeft" align="right" valign="top"><a id="aceb961b1262d5756dfa2bacbb0c8d331"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1single__method__action.html#aceb961b1262d5756dfa2bacbb0c8d331">begin</a> ()</td></tr>
-<tr class="memdesc:aceb961b1262d5756dfa2bacbb0c8d331"><td class="mdescLeft">&#160;</td><td class="mdescRight">uses call_method of base class <a class="el" href="classcgv_1_1base_1_1method__action.html">method_action</a> to call the method refered to by the stored method pointer <br /></td></tr>
+<tr class="memdesc:aceb961b1262d5756dfa2bacbb0c8d331"><td class="mdescLeft">&#160;</td><td class="mdescRight">uses call_method of base class <a class="el" href="classcgv_1_1base_1_1method__action.html" title="base class for all method actions that take a single argument of type T1 in their signature">method_action</a> to call the method refered to by the stored method pointer <br /></td></tr>
 <tr class="separator:aceb961b1262d5756dfa2bacbb0c8d331"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad18c7072531b5320c2c0ddbca448a39"><td class="memItemLeft" align="right" valign="top"><a id="aad18c7072531b5320c2c0ddbca448a39"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1single__method__action.html#aad18c7072531b5320c2c0ddbca448a39">has_begin_only</a> () const</td></tr>

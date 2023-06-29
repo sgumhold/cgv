@@ -90,6 +90,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1attribute__array
 </div><!--header-->
 <div class="contents">
 
+<p>the <a class="el" href="classcgv_1_1render_1_1attribute__array__binding.html" title="the attribute_array_binding allows to define vertex attributes (i.e.">attribute_array_binding</a> allows to define vertex attributes (i.e.  
+ <a href="classcgv_1_1render_1_1attribute__array__binding.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="attribute__array__binding_8h_source.html">attribute_array_binding.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::render::attribute_array_binding:</div>
@@ -109,6 +112,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a4c896d2654616448824f5f2f759b8947"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether component has been created <br /></td></tr>
 <tr class="separator:a4c896d2654616448824f5f2f759b8947"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">put_id_void</a> (void *ptr) const</td></tr>
+<tr class="memdesc:aa5404b2aec4bbe8fd4eff1959b627709"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the rendering api specific id the component to the memory location of the given pointer.  <a href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">More...</a><br /></td></tr>
 <tr class="separator:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06ff3003af849b32a76ec5be29bd89dc"><td class="memTemplParams" colspan="2"><a id="a06ff3003af849b32a76ec5be29bd89dc"></a>
 template&lt;typename T &gt; </td></tr>
@@ -225,7 +229,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:a0486660e1e9c2cabcbf5bdb81f5365a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>the <a class="el" href="classcgv_1_1render_1_1attribute__array__binding.html">attribute_array_binding</a> allows to define vertex attributes (i.e. the inputs to the vertex shader as well as an element array that stores element indices in indexed rendering. The vertex attributes can be set from instances of std::vector, pointers to arrays and <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a> objects. Each individual vertex attribute can be enabled and disabled. Each vertex attribute is attached to a program location that can be queried from a <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> with the get_attribute_location() function. The element array can only be set to a <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a> object of type VBT_INDICES with the function <a class="el" href="classcgv_1_1render_1_1attribute__array__binding.html#a0486660e1e9c2cabcbf5bdb81f5365a3" title="set the elment array to the given vertex buffer object which must me of type VBT_INDICES">set_element_array()</a>. </p>
+<div class="textblock"><p>the <a class="el" href="classcgv_1_1render_1_1attribute__array__binding.html" title="the attribute_array_binding allows to define vertex attributes (i.e.">attribute_array_binding</a> allows to define vertex attributes (i.e. </p>
+<p>the inputs to the vertex shader as well as an element array that stores element indices in indexed rendering. The vertex attributes can be set from instances of std::vector, pointers to arrays and <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html" title="a vertex buffer is an unstructured memory block on the GPU.">vertex_buffer</a> objects. Each individual vertex attribute can be enabled and disabled. Each vertex attribute is attached to a program location that can be queried from a <a class="el" href="classcgv_1_1render_1_1shader__program.html" title="a shader program combines several shader code fragments to a complete definition of the shading pipel...">shader_program</a> with the get_attribute_location() function. The element array can only be set to a <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html" title="a vertex buffer is an unstructured memory block on the GPU.">vertex_buffer</a> object of type VBT_INDICES with the function <a class="el" href="classcgv_1_1render_1_1attribute__array__binding.html#a0486660e1e9c2cabcbf5bdb81f5365a3" title="set the elment array to the given vertex buffer object which must me of type VBT_INDICES">set_element_array()</a>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae95ddb7973361eb3bfd350fa565812db"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae95ddb7973361eb3bfd350fa565812db">&#9670;&nbsp;</a></span>attribute_array_binding()</h2>
@@ -442,7 +447,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   </tr>
 </table>
 </div><div class="memdoc">
-<p>copy the rendering api specific id the component to the memory location of the given pointer. For opengl this the passed pointer should be of type GLint or GLuint. </p>
+
+<p>copy the rendering api specific id the component to the memory location of the given pointer. </p>
+<p>For opengl this the passed pointer should be of type GLint or GLuint. </p>
 
 </div>
 </div>

@@ -93,6 +93,9 @@ $(document).ready(function(){initNavTree('structcgv_1_1render_1_1callback__drawa
 </div><!--header-->
 <div class="contents">
 
+<p>as a drawable can manage only a single context, this callback drawable is a work around for the case when a drawable should draw in several contexts (i.e.  
+ <a href="structcgv_1_1render_1_1callback__drawable.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="callback__drawable_8h_source.html">callback_drawable.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::render::callback_drawable:</div>
@@ -100,13 +103,13 @@ Inheritance diagram for cgv::render::callback_drawable:</div>
  <div class="center">
   <img src="structcgv_1_1render_1_1callback__drawable.png" usemap="#cgv::render::callback_5Fdrawable_map" alt=""/>
   <map id="cgv::render::callback_5Fdrawable_map" name="cgv::render::callback_5Fdrawable_map">
-<area href="classcgv_1_1base_1_1node.html" alt="cgv::base::node" shape="rect" coords="99,168,288,192"/>
-<area href="classcgv_1_1render_1_1drawable.html" alt="cgv::render::drawable" shape="rect" coords="398,168,587,192"/>
-<area href="classcgv_1_1base_1_1named.html" alt="cgv::base::named" shape="rect" coords="99,112,288,136"/>
+<area href="classcgv_1_1base_1_1node.html" title="The node class keeps a pointer to its parent." alt="cgv::base::node" shape="rect" coords="99,168,288,192"/>
+<area href="classcgv_1_1render_1_1drawable.html" title="base class for all drawables, which is independent of the used rendering API." alt="cgv::render::drawable" shape="rect" coords="398,168,587,192"/>
+<area href="classcgv_1_1base_1_1named.html" title="base class for all gui types" alt="cgv::base::named" shape="rect" coords="99,112,288,136"/>
 <area href="classcgv_1_1base_1_1traverse__policy.html" title="nodes should inherit from this policy class to allow selective tree traversals" alt="cgv::base::traverse_policy" shape="rect" coords="298,112,487,136"/>
 <area href="structcgv_1_1render_1_1render__types.html" title="this is DEPRECATED" alt="cgv::render::render_types" shape="rect" coords="497,112,686,136"/>
-<area href="classcgv_1_1base_1_1base.html" alt="cgv::base::base" shape="rect" coords="99,56,288,80"/>
-<area href="classcgv_1_1data_1_1ref__counted.html" alt="cgv::data::ref_counted" shape="rect" coords="0,0,189,24"/>
+<area href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti..." alt="cgv::base::base" shape="rect" coords="99,56,288,80"/>
+<area href="classcgv_1_1data_1_1ref__counted.html" title="if you derive your class from this class, a ref_ptr will do reference counting in the inhereted ref_c..." alt="cgv::data::ref_counted" shape="rect" coords="0,0,189,24"/>
 <area href="structcgv_1_1reflect_1_1self__reflection__tag.html" title="Derive from this class to announce implementation of the method self_reflect." alt="cgv::reflect::self_reflection_tag" shape="rect" coords="199,0,388,24"/>
   </map>
 </div></div>
@@ -342,7 +345,7 @@ virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class=
 <tr class="separator:a79a9ca57ee7e6364153cda52223b8501"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec86a78e596c9c4fb203fcad98fb6afd"><td class="memItemLeft" align="right" valign="top"><a id="aec86a78e596c9c4fb203fcad98fb6afd"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#aec86a78e596c9c4fb203fcad98fb6afd">get_name_or_type_name</a> () const</td></tr>
-<tr class="memdesc:aec86a78e596c9c4fb203fcad98fb6afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">determine name of instance by checking <a class="el" href="classcgv_1_1base_1_1named.html">cgv::base::named</a> interface and in failure fallback to <a class="el" href="classcgv_1_1base_1_1base.html#a6e64a898476591f7246e522652abfa4c" title="overload to return the type name of this object. By default the type interface is queried over get_ty...">get_type_name()</a> <br /></td></tr>
+<tr class="memdesc:aec86a78e596c9c4fb203fcad98fb6afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">determine name of instance by checking <a class="el" href="classcgv_1_1base_1_1named.html" title="base class for all gui types">cgv::base::named</a> interface and in failure fallback to <a class="el" href="classcgv_1_1base_1_1base.html#a6e64a898476591f7246e522652abfa4c" title="overload to return the type name of this object. By default the type interface is queried over get_ty...">get_type_name()</a> <br /></td></tr>
 <tr class="separator:aec86a78e596c9c4fb203fcad98fb6afd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f074aea5bf4b0bfeb00845750d27623"><td class="memItemLeft" align="right" valign="top"><a id="a2f074aea5bf4b0bfeb00845750d27623"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#a2f074aea5bf4b0bfeb00845750d27623">on_register</a> ()</td></tr>
@@ -538,7 +541,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:aeacb85dab71b803971f8611644898371"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>as a drawable can manage only a single context, this callback drawable is a work around for the case when a drawable should draw in several contexts (i.e. two windows). Then the callback drawable can be registered in the second window and its callback signals can be connected to methods in the primary drawable. </p>
+<div class="textblock"><p>as a drawable can manage only a single context, this callback drawable is a work around for the case when a drawable should draw in several contexts (i.e. </p>
+<p>two windows). Then the callback drawable can be registered in the second window and its callback signals can be connected to methods in the primary drawable. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a6746cd9f70fefe5a4f2b72534869fcc3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6746cd9f70fefe5a4f2b72534869fcc3">&#9670;&nbsp;</a></span>call_void()</h2>
@@ -662,7 +666,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>convenience function to find the view control in the current hierarchy </p>
-<p>this only works if your class inherits from the <a class="el" href="classcgv_1_1base_1_1node.html">cgv::base::node</a> class. </p>
+<p>this only works if your class inherits from the <a class="el" href="classcgv_1_1base_1_1node.html" title="The node class keeps a pointer to its parent.">cgv::base::node</a> class. </p>
 
 </div>
 </div>

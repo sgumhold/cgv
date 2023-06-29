@@ -103,8 +103,8 @@ Inheritance diagram for cgv::media::video::video_reader:</div>
  <div class="center">
   <img src="classcgv_1_1media_1_1video_1_1video__reader.png" usemap="#cgv::media::video::video_5Freader_map" alt=""/>
   <map id="cgv::media::video::video_5Freader_map" name="cgv::media::video::video_5Freader_map">
-<area href="classcgv_1_1base_1_1base.html" alt="cgv::base::base" shape="rect" coords="100,56,291,80"/>
-<area href="classcgv_1_1data_1_1ref__counted.html" alt="cgv::data::ref_counted" shape="rect" coords="0,0,191,24"/>
+<area href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti..." alt="cgv::base::base" shape="rect" coords="100,56,291,80"/>
+<area href="classcgv_1_1data_1_1ref__counted.html" title="if you derive your class from this class, a ref_ptr will do reference counting in the inhereted ref_c..." alt="cgv::data::ref_counted" shape="rect" coords="0,0,191,24"/>
 <area href="structcgv_1_1reflect_1_1self__reflection__tag.html" title="Derive from this class to announce implementation of the method self_reflect." alt="cgv::reflect::self_reflection_tag" shape="rect" coords="201,0,392,24"/>
   </map>
 </div></div>
@@ -112,7 +112,7 @@ Inheritance diagram for cgv::media::video::video_reader:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac2ae8fe93fa69a97f9675539c1297ddd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1video_1_1video__reader.html#ac2ae8fe93fa69a97f9675539c1297ddd">video_reader</a> (<a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;image_format)</td></tr>
-<tr class="memdesc:ac2ae8fe93fa69a97f9675539c1297ddd"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct an image reader from a file name  <a href="classcgv_1_1media_1_1video_1_1video__reader.html#ac2ae8fe93fa69a97f9675539c1297ddd">More...</a><br /></td></tr>
+<tr class="memdesc:ac2ae8fe93fa69a97f9675539c1297ddd"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a video reader from a reference to the image format, which will be set after opening a file.  <a href="classcgv_1_1media_1_1video_1_1video__reader.html#ac2ae8fe93fa69a97f9675539c1297ddd">More...</a><br /></td></tr>
 <tr class="separator:ac2ae8fe93fa69a97f9675539c1297ddd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3576d1e95dd99442eb5dad89632a230"><td class="memItemLeft" align="right" valign="top"><a id="af3576d1e95dd99442eb5dad89632a230"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1video_1_1video__reader.html#af3576d1e95dd99442eb5dad89632a230">~video_reader</a> ()</td></tr>
@@ -143,8 +143,11 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <tr class="memdesc:ab6e03228c86f9cd42c540e4ebc356e10"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the frame rate <br /></td></tr>
 <tr class="separator:ab6e03228c86f9cd42c540e4ebc356e10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd1fe4008f6ee9e02e121dfc6d88b77c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1video_1_1video__reader.html#acd1fe4008f6ee9e02e121dfc6d88b77c">read_frame</a> (<a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;dv)</td></tr>
+<tr class="memdesc:acd1fe4008f6ee9e02e121dfc6d88b77c"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the next frame to the given data view, if this is empty recreate it with a newly allocated data pointer, which is owned by the view afterwards.  <a href="classcgv_1_1media_1_1video_1_1video__reader.html#acd1fe4008f6ee9e02e121dfc6d88b77c">More...</a><br /></td></tr>
 <tr class="separator:acd1fe4008f6ee9e02e121dfc6d88b77c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2e4e08497204f34e10a6aa05c084976"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1video_1_1video__reader.html#ae2e4e08497204f34e10a6aa05c084976">read_frame</a> (const <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;dv)</td></tr>
+<tr class="memitem:ae2e4e08497204f34e10a6aa05c084976"><td class="memItemLeft" align="right" valign="top"><a id="ae2e4e08497204f34e10a6aa05c084976"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1video_1_1video__reader.html#ae2e4e08497204f34e10a6aa05c084976">read_frame</a> (const <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;dv)</td></tr>
+<tr class="memdesc:ae2e4e08497204f34e10a6aa05c084976"><td class="mdescLeft">&#160;</td><td class="mdescRight">same as other read_frame version, but the data_view must point to allocated data of the correct format. <br /></td></tr>
 <tr class="separator:ae2e4e08497204f34e10a6aa05c084976"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89e5824d0b7bf0b8911058fe283febeb"><td class="memItemLeft" align="right" valign="top"><a id="a89e5824d0b7bf0b8911058fe283febeb"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1video_1_1video__reader.html#a89e5824d0b7bf0b8911058fe283febeb">close</a> ()</td></tr>
@@ -156,7 +159,7 @@ virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class=
 <tr class="separator:a79a9ca57ee7e6364153cda52223b8501"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec86a78e596c9c4fb203fcad98fb6afd"><td class="memItemLeft" align="right" valign="top"><a id="aec86a78e596c9c4fb203fcad98fb6afd"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#aec86a78e596c9c4fb203fcad98fb6afd">get_name_or_type_name</a> () const</td></tr>
-<tr class="memdesc:aec86a78e596c9c4fb203fcad98fb6afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">determine name of instance by checking <a class="el" href="classcgv_1_1base_1_1named.html">cgv::base::named</a> interface and in failure fallback to <a class="el" href="classcgv_1_1base_1_1base.html#a6e64a898476591f7246e522652abfa4c" title="overload to return the type name of this object. By default the type interface is queried over get_ty...">get_type_name()</a> <br /></td></tr>
+<tr class="memdesc:aec86a78e596c9c4fb203fcad98fb6afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">determine name of instance by checking <a class="el" href="classcgv_1_1base_1_1named.html" title="base class for all gui types">cgv::base::named</a> interface and in failure fallback to <a class="el" href="classcgv_1_1base_1_1base.html#a6e64a898476591f7246e522652abfa4c" title="overload to return the type name of this object. By default the type interface is queried over get_ty...">get_type_name()</a> <br /></td></tr>
 <tr class="separator:aec86a78e596c9c4fb203fcad98fb6afd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f074aea5bf4b0bfeb00845750d27623"><td class="memItemLeft" align="right" valign="top"><a id="a2f074aea5bf4b0bfeb00845750d27623"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#a2f074aea5bf4b0bfeb00845750d27623">on_register</a> ()</td></tr>
@@ -335,8 +338,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>construct an image reader from a file name </p>
 <p>construct a video reader from a reference to the image format, which will be set after opening a file. </p>
+<p>construct an image reader from a file name </p>
 
 </div>
 </div>
@@ -549,7 +552,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="acd1fe4008f6ee9e02e121dfc6d88b77c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acd1fe4008f6ee9e02e121dfc6d88b77c">&#9670;&nbsp;</a></span>read_frame() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#acd1fe4008f6ee9e02e121dfc6d88b77c">&#9670;&nbsp;</a></span>read_frame()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -563,26 +566,9 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>read the next frame to the given data view, if this is empty recreate it with a newly allocated data pointer, which is owned by the view afterwards. This method returns false if an error occurs or if there are no more frames in the file. </p>
 
-</div>
-</div>
-<a id="ae2e4e08497204f34e10a6aa05c084976"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae2e4e08497204f34e10a6aa05c084976">&#9670;&nbsp;</a></span>read_frame() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool cgv::media::video::video_reader::read_frame </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;&#160;</td>
-          <td class="paramname"><em>dv</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>same as other read_frame version, but the data_view must point to allocated data of the correct format. </p>
+<p>read the next frame to the given data view, if this is empty recreate it with a newly allocated data pointer, which is owned by the view afterwards. </p>
+<p>This method returns false if an error occurs or if there are no more frames in the file. </p>
 
 </div>
 </div>

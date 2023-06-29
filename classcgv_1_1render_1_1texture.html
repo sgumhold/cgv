@@ -93,6 +93,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1texture.html',''
 </div><!--header-->
 <div class="contents">
 
+<p>the texture class encapsulates all functionality independent of the rendering api.  
+ <a href="classcgv_1_1render_1_1texture.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="texture_8h_source.html">texture.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::render::texture:</div>
@@ -101,10 +104,10 @@ Inheritance diagram for cgv::render::texture:</div>
   <img src="classcgv_1_1render_1_1texture.png" usemap="#cgv::render::texture_map" alt=""/>
   <map id="cgv::render::texture_map" name="cgv::render::texture_map">
 <area href="classcgv_1_1render_1_1texture__base.html" title="base interface for a texture" alt="cgv::render::texture_base" shape="rect" coords="0,112,189,136"/>
-<area href="classcgv_1_1data_1_1data__format.html" alt="cgv::data::data_format" shape="rect" coords="199,112,388,136"/>
+<area href="classcgv_1_1data_1_1data__format.html" title="A data_format describes a multidimensional data block of data entries." alt="cgv::data::data_format" shape="rect" coords="199,112,388,136"/>
 <area href="classcgv_1_1render_1_1render__component.html" title="base interface for all render components" alt="cgv::render::render_component" shape="rect" coords="0,56,189,80"/>
-<area href="classcgv_1_1data_1_1component__format.html" alt="cgv::data::component_format" shape="rect" coords="199,56,388,80"/>
-<area href="classcgv_1_1data_1_1packing__info.html" alt="cgv::data::packing_info" shape="rect" coords="199,0,388,24"/>
+<area href="classcgv_1_1data_1_1component__format.html" title="the component format inherits the information of a packing_info and adds information on the component..." alt="cgv::data::component_format" shape="rect" coords="199,56,388,80"/>
+<area href="classcgv_1_1data_1_1packing__info.html" title="the packing_info class stores information about packed integers structures." alt="cgv::data::packing_info" shape="rect" coords="199,0,388,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -115,6 +118,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a4c896d2654616448824f5f2f759b8947"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether component has been created <br /></td></tr>
 <tr class="separator:a4c896d2654616448824f5f2f759b8947"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">put_id_void</a> (void *ptr) const</td></tr>
+<tr class="memdesc:aa5404b2aec4bbe8fd4eff1959b627709"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the rendering api specific id the component to the memory location of the given pointer.  <a href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">More...</a><br /></td></tr>
 <tr class="separator:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06ff3003af849b32a76ec5be29bd89dc"><td class="memTemplParams" colspan="2"><a id="a06ff3003af849b32a76ec5be29bd89dc"></a>
 template&lt;typename T &gt; </td></tr>
@@ -174,14 +178,14 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:afa956f264c10dbbfc02e411822ec9c1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the alignment of entries <br /></td></tr>
 <tr class="separator:afa956f264c10dbbfc02e411822ec9c1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90ce214c4438f87dc548552d662c6653"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__format.html#a90ce214c4438f87dc548552d662c6653">get_alignment</a> (unsigned int i) const</td></tr>
-<tr class="memdesc:a90ce214c4438f87dc548552d662c6653"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the alignment of a given dimension  <a href="classcgv_1_1data_1_1data__format.html#a90ce214c4438f87dc548552d662c6653">More...</a><br /></td></tr>
+<tr class="memdesc:a90ce214c4438f87dc548552d662c6653"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the alignment of a given dimension, where the alignment of the last dimension is always 1 and cannot be changed.  <a href="classcgv_1_1data_1_1data__format.html#a90ce214c4438f87dc548552d662c6653">More...</a><br /></td></tr>
 <tr class="separator:a90ce214c4438f87dc548552d662c6653"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3327dd2a85b70ee221a9cc6a811c1db8"><td class="memItemLeft" align="right" valign="top"><a id="a3327dd2a85b70ee221a9cc6a811c1db8"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__format.html#a3327dd2a85b70ee221a9cc6a811c1db8">set_entry_alignment</a> (unsigned int _a)</td></tr>
 <tr class="memdesc:a3327dd2a85b70ee221a9cc6a811c1db8"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the alignment of entries <br /></td></tr>
 <tr class="separator:a3327dd2a85b70ee221a9cc6a811c1db8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a716faf713640333f0664d103eb787110"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__format.html#a716faf713640333f0664d103eb787110">set_alignment</a> (unsigned int i, unsigned int _a)</td></tr>
-<tr class="memdesc:a716faf713640333f0664d103eb787110"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the alignment of a given dimension  <a href="classcgv_1_1data_1_1data__format.html#a716faf713640333f0664d103eb787110">More...</a><br /></td></tr>
+<tr class="memdesc:a716faf713640333f0664d103eb787110"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the alignment of a given dimension, add dimensions if necessary.  <a href="classcgv_1_1data_1_1data__format.html#a716faf713640333f0664d103eb787110">More...</a><br /></td></tr>
 <tr class="separator:a716faf713640333f0664d103eb787110"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af147ecfb2d85ddb1d134f00f54049e4d"><td class="memItemLeft" align="right" valign="top"><a id="af147ecfb2d85ddb1d134f00f54049e4d"></a>
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__format.html#af147ecfb2d85ddb1d134f00f54049e4d">get_layout_dimension</a> (unsigned int dim) const</td></tr>
@@ -192,11 +196,11 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="separator:a7f3679749ced2adf0d4d155a47fdd927"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb567e728873a51dc5e56ebca014dbf6"><td class="memItemLeft" align="right" valign="top"><a id="abb567e728873a51dc5e56ebca014dbf6"></a>
 const <a class="el" href="classcgv_1_1data_1_1component__format.html#a1594bbea3458a0a3f492a2daaff0fb1f">component_format</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__format.html#abb567e728873a51dc5e56ebca014dbf6">get_component_format</a> () const</td></tr>
-<tr class="memdesc:abb567e728873a51dc5e56ebca014dbf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> info by simple conversion of the this pointer <br /></td></tr>
+<tr class="memdesc:abb567e728873a51dc5e56ebca014dbf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the <a class="el" href="classcgv_1_1data_1_1component__format.html" title="the component format inherits the information of a packing_info and adds information on the component...">component_format</a> info by simple conversion of the this pointer <br /></td></tr>
 <tr class="separator:abb567e728873a51dc5e56ebca014dbf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a139b41ca40af4bc346bdbd28f0bde055"><td class="memItemLeft" align="right" valign="top"><a id="a139b41ca40af4bc346bdbd28f0bde055"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__format.html#a139b41ca40af4bc346bdbd28f0bde055">set_component_format</a> (const <a class="el" href="classcgv_1_1data_1_1component__format.html#a1594bbea3458a0a3f492a2daaff0fb1f">component_format</a> &amp;cf)</td></tr>
-<tr class="memdesc:a139b41ca40af4bc346bdbd28f0bde055"><td class="mdescLeft">&#160;</td><td class="mdescRight">set <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> by simply assigning to a converted this pointer <br /></td></tr>
+<tr class="memdesc:a139b41ca40af4bc346bdbd28f0bde055"><td class="mdescLeft">&#160;</td><td class="mdescRight">set <a class="el" href="classcgv_1_1data_1_1component__format.html" title="the component format inherits the information of a packing_info and adds information on the component...">component_format</a> by simply assigning to a converted this pointer <br /></td></tr>
 <tr class="separator:a139b41ca40af4bc346bdbd28f0bde055"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeeb352777bc7221d4b1ac4438c3cea43"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1component__format.html#aeeb352777bc7221d4b1ac4438c3cea43">set_component_format</a> (ComponentFormat _cf)</td></tr>
 <tr class="memdesc:aeeb352777bc7221d4b1ac4438c3cea43"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the component names from a standard component format  <a href="classcgv_1_1data_1_1component__format.html#aeeb352777bc7221d4b1ac4438c3cea43">More...</a><br /></td></tr>
@@ -335,8 +339,11 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:ade16f2632b544f472bc705e43c5f7847"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">methods that can be called without context</div></td></tr>
 <tr class="memitem:a71d20777f97d8ce4a252f1cbcf291738"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a71d20777f97d8ce4a252f1cbcf291738">texture</a> (const std::string &amp;description=&quot;uint8[R,G,B,A]&quot;, TextureFilter _mag_filter=TF_LINEAR, <a class="el" href="namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea">TextureFilter</a> _min_filter=TF_LINEAR, <a class="el" href="namespacecgv_1_1render.html#a4b3eb5abd80954194b0b60848fad0f2a">TextureWrap</a> _wrap_s=TW_CLAMP_TO_EDGE, <a class="el" href="namespacecgv_1_1render.html#a4b3eb5abd80954194b0b60848fad0f2a">TextureWrap</a> _wrap_t=TW_CLAMP_TO_EDGE, <a class="el" href="namespacecgv_1_1render.html#a4b3eb5abd80954194b0b60848fad0f2a">TextureWrap</a> _wrap_r=TW_CLAMP_TO_EDGE)</td></tr>
+<tr class="memdesc:a71d20777f97d8ce4a252f1cbcf291738"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct from description string (which defaults to rgba format) and most commonly used texture parameters.  <a href="classcgv_1_1render_1_1texture.html#a71d20777f97d8ce4a252f1cbcf291738">More...</a><br /></td></tr>
 <tr class="separator:a71d20777f97d8ce4a252f1cbcf291738"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d184c0f1510ce86bc216010d597ea2b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a2d184c0f1510ce86bc216010d597ea2b">~texture</a> ()</td></tr>
+<tr class="memitem:a2d184c0f1510ce86bc216010d597ea2b"><td class="memItemLeft" align="right" valign="top"><a id="a2d184c0f1510ce86bc216010d597ea2b"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a2d184c0f1510ce86bc216010d597ea2b">~texture</a> ()</td></tr>
+<tr class="memdesc:a2d184c0f1510ce86bc216010d597ea2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">destruct texture, the destructor can be called without context if the destruct method has been called or no creation has taken place <br /></td></tr>
 <tr class="separator:a2d184c0f1510ce86bc216010d597ea2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a138f53fac246f1d1280c5416a0d26862"><td class="memItemLeft" align="right" valign="top"><a id="a138f53fac246f1d1280c5416a0d26862"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a138f53fac246f1d1280c5416a0d26862">set_data_format</a> (const std::string &amp;description)</td></tr>
@@ -382,7 +389,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a1add740599c0405b61ff273e1ae63f09">set_border_color</a> (float r, float g, float b, float a=1.0f)</td></tr>
 <tr class="memdesc:a1add740599c0405b61ff273e1ae63f09"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the border color <br /></td></tr>
 <tr class="separator:a1add740599c0405b61ff273e1ae63f09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae16b594b6a561303de2dde63af981317"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#ae16b594b6a561303de2dde63af981317">set_min_filter</a> (<a class="el" href="namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea">TextureFilter</a> _min_filter, float _anisotropy=2.0f)</td></tr>
+<tr class="memitem:ae16b594b6a561303de2dde63af981317"><td class="memItemLeft" align="right" valign="top"><a id="ae16b594b6a561303de2dde63af981317"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#ae16b594b6a561303de2dde63af981317">set_min_filter</a> (<a class="el" href="namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea">TextureFilter</a> _min_filter, float _anisotropy=2.0f)</td></tr>
+<tr class="memdesc:ae16b594b6a561303de2dde63af981317"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the minification filters, if minification is set to TF_ANISOTROP, the second floating point parameter specifies the degree of anisotropy <br /></td></tr>
 <tr class="separator:ae16b594b6a561303de2dde63af981317"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a163e68830c4586dd1134208e45d5e557"><td class="memItemLeft" align="right" valign="top"><a id="a163e68830c4586dd1134208e45d5e557"></a>
 <a class="el" href="namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea">TextureFilter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a163e68830c4586dd1134208e45d5e557">get_min_filter</a> () const</td></tr>
@@ -457,7 +466,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr class="memdesc:a35c4f5d37dbe23598261ffd253040e3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the currently used texture unit and -1 for current <br /></td></tr>
 <tr class="separator:a35c4f5d37dbe23598261ffd253040e3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">methods that change the current gpu context</div></td></tr>
-<tr class="memitem:a81315c47d777439da016e988229bde3a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a81315c47d777439da016e988229bde3a">enable</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int tex_unit=-1)</td></tr>
+<tr class="memitem:a81315c47d777439da016e988229bde3a"><td class="memItemLeft" align="right" valign="top"><a id="a81315c47d777439da016e988229bde3a"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a81315c47d777439da016e988229bde3a">enable</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int tex_unit=-1)</td></tr>
+<tr class="memdesc:a81315c47d777439da016e988229bde3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable this texture in the given texture unit, -1 corresponds to the current unit. <br /></td></tr>
 <tr class="separator:a81315c47d777439da016e988229bde3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b6a0d57a4c4703b97ac8cd632973b9f"><td class="memItemLeft" align="right" valign="top"><a id="a7b6a0d57a4c4703b97ac8cd632973b9f"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a7b6a0d57a4c4703b97ac8cd632973b9f">disable</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
@@ -525,10 +536,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:ac734267808e1b7d8d53d707ff40e0a51"><td class="mdescLeft">&#160;</td><td class="mdescRight">find the format that matches the one specified in the component format best <br /></td></tr>
 <tr class="separator:ac734267808e1b7d8d53d707ff40e0a51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b89a0bb09f73e84dec467a61b3fcc8b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">create</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="namespacecgv_1_1render.html#ae3c8d596bb12c0538a8bbbb125b657d3">TextureType</a> _tt=TT_UNDEF, unsigned width=-1, unsigned height=-1, unsigned depth=-1)</td></tr>
+<tr class="memdesc:a2b89a0bb09f73e84dec467a61b3fcc8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">create the texture of dimension and resolution specified in the data format base class.  <a href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">More...</a><br /></td></tr>
 <tr class="separator:a2b89a0bb09f73e84dec467a61b3fcc8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a96c72a75d5c71bae41869929c211ba"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a3a96c72a75d5c71bae41869929c211ba">create_from_image</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;file_name=&quot;&quot;, int *image_width_ptr=0, int *image_height_ptr=0, unsigned char *clear_color_ptr=0, int level=-1, int cube_side=-1)</td></tr>
+<tr class="memdesc:a3a96c72a75d5c71bae41869929c211ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">create the texture from an image file.  <a href="classcgv_1_1render_1_1texture.html#a3a96c72a75d5c71bae41869929c211ba">More...</a><br /></td></tr>
 <tr class="separator:a3a96c72a75d5c71bae41869929c211ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a649eb7deef5551287a645212fdbcea80"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a649eb7deef5551287a645212fdbcea80">create_from_image</a> (<a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;df, <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;dv, const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;file_name=&quot;&quot;, unsigned char *clear_color_ptr=0, int level=-1, int cube_side=-1)</td></tr>
+<tr class="memdesc:a649eb7deef5551287a645212fdbcea80"><td class="mdescLeft">&#160;</td><td class="mdescRight">same as previous method but use the passed data format and data view to store the content of the image.  <a href="classcgv_1_1render_1_1texture.html#a649eb7deef5551287a645212fdbcea80">More...</a><br /></td></tr>
 <tr class="separator:a649eb7deef5551287a645212fdbcea80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef7071c125861dd07baea949e093ed21"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#aef7071c125861dd07baea949e093ed21">create_from_images</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;file_names, int level=-1)</td></tr>
 <tr class="memdesc:aef7071c125861dd07baea949e093ed21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a cube map from six files specified in the file_names parameter.  <a href="classcgv_1_1render_1_1texture.html#aef7071c125861dd07baea949e093ed21">More...</a><br /></td></tr>
@@ -537,17 +551,24 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#ab6a31e3c5d142c7edc7da3e939a80ccd">write_to_file</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;file_name, unsigned int z_or_cube_side=-1, float depth_map_gamma=1.0f, const std::string &amp;options=&quot;&quot;) const</td></tr>
 <tr class="memdesc:ab6a31e3c5d142c7edc7da3e939a80ccd"><td class="mdescLeft">&#160;</td><td class="mdescRight">write the content of the texture to a file. This method needs support for frame buffer objects. <br /></td></tr>
 <tr class="separator:ab6a31e3c5d142c7edc7da3e939a80ccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a008ed211e6b3157cbf20ad3fa6a64093"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a008ed211e6b3157cbf20ad3fa6a64093">generate_mipmaps</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="memitem:a008ed211e6b3157cbf20ad3fa6a64093"><td class="memItemLeft" align="right" valign="top"><a id="a008ed211e6b3157cbf20ad3fa6a64093"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a008ed211e6b3157cbf20ad3fa6a64093">generate_mipmaps</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="memdesc:a008ed211e6b3157cbf20ad3fa6a64093"><td class="mdescLeft">&#160;</td><td class="mdescRight">generate mipmaps automatically, only supported if framebuffer objects are supported by the GPU <br /></td></tr>
 <tr class="separator:a008ed211e6b3157cbf20ad3fa6a64093"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a46847d2f61498776e3c161da31438a31"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a46847d2f61498776e3c161da31438a31">create_from_buffer</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int x, int y, int width, int height, int level=-1)</td></tr>
+<tr class="memdesc:a46847d2f61498776e3c161da31438a31"><td class="mdescLeft">&#160;</td><td class="mdescRight">create texture from the currently set read buffer, where x, y, width and height define the to be used rectangle of the read buffer.  <a href="classcgv_1_1render_1_1texture.html#a46847d2f61498776e3c161da31438a31">More...</a><br /></td></tr>
 <tr class="separator:a46847d2f61498776e3c161da31438a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5967492788c5bc01af2d9bb6a9ff612"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#ab5967492788c5bc01af2d9bb6a9ff612">create</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">cgv::data::const_data_view</a> &amp;data, int level=-1, int cube_side=-1, int num_array_layers=0, const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *palettes=0)</td></tr>
+<tr class="memdesc:ab5967492788c5bc01af2d9bb6a9ff612"><td class="mdescLeft">&#160;</td><td class="mdescRight">create texture from data view.  <a href="classcgv_1_1render_1_1texture.html#ab5967492788c5bc01af2d9bb6a9ff612">More...</a><br /></td></tr>
 <tr class="separator:ab5967492788c5bc01af2d9bb6a9ff612"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac29e0ac55e94328ffc453fdbc794ca6f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#ac29e0ac55e94328ffc453fdbc794ca6f">replace</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int x, const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">cgv::data::const_data_view</a> &amp;data, int level=-1, const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *palettes=0)</td></tr>
+<tr class="memdesc:ac29e0ac55e94328ffc453fdbc794ca6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">replace a block within a 1d texture with the given data.  <a href="classcgv_1_1render_1_1texture.html#ac29e0ac55e94328ffc453fdbc794ca6f">More...</a><br /></td></tr>
 <tr class="separator:ac29e0ac55e94328ffc453fdbc794ca6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af752ef5b4fb8646f785f957adca7863d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#af752ef5b4fb8646f785f957adca7863d">replace</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int x, int y, const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">cgv::data::const_data_view</a> &amp;data, int level=-1, const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *palettes=0)</td></tr>
+<tr class="memdesc:af752ef5b4fb8646f785f957adca7863d"><td class="mdescLeft">&#160;</td><td class="mdescRight">replace a block within a 2d texture with the given data.  <a href="classcgv_1_1render_1_1texture.html#af752ef5b4fb8646f785f957adca7863d">More...</a><br /></td></tr>
 <tr class="separator:af752ef5b4fb8646f785f957adca7863d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e2a473024624c2b61c06b35592b97ed"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a8e2a473024624c2b61c06b35592b97ed">replace</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int x, int y, int z_or_cube_side, const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">cgv::data::const_data_view</a> &amp;data, int level=-1, const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *palettes=0)</td></tr>
+<tr class="memdesc:a8e2a473024624c2b61c06b35592b97ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">replace a block within a 3d texture or a side of a cube map with the given data.  <a href="classcgv_1_1render_1_1texture.html#a8e2a473024624c2b61c06b35592b97ed">More...</a><br /></td></tr>
 <tr class="separator:a8e2a473024624c2b61c06b35592b97ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52139ea756e89b31caca578ee9dedcf1"><td class="memItemLeft" align="right" valign="top"><a id="a52139ea756e89b31caca578ee9dedcf1"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a52139ea756e89b31caca578ee9dedcf1">replace_from_buffer</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int x, int y, int x_buffer, int y_buffer, int width, int height, int level=-1)</td></tr>
@@ -560,7 +581,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a765638e7594cee74b54325dbf4a3dd97">replace_from_image</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;file_name, int x, int y, int z_or_cube_side, int level)</td></tr>
 <tr class="memdesc:a765638e7594cee74b54325dbf4a3dd97"><td class="mdescLeft">&#160;</td><td class="mdescRight">replace within a slice of a volume or a side of a cube map from the given image <br /></td></tr>
 <tr class="separator:a765638e7594cee74b54325dbf4a3dd97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d8b0ee7e0c48bb34843f1f00d998f34"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a9d8b0ee7e0c48bb34843f1f00d998f34">replace_from_image</a> (<a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;df, <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;dv, const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;file_name, int x, int y, int z_or_cube_side, int level)</td></tr>
+<tr class="memitem:a9d8b0ee7e0c48bb34843f1f00d998f34"><td class="memItemLeft" align="right" valign="top"><a id="a9d8b0ee7e0c48bb34843f1f00d998f34"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a9d8b0ee7e0c48bb34843f1f00d998f34">replace_from_image</a> (<a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;df, <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;dv, const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;file_name, int x, int y, int z_or_cube_side, int level)</td></tr>
+<tr class="memdesc:a9d8b0ee7e0c48bb34843f1f00d998f34"><td class="mdescLeft">&#160;</td><td class="mdescRight">same as previous method but use the passed data format and data view to store the content of the image. <br /></td></tr>
 <tr class="separator:a9d8b0ee7e0c48bb34843f1f00d998f34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a848ffff0ddb2851add7c293dad6f446f"><td class="memItemLeft" align="right" valign="top"><a id="a848ffff0ddb2851add7c293dad6f446f"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
@@ -622,26 +645,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         </tr>
       </table>
 </div><div class="memdoc">
-<p>construct from description string (which defaults to rgba format) and most commonly used texture parameters. The description can define a component format as described in <code><a class="el" href="classcgv_1_1data_1_1component__format.html#a0f378a1f73f5a195fafcaa4382110cef" title="set the component format from a description string">cgv::data::component_format::set_component_format()</a></code> or a data format as described in <code><a class="el" href="classcgv_1_1data_1_1data__format.html#aebce783b7792eb182473489b52cb7194" title="set the data format from a description string">cgv::data::data_format::set_data_format()</a></code>.</p>
-<p>construct from description string and most commonly used texture parameters. The description can define a component format as described in <code><a class="el" href="classcgv_1_1data_1_1component__format.html#a0f378a1f73f5a195fafcaa4382110cef" title="set the component format from a description string">cgv::data::component_format::set_component_format()</a></code> or a data format as described in <code><a class="el" href="classcgv_1_1data_1_1data__format.html#aebce783b7792eb182473489b52cb7194" title="set the data format from a description string">cgv::data::data_format::set_data_format()</a></code>. </p>
 
-</div>
-</div>
-<a id="a2d184c0f1510ce86bc216010d597ea2b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d184c0f1510ce86bc216010d597ea2b">&#9670;&nbsp;</a></span>~texture()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">cgv::render::texture::~texture </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>destruct texture, the destructor can be called without context if the destruct method has been called or no creation has taken place </p>
+<p>construct from description string (which defaults to rgba format) and most commonly used texture parameters. </p>
+<p>construct from description string and most commonly used texture parameters.</p>
+<p>The description can define a component format as described in <code><a class="el" href="classcgv_1_1data_1_1component__format.html#a0f378a1f73f5a195fafcaa4382110cef" title="set component format from description string, which has the following syntax.">cgv::data::component_format::set_component_format()</a></code> or a data format as described in <code><a class="el" href="classcgv_1_1data_1_1data__format.html#aebce783b7792eb182473489b52cb7194" title="Set data format from description string, which adds information to the description string of the comp...">cgv::data::data_format::set_data_format()</a></code>. </p>
 
 </div>
 </div>
@@ -695,7 +702,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         </tr>
       </table>
 </div><div class="memdoc">
-<p>create texture from data view. Use dimension and resolution of data view but the component format of the texture. If level is not specified or set to -1 mipmaps are generated. If cube_side is specified, and data view is 2D, create one of the six sides of a cubemap. If num_array_layers is not zero a texture array is created. Set num_array_layers to -1 to automatically choose the layer number based on the data view dimensions and size, e.g. a 2D/3D data view creates a 1D/2D array with layer count equal to height/depth. Set num_array_layers to &gt; 0 to manually specify the layer count. This can be used to create a one layer 1D/2D texture array from a 1D/2D data view. Cubemap arrays are currently not suported. </p>
+
+<p>create texture from data view. </p>
+<p>Use dimension and resolution of data view but the component format of the texture. If level is not specified or set to -1 mipmaps are generated. If cube_side is specified, and data view is 2D, create one of the six sides of a cubemap. If num_array_layers is not zero a texture array is created. Set num_array_layers to -1 to automatically choose the layer number based on the data view dimensions and size, e.g. a 2D/3D data view creates a 1D/2D array with layer count equal to height/depth. Set num_array_layers to &gt; 0 to manually specify the layer count. This can be used to create a one layer 1D/2D texture array from a 1D/2D data view. Cubemap arrays are currently not suported. </p>
 
 </div>
 </div>
@@ -742,8 +751,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         </tr>
       </table>
 </div><div class="memdoc">
-<p>create the texture of dimension and resolution specified in the data format base class. If no type is given, determine it from the format. If dimensions are given, they overwrite the dimensions in the texture format.</p>
-<p>create the texture of dimension and resolution specified in the data format base class </p>
+
+<p>create the texture of dimension and resolution specified in the data format base class. </p>
+<p>create the texture of dimension and resolution specified in the data format base class</p>
+<p>If no type is given, determine it from the format. If dimensions are given, they overwrite the dimensions in the texture format. </p>
 
 </div>
 </div>
@@ -796,7 +807,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         </tr>
       </table>
 </div><div class="memdoc">
-<p>create texture from the currently set read buffer, where x, y, width and height define the to be used rectangle of the read buffer. The dimension and resolution of the texture format are updated automatically. If level is not specified or set to -1 mipmaps are generated. </p>
+
+<p>create texture from the currently set read buffer, where x, y, width and height define the to be used rectangle of the read buffer. </p>
+<p>The dimension and resolution of the texture format are updated automatically. If level is not specified or set to -1 mipmaps are generated. </p>
 
 </div>
 </div>
@@ -855,7 +868,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         </tr>
       </table>
 </div><div class="memdoc">
-<p>same as previous method but use the passed data format and data view to store the content of the image. No pointers to width and height can be passed as this information is available in the data_format after the call. </p>
+
+<p>same as previous method but use the passed data format and data view to store the content of the image. </p>
+<p>No pointers to width and height can be passed as this information is available in the data_format after the call. </p>
 
 </div>
 </div>
@@ -914,8 +929,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         </tr>
       </table>
 </div><div class="memdoc">
-<p>create the texture from an image file. If the file_name is not given ask the user interactively for a file name. The image dimensions are written to the optionally passed pointers image_width_ptr and image_height_ptr. In order to support mipmapping, the width and height of the texture must be powers of two. If the clear_color_ptr is given, the texture is automatically extended in size to powers of two. clear_color_ptr points to four bytes that specify a RGBA color used to fill texels that are inserted to ensure dimensions of powers of two. For creation of a side of a cubemap specify the cube_side parameter.</p>
-<p>create the texture from an image file </p>
+
+<p>create the texture from an image file. </p>
+<p>create the texture from an image file</p>
+<p>If the file_name is not given ask the user interactively for a file name. The image dimensions are written to the optionally passed pointers image_width_ptr and image_height_ptr. In order to support mipmapping, the width and height of the texture must be powers of two. If the clear_color_ptr is given, the texture is automatically extended in size to powers of two. clear_color_ptr points to four bytes that specify a RGBA color used to fill texels that are inserted to ensure dimensions of powers of two. For creation of a side of a cubemap specify the cube_side parameter. </p>
 
 </div>
 </div>
@@ -999,35 +1016,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="a81315c47d777439da016e988229bde3a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a81315c47d777439da016e988229bde3a">&#9670;&nbsp;</a></span>enable()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool cgv::render::texture::enable </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
-          <td class="paramname"><em>ctx</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>_tex_unit</em> = <code>-1</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>enable this texture in the given texture unit, -1 corresponds to the current unit. </p>
-
-</div>
-</div>
 <a id="ab1bf535d236a38f0619cfe7dfa35ef9d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab1bf535d236a38f0619cfe7dfa35ef9d">&#9670;&nbsp;</a></span>extract_components()</h2>
 
@@ -1056,25 +1044,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="a008ed211e6b3157cbf20ad3fa6a64093"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a008ed211e6b3157cbf20ad3fa6a64093">&#9670;&nbsp;</a></span>generate_mipmaps()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool cgv::render::texture::generate_mipmaps </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
-          <td class="paramname"><em>ctx</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>generate mipmaps automatically, only supported if framebuffer objects are supported by the GPU </p>
-
-</div>
-</div>
 <a id="a90ce214c4438f87dc548552d662c6653"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a90ce214c4438f87dc548552d662c6653">&#9670;&nbsp;</a></span>get_alignment()</h2>
 
@@ -1099,8 +1068,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>return the alignment of a given dimension </p>
-<p>return the alignment of a given dimension, where the alignment of the last dimension is always 1 and cannot be changed. This method also returns 1 if i is out of the range of valid dimensions. </p>
+<p>return the alignment of a given dimension, where the alignment of the last dimension is always 1 and cannot be changed. </p>
+<p>return the alignment of a given dimension</p>
+<p>This method also returns 1 if i is out of the range of valid dimensions. </p>
 
 </div>
 </div>
@@ -1391,7 +1361,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   </tr>
 </table>
 </div><div class="memdoc">
-<p>copy the rendering api specific id the component to the memory location of the given pointer. For opengl this the passed pointer should be of type GLint or GLuint. </p>
+
+<p>copy the rendering api specific id the component to the memory location of the given pointer. </p>
+<p>For opengl this the passed pointer should be of type GLint or GLuint. </p>
 
 </div>
 </div>
@@ -1438,7 +1410,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         </tr>
       </table>
 </div><div class="memdoc">
-<p>replace a block within a 1d texture with the given data. If level is not specified, level 0 is set and if a mipmap has been created before, coarser levels are updated also. </p>
+
+<p>replace a block within a 1d texture with the given data. </p>
+<p>If level is not specified, level 0 is set and if a mipmap has been created before, coarser levels are updated also. </p>
 
 </div>
 </div>
@@ -1491,7 +1465,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         </tr>
       </table>
 </div><div class="memdoc">
-<p>replace a block within a 2d texture with the given data. If level is not specified, level 0 is set and if a mipmap has been created before, coarser levels are updated also. </p>
+
+<p>replace a block within a 2d texture with the given data. </p>
+<p>If level is not specified, level 0 is set and if a mipmap has been created before, coarser levels are updated also. </p>
 
 </div>
 </div>
@@ -1550,7 +1526,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         </tr>
       </table>
 </div><div class="memdoc">
-<p>replace a block within a 3d texture or a side of a cube map with the given data. If level is not specified, level 0 is set and if a mipmap has been created before, coarser levels are updated also. </p>
+
+<p>replace a block within a 3d texture or a side of a cube map with the given data. </p>
+<p>If level is not specified, level 0 is set and if a mipmap has been created before, coarser levels are updated also. </p>
 
 </div>
 </div>
@@ -1627,71 +1605,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="a9d8b0ee7e0c48bb34843f1f00d998f34"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9d8b0ee7e0c48bb34843f1f00d998f34">&#9670;&nbsp;</a></span>replace_from_image()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool cgv::render::texture::replace_from_image </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;&#160;</td>
-          <td class="paramname"><em>df</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;&#160;</td>
-          <td class="paramname"><em>dv</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
-          <td class="paramname"><em>ctx</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>file_name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>z_or_cube_side</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>level</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>same as previous method but use the passed data format and data view to store the content of the image. </p>
-
-</div>
-</div>
 <a id="a716faf713640333f0664d103eb787110"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a716faf713640333f0664d103eb787110">&#9670;&nbsp;</a></span>set_alignment()</h2>
 
@@ -1726,8 +1639,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>set the alignment of a given dimension </p>
-<p>set the alignment of a given dimension, add dimensions if necessary. The alignment of the last dimension is always 1 and cannot be set. </p>
+<p>set the alignment of a given dimension, add dimensions if necessary. </p>
+<p>set the alignment of a given dimension</p>
+<p>The alignment of the last dimension is always 1 and cannot be set. </p>
 
 </div>
 </div>
@@ -1815,35 +1729,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p>set the resolution in the second dimension, add dimensions if necessary </p>
 <p>set the number of entries in the second dimension </p>
-
-</div>
-</div>
-<a id="ae16b594b6a561303de2dde63af981317"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae16b594b6a561303de2dde63af981317">&#9670;&nbsp;</a></span>set_min_filter()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::render::texture::set_min_filter </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea">TextureFilter</a>&#160;</td>
-          <td class="paramname"><em>_min_filter</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>_anisotropy</em> = <code>2.0f</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>set the minification filters, if minification is set to TF_ANISOTROP, the second floating point parameter specifies the degree of anisotropy </p>
 
 </div>
 </div>

@@ -101,7 +101,7 @@ Inheritance diagram for cgv::render::shader_program_base:</div>
   <img src="classcgv_1_1render_1_1shader__program__base.png" usemap="#cgv::render::shader_5Fprogram_5Fbase_map" alt=""/>
   <map id="cgv::render::shader_5Fprogram_5Fbase_map" name="cgv::render::shader_5Fprogram_5Fbase_map">
 <area href="classcgv_1_1render_1_1render__component.html" title="base interface for all render components" alt="cgv::render::render_component" shape="rect" coords="0,0,210,24"/>
-<area href="classcgv_1_1render_1_1shader__program.html" alt="cgv::render::shader_program" shape="rect" coords="0,112,210,136"/>
+<area href="classcgv_1_1render_1_1shader__program.html" title="a shader program combines several shader code fragments to a complete definition of the shading pipel..." alt="cgv::render::shader_program" shape="rect" coords="0,112,210,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -116,6 +116,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a4c896d2654616448824f5f2f759b8947"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether component has been created <br /></td></tr>
 <tr class="separator:a4c896d2654616448824f5f2f759b8947"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">put_id_void</a> (void *ptr) const</td></tr>
+<tr class="memdesc:aa5404b2aec4bbe8fd4eff1959b627709"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the rendering api specific id the component to the memory location of the given pointer.  <a href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">More...</a><br /></td></tr>
 <tr class="separator:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06ff3003af849b32a76ec5be29bd89dc"><td class="memTemplParams" colspan="2"><a id="a06ff3003af849b32a76ec5be29bd89dc"></a>
 template&lt;typename T &gt; </td></tr>
@@ -160,7 +161,9 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </tr>
 </table>
 </div><div class="memdoc">
-<p>copy the rendering api specific id the component to the memory location of the given pointer. For opengl this the passed pointer should be of type GLint or GLuint. </p>
+
+<p>copy the rendering api specific id the component to the memory location of the given pointer. </p>
+<p>For opengl this the passed pointer should be of type GLint or GLuint. </p>
 
 </div>
 </div>

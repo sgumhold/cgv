@@ -89,6 +89,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1ray_3_01T_00_013_0
 </div><!--header-->
 <div class="contents">
 
+<p>Partial specialization of ray class for 3 dimensions.  
+ <a href="classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="math_2ray_8h_source.html">ray.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -102,6 +105,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:acf01bddd00238c552d9e2e001de38dc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a ray with given origin and direction. <br /></td></tr>
 <tr class="separator:acf01bddd00238c552d9e2e001de38dc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3c7216e6c3773dda8cdf6597caaa716"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html#aa3c7216e6c3773dda8cdf6597caaa716">ray</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;screen_coord, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; unsigned, 2 &gt; &amp;viewport_size, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;eye_position, const <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, 4, 4 &gt; &amp;view_projection_matrix)</td></tr>
+<tr class="memdesc:aa3c7216e6c3773dda8cdf6597caaa716"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a ray from a given screen coordinate and view parameters.  <a href="classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html#aa3c7216e6c3773dda8cdf6597caaa716">More...</a><br /></td></tr>
 <tr class="separator:aa3c7216e6c3773dda8cdf6597caaa716"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67fbb07141858fc42e05af0c8b25f945"><td class="memItemLeft" align="right" valign="top"><a id="a67fbb07141858fc42e05af0c8b25f945"></a>
 <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html#a67fbb07141858fc42e05af0c8b25f945">position</a> (float t) const</td></tr>
@@ -161,7 +165,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Construct a ray from a given screen coordinate and view parameters. This is typically used to create a viewing ray that originates at the eye and goes through a pixel on the screen. </p><dl class="params"><dt>Parameters</dt><dd>
+
+<p>Construct a ray from a given screen coordinate and view parameters. </p>
+<p>This is typically used to create a viewing ray that originates at the eye and goes through a pixel on the screen. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">screen_coord</td><td>the screen pixel coordinate with (0,0) in the bottom left corner. </td></tr>
     <tr><td class="paramname">viewport_size</td><td>the screen size in pixels. </td></tr>

@@ -88,6 +88,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1interval.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>the interval template represents a close interval of two numbers, i.e.  
+ <a href="classcgv_1_1math_1_1interval.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="interval_8h_source.html">interval.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -98,6 +101,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a513efd992415d1142928f087ccabb656"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct empty interval <br /></td></tr>
 <tr class="separator:a513efd992415d1142928f087ccabb656"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab44e0dcfc3a7b148479e86db694cdf24"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#ab44e0dcfc3a7b148479e86db694cdf24">interval</a> (bool)</td></tr>
+<tr class="memdesc:ab44e0dcfc3a7b148479e86db694cdf24"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct interval over all valid values of the value type, where the parameter is only a dummy to distinguish this constructor from the standard constructor.  <a href="classcgv_1_1math_1_1interval.html#ab44e0dcfc3a7b148479e86db694cdf24">More...</a><br /></td></tr>
 <tr class="separator:ab44e0dcfc3a7b148479e86db694cdf24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97f5a54b3656beaa31f75851ecc53686"><td class="memItemLeft" align="right" valign="top"><a id="a97f5a54b3656beaa31f75851ecc53686"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a97f5a54b3656beaa31f75851ecc53686">interval</a> (const <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;I)</td></tr>
@@ -214,6 +218,7 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcg
 <tr class="memdesc:a73cdb375187da0adb5d5df33a6cf75c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the interval of all values of products of values from the two intervals <br /></td></tr>
 <tr class="separator:a73cdb375187da0adb5d5df33a6cf75c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0193dd3ef3000d8d5290a57ed3e98c1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#ad0193dd3ef3000d8d5290a57ed3e98c1">operator/=</a> (const <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;I)</td></tr>
+<tr class="memdesc:ad0193dd3ef3000d8d5290a57ed3e98c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute the interval of all values of all quotients of values from the two intervals.  <a href="classcgv_1_1math_1_1interval.html#ad0193dd3ef3000d8d5290a57ed3e98c1">More...</a><br /></td></tr>
 <tr class="separator:ad0193dd3ef3000d8d5290a57ed3e98c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a894cb1e97db647de8f36de63737ee9fd"><td class="memItemLeft" align="right" valign="top"><a id="a894cb1e97db647de8f36de63737ee9fd"></a>
 <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a894cb1e97db647de8f36de63737ee9fd">operator/</a> (const <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;J) const</td></tr>
@@ -261,7 +266,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
 class cgv::math::interval&lt; T &gt;</h3>
 
-<p>the interval template represents a close interval of two numbers, i.e. [a,b]. All arithmetic operators are overloaded for the interval template. This allows to compute bounds for an arbitrary expression. For example if the variable x is from the interval [-1,1] then the expression x*x is from the interval [0,1], what can be computed via \codebegin interval&lt;int&gt; x(-1,1); interval&lt;int&gt; e = x*x; std::cout &lt;&lt; e &lt;&lt; std::endl; \codeend Furthermore, the interval template supports further interval based operations like intersection and extension of an interval. </p>
+<p>the interval template represents a close interval of two numbers, i.e. </p>
+<p>[a,b]. All arithmetic operators are overloaded for the interval template. This allows to compute bounds for an arbitrary expression. For example if the variable x is from the interval [-1,1] then the expression x*x is from the interval [0,1], what can be computed via \codebegin interval&lt;int&gt; x(-1,1); interval&lt;int&gt; e = x*x; std::cout &lt;&lt; e &lt;&lt; std::endl; \codeend Furthermore, the interval template supports further interval based operations like intersection and extension of an interval. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab44e0dcfc3a7b148479e86db694cdf24"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab44e0dcfc3a7b148479e86db694cdf24">&#9670;&nbsp;</a></span>interval()</h2>
@@ -288,7 +294,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>construct interval over all valid values of the value type, where the parameter is only a dummy to distinguish this constructor from the standard constructor. This constructor relies on <a class="el" href="structcgv_1_1type_1_1traits_1_1min.html">cgv::type::traits::min</a> and <a class="el" href="structcgv_1_1type_1_1traits_1_1max.html">cgv::type::traits::max</a>. Thus if you want to build intervals over non standard types, you need to ensure that these two traits are instantiated for your type when using this constructor. </p>
+
+<p>construct interval over all valid values of the value type, where the parameter is only a dummy to distinguish this constructor from the standard constructor. </p>
+<p>This constructor relies on <a class="el" href="structcgv_1_1type_1_1traits_1_1min.html" title="the min traits defines for each type in the static const member value, what the minimum value is.">cgv::type::traits::min</a> and <a class="el" href="structcgv_1_1type_1_1traits_1_1max.html" title="the max traits defines for each type in the static const member value, what the maximum value is.">cgv::type::traits::max</a>. Thus if you want to build intervals over non standard types, you need to ensure that these two traits are instantiated for your type when using this constructor. </p>
 
 </div>
 </div>
@@ -318,7 +326,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>compute the interval of all values of all quotients of values from the two intervals. Notice that if zero is contained in the second interval, the result is the complete interval of all valid values and the same precondition holds as for the constructor with the bool dummy parameter <a class="el" href="classcgv_1_1math_1_1interval.html#ab44e0dcfc3a7b148479e86db694cdf24">interval(bool)</a>. </p>
+
+<p>compute the interval of all values of all quotients of values from the two intervals. </p>
+<p>Notice that if zero is contained in the second interval, the result is the complete interval of all valid values and the same precondition holds as for the constructor with the bool dummy parameter <a class="el" href="classcgv_1_1math_1_1interval.html#ab44e0dcfc3a7b148479e86db694cdf24" title="construct interval over all valid values of the value type, where the parameter is only a dummy to di...">interval(bool)</a>. </p>
 
 </div>
 </div>

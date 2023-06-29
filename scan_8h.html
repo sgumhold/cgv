@@ -88,6 +88,9 @@ $(document).ready(function(){initNavTree('scan_8h.html',''); initResizable(); })
 <div class="title">scan.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Helper functions to process strings.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;date_time.h&quot;</code><br />
@@ -219,10 +222,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a18d7a6454d822ff6a17ce1e794f50410">cgv::utils::is_element</a> (const std::string &amp;e, const std::string &amp;s, char sep=';')</td></tr>
 <tr class="memdesc:a18d7a6454d822ff6a17ce1e794f50410"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if the string e is contained as element in the string s, which is a list separated by sep <br /></td></tr>
 <tr class="separator:a18d7a6454d822ff6a17ce1e794f50410"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57c26aecb21c92d57d7818c42c04834b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a57c26aecb21c92d57d7818c42c04834b">cgv::utils::get_element_index</a> (const std::string &amp;e, const std::string &amp;s, char sep)</td></tr>
-<tr class="separator:a57c26aecb21c92d57d7818c42c04834b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10548675ebcef35e530c2be90e261f0d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a10548675ebcef35e530c2be90e261f0d">cgv::utils::get_element</a> (const std::string &amp;s, int element_index, char sep)</td></tr>
-<tr class="separator:a10548675ebcef35e530c2be90e261f0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeef200941450ccc1c5fb7be3334ead16"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#aeef200941450ccc1c5fb7be3334ead16">cgv::utils::get_element_index</a> (const std::string &amp;e, const std::string &amp;s, char sep=';')</td></tr>
+<tr class="memdesc:aeef200941450ccc1c5fb7be3334ead16"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if the string e is contained as element in the string s, which is a list separated by sep and return the index of the element.  <a href="namespacecgv_1_1utils.html#aeef200941450ccc1c5fb7be3334ead16">More...</a><br /></td></tr>
+<tr class="separator:aeef200941450ccc1c5fb7be3334ead16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18e2419852e04a69d36223b9da5af74f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a18e2419852e04a69d36223b9da5af74f">cgv::utils::get_element</a> (const std::string &amp;s, int element_index, char sep=';')</td></tr>
+<tr class="memdesc:a18e2419852e04a69d36223b9da5af74f"><td class="mdescLeft">&#160;</td><td class="mdescRight">interpret s as a list separated by sep and return the element with the given element index.  <a href="namespacecgv_1_1utils.html#a18e2419852e04a69d36223b9da5af74f">More...</a><br /></td></tr>
+<tr class="separator:a18e2419852e04a69d36223b9da5af74f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f21c3f652cfb7b2358bb19c515daa19"><td class="memItemLeft" align="right" valign="top"><a id="a2f21c3f652cfb7b2358bb19c515daa19"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">cgv::utils::is_integer</a> (const char *begin, const char *end, int &amp;value)</td></tr>
 <tr class="memdesc:a2f21c3f652cfb7b2358bb19c515daa19"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if the text range (begin,end( defines an integer value. If yes, store the value in the passed reference. <br /></td></tr>

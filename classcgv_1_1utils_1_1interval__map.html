@@ -113,8 +113,10 @@ const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <tr class="memdesc:aa3cbd977b3fc6a45a610adf69dab6699"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator pointing to the first element in the container whose key is greater than the given key. If no such element exists, returns end(). <br /></td></tr>
 <tr class="separator:aa3cbd977b3fc6a45a610adf69dab6699"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2b44926c559a7724cde23ad84db0f52"><td class="memItemLeft" align="right" valign="top">std::pair&lt; iterator, iterator &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1interval__map.html#ae2b44926c559a7724cde23ad84db0f52">bounds</a> (key_type key)</td></tr>
+<tr class="memdesc:ae2b44926c559a7724cde23ad84db0f52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pair of iterators pointing to the lower and upper bounds of the given key.  <a href="classcgv_1_1utils_1_1interval__map.html#ae2b44926c559a7724cde23ad84db0f52">More...</a><br /></td></tr>
 <tr class="separator:ae2b44926c559a7724cde23ad84db0f52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e1b57b97ca84cea25c97a807a588ce5"><td class="memItemLeft" align="right" valign="top">std::pair&lt; const_iterator, const_iterator &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1interval__map.html#a4e1b57b97ca84cea25c97a807a588ce5">bounds</a> (key_type key) const</td></tr>
+<tr class="memdesc:a4e1b57b97ca84cea25c97a807a588ce5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pair of const iterators pointing to the lower and upper bounds of the given key.  <a href="classcgv_1_1utils_1_1interval__map.html#a4e1b57b97ca84cea25c97a807a588ce5">More...</a><br /></td></tr>
 <tr class="separator:a4e1b57b97ca84cea25c97a807a588ce5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -155,7 +157,9 @@ template&lt;class Key , class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a pair of iterators pointing to the lower and upper bounds of the given key. The lower bound is defined as the greatest stored key less than or equal to the given key. The upper bound is defined as the smallest stored key greater than the given key. </p>
+
+<p>Returns a pair of iterators pointing to the lower and upper bounds of the given key. </p>
+<p>The lower bound is defined as the greatest stored key less than or equal to the given key. The upper bound is defined as the smallest stored key greater than the given key. </p>
 
 </div>
 </div>
@@ -184,7 +188,9 @@ template&lt;class Key , class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a pair of const iterators pointing to the lower and upper bounds of the given key. The lower bound is defined as the greatest stored key less than or equal to the given key. The upper bound is defined as the smallest stored key greater than the given key. </p>
+
+<p>Returns a pair of const iterators pointing to the lower and upper bounds of the given key. </p>
+<p>The lower bound is defined as the greatest stored key less than or equal to the given key. The upper bound is defined as the smallest stored key greater than the given key. </p>
 
 </div>
 </div>

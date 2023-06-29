@@ -90,6 +90,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1vertex__buffer.h
 </div><!--header-->
 <div class="contents">
 
+<p>a vertex buffer is an unstructured memory block on the GPU.  
+ <a href="classcgv_1_1render_1_1vertex__buffer.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::render::vertex_buffer:</div>
@@ -183,6 +186,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:ad1740efa4b262d12e26b4747267e4996"><td class="mdescLeft">&#160;</td><td class="mdescRight">destruct the render buffer <br /></td></tr>
 <tr class="separator:ad1740efa4b262d12e26b4747267e4996"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">put_id_void</a> (void *ptr) const</td></tr>
+<tr class="memdesc:aa5404b2aec4bbe8fd4eff1959b627709"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the rendering api specific id the component to the memory location of the given pointer.  <a href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">More...</a><br /></td></tr>
 <tr class="separator:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06ff3003af849b32a76ec5be29bd89dc"><td class="memTemplParams" colspan="2"><a id="a06ff3003af849b32a76ec5be29bd89dc"></a>
 template&lt;typename T &gt; </td></tr>
@@ -235,7 +239,9 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </tr>
 </table>
 </div><div class="memdoc">
-<p>copy the rendering api specific id the component to the memory location of the given pointer. For opengl this the passed pointer should be of type GLint or GLuint. </p>
+
+<p>copy the rendering api specific id the component to the memory location of the given pointer. </p>
+<p>For opengl this the passed pointer should be of type GLint or GLuint. </p>
 
 </div>
 </div>

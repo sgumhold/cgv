@@ -91,6 +91,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1os_1_1thread.html',''); in
 </div><!--header-->
 <div class="contents">
 
+<p>Thread class implementation that uses pthreads internally.  
+ <a href="classcgv_1_1os_1_1thread.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="thread_8h_source.html">thread.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::os::thread:</div>
@@ -120,13 +123,14 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a005fa3dd8aa8084d3fd87e2cd0b52de6"><td class="mdescLeft">&#160;</td><td class="mdescRight">thread function to override <br /></td></tr>
 <tr class="separator:a005fa3dd8aa8084d3fd87e2cd0b52de6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d7d10b965d4d445da6875068f902e38"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1thread.html#a1d7d10b965d4d445da6875068f902e38">stop</a> ()</td></tr>
+<tr class="memdesc:a1d7d10b965d4d445da6875068f902e38"><td class="mdescLeft">&#160;</td><td class="mdescRight">try to stop the thread execution via indicating a stop request.  <a href="classcgv_1_1os_1_1thread.html#a1d7d10b965d4d445da6875068f902e38">More...</a><br /></td></tr>
 <tr class="separator:a1d7d10b965d4d445da6875068f902e38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf89233e215b73a9c211c8f3fb5698b7"><td class="memItemLeft" align="right" valign="top"><a id="adf89233e215b73a9c211c8f3fb5698b7"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1thread.html#adf89233e215b73a9c211c8f3fb5698b7">kill</a> ()</td></tr>
 <tr class="memdesc:adf89233e215b73a9c211c8f3fb5698b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">kill a running thread <br /></td></tr>
 <tr class="separator:adf89233e215b73a9c211c8f3fb5698b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d7d0deaf2e2f20337b36bef3366d694"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1thread.html#a9d7d0deaf2e2f20337b36bef3366d694">wait_for_completion</a> ()</td></tr>
-<tr class="memdesc:a9d7d0deaf2e2f20337b36bef3366d694"><td class="mdescLeft">&#160;</td><td class="mdescRight">join the current thread  <a href="classcgv_1_1os_1_1thread.html#a9d7d0deaf2e2f20337b36bef3366d694">More...</a><br /></td></tr>
+<tr class="memdesc:a9d7d0deaf2e2f20337b36bef3366d694"><td class="mdescLeft">&#160;</td><td class="mdescRight">the thread is interpreted as a slave thread and started from another master thread.  <a href="classcgv_1_1os_1_1thread.html#a9d7d0deaf2e2f20337b36bef3366d694">More...</a><br /></td></tr>
 <tr class="separator:a9d7d0deaf2e2f20337b36bef3366d694"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a646084323b730863e9246555679209ed"><td class="memItemLeft" align="right" valign="top"><a id="a646084323b730863e9246555679209ed"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1thread.html#a646084323b730863e9246555679209ed">is_running</a> ()</td></tr>
@@ -144,7 +148,7 @@ thread_id_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a2979ad258138853206642ed4b55ce5b5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1thread.html#a2979ad258138853206642ed4b55ce5b5">wait_for_signal</a> (<a class="el" href="structcgv_1_1os_1_1condition__mutex.html">condition_mutex</a> &amp;cm)</td></tr>
-<tr class="memdesc:a2979ad258138853206642ed4b55ce5b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">sleep till the signal from the given <a class="el" href="structcgv_1_1os_1_1condition__mutex.html">condition_mutex</a> is sent, lock the mutex first and unlock after waiting  <a href="classcgv_1_1os_1_1thread.html#a2979ad258138853206642ed4b55ce5b5">More...</a><br /></td></tr>
+<tr class="memdesc:a2979ad258138853206642ed4b55ce5b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">sleep till the signal from the given <a class="el" href="structcgv_1_1os_1_1condition__mutex.html" title="A mutex that can wake up other threads by signals sent when a condition is fulfilled.">condition_mutex</a> is sent, lock the mutex first and unlock after waiting  <a href="classcgv_1_1os_1_1thread.html#a2979ad258138853206642ed4b55ce5b5">More...</a><br /></td></tr>
 <tr class="separator:a2979ad258138853206642ed4b55ce5b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61de3056ba3e8b13749d595c192e6448"><td class="memItemLeft" align="right" valign="top"><a id="a61de3056ba3e8b13749d595c192e6448"></a>
 static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1thread.html#a61de3056ba3e8b13749d595c192e6448">wait_for_signal_with_lock</a> (<a class="el" href="structcgv_1_1os_1_1condition__mutex.html">condition_mutex</a> &amp;cm)</td></tr>
@@ -152,7 +156,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:a61de3056ba3e8b13749d595c192e6448"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e1a25228616e42bcb24bfc0b1f01bc0"><td class="memItemLeft" align="right" valign="top"><a id="a8e1a25228616e42bcb24bfc0b1f01bc0"></a>
 static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1thread.html#a8e1a25228616e42bcb24bfc0b1f01bc0">wait_for_signal_or_timeout</a> (<a class="el" href="structcgv_1_1os_1_1condition__mutex.html">condition_mutex</a> &amp;cm, unsigned millisec)</td></tr>
-<tr class="memdesc:a8e1a25228616e42bcb24bfc0b1f01bc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">sleep till the signal from the given <a class="el" href="structcgv_1_1os_1_1condition__mutex.html">condition_mutex</a> is sent or the timeout is reached, lock the mutex first and unlock after waiting <br /></td></tr>
+<tr class="memdesc:a8e1a25228616e42bcb24bfc0b1f01bc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">sleep till the signal from the given <a class="el" href="structcgv_1_1os_1_1condition__mutex.html" title="A mutex that can wake up other threads by signals sent when a condition is fulfilled.">condition_mutex</a> is sent or the timeout is reached, lock the mutex first and unlock after waiting <br /></td></tr>
 <tr class="separator:a8e1a25228616e42bcb24bfc0b1f01bc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae51038d67fc609ce091af403e04be26"><td class="memItemLeft" align="right" valign="top"><a id="aae51038d67fc609ce091af403e04be26"></a>
 static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1thread.html#aae51038d67fc609ce091af403e04be26">wait_for_signal_or_timeout_with_lock</a> (<a class="el" href="structcgv_1_1os_1_1condition__mutex.html">condition_mutex</a> &amp;cm, unsigned millisec)</td></tr>
@@ -175,7 +179,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:a0b04f390cbcb27e543e22c455ab28c19"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Thread class implementation that uses pthreads internally. To create and run your own thread, follow this example: \begincode class mythread : thread { </p><pre class="fragment">    void run()
+<div class="textblock"><p>Thread class implementation that uses pthreads internally. </p>
+<p>To create and run your own thread, follow this example: \begincode class mythread : thread { </p><pre class="fragment">    void run()
     {
 </pre><p> no external stop request? while(no_stop_request()) { std::cout &lt;&lt; "abc" &lt;&lt; std::endl; } }</p>
 <p>};</p>
@@ -217,7 +222,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         </tr>
       </table>
 </div><div class="memdoc">
-<p>try to stop the thread execution via indicating a stop request. The existence of a stop request can be recognized by the no_stop_request() method. This test should be done periodically within the implementation of the <a class="el" href="classcgv_1_1os_1_1thread.html#a005fa3dd8aa8084d3fd87e2cd0b52de6" title="thread function to override">run()</a> method, e.g. to leave the execution loop in a clean way. </p>
+
+<p>try to stop the thread execution via indicating a stop request. </p>
+<p>The existence of a stop request can be recognized by the no_stop_request() method. This test should be done periodically within the implementation of the <a class="el" href="classcgv_1_1os_1_1thread.html#a005fa3dd8aa8084d3fd87e2cd0b52de6" title="thread function to override">run()</a> method, e.g. to leave the execution loop in a clean way. </p>
 
 </div>
 </div>
@@ -236,8 +243,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
       </table>
 </div><div class="memdoc">
 
-<p>join the current thread </p>
-<p>the thread is interpreted as a slave thread and started from another master thread. This method is called from the master thread in order to wait for termination of the slave thread. </p>
+<p>the thread is interpreted as a slave thread and started from another master thread. </p>
+<p>join the current thread</p>
+<p>This method is called from the master thread in order to wait for termination of the slave thread. </p>
 
 </div>
 </div>
@@ -265,8 +273,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>sleep till the signal from the given <a class="el" href="structcgv_1_1os_1_1condition__mutex.html">condition_mutex</a> is sent, lock the mutex first and unlock after waiting </p>
-<p>sleep till the signal from the given <a class="el" href="structcgv_1_1os_1_1condition__mutex.html">condition_mutex</a> is sent </p>
+<p>sleep till the signal from the given <a class="el" href="structcgv_1_1os_1_1condition__mutex.html" title="A mutex that can wake up other threads by signals sent when a condition is fulfilled.">condition_mutex</a> is sent, lock the mutex first and unlock after waiting </p>
+<p>sleep till the signal from the given <a class="el" href="structcgv_1_1os_1_1condition__mutex.html" title="A mutex that can wake up other threads by signals sent when a condition is fulfilled.">condition_mutex</a> is sent </p>
 
 </div>
 </div>

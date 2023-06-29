@@ -90,6 +90,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1gl_1_1gl__depth_
 </div><!--header-->
 <div class="contents">
 
+<p>OpenGL helper class to simplify depth peeling.  
+ <a href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="gl__depth__peeler_8h_source.html">gl_depth_peeler.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::render::gl::gl_depth_peeler:</div>
@@ -97,7 +100,7 @@ Inheritance diagram for cgv::render::gl::gl_depth_peeler:</div>
  <div class="center">
   <img src="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.png" usemap="#cgv::render::gl::gl_5Fdepth_5Fpeeler_map" alt=""/>
   <map id="cgv::render::gl::gl_5Fdepth_5Fpeeler_map" name="cgv::render::gl::gl_5Fdepth_5Fpeeler_map">
-<area href="classcgv_1_1render_1_1gl_1_1gl__transparent__renderer.html" alt="cgv::render::gl::gl_transparent_renderer" shape="rect" coords="0,56,237,80"/>
+<area href="classcgv_1_1render_1_1gl_1_1gl__transparent__renderer.html" title="OpenGL helper class to simplify transparent rendering." alt="cgv::render::gl::gl_transparent_renderer" shape="rect" coords="0,56,237,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -170,7 +173,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:a569901f9d08dbe31e73c39ba494fecb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>OpenGL helper class to simplify depth peeling. Call the init method after your OpenGL context has been created. A sample usage during a drawing method would look like:</p>
+<div class="textblock"><p>OpenGL helper class to simplify depth peeling. </p>
+<p>Call the init method after your OpenGL context has been created. A sample usage during a drawing method would look like:</p>
 <div class="fragment"><div class="line"><span class="comment">// draw and use first layer (no depth peeling necessary)</span></div>
 <div class="line">glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);</div>
 <div class="line">render_scene();</div>

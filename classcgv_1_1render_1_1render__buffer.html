@@ -93,6 +93,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1render__buffer.h
 </div><!--header-->
 <div class="contents">
 
+<p>this class encapsulate render buffers that live on the GPU which must support frame buffer objects for this to work.  
+ <a href="classcgv_1_1render_1_1render__buffer.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="render__buffer_8h_source.html">render_buffer.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::render::render_buffer:</div>
@@ -101,9 +104,9 @@ Inheritance diagram for cgv::render::render_buffer:</div>
   <img src="classcgv_1_1render_1_1render__buffer.png" usemap="#cgv::render::render_5Fbuffer_map" alt=""/>
   <map id="cgv::render::render_5Fbuffer_map" name="cgv::render::render_5Fbuffer_map">
 <area href="classcgv_1_1render_1_1render__buffer__base.html" title="base interface for a render_buffer" alt="cgv::render::render_buffer_base" shape="rect" coords="0,56,196,80"/>
-<area href="classcgv_1_1data_1_1component__format.html" alt="cgv::data::component_format" shape="rect" coords="206,56,402,80"/>
+<area href="classcgv_1_1data_1_1component__format.html" title="the component format inherits the information of a packing_info and adds information on the component..." alt="cgv::data::component_format" shape="rect" coords="206,56,402,80"/>
 <area href="classcgv_1_1render_1_1render__component.html" title="base interface for all render components" alt="cgv::render::render_component" shape="rect" coords="0,0,196,24"/>
-<area href="classcgv_1_1data_1_1packing__info.html" alt="cgv::data::packing_info" shape="rect" coords="206,0,402,24"/>
+<area href="classcgv_1_1data_1_1packing__info.html" title="the packing_info class stores information about packed integers structures." alt="cgv::data::packing_info" shape="rect" coords="206,0,402,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -122,6 +125,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:aca34e60aa09b5b16ff81451648dc1c28"><td class="mdescLeft">&#160;</td><td class="mdescRight">destruct the render buffer <br /></td></tr>
 <tr class="separator:aca34e60aa09b5b16ff81451648dc1c28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13b00ebab6222610cd9d72a813776422"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__buffer.html#a13b00ebab6222610cd9d72a813776422">create</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int width=-1, int height=-1)</td></tr>
+<tr class="memdesc:a13b00ebab6222610cd9d72a813776422"><td class="mdescLeft">&#160;</td><td class="mdescRight">create a render buffer.  <a href="classcgv_1_1render_1_1render__buffer.html#a13b00ebab6222610cd9d72a813776422">More...</a><br /></td></tr>
 <tr class="separator:a13b00ebab6222610cd9d72a813776422"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aacf95bc583ce13c3b2b0c602dcc31a78"><td class="memItemLeft" align="right" valign="top"><a id="aacf95bc583ce13c3b2b0c602dcc31a78"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__buffer.html#aacf95bc583ce13c3b2b0c602dcc31a78">is_created</a> () const override</td></tr>
@@ -156,6 +160,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a60d565cd669354dd0600dd011fbb58a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether the component format corresponds to a color buffer format <br /></td></tr>
 <tr class="separator:a60d565cd669354dd0600dd011fbb58a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">put_id_void</a> (void *ptr) const</td></tr>
+<tr class="memdesc:aa5404b2aec4bbe8fd4eff1959b627709"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the rendering api specific id the component to the memory location of the given pointer.  <a href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">More...</a><br /></td></tr>
 <tr class="separator:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06ff3003af849b32a76ec5be29bd89dc"><td class="memTemplParams" colspan="2"><a id="a06ff3003af849b32a76ec5be29bd89dc"></a>
 template&lt;typename T &gt; </td></tr>
@@ -163,7 +168,7 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memdesc:a06ff3003af849b32a76ec5be29bd89dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">cast the refence to rendering api specific representation of component id to the specified type <br /></td></tr>
 <tr class="separator:a06ff3003af849b32a76ec5be29bd89dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f378a1f73f5a195fafcaa4382110cef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1component__format.html#a0f378a1f73f5a195fafcaa4382110cef">set_component_format</a> (const std::string &amp;description)</td></tr>
-<tr class="memdesc:a0f378a1f73f5a195fafcaa4382110cef"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the component format from a description string  <a href="classcgv_1_1data_1_1component__format.html#a0f378a1f73f5a195fafcaa4382110cef">More...</a><br /></td></tr>
+<tr class="memdesc:a0f378a1f73f5a195fafcaa4382110cef"><td class="mdescLeft">&#160;</td><td class="mdescRight">set component format from description string, which has the following syntax.  <a href="classcgv_1_1data_1_1component__format.html#a0f378a1f73f5a195fafcaa4382110cef">More...</a><br /></td></tr>
 <tr class="separator:a0f378a1f73f5a195fafcaa4382110cef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeeb352777bc7221d4b1ac4438c3cea43"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1component__format.html#aeeb352777bc7221d4b1ac4438c3cea43">set_component_format</a> (ComponentFormat _cf)</td></tr>
 <tr class="memdesc:aeeb352777bc7221d4b1ac4438c3cea43"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the component names from a standard component format  <a href="classcgv_1_1data_1_1component__format.html#aeeb352777bc7221d4b1ac4438c3cea43">More...</a><br /></td></tr>
@@ -374,7 +379,9 @@ std::vector&lt; unsigned short &gt;&#160;</td><td class="memItemRight" valign="b
         </tr>
       </table>
 </div><div class="memdoc">
-<p>create a render buffer. If no extent is specified it is copied from the current viewport. </p>
+
+<p>create a render buffer. </p>
+<p>If no extent is specified it is copied from the current viewport. </p>
 
 </div>
 </div>
@@ -485,7 +492,9 @@ std::vector&lt; unsigned short &gt;&#160;</td><td class="memItemRight" valign="b
   </tr>
 </table>
 </div><div class="memdoc">
-<p>copy the rendering api specific id the component to the memory location of the given pointer. For opengl this the passed pointer should be of type GLint or GLuint. </p>
+
+<p>copy the rendering api specific id the component to the memory location of the given pointer. </p>
+<p>For opengl this the passed pointer should be of type GLint or GLuint. </p>
 
 </div>
 </div>
@@ -542,8 +551,9 @@ std::vector&lt; unsigned short &gt;&#160;</td><td class="memItemRight" valign="b
 </table>
 </div><div class="memdoc">
 
-<p>set the component format from a description string </p>
-<p>set component format from description string, which has the following syntax. If a parse error arises, return false and set the static last_error member, which can be queried with <a class="el" href="classcgv_1_1data_1_1component__format.html#acedea4bd86acdaa66860c7842e473074" title="returns an error string after parsing of description string has failed">get_last_error()</a>:</p>
+<p>set component format from description string, which has the following syntax. </p>
+<p>set the component format from a description string</p>
+<p>If a parse error arises, return false and set the static last_error member, which can be queried with <a class="el" href="classcgv_1_1data_1_1component__format.html#acedea4bd86acdaa66860c7842e473074" title="returns an error string after parsing of description string has failed">get_last_error()</a>:</p>
 <pre class="fragment">component_format &lt;- [type] [attributes] '[' component [',' component]* ']'
 
 component &lt;- component_name [attributes]

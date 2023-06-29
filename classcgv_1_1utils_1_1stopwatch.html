@@ -89,6 +89,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1utils_1_1stopwatch.html','
 </div><!--header-->
 <div class="contents">
 
+<p>A trivial stop watch class for time measurement.  
+ <a href="classcgv_1_1utils_1_1stopwatch.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="stopwatch_8h_source.html">stopwatch.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -103,7 +106,8 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <tr class="separator:aaa5315b7fb02ea374190c3650915d0eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A trivial stop watch class for time measurement. On Win32 the perfomance counter with a resolution of 0,313 microseconds is used, if available. If the performance counter is not available and on other systems the std::clock() function with a resolution of 0,055 milliseconds is used.</p>
+<div class="textblock"><p>A trivial stop watch class for time measurement. </p>
+<p>On Win32 the perfomance counter with a resolution of 0,313 microseconds is used, if available. If the performance counter is not available and on other systems the std::clock() function with a resolution of 0,055 milliseconds is used.</p>
 <p>Example 1:</p>
 <p>{ stopwatch s; dosomethingtimeconsuming(); }</p>
 <p>The duration is written into cout.</p>

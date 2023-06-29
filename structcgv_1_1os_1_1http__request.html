@@ -111,6 +111,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>path</b></td><
 std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>params</b></td></tr>
 <tr class="separator:a5837e2a5de0d5c5b51f8495fa14250c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0796e890ff3dad23b16c345efc561c8e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1os_1_1http__request.html#a0796e890ff3dad23b16c345efc561c8e">authentication_given</a></td></tr>
+<tr class="memdesc:a0796e890ff3dad23b16c345efc561c8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">authentication_given is true when the user has entered a username and password.  <a href="structcgv_1_1os_1_1http__request.html#a0796e890ff3dad23b16c345efc561c8e">More...</a><br /></td></tr>
 <tr class="separator:a0796e890ff3dad23b16c345efc561c8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb8c354e4a3f3a1f0a50b96ac2e077b2"><td class="memItemLeft" align="right" valign="top"><a id="adb8c354e4a3f3a1f0a50b96ac2e077b2"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1os_1_1http__request.html#adb8c354e4a3f3a1f0a50b96ac2e077b2">username</a></td></tr>
@@ -134,8 +135,11 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>user_agent</b>
 <tr class="separator:a5cb0278b969a3419d518da21f5aabaf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">return values</div></td></tr>
 <tr class="memitem:a33197a0816919fac8f2503a2d0e5a076"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1os_1_1http__request.html#a33197a0816919fac8f2503a2d0e5a076">status</a></td></tr>
+<tr class="memdesc:a33197a0816919fac8f2503a2d0e5a076"><td class="mdescLeft">&#160;</td><td class="mdescRight">status: used to transmit server's error status, such as  <a href="structcgv_1_1os_1_1http__request.html#a33197a0816919fac8f2503a2d0e5a076">More...</a><br /></td></tr>
 <tr class="separator:a33197a0816919fac8f2503a2d0e5a076"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af044dd9d9d9cc6dc196a4a3c0e465482"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1os_1_1http__request.html#af044dd9d9d9cc6dc196a4a3c0e465482">auth_realm</a></td></tr>
+<tr class="memitem:af044dd9d9d9cc6dc196a4a3c0e465482"><td class="memItemLeft" align="right" valign="top"><a id="af044dd9d9d9cc6dc196a4a3c0e465482"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1os_1_1http__request.html#af044dd9d9d9cc6dc196a4a3c0e465482">auth_realm</a></td></tr>
+<tr class="memdesc:af044dd9d9d9cc6dc196a4a3c0e465482"><td class="mdescLeft">&#160;</td><td class="mdescRight">auth_realm: allows to set the basic realm for an authentication, no need to additionally set status if set <br /></td></tr>
 <tr class="separator:af044dd9d9d9cc6dc196a4a3c0e465482"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e18224a3a0db3114c023c448ddb1915"><td class="memItemLeft" align="right" valign="top"><a id="a7e18224a3a0db3114c023c448ddb1915"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1os_1_1http__request.html#a7e18224a3a0db3114c023c448ddb1915">answer</a></td></tr>
@@ -145,21 +149,6 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>structure that contains all input and output parameters of a http request </p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
-<a id="af044dd9d9d9cc6dc196a4a3c0e465482"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af044dd9d9d9cc6dc196a4a3c0e465482">&#9670;&nbsp;</a></span>auth_realm</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string cgv::os::http_request::auth_realm</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>auth_realm: allows to set the basic realm for an authentication, no need to additionally set status if set </p>
-
-</div>
-</div>
 <a id="a0796e890ff3dad23b16c345efc561c8e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0796e890ff3dad23b16c345efc561c8e">&#9670;&nbsp;</a></span>authentication_given</h2>
 
@@ -171,7 +160,9 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
         </tr>
       </table>
 </div><div class="memdoc">
-<p>authentication_given is true when the user has entered a username and password. These can then be read from username and password </p>
+
+<p>authentication_given is true when the user has entered a username and password. </p>
+<p>These can then be read from username and password </p>
 
 </div>
 </div>
@@ -186,7 +177,9 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
         </tr>
       </table>
 </div><div class="memdoc">
-<p>status: used to transmit server's error status, such as</p><ul>
+
+<p>status: used to transmit server's error status, such as </p>
+<ul>
 <li>202 OK (this is set by default)</li>
 <li>404 Not Found and so on. </li>
 </ul>

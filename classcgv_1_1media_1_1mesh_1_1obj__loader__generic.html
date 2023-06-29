@@ -90,6 +90,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1media_1_1mesh_1_1obj__load
 </div><!--header-->
 <div class="contents">
 
+<p>implements the virtual interface of the obj_reader and stores all read information.  
+ <a href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="obj__loader_8h_source.html">obj_loader.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::media::mesh::obj_loader_generic&lt; T &gt;:</div>
@@ -97,8 +100,8 @@ Inheritance diagram for cgv::media::mesh::obj_loader_generic&lt; T &gt;:</div>
  <div class="center">
   <img src="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.png" usemap="#cgv::media::mesh::obj_5Floader_5Fgeneric_3C_20T_20_3E_map" alt=""/>
   <map id="cgv::media::mesh::obj_5Floader_5Fgeneric_3C_20T_20_3E_map" name="cgv::media::mesh::obj_5Floader_5Fgeneric_3C_20T_20_3E_map">
-<area href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html" alt="cgv::media::mesh::obj_reader_generic&lt; T &gt;" shape="rect" coords="0,56,256,80"/>
-<area href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html" alt="cgv::media::mesh::obj_reader_base" shape="rect" coords="0,0,256,24"/>
+<area href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html" title="implements the pure reading of an obj file and calls virtual callback functions to allow a derived cl..." alt="cgv::media::mesh::obj_reader_generic&lt; T &gt;" shape="rect" coords="0,56,256,80"/>
+<area href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html" title="base class for obj reader with implementation that is independent of coordinate type." alt="cgv::media::mesh::obj_reader_base" shape="rect" coords="0,0,256,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -266,7 +269,8 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
 class cgv::media::mesh::obj_loader_generic&lt; T &gt;</h3>
 
-<p>implements the virtual interface of the obj_reader and stores all read information. The read information is automatically stored in binary form to accelerate the second loading of the same obj file. </p>
+<p>implements the virtual interface of the obj_reader and stores all read information. </p>
+<p>The read information is automatically stored in binary form to accelerate the second loading of the same obj file. </p>
 </div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/media/mesh/<a class="el" href="obj__loader_8h_source.html">obj_loader.h</a></li>
 <li>cgv/media/mesh/obj_loader.cxx</li>

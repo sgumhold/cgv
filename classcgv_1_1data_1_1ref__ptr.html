@@ -92,6 +92,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1data_1_1ref__ptr.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>reference counted pointer, which can work together with types that are derived from <a class="el" href="classcgv_1_1data_1_1ref__counted.html" title="if you derive your class from this class, a ref_ptr will do reference counting in the inhereted ref_c...">ref_counted</a>, in which case the reference count of <a class="el" href="classcgv_1_1data_1_1ref__counted.html" title="if you derive your class from this class, a ref_ptr will do reference counting in the inhereted ref_c...">ref_counted</a> is used.  
+ <a href="classcgv_1_1data_1_1ref__ptr.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="ref__ptr_8h_source.html">ref_ptr.h</a>&gt;</code></p>
 
 <p>Inherits cgv::data::ref_ptr_impl&lt; T, is_ref_counted &gt;.</p>
@@ -124,7 +127,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a48bdd1191553cd366a769a8b92b48df9"><td class="memTemplParams" colspan="2"><a id="a48bdd1191553cd366a769a8b92b48df9"></a>
 template&lt;typename S &gt; </td></tr>
 <tr class="memitem:a48bdd1191553cd366a769a8b92b48df9"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1ref__ptr.html#a48bdd1191553cd366a769a8b92b48df9">ref_ptr</a> (const <a class="el" href="classcgv_1_1data_1_1ref__ptr.html">ref_ptr</a>&lt; S, is_ref_counted &gt; &amp;s)</td></tr>
-<tr class="memdesc:a48bdd1191553cd366a769a8b92b48df9"><td class="mdescLeft">&#160;</td><td class="mdescRight">allow to copy <a class="el" href="classcgv_1_1data_1_1ref__ptr.html">ref_ptr</a><s> to a ref_ptr&lt;T&gt; if T is a base class of S and if T has a virtual destructor </s><br /></td></tr>
+<tr class="memdesc:a48bdd1191553cd366a769a8b92b48df9"><td class="mdescLeft">&#160;</td><td class="mdescRight">allow to copy <a class="el" href="classcgv_1_1data_1_1ref__ptr.html" title="reference counted pointer, which can work together with types that are derived from ref_counted,...">ref_ptr</a><s> to a ref_ptr&lt;T&gt; if T is a base class of S and if T has a virtual destructor </s><br /></td></tr>
 <tr class="separator:a48bdd1191553cd366a769a8b92b48df9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74541a0b5edd656f132fd854672c26b1"><td class="memTemplParams" colspan="2"><a id="a74541a0b5edd656f132fd854672c26b1"></a>
 template&lt;typename S &gt; </td></tr>
@@ -203,7 +206,8 @@ Protected Attributes</h2></td></tr>
 <div class="textblock"><h3>template&lt;class T, bool is_ref_counted = type::cond::is_base_of&lt;ref_counted,T&gt;::value&gt;<br />
 class cgv::data::ref_ptr&lt; T, is_ref_counted &gt;</h3>
 
-<p>reference counted pointer, which can work together with types that are derived from <a class="el" href="classcgv_1_1data_1_1ref__counted.html">ref_counted</a>, in which case the reference count of <a class="el" href="classcgv_1_1data_1_1ref__counted.html">ref_counted</a> is used. Otherwise a reference count is allocated and access to the stored instance needs to follow two pointers. </p>
+<p>reference counted pointer, which can work together with types that are derived from <a class="el" href="classcgv_1_1data_1_1ref__counted.html" title="if you derive your class from this class, a ref_ptr will do reference counting in the inhereted ref_c...">ref_counted</a>, in which case the reference count of <a class="el" href="classcgv_1_1data_1_1ref__counted.html" title="if you derive your class from this class, a ref_ptr will do reference counting in the inhereted ref_c...">ref_counted</a> is used. </p>
+<p>Otherwise a reference count is allocated and access to the stored instance needs to follow two pointers. </p>
 </div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>cgv/data/<a class="el" href="ref__ptr_8h_source.html">ref_ptr.h</a></li>
 </ul>
