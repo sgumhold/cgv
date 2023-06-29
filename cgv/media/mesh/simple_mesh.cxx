@@ -73,8 +73,6 @@ simple_mesh_base& simple_mesh_base::operator=(simple_mesh_base&& smb)
 	return *this;
 }
 
-
-/// create a new empty face to which new corners are added and return face index
 simple_mesh_base::idx_type simple_mesh_base::start_face()
 {
 	faces.push_back((cgv::type::uint32_type)position_indices.size());
@@ -84,13 +82,14 @@ simple_mesh_base::idx_type simple_mesh_base::start_face()
 		group_indices.push_back(idx_type(group_names.size()) - 1);
 	return idx_type(faces.size() - 1);
 }
-/// create a new corner from position, optional normal and optional tex coordinate indices and return corner index
-simple_mesh_base::idx_type simple_mesh_base::new_corner(idx_type position_index, idx_type normal_index, idx_type tex_coord_index)
+
+simple_mesh_base::idx_type simple_mesh_base::new_corner(idx_type position_index, idx_type normal_index,
+														idx_type tex_coord_index)
 {
 	position_indices.push_back(position_index);
-	if (normal_index != -1)
+	if (normal_index != -1) //FIXME: -1 underflows unsigned int!
 		normal_indices.push_back(normal_index);
-	if (tex_coord_index != -1)
+	if (tex_coord_index != -1) //FIXME: -1 underflows unsigned int!
 		tex_coord_indices.push_back(tex_coord_index);
 	return idx_type(position_indices.size());
 }
@@ -115,7 +114,6 @@ void simple_mesh_base::revert_face_orientation()
 	}
 }
 
-/// sort faces by group and material indices with two bucket sorts
 void simple_mesh_base::sort_faces(std::vector<idx_type>& perm, bool by_group, bool by_material) const
 {
 	if (by_group && by_material) {
@@ -129,7 +127,6 @@ void simple_mesh_base::sort_faces(std::vector<idx_type>& perm, bool by_group, bo
 		cgv::math::bucket_sort(material_indices, get_nr_materials(), perm);
 }
 
-/// merge the three indices into one index into a vector of unique index triples
 void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector<vec4i>& unique_quadruples, bool* include_tex_coords_ptr, bool* include_normals_ptr, bool* include_tangents_ptr) const
 {
 	bool include_tex_coords = false;
@@ -168,16 +165,15 @@ void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector
 	}
 }
 
-/// extract element array buffers for triangulation
 void simple_mesh_base::extract_triangle_element_buffer(
 	const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& triangle_element_buffer, 
-	const std::vector<idx_type>* face_perm_ptr, std::vector<vec3i>* material_group_start_ptr) const
+	const std::vector<idx_type>* face_permutation_ptr, std::vector<vec3i>* material_group_start_ptr) const
 {
 	idx_type mi = idx_type(-1);
 	idx_type gi = idx_type(-1);
 	// construct triangle element buffer
 	for (idx_type fi = 0; fi < faces.size(); ++fi) {
-		idx_type fj = face_perm_ptr ? face_perm_ptr->at(fi) : fi;
+		idx_type fj = face_permutation_ptr ? face_permutation_ptr->at(fi) : fi;
 		if (material_group_start_ptr) {
 			if (mi != material_indices[fj] || gi != group_indices[fj]) {
 				mi = material_indices[fj];
@@ -567,7 +563,6 @@ void simple_mesh<T>::compute_vertex_normals()
 		n.normalize();
 }
 
-/// extract vertex attribute array and element array buffers for triangulation and edges in wireframe
 template <typename T>
 unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
 	const std::vector<idx_type>& vertex_indices, 
