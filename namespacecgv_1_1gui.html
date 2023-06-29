@@ -140,6 +140,7 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1control.html">control</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1dialog.html">dialog</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">use this class to construct and execute a modal dialog.  <a href="classcgv_1_1gui_1_1dialog.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event.html">event</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -183,8 +184,10 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">class to represent stick events with the EID_STICK  <a href="classcgv_1_1gui_1_1stick__event.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1gui_1_1text__editor__callback__handler.html">text_editor_callback_handler</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">implement this interface to interact with the text editor  <a href="structcgv_1_1gui_1_1text__editor__callback__handler.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1gui_1_1text__style.html">text_style</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">description of a text style  <a href="structcgv_1_1gui_1_1text__style.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1text__editor.html">text_editor</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">abstract base class for text editors  <a href="classcgv_1_1gui_1_1text__editor.html#details">More...</a><br /></td></tr>
@@ -338,7 +341,8 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a666fa03ad80594e9cdac05ecde1d7d71"><td class="mdescLeft">&#160;</td><td class="mdescRight">different actions that a key can perform  <a href="namespacecgv_1_1gui.html#a666fa03ad80594e9cdac05ecde1d7d71">More...</a><br /></td></tr>
 <tr class="separator:a666fa03ad80594e9cdac05ecde1d7d71"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac694bd9d4be9bef500b337cc81719f6"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#aac694bd9d4be9bef500b337cc81719f6">layout_hint</a> </td></tr>
+<tr class="memitem:aac694bd9d4be9bef500b337cc81719f6"><td class="memItemLeft" align="right" valign="top"><a id="aac694bd9d4be9bef500b337cc81719f6"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#aac694bd9d4be9bef500b337cc81719f6">layout_hint</a> </td></tr>
+<tr class="memdesc:aac694bd9d4be9bef500b337cc81719f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allowed hints: s - horizontal shrink S - vertical shrink x - horizontal expand X - vertical expand f - horizontal fill F - vertical fill l - align left r - align right c - align centered t - align top b - align bottom m - align middle (between top and bottom) <br /></td></tr>
 <tr class="separator:aac694bd9d4be9bef500b337cc81719f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8df984052bc15d562c44dfb9927d0203"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203">MouseAction</a> { <br />
 &#160;&#160;<a class="el" href="namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203a0091084872702ffd92ac7acaa168047b">MA_PRESS</a>
@@ -503,18 +507,24 @@ unsigned char &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class=
 CGV_API void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#a296ba7e8aae9758aa12a0cd473c51484">stream_in_toggle_keys</a> (std::istream &amp;is, unsigned char &amp;toggle_keys)</td></tr>
 <tr class="memdesc:a296ba7e8aae9758aa12a0cd473c51484"><td class="mdescLeft">&#160;</td><td class="mdescRight">read toggle keys in string format from a stream and set the passed reference to EventToggleKeys ored together. <br /></td></tr>
 <tr class="separator:a296ba7e8aae9758aa12a0cd473c51484"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade084937f79b4eb38f78e9af6f97f279"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#ade084937f79b4eb38f78e9af6f97f279">file_open_dialog</a> (const std::string &amp;title, const std::string &amp;filter, const std::string &amp;path)</td></tr>
-<tr class="separator:ade084937f79b4eb38f78e9af6f97f279"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8375a19e1a7906bc67c2e64e4c7fd06"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#ab8375a19e1a7906bc67c2e64e4c7fd06">directory_open_dialog</a> (const std::string &amp;title, const std::string &amp;path)</td></tr>
+<tr class="memitem:a3698234f662a091b7af00eb0e763d809"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#a3698234f662a091b7af00eb0e763d809">file_open_dialog</a> (const std::string &amp;title, const std::string &amp;filter, const std::string &amp;path=&quot;&quot;)</td></tr>
+<tr class="memdesc:a3698234f662a091b7af00eb0e763d809"><td class="mdescLeft">&#160;</td><td class="mdescRight">ask the user for a file name to open a file.  <a href="namespacecgv_1_1gui.html#a3698234f662a091b7af00eb0e763d809">More...</a><br /></td></tr>
+<tr class="separator:a3698234f662a091b7af00eb0e763d809"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8375a19e1a7906bc67c2e64e4c7fd06"><td class="memItemLeft" align="right" valign="top"><a id="ab8375a19e1a7906bc67c2e64e4c7fd06"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#ab8375a19e1a7906bc67c2e64e4c7fd06">directory_open_dialog</a> (const std::string &amp;title, const std::string &amp;path)</td></tr>
+<tr class="memdesc:ab8375a19e1a7906bc67c2e64e4c7fd06"><td class="mdescLeft">&#160;</td><td class="mdescRight">ask the user for an existing directory. <br /></td></tr>
 <tr class="separator:ab8375a19e1a7906bc67c2e64e4c7fd06"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9478ae68ec4977b7fec9066218d89b07"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#a9478ae68ec4977b7fec9066218d89b07">directory_save_dialog</a> (const std::string &amp;title, const std::string &amp;path)</td></tr>
+<tr class="memitem:a9478ae68ec4977b7fec9066218d89b07"><td class="memItemLeft" align="right" valign="top"><a id="a9478ae68ec4977b7fec9066218d89b07"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#a9478ae68ec4977b7fec9066218d89b07">directory_save_dialog</a> (const std::string &amp;title, const std::string &amp;path)</td></tr>
+<tr class="memdesc:a9478ae68ec4977b7fec9066218d89b07"><td class="mdescLeft">&#160;</td><td class="mdescRight">ask the user for a new directory. <br /></td></tr>
 <tr class="separator:a9478ae68ec4977b7fec9066218d89b07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad51a9ad68d0c886bfcca0f7b31ce20b3"><td class="memItemLeft" align="right" valign="top"><a id="ad51a9ad68d0c886bfcca0f7b31ce20b3"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#ad51a9ad68d0c886bfcca0f7b31ce20b3">files_open_dialog</a> (std::vector&lt; std::string &gt; &amp;file_names, const std::string &amp;title, const std::string &amp;filter, const std::string &amp;path)</td></tr>
 <tr class="memdesc:ad51a9ad68d0c886bfcca0f7b31ce20b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">ask user for an open dialog that can select multiple files, return common path prefix and fill field of filenames <br /></td></tr>
 <tr class="separator:ad51a9ad68d0c886bfcca0f7b31ce20b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3dca4a7fb286fb91dcfb045cdd492509"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#a3dca4a7fb286fb91dcfb045cdd492509">file_save_dialog</a> (const std::string &amp;title, const std::string &amp;filter, const std::string &amp;path)</td></tr>
-<tr class="separator:a3dca4a7fb286fb91dcfb045cdd492509"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd27d0cd04939544af3fcd040901ebf5"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#acd27d0cd04939544af3fcd040901ebf5">file_save_dialog</a> (const std::string &amp;title, const std::string &amp;filter, const std::string &amp;path=&quot;&quot;)</td></tr>
+<tr class="memdesc:acd27d0cd04939544af3fcd040901ebf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">ask the user for a file name to save a file.  <a href="namespacecgv_1_1gui.html#acd27d0cd04939544af3fcd040901ebf5">More...</a><br /></td></tr>
+<tr class="separator:acd27d0cd04939544af3fcd040901ebf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe43f90690b9f6429fc67a504422dfd7"><td class="memItemLeft" align="right" valign="top"><a id="abe43f90690b9f6429fc67a504422dfd7"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#abe43f90690b9f6429fc67a504422dfd7">register_gui_creator</a> (<a class="el" href="structcgv_1_1gui_1_1gui__creator.html">gui_creator</a> *gc, const char *creator_name)</td></tr>
 <tr class="memdesc:abe43f90690b9f6429fc67a504422dfd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">register a gui creator <br /></td></tr>
@@ -523,17 +533,17 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#acfea005ec75efc33168351c51cbc6c84">create_gui</a> (<a class="el" href="classcgv_1_1gui_1_1provider.html">provider</a> *p, const std::string &amp;label, void *value_ptr, const std::string &amp;value_type, const std::string &amp;gui_type, const std::string &amp;options, bool *toggles)</td></tr>
 <tr class="memdesc:acfea005ec75efc33168351c51cbc6c84"><td class="mdescLeft">&#160;</td><td class="mdescRight">create the gui for a composed structure <br /></td></tr>
 <tr class="separator:acfea005ec75efc33168351c51cbc6c84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee57abfd9f620182aa509f2d1d6f27e3"><td class="memItemLeft" align="right" valign="top"><a id="aee57abfd9f620182aa509f2d1d6f27e3"></a>
-<a class="el" href="namespacecgv_1_1gui.html#ada40b6257575bd2dfea678a6899299a9">gui_driver_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#aee57abfd9f620182aa509f2d1d6f27e3">get_gui_driver</a> ()</td></tr>
-<tr class="memdesc:aee57abfd9f620182aa509f2d1d6f27e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the currently registered gui driver or an empty pointer if non has been registered <br /></td></tr>
-<tr class="separator:aee57abfd9f620182aa509f2d1d6f27e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f1b6aa0e7f9cdcc604c29a9b0b49ab4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#a9f1b6aa0e7f9cdcc604c29a9b0b49ab4">register_gui_driver</a> (<a class="el" href="namespacecgv_1_1gui.html#ada40b6257575bd2dfea678a6899299a9">gui_driver_ptr</a> _driver)</td></tr>
-<tr class="memdesc:a9f1b6aa0e7f9cdcc604c29a9b0b49ab4"><td class="mdescLeft">&#160;</td><td class="mdescRight">register a new gui driver.  <a href="namespacecgv_1_1gui.html#a9f1b6aa0e7f9cdcc604c29a9b0b49ab4">More...</a><br /></td></tr>
-<tr class="separator:a9f1b6aa0e7f9cdcc604c29a9b0b49ab4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a17a960a38dc4836547de551c49eacb56"><td class="memItemLeft" align="right" valign="top"><a id="a17a960a38dc4836547de551c49eacb56"></a>
-cgv::signal::signal&lt; <a class="el" href="namespacecgv_1_1gui.html#ada40b6257575bd2dfea678a6899299a9">gui_driver_ptr</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#a17a960a38dc4836547de551c49eacb56">on_gui_driver_registration</a> ()</td></tr>
-<tr class="memdesc:a17a960a38dc4836547de551c49eacb56"><td class="mdescLeft">&#160;</td><td class="mdescRight">a signal that is emitted when a gui driver is registered <br /></td></tr>
-<tr class="separator:a17a960a38dc4836547de551c49eacb56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ab13fd264eaf4d4dbb46c04fb3b3785"><td class="memItemLeft" align="right" valign="top"><a id="a3ab13fd264eaf4d4dbb46c04fb3b3785"></a>
+<a class="el" href="namespacecgv_1_1gui.html#ada40b6257575bd2dfea678a6899299a9">gui_driver_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a> ()</td></tr>
+<tr class="memdesc:a3ab13fd264eaf4d4dbb46c04fb3b3785"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the currently registered gui driver or an empty pointer if non has been registered <br /></td></tr>
+<tr class="separator:a3ab13fd264eaf4d4dbb46c04fb3b3785"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f9ed1ef04949ae8e1c7eef61d44a2ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#a3f9ed1ef04949ae8e1c7eef61d44a2ef">register_gui_driver</a> (<a class="el" href="namespacecgv_1_1gui.html#ada40b6257575bd2dfea678a6899299a9">gui_driver_ptr</a> _driver)</td></tr>
+<tr class="memdesc:a3f9ed1ef04949ae8e1c7eef61d44a2ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">register a new gui driver.  <a href="namespacecgv_1_1gui.html#a3f9ed1ef04949ae8e1c7eef61d44a2ef">More...</a><br /></td></tr>
+<tr class="separator:a3f9ed1ef04949ae8e1c7eef61d44a2ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a03a0e681d4c9226269c0e3976c3bae"><td class="memItemLeft" align="right" valign="top"><a id="a2a03a0e681d4c9226269c0e3976c3bae"></a>
+cgv::signal::signal&lt; <a class="el" href="namespacecgv_1_1gui.html#ada40b6257575bd2dfea678a6899299a9">gui_driver_ptr</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#a2a03a0e681d4c9226269c0e3976c3bae">on_gui_driver_registration</a> ()</td></tr>
+<tr class="memdesc:a2a03a0e681d4c9226269c0e3976c3bae"><td class="mdescLeft">&#160;</td><td class="mdescRight">a signal that is emitted when a gui driver is registered <br /></td></tr>
+<tr class="separator:a2a03a0e681d4c9226269c0e3976c3bae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b568bfac3f9223fa725f3560a132fd9"><td class="memItemLeft" align="right" valign="top"><a id="a8b568bfac3f9223fa725f3560a132fd9"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1gui.html#a8b568bfac3f9223fa725f3560a132fd9">get_key_action_string</a> (<a class="el" href="namespacecgv_1_1gui.html#a666fa03ad80594e9cdac05ecde1d7d71">KeyAction</a> action)</td></tr>
 <tr class="memdesc:a8b568bfac3f9223fa725f3560a132fd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert a key action into a readable string <br /></td></tr>
@@ -857,21 +867,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 
 </div>
 </div>
-<a id="aac694bd9d4be9bef500b337cc81719f6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aac694bd9d4be9bef500b337cc81719f6">&#9670;&nbsp;</a></span>layout_hint</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="namespacecgv_1_1gui.html#aac694bd9d4be9bef500b337cc81719f6">cgv::gui::layout_hint</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Allowed hints: s - horizontal shrink S - vertical shrink x - horizontal expand X - vertical expand f - horizontal fill F - vertical fill l - align left r - align right c - align centered t - align top b - align bottom m - align middle (between top and bottom) </p>
-
-</div>
-</div>
 <a id="a8df984052bc15d562c44dfb9927d0203"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8df984052bc15d562c44dfb9927d0203">&#9670;&nbsp;</a></span>MouseAction</h2>
 
@@ -1080,66 +1075,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 
 </div>
 </div>
-<a id="ab8375a19e1a7906bc67c2e64e4c7fd06"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab8375a19e1a7906bc67c2e64e4c7fd06">&#9670;&nbsp;</a></span>directory_open_dialog()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">CGV_API std::string cgv::gui::directory_open_dialog </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>title</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>path</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>ask the user for an existing directory. </p>
-
-</div>
-</div>
-<a id="a9478ae68ec4977b7fec9066218d89b07"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9478ae68ec4977b7fec9066218d89b07">&#9670;&nbsp;</a></span>directory_save_dialog()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">CGV_API std::string cgv::gui::directory_save_dialog </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>title</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>path</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>ask the user for a new directory. </p>
-
-</div>
-</div>
-<a id="ade084937f79b4eb38f78e9af6f97f279"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade084937f79b4eb38f78e9af6f97f279">&#9670;&nbsp;</a></span>file_open_dialog()</h2>
+<a id="a3698234f662a091b7af00eb0e763d809"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3698234f662a091b7af00eb0e763d809">&#9670;&nbsp;</a></span>file_open_dialog()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1169,7 +1106,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
         </tr>
       </table>
 </div><div class="memdoc">
-<p>ask the user for a file name to open a file. The filter string is composed of '|'-separated pairs of the form '&lt;text&gt;:&lt;filter&gt;', where &lt;text&gt; is an arbitrary text (without '|' and ':' symbols) shown with the filter and &lt;filter&gt; is one filter string or a ';'-separated list of filters. For example the filter parameter could be set to "Image Files (jpg,gif):*.jpg;*.gif|Video Files (avi):*.avi|All Files:*.*". The path parameter can be used to define an initial directory and or an initial file for the dialog:</p><ul>
+
+<p>ask the user for a file name to open a file. </p>
+<p>The filter string is composed of '|'-separated pairs of the form '&lt;text&gt;:&lt;filter&gt;', where &lt;text&gt; is an arbitrary text (without '|' and ':' symbols) shown with the filter and &lt;filter&gt; is one filter string or a ';'-separated list of filters. For example the filter parameter could be set to "Image Files (jpg,gif):*.jpg;*.gif|Video Files (avi):*.avi|All Files:*.*". The path parameter can be used to define an initial directory and or an initial file for the dialog:</p><ul>
 <li>if path is empty no initial directory not path are selected,</li>
 <li>if path defines a directory, it is used as initial directory without initial file,</li>
 <li>if path defines file without directory the initial file is set and the standard directory is used</li>
@@ -1178,8 +1117,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 
 </div>
 </div>
-<a id="a3dca4a7fb286fb91dcfb045cdd492509"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3dca4a7fb286fb91dcfb045cdd492509">&#9670;&nbsp;</a></span>file_save_dialog()</h2>
+<a id="acd27d0cd04939544af3fcd040901ebf5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd27d0cd04939544af3fcd040901ebf5">&#9670;&nbsp;</a></span>file_save_dialog()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1209,7 +1148,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
         </tr>
       </table>
 </div><div class="memdoc">
-<p>ask the user for a file name to save a file. The filter string uses the syntax defined in the docu of <a class="el" href="namespacecgv_1_1gui.html#ade084937f79b4eb38f78e9af6f97f279">file_open_dialog()</a>. </p>
+
+<p>ask the user for a file name to save a file. </p>
+<p>The filter string uses the syntax defined in the docu of <a class="el" href="namespacecgv_1_1gui.html#a3698234f662a091b7af00eb0e763d809" title="ask the user for a file name to open a file.">file_open_dialog()</a>. </p>
 
 </div>
 </div>
@@ -1311,14 +1252,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 
 </div>
 </div>
-<a id="a9f1b6aa0e7f9cdcc604c29a9b0b49ab4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9f1b6aa0e7f9cdcc604c29a9b0b49ab4">&#9670;&nbsp;</a></span>register_gui_driver()</h2>
+<a id="a3f9ed1ef04949ae8e1c7eef61d44a2ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f9ed1ef04949ae8e1c7eef61d44a2ef">&#9670;&nbsp;</a></span>register_gui_driver()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void cgv::gui::register_gui_driver </td>
+          <td class="memname">CGV_API void cgv::gui::register_gui_driver </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacecgv_1_1gui.html#ada40b6257575bd2dfea678a6899299a9">gui_driver_ptr</a>&#160;</td>
           <td class="paramname"><em>_driver</em></td><td>)</td>

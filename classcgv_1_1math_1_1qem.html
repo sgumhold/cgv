@@ -147,6 +147,7 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcg
 <tr class="memdesc:a3e2fd58ed8f47cb2f28c516bda9a15c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">evaluate the quadric error metric at given location <br /></td></tr>
 <tr class="separator:a3e2fd58ed8f47cb2f28c516bda9a15c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79d2cff19a808fed66ac4d6302e09061"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1qem.html#a79d2cff19a808fed66ac4d6302e09061">minarg</a> (const <a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt; &amp;p_ref, T relative_epsilon, T max_distance=-1, T epsilon=1e-10) const</td></tr>
+<tr class="memdesc:a79d2cff19a808fed66ac4d6302e09061"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute point that minimizes distance to qem and is inside the sphere of radius max_distance around p_ref.  <a href="classcgv_1_1math_1_1qem.html#a79d2cff19a808fed66ac4d6302e09061">More...</a><br /></td></tr>
 <tr class="separator:a79d2cff19a808fed66ac4d6302e09061"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0cf2962f0e76527eaf93975e06eb049"><td class="memTemplParams" colspan="2"><a id="ad0cf2962f0e76527eaf93975e06eb049"></a>
 template&lt;typename S &gt; </td></tr>
@@ -485,7 +486,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>compute point that minimizes distance to qem and is inside the sphere of radius max_distance around p_ref. If max_distance is -1, no sphere inclusion test is performed. relative_epsilon gives the absolute value of the fraction betweenan eigenvalue and the largest eigenvalue before it is set to zero. epsilon is a global limit on the absolute value of a singular value before accepted as non zero. </p>
+
+<p>compute point that minimizes distance to qem and is inside the sphere of radius max_distance around p_ref. </p>
+<p>If max_distance is -1, no sphere inclusion test is performed. relative_epsilon gives the absolute value of the fraction betweenan eigenvalue and the largest eigenvalue before it is set to zero. epsilon is a global limit on the absolute value of a singular value before accepted as non zero. </p>
 
 </div>
 </div>

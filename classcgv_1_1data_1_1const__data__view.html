@@ -92,6 +92,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1data_1_1const__data__view.
 </div><!--header-->
 <div class="contents">
 
+<p>The <a class="el" href="classcgv_1_1data_1_1const__data__view.html" title="The const_data_view has the functionality of the data_view but uses a const pointer and therefore doe...">const_data_view</a> has the functionality of the <a class="el" href="classcgv_1_1data_1_1data__view.html" title="the data view gives access to a data array of one, two, three or four dimensions.">data_view</a> but uses a const pointer and therefore does not allow to manage the pointer nor to set the data.  
+ <a href="classcgv_1_1data_1_1const__data__view.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="data__view_8h_source.html">data_view.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::data::const_data_view:</div>
@@ -100,7 +103,7 @@ Inheritance diagram for cgv::data::const_data_view:</div>
   <img src="classcgv_1_1data_1_1const__data__view.png" usemap="#cgv::data::const_5Fdata_5Fview_map" alt=""/>
   <map id="cgv::data::const_5Fdata_5Fview_map" name="cgv::data::const_5Fdata_5Fview_map">
 <area href="classcgv_1_1data_1_1data__view__impl.html" alt="cgv::data::data_view_impl&lt; const_data_view, const unsigned char * &gt;" shape="rect" coords="0,56,411,80"/>
-<area href="classcgv_1_1data_1_1data__view__base.html" alt="cgv::data::data_view_base" shape="rect" coords="0,0,411,24"/>
+<area href="classcgv_1_1data_1_1data__view__base.html" title="base class of both implementations of the data view managing the component format,..." alt="cgv::data::data_view_base" shape="rect" coords="0,0,411,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -114,11 +117,13 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1const__data__view.html#a249cfd7f8500bf429008fdf1c64b7d99">const_data_view</a> (const <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;dv)</td></tr>
 <tr class="memdesc:a249cfd7f8500bf429008fdf1c64b7d99"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy construct from a non const data view <br /></td></tr>
 <tr class="separator:a249cfd7f8500bf429008fdf1c64b7d99"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0140b8a2bbe1d140984b1b58c5da3ca7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1const__data__view.html#a0140b8a2bbe1d140984b1b58c5da3ca7">const_data_view</a> (const <a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> *_format, const void *_data_ptr)</td></tr>
+<tr class="memitem:a0140b8a2bbe1d140984b1b58c5da3ca7"><td class="memItemLeft" align="right" valign="top"><a id="a0140b8a2bbe1d140984b1b58c5da3ca7"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1const__data__view.html#a0140b8a2bbe1d140984b1b58c5da3ca7">const_data_view</a> (const <a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> *_format, const void *_data_ptr)</td></tr>
+<tr class="memdesc:a0140b8a2bbe1d140984b1b58c5da3ca7"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a data view from the given format, viewing the complete data set pointed to by the passed data pointer <br /></td></tr>
 <tr class="separator:a0140b8a2bbe1d140984b1b58c5da3ca7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5043378f2291dad781f6cab6b2f8d4b"><td class="memItemLeft" align="right" valign="top"><a id="ab5043378f2291dad781f6cab6b2f8d4b"></a>
 <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1const__data__view.html#ab5043378f2291dad781f6cab6b2f8d4b">operator=</a> (const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &amp;dv)</td></tr>
-<tr class="memdesc:ab5043378f2291dad781f6cab6b2f8d4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">assignment of <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> never gains ownership of format or data <br /></td></tr>
+<tr class="memdesc:ab5043378f2291dad781f6cab6b2f8d4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">assignment of <a class="el" href="classcgv_1_1data_1_1const__data__view.html" title="The const_data_view has the functionality of the data_view but uses a const pointer and therefore doe...">const_data_view</a> never gains ownership of format or data <br /></td></tr>
 <tr class="separator:ab5043378f2291dad781f6cab6b2f8d4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36e9af6dc7512c018b68f745471bc5df"><td class="memItemLeft" align="right" valign="top"><a id="a36e9af6dc7512c018b68f745471bc5df"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1const__data__view.html#a36e9af6dc7512c018b68f745471bc5df">set_ptr</a> (const void *ptr)</td></tr>
@@ -185,6 +190,7 @@ S&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcg
 <tr class="memdesc:a418424d73300b10f393cff045d7781ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to entry at (i,j,k,l) <br /></td></tr>
 <tr class="separator:a418424d73300b10f393cff045d7781ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69c95d6e1ccfe03f4f13af1f42db19c9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view__impl.html#a69c95d6e1ccfe03f4f13af1f42db19c9">permute</a> (const std::string &amp;permutation) const</td></tr>
+<tr class="memdesc:a69c95d6e1ccfe03f4f13af1f42db19c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">permute the order of the indices, where the permutation argument "kji" implies that after the permutation the operator (i,j,k) returns the same as the operator (k,j,i) before the call to permute.  <a href="classcgv_1_1data_1_1data__view__impl.html#a69c95d6e1ccfe03f4f13af1f42db19c9">More...</a><br /></td></tr>
 <tr class="separator:a69c95d6e1ccfe03f4f13af1f42db19c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a541dc747e8faaea9cdaad1e1b34158b6"><td class="memItemLeft" align="right" valign="top"><a id="a541dc747e8faaea9cdaad1e1b34158b6"></a>
 <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view__impl.html#a541dc747e8faaea9cdaad1e1b34158b6">transpose</a> () const</td></tr>
@@ -253,38 +259,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <tr class="separator:a7071022caafc15c46058d3ffc9725054"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> has the functionality of the <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> but uses a const pointer and therefore does not allow to manage the pointer nor to set the data. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a0140b8a2bbe1d140984b1b58c5da3ca7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0140b8a2bbe1d140984b1b58c5da3ca7">&#9670;&nbsp;</a></span>const_data_view()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">cgv::data::const_data_view::const_data_view </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> *&#160;</td>
-          <td class="paramname"><em>_format</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>_data_ptr</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>construct a data view from the given format, viewing the complete data set pointed to by the passed data pointer </p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
+<div class="textblock"><p>The <a class="el" href="classcgv_1_1data_1_1const__data__view.html" title="The const_data_view has the functionality of the data_view but uses a const pointer and therefore doe...">const_data_view</a> has the functionality of the <a class="el" href="classcgv_1_1data_1_1data__view.html" title="the data view gives access to a data array of one, two, three or four dimensions.">data_view</a> but uses a const pointer and therefore does not allow to manage the pointer nor to set the data. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a69c95d6e1ccfe03f4f13af1f42db19c9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a69c95d6e1ccfe03f4f13af1f42db19c9">&#9670;&nbsp;</a></span>permute()</h2>
 
@@ -308,7 +284,9 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   </tr>
 </table>
 </div><div class="memdoc">
-<p>permute the order of the indices, where the permutation argument "kji" implies that after the permutation the operator (i,j,k) returns the same as the operator (k,j,i) before the call to permute. The permutation string must have at least two entries. If it has n entries it must contain each of the first n letters of "ijkl" exactly once, i.e. "ik" would be invalid, whereas "ikj" is a valid permutation. </p>
+
+<p>permute the order of the indices, where the permutation argument "kji" implies that after the permutation the operator (i,j,k) returns the same as the operator (k,j,i) before the call to permute. </p>
+<p>The permutation string must have at least two entries. If it has n entries it must contain each of the first n letters of "ijkl" exactly once, i.e. "ik" would be invalid, whereas "ikj" is a valid permutation. </p>
 
 </div>
 </div>

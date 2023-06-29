@@ -19,7 +19,7 @@ var classcgv_1_1render_1_1view =
     [ "get_y_extent_at_depth", "classcgv_1_1render_1_1view.html#a5553b1fc05253d70ceabbb4a996047bf", null ],
     [ "get_y_extent_at_focus", "classcgv_1_1render_1_1view.html#a2f26af861fb0b8a5a31a3f87dd5fdcaf", null ],
     [ "get_y_view_angle", "classcgv_1_1render_1_1view.html#a8204bd8991779bc831680569232989ea", null ],
-    [ "get_z_and_unproject", "classcgv_1_1render_1_1view.html#ab1c9a216ba1ed5b691c2ea62c29ecee8", null ],
+    [ "get_z_and_unproject", "classcgv_1_1render_1_1view.html#a059be4183561478000bad2b26e061769", null ],
     [ "is_parallel", "classcgv_1_1render_1_1view.html#aff24e76e995557a0b2e1c9871bc5fe45", null ],
     [ "is_viewport_splitting_enabled", "classcgv_1_1render_1_1view.html#a25ed5930a8b8620fbf67634cb2bd5c05", null ],
     [ "move", "classcgv_1_1render_1_1view.html#ae19b27f32fa358c4fc6891d6a666dc8c", null ],

@@ -102,9 +102,9 @@ Inheritance diagram for cgv::media::image::bmp_writer:</div>
   <img src="classcgv_1_1media_1_1image_1_1bmp__writer.png" usemap="#cgv::media::image::bmp_5Fwriter_map" alt=""/>
   <map id="cgv::media::image::bmp_5Fwriter_map" name="cgv::media::image::bmp_5Fwriter_map">
 <area href="classcgv_1_1media_1_1image_1_1abst__image__writer.html" title="abstract interface for image readers" alt="cgv::media::image::abst_image_writer" shape="rect" coords="229,112,448,136"/>
-<area href="classcgv_1_1base_1_1base.html" alt="cgv::base::base" shape="rect" coords="114,56,333,80"/>
+<area href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti..." alt="cgv::base::base" shape="rect" coords="114,56,333,80"/>
 <area href="structcgv_1_1base_1_1driver.html" title="interfaces that add several listeners and objects." alt="cgv::base::driver" shape="rect" coords="343,56,562,80"/>
-<area href="classcgv_1_1data_1_1ref__counted.html" alt="cgv::data::ref_counted" shape="rect" coords="0,0,219,24"/>
+<area href="classcgv_1_1data_1_1ref__counted.html" title="if you derive your class from this class, a ref_ptr will do reference counting in the inhereted ref_c..." alt="cgv::data::ref_counted" shape="rect" coords="0,0,219,24"/>
 <area href="structcgv_1_1reflect_1_1self__reflection__tag.html" title="Derive from this class to announce implementation of the method self_reflect." alt="cgv::reflect::self_reflection_tag" shape="rect" coords="229,0,448,24"/>
   </map>
 </div></div>
@@ -142,7 +142,9 @@ const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a cl
 <tr class="memitem:ab2e0b97c92b93f52ddf401af3b6e038b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1bmp__writer.html#ab2e0b97c92b93f52ddf401af3b6e038b">open</a> (const std::string &amp;file_name)</td></tr>
 <tr class="memdesc:ab2e0b97c92b93f52ddf401af3b6e038b"><td class="mdescLeft">&#160;</td><td class="mdescRight">open image file to write  <a href="classcgv_1_1media_1_1image_1_1bmp__writer.html#ab2e0b97c92b93f52ddf401af3b6e038b">More...</a><br /></td></tr>
 <tr class="separator:ab2e0b97c92b93f52ddf401af3b6e038b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a434a43edb1218f01f2b3c054d6bd1f55"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1bmp__writer.html#a434a43edb1218f01f2b3c054d6bd1f55">write_image</a> (const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &amp;dv, const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &gt; *palettes, double duration)</td></tr>
+<tr class="memitem:a434a43edb1218f01f2b3c054d6bd1f55"><td class="memItemLeft" align="right" valign="top"><a id="a434a43edb1218f01f2b3c054d6bd1f55"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1bmp__writer.html#a434a43edb1218f01f2b3c054d6bd1f55">write_image</a> (const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &amp;dv, const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &gt; *palettes, double duration)</td></tr>
+<tr class="memdesc:a434a43edb1218f01f2b3c054d6bd1f55"><td class="mdescLeft">&#160;</td><td class="mdescRight">write the data stored in the data view to a file with the file name given in the constructor. <br /></td></tr>
 <tr class="separator:a434a43edb1218f01f2b3c054d6bd1f55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abeda18bd84d698b1653c6954f08816aa"><td class="memItemLeft" align="right" valign="top"><a id="abeda18bd84d698b1653c6954f08816aa"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1bmp__writer.html#abeda18bd84d698b1653c6954f08816aa">close</a> ()</td></tr>
@@ -158,7 +160,7 @@ virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class=
 <tr class="separator:a79a9ca57ee7e6364153cda52223b8501"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec86a78e596c9c4fb203fcad98fb6afd"><td class="memItemLeft" align="right" valign="top"><a id="aec86a78e596c9c4fb203fcad98fb6afd"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#aec86a78e596c9c4fb203fcad98fb6afd">get_name_or_type_name</a> () const</td></tr>
-<tr class="memdesc:aec86a78e596c9c4fb203fcad98fb6afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">determine name of instance by checking <a class="el" href="classcgv_1_1base_1_1named.html">cgv::base::named</a> interface and in failure fallback to <a class="el" href="classcgv_1_1base_1_1base.html#a6e64a898476591f7246e522652abfa4c" title="overload to return the type name of this object. By default the type interface is queried over get_ty...">get_type_name()</a> <br /></td></tr>
+<tr class="memdesc:aec86a78e596c9c4fb203fcad98fb6afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">determine name of instance by checking <a class="el" href="classcgv_1_1base_1_1named.html" title="base class for all gui types">cgv::base::named</a> interface and in failure fallback to <a class="el" href="classcgv_1_1base_1_1base.html#a6e64a898476591f7246e522652abfa4c" title="overload to return the type name of this object. By default the type interface is queried over get_ty...">get_type_name()</a> <br /></td></tr>
 <tr class="separator:aec86a78e596c9c4fb203fcad98fb6afd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f074aea5bf4b0bfeb00845750d27623"><td class="memItemLeft" align="right" valign="top"><a id="a2f074aea5bf4b0bfeb00845750d27623"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#a2f074aea5bf4b0bfeb00845750d27623">on_register</a> ()</td></tr>
@@ -727,51 +729,6 @@ template&lt;typename T &gt; </div>
 <p>The default implementation uses the <a class="el" href="classcgv_1_1base_1_1base.html#aa0fe4266b74ebe49de68faaab3ca7a7a" title="used for simple self reflection">self_reflect()</a> method to find a member with the given property as name. If not found, the set_void method returns false. </p>
 
 <p>Reimplemented in <a class="el" href="structcgv_1_1base_1_1factory.html#a03229b698d12d0da2cae1b769f0ee40e">cgv::base::factory</a>, <a class="el" href="classcgv_1_1base_1_1console.html#a99ea2f5fa87e80338b1f996de9dc6983">cgv::base::console</a>, <a class="el" href="classcgv_1_1base_1_1base__generator.html#aa69ce6781528ebf7f78412fd6c7bad5f">cgv::base::base_generator</a>, <a class="el" href="classcgv_1_1media_1_1video_1_1video__writer.html#afd0800ba2f918dc95b8a3ce2a26978ed">cgv::media::video::video_writer</a>, <a class="el" href="classcgv_1_1media_1_1video_1_1video__reader.html#a702b054c51a69f3d1b982a14c99282d6">cgv::media::video::video_reader</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1image__writer.html#a2eeade9ca2755e97f55e1f162bf495b7">cgv::media::image::image_writer</a>, and <a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#aa31653a404d2100655e91db9c00cfda1">cgv::media::image::image_reader</a>.</p>
-
-</div>
-</div>
-<a id="a434a43edb1218f01f2b3c054d6bd1f55"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a434a43edb1218f01f2b3c054d6bd1f55">&#9670;&nbsp;</a></span>write_image()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool cgv::media::image::bmp_writer::write_image </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &amp;&#160;</td>
-          <td class="paramname"><em>dv</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &gt; *&#160;</td>
-          <td class="paramname"><em>palettes</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>duration</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>write the data stored in the data view to a file with the file name given in the constructor. </p>
-
-<p>Implements <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__writer.html#a717fa9ea631d35825fd0538fe7dba83b">cgv::media::image::abst_image_writer</a>.</p>
 
 </div>
 </div>

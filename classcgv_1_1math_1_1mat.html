@@ -90,6 +90,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1mat.html',''); ini
 </div><!--header-->
 <div class="contents">
 
+<p>A matrix type (full column major storage) The matrix can be loaded directly into OpenGL without need for transposing!  
+ <a href="classcgv_1_1math_1_1mat.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="mat_8h_source.html">mat.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -106,7 +109,9 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1mat.html#a8f911e1ba9c955132325d6f6ed493fb6">mat</a> (unsigned <a class="el" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>, unsigned <a class="el" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>, const T &amp;c)</td></tr>
 <tr class="memdesc:a8f911e1ba9c955132325d6f6ed493fb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a matrix with all elements set to c <br /></td></tr>
 <tr class="separator:a8f911e1ba9c955132325d6f6ed493fb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20918345d4b9655e5f5631b2811dceec"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1mat.html#a20918345d4b9655e5f5631b2811dceec">mat</a> (unsigned <a class="el" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>, unsigned <a class="el" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>, const T *marray, bool column_major=true)</td></tr>
+<tr class="memitem:a20918345d4b9655e5f5631b2811dceec"><td class="memItemLeft" align="right" valign="top"><a id="a20918345d4b9655e5f5631b2811dceec"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1mat.html#a20918345d4b9655e5f5631b2811dceec">mat</a> (unsigned <a class="el" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>, unsigned <a class="el" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>, const T *marray, bool column_major=true)</td></tr>
+<tr class="memdesc:a20918345d4b9655e5f5631b2811dceec"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a matrix from an array if the matrix data is stored in a row major fashion set column_major to false <br /></td></tr>
 <tr class="separator:a20918345d4b9655e5f5631b2811dceec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf3cc9748f5f46bd0de0d1487082a4f9"><td class="memTemplParams" colspan="2"><a id="acf3cc9748f5f46bd0de0d1487082a4f9"></a>
 template&lt;typename S &gt; </td></tr>
@@ -350,59 +355,7 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 class cgv::math::mat&lt; T &gt;</h3>
 
 <p>A matrix type (full column major storage) The matrix can be loaded directly into OpenGL without need for transposing! </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a20918345d4b9655e5f5631b2811dceec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a20918345d4b9655e5f5631b2811dceec">&#9670;&nbsp;</a></span>mat()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1math_1_1mat.html">cgv::math::mat</a>&lt; T &gt;::<a class="el" href="classcgv_1_1math_1_1mat.html">mat</a> </td>
-          <td>(</td>
-          <td class="paramtype">unsigned&#160;</td>
-          <td class="paramname"><em>nrows</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned&#160;</td>
-          <td class="paramname"><em>ncols</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const T *&#160;</td>
-          <td class="paramname"><em>marray</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>column_major</em> = <code>true</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>creates a matrix from an array if the matrix data is stored in a row major fashion set column_major to false </p>
-
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>cgv/math/<a class="el" href="mat_8h_source.html">mat.h</a></li>
 </ul>
 </div><!-- contents -->

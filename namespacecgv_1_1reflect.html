@@ -96,10 +96,13 @@ $(document).ready(function(){initNavTree('namespacecgv_1_1reflect.html',''); ini
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1reflect_1_1debug__reflection__handler.html">debug_reflection_handler</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">the debug reflection handler generates a string in the member <code>output</code> that contains a complete description of the reflected instance  <a href="classcgv_1_1reflect_1_1debug__reflection__handler.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1reflect_1_1find__reflection__handler.html">find_reflection_handler</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The cgv::reflect::find_reflection_hander steers traversal to a specific member and calls the virtual function process_member() that can be overloaded by derived classes such as <a class="el" href="classcgv_1_1reflect_1_1get__reflection__handler.html" title="provides access to a member variable of an instance.">cgv::reflect::get_reflection_handler</a>.  <a href="classcgv_1_1reflect_1_1find__reflection__handler.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1reflect_1_1get__reflection__handler.html">get_reflection_handler</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">provides access to a member variable of an instance.  <a href="classcgv_1_1reflect_1_1get__reflection__handler.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1abst__enum__reflection__traits.html">abst_enum_reflection_traits</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">type independent functionality for all enum fallback implementations  <a href="structcgv_1_1reflect_1_1abst__enum__reflection__traits.html#details">More...</a><br /></td></tr>
@@ -117,11 +120,13 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">this reflection traits implementation is used for external self_reflect implementations together with string interface of instances of type T where the external implementation is a self_reflect function in type D  <a href="structcgv_1_1reflect_1_1extern__string__reflection__traits.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1method__interface.html">method_interface</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">abstract interface to call a method of a given instance.  <a href="structcgv_1_1reflect_1_1method__interface.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1method__interface__impl.html">method_interface_impl</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">forward declaration of <a class="el" href="structcgv_1_1reflect_1_1method__interface__impl.html" title="forward declaration of method_interface_impl which is implemented in &lt;cgv/reflect/method_interface_im...">method_interface_impl</a> which is implemented in &lt;cgv/reflect/method_interface_impl.ph&gt;, include the generated header &lt;cgv/reflect/method_interface_impl.h&gt;  <a href="structcgv_1_1reflect_1_1method__interface__impl.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html">reflection_handler</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">the self reflection handler is passed to the virtual self_reflect() method of <a class="el" href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti...">cgv::base::base</a>.  <a href="classcgv_1_1reflect_1_1reflection__handler.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">abstract interface for type reflection with basic type management and optional string conversion  <a href="structcgv_1_1reflect_1_1abst__reflection__traits.html#details">More...</a><br /></td></tr>
@@ -158,7 +163,7 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a9f2618fca8a0f82c9f256239e16a93f5"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Q &gt; </td></tr>
 <tr class="memitem:a9f2618fca8a0f82c9f256239e16a93f5"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1reflect.html#a9f2618fca8a0f82c9f256239e16a93f5">get_member</a> (T &amp;variable, const std::string &amp;target, Q &amp;value)</td></tr>
-<tr class="memdesc:a9f2618fca8a0f82c9f256239e16a93f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">uses <a class="el" href="classcgv_1_1reflect_1_1get__reflection__handler.html">cgv::reflect::get_reflection_handler</a> to copy the value of a member from an instance  <a href="namespacecgv_1_1reflect.html#a9f2618fca8a0f82c9f256239e16a93f5">More...</a><br /></td></tr>
+<tr class="memdesc:a9f2618fca8a0f82c9f256239e16a93f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">uses <a class="el" href="classcgv_1_1reflect_1_1get__reflection__handler.html" title="provides access to a member variable of an instance.">cgv::reflect::get_reflection_handler</a> to copy the value of a member from an instance  <a href="namespacecgv_1_1reflect.html#a9f2618fca8a0f82c9f256239e16a93f5">More...</a><br /></td></tr>
 <tr class="separator:a9f2618fca8a0f82c9f256239e16a93f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5cc650905883cc409861c2d98a6cce93"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1reflect_1_1reflection__traits.html">reflection_traits</a>&lt; bool, RTK_STD_TYPE &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__detail.html#ga5cc650905883cc409861c2d98a6cce93">get_reflection_traits</a> (const bool &amp;)</td></tr>
 <tr class="memdesc:ga5cc650905883cc409861c2d98a6cce93"><td class="mdescLeft">&#160;</td><td class="mdescRight">example implementation of the cgv::reflect::get_reflection_traits() function  <a href="group__detail.html#ga5cc650905883cc409861c2d98a6cce93">More...</a><br /></td></tr>
@@ -201,11 +206,11 @@ template&lt;typename T , typename Q &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>uses <a class="el" href="classcgv_1_1reflect_1_1get__reflection__handler.html">cgv::reflect::get_reflection_handler</a> to copy the value of a member from an instance </p>
+<p>uses <a class="el" href="classcgv_1_1reflect_1_1get__reflection__handler.html" title="provides access to a member variable of an instance.">cgv::reflect::get_reflection_handler</a> to copy the value of a member from an instance </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">variable</td><td>Instance whoes member should be copied </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">target</td><td>Specification of member (see <a class="el" href="classcgv_1_1reflect_1_1find__reflection__handler.html">cgv::reflect::find_reflection_handler</a> for details) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">target</td><td>Specification of member (see <a class="el" href="classcgv_1_1reflect_1_1find__reflection__handler.html" title="The cgv::reflect::find_reflection_hander steers traversal to a specific member and calls the virtual ...">cgv::reflect::find_reflection_handler</a> for details) </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">value</td><td>Copy member into to this location. </td></tr>
   </table>
   </dd>

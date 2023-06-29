@@ -26,7 +26,7 @@ var classcgv_1_1render_1_1stereo__view =
     [ "get_y_extent_at_depth", "classcgv_1_1render_1_1stereo__view.html#a5553b1fc05253d70ceabbb4a996047bf", null ],
     [ "get_y_extent_at_focus", "classcgv_1_1render_1_1stereo__view.html#a2f26af861fb0b8a5a31a3f87dd5fdcaf", null ],
     [ "get_y_view_angle", "classcgv_1_1render_1_1stereo__view.html#a8204bd8991779bc831680569232989ea", null ],
-    [ "get_z_and_unproject", "classcgv_1_1render_1_1stereo__view.html#ab1c9a216ba1ed5b691c2ea62c29ecee8", null ],
+    [ "get_z_and_unproject", "classcgv_1_1render_1_1stereo__view.html#a059be4183561478000bad2b26e061769", null ],
     [ "get_z_D", "classcgv_1_1render_1_1stereo__view.html#ab795efa5bd6776d687c214f6887b7101", null ],
     [ "get_z_far", "classcgv_1_1render_1_1stereo__view.html#a5bb3f106995950ef8d1273d5a83cad2d", null ],
     [ "get_z_near", "classcgv_1_1render_1_1stereo__view.html#ad2835433ab7d52df4e57412ea4a3656c", null ],

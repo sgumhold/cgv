@@ -188,7 +188,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr__view__interactor.html#a0603604176f414e7da4f1b72684a1474">get_rendered_eye</a> () const</td></tr>
 <tr class="memdesc:a0603604176f414e7da4f1b72684a1474"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the currently rendered eye <br /></td></tr>
 <tr class="separator:a0603604176f414e7da4f1b72684a1474"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdd979ebb68c515b9a8eb7da706f275b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvr_1_1gl__vr__display.html">vr::gl_vr_display</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr__view__interactor.html#afdd979ebb68c515b9a8eb7da706f275b">get_rendered_display</a> () const</td></tr>
+<tr class="memitem:afdd979ebb68c515b9a8eb7da706f275b"><td class="memItemLeft" align="right" valign="top"><a id="afdd979ebb68c515b9a8eb7da706f275b"></a>
+<a class="el" href="classvr_1_1gl__vr__display.html">vr::gl_vr_display</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr__view__interactor.html#afdd979ebb68c515b9a8eb7da706f275b">get_rendered_display</a> () const</td></tr>
+<tr class="memdesc:afdd979ebb68c515b9a8eb7da706f275b"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the vr kit currently rendered return a pointer to the current vr kit <br /></td></tr>
 <tr class="separator:afdd979ebb68c515b9a8eb7da706f275b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a40b012f3ed5e2a7bf91be763717bd045"><td class="memItemLeft" align="right" valign="top"><a id="a40b012f3ed5e2a7bf91be763717bd045"></a>
 <a class="el" href="classvr_1_1vr__kit.html">vr::vr_kit</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr__view__interactor.html#a40b012f3ed5e2a7bf91be763717bd045">get_rendered_vr_kit</a> () const</td></tr>
@@ -500,7 +502,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <div class="line"> </div>
 <div class="line">        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdef"><b>Definition:</b> context.h:560</div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> context.h:560</div></div>
 <div class="ttc" id="aclassvr__view__interactor_html"><div class="ttname"><a href="classvr__view__interactor.html">vr_view_interactor</a></div><div class="ttdoc">extends the stereo view interactor for vr support</div><div class="ttdef"><b>Definition:</b> vr_view_interactor.h:69</div></div>
 <div class="ttc" id="aclassvr__view__interactor_html_adf4e1b4102711989f4218ba89d4add68"><div class="ttname"><a href="classvr__view__interactor.html#adf4e1b4102711989f4218ba89d4add68">vr_view_interactor::set_event_type_flags</a></div><div class="ttdeci">void set_event_type_flags(cgv::gui::VREventTypeFlags flags)</div><div class="ttdoc">set the event type flags of to be emitted events</div><div class="ttdef"><b>Definition:</b> vr_view_interactor.cxx:167</div></div>
 <div class="ttc" id="anamespacecgv_1_1gui_html_aceb07fba6859effc2353f70788dd7f9b"><div class="ttname"><a href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">cgv::gui::view_ptr</a></div><div class="ttdeci">data::ref_ptr&lt; abst_view &gt; view_ptr</div><div class="ttdoc">ref counted pointer to abst view</div><div class="ttdef"><b>Definition:</b> view.h:36</div></div>
@@ -558,32 +560,6 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <p>query the eye position of a vr kit. </p>
 <p>parameter <code>eye</code> is one of -1 .. left eye 0 .. cyclopic eye 1 .. right eye if parameter vr_kit_idx defaults to -1, the eye position of the current vr kit is returned if there are not vr kits or the <code>vr_kit_idx</code> parameter is invalid the eye position of the <code><a class="el" href="classvr__view__interactor.html" title="extends the stereo view interactor for vr support">vr_view_interactor</a></code> is returned </p>
-
-</div>
-</div>
-<a id="afdd979ebb68c515b9a8eb7da706f275b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afdd979ebb68c515b9a8eb7da706f275b">&#9670;&nbsp;</a></span>get_rendered_display()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classvr_1_1gl__vr__display.html">vr::gl_vr_display</a>* vr_view_interactor::get_rendered_display </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>return the vr kit currently rendered return a pointer to the current vr kit </p>
 
 </div>
 </div>

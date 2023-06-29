@@ -87,19 +87,25 @@ $(document).ready(function(){initNavTree('group__VR.html',''); initResizable(); 
 <div class="title">Virtual Reality</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>The library cgv/libs/vr is the basis for implementing vr apps.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="files"></a>
 Files</h2></td></tr>
 <tr class="memitem:vr__camera_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vr__camera_8h.html">vr_camera.h</a></td></tr>
+<tr class="memdesc:vr__camera_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">defines camera class for camera provided by vr_kit <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:vr__state_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vr__state_8h.html">vr_state.h</a></td></tr>
+<tr class="memdesc:vr__state_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">defines types to store the state <a class="el" href="structvr_1_1vr__kit__state.html" title="structure that stores all information describing the state of a VR kit">vr::vr_kit_state</a> of a vr kit, which is split into sub states for the hmd (<a class="el" href="structvr_1_1vr__trackable__state.html" title="a trackable knows whether it is tracked and its 6d pose stored as 3x4 matrix in column major format">vr::vr_trackable_state</a>) and the two controllers (vr::vr_conroller_state). <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:vr__emulator_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vr__emulator_8h.html">vr_emulator.h</a></td></tr>
+<tr class="memdesc:vr__emulator_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">provides vr_emulator and vr_emulated_kit classes. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:vr__test_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vr__test_8h.html">vr_test.h</a></td></tr>
+<tr class="memdesc:vr__test_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">example plugin for vr usage <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga785410ea03ccab5a21dfa1dbf16c380d"><td class="memItemLeft" align="right" valign="top"><a id="ga785410ea03ccab5a21dfa1dbf16c380d"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__VR.html#ga785410ea03ccab5a21dfa1dbf16c380d">VRkitVisType</a> </td></tr>
-<tr class="memdesc:ga785410ea03ccab5a21dfa1dbf16c380d"><td class="mdescLeft">&#160;</td><td class="mdescRight">different visualization types for vr kit components <br /></td></tr>
+<tr class="memitem:ga785410ea03ccab5a21dfa1dbf16c380d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__VR.html#ga785410ea03ccab5a21dfa1dbf16c380d">VRkitVisType</a> </td></tr>
 <tr class="separator:ga785410ea03ccab5a21dfa1dbf16c380d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac9fb7152b92ddde4b6a048ca241bc575"><td class="memItemLeft" align="right" valign="top"><a id="gac9fb7152b92ddde4b6a048ca241bc575"></a>
 CGV_API <a class="el" href="structcgv_1_1reflect_1_1enum__reflection__traits.html">cgv::reflect::enum_reflection_traits</a>&lt; <a class="el" href="group__VR.html#ga785410ea03ccab5a21dfa1dbf16c380d">VRkitVisType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__VR.html#gac9fb7152b92ddde4b6a048ca241bc575">get_reflection_traits</a> (const <a class="el" href="group__VR.html#ga785410ea03ccab5a21dfa1dbf16c380d">VRkitVisType</a> &amp;gm)</td></tr>
@@ -107,7 +113,24 @@ CGV_API <a class="el" href="structcgv_1_1reflect_1_1enum__reflection__traits.htm
 <tr class="separator:gac9fb7152b92ddde4b6a048ca241bc575"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<p>The library cgv/libs/vr is the basis for implementing vr apps. The library is completely independent of the cgv framework and does not include any frameword headers nor does it link to any other framework libraries. It builds on the concept of a <em>driver</em> implemented in the <a class="el" href="classvr_1_1vr__driver.html" title="interface class for vr drivers.">vr::vr_driver</a> class, which provides instances of <em>vr kits</em>. There can be several drivers in use at the same time. A simple registry is used to manage drivers and vr kits. The class <a class="el" href="classvr_1_1vr__kit.html" title="a vr kit is composed of headset, two controllers, and two trackers, where all devices can be attached...">vr::vr_kit</a> provides access to the head mounted display and the controllers with a simple state polling api. </p>
+<p>The library cgv/libs/vr is the basis for implementing vr apps. </p>
+<p>The library is completely independent of the cgv framework and does not include any frameword headers nor does it link to any other framework libraries. It builds on the concept of a <em>driver</em> implemented in the <a class="el" href="classvr_1_1vr__driver.html" title="interface class for vr drivers.">vr::vr_driver</a> class, which provides instances of <em>vr kits</em>. There can be several drivers in use at the same time. A simple registry is used to manage drivers and vr kits. The class <a class="el" href="classvr_1_1vr__kit.html" title="a vr kit is composed of headset, two controllers, and two trackers, where all devices can be attached...">vr::vr_kit</a> provides access to the head mounted display and the controllers with a simple state polling api. </p>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="ga785410ea03ccab5a21dfa1dbf16c380d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga785410ea03ccab5a21dfa1dbf16c380d">&#9670;&nbsp;</a></span>VRkitVisType</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__VR.html#ga785410ea03ccab5a21dfa1dbf16c380d">VRkitVisType</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>different visualization types for vr kit components </p>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -89,6 +89,9 @@ $(document).ready(function(){initNavTree('structcgv_1_1type_1_1variant.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>convenience template to access a value pointed to by a void pointer where the type of the value is given by a string as it results from <a class="el" href="structcgv_1_1type_1_1info_1_1type__name.html#a7dcb7c43dbf01bd9276508eb7e2295aa" title="return special name for standard types or type name from RTTI cleaned from keywords for all other typ...">cgv::type::info::type_name&lt;T&gt;::get_name()</a>.  
+ <a href="structcgv_1_1type_1_1variant.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="type_2variant_8h_source.html">variant.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
@@ -106,7 +109,8 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
 struct cgv::type::variant&lt; T &gt;</h3>
 
-<p>convenience template to access a value pointed to by a void pointer where the type of the value is given by a string as it results from <a class="el" href="structcgv_1_1type_1_1info_1_1type__name.html#a7dcb7c43dbf01bd9276508eb7e2295aa" title="return special name for standard types or type name from RTTI cleaned from keywords for all other typ...">cgv::type::info::type_name&lt;T&gt;::get_name()</a>. The template argument T is the type into which the stored type is to be converted. With the get method the pointed to value can be read out and with the set method written. If type T is not equal to the stored type, an automatic conversion is performed. A specialization for std::string converts number types to strings with the help of atoi and atof. </p>
+<p>convenience template to access a value pointed to by a void pointer where the type of the value is given by a string as it results from <a class="el" href="structcgv_1_1type_1_1info_1_1type__name.html#a7dcb7c43dbf01bd9276508eb7e2295aa" title="return special name for standard types or type name from RTTI cleaned from keywords for all other typ...">cgv::type::info::type_name&lt;T&gt;::get_name()</a>. </p>
+<p>The template argument T is the type into which the stored type is to be converted. With the get method the pointed to value can be read out and with the set method written. If type T is not equal to the stored type, an automatic conversion is performed. A specialization for std::string converts number types to strings with the help of atoi and atof. </p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>cgv/type/<a class="el" href="type_2variant_8h_source.html">variant.h</a></li>
 </ul>

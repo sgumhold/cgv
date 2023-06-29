@@ -90,6 +90,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1drawable.html','
 </div><!--header-->
 <div class="contents">
 
+<p>base class for all drawables, which is independent of the used rendering API.  
+ <a href="classcgv_1_1render_1_1drawable.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="drawable_8h_source.html">drawable.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::render::drawable:</div>
@@ -99,14 +102,14 @@ Inheritance diagram for cgv::render::drawable:</div>
   <map id="cgv::render::drawable_map" name="cgv::render::drawable_map">
 <area href="classcgv_1_1base_1_1traverse__policy.html" title="nodes should inherit from this policy class to allow selective tree traversals" alt="cgv::base::traverse_policy" shape="rect" coords="767,0,1064,24"/>
 <area href="structcgv_1_1render_1_1render__types.html" title="this is DEPRECATED" alt="cgv::render::render_types" shape="rect" coords="1074,0,1371,24"/>
-<area href="classcgv_1_1plot_1_1plot__base.html" alt="cgv::plot::plot_base" shape="rect" coords="153,112,450,136"/>
-<area href="structcgv_1_1render_1_1callback__drawable.html" alt="cgv::render::callback_drawable" shape="rect" coords="460,112,757,136"/>
-<area href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html" alt="cgv::render::gl::gl_implicit_surface_drawable_base" shape="rect" coords="767,112,1064,136"/>
+<area href="classcgv_1_1plot_1_1plot__base.html" title="base class for plot2d and plot3d, which can have several sub plots each" alt="cgv::plot::plot_base" shape="rect" coords="153,112,450,136"/>
+<area href="structcgv_1_1render_1_1callback__drawable.html" title="as a drawable can manage only a single context, this callback drawable is a work around for the case ..." alt="cgv::render::callback_drawable" shape="rect" coords="460,112,757,136"/>
+<area href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html" title="drawable that visualizes implicit surfaces by contouring them with marching cubes or dual contouring." alt="cgv::render::gl::gl_implicit_surface_drawable_base" shape="rect" coords="767,112,1064,136"/>
 <area href="classcgv_1_1render_1_1gl_1_1image__drawable.html" title="base class of drawables that show static or animated images" alt="cgv::render::gl::image_drawable" shape="rect" coords="1074,112,1371,136"/>
 <area href="classcgv_1_1render_1_1gl_1_1mesh__drawable.html" title="simple implementation of a drawable for a polygonal mesh with support for materials" alt="cgv::render::gl::mesh_drawable" shape="rect" coords="1381,112,1678,136"/>
-<area href="classcgv_1_1render_1_1multi__pass__drawable.html" alt="cgv::render::multi_pass_drawable" shape="rect" coords="1688,112,1985,136"/>
-<area href="classcgv_1_1plot_1_1plot2d.html" alt="cgv::plot::plot2d" shape="rect" coords="0,168,297,192"/>
-<area href="classcgv_1_1plot_1_1plot3d.html" alt="cgv::plot::plot3d" shape="rect" coords="307,168,604,192"/>
+<area href="classcgv_1_1render_1_1multi__pass__drawable.html" title="helper class to control multiple render passes in init_frame and after_finish methods of drawable." alt="cgv::render::multi_pass_drawable" shape="rect" coords="1688,112,1985,136"/>
+<area href="classcgv_1_1plot_1_1plot2d.html" title="The plot2d class draws 2d plots with potentially several sub plots of different chart types." alt="cgv::plot::plot2d" shape="rect" coords="0,168,297,192"/>
+<area href="classcgv_1_1plot_1_1plot3d.html" title="The plot3d class draws 2d plots with potentially several sub plots of different plot configuration." alt="cgv::plot::plot3d" shape="rect" coords="307,168,604,192"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -381,7 +384,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div><div class="memdoc">
 
 <p>convenience function to find the view control in the current hierarchy </p>
-<p>this only works if your class inherits from the <a class="el" href="classcgv_1_1base_1_1node.html">cgv::base::node</a> class. </p>
+<p>this only works if your class inherits from the <a class="el" href="classcgv_1_1base_1_1node.html" title="The node class keeps a pointer to its parent.">cgv::base::node</a> class. </p>
 
 </div>
 </div>

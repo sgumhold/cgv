@@ -90,6 +90,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1v2__func.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>specialization of a multivariate function to two independent variables, which only reimplements the method get_nr_independent_variables.  
+ <a href="classcgv_1_1math_1_1v2__func.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="mfunc_8h_source.html">mfunc.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::math::v2_func&lt; X, T &gt;:</div>
@@ -97,7 +100,7 @@ Inheritance diagram for cgv::math::v2_func&lt; X, T &gt;:</div>
  <div class="center">
   <img src="classcgv_1_1math_1_1v2__func.png" usemap="#cgv::math::v2_5Ffunc_3C_20X_2C_20T_20_3E_map" alt=""/>
   <map id="cgv::math::v2_5Ffunc_3C_20X_2C_20T_20_3E_map" name="cgv::math::v2_5Ffunc_3C_20X_2C_20T_20_3E_map">
-<area href="classcgv_1_1math_1_1mfunc.html" alt="cgv::math::mfunc&lt; X, T &gt;" shape="rect" coords="0,0,166,24"/>
+<area href="classcgv_1_1math_1_1mfunc.html" title="interface class for multivariate function with two template arguments:" alt="cgv::math::mfunc&lt; X, T &gt;" shape="rect" coords="0,0,166,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -123,6 +126,7 @@ virtual T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 <tr class="memdesc:ab846453b49c87769a1666f342010c8fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">interface for evaluation of the multivariate function <br /></td></tr>
 <tr class="separator:ab846453b49c87769a1666f342010c8fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66dea581223b93aada7bb0868bababc2"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classcgv_1_1math_1_1mfunc.html#a0cf0049ee7a7ca992495ddeda6f71675">vec_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1mfunc.html#a66dea581223b93aada7bb0868bababc2">evaluate_gradient</a> (const <a class="el" href="classcgv_1_1math_1_1mfunc.html#a4274553bff4b1c8058645ecde36fe8ec">pnt_type</a> &amp;p) const</td></tr>
+<tr class="memdesc:a66dea581223b93aada7bb0868bababc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">interface for evaluation of the gradient of the multivariate function.  <a href="classcgv_1_1math_1_1mfunc.html#a66dea581223b93aada7bb0868bababc2">More...</a><br /></td></tr>
 <tr class="separator:a66dea581223b93aada7bb0868bababc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -156,7 +160,9 @@ template&lt;typename X , typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>interface for evaluation of the gradient of the multivariate function. default implementation uses central differences to approximate the gradient, with an epsilon of 1e-5. </p>
+
+<p>interface for evaluation of the gradient of the multivariate function. </p>
+<p>default implementation uses central differences to approximate the gradient, with an epsilon of 1e-5. </p>
 
 </div>
 </div>

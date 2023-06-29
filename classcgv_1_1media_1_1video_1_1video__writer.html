@@ -103,8 +103,8 @@ Inheritance diagram for cgv::media::video::video_writer:</div>
  <div class="center">
   <img src="classcgv_1_1media_1_1video_1_1video__writer.png" usemap="#cgv::media::video::video_5Fwriter_map" alt=""/>
   <map id="cgv::media::video::video_5Fwriter_map" name="cgv::media::video::video_5Fwriter_map">
-<area href="classcgv_1_1base_1_1base.html" alt="cgv::base::base" shape="rect" coords="97,56,282,80"/>
-<area href="classcgv_1_1data_1_1ref__counted.html" alt="cgv::data::ref_counted" shape="rect" coords="0,0,185,24"/>
+<area href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti..." alt="cgv::base::base" shape="rect" coords="97,56,282,80"/>
+<area href="classcgv_1_1data_1_1ref__counted.html" title="if you derive your class from this class, a ref_ptr will do reference counting in the inhereted ref_c..." alt="cgv::data::ref_counted" shape="rect" coords="0,0,185,24"/>
 <area href="structcgv_1_1reflect_1_1self__reflection__tag.html" title="Derive from this class to announce implementation of the method self_reflect." alt="cgv::reflect::self_reflection_tag" shape="rect" coords="195,0,380,24"/>
   </map>
 </div></div>
@@ -136,11 +136,13 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="memdesc:a22eb10ca6345aca8287abc0eef5492c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the currently selected codec <br /></td></tr>
 <tr class="separator:a22eb10ca6345aca8287abc0eef5492c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70c7d0a47fedc21d9da8ae58a8e582b2"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1video_1_1video__writer.html#a70c7d0a47fedc21d9da8ae58a8e582b2">get_property_declarations</a> ()</td></tr>
-<tr class="memdesc:a70c7d0a47fedc21d9da8ae58a8e582b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a semicolon separated list of property declarations of the form "name:type", by default an empty list is returned  <a href="classcgv_1_1media_1_1video_1_1video__writer.html#a70c7d0a47fedc21d9da8ae58a8e582b2">More...</a><br /></td></tr>
+<tr class="memdesc:a70c7d0a47fedc21d9da8ae58a8e582b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a semicolon separated list of property declarations supported by the selected codec.  <a href="classcgv_1_1media_1_1video_1_1video__writer.html#a70c7d0a47fedc21d9da8ae58a8e582b2">More...</a><br /></td></tr>
 <tr class="separator:a70c7d0a47fedc21d9da8ae58a8e582b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c90b6fed445b177b79e277581339c2d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1video_1_1video__writer.html#a6c90b6fed445b177b79e277581339c2d">open</a> (const std::string &amp;file_name, const <a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;image_format, float fps=25, bool interactive=false)</td></tr>
+<tr class="memdesc:a6c90b6fed445b177b79e277581339c2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">open a video file for writing images in the given format with the given fps.  <a href="classcgv_1_1media_1_1video_1_1video__writer.html#a6c90b6fed445b177b79e277581339c2d">More...</a><br /></td></tr>
 <tr class="separator:a6c90b6fed445b177b79e277581339c2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51eabded367271657acd399a49dbdf97"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1video_1_1video__writer.html#a51eabded367271657acd399a49dbdf97">write_frame</a> (const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">cgv::data::const_data_view</a> &amp;image_data)</td></tr>
+<tr class="memdesc:a51eabded367271657acd399a49dbdf97"><td class="mdescLeft">&#160;</td><td class="mdescRight">write the image data stored in the data view as next video frame to the previously opened video file.  <a href="classcgv_1_1media_1_1video_1_1video__writer.html#a51eabded367271657acd399a49dbdf97">More...</a><br /></td></tr>
 <tr class="separator:a51eabded367271657acd399a49dbdf97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53920521917be773457cd23017a5bc3d"><td class="memItemLeft" align="right" valign="top"><a id="a53920521917be773457cd23017a5bc3d"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1video_1_1video__writer.html#a53920521917be773457cd23017a5bc3d">close</a> ()</td></tr>
@@ -152,7 +154,7 @@ virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class=
 <tr class="separator:a79a9ca57ee7e6364153cda52223b8501"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec86a78e596c9c4fb203fcad98fb6afd"><td class="memItemLeft" align="right" valign="top"><a id="aec86a78e596c9c4fb203fcad98fb6afd"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#aec86a78e596c9c4fb203fcad98fb6afd">get_name_or_type_name</a> () const</td></tr>
-<tr class="memdesc:aec86a78e596c9c4fb203fcad98fb6afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">determine name of instance by checking <a class="el" href="classcgv_1_1base_1_1named.html">cgv::base::named</a> interface and in failure fallback to <a class="el" href="classcgv_1_1base_1_1base.html#a6e64a898476591f7246e522652abfa4c" title="overload to return the type name of this object. By default the type interface is queried over get_ty...">get_type_name()</a> <br /></td></tr>
+<tr class="memdesc:aec86a78e596c9c4fb203fcad98fb6afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">determine name of instance by checking <a class="el" href="classcgv_1_1base_1_1named.html" title="base class for all gui types">cgv::base::named</a> interface and in failure fallback to <a class="el" href="classcgv_1_1base_1_1base.html#a6e64a898476591f7246e522652abfa4c" title="overload to return the type name of this object. By default the type interface is queried over get_ty...">get_type_name()</a> <br /></td></tr>
 <tr class="separator:aec86a78e596c9c4fb203fcad98fb6afd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f074aea5bf4b0bfeb00845750d27623"><td class="memItemLeft" align="right" valign="top"><a id="a2f074aea5bf4b0bfeb00845750d27623"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#a2f074aea5bf4b0bfeb00845750d27623">on_register</a> ()</td></tr>
@@ -261,7 +263,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a03ba6414869daafc38d6e2ad4c0d5c9d"><td class="memItemLeft" align="right" valign="top">static const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1video_1_1video__writer.html#a03ba6414869daafc38d6e2ad4c0d5c9d">get_supported_extensions</a> (char sep=';')</td></tr>
+<tr class="memitem:a03ba6414869daafc38d6e2ad4c0d5c9d"><td class="memItemLeft" align="right" valign="top"><a id="a03ba6414869daafc38d6e2ad4c0d5c9d"></a>
+static const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1video_1_1video__writer.html#a03ba6414869daafc38d6e2ad4c0d5c9d">get_supported_extensions</a> (char sep=';')</td></tr>
+<tr class="memdesc:a03ba6414869daafc38d6e2ad4c0d5c9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a string with a list of supported extensions, where the list entries are separated with the passed character that defaults to a semicolon <br /></td></tr>
 <tr class="separator:a03ba6414869daafc38d6e2ad4c0d5c9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0bed101b572b2115e0d2b18e7ebc970"><td class="memItemLeft" align="right" valign="top"><a id="aa0bed101b572b2115e0d2b18e7ebc970"></a>
 static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1video_1_1video__writer.html#aa0bed101b572b2115e0d2b18e7ebc970">construct_filter_string</a> ()</td></tr>
@@ -454,37 +458,11 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>return a semicolon separated list of property declarations of the form "name:type", by default an empty list is returned </p>
-<p>return a semicolon separated list of property declarations supported by the selected codec. Each property declaration is of the form "name:type", where type is in correcpondence with the <a class="el" href="structcgv_1_1type_1_1info_1_1type__name.html">cgv::type::info::type_name</a>. </p>
+<p>return a semicolon separated list of property declarations supported by the selected codec. </p>
+<p>return a semicolon separated list of property declarations of the form "name:type", by default an empty list is returned</p>
+<p>Each property declaration is of the form "name:type", where type is in correcpondence with the <a class="el" href="structcgv_1_1type_1_1info_1_1type__name.html" title="traits class with a static function get_name() of type const char* that returns the type name of the ...">cgv::type::info::type_name</a>. </p>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1base_1_1base.html#a4d67c8d339fe06f17396aaa8625292f8">cgv::base::base</a>.</p>
-
-</div>
-</div>
-<a id="a03ba6414869daafc38d6e2ad4c0d5c9d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03ba6414869daafc38d6e2ad4c0d5c9d">&#9670;&nbsp;</a></span>get_supported_extensions()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const std::string &amp; cgv::media::video::video_writer::get_supported_extensions </td>
-          <td>(</td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>sep</em> = <code>';'</code></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>return a string with a list of supported extensions, where the list entries are separated with the passed character that defaults to a semicolon </p>
 
 </div>
 </div>
@@ -651,7 +629,9 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>open a video file for writing images in the given format with the given fps. Use the currently selected codec and codec properties as set with the property interface. </p>
+
+<p>open a video file for writing images in the given format with the given fps. </p>
+<p>Use the currently selected codec and codec properties as set with the property interface. </p>
 
 </div>
 </div>
@@ -790,7 +770,9 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>write the image data stored in the data view as next video frame to the previously opened video file. Return whether this was successful. </p>
+
+<p>write the image data stored in the data view as next video frame to the previously opened video file. </p>
+<p>Return whether this was successful. </p>
 
 </div>
 </div>

@@ -93,6 +93,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1shader__code.htm
 </div><!--header-->
 <div class="contents">
 
+<p>a shader code object holds a code fragment of a geometry vertex or fragment shader and can be added to a shader program.  
+ <a href="classcgv_1_1render_1_1shader__code.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="shader__code_8h_source.html">shader_code.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::render::shader_code:</div>
@@ -118,7 +121,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a8a3cf5e1a75373cba0a1da8ed9672318"><td class="mdescLeft">&#160;</td><td class="mdescRight">destruct shader code  <a href="classcgv_1_1render_1_1shader__code.html#a8a3cf5e1a75373cba0a1da8ed9672318">More...</a><br /></td></tr>
 <tr class="separator:a8a3cf5e1a75373cba0a1da8ed9672318"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74e842fc0080dbe5f0a7b2782721e445"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#a74e842fc0080dbe5f0a7b2782721e445">read_code</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;file_name, <a class="el" href="namespacecgv_1_1render.html#aa829197f51559124b8c72a2bd024b8db">ShaderType</a> <a class="el" href="classcgv_1_1render_1_1shader__code.html#aa6b747b1b10960f15fc573a3a0bdd8da">st</a>=ST_DETECT, const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines=<a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a>())</td></tr>
-<tr class="memdesc:a74e842fc0080dbe5f0a7b2782721e445"><td class="mdescLeft">&#160;</td><td class="mdescRight">read shader code from file  <a href="classcgv_1_1render_1_1shader__code.html#a74e842fc0080dbe5f0a7b2782721e445">More...</a><br /></td></tr>
+<tr class="memdesc:a74e842fc0080dbe5f0a7b2782721e445"><td class="mdescLeft">&#160;</td><td class="mdescRight">read shader code from file that is searched for with find_file.  <a href="classcgv_1_1render_1_1shader__code.html#a74e842fc0080dbe5f0a7b2782721e445">More...</a><br /></td></tr>
 <tr class="separator:a74e842fc0080dbe5f0a7b2782721e445"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad14d84ad78fddf201e8683fa4ab85b62"><td class="memItemLeft" align="right" valign="top"><a id="ad14d84ad78fddf201e8683fa4ab85b62"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#ad14d84ad78fddf201e8683fa4ab85b62">set_code</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;source, <a class="el" href="namespacecgv_1_1render.html#aa829197f51559124b8c72a2bd024b8db">ShaderType</a> <a class="el" href="classcgv_1_1render_1_1shader__code.html#aa6b747b1b10960f15fc573a3a0bdd8da">st</a>)</td></tr>
@@ -141,7 +144,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:abbb6273475e91ead58130e5ffdda7770"><td class="mdescLeft">&#160;</td><td class="mdescRight">compile attached source; returns true if successful <br /></td></tr>
 <tr class="separator:abbb6273475e91ead58130e5ffdda7770"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af65768a52747adf9bbcedf1e050c4c4b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#af65768a52747adf9bbcedf1e050c4c4b">read_and_compile</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;file_name, <a class="el" href="namespacecgv_1_1render.html#aa829197f51559124b8c72a2bd024b8db">ShaderType</a> <a class="el" href="classcgv_1_1render_1_1shader__code.html#aa6b747b1b10960f15fc573a3a0bdd8da">st</a>=ST_DETECT, bool show_error=true, const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines=<a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a>())</td></tr>
-<tr class="memdesc:af65768a52747adf9bbcedf1e050c4c4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">read shader code from file, compile and print error message if necessary  <a href="classcgv_1_1render_1_1shader__code.html#af65768a52747adf9bbcedf1e050c4c4b">More...</a><br /></td></tr>
+<tr class="memdesc:af65768a52747adf9bbcedf1e050c4c4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">read shader code with read_code and compile.  <a href="classcgv_1_1render_1_1shader__code.html#af65768a52747adf9bbcedf1e050c4c4b">More...</a><br /></td></tr>
 <tr class="separator:af65768a52747adf9bbcedf1e050c4c4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84f593716c7261bb13874731d84c1582"><td class="memItemLeft" align="right" valign="top"><a id="a84f593716c7261bb13874731d84c1582"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#a84f593716c7261bb13874731d84c1582">is_compiled</a> () const</td></tr>
@@ -152,6 +155,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a4c896d2654616448824f5f2f759b8947"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether component has been created <br /></td></tr>
 <tr class="separator:a4c896d2654616448824f5f2f759b8947"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">put_id_void</a> (void *ptr) const</td></tr>
+<tr class="memdesc:aa5404b2aec4bbe8fd4eff1959b627709"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the rendering api specific id the component to the memory location of the given pointer.  <a href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">More...</a><br /></td></tr>
 <tr class="separator:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06ff3003af849b32a76ec5be29bd89dc"><td class="memTemplParams" colspan="2"><a id="a06ff3003af849b32a76ec5be29bd89dc"></a>
 template&lt;typename T &gt; </td></tr>
@@ -166,8 +170,10 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="memdesc:a9714d2e8ba8d61e6e676928747fd606d"><td class="mdescLeft">&#160;</td><td class="mdescRight">decode a string if it is base64 encoded <br /></td></tr>
 <tr class="separator:a9714d2e8ba8d61e6e676928747fd606d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67a995a8da53b28c0a250d685642e61b"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#a67a995a8da53b28c0a250d685642e61b">find_file</a> (const std::string &amp;file_name)</td></tr>
+<tr class="memdesc:a67a995a8da53b28c0a250d685642e61b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if file exists.  <a href="classcgv_1_1render_1_1shader__code.html#a67a995a8da53b28c0a250d685642e61b">More...</a><br /></td></tr>
 <tr class="separator:a67a995a8da53b28c0a250d685642e61b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf7764ff05b7729d356261b7547d3a44"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#aaf7764ff05b7729d356261b7547d3a44">get_last_error</a> (const std::string &amp;file_name, const std::string &amp;<a class="el" href="classcgv_1_1render_1_1render__component.html#a95f40a817168467d5a0d3fdbb09e0b79">last_error</a>)</td></tr>
+<tr class="memdesc:aaf7764ff05b7729d356261b7547d3a44"><td class="mdescLeft">&#160;</td><td class="mdescRight">format given last error in a way that developer environments can locate errors in the source file  <a href="classcgv_1_1render_1_1shader__code.html#aaf7764ff05b7729d356261b7547d3a44">More...</a><br /></td></tr>
 <tr class="separator:aaf7764ff05b7729d356261b7547d3a44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39711ac1195b385dd71f4f05208886a1"><td class="memItemLeft" align="right" valign="top"><a id="a39711ac1195b385dd71f4f05208886a1"></a>
 static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#a39711ac1195b385dd71f4f05208886a1">read_code_file</a> (const std::string &amp;file_name, std::string *_last_error=0)</td></tr>
@@ -178,6 +184,7 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="
 <tr class="memdesc:aa2bf52fcc6a50e7d03806f7b7d7ac74b"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreive shader code either by reading the file from disk or from the cache if enabled <br /></td></tr>
 <tr class="separator:aa2bf52fcc6a50e7d03806f7b7d7ac74b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af74bcb73f79aafe7f783c9a8f416ce8b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecgv_1_1render.html#aa829197f51559124b8c72a2bd024b8db">ShaderType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#af74bcb73f79aafe7f783c9a8f416ce8b">detect_shader_type</a> (const std::string &amp;file_name)</td></tr>
+<tr class="memdesc:af74bcb73f79aafe7f783c9a8f416ce8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">detect the shader type from the extension of the given file_name, i.e.  <a href="classcgv_1_1render_1_1shader__code.html#af74bcb73f79aafe7f783c9a8f416ce8b">More...</a><br /></td></tr>
 <tr class="separator:af74bcb73f79aafe7f783c9a8f416ce8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83e828d7558b612bfd807700552c1c0f"><td class="memItemLeft" align="right" valign="top"><a id="a83e828d7558b612bfd807700552c1c0f"></a>
 static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#a83e828d7558b612bfd807700552c1c0f">resolve_includes</a> (const std::string &amp;source, bool use_cache, std::set&lt; std::string &gt; &amp;included_file_names, std::string *_last_error=0)</td></tr>
@@ -260,7 +267,9 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
   </tr>
 </table>
 </div><div class="memdoc">
-<p>detect the shader type from the extension of the given file_name, i.e.</p><ul>
+
+<p>detect the shader type from the extension of the given file_name, i.e. </p>
+<ul>
 <li>glvs ... ST_VERTEX</li>
 <li>glgs ... ST_GEOMETRY</li>
 <li>glfs ... ST_FRAGMENT</li>
@@ -292,7 +301,9 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Check if file exists. If not, check if a resource file of this file_name has been registered. If not search it recursively in the shader_path of the shader_config that can be accessed with the function <a class="el" href="namespacecgv_1_1render.html#a5929e262d43bd2e095c4776547eebe5b" title="return a reference to the current shader configuration">get_shader_config()</a>. This path is initialized to the environment variable CGV_SHADER_PATH or empty if that is not defined. </p>
+
+<p>Check if file exists. </p>
+<p>If not, check if a resource file of this file_name has been registered. If not search it recursively in the shader_path of the shader_config that can be accessed with the function <a class="el" href="namespacecgv_1_1render.html#a5929e262d43bd2e095c4776547eebe5b" title="return a reference to the current shader configuration">get_shader_config()</a>. This path is initialized to the environment variable CGV_SHADER_PATH or empty if that is not defined. </p>
 
 </div>
 </div>
@@ -329,7 +340,8 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
   </tr>
 </table>
 </div><div class="memdoc">
-<p>format given last error in a way that developer environments can locate errors in the source file</p>
+
+<p>format given last error in a way that developer environments can locate errors in the source file </p>
 <p>query the last error in a way that developer environments can locate errors in the source file </p>
 
 </div>
@@ -357,7 +369,9 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
   </tr>
 </table>
 </div><div class="memdoc">
-<p>copy the rendering api specific id the component to the memory location of the given pointer. For opengl this the passed pointer should be of type GLint or GLuint. </p>
+
+<p>copy the rendering api specific id the component to the memory location of the given pointer. </p>
+<p>For opengl this the passed pointer should be of type GLint or GLuint. </p>
 
 </div>
 </div>
@@ -405,8 +419,9 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
       </table>
 </div><div class="memdoc">
 
-<p>read shader code from file, compile and print error message if necessary </p>
-<p>read shader code with read_code and compile. If show_error is true print error messages formated with the get_last_error method in case an error arose. </p>
+<p>read shader code with read_code and compile. </p>
+<p>read shader code from file, compile and print error message if necessary</p>
+<p>If show_error is true print error messages formated with the get_last_error method in case an error arose. </p>
 
 </div>
 </div>
@@ -448,8 +463,9 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
       </table>
 </div><div class="memdoc">
 
-<p>read shader code from file </p>
-<p>read shader code from file that is searched for with find_file. If the shader type defaults to ST_DETECT, the <a class="el" href="classcgv_1_1render_1_1shader__code.html#af74bcb73f79aafe7f783c9a8f416ce8b">detect_shader_type()</a> method is applied to the file name. </p>
+<p>read shader code from file that is searched for with find_file. </p>
+<p>read shader code from file</p>
+<p>If the shader type defaults to ST_DETECT, the <a class="el" href="classcgv_1_1render_1_1shader__code.html#af74bcb73f79aafe7f783c9a8f416ce8b" title="detect the shader type from the extension of the given file_name, i.e.">detect_shader_type()</a> method is applied to the file name. </p>
 
 </div>
 </div>

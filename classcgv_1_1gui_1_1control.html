@@ -103,10 +103,10 @@ Inheritance diagram for cgv::gui::control&lt; T &gt;:</div>
   <map id="cgv::gui::control_3C_20T_20_3E_map" name="cgv::gui::control_3C_20T_20_3E_map">
 <area href="classcgv_1_1gui_1_1abst__control.html" title="gui and type independent base class of all controls" alt="cgv::gui::abst_control" shape="rect" coords="97,280,282,304"/>
 <area href="classcgv_1_1gui_1_1abst__view.html" title="type independent &amp;base class of all views" alt="cgv::gui::abst_view" shape="rect" coords="97,224,282,248"/>
-<area href="classcgv_1_1base_1_1node.html" alt="cgv::base::node" shape="rect" coords="97,168,282,192"/>
-<area href="classcgv_1_1base_1_1named.html" alt="cgv::base::named" shape="rect" coords="97,112,282,136"/>
-<area href="classcgv_1_1base_1_1base.html" alt="cgv::base::base" shape="rect" coords="97,56,282,80"/>
-<area href="classcgv_1_1data_1_1ref__counted.html" alt="cgv::data::ref_counted" shape="rect" coords="0,0,185,24"/>
+<area href="classcgv_1_1base_1_1node.html" title="The node class keeps a pointer to its parent." alt="cgv::base::node" shape="rect" coords="97,168,282,192"/>
+<area href="classcgv_1_1base_1_1named.html" title="base class for all gui types" alt="cgv::base::named" shape="rect" coords="97,112,282,136"/>
+<area href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti..." alt="cgv::base::base" shape="rect" coords="97,56,282,80"/>
+<area href="classcgv_1_1data_1_1ref__counted.html" title="if you derive your class from this class, a ref_ptr will do reference counting in the inhereted ref_c..." alt="cgv::data::ref_counted" shape="rect" coords="0,0,185,24"/>
 <area href="structcgv_1_1reflect_1_1self__reflection__tag.html" title="Derive from this class to announce implementation of the method self_reflect." alt="cgv::reflect::self_reflection_tag" shape="rect" coords="195,0,380,24"/>
   </map>
 </div></div>
@@ -132,7 +132,9 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1control.html#a178b28c4b0d61339d3e2ae74574c1a3a">control</a> (const std::string &amp;_name, T *_value)</td></tr>
 <tr class="memdesc:a178b28c4b0d61339d3e2ae74574c1a3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct abstract element from <a class="el" href="structcgv_1_1gui_1_1control__provider.html">control_provider</a> <br /></td></tr>
 <tr class="separator:a178b28c4b0d61339d3e2ae74574c1a3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abfd7984595a3f4ee407c122913f13ff6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1control.html#abfd7984595a3f4ee407c122913f13ff6">control</a> (const std::string &amp;_name, <a class="el" href="structcgv_1_1gui_1_1abst__control__provider.html">abst_control_provider</a> *_cp, void *user_data)</td></tr>
+<tr class="memitem:abfd7984595a3f4ee407c122913f13ff6"><td class="memItemLeft" align="right" valign="top"><a id="abfd7984595a3f4ee407c122913f13ff6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1control.html#abfd7984595a3f4ee407c122913f13ff6">control</a> (const std::string &amp;_name, <a class="el" href="structcgv_1_1gui_1_1abst__control__provider.html">abst_control_provider</a> *_cp, void *user_data)</td></tr>
+<tr class="memdesc:abfd7984595a3f4ee407c122913f13ff6"><td class="mdescLeft">&#160;</td><td class="mdescRight">this constructor allows contruction from <a class="el" href="structcgv_1_1gui_1_1control__provider.html">control_provider</a> with user data or if the pointer to the <a class="el" href="structcgv_1_1gui_1_1control__provider.html">control_provider</a> is null, interpret the pointer to the user data as the value pointer and act as the previous constructor. <br /></td></tr>
 <tr class="separator:abfd7984595a3f4ee407c122913f13ff6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60118d7dd880b3df325f0b4b6da98cfd"><td class="memItemLeft" align="right" valign="top"><a id="a60118d7dd880b3df325f0b4b6da98cfd"></a>
 const T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1control.html#a60118d7dd880b3df325f0b4b6da98cfd">get_value</a> () const</td></tr>
@@ -235,7 +237,7 @@ virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class=
 <tr class="separator:a79a9ca57ee7e6364153cda52223b8501"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec86a78e596c9c4fb203fcad98fb6afd"><td class="memItemLeft" align="right" valign="top"><a id="aec86a78e596c9c4fb203fcad98fb6afd"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#aec86a78e596c9c4fb203fcad98fb6afd">get_name_or_type_name</a> () const</td></tr>
-<tr class="memdesc:aec86a78e596c9c4fb203fcad98fb6afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">determine name of instance by checking <a class="el" href="classcgv_1_1base_1_1named.html">cgv::base::named</a> interface and in failure fallback to <a class="el" href="classcgv_1_1base_1_1base.html#a6e64a898476591f7246e522652abfa4c" title="overload to return the type name of this object. By default the type interface is queried over get_ty...">get_type_name()</a> <br /></td></tr>
+<tr class="memdesc:aec86a78e596c9c4fb203fcad98fb6afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">determine name of instance by checking <a class="el" href="classcgv_1_1base_1_1named.html" title="base class for all gui types">cgv::base::named</a> interface and in failure fallback to <a class="el" href="classcgv_1_1base_1_1base.html#a6e64a898476591f7246e522652abfa4c" title="overload to return the type name of this object. By default the type interface is queried over get_ty...">get_type_name()</a> <br /></td></tr>
 <tr class="separator:aec86a78e596c9c4fb203fcad98fb6afd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f074aea5bf4b0bfeb00845750d27623"><td class="memItemLeft" align="right" valign="top"><a id="a2f074aea5bf4b0bfeb00845750d27623"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#a2f074aea5bf4b0bfeb00845750d27623">on_register</a> ()</td></tr>
@@ -377,53 +379,7 @@ class cgv::gui::control&lt; T &gt;</h3>
 <p>gui independent control of a value that has the type of the template argument. The value can either be specified as a reference or through the <a class="el" href="structcgv_1_1gui_1_1control__provider.html">control_provider</a> that implements a get and a set method.</p>
 <p>Before the control changes a value, it emits the signal check_value to test if the new value is valid. The check_value signal has a boolean return value. All attached callbacks must return true in order for the check to be successful. The attached callbacks can also change the new value to a valid value. The check_value callbacks should use the <a class="el" href="classcgv_1_1gui_1_1control.html#a62b39aa1db92161a3c58592f43630026" title="return the new value to the callbacks attached to the check_value signal">get_new_value()</a>, <a class="el" href="classcgv_1_1gui_1_1control.html#a60118d7dd880b3df325f0b4b6da98cfd" title="return a reference to the current value">get_value()</a> and <a class="el" href="classcgv_1_1gui_1_1control.html#a4735f33dd4214fae002e7de35b73aaeb" title="set a different new value from the callbacks attached to the check_value signal">set_new_value()</a> methods of the control to update the new value and to access the current value that has not been changed yet.</p>
 <p>If the validity check is successful, the value is changed to the new value and the value_change signal is emitted. The callbacks attached to this signal can not only query the current value with <a class="el" href="classcgv_1_1gui_1_1control.html#a60118d7dd880b3df325f0b4b6da98cfd" title="return a reference to the current value">get_value()</a> but also the old value with <a class="el" href="classcgv_1_1gui_1_1control.html#a9910ca7fb17ed31b5818926f36b338a3" title="return the old value to the callbacks attached to the change_value signal">get_old_value()</a>. Take care that the <a class="el" href="classcgv_1_1gui_1_1control.html#a9910ca7fb17ed31b5818926f36b338a3" title="return the old value to the callbacks attached to the change_value signal">get_old_value()</a> cannot be used in the callbacks attached to check_value and the <a class="el" href="classcgv_1_1gui_1_1control.html#a62b39aa1db92161a3c58592f43630026" title="return the new value to the callbacks attached to the check_value signal">get_new_value()</a> method cannot be used in the callbacks attached to the value_change signal. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="abfd7984595a3f4ee407c122913f13ff6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abfd7984595a3f4ee407c122913f13ff6">&#9670;&nbsp;</a></span>control()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1gui_1_1control.html">cgv::gui::control</a>&lt; T &gt;::<a class="el" href="classcgv_1_1gui_1_1control.html">control</a> </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>_name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structcgv_1_1gui_1_1abst__control__provider.html">abst_control_provider</a> *&#160;</td>
-          <td class="paramname"><em>_cp</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>user_data</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>this constructor allows contruction from <a class="el" href="structcgv_1_1gui_1_1control__provider.html">control_provider</a> with user data or if the pointer to the <a class="el" href="structcgv_1_1gui_1_1control__provider.html">control_provider</a> is null, interpret the pointer to the user data as the value pointer and act as the previous constructor. </p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a6746cd9f70fefe5a4f2b72534869fcc3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6746cd9f70fefe5a4f2b72534869fcc3">&#9670;&nbsp;</a></span>call_void()</h2>
 

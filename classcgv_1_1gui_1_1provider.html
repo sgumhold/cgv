@@ -282,6 +282,8 @@ template&lt;typename T &gt; </td></tr>
 <tr class="separator:a62ba041ea08c3e6e3a93e76995f706aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9bac0aa7c0467b606a3cbe9311f3d17c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a9bac0aa7c0467b606a3cbe9311f3d17c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1provider.html#a9bac0aa7c0467b606a3cbe9311f3d17c">end_tree_node</a> (const T &amp;value)</td></tr>
+<tr class="memdesc:a9bac0aa7c0467b606a3cbe9311f3d17c"><td class="mdescLeft">&#160;</td><td class="mdescRight">template specialization that allows to specify value reference plus node_instance by using the result of the function with_instance(value,idx) for the value argument finish a sub tree begun with begin_tree_node <br  />
+  <a href="classcgv_1_1gui_1_1provider.html#a9bac0aa7c0467b606a3cbe9311f3d17c">More...</a><br /></td></tr>
 <tr class="separator:a9bac0aa7c0467b606a3cbe9311f3d17c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadb085cf7522a281e61dd30041654c8c"><td class="memTemplParams" colspan="2"><a id="aadb085cf7522a281e61dd30041654c8c"></a>
 template&lt;typename T &gt; </td></tr>
@@ -435,7 +437,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>add control with callback to cgv::base::on_set method on <a class="el" href="classcgv_1_1gui_1_1control.html#a49af8e128fc1e8443b95adbddfed009a" title="this signal is sent after the user triggered a change of value and the check_value succeeded.">cgv::gui::control::value_change</a> </p>
-<p>use this method to add a control of a member and a callback to the on_set method of the <a class="el" href="classcgv_1_1base_1_1base.html">cgv::base::base</a> class. </p>
+<p>use this method to add a control of a member and a callback to the on_set method of the <a class="el" href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti...">cgv::base::base</a> class. </p>
 
 </div>
 </div>
@@ -484,7 +486,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>add a collapsable node to the gui (deprecated) </p>
-<p>This method is one possibility to support tree like guis with nodes that can be opened or closed. The other prefarable possibitly builds on the functions <a class="el" href="classcgv_1_1gui_1_1provider.html#a62ba041ea08c3e6e3a93e76995f706aa" title="Begin a sub tree of a tree structured gui.">begin_tree_node()</a> and <a class="el" href="classcgv_1_1gui_1_1provider.html#a9bac0aa7c0467b606a3cbe9311f3d17c">end_tree_node()</a>. </p><pre class="fragment">Each node is represented by a heading with the text provided in the first parameter and of heading 
+<p>This method is one possibility to support tree like guis with nodes that can be opened or closed. The other prefarable possibitly builds on the functions <a class="el" href="classcgv_1_1gui_1_1provider.html#a62ba041ea08c3e6e3a93e76995f706aa" title="Begin a sub tree of a tree structured gui.">begin_tree_node()</a> and <a class="el" href="classcgv_1_1gui_1_1provider.html#a9bac0aa7c0467b606a3cbe9311f3d17c" title="template specialization that allows to specify value reference plus node_instance by using the result...">end_tree_node()</a>. </p><pre class="fragment">Each node is represented by a heading with the text provided in the first parameter and of heading 
 level specified in the first parameter. The state of the node is stored in a boolean variable
 "toggle" that must be supplied by the implementation of the provider. The toggle needs to be
 initialized in the constructor and is used in the create_gui method to only provide the gui of
@@ -566,8 +568,8 @@ template&lt;typename T &gt; </div>
 <div class="line">   <a class="code" href="classcgv_1_1gui_1_1provider.html#a9bac0aa7c0467b606a3cbe9311f3d17c">end_tree_node</a>(composed_value);</div>
 <div class="line">}</div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1provider_html_a62ba041ea08c3e6e3a93e76995f706aa"><div class="ttname"><a href="classcgv_1_1gui_1_1provider.html#a62ba041ea08c3e6e3a93e76995f706aa">cgv::gui::provider::begin_tree_node</a></div><div class="ttdeci">bool begin_tree_node(const std::string &amp;label, const T &amp;value, bool initial_visibility=false, const std::string &amp;options=&quot;&quot;, gui_group_ptr ggp=gui_group_ptr())</div><div class="ttdoc">Begin a sub tree of a tree structured gui.</div><div class="ttdef"><b>Definition:</b> provider.h:212</div></div>
-<div class="ttc" id="aclasscgv_1_1gui_1_1provider_html_a9bac0aa7c0467b606a3cbe9311f3d17c"><div class="ttname"><a href="classcgv_1_1gui_1_1provider.html#a9bac0aa7c0467b606a3cbe9311f3d17c">cgv::gui::provider::end_tree_node</a></div><div class="ttdeci">void end_tree_node(const T &amp;value)</div><div class="ttdef"><b>Definition:</b> provider.h:222</div></div>
-</div><!-- fragment --><p> The state of the toggle button is attached to a boolean flag that is globally managed by the provider. If your this pointer can be converted to <a class="el" href="classcgv_1_1base_1_1base.html">cgv::base::base</a>, the on_set callback with a pointer to the flag is called when the user toggles the tree node. To check in the on_set callback for the tree node toggle one can get a reference to the boolean flag with the ref_tree_node_visible_flag method.</p>
+<div class="ttc" id="aclasscgv_1_1gui_1_1provider_html_a9bac0aa7c0467b606a3cbe9311f3d17c"><div class="ttname"><a href="classcgv_1_1gui_1_1provider.html#a9bac0aa7c0467b606a3cbe9311f3d17c">cgv::gui::provider::end_tree_node</a></div><div class="ttdeci">void end_tree_node(const T &amp;value)</div><div class="ttdoc">template specialization that allows to specify value reference plus node_instance by using the result...</div><div class="ttdef"><b>Definition:</b> provider.h:222</div></div>
+</div><!-- fragment --><p> The state of the toggle button is attached to a boolean flag that is globally managed by the provider. If your this pointer can be converted to <a class="el" href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti...">cgv::base::base</a>, the on_set callback with a pointer to the flag is called when the user toggles the tree node. To check in the on_set callback for the tree node toggle one can get a reference to the boolean flag with the ref_tree_node_visible_flag method.</p>
 <p>To allocate the boolean flag the reference to a value controlled by the tree node is specified. The pointer to the controlled value is used as key for a map that manages the toggle states of all tree node buttons. If there is no superior structure whose value is controlled by the tree node, one can specify any of the values controled by the tree node. It is just important that no two tree nodes use the same value and that the pointer to the value cannot change. The latter is for example the case, when one uses an entry in a std::vector that can change size and reallocate its values. Then one should use the std::vector itself as value. In order to be able to distinguish the different elements of a vector one can extend the key from a value reference to a pair of a value reference plus an index. The index is then the index of the vector element. This is done by specifying with_index(value, idx) in the value argument. An example could look as follows: </p><div class="fragment"><div class="line"><span class="keywordflow">if</span> (<a class="code" href="classcgv_1_1gui_1_1provider.html#a62ba041ea08c3e6e3a93e76995f706aa">begin_tree_node</a>(<span class="stringliteral">&quot;Node&quot;</span>, vec)) {</div>
 <div class="line">   <a class="code" href="classcgv_1_1gui_1_1provider.html#a28af4e659bdd1825f3829263e15ce5ae">align</a>(<span class="stringliteral">&quot;\a&quot;</span>); <span class="comment">// indent gui elements of tree node</span></div>
 <div class="line">   <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;vec.size; ++i) {</div>
@@ -651,8 +653,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
 <p>template specialization that allows to specify value reference plus node_instance by using the result of the function with_instance(value,idx) for the value argument finish a sub tree begun with begin_tree_node <br  />
-</p>
+ </p>
 <p>This functions should be called only if the corresponding call to begin_tree_node returned true. </p>
 
 </div>
@@ -791,16 +794,15 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Derive a name for this instance that can be used in the gui as heading. </p>
+<p>this method uses the following strategy to automatically determine the name shown in guis for a provider instance:</p>
 <p>This method uses the following strategy to automatically determine the name shown in guis for a provider instance:</p><ul>
-<li>try to cast the object into <a class="el" href="classcgv_1_1base_1_1named.html">cgv::base::named</a>, if successful, use get_name() method</li>
+<li>try to cast the object into <a class="el" href="classcgv_1_1base_1_1named.html" title="base class for all gui types">cgv::base::named</a>, if successful, use get_name() method</li>
 <li>check whether <a class="el" href="classcgv_1_1gui_1_1provider.html#a1f386dcbc43a7409fd2f3f655c938e5d" title="return a path in the main menu to select the gui">get_menu_path()</a> results in a path or name. In case of a path, use the last entry of the path as name.</li>
-<li>try to cast to <a class="el" href="classcgv_1_1base_1_1base.html">cgv::base::base</a> and use get_type_name().</li>
+<li>try to cast to <a class="el" href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti...">cgv::base::base</a> and use get_type_name().</li>
 <li>return "unnamed" otherwise</li>
-</ul>
-<p>this method uses the following strategy to automatically determine the name shown in guis for a provider instance:</p><ul>
-<li>try to cast the object into <a class="el" href="classcgv_1_1base_1_1named.html">cgv::base::named</a>, if successful, use get_name() method</li>
+<li>try to cast the object into <a class="el" href="classcgv_1_1base_1_1named.html" title="base class for all gui types">cgv::base::named</a>, if successful, use get_name() method</li>
 <li>check whether <a class="el" href="classcgv_1_1gui_1_1provider.html#a1f386dcbc43a7409fd2f3f655c938e5d" title="return a path in the main menu to select the gui">get_menu_path()</a> results in a path or name. In case of a path, use the last entry of the path as name.</li>
-<li>try to cast to <a class="el" href="classcgv_1_1base_1_1base.html">cgv::base::base</a> and use get_type_name().</li>
+<li>try to cast to <a class="el" href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti...">cgv::base::base</a> and use get_type_name().</li>
 <li>return "unnamed" otherwise </li>
 </ul>
 

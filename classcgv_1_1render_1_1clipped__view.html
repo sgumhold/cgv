@@ -90,6 +90,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1clipped__view.ht
 </div><!--header-->
 <div class="contents">
 
+<p>extends the view class with information on z clipping planes and scene extent and supports clipping plane computation from scene extent.  
+ <a href="classcgv_1_1render_1_1clipped__view.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="clipped__view_8h_source.html">clipped_view.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::render::clipped_view:</div>
@@ -97,8 +100,8 @@ Inheritance diagram for cgv::render::clipped_view:</div>
  <div class="center">
   <img src="classcgv_1_1render_1_1clipped__view.png" usemap="#cgv::render::clipped_5Fview_map" alt=""/>
   <map id="cgv::render::clipped_5Fview_map" name="cgv::render::clipped_5Fview_map">
-<area href="classcgv_1_1render_1_1view.html" alt="cgv::render::view" shape="rect" coords="0,0,157,24"/>
-<area href="classcgv_1_1render_1_1stereo__view.html" alt="cgv::render::stereo_view" shape="rect" coords="0,112,157,136"/>
+<area href="classcgv_1_1render_1_1view.html" title="defines a symmetric view with the following quantities:" alt="cgv::render::view" shape="rect" coords="0,0,157,24"/>
+<area href="classcgv_1_1render_1_1stereo__view.html" title="extends the clipped view with information on eye distance and parallax zero information." alt="cgv::render::stereo_view" shape="rect" coords="0,112,157,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -266,6 +269,57 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#afc364adffa256f9dda26ba0253ef99db">zoom</a> (double factor)</td></tr>
 <tr class="memdesc:afc364adffa256f9dda26ba0253ef99db"><td class="mdescLeft">&#160;</td><td class="mdescRight">zoom by given factor <br /></td></tr>
 <tr class="separator:afc364adffa256f9dda26ba0253ef99db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">viewport splitting</div></td></tr>
+<tr class="memitem:aba078260ea4e43714b47f85bbbeb34eb"><td class="memItemLeft" align="right" valign="top"><a id="aba078260ea4e43714b47f85bbbeb34eb"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#aba078260ea4e43714b47f85bbbeb34eb">enable_viewport_splitting</a> (unsigned nr_cols, unsigned nr_rows)</td></tr>
+<tr class="memdesc:aba078260ea4e43714b47f85bbbeb34eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">call this function before a drawing process to support viewport splitting inside the draw call via the activate/deactivate functions <br /></td></tr>
+<tr class="separator:aba078260ea4e43714b47f85bbbeb34eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25ed5930a8b8620fbf67634cb2bd5c05"><td class="memItemLeft" align="right" valign="top"><a id="a25ed5930a8b8620fbf67634cb2bd5c05"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#a25ed5930a8b8620fbf67634cb2bd5c05">is_viewport_splitting_enabled</a> (unsigned *nr_cols_ptr=0, unsigned *nr_rows_ptr=0) const</td></tr>
+<tr class="memdesc:a25ed5930a8b8620fbf67634cb2bd5c05"><td class="mdescLeft">&#160;</td><td class="mdescRight">check whether viewport splitting is activated and optionally set the number of columns and rows if corresponding pointers are passed <br /></td></tr>
+<tr class="separator:a25ed5930a8b8620fbf67634cb2bd5c05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad62667467a4ff89b19e57ab85893a23b"><td class="memItemLeft" align="right" valign="top"><a id="ad62667467a4ff89b19e57ab85893a23b"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#ad62667467a4ff89b19e57ab85893a23b">disable_viewport_splitting</a> ()</td></tr>
+<tr class="memdesc:ad62667467a4ff89b19e57ab85893a23b"><td class="mdescLeft">&#160;</td><td class="mdescRight">disable viewport splitting <br /></td></tr>
+<tr class="separator:ad62667467a4ff89b19e57ab85893a23b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb28040fb8dc07a67d6a16d3d44aacb4"><td class="memItemLeft" align="right" valign="top"><a id="aeb28040fb8dc07a67d6a16d3d44aacb4"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#aeb28040fb8dc07a67d6a16d3d44aacb4">activate_split_viewport</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, unsigned col_index, unsigned row_index)</td></tr>
+<tr class="memdesc:aeb28040fb8dc07a67d6a16d3d44aacb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">inside the drawing process activate the sub-viewport with the given column and row indices, always terminate an activated viewport with deactivate_split_viewport <br /></td></tr>
+<tr class="separator:aeb28040fb8dc07a67d6a16d3d44aacb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acba3a6bc00e8517d5d269b5181c8940f"><td class="memItemLeft" align="right" valign="top"><a id="acba3a6bc00e8517d5d269b5181c8940f"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#acba3a6bc00e8517d5d269b5181c8940f">deactivate_split_viewport</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="memdesc:acba3a6bc00e8517d5d269b5181c8940f"><td class="mdescLeft">&#160;</td><td class="mdescRight">deactivate the previously split viewport <br /></td></tr>
+<tr class="separator:acba3a6bc00e8517d5d269b5181c8940f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8c272470384fcacd9ab123791575745"><td class="memItemLeft" align="right" valign="top"><a id="ac8c272470384fcacd9ab123791575745"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#ac8c272470384fcacd9ab123791575745">enable_viewport_individual_view</a> (unsigned col_index, unsigned row_index, bool enable=true)</td></tr>
+<tr class="memdesc:ac8c272470384fcacd9ab123791575745"><td class="mdescLeft">&#160;</td><td class="mdescRight">make a viewport manage its own view <br /></td></tr>
+<tr class="separator:ac8c272470384fcacd9ab123791575745"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34426d520113779e787bf4364149a534"><td class="memItemLeft" align="right" valign="top"><a id="a34426d520113779e787bf4364149a534"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#a34426d520113779e787bf4364149a534">does_viewport_use_individual_view</a> (unsigned col_index, unsigned row_index) const</td></tr>
+<tr class="memdesc:a34426d520113779e787bf4364149a534"><td class="mdescLeft">&#160;</td><td class="mdescRight">check whether viewport manage its own view <br /></td></tr>
+<tr class="separator:a34426d520113779e787bf4364149a534"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9036241fbececf55302051ea79d3ee0b"><td class="memItemLeft" align="right" valign="top"><a id="a9036241fbececf55302051ea79d3ee0b"></a>
+virtual <a class="el" href="classcgv_1_1render_1_1view.html">view</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#a9036241fbececf55302051ea79d3ee0b">ref_viewport_view</a> (unsigned col_index, unsigned row_index)</td></tr>
+<tr class="memdesc:a9036241fbececf55302051ea79d3ee0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">access the view of a given viewport <br /></td></tr>
+<tr class="separator:a9036241fbececf55302051ea79d3ee0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16fb974c50ebb30be0fa136937167322"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#a16fb974c50ebb30be0fa136937167322">get_modelview_projection_window_matrices</a> (int x, int y, int width, int height, const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> **MPW_pptr, const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> **MPW_other_pptr=0, int *x_other_ptr=0, int *y_other_ptr=0, int *vp_col_idx_ptr=0, int *vp_row_idx_ptr=0, int *vp_width_ptr=0, int *vp_height_ptr=0, int *vp_center_x_ptr=0, int *vp_center_y_ptr=0, int *vp_center_x_other_ptr=0, int *vp_center_y_other_ptr=0) const</td></tr>
+<tr class="memdesc:a16fb974c50ebb30be0fa136937167322"><td class="mdescLeft">&#160;</td><td class="mdescRight">given an opengl pixel location and the size in pixels of the opengl window, return the modelview_projection_window matrix for unprojection  <a href="classcgv_1_1render_1_1view.html#a16fb974c50ebb30be0fa136937167322">More...</a><br /></td></tr>
+<tr class="separator:a16fb974c50ebb30be0fa136937167322"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fc41c698e66cbce07b76e5d58b5b102"><td class="memItemLeft" align="right" valign="top"><a id="a2fc41c698e66cbce07b76e5d58b5b102"></a>
+virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>get_modelview_projection_device_matrices</b> (int x, int y, int width, int height, const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> **MVPD_pptr, const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> **MVPD_other_pptr=0, int *x_other_ptr=0, int *y_other_ptr=0, int *vp_col_idx_ptr=0, int *vp_row_idx_ptr=0, int *vp_width_ptr=0, int *vp_height_ptr=0, int *vp_center_x_ptr=0, int *vp_center_y_ptr=0, int *vp_center_x_other_ptr=0, int *vp_center_y_other_ptr=0) const</td></tr>
+<tr class="separator:a2fc41c698e66cbce07b76e5d58b5b102"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a059be4183561478000bad2b26e061769"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#a059be4183561478000bad2b26e061769">get_z_and_unproject</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int x, int y, <a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a> &amp;p)</td></tr>
+<tr class="memdesc:a059be4183561478000bad2b26e061769"><td class="mdescLeft">&#160;</td><td class="mdescRight">given an opengl pixel location x,y return the window z-value from the depth buffer  <a href="classcgv_1_1render_1_1view.html#a059be4183561478000bad2b26e061769">More...</a><br /></td></tr>
+<tr class="separator:a059be4183561478000bad2b26e061769"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1c9a216ba1ed5b691c2ea62c29ecee8"><td class="memItemLeft" align="right" valign="top"><a id="ab1c9a216ba1ed5b691c2ea62c29ecee8"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>get_z_and_unproject</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int x, int y, <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> &amp;p)</td></tr>
+<tr class="separator:ab1c9a216ba1ed5b691c2ea62c29ecee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9755d9c8de88e76e3d8cec015b74c3bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#a9755d9c8de88e76e3d8cec015b74c3bc">compute_screen_rectangle</a> (std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a> &gt; &amp;rect, double depth, double aspect) const</td></tr>
+<tr class="memdesc:a9755d9c8de88e76e3d8cec015b74c3bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">fill <code>rect</code> with four points covering the screen rectangle at given depth from eye with given aspect ratio  <a href="classcgv_1_1render_1_1view.html#a9755d9c8de88e76e3d8cec015b74c3bc">More...</a><br /></td></tr>
+<tr class="separator:a9755d9c8de88e76e3d8cec015b74c3bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a610b5292c0a1247dae978cf2bb9e5a3b"><td class="memItemLeft" align="right" valign="top"><a id="a610b5292c0a1247dae978cf2bb9e5a3b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>compute_screen_rectangle</b> (std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> &gt; &amp;rect, double depth, double aspect) const</td></tr>
+<tr class="separator:a610b5292c0a1247dae978cf2bb9e5a3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -315,100 +369,6 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1clipped__view.html#ab795efa5bd6776d687c214f6887b7101">get_z_D</a> (double z_eye, double z_near, double z_far)</td></tr>
 <tr class="memdesc:ab795efa5bd6776d687c214f6887b7101"><td class="mdescLeft">&#160;</td><td class="mdescRight">transform a z value in eye-coordinates (should be negative!) to device coordinate <br /></td></tr>
 <tr class="separator:ab795efa5bd6776d687c214f6887b7101"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader">viewport splitting</h2></td></tr>
-<tr class="memitem:aba078260ea4e43714b47f85bbbeb34eb"><td class="memItemLeft" align="right" valign="top"><a id="aba078260ea4e43714b47f85bbbeb34eb"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#aba078260ea4e43714b47f85bbbeb34eb">enable_viewport_splitting</a> (unsigned nr_cols, unsigned nr_rows)</td></tr>
-<tr class="memdesc:aba078260ea4e43714b47f85bbbeb34eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">call this function before a drawing process to support viewport splitting inside the draw call via the activate/deactivate functions <br /></td></tr>
-<tr class="separator:aba078260ea4e43714b47f85bbbeb34eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25ed5930a8b8620fbf67634cb2bd5c05"><td class="memItemLeft" align="right" valign="top"><a id="a25ed5930a8b8620fbf67634cb2bd5c05"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#a25ed5930a8b8620fbf67634cb2bd5c05">is_viewport_splitting_enabled</a> (unsigned *nr_cols_ptr=0, unsigned *nr_rows_ptr=0) const</td></tr>
-<tr class="memdesc:a25ed5930a8b8620fbf67634cb2bd5c05"><td class="mdescLeft">&#160;</td><td class="mdescRight">check whether viewport splitting is activated and optionally set the number of columns and rows if corresponding pointers are passed <br /></td></tr>
-<tr class="separator:a25ed5930a8b8620fbf67634cb2bd5c05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad62667467a4ff89b19e57ab85893a23b"><td class="memItemLeft" align="right" valign="top"><a id="ad62667467a4ff89b19e57ab85893a23b"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#ad62667467a4ff89b19e57ab85893a23b">disable_viewport_splitting</a> ()</td></tr>
-<tr class="memdesc:ad62667467a4ff89b19e57ab85893a23b"><td class="mdescLeft">&#160;</td><td class="mdescRight">disable viewport splitting <br /></td></tr>
-<tr class="separator:ad62667467a4ff89b19e57ab85893a23b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb28040fb8dc07a67d6a16d3d44aacb4"><td class="memItemLeft" align="right" valign="top"><a id="aeb28040fb8dc07a67d6a16d3d44aacb4"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#aeb28040fb8dc07a67d6a16d3d44aacb4">activate_split_viewport</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, unsigned col_index, unsigned row_index)</td></tr>
-<tr class="memdesc:aeb28040fb8dc07a67d6a16d3d44aacb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">inside the drawing process activate the sub-viewport with the given column and row indices, always terminate an activated viewport with deactivate_split_viewport <br /></td></tr>
-<tr class="separator:aeb28040fb8dc07a67d6a16d3d44aacb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acba3a6bc00e8517d5d269b5181c8940f"><td class="memItemLeft" align="right" valign="top"><a id="acba3a6bc00e8517d5d269b5181c8940f"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#acba3a6bc00e8517d5d269b5181c8940f">deactivate_split_viewport</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
-<tr class="memdesc:acba3a6bc00e8517d5d269b5181c8940f"><td class="mdescLeft">&#160;</td><td class="mdescRight">deactivate the previously split viewport <br /></td></tr>
-<tr class="separator:acba3a6bc00e8517d5d269b5181c8940f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac8c272470384fcacd9ab123791575745"><td class="memItemLeft" align="right" valign="top"><a id="ac8c272470384fcacd9ab123791575745"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#ac8c272470384fcacd9ab123791575745">enable_viewport_individual_view</a> (unsigned col_index, unsigned row_index, bool enable=true)</td></tr>
-<tr class="memdesc:ac8c272470384fcacd9ab123791575745"><td class="mdescLeft">&#160;</td><td class="mdescRight">make a viewport manage its own view <br /></td></tr>
-<tr class="separator:ac8c272470384fcacd9ab123791575745"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34426d520113779e787bf4364149a534"><td class="memItemLeft" align="right" valign="top"><a id="a34426d520113779e787bf4364149a534"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#a34426d520113779e787bf4364149a534">does_viewport_use_individual_view</a> (unsigned col_index, unsigned row_index) const</td></tr>
-<tr class="memdesc:a34426d520113779e787bf4364149a534"><td class="mdescLeft">&#160;</td><td class="mdescRight">check whether viewport manage its own view <br /></td></tr>
-<tr class="separator:a34426d520113779e787bf4364149a534"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9036241fbececf55302051ea79d3ee0b"><td class="memItemLeft" align="right" valign="top"><a id="a9036241fbececf55302051ea79d3ee0b"></a>
-virtual <a class="el" href="classcgv_1_1render_1_1view.html">view</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#a9036241fbececf55302051ea79d3ee0b">ref_viewport_view</a> (unsigned col_index, unsigned row_index)</td></tr>
-<tr class="memdesc:a9036241fbececf55302051ea79d3ee0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">access the view of a given viewport <br /></td></tr>
-<tr class="separator:a9036241fbececf55302051ea79d3ee0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a16fb974c50ebb30be0fa136937167322"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#a16fb974c50ebb30be0fa136937167322">get_modelview_projection_window_matrices</a> (int x, int y, int width, int height, const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> **MPW_pptr, const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> **MPW_other_pptr=0, int *x_other_ptr=0, int *y_other_ptr=0, int *vp_col_idx_ptr=0, int *vp_row_idx_ptr=0, int *vp_width_ptr=0, int *vp_height_ptr=0, int *vp_center_x_ptr=0, int *vp_center_y_ptr=0, int *vp_center_x_other_ptr=0, int *vp_center_y_other_ptr=0) const</td></tr>
-<tr class="memdesc:a16fb974c50ebb30be0fa136937167322"><td class="mdescLeft">&#160;</td><td class="mdescRight">given an opengl pixel location and the size in pixels of the opengl window, return the modelview_projection_window matrix for unprojection  <a href="classcgv_1_1render_1_1view.html#a16fb974c50ebb30be0fa136937167322">More...</a><br /></td></tr>
-<tr class="separator:a16fb974c50ebb30be0fa136937167322"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab087df414aaa32c0520abf14a376b5ef"><td class="memItemLeft" align="right" valign="top"><a id="ab087df414aaa32c0520abf14a376b5ef"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DEPRECATED</b> (&quot;deprecated, use <a class="el" href="classcgv_1_1render_1_1view.html#a16fb974c50ebb30be0fa136937167322">get_modelview_projection_window_matrices</a>() instead.&quot;) virtual int get_modelview_projection_device_matrices(int x</td></tr>
-<tr class="separator:ab087df414aaa32c0520abf14a376b5ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1c9a216ba1ed5b691c2ea62c29ecee8"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#ab1c9a216ba1ed5b691c2ea62c29ecee8">get_z_and_unproject</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int x, int y, <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> &amp;p)</td></tr>
-<tr class="memdesc:ab1c9a216ba1ed5b691c2ea62c29ecee8"><td class="mdescLeft">&#160;</td><td class="mdescRight">given a pixel location x,y return the z-value from the depth buffer, which ranges from 0.0 at z_near to 1.0 at z_far and a point in world coordinates  <a href="classcgv_1_1render_1_1view.html#ab1c9a216ba1ed5b691c2ea62c29ecee8">More...</a><br /></td></tr>
-<tr class="separator:ab1c9a216ba1ed5b691c2ea62c29ecee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9755d9c8de88e76e3d8cec015b74c3bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#a9755d9c8de88e76e3d8cec015b74c3bc">compute_screen_rectangle</a> (std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a> &gt; &amp;rect, double depth, double aspect) const</td></tr>
-<tr class="memdesc:a9755d9c8de88e76e3d8cec015b74c3bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">fill <code>rect</code> with four points covering the screen rectangle at given depth from eye with given aspect ratio  <a href="classcgv_1_1render_1_1view.html#a9755d9c8de88e76e3d8cec015b74c3bc">More...</a><br /></td></tr>
-<tr class="separator:a9755d9c8de88e76e3d8cec015b74c3bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a610b5292c0a1247dae978cf2bb9e5a3b"><td class="memItemLeft" align="right" valign="top"><a id="a610b5292c0a1247dae978cf2bb9e5a3b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>compute_screen_rectangle</b> (std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> &gt; &amp;rect, double depth, double aspect) const</td></tr>
-<tr class="separator:a610b5292c0a1247dae978cf2bb9e5a3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa94d0cc06269eae1bc3e685a82237613"><td class="memItemLeft" align="right" valign="top"><a id="aa94d0cc06269eae1bc3e685a82237613"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>y</b></td></tr>
-<tr class="separator:aa94d0cc06269eae1bc3e685a82237613"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ffb1625bb9054c7bc69876d9de30cb2"><td class="memItemLeft" align="right" valign="top"><a id="a3ffb1625bb9054c7bc69876d9de30cb2"></a>
-int int&#160;</td><td class="memItemRight" valign="bottom"><b>width</b></td></tr>
-<tr class="separator:a3ffb1625bb9054c7bc69876d9de30cb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d796d7c53c9300da7455e24e55d0dad"><td class="memItemLeft" align="right" valign="top"><a id="a7d796d7c53c9300da7455e24e55d0dad"></a>
-int int int&#160;</td><td class="memItemRight" valign="bottom"><b>height</b></td></tr>
-<tr class="separator:a7d796d7c53c9300da7455e24e55d0dad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a956aaa16f7f4bb5cb22b393d87e72acd"><td class="memItemLeft" align="right" valign="top"><a id="a956aaa16f7f4bb5cb22b393d87e72acd"></a>
-int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> **&#160;</td><td class="memItemRight" valign="bottom"><b>MVPD_pptr</b></td></tr>
-<tr class="separator:a956aaa16f7f4bb5cb22b393d87e72acd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8548b998026c7c59cfdb551d1c830ce"><td class="memItemLeft" align="right" valign="top"><a id="aa8548b998026c7c59cfdb551d1c830ce"></a>
-int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> **&#160;</td><td class="memItemRight" valign="bottom"><b>MVPD_other_pptr</b> = 0</td></tr>
-<tr class="separator:aa8548b998026c7c59cfdb551d1c830ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee5da2ad84bf45c31d598869c7e0bdb4"><td class="memItemLeft" align="right" valign="top"><a id="aee5da2ad84bf45c31d598869c7e0bdb4"></a>
-int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> int *&#160;</td><td class="memItemRight" valign="bottom"><b>x_other_ptr</b> = 0</td></tr>
-<tr class="separator:aee5da2ad84bf45c31d598869c7e0bdb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6f52438f635d3e70d29ad8cf567ed1d"><td class="memItemLeft" align="right" valign="top"><a id="ad6f52438f635d3e70d29ad8cf567ed1d"></a>
-int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> int int *&#160;</td><td class="memItemRight" valign="bottom"><b>y_other_ptr</b> = 0</td></tr>
-<tr class="separator:ad6f52438f635d3e70d29ad8cf567ed1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a460655d29db973c001491cf5ac0aff76"><td class="memItemLeft" align="right" valign="top"><a id="a460655d29db973c001491cf5ac0aff76"></a>
-int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> int int int *&#160;</td><td class="memItemRight" valign="bottom"><b>vp_col_idx_ptr</b> = 0</td></tr>
-<tr class="separator:a460655d29db973c001491cf5ac0aff76"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48f4ab1cf133ace27ee3a524459dbe36"><td class="memItemLeft" align="right" valign="top"><a id="a48f4ab1cf133ace27ee3a524459dbe36"></a>
-int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> int int int int *&#160;</td><td class="memItemRight" valign="bottom"><b>vp_row_idx_ptr</b> = 0</td></tr>
-<tr class="separator:a48f4ab1cf133ace27ee3a524459dbe36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac89acdab0dc390984c9ce45fff5645f3"><td class="memItemLeft" align="right" valign="top"><a id="ac89acdab0dc390984c9ce45fff5645f3"></a>
-int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> int int int int int *&#160;</td><td class="memItemRight" valign="bottom"><b>vp_width_ptr</b> = 0</td></tr>
-<tr class="separator:ac89acdab0dc390984c9ce45fff5645f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab9bac1847472391bb91caf6b9f56b8f3"><td class="memItemLeft" align="right" valign="top"><a id="ab9bac1847472391bb91caf6b9f56b8f3"></a>
-int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> int int int int int int *&#160;</td><td class="memItemRight" valign="bottom"><b>vp_height_ptr</b> = 0</td></tr>
-<tr class="separator:ab9bac1847472391bb91caf6b9f56b8f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab42488c044849fea1a035164349b4132"><td class="memItemLeft" align="right" valign="top"><a id="ab42488c044849fea1a035164349b4132"></a>
-int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> int int int int int int int *&#160;</td><td class="memItemRight" valign="bottom"><b>vp_center_x_ptr</b> = 0</td></tr>
-<tr class="separator:ab42488c044849fea1a035164349b4132"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26114d8a4ded346ea59589c68753001b"><td class="memItemLeft" align="right" valign="top"><a id="a26114d8a4ded346ea59589c68753001b"></a>
-int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> int int int int int int int int *&#160;</td><td class="memItemRight" valign="bottom"><b>vp_center_y_ptr</b> = 0</td></tr>
-<tr class="separator:a26114d8a4ded346ea59589c68753001b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae02b1b9460ee3e4e3abb8df31a959648"><td class="memItemLeft" align="right" valign="top"><a id="ae02b1b9460ee3e4e3abb8df31a959648"></a>
-int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> int int int int int int int int int *&#160;</td><td class="memItemRight" valign="bottom"><b>vp_center_x_other_ptr</b> = 0</td></tr>
-<tr class="separator:ae02b1b9460ee3e4e3abb8df31a959648"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a67fc61652bb1e7abceef0f3d091488"><td class="memItemLeft" align="right" valign="top"><a id="a6a67fc61652bb1e7abceef0f3d091488"></a>
-int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> int int int int int int int int int int *&#160;</td><td class="memItemRight" valign="bottom"><b>vp_center_y_other_ptr</b></td></tr>
-<tr class="separator:a6a67fc61652bb1e7abceef0f3d091488"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>extends the view class with information on z clipping planes and scene extent and supports clipping plane computation from scene extent. </p>
@@ -663,8 +623,8 @@ int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> c
 
 </div>
 </div>
-<a id="ab1c9a216ba1ed5b691c2ea62c29ecee8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab1c9a216ba1ed5b691c2ea62c29ecee8">&#9670;&nbsp;</a></span>get_z_and_unproject()</h2>
+<a id="a059be4183561478000bad2b26e061769"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a059be4183561478000bad2b26e061769">&#9670;&nbsp;</a></span>get_z_and_unproject()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -693,7 +653,7 @@ int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> c
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a> &amp;&#160;</td>
           <td class="paramname"><em>p</em>&#160;</td>
         </tr>
         <tr>
@@ -704,12 +664,13 @@ int int int const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> c
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>given a pixel location x,y return the z-value from the depth buffer, which ranges from 0.0 at z_near to 1.0 at z_far and a point in world coordinates </p>
+<p>given an opengl pixel location x,y return the window z-value from the depth buffer </p>
+<p>given a pixel location x,y return the z-value from the depth buffer, which ranges from 0.0 at z_near to 1.0 at z_far and a point in world coordinates</p>
 <p>in case of stereo rendering two z-values exist that can be unprojected to two points in world coordinates. In this case the possibility with smaller z value is selected. </p>
 
 </div>

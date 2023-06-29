@@ -91,6 +91,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1frame__buffer.ht
 </div><!--header-->
 <div class="contents">
 
+<p>this class encapsulate frame buffers that live on the GPU and can be used as destination for the render process.  
+ <a href="classcgv_1_1render_1_1frame__buffer.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="frame__buffer_8h_source.html">frame_buffer.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::render::frame_buffer:</div>
@@ -118,7 +121,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a4b61d78398a7aa0079d69686be7e6be3"><td class="mdescLeft">&#160;</td><td class="mdescRight">destruct the framebuffer objext <br /></td></tr>
 <tr class="separator:a4b61d78398a7aa0079d69686be7e6be3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a061eb8de0786f323024824ae6d9a8f51"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1frame__buffer.html#a061eb8de0786f323024824ae6d9a8f51">create</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int _width=-1, int _height=-1)</td></tr>
-<tr class="memdesc:a061eb8de0786f323024824ae6d9a8f51"><td class="mdescLeft">&#160;</td><td class="mdescRight">create framebuffer of extension is supported, otherwise return false.  <a href="classcgv_1_1render_1_1frame__buffer.html#a061eb8de0786f323024824ae6d9a8f51">More...</a><br /></td></tr>
+<tr class="memdesc:a061eb8de0786f323024824ae6d9a8f51"><td class="mdescLeft">&#160;</td><td class="mdescRight">create framebuffer if extension is supported, otherwise return false.  <a href="classcgv_1_1render_1_1frame__buffer.html#a061eb8de0786f323024824ae6d9a8f51">More...</a><br /></td></tr>
 <tr class="separator:a061eb8de0786f323024824ae6d9a8f51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5ce3316d6511f675feb91ccb4b4bb1f"><td class="memItemLeft" align="right" valign="top"><a id="ae5ce3316d6511f675feb91ccb4b4bb1f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1frame__buffer.html#ae5ce3316d6511f675feb91ccb4b4bb1f">set_width</a> (int _width)</td></tr>
@@ -156,8 +159,11 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a17fdaaa847fe3687d4f65b38b6f6aa0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">check for completeness, if not complete, get the reason in last_error <br /></td></tr>
 <tr class="separator:a17fdaaa847fe3687d4f65b38b6f6aa0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a65859cf7cf0a2adf9bf1152261115a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1frame__buffer.html#a5a65859cf7cf0a2adf9bf1152261115a">enable</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int i0=-1, int i1=-1, int i2=-1, int i3=-1, int i4=-1, int i5=-1, int i6=-1, int i7=-1, int i8=-1, int i9=-1, int i10=-1, int i11=-1, int i12=-1, int i13=-1, int i14=-1, int i15=-1)</td></tr>
+<tr class="memdesc:a5a65859cf7cf0a2adf9bf1152261115a"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable the framebuffer either with all color attachments if no arguments are given or if arguments are given with the indexed color attachments.  <a href="classcgv_1_1render_1_1frame__buffer.html#a5a65859cf7cf0a2adf9bf1152261115a">More...</a><br /></td></tr>
 <tr class="separator:a5a65859cf7cf0a2adf9bf1152261115a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad041c20f763f8eba7109c8ee88a08083"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1frame__buffer.html#ad041c20f763f8eba7109c8ee88a08083">enable</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, std::vector&lt; int &gt; &amp;indices)</td></tr>
+<tr class="memitem:ad041c20f763f8eba7109c8ee88a08083"><td class="memItemLeft" align="right" valign="top"><a id="ad041c20f763f8eba7109c8ee88a08083"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1frame__buffer.html#ad041c20f763f8eba7109c8ee88a08083">enable</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, std::vector&lt; int &gt; &amp;indices)</td></tr>
+<tr class="memdesc:ad041c20f763f8eba7109c8ee88a08083"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable the framebuffer either with the color attachments specified in the given vector. <br /></td></tr>
 <tr class="separator:ad041c20f763f8eba7109c8ee88a08083"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a145e4504b00cc3c9c80125d636c69aa1"><td class="memItemLeft" align="right" valign="top"><a id="a145e4504b00cc3c9c80125d636c69aa1"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1frame__buffer.html#a145e4504b00cc3c9c80125d636c69aa1">push_viewport</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="structcgv_1_1render_1_1render__types.html#a1e647cad0feb06b4067d49caefffec9b">cgv::render::render_types::dvec2</a> &amp;depth_range=<a class="el" href="structcgv_1_1render_1_1render__types.html#a1e647cad0feb06b4067d49caefffec9b">cgv::render::render_types::dvec2</a>(0, 1))</td></tr>
@@ -184,6 +190,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a4c896d2654616448824f5f2f759b8947"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether component has been created <br /></td></tr>
 <tr class="separator:a4c896d2654616448824f5f2f759b8947"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">put_id_void</a> (void *ptr) const</td></tr>
+<tr class="memdesc:aa5404b2aec4bbe8fd4eff1959b627709"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the rendering api specific id the component to the memory location of the given pointer.  <a href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">More...</a><br /></td></tr>
 <tr class="separator:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06ff3003af849b32a76ec5be29bd89dc"><td class="memTemplParams" colspan="2"><a id="a06ff3003af849b32a76ec5be29bd89dc"></a>
 template&lt;typename T &gt; </td></tr>
@@ -214,7 +221,8 @@ const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> *&#160
 <tr class="separator:a738cb1064e1c6fc606c018191a53f23e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>this class encapsulate frame buffers that live on the GPU and can be used as destination for the render process. The GPU must support frame buffer objects for this to work. </p>
+<div class="textblock"><p>this class encapsulate frame buffers that live on the GPU and can be used as destination for the render process. </p>
+<p>The GPU must support frame buffer objects for this to work. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="af88f1f3dcc3b8cb7a0bf7c6f2d72ba4c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af88f1f3dcc3b8cb7a0bf7c6f2d72ba4c">&#9670;&nbsp;</a></span>attach()</h2>
@@ -297,13 +305,14 @@ const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> *&#160
       </table>
 </div><div class="memdoc">
 
-<p>create framebuffer of extension is supported, otherwise return false. </p>
-<p>create framebuffer if extension is supported, otherwise return false. The set extent is used to set the viewport in the enable method. If no extent is specified it is copied from glViewport. </p>
+<p>create framebuffer if extension is supported, otherwise return false. </p>
+<p>create framebuffer of extension is supported, otherwise return false.</p>
+<p>The set extent is used to set the viewport in the enable method. If no extent is specified it is copied from glViewport. </p>
 
 </div>
 </div>
 <a id="a5a65859cf7cf0a2adf9bf1152261115a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a65859cf7cf0a2adf9bf1152261115a">&#9670;&nbsp;</a></span>enable() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a65859cf7cf0a2adf9bf1152261115a">&#9670;&nbsp;</a></span>enable()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -417,36 +426,9 @@ const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> *&#160
         </tr>
       </table>
 </div><div class="memdoc">
-<p>enable the framebuffer either with all color attachments if no arguments are given or if arguments are given with the indexed color attachments. Return whether this was successful. </p>
 
-</div>
-</div>
-<a id="ad041c20f763f8eba7109c8ee88a08083"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad041c20f763f8eba7109c8ee88a08083">&#9670;&nbsp;</a></span>enable() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool cgv::render::frame_buffer::enable </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
-          <td class="paramname"><em>ctx</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::vector&lt; int &gt; &amp;&#160;</td>
-          <td class="paramname"><em>indices</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>enable the framebuffer either with the color attachments specified in the given vector. </p>
+<p>enable the framebuffer either with all color attachments if no arguments are given or if arguments are given with the indexed color attachments. </p>
+<p>Return whether this was successful. </p>
 
 </div>
 </div>
@@ -473,7 +455,9 @@ const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> *&#160
   </tr>
 </table>
 </div><div class="memdoc">
-<p>copy the rendering api specific id the component to the memory location of the given pointer. For opengl this the passed pointer should be of type GLint or GLuint. </p>
+
+<p>copy the rendering api specific id the component to the memory location of the given pointer. </p>
+<p>For opengl this the passed pointer should be of type GLint or GLuint. </p>
 
 </div>
 </div>

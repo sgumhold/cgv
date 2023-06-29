@@ -90,6 +90,9 @@ $(document).ready(function(){initNavTree('structcgv_1_1os_1_1condition__mutex.ht
 </div><!--header-->
 <div class="contents">
 
+<p>A mutex that can wake up other threads by signals sent when a condition is fulfilled.  
+ <a href="structcgv_1_1os_1_1condition__mutex.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="mutex_8h_source.html">mutex.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::os::condition_mutex:</div>
@@ -97,7 +100,7 @@ Inheritance diagram for cgv::os::condition_mutex:</div>
  <div class="center">
   <img src="structcgv_1_1os_1_1condition__mutex.png" usemap="#cgv::os::condition_5Fmutex_map" alt=""/>
   <map id="cgv::os::condition_5Fmutex_map" name="cgv::os::condition_5Fmutex_map">
-<area href="structcgv_1_1os_1_1mutex.html" alt="cgv::os::mutex" shape="rect" coords="0,0,148,24"/>
+<area href="structcgv_1_1os_1_1mutex.html" title="A simple mutex (mutual exclusion) for solving thread synchronisation problems." alt="cgv::os::mutex" shape="rect" coords="0,0,148,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -113,7 +116,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5c80e83e797ccf0c85f35c97e5feb36e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a791a1c1d48a59fd91ef4a9d0bd310471"><td class="memItemLeft" align="right" valign="top"><a id="a791a1c1d48a59fd91ef4a9d0bd310471"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1os_1_1condition__mutex.html#a791a1c1d48a59fd91ef4a9d0bd310471">send_signal</a> ()</td></tr>
-<tr class="memdesc:a791a1c1d48a59fd91ef4a9d0bd310471"><td class="mdescLeft">&#160;</td><td class="mdescRight">send the signal to unblock a thread waiting for the condition represented by this <a class="el" href="structcgv_1_1os_1_1condition__mutex.html">condition_mutex</a> <br /></td></tr>
+<tr class="memdesc:a791a1c1d48a59fd91ef4a9d0bd310471"><td class="mdescLeft">&#160;</td><td class="mdescRight">send the signal to unblock a thread waiting for the condition represented by this <a class="el" href="structcgv_1_1os_1_1condition__mutex.html" title="A mutex that can wake up other threads by signals sent when a condition is fulfilled.">condition_mutex</a> <br /></td></tr>
 <tr class="separator:a791a1c1d48a59fd91ef4a9d0bd310471"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a075900146c80496274428e27e1fee88b"><td class="memItemLeft" align="right" valign="top"><a id="a075900146c80496274428e27e1fee88b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1os_1_1condition__mutex.html#a075900146c80496274428e27e1fee88b">send_signal_with_lock</a> ()</td></tr>
@@ -121,7 +124,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <tr class="separator:a075900146c80496274428e27e1fee88b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84fd75c3d8396860675416f042be5680"><td class="memItemLeft" align="right" valign="top"><a id="a84fd75c3d8396860675416f042be5680"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1os_1_1condition__mutex.html#a84fd75c3d8396860675416f042be5680">broadcast_signal</a> ()</td></tr>
-<tr class="memdesc:a84fd75c3d8396860675416f042be5680"><td class="mdescLeft">&#160;</td><td class="mdescRight">broadcast signal to unblock several threads waiting for the condition represented by this <a class="el" href="structcgv_1_1os_1_1condition__mutex.html">condition_mutex</a> <br /></td></tr>
+<tr class="memdesc:a84fd75c3d8396860675416f042be5680"><td class="mdescLeft">&#160;</td><td class="mdescRight">broadcast signal to unblock several threads waiting for the condition represented by this <a class="el" href="structcgv_1_1os_1_1condition__mutex.html" title="A mutex that can wake up other threads by signals sent when a condition is fulfilled.">condition_mutex</a> <br /></td></tr>
 <tr class="separator:a84fd75c3d8396860675416f042be5680"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ebf26e2e75eafc3161ea69b9498254d"><td class="memItemLeft" align="right" valign="top"><a id="a7ebf26e2e75eafc3161ea69b9498254d"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1os_1_1condition__mutex.html#a7ebf26e2e75eafc3161ea69b9498254d">broadcast_signal_with_lock</a> ()</td></tr>
@@ -155,7 +158,7 @@ static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el"
 <tr class="separator:a0b980fdeb7ab025bf56231d1c7aacc63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A mutex that can wake up other threads by signals sent when a condition is fulfilled </p>
+<div class="textblock"><p>A mutex that can wake up other threads by signals sent when a condition is fulfilled. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ac47eb48c01c18a20d4bfc22f839568d1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac47eb48c01c18a20d4bfc22f839568d1">&#9670;&nbsp;</a></span>lock()</h2>
