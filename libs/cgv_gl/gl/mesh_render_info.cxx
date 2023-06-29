@@ -1,5 +1,8 @@
-#include <cgv/base/base.h>
 #include "mesh_render_info.h"
+
+#include <memory>
+
+#include <cgv/base/base.h>
 
 namespace cgv {
 	namespace render {
@@ -21,13 +24,10 @@ void mesh_render_info::destruct(cgv::render::context& ctx)
 }
 
 ///
-void mesh_render_info::construct_vbos_base(
-	cgv::render::context& ctx,
-	const cgv::media::mesh::simple_mesh_base& mesh,
-	std::vector<idx_type>& vertex_indices,
-	std::vector<vec4i>& unique_quadruples,
-	std::vector<idx_type>& triangle_element_buffer,
-	std::vector<idx_type>& edge_element_buffer)
+void mesh_render_info::construct_vbos_base(cgv::render::context& ctx, const cgv::media::mesh::simple_mesh_base& mesh,
+										   std::vector<idx_type>& vertex_indices, std::vector<vec4i>& unique_quadruples,
+										   std::vector<idx_type>& triangle_element_buffer,
+										   std::vector<idx_type>& edge_element_buffer)
 {
 	include_tex_coords = include_normals = include_tangents = include_colors = true;
 
@@ -37,20 +37,18 @@ void mesh_render_info::construct_vbos_base(
 		ref_materials().back()->ensure_textures(ctx);
 	}
 
-	std::vector<idx_type>* perm_ptr = 0;
+	std::unique_ptr<std::vector<idx_type>> permutation;
 	bool sort_by_groups = mesh.get_nr_groups() > 0;
 	bool sort_by_materials = mesh.get_nr_materials() > 0;
 	if (sort_by_groups || sort_by_materials) {
-		perm_ptr = new std::vector<idx_type>();
-		mesh.sort_faces(*perm_ptr, sort_by_groups, sort_by_materials);
+		permutation = std::make_unique<std::vector<idx_type>>();
+		mesh.sort_faces(*permutation, sort_by_groups, sort_by_materials);
 	}
 	mesh.merge_indices(vertex_indices, unique_quadruples, &include_tex_coords, &include_normals, &include_tangents);
 	nr_vertices = unique_quadruples.size();
-	mesh.extract_triangle_element_buffer(vertex_indices, triangle_element_buffer, perm_ptr, mesh.get_nr_materials() > 0 ? &material_primitive_start : 0);
-	if (perm_ptr) {
-		delete perm_ptr;
-		perm_ptr = 0;
-	}
+	mesh.extract_triangle_element_buffer(vertex_indices, triangle_element_buffer, permutation.get(),
+										 mesh.get_nr_materials() > 0 ? &material_primitive_start : 0);
+	
 	nr_triangle_elements = triangle_element_buffer.size();
 	mesh.extract_wireframe_element_buffer(vertex_indices, edge_element_buffer);
 	nr_edge_elements = edge_element_buffer.size();
