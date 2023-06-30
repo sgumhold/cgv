@@ -426,6 +426,8 @@ Friends</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A <a class="el" href="classcgv_1_1data_1_1data__format.html" title="A data_format describes a multidimensional data block of data entries.">data_format</a> describes a multidimensional data block of data entries. </p>
 <p>It inherits the information stored in component info which describes which components each data entry has. The <a class="el" href="classcgv_1_1data_1_1data__format.html" title="A data_format describes a multidimensional data block of data entries.">data_format</a> adds information about the dimensionality and the alignment and resolution in each dimension. </p>
+
+<p class="definition">Definition at line <a class="el" href="data__format_8h_source.html#l00018">18</a> of file <a class="el" href="data__format_8h_source.html">data_format.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="abc7caed8c9d8d9a8b773cabdbf7dc700"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abc7caed8c9d8d9a8b773cabdbf7dc700">&#9670;&nbsp;</a></span>data_format()</h2>
@@ -453,6 +455,8 @@ Friends</h2></td></tr>
 
 <p>construct from description string, see set_data_format for docu </p>
 <p>construct from description string </p>
+
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00017">17</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
 
 </div>
 </div>
@@ -483,6 +487,10 @@ Friends</h2></td></tr>
 <p>extract components from component string </p>
 <p>extract component_positions from component string </p>
 
+<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00042">42</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="component__format_8cxx_source.html#l00066">cgv::data::component_format::component_format()</a>, <a class="el" href="component__format_8cxx_source.html#l00168">cgv::data::component_format::set_component_format()</a>, and <a class="el" href="component__format_8cxx_source.html#l00369">cgv::data::component_format::set_component_names()</a>.</p>
+
 </div>
 </div>
 <a id="a90ce214c4438f87dc548552d662c6653"></a>
@@ -505,6 +513,12 @@ Friends</h2></td></tr>
 <p>return the alignment of a given dimension</p>
 <p>This method also returns 1 if i is out of the range of valid dimensions. </p>
 
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00293">293</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8h_source.html#l00030">dimensions</a>, and <a class="el" href="data__format_8cxx_source.html#l00203">get_nr_dimensions()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00040">cgv::data::data_view_base::data_view_base()</a>, and <a class="el" href="data__format_8cxx_source.html#l00352">operator==()</a>.</p>
+
 </div>
 </div>
 <a id="a984f838e5ff150c67f233fd8f4e86fde"></a>
@@ -524,6 +538,12 @@ Friends</h2></td></tr>
 
 <p>return the resolution in the third dimension, or 1 if not defined </p>
 <p>return the number of entries in the third dimension </p>
+
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00272">272</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00213">get_resolution()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00612">cgv::render::gl::load_texture()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>, and <a class="el" href="gl__texture__tools_8cxx_source.html#l00675">cgv::render::gl::replace_texture()</a>.</p>
 
 </div>
 </div>
@@ -553,6 +573,12 @@ Friends</h2></td></tr>
 <p>return the size of one entry of components in bytes </p>
 <p>return the size of one entry of component_positions in bytes </p>
 
+<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00396">396</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="packing__info_8cxx_source.html#l00009">cgv::data::packing_info::align()</a>, <a class="el" href="packing__info_8cxx_source.html#l00034">cgv::data::packing_info::get_bit_depth()</a>, <a class="el" href="packing__info_8cxx_source.html#l00056">cgv::data::packing_info::get_component_alignment()</a>, <a class="el" href="component__format_8cxx_source.html#l00383">cgv::data::component_format::get_component_type()</a>, <a class="el" href="component__format_8cxx_source.html#l00324">cgv::data::component_format::get_nr_components()</a>, <a class="el" href="type__id_8cxx_source.html#l00018">cgv::type::info::get_type_size()</a>, and <a class="el" href="packing__info_8cxx_source.html#l00045">cgv::data::packing_info::is_packing()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00259">cgv::render::texture::create_from_image()</a>, <a class="el" href="data__view_8cxx_source.html#l00040">cgv::data::data_view_base::data_view_base()</a>, <a class="el" href="data__format_8cxx_source.html#l00255">get_nr_bytes()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00237">cgv::media::image::image_reader::read_line()</a>.</p>
+
 </div>
 </div>
 <a id="a8f9457addc136beed77ae367c87fe337"></a>
@@ -572,6 +598,12 @@ Friends</h2></td></tr>
 
 <p>return the resolution in the second dimension, or 1 if not defined </p>
 <p>return the number of entries in the second dimension </p>
+
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00267">267</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00213">get_resolution()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00259">cgv::render::texture::create_from_image()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00104">cgv::render::a_buffer::init_frame()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00612">cgv::render::gl::load_texture()</a>, <a class="el" href="gl__context_8cxx_source.html#l00868">cgv::render::gl::gl_context::read_frame_buffer()</a>, <a class="el" href="bmp__reader_8cxx_source.html#l00212">cgv::media::image::bmp_reader::read_image()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00113">cgv::render::gl::image_drawable::read_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00133">cgv::render::gl::image_drawable::read_images()</a>, <a class="el" href="data__view_8cxx_source.html#l00336">cgv::data::data_view::reflect_horizontally()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>, <a class="el" href="texture_8cxx_source.html#l00699">cgv::render::texture::replace_from_image()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00675">cgv::render::gl::replace_texture()</a>, <a class="el" href="context_8cxx_source.html#l00885">cgv::render::context::write_frame_buffer_to_image()</a>, <a class="el" href="bmp__writer_8cxx_source.html#l00080">cgv::media::image::bmp_writer::write_image()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">cgv::render::texture::write_to_file()</a>.</p>
 
 </div>
 </div>
@@ -604,6 +636,10 @@ Friends</h2></td></tr>
 <p>set the layout dimension of a given dimension, add dimensions if necessary </p>
 <p>set the layout dimension of a given dimension </p>
 
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00237">237</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8h_source.html#l00030">dimensions</a>, and <a class="el" href="data__format_8cxx_source.html#l00203">get_nr_dimensions()</a>.</p>
+
 </div>
 </div>
 <a id="aff1bf203447a682b49b88af95fcda3f0"></a>
@@ -632,6 +668,12 @@ Friends</h2></td></tr>
 <p>return the number of components </p>
 <p>return the number of component_positions </p>
 
+<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00324">324</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="component__format_8h_source.html#l00067">cgv::data::component_format::component_positions</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>, <a class="el" href="texture_8cxx_source.html#l00559">cgv::render::texture::create()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00511">cgv::render::gl::find_best_texture_format()</a>, <a class="el" href="component__format_8cxx_source.html#l00474">cgv::data::fmt1_compares_better()</a>, <a class="el" href="component__format_8cxx_source.html#l00330">cgv::data::component_format::get_component_index()</a>, <a class="el" href="component__format_8cxx_source.html#l00341">cgv::data::component_format::get_component_name()</a>, <a class="el" href="component__format_8cxx_source.html#l00396">cgv::data::component_format::get_entry_size()</a>, <a class="el" href="component__format_8cxx_source.html#l00353">cgv::data::component_format::get_standard_component_format()</a>, <a class="el" href="bmp__writer_8cxx_source.html#l00035">cgv::media::image::bmp_writer::is_format_supported()</a>, <a class="el" href="component__format_8cxx_source.html#l00421">cgv::data::component_format::operator==()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, <a class="el" href="bmp__reader_8cxx_source.html#l00174">cgv::media::image::bmp_reader::read_line()</a>, and <a class="el" href="bmp__writer_8cxx_source.html#l00080">cgv::media::image::bmp_writer::write_image()</a>.</p>
+
 </div>
 </div>
 <a id="a280ffb4e71106d6a105fae8e26226406"></a>
@@ -652,6 +694,12 @@ Friends</h2></td></tr>
 <p>return the number of dimensions of the data set </p>
 <p>return the dimension of the data set </p>
 
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00203">203</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8h_source.html#l00030">dimensions</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="frame__buffer_8cxx_source.html#l00088">cgv::render::frame_buffer::attach()</a>, <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>, <a class="el" href="data__view_8cxx_source.html#l00350">cgv::data::data_view::compose()</a>, <a class="el" href="texture_8cxx_source.html#l00559">cgv::render::texture::create()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00716">cgv::render::gl::create_texture()</a>, <a class="el" href="data__view_8cxx_source.html#l00040">cgv::data::data_view_base::data_view_base()</a>, <a class="el" href="texture_8cxx_source.html#l00750">cgv::render::texture::disable()</a>, <a class="el" href="texture_8cxx_source.html#l00739">cgv::render::texture::enable()</a>, <a class="el" href="texture_8cxx_source.html#l00511">cgv::render::texture::generate_mipmaps()</a>, <a class="el" href="data__format_8cxx_source.html#l00293">get_alignment()</a>, <a class="el" href="data__format_8cxx_source.html#l00285">get_entry_alignment()</a>, <a class="el" href="data__format_8cxx_source.html#l00229">get_layout_dimension()</a>, <a class="el" href="data__format_8cxx_source.html#l00246">get_nr_entries()</a>, <a class="el" href="data__format_8cxx_source.html#l00277">get_nr_time_steps()</a>, <a class="el" href="data__format_8cxx_source.html#l00213">get_resolution()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00612">cgv::render::gl::load_texture()</a>, <a class="el" href="data__format_8cxx_source.html#l00352">operator==()</a>, <a class="el" href="texture_8cxx_source.html#l00614">cgv::render::texture::replace()</a>, <a class="el" href="texture_8cxx_source.html#l00660">cgv::render::texture::replace_from_buffer()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00675">cgv::render::gl::replace_texture()</a>, <a class="el" href="data__format_8cxx_source.html#l00330">set_alignment()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00177">cgv::render::volume_renderer::set_depth_texture()</a>, <a class="el" href="data__format_8cxx_source.html#l00322">set_entry_alignment()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00170">cgv::render::volume_renderer::set_gradient_texture()</a>, <a class="el" href="data__format_8cxx_source.html#l00315">set_nr_time_steps()</a>, <a class="el" href="data__format_8cxx_source.html#l00221">set_resolution()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00163">cgv::render::volume_renderer::set_transfer_function_texture()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00156">cgv::render::volume_renderer::set_volume_texture()</a>, and <a class="el" href="volume__renderer_8cxx_source.html#l00104">cgv::render::volume_renderer::update_defines()</a>.</p>
+
 </div>
 </div>
 <a id="a0989aebd98e3e288f9eb7ddd07b5bb5a"></a>
@@ -671,6 +719,12 @@ Friends</h2></td></tr>
 
 <p>return the resolution in the highest dimension, or 1 if not defined </p>
 <p>return the number of entries in the last dimension </p>
+
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00277">277</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00203">get_nr_dimensions()</a>, and <a class="el" href="data__format_8cxx_source.html#l00213">get_resolution()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>.</p>
 
 </div>
 </div>
@@ -693,6 +747,12 @@ Friends</h2></td></tr>
 <p>return the resolution in the i-th dimension, or 0 if not defined </p>
 <p>return the number of data entries in the given dimension </p>
 
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00213">213</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8h_source.html#l00030">dimensions</a>, and <a class="el" href="data__format_8cxx_source.html#l00203">get_nr_dimensions()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00559">cgv::render::texture::create()</a>, <a class="el" href="data__format_8cxx_source.html#l00272">get_depth()</a>, <a class="el" href="data__format_8cxx_source.html#l00267">get_height()</a>, <a class="el" href="data__format_8cxx_source.html#l00246">get_nr_entries()</a>, <a class="el" href="data__format_8cxx_source.html#l00277">get_nr_time_steps()</a>, <a class="el" href="data__format_8cxx_source.html#l00262">get_width()</a>, and <a class="el" href="data__format_8cxx_source.html#l00352">operator==()</a>.</p>
+
 </div>
 </div>
 <a id="ab9e20b698e4a244dbeb95bf50474a923"></a>
@@ -712,6 +772,12 @@ Friends</h2></td></tr>
 
 <p>return the resolution in the first dimension, or 1 if not defined </p>
 <p>return the number of entries in the first dimension </p>
+
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00262">262</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00213">get_resolution()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00259">cgv::render::texture::create_from_image()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00104">cgv::render::a_buffer::init_frame()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00612">cgv::render::gl::load_texture()</a>, <a class="el" href="gl__context_8cxx_source.html#l00868">cgv::render::gl::gl_context::read_frame_buffer()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00113">cgv::render::gl::image_drawable::read_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00133">cgv::render::gl::image_drawable::read_images()</a>, <a class="el" href="bmp__reader_8cxx_source.html#l00174">cgv::media::image::bmp_reader::read_line()</a>, <a class="el" href="image__reader_8cxx_source.html#l00237">cgv::media::image::image_reader::read_line()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>, <a class="el" href="texture_8cxx_source.html#l00699">cgv::render::texture::replace_from_image()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00675">cgv::render::gl::replace_texture()</a>, <a class="el" href="context_8cxx_source.html#l00885">cgv::render::context::write_frame_buffer_to_image()</a>, <a class="el" href="bmp__writer_8cxx_source.html#l00080">cgv::media::image::bmp_writer::write_image()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">cgv::render::texture::write_to_file()</a>.</p>
 
 </div>
 </div>
@@ -745,6 +811,10 @@ Friends</h2></td></tr>
 <p>set the alignment of a given dimension</p>
 <p>The alignment of the last dimension is always 1 and cannot be set. </p>
 
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00330">330</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8h_source.html#l00030">dimensions</a>, and <a class="el" href="data__format_8cxx_source.html#l00203">get_nr_dimensions()</a>.</p>
+
 </div>
 </div>
 <a id="aeeb352777bc7221d4b1ac4438c3cea43"></a>
@@ -773,6 +843,10 @@ Friends</h2></td></tr>
 
 <p>set the component names from a standard component format </p>
 <p>set the component names from a given component format </p>
+
+<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00376">376</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="component__format_8h_source.html#l00065">cgv::data::component_format::component_string</a>, and <a class="el" href="component__format_8cxx_source.html#l00042">cgv::data::component_format::extract_components()</a>.</p>
 
 </div>
 </div>
@@ -829,6 +903,12 @@ alignment : unsigned int ... number of bits to which a component is aligned
 <li><code>"[D]"</code> ... one depth component without specified type, which defaults to "undef" and implies that the default depth format should be used. </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00168">168</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="packing__info_8cxx_source.html#l00009">cgv::data::packing_info::align()</a>, <a class="el" href="component__format_8h_source.html#l00063">cgv::data::component_format::component_interpretation</a>, <a class="el" href="component__format_8h_source.html#l00065">cgv::data::component_format::component_string</a>, <a class="el" href="component__format_8h_source.html#l00061">cgv::data::component_format::component_type</a>, <a class="el" href="component__format_8cxx_source.html#l00042">cgv::data::component_format::extract_components()</a>, <a class="el" href="type__id_8cxx_source.html#l00053">cgv::type::info::get_type_id()</a>, <a class="el" href="scan_8cxx_source.html#l00339">cgv::utils::is_integer()</a>, <a class="el" href="component__format_8h_source.html#l00071">cgv::data::component_format::last_error</a>, <a class="el" href="packing__info_8cxx_source.html#l00039">cgv::data::packing_info::set_bit_depth()</a>, <a class="el" href="packing__info_8cxx_source.html#l00061">cgv::data::packing_info::set_component_alignment()</a>, <a class="el" href="packing__info_8cxx_source.html#l00050">cgv::data::packing_info::set_packing()</a>, <a class="el" href="tokenizer_8cxx_source.html#l00059">cgv::utils::tokenizer::set_sep()</a>, and <a class="el" href="convert__string_8h_source.html#l00018">cgv::utils::to_string()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="component__format_8cxx_source.html#l00087">cgv::data::component_format::component_format()</a>.</p>
+
 </div>
 </div>
 <a id="aebce783b7792eb182473489b52cb7194"></a>
@@ -868,6 +948,10 @@ dimension_info &lt;- resolution [':' layout_dimension]['|' alignment_in_bytes]
 <li><code>"uint16[L:12,A:12]|4(32,32,32)"</code> ... 32x32x32 12-Bit Luminance Alpha Volume, where each entry is aligned to 4 bytes </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00023">23</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00339">cgv::utils::is_integer()</a>, <a class="el" href="tokenizer_8cxx_source.html#l00059">cgv::utils::tokenizer::set_sep()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
+
 </div>
 </div>
 <a id="abcacd2546a54336c4963d904f25e7219"></a>
@@ -888,6 +972,12 @@ dimension_info &lt;- resolution [':' layout_dimension]['|' alignment_in_bytes]
 
 <p>set the resolution in the third dimension, add dimensions if necessary </p>
 <p>set the number of entries in the third dimension </p>
+
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00310">310</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00221">set_resolution()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00350">cgv::data::data_view::compose()</a>, <a class="el" href="texture_8cxx_source.html#l00211">cgv::render::texture::create()</a>, and <a class="el" href="data__format_8cxx_source.html#l00191">set_dimensions()</a>.</p>
 
 </div>
 </div>
@@ -910,6 +1000,12 @@ dimension_info &lt;- resolution [':' layout_dimension]['|' alignment_in_bytes]
 <p>set the resolution in the second dimension, add dimensions if necessary </p>
 <p>set the number of entries in the second dimension </p>
 
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00305">305</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00221">set_resolution()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00350">cgv::data::data_view::compose()</a>, <a class="el" href="texture_8cxx_source.html#l00211">cgv::render::texture::create()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00531">cgv::render::texture::create_from_buffer()</a>, <a class="el" href="texture_8cxx_source.html#l00259">cgv::render::texture::create_from_image()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00162">cgv::render::gl::image_drawable::save_images()</a>, <a class="el" href="data__format_8cxx_source.html#l00191">set_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l00885">cgv::render::context::write_frame_buffer_to_image()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">cgv::render::texture::write_to_file()</a>.</p>
+
 </div>
 </div>
 <a id="a217d629535dc23d42edc33b1c2b31ad0"></a>
@@ -931,6 +1027,12 @@ dimension_info &lt;- resolution [':' layout_dimension]['|' alignment_in_bytes]
 <p>set the number of dimensions of the data set </p>
 <p>set the dimension of the data set </p>
 
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00208">208</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8h_source.html#l00030">dimensions</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00559">cgv::render::texture::create()</a>, and <a class="el" href="texture_8cxx_source.html#l00531">cgv::render::texture::create_from_buffer()</a>.</p>
+
 </div>
 </div>
 <a id="af02da1a1000dfeb15f6f2bb5818ac0d1"></a>
@@ -951,6 +1053,12 @@ dimension_info &lt;- resolution [':' layout_dimension]['|' alignment_in_bytes]
 
 <p>set the resolution in the last dimension, add dimensions if necessary </p>
 <p>set the number of entries in the last dimension </p>
+
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00315">315</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00203">get_nr_dimensions()</a>, and <a class="el" href="data__format_8cxx_source.html#l00221">set_resolution()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00350">cgv::data::data_view::compose()</a>, and <a class="el" href="data__format_8cxx_source.html#l00191">set_dimensions()</a>.</p>
 
 </div>
 </div>
@@ -983,6 +1091,12 @@ dimension_info &lt;- resolution [':' layout_dimension]['|' alignment_in_bytes]
 <p>set the resolution in the i-th dimension, add dimensions if necessary </p>
 <p>set the number of data entries in the given dimension </p>
 
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00221">221</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8h_source.html#l00030">dimensions</a>, and <a class="el" href="data__format_8cxx_source.html#l00203">get_nr_dimensions()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00559">cgv::render::texture::create()</a>, <a class="el" href="data__format_8cxx_source.html#l00310">set_depth()</a>, <a class="el" href="data__format_8cxx_source.html#l00305">set_height()</a>, <a class="el" href="data__format_8cxx_source.html#l00315">set_nr_time_steps()</a>, and <a class="el" href="data__format_8cxx_source.html#l00300">set_width()</a>.</p>
+
 </div>
 </div>
 <a id="a689cbcb12fcc4a8b39a2fbaed161813d"></a>
@@ -1003,6 +1117,12 @@ dimension_info &lt;- resolution [':' layout_dimension]['|' alignment_in_bytes]
 
 <p>set the resolution in the first dimension, add dimensions if necessary </p>
 <p>set the number of entries in the first dimension </p>
+
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00300">300</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00221">set_resolution()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00211">cgv::render::texture::create()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00531">cgv::render::texture::create_from_buffer()</a>, <a class="el" href="texture_8cxx_source.html#l00259">cgv::render::texture::create_from_image()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00162">cgv::render::gl::image_drawable::save_images()</a>, <a class="el" href="data__format_8cxx_source.html#l00191">set_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l00885">cgv::render::context::write_frame_buffer_to_image()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">cgv::render::texture::write_to_file()</a>.</p>
 
 </div>
 </div>
@@ -1044,11 +1164,13 @@ dimension_info &lt;- resolution [':' layout_dimension]['|' alignment_in_bytes]
 <p>define stream out operator </p>
 <p>stream out operator writes the data format in the syntax of description strings as defined in the docu of <a class="el" href="classcgv_1_1data_1_1data__format.html#aebce783b7792eb182473489b52cb7194" title="Set data format from description string, which adds information to the description string of the comp...">set_data_format()</a>. </p>
 
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00372">372</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/data/<a class="el" href="data__format_8h_source.html">data_format.h</a></li>
-<li>cgv/data/data_format.cxx</li>
+<li>cgv/data/<a class="el" href="data__format_8cxx_source.html">data_format.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

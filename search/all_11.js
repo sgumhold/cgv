@@ -5,7 +5,7 @@ var searchData=
   ['qem_5ftype_2279',['qem_type',['../classcgv_1_1media_1_1mesh_1_1dual__contouring.html#aa6c5cae820e4524724092146cfb1d28a',1,'cgv::media::mesh::dual_contouring']]],
   ['qr_5fsolve_2280',['qr_solve',['../namespacecgv_1_1math.html#af36ab77a746697862a6c5887fb985b60',1,'cgv::math::qr_solve(const mat&lt; T &gt; &amp;a, const vec&lt; T &gt; &amp;b, vec&lt; T &gt; &amp;x)'],['../namespacecgv_1_1math.html#a39153e84c1ba0d7cd907ea31a1897f0b',1,'cgv::math::qr_solve(const mat&lt; T &gt; &amp;a, const mat&lt; T &gt; &amp;b, mat&lt; T &gt; &amp;x)']]],
   ['quadratic_5fattenuation_2281',['quadratic_attenuation',['../classcgv_1_1media_1_1illum_1_1light__source.html#a28abaf522cfa210ee8ee1023ec1e9f84',1,'cgv::media::illum::light_source']]],
-  ['quat_2282',['quat',['../structcgv_1_1render_1_1render__types.html#a3563b70772c201cb2bd6533c31a3930e',1,'cgv::render::render_types::quat()'],['../classcgv_1_1gui_1_1pose__event.html#aa304ba805e6a735e99b5f588cd7ef3b1',1,'cgv::gui::pose_event::quat()'],['../namespacecgv_1_1render.html#a77116d5f5700b4c2edfb0e3c663a8a94',1,'cgv::render::quat()']]],
+  ['quat_2282',['quat',['../classcgv_1_1gui_1_1pose__event.html#aa304ba805e6a735e99b5f588cd7ef3b1',1,'cgv::gui::pose_event::quat()'],['../namespacecgv_1_1render.html#a77116d5f5700b4c2edfb0e3c663a8a94',1,'cgv::render::quat()']]],
   ['quat_5f2_5faxis_5fangle_2283',['quat_2_axis_angle',['../namespacecgv_1_1math.html#a4e17e86fbb77d2e81c3955d56b666ea6',1,'cgv::math']]],
   ['quat_5f2_5fmat_5f33_2284',['quat_2_mat_33',['../namespacecgv_1_1math.html#a81aff26fbcb622a458ea9ad3f053c9e2',1,'cgv::math']]],
   ['quat_5f2_5fmat_5f44_2285',['quat_2_mat_44',['../namespacecgv_1_1math.html#a24fcb46517f4106ddcfd5b2a2fd256ff',1,'cgv::math']]],

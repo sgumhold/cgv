@@ -321,6 +321,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>the video reader chooses a specific reader automatically based on the extension of the given file name </p>
+
+<p class="definition">Definition at line <a class="el" href="video__reader_8h_source.html#l00036">36</a> of file <a class="el" href="video__reader_8h_source.html">video_reader.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ac2ae8fe93fa69a97f9675539c1297ddd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac2ae8fe93fa69a97f9675539c1297ddd">&#9670;&nbsp;</a></span>video_reader()</h2>
@@ -340,6 +342,10 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <p>construct a video reader from a reference to the image format, which will be set after opening a file. </p>
 <p>construct an image reader from a file name </p>
+
+<p class="definition">Definition at line <a class="el" href="video__reader_8cxx_source.html#l00046">46</a> of file <a class="el" href="video__reader_8cxx_source.html">video_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="video__reader_8h_source.html#l00044">fps</a>.</p>
 
 </div>
 </div>
@@ -400,6 +406,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>overload to implement the execution of a method based on the method name and the given parameters</p>
 <p>, i.e. a class method based on the action name and the given parameters. The default implementation uses the <a class="el" href="classcgv_1_1base_1_1base.html#aa0fe4266b74ebe49de68faaab3ca7a7a" title="used for simple self reflection">self_reflect()</a> method to dispatch this call. If not found, the get_void method returns false. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00168">168</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
 </div>
 </div>
 <a id="ad121ecb072de62a4ab4a180bc9d183bb"></a>
@@ -439,6 +447,12 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>find a member pointer by name. </p>
 <p>If not found the null pointer is returned. If the type name string pointer is provided, the type of the property is copied to the referenced string. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00360">360</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="find__reflection__handler_8cxx_source.html#l00047">cgv::reflect::find_reflection_handler::found_target()</a>, <a class="el" href="find__reflection__handler_8cxx_source.html#l00059">cgv::reflect::find_reflection_handler::get_member_ptr()</a>, <a class="el" href="find__reflection__handler_8cxx_source.html#l00072">cgv::reflect::find_reflection_handler::get_reflection_traits()</a>, and <a class="el" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#aa00b01c2252909e01eb154c6170df6d2">cgv::reflect::abst_reflection_traits::get_type_name()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="event__handler_8cxx_source.html#l00022">cgv::gui::event_handler::add_key_control()</a>.</p>
+
 </div>
 </div>
 <a id="a5978e45464c3fdd3083426c4b21ed28a"></a>
@@ -469,6 +483,8 @@ template&lt;typename T &gt; </div>
 
 <p>query a property of the element and perform standard conversions if necessary. </p>
 <p>This templated version simply extracts the type of the value from the reference and calls the <a class="el" href="classcgv_1_1media_1_1video_1_1video__reader.html#a702b054c51a69f3d1b982a14c99282d6" title="abstract interface for the setter, by default it simply returns false">set_void()</a> method. Note that this only works if the template cgv::type::info::type_name&lt;T&gt; is overloaded for the value type. </p>
+
+<p class="definition">Definition at line <a class="el" href="base_8h_source.html#l00192">192</a> of file <a class="el" href="base_8h_source.html">base.h</a>.</p>
 
 </div>
 </div>
@@ -508,6 +524,10 @@ template&lt;typename T &gt; </div>
 
 <p>check if the given name specifies a property. </p>
 <p>If the type name string pointer is provided, the type of the property is copied to the referenced string. </p>
+
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00336">336</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="tokenizer_8h_source.html#l00121">cgv::utils::bite_all()</a>, and <a class="el" href="convert__string_8h_source.html#l00018">cgv::utils::to_string()</a>.</p>
 
 </div>
 </div>
@@ -549,6 +569,12 @@ template&lt;typename T &gt; </div>
 <p>set several properties, which are defined as colon separated assignments, where the types are derived automatically</p>
 <p>, which are defined as colon separated assignments, where the types are derived automatically to bool, int, double or std::string. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00287">287</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="tokenizer_8h_source.html#l00121">cgv::utils::bite_all()</a>, <a class="el" href="scan_8cxx_source.html#l00017">cgv::utils::is_digit()</a>, <a class="el" href="scan_8cxx_source.html#l00339">cgv::utils::is_integer()</a>, and <a class="el" href="convert__string_8h_source.html#l00018">cgv::utils::to_string()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="base__generator_8h_source.html#l00132">cgv::base::has_property()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">cgv::render::texture::write_to_file()</a>.</p>
+
 </div>
 </div>
 <a id="acd1fe4008f6ee9e02e121dfc6d88b77c"></a>
@@ -569,6 +595,10 @@ template&lt;typename T &gt; </div>
 
 <p>read the next frame to the given data view, if this is empty recreate it with a newly allocated data pointer, which is owned by the view afterwards. </p>
 <p>This method returns false if an error occurs or if there are no more frames in the file. </p>
+
+<p class="definition">Definition at line <a class="el" href="video__reader_8cxx_source.html#l00133">133</a> of file <a class="el" href="video__reader_8cxx_source.html">video_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00113">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="video__reader_8h_source.html#l00040">image_format_ptr</a>, <a class="el" href="video__reader_8h_source.html#l00046">last_error</a>, <a class="el" href="video__reader_8h_source.html#l00042">rd</a>, and <a class="el" href="classcgv_1_1media_1_1video_1_1abst__video__reader.html#a86c56e784c8115a0012f79280c92d981">cgv::media::video::abst_video_reader::read_frame()</a>.</p>
 
 </div>
 </div>
@@ -601,6 +631,8 @@ template&lt;typename T &gt; </div>
 <p>The overloaded implementation is used by the default implementations of set_void, get_void and get_property_declarations with corresponding reflection handlers. The default implementation of self_reflect is empty. </p>
 
 <p>Reimplemented in <a class="el" href="structcgv_1_1render_1_1render__config.html#a91eabc5d1bee4696cce6de5ad05dfbe8">cgv::render::render_config</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00161">161</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
 
 </div>
 </div>
@@ -643,11 +675,13 @@ template&lt;typename T &gt; </div>
 <p>set a property of the element to the given value and perform standard conversions if necessary. </p>
 <p>This templated version simply extracts the type of the value from the reference and calls the <a class="el" href="classcgv_1_1media_1_1video_1_1video__reader.html#a702b054c51a69f3d1b982a14c99282d6" title="abstract interface for the setter, by default it simply returns false">set_void()</a> method. Note that this only works if the template cgv::type::info::type_name&lt;T&gt; is overloaded for the value type. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8h_source.html#l00186">186</a> of file <a class="el" href="base_8h_source.html">base.h</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/media/video/<a class="el" href="video__reader_8h_source.html">video_reader.h</a></li>
-<li>cgv/media/video/video_reader.cxx</li>
+<li>cgv/media/video/<a class="el" href="video__reader_8cxx_source.html">video_reader.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

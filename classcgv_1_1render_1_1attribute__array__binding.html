@@ -231,6 +231,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>the <a class="el" href="classcgv_1_1render_1_1attribute__array__binding.html" title="the attribute_array_binding allows to define vertex attributes (i.e.">attribute_array_binding</a> allows to define vertex attributes (i.e. </p>
 <p>the inputs to the vertex shader as well as an element array that stores element indices in indexed rendering. The vertex attributes can be set from instances of std::vector, pointers to arrays and <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html" title="a vertex buffer is an unstructured memory block on the GPU.">vertex_buffer</a> objects. Each individual vertex attribute can be enabled and disabled. Each vertex attribute is attached to a program location that can be queried from a <a class="el" href="classcgv_1_1render_1_1shader__program.html" title="a shader program combines several shader code fragments to a complete definition of the shading pipel...">shader_program</a> with the get_attribute_location() function. The element array can only be set to a <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html" title="a vertex buffer is an unstructured memory block on the GPU.">vertex_buffer</a> object of type VBT_INDICES with the function <a class="el" href="classcgv_1_1render_1_1attribute__array__binding.html#a0486660e1e9c2cabcbf5bdb81f5365a3" title="set the elment array to the given vertex buffer object which must me of type VBT_INDICES">set_element_array()</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="attribute__array__binding_8h_source.html#l00019">19</a> of file <a class="el" href="attribute__array__binding_8h_source.html">attribute_array_binding.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae95ddb7973361eb3bfd350fa565812db"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae95ddb7973361eb3bfd350fa565812db">&#9670;&nbsp;</a></span>attribute_array_binding()</h2>
@@ -249,6 +251,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p>default constructor does not create attribute array binding </p>
 <p>create empty shader program and set the option whether errors during shader code attachment should be printed to std::cerr </p>
+
+<p class="definition">Definition at line <a class="el" href="attribute__array__binding_8cxx_source.html#l00073">73</a> of file <a class="el" href="attribute__array__binding_8cxx_source.html">attribute_array_binding.cxx</a>.</p>
 
 </div>
 </div>
@@ -269,6 +273,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p>destruct attribute array binding object </p>
 <p>call destruct method </p>
+
+<p class="definition">Definition at line <a class="el" href="attribute__array__binding_8cxx_source.html#l00077">77</a> of file <a class="el" href="attribute__array__binding_8cxx_source.html">attribute_array_binding.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="context_8h_source.html#l00266">cgv::render::render_component::ctx_ptr</a>, <a class="el" href="attribute__array__binding_8cxx_source.html#l00094">destruct()</a>, and <a class="el" href="classcgv_1_1render_1_1context.html#ad351a2dc1c1e0343b17738053a981816">cgv::render::context::make_current()</a>.</p>
 
 </div>
 </div>
@@ -338,6 +346,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>convenience function that determines attribute location in program by name and then uses set_attribute_array to point array of vertex attribute at location <code>loc</code> to elements of given type in vertex buffer object at given offset spaced with given stride </p>
 <p>conveniance function that determines attribute location in program by name and then uses set_attribute_array to point array of vertex attribute at location <code>loc</code> to elements of given type in vertex buffer object at given offset spaced with given stride </p>
 
+<p class="definition">Definition at line <a class="el" href="attribute__array__binding_8cxx_source.html#l00032">32</a> of file <a class="el" href="attribute__array__binding_8cxx_source.html">attribute_array_binding.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00666">cgv::render::shader_program::get_attribute_location()</a>, and <a class="el" href="attribute__array__binding_8h_source.html#l00068">set_attribute_array()</a>.</p>
+
 </div>
 </div>
 <a id="a180fc55e536437e5798b2cf355c017eb"></a>
@@ -358,6 +370,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p>create the attribute array binding object </p>
 <p>create the attribute array binding </p>
+
+<p class="definition">Definition at line <a class="el" href="attribute__array__binding_8cxx_source.html#l00088">88</a> of file <a class="el" href="attribute__array__binding_8cxx_source.html">attribute_array_binding.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01204">cgv::plot::plot_base::init()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00083">cgv::render::gl::image_drawable::init()</a>, and <a class="el" href="gl__context_8cxx_source.html#l01001">cgv::render::gl::gl_context::prepare_attributes()</a>.</p>
 
 </div>
 </div>
@@ -380,6 +396,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>destruct attribute array binding object </p>
 <p>destruct attribute array </p>
 
+<p class="definition">Definition at line <a class="el" href="attribute__array__binding_8cxx_source.html#l00094">94</a> of file <a class="el" href="attribute__array__binding_8cxx_source.html">attribute_array_binding.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01239">cgv::plot::plot_base::clear()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00104">cgv::render::gl::image_drawable::clear()</a>, and <a class="el" href="attribute__array__binding_8cxx_source.html#l00077">~attribute_array_binding()</a>.</p>
+
 </div>
 </div>
 <a id="a2a0667d238f86218e29e7d8ee0a6c39a"></a>
@@ -401,6 +421,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>disable whole attribute array binding object </p>
 <p>disable the attribute array binding </p>
 
+<p class="definition">Definition at line <a class="el" href="attribute__array__binding_8cxx_source.html#l00111">111</a> of file <a class="el" href="attribute__array__binding_8cxx_source.html">attribute_array_binding.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>, and <a class="el" href="gl__context_8cxx_source.html#l00972">cgv::render::gl::gl_context::release_attributes()</a>.</p>
+
 </div>
 </div>
 <a id="a1444cdefabef6ea00406b1b4db900b2c"></a>
@@ -421,6 +445,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p>enable whole the attribute array binding object </p>
 <p>enable the attribute array binding </p>
+
+<p class="definition">Definition at line <a class="el" href="attribute__array__binding_8cxx_source.html#l00101">101</a> of file <a class="el" href="attribute__array__binding_8cxx_source.html">attribute_array_binding.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l00186">cgv::render::context::error()</a>, and <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>, and <a class="el" href="gl__context_8cxx_source.html#l01001">cgv::render::gl::gl_context::prepare_attributes()</a>.</p>
 
 </div>
 </div>
@@ -451,11 +481,13 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>copy the rendering api specific id the component to the memory location of the given pointer. </p>
 <p>For opengl this the passed pointer should be of type GLint or GLuint. </p>
 
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01886">1886</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/render/<a class="el" href="attribute__array__binding_8h_source.html">attribute_array_binding.h</a></li>
-<li>cgv/render/attribute_array_binding.cxx</li>
+<li>cgv/render/<a class="el" href="attribute__array__binding_8cxx_source.html">attribute_array_binding.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

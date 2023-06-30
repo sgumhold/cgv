@@ -324,6 +324,8 @@ Protected Attributes</h2></td></tr>
 </ul>
 </li>
 </ul>
+
+<p class="definition">Definition at line <a class="el" href="render_2view_8h_source.html#l00021">21</a> of file <a class="el" href="render_2view_8h_source.html">view.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ad7bcc1852080952e249f448b54a17ee3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad7bcc1852080952e249f448b54a17ee3">&#9670;&nbsp;</a></span>compute_axis_and_angle()</h2>
@@ -366,6 +368,10 @@ Protected Attributes</h2></td></tr>
 <p>compute axis and angle of a rotation that the current view_dir and view_up_dir to the given target_view_dir and target_view_up_dir </p>
 <p>returns the result of the function <a class="el" href="namespacecgv_1_1math.html#ab5a5bdaef42e636106d43ad1273d6534" title="decompose a rotation matrix into axis angle representation">cgv::math::decompose_rotation_to_axis_and_angle()</a> </p>
 
+<p class="definition">Definition at line <a class="el" href="view_8cxx_source.html#l00027">27</a> of file <a class="el" href="view_8cxx_source.html">view.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="geom_8h_source.html#l00076">cgv::math::build_orthogonal_frame()</a>, <a class="el" href="geom_8h_source.html#l00037">cgv::math::decompose_rotation_to_axis_and_angle()</a>, and <a class="el" href="fmat_8h_source.html#l00232">cgv::math::fmat&lt; T, N, M &gt;::transpose()</a>.</p>
+
 </div>
 </div>
 <a id="a9755d9c8de88e76e3d8cec015b74c3bc"></a>
@@ -403,6 +409,10 @@ Protected Attributes</h2></td></tr>
 <p>fill <code>rect</code> with four points covering the screen rectangle at given depth from eye with given aspect ratio </p>
 <p>fill the given vector with four points covering the screen rectangle </p>
 
+<p class="definition">Definition at line <a class="el" href="view_8cxx_source.html#l00304">304</a> of file <a class="el" href="view_8cxx_source.html">view.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="view_8cxx_source.html#l00123">get_eye()</a>, <a class="el" href="view_8cxx_source.html#l00079">get_y_extent_at_depth()</a>, and <a class="el" href="view_8cxx_source.html#l00211">put_coordinate_system()</a>.</p>
+
 </div>
 </div>
 <a id="ace6008d675e0f8be53ef1101095a44a9"></a>
@@ -422,6 +432,12 @@ Protected Attributes</h2></td></tr>
 
 <p>query the eye point, which is computed from focus, view dir, y extent at focus and y view angle </p>
 <p>With the y view angle approaching 0, the eye point moves infinitely far away. To avoid numerical problems, the eye point is computed with an y view angle no less than 0.1. </p>
+
+<p class="definition">Definition at line <a class="el" href="view_8cxx_source.html#l00123">123</a> of file <a class="el" href="view_8cxx_source.html">view.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="render_2view_8h_source.html#l00030">focus</a>, and <a class="el" href="view_8cxx_source.html#l00042">get_tan_of_half_of_fovy()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="clipped__view_8cxx_source.html#l00069">cgv::render::clipped_view::compute_clipping_planes()</a>, <a class="el" href="view_8cxx_source.html#l00304">compute_screen_rectangle()</a>, <a class="el" href="stereo__view_8cxx_source.html#l00042">cgv::render::stereo_view::get_parallax_zero_depth()</a>, and <a class="el" href="view_8cxx_source.html#l00242">rotate()</a>.</p>
 
 </div>
 </div>
@@ -549,6 +565,10 @@ Protected Attributes</h2></td></tr>
 <p>Finally, the vp_width, vp_height, vp_center_x, and vp_center_y pointers are set to the viewport size and center mouse location of the panel panel that the mouse pointer is in.</p>
 <p>All pointer arguments starting with MPW_other_ptr can be set to the null pointer. </p>
 
+<p class="definition">Definition at line <a class="el" href="view_8cxx_source.html#l00277">277</a> of file <a class="el" href="view_8cxx_source.html">view.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="drawable_8cxx_source.html#l00058">cgv::render::drawable::get_world_location()</a>.</p>
+
 </div>
 </div>
 <a id="a059be4183561478000bad2b26e061769"></a>
@@ -601,6 +621,8 @@ Protected Attributes</h2></td></tr>
 <p>given a pixel location x,y return the z-value from the depth buffer, which ranges from 0.0 at z_near to 1.0 at z_far and a point in world coordinates</p>
 <p>in case of stereo rendering two z-values exist that can be unprojected to two points in world coordinates. In this case the possibility with smaller z value is selected. </p>
 
+<p class="definition">Definition at line <a class="el" href="view_8cxx_source.html#l00290">290</a> of file <a class="el" href="view_8cxx_source.html">view.cxx</a>.</p>
+
 </div>
 </div>
 <a id="a9624a54ab12b50eeb23ac464c4c73aff"></a>
@@ -637,6 +659,12 @@ Protected Attributes</h2></td></tr>
 
 <p>construct coordinate system with z in negative view direction and x and y aligned with the right and up direction of the viewed image </p>
 <p>If view direction and view up direction are not orthogonal, the y direction will point in the component of the view up direction that is orthogonal to the view direction. </p>
+
+<p class="definition">Definition at line <a class="el" href="view_8cxx_source.html#l00211">211</a> of file <a class="el" href="view_8cxx_source.html">view.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="fvec_8h_source.html#l00454">cgv::math::cross()</a>, and <a class="el" href="fvec_8h_source.html#l00296">cgv::math::fvec&lt; T, N &gt;::normalize()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="view_8cxx_source.html#l00304">compute_screen_rectangle()</a>, <a class="el" href="view_8cxx_source.html#l00264">pan()</a>, and <a class="el" href="view_8cxx_source.html#l00242">rotate()</a>.</p>
 
 </div>
 </div>
@@ -675,6 +703,10 @@ Protected Attributes</h2></td></tr>
 <p>rotated view around axis by angle </p>
 <p>Axis is given by point and direction, where the point is in the image center and the given depth and the axis points into a direction in image plane given through its screen x and screen y coordinate. The length of the axis vector gives the rotation angle in radians. Rotation around screen x direction corresponds to yaw and around screen y direction to gear rotations. </p>
 
+<p class="definition">Definition at line <a class="el" href="view_8cxx_source.html#l00242">242</a> of file <a class="el" href="view_8cxx_source.html">view.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="render_2view_8h_source.html#l00030">focus</a>, <a class="el" href="view_8cxx_source.html#l00123">get_eye()</a>, <a class="el" href="fvec_8h_source.html#l00243">cgv::math::fvec&lt; T, N &gt;::length()</a>, <a class="el" href="fvec_8h_source.html#l00319">cgv::math::normalize()</a>, <a class="el" href="view_8cxx_source.html#l00211">put_coordinate_system()</a>, and <a class="el" href="geom_8h_source.html#l00010">cgv::math::rotate()</a>.</p>
+
 </div>
 </div>
 <a id="a45735dc050d4f357a9cd10ffef40816c"></a>
@@ -696,6 +728,12 @@ Protected Attributes</h2></td></tr>
 <p>set view dir and y view angle keeping focus and y extent such that <a class="el" href="classcgv_1_1render_1_1view.html#ace6008d675e0f8be53ef1101095a44a9" title="query the eye point, which is computed from focus, view dir, y extent at focus and y view angle">get_eye()</a> returns the passed point, return whether this was successful. </p>
 <p>Recomputes view up direction to make it orthogonal to view direction. In the case that the eye point is identical to the current focus point the function fails and returns false. </p>
 
+<p class="definition">Definition at line <a class="el" href="view_8cxx_source.html#l00148">148</a> of file <a class="el" href="view_8cxx_source.html">view.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="render_2view_8h_source.html#l00030">focus</a>, and <a class="el" href="fvec_8h_source.html#l00243">cgv::math::fvec&lt; T, N &gt;::length()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="view_8cxx_source.html#l00161">view_look_at_keep_extent()</a>.</p>
+
 </div>
 </div>
 <a id="a14e2bffa5f6eacfbbf493eab2413e7ef"></a>
@@ -716,6 +754,12 @@ Protected Attributes</h2></td></tr>
 
 <p>set the view dir and y extent at focus keeping focus and y view angle such that <a class="el" href="classcgv_1_1render_1_1view.html#ace6008d675e0f8be53ef1101095a44a9" title="query the eye point, which is computed from focus, view dir, y extent at focus and y view angle">get_eye()</a> returns the passed point, return whether this was successful. </p>
 <p>Recomputes view up direction to make it orthogonal to view direction. In the case that the eye point is identical to the current focus point the function fails and returns false. If the current view angle is &lt; 0.1, the view anlge 0.1 is used for eye point calculation </p>
+
+<p class="definition">Definition at line <a class="el" href="view_8cxx_source.html#l00132">132</a> of file <a class="el" href="view_8cxx_source.html">view.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="render_2view_8h_source.html#l00030">focus</a>, <a class="el" href="view_8cxx_source.html#l00079">get_y_extent_at_depth()</a>, and <a class="el" href="fvec_8h_source.html#l00243">cgv::math::fvec&lt; T, N &gt;::length()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="view_8cxx_source.html#l00169">view_look_at_keep_view_angle()</a>.</p>
 
 </div>
 </div>
@@ -754,6 +798,10 @@ Protected Attributes</h2></td></tr>
 <p>set the view according to the standard view lookat definition from eye, focus and view up direction keeping the y-view angle constant </p>
 <p>set the view according to the standard view lookat definition from eye, focus and view up direction. </p>
 
+<p class="definition">Definition at line <a class="el" href="view_8cxx_source.html#l00161">161</a> of file <a class="el" href="view_8cxx_source.html">view.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="view_8cxx_source.html#l00148">set_eye_keep_extent()</a>, <a class="el" href="view_8cxx_source.html#l00085">set_focus()</a>, and <a class="el" href="view_8cxx_source.html#l00092">set_view_up_dir()</a>.</p>
+
 </div>
 </div>
 <a id="aafad49fb7a84eea1a08f20354b129ed8"></a>
@@ -791,11 +839,15 @@ Protected Attributes</h2></td></tr>
 <p>set the view according to the standard view lookat definition from eye, focus and view up direction keeping the y-extent at the focus point constant </p>
 <p>set the view according to the standard view lookat definition from eye, focus and view up direction. </p>
 
+<p class="definition">Definition at line <a class="el" href="view_8cxx_source.html#l00169">169</a> of file <a class="el" href="view_8cxx_source.html">view.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="view_8cxx_source.html#l00132">set_eye_keep_view_angle()</a>, <a class="el" href="view_8cxx_source.html#l00085">set_focus()</a>, and <a class="el" href="view_8cxx_source.html#l00092">set_view_up_dir()</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/render/<a class="el" href="render_2view_8h_source.html">view.h</a></li>
-<li>cgv/render/view.cxx</li>
+<li>cgv/render/<a class="el" href="view_8cxx_source.html">view.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

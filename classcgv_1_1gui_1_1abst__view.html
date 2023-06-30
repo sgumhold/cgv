@@ -120,7 +120,7 @@ Inheritance diagram for cgv::gui::abst_view:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a7ee74f704817483c71e72bb9ddbe9985"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1abst__view.html#a7ee74f704817483c71e72bb9ddbe9985">abst_view</a> (const std::string &amp;<a class="el" href="classcgv_1_1base_1_1named.html#aeacb85dab71b803971f8611644898371">name</a>)</td></tr>
-<tr class="memdesc:a7ee74f704817483c71e72bb9ddbe9985"><td class="mdescLeft">&#160;</td><td class="mdescRight">pass name on to node, careful the implementation of this is in the source file control.cxx to avoid name clashes with view.cxx  <a href="classcgv_1_1gui_1_1abst__view.html#a7ee74f704817483c71e72bb9ddbe9985">More...</a><br /></td></tr>
+<tr class="memdesc:a7ee74f704817483c71e72bb9ddbe9985"><td class="mdescLeft">&#160;</td><td class="mdescRight">pass name on to node, careful the implementation of this is in the source file <a class="el" href="control_8cxx_source.html">control.cxx</a> to avoid name clashes with <a class="el" href="view_8cxx_source.html">view.cxx</a>  <a href="classcgv_1_1gui_1_1abst__view.html#a7ee74f704817483c71e72bb9ddbe9985">More...</a><br /></td></tr>
 <tr class="separator:a7ee74f704817483c71e72bb9ddbe9985"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adbf820382c352448efc417e12ba884ed"><td class="memItemLeft" align="right" valign="top"><a id="adbf820382c352448efc417e12ba884ed"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1abst__view.html#adbf820382c352448efc417e12ba884ed">~abst_view</a> ()</td></tr>
@@ -323,6 +323,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>type independent &amp;base class of all views </p>
+
+<p class="definition">Definition at line <a class="el" href="gui_2view_8h_source.html#l00012">12</a> of file <a class="el" href="gui_2view_8h_source.html">view.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7ee74f704817483c71e72bb9ddbe9985"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7ee74f704817483c71e72bb9ddbe9985">&#9670;&nbsp;</a></span>abst_view()</h2>
@@ -340,8 +342,10 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>pass name on to node, careful the implementation of this is in the source file control.cxx to avoid name clashes with view.cxx </p>
+<p>pass name on to node, careful the implementation of this is in the source file <a class="el" href="control_8cxx_source.html">control.cxx</a> to avoid name clashes with <a class="el" href="view_8cxx_source.html">view.cxx</a> </p>
 <p>construct from name </p>
+
+<p class="definition">Definition at line <a class="el" href="control_8cxx_source.html#l00008">8</a> of file <a class="el" href="control_8cxx_source.html">control.cxx</a>.</p>
 
 </div>
 </div>
@@ -402,6 +406,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>overload to implement the execution of a method based on the method name and the given parameters</p>
 <p>, i.e. a class method based on the action name and the given parameters. The default implementation uses the <a class="el" href="classcgv_1_1base_1_1base.html#aa0fe4266b74ebe49de68faaab3ca7a7a" title="used for simple self reflection">self_reflect()</a> method to dispatch this call. If not found, the get_void method returns false. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00168">168</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
 </div>
 </div>
 <a id="a4cf1cd57fbf61be2a8596e060a045c14"></a>
@@ -421,6 +427,10 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <p>detach view again </p>
 <p>links all views to a reference into a doubly linked list in order to allow controls of the reference to update all attached views </p>
+
+<p class="definition">Definition at line <a class="el" href="control_8cxx_source.html#l00060">60</a> of file <a class="el" href="control_8cxx_source.html">control.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="control_8cxx_source.html#l00040">attach_to_reference()</a>, and <a class="el" href="control_8cxx_source.html#l00033">~abst_view()</a>.</p>
 
 </div>
 </div>
@@ -461,6 +471,12 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>find a member pointer by name. </p>
 <p>If not found the null pointer is returned. If the type name string pointer is provided, the type of the property is copied to the referenced string. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00360">360</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="find__reflection__handler_8cxx_source.html#l00047">cgv::reflect::find_reflection_handler::found_target()</a>, <a class="el" href="find__reflection__handler_8cxx_source.html#l00059">cgv::reflect::find_reflection_handler::get_member_ptr()</a>, <a class="el" href="find__reflection__handler_8cxx_source.html#l00072">cgv::reflect::find_reflection_handler::get_reflection_traits()</a>, and <a class="el" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#aa00b01c2252909e01eb154c6170df6d2">cgv::reflect::abst_reflection_traits::get_type_name()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="event__handler_8cxx_source.html#l00022">cgv::gui::event_handler::add_key_control()</a>.</p>
+
 </div>
 </div>
 <a id="a5978e45464c3fdd3083426c4b21ed28a"></a>
@@ -492,6 +508,8 @@ template&lt;typename T &gt; </div>
 <p>query a property of the element and perform standard conversions if necessary. </p>
 <p>This templated version simply extracts the type of the value from the reference and calls the <a class="el" href="classcgv_1_1base_1_1base.html#a62d3cd5ae49c3e261f5c0e52bc59bd4f" title="abstract interface for the setter of a dynamic property.">set_void()</a> method. Note that this only works if the template cgv::type::info::type_name&lt;T&gt; is overloaded for the value type. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8h_source.html#l00192">192</a> of file <a class="el" href="base_8h_source.html">base.h</a>.</p>
+
 </div>
 </div>
 <a id="a4d67c8d339fe06f17396aaa8625292f8"></a>
@@ -522,6 +540,10 @@ template&lt;typename T &gt; </div>
 <p>of the form "name1:type1;name2:type2;...", by default an empty list is returned. The types should by consistent with the names returned by <a class="el" href="structcgv_1_1type_1_1info_1_1type__name.html#a7dcb7c43dbf01bd9276508eb7e2295aa" title="return special name for standard types or type name from RTTI cleaned from keywords for all other typ...">cgv::type::info::type_name::get_name</a>. The default implementation extracts names and types from the <a class="el" href="classcgv_1_1base_1_1base.html#aa0fe4266b74ebe49de68faaab3ca7a7a" title="used for simple self reflection">self_reflect()</a> method and the meta type information provided by the get_type() method. </p>
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1media_1_1video_1_1video__writer.html#a70c7d0a47fedc21d9da8ae58a8e582b2">cgv::media::video::video_writer</a>, <a class="el" href="classcgv_1_1media_1_1video_1_1video__reader.html#aa79161bb56539ef00192c01887e91026">cgv::media::video::video_reader</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1image__writer.html#a477ec6f721fcae426557c6f6584cf134">cgv::media::image::image_writer</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#ae6cd9178f2412fcc7e3068cf76cb1611">cgv::media::image::image_reader</a>, <a class="el" href="structcgv_1_1base_1_1factory.html#a614db734b9dab12958b6c0370addfb6f">cgv::base::factory</a>, <a class="el" href="classcgv_1_1base_1_1console.html#a662798821c197e8886aff79e8ffa3d40">cgv::base::console</a>, and <a class="el" href="classcgv_1_1base_1_1base__generator.html#a398375938ddac0a608e2fcaa96240623">cgv::base::base_generator</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00264">264</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="image__reader_8cxx_source.html#l00310">cgv::media::image::image_reader::get_property_declarations()</a>, <a class="el" href="image__writer_8cxx_source.html#l00161">cgv::media::image::image_writer::get_property_declarations()</a>, <a class="el" href="video__reader_8cxx_source.html#l00176">cgv::media::video::video_reader::get_property_declarations()</a>, and <a class="el" href="video__writer_8cxx_source.html#l00149">cgv::media::video::video_writer::get_property_declarations()</a>.</p>
 
 </div>
 </div>
@@ -571,6 +593,12 @@ template&lt;typename T &gt; </div>
 
 <p>Reimplemented in <a class="el" href="structcgv_1_1base_1_1factory.html#aa4d907250a697d6c8368140133c9d719">cgv::base::factory</a>, <a class="el" href="classcgv_1_1base_1_1console.html#a122730d2bac682abd6213b355f7d95b5">cgv::base::console</a>, <a class="el" href="classcgv_1_1base_1_1base__generator.html#abfaaedd0749b1123dd7f320a13600027">cgv::base::base_generator</a>, <a class="el" href="classcgv_1_1media_1_1video_1_1video__writer.html#a90f05725f03c58306d1d3a35157517c4">cgv::media::video::video_writer</a>, <a class="el" href="classcgv_1_1media_1_1video_1_1video__reader.html#a0bd18953a4ce256e940177c643fca639">cgv::media::video::video_reader</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1image__writer.html#aa6627b8b8595bbb75cb3e9f45839fa08">cgv::media::image::image_writer</a>, and <a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#aa96a1e4519bc87a517b5149ba27095e0">cgv::media::image::image_reader</a>.</p>
 
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00215">215</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="find__reflection__handler_8cxx_source.html#l00053">cgv::reflect::find_reflection_handler::found_valid_target()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="image__reader_8cxx_source.html#l00325">cgv::media::image::image_reader::get_void()</a>, <a class="el" href="image__writer_8cxx_source.html#l00176">cgv::media::image::image_writer::get_void()</a>, <a class="el" href="video__reader_8cxx_source.html#l00191">cgv::media::video::video_reader::get_void()</a>, and <a class="el" href="video__writer_8cxx_source.html#l00164">cgv::media::video::video_writer::get_void()</a>.</p>
+
 </div>
 </div>
 <a id="ad796aa58a0b7d9c52d724a99366f58ae"></a>
@@ -609,6 +637,10 @@ template&lt;typename T &gt; </div>
 
 <p>check if the given name specifies a property. </p>
 <p>If the type name string pointer is provided, the type of the property is copied to the referenced string. </p>
+
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00336">336</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="tokenizer_8h_source.html#l00121">cgv::utils::bite_all()</a>, and <a class="el" href="convert__string_8h_source.html#l00018">cgv::utils::to_string()</a>.</p>
 
 </div>
 </div>
@@ -650,6 +682,12 @@ template&lt;typename T &gt; </div>
 <p>set several properties, which are defined as colon separated assignments, where the types are derived automatically</p>
 <p>, which are defined as colon separated assignments, where the types are derived automatically to bool, int, double or std::string. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00287">287</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="tokenizer_8h_source.html#l00121">cgv::utils::bite_all()</a>, <a class="el" href="scan_8cxx_source.html#l00017">cgv::utils::is_digit()</a>, <a class="el" href="scan_8cxx_source.html#l00339">cgv::utils::is_integer()</a>, and <a class="el" href="convert__string_8h_source.html#l00018">cgv::utils::to_string()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="base__generator_8h_source.html#l00132">cgv::base::has_property()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">cgv::render::texture::write_to_file()</a>.</p>
+
 </div>
 </div>
 <a id="aa0fe4266b74ebe49de68faaab3ca7a7a"></a>
@@ -681,6 +719,8 @@ template&lt;typename T &gt; </div>
 <p>The overloaded implementation is used by the default implementations of set_void, get_void and get_property_declarations with corresponding reflection handlers. The default implementation of self_reflect is empty. </p>
 
 <p>Reimplemented in <a class="el" href="structcgv_1_1render_1_1render__config.html#a91eabc5d1bee4696cce6de5ad05dfbe8">cgv::render::render_config</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00161">161</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
 
 </div>
 </div>
@@ -722,6 +762,8 @@ template&lt;typename T &gt; </div>
 
 <p>set a property of the element to the given value and perform standard conversions if necessary. </p>
 <p>This templated version simply extracts the type of the value from the reference and calls the <a class="el" href="classcgv_1_1base_1_1base.html#a62d3cd5ae49c3e261f5c0e52bc59bd4f" title="abstract interface for the setter of a dynamic property.">set_void()</a> method. Note that this only works if the template cgv::type::info::type_name&lt;T&gt; is overloaded for the value type. </p>
+
+<p class="definition">Definition at line <a class="el" href="base_8h_source.html#l00186">186</a> of file <a class="el" href="base_8h_source.html">base.h</a>.</p>
 
 </div>
 </div>
@@ -771,11 +813,15 @@ template&lt;typename T &gt; </div>
 
 <p>Reimplemented in <a class="el" href="structcgv_1_1base_1_1factory.html#a03229b698d12d0da2cae1b769f0ee40e">cgv::base::factory</a>, <a class="el" href="classcgv_1_1base_1_1console.html#a99ea2f5fa87e80338b1f996de9dc6983">cgv::base::console</a>, <a class="el" href="classcgv_1_1base_1_1base__generator.html#aa69ce6781528ebf7f78412fd6c7bad5f">cgv::base::base_generator</a>, <a class="el" href="classcgv_1_1media_1_1video_1_1video__writer.html#afd0800ba2f918dc95b8a3ce2a26978ed">cgv::media::video::video_writer</a>, <a class="el" href="classcgv_1_1media_1_1video_1_1video__reader.html#a702b054c51a69f3d1b982a14c99282d6">cgv::media::video::video_reader</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1image__writer.html#a2eeade9ca2755e97f55e1f162bf495b7">cgv::media::image::image_writer</a>, and <a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#aa31653a404d2100655e91db9c00cfda1">cgv::media::image::image_reader</a>.</p>
 
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00181">181</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="image__reader_8cxx_source.html#l00318">cgv::media::image::image_reader::set_void()</a>, <a class="el" href="image__writer_8cxx_source.html#l00169">cgv::media::image::image_writer::set_void()</a>, <a class="el" href="video__reader_8cxx_source.html#l00184">cgv::media::video::video_reader::set_void()</a>, and <a class="el" href="video__writer_8cxx_source.html#l00157">cgv::media::video::video_writer::set_void()</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/gui/<a class="el" href="gui_2view_8h_source.html">view.h</a></li>
-<li>cgv/gui/control.cxx</li>
+<li>cgv/gui/<a class="el" href="control_8cxx_source.html">control.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

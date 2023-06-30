@@ -328,6 +328,8 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>a shader program combines several shader code fragments to a complete definition of the shading pipeline. </p>
+
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00027">27</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a107cd1f3364e7137b5267d0070be98db"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a107cd1f3364e7137b5267d0070be98db">&#9670;&nbsp;</a></span>shader_program()</h2>
@@ -347,6 +349,8 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 
 <p>create empty shader program and set the option whether errors during shader code attachment should be printed to std::cerr </p>
 <p>create empty shader program </p>
+
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00176">176</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
 </div>
 </div>
@@ -394,6 +398,10 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 <p>collect shader code files from directory. </p>
 <p>If the directory does not exist search it in the shader path of the shader configuration returned by <a class="el" href="namespacecgv_1_1render.html#a5929e262d43bd2e095c4776547eebe5b" title="return a reference to the current shader configuration">get_shader_config()</a>. Returns true if at least one shader code file has been collected. </p>
 
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00106">106</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="ref__ptr_8h_source.html#l00230">cgv::data::ref_ptr&lt; T, is_ref_counted &gt;::empty()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00045">cgv::render::get_shader_config()</a>.</p>
+
 </div>
 </div>
 <a id="a784eef71ad129bb2ddddf6dcb1e2aa7f"></a>
@@ -438,6 +446,8 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 
 <p>collect shader code files that extent the given base name. </p>
 <p>Returns true if at least one shader code file has been collected. </p>
+
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00072">72</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
 </div>
 </div>
@@ -494,6 +504,10 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 <li>geometry_shader_info:input_type;output_type;max_output_count ... calls set_geometry_shader_info with input_type, output_type and max_output_count as arguments, where the primitive types are one out of points,lines,lines_adjacency,line_strip,line_strip_adjacency,line_loop, triangles,triangles_adjacency,triangle_strip,triangle_strip_adjacency,triangle_fan, quads,quad_strip,polygon. Returns true if at least one shader code file has been collected. </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00128">128</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00045">cgv::render::get_shader_config()</a>, <a class="el" href="import_8cxx_source.html#l00388">cgv::base::read_data_file()</a>, <a class="el" href="advanced__scan_8cxx_source.html#l00065">cgv::utils::split_to_lines()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
+
 </div>
 </div>
 <a id="aa5404b2aec4bbe8fd4eff1959b627709"></a>
@@ -522,6 +536,8 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 
 <p>copy the rendering api specific id the component to the memory location of the given pointer. </p>
 <p>For opengl this the passed pointer should be of type GLint or GLuint. </p>
+
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01886">1886</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -560,11 +576,13 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 <p>configure the geometry shader, if count &lt; 1 set it to get_max_nr_geometry_shader_output_vertices </p>
 <p>configure the geometry shader </p>
 
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00551">551</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/render/<a class="el" href="shader__program_8h_source.html">shader_program.h</a></li>
-<li>cgv/render/shader_program.cxx</li>
+<li>cgv/render/<a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

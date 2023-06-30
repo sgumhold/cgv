@@ -415,7 +415,10 @@ var hierarchy =
         [ "cgv::render::vertex_buffer", "classcgv_1_1render_1_1vertex__buffer.html", null ]
       ] ]
     ] ],
-    [ "cgv::render::render_types", "structcgv_1_1render_1_1render__types.html", [
+    [ "cgv::render::render_info", "classcgv_1_1render_1_1render__info.html", [
+      [ "cgv::render::mesh_render_info", "classcgv_1_1render_1_1mesh__render__info.html", null ]
+    ] ],
+    [ "cgv::render::render_types", null, [
       [ "cgv::plot::axis_config", "classcgv_1_1plot_1_1axis__config.html", null ],
       [ "cgv::plot::plot_base_config", "structcgv_1_1plot_1_1plot__base__config.html", [
         [ "cgv::plot::plot2d_config", "structcgv_1_1plot_1_1plot2d__config.html", null ],
@@ -425,9 +428,6 @@ var hierarchy =
       [ "cgv::render::context", "classcgv_1_1render_1_1context.html", null ],
       [ "cgv::render::drawable", "classcgv_1_1render_1_1drawable.html", null ],
       [ "cgv::render::managed_frame_buffer", "classcgv_1_1render_1_1managed__frame__buffer.html", null ],
-      [ "cgv::render::render_info", "classcgv_1_1render_1_1render__info.html", [
-        [ "cgv::render::mesh_render_info", "classcgv_1_1render_1_1mesh__render__info.html", null ]
-      ] ],
       [ "cgv::render::render_style", "structcgv_1_1render_1_1render__style.html", [
         [ "cgv::render::clod_point_render_style", "structcgv_1_1render_1_1clod__point__render__style.html", null ],
         [ "cgv::render::group_render_style", "structcgv_1_1render_1_1group__render__style.html", [

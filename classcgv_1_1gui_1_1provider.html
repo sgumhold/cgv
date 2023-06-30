@@ -322,6 +322,8 @@ static bool &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_tree
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>derive from this class to provide a gui to the current viewer </p>
+
+<p class="definition">Definition at line <a class="el" href="provider_8h_source.html#l00063">63</a> of file <a class="el" href="provider_8h_source.html">provider.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a05025e09df1d16f40678661b83c79bc8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a05025e09df1d16f40678661b83c79bc8">&#9670;&nbsp;</a></span>add_gui()</h2>
@@ -373,6 +375,12 @@ template&lt;typename T &gt; </div>
 
 <p>Add a composed gui of the given gui_type for the given value. </p>
 <p>This function returns false if no cgv::base::gui_creator has been registered for the given gui_type. The plugin cg_ext contains registers gui_creators for the most important types of the framework. The supported values for the options parameter are specific for the gui_type. Currently these are not documented and can only be found in the source code of the cg_ext plugin. </p>
+
+<p class="definition">Definition at line <a class="el" href="provider_8h_source.html#l00247">247</a> of file <a class="el" href="provider_8h_source.html">provider.h</a>.</p>
+
+<p class="reference">References <a class="el" href="gui__creator_8cxx_source.html#l00021">cgv::gui::create_gui()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01453">cgv::plot::plot_base::create_base_config_gui()</a>, <a class="el" href="plot3d_8cxx_source.html#l00582">cgv::plot::plot3d::create_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01254">cgv::plot::plot_base::create_plot_gui()</a>.</p>
 
 </div>
 </div>
@@ -439,6 +447,12 @@ template&lt;typename T &gt; </div>
 <p>add control with callback to cgv::base::on_set method on <a class="el" href="classcgv_1_1gui_1_1control.html#a49af8e128fc1e8443b95adbddfed009a" title="this signal is sent after the user triggered a change of value and the check_value succeeded.">cgv::gui::control::value_change</a> </p>
 <p>use this method to add a control of a member and a callback to the on_set method of the <a class="el" href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti...">cgv::base::base</a> class. </p>
 
+<p class="definition">Definition at line <a class="el" href="provider_8h_source.html#l00137">137</a> of file <a class="el" href="provider_8h_source.html">provider.h</a>.</p>
+
+<p class="reference">References <a class="el" href="base_8cxx_source.html#l00210">cgv::base::base::on_set()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01525">cgv::plot::plot_base::create_bar_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01453">cgv::plot::plot_base::create_base_config_gui()</a>, <a class="el" href="plot3d_8cxx_source.html#l00565">cgv::plot::plot3d::create_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01535">cgv::plot::plot_base::create_config_gui()</a>, <a class="el" href="axis__config_8cxx_source.html#l00208">cgv::plot::axis_config::create_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00671">cgv::plot::plot2d::create_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01578">cgv::plot::plot_base::create_gui()</a>, <a class="el" href="plot3d_8cxx_source.html#l00552">cgv::plot::plot3d::create_line_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01254">cgv::plot::plot_base::create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01517">cgv::plot::plot_base::create_stick_config_gui()</a>.</p>
+
 </div>
 </div>
 <a id="a71d52460406852908aeaceb573cbd00e"></a>
@@ -500,9 +514,13 @@ like
 <div class="line">   </div>
 <div class="line">   <a class="code" href="classcgv_1_1gui_1_1provider.html#a28af4e659bdd1825f3829263e15ce5ae">align</a>(<span class="stringliteral">&quot;\b&quot;</span>); <span class="comment">// undo indentation</span></div>
 <div class="line">}</div>
-<div class="ttc" id="aclasscgv_1_1gui_1_1provider_html_a28af4e659bdd1825f3829263e15ce5ae"><div class="ttname"><a href="classcgv_1_1gui_1_1provider.html#a28af4e659bdd1825f3829263e15ce5ae">cgv::gui::provider::align</a></div><div class="ttdeci">void align(const std::string &amp;_align)</div><div class="ttdoc">send pure alignment information</div><div class="ttdef"><b>Definition:</b> provider.cxx:36</div></div>
-<div class="ttc" id="aclasscgv_1_1gui_1_1provider_html_a71d52460406852908aeaceb573cbd00e"><div class="ttname"><a href="classcgv_1_1gui_1_1provider.html#a71d52460406852908aeaceb573cbd00e">cgv::gui::provider::add_tree_node</a></div><div class="ttdeci">bool add_tree_node(const std::string &amp;label, bool &amp;toggle, int level, const std::string &amp;a=&quot;\n&quot;, gui_group_ptr ggp=gui_group_ptr())</div><div class="ttdoc">add a collapsable node to the gui (deprecated)</div><div class="ttdef"><b>Definition:</b> provider.cxx:183</div></div>
+<div class="ttc" id="aclasscgv_1_1gui_1_1provider_html_a28af4e659bdd1825f3829263e15ce5ae"><div class="ttname"><a href="classcgv_1_1gui_1_1provider.html#a28af4e659bdd1825f3829263e15ce5ae">cgv::gui::provider::align</a></div><div class="ttdeci">void align(const std::string &amp;_align)</div><div class="ttdoc">send pure alignment information</div><div class="ttdef"><b>Definition:</b> <a href="provider_8cxx_source.html#l00036">provider.cxx:36</a></div></div>
+<div class="ttc" id="aclasscgv_1_1gui_1_1provider_html_a71d52460406852908aeaceb573cbd00e"><div class="ttname"><a href="classcgv_1_1gui_1_1provider.html#a71d52460406852908aeaceb573cbd00e">cgv::gui::provider::add_tree_node</a></div><div class="ttdeci">bool add_tree_node(const std::string &amp;label, bool &amp;toggle, int level, const std::string &amp;a=&quot;\n&quot;, gui_group_ptr ggp=gui_group_ptr())</div><div class="ttdoc">add a collapsable node to the gui (deprecated)</div><div class="ttdef"><b>Definition:</b> <a href="provider_8cxx_source.html#l00183">provider.cxx:183</a></div></div>
 </div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="provider_8cxx_source.html#l00183">183</a> of file <a class="el" href="provider_8cxx_source.html">provider.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="provider_8h_source.html#l00069">parent_group</a>, <a class="el" href="provider_8cxx_source.html#l00509">post_recreate_gui()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
+
 </div>
 </div>
 <a id="a62ba041ea08c3e6e3a93e76995f706aa"></a>
@@ -567,8 +585,8 @@ template&lt;typename T &gt; </div>
 <div class="line">   <a class="code" href="classcgv_1_1gui_1_1provider.html#a28af4e659bdd1825f3829263e15ce5ae">align</a>(<span class="stringliteral">&quot;\b&quot;</span>); <span class="comment">// undo indentation</span></div>
 <div class="line">   <a class="code" href="classcgv_1_1gui_1_1provider.html#a9bac0aa7c0467b606a3cbe9311f3d17c">end_tree_node</a>(composed_value);</div>
 <div class="line">}</div>
-<div class="ttc" id="aclasscgv_1_1gui_1_1provider_html_a62ba041ea08c3e6e3a93e76995f706aa"><div class="ttname"><a href="classcgv_1_1gui_1_1provider.html#a62ba041ea08c3e6e3a93e76995f706aa">cgv::gui::provider::begin_tree_node</a></div><div class="ttdeci">bool begin_tree_node(const std::string &amp;label, const T &amp;value, bool initial_visibility=false, const std::string &amp;options=&quot;&quot;, gui_group_ptr ggp=gui_group_ptr())</div><div class="ttdoc">Begin a sub tree of a tree structured gui.</div><div class="ttdef"><b>Definition:</b> provider.h:212</div></div>
-<div class="ttc" id="aclasscgv_1_1gui_1_1provider_html_a9bac0aa7c0467b606a3cbe9311f3d17c"><div class="ttname"><a href="classcgv_1_1gui_1_1provider.html#a9bac0aa7c0467b606a3cbe9311f3d17c">cgv::gui::provider::end_tree_node</a></div><div class="ttdeci">void end_tree_node(const T &amp;value)</div><div class="ttdoc">template specialization that allows to specify value reference plus node_instance by using the result...</div><div class="ttdef"><b>Definition:</b> provider.h:222</div></div>
+<div class="ttc" id="aclasscgv_1_1gui_1_1provider_html_a62ba041ea08c3e6e3a93e76995f706aa"><div class="ttname"><a href="classcgv_1_1gui_1_1provider.html#a62ba041ea08c3e6e3a93e76995f706aa">cgv::gui::provider::begin_tree_node</a></div><div class="ttdeci">bool begin_tree_node(const std::string &amp;label, const T &amp;value, bool initial_visibility=false, const std::string &amp;options=&quot;&quot;, gui_group_ptr ggp=gui_group_ptr())</div><div class="ttdoc">Begin a sub tree of a tree structured gui.</div><div class="ttdef"><b>Definition:</b> <a href="provider_8h_source.html#l00212">provider.h:212</a></div></div>
+<div class="ttc" id="aclasscgv_1_1gui_1_1provider_html_a9bac0aa7c0467b606a3cbe9311f3d17c"><div class="ttname"><a href="classcgv_1_1gui_1_1provider.html#a9bac0aa7c0467b606a3cbe9311f3d17c">cgv::gui::provider::end_tree_node</a></div><div class="ttdeci">void end_tree_node(const T &amp;value)</div><div class="ttdoc">template specialization that allows to specify value reference plus node_instance by using the result...</div><div class="ttdef"><b>Definition:</b> <a href="provider_8h_source.html#l00222">provider.h:222</a></div></div>
 </div><!-- fragment --><p> The state of the toggle button is attached to a boolean flag that is globally managed by the provider. If your this pointer can be converted to <a class="el" href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti...">cgv::base::base</a>, the on_set callback with a pointer to the flag is called when the user toggles the tree node. To check in the on_set callback for the tree node toggle one can get a reference to the boolean flag with the ref_tree_node_visible_flag method.</p>
 <p>To allocate the boolean flag the reference to a value controlled by the tree node is specified. The pointer to the controlled value is used as key for a map that manages the toggle states of all tree node buttons. If there is no superior structure whose value is controlled by the tree node, one can specify any of the values controled by the tree node. It is just important that no two tree nodes use the same value and that the pointer to the value cannot change. The latter is for example the case, when one uses an entry in a std::vector that can change size and reallocate its values. Then one should use the std::vector itself as value. In order to be able to distinguish the different elements of a vector one can extend the key from a value reference to a pair of a value reference plus an index. The index is then the index of the vector element. This is done by specifying with_index(value, idx) in the value argument. An example could look as follows: </p><div class="fragment"><div class="line"><span class="keywordflow">if</span> (<a class="code" href="classcgv_1_1gui_1_1provider.html#a62ba041ea08c3e6e3a93e76995f706aa">begin_tree_node</a>(<span class="stringliteral">&quot;Node&quot;</span>, vec)) {</div>
 <div class="line">   <a class="code" href="classcgv_1_1gui_1_1provider.html#a28af4e659bdd1825f3829263e15ce5ae">align</a>(<span class="stringliteral">&quot;\a&quot;</span>); <span class="comment">// indent gui elements of tree node</span></div>
@@ -584,9 +602,13 @@ template&lt;typename T &gt; </div>
 <div class="line">        <a class="code" href="classcgv_1_1gui_1_1provider.html#a28af4e659bdd1825f3829263e15ce5ae">align</a>(<span class="stringliteral">&quot;\b&quot;</span>); <span class="comment">// undo indentation</span></div>
 <div class="line">        <a class="code" href="classcgv_1_1gui_1_1provider.html#a9bac0aa7c0467b606a3cbe9311f3d17c">end_tree_node</a>(vec);</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecgv_1_1gui_html_aa887b469731f8956d0eaefd8801fc4a3"><div class="ttname"><a href="namespacecgv_1_1gui.html#aa887b469731f8956d0eaefd8801fc4a3">cgv::gui::with_index</a></div><div class="ttdeci">with_index_struct&lt; T &gt; with_index(const T &amp;_value, int _index)</div><div class="ttdoc">helper function to support value references as well as value references with index for the tree_node ...</div><div class="ttdef"><b>Definition:</b> provider.h:28</div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a9584ae56050ff7dd2b881c2b60efd55b"><div class="ttname"><a href="namespacecgv_1_1utils.html#a9584ae56050ff7dd2b881c2b60efd55b">cgv::utils::to_string</a></div><div class="ttdeci">std::string to_string(const std::string &amp;v, unsigned int w, unsigned int p)</div><div class="ttdoc">specialization of conversion from string to strings</div><div class="ttdef"><b>Definition:</b> convert_string.cxx:7</div></div>
+<div class="ttc" id="anamespacecgv_1_1gui_html_aa887b469731f8956d0eaefd8801fc4a3"><div class="ttname"><a href="namespacecgv_1_1gui.html#aa887b469731f8956d0eaefd8801fc4a3">cgv::gui::with_index</a></div><div class="ttdeci">with_index_struct&lt; T &gt; with_index(const T &amp;_value, int _index)</div><div class="ttdoc">helper function to support value references as well as value references with index for the tree_node ...</div><div class="ttdef"><b>Definition:</b> <a href="provider_8h_source.html#l00028">provider.h:28</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a9584ae56050ff7dd2b881c2b60efd55b"><div class="ttname"><a href="namespacecgv_1_1utils.html#a9584ae56050ff7dd2b881c2b60efd55b">cgv::utils::to_string</a></div><div class="ttdeci">std::string to_string(const std::string &amp;v, unsigned int w, unsigned int p)</div><div class="ttdoc">specialization of conversion from string to strings</div><div class="ttdef"><b>Definition:</b> <a href="convert__string_8cxx_source.html#l00007">convert_string.cxx:7</a></div></div>
 </div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="provider_8h_source.html#l00212">212</a> of file <a class="el" href="provider_8h_source.html">provider.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot3d_8cxx_source.html#l00565">cgv::plot::plot3d::create_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01535">cgv::plot::plot_base::create_config_gui()</a>, <a class="el" href="axis__config_8cxx_source.html#l00208">cgv::plot::axis_config::create_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00671">cgv::plot::plot2d::create_gui()</a>, <a class="el" href="plot3d_8cxx_source.html#l00582">cgv::plot::plot3d::create_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01578">cgv::plot::plot_base::create_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01254">cgv::plot::plot_base::create_plot_gui()</a>.</p>
+
 </div>
 </div>
 <a id="a90fe8e7ea3ff452a8148cc779111512a"></a>
@@ -626,6 +648,8 @@ template&lt;typename T &gt; </div>
 <p>Add group with the gui of another object inside.</p>
 <p>Add a new group, where the group elements are defined by another object that must be derived from provider. You can use the same group types as in the add_group method. concatenate names in string to enum declaration and optionally prepend or append given additional names </p>
 
+<p class="definition">Definition at line <a class="el" href="provider_8cxx_source.html#l00043">43</a> of file <a class="el" href="provider_8cxx_source.html">provider.cxx</a>.</p>
+
 </div>
 </div>
 <a id="a9bac0aa7c0467b606a3cbe9311f3d17c"></a>
@@ -658,6 +682,10 @@ template&lt;typename T &gt; </div>
  </p>
 <p>This functions should be called only if the corresponding call to begin_tree_node returned true. </p>
 
+<p class="definition">Definition at line <a class="el" href="provider_8h_source.html#l00222">222</a> of file <a class="el" href="provider_8h_source.html">provider.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot3d_8cxx_source.html#l00565">cgv::plot::plot3d::create_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01535">cgv::plot::plot_base::create_config_gui()</a>, <a class="el" href="axis__config_8cxx_source.html#l00208">cgv::plot::axis_config::create_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00671">cgv::plot::plot2d::create_gui()</a>, <a class="el" href="plot3d_8cxx_source.html#l00582">cgv::plot::plot3d::create_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01578">cgv::plot::plot_base::create_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01254">cgv::plot::plot_base::create_plot_gui()</a>.</p>
+
 </div>
 </div>
 <a id="a6abf8d523c9ac4d79b54ceba5edd3727"></a>
@@ -685,6 +713,10 @@ template&lt;typename T &gt; </div>
 
 <p>ensure that my UI is selected in the parent group in case this is a tab group, otherwise return false </p>
 <p>ensure that my UI is selected in the closest parent that is a tab group </p>
+
+<p class="definition">Definition at line <a class="el" href="provider_8cxx_source.html#l00407">407</a> of file <a class="el" href="provider_8cxx_source.html">provider.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="provider_8h_source.html#l00081">get_parent_group()</a>.</p>
 
 </div>
 </div>
@@ -727,6 +759,12 @@ template&lt;typename T &gt; </div>
 <p>find a control of a given class member </p>
 <p>find the next control of the given value in the current group. If the index pointer is given, start at the index to which the pointer points and set this index to the index of the child index of the found control </p>
 
+<p class="definition">Definition at line <a class="el" href="provider_8h_source.html#l00330">330</a> of file <a class="el" href="provider_8h_source.html">provider.h</a>.</p>
+
+<p class="reference">References <a class="el" href="ref__ptr_8h_source.html#l00230">cgv::data::ref_ptr&lt; T, is_ref_counted &gt;::empty()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01254">cgv::plot::plot_base::create_plot_gui()</a>.</p>
+
 </div>
 </div>
 <a id="af4350ea3d268a289aff9a9b792d8eb7f"></a>
@@ -768,6 +806,10 @@ template&lt;typename T &gt; </div>
 <p>find a view of a given class member </p>
 <p>find the next view of the given value in the current group. If the index pointer is given, start at the index to which the pointer points and set this index to the index of the child index of the found view </p>
 
+<p class="definition">Definition at line <a class="el" href="provider_8h_source.html#l00320">320</a> of file <a class="el" href="provider_8h_source.html">provider.h</a>.</p>
+
+<p class="reference">References <a class="el" href="ref__ptr_8h_source.html#l00230">cgv::data::ref_ptr&lt; T, is_ref_counted &gt;::empty()</a>.</p>
+
 </div>
 </div>
 <a id="abd40cd68e7f4339a603af99ebbf40108"></a>
@@ -806,6 +848,12 @@ template&lt;typename T &gt; </div>
 <li>return "unnamed" otherwise </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="provider_8cxx_source.html#l00383">383</a> of file <a class="el" href="provider_8cxx_source.html">provider.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="provider_8cxx_source.html#l00424">get_menu_path()</a>, <a class="el" href="base_8cxx_source.html#l00037">cgv::base::base::get_named()</a>, and <a class="el" href="base_8cxx_source.html#l00241">cgv::base::base::get_type_name()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="provider_8cxx_source.html#l00015">update_parent()</a>.</p>
+
 </div>
 </div>
 <a id="a9f68d3402bf77c9705f1fd010a4f6390"></a>
@@ -833,6 +881,8 @@ template&lt;typename T &gt; </div>
 
 <p>Returns the group type that should be used by the class embedding the gui of the provider. </p>
 <p>The default is to use a group of type "align_group". Overload this virtual method to use a different group type, such as layout group. </p>
+
+<p class="definition">Definition at line <a class="el" href="provider_8cxx_source.html#l00402">402</a> of file <a class="el" href="provider_8cxx_source.html">provider.cxx</a>.</p>
 
 </div>
 </div>
@@ -862,6 +912,12 @@ template&lt;typename T &gt; </div>
 <p>delayed recreation of gui </p>
 <p>schedule the recreation of the gui for the next time the program is idle. This mechanism is implemented in a thread save way. </p>
 
+<p class="definition">Definition at line <a class="el" href="provider_8cxx_source.html#l00509">509</a> of file <a class="el" href="provider_8cxx_source.html">provider.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="trigger_8cxx_source.html#l00100">cgv::gui::get_trigger_server()</a>, <a class="el" href="provider_8h_source.html#l00069">parent_group</a>, and <a class="el" href="provider_8cxx_source.html#l00509">post_recreate_gui()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="provider_8cxx_source.html#l00183">add_tree_node()</a>, <a class="el" href="provider_8cxx_source.html#l00207">begin_tree_node_void()</a>, and <a class="el" href="provider_8cxx_source.html#l00509">post_recreate_gui()</a>.</p>
+
 </div>
 </div>
 <a id="ab71df33b57067886a8c264ed9eb672f5"></a>
@@ -889,6 +945,10 @@ template&lt;typename T &gt; </div>
 
 <p>Recreate the gui of this instance right now. </p>
 <p>Use this method to recreate the gui, dont call create gui directly. Be careful when calling the method from a functor that is attached to a gui element generated by this provider. This can cause the gui element to be destroyed before the callback triggering the recreate_gui method has been completely finished, what might make the program crash. Use the post_recreate_gui method instead. </p>
+
+<p class="definition">Definition at line <a class="el" href="provider_8cxx_source.html#l00436">436</a> of file <a class="el" href="provider_8cxx_source.html">provider.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="classcgv_1_1gui_1_1provider.html#a1d2f0b6c734c04d3c90a1c51ffbc0de9">create_gui()</a>, <a class="el" href="provider_8h_source.html#l00069">parent_group</a>, and <a class="el" href="provider_8cxx_source.html#l00297">remove_all_elements()</a>.</p>
 
 </div>
 </div>
@@ -920,6 +980,8 @@ template&lt;typename T &gt; </div>
 
 <p>return a reference to the boolean flag, that tells whether the tree node for the passed value is visible </p>
 <p>T can be with_index(v,i) as in the begin_tree_node function. You typically need this function in an on_set callback to check whether the user has toggled a tree node </p>
+
+<p class="definition">Definition at line <a class="el" href="provider_8h_source.html#l00217">217</a> of file <a class="el" href="provider_8h_source.html">provider.h</a>.</p>
 
 </div>
 </div>
@@ -968,11 +1030,13 @@ template&lt;typename T &gt; </div>
 <p>Set the property value of all controls of a given class member. </p>
 <p>Use this method to loop over all controls of the given value and set their named property to the specified property value. </p>
 
+<p class="definition">Definition at line <a class="el" href="provider_8h_source.html#l00343">343</a> of file <a class="el" href="provider_8h_source.html">provider.h</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/gui/<a class="el" href="provider_8h_source.html">provider.h</a></li>
-<li>cgv/gui/provider.cxx</li>
+<li>cgv/gui/<a class="el" href="provider_8cxx_source.html">provider.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

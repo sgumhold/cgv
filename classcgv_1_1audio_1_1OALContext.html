@@ -136,6 +136,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class provides easy sample loading, device enumeration and error retrieval. </p>
+
+<p class="definition">Definition at line <a class="el" href="al__context_8h_source.html#l00021">21</a> of file <a class="el" href="al__context_8h_source.html">al_context.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa24c338882c4cded6ce349ad19050a56"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa24c338882c4cded6ce349ad19050a56">&#9670;&nbsp;</a></span>OALContext()</h2>
@@ -170,6 +172,8 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a1428a16474ca49303a63484ec74bd56b" title="Enumerates all devices which are output targets for the OpenAL context.">enumerate_devices()</a> </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="al__context_8cpp_source.html#l00021">21</a> of file <a class="el" href="al__context_8cpp_source.html">al_context.cpp</a>.</p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -201,6 +205,8 @@ Static Public Member Functions</h2></td></tr>
 <dl class="section remark"><dt>Remarks</dt><dd>This function can be used to choose a specific OpenAL device for the context creation.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd>explicit OALContext(std::string) </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="al__context_8cpp_source.html#l00194">194</a> of file <a class="el" href="al__context_8cpp_source.html">al_context.cpp</a>.</p>
+
 </div>
 </div>
 <a id="afe0cd13fe5d25010696ad63c6cd22b66"></a>
@@ -231,6 +237,10 @@ Static Public Member Functions</h2></td></tr>
 <dd>
 <a class="el" href="classcgv_1_1audio_1_1OALContext.html#a040d8f4f4325096f6d03e236bc83544f" title="Loads all audio files in a folder into the internal buffer list.">load_samples()</a> </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="al__context_8cpp_source.html#l00188">188</a> of file <a class="el" href="al__context_8cpp_source.html">al_context.cpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="al__context_8cpp_source.html#l00232">cgv::audio::OALSource::init()</a>.</p>
+
 </div>
 </div>
 <a id="a4793753a40efc6732903cdf70aef115e"></a>
@@ -253,6 +263,8 @@ Static Public Member Functions</h2></td></tr>
 <dl class="section warning"><dt>Warning</dt><dd>This function call clears the last error in the OpenAL context. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1audio_1_1OALContext.html#abcbc203beb11e2a70a8383de59cfbbb3" title="Determines if there were any errors since last call.">is_no_error()</a> </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="al__context_8cpp_source.html#l00211">211</a> of file <a class="el" href="al__context_8cpp_source.html">al_context.cpp</a>.</p>
+
 </div>
 </div>
 <a id="aff820da73611357c412f78f5166a3373"></a>
@@ -273,6 +285,10 @@ Static Public Member Functions</h2></td></tr>
 <p>Gets the native context handle for direct OpenAL calls. </p>
 <dl class="section return"><dt>Returns</dt><dd>The native OpenAL context handle. </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="al__context_8cpp_source.html#l00228">228</a> of file <a class="el" href="al__context_8cpp_source.html">al_context.cpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="al__context_8cpp_source.html#l00232">cgv::audio::OALSource::init()</a>.</p>
+
 </div>
 </div>
 <a id="a0f8227ba499d6a770c64650081c633c8"></a>
@@ -292,6 +308,10 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Gets the native device handle for direct OpenAL calls. </p>
 <dl class="section return"><dt>Returns</dt><dd>The native OpenAL device handle. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="al__context_8cpp_source.html#l00226">226</a> of file <a class="el" href="al__context_8cpp_source.html">al_context.cpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="al__context_8cpp_source.html#l00215">set_HRTF()</a>.</p>
 
 </div>
 </div>
@@ -314,6 +334,10 @@ Static Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>True if no errors were encountered, False otherwise.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>This function call clears the last error in the OpenAL context. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a4793753a40efc6732903cdf70aef115e" title="Returns the last error from the OpenAL context.">get_error_string()</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="al__context_8cpp_source.html#l00213">213</a> of file <a class="el" href="al__context_8cpp_source.html">al_context.cpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="al__context_8cpp_source.html#l00232">cgv::audio::OALSource::init()</a>.</p>
 
 </div>
 </div>
@@ -341,6 +365,10 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section remark"><dt>Remarks</dt><dd>The supported filetypes are .WAV, .AIFF, .FLAC, etc. For detailed information visit <a href="http://www.mega-nerd.com/libsndfile/">http://www.mega-nerd.com/libsndfile/</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="al__context_8cpp_source.html#l00045">45</a> of file <a class="el" href="al__context_8cpp_source.html">al_context.cpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="al__context_8cpp_source.html#l00163">load_samples()</a>.</p>
 
 </div>
 </div>
@@ -389,6 +417,8 @@ Static Public Member Functions</h2></td></tr>
 <dd>
 Each file will be transformed into a buffer ID with the filename stem as symbolic key. For example: ./sounds/Wind.wav will have the key "Wind". </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="al__context_8cpp_source.html#l00083">83</a> of file <a class="el" href="al__context_8cpp_source.html">al_context.cpp</a>.</p>
+
 </div>
 </div>
 <a id="a040d8f4f4325096f6d03e236bc83544f"></a>
@@ -428,6 +458,10 @@ Each file will be transformed into a buffer ID with the filename stem as symboli
 <dl class="section remark"><dt>Remarks</dt><dd>This function is a convenience wrapper around the tedious process of reading all files in a folder and uploading each to a buffer.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a6f73bd05ef149d0a8af6e9faa9b9f5db" title="Loads a sound into the internal buffer list.">load_sample(std::string)</a> </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="al__context_8cpp_source.html#l00163">163</a> of file <a class="el" href="al__context_8cpp_source.html">al_context.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="al__context_8cpp_source.html#l00045">load_sample()</a>.</p>
+
 </div>
 </div>
 <a id="ae65efe87004dcbb3d8ac45e73146ef5f"></a>
@@ -455,11 +489,15 @@ Each file will be transformed into a buffer ID with the filename stem as symboli
 </dl>
 <dl class="section remark"><dt>Remarks</dt><dd>HRTFs improve the perceived localization of sounds in the scene. Therefore it is advisable to enable HRTF output with headphones. For loudspeakers however this should be disabled as the users head already has a specific HRTF. </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="al__context_8cpp_source.html#l00215">215</a> of file <a class="el" href="al__context_8cpp_source.html">al_context.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="al__context_8cpp_source.html#l00226">get_native_device()</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>libs/cgv_oal/<a class="el" href="al__context_8h_source.html">al_context.h</a></li>
-<li>libs/cgv_oal/al_context.cpp</li>
+<li>libs/cgv_oal/<a class="el" href="al__context_8cpp_source.html">al_context.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

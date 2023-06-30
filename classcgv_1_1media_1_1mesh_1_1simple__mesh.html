@@ -495,6 +495,8 @@ Protected Attributes</h2></td></tr>
 class cgv::media::mesh::simple_mesh&lt; T &gt;</h3>
 
 <p>the <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html" title="the simple_mesh class is templated over the coordinate type that defaults to float">simple_mesh</a> class is templated over the coordinate type that defaults to float </p>
+
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00199">199</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a44c75c9157ed9f86e0c69a583eacfb26"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a44c75c9157ed9f86e0c69a583eacfb26">&#9670;&nbsp;</a></span>simple_mesh()</h2>
@@ -516,6 +518,8 @@ template&lt;typename T &gt; </div>
 
 <p>assignment operator </p>
 <p>construct from string corresponding to conway notation (defaults to empty mesh) </p>
+
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00640">640</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -552,6 +556,10 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Index of the face's first vertex. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00095">95</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00267">cgv::media::mesh::simple_mesh_base::compute_c2e()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00168">cgv::media::mesh::simple_mesh_base::extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00200">cgv::media::mesh::simple_mesh_base::extract_wireframe_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00098">cgv::media::mesh::simple_mesh_base::revert_face_orientation()</a>.</p>
 
 </div>
 </div>
@@ -598,6 +606,10 @@ template&lt;typename T &gt; </div>
 <p>given the inv corners compute index vector per corner its edge index and optionally per edge its corner index and return edge count (implementation assumes closed manifold connectivity) </p>
 <p>given the inv corners compute index vector per corner its edge index and optionally per edge its corner index (implementation assumes closed manifold connectivity) </p>
 
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00267">267</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00095">cgv::media::mesh::simple_mesh_base::begin_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00102">cgv::media::mesh::simple_mesh_base::end_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00088">cgv::media::mesh::simple_mesh_base::get_nr_corners()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00086">cgv::media::mesh::simple_mesh_base::get_nr_faces()</a>.</p>
+
 </div>
 </div>
 <a id="a105455b6c44ad341321cc9dfbe2710c3"></a>
@@ -632,6 +644,10 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Index of the face's last vertex + 1. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00102">102</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00267">cgv::media::mesh::simple_mesh_base::compute_c2e()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00168">cgv::media::mesh::simple_mesh_base::extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00200">cgv::media::mesh::simple_mesh_base::extract_wireframe_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00098">cgv::media::mesh::simple_mesh_base::revert_face_orientation()</a>.</p>
 
 </div>
 </div>
@@ -671,6 +687,12 @@ template&lt;typename T &gt; </div>
 
 <p>ensure that colors are allocated and of given storage type </p>
 <p>Only in case of new allocation, the second parameter is used to define the number of colors </p>
+
+<p class="definition">Definition at line <a class="el" href="colored__model_8cxx_source.html#l00133">133</a> of file <a class="el" href="colored__model_8cxx_source.html">colored_model.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="colored__model_8h_source.html#l00015">cgv::media::colored_model::color_storage_ptr</a>, <a class="el" href="color__storage_8cxx_source.html#l00015">cgv::media::abst_color_storage::get_color_type()</a>, and <a class="el" href="classcgv_1_1media_1_1abst__color__storage.html#a9ac2e4e664d89fe58fbbdf72de4fc815">cgv::media::abst_color_storage::resize()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="colored__model_8cxx_source.html#l00107">cgv::media::colored_model::resize_colors()</a>.</p>
 
 </div>
 </div>
@@ -733,6 +755,12 @@ template&lt;typename T &gt; </div>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#aad80ef7cc9b163531591febd3a8bd333" title="Transforms n individual vertex attribute indices into one list of unique index n-tuples.">simple_mesh::merge_indices()</a> </dd>
 <dd>
 <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ab5cc67e7a85610d8a316305dcadb4c55" title="Calculate a permutation of face indices which sorts them by group and/or material.">simple_mesh::sort_faces()</a> for getting a permutation </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00168">168</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00095">cgv::media::mesh::simple_mesh_base::begin_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00102">cgv::media::mesh::simple_mesh_base::end_corner()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00104">cgv::media::mesh::simple_mesh_base::face_degree()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00026">cgv::render::mesh_render_info::construct_vbos_base()</a>.</p>
 
 </div>
 </div>
@@ -809,6 +837,10 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The size of one color in bytes. </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00567">567</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="mesh__render__info_8h_source.html#l00091">cgv::render::mesh_render_info::construct()</a>.</p>
+
 </div>
 </div>
 <a id="a91dfd37d08cbcb2762767f0fd30913a6"></a>
@@ -855,6 +887,12 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#aad80ef7cc9b163531591febd3a8bd333" title="Transforms n individual vertex attribute indices into one list of unique index n-tuples.">simple_mesh::merge_indices()</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00200">200</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00095">cgv::media::mesh::simple_mesh_base::begin_corner()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00102">cgv::media::mesh::simple_mesh_base::end_corner()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00026">cgv::render::mesh_render_info::construct_vbos_base()</a>.</p>
 
 </div>
 </div>
@@ -911,6 +949,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Transforms n individual vertex attribute indices into one list of unique index n-tuples. </p>
+<p>Picture for example a cube where each quadratic face has a color. There would be only eight vertex positions. However, each of these vertices belongs to three faces and would therefore need to carry three distinct colors. To solve this issue all the unique combinations of attribute indicies get recorded into a list. The new face primitives are then referenced by indexing into this list of unique index n-tuples.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">vertex_indices</td><td>will be filled with indicies into the unique quadruple list. </td></tr>
@@ -924,6 +963,10 @@ template&lt;typename T &gt; </div>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a116d992457d26966664db28542b423ea" title="Extract element array buffers for triangulation.">simple_mesh::extract_triangle_element_buffer()</a> </dd>
 <dd>
 <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a91dfd37d08cbcb2762767f0fd30913a6" title="Extract element array buffers for edges in wireframe.">simple_mesh::extract_wireframe_element_buffer()</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00130">130</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00026">cgv::render::mesh_render_info::construct_vbos_base()</a>.</p>
 
 </div>
 </div>
@@ -978,6 +1021,10 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the index of the newly created corner </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00086">86</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00744">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00861">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00893">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00945">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00816">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00780">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
+
 </div>
 </div>
 <a id="a7cdbcab650d6c4d3f8bb9c1376564c66"></a>
@@ -1000,6 +1047,12 @@ template&lt;typename T &gt; </div>
 
 <p>read simple mesh from file (currently only obj and stl are supported) </p>
 <p>read simple mesh from file </p>
+
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00454">454</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="stl__reader_8h_source.html#l00303">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::num_tris()</a>, <a class="el" href="stl__reader_8h_source.html#l00291">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::num_vrts()</a>, <a class="el" href="stl__reader_8h_source.html#l00376">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::raw_normals()</a>, <a class="el" href="scan_8cxx_source.html#l00036">cgv::utils::to_lower()</a>, <a class="el" href="stl__reader_8h_source.html#l00315">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::tri_corner_ind()</a>, <a class="el" href="stl__reader_8h_source.html#l00333">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::tri_normal()</a>, and <a class="el" href="stl__reader_8h_source.html#l00297">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::vrt_coords()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="vr__render__helpers_8cxx_source.html#l00031">vr::get_vrmesh_render_info()</a>, and <a class="el" href="mesh__drawable_8cxx_source.html#l00052">cgv::render::gl::mesh_drawable::read_mesh()</a>.</p>
 
 </div>
 </div>
@@ -1054,6 +1107,12 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a116d992457d26966664db28542b423ea" title="Extract element array buffers for triangulation.">simple_mesh::extract_triangle_element_buffer()</a> for applying the sorting permutation </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00117">117</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="bucket__sort_8h_source.html#l00009">cgv::math::bucket_sort()</a>, <a class="el" href="simple__mesh_8h_source.html#l00118">cgv::media::mesh::simple_mesh_base::get_nr_groups()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00106">cgv::media::mesh::simple_mesh_base::get_nr_materials()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00026">cgv::render::mesh_render_info::construct_vbos_base()</a>.</p>
+
 </div>
 </div>
 <a id="a58ec8ca84b58127b2579294cb0606433"></a>
@@ -1082,11 +1141,15 @@ template&lt;typename T &gt; </div>
 <p>Create a new empty face to which new corners are added. </p>
 <dl class="section return"><dt>Returns</dt><dd>The index to the newly created face. </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00076">76</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00744">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00861">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00893">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00945">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00816">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00780">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/media/mesh/<a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a></li>
-<li>cgv/media/mesh/simple_mesh.cxx</li>
+<li>cgv/media/mesh/<a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

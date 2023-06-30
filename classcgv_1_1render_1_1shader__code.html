@@ -222,6 +222,8 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>a shader code object holds a code fragment of a geometry vertex or fragment shader and can be added to a shader program. </p>
+
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00058">58</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a8a3cf5e1a75373cba0a1da8ed9672318"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8a3cf5e1a75373cba0a1da8ed9672318">&#9670;&nbsp;</a></span>destruct()</h2>
@@ -241,6 +243,8 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 
 <p>destruct shader code </p>
 <p>destruct shader </p>
+
+<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00167">167</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
 
 </div>
 </div>
@@ -276,6 +280,8 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 <li>glcs ... ST_COMPUTE </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00231">231</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
+
 </div>
 </div>
 <a id="a67a995a8da53b28c0a250d685642e61b"></a>
@@ -304,6 +310,10 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 
 <p>Check if file exists. </p>
 <p>If not, check if a resource file of this file_name has been registered. If not search it recursively in the shader_path of the shader_config that can be accessed with the function <a class="el" href="namespacecgv_1_1render.html#a5929e262d43bd2e095c4776547eebe5b" title="return a reference to the current shader configuration">get_shader_config()</a>. This path is initialized to the environment variable CGV_SHADER_PATH or empty if that is not defined. </p>
+
+<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00175">175</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="ref__ptr_8h_source.html#l00230">cgv::data::ref_ptr&lt; T, is_ref_counted &gt;::empty()</a>, <a class="el" href="shader__code_8cxx_source.html#l00045">cgv::render::get_shader_config()</a>, <a class="el" href="register_8cxx_source.html#l00125">cgv::base::ref_prog_name()</a>, and <a class="el" href="register_8cxx_source.html#l00143">cgv::base::ref_resource_file_map()</a>.</p>
 
 </div>
 </div>
@@ -344,6 +354,10 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 <p>format given last error in a way that developer environments can locate errors in the source file </p>
 <p>query the last error in a way that developer environments can locate errors in the source file </p>
 
+<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00088">88</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00045">cgv::render::get_shader_config()</a>, <a class="el" href="scan_8cxx_source.html#l00339">cgv::utils::is_integer()</a>, <a class="el" href="tokenizer_8cxx_source.html#l00059">cgv::utils::tokenizer::set_sep()</a>, <a class="el" href="tokenizer_8cxx_source.html#l00038">cgv::utils::tokenizer::set_ws()</a>, <a class="el" href="advanced__scan_8h_source.html#l00119">cgv::utils::split_to_lines()</a>, <a class="el" href="convert__string_8h_source.html#l00018">cgv::utils::to_string()</a>, and <a class="el" href="scan_8cxx_source.html#l00103">cgv::utils::to_upper()</a>.</p>
+
 </div>
 </div>
 <a id="aa5404b2aec4bbe8fd4eff1959b627709"></a>
@@ -372,6 +386,8 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 
 <p>copy the rendering api specific id the component to the memory location of the given pointer. </p>
 <p>For opengl this the passed pointer should be of type GLint or GLuint. </p>
+
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01886">1886</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -423,6 +439,10 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 <p>read shader code from file, compile and print error message if necessary</p>
 <p>If show_error is true print error messages formated with the get_last_error method in case an error arose. </p>
 
+<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00607">607</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00260">cgv::render::shader_program::attach_file()</a>.</p>
+
 </div>
 </div>
 <a id="a74e842fc0080dbe5f0a7b2782721e445"></a>
@@ -467,11 +487,15 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 <p>read shader code from file</p>
 <p>If the shader type defaults to ST_DETECT, the <a class="el" href="classcgv_1_1render_1_1shader__code.html#af74bcb73f79aafe7f783c9a8f416ce8b" title="detect the shader type from the extension of the given file_name, i.e.">detect_shader_type()</a> method is applied to the file name. </p>
 
+<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00344">344</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l00197">cgv::render::context::get_gpu_vendor_id()</a>, and <a class="el" href="context_8cxx_source.html#l00419">cgv::render::context::is_shader_file_cache_enabled()</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/render/<a class="el" href="shader__code_8h_source.html">shader_code.h</a></li>
-<li>cgv/render/shader_code.cxx</li>
+<li>cgv/render/<a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

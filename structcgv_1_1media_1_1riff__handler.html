@@ -114,6 +114,8 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>callback handler passed to riff reader </p>
+
+<p class="definition">Definition at line <a class="el" href="riff_8h_source.html#l00034">34</a> of file <a class="el" href="riff_8h_source.html">riff.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="aa36b1dec8abe4e75b0f01f35f37f9711"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa36b1dec8abe4e75b0f01f35f37f9711">&#9670;&nbsp;</a></span>process_chunk_header()</h2>
@@ -158,11 +160,13 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p>this is called before data of chunk is read, return whether to process chunk data (default return is true) </p>
 <p>If the chunk data should be stored in memory allocated by the handler, set <code>data_ptr</code> to this memory block that must provide space for <code>size</code> bytes. If <code>data_ptr</code> is not set, the reader automatically allocates a new data block, which is also deallocated by the reader after the corresponding call to <code>process_chunk_data</code>. </p>
 
+<p class="definition">Definition at line <a class="el" href="riff_8cxx_source.html#l00039">39</a> of file <a class="el" href="riff_8cxx_source.html">riff.cxx</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following files:<ul>
 <li>cgv/media/<a class="el" href="riff_8h_source.html">riff.h</a></li>
-<li>cgv/media/riff.cxx</li>
+<li>cgv/media/<a class="el" href="riff_8cxx_source.html">riff.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
