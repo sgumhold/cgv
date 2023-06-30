@@ -569,6 +569,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 </td></tr>
 </table>
 
+<p class="definition">Definition at line <a class="el" href="traverser_8h_source.html#l00013">13</a> of file <a class="el" href="traverser_8h_source.html">traverser.h</a>.</p>
+
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
@@ -606,6 +608,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 
 <p>function to attach an object to an object of type <a class="el" href="classcgv_1_1base_1_1attach__slot.html" title="interface for an attachment slot that can store a base pointer">attach_slot</a>. </p>
 <p>Return whether the slot_object implements the <a class="el" href="classcgv_1_1base_1_1attach__slot.html" title="interface for an attachment slot that can store a base pointer">attach_slot</a> interface and could retreive the attachment. </p>
+
+<p class="definition">Definition at line <a class="el" href="attach__slot_8cxx_source.html#l00038">38</a> of file <a class="el" href="attach__slot_8cxx_source.html">attach_slot.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="attach__slot_8cxx_source.html#l00014">cgv::base::attach_slot::attach()</a>, and <a class="el" href="base_8h_source.html#l00128">cgv::base::base::get_interface()</a>.</p>
 
 </div>
 </div>
@@ -649,6 +655,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <li>&lt;plugin_name&gt; only for the enable event of the plugin with the given name If several partial orders are defined for an enable call, a combined partial order is computed and used to find the order closest to the actual registration order that is in accordance to the combined partial order. </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="register_8cxx_source.html#l00247">247</a> of file <a class="el" href="register_8cxx_source.html">register.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="register_8cxx_source.html#l00247">define_registration_order()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="register_8cxx_source.html#l00247">define_registration_order()</a>.</p>
+
 </div>
 </div>
 <a id="aa839bf46a9e8abb32cfea4964ec91507"></a>
@@ -670,6 +682,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <p>Enable registration (default is that registration is disabled).</p>
 <p>If registration has been disabled before, send all registration events that where emitted during disabled registration. </p>
 
+<p class="definition">Definition at line <a class="el" href="register_8cxx_source.html#l00381">381</a> of file <a class="el" href="register_8cxx_source.html">register.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="structcgv_1_1base_1_1object__constructor.html#a9df205baad55e14176d646ab12514c00">cgv::base::object_constructor::construct_object()</a>, <a class="el" href="register_8cxx_source.html#l00381">enable_registration()</a>, <a class="el" href="structcgv_1_1base_1_1object__constructor.html#a2a8df43ff616083096555cce5e743b13">cgv::base::object_constructor::get_constructed_type_name()</a>, <a class="el" href="register_8cxx_source.html#l00376">is_registration_debugging_enabled()</a>, <a class="el" href="register_8cxx_source.html#l00493">is_registration_enabled()</a>, <a class="el" href="register_8cxx_source.html#l00575">is_registration_event_cleanup_enabled()</a>, <a class="el" href="register_8cxx_source.html#l00137">ref_plugin_name()</a>, <a class="el" href="register_8cxx_source.html#l00125">ref_prog_name()</a>, and <a class="el" href="register_8cxx_source.html#l00214">register_object_internal()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="register_8cxx_source.html#l00381">enable_registration()</a>, and <a class="el" href="register_8cxx_source.html#l01397">load_plugin()</a>.</p>
+
 </div>
 </div>
 <a id="a5972c6c1a1833e46393f9361ea2b860a"></a>
@@ -689,6 +707,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 
 <p>Enable cleanup of registration events (default). </p>
 <p>If registration event cleanup is disabled, registration events are not discarded as soon as objects have been registered. This makes objects available to listeners that are registered later. </p>
+
+<p class="definition">Definition at line <a class="el" href="register_8cxx_source.html#l00548">548</a> of file <a class="el" href="register_8cxx_source.html">register.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="register_8cxx_source.html#l00548">enable_registration_event_cleanup()</a>, <a class="el" href="register_8cxx_source.html#l00376">is_registration_debugging_enabled()</a>, <a class="el" href="register_8cxx_source.html#l00493">is_registration_enabled()</a>, and <a class="el" href="register_8cxx_source.html#l00575">is_registration_event_cleanup_enabled()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="register_8cxx_source.html#l00548">enable_registration_event_cleanup()</a>.</p>
 
 </div>
 </div>
@@ -740,6 +764,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <li>p/P ... search the path of the parent on the parent path stack that is controlled with <a class="el" href="namespacecgv_1_1base.html#a90c98c559c9c197551a146a91a704e4b" title="extract a valid path from the given argument and push it onto the stack of parent paths....">push_file_parent()</a> and <a class="el" href="namespacecgv_1_1base.html#a8117654ca2eb262f18fc1093c0fdf828" title="pop the latestly pushed parent path from the parent path stack.">pop_file_parent()</a></li>
 <li>a/A ... search all anchester paths of the all parents on the parent path stack that is controlled with <a class="el" href="namespacecgv_1_1base.html#a90c98c559c9c197551a146a91a704e4b" title="extract a valid path from the given argument and push it onto the stack of parent paths....">push_file_parent()</a> and <a class="el" href="namespacecgv_1_1base.html#a8117654ca2eb262f18fc1093c0fdf828" title="pop the latestly pushed parent path from the parent path stack.">pop_file_parent()</a> As an example the strategy "cpmD" first looks in the current directory, then in the parent directory, then in the master path and finally recursively in each of the registered data paths. </li>
 </ul>
+
+<p class="definition">Definition at line <a class="el" href="import_8cxx_source.html#l00059">59</a> of file <a class="el" href="import_8cxx_source.html">import.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="import_8cxx_source.html#l00059">find_data_file()</a>, <a class="el" href="import_8cxx_source.html#l00274">ref_data_path_list()</a>, <a class="el" href="import_8cxx_source.html#l00321">ref_parent_file_stack()</a>, and <a class="el" href="register_8cxx_source.html#l00143">ref_resource_file_map()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="import_8cxx_source.html#l00059">find_data_file()</a>, <a class="el" href="import_8cxx_source.html#l00159">find_or_download_data_file()</a>, <a class="el" href="vr__render__helpers_8cxx_source.html#l00031">vr::get_vrmesh_render_info()</a>, <a class="el" href="mesh__drawable_8cxx_source.html#l00052">cgv::render::gl::mesh_drawable::read_mesh()</a>, and <a class="el" href="obj__reader_8cxx_source.html#l00307">cgv::media::mesh::obj_reader_base::read_mtl()</a>.</p>
 
 </div>
 </div>
@@ -811,6 +841,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <p>If a gui driver is available one can use the following alternative after including &lt;<a class="el" href="dialog_8h_source.html">cgv/gui/dialog.h</a>&gt; and &lt;<a class="el" href="file__dialog_8h_source.html">cgv/gui/file_dialog.h</a>&gt;</p>
 <p><code> <a class="el" href="structcgv_1_1base_1_1user__feedback.html" title="function pointers implementing user feedback functionality of find_or_download_data_file() function">cgv::base::user_feedback(&amp;cgv::gui::message, &amp;cgv::gui::question, &amp;cgv::gui::directory_save_dialog)</a> </code> </p>
 
+<p class="definition">Definition at line <a class="el" href="import_8cxx_source.html#l00159">159</a> of file <a class="el" href="import_8cxx_source.html">import.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="import_8h_source.html#l00062">cgv::base::user_feedback::ask_dir</a>, <a class="el" href="import_8cxx_source.html#l00059">find_data_file()</a>, <a class="el" href="import_8cxx_source.html#l00159">find_or_download_data_file()</a>, <a class="el" href="import_8h_source.html#l00058">cgv::base::user_feedback::message</a>, <a class="el" href="import_8h_source.html#l00060">cgv::base::user_feedback::query</a>, <a class="el" href="import_8cxx_source.html#l00274">ref_data_path_list()</a>, and <a class="el" href="import_8cxx_source.html#l00321">ref_parent_file_stack()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="import_8cxx_source.html#l00159">find_or_download_data_file()</a>.</p>
+
 </div>
 </div>
 <a id="a1e3f23268db7fec467dfd98ab36094f5"></a>
@@ -832,6 +868,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <p>query the attachment of an <a class="el" href="classcgv_1_1base_1_1attach__slot.html" title="interface for an attachment slot that can store a base pointer">attach_slot</a> object. </p>
 <p>If the slot_object is not derived from the <a class="el" href="classcgv_1_1base_1_1attach__slot.html" title="interface for an attachment slot that can store a base pointer">attach_slot</a> interface, return an empty base_ptr. </p>
 
+<p class="definition">Definition at line <a class="el" href="attach__slot_8cxx_source.html#l00053">53</a> of file <a class="el" href="attach__slot_8cxx_source.html">attach_slot.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="attach__slot_8cxx_source.html#l00026">cgv::base::attach_slot::get_attachment()</a>, and <a class="el" href="base_8h_source.html#l00128">cgv::base::base::get_interface()</a>.</p>
+
 </div>
 </div>
 <a id="aec69e775624f1ca64e001ff8b1254344"></a>
@@ -852,6 +892,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 
 <p>query the user data of the attachment of an <a class="el" href="classcgv_1_1base_1_1attach__slot.html" title="interface for an attachment slot that can store a base pointer">attach_slot</a> object. </p>
 <p>If the slot_object is not derived from the <a class="el" href="classcgv_1_1base_1_1attach__slot.html" title="interface for an attachment slot that can store a base pointer">attach_slot</a> interface, return the null pointer. </p>
+
+<p class="definition">Definition at line <a class="el" href="attach__slot_8cxx_source.html#l00062">62</a> of file <a class="el" href="attach__slot_8cxx_source.html">attach_slot.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="attach__slot_8cxx_source.html#l00032">cgv::base::attach_slot::get_attachement_data()</a>, and <a class="el" href="base_8h_source.html#l00128">cgv::base::base::get_interface()</a>.</p>
 
 </div>
 </div>
@@ -902,6 +946,12 @@ template&lt;typename T &gt; </div>
     true  == has_property("x=10.4;tooltip='help'", "x", str_var)" ==&gt; str_var = "10.4" true == has_property("x=10.4;tooltip='help'", "tooltip", str_var)" ==&gt; str_var = "help"
     false == has_property("x=10.4;tooltip='help'", "y", int_var)" ==&gt; int_var ... not changed </p>
 
+<p class="definition">Definition at line <a class="el" href="base__generator_8h_source.html#l00132">132</a> of file <a class="el" href="base__generator_8h_source.html">base_generator.h</a>.</p>
+
+<p class="reference">References <a class="el" href="base__generator_8h_source.html#l00104">cgv::base::base_generator::add()</a>, <a class="el" href="base__generator_8cxx_source.html#l00046">cgv::base::base_generator::changed()</a>, <a class="el" href="base__generator_8h_source.html#l00132">has_property()</a>, and <a class="el" href="base_8cxx_source.html#l00287">cgv::base::base::multi_set()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="provider_8cxx_source.html#l00207">cgv::gui::provider::begin_tree_node_void()</a>, and <a class="el" href="base__generator_8h_source.html#l00132">has_property()</a>.</p>
+
 </div>
 </div>
 <a id="acf58539e451af7248fa0d2e64bbb48f5"></a>
@@ -922,6 +972,10 @@ template&lt;typename T &gt; </div>
 
 <p>load a plugin or dll and return a handle to the plugin, or 0 if loading was not successful. </p>
 <p>During plugin loading the registration is always disabled in order to avoid deadlocks that can arise when a registered object triggers loading of another dll. </p>
+
+<p class="definition">Definition at line <a class="el" href="register_8cxx_source.html#l01397">1397</a> of file <a class="el" href="register_8cxx_source.html">register.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="tokenizer_8h_source.html#l00121">cgv::utils::bite_all()</a>, <a class="el" href="register_8cxx_source.html#l00480">disable_registration()</a>, <a class="el" href="register_8cxx_source.html#l00381">enable_registration()</a>, <a class="el" href="register_8cxx_source.html#l00493">is_registration_enabled()</a>, <a class="el" href="register_8cxx_source.html#l00137">ref_plugin_name()</a>, <a class="el" href="scan_8cxx_source.html#l00036">cgv::utils::to_lower()</a>, and <a class="el" href="convert__string_8h_source.html#l00018">cgv::utils::to_string()</a>.</p>
 
 </div>
 </div>
@@ -964,6 +1018,10 @@ template&lt;typename T &gt; </div>
 <p>The assigment list in the name and type commands are of the form:</p>
 <p>member_name_1=value_1;member_name_2=value_2;... </p>
 
+<p class="definition">Definition at line <a class="el" href="register_8cxx_source.html#l01274">1274</a> of file <a class="el" href="register_8cxx_source.html">register.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="register_8cxx_source.html#l00992">analyze_command()</a>.</p>
+
 </div>
 </div>
 <a id="aa3f550111b3915df062b0bbda4795f37"></a>
@@ -983,6 +1041,12 @@ template&lt;typename T &gt; </div>
 
 <p>return a reference to the data path list, which is constructed from the environment variable CGV_DATA </p>
 <p>return a reference to the parent file stack controlled with <a class="el" href="namespacecgv_1_1base.html#a90c98c559c9c197551a146a91a704e4b" title="extract a valid path from the given argument and push it onto the stack of parent paths....">push_file_parent()</a> and <a class="el" href="namespacecgv_1_1base.html#a8117654ca2eb262f18fc1093c0fdf828" title="pop the latestly pushed parent path from the parent path stack.">pop_file_parent()</a>, where the last vector element is the latestly pushed one </p>
+
+<p class="definition">Definition at line <a class="el" href="import_8cxx_source.html#l00321">321</a> of file <a class="el" href="import_8cxx_source.html">import.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="import_8cxx_source.html#l00321">ref_parent_file_stack()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="import_8cxx_source.html#l00059">find_data_file()</a>, <a class="el" href="import_8cxx_source.html#l00159">find_or_download_data_file()</a>, <a class="el" href="import_8cxx_source.html#l00314">pop_file_parent()</a>, <a class="el" href="import_8cxx_source.html#l00295">push_file_parent()</a>, and <a class="el" href="import_8cxx_source.html#l00321">ref_parent_file_stack()</a>.</p>
 
 </div>
 </div>
@@ -1016,6 +1080,12 @@ template&lt;typename T &gt; </div>
 <p>register an object.</p>
 <p>This will send an event to all currently registered registration listeners. The options parameter can be used to select a specific listener. </p>
 
+<p class="definition">Definition at line <a class="el" href="register_8cxx_source.html#l00581">581</a> of file <a class="el" href="register_8cxx_source.html">register.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="structcgv_1_1base_1_1object__constructor.html#a9df205baad55e14176d646ab12514c00">cgv::base::object_constructor::construct_object()</a>, <a class="el" href="base_8h_source.html#l00128">cgv::base::base::get_interface()</a>, <a class="el" href="register_8cxx_source.html#l00376">is_registration_debugging_enabled()</a>, <a class="el" href="register_8cxx_source.html#l00493">is_registration_enabled()</a>, <a class="el" href="register_8cxx_source.html#l00575">is_registration_event_cleanup_enabled()</a>, <a class="el" href="register_8cxx_source.html#l00581">register_object()</a>, <a class="el" href="structcgv_1_1base_1_1registration__listener.html#a0a3daf45e8d5b759649f2ea2c637535b">cgv::base::registration_listener::register_object()</a>, and <a class="el" href="register_8cxx_source.html#l00214">register_object_internal()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="register_8h_source.html#l00310">cgv::base::factory_registration&lt; T &gt;::factory_registration()</a>, <a class="el" href="register_8h_source.html#l00333">cgv::base::factory_registration_1&lt; T, CA &gt;::factory_registration_1()</a>, <a class="el" href="register_8h_source.html#l00356">cgv::base::factory_registration_2&lt; T, CA1, CA2 &gt;::factory_registration_2()</a>, <a class="el" href="register_8h_source.html#l00161">cgv::base::object_registration&lt; T &gt;::object_registration()</a>, <a class="el" href="register_8h_source.html#l00174">cgv::base::object_registration_1&lt; T, CA &gt;::object_registration_1()</a>, <a class="el" href="register_8h_source.html#l00187">cgv::base::object_registration_2&lt; T, CA1, CA2 &gt;::object_registration_2()</a>, <a class="el" href="register_8cxx_source.html#l00581">register_object()</a>, <a class="el" href="register_8cxx_source.html#l00214">register_object_internal()</a>, <a class="el" href="register_8cxx_source.html#l00841">cgv::base::factory::set_void()</a>, and <a class="el" href="register_8cxx_source.html#l00817">cgv::base::test_registration::test_registration()</a>.</p>
+
 </div>
 </div>
 <a id="a9e4204680cce6ce77447fcab18a7fab0"></a>
@@ -1036,6 +1106,12 @@ template&lt;typename T &gt; </div>
 
 <p>set the file name of the current program. </p>
 <p>simply pass argv[0] in the main procedure. This is done automatically in the process_command_line_args function. </p>
+
+<p class="definition">Definition at line <a class="el" href="register_8cxx_source.html#l00915">915</a> of file <a class="el" href="register_8cxx_source.html">register.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="register_8cxx_source.html#l00125">ref_prog_name()</a>, and <a class="el" href="register_8cxx_source.html#l00131">ref_prog_path_prefix()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="register_8cxx_source.html#l01283">process_command_line_args()</a>.</p>
 
 </div>
 </div>
@@ -1067,6 +1143,12 @@ template&lt;typename T &gt; </div>
 
 <p>unregister an object and send event to all current registration ref_listeners() </p>
 <p>unregister an object and send event to all currently registered registration listeners </p>
+
+<p class="definition">Definition at line <a class="el" href="register_8cxx_source.html#l00617">617</a> of file <a class="el" href="register_8cxx_source.html">register.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="register_8cxx_source.html#l00376">is_registration_debugging_enabled()</a>, and <a class="el" href="register_8cxx_source.html#l00617">unregister_object()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="register_8cxx_source.html#l00617">unregister_object()</a>.</p>
 
 </div>
 </div>

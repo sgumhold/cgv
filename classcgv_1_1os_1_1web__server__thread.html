@@ -196,6 +196,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>web server interface that runs in its own thread </p>
+
+<p class="definition">Definition at line <a class="el" href="web__server_8h_source.html#l00032">32</a> of file <a class="el" href="web__server_8h_source.html">web_server.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a8f922c2b4204a62fcdd2376c08730998"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8f922c2b4204a62fcdd2376c08730998">&#9670;&nbsp;</a></span>start() <span class="overload">[1/2]</span></h2>
@@ -214,6 +216,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p>start the web server in a separate thread </p>
 <p>start the html server in a separate thread </p>
+
+<p class="definition">Definition at line <a class="el" href="web__server_8cxx_source.html#l00051">51</a> of file <a class="el" href="web__server_8cxx_source.html">web_server.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="thread__pthread_8h_source.html#l00023">cgv::os::thread::start()</a>.</p>
 
 </div>
 </div>
@@ -244,6 +250,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>start the implemented <a class="el" href="classcgv_1_1os_1_1web__server__thread.html#a73271973aea10864547a9b478aa2d69a" title="reimplements the run method that simply starts the web server">run()</a> method (asynchronly) and destruct the thread object </p>
 <p>start the implemented <a class="el" href="classcgv_1_1os_1_1web__server__thread.html#a73271973aea10864547a9b478aa2d69a" title="reimplements the run method that simply starts the web server">run()</a> method (asynchronly) </p>
 
+<p class="definition">Definition at line <a class="el" href="thread__pthread_8h_source.html#l00023">23</a> of file <a class="el" href="thread__pthread_8h_source.html">thread_pthread.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="web__server_8cxx_source.html#l00051">start()</a>.</p>
+
 </div>
 </div>
 <a id="a1d7d10b965d4d445da6875068f902e38"></a>
@@ -271,6 +281,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p>try to stop the thread execution via indicating a stop request. </p>
 <p>The existence of a stop request can be recognized by the no_stop_request() method. This test should be done periodically within the implementation of the <a class="el" href="classcgv_1_1os_1_1web__server__thread.html#a73271973aea10864547a9b478aa2d69a" title="reimplements the run method that simply starts the web server">run()</a> method, e.g. to leave the execution loop in a clean way. </p>
+
+<p class="definition">Definition at line <a class="el" href="thread__pthread_8h_source.html#l00078">78</a> of file <a class="el" href="thread__pthread_8h_source.html">thread_pthread.h</a>.</p>
 
 </div>
 </div>
@@ -301,6 +313,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>join the current thread</p>
 <p>This method is called from the master thread in order to wait for termination of the slave thread. </p>
 
+<p class="definition">Definition at line <a class="el" href="thread__pthread_8h_source.html#l00098">98</a> of file <a class="el" href="thread__pthread_8h_source.html">thread_pthread.h</a>.</p>
+
 </div>
 </div>
 <a id="a2979ad258138853206642ed4b55ce5b5"></a>
@@ -330,11 +344,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>sleep till the signal from the given <a class="el" href="structcgv_1_1os_1_1condition__mutex.html" title="A mutex that can wake up other threads by signals sent when a condition is fulfilled.">condition_mutex</a> is sent, lock the mutex first and unlock after waiting </p>
 <p>sleep till the signal from the given <a class="el" href="structcgv_1_1os_1_1condition__mutex.html" title="A mutex that can wake up other threads by signals sent when a condition is fulfilled.">condition_mutex</a> is sent </p>
 
+<p class="definition">Definition at line <a class="el" href="thread__pthread_8h_source.html#l00039">39</a> of file <a class="el" href="thread__pthread_8h_source.html">thread_pthread.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="thread__pthread_8h_source.html#l00045">cgv::os::thread::wait_for_signal_with_lock()</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/os/<a class="el" href="web__server_8h_source.html">web_server.h</a></li>
-<li>cgv/os/web_server.cxx</li>
+<li>cgv/os/<a class="el" href="web__server_8cxx_source.html">web_server.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

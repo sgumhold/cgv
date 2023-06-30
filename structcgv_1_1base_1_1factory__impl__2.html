@@ -304,6 +304,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 struct cgv::base::factory_impl_2&lt; T, CA1, CA2 &gt;</h3>
 
 <p>implementation of factory for objects of type T using a constructor with two arguments of types CA1 and CA2 </p>
+
+<p class="definition">Definition at line <a class="el" href="register_8h_source.html#l00285">285</a> of file <a class="el" href="register_8h_source.html">register.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a6746cd9f70fefe5a4f2b72534869fcc3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6746cd9f70fefe5a4f2b72534869fcc3">&#9670;&nbsp;</a></span>call_void()</h2>
@@ -361,6 +363,8 @@ struct cgv::base::factory_impl_2&lt; T, CA1, CA2 &gt;</h3>
 <p>overload to implement the execution of a method based on the method name and the given parameters</p>
 <p>, i.e. a class method based on the action name and the given parameters. The default implementation uses the <a class="el" href="classcgv_1_1base_1_1base.html#aa0fe4266b74ebe49de68faaab3ca7a7a" title="used for simple self reflection">self_reflect()</a> method to dispatch this call. If not found, the get_void method returns false. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00168">168</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
 </div>
 </div>
 <a id="ad121ecb072de62a4ab4a180bc9d183bb"></a>
@@ -400,6 +404,12 @@ struct cgv::base::factory_impl_2&lt; T, CA1, CA2 &gt;</h3>
 <p>find a member pointer by name. </p>
 <p>If not found the null pointer is returned. If the type name string pointer is provided, the type of the property is copied to the referenced string. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00360">360</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="find__reflection__handler_8cxx_source.html#l00047">cgv::reflect::find_reflection_handler::found_target()</a>, <a class="el" href="find__reflection__handler_8cxx_source.html#l00059">cgv::reflect::find_reflection_handler::get_member_ptr()</a>, <a class="el" href="find__reflection__handler_8cxx_source.html#l00072">cgv::reflect::find_reflection_handler::get_reflection_traits()</a>, and <a class="el" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#aa00b01c2252909e01eb154c6170df6d2">cgv::reflect::abst_reflection_traits::get_type_name()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="event__handler_8cxx_source.html#l00022">cgv::gui::event_handler::add_key_control()</a>.</p>
+
 </div>
 </div>
 <a id="a5978e45464c3fdd3083426c4b21ed28a"></a>
@@ -430,6 +440,8 @@ template&lt;typename T &gt; </div>
 
 <p>query a property of the element and perform standard conversions if necessary. </p>
 <p>This templated version simply extracts the type of the value from the reference and calls the <a class="el" href="structcgv_1_1base_1_1factory.html#a03229b698d12d0da2cae1b769f0ee40e" title="abstract interface for the setter of a dynamic property.">set_void()</a> method. Note that this only works if the template cgv::type::info::type_name&lt;T&gt; is overloaded for the value type. </p>
+
+<p class="definition">Definition at line <a class="el" href="base_8h_source.html#l00192">192</a> of file <a class="el" href="base_8h_source.html">base.h</a>.</p>
 
 </div>
 </div>
@@ -462,6 +474,10 @@ template&lt;class T , typename CA1 , typename CA2 &gt; </div>
 <p>overload to return the type name of this object </p>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1base_1_1base.html#a6e64a898476591f7246e522652abfa4c">cgv::base::base</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="register_8h_source.html#l00292">292</a> of file <a class="el" href="register_8h_source.html">register.h</a>.</p>
+
+<p class="reference">References <a class="el" href="register_8cxx_source.html#l00866">cgv::base::factory::get_created_type_name()</a>.</p>
 
 </div>
 </div>
@@ -511,6 +527,8 @@ template&lt;class T , typename CA1 , typename CA2 &gt; </div>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1base_1_1base.html#aec0cf2e6e9275472854996435e25fe17">cgv::base::base</a>.</p>
 
+<p class="definition">Definition at line <a class="el" href="register_8cxx_source.html#l00855">855</a> of file <a class="el" href="register_8cxx_source.html">register.cxx</a>.</p>
+
 </div>
 </div>
 <a id="ad796aa58a0b7d9c52d724a99366f58ae"></a>
@@ -549,6 +567,10 @@ template&lt;class T , typename CA1 , typename CA2 &gt; </div>
 
 <p>check if the given name specifies a property. </p>
 <p>If the type name string pointer is provided, the type of the property is copied to the referenced string. </p>
+
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00336">336</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="tokenizer_8h_source.html#l00121">cgv::utils::bite_all()</a>, and <a class="el" href="convert__string_8h_source.html#l00018">cgv::utils::to_string()</a>.</p>
 
 </div>
 </div>
@@ -590,6 +612,12 @@ template&lt;class T , typename CA1 , typename CA2 &gt; </div>
 <p>set several properties, which are defined as colon separated assignments, where the types are derived automatically</p>
 <p>, which are defined as colon separated assignments, where the types are derived automatically to bool, int, double or std::string. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00287">287</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="tokenizer_8h_source.html#l00121">cgv::utils::bite_all()</a>, <a class="el" href="scan_8cxx_source.html#l00017">cgv::utils::is_digit()</a>, <a class="el" href="scan_8cxx_source.html#l00339">cgv::utils::is_integer()</a>, and <a class="el" href="convert__string_8h_source.html#l00018">cgv::utils::to_string()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="base__generator_8h_source.html#l00132">cgv::base::has_property()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">cgv::render::texture::write_to_file()</a>.</p>
+
 </div>
 </div>
 <a id="aa0fe4266b74ebe49de68faaab3ca7a7a"></a>
@@ -621,6 +649,8 @@ template&lt;class T , typename CA1 , typename CA2 &gt; </div>
 <p>The overloaded implementation is used by the default implementations of set_void, get_void and get_property_declarations with corresponding reflection handlers. The default implementation of self_reflect is empty. </p>
 
 <p>Reimplemented in <a class="el" href="structcgv_1_1render_1_1render__config.html#a91eabc5d1bee4696cce6de5ad05dfbe8">cgv::render::render_config</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00161">161</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
 
 </div>
 </div>
@@ -662,6 +692,8 @@ template&lt;typename T &gt; </div>
 
 <p>set a property of the element to the given value and perform standard conversions if necessary. </p>
 <p>This templated version simply extracts the type of the value from the reference and calls the <a class="el" href="structcgv_1_1base_1_1factory.html#a03229b698d12d0da2cae1b769f0ee40e" title="abstract interface for the setter of a dynamic property.">set_void()</a> method. Note that this only works if the template cgv::type::info::type_name&lt;T&gt; is overloaded for the value type. </p>
+
+<p class="definition">Definition at line <a class="el" href="base_8h_source.html#l00186">186</a> of file <a class="el" href="base_8h_source.html">base.h</a>.</p>
 
 </div>
 </div>
@@ -710,6 +742,10 @@ template&lt;typename T &gt; </div>
 <p>The default implementation uses the <a class="el" href="classcgv_1_1base_1_1base.html#aa0fe4266b74ebe49de68faaab3ca7a7a" title="used for simple self reflection">self_reflect()</a> method to find a member with the given property as name. If not found, the set_void method returns false. </p>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1base_1_1base.html#a62d3cd5ae49c3e261f5c0e52bc59bd4f">cgv::base::base</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="register_8cxx_source.html#l00841">841</a> of file <a class="el" href="register_8cxx_source.html">register.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="register_8cxx_source.html#l00888">cgv::base::factory::create_object()</a>, and <a class="el" href="register_8cxx_source.html#l00581">cgv::base::register_object()</a>.</p>
 
 </div>
 </div>

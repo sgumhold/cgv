@@ -166,7 +166,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:ad041c20f763f8eba7109c8ee88a08083"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable the framebuffer either with the color attachments specified in the given vector. <br /></td></tr>
 <tr class="separator:ad041c20f763f8eba7109c8ee88a08083"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a145e4504b00cc3c9c80125d636c69aa1"><td class="memItemLeft" align="right" valign="top"><a id="a145e4504b00cc3c9c80125d636c69aa1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1frame__buffer.html#a145e4504b00cc3c9c80125d636c69aa1">push_viewport</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="structcgv_1_1render_1_1render__types.html#a1e647cad0feb06b4067d49caefffec9b">cgv::render::render_types::dvec2</a> &amp;depth_range=<a class="el" href="structcgv_1_1render_1_1render__types.html#a1e647cad0feb06b4067d49caefffec9b">cgv::render::render_types::dvec2</a>(0, 1))</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1frame__buffer.html#a145e4504b00cc3c9c80125d636c69aa1">push_viewport</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::render::render_types::dvec2</a> &amp;depth_range=<a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::render::render_types::dvec2</a>(0, 1))</td></tr>
 <tr class="memdesc:a145e4504b00cc3c9c80125d636c69aa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a new window transformation to cover the fbo onto the window transformation stack <br /></td></tr>
 <tr class="separator:a145e4504b00cc3c9c80125d636c69aa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4350e8559276f2a816e1969d2fdea9db"><td class="memItemLeft" align="right" valign="top"><a id="a4350e8559276f2a816e1969d2fdea9db"></a>
@@ -223,6 +223,8 @@ const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> *&#160
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>this class encapsulate frame buffers that live on the GPU and can be used as destination for the render process. </p>
 <p>The GPU must support frame buffer objects for this to work. </p>
+
+<p class="definition">Definition at line <a class="el" href="frame__buffer_8h_source.html#l00016">16</a> of file <a class="el" href="frame__buffer_8h_source.html">frame_buffer.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="af88f1f3dcc3b8cb7a0bf7c6f2d72ba4c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af88f1f3dcc3b8cb7a0bf7c6f2d72ba4c">&#9670;&nbsp;</a></span>attach()</h2>
@@ -271,6 +273,10 @@ const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> *&#160
 <p>attach the j-th slice of a 3d texture or the given cube side of a cubemap to the i-th color attachment </p>
 <p>attach the j-th slice of a 3d texture to the i-th color attachment </p>
 
+<p class="definition">Definition at line <a class="el" href="frame__buffer_8cxx_source.html#l00099">99</a> of file <a class="el" href="frame__buffer_8cxx_source.html">frame_buffer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="component__format_8h_source.html#l00033">cgv::data::CF_D</a>, <a class="el" href="texture_8cxx_source.html#l00201">cgv::render::texture::ensure_state()</a>, <a class="el" href="data__format_8cxx_source.html#l00203">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="component__format_8cxx_source.html#l00353">cgv::data::component_format::get_standard_component_format()</a>, and <a class="el" href="frame__buffer_8h_source.html#l00024">last_error</a>.</p>
+
 </div>
 </div>
 <a id="a061eb8de0786f323024824ae6d9a8f51"></a>
@@ -308,6 +314,12 @@ const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> *&#160
 <p>create framebuffer if extension is supported, otherwise return false. </p>
 <p>create framebuffer of extension is supported, otherwise return false.</p>
 <p>The set extent is used to set the viewport in the enable method. If no extent is specified it is copied from glViewport. </p>
+
+<p class="definition">Definition at line <a class="el" href="frame__buffer_8cxx_source.html#l00051">51</a> of file <a class="el" href="frame__buffer_8cxx_source.html">frame_buffer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="context_8h_source.html#l00266">cgv::render::render_component::ctx_ptr</a>, and <a class="el" href="frame__buffer_8cxx_source.html#l00044">destruct()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00051">cgv::render::gl::gl_transparent_renderer::init_frame()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">cgv::render::texture::write_to_file()</a>.</p>
 
 </div>
 </div>
@@ -430,6 +442,10 @@ const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> *&#160
 <p>enable the framebuffer either with all color attachments if no arguments are given or if arguments are given with the indexed color attachments. </p>
 <p>Return whether this was successful. </p>
 
+<p class="definition">Definition at line <a class="el" href="frame__buffer_8cxx_source.html#l00121">121</a> of file <a class="el" href="frame__buffer_8cxx_source.html">frame_buffer.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00120">cgv::render::gl::gl_transparent_renderer::render_transparent()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">cgv::render::texture::write_to_file()</a>.</p>
+
 </div>
 </div>
 <a id="aa5404b2aec4bbe8fd4eff1959b627709"></a>
@@ -459,11 +475,13 @@ const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> *&#160
 <p>copy the rendering api specific id the component to the memory location of the given pointer. </p>
 <p>For opengl this the passed pointer should be of type GLint or GLuint. </p>
 
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01886">1886</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/render/<a class="el" href="frame__buffer_8h_source.html">frame_buffer.h</a></li>
-<li>cgv/render/frame_buffer.cxx</li>
+<li>cgv/render/<a class="el" href="frame__buffer_8cxx_source.html">frame_buffer.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

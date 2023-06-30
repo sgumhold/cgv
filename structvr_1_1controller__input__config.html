@@ -116,6 +116,8 @@ Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>configuration of a controller input axis </p>
+
+<p class="definition">Definition at line <a class="el" href="vr__kit_8h_source.html#l00019">19</a> of file <a class="el" href="vr__kit_8h_source.html">vr_kit.h</a>.</p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="ab198c80d1ea259c99b1992a2c5f48a63"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab198c80d1ea259c99b1992a2c5f48a63">&#9670;&nbsp;</a></span>dead_zone</h2>
@@ -131,6 +133,10 @@ Public Attributes</h2></td></tr>
 
 <p>all input values below dead_zone are clamped to 0. </p>
 <p>For pad and stick inputs the length of the vector valued position is compared to dead_zone and the zero vector is compared inside of dead zone. </p>
+
+<p class="definition">Definition at line <a class="el" href="vr__kit_8h_source.html#l00024">24</a> of file <a class="el" href="vr__kit_8h_source.html">vr_kit.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="vr__kit_8cxx_source.html#l00007">controller_input_config()</a>.</p>
 
 </div>
 </div>
@@ -149,6 +155,10 @@ Public Attributes</h2></td></tr>
 <p>if precision is larger than zero, values are rounded to multiples of precision. </p>
 <p>If precision is 0.02 then the value 0.031 would be rounded to 0.04. </p>
 
+<p class="definition">Definition at line <a class="el" href="vr__kit_8h_source.html#l00027">27</a> of file <a class="el" href="vr__kit_8h_source.html">vr_kit.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="vr__kit_8cxx_source.html#l00007">controller_input_config()</a>.</p>
+
 </div>
 </div>
 <a id="acf5606e400fcc5736b729565ede2415a"></a>
@@ -166,11 +176,15 @@ Public Attributes</h2></td></tr>
 <p>if value gets larger than threshold a key press event is triggered if this is enabled. </p>
 <p>In case input is pad or stick, a direction pad is emulated and the two thresholds are used to determine direction. </p>
 
+<p class="definition">Definition at line <a class="el" href="vr__kit_8h_source.html#l00030">30</a> of file <a class="el" href="vr__kit_8h_source.html">vr_kit.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="vr__kit_8cxx_source.html#l00007">controller_input_config()</a>, and <a class="el" href="vr__server_8cxx_source.html#l00100">cgv::gui::vr_server::emit_events_and_update_state()</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following files:<ul>
 <li>libs/vr/<a class="el" href="vr__kit_8h_source.html">vr_kit.h</a></li>
-<li>libs/vr/vr_kit.cxx</li>
+<li>libs/vr/<a class="el" href="vr__kit_8cxx_source.html">vr_kit.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

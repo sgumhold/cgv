@@ -163,7 +163,7 @@ Usage example 1 (using &lt;tt&gt;StlMesh&lt;/tt&gt;):</h3>
 <div class="line"><span class="keywordflow">catch</span> (std::exception&amp; e) {</div>
 <div class="line">  std::cout &lt;&lt; e.what() &lt;&lt; std::endl;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclassstl__reader_1_1StlMesh_html"><div class="ttname"><a href="classstl__reader_1_1StlMesh.html">stl_reader::StlMesh</a></div><div class="ttdoc">convenience mesh class which makes accessing the stl data more easy</div><div class="ttdef"><b>Definition:</b> stl_reader.h:235</div></div>
+<div class="ttc" id="aclassstl__reader_1_1StlMesh_html"><div class="ttname"><a href="classstl__reader_1_1StlMesh.html">stl_reader::StlMesh</a></div><div class="ttdoc">convenience mesh class which makes accessing the stl data more easy</div><div class="ttdef"><b>Definition:</b> <a href="stl__reader_8h_source.html#l00235">stl_reader.h:235</a></div></div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md1"></a>
 Usage example 2 (using &lt;tt&gt;StlMesh&lt;/tt&gt; and &lt;em&gt;solids&lt;/em&gt;)</h3>
 <div class="fragment"><div class="line"><span class="keywordflow">try</span> {</div>
@@ -208,8 +208,10 @@ Usage example 3 (using raw data arrays)</h3>
 <div class="line"><span class="keywordflow">catch</span> (std::exception&amp; e) {</div>
 <div class="line">  std::cout &lt;&lt; e.what() &lt;&lt; std::endl;</div>
 <div class="line">}</div>
-<div class="ttc" id="astl__reader_8h_html_a37bfc17a0ef2bdca4bd0b603616c22ad"><div class="ttname"><a href="stl__reader_8h.html#a37bfc17a0ef2bdca4bd0b603616c22ad">stl_reader::ReadStlFile</a></div><div class="ttdeci">bool ReadStlFile(const char *filename, TNumberContainer1 &amp;coordsOut, TNumberContainer2 &amp;normalsOut, TIndexContainer1 &amp;trisOut, TIndexContainer2 &amp;solidRangesOut)</div><div class="ttdoc">Reads an ASCII or binary stl file into several arrays.</div><div class="ttdef"><b>Definition:</b> stl_reader.h:514</div></div>
+<div class="ttc" id="astl__reader_8h_html_a37bfc17a0ef2bdca4bd0b603616c22ad"><div class="ttname"><a href="stl__reader_8h.html#a37bfc17a0ef2bdca4bd0b603616c22ad">stl_reader::ReadStlFile</a></div><div class="ttdeci">bool ReadStlFile(const char *filename, TNumberContainer1 &amp;coordsOut, TNumberContainer2 &amp;normalsOut, TIndexContainer1 &amp;trisOut, TIndexContainer2 &amp;solidRangesOut)</div><div class="ttdoc">Reads an ASCII or binary stl file into several arrays.</div><div class="ttdef"><b>Definition:</b> <a href="stl__reader_8h_source.html#l00514">stl_reader.h:514</a></div></div>
 </div><!-- fragment --><p>If you do not want to use exceptions, you may define the macro STL_READER_NO_EXCEPTIONS before including '<a class="el" href="stl__reader_8h.html" title="Provides functions to read stl files into user provided arrays.">stl_reader.h</a>'. In that case, functions will return <code>false</code> if an error occurred. </p>
+
+<p class="definition">Definition in file <a class="el" href="stl__reader_8h_source.html">stl_reader.h</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a id="a37bfc17a0ef2bdca4bd0b603616c22ad"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a37bfc17a0ef2bdca4bd0b603616c22ad">&#9670;&nbsp;</a></span>ReadStlFile()</h2>
@@ -273,6 +275,12 @@ template&lt;class TNumberContainer1 , class TNumberContainer2 , class TIndexCont
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the file was successfully read into the provided container. </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="stl__reader_8h_source.html#l00514">514</a> of file <a class="el" href="stl__reader_8h_source.html">stl_reader.h</a>.</p>
+
+<p class="reference">References <a class="el" href="stl__reader_8h_source.html#l00514">stl_reader::ReadStlFile()</a>, <a class="el" href="stl__reader_8h_source.html#l00529">stl_reader::ReadStlFile_ASCII()</a>, <a class="el" href="stl__reader_8h_source.html#l00639">stl_reader::ReadStlFile_BINARY()</a>, and <a class="el" href="stl__reader_8h_source.html#l00703">stl_reader::StlFileHasASCIIFormat()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="stl__reader_8h_source.html#l00258">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::read_file()</a>, and <a class="el" href="stl__reader_8h_source.html#l00514">stl_reader::ReadStlFile()</a>.</p>
+
 </div>
 </div>
 <a id="a528eb850da5aae3612f322cb3e7dc092"></a>
@@ -323,6 +331,12 @@ template&lt;class TNumberContainer1 , class TNumberContainer2 , class TIndexCont
 
 <p>Reads an ASCII stl file into several arrays. </p>
 <dl class="section see"><dt>See also</dt><dd>ReadStlFile, ReadStlFile_ASCII </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="stl__reader_8h_source.html#l00529">529</a> of file <a class="el" href="stl__reader_8h_source.html">stl_reader.h</a>.</p>
+
+<p class="reference">References <a class="el" href="stl__reader_8h_source.html#l00529">stl_reader::ReadStlFile_ASCII()</a>, <a class="el" href="stl__reader_8h_source.html#l00144">STL_READER_COND_THROW</a>, and <a class="el" href="stl__reader_8h_source.html#l00141">STL_READER_THROW</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="stl__reader_8h_source.html#l00514">stl_reader::ReadStlFile()</a>, and <a class="el" href="stl__reader_8h_source.html#l00529">stl_reader::ReadStlFile_ASCII()</a>.</p>
 
 </div>
 </div>
@@ -376,6 +390,12 @@ template&lt;class TNumberContainer1 , class TNumberContainer2 , class TIndexCont
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>support systems with big endianess </dd></dl>
 <dl class="section see"><dt>See also</dt><dd>ReadStlFile, ReadStlFile_BINARY </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="stl__reader_8h_source.html#l00639">639</a> of file <a class="el" href="stl__reader_8h_source.html">stl_reader.h</a>.</p>
+
+<p class="reference">References <a class="el" href="stl__reader_8h_source.html#l00639">stl_reader::ReadStlFile_BINARY()</a>, and <a class="el" href="stl__reader_8h_source.html#l00144">STL_READER_COND_THROW</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="stl__reader_8h_source.html#l00514">stl_reader::ReadStlFile()</a>, and <a class="el" href="stl__reader_8h_source.html#l00639">stl_reader::ReadStlFile_BINARY()</a>.</p>
+
 </div>
 </div>
 <a id="a7508c26f3f30ed8fce23c20a2fb51064"></a>
@@ -404,6 +424,12 @@ template&lt;class TNumberContainer1 , class TNumberContainer2 , class TIndexCont
 
 <p>Determines whether a stl file has ASCII format. </p>
 <p>The underlying mechanism is simply checks whether the provided file starts with the keyword solid. This should work for many stl files, but may fail, of course. </p>
+
+<p class="definition">Definition at line <a class="el" href="stl__reader_8h_source.html#l00703">703</a> of file <a class="el" href="stl__reader_8h_source.html">stl_reader.h</a>.</p>
+
+<p class="reference">References <a class="el" href="stl__reader_8h_source.html#l00144">STL_READER_COND_THROW</a>, and <a class="el" href="stl__reader_8h_source.html#l00703">stl_reader::StlFileHasASCIIFormat()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="stl__reader_8h_source.html#l00514">stl_reader::ReadStlFile()</a>, and <a class="el" href="stl__reader_8h_source.html#l00703">stl_reader::StlFileHasASCIIFormat()</a>.</p>
 
 </div>
 </div>

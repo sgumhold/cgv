@@ -186,6 +186,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>};</p>
 <p>mythread t1;</p>
 <p>t1.start(); ... t1.stop();  </p>
+
+<p class="definition">Definition at line <a class="el" href="thread_8h_source.html#l00038">38</a> of file <a class="el" href="thread_8h_source.html">thread.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a77379983cee6b9b4a4f53fc65a018ba5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a77379983cee6b9b4a4f53fc65a018ba5">&#9670;&nbsp;</a></span>start()</h2>
@@ -205,6 +207,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p>start the implemented <a class="el" href="classcgv_1_1os_1_1thread.html#a005fa3dd8aa8084d3fd87e2cd0b52de6" title="thread function to override">run()</a> method (asynchronly) and destruct the thread object </p>
 <p>start the implemented <a class="el" href="classcgv_1_1os_1_1thread.html#a005fa3dd8aa8084d3fd87e2cd0b52de6" title="thread function to override">run()</a> method (asynchronly) </p>
+
+<p class="definition">Definition at line <a class="el" href="thread__pthread_8h_source.html#l00023">23</a> of file <a class="el" href="thread__pthread_8h_source.html">thread_pthread.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="web__server_8cxx_source.html#l00051">cgv::os::web_server_thread::start()</a>.</p>
 
 </div>
 </div>
@@ -226,6 +232,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>try to stop the thread execution via indicating a stop request. </p>
 <p>The existence of a stop request can be recognized by the no_stop_request() method. This test should be done periodically within the implementation of the <a class="el" href="classcgv_1_1os_1_1thread.html#a005fa3dd8aa8084d3fd87e2cd0b52de6" title="thread function to override">run()</a> method, e.g. to leave the execution loop in a clean way. </p>
 
+<p class="definition">Definition at line <a class="el" href="thread__pthread_8h_source.html#l00078">78</a> of file <a class="el" href="thread__pthread_8h_source.html">thread_pthread.h</a>.</p>
+
 </div>
 </div>
 <a id="a9d7d0deaf2e2f20337b36bef3366d694"></a>
@@ -246,6 +254,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>the thread is interpreted as a slave thread and started from another master thread. </p>
 <p>join the current thread</p>
 <p>This method is called from the master thread in order to wait for termination of the slave thread. </p>
+
+<p class="definition">Definition at line <a class="el" href="thread__pthread_8h_source.html#l00098">98</a> of file <a class="el" href="thread__pthread_8h_source.html">thread_pthread.h</a>.</p>
 
 </div>
 </div>
@@ -275,6 +285,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p>sleep till the signal from the given <a class="el" href="structcgv_1_1os_1_1condition__mutex.html" title="A mutex that can wake up other threads by signals sent when a condition is fulfilled.">condition_mutex</a> is sent, lock the mutex first and unlock after waiting </p>
 <p>sleep till the signal from the given <a class="el" href="structcgv_1_1os_1_1condition__mutex.html" title="A mutex that can wake up other threads by signals sent when a condition is fulfilled.">condition_mutex</a> is sent </p>
+
+<p class="definition">Definition at line <a class="el" href="thread__pthread_8h_source.html#l00039">39</a> of file <a class="el" href="thread__pthread_8h_source.html">thread_pthread.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="thread__pthread_8h_source.html#l00045">wait_for_signal_with_lock()</a>.</p>
 
 </div>
 </div>

@@ -351,6 +351,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>the image reader chooses a specific reader automatically based on the extension of the given file name. </p>
 <p>In the open method it sets the format passed by reference to the reader in the constructor. </p>
+
+<p class="definition">Definition at line <a class="el" href="image__reader_8h_source.html#l00063">63</a> of file <a class="el" href="image__reader_8h_source.html">image_reader.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="abe89ffd5db0943e20d19bc3494e25e88"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abe89ffd5db0943e20d19bc3494e25e88">&#9670;&nbsp;</a></span>image_reader()</h2>
@@ -381,6 +383,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>construct an image reader from a reference to a data format instance in which the format of the image file will be stored after a call to the open method. </p>
 <p>construct an image <a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html" title="the image reader chooses a specific reader automatically based on the extension of the given file nam...">image_reader</a> from a file name</p>
 <p>If also images with palettes should be handled, provide also a vector of data formats for the palettes. By default no vector is provided such that the reader converts paletted image formats to non paletted ones. In case palettes are used, the components in the file_format will be '0', '1', ... for the components that reference the i-th palette. </p>
+
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00078">78</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
 </div>
 </div>
@@ -441,6 +445,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>overload to implement the execution of a method based on the method name and the given parameters</p>
 <p>, i.e. a class method based on the action name and the given parameters. The default implementation uses the <a class="el" href="classcgv_1_1base_1_1base.html#aa0fe4266b74ebe49de68faaab3ca7a7a" title="used for simple self reflection">self_reflect()</a> method to dispatch this call. If not found, the get_void method returns false. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00168">168</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
 </div>
 </div>
 <a id="ad121ecb072de62a4ab4a180bc9d183bb"></a>
@@ -480,6 +486,12 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>find a member pointer by name. </p>
 <p>If not found the null pointer is returned. If the type name string pointer is provided, the type of the property is copied to the referenced string. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00360">360</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="find__reflection__handler_8cxx_source.html#l00047">cgv::reflect::find_reflection_handler::found_target()</a>, <a class="el" href="find__reflection__handler_8cxx_source.html#l00059">cgv::reflect::find_reflection_handler::get_member_ptr()</a>, <a class="el" href="find__reflection__handler_8cxx_source.html#l00072">cgv::reflect::find_reflection_handler::get_reflection_traits()</a>, and <a class="el" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#aa00b01c2252909e01eb154c6170df6d2">cgv::reflect::abst_reflection_traits::get_type_name()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="event__handler_8cxx_source.html#l00022">cgv::gui::event_handler::add_key_control()</a>.</p>
+
 </div>
 </div>
 <a id="a5978e45464c3fdd3083426c4b21ed28a"></a>
@@ -511,6 +523,8 @@ template&lt;typename T &gt; </div>
 <p>query a property of the element and perform standard conversions if necessary. </p>
 <p>This templated version simply extracts the type of the value from the reference and calls the <a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#aa31653a404d2100655e91db9c00cfda1" title="abstract interface for the setter, by default it simply returns false">set_void()</a> method. Note that this only works if the template cgv::type::info::type_name&lt;T&gt; is overloaded for the value type. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8h_source.html#l00192">192</a> of file <a class="el" href="base_8h_source.html">base.h</a>.</p>
+
 </div>
 </div>
 <a id="a97b29aba3062357f7a1c8315f428b559"></a>
@@ -531,6 +545,10 @@ template&lt;typename T &gt; </div>
 <p>return the data format of the image file </p>
 <p>return the image info </p>
 
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00167">167</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>.</p>
+
 </div>
 </div>
 <a id="a4dea520977d6412453e42e3550e16b7c"></a>
@@ -550,6 +568,12 @@ template&lt;typename T &gt; </div>
 
 <p>return the duration of the current image in seconds, if returned value is 0, no duration is available </p>
 <p>return the duration of the current image in seconds </p>
+
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00187">187</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00028">cgv::media::image::abst_image_reader::get_image_duration()</a>, and <a class="el" href="image__reader_8h_source.html#l00071">rd</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, and <a class="el" href="image__drawable_8cxx_source.html#l00162">cgv::render::gl::image_drawable::save_images()</a>.</p>
 
 </div>
 </div>
@@ -589,6 +613,10 @@ template&lt;typename T &gt; </div>
 
 <p>check if the given name specifies a property. </p>
 <p>If the type name string pointer is provided, the type of the property is copied to the referenced string. </p>
+
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00336">336</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="tokenizer_8h_source.html#l00121">cgv::utils::bite_all()</a>, and <a class="el" href="convert__string_8h_source.html#l00018">cgv::utils::to_string()</a>.</p>
 
 </div>
 </div>
@@ -630,6 +658,12 @@ template&lt;typename T &gt; </div>
 <p>set several properties, which are defined as colon separated assignments, where the types are derived automatically</p>
 <p>, which are defined as colon separated assignments, where the types are derived automatically to bool, int, double or std::string. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00287">287</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="tokenizer_8h_source.html#l00121">cgv::utils::bite_all()</a>, <a class="el" href="scan_8cxx_source.html#l00017">cgv::utils::is_digit()</a>, <a class="el" href="scan_8cxx_source.html#l00339">cgv::utils::is_integer()</a>, and <a class="el" href="convert__string_8h_source.html#l00018">cgv::utils::to_string()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="base__generator_8h_source.html#l00132">cgv::base::has_property()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">cgv::render::texture::write_to_file()</a>.</p>
+
 </div>
 </div>
 <a id="aa7e432a1d23297e019079b5dbd83e8db"></a>
@@ -650,6 +684,12 @@ template&lt;typename T &gt; </div>
 
 <p>open the file and read the image header in order to determine the data format of the file, which is stored in the data format specified in the constructor </p>
 <p>open the file and read the image header in order to determine the data format </p>
+
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00140">140</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>, <a class="el" href="base_8h_source.html#l00128">cgv::base::base::get_interface()</a>, <a class="el" href="image__reader_8cxx_source.html#l00084">get_supported_extensions()</a>, <a class="el" href="scan_8cxx_source.html#l00274">cgv::utils::is_element()</a>, <a class="el" href="image__reader_8h_source.html#l00073">last_error</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#a21741f88130baa3224809472f69df8b5">cgv::media::image::abst_image_reader::open()</a>, <a class="el" href="image__reader_8h_source.html#l00069">palette_formats</a>, and <a class="el" href="image__reader_8h_source.html#l00071">rd</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00113">cgv::render::gl::image_drawable::read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00120">read_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00133">cgv::render::gl::image_drawable::read_images()</a>, and <a class="el" href="image__drawable_8cxx_source.html#l00162">cgv::render::gl::image_drawable::save_images()</a>.</p>
 
 </div>
 </div>
@@ -681,6 +721,10 @@ template&lt;typename T &gt; </div>
 
 <p>read image to a data_view with the correct format and an allocated pointer </p>
 <p>read the whole image into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done. If image file has not been opened yet, open it and close it after reading </p>
+
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00276">276</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00113">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>, <a class="el" href="image__reader_8h_source.html#l00069">palette_formats</a>, <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#af3811feeb4f9c0c1b50e6985764af9bf">cgv::media::image::abst_image_reader::read_image()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00211">read_palette()</a>.</p>
 
 </div>
 </div>
@@ -718,6 +762,10 @@ template&lt;typename T &gt; </div>
 
 <p>read the image into the given data view that must have the correct format and an allocated data pointer. </p>
 <p>read the whole image into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done. If image file has not been opened yet, open it and close it after reading </p>
+
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00130">130</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00295">close()</a>, <a class="el" href="component__format_8cxx_source.html#l00318">cgv::data::component_format::empty()</a>, <a class="el" href="data__view_8cxx_source.html#l00113">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>, <a class="el" href="image__reader_8cxx_source.html#l00140">open()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00120">read_image()</a>.</p>
 
 </div>
 </div>
@@ -757,6 +805,12 @@ template&lt;typename T &gt; </div>
 <p>read the whole image into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done. If image file has not been opened yet, open it and close it after reading</p>
 <p>If the data view is empty, set the format and allocate memory to hold the image data. The newly allocate data pointer will belong to the data view afterwards. If the data pointer of the data view is already allocated, use this in the same way as the alternate version of read_image with the const data_view argument does. </p>
 
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00120">120</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00295">close()</a>, <a class="el" href="component__format_8cxx_source.html#l00318">cgv::data::component_format::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>, and <a class="el" href="image__reader_8cxx_source.html#l00140">open()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="texture_8cxx_source.html#l00259">cgv::render::texture::create_from_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00130">read_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, <a class="el" href="texture_8cxx_source.html#l00699">cgv::render::texture::replace_from_image()</a>, and <a class="el" href="image__drawable_8cxx_source.html#l00162">cgv::render::gl::image_drawable::save_images()</a>.</p>
+
 </div>
 </div>
 <a id="abadd93d051939e353e40d674718ebf1b"></a>
@@ -789,6 +843,10 @@ template&lt;typename T &gt; </div>
 <p>read the whole image into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done. If image file has not been opened yet, open it and close it after reading</p>
 <p>read an image from an opened image file into the given data view. If the data format of the view has not been specified, set it to the data format of the file. If the data pointer is empty, allocate enough memory to hold the image. The pointer is then owned by the view. </p>
 
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00258">258</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00113">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>, <a class="el" href="image__reader_8h_source.html#l00069">palette_formats</a>, <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#af3811feeb4f9c0c1b50e6985764af9bf">cgv::media::image::abst_image_reader::read_image()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00211">read_palette()</a>.</p>
+
 </div>
 </div>
 <a id="a265b84b8171b89cba0747f99e9e50058"></a>
@@ -809,6 +867,10 @@ template&lt;typename T &gt; </div>
 
 <p>read line into a preallocated data view of the correct format </p>
 <p>read the next line into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done </p>
+
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00250">250</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00113">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>, <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, and <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#afd444e1f0903a178c082d69fa8145099">cgv::media::image::abst_image_reader::read_line()</a>.</p>
 
 </div>
 </div>
@@ -831,6 +893,10 @@ template&lt;typename T &gt; </div>
 <p>read the next line into the given data view. </p>
 <p>read the next line into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done</p>
 <p>If the data format of the view has not been specified, set it to the data format of the file, construct a 1d subview and allocate memory for a line only. The data pointer is then owned by the view. </p>
+
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00237">237</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00113">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>, <a class="el" href="component__format_8cxx_source.html#l00396">cgv::data::component_format::get_entry_size()</a>, <a class="el" href="data__format_8cxx_source.html#l00262">cgv::data::data_format::get_width()</a>, <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#afd444e1f0903a178c082d69fa8145099">cgv::media::image::abst_image_reader::read_line()</a>, and <a class="el" href="data__view_8cxx_source.html#l00285">cgv::data::data_view::set_ptr()</a>.</p>
 
 </div>
 </div>
@@ -864,6 +930,10 @@ template&lt;typename T &gt; </div>
 <p>read the i-th palette in case of a paletted file format, the standard implementation returns false</p>
 <p>In case of files with animated images, the palette can change for each image. Therefore call this method before each call to <code><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#ac871d242183818bcacb62613a6907611" title="read the whole image into the given data view.">read_image()</a></code>. </p>
 
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00221">221</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00113">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00069">palette_formats</a>, <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, and <a class="el" href="image__reader_8cxx_source.html#l00046">cgv::media::image::abst_image_reader::read_palette()</a>.</p>
+
 </div>
 </div>
 <a id="a5f47f588ac70c2c9f7fb733d6bd9cff0"></a>
@@ -896,6 +966,12 @@ template&lt;typename T &gt; </div>
 <p>read the i-th palette in case of a paletted file format, the standard implementation returns false</p>
 <p>In case of files with animated images, the palette can change for each image. Therefore call this method before each call to <code><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#ac871d242183818bcacb62613a6907611" title="read the whole image into the given data view.">read_image()</a></code>. </p>
 
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00211">211</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00113">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00069">palette_formats</a>, <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, and <a class="el" href="image__reader_8cxx_source.html#l00046">cgv::media::image::abst_image_reader::read_palette()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00259">cgv::render::texture::create_from_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00258">read_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, <a class="el" href="texture_8cxx_source.html#l00699">cgv::render::texture::replace_from_image()</a>, and <a class="el" href="image__drawable_8cxx_source.html#l00162">cgv::render::gl::image_drawable::save_images()</a>.</p>
+
 </div>
 </div>
 <a id="aa0fe4266b74ebe49de68faaab3ca7a7a"></a>
@@ -927,6 +1003,8 @@ template&lt;typename T &gt; </div>
 <p>The overloaded implementation is used by the default implementations of set_void, get_void and get_property_declarations with corresponding reflection handlers. The default implementation of self_reflect is empty. </p>
 
 <p>Reimplemented in <a class="el" href="structcgv_1_1render_1_1render__config.html#a91eabc5d1bee4696cce6de5ad05dfbe8">cgv::render::render_config</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="base_8cxx_source.html#l00161">161</a> of file <a class="el" href="base_8cxx_source.html">base.cxx</a>.</p>
 
 </div>
 </div>
@@ -969,6 +1047,8 @@ template&lt;typename T &gt; </div>
 <p>set a property of the element to the given value and perform standard conversions if necessary. </p>
 <p>This templated version simply extracts the type of the value from the reference and calls the <a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#aa31653a404d2100655e91db9c00cfda1" title="abstract interface for the setter, by default it simply returns false">set_void()</a> method. Note that this only works if the template cgv::type::info::type_name&lt;T&gt; is overloaded for the value type. </p>
 
+<p class="definition">Definition at line <a class="el" href="base_8h_source.html#l00186">186</a> of file <a class="el" href="base_8h_source.html">base.h</a>.</p>
+
 </div>
 </div>
 <a id="af29e189b8a2da2409e9b9ba119108f7b"></a>
@@ -989,11 +1069,15 @@ template&lt;typename T &gt; </div>
 <p>return whether the reader supports per line reading (only valid after successfully opening an image file) </p>
 <p>whether the <a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html" title="the image reader chooses a specific reader automatically based on the extension of the given file nam...">image_reader</a> supports per line reading (only valid after successful opening an image file </p>
 
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00229">229</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, and <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#a5ada7393c90cdec16d2ca107872eb7aa">cgv::media::image::abst_image_reader::supports_per_line_read()</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/media/image/<a class="el" href="image__reader_8h_source.html">image_reader.h</a></li>
-<li>cgv/media/image/image_reader.cxx</li>
+<li>cgv/media/image/<a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

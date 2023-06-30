@@ -301,6 +301,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>the data view gives access to a data array of one, two, three or four dimensions. </p>
 <p>Each data entry can consist of several components as defined in the referenced component format. It allows to permute the dimensions, construct views of lower dimension with the ()-operators defined in the <a class="el" href="classcgv_1_1data_1_1data__view__impl.html" title="template class implementing the part of the view that depends on whether the pointer is const or not ...">data_view_impl</a> and to access the data components with the get- and set-method of <a class="el" href="classcgv_1_1data_1_1data__view__impl.html" title="template class implementing the part of the view that depends on whether the pointer is const or not ...">data_view_impl</a>. It keeps a flag that tells whether the data pointer belongs to the data view and therefore needs to be deleted on destruction. </p>
+
+<p class="definition">Definition at line <a class="el" href="data__view_8h_source.html#l00154">154</a> of file <a class="el" href="data__view_8h_source.html">data_view.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a3643286f907cf51f7b85192b9241ece4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3643286f907cf51f7b85192b9241ece4">&#9670;&nbsp;</a></span>data_view() <span class="overload">[1/4]</span></h2>
@@ -320,6 +322,10 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 <p>construct a data view from the given format. </p>
 <p>Allocate a new data pointer with the new [] operator of type (unsigned char) and own the pointer. The <a class="el" href="classcgv_1_1data_1_1data__view.html" title="the data view gives access to a data array of one, two, three or four dimensions.">data_view</a> will view the complete data set as defined in the format. </p>
+
+<p class="definition">Definition at line <a class="el" href="data__view_8cxx_source.html#l00222">222</a> of file <a class="el" href="data__view_8cxx_source.html">data_view.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__view_8h_source.html#l00052">cgv::data::data_view_impl&lt; data_view, unsigned char * &gt;::data_ptr</a>, <a class="el" href="data__format_8cxx_source.html#l00255">cgv::data::data_format::get_nr_bytes()</a>, and <a class="el" href="data__view_8h_source.html#l00161">owns_ptr</a>.</p>
 
 </div>
 </div>
@@ -351,6 +357,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 <p>construct a data view from the given format, viewing the complete data set. </p>
 <p>The passed pointer will not be owned by the view. </p>
+
+<p class="definition">Definition at line <a class="el" href="data__view_8cxx_source.html#l00233">233</a> of file <a class="el" href="data__view_8cxx_source.html">data_view.cxx</a>.</p>
 
 </div>
 </div>
@@ -389,6 +397,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <p>construct a data view from the given format, viewing the complete data set. </p>
 <p>The passed pointer will be owned by the view if the manage_ptr flag is true. In this case the pointer is deleted on destruction with the delete [] operator of type (unsigned char*). </p>
 
+<p class="definition">Definition at line <a class="el" href="data__view_8cxx_source.html#l00242">242</a> of file <a class="el" href="data__view_8cxx_source.html">data_view.cxx</a>.</p>
+
 </div>
 </div>
 <a id="ad1c1d3a7a09a53fec25c42eae5cea4c9"></a>
@@ -417,6 +427,10 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 <p>construct a data view as a copy of the given data view. </p>
 <p>Copy the data and own the pointer. The <a class="el" href="classcgv_1_1data_1_1data__view.html" title="the data view gives access to a data array of one, two, three or four dimensions.">data_view</a> will view the complete data set as defined in the format. </p>
+
+<p class="definition">Definition at line <a class="el" href="data__view_8h_source.html#l00186">186</a> of file <a class="el" href="data__view_8h_source.html">data_view.h</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00255">cgv::data::data_format::get_nr_bytes()</a>, and <a class="el" href="data__view_8h_source.html#l00063">cgv::data::data_view_impl&lt; D, P &gt;::get_ptr()</a>.</p>
 
 </div>
 </div>
@@ -448,6 +462,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <p>permute the order of the indices, where the permutation argument "kji" implies that after the permutation the operator (i,j,k) returns the same as the operator (k,j,i) before the call to permute. </p>
 <p>The permutation string must have at least two entries. If it has n entries it must contain each of the first n letters of "ijkl" exactly once, i.e. "ik" would be invalid, whereas "ikj" is a valid permutation. </p>
 
+<p class="definition">Definition at line <a class="el" href="data__view_8cxx_source.html#l00121">121</a> of file <a class="el" href="data__view_8cxx_source.html">data_view.cxx</a>.</p>
+
 </div>
 </div>
 <a id="a8f339d16aae7cf88c55c943f2dbecbb3"></a>
@@ -468,11 +484,17 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <p>reflect 2D data view at horizontal axis </p>
 <p>reflect image at horizontal axis </p>
 
+<p class="definition">Definition at line <a class="el" href="data__view_8cxx_source.html#l00336">336</a> of file <a class="el" href="data__view_8cxx_source.html">data_view.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__view_8h_source.html#l00052">cgv::data::data_view_impl&lt; data_view, unsigned char * &gt;::data_ptr</a>, <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="data__format_8cxx_source.html#l00267">cgv::data::data_format::get_height()</a>, and <a class="el" href="data__view_8cxx_source.html#l00089">cgv::data::data_view_base::get_step_size()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gl__context_8cxx_source.html#l00868">cgv::render::gl::gl_context::read_frame_buffer()</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/data/<a class="el" href="data__view_8h_source.html">data_view.h</a></li>
-<li>cgv/data/data_view.cxx</li>
+<li>cgv/data/<a class="el" href="data__view_8cxx_source.html">data_view.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

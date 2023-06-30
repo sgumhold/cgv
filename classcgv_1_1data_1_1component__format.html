@@ -305,6 +305,8 @@ Friends</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>the component format inherits the information of a <a class="el" href="classcgv_1_1data_1_1packing__info.html" title="the packing_info class stores information about packed integers structures.">packing_info</a> and adds information on the component type, which components are present in the data and in which order they appear </p>
+
+<p class="definition">Definition at line <a class="el" href="component__format_8h_source.html#l00057">57</a> of file <a class="el" href="component__format_8h_source.html">component_format.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1594bbea3458a0a3f492a2daaff0fb1f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1594bbea3458a0a3f492a2daaff0fb1f">&#9670;&nbsp;</a></span>component_format() <span class="overload">[1/2]</span></h2>
@@ -332,6 +334,10 @@ Friends</h2></td></tr>
 
 <p>construct from description string, see set_component_format for docu </p>
 <p>construct from description string </p>
+
+<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00087">87</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="component__format_8cxx_source.html#l00042">extract_components()</a>, and <a class="el" href="component__format_8cxx_source.html#l00168">set_component_format()</a>.</p>
 
 </div>
 </div>
@@ -394,6 +400,10 @@ Friends</h2></td></tr>
 <p>construct component format from component type, comma or colon separated list of component names, component alignment and bit depths for packed formats </p>
 <p>construct packed component format from component type, component sequence, and common component bit depth </p>
 
+<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00066">66</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="component__format_8h_source.html#l00063">component_interpretation</a>, and <a class="el" href="component__format_8cxx_source.html#l00042">extract_components()</a>.</p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -423,6 +433,10 @@ Friends</h2></td></tr>
 <p>extract components from component string </p>
 <p>extract component_positions from component string </p>
 
+<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00042">42</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="component__format_8cxx_source.html#l00066">component_format()</a>, <a class="el" href="component__format_8cxx_source.html#l00168">set_component_format()</a>, and <a class="el" href="component__format_8cxx_source.html#l00369">set_component_names()</a>.</p>
+
 </div>
 </div>
 <a id="a87c6adb3764104032af1d34abcbebf02"></a>
@@ -442,6 +456,12 @@ Friends</h2></td></tr>
 
 <p>return the size of one entry of components in bytes </p>
 <p>return the size of one entry of component_positions in bytes </p>
+
+<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00396">396</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="packing__info_8cxx_source.html#l00009">cgv::data::packing_info::align()</a>, <a class="el" href="packing__info_8cxx_source.html#l00034">cgv::data::packing_info::get_bit_depth()</a>, <a class="el" href="packing__info_8cxx_source.html#l00056">cgv::data::packing_info::get_component_alignment()</a>, <a class="el" href="component__format_8cxx_source.html#l00383">get_component_type()</a>, <a class="el" href="component__format_8cxx_source.html#l00324">get_nr_components()</a>, <a class="el" href="type__id_8cxx_source.html#l00018">cgv::type::info::get_type_size()</a>, and <a class="el" href="packing__info_8cxx_source.html#l00045">cgv::data::packing_info::is_packing()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00259">cgv::render::texture::create_from_image()</a>, <a class="el" href="data__view_8cxx_source.html#l00040">cgv::data::data_view_base::data_view_base()</a>, <a class="el" href="data__format_8cxx_source.html#l00255">cgv::data::data_format::get_nr_bytes()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00237">cgv::media::image::image_reader::read_line()</a>.</p>
 
 </div>
 </div>
@@ -463,6 +483,12 @@ Friends</h2></td></tr>
 <p>return the number of components </p>
 <p>return the number of component_positions </p>
 
+<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00324">324</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="component__format_8h_source.html#l00067">component_positions</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>, <a class="el" href="texture_8cxx_source.html#l00559">cgv::render::texture::create()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00511">cgv::render::gl::find_best_texture_format()</a>, <a class="el" href="component__format_8cxx_source.html#l00474">cgv::data::fmt1_compares_better()</a>, <a class="el" href="component__format_8cxx_source.html#l00330">get_component_index()</a>, <a class="el" href="component__format_8cxx_source.html#l00341">get_component_name()</a>, <a class="el" href="component__format_8cxx_source.html#l00396">get_entry_size()</a>, <a class="el" href="component__format_8cxx_source.html#l00353">get_standard_component_format()</a>, <a class="el" href="bmp__writer_8cxx_source.html#l00035">cgv::media::image::bmp_writer::is_format_supported()</a>, <a class="el" href="component__format_8cxx_source.html#l00421">operator==()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, <a class="el" href="bmp__reader_8cxx_source.html#l00174">cgv::media::image::bmp_reader::read_line()</a>, and <a class="el" href="bmp__writer_8cxx_source.html#l00080">cgv::media::image::bmp_writer::write_image()</a>.</p>
+
 </div>
 </div>
 <a id="aeeb352777bc7221d4b1ac4438c3cea43"></a>
@@ -483,6 +509,10 @@ Friends</h2></td></tr>
 
 <p>set the component names from a standard component format </p>
 <p>set the component names from a given component format </p>
+
+<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00376">376</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="component__format_8h_source.html#l00065">component_string</a>, and <a class="el" href="component__format_8cxx_source.html#l00042">extract_components()</a>.</p>
 
 </div>
 </div>
@@ -531,6 +561,12 @@ alignment : unsigned int ... number of bits to which a component is aligned
 <li><code>"[D]"</code> ... one depth component without specified type, which defaults to "undef" and implies that the default depth format should be used. </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00168">168</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="packing__info_8cxx_source.html#l00009">cgv::data::packing_info::align()</a>, <a class="el" href="component__format_8h_source.html#l00063">component_interpretation</a>, <a class="el" href="component__format_8h_source.html#l00065">component_string</a>, <a class="el" href="component__format_8h_source.html#l00061">component_type</a>, <a class="el" href="component__format_8cxx_source.html#l00042">extract_components()</a>, <a class="el" href="type__id_8cxx_source.html#l00053">cgv::type::info::get_type_id()</a>, <a class="el" href="scan_8cxx_source.html#l00339">cgv::utils::is_integer()</a>, <a class="el" href="component__format_8h_source.html#l00071">last_error</a>, <a class="el" href="packing__info_8cxx_source.html#l00039">cgv::data::packing_info::set_bit_depth()</a>, <a class="el" href="packing__info_8cxx_source.html#l00061">cgv::data::packing_info::set_component_alignment()</a>, <a class="el" href="packing__info_8cxx_source.html#l00050">cgv::data::packing_info::set_packing()</a>, <a class="el" href="tokenizer_8cxx_source.html#l00059">cgv::utils::tokenizer::set_sep()</a>, and <a class="el" href="convert__string_8h_source.html#l00018">cgv::utils::to_string()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="component__format_8cxx_source.html#l00087">component_format()</a>.</p>
+
 </div>
 </div>
 <h2 class="groupheader">Friends And Related Function Documentation</h2>
@@ -571,11 +607,13 @@ alignment : unsigned int ... number of bits to which a component is aligned
 <p>define stream out operator </p>
 <p>stream out operator writes the component format in the syntax of description strings as defined in the docu of <a class="el" href="classcgv_1_1data_1_1component__format.html#a0f378a1f73f5a195fafcaa4382110cef" title="set component format from description string, which has the following syntax.">set_component_format()</a>. </p>
 
+<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00442">442</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/data/<a class="el" href="component__format_8h_source.html">component_format.h</a></li>
-<li>cgv/data/component_format.cxx</li>
+<li>cgv/data/<a class="el" href="component__format_8cxx_source.html">component_format.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

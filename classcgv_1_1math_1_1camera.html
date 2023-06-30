@@ -158,6 +158,8 @@ Public Attributes</h2></td></tr>
 class cgv::math::camera&lt; T &gt;</h3>
 
 <p>extend distorted pinhole with external calibration </p>
+
+<p class="definition">Definition at line <a class="el" href="camera_8h_source.html#l00530">530</a> of file <a class="el" href="camera_8h_source.html">camera.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="aff51ec684c3612bb1ed2ce518c0294bd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aff51ec684c3612bb1ed2ce518c0294bd">&#9670;&nbsp;</a></span>apply_distortion_model()</h2>
@@ -209,6 +211,10 @@ template&lt;typename T &gt; </div>
 
 <p>apply distortion model from distorted to undistorted image coordinates used in projection direction and return whether successful </p>
 <p>Failure cases are zero denominator in distortion formula or radius larger than max projection radius. </p>
+
+<p class="definition">Definition at line <a class="el" href="camera_8h_source.html#l00431">431</a> of file <a class="el" href="camera_8h_source.html">camera.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="camera_8h_source.html#l00473">cgv::math::distorted_pinhole&lt; T &gt;::invert_distortion_model()</a>.</p>
 
 </div>
 </div>
@@ -292,6 +298,10 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>reason of termination where in all case a best guess for xd is provided</dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="camera_8h_source.html#l00473">473</a> of file <a class="el" href="camera_8h_source.html">camera.h</a>.</p>
+
+<p class="reference">References <a class="el" href="camera_8h_source.html#l00431">cgv::math::distorted_pinhole&lt; T &gt;::apply_distortion_model()</a>, <a class="el" href="inv_8h_source.html#l00011">cgv::math::inv()</a>, and <a class="el" href="fvec_8h_source.html#l00288">cgv::math::fvec&lt; T, N &gt;::sqr_length()</a>.</p>
 
 </div>
 </div>

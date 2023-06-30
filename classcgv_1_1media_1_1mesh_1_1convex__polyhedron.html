@@ -344,6 +344,8 @@ class cgv::media::mesh::convex_polyhedron&lt; T, TCDim &gt;</h3>
 
 <p>simple mesh templated with per vertex position and texture coordinates and per face plane. </p>
 <p>First template parameter is common type and the second is the dimension of texture coordinates </p>
+
+<p class="definition">Definition at line <a class="el" href="convex__polyhedron_8h_source.html#l00124">124</a> of file <a class="el" href="convex__polyhedron_8h_source.html">convex_polyhedron.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ae5e3d4520bc2f1222c7e04eb52581551"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae5e3d4520bc2f1222c7e04eb52581551">&#9670;&nbsp;</a></span>clip_to_inside_of_plane()</h2>
@@ -393,6 +395,8 @@ template&lt;typename T , cgv::type::int32_type TCDim&gt; </div>
 
 <p>compute the interior of the given shell si with respect to the given clipping plane and either replace the shell or create a new one </p>
 <p>return the index of the new shell or -1 if the shell was empty and therefore not created. If the current shell was to be replace with an empty result, it is simply deleted. </p>
+
+<p class="definition">Definition at line <a class="el" href="convex__polyhedron_8h_source.html#l00328">328</a> of file <a class="el" href="convex__polyhedron_8h_source.html">convex_polyhedron.h</a>.</p>
 
 </div>
 </div>
@@ -445,6 +449,8 @@ template&lt;typename T , cgv::type::int32_type TCDim&gt; </div>
 <p>compute the exterior of the given shell si with respect to the given clipping plane and either replace the shell or create a new one </p>
 <p>return the index of the new shell or -1 if the shell was empty and therefore not created. If the current shell was to be replace with an empty result, it is simply deleted. </p>
 
+<p class="definition">Definition at line <a class="el" href="convex__polyhedron_8h_source.html#l00346">346</a> of file <a class="el" href="convex__polyhedron_8h_source.html">convex_polyhedron.h</a>.</p>
+
 </div>
 </div>
 <a id="aee9d662aa8f2276e9796b32098c26406"></a>
@@ -483,6 +489,8 @@ template&lt;typename T , cgv::type::int32_type TCDim&gt; </div>
 
 <p>given a face as a list of vertex indices and a vector of vertex locations, find a halfedge that touches the current clip plane </p>
 <p>find a halfedge that touches the current clip plane </p>
+
+<p class="definition">Definition at line <a class="el" href="convex__polyhedron_8cxx_source.html#l00094">94</a> of file <a class="el" href="convex__polyhedron_8cxx_source.html">convex_polyhedron.cxx</a>.</p>
 
 </div>
 </div>
@@ -540,6 +548,8 @@ template&lt;typename T , cgv::type::int32_type TCDim&gt; </div>
 
 <p>split the given shell into interior and exterior </p>
 <p>return shell index pair where first index corresponds to interior part and second to exterior part. If a shell is empty the returned shell index is set to -1. </p>
+
+<p class="definition">Definition at line <a class="el" href="convex__polyhedron_8h_source.html#l00381">381</a> of file <a class="el" href="convex__polyhedron_8h_source.html">convex_polyhedron.h</a>.</p>
 
 </div>
 </div>

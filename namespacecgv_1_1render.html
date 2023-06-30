@@ -166,9 +166,6 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__buffer.html">render_buffer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">this class encapsulate render buffers that live on the GPU which must support frame buffer objects for this to work.  <a href="classcgv_1_1render_1_1render__buffer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1render__types.html">render_types</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">this is DEPRECATED  <a href="structcgv_1_1render_1_1render__types.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1textured__rectangle.html">textured_rectangle</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">simple helper class to store rectangles with texture coordinates  <a href="structcgv_1_1render_1_1textured__rectangle.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -611,7 +608,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <tr class="memdesc:a41a6e252b09926b43b640b2141c8fb24"><td class="mdescLeft">&#160;</td><td class="mdescRight">reference to a singleton cone renderer that is shared among drawables  <a href="namespacecgv_1_1render.html#a41a6e252b09926b43b640b2141c8fb24">More...</a><br /></td></tr>
 <tr class="separator:a41a6e252b09926b43b640b2141c8fb24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f104db7ff3601b636c876ff92ab8852"><td class="memItemLeft" align="right" valign="top"><a id="a7f104db7ff3601b636c876ff92ab8852"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a7f104db7ff3601b636c876ff92ab8852">extract_additional_information</a> (const fx::gltf::Document &amp;doc, <a class="el" href="structcgv_1_1render_1_1render__types.html#a65daf724c16fb2e17b417a2b0d7a546d">cgv::render::render_types::box3</a> &amp;box, size_t &amp;vertex_count)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a7f104db7ff3601b636c876ff92ab8852">extract_additional_information</a> (const fx::gltf::Document &amp;doc, <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::render::render_types::box3</a> &amp;box, size_t &amp;vertex_count)</td></tr>
 <tr class="memdesc:a7f104db7ff3601b636c876ff92ab8852"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract bounding box and vertex count from gltf document <br /></td></tr>
 <tr class="separator:a7f104db7ff3601b636c876ff92ab8852"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b675d0a601181144b6ce95371ad087d"><td class="memItemLeft" align="right" valign="top"><a id="a7b675d0a601181144b6ce95371ad087d"></a>
@@ -687,6 +684,8 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 <p>type(shader_config):shader_path='D:/my_shaders'</p>
 <p>To set the shader path at runtime, query the shader_config with the <a class="el" href="namespacecgv_1_1render.html#a5929e262d43bd2e095c4776547eebe5b" title="return a reference to the current shader configuration">get_shader_config()</a> function. typedef for shader define map data structure </p>
 
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00027">27</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
@@ -703,6 +702,8 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 </div><div class="memdoc">
 
 <p>different modes to compute the head length of an arrow </p>
+
+<p class="definition">Definition at line <a class="el" href="arrow__renderer_8h_source.html#l00020">20</a> of file <a class="el" href="arrow__renderer_8h_source.html">arrow_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -729,6 +730,8 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 <tr><td class="fieldname"><a id="adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c"></a>BTB_ALL_BITS&#160;</td><td class="fielddoc"><p>stencil buffer type </p>
 </td></tr>
 </table>
+
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00402">402</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -762,6 +765,8 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 </td></tr>
 </table>
 
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00078">78</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+
 </div>
 </div>
 <a id="a6ddc63c9f76935e53fab79b373077832"></a>
@@ -781,6 +786,8 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a6ddc63c9f76935e53fab79b373077832a963359456640e9b8d512709facecb892"></a>TS_VERTEX&#160;</td><td class="fielddoc"><p>for texture resulution N x M x L the <code>tex_coord</code> ranges from [1/2N, 1/2M, 1/2L] to [1-1/2N, 1-1/2M, 1-1/2P] </p>
 </td></tr>
 </table>
+
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00212">212</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -834,6 +841,12 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
   </dd>
 </dl>
 
+<p class="definition">Definition at line <a class="el" href="render_2color__scale_8cxx_source.html#l00006">6</a> of file <a class="el" href="render_2color__scale_8cxx_source.html">color_scale.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="shader__program_8h_source.html#l00139">cgv::render::shader_program::set_uniform()</a>, and <a class="el" href="shader__program_8h_source.html#l00149">cgv::render::shader_program::set_uniform_array()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00387">cgv::plot::plot_base::set_mapping_uniforms()</a>.</p>
+
 </div>
 </div>
 <a id="a30147ad00afa94d5133a66836282a047"></a>
@@ -885,6 +898,10 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
   </dd>
 </dl>
 
+<p class="definition">Definition at line <a class="el" href="render_2color__scale_8cxx_source.html#l00020">20</a> of file <a class="el" href="render_2color__scale_8cxx_source.html">color_scale.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="shader__program_8h_source.html#l00149">cgv::render::shader_program::set_uniform_array()</a>.</p>
+
 </div>
 </div>
 <a id="a70f8fa845a248470de8b176c778b3e32"></a>
@@ -935,6 +952,12 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 <p>This is primarily used to create a context without a window for console applications that render into a frame buffer object only. After usage you need to delete the context by hand.</p>
 <p>This is primarily used to create a context without a window for console applications that render into a frame buffer object only. The newly created context will be current right after creation. After usage you need to delete the context by hand. </p>
 
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02277">2277</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l02277">create_context()</a>, and <a class="el" href="classcgv_1_1render_1_1context.html#ad351a2dc1c1e0343b17738053a981816">cgv::render::context::make_current()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l02277">create_context()</a>.</p>
+
 </div>
 </div>
 <a id="a9a9f6a897808a5990c182946582a514c"></a>
@@ -984,6 +1007,10 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 <p>extract simple mesh form gltf document </p>
 <p>extraction can be restricted to a mesh and within the mesh to a primitive by specifying the corresponsing indices as parameters to this function. The number of meshes can be extracted from the gltf document via doc.meshes.size() and the number of primitives for a given mesh with doc.meshes[mesh_index].primitives.size(). CAREFULL: works only in cases were all meshes and primitives have same vertex attribute configuration. </p>
 
+<p class="definition">Definition at line <a class="el" href="gltf__support_8cxx_source.html#l00328">328</a> of file <a class="el" href="gltf__support_8cxx_source.html">gltf_support.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00435">cgv::media::mesh::simple_mesh&lt; T &gt;::clear()</a>, <a class="el" href="simple__mesh_8h_source.html#l00245">cgv::media::mesh::simple_mesh&lt; T &gt;::get_nr_positions()</a>, <a class="el" href="simple__mesh_8h_source.html#l00126">cgv::media::mesh::simple_mesh_base::group_index()</a>, <a class="el" href="simple__mesh_8h_source.html#l00114">cgv::media::mesh::simple_mesh_base::material_index()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00124">cgv::media::mesh::simple_mesh_base::new_group()</a>, <a class="el" href="simple__mesh_8h_source.html#l00108">cgv::media::mesh::simple_mesh_base::new_material()</a>, <a class="el" href="simple__mesh_8h_source.html#l00251">cgv::media::mesh::simple_mesh&lt; T &gt;::new_normal()</a>, <a class="el" href="simple__mesh_8h_source.html#l00243">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, <a class="el" href="simple__mesh_8h_source.html#l00268">cgv::media::mesh::simple_mesh&lt; T &gt;::new_tex_coord()</a>, <a class="el" href="simple__mesh_8h_source.html#l00112">cgv::media::mesh::simple_mesh_base::ref_material()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00072">cgv::media::illum::textured_surface_material::set_name()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00076">cgv::media::mesh::simple_mesh_base::start_face()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
+
 </div>
 </div>
 <a id="a34f01911dc10ffc2500dc4d9f8cdc526"></a>
@@ -1011,6 +1038,12 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 <p>transparent surface rendering using depth peeling</p>
 <p>in picking pass a small rectangle around the mouse is rendered</p>
 
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00684">684</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l00684">get_render_pass_name()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l00684">get_render_pass_name()</a>, and <a class="el" href="context_8cxx_source.html#l00747">cgv::render::context::render_pass()</a>.</p>
+
 </div>
 </div>
 <a id="a5929e262d43bd2e095c4776547eebe5b"></a>
@@ -1030,6 +1063,12 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 
 <p>return a reference to the current shader configuration </p>
 <p>return a pointer to the current shader configuration </p>
+
+<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00045">45</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00045">get_shader_config()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00359">cgv::render::shader_program::attach_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00106">cgv::render::shader_program::collect_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00128">cgv::render::shader_program::collect_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00175">cgv::render::shader_code::find_file()</a>, <a class="el" href="shader__code_8cxx_source.html#l00088">cgv::render::shader_code::get_last_error()</a>, <a class="el" href="shader__code_8cxx_source.html#l00045">get_shader_config()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00301">cgv::render::shader_code::read_code_file()</a>.</p>
 
 </div>
 </div>
@@ -1062,6 +1101,12 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 <p>reference to a singleton surfel renderer that can be shared among drawables </p>
 <p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
 
+<p class="definition">Definition at line <a class="el" href="arrow__renderer_8cxx_source.html#l00007">7</a> of file <a class="el" href="arrow__renderer_8cxx_source.html">arrow_renderer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00021">cgv::render::renderer::manage_singleton()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00434">cgv::render::gl::gl_implicit_surface_drawable_base::clear()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00443">cgv::render::gl::gl_implicit_surface_drawable_base::draw()</a>, and <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00425">cgv::render::gl::gl_implicit_surface_drawable_base::init()</a>.</p>
+
 </div>
 </div>
 <a id="a8b3b7372ee5147ff1ba384f8bbe74156"></a>
@@ -1092,6 +1137,12 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 
 <p>reference to a singleton box renderer that is shared among drawables </p>
 <p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
+
+<p class="definition">Definition at line <a class="el" href="box__renderer_8cxx_source.html#l00014">14</a> of file <a class="el" href="box__renderer_8cxx_source.html">box_renderer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00021">cgv::render::renderer::manage_singleton()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot3d_8cxx_source.html#l00538">cgv::plot::plot3d::clear()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00434">cgv::render::gl::gl_implicit_surface_drawable_base::clear()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00443">cgv::render::gl::gl_implicit_surface_drawable_base::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00142">cgv::plot::plot3d::init()</a>, and <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00425">cgv::render::gl::gl_implicit_surface_drawable_base::init()</a>.</p>
 
 </div>
 </div>
@@ -1124,6 +1175,10 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 <p>reference to a singleton box_wire renderer that can be shared among drawables </p>
 <p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
 
+<p class="definition">Definition at line <a class="el" href="box__wire__renderer_8cxx_source.html#l00013">13</a> of file <a class="el" href="box__wire__renderer_8cxx_source.html">box_wire_renderer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00021">cgv::render::renderer::manage_singleton()</a>.</p>
+
 </div>
 </div>
 <a id="a41a6e252b09926b43b640b2141c8fb24"></a>
@@ -1154,6 +1209,12 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 
 <p>reference to a singleton cone renderer that is shared among drawables </p>
 <p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
+
+<p class="definition">Definition at line <a class="el" href="cone__renderer_8cxx_source.html#l00007">7</a> of file <a class="el" href="cone__renderer_8cxx_source.html">cone_renderer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00021">cgv::render::renderer::manage_singleton()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot3d_8cxx_source.html#l00538">cgv::plot::plot3d::clear()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00434">cgv::render::gl::gl_implicit_surface_drawable_base::clear()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00443">cgv::render::gl::gl_implicit_surface_drawable_base::draw()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00568">cgv::render::gl::gl_implicit_surface_drawable_base::draw_implicit_surface()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00536">cgv::render::gl::gl_implicit_surface_drawable_base::finish_frame()</a>, <a class="el" href="plot3d_8cxx_source.html#l00142">cgv::plot::plot3d::init()</a>, and <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00425">cgv::render::gl::gl_implicit_surface_drawable_base::init()</a>.</p>
 
 </div>
 </div>
@@ -1186,6 +1247,10 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 <p>reference to a singleton normal renderer that can be shared among drawables </p>
 <p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
 
+<p class="definition">Definition at line <a class="el" href="normal__renderer_8cxx_source.html#l00007">7</a> of file <a class="el" href="normal__renderer_8cxx_source.html">normal_renderer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00021">cgv::render::renderer::manage_singleton()</a>.</p>
+
 </div>
 </div>
 <a id="af2167f067ad328f6b3ee33215c888ecb"></a>
@@ -1216,6 +1281,10 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 
 <p>reference to a singleton point renderer that can be shared among drawables </p>
 <p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
+
+<p class="definition">Definition at line <a class="el" href="point__renderer_8cxx_source.html#l00008">8</a> of file <a class="el" href="point__renderer_8cxx_source.html">point_renderer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00021">cgv::render::renderer::manage_singleton()</a>.</p>
 
 </div>
 </div>
@@ -1248,6 +1317,12 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 <p>reference to a singleton plane renderer that can be shared among drawables </p>
 <p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
 
+<p class="definition">Definition at line <a class="el" href="rectangle__renderer_8cxx_source.html#l00036">36</a> of file <a class="el" href="rectangle__renderer_8cxx_source.html">rectangle_renderer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00021">cgv::render::renderer::manage_singleton()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01239">cgv::plot::plot_base::clear()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01204">cgv::plot::plot_base::init()</a>.</p>
+
 </div>
 </div>
 <a id="a357b2c7107ff872aa762543c1d2efdaa"></a>
@@ -1278,6 +1353,10 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 
 <p>reference to a singleton slab renderer that is shared among drawables </p>
 <p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
+
+<p class="definition">Definition at line <a class="el" href="slab__renderer_8cxx_source.html#l00007">7</a> of file <a class="el" href="slab__renderer_8cxx_source.html">slab_renderer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00021">cgv::render::renderer::manage_singleton()</a>.</p>
 
 </div>
 </div>
@@ -1310,6 +1389,12 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 <p>reference to a singleton sphere renderer that can be shared among drawables </p>
 <p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
 
+<p class="definition">Definition at line <a class="el" href="sphere__renderer_8cxx_source.html#l00007">7</a> of file <a class="el" href="sphere__renderer_8cxx_source.html">sphere_renderer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00021">cgv::render::renderer::manage_singleton()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00434">cgv::render::gl::gl_implicit_surface_drawable_base::clear()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00443">cgv::render::gl::gl_implicit_surface_drawable_base::draw()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00568">cgv::render::gl::gl_implicit_surface_drawable_base::draw_implicit_surface()</a>, and <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00425">cgv::render::gl::gl_implicit_surface_drawable_base::init()</a>.</p>
+
 </div>
 </div>
 <a id="a78e11768aff9997a87ccb9c6a275b85d"></a>
@@ -1340,6 +1425,10 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 
 <p>reference to a singleton spline tube renderer that is shared among drawables </p>
 <p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
+
+<p class="definition">Definition at line <a class="el" href="spline__tube__renderer_8cxx_source.html#l00007">7</a> of file <a class="el" href="spline__tube__renderer_8cxx_source.html">spline_tube_renderer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00021">cgv::render::renderer::manage_singleton()</a>.</p>
 
 </div>
 </div>
@@ -1372,6 +1461,10 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 <p>reference to a singleton surfel renderer that can be shared among drawables </p>
 <p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
 
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00007">7</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00021">cgv::render::renderer::manage_singleton()</a>.</p>
+
 </div>
 </div>
 <a id="a61032957d1ebbec2abf7260ee4c522c5"></a>
@@ -1402,6 +1495,10 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 
 <p>reference to a singleton volume renderer that is shared among drawables </p>
 <p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
+
+<p class="definition">Definition at line <a class="el" href="volume__renderer_8cxx_source.html#l00009">9</a> of file <a class="el" href="volume__renderer_8cxx_source.html">volume_renderer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00021">cgv::render::renderer::manage_singleton()</a>.</p>
 
 </div>
 </div>

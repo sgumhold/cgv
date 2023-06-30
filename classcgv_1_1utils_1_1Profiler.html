@@ -101,6 +101,8 @@ class cgv::utils::Profiler&lt; T &gt;</h3>
 <p>Profiler&lt;&gt; p;</p>
 <p>p.prepare_counter("all"); p.prepare_counter("graphics"); p.prepare_counter("simulation");</p>
 <p>... while(not_stopped) { stopwatch sa(p.get_time_accu("all")); { stopwatch ss(p.get_time_accu("simulation")); simulate(); } { stopwatch sr(p.get_time_accu("graphics")); render(); } } ... std::cout &lt;&lt; p; </p>
+
+<p class="definition">Definition at line <a class="el" href="profiler_8h_source.html#l00044">44</a> of file <a class="el" href="profiler_8h_source.html">profiler.h</a>.</p>
 </div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>cgv/utils/<a class="el" href="profiler_8h_source.html">profiler.h</a></li>
 </ul>

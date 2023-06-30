@@ -289,6 +289,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>TODO: support for vibration based force feedback</p>
 <p>rendering to the hmd is done in current opengl context via <a class="el" href="classvr_1_1gl__vr__display.html#a9c3bf4e60806e19db47aa11c0c3d9ba5" title="initialize render targets and framebuffer objects in current opengl context">init_fbos()</a>, enable_fbo(eye), disable_fbo(eye) and <a class="el" href="classvr_1_1vr__kit.html#ad6f636081ed5a43637db2ad364e324b0" title="submit the rendered stereo frame to the hmd">submit_frame()</a> (after rendering both eyes). The crg_vr_view plugin uses these functions and completely handles the rendering process. If you want to use the functions yourself, you need to ensure to make the opengl context current before calling them. In order to debug the vr views, the function blit_fbo(eye,x,y,w,h) allows to blit a vr view into the framebuffer currently bound to GL_DRAW_FRAMEBUFFER.</p>
 <p>In order to build the modelview and projection matrices for rendering, the functions put_eye_to_head_matrix(eye,float[12]) provides a 3x4 pose matrix for each eye. Multiplying to the hmd pose matrix and inverting the matrix product yields the modelview matrix. The projection matrix can be accessed per eye via put_projection_matrix(eye,z_near,z_far,float[16]). </p>
+
+<p class="definition">Definition at line <a class="el" href="vr__kit_8h_source.html#l00068">68</a> of file <a class="el" href="vr__kit_8h_source.html">vr_kit.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a198941386cd05cfe1b85efc4a609f7a5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a198941386cd05cfe1b85efc4a609f7a5">&#9670;&nbsp;</a></span>get_camera()</h2>
@@ -307,6 +309,12 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <p>return camera or nullptr if not available </p>
 <p>return camera </p>
+
+<p class="definition">Definition at line <a class="el" href="vr__kit_8cxx_source.html#l00052">52</a> of file <a class="el" href="vr__kit_8cxx_source.html">vr_kit.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="vr__kit_8h_source.html#l00076">camera</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="vr__render__helpers_8cxx_source.html#l00109">vr::configure_seethrough_shader_program()</a>, <a class="el" href="vr__render__helpers_8cxx_source.html#l00095">vr::get_camera_projection_transform()</a>, <a class="el" href="vr__render__helpers_8cxx_source.html#l00078">vr::get_world_to_camera_transform()</a>, and <a class="el" href="vr__driver_8cxx_source.html#l00138">vr::vr_driver::register_vr_kit()</a>.</p>
 
 </div>
 </div>
@@ -327,6 +335,10 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <p>return handle of vr kit </p>
 <p>return device handle </p>
+
+<p class="definition">Definition at line <a class="el" href="vr__kit_8cxx_source.html#l00050">50</a> of file <a class="el" href="vr__kit_8cxx_source.html">vr_kit.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="vr__kit_8h_source.html#l00074">handle</a>.</p>
 
 </div>
 </div>
@@ -385,6 +397,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right) </p>
 <p>pose matrix is not needed for most vr kits and can be set to nullptr; only in case of wall based vr kits the pose matrix needs to be specified </p>
 
+<p class="reference">Referenced by <a class="el" href="vr__render__helpers_8cxx_source.html#l00088">vr::get_eye_projection_transform()</a>.</p>
+
 </div>
 </div>
 <a id="a54207434ab5486bde106a96cec1563e3"></a>
@@ -421,6 +435,12 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </table>
   </dd>
 </dl>
+
+<p class="definition">Definition at line <a class="el" href="vr__kit_8cxx_source.html#l00103">103</a> of file <a class="el" href="vr__kit_8cxx_source.html">vr_kit.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="vr__driver_8cxx_source.html#l00055">vr::vr_driver::calibrate_pose()</a>, <a class="el" href="vr__state_8h_source.html#l00143">vr::vr_kit_state::controller</a>, <a class="el" href="vr__kit_8cxx_source.html#l00048">get_driver()</a>, <a class="el" href="vr__state_8h_source.html#l00141">vr::vr_kit_state::hmd</a>, <a class="el" href="vr__driver_8cxx_source.html#l00094">vr::vr_driver::is_calibration_transformation_enabled()</a>, <a class="el" href="vr__state_8h_source.html#l00019">vr::max_nr_controllers</a>, <a class="el" href="vr__state_8h_source.html#l00104">vr::vr_trackable_state::pose</a>, <a class="el" href="classvr_1_1vr__kit.html#a93c3ef814f356806fd382c8ac36f9160">query_state_impl()</a>, <a class="el" href="vr__kit_8h_source.html#l00078">skip_calibration</a>, <a class="el" href="vr__state_8h_source.html#l00096">vr::vr_trackable_state::status</a>, and <a class="el" href="vr__state_8h_source.html#l00088">vr::VRS_TRACKED</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="vr__server_8cxx_source.html#l00320">cgv::gui::vr_server::check_and_emit_events()</a>, and <a class="el" href="vr__calib_8cxx_source.html#l00031">cgv::gui::vr_calibration::update_driver_calibration()</a>.</p>
 
 </div>
 </div>
@@ -467,11 +487,15 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>set the configuration of a controller input </p>
 <p>A controller can have up to 5 inputs, which can be 1-axis throttels and triggers or 2 axis touchpad (abbreviated as pad) and joysticks (abbreviated as stick). The input type can be checked in <a class="el" href="structvr_1_1vr__kit__info.html" title="information provided for a vr kit">vr_kit_info</a> queried with <a class="el" href="classvr_1_1vr__kit.html#a618d2f0e426c259410816d1c659f51cf" title="return information on the currently attached devices">get_device_info()</a>. The provided deadzone, precision and threshold information is used by <a class="el" href="classcgv_1_1gui_1_1vr__server.html" title="server for vr events">cgv::gui::vr_server</a> for detection and creation of events. </p>
 
+<p class="definition">Definition at line <a class="el" href="vr__kit_8cxx_source.html#l00121">121</a> of file <a class="el" href="vr__kit_8cxx_source.html">vr_kit.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="vr__kit_8h_source.html#l00084">input_configs</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>libs/vr/<a class="el" href="vr__kit_8h_source.html">vr_kit.h</a></li>
-<li>libs/vr/vr_kit.cxx</li>
+<li>libs/vr/<a class="el" href="vr__kit_8cxx_source.html">vr_kit.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

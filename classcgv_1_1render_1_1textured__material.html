@@ -329,6 +329,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>class that extends obj_material with the management of textures </p>
+
+<p class="definition">Definition at line <a class="el" href="textured__material_8h_source.html#l00012">12</a> of file <a class="el" href="textured__material_8h_source.html">textured_material.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a2bc8ad575585c8242287e2f34e737536"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2bc8ad575585c8242287e2f34e737536">&#9670;&nbsp;</a></span>~textured_material()</h2>
@@ -356,6 +358,10 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <p>ensure that textures are destructed </p>
 <p>destruct textures </p>
 
+<p class="definition">Definition at line <a class="el" href="textured__material_8cxx_source.html#l00026">26</a> of file <a class="el" href="textured__material_8cxx_source.html">textured_material.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="textured__material_8cxx_source.html#l00109">destruct_textures()</a>, and <a class="el" href="classcgv_1_1render_1_1context.html#ad351a2dc1c1e0343b17738053a981816">cgv::render::context::make_current()</a>.</p>
+
 </div>
 </div>
 <a id="a0c48bc3e7d027ca280748bed3dfb7fbc"></a>
@@ -376,6 +382,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 <p>construct from textured surface material </p>
 <p>construct from obj_material </p>
+
+<p class="definition">Definition at line <a class="el" href="textured__material_8cxx_source.html#l00017">17</a> of file <a class="el" href="textured__material_8cxx_source.html">textured_material.cxx</a>.</p>
 
 </div>
 </div>
@@ -399,6 +407,12 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <p>add a reference to a new texture that is managed outside of this class and return its index </p>
 <p>all image file based textures need to be added with add_image_file before calling this function. </p>
 
+<p class="definition">Definition at line <a class="el" href="textured__material_8cxx_source.html#l00033">33</a> of file <a class="el" href="textured__material_8cxx_source.html">textured_material.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="textured__surface__material_8h_source.html#l00022">cgv::media::illum::textured_surface_material::image_file_names</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>.</p>
+
 </div>
 </div>
 <a id="a26980065ac03e3420492780ea7443330"></a>
@@ -419,6 +433,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 <p>disable material textures </p>
 <p>disable material </p>
+
+<p class="definition">Definition at line <a class="el" href="textured__material_8cxx_source.html#l00131">131</a> of file <a class="el" href="textured__material_8cxx_source.html">textured_material.cxx</a>.</p>
 
 </div>
 </div>
@@ -441,6 +457,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <p>enable all textures with their indices as texture unit </p>
 <p>enable by modulating opacities of material with given opacity value </p>
 
+<p class="definition">Definition at line <a class="el" href="textured__material_8cxx_source.html#l00122">122</a> of file <a class="el" href="textured__material_8cxx_source.html">textured_material.cxx</a>.</p>
+
 </div>
 </div>
 <a id="afefbc28eec98705c863b4f7d94de606f"></a>
@@ -461,6 +479,10 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 <p>call this to ensure that the textures specified by image files are loaded - typically done in the init_frame method of a drawable </p>
 <p>call this to ensure that the textures are loaded - typically done in the init_frame method of a drawable </p>
+
+<p class="definition">Definition at line <a class="el" href="textured__material_8cxx_source.html#l00042">42</a> of file <a class="el" href="textured__material_8cxx_source.html">textured_material.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00331">cgv::render::texture::create_from_image()</a>, <a class="el" href="component__format_8cxx_source.html#l00303">cgv::data::component_format::get_last_error()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00022">cgv::media::illum::textured_surface_material::image_file_names</a>, <a class="el" href="texture_8cxx_source.html#l00080">cgv::render::texture::set_wrap_s()</a>, and <a class="el" href="texture_8cxx_source.html#l00086">cgv::render::texture::set_wrap_t()</a>.</p>
 
 </div>
 </div>
@@ -488,6 +510,10 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <p>index of image from which ambient_occlusion should be mapped, -1 corresponds to no mapping </p>
 <p>In case of 4 component textures ambient_occlusion is mapped from the w component. </p>
 
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00035">35</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00010">cgv::media::illum::textured_surface_material::textured_surface_material()</a>.</p>
+
 </div>
 </div>
 <a id="ae3be22efb242773e5612b1908fb4995f"></a>
@@ -512,6 +538,10 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 <p>index of image from which bumps should be mapped, -1 corresponds to no mapping </p>
 <p>If no normal mapping is applies, bump map is also used for normal mapping. </p>
+
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00049">49</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00010">cgv::media::illum::textured_surface_material::textured_surface_material()</a>.</p>
 
 </div>
 </div>
@@ -538,6 +568,10 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <p>index of image from which metalness should be mapped, -1 corresponds to no mapping </p>
 <p>In case of 4 component textures metalness is mapped from the w component. For 2 component textures, metalness is mapped from the x-component. </p>
 
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00032">32</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00010">cgv::media::illum::textured_surface_material::textured_surface_material()</a>.</p>
+
 </div>
 </div>
 <a id="a60489a57762d4f098cdda01f362bd2ae"></a>
@@ -562,6 +596,10 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 <p>index of image from which roughness should be mapped, -1 corresponds to no mapping </p>
 <p>In case of 3 or 4 component textures roughness is mapped anisotropically from the xyz components. For 2 component textures, roughness is mapped from the y-component. </p>
+
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00028">28</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00010">cgv::media::illum::textured_surface_material::textured_surface_material()</a>.</p>
 
 </div>
 </div>
@@ -588,11 +626,15 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <p>index of image from which transparency should be mapped, -1 corresponds to no mapping </p>
 <p>In case of 4 component textures transparency is mapped from the w component. </p>
 
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00040">40</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00010">cgv::media::illum::textured_surface_material::textured_surface_material()</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/render/<a class="el" href="textured__material_8h_source.html">textured_material.h</a></li>
-<li>cgv/render/textured_material.cxx</li>
+<li>cgv/render/<a class="el" href="textured__material_8cxx_source.html">textured_material.cxx</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -166,6 +166,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 class stl_reader::StlMesh&lt; TNumber, TIndex &gt;</h3>
 
 <p>convenience mesh class which makes accessing the stl data more easy </p>
+
+<p class="definition">Definition at line <a class="el" href="stl__reader_8h_source.html#l00235">235</a> of file <a class="el" href="stl__reader_8h_source.html">stl_reader.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a2d0f581dd3572bead9621ba5adc4ccc8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2d0f581dd3572bead9621ba5adc4ccc8">&#9670;&nbsp;</a></span>num_solids()</h2>
@@ -194,6 +196,8 @@ template&lt;class TNumber  = float, class TIndex  = unsigned int&gt; </div>
 
 <p>returns the number of solids of the mesh </p>
 <p>solids can be seen as a partitioning of the triangles of a mesh. By iterating consecutively from the index of the first triangle of a solid <code>si</code> (using <code>solid_tris_begin(si)</code>) to the index of the last triangle of a solid (using <code>solid_tris_end(...)-1</code>), one visits all triangles of the solid <code>si</code>. </p>
+
+<p class="definition">Definition at line <a class="el" href="stl__reader_8h_source.html#l00344">344</a> of file <a class="el" href="stl__reader_8h_source.html">stl_reader.h</a>.</p>
 
 </div>
 </div>
@@ -225,6 +229,8 @@ template&lt;class TNumber  = float, class TIndex  = unsigned int&gt; </div>
 <p>returns a pointer to the coordinate array, containing <code><a class="el" href="classstl__reader_1_1StlMesh.html#aefdafe070182cab44d08c6edf1f40c0d" title="returns the number of vertices in the mesh">num_vrts()</a>*3</code> entries. </p>
 <p>Storage layout: <code>x0,y0,z0,x1,y1,z1,...</code> </p><dl class="section return"><dt>Returns</dt><dd>pointer to a contiguous array of numbers, or <code>NULL</code> if no coords exist. </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="stl__reader_8h_source.html#l00366">366</a> of file <a class="el" href="stl__reader_8h_source.html">stl_reader.h</a>.</p>
+
 </div>
 </div>
 <a id="a2bbe872729877a51865016ebe0529114"></a>
@@ -254,6 +260,10 @@ template&lt;class TNumber  = float, class TIndex  = unsigned int&gt; </div>
 
 <p>returns a pointer to the normal array, containing <code><a class="el" href="classstl__reader_1_1StlMesh.html#a4463d33f7d1d24dd9551f2a7780d2ed0" title="returns the number of triangles in the mesh">num_tris()</a>*3</code> entries. </p>
 <p>Storage layout: <code>nx0,ny0,nz0,nx1,ny1,nz1,...</code> </p><dl class="section return"><dt>Returns</dt><dd>pointer to a contiguous array of numbers, or <code>NULL</code> if no normals exist. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="stl__reader_8h_source.html#l00376">376</a> of file <a class="el" href="stl__reader_8h_source.html">stl_reader.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00454">cgv::media::mesh::simple_mesh&lt; T &gt;::read()</a>.</p>
 
 </div>
 </div>
@@ -285,6 +295,8 @@ template&lt;class TNumber  = float, class TIndex  = unsigned int&gt; </div>
 <p>returns a pointer to the solids array, containing <code><a class="el" href="classstl__reader_1_1StlMesh.html#a2d0f581dd3572bead9621ba5adc4ccc8" title="returns the number of solids of the mesh">num_solids()</a>+1</code> entries. </p>
 <p>Storage layout: <code>s0begin, s0end/s1begin, s1end/s2begin, ..., sNend</code> </p><dl class="section return"><dt>Returns</dt><dd>pointer to a contiguous array of indices, or <code>NULL</code> if no solids exist. </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="stl__reader_8h_source.html#l00396">396</a> of file <a class="el" href="stl__reader_8h_source.html">stl_reader.h</a>.</p>
+
 </div>
 </div>
 <a id="a0300929717ecc5edc424934d1a68a0ab"></a>
@@ -314,6 +326,8 @@ template&lt;class TNumber  = float, class TIndex  = unsigned int&gt; </div>
 
 <p>returns a pointer to the triangle array, containing <code><a class="el" href="classstl__reader_1_1StlMesh.html#a4463d33f7d1d24dd9551f2a7780d2ed0" title="returns the number of triangles in the mesh">num_tris()</a>*3</code> entries. </p>
 <p>Storage layout: <code>t0c0,t0c1,t0c2,t1c0,t1c1,t1c2,...</code> </p><dl class="section return"><dt>Returns</dt><dd>pointer to a contiguous array of indices, or <code>NULL</code> if no tris exist. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="stl__reader_8h_source.html#l00386">386</a> of file <a class="el" href="stl__reader_8h_source.html">stl_reader.h</a>.</p>
 
 </div>
 </div>
@@ -356,6 +370,10 @@ template&lt;class TNumber  = float, class TIndex  = unsigned int&gt; </div>
 <p>returns an array of 3 floating point values, one for each coordinate of the specified corner of the specified tri. </p>
 <dl class="section note"><dt>Note</dt><dd>same result as calling on a <code><a class="el" href="classstl__reader_1_1StlMesh.html" title="convenience mesh class which makes accessing the stl data more easy">StlMesh</a> mesh</code>: <div class="fragment"><div class="line">mesh.vrt_coords (mesh.tri_corner_ind (itri, icorner))</div>
 </div><!-- fragment --> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="stl__reader_8h_source.html#l00327">327</a> of file <a class="el" href="stl__reader_8h_source.html">stl_reader.h</a>.</p>
+
+<p class="reference">References <a class="el" href="stl__reader_8h_source.html#l00315">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::tri_corner_ind()</a>.</p>
 
 </div>
 </div>
