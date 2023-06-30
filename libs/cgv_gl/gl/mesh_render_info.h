@@ -50,11 +50,30 @@ protected:
 	size_t color_increment;
 	/// color type
 	cgv::media::ColorType ct;
-	/// helper function to construct vbos
+	/**
+	 * Transform the given mesh into vectors which are suitable for upload into a VBO/EBO
+	 * 
+	 * \param [in] c The CGV drawing context.
+	 * \param [in] mesh The mesh which shall be transformed.
+	 * \param [out] vertex_indices the list of indices into the unique n-tuples.
+	 * \param [out] unique_quartuples the list of n-tuples which aggregate unique combinations of vertex attribute indices.
+	 * \param [out] triangle_element_buffer the buffer with successive index triples, which make up a triangle.
+	 * \param [out] edge_element_buffer the buffer with successive index pairs, which make up the edges of a face.
+	 * 
+	 * \see mesh_render_info::finish_construct_vbos_base()
+	 */
 	void construct_vbos_base(cgv::render::context& c, const cgv::media::mesh::simple_mesh_base& mesh,
 		std::vector<idx_type>& vertex_indices, std::vector<vec4i>& unique_quartuples,
 		std::vector<idx_type>& triangle_element_buffer, std::vector<idx_type>& edge_element_buffer);
-	/// helper function for mesh render info consrtuctions
+	/**
+	 * Uploads the given element buffers into EBOs on the GPU.
+	 * 
+	 * \param [in] ctx The CGV drawing context.
+	 * \param [in] triangle_element_buffer The vector of indices which make up triangles.
+	 * \param [in] edge_element_buffer The vector of indices which make up the edges of faces.
+	 * 
+	 * \see mesh_render_info::construct_vbos_base()
+	 */
 	void finish_construct_vbos_base(cgv::render::context& ctx,
 		const std::vector<idx_type>& triangle_element_buffer,
 		const std::vector<idx_type>& edge_element_buffer);

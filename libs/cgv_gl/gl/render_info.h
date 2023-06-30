@@ -72,7 +72,7 @@ struct draw_call {
 	object. The vertex buffer can be constructed from a simple mesh and
 	the attribute array binding is bound to a specific
 	shader program which defines the attribute locations.  */
-class CGV_API render_info : public render_types
+class CGV_API render_info
 {
 public:
 	/// define index type

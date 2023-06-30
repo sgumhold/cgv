@@ -23,7 +23,6 @@ void mesh_render_info::destruct(cgv::render::context& ctx)
 	nr_edge_elements = 0;
 }
 
-///
 void mesh_render_info::construct_vbos_base(cgv::render::context& ctx, const cgv::media::mesh::simple_mesh_base& mesh,
 										   std::vector<idx_type>& vertex_indices, std::vector<vec4i>& unique_quadruples,
 										   std::vector<idx_type>& triangle_element_buffer,
@@ -55,7 +54,6 @@ void mesh_render_info::construct_vbos_base(cgv::render::context& ctx, const cgv:
 	ct = mesh.get_color_storage_type();
 }
 
-///
 void mesh_render_info::finish_construct_vbos_base(cgv::render::context& ctx,
 	const std::vector<idx_type>& triangle_element_buffer,
 	const std::vector<idx_type>& edge_element_buffer)
