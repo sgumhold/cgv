@@ -140,6 +140,11 @@ public:
 	void sort_faces(std::vector<idx_type>& perm, bool by_group = true, bool by_material = true) const;
 	/**
 	 * Transforms n individual vertex attribute indices into one list of unique index n-tuples.
+	 * 
+	 * Picture for example a cube where each quadratic face has a color. There would be only
+	 * eight vertex positions. However, each of these vertices belongs to three faces and would therefore need to carry
+	 * three distinct colors. To solve this issue all the unique combinations of attribute indicies get recorded
+	 * into a list. The new face primitives are then referenced by indexing into this list of unique index n-tuples.
 	 *
 	 * \param [out] vertex_indices will be filled with indicies into the unique quadruple list.
 	 * \param [out] unique_quadruples will be filled with all the unique n-tuples.
@@ -153,7 +158,9 @@ public:
 	 * \see simple_mesh::extract_triangle_element_buffer()
 	 * \see simple_mesh::extract_wireframe_element_buffer()
 	 */
-	void merge_indices(std::vector<idx_type>& vertex_indices, std::vector<vec4i>& unique_quadruples, bool* include_tex_coords_ptr = 0, bool* include_normals_ptr = 0, bool* include_tangents_ptr = 0) const;
+	void merge_indices(std::vector<idx_type>& vertex_indices, std::vector<vec4i>& unique_quadruples,
+					   bool* include_tex_coords_ptr = 0, bool* include_normals_ptr = 0,
+					   bool* include_tangents_ptr = 0) const;
 	/**
 	 * Extract element array buffers for triangulation.
 	 *
