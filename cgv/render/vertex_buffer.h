@@ -17,14 +17,50 @@ public:
 	vertex_buffer(VertexBufferType _type = VBT_VERTICES, VertexBufferUsage _usage = VBU_STATIC_DRAW);
 	/// calls the destruct method if necessary
 	~vertex_buffer();
-	/// bind buffer potentially overwriting buffer type
-	void bind(context& ctx, VertexBufferType _type = VBT_UNDEF) const;
-	/// unbind buffer potentially overwriting buffer type
-	void unbind(context& ctx, VertexBufferType _type = VBT_UNDEF) const;
-	/// bind uniform, feedback, storage or atomic counter buffer to an indexed buffer target
+	/**
+	 * Bind buffer to appropriate target.
+	 *
+	 * \param ctx The CGV rendering context.
+	 * \param type If cgv::render::VBT_UNDEF, will use type information as given to vertex_buffer::vertex_buffer().
+	 * Otherwise will bind according to the given type.
+	 * \warning Pay special attention to use the same type in the matching unbind() call. Otherwise the internal type
+	 * will be used again.
+	 *
+	 * The explicit type specification allows interpreting the underlying buffer in different ways. One example would be
+	 * the manipulation of vertex data in a compute shader. Here you would bind your vertex buffer as a simple shader
+	 * storage buffer before dispatching the compute call.
+	 */
+	void bind(context& ctx, VertexBufferType type = VBT_UNDEF) const;
+	/**
+	 * Unbind buffer from the appropriate target.
+	 * 
+	 * \param ctx The CGV rendering context.
+	 * \param type If cgv::render::VBT_UNDEF, will use type information as given to vertex_buffer::vertex_buffer().
+	 * Otherwise will unbind according to the given type.
+	 * \warning Pay special attention to use the same type as the preceeding bind() call. Otherwise the internal type
+	 * will be used again.
+	 */
+	void unbind(context& ctx, VertexBufferType type = VBT_UNDEF) const;
+	/**
+	 * Bind this buffer to the appropriate indexed buffer target.
+	 *
+	 * \param ctx The CGV rendering context.
+	 * \param index Which index of the binding target to use.
+	 *
+	 * This function will use the type information given to vertex_buffer::vertex_buffer() to determine the correct
+	 * binding target.
+	 */
 	void bind(context& ctx, unsigned index) const;
-	/// bind uniform, feedback, storage or atomic counter buffer to an indexed buffer target overwriting buffer type
-	void bind(context& ctx, VertexBufferType _type, unsigned index) const;
+	/**
+	 * Bind this buffer to the appropriate indexed buffer target.
+	 *
+	 * \param ctx The CGV rendering context.
+	 * \param type Will bind according to the given type.
+	 * \param index Which index of the binding target to use.
+	 * \warning Pay special attention to use the same type in the matching unbind() call. Otherwise the internal type
+	 * will be used again.
+	 */
+	void bind(context& ctx, VertexBufferType type, unsigned index) const;
 	/// create empty vertex buffer of size \c size given in bytes
 	bool create(const context& ctx, size_t size_in_bytes);
 	/// create vertex buffer and copy data from CPU array \c array into buffer memory
