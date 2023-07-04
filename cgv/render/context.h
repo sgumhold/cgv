@@ -369,21 +369,29 @@ public:
 };
 
 
-/// different vertex buffer types
+/// Provides vertex buffer types to allow implicit binding
 enum VertexBufferType {
-	VBT_UNDEF = -1,
-	VBT_VERTICES,
-	VBT_INDICES,
-	VBT_TEXTURE,
-	VBT_UNIFORM,
-	VBT_FEEDBACK,
-	VBT_STORAGE,
-	VBT_ATOMIC_COUNTER
+	VBT_UNDEF = -1, ///< The buffer has no type
+	VBT_VERTICES, ///< The buffer contains vertices and will be bound to GL_ARRAY_BUFFER
+	VBT_INDICES, ///< The buffer contains indices and will be bound to GL_ELEMENT_ARRAY_BUFFER
+	VBT_TEXTURE, ///< The buffer contains texture data and will be bound to GL_TEXTURE_BUFFER
+	VBT_UNIFORM, ///< The buffer contains uniforms and will be bound to GL_UNIFORM_BUFFER
+	VBT_FEEDBACK, ///< The buffer is used for transform&feedback and will be bound to GL_TRANSFORM_FEEDBACK_BUFFER
+	VBT_STORAGE, ///< The buffer contains arbitrary data and will be bound to GL_SHADER_STORAGE_BUFFER
+	VBT_ATOMIC_COUNTER ///< The buffer contains atomic counter and will be bound to GL_ATOMIC_COUNTER_BUFFER
 };
 
-/// different vertex buffer usages as defined in OpenGL
+/// Provides vertex buffer usage hints as defined in OpenGL
 enum VertexBufferUsage {
-	VBU_STREAM_DRAW, VBU_STREAM_READ, VBU_STREAM_COPY, VBU_STATIC_DRAW, VBU_STATIC_READ, VBU_STATIC_COPY, VBU_DYNAMIC_DRAW, VBU_DYNAMIC_READ, VBU_DYNAMIC_COPY
+	VBU_STREAM_DRAW, ///< Modified once and used at most a few times; Modified by the application, and used as the source for GL drawing and image specification commands.
+	VBU_STREAM_READ, ///< Modified once and used at most a few times; Modified by reading data from the GL, and used to return that data when queried by the application.
+	VBU_STREAM_COPY, ///< Modified once and used at most a few times; Modified by reading data from the GL, and used as the source for GL drawing and image specification commands.
+	VBU_STATIC_DRAW, ///< Modified once and used many times; Modified by the application, and used as the source for GL drawing and image specification commands.
+	VBU_STATIC_READ, ///< Modified once and used many times; Modified by reading data from the GL, and used to return that data when queried by the application.
+	VBU_STATIC_COPY, ///< Modified once and used many times; Modified by reading data from the GL, and used as the source for GL drawing and image specification commands.
+	VBU_DYNAMIC_DRAW, ///< Modified repeatedly and used many times; Modified by the application, and used as the source for GL drawing and image specification commands.
+	VBU_DYNAMIC_READ, ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used to return that data when queried by the application.
+	VBU_DYNAMIC_COPY ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used as the source for GL drawing and image specification commands.
 };
 
 /// base interface for a vertex buffer
