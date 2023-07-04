@@ -74,17 +74,17 @@ enum RenderAPI {
 };
 
 
-/// enumeration of different render passes, which can be queried from the context and used to specify a new render pass
+/// Enumeration of different render passes, which can be queried from the context and used to specify a new render pass.
 enum RenderPass {
-	RP_NONE,
-	RP_MAIN,                 /// the main rendering pass triggered by the redraw event
-	RP_STEREO,               /// rendering of second eye
-	RP_SHADOW_MAP,           /// construction of shadow map
-	RP_SHADOW_VOLUME,        /// construction of shadow map
-	RP_OPAQUE_SURFACES,      /// opaque surface rendering using z-Buffer
-	RP_TRANSPARENT_SURFACES, /// transparent surface rendering using depth peeling
-	RP_PICK,                 /// in picking pass a small rectangle around the mouse is rendered 
-	RP_USER_DEFINED
+	RP_NONE,                 ///< no renderpass
+	RP_MAIN,                 ///< the main rendering pass triggered by the redraw event
+	RP_STEREO,               ///< rendering of second eye
+	RP_SHADOW_MAP,           ///< construction of shadow map
+	RP_SHADOW_VOLUME,        ///< construction of shadow map
+	RP_OPAQUE_SURFACES,      ///< opaque surface rendering using z-Buffer
+	RP_TRANSPARENT_SURFACES, ///< transparent surface rendering using depth peeling
+	RP_PICK,                 ///< in picking pass a small rectangle around the mouse is rendered 
+	RP_USER_DEFINED          ///< user defined renderpass
 };
 
 /// convert render pass type into string
@@ -92,33 +92,37 @@ extern CGV_API std::string get_render_pass_name(RenderPass rp);
 
 /// available flags that can be queried from the context and set for a new render pass
 enum RenderPassFlags {
-	RPF_NONE = 0,                      // no frame initialization is performed
-	RPF_SET_PROJECTION = 1,            // whether to set default projection matrix
-	RPF_SET_MODELVIEW =  1 << 1,             // whether to set default modelview matrix
-	RPF_SET_MODELVIEW_PROJECTION = RPF_SET_PROJECTION|RPF_SET_MODELVIEW,  // whether to set default modelview and projection matrix
-	RPF_SET_LIGHTS = 1 << 2,                // whether to define default lights
-	RPF_SET_MATERIAL = 1 << 3,              // whether to define default material
-	RPF_SET_LIGHTS_ON = 1 << 4,            // whether to turn on default lights
-	RPF_ENABLE_MATERIAL = 1 << 5,          // whether to enable material
-	RPF_SET_LIGHTING = RPF_SET_LIGHTS|RPF_SET_LIGHTS_ON|RPF_ENABLE_MATERIAL,             // whether to define and enable default lighting
-	RPF_CLEAR_COLOR = 1 << 6,              // whether to clear the color buffer
-	RPF_CLEAR_DEPTH = 1 << 7,             // whether to clear the depth buffer
-	RPF_CLEAR_STENCIL = 1 << 8,             // whether to clear the depth buffer
-	RPF_CLEAR_ACCUM = 1 << 9,               // whether to clear the accumulation buffer
-	RPF_CLEAR_ALL = RPF_CLEAR_COLOR|RPF_CLEAR_DEPTH|RPF_CLEAR_STENCIL|RPF_CLEAR_ACCUM, // whether to clear all buffers
-	RPF_DRAWABLES_INIT_FRAME = 1 << 10,    // whether to call the init_frame method of the drawables
-	RPF_SET_STATE_FLAGS = 1 << 11,         // whether to set depth buffer and culling flags
-	RPF_SET_CLEAR_COLOR = 1 << 12,        // whether to set the clear color
-	RPF_SET_CLEAR_DEPTH = 1 << 13,        // whether to set the clear color
-	RPF_SET_CLEAR_STENCIL = 1 << 14,        // whether to set the clear color
-	RPF_SET_CLEAR_ACCUM = 1 << 15,        // whether to set the accumulation buffer clear color
-	RPF_DRAWABLES_DRAW = 1 << 16,         // whether to call draw and finish_draw methods of drawables
-	RPF_DRAWABLES_FINISH_FRAME = 1 << 17, // whether to call finish frame method of drawables
-	RPF_DRAW_TEXTUAL_INFO = 1 << 18,      // whether to draw textual information
-	RPF_DRAWABLES_AFTER_FINISH = 1 << 19, // whether to call after finish method of drawables
-	RPF_HANDLE_SCREEN_SHOT = 1 << 20,    // whether to perform a screen shot if this was scheduled
-	RPF_ALL = (1 << 21) - 1,            // all flags set, defines default render pass
-	RPF_DEFAULT = RPF_ALL & ~ (RPF_CLEAR_ACCUM|RPF_SET_CLEAR_ACCUM|RPF_CLEAR_STENCIL|RPF_SET_CLEAR_STENCIL)  // all flags set, defines default render pass
+	RPF_NONE = 0,				///< no frame initialization is performed
+	RPF_SET_PROJECTION = 1,		///< whether to set default projection matrix
+	RPF_SET_MODELVIEW = 1 << 1, ///< whether to set default modelview matrix
+	RPF_SET_MODELVIEW_PROJECTION =
+		  RPF_SET_PROJECTION | RPF_SET_MODELVIEW, ///< whether to set default modelview and projection matrix
+	RPF_SET_LIGHTS = 1 << 2,					  ///< whether to define default lights
+	RPF_SET_MATERIAL = 1 << 3,					  ///< whether to define default material
+	RPF_SET_LIGHTS_ON = 1 << 4,					  ///< whether to turn on default lights
+	RPF_ENABLE_MATERIAL = 1 << 5,				  ///< whether to enable material
+	RPF_SET_LIGHTING =
+		  RPF_SET_LIGHTS | RPF_SET_LIGHTS_ON | RPF_ENABLE_MATERIAL, ///< whether to define and enable default lighting
+	RPF_CLEAR_COLOR = 1 << 6,										///< whether to clear the color buffer
+	RPF_CLEAR_DEPTH = 1 << 7,										///< whether to clear the depth buffer
+	RPF_CLEAR_STENCIL = 1 << 8,										///< whether to clear the depth buffer
+	RPF_CLEAR_ACCUM = 1 << 9,										///< whether to clear the accumulation buffer
+	RPF_CLEAR_ALL =
+		  RPF_CLEAR_COLOR | RPF_CLEAR_DEPTH | RPF_CLEAR_STENCIL | RPF_CLEAR_ACCUM, ///< whether to clear all buffers
+	RPF_DRAWABLES_INIT_FRAME = 1 << 10,	  ///< whether to call the init_frame method of the drawables
+	RPF_SET_STATE_FLAGS = 1 << 11,		  ///< whether to set depth buffer and culling flags
+	RPF_SET_CLEAR_COLOR = 1 << 12,		  ///< whether to set the clear color
+	RPF_SET_CLEAR_DEPTH = 1 << 13,		  ///< whether to set the clear color
+	RPF_SET_CLEAR_STENCIL = 1 << 14,	  ///< whether to set the clear color
+	RPF_SET_CLEAR_ACCUM = 1 << 15,		  ///< whether to set the accumulation buffer clear color
+	RPF_DRAWABLES_DRAW = 1 << 16,		  ///< whether to call draw and finish_draw methods of drawables
+	RPF_DRAWABLES_FINISH_FRAME = 1 << 17, ///< whether to call finish frame method of drawables
+	RPF_DRAW_TEXTUAL_INFO = 1 << 18,	  ///< whether to draw textual information
+	RPF_DRAWABLES_AFTER_FINISH = 1 << 19, ///< whether to call after finish method of drawables
+	RPF_HANDLE_SCREEN_SHOT = 1 << 20,	  ///< whether to perform a screen shot if this was scheduled
+	RPF_ALL = (1 << 21) - 1,			  ///< all flags set, defines default render pass
+	RPF_DEFAULT = RPF_ALL & ~(RPF_CLEAR_ACCUM | RPF_SET_CLEAR_ACCUM | RPF_CLEAR_STENCIL |
+							  RPF_SET_CLEAR_STENCIL) ///< all flags set, defines default render pass
 };
 
 /// different sides of a material
@@ -211,8 +215,8 @@ enum PrimitiveType {
 /// different sampling strategies for rendering to textures that steer the computation of the \c tex_coord input to the fragment shader
 enum TextureSampling
 {
-	TS_CELL = 0,   /// for texture resulution N x M x L the \c tex_coord ranges from [1/2N, 1/2M, 1/2L] to [1-1/2N, 1-1/2M, 1-1/2P]
-	TS_VERTEX = 1  /// \c tex_coord ranges from [0,0,0] to [1,1,1]
+	TS_CELL = 0,   ///< for texture resulution N x M x L the \c tex_coord ranges from [1/2N, 1/2M, 1/2L] to [1-1/2N, 1-1/2M, 1-1/2P]
+	TS_VERTEX = 1  ///< \c tex_coord ranges from [0,0,0] to [1,1,1]
 };
 
 /// different sampling strategies for rendering to textures that steer the computation of the \c tex_coord input to the fragment shader
@@ -230,15 +234,15 @@ enum CompareFunction
 
 /// different text alignments
 enum TextAlignment {
-	TA_NONE = 0,
-	TA_LEFT = 1,    // center of left edge of text bounds
-	TA_RIGHT = 2,   // center of right edge of text bounds
-	TA_TOP = 4,     // center of top edge of text bounds
-	TA_BOTTOM = 8,  // center of bottom edge of text bounds
-	TA_TOP_LEFT = TA_LEFT+TA_TOP,    // top left corner of text bounds
-	TA_TOP_RIGHT = TA_RIGHT+TA_TOP,  // top right corner of text bounds
-	TA_BOTTOM_LEFT = TA_LEFT+TA_BOTTOM,   // bottom left corner of text bounds
-	TA_BOTTOM_RIGHT = TA_RIGHT+TA_BOTTOM  // bottom right corner of text bounds
+	TA_NONE = 0,						   ///< no alignment
+	TA_LEFT = 1,						   ///< center of left edge of text bounds
+	TA_RIGHT = 2,						   ///< center of right edge of text bounds
+	TA_TOP = 4,							   ///< center of top edge of text bounds
+	TA_BOTTOM = 8,						   ///< center of bottom edge of text bounds
+	TA_TOP_LEFT = TA_LEFT + TA_TOP,		   ///< top left corner of text bounds
+	TA_TOP_RIGHT = TA_RIGHT + TA_TOP,	   ///< top right corner of text bounds
+	TA_BOTTOM_LEFT = TA_LEFT + TA_BOTTOM,  ///< bottom left corner of text bounds
+	TA_BOTTOM_RIGHT = TA_RIGHT + TA_BOTTOM ///< bottom right corner of text bounds
 };
 
 /// convert texture filter to string
@@ -371,27 +375,36 @@ public:
 
 /// Provides vertex buffer types to allow implicit binding
 enum VertexBufferType {
-	VBT_UNDEF = -1, ///< The buffer has no type
-	VBT_VERTICES, ///< The buffer contains vertices and will be bound to GL_ARRAY_BUFFER
-	VBT_INDICES, ///< The buffer contains indices and will be bound to GL_ELEMENT_ARRAY_BUFFER
-	VBT_TEXTURE, ///< The buffer contains texture data and will be bound to GL_TEXTURE_BUFFER
-	VBT_UNIFORM, ///< The buffer contains uniforms and will be bound to GL_UNIFORM_BUFFER
-	VBT_FEEDBACK, ///< The buffer is used for transform&feedback and will be bound to GL_TRANSFORM_FEEDBACK_BUFFER
-	VBT_STORAGE, ///< The buffer contains arbitrary data and will be bound to GL_SHADER_STORAGE_BUFFER
+	VBT_UNDEF = -1,	   ///< The buffer has no type
+	VBT_VERTICES,	   ///< The buffer contains vertices and will be bound to GL_ARRAY_BUFFER
+	VBT_INDICES,	   ///< The buffer contains indices and will be bound to GL_ELEMENT_ARRAY_BUFFER
+	VBT_TEXTURE,	   ///< The buffer contains texture data and will be bound to GL_TEXTURE_BUFFER
+	VBT_UNIFORM,	   ///< The buffer contains uniforms and will be bound to GL_UNIFORM_BUFFER
+	VBT_FEEDBACK,	   ///< The buffer is used for transform&feedback and will be bound to GL_TRANSFORM_FEEDBACK_BUFFER
+	VBT_STORAGE,	   ///< The buffer contains arbitrary data and will be bound to GL_SHADER_STORAGE_BUFFER
 	VBT_ATOMIC_COUNTER ///< The buffer contains atomic counter and will be bound to GL_ATOMIC_COUNTER_BUFFER
 };
 
 /// Provides vertex buffer usage hints as defined in OpenGL
 enum VertexBufferUsage {
-	VBU_STREAM_DRAW, ///< Modified once and used at most a few times; Modified by the application, and used as the source for GL drawing and image specification commands.
-	VBU_STREAM_READ, ///< Modified once and used at most a few times; Modified by reading data from the GL, and used to return that data when queried by the application.
-	VBU_STREAM_COPY, ///< Modified once and used at most a few times; Modified by reading data from the GL, and used as the source for GL drawing and image specification commands.
-	VBU_STATIC_DRAW, ///< Modified once and used many times; Modified by the application, and used as the source for GL drawing and image specification commands.
-	VBU_STATIC_READ, ///< Modified once and used many times; Modified by reading data from the GL, and used to return that data when queried by the application.
-	VBU_STATIC_COPY, ///< Modified once and used many times; Modified by reading data from the GL, and used as the source for GL drawing and image specification commands.
-	VBU_DYNAMIC_DRAW, ///< Modified repeatedly and used many times; Modified by the application, and used as the source for GL drawing and image specification commands.
-	VBU_DYNAMIC_READ, ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used to return that data when queried by the application.
-	VBU_DYNAMIC_COPY ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used as the source for GL drawing and image specification commands.
+	VBU_STREAM_DRAW,  ///< Modified once and used at most a few times; Modified by the application, and used as the
+					  ///< source for GL drawing and image specification commands.
+	VBU_STREAM_READ,  ///< Modified once and used at most a few times; Modified by reading data from the GL, and used to
+					  ///< return that data when queried by the application.
+	VBU_STREAM_COPY,  ///< Modified once and used at most a few times; Modified by reading data from the GL, and used as
+					  ///< the source for GL drawing and image specification commands.
+	VBU_STATIC_DRAW,  ///< Modified once and used many times; Modified by the application, and used as the source for GL
+					  ///< drawing and image specification commands.
+	VBU_STATIC_READ,  ///< Modified once and used many times; Modified by reading data from the GL, and used to return
+					  ///< that data when queried by the application.
+	VBU_STATIC_COPY,  ///< Modified once and used many times; Modified by reading data from the GL, and used as the
+					  ///< source for GL drawing and image specification commands.
+	VBU_DYNAMIC_DRAW, ///< Modified repeatedly and used many times; Modified by the application, and used as the source
+					  ///< for GL drawing and image specification commands.
+	VBU_DYNAMIC_READ, ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used to
+					  ///< return that data when queried by the application.
+	VBU_DYNAMIC_COPY ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used as the
+					 ///< source for GL drawing and image specification commands.
 };
 
 /// base interface for a vertex buffer
@@ -406,13 +419,13 @@ public:
 	vertex_buffer_base();
 };
 
-/// bits for the selection of different buffer types
-enum BufferTypeBits { 
-	BTB_COLOR_BIT = 1, /// color buffer type
-	BTB_DEPTH_BIT = 2, /// depth buffer type
-	BTB_COLOR_AND_DEPTH_BITS = 3, /// color and depth buffer types
-	BTB_STENCIL_BIT = 4, /// stencil buffer type
-	BTB_ALL_BITS = 7   /// all buffer types 
+/// Bits for the selection of different buffer types
+enum BufferTypeBits {
+	BTB_COLOR_BIT = 1,			  ///< color buffer type
+	BTB_DEPTH_BIT = 2,			  ///< depth buffer type
+	BTB_COLOR_AND_DEPTH_BITS = 3, ///< color and depth buffer types
+	BTB_STENCIL_BIT = 4,		  ///< stencil buffer type
+	BTB_ALL_BITS = 7			  ///< all buffer types
 };
 
 /// base interface for framebuffer
