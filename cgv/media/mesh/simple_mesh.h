@@ -145,9 +145,11 @@ public:
 	 * eight vertex positions. However, each of these vertices belongs to three faces and would therefore need to carry
 	 * three distinct colors. To solve this issue all the unique combinations of attribute indicies get recorded
 	 * into a list. The new face primitives are then referenced by indexing into this list of unique index n-tuples.
+	 * 
+	 * See https://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/ for further details.
 	 *
-	 * \param [out] vertex_indices will be filled with indicies into the unique quadruple list.
-	 * \param [out] unique_quadruples will be filled with all the unique n-tuples.
+	 * \param [out] vertex_indices will be filled with indicies into the unique tuple list.
+	 * \param [out] unique_tuples will be filled with all the unique n-tuples.
 	 * \param [in,out] include_tex_coords_ptr if nullptr then texture coordinates won't be included in the n-tuples.
 	 * Otherwise the pointed to bool will be set to true if the mesh even contains texture coordinates or false if not.
 	 * \param [in,out] include_normals_ptr if nullptr then normals won't be included in the n-tuples.
@@ -158,9 +160,8 @@ public:
 	 * \see simple_mesh::extract_triangle_element_buffer()
 	 * \see simple_mesh::extract_wireframe_element_buffer()
 	 */
-	void merge_indices(std::vector<idx_type>& vertex_indices, std::vector<vec4i>& unique_quadruples,
-					   bool* include_tex_coords_ptr = 0, bool* include_normals_ptr = 0,
-					   bool* include_tangents_ptr = 0) const;
+	void merge_indices(std::vector<idx_type>& vertex_indices, std::vector<vec4i>& unique_tuples,
+					   bool* include_tex_coords_ptr = 0, bool* include_normals_ptr = 0, bool* include_tangents_ptr = 0) const;
 	/**
 	 * Extract element array buffers for triangulation.
 	 *
@@ -308,19 +309,18 @@ public:
 	/**
 	 * Extract vertex attribute array and element array buffers for triangulation and edges in wireframe.
 	 * 
-	 * \param [in] vertex_indices A list which defines face primitives through an index sequence into unique n-tuples.
-	 * \param [in] unique_quadruples A list of unique n-tuples where each entry is an index into attribute vectors of simple_mesh.
-	 * \param [in] include_tex_coords True if texture coordinates should be written into the vertex buffer, false otherwise.
-	 * \param [in] include_normals True if normals should be written into the vertex buffer, false otherwise.
-	 * \param [in] include_tangents True if tangents should be written into the vertex buffer, false otherwise.
-	 * \param [out] attrib_buffer will contain the vertex attribute data in interleaved form.
-	 * \param [in,out] include_colors_ptr If nullptr then the vertex buffer won't contain colors, otherwise it will be set to true if the mesh even contains colors or false if not.
+	 * \param unique_quadruples A list of unique n-tuples where each entry is an index into attribute vectors of simple_mesh.
+	 * \param include_tex_coords True if texture coordinates should be written into the vertex buffer, false otherwise.
+	 * \param include_normals True if normals should be written into the vertex buffer, false otherwise.
+	 * \param include_tangents True if tangents should be written into the vertex buffer, false otherwise.
+	 * \param attrib_buffer will contain the vertex attribute data in interleaved form.
+	 * \param include_colors_ptr If nullptr then the vertex buffer won't contain colors, otherwise it will be set to true if the mesh even contains colors or false if not.
+	 * \param num_floats_in_vertex If not nullptr will be set to the number of floats which make up one vertex with all its attributes.
 	 * \return The size of one color in bytes.
 	 */
-	unsigned extract_vertex_attribute_buffer(const std::vector<idx_type>& vertex_indices,
-											 const std::vector<vec4i>& unique_quadruples, bool include_tex_coords,
+	unsigned extract_vertex_attribute_buffer(const std::vector<vec4i>& unique_quadruples, bool include_tex_coords,
 											 bool include_normals, bool include_tangents, std::vector<T>& attrib_buffer,
-											 bool* include_colors_ptr = 0) const;
+											 bool* include_colors_ptr = 0, int* num_floats_in_vertex = nullptr) const;
 	/// apply transformation to mesh
 	void transform(const mat3& linear_transformation, const vec3& translation);
 	/// apply transformation to mesh with given inverse linear transformation

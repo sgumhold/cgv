@@ -564,11 +564,10 @@ void simple_mesh<T>::compute_vertex_normals()
 }
 
 template <typename T>
-unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
-	const std::vector<idx_type>& vertex_indices, 
-	const std::vector<vec4i>& unique_quadruples,
-	bool include_tex_coords, bool include_normals, bool include_tangents,
-	std::vector<T>& attrib_buffer, bool* include_colors_ptr) const
+unsigned simple_mesh<T>::extract_vertex_attribute_buffer(const std::vector<vec4i>& unique_quadruples,
+														 bool include_tex_coords, bool include_normals,
+														 bool include_tangents, std::vector<T>& attrib_buffer,
+														 bool* include_colors_ptr, int* num_floats_in_vertex) const
 {
 	// correct inquiry in case data is missing
 	include_tex_coords = include_tex_coords && !tex_coord_indices.empty() && !tex_coords.empty();
@@ -576,8 +575,7 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
 	include_tangents = include_tangents && !tangent_indices.empty() && !tangents.empty();
 	bool include_colors = false;
 	if (include_colors_ptr)
-		*include_colors_ptr = include_colors = 
-			has_colors() && get_nr_colors() > 0 && *include_colors_ptr;
+		*include_colors_ptr = include_colors = has_colors() && get_nr_colors() > 0 && *include_colors_ptr;
 
 	// determine number floats per vertex
 	unsigned nr_floats = 3;
@@ -590,7 +588,10 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
 		nr_floats += color_increment;
 	}
 
-	attrib_buffer.resize(nr_floats*unique_quadruples.size());
+	if (num_floats_in_vertex)
+		*num_floats_in_vertex = nr_floats;
+
+	attrib_buffer.resize(nr_floats * unique_quadruples.size());
 	T* data_ptr = &attrib_buffer.front();
 	for (auto t : unique_quadruples) {
 		*reinterpret_cast<vec3*>(data_ptr) = positions[t[0]];
@@ -603,7 +604,7 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
 			*reinterpret_cast<vec3*>(data_ptr) = normals[t[2]];
 			data_ptr += 3;
 		}
-		if(include_tangents) {
+		if (include_tangents) {
 			*reinterpret_cast<vec3*>(data_ptr) = tangents[t[3]];
 			data_ptr += 3;
 		}
