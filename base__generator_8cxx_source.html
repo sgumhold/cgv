@@ -88,80 +88,80 @@ $(document).ready(function(){initNavTree('base__generator_8cxx_source.html','');
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;base_generator.h&quot;</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="keyword">namespace </span>base {</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;    <span class="keyword">namespace </span>base {</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1base__generator.html#a6e2ed9978aa7b6b765533e3b55f1d378">    7</a></span>&#160;std::string <a class="code" href="classcgv_1_1base_1_1base__generator.html#a6e2ed9978aa7b6b765533e3b55f1d378">base_generator::get_type_name</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keywordflow">return</span> <span class="stringliteral">&quot;base_generator&quot;</span>; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keywordflow">return</span> <span class="stringliteral">&quot;base_generator&quot;</span>; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;}</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1base__generator.html#aa45d072ac0165d352c80ede36f15a3f1">   13</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1base_1_1base__generator.html#aa45d072ac0165d352c80ede36f15a3f1">base_generator::add_void</a>(<span class="keyword">const</span> std::string&amp; name, abst_property_access* apa)</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;{</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        iter_type i = <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.find(name);</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="keywordflow">if</span> (i != <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.end()) {</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                <span class="keywordflow">if</span> (apa != i-&gt;second) {</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                        <span class="keyword">delete</span> i-&gt;second;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                        i-&gt;second = apa;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                }</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        }</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keywordflow">else</span> </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>[name] = apa;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    iter_type i = <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.find(name);</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordflow">if</span> (i != <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.end()) {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keywordflow">if</span> (apa != i-&gt;second) {</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            <span class="keyword">delete</span> i-&gt;second;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            i-&gt;second = apa;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        }</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    }</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordflow">else</span> </div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>[name] = apa;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;}</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1base__generator.html#a4e1e05d8a09e354331bb253e72bd3113">   26</a></span>&#160;<a class="code" href="classcgv_1_1base_1_1base__generator.html#a4e1e05d8a09e354331bb253e72bd3113">base_generator::~base_generator</a>()</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;{</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; p : <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>) {</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                <span class="keyword">delete</span> p.second;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                p.second = 0;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        }</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; p : <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>) {</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keyword">delete</span> p.second;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        p.second = 0;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    }</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;}</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
 <div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1base__generator.html#ad96a86a63b71001d339be0d7b8dd4dde">   36</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1base_1_1base__generator.html#ad96a86a63b71001d339be0d7b8dd4dde">base_generator::del</a>(<span class="keyword">const</span> std::string&amp; name)</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;{</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        iter_type i = <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.find(name);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordflow">if</span> (i != <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.end()) {</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                <span class="keyword">delete</span> i-&gt;second;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.erase(i);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        }</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    iter_type i = <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.find(name);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordflow">if</span> (i != <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.end()) {</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">delete</span> i-&gt;second;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.erase(i);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    }</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
 <div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1base__generator.html#ab193f8e4ea2b1dbbb773780a53dce309">   46</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1base_1_1base__generator.html#ab193f8e4ea2b1dbbb773780a53dce309">base_generator::changed</a>(<span class="keyword">const</span> std::string&amp; property)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        const_iter_type i = <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.find(property);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordflow">if</span> (i == <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.end())</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordflow">return</span> i-&gt;second-&gt;has_changed;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    const_iter_type i = <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.find(property);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">if</span> (i == <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.end())</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordflow">return</span> i-&gt;second-&gt;has_changed;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
 <div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1base__generator.html#a398375938ddac0a608e2fcaa96240623">   55</a></span>&#160;std::string <a class="code" href="classcgv_1_1base_1_1base__generator.html#a398375938ddac0a608e2fcaa96240623">base_generator::get_property_declarations</a>()</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;{</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        std::string res;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordflow">for</span> (iter_type i = <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.begin(); i != <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.end(); ++i) {</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                <span class="keywordflow">if</span> (!res.empty())</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        res += <span class="charliteral">&#39;;&#39;</span>;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                res += i-&gt;first+<span class="charliteral">&#39;:&#39;</span>+i-&gt;second-&gt;get_type_name();</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        }</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keywordflow">return</span> res;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    std::string res;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordflow">for</span> (iter_type i = <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.begin(); i != <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.end(); ++i) {</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">if</span> (!res.empty())</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            res += <span class="charliteral">&#39;;&#39;</span>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        res += i-&gt;first+<span class="charliteral">&#39;:&#39;</span>+i-&gt;second-&gt;get_type_name();</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    }</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordflow">return</span> res;</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
 <div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1base__generator.html#aa69ce6781528ebf7f78412fd6c7bad5f">   67</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1base_1_1base__generator.html#aa69ce6781528ebf7f78412fd6c7bad5f">base_generator::set_void</a>(<span class="keyword">const</span> std::string&amp; property, <span class="keyword">const</span> std::string&amp; value_type, <span class="keyword">const</span> <span class="keywordtype">void</span>* value_ptr)</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;{</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        iter_type i = <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.find(property);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">if</span> (i != <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.end())</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                <span class="keywordflow">return</span> i-&gt;second-&gt;set(value_type, value_ptr);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    iter_type i = <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.find(property);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordflow">if</span> (i != <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.end())</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">return</span> i-&gt;second-&gt;set(value_type, value_ptr);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;}</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
 <div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1base__generator.html#abfaaedd0749b1123dd7f320a13600027">   76</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1base_1_1base__generator.html#abfaaedd0749b1123dd7f320a13600027">base_generator::get_void</a>(<span class="keyword">const</span> std::string&amp; property, <span class="keyword">const</span> std::string&amp; value_type, <span class="keywordtype">void</span>* value_ptr)</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;{</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        iter_type i = <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.find(property);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordflow">if</span> (i != <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.end())</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                <span class="keywordflow">return</span> i-&gt;second-&gt;get(value_type, value_ptr);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    iter_type i = <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.find(property);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordflow">if</span> (i != <a class="code" href="classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae">property_map</a>.end())</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keywordflow">return</span> i-&gt;second-&gt;get(value_type, value_ptr);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        }</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    }</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1base_1_1base__generator_html_a398375938ddac0a608e2fcaa96240623"><div class="ttname"><a href="classcgv_1_1base_1_1base__generator.html#a398375938ddac0a608e2fcaa96240623">cgv::base::base_generator::get_property_declarations</a></div><div class="ttdeci">std::string get_property_declarations()</div><div class="ttdoc">returns a semicolon separated list of property declarations</div><div class="ttdef"><b>Definition:</b> <a href="base__generator_8cxx_source.html#l00055">base_generator.cxx:55</a></div></div>
 <div class="ttc" id="aclasscgv_1_1base_1_1base__generator_html_a4e1e05d8a09e354331bb253e72bd3113"><div class="ttname"><a href="classcgv_1_1base_1_1base__generator.html#a4e1e05d8a09e354331bb253e72bd3113">cgv::base::base_generator::~base_generator</a></div><div class="ttdeci">~base_generator()</div><div class="ttdoc">during destruction free all memory allocated on heap</div><div class="ttdef"><b>Definition:</b> <a href="base__generator_8cxx_source.html#l00026">base_generator.cxx:26</a></div></div>

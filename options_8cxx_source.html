@@ -90,30 +90,30 @@ $(document).ready(function(){initNavTree('options_8cxx_source.html',''); initRes
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="advanced__scan_8h.html">advanced_scan.h</a>&quot;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="keyword">namespace </span>utils {</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;    <span class="keyword">namespace </span>utils {</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#acac309902b58e10c2d8076c33466ae20">    8</a></span>&#160;                <span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#acac309902b58e10c2d8076c33466ae20">has_option</a>(<span class="keyword">const</span> std::string&amp; option)</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;                {</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;                        std::vector&lt;std::string&gt; options;</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;                        <a class="code" href="namespacecgv_1_1utils.html#afefecea53f0e5b26d4101f8c9e2662a4">enumerate_options</a>(options);</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;                        <span class="keywordflow">for</span> (<span class="keyword">auto</span> o : options)</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                                <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a768fdf54202b2fc80c51ea8f312b2b82">to_upper</a>(o) == <a class="code" href="namespacecgv_1_1utils.html#a768fdf54202b2fc80c51ea8f312b2b82">to_upper</a>(option))</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                                        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#acac309902b58e10c2d8076c33466ae20">    8</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#acac309902b58e10c2d8076c33466ae20">has_option</a>(<span class="keyword">const</span> std::string&amp; option)</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        {</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;            std::vector&lt;std::string&gt; options;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;            <a class="code" href="namespacecgv_1_1utils.html#afefecea53f0e5b26d4101f8c9e2662a4">enumerate_options</a>(options);</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">auto</span> o : options)</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a768fdf54202b2fc80c51ea8f312b2b82">to_upper</a>(o) == <a class="code" href="namespacecgv_1_1utils.html#a768fdf54202b2fc80c51ea8f312b2b82">to_upper</a>(option))</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                }</div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#afefecea53f0e5b26d4101f8c9e2662a4">   18</a></span>&#160;                <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1utils.html#afefecea53f0e5b26d4101f8c9e2662a4">enumerate_options</a>(std::vector&lt;std::string&gt;&amp; options)</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                {</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                        <span class="keywordtype">char</span>* cgv_options = getenv(<span class="stringliteral">&quot;CGV_OPTIONS&quot;</span>);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                        <span class="keywordflow">if</span> (cgv_options) {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                                std::vector&lt;cgv::utils::token&gt; toks;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                                std::string option_str(cgv_options);</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                                <a class="code" href="namespacecgv_1_1utils.html#a0cce71c6163b28d05cb6ca217d7a8910">split_to_tokens</a>(option_str, toks, <span class="stringliteral">&quot;;&quot;</span>, <span class="keyword">true</span>, <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                                <span class="keywordflow">for</span> (<span class="keyword">auto</span> tok : toks)</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                                        options.push_back(<a class="code" href="namespacecgv_1_1utils.html#a9584ae56050ff7dd2b881c2b60efd55b">to_string</a>(tok));</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                        }</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                }</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        }</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        }</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#afefecea53f0e5b26d4101f8c9e2662a4">   18</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1utils.html#afefecea53f0e5b26d4101f8c9e2662a4">enumerate_options</a>(std::vector&lt;std::string&gt;&amp; options)</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        {</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            <span class="keywordtype">char</span>* cgv_options = getenv(<span class="stringliteral">&quot;CGV_OPTIONS&quot;</span>);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            <span class="keywordflow">if</span> (cgv_options) {</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                std::vector&lt;cgv::utils::token&gt; toks;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                std::string option_str(cgv_options);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                <a class="code" href="namespacecgv_1_1utils.html#a0cce71c6163b28d05cb6ca217d7a8910">split_to_tokens</a>(option_str, toks, <span class="stringliteral">&quot;;&quot;</span>, <span class="keyword">true</span>, <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                <span class="keywordflow">for</span> (<span class="keyword">auto</span> tok : toks)</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                    options.push_back(<a class="code" href="namespacecgv_1_1utils.html#a9584ae56050ff7dd2b881c2b60efd55b">to_string</a>(tok));</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            }</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        }</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    }</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;}</div>
 <div class="ttc" id="aadvanced__scan_8h_html"><div class="ttname"><a href="advanced__scan_8h.html">advanced_scan.h</a></div><div class="ttdoc">More advanced text processing for splitting text into lines or tokens.</div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a0cce71c6163b28d05cb6ca217d7a8910"><div class="ttname"><a href="namespacecgv_1_1utils.html#a0cce71c6163b28d05cb6ca217d7a8910">cgv::utils::split_to_tokens</a></div><div class="ttdeci">void split_to_tokens(const char *begin, const char *end, std::vector&lt; token &gt; &amp;tokens, const std::string &amp;separators, bool merge_separators, const std::string &amp;open_parenthesis, const std::string &amp;close_parenthesis, const std::string &amp;whitespaces, unsigned int max_nr_tokens)</div><div class="ttdoc">this function splits a text range into tokens.</div><div class="ttdef"><b>Definition:</b> <a href="advanced__scan_8cxx_source.html#l00006">advanced_scan.cxx:6</a></div></div>

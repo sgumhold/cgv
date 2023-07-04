@@ -90,34 +90,34 @@ $(document).ready(function(){initNavTree('bucket__sort_8h_source.html',''); init
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="keyword">namespace </span>math {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> key_type, <span class="keyword">typename</span> <span class="keywordtype">id</span>x_type&gt;</div>
-<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#aeb3d20eb47e56aebfa6f2208a351e668">    9</a></span>&#160;                <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#aeb3d20eb47e56aebfa6f2208a351e668">bucket_sort</a>(<span class="keyword">const</span> std::vector&lt;key_type&gt;&amp; keys, <span class="keywordtype">size_t</span> nr_keys, std::vector&lt;idx_type&gt;&amp; perm, std::vector&lt;idx_type&gt;* perm_in_ptr = 0)</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;                {</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;                        <span class="comment">// prepare links and lookup table</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;                        std::vector&lt;idx_type&gt; links(keys.size(), idx_type(-1));</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                        std::vector&lt;idx_type&gt; lookup(nr_keys, idx_type(-1));</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                        <span class="comment">// sort indices into lookup table</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                        idx_type i;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                        <span class="keywordflow">for</span> (i = 0; i &lt; keys.size(); ++i) {</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                                key_type k = keys[perm_in_ptr ? perm_in_ptr-&gt;at(i) : i];</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                                idx_type j = lookup[k];</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                                <span class="keywordflow">if</span> (j != idx_type(-1))</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                                        links[i] = j;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                                lookup[k] = i;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                        }</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                        <span class="comment">// construct permutation</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                        perm.resize(keys.size());</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                        i = idx_type(keys.size());</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                        <span class="keywordflow">for</span> (key_type k = key_type(nr_keys); k &gt; 0; ) {</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                                idx_type j = lookup[--k];</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                                <span class="keywordflow">while</span> (j != idx_type(-1)) {</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                                        perm[--i] = perm_in_ptr ? perm_in_ptr-&gt;at(j) : j;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                                        j = links[j];</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                                }</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                        }</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                }</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        }</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;    <span class="keyword">namespace </span>math {</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> key_type, <span class="keyword">typename</span> <span class="keywordtype">id</span>x_type&gt;</div>
+<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#aeb3d20eb47e56aebfa6f2208a351e668">    9</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#aeb3d20eb47e56aebfa6f2208a351e668">bucket_sort</a>(<span class="keyword">const</span> std::vector&lt;key_type&gt;&amp; keys, <span class="keywordtype">size_t</span> nr_keys, std::vector&lt;idx_type&gt;&amp; perm, std::vector&lt;idx_type&gt;* perm_in_ptr = 0)</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        {</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;            <span class="comment">// prepare links and lookup table</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            std::vector&lt;idx_type&gt; links(keys.size(), idx_type(-1));</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            std::vector&lt;idx_type&gt; lookup(nr_keys, idx_type(-1));</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            <span class="comment">// sort indices into lookup table</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            idx_type i;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            <span class="keywordflow">for</span> (i = 0; i &lt; keys.size(); ++i) {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                key_type k = keys[perm_in_ptr ? perm_in_ptr-&gt;at(i) : i];</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                idx_type j = lookup[k];</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                <span class="keywordflow">if</span> (j != idx_type(-1))</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                    links[i] = j;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                lookup[k] = i;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            }</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            <span class="comment">// construct permutation</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            perm.resize(keys.size());</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            i = idx_type(keys.size());</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            <span class="keywordflow">for</span> (key_type k = key_type(nr_keys); k &gt; 0; ) {</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                idx_type j = lookup[--k];</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                <span class="keywordflow">while</span> (j != idx_type(-1)) {</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                    perm[--i] = perm_in_ptr ? perm_in_ptr-&gt;at(j) : j;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                    j = links[j];</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                }</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            }</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        }</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    }</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;}</div>
 <div class="ttc" id="anamespacecgv_1_1math_html_aeb3d20eb47e56aebfa6f2208a351e668"><div class="ttname"><a href="namespacecgv_1_1math.html#aeb3d20eb47e56aebfa6f2208a351e668">cgv::math::bucket_sort</a></div><div class="ttdeci">void bucket_sort(const std::vector&lt; key_type &gt; &amp;keys, size_t nr_keys, std::vector&lt; idx_type &gt; &amp;perm, std::vector&lt; idx_type &gt; *perm_in_ptr=0)</div><div class="ttdoc">compute a permutation perm with bucket_sort over index typed keys that a limited to nr_keys,...</div><div class="ttdef"><b>Definition:</b> <a href="bucket__sort_8h_source.html#l00009">bucket_sort.h:9</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="vr__calib_8cxx_source.html#l00009">vr_calib.cxx:9</a></div></div>

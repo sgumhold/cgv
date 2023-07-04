@@ -88,26 +88,26 @@ $(document).ready(function(){initNavTree('window_8cxx_source.html',''); initResi
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;window.h&quot;</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="keyword">namespace </span>gui {</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;    <span class="keyword">namespace </span>gui {</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1window.html#a3028fa4c6f92870f8aa62e4d60adca92">    6</a></span>&#160;<a class="code" href="classcgv_1_1gui_1_1window.html#a3028fa4c6f92870f8aa62e4d60adca92">window::window</a>(<span class="keyword">const</span> std::string&amp; name) : <a class="code" href="classcgv_1_1gui_1_1gui__group.html">gui_group</a>(name) {}</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1window.html#abfac998925c78b8d27656afe51faf9bd">    8</a></span>&#160;std::string <a class="code" href="classcgv_1_1gui_1_1window.html#abfac998925c78b8d27656afe51faf9bd">window::get_type_name</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        <span class="keywordflow">return</span> <span class="stringliteral">&quot;window&quot;</span>;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keywordflow">return</span> <span class="stringliteral">&quot;window&quot;</span>;</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;}</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
 <div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1window.html#aae2d4e2797c5e3ebb6121e7967f99755">   14</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_group_ptr</a> <a class="code" href="classcgv_1_1gui_1_1window.html#aae2d4e2797c5e3ebb6121e7967f99755">window::get_inner_group</a>()</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a24b531058de9d4333ab8541c302587d7">gui_group_ptr</a>(<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a24b531058de9d4333ab8541c302587d7">gui_group_ptr</a>(<span class="keyword">this</span>);</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;}</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
 <div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1window.html#a3e2adf08f902d03c21eaafda055a4370">   20</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1gui_1_1window.html#a3e2adf08f902d03c21eaafda055a4370">window::dispatch_event</a>(<a class="code" href="classcgv_1_1gui_1_1event.html">event</a>&amp;)</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;}</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        }</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    }</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr&lt; gui_group, true &gt;</a></div></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1event_html"><div class="ttname"><a href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a></div><div class="ttdef"><b>Definition:</b> <a href="event_8h_source.html#l00058">event.h:59</a></div></div>

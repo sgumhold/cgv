@@ -93,27 +93,27 @@ $(document).ready(function(){initNavTree('reflection__traits__info_8h_source.htm
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;reflect_config.h&quot;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keyword">namespace </span><a class="code" href="namespacecgv_1_1math.html#afa5be51992b338933231c56f5b235e3e">reflect</a> {</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keyword">namespace </span><a class="code" href="namespacecgv_1_1math.html#afa5be51992b338933231c56f5b235e3e">reflect</a> {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">template</span> &lt;<span class="keywordtype">bool</span> is_self,<span class="keyword">typename</span> T&gt; </div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">struct </span>reflection_traits_info_self</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keyword">static</span> T* get_dummy_ptr() { <span class="keywordflow">return</span> 0; }</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> use_get = <span class="keyword">true</span>; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">static</span> T* get_dummy_ptr() { <span class="keywordflow">return</span> 0; }</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> use_get = <span class="keyword">true</span>; </div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#ifdef REFLECT_TRAITS_WITH_DECLTYPE</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keyword">typedef</span> decltype(get_reflection_traits(*get_dummy_ptr())) traits_type;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        static const <a class="code" href="namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8">ReflectionTraitsKind</a> kind = traits_type::kind; </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">typedef</span> decltype(get_reflection_traits(*get_dummy_ptr())) traits_type;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    static const <a class="code" href="namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8">ReflectionTraitsKind</a> kind = traits_type::kind; </div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8">ReflectionTraitsKind</a> kind = RTK_EXTERNAL_SELF_REFLECT; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8">ReflectionTraitsKind</a> kind = RTK_EXTERNAL_SELF_REFLECT; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;};</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">struct </span>reflection_traits_info_self&lt;true,T&gt;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;{ </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8">ReflectionTraitsKind</a> kind = RTK_SELF_REFLECT; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> use_get = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keyword">typedef</span> reflection_traits&lt;T, RTK_SELF_REFLECT, false&gt; traits_type;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8">ReflectionTraitsKind</a> kind = RTK_SELF_REFLECT; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> use_get = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">typedef</span> reflection_traits&lt;T, RTK_SELF_REFLECT, false&gt; traits_type;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;};</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">template</span> &lt;<span class="keywordtype">bool</span> is_std, <span class="keyword">typename</span> T&gt;</div>
@@ -122,9 +122,9 @@ $(document).ready(function(){initNavTree('reflection__traits__info_8h_source.htm
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">struct </span>reflection_traits_info_std&lt;true,T&gt;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;{ </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8">ReflectionTraitsKind</a> kind = RTK_STD_TYPE; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> use_get = <span class="keyword">false</span>; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">typedef</span> reflection_traits&lt;T, RTK_STD_TYPE, true&gt; traits_type;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8">ReflectionTraitsKind</a> kind = RTK_STD_TYPE; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> use_get = <span class="keyword">false</span>; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">typedef</span> reflection_traits&lt;T, RTK_STD_TYPE, true&gt; traits_type;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;};</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
@@ -133,7 +133,7 @@ $(document).ready(function(){initNavTree('reflection__traits__info_8h_source.htm
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;{</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    }</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>

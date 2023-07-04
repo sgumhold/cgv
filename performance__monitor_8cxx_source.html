@@ -91,191 +91,191 @@ $(document).ready(function(){initNavTree('performance__monitor_8cxx_source.html'
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="keyword">namespace </span>render {</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    <span class="keyword">namespace </span>render {</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;performance_monitor::frame_data&amp; performance_monitor::current_frame()   </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;{</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="keywordflow">return</span> data.back(); </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keywordflow">return</span> data.back(); </div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;}</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keywordtype">void</span> performance_monitor::add_measurement(<span class="keyword">const</span> performance_measurement&amp; pm)</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        current_frame().push_back(pm); </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    current_frame().push_back(pm); </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;}</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
 <div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a9171e0f230e90d1d260af3eb415592ab">   19</a></span>&#160;<a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a9171e0f230e90d1d260af3eb415592ab">performance_monitor::performance_monitor</a>() : plot_color(0.3f,1,1)</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        fps = -1;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        fps_alpha = 0.1;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        time_scale = 60;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        enabled = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        frame_finished = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        placement.<a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html#a6b6feb8db28359a7cf3491ffe432afaa">ref_min_pnt</a>().<a class="code" href="classcgv_1_1math_1_1fvec.html#ac1352402a484b3bbc14bf220fc1ae740">set</a>(10,10);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        placement.<a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html#a78f1160d42a073fdb40b240f3de0108f">ref_max_pnt</a>().<a class="code" href="classcgv_1_1math_1_1fvec.html#ac1352402a484b3bbc14bf220fc1ae740">set</a>(310,110);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        nr_display_cycles = 2;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        bar_line_width = 5;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        frame_id = 0;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a613c489d4c3ce6cae48989c2f47f58f0">init_tasks</a>();</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        bar_config.push_back(PMB_MAX);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        bar_config.push_back(PMB_CUR);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        bar_config.push_back(PMB_MIN);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    fps = -1;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    fps_alpha = 0.1;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    time_scale = 60;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    enabled = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    frame_finished = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    placement.<a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html#a6b6feb8db28359a7cf3491ffe432afaa">ref_min_pnt</a>().<a class="code" href="classcgv_1_1math_1_1fvec.html#ac1352402a484b3bbc14bf220fc1ae740">set</a>(10,10);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    placement.<a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html#a78f1160d42a073fdb40b240f3de0108f">ref_max_pnt</a>().<a class="code" href="classcgv_1_1math_1_1fvec.html#ac1352402a484b3bbc14bf220fc1ae740">set</a>(310,110);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    nr_display_cycles = 2;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    bar_line_width = 5;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    frame_id = 0;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a613c489d4c3ce6cae48989c2f47f58f0">init_tasks</a>();</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    bar_config.push_back(PMB_MAX);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    bar_config.push_back(PMB_CUR);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    bar_config.push_back(PMB_MIN);</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;}</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
 <div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#ae38c0ca6ea1e9b77a376c3ea828793d3">   38</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#ae38c0ca6ea1e9b77a376c3ea828793d3">performance_monitor::enable</a>() </div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        enabled = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    enabled = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;}</div>
 <div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a09307c3a0d4e6630d8ab71c5c197f513">   43</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a09307c3a0d4e6630d8ab71c5c197f513">performance_monitor::disable</a>() </div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;{</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        enabled = <span class="keyword">false</span>; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    enabled = <span class="keyword">false</span>; </div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;}</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keywordtype">void</span> performance_monitor::set_file_name(<span class="keyword">const</span> std::string&amp; _file_name) </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;{</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        file_name = _file_name; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    file_name = _file_name; </div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
 <div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a613c489d4c3ce6cae48989c2f47f58f0">   56</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a613c489d4c3ce6cae48989c2f47f58f0">performance_monitor::init_tasks</a>()</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;{</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        tasks.clear();</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;frame&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0.5f,0.5f,0.5f));</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;main&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0.8f,0.2f,0.2f));</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;stereo&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0.2f,0.2f,0.8f));</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;shadow_map&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0.1f, 0.1f, 0.1f));</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;shadow_volume&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0.2f, 0.2f, 0.2f));</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;opaque_surface&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(1,1,0));</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;transparent_surfaces&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0.9f,0.7f,0.5f));</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;pick&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0, 0, 1));</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;user&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0, 1, 0));</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    tasks.clear();</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;frame&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0.5f,0.5f,0.5f));</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;main&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0.8f,0.2f,0.2f));</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;stereo&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0.2f,0.2f,0.8f));</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;shadow_map&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0.1f, 0.1f, 0.1f));</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;shadow_volume&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0.2f, 0.2f, 0.2f));</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;opaque_surface&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(1,1,0));</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;transparent_surfaces&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0.9f,0.7f,0.5f));</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;pick&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0, 0, 1));</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">add_task</a>(<span class="stringliteral">&quot;user&quot;</span>, <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>(0, 1, 0));</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
 <div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a21721e60600dcd87c1ed4a710e0e61d6">   71</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a21721e60600dcd87c1ed4a710e0e61d6">performance_monitor::clear_bar</a>() </div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;{</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        bar_config.clear(); </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    bar_config.clear(); </div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}</div>
 <div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a22bf4e65bf65030544cf1fb9fe587de0">   76</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a22bf4e65bf65030544cf1fb9fe587de0">performance_monitor::add_bar_item</a>(<a class="code" href="namespacecgv_1_1render.html#a79b40c1e022fe70b55c592f296dd5e29">PerformanceMonitoringBar</a> item)</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;{</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        bar_config.push_back(item);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    bar_config.push_back(item);</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;}</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
 <div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#ae1232ad69c8cdbb2ceada84469e7c03e">   82</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#ae1232ad69c8cdbb2ceada84469e7c03e">performance_monitor::set_placement</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html">Rec</a>&amp; rectangle) </div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;{</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        placement = rectangle;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    placement = rectangle;</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;}</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
 <div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#ab3fa9a1be3cd2b6606bb7578d053da45">   88</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#ab3fa9a1be3cd2b6606bb7578d053da45">performance_monitor::set_nr_display_cycles</a>(<span class="keywordtype">unsigned</span> _nr_cycles) </div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;{</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        nr_display_cycles = _nr_cycles; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    nr_display_cycles = _nr_cycles; </div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;}</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
 <div class="line"><a name="l00094"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">   94</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a8062baa361f0a05f0f9690ebb6022a3a">performance_monitor::add_task</a>(<span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float&gt;</a>&amp; col)</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;{</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        performance_task pt(name,col);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        tasks.push_back(pt);</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keywordflow">return</span> (<span class="keywordtype">int</span>)tasks.size() - 1;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    performance_task pt(name,col);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    tasks.push_back(pt);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordflow">return</span> (<span class="keywordtype">int</span>)tasks.size() - 1;</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;}</div>
 <div class="line"><a name="l00101"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a92e3fa4b55fcb6a52428627d20430abb">  101</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a92e3fa4b55fcb6a52428627d20430abb">performance_monitor::start_frame</a>()</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;{</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="keywordflow">if</span> (!enabled)</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keywordflow">if</span> (!frame_finished)</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a28e9a4d1cd318e741081d4572e473d4c">finish_frame</a>();</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordflow">if</span> (!enabled)</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordflow">if</span> (!frame_finished)</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a28e9a4d1cd318e741081d4572e473d4c">finish_frame</a>();</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <span class="keywordflow">while</span> (data.size() &gt;= <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#ab32a40ef4ab9c447388fb209366956c5">get_buffer_size</a>())</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                data.pop_front();</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        data.push_back(frame_data());</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        watch.<a class="code" href="classcgv_1_1utils_1_1stopwatch.html#aaa5315b7fb02ea374190c3650915d0eb">restart</a>();</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        performance_measurement pm(watch.<a class="code" href="classcgv_1_1utils_1_1stopwatch.html#a2bc8e04a104f57f82e22959e02c33fe8">get_elapsed_time</a>(), 0, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        add_measurement(pm);</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        frame_finished = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        ++frame_id;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keywordflow">while</span> (data.size() &gt;= <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#ab32a40ef4ab9c447388fb209366956c5">get_buffer_size</a>())</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        data.pop_front();</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    data.push_back(frame_data());</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    watch.<a class="code" href="classcgv_1_1utils_1_1stopwatch.html#aaa5315b7fb02ea374190c3650915d0eb">restart</a>();</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    performance_measurement pm(watch.<a class="code" href="classcgv_1_1utils_1_1stopwatch.html#a2bc8e04a104f57f82e22959e02c33fe8">get_elapsed_time</a>(), 0, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    add_measurement(pm);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    frame_finished = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    ++frame_id;</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;}</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
 <div class="line"><a name="l00119"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a75a75a2fe2ce2dae9b100aa988904241">  119</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a75a75a2fe2ce2dae9b100aa988904241">performance_monitor::start_task</a>(<span class="keywordtype">int</span> task_id)</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;{</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <span class="keywordflow">if</span> (!enabled)</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        performance_measurement pm(watch.<a class="code" href="classcgv_1_1utils_1_1stopwatch.html#a2bc8e04a104f57f82e22959e02c33fe8">get_elapsed_time</a>(), task_id, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        add_measurement(pm);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordflow">if</span> (!enabled)</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    performance_measurement pm(watch.<a class="code" href="classcgv_1_1utils_1_1stopwatch.html#a2bc8e04a104f57f82e22959e02c33fe8">get_elapsed_time</a>(), task_id, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    add_measurement(pm);</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;}</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
 <div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#ab6d46ec8487420caaed02dd25b14472b">  127</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#ab6d46ec8487420caaed02dd25b14472b">performance_monitor::finish_task</a>(<span class="keywordtype">int</span> task_id)</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;{</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        <span class="keywordflow">if</span> (!enabled)</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        performance_measurement pm(watch.<a class="code" href="classcgv_1_1utils_1_1stopwatch.html#a2bc8e04a104f57f82e22959e02c33fe8">get_elapsed_time</a>(), task_id, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        add_measurement(pm);</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keywordflow">if</span> (!enabled)</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    performance_measurement pm(watch.<a class="code" href="classcgv_1_1utils_1_1stopwatch.html#a2bc8e04a104f57f82e22959e02c33fe8">get_elapsed_time</a>(), task_id, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    add_measurement(pm);</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;}</div>
 <div class="line"><a name="l00135"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a28e9a4d1cd318e741081d4572e473d4c">  135</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a28e9a4d1cd318e741081d4572e473d4c">performance_monitor::finish_frame</a>()</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;{</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <span class="keywordflow">if</span> (!enabled)</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;                <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* start_or_finish[] = { <span class="stringliteral">&quot;start&quot;</span>, <span class="stringliteral">&quot;finish&quot;</span> };</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        performance_measurement pm(watch.<a class="code" href="classcgv_1_1utils_1_1stopwatch.html#a2bc8e04a104f57f82e22959e02c33fe8">get_elapsed_time</a>(), 0, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        add_measurement(pm);</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keywordtype">double</span> new_fps = 1.0 / (data.back().back().time - data.back().front().time);</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="keywordflow">if</span> (fps &lt; 0)</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                fps = new_fps;</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                fps = fps_alpha * new_fps + (1.0 - fps_alpha)*fps;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        frame_finished = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <span class="keywordflow">if</span> (file_name.empty())</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        <span class="keywordtype">bool</span> need_header = cgv::utils::file::exists(file_name);</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        FILE* fp = fopen(file_name.c_str(), <span class="stringliteral">&quot;wa&quot;</span>);</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        <span class="keywordflow">if</span> (!fp)</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        <span class="keywordtype">int</span> i;</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        <span class="keywordflow">if</span> (need_header) {</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;                <span class="keyword">const</span> frame_data&amp; cf = current_frame();</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                <span class="keywordflow">for</span> (i=0; i&lt;(int)cf.size(); ++i) {</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                        <span class="keyword">const</span> performance_measurement&amp; pm = cf[i];</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                        fprintf(fp, i==0?<span class="stringliteral">&quot;%s %s&quot;</span>:<span class="stringliteral">&quot;,%s %s&quot;</span>, start_or_finish[pm.start ? 0 : 1], tasks[pm.task_id].name.c_str());</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;                }</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;                fprintf(fp, <span class="stringliteral">&quot;\n&quot;</span>);</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        }</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        fprintf(fp, <span class="stringliteral">&quot;%d&quot;</span>, frame_id);</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="keywordflow">for</span> (i=0; i&lt;(int)current_frame().size(); ++i) </div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                fprintf(fp, <span class="stringliteral">&quot;, %f&quot;</span>, current_frame()[i].time);</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        fprintf(fp, <span class="stringliteral">&quot;\n&quot;</span>);</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        fclose(fp);</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keywordflow">if</span> (!enabled)</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* start_or_finish[] = { <span class="stringliteral">&quot;start&quot;</span>, <span class="stringliteral">&quot;finish&quot;</span> };</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    performance_measurement pm(watch.<a class="code" href="classcgv_1_1utils_1_1stopwatch.html#a2bc8e04a104f57f82e22959e02c33fe8">get_elapsed_time</a>(), 0, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    add_measurement(pm);</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keywordtype">double</span> new_fps = 1.0 / (data.back().back().time - data.back().front().time);</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keywordflow">if</span> (fps &lt; 0)</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        fps = new_fps;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        fps = fps_alpha * new_fps + (1.0 - fps_alpha)*fps;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    frame_finished = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keywordflow">if</span> (file_name.empty())</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <span class="keywordtype">bool</span> need_header = cgv::utils::file::exists(file_name);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    FILE* fp = fopen(file_name.c_str(), <span class="stringliteral">&quot;wa&quot;</span>);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keywordflow">if</span> (!fp)</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keywordtype">int</span> i;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keywordflow">if</span> (need_header) {</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        <span class="keyword">const</span> frame_data&amp; cf = current_frame();</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="keywordflow">for</span> (i=0; i&lt;(int)cf.size(); ++i) {</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;            <span class="keyword">const</span> performance_measurement&amp; pm = cf[i];</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;            fprintf(fp, i==0?<span class="stringliteral">&quot;%s %s&quot;</span>:<span class="stringliteral">&quot;,%s %s&quot;</span>, start_or_finish[pm.start ? 0 : 1], tasks[pm.task_id].name.c_str());</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        }</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        fprintf(fp, <span class="stringliteral">&quot;\n&quot;</span>);</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    }</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    fprintf(fp, <span class="stringliteral">&quot;%d&quot;</span>, frame_id);</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordflow">for</span> (i=0; i&lt;(int)current_frame().size(); ++i) </div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        fprintf(fp, <span class="stringliteral">&quot;, %f&quot;</span>, current_frame()[i].time);</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    fprintf(fp, <span class="stringliteral">&quot;\n&quot;</span>);</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    fclose(fp);</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;}</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="keywordtype">void</span> performance_monitor::compute_colors(<span class="keyword">const</span> frame_data&amp; fdata)</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;{</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        colors.resize(2*fdata.size()-2);</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        std::stack&lt;int&gt; task_stack;</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        task_stack.push(0);</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> t=0; t&lt;fdata.size()-1; ++t) {</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                <span class="keywordtype">int</span> task_id = fdata[t].task_id;</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                <span class="keywordflow">if</span> (fdata[t].start) {</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                        colors[2*t+1] = colors[2*t] = tasks[task_id].col;</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                        task_stack.push(task_id);</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                }</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                        task_stack.pop();</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                        colors[2*t+1] = colors[2*t] = tasks[task_stack.top()].col;</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                }</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        }</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    colors.resize(2*fdata.size()-2);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    std::stack&lt;int&gt; task_stack;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    task_stack.push(0);</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> t=0; t&lt;fdata.size()-1; ++t) {</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        <span class="keywordtype">int</span> task_id = fdata[t].task_id;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="keywordflow">if</span> (fdata[t].start) {</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            colors[2*t+1] = colors[2*t] = tasks[task_id].col;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;            task_stack.push(task_id);</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        }</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;            task_stack.pop();</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;            colors[2*t+1] = colors[2*t] = tasks[task_stack.top()].col;</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        }</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    }</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;}</div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160; </div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="keywordtype">void</span> performance_monitor::compute_positions(<span class="keywordtype">int</span> x0, <span class="keywordtype">int</span> y0, <span class="keywordtype">int</span> dx, <span class="keywordtype">int</span> dy, <span class="keyword">const</span> frame_data&amp; fdata)</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;{</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;        positions.resize(2*fdata.size()-2);</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        <span class="keywordtype">double</span> scale_x = time_scale*dx;</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;        <span class="keywordtype">double</span> scale_y = time_scale*dy;</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        <span class="keywordtype">int</span> x = x0, y = y0;</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> t=0; t &lt; fdata.size()-1; ++t) {</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                positions[2*t].set(x,y);</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                x = x0 + (int)(fdata[t+1].time*scale_x+0.5);</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                y = y0 + (int)(fdata[t+1].time*scale_y+0.5);</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                positions[2*t+1].set(x,y);</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;        }</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    positions.resize(2*fdata.size()-2);</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    <span class="keywordtype">double</span> scale_x = time_scale*dx;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    <span class="keywordtype">double</span> scale_y = time_scale*dy;</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <span class="keywordtype">int</span> x = x0, y = y0;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> t=0; t &lt; fdata.size()-1; ++t) {</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        positions[2*t].set(x,y);</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        x = x0 + (int)(fdata[t+1].time*scale_x+0.5);</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        y = y0 + (int)(fdata[t+1].time*scale_y+0.5);</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;        positions[2*t+1].set(x,y);</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    }</div>
 <div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;}</div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        }</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    }</div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_ac1352402a484b3bbc14bf220fc1ae740"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#ac1352402a484b3bbc14bf220fc1ae740">cgv::math::fvec::set</a></div><div class="ttdeci">void set(const T &amp;x, const T &amp;y)</div><div class="ttdoc">set the first two components</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00123">fvec.h:123</a></div></div>
 <div class="ttc" id="aclasscgv_1_1media_1_1axis__aligned__box_html"><div class="ttname"><a href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::media::axis_aligned_box&lt; int, 2 &gt;</a></div></div>

@@ -95,42 +95,42 @@ $(document).ready(function(){initNavTree('gl__vr__display_8h_source.html',''); i
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacevr.html">vr</a> {</div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="namespacevr.html#ad455174827a305ad7d0b3e9dea4f06be">   15</a></span>&#160;        <span class="keyword">enum</span> <a class="code" href="namespacevr.html#ad455174827a305ad7d0b3e9dea4f06be">EyeSelection</a> {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                ES_BOTH,</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                ES_LEFT,</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                ES_RIGHT</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        };</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="namespacevr.html#ad455174827a305ad7d0b3e9dea4f06be">   15</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="namespacevr.html#ad455174827a305ad7d0b3e9dea4f06be">EyeSelection</a> {</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        ES_BOTH,</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        ES_LEFT,</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        ES_RIGHT</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    };</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classvr_1_1gl__vr__display.html">   24</a></span>&#160;        <span class="keyword">class </span>CGV_API <a class="code" href="classvr_1_1gl__vr__display.html">gl_vr_display</a></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        {</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                <span class="keywordtype">int</span> vp[4];</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                <span class="keywordtype">int</span> old_msaa;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classvr_1_1gl__vr__display.html#a3ed3143ae5fbe0e15b2e6a0e282827cb">   31</a></span>&#160;                <span class="keywordtype">unsigned</span> <a class="code" href="classvr_1_1gl__vr__display.html#a3ed3143ae5fbe0e15b2e6a0e282827cb">width</a>, height, nr_multi_samples;</div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classvr_1_1gl__vr__display.html#aa905bbf9f3790d68d7cf4b216f7177ca">   33</a></span>&#160;                <span class="keywordtype">unsigned</span> multi_depth_buffer_id[2];</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                <span class="keywordtype">unsigned</span> multi_tex_id[2];</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                <span class="keywordtype">unsigned</span> multi_fbo_id[2];</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                <span class="keywordtype">unsigned</span> tex_id[2];</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                <span class="keywordtype">unsigned</span> fbo_id[2];</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classvr_1_1gl__vr__display.html">   24</a></span>&#160;    <span class="keyword">class </span>CGV_API <a class="code" href="classvr_1_1gl__vr__display.html">gl_vr_display</a></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    {</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keywordtype">int</span> vp[4];</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordtype">int</span> old_msaa;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classvr_1_1gl__vr__display.html#a3ed3143ae5fbe0e15b2e6a0e282827cb">   31</a></span>&#160;        <span class="keywordtype">unsigned</span> <a class="code" href="classvr_1_1gl__vr__display.html#a3ed3143ae5fbe0e15b2e6a0e282827cb">width</a>, height, nr_multi_samples;</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classvr_1_1gl__vr__display.html#aa905bbf9f3790d68d7cf4b216f7177ca">   33</a></span>&#160;        <span class="keywordtype">unsigned</span> multi_depth_buffer_id[2];</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordtype">unsigned</span> multi_tex_id[2];</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordtype">unsigned</span> multi_fbo_id[2];</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordtype">unsigned</span> tex_id[2];</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordtype">unsigned</span> fbo_id[2];</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                <span class="keyword">friend</span> <span class="keyword">class </span>vr_wall_kit;</div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classvr_1_1gl__vr__display.html#a038042488c10a8d59608e736a80d7afa">   41</a></span>&#160;                std::string <a class="code" href="classvr_1_1gl__vr__display.html#a038042488c10a8d59608e736a80d7afa">last_error</a>;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                <a class="code" href="classvr_1_1gl__vr__display.html">gl_vr_display</a>(<span class="keywordtype">unsigned</span> _width, <span class="keywordtype">unsigned</span> _height, <span class="keywordtype">unsigned</span> _nr_multi_samples);</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                <span class="keyword">virtual</span> ~<a class="code" href="classvr_1_1gl__vr__display.html">gl_vr_display</a>();</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                <span class="keyword">const</span> std::string&amp; get_last_error() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                <span class="keywordtype">int</span> get_width() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                <span class="keywordtype">int</span> get_height() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_size(<span class="keywordtype">int</span> new_width, <span class="keywordtype">int</span> new_height);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">bool</span> init_fbos(<a class="code" href="namespacevr.html#ad455174827a305ad7d0b3e9dea4f06be">EyeSelection</a> es = ES_BOTH);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">bool</span> blit_fbo(<span class="keywordtype">int</span> eye, <span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">bool</span> fbos_initialized(<a class="code" href="namespacevr.html#ad455174827a305ad7d0b3e9dea4f06be">EyeSelection</a> es = ES_BOTH) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> destruct_fbos(<a class="code" href="namespacevr.html#ad455174827a305ad7d0b3e9dea4f06be">EyeSelection</a> es = ES_BOTH);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> enable_fbo(<span class="keywordtype">int</span> eye);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> disable_fbo(<span class="keywordtype">int</span> eye);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> bind_texture(<span class="keywordtype">int</span> eye);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        };</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keyword">friend</span> <span class="keyword">class </span>vr_wall_kit;</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classvr_1_1gl__vr__display.html#a038042488c10a8d59608e736a80d7afa">   41</a></span>&#160;        std::string <a class="code" href="classvr_1_1gl__vr__display.html#a038042488c10a8d59608e736a80d7afa">last_error</a>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <a class="code" href="classvr_1_1gl__vr__display.html">gl_vr_display</a>(<span class="keywordtype">unsigned</span> _width, <span class="keywordtype">unsigned</span> _height, <span class="keywordtype">unsigned</span> _nr_multi_samples);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keyword">virtual</span> ~<a class="code" href="classvr_1_1gl__vr__display.html">gl_vr_display</a>();</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">const</span> std::string&amp; get_last_error() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordtype">int</span> get_width() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordtype">int</span> get_height() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_size(<span class="keywordtype">int</span> new_width, <span class="keywordtype">int</span> new_height);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> init_fbos(<a class="code" href="namespacevr.html#ad455174827a305ad7d0b3e9dea4f06be">EyeSelection</a> es = ES_BOTH);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> blit_fbo(<span class="keywordtype">int</span> eye, <span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> fbos_initialized(<a class="code" href="namespacevr.html#ad455174827a305ad7d0b3e9dea4f06be">EyeSelection</a> es = ES_BOTH) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> destruct_fbos(<a class="code" href="namespacevr.html#ad455174827a305ad7d0b3e9dea4f06be">EyeSelection</a> es = ES_BOTH);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> enable_fbo(<span class="keywordtype">int</span> eye);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> disable_fbo(<span class="keywordtype">int</span> eye);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> bind_texture(<span class="keywordtype">int</span> eye);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    };</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>

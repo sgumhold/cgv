@@ -89,263 +89,263 @@ $(document).ready(function(){initNavTree('gl__depth__peeler_8cxx_source.html',''
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;gl_depth_peeler.h&quot;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keyword">namespace </span>render {</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;                <span class="keyword">namespace </span>gl {</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    <span class="keyword">namespace </span>render {</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="keyword">namespace </span>gl {</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a7173e59fe166c839220eb6a0262f6305">    9</a></span>&#160;<a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a7173e59fe166c839220eb6a0262f6305">gl_depth_peeler::gl_depth_peeler</a>(<span class="keywordtype">bool</span> f2b, <span class="keywordtype">float</span> _depth_bias) </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        : depth_texture(<span class="stringliteral">&quot;[D]&quot;</span>, TF_NEAREST, TF_NEAREST, TW_CLAMP, TW_CLAMP)</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    : depth_texture(<span class="stringliteral">&quot;[D]&quot;</span>, TF_NEAREST, TF_NEAREST, TW_CLAMP, TW_CLAMP)</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;{</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        query = -1;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        front_to_back = f2b;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        ctx_ptr = 0;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        depth_bias = _depth_bias;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        _invert_t = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    query = -1;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    front_to_back = f2b;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    ctx_ptr = 0;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    depth_bias = _depth_bias;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    _invert_t = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;}</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
 <div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#aa5a02fe12261517b9afece48f8742780">   20</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#aa5a02fe12261517b9afece48f8742780">gl_depth_peeler::invert_t</a>(<span class="keywordtype">bool</span> enable)</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        _invert_t = enable;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    _invert_t = enable;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;}</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#af125ecdd4459df43d08fec9bd3b4a5d6">   26</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#af125ecdd4459df43d08fec9bd3b4a5d6">gl_depth_peeler::set_back_to_front</a>()</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;{</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        front_to_back = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    front_to_back = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}</div>
 <div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a752cfa3e2e548f9565bdbf5b9afc91a2">   31</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a752cfa3e2e548f9565bdbf5b9afc91a2">gl_depth_peeler::set_front_to_back</a>()</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;{</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        front_to_back = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    front_to_back = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;}</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
 <div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a101f4a44f300d506a1053151dde8ee3e">   38</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a101f4a44f300d506a1053151dde8ee3e">gl_depth_peeler::is_front_to_back</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordflow">return</span> front_to_back;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordflow">return</span> front_to_back;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;}</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
 <div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a6d8c027d9d97c096ea28c219160b46bc">   44</a></span>&#160;<a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a6d8c027d9d97c096ea28c219160b46bc">gl_depth_peeler::~gl_depth_peeler</a>()</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;{</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a2d464e3ce60eeb74158f77201b8d57cc">is_initialized</a>())</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a7fe56a686b5c722fc31c826ea2ad2150">destruct</a>(*ctx_ptr);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a2d464e3ce60eeb74158f77201b8d57cc">is_initialized</a>())</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a7fe56a686b5c722fc31c826ea2ad2150">destruct</a>(*ctx_ptr);</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;}</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
 <div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a7fe56a686b5c722fc31c826ea2ad2150">   51</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a7fe56a686b5c722fc31c826ea2ad2150">gl_depth_peeler::destruct</a>(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx)</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;{</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
 <div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a7e60447971c8800dc24a91240296b530">   57</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a7e60447971c8800dc24a91240296b530">gl_depth_peeler::set_depth_bias</a>(<span class="keywordtype">float</span> bias)</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;{</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        depth_bias = (GLfloat) bias;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    depth_bias = (GLfloat) bias;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;}</div>
 <div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a80ab3eba4c8fb8acea6ef277e04a4217">   62</a></span>&#160;<span class="keywordtype">float</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a80ab3eba4c8fb8acea6ef277e04a4217">gl_depth_peeler::get_depth_bias</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keywordflow">return</span> depth_bias;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">return</span> depth_bias;</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
 <div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a2d464e3ce60eeb74158f77201b8d57cc">   68</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a2d464e3ce60eeb74158f77201b8d57cc">gl_depth_peeler::is_initialized</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">return</span> ctx_ptr != 0;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordflow">return</span> ctx_ptr != 0;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
 <div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a4932360d577126a9fba1e73c63d0dc0a">   74</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a4932360d577126a9fba1e73c63d0dc0a">gl_depth_peeler::init</a>(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) </div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;{</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordflow">if</span> (!<a class="code" href="namespacecgv_1_1render_1_1gl.html#a7f91bb803acfca66eb4a1eca87e0da63">ensure_glew_initialized</a>()) {</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a569901f9d08dbe31e73c39ba494fecb2">last_error</a> = <span class="stringliteral">&quot;could not initialize glew&quot;</span>;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        }</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keywordflow">if</span> (!GLEW_ARB_occlusion_query) {</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a569901f9d08dbe31e73c39ba494fecb2">last_error</a> = <span class="stringliteral">&quot;missing ARB occlusion query extension&quot;</span>;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        }</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keywordflow">if</span> (!GLEW_ARB_texture_rectangle) {</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a569901f9d08dbe31e73c39ba494fecb2">last_error</a> = <span class="stringliteral">&quot;missing ARB texture rectangle extension&quot;</span>;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        }</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="keywordflow">if</span> (!GLEW_ARB_depth_texture) {</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a569901f9d08dbe31e73c39ba494fecb2">last_error</a> = <span class="stringliteral">&quot;missing ARB depth texture extension&quot;</span>;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        }</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keywordflow">if</span> (!GLEW_ARB_shadow) {</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a569901f9d08dbe31e73c39ba494fecb2">last_error</a> = <span class="stringliteral">&quot;missing ARB shadow extension&quot;</span>;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        }</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        ctx_ptr = &amp;ctx;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;            </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacecgv_1_1render_1_1gl.html#a7f91bb803acfca66eb4a1eca87e0da63">ensure_glew_initialized</a>()) {</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a569901f9d08dbe31e73c39ba494fecb2">last_error</a> = <span class="stringliteral">&quot;could not initialize glew&quot;</span>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    }</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordflow">if</span> (!GLEW_ARB_occlusion_query) {</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a569901f9d08dbe31e73c39ba494fecb2">last_error</a> = <span class="stringliteral">&quot;missing ARB occlusion query extension&quot;</span>;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    }</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordflow">if</span> (!GLEW_ARB_texture_rectangle) {</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a569901f9d08dbe31e73c39ba494fecb2">last_error</a> = <span class="stringliteral">&quot;missing ARB texture rectangle extension&quot;</span>;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    }</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordflow">if</span> (!GLEW_ARB_depth_texture) {</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a569901f9d08dbe31e73c39ba494fecb2">last_error</a> = <span class="stringliteral">&quot;missing ARB depth texture extension&quot;</span>;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    }</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordflow">if</span> (!GLEW_ARB_shadow) {</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a569901f9d08dbe31e73c39ba494fecb2">last_error</a> = <span class="stringliteral">&quot;missing ARB shadow extension&quot;</span>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    }</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    ctx_ptr = &amp;ctx;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;        </div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;}</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
 <div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#af9538826d6c2476300bae0a06e3e64c4">  100</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#af9538826d6c2476300bae0a06e3e64c4">gl_depth_peeler::init_frame</a>(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx)</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;{</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="comment">// allocate memory for depth texture</span></div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        GLint vp[4];</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        glGetIntegerv(GL_VIEWPORT, vp);</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keywordflow">if</span> (!depth_texture.<a class="code" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>() || vp[2] != depth_texture.<a class="code" href="classcgv_1_1data_1_1data__format.html#ab9e20b698e4a244dbeb95bf50474a923">get_width</a>() || vp[3] != depth_texture.<a class="code" href="classcgv_1_1data_1_1data__format.html#a8f9457addc136beed77ae367c87fe337">get_height</a>()) {</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                <span class="keywordflow">if</span> (depth_texture.<a class="code" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>())</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                        depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                depth_texture.<a class="code" href="classcgv_1_1data_1_1data__format.html#a689cbcb12fcc4a8b39a2fbaed161813d">set_width</a>(vp[2]);</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                depth_texture.<a class="code" href="classcgv_1_1data_1_1data__format.html#af3e40e9348b3c7217599106e417cf47f">set_height</a>(vp[3]);</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#ae516d30cbba12b0b3b736fd913e79456">set_compare_mode</a>(<span class="keyword">true</span>);</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#a31c308bb38b1713521fa245f869277a0">set_compare_function</a>(CF_GREATER);</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">create</a>(ctx);</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        }</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="comment">// allocate memory for depth texture</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    GLint vp[4];</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    glGetIntegerv(GL_VIEWPORT, vp);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordflow">if</span> (!depth_texture.<a class="code" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>() || vp[2] != depth_texture.<a class="code" href="classcgv_1_1data_1_1data__format.html#ab9e20b698e4a244dbeb95bf50474a923">get_width</a>() || vp[3] != depth_texture.<a class="code" href="classcgv_1_1data_1_1data__format.html#a8f9457addc136beed77ae367c87fe337">get_height</a>()) {</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="keywordflow">if</span> (depth_texture.<a class="code" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>())</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        depth_texture.<a class="code" href="classcgv_1_1data_1_1data__format.html#a689cbcb12fcc4a8b39a2fbaed161813d">set_width</a>(vp[2]);</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        depth_texture.<a class="code" href="classcgv_1_1data_1_1data__format.html#af3e40e9348b3c7217599106e417cf47f">set_height</a>(vp[3]);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#ae516d30cbba12b0b3b736fd913e79456">set_compare_mode</a>(<span class="keyword">true</span>);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#a31c308bb38b1713521fa245f869277a0">set_compare_function</a>(CF_GREATER);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">create</a>(ctx);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    }</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;}</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
 <div class="line"><a name="l00116"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a0a6fc4bfa5c5a5481fe1da45af14f280">  116</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a0a6fc4bfa5c5a5481fe1da45af14f280">gl_depth_peeler::copy_depth_buffer</a>(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx)</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;{</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        GLint vp[4];</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        glGetIntegerv(GL_VIEWPORT, vp);</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#a52139ea756e89b31caca578ee9dedcf1">replace_from_buffer</a>(ctx,0,0,vp[0],vp[1],vp[2],vp[3],0);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    GLint vp[4];</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    glGetIntegerv(GL_VIEWPORT, vp);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#a52139ea756e89b31caca578ee9dedcf1">replace_from_buffer</a>(ctx,0,0,vp[0],vp[1],vp[2],vp[3],0);</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;}</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
 <div class="line"><a name="l00123"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a3eca44b4d2ce25b209a80be098ebd071">  123</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a3eca44b4d2ce25b209a80be098ebd071">gl_depth_peeler::begin_layer</a>(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx, <span class="keywordtype">int</span> tex_unit)</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;{</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        glPushAttrib(GL_TEXTURE_BIT);</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        glPushAttrib(GL_COLOR_BUFFER_BIT);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    glPushAttrib(GL_TEXTURE_BIT);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    glPushAttrib(GL_COLOR_BUFFER_BIT);</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        <span class="comment">// enable the depth texture (2nd depth buffer)</span></div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#a81315c47d777439da016e988229bde3a">enable</a>(ctx, tex_unit);</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="comment">// enable the depth texture (2nd depth buffer)</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#a81315c47d777439da016e988229bde3a">enable</a>(ctx, tex_unit);</div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="keywordflow">if</span> (tex_unit &gt;= 0) {</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                <span class="keywordflow">if</span> (!<a class="code" href="namespacecgv_1_1render_1_1gl.html#a7f91bb803acfca66eb4a1eca87e0da63">ensure_glew_initialized</a>() || !glActiveTextureARB)</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                        tex_unit = -1;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;                <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                        glActiveTextureARB(GL_TEXTURE0_ARB+tex_unit);</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        }</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keywordflow">if</span> (tex_unit &gt;= 0) {</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="keywordflow">if</span> (!<a class="code" href="namespacecgv_1_1render_1_1gl.html#a7f91bb803acfca66eb4a1eca87e0da63">ensure_glew_initialized</a>() || !glActiveTextureARB)</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;            tex_unit = -1;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;            glActiveTextureARB(GL_TEXTURE0_ARB+tex_unit);</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    }</div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        <span class="comment">// Use OpenGL- Extension GL_ARB_shadow and set the r texture coordinate to be tested</span></div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB);</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <span class="comment">// check whether the computed texture coordinate is greater or equal to the value stored in the texture</span></div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, front_to_back?GL_GEQUAL:GL_LEQUAL);</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="comment">// write the result of the test to the alpha channel (1 for r &gt;= tex(s,t) and 0 for r &lt; tex(s,t) )</span></div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_ALPHA);</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="comment">// Use OpenGL- Extension GL_ARB_shadow and set the r texture coordinate to be tested</span></div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB);</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="comment">// check whether the computed texture coordinate is greater or equal to the value stored in the texture</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, front_to_back?GL_GEQUAL:GL_LEQUAL);</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="comment">// write the result of the test to the alpha channel (1 for r &gt;= tex(s,t) and 0 for r &lt; tex(s,t) )</span></div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_ALPHA);</div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);</div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="comment">        /*************************************************************</span></div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="comment">          </span></div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="comment">          the texture coordinates with which the 2nd depth buffer   </span></div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="comment">          is accessed must correspond to in s and t to the normalized </span></div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="comment">          device but re-normalized from [-1,1] to [0,1]. The r texture</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="comment">          coordinate must correspond to the z-buffer value [0,1]. To</span></div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="comment">          compute (s,t,r) 4D texture coordinates (s&#39;,t&#39;,r&#39;,q&#39;) are used</span></div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="comment">          together with the q&#39;-clip ( s=s&#39;/q&#39;, t=t&#39;/q&#39;, r=r&#39;/q&#39; ).</span></div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="comment">          </span></div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="comment">          We use the matrices</span></div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="comment">          </span></div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="comment">          mm ... modelview matrix</span></div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="comment">          mp ... modelview projection</span></div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="comment">          transAndScale ... re-normalization matrix</span></div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="comment">    /*************************************************************</span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="comment">      </span></div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="comment">      the texture coordinates with which the 2nd depth buffer   </span></div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="comment">      is accessed must correspond to in s and t to the normalized </span></div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="comment">      device but re-normalized from [-1,1] to [0,1]. The r texture</span></div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="comment">      coordinate must correspond to the z-buffer value [0,1]. To</span></div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="comment">      compute (s,t,r) 4D texture coordinates (s&#39;,t&#39;,r&#39;,q&#39;) are used</span></div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="comment">      together with the q&#39;-clip ( s=s&#39;/q&#39;, t=t&#39;/q&#39;, r=r&#39;/q&#39; ).</span></div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="comment">      </span></div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="comment">      We use the matrices</span></div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="comment">      </span></div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="comment">      mm ... modelview matrix</span></div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="comment">      mp ... modelview projection</span></div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="comment">      transAndScale ... re-normalization matrix</span></div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="comment">          these are multiplied together to</span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="comment">      these are multiplied together to</span></div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="comment">          M = transAndScale*mp*mm</span></div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="comment">      M = transAndScale*mp*mm</span></div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="comment">          to compute s&#39; we compute the scalar product of the first row of M</span></div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;<span class="comment">          with the current vertex (x,y,z,w). t/r/q are computed from the </span></div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;<span class="comment">          second/third/fourth rows of M. This is done by the automatic</span></div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="comment">          texture coordinate generation. </span></div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="comment">        </span></div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="comment">        ********************************************************************/</span></div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="comment">      to compute s&#39; we compute the scalar product of the first row of M</span></div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;<span class="comment">      with the current vertex (x,y,z,w). t/r/q are computed from the </span></div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;<span class="comment">      second/third/fourth rows of M. This is done by the automatic</span></div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="comment">      texture coordinate generation. </span></div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="comment">    </span></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="comment">    ********************************************************************/</span></div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <span class="comment">//  gather all matrices</span></div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        <span class="keyword">static</span> GLdouble transAndScale[] = {</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                0.5,0.0,0.0,0.0,</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                0.0,0.5,0.0,0.0,</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                0.0,0.0,0.5,0.0,</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                0.5,0.5,0.5,1.0};</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        GLdouble mp[16];</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        glGetDoublev(GL_PROJECTION_MATRIX, &amp;mp[0]);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="comment">//  gather all matrices</span></div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="keyword">static</span> GLdouble transAndScale[] = {</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        0.5,0.0,0.0,0.0,</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        0.0,0.5,0.0,0.0,</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        0.0,0.0,0.5,0.0,</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        0.5,0.5,0.5,1.0};</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    GLdouble mp[16];</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    glGetDoublev(GL_PROJECTION_MATRIX, &amp;mp[0]);</div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        GLdouble mm[16];</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        glGetDoublev(GL_MODELVIEW_MATRIX, &amp;mm[0]);</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        </div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        <span class="comment">// remember matrix mode and set to texture mode</span></div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        GLenum current_matrix_mode;</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        glGetIntegerv(GL_MATRIX_MODE, (GLint*)&amp;current_matrix_mode);</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        glMatrixMode(GL_TEXTURE);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    GLdouble mm[16];</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    glGetDoublev(GL_MODELVIEW_MATRIX, &amp;mm[0]);</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    </div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="comment">// remember matrix mode and set to texture mode</span></div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    GLenum current_matrix_mode;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    glGetIntegerv(GL_MATRIX_MODE, (GLint*)&amp;current_matrix_mode);</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    glMatrixMode(GL_TEXTURE);</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160; </div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;        <span class="comment">// push a matrix onto the stack that is only used to compute M = transAndScale*mp*mm</span></div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        glPushMatrix();</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;        glLoadMatrixd(transAndScale);</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        glMultMatrixd(mp);</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        glMultMatrixd(mm);</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    <span class="comment">// push a matrix onto the stack that is only used to compute M = transAndScale*mp*mm</span></div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    glPushMatrix();</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    glLoadMatrixd(transAndScale);</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    glMultMatrixd(mp);</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    glMultMatrixd(mm);</div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        <span class="comment">// read M into the variable mm</span></div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        glGetDoublev(GL_TEXTURE_MATRIX, mm);</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;        glPopMatrix();</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    <span class="comment">// read M into the variable mm</span></div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    glGetDoublev(GL_TEXTURE_MATRIX, mm);</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    glPopMatrix();</div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        <span class="comment">// ensure that now texture matrix is used</span></div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        glLoadIdentity();</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    <span class="comment">// ensure that now texture matrix is used</span></div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    glLoadIdentity();</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        <span class="comment">// restore matrix mode</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;        glMatrixMode(current_matrix_mode);</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    <span class="comment">// restore matrix mode</span></div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    glMatrixMode(current_matrix_mode);</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;        <span class="comment">// get the rows of m which are used to compute (s&#39;,t&#39;,r&#39;,q&#39;)</span></div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        GLdouble rowForS[] = {mm[0], mm[4], mm[8],  mm[12]};</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        GLdouble rowForT[] = {</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                _invert_t ? (mm[3] -mm[1])  : mm[1],</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                _invert_t ? (mm[7] -mm[5])  : mm[5],</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;                _invert_t ? (mm[11]-mm[9])  : mm[9],</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;                _invert_t ? (mm[15]-mm[13]) : mm[13] };</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;        <span class="comment">// subtract depth bias in the r-component to implement the depth-epsilon</span></div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;        GLdouble rowForR[] = {</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;                front_to_back?(mm[2]-mm[3]*depth_bias):(mm[2]+mm[3]*depth_bias),</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;                front_to_back?(mm[6]-mm[7]*depth_bias):(mm[6]+mm[7]*depth_bias),</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;                front_to_back?(mm[10]-mm[11]*depth_bias):(mm[10]+mm[11]*depth_bias),</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;                front_to_back?(mm[14]-mm[15]*depth_bias):(mm[14]+mm[15]*depth_bias)</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        };</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        GLdouble rowForQ[] = {mm[3], mm[7], mm[11], mm[15]};</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    <span class="comment">// get the rows of m which are used to compute (s&#39;,t&#39;,r&#39;,q&#39;)</span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    GLdouble rowForS[] = {mm[0], mm[4], mm[8],  mm[12]};</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    GLdouble rowForT[] = {</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        _invert_t ? (mm[3] -mm[1])  : mm[1],</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        _invert_t ? (mm[7] -mm[5])  : mm[5],</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        _invert_t ? (mm[11]-mm[9])  : mm[9],</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        _invert_t ? (mm[15]-mm[13]) : mm[13] };</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    <span class="comment">// subtract depth bias in the r-component to implement the depth-epsilon</span></div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    GLdouble rowForR[] = {</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        front_to_back?(mm[2]-mm[3]*depth_bias):(mm[2]+mm[3]*depth_bias),</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        front_to_back?(mm[6]-mm[7]*depth_bias):(mm[6]+mm[7]*depth_bias),</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;        front_to_back?(mm[10]-mm[11]*depth_bias):(mm[10]+mm[11]*depth_bias),</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;        front_to_back?(mm[14]-mm[15]*depth_bias):(mm[14]+mm[15]*depth_bias)</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    };</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;    GLdouble rowForQ[] = {mm[3], mm[7], mm[11], mm[15]};</div>
 <div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;        <span class="comment">// use automatic texture generation of OpenGL</span></div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;        glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;        glTexGendv(GL_S, GL_EYE_PLANE, rowForS);</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;        glEnable(GL_TEXTURE_GEN_S);</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    <span class="comment">// use automatic texture generation of OpenGL</span></div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    glTexGendv(GL_S, GL_EYE_PLANE, rowForS);</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    glEnable(GL_TEXTURE_GEN_S);</div>
 <div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160; </div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;        glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;        glTexGendv(GL_T, GL_EYE_PLANE, rowForT);</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        glEnable(GL_TEXTURE_GEN_T);</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    glTexGendv(GL_T, GL_EYE_PLANE, rowForT);</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    glEnable(GL_TEXTURE_GEN_T);</div>
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160; </div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;        glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;        glTexGendv(GL_R, GL_EYE_PLANE, rowForR);</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;        glEnable(GL_TEXTURE_GEN_R);</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    glTexGendv(GL_R, GL_EYE_PLANE, rowForR);</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    glEnable(GL_TEXTURE_GEN_R);</div>
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160; </div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;        glTexGeni(GL_Q, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;        glTexGendv(GL_Q, GL_EYE_PLANE, rowForQ);</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        glEnable(GL_TEXTURE_GEN_Q);</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    glTexGeni(GL_Q, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    glTexGendv(GL_Q, GL_EYE_PLANE, rowForQ);</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    glEnable(GL_TEXTURE_GEN_Q);</div>
 <div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160; </div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        <span class="keywordflow">if</span> (tex_unit &gt;= 0)</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;                glActiveTextureARB(GL_TEXTURE0_ARB);</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        </div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;        <span class="comment">// create occlusion query, that counts the number of rendered fragments</span></div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        glGenQueriesARB(1, &amp;query);</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;        glBeginQueryARB(GL_SAMPLES_PASSED_ARB, query);</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    <span class="keywordflow">if</span> (tex_unit &gt;= 0)</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        glActiveTextureARB(GL_TEXTURE0_ARB);</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    </div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    <span class="comment">// create occlusion query, that counts the number of rendered fragments</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    glGenQueriesARB(1, &amp;query);</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    glBeginQueryARB(GL_SAMPLES_PASSED_ARB, query);</div>
 <div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        <span class="comment">// enable alpha test, where the alpha results from the depth comparison and discards fragments of previous layers</span></div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        glEnable(GL_ALPHA_TEST);</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        glAlphaFunc(GL_GREATER, 0.01f);</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    <span class="comment">// enable alpha test, where the alpha results from the depth comparison and discards fragments of previous layers</span></div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    glEnable(GL_ALPHA_TEST);</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    glAlphaFunc(GL_GREATER, 0.01f);</div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;}</div>
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160; </div>
 <div class="line"><a name="l00252"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a4b6347f61fbcc87358912bec06350ab8">  252</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a4b6347f61fbcc87358912bec06350ab8">gl_depth_peeler::end_layer</a>(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx)</div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;{</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        glEndQueryARB(GL_SAMPLES_PASSED_ARB);</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;        depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#a7b6a0d57a4c4703b97ac8cd632973b9f">disable</a>(ctx);</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;        glPopAttrib();                  </div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        glPopAttrib();                  </div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        <span class="comment">// evaluation of occlusion query</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        GLuint nr_drawn_fragments;</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;        glGetQueryObjectuivARB(query,GL_QUERY_RESULT_ARB,&amp;nr_drawn_fragments);</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        glDeleteQueriesARB(1,&amp;query);</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;        query = -1;</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;        <span class="keywordflow">return</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>) nr_drawn_fragments;</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    glEndQueryARB(GL_SAMPLES_PASSED_ARB);</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;    depth_texture.<a class="code" href="classcgv_1_1render_1_1texture.html#a7b6a0d57a4c4703b97ac8cd632973b9f">disable</a>(ctx);</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    glPopAttrib();          </div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    glPopAttrib();          </div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    <span class="comment">// evaluation of occlusion query</span></div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    GLuint nr_drawn_fragments;</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    glGetQueryObjectuivARB(query,GL_QUERY_RESULT_ARB,&amp;nr_drawn_fragments);</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    glDeleteQueriesARB(1,&amp;query);</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    query = -1;</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    <span class="keywordflow">return</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>) nr_drawn_fragments;</div>
 <div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;}</div>
 <div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160; </div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;                }</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;        }</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;        }</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;    }</div>
 <div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1data_1_1data__format_html_a689cbcb12fcc4a8b39a2fbaed161813d"><div class="ttname"><a href="classcgv_1_1data_1_1data__format.html#a689cbcb12fcc4a8b39a2fbaed161813d">cgv::data::data_format::set_width</a></div><div class="ttdeci">void set_width(unsigned int _width)</div><div class="ttdoc">set the resolution in the first dimension, add dimensions if necessary</div><div class="ttdef"><b>Definition:</b> <a href="data__format_8cxx_source.html#l00300">data_format.cxx:300</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1data__format_html_a8f9457addc136beed77ae367c87fe337"><div class="ttname"><a href="classcgv_1_1data_1_1data__format.html#a8f9457addc136beed77ae367c87fe337">cgv::data::data_format::get_height</a></div><div class="ttdeci">unsigned int get_height() const</div><div class="ttdoc">return the resolution in the second dimension, or 1 if not defined</div><div class="ttdef"><b>Definition:</b> <a href="data__format_8cxx_source.html#l00267">data_format.cxx:267</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1data__format_html_ab9e20b698e4a244dbeb95bf50474a923"><div class="ttname"><a href="classcgv_1_1data_1_1data__format.html#ab9e20b698e4a244dbeb95bf50474a923">cgv::data::data_format::get_width</a></div><div class="ttdeci">unsigned int get_width() const</div><div class="ttdoc">return the resolution in the first dimension, or 1 if not defined</div><div class="ttdef"><b>Definition:</b> <a href="data__format_8cxx_source.html#l00262">data_format.cxx:262</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1data__format_html_af3e40e9348b3c7217599106e417cf47f"><div class="ttname"><a href="classcgv_1_1data_1_1data__format.html#af3e40e9348b3c7217599106e417cf47f">cgv::data::data_format::set_height</a></div><div class="ttdeci">void set_height(unsigned int _height)</div><div class="ttdoc">set the resolution in the second dimension, add dimensions if necessary</div><div class="ttdef"><b>Definition:</b> <a href="data__format_8cxx_source.html#l00305">data_format.cxx:305</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00559">context.h:560</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00580">context.h:581</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1gl_1_1gl__depth__peeler_html_a0a6fc4bfa5c5a5481fe1da45af14f280"><div class="ttname"><a href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a0a6fc4bfa5c5a5481fe1da45af14f280">cgv::render::gl::gl_depth_peeler::copy_depth_buffer</a></div><div class="ttdeci">void copy_depth_buffer(context &amp;ctx)</div><div class="ttdoc">copies the current depth buffer to the second depth buffer, what is typically done before peeling a l...</div><div class="ttdef"><b>Definition:</b> <a href="gl__depth__peeler_8cxx_source.html#l00116">gl_depth_peeler.cxx:116</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1gl_1_1gl__depth__peeler_html_a101f4a44f300d506a1053151dde8ee3e"><div class="ttname"><a href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a101f4a44f300d506a1053151dde8ee3e">cgv::render::gl::gl_depth_peeler::is_front_to_back</a></div><div class="ttdeci">bool is_front_to_back() const</div><div class="ttdoc">return whether the mode is front to back</div><div class="ttdef"><b>Definition:</b> <a href="gl__depth__peeler_8cxx_source.html#l00038">gl_depth_peeler.cxx:38</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1gl_1_1gl__depth__peeler_html_a2d464e3ce60eeb74158f77201b8d57cc"><div class="ttname"><a href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a2d464e3ce60eeb74158f77201b8d57cc">cgv::render::gl::gl_depth_peeler::is_initialized</a></div><div class="ttdeci">bool is_initialized() const</div><div class="ttdoc">check whether the depth peeler has been initialized, i.e. the init method has been called successfull...</div><div class="ttdef"><b>Definition:</b> <a href="gl__depth__peeler_8cxx_source.html#l00068">gl_depth_peeler.cxx:68</a></div></div>

@@ -105,162 +105,162 @@ $(document).ready(function(){initNavTree('xinput__gamepad__driver_8cxx_source.ht
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">// encode user index in handle</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keywordtype">void</span>* get_handle(<span class="keywordtype">int</span> user_index)</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keywordtype">void</span>* device_handle = 0;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        (<span class="keywordtype">int</span>&amp;)device_handle = user_index;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keywordflow">return</span> device_handle;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">void</span>* device_handle = 0;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    (<span class="keywordtype">int</span>&amp;)device_handle = user_index;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordflow">return</span> device_handle;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;}</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">// decode user index from handle</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keywordtype">int</span> get_user_index(<span class="keywordtype">void</span>* device_handle)</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;{</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keywordtype">int</span> user_index = (<span class="keywordtype">int</span>&amp;)device_handle;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        assert(user_index &gt;= 0 &amp;&amp; user_index &lt; 4);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordflow">return</span> user_index;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordtype">int</span> user_index = (<span class="keywordtype">int</span>&amp;)device_handle;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    assert(user_index &gt;= 0 &amp;&amp; user_index &lt; 4);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordflow">return</span> user_index;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;}</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">struct </span>xinput_gamepad_driver : <span class="keyword">public</span> <a class="code" href="structgamepad_1_1gamepad__driver.html">gamepad_driver</a></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;{</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordtype">bool</span> enabled[4];</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        xinput_gamepad_driver(<span class="keyword">const</span> std::string&amp; options)</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        {</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> user_index = 0; user_index &lt; 4; ++user_index)</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                        enabled[user_index] = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        }</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        std::string get_name()</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        {</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                <span class="keywordflow">return</span> <span class="stringliteral">&quot;XInput Gamepad Driver&quot;</span>;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        }</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordtype">void</span> set_driver_state(<span class="keywordtype">bool</span> enabled)</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        {</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                XInputEnable(enabled ? TRUE : FALSE);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordtype">void</span> scan_devices(std::vector&lt;device_info&gt;&amp; infos)</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        {</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                XINPUT_CAPABILITIES caps;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                <span class="keywordtype">unsigned</span> nr_devices = 0;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> user_index = 0; user_index &lt; 4; ++user_index) {</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        DWORD result = XInputGetCapabilities(user_index, XINPUT_FLAG_GAMEPAD, &amp;caps);</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                        <span class="keywordflow">if</span> (result == ERROR_DEVICE_NOT_CONNECTED) {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                                enabled[user_index] = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                                <span class="keywordflow">continue</span>;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                        }</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                        enabled[user_index] = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                        infos.resize(infos.size() + 1);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                        infos.back().device_handle = get_handle(user_index);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                        infos.back().enabled = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                        infos.back().force_feedback_support = (caps.Flags | XINPUT_CAPS_FFB_SUPPORTED) != 0;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                        infos.back().is_wireless = (caps.Flags | XINPUT_CAPS_WIRELESS) != 0;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                        infos.back().no_menu_buttons = (caps.Flags | XINPUT_CAPS_NO_NAVIGATION) != 0;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                        infos.back().name = std::string(<span class="stringliteral">&quot;controler_&quot;</span>);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                        infos.back().name += <span class="charliteral">&#39;0&#39;</span> + user_index;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                        infos.back().vibration_strength[0] = convert(caps.Vibration.wLeftMotorSpeed);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                        infos.back().vibration_strength[1] = convert(caps.Vibration.wRightMotorSpeed);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                }</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        }</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordtype">void</span> set_device_state(<span class="keywordtype">void</span>* device_handle, <span class="keywordtype">bool</span> _enabled)</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        {</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                enabled[get_user_index(device_handle)] = _enabled;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        }</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keywordtype">bool</span> get_device_battery_info(<span class="keywordtype">void</span>* device_handle, BatteryType&amp; battery_type, <span class="keywordtype">float</span>&amp; fill_state)</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        {</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                <span class="keywordtype">int</span> user_index = get_user_index(device_handle);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                XINPUT_BATTERY_INFORMATION battery_info;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                DWORD result = XInputGetBatteryInformation(user_index, BATTERY_DEVTYPE_GAMEPAD, &amp;battery_info);</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                <span class="keywordflow">if</span> (result == ERROR_DEVICE_NOT_CONNECTED)</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                <span class="keywordflow">switch</span> (battery_info.BatteryType) {</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                <span class="keywordflow">case</span> BATTERY_TYPE_DISCONNECTED: <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                <span class="keywordflow">case</span> BATTERY_TYPE_WIRED:    battery_type = BT_WIRED; <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                <span class="keywordflow">case</span> BATTERY_TYPE_ALKALINE: battery_type = BT_ALKALINE; <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                <span class="keywordflow">case</span> BATTERY_TYPE_NIMH: battery_type = BT_NIMH; <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                <span class="keywordflow">case</span> BATTERY_TYPE_UNKNOWN:      battery_type = BT_UNKNOWN; <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                }</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">bool</span> enabled[4];</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    xinput_gamepad_driver(<span class="keyword">const</span> std::string&amp; options)</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> user_index = 0; user_index &lt; 4; ++user_index)</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            enabled[user_index] = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    }</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    std::string get_name()</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">return</span> <span class="stringliteral">&quot;XInput Gamepad Driver&quot;</span>;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    }</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">void</span> set_driver_state(<span class="keywordtype">bool</span> enabled)</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    {</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        XInputEnable(enabled ? TRUE : FALSE);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    }</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">void</span> scan_devices(std::vector&lt;device_info&gt;&amp; infos)</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    {</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        XINPUT_CAPABILITIES caps;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordtype">unsigned</span> nr_devices = 0;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> user_index = 0; user_index &lt; 4; ++user_index) {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            DWORD result = XInputGetCapabilities(user_index, XINPUT_FLAG_GAMEPAD, &amp;caps);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <span class="keywordflow">if</span> (result == ERROR_DEVICE_NOT_CONNECTED) {</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                enabled[user_index] = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            }</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            enabled[user_index] = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            infos.resize(infos.size() + 1);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            infos.back().device_handle = get_handle(user_index);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            infos.back().enabled = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            infos.back().force_feedback_support = (caps.Flags | XINPUT_CAPS_FFB_SUPPORTED) != 0;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            infos.back().is_wireless = (caps.Flags | XINPUT_CAPS_WIRELESS) != 0;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            infos.back().no_menu_buttons = (caps.Flags | XINPUT_CAPS_NO_NAVIGATION) != 0;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            infos.back().name = std::string(<span class="stringliteral">&quot;controler_&quot;</span>);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            infos.back().name += <span class="charliteral">&#39;0&#39;</span> + user_index;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            infos.back().vibration_strength[0] = convert(caps.Vibration.wLeftMotorSpeed);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            infos.back().vibration_strength[1] = convert(caps.Vibration.wRightMotorSpeed);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    }</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordtype">void</span> set_device_state(<span class="keywordtype">void</span>* device_handle, <span class="keywordtype">bool</span> _enabled)</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    {</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        enabled[get_user_index(device_handle)] = _enabled;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    }</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordtype">bool</span> get_device_battery_info(<span class="keywordtype">void</span>* device_handle, BatteryType&amp; battery_type, <span class="keywordtype">float</span>&amp; fill_state)</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordtype">int</span> user_index = get_user_index(device_handle);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        XINPUT_BATTERY_INFORMATION battery_info;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        DWORD result = XInputGetBatteryInformation(user_index, BATTERY_DEVTYPE_GAMEPAD, &amp;battery_info);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keywordflow">if</span> (result == ERROR_DEVICE_NOT_CONNECTED)</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">switch</span> (battery_info.BatteryType) {</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keywordflow">case</span> BATTERY_TYPE_DISCONNECTED: <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="keywordflow">case</span> BATTERY_TYPE_WIRED:    battery_type = BT_WIRED; <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keywordflow">case</span> BATTERY_TYPE_ALKALINE: battery_type = BT_ALKALINE; <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="keywordflow">case</span> BATTERY_TYPE_NIMH: battery_type = BT_NIMH; <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keywordflow">case</span> BATTERY_TYPE_UNKNOWN:  battery_type = BT_UNKNOWN; <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        }</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                <span class="keywordflow">switch</span> (battery_info.BatteryLevel) {</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                <span class="keywordflow">case</span> BATTERY_LEVEL_EMPTY: fill_state = 0.0f; <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                <span class="keywordflow">case</span> BATTERY_LEVEL_LOW: fill_state = 0.2f; <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                <span class="keywordflow">case</span> BATTERY_LEVEL_MEDIUM: fill_state = 0.5f; <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                <span class="keywordflow">case</span> BATTERY_LEVEL_FULL: fill_state = 1.0f; <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                }</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        }</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <span class="keywordtype">bool</span> query_device_key_event(<span class="keywordtype">void</span>* device_handle, GamepadKeys&amp; gk, KeyAction&amp; action)</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        {</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                XINPUT_KEYSTROKE keystroke;</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                DWORD result = XInputGetKeystroke(get_user_index(device_handle), 0, &amp;keystroke);</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                <span class="keywordflow">if</span> (result == ERROR_DEVICE_NOT_CONNECTED)</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                <span class="keywordflow">if</span> (result == ERROR_EMPTY)</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                <span class="keywordflow">switch</span> (keystroke.VirtualKey) {</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                <span class="keywordflow">case</span> VK_PAD_A:                 gk = GPK_A;                               <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                <span class="keywordflow">case</span> VK_PAD_B:                             gk = GPK_B;                           <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                <span class="keywordflow">case</span> VK_PAD_X:                             gk = GPK_X;                           <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                <span class="keywordflow">case</span> VK_PAD_Y:                             gk = GPK_Y;                           <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                <span class="keywordflow">case</span> VK_PAD_RSHOULDER:             gk = GPK_RIGHT_BUMPER;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                <span class="keywordflow">case</span> VK_PAD_LSHOULDER:             gk = GPK_LEFT_BUMPER;                 <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                <span class="keywordflow">case</span> VK_PAD_LTRIGGER:              gk = GPK_LEFT_TRIGGER;                        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                <span class="keywordflow">case</span> VK_PAD_RTRIGGER:              gk = GPK_RIGHT_TRIGGER;                       <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                <span class="keywordflow">case</span> VK_PAD_DPAD_UP:               gk = GPK_DPAD_UP;                     <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                <span class="keywordflow">case</span> VK_PAD_DPAD_DOWN:             gk = GPK_DPAD_DOWN;           <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                <span class="keywordflow">case</span> VK_PAD_DPAD_LEFT:             gk = GPK_DPAD_LEFT;           <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;                <span class="keywordflow">case</span> VK_PAD_DPAD_RIGHT:            gk = GPK_DPAD_RIGHT;          <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                <span class="keywordflow">case</span> VK_PAD_START:                         gk = GPK_START;                       <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                <span class="keywordflow">case</span> VK_PAD_BACK:                          gk = GPK_BACK;                                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                <span class="keywordflow">case</span> VK_PAD_LTHUMB_PRESS:          gk = GPK_LEFT_STICK_PRESS;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                <span class="keywordflow">case</span> VK_PAD_RTHUMB_PRESS:          gk = GPK_RIGHT_STICK_PRESS;           <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                <span class="keywordflow">case</span> VK_PAD_LTHUMB_UP:             gk = GPK_LEFT_STICK_UP;               <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;                <span class="keywordflow">case</span> VK_PAD_LTHUMB_DOWN:           gk = GPK_LEFT_STICK_DOWN;             <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                <span class="keywordflow">case</span> VK_PAD_LTHUMB_RIGHT:          gk = GPK_LEFT_STICK_RIGHT;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                <span class="keywordflow">case</span> VK_PAD_LTHUMB_LEFT:           gk = GPK_LEFT_STICK_LEFT;             <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                <span class="keywordflow">case</span> VK_PAD_LTHUMB_UPLEFT:         gk = GPK_LEFT_STICK_UPLEFT;   <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;                <span class="keywordflow">case</span> VK_PAD_LTHUMB_UPRIGHT:        gk = GPK_LEFT_STICK_UPRIGHT;  <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                <span class="keywordflow">case</span> VK_PAD_LTHUMB_DOWNRIGHT:  gk = GPK_LEFT_STICK_DOWNRIGHT;    <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;                <span class="keywordflow">case</span> VK_PAD_LTHUMB_DOWNLEFT:   gk = GPK_LEFT_STICK_DOWNLEFT;     <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                <span class="keywordflow">case</span> VK_PAD_RTHUMB_UP:             gk = GPK_RIGHT_STICK_UP;              <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                <span class="keywordflow">case</span> VK_PAD_RTHUMB_DOWN:           gk = GPK_RIGHT_STICK_DOWN;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                <span class="keywordflow">case</span> VK_PAD_RTHUMB_RIGHT:          gk = GPK_RIGHT_STICK_RIGHT;           <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                <span class="keywordflow">case</span> VK_PAD_RTHUMB_LEFT:           gk = GPK_RIGHT_STICK_LEFT;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                <span class="keywordflow">case</span> VK_PAD_RTHUMB_UPLEFT:         gk = GPK_RIGHT_STICK_UPLEFT;  <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                <span class="keywordflow">case</span> VK_PAD_RTHUMB_UPRIGHT:        gk = GPK_RIGHT_STICK_UPRIGHT;         <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;                <span class="keywordflow">case</span> VK_PAD_RTHUMB_DOWNRIGHT:  gk = GPK_RIGHT_STICK_DOWNRIGHT;   <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;                <span class="keywordflow">case</span> VK_PAD_RTHUMB_DOWNLEFT:   gk = GPK_RIGHT_STICK_DOWNLEFT;   <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                <span class="keywordflow">default</span>:                       gk = GPK_UNKNOWN; <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                }</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                <span class="keywordflow">switch</span> (keystroke.Flags) {</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;                <span class="keywordflow">case</span> XINPUT_KEYSTROKE_KEYUP: action = KA_RELEASE; <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                <span class="keywordflow">case</span> XINPUT_KEYSTROKE_KEYDOWN: action = KA_PRESS; <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                <span class="keywordflow">case</span> XINPUT_KEYSTROKE_KEYDOWN + XINPUT_KEYSTROKE_REPEAT: action = KA_REPEAT; <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                <span class="keywordflow">default</span>: action = <a class="code" href="namespacevr.html#aef3295070e29d71a25db0d6374da32ff">KeyAction</a>(-1); <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;                }</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        }</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        <span class="keywordtype">bool</span> xinput_gamepad_driver::get_device_state(<span class="keywordtype">void</span>* device_handle, <a class="code" href="structgamepad_1_1gamepad__state.html">gamepad_state</a>&amp; state)</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        {</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                XINPUT_STATE pad_state;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                DWORD result = XInputGetState(get_user_index(device_handle), &amp;pad_state);</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                <span class="keywordflow">if</span> (result == ERROR_DEVICE_NOT_CONNECTED)</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                state.<a class="code" href="structgamepad_1_1gamepad__state.html#a8111170499d3033b263b92b92ac1115a">time_stamp</a> = pad_state.dwPacketNumber;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                state.<a class="code" href="structgamepad_1_1gamepad__state.html#ad0cb46d3168be6f56d1ea2861432f458">button_flags</a> = pad_state.Gamepad.wButtons;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                state.<a class="code" href="structgamepad_1_1gamepad__state.html#afe65228383bfc1464c99cecb6c917bef">trigger_position</a>[0] = convert(pad_state.Gamepad.bLeftTrigger);</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                state.<a class="code" href="structgamepad_1_1gamepad__state.html#afe65228383bfc1464c99cecb6c917bef">trigger_position</a>[1] = convert(pad_state.Gamepad.bRightTrigger);</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                state.<a class="code" href="structgamepad_1_1gamepad__state.html#a8fca7b1a05bec5e5d3ca58081ca0b1cb">left_stick_position</a>[0] = convert(pad_state.Gamepad.sThumbLX);</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                state.<a class="code" href="structgamepad_1_1gamepad__state.html#a8fca7b1a05bec5e5d3ca58081ca0b1cb">left_stick_position</a>[1] = convert(pad_state.Gamepad.sThumbLY);</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                state.<a class="code" href="structgamepad_1_1gamepad__state.html#a085176ecd68c889a3f508dacf9018795">right_stick_position</a>[0] = convert(pad_state.Gamepad.sThumbRX);</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                state.<a class="code" href="structgamepad_1_1gamepad__state.html#a085176ecd68c889a3f508dacf9018795">right_stick_position</a>[1] = convert(pad_state.Gamepad.sThumbRY);</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        }</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="keywordtype">bool</span> xinput_gamepad_driver::set_device_vibration(<span class="keywordtype">void</span>* device_handle, <span class="keywordtype">float</span> low_frequency_strength, <span class="keywordtype">float</span> high_frequency_strength)</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        {</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                XINPUT_VIBRATION vibration;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                vibration.wLeftMotorSpeed = WORD(low_frequency_strength * 65535);</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                vibration.wRightMotorSpeed = WORD(high_frequency_strength * 65535);</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                DWORD result = XInputSetState(get_user_index(device_handle), &amp;vibration);</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                <span class="keywordflow">if</span> (result == ERROR_DEVICE_NOT_CONNECTED)</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        }</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        <span class="keywordflow">switch</span> (battery_info.BatteryLevel) {</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="keywordflow">case</span> BATTERY_LEVEL_EMPTY: fill_state = 0.0f; <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keywordflow">case</span> BATTERY_LEVEL_LOW: fill_state = 0.2f; <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keywordflow">case</span> BATTERY_LEVEL_MEDIUM: fill_state = 0.5f; <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="keywordflow">case</span> BATTERY_LEVEL_FULL: fill_state = 1.0f; <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        }</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    }</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keywordtype">bool</span> query_device_key_event(<span class="keywordtype">void</span>* device_handle, GamepadKeys&amp; gk, KeyAction&amp; action)</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    {</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        XINPUT_KEYSTROKE keystroke;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        DWORD result = XInputGetKeystroke(get_user_index(device_handle), 0, &amp;keystroke);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <span class="keywordflow">if</span> (result == ERROR_DEVICE_NOT_CONNECTED)</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <span class="keywordflow">if</span> (result == ERROR_EMPTY)</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keywordflow">switch</span> (keystroke.VirtualKey) {</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="keywordflow">case</span> VK_PAD_A:                 gk = GPK_A;               <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keywordflow">case</span> VK_PAD_B:                 gk = GPK_B;               <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keywordflow">case</span> VK_PAD_X:                 gk = GPK_X;               <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keywordflow">case</span> VK_PAD_Y:                 gk = GPK_Y;               <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <span class="keywordflow">case</span> VK_PAD_RSHOULDER:         gk = GPK_RIGHT_BUMPER;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="keywordflow">case</span> VK_PAD_LSHOULDER:         gk = GPK_LEFT_BUMPER;         <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        <span class="keywordflow">case</span> VK_PAD_LTRIGGER:          gk = GPK_LEFT_TRIGGER;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keywordflow">case</span> VK_PAD_RTRIGGER:          gk = GPK_RIGHT_TRIGGER;           <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <span class="keywordflow">case</span> VK_PAD_DPAD_UP:           gk = GPK_DPAD_UP;             <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <span class="keywordflow">case</span> VK_PAD_DPAD_DOWN:         gk = GPK_DPAD_DOWN;       <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        <span class="keywordflow">case</span> VK_PAD_DPAD_LEFT:         gk = GPK_DPAD_LEFT;       <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        <span class="keywordflow">case</span> VK_PAD_DPAD_RIGHT:        gk = GPK_DPAD_RIGHT;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        <span class="keywordflow">case</span> VK_PAD_START:             gk = GPK_START;           <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <span class="keywordflow">case</span> VK_PAD_BACK:              gk = GPK_BACK;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="keywordflow">case</span> VK_PAD_LTHUMB_PRESS:      gk = GPK_LEFT_STICK_PRESS;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="keywordflow">case</span> VK_PAD_RTHUMB_PRESS:      gk = GPK_RIGHT_STICK_PRESS;       <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="keywordflow">case</span> VK_PAD_LTHUMB_UP:         gk = GPK_LEFT_STICK_UP;       <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keywordflow">case</span> VK_PAD_LTHUMB_DOWN:       gk = GPK_LEFT_STICK_DOWN;         <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keywordflow">case</span> VK_PAD_LTHUMB_RIGHT:      gk = GPK_LEFT_STICK_RIGHT;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <span class="keywordflow">case</span> VK_PAD_LTHUMB_LEFT:       gk = GPK_LEFT_STICK_LEFT;         <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <span class="keywordflow">case</span> VK_PAD_LTHUMB_UPLEFT:     gk = GPK_LEFT_STICK_UPLEFT;   <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        <span class="keywordflow">case</span> VK_PAD_LTHUMB_UPRIGHT:    gk = GPK_LEFT_STICK_UPRIGHT;  <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        <span class="keywordflow">case</span> VK_PAD_LTHUMB_DOWNRIGHT:  gk = GPK_LEFT_STICK_DOWNRIGHT;    <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <span class="keywordflow">case</span> VK_PAD_LTHUMB_DOWNLEFT:   gk = GPK_LEFT_STICK_DOWNLEFT;     <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        <span class="keywordflow">case</span> VK_PAD_RTHUMB_UP:         gk = GPK_RIGHT_STICK_UP;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keywordflow">case</span> VK_PAD_RTHUMB_DOWN:       gk = GPK_RIGHT_STICK_DOWN;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="keywordflow">case</span> VK_PAD_RTHUMB_RIGHT:      gk = GPK_RIGHT_STICK_RIGHT;       <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        <span class="keywordflow">case</span> VK_PAD_RTHUMB_LEFT:       gk = GPK_RIGHT_STICK_LEFT;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <span class="keywordflow">case</span> VK_PAD_RTHUMB_UPLEFT:     gk = GPK_RIGHT_STICK_UPLEFT;  <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        <span class="keywordflow">case</span> VK_PAD_RTHUMB_UPRIGHT:    gk = GPK_RIGHT_STICK_UPRIGHT;     <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        <span class="keywordflow">case</span> VK_PAD_RTHUMB_DOWNRIGHT:  gk = GPK_RIGHT_STICK_DOWNRIGHT;   <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <span class="keywordflow">case</span> VK_PAD_RTHUMB_DOWNLEFT:   gk = GPK_RIGHT_STICK_DOWNLEFT;   <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">default</span>:                       gk = GPK_UNKNOWN; <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        }</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        <span class="keywordflow">switch</span> (keystroke.Flags) {</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        <span class="keywordflow">case</span> XINPUT_KEYSTROKE_KEYUP: action = KA_RELEASE; <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keywordflow">case</span> XINPUT_KEYSTROKE_KEYDOWN: action = KA_PRESS; <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        <span class="keywordflow">case</span> XINPUT_KEYSTROKE_KEYDOWN + XINPUT_KEYSTROKE_REPEAT: action = KA_REPEAT; <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        <span class="keywordflow">default</span>: action = <a class="code" href="namespacevr.html#aef3295070e29d71a25db0d6374da32ff">KeyAction</a>(-1); <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        }</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    }</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    <span class="keywordtype">bool</span> xinput_gamepad_driver::get_device_state(<span class="keywordtype">void</span>* device_handle, <a class="code" href="structgamepad_1_1gamepad__state.html">gamepad_state</a>&amp; state)</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    {</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        XINPUT_STATE pad_state;</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        DWORD result = XInputGetState(get_user_index(device_handle), &amp;pad_state);</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="keywordflow">if</span> (result == ERROR_DEVICE_NOT_CONNECTED)</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        state.<a class="code" href="structgamepad_1_1gamepad__state.html#a8111170499d3033b263b92b92ac1115a">time_stamp</a> = pad_state.dwPacketNumber;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        state.<a class="code" href="structgamepad_1_1gamepad__state.html#ad0cb46d3168be6f56d1ea2861432f458">button_flags</a> = pad_state.Gamepad.wButtons;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        state.<a class="code" href="structgamepad_1_1gamepad__state.html#afe65228383bfc1464c99cecb6c917bef">trigger_position</a>[0] = convert(pad_state.Gamepad.bLeftTrigger);</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        state.<a class="code" href="structgamepad_1_1gamepad__state.html#afe65228383bfc1464c99cecb6c917bef">trigger_position</a>[1] = convert(pad_state.Gamepad.bRightTrigger);</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        state.<a class="code" href="structgamepad_1_1gamepad__state.html#a8fca7b1a05bec5e5d3ca58081ca0b1cb">left_stick_position</a>[0] = convert(pad_state.Gamepad.sThumbLX);</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        state.<a class="code" href="structgamepad_1_1gamepad__state.html#a8fca7b1a05bec5e5d3ca58081ca0b1cb">left_stick_position</a>[1] = convert(pad_state.Gamepad.sThumbLY);</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        state.<a class="code" href="structgamepad_1_1gamepad__state.html#a085176ecd68c889a3f508dacf9018795">right_stick_position</a>[0] = convert(pad_state.Gamepad.sThumbRX);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        state.<a class="code" href="structgamepad_1_1gamepad__state.html#a085176ecd68c889a3f508dacf9018795">right_stick_position</a>[1] = convert(pad_state.Gamepad.sThumbRY);</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    }</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <span class="keywordtype">bool</span> xinput_gamepad_driver::set_device_vibration(<span class="keywordtype">void</span>* device_handle, <span class="keywordtype">float</span> low_frequency_strength, <span class="keywordtype">float</span> high_frequency_strength)</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    {</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        XINPUT_VIBRATION vibration;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        vibration.wLeftMotorSpeed = WORD(low_frequency_strength * 65535);</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        vibration.wRightMotorSpeed = WORD(high_frequency_strength * 65535);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        DWORD result = XInputSetState(get_user_index(device_handle), &amp;vibration);</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        <span class="keywordflow">if</span> (result == ERROR_DEVICE_NOT_CONNECTED)</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    }</div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;};</div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160; </div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<a class="code" href="structgamepad_1_1driver__registry.html">driver_registry&lt;xinput_gamepad_driver&gt;</a> xinput_gpd_registry(<span class="stringliteral">&quot;xinput&quot;</span>);</div>

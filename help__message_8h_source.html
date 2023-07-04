@@ -95,62 +95,62 @@ $(document).ready(function(){initNavTree('help__message_8h_source.html',''); ini
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">class </span>help_message {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        std::string <a class="code" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">message</a> = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    std::string <a class="code" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">message</a> = <span class="stringliteral">&quot;&quot;</span>;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keywordtype">void</span> clear() {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keywordtype">void</span> clear() {</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                <a class="code" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">message</a>.clear();</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        }</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <a class="code" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">message</a>.clear();</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    }</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keywordtype">void</span> add_line(<span class="keyword">const</span> std::string&amp; line) {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">void</span> add_line(<span class="keyword">const</span> std::string&amp; line) {</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                <span class="keywordflow">if</span>(!<a class="code" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">message</a>.empty())</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                        <a class="code" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">message</a> += <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keywordflow">if</span>(!<a class="code" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">message</a>.empty())</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <a class="code" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">message</a> += <span class="stringliteral">&quot;\n&quot;</span>;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                <a class="code" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">message</a> += line;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        }</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <a class="code" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">message</a> += line;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    }</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keywordtype">void</span> add_bullet_point(<span class="keyword">const</span> std::string&amp; line) {</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                add_line(<span class="stringliteral">&quot;  -\t&quot;</span> + line);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        }</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordtype">void</span> add_bullet_point(<span class="keyword">const</span> std::string&amp; line) {</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        add_line(<span class="stringliteral">&quot;  -\t&quot;</span> + line);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    }</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordtype">void</span> show()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">void</span> show()<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                <a class="code" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">cgv::gui::message</a>(<a class="code" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">message</a>);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        }</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <a class="code" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">cgv::gui::message</a>(<a class="code" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">message</a>);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    }</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1gui.html#acfea005ec75efc33168351c51cbc6c84">create_gui</a>(<a class="code" href="classcgv_1_1gui_1_1provider.html">cgv::gui::provider</a>* p)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::gui::button_ptr</a> btn = p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#aec4c2c18d5da07d5dadfececde56e48e">add_button</a>(<span class="stringliteral">&quot;?&quot;</span>, <span class="stringliteral">&quot;w=0;font_style=&#39;bold&#39;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                <span class="keywordtype">int</span> x = btn-&gt;get&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;x&quot;</span>);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                <span class="keywordtype">int</span> y = btn-&gt;get&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;y&quot;</span>);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1gui.html#acfea005ec75efc33168351c51cbc6c84">create_gui</a>(<a class="code" href="classcgv_1_1gui_1_1provider.html">cgv::gui::provider</a>* p)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::gui::button_ptr</a> btn = p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#aec4c2c18d5da07d5dadfececde56e48e">add_button</a>(<span class="stringliteral">&quot;?&quot;</span>, <span class="stringliteral">&quot;w=0;font_style=&#39;bold&#39;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordtype">int</span> x = btn-&gt;get&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;x&quot;</span>);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordtype">int</span> y = btn-&gt;get&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;y&quot;</span>);</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::base::group_ptr</a> group = btn-&gt;get_parent() ? btn-&gt;get_parent()-&gt;get_group() : <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                <span class="keywordflow">if</span>(group-&gt;get_nr_children() &gt; 1) {</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::base::base_ptr</a> last_child = group-&gt;get_child(group-&gt;get_nr_children() - 2);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::base::group_ptr</a> group = btn-&gt;get_parent() ? btn-&gt;get_parent()-&gt;get_group() : <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordflow">if</span>(group-&gt;get_nr_children() &gt; 1) {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::base::base_ptr</a> last_child = group-&gt;get_child(group-&gt;get_nr_children() - 2);</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                        <span class="keywordtype">int</span> last_x = last_child-&gt;get&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;x&quot;</span>);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                        <span class="keywordtype">int</span> last_y = last_child-&gt;get&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;y&quot;</span>);</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                        <span class="keywordtype">int</span> last_w = last_child-&gt;get&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;w&quot;</span>);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                        <span class="keywordtype">int</span> last_h = last_child-&gt;get&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;h&quot;</span>);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <span class="keywordtype">int</span> last_x = last_child-&gt;get&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;x&quot;</span>);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            <span class="keywordtype">int</span> last_y = last_child-&gt;get&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;y&quot;</span>);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <span class="keywordtype">int</span> last_w = last_child-&gt;get&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;w&quot;</span>);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            <span class="keywordtype">int</span> last_h = last_child-&gt;get&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;h&quot;</span>);</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                        x = last_x + (last_w &gt; 200 ? last_w - 20 : 180);</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                        y = last_y;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            x = last_x + (last_w &gt; 200 ? last_w - 20 : 180);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            y = last_y;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                        x += 180;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            x += 180;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        }</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                btn-&gt;set(<span class="stringliteral">&quot;x&quot;</span>, x);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                btn-&gt;set(<span class="stringliteral">&quot;y&quot;</span>, y);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                btn-&gt;set(<span class="stringliteral">&quot;w&quot;</span>, 20);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        btn-&gt;set(<span class="stringliteral">&quot;x&quot;</span>, x);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        btn-&gt;set(<span class="stringliteral">&quot;y&quot;</span>, y);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        btn-&gt;set(<span class="stringliteral">&quot;w&quot;</span>, 20);</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                connect_copy(btn-&gt;click, cgv::signal::rebind(<span class="keyword">this</span>, &amp;help_message::show));</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        }</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        connect_copy(btn-&gt;click, cgv::signal::rebind(<span class="keyword">this</span>, &amp;help_message::show));</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    }</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;};</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>

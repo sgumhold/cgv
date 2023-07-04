@@ -91,92 +91,92 @@ $(document).ready(function(){initNavTree('application_8cxx_source.html',''); ini
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="keyword">namespace </span>gui {</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    <span class="keyword">namespace </span>gui {</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1application.html#a8998a8b8d5a15c571a4a46aebc5a6646">    9</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1gui_1_1application.html#a8998a8b8d5a15c571a4a46aebc5a6646">application::enumerate_monitors</a>(std::vector&lt;monitor_description&gt;&amp; monitor_descriptions)</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;{</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>().empty())</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a10b5584d27bb38b432141d718b0e6d17">window_ptr</a>();</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>()-&gt;enumerate_monitors(monitor_descriptions);</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>().empty())</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a10b5584d27bb38b432141d718b0e6d17">window_ptr</a>();</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>()-&gt;enumerate_monitors(monitor_descriptions);</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;}</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
 <div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1application.html#a5c5c33bee6728c8a00fe60d22a7f0e7f">   16</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">window_ptr</a> <a class="code" href="classcgv_1_1gui_1_1application.html#a5c5c33bee6728c8a00fe60d22a7f0e7f">application::create_window</a>(<span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h, <span class="keyword">const</span> std::string&amp; title, <span class="keyword">const</span> std::string&amp; window_type)</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>().empty())</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a10b5584d27bb38b432141d718b0e6d17">window_ptr</a>();</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>()-&gt;create_window(w,h,title,window_type);</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>().empty())</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a10b5584d27bb38b432141d718b0e6d17">window_ptr</a>();</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>()-&gt;create_window(w,h,title,window_type);</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;}</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
 <div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1application.html#ae4eb02f60b2cc8a5174b1a13b622ee4c">   23</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1gui_1_1application.html#ae4eb02f60b2cc8a5174b1a13b622ee4c">application::remove_window</a>(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">window_ptr</a> w)</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;{</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>().empty())</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>()-&gt;remove_window(w);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>().empty())</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>()-&gt;remove_window(w);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
 <div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1application.html#aefdaa4677540764586baa305864028f0">   31</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1gui_1_1application.html#aefdaa4677540764586baa305864028f0">application::set_focus</a>(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">const_window_ptr</a> w)</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;{</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_driver_ptr</a> d = <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>();</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordflow">if</span> (d.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>())</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordflow">return</span> d-&gt;set_focus(w);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_driver_ptr</a> d = <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>();</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordflow">if</span> (d.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>())</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordflow">return</span> d-&gt;set_focus(w);</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;}</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
 <div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1application.html#ae6a95dcc9363120ebfba4bf1e4c74262">   39</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classcgv_1_1gui_1_1application.html#ae6a95dcc9363120ebfba4bf1e4c74262">application::get_nr_windows</a>()</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_driver_ptr</a> d = <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>();</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">if</span> (d.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>())</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">return</span> d-&gt;get_nr_windows();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_driver_ptr</a> d = <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>();</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordflow">if</span> (d.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>())</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordflow">return</span> d-&gt;get_nr_windows();</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
 <div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1application.html#aaef1bfe78ce43bbe9513136e9556e785">   47</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">window_ptr</a> <a class="code" href="classcgv_1_1gui_1_1application.html#aaef1bfe78ce43bbe9513136e9556e785">application::get_window</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i)</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;{</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>().empty())</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a10b5584d27bb38b432141d718b0e6d17">window_ptr</a>();</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>()-&gt;get_window(i);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>().empty())</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a10b5584d27bb38b432141d718b0e6d17">window_ptr</a>();</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>()-&gt;get_window(i);</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1application.html#a68bef207d5acacb2ca6005d091524bab">   54</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1gui_1_1application.html#a68bef207d5acacb2ca6005d091524bab">application::run</a>()</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;{</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_driver_ptr</a> d = <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>();</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keywordflow">if</span> (d.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>()) {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                std::cerr &lt;&lt; <span class="stringliteral">&quot;\nSorry, but no cgv::gui-driver available.\n&quot;</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                        &lt;&lt; <span class="stringliteral">&quot;To get one, compile project &#39;cg_fltk&#39; and add &#39;plugin:cg_fltk.cgv&#39;\n&quot;</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        &lt;&lt; <span class="stringliteral">&quot;to the argument list when starting the fltk_viewer\n&quot;</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                        &lt;&lt; <span class="stringliteral">&quot;(in Visual Studio right click you project and get to properties,\n&quot;</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                        &lt;&lt; <span class="stringliteral">&quot; select &#39;configuration settings&#39; -&gt; &#39;debugging&#39; -&gt; command line arguments&#39;)&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        }</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordflow">return</span> d-&gt;run();</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_driver_ptr</a> d = <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>();</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordflow">if</span> (d.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>()) {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;\nSorry, but no cgv::gui-driver available.\n&quot;</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            &lt;&lt; <span class="stringliteral">&quot;To get one, compile project &#39;cg_fltk&#39; and add &#39;plugin:cg_fltk.cgv&#39;\n&quot;</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            &lt;&lt; <span class="stringliteral">&quot;to the argument list when starting the fltk_viewer\n&quot;</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            &lt;&lt; <span class="stringliteral">&quot;(in Visual Studio right click you project and get to properties,\n&quot;</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            &lt;&lt; <span class="stringliteral">&quot; select &#39;configuration settings&#39; -&gt; &#39;debugging&#39; -&gt; command line arguments&#39;)&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    }</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">return</span> d-&gt;run();</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
 <div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1application.html#aaf8bae620c3b55a5054ec775bc2007cd">   68</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1gui_1_1application.html#aaf8bae620c3b55a5054ec775bc2007cd">application::quit</a>(<span class="keywordtype">int</span> exit_code)</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;{</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_driver_ptr</a> d = <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>();</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">if</span> (d.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>())</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                exit(exit_code);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        d-&gt;quit(exit_code);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_driver_ptr</a> d = <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>();</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordflow">if</span> (d.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>())</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        exit(exit_code);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    d-&gt;quit(exit_code);</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
 <div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1application.html#a63d920132446d4fcd93bd84f4e92cc24">   77</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1gui_1_1application.html#a63d920132446d4fcd93bd84f4e92cc24">application::copy_to_clipboard</a>(<span class="keyword">const</span> std::string&amp; s)</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;{</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_driver_ptr</a> d = <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>();</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keywordflow">if</span> (d.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>())</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                exit(0);</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        d-&gt;copy_to_clipboard(s);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_driver_ptr</a> d = <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>();</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordflow">if</span> (d.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>())</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        exit(0);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    d-&gt;copy_to_clipboard(s);</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;}</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
 <div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1application.html#ab4f3a48c455324727e1e332d57893680">   86</a></span>&#160;std::string <a class="code" href="classcgv_1_1gui_1_1application.html#ab4f3a48c455324727e1e332d57893680">application::paste_from_clipboard</a>()</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;{</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_driver_ptr</a> d = <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>();</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keywordflow">if</span> (d.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>())</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                <span class="keywordflow">return</span> <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">return</span> d-&gt;paste_from_clipboard();</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_driver_ptr</a> d = <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>();</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordflow">if</span> (d.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>())</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keywordflow">return</span> <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordflow">return</span> d-&gt;paste_from_clipboard();</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;}</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        }</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    }</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr&lt; window &gt;</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html_a064308a0ae0990b5ca8296f03e23c344"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">cgv::data::ref_ptr::empty</a></div><div class="ttdeci">bool empty() const</div><div class="ttdoc">check if pointer is not yet set</div><div class="ttdef"><b>Definition:</b> <a href="ref__ptr_8h_source.html#l00230">ref_ptr.h:230</a></div></div>

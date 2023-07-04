@@ -89,7 +89,7 @@ $(document).ready(function(){initNavTree('sparse__les_8cxx_source.html',''); ini
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keyword">namespace </span>math {</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    <span class="keyword">namespace </span>math {</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1sparse__les__factory.html#a7b6f7c55b282e4ab7070bada04a001ae">    8</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1sparse__les__factory.html#a7b6f7c55b282e4ab7070bada04a001ae">sparse_les_factory::~sparse_les_factory</a>()</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;{</div>
@@ -97,53 +97,53 @@ $(document).ready(function(){initNavTree('sparse__les_8cxx_source.html',''); ini
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;std::vector&lt;sparse_les_factory_ptr&gt;&amp; ref_solver_factories()</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keyword">static</span> std::vector&lt;sparse_les_factory_ptr&gt; facs;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keywordflow">return</span> facs;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">static</span> std::vector&lt;sparse_les_factory_ptr&gt; facs;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keywordflow">return</span> facs;</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;}</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
 <div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1sparse__les.html#a9df35119253fcc49034f64a871de1ed3">   19</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1math_1_1sparse__les.html#a9df35119253fcc49034f64a871de1ed3">sparse_les::register_solver_factory</a>(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">sparse_les_factory_ptr</a> sls_fac)</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        ref_solver_factories().push_back(sls_fac);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    ref_solver_factories().push_back(sls_fac);</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;}</div>
 <div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1sparse__les.html#acc512f5a42b774900a2cc02d7285e402">   24</a></span>&#160;<span class="keyword">const</span> std::vector&lt;sparse_les_factory_ptr&gt;&amp; <a class="code" href="classcgv_1_1math_1_1sparse__les.html#acc512f5a42b774900a2cc02d7285e402">sparse_les::get_solver_factories</a>()</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;{</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keywordflow">return</span> ref_solver_factories();</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordflow">return</span> ref_solver_factories();</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;}</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1sparse__les.html#aaf5ac482e7dd494b906e90627a8456ce">   30</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">sparse_les_ptr</a> <a class="code" href="classcgv_1_1math_1_1sparse__les.html#aaf5ac482e7dd494b906e90627a8456ce">sparse_les::create_by_name</a>(<span class="keyword">const</span> std::string&amp; solver_name, <span class="keywordtype">int</span> n, <span class="keywordtype">int</span> nr_rhs, <span class="keywordtype">int</span> nr_nze)</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;{</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        std::vector&lt;sparse_les_factory_ptr&gt;&amp; F = ref_solver_factories();</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordflow">for</span> (std::vector&lt;sparse_les_factory_ptr&gt;::const_iterator fi = F.begin(); fi != F.end(); ++fi) {</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                <span class="keywordflow">if</span> ((*fi)-&gt;get_solver_name() == solver_name)</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                        <span class="keywordflow">return</span> (*fi)-&gt;create(n, nr_rhs, nr_nze);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        }</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a1ee5ee26c821419a8c7c5efbf583d424">sparse_les_ptr</a>();</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    std::vector&lt;sparse_les_factory_ptr&gt;&amp; F = ref_solver_factories();</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordflow">for</span> (std::vector&lt;sparse_les_factory_ptr&gt;::const_iterator fi = F.begin(); fi != F.end(); ++fi) {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordflow">if</span> ((*fi)-&gt;get_solver_name() == solver_name)</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            <span class="keywordflow">return</span> (*fi)-&gt;create(n, nr_rhs, nr_nze);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    }</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a1ee5ee26c821419a8c7c5efbf583d424">sparse_les_ptr</a>();</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;}</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
 <div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1sparse__les.html#a02f99e6730454b612ac5baeae12ee885">   41</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">sparse_les_ptr</a> <a class="code" href="classcgv_1_1math_1_1sparse__les.html#a02f99e6730454b612ac5baeae12ee885">sparse_les::create_by_cap</a>(<a class="code" href="namespacecgv_1_1math.html#a22446204b5909c06423af9ce96233507">SparseLesCaps</a> caps, <span class="keywordtype">int</span> n, <span class="keywordtype">int</span> nr_rhs, <span class="keywordtype">int</span> nr_nze)</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;{</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        std::vector&lt;sparse_les_factory_ptr&gt;&amp; F = ref_solver_factories();</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">for</span> (std::vector&lt;sparse_les_factory_ptr&gt;::const_iterator fi = F.begin(); fi != F.end(); ++fi) {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                <span class="keywordflow">if</span> (((*fi)-&gt;get_caps() &amp; caps) == caps)</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                        <span class="keywordflow">return</span> (*fi)-&gt;create(n, nr_rhs, nr_nze);</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        }</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a1ee5ee26c821419a8c7c5efbf583d424">sparse_les_ptr</a>();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    std::vector&lt;sparse_les_factory_ptr&gt;&amp; F = ref_solver_factories();</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordflow">for</span> (std::vector&lt;sparse_les_factory_ptr&gt;::const_iterator fi = F.begin(); fi != F.end(); ++fi) {</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">if</span> (((*fi)-&gt;get_caps() &amp; caps) == caps)</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            <span class="keywordflow">return</span> (*fi)-&gt;create(n, nr_rhs, nr_nze);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    }</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a1ee5ee26c821419a8c7c5efbf583d424">sparse_les_ptr</a>();</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
 <div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1sparse__les.html#aa6a96143e37efa27a9baed685adcfd5a">   52</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1math_1_1sparse__les.html#aa6a96143e37efa27a9baed685adcfd5a">sparse_les::set_b_entry</a>(<span class="keywordtype">int</span> i, <span class="keywordtype">double</span> val)</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;{</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <a class="code" href="classcgv_1_1math_1_1sparse__les.html#aa6a96143e37efa27a9baed685adcfd5a">set_b_entry</a>(i,0,val);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <a class="code" href="classcgv_1_1math_1_1sparse__les.html#aa6a96143e37efa27a9baed685adcfd5a">set_b_entry</a>(i,0,val);</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
 <div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1sparse__les.html#a760674e8ce74d59d46edbc7da59cdb73">   57</a></span>&#160;<span class="keywordtype">double</span>&amp; <a class="code" href="classcgv_1_1math_1_1sparse__les.html#a760674e8ce74d59d46edbc7da59cdb73">sparse_les::ref_b_entry</a>(<span class="keywordtype">int</span> i)</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;{</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1math_1_1sparse__les.html#a760674e8ce74d59d46edbc7da59cdb73">ref_b_entry</a>(i, 0);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1math_1_1sparse__les.html#a760674e8ce74d59d46edbc7da59cdb73">ref_b_entry</a>(i, 0);</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;}</div>
 <div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1sparse__les.html#a3153cbd6ff12c89650dd4ca09ed1b9ff">   62</a></span>&#160;<span class="keywordtype">double</span> <a class="code" href="classcgv_1_1math_1_1sparse__les.html#a3153cbd6ff12c89650dd4ca09ed1b9ff">sparse_les::get_x_entry</a>(<span class="keywordtype">int</span> i)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1math_1_1sparse__les.html#a3153cbd6ff12c89650dd4ca09ed1b9ff">get_x_entry</a>(i,0);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1math_1_1sparse__les.html#a3153cbd6ff12c89650dd4ca09ed1b9ff">get_x_entry</a>(i,0);</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        }</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    }</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a></div><div class="ttdoc">reference counted pointer, which can work together with types that are derived from ref_counted,...</div><div class="ttdef"><b>Definition:</b> <a href="ref__ptr_8h_source.html#l00159">ref_ptr.h:160</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1sparse__les__factory_html_a7b6f7c55b282e4ab7070bada04a001ae"><div class="ttname"><a href="classcgv_1_1math_1_1sparse__les__factory.html#a7b6f7c55b282e4ab7070bada04a001ae">cgv::math::sparse_les_factory::~sparse_les_factory</a></div><div class="ttdeci">virtual ~sparse_les_factory()</div><div class="ttdoc">make constructor virtual</div><div class="ttdef"><b>Definition:</b> <a href="sparse__les_8cxx_source.html#l00008">sparse_les.cxx:8</a></div></div>

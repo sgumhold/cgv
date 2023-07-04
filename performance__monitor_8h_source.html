@@ -96,89 +96,89 @@ $(document).ready(function(){initNavTree('performance__monitor_8h_source.html','
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <span class="keyword">namespace </span>render {</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keyword">namespace </span>render {</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
 <div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="namespacecgv_1_1render.html#a79b40c1e022fe70b55c592f296dd5e29">   15</a></span>&#160;<span class="keyword">enum</span> <a class="code" href="namespacecgv_1_1render.html#a79b40c1e022fe70b55c592f296dd5e29">PerformanceMonitoringBar</a> {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        PMB_MIN,</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        PMB_MAX,</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        PMB_CUR,</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        PMB_AVG</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    PMB_MIN,</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    PMB_MAX,</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    PMB_CUR,</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    PMB_AVG</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;};</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">struct </span>CGV_API performance_measurement</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;{</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keywordtype">double</span> time;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <span class="keywordtype">int</span> task_id;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keywordtype">bool</span> start;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        performance_measurement(<span class="keywordtype">double</span> _time, <span class="keywordtype">int</span> _task_id, <span class="keywordtype">bool</span> _start) : time(_time), task_id(_task_id), start(_start) {}</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">double</span> time;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">int</span> task_id;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">bool</span> start;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    performance_measurement(<span class="keywordtype">double</span> _time, <span class="keywordtype">int</span> _task_id, <span class="keywordtype">bool</span> _start) : time(_time), task_id(_task_id), start(_start) {}</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;};</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">struct </span>CGV_API performance_task</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;{</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        std::string name;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float&gt;</a> col;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        performance_task(std::string _name, <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float&gt;</a> _col) : name(_name), col(_col) {}</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    std::string name;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float&gt;</a> col;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    performance_task(std::string _name, <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float&gt;</a> _col) : name(_name), col(_col) {}</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;};</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
 <div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html">   42</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1render_1_1performance__monitor.html">performance_monitor</a></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keyword">typedef</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;int,2&gt;</a> <a class="code" href="classcgv_1_1math_1_1fvec.html">Pos</a>;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keyword">typedef</span> <a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::media::axis_aligned_box&lt;int,2&gt;</a> <a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html">Rec</a>;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keyword">typedef</span> <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float&gt;</a> <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">typedef</span> std::vector&lt;performance_measurement&gt; frame_data;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;int,2&gt;</a> <a class="code" href="classcgv_1_1math_1_1fvec.html">Pos</a>;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::media::axis_aligned_box&lt;int,2&gt;</a> <a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html">Rec</a>;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float&gt;</a> <a class="code" href="classcgv_1_1media_1_1color.html">Col</a>;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">typedef</span> std::vector&lt;performance_measurement&gt; frame_data;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordtype">bool</span> frame_finished;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordtype">unsigned</span> frame_id;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">bool</span> frame_finished;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">unsigned</span> frame_id;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordtype">bool</span> enabled;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordtype">double</span> fps_alpha;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordtype">double</span> fps;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html">Rec</a> placement;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keywordtype">int</span> nr_display_cycles;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordtype">int</span> bar_line_width;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <a class="code" href="classcgv_1_1media_1_1color.html">Col</a> plot_color;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        std::string file_name;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        std::vector&lt;performance_task&gt; tasks;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        std::deque&lt;frame_data&gt; data;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        std::vector&lt;PerformanceMonitoringBar&gt; bar_config;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">bool</span> enabled;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">double</span> fps_alpha;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">double</span> fps;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html">Rec</a> placement;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">int</span> nr_display_cycles;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">int</span> bar_line_width;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <a class="code" href="classcgv_1_1media_1_1color.html">Col</a> plot_color;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    std::string file_name;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    std::vector&lt;performance_task&gt; tasks;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    std::deque&lt;frame_data&gt; data;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    std::vector&lt;PerformanceMonitoringBar&gt; bar_config;</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <a class="code" href="classcgv_1_1utils_1_1stopwatch.html">cgv::utils::stopwatch</a> watch;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordtype">float</span> time_scale;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        std::vector&lt;Pos&gt; positions;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        std::vector&lt;Col&gt; colors;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <a class="code" href="classcgv_1_1utils_1_1stopwatch.html">cgv::utils::stopwatch</a> watch;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">float</span> time_scale;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    std::vector&lt;Pos&gt; positions;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    std::vector&lt;Col&gt; colors;</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordtype">void</span> compute_colors(<span class="keyword">const</span> frame_data&amp; fdata);</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordtype">void</span> compute_positions(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">int</span> dx, <span class="keywordtype">int</span> dy, <span class="keyword">const</span> frame_data&amp; fdata);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        frame_data&amp; current_frame();</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordtype">void</span> add_measurement(<span class="keyword">const</span> performance_measurement&amp; pm);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordtype">void</span> compute_colors(<span class="keyword">const</span> frame_data&amp; fdata);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordtype">void</span> compute_positions(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">int</span> dx, <span class="keywordtype">int</span> dy, <span class="keyword">const</span> frame_data&amp; fdata);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    frame_data&amp; current_frame();</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordtype">void</span> add_measurement(<span class="keyword">const</span> performance_measurement&amp; pm);</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <a class="code" href="classcgv_1_1render_1_1performance__monitor.html">performance_monitor</a>();</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keywordtype">void</span> set_file_name(<span class="keyword">const</span> std::string&amp; _file_name);</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keyword">const</span> std::string&amp; get_file_name()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> file_name; }</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keywordtype">void</span> enable();</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordtype">void</span> disable();</div>
-<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a9cd82399c7e4011ec13f4b83b5eb5c2b">   89</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a9cd82399c7e4011ec13f4b83b5eb5c2b">is_enabled</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> enabled; }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="classcgv_1_1render_1_1performance__monitor.html">performance_monitor</a>();</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keywordtype">void</span> set_file_name(<span class="keyword">const</span> std::string&amp; _file_name);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keyword">const</span> std::string&amp; get_file_name()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> file_name; }</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">void</span> enable();</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">void</span> disable();</div>
+<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a9cd82399c7e4011ec13f4b83b5eb5c2b">   89</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a9cd82399c7e4011ec13f4b83b5eb5c2b">is_enabled</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> enabled; }</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="keywordtype">void</span> init_tasks();</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordtype">int</span> add_task(<span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> Col&amp; col);</div>
-<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#ab32a40ef4ab9c447388fb209366956c5">   99</a></span>&#160;        <span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#ab32a40ef4ab9c447388fb209366956c5">get_buffer_size</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> placement.<a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html#ad557a358e6cf7eff922b7199b61e7da6">get_extent</a>()(0); }</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keywordtype">void</span> start_frame();</div>
-<div class="line"><a name="l00103"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#ae50f0ed86406af55b73018ae06500f9a">  103</a></span>&#160;        <span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#ae50f0ed86406af55b73018ae06500f9a">get_frame_id</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> frame_id; }</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keywordtype">void</span> start_task(<span class="keywordtype">int</span> task_id);</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <span class="keywordtype">void</span> finish_task(<span class="keywordtype">int</span> task_id);</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="keywordtype">void</span> finish_frame();</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordtype">void</span> init_tasks();</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordtype">int</span> add_task(<span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> Col&amp; col);</div>
+<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#ab32a40ef4ab9c447388fb209366956c5">   99</a></span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#ab32a40ef4ab9c447388fb209366956c5">get_buffer_size</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> placement.<a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html#ad557a358e6cf7eff922b7199b61e7da6">get_extent</a>()(0); }</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordtype">void</span> start_frame();</div>
+<div class="line"><a name="l00103"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#ae50f0ed86406af55b73018ae06500f9a">  103</a></span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#ae50f0ed86406af55b73018ae06500f9a">get_frame_id</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> frame_id; }</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">void</span> start_task(<span class="keywordtype">int</span> task_id);</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordtype">void</span> finish_task(<span class="keywordtype">int</span> task_id);</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordtype">void</span> finish_frame();</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <span class="keywordtype">void</span> clear_bar();</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="keywordtype">void</span> add_bar_item(<a class="code" href="namespacecgv_1_1render.html#a79b40c1e022fe70b55c592f296dd5e29">PerformanceMonitoringBar</a> item);</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keywordtype">void</span> set_placement(<span class="keyword">const</span> Rec&amp; rectangle);</div>
-<div class="line"><a name="l00121"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a9e94ed9b00cd7972f9b5ca2426adec4a">  121</a></span>&#160;        <a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html">Rec</a> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a9e94ed9b00cd7972f9b5ca2426adec4a">get_placement</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> placement; }</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        <span class="keywordtype">void</span> set_nr_display_cycles(<span class="keywordtype">unsigned</span> _nr_cycles);</div>
-<div class="line"><a name="l00125"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a04082e469598c44ebb891e3d08f28907">  125</a></span>&#160;        <span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a04082e469598c44ebb891e3d08f28907">get_nr_display_cycles</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> nr_display_cycles; }</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordtype">void</span> clear_bar();</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordtype">void</span> add_bar_item(<a class="code" href="namespacecgv_1_1render.html#a79b40c1e022fe70b55c592f296dd5e29">PerformanceMonitoringBar</a> item);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordtype">void</span> set_placement(<span class="keyword">const</span> Rec&amp; rectangle);</div>
+<div class="line"><a name="l00121"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a9e94ed9b00cd7972f9b5ca2426adec4a">  121</a></span>&#160;    <a class="code" href="classcgv_1_1media_1_1axis__aligned__box.html">Rec</a> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a9e94ed9b00cd7972f9b5ca2426adec4a">get_placement</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> placement; }</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordtype">void</span> set_nr_display_cycles(<span class="keywordtype">unsigned</span> _nr_cycles);</div>
+<div class="line"><a name="l00125"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html#a04082e469598c44ebb891e3d08f28907">  125</a></span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1render_1_1performance__monitor.html#a04082e469598c44ebb891e3d08f28907">get_nr_display_cycles</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> nr_display_cycles; }</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;};</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        }</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    }</div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;}</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>

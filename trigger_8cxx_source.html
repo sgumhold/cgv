@@ -89,104 +89,104 @@ $(document).ready(function(){initNavTree('trigger_8cxx_source.html',''); initRes
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keyword">namespace </span>gui {</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    <span class="keyword">namespace </span>gui {</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1trigger.html#a991fd1245d3ca0d2d3cfb7a1c52298d5">    8</a></span>&#160;<a class="code" href="classcgv_1_1gui_1_1trigger.html#a991fd1245d3ca0d2d3cfb7a1c52298d5">trigger::trigger</a>()</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;{</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        delay = 0;</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        recur = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    delay = 0;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    recur = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;}</div>
 <div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1trigger.html#a47faeeb2ab7018817dc7c2e42bc9dfbc">   14</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1gui_1_1trigger.html#a47faeeb2ab7018817dc7c2e42bc9dfbc">trigger::is_scheduled</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">trigger_server_ptr</a> ts = <a class="code" href="namespacecgv_1_1gui.html#a8024c4fdb228018a91f2265185487b54">get_trigger_server</a>();</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keywordflow">if</span> (ts)</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                <span class="keywordflow">return</span> ts-&gt;is_scheduled(<span class="keyword">this</span>);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">trigger_server_ptr</a> ts = <a class="code" href="namespacecgv_1_1gui.html#a8024c4fdb228018a91f2265185487b54">get_trigger_server</a>();</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordflow">if</span> (ts)</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordflow">return</span> ts-&gt;is_scheduled(<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;}</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1trigger.html#a2560201ba2b4da9bd8b8bfb2d877a63a">   23</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1gui_1_1trigger.html#a2560201ba2b4da9bd8b8bfb2d877a63a">trigger::schedule_one_shot</a>(<span class="keywordtype">double</span> _delay)</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;{</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        delay = _delay;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        recur = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">trigger_server_ptr</a> ts = <a class="code" href="namespacecgv_1_1gui.html#a8024c4fdb228018a91f2265185487b54">get_trigger_server</a>();</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordflow">if</span> (ts)</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                <span class="keywordflow">return</span> ts-&gt;schedule_one_shot(<span class="keyword">this</span>, delay);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                std::cerr &lt;&lt; <span class="stringliteral">&quot;no trigger server registered&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    delay = _delay;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    recur = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">trigger_server_ptr</a> ts = <a class="code" href="namespacecgv_1_1gui.html#a8024c4fdb228018a91f2265185487b54">get_trigger_server</a>();</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">if</span> (ts)</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordflow">return</span> ts-&gt;schedule_one_shot(<span class="keyword">this</span>, delay);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;no trigger server registered&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;}</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
 <div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1trigger.html#aa43b63773c6efb21fbb52fa8ee0433d3">   36</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1gui_1_1trigger.html#aa43b63773c6efb21fbb52fa8ee0433d3">trigger::schedule_recuring</a>(<span class="keywordtype">double</span> _delay)</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;{</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        delay = _delay;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        recur = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">trigger_server_ptr</a> ts = <a class="code" href="namespacecgv_1_1gui.html#a8024c4fdb228018a91f2265185487b54">get_trigger_server</a>();</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordflow">if</span> (ts)</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                <span class="keywordflow">return</span> ts-&gt;schedule_recuring(<span class="keyword">this</span>, delay);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                std::cerr &lt;&lt; <span class="stringliteral">&quot;no trigger server registered&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    delay = _delay;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    recur = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">trigger_server_ptr</a> ts = <a class="code" href="namespacecgv_1_1gui.html#a8024c4fdb228018a91f2265185487b54">get_trigger_server</a>();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordflow">if</span> (ts)</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">return</span> ts-&gt;schedule_recuring(<span class="keyword">this</span>, delay);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;no trigger server registered&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;}</div>
 <div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1trigger.html#a7e48144c12edeadd480edba3f829af59">   48</a></span>&#160;<span class="keywordtype">double</span> <a class="code" href="classcgv_1_1gui_1_1trigger.html#a7e48144c12edeadd480edba3f829af59">trigger::get_delay</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">return</span> delay;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordflow">return</span> delay;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1trigger.html#a665369e31b3a59c9b6c00f1e1aa15aa2">   54</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1gui_1_1trigger.html#a665369e31b3a59c9b6c00f1e1aa15aa2">trigger::is_recuring</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">return</span> recur; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordflow">return</span> recur; </div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
 <div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1trigger.html#a56d4b39a12d95a2c5b08ae1c7596fa80">   60</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1gui_1_1trigger.html#a56d4b39a12d95a2c5b08ae1c7596fa80">trigger::stop</a>()</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;{</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">trigger_server_ptr</a> ts = <a class="code" href="namespacecgv_1_1gui.html#a8024c4fdb228018a91f2265185487b54">get_trigger_server</a>();</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keywordflow">if</span> (ts)</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                ts-&gt;stop(<span class="keyword">this</span>);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                std::cerr &lt;&lt; <span class="stringliteral">&quot;no trigger server registered&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">trigger_server_ptr</a> ts = <a class="code" href="namespacecgv_1_1gui.html#a8024c4fdb228018a91f2265185487b54">get_trigger_server</a>();</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordflow">if</span> (ts)</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        ts-&gt;stop(<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;no trigger server registered&quot;</span> &lt;&lt; std::endl;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
 <div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1trigger.html#a6e480ff431ce572cefaa095dc5938490">   70</a></span>&#160;<span class="keywordtype">double</span> <a class="code" href="classcgv_1_1gui_1_1trigger.html#a6e480ff431ce572cefaa095dc5938490">trigger::get_current_time</a>()</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;{</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">trigger_server_ptr</a> ts = <a class="code" href="namespacecgv_1_1gui.html#a8024c4fdb228018a91f2265185487b54">get_trigger_server</a>();</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordflow">if</span> (ts)</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                <span class="keywordflow">return</span> ts-&gt;get_current_time();</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                std::cerr &lt;&lt; <span class="stringliteral">&quot;no trigger server registered&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">trigger_server_ptr</a> ts = <a class="code" href="namespacecgv_1_1gui.html#a8024c4fdb228018a91f2265185487b54">get_trigger_server</a>();</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordflow">if</span> (ts)</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordflow">return</span> ts-&gt;get_current_time();</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;no trigger server registered&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordflow">return</span> -1;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;}</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
 <div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="namespacecgv_1_1gui.html#ae2f281163d977afd9edd70290978d307">   81</a></span>&#160;<a class="code" href="classcgv_1_1gui_1_1trigger.html">trigger</a>&amp; <a class="code" href="namespacecgv_1_1gui.html#ae2f281163d977afd9edd70290978d307">get_animation_trigger</a>()</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;{</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keyword">static</span> <a class="code" href="classcgv_1_1gui_1_1trigger.html">trigger</a> t;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">bool</span> initialized = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keywordflow">if</span> (!initialized) {</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1gui.html#a8024c4fdb228018a91f2265185487b54">get_trigger_server</a>()) {</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                        initialized = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                        t.<a class="code" href="classcgv_1_1gui_1_1trigger.html#aa43b63773c6efb21fbb52fa8ee0433d3">schedule_recuring</a>(1.0/60);</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                }</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        }</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">return</span> t;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keyword">static</span> <a class="code" href="classcgv_1_1gui_1_1trigger.html">trigger</a> t;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> initialized = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordflow">if</span> (!initialized) {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1gui.html#a8024c4fdb228018a91f2265185487b54">get_trigger_server</a>()) {</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            initialized = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            t.<a class="code" href="classcgv_1_1gui_1_1trigger.html#aa43b63773c6efb21fbb52fa8ee0433d3">schedule_recuring</a>(1.0/60);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        }</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    }</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordflow">return</span> t;</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;}</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<a class="code" href="namespacecgv_1_1gui.html#a206d67d701d8b857a630c19e91e234c8">trigger_server_ptr</a>&amp; ref_trigger_server()</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;{</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keyword">static</span> <a class="code" href="namespacecgv_1_1gui.html#a206d67d701d8b857a630c19e91e234c8">trigger_server_ptr</a> ts;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordflow">return</span> ts;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keyword">static</span> <a class="code" href="namespacecgv_1_1gui.html#a206d67d701d8b857a630c19e91e234c8">trigger_server_ptr</a> ts;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordflow">return</span> ts;</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;}</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
 <div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="namespacecgv_1_1gui.html#a8024c4fdb228018a91f2265185487b54">  100</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">trigger_server_ptr</a> <a class="code" href="namespacecgv_1_1gui.html#a8024c4fdb228018a91f2265185487b54">get_trigger_server</a>()</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;{</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keywordflow">return</span> ref_trigger_server();</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordflow">return</span> ref_trigger_server();</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;}</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
 <div class="line"><a name="l00105"></a><span class="lineno"><a class="line" href="namespacecgv_1_1gui.html#aba6312670f64864faa0060a4addc1280">  105</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1gui.html#aba6312670f64864faa0060a4addc1280">register_trigger_server</a>(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">trigger_server_ptr</a> _ts)</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;{</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        ref_trigger_server() = _ts;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <a class="code" href="namespacecgv_1_1gui.html#ae2f281163d977afd9edd70290978d307">get_animation_trigger</a>();</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    ref_trigger_server() = _ts;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <a class="code" href="namespacecgv_1_1gui.html#ae2f281163d977afd9edd70290978d307">get_animation_trigger</a>();</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;}</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        }</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    }</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a></div><div class="ttdoc">reference counted pointer, which can work together with types that are derived from ref_counted,...</div><div class="ttdef"><b>Definition:</b> <a href="ref__ptr_8h_source.html#l00159">ref_ptr.h:160</a></div></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1trigger_html"><div class="ttname"><a href="classcgv_1_1gui_1_1trigger.html">cgv::gui::trigger</a></div><div class="ttdoc">a trigger provides callbacks after a programmable time delay</div><div class="ttdef"><b>Definition:</b> <a href="trigger_8h_source.html#l00013">trigger.h:14</a></div></div>

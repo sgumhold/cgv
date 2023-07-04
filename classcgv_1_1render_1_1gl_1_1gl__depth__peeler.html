@@ -187,19 +187,19 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <div class="line"> </div>
 <div class="line"><span class="comment">// repeat until no more fragments have been drawn</span></div>
 <div class="line"><span class="keywordflow">do</span> {</div>
-<div class="line">        ++nr_layers;</div>
+<div class="line">    ++nr_layers;</div>
 <div class="line"> </div>
 <div class="line">   <span class="comment">// copy previous depth buffer to secondary depth buffer</span></div>
 <div class="line">   peeler.copy_depth_buffer();</div>
 <div class="line"> </div>
-<div class="line">        <span class="comment">// then peel the next layer</span></div>
-<div class="line">        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);</div>
-<div class="line">        peeler.begin_layer();</div>
-<div class="line">        render_scene();</div>
-<div class="line">        nr_fragments = peeler.end_layer();</div>
-<div class="line">        use_current_layer();</div>
+<div class="line">    <span class="comment">// then peel the next layer</span></div>
+<div class="line">    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);</div>
+<div class="line">    peeler.begin_layer();</div>
+<div class="line">    render_scene();</div>
+<div class="line">    nr_fragments = peeler.end_layer();</div>
+<div class="line">    use_current_layer();</div>
 <div class="line"> </div>
-<div class="line">}      <span class="keywordflow">while</span>(nr_fragments &gt; 0);</div>
+<div class="line">}  <span class="keywordflow">while</span>(nr_fragments &gt; 0);</div>
 <div class="line"><span class="keywordflow">return</span> nr_layers;</div>
 </div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="gl__depth__peeler_8h_source.html#l00044">44</a> of file <a class="el" href="gl__depth__peeler_8h_source.html">gl_depth_peeler.h</a>.</p>

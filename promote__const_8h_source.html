@@ -93,15 +93,15 @@ $(document).ready(function(){initNavTree('promote__const_8h_source.html',''); in
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;cgv/type/ctrl/if_.h&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keyword">namespace </span>type {</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;                <span class="keyword">namespace </span>func {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;                        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T1, <span class="keyword">typename</span> T2&gt;</div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="structcgv_1_1type_1_1func_1_1promote__const.html">   13</a></span>&#160;                        <span class="keyword">struct </span><a class="code" href="structcgv_1_1type_1_1func_1_1promote__const.html">promote_const</a> : <span class="keyword">public</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                                <a class="code" href="structcgv_1_1type_1_1ctrl_1_1if__.html">ctrl::if_</a>&lt;cond::is_const&lt;T1&gt;::value,</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                                                  typename make_const&lt;T2&gt;::type,</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                                                  typename drop_const&lt;T2&gt;::type&gt; {};</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                }</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        }</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keyword">namespace </span>type {</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        <span class="keyword">namespace </span>func {</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T1, <span class="keyword">typename</span> T2&gt;</div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="structcgv_1_1type_1_1func_1_1promote__const.html">   13</a></span>&#160;            <span class="keyword">struct </span><a class="code" href="structcgv_1_1type_1_1func_1_1promote__const.html">promote_const</a> : <span class="keyword">public</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                <a class="code" href="structcgv_1_1type_1_1ctrl_1_1if__.html">ctrl::if_</a>&lt;cond::is_const&lt;T1&gt;::value,</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                          typename make_const&lt;T2&gt;::type,</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                          typename drop_const&lt;T2&gt;::type&gt; {};</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        }</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    }</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;}</div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="vr__calib_8cxx_source.html#l00009">vr_calib.cxx:9</a></div></div>
 <div class="ttc" id="astructcgv_1_1type_1_1ctrl_1_1if___html"><div class="ttname"><a href="structcgv_1_1type_1_1ctrl_1_1if__.html">cgv::type::ctrl::if_</a></div><div class="ttdoc">the if traits selects a type from a given condition type which should be cond::true_type or cond::fal...</div><div class="ttdef"><b>Definition:</b> <a href="if___8h_source.html#l00008">if_.h:8</a></div></div>

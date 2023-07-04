@@ -91,143 +91,143 @@ $(document).ready(function(){initNavTree('packing__info_8cxx_source.html',''); i
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">using namespace </span><a class="code" href="namespacecgv_1_1utils.html">cgv::utils</a>;</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="keyword">namespace </span>data {</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    <span class="keyword">namespace </span>data {</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#a3d2868685e5680021a30e9a5131082af">    9</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> packing_info::align(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> v, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> a)</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;{</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="keywordflow">return</span> a*(v/a) == v ? v : a*((v/a)+1);</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keywordflow">return</span> a*(v/a) == v ? v : a*((v/a)+1);</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;}</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
 <div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#a77d440d490673c8c49629130acf37123">   15</a></span>&#160;packing_info::packing_info(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> align, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> d0, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> d1, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> d2, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> d3) </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        : is_packed(true), bd0(d0), bd1(d1), bd2(d2), bd3(d3), ca(align)</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    : is_packed(true), bd0(d0), bd1(d1), bd2(d2), bd3(d3), ca(align)</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordflow">if</span> (d0 == 0)</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                is_packed = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (d1 == 0)</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                bd1 = bd2 = bd3 = d0;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordflow">if</span> (d0 == 0)</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        is_packed = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (d1 == 0)</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        bd1 = bd2 = bd3 = d0;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;}</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
 <div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#aff9e24ef33b9034e3791eb5537c69583">   25</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html#aff9e24ef33b9034e3791eb5537c69583">packing_info::clear</a>()</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;{</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        is_packed = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        ca = 1;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        bd0 = bd1 = bd2 = bd3 = 0;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    is_packed = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    ca = 1;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    bd0 = bd1 = bd2 = bd3 = 0;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;}</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#aac93b468dba5a765cfd68e8018b770eb">   34</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html#aac93b468dba5a765cfd68e8018b770eb">packing_info::get_bit_depth</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ci)<span class="keyword"> const </span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword"></span>{ </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordflow">return</span> ci&lt;2 ? (ci==0?bd0:bd1) : (ci==2?bd2:bd3); </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordflow">return</span> ci&lt;2 ? (ci==0?bd0:bd1) : (ci==2?bd2:bd3); </div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;}</div>
 <div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#aa4232cdca7ef3843de9cdcc8737c81b2">   39</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html#aa4232cdca7ef3843de9cdcc8737c81b2">packing_info::set_bit_depth</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ci, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> depth) </div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordflow">if</span> (ci&lt;2) <span class="keywordflow">if</span> (ci == 0) bd0 = depth; <span class="keywordflow">else</span> bd1 = depth;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">else</span>      <span class="keywordflow">if</span> (ci == 2) bd2 = depth; <span class="keywordflow">else</span> bd3 = depth;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordflow">if</span> (ci&lt;2) <span class="keywordflow">if</span> (ci == 0) bd0 = depth; <span class="keywordflow">else</span> bd1 = depth;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordflow">else</span>      <span class="keywordflow">if</span> (ci == 2) bd2 = depth; <span class="keywordflow">else</span> bd3 = depth;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
 <div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#a39f435d15fecfa434613223b975fba27">   45</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html#a39f435d15fecfa434613223b975fba27">packing_info::is_packing</a>()<span class="keyword"> const </span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">return</span> is_packed; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordflow">return</span> is_packed; </div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;}</div>
 <div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#ab1b16496c1613ecae04e2643d2233081">   50</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html#ab1b16496c1613ecae04e2643d2233081">packing_info::set_packing</a>(<span class="keywordtype">bool</span> enable) </div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;{</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        is_packed = enable; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    is_packed = enable; </div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;}</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
 <div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#aa7e52361324fc34fceaaa433191732ef">   56</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html#aa7e52361324fc34fceaaa433191732ef">packing_info::get_component_alignment</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordflow">return</span> ca;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordflow">return</span> ca;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;}</div>
 <div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#a07ab14d1d5b252e106e9845762b945a3">   61</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html#a07ab14d1d5b252e106e9845762b945a3">packing_info::set_component_alignment</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> a)</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;{</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        ca = a;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    ca = a;</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keywordtype">bool</span> packing_info::prepare_bit_operation(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ci, <span class="keywordtype">void</span>* ptr, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;off, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;bd, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>* &amp;iptr)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        off = get_bit_offset(ci);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        bd  = <a class="code" href="classcgv_1_1data_1_1packing__info.html#aac93b468dba5a765cfd68e8018b770eb">get_bit_depth</a>(ci);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        ptr = <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(ptr)+off/8;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        off -= 8*(off/8);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        iptr = <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>*<span class="keyword">&gt;</span>(ptr);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    off = get_bit_offset(ci);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    bd  = <a class="code" href="classcgv_1_1data_1_1packing__info.html#aac93b468dba5a765cfd68e8018b770eb">get_bit_depth</a>(ci);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    ptr = <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(ptr)+off/8;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    off -= 8*(off/8);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    iptr = <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>*<span class="keyword">&gt;</span>(ptr);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;};</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="keywordtype">bool</span> packing_info::prepare_bit_operation(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ci, <span class="keyword">const</span> <span class="keywordtype">void</span>* ptr, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;off, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp;bd, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>* &amp;iptr)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        off = get_bit_offset(ci);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        bd  = <a class="code" href="classcgv_1_1data_1_1packing__info.html#aac93b468dba5a765cfd68e8018b770eb">get_bit_depth</a>(ci);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        ptr = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(ptr)+off/8;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        off -= 8*(off/8);</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        iptr = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>*<span class="keyword">&gt;</span>(ptr);</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    off = get_bit_offset(ci);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    bd  = <a class="code" href="classcgv_1_1data_1_1packing__info.html#aac93b468dba5a765cfd68e8018b770eb">get_bit_depth</a>(ci);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    ptr = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(ptr)+off/8;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    off -= 8*(off/8);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    iptr = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>*<span class="keyword">&gt;</span>(ptr);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;};</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> packing_info::get_bit_offset(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ci)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> off = 0;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i = 0; i &lt; ci; ++i)</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                off += <a class="code" href="classcgv_1_1data_1_1packing__info.html#a3d2868685e5680021a30e9a5131082af">align</a>(<a class="code" href="classcgv_1_1data_1_1packing__info.html#aac93b468dba5a765cfd68e8018b770eb">get_bit_depth</a>(i),<a class="code" href="classcgv_1_1data_1_1packing__info.html#aa7e52361324fc34fceaaa433191732ef">get_component_alignment</a>());</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">return</span> off;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> off = 0;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i = 0; i &lt; ci; ++i)</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        off += <a class="code" href="classcgv_1_1data_1_1packing__info.html#a3d2868685e5680021a30e9a5131082af">align</a>(<a class="code" href="classcgv_1_1data_1_1packing__info.html#aac93b468dba5a765cfd68e8018b770eb">get_bit_depth</a>(i),<a class="code" href="classcgv_1_1data_1_1packing__info.html#aa7e52361324fc34fceaaa433191732ef">get_component_alignment</a>());</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordflow">return</span> off;</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;}</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
 <div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#a53964cb403d74970e193624617a1ab92">   95</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html#a53964cb403d74970e193624617a1ab92">packing_info::get_signed</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ci, <span class="keyword">const</span> <span class="keywordtype">void</span>* ptr)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> off, bd;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> *iptr;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        prepare_bit_operation(ci, ptr, off, bd, iptr);</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i = *iptr &gt;&gt; off;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a481bc36ea7e12bdc82437f4d841d14ee">is_bit_set</a>(bd-1,i))</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                <a class="code" href="namespacecgv_1_1utils.html#acb20b396d0c36e0bd77ccfc8af8a286a">enable_upper_bits</a>(i, bd);</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                <a class="code" href="namespacecgv_1_1utils.html#ae385ad052891ece976accf415c461c51">disable_upper_bits</a>(i, bd);</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keywordflow">return</span> (<span class="keywordtype">int</span>) i;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> off, bd;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> *iptr;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    prepare_bit_operation(ci, ptr, off, bd, iptr);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i = *iptr &gt;&gt; off;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a481bc36ea7e12bdc82437f4d841d14ee">is_bit_set</a>(bd-1,i))</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <a class="code" href="namespacecgv_1_1utils.html#acb20b396d0c36e0bd77ccfc8af8a286a">enable_upper_bits</a>(i, bd);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <a class="code" href="namespacecgv_1_1utils.html#ae385ad052891ece976accf415c461c51">disable_upper_bits</a>(i, bd);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordflow">return</span> (<span class="keywordtype">int</span>) i;</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;}</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
 <div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#ac8592fc24f701e8daa02b3d0ee46206a">  109</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html#ac8592fc24f701e8daa02b3d0ee46206a">packing_info::get_unsigned</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ci, <span class="keyword">const</span> <span class="keywordtype">void</span>* ptr)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> off, bd;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> *iptr;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        prepare_bit_operation(ci, ptr, off, bd, iptr);</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i = *iptr &gt;&gt; off;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <a class="code" href="namespacecgv_1_1utils.html#ae385ad052891ece976accf415c461c51">disable_upper_bits</a>(i, bd);</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keywordflow">return</span> i;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> off, bd;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> *iptr;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    prepare_bit_operation(ci, ptr, off, bd, iptr);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i = *iptr &gt;&gt; off;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <a class="code" href="namespacecgv_1_1utils.html#ae385ad052891ece976accf415c461c51">disable_upper_bits</a>(i, bd);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordflow">return</span> i;</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;}</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
 <div class="line"><a name="l00120"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#a3534281bbd7aec60809d86cdc13306a4">  120</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html#a3534281bbd7aec60809d86cdc13306a4">packing_info::set_signed</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ci, <span class="keywordtype">void</span>* ptr, <span class="keywordtype">int</span> v)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> off, bd, *iptr;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        prepare_bit_operation(ci, ptr, off, bd, iptr);</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <a class="code" href="namespacecgv_1_1utils.html#ae571a5eae1a85b1b00bbc45ffe6133f1">set_bits</a>(*iptr, off, bd, (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>&amp;) v);</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> off, bd, *iptr;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    prepare_bit_operation(ci, ptr, off, bd, iptr);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <a class="code" href="namespacecgv_1_1utils.html#ae571a5eae1a85b1b00bbc45ffe6133f1">set_bits</a>(*iptr, off, bd, (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>&amp;) v);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;}</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
 <div class="line"><a name="l00129"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#ade16f2632b544f472bc705e43c5f7847">  129</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html#ade16f2632b544f472bc705e43c5f7847">packing_info::set_unsigned</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ci, <span class="keywordtype">void</span>* ptr, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> v)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> off, bd, *iptr;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        prepare_bit_operation(ci, ptr, off, bd, iptr);</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <a class="code" href="namespacecgv_1_1utils.html#ae571a5eae1a85b1b00bbc45ffe6133f1">set_bits</a>(*iptr, off, bd, v);</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> off, bd, *iptr;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    prepare_bit_operation(ci, ptr, off, bd, iptr);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <a class="code" href="namespacecgv_1_1utils.html#ae571a5eae1a85b1b00bbc45ffe6133f1">set_bits</a>(*iptr, off, bd, v);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;}</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
 <div class="line"><a name="l00138"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#af2e115c117710db30ae12d4c212fb650">  138</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html#af2e115c117710db30ae12d4c212fb650">packing_info::operator == </a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html">packing_info</a>&amp; pi)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classcgv_1_1data_1_1packing__info.html#a39f435d15fecfa434613223b975fba27">is_packing</a>() != pi.<a class="code" href="classcgv_1_1data_1_1packing__info.html#a39f435d15fecfa434613223b975fba27">is_packing</a>())</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classcgv_1_1data_1_1packing__info.html#aa7e52361324fc34fceaaa433191732ef">get_component_alignment</a>() != pi.<a class="code" href="classcgv_1_1data_1_1packing__info.html#aa7e52361324fc34fceaaa433191732ef">get_component_alignment</a>())</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i=0; i&lt;4; ++i)</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                <span class="keywordflow">if</span> (<a class="code" href="classcgv_1_1data_1_1packing__info.html#aac93b468dba5a765cfd68e8018b770eb">get_bit_depth</a>(i) != pi.<a class="code" href="classcgv_1_1data_1_1packing__info.html#aac93b468dba5a765cfd68e8018b770eb">get_bit_depth</a>(i))</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="classcgv_1_1data_1_1packing__info.html#a39f435d15fecfa434613223b975fba27">is_packing</a>() != pi.<a class="code" href="classcgv_1_1data_1_1packing__info.html#a39f435d15fecfa434613223b975fba27">is_packing</a>())</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="classcgv_1_1data_1_1packing__info.html#aa7e52361324fc34fceaaa433191732ef">get_component_alignment</a>() != pi.<a class="code" href="classcgv_1_1data_1_1packing__info.html#aa7e52361324fc34fceaaa433191732ef">get_component_alignment</a>())</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i=0; i&lt;4; ++i)</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classcgv_1_1data_1_1packing__info.html#aac93b468dba5a765cfd68e8018b770eb">get_bit_depth</a>(i) != pi.<a class="code" href="classcgv_1_1data_1_1packing__info.html#aac93b468dba5a765cfd68e8018b770eb">get_bit_depth</a>(i))</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;}</div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
 <div class="line"><a name="l00151"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1packing__info.html#a7304187d58c23050c39abb371c873c0a">  151</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html#a7304187d58c23050c39abb371c873c0a">packing_info::operator != </a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1data_1_1packing__info.html">packing_info</a>&amp; pi)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keywordflow">return</span> !(*<span class="keyword">this</span> == pi);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    <span class="keywordflow">return</span> !(*<span class="keyword">this</span> == pi);</div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;}</div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        }</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    }</div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1data_1_1packing__info_html"><div class="ttname"><a href="classcgv_1_1data_1_1packing__info.html">cgv::data::packing_info</a></div><div class="ttdoc">the packing_info class stores information about packed integers structures.</div><div class="ttdef"><b>Definition:</b> <a href="packing__info_8h_source.html#l00022">packing_info.h:23</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1packing__info_html_a07ab14d1d5b252e106e9845762b945a3"><div class="ttname"><a href="classcgv_1_1data_1_1packing__info.html#a07ab14d1d5b252e106e9845762b945a3">cgv::data::packing_info::set_component_alignment</a></div><div class="ttdeci">void set_component_alignment(unsigned int a)</div><div class="ttdoc">set the component alignment in bits in the packed case and in bytes in the unpacked case</div><div class="ttdef"><b>Definition:</b> <a href="packing__info_8cxx_source.html#l00061">packing_info.cxx:61</a></div></div>

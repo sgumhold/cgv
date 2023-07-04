@@ -94,76 +94,76 @@ $(document).ready(function(){initNavTree('align_8h_source.html',''); initResizab
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;cgv/math/svd.h&gt;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        <span class="keyword">namespace </span>math {</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keyword">namespace </span>math {</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a329a46cc70edfd039f85153dc8aefc0e">   14</a></span>&#160;                <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a> <a class="code" href="namespacecgv_1_1math.html#a329a46cc70edfd039f85153dc8aefc0e">mean</a>(<span class="keyword">const</span> std::vector&lt;<a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a> &gt;&amp; P, T inv_n = T(1) / P.<a class="code" href="classcgv_1_1math_1_1fvec.html#afea901268f6ba41a98e59d08b417f024">size</a>())</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a> mu(T(0));</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; P.size(); ++i)</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                                mu += P[i];</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                        mu *= inv_n;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                        <span class="keywordflow">return</span> mu;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                }</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a329a46cc70edfd039f85153dc8aefc0e">   14</a></span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a> <a class="code" href="namespacecgv_1_1math.html#a329a46cc70edfd039f85153dc8aefc0e">mean</a>(<span class="keyword">const</span> std::vector&lt;<a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a> &gt;&amp; P, T inv_n = T(1) / P.<a class="code" href="classcgv_1_1math_1_1fvec.html#afea901268f6ba41a98e59d08b417f024">size</a>())</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        {</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a> mu(T(0));</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; P.size(); ++i)</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                mu += P[i];</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            mu *= inv_n;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            <span class="keywordflow">return</span> mu;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        }</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, cgv::type::u<span class="keywordtype">int</span>32_type N, cgv::type::u<span class="keywordtype">int</span>32_type M&gt;</div>
-<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ad955645264ca2260ee8621b44ae5f734">   25</a></span>&#160;                <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#ad955645264ca2260ee8621b44ae5f734">svd</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T, N, M&gt;</a>&amp; A, <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T, N, N&gt;</a>&amp; U, <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, M&gt;</a>&amp; D, <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T, M, M&gt;</a>&amp; V_t, <span class="keywordtype">bool</span> ordering = <span class="keyword">true</span>, <span class="keywordtype">int</span> maxiter = 30)</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                {</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> _A(N, M, &amp;A(0, 0)), _U, _V;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1diag__mat.html">diag_mat&lt;T&gt;</a> _D;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                        <a class="code" href="namespacecgv_1_1math.html#ad955645264ca2260ee8621b44ae5f734">svd</a>(_A, _U, _D, _V, ordering, maxiter);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                        U = <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T, N, N&gt;</a>(N, N, &amp;_U(0, 0));</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                        <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">cgv::type::uint32_type</a> i, j;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                        <span class="keywordflow">for</span> (j = 0; j &lt; M; ++j) {</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                                D(j) = _D(j);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                                <span class="keywordflow">for</span> (i = 0; i &lt; M; ++i)</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                                        V_t(j, i) = _V(i, j);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                        }</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                }</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, cgv::type::u<span class="keywordtype">int</span>32_type N, cgv::type::u<span class="keywordtype">int</span>32_type M&gt;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ad955645264ca2260ee8621b44ae5f734">   25</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#ad955645264ca2260ee8621b44ae5f734">svd</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T, N, M&gt;</a>&amp; A, <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T, N, N&gt;</a>&amp; U, <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, M&gt;</a>&amp; D, <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T, M, M&gt;</a>&amp; V_t, <span class="keywordtype">bool</span> ordering = <span class="keyword">true</span>, <span class="keywordtype">int</span> maxiter = 30)</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        {</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> _A(N, M, &amp;A(0, 0)), _U, _V;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            <a class="code" href="structcgv_1_1math_1_1diag__mat.html">diag_mat&lt;T&gt;</a> _D;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            <a class="code" href="namespacecgv_1_1math.html#ad955645264ca2260ee8621b44ae5f734">svd</a>(_A, _U, _D, _V, ordering, maxiter);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            U = <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T, N, N&gt;</a>(N, N, &amp;_U(0, 0));</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">cgv::type::uint32_type</a> i, j;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            <span class="keywordflow">for</span> (j = 0; j &lt; M; ++j) {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                D(j) = _D(j);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                <span class="keywordflow">for</span> (i = 0; i &lt; M; ++i)</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                    V_t(j, i) = _V(i, j);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            }</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        }</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> T_SVD = T&gt;</div>
-<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#aa8527540ec203ab48b8d29c34602218f">   53</a></span>&#160;                <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#aa8527540ec203ab48b8d29c34602218f">align</a>(</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                        <span class="keyword">const</span> std::vector&lt;<a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a> &gt;&amp; source_points, <span class="keyword">const</span> std::vector&lt;<a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a> &gt;&amp; target_points, <span class="comment">// input point sets</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T, 3, 3&gt;</a>&amp; O, <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a>&amp; t, T* scale_ptr = <span class="keyword">nullptr</span>,                        <span class="comment">// output transformation</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                        <span class="keywordtype">bool</span> allow_reflection = <span class="keyword">false</span>)                                                                            <span class="comment">// configuration</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                        <span class="comment">// ensure that source_points and target_points have same number of points and that we have at least 3 point pairs</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                        assert(source_points.size() == target_points.size() &amp;&amp; source_points.size() &gt; 2);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        T inv_n = T(1) / source_points.size();</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                        <span class="comment">// compute mean points</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a> mu_source = <a class="code" href="namespacecgv_1_1math.html#a329a46cc70edfd039f85153dc8aefc0e">mean</a>(source_points, inv_n);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a> mu_target = <a class="code" href="namespacecgv_1_1math.html#a329a46cc70edfd039f85153dc8aefc0e">mean</a>(target_points, inv_n);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                        <span class="comment">// compute covariance matrix and variances of point sets</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T, 3, 3&gt;</a> Sigma(T(0));</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                        T sigma_S = 0, sigma_T = 0;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; source_points.size(); ++i) {</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                                Sigma += <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T, 3, 3&gt;</a>(target_points[i] - mu_target, source_points[i] - mu_source);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                                sigma_S += <a class="code" href="namespacecgv_1_1math.html#a98dec8fec76658745c64947ff97a0915">sqr_length</a>(source_points[i] - mu_source);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                                sigma_T += <a class="code" href="namespacecgv_1_1math.html#a98dec8fec76658745c64947ff97a0915">sqr_length</a>(target_points[i] - mu_target);</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                        }</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                        Sigma *= inv_n;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                        sigma_S *= inv_n;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                        sigma_T *= inv_n;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                        <span class="comment">// compute SVD of covariance matrix</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T_SVD, 3&gt;</a> D;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T_SVD, 3, 3&gt;</a> U, V_t;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                        <a class="code" href="namespacecgv_1_1math.html#ad955645264ca2260ee8621b44ae5f734">svd</a>(<a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T_SVD,3,3&gt;</a>(Sigma), U, D, V_t);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                        <span class="comment">// account for reflections</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T_SVD, 3, 3&gt;</a> S;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                        S.<a class="code" href="classcgv_1_1math_1_1fmat.html#ae8f700a5a91b1b766d85ec779c87e18c">identity</a>();</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                        <span class="keywordflow">if</span> (!allow_reflection &amp;&amp; det(<a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>(3,3,&amp;Sigma(0,0))) &lt; 0)</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                                S(2, 2) = T_SVD(-1);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                        <span class="comment">// compute results</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                        O = <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T,3,3&gt;</a>(U*S*V_t);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                        <span class="keywordflow">if</span> (scale_ptr) {</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                                *scale_ptr = T(D(0) + D(1) + S(2, 2)*D(2)) / sigma_S;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                                t = mu_target - *scale_ptr * O * mu_source;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                        }</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                                t = mu_target - O*mu_source;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                }</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        }</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> T_SVD = T&gt;</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#aa8527540ec203ab48b8d29c34602218f">   53</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#aa8527540ec203ab48b8d29c34602218f">align</a>(</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            <span class="keyword">const</span> std::vector&lt;<a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a> &gt;&amp; source_points, <span class="keyword">const</span> std::vector&lt;<a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a> &gt;&amp; target_points, <span class="comment">// input point sets</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T, 3, 3&gt;</a>&amp; O, <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a>&amp; t, T* scale_ptr = <span class="keyword">nullptr</span>,                        <span class="comment">// output transformation</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            <span class="keywordtype">bool</span> allow_reflection = <span class="keyword">false</span>)                                        <span class="comment">// configuration</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            <span class="comment">// ensure that source_points and target_points have same number of points and that we have at least 3 point pairs</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            assert(source_points.size() == target_points.size() &amp;&amp; source_points.size() &gt; 2);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            T inv_n = T(1) / source_points.size();</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <span class="comment">// compute mean points</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a> mu_source = <a class="code" href="namespacecgv_1_1math.html#a329a46cc70edfd039f85153dc8aefc0e">mean</a>(source_points, inv_n);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, 3&gt;</a> mu_target = <a class="code" href="namespacecgv_1_1math.html#a329a46cc70edfd039f85153dc8aefc0e">mean</a>(target_points, inv_n);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            <span class="comment">// compute covariance matrix and variances of point sets</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T, 3, 3&gt;</a> Sigma(T(0));</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            T sigma_S = 0, sigma_T = 0;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; source_points.size(); ++i) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                Sigma += <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T, 3, 3&gt;</a>(target_points[i] - mu_target, source_points[i] - mu_source);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                sigma_S += <a class="code" href="namespacecgv_1_1math.html#a98dec8fec76658745c64947ff97a0915">sqr_length</a>(source_points[i] - mu_source);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                sigma_T += <a class="code" href="namespacecgv_1_1math.html#a98dec8fec76658745c64947ff97a0915">sqr_length</a>(target_points[i] - mu_target);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            }</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            Sigma *= inv_n;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            sigma_S *= inv_n;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            sigma_T *= inv_n;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <span class="comment">// compute SVD of covariance matrix</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T_SVD, 3&gt;</a> D;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T_SVD, 3, 3&gt;</a> U, V_t;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <a class="code" href="namespacecgv_1_1math.html#ad955645264ca2260ee8621b44ae5f734">svd</a>(<a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T_SVD,3,3&gt;</a>(Sigma), U, D, V_t);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <span class="comment">// account for reflections</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T_SVD, 3, 3&gt;</a> S;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            S.<a class="code" href="classcgv_1_1math_1_1fmat.html#ae8f700a5a91b1b766d85ec779c87e18c">identity</a>();</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            <span class="keywordflow">if</span> (!allow_reflection &amp;&amp; det(<a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>(3,3,&amp;Sigma(0,0))) &lt; 0)</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                S(2, 2) = T_SVD(-1);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <span class="comment">// compute results</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            O = <a class="code" href="classcgv_1_1math_1_1fmat.html">fmat&lt;T,3,3&gt;</a>(U*S*V_t);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            <span class="keywordflow">if</span> (scale_ptr) {</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                *scale_ptr = T(D(0) + D(1) + S(2, 2)*D(2)) / sigma_S;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                t = mu_target - *scale_ptr * O * mu_source;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            }</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                t = mu_target - O*mu_source;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    }</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fmat_html"><div class="ttname"><a href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a></div><div class="ttdoc">matrix of fixed size dimensions</div><div class="ttdef"><b>Definition:</b> <a href="fmat_8h_source.html#l00023">fmat.h:24</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fmat_html_ae8f700a5a91b1b766d85ec779c87e18c"><div class="ttname"><a href="classcgv_1_1math_1_1fmat.html#ae8f700a5a91b1b766d85ec779c87e18c">cgv::math::fmat::identity</a></div><div class="ttdeci">void identity()</div><div class="ttdoc">set identity matrix</div><div class="ttdef"><b>Definition:</b> <a href="fmat_8h_source.html#l00241">fmat.h:241</a></div></div>

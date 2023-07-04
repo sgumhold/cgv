@@ -89,48 +89,48 @@ $(document).ready(function(){initNavTree('stereo__view_8cxx_source.html',''); in
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;stereo_view.h&quot;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keyword">namespace </span>render {</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    <span class="keyword">namespace </span>render {</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1stereo__view.html#ab3e3e675f3deac15d2d1baab9b4d698c">    8</a></span>&#160;<a class="code" href="classcgv_1_1render_1_1stereo__view.html#ab3e3e675f3deac15d2d1baab9b4d698c">stereo_view::stereo_view</a>()</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;{</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        set_default_values();</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    set_default_values();</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;}</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
 <div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1stereo__view.html#acad0ea87a128c10c9a83a51ba015582d">   14</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1stereo__view.html#acad0ea87a128c10c9a83a51ba015582d">stereo_view::set_eye_distance</a>(<span class="keywordtype">double</span> e)</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <a class="code" href="classcgv_1_1render_1_1stereo__view.html#ae656fa9f378e6f618290a1b481b55600">eye_distance</a> = e;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <a class="code" href="classcgv_1_1render_1_1stereo__view.html#ae656fa9f378e6f618290a1b481b55600">eye_distance</a> = e;</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;}</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keywordtype">void</span> stereo_view::set_default_values()</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <a class="code" href="classcgv_1_1render_1_1clipped__view.html#af5d9a49b2e481ccc3f99d450b0057aee">set_default_view</a>();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <a class="code" href="classcgv_1_1render_1_1view.html#ad7cc762875545f9cfbeb1a90d5d47534">set_y_view_angle</a>(45);</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <a class="code" href="classcgv_1_1render_1_1clipped__view.html#ab4d1ac03926317c6f9fd1adee325f253">set_z_near</a>(0.01);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <a class="code" href="classcgv_1_1render_1_1clipped__view.html#afcd08c08a89cda47c0077c2ae8277da9">set_z_far</a>(10000.0);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <a class="code" href="classcgv_1_1render_1_1stereo__view.html#acad0ea87a128c10c9a83a51ba015582d">set_eye_distance</a>(0.03);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <a class="code" href="classcgv_1_1render_1_1stereo__view.html#a0600a69498eab7bc029c2da4226ddb93">set_parallax_zero_scale</a>(0.5);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="classcgv_1_1render_1_1clipped__view.html#af5d9a49b2e481ccc3f99d450b0057aee">set_default_view</a>();</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <a class="code" href="classcgv_1_1render_1_1view.html#ad7cc762875545f9cfbeb1a90d5d47534">set_y_view_angle</a>(45);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="classcgv_1_1render_1_1clipped__view.html#ab4d1ac03926317c6f9fd1adee325f253">set_z_near</a>(0.01);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <a class="code" href="classcgv_1_1render_1_1clipped__view.html#afcd08c08a89cda47c0077c2ae8277da9">set_z_far</a>(10000.0);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="classcgv_1_1render_1_1stereo__view.html#acad0ea87a128c10c9a83a51ba015582d">set_eye_distance</a>(0.03);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classcgv_1_1render_1_1stereo__view.html#a0600a69498eab7bc029c2da4226ddb93">set_parallax_zero_scale</a>(0.5);</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;}</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
 <div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1stereo__view.html#a3856fbe028b8fecc110992b638bad12e">   31</a></span>&#160;<span class="keywordtype">double</span> <a class="code" href="classcgv_1_1render_1_1stereo__view.html#a3856fbe028b8fecc110992b638bad12e">stereo_view::get_eye_distance</a>()<span class="keyword"> const </span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword"></span>{ </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1render_1_1stereo__view.html#ae656fa9f378e6f618290a1b481b55600">eye_distance</a>; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1render_1_1stereo__view.html#ae656fa9f378e6f618290a1b481b55600">eye_distance</a>; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;}</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
 <div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1stereo__view.html#aa045de1ed6464338278f1cee34899cd7">   37</a></span>&#160;<span class="keywordtype">double</span> <a class="code" href="classcgv_1_1render_1_1stereo__view.html#aa045de1ed6464338278f1cee34899cd7">stereo_view::get_parallax_zero_scale</a>()<span class="keyword"> const </span></div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1render_1_1stereo__view.html#a901c9a7fa596c6b0485a3f2f7f9fb284">parallax_zero_scale</a>; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1render_1_1stereo__view.html#a901c9a7fa596c6b0485a3f2f7f9fb284">parallax_zero_scale</a>; </div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;}</div>
 <div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1stereo__view.html#a8390b3ed8e177ef1418b331c432fff4a">   42</a></span>&#160;<span class="keywordtype">double</span> <a class="code" href="classcgv_1_1render_1_1stereo__view.html#a8390b3ed8e177ef1418b331c432fff4a">stereo_view::get_parallax_zero_depth</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">return</span> (1.0 / (1.0 - <a class="code" href="classcgv_1_1render_1_1stereo__view.html#a901c9a7fa596c6b0485a3f2f7f9fb284">parallax_zero_scale</a>) - 1.0) * dot(<a class="code" href="classcgv_1_1render_1_1view.html#a2c7e200a5a2689a83989347f2e03cc82">get_focus</a>() - <a class="code" href="classcgv_1_1render_1_1view.html#ace6008d675e0f8be53ef1101095a44a9">get_eye</a>(), view_dir);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordflow">return</span> (1.0 / (1.0 - <a class="code" href="classcgv_1_1render_1_1stereo__view.html#a901c9a7fa596c6b0485a3f2f7f9fb284">parallax_zero_scale</a>) - 1.0) * dot(<a class="code" href="classcgv_1_1render_1_1view.html#a2c7e200a5a2689a83989347f2e03cc82">get_focus</a>() - <a class="code" href="classcgv_1_1render_1_1view.html#ace6008d675e0f8be53ef1101095a44a9">get_eye</a>(), view_dir);</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
 <div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1stereo__view.html#a0600a69498eab7bc029c2da4226ddb93">   48</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1stereo__view.html#a0600a69498eab7bc029c2da4226ddb93">stereo_view::set_parallax_zero_scale</a>(<span class="keywordtype">double</span> pzs) </div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;{</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <a class="code" href="classcgv_1_1render_1_1stereo__view.html#a901c9a7fa596c6b0485a3f2f7f9fb284">parallax_zero_scale</a> = pzs; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <a class="code" href="classcgv_1_1render_1_1stereo__view.html#a901c9a7fa596c6b0485a3f2f7f9fb284">parallax_zero_scale</a> = pzs; </div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        }</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    }</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1render_1_1clipped__view_html_ab4d1ac03926317c6f9fd1adee325f253"><div class="ttname"><a href="classcgv_1_1render_1_1clipped__view.html#ab4d1ac03926317c6f9fd1adee325f253">cgv::render::clipped_view::set_z_near</a></div><div class="ttdeci">virtual void set_z_near(double z)</div><div class="ttdoc">set the z-value for the z-near clipping plane</div><div class="ttdef"><b>Definition:</b> <a href="clipped__view_8cxx_source.html#l00018">clipped_view.cxx:18</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1clipped__view_html_af5d9a49b2e481ccc3f99d450b0057aee"><div class="ttname"><a href="classcgv_1_1render_1_1clipped__view.html#af5d9a49b2e481ccc3f99d450b0057aee">cgv::render::clipped_view::set_default_view</a></div><div class="ttdeci">virtual void set_default_view()</div><div class="ttdoc">reset view with focus and y-extent based on current scene extent</div><div class="ttdef"><b>Definition:</b> <a href="clipped__view_8cxx_source.html#l00047">clipped_view.cxx:47</a></div></div>

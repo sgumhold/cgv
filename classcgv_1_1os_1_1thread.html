@@ -180,8 +180,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Thread class implementation that uses pthreads internally. </p>
-<p>To create and run your own thread, follow this example: \begincode class mythread : thread { </p><pre class="fragment">    void run()
-    {
+<p>To create and run your own thread, follow this example: \begincode class mythread : thread { </p><pre class="fragment">void run()
+{
 </pre><p> no external stop request? while(no_stop_request()) { std::cout &lt;&lt; "abc" &lt;&lt; std::endl; } }</p>
 <p>};</p>
 <p>mythread t1;</p>

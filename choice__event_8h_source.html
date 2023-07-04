@@ -93,31 +93,31 @@ $(document).ready(function(){initNavTree('choice__event_8h_source.html',''); ini
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keyword">namespace </span>gui {</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keyword">namespace </span>gui {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3c">   12</a></span>&#160;                <span class="keyword">enum</span> <a class="code" href="namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3c">ChoiceEventType</a></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                {</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                        CET_GRAB_FOCUS,</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                        CET_LOOSE_FOCUS,</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                        CET_SELECTED,</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                        CET_UNSELECTED</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                };</div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3c">   12</a></span>&#160;        <span class="keyword">enum</span> <a class="code" href="namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3c">ChoiceEventType</a></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            CET_GRAB_FOCUS,</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            CET_LOOSE_FOCUS,</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            CET_SELECTED,</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            CET_UNSELECTED</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        };</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                <span class="keyword">extern</span> CGV_API std::string <a class="code" href="namespacecgv_1_1gui.html#af2a1d815fff5177d9cd50a6fb6fb5a0b">get_choice_type_string</a>(<a class="code" href="namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3c">ChoiceEventType</a> type);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keyword">extern</span> CGV_API std::string <a class="code" href="namespacecgv_1_1gui.html#af2a1d815fff5177d9cd50a6fb6fb5a0b">get_choice_type_string</a>(<a class="code" href="namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3c">ChoiceEventType</a> type);</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1choice__event.html">   24</a></span>&#160;                <span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1gui_1_1choice__event.html">choice_event</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1gui_1_1event.html">event</a></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                {</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1choice__event.html#a4fe6ca5c1f3cd729fa12c5a52ee15ece">   28</a></span>&#160;                        <a class="code" href="namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3c">ChoiceEventType</a> <a class="code" href="classcgv_1_1gui_1_1choice__event.html#a4fe6ca5c1f3cd729fa12c5a52ee15ece">type</a>;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                        <a class="code" href="classcgv_1_1gui_1_1choice__event.html">choice_event</a>(<a class="code" href="namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3c">ChoiceEventType</a> _type, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> _modifiers = 0, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> _toggle_keys = 0, <span class="keywordtype">double</span> _time = 0);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                        <span class="keywordtype">void</span> stream_out(std::ostream&amp; os) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                        <span class="keywordtype">void</span> stream_in(std::istream&amp; is);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                        <a class="code" href="namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3c">ChoiceEventType</a> get_type() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                        <span class="keywordtype">void</span> set_type(<a class="code" href="namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3c">ChoiceEventType</a> _type);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                };</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1choice__event.html">   24</a></span>&#160;        <span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1gui_1_1choice__event.html">choice_event</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1gui_1_1event.html">event</a></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        {</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1choice__event.html#a4fe6ca5c1f3cd729fa12c5a52ee15ece">   28</a></span>&#160;            <a class="code" href="namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3c">ChoiceEventType</a> <a class="code" href="classcgv_1_1gui_1_1choice__event.html#a4fe6ca5c1f3cd729fa12c5a52ee15ece">type</a>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            <a class="code" href="classcgv_1_1gui_1_1choice__event.html">choice_event</a>(<a class="code" href="namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3c">ChoiceEventType</a> _type, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> _modifiers = 0, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> _toggle_keys = 0, <span class="keywordtype">double</span> _time = 0);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            <span class="keywordtype">void</span> stream_out(std::ostream&amp; os) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            <span class="keywordtype">void</span> stream_in(std::istream&amp; is);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            <a class="code" href="namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3c">ChoiceEventType</a> get_type() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <span class="keywordtype">void</span> set_type(<a class="code" href="namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3c">ChoiceEventType</a> _type);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        };</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        }</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    }</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>

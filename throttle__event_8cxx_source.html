@@ -88,57 +88,57 @@ $(document).ready(function(){initNavTree('throttle__event_8cxx_source.html','');
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;throttle_event.h&quot;</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="keyword">namespace </span>gui {</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;    <span class="keyword">namespace </span>gui {</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1throttle__event.html#a4e03eab28a5cac166aa96400f9226742">    7</a></span>&#160;<a class="code" href="classcgv_1_1gui_1_1throttle__event.html#a4e03eab28a5cac166aa96400f9226742">throttle_event::throttle_event</a>(<span class="keywordtype">float</span> _x, <span class="keywordtype">float</span> _dx, <span class="keywordtype">unsigned</span> _player_index, <span class="keywordtype">unsigned</span> _controller_index, <span class="keywordtype">unsigned</span> _throttle_index, <span class="keywordtype">double</span> _time) :</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <a class="code" href="classcgv_1_1gui_1_1event.html">event</a>(<a class="code" href="namespacecgv_1_1gui.html#ac96154d54fa346efee6cef81b584e8feaedc1b4775ba20aeaeed59058738755fa">EID_THROTTLE</a>,0,0,_time), x(_x), dx(_dx), player_index(_player_index), controller_index(_controller_index), throttle_index(_throttle_index)</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <a class="code" href="classcgv_1_1gui_1_1event.html">event</a>(<a class="code" href="namespacecgv_1_1gui.html#ac96154d54fa346efee6cef81b584e8feaedc1b4775ba20aeaeed59058738755fa">EID_THROTTLE</a>,0,0,_time), x(_x), dx(_dx), player_index(_player_index), controller_index(_controller_index), throttle_index(_throttle_index)</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;{</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;}</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1throttle__event.html#aff717f3f66e610abf368d533a042a67f">   13</a></span>&#160;<span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1gui_1_1throttle__event.html#aff717f3f66e610abf368d533a042a67f">throttle_event::get_player_index</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keywordflow">return</span> player_index;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keywordflow">return</span> player_index;</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;}</div>
 <div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1throttle__event.html#a18a6ff754ed419fea71880b0283dc5d1">   18</a></span>&#160;<span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1gui_1_1throttle__event.html#a18a6ff754ed419fea71880b0283dc5d1">throttle_event::get_controller_index</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keywordflow">return</span> controller_index;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordflow">return</span> controller_index;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;}</div>
 <div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1throttle__event.html#aef2b674ee4a9dbf658917cd95afc0910">   23</a></span>&#160;<span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1gui_1_1throttle__event.html#aef2b674ee4a9dbf658917cd95afc0910">throttle_event::get_throttle_index</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <span class="keywordflow">return</span> throttle_index;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordflow">return</span> throttle_index;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;}</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1throttle__event.html#a09589b1678a1fc564370edd6daeac86b">   30</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1gui_1_1throttle__event.html#a09589b1678a1fc564370edd6daeac86b">throttle_event::stream_out</a>(std::ostream&amp; os)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="classcgv_1_1gui_1_1event.html#a68ec6cc96c5cbf7324e4a04cc4bca8e7">event::stream_out</a>(os);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        os &lt;&lt; x &lt;&lt; <span class="stringliteral">&quot;[&quot;</span>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordflow">if</span> (dx &gt; 0)</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                os &lt;&lt; <span class="stringliteral">&quot;+&quot;</span>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        os &lt;&lt; dx &lt;&lt; <span class="stringliteral">&quot;]&quot;</span>;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        os &lt;&lt; <span class="stringliteral">&quot;&lt;&quot;</span> &lt;&lt; (int)player_index &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; (<span class="keywordtype">int</span>)controller_index &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; (int)throttle_index &lt;&lt; <span class="stringliteral">&quot;&gt;&quot;</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <a class="code" href="classcgv_1_1gui_1_1event.html#a68ec6cc96c5cbf7324e4a04cc4bca8e7">event::stream_out</a>(os);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    os &lt;&lt; x &lt;&lt; <span class="stringliteral">&quot;[&quot;</span>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordflow">if</span> (dx &gt; 0)</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        os &lt;&lt; <span class="stringliteral">&quot;+&quot;</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    os &lt;&lt; dx &lt;&lt; <span class="stringliteral">&quot;]&quot;</span>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;&lt;&quot;</span> &lt;&lt; (int)player_index &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; (<span class="keywordtype">int</span>)controller_index &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; (int)throttle_index &lt;&lt; <span class="stringliteral">&quot;&gt;&quot;</span>;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;}</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
 <div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1throttle__event.html#a9fae2f6b369580e5ee7b7a983962ee55">   41</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1gui_1_1throttle__event.html#a9fae2f6b369580e5ee7b7a983962ee55">throttle_event::stream_in</a>(std::istream&amp; is)</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;{</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;not implemented&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    std::cerr &lt;&lt; <span class="stringliteral">&quot;not implemented&quot;</span> &lt;&lt; std::endl;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
 <div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1throttle__event.html#a1879f8e63ad0be83fa899ce22a00a709">   47</a></span>&#160;<span class="keywordtype">float</span> <a class="code" href="classcgv_1_1gui_1_1throttle__event.html#a1879f8e63ad0be83fa899ce22a00a709">throttle_event::get_value</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordflow">return</span> x;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">return</span> x;</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
 <div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1throttle__event.html#ac683914982c1235542ff54614d49bc40">   53</a></span>&#160;<span class="keywordtype">float</span> <a class="code" href="classcgv_1_1gui_1_1throttle__event.html#ac683914982c1235542ff54614d49bc40">throttle_event::get_value_change</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">return</span> dx;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordflow">return</span> dx;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
 <div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1throttle__event.html#a0fe098a8069efee56799cbbba7d8ca1d">   59</a></span>&#160;<span class="keywordtype">float</span> <a class="code" href="classcgv_1_1gui_1_1throttle__event.html#a0fe098a8069efee56799cbbba7d8ca1d">throttle_event::get_last_value</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1gui_1_1throttle__event.html#a1879f8e63ad0be83fa899ce22a00a709">get_value</a>() - <a class="code" href="classcgv_1_1gui_1_1throttle__event.html#ac683914982c1235542ff54614d49bc40">get_value_change</a>();</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1gui_1_1throttle__event.html#a1879f8e63ad0be83fa899ce22a00a709">get_value</a>() - <a class="code" href="classcgv_1_1gui_1_1throttle__event.html#ac683914982c1235542ff54614d49bc40">get_value_change</a>();</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        }</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    }</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1event_html"><div class="ttname"><a href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a></div><div class="ttdef"><b>Definition:</b> <a href="event_8h_source.html#l00058">event.h:59</a></div></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1event_html_a68ec6cc96c5cbf7324e4a04cc4bca8e7"><div class="ttname"><a href="classcgv_1_1gui_1_1event.html#a68ec6cc96c5cbf7324e4a04cc4bca8e7">cgv::gui::event::stream_out</a></div><div class="ttdeci">virtual void stream_out(std::ostream &amp;os) const</div><div class="ttdoc">write to stream</div><div class="ttdef"><b>Definition:</b> <a href="event_8cxx_source.html#l00139">event.cxx:139</a></div></div>

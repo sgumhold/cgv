@@ -93,59 +93,59 @@ $(document).ready(function(){initNavTree('command__token_8h_source.html',''); in
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keyword">namespace </span>ppp {</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keyword">namespace </span>ppp {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;                <span class="keyword">enum</span> <a class="code" href="namespacecgv_1_1base.html#a836526596df30a9ba628d7fd61aa2c76">CommandType</a> {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;                        CT_IMPLICIT_TEXT = -1,</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                        CT_TEXT = 0,</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                        CT_DEFINE,</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                        CT_SKIP,</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                        CT_READ,</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                        CT_WRITE,</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                        CT_RAND,</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                        CT_NAMESPACE,</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                        CT_FOR,</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                        CT_IF, CT_ELIF, CT_ELSE,</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                        CT_EVAL, CT_STRING, CT_LIST,</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                        CT_BEGIN, CT_END,</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                        CT_INCLUDE, CT_CINCLUDE, CT_EXCLUDE, CT_INSERT,</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                        CT_REFLECT_NEXT_LINE, CT_REFLECT_PREV_LINE,</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                        CT_COUT, CT_CIN, CT_ERROR, CT_WARNING,</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                        CT_SYSTEM, CT_DIR, CT_FUNC, CT_EXIT,</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                        CT_TRANSFORM,</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                        CT_SCAN_INCLUDES,</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                        CT_UNDEF</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                };</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="keyword">enum</span> <a class="code" href="namespacecgv_1_1base.html#a836526596df30a9ba628d7fd61aa2c76">CommandType</a> {</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            CT_IMPLICIT_TEXT = -1,</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            CT_TEXT = 0,</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            CT_DEFINE,</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            CT_SKIP,</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            CT_READ,</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            CT_WRITE,</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            CT_RAND,</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            CT_NAMESPACE,</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            CT_FOR,</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            CT_IF, CT_ELIF, CT_ELSE,</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            CT_EVAL, CT_STRING, CT_LIST,</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            CT_BEGIN, CT_END,</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            CT_INCLUDE, CT_CINCLUDE, CT_EXCLUDE, CT_INSERT,</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            CT_REFLECT_NEXT_LINE, CT_REFLECT_PREV_LINE,</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            CT_COUT, CT_CIN, CT_ERROR, CT_WARNING,</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            CT_SYSTEM, CT_DIR, CT_FUNC, CT_EXIT,</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            CT_TRANSFORM,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            CT_SCAN_INCLUDES,</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            CT_UNDEF</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        };</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                <span class="keyword">struct </span>CGV_API command_token : <span class="keyword">public</span> token</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                        <span class="keyword">static</span> std::string last_error;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                        <span class="keyword">static</span> token last_error_token;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                        <span class="keyword">static</span> <span class="keyword">const</span> std::string&amp; get_last_error();</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                        <span class="keyword">static</span> <span class="keyword">const</span> token&amp; get_last_error_token();</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                        <a class="code" href="namespacecgv_1_1base.html#a836526596df30a9ba628d7fd61aa2c76">CommandType</a> ct;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> parenthesis_index;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> block_end;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                        std::vector&lt;expression_processor&gt; expressions;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keyword">struct </span>CGV_API command_token : <span class="keyword">public</span> token</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            <span class="keyword">static</span> std::string last_error;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            <span class="keyword">static</span> token last_error_token;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <span class="keyword">static</span> <span class="keyword">const</span> std::string&amp; get_last_error();</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            <span class="keyword">static</span> <span class="keyword">const</span> token&amp; get_last_error_token();</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <a class="code" href="namespacecgv_1_1base.html#a836526596df30a9ba628d7fd61aa2c76">CommandType</a> ct;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> parenthesis_index;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> block_end;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            std::vector&lt;expression_processor&gt; expressions;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                        command_token();</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                        command_token(<span class="keyword">const</span> token&amp; t);</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                        <span class="keywordtype">bool</span> split_off_from(token&amp; t);</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                        <span class="keywordtype">unsigned</span> get_skip_length() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                        <span class="keywordtype">unsigned</span> get_nr_expressions() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                        <span class="keywordtype">unsigned</span> get_min_nr_expressions() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                        <span class="keywordtype">bool</span> is_nr_expressions_fix() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">char</span>* get_keyword() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                        <span class="keywordtype">bool</span> is_empty() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                        <span class="keywordtype">bool</span> block_follows() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                        <span class="keywordtype">bool</span> remove_preceeding_empty_text_token() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                        <span class="keywordtype">char</span> get_open_parenthesis() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                        <span class="keywordtype">char</span> get_close_parenthesis() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                };</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            command_token();</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            command_token(<span class="keyword">const</span> token&amp; t);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <span class="keywordtype">bool</span> split_off_from(token&amp; t);</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <span class="keywordtype">unsigned</span> get_skip_length() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            <span class="keywordtype">unsigned</span> get_nr_expressions() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <span class="keywordtype">unsigned</span> get_min_nr_expressions() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <span class="keywordtype">bool</span> is_nr_expressions_fix() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">char</span>* get_keyword() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            <span class="keywordtype">bool</span> is_empty() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            <span class="keywordtype">bool</span> block_follows() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            <span class="keywordtype">bool</span> remove_preceeding_empty_text_token() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            <span class="keywordtype">char</span> get_open_parenthesis() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <span class="keywordtype">char</span> get_close_parenthesis() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        };</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        }</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    }</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;}</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 <div class="ttc" id="anamespacecgv_1_1base_html_a836526596df30a9ba628d7fd61aa2c76"><div class="ttname"><a href="namespacecgv_1_1base.html#a836526596df30a9ba628d7fd61aa2c76">cgv::base::CommandType</a></div><div class="ttdeci">CommandType</div><div class="ttdoc">enumerate type for all command types supported in configuration files</div><div class="ttdef"><b>Definition:</b> <a href="register_8h_source.html#l00469">register.h:470</a></div></div>

@@ -88,72 +88,72 @@ $(document).ready(function(){initNavTree('attach__slot_8cxx_source.html',''); in
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;attach_slot.h&quot;</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="keyword">namespace </span>base {</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;    <span class="keyword">namespace </span>base {</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1attach__slot.html#a5e24ae8a54372aa75bee127cb503b473">    7</a></span>&#160;<a class="code" href="classcgv_1_1base_1_1attach__slot.html#a5e24ae8a54372aa75bee127cb503b473">attach_slot::attach_slot</a>()</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;{</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a04976498828a2bb51ea5183ad20ed632">attachment_user_data</a> = 0;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a04976498828a2bb51ea5183ad20ed632">attachment_user_data</a> = 0;</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;}</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
 <div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1attach__slot.html#a08111e65fda33f038fa4e12b246b176a">   14</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a08111e65fda33f038fa4e12b246b176a">attach_slot::attach</a>(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> attachment_object, <span class="keywordtype">void</span>* user_data)</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a04976498828a2bb51ea5183ad20ed632">attachment_user_data</a> = user_data;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a0ec5c1fc6f863876da02fceab5f4eed0">attachment</a> = attachment_object;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a04976498828a2bb51ea5183ad20ed632">attachment_user_data</a> = user_data;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a0ec5c1fc6f863876da02fceab5f4eed0">attachment</a> = attachment_object;</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;}</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
 <div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1attach__slot.html#a1699ba4e64f58e01f4208037c6fea3a5">   20</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a08111e65fda33f038fa4e12b246b176a">attach_slot::attach</a>(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> attachment_object, <span class="keywordtype">int</span> user_data)</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a08111e65fda33f038fa4e12b246b176a">attach</a>(attachment_object, (<span class="keywordtype">void</span>*&amp;)user_data);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a08111e65fda33f038fa4e12b246b176a">attach</a>(attachment_object, (<span class="keywordtype">void</span>*&amp;)user_data);</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;}</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1attach__slot.html#a071d61a51b5611c5d5de7d7fda9587ba">   26</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a071d61a51b5611c5d5de7d7fda9587ba">attach_slot::get_attachment</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a0ec5c1fc6f863876da02fceab5f4eed0">attachment</a>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a0ec5c1fc6f863876da02fceab5f4eed0">attachment</a>;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
 <div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1attach__slot.html#a38e93bf236a1feef602f0ecb661bdeb2">   32</a></span>&#160;<span class="keywordtype">void</span>* <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a38e93bf236a1feef602f0ecb661bdeb2">attach_slot::get_attachement_data</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a04976498828a2bb51ea5183ad20ed632">attachment_user_data</a>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1base_1_1attach__slot.html#a04976498828a2bb51ea5183ad20ed632">attachment_user_data</a>;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;}</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
 <div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="namespacecgv_1_1base.html#ac56137cd8bf24c23f7f6ef15a417bbdd">   38</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1base.html#ac56137cd8bf24c23f7f6ef15a417bbdd">attach</a>(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> slot_object, <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> attachment_object, <span class="keywordtype">void</span>* user_data)</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <a class="code" href="classcgv_1_1base_1_1attach__slot.html">attach_slot</a>* as = slot_object-&gt;<a class="code" href="classcgv_1_1base_1_1base.html#aa2b866151a23c63b3e8029849e71a796">get_interface</a>&lt;<a class="code" href="classcgv_1_1base_1_1attach__slot.html">attach_slot</a>&gt;();</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordflow">if</span> (!as)</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        as-&gt;<a class="code" href="classcgv_1_1base_1_1attach__slot.html#a08111e65fda33f038fa4e12b246b176a">attach</a>(attachment_object, user_data);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <a class="code" href="classcgv_1_1base_1_1attach__slot.html">attach_slot</a>* as = slot_object-&gt;<a class="code" href="classcgv_1_1base_1_1base.html#aa2b866151a23c63b3e8029849e71a796">get_interface</a>&lt;<a class="code" href="classcgv_1_1base_1_1attach__slot.html">attach_slot</a>&gt;();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordflow">if</span> (!as)</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    as-&gt;<a class="code" href="classcgv_1_1base_1_1attach__slot.html#a08111e65fda33f038fa4e12b246b176a">attach</a>(attachment_object, user_data);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1base.html#ac56137cd8bf24c23f7f6ef15a417bbdd">attach</a>(<a class="code" href="namespacecgv_1_1base.html#a580333ed27888f5e8c61452a44545f51">base_ptr</a> slot_object, <a class="code" href="namespacecgv_1_1base.html#a580333ed27888f5e8c61452a44545f51">base_ptr</a> attachment_object, <span class="keywordtype">int</span> user_data)</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;{</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1base.html#ac56137cd8bf24c23f7f6ef15a417bbdd">attach</a>(slot_object, attachment_object, (<span class="keywordtype">void</span>*&amp;) user_data);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1base.html#ac56137cd8bf24c23f7f6ef15a417bbdd">attach</a>(slot_object, attachment_object, (<span class="keywordtype">void</span>*&amp;) user_data);</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
 <div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="namespacecgv_1_1base.html#a1e3f23268db7fec467dfd98ab36094f5">   53</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> <a class="code" href="namespacecgv_1_1base.html#a1e3f23268db7fec467dfd98ab36094f5">get_attachment</a>(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> slot_object)</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;{</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <a class="code" href="classcgv_1_1base_1_1attach__slot.html">attach_slot</a>* as = slot_object-&gt;<a class="code" href="classcgv_1_1base_1_1base.html#aa2b866151a23c63b3e8029849e71a796">get_interface</a>&lt;<a class="code" href="classcgv_1_1base_1_1attach__slot.html">attach_slot</a>&gt;();</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">if</span> (!as)</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1base.html#a580333ed27888f5e8c61452a44545f51">base_ptr</a>();</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordflow">return</span> as-&gt;<a class="code" href="classcgv_1_1base_1_1attach__slot.html#a071d61a51b5611c5d5de7d7fda9587ba">get_attachment</a>();</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <a class="code" href="classcgv_1_1base_1_1attach__slot.html">attach_slot</a>* as = slot_object-&gt;<a class="code" href="classcgv_1_1base_1_1base.html#aa2b866151a23c63b3e8029849e71a796">get_interface</a>&lt;<a class="code" href="classcgv_1_1base_1_1attach__slot.html">attach_slot</a>&gt;();</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordflow">if</span> (!as)</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1base.html#a580333ed27888f5e8c61452a44545f51">base_ptr</a>();</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordflow">return</span> as-&gt;<a class="code" href="classcgv_1_1base_1_1attach__slot.html#a071d61a51b5611c5d5de7d7fda9587ba">get_attachment</a>();</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;}</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
 <div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="namespacecgv_1_1base.html#aec69e775624f1ca64e001ff8b1254344">   62</a></span>&#160;<span class="keywordtype">void</span>* <a class="code" href="namespacecgv_1_1base.html#aec69e775624f1ca64e001ff8b1254344">get_attachment_data</a>(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> slot_object)</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;{</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <a class="code" href="classcgv_1_1base_1_1attach__slot.html">attach_slot</a>* as = slot_object-&gt;<a class="code" href="classcgv_1_1base_1_1base.html#aa2b866151a23c63b3e8029849e71a796">get_interface</a>&lt;<a class="code" href="classcgv_1_1base_1_1attach__slot.html">attach_slot</a>&gt;();</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordflow">if</span> (!as)</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordflow">return</span> as-&gt;<a class="code" href="classcgv_1_1base_1_1attach__slot.html#a38e93bf236a1feef602f0ecb661bdeb2">get_attachement_data</a>();</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <a class="code" href="classcgv_1_1base_1_1attach__slot.html">attach_slot</a>* as = slot_object-&gt;<a class="code" href="classcgv_1_1base_1_1base.html#aa2b866151a23c63b3e8029849e71a796">get_interface</a>&lt;<a class="code" href="classcgv_1_1base_1_1attach__slot.html">attach_slot</a>&gt;();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">if</span> (!as)</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordflow">return</span> as-&gt;<a class="code" href="classcgv_1_1base_1_1attach__slot.html#a38e93bf236a1feef602f0ecb661bdeb2">get_attachement_data</a>();</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="keywordtype">int</span> get_attachment_data_int(<a class="code" href="namespacecgv_1_1base.html#a580333ed27888f5e8c61452a44545f51">base_ptr</a> slot_object)</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;{</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keywordtype">void</span>* ud = <a class="code" href="namespacecgv_1_1base.html#aec69e775624f1ca64e001ff8b1254344">get_attachment_data</a>(slot_object);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordflow">return</span> (<span class="keywordtype">int</span>&amp;) ud;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordtype">void</span>* ud = <a class="code" href="namespacecgv_1_1base.html#aec69e775624f1ca64e001ff8b1254344">get_attachment_data</a>(slot_object);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordflow">return</span> (<span class="keywordtype">int</span>&amp;) ud;</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        }</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    }</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1base_1_1attach__slot_html"><div class="ttname"><a href="classcgv_1_1base_1_1attach__slot.html">cgv::base::attach_slot</a></div><div class="ttdoc">interface for an attachment slot that can store a base pointer</div><div class="ttdef"><b>Definition:</b> <a href="attach__slot_8h_source.html#l00011">attach_slot.h:12</a></div></div>
 <div class="ttc" id="aclasscgv_1_1base_1_1attach__slot_html_a04976498828a2bb51ea5183ad20ed632"><div class="ttname"><a href="classcgv_1_1base_1_1attach__slot.html#a04976498828a2bb51ea5183ad20ed632">cgv::base::attach_slot::attachment_user_data</a></div><div class="ttdeci">void * attachment_user_data</div><div class="ttdoc">allow to add user data to the attachment</div><div class="ttdef"><b>Definition:</b> <a href="attach__slot_8h_source.html#l00017">attach_slot.h:17</a></div></div>

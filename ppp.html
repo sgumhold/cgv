@@ -126,7 +126,7 @@ Example Pre-Header File and Generated Header</h2>
 <div class="line">struct signature&lt;@(i),@[&quot;T1&quot;; &quot;, &quot;; &quot;T&quot;.N_ARG]&gt;</div>
 <div class="line">{</div>
 <div class="line">@for (j=1; j&lt;=i; j=j+1) @{</div>
-<div class="line">        typedef typename type::func::make_argument&lt;T@(j)&gt;::type A@(j);</div>
+<div class="line">    typedef typename type::func::make_argument&lt;T@(j)&gt;::type A@(j);</div>
 <div class="line">@}</div>
 <div class="line">};</div>
 </div><!-- fragment --><p> All ppp commands are preceeded by a -symbol. This example includes three ppp commands:</p><ul>

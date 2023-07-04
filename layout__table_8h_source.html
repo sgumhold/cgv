@@ -94,79 +94,79 @@ $(document).ready(function(){initNavTree('layout__table_8h_source.html',''); ini
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        <span class="keyword">namespace </span>gui {</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keyword">namespace </span>gui {</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;                <span class="comment">// struct containing information on one cell</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                <span class="keyword">struct </span>layout_table_cell {</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                        <span class="keywordtype">bool</span> can_shrink;        <span class="comment">// can this cell be shrinked?</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                        <span class="keywordtype">bool</span> can_expand;        <span class="comment">// can this cell be expanded?</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                        <span class="keywordtype">bool</span> can_fill;          <span class="comment">// can this cell fill all avalable space?</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                        <span class="keywordtype">int</span> min_size;           <span class="comment">// minimum size for this cell</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                        <span class="keywordtype">int</span> opt_size;           <span class="comment">// optimal size for this cell</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                        <span class="keywordtype">int</span> real_size;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <span class="comment">// struct containing information on one cell</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="keyword">struct </span>layout_table_cell {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            <span class="keywordtype">bool</span> can_shrink;    <span class="comment">// can this cell be shrinked?</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            <span class="keywordtype">bool</span> can_expand;    <span class="comment">// can this cell be expanded?</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            <span class="keywordtype">bool</span> can_fill;      <span class="comment">// can this cell fill all avalable space?</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            <span class="keywordtype">int</span> min_size;       <span class="comment">// minimum size for this cell</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            <span class="keywordtype">int</span> opt_size;       <span class="comment">// optimal size for this cell</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            <span class="keywordtype">int</span> real_size;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                        <span class="keywordtype">void</span> reset() {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                                can_shrink = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                                can_expand = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                                can_fill = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                                min_size = 0;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                                opt_size = 0;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                                real_size = 0;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                        };</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                };</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            <span class="keywordtype">void</span> reset() {</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                can_shrink = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                can_expand = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                can_fill = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                min_size = 0;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                opt_size = 0;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                real_size = 0;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            };</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        };</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                <span class="comment">// layout to arrange children of a group that have a size and position</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                <span class="comment">// (ie. are derived from resizable) in a table</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                <span class="keyword">class </span>CGV_API layout_table: <span class="keyword">public</span> layout</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                        layout_table();</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                        layout_table(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::base::group_ptr</a> container);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="comment">// layout to arrange children of a group that have a size and position</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="comment">// (ie. are derived from resizable) in a table</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keyword">class </span>CGV_API layout_table: <span class="keyword">public</span> layout</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        {</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            layout_table();</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            layout_table(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::base::group_ptr</a> container);</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                        ~layout_table();</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            ~layout_table();</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                        <span class="comment">// the core update function to align the elements in a table</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                        <span class="keywordtype">void</span> update();</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <span class="comment">// the core update function to align the elements in a table</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <span class="keywordtype">void</span> update();</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                        <span class="comment">// standard get and set methods</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                        std::string get_property_declarations();</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                        <span class="keywordtype">bool</span> set_void(<span class="keyword">const</span> std::string&amp; property, <span class="keyword">const</span> std::string&amp; value_type, <span class="keyword">const</span> <span class="keywordtype">void</span>* value_ptr);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                        <span class="keywordtype">bool</span> get_void(<span class="keyword">const</span> std::string&amp; property, <span class="keyword">const</span> std::string&amp; value_type, <span class="keywordtype">void</span>* value_ptr);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            <span class="comment">// standard get and set methods</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            std::string get_property_declarations();</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            <span class="keywordtype">bool</span> set_void(<span class="keyword">const</span> std::string&amp; property, <span class="keyword">const</span> std::string&amp; value_type, <span class="keyword">const</span> <span class="keywordtype">void</span>* value_ptr);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            <span class="keywordtype">bool</span> get_void(<span class="keyword">const</span> std::string&amp; property, <span class="keyword">const</span> std::string&amp; value_type, <span class="keywordtype">void</span>* value_ptr);</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                        <span class="comment">// get width of a column</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                        <span class="keywordtype">int</span> get_column_width(<span class="keywordtype">int</span> col);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                        <span class="comment">// get height of a row</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                        <span class="keywordtype">int</span> get_row_height(<span class="keywordtype">int</span> row);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            <span class="comment">// get width of a column</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <span class="keywordtype">int</span> get_column_width(<span class="keywordtype">int</span> col);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            <span class="comment">// get height of a row</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            <span class="keywordtype">int</span> get_row_height(<span class="keywordtype">int</span> row);</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                        <span class="comment">// get size of a cell</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                        <span class="keywordtype">void</span> get_cell_size(<span class="keywordtype">int</span> row, <span class="keywordtype">int</span> col, <span class="keywordtype">int</span> &amp;width, <span class="keywordtype">int</span> &amp;height);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <span class="comment">// get size of a cell</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            <span class="keywordtype">void</span> get_cell_size(<span class="keywordtype">int</span> row, <span class="keywordtype">int</span> col, <span class="keywordtype">int</span> &amp;width, <span class="keywordtype">int</span> &amp;height);</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                        <span class="keywordtype">int</span> nr_cols, nr_rows;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        layout_table_cell *columns;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                        layout_table_cell *rows;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                        <span class="keywordtype">bool</span> do_not_layout;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            <span class="keywordtype">int</span> nr_cols, nr_rows;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            layout_table_cell *columns;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            layout_table_cell *rows;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            <span class="keywordtype">bool</span> do_not_layout;</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                        <span class="comment">// calculate minimum and optimum size</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                        <span class="keywordtype">void</span> initialize_space_tables();</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            <span class="comment">// calculate minimum and optimum size</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            <span class="keywordtype">void</span> initialize_space_tables();</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                        <span class="keywordtype">void</span> delete_space_tables();</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                        <span class="keywordtype">void</span> update_spaces_table(layout_table_cell &amp;element,  <span class="keywordtype">int</span> opt_size, <span class="keywordtype">int</span> min_size, <span class="keywordtype">int</span> hints, <span class="keywordtype">int</span> hints_shift);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                        <span class="keywordtype">bool</span> distribute_space(layout_table_cell *elements, <span class="keywordtype">int</span> nr_elements, <span class="keywordtype">int</span> new_size);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                        <span class="keywordtype">void</span> calculate_child_size(layout_table_cell &amp;element, <span class="keywordtype">int</span> opt_size, <span class="keywordtype">int</span> min_size, <span class="keywordtype">int</span> hints, <span class="keywordtype">int</span> hints_shift, <span class="keywordtype">int</span> &amp;new_size); </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                        <span class="keywordtype">void</span> calculate_child_pos(layout_table_cell &amp;element, <span class="keywordtype">int</span> child_size, <span class="keywordtype">int</span> hints, <span class="keywordtype">int</span> hints_shift, <span class="keywordtype">int</span> &amp;new_pos);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                        </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                        <span class="keywordtype">void</span> get_sizes(layout_table_cell *elements, <span class="keywordtype">int</span> nr_elements, <span class="keywordtype">int</span> *opt_size, <span class="keywordtype">int</span> *min_size);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            <span class="keywordtype">void</span> delete_space_tables();</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            <span class="keywordtype">void</span> update_spaces_table(layout_table_cell &amp;element,  <span class="keywordtype">int</span> opt_size, <span class="keywordtype">int</span> min_size, <span class="keywordtype">int</span> hints, <span class="keywordtype">int</span> hints_shift);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            <span class="keywordtype">bool</span> distribute_space(layout_table_cell *elements, <span class="keywordtype">int</span> nr_elements, <span class="keywordtype">int</span> new_size);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            <span class="keywordtype">void</span> calculate_child_size(layout_table_cell &amp;element, <span class="keywordtype">int</span> opt_size, <span class="keywordtype">int</span> min_size, <span class="keywordtype">int</span> hints, <span class="keywordtype">int</span> hints_shift, <span class="keywordtype">int</span> &amp;new_size); </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            <span class="keywordtype">void</span> calculate_child_pos(layout_table_cell &amp;element, <span class="keywordtype">int</span> child_size, <span class="keywordtype">int</span> hints, <span class="keywordtype">int</span> hints_shift, <span class="keywordtype">int</span> &amp;new_pos);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            <span class="keywordtype">void</span> get_sizes(layout_table_cell *elements, <span class="keywordtype">int</span> nr_elements, <span class="keywordtype">int</span> *opt_size, <span class="keywordtype">int</span> *min_size);</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                        <span class="keywordtype">void</span> repair_default_values(<span class="keywordtype">int</span> min_width, <span class="keywordtype">int</span> min_height, <span class="keywordtype">int</span> opt_width, <span class="keywordtype">int</span> opt_height);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                };</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <span class="keywordtype">void</span> repair_default_values(<span class="keywordtype">int</span> min_width, <span class="keywordtype">int</span> min_height, <span class="keywordtype">int</span> opt_width, <span class="keywordtype">int</span> opt_height);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        };</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
 <div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="namespacecgv_1_1gui.html#a9265f54c5bc1f0abe8e00dd1718fe861">   80</a></span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr&lt;layout_table&gt;</a> <a class="code" href="namespacecgv_1_1gui.html#a9265f54c5bc1f0abe8e00dd1718fe861">layout_table_ptr</a>;</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        }</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    }</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;}</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>

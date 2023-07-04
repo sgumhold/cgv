@@ -143,14 +143,13 @@ Namespaces</h2></td></tr>
 </li>
 </ul>
 </li>
+<li>Do the same for all rows</li>
 </ul>
 </li>
 </ul>
-<p>Do the same for all rows</p>
-<ul>
-<li>As long as the relayouting process is not finished:<ul>
+<p>As long as the relayouting process is not finished:</p><ul>
 <li>Method "distribute_space":<ul>
-<li>Sum the space needed for all columns<ul>
+<li>Sum the space needed for all columns</li>
 <li>If the space is smaller than the available space:<ul>
 <li>Expand elements that can be expanded or filled</li>
 </ul>
@@ -162,49 +161,36 @@ Namespaces</h2></td></tr>
 <li>Do the same for all rows</li>
 </ul>
 </li>
-</ul>
-</li>
 <li>For all elements (children) in the table at position (i,j):<ul>
-<li>Get width at columns[i] and height at rows[j]<ul>
+<li>Get width at columns[i] and height at rows[j]</li>
 <li>Method "calculate_child_size":<ul>
-<li>If the child can expand in X then set its width to columns[i]<ul>
+<li>If the child can expand in X then set its width to columns[i]</li>
 <li>If the child cannot expand in X then set its width to its optimal width</li>
 <li>... same for Y</li>
-</ul>
-</li>
 </ul>
 </li>
 <li>Try to apply the width and height for the child</li>
 <li>Get the width and height of the child</li>
 <li>If it could not set the width or height update the childs minimum width and height</li>
 <li>If the overall width or height exceeds the available table dimensions:<ul>
-<li>Expand the table<ul>
+<li>Expand the table</li>
 <li>Queue another relayout iteration with the new extents</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>For all elements (children) in the table:<ul>
+<p>For all elements (children) in the table:</p><ul>
 <li>Method "calculate_child_pos":<ul>
-<li>If the child's X-alignment is middle then use the remaining cell space/2 as X offset<ul>
+<li>If the child's X-alignment is middle then use the remaining cell space/2 as X offset</li>
 <li>If the child's X-alignment is right then use the remaining cell space as X offset</li>
 <li>... same for Y</li>
-</ul>
-</li>
 </ul>
 </li>
 <li>Set size and position</li>
 <li>If the overall table size differs from the requested size:<ul>
 <li>Method "repair_default_values":<ul>
 <li>Set the new minimum and default width for the table</li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
