@@ -89,15 +89,15 @@ $(document).ready(function(){initNavTree('text__editor_8cxx_source.html',''); in
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;gui_driver.h&quot;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keyword">namespace </span>gui {</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    <span class="keyword">namespace </span>gui {</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="namespacecgv_1_1gui.html#a9c73669fad0bcad3a02c4d6c262b32b6">    9</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">text_editor_ptr</a> <a class="code" href="namespacecgv_1_1gui.html#a9c73669fad0bcad3a02c4d6c262b32b6">create_text_editor</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> w, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> h, <span class="keyword">const</span> std::string&amp; title, <span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y)</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;{</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_driver_ptr</a> d = <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>();</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <span class="keywordflow">if</span> (d.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>())</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a6ebd0c185e95d755a9a7ad4143d288a3">text_editor_ptr</a>();</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keywordflow">return</span> d-&gt;create_text_editor(w,h,title,x,y);</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">gui_driver_ptr</a> d = <a class="code" href="namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785">get_gui_driver</a>();</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keywordflow">if</span> (d.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>())</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1gui.html#a6ebd0c185e95d755a9a7ad4143d288a3">text_editor_ptr</a>();</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keywordflow">return</span> d-&gt;create_text_editor(w,h,title,x,y);</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;}</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="structcgv_1_1gui_1_1text__editor__callback__handler.html#ab02ede9806c4813df68853a3e13f5f6e">   18</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="structcgv_1_1gui_1_1text__editor__callback__handler.html#ab02ede9806c4813df68853a3e13f5f6e">text_editor_callback_handler::on_close_editor</a>()</div>
@@ -126,23 +126,23 @@ $(document).ready(function(){initNavTree('text__editor_8cxx_source.html',''); in
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;}</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
 <div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1text__editor.html#ab1c7e76324d58d3601d1225cf2c73a46">   49</a></span>&#160;<a class="code" href="classcgv_1_1gui_1_1text__editor.html#ab1c7e76324d58d3601d1225cf2c73a46">text_editor::text_editor</a>(<span class="keyword">const</span> std::string&amp; name, <a class="code" href="structcgv_1_1gui_1_1text__editor__callback__handler.html">text_editor_callback_handler</a>* _handler) : </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        named(name), handler(_handler)</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    named(name), handler(_handler)</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;{</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
 <div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1text__editor.html#abe95f57cbfa934a495bbbddc22406161">   54</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1gui_1_1text__editor.html#abe95f57cbfa934a495bbbddc22406161">text_editor::set_callback_handler</a>(<a class="code" href="structcgv_1_1gui_1_1text__editor__callback__handler.html">text_editor_callback_handler</a>* _handler)</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;{</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <a class="code" href="classcgv_1_1gui_1_1text__editor.html#aabc1a5494fa354abecc1130f7bc276d7">handler</a> = _handler;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <a class="code" href="classcgv_1_1gui_1_1text__editor.html#aabc1a5494fa354abecc1130f7bc276d7">handler</a> = _handler;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
 <div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1text__editor.html#a57b346d4d5df0b0145bf25d8a4db67a9">   59</a></span>&#160;<span class="keyword">const</span> <a class="code" href="structcgv_1_1gui_1_1text__editor__callback__handler.html">text_editor_callback_handler</a>* <a class="code" href="classcgv_1_1gui_1_1text__editor.html#a57b346d4d5df0b0145bf25d8a4db67a9">text_editor::get_callback_handler</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1gui_1_1text__editor.html#aabc1a5494fa354abecc1130f7bc276d7">handler</a>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1gui_1_1text__editor.html#aabc1a5494fa354abecc1130f7bc276d7">handler</a>;</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
 <div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1text__editor.html#a4018a70776f2773da8276a29694704ef">   65</a></span>&#160;<a class="code" href="classcgv_1_1gui_1_1text__editor.html#a4018a70776f2773da8276a29694704ef">text_editor::~text_editor</a>()</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;{</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        }</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    }</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a></div><div class="ttdoc">reference counted pointer, which can work together with types that are derived from ref_counted,...</div><div class="ttdef"><b>Definition:</b> <a href="ref__ptr_8h_source.html#l00159">ref_ptr.h:160</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html_a064308a0ae0990b5ca8296f03e23c344"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">cgv::data::ref_ptr::empty</a></div><div class="ttdeci">bool empty() const</div><div class="ttdoc">check if pointer is not yet set</div><div class="ttdef"><b>Definition:</b> <a href="ref__ptr_8h_source.html#l00230">ref_ptr.h:230</a></div></div>

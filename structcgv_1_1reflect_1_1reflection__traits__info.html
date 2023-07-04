@@ -100,11 +100,9 @@ struct cgv::reflect::reflection_traits_info&lt; T &gt;</h3>
 
 <p>the <a class="el" href="structcgv_1_1reflect_1_1reflection__traits__info.html" title="the reflection_traits_info defines compile time information about reflection_traits for a given type ...">reflection_traits_info</a> defines compile time information about <a class="el" href="structcgv_1_1reflect_1_1reflection__traits.html" title="Default implementation of the reflection traits providing type specific interface.">reflection_traits</a> for a given type T </p>
 <p>Each specialization defines three members:</p><ul>
-<li>static const ReflectionTraitsKind kind ... careful, the compatibility implementation without using C++11 does not split into RTK_EXTERNAL_SELF_REFLECT and RTK_STRING. This difference can only be dispatched by a function call to get_reflection_traits as for example done in the <a class="el" href="classcgv_1_1reflect_1_1get__reflection__handler.html" title="provides access to a member variable of an instance.">get_reflection_handler</a><ul>
+<li>static const ReflectionTraitsKind kind ... careful, the compatibility implementation without using C++11 does not split into RTK_EXTERNAL_SELF_REFLECT and RTK_STRING. This difference can only be dispatched by a function call to get_reflection_traits as for example done in the <a class="el" href="classcgv_1_1reflect_1_1get__reflection__handler.html" title="provides access to a member variable of an instance.">get_reflection_handler</a></li>
 <li>const bool use_get ... whether the get_reflection_traits function needs to be called to determine the <a class="el" href="structcgv_1_1reflect_1_1reflection__traits.html" title="Default implementation of the reflection traits providing type specific interface.">reflection_traits</a> of T</li>
 <li>typedef traits_type ... the <a class="el" href="structcgv_1_1reflect_1_1reflection__traits.html" title="Default implementation of the reflection traits providing type specific interface.">reflection_traits</a> for T. Take care! In compatibility mode this is only defined if no call to get_reflection_traits is necessary to determine the <a class="el" href="structcgv_1_1reflect_1_1reflection__traits.html" title="Default implementation of the reflection traits providing type specific interface.">reflection_traits</a> of T. </li>
-</ul>
-</li>
 </ul>
 
 <p class="definition">Definition at line <a class="el" href="reflection__traits__info_8h_source.html#l00053">53</a> of file <a class="el" href="reflection__traits__info_8h_source.html">reflection_traits_info.h</a>.</p>

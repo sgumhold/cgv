@@ -92,7 +92,7 @@ $(document).ready(function(){initNavTree('named_8h_source.html',''); initResizab
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="keyword">namespace </span>base {</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">namespace </span>base {</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">class </span>CGV_API named;</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
@@ -103,32 +103,32 @@ $(document).ready(function(){initNavTree('named_8h_source.html',''); initResizab
 <div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1named.html">   19</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1base_1_1named.html">named</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1base_1_1base.html">base</a></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr</a>&lt;<a class="code" href="classcgv_1_1base_1_1named.html">named</a>,true&gt;;</div>
-<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1named.html#aeacb85dab71b803971f8611644898371">   25</a></span>&#160;        std::string <a class="code" href="classcgv_1_1base_1_1named.html#aeacb85dab71b803971f8611644898371">name</a>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr</a>&lt;<a class="code" href="classcgv_1_1base_1_1named.html">named</a>,true&gt;;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1named.html#aeacb85dab71b803971f8611644898371">   25</a></span>&#160;    std::string <a class="code" href="classcgv_1_1base_1_1named.html#aeacb85dab71b803971f8611644898371">name</a>;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <a class="code" href="classcgv_1_1base_1_1named.html">named</a>(<span class="keyword">const</span> std::string&amp; name = <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keyword">const</span> std::string&amp; get_name() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordtype">void</span> set_name(<span class="keyword">const</span> std::string&amp; _name);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">named_ptr</a> get_named();</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">const_named_ptr</a> get_named_const();</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        std::string get_type_name() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <a class="code" href="classcgv_1_1base_1_1named.html">named</a>(<span class="keyword">const</span> std::string&amp; name = <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">const</span> std::string&amp; get_name() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">void</span> set_name(<span class="keyword">const</span> std::string&amp; _name);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">named_ptr</a> get_named();</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">const_named_ptr</a> get_named_const();</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    std::string get_type_name() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;};</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">template</span> &lt;&gt; <span class="keyword">struct </span>cast_helper&lt;<a class="code" href="classcgv_1_1base_1_1named.html">named</a>&gt;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;{</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">named_ptr</a> cast(<a class="code" href="classcgv_1_1base_1_1base.html">base</a>* b) { <span class="keywordflow">return</span> b-&gt;get_named(); }</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">named_ptr</a> cast(<a class="code" href="classcgv_1_1base_1_1base.html">base</a>* b) { <span class="keywordflow">return</span> b-&gt;get_named(); }</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;};</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">template</span> &lt;&gt; <span class="keyword">struct </span>cast_const_helper&lt;named&gt;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;{</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="namespacecgv_1_1base.html#acc1c8267eac5b54dcab53b3adb1fa357">const_named_ptr</a> cast_const(<span class="keyword">const</span> base* b) { <span class="keywordflow">return</span> b-&gt;get_named_const(); }</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="namespacecgv_1_1base.html#acc1c8267eac5b54dcab53b3adb1fa357">const_named_ptr</a> cast_const(<span class="keyword">const</span> base* b) { <span class="keywordflow">return</span> b-&gt;get_named_const(); }</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;};</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#if _MSC_VER &gt;= 1400</span></div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;CGV_TEMPLATE <span class="keyword">template</span> <span class="keyword">class </span>CGV_API data::ref_ptr&lt;named&gt;;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        }</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    }</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>

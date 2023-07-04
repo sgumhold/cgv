@@ -90,24 +90,24 @@ $(document).ready(function(){initNavTree('make__const_8h_source.html',''); initR
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;cgv/type/func/drop_const.h&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="keyword">namespace </span>type {</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;                <span class="keyword">namespace </span>func {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;                        <span class="keyword">namespace </span>MakeConst {</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;                                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;                                <span class="keyword">struct </span>make_const_impl </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;                                {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;                                        <span class="keyword">typedef</span> <span class="keyword">const</span> T type;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                                };</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                                <span class="keyword">struct </span>make_const_impl&lt;T&amp;&gt;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                                {</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                                        <span class="keyword">typedef</span> <span class="keyword">const</span> T&amp; type;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                                };</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                        }</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structcgv_1_1type_1_1func_1_1make__const.html">   22</a></span>&#160;                        <span class="keyword">struct </span><a class="code" href="structcgv_1_1type_1_1func_1_1make__const.html">make_const</a> : <span class="keyword">public</span> MakeConst::make_const_impl&lt;typename drop_const&lt;T&gt;::type&gt; {};</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                }</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        }</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;    <span class="keyword">namespace </span>type {</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="keyword">namespace </span>func {</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;            <span class="keyword">namespace </span>MakeConst {</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;                <span class="keyword">struct </span>make_const_impl </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;                {</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;                    <span class="keyword">typedef</span> <span class="keyword">const</span> T type;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                };</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                <span class="keyword">struct </span>make_const_impl&lt;T&amp;&gt;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                    <span class="keyword">typedef</span> <span class="keyword">const</span> T&amp; type;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                };</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            }</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structcgv_1_1type_1_1func_1_1make__const.html">   22</a></span>&#160;            <span class="keyword">struct </span><a class="code" href="structcgv_1_1type_1_1func_1_1make__const.html">make_const</a> : <span class="keyword">public</span> MakeConst::make_const_impl&lt;typename drop_const&lt;T&gt;::type&gt; {};</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        }</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    }</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;}</div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="vr__calib_8cxx_source.html#l00009">vr_calib.cxx:9</a></div></div>
 <div class="ttc" id="astructcgv_1_1type_1_1func_1_1make__const_html"><div class="ttname"><a href="structcgv_1_1type_1_1func_1_1make__const.html">cgv::type::func::make_const</a></div><div class="ttdoc">the drop const traits defines a type without const modifier</div><div class="ttdef"><b>Definition:</b> <a href="make__const_8h_source.html#l00022">make_const.h:22</a></div></div>

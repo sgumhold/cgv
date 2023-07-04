@@ -176,21 +176,21 @@ Application Development</h1>
 <div class="line">    <span class="keywordflow">if</span> (view_ptr) {</div>
 <div class="line">        vr_view_ptr = <span class="keyword">dynamic_cast&lt;</span><a class="code" href="classvr__view__interactor.html">vr_view_interactor</a>*<span class="keyword">&gt;</span>(<a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a>);</div>
 <div class="line">        <span class="keywordflow">if</span> (vr_view_ptr) {</div>
-<div class="line">                vr_view_ptr-&gt;<a class="code" href="classvr__view__interactor.html#adf4e1b4102711989f4218ba89d4add68">set_event_type_flags</a>(</div>
-<div class="line">                        <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cd">cgv::gui::VREventTypeFlags</a>(</div>
-<div class="line">                                <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cdad51d9f77f004dc9dba700ed831a2b135">cgv::gui::VRE_DEVICE</a> + <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cdab531b503b809c0b17a03c7eb34ba8500">cgv::gui::VRE_STATUS</a> +</div>
-<div class="line">                                <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cdaa52da604bb760364d15d1f271264ccf5">cgv::gui::VRE_KEY</a> +     <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cda43c91e72fb5c679241175baf085e3257">cgv::gui::VRE_ONE_AXIS</a> + <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cda329677e0c4e8d6d539e287c30e713fd8">cgv::gui::VRE_TWO_AXES</a> +</div>
-<div class="line">                                <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cda2e30c55db8bc2f29584595c3b2e09cdb">cgv::gui::VRE_ONE_AXIS_GENERATES_KEY</a> + <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cdabc2660a06e4491252aa2ae75b2d5aad8">cgv::gui::VRE_TWO_AXES_GENERATES_DPAD</a> +</div>
-<div class="line">                                <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cda111403896cb8142d28d52614b2470dab">cgv::gui::VRE_POSE</a>));</div>
-<div class="line">                vr_view_ptr-&gt;enable_vr_event_debugging(<span class="keyword">true</span>);</div>
-<div class="line">                vr_view_ptr-&gt;draw_action_zone(<span class="keyword">false</span>);</div>
-<div class="line">                vr_view_ptr-&gt;draw_vr_kits(<span class="keyword">true</span>);</div>
-<div class="line">                vr_view_ptr-&gt;enable_blit_vr_views(<span class="keyword">true</span>);</div>
-<div class="line">                vr_view_ptr-&gt;set_blit_vr_view_width(200);</div>
+<div class="line">            vr_view_ptr-&gt;<a class="code" href="classvr__view__interactor.html#adf4e1b4102711989f4218ba89d4add68">set_event_type_flags</a>(</div>
+<div class="line">                <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cd">cgv::gui::VREventTypeFlags</a>(</div>
+<div class="line">                    <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cdad51d9f77f004dc9dba700ed831a2b135">cgv::gui::VRE_DEVICE</a> + <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cdab531b503b809c0b17a03c7eb34ba8500">cgv::gui::VRE_STATUS</a> +</div>
+<div class="line">                    <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cdaa52da604bb760364d15d1f271264ccf5">cgv::gui::VRE_KEY</a> + <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cda43c91e72fb5c679241175baf085e3257">cgv::gui::VRE_ONE_AXIS</a> + <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cda329677e0c4e8d6d539e287c30e713fd8">cgv::gui::VRE_TWO_AXES</a> +</div>
+<div class="line">                    <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cda2e30c55db8bc2f29584595c3b2e09cdb">cgv::gui::VRE_ONE_AXIS_GENERATES_KEY</a> + <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cdabc2660a06e4491252aa2ae75b2d5aad8">cgv::gui::VRE_TWO_AXES_GENERATES_DPAD</a> +</div>
+<div class="line">                    <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cda111403896cb8142d28d52614b2470dab">cgv::gui::VRE_POSE</a>));</div>
+<div class="line">            vr_view_ptr-&gt;enable_vr_event_debugging(<span class="keyword">true</span>);</div>
+<div class="line">            vr_view_ptr-&gt;draw_action_zone(<span class="keyword">false</span>);</div>
+<div class="line">            vr_view_ptr-&gt;draw_vr_kits(<span class="keyword">true</span>);</div>
+<div class="line">            vr_view_ptr-&gt;enable_blit_vr_views(<span class="keyword">true</span>);</div>
+<div class="line">            vr_view_ptr-&gt;set_blit_vr_view_width(200);</div>
 <div class="line">        }</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00559">context.h:560</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00580">context.h:581</a></div></div>
 <div class="ttc" id="aclassvr__view__interactor_html"><div class="ttname"><a href="classvr__view__interactor.html">vr_view_interactor</a></div><div class="ttdoc">extends the stereo view interactor for vr support</div><div class="ttdef"><b>Definition:</b> <a href="vr__view__interactor_8h_source.html#l00068">vr_view_interactor.h:69</a></div></div>
 <div class="ttc" id="aclassvr__view__interactor_html_adf4e1b4102711989f4218ba89d4add68"><div class="ttname"><a href="classvr__view__interactor.html#adf4e1b4102711989f4218ba89d4add68">vr_view_interactor::set_event_type_flags</a></div><div class="ttdeci">void set_event_type_flags(cgv::gui::VREventTypeFlags flags)</div><div class="ttdoc">set the event type flags of to be emitted events</div><div class="ttdef"><b>Definition:</b> <a href="vr__view__interactor_8cxx_source.html#l00167">vr_view_interactor.cxx:167</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1gui_html_aceb07fba6859effc2353f70788dd7f9b"><div class="ttname"><a href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">cgv::gui::view_ptr</a></div><div class="ttdeci">data::ref_ptr&lt; abst_view &gt; view_ptr</div><div class="ttdoc">ref counted pointer to abst view</div><div class="ttdef"><b>Definition:</b> <a href="gui_2view_8h_source.html#l00036">view.h:36</a></div></div>
@@ -214,9 +214,9 @@ Application Development</h1>
 <div class="line"><span class="keywordtype">void</span> vr_test::on_device_change(<span class="keywordtype">void</span>* kit_handle, <span class="keywordtype">bool</span> attach)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">if</span> (attach) {</div>
-<div class="line">                <a class="code" href="classvr_1_1vr__kit.html">vr::vr_kit</a>* kit_ptr = <a class="code" href="namespacevr.html#a3420569d66aab89ad53aa8ee86f76733">vr::get_vr_kit</a>(kit_handle);</div>
-<div class="line">                :</div>
-<div class="line">        }</div>
+<div class="line">        <a class="code" href="classvr_1_1vr__kit.html">vr::vr_kit</a>* kit_ptr = <a class="code" href="namespacevr.html#a3420569d66aab89ad53aa8ee86f76733">vr::get_vr_kit</a>(kit_handle);</div>
+<div class="line">        :</div>
+<div class="line">    }</div>
 <div class="line">}</div>
 <div class="line"><span class="keywordtype">void</span> vr_test::on_status_change(<span class="keywordtype">void</span>* kit_handle, <span class="keywordtype">int</span> ci, <a class="code" href="namespacevr.html#a97f62fa341bd860ba107738084e5cc08">vr::VRStatus</a> old_status, <a class="code" href="namespacevr.html#a97f62fa341bd860ba107738084e5cc08">vr::VRStatus</a> new_status)</div>
 <div class="line">{</div>
@@ -230,9 +230,9 @@ Application Development</h1>
 </div><!-- fragment --><p>The vr events are dispatched through your handle method and where you can ensure that you only process vr events by </p><div class="fragment"><div class="line"> {c++}</div>
 <div class="line"><span class="keywordtype">bool</span> vr_test::handle(<a class="code" href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a>&amp; e)</div>
 <div class="line">{</div>
-<div class="line">        <span class="keywordflow">if</span> ((e.<a class="code" href="classcgv_1_1gui_1_1event.html#aab1416286305286b19ebfccc165abf67">get_flags</a>() &amp; <a class="code" href="namespacecgv_1_1gui.html#ae38dbc5a70de43f0304bf39dcf21175aa62bd9726fe3f52c40bade752ad5451c8">cgv::gui::EF_VR</a>) == 0)</div>
-<div class="line">                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line">        :</div>
+<div class="line">    <span class="keywordflow">if</span> ((e.<a class="code" href="classcgv_1_1gui_1_1event.html#aab1416286305286b19ebfccc165abf67">get_flags</a>() &amp; <a class="code" href="namespacecgv_1_1gui.html#ae38dbc5a70de43f0304bf39dcf21175aa62bd9726fe3f52c40bade752ad5451c8">cgv::gui::EF_VR</a>) == 0)</div>
+<div class="line">        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line">    :</div>
 <div class="line">}</div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1event_html"><div class="ttname"><a href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a></div><div class="ttdef"><b>Definition:</b> <a href="event_8h_source.html#l00058">event.h:59</a></div></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1event_html_aab1416286305286b19ebfccc165abf67"><div class="ttname"><a href="classcgv_1_1gui_1_1event.html#aab1416286305286b19ebfccc165abf67">cgv::gui::event::get_flags</a></div><div class="ttdeci">unsigned get_flags() const</div><div class="ttdoc">return the event flags</div><div class="ttdef"><b>Definition:</b> <a href="event_8cxx_source.html#l00214">event.cxx:214</a></div></div>

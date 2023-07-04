@@ -93,59 +93,59 @@ $(document).ready(function(){initNavTree('find__reflection__handler_8h_source.ht
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keyword">namespace </span><a class="code" href="namespacecgv_1_1math.html#afa5be51992b338933231c56f5b235e3e">reflect</a> {</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keyword">namespace </span><a class="code" href="namespacecgv_1_1math.html#afa5be51992b338933231c56f5b235e3e">reflect</a> {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classcgv_1_1reflect_1_1find__reflection__handler.html">   18</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1reflect_1_1find__reflection__handler.html">find_reflection_handler</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html">reflection_handler</a></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        std::vector&lt;cgv::utils::token&gt; tokens;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keywordtype">unsigned</span> token_idx;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordtype">bool</span> at_end() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keywordtype">bool</span> step_if_matches(<span class="keyword">const</span> std::string&amp; name);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    std::vector&lt;cgv::utils::token&gt; tokens;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">unsigned</span> token_idx;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">bool</span> at_end() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">bool</span> step_if_matches(<span class="keyword">const</span> std::string&amp; name);</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keyword">const</span> std::string* target;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">void</span>* target_ptr;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keyword">struct </span>group_info {</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                std::string group_name;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                <span class="keywordtype">void</span>* group_ptr;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* rt;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                <a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ab19ae36b12102985f9a41293f4a6adfa">GroupKind</a> group_kind; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                <span class="keywordtype">unsigned</span> group_size;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        };</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordtype">bool</span> traverse_matched_groups;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        std::vector&lt;group_info&gt; traversed_groups;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordtype">void</span> push_group(<span class="keyword">const</span> std::string&amp; _group_name, <span class="keywordtype">void</span>* _group_ptr, <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* _rt, <a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ab19ae36b12102985f9a41293f4a6adfa">GroupKind</a> _group_kind, <span class="keywordtype">unsigned</span> _group_size = -1);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordtype">void</span> check_for_index_increment();</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        std::vector&lt;std::string&gt; target_tokens;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordtype">bool</span> found;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordtype">bool</span> valid;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        std::string member_name;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* rt;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordtype">void</span>* member_ptr;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ab19ae36b12102985f9a41293f4a6adfa">GroupKind</a> group_kind;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordtype">unsigned</span> grp_size;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keyword">const</span> std::string* target;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">void</span>* target_ptr;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">struct </span>group_info {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        std::string group_name;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordtype">void</span>* group_ptr;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* rt;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ab19ae36b12102985f9a41293f4a6adfa">GroupKind</a> group_kind; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordtype">unsigned</span> group_size;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    };</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">bool</span> traverse_matched_groups;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    std::vector&lt;group_info&gt; traversed_groups;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">void</span> push_group(<span class="keyword">const</span> std::string&amp; _group_name, <span class="keywordtype">void</span>* _group_ptr, <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* _rt, <a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ab19ae36b12102985f9a41293f4a6adfa">GroupKind</a> _group_kind, <span class="keywordtype">unsigned</span> _group_size = -1);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">void</span> check_for_index_increment();</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::vector&lt;std::string&gt; target_tokens;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">bool</span> found;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">bool</span> valid;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    std::string member_name;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* rt;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">void</span>* member_ptr;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ab19ae36b12102985f9a41293f4a6adfa">GroupKind</a> group_kind;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordtype">unsigned</span> grp_size;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <a class="code" href="classcgv_1_1reflect_1_1find__reflection__handler.html">find_reflection_handler</a>(<span class="keyword">const</span> std::string&amp; _target);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <a class="code" href="classcgv_1_1reflect_1_1find__reflection__handler.html">find_reflection_handler</a>(<span class="keyword">const</span> <span class="keywordtype">void</span>* _target_ptr, <span class="keywordtype">bool</span> _traverse_matched_groups);</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        ~<a class="code" href="classcgv_1_1reflect_1_1find__reflection__handler.html">find_reflection_handler</a>();</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keywordtype">bool</span> found_target() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordtype">bool</span> found_valid_target() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordtype">void</span>* get_member_ptr() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keyword">const</span> std::string&amp; get_member_name() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* get_reflection_traits() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> process_member_void(<span class="keyword">const</span> std::string&amp; member_name, <span class="keywordtype">void</span>* member_ptr, </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                                                                     <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* rt, <a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ab19ae36b12102985f9a41293f4a6adfa">GroupKind</a> group_kind = GK_NO_GROUP, <span class="keywordtype">unsigned</span> grp_size = -1);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordtype">int</span> reflect_group_begin(<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ab19ae36b12102985f9a41293f4a6adfa">GroupKind</a> group_kind, <span class="keyword">const</span> std::string&amp; group_name, <span class="keywordtype">void</span>* group_ptr, </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                                                    <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* rt, <span class="keywordtype">unsigned</span> grp_size);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <a class="code" href="classcgv_1_1reflect_1_1find__reflection__handler.html">find_reflection_handler</a>(<span class="keyword">const</span> std::string&amp; _target);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="classcgv_1_1reflect_1_1find__reflection__handler.html">find_reflection_handler</a>(<span class="keyword">const</span> <span class="keywordtype">void</span>* _target_ptr, <span class="keywordtype">bool</span> _traverse_matched_groups);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    ~<a class="code" href="classcgv_1_1reflect_1_1find__reflection__handler.html">find_reflection_handler</a>();</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">bool</span> found_target() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordtype">bool</span> found_valid_target() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">void</span>* get_member_ptr() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">const</span> std::string&amp; get_member_name() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* get_reflection_traits() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> process_member_void(<span class="keyword">const</span> std::string&amp; member_name, <span class="keywordtype">void</span>* member_ptr, </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                                     <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* rt, <a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ab19ae36b12102985f9a41293f4a6adfa">GroupKind</a> group_kind = GK_NO_GROUP, <span class="keywordtype">unsigned</span> grp_size = -1);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordtype">int</span> reflect_group_begin(<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ab19ae36b12102985f9a41293f4a6adfa">GroupKind</a> group_kind, <span class="keyword">const</span> std::string&amp; group_name, <span class="keywordtype">void</span>* group_ptr, </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                            <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* rt, <span class="keywordtype">unsigned</span> grp_size);</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordtype">void</span> reflect_group_end(<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ab19ae36b12102985f9a41293f4a6adfa">GroupKind</a> group_kind);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordtype">bool</span> reflect_member_void(<span class="keyword">const</span> std::string&amp; member_name, <span class="keywordtype">void</span>* member_ptr, <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* rt);</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordtype">bool</span> reflect_method_void(<span class="keyword">const</span> std::string&amp; method_name, <a class="code" href="structcgv_1_1reflect_1_1method__interface.html">method_interface</a>* mi_ptr,</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                                                         <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* return_traits, <span class="keyword">const</span> std::vector&lt;abst_reflection_traits*&gt;&amp; param_value_traits);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordtype">void</span> reflect_group_end(<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ab19ae36b12102985f9a41293f4a6adfa">GroupKind</a> group_kind);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordtype">bool</span> reflect_member_void(<span class="keyword">const</span> std::string&amp; member_name, <span class="keywordtype">void</span>* member_ptr, <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* rt);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordtype">bool</span> reflect_method_void(<span class="keyword">const</span> std::string&amp; method_name, <a class="code" href="structcgv_1_1reflect_1_1method__interface.html">method_interface</a>* mi_ptr,</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                             <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a>* return_traits, <span class="keyword">const</span> std::vector&lt;abst_reflection_traits*&gt;&amp; param_value_traits);</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;};</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        }</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    }</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>

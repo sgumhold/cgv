@@ -95,40 +95,40 @@ $(document).ready(function(){initNavTree('type__name_8h_source.html',''); initRe
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;cgv/type/lib_begin.h&gt;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="keyword">namespace </span>type {</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                <span class="keyword">namespace </span>info {</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keyword">namespace </span>type {</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="keyword">namespace </span>info {</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">extern</span> CGV_API std::string <a class="code" href="namespacecgv_1_1type_1_1info.html#afed173238b5c123d553cf43e7860111b">extract_type_name</a>(<span class="keyword">const</span> std::type_info&amp; ti);</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">namespace </span>detail {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="comment">// implementation of type_name traits for standard types</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">bool</span> is_std = true&gt;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keyword">struct </span>dispatch_type_name</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        {</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <span class="comment">// use type id to determine name of standard type</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* get_name() { <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1type_1_1info.html#a62e63a08ae5b3c95e1dcfe6614222626">get_type_name</a>(type_id&lt;T&gt;::get_id()); }</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        };</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="comment">// implementation of type_name traits for standard types</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">bool</span> is_std = true&gt;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">struct </span>dispatch_type_name</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    {</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="comment">// use type id to determine name of standard type</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* get_name() { <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1type_1_1info.html#a62e63a08ae5b3c95e1dcfe6614222626">get_type_name</a>(type_id&lt;T&gt;::get_id()); }</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    };</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="comment">// implementation of type_name traits for all other types</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keyword">struct </span>dispatch_type_name&lt;T,false&gt;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        {</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                <span class="comment">// use RTTI and clean up the resulting name from unwanted keywords</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* get_name() { </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                        <span class="keyword">static</span> std::string type_name = <a class="code" href="namespacecgv_1_1type_1_1info.html#afed173238b5c123d553cf43e7860111b">extract_type_name</a>(<span class="keyword">typeid</span>(T));</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                        <span class="keywordflow">return</span> type_name.c_str();</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                }</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        };</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="comment">// implementation of type_name traits for all other types</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">struct </span>dispatch_type_name&lt;T,false&gt;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    {</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="comment">// use RTTI and clean up the resulting name from unwanted keywords</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* get_name() { </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            <span class="keyword">static</span> std::string type_name = <a class="code" href="namespacecgv_1_1type_1_1info.html#afed173238b5c123d553cf43e7860111b">extract_type_name</a>(<span class="keyword">typeid</span>(T));</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;            <span class="keywordflow">return</span> type_name.c_str();</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        }</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    };</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;}</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="structcgv_1_1type_1_1info_1_1type__name.html">   53</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1type_1_1info_1_1type__name.html">type_name</a></div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;{</div>
-<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="structcgv_1_1type_1_1info_1_1type__name.html#a7dcb7c43dbf01bd9276508eb7e2295aa">   56</a></span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="structcgv_1_1type_1_1info_1_1type__name.html#a7dcb7c43dbf01bd9276508eb7e2295aa">get_name</a>() { <span class="keywordflow">return</span> detail::dispatch_type_name&lt;T, cond::is_standard_type&lt;T&gt;::value&gt;<a class="code" href="structcgv_1_1type_1_1info_1_1type__name.html#a7dcb7c43dbf01bd9276508eb7e2295aa">::get_name</a>(); }</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="structcgv_1_1type_1_1info_1_1type__name.html#a7dcb7c43dbf01bd9276508eb7e2295aa">   56</a></span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="structcgv_1_1type_1_1info_1_1type__name.html#a7dcb7c43dbf01bd9276508eb7e2295aa">get_name</a>() { <span class="keywordflow">return</span> detail::dispatch_type_name&lt;T, cond::is_standard_type&lt;T&gt;::value&gt;<a class="code" href="structcgv_1_1type_1_1info_1_1type__name.html#a7dcb7c43dbf01bd9276508eb7e2295aa">::get_name</a>(); }</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;};</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        }</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        }</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    }</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;}</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>

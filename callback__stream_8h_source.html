@@ -93,57 +93,57 @@ $(document).ready(function(){initNavTree('callback__stream_8h_source.html',''); 
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;cgv/signal/signal.h&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keyword">namespace </span>signal {</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keyword">namespace </span>signal {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="structcgv_1_1signal_1_1callback__streambuf.html">   12</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1signal_1_1callback__streambuf.html">callback_streambuf</a> : <span class="keyword">public</span> std::streambuf</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        cgv::signal::signal&lt;const std::string&amp;&gt;&amp; write;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    cgv::signal::signal&lt;const std::string&amp;&gt;&amp; write;</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <a class="code" href="structcgv_1_1signal_1_1callback__streambuf.html">callback_streambuf</a>(cgv::signal::signal&lt;const std::string&amp;&gt;&amp; _write) : write(_write)</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        {</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        }</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        std::streambuf *setbuf(char_type *buf, std::streamsize n)</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        {</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                setp(buf,buf+n-1);</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">this</span>;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        }</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        int_type overflow(int_type c)</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        {</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                <span class="keywordflow">if</span> (c != std::char_traits&lt;char&gt;::eof()) {</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                        *pptr() = c;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                        pbump(1);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                }</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                <span class="keywordtype">int</span> num = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(pptr()-pbase());</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                std::string text(pbase(),num);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                write(text);</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <a class="code" href="structcgv_1_1signal_1_1callback__streambuf.html">callback_streambuf</a>(cgv::signal::signal&lt;const std::string&amp;&gt;&amp; _write) : write(_write)</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    {</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    }</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    std::streambuf *setbuf(char_type *buf, std::streamsize n)</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    {</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        setp(buf,buf+n-1);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">this</span>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    }</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    int_type overflow(int_type c)</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    {</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keywordflow">if</span> (c != std::char_traits&lt;char&gt;::eof()) {</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            *pptr() = c;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            pbump(1);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        }</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keywordtype">int</span> num = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(pptr()-pbase());</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        std::string text(pbase(),num);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        write(text);</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        pbump(-num);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                <span class="keywordflow">return</span> c;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        }</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordtype">int</span> sync()</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        {</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                <span class="keywordtype">int</span> num = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(pptr()-pbase());</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                std::string text(pbase(),num);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                write(text);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordflow">return</span> c;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    }</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">int</span> sync()</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordtype">int</span> num = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(pptr()-pbase());</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        std::string text(pbase(),num);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        write(text);</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        pbump(-num);</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">return</span> num;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        }</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    }</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;};</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
 <div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classcgv_1_1signal_1_1callback__stream.html">   47</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcgv_1_1signal_1_1callback__stream.html">callback_stream</a> : <span class="keyword">public</span> std::ostream</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;{</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <a class="code" href="structcgv_1_1signal_1_1callback__streambuf.html">callback_streambuf</a> buf;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordtype">char</span> buffer[256];</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <a class="code" href="structcgv_1_1signal_1_1callback__streambuf.html">callback_streambuf</a> buf;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">char</span> buffer[256];</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classcgv_1_1signal_1_1callback__stream.html#afe77649eaedcad4d2e6ef9515b4408c4">   54</a></span>&#160;        cgv::signal::signal&lt;const std::string&amp;&gt; <a class="code" href="classcgv_1_1signal_1_1callback__stream.html#afe77649eaedcad4d2e6ef9515b4408c4">write</a>;</div>
-<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classcgv_1_1signal_1_1callback__stream.html#ac290c41fd2728ed72dfdaeaf539edce3">   56</a></span>&#160;        <a class="code" href="classcgv_1_1signal_1_1callback__stream.html#ac290c41fd2728ed72dfdaeaf539edce3">callback_stream</a>() : std::ostream(0), buf(<a class="code" href="classcgv_1_1signal_1_1callback__stream.html#afe77649eaedcad4d2e6ef9515b4408c4">write</a>)</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                buf.setbuf(buffer,256);</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                init(&amp;buf);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        }</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classcgv_1_1signal_1_1callback__stream.html#afe77649eaedcad4d2e6ef9515b4408c4">   54</a></span>&#160;    cgv::signal::signal&lt;const std::string&amp;&gt; <a class="code" href="classcgv_1_1signal_1_1callback__stream.html#afe77649eaedcad4d2e6ef9515b4408c4">write</a>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classcgv_1_1signal_1_1callback__stream.html#ac290c41fd2728ed72dfdaeaf539edce3">   56</a></span>&#160;    <a class="code" href="classcgv_1_1signal_1_1callback__stream.html#ac290c41fd2728ed72dfdaeaf539edce3">callback_stream</a>() : std::ostream(0), buf(<a class="code" href="classcgv_1_1signal_1_1callback__stream.html#afe77649eaedcad4d2e6ef9515b4408c4">write</a>)</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        buf.setbuf(buffer,256);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        init(&amp;buf);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    }</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;};</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        }</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    }</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1signal_1_1callback__stream_html"><div class="ttname"><a href="classcgv_1_1signal_1_1callback__stream.html">cgv::signal::callback_stream</a></div><div class="ttdoc">connect to the write signal of the callback stream in order to process all text written to the stream</div><div class="ttdef"><b>Definition:</b> <a href="callback__stream_8h_source.html#l00047">callback_stream.h:48</a></div></div>
 <div class="ttc" id="aclasscgv_1_1signal_1_1callback__stream_html_ac290c41fd2728ed72dfdaeaf539edce3"><div class="ttname"><a href="classcgv_1_1signal_1_1callback__stream.html#ac290c41fd2728ed72dfdaeaf539edce3">cgv::signal::callback_stream::callback_stream</a></div><div class="ttdeci">callback_stream()</div><div class="ttdoc">constructor sets the stream buffer of the stream to the callback_streambuf</div><div class="ttdef"><b>Definition:</b> <a href="callback__stream_8h_source.html#l00056">callback_stream.h:56</a></div></div>

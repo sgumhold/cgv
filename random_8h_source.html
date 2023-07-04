@@ -102,495 +102,495 @@ $(document).ready(function(){initNavTree('random_8h_source.html',''); initResiza
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">//#include &lt;cgv/math/constants.h&gt;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keyword">namespace </span>math {</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">namespace </span>math {</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html">   26</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1math_1_1random.html">random</a></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;{</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> u,v,w;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keywordtype">double</span> storedval;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> u,v,w;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordtype">double</span> storedval;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a6769390cf881bebefbe8b4016ad2413c">   33</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a6769390cf881bebefbe8b4016ad2413c">set_seed</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> seed)</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                w = 1;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                v = 4101842887655102017LL;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                u = seed^v;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> ull;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(ull);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                v = u; <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(ull);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                w = v; <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(ull);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        }</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a6769390cf881bebefbe8b4016ad2413c">   33</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a6769390cf881bebefbe8b4016ad2413c">set_seed</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> seed)</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        w = 1;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        v = 4101842887655102017LL;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        u = seed^v;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> ull;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(ull);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        v = u; <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(ull);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        w = v; <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(ull);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    }</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ad47e368bd696ab7976d59f1902502d8c">   45</a></span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#ad47e368bd696ab7976d59f1902502d8c">random</a>() : storedval(0.0)</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        {</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> seed = clock();</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a6769390cf881bebefbe8b4016ad2413c">set_seed</a>(seed);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        }</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ad47e368bd696ab7976d59f1902502d8c">   45</a></span>&#160;    <a class="code" href="structcgv_1_1math_1_1random.html#ad47e368bd696ab7976d59f1902502d8c">random</a>() : storedval(0.0)</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> seed = clock();</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a6769390cf881bebefbe8b4016ad2413c">set_seed</a>(seed);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#acfc2fcff24078efe4ca29b6ff91299f6">   52</a></span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#acfc2fcff24078efe4ca29b6ff91299f6">random</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> seed) : storedval(0.0)</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        {</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a6769390cf881bebefbe8b4016ad2413c">set_seed</a>(seed);</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        }</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        </div>
-<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">   58</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span>&amp; rv)</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        {</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                u = u*2862933555777941757LL + 7046029254386353087LL;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                v ^= v &gt;&gt; 17; v ^= v &lt;&lt;31; v ^= v &gt;&gt; 8;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                w = 4294957665U*(w &amp; 0xffffffff) + (w &gt;&gt; 32);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> x = u ^(u &lt;&lt; 21); x ^= x &gt;&gt;35; x^=x &lt;&lt; 4;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                rv= (x+v)^w;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        }</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#acfc2fcff24078efe4ca29b6ff91299f6">   52</a></span>&#160;    <a class="code" href="structcgv_1_1math_1_1random.html#acfc2fcff24078efe4ca29b6ff91299f6">random</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> seed) : storedval(0.0)</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    {</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a6769390cf881bebefbe8b4016ad2413c">set_seed</a>(seed);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    }</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    </div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">   58</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span>&amp; rv)</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        u = u*2862933555777941757LL + 7046029254386353087LL;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        v ^= v &gt;&gt; 17; v ^= v &lt;&lt;31; v ^= v &gt;&gt; 8;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        w = 4294957665U*(w &amp; 0xffffffff) + (w &gt;&gt; 32);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> x = u ^(u &lt;&lt; 21); x ^= x &gt;&gt;35; x^=x &lt;&lt; 4;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        rv= (x+v)^w;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    }</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a15799f297182e54054aabb51da39d232">   68</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a15799f297182e54054aabb51da39d232">uniform</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>&amp; rv)</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        {</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> v;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                rv= (<span class="keywordtype">unsigned</span> int) v;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        }</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a15799f297182e54054aabb51da39d232">   68</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a15799f297182e54054aabb51da39d232">uniform</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>&amp; rv)</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    {</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> v;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        rv= (<span class="keywordtype">unsigned</span> int) v;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    }</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ae50efa3ced0a67a10d1fa45c934c6947">   76</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ae50efa3ced0a67a10d1fa45c934c6947">uniform</a>(<span class="keywordtype">int</span>&amp; rv)</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> v;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                rv = (int) v;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        }</div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ae50efa3ced0a67a10d1fa45c934c6947">   76</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ae50efa3ced0a67a10d1fa45c934c6947">uniform</a>(<span class="keywordtype">int</span>&amp; rv)</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    {</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> v;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        rv = (int) v;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    }</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a395c079938876188f3177320cda6a409">   84</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a395c079938876188f3177320cda6a409">uniform</a>(<span class="keywordtype">long</span>&amp; rv)</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        {</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> v;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                rv = (long) v;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        }</div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a395c079938876188f3177320cda6a409">   84</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a395c079938876188f3177320cda6a409">uniform</a>(<span class="keywordtype">long</span>&amp; rv)</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> v;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        rv = (long) v;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    }</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#adaa9bda672e1902d509829db3ad9f97a">   92</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#adaa9bda672e1902d509829db3ad9f97a">uniform</a>(<span class="keywordtype">long</span> <span class="keywordtype">long</span>&amp; rv)</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        {</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> v;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                rv = (<span class="keywordtype">long</span> long) v;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        }</div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#adaa9bda672e1902d509829db3ad9f97a">   92</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#adaa9bda672e1902d509829db3ad9f97a">uniform</a>(<span class="keywordtype">long</span> <span class="keywordtype">long</span>&amp; rv)</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    {</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> v;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        rv = (<span class="keywordtype">long</span> long) v;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    }</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ab85f88c8da9e64ec4ddce4e644266c40">  100</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ab85f88c8da9e64ec4ddce4e644266c40">uniform</a>(<span class="keywordtype">bool</span>&amp; rv)</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        {</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> v;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                rv= v%2 == 0;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        }</div>
+<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ab85f88c8da9e64ec4ddce4e644266c40">  100</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ab85f88c8da9e64ec4ddce4e644266c40">uniform</a>(<span class="keywordtype">bool</span>&amp; rv)</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    {</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> v;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        rv= v%2 == 0;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    }</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a834fc798921301a82a16b50c022a85be">  108</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a834fc798921301a82a16b50c022a85be">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <span class="keywordtype">unsigned</span>&amp; rv)</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        {</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv);</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                rv =rv%(<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>-<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>+1)+<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        }</div>
+<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a834fc798921301a82a16b50c022a85be">  108</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a834fc798921301a82a16b50c022a85be">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <span class="keywordtype">unsigned</span>&amp; rv)</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    {</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        rv =rv%(<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>-<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>+1)+<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    }</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#accd40622a9843fdf657062d95f8737a5">  115</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#accd40622a9843fdf657062d95f8737a5">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <span class="keywordtype">int</span>&amp; rv)</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        {</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv);</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                rv =(int)(rv%(<span class="keywordtype">unsigned</span>)(<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>-<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>+1))+<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        }</div>
+<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#accd40622a9843fdf657062d95f8737a5">  115</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#accd40622a9843fdf657062d95f8737a5">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <span class="keywordtype">int</span>&amp; rv)</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    {</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        rv =(int)(rv%(<span class="keywordtype">unsigned</span>)(<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>-<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>+1))+<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    }</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
-<div class="line"><a name="l00123"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#af76de0f920caf6c68359d7ad78214b0b">  123</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#af76de0f920caf6c68359d7ad78214b0b">uniform</a>(<span class="keywordtype">double</span>&amp; rv)</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        {</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> v;</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                rv= 5.42101086242752217E-20 * v;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        }</div>
+<div class="line"><a name="l00123"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#af76de0f920caf6c68359d7ad78214b0b">  123</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#af76de0f920caf6c68359d7ad78214b0b">uniform</a>(<span class="keywordtype">double</span>&amp; rv)</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    {</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> v;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        rv= 5.42101086242752217E-20 * v;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    }</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a274bfa67af8cba8ef1de47bca7733777">  131</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a274bfa67af8cba8ef1de47bca7733777">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <span class="keywordtype">double</span> &amp;rv)</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        {</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                <span class="keywordtype">double</span> v;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                rv= (<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>-<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>)*v + <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        }</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        </div>
-<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a514d7cf6032b47f02ed652c227b1d676">  139</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a514d7cf6032b47f02ed652c227b1d676">uniform</a>(<span class="keywordtype">float</span> &amp; rv)</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        {</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                <span class="keywordtype">double</span> v;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                rv =(float) v;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        }</div>
+<div class="line"><a name="l00131"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a274bfa67af8cba8ef1de47bca7733777">  131</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a274bfa67af8cba8ef1de47bca7733777">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <span class="keywordtype">double</span> &amp;rv)</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    {</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="keywordtype">double</span> v;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        rv= (<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>-<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>)*v + <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    }</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    </div>
+<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a514d7cf6032b47f02ed652c227b1d676">  139</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a514d7cf6032b47f02ed652c227b1d676">uniform</a>(<span class="keywordtype">float</span> &amp; rv)</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    {</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        <span class="keywordtype">double</span> v;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        rv =(float) v;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    }</div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
-<div class="line"><a name="l00147"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ad6f4fa2bd6bc48f9ba1c245a91001e2a">  147</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ad6f4fa2bd6bc48f9ba1c245a91001e2a">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <span class="keywordtype">float</span>&amp; rv)</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        {</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                <span class="keywordtype">float</span> f;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(f);</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                rv= (<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>-<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>)*f + <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        }</div>
+<div class="line"><a name="l00147"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ad6f4fa2bd6bc48f9ba1c245a91001e2a">  147</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ad6f4fa2bd6bc48f9ba1c245a91001e2a">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <span class="keywordtype">float</span>&amp; rv)</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    {</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordtype">float</span> f;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(f);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        rv= (<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>-<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>)*f + <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    }</div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00155"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a09d7d62cb3b732ada5a24d149f73cb95">  155</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a09d7d62cb3b732ada5a24d149f73cb95">uniform</a>( <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a>&amp; rv)</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        {</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i)); </div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        }</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        </div>
-<div class="line"><a name="l00162"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a4981fb5ed4caa81ca5ca8355f65cdd13">  162</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a4981fb5ed4caa81ca5ca8355f65cdd13">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a>&amp; rv)</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        {</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i));</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                </div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        }</div>
+<div class="line"><a name="l00155"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a09d7d62cb3b732ada5a24d149f73cb95">  155</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a09d7d62cb3b732ada5a24d149f73cb95">uniform</a>( <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a>&amp; rv)</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    {</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i)); </div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    }</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    </div>
+<div class="line"><a name="l00162"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a4981fb5ed4caa81ca5ca8355f65cdd13">  162</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a4981fb5ed4caa81ca5ca8355f65cdd13">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a>&amp; rv)</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    {</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i));</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        </div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    }</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        </div>
-<div class="line"><a name="l00171"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#aa97cdda21cc54ecf7ee1dcc92bbb656c">  171</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#aa97cdda21cc54ecf7ee1dcc92bbb656c">uniform</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; rv)</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        {</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i)); </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        }</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        </div>
-<div class="line"><a name="l00178"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ae3ddad84fbe648802cfe6a692d6da90c">  178</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ae3ddad84fbe648802cfe6a692d6da90c">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; rv)</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        {</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i)); </div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        }</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    </div>
+<div class="line"><a name="l00171"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#aa97cdda21cc54ecf7ee1dcc92bbb656c">  171</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#aa97cdda21cc54ecf7ee1dcc92bbb656c">uniform</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; rv)</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    {</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i)); </div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    }</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    </div>
+<div class="line"><a name="l00178"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ae3ddad84fbe648802cfe6a692d6da90c">  178</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ae3ddad84fbe648802cfe6a692d6da90c">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; rv)</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    {</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i)); </div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    }</div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160; </div>
-<div class="line"><a name="l00185"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a0c6a7aef9ae9a35e91384555f8d15c7b">  185</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a0c6a7aef9ae9a35e91384555f8d15c7b">uniform</a>(<a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;float&gt;</a>&amp; rv)</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        {</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>(); i++)</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>(); j++)</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i,j));       </div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;        }</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        </div>
-<div class="line"><a name="l00193"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a3067c5fe9eb1479ff453e2406578afb2">  193</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a3067c5fe9eb1479ff453e2406578afb2">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;float&gt;</a>&amp; rv)</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        {</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>(); i++)</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>(); j++)</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i,j));               </div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;        }</div>
+<div class="line"><a name="l00185"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a0c6a7aef9ae9a35e91384555f8d15c7b">  185</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a0c6a7aef9ae9a35e91384555f8d15c7b">uniform</a>(<a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;float&gt;</a>&amp; rv)</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    {</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>(); i++)</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>(); j++)</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i,j));   </div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    }</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    </div>
+<div class="line"><a name="l00193"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a3067c5fe9eb1479ff453e2406578afb2">  193</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a3067c5fe9eb1479ff453e2406578afb2">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;float&gt;</a>&amp; rv)</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    {</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>(); i++)</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>(); j++)</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i,j));       </div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    }</div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
-<div class="line"><a name="l00201"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ad399e71cd3d083e59ced8c9af24e55b0">  201</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ad399e71cd3d083e59ced8c9af24e55b0">uniform</a>(<a class="code" href="structcgv_1_1math_1_1perm__mat.html">perm_mat</a>&amp; rv)</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        {</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                <span class="keywordtype">unsigned</span> j;</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="structcgv_1_1math_1_1perm__mat.html#ac265779088ff001c686d068cdafd6ca7">size</a>();i++)</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;                {</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(j);</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;                        j=(i+j)%rv.<a class="code" href="structcgv_1_1math_1_1perm__mat.html#ac265779088ff001c686d068cdafd6ca7">size</a>();</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                        rv.swap(i,j);</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                }</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                std::random_shuffle(&amp;(rv(0)),&amp;(rv(rv.<a class="code" href="structcgv_1_1math_1_1perm__mat.html#ae6a8a42dac8e68c7016954cef3d0da3e">nrows</a>())));        </div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        }</div>
+<div class="line"><a name="l00201"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ad399e71cd3d083e59ced8c9af24e55b0">  201</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ad399e71cd3d083e59ced8c9af24e55b0">uniform</a>(<a class="code" href="structcgv_1_1math_1_1perm__mat.html">perm_mat</a>&amp; rv)</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    {</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        <span class="keywordtype">unsigned</span> j;</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="structcgv_1_1math_1_1perm__mat.html#ac265779088ff001c686d068cdafd6ca7">size</a>();i++)</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        {</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(j);</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;            j=(i+j)%rv.<a class="code" href="structcgv_1_1math_1_1perm__mat.html#ac265779088ff001c686d068cdafd6ca7">size</a>();</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;            rv.swap(i,j);</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        }</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        std::random_shuffle(&amp;(rv(0)),&amp;(rv(rv.<a class="code" href="structcgv_1_1math_1_1perm__mat.html#ae6a8a42dac8e68c7016954cef3d0da3e">nrows</a>())));    </div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    }</div>
 <div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160; </div>
-<div class="line"><a name="l00214"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ab0b36a764ac64b355cd85ef6cc8ac196">  214</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ab0b36a764ac64b355cd85ef6cc8ac196">uniform</a>(up_tri_mat&lt;float&gt;&amp; rv)</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        {</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.nrows(); i++)</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = i; j &lt; rv.ncols(); j++)</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i,j));       </div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        }</div>
+<div class="line"><a name="l00214"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ab0b36a764ac64b355cd85ef6cc8ac196">  214</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ab0b36a764ac64b355cd85ef6cc8ac196">uniform</a>(up_tri_mat&lt;float&gt;&amp; rv)</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    {</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.nrows(); i++)</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = i; j &lt; rv.ncols(); j++)</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i,j));   </div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    }</div>
 <div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160; </div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;        </div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    </div>
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160; </div>
-<div class="line"><a name="l00224"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a971b15e2f4f54d066ac841632b8a3a93">  224</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a971b15e2f4f54d066ac841632b8a3a93">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>, <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,up_tri_mat&lt;float&gt;&amp; rv)</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;        {</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.nrows(); i++)</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = i; j &lt; rv.ncols(); j++)</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i,j));       </div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        }</div>
+<div class="line"><a name="l00224"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a971b15e2f4f54d066ac841632b8a3a93">  224</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a971b15e2f4f54d066ac841632b8a3a93">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>, <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,up_tri_mat&lt;float&gt;&amp; rv)</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    {</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.nrows(); i++)</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = i; j &lt; rv.ncols(); j++)</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i,j));   </div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    }</div>
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160; </div>
-<div class="line"><a name="l00232"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a9a0f604fb7a2f7b85179d76c6561e325">  232</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a9a0f604fb7a2f7b85179d76c6561e325">uniform</a>(up_tri_mat&lt;double&gt;&amp; rv)</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;        {</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.nrows(); i++)</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = i; j &lt; rv.ncols(); j++)</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i,j));       </div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        }</div>
+<div class="line"><a name="l00232"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a9a0f604fb7a2f7b85179d76c6561e325">  232</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a9a0f604fb7a2f7b85179d76c6561e325">uniform</a>(up_tri_mat&lt;double&gt;&amp; rv)</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    {</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.nrows(); i++)</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = i; j &lt; rv.ncols(); j++)</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i,j));   </div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    }</div>
 <div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160; </div>
-<div class="line"><a name="l00240"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a2e9af174856024a226e425673477b1d2">  240</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a2e9af174856024a226e425673477b1d2">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>, <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,up_tri_mat&lt;double&gt;&amp; rv)</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        {</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.nrows(); i++)</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = i; j &lt; rv.ncols(); j++)</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i,j));       </div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        }</div>
+<div class="line"><a name="l00240"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a2e9af174856024a226e425673477b1d2">  240</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a2e9af174856024a226e425673477b1d2">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>, <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,up_tri_mat&lt;double&gt;&amp; rv)</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    {</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.nrows(); i++)</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = i; j &lt; rv.ncols(); j++)</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i,j));   </div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    }</div>
 <div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
-<div class="line"><a name="l00248"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a8e4ca13c8f6c2d999a42709c5dc34b6b">  248</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a8e4ca13c8f6c2d999a42709c5dc34b6b">uniform</a>( low_tri_mat&lt;float&gt;&amp; rv)</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        {</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.nrows(); i++)</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt;= i; j++)</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;                                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i,j));               </div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        }</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        </div>
-<div class="line"><a name="l00256"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#abd9715fb6ee3a3f74bc72d68a6b44848">  256</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#abd9715fb6ee3a3f74bc72d68a6b44848">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, low_tri_mat&lt;float&gt;&amp; rv)</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        {</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.nrows(); i++)</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt;= i; j++)</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;                                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i,j));               </div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        }</div>
+<div class="line"><a name="l00248"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a8e4ca13c8f6c2d999a42709c5dc34b6b">  248</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a8e4ca13c8f6c2d999a42709c5dc34b6b">uniform</a>( low_tri_mat&lt;float&gt;&amp; rv)</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    {</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.nrows(); i++)</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt;= i; j++)</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i,j));       </div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;    }</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    </div>
+<div class="line"><a name="l00256"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#abd9715fb6ee3a3f74bc72d68a6b44848">  256</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#abd9715fb6ee3a3f74bc72d68a6b44848">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, low_tri_mat&lt;float&gt;&amp; rv)</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    {</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.nrows(); i++)</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt;= i; j++)</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i,j));       </div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    }</div>
 <div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160; </div>
-<div class="line"><a name="l00264"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a046f8e7a8476fc81d1b11eda6b712bfa">  264</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a046f8e7a8476fc81d1b11eda6b712bfa">uniform</a>( low_tri_mat&lt;double&gt;&amp; rv)</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;        {</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; rv.ncols(); j++)</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; j; i++)</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;                                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i,j));               </div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;        }</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;        </div>
-<div class="line"><a name="l00272"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a8a42931c3a8a08ea59ec4054c61e91a8">  272</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a8a42931c3a8a08ea59ec4054c61e91a8">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, low_tri_mat&lt;double&gt;&amp; rv)</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;        {</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; rv.ncols(); j++)</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; j; i++)</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;                                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i,j));               </div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;        }</div>
+<div class="line"><a name="l00264"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a046f8e7a8476fc81d1b11eda6b712bfa">  264</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a046f8e7a8476fc81d1b11eda6b712bfa">uniform</a>( low_tri_mat&lt;double&gt;&amp; rv)</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    {</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; rv.ncols(); j++)</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; j; i++)</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i,j));       </div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    }</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    </div>
+<div class="line"><a name="l00272"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a8a42931c3a8a08ea59ec4054c61e91a8">  272</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a8a42931c3a8a08ea59ec4054c61e91a8">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, low_tri_mat&lt;double&gt;&amp; rv)</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    {</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; rv.ncols(); j++)</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; j; i++)</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i,j));       </div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    }</div>
 <div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160; </div>
-<div class="line"><a name="l00280"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a60c0b961c092805db81f624a381b8fa0">  280</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a60c0b961c092805db81f624a381b8fa0">uniform</a>(<a class="code" href="structcgv_1_1math_1_1diag__mat.html">diag_mat&lt;float&gt;</a>&amp; rv)</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;        {</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="structcgv_1_1math_1_1diag__mat.html#aff0da670fa756d3e47d3e7517312f5b3">nrows</a>(); i++)</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i)); </div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;        }</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        </div>
-<div class="line"><a name="l00287"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ae2e07c671e6c32f12750ecf29b8ba5c2">  287</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ae2e07c671e6c32f12750ecf29b8ba5c2">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <a class="code" href="structcgv_1_1math_1_1diag__mat.html">diag_mat&lt;float&gt;</a>&amp; rv)</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;        {</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="structcgv_1_1math_1_1diag__mat.html#aff0da670fa756d3e47d3e7517312f5b3">nrows</a>(); i++)</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;                                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i));         </div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;        }</div>
+<div class="line"><a name="l00280"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a60c0b961c092805db81f624a381b8fa0">  280</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a60c0b961c092805db81f624a381b8fa0">uniform</a>(<a class="code" href="structcgv_1_1math_1_1diag__mat.html">diag_mat&lt;float&gt;</a>&amp; rv)</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    {</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="structcgv_1_1math_1_1diag__mat.html#aff0da670fa756d3e47d3e7517312f5b3">nrows</a>(); i++)</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i)); </div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    }</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;    </div>
+<div class="line"><a name="l00287"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ae2e07c671e6c32f12750ecf29b8ba5c2">  287</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ae2e07c671e6c32f12750ecf29b8ba5c2">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <a class="code" href="structcgv_1_1math_1_1diag__mat.html">diag_mat&lt;float&gt;</a>&amp; rv)</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;    {</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="structcgv_1_1math_1_1diag__mat.html#aff0da670fa756d3e47d3e7517312f5b3">nrows</a>(); i++)</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i));     </div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;    }</div>
 <div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
-<div class="line"><a name="l00294"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a3a5ae5f85807ac5304fa8c221e375dfe">  294</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a3a5ae5f85807ac5304fa8c221e375dfe">uniform</a>(<a class="code" href="structcgv_1_1math_1_1diag__mat.html">diag_mat&lt;double&gt;</a>&amp; rv)</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;        {</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="structcgv_1_1math_1_1diag__mat.html#aff0da670fa756d3e47d3e7517312f5b3">nrows</a>(); i++)</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i)); </div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;        }</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;        </div>
-<div class="line"><a name="l00301"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ad40636d9a712d8013880ad23425b7593">  301</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ad40636d9a712d8013880ad23425b7593">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <a class="code" href="structcgv_1_1math_1_1diag__mat.html">diag_mat&lt;double&gt;</a>&amp; rv)</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;        {</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="structcgv_1_1math_1_1diag__mat.html#aff0da670fa756d3e47d3e7517312f5b3">nrows</a>(); i++)</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;                                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i));         </div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        }</div>
+<div class="line"><a name="l00294"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a3a5ae5f85807ac5304fa8c221e375dfe">  294</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a3a5ae5f85807ac5304fa8c221e375dfe">uniform</a>(<a class="code" href="structcgv_1_1math_1_1diag__mat.html">diag_mat&lt;double&gt;</a>&amp; rv)</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    {</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="structcgv_1_1math_1_1diag__mat.html#aff0da670fa756d3e47d3e7517312f5b3">nrows</a>(); i++)</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i)); </div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    }</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    </div>
+<div class="line"><a name="l00301"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#ad40636d9a712d8013880ad23425b7593">  301</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#ad40636d9a712d8013880ad23425b7593">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <a class="code" href="structcgv_1_1math_1_1diag__mat.html">diag_mat&lt;double&gt;</a>&amp; rv)</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    {</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="structcgv_1_1math_1_1diag__mat.html#aff0da670fa756d3e47d3e7517312f5b3">nrows</a>(); i++)</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i));     </div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    }</div>
 <div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160; </div>
 <div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160; </div>
-<div class="line"><a name="l00309"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#aa56aa89b0fab10a5003ae0c86325ce0c">  309</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#aa56aa89b0fab10a5003ae0c86325ce0c">uniform</a>(<a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;double&gt;</a>&amp; rv)</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;        {</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>(); i++)</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>(); j++)</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;                                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i,j));       </div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;        }</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        </div>
-<div class="line"><a name="l00317"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a7131b091aec631aa9a94e7dafd8ae234">  317</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a7131b091aec631aa9a94e7dafd8ae234">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;double&gt;</a>&amp; rv)</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        {</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span>  i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>(); i++)</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>(); j++)</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;                                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i,j));               </div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;        }</div>
+<div class="line"><a name="l00309"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#aa56aa89b0fab10a5003ae0c86325ce0c">  309</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#aa56aa89b0fab10a5003ae0c86325ce0c">uniform</a>(<a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;double&gt;</a>&amp; rv)</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    {</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>(); i++)</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>(); j++)</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(rv(i,j));   </div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    }</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    </div>
+<div class="line"><a name="l00317"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a7131b091aec631aa9a94e7dafd8ae234">  317</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a7131b091aec631aa9a94e7dafd8ae234">uniform</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>, <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;double&gt;</a>&amp; rv)</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    {</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span>  i = 0; i &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>(); i++)</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; rv.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>(); j++)</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>,<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>,rv(i,j));       </div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    }</div>
 <div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160; </div>
 <div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160; </div>
 <div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160; </div>
-<div class="line"><a name="l00327"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">  327</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">normal</a>(<span class="keywordtype">double</span>&amp; rv)</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;        {</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;                <span class="keywordtype">double</span> v1,v2,rsq,fac;</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                <span class="keywordflow">if</span>(storedval == 0.)</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                {</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                        <span class="keywordflow">do</span>{</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;                                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v1);</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;                                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v2);</div>
+<div class="line"><a name="l00327"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">  327</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">normal</a>(<span class="keywordtype">double</span>&amp; rv)</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    {</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        <span class="keywordtype">double</span> v1,v2,rsq,fac;</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;        <span class="keywordflow">if</span>(storedval == 0.)</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        {</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;            <span class="keywordflow">do</span>{</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v1);</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v2);</div>
 <div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160; </div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                                v1 = 2.0 * v1-1.0;</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;                                v2 = 2.0 * v2-1.0;</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;                                rsq = v1*v1+v2*v2;</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                        }<span class="keywordflow">while</span>(rsq &gt;= 1.0 || rsq == 0.0);</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;                        fac = sqrt(-2.0*std::log(rsq)/rsq);</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;                        storedval = v1*fac;</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;                        rv= v2*fac;</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                v1 = 2.0 * v1-1.0;</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;                v2 = 2.0 * v2-1.0;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;                rsq = v1*v1+v2*v2;</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;            }<span class="keywordflow">while</span>(rsq &gt;= 1.0 || rsq == 0.0);</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;            fac = sqrt(-2.0*std::log(rsq)/rsq);</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;            storedval = v1*fac;</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;            rv= v2*fac;</div>
 <div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160; </div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;                }<span class="keywordflow">else</span></div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;                {</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;                        fac = storedval;</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                        storedval = 0.;</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                        rv= fac;</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                }</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;        }</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        }<span class="keywordflow">else</span></div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        {</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;            fac = storedval;</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;            storedval = 0.;</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;            rv= fac;</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;        }</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    }</div>
 <div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160; </div>
-<div class="line"><a name="l00353"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a9db3f13fff8ae83ac7b797537e37fbc9">  353</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a9db3f13fff8ae83ac7b797537e37fbc9">normal</a>(<span class="keywordtype">float</span>&amp; rv)</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;        {</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                <span class="keywordtype">double</span> d;</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">normal</a>(d);</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                rv = (float)d;</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        }</div>
+<div class="line"><a name="l00353"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a9db3f13fff8ae83ac7b797537e37fbc9">  353</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a9db3f13fff8ae83ac7b797537e37fbc9">normal</a>(<span class="keywordtype">float</span>&amp; rv)</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    {</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;        <span class="keywordtype">double</span> d;</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">normal</a>(d);</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;        rv = (float)d;</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    }</div>
 <div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160; </div>
-<div class="line"><a name="l00361"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a104d1e87f894aa8b0a64a73583844ec0">  361</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a104d1e87f894aa8b0a64a73583844ec0">normal</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> mu, <span class="keyword">const</span> <span class="keywordtype">double</span> sigma, <span class="keywordtype">double</span> &amp;rv)</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        {       </div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;                <span class="keywordtype">double</span> d;</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">normal</a>(d);</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;                rv =mu + sigma * d;</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;        }</div>
+<div class="line"><a name="l00361"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a104d1e87f894aa8b0a64a73583844ec0">  361</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a104d1e87f894aa8b0a64a73583844ec0">normal</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> mu, <span class="keyword">const</span> <span class="keywordtype">double</span> sigma, <span class="keywordtype">double</span> &amp;rv)</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    {   </div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;        <span class="keywordtype">double</span> d;</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">normal</a>(d);</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;        rv =mu + sigma * d;</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    }</div>
 <div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160; </div>
-<div class="line"><a name="l00369"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#aff387159e54e5bb679f023b8d8ff5dd8">  369</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#aff387159e54e5bb679f023b8d8ff5dd8">normal</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> mu, <span class="keyword">const</span> <span class="keywordtype">float</span> sigma, <span class="keywordtype">float</span>&amp; rv)</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        {       <span class="keywordtype">float</span> f;</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">normal</a>(f);</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;                rv= mu + sigma * f;</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        }</div>
+<div class="line"><a name="l00369"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#aff387159e54e5bb679f023b8d8ff5dd8">  369</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#aff387159e54e5bb679f023b8d8ff5dd8">normal</a>(<span class="keyword">const</span> <span class="keywordtype">float</span> mu, <span class="keyword">const</span> <span class="keywordtype">float</span> sigma, <span class="keywordtype">float</span>&amp; rv)</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    {   <span class="keywordtype">float</span> f;</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">normal</a>(f);</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        rv= mu + sigma * f;</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    }</div>
 <div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160; </div>
-<div class="line"><a name="l00376"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a7b2da813611069c6e495f3ca7e92f143">  376</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a7b2da813611069c6e495f3ca7e92f143">uniform_direction</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a>&amp; v)</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;        {</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;                </div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0;i &lt; v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>(); i++)</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;                         <a class="code" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">normal</a>(v(i));</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;                v.<a class="code" href="classcgv_1_1math_1_1vec.html#ad397c1a505ce48bedbe8a801cf11b039">normalize</a>();</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;        }</div>
+<div class="line"><a name="l00376"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a7b2da813611069c6e495f3ca7e92f143">  376</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a7b2da813611069c6e495f3ca7e92f143">uniform_direction</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a>&amp; v)</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    {</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;        </div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0;i &lt; v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>(); i++)</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;             <a class="code" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">normal</a>(v(i));</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;        v.<a class="code" href="classcgv_1_1math_1_1vec.html#ad397c1a505ce48bedbe8a801cf11b039">normalize</a>();</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;    }</div>
 <div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160; </div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        </div>
-<div class="line"><a name="l00386"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a53e7b6cebaee9aa30e5fc5aa94db3815">  386</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a53e7b6cebaee9aa30e5fc5aa94db3815">uniform_direction</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; v)</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;        {</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0;i &lt; v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;                         <a class="code" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">normal</a>(v(i));</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;                v.<a class="code" href="classcgv_1_1math_1_1vec.html#ad397c1a505ce48bedbe8a801cf11b039">normalize</a>();</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;        }</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    </div>
+<div class="line"><a name="l00386"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a53e7b6cebaee9aa30e5fc5aa94db3815">  386</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a53e7b6cebaee9aa30e5fc5aa94db3815">uniform_direction</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; v)</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    {</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0;i &lt; v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;             <a class="code" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">normal</a>(v(i));</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;        v.<a class="code" href="classcgv_1_1math_1_1vec.html#ad397c1a505ce48bedbe8a801cf11b039">normalize</a>();</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;    }</div>
 <div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160; </div>
-<div class="line"><a name="l00394"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a181230e4abe03d25aa03ac67e7e44a86">  394</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a181230e4abe03d25aa03ac67e7e44a86">uniform_quat_orientation</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a>&amp; q)</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        {</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;                <span class="keywordtype">float</span> x[3];</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(x[0]);</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(x[1]);</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(x[2]);</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;                <span class="keywordtype">float</span>  a, b, c, d, s;</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;                <span class="keywordtype">float</span>  z, r, theta, omega;       </div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;                </div>
+<div class="line"><a name="l00394"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a181230e4abe03d25aa03ac67e7e44a86">  394</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a181230e4abe03d25aa03ac67e7e44a86">uniform_quat_orientation</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a>&amp; q)</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    {</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;        <span class="keywordtype">float</span> x[3];</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(x[0]);</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(x[1]);</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(x[2]);</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;        <span class="keywordtype">float</span>  a, b, c, d, s;</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;        <span class="keywordtype">float</span>  z, r, theta, omega;       </div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;        </div>
 <div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160; </div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;                z = x[0];</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;                r = sqrt( 1 - z * z );</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;                theta = 2.0f * 3.14159f * x[1];</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                omega = 3.14159f * x[2];</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;        z = x[0];</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;        r = sqrt( 1 - z * z );</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;        theta = 2.0f * 3.14159f * x[1];</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;        omega = 3.14159f * x[2];</div>
 <div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160; </div>
 <div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160; </div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;                s = sin( omega );</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;                a = cos( omega );</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;                b = s * cos( theta ) * r;</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;                c = s * sin( theta ) * r;</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;                d = s * z;</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;        s = sin( omega );</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;        a = cos( omega );</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;        b = s * cos( theta ) * r;</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;        c = s * sin( theta ) * r;</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;        d = s * z;</div>
 <div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160; </div>
 <div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160; </div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;                q.<a class="code" href="classcgv_1_1math_1_1vec.html#ac97b8a6328e53c58e1d639dcb008e46b">set</a>(b,c,d,a);</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;        }</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;        q.<a class="code" href="classcgv_1_1math_1_1vec.html#ac97b8a6328e53c58e1d639dcb008e46b">set</a>(b,c,d,a);</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;    }</div>
 <div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160; </div>
 <div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160; </div>
-<div class="line"><a name="l00423"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a6da7a71b98656144064f6709505e070d">  423</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a6da7a71b98656144064f6709505e070d">uniform_quat_orientation</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; q)</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;        {</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;                q.<a class="code" href="classcgv_1_1math_1_1vec.html#a4ad00087a03df57550f9082992ce827b">resize</a>(4);</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;                <span class="keywordtype">double</span> x[3];</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(x[0]);</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(x[1]);</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(x[2]);</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;                <span class="keywordtype">double</span>  a, b, c, d, s;</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;                <span class="keywordtype">double</span>  z, r, theta, omega;       </div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;                </div>
+<div class="line"><a name="l00423"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a6da7a71b98656144064f6709505e070d">  423</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a6da7a71b98656144064f6709505e070d">uniform_quat_orientation</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; q)</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;    {</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;        q.<a class="code" href="classcgv_1_1math_1_1vec.html#a4ad00087a03df57550f9082992ce827b">resize</a>(4);</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;        <span class="keywordtype">double</span> x[3];</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(x[0]);</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(x[1]);</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(x[2]);</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;        <span class="keywordtype">double</span>  a, b, c, d, s;</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;        <span class="keywordtype">double</span>  z, r, theta, omega;       </div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;        </div>
 <div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160; </div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;                z = x[0];</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;                r = sqrt( 1 - z * z );</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;                theta = 2.0 * 3.14159 * x[1];</div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;                omega = 3.14159 * x[2];</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;        z = x[0];</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;        r = sqrt( 1 - z * z );</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;        theta = 2.0 * 3.14159 * x[1];</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;        omega = 3.14159 * x[2];</div>
 <div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160; </div>
 <div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160; </div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;                s = sin( omega );</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;                a = cos( omega );</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;                b = s * cos( theta ) * r;</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;                c = s * sin( theta ) * r;</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;                d = s * z;</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;        s = sin( omega );</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;        a = cos( omega );</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;        b = s * cos( theta ) * r;</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;        c = s * sin( theta ) * r;</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;        d = s * z;</div>
 <div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160; </div>
 <div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160; </div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;                q.<a class="code" href="classcgv_1_1math_1_1vec.html#ac97b8a6328e53c58e1d639dcb008e46b">set</a>(b,c,d,a);</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;        }</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;        </div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;        q.<a class="code" href="classcgv_1_1math_1_1vec.html#ac97b8a6328e53c58e1d639dcb008e46b">set</a>(b,c,d,a);</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;    }</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;    </div>
 <div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160; </div>
-<div class="line"><a name="l00452"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a587a5a024c1d4a0f595a06c4d0d0659b">  452</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a587a5a024c1d4a0f595a06c4d0d0659b">uniform_orientation</a>(<a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;float&gt;</a>&amp; m)</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;        {</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;                <span class="keywordflow">if</span>(m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>() == 3 &amp;&amp; m.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>() == 3)</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;                {</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a> q(4);</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a181230e4abe03d25aa03ac67e7e44a86">uniform_quat_orientation</a>(q);</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;                        m = <a class="code" href="namespacecgv_1_1math.html#a81aff26fbcb622a458ea9ad3f053c9e2">quat_2_mat_33</a>(q);</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;                        <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;                }</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;                <span class="keywordflow">if</span>(m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>() == 4 &amp;&amp; m.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>() == 4)</div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;                {</div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a> q(4);</div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a181230e4abe03d25aa03ac67e7e44a86">uniform_quat_orientation</a>(q);</div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;                        m = <a class="code" href="namespacecgv_1_1math.html#a24fcb46517f4106ddcfd5b2a2fd256ff">quat_2_mat_44</a>(q);</div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;                        <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;                }</div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;                assert(<span class="keyword">false</span>);</div>
+<div class="line"><a name="l00452"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a587a5a024c1d4a0f595a06c4d0d0659b">  452</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a587a5a024c1d4a0f595a06c4d0d0659b">uniform_orientation</a>(<a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;float&gt;</a>&amp; m)</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;    {</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;        <span class="keywordflow">if</span>(m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>() == 3 &amp;&amp; m.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>() == 3)</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;        {</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;            <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a> q(4);</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a181230e4abe03d25aa03ac67e7e44a86">uniform_quat_orientation</a>(q);</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;            m = <a class="code" href="namespacecgv_1_1math.html#a81aff26fbcb622a458ea9ad3f053c9e2">quat_2_mat_33</a>(q);</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;        }</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        <span class="keywordflow">if</span>(m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>() == 4 &amp;&amp; m.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>() == 4)</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;        {</div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;            <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a> q(4);</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a181230e4abe03d25aa03ac67e7e44a86">uniform_quat_orientation</a>(q);</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;            m = <a class="code" href="namespacecgv_1_1math.html#a24fcb46517f4106ddcfd5b2a2fd256ff">quat_2_mat_44</a>(q);</div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;        }</div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;        assert(<span class="keyword">false</span>);</div>
 <div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160; </div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;        }</div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;    }</div>
 <div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160; </div>
-<div class="line"><a name="l00473"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a538c8578c12e1657112600a45a56e8c6">  473</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a538c8578c12e1657112600a45a56e8c6">uniform_orientation</a>( <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;double&gt;</a>&amp; m)</div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;        {</div>
-<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;                <span class="keywordflow">if</span>(m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>() == 3 &amp;&amp; m.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>() == 3)</div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;                {</div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a> q(4);</div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a181230e4abe03d25aa03ac67e7e44a86">uniform_quat_orientation</a>(q);</div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;                        m = <a class="code" href="namespacecgv_1_1math.html#a81aff26fbcb622a458ea9ad3f053c9e2">quat_2_mat_33</a>(q);</div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;                        <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;                }</div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;                <span class="keywordflow">if</span>(m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>() == 4 &amp;&amp; m.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>() == 4)</div>
-<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;                {</div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a> q(4);</div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a181230e4abe03d25aa03ac67e7e44a86">uniform_quat_orientation</a>(q);</div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;                        m = <a class="code" href="namespacecgv_1_1math.html#a24fcb46517f4106ddcfd5b2a2fd256ff">quat_2_mat_44</a>(q);</div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;                        <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;                }</div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;                assert(<span class="keyword">false</span>);</div>
-<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;        }</div>
+<div class="line"><a name="l00473"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a538c8578c12e1657112600a45a56e8c6">  473</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a538c8578c12e1657112600a45a56e8c6">uniform_orientation</a>( <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;double&gt;</a>&amp; m)</div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;    {</div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;        <span class="keywordflow">if</span>(m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>() == 3 &amp;&amp; m.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>() == 3)</div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;        {</div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;            <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a> q(4);</div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a181230e4abe03d25aa03ac67e7e44a86">uniform_quat_orientation</a>(q);</div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;            m = <a class="code" href="namespacecgv_1_1math.html#a81aff26fbcb622a458ea9ad3f053c9e2">quat_2_mat_33</a>(q);</div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;        }</div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;        <span class="keywordflow">if</span>(m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>() == 4 &amp;&amp; m.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>() == 4)</div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;        {</div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;            <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a> q(4);</div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a181230e4abe03d25aa03ac67e7e44a86">uniform_quat_orientation</a>(q);</div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;            m = <a class="code" href="namespacecgv_1_1math.html#a24fcb46517f4106ddcfd5b2a2fd256ff">quat_2_mat_44</a>(q);</div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;        }</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;        assert(<span class="keyword">false</span>);</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;    }</div>
 <div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160; </div>
 <div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160; </div>
-<div class="line"><a name="l00494"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#aa8221d34c4a8fed6fff84e42148bd6e6">  494</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#aa8221d34c4a8fed6fff84e42148bd6e6">uniform_point_in_unit_box</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; p)</div>
-<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;        {</div>
-<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;                <span class="keywordflow">if</span> (p.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>() == 0)</div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;                        p.<a class="code" href="classcgv_1_1math_1_1vec.html#a4ad00087a03df57550f9082992ce827b">resize</a>(3);</div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;                <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;p.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>(); ++i)</div>
-<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(p(i));</div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;        }</div>
+<div class="line"><a name="l00494"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#aa8221d34c4a8fed6fff84e42148bd6e6">  494</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#aa8221d34c4a8fed6fff84e42148bd6e6">uniform_point_in_unit_box</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; p)</div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;    {</div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;        <span class="keywordflow">if</span> (p.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>() == 0)</div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;            p.<a class="code" href="classcgv_1_1math_1_1vec.html#a4ad00087a03df57550f9082992ce827b">resize</a>(3);</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;p.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>(); ++i)</div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(p(i));</div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;    }</div>
 <div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160; </div>
-<div class="line"><a name="l00503"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a9208792339dc3667fa963cf0c8d6b18b">  503</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a9208792339dc3667fa963cf0c8d6b18b">uniform_point_in_box</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; minp,<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; maxp, <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; p)</div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;        {</div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;                assert(minp.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>() == maxp.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>());</div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;                <span class="keywordflow">if</span> (p.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>() != minp.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>())</div>
-<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;                        p.<a class="code" href="classcgv_1_1math_1_1vec.html#a4ad00087a03df57550f9082992ce827b">resize</a>(minp.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>());</div>
-<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;                <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;p.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>(); ++i)</div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(minp(i),maxp(i),p(i));</div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;        }</div>
+<div class="line"><a name="l00503"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a9208792339dc3667fa963cf0c8d6b18b">  503</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a9208792339dc3667fa963cf0c8d6b18b">uniform_point_in_box</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; minp,<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; maxp, <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; p)</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;    {</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;        assert(minp.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>() == maxp.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>());</div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;        <span class="keywordflow">if</span> (p.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>() != minp.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>())</div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;            p.<a class="code" href="classcgv_1_1math_1_1vec.html#a4ad00087a03df57550f9082992ce827b">resize</a>(minp.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>());</div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;p.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>(); ++i)</div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(minp(i),maxp(i),p(i));</div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;    }</div>
 <div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160; </div>
-<div class="line"><a name="l00513"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a74bd19c2074f3f630fe96100e68613b2">  513</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a74bd19c2074f3f630fe96100e68613b2">uniform_point_in_unit_ball</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; p)</div>
-<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;        {</div>
-<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a7b2da813611069c6e495f3ca7e92f143">uniform_direction</a>(p);</div>
-<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;                <span class="keywordtype">double</span> r;</div>
-<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(r);</div>
-<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;                r = std::pow(r, 1.0/p.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>());</div>
-<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;                p *= r;</div>
-<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;        }</div>
-<div class="line"><a name="l00522"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a36a8daff4f5830636006430acbda63c8">  522</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a36a8daff4f5830636006430acbda63c8">uniform_point_in_triangle</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; p1, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; p2, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; p3,<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a> p)</div>
-<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;        {</div>
-<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;                <span class="keywordtype">double</span> u,v;</div>
-<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(u);</div>
-<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;                <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
-<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;                <span class="keywordflow">if</span>(u+v &gt; 1.0)</div>
-<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;                {</div>
-<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;                        u=1.0-u;</div>
-<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;                        v=1.0-v;</div>
-<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;                }</div>
-<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;                p= u*p1 + v*p2 +(1.0-u-v)*p3;</div>
-<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;        }</div>
+<div class="line"><a name="l00513"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a74bd19c2074f3f630fe96100e68613b2">  513</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a74bd19c2074f3f630fe96100e68613b2">uniform_point_in_unit_ball</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; p)</div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;    {</div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a7b2da813611069c6e495f3ca7e92f143">uniform_direction</a>(p);</div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;        <span class="keywordtype">double</span> r;</div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(r);</div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;        r = std::pow(r, 1.0/p.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>());</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;        p *= r;</div>
+<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;    }</div>
+<div class="line"><a name="l00522"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a36a8daff4f5830636006430acbda63c8">  522</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a36a8daff4f5830636006430acbda63c8">uniform_point_in_triangle</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; p1, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; p2, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; p3,<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a> p)</div>
+<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;    {</div>
+<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;        <span class="keywordtype">double</span> u,v;</div>
+<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(u);</div>
+<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(v);</div>
+<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;        <span class="keywordflow">if</span>(u+v &gt; 1.0)</div>
+<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;        {</div>
+<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;            u=1.0-u;</div>
+<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;            v=1.0-v;</div>
+<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;        }</div>
+<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;        p= u*p1 + v*p2 +(1.0-u-v)*p3;</div>
+<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;    }</div>
 <div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160; </div>
-<div class="line"><a name="l00536"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a16b0d2664f04f84efe1830111b702c27">  536</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a16b0d2664f04f84efe1830111b702c27">uniform_point_on_sphere</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; center,<span class="keyword">const</span> <span class="keywordtype">double</span>&amp; radius,</div>
-<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;                <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; p)</div>
-<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;        {</div>
-<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0;i &lt; p.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
-<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;                         <a class="code" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">normal</a>(p(i));</div>
-<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;                p.<a class="code" href="classcgv_1_1math_1_1vec.html#ad397c1a505ce48bedbe8a801cf11b039">normalize</a>();</div>
-<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;                p=center+radius*p;</div>
-<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;        }</div>
+<div class="line"><a name="l00536"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a16b0d2664f04f84efe1830111b702c27">  536</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a16b0d2664f04f84efe1830111b702c27">uniform_point_on_sphere</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; center,<span class="keyword">const</span> <span class="keywordtype">double</span>&amp; radius,</div>
+<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;        <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;double&gt;</a>&amp; p)</div>
+<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;    {</div>
+<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0;i &lt; p.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;             <a class="code" href="structcgv_1_1math_1_1random.html#a03ef4ffb969267ecae4dbd4d78d32f41">normal</a>(p(i));</div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;        p.<a class="code" href="classcgv_1_1math_1_1vec.html#ad397c1a505ce48bedbe8a801cf11b039">normalize</a>();</div>
+<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;        p=center+radius*p;</div>
+<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;    }</div>
 <div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160; </div>
 <div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160; </div>
-<div class="line"><a name="l00547"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a90a5ce8c3b3e9ba3da5c7cbd754ab3c2">  547</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a90a5ce8c3b3e9ba3da5c7cbd754ab3c2">uniform_nchoosek</a>(<span class="keywordtype">unsigned</span> n, <span class="keywordtype">unsigned</span> k, <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;unsigned&gt;</a>&amp; indices)</div>
-<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;        {</div>
-<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;                std::set&lt;unsigned&gt; s;   </div>
-<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;                <span class="keywordtype">unsigned</span> v;</div>
-<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;                <span class="keywordflow">while</span>(s.size() &lt; k)</div>
-<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;                {</div>
-<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;                        <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(0,n-1,v);</div>
-<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;                        s.insert(v);</div>
-<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;                }</div>
+<div class="line"><a name="l00547"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1random.html#a90a5ce8c3b3e9ba3da5c7cbd754ab3c2">  547</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1math_1_1random.html#a90a5ce8c3b3e9ba3da5c7cbd754ab3c2">uniform_nchoosek</a>(<span class="keywordtype">unsigned</span> n, <span class="keywordtype">unsigned</span> k, <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;unsigned&gt;</a>&amp; indices)</div>
+<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;    {</div>
+<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;        std::set&lt;unsigned&gt; s;   </div>
+<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;        <span class="keywordtype">unsigned</span> v;</div>
+<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;        <span class="keywordflow">while</span>(s.size() &lt; k)</div>
+<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;        {</div>
+<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;            <a class="code" href="structcgv_1_1math_1_1random.html#a9bad25a6b63aa86c86fe9e66822ee908">uniform</a>(0,n-1,v);</div>
+<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;            s.insert(v);</div>
+<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;        }</div>
 <div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160; </div>
-<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;                indices.<a class="code" href="classcgv_1_1math_1_1vec.html#a4ad00087a03df57550f9082992ce827b">resize</a>(k);</div>
-<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;                <span class="keywordtype">unsigned</span> i=0;</div>
-<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;                <span class="keywordflow">for</span>(std::set&lt;unsigned&gt;::iterator it =s.begin(); it != s.end();it++,i++)</div>
-<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;                        indices(i)=*it;</div>
-<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;                        </div>
-<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;        }</div>
+<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;        indices.<a class="code" href="classcgv_1_1math_1_1vec.html#a4ad00087a03df57550f9082992ce827b">resize</a>(k);</div>
+<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;        <span class="keywordtype">unsigned</span> i=0;</div>
+<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;        <span class="keywordflow">for</span>(std::set&lt;unsigned&gt;::iterator it =s.begin(); it != s.end();it++,i++)</div>
+<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;            indices(i)=*it;</div>
+<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;            </div>
+<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;    }</div>
 <div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160; </div>
-<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;        </div>
+<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;    </div>
 <div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160; </div>
 <div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160; </div>
 <div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;};</div>

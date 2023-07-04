@@ -90,54 +90,54 @@ $(document).ready(function(){initNavTree('find__action_8h_source.html',''); init
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;cgv/base/action.h&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="keyword">namespace </span>base {</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;    <span class="keyword">namespace </span>base {</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> X&gt;</div>
 <div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1find__action.html">   10</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcgv_1_1base_1_1find__action.html">find_action</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1base_1_1action.html">action</a></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;{</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        X* x;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    X* x;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        std::vector&lt;X*&gt;&amp; result;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    std::vector&lt;X*&gt;&amp; result;</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <a class="code" href="classcgv_1_1base_1_1find__action.html">find_action</a>(std::vector&lt;X*&gt;&amp; _result) : <a class="code" href="classcgv_1_1base_1_1action.html#a679a25a5f77e3ab9d607346942994b76">action</a>(<span class="keyword">true</span>,<span class="keyword">true</span>), result(_result) {}</div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1find__action.html#a2af9f4d1edf15ef9462b7c1638c33870">   18</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1base_1_1find__action.html#a2af9f4d1edf15ef9462b7c1638c33870">select</a>(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> p) {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                x = p-&gt;get_interface&lt;X&gt;();</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        }</div>
-<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1find__action.html#ae5b12e0a5d83d3d1060b9e9b6b3a2c2c">   21</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1base_1_1find__action.html#ae5b12e0a5d83d3d1060b9e9b6b3a2c2c">begin</a>()</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        {</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <span class="keywordflow">if</span> (x) {</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                        result.push_back(x);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                }</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        }</div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1find__action.html#acc7609f9339d3524ce535fdfbac43224">   31</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1base_1_1find__action.html#acc7609f9339d3524ce535fdfbac43224">implements_action</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                <span class="keywordflow">return</span> x != 0;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        }</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <a class="code" href="classcgv_1_1base_1_1find__action.html">find_action</a>(std::vector&lt;X*&gt;&amp; _result) : <a class="code" href="classcgv_1_1base_1_1action.html#a679a25a5f77e3ab9d607346942994b76">action</a>(<span class="keyword">true</span>,<span class="keyword">true</span>), result(_result) {}</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1find__action.html#a2af9f4d1edf15ef9462b7c1638c33870">   18</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1base_1_1find__action.html#a2af9f4d1edf15ef9462b7c1638c33870">select</a>(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> p) {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        x = p-&gt;get_interface&lt;X&gt;();</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    }</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1find__action.html#ae5b12e0a5d83d3d1060b9e9b6b3a2c2c">   21</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1base_1_1find__action.html#ae5b12e0a5d83d3d1060b9e9b6b3a2c2c">begin</a>()</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    {</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordflow">if</span> (x) {</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            result.push_back(x);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        }</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    }</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1find__action.html#acc7609f9339d3524ce535fdfbac43224">   31</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1base_1_1find__action.html#acc7609f9339d3524ce535fdfbac43224">implements_action</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordflow">return</span> x != 0;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    }</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;};</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> X&gt;</div>
 <div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="namespacecgv_1_1base.html#a9306cf99f175197cf29de2b547b5cfb9">   38</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1base.html#a9306cf99f175197cf29de2b547b5cfb9">find_interface</a>(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> start, std::vector&lt;X*&gt;&amp; result) {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <a class="code" href="classcgv_1_1base_1_1find__action.html">find_action&lt;X&gt;</a> fa(result);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <a class="code" href="classcgv_1_1base_1_1traverser.html">traverser</a>(fa).<a class="code" href="classcgv_1_1base_1_1traverser.html#a0e666469a7cdf67c326cbea0b9be8f75">traverse</a>(start);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <a class="code" href="classcgv_1_1base_1_1find__action.html">find_action&lt;X&gt;</a> fa(result);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <a class="code" href="classcgv_1_1base_1_1traverser.html">traverser</a>(fa).<a class="code" href="classcgv_1_1base_1_1traverser.html#a0e666469a7cdf67c326cbea0b9be8f75">traverse</a>(start);</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;}</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> X, <span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="namespacecgv_1_1base.html#a36bdb717a44db6f25d51ffb3a110d6aa">   45</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1base.html#a36bdb717a44db6f25d51ffb3a110d6aa">ensure_by_find</a>(X* start, T*&amp; pointer, <span class="keywordtype">unsigned</span> i = 0)</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;{</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">if</span> (pointer)</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordflow">if</span> (pointer)</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        std::vector&lt;T*&gt; instances;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        cgv::base::find_interface&lt;T&gt;(<a class="code" href="namespacecgv_1_1base.html#a580333ed27888f5e8c61452a44545f51">base_ptr</a>(start), instances);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordflow">if</span> (instances.empty())</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        pointer = instances[i &lt; instances.size() ? i : instances.size() - 1];</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    std::vector&lt;T*&gt; instances;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    cgv::base::find_interface&lt;T&gt;(<a class="code" href="namespacecgv_1_1base.html#a580333ed27888f5e8c61452a44545f51">base_ptr</a>(start), instances);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordflow">if</span> (instances.empty())</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    pointer = instances[i &lt; instances.size() ? i : instances.size() - 1];</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        }</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    }</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1base_1_1action_html"><div class="ttname"><a href="classcgv_1_1base_1_1action.html">cgv::base::action</a></div><div class="ttdoc">The action class is used in tree traversals together with the traverser.</div><div class="ttdef"><b>Definition:</b> <a href="action_8h_source.html#l00016">action.h:17</a></div></div>
 <div class="ttc" id="aclasscgv_1_1base_1_1action_html_a679a25a5f77e3ab9d607346942994b76"><div class="ttname"><a href="classcgv_1_1base_1_1action.html#a679a25a5f77e3ab9d607346942994b76">cgv::base::action::action</a></div><div class="ttdeci">action(bool _default_result_begin, bool _default_result_end)</div><div class="ttdoc">construct with default return values for the begin and end method</div><div class="ttdef"><b>Definition:</b> <a href="action_8cxx_source.html#l00006">action.cxx:6</a></div></div>

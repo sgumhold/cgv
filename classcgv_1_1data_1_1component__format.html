@@ -542,10 +542,10 @@ component &lt;- component_name [attributes]
 attributes &lt;- [':' bit_depth]['|' alignment]
 
 type &lt;- "undef" | "bool" | 
-                "int8"  | "int16"  | "int32"  | "int64"  | "uint8"  | "uint16"  | "uint32"  | "uint64" |
-                "sint8" | "sint16" | "sint32" | "sint64" |                                                // same as int* types but in snorm interpretation
-                "_int8" | "_int16" | "_int32" | "_int64" | "_uint8" | "_uint16" | "_uint32" | "_uint64" | // same as [u]int* but in integer interpretation
-                "flt16" | "flt32"  | "flt64"  | "string"
+        "int8"  | "int16"  | "int32"  | "int64"  | "uint8"  | "uint16"  | "uint32"  | "uint64" |
+        "sint8" | "sint16" | "sint32" | "sint64" |                                                // same as int* types but in snorm interpretation
+        "_int8" | "_int16" | "_int32" | "_int64" | "_uint8" | "_uint16" | "_uint32" | "_uint64" | // same as [u]int* but in integer interpretation
+        "flt16" | "flt32"  | "flt64"  | "string"
 
 component_name : string ... name of component, i.e. "R", "Cb", "px", ...
 

@@ -91,26 +91,26 @@ $(document).ready(function(){initNavTree('clean_8h_source.html',''); initResizab
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;cgv/type/func/drop_ref.h&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="keyword">namespace </span>type {</div>
-<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="namespacecgv_1_1type_1_1func.html">    9</a></span>&#160;                <span class="keyword">namespace </span>func {</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    <span class="keyword">namespace </span>type {</div>
+<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="namespacecgv_1_1type_1_1func.html">    9</a></span>&#160;        <span class="keyword">namespace </span>func {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="structcgv_1_1type_1_1func_1_1clean.html">   13</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1type_1_1func_1_1clean.html">clean</a></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;{</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code" href="structcgv_1_1type_1_1func_1_1drop__const.html#a0722721b66d95e42f409360f5dc47710">func::drop_const&lt;T&gt;::type</a> drop_const_type;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code" href="structcgv_1_1type_1_1func_1_1drop__ref.html#a95bad19320825640538a1caf3e9b8fb2">func::drop_ref&lt;drop_const_type&gt;::type</a> type;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code" href="structcgv_1_1type_1_1func_1_1drop__const.html#a0722721b66d95e42f409360f5dc47710">func::drop_const&lt;T&gt;::type</a> drop_const_type;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code" href="structcgv_1_1type_1_1func_1_1drop__ref.html#a95bad19320825640538a1caf3e9b8fb2">func::drop_ref&lt;drop_const_type&gt;::type</a> type;</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;};</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="structcgv_1_1type_1_1func_1_1clean__traits.html">   20</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1type_1_1func_1_1clean__traits.html">clean_traits</a> : <span class="keyword">public</span> <a class="code" href="structcgv_1_1type_1_1func_1_1clean.html">clean</a>&lt;T&gt;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keyword">typedef</span> <span class="keyword">typename</span> clean&lt;T&gt;::type* pointer_type;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keyword">typedef</span> <span class="keyword">const</span> <span class="keyword">typename</span> clean&lt;T&gt;::type* const_pointer_type;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keyword">typedef</span> <span class="keyword">typename</span> clean&lt;T&gt;::type&amp; reference_type;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <span class="keyword">typedef</span> <span class="keyword">const</span> <span class="keyword">typename</span> clean&lt;T&gt;::type&amp; const_reference_type;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> clean&lt;T&gt;::type* pointer_type;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">const</span> <span class="keyword">typename</span> clean&lt;T&gt;::type* const_pointer_type;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> clean&lt;T&gt;::type&amp; reference_type;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">const</span> <span class="keyword">typename</span> clean&lt;T&gt;::type&amp; const_reference_type;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;};</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                }</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        }</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        }</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    }</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;}</div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="vr__calib_8cxx_source.html#l00009">vr_calib.cxx:9</a></div></div>
 <div class="ttc" id="astructcgv_1_1type_1_1func_1_1clean__traits_html"><div class="ttname"><a href="structcgv_1_1type_1_1func_1_1clean__traits.html">cgv::type::func::clean_traits</a></div><div class="ttdoc">defines value, reference and pointer types for potentially const and reference types</div><div class="ttdef"><b>Definition:</b> <a href="clean_8h_source.html#l00020">clean.h:21</a></div></div>

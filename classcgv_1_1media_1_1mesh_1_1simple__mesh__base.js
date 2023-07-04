@@ -40,7 +40,7 @@ var classcgv_1_1media_1_1mesh_1_1simple__mesh__base =
     [ "has_tex_coord_indices", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a8dcd7270d700f49416aa3efe26844ce0", null ],
     [ "material_index", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#abd74ae75e2198a5c87893dea27acfc67", null ],
     [ "material_index", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a04acd6db9ad1935576138e9d71a02c70", null ],
-    [ "merge_indices", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#aad80ef7cc9b163531591febd3a8bd333", null ],
+    [ "merge_indices", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a308e232556ccf1621e69fde8d6ceffe7", null ],
     [ "new_corner", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8", null ],
     [ "new_group", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ab5c9550bab2399e90872985034e9c5f2", null ],
     [ "new_material", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0e3f2b0198aa29df61f87183d95fc709", null ],

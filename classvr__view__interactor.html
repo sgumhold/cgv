@@ -474,35 +474,35 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">bool</span> your_class::init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx)</div>
 <div class="line">{</div>
-<div class="line">        <a class="code" href="namespacecgv_1_1gui.html#ae0975ed87d1a75c654c88184288a6543">cgv::gui::connect_vr_server</a>(<span class="keyword">true</span>);</div>
+<div class="line">    <a class="code" href="namespacecgv_1_1gui.html#ae0975ed87d1a75c654c88184288a6543">cgv::gui::connect_vr_server</a>(<span class="keyword">true</span>);</div>
 <div class="line"> </div>
-<div class="line">        <span class="keyword">auto</span> <a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a> = find_view_as_node();</div>
-<div class="line">        <span class="keywordflow">if</span> (view_ptr) {</div>
-<div class="line">                <span class="comment">// if the view points to a vr_view_interactor</span></div>
-<div class="line">                vr_view_ptr = <span class="keyword">dynamic_cast&lt;</span><a class="code" href="classvr__view__interactor.html">vr_view_interactor</a>*<span class="keyword">&gt;</span>(<a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a>);</div>
-<div class="line">                <span class="keywordflow">if</span> (vr_view_ptr) {</div>
-<div class="line">                        <span class="comment">// configure vr event processing</span></div>
-<div class="line">                        vr_view_ptr-&gt;<a class="code" href="classvr__view__interactor.html#adf4e1b4102711989f4218ba89d4add68">set_event_type_flags</a>(</div>
-<div class="line">                                <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cd">cgv::gui::VREventTypeFlags</a>(</div>
-<div class="line">                                        <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cdaa52da604bb760364d15d1f271264ccf5">cgv::gui::VRE_KEY</a> +</div>
-<div class="line">                                        cgv::gui::VRE_THROTTLE+</div>
-<div class="line">                                        cgv::gui::VRE_STICK +</div>
-<div class="line">                                        cgv::gui::VRE_STICK_KEY +</div>
-<div class="line">                                        <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cda111403896cb8142d28d52614b2470dab">cgv::gui::VRE_POSE</a></div>
-<div class="line">                                ));</div>
-<div class="line">                        vr_view_ptr-&gt;enable_vr_event_debugging(<span class="keyword">false</span>);</div>
-<div class="line">                        <span class="comment">// configure vr rendering</span></div>
-<div class="line">                        vr_view_ptr-&gt;draw_action_zone(<span class="keyword">false</span>);</div>
-<div class="line">                        vr_view_ptr-&gt;draw_vr_kits(<span class="keyword">true</span>);</div>
-<div class="line">                        vr_view_ptr-&gt;enable_blit_vr_views(<span class="keyword">true</span>);</div>
-<div class="line">                        vr_view_ptr-&gt;set_blit_vr_view_width(200);</div>
-<div class="line">                }</div>
+<div class="line">    <span class="keyword">auto</span> <a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a> = find_view_as_node();</div>
+<div class="line">    <span class="keywordflow">if</span> (view_ptr) {</div>
+<div class="line">        <span class="comment">// if the view points to a vr_view_interactor</span></div>
+<div class="line">        vr_view_ptr = <span class="keyword">dynamic_cast&lt;</span><a class="code" href="classvr__view__interactor.html">vr_view_interactor</a>*<span class="keyword">&gt;</span>(<a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a>);</div>
+<div class="line">        <span class="keywordflow">if</span> (vr_view_ptr) {</div>
+<div class="line">            <span class="comment">// configure vr event processing</span></div>
+<div class="line">            vr_view_ptr-&gt;<a class="code" href="classvr__view__interactor.html#adf4e1b4102711989f4218ba89d4add68">set_event_type_flags</a>(</div>
+<div class="line">                <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cd">cgv::gui::VREventTypeFlags</a>(</div>
+<div class="line">                    <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cdaa52da604bb760364d15d1f271264ccf5">cgv::gui::VRE_KEY</a> +</div>
+<div class="line">                    cgv::gui::VRE_THROTTLE+</div>
+<div class="line">                    cgv::gui::VRE_STICK +</div>
+<div class="line">                    cgv::gui::VRE_STICK_KEY +</div>
+<div class="line">                    <a class="code" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cda111403896cb8142d28d52614b2470dab">cgv::gui::VRE_POSE</a></div>
+<div class="line">                ));</div>
+<div class="line">            vr_view_ptr-&gt;enable_vr_event_debugging(<span class="keyword">false</span>);</div>
+<div class="line">            <span class="comment">// configure vr rendering</span></div>
+<div class="line">            vr_view_ptr-&gt;draw_action_zone(<span class="keyword">false</span>);</div>
+<div class="line">            vr_view_ptr-&gt;draw_vr_kits(<span class="keyword">true</span>);</div>
+<div class="line">            vr_view_ptr-&gt;enable_blit_vr_views(<span class="keyword">true</span>);</div>
+<div class="line">            vr_view_ptr-&gt;set_blit_vr_view_width(200);</div>
 <div class="line">        }</div>
-<div class="line">        <span class="comment">// more application specific init here</span></div>
+<div class="line">    }</div>
+<div class="line">    <span class="comment">// more application specific init here</span></div>
 <div class="line"> </div>
-<div class="line">        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line">    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00559">context.h:560</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00580">context.h:581</a></div></div>
 <div class="ttc" id="aclassvr__view__interactor_html"><div class="ttname"><a href="classvr__view__interactor.html">vr_view_interactor</a></div><div class="ttdoc">extends the stereo view interactor for vr support</div><div class="ttdef"><b>Definition:</b> <a href="vr__view__interactor_8h_source.html#l00068">vr_view_interactor.h:69</a></div></div>
 <div class="ttc" id="aclassvr__view__interactor_html_adf4e1b4102711989f4218ba89d4add68"><div class="ttname"><a href="classvr__view__interactor.html#adf4e1b4102711989f4218ba89d4add68">vr_view_interactor::set_event_type_flags</a></div><div class="ttdeci">void set_event_type_flags(cgv::gui::VREventTypeFlags flags)</div><div class="ttdoc">set the event type flags of to be emitted events</div><div class="ttdef"><b>Definition:</b> <a href="vr__view__interactor_8cxx_source.html#l00167">vr_view_interactor.cxx:167</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1gui_html_aceb07fba6859effc2353f70788dd7f9b"><div class="ttname"><a href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">cgv::gui::view_ptr</a></div><div class="ttdeci">data::ref_ptr&lt; abst_view &gt; view_ptr</div><div class="ttdoc">ref counted pointer to abst view</div><div class="ttdef"><b>Definition:</b> <a href="gui_2view_8h_source.html#l00036">view.h:36</a></div></div>

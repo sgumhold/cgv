@@ -94,17 +94,17 @@ $(document).ready(function(){initNavTree('media_2color__scale_8h_source.html',''
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        <span class="keyword">namespace </span>media {</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keyword">namespace </span>media {</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">enum</span> ColorScale {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        CS_RED,   </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        CS_GREEN, </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        CS_BLUE,  </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        CS_GRAY,  </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        CS_TEMPERATURE,   </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        CS_HUE,           </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        CS_HUE_LUMINANCE, </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        CS_NAMED          </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    CS_RED,   </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    CS_GREEN, </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    CS_BLUE,  </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    CS_GRAY,  </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    CS_TEMPERATURE,   </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    CS_HUE,           </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    CS_HUE_LUMINANCE, </div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    CS_NAMED          </div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;};</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">extern</span> CGV_API color&lt;float,RGB&gt; color_scale(<span class="keywordtype">double</span> value, ColorScale cs = CS_TEMPERATURE, <span class="keywordtype">int</span> polarity = 0);</div>
@@ -133,7 +133,7 @@ $(document).ready(function(){initNavTree('media_2color__scale_8h_source.html',''
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="keyword">extern</span> CGV_API color&lt;float, RGB&gt; sample_sampled_color_scale(<span class="keywordtype">float</span> value, <span class="keyword">const</span> std::vector&lt;color&lt;float, RGB&gt;&gt;&amp; samples, <span class="keywordtype">bool</span> is_bipolar = <span class="keyword">false</span>);</div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        }</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    }</div>
 <div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;}</div>
 <div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
 <div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>

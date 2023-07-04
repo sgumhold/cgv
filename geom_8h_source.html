@@ -90,77 +90,77 @@ $(document).ready(function(){initNavTree('geom_8h_source.html',''); initResizabl
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;fmat.h&quot;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="keyword">namespace </span>math {</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;    <span class="keyword">namespace </span>math {</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ad952cb09accb18e3535e7aeb6c8a5957">   10</a></span>&#160;                <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a> <a class="code" href="namespacecgv_1_1math.html#ad952cb09accb18e3535e7aeb6c8a5957">rotate</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; v, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; n, T a)</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;                {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a> vn = <a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(n, v)*n;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                        <span class="keywordflow">return</span> vn + cos(a)*(v - vn) + sin(a)*<a class="code" href="namespacecgv_1_1math.html#a43c477a6a271f0ea40c265e5182c529e">cross</a>(n, v);</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                }</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ad952cb09accb18e3535e7aeb6c8a5957">   10</a></span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a> <a class="code" href="namespacecgv_1_1math.html#ad952cb09accb18e3535e7aeb6c8a5957">rotate</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; v, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; n, T a)</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        {</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a> vn = <a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(n, v)*n;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            <span class="keywordflow">return</span> vn + cos(a)*(v - vn) + sin(a)*<a class="code" href="namespacecgv_1_1math.html#a43c477a6a271f0ea40c265e5182c529e">cross</a>(n, v);</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        }</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a06d82df0891c707f07c81f85eb818690">   18</a></span>&#160;                <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#a06d82df0891c707f07c81f85eb818690">compute_rotation_axis_and_angle_from_vector_pair</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; v0, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; v1, <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; axis, T&amp; angle)</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                {</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                        axis = <a class="code" href="namespacecgv_1_1math.html#a43c477a6a271f0ea40c265e5182c529e">cross</a>(v0, v1);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                        T len = axis.<a class="code" href="classcgv_1_1math_1_1fvec.html#a68f4c962a48bde5bf2b65494c6e89985">length</a>();</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                        <span class="keywordflow">if</span> (len &gt; 2 * std::numeric_limits&lt;T&gt;::epsilon())</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                                axis *= T(1) / len;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                                axis[1] = T(1);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                        angle = atan2(len, <a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(v0, v1));</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                }</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a06d82df0891c707f07c81f85eb818690">   18</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#a06d82df0891c707f07c81f85eb818690">compute_rotation_axis_and_angle_from_vector_pair</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; v0, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; v1, <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; axis, T&amp; angle)</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        {</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            axis = <a class="code" href="namespacecgv_1_1math.html#a43c477a6a271f0ea40c265e5182c529e">cross</a>(v0, v1);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            T len = axis.<a class="code" href="classcgv_1_1math_1_1fvec.html#a68f4c962a48bde5bf2b65494c6e89985">length</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <span class="keywordflow">if</span> (len &gt; 2 * std::numeric_limits&lt;T&gt;::epsilon())</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                axis *= T(1) / len;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                axis[1] = T(1);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            angle = atan2(len, <a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(v0, v1));</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        }</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ab5a5bdaef42e636106d43ad1273d6534">   37</a></span>&#160;                <span class="keywordtype">int</span> <a class="code" href="namespacecgv_1_1math.html#ab5a5bdaef42e636106d43ad1273d6534">decompose_rotation_to_axis_and_angle</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat&lt;T, 3, 3&gt;</a>&amp; R, <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; axis, T&amp; angle)</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                        axis(0) = R(2, 1) - R(1, 2);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                        axis(1) = R(0, 2) - R(2, 0);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                        axis(2) = R(1, 0) - R(0, 1);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                        T len = axis.<a class="code" href="classcgv_1_1math_1_1fvec.html#a68f4c962a48bde5bf2b65494c6e89985">length</a>();</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                        T tra = R.<a class="code" href="classcgv_1_1math_1_1fmat.html#acd467df60bb7e088cdb8c4ba405b7f66">trace</a>();</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                        <span class="keywordflow">if</span> (len &lt; 2 * std::numeric_limits&lt;T&gt;::epsilon()) {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                                <span class="keywordflow">if</span> (tra &lt; 0) {</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                                        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> c = 0; c&lt;3; ++c)</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                                                <span class="keywordflow">if</span> (R(c, c) &gt; 0) {</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                                                        axis(c) = T(1);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                                                        angle = M_PI;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                                                        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                                                }</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                                        <span class="keywordflow">return</span> 1;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                                }</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                                <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                                        axis(1) = T(1);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                                        angle = 0;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                                        <span class="keywordflow">return</span> 2;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                                }</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                        }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                                axis *= T(1) / len;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                                angle = atan2(len, tra - T(1));</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                                <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                        }</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                }</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ab5a5bdaef42e636106d43ad1273d6534">   37</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="namespacecgv_1_1math.html#ab5a5bdaef42e636106d43ad1273d6534">decompose_rotation_to_axis_and_angle</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat&lt;T, 3, 3&gt;</a>&amp; R, <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; axis, T&amp; angle)</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        {</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            axis(0) = R(2, 1) - R(1, 2);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            axis(1) = R(0, 2) - R(2, 0);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            axis(2) = R(1, 0) - R(0, 1);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            T len = axis.<a class="code" href="classcgv_1_1math_1_1fvec.html#a68f4c962a48bde5bf2b65494c6e89985">length</a>();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            T tra = R.<a class="code" href="classcgv_1_1math_1_1fmat.html#acd467df60bb7e088cdb8c4ba405b7f66">trace</a>();</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            <span class="keywordflow">if</span> (len &lt; 2 * std::numeric_limits&lt;T&gt;::epsilon()) {</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                <span class="keywordflow">if</span> (tra &lt; 0) {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> c = 0; c&lt;3; ++c)</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                        <span class="keywordflow">if</span> (R(c, c) &gt; 0) {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                            axis(c) = T(1);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                            angle = M_PI;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                        }</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                    <span class="keywordflow">return</span> 1;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                }</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                    axis(1) = T(1);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                    angle = 0;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                    <span class="keywordflow">return</span> 2;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                }</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            }</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                axis *= T(1) / len;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                angle = atan2(len, tra - T(1));</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            }</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        }</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ae603218d7efcd704cd6e26a753aa1f98">   76</a></span>&#160;                <a class="code" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat&lt;T, 3, 3&gt;</a> <a class="code" href="namespacecgv_1_1math.html#ae603218d7efcd704cd6e26a753aa1f98">build_orthogonal_frame</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; v0, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; v1)</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat&lt;T, 3, 3&gt;</a> O;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ae603218d7efcd704cd6e26a753aa1f98">   76</a></span>&#160;        <a class="code" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat&lt;T, 3, 3&gt;</a> <a class="code" href="namespacecgv_1_1math.html#ae603218d7efcd704cd6e26a753aa1f98">build_orthogonal_frame</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; v0, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; v1)</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        {</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat&lt;T, 3, 3&gt;</a> O;</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; x = (<a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp;)O(0, 0);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; y = (<a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp;)O(0, 1);</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                        <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; z = (<a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp;)O(0, 2);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; x = (<a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp;)O(0, 0);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; y = (<a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp;)O(0, 1);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp; z = (<a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, 3&gt;</a>&amp;)O(0, 2);</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                        x = v0;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                        x.<a class="code" href="classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b">normalize</a>();</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                        z = <a class="code" href="namespacecgv_1_1math.html#a43c477a6a271f0ea40c265e5182c529e">cross</a>(v0, v1);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                        z.<a class="code" href="classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b">normalize</a>();</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                        y = <a class="code" href="namespacecgv_1_1math.html#a43c477a6a271f0ea40c265e5182c529e">cross</a>(z, x);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            x = v0;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            x.<a class="code" href="classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b">normalize</a>();</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            z = <a class="code" href="namespacecgv_1_1math.html#a43c477a6a271f0ea40c265e5182c529e">cross</a>(v0, v1);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            z.<a class="code" href="classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b">normalize</a>();</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            y = <a class="code" href="namespacecgv_1_1math.html#a43c477a6a271f0ea40c265e5182c529e">cross</a>(z, x);</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                        <span class="keywordflow">return</span> O;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                }</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            <span class="keywordflow">return</span> O;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        }</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    }</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fmat_html"><div class="ttname"><a href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a></div><div class="ttdoc">matrix of fixed size dimensions</div><div class="ttdef"><b>Definition:</b> <a href="fmat_8h_source.html#l00023">fmat.h:24</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fmat_html_acd467df60bb7e088cdb8c4ba405b7f66"><div class="ttname"><a href="classcgv_1_1math_1_1fmat.html#acd467df60bb7e088cdb8c4ba405b7f66">cgv::math::fmat::trace</a></div><div class="ttdeci">T trace() const</div><div class="ttdoc">returns the trace</div><div class="ttdef"><b>Definition:</b> <a href="fmat_8h_source.html#l00223">fmat.h:223</a></div></div>

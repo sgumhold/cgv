@@ -159,161 +159,161 @@ $(document).ready(function(){initNavTree('gl__cursor_8cxx_source.html',''); init
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* get_bitmap_data(HBITMAP hbmp, <span class="keywordtype">unsigned</span>&amp; tex_w, <span class="keywordtype">unsigned</span>&amp; tex_h)</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;{</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        BITMAP bmp; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordflow">if</span> (!GetObject(hbmp, <span class="keyword">sizeof</span>(BITMAP), (LPSTR)&amp;bmp)) </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        PBITMAPINFO pbi = CreateBitmapInfoStruct(hbmp);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        PBITMAPINFOHEADER pbih = (PBITMAPINFOHEADER) pbi;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keywordtype">unsigned</span> my_size = 4 * pbih-&gt;biWidth * pbih-&gt;biHeight;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keywordflow">if</span> (pbih-&gt;biSizeImage &gt;= my_size)</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                my_size = pbih-&gt;biSizeImage;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* lpBits = <span class="keyword">new</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>[my_size];</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    BITMAP bmp; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordflow">if</span> (!GetObject(hbmp, <span class="keyword">sizeof</span>(BITMAP), (LPSTR)&amp;bmp)) </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    PBITMAPINFO pbi = CreateBitmapInfoStruct(hbmp);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    PBITMAPINFOHEADER pbih = (PBITMAPINFOHEADER) pbi;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordtype">unsigned</span> my_size = 4 * pbih-&gt;biWidth * pbih-&gt;biHeight;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keywordflow">if</span> (pbih-&gt;biSizeImage &gt;= my_size)</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        my_size = pbih-&gt;biSizeImage;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* lpBits = <span class="keyword">new</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>[my_size];</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordflow">if</span> (!lpBits)</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">if</span> (!GetDIBits(GetDC(NULL), hbmp, 0, (WORD) pbih-&gt;biHeight, lpBits, pbi, DIB_RGB_COLORS))</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        tex_w = bmp.bmWidth;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        tex_h = bmp.bmHeight;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keywordflow">return</span> lpBits;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordflow">if</span> (!GetDIBits(GetDC(NULL), hbmp, 0, (WORD) pbih-&gt;biHeight, lpBits, pbi, DIB_RGB_COLORS))</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    tex_w = bmp.bmWidth;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    tex_h = bmp.bmHeight;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordflow">return</span> lpBits;</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;}</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* get_cursor_bitmap(HCURSOR hc, <span class="keywordtype">unsigned</span>&amp; w, <span class="keywordtype">unsigned</span>&amp; h, <span class="keywordtype">int</span> anim_step = 0)</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;{</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        ICONINFO ii;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        GetIconInfo(hc, &amp;ii);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        BITMAP bmp;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keywordflow">if</span> (!GetObject(ii.hbmColor ? ii.hbmColor : ii.hbmMask, <span class="keyword">sizeof</span>(BITMAP), (LPSTR)&amp;bmp)) </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        w = bmp.bmWidth;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        h = bmp.bmHeight;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keywordflow">if</span> (h == 2*w)</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                h = w;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        HDC dc = GetDC(NULL);</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        HDC mem_dc = CreateCompatibleDC(dc);</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        HBITMAP hbm = CreateCompatibleBitmap (dc, w, h);</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        HBITMAP old_bm = (HBITMAP)SelectObject(mem_dc, hbm);</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        RECT r;</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        r.left = 0;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        r.bottom = 0;</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        r.right = w;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        r.top = h;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        HBRUSH black = CreateSolidBrush(RGB(0,0,0));</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    ICONINFO ii;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    GetIconInfo(hc, &amp;ii);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    BITMAP bmp;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordflow">if</span> (!GetObject(ii.hbmColor ? ii.hbmColor : ii.hbmMask, <span class="keyword">sizeof</span>(BITMAP), (LPSTR)&amp;bmp)) </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    w = bmp.bmWidth;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    h = bmp.bmHeight;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordflow">if</span> (h == 2*w)</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        h = w;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    HDC dc = GetDC(NULL);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    HDC mem_dc = CreateCompatibleDC(dc);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    HBITMAP hbm = CreateCompatibleBitmap (dc, w, h);</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    HBITMAP old_bm = (HBITMAP)SelectObject(mem_dc, hbm);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    RECT r;</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    r.left = 0;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    r.bottom = 0;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    r.right = w;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    r.top = h;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    HBRUSH black = CreateSolidBrush(RGB(0,0,0));</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        FillRect(mem_dc,&amp;r, black);</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keywordflow">if</span> (DrawIconEx(mem_dc,0,0,hc,w,h,anim_step,NULL,DI_NORMAL | DI_COMPAT) == FALSE) {</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                SelectObject(mem_dc, old_bm);</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                DeleteObject(black);</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                DeleteObject(hbm);</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                DeleteDC(mem_dc);</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                ReleaseDC(NULL,dc);</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        }</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    FillRect(mem_dc,&amp;r, black);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordflow">if</span> (DrawIconEx(mem_dc,0,0,hc,w,h,anim_step,NULL,DI_NORMAL | DI_COMPAT) == FALSE) {</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        SelectObject(mem_dc, old_bm);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        DeleteObject(black);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        DeleteObject(hbm);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        DeleteDC(mem_dc);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        ReleaseDC(NULL,dc);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    }</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        SelectObject(mem_dc, old_bm);</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* data_b = get_bitmap_data(hbm,w,h);</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        </div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        old_bm = (HBITMAP)SelectObject(mem_dc, hbm);</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        HBRUSH white = CreateSolidBrush(RGB(255,255,255));</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        FillRect(mem_dc,&amp;r, white);</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        DrawIconEx(mem_dc,0,0,hc,w,h,anim_step,NULL,DI_NORMAL | DI_COMPAT);</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        SelectObject(mem_dc, old_bm);</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* data_w = get_bitmap_data(hbm,w,h);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    SelectObject(mem_dc, old_bm);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* data_b = get_bitmap_data(hbm,w,h);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    </div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    old_bm = (HBITMAP)SelectObject(mem_dc, hbm);</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    HBRUSH white = CreateSolidBrush(RGB(255,255,255));</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    FillRect(mem_dc,&amp;r, white);</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    DrawIconEx(mem_dc,0,0,hc,w,h,anim_step,NULL,DI_NORMAL | DI_COMPAT);</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    SelectObject(mem_dc, old_bm);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* data_w = get_bitmap_data(hbm,w,h);</div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keywordtype">unsigned</span> n=w*h;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;n; ++i) {</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                <span class="keywordtype">int</span> sum_alpha = 0;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;                <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j=0; j&lt;3; ++j)</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                        sum_alpha += 255+(<span class="keywordtype">int</span>)data_b[4*i+j]-(int)data_w[4*i+j];</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;                <span class="keywordflow">if</span> (sum_alpha &gt; 3*255)</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                        sum_alpha = 3*255;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> alpha = (<span class="keywordtype">unsigned</span> char)(sum_alpha/3);</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                data_b[4*i+3] = alpha;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                <span class="keywordflow">if</span> (alpha &gt; 0) {</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j=0; j&lt;3; ++j) {</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                                <span class="keywordtype">float</span> v = data_b[4*i+j]*255.0f/alpha;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;                                <span class="keywordflow">if</span> (v &gt; 255)</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;                                        v = 255;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                                data_b[4*i+j] = (<span class="keywordtype">unsigned</span> char) v;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                        }</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                }</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        }</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        <span class="keyword">delete</span> [] data_w;</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        </div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        DeleteObject(white);</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        DeleteObject(black);</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        DeleteObject(hbm);</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        DeleteDC(mem_dc);</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        ReleaseDC(NULL,dc);</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        <span class="keywordflow">return</span> data_b;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keywordtype">unsigned</span> n=w*h;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;n; ++i) {</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <span class="keywordtype">int</span> sum_alpha = 0;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j=0; j&lt;3; ++j)</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;            sum_alpha += 255+(<span class="keywordtype">int</span>)data_b[4*i+j]-(int)data_w[4*i+j];</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <span class="keywordflow">if</span> (sum_alpha &gt; 3*255)</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;            sum_alpha = 3*255;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> alpha = (<span class="keywordtype">unsigned</span> char)(sum_alpha/3);</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        data_b[4*i+3] = alpha;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        <span class="keywordflow">if</span> (alpha &gt; 0) {</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j=0; j&lt;3; ++j) {</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                <span class="keywordtype">float</span> v = data_b[4*i+j]*255.0f/alpha;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;                <span class="keywordflow">if</span> (v &gt; 255)</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;                    v = 255;</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                data_b[4*i+j] = (<span class="keywordtype">unsigned</span> char) v;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;            }</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        }</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    }</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keyword">delete</span> [] data_w;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    </div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    DeleteObject(white);</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    DeleteObject(black);</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    DeleteObject(hbm);</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    DeleteDC(mem_dc);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    ReleaseDC(NULL,dc);</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="keywordflow">return</span> data_b;</div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;}</div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="keywordtype">unsigned</span> create_texture_from_cursor(HCURSOR hc, <span class="keywordtype">unsigned</span>&amp; tex_w, <span class="keywordtype">unsigned</span>&amp; tex_h, <span class="keywordtype">int</span>&amp; hot_x, <span class="keywordtype">int</span>&amp; hot_y, <span class="keywordtype">int</span> anim_step = 0)</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;{</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        <span class="keywordtype">unsigned</span> tex_id;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        ICONINFO ii;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        GetIconInfo(hc, &amp;ii);</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="comment">/*      ICONINFOEX iie;</span></div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="comment">        iie.cbSize = sizeof(ICONINFOEX);</span></div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="comment">        GetIconInfoEx(hc, &amp;iie);*/</span></div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* bgra_data = get_cursor_bitmap(hc, tex_w, tex_h, anim_step);</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <span class="keywordflow">if</span> (!bgra_data)</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        <span class="keywordflow">if</span> (anim_step == 1) {</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                <span class="keywordtype">unsigned</span> w,h;</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* first_bgra_data = get_cursor_bitmap(hc, w, h, 0);</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                <span class="keywordtype">int</span> m=4*tex_w*tex_h;</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                <span class="keywordtype">bool</span> found_diff = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j=0; !found_diff &amp;&amp; (j&lt;m); ++j)</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                        <span class="keywordflow">if</span> (first_bgra_data[j] != bgra_data[j])</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                                found_diff = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                <span class="keyword">delete</span> [] first_bgra_data;</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                <span class="keywordflow">if</span> (!found_diff) {</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                        <span class="keyword">delete</span> [] bgra_data;</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;                        <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;                }</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        }</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        hot_x = ii.xHotspot;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;        hot_y = ii.yHotspot;</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        glGenTextures(1, &amp;tex_id);</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;        glBindTexture(GL_TEXTURE_2D, tex_id);</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex_w, tex_h, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, bgra_data);</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        <span class="keyword">delete</span> [] bgra_data;</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        <span class="keywordflow">return</span> tex_id;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="keywordtype">unsigned</span> tex_id;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    ICONINFO ii;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    GetIconInfo(hc, &amp;ii);</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="comment">/*  ICONINFOEX iie;</span></div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="comment">    iie.cbSize = sizeof(ICONINFOEX);</span></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="comment">    GetIconInfoEx(hc, &amp;iie);*/</span></div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* bgra_data = get_cursor_bitmap(hc, tex_w, tex_h, anim_step);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keywordflow">if</span> (!bgra_data)</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="keywordflow">if</span> (anim_step == 1) {</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        <span class="keywordtype">unsigned</span> w,h;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* first_bgra_data = get_cursor_bitmap(hc, w, h, 0);</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        <span class="keywordtype">int</span> m=4*tex_w*tex_h;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        <span class="keywordtype">bool</span> found_diff = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j=0; !found_diff &amp;&amp; (j&lt;m); ++j)</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            <span class="keywordflow">if</span> (first_bgra_data[j] != bgra_data[j])</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                found_diff = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        <span class="keyword">delete</span> [] first_bgra_data;</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        <span class="keywordflow">if</span> (!found_diff) {</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;            <span class="keyword">delete</span> [] bgra_data;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;            <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        }</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    }</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    hot_x = ii.xHotspot;</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    hot_y = ii.yHotspot;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    glGenTextures(1, &amp;tex_id);</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    glBindTexture(GL_TEXTURE_2D, tex_id);</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex_w, tex_h, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, bgra_data);</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    <span class="keyword">delete</span> [] bgra_data;</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    <span class="keywordflow">return</span> tex_id;</div>
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;}</div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        <span class="keyword">namespace </span>render {</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                <span class="keyword">namespace </span>gl {</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    <span class="keyword">namespace </span>render {</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        <span class="keyword">namespace </span>gl {</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
 <div class="line"><a name="l00205"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a00f5a10e2c1fb1428f0ad0ce9f1994af">  205</a></span>&#160;<a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a00f5a10e2c1fb1428f0ad0ce9f1994af">gl_cursor::gl_cursor</a>()</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;{</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        w=h=hot_x=hot_y=0;</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        duration = 1;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    w=h=hot_x=hot_y=0;</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    duration = 1;</div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;}</div>
 <div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
 <div class="line"><a name="l00211"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a2868ea228d120f0a13a67cef25668be4">  211</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a2868ea228d120f0a13a67cef25668be4">gl_cursor::is_created</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;        <span class="keywordflow">return</span> tex_ids.size() &gt; 0;</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    <span class="keywordflow">return</span> tex_ids.size() &gt; 0;</div>
 <div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;}</div>
 <div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160; </div>
 <div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;<span class="keywordtype">void</span> gl_cursor::clear()</div>
 <div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;{</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;        <span class="keywordflow">while</span> (tex_ids.size() &gt; 0) {</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;                glDeleteTextures(1, &amp;tex_ids.back());</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                tex_ids.pop_back();</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;        }</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;        periods.clear();</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;        frames.clear();</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    <span class="keywordflow">while</span> (tex_ids.size() &gt; 0) {</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        glDeleteTextures(1, &amp;tex_ids.back());</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        tex_ids.pop_back();</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    }</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    periods.clear();</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    frames.clear();</div>
 <div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;}</div>
 <div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160; </div>
 <div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="keywordtype">void</span> gl_cursor::add_frame(<span class="keywordtype">unsigned</span> tex_id)</div>
 <div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;{</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;        <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a084bc7ea0a2e4ff3fa45f0bc12bc37b0">append_step</a>((<span class="keywordtype">unsigned</span>)tex_ids.size(),3);</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        tex_ids.push_back(tex_id);</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a084bc7ea0a2e4ff3fa45f0bc12bc37b0">append_step</a>((<span class="keywordtype">unsigned</span>)tex_ids.size(),3);</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    tex_ids.push_back(tex_id);</div>
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;}</div>
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160; </div>
 <div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="preprocessor">#ifdef WIN32</span></div>
@@ -323,69 +323,69 @@ $(document).ready(function(){initNavTree('gl__cursor_8cxx_source.html',''); init
 <div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160; </div>
 <div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;std::wstring str2wstr(<span class="keyword">const</span> std::string&amp; s)</div>
 <div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;{</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        std::wstring ws;</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        ws.resize(s.size());</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    std::wstring ws;</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;    ws.resize(s.size());</div>
 <div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="preprocessor">#ifdef WIN32</span></div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;        <span class="keywordtype">int</span> n = MultiByteToWideChar(CP_ACP,0,s.c_str(),(<span class="keywordtype">int</span>)s.size(),&amp;ws[0],(<span class="keywordtype">int</span>)ws.size());</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        ws.resize(n);</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    <span class="keywordtype">int</span> n = MultiByteToWideChar(CP_ACP,0,s.c_str(),(<span class="keywordtype">int</span>)s.size(),&amp;ws[0],(<span class="keywordtype">int</span>)ws.size());</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    ws.resize(n);</div>
 <div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;str2wstr(const std::string&amp; s) not implemented&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    std::cerr &lt;&lt; <span class="stringliteral">&quot;str2wstr(const std::string&amp; s) not implemented&quot;</span> &lt;&lt; std::endl;</div>
 <div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        <span class="keywordflow">return</span> ws;</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    <span class="keywordflow">return</span> ws;</div>
 <div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;}</div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160; </div>
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160; </div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;<span class="keywordtype">bool</span> create_from_cursor(HCURSOR hc, gl_cursor* c)</div>
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;{</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        <span class="keywordflow">if</span> (!hc)</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;        c-&gt;clear();</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;        <span class="keywordtype">unsigned</span> tex_id, i = 0;</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        <span class="keywordflow">do</span> {</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;                tex_id = create_texture_from_cursor(hc, c-&gt;w, c-&gt;h, c-&gt;hot_x, c-&gt;hot_y, i);</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;                <span class="keywordflow">if</span> (tex_id != -1)</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;                        c-&gt;add_frame(tex_id);</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;                ++i;</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;        } <span class="keywordflow">while</span> (tex_id != -1);</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;        <span class="keywordflow">return</span> c-&gt;is_created();</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;    <span class="keywordflow">if</span> (!hc)</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;    c-&gt;clear();</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    <span class="keywordtype">unsigned</span> tex_id, i = 0;</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    <span class="keywordflow">do</span> {</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        tex_id = create_texture_from_cursor(hc, c-&gt;w, c-&gt;h, c-&gt;hot_x, c-&gt;hot_y, i);</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        <span class="keywordflow">if</span> (tex_id != -1)</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;            c-&gt;add_frame(tex_id);</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        ++i;</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    } <span class="keywordflow">while</span> (tex_id != -1);</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    <span class="keywordflow">return</span> c-&gt;is_created();</div>
 <div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;}</div>
 <div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160; </div>
 <div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a5465003ac14ac87faaad5d8bb30d2784">gl_cursor::create</a>(<span class="keyword">const</span> std::string&amp; <span class="keywordtype">id</span>)</div>
 <div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;{</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;        <span class="keyword">static</span> <span class="keyword">struct </span>{ <span class="keyword">const</span> <span class="keywordtype">char</span>* id; </div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    <span class="keyword">static</span> <span class="keyword">struct </span>{ <span class="keyword">const</span> <span class="keywordtype">char</span>* id; </div>
 <div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;<span class="preprocessor">#ifdef UNICODE</span></div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;        LPCWSTR cid; </div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    LPCWSTR cid; </div>
 <div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;        LPCSTR cid;</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    LPCSTR cid;</div>
 <div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;        } lookup[] =</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;        {</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;                { <span class="stringliteral">&quot;startup&quot;</span>, IDC_APPSTARTING },</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;                { <span class="stringliteral">&quot;arrow&quot;</span>, IDC_ARROW },</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                { <span class="stringliteral">&quot;cross&quot;</span>, IDC_CROSS },</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;                { <span class="stringliteral">&quot;wait&quot;</span>, IDC_WAIT },</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;                { <span class="stringliteral">&quot;hand&quot;</span>, IDC_HAND },</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;                { <span class="stringliteral">&quot;help&quot;</span>, IDC_HELP },</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;                { <span class="stringliteral">&quot;no&quot;</span>, IDC_NO },</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;                { <span class="stringliteral">&quot;ns&quot;</span>, IDC_SIZENS },</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;                { <span class="stringliteral">&quot;we&quot;</span>, IDC_SIZEWE },</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;                { <span class="stringliteral">&quot;move&quot;</span>, IDC_SIZEALL },</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;                { <span class="stringliteral">&quot;nesw&quot;</span>, IDC_SIZENESW },</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;                { <span class="stringliteral">&quot;nwse&quot;</span>, IDC_SIZENWSE }</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;        };</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    } lookup[] =</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;    {</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;        { <span class="stringliteral">&quot;startup&quot;</span>, IDC_APPSTARTING },</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;        { <span class="stringliteral">&quot;arrow&quot;</span>, IDC_ARROW },</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;        { <span class="stringliteral">&quot;cross&quot;</span>, IDC_CROSS },</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;        { <span class="stringliteral">&quot;wait&quot;</span>, IDC_WAIT },</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;        { <span class="stringliteral">&quot;hand&quot;</span>, IDC_HAND },</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;        { <span class="stringliteral">&quot;help&quot;</span>, IDC_HELP },</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        { <span class="stringliteral">&quot;no&quot;</span>, IDC_NO },</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;        { <span class="stringliteral">&quot;ns&quot;</span>, IDC_SIZENS },</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;        { <span class="stringliteral">&quot;we&quot;</span>, IDC_SIZEWE },</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        { <span class="stringliteral">&quot;move&quot;</span>, IDC_SIZEALL },</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;        { <span class="stringliteral">&quot;nesw&quot;</span>, IDC_SIZENESW },</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;        { <span class="stringliteral">&quot;nwse&quot;</span>, IDC_SIZENWSE }</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;    };</div>
 <div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;<span class="preprocessor">#ifdef UNICODE</span></div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;        LPCWSTR cid = 0;</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    LPCWSTR cid = 0;</div>
 <div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;        LPCSTR cid = 0;</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;    LPCSTR cid = 0;</div>
 <div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;10; ++i)</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;                <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == lookup[i].<span class="keywordtype">id</span>) {</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;                        cid = lookup[i].cid;</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;                        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;                }</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;        <span class="keywordflow">if</span> (!cid)</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;        <span class="keywordflow">return</span> create_from_cursor(LoadCursor(NULL, cid), <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;10; ++i)</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;        <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == lookup[i].<span class="keywordtype">id</span>) {</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;            cid = lookup[i].cid;</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;        }</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    <span class="keywordflow">if</span> (!cid)</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    <span class="keywordflow">return</span> create_from_cursor(LoadCursor(NULL, cid), <span class="keyword">this</span>);</div>
 <div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;}</div>
 <div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160; </div>
 <div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;<span class="preprocessor">#include &lt;cgv/type/standard_types.h&gt;</span></div>
@@ -394,234 +394,234 @@ $(document).ready(function(){initNavTree('gl__cursor_8cxx_source.html',''); init
 <div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160; </div>
 <div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;<span class="keyword">struct </span>anih_structure</div>
 <div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;{</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;        <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> size;</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;        <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> nr_frames;</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;        <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> nr_steps;</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;        <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> width;</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;        <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> height;</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> nr_bits_per_pixel;</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> nr_planes;</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> display_rate;</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> flags;</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> size;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> nr_frames;</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;    <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> nr_steps;</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> width;</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> height;</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> nr_bits_per_pixel;</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> nr_planes;</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> display_rate;</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    <a class="code" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">uint32_type</a> flags;</div>
 <div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;};</div>
 <div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160; </div>
 <div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;<span class="keyword">struct </span>ani_riff_handler : <span class="keyword">public</span> media::riff_handler</div>
 <div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;{</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;        <span class="keywordtype">unsigned</span> nr_frames;</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;        <span class="keywordtype">unsigned</span> nr_steps;</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;        <span class="keywordtype">unsigned</span> period;</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;        gl_cursor* c;</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;        ani_riff_handler(gl_cursor* _c) : c(_c)</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;        {</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;                nr_frames = 0;</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                nr_steps = 0;</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                period = 3;</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;        }</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        <span class="keywordtype">void</span> process_chunk_data(media::fourcc <span class="keywordtype">id</span>, <span class="keywordtype">unsigned</span> size, <span class="keywordtype">void</span>* data_ptr)</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;        {</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;                <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == <span class="stringliteral">&quot;anih&quot;</span>) {</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                        anih_structure&amp; as = *((anih_structure*)data_ptr);</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;                        nr_frames = as.nr_frames;</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;                        nr_steps = as.nr_steps;</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                        period = as.display_rate == 0 ? 3 : as.display_rate;</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;                        c-&gt;tex_ids.resize(nr_frames);</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;                        c-&gt;frames.resize(nr_steps);</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;                        c-&gt;periods.resize(nr_steps);</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;                        <span class="keywordtype">unsigned</span> i;</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;                        <span class="keywordflow">for</span> (i=0; i&lt;nr_steps; ++i) {</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;                                c-&gt;frames[i] = i % nr_frames;</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;                                c-&gt;periods[i] = period;</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                        }</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                        <span class="keywordflow">for</span> (i=0; i&lt;nr_frames; ++i)</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                                c-&gt;tex_ids[i] = -1;</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                        c-&gt;update_duration();</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                }</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == <span class="stringliteral">&quot;seq&quot;</span>) {</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                        <span class="keywordtype">unsigned</span> count = size/4;</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                        <span class="keywordtype">unsigned</span> *values = (<span class="keywordtype">unsigned</span>*)data_ptr;</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                        c-&gt;frames.resize(count);</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                        c-&gt;periods.resize(count);</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                        <span class="keywordflow">if</span> (count != c-&gt;periods.size())</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                                std::cerr &lt;&lt; <span class="stringliteral">&quot;found wrong number of seq entries&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;                        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;                                <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;count; ++i)</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;                                        c-&gt;frames[i] = values[i];</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;                }</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;                <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == <span class="stringliteral">&quot;rate&quot;</span>) {</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;                        <span class="keywordtype">unsigned</span> count = size/4;</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;                        <span class="keywordtype">unsigned</span> *values = (<span class="keywordtype">unsigned</span>*)data_ptr;</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;                        <span class="keywordflow">if</span> (count != c-&gt;periods.size())</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;                                std::cerr &lt;&lt; <span class="stringliteral">&quot;found wrong number of rate entries&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;                        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;                                <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;count; ++i)</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;                                        c-&gt;periods[i] = values[i];</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;                        c-&gt;update_duration();</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;                }</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        }</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    <span class="keywordtype">unsigned</span> nr_frames;</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    <span class="keywordtype">unsigned</span> nr_steps;</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    <span class="keywordtype">unsigned</span> period;</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    gl_cursor* c;</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    ani_riff_handler(gl_cursor* _c) : c(_c)</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    {</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        nr_frames = 0;</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;        nr_steps = 0;</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        period = 3;</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    }</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    <span class="keywordtype">void</span> process_chunk_data(media::fourcc <span class="keywordtype">id</span>, <span class="keywordtype">unsigned</span> size, <span class="keywordtype">void</span>* data_ptr)</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    {</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;        <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == <span class="stringliteral">&quot;anih&quot;</span>) {</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;            anih_structure&amp; as = *((anih_structure*)data_ptr);</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;            nr_frames = as.nr_frames;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;            nr_steps = as.nr_steps;</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;            period = as.display_rate == 0 ? 3 : as.display_rate;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;            c-&gt;tex_ids.resize(nr_frames);</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;            c-&gt;frames.resize(nr_steps);</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;            c-&gt;periods.resize(nr_steps);</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;            <span class="keywordtype">unsigned</span> i;</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;            <span class="keywordflow">for</span> (i=0; i&lt;nr_steps; ++i) {</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;                c-&gt;frames[i] = i % nr_frames;</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;                c-&gt;periods[i] = period;</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;            }</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;            <span class="keywordflow">for</span> (i=0; i&lt;nr_frames; ++i)</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                c-&gt;tex_ids[i] = -1;</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;            c-&gt;update_duration();</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;        }</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == <span class="stringliteral">&quot;seq&quot;</span>) {</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;            <span class="keywordtype">unsigned</span> count = size/4;</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;            <span class="keywordtype">unsigned</span> *values = (<span class="keywordtype">unsigned</span>*)data_ptr;</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;            c-&gt;frames.resize(count);</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;            c-&gt;periods.resize(count);</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;            <span class="keywordflow">if</span> (count != c-&gt;periods.size())</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                std::cerr &lt;&lt; <span class="stringliteral">&quot;found wrong number of seq entries&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;                <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;count; ++i)</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;                    c-&gt;frames[i] = values[i];</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        }</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == <span class="stringliteral">&quot;rate&quot;</span>) {</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;            <span class="keywordtype">unsigned</span> count = size/4;</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;            <span class="keywordtype">unsigned</span> *values = (<span class="keywordtype">unsigned</span>*)data_ptr;</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;            <span class="keywordflow">if</span> (count != c-&gt;periods.size())</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;                std::cerr &lt;&lt; <span class="stringliteral">&quot;found wrong number of rate entries&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;                <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;count; ++i)</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;                    c-&gt;periods[i] = values[i];</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;            c-&gt;update_duration();</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        }</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    }</div>
 <div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;};</div>
 <div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160; </div>
 <div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#ad8bac073b71b11bee48e2df17c0bdc47">gl_cursor::create_from_file</a>(<span class="keyword">const</span> std::string&amp; file_name)</div>
 <div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;{</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;        <span class="comment">// extract upper case extension</span></div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;        <span class="keywordtype">unsigned</span> dot = (unsigned)file_name.find_last_of(<span class="charliteral">&#39;.&#39;</span>);</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;        <span class="keywordflow">if</span> (dot == std::string::npos)</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;        std::string ext = file_name.substr(dot+1);</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;ext.size(); ++i)</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;                <span class="keywordflow">if</span> (ext[i] &gt;= <span class="charliteral">&#39;a&#39;</span> &amp;&amp; ext[i] &lt;= <span class="charliteral">&#39;z&#39;</span>) {</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;                        ext[i] -= <span class="charliteral">&#39;a&#39;</span>;</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;                        ext[i] += <span class="charliteral">&#39;A&#39;</span>;</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;                }</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;    <span class="comment">// extract upper case extension</span></div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    <span class="keywordtype">unsigned</span> dot = (unsigned)file_name.find_last_of(<span class="charliteral">&#39;.&#39;</span>);</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    <span class="keywordflow">if</span> (dot == std::string::npos)</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;    std::string ext = file_name.substr(dot+1);</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;ext.size(); ++i)</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        <span class="keywordflow">if</span> (ext[i] &gt;= <span class="charliteral">&#39;a&#39;</span> &amp;&amp; ext[i] &lt;= <span class="charliteral">&#39;z&#39;</span>) {</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;            ext[i] -= <span class="charliteral">&#39;a&#39;</span>;</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;            ext[i] += <span class="charliteral">&#39;A&#39;</span>;</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;        }</div>
 <div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160; </div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;        <span class="comment">// load static cursors</span></div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;        <span class="keywordflow">if</span> (ext == <span class="stringliteral">&quot;CUR&quot;</span>) {</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;                <span class="keywordflow">return</span> create_from_cursor(LoadCursorFromFile(</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;    <span class="comment">// load static cursors</span></div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    <span class="keywordflow">if</span> (ext == <span class="stringliteral">&quot;CUR&quot;</span>) {</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;        <span class="keywordflow">return</span> create_from_cursor(LoadCursorFromFile(</div>
 <div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;#ifdef UNICODE</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;                        str2wstr(file_name).c_str()</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;            str2wstr(file_name).c_str()</div>
 <div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;#<span class="keywordflow">else</span></div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;                        file_name.c_str()</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;            file_name.c_str()</div>
 <div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;#endif</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;                ), <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;        ), <span class="keyword">this</span>);</div>
 <div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160; </div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;        }</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (ext == <span class="stringliteral">&quot;ANI&quot;</span>) {</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;                <span class="comment">// open file and get seq and rate chunks</span></div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;                clear();</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;                ani_riff_handler arh(<span class="keyword">this</span>);</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;                media::riff_reader rr(&amp;arh);</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;                <span class="keywordflow">if</span> (!rr.read(file_name))</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                <span class="comment">//</span></div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;                HCURSOR hc = LoadCursorFromFile(</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;    }</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (ext == <span class="stringliteral">&quot;ANI&quot;</span>) {</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;        <span class="comment">// open file and get seq and rate chunks</span></div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;        clear();</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;        ani_riff_handler arh(<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;        media::riff_reader rr(&amp;arh);</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;        <span class="keywordflow">if</span> (!rr.read(file_name))</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;        <span class="comment">//</span></div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;        HCURSOR hc = LoadCursorFromFile(</div>
 <div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;#ifdef UNICODE</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;                        str2wstr(file_name).c_str()</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;            str2wstr(file_name).c_str()</div>
 <div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;#<span class="keywordflow">else</span></div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;                        file_name.c_str()</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;            file_name.c_str()</div>
 <div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;#endif</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;                );</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;                <span class="keywordflow">if</span> (!hc)</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;                <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i&lt;get_nr_steps(); ++i) {</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;                        <span class="keywordflow">if</span> (tex_ids[frames[i]] == -1) {</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;                                tex_ids[frames[i]] = create_texture_from_cursor(hc, w, h, hot_x, hot_y, i);</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;                                <span class="keywordflow">if</span> (tex_ids[frames[i]] == -1) {</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;                                        clear();</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;                                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;                                }</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;                        }</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;                }</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;        }</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;        );</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;        <span class="keywordflow">if</span> (!hc)</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i&lt;get_nr_steps(); ++i) {</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;            <span class="keywordflow">if</span> (tex_ids[frames[i]] == -1) {</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;                tex_ids[frames[i]] = create_texture_from_cursor(hc, w, h, hot_x, hot_y, i);</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;                <span class="keywordflow">if</span> (tex_ids[frames[i]] == -1) {</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;                    clear();</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;                    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;                }</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;            }</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;        }</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;    }</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;}</div>
 <div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160; </div>
 <div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00432"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a5465003ac14ac87faaad5d8bb30d2784">  432</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a5465003ac14ac87faaad5d8bb30d2784">gl_cursor::create</a>(<span class="keyword">const</span> std::string&amp; <span class="keywordtype">id</span>)</div>
 <div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;{</div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;gl_cursor::create only implemented under WIN32&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    std::cerr &lt;&lt; <span class="stringliteral">&quot;gl_cursor::create only implemented under WIN32&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;}</div>
 <div class="line"><a name="l00437"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#ad8bac073b71b11bee48e2df17c0bdc47">  437</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#ad8bac073b71b11bee48e2df17c0bdc47">gl_cursor::create_from_file</a>(<span class="keyword">const</span> std::string&amp; file_name)</div>
 <div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;{</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;gl_cursor::create_from_file only implemented under WIN32&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;    std::cerr &lt;&lt; <span class="stringliteral">&quot;gl_cursor::create_from_file only implemented under WIN32&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;}</div>
 <div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160; </div>
 <div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160; </div>
 <div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;<span class="keywordtype">void</span> gl_cursor::update_duration()</div>
 <div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;{</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;        duration = 0;</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;periods.size(); ++i)</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;                duration += periods[i];</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;    duration = 0;</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0; i&lt;periods.size(); ++i)</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;        duration += periods[i];</div>
 <div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;}</div>
 <div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160; </div>
 <div class="line"><a name="l00453"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a0098fa3361a9d72c1ce6545a523ea449">  453</a></span>&#160;<span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a0098fa3361a9d72c1ce6545a523ea449">gl_cursor::get_nr_steps</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;        <span class="keywordflow">return</span> (<span class="keywordtype">unsigned</span>)frames.size();</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    <span class="keywordflow">return</span> (<span class="keywordtype">unsigned</span>)frames.size();</div>
 <div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;}</div>
 <div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160; </div>
 <div class="line"><a name="l00459"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#accb5c20524c1fc57e9da6d5c52c34cdb">  459</a></span>&#160;<span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#accb5c20524c1fc57e9da6d5c52c34cdb">gl_cursor::get_nr_frames</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        <span class="keywordflow">return</span> (<span class="keywordtype">unsigned</span>)tex_ids.size();</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;    <span class="keywordflow">return</span> (<span class="keywordtype">unsigned</span>)tex_ids.size();</div>
 <div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;}</div>
 <div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160; </div>
 <div class="line"><a name="l00465"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a405e50fb294a53f4649cae5dd8e81b6b">  465</a></span>&#160;<span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a405e50fb294a53f4649cae5dd8e81b6b">gl_cursor::get_texture_id</a>(<span class="keywordtype">unsigned</span> frame_idx)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;        <span class="keywordflow">return</span> tex_ids[frame_idx];</div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;    <span class="keywordflow">return</span> tex_ids[frame_idx];</div>
 <div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;}</div>
 <div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160; </div>
 <div class="line"><a name="l00471"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a981cc5c53287949edc5e21fe50291d95">  471</a></span>&#160;<span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a981cc5c53287949edc5e21fe50291d95">gl_cursor::get_step_frame</a>(<span class="keywordtype">unsigned</span> step_idx)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;        <span class="keywordflow">return</span> frames[step_idx];</div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;    <span class="keywordflow">return</span> frames[step_idx];</div>
 <div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;}</div>
 <div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160; </div>
 <div class="line"><a name="l00477"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#ac45d22a901c518a6f0419dd8f533335b">  477</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#ac45d22a901c518a6f0419dd8f533335b">gl_cursor::set_step_frame</a>(<span class="keywordtype">unsigned</span> step_idx, <span class="keywordtype">unsigned</span> frame_idx)</div>
 <div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;{</div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;        frames[step_idx] = frame_idx;</div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;    frames[step_idx] = frame_idx;</div>
 <div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;}</div>
 <div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160; </div>
 <div class="line"><a name="l00483"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a48883e79bff4a37810a1b1b5454cd1ba">  483</a></span>&#160;<span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a48883e79bff4a37810a1b1b5454cd1ba">gl_cursor::get_step_period</a>(<span class="keywordtype">unsigned</span> step_idx)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;        <span class="keywordflow">return</span> periods[step_idx];</div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;    <span class="keywordflow">return</span> periods[step_idx];</div>
 <div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;}</div>
 <div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160; </div>
 <div class="line"><a name="l00489"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a2be4f512c227b53690e050eba9a90e96">  489</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a2be4f512c227b53690e050eba9a90e96">gl_cursor::set_step_period</a>(<span class="keywordtype">unsigned</span> step_idx, <span class="keywordtype">unsigned</span> period)</div>
 <div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;{</div>
-<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;        periods[step_idx] = period;</div>
-<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;        update_duration();</div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;    periods[step_idx] = period;</div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;    update_duration();</div>
 <div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;}</div>
 <div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160; </div>
 <div class="line"><a name="l00496"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a084bc7ea0a2e4ff3fa45f0bc12bc37b0">  496</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a084bc7ea0a2e4ff3fa45f0bc12bc37b0">gl_cursor::append_step</a>(<span class="keywordtype">unsigned</span> frame_idx, <span class="keywordtype">unsigned</span> period)</div>
 <div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;{</div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;        frames.push_back(frame_idx);</div>
-<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;        periods.push_back(period);</div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;        update_duration();</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;    frames.push_back(frame_idx);</div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;    periods.push_back(period);</div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;    update_duration();</div>
 <div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;}</div>
 <div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160; </div>
 <div class="line"><a name="l00504"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#ae97462b03936cec99ea6f5ffaeb59664">  504</a></span>&#160;<span class="keywordtype">unsigned</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#ae97462b03936cec99ea6f5ffaeb59664">gl_cursor::find_step_index</a>(<span class="keywordtype">double</span> elapsed_seconds)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;        <span class="keywordtype">unsigned</span> i, period = ((int)(elapsed_seconds * 60))%duration;</div>
-<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;        <span class="keywordflow">for</span> (i=0; i&lt;periods.size(); ++i) {</div>
-<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;                <span class="keywordflow">if</span> (periods[i] &gt; period)</div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;                        <span class="keywordflow">return</span> i;</div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;                period -= periods[i];</div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;        }</div>
-<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;        <span class="keywordflow">return</span> i % periods.size();</div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;    <span class="keywordtype">unsigned</span> i, period = ((int)(elapsed_seconds * 60))%duration;</div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;    <span class="keywordflow">for</span> (i=0; i&lt;periods.size(); ++i) {</div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;        <span class="keywordflow">if</span> (periods[i] &gt; period)</div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;            <span class="keywordflow">return</span> i;</div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;        period -= periods[i];</div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;    }</div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;    <span class="keywordflow">return</span> i % periods.size();</div>
 <div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;}</div>
 <div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160; </div>
 <div class="line"><a name="l00515"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#acf070fda244141af086ca0ed077ab968">  515</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#acf070fda244141af086ca0ed077ab968">gl_cursor::draw</a>(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">bool</span> use_color, <span class="keywordtype">unsigned</span> frame_idx)</div>
 <div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;{</div>
-<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;        <span class="keywordflow">if</span> (frame_idx &gt;= tex_ids.size())</div>
-<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;                <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;        <span class="keywordflow">if</span> (tex_ids[frame_idx] == -1) </div>
-<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;                <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;    <span class="keywordflow">if</span> (frame_idx &gt;= tex_ids.size())</div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;    <span class="keywordflow">if</span> (tex_ids[frame_idx] == -1) </div>
+<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;        <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160; </div>
-<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;        glPushAttrib(GL_COLOR_BUFFER_BIT|GL_TEXTURE_BIT);</div>
-<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;        glEnable(GL_ALPHA_TEST);</div>
-<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;        glEnable(GL_BLEND);</div>
-<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;        glAlphaFunc(GL_GREATER, 0.0f);</div>
-<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);</div>
-<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, use_color ? GL_MODULATE : GL_REPLACE);</div>
-<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;        glBindTexture(GL_TEXTURE_2D, tex_ids[frame_idx]);</div>
-<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;        x -= hot_x;</div>
-<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;        y -= hot_y;</div>
-<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;        glEnable(GL_TEXTURE_2D);</div>
-<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;        glBegin(GL_QUADS);</div>
-<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;                glTexCoord2f(1,1);</div>
-<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;                glVertex2i(x+w,y);</div>
-<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;                glTexCoord2f(0,1);</div>
-<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;                glVertex2i(x,y);</div>
-<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;                glTexCoord2f(0,0);</div>
-<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;                glVertex2i(x,y+h);</div>
-<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;                glTexCoord2f(1,0);</div>
-<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;                glVertex2i(x+w,y+h);</div>
-<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;        glEnd();</div>
-<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;        glPopAttrib();</div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;    glPushAttrib(GL_COLOR_BUFFER_BIT|GL_TEXTURE_BIT);</div>
+<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;    glEnable(GL_ALPHA_TEST);</div>
+<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;    glEnable(GL_BLEND);</div>
+<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;    glAlphaFunc(GL_GREATER, 0.0f);</div>
+<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);</div>
+<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, use_color ? GL_MODULATE : GL_REPLACE);</div>
+<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;    glBindTexture(GL_TEXTURE_2D, tex_ids[frame_idx]);</div>
+<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;    x -= hot_x;</div>
+<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;    y -= hot_y;</div>
+<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;    glEnable(GL_TEXTURE_2D);</div>
+<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;    glBegin(GL_QUADS);</div>
+<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;        glTexCoord2f(1,1);</div>
+<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;        glVertex2i(x+w,y);</div>
+<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;        glTexCoord2f(0,1);</div>
+<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;        glVertex2i(x,y);</div>
+<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;        glTexCoord2f(0,0);</div>
+<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;        glVertex2i(x,y+h);</div>
+<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;        glTexCoord2f(1,0);</div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;        glVertex2i(x+w,y+h);</div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;    glEnd();</div>
+<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;    glPopAttrib();</div>
 <div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;}</div>
 <div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160; </div>
-<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;                }</div>
-<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;        }</div>
+<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;        }</div>
+<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;    }</div>
 <div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1render_1_1gl_1_1gl__cursor_html_a0098fa3361a9d72c1ce6545a523ea449"><div class="ttname"><a href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a0098fa3361a9d72c1ce6545a523ea449">cgv::render::gl::gl_cursor::get_nr_steps</a></div><div class="ttdeci">unsigned get_nr_steps() const</div><div class="ttdoc">return the number of animation steps</div><div class="ttdef"><b>Definition:</b> <a href="gl__cursor_8cxx_source.html#l00453">gl_cursor.cxx:453</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1gl_1_1gl__cursor_html_a00f5a10e2c1fb1428f0ad0ce9f1994af"><div class="ttname"><a href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a00f5a10e2c1fb1428f0ad0ce9f1994af">cgv::render::gl::gl_cursor::gl_cursor</a></div><div class="ttdeci">gl_cursor()</div><div class="ttdoc">construct empty gl_cursor instance</div><div class="ttdef"><b>Definition:</b> <a href="gl__cursor_8cxx_source.html#l00205">gl_cursor.cxx:205</a></div></div>

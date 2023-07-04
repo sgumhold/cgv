@@ -281,12 +281,12 @@ Internal Makefiles (Windows only)</h1>
 <div class="line">// - &quot;application&quot; ... executable that can take arguments of the form &quot;plugin:my_plugin&quot;</div>
 <div class="line">// - &quot;application_plugin&quot; ... has the same configurations as a plugin plus two additional</div>
 <div class="line">//                configurations called &quot;Release Exe&quot; and &quot;Debug Exe&quot; that generate an</div>
-<div class="line">//                            executable with all plugins statically linked in. The solution of an</div>
-<div class="line">//                                application_plugin uses the new configurations by default in the static</div>
-<div class="line">//                                solution configurations &quot;Release&quot; and &quot;Debug&quot;. When an application_plugin</div>
-<div class="line">//                                is a dependent plugin of another application_plugin, the other solution uses</div>
-<div class="line">//                                the &quot;Release&quot; and &quot;Debug&quot; configurations of the application_plugin to link</div>
-<div class="line">//                                it into the other executable.</div>
+<div class="line">//                executable with all plugins statically linked in. The solution of an</div>
+<div class="line">//                application_plugin uses the new configurations by default in the static</div>
+<div class="line">//                solution configurations &quot;Release&quot; and &quot;Debug&quot;. When an application_plugin</div>
+<div class="line">//                is a dependent plugin of another application_plugin, the other solution uses</div>
+<div class="line">//                the &quot;Release&quot; and &quot;Debug&quot; configurations of the application_plugin to link</div>
+<div class="line">//                it into the other executable.</div>
 <div class="line">// - &quot;tool&quot; ... executable used during the build process like ppp</div>
 <div class="line">// - &quot;test&quot; ... plugin to the tester tool that provides boolean functions to test code</div>
 <div class="line">//if not specified, the projectType defaults to &quot;plugin&quot;</div>
@@ -322,8 +322,8 @@ Internal Makefiles (Windows only)</h1>
 <div class="line">// source file null.cpp whose object file name is not changed):</div>
 <div class="line"> </div>
 <div class="line">renameObjectFiles=[</div>
-<div class="line">        [ INPUT_DIR.&quot;/openal-soft/alc/backends/null.cpp&quot;, &quot;alc_backends_null&quot; ],</div>
-<div class="line">        [ INPUT_DIR.&quot;/openal-soft/alc/effects/null.cpp&quot;, &quot;alc_effects_null&quot; ]</div>
+<div class="line">    [ INPUT_DIR.&quot;/openal-soft/alc/backends/null.cpp&quot;, &quot;alc_backends_null&quot; ],</div>
+<div class="line">    [ INPUT_DIR.&quot;/openal-soft/alc/effects/null.cpp&quot;, &quot;alc_effects_null&quot; ]</div>
 <div class="line">];</div>
 <div class="line"> </div>
 <div class="line"> </div>
@@ -344,11 +344,11 @@ Internal Makefiles (Windows only)</h1>
 <div class="line">// are project directories.</div>
 <div class="line"> </div>
 <div class="line">addProjectDirs = [</div>
-<div class="line">        CGV_DIR.&quot;/3rd&quot;, </div>
-<div class="line">        CGV_DIR.&quot;/plugins&quot;, </div>
-<div class="line">        CGV_DIR.&quot;/libs&quot;, </div>
-<div class="line">        env::CGV_SUPPORT_DIR.&quot;/plugins&quot;];</div>
-<div class="line">        </div>
+<div class="line">    CGV_DIR.&quot;/3rd&quot;, </div>
+<div class="line">    CGV_DIR.&quot;/plugins&quot;, </div>
+<div class="line">    CGV_DIR.&quot;/libs&quot;, </div>
+<div class="line">    env::CGV_SUPPORT_DIR.&quot;/plugins&quot;];</div>
+<div class="line">    </div>
 <div class="line"> </div>
 <div class="line">//Define projects on which this project depends. All projects that are</div>
 <div class="line">//handled by the cgv-framework need to be added as addProjectDeps and</div>
@@ -406,8 +406,8 @@ Internal Makefiles (Windows only)</h1>
 <div class="line">// have been read. You can refer to this list in the addCommandLineArguments with the string &quot;SHADER_PATHS&quot;.</div>
 <div class="line"> </div>
 <div class="line">addShaderPaths = [ </div>
-<div class="line">        INPUT_DIR.&quot;/private_glsl&quot;, </div>
-<div class="line">        [ INPUT_DIR.&quot;/public_glsl&quot;, &quot;all&quot;] </div>
+<div class="line">    INPUT_DIR.&quot;/private_glsl&quot;, </div>
+<div class="line">    [ INPUT_DIR.&quot;/public_glsl&quot;, &quot;all&quot;] </div>
 <div class="line">];</div>
 <div class="line"> </div>
 <div class="line">// add additional command line arguments. Use the predefined functions after(argument, plugin) </div>
@@ -420,8 +420,8 @@ Internal Makefiles (Windows only)</h1>
 <div class="line">// addShaderPaths=[ [&quot;PATH1&quot;,&quot;all&quot;], ...].</div>
 <div class="line"> </div>
 <div class="line">addCommandLineArguments = [</div>
-<div class="line">        &#39;config:&quot;&#39;.INPUT_DIR.&#39;/my_config.def&quot;&#39;,</div>
-<div class="line">        after(&quot;SHADER_PATHS&quot;, &quot;cg_fltk&quot;)</div>
+<div class="line">    &#39;config:&quot;&#39;.INPUT_DIR.&#39;/my_config.def&quot;&#39;,</div>
+<div class="line">    after(&quot;SHADER_PATHS&quot;, &quot;cg_fltk&quot;)</div>
 <div class="line">];</div>
 <div class="line"> </div>
 <div class="line">//additional preprocessor definitions for all configurations. By default the</div>
@@ -465,8 +465,8 @@ Internal Makefiles (Windows only)</h1>
 <div class="line">//define a dependency by specification of a configuration specific library name either</div>
 <div class="line">//for current project only or to be exported to all dependent projects</div>
 <div class="line">addMapDeps = [</div>
-<div class="line">        [ &quot;testlib2&quot;, [&quot;testlib1_s10&quot;,&quot;testlib1_sd10&quot;,&quot;testlib1_10&quot;,&quot;testlib1_d10&quot;] ],</div>
-<div class="line">        [ [&quot;testlib1&quot;, [&quot;testlib1_s10&quot;,&quot;testlib1_sd10&quot;,&quot;testlib1_10&quot;,&quot;testlib1_d10&quot;] ], &quot;all&quot; ]</div>
+<div class="line">    [ &quot;testlib2&quot;, [&quot;testlib1_s10&quot;,&quot;testlib1_sd10&quot;,&quot;testlib1_10&quot;,&quot;testlib1_d10&quot;] ],</div>
+<div class="line">    [ [&quot;testlib1&quot;, [&quot;testlib1_s10&quot;,&quot;testlib1_sd10&quot;,&quot;testlib1_10&quot;,&quot;testlib1_d10&quot;] ], &quot;all&quot; ]</div>
 <div class="line">];</div>
 <div class="line"> </div>
 <div class="line"> </div>

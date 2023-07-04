@@ -89,7 +89,7 @@ $(document).ready(function(){initNavTree('reflection__traits_8cxx_source.html','
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;reflection_handler.h&quot;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keyword">namespace </span><a class="code" href="namespacecgv_1_1math.html#afa5be51992b338933231c56f5b235e3e">reflect</a> {</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    <span class="keyword">namespace </span><a class="code" href="namespacecgv_1_1math.html#afa5be51992b338933231c56f5b235e3e">reflect</a> {</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno"><a class="line" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#a6ac53bf0165696c2fbf571f8f4cbcfe3">    7</a></span>&#160;<a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#a6ac53bf0165696c2fbf571f8f4cbcfe3">abst_reflection_traits::~abst_reflection_traits</a>() </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;{</div>
@@ -97,22 +97,22 @@ $(document).ready(function(){initNavTree('reflection__traits_8cxx_source.html','
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#a8d778150c538b7c521a3abe04ca5e45c">   11</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#a8d778150c538b7c521a3abe04ca5e45c">abst_reflection_traits::has_external_implementation</a>()<span class="keyword"> const </span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>; </div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>; </div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;}</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
 <div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#aea0ce2d0df181d5a953610c242cc3681">   16</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#aea0ce2d0df181d5a953610c242cc3681">abst_reflection_traits::external_implementation</a>(<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html">reflection_handler</a>&amp;, <span class="keywordtype">void</span>* member_ptr)</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>; </div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;}</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#a49b8a684cf72158e439f162db66b2061">   21</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#a49b8a684cf72158e439f162db66b2061">abst_reflection_traits::has_string_conversions</a>()<span class="keyword"> const </span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>; </div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>; </div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;}</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#af926d70eab7ea31fab672ee3340c6f56">   26</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#af926d70eab7ea31fab672ee3340c6f56">abst_reflection_traits::set_from_string</a>(<span class="keywordtype">void</span>* member_ptr, <span class="keyword">const</span> std::string&amp; str_val) </div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;{</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>; </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
 <div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#aade7c3a52889a38379285581d491c318">   31</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#aade7c3a52889a38379285581d491c318">abst_reflection_traits::get_to_string</a>(<span class="keyword">const</span> <span class="keywordtype">void</span>* member_ptr, std::string&amp; str_val)</div>
@@ -121,37 +121,37 @@ $(document).ready(function(){initNavTree('reflection__traits_8cxx_source.html','
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
 <div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#a41ed31cc8eb0ad3813519a0a40f1f32c">   35</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#a41ed31cc8eb0ad3813519a0a40f1f32c">abst_reflection_traits::is_enum_type</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;}</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
 <div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#ac9413a20e338263007c6c814c5e8a378">   41</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#ac9413a20e338263007c6c814c5e8a378">abst_reflection_traits::has_enum_interface</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
 <div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#afc5b137983f4c516229642e260eaf0c5">   46</a></span>&#160;<span class="keywordtype">unsigned</span> <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#afc5b137983f4c516229642e260eaf0c5">abst_reflection_traits::get_nr_enum_items</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
 <div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#a00a8b2abc9da7a9cda0184c1e211a5dd">   51</a></span>&#160;std::string <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#a00a8b2abc9da7a9cda0184c1e211a5dd">abst_reflection_traits::get_enum_name</a>(<span class="keywordtype">unsigned</span> i)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordflow">return</span> <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordflow">return</span> <span class="stringliteral">&quot;&quot;</span>;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
 <div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#a4f1099b775183803c79fdead0b23f4e4">   56</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#a4f1099b775183803c79fdead0b23f4e4">abst_reflection_traits::get_enum_value</a>(<span class="keywordtype">unsigned</span> i)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordflow">return</span> -1;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;}</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
 <div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="group__detail.html#ga5cc650905883cc409861c2d98a6cce93">   61</a></span>&#160;<a class="code" href="structcgv_1_1reflect_1_1reflection__traits.html">reflection_traits&lt;bool,RTK_STD_TYPE&gt;</a> get_reflection_traits(<span class="keyword">const</span> <span class="keywordtype">bool</span>&amp;)</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;{ </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="structcgv_1_1reflect_1_1reflection__traits.html">reflection_traits&lt;bool,RTK_STD_TYPE&gt;</a>(); </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="structcgv_1_1reflect_1_1reflection__traits.html">reflection_traits&lt;bool,RTK_STD_TYPE&gt;</a>(); </div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        }</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    }</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1reflect_1_1reflection__handler_html"><div class="ttname"><a href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a></div><div class="ttdoc">the self reflection handler is passed to the virtual self_reflect() method of cgv::base::base.</div><div class="ttdef"><b>Definition:</b> <a href="reflection__handler_8h_source.html#l00062">reflection_handler.h:63</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_afa5be51992b338933231c56f5b235e3e"><div class="ttname"><a href="namespacecgv_1_1math.html#afa5be51992b338933231c56f5b235e3e">cgv::math::reflect</a></div><div class="ttdeci">vec&lt; T &gt; reflect(const vec&lt; T &gt; &amp;v, const vec&lt; T &gt; &amp;n)</div><div class="ttdoc">calculates the reflected direction of v; n is the normal of the reflecting surface</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00843">vec.h:843</a></div></div>

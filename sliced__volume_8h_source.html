@@ -94,41 +94,41 @@ $(document).ready(function(){initNavTree('sliced__volume_8h_source.html',''); in
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;../lib_begin.h&quot;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        <span class="keyword">namespace </span>media {</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;                <span class="keyword">namespace </span>volume {</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keyword">namespace </span>media {</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="keyword">namespace </span>volume {</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html">   16</a></span>&#160;                        <span class="keyword">struct </span>CGV_API <a class="code" href="structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html">ooc_sliced_volume</a> : <span class="keyword">public</span> volume</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                        {</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                                <span class="keywordtype">unsigned</span> nr_slices;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                                <span class="keywordtype">unsigned</span> offset;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                                std::string file_name_pattern;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                                <a class="code" href="structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html">ooc_sliced_volume</a>();</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                                std::string get_slice_file_name(<span class="keywordtype">int</span> i) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                                <span class="keywordtype">unsigned</span> get_nr_slices() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                                <a class="code" href="classcgv_1_1math_1_1fvec.html">dimension_type</a> get_dimensions() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                                <span class="keywordtype">void</span> resize(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">dimension_type</a>&amp; S);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                                <span class="keywordtype">bool</span> open_read(<span class="keyword">const</span> std::string&amp; file_name);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                                <span class="keywordtype">bool</span> is_open() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                                <span class="keywordtype">bool</span> read_slice(<span class="keywordtype">int</span> i, <span class="keyword">const</span> std::string&amp; slice_file_name = <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                                <span class="keywordtype">bool</span> open_write(<span class="keyword">const</span> std::string&amp; file_name, <span class="keyword">const</span> std::string&amp; _file_name_pattern, <span class="keywordtype">unsigned</span> nr_slices);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                                <span class="keywordtype">bool</span> write_slice(<span class="keywordtype">int</span> i) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                                <span class="keywordtype">void</span> close();</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                        };</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html">   16</a></span>&#160;            <span class="keyword">struct </span>CGV_API <a class="code" href="structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html">ooc_sliced_volume</a> : <span class="keyword">public</span> volume</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            {</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                <span class="keywordtype">unsigned</span> nr_slices;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                <span class="keywordtype">unsigned</span> offset;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                std::string file_name_pattern;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <a class="code" href="structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html">ooc_sliced_volume</a>();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                std::string get_slice_file_name(<span class="keywordtype">int</span> i) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                <span class="keywordtype">unsigned</span> get_nr_slices() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                <a class="code" href="classcgv_1_1math_1_1fvec.html">dimension_type</a> get_dimensions() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                <span class="keywordtype">void</span> resize(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">dimension_type</a>&amp; S);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                <span class="keywordtype">bool</span> open_read(<span class="keyword">const</span> std::string&amp; file_name);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                <span class="keywordtype">bool</span> is_open() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                <span class="keywordtype">bool</span> read_slice(<span class="keywordtype">int</span> i, <span class="keyword">const</span> std::string&amp; slice_file_name = <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                <span class="keywordtype">bool</span> open_write(<span class="keyword">const</span> std::string&amp; file_name, <span class="keyword">const</span> std::string&amp; _file_name_pattern, <span class="keywordtype">unsigned</span> nr_slices);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                <span class="keywordtype">bool</span> write_slice(<span class="keywordtype">int</span> i) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                <span class="keywordtype">void</span> close();</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            };</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                        <span class="keyword">struct </span>CGV_API sliced_volume_info : <span class="keyword">public</span> volume_info</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                        {</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                                std::string file_name_pattern;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                                <span class="keywordtype">int</span> offset;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                                sliced_volume_info();</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                        };</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <span class="keyword">struct </span>CGV_API sliced_volume_info : <span class="keyword">public</span> volume_info</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                std::string file_name_pattern;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                <span class="keywordtype">int</span> offset;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                sliced_volume_info();</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            };</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                        <span class="keyword">extern</span> CGV_API <span class="keywordtype">bool</span> read_sliced_header(<span class="keyword">const</span> std::string&amp; file_name, sliced_volume_info&amp; info);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <span class="keyword">extern</span> CGV_API <span class="keywordtype">bool</span> read_sliced_header(<span class="keyword">const</span> std::string&amp; file_name, sliced_volume_info&amp; info);</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                        <span class="keyword">extern</span> CGV_API <span class="keywordtype">bool</span> write_sliced_header(<span class="keyword">const</span> std::string&amp; file_name, <span class="keyword">const</span> ooc_sliced_volume&amp; V);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                }</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        }</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <span class="keyword">extern</span> CGV_API <span class="keywordtype">bool</span> write_sliced_header(<span class="keyword">const</span> std::string&amp; file_name, <span class="keyword">const</span> ooc_sliced_volume&amp; V);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        }</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    }</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>

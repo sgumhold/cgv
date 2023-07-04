@@ -92,23 +92,23 @@ $(document).ready(function(){initNavTree('stereo__view_8h_source.html',''); init
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="keyword">namespace </span>render {</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">namespace </span>render {</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1stereo__view.html">   11</a></span>&#160;                <span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1render_1_1stereo__view.html">stereo_view</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1render_1_1clipped__view.html">clipped_view</a></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;                {</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1stereo__view.html#ae656fa9f378e6f618290a1b481b55600">   15</a></span>&#160;                        <span class="keywordtype">double</span> <a class="code" href="classcgv_1_1render_1_1stereo__view.html#ae656fa9f378e6f618290a1b481b55600">eye_distance</a>;</div>
-<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1stereo__view.html#a901c9a7fa596c6b0485a3f2f7f9fb284">   17</a></span>&#160;                        <span class="keywordtype">double</span> <a class="code" href="classcgv_1_1render_1_1stereo__view.html#a901c9a7fa596c6b0485a3f2f7f9fb284">parallax_zero_scale</a>;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                        <a class="code" href="classcgv_1_1render_1_1stereo__view.html">stereo_view</a>();</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                        <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_default_values();</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                        <span class="keywordtype">double</span> get_eye_distance() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                        <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_eye_distance(<span class="keywordtype">double</span> e);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                        <span class="keywordtype">double</span> get_parallax_zero_scale() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                        <span class="keywordtype">double</span> get_parallax_zero_depth() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                        <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_parallax_zero_scale(<span class="keywordtype">double</span> pzs);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                };</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        }</div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1stereo__view.html">   11</a></span>&#160;        <span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1render_1_1stereo__view.html">stereo_view</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1render_1_1clipped__view.html">clipped_view</a></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        {</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1stereo__view.html#ae656fa9f378e6f618290a1b481b55600">   15</a></span>&#160;            <span class="keywordtype">double</span> <a class="code" href="classcgv_1_1render_1_1stereo__view.html#ae656fa9f378e6f618290a1b481b55600">eye_distance</a>;</div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1stereo__view.html#a901c9a7fa596c6b0485a3f2f7f9fb284">   17</a></span>&#160;            <span class="keywordtype">double</span> <a class="code" href="classcgv_1_1render_1_1stereo__view.html#a901c9a7fa596c6b0485a3f2f7f9fb284">parallax_zero_scale</a>;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            <a class="code" href="classcgv_1_1render_1_1stereo__view.html">stereo_view</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_default_values();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            <span class="keywordtype">double</span> get_eye_distance() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_eye_distance(<span class="keywordtype">double</span> e);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            <span class="keywordtype">double</span> get_parallax_zero_scale() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            <span class="keywordtype">double</span> get_parallax_zero_depth() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> set_parallax_zero_scale(<span class="keywordtype">double</span> pzs);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        };</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    }</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;}</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>

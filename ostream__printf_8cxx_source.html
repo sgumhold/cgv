@@ -92,7 +92,7 @@ $(document).ready(function(){initNavTree('ostream__printf_8cxx_source.html','');
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">using namespace </span>std;</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="keyword">namespace </span>utils {</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">namespace </span>utils {</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">//------------------------------------------------------------------------</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keywordtype">void</span> ostream_printf::parseFormatString()</div>
@@ -207,7 +207,7 @@ $(document).ready(function(){initNavTree('ostream__printf_8cxx_source.html','');
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="comment">/* if formatting string was recognized set stream options*/</span></div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordflow">if</span> (format_ok) {</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;      m_stream.unsetf(ios::adjustfield | ios::basefield | ios::floatfield);</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                m_stream.setf((std::ios_base::fmtflags)flags);</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        m_stream.setf((std::ios_base::fmtflags)flags);</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;      m_stream.width(width);</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;      m_stream.precision(precision);</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;      m_stream.fill(fill);</div>
@@ -233,7 +233,7 @@ $(document).ready(function(){initNavTree('ostream__printf_8cxx_source.html','');
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    m_pos++;</div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;  }</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;}</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        }</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    }</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;}</div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="vr__calib_8cxx_source.html#l00009">vr_calib.cxx:9</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

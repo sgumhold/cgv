@@ -92,53 +92,53 @@ $(document).ready(function(){initNavTree('media_2color__scale_8cxx_source.html',
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="convert__string_8h.html">cgv/utils/convert_string.h</a>&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="keyword">namespace </span>media {</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">namespace </span>media {</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;color&lt;float,RGB&gt; color_scale(<span class="keywordtype">double</span> v, ColorScale cs, <span class="keywordtype">int</span> polarity)</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;{</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="keywordflow">switch</span> (cs) {</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keywordflow">case</span> CS_RED: <span class="keywordflow">return</span> color&lt;float, RGB&gt;((<span class="keywordtype">float</span>)v, 0, 0);</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keywordflow">case</span> CS_GREEN: <span class="keywordflow">return</span> color&lt;float, RGB&gt;(0, (<span class="keywordtype">float</span>)v, 0);</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="keywordflow">case</span> CS_BLUE: <span class="keywordflow">return</span> color&lt;float, RGB&gt;(0, 0, (<span class="keywordtype">float</span>)v);</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keywordflow">case</span> CS_GRAY: <span class="keywordflow">return</span> color&lt;float, RGB&gt;((<span class="keywordtype">float</span>)v, (<span class="keywordtype">float</span>)v, (<span class="keywordtype">float</span>)v);</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordflow">case</span> CS_TEMPERATURE:</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                <span class="keywordflow">if</span> (v &lt; 1.0 / 3)</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                        <span class="keywordflow">return</span> color&lt;float, RGB&gt;((<span class="keywordtype">float</span>)(3 * v), 0, 0);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                <span class="keywordflow">if</span> (v &lt; 2.0 / 3)</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                        <span class="keywordflow">return</span> color&lt;float, RGB&gt;(1, (<span class="keywordtype">float</span>)(3 * v) - 1, 0);</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <span class="keywordflow">return</span> color&lt;float, RGB&gt;(1, 1, (<span class="keywordtype">float</span>)(3 * v) - 2);</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keywordflow">case</span> CS_HUE:</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                <span class="keywordflow">return</span> color&lt;float, RGB&gt;(color&lt;float, HLS&gt;((<span class="keywordtype">float</span>)v, 0.5f, 1));</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keywordflow">case</span> CS_HUE_LUMINANCE:</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                <span class="keywordflow">return</span> color&lt;float, RGB&gt;(color&lt;float, HLS&gt;((<span class="keywordtype">float</span>)v, (<span class="keywordtype">float</span>)(0.5 * v + 0.25), 1));</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                <span class="keywordflow">if</span> (<span class="keywordtype">int</span>(cs - CS_NAMED) &lt; query_color_scale_names(polarity).size())</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                        <span class="keywordflow">return</span> sample_sampled_color_scale((<span class="keywordtype">float</span>)v, query_named_color_scale(query_color_scale_names(polarity)[cs - CS_NAMED]));</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        }</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordflow">return</span> color&lt;float,RGB&gt;((<span class="keywordtype">float</span>)v, (<span class="keywordtype">float</span>)v, (<span class="keywordtype">float</span>)v);</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keywordflow">switch</span> (cs) {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keywordflow">case</span> CS_RED: <span class="keywordflow">return</span> color&lt;float, RGB&gt;((<span class="keywordtype">float</span>)v, 0, 0);</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keywordflow">case</span> CS_GREEN: <span class="keywordflow">return</span> color&lt;float, RGB&gt;(0, (<span class="keywordtype">float</span>)v, 0);</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordflow">case</span> CS_BLUE: <span class="keywordflow">return</span> color&lt;float, RGB&gt;(0, 0, (<span class="keywordtype">float</span>)v);</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordflow">case</span> CS_GRAY: <span class="keywordflow">return</span> color&lt;float, RGB&gt;((<span class="keywordtype">float</span>)v, (<span class="keywordtype">float</span>)v, (<span class="keywordtype">float</span>)v);</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordflow">case</span> CS_TEMPERATURE:</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keywordflow">if</span> (v &lt; 1.0 / 3)</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            <span class="keywordflow">return</span> color&lt;float, RGB&gt;((<span class="keywordtype">float</span>)(3 * v), 0, 0);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keywordflow">if</span> (v &lt; 2.0 / 3)</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <span class="keywordflow">return</span> color&lt;float, RGB&gt;(1, (<span class="keywordtype">float</span>)(3 * v) - 1, 0);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordflow">return</span> color&lt;float, RGB&gt;(1, 1, (<span class="keywordtype">float</span>)(3 * v) - 2);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordflow">case</span> CS_HUE:</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <span class="keywordflow">return</span> color&lt;float, RGB&gt;(color&lt;float, HLS&gt;((<span class="keywordtype">float</span>)v, 0.5f, 1));</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordflow">case</span> CS_HUE_LUMINANCE:</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keywordflow">return</span> color&lt;float, RGB&gt;(color&lt;float, HLS&gt;((<span class="keywordtype">float</span>)v, (<span class="keywordtype">float</span>)(0.5 * v + 0.25), 1));</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordflow">if</span> (<span class="keywordtype">int</span>(cs - CS_NAMED) &lt; query_color_scale_names(polarity).size())</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            <span class="keywordflow">return</span> sample_sampled_color_scale((<span class="keywordtype">float</span>)v, query_named_color_scale(query_color_scale_names(polarity)[cs - CS_NAMED]));</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    }</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordflow">return</span> color&lt;float,RGB&gt;((<span class="keywordtype">float</span>)v, (<span class="keywordtype">float</span>)v, (<span class="keywordtype">float</span>)v);</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;}</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keywordtype">double</span> color_scale_gamma_mapping(<span class="keywordtype">double</span> v, <span class="keywordtype">double</span> gamma, <span class="keywordtype">bool</span> is_bipolar, <span class="keywordtype">double</span> window_zero_position)</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;{</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordflow">if</span> (is_bipolar) {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                <span class="keywordtype">double</span> amplitude = std::max(window_zero_position, 1.0 - window_zero_position);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                <span class="keywordflow">if</span> (v &lt; window_zero_position)</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                        <span class="keywordflow">return</span> window_zero_position - <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>((window_zero_position - v) / amplitude, gamma) * amplitude;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>((v - window_zero_position) / amplitude, gamma) * amplitude + window_zero_position;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        }</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>(v, gamma);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordflow">if</span> (is_bipolar) {</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordtype">double</span> amplitude = std::max(window_zero_position, 1.0 - window_zero_position);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordflow">if</span> (v &lt; window_zero_position)</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <span class="keywordflow">return</span> window_zero_position - <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>((window_zero_position - v) / amplitude, gamma) * amplitude;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>((v - window_zero_position) / amplitude, gamma) * amplitude + window_zero_position;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    }</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>(v, gamma);</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keywordtype">double</span> adjust_zero_position(<span class="keywordtype">double</span> v, <span class="keywordtype">double</span> window_zero_position)</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;{</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordflow">if</span> (window_zero_position &lt;= 0.5)</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                <span class="keywordflow">return</span> 1.0 - 0.5 * (1.0 - v) / (1.0 - window_zero_position);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                <span class="keywordflow">return</span> 0.5 * v / window_zero_position;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordflow">if</span> (window_zero_position &lt;= 0.5)</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordflow">return</span> 1.0 - 0.5 * (1.0 - v) / (1.0 - window_zero_position);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">return</span> 0.5 * v / window_zero_position;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">typedef</span> std::pair&lt;std::vector&lt;color&lt;float, RGB&gt;&gt;, <span class="keywordtype">bool</span>&gt; scs_entry_type;</div>
@@ -146,231 +146,231 @@ $(document).ready(function(){initNavTree('media_2color__scale_8cxx_source.html',
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;std::vector&lt;color&lt;float, RGB&gt;&gt; construct_sampled_color_scale(<span class="keywordtype">unsigned</span> count, <span class="keywordtype">unsigned</span>* data)</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;{</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        ::std::vector&lt;color&lt;float, RGB&gt;&gt; samples;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; count; ++i)</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                samples.push_back(color&lt;float, RGB&gt;(((data[i] &amp; 0xff0000) &gt;&gt; 16) / 255.0f, ((data[i] &amp; 0xff00) &gt;&gt; 8) / 255.0f, (data[i] &amp; 0xff) / 255.0f));</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">return</span> samples;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    ::std::vector&lt;color&lt;float, RGB&gt;&gt; samples;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; count; ++i)</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        samples.push_back(color&lt;float, RGB&gt;(((data[i] &amp; 0xff0000) &gt;&gt; 16) / 255.0f, ((data[i] &amp; 0xff00) &gt;&gt; 8) / 255.0f, (data[i] &amp; 0xff) / 255.0f));</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordflow">return</span> samples;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;scs_map_type&amp; ref_sampled_color_scale_map()</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;{</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keyword">static</span> scs_map_type scs_map;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">bool</span> initialized = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordflow">if</span> (!initialized) {</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                <span class="comment">// register default color maps</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                <span class="comment">// https://gka.github.io/palettes/#/11|s|000000,760000,ff0000,ffa500,f7f825,ffffff|ffffe0,ff005e,93003a|0|0</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                <span class="keyword">static</span> <span class="keywordtype">unsigned</span> temp[11] = { 0x000000,0x3b0000,0x760000,0xba0000,0xff0000,0xff5300,0xffa500,0xfbce12,0xf7f825,0xfbfc92,0xffffff };</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                <span class="comment">// https://learnui.design/tools/data-color-picker.html</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                <span class="keyword">static</span> <span class="keywordtype">unsigned</span> anag[9] = { 0x000000,0x32172e,0x5d2851,0x873e6f,0xaf5c85,0xd37e93,0xefa79b,0xffd4a4,0xffffff };</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                <span class="comment">// https://gka.github.io/palettes/#/49|d|43ffff,00cdcd,0073ff,203434|332420,ac0000,ff6100,ffe000|0|0</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                <span class="keyword">static</span> <span class="keywordtype">unsigned</span> bipo[8] = { 0x43ffff, 0x00cdcd, 0x0073ff, 0x203434, 0x332420, 0xac0000, 0xff6100, 0xffe000 };</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                <span class="comment">//</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                <span class="keyword">static</span> <span class="keywordtype">unsigned</span> hue[7] = { 0xff0000,0xffff00,0x00ff00,0x00ffff,0x0000ff,0xff00ff,0xff0000 };</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                scs_map[<span class="stringliteral">&quot;temperature_11&quot;</span>] = scs_entry_type(construct_sampled_color_scale(11, temp),<span class="keyword">false</span>);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                scs_map[<span class="stringliteral">&quot;anaglyph_9&quot;</span>] = scs_entry_type(construct_sampled_color_scale(9, anag), <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                scs_map[<span class="stringliteral">&quot;bipolar_8&quot;</span>] = scs_entry_type(construct_sampled_color_scale(8, bipo), <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                scs_map[<span class="stringliteral">&quot;hue_7&quot;</span>] = scs_entry_type(construct_sampled_color_scale(7, hue),<span class="keyword">false</span>);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                initialized = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        }</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keywordflow">return</span> scs_map;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keyword">static</span> scs_map_type scs_map;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> initialized = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordflow">if</span> (!initialized) {</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="comment">// register default color maps</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="comment">// https://gka.github.io/palettes/#/11|s|000000,760000,ff0000,ffa500,f7f825,ffffff|ffffe0,ff005e,93003a|0|0</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">unsigned</span> temp[11] = { 0x000000,0x3b0000,0x760000,0xba0000,0xff0000,0xff5300,0xffa500,0xfbce12,0xf7f825,0xfbfc92,0xffffff };</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="comment">// https://learnui.design/tools/data-color-picker.html</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">unsigned</span> anag[9] = { 0x000000,0x32172e,0x5d2851,0x873e6f,0xaf5c85,0xd37e93,0xefa79b,0xffd4a4,0xffffff };</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="comment">// https://gka.github.io/palettes/#/49|d|43ffff,00cdcd,0073ff,203434|332420,ac0000,ff6100,ffe000|0|0</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">unsigned</span> bipo[8] = { 0x43ffff, 0x00cdcd, 0x0073ff, 0x203434, 0x332420, 0xac0000, 0xff6100, 0xffe000 };</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="comment">//</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">unsigned</span> hue[7] = { 0xff0000,0xffff00,0x00ff00,0x00ffff,0x0000ff,0xff00ff,0xff0000 };</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        scs_map[<span class="stringliteral">&quot;temperature_11&quot;</span>] = scs_entry_type(construct_sampled_color_scale(11, temp),<span class="keyword">false</span>);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        scs_map[<span class="stringliteral">&quot;anaglyph_9&quot;</span>] = scs_entry_type(construct_sampled_color_scale(9, anag), <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        scs_map[<span class="stringliteral">&quot;bipolar_8&quot;</span>] = scs_entry_type(construct_sampled_color_scale(8, bipo), <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        scs_map[<span class="stringliteral">&quot;hue_7&quot;</span>] = scs_entry_type(construct_sampled_color_scale(7, hue),<span class="keyword">false</span>);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        initialized = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    }</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordflow">return</span> scs_map;</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;}</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="keywordtype">size_t</span>&amp; ref_named_color_scale_timestamp()</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;{</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">size_t</span> timestamp = 1;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="keywordflow">return</span> timestamp;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">size_t</span> timestamp = 1;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordflow">return</span> timestamp;</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;}</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="keywordtype">size_t</span> get_named_color_scale_timestamp()</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;{</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="keywordflow">return</span> ref_named_color_scale_timestamp();</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordflow">return</span> ref_named_color_scale_timestamp();</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;}</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="keywordtype">void</span> register_named_color_scale(<span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> std::vector&lt;color&lt;float, RGB&gt;&gt;&amp; samples, <span class="keywordtype">bool</span> is_bipolar)</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;{</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        ref_sampled_color_scale_map()[name] = scs_entry_type(samples, is_bipolar);</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        ++ref_named_color_scale_timestamp();</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    ref_sampled_color_scale_map()[name] = scs_entry_type(samples, is_bipolar);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    ++ref_named_color_scale_timestamp();</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;}</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; query_color_scale_names(<span class="keywordtype">int</span> polarity)</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;{</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        <span class="keyword">static</span> std::vector&lt;std::string&gt; names[3];</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">size_t</span> timestamp[3] = { 0, 0, 0 };</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        <span class="keywordflow">if</span> (timestamp[polarity] &lt; get_named_color_scale_timestamp()) {</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; p : ref_sampled_color_scale_map())</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                        <span class="keywordflow">if</span> (polarity == 0 || (polarity == (p.second.second ? 2 : 1)))</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                                names[polarity].push_back(p.first);</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                timestamp[polarity] = get_named_color_scale_timestamp();</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        }</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keywordflow">return</span> names[polarity];</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keyword">static</span> std::vector&lt;std::string&gt; names[3];</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">size_t</span> timestamp[3] = { 0, 0, 0 };</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordflow">if</span> (timestamp[polarity] &lt; get_named_color_scale_timestamp()) {</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; p : ref_sampled_color_scale_map())</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            <span class="keywordflow">if</span> (polarity == 0 || (polarity == (p.second.second ? 2 : 1)))</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                names[polarity].push_back(p.first);</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        timestamp[polarity] = get_named_color_scale_timestamp();</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    }</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordflow">return</span> names[polarity];</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;}</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;std::string get_color_scale_name(ColorScale cs)</div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;{</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* color_scale_names[] = { <span class="stringliteral">&quot;red&quot;</span>,<span class="stringliteral">&quot;green&quot;</span>,<span class="stringliteral">&quot;blue&quot;</span>,<span class="stringliteral">&quot;gray&quot;</span>,<span class="stringliteral">&quot;temperature&quot;</span>,<span class="stringliteral">&quot;hue&quot;</span>,<span class="stringliteral">&quot;hue_luminance&quot;</span> };</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <span class="keywordflow">if</span> (cs &lt; CS_NAMED)</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                <span class="keywordflow">return</span> color_scale_names[cs];</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        <span class="keywordtype">int</span> idx = cs - CS_NAMED;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        <span class="keywordflow">if</span> (idx &lt; ref_sampled_color_scale_map().size())</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; p : ref_sampled_color_scale_map()) {</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                        <span class="keywordflow">if</span> (idx == 0)</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                                <span class="keywordflow">return</span> p.first;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                        --idx;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                }</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keywordflow">return</span> std::string();</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* color_scale_names[] = { <span class="stringliteral">&quot;red&quot;</span>,<span class="stringliteral">&quot;green&quot;</span>,<span class="stringliteral">&quot;blue&quot;</span>,<span class="stringliteral">&quot;gray&quot;</span>,<span class="stringliteral">&quot;temperature&quot;</span>,<span class="stringliteral">&quot;hue&quot;</span>,<span class="stringliteral">&quot;hue_luminance&quot;</span> };</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keywordflow">if</span> (cs &lt; CS_NAMED)</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <span class="keywordflow">return</span> color_scale_names[cs];</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keywordtype">int</span> idx = cs - CS_NAMED;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keywordflow">if</span> (idx &lt; ref_sampled_color_scale_map().size())</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; p : ref_sampled_color_scale_map()) {</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;            <span class="keywordflow">if</span> (idx == 0)</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                <span class="keywordflow">return</span> p.first;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;            --idx;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        }</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <span class="keywordflow">return</span> std::string();</div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;}</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="keywordtype">bool</span> find_color_scale(<span class="keyword">const</span> std::string&amp; name, ColorScale&amp; cs)</div>
 <div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;{</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        <span class="keyword">const</span> <span class="keyword">auto</span>&amp; csm = ref_sampled_color_scale_map();</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <span class="keywordflow">if</span> (csm.find(name) != csm.end()) {</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                ColorScale _cs = CS_NAMED;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; p : csm) {</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                        <span class="keywordflow">if</span> (p.first == name) {</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                                cs = _cs;</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                        }</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;                        ++((<span class="keywordtype">int</span>&amp;)_cs);</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;                }</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        }</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        std::string lname = <a class="code" href="namespacecgv_1_1utils.html#a6b682be2fdbb130c91a3bd8bd7936ff8">cgv::utils::to_lower</a>(name);</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        <span class="keywordflow">if</span> (lname == <span class="stringliteral">&quot;red&quot;</span>)</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                cs = CS_RED;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (lname == <span class="stringliteral">&quot;green&quot;</span>)</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                cs = CS_GREEN;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (lname == <span class="stringliteral">&quot;blue&quot;</span>)</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                cs = CS_BLUE;</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (lname == <span class="stringliteral">&quot;gray&quot;</span>)</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                cs = CS_GRAY;</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (lname == <span class="stringliteral">&quot;temperature&quot;</span>)</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;                cs = CS_TEMPERATURE;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (lname == <span class="stringliteral">&quot;hue&quot;</span>)</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                cs = CS_HUE;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (lname == <span class="stringliteral">&quot;hue_luminance&quot;</span>)</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                cs = CS_HUE_LUMINANCE;</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        <span class="keywordflow">else</span> </div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; csm = ref_sampled_color_scale_map();</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="keywordflow">if</span> (csm.find(name) != csm.end()) {</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        ColorScale _cs = CS_NAMED;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; p : csm) {</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;            <span class="keywordflow">if</span> (p.first == name) {</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                cs = _cs;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;            }</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;            ++((<span class="keywordtype">int</span>&amp;)_cs);</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        }</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    }</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    std::string lname = <a class="code" href="namespacecgv_1_1utils.html#a6b682be2fdbb130c91a3bd8bd7936ff8">cgv::utils::to_lower</a>(name);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keywordflow">if</span> (lname == <span class="stringliteral">&quot;red&quot;</span>)</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        cs = CS_RED;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (lname == <span class="stringliteral">&quot;green&quot;</span>)</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        cs = CS_GREEN;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (lname == <span class="stringliteral">&quot;blue&quot;</span>)</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        cs = CS_BLUE;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (lname == <span class="stringliteral">&quot;gray&quot;</span>)</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        cs = CS_GRAY;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (lname == <span class="stringliteral">&quot;temperature&quot;</span>)</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        cs = CS_TEMPERATURE;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (lname == <span class="stringliteral">&quot;hue&quot;</span>)</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        cs = CS_HUE;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (lname == <span class="stringliteral">&quot;hue_luminance&quot;</span>)</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        cs = CS_HUE_LUMINANCE;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="keywordflow">else</span> </div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;}</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="keyword">const</span> std::string&amp; get_color_scale_enum_definition(<span class="keywordtype">bool</span> include_fixed, <span class="keywordtype">bool</span> include_named, <span class="keywordtype">int</span> polarity)</div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;{</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <span class="keyword">static</span> std::string empty = <span class="stringliteral">&quot;enums=&#39;&#39;&quot;</span>;</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        <span class="keywordflow">if</span> (!include_fixed &amp;&amp; !include_named)</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                <span class="keywordflow">return</span> empty;</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        <span class="keywordtype">unsigned</span> i = (include_fixed ? 1 : 0) + (include_named ? 2 : 0) - 1 + 3*polarity;</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="keyword">static</span> std::string enum_definitions[9];</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">size_t</span> timestamps[9] = { 0,0,0, 0,0,0, 0,0,0 };</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        <span class="keywordflow">if</span> (timestamps[i] &lt; get_named_color_scale_timestamp()) {</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                std::string def = <span class="stringliteral">&quot;enums=&#39;&quot;</span>;</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                <span class="keywordflow">if</span> (include_fixed)</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                        def += <span class="stringliteral">&quot;red,green,blue,gray,temperature,hue,hue_luminance&quot;</span>;</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                <span class="keywordflow">if</span> (include_named) {</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                        <span class="keywordtype">bool</span> no_comma = !include_fixed;</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                        <span class="keywordtype">unsigned</span> i = 7;</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;                        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; p : ref_sampled_color_scale_map()) {</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;                                <span class="keywordflow">if</span> (polarity == 0 || (polarity == (p.second.second ? 2 : 1))) {</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                                        <span class="keywordflow">if</span> (no_comma)</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                                                no_comma = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                                        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                                                def += <span class="stringliteral">&quot;,&quot;</span>;</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                                        def += p.first;</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                                        def += <span class="stringliteral">&quot;=&quot;</span>;</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                                        def += <a class="code" href="namespacecgv_1_1utils.html#a9584ae56050ff7dd2b881c2b60efd55b">cgv::utils::to_string</a>(i);</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                                }</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                                ++i;</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                        }</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                }</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                def += <span class="stringliteral">&quot;&#39;&quot;</span>;</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;                enum_definitions[i] = def;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                timestamps[i] = get_named_color_scale_timestamp();</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        }</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        <span class="keywordflow">return</span> enum_definitions[i];</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keyword">static</span> std::string empty = <span class="stringliteral">&quot;enums=&#39;&#39;&quot;</span>;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="keywordflow">if</span> (!include_fixed &amp;&amp; !include_named)</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        <span class="keywordflow">return</span> empty;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    <span class="keywordtype">unsigned</span> i = (include_fixed ? 1 : 0) + (include_named ? 2 : 0) - 1 + 3*polarity;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <span class="keyword">static</span> std::string enum_definitions[9];</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">size_t</span> timestamps[9] = { 0,0,0, 0,0,0, 0,0,0 };</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    <span class="keywordflow">if</span> (timestamps[i] &lt; get_named_color_scale_timestamp()) {</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        std::string def = <span class="stringliteral">&quot;enums=&#39;&quot;</span>;</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        <span class="keywordflow">if</span> (include_fixed)</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;            def += <span class="stringliteral">&quot;red,green,blue,gray,temperature,hue,hue_luminance&quot;</span>;</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        <span class="keywordflow">if</span> (include_named) {</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            <span class="keywordtype">bool</span> no_comma = !include_fixed;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;            <span class="keywordtype">unsigned</span> i = 7;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; p : ref_sampled_color_scale_map()) {</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;                <span class="keywordflow">if</span> (polarity == 0 || (polarity == (p.second.second ? 2 : 1))) {</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                    <span class="keywordflow">if</span> (no_comma)</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                        no_comma = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                        def += <span class="stringliteral">&quot;,&quot;</span>;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                    def += p.first;</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                    def += <span class="stringliteral">&quot;=&quot;</span>;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                    def += <a class="code" href="namespacecgv_1_1utils.html#a9584ae56050ff7dd2b881c2b60efd55b">cgv::utils::to_string</a>(i);</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                }</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                ++i;</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;            }</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;        }</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;        def += <span class="stringliteral">&quot;&#39;&quot;</span>;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        enum_definitions[i] = def;</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        timestamps[i] = get_named_color_scale_timestamp();</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    }</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    <span class="keywordflow">return</span> enum_definitions[i];</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;}</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
 <div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="keyword">const</span> std::vector&lt;color&lt;float, RGB&gt;&gt;&amp; query_named_color_scale(<span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">bool</span>* is_bipolar_ptr)</div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;{</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        <span class="keyword">const</span> <span class="keyword">auto</span>&amp; scs = ref_sampled_color_scale_map()[name];</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        <span class="keywordflow">if</span> (is_bipolar_ptr)</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;                *is_bipolar_ptr = scs.second;</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        <span class="keywordflow">return</span> scs.first;</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; scs = ref_sampled_color_scale_map()[name];</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    <span class="keywordflow">if</span> (is_bipolar_ptr)</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        *is_bipolar_ptr = scs.second;</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    <span class="keywordflow">return</span> scs.first;</div>
 <div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;}</div>
 <div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160; </div>
 <div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;::std::vector&lt;color&lt;float, RGB&gt;&gt; sample_named_color_scale(<span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">size_t</span> nr_samples, <span class="keywordtype">bool</span> exact)</div>
 <div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;{</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;        <span class="keyword">const</span> <span class="keyword">auto</span>&amp; scs_map = ref_sampled_color_scale_map();</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;        <span class="keyword">auto</span> it = scs_map.find(name);</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        <span class="keywordflow">if</span> (it == scs_map.end())</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                return ::std::vector&lt;color&lt;float, RGB&gt;&gt;();</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;        <span class="keywordflow">if</span> (nr_samples == 0)</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                <span class="keywordflow">return</span> it-&gt;second.first;</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;        <span class="comment">// determine size of to be returned sampling</span></div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;        <span class="keywordtype">size_t</span> size = it-&gt;second.first.size();</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;        <span class="keywordtype">size_t</span> target_size = nr_samples;</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        <span class="comment">// in case of not exactly given size</span></div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;        <span class="keywordflow">if</span> (!exact) {</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;                <span class="comment">// if queried size is larger than size of color scale sampling</span></div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;                <span class="keywordflow">if</span> (nr_samples &gt; size)</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;                        <span class="comment">// find smallest multiple of size at least as big as queried size</span></div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;                        target_size = size * size_t(<a class="code" href="namespacecgv_1_1math.html#a7bdfc685a508ef94145942bc61929185">ceil</a>(<span class="keywordtype">double</span>(nr_samples) / size));</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;                <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;                        <span class="comment">// otherwise find smallest divisor of size that is at least as large as fraction of size to queried size</span></div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;                        <span class="keywordtype">size_t</span> divisor = size_t(<a class="code" href="namespacecgv_1_1math.html#a7bdfc685a508ef94145942bc61929185">ceil</a>(<span class="keywordtype">double</span>(size) / nr_samples));</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;                        <span class="keywordflow">while</span> (divisor &gt; 1) {</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;                                <span class="keywordflow">if</span> (size == divisor * (size / divisor))</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;                                        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;                                --divisor;</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;                        }</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;                        target_size = divisor * (size / divisor);</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;                }</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;        }</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        <span class="comment">// resampled color scale</span></div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;        ::std::vector&lt;color&lt;float, RGB&gt;&gt; result(target_size);</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; target_size; ++i) {</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;                <span class="keywordtype">float</span> value = float(i) / (target_size - 1);</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;                result.push_back(sample_sampled_color_scale(value, it-&gt;second.first, it-&gt;second.second));</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        }</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; scs_map = ref_sampled_color_scale_map();</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    <span class="keyword">auto</span> it = scs_map.find(name);</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    <span class="keywordflow">if</span> (it == scs_map.end())</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        return ::std::vector&lt;color&lt;float, RGB&gt;&gt;();</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    <span class="keywordflow">if</span> (nr_samples == 0)</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;        <span class="keywordflow">return</span> it-&gt;second.first;</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    <span class="comment">// determine size of to be returned sampling</span></div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    <span class="keywordtype">size_t</span> size = it-&gt;second.first.size();</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    <span class="keywordtype">size_t</span> target_size = nr_samples;</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    <span class="comment">// in case of not exactly given size</span></div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    <span class="keywordflow">if</span> (!exact) {</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;        <span class="comment">// if queried size is larger than size of color scale sampling</span></div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        <span class="keywordflow">if</span> (nr_samples &gt; size)</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;            <span class="comment">// find smallest multiple of size at least as big as queried size</span></div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;            target_size = size * size_t(<a class="code" href="namespacecgv_1_1math.html#a7bdfc685a508ef94145942bc61929185">ceil</a>(<span class="keywordtype">double</span>(nr_samples) / size));</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;        <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;            <span class="comment">// otherwise find smallest divisor of size that is at least as large as fraction of size to queried size</span></div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;            <span class="keywordtype">size_t</span> divisor = size_t(<a class="code" href="namespacecgv_1_1math.html#a7bdfc685a508ef94145942bc61929185">ceil</a>(<span class="keywordtype">double</span>(size) / nr_samples));</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;            <span class="keywordflow">while</span> (divisor &gt; 1) {</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;                <span class="keywordflow">if</span> (size == divisor * (size / divisor))</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;                    <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;                --divisor;</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;            }</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;            target_size = divisor * (size / divisor);</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        }</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    }</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    <span class="comment">// resampled color scale</span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    ::std::vector&lt;color&lt;float, RGB&gt;&gt; result(target_size);</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; target_size; ++i) {</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        <span class="keywordtype">float</span> value = float(i) / (target_size - 1);</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        result.push_back(sample_sampled_color_scale(value, it-&gt;second.first, it-&gt;second.second));</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    }</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    <span class="keywordflow">return</span> result;</div>
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;}</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;color&lt;float, RGB&gt; sample_sampled_color_scale(<span class="keywordtype">float</span> value, const ::std::vector&lt;color&lt;float, RGB&gt;&gt;&amp; samples, <span class="keywordtype">bool</span> is_bipolar)</div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;{</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        <span class="comment">// first check if values needs to be clamped to 0</span></div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;        <span class="keywordflow">if</span> (value &lt;= 0.0f)</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;                <span class="keywordflow">return</span> samples.front();</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        <span class="comment">// than check if values needs to be clamped to 1 and make sure that values is really smaller than 1</span></div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        <span class="keywordflow">if</span> (value &gt; 0.99999f)</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;                <span class="keywordflow">return</span> samples.back();</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;        <span class="keywordtype">float</span> v, f;</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        <span class="keywordtype">size_t</span> i;</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;        <span class="comment">// in case of bipolar color map central to samples correspond to -0 and +0</span></div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;        <span class="keywordflow">if</span> (is_bipolar &amp;&amp; ((samples.size() &amp; 1) == 0)) {</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;                <span class="comment">// scale value up to [0,n-2]</span></div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;                v = value * (samples.size() - 2);</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;                <span class="comment">// compute index of smaller sampled necessary for linear interpolation</span></div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;                i = size_t(v);</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;                <span class="comment">// correct indices in second half</span></div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;                <span class="keywordflow">if</span> (i+1 &gt;= samples.size()/2)</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;                        ++i;</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;                <span class="comment">// compute fractional part</span></div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;                f = v - i;</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;        }</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;        <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;                <span class="comment">// scale value up to [0,n-1]</span></div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;                v = value * (samples.size() - 1);</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;                <span class="comment">// compute index of smaller sampled necessary for linear interpolation</span></div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                i = size_t(v);</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;                <span class="comment">// compute fractional part</span></div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;                f = v - i;</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;        }</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        <span class="comment">// return affine combination of two adjacent samples</span></div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;        <span class="keywordflow">return</span> (1.0f - f) * samples[i] + f * samples[i + 1];</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    <span class="comment">// first check if values needs to be clamped to 0</span></div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;    <span class="keywordflow">if</span> (value &lt;= 0.0f)</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;        <span class="keywordflow">return</span> samples.front();</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    <span class="comment">// than check if values needs to be clamped to 1 and make sure that values is really smaller than 1</span></div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    <span class="keywordflow">if</span> (value &gt; 0.99999f)</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        <span class="keywordflow">return</span> samples.back();</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    <span class="keywordtype">float</span> v, f;</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    <span class="keywordtype">size_t</span> i;</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    <span class="comment">// in case of bipolar color map central to samples correspond to -0 and +0</span></div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    <span class="keywordflow">if</span> (is_bipolar &amp;&amp; ((samples.size() &amp; 1) == 0)) {</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;        <span class="comment">// scale value up to [0,n-2]</span></div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;        v = value * (samples.size() - 2);</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;        <span class="comment">// compute index of smaller sampled necessary for linear interpolation</span></div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;        i = size_t(v);</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;        <span class="comment">// correct indices in second half</span></div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;        <span class="keywordflow">if</span> (i+1 &gt;= samples.size()/2)</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;            ++i;</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;        <span class="comment">// compute fractional part</span></div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;        f = v - i;</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    }</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;        <span class="comment">// scale value up to [0,n-1]</span></div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;        v = value * (samples.size() - 1);</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;        <span class="comment">// compute index of smaller sampled necessary for linear interpolation</span></div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;        i = size_t(v);</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;        <span class="comment">// compute fractional part</span></div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;        f = v - i;</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    }</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    <span class="comment">// return affine combination of two adjacent samples</span></div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;    <span class="keywordflow">return</span> (1.0f - f) * samples[i] + f * samples[i + 1];</div>
 <div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;}</div>
 <div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160; </div>
 <div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160; </div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;        }</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;    }</div>
 <div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;}</div>
 <div class="ttc" id="aconvert__string_8h_html"><div class="ttname"><a href="convert__string_8h.html">convert_string.h</a></div><div class="ttdoc">Helper functions to convert numeric types into strings using std streams.</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a7bdfc685a508ef94145942bc61929185"><div class="ttname"><a href="namespacecgv_1_1math.html#a7bdfc685a508ef94145942bc61929185">cgv::math::ceil</a></div><div class="ttdeci">fvec&lt; T, N &gt; ceil(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">apply ceil function component wise to vector</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00443">fvec.h:443</a></div></div>

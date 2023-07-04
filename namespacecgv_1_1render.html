@@ -473,11 +473,58 @@ Enumerations</h2></td></tr>
 <tr class="memdesc:a04797cd64ece747a5fda1f3bd7f45ee7"><td class="mdescLeft">&#160;</td><td class="mdescRight">enumeration of rendering APIs which can be queried from the context <br /></td></tr>
 <tr class="separator:a04797cd64ece747a5fda1f3bd7f45ee7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adde1a2f8dd33598ed7a81b969b31393b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393b">RenderPass</a> { <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393ba811317825bf3fe1bdb088fd633cbf465">RP_NONE</a>
+, <a class="el" href="namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393ba906f07e88e8dcde236f733ccf553e6ce">RP_MAIN</a>
+, <a class="el" href="namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393ba3bdeec44042e17855372e1c422f524f9">RP_STEREO</a>
+, <a class="el" href="namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393bafb8f35b06de6a7f0720e54f6f4020d3c">RP_SHADOW_MAP</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393ba1ab646a5afbde7deea6d6d59cba8acdd">RP_SHADOW_VOLUME</a>
+, <a class="el" href="namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393ba69336a28028ef0e9bda0c8e5a7f42a27">RP_OPAQUE_SURFACES</a>
+, <a class="el" href="namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393ba96ac3415ee1a245182d011282b7003c4">RP_TRANSPARENT_SURFACES</a>
+, <a class="el" href="namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393bac279b5b109a772a7d76883988bd7e546">RP_PICK</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393ba415d18aeb4ec08758e2cbe6ce9b0fe0f">RP_USER_DEFINED</a>
+<br />
  }</td></tr>
-<tr class="memdesc:adde1a2f8dd33598ed7a81b969b31393b"><td class="mdescLeft">&#160;</td><td class="mdescRight">enumeration of different render passes, which can be queried from the context and used to specify a new render pass  <a href="namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393b">More...</a><br /></td></tr>
+<tr class="memdesc:adde1a2f8dd33598ed7a81b969b31393b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of different render passes, which can be queried from the context and used to specify a new render pass.  <a href="namespacecgv_1_1render.html#adde1a2f8dd33598ed7a81b969b31393b">More...</a><br /></td></tr>
 <tr class="separator:adde1a2f8dd33598ed7a81b969b31393b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae903f198d1beae98f419246e35f99e13"><td class="memItemLeft" align="right" valign="top"><a id="ae903f198d1beae98f419246e35f99e13"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13">RenderPassFlags</a> </td></tr>
-<tr class="memdesc:ae903f198d1beae98f419246e35f99e13"><td class="mdescLeft">&#160;</td><td class="mdescRight">available flags that can be queried from the context and set for a new render pass <br /></td></tr>
+<tr class="memitem:ae903f198d1beae98f419246e35f99e13"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13">RenderPassFlags</a> { <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a845b1cde2ae94a0edcfb5324df7ea3b4">RPF_NONE</a> = 0
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13ab780102a693e1ff13290777ea199ecbb">RPF_SET_PROJECTION</a> = 1
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a18b531670a0ac30382a41d465940d131">RPF_SET_MODELVIEW</a> = 1 &lt;&lt; 1
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a522ecc525bacc25a49a7dcb2582affb5">RPF_SET_MODELVIEW_PROJECTION</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a44e722bd4f90cb676f8d9765b168f612">RPF_SET_LIGHTS</a> = 1 &lt;&lt; 2
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a2dfdf0c997b4f2b4fc27663256a03695">RPF_SET_MATERIAL</a> = 1 &lt;&lt; 3
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13af7004bc1011919d4a4f27687264e83fa">RPF_SET_LIGHTS_ON</a> = 1 &lt;&lt; 4
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a69d56ed9ea7bd2ed4911faf9792ada47">RPF_ENABLE_MATERIAL</a> = 1 &lt;&lt; 5
+, <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13ad768ce7436b5f41f15085b5640750478">RPF_SET_LIGHTING</a>
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a471c3e959792e4663792dce772c86b74">RPF_CLEAR_COLOR</a> = 1 &lt;&lt; 6
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a91560593b7d80af671c687c1f3a08d55">RPF_CLEAR_DEPTH</a> = 1 &lt;&lt; 7
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a4a2aaf1fad742e472c8b820298eac1ee">RPF_CLEAR_STENCIL</a> = 1 &lt;&lt; 8
+, <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a061408370303e1171dda8386d241c1bb">RPF_CLEAR_ACCUM</a> = 1 &lt;&lt; 9
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13aaf18ddc8b1b5817e62cedf1004be054e">RPF_CLEAR_ALL</a>
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a6cf331dba2b0aa8ba0475e9bc899f6ea">RPF_DRAWABLES_INIT_FRAME</a> = 1 &lt;&lt; 10
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13aab557cf4b50cb7eb97f495c69e79d4b6">RPF_SET_STATE_FLAGS</a> = 1 &lt;&lt; 11
+, <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13af5c43cc4cb4cc1291bac688379445cfa">RPF_SET_CLEAR_COLOR</a> = 1 &lt;&lt; 12
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a3b5a0190c7bfe6ddb9cb8064fbbfad1e">RPF_SET_CLEAR_DEPTH</a> = 1 &lt;&lt; 13
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a60d7b78090bf9c9891d59ea9db9245a5">RPF_SET_CLEAR_STENCIL</a> = 1 &lt;&lt; 14
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13add3fc11ba101df3de081037f2cc40df3">RPF_SET_CLEAR_ACCUM</a> = 1 &lt;&lt; 15
+, <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a48956d93d1311702258a0e4994f8d1d0">RPF_DRAWABLES_DRAW</a> = 1 &lt;&lt; 16
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a2d878f6bf8cf7300b9350af60989b0ae">RPF_DRAWABLES_FINISH_FRAME</a> = 1 &lt;&lt; 17
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13ab1474ae1be0b12759f2605e3ce4d16ed">RPF_DRAW_TEXTUAL_INFO</a> = 1 &lt;&lt; 18
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a7d28f96267b9ecebeca727485278f147">RPF_DRAWABLES_AFTER_FINISH</a> = 1 &lt;&lt; 19
+, <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a8485eaed4a1b04e37570630271788e1a">RPF_HANDLE_SCREEN_SHOT</a> = 1 &lt;&lt; 20
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a3e4364badb2589ccfc46e60877676409">RPF_ALL</a> = (1 &lt;&lt; 21) - 1
+, <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13a8294211b6fce7a68d8928ff8ccd2a336">RPF_DEFAULT</a>
+<br />
+ }</td></tr>
+<tr class="memdesc:ae903f198d1beae98f419246e35f99e13"><td class="mdescLeft">&#160;</td><td class="mdescRight">available flags that can be queried from the context and set for a new render pass  <a href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13">More...</a><br /></td></tr>
 <tr class="separator:ae903f198d1beae98f419246e35f99e13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d228fe5151b5fca590320445c9e9139"><td class="memItemLeft" align="right" valign="top"><a id="a6d228fe5151b5fca590320445c9e9139"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a6d228fe5151b5fca590320445c9e9139">MaterialSide</a> </td></tr>
 <tr class="memdesc:a6d228fe5151b5fca590320445c9e9139"><td class="mdescLeft">&#160;</td><td class="mdescRight">different sides of a material <br /></td></tr>
@@ -503,23 +550,70 @@ Enumerations</h2></td></tr>
 <tr class="memitem:ad09ce7c1f1275e31a8fbc3a85efbb1b6"><td class="memItemLeft" align="right" valign="top"><a id="ad09ce7c1f1275e31a8fbc3a85efbb1b6"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ad09ce7c1f1275e31a8fbc3a85efbb1b6">PrimitiveType</a> </td></tr>
 <tr class="memdesc:ad09ce7c1f1275e31a8fbc3a85efbb1b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">different primitive types <br /></td></tr>
 <tr class="separator:ad09ce7c1f1275e31a8fbc3a85efbb1b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ddc63c9f76935e53fab79b373077832"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a6ddc63c9f76935e53fab79b373077832">TextureSampling</a> {  }</td></tr>
+<tr class="memitem:a6ddc63c9f76935e53fab79b373077832"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a6ddc63c9f76935e53fab79b373077832">TextureSampling</a> { <a class="el" href="namespacecgv_1_1render.html#a6ddc63c9f76935e53fab79b373077832abcaed8eb4f3af2abb44f06421146c9d5">TS_CELL</a> = 0
+, <a class="el" href="namespacecgv_1_1render.html#a6ddc63c9f76935e53fab79b373077832a963359456640e9b8d512709facecb892">TS_VERTEX</a> = 1
+ }</td></tr>
 <tr class="memdesc:a6ddc63c9f76935e53fab79b373077832"><td class="mdescLeft">&#160;</td><td class="mdescRight">different sampling strategies for rendering to textures that steer the computation of the <code>tex_coord</code> input to the fragment shader  <a href="namespacecgv_1_1render.html#a6ddc63c9f76935e53fab79b373077832">More...</a><br /></td></tr>
 <tr class="separator:a6ddc63c9f76935e53fab79b373077832"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1b1b5ee6ada2ce3649637247799b929"><td class="memItemLeft" align="right" valign="top"><a id="af1b1b5ee6ada2ce3649637247799b929"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#af1b1b5ee6ada2ce3649637247799b929">CompareFunction</a> </td></tr>
 <tr class="memdesc:af1b1b5ee6ada2ce3649637247799b929"><td class="mdescLeft">&#160;</td><td class="mdescRight">different sampling strategies for rendering to textures that steer the computation of the <code>tex_coord</code> input to the fragment shader <br /></td></tr>
 <tr class="separator:af1b1b5ee6ada2ce3649637247799b929"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e4474a2c2cbe3c2f8ac57a264b5f457"><td class="memItemLeft" align="right" valign="top"><a id="a2e4474a2c2cbe3c2f8ac57a264b5f457"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">TextAlignment</a> </td></tr>
-<tr class="memdesc:a2e4474a2c2cbe3c2f8ac57a264b5f457"><td class="mdescLeft">&#160;</td><td class="mdescRight">different text alignments <br /></td></tr>
+<tr class="memitem:a2e4474a2c2cbe3c2f8ac57a264b5f457"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">TextAlignment</a> { <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457a9c0648e2efcab83d648964294c8d9659">TA_NONE</a> = 0
+, <a class="el" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457ac7cba5a6ce5a076bd468903f5e5430a4">TA_LEFT</a> = 1
+, <a class="el" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457aa5b72c1ee707a8e67d2040ca5d48b145">TA_RIGHT</a> = 2
+, <a class="el" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457a32c29a486e04d784ff53a79bc6cf5389">TA_TOP</a> = 4
+, <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457a78800510540253aa38fc4a90a45914ac">TA_BOTTOM</a> = 8
+, <a class="el" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457ac243d7ca0c6e785ac16e79de065253f5">TA_TOP_LEFT</a> = TA_LEFT + TA_TOP
+, <a class="el" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457afae0f0d3c23aa4b6388f207b2e27347e">TA_TOP_RIGHT</a> = TA_RIGHT + TA_TOP
+, <a class="el" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457aa67860141e5a23231de975d49e40cea3">TA_BOTTOM_LEFT</a> = TA_LEFT + TA_BOTTOM
+, <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457a46d05c3099580d129e869af51a6707d8">TA_BOTTOM_RIGHT</a> = TA_RIGHT + TA_BOTTOM
+<br />
+ }</td></tr>
+<tr class="memdesc:a2e4474a2c2cbe3c2f8ac57a264b5f457"><td class="mdescLeft">&#160;</td><td class="mdescRight">different text alignments  <a href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">More...</a><br /></td></tr>
 <tr class="separator:a2e4474a2c2cbe3c2f8ac57a264b5f457"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad2f311c0b3d1f95cfd5fcb4b638fead3"><td class="memItemLeft" align="right" valign="top"><a id="ad2f311c0b3d1f95cfd5fcb4b638fead3"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3">VertexBufferType</a> </td></tr>
-<tr class="memdesc:ad2f311c0b3d1f95cfd5fcb4b638fead3"><td class="mdescLeft">&#160;</td><td class="mdescRight">different vertex buffer types <br /></td></tr>
+<tr class="memitem:ad2f311c0b3d1f95cfd5fcb4b638fead3"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3">VertexBufferType</a> { <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3a6220782360c9a07f8d8b7ff26c47f59e">VBT_UNDEF</a> = -1
+, <a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3a1b9244bf0cab14877c0f63a7b47fe04b">VBT_VERTICES</a>
+, <a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3a984e2ddb29823c4eac562f3a3244a827">VBT_INDICES</a>
+, <a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3a332156b40b2a33613e24150c7ffa696c">VBT_TEXTURE</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3ad4e4c7ea3d346f6a7555fb17b1990ea0">VBT_UNIFORM</a>
+, <a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3af2afd156162c09c3ff3ed3326fa801fe">VBT_FEEDBACK</a>
+, <a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3ac24b1f5816bb8f65a23ae8ca901c3f1f">VBT_STORAGE</a>
+, <a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3aa91030375b0a4aa5ef7b26b7703d0263">VBT_ATOMIC_COUNTER</a>
+<br />
+ }</td></tr>
+<tr class="memdesc:ad2f311c0b3d1f95cfd5fcb4b638fead3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides vertex buffer types to allow implicit binding.  <a href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3">More...</a><br /></td></tr>
 <tr class="separator:ad2f311c0b3d1f95cfd5fcb4b638fead3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ca439553e212967238e29e838343eb9"><td class="memItemLeft" align="right" valign="top"><a id="a7ca439553e212967238e29e838343eb9"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9">VertexBufferUsage</a> </td></tr>
-<tr class="memdesc:a7ca439553e212967238e29e838343eb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">different vertex buffer usages as defined in OpenGL <br /></td></tr>
+<tr class="memitem:a7ca439553e212967238e29e838343eb9"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9">VertexBufferUsage</a> { <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9af611814ee9546db6d52ea3f8e5dd1ec4">VBU_STREAM_DRAW</a>
+, <a class="el" href="namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9a67a5e51677061c36743da443b5521a89">VBU_STREAM_READ</a>
+, <a class="el" href="namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9a27c646eb48f833f03fc505fcd31e6e23">VBU_STREAM_COPY</a>
+, <a class="el" href="namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9a9baabcf89d1703922b7e9e7bff14db37">VBU_STATIC_DRAW</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9a820540e5f706d63ef8ae8944e8a18d36">VBU_STATIC_READ</a>
+, <a class="el" href="namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9a0d95c88bd467f419c6f06fb884fd4f7d">VBU_STATIC_COPY</a>
+, <a class="el" href="namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9a3c6e5ff3b3df6e4c101e912d0d20b637">VBU_DYNAMIC_DRAW</a>
+, <a class="el" href="namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9aab769b892e1be0a3f7f23c5d27bfbda5">VBU_DYNAMIC_READ</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9a7e154acae890ba95a1338a7cb2d8d0e6">VBU_DYNAMIC_COPY</a>
+<br />
+ }</td></tr>
+<tr class="memdesc:a7ca439553e212967238e29e838343eb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides vertex buffer usage hints as defined in OpenGL.  <a href="namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9">More...</a><br /></td></tr>
 <tr class="separator:a7ca439553e212967238e29e838343eb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adba4fbd4582055f229fe59a0545833ab"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> {  }</td></tr>
-<tr class="memdesc:adba4fbd4582055f229fe59a0545833ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">bits for the selection of different buffer types  <a href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">More...</a><br /></td></tr>
+<tr class="memitem:adba4fbd4582055f229fe59a0545833ab"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> { <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833aba03264569ff72f15010d2538a508e5951">BTB_COLOR_BIT</a> = 1
+, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abab93a33913d4a4383e4ee9477de95d2ca">BTB_DEPTH_BIT</a> = 2
+, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaafc4ddb9da0f009c1dab4c43e1ba5527">BTB_COLOR_AND_DEPTH_BITS</a> = 3
+, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833aba6ba7d7f4cdadd1ea367d79e90c7da932">BTB_STENCIL_BIT</a> = 4
+, <br />
+&#160;&#160;<a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c">BTB_ALL_BITS</a> = 7
+<br />
+ }</td></tr>
+<tr class="memdesc:adba4fbd4582055f229fe59a0545833ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bits for the selection of different buffer types.  <a href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">More...</a><br /></td></tr>
 <tr class="separator:adba4fbd4582055f229fe59a0545833ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa829197f51559124b8c72a2bd024b8db"><td class="memItemLeft" align="right" valign="top"><a id="aa829197f51559124b8c72a2bd024b8db"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#aa829197f51559124b8c72a2bd024b8db">ShaderType</a> </td></tr>
 <tr class="memdesc:aa829197f51559124b8c72a2bd024b8db"><td class="mdescLeft">&#160;</td><td class="mdescRight">different shader types <br /></td></tr>
@@ -719,19 +813,21 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
       </table>
 </div><div class="memdoc">
 
-<p>bits for the selection of different buffer types </p>
+<p>Bits for the selection of different buffer types. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="adba4fbd4582055f229fe59a0545833abab93a33913d4a4383e4ee9477de95d2ca"></a>BTB_DEPTH_BIT&#160;</td><td class="fielddoc"><p>color buffer type </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="adba4fbd4582055f229fe59a0545833aba03264569ff72f15010d2538a508e5951"></a>BTB_COLOR_BIT&#160;</td><td class="fielddoc"><p>color buffer type </p>
 </td></tr>
-<tr><td class="fieldname"><a id="adba4fbd4582055f229fe59a0545833abaafc4ddb9da0f009c1dab4c43e1ba5527"></a>BTB_COLOR_AND_DEPTH_BITS&#160;</td><td class="fielddoc"><p>depth buffer type </p>
+<tr><td class="fieldname"><a id="adba4fbd4582055f229fe59a0545833abab93a33913d4a4383e4ee9477de95d2ca"></a>BTB_DEPTH_BIT&#160;</td><td class="fielddoc"><p>depth buffer type </p>
 </td></tr>
-<tr><td class="fieldname"><a id="adba4fbd4582055f229fe59a0545833aba6ba7d7f4cdadd1ea367d79e90c7da932"></a>BTB_STENCIL_BIT&#160;</td><td class="fielddoc"><p>color and depth buffer types </p>
+<tr><td class="fieldname"><a id="adba4fbd4582055f229fe59a0545833abaafc4ddb9da0f009c1dab4c43e1ba5527"></a>BTB_COLOR_AND_DEPTH_BITS&#160;</td><td class="fielddoc"><p>color and depth buffer types </p>
 </td></tr>
-<tr><td class="fieldname"><a id="adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c"></a>BTB_ALL_BITS&#160;</td><td class="fielddoc"><p>stencil buffer type </p>
+<tr><td class="fieldname"><a id="adba4fbd4582055f229fe59a0545833aba6ba7d7f4cdadd1ea367d79e90c7da932"></a>BTB_STENCIL_BIT&#160;</td><td class="fielddoc"><p>stencil buffer type </p>
+</td></tr>
+<tr><td class="fieldname"><a id="adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c"></a>BTB_ALL_BITS&#160;</td><td class="fielddoc"><p>all buffer types </p>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00402">402</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00423">423</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -747,25 +843,141 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
       </table>
 </div><div class="memdoc">
 
-<p>enumeration of different render passes, which can be queried from the context and used to specify a new render pass </p>
+<p>Enumeration of different render passes, which can be queried from the context and used to specify a new render pass. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393ba3bdeec44042e17855372e1c422f524f9"></a>RP_STEREO&#160;</td><td class="fielddoc"><p>the main rendering pass triggered by the redraw event </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393ba811317825bf3fe1bdb088fd633cbf465"></a>RP_NONE&#160;</td><td class="fielddoc"><p>no renderpass </p>
 </td></tr>
-<tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393bafb8f35b06de6a7f0720e54f6f4020d3c"></a>RP_SHADOW_MAP&#160;</td><td class="fielddoc"><p>rendering of second eye </p>
+<tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393ba906f07e88e8dcde236f733ccf553e6ce"></a>RP_MAIN&#160;</td><td class="fielddoc"><p>the main rendering pass triggered by the redraw event </p>
+</td></tr>
+<tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393ba3bdeec44042e17855372e1c422f524f9"></a>RP_STEREO&#160;</td><td class="fielddoc"><p>rendering of second eye </p>
+</td></tr>
+<tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393bafb8f35b06de6a7f0720e54f6f4020d3c"></a>RP_SHADOW_MAP&#160;</td><td class="fielddoc"><p>construction of shadow map </p>
 </td></tr>
 <tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393ba1ab646a5afbde7deea6d6d59cba8acdd"></a>RP_SHADOW_VOLUME&#160;</td><td class="fielddoc"><p>construction of shadow map </p>
 </td></tr>
-<tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393ba69336a28028ef0e9bda0c8e5a7f42a27"></a>RP_OPAQUE_SURFACES&#160;</td><td class="fielddoc"><p>construction of shadow map </p>
+<tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393ba69336a28028ef0e9bda0c8e5a7f42a27"></a>RP_OPAQUE_SURFACES&#160;</td><td class="fielddoc"><p>opaque surface rendering using z-Buffer </p>
 </td></tr>
-<tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393ba96ac3415ee1a245182d011282b7003c4"></a>RP_TRANSPARENT_SURFACES&#160;</td><td class="fielddoc"><p>opaque surface rendering using z-Buffer </p>
+<tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393ba96ac3415ee1a245182d011282b7003c4"></a>RP_TRANSPARENT_SURFACES&#160;</td><td class="fielddoc"><p>transparent surface rendering using depth peeling </p>
 </td></tr>
-<tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393bac279b5b109a772a7d76883988bd7e546"></a>RP_PICK&#160;</td><td class="fielddoc"><p>transparent surface rendering using depth peeling </p>
+<tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393bac279b5b109a772a7d76883988bd7e546"></a>RP_PICK&#160;</td><td class="fielddoc"><p>in picking pass a small rectangle around the mouse is rendered </p>
 </td></tr>
-<tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393ba415d18aeb4ec08758e2cbe6ce9b0fe0f"></a>RP_USER_DEFINED&#160;</td><td class="fielddoc"><p>in picking pass a small rectangle around the mouse is rendered </p>
+<tr><td class="fieldname"><a id="adde1a2f8dd33598ed7a81b969b31393ba415d18aeb4ec08758e2cbe6ce9b0fe0f"></a>RP_USER_DEFINED&#160;</td><td class="fielddoc"><p>user defined renderpass </p>
 </td></tr>
 </table>
 
 <p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00078">78</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+
+</div>
+</div>
+<a id="ae903f198d1beae98f419246e35f99e13"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae903f198d1beae98f419246e35f99e13">&#9670;&nbsp;</a></span>RenderPassFlags</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13">cgv::render::RenderPassFlags</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>available flags that can be queried from the context and set for a new render pass </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a845b1cde2ae94a0edcfb5324df7ea3b4"></a>RPF_NONE&#160;</td><td class="fielddoc"><p>no frame initialization is performed </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13ab780102a693e1ff13290777ea199ecbb"></a>RPF_SET_PROJECTION&#160;</td><td class="fielddoc"><p>whether to set default projection matrix </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a18b531670a0ac30382a41d465940d131"></a>RPF_SET_MODELVIEW&#160;</td><td class="fielddoc"><p>whether to set default modelview matrix </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a522ecc525bacc25a49a7dcb2582affb5"></a>RPF_SET_MODELVIEW_PROJECTION&#160;</td><td class="fielddoc"><p>whether to set default modelview and projection matrix </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a44e722bd4f90cb676f8d9765b168f612"></a>RPF_SET_LIGHTS&#160;</td><td class="fielddoc"><p>whether to define default lights </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a2dfdf0c997b4f2b4fc27663256a03695"></a>RPF_SET_MATERIAL&#160;</td><td class="fielddoc"><p>whether to define default material </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13af7004bc1011919d4a4f27687264e83fa"></a>RPF_SET_LIGHTS_ON&#160;</td><td class="fielddoc"><p>whether to turn on default lights </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a69d56ed9ea7bd2ed4911faf9792ada47"></a>RPF_ENABLE_MATERIAL&#160;</td><td class="fielddoc"><p>whether to enable material </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13ad768ce7436b5f41f15085b5640750478"></a>RPF_SET_LIGHTING&#160;</td><td class="fielddoc"><p>whether to define and enable default lighting </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a471c3e959792e4663792dce772c86b74"></a>RPF_CLEAR_COLOR&#160;</td><td class="fielddoc"><p>whether to clear the color buffer </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a91560593b7d80af671c687c1f3a08d55"></a>RPF_CLEAR_DEPTH&#160;</td><td class="fielddoc"><p>whether to clear the depth buffer </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a4a2aaf1fad742e472c8b820298eac1ee"></a>RPF_CLEAR_STENCIL&#160;</td><td class="fielddoc"><p>whether to clear the depth buffer </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a061408370303e1171dda8386d241c1bb"></a>RPF_CLEAR_ACCUM&#160;</td><td class="fielddoc"><p>whether to clear the accumulation buffer </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13aaf18ddc8b1b5817e62cedf1004be054e"></a>RPF_CLEAR_ALL&#160;</td><td class="fielddoc"><p>whether to clear all buffers </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a6cf331dba2b0aa8ba0475e9bc899f6ea"></a>RPF_DRAWABLES_INIT_FRAME&#160;</td><td class="fielddoc"><p>whether to call the init_frame method of the drawables </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13aab557cf4b50cb7eb97f495c69e79d4b6"></a>RPF_SET_STATE_FLAGS&#160;</td><td class="fielddoc"><p>whether to set depth buffer and culling flags </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13af5c43cc4cb4cc1291bac688379445cfa"></a>RPF_SET_CLEAR_COLOR&#160;</td><td class="fielddoc"><p>whether to set the clear color </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a3b5a0190c7bfe6ddb9cb8064fbbfad1e"></a>RPF_SET_CLEAR_DEPTH&#160;</td><td class="fielddoc"><p>whether to set the clear color </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a60d7b78090bf9c9891d59ea9db9245a5"></a>RPF_SET_CLEAR_STENCIL&#160;</td><td class="fielddoc"><p>whether to set the clear color </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13add3fc11ba101df3de081037f2cc40df3"></a>RPF_SET_CLEAR_ACCUM&#160;</td><td class="fielddoc"><p>whether to set the accumulation buffer clear color </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a48956d93d1311702258a0e4994f8d1d0"></a>RPF_DRAWABLES_DRAW&#160;</td><td class="fielddoc"><p>whether to call draw and finish_draw methods of drawables </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a2d878f6bf8cf7300b9350af60989b0ae"></a>RPF_DRAWABLES_FINISH_FRAME&#160;</td><td class="fielddoc"><p>whether to call finish frame method of drawables </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13ab1474ae1be0b12759f2605e3ce4d16ed"></a>RPF_DRAW_TEXTUAL_INFO&#160;</td><td class="fielddoc"><p>whether to draw textual information </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a7d28f96267b9ecebeca727485278f147"></a>RPF_DRAWABLES_AFTER_FINISH&#160;</td><td class="fielddoc"><p>whether to call after finish method of drawables </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a8485eaed4a1b04e37570630271788e1a"></a>RPF_HANDLE_SCREEN_SHOT&#160;</td><td class="fielddoc"><p>whether to perform a screen shot if this was scheduled </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a3e4364badb2589ccfc46e60877676409"></a>RPF_ALL&#160;</td><td class="fielddoc"><p>all flags set, defines default render pass </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae903f198d1beae98f419246e35f99e13a8294211b6fce7a68d8928ff8ccd2a336"></a>RPF_DEFAULT&#160;</td><td class="fielddoc"><p>all flags set, defines default render pass </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00094">94</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+
+</div>
+</div>
+<a id="a2e4474a2c2cbe3c2f8ac57a264b5f457"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e4474a2c2cbe3c2f8ac57a264b5f457">&#9670;&nbsp;</a></span>TextAlignment</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>different text alignments </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2e4474a2c2cbe3c2f8ac57a264b5f457a9c0648e2efcab83d648964294c8d9659"></a>TA_NONE&#160;</td><td class="fielddoc"><p>no alignment </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2e4474a2c2cbe3c2f8ac57a264b5f457ac7cba5a6ce5a076bd468903f5e5430a4"></a>TA_LEFT&#160;</td><td class="fielddoc"><p>center of left edge of text bounds </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2e4474a2c2cbe3c2f8ac57a264b5f457aa5b72c1ee707a8e67d2040ca5d48b145"></a>TA_RIGHT&#160;</td><td class="fielddoc"><p>center of right edge of text bounds </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2e4474a2c2cbe3c2f8ac57a264b5f457a32c29a486e04d784ff53a79bc6cf5389"></a>TA_TOP&#160;</td><td class="fielddoc"><p>center of top edge of text bounds </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2e4474a2c2cbe3c2f8ac57a264b5f457a78800510540253aa38fc4a90a45914ac"></a>TA_BOTTOM&#160;</td><td class="fielddoc"><p>center of bottom edge of text bounds </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2e4474a2c2cbe3c2f8ac57a264b5f457ac243d7ca0c6e785ac16e79de065253f5"></a>TA_TOP_LEFT&#160;</td><td class="fielddoc"><p>top left corner of text bounds </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2e4474a2c2cbe3c2f8ac57a264b5f457afae0f0d3c23aa4b6388f207b2e27347e"></a>TA_TOP_RIGHT&#160;</td><td class="fielddoc"><p>top right corner of text bounds </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2e4474a2c2cbe3c2f8ac57a264b5f457aa67860141e5a23231de975d49e40cea3"></a>TA_BOTTOM_LEFT&#160;</td><td class="fielddoc"><p>bottom left corner of text bounds </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2e4474a2c2cbe3c2f8ac57a264b5f457a46d05c3099580d129e869af51a6707d8"></a>TA_BOTTOM_RIGHT&#160;</td><td class="fielddoc"><p>bottom right corner of text bounds </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00236">236</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -783,11 +995,87 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 
 <p>different sampling strategies for rendering to textures that steer the computation of the <code>tex_coord</code> input to the fragment shader </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a6ddc63c9f76935e53fab79b373077832a963359456640e9b8d512709facecb892"></a>TS_VERTEX&#160;</td><td class="fielddoc"><p>for texture resulution N x M x L the <code>tex_coord</code> ranges from [1/2N, 1/2M, 1/2L] to [1-1/2N, 1-1/2M, 1-1/2P] </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a6ddc63c9f76935e53fab79b373077832abcaed8eb4f3af2abb44f06421146c9d5"></a>TS_CELL&#160;</td><td class="fielddoc"><p>for texture resulution N x M x L the <code>tex_coord</code> ranges from [1/2N, 1/2M, 1/2L] to [1-1/2N, 1-1/2M, 1-1/2P] </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6ddc63c9f76935e53fab79b373077832a963359456640e9b8d512709facecb892"></a>TS_VERTEX&#160;</td><td class="fielddoc"><p><code>tex_coord</code> ranges from [0,0,0] to [1,1,1] </p>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00212">212</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00216">216</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+
+</div>
+</div>
+<a id="ad2f311c0b3d1f95cfd5fcb4b638fead3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2f311c0b3d1f95cfd5fcb4b638fead3">&#9670;&nbsp;</a></span>VertexBufferType</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3">cgv::render::VertexBufferType</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Provides vertex buffer types to allow implicit binding. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad2f311c0b3d1f95cfd5fcb4b638fead3a6220782360c9a07f8d8b7ff26c47f59e"></a>VBT_UNDEF&#160;</td><td class="fielddoc"><p>The buffer has no type. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad2f311c0b3d1f95cfd5fcb4b638fead3a1b9244bf0cab14877c0f63a7b47fe04b"></a>VBT_VERTICES&#160;</td><td class="fielddoc"><p>The buffer contains vertices and will be bound to GL_ARRAY_BUFFER. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad2f311c0b3d1f95cfd5fcb4b638fead3a984e2ddb29823c4eac562f3a3244a827"></a>VBT_INDICES&#160;</td><td class="fielddoc"><p>The buffer contains indices and will be bound to GL_ELEMENT_ARRAY_BUFFER. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad2f311c0b3d1f95cfd5fcb4b638fead3a332156b40b2a33613e24150c7ffa696c"></a>VBT_TEXTURE&#160;</td><td class="fielddoc"><p>The buffer contains texture data and will be bound to GL_TEXTURE_BUFFER. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad2f311c0b3d1f95cfd5fcb4b638fead3ad4e4c7ea3d346f6a7555fb17b1990ea0"></a>VBT_UNIFORM&#160;</td><td class="fielddoc"><p>The buffer contains uniforms and will be bound to GL_UNIFORM_BUFFER. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad2f311c0b3d1f95cfd5fcb4b638fead3af2afd156162c09c3ff3ed3326fa801fe"></a>VBT_FEEDBACK&#160;</td><td class="fielddoc"><p>The buffer is used for transform&amp;feedback and will be bound to GL_TRANSFORM_FEEDBACK_BUFFER. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad2f311c0b3d1f95cfd5fcb4b638fead3ac24b1f5816bb8f65a23ae8ca901c3f1f"></a>VBT_STORAGE&#160;</td><td class="fielddoc"><p>The buffer contains arbitrary data and will be bound to GL_SHADER_STORAGE_BUFFER. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad2f311c0b3d1f95cfd5fcb4b638fead3aa91030375b0a4aa5ef7b26b7703d0263"></a>VBT_ATOMIC_COUNTER&#160;</td><td class="fielddoc"><p>The buffer contains atomic counter and will be bound to GL_ATOMIC_COUNTER_BUFFER. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00377">377</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+
+</div>
+</div>
+<a id="a7ca439553e212967238e29e838343eb9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ca439553e212967238e29e838343eb9">&#9670;&nbsp;</a></span>VertexBufferUsage</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9">cgv::render::VertexBufferUsage</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Provides vertex buffer usage hints as defined in OpenGL. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7ca439553e212967238e29e838343eb9af611814ee9546db6d52ea3f8e5dd1ec4"></a>VBU_STREAM_DRAW&#160;</td><td class="fielddoc"><p>Modified once and used at most a few times; Modified by the application, and used as the source for GL drawing and image specification commands. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7ca439553e212967238e29e838343eb9a67a5e51677061c36743da443b5521a89"></a>VBU_STREAM_READ&#160;</td><td class="fielddoc"><p>Modified once and used at most a few times; Modified by reading data from the GL, and used to return that data when queried by the application. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7ca439553e212967238e29e838343eb9a27c646eb48f833f03fc505fcd31e6e23"></a>VBU_STREAM_COPY&#160;</td><td class="fielddoc"><p>Modified once and used at most a few times; Modified by reading data from the GL, and used as the source for GL drawing and image specification commands. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7ca439553e212967238e29e838343eb9a9baabcf89d1703922b7e9e7bff14db37"></a>VBU_STATIC_DRAW&#160;</td><td class="fielddoc"><p>Modified once and used many times; Modified by the application, and used as the source for GL drawing and image specification commands. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7ca439553e212967238e29e838343eb9a820540e5f706d63ef8ae8944e8a18d36"></a>VBU_STATIC_READ&#160;</td><td class="fielddoc"><p>Modified once and used many times; Modified by reading data from the GL, and used to return that data when queried by the application. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7ca439553e212967238e29e838343eb9a0d95c88bd467f419c6f06fb884fd4f7d"></a>VBU_STATIC_COPY&#160;</td><td class="fielddoc"><p>Modified once and used many times; Modified by reading data from the GL, and used as the source for GL drawing and image specification commands. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7ca439553e212967238e29e838343eb9a3c6e5ff3b3df6e4c101e912d0d20b637"></a>VBU_DYNAMIC_DRAW&#160;</td><td class="fielddoc"><p>Modified repeatedly and used many times; Modified by the application, and used as the source for GL drawing and image specification commands. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7ca439553e212967238e29e838343eb9aab769b892e1be0a3f7f23c5d27bfbda5"></a>VBU_DYNAMIC_READ&#160;</td><td class="fielddoc"><p>Modified repeatedly and used many times; Modified by reading data from the GL, and used to return that data when queried by the application. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7ca439553e212967238e29e838343eb9a7e154acae890ba95a1338a7cb2d8d0e6"></a>VBU_DYNAMIC_COPY&#160;</td><td class="fielddoc"><p>Modified repeatedly and used many times; Modified by reading data from the GL, and used as the source for GL drawing and image specification commands. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00389">389</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1009,7 +1297,7 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 
 <p class="definition">Definition at line <a class="el" href="gltf__support_8cxx_source.html#l00328">328</a> of file <a class="el" href="gltf__support_8cxx_source.html">gltf_support.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00435">cgv::media::mesh::simple_mesh&lt; T &gt;::clear()</a>, <a class="el" href="simple__mesh_8h_source.html#l00245">cgv::media::mesh::simple_mesh&lt; T &gt;::get_nr_positions()</a>, <a class="el" href="simple__mesh_8h_source.html#l00126">cgv::media::mesh::simple_mesh_base::group_index()</a>, <a class="el" href="simple__mesh_8h_source.html#l00114">cgv::media::mesh::simple_mesh_base::material_index()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00124">cgv::media::mesh::simple_mesh_base::new_group()</a>, <a class="el" href="simple__mesh_8h_source.html#l00108">cgv::media::mesh::simple_mesh_base::new_material()</a>, <a class="el" href="simple__mesh_8h_source.html#l00251">cgv::media::mesh::simple_mesh&lt; T &gt;::new_normal()</a>, <a class="el" href="simple__mesh_8h_source.html#l00243">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, <a class="el" href="simple__mesh_8h_source.html#l00268">cgv::media::mesh::simple_mesh&lt; T &gt;::new_tex_coord()</a>, <a class="el" href="simple__mesh_8h_source.html#l00112">cgv::media::mesh::simple_mesh_base::ref_material()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00072">cgv::media::illum::textured_surface_material::set_name()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00076">cgv::media::mesh::simple_mesh_base::start_face()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
+<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00435">cgv::media::mesh::simple_mesh&lt; T &gt;::clear()</a>, <a class="el" href="simple__mesh_8h_source.html#l00246">cgv::media::mesh::simple_mesh&lt; T &gt;::get_nr_positions()</a>, <a class="el" href="simple__mesh_8h_source.html#l00126">cgv::media::mesh::simple_mesh_base::group_index()</a>, <a class="el" href="simple__mesh_8h_source.html#l00114">cgv::media::mesh::simple_mesh_base::material_index()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00124">cgv::media::mesh::simple_mesh_base::new_group()</a>, <a class="el" href="simple__mesh_8h_source.html#l00108">cgv::media::mesh::simple_mesh_base::new_material()</a>, <a class="el" href="simple__mesh_8h_source.html#l00252">cgv::media::mesh::simple_mesh&lt; T &gt;::new_normal()</a>, <a class="el" href="simple__mesh_8h_source.html#l00244">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, <a class="el" href="simple__mesh_8h_source.html#l00269">cgv::media::mesh::simple_mesh&lt; T &gt;::new_tex_coord()</a>, <a class="el" href="simple__mesh_8h_source.html#l00112">cgv::media::mesh::simple_mesh_base::ref_material()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00072">cgv::media::illum::textured_surface_material::set_name()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00076">cgv::media::mesh::simple_mesh_base::start_face()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
 
 </div>
 </div>

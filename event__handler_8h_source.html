@@ -95,22 +95,22 @@ $(document).ready(function(){initNavTree('event__handler_8h_source.html',''); in
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="keyword">namespace </span>gui {</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keyword">namespace </span>gui {</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
 <div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1event__handler.html">   14</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1gui_1_1event__handler.html">event_handler</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1base_1_1traverse__policy.html">base::traverse_policy</a></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="comment">//std::vector&lt;abst_control&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="comment">//std::vector&lt;abst_control&gt;</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <a class="code" href="classcgv_1_1gui_1_1event__handler.html">event_handler</a>();</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keywordtype">bool</span> grab_focus();</div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1event__handler.html#aeef89567e820d30fc538b9be22083403">   24</a></span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1gui_1_1event__handler.html#aeef89567e820d30fc538b9be22083403">handle</a>(<a class="code" href="classcgv_1_1gui_1_1event.html">event</a>&amp; e) = 0;</div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1event__handler.html#a247d57486e7c06516b2b028262b6dc35">   26</a></span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1gui_1_1event__handler.html#a247d57486e7c06516b2b028262b6dc35">stream_help</a>(std::ostream&amp; os) = 0;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="classcgv_1_1gui_1_1event__handler.html">event_handler</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">bool</span> grab_focus();</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1event__handler.html#aeef89567e820d30fc538b9be22083403">   24</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1gui_1_1event__handler.html#aeef89567e820d30fc538b9be22083403">handle</a>(<a class="code" href="classcgv_1_1gui_1_1event.html">event</a>&amp; e) = 0;</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1event__handler.html#a247d57486e7c06516b2b028262b6dc35">   26</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1gui_1_1event__handler.html#a247d57486e7c06516b2b028262b6dc35">stream_help</a>(std::ostream&amp; os) = 0;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordtype">bool</span> add_key_control(<span class="keyword">const</span> std::string&amp; property, <span class="keyword">const</span> std::string&amp; options, <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::base::group_ptr</a> group = <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::base::group_ptr</a>());</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">bool</span> add_key_control(<span class="keyword">const</span> std::string&amp; property, <span class="keyword">const</span> std::string&amp; options, <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::base::group_ptr</a> group = <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::base::group_ptr</a>());</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;};</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        }</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    }</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;}</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>

@@ -91,69 +91,69 @@ $(document).ready(function(){initNavTree('intersections_8h_source.html',''); ini
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a>{</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="keyword">namespace </span>math{</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    <span class="keyword">namespace </span>math{</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keywordtype">bool</span> line_line_intersection(<span class="keyword">const</span> vec&lt;T&gt;&amp; x1,<span class="keyword">const</span> vec&lt;T&gt;&amp; d1,<span class="keyword">const</span> vec&lt;T&gt;&amp; x2,<span class="keyword">const</span> vec&lt;T&gt;&amp; d2, T&amp; t1, T&amp; t2, T eps=0.00001)</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;{</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        mat&lt;T&gt; A(x1.dim(),2);</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        A.set_col(0,d1);</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        A.set_col(1,d2);</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        vec&lt;T&gt; b = <a class="code" href="namespacecgv_1_1math.html#ae1f639abf33334ad93ab52dbdaa19abf">transpose</a>(A)*(x1-x2);</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        A=<a class="code" href="namespacecgv_1_1math.html#ae1f639abf33334ad93ab52dbdaa19abf">transpose</a>(A)*A;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        vec&lt;T&gt; t;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <a class="code" href="namespacecgv_1_1math.html#a627d83610f33d7bbff7d122e789aef12">solve</a>(A,b,t);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        vec&lt;T&gt; s1 = x1 + t(0)*d1;       </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        vec&lt;T&gt; s2 = x2 + t(1)*d2;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        t1 = t(0);</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        t2 = t(1);</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a>(s1-s2)&lt;= eps;     </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    mat&lt;T&gt; A(x1.dim(),2);</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    A.set_col(0,d1);</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    A.set_col(1,d2);</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    vec&lt;T&gt; b = <a class="code" href="namespacecgv_1_1math.html#ae1f639abf33334ad93ab52dbdaa19abf">transpose</a>(A)*(x1-x2);</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    A=<a class="code" href="namespacecgv_1_1math.html#ae1f639abf33334ad93ab52dbdaa19abf">transpose</a>(A)*A;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    vec&lt;T&gt; t;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="namespacecgv_1_1math.html#a627d83610f33d7bbff7d122e789aef12">solve</a>(A,b,t);</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    vec&lt;T&gt; s1 = x1 + t(0)*d1;   </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    vec&lt;T&gt; s2 = x2 + t(1)*d2;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    t1 = t(0);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    t2 = t(1);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a>(s1-s2)&lt;= eps; </div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;}</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keywordtype">bool</span> line_circle_intersection(<span class="keyword">const</span> vec&lt;T&gt;&amp; x,<span class="keyword">const</span> vec&lt;T&gt;&amp; d,<span class="keyword">const</span> vec&lt;T&gt;&amp; center,<span class="keyword">const</span> vec&lt;T&gt;&amp; normal,</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                                                          <span class="keyword">const</span> T&amp; radius, vec&lt;T&gt;&amp; nearest_point, T eps=0.00001)</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                              <span class="keyword">const</span> T&amp; radius, vec&lt;T&gt;&amp; nearest_point, T eps=0.00001)</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;{</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        T s = <a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(normal,d);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordflow">if</span>(s == 0)</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        T t = <a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(normal,x)-<a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(center,normal);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        t/=-s;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        vec&lt;T&gt; v1 = x+t*d-center;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        nearest_point = radius*<a class="code" href="namespacecgv_1_1math.html#abfa52c4120248159499bc320aba339c5">normalize</a>(v1)+center;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordflow">if</span>(t &lt; 0)</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">return</span> ( fabs(<a class="code" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a>(v1)-radius) &lt;= eps);</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    T s = <a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(normal,d);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordflow">if</span>(s == 0)</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    T t = <a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(normal,x)-<a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(center,normal);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    t/=-s;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    vec&lt;T&gt; v1 = x+t*d-center;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    nearest_point = radius*<a class="code" href="namespacecgv_1_1math.html#abfa52c4120248159499bc320aba339c5">normalize</a>(v1)+center;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordflow">if</span>(t &lt; 0)</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordflow">return</span> ( fabs(<a class="code" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a>(v1)-radius) &lt;= eps);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    </div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1math.html#ac940672f781e5135fdde91c8e1ac3043">ray_plane_intersection</a>(<span class="keyword">const</span> vec&lt;T&gt;&amp; x,<span class="keyword">const</span> vec&lt;T&gt;&amp; d,<span class="keyword">const</span> vec&lt;T&gt;&amp; plane, T&amp; t)</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;{</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        t =0;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        T s =0;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordtype">unsigned</span> n = x.dim();</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; n; i++)</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                t+=plane(i)*x(i);</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                s+=plane(i)*d(i);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        }</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordflow">if</span>(s == 0)</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        t+=plane(n);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        t/=-s;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordflow">return</span> ( t &gt;= 0);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    t =0;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    T s =0;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">unsigned</span> n = x.dim();</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; n; i++)</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        t+=plane(i)*x(i);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        s+=plane(i)*d(i);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    }</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordflow">if</span>(s == 0)</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    t+=plane(n);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    t/=-s;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">return</span> ( t &gt;= 0);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        </div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        }</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    }</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a319fcf5471db921fa80eedf62c03ff02"><div class="ttname"><a href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">cgv::math::length</a></div><div class="ttdeci">T length(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">returns the length of vector v</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00419">fvec.h:419</a></div></div>

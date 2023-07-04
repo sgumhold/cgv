@@ -91,19 +91,19 @@ $(document).ready(function(){initNavTree('is__base__of_8h_source.html',''); init
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;cgv/type/func/drop_const.h&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="keyword">namespace </span>type {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;                <span class="keyword">namespace </span>cond {</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    <span class="keyword">namespace </span>type {</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="keyword">namespace </span>cond {</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> base_type, <span class="keyword">typename</span> derived_type&gt;</div>
 <div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="structcgv_1_1type_1_1cond_1_1is__base__of.html">   12</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1type_1_1cond_1_1is__base__of.html">is_base_of</a> </div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{ </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> value =  </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                std::is_base_of&lt;typename func::drop_const&lt;base_type&gt;::type,</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                                                                   <span class="keyword">typename</span> <a class="code" href="structcgv_1_1type_1_1func_1_1drop__const.html#a0722721b66d95e42f409360f5dc47710">func::drop_const&lt;derived_type&gt;::type</a>&gt;::value;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> value =  </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        std::is_base_of&lt;typename func::drop_const&lt;base_type&gt;::type,</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                                   <span class="keyword">typename</span> <a class="code" href="structcgv_1_1type_1_1func_1_1drop__const.html#a0722721b66d95e42f409360f5dc47710">func::drop_const&lt;derived_type&gt;::type</a>&gt;::value;</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;};</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                }</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        }</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        }</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    }</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;}</div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="vr__calib_8cxx_source.html#l00009">vr_calib.cxx:9</a></div></div>
 <div class="ttc" id="astructcgv_1_1type_1_1cond_1_1is__base__of_html"><div class="ttname"><a href="structcgv_1_1type_1_1cond_1_1is__base__of.html">cgv::type::cond::is_base_of</a></div><div class="ttdoc">template condition returning, whether the first argument is a base class of the second argument</div><div class="ttdef"><b>Definition:</b> <a href="is__base__of_8h_source.html#l00012">is_base_of.h:13</a></div></div>

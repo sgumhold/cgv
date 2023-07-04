@@ -2291,14 +2291,12 @@ template&lt;typename T &gt; </div>
 
 <p>Given two vectors v0 and v1 extend to orthonormal frame and return 3x3 matrix containing frame vectors in the columns. </p>
 <p>The implementation has the following assumptions that are not checked:</p><ul>
-<li>v0.length() &gt; 0<ul>
+<li>v0.length() &gt; 0</li>
 <li>v1.length() &gt; 0</li>
 <li>v0 and v1 are not parallel or anti-parallel If the result matrix has columns x,y, and z,</li>
 <li>x will point in direction of v0</li>
 <li>z will point orthogonal to x and v1</li>
 <li>y will point orthogonal to x and z as good as possible in direction of v1. If v0 and v1 are orthogonal, y is in direction of v1. </li>
-</ul>
-</li>
 </ul>
 
 <p class="definition">Definition at line <a class="el" href="geom_8h_source.html#l00076">76</a> of file <a class="el" href="geom_8h_source.html">geom.h</a>.</p>

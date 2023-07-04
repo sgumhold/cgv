@@ -339,19 +339,15 @@ std::vector&lt; <a class="el" href="structcgv_1_1reflect_1_1reflection__handler_
 
 <p>abstract interface to start reflection of a group of members. </p>
 <p>The return value gives information about further traversal of the group:</p><ul>
-<li>GT_TERMINATE ... terminate traversal completely<ul>
+<li>GT_TERMINATE ... terminate traversal completely</li>
 <li>GT_SKIP ... skip traversal of group</li>
-</ul>
-</li>
-<li>GT_COMPLETE ... traverse group completely<ul>
+<li>GT_COMPLETE ... traverse group completely</li>
 <li>index i &gt;= 0 ... traverse only the i-th member of the group. Depending on the group kind, the remaining parameters are given as follows:</li>
 <li>GK_BASE_CLASS ... group_name and grp_size are undefined, group_ptr is pointer to instance of base class, rt reflects base class</li>
 <li>GK_STRUCTURE ... group_name is instance name, group_ptr is pointer to instance, rt reflects type of structure, grp_size is undefined,</li>
 <li>GK_VECTOR ... group_name is vector name, group_ptr is pointer to vector data structure, rt reflects element type, grp_size is size of vector</li>
 <li>GK_ARRAY ... group_name is array name, group_ptr is pointer to first array element, rt reflects element type, grp_size is size of array.</li>
 <li>GK_POINTER ... group_name is pointer name, group_ptr is pointer to first array element, rt reflects type to which pointer poits, grp_size is undefined. </li>
-</ul>
-</li>
 </ul>
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1data_1_1ascii__write__reflection__handler.html#a429f9ab1bf86ac9b8b369a147c429c1a">cgv::data::ascii_write_reflection_handler</a>, <a class="el" href="classcgv_1_1data_1_1ascii__read__reflection__handler.html#a6a6817db60d7a63032c80740df54c042">cgv::data::ascii_read_reflection_handler</a>, <a class="el" href="classcgv_1_1data_1_1ascii__reflection__handler.html#a6383127d2b5ad75c462b9d3b23748d9f">cgv::data::ascii_reflection_handler</a>, <a class="el" href="classcgv_1_1reflect_1_1find__reflection__handler.html#aaf2b9206a361ebe8f9a1d185bf4974a6">cgv::reflect::find_reflection_handler</a>, and <a class="el" href="classcgv_1_1reflect_1_1debug__reflection__handler.html#acc026fe0c1c785458478bf8397e7529a">cgv::reflect::debug_reflection_handler</a>.</p>

@@ -261,9 +261,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:ab5cc67e7a85610d8a316305dcadb4c55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ab5cc67e7a85610d8a316305dcadb4c55">sort_faces</a> (std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;perm, bool by_group=true, bool by_material=true) const</td></tr>
 <tr class="memdesc:ab5cc67e7a85610d8a316305dcadb4c55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate a permutation of face indices which sorts them by group and/or material.  <a href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ab5cc67e7a85610d8a316305dcadb4c55">More...</a><br /></td></tr>
 <tr class="separator:ab5cc67e7a85610d8a316305dcadb4c55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad80ef7cc9b163531591febd3a8bd333"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#aad80ef7cc9b163531591febd3a8bd333">merge_indices</a> (std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;vertex_indices, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0020cefcc7053881a18569fddbee2b44">vec4i</a> &gt; &amp;unique_quadruples, bool *include_tex_coords_ptr=0, bool *include_normals_ptr=0, bool *include_tangents_ptr=0) const</td></tr>
-<tr class="memdesc:aad80ef7cc9b163531591febd3a8bd333"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transforms n individual vertex attribute indices into one list of unique index n-tuples.  <a href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#aad80ef7cc9b163531591febd3a8bd333">More...</a><br /></td></tr>
-<tr class="separator:aad80ef7cc9b163531591febd3a8bd333"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a308e232556ccf1621e69fde8d6ceffe7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a308e232556ccf1621e69fde8d6ceffe7">merge_indices</a> (std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;vertex_indices, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0020cefcc7053881a18569fddbee2b44">vec4i</a> &gt; &amp;unique_tuples, bool *include_tex_coords_ptr=0, bool *include_normals_ptr=0, bool *include_tangents_ptr=0) const</td></tr>
+<tr class="memdesc:a308e232556ccf1621e69fde8d6ceffe7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transforms n individual vertex attribute indices into one list of unique index n-tuples.  <a href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a308e232556ccf1621e69fde8d6ceffe7">More...</a><br /></td></tr>
+<tr class="separator:a308e232556ccf1621e69fde8d6ceffe7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a116d992457d26966664db28542b423ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a116d992457d26966664db28542b423ea">extract_triangle_element_buffer</a> (const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;vertex_indices, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;triangle_element_buffer, const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *face_permutation_ptr=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ac896d9a28d7e997a48d71b3cb6af4cee">vec3i</a> &gt; *material_group_start_ptr=0) const</td></tr>
 <tr class="memdesc:a116d992457d26966664db28542b423ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract element array buffers for triangulation.  <a href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a116d992457d26966664db28542b423ea">More...</a><br /></td></tr>
 <tr class="separator:a116d992457d26966664db28542b423ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -580,7 +580,7 @@ Protected Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#aad80ef7cc9b163531591febd3a8bd333" title="Transforms n individual vertex attribute indices into one list of unique index n-tuples.">simple_mesh::merge_indices()</a> </dd>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a308e232556ccf1621e69fde8d6ceffe7" title="Transforms n individual vertex attribute indices into one list of unique index n-tuples.">simple_mesh::merge_indices()</a> </dd>
 <dd>
 <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ab5cc67e7a85610d8a316305dcadb4c55" title="Calculate a permutation of face indices which sorts them by group and/or material.">simple_mesh::sort_faces()</a> for getting a permutation </dd></dl>
 
@@ -627,7 +627,7 @@ Protected Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#aad80ef7cc9b163531591febd3a8bd333" title="Transforms n individual vertex attribute indices into one list of unique index n-tuples.">simple_mesh::merge_indices()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a308e232556ccf1621e69fde8d6ceffe7" title="Transforms n individual vertex attribute indices into one list of unique index n-tuples.">simple_mesh::merge_indices()</a> </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00200">200</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
@@ -637,8 +637,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aad80ef7cc9b163531591febd3a8bd333"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aad80ef7cc9b163531591febd3a8bd333">&#9670;&nbsp;</a></span>merge_indices()</h2>
+<a id="a308e232556ccf1621e69fde8d6ceffe7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a308e232556ccf1621e69fde8d6ceffe7">&#9670;&nbsp;</a></span>merge_indices()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -653,7 +653,7 @@ Protected Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0020cefcc7053881a18569fddbee2b44">vec4i</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>unique_quadruples</em>, </td>
+          <td class="paramname"><em>unique_tuples</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -683,10 +683,11 @@ Protected Attributes</h2></td></tr>
 
 <p>Transforms n individual vertex attribute indices into one list of unique index n-tuples. </p>
 <p>Picture for example a cube where each quadratic face has a color. There would be only eight vertex positions. However, each of these vertices belongs to three faces and would therefore need to carry three distinct colors. To solve this issue all the unique combinations of attribute indicies get recorded into a list. The new face primitives are then referenced by indexing into this list of unique index n-tuples.</p>
+<p>See <a href="https://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/">https://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/</a> for further details.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">vertex_indices</td><td>will be filled with indicies into the unique quadruple list. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">unique_quadruples</td><td>will be filled with all the unique n-tuples. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">vertex_indices</td><td>will be filled with indicies into the unique tuple list. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">unique_tuples</td><td>will be filled with all the unique n-tuples. </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">include_tex_coords_ptr</td><td>if nullptr then texture coordinates won't be included in the n-tuples. Otherwise the pointed to bool will be set to true if the mesh even contains texture coordinates or false if not. </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">include_normals_ptr</td><td>if nullptr then normals won't be included in the n-tuples. Otherwise the pointed to bool will be set to true if the mesh even contains normals or false if not. </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">include_tangents_ptr</td><td>if nullptr then tangents won't be included in the n-tuples. Otherwise the pointed to bool will be set to true if the mesh even contains texture coordinates or false if not.</td></tr>
@@ -748,7 +749,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00086">86</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00744">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00861">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00893">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00945">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00816">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00780">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00745">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00862">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00894">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00946">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00817">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00781">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
 
 </div>
 </div>
@@ -823,7 +824,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00076">76</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00744">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00861">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00893">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00945">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00816">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00780">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00745">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00862">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00894">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00946">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00817">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00781">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
 
 </div>
 </div>

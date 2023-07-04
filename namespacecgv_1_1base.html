@@ -943,8 +943,8 @@ template&lt;typename T &gt; </div>
 <p>Given an option string (first parameter) with name-value-pairs, i.e. "x=10.4;tooltip='help'" and a property name (second parameter), the function returns whether the option string contains an assignment of the queried property and if yes, the value is stored in the reference given in the third parameter. The type casts supported by the <a class="el" href="structcgv_1_1type_1_1variant.html" title="convenience template to access a value pointed to by a void pointer where the type of the value is gi...">cgv::type::variant</a> type are used when converting to the reference type.</p>
 <p>Examples:</p>
 <p>true == has_property("x=10.4;tooltip='help'", "x", dbl_var)"       ==&gt; dbl_var = 10.4
-    true  == has_property("x=10.4;tooltip='help'", "x", str_var)" ==&gt; str_var = "10.4" true == has_property("x=10.4;tooltip='help'", "tooltip", str_var)" ==&gt; str_var = "help"
-    false == has_property("x=10.4;tooltip='help'", "y", int_var)" ==&gt; int_var ... not changed </p>
+true  == has_property("x=10.4;tooltip='help'", "x", str_var)" ==&gt; str_var = "10.4" true == has_property("x=10.4;tooltip='help'", "tooltip", str_var)" ==&gt; str_var = "help"
+false == has_property("x=10.4;tooltip='help'", "y", int_var)" ==&gt; int_var ... not changed </p>
 
 <p class="definition">Definition at line <a class="el" href="base__generator_8h_source.html#l00132">132</a> of file <a class="el" href="base__generator_8h_source.html">base_generator.h</a>.</p>
 

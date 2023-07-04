@@ -135,11 +135,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a2f17efe64c9f1c86ea2f4c9cabe0a6b0">is_bound</a> () const</td></tr>
 <tr class="memdesc:a2f17efe64c9f1c86ea2f4c9cabe0a6b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">check whether attribute array binding is bound <br /></td></tr>
 <tr class="separator:a2f17efe64c9f1c86ea2f4c9cabe0a6b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ff079800523ee8cafe285df2d48f5fb"><td class="memTemplParams" colspan="2"><a id="a6ff079800523ee8cafe285df2d48f5fb"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a6ff079800523ee8cafe285df2d48f5fb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a6ff079800523ee8cafe285df2d48f5fb">construct</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">cgv::media::mesh::simple_mesh</a>&lt; T &gt; &amp;mesh)</td></tr>
-<tr class="memdesc:a6ff079800523ee8cafe285df2d48f5fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct mesh render info from a given simple mesh and store attributes in vertex buffer objects <br /></td></tr>
-<tr class="separator:a6ff079800523ee8cafe285df2d48f5fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4980a8ef4e0728682304d7937370eb78"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a4980a8ef4e0728682304d7937370eb78"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a4980a8ef4e0728682304d7937370eb78">construct</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">cgv::media::mesh::simple_mesh</a>&lt; T &gt; &amp;mesh, std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; *tuple_pos_indices=nullptr, int *num_floats_in_vertex=nullptr)</td></tr>
+<tr class="memdesc:a4980a8ef4e0728682304d7937370eb78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct mesh render info from a given simple mesh and store attributes in vertex buffer objects.  <a href="classcgv_1_1render_1_1mesh__render__info.html#a4980a8ef4e0728682304d7937370eb78">More...</a><br /></td></tr>
+<tr class="separator:a4980a8ef4e0728682304d7937370eb78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e9586a37d83a629d41201b1692c5236"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a5e9586a37d83a629d41201b1692c5236">set_nr_instances</a> (unsigned nr)</td></tr>
 <tr class="memdesc:a5e9586a37d83a629d41201b1692c5236"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the number of to be drawn instances - in case of 0, instanced drawing is turned off  <a href="classcgv_1_1render_1_1mesh__render__info.html#a5e9586a37d83a629d41201b1692c5236">More...</a><br /></td></tr>
 <tr class="separator:a5e9586a37d83a629d41201b1692c5236"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -333,8 +332,81 @@ std::vector&lt; draw_call &gt;&#160;</td><td class="memItemRight" valign="bottom
 <p>The vertex buffer can be constructed from a simple mesh and the attribute array binding is bound to a specific shader program which defines the attribute locations. <br  />
  </p>
 
-<p class="definition">Definition at line <a class="el" href="mesh__render__info_8h_source.html#l00015">15</a> of file <a class="el" href="mesh__render__info_8h_source.html">mesh_render_info.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mesh__render__info_8h_source.html#l00018">18</a> of file <a class="el" href="mesh__render__info_8h_source.html">mesh_render_info.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a4980a8ef4e0728682304d7937370eb78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4980a8ef4e0728682304d7937370eb78">&#9670;&nbsp;</a></span>construct()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::render::mesh_render_info::construct </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">cgv::media::mesh::simple_mesh</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>mesh</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; *&#160;</td>
+          <td class="paramname"><em>tuple_pos_indices</em> = <code>nullptr</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>num_floats_in_vertex</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Construct mesh render info from a given simple mesh and store attributes in vertex buffer objects. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>The coordinate type which is used in the <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html" title="the simple_mesh class is templated over the coordinate type that defaults to float">cgv::media::mesh::simple_mesh</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>The CGV rendering context. </td></tr>
+    <tr><td class="paramname">mesh</td><td>The general mesh which will be translated into appropriately formatted GPU buffers. </td></tr>
+    <tr><td class="paramname">tuple_position_indices</td><td>If not nullptr, will be filled the mapping from unique vertex attribute tuples to the </td></tr>
+    <tr><td class="paramname">num_floats_in_vertex</td><td>If not nullptr will be set to the number of floats which make up one vertex with all its attributes. original index buffers of the mesh. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="mesh__render__info_8h_source.html#l00103">103</a> of file <a class="el" href="mesh__render__info_8h_source.html">mesh_render_info.h</a>.</p>
+
+<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00567">cgv::media::mesh::simple_mesh&lt; T &gt;::extract_vertex_attribute_buffer()</a>, and <a class="el" href="context_8h_source.html#l00379">cgv::render::VBT_VERTICES</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00443">cgv::render::gl::gl_implicit_surface_drawable_base::draw()</a>, and <a class="el" href="mesh__drawable_8cxx_source.html#l00016">cgv::render::gl::mesh_drawable::init_frame()</a>.</p>
+
+</div>
+</div>
 <a id="ad85cf218bcf5f6be8ec13d4a67c27135"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad85cf218bcf5f6be8ec13d4a67c27135">&#9670;&nbsp;</a></span>construct_vbos_base()</h2>
 
@@ -409,7 +481,7 @@ std::vector&lt; draw_call &gt;&#160;</td><td class="memItemRight" valign="bottom
 
 <p class="definition">Definition at line <a class="el" href="mesh__render__info_8cxx_source.html#l00026">26</a> of file <a class="el" href="mesh__render__info_8cxx_source.html">mesh_render_info.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="mesh__render__info_8h_source.html#l00052">ct</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00168">cgv::media::mesh::simple_mesh_base::extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00200">cgv::media::mesh::simple_mesh_base::extract_wireframe_element_buffer()</a>, <a class="el" href="colored__model_8cxx_source.html#l00128">cgv::media::colored_model::get_color_storage_type()</a>, <a class="el" href="simple__mesh_8h_source.html#l00110">cgv::media::mesh::simple_mesh_base::get_material()</a>, <a class="el" href="simple__mesh_8h_source.html#l00118">cgv::media::mesh::simple_mesh_base::get_nr_groups()</a>, <a class="el" href="simple__mesh_8h_source.html#l00106">cgv::media::mesh::simple_mesh_base::get_nr_materials()</a>, <a class="el" href="mesh__render__info_8h_source.html#l00034">include_colors</a>, <a class="el" href="mesh__render__info_8h_source.html#l00030">include_normals</a>, <a class="el" href="mesh__render__info_8h_source.html#l00032">include_tangents</a>, <a class="el" href="mesh__render__info_8h_source.html#l00028">include_tex_coords</a>, <a class="el" href="mesh__render__info_8h_source.html#l00026">material_primitive_start</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00130">cgv::media::mesh::simple_mesh_base::merge_indices()</a>, <a class="el" href="mesh__render__info_8h_source.html#l00038">nr_edge_elements</a>, <a class="el" href="mesh__render__info_8h_source.html#l00040">nr_triangle_elements</a>, <a class="el" href="mesh__render__info_8h_source.html#l00036">nr_vertices</a>, <a class="el" href="render__info_8cxx_source.html#l00146">cgv::render::render_info::ref_materials()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00117">cgv::media::mesh::simple_mesh_base::sort_faces()</a>.</p>
+<p class="reference">References <a class="el" href="mesh__render__info_8h_source.html#l00055">ct</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00168">cgv::media::mesh::simple_mesh_base::extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00200">cgv::media::mesh::simple_mesh_base::extract_wireframe_element_buffer()</a>, <a class="el" href="colored__model_8cxx_source.html#l00128">cgv::media::colored_model::get_color_storage_type()</a>, <a class="el" href="simple__mesh_8h_source.html#l00110">cgv::media::mesh::simple_mesh_base::get_material()</a>, <a class="el" href="simple__mesh_8h_source.html#l00118">cgv::media::mesh::simple_mesh_base::get_nr_groups()</a>, <a class="el" href="simple__mesh_8h_source.html#l00106">cgv::media::mesh::simple_mesh_base::get_nr_materials()</a>, <a class="el" href="mesh__render__info_8h_source.html#l00037">include_colors</a>, <a class="el" href="mesh__render__info_8h_source.html#l00033">include_normals</a>, <a class="el" href="mesh__render__info_8h_source.html#l00035">include_tangents</a>, <a class="el" href="mesh__render__info_8h_source.html#l00031">include_tex_coords</a>, <a class="el" href="mesh__render__info_8h_source.html#l00029">material_primitive_start</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00130">cgv::media::mesh::simple_mesh_base::merge_indices()</a>, <a class="el" href="mesh__render__info_8h_source.html#l00041">nr_edge_elements</a>, <a class="el" href="mesh__render__info_8h_source.html#l00043">nr_triangle_elements</a>, <a class="el" href="mesh__render__info_8h_source.html#l00039">nr_vertices</a>, <a class="el" href="render__info_8cxx_source.html#l00146">cgv::render::render_info::ref_materials()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00117">cgv::media::mesh::simple_mesh_base::sort_faces()</a>.</p>
 
 </div>
 </div>
@@ -466,7 +538,7 @@ std::vector&lt; draw_call &gt;&#160;</td><td class="memItemRight" valign="bottom
 
 <p class="definition">Definition at line <a class="el" href="mesh__render__info_8cxx_source.html#l00057">57</a> of file <a class="el" href="mesh__render__info_8cxx_source.html">mesh_render_info.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="vertex__buffer_8cxx_source.html#l00052">cgv::render::vertex_buffer::create()</a>, <a class="el" href="mesh__render__info_8h_source.html#l00038">nr_edge_elements</a>, <a class="el" href="mesh__render__info_8h_source.html#l00040">nr_triangle_elements</a>, <a class="el" href="render__info_8cxx_source.html#l00152">cgv::render::render_info::ref_vbos()</a>, and <a class="el" href="vertex__buffer_8h_source.html#l00062">cgv::render::vertex_buffer::replace()</a>.</p>
+<p class="reference">References <a class="el" href="vertex__buffer_8cxx_source.html#l00051">cgv::render::vertex_buffer::create()</a>, <a class="el" href="mesh__render__info_8h_source.html#l00041">nr_edge_elements</a>, <a class="el" href="mesh__render__info_8h_source.html#l00043">nr_triangle_elements</a>, <a class="el" href="render__info_8cxx_source.html#l00152">cgv::render::render_info::ref_vbos()</a>, <a class="el" href="vertex__buffer_8h_source.html#l00098">cgv::render::vertex_buffer::replace()</a>, and <a class="el" href="context_8h_source.html#l00380">cgv::render::VBT_INDICES</a>.</p>
 
 </div>
 </div>

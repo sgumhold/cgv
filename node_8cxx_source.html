@@ -88,46 +88,46 @@ $(document).ready(function(){initNavTree('node_8cxx_source.html',''); initResiza
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;node.h&quot;</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="keyword">namespace </span>base {</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;    <span class="keyword">namespace </span>base {</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1node.html#a62615bb328f6c0b6f8ff4a9730349fba">    6</a></span>&#160;<a class="code" href="classcgv_1_1base_1_1node.html#a62615bb328f6c0b6f8ff4a9730349fba">node::node</a>(<span class="keyword">const</span> std::string&amp; _name) : <a class="code" href="classcgv_1_1base_1_1named.html">named</a>(_name)</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;{</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;}</div>
 <div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1node.html#a3053a69b9fefa20cc4c2b851d88bbaf6">    9</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">node_ptr</a> <a class="code" href="classcgv_1_1base_1_1node.html#a3053a69b9fefa20cc4c2b851d88bbaf6">node::get_parent</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1base_1_1node.html#a28286049d6db60c75aedf4c6358dfc12">parent</a>;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1base_1_1node.html#a28286049d6db60c75aedf4c6358dfc12">parent</a>;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;}</div>
 <div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1node.html#ad14d6331e7487f989f0fa0f8af5c5a85">   13</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> <a class="code" href="classcgv_1_1base_1_1node.html#ad14d6331e7487f989f0fa0f8af5c5a85">node::get_root</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">node_ptr</a> np(<span class="keyword">const_cast&lt;</span><a class="code" href="classcgv_1_1base_1_1node.html">node</a>*<span class="keyword">&gt;</span>(<span class="keyword">this</span>));</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="keywordflow">do</span> {</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> bp = np-&gt;get_parent();</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                <span class="keywordflow">if</span> (!bp)</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                        <span class="keywordflow">return</span> np;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                np = bp-&gt;get_node();</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                <span class="keywordflow">if</span> (!np)</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                        <span class="keywordflow">return</span> bp;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        } </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keywordflow">while</span> (<span class="keyword">true</span>);</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">node_ptr</a> np(<span class="keyword">const_cast&lt;</span><a class="code" href="classcgv_1_1base_1_1node.html">node</a>*<span class="keyword">&gt;</span>(<span class="keyword">this</span>));</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordflow">do</span> {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> bp = np-&gt;get_parent();</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordflow">if</span> (!bp)</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            <span class="keywordflow">return</span> np;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        np = bp-&gt;get_node();</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keywordflow">if</span> (!np)</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <span class="keywordflow">return</span> bp;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    } </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordflow">while</span> (<span class="keyword">true</span>);</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;}</div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1node.html#aaaf1d20e3f26347e54c40d31c67d930f">   26</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1base_1_1node.html#aaaf1d20e3f26347e54c40d31c67d930f">node::set_parent</a>(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">node_ptr</a> _parent)</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;{</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <a class="code" href="classcgv_1_1base_1_1node.html#a28286049d6db60c75aedf4c6358dfc12">parent</a> = _parent;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <a class="code" href="classcgv_1_1base_1_1node.html#a28286049d6db60c75aedf4c6358dfc12">parent</a> = _parent;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}</div>
 <div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1node.html#a746bbe7e49b1fae8253a8b06ce9ad4c3">   30</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">node_ptr</a> <a class="code" href="classcgv_1_1base_1_1node.html#a746bbe7e49b1fae8253a8b06ce9ad4c3">node::get_node</a>()</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;{</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1base.html#a876ea103d1a70f0477574fd136a99192">node_ptr</a>(<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1base.html#a876ea103d1a70f0477574fd136a99192">node_ptr</a>(<span class="keyword">this</span>);</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;}</div>
 <div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1node.html#a8d0651595bba92daa2271a015a408867">   34</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">const_node_ptr</a> <a class="code" href="classcgv_1_1base_1_1node.html#a8d0651595bba92daa2271a015a408867">node::get_node_const</a>()</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;{</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1base.html#a12b0172515fe3213763efbcec3d45c76">const_node_ptr</a>(<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1base.html#a12b0172515fe3213763efbcec3d45c76">const_node_ptr</a>(<span class="keyword">this</span>);</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;}</div>
 <div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1node.html#ab135d52af631a979c9142fa6e6277eff">   38</a></span>&#160;std::string <a class="code" href="classcgv_1_1base_1_1node.html#ab135d52af631a979c9142fa6e6277eff">node::get_type_name</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordflow">return</span> <span class="stringliteral">&quot;node&quot;</span>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordflow">return</span> <span class="stringliteral">&quot;node&quot;</span>;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;}</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        }</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    }</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1base_1_1named_html"><div class="ttname"><a href="classcgv_1_1base_1_1named.html">cgv::base::named</a></div><div class="ttdoc">base class for all gui types</div><div class="ttdef"><b>Definition:</b> <a href="named_8h_source.html#l00019">named.h:20</a></div></div>
 <div class="ttc" id="aclasscgv_1_1base_1_1node_html"><div class="ttname"><a href="classcgv_1_1base_1_1node.html">cgv::base::node</a></div><div class="ttdoc">The node class keeps a pointer to its parent.</div><div class="ttdef"><b>Definition:</b> <a href="node_8h_source.html#l00018">node.h:19</a></div></div>

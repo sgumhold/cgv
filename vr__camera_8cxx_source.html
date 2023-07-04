@@ -92,103 +92,103 @@ $(document).ready(function(){initNavTree('vr__camera_8cxx_source.html',''); init
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacevr.html">vr</a> {</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a395148da99f5bb4c15bb096fd5cb1d65">    8</a></span>&#160;        <a class="code" href="classvr_1_1vr__camera.html#a395148da99f5bb4c15bb096fd5cb1d65">vr_camera::vr_camera</a>() : num_cameras(0u), state(CS_UNINITIALIZED), frame_format(CFF_RGBA), frame_split(CFS_NONE), frame_flipped(false)</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        {</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        }</div>
+<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a395148da99f5bb4c15bb096fd5cb1d65">    8</a></span>&#160;    <a class="code" href="classvr_1_1vr__camera.html#a395148da99f5bb4c15bb096fd5cb1d65">vr_camera::vr_camera</a>() : num_cameras(0u), state(CS_UNINITIALIZED), frame_format(CFF_RGBA), frame_split(CFS_NONE), frame_flipped(false)</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    {</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    }</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a18d588a71df1fe211e8a1aec17527c47">   13</a></span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classvr_1_1vr__camera.html#a18d588a71df1fe211e8a1aec17527c47">vr_camera::get_last_error</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a>;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        }</div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a18d588a71df1fe211e8a1aec17527c47">   13</a></span>&#160;    <span class="keyword">const</span> std::string&amp; <a class="code" href="classvr_1_1vr__camera.html#a18d588a71df1fe211e8a1aec17527c47">vr_camera::get_last_error</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a>;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    }</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a6c6431708b2fecd53bca7f49449f2966">   18</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classvr_1_1vr__camera.html#a6c6431708b2fecd53bca7f49449f2966">vr_camera::initialize</a>()</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        {</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                <span class="keywordflow">if</span> (state != CS_UNINITIALIZED) {</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                        <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a> = <span class="stringliteral">&quot;attempt to initialize already initialized vr camera&quot;</span>;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                }</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                <span class="keywordflow">if</span> (!initialize_impl())</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                state = CS_INITIALIZED;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a>.clear();</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        }</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a6c6431708b2fecd53bca7f49449f2966">   18</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classvr_1_1vr__camera.html#a6c6431708b2fecd53bca7f49449f2966">vr_camera::initialize</a>()</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    {</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keywordflow">if</span> (state != CS_UNINITIALIZED) {</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a> = <span class="stringliteral">&quot;attempt to initialize already initialized vr camera&quot;</span>;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        }</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keywordflow">if</span> (!initialize_impl())</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        state = CS_INITIALIZED;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a>.clear();</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    }</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a0671327614192384fabd4debb6c19e46">   31</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classvr_1_1vr__camera.html#a0671327614192384fabd4debb6c19e46">vr_camera::start</a>() {</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                <span class="keywordflow">if</span> (state == CS_UNINITIALIZED) {</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                        <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a> = <span class="stringliteral">&quot;attempt to start not initialized vr camera, please initialize first&quot;</span>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                }</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                <span class="keywordflow">if</span> (state == CS_STARTED) {</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                        <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a> = <span class="stringliteral">&quot;attempt to start already started vr camera&quot;</span>;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                }</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                <span class="keywordflow">if</span> (!start_impl())</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                state = CS_STARTED;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a>.clear();</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        }</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a0671327614192384fabd4debb6c19e46">   31</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classvr_1_1vr__camera.html#a0671327614192384fabd4debb6c19e46">vr_camera::start</a>() {</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordflow">if</span> (state == CS_UNINITIALIZED) {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a> = <span class="stringliteral">&quot;attempt to start not initialized vr camera, please initialize first&quot;</span>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        }</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordflow">if</span> (state == CS_STARTED) {</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a> = <span class="stringliteral">&quot;attempt to start already started vr camera&quot;</span>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        }</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordflow">if</span> (!start_impl())</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        state = CS_STARTED;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a>.clear();</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    }</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a4a5466b00dcf1dc04e6881a8623d5a51">   47</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classvr_1_1vr__camera.html#a4a5466b00dcf1dc04e6881a8623d5a51">vr_camera::stop</a>() {</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                <span class="keywordflow">if</span> (state != CS_STARTED) {</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                        <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a> = <span class="stringliteral">&quot;attempt to stop camera that was not started, please start camera first&quot;</span>;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                }</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                <span class="keywordflow">if</span> (!stop_impl())</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                state = CS_INITIALIZED;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a>.clear();</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        }</div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a4a5466b00dcf1dc04e6881a8623d5a51">   47</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classvr_1_1vr__camera.html#a4a5466b00dcf1dc04e6881a8623d5a51">vr_camera::stop</a>() {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordflow">if</span> (state != CS_STARTED) {</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a> = <span class="stringliteral">&quot;attempt to stop camera that was not started, please start camera first&quot;</span>;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        }</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordflow">if</span> (!stop_impl())</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        state = CS_INITIALIZED;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a>.clear();</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    }</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#af4b3bb234ad83e8d36878b9bb05b312c">   60</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classvr_1_1vr__camera.html#af4b3bb234ad83e8d36878b9bb05b312c">vr_camera::get_frame</a>(std::vector&lt;uint8_t&gt;&amp; frame_data, uint32_t&amp; width, uint32_t&amp; height, <span class="keywordtype">bool</span> undistorted, <span class="keywordtype">bool</span> maximum_valid_rectangle)</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                <span class="keywordflow">if</span> (state != CS_STARTED) {</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                        <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a> = <span class="stringliteral">&quot;attempt to get frame from vr camera that was not started, please start camera first&quot;</span>;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                }</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                <span class="keywordflow">if</span> (!get_frame_impl(frame_data, width, height, undistorted, maximum_valid_rectangle))</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a>.clear();</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        }</div>
-<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#ab021d5fc50ab7bdd65df36f9a92bf347">   72</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classvr_1_1vr__camera.html#ab021d5fc50ab7bdd65df36f9a92bf347">vr_camera::get_gl_texture_id</a>(uint32_t&amp; tex_id, uint32_t&amp; width, uint32_t&amp; height, <span class="keywordtype">bool</span> undistorted, <span class="keywordtype">float</span> max_valid_texcoord_range[4])</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        {</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                <span class="keywordflow">if</span> (state != CS_STARTED) {</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                        <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a> = <span class="stringliteral">&quot;attempt to get gl texture id from vr camera that was not started, please start camera first&quot;</span>;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                }</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                <span class="keywordflow">if</span> (!get_gl_texture_id_impl(tex_id, width, height, undistorted, max_valid_texcoord_range))</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a>.clear();</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        }</div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#af4b3bb234ad83e8d36878b9bb05b312c">   60</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classvr_1_1vr__camera.html#af4b3bb234ad83e8d36878b9bb05b312c">vr_camera::get_frame</a>(std::vector&lt;uint8_t&gt;&amp; frame_data, uint32_t&amp; width, uint32_t&amp; height, <span class="keywordtype">bool</span> undistorted, <span class="keywordtype">bool</span> maximum_valid_rectangle)</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    {</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keywordflow">if</span> (state != CS_STARTED) {</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a> = <span class="stringliteral">&quot;attempt to get frame from vr camera that was not started, please start camera first&quot;</span>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        }</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">if</span> (!get_frame_impl(frame_data, width, height, undistorted, maximum_valid_rectangle))</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a>.clear();</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    }</div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#ab021d5fc50ab7bdd65df36f9a92bf347">   72</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classvr_1_1vr__camera.html#ab021d5fc50ab7bdd65df36f9a92bf347">vr_camera::get_gl_texture_id</a>(uint32_t&amp; tex_id, uint32_t&amp; width, uint32_t&amp; height, <span class="keywordtype">bool</span> undistorted, <span class="keywordtype">float</span> max_valid_texcoord_range[4])</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    {</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordflow">if</span> (state != CS_STARTED) {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a> = <span class="stringliteral">&quot;attempt to get gl texture id from vr camera that was not started, please start camera first&quot;</span>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        }</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordflow">if</span> (!get_gl_texture_id_impl(tex_id, width, height, undistorted, max_valid_texcoord_range))</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <a class="code" href="classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb">last_error</a>.clear();</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    }</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a259a5e9ce3c8529a218f2eddad229f15">   84</a></span>&#160;        <a class="code" href="namespacevr.html#aa7ff189a9f487df57ab41daf2a8b5214">CameraFrameFormat</a> <a class="code" href="classvr_1_1vr__camera.html#a259a5e9ce3c8529a218f2eddad229f15">vr_camera::get_frame_format</a>()<span class="keyword"> const </span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                <span class="keywordflow">return</span> frame_format; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        }</div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a259a5e9ce3c8529a218f2eddad229f15">   84</a></span>&#160;    <a class="code" href="namespacevr.html#aa7ff189a9f487df57ab41daf2a8b5214">CameraFrameFormat</a> <a class="code" href="classvr_1_1vr__camera.html#a259a5e9ce3c8529a218f2eddad229f15">vr_camera::get_frame_format</a>()<span class="keyword"> const </span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">return</span> frame_format; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    }</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#ac9ed63e297b2449060f627c511839177">   89</a></span>&#160;        <a class="code" href="namespacevr.html#a4d435c9cc7df8e3d66348f2eca4fd18a">CameraFrameSplit</a> <a class="code" href="classvr_1_1vr__camera.html#ac9ed63e297b2449060f627c511839177">vr_camera::get_frame_split</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                <span class="keywordflow">return</span> frame_split;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        }</div>
+<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#ac9ed63e297b2449060f627c511839177">   89</a></span>&#160;    <a class="code" href="namespacevr.html#a4d435c9cc7df8e3d66348f2eca4fd18a">CameraFrameSplit</a> <a class="code" href="classvr_1_1vr__camera.html#ac9ed63e297b2449060f627c511839177">vr_camera::get_frame_split</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">return</span> frame_split;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    }</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
-<div class="line"><a name="l00094"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a2a68e2a9ed9b47b593eff68d70f3568d">   94</a></span>&#160;        <a class="code" href="namespacevr.html#a61f728d7ccfe3b3871e6c66d0855aea1">CameraState</a> <a class="code" href="classvr_1_1vr__camera.html#a2a68e2a9ed9b47b593eff68d70f3568d">vr_camera::get_state</a>()<span class="keyword"> const </span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                <span class="keywordflow">return</span> state; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        }</div>
+<div class="line"><a name="l00094"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a2a68e2a9ed9b47b593eff68d70f3568d">   94</a></span>&#160;    <a class="code" href="namespacevr.html#a61f728d7ccfe3b3871e6c66d0855aea1">CameraState</a> <a class="code" href="classvr_1_1vr__camera.html#a2a68e2a9ed9b47b593eff68d70f3568d">vr_camera::get_state</a>()<span class="keyword"> const </span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keywordflow">return</span> state; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    }</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#ae279b4fa6e2a6356006d9b31bd359ea7">   99</a></span>&#160;        uint8_t <a class="code" href="classvr_1_1vr__camera.html#ae279b4fa6e2a6356006d9b31bd359ea7">vr_camera::get_nr_cameras</a>()<span class="keyword"> const </span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                <span class="keywordflow">return</span> num_cameras; </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        }</div>
+<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#ae279b4fa6e2a6356006d9b31bd359ea7">   99</a></span>&#160;    uint8_t <a class="code" href="classvr_1_1vr__camera.html#ae279b4fa6e2a6356006d9b31bd359ea7">vr_camera::get_nr_cameras</a>()<span class="keyword"> const </span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keywordflow">return</span> num_cameras; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    }</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a34e5c97236162c19c8236f7da2345257">  104</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classvr_1_1vr__camera.html#a34e5c97236162c19c8236f7da2345257">vr_camera::is_frame_flipped</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                <span class="keywordflow">return</span> frame_flipped;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        }</div>
+<div class="line"><a name="l00104"></a><span class="lineno"><a class="line" href="classvr_1_1vr__camera.html#a34e5c97236162c19c8236f7da2345257">  104</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classvr_1_1vr__camera.html#a34e5c97236162c19c8236f7da2345257">vr_camera::is_frame_flipped</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="keywordflow">return</span> frame_flipped;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    }</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;} <span class="comment">// namespace vr</span></div>
 <div class="ttc" id="aclassvr_1_1vr__camera_html_a0671327614192384fabd4debb6c19e46"><div class="ttname"><a href="classvr_1_1vr__camera.html#a0671327614192384fabd4debb6c19e46">vr::vr_camera::start</a></div><div class="ttdeci">bool start()</div><div class="ttdoc">start streaming of frames</div><div class="ttdef"><b>Definition:</b> <a href="vr__camera_8cxx_source.html#l00031">vr_camera.cxx:31</a></div></div>

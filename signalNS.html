@@ -100,8 +100,8 @@ Tutorial on the Usage of Signals</h2>
 <div class="line"><span class="keyword">class </span>X : <span class="keyword">public</span> cgv::base::tacker</div>
 <div class="line">{</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">        <span class="keywordtype">void</span> int_method(<span class="keywordtype">int</span> i)   { std::cout &lt;&lt; <span class="stringliteral">&quot;X::m(&quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;)&quot;</span> &lt;&lt; std::endl; }</div>
-<div class="line">        <span class="keywordtype">void</span> operator () (<span class="keywordtype">int</span> i) { std::cout &lt;&lt; <span class="stringliteral">&quot;X(&quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;)&quot;</span> &lt;&lt; std::endl; }</div>
+<div class="line">    <span class="keywordtype">void</span> int_method(<span class="keywordtype">int</span> i)   { std::cout &lt;&lt; <span class="stringliteral">&quot;X::m(&quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;)&quot;</span> &lt;&lt; std::endl; }</div>
+<div class="line">    <span class="keywordtype">void</span> operator () (<span class="keywordtype">int</span> i) { std::cout &lt;&lt; <span class="stringliteral">&quot;X(&quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;)&quot;</span> &lt;&lt; std::endl; }</div>
 <div class="line">};</div>
 <div class="line"> </div>
 <div class="line">X x;</div>
@@ -136,7 +136,7 @@ Tutorial on the Usage of Signals</h2>
 <div class="line">connect(check_valid, down_check);</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordflow">if</span> (check_valid(7))</div>
-<div class="line">        std::cout &lt;&lt; <span class="stringliteral">&quot;7 is valid&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line">    std::cout &lt;&lt; <span class="stringliteral">&quot;7 is valid&quot;</span> &lt;&lt; std::endl;</div>
 </div><!-- fragment --><p>The final feature supported in the signal mechanism of cgv is argument rebinding of the callbacks. Suppose you have a callback that has a different number or different types of arguments as the signal to which you want to attach the callback. This would typically require the implementation of an interface function with a signature matching that of the signal and an implementation that calls the callback with parameters derived from the parameters retrieved from the signal.</p>
 <p>In cases where this conversion of parameters is simply the exclusion of one or several parameters, a rearrangement or the addition of a constant or reference to a variable, one can use the functions cgv::gui::rebind to generate a functor implementing the parameter conversion without the need for the declaration of a new function.</p>
 <p>The functors returned by cgv::base::rebind overload the ()-operator with all possible signatures such that they can be attached to any signal. Currently, rebinding is only supported for function and methods and not for functors. In case of a function the first parameter to the rebind function is the function itself. In case of a method the first two parameters are the this pointer and the method pointer. Depending on the number of arguments in the signature of the rebound function / method, the rebind() functions takes one further parameter for each function / method argument. This argument can be one out of</p><ul>

@@ -89,65 +89,65 @@ $(document).ready(function(){initNavTree('bi__polynomial_8h_source.html',''); in
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &lt;cgv/math/polynomial.h&gt;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="keyword">namespace </span>math {</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    <span class="keyword">namespace </span>math {</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a334232cf858e03e53db9bbf416fc76e3">   20</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a334232cf858e03e53db9bbf416fc76e3">bipoly_val</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>&amp; bp, <span class="keyword">const</span> T&amp; x1, <span class="keyword">const</span> T&amp; x2)</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keywordtype">unsigned</span> n = bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordtype">unsigned</span> m = bp.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>();</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        assert(n &gt; 0);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        assert(m &gt; 0);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">unsigned</span> n = bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>();</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">unsigned</span> m = bp.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    assert(n &gt; 0);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    assert(m &gt; 0);</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r(m);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; m;i++)</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                r(i) = <a class="code" href="namespacecgv_1_1math.html#a9f72457452fa12679ad840de7b06df1c">poly_val</a>(bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a445e68257ac656cb7bf7656b110c23e4">row</a>(i),x1);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r(m);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; m;i++)</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        r(i) = <a class="code" href="namespacecgv_1_1math.html#a9f72457452fa12679ad840de7b06df1c">poly_val</a>(bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a445e68257ac656cb7bf7656b110c23e4">row</a>(i),x1);</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a9f72457452fa12679ad840de7b06df1c">poly_val</a>(r,x2);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a9f72457452fa12679ad840de7b06df1c">poly_val</a>(r,x2);</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;}</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a71c3df147faeb70898d5d8be36ee6989">   38</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a334232cf858e03e53db9bbf416fc76e3">bipoly_val</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>&amp; bp, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; x)</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordtype">unsigned</span> n = bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>();</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordtype">unsigned</span> m = bp.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>();</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        assert(n &gt; 0);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        assert(m &gt; 0);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        assert(v.size() == 2)</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">unsigned</span> n = bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">unsigned</span> m = bp.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>();</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    assert(n &gt; 0);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    assert(m &gt; 0);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    assert(v.size() == 2)</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r(n);</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; m;i++)</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                r(i) = <a class="code" href="namespacecgv_1_1math.html#a9f72457452fa12679ad840de7b06df1c">poly_val</a>(bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a445e68257ac656cb7bf7656b110c23e4">row</a>(i),x(0));</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r(n);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; m;i++)</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        r(i) = <a class="code" href="namespacecgv_1_1math.html#a9f72457452fa12679ad840de7b06df1c">poly_val</a>(bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a445e68257ac656cb7bf7656b110c23e4">row</a>(i),x(0));</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a9f72457452fa12679ad840de7b06df1c">poly_val</a>(r,x(1));</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a9f72457452fa12679ad840de7b06df1c">poly_val</a>(r,x(1));</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">//returns vandermonde matrix for bivariate polynomial fitting</span></div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<a class="code" href="classcgv_1_1math_1_1mat.html">cgv::math::mat&lt;T&gt;</a> vander2(<span class="keywordtype">unsigned</span> degree1, <span class="keywordtype">unsigned</span> degree2,</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                                  <span class="keyword">const</span> vec&lt;T&gt;&amp; X1,<span class="keyword">const</span> vec&lt;T&gt; X2)</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                  <span class="keyword">const</span> vec&lt;T&gt;&amp; X1,<span class="keyword">const</span> vec&lt;T&gt; X2)</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;{</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        assert(X1.size()&gt;0);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        assert(X1.size() == X2.size());</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordtype">unsigned</span> n = X1.size();</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keywordtype">unsigned</span> m = (degree1+1)*(degree2+1);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <a class="code" href="classcgv_1_1math_1_1mat.html">cgv::math::mat&lt;T&gt;</a> Vxy(n,m);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <a class="code" href="classcgv_1_1math_1_1mat.html">cgv::math::mat&lt;T&gt;</a> Vx = vander(degree1,X1);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <a class="code" href="classcgv_1_1math_1_1mat.html">cgv::math::mat&lt;T&gt;</a> Vy = vander(degree2,X2);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> r = 0; r &lt; n; r++)</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        {</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; degree2+1; i++)</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j =0; j &lt; degree1+1; j++)</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                                Vxy(r,j*(degree2+1)+i) = Vy(r,i)*Vx(r,j);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                        </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        }</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                        </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keywordflow">return</span> Vxy;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    assert(X1.size()&gt;0);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    assert(X1.size() == X2.size());</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">unsigned</span> n = X1.size();</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordtype">unsigned</span> m = (degree1+1)*(degree2+1);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <a class="code" href="classcgv_1_1math_1_1mat.html">cgv::math::mat&lt;T&gt;</a> Vxy(n,m);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <a class="code" href="classcgv_1_1math_1_1mat.html">cgv::math::mat&lt;T&gt;</a> Vx = vander(degree1,X1);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <a class="code" href="classcgv_1_1math_1_1mat.html">cgv::math::mat&lt;T&gt;</a> Vy = vander(degree2,X2);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> r = 0; r &lt; n; r++)</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    {</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; degree2+1; i++)</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j =0; j &lt; degree1+1; j++)</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                Vxy(r,j*(degree2+1)+i) = Vy(r,i)*Vx(r,j);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    }</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordflow">return</span> Vxy;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;}</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
@@ -156,105 +156,105 @@ $(document).ready(function(){initNavTree('bi__polynomial_8h_source.html',''); in
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment">//fit a bivariate polynomial </span></div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;mat&lt;T&gt; bipoly_fit(<span class="keywordtype">unsigned</span> degree1, <span class="keywordtype">unsigned</span> degree2,</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                                  <span class="keyword">const</span> vec&lt;T&gt;&amp; X1,<span class="keyword">const</span> vec&lt;T&gt; X2,<span class="keyword">const</span> vec&lt;T&gt; Y)</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                  <span class="keyword">const</span> vec&lt;T&gt;&amp; X1,<span class="keyword">const</span> vec&lt;T&gt; X2,<span class="keyword">const</span> vec&lt;T&gt; Y)</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;{</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        assert(X1.size() == X2.size());</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        assert(X1.size() == Y.size());</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        mat&lt;T&gt; V = cgv::math::vander2(degree1,degree2,X1,X2);</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        mat&lt;T&gt; A;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        vec&lt;T&gt; b,bp;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        AtA(V,A);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <a class="code" href="namespacecgv_1_1math.html#a2f884462214d37af98d55984170fb1c5">Atx</a>(V,Y,b);</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <a class="code" href="namespacecgv_1_1math.html#a5dbdf6fbf49a08e616601b2ac1a7895b">svd_solve</a>(A,b,bp);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                </div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="keywordflow">return</span> reshape(bp,degree2+1,degree1+1);</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    assert(X1.size() == X2.size());</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    assert(X1.size() == Y.size());</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    mat&lt;T&gt; V = cgv::math::vander2(degree1,degree2,X1,X2);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    mat&lt;T&gt; A;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    vec&lt;T&gt; b,bp;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    AtA(V,A);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <a class="code" href="namespacecgv_1_1math.html#a2f884462214d37af98d55984170fb1c5">Atx</a>(V,Y,b);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <a class="code" href="namespacecgv_1_1math.html#a5dbdf6fbf49a08e616601b2ac1a7895b">svd_solve</a>(A,b,bp);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordflow">return</span> reshape(bp,degree2+1,degree1+1);</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    </div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;}</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="comment">template &lt;typename T&gt;</span></div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="comment">mat&lt;T&gt; bipoly_fit2(unsigned degree1, unsigned degree2,</span></div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="comment">                                  const vec&lt;T&gt;&amp; X1,const vec&lt;T&gt; X2,const vec&lt;T&gt; Y)</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="comment">                  const vec&lt;T&gt;&amp; X1,const vec&lt;T&gt; X2,const vec&lt;T&gt; Y)</span></div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="comment">{</span></div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="comment">        </span></div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="comment">        assert(X1.size() == X2.size());</span></div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="comment">        assert(X1.size() == Y.size());</span></div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="comment">        </span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="comment">        vec&lt;T&gt; C = poly_fit&lt;T&gt;(degree2,X2,Y);</span></div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="comment">        //std::cout &lt;&lt; C &lt;&lt; &quot;\n&quot;;</span></div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="comment">        mat&lt;T&gt; B = dyad(cgv::math::ones&lt;T&gt;(X1.size()),C);</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="comment">        mat&lt;T&gt; V = cgv::math::vander(degree1,X1);</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="comment">        mat&lt;T&gt; A;</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="comment">        </span></div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="comment">        AtA(V,A);</span></div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="comment">        </span></div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="comment">        mat&lt;T&gt; D,bp;</span></div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="comment">        AtB(V,B,D);</span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="comment">        </span></div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="comment">        svd_solve(A,D,bp);</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="comment">        //std::cout &lt;&lt;&quot;:\n&quot;&lt;&lt; A*bp-D;</span></div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="comment">                </span></div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="comment">        return bp;</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="comment">    </span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="comment">    assert(X1.size() == X2.size());</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="comment">    assert(X1.size() == Y.size());</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="comment">    </span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="comment">    vec&lt;T&gt; C = poly_fit&lt;T&gt;(degree2,X2,Y);</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="comment">    //std::cout &lt;&lt; C &lt;&lt; &quot;\n&quot;;</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="comment">    mat&lt;T&gt; B = dyad(cgv::math::ones&lt;T&gt;(X1.size()),C);</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="comment">    mat&lt;T&gt; V = cgv::math::vander(degree1,X1);</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="comment">    mat&lt;T&gt; A;</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="comment">    </span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="comment">    AtA(V,A);</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="comment">    </span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="comment">    mat&lt;T&gt; D,bp;</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="comment">    AtB(V,B,D);</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="comment">    </span></div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="comment">    svd_solve(A,D,bp);</span></div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="comment">    //std::cout &lt;&lt;&quot;:\n&quot;&lt;&lt; A*bp-D;</span></div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="comment">        </span></div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="comment">    return bp;</span></div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="comment">}*/</span></div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;mat&lt;T&gt; bipoly_der_x1(<span class="keyword">const</span> mat&lt;T&gt;&amp; bp)</div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;{</div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        assert(bp.ncols() &gt; 0 &amp;&amp; bp.nrows() &gt; 0);</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <span class="keywordflow">if</span>(bp.ncols() == 1)</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;                <span class="keywordflow">return</span> zeros&lt;T&gt;(1,1);</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    assert(bp.ncols() &gt; 0 &amp;&amp; bp.nrows() &gt; 0);</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keywordflow">if</span>(bp.ncols() == 1)</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        <span class="keywordflow">return</span> zeros&lt;T&gt;(1,1);</div>
 <div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        mat&lt;T&gt; m(bp.nrows(),bp.ncols()-1);</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; bp.nrows(); i++)</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                m.set_row(i,poly_der(bp.row(i)));</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="keywordflow">return</span> m;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    mat&lt;T&gt; m(bp.nrows(),bp.ncols()-1);</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; bp.nrows(); i++)</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        m.set_row(i,poly_der(bp.row(i)));</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keywordflow">return</span> m;</div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;}</div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;mat&lt;T&gt; bipoly_der_x2(<span class="keyword">const</span> mat&lt;T&gt;&amp; bp)</div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;{</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        assert(bp.ncols() &gt; 0 &amp;&amp; bp.nrows() &gt; 0);</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        <span class="keywordflow">if</span>(bp.nrows() == 1)</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                <span class="keywordflow">return</span> zeros&lt;T&gt;(1,1);</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        T n = (T)(bp.nrows()-1);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    assert(bp.ncols() &gt; 0 &amp;&amp; bp.nrows() &gt; 0);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keywordflow">if</span>(bp.nrows() == 1)</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keywordflow">return</span> zeros&lt;T&gt;(1,1);</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    T n = (T)(bp.nrows()-1);</div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        mat&lt;T&gt; m(bp.nrows()-1,bp.ncols());</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; bp.nrows()-1; i++)</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                m.set_row(i,(n-(T)i)*  bp.row(i));</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        <span class="keywordflow">return</span> m;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    mat&lt;T&gt; m(bp.nrows()-1,bp.ncols());</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; bp.nrows()-1; i++)</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        m.set_row(i,(n-(T)i)*  bp.row(i));</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keywordflow">return</span> m;</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;}</div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00164"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#abd02962dd3e20c230b6920c4baa6b1cf">  164</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#abd02962dd3e20c230b6920c4baa6b1cf">bipoly_int_x1</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>&amp; bp,<span class="keyword">const</span> T&amp; k=0)</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;{</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> m(bp.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>(),bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>()+1);</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; bp.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>();i++) </div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                m.<a class="code" href="classcgv_1_1math_1_1mat.html#a9504758351d299d0b116bd70913f03dc">set_row</a>(i,poly_int(bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a445e68257ac656cb7bf7656b110c23e4">row</a>(i),k));</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        <span class="keywordflow">return</span> m;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> m(bp.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>(),bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>()+1);</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; bp.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>();i++) </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        m.<a class="code" href="classcgv_1_1math_1_1mat.html#a9504758351d299d0b116bd70913f03dc">set_row</a>(i,poly_int(bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a445e68257ac656cb7bf7656b110c23e4">row</a>(i),k));</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <span class="keywordflow">return</span> m;</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;}</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00174"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ae3d44c29d8541df107111af2d9b2e179">  174</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#ae3d44c29d8541df107111af2d9b2e179">bipoly_int_x2</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>&amp; bp,<span class="keyword">const</span> T&amp; k=0)</div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;{</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        </div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> v(1,bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>());</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        v.<a class="code" href="classcgv_1_1math_1_1mat.html#ab9f9d6987f1c6271117a43467e057436">zeros</a>();</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        v(0,bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>()-1)=k;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> m = vertcat(bp,v);</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        </div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>()-2;i++)</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; m.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>();j++)</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                        m(i,j)=m(i,j)/(m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>()-1-i);</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    </div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> v(1,bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>());</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    v.<a class="code" href="classcgv_1_1math_1_1mat.html#ab9f9d6987f1c6271117a43467e057436">zeros</a>();</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    v(0,bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>()-1)=k;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> m = vertcat(bp,v);</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    </div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>()-2;i++)</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; m.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>();j++)</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            m(i,j)=m(i,j)/(m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>()-1-i);</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        </div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        </div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        <span class="keywordflow">return</span> m;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    </div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    </div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <span class="keywordflow">return</span> m;</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;}</div>
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160; </div>
@@ -264,7 +264,7 @@ $(document).ready(function(){initNavTree('bi__polynomial_8h_source.html',''); in
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160; </div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;        }</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    }</div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1math_1_1mat_html"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html">cgv::math::mat</a></div><div class="ttdoc">A matrix type (full column major storage) The matrix can be loaded directly into OpenGL without need ...</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00208">mat.h:209</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1mat_html_a19c47145cbe77fd7f48fd2d7dae97deb"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">cgv::math::mat::ncols</a></div><div class="ttdeci">unsigned ncols() const</div><div class="ttdoc">number of columns</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00547">mat.h:547</a></div></div>

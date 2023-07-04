@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('group_8h_source.html',''); initResizab
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keyword">namespace </span>base {</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keyword">namespace </span>base {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">class </span>CGV_API group;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
@@ -103,30 +103,30 @@ $(document).ready(function(){initNavTree('group_8h_source.html',''); initResizab
 <div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1group.html">   19</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1base_1_1group.html">group</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1base_1_1node.html">node</a></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr</a>&lt;<a class="code" href="classcgv_1_1base_1_1group.html">group</a>,true&gt;;</div>
-<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1group.html#a541b1eae8145dd8a173e99b16722f975">   25</a></span>&#160;        std::vector&lt;base_ptr&gt; <a class="code" href="classcgv_1_1base_1_1group.html#a541b1eae8145dd8a173e99b16722f975">children</a>;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keywordtype">void</span> link(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> b);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordtype">void</span> unlink(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> b);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr</a>&lt;<a class="code" href="classcgv_1_1base_1_1group.html">group</a>,true&gt;;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1group.html#a541b1eae8145dd8a173e99b16722f975">   25</a></span>&#160;    std::vector&lt;base_ptr&gt; <a class="code" href="classcgv_1_1base_1_1group.html#a541b1eae8145dd8a173e99b16722f975">children</a>;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordtype">void</span> link(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> b);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">void</span> unlink(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> b);</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="classcgv_1_1base_1_1group.html">group</a>(<span class="keyword">const</span> std::string&amp; name = <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> get_nr_children() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> get_child(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> append_child(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> child);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> remove_child(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> child);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> remove_all_children();</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> insert_child(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i, <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> child);</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">group_ptr</a> get_group();</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">const_group_ptr</a> get_group_const();</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        std::string get_type_name() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <a class="code" href="classcgv_1_1base_1_1group.html">group</a>(<span class="keyword">const</span> std::string&amp; name = <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> get_nr_children() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> get_child(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> append_child(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> child);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> remove_child(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> child);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> remove_all_children();</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> insert_child(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i, <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> child);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">group_ptr</a> get_group();</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">const_group_ptr</a> get_group_const();</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    std::string get_type_name() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;};</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">template</span> &lt;&gt; <span class="keyword">struct </span>cast_helper&lt;<a class="code" href="classcgv_1_1base_1_1group.html">group</a>&gt;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;{</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">group_ptr</a> cast(<a class="code" href="classcgv_1_1base_1_1base.html">base</a>* b) { <span class="keywordflow">return</span> b-&gt;get_group(); }</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">group_ptr</a> cast(<a class="code" href="classcgv_1_1base_1_1base.html">base</a>* b) { <span class="keywordflow">return</span> b-&gt;get_group(); }</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;};</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">template</span> &lt;&gt; <span class="keyword">struct </span>cast_const_helper&lt;group&gt;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;{</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="namespacecgv_1_1base.html#a46e8e877cbf782dcf8f019bc1816a59f">const_group_ptr</a> cast_const(<span class="keyword">const</span> base* b) { <span class="keywordflow">return</span> b-&gt;get_group_const(); }</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="namespacecgv_1_1base.html#a46e8e877cbf782dcf8f019bc1816a59f">const_group_ptr</a> cast_const(<span class="keyword">const</span> base* b) { <span class="keywordflow">return</span> b-&gt;get_group_const(); }</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
@@ -135,7 +135,7 @@ $(document).ready(function(){initNavTree('group_8h_source.html',''); initResizab
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;CGV_TEMPLATE <span class="keyword">template</span> <span class="keyword">class </span>CGV_API std::vector&lt;base_ptr&gt;;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        }</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    }</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>

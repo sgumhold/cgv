@@ -892,7 +892,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00259">259</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00211">create()</a>, <a class="el" href="texture_8cxx_source.html#l00726">destruct()</a>, <a class="el" href="component__format_8cxx_source.html#l00318">cgv::data::component_format::empty()</a>, <a class="el" href="component__format_8cxx_source.html#l00396">cgv::data::component_format::get_entry_size()</a>, <a class="el" href="data__format_8cxx_source.html#l00267">cgv::data::data_format::get_height()</a>, <a class="el" href="image__reader_8cxx_source.html#l00112">cgv::media::image::image_reader::get_last_error()</a>, <a class="el" href="data__view_8h_source.html#l00063">cgv::data::data_view_impl&lt; D, P &gt;::get_ptr()</a>, <a class="el" href="data__format_8cxx_source.html#l00262">cgv::data::data_format::get_width()</a>, <a class="el" href="context_8h_source.html#l00268">cgv::render::render_component::last_error</a>, <a class="el" href="image__reader_8cxx_source.html#l00120">cgv::media::image::image_reader::read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00211">cgv::media::image::image_reader::read_palette()</a>, <a class="el" href="data__format_8cxx_source.html#l00305">cgv::data::data_format::set_height()</a>, and <a class="el" href="data__format_8cxx_source.html#l00300">cgv::data::data_format::set_width()</a>.</p>
+<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00211">create()</a>, <a class="el" href="texture_8cxx_source.html#l00726">destruct()</a>, <a class="el" href="component__format_8cxx_source.html#l00318">cgv::data::component_format::empty()</a>, <a class="el" href="component__format_8cxx_source.html#l00396">cgv::data::component_format::get_entry_size()</a>, <a class="el" href="data__format_8cxx_source.html#l00267">cgv::data::data_format::get_height()</a>, <a class="el" href="image__reader_8cxx_source.html#l00112">cgv::media::image::image_reader::get_last_error()</a>, <a class="el" href="data__view_8h_source.html#l00063">cgv::data::data_view_impl&lt; D, P &gt;::get_ptr()</a>, <a class="el" href="data__format_8cxx_source.html#l00262">cgv::data::data_format::get_width()</a>, <a class="el" href="context_8h_source.html#l00272">cgv::render::render_component::last_error</a>, <a class="el" href="image__reader_8cxx_source.html#l00120">cgv::media::image::image_reader::read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00211">cgv::media::image::image_reader::read_palette()</a>, <a class="el" href="data__format_8cxx_source.html#l00305">cgv::data::data_format::set_height()</a>, and <a class="el" href="data__format_8cxx_source.html#l00300">cgv::data::data_format::set_width()</a>.</p>
 
 </div>
 </div>
@@ -999,8 +999,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>Create a cube map from six files specified in the file_names parameter. </p>
 <p>The file_names parameter can specify different file names by the use of the wildchar symbol '*' or by curly brackets. When using '*' the files are loaded in alphanumerical order. The image files defining the cubemap sides must be in the order positive x, negative x, positive y, negative y, positive z and negative z. Some examples of specifying file names:</p><ul>
 <li>"cm_{xp,xn,yp,yn,zp,zn}.png" defines the file names "cm_xp.png", "cm_xn.png", "cm_yp.png", "cm_yn.png", "cm_zp.png" and "cm_zn.png"</li>
+<li>"cm_*.png" issues a glob command resulting in an alphanumerically ordered file name list. Be aware that the naming of the previous example would result in a wrong ordering of the file names. Mixing of '*' and "{,}" syntax is not allowed. The static method deduce_file_names is used to deduce the individual file names from the file_names parameter and can be used also when the correct path to the cubemap files needs to be found.</li>
 </ul>
-<p>"cm_*.png" issues a glob command resulting in an alphanumerically ordered file name list. Be aware that the naming of the previous example would result in a wrong ordering of the file names. Mixing of '*' and "{,}" syntax is not allowed. The static method deduce_file_names is used to deduce the individual file names from the file_names parameter and can be used also when the correct path to the cubemap files needs to be found.</p>
 <p>Different levels of the mipmap pyramid can be created in separate calls. If the level parameter is not specified or -1, the images are load to level 0 and a mipmap pyramid is built automatically. This method has no support for rescaling to power of two dimensions. If a mipmap is used, the image files should already have power of two dimensions. </p>
 
 <p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00412">412</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
@@ -1518,7 +1518,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00614">614</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="data__format_8cxx_source.html#l00203">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00268">cgv::render::render_component::last_error</a>.</p>
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="data__format_8cxx_source.html#l00203">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00272">cgv::render::render_component::last_error</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00559">create()</a>, and <a class="el" href="texture_8cxx_source.html#l00699">replace_from_image()</a>.</p>
 
@@ -1579,7 +1579,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00630">630</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="data__format_8cxx_source.html#l00203">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00268">cgv::render::render_component::last_error</a>.</p>
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="data__format_8cxx_source.html#l00203">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00272">cgv::render::render_component::last_error</a>.</p>
 
 </div>
 </div>
@@ -1644,7 +1644,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00647">647</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00268">cgv::render::render_component::last_error</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00272">cgv::render::render_component::last_error</a>.</p>
 
 </div>
 </div>
@@ -1721,7 +1721,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00675">675</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00268">cgv::render::render_component::last_error</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00272">cgv::render::render_component::last_error</a>.</p>
 
 </div>
 </div>
