@@ -121,6 +121,20 @@ std::string to_upper(const std::string& _s)
 	return s;
 }
 
+std::string& remove(std::string& s, char c)
+{
+	s.erase(std::remove(s.begin(), s.end(), c), s.end());
+	return s;
+}
+
+
+std::string remove_copy(const std::string& s, char c)
+{
+	std::string r;
+	std::remove_copy(s.begin(), s.end(), std::back_inserter(r), c);
+	return r;
+}
+
 std::string replace_special(const std::string& _s)
 {
 	std::string s;
