@@ -1,6 +1,11 @@
 var annotated_dup =
 [
     [ "cgv", "namespacecgv.html", [
+      [ "app", null, [
+        [ "application_plugin_base", "classcgv_1_1app_1_1application__plugin__base.html", "classcgv_1_1app_1_1application__plugin__base" ],
+        [ "generic_application_plugin", "classcgv_1_1app_1_1generic__application__plugin.html", "classcgv_1_1app_1_1generic__application__plugin" ],
+        [ "application_plugin", "classcgv_1_1app_1_1application__plugin.html", "classcgv_1_1app_1_1application__plugin" ]
+      ] ],
       [ "audio", null, [
         [ "OALContext", "classcgv_1_1audio_1_1OALContext.html", "classcgv_1_1audio_1_1OALContext" ],
         [ "OALListener", "classcgv_1_1audio_1_1OALListener.html", "classcgv_1_1audio_1_1OALListener" ],
@@ -430,6 +435,9 @@ var annotated_dup =
         [ "stopwatch", "classcgv_1_1utils_1_1stopwatch.html", "classcgv_1_1utils_1_1stopwatch" ],
         [ "token", "structcgv_1_1utils_1_1token.html", "structcgv_1_1utils_1_1token" ],
         [ "tokenizer", "classcgv_1_1utils_1_1tokenizer.html", "classcgv_1_1utils_1_1tokenizer" ]
+      ] ],
+      [ "xml", null, [
+        [ "FindElementByNameVisitor", "classcgv_1_1xml_1_1FindElementByNameVisitor.html", "classcgv_1_1xml_1_1FindElementByNameVisitor" ]
       ] ]
     ] ],
     [ "gamepad", null, [

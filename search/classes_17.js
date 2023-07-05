@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['zero_4129',['zero',['../structcgv_1_1type_1_1traits_1_1zero.html',1,'cgv::type::traits']]]
+  ['zero_4151',['zero',['../structcgv_1_1type_1_1traits_1_1zero.html',1,'cgv::type::traits']]]
 ];
