@@ -1,5 +1,9 @@
 var NAVTREEINDEX45 =
 {
+"structcgv_1_1render_1_1surfel__render__style.html#ad8f48464b480e9ecfc40ca2ab1532b69":[11,0,0,10,61,14],
+"structcgv_1_1render_1_1textured__rectangle.html":[11,0,0,10,22],
+"structcgv_1_1render_1_1type__descriptor.html":[11,0,0,10,4],
+"structcgv_1_1render_1_1type__descriptor.html#a10d90f6687ae47aeeefd4a2a5fb9de20":[11,0,0,10,4,4],
 "structcgv_1_1render_1_1type__descriptor.html#a120e1312817b6f06f505ca54021384e7":[11,0,0,10,4,1],
 "structcgv_1_1render_1_1type__descriptor.html#a2ab45474f2abdb32b590453960c04506":[11,0,0,10,4,3],
 "structcgv_1_1render_1_1type__descriptor.html#a40e86d8ff4d5e35c0ac4855b6c41ba4d":[11,0,0,10,4,2],
@@ -245,9 +249,5 @@ var NAVTREEINDEX45 =
 "structvr_1_1vr__trackable__info.html#af60c8e4e6ca4eb993050a3b9b1a0c9ab":[11,0,3,6,9],
 "structvr_1_1vr__trackable__state.html":[11,0,3,15],
 "structvr_1_1vr__trackable__state.html#a36f426d15fcb6a52af1cbd7dfb5d31ea":[11,0,3,15,3],
-"structvr_1_1vr__trackable__state.html#a45bdee0f059c9ed99e545421be8baaf7":[11,0,3,15,2],
-"structvr_1_1vr__trackable__state.html#a4f4063946c3cd68488940172caf47c72":[11,0,3,15,1],
-"structvr_1_1vr__trackable__state.html#a50634af3a718afd15f6b63198ce6d2f6":[11,0,3,15,0],
-"structvr_1_1vr__tracking__reference__info.html":[11,0,3,10],
-"structvr_1_1vr__tracking__reference__info.html#a0a03961d43c1772abe9d676cbb0b7bb1":[11,0,3,10,0]
+"structvr_1_1vr__trackable__state.html#a45bdee0f059c9ed99e545421be8baaf7":[11,0,3,15,2]
 };
