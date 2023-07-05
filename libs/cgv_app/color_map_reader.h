@@ -106,16 +106,16 @@ private:
 			entries.push_back({ name, cm });
 	}
 
-	static void extract_color_maps(const tinyxml2::XMLDocument& doc, result& entries, const identifier_config& config) {
+	static void extract_color_maps(const tinyxml2::XMLElement& elem, result& entries, const identifier_config& config) {
 
 		cgv::xml::FindElementByNameVisitor findElementByName("ColorMaps");
-		doc.Accept(&findElementByName);
+		elem.Accept(&findElementByName);
 
-		if(auto color_maps_elem = findElementByName.Result()) {
+		if (auto color_maps_elem = findElementByName.Result()) {
 			auto color_map_elem = color_maps_elem->FirstChildElement();
 
-			while(color_map_elem) {
-				if(strcmp(color_map_elem->Name(), config.color_map_tag_id.c_str()) == 0)
+			while (color_map_elem) {
+				if (strcmp(color_map_elem->Name(), config.color_map_tag_id.c_str()) == 0)
 					extract_color_map(*color_map_elem, entries, config);
 				color_map_elem = color_map_elem->NextSiblingElement();
 			}
@@ -123,10 +123,16 @@ private:
 	}
 
 public:
-	static void read_from_xml(const tinyxml2::XMLDocument& doc, result& entries, const identifier_config& config = identifier_config()) {
-		
+	static void read_from_xml(const tinyxml2::XMLElement& elem, result& entries, const identifier_config& config = identifier_config()) {
+
 		entries.clear();
-		extract_color_maps(doc, entries, config);
+		extract_color_maps(elem, entries, config);
+	}
+
+	static void read_from_xml(const tinyxml2::XMLDocument& doc, result& entries, const identifier_config& config = identifier_config()) {
+
+		if(const tinyxml2::XMLElement* elem = doc.RootElement())
+			read_from_xml(*elem, entries, config);
 	}
 
 	static bool read_from_xml_string(const std::string& xml, result& entries, const identifier_config& config = identifier_config()) {
