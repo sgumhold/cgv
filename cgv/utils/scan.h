@@ -54,6 +54,10 @@ extern CGV_API std::string to_lower(const std::string& _s);
 extern CGV_API char to_upper(char c);
 /// convert string to upper case
 extern CGV_API std::string to_upper(const std::string& _s);
+/// remove char \c c from the given string \c s and return a reference to the same string object
+extern CGV_API std::string& remove(std::string& s, char c);
+/// return a copy of the given string \c s with all occurences of char \c removed
+extern CGV_API std::string remove_copy(const std::string& s, char c);
 /// replaces the german special characters ä,ö,ü,ß,Ä,Ö,Ü
 extern CGV_API std::string replace_special(const std::string& _s);
 /// replace char \c c1 with \c c2 in the given string \c _s and return number of replacements
