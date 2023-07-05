@@ -59,11 +59,15 @@ bool vertex_buffer::is_created() const
 	return handle != 0;
 }
 
-/// resize vertex buffer to size \c size given in bytes clearing all data
-bool vertex_buffer::resize(const context& ctx, size_t _size_in_bytes)
+bool vertex_buffer::resize(const context& ctx, size_t size_in_bytes)
 {
-	size_in_bytes = _size_in_bytes;
+	this->size_in_bytes = size_in_bytes;
 	return ctx.vertex_buffer_resize(*this, 0, size_in_bytes);
+}
+
+bool vertex_buffer::create_or_resize(const context& ctx, size_t size_in_bytes)
+{
+	return !is_created() ? create(ctx, size_in_bytes) : resize(ctx, size_in_bytes);
 }
 
 bool vertex_buffer::copy(const context& ctx, size_t src_offset_in_bytes, size_t size_in_bytes, vertex_buffer& dst, size_t dst_offset_in_bytes) const
