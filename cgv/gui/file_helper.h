@@ -22,6 +22,7 @@ protected:
 
 public:
 	bool allow_all_files = true;
+	bool default_to_all_files = false;
 	std::string file_name = "";
 
 	file_helper() {}
@@ -39,6 +40,14 @@ public:
 			filter += "|";
 
 		filter += name + " (*." + extension + "):*." + extension;
+	}
+
+	void add_filter(const std::string& name, const std::vector<std::string>& extensions) {
+
+		if(!filter.empty())
+			filter += "|";
+
+		filter += name + " (*." + cgv::utils::join(extensions, ", *.") + "):*." + cgv::utils::join(extensions, ";*.");
 	}
 
 	void update() {
@@ -76,8 +85,16 @@ public:
 		default: "open=false;save=false";
 		}
 
+		std::string all_files_filter = allow_all_files ? "All Files (*.*):*.*" : "";
+		std::string file_filter = filter;
+
+		if(default_to_all_files)
+			file_filter = all_files_filter + "|" + filter;
+		else
+			file_filter = filter + "|" + all_files_filter;
+
 		if(provider_ptr)
-			provider_ptr->add_gui(label, file_name, "file_name", "title='" + title + "';filter='" + filter + (allow_all_files ? "|All Files (*.*):*.*" : "") + "';" + configuration + ";" + options);
+			provider_ptr->add_gui(label, file_name, "file_name", "title='" + title + "';filter='" + file_filter + "';" + configuration + ";" + options);
 	}
 
 	bool save() const {
