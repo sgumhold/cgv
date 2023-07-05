@@ -101,6 +101,39 @@ public:
 		size_in_bytes = nr_elements * sizeof(T);
 		return ctx.vertex_buffer_resize(*this, array_ptr, size_in_bytes);
 	}
+	/**
+	 * Convenience wrapper to either create() or resize() the buffer.
+	 * 
+	 * \param ctx The CGV rendering context.
+	 * \param size_in_bytes The desired size in bytes of the buffer.
+	 * \return False if there was a rendering API error, true otherwise.
+	 */
+	bool create_or_resize(const context& ctx, size_t size_in_bytes);
+	/**
+	 * Convenience wrapper to either create() or resize() the buffer.
+	 * 
+	 * \tparam T A generic array type.
+	 * \param ctx The CGV rendering context.
+	 * \param array The array which will be copied into the buffer.
+	 * \return False if there was a rendering API error, true otherwise.
+	 */
+	template <typename T> bool create_or_resize(const context& ctx, const T& array)
+	{
+		return !is_created() ? create(ctx, array) : resize(ctx, array);
+	}
+	/**
+	 * Convenience wrapper to either create() or resize() the buffer.
+	 *
+	 * \tparam T the fundamental data type of the CPU array.
+	 * \param ctx The CGV rendering context.
+	 * \param array_ptr The array which will be copied into the buffer.
+	 * \param nr_elements The count of elements in the array.
+	 * \return False if there was a rendering API error, true otherwise.
+	 */
+	template <typename T> bool create_or_resize(const context& ctx, const T* array_ptr, size_t nr_elements)
+	{
+		return !is_created() ? create(ctx, array_ptr, nr_elements) : resize(ctx, array_ptr, nr_elements);
+	}
 	/// replace part (starting at byte offset \c buffer_offset_in_bytes) or whole vertex buffer content from \c nr_elements of CPU array \c array_ptr
 	template <typename T>
 	bool replace(const context& ctx, size_t buffer_offset_in_bytes, const T* array_ptr, size_t nr_elements) {
@@ -109,7 +142,7 @@ public:
 	/**
 	 * Copy bytes between different vertex_buffer instances.
 	 * 
-	 * \param ctx The CGV rendering context
+	 * \param ctx The CGV rendering context.
 	 * \param src_offset_in_bytes Offset in bytes from the beginning of the source buffer.
 	 * \param size_in_bytes The amount of bytes, which will be copied.
 	 * \param dst The buffer in which to copy the bytes into.
