@@ -54,7 +54,6 @@ bool vertex_buffer::create(const context& ctx, size_t _size_in_bytes)
 	return ctx.vertex_buffer_create(*this, 0, size_in_bytes);
 }
 
-/// check whether the vertex buffer has been created
 bool vertex_buffer::is_created() const
 {
 	return handle != 0;
