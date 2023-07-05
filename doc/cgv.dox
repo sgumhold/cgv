@@ -946,6 +946,7 @@ WARN_LOGFILE           = -
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = $(CGV_DIR)/doc \
+                         $(CGV_DIR)/3rd/xml/cgv_xml \
                          $(CGV_DIR)/libs/vr \
                          $(CGV_DIR)/libs/cg_vr \
                          $(CGV_DIR)/test/vr \
@@ -965,6 +966,7 @@ INPUT                  = $(CGV_DIR)/doc \
                          $(CGV_DIR)/cgv/media \
                          $(CGV_DIR)/cgv/render \
                          $(CGV_DIR)/cgv/gui \
+                         $(CGV_DIR)/libs/cgv_app \
                          $(CGV_DIR)/libs/cgv_gl \
                          $(CGV_DIR)/libs/plot \
                          $(CGV_DIR)/libs/gamepad \
