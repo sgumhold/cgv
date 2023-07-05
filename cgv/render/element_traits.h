@@ -88,9 +88,7 @@ namespace cgv {
 			second does not. Therefore the implementation of resize(ctx, const T&) tries to treat "buf_size" like an
 			array.
 			*/
-			enum dummy {
-				d = (sizeof(struct this_type_is_not_an_array_type_or_was_not_detected_as_an_array_type) == sizeof(T))
-			};
+			static_assert(sizeof(T) == 0, "This type is not an array type or was not detected as an array type");
 		};
 
 		template <typename T>
