@@ -131,6 +131,24 @@ public:
 	bool copy(const context& ctx, size_t src_offset_in_bytes, T* array_ptr, size_t nr_elements) {
 		return ctx.vertex_buffer_copy_back(*this, src_offset_in_bytes, sizeof(T)*nr_elements, array_ptr);
 	}
+	/**
+	 * Copy elements from the buffer into the CPU array.
+	 * 
+	 * \tparam T A generic array type.
+	 * \param ctx The CGV rendering context.
+	 * \param array The destination array in which to copy the data.
+	 * \param src_offset_in_bytes Offset in bytes from the beginning of the source buffer.
+	 * \return False if the vertex_buffer has no valid handle or if there was a rendering API error, true otherwise.
+	 * 
+	 * This function will implicity infer how many bytes to copy from the dimensions of the generic array. Therefore you
+	 * need to make sure, that your std::vector or cgv::math::vec is appropriately sized beforehand!
+	 * Otherwise the underlying copy command might cross the boundaries of the GPU buffer and or read unrelated data.
+	 */
+	template <typename T>
+	bool copy(const context& ctx, T& array, size_t src_offset_in_bytes = 0) {
+		const auto size_in_bytes = array_descriptor_traits<T>::get_size(array);
+		return ctx.vertex_buffer_copy_back(*this, src_offset_in_bytes, size_in_bytes, array_descriptor_traits<T>::get_address(array));
+	}
 	/// destruct the render buffer
 	void destruct(const context& ctx);
 };
