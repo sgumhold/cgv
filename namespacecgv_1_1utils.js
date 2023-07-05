@@ -112,6 +112,8 @@ var namespacecgv_1_1utils =
     [ "operator<<", "namespacecgv_1_1utils.html#aedceed3128644dd33226f3c1a561c264", null ],
     [ "parse_enum_declarations", "namespacecgv_1_1utils.html#a033fc28e490d7a8db989180175f7c9a8", null ],
     [ "parse_hex_bytes", "namespacecgv_1_1utils.html#af218cd40bc285058a5168f28bfaf277a", null ],
+    [ "remove", "namespacecgv_1_1utils.html#ae95941e64781ca8614cc0bed57216449", null ],
+    [ "remove_copy", "namespacecgv_1_1utils.html#a812fedad9007ec86f4e2e4003d88ab1e", null ],
     [ "replace", "namespacecgv_1_1utils.html#a145360669d325a1f530539c8aff35990", null ],
     [ "replace", "namespacecgv_1_1utils.html#a2791a9ab5164403dbdd107a4337a6e6b", null ],
     [ "replace_special", "namespacecgv_1_1utils.html#a97032f8b8a5544a118c84ff2346b5bfe", null ],

@@ -34,6 +34,8 @@ var scan_8h =
     [ "ltrim", "scan_8h.html#a612b9004a640fd424d7ed20ba2104e74", null ],
     [ "ltrim", "scan_8h.html#a6111552f6d6592cb0a9bec7939f4e236", null ],
     [ "parse_hex_bytes", "scan_8h.html#af218cd40bc285058a5168f28bfaf277a", null ],
+    [ "remove", "scan_8h.html#ae95941e64781ca8614cc0bed57216449", null ],
+    [ "remove_copy", "scan_8h.html#a812fedad9007ec86f4e2e4003d88ab1e", null ],
     [ "replace", "scan_8h.html#a145360669d325a1f530539c8aff35990", null ],
     [ "replace", "scan_8h.html#a2791a9ab5164403dbdd107a4337a6e6b", null ],
     [ "replace_special", "scan_8h.html#a97032f8b8a5544a118c84ff2346b5bfe", null ],

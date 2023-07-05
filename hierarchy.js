@@ -62,8 +62,16 @@ var hierarchy =
     [ "cgv::base::test_registration", "structcgv_1_1base_1_1test__registration.html", null ],
     [ "cgv::base::traverse_callback_handler", "classcgv_1_1base_1_1traverse__callback__handler.html", null ],
     [ "cgv::base::traverse_policy", "classcgv_1_1base_1_1traverse__policy.html", [
-      [ "cgv::gui::event_handler", "classcgv_1_1gui_1_1event__handler.html", null ],
+      [ "cgv::gui::event_handler", "classcgv_1_1gui_1_1event__handler.html", [
+        [ "cgv::app::application_plugin_base", "classcgv_1_1app_1_1application__plugin__base.html", [
+          [ "cgv::app::generic_application_plugin< cgv::render::drawable >", "classcgv_1_1app_1_1generic__application__plugin.html", [
+            [ "cgv::app::application_plugin", "classcgv_1_1app_1_1application__plugin.html", null ]
+          ] ],
+          [ "cgv::app::generic_application_plugin< base_drawable >", "classcgv_1_1app_1_1generic__application__plugin.html", null ]
+        ] ]
+      ] ],
       [ "cgv::render::drawable", "classcgv_1_1render_1_1drawable.html", [
+        [ "cgv::app::generic_application_plugin< cgv::render::drawable >", "classcgv_1_1app_1_1generic__application__plugin.html", null ],
         [ "cgv::plot::plot_base", "classcgv_1_1plot_1_1plot__base.html", [
           [ "cgv::plot::plot2d", "classcgv_1_1plot_1_1plot2d.html", null ],
           [ "cgv::plot::plot3d", "classcgv_1_1plot_1_1plot3d.html", null ]
@@ -108,6 +116,7 @@ var hierarchy =
         [ "cgv::base::named", "classcgv_1_1base_1_1named.html", [
           [ "cgv::base::node", "classcgv_1_1base_1_1node.html", [
             [ "cgv::base::group", "classcgv_1_1base_1_1group.html", [
+              [ "cgv::app::application_plugin_base", "classcgv_1_1app_1_1application__plugin__base.html", null ],
               [ "cgv::gui::gui_group", "classcgv_1_1gui_1_1gui__group.html", null ]
             ] ],
             [ "cgv::gui::abst_view", "classcgv_1_1gui_1_1abst__view.html", [
@@ -187,7 +196,9 @@ var hierarchy =
     [ "cgv::gui::gui_creator_registration< T >", "classcgv_1_1gui_1_1gui__creator__registration.html", null ],
     [ "cgv::gui::menu_provider", "classcgv_1_1gui_1_1menu__provider.html", null ],
     [ "cgv::gui::monitor_description", "structcgv_1_1gui_1_1monitor__description.html", null ],
-    [ "cgv::gui::provider", "classcgv_1_1gui_1_1provider.html", null ],
+    [ "cgv::gui::provider", "classcgv_1_1gui_1_1provider.html", [
+      [ "cgv::app::application_plugin_base", "classcgv_1_1app_1_1application__plugin__base.html", null ]
+    ] ],
     [ "cgv::gui::shortcut", "classcgv_1_1gui_1_1shortcut.html", null ],
     [ "cgv::gui::text_editor_callback_handler", "structcgv_1_1gui_1_1text__editor__callback__handler.html", null ],
     [ "cgv::gui::text_style", "structcgv_1_1gui_1_1text__style.html", null ],
@@ -527,6 +538,7 @@ var hierarchy =
       [ "cgv::utils::tokenizer", "classcgv_1_1utils_1_1tokenizer.html", null ],
       [ "cgv::utils::typed_token", "structcgv_1_1utils_1_1typed__token.html", null ]
     ] ],
+    [ "cgv::xml::FindElementByNameVisitor", "classcgv_1_1xml_1_1FindElementByNameVisitor.html", null ],
     [ "cgv::math::diag_mat< std::complex< T > >", "structcgv_1_1math_1_1diag__mat.html", null ],
     [ "cgv::math::fvec< coord_type, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< double, 2 >", "classcgv_1_1math_1_1fvec.html", null ],
@@ -570,6 +582,7 @@ var hierarchy =
     [ "cgv::data::ref_ptr< group, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
     [ "cgv::data::ref_ptr< gui_group, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
     [ "cgv::data::ref_ptr< node, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+    [ "cgv::data::ref_ptr< overlay >", "classcgv_1_1data_1_1ref__ptr.html", null ],
     [ "cgv::data::ref_ptr< window >", "classcgv_1_1data_1_1ref__ptr.html", null ],
     [ "cgv::media::rgb_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1rgb__color__interface.html", [
       [ "cgv::media::hls_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01HLS_00_01am_01_4_01_4.html", null ]

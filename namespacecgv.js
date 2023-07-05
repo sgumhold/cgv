@@ -1,5 +1,10 @@
 var namespacecgv =
 [
+    [ "app", null, [
+      [ "application_plugin_base", "classcgv_1_1app_1_1application__plugin__base.html", "classcgv_1_1app_1_1application__plugin__base" ],
+      [ "generic_application_plugin", "classcgv_1_1app_1_1generic__application__plugin.html", "classcgv_1_1app_1_1generic__application__plugin" ],
+      [ "application_plugin", "classcgv_1_1app_1_1application__plugin.html", "classcgv_1_1app_1_1application__plugin" ]
+    ] ],
     [ "audio", null, [
       [ "OALContext", "classcgv_1_1audio_1_1OALContext.html", "classcgv_1_1audio_1_1OALContext" ],
       [ "OALListener", "classcgv_1_1audio_1_1OALListener.html", "classcgv_1_1audio_1_1OALListener" ],
@@ -255,5 +260,11 @@ var namespacecgv =
       [ "callback_stream", "classcgv_1_1signal_1_1callback__stream.html", "classcgv_1_1signal_1_1callback__stream" ]
     ] ],
     [ "type", "namespacecgv_1_1type.html", "namespacecgv_1_1type" ],
-    [ "utils", "namespacecgv_1_1utils.html", "namespacecgv_1_1utils" ]
+    [ "utils", "namespacecgv_1_1utils.html", "namespacecgv_1_1utils" ],
+    [ "xml", null, [
+      [ "FindElementByNameVisitor", "classcgv_1_1xml_1_1FindElementByNameVisitor.html", "classcgv_1_1xml_1_1FindElementByNameVisitor" ],
+      [ "QueryRGBAttribute", "query_8h.html#a00aa3faed1d421e48e280c419558c862", null ],
+      [ "QueryStringAttribute", "query_8h.html#a2c6fc6ff000dafe74a4c7b2e18af29be", null ],
+      [ "QueryVecAttribute", "query_8h.html#a1da3000acda4972ce0c11796161c5561", null ]
+    ] ]
 ];
