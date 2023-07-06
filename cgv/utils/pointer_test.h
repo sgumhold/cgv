@@ -16,14 +16,15 @@ private:
 	}
 
 public:
-	const void* member_ptr = nullptr;
+	/// The stored pointer.
+	const void* ptr = nullptr;
 
 	/// Instantiate a pointer_test with a const void pointer.
-	pointer_test(const void* ptr) : member_ptr(ptr) {}
+	pointer_test(const void* ptr) : ptr(ptr) {}
 
 	/// Test if the stored pointer points to the given pointer address.
 	bool is(const void* ptr) const {
-		return member_ptr == ptr;
+		return this->ptr == ptr;
 	}
 
 	/// Test if the stored pointer points to the given variable/object instance.
@@ -32,7 +33,7 @@ public:
 		return is(static_cast<const void*>(&ref));
 	}
 
-	/// Test if the stored pointer points to one of the given variable/object instance.
+	/// Test if the stored pointer points to one of the given variable/object instances.
 	template <typename T, typename... Ts>
 	bool one_of(const T& ref, const Ts&... refs) const {
 
@@ -58,7 +59,7 @@ public:
 	bool member_of(const T& ref) const {
 		const void* addr_begin = reinterpret_cast<const void*>(&ref);
 		const void* addr_end = reinterpret_cast<const void*>(reinterpret_cast<size_t>(addr_begin) + sizeof(T));
-		return member_ptr >= addr_begin && member_ptr < addr_end;
+		return ptr >= addr_begin && ptr < addr_end;
 	}
 };
 
