@@ -57,7 +57,7 @@ public:
 		return ptr;
 	}
 
-	/// @brief Final implementation of event_handler::handle to support event handling of registered overlays.
+	/// @brief Final implementation of event_handler::handle() to support event handling of registered overlays.
 	/// 
 	/// Implement handle_event to handle any events that are passed to the instance of this class.
 	/// 
@@ -111,7 +111,7 @@ public:
 	/// @param m the pointer_test interface used to conveniently evaluate the affected member.
 	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
 
-	/// @brief Initializes the view pointer using drawable::find_view_as_node.
+	/// @brief Initializes the view pointer using drawable::find_view_as_node().
 	///
 	/// Can be used to check when the view pointer is available and, e.g., perform one-time initializations of dependent
 	/// members. Due to the non-guaranteed registration order of plugins it is advisable to call this method in

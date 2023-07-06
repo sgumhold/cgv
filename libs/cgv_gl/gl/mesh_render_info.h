@@ -1,6 +1,9 @@
 #pragma once
 
 #include "render_info.h"
+
+#include <vector>
+
 #include <cgv/media/mesh/simple_mesh.h>
 
 #include "lib_begin.h"
@@ -50,11 +53,30 @@ protected:
 	size_t color_increment;
 	/// color type
 	cgv::media::ColorType ct;
-	/// helper function to construct vbos
+	/**
+	 * Transform the given mesh into vectors which are suitable for upload into a VBO/EBO.
+	 * 
+	 * \param [in] c The CGV drawing context.
+	 * \param [in] mesh The mesh which shall be transformed.
+	 * \param [out] vertex_indices the list of indices into the unique n-tuples.
+	 * \param [out] unique_quartuples the list of n-tuples which aggregate unique combinations of vertex attribute indices.
+	 * \param [out] triangle_element_buffer the buffer with successive index triples, which make up a triangle.
+	 * \param [out] edge_element_buffer the buffer with successive index pairs, which make up the edges of a face.
+	 * 
+	 * \see mesh_render_info::finish_construct_vbos_base()
+	 */
 	void construct_vbos_base(cgv::render::context& c, const cgv::media::mesh::simple_mesh_base& mesh,
-		std::vector<idx_type>& vertex_indices, std::vector<vec4i>& unique_quartuples,
-		std::vector<idx_type>& triangle_element_buffer, std::vector<idx_type>& edge_element_buffer);
-	/// helper function for mesh render info consrtuctions
+							 std::vector<idx_type>& vertex_indices, std::vector<vec4i>& unique_quartuples,
+							 std::vector<idx_type>& triangle_element_buffer, std::vector<idx_type>& edge_element_buffer);
+	/**
+	 * Uploads the given element buffers into EBOs on the GPU.
+	 * 
+	 * \param [in] ctx The CGV drawing context.
+	 * \param [in] triangle_element_buffer The vector of indices which make up triangles.
+	 * \param [in] edge_element_buffer The vector of indices which make up the edges of faces.
+	 * 
+	 * \see mesh_render_info::construct_vbos_base()
+	 */
 	void finish_construct_vbos_base(cgv::render::context& ctx,
 		const std::vector<idx_type>& triangle_element_buffer,
 		const std::vector<idx_type>& edge_element_buffer);
@@ -67,9 +89,19 @@ public:
 	bool is_constructed() const { return get_vbos().size() > 0; }
 	/// check whether attribute array binding is bound
 	bool is_bound() const { return get_aas().size() > 0; }
-	/// construct mesh render info from a given simple mesh and store attributes in vertex buffer objects
+	/**
+	 * Construct mesh render info from a given simple mesh and store attributes in vertex buffer objects.
+	 * 
+	 * \tparam T The coordinate type which is used in the cgv::media::mesh::simple_mesh
+	 * \param ctx The CGV rendering context.
+	 * \param mesh The general mesh which will be translated into appropriately formatted GPU buffers.
+	 * \param tuple_position_indices If not nullptr, will be filled the mapping from unique vertex attribute tuples to the
+	 * \param num_floats_in_vertex If not nullptr will be set to the number of floats which make up one vertex with all its attributes.
+	 * original index buffers of the mesh.
+	 */
 	template <typename T>
-	void construct(cgv::render::context& ctx, cgv::media::mesh::simple_mesh<T>& mesh)
+	void construct(cgv::render::context& ctx, cgv::media::mesh::simple_mesh<T>& mesh,
+				   std::vector<idx_type>* tuple_pos_indices = nullptr, int* num_floats_in_vertex = nullptr)
 	{
 		// construct render buffers
 		std::vector<idx_type> vertex_indices;
@@ -77,13 +109,24 @@ public:
 		std::vector<idx_type> triangle_element_buffer;
 		std::vector<idx_type> edge_element_buffer;
 		construct_vbos_base(ctx, mesh, vertex_indices, unique_quartuples, triangle_element_buffer, edge_element_buffer);
+
+		// Record which position each unique tuple was referencing
+		if (tuple_pos_indices) {
+			std::transform(std::cbegin(unique_quartuples), std::cend(unique_quartuples),
+						   std::back_inserter(*tuple_pos_indices), [](const vec4i& tuple) { return tuple[0]; });
+		}
+
 		std::vector<T> attrib_buffer;
-		color_increment = mesh.extract_vertex_attribute_buffer(vertex_indices, unique_quartuples, include_tex_coords, include_normals, include_tangents, attrib_buffer, &include_colors);
+		color_increment = mesh.extract_vertex_attribute_buffer(unique_quartuples, include_tex_coords, include_normals,
+															   include_tangents, attrib_buffer, &include_colors,
+															   num_floats_in_vertex);
 		ref_vbos().push_back(new cgv::render::vertex_buffer(cgv::render::VBT_VERTICES));
 		ref_vbos().back()->create(ctx, attrib_buffer);
 		element_size = sizeof(T);
-		position_descr = cgv::render::element_descriptor_traits<typename cgv::media::mesh::simple_mesh<T>::vec3>::get_type_descriptor(mesh.position(0));
-		tex_coords_descr = cgv::render::element_descriptor_traits<typename cgv::media::mesh::simple_mesh<T>::vec2>::get_type_descriptor(typename cgv::media::mesh::simple_mesh<T>::vec2());
+		position_descr = cgv::render::element_descriptor_traits<
+			  typename cgv::media::mesh::simple_mesh<T>::vec3>::get_type_descriptor(mesh.position(0));
+		tex_coords_descr = cgv::render::element_descriptor_traits<typename cgv::media::mesh::simple_mesh<T>::vec2>::
+			  get_type_descriptor(typename cgv::media::mesh::simple_mesh<T>::vec2());
 		finish_construct_vbos_base(ctx, triangle_element_buffer, edge_element_buffer);
 		construct_draw_calls(ctx);
 	}

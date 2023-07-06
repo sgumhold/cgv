@@ -9,6 +9,7 @@
 #include <limits>
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 #include <cmath>
 #include <cgv/type/standard_types.h>
 #include <cgv/math/functions.h>
@@ -346,6 +347,24 @@ std::istream& operator>>(std::istream& in, fvec<T,N>& v)
 		}
 	}
 	return in;
+}
+
+///vector to string
+template<typename T, cgv::type::uint32_type N>
+std::string to_string(const fvec<T, N>& v)
+{
+	std::ostringstream ss;
+	ss << v;//.rdbuf();
+	return ss.str();
+}
+
+/// vector from string
+template<typename T, cgv::type::uint32_type N>
+bool from_string(const std::string& s, fvec<T, N>& v)
+{
+	std::istringstream iss(s);
+	iss >> v;
+	return !iss.fail();
 }
 
 ///returns the product of a scalar s and vector v

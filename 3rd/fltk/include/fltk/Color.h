@@ -50,6 +50,7 @@ enum ThemeColorIndex {
 	THEME_SELECTION_COLOR,
 	THEME_HIGHLIGHT_COLOR,
 	THEME_WARNING_COLOR,
+	THEME_END
 };
 
 /*! Symbolic names for some of the indexed colors.
