@@ -38,28 +38,41 @@ private:
 	}
 
 public:
+	static void to_xml_printer(tinyxml2::XMLPrinter& printer, const std::string& name, const cgv::render::color_map& color_map, bool put_parent_tag = true) {
+
+		std::vector<std::string> names = {name};
+		std::vector<cgv::render::color_map> color_maps = {color_map};
+		to_xml_printer(printer, names, color_maps, put_parent_tag);
+	}
+
+	static void to_xml_printer(tinyxml2::XMLPrinter& printer, const std::vector<std::string>& names, const std::vector<cgv::render::color_map>& color_maps, bool put_parent_tag = true) {
+
+		if (put_parent_tag)
+			printer.OpenElement("ColorMaps");
+
+		if (names.size() == color_maps.size()) {
+			for (size_t i = 0; i < names.size(); ++i)
+				write_color_map(printer, names[i], color_maps[i]);
+		}
+
+		if (put_parent_tag)
+			printer.CloseElement();
+	}
+
 	static std::string to_xml(const std::string& name, const cgv::render::color_map& color_map, bool put_parent_tag = true) {
 		
 		std::vector<std::string> names = { name };
 		std::vector<cgv::render::color_map> color_maps = { color_map };
+
 		return to_xml(names, color_maps, put_parent_tag);
 	}
 
 	static std::string to_xml(const std::vector<std::string>& names, const std::vector<cgv::render::color_map>& color_maps, bool put_parent_tag = true) {
 		
 		tinyxml2::XMLPrinter printer;
-		if(put_parent_tag)
-			printer.OpenElement("ColorMaps");
-
-		if(names.size() == color_maps.size()) {
-			for(size_t i = 0; i < names.size(); ++i)
-				write_color_map(printer, names[i], color_maps[i]);
-		}
-
-		if(put_parent_tag)
-			printer.CloseElement();
-
+		to_xml_printer(printer, names, color_maps, put_parent_tag);
 		std::string xml = printer.CStr();
+
 		return xml;
 	}
 

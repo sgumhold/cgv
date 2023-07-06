@@ -121,6 +121,20 @@ std::string to_upper(const std::string& _s)
 	return s;
 }
 
+std::string& remove(std::string& s, char c)
+{
+	s.erase(std::remove(s.begin(), s.end(), c), s.end());
+	return s;
+}
+
+
+std::string remove_copy(const std::string& s, char c)
+{
+	std::string r;
+	std::remove_copy(s.begin(), s.end(), std::back_inserter(r), c);
+	return r;
+}
+
 std::string replace_special(const std::string& _s)
 {
 	std::string s;
@@ -701,6 +715,48 @@ std::string join(const std::vector<std::string>& strs, const std::string& sep, b
 			res += sep;
 	}
 	return res;
+}
+
+unsigned int levenshtein_distance(const std::string& s1, const std::string& s2)
+{
+	// create two work vectors of integer distances
+	std::vector<int> v0(s2.length() + 1);
+	std::vector<int> v1(s2.length() + 1);
+
+	// initialize v0 (the previous row of distances)
+	// this row is A[0][i]: edit distance from an empty s to t;
+	// that distance is the number of characters to append to  s to make t.
+	for (size_t i = 0; i <= s2.length(); ++i) {
+		v0[i] = i;
+	}
+
+	for (size_t i = 0; i < s1.length(); ++i) {
+		// calculate v1 (current row distances) from the previous row v0
+
+		// first element of v1 is A[i + 1][0]
+		//   edit distance is delete (i + 1) chars from s to match empty t
+		v1[0] = i + 1;
+
+		// use formula to fill in the rest of the row
+		for (size_t j = 0; j < s2.length(); ++j) {
+			// calculating costs for A[i + 1][j + 1]
+			int deletion_cost = v0[j + 1] + 1;
+			int insertion_cost = v1[j] + 1;
+			int substitution_cost = 0;
+			if (s1[i] == s2[j])
+				substitution_cost = v0[j];
+			else
+				substitution_cost = v0[j] + 1;
+
+			v1[j + 1] = std::min(std::min(deletion_cost, insertion_cost), substitution_cost);
+		}
+
+		// copy v1 (current row) to v0 (previous row) for next iteration
+		// since data in v1 is always invalidated, a swap without copy could be more efficient
+		std::swap(v0, v1);
+	}
+	// after the last swap, the results of v1 are now in v0
+	return v0[s2.length()];
 }
 
 	}

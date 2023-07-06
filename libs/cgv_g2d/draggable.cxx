@@ -5,8 +5,6 @@ using namespace cgv::render;
 namespace cgv {
 namespace g2d {
 
-draggable::draggable() : constraint_reference(CR_FULL_SIZE) {}
-
 void draggable::set_constraint(const irect* area) {
 	constraint = area;
 }
@@ -55,6 +53,14 @@ void draggable::apply_constraint(const irect& area) {
 	}
 
 	position = cgv::math::clamp(position, min_pnt, max_pnt);
+}
+
+circle_draggable::circle_draggable() : draggable() {
+	position_is_center = true;
+}
+
+circle_draggable::circle_draggable(const cgv::render::vec2& position, const cgv::render::vec2& size) : draggable(position, size) {
+	position_is_center = true;
 }
 
 }
