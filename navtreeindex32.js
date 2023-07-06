@@ -1,17 +1,5 @@
 var NAVTREEINDEX32 =
 {
-"classcgv_1_1utils_1_1statistics.html":[11,0,0,14,6],
-"classcgv_1_1utils_1_1statistics.html#a0c4b7cd054ab3c1579bdc462ba43136d":[11,0,0,14,6,9],
-"classcgv_1_1utils_1_1statistics.html#a271d32d6e9dd3cd5e6dca15907d61116":[11,0,0,14,6,14],
-"classcgv_1_1utils_1_1statistics.html#a2ca22f295235ac44b4cfec915f15fa57":[11,0,0,14,6,4],
-"classcgv_1_1utils_1_1statistics.html#a4de345e85cb2bf1959fd5e960e5d9e77":[11,0,0,14,6,15],
-"classcgv_1_1utils_1_1statistics.html#a54b6fb369c5e9db9188a0ad4eedd993d":[11,0,0,14,6,13],
-"classcgv_1_1utils_1_1statistics.html#a7233393de458b0db7a3dd8f1f4de82ba":[11,0,0,14,6,3],
-"classcgv_1_1utils_1_1statistics.html#a8f71da02a494beca9bcd506a2dcf97a6":[11,0,0,14,6,5],
-"classcgv_1_1utils_1_1statistics.html#aaafef4fa8f5329bee7cbd7cb95aee8fd":[11,0,0,14,6,12],
-"classcgv_1_1utils_1_1statistics.html#acca02c0564ca65f0c7afcf7ac697193f":[11,0,0,14,6,11],
-"classcgv_1_1utils_1_1statistics.html#ad5dec3d8746e1591d76627d0e916e52f":[11,0,0,14,6,7],
-"classcgv_1_1utils_1_1statistics.html#af0224e1896dfbfbc760d80733fcce944":[11,0,0,14,6,8],
 "classcgv_1_1utils_1_1statistics.html#af1f79d581d21f1901bd0f497282a9109":[11,0,0,14,6,6],
 "classcgv_1_1utils_1_1statistics.html#af33e661e57ee4c3b1efba9cd6661bdad":[11,0,0,14,6,1],
 "classcgv_1_1utils_1_1statistics.html#af54a7f11b70d4d629eb51d79799f588f":[11,0,0,14,6,0],
@@ -249,5 +237,17 @@ var NAVTREEINDEX32 =
 "classvr__view__interactor.html#af414778d878ce7342def12f15fa8e5a5":[11,0,4,35],
 "classvr__view__interactor.html#af699911379197f4d9a805e849e4dd541":[11,0,4,29],
 "classvr__view__interactor.html#afdd979ebb68c515b9a8eb7da706f275b":[11,0,4,20],
-"clean_8h_source.html":[12,0,1,12,2,0]
+"clean_8h_source.html":[12,0,1,12,2,0],
+"clipboard_8cxx.html#ac7925f0c4f11c57636affc37cd90b578":[10,0,1,8,23],
+"clipboard_8cxx.html#ac80824ae2d8d6f732a5be40141778872":[10,0,1,8,22],
+"clipboard_8cxx_source.html":[12,0,1,7,1],
+"clipboard_8h_source.html":[12,0,1,7,2],
+"clipped__view_8cxx_source.html":[12,0,1,10,5],
+"clipped__view_8h_source.html":[12,0,1,10,6],
+"clod__point__renderer_8cxx_source.html":[12,0,3,3,15],
+"clod__point__renderer_8h_source.html":[12,0,3,3,16],
+"cmdline__tools_8cxx.html#a07714b32304797dbfabe23575eb484f4":[10,0,1,8,21],
+"cmdline__tools_8cxx.html#a249e70e64a10cf8a55d9c00eadd076f0":[10,0,1,8,27],
+"cmdline__tools_8cxx_source.html":[12,0,1,7,3],
+"cmdline__tools_8h_source.html":[12,0,1,7,4]
 };

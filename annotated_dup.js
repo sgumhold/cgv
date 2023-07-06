@@ -107,6 +107,7 @@ var annotated_dup =
         [ "provider", "classcgv_1_1gui_1_1provider.html", "classcgv_1_1gui_1_1provider" ],
         [ "shortcut", "classcgv_1_1gui_1_1shortcut.html", "classcgv_1_1gui_1_1shortcut" ],
         [ "stick_event", "classcgv_1_1gui_1_1stick__event.html", "classcgv_1_1gui_1_1stick__event" ],
+        [ "subprovider", "classcgv_1_1gui_1_1subprovider.html", "classcgv_1_1gui_1_1subprovider" ],
         [ "text_editor_callback_handler", "structcgv_1_1gui_1_1text__editor__callback__handler.html", "structcgv_1_1gui_1_1text__editor__callback__handler" ],
         [ "text_style", "structcgv_1_1gui_1_1text__style.html", "structcgv_1_1gui_1_1text__style" ],
         [ "text_editor", "classcgv_1_1gui_1_1text__editor.html", "classcgv_1_1gui_1_1text__editor" ],

@@ -200,6 +200,7 @@ var hierarchy =
       [ "cgv::app::application_plugin_base", "classcgv_1_1app_1_1application__plugin__base.html", null ]
     ] ],
     [ "cgv::gui::shortcut", "classcgv_1_1gui_1_1shortcut.html", null ],
+    [ "cgv::gui::subprovider", "classcgv_1_1gui_1_1subprovider.html", null ],
     [ "cgv::gui::text_editor_callback_handler", "structcgv_1_1gui_1_1text__editor__callback__handler.html", null ],
     [ "cgv::gui::text_style", "structcgv_1_1gui_1_1text__style.html", null ],
     [ "cgv::gui::trigger", "classcgv_1_1gui_1_1trigger.html", null ],
