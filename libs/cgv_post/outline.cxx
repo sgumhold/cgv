@@ -63,10 +63,9 @@ void outline::end(cgv::render::context& ctx) {
 	fbc_draw.disable_attachment(ctx, "color");
 }
 
-void outline::create_gui(cgv::gui::provider* p) {
-	cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
+void outline::create_gui_impl(cgv::base::base* b, cgv::gui::provider* p) {
 
-	post_process_effect::create_gui(p);
+	post_process_effect::create_gui_impl(b, p);
 	p->add_member_control(b, "Strength", strength, "value_slider", "min=0;step=0.001;max=5");
 	p->add_member_control(b, "Threshold", threshold, "value_slider", "min=0;step=0.001;max=1");
 }

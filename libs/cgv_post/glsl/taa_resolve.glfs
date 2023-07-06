@@ -91,13 +91,11 @@ void main()
 	
 	vec3 prev_color = vec3(0.0);
 
-	bool bad_velocity = isnan(velocity.x) || isnan(velocity.y);
-
-	if(bad_velocity || is_static)
+	if(is_static)
 		prev_color = texture(prev_color_tex, texcoord_fs).rgb;
 	else
 		prev_color = texture(prev_color_tex, texcoord_fs - velocity).rgb;
-	
+
 	vec3 cn_0 = textureOffset(curr_color_tex, texcoord_fs, ivec2(1, 0)).rgb;
 	vec3 cn_1 = textureOffset(curr_color_tex, texcoord_fs, ivec2(0, 1)).rgb;
 	vec3 cn_2 = textureOffset(curr_color_tex, texcoord_fs, ivec2(-1, 0)).rgb;
@@ -110,4 +108,7 @@ void main()
 		prev_color = clip(curr_color, prev_color, cn_min, cn_max);
 	
 	frag_color.rgb = mix(prev_color, curr_color, curr_mix_factor);
+
+	if(isnan(frag_color.x) || isnan(frag_color.y) || isnan(frag_color.z))
+		frag_color.rgb = curr_color;
 }

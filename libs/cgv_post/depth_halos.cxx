@@ -74,10 +74,9 @@ void depth_halos::end(cgv::render::context& ctx) {
 	noise_tex.disable(ctx);
 }
 
-void depth_halos::create_gui(cgv::gui::provider* p) {
-	cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
+void depth_halos::create_gui_impl(cgv::base::base* b, cgv::gui::provider* p) {
 
-	post_process_effect::create_gui(p);
+	post_process_effect::create_gui_impl(b, p);
 	connect_copy(
 		p->add_member_control(b, "Mode", mode, "dropdown", "enums='Inside,Outside;Center'")->value_change,
 		cgv::signal::rebind(this, &depth_halos::on_change_mode));

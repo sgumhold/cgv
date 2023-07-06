@@ -68,6 +68,10 @@ void temporal_anti_aliasing::reset() {
 	static_frame_count = 0;
 }
 
+void temporal_anti_aliasing::reset_static_frame_count() {
+	static_frame_count = 0;
+}
+
 void temporal_anti_aliasing::begin(cgv::render::context& ctx) {
 
 	assert_init();
@@ -215,10 +219,10 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx) {
 	return; // return redraw;
 }
 
-void temporal_anti_aliasing::create_gui(cgv::gui::provider* p) {
-	cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
+void temporal_anti_aliasing::create_gui_impl(cgv::base::base* b, cgv::gui::provider* p) {
 	
-	post_process_effect::create_gui(p);
+	post_process_effect::create_gui_impl(b, p);
+	
 	p->add_member_control(b, "Jitter Samples", jitter_sample_count, "value_slider", "min=1;max=32;step=1");
 	p->add_member_control(b, "Jitter Scale", jitter_scale, "value_slider", "min=0;max=2;step=0.0001");
 	p->add_member_control(b, "Mix Factor", mix_factor, "value_slider", "min=0;max=1;step=0.0001");

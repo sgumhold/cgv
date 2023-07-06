@@ -14,6 +14,8 @@ protected:
 	/// depth difference threshold
 	float threshold = 0.025f;
 
+	void create_gui_impl(cgv::base::base* b, cgv::gui::provider* p);
+
 public:
 	outline() : post_process_effect("Outline") {}
 
@@ -27,16 +29,14 @@ public:
 
 	void end(cgv::render::context& ctx);
 
-	void create_gui(cgv::gui::provider* p);
-
 	/// accessors
 	float get_strength() const { return strength; }
 
-	void set_strength(float s) { strength = s; }
+	void set_strength(float s) { set_and_update_member(strength, s); }
 
 	float get_threshold() const { return threshold; }
 
-	void set_threshold(float t) { threshold = t; }
+	void set_threshold(float t) { set_and_update_member(threshold, t); }
 };
 
 }

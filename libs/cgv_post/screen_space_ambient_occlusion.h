@@ -24,6 +24,8 @@ protected:
 	/// generate random samples and noise texture
 	void generate_samples_and_noise_texture(cgv::render::context& ctx);
 
+	void create_gui_impl(cgv::base::base* b, cgv::gui::provider* p);
+
 public:
 	screen_space_ambient_occlusion() : post_process_effect("SSAO") {}
 
@@ -37,19 +39,17 @@ public:
 
 	void end(cgv::render::context& ctx);
 
-	void create_gui(cgv::gui::provider* p);
-
 	float get_strength() const { return strength; }
 
-	void set_strength(float s) { strength = s; }
+	void set_strength(float s) { set_and_update_member(strength, s); }
 
 	float get_radius() const { return radius; }
 
-	void set_radius(float s) { radius = s; }
+	void set_radius(float r) { set_and_update_member(radius, r); }
 
 	float get_bias() const { return bias; }
 
-	void set_bias(float s) { bias = s; }
+	void set_bias(float b) { set_and_update_member(bias, b); }
 };
 
 }
