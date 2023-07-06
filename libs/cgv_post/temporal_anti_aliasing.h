@@ -45,7 +45,7 @@ protected:
 	size_t jitter_sample_count = 16;
 	/// scale for the jitter offsets
 	float jitter_scale = 0.5f;
-	/// whether to use an offset calculated from the velocity of the camera movement for finding previous pixel values
+	/// whether to use the camera movement velocity to offset history buffer samples (reduces motion blur)
 	bool use_velocity = true;
 	/// whether to enable fast approximate anti-aliasing before accumulation (FXAA also works with disabled TAA)
 	bool enable_fxaa = true;
@@ -60,6 +60,8 @@ protected:
 	/// returns true if the view appears to be unchanged since the last frame (tests eye position, view direction and view up direction)
 	bool is_static_view() const;
 
+	void create_gui_impl(cgv::base::base* b, cgv::gui::provider* p);
+
 public:
 	temporal_anti_aliasing() : post_process_effect("TAA") {}
 
@@ -71,11 +73,11 @@ public:
 
 	void reset();
 
+	void reset_static_frame_count();
+
 	void begin(cgv::render::context& ctx);
 
 	void end(cgv::render::context& ctx);
-
-	void create_gui(cgv::gui::provider* p);
 
 	void set_view(cgv::render::view* view) { view_ptr = view; }
 
@@ -97,17 +99,17 @@ public:
 	/// return the current accumulation count
 	unsigned int get_current_accumulation_count() const { return accumulate_count; }
 
-	void set_fxaa_enabled(bool enable) { enable_fxaa = enable; }
+	void set_fxaa_enabled(bool enable) { set_and_update_member(enable_fxaa, enable); }
 
-	void set_velocity_enabled(bool enable) { use_velocity = enable; }
+	void set_velocity_enabled(bool enable) { set_and_update_member(use_velocity, enable); }
 
-	void set_mix_factor(float value) { mix_factor = std::min(std::max(value, 0.0f), 1.0f); }
+	void set_mix_factor(float value) { set_and_update_member(mix_factor, std::min(std::max(value, 0.0f), 1.0f)); }
 
-	void set_fxaa_mix_factor(float value) { fxaa_mix_factor = std::min(std::max(value, 0.0f), 1.0f); }
+	void set_fxaa_mix_factor(float value) { set_and_update_member(fxaa_mix_factor, std::min(std::max(value, 0.0f), 1.0f)); }
 
-	void set_jitter_scale(float value) { fxaa_mix_factor = std::min(std::max(value, 0.0f), 2.0f); }
+	void set_jitter_scale(float value) { set_and_update_member(fxaa_mix_factor, std::min(std::max(value, 0.0f), 2.0f)); }
 
-	void set_jitter_sample_count(size_t count) { jitter_sample_count = std::min(std::max(count, size_t(1)), size_t(128)); }
+	void set_jitter_sample_count(size_t count) { set_and_update_member(jitter_sample_count, std::min(std::max(count, size_t(1)), size_t(128))); }
 
 	const std::vector<vec2> ref_jitter_offsets() const {
 		return jitter_offsets;

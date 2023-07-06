@@ -37,6 +37,8 @@ protected:
 	/// generate random samples and noise texture
 	void generate_noise_texture(cgv::render::context& ctx);
 
+	void create_gui_impl(cgv::base::base* b, cgv::gui::provider* p);
+
 public:
 	depth_halos() : post_process_effect("Depth Halos") {}
 
@@ -50,28 +52,26 @@ public:
 
 	void end(cgv::render::context& ctx);
 
-	void create_gui(cgv::gui::provider* p);
-
 	/// accessors
 	Mode get_mode() const { return mode; }
 
-	void set_mode(Mode m) { mode = m; on_change_mode(); }
+	void set_mode(Mode m) { set_and_update_member(mode, m); on_change_mode(); }
 	
 	float get_strength() const { return strength; }
 
-	void set_strength(float s) { strength = s; }
+	void set_strength(float s) { set_and_update_member(strength, s); }
 
 	float get_radius() const { return radius; }
 
-	void set_radius(float r) { radius = r; }
+	void set_radius(float r) { set_and_update_member(radius, r); }
 
 	float get_threshold() const { return threshold; }
 
-	void set_threshold(float t) { threshold = t; }
+	void set_threshold(float t) { set_and_update_member(threshold, t); }
 
 	float get_depth_scale() const { return depth_scale; }
 
-	void set_depth_scale(float s) { depth_scale = s; }
+	void set_depth_scale(float s) { set_and_update_member(depth_scale, s); }
 };
 
 }
