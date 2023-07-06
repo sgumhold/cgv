@@ -59,6 +59,8 @@ var dir_2c5ad07a7e23165bc455c8440839201b =
     [ "shortcut.h", "shortcut_8h_source.html", null ],
     [ "stick_event.cxx", "stick__event_8cxx_source.html", null ],
     [ "stick_event.h", "stick__event_8h_source.html", null ],
+    [ "subprovider.cxx", "subprovider_8cxx_source.html", null ],
+    [ "subprovider.h", "subprovider_8h_source.html", null ],
     [ "text_editor.cxx", "text__editor_8cxx_source.html", null ],
     [ "text_editor.h", "text__editor_8h_source.html", null ],
     [ "theme_info.cxx", "theme__info_8cxx_source.html", null ],
