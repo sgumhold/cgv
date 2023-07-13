@@ -23,6 +23,8 @@ var classcgv_1_1render_1_1vertex__buffer =
     [ "resize", "classcgv_1_1render_1_1vertex__buffer.html#ad971f5a8e116204215a8ef0fc71a2d97", null ],
     [ "resize", "classcgv_1_1render_1_1vertex__buffer.html#a0a395a6194b9674d4a9b2b0b5a779aa0", null ],
     [ "resize", "classcgv_1_1render_1_1vertex__buffer.html#a6a3bc1ae0fe7436a4020e79aa4ca269a", null ],
+    [ "unbind", "classcgv_1_1render_1_1vertex__buffer.html#a79146482679d2ca1b9b02109007ae613", null ],
+    [ "unbind", "classcgv_1_1render_1_1vertex__buffer.html#a8176defddc8215bb546d0e6737e0c002", null ],
     [ "unbind", "classcgv_1_1render_1_1vertex__buffer.html#a7dde477cefe02afc4890b2b32acdb020", null ],
     [ "ctx_ptr", "classcgv_1_1render_1_1vertex__buffer.html#a738cb1064e1c6fc606c018191a53f23e", null ],
     [ "last_error", "classcgv_1_1render_1_1vertex__buffer.html#a95f40a817168467d5a0d3fdbb09e0b79", null ],
