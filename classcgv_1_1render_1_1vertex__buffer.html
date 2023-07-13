@@ -121,6 +121,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7dde477cefe02afc4890b2b32acdb020"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a7dde477cefe02afc4890b2b32acdb020">unbind</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3">VertexBufferType</a> <a class="el" href="classcgv_1_1render_1_1vertex__buffer__base.html#a9cf9f4e32916229b82bfba2d04f4ad91">type</a>=<a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3a6220782360c9a07f8d8b7ff26c47f59e">VBT_UNDEF</a>) const</td></tr>
 <tr class="memdesc:a7dde477cefe02afc4890b2b32acdb020"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unbind buffer from the appropriate target.  <a href="classcgv_1_1render_1_1vertex__buffer.html#a7dde477cefe02afc4890b2b32acdb020">More...</a><br /></td></tr>
 <tr class="separator:a7dde477cefe02afc4890b2b32acdb020"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79146482679d2ca1b9b02109007ae613"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a79146482679d2ca1b9b02109007ae613">unbind</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, unsigned index) const</td></tr>
+<tr class="memdesc:a79146482679d2ca1b9b02109007ae613"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unbind this buffer from the appropriate indexed binding target.  <a href="classcgv_1_1render_1_1vertex__buffer.html#a79146482679d2ca1b9b02109007ae613">More...</a><br /></td></tr>
+<tr class="separator:a79146482679d2ca1b9b02109007ae613"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8176defddc8215bb546d0e6737e0c002"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a8176defddc8215bb546d0e6737e0c002">unbind</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3">VertexBufferType</a> <a class="el" href="classcgv_1_1render_1_1vertex__buffer__base.html#a9cf9f4e32916229b82bfba2d04f4ad91">type</a>, unsigned index) const</td></tr>
+<tr class="memdesc:a8176defddc8215bb546d0e6737e0c002"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unbind from the choosen binding target.  <a href="classcgv_1_1render_1_1vertex__buffer.html#a8176defddc8215bb546d0e6737e0c002">More...</a><br /></td></tr>
+<tr class="separator:a8176defddc8215bb546d0e6737e0c002"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa29d9ed4925992d02bcc6c4e6af798ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#aa29d9ed4925992d02bcc6c4e6af798ee">bind</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, unsigned index) const</td></tr>
 <tr class="memdesc:aa29d9ed4925992d02bcc6c4e6af798ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bind this buffer to the appropriate indexed buffer target.  <a href="classcgv_1_1render_1_1vertex__buffer.html#aa29d9ed4925992d02bcc6c4e6af798ee">More...</a><br /></td></tr>
 <tr class="separator:aa29d9ed4925992d02bcc6c4e6af798ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -261,7 +267,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </dl>
 <p>This function will use the type information given to <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a38c35c74e480ffd1f95555f1a94ea293" title="construct from description of component format, where the default format specifies a color buffer wit...">vertex_buffer::vertex_buffer()</a> to determine the correct binding target. </p>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8cxx_source.html#l00040">40</a> of file <a class="el" href="vertex__buffer_8cxx_source.html">vertex_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8cxx_source.html#l00047">47</a> of file <a class="el" href="vertex__buffer_8cxx_source.html">vertex_buffer.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="context_8h_source.html#l00415">cgv::render::vertex_buffer_base::type</a>.</p>
 
@@ -310,7 +316,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>Pay special attention to use the same type in the matching <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a7dde477cefe02afc4890b2b32acdb020" title="Unbind buffer from the appropriate target.">unbind()</a> call. Otherwise the internal type will be used again. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8cxx_source.html#l00045">45</a> of file <a class="el" href="vertex__buffer_8cxx_source.html">vertex_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8cxx_source.html#l00052">52</a> of file <a class="el" href="vertex__buffer_8cxx_source.html">vertex_buffer.cxx</a>.</p>
 
 </div>
 </div>
@@ -414,7 +420,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>False if the buffers have no valid handles or if there was a rendering API error, true otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8cxx_source.html#l00073">73</a> of file <a class="el" href="vertex__buffer_8cxx_source.html">vertex_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8cxx_source.html#l00080">80</a> of file <a class="el" href="vertex__buffer_8cxx_source.html">vertex_buffer.cxx</a>.</p>
 
 </div>
 </div>
@@ -484,7 +490,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>False if the <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html" title="a vertex buffer is an unstructured memory block on the GPU.">vertex_buffer</a> has no valid handle or if there was a rendering API error, true otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00167">167</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00180">180</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -548,7 +554,7 @@ template&lt;typename T , typename  = std::enable_if_t&lt;std::is_class&lt;T&gt;:
 <dl class="section return"><dt>Returns</dt><dd>False if the <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html" title="a vertex buffer is an unstructured memory block on the GPU.">vertex_buffer</a> has no valid handle or if there was a rendering API error, true otherwise.</dd></dl>
 <p>This function will implicity infer how many bytes to copy from the dimensions of the generic array. Therefore you need to make sure, that your std::vector or <a class="el" href="classcgv_1_1math_1_1vec.html" title="A column vector class.">cgv::math::vec</a> is appropriately sized beforehand! Otherwise the underlying copy command might cross the boundaries of the GPU buffer and or read unrelated data. </p>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00184">184</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00197">197</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -604,7 +610,7 @@ template&lt;typename T , typename  = std::enable_if_t&lt;std::is_class&lt;T&gt;:
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>False if there was a rendering API error, true otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00123">123</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00136">136</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -667,7 +673,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>False if there was a rendering API error, true otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00136">136</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00149">149</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -707,9 +713,9 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>False if there was a rendering API error, true otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8cxx_source.html#l00068">68</a> of file <a class="el" href="vertex__buffer_8cxx_source.html">vertex_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8cxx_source.html#l00075">75</a> of file <a class="el" href="vertex__buffer_8cxx_source.html">vertex_buffer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="vertex__buffer_8cxx_source.html#l00051">create()</a>, <a class="el" href="vertex__buffer_8cxx_source.html#l00057">is_created()</a>, and <a class="el" href="vertex__buffer_8cxx_source.html#l00062">resize()</a>.</p>
+<p class="reference">References <a class="el" href="vertex__buffer_8cxx_source.html#l00058">create()</a>, <a class="el" href="vertex__buffer_8cxx_source.html#l00064">is_created()</a>, and <a class="el" href="vertex__buffer_8cxx_source.html#l00069">resize()</a>.</p>
 
 </div>
 </div>
@@ -763,9 +769,9 @@ template&lt;typename T &gt; </div>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">cgv::render::render_component</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8cxx_source.html#l00057">57</a> of file <a class="el" href="vertex__buffer_8cxx_source.html">vertex_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8cxx_source.html#l00064">64</a> of file <a class="el" href="vertex__buffer_8cxx_source.html">vertex_buffer.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="vertex__buffer_8cxx_source.html#l00068">create_or_resize()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="vertex__buffer_8cxx_source.html#l00075">create_or_resize()</a>.</p>
 
 </div>
 </div>
@@ -800,8 +806,98 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="a79146482679d2ca1b9b02109007ae613"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79146482679d2ca1b9b02109007ae613">&#9670;&nbsp;</a></span>unbind() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::render::vertex_buffer::unbind </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Unbind this buffer from the appropriate indexed binding target. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>The CGV rendering context. </td></tr>
+    <tr><td class="paramname">index</td><td>Which slot of the target to unbind from. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8cxx_source.html#l00040">40</a> of file <a class="el" href="vertex__buffer_8cxx_source.html">vertex_buffer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="context_8h_source.html#l00415">cgv::render::vertex_buffer_base::type</a>.</p>
+
+</div>
+</div>
+<a id="a8176defddc8215bb546d0e6737e0c002"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8176defddc8215bb546d0e6737e0c002">&#9670;&nbsp;</a></span>unbind() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::render::vertex_buffer::unbind </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3">VertexBufferType</a>&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Unbind from the choosen binding target. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>The CGV rendering context. </td></tr>
+    <tr><td class="paramname">type</td><td>If <a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3a6220782360c9a07f8d8b7ff26c47f59e" title="The buffer has no type.">cgv::render::VBT_UNDEF</a>, will use type information as given to <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a38c35c74e480ffd1f95555f1a94ea293" title="construct from description of component format, where the default format specifies a color buffer wit...">vertex_buffer::vertex_buffer()</a>. Otherwise will unbind according to the given type. </td></tr>
+    <tr><td class="paramname">index</td><td>Which slot of the target to unbind from. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section warning"><dt>Warning</dt><dd>Pay special attention to use the same type as the preceeding <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a066e6fb16701c6b6e831d20fe3183487" title="Bind buffer to appropriate target.">bind()</a> call. Otherwise the internal type will be used again. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8cxx_source.html#l00042">42</a> of file <a class="el" href="vertex__buffer_8cxx_source.html">vertex_buffer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="context_8h_source.html#l00415">cgv::render::vertex_buffer_base::type</a>.</p>
+
+</div>
+</div>
 <a id="a7dde477cefe02afc4890b2b32acdb020"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7dde477cefe02afc4890b2b32acdb020">&#9670;&nbsp;</a></span>unbind()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7dde477cefe02afc4890b2b32acdb020">&#9670;&nbsp;</a></span>unbind() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -831,6 +927,7 @@ template&lt;typename T &gt; </div>
   <table class="params">
     <tr><td class="paramname">ctx</td><td>The CGV rendering context. </td></tr>
     <tr><td class="paramname">type</td><td>If <a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3a6220782360c9a07f8d8b7ff26c47f59e" title="The buffer has no type.">cgv::render::VBT_UNDEF</a>, will use type information as given to <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a38c35c74e480ffd1f95555f1a94ea293" title="construct from description of component format, where the default format specifies a color buffer wit...">vertex_buffer::vertex_buffer()</a>. Otherwise will unbind according to the given type. </td></tr>
+    <tr><td class="paramname">index</td><td>The index to unbind from, on an index binding target. </td></tr>
   </table>
   </dd>
 </dl>
