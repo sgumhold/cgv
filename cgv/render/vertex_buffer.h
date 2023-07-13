@@ -37,10 +37,23 @@ public:
 	 * \param ctx The CGV rendering context.
 	 * \param type If cgv::render::VBT_UNDEF, will use type information as given to vertex_buffer::vertex_buffer().
 	 * Otherwise will unbind according to the given type.
+	 * \param index The index to unbind from, on an index binding target.
 	 * \warning Pay special attention to use the same type as the preceeding bind() call. Otherwise the internal type
 	 * will be used again.
 	 */
 	void unbind(context& ctx, VertexBufferType type = VBT_UNDEF) const;
+	/// @brief Unbind this buffer from the appropriate indexed binding target
+	/// @param ctx The CGV rendering context.
+	/// @param index Which slot of the target to unbind from.
+	void unbind(context& ctx, unsigned index) const;
+	/// @brief Unbind from the choosen binding target.
+	/// @param ctx The CGV rendering context.
+	/// @param type If cgv::render::VBT_UNDEF, will use type information as given to vertex_buffer::vertex_buffer().
+	/// Otherwise will unbind according to the given type.
+	/// @param index Which slot of the target to unbind from.
+	/// @warning Pay special attention to use the same type as the preceeding bind() call. Otherwise the internal type
+	/// will be used again.
+	void unbind(context& ctx, VertexBufferType type, unsigned index) const;
 	/**
 	 * Bind this buffer to the appropriate indexed buffer target.
 	 *
