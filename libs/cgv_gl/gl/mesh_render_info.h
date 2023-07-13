@@ -96,8 +96,8 @@ public:
 	 * \param ctx The CGV rendering context.
 	 * \param mesh The general mesh which will be translated into appropriately formatted GPU buffers.
 	 * \param tuple_position_indices If not nullptr, will be filled the mapping from unique vertex attribute tuples to the
-	 * \param num_floats_in_vertex If not nullptr will be set to the number of floats which make up one vertex with all its attributes.
 	 * original index buffers of the mesh.
+	 * \param num_floats_in_vertex If not nullptr will be set to the number of floats which make up one vertex with all its attributes.
 	 */
 	template <typename T>
 	void construct(cgv::render::context& ctx, cgv::media::mesh::simple_mesh<T>& mesh,
