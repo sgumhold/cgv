@@ -118,7 +118,7 @@ public:
   void	callback(Callback1*c, long p=0) { callback_=(Callback*)c; user_data_=(void*)p; }
   void*	user_data() const	{ return user_data_; }
   void	user_data(void* v)	{ user_data_ = v; }
-  long	argument() const	{ return (long)user_data_; }
+  long	argument() const	{ return (long)(size_t)user_data_; }
   void	argument(long v)	{ user_data_ = (void*)v; }
   uchar when() const		{ return when_; }
   void	when(uchar i)		{ when_ = i; }
