@@ -399,7 +399,8 @@ template&lt;typename T &gt; </div>
   <table class="params">
     <tr><td class="paramname">ctx</td><td>The CGV rendering context. </td></tr>
     <tr><td class="paramname">mesh</td><td>The general mesh which will be translated into appropriately formatted GPU buffers. </td></tr>
-    <tr><td class="paramname">tuple_position_indices</td><td>If not nullptr, will be filled the mapping from unique vertex attribute tuples to the original index buffers of the mesh. </td></tr>
+    <tr><td class="paramname">tuple_pos_indices</td><td>If not nullptr, will be filled the mapping from unique vertex attribute tuples to the original position buffers of the mesh. </td></tr>
+    <tr><td class="paramname">tuple_normal_indices</td><td>If not nullptr, will be filled the mapping from unique vertex attribute tuples to the original normal buffers of the mesh. </td></tr>
     <tr><td class="paramname">num_floats_in_vertex</td><td>If not nullptr will be set to the number of floats which make up one vertex with all its attributes. </td></tr>
   </table>
   </dd>
