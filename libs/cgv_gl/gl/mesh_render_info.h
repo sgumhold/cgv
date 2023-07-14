@@ -101,7 +101,8 @@ public:
 	 */
 	template <typename T>
 	void construct(cgv::render::context& ctx, cgv::media::mesh::simple_mesh<T>& mesh,
-				   std::vector<idx_type>* tuple_pos_indices = nullptr, int* num_floats_in_vertex = nullptr)
+				   std::vector<idx_type>* tuple_pos_indices = nullptr,
+				   std::vector<idx_type>* tuple_normal_indices = nullptr, int* num_floats_in_vertex = nullptr)
 	{
 		// construct render buffers
 		std::vector<idx_type> vertex_indices;
@@ -110,10 +111,12 @@ public:
 		std::vector<idx_type> edge_element_buffer;
 		construct_vbos_base(ctx, mesh, vertex_indices, unique_quartuples, triangle_element_buffer, edge_element_buffer);
 
-		// Record which position each unique tuple was referencing
-		if (tuple_pos_indices) {
-			std::transform(std::cbegin(unique_quartuples), std::cend(unique_quartuples),
-						   std::back_inserter(*tuple_pos_indices), [](const vec4i& tuple) { return tuple[0]; });
+		// Record which attributes each unique tuple was referencing
+		for (const auto& tuple : unique_quartuples) {
+			if (tuple_pos_indices)
+				tuple_pos_indices->push_back(tuple[0]);
+			if (tuple_normal_indices)
+				tuple_normal_indices->push_back(tuple[2]);
 		}
 
 		std::vector<T> attrib_buffer;
