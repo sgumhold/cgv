@@ -135,10 +135,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a2f17efe64c9f1c86ea2f4c9cabe0a6b0">is_bound</a> () const</td></tr>
 <tr class="memdesc:a2f17efe64c9f1c86ea2f4c9cabe0a6b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">check whether attribute array binding is bound <br /></td></tr>
 <tr class="separator:a2f17efe64c9f1c86ea2f4c9cabe0a6b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4980a8ef4e0728682304d7937370eb78"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a4980a8ef4e0728682304d7937370eb78"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a4980a8ef4e0728682304d7937370eb78">construct</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">cgv::media::mesh::simple_mesh</a>&lt; T &gt; &amp;mesh, std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; *tuple_pos_indices=nullptr, int *num_floats_in_vertex=nullptr)</td></tr>
-<tr class="memdesc:a4980a8ef4e0728682304d7937370eb78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct mesh render info from a given simple mesh and store attributes in vertex buffer objects.  <a href="classcgv_1_1render_1_1mesh__render__info.html#a4980a8ef4e0728682304d7937370eb78">More...</a><br /></td></tr>
-<tr class="separator:a4980a8ef4e0728682304d7937370eb78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af34abaa76c71b3832a18a0f43492fa4c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:af34abaa76c71b3832a18a0f43492fa4c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#af34abaa76c71b3832a18a0f43492fa4c">construct</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">cgv::media::mesh::simple_mesh</a>&lt; T &gt; &amp;mesh, std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; *tuple_pos_indices=nullptr, std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; *tuple_normal_indices=nullptr, int *num_floats_in_vertex=nullptr)</td></tr>
+<tr class="memdesc:af34abaa76c71b3832a18a0f43492fa4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct mesh render info from a given simple mesh and store attributes in vertex buffer objects.  <a href="classcgv_1_1render_1_1mesh__render__info.html#af34abaa76c71b3832a18a0f43492fa4c">More...</a><br /></td></tr>
+<tr class="separator:af34abaa76c71b3832a18a0f43492fa4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e9586a37d83a629d41201b1692c5236"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a5e9586a37d83a629d41201b1692c5236">set_nr_instances</a> (unsigned nr)</td></tr>
 <tr class="memdesc:a5e9586a37d83a629d41201b1692c5236"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the number of to be drawn instances - in case of 0, instanced drawing is turned off  <a href="classcgv_1_1render_1_1mesh__render__info.html#a5e9586a37d83a629d41201b1692c5236">More...</a><br /></td></tr>
 <tr class="separator:a5e9586a37d83a629d41201b1692c5236"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -334,8 +334,8 @@ std::vector&lt; draw_call &gt;&#160;</td><td class="memItemRight" valign="bottom
 
 <p class="definition">Definition at line <a class="el" href="mesh__render__info_8h_source.html#l00018">18</a> of file <a class="el" href="mesh__render__info_8h_source.html">mesh_render_info.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a4980a8ef4e0728682304d7937370eb78"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4980a8ef4e0728682304d7937370eb78">&#9670;&nbsp;</a></span>construct()</h2>
+<a id="af34abaa76c71b3832a18a0f43492fa4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af34abaa76c71b3832a18a0f43492fa4c">&#9670;&nbsp;</a></span>construct()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -362,6 +362,12 @@ template&lt;typename T &gt; </div>
           <td></td>
           <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; *&#160;</td>
           <td class="paramname"><em>tuple_pos_indices</em> = <code>nullptr</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; *&#160;</td>
+          <td class="paramname"><em>tuple_normal_indices</em> = <code>nullptr</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

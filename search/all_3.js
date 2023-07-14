@@ -193,7 +193,7 @@ var searchData=
   ['const_5ftype_5fptr_441',['const_type_ptr',['../namespacecgv_1_1type_1_1info.html#a332bb394e8a85aedd5d5f9c79fc6d917',1,'cgv::type::info']]],
   ['const_5fwindow_5fptr_442',['const_window_ptr',['../namespacecgv_1_1gui.html#a8d097b499c3e4bd4981b5c6105773651',1,'cgv::gui']]],
   ['constant_5fattenuation_443',['constant_attenuation',['../classcgv_1_1media_1_1illum_1_1light__source.html#a5640a5b133fe79ab8345e217020bd626',1,'cgv::media::illum::light_source']]],
-  ['construct_444',['construct',['../classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a403426a00b611326530926db100e2da2',1,'cgv::media::mesh::simple_mesh::construct()'],['../classcgv_1_1render_1_1mesh__render__info.html#a4980a8ef4e0728682304d7937370eb78',1,'cgv::render::mesh_render_info::construct()']]],
+  ['construct_444',['construct',['../classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a403426a00b611326530926db100e2da2',1,'cgv::media::mesh::simple_mesh::construct()'],['../classcgv_1_1render_1_1mesh__render__info.html#af34abaa76c71b3832a18a0f43492fa4c',1,'cgv::render::mesh_render_info::construct()']]],
   ['construct_5fbox_445',['construct_box',['../classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html#a0eab818be0d5ed555c1ced332a9413ff',1,'cgv::media::mesh::convex_polyhedron']]],
   ['construct_5fconway_5fpolyhedron_446',['construct_conway_polyhedron',['../classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a7ef582d4c3e0b782a23dc194aeee44d0',1,'cgv::media::mesh::simple_mesh']]],
   ['construct_5fdraw_5fcalls_447',['construct_draw_calls',['../classcgv_1_1render_1_1mesh__render__info.html#a793bd6f244d7df036b390a1f13804734',1,'cgv::render::mesh_render_info']]],
