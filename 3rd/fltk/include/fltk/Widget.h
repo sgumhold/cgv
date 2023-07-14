@@ -22,6 +22,7 @@
 #ifndef fltk_Widget_h
 #define fltk_Widget_h
 
+#include "stddef.h"
 #include "Style.h"
 #include "Rectangle.h"
 
