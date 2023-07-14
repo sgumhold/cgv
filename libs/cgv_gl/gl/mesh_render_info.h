@@ -89,16 +89,16 @@ public:
 	bool is_constructed() const { return get_vbos().size() > 0; }
 	/// check whether attribute array binding is bound
 	bool is_bound() const { return get_aas().size() > 0; }
-	/**
-	 * Construct mesh render info from a given simple mesh and store attributes in vertex buffer objects.
-	 * 
-	 * \tparam T The coordinate type which is used in the cgv::media::mesh::simple_mesh
-	 * \param ctx The CGV rendering context.
-	 * \param mesh The general mesh which will be translated into appropriately formatted GPU buffers.
-	 * \param tuple_position_indices If not nullptr, will be filled the mapping from unique vertex attribute tuples to the
-	 * original index buffers of the mesh.
-	 * \param num_floats_in_vertex If not nullptr will be set to the number of floats which make up one vertex with all its attributes.
-	 */
+	/// @brief Construct mesh render info from a given simple mesh and store attributes in vertex buffer objects.
+	/// @tparam T The coordinate type which is used in the cgv::media::mesh::simple_mesh
+	/// @param ctx The CGV rendering context.
+	/// @param mesh The general mesh which will be translated into appropriately formatted GPU buffers.
+	/// @param tuple_pos_indices If not nullptr, will be filled the mapping from unique vertex attribute tuples to the
+	/// original position buffers of the mesh.
+	/// @param tuple_normal_indices If not nullptr, will be filled the mapping from unique vertex attribute tuples to
+	/// the original normal buffers of the mesh.
+	/// @param num_floats_in_vertex If not nullptr will be set to the number of floats which make up one vertex with all
+	/// its attributes.
 	template <typename T>
 	void construct(cgv::render::context& ctx, cgv::media::mesh::simple_mesh<T>& mesh,
 				   std::vector<idx_type>* tuple_pos_indices = nullptr,
