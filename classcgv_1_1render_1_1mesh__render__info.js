@@ -6,7 +6,7 @@ var classcgv_1_1render_1_1mesh__render__info =
     [ "mesh_render_info", "classcgv_1_1render_1_1mesh__render__info.html#a943fca991d25a02fd5b1148de955320b", null ],
     [ "bind", "classcgv_1_1render_1_1mesh__render__info.html#acb4d48b542e71650607a08ad47ce8ace", null ],
     [ "bind_wireframe", "classcgv_1_1render_1_1mesh__render__info.html#a79b5452b68e5e0a828d59eea2e34ae65", null ],
-    [ "construct", "classcgv_1_1render_1_1mesh__render__info.html#a4980a8ef4e0728682304d7937370eb78", null ],
+    [ "construct", "classcgv_1_1render_1_1mesh__render__info.html#af34abaa76c71b3832a18a0f43492fa4c", null ],
     [ "construct_draw_calls", "classcgv_1_1render_1_1mesh__render__info.html#a793bd6f244d7df036b390a1f13804734", null ],
     [ "construct_vbos_base", "classcgv_1_1render_1_1mesh__render__info.html#ad85cf218bcf5f6be8ec13d4a67c27135", null ],
     [ "destruct", "classcgv_1_1render_1_1mesh__render__info.html#ae635fff7f16bb611548349b183948bf6", null ],
