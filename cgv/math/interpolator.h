@@ -12,6 +12,7 @@ template<typename T>
 class control_point_container {
 public:
 	typedef std::pair<float, T> control_point;
+	using const_iterator = typename std::vector<control_point>::const_iterator;
 
 private:
 	std::vector<control_point> control_points;
@@ -46,6 +47,9 @@ public:
 	const std::vector<control_point>& ref_points() const {
 		return control_points;
 	}
+
+	const_iterator begin() const { return control_points.cbegin(); }
+	const_iterator end() const { return control_points.cend(); }
 
 	control_point min() const {
 		if(size() > 0)
