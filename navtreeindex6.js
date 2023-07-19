@@ -1,5 +1,6 @@
 var NAVTREEINDEX6 =
 {
+"classcgv_1_1gui_1_1abst__control.html#a0b3db0f57373229e66422eeeb6750ebc":[11,0,0,4,11,46],
 "classcgv_1_1gui_1_1abst__control.html#a1c5ca2e5257ad86420b2719887dc1d64":[11,0,0,4,11,8],
 "classcgv_1_1gui_1_1abst__control.html#a1ff38549b7f5c57918898543e78a416d":[11,0,0,4,11,38],
 "classcgv_1_1gui_1_1abst__control.html#a28286049d6db60c75aedf4c6358dfc12":[11,0,0,4,11,50],
@@ -248,6 +249,5 @@ var NAVTREEINDEX6 =
 "classcgv_1_1gui_1_1dialog.html#a62385e08a1cb4ec7c449521e883843d7":[11,0,0,4,15,2],
 "classcgv_1_1gui_1_1dialog.html#a8139ac0a9188860cd4e7b6657587d590":[11,0,0,4,15,0],
 "classcgv_1_1gui_1_1dialog.html#a9758ad3672fd2f8b0a7a47ed2954816c":[11,0,0,4,15,3],
-"classcgv_1_1gui_1_1dialog.html#aa030623e71c3661de8215730dc6e5061":[11,0,0,4,15,1],
-"classcgv_1_1gui_1_1event.html":[11,0,0,4,16]
+"classcgv_1_1gui_1_1dialog.html#aa030623e71c3661de8215730dc6e5061":[11,0,0,4,15,1]
 };

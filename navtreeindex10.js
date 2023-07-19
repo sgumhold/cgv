@@ -1,5 +1,6 @@
 var NAVTREEINDEX10 =
 {
+"classcgv_1_1gui_1_1vr__pose__event.html#a559dc3c561b6cd9257913941a07cbd19":[11,0,0,4,5,24],
 "classcgv_1_1gui_1_1vr__pose__event.html#a5d67565e65a2213fdc0278bc9ee2a880":[11,0,0,4,5,5],
 "classcgv_1_1gui_1_1vr__pose__event.html#a7bdfa88afd524c47eb91c02b6dcd141c":[11,0,0,4,5,35],
 "classcgv_1_1gui_1_1vr__pose__event.html#a85698ba126b46fee36cd6e31fdfe86b5":[11,0,0,4,5,41],
@@ -248,6 +249,5 @@ var NAVTREEINDEX10 =
 "classcgv_1_1math_1_1distorted__pinhole.html#a026e015e0ea5d823ee4f8ff4a99709e7":[11,0,0,5,3,5],
 "classcgv_1_1math_1_1distorted__pinhole.html#a1a4f441040c7bd6c20abac7a31befdf0":[11,0,0,5,3,3],
 "classcgv_1_1math_1_1distorted__pinhole.html#a1a5d09eb25a7e4f55798cf9c48937947":[11,0,0,5,3,6],
-"classcgv_1_1math_1_1distorted__pinhole.html#a3641c902138487340847d88754e81398":[11,0,0,5,3,1],
-"classcgv_1_1math_1_1distorted__pinhole.html#a5076d61991f97ecf36a6dc679762d40b":[11,0,0,5,3,0]
+"classcgv_1_1math_1_1distorted__pinhole.html#a3641c902138487340847d88754e81398":[11,0,0,5,3,1]
 };

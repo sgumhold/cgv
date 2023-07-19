@@ -1,5 +1,6 @@
 var NAVTREEINDEX9 =
 {
+"classcgv_1_1gui_1_1stick__event.html#a2cf741ae08d04f325553109e11d1c146":[11,0,0,4,29,4],
 "classcgv_1_1gui_1_1stick__event.html#a2de6c3501e4d96617ffe0e4422f05af6":[11,0,0,4,29,20],
 "classcgv_1_1gui_1_1stick__event.html#a3885e80eff45797081392ac8297f6ed0":[11,0,0,4,29,26],
 "classcgv_1_1gui_1_1stick__event.html#a3a0495e3d6d0a3adf1148158d55b035e":[11,0,0,4,29,9],
@@ -248,6 +249,5 @@ var NAVTREEINDEX9 =
 "classcgv_1_1gui_1_1vr__pose__event.html#a31b40d6f8c85b8e19926530c5d60f207":[11,0,0,4,5,38],
 "classcgv_1_1gui_1_1vr__pose__event.html#a3a0495e3d6d0a3adf1148158d55b035e":[11,0,0,4,5,9],
 "classcgv_1_1gui_1_1vr__pose__event.html#a3a9c497bedc2887daf900a6aedfda88f":[11,0,0,4,5,17],
-"classcgv_1_1gui_1_1vr__pose__event.html#a402c7fc7e6c7b5598c18a88fafa42822":[11,0,0,4,5,15],
-"classcgv_1_1gui_1_1vr__pose__event.html#a559dc3c561b6cd9257913941a07cbd19":[11,0,0,4,5,24]
+"classcgv_1_1gui_1_1vr__pose__event.html#a402c7fc7e6c7b5598c18a88fafa42822":[11,0,0,4,5,15]
 };
