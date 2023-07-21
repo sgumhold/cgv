@@ -30,6 +30,6 @@ var searchData=
   ['propagation_5fslow_5fdown_6936',['propagation_slow_down',['../classcgv_1_1media_1_1illum_1_1surface__material.html#a91dd38994fcab38d3b9b974af5f888da',1,'cgv::media::illum::surface_material']]],
   ['propagation_5fslow_5fdown_5findex_6937',['propagation_slow_down_index',['../classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a1b1369127af64f7a53cb05f0e774fee0',1,'cgv::media::illum::textured_surface_material']]],
   ['property_5fmap_6938',['property_map',['../classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae',1,'cgv::base::base_generator']]],
-  ['provider_5fptr_6939',['provider_ptr',['../classcgv_1_1gui_1_1subprovider.html#a752b386a89a695b41d48044850c97d54',1,'cgv::gui::subprovider']]],
+  ['provider_5fptr_6939',['provider_ptr',['../classcgv_1_1gui_1_1subprovider.html#a649449ee0e23aae2a6188abdba1bab6f',1,'cgv::gui::subprovider']]],
   ['provides_5fbattery_5fcharge_5flevel_6940',['provides_battery_charge_level',['../structvr_1_1vr__trackable__info.html#a4ff3fc2812bf0d96ffabe1e9ec85c3ba',1,'vr::vr_trackable_info']]]
 ];
