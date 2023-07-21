@@ -45,6 +45,7 @@ public:
 
 	shader_program& enable_prog(context& ctx) {
 		assert(("generic_renderer::enable_prog shader program is not created; call init before first use", prog.is_created()));
+		prog.allow_context_to_set_color(false);
 		prog.enable(ctx);
 		return prog;
 	}
