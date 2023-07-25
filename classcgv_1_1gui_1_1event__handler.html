@@ -117,9 +117,8 @@ Public Member Functions</h2></td></tr>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event__handler.html#af98ba277948d39c0e8870018e2f466ae">grab_focus</a> ()</td></tr>
 <tr class="memdesc:af98ba277948d39c0e8870018e2f466ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">grab the focus in all parent nodes <br /></td></tr>
 <tr class="separator:af98ba277948d39c0e8870018e2f466ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeef89567e820d30fc538b9be22083403"><td class="memItemLeft" align="right" valign="top"><a id="aeef89567e820d30fc538b9be22083403"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event__handler.html#aeef89567e820d30fc538b9be22083403">handle</a> (<a class="el" href="classcgv_1_1gui_1_1event.html">event</a> &amp;e)=0</td></tr>
-<tr class="memdesc:aeef89567e820d30fc538b9be22083403"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload and implement this method to handle events <br /></td></tr>
+<tr class="memitem:aeef89567e820d30fc538b9be22083403"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event__handler.html#aeef89567e820d30fc538b9be22083403">handle</a> (<a class="el" href="classcgv_1_1gui_1_1event.html">event</a> &amp;e)=0</td></tr>
+<tr class="memdesc:aeef89567e820d30fc538b9be22083403"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload and implement this method to handle events  <a href="classcgv_1_1gui_1_1event__handler.html#aeef89567e820d30fc538b9be22083403">More...</a><br /></td></tr>
 <tr class="separator:aeef89567e820d30fc538b9be22083403"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a247d57486e7c06516b2b028262b6dc35"><td class="memItemLeft" align="right" valign="top"><a id="a247d57486e7c06516b2b028262b6dc35"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event__handler.html#a247d57486e7c06516b2b028262b6dc35">stream_help</a> (std::ostream &amp;os)=0</td></tr>
@@ -205,6 +204,45 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p class="definition">Definition at line <a class="el" href="event__handler_8cxx_source.html#l00022">22</a> of file <a class="el" href="event__handler_8cxx_source.html">event_handler.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="group_8cxx_source.html#l00036">cgv::base::group::append_child()</a>, <a class="el" href="ref__ptr_8h_source.html#l00230">cgv::data::ref_ptr&lt; T, is_ref_counted &gt;::empty()</a>, <a class="el" href="base_8cxx_source.html#l00360">cgv::base::base::find_member_ptr()</a>, and <a class="el" href="base_8cxx_source.html#l00210">cgv::base::base::on_set()</a>.</p>
+
+</div>
+</div>
+<a id="aeef89567e820d30fc538b9be22083403"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeef89567e820d30fc538b9be22083403">&#9670;&nbsp;</a></span>handle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool cgv::gui::event_handler::handle </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1event.html">event</a> &amp;&#160;</td>
+          <td class="paramname"><em>e</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>overload and implement this method to handle events </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>to be handled event (use e.get_kind() to check event type)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>return true for handled events and false otherwise. Other event handlers (e.g. parents) only receive unhandled events if false is returned</dd></dl>
+
+<p>Implemented in <a class="el" href="classcgv_1_1app_1_1application__plugin__base.html#af235f0a26a1d9dd7aac02e4cb0009dc4">cgv::app::application_plugin_base</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="vr__server_8cxx_source.html#l00351">cgv::gui::vr_server::dispatch()</a>, and <a class="el" href="vr__server_8cxx_source.html#l00039">cgv::gui::vr_server::grab_focus()</a>.</p>
 
 </div>
 </div>
