@@ -1,5 +1,6 @@
 var NAVTREEINDEX47 =
 {
+"structcgv_1_1type_1_1cond_1_1has__virtual__destructor.html":[11,0,0,13,0,0],
 "structcgv_1_1type_1_1cond_1_1is__abstract.html":[11,0,0,13,0,1],
 "structcgv_1_1type_1_1cond_1_1is__base__of.html":[11,0,0,13,0,2],
 "structcgv_1_1type_1_1cond_1_1is__const.html":[11,0,0,13,0,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX47 =
 "textured__surface__material_8h_source.html":[12,0,1,6,1,9],
 "theme__info_8cxx_source.html":[12,0,1,4,63],
 "theme__info_8h_source.html":[12,0,1,4,64],
-"thin__plate__spline_8h_source.html":[12,0,1,5,64],
-"thread_8cxx_source.html":[12,0,1,7,25]
+"thin__plate__spline_8h_source.html":[12,0,1,5,64]
 };
