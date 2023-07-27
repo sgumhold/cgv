@@ -48,14 +48,14 @@ public:
 	bool render(cgv::render::context& ctx, canvas& cvs, cgv::render::PrimitiveType type, cgv::render::generic_render_data& geometry, size_t start = 0, size_t count = 0) {
 		if(!enable(ctx, cvs, geometry))
 			return false;
-		draw(ctx, type, start, count ? count : geometry.get_render_count());
+		draw(ctx, type, geometry, start, count);
 		return disable(ctx, geometry);
 	}
 
 	bool render(cgv::render::context& ctx, canvas& cvs, cgv::render::PrimitiveType type, cgv::render::generic_render_data& geometry, const shape2d_style& style, size_t start = 0, size_t count = 0) {
 		if(!enable(ctx, cvs, geometry, style))
 			return false;
-		draw(ctx, type, start, count ? count : geometry.get_render_count());
+		draw(ctx, type, geometry, start, count);
 		return disable(ctx, geometry);
 	}
 };
