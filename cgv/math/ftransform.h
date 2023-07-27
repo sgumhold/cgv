@@ -123,6 +123,14 @@ namespace cgv {
 				M(2, 2) = cx * cy;
 				return M;
 			}
+		/// construct 3x3 rotation matrix from spin vector via Rodrigues formula
+		template <typename T> fmat<T, 3, 3>
+			rotate3s(fvec<T, 3> k) {
+				T o = k.length();
+				k /= std::max(o, T(1e-8f));
+				fmat<T,3,3> K = { 0.0f, k.z(), -k.y(), -k.z(), 0.0f ,k.x(), k.y(),-k.x(), 0.0f };
+				return identity3<float>() + sin(o) * K + (T(1) - cos(o)) * K * K;
+			}
 		/// construct 4x4 rotation matrix from angle in degrees and axis 
 		template <typename T> fmat<T, 4, 4>
 			rotate4(const T& A, const fvec<T, 3>& a) { 
