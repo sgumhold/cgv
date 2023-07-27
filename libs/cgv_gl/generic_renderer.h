@@ -51,8 +51,11 @@ public:
 	}
 
 	bool enable(context& ctx, generic_render_data& geometry) {
-		bool res = prog.is_enabled() ? true : prog.enable(ctx);
-		res &= geometry.enable(ctx, prog);
+		bool res = geometry.enable(ctx, prog);
+
+		if(res)
+			res &= prog.is_enabled() ? true : prog.enable(ctx);
+		
 		has_indices = geometry.has_indices();
 		return res;
 	}
