@@ -29,10 +29,13 @@ public:
 	}
 
 	bool enable(cgv::render::context& ctx, canvas& cvs, cgv::render::generic_render_data& geometry) {
-		bool res = prog.is_enabled() ? true : prog.enable(ctx);
+		bool res = geometry.enable(ctx, prog);	
+
+		if(res)
+			res &= prog.is_enabled() ? true : prog.enable(ctx);
 		if(res)
 			cvs.set_view(ctx, prog);
-		res &= geometry.enable(ctx, prog);
+
 		has_indices = geometry.has_indices();
 		return res;
 	}
