@@ -1,5 +1,6 @@
 var NAVTREEINDEX46 =
 {
+"structcgv_1_1render_1_1callback__drawable.html#afbfaded48bb322a4b77350ca73c9e1a2":[11,0,0,11,2,43],
 "structcgv_1_1render_1_1callback__drawable.html#afc15e06f2cc55604d795870ad01099e6":[11,0,0,11,2,39],
 "structcgv_1_1render_1_1callback__drawable.html#afffd8ead513770ac167efd9a2a56fdf5":[11,0,0,11,2,42],
 "structcgv_1_1render_1_1clod__point__render__style.html":[11,0,0,11,39],
@@ -248,6 +249,5 @@ var NAVTREEINDEX46 =
 "structcgv_1_1render_1_1window__transformation.html":[11,0,0,11,14],
 "structcgv_1_1render_1_1window__transformation.html#a1730d8c08e8ac242095931cdbdcf51ca":[11,0,0,11,14,0],
 "structcgv_1_1render_1_1window__transformation.html#a184502fb2e060a3bad5f4f96a33990d5":[11,0,0,11,14,1],
-"structcgv_1_1signal_1_1callback__streambuf.html":[11,0,0,12,1],
-"structcgv_1_1type_1_1cond_1_1has__virtual__destructor.html":[11,0,0,13,0,0]
+"structcgv_1_1signal_1_1callback__streambuf.html":[11,0,0,12,1]
 };

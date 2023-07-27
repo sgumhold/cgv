@@ -282,6 +282,7 @@ var namespacecgv_1_1math =
     [ "rotate2h", "namespacecgv_1_1math.html#a114910f4a04bd24d7a04d43d4fe79fc8", null ],
     [ "rotate3", "namespacecgv_1_1math.html#a39594949e1518068bdab10f89da0d57d", null ],
     [ "rotate3", "namespacecgv_1_1math.html#af6c02fb56bb0f27964498d29f7eaa679", null ],
+    [ "rotate3s", "namespacecgv_1_1math.html#a8b280a0167112c9fc71710b472909949", null ],
     [ "rotate4", "namespacecgv_1_1math.html#aecb84edef7e25cd2273deee10844a2e0", null ],
     [ "rotate4", "namespacecgv_1_1math.html#a9c98840cff4a0b25d6bbf25541347483", null ],
     [ "rotate4", "namespacecgv_1_1math.html#a4ce5b05bfe2bf1938ee5079ce7a532ad", null ],
