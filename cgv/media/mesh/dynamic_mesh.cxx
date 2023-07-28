@@ -51,7 +51,7 @@ typename dynamic_mesh<T>::vec3 dynamic_mesh<T>::get_blend_shape_vector(idx_type 
 	const auto& bs = blend_shapes[bi];
 	switch (bs.mode) {
 	case blend_shape_mode::direct: 
-		return blend_shape_data[bi*get_nr_positions()+vi];
+		return blend_shape_data[bi*this->get_nr_positions()+vi];
 	case blend_shape_mode::indexed: 
 		for (idx_type i = bs.blend_shape_index_range[0]; i < bs.blend_shape_index_range[1]; ++i)
 			if (blend_shape_indices[i] == vi)
@@ -190,22 +190,22 @@ template <typename T>
 void dynamic_mesh<T>::apply_blend_shapes(const std::vector<T>& weights, idx_type blend_shape_offset, bool only_add)
 {
 	if (!only_add)
-		positions = reference_positions;
+		this->positions = reference_positions;
 	for (idx_type bi = blend_shape_offset, wi = 0; wi < weights.size(); ++wi, ++bi) {
 		const auto& bs = blend_shapes[bi];
 		switch (bs.mode) {
 		case blend_shape_mode::direct:
 			for (uint32_t i = bs.blend_shape_data_range[0], j = 0; i < bs.blend_shape_data_range[1]; ++i, ++j)
-				positions[j] += weights[wi] * blend_shape_data[i];
+				this->positions[j] += weights[wi] * blend_shape_data[i];
 			break;
 		case blend_shape_mode::indexed:
 			for (uint32_t i = bs.blend_shape_data_range[0], j = bs.blend_shape_index_range[0]; i < bs.blend_shape_data_range[1]; ++i, ++j)
-				positions[blend_shape_indices[j]] += weights[wi] * blend_shape_data[i];
+				this->positions[blend_shape_indices[j]] += weights[wi] * blend_shape_data[i];
 			break;
 		case blend_shape_mode::range_indexed:
 			for (uint32_t i = bs.blend_shape_data_range[0], j = bs.blend_shape_index_range[0]; j < bs.blend_shape_index_range[1]; j += 2)
 				for (uint32_t k = blend_shape_indices[j]; k < blend_shape_indices[j + 1]; ++k, ++i)
-					positions[k] += weights[wi] * blend_shape_data[i];
+					this->positions[k] += weights[wi] * blend_shape_data[i];
 			break;
 		}
 	}
@@ -229,17 +229,17 @@ std::vector<int32_t>& dynamic_mesh<T>::ref_joint_parents()
 template <typename T>
 void dynamic_mesh<T>::store_in_reference_positions()
 {
-	reference_positions = positions;
+	reference_positions = this->positions;
 }
 template <typename T>
 void dynamic_mesh<T>::store_in_intermediate_positions()
 {
-	intermediate_positions = positions;
+	intermediate_positions = this->positions;
 }
 template <typename T>
 void dynamic_mesh<T>::recover_intermediate_positions()
 {
-	positions = intermediate_positions;
+	this->positions = intermediate_positions;
 }
 
 template <typename T>
@@ -247,7 +247,7 @@ void dynamic_mesh<T>::lbs(const std::vector<mat4>& joint_matrices, lbs_source_mo
 {
 	std::vector<vec3> tmp;
 	if (mode == lbs_source_mode::position)
-		tmp = positions;
+		tmp = this->positions;
 	const std::vector<vec3>& P = mode == lbs_source_mode::position ? tmp : (
 		mode == lbs_source_mode::intermediate ? intermediate_positions : reference_positions);
 	switch (weight_mode) {
