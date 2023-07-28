@@ -257,7 +257,7 @@ void dynamic_mesh<T>::lbs(const std::vector<mat4>& joint_matrices, lbs_source_mo
 			vec4 q = vec4(0.0f);
 			for (unsigned ji = 0; ji < joint_parents.size(); ++ji, ++wi)
 				q += vertex_weight_data[wi] * (joint_matrices[ji] * p);
-			position(idx_type(pi)) = q;
+			this->position(idx_type(pi)) = q;
 		}
 		break;
 	case vertex_weight_mode::sparse:
@@ -268,7 +268,7 @@ void dynamic_mesh<T>::lbs(const std::vector<mat4>& joint_matrices, lbs_source_mo
 			size_t end = pi+1 < P.size() ? vertex_weight_index_begins[pi+1] : vertex_weight_indices.size();
 			for (size_t wi = beg; wi < end; ++wi)
 				q += vertex_weight_data[wi] * (joint_matrices[vertex_weight_indices[wi]] * p);
-			position(idx_type(pi)) = q;
+			this->position(idx_type(pi)) = q;
 		}
 		break;
 	case vertex_weight_mode::fixed:
@@ -279,7 +279,7 @@ void dynamic_mesh<T>::lbs(const std::vector<mat4>& joint_matrices, lbs_source_mo
 			size_t end = pi + 1 < P.size() ? vertex_weight_index_begins[pi + 1] : vertex_weight_indices.size();
 			for (size_t wi = beg; wi < end; ++wi)
 				q += vertex_weight_data[wi] * (joint_matrices[vertex_weight_indices[wi]] * p);
-			position(idx_type(pi)) = q;
+			this->position(idx_type(pi)) = q;
 		}
 		break;
 	}
