@@ -18,6 +18,14 @@ public:
 	using simple_mesh_base::vec3i;
 	using simple_mesh_base::vec4i;
 	using simple_mesh_base::mat_type;
+	using typename simple_mesh<T>::vec2;
+	using typename simple_mesh<T>::vec3;
+	using typename simple_mesh<T>::vec4;
+	using typename simple_mesh<T>::box_type;
+	using typename simple_mesh<T>::clr_type;
+	using typename simple_mesh<T>::mesh_type;
+	using typename simple_mesh<T>::mat3;
+	using typename simple_mesh<T>::mat4;
 	
 	enum class blend_shape_mode { direct, indexed, range_indexed };
 protected:
