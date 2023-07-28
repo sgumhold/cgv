@@ -138,7 +138,7 @@ $(document).ready(function(){initNavTree('dynamic__mesh_8cxx_source.html',''); i
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; bs = blend_shapes[bi];</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordflow">switch</span> (bs.mode) {</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordflow">case</span> blend_shape_mode::direct: </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordflow">return</span> blend_shape_data[bi*get_nr_positions()+vi];</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordflow">return</span> blend_shape_data[bi*this-&gt;get_nr_positions()+vi];</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordflow">case</span> blend_shape_mode::indexed: </div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">for</span> (idx_type i = bs.blend_shape_index_range[0]; i &lt; bs.blend_shape_index_range[1]; ++i)</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <span class="keywordflow">if</span> (blend_shape_indices[i] == vi)</div>
@@ -277,22 +277,22 @@ $(document).ready(function(){initNavTree('dynamic__mesh_8cxx_source.html',''); i
 <div class="line"><a name="l00190"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a80e4bd3dab6f5d7a34f0ff50adffd941">  190</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a80e4bd3dab6f5d7a34f0ff50adffd941">dynamic_mesh&lt;T&gt;::apply_blend_shapes</a>(<span class="keyword">const</span> std::vector&lt;T&gt;&amp; weights, <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> blend_shape_offset, <span class="keywordtype">bool</span> only_add)</div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;{</div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    <span class="keywordflow">if</span> (!only_add)</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        positions = reference_positions;</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        this-&gt;positions = reference_positions;</div>
 <div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    <span class="keywordflow">for</span> (<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> bi = blend_shape_offset, wi = 0; wi &lt; weights.size(); ++wi, ++bi) {</div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        <span class="keyword">const</span> <span class="keyword">auto</span>&amp; bs = blend_shapes[bi];</div>
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        <span class="keywordflow">switch</span> (bs.mode) {</div>
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        <span class="keywordflow">case</span> blend_shape_mode::direct:</div>
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;            <span class="keywordflow">for</span> (uint32_t i = bs.blend_shape_data_range[0], j = 0; i &lt; bs.blend_shape_data_range[1]; ++i, ++j)</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                positions[j] += weights[wi] * blend_shape_data[i];</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                this-&gt;positions[j] += weights[wi] * blend_shape_data[i];</div>
 <div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;            <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        <span class="keywordflow">case</span> blend_shape_mode::indexed:</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;            <span class="keywordflow">for</span> (uint32_t i = bs.blend_shape_data_range[0], j = bs.blend_shape_index_range[0]; i &lt; bs.blend_shape_data_range[1]; ++i, ++j)</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                positions[blend_shape_indices[j]] += weights[wi] * blend_shape_data[i];</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                this-&gt;positions[blend_shape_indices[j]] += weights[wi] * blend_shape_data[i];</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;            <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        <span class="keywordflow">case</span> blend_shape_mode::range_indexed:</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;            <span class="keywordflow">for</span> (uint32_t i = bs.blend_shape_data_range[0], j = bs.blend_shape_index_range[0]; j &lt; bs.blend_shape_index_range[1]; j += 2)</div>
 <div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;                <span class="keywordflow">for</span> (uint32_t k = blend_shape_indices[j]; k &lt; blend_shape_indices[j + 1]; ++k, ++i)</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                    positions[k] += weights[wi] * blend_shape_data[i];</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                    this-&gt;positions[k] += weights[wi] * blend_shape_data[i];</div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;            <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        }</div>
 <div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    }</div>
@@ -316,17 +316,17 @@ $(document).ready(function(){initNavTree('dynamic__mesh_8cxx_source.html',''); i
 <div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00230"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a3eea98326d8c874604bad319a7bf5470">  230</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a3eea98326d8c874604bad319a7bf5470">dynamic_mesh&lt;T&gt;::store_in_reference_positions</a>()</div>
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;{</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    reference_positions = positions;</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    reference_positions = this-&gt;positions;</div>
 <div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;}</div>
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00235"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a3d97c9655e2f9e8385150e3c0319faa9">  235</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a3d97c9655e2f9e8385150e3c0319faa9">dynamic_mesh&lt;T&gt;::store_in_intermediate_positions</a>()</div>
 <div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;{</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    intermediate_positions = positions;</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    intermediate_positions = this-&gt;positions;</div>
 <div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;}</div>
 <div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00240"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a114c1031847b61f0b9f5ef349694dab5">  240</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a114c1031847b61f0b9f5ef349694dab5">dynamic_mesh&lt;T&gt;::recover_intermediate_positions</a>()</div>
 <div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;{</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    positions = intermediate_positions;</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    this-&gt;positions = intermediate_positions;</div>
 <div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;}</div>
 <div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160; </div>
 <div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
@@ -334,7 +334,7 @@ $(document).ready(function(){initNavTree('dynamic__mesh_8cxx_source.html',''); i
 <div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;{</div>
 <div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    std::vector&lt;vec3&gt; tmp;</div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    <span class="keywordflow">if</span> (mode == lbs_source_mode::position)</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        tmp = positions;</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        tmp = this-&gt;positions;</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    <span class="keyword">const</span> std::vector&lt;vec3&gt;&amp; P = mode == lbs_source_mode::position ? tmp : (</div>
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;        mode == lbs_source_mode::intermediate ? intermediate_positions : reference_positions);</div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;    <span class="keywordflow">switch</span> (weight_mode) {</div>
