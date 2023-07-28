@@ -201,7 +201,11 @@ class CGV_API simple_mesh : public simple_mesh_base
 {
 public:
 	using numeric_type = T;
-
+	using simple_mesh_base::idx_type;
+	using simple_mesh_base::vec2i;
+	using simple_mesh_base::vec3i;
+	using simple_mesh_base::vec4i;
+	using simple_mesh_base::mat_type;
 	/// type of axis aligned 3d box
 	typedef simple_mesh<T> mesh_type;
 	/// type of axis aligned 3d box
@@ -218,10 +222,6 @@ public:
 	typedef typename cgv::math::fmat<T, 4, 4> mat4;
 	/// color type used in surface materials
 	typedef typename illum::surface_material::color_type clr_type;
-	/// textured surface materials are supported by mat_type
-	typedef typename illum::textured_surface_material mat_type;
-	/// 32bit index
-	typedef cgv::type::uint32_type idx_type;
 protected:
 	friend class simple_mesh_obj_reader<T>;
 	std::vector<vec3>  positions;
