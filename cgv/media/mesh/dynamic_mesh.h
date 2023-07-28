@@ -13,7 +13,13 @@ template <typename T = float>
 class CGV_API dynamic_mesh : public simple_mesh<T>
 {
 public:
-	 enum class blend_shape_mode { direct, indexed, range_indexed };
+	using simple_mesh_base::idx_type;
+	using simple_mesh_base::vec2i;
+	using simple_mesh_base::vec3i;
+	using simple_mesh_base::vec4i;
+	using simple_mesh_base::mat_type;
+	
+	enum class blend_shape_mode { direct, indexed, range_indexed };
 protected:
 	std::vector<vec3>     reference_positions, intermediate_positions;
 	std::vector<vec3>     blend_shape_data;
