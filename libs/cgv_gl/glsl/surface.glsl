@@ -162,7 +162,7 @@ void update_material_from_texture(inout Material M, in vec2 texcoords)
 
 	if (diffuse_index > -1) {
 		vec4 col = lookup_texture(diffuse_index, texcoords, true);
-		M.diffuse_reflectance = col.rgb;
+		M.diffuse_reflectance *= col.rgb;
 		if (trans_idx == diffuse_index) {
 			M.transparency = 1.0-col.a;
 			trans_idx = -1;
