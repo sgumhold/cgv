@@ -46,6 +46,7 @@ var namespacecgv =
         [ "cell_info", "structcgv_1_1media_1_1mesh_1_1cell__info.html", null ],
         [ "dc_slice_info", "structcgv_1_1media_1_1mesh_1_1dc__slice__info.html", "structcgv_1_1media_1_1mesh_1_1dc__slice__info" ],
         [ "dual_contouring", "classcgv_1_1media_1_1mesh_1_1dual__contouring.html", "classcgv_1_1media_1_1mesh_1_1dual__contouring" ],
+        [ "dynamic_mesh", "classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html", "classcgv_1_1media_1_1mesh_1_1dynamic__mesh" ],
         [ "slice_info", "structcgv_1_1media_1_1mesh_1_1slice__info.html", "structcgv_1_1media_1_1mesh_1_1slice__info" ],
         [ "marching_cubes_base", "classcgv_1_1media_1_1mesh_1_1marching__cubes__base.html", "classcgv_1_1media_1_1mesh_1_1marching__cubes__base" ],
         [ "marching_cubes", "classcgv_1_1media_1_1mesh_1_1marching__cubes.html", "classcgv_1_1media_1_1mesh_1_1marching__cubes" ],

@@ -4,6 +4,8 @@ var dir_a14adb562a0c3e273f9c52429d05db33 =
     [ "convex_polyhedron.h", "convex__polyhedron_8h_source.html", null ],
     [ "cuberille.h", "cuberille_8h_source.html", null ],
     [ "dual_contouring.h", "dual__contouring_8h_source.html", null ],
+    [ "dynamic_mesh.cxx", "dynamic__mesh_8cxx_source.html", null ],
+    [ "dynamic_mesh.h", "dynamic__mesh_8h_source.html", null ],
     [ "marching_cubes.cxx", "marching__cubes_8cxx_source.html", null ],
     [ "marching_cubes.h", "marching__cubes_8h_source.html", null ],
     [ "obj_loader.cxx", "obj__loader_8cxx_source.html", null ],

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['y_7099',['y',['../structcgv_1_1os_1_1display__position.html#a079014040cc6312cac9e6b71f2799de3',1,'cgv::os::display_position::y()'],['../classcgv_1_1gui_1_1key__event.html#afddd45569254b7e1c622841b42ea7552',1,'cgv::gui::key_event::y()'],['../classcgv_1_1gui_1_1mouse__event.html#a34db9c71c3237368d10f5a1890731645',1,'cgv::gui::mouse_event::y()']]]
+  ['x_7138',['x',['../structcgv_1_1os_1_1display__position.html#a684b78355c3ba0eb1866ba12d7be431a',1,'cgv::os::display_position::x()'],['../classcgv_1_1gui_1_1key__event.html#a0749100719ee882dfd3c47cc9d9ff3be',1,'cgv::gui::key_event::x()'],['../classcgv_1_1gui_1_1mouse__event.html#aaadd15e2dc5c425e8b83c8ff6f31cf3d',1,'cgv::gui::mouse_event::x()']]],
+  ['x_5foffset_7139',['x_offset',['../classcgv_1_1render_1_1context.html#acad150548a8c385d5500de242cba3282',1,'cgv::render::context']]]
 ];

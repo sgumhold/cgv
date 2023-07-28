@@ -255,7 +255,9 @@ var hierarchy =
       ] ],
       [ "cgv::media::colored_model", "classcgv_1_1media_1_1colored__model.html", [
         [ "cgv::media::mesh::simple_mesh_base", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html", [
-          [ "cgv::media::mesh::simple_mesh< float >", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html", null ],
+          [ "cgv::media::mesh::simple_mesh< float >", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html", [
+            [ "cgv::media::mesh::dynamic_mesh< T >", "classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html", null ]
+          ] ],
           [ "cgv::media::mesh::simple_mesh< T >", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html", null ],
           [ "cgv::media::mesh::simple_mesh< T >", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html", null ]
         ] ]
