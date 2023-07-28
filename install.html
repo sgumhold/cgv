@@ -493,10 +493,11 @@ Internal Makefiles (Windows only)</h1>
 <div class="line"> </div>
 <div class="line">addDependencies = [&quot;opengl&quot;,&quot;glu&quot;,&quot;glew&quot;,[&quot;Vfw32&quot;, &quot;static&quot;] ];</div>
 <div class="line"> </div>
-<div class="line">// enable openmp support by the following line (0 is default value)</div>
+<div class="line">// enable openmp support by the following line (default value is 0 or 1 if env::CGV_OPTIONS containts OPENMP)</div>
 <div class="line">useOpenMP = 1;</div>
 <div class="line"> </div>
-<div class="line">// set the C++ language standard to &quot;stdcpp14&quot; or &quot;stdcpp17&quot; by the following line</div>
+<div class="line">// set the C++ language standard to &quot;stdcpp14&quot; or &quot;stdcpp17&quot; by the following line,</div>
+<div class="line">//     which defaults to empty or &quot;stdcpp17&quot; if env::CGV_OPTIONS contains STDCPP17</div>
 <div class="line">cppLanguageStandard = &quot;stdcpp17&quot;;</div>
 <div class="line"> </div>
 <div class="line">// overwrite windows character set used to encode string, which defaults to &quot;Unicode&quot; or if set env::CGV_CHARSET</div>
