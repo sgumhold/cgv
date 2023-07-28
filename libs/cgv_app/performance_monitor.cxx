@@ -351,7 +351,7 @@ void performance_monitor::update_plot() {
 
 	rgb bar_color = a > 1.0f ? rgb(0.7f, 0.0f, 0.0f) : plot_color_map.interpolate_color(b);
 
-	if(bars.get_render_count() < plot_size.x()) {
+	if(bars.render_count() < plot_size.x()) {
 		for(auto& position : bars.position)
 			position.x() -= 1.0f;
 

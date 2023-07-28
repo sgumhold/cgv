@@ -31,8 +31,10 @@ bool enable(context& ctx, RENDERER& r, const STYLE& s) { \
 		r.enable_attribute_array_manager(ctx, this->aam); \
 		if(this->out_of_date) transfer(ctx, r); \
 		return r.validate_and_enable(ctx); \
+	} else if(this->out_of_date) { \
+		early_transfer(ctx, r); \
+		return false; \
 	} \
-	return false; \
 }
 
 #define RDB_RENDER_FUNC3_DEF(RENDERER) \
@@ -83,6 +85,8 @@ protected:
 	std::vector<ColorType> col;
 
 	virtual bool transfer(context& ctx, renderer& r) {
+		out_of_date = false;
+
 		if(pos.size() > 0) {
 			r.set_position_array(ctx, pos);
 			if(col.size() == size())
@@ -90,11 +94,15 @@ protected:
 			if(idx.size() > 0)
 				r.set_indices(ctx, idx);
 			else
-				r.remove_indices(ctx);
-			out_of_date = false;
+				r.remove_indices(ctx);	
 			return true;
+		} else {
+			if(aam.is_created()) {
+				aam.destruct(ctx);
+				aam.init(ctx);
+			}
+			return false;
 		}
-		return false;
 	}
 
 public:
@@ -137,8 +145,12 @@ public:
 		return res;
 	}
 
-	void draw(context& ctx, renderer& r, unsigned offset = 0, int count = -1) {
-		r.draw(ctx, offset, count < 0 ? render_count() : count);
+	void draw(context& ctx, renderer& r, unsigned offset = 0, int count = -1) {		
+		size_t draw_count = render_count();
+		offset = std::min(offset, static_cast<unsigned>(draw_count));
+		draw_count = std::min(offset + (count < 0 ? draw_count : count), draw_count) - offset;
+
+		r.draw(ctx, offset, draw_count);
 	}
 
 	const attribute_array_manager& ref_aam() const { return aam; }
