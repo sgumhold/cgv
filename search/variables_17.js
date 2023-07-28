@@ -1,5 +1,16 @@
 var searchData=
 [
-  ['x_7097',['x',['../structcgv_1_1os_1_1display__position.html#a684b78355c3ba0eb1866ba12d7be431a',1,'cgv::os::display_position::x()'],['../classcgv_1_1gui_1_1key__event.html#a0749100719ee882dfd3c47cc9d9ff3be',1,'cgv::gui::key_event::x()'],['../classcgv_1_1gui_1_1mouse__event.html#aaadd15e2dc5c425e8b83c8ff6f31cf3d',1,'cgv::gui::mouse_event::x()']]],
-  ['x_5foffset_7098',['x_offset',['../classcgv_1_1render_1_1context.html#acad150548a8c385d5500de242cba3282',1,'cgv::render::context']]]
+  ['w_7125',['W',['../classcgv_1_1render_1_1gl_1_1image__drawable.html#a150b078891f4c1211f076eecaa3bfdc6',1,'cgv::render::gl::image_drawable']]],
+  ['weight_5fmode_7126',['weight_mode',['../classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aab4e4b45879f1ae825052427809c07d8',1,'cgv::media::mesh::dynamic_mesh']]],
+  ['wgs84_5fa_7127',['WGS84_a',['../namespacecgv_1_1math.html#a586480b4ea85b19aef8d6a1b752f9815',1,'cgv::math']]],
+  ['wgs84_5fe_7128',['WGS84_e',['../namespacecgv_1_1math.html#ac9d04164120bee6630b604a2a0f6a4ee',1,'cgv::math']]],
+  ['width_7129',['width',['../classvr_1_1gl__vr__display.html#a3ed3143ae5fbe0e15b2e6a0e282827cb',1,'vr::gl_vr_display::width()'],['../structcgv_1_1os_1_1display__mode.html#ac3d5b427ba824a1fa6d59af4ddfc5d24',1,'cgv::os::display_mode::width()']]],
+  ['window_5fheight_7130',['window_height',['../structcgv_1_1render_1_1render__config.html#ac249588aef6c5b0675446d9b1620dcd5',1,'cgv::render::render_config']]],
+  ['window_5ftransformation_5fstack_7131',['window_transformation_stack',['../classcgv_1_1render_1_1context.html#aceba97d043929ea9b499efcf5f58abc0',1,'cgv::render::context']]],
+  ['window_5fwidth_7132',['window_width',['../structcgv_1_1render_1_1render__config.html#a0a0a521fbd00fe317486503a0f9de08e',1,'cgv::render::render_config']]],
+  ['window_5fzero_5fposition_7133',['window_zero_position',['../classcgv_1_1plot_1_1plot__base.html#a5dca6ff77c3609b4aa34d5537d3239eb',1,'cgv::plot::plot_base']]],
+  ['wire_5fdraw_5fcall_7134',['wire_draw_call',['../classcgv_1_1render_1_1mesh__render__info.html#ada34b6c62c5e45e4858021cbadbdfbd0',1,'cgv::render::mesh_render_info']]],
+  ['wireframe_7135',['wireframe',['../structcgv_1_1plot_1_1plot3d__config.html#a9396847e43aa3f97902158f34ea50dcf',1,'cgv::plot::plot3d_config']]],
+  ['wr_7136',['wr',['../classcgv_1_1media_1_1image_1_1image__writer.html#a9fcaabacef0a4bfcf8ab1608476484c3',1,'cgv::media::image::image_writer::wr()'],['../classcgv_1_1media_1_1video_1_1video__writer.html#ac81e47b6ad9d8605887521a372b9746e',1,'cgv::media::video::video_writer::wr()']]],
+  ['write_7137',['write',['../classcgv_1_1signal_1_1callback__stream.html#afe77649eaedcad4d2e6ef9515b4408c4',1,'cgv::signal::callback_stream']]]
 ];

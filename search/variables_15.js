@@ -1,16 +1,13 @@
 var searchData=
 [
-  ['value_5fchange_7072',['value_change',['../classcgv_1_1gui_1_1control.html#a49af8e128fc1e8443b95adbddfed009a',1,'cgv::gui::control']]],
-  ['variable_5fparameters_7073',['variable_parameters',['../structvr_1_1vr__device__info.html#af60c8e4e6ca4eb993050a3b9b1a0c9ab',1,'vr::vr_device_info']]],
-  ['vbo_5flegend_7074',['vbo_legend',['../classcgv_1_1plot_1_1plot__base.html#a4828463be56186b1976c1506bb009922',1,'cgv::plot::plot_base']]],
-  ['vbos_7075',['vbos',['../classcgv_1_1render_1_1attribute__array__manager.html#a0204e5b65d71cbc67d735148c9a8fa6f',1,'cgv::render::attribute_array_manager::vbos()'],['../classcgv_1_1render_1_1render__info.html#a61948e5f9a1035db2702a050044dabf8',1,'cgv::render::render_info::vbos()']]],
-  ['version_5fmajor_7076',['version_major',['../structcgv_1_1render_1_1context__config.html#a5d535c286342e748d0360568f8d7aeda',1,'cgv::render::context_config']]],
-  ['version_5fminor_7077',['version_minor',['../structcgv_1_1render_1_1context__config.html#a29bcff8dff9b613d9d9a8df2b67fdd78',1,'cgv::render::context_config']]],
-  ['vertices_7078',['vertices',['../classcgv_1_1math_1_1adjacency__list.html#a72b26efa6fe617182141e8fd02fb404e',1,'cgv::math::adjacency_list::vertices()'],['../classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html#afe44313dd21e4ef9a791b2c13241e9c5',1,'cgv::media::mesh::convex_polyhedron::vertices()']]],
-  ['vibration_7079',['vibration',['../structvr_1_1vr__controller__state.html#a2049e60e70d799088e50a514e8db44f0',1,'vr::vr_controller_state']]],
-  ['vibration_5fstrength_7080',['vibration_strength',['../structgamepad_1_1device__info.html#a3661dad12c7fedbc4072cc015e760be1',1,'gamepad::device_info']]],
-  ['view_5fptr_7081',['view_ptr',['../classcgv_1_1app_1_1application__plugin__base.html#a8335fb38baab1499d22bede7d582a4ed',1,'cgv::app::application_plugin_base']]],
-  ['viewport_7082',['viewport',['../structcgv_1_1render_1_1window__transformation.html#a184502fb2e060a3bad5f4f96a33990d5',1,'cgv::render::window_transformation']]],
-  ['volume_5ftexture_7083',['volume_texture',['../classcgv_1_1render_1_1volume__renderer.html#ad1c939fab9bfd4c78c17e1e84db52425',1,'cgv::render::volume_renderer']]],
-  ['vr_5fdriver_7084',['vr_driver',['../namespacevr.html#ad99996e738d108251465649bee84c178',1,'vr']]]
+  ['usage_7099',['usage',['../classcgv_1_1render_1_1vertex__buffer__base.html#ad5ce71c5fb351c3fb5ac3e75ddbf99e0',1,'cgv::render::vertex_buffer_base']]],
+  ['use_5fgradient_5ftexture_7100',['use_gradient_texture',['../structcgv_1_1render_1_1volume__render__style.html#ac7496465448f83cbe24dcaca237f6b5a',1,'cgv::render::volume_render_style']]],
+  ['use_5fgroup_5fcolor_7101',['use_group_color',['../structcgv_1_1render_1_1group__render__style.html#aaeef17e385a1d3ae754742b2619bd55c',1,'cgv::render::group_render_style']]],
+  ['use_5fgroup_5fpoint_5fsize_7102',['use_group_point_size',['../structcgv_1_1render_1_1point__render__style.html#a42db24dc82c65089650f9489c4e3dfa3',1,'cgv::render::point_render_style::use_group_point_size()'],['../structcgv_1_1render_1_1surfel__render__style.html#a7d36f503553b1e9719b7753ff483a70f',1,'cgv::render::surfel_render_style::use_group_point_size()']]],
+  ['use_5fgroup_5fradius_7103',['use_group_radius',['../structcgv_1_1render_1_1sphere__render__style.html#a4392dc773cea5a260d1d777bd874ea8f',1,'cgv::render::sphere_render_style']]],
+  ['use_5fgroup_5ftransformation_7104',['use_group_transformation',['../structcgv_1_1render_1_1group__render__style.html#a113f4aa88c33c892574038e0f2478a7a',1,'cgv::render::group_render_style']]],
+  ['use_5fshader_5ffile_5fcache_7105',['use_shader_file_cache',['../classcgv_1_1render_1_1context.html#a80306fb1d08f59cdb7d540ae13a88e22',1,'cgv::render::context']]],
+  ['use_5ftransfer_5ffunction_7106',['use_transfer_function',['../structcgv_1_1render_1_1slab__render__style.html#ad4929d9df6c5cfc69215c4abefc53bc7',1,'cgv::render::slab_render_style']]],
+  ['user_5fdata_7107',['user_data',['../classcgv_1_1os_1_1socket.html#ac8c9d9da08fbb231343c4bf334c5ac97',1,'cgv::os::socket']]],
+  ['username_7108',['username',['../structcgv_1_1os_1_1http__request.html#adb8c354e4a3f3a1f0a50b96ac2e077b2',1,'cgv::os::http_request']]]
 ];
