@@ -206,12 +206,16 @@ public:
 	typedef simple_mesh<T> mesh_type;
 	/// type of axis aligned 3d box
 	typedef typename cgv::media::axis_aligned_box<T, 3> box_type;
+	/// type of 4d vector
+	typedef typename cgv::math::fvec<T, 4> vec4;
 	/// type of 3d vector
 	typedef typename cgv::math::fvec<T, 3> vec3;
 	/// type of 2d vector
 	typedef typename cgv::math::fvec<T, 2> vec2;
 	/// linear transformation 
 	typedef typename cgv::math::fmat<T, 3, 3> mat3;
+	/// linear transformation 
+	typedef typename cgv::math::fmat<T, 4, 4> mat4;
 	/// color type used in surface materials
 	typedef typename illum::surface_material::color_type clr_type;
 	/// textured surface materials are supported by mat_type
@@ -247,6 +251,7 @@ public:
 	vec3& position(idx_type pi) { return positions[pi]; }
 	const vec3& position(idx_type pi) const { return positions[pi]; }
 	const std::vector<vec3>& get_positions() const { return positions; }
+	std::vector<vec3>& ref_positions() { return positions; }
 
 	/// add a new normal and return normal index
 	idx_type new_normal(const vec3& n) { normals.push_back(n); return idx_type(normals.size()-1); }
