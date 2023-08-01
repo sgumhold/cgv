@@ -270,6 +270,31 @@ void rgbd_input::query_stream_formats(InputStreams is, std::vector<stream_format
 	}
 	rgbd->query_stream_formats(is, stream_formats);
 }
+const std::vector<color_parameter_info>& rgbd_input::get_supported_color_control_parameter_infos() const
+{
+	static std::vector<color_parameter_info> I;
+	if (!is_attached()) {
+		cerr << "rgbd_input::get_supported_color_control_parameter_infos called on device that has not been attached" << endl;
+		return I;
+	}
+	return rgbd->get_supported_color_control_parameter_infos();
+}
+std::pair<int32_t, bool> rgbd_input::get_color_control_parameter(ColorControlParameter ccp) const
+{
+	if (!is_attached()) {
+		cerr << "rgbd_input::get_color_control_parameter called on device that has not been attached" << endl;
+		return std::pair<int32_t, bool>(-1,false);
+	}
+	return rgbd->get_color_control_parameter(ccp);
+}
+bool rgbd_input::set_color_control_parameter(ColorControlParameter ccp, int32_t value, bool automatic_mode)
+{
+	if (!is_attached()) {
+		cerr << "rgbd_input::start called on device that has not been attached" << endl;
+		return false;
+	}
+	return rgbd->set_color_control_parameter(ccp, value, automatic_mode);
+}
 
 bool rgbd_input::start(InputStreams is, std::vector<stream_format>& stream_formats)
 {

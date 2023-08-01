@@ -187,9 +187,9 @@ namespace rgbd {
 			m.linear_acceleration[0] = reading.x;
 			m.linear_acceleration[1] = reading.y;
 			m.linear_acceleration[2] = reading.z;
-			m.angular_acceleration[0] = 0.0f;
-			m.angular_acceleration[1] = 0.0f;
-			m.angular_acceleration[2] = 0.0f;
+			m.angular_velocity[0] = 0.0f;
+			m.angular_velocity[1] = 0.0f;
+			m.angular_velocity[2] = 0.0f;
 			return true;
 		}
 		else {

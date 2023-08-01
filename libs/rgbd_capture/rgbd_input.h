@@ -89,6 +89,12 @@ public:
 	void query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const;
 	///
 	bool set_near_mode(bool on = true);
+	/// return information about the support color control parameters
+	const std::vector<color_parameter_info>& get_supported_color_control_parameter_infos() const;
+	/// query color control value and whether its adjustment is in automatic mode
+	std::pair<int32_t, bool> get_color_control_parameter(ColorControlParameter ccp) const;
+	/// set a color control value and automatic mode and return whether successful
+	bool set_color_control_parameter(ColorControlParameter ccp, int32_t value, bool automatic_mode);
 	/// start the rgbd input with standard stream formats returned in second parameter
 	bool start(InputStreams, std::vector<stream_format>& stream_formats);
 	/// start the rgbd input with given stream formats 
