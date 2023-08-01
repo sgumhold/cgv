@@ -67,7 +67,7 @@ var searchData=
   ['application_5fplugin_4276',['application_plugin',['../classcgv_1_1app_1_1application__plugin.html#a3f2e301b101a26d7dd8a116fa90bc8b8',1,'cgv::app::application_plugin']]],
   ['application_5fplugin_5fbase_4277',['application_plugin_base',['../classcgv_1_1app_1_1application__plugin__base.html#a24807ef393db7aaa2cf500be61c03dc8',1,'cgv::app::application_plugin_base']]],
   ['apply_4278',['apply',['../classcgv_1_1math_1_1quaternion.html#a8f03fd04e375363e722b222d8e8b04de',1,'cgv::math::quaternion']]],
-  ['apply_5fblend_5fshapes_4279',['apply_blend_shapes',['../classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a80e4bd3dab6f5d7a34f0ff50adffd941',1,'cgv::media::mesh::dynamic_mesh']]],
+  ['apply_5fblend_5fshapes_4279',['apply_blend_shapes',['../classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aa6c4b9c6b745873649865e0f8c5e08bc',1,'cgv::media::mesh::dynamic_mesh']]],
   ['apply_5fdistortion_5fmodel_4280',['apply_distortion_model',['../classcgv_1_1math_1_1distorted__pinhole.html#aff51ec684c3612bb1ed2ce518c0294bd',1,'cgv::math::distorted_pinhole']]],
   ['apply_5fnonrigid_5ftransformation_4281',['apply_nonrigid_transformation',['../namespacecgv_1_1math.html#a9716f3d02a56270fbad9174562bec242',1,'cgv::math::apply_nonrigid_transformation(const thin_plate_spline&lt; T &gt; &amp;s, mat&lt; T &gt; &amp;points)'],['../namespacecgv_1_1math.html#adfb844540e70f134515a6e5114f163da',1,'cgv::math::apply_nonrigid_transformation(const thin_hyper_plate_spline&lt; T &gt; &amp;s, mat&lt; T &gt; &amp;points)']]],
   ['arrow_5frender_5fstyle_4282',['arrow_render_style',['../structcgv_1_1render_1_1arrow__render__style.html#a6f8eb543c0ee98f2334fef06a44d7ad7',1,'cgv::render::arrow_render_style']]],
