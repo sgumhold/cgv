@@ -187,26 +187,49 @@ std::vector<typename dynamic_mesh<T>::mat4> dynamic_mesh<T>::compute_joint_trans
 
 
 template <typename T>
-void dynamic_mesh<T>::apply_blend_shapes(const std::vector<T>& weights, idx_type blend_shape_offset, bool only_add)
+void dynamic_mesh<T>::apply_blend_shapes(const std::vector<T>& weights, idx_type blend_shape_offset, bool only_add, bool use_parallel_implementation)
 {
 	if (!only_add)
 		this->positions = reference_positions;
-	for (idx_type bi = blend_shape_offset, wi = 0; wi < weights.size(); ++wi, ++bi) {
-		const auto& bs = blend_shapes[bi];
-		switch (bs.mode) {
-		case blend_shape_mode::direct:
-			for (uint32_t i = bs.blend_shape_data_range[0], j = 0; i < bs.blend_shape_data_range[1]; ++i, ++j)
-				this->positions[j] += weights[wi] * blend_shape_data[i];
-			break;
-		case blend_shape_mode::indexed:
-			for (uint32_t i = bs.blend_shape_data_range[0], j = bs.blend_shape_index_range[0]; i < bs.blend_shape_data_range[1]; ++i, ++j)
-				this->positions[blend_shape_indices[j]] += weights[wi] * blend_shape_data[i];
-			break;
-		case blend_shape_mode::range_indexed:
-			for (uint32_t i = bs.blend_shape_data_range[0], j = bs.blend_shape_index_range[0]; j < bs.blend_shape_index_range[1]; j += 2)
-				for (uint32_t k = blend_shape_indices[j]; k < blend_shape_indices[j + 1]; ++k, ++i)
-					this->positions[k] += weights[wi] * blend_shape_data[i];
-			break;
+	if (use_parallel_implementation) {
+		// here we assume that all blend shapes have mode direct and address whole mesh
+
+		// first extract per blend shape pointers to the blend shape data start
+		std::vector<const vec3*> bs_ptrs;
+		int n = this->get_nr_positions();
+		for (size_t bi = blend_shape_offset; bi < weights.size() + blend_shape_offset; ++bi) {
+			const auto& bs = blend_shapes[bi];
+			assert(bs.mode == blend_shape_mode::direct);
+			assert(bs.blend_shape_data_range[1] - bs.blend_shape_data_range[0] == n);
+			bs_ptrs.push_back(&blend_shape_data[bs.blend_shape_data_range[0]]);
+		}
+		// next apply them to mesh positions
+#pragma omp parallel for
+		for (int vi = 0; vi < n; ++vi) {
+			vec3 p(T(0));
+			for (int wi = 0; wi < weights.size(); ++wi)
+				p += weights[wi]*bs_ptrs[wi][vi];
+			this->position(vi) += p;
+		}
+	}
+	else {
+		for (idx_type bi = blend_shape_offset, wi = 0; wi < weights.size(); ++wi, ++bi) {
+			const auto& bs = blend_shapes[bi];
+			switch (bs.mode) {
+			case blend_shape_mode::direct:
+				for (int j=0, i = bs.blend_shape_data_range[0]; i < int(bs.blend_shape_data_range[1]); ++i, ++j)
+					this->positions[j] += weights[wi] * blend_shape_data[i];
+				break;
+			case blend_shape_mode::indexed:
+				for (uint32_t i = bs.blend_shape_data_range[0], j = bs.blend_shape_index_range[0]; i < bs.blend_shape_data_range[1]; ++i, ++j)
+					this->positions[blend_shape_indices[j]] += weights[wi] * blend_shape_data[i];
+				break;
+			case blend_shape_mode::range_indexed:
+				for (uint32_t i = bs.blend_shape_data_range[0], j = bs.blend_shape_index_range[0]; j < bs.blend_shape_index_range[1]; j += 2)
+					for (uint32_t k = blend_shape_indices[j]; k < blend_shape_indices[j + 1]; ++k, ++i)
+						this->positions[k] += weights[wi] * blend_shape_data[i];
+				break;
+			}
 		}
 	}
 }

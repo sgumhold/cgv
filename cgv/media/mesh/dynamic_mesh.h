@@ -93,7 +93,7 @@ public:
 	//! this function applies weights.size() number of blend shapes starting at offset blend_shape_offset and stores result in mesh position attribute
 	/*! If only_add is false, the position is initialized to the reference_position attribute - otherwise the
 		blend shapes are just added to the current mesh position attribute. */
-	void apply_blend_shapes(const std::vector<T>& weights, idx_type blend_shape_offset = 0, bool only_add = false);
+	void apply_blend_shapes(const std::vector<T>& weights, idx_type blend_shape_offset = 0, bool only_add = false, bool use_parallel_implementation = false);
 	//@}
 
 	/**@name skinning*/
