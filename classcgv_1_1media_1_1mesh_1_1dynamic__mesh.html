@@ -435,9 +435,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>has_blend_shape_vecto
 <tr class="memitem:af019f1f7808bdecb5faaa01a6af10fba"><td class="memItemLeft" align="right" valign="top"><a id="af019f1f7808bdecb5faaa01a6af10fba"></a>
 size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_nr_blend_shapes</b> () const</td></tr>
 <tr class="separator:af019f1f7808bdecb5faaa01a6af10fba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80e4bd3dab6f5d7a34f0ff50adffd941"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a80e4bd3dab6f5d7a34f0ff50adffd941">apply_blend_shapes</a> (const std::vector&lt; T &gt; &amp;weights, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> blend_shape_offset=0, bool only_add=false)</td></tr>
-<tr class="memdesc:a80e4bd3dab6f5d7a34f0ff50adffd941"><td class="mdescLeft">&#160;</td><td class="mdescRight">this function applies weights.size() number of blend shapes starting at offset blend_shape_offset and stores result in mesh position attribute  <a href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a80e4bd3dab6f5d7a34f0ff50adffd941">More...</a><br /></td></tr>
-<tr class="separator:a80e4bd3dab6f5d7a34f0ff50adffd941"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6c4b9c6b745873649865e0f8c5e08bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aa6c4b9c6b745873649865e0f8c5e08bc">apply_blend_shapes</a> (const std::vector&lt; T &gt; &amp;weights, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> blend_shape_offset=0, bool only_add=false, bool use_parallel_implementation=false)</td></tr>
+<tr class="memdesc:aa6c4b9c6b745873649865e0f8c5e08bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">this function applies weights.size() number of blend shapes starting at offset blend_shape_offset and stores result in mesh position attribute  <a href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aa6c4b9c6b745873649865e0f8c5e08bc">More...</a><br /></td></tr>
+<tr class="separator:aa6c4b9c6b745873649865e0f8c5e08bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">access to colors</div></td></tr>
 <tr class="memitem:a88886e9e71f4a41d2ab88b44cea50e02"><td class="memItemLeft" align="right" valign="top"><a id="a88886e9e71f4a41d2ab88b44cea50e02"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1colored__model.html#a88886e9e71f4a41d2ab88b44cea50e02">has_colors</a> () const</td></tr>
@@ -608,8 +608,8 @@ class cgv::media::mesh::dynamic_mesh&lt; T &gt;</h3>
 
 <p class="definition">Definition at line <a class="el" href="dynamic__mesh_8h_source.html#l00013">13</a> of file <a class="el" href="dynamic__mesh_8h_source.html">dynamic_mesh.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a80e4bd3dab6f5d7a34f0ff50adffd941"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a80e4bd3dab6f5d7a34f0ff50adffd941">&#9670;&nbsp;</a></span>apply_blend_shapes()</h2>
+<a id="aa6c4b9c6b745873649865e0f8c5e08bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6c4b9c6b745873649865e0f8c5e08bc">&#9670;&nbsp;</a></span>apply_blend_shapes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -632,7 +632,13 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>only_add</em> = <code>false</code>&#160;</td>
+          <td class="paramname"><em>only_add</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>use_parallel_implementation</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1056,7 +1062,7 @@ template&lt;typename T &gt; </div>
 <p>perform linear blend skinning on reference positions or the current mesh position attribute </p>
 <p>the joint matrices define per joint the transformation from reference positions or intermediate positions. </p>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8cxx_source.html#l00246">246</a> of file <a class="el" href="dynamic__mesh_8cxx_source.html">dynamic_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8cxx_source.html#l00269">269</a> of file <a class="el" href="dynamic__mesh_8cxx_source.html">dynamic_mesh.cxx</a>.</p>
 
 </div>
 </div>
