@@ -59,6 +59,13 @@ namespace rgbd {
 		/// configure device for a multi-device role and return whether this was successful (do this before starting)
 		bool configure_role(MultiDeviceRole mdr);
 
+		/// get range, step and default value of color control parameter
+		const std::vector<color_parameter_info>& get_supported_color_control_parameter_infos() const;
+		/// query color control value and whether its adjustment is in automatic mode
+		std::pair<int32_t, bool> get_color_control_parameter(ColorControlParameter ccp) const;
+		/// set a color control value and automatic mode and return whether successful
+		bool set_color_control_parameter(ColorControlParameter ccp, int32_t value, bool automatic_mode);
+
 		/// check whether rgbd device has inertia measurement unit
 		bool has_IMU() const;
 		/// return additional information on inertia measurement unit
@@ -114,6 +121,7 @@ namespace rgbd {
 		void remap(const k4a_image_t src, const k4a_image_t lut, k4a_image_t dst, interpolation_t type);
 
 	private:
+		mutable std::vector<color_parameter_info> ccp_infos;
 		std::unique_ptr<k4a::error> capture_thread_device_error;
 		std::atomic<bool> capture_thread_has_new_messages = false;
 		bool capture_thread_broken = false;
@@ -129,7 +137,8 @@ namespace rgbd {
 		
 		mutable std::mutex capture_lock;
 		volatile bool has_new_color_frame, has_new_depth_frame, has_new_ir_frame;
-		std::unique_ptr<rgbd::frame_type> color_frame, depth_frame, ir_frame;
+		unsigned frame_cache_size = 4, current_read_color_frame = 0, current_write_color_frame = 0, current_read_depth_frame = 0, current_write_depth_frame = 0, current_read_ir_frame = 0, current_write_ir_frame = 0;
+		std::vector<std::unique_ptr<rgbd::frame_type>> color_frames, depth_frames, ir_frames;
 		//rgbd::frame_type *color_frame =nullptr, *depth_frame=nullptr, *ir_frame=nullptr;
 		bool imu_enabled;
 		mutable IMU_measurement imu_data;

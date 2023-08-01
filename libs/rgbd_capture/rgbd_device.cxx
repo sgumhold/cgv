@@ -53,6 +53,19 @@ namespace rgbd {
 	rgbd_device::~rgbd_device()
 	{
 	}
+	const std::vector<color_parameter_info>& rgbd_device::get_supported_color_control_parameter_infos() const
+	{
+		static std::vector<color_parameter_info> I;
+		return I;
+	}
+	std::pair<int32_t, bool> rgbd_device::get_color_control_parameter(ColorControlParameter ccp) const
+	{
+		return std::pair<int32_t, bool>(-1, false);
+	}
+	bool rgbd_device::set_color_control_parameter(ColorControlParameter ccp, int32_t value, bool automatic_mode)
+	{
+		return false;
+	}
 
 	/// return whether rgbd device has support for view finding actuator
 	bool rgbd_device::has_view_finder() const

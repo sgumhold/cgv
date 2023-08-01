@@ -55,6 +55,27 @@ namespace rgbd {
 		MDR_FOLLOWER    /// device that retrieves synchronization signals
 	};
 
+	/// different color camera control parameters
+	enum ColorControlParameter {
+		CCP_EXPOSURE,
+		CCP_BRIGHTNESS,
+		CCP_CONTRAST,
+		CCP_SATURATION,
+		CCP_SHARPNESS,
+		CCP_WHITEBALANCE,
+		CCP_BACKLIGHT_COMPENSATION,
+		CCP_GAIN,
+		CCP_POWERLINE_FREQUENCY
+	};
+	/// information about a color control parameter
+	struct color_parameter_info
+	{
+		std::string name;
+		ColorControlParameter parameter_id;
+		bool supports_automatic_adjustment, default_automatic_adjustment;
+		int32_t min_value, max_value, value_step, default_value;
+	};
+
 	/// different input streams
 	enum InputStreams {
 		IS_NONE = 0,
@@ -99,10 +120,12 @@ namespace rgbd {
 	{
 		/// linear acceleration along x, y, and z axes in m/s²
 		float linear_acceleration[3];
-		/// angular acceleration around x, y, and z axes in degrees/s²
-		float angular_acceleration[3];
+		/// angular velocity around x, y, and z axes in degrees/s
+		float angular_velocity[3];
 		/// time stamp in milliseconds. Only present if supported by accelerometer
 		unsigned long long time_stamp;
+		/// additional time stamp for angular measurements
+		unsigned long long angular_time_stamp;
 	};
 	/// return the preferred extension for a given frame format
 	extern CGV_API std::string get_frame_extension(const frame_format& ff);
@@ -131,6 +154,13 @@ namespace rgbd {
 		virtual bool configure_role(MultiDeviceRole mdr);
 		/// return the multi-device role of the device
 		MultiDeviceRole get_role() const { return multi_device_role; }
+
+		/// return information about the support color control parameters
+		virtual const std::vector<color_parameter_info>& get_supported_color_control_parameter_infos() const;
+		/// query color control value and whether its adjustment is in automatic mode
+		virtual std::pair<int32_t, bool> get_color_control_parameter(ColorControlParameter ccp) const;
+		/// set a color control value and automatic mode and return whether successful
+		virtual bool set_color_control_parameter(ColorControlParameter ccp, int32_t value, bool automatic_mode);
 
 		/// return whether rgbd device has support for view finding actuator
 		virtual bool has_view_finder() const;

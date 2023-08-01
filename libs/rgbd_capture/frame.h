@@ -55,6 +55,10 @@ namespace rgbd {
 		unsigned frame_index;
 		/// 
 		double time;
+		///
+		long long system_time_stamp;
+		///
+		long long device_time_stamp;
 	};
 	/// struct to store single frame
 	struct CGV_API frame_type : public frame_info

@@ -130,7 +130,7 @@ namespace rgbd {
 	}
 	bool rgbd_emulation::put_IMU_measurement(IMU_measurement& m, unsigned time_out) const
 	{
-		m.angular_acceleration[0] = m.angular_acceleration[1] = m.angular_acceleration[2] = 0.0f;
+		m.angular_velocity[0] = m.angular_velocity[1] = m.angular_velocity[2] = 0.0f;
 		m.linear_acceleration[0] = m.linear_acceleration[1] = m.linear_acceleration[2] = 0.0f;
 		m.time_stamp = 0;
 		return true;

@@ -152,7 +152,7 @@ void rgbd_mouse::filter_depth_image(cgv::data::data_view& depth_data)
 
 	#pragma omp parallel for
 
-	for (unsigned i=0; i<n; ++i) {
+	for (int i=0; i<int(n); ++i) {
 		unsigned v = 0;
 		unsigned count = 0;
 		for (unsigned j=0; j<last_images.size(); ++j) {
