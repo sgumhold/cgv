@@ -1,5 +1,9 @@
 var NAVTREEINDEX34 =
 {
+"dir_179dad1cbe11e5b600d24c38e7cdbfc0.html":[12,0,1,6,4],
+"dir_247a0f776eec227c09028960d6b03e4d.html":[12,0,1,6,2],
+"dir_250244a78624d2f9aca79946c371c189.html":[12,0,3,4],
+"dir_2509f3c62ff9485e87979def016e82f7.html":[12,0,3,5],
 "dir_284aa825dfcd36fc77eb764ce6199a8f.html":[12,0,3,2],
 "dir_29bd7aeda03faff261d61715803a0d39.html":[12,0,1,12,4],
 "dir_2b6419dc503d968f6b15eb4bb19987c4.html":[12,0,4,0],
@@ -190,8 +194,8 @@ var NAVTREEINDEX34 =
 "functions_type.html":[11,3,3],
 "functions_u.html":[11,3,0,21],
 "functions_v.html":[11,3,0,22],
-"functions_vars.html":[11,3,2],
 "functions_vars.html":[11,3,2,0],
+"functions_vars.html":[11,3,2],
 "functions_vars_a.html":[11,3,2,1],
 "functions_vars_b.html":[11,3,2,2],
 "functions_vars_c.html":[11,3,2,3],
@@ -245,9 +249,5 @@ var NAVTREEINDEX34 =
 "gamepad_8h.html#a702ebe17544cdda07e2c449f0a72c07e":[10,0,2,10],
 "gamepad_8h.html#a78f62ee041ef48c3d47c312ecff98d12":[10,0,2,6],
 "gamepad_8h.html#abe29b337a92853e95a381744926a431e":[10,0,2,5],
-"gamepad_8h_source.html":[12,0,3,5,1],
-"gamepad_8pj_source.html":[12,0,3,5,2],
-"gamepad__driver_8cxx.html#a2137de92a7802a58efd7b91b8854832d":[10,0,2,19],
-"gamepad__driver_8cxx.html#a8923f6252608bcdd6d4782121b056466":[10,0,2,22],
-"gamepad__driver_8cxx.html#a9c9a76e894d0745688839fbf440eb766":[10,0,2,21]
+"gamepad_8h_source.html":[12,0,3,5,1]
 };
