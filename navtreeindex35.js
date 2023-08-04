@@ -1,5 +1,9 @@
 var NAVTREEINDEX35 =
 {
+"gamepad_8pj_source.html":[12,0,3,5,2],
+"gamepad__driver_8cxx.html#a2137de92a7802a58efd7b91b8854832d":[10,0,2,19],
+"gamepad__driver_8cxx.html#a8923f6252608bcdd6d4782121b056466":[10,0,2,22],
+"gamepad__driver_8cxx.html#a9c9a76e894d0745688839fbf440eb766":[10,0,2,21],
 "gamepad__driver_8cxx.html#ac766685bdb494e8b5e36b918ec000b28":[10,0,2,18],
 "gamepad__driver_8cxx.html#adb42e925c3d861bea58ce1922a4b66e3":[10,0,2,20],
 "gamepad__driver_8cxx_source.html":[12,0,3,5,3],
@@ -245,9 +249,5 @@ var NAVTREEINDEX35 =
 "namespacecgv_1_1base.html#a746925f26d076c26742b2dc558cbae36a4dd87fc30d8a2e369fe315eb9ccde557":[10,0,1,2,53,0],
 "namespacecgv_1_1base.html#a746925f26d076c26742b2dc558cbae36a69ee76315433dc44f8bfa441afefa249":[10,0,1,2,53,1],
 "namespacecgv_1_1base.html#a746925f26d076c26742b2dc558cbae36a7b2b5c718b50e4241491dcb951599a8b":[10,0,1,2,53,3],
-"namespacecgv_1_1base.html#a78c6f4c42602d5fdda61e603f5cbe25e":[10,0,1,2,55],
-"namespacecgv_1_1base.html#a8117654ca2eb262f18fc1093c0fdf828":[10,0,1,2,89],
-"namespacecgv_1_1base.html#a836526596df30a9ba628d7fd61aa2c76":[10,0,1,2,52],
-"namespacecgv_1_1base.html#a876ea103d1a70f0477574fd136a99192":[10,0,1,2,51],
-"namespacecgv_1_1base.html#a89d35f03b0d843ceb855119ab9beb635":[10,0,1,2,82]
+"namespacecgv_1_1base.html#a78c6f4c42602d5fdda61e603f5cbe25e":[10,0,1,2,55]
 };

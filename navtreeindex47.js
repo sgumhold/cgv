@@ -1,5 +1,9 @@
 var NAVTREEINDEX47 =
 {
+"structcgv_1_1render_1_1render__config.html#ac61ebe1b94a71e0e95b4ca189993b238":[11,0,0,11,13,35],
+"structcgv_1_1render_1_1render__config.html#ac961620d05cc3e086bc1e6a1632feff1":[11,0,0,11,13,19],
+"structcgv_1_1render_1_1render__config.html#acb0c5b45da256e0696602feaf69a5cf3":[11,0,0,11,13,14],
+"structcgv_1_1render_1_1render__config.html#acd6c94f5eb8784c955f687984cbb70ae":[11,0,0,11,13,9],
 "structcgv_1_1render_1_1render__config.html#ad121ecb072de62a4ab4a180bc9d183bb":[11,0,0,11,13,5],
 "structcgv_1_1render_1_1render__config.html#ad796aa58a0b7d9c52d724a99366f58ae":[11,0,0,11,13,22],
 "structcgv_1_1render_1_1render__config.html#ad8d0e6ffe70e6d8adc43876dfca2e84a":[11,0,0,11,13,4],
@@ -245,9 +249,5 @@ var NAVTREEINDEX47 =
 "structgamepad_1_1gamepad__state.html#afe65228383bfc1464c99cecb6c917bef":[11,0,1,2,5],
 "structvr_1_1controller__input__config.html":[11,0,3,12],
 "structvr_1_1controller__input__config.html#a99fc84ca300b055a49c7739b26696f89":[11,0,3,12,2],
-"structvr_1_1controller__input__config.html#ab198c80d1ea259c99b1992a2c5f48a63":[11,0,3,12,1],
-"structvr_1_1controller__input__config.html#acf5606e400fcc5736b729565ede2415a":[11,0,3,12,3],
-"structvr_1_1controller__input__config.html#ad2af02d92ee50b37d8c0a62b82263600":[11,0,3,12,0],
-"structvr_1_1driver__registry.html":[11,0,3,4],
-"structvr_1_1vr__controller__info.html":[11,0,3,8]
+"structvr_1_1controller__input__config.html#ab198c80d1ea259c99b1992a2c5f48a63":[11,0,3,12,1]
 };
