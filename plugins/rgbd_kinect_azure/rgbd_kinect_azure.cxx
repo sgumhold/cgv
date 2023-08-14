@@ -526,7 +526,7 @@ namespace rgbd {
 	bool rgbd_kinect_azure::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
 		// call function from sdk
-		/*k4a_float2_t p;
+		k4a_float2_t p;
 		k4a_float3_t ray;
 		int valid;
 
@@ -538,7 +538,7 @@ namespace rgbd {
 
 		if (valid)
 		{
-			point_ptr[0] = -1.f * 0.001 * ray.xyz.x;
+			point_ptr[0] = 1.f * 0.001 * ray.xyz.x;
 			point_ptr[1] = 0.001 * ray.xyz.y;
 			point_ptr[2] = 0.001 * ray.xyz.z;
 		}
@@ -548,9 +548,9 @@ namespace rgbd {
 			point_ptr[1] = nanf("");
 			point_ptr[2] = nanf("");
 		}
-		return true;*/
+		return true;
 		// 
-		auto& p = intrinsics->param;
+		/*auto& p = intrinsics->param;
 
 		double fx_d = 1.0 / p.fx;
 		double fy_d = 1.0 / p.fy;
@@ -572,7 +572,7 @@ namespace rgbd {
 			point_ptr[2] = float(d);
 			return true;
 		}
-		return false;
+		return false;*/
 	}
 
 	bool rgbd_kinect_azure::transformation_iterative_unproject(const float *uv, float *xy, bool valid, unsigned int max_passes) const
