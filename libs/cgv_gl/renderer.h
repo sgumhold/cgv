@@ -29,10 +29,12 @@ namespace cgv { // @<
 			shader_define_map defines;
 			/// last shader define maps
 			shader_define_map last_defines;
-#ifdef _DEBUG
+//#ifdef _DEBUG
+			/* TODO: FIXME: Find out why _DEBUG is sometimes not set in CMake Ninja builds under Linux, causing crashes
+			                due to inconsistent object layout in memory between different modules using the renderers */
 			/// count of render calls with current program configuration (used to detect frequent rebuilds)
 			int current_prog_render_count;
-#endif
+//#endif
 			/// otherwise keep track of enabled arrays
 			std::set<int> enabled_attribute_arrays;
 			/// default render style
@@ -267,17 +269,17 @@ namespace cgv { // @<
 			}
 			/// remove previously set indices
 			void remove_indices(const context& ctx);
-			/*! Returns the OpenGL handle to the buffer of the given attribute name as managed by the attribute array manager.
-				Returns -1 if the buffer or attribute array manager does not exist.
+			/*! Returns a pointer to the vertex buffer of the given attribute name as managed by the attribute array manager.
+				Returns nullptr if the buffer or attribute array manager does not exist.
 				Take caution when manipulating the buffer. */
-			int get_vbo_handle(const context& ctx, const attribute_array_manager& aam, const std::string& attr_name) {
-				return aam.get_buffer_handle(get_prog_attribute_location(ctx, attr_name));
+			const vertex_buffer* get_vertex_buffer_ptr(const context& ctx, const attribute_array_manager& aam, const std::string& attr_name) {
+				return aam.get_buffer_ptr(get_prog_attribute_location(ctx, attr_name));
 			}
-			/*! Returns the OpenGL handle to the element buffer holding the indices for indexed rendering as managed by the attribute array manager.
-				Returns -1 if the buffer or attribute array manager does not exist.
+			/*! Returns a pointer to the vertex buffer of type element buffer holding the indices for indexed rendering as managed by the attribute array manager.
+				Returns nullptr if the buffer or attribute array manager does not exist.
 				Take caution when manipulating the buffer. */
-			int get_index_buffer_handle(const attribute_array_manager& aam) {
-				return aam.get_buffer_handle(-1);
+			const vertex_buffer* get_index_buffer_ptr(const attribute_array_manager& aam) {
+				return aam.get_buffer_ptr(-1);
 			}
 			/// call to validate, whether essential position attribute is defined
 			virtual bool validate_attributes(const context& ctx) const;

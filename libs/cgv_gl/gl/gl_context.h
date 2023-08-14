@@ -112,6 +112,7 @@ protected:
 	bool is_attribute_array_enabled(const attribute_array_binding_base* aab, int loc) const;
 
 	bool vertex_buffer_bind(const vertex_buffer_base& vbb, VertexBufferType _type, unsigned _idx) const;
+	bool vertex_buffer_unbind(const vertex_buffer_base& vbb, VertexBufferType _type, unsigned _idx) const;
 	bool vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const;
 	bool vertex_buffer_resize(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const;
 	bool vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) const;

@@ -40,13 +40,13 @@ public:
 	/// virtual destructor for ref_ptr support
 	~fltk_font();
 	/// return the name of the font
-	const char* get_name() const;
+	const char* get_name() const override;
 	/// check whether the given font includes a face that include the possibly or-ed together selection of font face attributes
-	bool supports_font_face(int _ffa) const;
+	bool supports_font_face(cgv::media::font::FontFaceAttributes _ffa) const override;
 	/// enumerate the supported font sizes
 	void enumerate_sizes(std::vector<int>& supported_sizes) const;
 	/// return a pointer to a font face
-	font_face_ptr get_font_face(int _ffa) const;
+	font_face_ptr get_font_face(cgv::media::font::FontFaceAttributes _ffa) const override;
 };
 
 /// always use this ref counted pointer to store font faces

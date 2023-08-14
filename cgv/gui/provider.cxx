@@ -511,21 +511,19 @@ void provider::post_recreate_gui()
 	if (parent_provider)
 		parent_provider->post_recreate_gui();
 	else {
-
-		// ref_mutex().lock();
-
-		std::set<provider*>& ps = ref_providers();
-		if (ps.find(this) == ps.end()) {
-			bool dont_insert = false;
-			if (!ref_one_shot_trigger().is_scheduled() && get_trigger_server())
-				if (!ref_one_shot_trigger().schedule_one_shot(0))
-					dont_insert = true;
-			if (!dont_insert)
-				ps.insert(this);
+		if (parent_group) {
+			// ref_mutex().lock();
+			std::set<provider*>& ps = ref_providers();
+			if (ps.find(this) == ps.end()) {
+				bool dont_insert = false;
+				if (!ref_one_shot_trigger().is_scheduled() && get_trigger_server())
+					if (!ref_one_shot_trigger().schedule_one_shot(0))
+						dont_insert = true;
+				if (!dont_insert)
+					ps.insert(this);
+			}
+			// ref_mutex().unlock();
 		}
-
-		// ref_mutex().unlock();
-
 	}
 }
 

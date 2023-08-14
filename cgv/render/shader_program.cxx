@@ -46,19 +46,9 @@ bool shader_program::collect_files_from_cache(const std::string& name, std::vect
 bool shader_program::collect_file(const std::string& file_name, bool use_cache, std::vector<std::string>& file_names)
 {
 	if(use_cache) {
-
 		bool added_files = false;
 		if(collect_files_from_cache(file_name, file_names, added_files))
 			return added_files;
-
-		//auto it = files_cache.find(file_name);
-		//if(it != files_cache.end()) {
-		//	const std::vector<std::string>& cached_file_names = it->second;
-		//	for(size_t i = 0; i < cached_file_names.size(); ++i)
-		//		file_names.push_back(cached_file_names[i]);
-		//
-		//	return !cached_file_names.empty();
-		//}
 	}
 
 	std::vector<std::string> collected_file_names;
@@ -82,19 +72,9 @@ bool shader_program::collect_file(const std::string& file_name, bool use_cache, 
 bool shader_program::collect_files(const std::string& base_name, bool use_cache, std::vector<std::string>& file_names)
 {
 	if(use_cache) {
-
 		bool added_files = false;
 		if(collect_files_from_cache(base_name, file_names, added_files))
 			return added_files;
-
-		//auto it = files_cache.find(base_name);
-		//if(it != files_cache.end()) {
-		//	const std::vector<std::string>& cached_file_names = it->second;
-		//	for(size_t i = 0; i < cached_file_names.size(); ++i)
-		//		file_names.push_back(cached_file_names[i]);
-		//
-		//	return !cached_file_names.empty();
-		//}
 	}
 
 	std::vector<std::string> collected_file_names;
@@ -448,7 +428,7 @@ bool shader_program::attach_program(const context& ctx, std::string file_name, b
 					error += to_string(toks[0])+">";
 					success = false;
 				}
-				else if (i_pt == PT_UNDEF) {
+				else if (o_pt == PT_UNDEF) {
 					error = "5 : unknown ouput_type for geometry shader <";
 					error += to_string(toks[1])+">";
 					success = false;

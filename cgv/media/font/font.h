@@ -60,9 +60,9 @@ public:
 	/// return the name of the font
 	virtual const char* get_name() const = 0;
 	/// check whether the given font includes a face that include the possibly or-ed together selection of font face attributes
-	virtual bool supports_font_face(int ffa) const = 0;
+	virtual bool supports_font_face(cgv::media::font::FontFaceAttributes ffa) const = 0;
 	/// return a pointer to a font face
-	virtual font_face_ptr get_font_face(int ffa) const = 0;
+	virtual font_face_ptr get_font_face(cgv::media::font::FontFaceAttributes ffa) const = 0;
 	/// enumerate the supported font sizes
 	virtual void enumerate_sizes(std::vector<int>& supported_sizes) const = 0;
 };

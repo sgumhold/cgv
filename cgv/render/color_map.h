@@ -13,6 +13,9 @@ namespace render {
 
 class color_map : public render_types {
 protected:
+	typedef cgv::math::control_point_container<rgb>::control_point color_control_point_type;
+	typedef cgv::math::control_point_container<float>::control_point opacity_control_point_type;
+
 	cgv::math::control_point_container<rgb> color_points;
 	cgv::math::control_point_container<float> opacity_points;
 
@@ -21,9 +24,9 @@ protected:
 
 	/// resolution of the sampled color map; mostly used when generating textures from color maps
 	unsigned resolution = 256u;
-	/// whether to use  interpolation between the samples or just take the nearest one
+	/// whether to use interpolation between the samples or just take the nearest one
 	bool use_interpolation = true;
-
+	
 public:
 	color_map() {
 		construct_interpolators();
@@ -65,7 +68,6 @@ public:
 	unsigned get_resolution() const { return resolution; }
 
 	void set_resolution(unsigned resolution) {
-
 		this->resolution = std::max(resolution, 2u);
 	}
 
@@ -74,6 +76,21 @@ public:
 	void enable_interpolation(bool enabled) {
 		use_interpolation = enabled;
 		construct_interpolators();
+	}
+
+	void flip() {
+
+		cgv::math::control_point_container<rgb> flipped_color_points;
+		cgv::math::control_point_container<float> flipped_opacity_points;
+
+		for(const color_control_point_type& color_point : color_points)
+			flipped_color_points.push_back(1.0f - color_point.first, color_point.second);
+
+		for(const opacity_control_point_type& opacity_point : opacity_points)
+			flipped_opacity_points.push_back(1.0f - opacity_point.first, opacity_point.second);
+
+		color_points = flipped_color_points;
+		opacity_points = flipped_opacity_points;
 	}
 
 	void add_color_point(float t, rgb color) {
@@ -86,8 +103,8 @@ public:
 		opacity_points.push_back(t, opacity);
 	}
 
-	const std::vector<decltype(color_points)::control_point>& ref_color_points() const { return color_points.ref_points(); }
-	const std::vector<decltype(opacity_points)::control_point>& ref_opacity_points() const { return opacity_points.ref_points(); }
+	const std::vector<color_control_point_type>& ref_color_points() const { return color_points.ref_points(); }
+	const std::vector<opacity_control_point_type>& ref_opacity_points() const { return opacity_points.ref_points(); }
 
 	rgb interpolate_color(float t) const {
 
@@ -134,7 +151,7 @@ public:
 
 class gl_color_map : public color_map {
 protected:
-	/// whether to use linear tekture filtering or nearest neighbour
+	/// whether to use linear or nearest neighbour texture filtering 
 	bool use_linear_filtering = true;
 	texture tex;
 	

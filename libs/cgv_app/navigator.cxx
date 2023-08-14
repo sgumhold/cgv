@@ -78,8 +78,7 @@ void navigator::clear(cgv::render::context& ctx) {
 }
 
 bool navigator::self_reflect(cgv::reflect::reflection_handler& _rh) {
-
-	return true;
+	return _rh.reflect_member("layout_size", layout_size);
 }
 
 bool navigator::handle_event(cgv::gui::event& e) {
@@ -214,8 +213,7 @@ bool navigator::init(cgv::render::context& ctx) {
 	bool success = true;
 
 	success &= fbc.ensure(ctx);
-	success &= blit_canvas.init(ctx);
-
+	
 	success &= arrow_data.init(ctx);
 	success &= box_data.init(ctx);
 	success &= box_wire_data.init(ctx);
@@ -224,7 +222,8 @@ bool navigator::init(cgv::render::context& ctx) {
 
 	success &= box_renderer.init(ctx);
 
-	blit_canvas.register_shader("rectangle", "rect2d.glpr");
+	blit_canvas.register_shader("rectangle", cgv::g2d::shaders::rectangle);
+	success &= blit_canvas.init(ctx);
 
 	if(success) {
 		box_data.add(vec3(0.0f));

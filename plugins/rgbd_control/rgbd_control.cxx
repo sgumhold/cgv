@@ -25,6 +25,10 @@ using namespace cgv::render;
 using namespace rgbd;
 
 
+#include "../../3rd/json/nlohmann/json.hpp"
+#include "../../3rd/json/cgv_json/math.h"
+#include <fstream>
+
 std::string get_stream_format_enum(const std::vector<rgbd::stream_format>& sfs)
 {
 	std::string enum_def = "enums='default=-1";
@@ -94,6 +98,17 @@ rgbd_control::rgbd_control(bool no_interactor)
 	prs.point_size = 3.0f;
 	visualisation_enabled = true;
 
+	/*
+	cgv::math::camera<double> color_calib, depth_calib;
+	nlohmann::json j;
+	std::ifstream is("D:/kinect.json");
+	is >> j;
+	std::string serial;
+	j.at("serial").get_to(serial);
+	j.at("color_calib").get_to(color_calib);
+	j.at("depth_calib").get_to(depth_calib);
+	*/
+
 	connect(get_animation_trigger().shoot, this, &rgbd_control::timer_event);
 }
 
@@ -122,6 +137,14 @@ bool rgbd_control::self_reflect(cgv::reflect::reflection_handler& rh)
 ///
 void rgbd_control::on_set(void* member_ptr)
 {
+	if (member_ptr == &multi_device_role) {
+		if (rgbd_inp.is_attached()) {
+			if (!rgbd_inp.configure_role(multi_device_role)) {
+				multi_device_role = rgbd_inp.get_role();
+				update_member(&multi_device_role);
+			}
+		}
+	}
 	if (member_ptr == &do_recording) {
 		if (do_recording) {
 			//prevent reading and writing the log on the same path 
@@ -511,6 +534,7 @@ void rgbd_control::create_gui()
 
 	if (begin_tree_node("Device", nr_color_frames, true, "level=2")) {
 		align("\a");
+		add_member_control(this, "multi_device_role", multi_device_role, "dropdown", "enums='standalone,leader,follower'");
 		add_member_control(this, "stream_color", stream_color, "check");
 		add_member_control(this, "stream_depth", stream_depth, "check");
 		add_member_control(this, "stream_infrared", stream_infrared, "check");
@@ -530,7 +554,8 @@ void rgbd_control::create_gui()
 		add_member_control(this, "write_async", rgbd_inp.protocol_write_async, "toggle");
 		add_member_control(this, "record", do_recording, "toggle");
 		connect_copy(add_button("clear record")->click, rebind(this, &rgbd_control::on_clear_protocol_cb));
-		connect_copy(add_button("save")->click, rebind(this, &rgbd_control::on_save_cb));
+		connect_copy(add_button("save", "w=108", " ")->click, rebind(this, &rgbd_control::on_save_cb));
+		add_member_control(this, "incl pc", also_save_pc, "toggle", "w=80;tooltip='if on also save point cloud together with frames'");
 		connect_copy(add_button("save point cloud")->click, rebind(this, &rgbd_control::on_save_point_cloud_cb));
 		connect_copy(add_button("load")->click, rebind(this, &rgbd_control::on_load_cb));
 		align("\b");
@@ -594,16 +619,6 @@ size_t rgbd_control::construct_point_cloud()
 	const unsigned char* colors = reinterpret_cast<const unsigned char*>(&color_frame_2.frame_data.front());
 	if (remap_color) {
 		rgbd_inp.map_color_to_depth(depth_frame_2, color_frame_2, warped_color_frame_2);
-		/* if (show_grayscale)
-		{
-			// convert to grayscale
-			convert_to_grayscale(warped_color_frame_2, gray_frame_2);
-			// TODO extract FAST or ORB features
-			int* ret_num = new int;
-			fast::xy* corners;
-			corners = fast::fast10_detect_nonmax(reinterpret_cast<const unsigned char*>(&gray_frame_2.frame_data.front()), gray_frame_2.width, gray_frame_2.height, gray_frame_2.width, 20,
-			ret_num); 
-		}*/
 		if (do_bilateral_filter) {
 			//bilatral_filter();
 		}
@@ -836,8 +851,20 @@ void rgbd_control::on_start_cb()
 		aspect = float(color_stream_formats[color_stream_format_idx].width) / color_stream_formats[color_stream_format_idx].height;
 	if (stream_depth)
 		aspect = float(depth_stream_formats[depth_stream_format_idx].width) / depth_stream_formats[depth_stream_format_idx].height;
-
+	//std::cout << "size of header: " << sizeof(frame_format) << std::endl;
 	stopped = false;
+
+	/*
+	cgv::math::camera<double> color_calib, depth_calib;
+	rgbd_inp.query_calibration(IS_COLOR, color_calib);
+	rgbd_inp.query_calibration(IS_DEPTH, depth_calib);
+	nlohmann::json j;
+	j["serial"] = rgbd_inp.get_serial();
+	j["color_calib"] = color_calib;
+	j["depth_calib"] = depth_calib;
+	std::ofstream os("D:/kinect.json");
+	os << std::setw(4) << j;
+	*/
 
 	post_redraw();
 }
@@ -861,20 +888,27 @@ void rgbd_control::on_save_cb()
 	if (fn.empty())
 		return;
 	std::string fnc = fn+".rgb";
+	std::string fnwc = fn+".wrgb";
 	std::string fnd = fn + ".dep";
 	std::string fni = fn + ".ir";
 	if (stream_color && color_frame.is_allocated()) {
 		if (!color_frame.write(fnc))
 			std::cerr << "could not write " << fnc << std::endl;
 	}
-	if (stream_depth&& depth_frame.is_allocated()) {
+	if (stream_depth && depth_frame.is_allocated()) {
 		if (!depth_frame.write(fnd))
+			std::cerr << "could not write " << fnd << std::endl;
+	}
+	if (stream_depth && stream_color && warped_color_frame.is_allocated()) {
+		if (!warped_color_frame.write(fnwc))
 			std::cerr << "could not write " << fnd << std::endl;
 	}
 	if (stream_infrared && ir_frame.is_allocated()) {
 		if (!ir_frame.write(fni))
 			std::cerr << "could not write " << fni << std::endl;
 	}
+	if (also_save_pc)
+		on_save_point_cloud_cb();
 }
 
 void rgbd_control::on_save_point_cloud_cb()

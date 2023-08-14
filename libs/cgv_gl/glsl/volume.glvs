@@ -4,6 +4,7 @@
 mat4 get_modelview_matrix();
 mat4 get_projection_matrix();
 mat4 get_modelview_projection_matrix();
+vec3 get_eye_world();
 mat4 get_inverse_modelview_matrix();
 mat4 get_inverse_modelview_projection_matrix();
 mat3 get_normal_matrix();
@@ -15,14 +16,9 @@ in vec4 position;
 out vec3 position_object;
 out vec3 eye_fs;
 
-vec3 object_space_eye_pos() {
-
-	return (get_inverse_modelview_matrix() * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-}
-
 void main()
 {
-	eye_fs = object_space_eye_pos();
+	eye_fs = get_eye_world();
     position_object = position.xyz;
 
 	gl_Position = get_modelview_projection_matrix() * position;

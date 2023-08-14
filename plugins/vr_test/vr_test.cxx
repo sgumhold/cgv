@@ -473,9 +473,6 @@ bool vr_test::init(cgv::render::context& ctx)
 	if (!cgv::utils::has_option("NO_OPENVR"))
 		ctx.set_gamma(1.0f);
 
-	if (!seethrough.build_program(ctx, "seethrough.glpr"))
-		cgv::gui::message("could not build seethrough program");
-	
 	cgv::media::mesh::simple_mesh<> M;
 //#ifdef 1
 	if (M.read("D:/data/surface/meshes/obj/Max-Planck_lowres.obj")) {
@@ -530,6 +527,10 @@ void vr_test::clear(cgv::render::context& ctx)
 
 void vr_test::init_frame(cgv::render::context& ctx)
 {
+	if (!seethrough.is_linked()) {
+		if (!seethrough.build_program(ctx, "seethrough.glpr"))
+			cgv::gui::message("could not build seethrough program");
+	}
 	if (label_fbo.get_width() != label_resolution) {
 		label_tex.destruct(ctx);
 		label_fbo.destruct(ctx);
@@ -786,46 +787,48 @@ void vr_test::draw(cgv::render::context& ctx)
 		}
 	}
 	cgv::render::box_renderer& renderer = cgv::render::ref_box_renderer(ctx);
-
 	// draw wireframe boxes
 	//TODO draw wireframe boxes
-	renderer.set_render_style(wire_frame_style);
-	renderer.set_box_array(ctx, frame_boxes);
-	renderer.set_color_array(ctx, frame_box_colors);
-	renderer.set_translation_array(ctx, frame_box_translations);
-	renderer.set_rotation_array(ctx, frame_box_rotations);
-	if (renderer.validate_and_enable(ctx)) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		renderer.draw(ctx, 0, frame_boxes.size());
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-	renderer.disable(ctx);
-
-	// draw dynamic boxes 
-	renderer.set_render_style(movable_style);
-	renderer.set_box_array(ctx, movable_boxes);
-	renderer.set_color_array(ctx, movable_box_colors);
-	renderer.set_translation_array(ctx, movable_box_translations);
-	renderer.set_rotation_array(ctx, movable_box_rotations);
-	if (renderer.validate_and_enable(ctx)) {
-		if (show_seethrough) {
-			glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-			renderer.draw(ctx, 0, 3);
-			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-			renderer.draw(ctx, 3, movable_boxes.size() - 3);
+	if (!frame_boxes.empty()) {
+		renderer.set_render_style(wire_frame_style);
+		renderer.set_box_array(ctx, frame_boxes);
+		renderer.set_color_array(ctx, frame_box_colors);
+		renderer.set_translation_array(ctx, frame_box_translations);
+		renderer.set_rotation_array(ctx, frame_box_rotations);
+		if (renderer.validate_and_enable(ctx)) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			renderer.draw(ctx, 0, frame_boxes.size());
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
-		else
-			renderer.draw(ctx, 0, movable_boxes.size());
+		renderer.disable(ctx);
 	}
-	renderer.disable(ctx);
 
+	// draw dynamic boxes
+	if (!movable_boxes.empty()) {
+		renderer.set_render_style(movable_style);
+		renderer.set_box_array(ctx, movable_boxes);
+		renderer.set_color_array(ctx, movable_box_colors);
+		renderer.set_translation_array(ctx, movable_box_translations);
+		renderer.set_rotation_array(ctx, movable_box_rotations);
+		if (renderer.validate_and_enable(ctx)) {
+			if (show_seethrough) {
+				glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+				renderer.draw(ctx, 0, 3);
+				glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+				renderer.draw(ctx, 3, movable_boxes.size() - 3);
+			}
+			else
+				renderer.draw(ctx, 0, movable_boxes.size());
+		}
+		renderer.disable(ctx);
+	}
 	// draw static boxes
-	renderer.set_render_style(style);
-	renderer.set_box_array(ctx, boxes);
-	renderer.set_color_array(ctx, box_colors);
-	renderer.render(ctx, 0, boxes.size());
-
-
+	if (!boxes.empty()) {
+		renderer.set_render_style(style);
+		renderer.set_box_array(ctx, boxes);
+		renderer.set_color_array(ctx, box_colors);
+		renderer.render(ctx, 0, boxes.size());
+	}
 	// draw intersection points
 	if (!intersection_points.empty()) {
 		auto& sr = cgv::render::ref_sphere_renderer(ctx);
@@ -1129,3 +1132,7 @@ void vr_test::clear_frame_boxes()
 #include <cgv/base/register.h>
 
 cgv::base::object_registration<vr_test> vr_test_reg("vr_test");
+
+#ifdef CGV_FORCE_STATIC
+cgv::base::registration_order_definition ro_def("vr_view_interactor;vr_emulator;vr_wall;vr_scene;vr_test");
+#endif

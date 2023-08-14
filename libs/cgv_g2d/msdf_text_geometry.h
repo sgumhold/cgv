@@ -14,10 +14,15 @@ protected:
 	struct text_info {
 		std::string str;
 		int offset;
-		ivec2 position;
+		vec2 position;
 		vec2 size;
 		cgv::render::TextAlignment alignment;
 		float angle;
+
+		text_info() : text_info("", vec2(0.0f), vec2(1.0f)) {}
+
+		text_info(const std::string& str, const vec2& position, const vec2& size, const cgv::render::TextAlignment alignment = cgv::render::TA_NONE, float angle = 0.0f)
+			: str(str), position(position), size(size), alignment(alignment), angle(angle) {}
 	};
 
 	struct vertex_type {
@@ -25,7 +30,7 @@ protected:
 		vec4 texcoords;
 	};
 
-	// TODO: use a ref_ptr
+	// TODO: use a ref_ptr?
 	msdf_font* msdf_font_ptr;
 
 	GLuint ssbo;
@@ -34,13 +39,9 @@ protected:
 	std::vector<text_info> texts;
 	std::vector<vertex_type> vertices;
 
-	float render_font_size;
-
 	float compute_length(const std::string& str) const;
 
-	void end_text(text_info text);
-
-	void update_offsets_and_counts();
+	void update_offsets(size_t begin);
 
 	void add_vertex(const vec4& pos, const vec4& txc);
 
@@ -57,17 +58,19 @@ public:
 
 	const msdf_font* get_msdf_font() { return msdf_font_ptr; }
 
-	float get_font_size() { return render_font_size; }
-
 	void set_msdf_font(msdf_font* ptr, bool update_texts = true);
-
-	void set_font_size(float size) { render_font_size = size; }
 
 	void set_text(unsigned i, const std::string& text);
 
-	void set_position(unsigned i, const ivec2& position);
+	template<typename T>
+	void set_position(unsigned i, const cgv::math::fvec<T, 2>& position) {
+		if(i < texts.size())
+			texts[i].position = static_cast<vec2>(position);
+	}
 
 	void set_alignment(unsigned i, const cgv::render::TextAlignment alignment);
+
+	void set_scale(unsigned i, float scale);
 
 	void set_angle(unsigned i, const float angle);
 
@@ -75,9 +78,21 @@ public:
 
 	const std::vector<text_info>& ref_texts() const { return texts; }
 
-	vec2 get_text_render_size(unsigned i) const;
+	vec2 get_text_render_size(unsigned i, float font_size) const;
 
-	void add_text(const std::string& str, const ivec2& position = ivec2(0), const cgv::render::TextAlignment alignment = cgv::render::TA_NONE, float angle = 0.0f);
+	template<typename T>
+	void add_text(const std::string& str, const cgv::math::fvec<T, 2>& position, const cgv::render::TextAlignment alignment = cgv::render::TA_NONE, float scale = 1.0f, float angle = 0.0f) {
+		int offset = 0;
+		if(texts.size() > 0) {
+			const text_info& last_text = texts.back();
+			offset = int(last_text.offset + last_text.str.size());
+		}
+
+		texts.emplace_back(str, static_cast<vec2>(position), vec2(compute_length(str), scale), alignment, angle);
+		texts.back().offset = offset;
+
+		state_out_of_date = true;
+	}
 
 	bool create(cgv::render::context& ctx);
 

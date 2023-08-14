@@ -49,14 +49,29 @@ public:
 	simple_mesh_base();
 	/// copy constructor
 	simple_mesh_base(const simple_mesh_base& smb);
+	/// move constructor
+	simple_mesh_base(simple_mesh_base&& smb);
 	/// assignment operator
 	simple_mesh_base& operator=(const simple_mesh_base& smb);
+	/// move assignment operator
+	simple_mesh_base& operator=(simple_mesh_base&& smb);
 	/// position count
 	virtual idx_type get_nr_positions() const = 0;
-	/// create a new empty face to which new corners are added and return face index
+	/**
+	 * Create a new empty face to which new corners are added.
+	 * 
+	 * \return The index to the newly created face.
+	 */
 	idx_type start_face();
-	/// create a new corner from position, optional normal and optional tex coordinate indices and return corner index
-	idx_type new_corner(idx_type position_index, idx_type normal_index = -1, idx_type tex_coord_index = -1);
+	/**
+	 * Create a new corner with the given attributes.
+	 * 
+	 * \param [in] position_index the corner's position as index into an attribute vector
+	 * \param [in] normal_index the corner's normal as index into an attribute vector, or -1 if no normal
+	 * \param [in] tex_coord_index the corner's texture coordinate as index into an attribute vector, or -1 if no texture coordinate
+	 * \return the index of the newly created corner
+	 */
+	idx_type new_corner(idx_type position_index, idx_type normal_index = -1, idx_type tex_coord_index = -1); //FIXME: -1 underflows unsigned int!
 	/// return position index of corner
 	idx_type c2p(idx_type ci) const { return position_indices[ci]; }
 	/// return normal index of corner
@@ -71,9 +86,19 @@ public:
 	idx_type get_nr_faces() const { return idx_type(faces.size()); }
 	/// return the number of corners
 	idx_type get_nr_corners() const { return idx_type(position_indices.size()); }
-	/// return index of first corner of face with index fi
+	/**
+	 * Retrieve the vertex index of the first corner of a face.
+	 *
+	 * \param [in] fi Which face of simple_mesh\<T\>::faces.
+	 * \return Index of the face's first vertex.
+	 */
 	idx_type begin_corner(idx_type fi) const { return faces[fi]; }
-	/// return index of end corner (one after the last one) of face with index fi
+	/**
+	 * Retrieve index of the vertex which follows the end corner of a face.
+	 * 
+	 * \param [in] fi Which face of simple_mesh\<T\>::faces.
+	 * \return Index of the face's last vertex + 1.
+	 */
 	idx_type end_corner(idx_type fi) const { return fi + 1 == faces.size() ? idx_type(position_indices.size()) : faces[fi + 1]; }
 	/// return number of edges/corners of face with index fi
 	idx_type face_degree(idx_type fi) const { return end_corner(fi) - begin_corner(fi); }
@@ -103,15 +128,65 @@ public:
 	idx_type& group_index(idx_type fi) { return group_indices[fi]; }
 	/// revert face orientation
 	void revert_face_orientation();
-	/// sort faces by group and material indices with two bucket sorts
+	/**
+	 * Calculate a permutation of face indices which sorts them by group and/or material.
+	 * 
+	 * \param [out] perm The sorting permutation.
+	 * \param [in] by_group True if the faces should be sorted by group, false otherwise.
+	 * \param [in] by_material True if the faces should be sorted by material, false otherwise.
+	 * 
+	 * \see simple_mesh::extract_triangle_element_buffer() for applying the sorting permutation
+	 */
 	void sort_faces(std::vector<idx_type>& perm, bool by_group = true, bool by_material = true) const;
-	/// merge the three indices into one index into a vector of unique index triples
-	void merge_indices(std::vector<idx_type>& vertex_indices, std::vector<vec4i>& unique_quadruples, bool* include_tex_coords_ptr = 0, bool* include_normals_ptr = 0, bool* include_tangents_ptr = 0) const;
-	/// extract element array buffers for triangulation
-	void extract_triangle_element_buffer(const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& triangle_element_buffer, 
-		const std::vector<idx_type>* face_perm_ptr = 0, std::vector<vec3i>* material_group_start_ptr = 0) const;
-	/// extract element array buffers for edges in wireframe
-	void extract_wireframe_element_buffer(const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& edge_element_buffer) const;
+	/**
+	 * Transforms n individual vertex attribute indices into one list of unique index n-tuples.
+	 * 
+	 * Picture for example a cube where each quadratic face has a color. There would be only
+	 * eight vertex positions. However, each of these vertices belongs to three faces and would therefore need to carry
+	 * three distinct colors. To solve this issue all the unique combinations of attribute indicies get recorded
+	 * into a list. The new face primitives are then referenced by indexing into this list of unique index n-tuples.
+	 * 
+	 * See https://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/ for further details.
+	 *
+	 * \param [out] vertex_indices will be filled with indicies into the unique tuple list.
+	 * \param [out] unique_tuples will be filled with all the unique n-tuples.
+	 * \param [in,out] include_tex_coords_ptr if nullptr then texture coordinates won't be included in the n-tuples.
+	 * Otherwise the pointed to bool will be set to true if the mesh even contains texture coordinates or false if not.
+	 * \param [in,out] include_normals_ptr if nullptr then normals won't be included in the n-tuples.
+	 * Otherwise the pointed to bool will be set to true if the mesh even contains normals or false if not.
+	 * \param [in,out] include_tangents_ptr if nullptr then tangents won't be included in the n-tuples.
+	 * Otherwise the pointed to bool will be set to true if the mesh even contains texture coordinates or false if not.
+	 * 
+	 * \see simple_mesh::extract_triangle_element_buffer()
+	 * \see simple_mesh::extract_wireframe_element_buffer()
+	 */
+	void merge_indices(std::vector<idx_type>& vertex_indices, std::vector<vec4i>& unique_tuples,
+					   bool* include_tex_coords_ptr = 0, bool* include_normals_ptr = 0, bool* include_tangents_ptr = 0) const;
+	/**
+	 * Extract element array buffers for triangulation.
+	 *
+	 * \param [in] vertex_indices Contains indices into a list of vertices.
+	 * \param [out] triangle_element_buffer Stores the vertex indices which make up a triangulated mesh.
+	 * \param [in] face_permutation_ptr If nullptr the faces will be traversed in successive fashion. Otherwise the given index-permutation is used.
+	 * \param [out] material_group_start_ptr Will be filled with material group indices if not nullptr.
+	 * 
+	 * \see simple_mesh::merge_indices()
+	 * \see simple_mesh::sort_faces() for getting a permutation
+	 */
+	void extract_triangle_element_buffer(const std::vector<idx_type>& vertex_indices,
+										 std::vector<idx_type>& triangle_element_buffer,
+										 const std::vector<idx_type>* face_permutation_ptr = 0,
+										 std::vector<vec3i>* material_group_start_ptr = 0) const;
+	/**
+	 * Extract element array buffers for edges in wireframe.
+	 * 
+	 * \param [in] vertex_indices Contains indices into a list of vertices.
+	 * \param [out] edge_element_buffer Stores the vertex indices which make up a wireframed mesh.
+	 * 
+	 * \see simple_mesh::merge_indices()
+	 */
+	void extract_wireframe_element_buffer(const std::vector<idx_type>& vertex_indices,
+										  std::vector<idx_type>& edge_element_buffer) const;
 	/// compute a index vector storing the inv corners per corner and optionally index vectors with per position corner index, per corner next and or prev corner index (implementation assumes closed manifold connectivity)
 	void compute_inv(std::vector<uint32_t>& inv, std::vector<uint32_t>* p2c_ptr = 0, std::vector<uint32_t>* next_ptr = 0, std::vector<uint32_t>* prev_ptr = 0) const;
 	/// given the inv corners compute index vector per corner its edge index and optionally per edge its corner index and return edge count (implementation assumes closed manifold connectivity)
@@ -125,22 +200,28 @@ template <typename T = float>
 class CGV_API simple_mesh : public simple_mesh_base
 {
 public:
+	using numeric_type = T;
+	using simple_mesh_base::idx_type;
+	using simple_mesh_base::vec2i;
+	using simple_mesh_base::vec3i;
+	using simple_mesh_base::vec4i;
+	using simple_mesh_base::mat_type;
 	/// type of axis aligned 3d box
 	typedef simple_mesh<T> mesh_type;
 	/// type of axis aligned 3d box
 	typedef typename cgv::media::axis_aligned_box<T, 3> box_type;
+	/// type of 4d vector
+	typedef typename cgv::math::fvec<T, 4> vec4;
 	/// type of 3d vector
 	typedef typename cgv::math::fvec<T, 3> vec3;
 	/// type of 2d vector
 	typedef typename cgv::math::fvec<T, 2> vec2;
 	/// linear transformation 
 	typedef typename cgv::math::fmat<T, 3, 3> mat3;
+	/// linear transformation 
+	typedef typename cgv::math::fmat<T, 4, 4> mat4;
 	/// color type used in surface materials
 	typedef typename illum::surface_material::color_type clr_type;
-	/// textured surface materials are supported by mat_type
-	typedef typename illum::textured_surface_material mat_type;
-	/// 32bit index
-	typedef cgv::type::uint32_type idx_type;
 protected:
 	friend class simple_mesh_obj_reader<T>;
 	std::vector<vec3>  positions;
@@ -150,12 +231,16 @@ protected:
 
 	vec3 compute_normal(const vec3& p0, const vec3& p1, const vec3& p2);
 public:
-	/// construct from string corresponding to Conway notation (defaults to empty mesh)
+	/// copy constructor
 	simple_mesh(const simple_mesh<T>& sm);
-	/// construct from string corresponding to Conway notation (defaults to empty mesh)
+	/// move constructor
+	simple_mesh(simple_mesh<T>&& sm);
+	/// assignment operator
 	simple_mesh(const std::string& conway_notation = "");
-	/// construct from string corresponding to Conway notation (defaults to empty mesh)
-	simple_mesh<T>& operator = (const simple_mesh<T>& sm);
+	/// assignment operator
+	simple_mesh<T>& operator= (const simple_mesh<T>& sm);
+	/// move assignment operator
+	simple_mesh<T>& operator= (simple_mesh<T>&& sm);
 	/// clear simple mesh
 	void clear();
 
@@ -166,6 +251,7 @@ public:
 	vec3& position(idx_type pi) { return positions[pi]; }
 	const vec3& position(idx_type pi) const { return positions[pi]; }
 	const std::vector<vec3>& get_positions() const { return positions; }
+	std::vector<vec3>& ref_positions() { return positions; }
 
 	/// add a new normal and return normal index
 	idx_type new_normal(const vec3& n) { normals.push_back(n); return idx_type(normals.size()-1); }
@@ -225,12 +311,21 @@ public:
 	bool read(const std::string& file_name);
 	/// write simple mesh to file (currently only obj is supported)
 	bool write(const std::string& file_name) const;
-	/// extract vertex attribute array, return size of color in bytes
-	unsigned extract_vertex_attribute_buffer(
-		const std::vector<idx_type>& vertex_indices,
-		const std::vector<vec4i>& unique_quadruples,
-		bool include_tex_coords, bool include_normals, bool include_tangents, 
-		std::vector<T>& attrib_buffer, bool *include_colors_ptr = 0) const;
+	/**
+	 * Extract vertex attribute array and element array buffers for triangulation and edges in wireframe.
+	 * 
+	 * \param unique_quadruples A list of unique n-tuples where each entry is an index into attribute vectors of simple_mesh.
+	 * \param include_tex_coords True if texture coordinates should be written into the vertex buffer, false otherwise.
+	 * \param include_normals True if normals should be written into the vertex buffer, false otherwise.
+	 * \param include_tangents True if tangents should be written into the vertex buffer, false otherwise.
+	 * \param attrib_buffer will contain the vertex attribute data in interleaved form.
+	 * \param include_colors_ptr If nullptr then the vertex buffer won't contain colors, otherwise it will be set to true if the mesh even contains colors or false if not.
+	 * \param num_floats_in_vertex If not nullptr will be set to the number of floats which make up one vertex with all its attributes.
+	 * \return The size of one color in bytes.
+	 */
+	unsigned extract_vertex_attribute_buffer(const std::vector<vec4i>& unique_quadruples, bool include_tex_coords,
+											 bool include_normals, bool include_tangents, std::vector<T>& attrib_buffer,
+											 bool* include_colors_ptr = 0, int* num_floats_in_vertex = nullptr) const;
 	/// apply transformation to mesh
 	void transform(const mat3& linear_transformation, const vec3& translation);
 	/// apply transformation to mesh with given inverse linear transformation

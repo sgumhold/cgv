@@ -97,6 +97,13 @@ protected:
 		return false;
 	}
 
+	void clear_attribute_arrays(context& ctx) {
+		if(aam.is_created()) {
+			aam.destruct(ctx);
+			aam.init(ctx);
+		}
+	}
+
 	bool has_indices() const {
 		return aam.has_index_buffer();
 	}
@@ -114,13 +121,18 @@ protected:
 	bool enable(context& ctx, shader_program& prog) {
 		if(!aam.is_created())
 			aam.init(ctx);
-		bool res = true;
-		if(state_out_of_date)
+
+		if(render_count() > 0) {
+			bool res = true;
+			if(state_out_of_date)
+				res = transfer(ctx, prog);
+			if(!res)
+				return false;
+			return aam.enable(ctx);
+		} else if(state_out_of_date) {
 			transfer(ctx, prog);
-		state_out_of_date = false;
-		if(!res)
 			return false;
-		return aam.enable(ctx);
+		}
 	}
 
 	bool disable(context& ctx) {
@@ -145,17 +157,18 @@ public:
 		state_out_of_date = true;
 	}
 
-	virtual size_t get_render_count() const = 0;
+	virtual size_t render_count() const = 0;
 };
 
 }
 }
 
-/** This macro provides a shortcut to define a class that inherits from the abstract generic render data base class,
-	that can be used with a generic renderer.
+/** This macro provides a shortcut to define a class that inherits from the abstract generic render data base class
+	and can be used with a generic renderer.
 	Arguments taken are (class name, attribute count, [type, name], [...])
-	Omit square brackets when caling the macro, see example.
+	Omit square brackets when calling the macro, see example.
 	Up to 8 attributes are supported. Attribute count must match the number of [type, name] pairs.
+	Attribute type and name must be comma separated.
 
 	The macro generates:
 		> a class inheriting from generic_render_data
@@ -179,17 +192,24 @@ public:
 	class example_geometry : public generic_render_data {
 	protected:
 		bool transfer(context& ctx, shader_program& prog) {
-			bool success = true;
-			if(get_render_count() == 0) return false;\
-			success &= set_attribute_array(ctx, prog, "position", position);
-			success &= set_attribute_array(ctx, prog, "color", color);
-			return success;
+			state_out_of_date = false;
+			if(render_count() > 0) {
+				bool success = true;
+				success &= set_attribute_array(ctx, prog, "position", position);
+				success &= set_attribute_array(ctx, prog, "color", color);
+				if(idx.size() > 0) set_indices(ctx);
+				else remove_indices(ctx);
+				return success;
+			} else {
+				clear_attribute_arrays(ctx);
+				return false;
+			}
 		}
 	public:
 		std::vector<vec2> position;
 		std::vector<rgb> color;
 
-		size_t get_render_count() const {
+		size_t render_count() const {
 			if(idx.empty() return position.size();
 			else return idx.size();
 		};
@@ -206,22 +226,26 @@ public:
 		}
 	};
 */
-
 #define DEFINE_GENERIC_RENDER_DATA_CLASS(name, attrib_count, ...)\
 class name : public cgv::render::generic_render_data {\
 protected:\
 	bool transfer(cgv::render::context& ctx, cgv::render::shader_program& prog) {\
-		bool success = true;\
-		if(get_render_count() == 0) return false;\
-		if(idx.size() > 0) set_indices(ctx);\
-		else remove_indices(ctx);\
-		GRD_APPLY_FUNC_N(attrib_count, GRD_SET_ATTRIB_ARRAY, GRD_SEP_NULL, __VA_ARGS__)\
-		return success;\
+		state_out_of_date = false;\
+		if(render_count() > 0) {\
+			bool success = true;\
+			GRD_APPLY_FUNC_N(attrib_count, GRD_SET_ATTRIB_ARRAY, GRD_SEP_NULL, __VA_ARGS__)\
+			if(idx.size() > 0) set_indices(ctx); \
+			else remove_indices(ctx); \
+			return success; \
+		} else {\
+			clear_attribute_arrays(ctx);\
+			return false;\
+		}\
 	}\
 public:\
 	GRD_APPLY_FUNC_N(attrib_count, GRD_DECL_VEC_MEMBER, GRD_SEP_NULL, __VA_ARGS__)\
 	GRD_APPLY_FUNC_N(attrib_count, GRD_DECL_VEC_MEMBER_CONST_REF, GRD_SEP_NULL, __VA_ARGS__)\
-	size_t get_render_count() const {\
+	size_t render_count() const {\
 		if(idx.empty()) return GRD_GET_FIRST_PAIR(GRD_CALL_SIZE_FUNC, __VA_ARGS__)\
 		else return idx.size();\
 	}\
@@ -234,3 +258,55 @@ public:\
 		GRD_APPLY_FUNC_N(attrib_count, GRD_CALL_PUSH_BACK_FUNC, GRD_SEP_NULL, __VA_ARGS__)\
 	}\
 };
+
+/* Define some presets */
+namespace cgv {
+namespace g2d {
+
+/// Defines a generic render data class using attributes:
+/// vec2 position
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec2, 1, vec2, position);
+
+/// Defines a generic render data class using attributes:
+/// vec2 position
+/// rgb color
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec2_rgb, 2, vec2, position, rgb, color);
+
+/// Defines a generic render data class using attributes:
+/// vec2 position
+/// rgba color
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec2_rgba, 2, vec2, position, rgba, color);
+
+/// Defines a generic render data class using attributes:
+/// vec2 position
+/// vec2 size
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec2_vec2, 2, vec2, position, vec2, size);
+
+/// Defines a generic render data class using attributes:
+/// vec2 position
+/// vec2 size
+/// rgb color
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec2_vec2_rgb, 3, vec2, position, vec2, size, rgb, color);
+
+/// Defines a generic render data class using attributes:
+/// vec2 position
+/// vec2 size
+/// rgba color
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec2_vec2_rgba, 3, vec2, position, vec2, size, rgba, color);
+
+/// Defines a generic render data class using attributes:
+/// vec3 position
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec3, 1, vec3, position);
+
+/// Defines a generic render data class using attributes:
+/// vec3 position
+/// rgb color
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec3_rgb, 2, vec3, position, rgb, color);
+
+/// Defines a generic render data class using attributes:
+/// vec3 position
+/// rgba color
+DEFINE_GENERIC_RENDER_DATA_CLASS(generic_render_data_vec3_rgba, 2, vec3, position, rgba, color);
+
+} // namespace cgv
+} // namespace g2d

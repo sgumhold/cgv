@@ -19,7 +19,6 @@
 #include <string>
 #include <mutex>
 #include <future>
-#include "fast.h"
 
 #include "lib_begin.h"
 
@@ -85,6 +84,7 @@ public:
 	/// members for rgbd input
 	rgbd::rgbd_input rgbd_inp;
 	std::string record_path;
+	rgbd::MultiDeviceRole multi_device_role = rgbd::MDR_STANDALONE;
 	bool do_recording;
 	bool stream_color;
 	bool stream_depth;
@@ -96,6 +96,7 @@ public:
 	int color_stream_format_idx;
 	int depth_stream_format_idx;
 	int ir_stream_format_idx;
+	bool also_save_pc = false;
 
 	void rgbd_control::update_stream_formats();
 	/// members for rgbd mouse
@@ -148,7 +149,7 @@ public:
 	/// internal members used for data storage
 	rgbd::frame_type color_frame, depth_frame, ir_frame, warped_color_frame,mesh_frame;
 	rgbd::frame_type color_frame_2, depth_frame_2, ir_frame_2, warped_color_frame_2, gray_frame_2, bilateral_filter_frame_2;
-	std::vector<fast::xy> corners;
+
 	std::future<size_t> future_handle;
 	size_t construct_point_cloud();
 	bool acquire_next;

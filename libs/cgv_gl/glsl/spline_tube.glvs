@@ -16,6 +16,6 @@ void main()
 	// TODO: group color and transformations not yet supported
 	//color_gs = group_color(color, group_index);
 	color_gs = color;
-	tangent_gs = tangent;
-	gl_Position = vec4(position.xyz, radius * radius_scale);
+	tangent_gs = tangent;  // TODO: shouldn't this be vec4(tangent.xyz, tangent.w*radius_scale) ?
+	gl_Position = vec4(position.xyz, radius*radius_scale);
 }

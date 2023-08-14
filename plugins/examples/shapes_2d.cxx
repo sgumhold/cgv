@@ -16,7 +16,7 @@
 #include <cgv_gl/generic_renderer.h>
 #include <cgv_g2d/canvas.h>
 #include <cgv_g2d/draggable.h>
-#include <cgv_g2d/draggables_collection.h>
+#include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 #include <cgv_g2d/rect.h>
 #include <cgv_g2d/shape2d_styles.h>
@@ -34,46 +34,39 @@ private:
 	*/
 	struct point : public cgv::g2d::draggable {
 		point(const ivec2& pos) {
-			this->pos = pos;
-			size = vec2(8.0f);
+			position = pos;
+			size = vec2(16.0f);
 			position_is_center = true;
 			constraint_reference = CR_FULL_SIZE;
 		}
 
 		bool is_inside(const vec2& mp) const {
-
 			float dist = length(mp - center());
-			return dist <= size.x();
-		}
-
-		ivec2 get_render_position() const {
-			return ivec2(pos + 0.5f);
-		}
-
-		ivec2 get_render_size() const {
-			return 2 * ivec2(size);
+			return dist <= 0.5f*size.x();
 		}
 	};
 
 protected:
-	cgv::g2d::rect viewport_rect;
+	cgv::g2d::irect viewport_rect;
 
 	cgv::g2d::canvas canvas;
-	cgv::g2d::shape2d_style bg_style, rect_style, circle_style, quad_style, text_style, draggable_style;
+	cgv::g2d::shape2d_style bg_style, rect_style, quad_style, draggable_style;
+	cgv::g2d::circle2d_style circle_style;
 	cgv::g2d::line2d_style line_style, control_line_style;
 	cgv::g2d::arrow2d_style arrow_style;
 	cgv::g2d::grid2d_style grid_style;
+	cgv::g2d::text2d_style text_style;
 
 	bool show_background;
 	cgv::render::texture background_tex;
 	cgv::render::texture image_tex;
 	
 	std::vector<point> points;
-	cgv::g2d::draggables_collection<point*> line_handles;
-	cgv::g2d::draggables_collection<point*> arrow_handles;
-	cgv::g2d::draggables_collection<point*> curve_handles;
-	cgv::g2d::draggables_collection<point*> text_handles;
-	cgv::g2d::draggables_collection<point*> quad_handles;
+	cgv::g2d::draggable_collection<point*> line_handles;
+	cgv::g2d::draggable_collection<point*> arrow_handles;
+	cgv::g2d::draggable_collection<point*> curve_handles;
+	cgv::g2d::draggable_collection<point*> text_handles;
+	cgv::g2d::draggable_collection<point*> quad_handles;
 
 	cgv::render::generic_renderer line_renderer, spline_renderer, point_renderer;
 	
@@ -118,13 +111,10 @@ protected:
 	bool apply_gamma = true;
 
 	// text appearance
-	float font_size = 32.0f;
 	cgv::render::TextAlignment text_align_h, text_align_v;
 	float text_angle = 0.0f;
 
-	cgv::g2d::msdf_font msdf_font;
 	cgv::g2d::msdf_text_geometry texts;
-	cgv::g2d::msdf_gl_canvas_font_renderer font_renderer;
 
 	// test variables
 	struct {
@@ -135,21 +125,21 @@ protected:
 
 public:
 	shapes_2d() : cgv::base::node("Shapes 2D Test") {
-		viewport_rect.set_pos(ivec2(0));
-		viewport_rect.set_size(ivec2(-1));
+		viewport_rect.position = ivec2(0);
+		viewport_rect.size = ivec2(-1);
 		
 		show_background = true;
 
-		canvas.register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
-		canvas.register_shader("circle", cgv::g2d::canvas::shaders_2d::circle);
-		canvas.register_shader("ellipse", cgv::g2d::canvas::shaders_2d::ellipse);
-		canvas.register_shader("quad", cgv::g2d::canvas::shaders_2d::quad);
-		canvas.register_shader("arrow", cgv::g2d::canvas::shaders_2d::arrow);
-		canvas.register_shader("grid", cgv::g2d::canvas::shaders_2d::grid);
+		canvas.register_shader("rectangle", cgv::g2d::shaders::rectangle);
+		canvas.register_shader("circle", cgv::g2d::shaders::circle);
+		canvas.register_shader("ellipse", cgv::g2d::shaders::ellipse);
+		canvas.register_shader("quad", cgv::g2d::shaders::quad);
+		canvas.register_shader("arrow", cgv::g2d::shaders::arrow);
+		canvas.register_shader("grid", cgv::g2d::shaders::grid);
 
-		line_renderer = cgv::render::generic_renderer(cgv::g2d::canvas::shaders_2d::line);
-		spline_renderer = cgv::render::generic_renderer(cgv::g2d::canvas::shaders_2d::cubic_spline);
-		point_renderer = cgv::render::generic_renderer(cgv::g2d::canvas::shaders_2d::circle);
+		line_renderer = cgv::render::generic_renderer(cgv::g2d::shaders::line);
+		spline_renderer = cgv::render::generic_renderer(cgv::g2d::shaders::cubic_spline);
+		point_renderer = cgv::render::generic_renderer(cgv::g2d::shaders::circle);
 
 		text_align_h = text_align_v = cgv::render::TA_NONE;
 
@@ -171,11 +161,11 @@ public:
 		text_handles.set_transformation(M);
 		quad_handles.set_transformation(M);
 
-		handled |= arrow_handles.handle(e, viewport_rect.size());
-		handled |= line_handles.handle(e, viewport_rect.size());
-		handled |= curve_handles.handle(e, viewport_rect.size());
-		handled |= text_handles.handle(e, viewport_rect.size());
-		handled |= quad_handles.handle(e, viewport_rect.size());
+		handled |= arrow_handles.handle(e, viewport_rect.size);
+		handled |= line_handles.handle(e, viewport_rect.size);
+		handled |= curve_handles.handle(e, viewport_rect.size);
+		handled |= text_handles.handle(e, viewport_rect.size);
+		handled |= quad_handles.handle(e, viewport_rect.size);
 
 		if(!handled) {
 			unsigned et = e.get_kind();
@@ -191,9 +181,9 @@ public:
 
 				if(ma == cgv::gui::MA_WHEEL) {
 					ivec2 mpos(me.get_x(), me.get_y());
-					mpos.y() = viewport_rect.size().y() - mpos.y();
+					mpos.y() = viewport_rect.h() - mpos.y() - 1;
 
-					vec2 origin = viewport_rect.box.get_center();
+					vec2 origin = viewport_rect.center();
 					vec2 offset = origin - mpos + view_params.translation;
 
 					float scale = view_params.scale;
@@ -243,10 +233,6 @@ public:
 				texts.set_angle(i, text_angle);
 		}
 
-		if(member_ptr == &font_size) {
-			texts.set_font_size(font_size);
-		}
-
 		post_redraw();
 		update_member(member_ptr);
 	}
@@ -254,12 +240,12 @@ public:
 		return "shapes_2d";
 	}
 	void clear(cgv::render::context& ctx) {
-		//shaders.clear(ctx);
 		canvas.destruct(ctx);
 		background_tex.destruct(ctx);
 
-		msdf_font.destruct(ctx);
-		font_renderer.destruct(ctx);
+		// decrease reference count of msdf font and renderer singletons, potentially causing them to be destructed
+		cgv::g2d::ref_msdf_font_regular(ctx, -1);
+		cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
 	}
 	bool init(cgv::render::context& ctx) {
 		bool success = true;
@@ -293,9 +279,12 @@ public:
 			image_tex.create_from_image(image_format, image_data, ctx, "res://alhambra.png", (unsigned char*)0, 0);
 		}
 		
-		success &= msdf_font.init(ctx);
-		success &= font_renderer.init(ctx);
-		texts.set_msdf_font(&msdf_font);
+		// increase reference count of msdf font and renderer singletons, potentially causing them to be initialized
+		cgv::g2d::msdf_font_regular& msdf_font = cgv::g2d::ref_msdf_font_regular(ctx, 1);
+		cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
+
+		if(msdf_font.is_initialized())
+			texts.set_msdf_font(&msdf_font);
 
 		// add 2 control points for the arrow
 		points.push_back(point(ivec2(600, 600)));
@@ -342,10 +331,10 @@ public:
 	void init_frame(cgv::render::context& ctx) {
 		ivec2 viewport_resolution(ctx.get_width(), ctx.get_height());
 
-		if(viewport_resolution != viewport_rect.size()) {
-			viewport_rect.set_size(viewport_resolution);
+		if(viewport_resolution != viewport_rect.size) {
+			viewport_rect.size = viewport_resolution;
 
-			canvas.set_resolution(ctx, viewport_rect.size());
+			canvas.set_resolution(ctx, viewport_rect.size);
 
 			set_resolution_uniform(ctx, line_renderer.ref_prog());
 			set_resolution_uniform(ctx, spline_renderer.ref_prog());
@@ -397,12 +386,12 @@ public:
 		auto& quad_prog = canvas.enable_shader(ctx, "quad");
 		quad_style.apply(ctx, quad_prog);
 		// takes 4 positions (must be convex)
-		canvas.draw_shape4(ctx, ivec2(400, 300), ivec2(480, 300), points[10].get_render_position(), points[11].get_render_position(), rgba(1, 1, 0, 1));
+		canvas.draw_shape4(ctx, ivec2(400, 300), ivec2(480, 300), points[10].int_position(), points[11].int_position(), rgba(1, 1, 0, 1));
 		canvas.disable_current_shader(ctx);
 
 		auto& arrow_prog = canvas.enable_shader(ctx, "arrow");
 		arrow_style.apply(ctx, arrow_prog);
-		canvas.draw_shape2(ctx, arrow_handles[0]->pos, arrow_handles[1]->pos, rgba(1.0f, 0.0f, 1.0f, 1.0f), rgba(0.0f, 0.0f, 1.0f, 1.0f));
+		canvas.draw_shape2(ctx, arrow_handles[0]->position, arrow_handles[1]->position, rgba(1.0f, 0.0f, 1.0f, 1.0f), rgba(0.0f, 0.0f, 1.0f, 1.0f));
 		canvas.disable_current_shader(ctx);
 
 		shader_program& line_prog = line_renderer.ref_prog();
@@ -421,6 +410,7 @@ public:
 
 		image_tex.disable(ctx);
 
+		cgv::g2d::msdf_gl_canvas_font_renderer& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 0);
 		font_renderer.render(ctx, canvas, texts, text_style);
 		
 		draw_control_lines(ctx);
@@ -434,9 +424,9 @@ public:
 	}
 	void draw_background(cgv::render::context& ctx) {
 		auto& grid_prog = canvas.enable_shader(ctx, "grid");
-		grid_style.texcoord_scaling = vec2(viewport_rect.size()) / 20.0f;
+		grid_style.texcoord_scaling = vec2(viewport_rect.size) / 20.0f;
 		grid_style.apply(ctx, grid_prog);
-		canvas.draw_shape(ctx, ivec2(0), viewport_rect.size());
+		canvas.draw_shape(ctx, ivec2(0), viewport_rect.size);
 		canvas.disable_current_shader(ctx);
 	}
 	void draw_control_lines(cgv::render::context& ctx) {
@@ -454,8 +444,8 @@ public:
 
 		for(unsigned i = 0; i < points.size(); ++i) {
 			const point& p = points[i];
-			draggable_points.add(p.get_render_position());
-			render_size = p.get_render_size();
+			draggable_points.add(p.position);
+			render_size = p.size;
 		}
 		
 		draggable_points.set_out_of_date();
@@ -472,7 +462,7 @@ public:
 		lines.clear();
 		for(unsigned  i = 0; i < 2; ++i) {
 			float brightness = static_cast<float>(i) / 1;
-			lines.add(line_handles[i]->pos, brightness * color);
+			lines.add(line_handles[i]->position, brightness * color);
 		}
 		lines.set_out_of_date();
 	}
@@ -491,11 +481,11 @@ public:
 			unsigned si = idx;
 			unsigned ei = idx + 1;
 			unsigned pi = (i % 2) ? ei : si;
-			vec2 tangent = 3.0f * (control_points[ei]->pos - control_points[si]->pos);
+			vec2 tangent = 3.0f * (control_points[ei]->position - control_points[si]->position);
 			
-			curves.add(control_points[pi]->pos, tangent, colors[i]);
-			control_lines.add(control_points[si]->pos, rgba(0.7f, 0.2f, 0.2f, 1.0f));
-			control_lines.add(control_points[ei]->pos, rgba(0.7f, 0.2f, 0.2f, 1.0f));
+			curves.add(control_points[pi]->position, tangent, colors[i]);
+			control_lines.add(control_points[si]->position, rgba(0.7f, 0.2f, 0.2f, 1.0f));
+			control_lines.add(control_points[ei]->position, rgba(0.7f, 0.2f, 0.2f, 1.0f));
 		}
 		curves.set_out_of_date();
 		control_lines.set_out_of_date();
@@ -513,14 +503,14 @@ public:
 		texts.clear();
 		for(unsigned i=0; i<2; ++i) {
 			std::string str = labels[i];
-			texts.add_text(str, text_handles[i]->pos, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
+			texts.add_text(str, text_handles[i]->position, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
 		}
 	}
 	void set_text_positions() {
 		for(unsigned i=0; i<2; ++i)
-			texts.set_position(i, text_handles[i]->pos);
+			texts.set_position(i, text_handles[i]->position);
 
-		ivec2 p(text_handles[0]->pos);
+		ivec2 p(text_handles[0]->position);
 		std::string pos_str = "(";
 		pos_str += std::to_string(p.x());
 		pos_str += ", ";
@@ -530,7 +520,7 @@ public:
 	}
 	void set_resolution_uniform(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 		prog.enable(ctx);
-		prog.set_uniform(ctx, "resolution", viewport_rect.size());
+		prog.set_uniform(ctx, "resolution", viewport_rect.size);
 		prog.disable(ctx);
 	}
 	void set_default_styles() {
@@ -566,6 +556,8 @@ public:
 		set_default_shape_style(text_style);
 		set_default_shape_style(line_style);
 		set_default_shape_style(arrow_style);
+
+		text_style.feather_origin = 0.5f;
 		line_style.width = 20.0f;
 		line_style.use_fill_color = false;
 		arrow_style.stem_width = 20.0f;
@@ -579,8 +571,8 @@ public:
 		s.use_blending = true;
 	}
 	mat3 get_view_matrix() {
-		mat3 T0 = cgv::math::translate2h(vec2(-viewport_rect.box.get_center()));
-		mat3 T1 = cgv::math::translate2h(vec2(viewport_rect.box.get_center()));
+		mat3 T0 = cgv::math::translate2h(vec2(-viewport_rect.center()));
+		mat3 T1 = cgv::math::translate2h(vec2(viewport_rect.center()));
 		mat3 T = cgv::math::translate2h(vec2(view_params.translation));
 		mat3 S = cgv::math::scale2h(vec2(view_params.scale));
 		mat3 R = cgv::math::rotate2h(view_params.angle);
@@ -653,9 +645,8 @@ public:
 		if(begin_tree_node("Text Style", text_style, false)) {
 			align("\a");
 			add_gui("text_style", text_style);
-			add_member_control(this, "Font Size", font_size, "value_slider", "min=1;max=256;step=0.5;ticks=true");
 			add_member_control(this, "Horizontal Alignment", text_align_h, "dropdown", "enums='Center=0,Left=1,Right=2'");
-			add_member_control(this, "Vertical Alignment", text_align_v, "dropdown", "enums='Center=0,Top=4,Botom=8'");
+			add_member_control(this, "Vertical Alignment", text_align_v, "dropdown", "enums='Center=0,Top=4,Bottom=8'");
 			add_member_control(this, "Angle", text_angle, "value_slider", "min=0;max=360;step=0.1;ticks=true");
 			align("\b");
 			end_tree_node(text_style);

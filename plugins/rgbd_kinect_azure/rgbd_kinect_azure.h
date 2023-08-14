@@ -9,6 +9,7 @@
 #include <mutex>
 #include <atomic>
 #include <k4a/k4a.hpp>
+#include <k4a/k4atypes.h>
 #define INVALID INT32_MIN
 
 namespace rgbd {
@@ -52,6 +53,19 @@ namespace rgbd {
 		bool is_attached() const;
 		/// detach from serial (done automatically in constructor
 		bool detach();
+
+		/// check whether a multi-device role is supported
+		bool is_supported(MultiDeviceRole mdr) const;
+		/// configure device for a multi-device role and return whether this was successful (do this before starting)
+		bool configure_role(MultiDeviceRole mdr);
+
+		/// get range, step and default value of color control parameter
+		const std::vector<color_parameter_info>& get_supported_color_control_parameter_infos() const;
+		/// query color control value and whether its adjustment is in automatic mode
+		std::pair<int32_t, bool> get_color_control_parameter(ColorControlParameter ccp) const;
+		/// set a color control value and automatic mode and return whether successful
+		bool set_color_control_parameter(ColorControlParameter ccp, int32_t value, bool automatic_mode);
+
 		/// check whether rgbd device has inertia measurement unit
 		bool has_IMU() const;
 		/// return additional information on inertia measurement unit
@@ -66,6 +80,8 @@ namespace rgbd {
 		bool start_device(InputStreams is, std::vector<stream_format>& stream_formats);
 		/// start the rgbd device with given stream formats 
 		virtual bool start_device(const std::vector<stream_format>& stream_formats);
+		///
+		bool query_calibration(InputStreams is, cgv::math::camera<double>& cam);
 		/// stop the camera
 		bool stop_device();
 		/// return whether device has been started
@@ -77,6 +93,14 @@ namespace rgbd {
 			frame_type& warped_color_frame) const;
 		/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
+
+
+		void invert_2x2(const float J[2 * 2], float Jinv[2 * 2]) const; 
+		bool transformation_iterative_unproject(const float* uv, float* xy, bool valid, unsigned int max_passes) const;
+		bool transformation_project_internal(const k4a_calibration_camera_t* camera_calibration_tt, const float xy[2],
+											 float uv[2], bool valid, float J_xy[2 * 2]) const;
+		bool transformation_unproject_internal(const k4a_calibration_camera_t* camera_calibration, const float uv[2],
+											   float xy[2], bool valid) const;
 
 		virtual bool get_emulator_configuration(emulator_parameters& parameters) const override;
 		// undistort
@@ -97,6 +121,7 @@ namespace rgbd {
 		void remap(const k4a_image_t src, const k4a_image_t lut, k4a_image_t dst, interpolation_t type);
 
 	private:
+		mutable std::vector<color_parameter_info> ccp_infos;
 		std::unique_ptr<k4a::error> capture_thread_device_error;
 		std::atomic<bool> capture_thread_has_new_messages = false;
 		bool capture_thread_broken = false;
@@ -112,7 +137,8 @@ namespace rgbd {
 		
 		mutable std::mutex capture_lock;
 		volatile bool has_new_color_frame, has_new_depth_frame, has_new_ir_frame;
-		std::unique_ptr<rgbd::frame_type> color_frame, depth_frame, ir_frame;
+		unsigned frame_cache_size = 4, current_read_color_frame = 0, current_write_color_frame = 0, current_read_depth_frame = 0, current_write_depth_frame = 0, current_read_ir_frame = 0, current_write_ir_frame = 0;
+		std::vector<std::unique_ptr<rgbd::frame_type>> color_frames, depth_frames, ir_frames;
 		//rgbd::frame_type *color_frame =nullptr, *depth_frame=nullptr, *ir_frame=nullptr;
 		bool imu_enabled;
 		mutable IMU_measurement imu_data;
@@ -120,6 +146,9 @@ namespace rgbd {
 		k4a::calibration camera_calibration;
 		k4a::transformation camera_transform;
 		k4a_calibration_intrinsic_parameters_t* intrinsics;
+		k4a_calibration_intrinsics_t* intrinsics_t;
+		k4a_calibration_camera_t* camera_calibration_t;
+		k4a_calibration_t* calibration_t;
 
 		int returnCode = 1;
 		k4a_device_t device_t = NULL;

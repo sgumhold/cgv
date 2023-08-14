@@ -130,7 +130,7 @@ namespace rgbd {
 	}
 	bool rgbd_emulation::put_IMU_measurement(IMU_measurement& m, unsigned time_out) const
 	{
-		m.angular_acceleration[0] = m.angular_acceleration[1] = m.angular_acceleration[2] = 0.0f;
+		m.angular_velocity[0] = m.angular_velocity[1] = m.angular_velocity[2] = 0.0f;
 		m.linear_acceleration[0] = m.linear_acceleration[1] = m.linear_acceleration[2] = 0.0f;
 		m.time_stamp = 0;
 		return true;
@@ -304,7 +304,7 @@ namespace rgbd {
 		}
 
 		double inv_fps = 1000.f / stream->fps;
-		double current_frame_time = chrono::duration_cast<milliseconds>(chrono::steady_clock::now().time_since_epoch()).count();
+		double current_frame_time = (double)chrono::duration_cast<milliseconds>(chrono::steady_clock::now().time_since_epoch()).count();
 		
 		//limit fps
 		if (current_frame_time < *last_frame_time+inv_fps) {
@@ -340,7 +340,7 @@ namespace rgbd {
 			return false;
 		}
 
-		frame.buffer_size = data.size();
+		frame.buffer_size = (unsigned)data.size();
 		if (frame.frame_data.size() != frame.buffer_size) {
 			frame.frame_data.resize(frame.buffer_size);
 		}

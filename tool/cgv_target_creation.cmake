@@ -7,10 +7,14 @@ function(cgv_format_list OUTPUT_VAR LIST_VAR)
 	endif()
 endfunction()
 
-# retrieves a CGV-specific property and returns its content if any, otherwise returns something that evaluates to FALSE under
-# CMake's rules
+# retrieves a CGV-specific property and returns its content if any, otherwise returns something that evaluates to FALSE
+# under CMake's rules
 function(cgv_query_property OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
-	get_target_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
+	if (NOT TARGET_NAME STREQUAL "GLOBAL")
+		get_target_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
+	else()
+		get_property(PROPVAL GLOBAL PROPERTY ${PROPERTY_NAME})
+	endif()
 	if (PROPVAL AND NOT PROPVAL STREQUAL "PROPVAL-NOTFOUND")
 		set(${OUTPUT_VAR} "${PROPVAL}" PARENT_SCOPE)
 	else()
@@ -18,7 +22,23 @@ function(cgv_query_property OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
 	endif()
 endfunction()
 
-# helper function for properties: formats a string representing the property value that will say "<none>" if the property is empty
+# retrieves a CGV-specific property that is suppposed to be a list and returns its content if any, otherwise returns
+# something that evaluates to and empty list under CMake's rules
+function(cgv_query_listproperty OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
+	if (NOT TARGET_NAME STREQUAL "GLOBAL")
+		get_target_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
+	else()
+		get_property(PROPVAL GLOBAL PROPERTY ${PROPERTY_NAME})
+	endif()
+	if (PROPVAL AND NOT PROPVAL STREQUAL "PROPVAL-NOTFOUND")
+		set(${OUTPUT_VAR} "${PROPVAL}" PARENT_SCOPE)
+	else()
+		set(${OUTPUT_VAR} "" PARENT_SCOPE)
+	endif()
+endfunction()
+
+# helper function for properties: formats a string representing the property value that will say "<none>" if the property
+# is empty
 function(cgv_format_property_value OUTPUT_VAR TARGET_NAME PROPERTY_NAME)
 	cgv_query_property(PROPVAL ${TARGET_NAME} ${PROPERTY_NAME})
 	cgv_format_list(PROPVAL_FORMATTED "${PROPVAL}")
@@ -68,7 +88,8 @@ function(cgv_get_all_directory_targets TARGETS_VAR DIRECTORY)
 	set(${TARGETS_VAR} ${MY_TARGETS} PARENT_SCOPE)
 endfunction()
 
-# checks if the given target is some kind of CGV Framework component, and if yes, optionally returns the type of the component
+# checks if the given target is some kind of CGV Framework component, and if yes, optionally returns the type of the
+# component
 function(cgv_is_cgvtarget CHECK_RESULT_OUT TARGET_NAME)
 	cmake_parse_arguments(
 		PARSE_ARGV 2 CGVARG_ "" "GET_TYPE" ""
@@ -134,8 +155,8 @@ endfunction()
 
 # filters all plugins from a list of targets
 function(cgv_filter_for_plugins PLUGIN_LIST_OUT GUI_PROVIDER_PLUGIN_OUT TARGET_NAMES)
-	# Make sure the variable requested to contain the GUI provider will evaluate to the FALSE value when no GUI provider is among
-	# the given list of dependencies
+	# Make sure the variable requested to contain the GUI provider will evaluate to the FALSE value when no GUI provider
+	# is among the given list of dependencies
 	set(GUI_PROVIDER_PLUGIN_LOCAL FALSE)
 
 	# check TYPE property of each target
@@ -164,11 +185,12 @@ function(cgv_get_static_or_exe_name STATIC_NAME_OUT EXE_NAME_OUT TARGET_NAME IS_
 	set(${STATIC_NAME_OUT} "${TARGET_NAME}_static" PARENT_SCOPE)
 endfunction()
 
-# internal helper function that takes over deferred computations that require other targets to have already been fully defined
+# internal helper function that takes over deferred computations that require other targets to have already been fully
+# defined
 # - global state the function can modify
 set(VSCODE_LAUNCH_JSON_CONFIG_LIST "")
 # - the actual function
-function(cgv_do_deferred_ops TARGET_NAME)
+function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 	# output notification of deferred operation
 	get_target_property(TARGET_TYPE ${TARGET_NAME} CGVPROP_TYPE)
 	message(STATUS "Performing deferred operations for ${TARGET_TYPE} '${TARGET_NAME}'")
@@ -264,8 +286,17 @@ function(cgv_do_deferred_ops TARGET_NAME)
 		endif()
 
 		# create launch script and .vscode config in case of Make- and Ninja-based generators when the plugin is executable
-		if (NOT NO_EXECUTABLE AND (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
+		# - check if a specific working directory was requested
+		cgv_query_property(WORKING_DIR ${TARGET_NAME} CGVPROP_WORKING_DIR)
+		if (NOT WORKING_DIR)
 			set(WORKING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+		endif()
+		# - create actual launch/debug config
+		set(DO_CREATE_LAUNCH_CONFIG TRUE)
+		if (CONFIGURING_CGV AND NO_EXECUTABLE)
+			set(DO_CREATE_LAUNCH_CONFIG FALSE)
+		endif()
+		if (DO_CREATE_LAUNCH_CONFIG AND (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
 			configure_file(
 				"${CGV_DIR}/make/cmake/run_plugin.sh.in" "${CMAKE_BINARY_DIR}/run_${TARGET_NAME}.sh"
 				FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
@@ -277,24 +308,29 @@ function(cgv_do_deferred_ops TARGET_NAME)
 				USE_SOURCE_PERMISSIONS
 			)
 
+			set(NO_EXE_FLAG "")
+			if (NO_EXECUTABLE)
+				set(NO_EXE_FLAG "NO_EXECUTABLE")
+			endif()
 			concat_vscode_launch_json_content(
-				VSCODE_TARGET_LAUNCH_JSON_CONFIGS
-				${TARGET_NAME} PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS} EXE_ARGS ${ADDITIONAL_ARGS} WORKING_DIR ${WORKING_DIR}
+				VSCODE_TARGET_LAUNCH_JSON_CONFIGS ${TARGET_NAME} ${NO_EXE_FLAG} WORKING_DIR ${WORKING_DIR}
+				PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS} EXE_ARGS ${ADDITIONAL_ARGS}
 			)
 			if (NOT VSCODE_LAUNCH_JSON_CONFIG_LIST OR VSCODE_LAUNCH_JSON_CONFIG_LIST STREQUAL "")
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS}" PARENT_SCOPE)
-			elseif (CGV_IS_CONFIGURING)
+			elseif (CONFIGURING_CGV)
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_LAUNCH_JSON_CONFIG_LIST},\n${VSCODE_TARGET_LAUNCH_JSON_CONFIGS}" PARENT_SCOPE)
 			else()
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS},\n${VSCODE_LAUNCH_JSON_CONFIG_LIST}" PARENT_SCOPE)
 			endif()
-		else()
-			# try to set relevant options for all other generators in the hopes of ending up with a valid launch/debug configuration
+		elseif(DO_CREATE_LAUNCH_CONFIG)
+			# try to set relevant options for all other generators in the hopes of ending up with a valid launch/debug
+			# configuration
+			cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
+			set_plugin_execution_params(${TARGET_NAME} ARGUMENTS ${CMD_LINE_ARGS_STRING})
+			set_plugin_execution_working_dir(${TARGET_NAME} ${WORKING_DIR})
 			if (NOT NO_EXECUTABLE)
-				cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
-				set_plugin_execution_params(${TARGET_NAME} ARGUMENTS ${CMD_LINE_ARGS_STRING})
 				set_plugin_execution_params(${NAME_EXE} ARGUMENTS ${ADDITIONAL_ARGS_STRING} ALTERNATIVE_COMMAND $<TARGET_FILE:${NAME_EXE}>)
-				set_plugin_execution_working_dir(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 				set_plugin_execution_working_dir(${NAME_EXE} ${CMAKE_CURRENT_SOURCE_DIR})
 			endif()
 		endif()
@@ -303,8 +339,6 @@ endfunction()
 
 # internal helper function that will perform final deferred operations after the very last cgv target has been
 # added either by the Framework itself or by any other projects that use the Framework from the outside
-# - global state the function will access
-set(USER_TARGETS "")
 # - the actual function
 function(cgv_do_final_operations)
 	message(STATUS "Performing final operations")
@@ -316,6 +350,7 @@ function(cgv_do_final_operations)
 	if (CGV_EXCLUDE_UNUSED_TARGETS)
 		cgv_get_all_directory_targets(CGV_FRAMEWORK_TARGETS ${CGV_DIR} RECURSIVE)
 		set(ALL_USER_DEPENDENCIES "")
+		cgv_query_listproperty(USER_TARGETS GLOBAL "CGVPROP_USER_TARGETS")
 		foreach(USER_TARGET ${USER_TARGETS})
 			cgv_gather_dependencies(DEPENDENCIES ${USER_TARGET} RECURSION_CONVERGENCE_HELPER)
 			list(APPEND ALL_USER_DEPENDENCIES ${DEPENDENCIES})
@@ -326,7 +361,7 @@ function(cgv_do_final_operations)
 		set(EXCLUDED_CGV_FRAMEWORK_TARGETS "")
 		foreach(CGV_FRAMEWORK_TARGET ${CGV_FRAMEWORK_TARGETS})
 			if (    NOT ${CGV_FRAMEWORK_TARGET} IN_LIST CGV_BUILD_TOOLS
-			    AND NOT ${CGV_FRAMEWORK_TARGET} IN_LIST ALL_USER_DEPENDENCIES)
+				AND NOT ${CGV_FRAMEWORK_TARGET} IN_LIST ALL_USER_DEPENDENCIES)
 				list(APPEND EXCLUDED_CGV_FRAMEWORK_TARGETS ${CGV_FRAMEWORK_TARGET})
 				set_target_properties(${CGV_FRAMEWORK_TARGET} PROPERTIES EXCLUDE_FROM_ALL TRUE)
 				set_target_properties(${CGV_FRAMEWORK_TARGET} PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD TRUE)
@@ -396,8 +431,8 @@ endfunction()
 function(cgv_add_target NAME)
 	cmake_parse_arguments(
 		PARSE_ARGV 1 CGVARG_
-		"NO_EXECUTABLE" "TYPE;OVERRIDE_SHARED_EXPORT_DEFINE;OVERRIDE_FORCE_STATIC_DEFINE"
-		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;ADDITIONAL_PRIVATE_DEFINES;ADDITIONAL_PUBLIC_DEFINES;DEPENDENCIES;LINKTIME_PLUGIN_DEPENDENCIES;ADDITIONAL_CMDLINE_ARGS"
+		"NO_EXECUTABLE" "TYPE;OVERRIDE_SHARED_EXPORT_DEFINE;OVERRIDE_FORCE_STATIC_DEFINE;WORKING_DIR"
+		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;ADDITIONAL_PRIVATE_DEFINES;ADDITIONAL_PUBLIC_DEFINES;DEPENDENCIES;LINKTIME_PLUGIN_DEPENDENCIES;ADDITIONAL_INCLUDE_PATHS;ADDITIONAL_LINKER_PATHS;ADDITIONAL_CMDLINE_ARGS"
 	)
 
 	# prelude
@@ -459,16 +494,16 @@ function(cgv_add_target NAME)
 	endif ()
 	# - generic resources (e.g. images, icons)
 	if (CGVARG__RESOURCES)
-		cgv_prepare_resources(${CMAKE_SOURCE_DIR} RESOURCE_SRCFILES ${CGVARG__RESOURCES})
+		cgv_prepare_resources(${CMAKE_CURRENT_SOURCE_DIR} RESOURCE_SRCFILES ${CGVARG__RESOURCES})
 	endif()
 	# - audio resources
 	if (CGVARG__AUDIO_RESOURCES AND CGV_BUILD_WITH_AUDIO)
-		cgv_prepare_resources(${CMAKE_SOURCE_DIR} AUDIO_RESOURCE_SRCFILES ${CGVARG__AUDIO_RESOURCES})
+		cgv_prepare_resources(${CMAKE_CURRENT_SOURCE_DIR} AUDIO_RESOURCE_SRCFILES ${CGVARG__AUDIO_RESOURCES})
 	else()
 		set(CGVARG__AUDIO_RESOURCES "")
 	endif()
 
-	# prepare all files for inclusion in the target 	 	 	 cgv_viewer
+	# prepare all files for inclusion in the target
 	set(ALL_SOURCES
 		${CGVARG__SOURCES} ${PPP_FILES} ${CGVARG__PPP_SOURCES} ${CGVARG__HEADERS} ${ST_FILES} ${SHADERS}
 		${RESOURCE_SRCFILES} ${CGVARG__RESOURCES}
@@ -483,7 +518,7 @@ function(cgv_add_target NAME)
 
 	# for plugin builds
 	if (IS_STATIC)
-		# Moreso than indicating the type of object that will be generated from the target, the static suffix
+		# Moreso than indicating the type of object that will be generated from the target, the _static suffix
 		# indicates in what type of build the target will be used. The framework knows plugin builds and single
 		# executable builds - the latter one links the static variants of all targets it depends on into an
 		# executable, while the former will use the non-static versions of all library targets (usually, those
@@ -507,6 +542,10 @@ function(cgv_add_target NAME)
 	# set custom defines
 	target_compile_definitions(${NAME} PRIVATE ${CGVARG__ADDITIONAL_PRIVATE_DEFINES})
 	target_compile_definitions(${NAME} PUBLIC  ${CGVARG__ADDITIONAL_PUBLIC_DEFINES})
+	# set compile options
+	target_compile_options(${NAME} PRIVATE ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS})
+	# handle dependencies
+	target_link_directories(${NAME} PRIVATE ${CGVARG__ADDITIONAL_LINKER_PATHS})
 	foreach (DEPENDENCY ${CGVARG__DEPENDENCIES})
 		# find out dependency type
 		cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY} GET_TYPE DEPENDENCY_TYPE)
@@ -529,6 +568,7 @@ function(cgv_add_target NAME)
 	endif()
 
 	target_include_directories(${NAME} PUBLIC
+			${CGVARG__ADDITIONAL_INCLUDE_PATHS}
 			"$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>"
 			"$<BUILD_INTERFACE:${CGV_DIR}>"
 			"$<BUILD_INTERFACE:${PPP_INCLUDES}>"
@@ -554,7 +594,9 @@ function(cgv_add_target NAME)
 	set_target_properties(${NAME_STATIC} PROPERTIES CGVPROP_SHADERPATH "${SHADER_PATH}")
 	target_compile_definitions(${NAME_STATIC} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
 	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC" ${CGVARG__ADDITIONAL_PUBLIC_DEFINES})
+	target_compile_options(${NAME_STATIC} PUBLIC ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS})
 
+	target_link_directories(${NAME_STATIC} PUBLIC ${CGVARG__ADDITIONAL_LINKER_PATHS})
 	if (NOT MSVC)
 		target_link_options(${NAME_STATIC} PUBLIC -Wl,--copy-dt-needed-entries)
 	endif()
@@ -574,6 +616,7 @@ function(cgv_add_target NAME)
 	endforeach()
 
 	target_include_directories(${NAME_STATIC} PUBLIC
+		${CGVARG__ADDITIONAL_INCLUDE_PATHS}
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>"
 		"$<BUILD_INTERFACE:${CGV_DIR}>"
 		"$<BUILD_INTERFACE:${PPP_INCLUDES}>"
@@ -590,8 +633,8 @@ function(cgv_add_target NAME)
 		target_compile_definitions(${NAME_EXE} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
 		target_include_directories(
 			${NAME_EXE} PUBLIC
-			"$<BUILD_INTERFACE:${CGV_DIR}>" "$<BUILD_INTERFACE:${CGV_DIR}/libs>" "$<BUILD_INTERFACE:${PPP_INCLUDES}>"
-			"$<BUILD_INTERFACE:${ST_INCLUDE}>" "$<INSTALL_INTERFACE:include>"
+			${CGVARG__ADDITIONAL_INCLUDE_PATHS} "$<BUILD_INTERFACE:${CGV_DIR}>" "$<BUILD_INTERFACE:${CGV_DIR}/libs>"
+			"$<BUILD_INTERFACE:${PPP_INCLUDES}>" "$<BUILD_INTERFACE:${ST_INCLUDE}>" "$<INSTALL_INTERFACE:include>"
 		)
 		target_link_libraries(${NAME_EXE} PRIVATE ${NAME_STATIC})
 	endif()
@@ -624,14 +667,18 @@ function(cgv_add_target NAME)
 		set_target_properties(${NAME} PROPERTIES CGVPROP_ADDITIONAL_CMDLINE_ARGS "${CGVARG__ADDITIONAL_CMDLINE_ARGS}")
 	endif()
 
+	# commit custom run/debug working directory if requested
+	if (IS_PLUGIN AND CGVARG__WORKING_DIR)
+		set_target_properties(${NAME} PROPERTIES CGVPROP_WORKING_DIR "${CGVARG__WORKING_DIR}")
+	endif()
+
 	# record whether this target is added by the CGV Framework itself or by another project using it
 	if (NOT CGV_IS_CONFIGURING)
-		set(USER_TARGETS_LOCAL ${USER_TARGETS})
-		list(APPEND USER_TARGETS_LOCAL ${NAME} ${NAME_STATIC})
+		list(APPEND MY_TARGETS ${NAME} ${NAME_STATIC})
 		if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
-			list(APPEND USER_TARGETS_LOCAL ${NAME_EXE})
+			list(APPEND MY_TARGETS ${NAME_EXE})
 		endif()
-		set(USER_TARGETS "${USER_TARGETS_LOCAL}" PARENT_SCOPE)
+		set_property(GLOBAL APPEND PROPERTY "CGVPROP_USER_TARGETS" ${MY_TARGETS})
 	endif()
 
 	# IDE fluff
@@ -675,9 +722,9 @@ function(cgv_add_target NAME)
 	# schedule deferred ops
 	# - for the created target
 	if (CGV_IS_CONFIGURING)
-		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CGV_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
+		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CGV_DIR} CALL cgv_do_deferred_ops [[${NAME}]] TRUE)")
 	else()
-		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]])")
+		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]] FALSE)")
 	endif()
 	# - update final pass
 	cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CANCEL_CALL "_999_FINALOPS")
@@ -688,6 +735,111 @@ function(cgv_add_target NAME)
 		install(TARGETS ${NAME_EXE} EXPORT ${EXPORT_TARGET} DESTINATION ${CGV_BIN_DEST})
 	endif()
 endfunction()
+
+# add sources of a custom type with an associated build rule to the given CGV Framework component
+# NOTES:
+#	(1) when specifying the build output filename, every occurence of <<<FN>>> will be replaced by the pure name without
+#	    path and without the file extension (starting from the last dot) of the input source file, and every occurence of
+#	    <<<EXT>>> will be replaced with the original file extension (without the preceding dot) of the original input
+#	    source file
+#	(2) when specifying the tool command arguments, every occurence of <<<INFILE>>> will be replaced with the fully
+#	    qualified path to your source file, every occurence of <<<OUTFILE>>> will be replaced with the fully qualified
+#	    path to your target file build from the source file, and every occurence of <<<INFILE_PATH>>> will be replaced
+#	    with the fully qualified path to the directory containing the source file
+#	(3) by default, the rule is added to both normal (shared) and static variants of the component - you can select to
+#	    add it to only one or the other (or explicitly both) by specifying the SHARED and/or STATIC flags
+#	(4) secondary files included by the sources that can not be compiled by themselves (e.g. headers of some sort) can be
+#	    declared for inclusion in IDEs by listing them as HEADERS
+function(cgv_add_custom_sources TARGET_NAME)
+	cmake_parse_arguments(
+		PARSE_ARGV 1 CGVARG_ "SHARED;STATIC" "OUTFILE_TEMPLATE;BUILD_TOOL;BUILD_SUBDIR" "SOURCES;HEADERS;BUILD_TOOL_ARGS"
+	)
+
+	# preliminaries
+	cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
+	string(SUBSTRING ${CGVARG__BUILD_SUBDIR} 0 1 FIRST_LETTER)
+	string(TOUPPER ${FIRST_LETTER} FIRST_LETTER)
+	string(REGEX REPLACE "^.(.*)" "${FIRST_LETTER}\\1" SOURCE_GROUP_BASE "${CGVARG__BUILD_SUBDIR}")
+
+	# loop through every source file and add it to the build system using the provided custom rule
+	foreach(SOURCE ${CGVARG__SOURCES})
+		# preprocess filenames
+		get_filename_component(SRC_FULLPATH ${SOURCE} ABSOLUTE) # <-- evaluates with respect to CMAKE_CURRENT_SOURCE_DIR
+		get_filename_component(SRC_PATH_ONLY ${SRC_FULLPATH} DIRECTORY)
+		get_filename_component(SRC_FILE ${SOURCE} NAME)
+		get_filename_component(SRC_FILE_WITHOUT_EXT ${SOURCE} NAME_WLE)
+		get_filename_component(SRC_FILE_EXT ${SOURCE} LAST_EXT)
+		string(REGEX REPLACE ".(.*)" "\\1" SRC_FILE_EXT_WITHOUT_DOT ${SRC_FILE_EXT})
+		string(REGEX REPLACE "\\<\\<\\<FN>>>" "${SRC_FILE_WITHOUT_EXT}" OFILE_PROCESSED ${CGVARG__OUTFILE_TEMPLATE})
+		string(REGEX REPLACE "\\<\\<\\<EXT>>>" "${SRC_FILE_EXT_WITHOUT_DOT}" OFILE ${OFILE_PROCESSED})
+		set(OFILE_FULLPATH "${CMAKE_CURRENT_BINARY_DIR}/${CGVARG__BUILD_SUBDIR}/${OFILE}")
+
+		# determine which variants of the component to add the custom source to
+		if (NOT CGVARG__SHARED AND NOT CGVARG__STATIC)
+			set(NO_VARIANT_FLAGS TRUE)
+		endif()
+		if (NO_VARIANT_FLAGS OR CGVARG__SHARED)
+			set(ADD_TO_SHARED TRUE)
+		endif()
+		if (NO_VARIANT_FLAGS OR CGVARG__STATIC)
+			set(ADD_TO_STATIC TRUE)
+		endif()
+
+		# add custom build rule for the specified sources
+		set(BUILD_TOOL "$<IF:$<TARGET_EXISTS:${CGVARG__BUILD_TOOL}>,$<TARGET_FILE:${CGVARG__BUILD_TOOL}>,${CGVARG__BUILD_TOOL}>")
+		# - instantiate argument templates
+		set(TOOL_ARGS "")
+		foreach(TOOL_ARG ${CGVARG__BUILD_TOOL_ARGS})
+			string(REGEX REPLACE "\\<\\<\\<INFILE>>>" "${SRC_FULLPATH}" TOOL_ARG_PROCESSED0 ${TOOL_ARG})
+			string(REGEX REPLACE "\\<\\<\\<OUTFILE>>>" "${OFILE_FULLPATH}" TOOL_ARG_PROCESSED1 ${TOOL_ARG_PROCESSED0})
+			string(REGEX REPLACE "\\<\\<\\<INFILE_PATH>>>" "${SRC_PATH_ONLY}" TOOL_ARG_PROCESSED ${TOOL_ARG_PROCESSED1})
+			list(APPEND TOOL_ARGS ${TOOL_ARG_PROCESSED})
+		endforeach()
+		# - add the actual build rule
+		add_custom_command(
+			OUTPUT ${OFILE_FULLPATH}
+			COMMAND ${CMAKE_COMMAND} -E env CGV_DIR="${CGV_DIR}" CGV_OPTIONS="${CGV_OPTIONS}" ${BUILD_TOOL}
+			ARGS ${TOOL_ARGS}
+			WORKING_DIRECTORY $<PATH:GET_PARENT_PATH,${BUILD_TOOL}>
+			DEPENDS "${SRC_FULLPATH}"
+		)
+		# - tie the rule to the appropriate targets
+		if (ADD_TO_SHARED)
+			target_sources(${TARGET_NAME} PRIVATE "${OFILE_FULLPATH}" "${SRC_FULLPATH}")
+		elseif (NOT (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
+			# in case of IDE generators we still want to display the files even if they're not going to be build
+			target_sources(${TARGET_NAME} PRIVATE "${SRC_FULLPATH}")
+			set_source_files_properties(
+				"${SRC_FULLPATH}" TARGET_DIRECTORY ${TARGET_NAME}
+				PROPERTIES HEADER_FILE_ONLY TRUE
+			)
+		endif()
+		if (ADD_TO_STATIC)
+			target_sources(${NAME_STATIC} PRIVATE "${OFILE_FULLPATH}" "${SRC_FULLPATH}")
+		elseif (NOT (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
+			# in case of IDE generators we still want to display the files even if they're not going to be build
+			target_sources(${NAME_STATIC} PRIVATE "${SRC_FULLPATH}")
+			set_source_files_properties(
+				"${SRC_FULLPATH}" TARGET_DIRECTORY ${NAME_STATIC}
+				PROPERTIES HEADER_FILE_ONLY TRUE
+			)
+		endif()
+		# - IDE fluff
+		source_group("${SOURCE_GROUP_BASE}" FILES ${SRC_FULLPATH})
+		source_group("${SOURCE_GROUP_BASE}/processed" FILES ${OFILE_FULLPATH})
+	endforeach()
+
+	# loop through every header and make them show up in IDEs
+	if (NOT (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
+		foreach(HEADER ${CGVARG__HEADERS})
+			target_sources(${TARGET_NAME} PRIVATE ${HEADER})
+			target_sources(${NAME_STATIC} PRIVATE ${HEADER})
+			set_source_files_properties(${HEADER} PROPERTIES HEADER_FILE_ONLY TRUE)
+			source_group("${SOURCE_GROUP_BASE}" FILES ${HEADER})
+		endforeach()
+	endif()
+endfunction()
+
 
 
 
@@ -749,6 +901,7 @@ function(cgv_create_lib NAME)
 	endif()
 	set_target_properties(${NAME} PROPERTIES CGVPROP_SHADERPATH "${LIB_SHADER_PATH}")
 	target_compile_definitions(${NAME} PRIVATE "${NAME_UPPER}_EXPORTS")
+	target_compile_options(${NAME} PRIVATE ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS})
 	foreach (DEPENDENCY ${ARGS_DEPENDENCIES})
 		target_link_libraries(${NAME} PUBLIC ${DEPENDENCY})
 	endforeach ()
@@ -769,6 +922,7 @@ function(cgv_create_lib NAME)
 	# Static Library
 	add_library(${NAME_STATIC} OBJECT ${ALL_SOURCES} ${SHADER_REG_INCLUDE_FILE})
 	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC" "REGISTER_SHADER_FILES")
+	target_compile_options(${NAME} PUBLIC ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS})
 	foreach (DEPENDENCY ${ARGS_DEPENDENCIES})
 		if (${DEPENDENCY} STREQUAL "${CMAKE_DL_LIBS}")
 			continue()

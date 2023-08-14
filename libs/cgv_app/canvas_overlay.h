@@ -11,20 +11,18 @@
 namespace cgv {
 namespace app {
 
-class CGV_API canvas_overlay : public overlay {
+class CGV_API canvas_overlay : public overlay, public cgv::gui::theme_observer {
 private:
 	bool has_damage = true;
 	bool recreate_layout = true;
 	GLboolean blending_was_enabled = false;
 
 protected:
-	int last_theme_idx = -1;
-
 	cgv::render::managed_frame_buffer fbc;
 
 	cgv::g2d::canvas content_canvas, overlay_canvas;
 
-	bool blend_overlay = false;
+	bool blend_overlay;
 	
 	void init_overlay_style(cgv::render::context& ctx);
 
@@ -32,13 +30,9 @@ protected:
 
 	void post_recreate_layout();
 
-	void post_damage(bool redraw = true);
-
 	void clear_damage();
 
 	bool is_damaged() const;
-
-	bool ensure_theme();
 
 	void begin_content(cgv::render::context& ctx, bool clear_frame_buffer = true);
 	
@@ -48,17 +42,32 @@ protected:
 
 	void disable_blending();
 
+	void draw_impl(cgv::render::context& ctx);
+
+	virtual void init_styles(cgv::render::context& ctx) {}
+
 public:
 	/// creates an overlay in the bottom left corner with zero size using a canvas for 2d drawing
 	canvas_overlay();
 
 	void clear(cgv::render::context& ctx);
 
+	/// implement to handle member changes
+	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
+
+	/// default implementation of that calls handle_on_set and afterwards upates the member in the gui and post damage to the canvas overlay
+	virtual void on_set(void* member_ptr);
+
 	bool init(cgv::render::context& ctx);
 	void draw(cgv::render::context& ctx);
+	void finish_frame(cgv::render::context&);
 	virtual void draw_content(cgv::render::context& ctx) = 0;
 
 	void register_shader(const std::string& name, const std::string& filename);
+
+	virtual void handle_theme_change(const cgv::gui::theme_info& theme) override;
+
+	void post_damage(bool redraw = true);
 };
 
 typedef cgv::data::ref_ptr<canvas_overlay> canvas_overlay_ptr;

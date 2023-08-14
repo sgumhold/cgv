@@ -22,6 +22,7 @@ public:
 
 protected:
 	std::vector<vec2> ext;
+	std::vector<vec3> transl;
 	std::vector<quat> rot;
 
 	bool transfer(context& ctx, rectangle_renderer& r) {
@@ -29,6 +30,8 @@ protected:
 			r.set_position_array(ctx, this->pos);
 			if(ext.size() == this->size())
 				r.set_extent_array(ctx, ext);
+			if(transl.size() == this->size())
+				r.set_translation_array(ctx, transl);
 			if(rot.size() == this->size())
 				r.set_rotation_array(ctx, rot);
 			return true;
@@ -40,20 +43,22 @@ public:
 	void clear() {
 		super::clear();
 		ext.clear();
+		transl.clear();
 		rot.clear();
 	}
 
 	std::vector<vec2>& ref_ext() { return ext; }
+	std::vector<vec3>& ref_transl() { return transl; }
 	std::vector<quat>& ref_rot() { return rot; }
 
 	RDB_BASE_FUNC_DEF(rectangle_renderer, rectangle_render_style);
 
 	void add(const vec3& p) {
-		this->pos.push_back(p);
+		super::pos.push_back(p);
 	}
 
 	void add(const vec3& p, const vec2& e) {
-		this->pos.push_back(p);
+		super::pos.push_back(p);
 		ext.push_back(e);
 	}
 
@@ -61,8 +66,13 @@ public:
 		rot.push_back(r);
 	}
 
+	void add(const vec3& t, const quat& r) {
+		transl.push_back(t);
+		rot.push_back(r);
+	}
+
 	void add(const ColorType& c) {
-		this->col.push_back(c);
+		super::col.push_back(c);
 	}
 
 	void add(const vec3& p, const vec2& e, const ColorType& c) {
@@ -76,18 +86,18 @@ public:
 	}
 
 	void fill(const vec2& e) {
-		for(size_t i = ext.size(); i < ext.size(); ++i)
+		for(size_t i = ext.size(); i < super::pos.size(); ++i)
 			ext.push_back(e);
 	}
 
 	void fill(const quat& r) {
-		for(size_t i = rot.size(); i < rot.size(); ++i)
+		for(size_t i = rot.size(); i < super::pos.size(); ++i)
 			rot.push_back(r);
 	}
 
 	void fill(const ColorType& c) {
-		for(size_t i = this->col.size(); i < this->pos.size(); ++i)
-			this->col.push_back(c);
+		for(size_t i = super::col.size(); i < super::pos.size(); ++i)
+			super::col.push_back(c);
 	}
 };
 

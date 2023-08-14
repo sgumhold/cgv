@@ -20,7 +20,11 @@ public:
 	event_handler();
 	/// grab the focus in all parent nodes
 	bool grab_focus();
+	/// <summary>
 	/// overload and implement this method to handle events
+	/// </summary>
+	/// <param name="e">to be handled event (use e.get_kind() to check event type)</param>
+	/// <returns>return true for handled events and false otherwise. Other event handlers (e.g. parents) only receive unhandled events if false is returned</returns>
 	virtual bool handle(event& e) = 0;
 	/// overload to stream help information to the given output stream
 	virtual void stream_help(std::ostream& os) = 0;

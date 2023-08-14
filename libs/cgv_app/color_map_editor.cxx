@@ -11,6 +11,11 @@
 namespace cgv {
 namespace app {
 
+const float color_map_editor::color_point::default_width = 12.0f;
+const float color_map_editor::color_point::default_height = 18.0f;
+
+const float color_map_editor::opacity_point::default_size = 12.0f;
+
 color_map_editor::color_map_editor() {
 
 	set_name("Color Scale Editor");
@@ -38,15 +43,17 @@ color_map_editor::color_map_editor() {
 	cmc.color_points.set_constraint(layout.color_handles_rect);
 	cmc.color_points.set_drag_callback(std::bind(&color_map_editor::handle_color_point_drag, this));
 	cmc.color_points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
+	cmc.color_points.set_selection_change_callback(std::bind(&color_map_editor::handle_drag_end, this));
 
 	cmc.opacity_points.set_constraint(layout.opacity_editor_rect);
 	cmc.opacity_points.set_drag_callback(std::bind(&color_map_editor::handle_opacity_point_drag, this));
 	cmc.opacity_points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
+	cmc.opacity_points.set_selection_change_callback(std::bind(&color_map_editor::handle_drag_end, this));
 
-	color_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::arrow);
-	opacity_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::rectangle);
-	line_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::line);
-	polygon_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::polygon);
+	color_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::arrow);
+	opacity_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
+	line_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::line);
+	polygon_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::polygon);
 }
 
 void color_map_editor::clear(cgv::render::context& ctx) {
@@ -62,7 +69,7 @@ void color_map_editor::clear(cgv::render::context& ctx) {
 	preview_tex.destruct(ctx);
 	hist_tex.destruct(ctx);
 
-	cgv::g2d::ref_msdf_font(ctx, -1);
+	cgv::g2d::ref_msdf_font_regular(ctx, -1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
 }
 
@@ -141,9 +148,9 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 			}
 		}
 
-		if(cmc.color_points.handle(e, last_viewport_size, container))
+		if(cmc.color_points.handle(e, get_viewport_size(), get_overlay_rectangle()))
 			return true;
-		if(cmc.opacity_points.handle(e, last_viewport_size, container))
+		if(cmc.opacity_points.handle(e, get_viewport_size(), get_overlay_rectangle()))
 			return true;
 	}
 	return false;
@@ -231,8 +238,8 @@ void color_map_editor::on_set(void* member_ptr) {
 
 bool color_map_editor::init(cgv::render::context& ctx) {
 	
-	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
-	register_shader("circle", cgv::g2d::canvas::shaders_2d::circle);
+	register_shader("rectangle", cgv::g2d::shaders::rectangle);
+	register_shader("circle", cgv::g2d::shaders::circle);
 	register_shader("histogram", "heightfield1d.glpr");
 	register_shader("background", "color_map_editor_bg.glpr");
 
@@ -243,19 +250,15 @@ bool color_map_editor::init(cgv::render::context& ctx) {
 	success &= line_renderer.init(ctx);
 	success &= polygon_renderer.init(ctx);
 
-	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font(ctx, 1);
+	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font_regular(ctx, 1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
 
 	if(font.is_initialized()) {
 		cursor_labels.set_msdf_font(&font);
-		cursor_labels.set_font_size(cursor_label_size);
-
-		cursor_labels.add_text("-");
-		cursor_labels.add_text("+");
+		cursor_labels.add_text("-", vec2(0.0f));
+		cursor_labels.add_text("+", vec2(0.0f));
 
 		value_labels.set_msdf_font(&font);
-		value_labels.set_font_size(value_label_size);
-
 		value_labels.add_text("", ivec2(0), cgv::render::TA_BOTTOM);
 	}
 
@@ -284,7 +287,7 @@ void color_map_editor::init_frame(cgv::render::context& ctx) {
 		layout.update(container_size, supports_opacity);
 
 		auto& bg_prog = content_canvas.enable_shader(ctx, "background");
-		float width_factor = static_cast<float>(layout.opacity_editor_rect.size().x()) / static_cast<float>(layout.opacity_editor_rect.size().y());
+		float width_factor = static_cast<float>(layout.opacity_editor_rect.w()) / static_cast<float>(layout.opacity_editor_rect.h());
 		bg_style.texcoord_scaling = vec2(5.0f * width_factor, 5.0f);
 		bg_style.apply(ctx, bg_prog);
 		content_canvas.disable_current_shader(ctx);
@@ -294,12 +297,6 @@ void color_map_editor::init_frame(cgv::render::context& ctx) {
 		update_geometry();
 		cmc.color_points.set_constraint(layout.color_handles_rect);
 		cmc.opacity_points.set_constraint(layout.opacity_editor_rect);
-	}
-
-	if(ensure_theme()) {
-		init_styles(ctx);
-		update_geometry();
-		post_recreate_gui();
 	}
 }
 
@@ -324,16 +321,17 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 		// draw color scale texture
 		color_map_style.apply(ctx, rect_prog);
 		preview_tex.enable(ctx, 0);
-		cc.draw_shape(ctx, layout.color_editor_rect.pos(), layout.color_editor_rect.size());
+		cc.draw_shape(ctx, layout.color_editor_rect);
 		preview_tex.disable(ctx);
 		cc.disable_current_shader(ctx);
 
 		if(supports_opacity) {
 			// draw opacity editor checkerboard background
 			auto& bg_prog = cc.enable_shader(ctx, "background");
+			bg_style.apply(ctx, bg_prog);
 			bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
 			bg_tex.enable(ctx, 0);
-			cc.draw_shape(ctx, layout.opacity_editor_rect.pos(), layout.opacity_editor_rect.size());
+			cc.draw_shape(ctx, layout.opacity_editor_rect);
 			bg_tex.disable(ctx);
 			cc.disable_current_shader(ctx);
 
@@ -346,24 +344,24 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 				hist_style.apply(ctx, hist_prog);
 
 				hist_tex.enable(ctx, 1);
-				cc.draw_shape(ctx, layout.opacity_editor_rect.pos(), layout.opacity_editor_rect.size());
+				cc.draw_shape(ctx, layout.opacity_editor_rect);
 				hist_tex.disable(ctx);
 				cc.disable_current_shader(ctx);
 			}
 
 			preview_tex.enable(ctx, 0);
 			// draw transfer function area polygon
-			polygon_renderer.render(ctx, cc, cgv::render::PT_TRIANGLE_STRIP, cmc.triangles);
+			polygon_renderer.render(ctx, cc, cgv::render::PT_TRIANGLE_STRIP, cmc.triangles, polygon_style);
 
 			// draw transfer function lines
-			line_renderer.render(ctx, cc, cgv::render::PT_LINE_STRIP, cmc.lines);
+			line_renderer.render(ctx, cc, cgv::render::PT_LINE_STRIP, cmc.lines, line_style);
 			preview_tex.disable(ctx);
 
 			// draw separator line
 			rect_prog = cc.enable_shader(ctx, "rectangle");
 			border_style.apply(ctx, rect_prog);
 			cc.draw_shape(ctx,
-				ivec2(layout.color_editor_rect.pos().x(), layout.color_editor_rect.box.get_max_pnt().y()),
+				ivec2(layout.color_editor_rect.x(), layout.color_editor_rect.y1()),
 				ivec2(container_size.x() - 2 * layout.padding, 1)
 			);
 			cc.disable_current_shader(ctx);
@@ -371,14 +369,14 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 
 		// draw control points
 		// color handles
-		color_handle_renderer.render(ctx, cc, cgv::render::PT_LINES, cmc.color_handles);
+		color_handle_renderer.render(ctx, cc, cgv::render::PT_LINES, cmc.color_handles, color_handle_style);
 
 		// opacity handles
 		if(supports_opacity) {
 			auto& opacity_handle_prog = opacity_handle_renderer.enable_prog(ctx);
 			// size is constant for all points
-			opacity_handle_prog.set_attribute(ctx, "size", vec2(2.0f*6.0f));
-			opacity_handle_renderer.render(ctx, cc, cgv::render::PT_POINTS, cmc.opacity_handles);
+			opacity_handle_prog.set_attribute(ctx, "size", vec2(opacity_point::default_size));
+			opacity_handle_renderer.render(ctx, cc, cgv::render::PT_POINTS, cmc.opacity_handles, opacity_handle_style);
 		}
 	} else {
 		cc.disable_current_shader(ctx);
@@ -393,7 +391,7 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 
 		ivec2 position = value_labels.ref_texts()[0].position;
 		position.y() += 5;
-		ivec2 size = static_cast<ivec2>(value_labels.get_text_render_size(0));
+		ivec2 size = static_cast<ivec2>(value_labels.get_text_render_size(0, value_label_style.font_size));
 		size += ivec2(10, 6);
 
 		cc.draw_shape(ctx, position, size);
@@ -404,20 +402,25 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 
 	// draw cursor decorators to show interaction hints
 	if(mouse_is_on_overlay && cursor_label_index > -1) {
-		if(font_renderer.enable(ctx, content_canvas, cursor_labels, cursor_label_style)) {
-			ivec2 pos = cursor_pos + ivec2(14, 10);
-			content_canvas.push_modelview_matrix();
-			content_canvas.mul_modelview_matrix(ctx, cgv::math::translate2h(pos));
+		ivec2 pos = cursor_pos + ivec2(14, 10);
+		content_canvas.push_modelview_matrix();
+		content_canvas.mul_modelview_matrix(ctx, cgv::math::translate2h(pos));
 
-			font_renderer.draw(ctx, content_canvas, cursor_labels, cursor_label_index, 1);
-			
-			content_canvas.pop_modelview_matrix(ctx);
-			font_renderer.disable(ctx, cursor_labels);
-		}
+		font_renderer.render(ctx, content_canvas, cursor_labels, cursor_label_style,  cursor_label_index, 1);
+
+		content_canvas.pop_modelview_matrix(ctx);
 	}
 
 	disable_blending();
 	end_content(ctx);
+}
+
+void color_map_editor::handle_theme_change(const cgv::gui::theme_info& theme) {
+
+	init_styles(*get_context());
+	update_geometry();
+	post_recreate_gui();
+	post_damage();
 }
 
 void color_map_editor::create_gui_impl() {
@@ -489,6 +492,7 @@ void color_map_editor::create_gui_impl() {
 void color_map_editor::set_opacity_support(bool flag) {
 	
 	supports_opacity = flag;
+	set_color_map(cmc.cm);
 	on_set(&supports_opacity);
 }
 
@@ -597,11 +601,6 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	bg_style.use_texture = true;
 	bg_style.feather_width = 0.0f;
 
-	auto& bg_prog = content_canvas.enable_shader(ctx, "background");
-	bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
-	bg_style.apply(ctx, bg_prog);
-	content_canvas.disable_current_shader(ctx);
-
 	// configure style for histogram
 	hist_style.use_blending = true;
 	hist_style.feather_width = 1.0f;
@@ -611,17 +610,14 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	hist_style.border_width = 1.0f;
 
 	// configure style for color handles
-	cgv::g2d::arrow2d_style color_handle_style;
 	color_handle_style.use_blending = true;
 	color_handle_style.use_fill_color = false;
 	color_handle_style.position_is_center = true;
 	color_handle_style.border_color = rgba(ti.border(), 1.0f);
 	color_handle_style.border_width = 1.5f;
 	color_handle_style.border_radius = 2.0f;
-	color_handle_style.stem_width = 12.0f;
-	color_handle_style.head_width = 12.0f;
-
-	color_handle_renderer.set_style(ctx, color_handle_style);
+	color_handle_style.stem_width = color_point::default_width;
+	color_handle_style.head_width = color_point::default_width;
 
 	label_box_style.position_is_center = true;
 	label_box_style.use_blending = true;
@@ -631,38 +627,28 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	label_box_style.border_radius = 4.0f;
 
 	// configure style for opacity handles
-	cgv::g2d::shape2d_style opacity_handle_style;
 	opacity_handle_style.use_blending = true;
 	opacity_handle_style.use_fill_color = false;
 	opacity_handle_style.position_is_center = true;
 	opacity_handle_style.border_color = rgba(ti.border(), 1.0f);
 	opacity_handle_style.border_width = 1.5f;
 
-	opacity_handle_renderer.set_style(ctx, opacity_handle_style);
-	
 	// configure style for the lines and polygon
-	cgv::g2d::line2d_style line_style;
 	line_style.use_blending = true;
 	line_style.use_fill_color = false;
 	line_style.use_texture = true;
 	line_style.use_texture_alpha = false;
 	line_style.width = 3.0f;
 
-	line_renderer.set_style(ctx, line_style);
-
-	line_style.use_texture_alpha = true;
-	cgv::g2d::shape2d_style poly_style = static_cast<cgv::g2d::shape2d_style>(line_style);
-
-	polygon_renderer.set_style(ctx, poly_style);
+	polygon_style = static_cast<cgv::g2d::shape2d_style>(line_style);
+	polygon_style.use_texture_alpha = true;
 
 	// label style
-	cursor_label_style.fill_color = rgba(rgb(0.0f), 1.0f);
-	cursor_label_style.use_blending = true;
+	cursor_label_style = cgv::g2d::text2d_style::preset_clear(rgb(0.0f));
+	cursor_label_style.font_size = 16.0f;
 
-	value_label_style.fill_color = rgba(group_color, 1.0f);
-	value_label_style.border_color = rgba(group_color, 0.0f);
-	value_label_style.border_width = 0.25f;
-	value_label_style.use_blending = true;
+	value_label_style = cgv::g2d::text2d_style::preset_clear(group_color);
+	value_label_style.font_size = 12.0f;
 }
 
 void color_map_editor::setup_preview_texture(cgv::render::context& ctx) {
@@ -691,14 +677,14 @@ void color_map_editor::add_point(const vec2& pos) {
 		if(layout.color_editor_rect.is_inside(test_pos)) {
 			// color point
 			color_point p;
-			p.pos = ivec2(int(pos.x()), layout.color_handles_rect.pos().y());
+			p.position = ivec2(int(pos.x()), layout.color_handles_rect.y());
 			p.update_val(layout);
 			p.col = cmc.cm->interpolate_color(p.val);
 			cmc.color_points.add(p);
 		} else if(supports_opacity && layout.opacity_editor_rect.is_inside(test_pos)) {
 			// opacity point
 			opacity_point p;
-			p.pos = pos;
+			p.position = pos;
 			p.update_val(layout, opacity_scale_exponent);
 			cmc.opacity_points.add(p);
 		}
@@ -775,9 +761,9 @@ void color_map_editor::handle_color_point_drag() {
 	std::string value_label = value_to_string(dragged_point->val);
 	value_labels.set_text(0, value_label);
 
-	float width = value_labels.get_text_render_size(0).x();
+	float width = value_labels.get_text_render_size(0, value_label_style.font_size).x();
 	int padding = static_cast<int>(ceil(0.5f*width)) + 4;
-	ivec2 label_position = dragged_point->pos;
+	ivec2 label_position = dragged_point->position;
 	label_position.x() = cgv::math::clamp(label_position.x(), layout.color_editor_rect.x() + padding, layout.color_editor_rect.x1() - padding);
 	label_position.y() += 25;
 	value_labels.set_position(0, label_position);
@@ -800,9 +786,9 @@ void color_map_editor::handle_opacity_point_drag() {
 	std::string value_label = x_label + ", " + y_label;
 	value_labels.set_text(0, value_label);
 
-	float width = value_labels.get_text_render_size(0).x();
+	float width = value_labels.get_text_render_size(0, value_label_style.font_size).x();
 	int padding = static_cast<int>(ceil(0.5f*width)) + 4;
-	ivec2 label_position = dragged_point->pos;
+	ivec2 label_position = dragged_point->position;
 	label_position.x() = cgv::math::clamp(label_position.x(), layout.opacity_editor_rect.x() + padding, layout.opacity_editor_rect.x1() - padding);
 	label_position.y() = std::min(label_position.y() + 10, layout.opacity_editor_rect.y1() - 6);
 	value_labels.set_position(0, label_position);
@@ -1041,12 +1027,14 @@ bool color_map_editor::update_geometry() {
 	bool success = color_points.size() > 0 && opacity_points.size() > 0;
 
 	// create color handles
+	vec2 pos_offset = vec2(0.0f, 0.5f * color_point::default_height);
+
 	for(unsigned i = 0; i < color_points.size(); ++i) {
 		const auto& p = color_points[i];
 		vec2 pos = p.center();
 		rgba col = color_points.get_selected() == &p ? highlight_color : handle_color;
-		color_handles.add(pos + vec2(0.0f, 2.0f),  col);
-		color_handles.add(pos + vec2(0.0f, 20.0f), col);
+		color_handles.add(pos - pos_offset, col);
+		color_handles.add(pos + pos_offset, col);
 	}
 
 	// create opacity handles
@@ -1060,27 +1048,34 @@ bool color_map_editor::update_geometry() {
 	if(opacity_points.size() > 0) {
 		const auto& pl = opacity_points[0];
 
-		lines.add(vec2(float(layout.opacity_editor_rect.pos().x()), pl.center().y()), vec2(0.0f, 0.5f));
+		vec2 tex_coord(0.0f, 0.5f);
 
-		triangles.add(vec2(float(layout.opacity_editor_rect.pos().x()), pl.center().y()), vec2(0.0f, 0.5f));
-		triangles.add(layout.opacity_editor_rect.pos(), vec2(0.0f, 0.5f));
+		lines.add(vec2(float(layout.opacity_editor_rect.x()), pl.center().y()), tex_coord);
+		
+		triangles.add(vec2(float(layout.opacity_editor_rect.x()), pl.center().y()), tex_coord);
+		triangles.add(layout.opacity_editor_rect.position, tex_coord);
 
 		for(unsigned i = 0; i < opacity_points.size(); ++i) {
 			const auto& p = opacity_points[i];
 			vec2 pos = p.center();
 
-			lines.add(pos, vec2(p.val.x(), 0.5f));
-			triangles.add(pos, vec2(p.val.x(), 0.5f));
-			triangles.add(vec2(pos.x(), (float)layout.opacity_editor_rect.pos().y()), vec2(p.val.x(), 0.5f));
+			tex_coord.x() = p.val.x();
+
+			lines.add(pos, tex_coord);
+
+			triangles.add(pos, tex_coord);
+			triangles.add(vec2(pos.x(), (float)layout.opacity_editor_rect.y()), tex_coord);
 		}
 
 		const auto& pr = opacity_points[opacity_points.size() - 1];
-		vec2 max_pos = layout.opacity_editor_rect.pos() + vec2(1.0f, 0.0f) * layout.opacity_editor_rect.size();
+		vec2 max_pos = layout.opacity_editor_rect.position + vec2(1.0f, 0.0f) * layout.opacity_editor_rect.size;
 
-		lines.add(vec2(max_pos.x(), pr.center().y()), vec2(1.0f, 0.5f));
+		tex_coord.x() = 1.0f;
 
-		triangles.add(vec2(max_pos.x(), pr.center().y()), vec2(1.0f, 0.5f));
-		triangles.add(max_pos, vec2(1.0f, 0.5f));
+		lines.add(vec2(max_pos.x(), pr.center().y()), tex_coord);
+
+		triangles.add(vec2(max_pos.x(), pr.center().y()), tex_coord);
+		triangles.add(max_pos, tex_coord);
 	} else {
 		success = false;
 	}

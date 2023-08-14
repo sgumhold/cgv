@@ -144,7 +144,7 @@ void rgbd_mouse::filter_depth_image(cgv::data::data_view& depth_data)
 
 	if (nr_cached_images == 0)
 		return;
-	unsigned n = depth_data.get_format()->get_nr_bytes();
+	unsigned n = unsigned(depth_data.get_format()->get_nr_bytes());
 	unsigned short* last_img = new unsigned short[n];
 	unsigned short* img = depth_data.get_ptr<unsigned short>();
 	memcpy(last_img, img, n*sizeof(unsigned short));
@@ -152,7 +152,7 @@ void rgbd_mouse::filter_depth_image(cgv::data::data_view& depth_data)
 
 	#pragma omp parallel for
 
-	for (unsigned i=0; i<n; ++i) {
+	for (int i=0; i<int(n); ++i) {
 		unsigned v = 0;
 		unsigned count = 0;
 		for (unsigned j=0; j<last_images.size(); ++j) {

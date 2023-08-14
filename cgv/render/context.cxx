@@ -628,6 +628,14 @@ void* context::get_enabled_light_source_handle(size_t i) const
 {
 	return enabled_light_source_handles[i];
 }
+/// check whether light source is enabled
+bool context::is_light_source_enabled(void* handle)
+{
+	auto iter = light_sources.find(handle);
+	if (iter == light_sources.end())
+		return false;
+	return iter->second.second.enabled;
+}
 
 /// enable a given light source and return whether there existed a light source with given handle
 bool context::enable_light_source(void* handle)

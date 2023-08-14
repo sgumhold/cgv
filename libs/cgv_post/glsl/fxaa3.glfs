@@ -7,7 +7,7 @@ uniform float mix_factor = 1.0;
 
 in vec2 texcoord_fs;
 
-out layout(location = 0) vec4 frag_color;
+layout(location = 0) out vec4 frag_color;
 
 // ported version of https://github.com/kosua20/Rendu/blob/master/resources/common/shaders/screens/fxaa.frag
 

@@ -94,6 +94,10 @@ void vr_emulated_kit::compute_state_poses()
 	set_pose_matrix(T_body*T_hip*T_head, state.hmd.pose);
 	set_pose_matrix(T_body*T_hip*T_left, state.controller[0].pose);
 	set_pose_matrix(T_body*T_hip*T_right, state.controller[1].pose);
+	static unsigned ts = 1;
+	++ts;
+	state.controller[0].time_stamp = ts;
+	state.controller[1].time_stamp = ts;
 	for (int i = 0; i < 4; ++i) {
 		if (!tracker_enabled[i]) {
 			state.controller[2 + i].status = vr::VRS_DETACHED;
@@ -107,6 +111,7 @@ void vr_emulated_kit::compute_state_poses()
 		}
 		set_pose_matrix(T, state.controller[2 + i].pose);
 		state.controller[2 + i].status = vr::VRS_TRACKED;
+		state.controller[2 + i].time_stamp = ts;
 	}
 }
 
@@ -500,8 +505,9 @@ bool vr_emulator::replace_by_pointer(vr::vr_kit* old_kit_ptr, vr::vr_kit* new_ki
 {
 	if (!is_installed())
 		return false;
+
 	for (auto kit_ptr : kits) {
-		if (kit_ptr == old_kit_ptr) {
+		if (kit_ptr == old_kit_ptr || vr::get_vr_kit(kit_ptr->get_handle()) == old_kit_ptr) {
 			replace_vr_kit(kit_ptr->get_handle(), new_kit_ptr);
 			return true;
 		}
@@ -549,8 +555,10 @@ bool vr_emulator::check_for_button_toggle(cgv::gui::key_event& ke, int controlle
 		kits[current_kit_index]->state.controller[controller_index].axes[0] = touch_x;
 		kits[current_kit_index]->state.controller[controller_index].axes[1] = touch_y;
 	}
-	else
+	else if (ke.get_modifiers() == 0)
 		kits[current_kit_index]->state.controller[controller_index].button_flags ^= button;
+	else
+		return false;
 	update_all_members();
 	return true;
 }
