@@ -9,7 +9,6 @@ namespace cgv { // @<
 		
 		class CGV_API cone_renderer;
 
-
 		//! reference to a singleton cone renderer that is shared among drawables
 		/*! the second parameter is used for reference counting. Use +1 in your init method,
 			-1 in your clear method and default 0 argument otherwise. If internal reference
@@ -53,11 +52,10 @@ namespace cgv { // @<
 			float texel_size;
 			float cone_angle_factor;
 			std::vector<vec3> sample_dirs;
+
 			/// construct with default values
-		
 			cone_render_style();
 		};
-
 
 		/// renderer that supports raycasting of cones
 		class CGV_API cone_renderer : public surface_renderer
@@ -66,12 +64,10 @@ namespace cgv { // @<
 			bool has_radii;
 			/// the shader defines used to build the shader, used to comapre against new defines to determine if the shader needs to be rebuilt
 			shader_define_map shader_defines;
-
 			/// overload to allow instantiation of cone_renderer
 			render_style* create_render_style() const;
 			/// update shader defines based on render style
 			void update_defines(shader_define_map& defines);
-
 			/// build cone program
 			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 
@@ -80,7 +76,6 @@ namespace cgv { // @<
 
 		public:
 			/// initializes member variables
-
 			cone_renderer();
 			/// call this before setting attribute arrays to manage attribute array in given manager
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);

@@ -118,6 +118,7 @@ private:
 	void set_label_border_width(float border_width);
 
 protected:
+	bool auto_grab_focus = false;
 	bool draw_controller_mode;
 	cgv::render::sphere_render_style srs;
 	cgv::render::cone_render_style crs;

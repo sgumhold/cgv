@@ -4,13 +4,14 @@
 #include <cgv/render/texture.h>
 #include <cgv_app/canvas_overlay.h>
 #include <cgv_app/color_selector.h>
-#include <cgv_g2d/draggables_collection.h>
+#include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
+
 namespace app {
 
 class CGV_API color_map_editor : public canvas_overlay {
@@ -22,9 +23,9 @@ protected:
 		// dependent members
 		int color_editor_height;
 		int opacity_editor_height;
-		cgv::g2d::rect color_handles_rect;
-		cgv::g2d::rect color_editor_rect;
-		cgv::g2d::rect opacity_editor_rect;
+		cgv::g2d::irect color_handles_rect;
+		cgv::g2d::irect color_editor_rect;
+		cgv::g2d::irect opacity_editor_rect;
 
 		void update(const ivec2& parent_size, bool color_and_opacity) {
 
@@ -40,109 +41,73 @@ protected:
 
 			int y_off = padding;
 
-			color_handles_rect.set_pos(ivec2(padding, 8));
-			color_handles_rect.set_size(ivec2(parent_size.x() - 2 * padding, 0));
+			color_handles_rect.position = ivec2(padding, 20);
+			color_handles_rect.size = ivec2(parent_size.x() - 2 * padding, 0);
 
 			// move 10px up to clear some space for the color handles rect
 			y_off += 10;
 
-			color_editor_rect.set_pos(ivec2(padding, y_off));
-			color_editor_rect.set_size(ivec2(parent_size.x() - 2 * padding, color_editor_height));
+			color_editor_rect.position = ivec2(padding, y_off);
+			color_editor_rect.size = ivec2(parent_size.x() - 2 * padding, color_editor_height);
 
 			y_off += color_editor_height + 1; // plus 1px border
 
-			opacity_editor_rect.set_pos(ivec2(padding, y_off));
-			opacity_editor_rect.set_size(ivec2(parent_size.x() - 2 * padding, opacity_editor_height));
+			opacity_editor_rect.position = ivec2(padding, y_off);
+			opacity_editor_rect.size = ivec2(parent_size.x() - 2 * padding, opacity_editor_height);
 		}
 	} layout;
 	
 	struct color_point : public cgv::g2d::draggable {
+		static const float default_width;
+		static const float default_height;
 		float val;
 		rgb col;
 
 		color_point() {
-			size = vec2(12.0f, 18.0f);
+			size = vec2(default_width, default_height);
 			position_is_center = true;
 			constraint_reference = CR_CENTER;
 		}
 
 		void update_val(const layout_attributes& la) {
-			vec2 p = pos - la.color_handles_rect.pos();
-			val = p.x() / la.color_handles_rect.size().x();
+			vec2 p = position - la.color_handles_rect.position;
+			val = p.x() / la.color_handles_rect.size.x();
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
 		}
 
 		void update_pos(const layout_attributes& la) {
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
 			float t = val;
-			pos.x() = static_cast<float>(la.color_handles_rect.pos().x()) + t * la.color_handles_rect.size().x();
-			pos.y() = static_cast<float>(la.color_handles_rect.pos().y());
-		}
-
-		float sd_rectangle(const vec2& p, const vec2& b) const {
-			vec2 d = abs(p) - b;
-			return length(cgv::math::max(d, 0.0f)) + std::min(std::max(d.x(), d.y()), 0.0f);
-		}
-
-		bool is_inside(const vec2& mp) const {
-			// test if the given position is inside the handle shape (hit box is defined as a rectangle)
-			return sd_rectangle(mp - (pos + vec2(0.0f, 0.5f*size.y() + 2.0f)), 0.5f*size) < 0.0f;
-		}
-
-		ivec2 get_render_position() const {
-			return ivec2(pos + 0.5f);
-		}
-
-		ivec2 get_render_size() const {
-			return 2 * ivec2(size);
+			position.x() = static_cast<float>(la.color_handles_rect.position.x()) + t * la.color_handles_rect.size.x();
+			position.y() = static_cast<float>(la.color_handles_rect.position.y());
 		}
 	};
 
 	struct opacity_point : public cgv::g2d::draggable {
+		static const float default_size;
 		vec2 val;
 
 		opacity_point() {
-			size = vec2(6.0f);
+			size = vec2(default_size);
 			position_is_center = true;
 			constraint_reference = CR_CENTER;
 		}
 
 		void update_val(const layout_attributes& la, const float scale_exponent) {
-
-			vec2 p = pos - la.opacity_editor_rect.pos();
-			val = p / la.opacity_editor_rect.size();
+			vec2 p = position - la.opacity_editor_rect.position;
+			val = p / la.opacity_editor_rect.size;
 
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
 			val.y() = cgv::math::clamp(std::pow(val.y(), scale_exponent), 0.0f, 1.0f);
 		}
 
 		void update_pos(const layout_attributes& la, const float scale_exponent) {
-
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
 
 			vec2 t = val;
-
 			t.y() = cgv::math::clamp(std::pow(t.y(), 1.0f / scale_exponent), 0.0f, 1.0f);
 
-			pos = la.opacity_editor_rect.pos() + t * la.opacity_editor_rect.size();
-		}
-
-		float sd_rectangle(const vec2& p, const vec2& b) const {
-			vec2 d = abs(p) - b;
-			return length(cgv::math::max(d, 0.0f)) + std::min(std::max(d.x(), d.y()), 0.0f);
-		}
-
-		bool is_inside(const vec2& mp) const {
-
-			return sd_rectangle(mp - pos, size) < 0.0f;
-		}
-
-		ivec2 get_render_position() const {
-			return ivec2(pos + 0.5f);
-		}
-
-		ivec2 get_render_size() const {
-			return 2 * ivec2(size);
+			position = la.opacity_editor_rect.position + t * la.opacity_editor_rect.size;
 		}
 	};
 
@@ -160,12 +125,12 @@ protected:
 	rgba handle_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
 	rgba highlight_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
 	std::string highlight_color_hex = "0x808080";
-	cgv::g2d::shape2d_style container_style, border_style, color_map_style, bg_style, hist_style, label_box_style;
+	cgv::g2d::shape2d_style container_style, border_style, color_map_style, bg_style, hist_style, label_box_style, opacity_handle_style, polygon_style;
+	cgv::g2d::arrow2d_style color_handle_style;
+	cgv::g2d::line2d_style line_style;
 
 	// label appearance
-	const float cursor_label_size = 16.0f;
-	const float value_label_size = 12.0f;
-	cgv::g2d::shape2d_style cursor_label_style, value_label_style;
+	cgv::g2d::text2d_style cursor_label_style, value_label_style;
 	cgv::g2d::msdf_text_geometry cursor_labels, value_labels;
 
 	std::vector<unsigned> histogram;
@@ -188,8 +153,8 @@ protected:
 
 	struct cm_container {
 		cgv::render::color_map* cm = nullptr;
-		cgv::g2d::draggables_collection<color_point> color_points;
-		cgv::g2d::draggables_collection<opacity_point> opacity_points;
+		cgv::g2d::draggable_collection<color_point> color_points;
+		cgv::g2d::draggable_collection<opacity_point> opacity_points;
 		
 		custom_geometry color_handles, opacity_handles;
 		line_geometry lines;
@@ -243,8 +208,6 @@ public:
 
 	void clear(cgv::render::context& ctx);
 
-	void stream_help(std::ostream& os) {}
-
 	bool handle_event(cgv::gui::event& e);
 	void on_set(void* member_ptr);
 
@@ -252,6 +215,8 @@ public:
 	void init_frame(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
 	
+	void handle_theme_change(const cgv::gui::theme_info& theme) override;
+
 	bool get_opacity_support() { return supports_opacity; }
 	void set_opacity_support(bool flag);
 

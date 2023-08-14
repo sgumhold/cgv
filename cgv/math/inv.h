@@ -222,7 +222,7 @@ template <typename T>
 fmat<T, 2, 2> inv(const fmat<T, 2, 2>& m)
 {
 	fmat<T, 2, 2> im;
-	T t4 = 1.0 / (-m(0, 0) * m(1, 1) + m(0, 1) * m(1, 0));
+	T t4 = T(1) / (-m(0, 0) * m(1, 1) + m(0, 1) * m(1, 0));
 	im(0, 0) = -m(1, 1) * t4;
 	im(1, 0) = +m(1, 0) * t4;
 	im(0, 1) = +m(0, 1) * t4;

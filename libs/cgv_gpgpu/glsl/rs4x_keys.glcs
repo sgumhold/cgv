@@ -13,6 +13,7 @@
 #define AUXILIARY_TYPE_DEFINITION float x;
 
 #define KEY_DEFINITION data_type p = data[idx]; vec3 eye_to_pos = vec3(p.x, p.y, p.z) - eye_pos; float key = dot(eye_to_pos, eye_to_pos);
+#define UNIFORM_DEFINITION
 
 layout(local_size_x = 256) in;
 
@@ -47,6 +48,8 @@ uniform uint n_padded;
 
 uniform vec3 eye_pos;
 uniform vec3 view_dir;
+
+UNIFORM_DEFINITION
 
 uint flip_float(float f) {
 	uint f_ = floatBitsToUint(f);

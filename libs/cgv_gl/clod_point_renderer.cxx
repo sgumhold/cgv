@@ -71,7 +71,7 @@ namespace cgv {
 			reduce_prog.set_uniform(ctx, uniforms.batch_offset, (int)start);
 			reduce_prog.set_uniform(ctx, uniforms.batch_size, (int)count);
 
-			glDispatchCompute((count / clod_reduce_group_size) + 1, 1, 1); // with NVIDIA GPUs this will spam notifications about buffer usage if gl debug messages are enabled
+			glDispatchCompute(static_cast<GLuint>(count / clod_reduce_group_size) + 1, 1, 1); // with NVIDIA GPUs this will spam notifications about buffer usage if gl debug messages are enabled
 		}
 
 		/// synchronizes and disables the shader prog.
@@ -123,7 +123,7 @@ namespace cgv {
 			reduce_prog.set_uniform(ctx, uniforms.target_buffer_size, active_buffer_manager_ptr->size());
 			reduce_prog.enable(ctx);
 
-			for (int i = 0; i < num_reduction_sources; ++i) {
+			for (uint32_t i = 0; i < num_reduction_sources; ++i) {
 				auto chunk_id = reduction_sources[i];
 				reduce_prog.set_uniform(ctx, uniforms.batch_offset, (int)chunk_starts[chunk_id]);
 				reduce_prog.set_uniform(ctx, uniforms.batch_size, (int)chunk_point_counts[chunk_id]);
@@ -222,7 +222,7 @@ namespace cgv {
 			*/
 
 			//const clod_point_render_style& srs = get_style<clod_point_render_style>();
-			vec2 screenSize(ctx.get_width(), ctx.get_height());
+			vec2 screenSize(static_cast<float>(ctx.get_width()), static_cast<float>(ctx.get_height()));
 			
 			draw_prog_ptr->set_uniform(ctx, "CLOD" , prs.CLOD);
 			draw_prog_ptr->set_uniform(ctx, "scale", prs.scale);
@@ -326,7 +326,7 @@ namespace cgv {
 			glBufferData(GL_SHADER_STORAGE_BUFFER, num_points * sizeof(Point), pnts, GL_STATIC_READ);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 			input_buffer_size = num_points * sizeof(Point);
-			input_buffer_num_points = num_points;
+			input_buffer_num_points = static_cast<GLuint>(num_points);
 			buffers_outofdate = true;
 		}
 

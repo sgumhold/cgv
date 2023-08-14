@@ -1,0 +1,491 @@
+#version 430
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_inverse_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of fragment.glfs ***********************************
+void finish_fragment(vec4 color);
+void finish_fragment(vec4 color, float depth);
+//***** end interface of fragment.glfs ***********************************
+
+// looking Glass calibration values
+uniform float pitch  = 673.46088569750157;
+uniform float slope  = -0.074780801514116493;
+uniform float center = 0.076352536678314209;
+
+// stereoscopy parameters
+uniform vec2 viewport_dims;
+uniform vec3 eye_pos;
+uniform float eye_separation;
+uniform float screen_width;
+uniform float screen_height;
+uniform float parallax_zero_depth;
+uniform float z_near;
+uniform float z_far;
+
+uniform mat4 stereo_view_params;
+
+uniform vec3 eye_pos_left;
+uniform vec3 eye_pos_right;
+
+uniform vec3 light_direction;
+uniform bool enable_shadows;
+uniform bool interpolate_view_matrix;
+
+// input from screen_quad vertex shader (we ignore this)
+in vec2 texcoord_fs;
+
+// The MIT License
+// Copyright � 2019 Inigo Quilez
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+//===============================================================================================
+// ray-object intersection routines (from: https://iquilezles.org/articles/intersectors/)
+//===============================================================================================
+
+float plane_intersection(in vec3 ro, in vec3 rd, in vec4 p) {
+	float denom = dot(rd,p.xyz);
+	if(abs(denom) < 0.01)
+		return -1.0;
+    return -(dot(ro,p.xyz)+p.w)/denom;
+}
+
+vec2 box_intersection(in vec3 ro, in vec3 rd, in vec3 box_pos, in vec3 box_size, out vec3 outNormal) {
+	ro -= box_pos;
+    vec3 m = 1.0/rd; // can precompute if traversing a set of aligned boxes
+    vec3 n = m*ro;   // can precompute if traversing a set of aligned boxes
+    vec3 k = abs(m)*box_size;
+    vec3 t1 = -n - k;
+    vec3 t2 = -n + k;
+    float tN = max( max( t1.x, t1.y ), t1.z );
+    float tF = min( min( t2.x, t2.y ), t2.z );
+    if( tN>tF || tF<0.0) return vec2(-1.0); // no intersection
+    outNormal = (tN>0.0) ? step(vec3(tN),t1) : // ro ouside the box
+                           step(t2,vec3(tF));  // ro inside the box
+    outNormal *= -sign(rd);
+    return vec2( tN, tF );
+}
+
+vec2 sphere_intersection(in vec3 ro, in vec3 rd, in vec3 center, float rad, out vec3 outNormal) {
+    vec3 oc = ro - center;
+    float b = dot( oc, rd );
+    float c = dot( oc, oc ) - rad*rad;
+    float h = b*b - c;
+    if( h<0.0 ) return vec2(-1.0); // no intersection
+    h = sqrt( h );
+	vec3 pos = ro + (-b-h) * rd;
+	outNormal = normalize(pos - center);
+    return vec2( -b-h, -b+h );
+}
+
+float cylinder_intersection(in vec3 ro, in vec3 rd, in vec3 a, in vec3 b, float rad, out vec3 outNormal) {
+    vec3  ba = b  - a;
+    vec3  oc = ro - a;
+    float baba = dot(ba,ba);
+    float bard = dot(ba,rd);
+    float baoc = dot(ba,oc);
+    float k2 = baba            - bard*bard;
+    float k1 = baba*dot(oc,rd) - baoc*bard;
+    float k0 = baba*dot(oc,oc) - baoc*baoc - rad*rad*baba;
+    float h = k1*k1 - k2*k0;
+    if( h<0.0 ) return -1.0;//no intersection
+    h = sqrt(h);
+    float t = (-k1-h)/k2;
+    // body
+    float y = baoc + t*bard;
+    if( y>0.0 && y<baba ) {
+		outNormal = (oc+t*rd - ba*y/baba)/rad;
+		return t;
+	}
+    // caps
+    t = ( ((y<0.0) ? 0.0 : baba) - baoc)/bard;
+    if( abs(k1+k2*t)<h )
+    {
+		outNormal = ba*sign(y)/sqrt(baba);
+        return t;
+    }
+    return -1.0;//no intersection
+}
+
+float torus_intersection(in vec3 ro, in vec3 rd, in vec3 pos, in vec2 tor) {
+	ro -= pos;
+
+    float po = 1.0;
+    float Ra2 = tor.x*tor.x;
+    float ra2 = tor.y*tor.y;
+    float m = dot(ro,ro);
+    float n = dot(ro,rd);
+    float k = (m + Ra2 - ra2)/2.0;
+    float k3 = n;
+    float k2 = n*n - Ra2*dot(rd.xy,rd.xy) + k;
+    float k1 = n*k - Ra2*dot(rd.xy,ro.xy);
+    float k0 = k*k - Ra2*dot(ro.xy,ro.xy);
+    
+    if( abs(k3*(k3*k3-k2)+k1) < 0.01 )
+    {
+        po = -1.0;
+        float tmp=k1; k1=k3; k3=tmp;
+        k0 = 1.0/k0;
+        k1 = k1*k0;
+        k2 = k2*k0;
+        k3 = k3*k0;
+    }
+    
+    float c2 = k2*2.0 - 3.0*k3*k3;
+    float c1 = k3*(k3*k3-k2)+k1;
+    float c0 = k3*(k3*(c2+2.0*k2)-8.0*k1)+4.0*k0;
+    c2 /= 3.0;
+    c1 *= 2.0;
+    c0 /= 3.0;
+    float Q = c2*c2 + c0;
+    float R = c2*c2*c2 - 3.0*c2*c0 + c1*c1;
+    float h = R*R - Q*Q*Q;
+    
+    if( h>=0.0 )  
+    {
+        h = sqrt(h);
+        float v = sign(R+h)*pow(abs(R+h),1.0/3.0); // cube root
+        float u = sign(R-h)*pow(abs(R-h),1.0/3.0); // cube root
+        vec2 s = vec2( (v+u)+4.0*c2, (v-u)*sqrt(3.0));
+        float y = sqrt(0.5*(length(s)+s.x));
+        float x = 0.5*s.y/y;
+        float r = 2.0*c1/(x*x+y*y);
+        float t1 =  x - r - k3; t1 = (po<0.0)?2.0/t1:t1;
+        float t2 = -x - r - k3; t2 = (po<0.0)?2.0/t2:t2;
+        float t = 1e20;
+        if( t1>0.0 ) t=t1;
+        if( t2>0.0 ) t=min(t,t2);
+        return t;
+    }
+    
+    float sQ = sqrt(Q);
+    float w = sQ*cos( acos(-R/(sQ*Q)) / 3.0 );
+    float d2 = -(w+c2); if( d2<0.0 ) return -1.0;
+    float d1 = sqrt(d2);
+    float h1 = sqrt(w - 2.0*c2 + c1/d1);
+    float h2 = sqrt(w - 2.0*c2 - c1/d1);
+    float t1 = -d1 - h1 - k3; t1 = (po<0.0)?2.0/t1:t1;
+    float t2 = -d1 + h1 - k3; t2 = (po<0.0)?2.0/t2:t2;
+    float t3 =  d1 - h2 - k3; t3 = (po<0.0)?2.0/t3:t3;
+    float t4 =  d1 + h2 - k3; t4 = (po<0.0)?2.0/t4:t4;
+    float t = 1e20;
+    if( t1>0.0 ) t=t1;
+    if( t2>0.0 ) t=min(t,t2);
+    if( t3>0.0 ) t=min(t,t3);
+    if( t4>0.0 ) t=min(t,t4);
+    return t;
+}
+
+vec3 torus_normal(in vec3 pos, vec2 tor) {
+    return normalize( pos*(dot(pos,pos)-tor.y*tor.y - tor.x*tor.x*vec3(1.0,1.0,-1.0)));
+}
+
+//===============================================================================================
+// scene
+//===============================================================================================
+
+// objects
+const vec4 back_plane = vec4(0.0, 0.0, -1.0, -1.0);
+
+const vec3 floor_box_pos = vec3(0.0, -1.0, 0.0);
+const vec3 floor_box_ext = vec3(1.0, 0.1, 1.0);
+const vec3 pillar_box_pos = vec3(0.0, 0.0, -0.9);
+const vec3 pillar_box_ext = vec3(0.1, 1.0, 0.1);
+const vec3 beam_box_pos = vec3(0.0, 0.9, 0.0);
+const vec3 beam_box_ext = vec3(0.1, 0.1, 1.0);
+
+const float rope_radius = 0.05;
+const vec3 rope0_cyl_start = vec3(0.0, 0.9, 0.0);
+const vec3 rope0_cyl_end = vec3(0.0, 0.0, 0.0);
+const vec3 rope1_cyl_start = vec3(0.0, 0.9, 0.9);
+const vec3 rope1_cyl_end = vec3(0.0, 0.3, 0.9);
+
+const vec3 torus_pos = vec3(0.0, 0.0, 0.9);
+const vec2 torus_params = vec2(0.3, 0.075);
+
+const vec4 sph = vec4(0.0, 0.0, 0.0, 0.25);
+
+float intersect(vec3 ro, vec3 rd, out vec3 pos, out vec3 nor, out int mat_id) {
+	// raytrace
+	float tmin = 1e20;
+	nor = vec3(0.0);
+	pos = ro + tmin*rd;
+	mat_id = -1;
+
+	// raytrace floor box
+	vec3 nml;
+	float h = box_intersection(ro, rd, floor_box_pos, floor_box_ext, nml).x;
+	if(h > 0.0 && h < tmin) {
+		tmin = h;
+		pos = ro + h*rd;
+		nor = nml;
+		mat_id = 0;
+	}
+
+	// raytrace pillar box
+	h = box_intersection(ro, rd, pillar_box_pos, pillar_box_ext, nml).x;
+	if(h > 0.0 && h < tmin) {
+		tmin = h;
+		pos = ro + h*rd;
+		nor = nml;
+		mat_id = 1;
+	}
+
+	// raytrace beam box
+	h = box_intersection(ro, rd, beam_box_pos, beam_box_ext, nml).x;
+	if(h > 0.0 && h < tmin) {
+		tmin = h;
+		pos = ro + h*rd;
+		nor = nml;
+		mat_id = 1;
+	}
+
+	// raytrace rope cylinders
+	h = cylinder_intersection(ro, rd, rope0_cyl_start, rope0_cyl_end, rope_radius, nml);
+	if(h > 0.0 && h < tmin) {
+		tmin = h;
+		pos = ro + h*rd;
+		nor = nml;
+		mat_id = 2;
+	}
+
+	h = cylinder_intersection(ro, rd, rope1_cyl_start, rope1_cyl_end, rope_radius, nml);
+	if(h > 0.0 && h < tmin) {
+		tmin = h;
+		pos = ro + h*rd;
+		nor = nml;
+		mat_id = 2;
+	}
+
+	// raytrace sphere
+	h = sphere_intersection(ro, rd, sph.xyz, sph.w, nml).x;
+	if(h > 0.0 && h < tmin) {
+		tmin = h;
+		pos = ro + h*rd;
+		nor = nml;
+		mat_id = 3;
+	}
+
+	// raytrace torus
+	// increase numerical stability by first intersecting with a boundign sphere and moving the ray origin closer to the torus
+	vec3 ts_nml;
+	float tsh = sphere_intersection(ro, rd, torus_pos, torus_params.x + 1.05*torus_params.y, ts_nml).x;
+	if(tsh>0.0) {
+		vec3 tro = ro + 0.95*tsh*rd;
+		float th = torus_intersection(tro, rd, torus_pos, torus_params);
+		if(th > 0.0) {
+			h = th + 0.95*tsh;
+			if(h > 0.0 && h < tmin) {
+				tmin = h;
+				pos = ro + h*rd;
+				nor = torus_normal(pos - torus_pos, torus_params);
+				mat_id = 4;
+			}
+		}
+	}
+
+	// raytrace back plane
+	h = plane_intersection(ro, rd, back_plane);
+	if(h > 0.0 && h < tmin) {
+		tmin = h;
+		pos = ro + h*rd;
+		nor = -back_plane.xyz;
+		mat_id = 5;
+	}
+
+	return tmin;
+}
+
+vec4 get_material(in int mat_id) {
+	// RGB color + texture mix factor
+	const vec4 materials[6] = vec4[6](
+		vec4(0.1, 0.1, 0.1, 0.5),
+		vec4(0.9, 0.8, 0.2, 0.0),
+		vec4(1.0, 0.5, 0.8, 0.0),
+		vec4(0.95, 0.05, 0.05, 0.0),
+		vec4(0.1, 0.1, 0.95, 0.0),
+		vec4(0.1, 0.1, 0.1, 0.05)
+	);
+
+	return materials[mat_id];
+}
+
+vec2 get_texcoords(in vec3 pos, int mat_id) {
+	vec2 uv = vec2(0.0);
+
+	if(mat_id == 0)
+		uv = pos.xz;
+	else if(mat_id== 5)
+		uv = 0.25*pos.xy;
+	
+	return uv;
+}
+
+float checker_texture(in vec2 p) {
+	vec2 i = step(fract(p), vec2(1.0/2.0));
+	return 1.0 - i.x - i.y + 2.0*i.x*i.y;
+}
+
+vec3 compute_illumination(in vec3 pos, in vec3 nor, in vec3 rd, in float shadow_factor, in vec3 albedo) {
+	float diffuse = clamp(dot(nor, light_direction), 0.0, 1.0);
+	float illum = diffuse * (1.0 - shadow_factor);
+	// ambient term
+	illum += 0.1;
+	return illum * albedo;
+}
+
+//===============================================================================================
+// render
+//===============================================================================================
+
+vec3 rayTracePixel(vec3 ro, vec3 rd, out float depth) {
+	vec3 pos, nor; // hit position and normal
+	int mat_id; // material ID
+	float t = intersect(ro, rd, pos, nor, mat_id);
+
+	vec3 color = vec3(0.9);
+	if(mat_id != -1) {
+		float shadow_factor = 0.0;
+
+		// trace a shadow ray if requested
+		if(enable_shadows) {
+			vec3 shadow_ray_origin = pos + 0.001*light_direction;
+			vec3 shadow_pos, shadow_nor;
+			int shadow_mat_id;
+			float st = intersect(shadow_ray_origin, light_direction, shadow_pos, shadow_nor, shadow_mat_id);
+		
+			if(shadow_mat_id != -1)
+				shadow_factor = 1.0;
+		}
+
+		// get color and texture coordinates depending on material
+		vec4 material = get_material(mat_id);
+		vec2 uv = get_texcoords(pos, mat_id);
+		
+		vec3 albedo = mix(material.rgb, vec3(checker_texture(0.9*uv)), material.w);
+		
+		// lighting
+		color = compute_illumination(pos, nor, rd, shadow_factor, albedo);
+	}
+	
+	vec4 pos_clip = get_modelview_projection_matrix() * vec4(pos, 1.0);
+	depth = 0.5*(pos_clip.z / pos_clip.w) + 0.5;
+	
+	return color; 
+}
+
+mat4 compute_frustum(float l, float r, float b, float t, float n, float f) {
+	mat4 M = mat4(0.0);
+	M[0][0] = 2.0 * n / (r - l);
+	M[2][0] = (r + l) / (r - l);
+	M[1][1] = 2.0 * n / (t - b);
+	M[2][1] = (t + b) / (t - b);
+	M[2][2] = (n + f) / (n - f);
+	M[3][2] = 2.0 * n * f / (n - f);
+	M[2][3] = -1.0;
+	return M;
+}
+
+// eye from left to right / -1 to 1
+mat4 compute_stereo_frustum_screen(in float eye) {
+	float aspect = screen_width / screen_height;
+	float top = 0.5*screen_height*z_near / parallax_zero_depth;
+	float bottom = -top;
+	float delta = 0.5*eye_separation*eye*screen_width*z_near / parallax_zero_depth;
+	float left = bottom * aspect - delta;
+	float right = top * aspect - delta;
+	return compute_frustum(left, right, bottom, top, z_near, z_far);
+}
+
+// eye from left to right / -1 to 1
+void stereo_translate_modelview_matrix(in float eye, in out mat4 M) {
+	M[3].x += -0.5 * eye_separation * eye * screen_width;
+}
+
+// Compute view in [-1,1] according to calibration values (see: https://www.shadertoy.com/view/ttXSDN)
+// width of one subpixel as a fraction of full viewport width
+const float subpixel_width = 1./(3*viewport_dims.x);
+
+float view_from_fragment_component (const vec2 frag, const int component) {
+	float z = (frag.x + subpixel_width*float(component) + slope*frag.y) * pitch - center;
+	z = 1. - mod(z + ceil(abs(z)), 1.);
+	return z+z - 1.;
+}
+
+/*float view_from_pixel_component(const vec2 pixel, const int component) {
+	vec2 screen_coord = (pixel + (component/3.0)) / viewport_dims;
+	float view = screen_coord.x;
+	view += screen_coord.y * slope;
+	view *= pitch;
+	view -= center;
+	view = 1.0 - mod(view + ceil(abs(view)), 1.0);
+	return 2.0 * view - 1.0;
+}*/
+
+void main() {
+	const vec2 uv = gl_FragCoord.xy / viewport_dims;
+
+	vec3 rgb, depth;
+	for (int c = 0; c < 3; c++)
+	{
+		// determine which view the subpixel belongs to
+		float view = view_from_fragment_component(uv, c);
+
+		vec3 ray_origin;
+		vec3 ray_direction;
+
+		// transform fragment coordinates from clip coordinates to object coordinates
+		if(interpolate_view_matrix) {
+			view = clamp(0.5 * view + 0.5, 0.0, 1.0);
+
+			mat4 iMVP_view = get_inverse_modelview_projection_matrix();
+
+			iMVP_view[2] = mix(stereo_view_params[0], stereo_view_params[1], view);
+			iMVP_view[3] = mix(stereo_view_params[2], stereo_view_params[3], view);
+			
+			// transform texcoord to clip coordinates
+			vec4 coord = vec4(uv, 0.0, 1.0) * vec4(2.0, 2.0, 2.0, 0.0) + vec4(-1.0, -1.0, -1.0, 1.0);
+			coord = iMVP_view * coord;
+			coord /= coord.w;
+
+			// start at object space eye position
+			ray_origin = mix(eye_pos_left, eye_pos_right, view);
+			ray_direction = normalize(coord.xyz - ray_origin);
+
+			
+		} else {
+			mat4 P = compute_stereo_frustum_screen(view);
+			mat4 MV = get_modelview_matrix();
+			stereo_translate_modelview_matrix(view, MV);
+
+			// transform texcoord to clip coordinates
+			vec4 coord = vec4(uv, 0.0, 1.0) * vec4(2.0, 2.0, 2.0, 0.0) + vec4(-1.0, -1.0, -1.0, 1.0);
+			coord = inverse(P * MV) * coord;
+			coord /= coord.w;
+
+			// start at object space eye position
+			ray_origin = inverse(MV)[3].xyz;
+			ray_direction = normalize(coord.xyz - ray_origin);
+		}
+
+		rgb[c] = rayTracePixel(ray_origin, ray_direction, depth[c])[c];
+	}
+
+	// gamma correction
+	rgb = pow(rgb, vec3(1.0 / 2.2));
+
+	// FIXME: find proper way to discard subpixels (perhaps init frag color to set background color?)
+	float min_depth = min(min(depth.r, depth.g), depth.b);
+	if (min_depth < 1.0)
+		finish_fragment(vec4(rgb, 1.0), min_depth);
+	else
+		discard;
+}

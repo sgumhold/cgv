@@ -584,14 +584,14 @@ bool fltk_gl_view::handle(event& e)
 				}
 				break;
 			case KEY_F1 : 
-				if (ke.get_modifiers() == 0) {				
+				if (ke.get_modifiers() == 0) {
 					show_help = !show_help;
 					redraw();
 					return true;
 				}
 				break;
 			case KEY_Delete :
-				if (ke.get_modifiers() == 0 && get_nr_children() > 1 && get_focused_child() != -1) {
+				if (ke.get_modifiers() == EM_ALT && get_nr_children() > 1 && get_focused_child() != -1) {
 					cgv::base::unregister_object(get_child(get_focused_child()), "");
 //						remove_child(get_child(get_focused_child()));
 					if (get_focused_child() >= (int)get_nr_children())

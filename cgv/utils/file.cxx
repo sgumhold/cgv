@@ -15,7 +15,7 @@
 #include <glob.h>
 #endif
 
-#if __cplusplus >= 201703L || _MSVC_LANG >= 201703L
+#if (__cplusplus >= 201703L || _MSVC_LANG >= 201703L)
 #include <filesystem>
 #define USE_STD_FILESYSTEM
 #endif
@@ -202,7 +202,12 @@ Result cmp(const std::string& what, const std::string& with)
 size_t size(const std::string& file_name, bool ascii)
 {
 #ifdef USE_STD_FILESYSTEM
-	return std::filesystem::file_size(file_name);
+	try {
+		return std::filesystem::file_size(file_name);
+	}
+	catch(...) {
+		return (size_t)-1;
+	}
 #else
 #ifdef _WIN32
 	if (ascii) {

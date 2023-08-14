@@ -1120,7 +1120,7 @@ bool point_cloud::read_bin(const string& file_name)
 			success = success && (fread(&N[0][0], sizeof(Nml), m, fp) == m);
 		}
 		if (flags & BPC_HAS_CLRS) {
-			bool byte_colors_in_file = (flags & BPC_HAS_BYTE_CLRS) != 0;
+			bool byte_colors_in_file = !((flags & BPC_HAS_BYTE_CLRS) != 0);
 #ifdef BYTE_COLORS
 			bool byte_colors_in_pc = true;
 #else
@@ -1142,7 +1142,8 @@ bool point_cloud::read_bin(const string& file_name)
 				else {
 					std::vector<cgv::media::color<float> > tmp;
 					tmp.resize(n);
-					success = success && fread(&tmp[0][0], sizeof(cgv::media::color<float>), n, fp) == n;
+					size_t cnt = fread(&tmp[0][0], sizeof(cgv::media::color<float>), n, fp);
+					success = success && cnt == n;
 					if (success) {
 						for (size_t i = 0; i < n; ++i)
 							C[i] = Clr(float_to_color_component(tmp[i][0]), float_to_color_component(tmp[i][1]), float_to_color_component(tmp[i][2]));

@@ -8,6 +8,12 @@ namespace cgv {
 		/// construct 4x4 zero matrix
 		template <typename T> fmat<T, 4, 4>
 			zero4() { fmat<T, 4, 4> M; M.zeros(); return M; }
+		/// construct 2x2 identity matrix
+		template <typename T> fmat<T, 2, 2>
+			identity2() { fmat<T, 2, 2> M; M.identity(); return M; }
+		/// construct 3x3 identity matrix
+		template <typename T> fmat<T, 3, 3>
+			identity3() { fmat<T, 3, 3> M; M.identity(); return M; }
 		/// construct 4x4 identity matrix
 		template <typename T> fmat<T, 4, 4>
 			identity4() { fmat<T, 4, 4> M; M.identity(); return M; }
@@ -35,12 +41,21 @@ namespace cgv {
 		/// construct 2x2 scale matrix from xy scales
 		template <typename T> fmat<T, 2, 2>
 			scale2(const T& sx, const T& sy) { return scale2(fvec<T, 2>(sx, sy)); }
+		/// construct 3x3 scale matrix from xyz scales
+		template <typename T> fmat<T, 3, 3>
+			scale3(const fvec<T, 3>& s) { fmat<T, 3, 3> M; M.identity(); M(0, 0) = s(0); M(1, 1) = s(1); M(2, 2) = s(2); return M; }
+		/// construct 3x3 scale matrix from xyz scales
+		template <typename T> fmat<T, 3, 3>
+			scale3(const T& sx, const T& sy, const T& sz) { return scale3(fvec<T, 3>(sx, sy, sz)); }
 		/// construct 4x4 scale matrix from xyz scales
 		template <typename T> fmat<T, 4, 4>
 			scale4(const fvec<T, 3>& s) { fmat<T, 4, 4> M; M.identity(); M(0, 0) = s(0); M(1, 1) = s(1); M(2, 2) = s(2); return M; }
 		/// construct 4x4 scale matrix from xyz scales
 		template <typename T> fmat<T, 4, 4>
 			scale4(const T& sx, const T& sy, const T& sz) { return scale4(fvec<T, 3>(sx, sy, sz)); }
+		/// construct 4x4 uniform scale matrix
+		template <typename T> fmat<T, 4, 4>
+			scale4(const T& s) { return scale4(fvec<T, 3>(s, s, s)); }
 		/// construct 2x2 rotation matrix from angle in degrees
 		template <typename T> fmat<T, 2, 2>
 			rotate2(const T& A) {
@@ -107,6 +122,14 @@ namespace cgv {
 				M(2, 1) = sx * cy;
 				M(2, 2) = cx * cy;
 				return M;
+			}
+		/// construct 3x3 rotation matrix from spin vector via Rodrigues formula
+		template <typename T> fmat<T, 3, 3>
+			rotate3s(fvec<T, 3> k) {
+				T o = k.length();
+				k /= std::max(o, T(1e-8f));
+				fmat<T,3,3> K = { 0.0f, k.z(), -k.y(), -k.z(), 0.0f ,k.x(), k.y(),-k.x(), 0.0f };
+				return identity3<float>() + sin(o) * K + (T(1) - cos(o)) * K * K;
 			}
 		/// construct 4x4 rotation matrix from angle in degrees and axis 
 		template <typename T> fmat<T, 4, 4>
@@ -229,7 +252,6 @@ namespace cgv {
 				M(3, 2) = -T(1);
 				return M;
 			}
-
 		/// construct 4x4 perspective frustum matrix
 		template <typename T> fmat<T, 4, 4>
 			perspective4(const T& fovy, const T& aspect, const T& zNear, const T& zFar) {
@@ -244,6 +266,27 @@ namespace cgv {
 				M(3, 2) = -T(1);
 				return M;
 			}
+
+		/// extract distance of near clipping plane from a 4x4 projection matrix (ortho or perspective)
+		template <typename T>
+			inline T znear_from_proj4(const fmat<T, 4, 4>& proj) {
+				return (proj[14] + proj[15]) / (proj[10] + proj[11]);
+		}
+		/// extract distance of far clipping plane from a 4x4 projection matrix (ortho or perspective)
+		template <typename T>
+			inline T zfar_from_proj4(const fmat<T, 4, 4>& proj) {
+				return (proj[14] - proj[15]) / (proj[10] - proj[11]);
+		}
+		/// extract distance of near clipping plane from given inverse of a 4x4 projection matrix (ortho or perspective)
+		template <typename T>
+			inline T znear_from_invproj4(const fmat<T, 4, 4>& invproj) {
+				return -(invproj[14] - invproj[10]) / (invproj[15] - invproj[11]);
+		}
+		/// extract distance of far clipping plane from given inverse of a 4x4 projection matrix (ortho or perspective)
+		template <typename T>
+			inline T zfar_from_invproj4(const fmat<T, 4, 4>& invproj) {
+				return -(invproj[10] + invproj[14]) / (invproj[11] + invproj[15]);
+		}
 
 		/// return perspective projection for given eye (from -1 ... left most to 1 ... right most) without translation
 		template <typename T> fmat<T, 4, 4>

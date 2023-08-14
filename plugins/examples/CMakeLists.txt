@@ -1,6 +1,6 @@
 
 # compile a list of source files for each specific source type the CGV CMake build system knows about
-file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
+file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx" "*.cpp")
 file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.gl*")
 file(GLOB_RECURSE IMAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.png" "*.bmp")
@@ -26,9 +26,9 @@ cgv_add_target(examples
 	RESOURCES       ${IMAGES}
 	AUDIO_RESOURCES ${AUDIO}	# <-- inclusion of audio resources is automatically disabled when BUILD_WITH_AUDIO is off
 	DEPENDENCIES
-		cgv_viewer delaunay plot cg_gamepad cgv_proc cgv_gl cgv_os cgv_signal cgv_g2d cgv_gpgpu cgv_app
+		cgv_viewer delaunay plot cg_gamepad cgv_proc cgv_gl cgv_os cgv_signal cgv_g2d cgv_gpgpu cgv_app cgv_post
 		cg_ext cg_fltk cg_icons cg_meta cmi_io cgv_proc cmf_tt_gl_font crg_antialias crg_depth_of_field
-		crg_grid crg_light crg_bg crg_stereo_view ${AUDIO_DEPENDENCIES} ${WINDOWS_DEPENDENCIES}
+		crg_grid crg_light crg_bg crg_holo_view ${AUDIO_DEPENDENCIES} ${WINDOWS_DEPENDENCIES}
 
 	# we are not using symbols from other plugins directly anywhere in the examples code, but if we did, we could specify them
 	# here so the linker would know to look for these symbols in the import libs / shared objects of the listed plugins

@@ -1,6 +1,8 @@
 #include <iostream>
 #include "rgbd_kinect_azure.h"
 #include <cgv/utils/convert.h>
+#include <cgv/math/pose.h>
+#include <k4a/k4atypes.h>
 
 
 using namespace std;
@@ -44,8 +46,13 @@ namespace rgbd {
 				return false;
 			}
 		}
+		color_frames.resize(frame_cache_size);
+		depth_frames.resize(frame_cache_size);
+		ir_frames.resize(frame_cache_size);
+		current_read_color_frame = current_write_color_frame = current_read_depth_frame = current_write_depth_frame = current_read_ir_frame = current_write_ir_frame = 0;
+		has_new_color_frame = has_new_depth_frame = has_new_ir_frame = false;
 		//find device with given serial
-		for (int i = 0; i < k4a::device::get_installed_count();++i) {
+		for (int i = 0; i < int(k4a::device::get_installed_count());++i) {
 			string dev_serial;
 			try {
 				device = k4a::device::open(i);
@@ -100,14 +107,21 @@ namespace rgbd {
 	/// query the current measurement of the acceleration sensors within the given time_out in milliseconds; return whether a measurement has been retrieved
 	bool rgbd_kinect_azure::put_IMU_measurement(IMU_measurement& m, unsigned time_out) const
 	{
-		if (has_new_IMU_data) {
-			capture_lock.lock();
-			memcpy(&m, &imu_data, sizeof(imu_data));
-			has_new_IMU_data = false;
-			capture_lock.unlock();
-			return true;
-		}
-		return false;
+		if (!imu_enabled)
+			return false;
+		//capture_lock.lock();
+		k4a_imu_sample_t imu_sample;
+		if (k4a_device_get_imu_sample(device.handle(), &imu_sample, time_out) != K4A_WAIT_RESULT_SUCCEEDED)
+			return false;
+		m.angular_velocity[0] = imu_sample.gyro_sample.v[0];
+		m.angular_velocity[1] = imu_sample.gyro_sample.v[1];
+		m.angular_velocity[2] = imu_sample.gyro_sample.v[2];
+		m.linear_acceleration[0] = imu_sample.acc_sample.v[0];
+		m.linear_acceleration[1] = imu_sample.acc_sample.v[1];
+		m.linear_acceleration[2] = imu_sample.acc_sample.v[2];
+		m.time_stamp = imu_sample.acc_timestamp_usec;
+		m.angular_time_stamp = imu_sample.gyro_timestamp_usec;
+		return true;
 	}
 	/// check whether the device supports the given combination of input streams
 	bool rgbd_kinect_azure::check_input_stream_configuration(InputStreams is) const
@@ -117,7 +131,7 @@ namespace rgbd {
 	/// query the stream formats available for a given stream configuration
 	void rgbd_kinect_azure::query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const
 	{
-		const static int fps[] = { 5,15,30 };
+		const static float fps[] = { 5.0f,15.0f,30.0f };
 		constexpr int fps_size = sizeof(fps) / sizeof(int);
 		if ((is & IS_COLOR) != 0) {
 			
@@ -169,6 +183,104 @@ namespace rgbd {
 			return true;
 		return start_device(stream_formats);
 	}
+	/// check whether a multi-device role is supported
+	bool rgbd_kinect_azure::is_supported(MultiDeviceRole mdr) const
+	{
+		return true;
+	}
+	/// configure device for a multi-device role and return whether this was successful (do this before starting)
+	bool rgbd_kinect_azure::configure_role(MultiDeviceRole mdr)
+	{
+		multi_device_role = mdr;
+		return true;
+	}
+
+	const std::vector<color_parameter_info>& rgbd_kinect_azure::get_supported_color_control_parameter_infos() const
+	{
+		if (ccp_infos.empty()) {
+			bool supports_auto;
+			int32_t min_value;
+			int32_t max_value;
+			int32_t step_value;
+			int32_t default_value;
+			k4a_color_control_mode_t default_mode;
+			if (k4a_device_get_color_control_capabilities(device.handle(), K4A_COLOR_CONTROL_EXPOSURE_TIME_ABSOLUTE, &supports_auto, &min_value, &max_value, &step_value, &default_value, &default_mode) == K4A_RESULT_SUCCEEDED)
+				ccp_infos.push_back({ "exposure", CCP_EXPOSURE, supports_auto, default_mode == K4A_COLOR_CONTROL_MODE_AUTO, min_value, max_value, step_value, default_value });
+			if (k4a_device_get_color_control_capabilities(device.handle(), K4A_COLOR_CONTROL_BRIGHTNESS, &supports_auto, &min_value, &max_value, &step_value, &default_value, &default_mode) == K4A_RESULT_SUCCEEDED)
+				ccp_infos.push_back({ "brightness", CCP_BRIGHTNESS, supports_auto, default_mode == K4A_COLOR_CONTROL_MODE_AUTO, min_value, max_value, step_value, default_value });
+			if (k4a_device_get_color_control_capabilities(device.handle(), K4A_COLOR_CONTROL_CONTRAST, &supports_auto, &min_value, &max_value, &step_value, &default_value, &default_mode) == K4A_RESULT_SUCCEEDED)
+				ccp_infos.push_back({ "contrast", CCP_CONTRAST, supports_auto, default_mode == K4A_COLOR_CONTROL_MODE_AUTO, min_value, max_value, step_value, default_value });
+			if (k4a_device_get_color_control_capabilities(device.handle(), K4A_COLOR_CONTROL_SATURATION, &supports_auto, &min_value, &max_value, &step_value, &default_value, &default_mode) == K4A_RESULT_SUCCEEDED)
+				ccp_infos.push_back({ "saturation", CCP_SATURATION, supports_auto, default_mode == K4A_COLOR_CONTROL_MODE_AUTO, min_value, max_value, step_value, default_value });
+			if (k4a_device_get_color_control_capabilities(device.handle(), K4A_COLOR_CONTROL_SHARPNESS, &supports_auto, &min_value, &max_value, &step_value, &default_value, &default_mode) == K4A_RESULT_SUCCEEDED)
+				ccp_infos.push_back({ "sharpness", CCP_SHARPNESS, supports_auto, default_mode == K4A_COLOR_CONTROL_MODE_AUTO, min_value, max_value, step_value, default_value });
+			if (k4a_device_get_color_control_capabilities(device.handle(), K4A_COLOR_CONTROL_WHITEBALANCE, &supports_auto, &min_value, &max_value, &step_value, &default_value, &default_mode) == K4A_RESULT_SUCCEEDED)
+				ccp_infos.push_back({ "whitebalance[Kelvin]", CCP_WHITEBALANCE, supports_auto, default_mode == K4A_COLOR_CONTROL_MODE_AUTO, min_value, max_value, step_value, default_value });
+			if (k4a_device_get_color_control_capabilities(device.handle(), K4A_COLOR_CONTROL_BACKLIGHT_COMPENSATION, &supports_auto, &min_value, &max_value, &step_value, &default_value, &default_mode) == K4A_RESULT_SUCCEEDED)
+				ccp_infos.push_back({ "backlight_compensation(off,on)", CCP_BACKLIGHT_COMPENSATION, supports_auto, default_mode == K4A_COLOR_CONTROL_MODE_AUTO, min_value, max_value, step_value, default_value });
+			if (k4a_device_get_color_control_capabilities(device.handle(), K4A_COLOR_CONTROL_GAIN, &supports_auto, &min_value, &max_value, &step_value, &default_value, &default_mode) == K4A_RESULT_SUCCEEDED)
+				ccp_infos.push_back({ "gain", CCP_GAIN, supports_auto, default_mode == K4A_COLOR_CONTROL_MODE_AUTO, min_value, max_value, step_value, default_value });
+			if (k4a_device_get_color_control_capabilities(device.handle(), K4A_COLOR_CONTROL_POWERLINE_FREQUENCY, &supports_auto, &min_value, &max_value, &step_value, &default_value, &default_mode) == K4A_RESULT_SUCCEEDED)
+				ccp_infos.push_back({ "powerline_frequency(off,50Hz,60Hz)", CCP_POWERLINE_FREQUENCY, supports_auto, default_mode == K4A_COLOR_CONTROL_MODE_AUTO, min_value, max_value, step_value, default_value });
+		}
+		return ccp_infos;
+		/*
+		static std::vector<color_parameter_info> I;
+		if (I.empty()) {
+			I.push_back({ "exposure", CCP_EXPOSURE, true, -11, 1, 1, -5 });
+			I.push_back({ "brightness", CCP_BRIGHTNESS, false, 0, 255, 1, 128 });
+			I.push_back({ "contrast", CCP_CONTRAST, false, 0, 255, 1, 128 });
+			I.push_back({ "saturation", CCP_SATURATION, false, 0, 255, 1, 128 });
+			I.push_back({ "sharpness", CCP_SHARPNESS, false, 0, 255, 1, 128 });
+			I.push_back({ "whitebalance[Kelvin]", CCP_WHITEBALANCE, true, 0, 10000, 10, 5500 });
+			I.push_back({ "backlight_compensation(off,on)", CCP_BACKLIGHT_COMPENSATION, false, 0, 1, 1, 0 });
+			I.push_back({ "gain", CCP_GAIN, false, 0, 255, 1, 128 });
+			I.push_back({ "powerline_frequency(off,50Hz,60Hz)", CCP_POWERLINE_FREQUENCY, false, 0, 2, 1, 0 });
+		}
+		return I;
+		*/
+	}
+	k4a_color_control_command_t ccp_to_ccc(ColorControlParameter ccp)
+	{
+		static k4a_color_control_command_t cccs[] = {
+			K4A_COLOR_CONTROL_EXPOSURE_TIME_ABSOLUTE,
+			K4A_COLOR_CONTROL_BRIGHTNESS,
+			K4A_COLOR_CONTROL_CONTRAST,
+			K4A_COLOR_CONTROL_SATURATION,
+			K4A_COLOR_CONTROL_SHARPNESS,
+			K4A_COLOR_CONTROL_WHITEBALANCE,
+			K4A_COLOR_CONTROL_BACKLIGHT_COMPENSATION,
+			K4A_COLOR_CONTROL_GAIN,
+			K4A_COLOR_CONTROL_POWERLINE_FREQUENCY
+		};
+		assert(ccp >= CCP_EXPOSURE && ccp <= CCP_POWERLINE_FREQUENCY);
+		return cccs[ccp];
+	}
+	/// query color control value and whether its adjustment is in automatic mode
+	std::pair<int32_t, bool> rgbd_kinect_azure::get_color_control_parameter(ColorControlParameter ccp) const
+	{
+		k4a_color_control_mode_t mode;
+		int32_t value;
+		device.get_color_control(ccp_to_ccc(ccp), &mode, &value);
+		//if (ccp == CCP_EXPOSURE) {
+		//
+		//}
+		return { value, mode == K4A_COLOR_CONTROL_MODE_AUTO };
+	}
+	/// set a color control value and automatic mode and return whether successful
+	bool rgbd_kinect_azure::set_color_control_parameter(ColorControlParameter ccp, int32_t value, bool automatic_mode)
+	{
+		try {
+			device.set_color_control(ccp_to_ccc(ccp), automatic_mode ? K4A_COLOR_CONTROL_MODE_AUTO : K4A_COLOR_CONTROL_MODE_MANUAL, value);
+		}
+		catch (k4a::error e)
+		{
+			std::cerr << "ERROR in set_color_control_parameter: " << e.what() << std::endl;
+			return false;
+		}
+		return true;
+	}
+
 	/// start the rgbd device with given stream formats 
 	bool rgbd_kinect_azure::start_device(const std::vector<stream_format>& stream_formats)
 	{
@@ -185,7 +297,11 @@ namespace rgbd {
 		cfg.color_resolution = K4A_COLOR_RESOLUTION_OFF;
 		cfg.color_format = K4A_IMAGE_FORMAT_COLOR_BGRA32;
 		cfg.depth_mode = K4A_DEPTH_MODE_OFF;
-		cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_STANDALONE; //set syncronization mode to standalone
+		switch (multi_device_role) {
+		case MDR_LEADER: cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_MASTER; break;
+		case MDR_FOLLOWER: cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_SUBORDINATE; break;
+		default : cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_STANDALONE; break;
+		}
 		cfg.depth_delay_off_color_usec = 0;
 		cfg.subordinate_delay_off_master_usec = 0;
 		cfg.disable_streaming_indicator = false;
@@ -259,6 +375,8 @@ namespace rgbd {
 		camera_calibration = device.get_calibration(cfg.depth_mode, cfg.color_resolution);
 		camera_transform = k4a::transformation(camera_calibration);
 		intrinsics = &camera_calibration.depth_camera_calibration.intrinsics.parameters;
+		camera_calibration_t = &camera_calibration.depth_camera_calibration;
+		intrinsics_t = &camera_calibration.depth_camera_calibration.intrinsics;
 
 		try { device.start_cameras(&cfg); }
 		catch (runtime_error e) {
@@ -282,6 +400,36 @@ namespace rgbd {
 		capture_thread = make_unique<thread>(&rgbd_kinect_azure::capture,this,is);
 		return true;
 	}
+	
+	/// query the calibration information and return whether this was successful
+	bool rgbd_kinect_azure::query_calibration(InputStreams is, cgv::math::camera<double>& cam)
+	{
+		if (!(is == IS_DEPTH || is == IS_COLOR))
+			return false;
+		const auto& C = (is == IS_DEPTH) ? camera_calibration.depth_camera_calibration :
+			camera_calibration.color_camera_calibration;
+		const auto& P = C.intrinsics.parameters.param;
+		cam.w = C.resolution_width;
+		cam.h = C.resolution_height;
+		cam.max_radius_for_projection = P.metric_radius;
+		cam.s = cgv::math::fvec<double, 2>(P.fx, P.fy);
+		cam.c = cgv::math::fvec<double, 2>(P.cx, P.cy);
+		cam.dc = cgv::math::fvec<double, 2>(P.codx, P.cody);
+		cam.skew = 0.0;
+		cam.k[0] = P.k1;
+		cam.k[1] = P.k2;
+		cam.k[2] = P.k3;
+		cam.k[3] = P.k4;
+		cam.k[4] = P.k5;
+		cam.k[5] = P.k6;
+		cam.p[0] = P.p1;
+		cam.p[1] = P.p2;
+		cam.pose = pose_construct(
+			cgv::math::fmat<float, 3, 3>(3,3,&C.extrinsics.rotation[0]), 
+			cgv::math::fvec<float, 3>(3, &C.extrinsics.translation[0]));
+		return true;
+	}
+
 	/// stop the camera
 	bool rgbd_kinect_azure::stop_device()
 	{
@@ -306,7 +454,7 @@ namespace rgbd {
 		return device_started.load(std::memory_order_relaxed);
 	}
 
-		/// query a frame of the given input stream
+	/// query a frame of the given input stream
 	bool rgbd_kinect_azure::get_frame(InputStreams is, frame_type& frame, int timeOut)
 	{
 		if (!is_attached()) {
@@ -321,20 +469,23 @@ namespace rgbd {
 
 		if (is == IS_COLOR && has_new_color_frame) {
 			capture_lock.lock();
-			frame = move(*color_frame);
-			has_new_color_frame = false;
+			frame = move(*color_frames[current_read_color_frame]);
+			current_read_color_frame = (current_read_color_frame + 1) % frame_cache_size;
+			has_new_color_frame = current_read_color_frame != current_write_color_frame;
 			capture_lock.unlock();
 			return true;
 		} else if (is == IS_DEPTH && has_new_depth_frame) {
 			capture_lock.lock();
-			frame = move(*depth_frame);
-			has_new_depth_frame = false;
+			frame = move(*depth_frames[current_read_depth_frame]);
+			current_read_depth_frame = (current_read_depth_frame + 1) % frame_cache_size;
+			has_new_depth_frame = current_read_depth_frame != current_write_depth_frame;
 			capture_lock.unlock();
 			return true;
 		} else if (is == IS_INFRARED && has_new_ir_frame) {
 			capture_lock.lock();
-			frame = move(*ir_frame);
-			has_new_ir_frame = false;
+			frame = move(*ir_frames[current_read_ir_frame]);
+			current_read_ir_frame = (current_read_ir_frame + 1) % frame_cache_size;
+			has_new_ir_frame = current_read_ir_frame != current_write_ir_frame;
 			capture_lock.unlock();
 			return true;
 		}
@@ -374,7 +525,8 @@ namespace rgbd {
 	/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 	bool rgbd_kinect_azure::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
-		k4a_float2_t p;
+		// call function from sdk
+		/*k4a_float2_t p;
 		k4a_float3_t ray;
 		int valid;
 
@@ -396,8 +548,217 @@ namespace rgbd {
 			point_ptr[1] = nanf("");
 			point_ptr[2] = nanf("");
 		}
+		return true;*/
+		// 
+		auto& p = intrinsics->param;
+
+		double fx_d = 1.0 / p.fx;
+		double fy_d = 1.0 / p.fy;
+		double cx_d = p.cx;
+		double cy_d = p.cy;
+		// set 0.001 for current vr_rgbd
+		double d = 0.001 * depth * 1.000;
+		double x_d = (x - cx_d) * fx_d;
+		double y_d = (y - cy_d) * fy_d;
+
+		float uv[2], xy[2];
+		uv[0] = float(x_d);
+		uv[1] = float(y_d);
+		bool valid = true;
 		
-		return true;
+		if (transformation_unproject_internal(camera_calibration_t, uv, xy, valid)) {
+			point_ptr[0] = float(-xy[0] * d);
+			point_ptr[1] = float(xy[1] * d);
+			point_ptr[2] = float(d);
+			return true;
+		}
+		return false;
+	}
+
+	bool rgbd_kinect_azure::transformation_iterative_unproject(const float *uv, float *xy, bool valid, unsigned int max_passes) const
+	{
+		float Jinv[2 * 2];
+		float best_xy[2] = {0.f, 0.f};
+		float best_err = FLT_MAX;
+
+		for (unsigned int pass = 0; pass < max_passes; pass++) {
+			float p[2];
+			float J[2 * 2];
+			if (!transformation_project_internal(camera_calibration_t, xy, p, valid, J))
+			{
+				return K4A_RESULT_FAILED;
+			}
+			if (valid)
+			{
+				return K4A_RESULT_SUCCEEDED;
+			}
+
+			float err_x = uv[0] - p[0];
+			float err_y = uv[1] - p[1];
+			float err = err_x * err_x + err_y * err_y;
+			if (err >= best_err) {
+				xy[0] = best_xy[0];
+				xy[1] = best_xy[1];
+				break;
+			}
+
+			best_err = err;
+			best_xy[0] = xy[0];
+			best_xy[1] = xy[1];
+			invert_2x2(J, Jinv);
+			if (pass + 1 == max_passes || best_err < 1e-22f) {
+				break;
+			}
+
+			float dx = Jinv[0] * err_x + Jinv[1] * err_y;
+			float dy = Jinv[2] * err_x + Jinv[3] * err_y;
+
+			xy[0] += dx;
+			xy[1] += dy;
+		}
+		if (best_err > 1e-6f)
+		{
+			valid = true;
+		}
+		return K4A_RESULT_SUCCEEDED;
+	}
+
+	bool rgbd_kinect_azure::transformation_project_internal(const k4a_calibration_camera_t* camera_calibration_tt,
+															const float xy[2], float point2d[2], bool valid,
+															float J_xy[2 * 2]) const
+	{
+		auto* p = &intrinsics->param;
+		float max_radius_for_projection = camera_calibration_tt->metric_radius;
+		valid = false;
+
+		float xp = xy[0] - p->codx;
+		float yp = xy[1] - p->cody;
+
+		float xp2 = xp * xp;
+		float yp2 = yp * yp;
+		float xyp = xp * yp;
+		float rs = xp2 + yp2;
+		float rm = max_radius_for_projection * max_radius_for_projection;
+		if (rs > rm) {
+			valid = true;
+			return K4A_RESULT_SUCCEEDED;
+		}
+		float rss = rs * rs;
+		float rsc = rss * rs;
+		float a = 1.f + p->k1 * rs + p->k2 * rss + p->k3 * rsc;
+		float b = 1.f + p->k4 * rs + p->k5 * rss + p->k6 * rsc;
+		float bi;
+		if (b != 0.f) {
+			bi = 1.f / b;
+		}
+		else {
+			bi = 1.f;
+		}
+		float d = a * bi;
+
+		float xp_d = xp * d;
+		float yp_d = yp * d;
+
+		float rs_2xp2 = rs + 2.f * xp2;
+		float rs_2yp2 = rs + 2.f * yp2;
+
+		if (intrinsics_t->type == K4A_CALIBRATION_LENS_DISTORTION_MODEL_RATIONAL_6KT) {
+			xp_d += rs_2xp2 * p->p2 + xyp * p->p1;
+			yp_d += rs_2yp2 * p->p1 + xyp * p->p2;
+		}
+		else {
+			// the only difference from Rational6ktCameraModel is 2 multiplier for the tangential coefficient term
+			// xyp*p1 and xyp*p2
+			xp_d += rs_2xp2 * p->p2 + 2.f * xyp * p->p1;
+			yp_d += rs_2yp2 * p->p1 + 2.f * xyp * p->p2;
+		}
+
+		float xp_d_cx = xp_d + p->codx;
+		float yp_d_cy = yp_d + p->cody;
+
+		point2d[0] = xp_d_cx * p->fx + p->cx;
+		point2d[1] = yp_d_cy * p->fy + p->cy;
+
+		if (J_xy == 0) {
+			return K4A_RESULT_SUCCEEDED;
+		}
+
+		// compute Jacobian matrix
+		float dudrs = p->k1 + 2.f * p->k2 * rs + 3.f * p->k3 * rss;
+		// compute d(b)/d(r^2)
+		float dvdrs = p->k4 + 2.f * p->k5 * rs + 3.f * p->k6 * rss;
+		float bis = bi * bi;
+		float dddrs = (dudrs * b - a * dvdrs) * bis;
+
+		float dddrs_2 = dddrs * 2.f;
+		float xp_dddrs_2 = xp * dddrs_2;
+		float yp_xp_dddrs_2 = yp * xp_dddrs_2;
+		// compute d(u)/d(xp)
+		if (intrinsics_t->type == K4A_CALIBRATION_LENS_DISTORTION_MODEL_RATIONAL_6KT) {
+			J_xy[0] = p->fx * (d + xp * xp_dddrs_2 + 6.f * xp * p->p2 + yp * p->p1);
+			J_xy[1] = p->fx * (yp_xp_dddrs_2 + 2.f * yp * p->p2 + xp * p->p1);
+			J_xy[2] = p->fy * (yp_xp_dddrs_2 + 2.f * xp * p->p1 + yp * p->p2);
+			J_xy[3] = p->fy * (d + yp * yp * dddrs_2 + 6.f * yp * p->p1 + xp * p->p2);
+		}
+		else {
+			J_xy[0] = p->fx * (d + xp * xp_dddrs_2 + 6.f * xp * p->p2 + 2.f * yp * p->p1);
+			J_xy[1] = p->fx * (yp_xp_dddrs_2 + 2.f * yp * p->p2 + 2.f * xp * p->p1);
+			J_xy[2] = p->fy * (yp_xp_dddrs_2 + 2.f * xp * p->p1 + 2.f * yp * p->p2);
+			J_xy[3] = p->fy * (d + yp * yp * dddrs_2 + 6.f * yp * p->p1 + 2.f * xp * p->p2);
+		}
+		return K4A_RESULT_SUCCEEDED;
+	}
+
+	void rgbd_kinect_azure::invert_2x2(const float J[2 * 2], float Jinv[2 * 2]) const
+	{
+		float detJ = J[0] * J[3] - J[1] * J[2];
+		float inv_detJ = 1.f / detJ;
+
+		Jinv[0] = inv_detJ * J[3];
+		Jinv[3] = inv_detJ * J[0];
+		Jinv[1] = -inv_detJ * J[1];
+		Jinv[2] = -inv_detJ * J[2];
+	}
+
+	bool rgbd_kinect_azure::transformation_unproject_internal(const k4a_calibration_camera_t* camera_calibration,
+															  const float uv[2], float xy[2], bool valid) const
+	{
+		auto& p = camera_calibration->intrinsics.parameters.param;
+		double xp_d = uv[0] - p.codx;
+		double yp_d = uv[1] - p.cody;
+
+		double r2 = xp_d * xp_d + yp_d * yp_d;
+		double r4 = r2 * r2;
+		double r6 = r2 * r4;
+		double r8 = r4 * r4;
+		double a = 1 + p.k1 * r2 + p.k2 * r4 + p.k3 * r6;
+		double b = 1 + p.k4 * r2 + p.k5 * r4 + p.k6 * r6;
+		double ai;
+		if (a != 0.f) {
+			ai = 1.f / a;
+		}
+		else {
+			ai = 1.f;
+		}
+		float di = float(ai * b);
+		// solve the radial and tangential distortion
+		double x_u = xp_d * di;
+		double y_u = yp_d * di;
+
+		// approximate correction for tangential params
+		float two_xy = float(2* x_u * y_u);
+		float xx = float(x_u * x_u);
+		float yy = float(y_u * y_u);
+
+		x_u -= (yy + 3.f * xx) * p.p2 + two_xy * p.p1;
+		y_u -= (xx + 3.f * yy) * p.p1 + two_xy * p.p2;
+
+		x_u += p.codx;
+		y_u += p.cody;
+
+		xy[0] = float(x_u);
+		xy[1] = float(y_u);
+		return transformation_iterative_unproject(uv, xy, valid, 20);
 	}
 
 	bool rgbd_kinect_azure::get_emulator_configuration(emulator_parameters& parameters) const
@@ -429,46 +790,34 @@ namespace rgbd {
 		return attach(old_dev_serial);
 	}
 
+	auto extract_frame(const k4a::image& col, const rgbd::stream_format& color_format)
+	{
+		auto col_frame = make_unique<frame_type>();
+		static_cast<frame_format&>(*col_frame) = color_format;
+		col_frame->time = col.get_system_timestamp().count() * 0.000000001;
+		col_frame->system_time_stamp = col.get_system_timestamp().count();
+		col_frame->device_time_stamp = col.get_device_timestamp().count() * 1000;
+		col_frame->frame_data.resize(col.get_size());
+		col_frame->compute_buffer_size();
+		memcpy(col_frame->frame_data.data(), col.get_buffer(), col.get_size());
+		return col_frame;
+	}
+
 	void rgbd_kinect_azure::capture(int is)
 	{
 		while (is_running()) {
 			try {
-				k4a::capture cap;
-				
+				k4a::capture cap;				
 				device.get_capture(&cap);
+				//device.get_color_control()
 				unique_ptr<frame_type> col_frame, dep_frame, ired_frame;
-
-				if (is & IS_COLOR) {
-					k4a::image col = cap.get_color_image();
-					col_frame = make_unique<frame_type>();
-					static_cast<frame_format&>(*col_frame) = color_format;
-					col_frame->time = col.get_device_timestamp().count() * 0.001;
-					col_frame->frame_data.resize(col.get_size());
-					col_frame->compute_buffer_size();
-					memcpy(col_frame->frame_data.data(), col.get_buffer(), col.get_size());
-				}
-
-				if (is & IS_DEPTH) {
-					k4a::image dep = cap.get_depth_image();
-					dep_frame = make_unique<frame_type>();
-					static_cast<frame_format&>(*dep_frame) = depth_format;
-					dep_frame->time = dep.get_device_timestamp().count() * 0.001;
-					dep_frame->frame_data.resize(dep.get_size());
-					dep_frame->compute_buffer_size();
-					memcpy(dep_frame->frame_data.data(), dep.get_buffer(), dep.get_size());
-				}
-
-				if (is & IS_INFRARED) {
-					k4a::image ir = cap.get_ir_image();
-					ired_frame = make_unique<frame_type>();
-					static_cast<frame_format&>(*ired_frame) = ir_format;
-					ired_frame->time = ir.get_device_timestamp().count() * 0.001;
-					ired_frame->frame_data.resize(ir.get_size());
-					ired_frame->compute_buffer_size();
-					memcpy(ired_frame->frame_data.data(), ir.get_buffer(), ir.get_size());
-				}
-
-
+				if (is & IS_COLOR)
+					col_frame = extract_frame(cap.get_color_image(), color_format);
+				if (is & IS_DEPTH)
+					dep_frame = extract_frame(cap.get_depth_image(), depth_format);
+				if (is & IS_INFRARED)
+					ired_frame = extract_frame(cap.get_ir_image(), ir_format);
+				/*
 				//read IMU
 				k4a_imu_sample_t imu_sample;
 				if (imu_enabled) {
@@ -483,22 +832,25 @@ namespace rgbd {
 						imu_enabled = false;
 					}
 				}
-
+				*/
 
 				capture_lock.lock();
 				if (is & IS_COLOR) {
-					color_frame = move(col_frame);
+					color_frames[current_write_color_frame] = move(col_frame);
+					current_write_color_frame = (current_write_color_frame + 1) % frame_cache_size;
 					has_new_color_frame = true;
 				}
 				if (is & IS_DEPTH) {
-					depth_frame = move(dep_frame);
+					depth_frames[current_write_depth_frame] = move(dep_frame);
+					current_write_depth_frame = (current_write_depth_frame + 1) % frame_cache_size;
 					has_new_depth_frame = true;
 				}
 				if (is & IS_INFRARED) {
-					ir_frame = move(ired_frame);
+					ir_frames[current_write_ir_frame] = move(ired_frame);
+					current_write_ir_frame = (current_write_ir_frame + 1) % frame_cache_size;
 					has_new_ir_frame = true;
 				}
-
+				/*
 				if (imu_enabled) {
 					imu_data.angular_acceleration[0] = imu_sample.gyro_sample.v[0];
 					imu_data.angular_acceleration[1] = imu_sample.gyro_sample.v[1];
@@ -510,6 +862,7 @@ namespace rgbd {
 					imu_data.time_stamp = imu_sample.acc_timestamp_usec;
 					has_new_IMU_data = true;
 				}
+				*/
 				capture_lock.unlock();
 			}
 			catch (k4a::error err) {

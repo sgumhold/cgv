@@ -25,14 +25,13 @@ protected:
 		int x_label_size = 0;
 		int title_space = 0;
 
-		//int band_height;
 		ivec2 total_size;
 
 		OrientationOption orientation = OO_HORIZONTAL;
 		AlignmentOption label_alignment = AO_END;
 
 		// dependent members
-		cgv::g2d::rect color_map_rect;
+		cgv::g2d::irect color_map_rect;
 		ivec2 title_position = ivec2(0);
 		float title_angle = 90.0f;
 
@@ -67,8 +66,8 @@ protected:
 			default: break;
 			}
 
-			color_map_rect.set_pos(offset + padding);
-			color_map_rect.set_size(size - 2 * padding);
+			color_map_rect.position = offset + padding;
+			color_map_rect.size = size - 2 * padding;
 		}
 	} layout;
 
@@ -89,15 +88,14 @@ protected:
 	cgv::g2d::shape2d_style container_style, border_style, color_map_style;
 
 	// text appearance
-	float font_size = 12.0f;
-	cgv::g2d::shape2d_style text_style;
+	cgv::g2d::text2d_style text_style;
 	cgv::g2d::msdf_text_geometry labels;
 
 	cgv::g2d::generic_2d_renderer tick_renderer;
 	DEFINE_GENERIC_RENDER_DATA_CLASS(tick_geometry, 2, vec2, position, vec2, size);
 	tick_geometry ticks;
 
-	void init_styles(cgv::render::context& ctx);
+	void init_styles(cgv::render::context& ctx) override;
 	void create_labels();
 	void create_ticks();
 
@@ -109,17 +107,13 @@ public:
 
 	void clear(cgv::render::context& ctx);
 
-	bool self_reflect(cgv::reflect::reflection_handler& _rh);
-	void stream_help(std::ostream& os) {}
-
-	bool handle_event(cgv::gui::event& e);
 	void on_set(void* member_ptr);
 
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
 	void draw_content(cgv::render::context& ctx);
 
-	void set_color_map(cgv::render::context & ctx, cgv::render::color_map& cm);
+	void set_color_map(cgv::render::context& ctx, cgv::render::color_map& cm);
 
 	void set_width(size_t w);
 	void set_height(size_t h);

@@ -1,40 +1,52 @@
 #pragma once
 
-#include <cgv/render/render_types.h>
-
 #include "rect.h"
+#include "shape.h"
 
 #include "lib_begin.h"
 
 namespace cgv {
 namespace g2d {
 
-struct CGV_API draggable : public cgv::render::render_types {
-	vec2 pos;
-	vec2 size;
-	bool position_is_center;
-	const rect* constraint = nullptr;
+/// @brief Defines a draggable shape using rectangular geometry that can be used in a draggable collection.
+struct CGV_API draggable : public shape_base {
+
+	using shape_base::shape_base;
+
+	const irect* constraint = nullptr;
 
 	enum ConstraintReference {
 		CR_CENTER,
 		CR_MIN_POINT,
 		CR_MAX_POINT,
 		CR_FULL_SIZE
-	} constraint_reference;
+	} constraint_reference = CR_FULL_SIZE;
 
-	draggable();
+	void set_constraint(const irect* area);
 
-	vec2 center() const;
-
-	void set_constraint(const rect* constraint);
-
-	const rect* get_constraint() const;
+	const irect* get_constraint() const;
 
 	void apply_constraint();
 
-	void apply_constraint(const rect& area);
+	void apply_constraint(const irect& area);
+};
 
-	virtual bool is_inside(const ivec2& p) const;
+/// @brief Defines a draggable shape using circular geometry that can be used in a draggable collection.
+/// Per default, shape_base::position_is_center is set to true. The size is interpreted as the diameter
+/// and only the x-component is used while the y-component is ignored.
+struct CGV_API circle_draggable : public draggable {
+
+	using draggable::draggable;
+
+	circle_draggable();
+
+	circle_draggable(const cgv::render::vec2& position, const cgv::render::vec2& size);
+
+	inline bool is_inside(const cgv::render::vec2& mp) const override {
+
+		float dist = length(mp - center());
+		return dist <= 0.5f * size.x();
+	}
 };
 
 }

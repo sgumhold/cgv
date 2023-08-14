@@ -18,8 +18,12 @@ namespace cgv {
 			colored_model();
 			/// copy constructur
 			colored_model(const colored_model& cm);
+			/// move constructur
+			colored_model(colored_model&& cm);
 			/// assignment operator
-			colored_model& operator = (const colored_model& cm);
+			colored_model& operator=(const colored_model& cm);
+			/// move assignment operator
+			colored_model& operator=(colored_model&& cm);
 			/// destruct colored model
 			virtual ~colored_model();
 			/**@name access to colors*/

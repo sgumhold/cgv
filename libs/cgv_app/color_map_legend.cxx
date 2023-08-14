@@ -20,7 +20,7 @@ color_map_legend::color_map_legend() {
 	set_overlay_margin(ivec2(-3));
 	set_overlay_size(layout.total_size);
 
-	tick_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::rectangle);
+	tick_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
 
 	title = "";
 	range = vec2(0.0f, 1.0f);
@@ -37,21 +37,11 @@ void color_map_legend::clear(cgv::render::context& ctx) {
 
 	tex.destruct(ctx);
 
-	cgv::g2d::ref_msdf_font(ctx, -1);
+	cgv::g2d::ref_msdf_font_regular(ctx, -1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
 
 	tick_renderer.destruct(ctx);
 	ticks.destruct(ctx);
-}
-
-bool color_map_legend::self_reflect(cgv::reflect::reflection_handler& _rh) {
-
-	return false;
-}
-
-bool color_map_legend::handle_event(cgv::gui::event& e) {
-
-	return false;
 }
 
 void color_map_legend::on_set(void* member_ptr) {
@@ -96,22 +86,20 @@ void color_map_legend::on_set(void* member_ptr) {
 
 bool color_map_legend::init(cgv::render::context& ctx) {
 
-	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
+	register_shader("rectangle", cgv::g2d::shaders::rectangle);
 
 	bool success = canvas_overlay::init(ctx);
 
 	success &= tick_renderer.init(ctx);
 
-	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font(ctx, 1);
+	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font_regular(ctx, 1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
 
 	if(success)
 		init_styles(ctx);
 
-	if(font.is_initialized()) {
+	if(font.is_initialized())
 		labels.set_msdf_font(&font);
-		labels.set_font_size(font_size);
-	}
 
 	return success;
 }
@@ -124,9 +112,6 @@ void color_map_legend::init_frame(cgv::render::context& ctx) {
 		layout.update(container_size);
 		create_ticks();
 	}
-
-	if(ensure_theme())
-		init_styles(ctx);
 }
 
 void color_map_legend::draw_content(cgv::render::context& ctx) {
@@ -145,16 +130,16 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 
 	// draw inner border
 	border_style.apply(ctx, rect_prog);
-	content_canvas.draw_shape(ctx, layout.color_map_rect.pos() - 1, layout.color_map_rect.size() + 2);
+	content_canvas.draw_shape(ctx, layout.color_map_rect.position - 1, layout.color_map_rect.size + 2);
 
 	if(tex.is_created()) {
 		content_canvas.push_modelview_matrix();
-		ivec2 pos = layout.color_map_rect.pos();
-		ivec2 size = layout.color_map_rect.size();
+		ivec2 pos = layout.color_map_rect.position;
+		ivec2 size = layout.color_map_rect.size;
 		float angle = 0.0f;
 
 		if(layout.orientation == OO_VERTICAL) {
-			pos.x() += layout.color_map_rect.size().x();
+			pos.x() += layout.color_map_rect.size.x();
 			std::swap(size.x(), size.y());
 			angle = 90.0f;
 		}
@@ -255,6 +240,7 @@ void color_map_legend::set_width(size_t w) {
 	layout.total_size.x() = int(w);
 	on_set(&layout.total_size.x());
 }
+
 void color_map_legend::set_height(size_t h) {
 	layout.total_size.y() = int(h);
 	on_set(&layout.total_size.y());
@@ -328,12 +314,10 @@ void color_map_legend::init_styles(cgv::render::context& ctx) {
 		border_width = 0.0f;
 	}
 
-	text_style.fill_color = rgba(tick_color, 1.0f);
-	text_style.border_color = rgba(tick_color, label_border_alpha);
-	text_style.border_width = border_width;
-	text_style.feather_origin = 0.5f;
-	text_style.use_blending = true;
-
+	text_style = cgv::g2d::text2d_style::preset_stylized(tick_color);
+	text_style.feather_origin = 0.25f;
+	text_style.font_size = 12.0f;
+	
 	// configure style for tick marks
 	cgv::g2d::shape2d_style tick_style;
 	tick_style.position_is_center = true;
@@ -389,9 +373,9 @@ void color_map_legend::create_labels() {
 
 	if(labels.size() > 1) {
 		if(layout.orientation == OO_HORIZONTAL)
-			layout.x_label_size = std::max(labels.ref_texts().front().size.x(), labels.ref_texts().back().size.x()) * labels.get_font_size();
+			layout.x_label_size = static_cast<int>(std::max(labels.ref_texts().front().size.x(), labels.ref_texts().back().size.x()) * text_style.font_size);
 		else
-			layout.x_label_size = int(max_length * labels.get_font_size());
+			layout.x_label_size = static_cast<int>(max_length * text_style.font_size);
 	} else {
 		layout.x_label_size = 0;
 	}
@@ -438,8 +422,8 @@ void color_map_legend::create_ticks() {
 		layout.title_angle = 90.0f;
 	}
 
-	ivec2 color_rect_pos = layout.color_map_rect.pos();
-	ivec2 color_rect_size = layout.color_map_rect.size();
+	ivec2 color_rect_pos = layout.color_map_rect.position;
+	ivec2 color_rect_size = layout.color_map_rect.size;
 
 	int length = color_rect_size[axis];
 	float step = static_cast<float>(length + 1) / static_cast<float>(num_ticks - 1);
@@ -466,7 +450,6 @@ void color_map_legend::create_ticks() {
 		break;
 	case AO_END:
 		title_alignment = title_alignment_2;
-
 		title_pos[1 - axis] += color_rect_size[1 - axis] + 4;
 		tick_start[1 - axis] -= 3;
 		label_offset = -label_offset;

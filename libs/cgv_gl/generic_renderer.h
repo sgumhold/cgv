@@ -45,13 +45,17 @@ public:
 
 	shader_program& enable_prog(context& ctx) {
 		assert(("generic_renderer::enable_prog shader program is not created; call init before first use", prog.is_created()));
+		prog.allow_context_to_set_color(false);
 		prog.enable(ctx);
 		return prog;
 	}
 
 	bool enable(context& ctx, generic_render_data& geometry) {
-		bool res = prog.is_enabled() ? true : prog.enable(ctx);
-		res &= geometry.enable(ctx, prog);
+		bool res = geometry.enable(ctx, prog);
+
+		if(res)
+			res &= prog.is_enabled() ? true : prog.enable(ctx);
+		
 		has_indices = geometry.has_indices();
 		return res;
 	}
@@ -63,18 +67,23 @@ public:
 		return res;
 	}
 
-	void draw(context& ctx, PrimitiveType type, size_t start, size_t count) {
+	void draw(context& ctx, PrimitiveType type, generic_render_data& geometry, size_t start = 0, size_t count = 0) {
+		size_t draw_count = geometry.render_count();
+		start = std::min(start, draw_count);
+		draw_count = std::min(start + (count ? count : draw_count), draw_count) - start;
+
 		GLenum pt = gl::map_to_gl(type);
 		if(has_indices)
-			glDrawElements(pt, (GLsizei)count, GL_UNSIGNED_INT, (void*)(start * sizeof(unsigned)));
+			glDrawElements(pt, (GLsizei)draw_count, GL_UNSIGNED_INT, (void*)(start * sizeof(unsigned)));
 		else
-			glDrawArrays(pt, (GLint)start, (GLsizei)count);
+			glDrawArrays(pt, (GLint)start, (GLsizei)draw_count);
 	}
+
 
 	bool render(context& ctx, PrimitiveType type, generic_render_data& geometry, size_t start = 0, size_t count = 0) {
 		if(!enable(ctx, geometry))
 			return false;
-		draw(ctx, type, start, count ? count : geometry.get_render_count());
+		draw(ctx, type, geometry, start, count);
 		return disable(ctx, geometry);
 	}
 };

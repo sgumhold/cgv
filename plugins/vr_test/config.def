@@ -15,20 +15,20 @@ type(vr_emulator):tracker_1_orientation.coords[3]=0
 type(vr_emulator):body_position.coords[0]=-0.10
 type(vr_emulator):body_position.coords[1]=-0.60
 type(vr_emulator):body_position.coords[2]=0.935
-type(vr_emulator):right_hand_position.coords[0]=-0.575
-type(vr_emulator):right_hand_position.coords[1]=0.249
-type(vr_emulator):right_hand_position.coords[2]=-0.2391
-type(vr_emulator):right_hand_orientation.coords[0]=0.49
-type(vr_emulator):right_hand_orientation.coords[1]=0
-type(vr_emulator):right_hand_orientation.coords[2]=0
-type(vr_emulator):right_hand_orientation.coords[3]=0.8717
-type(vr_emulator):left_hand_position.coords[0]=0.575
-type(vr_emulator):left_hand_position.coords[1]=0.249
-type(vr_emulator):left_hand_position.coords[2]=-0.2391
-type(vr_emulator):left_hand_orientation.coords[0]=0.49
-type(vr_emulator):left_hand_orientation.coords[1]=0
-type(vr_emulator):left_hand_orientation.coords[2]=0
-type(vr_emulator):left_hand_orientation.coords[3]=0.8717
+//type(vr_emulator):right_hand_position.coords[0]=-0.575
+//type(vr_emulator):right_hand_position.coords[1]=0.249
+//type(vr_emulator):right_hand_position.coords[2]=-0.2391
+//type(vr_emulator):right_hand_orientation.coords[0]=0.49
+//type(vr_emulator):right_hand_orientation.coords[1]=0
+//type(vr_emulator):right_hand_orientation.coords[2]=0
+//type(vr_emulator):right_hand_orientation.coords[3]=0.8717
+//type(vr_emulator):left_hand_position.coords[0]=0.575
+//type(vr_emulator):left_hand_position.coords[1]=0.249
+//type(vr_emulator):left_hand_position.coords[2]=-0.2391
+//type(vr_emulator):left_hand_orientation.coords[0]=0.49
+//type(vr_emulator):left_hand_orientation.coords[1]=0
+//type(vr_emulator):left_hand_orientation.coords[2]=0
+//type(vr_emulator):left_hand_orientation.coords[3]=0.8717
 
 // stereo shader mode indices are 
 // left only = 0, right only = 1, side by side = 2, top bottom = 3

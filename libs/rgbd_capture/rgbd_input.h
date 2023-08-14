@@ -40,6 +40,7 @@ public:
 	~rgbd_input();
 	/// create a rgbd input device object and attach to device with given serial
 	rgbd_input(const std::string& serial);
+
 	/// attach to the rgbd input device of the given serial
 	bool attach(const std::string& serial);
 	/// return the serial of the device
@@ -76,16 +77,30 @@ public:
 
 	/**@name camera control*/
 	//@{
+	/// check whether a multi-device role is supported
+	bool is_supported(MultiDeviceRole mdr) const;
+	/// configure device for a multi-device role and return whether this was successful (do this before starting)
+	bool configure_role(MultiDeviceRole mdr);
+	/// return the multi-device role of the device
+	MultiDeviceRole get_role() const;
 	/// check whether the device supports the given combination of input streams
 	bool check_input_stream_configuration(InputStreams is) const;
 	/// query the stream formats available for a given stream configuration
 	void query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const;
 	///
 	bool set_near_mode(bool on = true);
+	/// return information about the support color control parameters
+	const std::vector<color_parameter_info>& get_supported_color_control_parameter_infos() const;
+	/// query color control value and whether its adjustment is in automatic mode
+	std::pair<int32_t, bool> get_color_control_parameter(ColorControlParameter ccp) const;
+	/// set a color control value and automatic mode and return whether successful
+	bool set_color_control_parameter(ColorControlParameter ccp, int32_t value, bool automatic_mode);
 	/// start the rgbd input with standard stream formats returned in second parameter
 	bool start(InputStreams, std::vector<stream_format>& stream_formats);
 	/// start the rgbd input with given stream formats 
 	bool start(const std::vector<stream_format>& stream_formats);
+	/// query the calibration information and return whether this was successful
+	bool query_calibration(InputStreams is, cgv::math::camera<double>& cam);
 	/// check whether device is started
 	bool is_started() const;
 	/// stop the rgbd input device
