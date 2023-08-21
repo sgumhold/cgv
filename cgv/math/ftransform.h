@@ -101,26 +101,28 @@ namespace cgv {
 				M(2, 2) = c + a(2) * a(2)*(T(1) - c);
 				return M;
 			}
-		/// construct 3x3 rotation matrix from kardan angles (roll, pitch, yaw) in degrees
+		/// construct 3x3 rotation matrix from euler angles yaw, pitch and roll around axes y, x and z in degrees
 		template <typename T> fmat<T, 3, 3>
 			rotate3(const fvec<T, 3>& A) {
 				fmat<T, 3, 3>  M;
 				fvec<T, 3> angles = cgv::math::fvec<T, 3>(T(0.01745329252))*A;
-				T cx = cos(angles[0]);
-				T sx = sin(angles[0]);
-				T cy = cos(angles[1]);
-				T sy = sin(angles[1]);
-				T cz = cos(angles[2]);
-				T sz = sin(angles[2]);
-				M(0, 0) = cy * cz;
-				M(0, 1) = sx * sy*cz - cx * sz;
-				M(0, 2) = cx * sy*cz + sx * sz;
-				M(1, 0) = cy * sz;
-				M(1, 1) = sx * sy*sz + cx * cz;
-				M(1, 2) = cx * sy*sz - sx * cz;
-				M(2, 0) = -sy;
-				M(2, 1) = sx * cy;
-				M(2, 2) = cx * cy;
+				// cos and sin for yaw, pitch and roll in radians
+				T cy = cos(angles[0]);
+				T sy = sin(angles[0]);
+				T cp = cos(angles[1]);
+				T sp = sin(angles[1]);
+				T cr = cos(angles[2]);
+				T sr = sin(angles[2]);
+				// construct matrix of form rotY(yaw) * rotX(pitch) * rotZ(roll)
+				M(0, 0) = sy * sp * sr + cy * cr;
+				M(0, 1) = sy * sp * cr - cy * sr;
+				M(0, 2) = sy * cp;
+				M(1, 0) = cp * sr;
+				M(1, 1) = cp * cr;
+				M(1, 2) = -sp;
+				M(2, 0) = cy * sp * sr - sy * cr;
+				M(2, 1) = cy * sp * cr + sy * sr;
+				M(2, 2) = cy * cp;
 				return M;
 			}
 		/// construct 3x3 rotation matrix from spin vector via Rodrigues formula
@@ -154,27 +156,29 @@ namespace cgv {
 		template <typename T> fmat<T, 4, 4>
 			rotate4(const T& A, const T& ax, const T& ay, const T& az) { return rotate4(A, fvec<T, 3>(ax, ay, az)); }
 
-		/// construct 4x4 rotation matrix from kardan angles (roll, pitch, yaw) in degrees
+		/// construct 4x4 rotation matrix from euler angles yaw, pitch and roll around axes y, x and z in degrees
 		template <typename T> fmat<T, 4, 4>
 			rotate4(const fvec<T, 3>& A) {
 				fmat<T, 4, 4>  M;
 				M.identity();
 				fvec<T, 3> angles = cgv::math::fvec<T, 3>(T(0.01745329252))*A;
-				T cx = cos(angles[0]);
-				T sx = sin(angles[0]);
-				T cy = cos(angles[1]);
-				T sy = sin(angles[1]);
-				T cz = cos(angles[2]);
-				T sz = sin(angles[2]);
-				M(0, 0) = cy * cz;
-				M(0, 1) = sx * sy*cz - cx * sz;
-				M(0, 2) = cx * sy*cz + sx * sz;
-				M(1, 0) = cy * sz;
-				M(1, 1) = sx * sy*sz + cx * cz;
-				M(1, 2) = cx * sy*sz - sx * cz;
-				M(2, 0) = -sy;
-				M(2, 1) = sx * cy;
-				M(2, 2) = cx * cy;
+				// cos and sin for yaw, pitch and roll in radians
+				T cy = cos(angles[0]);
+				T sy = sin(angles[0]);
+				T cp = cos(angles[1]);
+				T sp = sin(angles[1]);
+				T cr = cos(angles[2]);
+				T sr = sin(angles[2]);
+				// construct matrix of form rotY(yaw) * rotX(pitch) * rotZ(roll)
+				M(0, 0) = sy * sp * sr + cy * cr;
+				M(0, 1) = sy * sp * cr - cy * sr;
+				M(0, 2) = sy * cp;
+				M(1, 0) = cp * sr;
+				M(1, 1) = cp * cr;
+				M(1, 2) = -sp;
+				M(2, 0) = cy * sp * sr - sy * cr;
+				M(2, 1) = cy * sp * cr + sy * sr;
+				M(2, 2) = cy * cp;
 				return M;
 			}
 
