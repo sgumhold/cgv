@@ -74,6 +74,8 @@ namespace cgv { // @<
 			float specular_strength;
 			/// material roughness (inversely proportional to specular shininess)
 			float roughness;
+			/// material specular color mix factor (0 = color from transfer function, 1 = pure white)
+			float specular_color_mix;
 
 			/// whether to enable modulating the volume opacity by the gradient magnitude
 			bool enable_gradient_modulation;

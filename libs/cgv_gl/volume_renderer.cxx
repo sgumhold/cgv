@@ -41,6 +41,7 @@ namespace cgv {
 			diffuse_strength = 0.8f;
 			specular_strength = 0.4f;
 			roughness = 0.3f;
+			specular_color_mix = 0.0f;
 
 			enable_gradient_modulation = false;
 			gradient_lambda = 0.0f;
@@ -211,8 +212,12 @@ namespace cgv {
 			
 			ref_prog().set_uniform(ctx, "light_local_to_eye", vrs.light_local_to_eye);
 			ref_prog().set_uniform(ctx, "light_direction", normalize(vrs.light_direction));
-			float specular_power = cgv::math::lerp(128.0f, 1.0f, cgv::math::clamp(vrs.roughness, 0.0f, 1.0f));
-			ref_prog().set_uniform(ctx, "light_parameters", vec4(vrs.ambient_strength, vrs.diffuse_strength, vrs.specular_strength, specular_power));
+			float specular_exponent = cgv::math::lerp(128.0f, 1.0f, cgv::math::clamp(vrs.roughness, 0.0f, 1.0f));
+			ref_prog().set_uniform(ctx, "ambient_strength", vrs.ambient_strength);
+			ref_prog().set_uniform(ctx, "diffuse_strength", vrs.diffuse_strength);
+			ref_prog().set_uniform(ctx, "specular_strength", vrs.specular_strength);
+			ref_prog().set_uniform(ctx, "specular_exponent", specular_exponent);
+			ref_prog().set_uniform(ctx, "specular_color_mix", vrs.specular_color_mix);
 
 			ref_prog().set_uniform(ctx, "gradient_lambda", std::max(vrs.gradient_lambda, 0.001f));
 
@@ -317,6 +322,7 @@ namespace cgv {
 					p->add_member_control(b, "Diffuse", vrs_ptr->diffuse_strength, "value_slider", "min=0;max=1;step=0.001;ticks=true");
 					p->add_member_control(b, "Specular", vrs_ptr->specular_strength, "value_slider", "min=0;max=1;step=0.001;ticks=true");
 					p->add_member_control(b, "Roughness", vrs_ptr->roughness, "value_slider", "min=0;max=1;step=0.001;ticks=true");
+					p->add_member_control(b, "Specular Color", vrs_ptr->specular_color_mix, "value_slider", "min=0;max=1;step=0.001;ticks=true");
 					p->align("/b");
 					p->end_tree_node(vrs_ptr->enable_lighting);
 				}
