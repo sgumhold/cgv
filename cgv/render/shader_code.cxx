@@ -217,6 +217,8 @@ std::string shader_code::retrieve_code(const std::string& file_name, bool use_ca
 		if(it != code_cache.end()) {
 			source = it->second;
 		}
+	} else {
+		code_cache.clear();
 	}
 
 	if(source.empty())
