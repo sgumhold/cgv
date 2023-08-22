@@ -1,5 +1,6 @@
 var NAVTREEINDEX48 =
 {
+"structvr_1_1vr__controller__info.html#ac111a52252e426ef0a885ba4bb4ae176":[11,0,3,8,8],
 "structvr_1_1vr__controller__info.html#ac1a70cf307fe85cc2b103df08e26566d":[11,0,3,8,1],
 "structvr_1_1vr__controller__info.html#aeaab18f9d79427e7ca8572dfef756303":[11,0,3,8,10],
 "structvr_1_1vr__controller__info.html#af60c8e4e6ca4eb993050a3b9b1a0c9ab":[11,0,3,8,16],
@@ -248,6 +249,5 @@ var NAVTREEINDEX48 =
 "vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a623801885eeed1ca5171ce2b941d4650":[12,0,3,7,15,5,24],
 "vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a6d54169ff4005a9afdc3955b921315aa":[12,0,3,7,15,5,6],
 "vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a7cda4dc28be5c62a0571f5e482e34ebd":[12,0,3,7,15,5,1],
-"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a84c3b6939afe47b73e3324658cc0a77d":[12,0,3,7,15,5,17],
-"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a897b91c5a4d805a6f440a995788c5a1d":[12,0,3,7,15,5,23]
+"vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a84c3b6939afe47b73e3324658cc0a77d":[12,0,3,7,15,5,17]
 };
