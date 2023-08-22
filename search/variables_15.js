@@ -1,13 +1,13 @@
 var searchData=
 [
-  ['usage_7105',['usage',['../classcgv_1_1render_1_1vertex__buffer__base.html#ad5ce71c5fb351c3fb5ac3e75ddbf99e0',1,'cgv::render::vertex_buffer_base']]],
-  ['use_5fgradient_5ftexture_7106',['use_gradient_texture',['../structcgv_1_1render_1_1volume__render__style.html#ac7496465448f83cbe24dcaca237f6b5a',1,'cgv::render::volume_render_style']]],
-  ['use_5fgroup_5fcolor_7107',['use_group_color',['../structcgv_1_1render_1_1group__render__style.html#aaeef17e385a1d3ae754742b2619bd55c',1,'cgv::render::group_render_style']]],
-  ['use_5fgroup_5fpoint_5fsize_7108',['use_group_point_size',['../structcgv_1_1render_1_1point__render__style.html#a42db24dc82c65089650f9489c4e3dfa3',1,'cgv::render::point_render_style::use_group_point_size()'],['../structcgv_1_1render_1_1surfel__render__style.html#a7d36f503553b1e9719b7753ff483a70f',1,'cgv::render::surfel_render_style::use_group_point_size()']]],
-  ['use_5fgroup_5fradius_7109',['use_group_radius',['../structcgv_1_1render_1_1sphere__render__style.html#a4392dc773cea5a260d1d777bd874ea8f',1,'cgv::render::sphere_render_style']]],
-  ['use_5fgroup_5ftransformation_7110',['use_group_transformation',['../structcgv_1_1render_1_1group__render__style.html#a113f4aa88c33c892574038e0f2478a7a',1,'cgv::render::group_render_style']]],
-  ['use_5fshader_5ffile_5fcache_7111',['use_shader_file_cache',['../classcgv_1_1render_1_1context.html#a80306fb1d08f59cdb7d540ae13a88e22',1,'cgv::render::context']]],
-  ['use_5ftransfer_5ffunction_7112',['use_transfer_function',['../structcgv_1_1render_1_1slab__render__style.html#ad4929d9df6c5cfc69215c4abefc53bc7',1,'cgv::render::slab_render_style']]],
-  ['user_5fdata_7113',['user_data',['../classcgv_1_1os_1_1socket.html#ac8c9d9da08fbb231343c4bf334c5ac97',1,'cgv::os::socket']]],
-  ['username_7114',['username',['../structcgv_1_1os_1_1http__request.html#adb8c354e4a3f3a1f0a50b96ac2e077b2',1,'cgv::os::http_request']]]
+  ['usage_7107',['usage',['../classcgv_1_1render_1_1vertex__buffer__base.html#ad5ce71c5fb351c3fb5ac3e75ddbf99e0',1,'cgv::render::vertex_buffer_base']]],
+  ['use_5fgradient_5ftexture_7108',['use_gradient_texture',['../structcgv_1_1render_1_1volume__render__style.html#ac7496465448f83cbe24dcaca237f6b5a',1,'cgv::render::volume_render_style']]],
+  ['use_5fgroup_5fcolor_7109',['use_group_color',['../structcgv_1_1render_1_1group__render__style.html#aaeef17e385a1d3ae754742b2619bd55c',1,'cgv::render::group_render_style']]],
+  ['use_5fgroup_5fpoint_5fsize_7110',['use_group_point_size',['../structcgv_1_1render_1_1point__render__style.html#a42db24dc82c65089650f9489c4e3dfa3',1,'cgv::render::point_render_style::use_group_point_size()'],['../structcgv_1_1render_1_1surfel__render__style.html#a7d36f503553b1e9719b7753ff483a70f',1,'cgv::render::surfel_render_style::use_group_point_size()']]],
+  ['use_5fgroup_5fradius_7111',['use_group_radius',['../structcgv_1_1render_1_1sphere__render__style.html#a4392dc773cea5a260d1d777bd874ea8f',1,'cgv::render::sphere_render_style']]],
+  ['use_5fgroup_5ftransformation_7112',['use_group_transformation',['../structcgv_1_1render_1_1group__render__style.html#a113f4aa88c33c892574038e0f2478a7a',1,'cgv::render::group_render_style']]],
+  ['use_5fshader_5ffile_5fcache_7113',['use_shader_file_cache',['../classcgv_1_1render_1_1context.html#a80306fb1d08f59cdb7d540ae13a88e22',1,'cgv::render::context']]],
+  ['use_5ftransfer_5ffunction_7114',['use_transfer_function',['../structcgv_1_1render_1_1slab__render__style.html#ad4929d9df6c5cfc69215c4abefc53bc7',1,'cgv::render::slab_render_style']]],
+  ['user_5fdata_7115',['user_data',['../classcgv_1_1os_1_1socket.html#ac8c9d9da08fbb231343c4bf334c5ac97',1,'cgv::os::socket']]],
+  ['username_7116',['username',['../structcgv_1_1os_1_1http__request.html#adb8c354e4a3f3a1f0a50b96ac2e077b2',1,'cgv::os::http_request']]]
 ];
