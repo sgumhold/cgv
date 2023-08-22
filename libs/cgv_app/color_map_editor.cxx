@@ -128,22 +128,27 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 			break;
 		}
 
+		bool request_clear_selection = false;
+
 		if (me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
-			if (ma == cgv::gui::MA_PRESS && modifiers > 0) {
+			if (ma == cgv::gui::MA_PRESS) {
 				ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
+				
+				request_clear_selection = get_overlay_rectangle().is_inside(mpos);
 
 				switch (modifiers) {
 				case cgv::gui::EM_CTRL:
-					if (!get_hit_point(mpos))
+					if(!get_hit_point(mpos))
 						add_point(mpos);
 					break;
 				case cgv::gui::EM_ALT:
 				{
 					cgv::g2d::draggable* hit_point = get_hit_point(mpos);
-					if (hit_point)
+					if(hit_point)
 						remove_point(hit_point);
 				}
 				break;
+				default: break;
 				}
 			}
 		}
@@ -152,6 +157,12 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 			return true;
 		if(cmc.opacity_points.handle(e, get_viewport_size(), get_overlay_rectangle()))
 			return true;
+
+		if(request_clear_selection) {
+			cmc.color_points.clear_selected();
+			cmc.opacity_points.clear_selected();
+			handle_drag_end();
+		}
 	}
 	return false;
 }
