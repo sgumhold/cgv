@@ -341,7 +341,7 @@ namespace cgv {
 
 					p->add_member_control(b, "Value", vrs_ptr->isovalue, "value_slider", "min=0.0;max=1.0;step=0.001;ticks=true");
 					p->add_member_control(b, "Color", vrs_ptr->isosurface_color, "", "w=42", " ");
-					p->add_member_control(b, "From Transfer Function", vrs_ptr->isosurface_color_from_transfer_function, "check");
+					p->add_member_control(b, "From Transfer Function", vrs_ptr->isosurface_color_from_transfer_function, "check", "w=146");
 					p->align("\b");
 					p->end_tree_node(vrs_ptr->isosurface_mode);
 				}
