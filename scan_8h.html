@@ -94,6 +94,7 @@ $(document).ready(function(){initNavTree('scan_8h.html',''); initResizable(); })
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;date_time.h&quot;</code><br />
+<code>#include &quot;token.h&quot;</code><br />
 <code>#include &quot;lib_begin.h&quot;</code><br />
 <code>#include &lt;cgv/config/lib_end.h&gt;</code><br />
 </div>
@@ -142,10 +143,18 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#adcdb4408e94a15f0337146b18058c79e">cgv::utils::trim</a> (const std::string &amp;str, const std::string &amp;chars=&quot;\t\n\v\f\r &quot;)</td></tr>
 <tr class="memdesc:adcdb4408e94a15f0337146b18058c79e"><td class="mdescLeft">&#160;</td><td class="mdescRight">trim white space or other characters from start and end of string <br /></td></tr>
 <tr class="separator:adcdb4408e94a15f0337146b18058c79e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c7e4e48bd1834e5558fc9d5461457d9"><td class="memItemLeft" align="right" valign="top"><a id="a8c7e4e48bd1834e5558fc9d5461457d9"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">cgv::utils::join</a> (const std::vector&lt; std::string &gt;::const_iterator first, const std::vector&lt; std::string &gt;::const_iterator last, const std::string &amp;sep, bool trailing_sep=false)</td></tr>
+<tr class="memdesc:a8c7e4e48bd1834e5558fc9d5461457d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">joins a given range of strings, separating them by the given separator; if trailing_sep is true, also puts a separator at the end <br /></td></tr>
+<tr class="separator:a8c7e4e48bd1834e5558fc9d5461457d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07474e4aecaf06a8ecca7aba033d5475"><td class="memItemLeft" align="right" valign="top"><a id="a07474e4aecaf06a8ecca7aba033d5475"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a07474e4aecaf06a8ecca7aba033d5475">cgv::utils::join</a> (const std::vector&lt; std::string &gt; &amp;strs, const std::string &amp;sep, bool trailing_sep=false)</td></tr>
 <tr class="memdesc:a07474e4aecaf06a8ecca7aba033d5475"><td class="mdescLeft">&#160;</td><td class="mdescRight">joins a given list of strings, separating them by the given separator; if trailing_sep is true, also puts a separator at the end <br /></td></tr>
 <tr class="separator:a07474e4aecaf06a8ecca7aba033d5475"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab965cca354619eefb296b13d8a9e87d4"><td class="memItemLeft" align="right" valign="top"><a id="ab965cca354619eefb296b13d8a9e87d4"></a>
+CGV_API std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#ab965cca354619eefb296b13d8a9e87d4">cgv::utils::join</a> (const std::vector&lt; token &gt;::const_iterator first, const std::vector&lt; token &gt;::const_iterator last, const std::string &amp;sep, bool trailing_sep=false)</td></tr>
+<tr class="memdesc:ab965cca354619eefb296b13d8a9e87d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">joins a given range of tokens, separating them by the given separator; if trailing_sep is true, also puts a separator at the end <br /></td></tr>
+<tr class="separator:ab965cca354619eefb296b13d8a9e87d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81d51336fe7248cc852738af2b6adf85"><td class="memItemLeft" align="right" valign="top"><a id="a81d51336fe7248cc852738af2b6adf85"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a81d51336fe7248cc852738af2b6adf85">cgv::utils::is_space</a> (char c)</td></tr>
 <tr class="memdesc:a81d51336fe7248cc852738af2b6adf85"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if char is a whitespace <br /></td></tr>
