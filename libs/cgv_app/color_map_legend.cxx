@@ -29,6 +29,7 @@ color_map_legend::color_map_legend() {
 	label_auto_precision = true;
 	label_integer_mode = false;
 	title_align = AO_START;
+	show_opacity = true;
 }
 
 void color_map_legend::clear(cgv::render::context& ctx) {
@@ -80,6 +81,9 @@ void color_map_legend::on_set(void* member_ptr) {
 		post_recreate_layout();
 	}
 
+	if(member_ptr == &show_opacity)
+		color_map_style.use_texture_alpha = show_opacity;
+
 	update_member(member_ptr);
 	post_damage();
 }
@@ -87,6 +91,7 @@ void color_map_legend::on_set(void* member_ptr) {
 bool color_map_legend::init(cgv::render::context& ctx) {
 
 	register_shader("rectangle", cgv::g2d::shaders::rectangle);
+	register_shader("grid", cgv::g2d::shaders::grid);
 
 	bool success = canvas_overlay::init(ctx);
 
@@ -111,6 +116,10 @@ void color_map_legend::init_frame(cgv::render::context& ctx) {
 		create_labels();
 		layout.update(container_size);
 		create_ticks();
+
+		float width_factor = static_cast<float>(layout.color_map_rect.w());
+		float height_factor = static_cast<float>(layout.color_map_rect.h());
+		background_style.texcoord_scaling = vec2(width_factor, height_factor) / 10.0f;
 	}
 }
 
@@ -132,7 +141,15 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 	border_style.apply(ctx, rect_prog);
 	content_canvas.draw_shape(ctx, layout.color_map_rect.position - 1, layout.color_map_rect.size + 2);
 
+	// draw background grid as contrast for transparent color maps or indicator that no color map is set
+	auto& grid_prog = content_canvas.enable_shader(ctx, "grid");
+	background_style.apply(ctx, grid_prog);
+	content_canvas.draw_shape(ctx, layout.color_map_rect);
+
 	if(tex.is_created()) {
+		// draw the color map texture
+		content_canvas.enable_shader(ctx, rect_prog);
+
 		content_canvas.push_modelview_matrix();
 		ivec2 pos = layout.color_map_rect.position;
 		ivec2 size = layout.color_map_rect.size;
@@ -193,6 +210,7 @@ void color_map_legend::create_gui_impl() {
 	add_member_control(this, "Number Precision", label_precision, "value", "w=60;min=0;max=10;step=1", " ");
 	add_member_control(this, "Auto", label_auto_precision, "check", "w=44", " ");
 	add_member_control(this, "Integers", label_integer_mode, "check", "w=72");
+	add_member_control(this, "Show Opacity", show_opacity, "check");
 }
 
 void color_map_legend::set_color_map(cgv::render::context& ctx, cgv::render::color_map& cm) {
@@ -204,24 +222,29 @@ void color_map_legend::set_color_map(cgv::render::context& ctx, cgv::render::col
 	}
 
 	unsigned resolution = cm.get_resolution();
-	std::vector<rgb> data = cm.interpolate_color(static_cast<size_t>(resolution));
-
-	std::vector<uint8_t> data_8(2 * 3 * data.size());
-	for(unsigned i = 0; i < data.size(); ++i) {
-		rgba col = data[i];
-		data_8[3 * i + 0] = static_cast<uint8_t>(255.0f * col.R());
-		data_8[3 * i + 1] = static_cast<uint8_t>(255.0f * col.G());
-		data_8[3 * i + 2] = static_cast<uint8_t>(255.0f * col.B());
+	std::vector<rgb> color_data = cm.interpolate_color(static_cast<size_t>(resolution));
+	std::vector<float> opacity_data(static_cast<size_t>(resolution), 1.0f);
+	
+	if(!cm.ref_opacity_points().empty())
+		opacity_data = cm.interpolate_opacity(static_cast<size_t>(resolution));
+	
+	std::vector<uint8_t> data_8(2 * 4 * color_data.size());
+	for(unsigned i = 0; i < color_data.size(); ++i) {
+		rgba col = color_data[i];
+		data_8[4 * i + 0] = static_cast<uint8_t>(255.0f * col.R());
+		data_8[4 * i + 1] = static_cast<uint8_t>(255.0f * col.G());
+		data_8[4 * i + 2] = static_cast<uint8_t>(255.0f * col.B());
+		data_8[4 * i + 3] = static_cast<uint8_t>(255.0f * opacity_data[i]);
 	}
 
-	std::copy(data_8.begin(), data_8.begin() + 3*resolution, data_8.begin() + 3*resolution);
+	std::copy(data_8.begin(), data_8.begin() + 4 * resolution, data_8.begin() + 4 * resolution);
 
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2u, TI_UINT8, cgv::data::CF_RGB), data_8.data());
+	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2u, TI_UINT8, cgv::data::CF_RGBA), data_8.data());
 
 	unsigned width = tex.get_width();
 
 	bool replaced = false;
-	if(tex.is_created() && width == resolution && tex.get_nr_components() == 3) {
+	if(tex.is_created() && width == resolution && tex.get_nr_components() == 4) {
 		tex.set_min_filter(filter);
 		tex.set_mag_filter(filter);
 		replaced = tex.replace(ctx, 0, 0, dv);
@@ -229,7 +252,7 @@ void color_map_legend::set_color_map(cgv::render::context& ctx, cgv::render::col
 
 	if(!replaced) {
 		tex.destruct(ctx);
-		tex = cgv::render::texture("uint8[R,G,B]", filter, filter);
+		tex = cgv::render::texture("uint8[R,G,B,A]", filter, filter);
 		tex.create(ctx, dv, 0);
 	}
 
@@ -276,6 +299,11 @@ void color_map_legend::set_label_integer_mode(bool enabled) {
 	on_set(&label_integer_mode);
 }
 
+void color_map_legend::set_show_opacity(bool enabled) {
+	show_opacity = enabled;
+	on_set(&show_opacity);
+}
+
 void color_map_legend::init_styles(cgv::render::context& ctx) {
 	// get theme colors
 	auto& ti = cgv::gui::theme_info::instance();
@@ -301,10 +329,17 @@ void color_map_legend::init_styles(cgv::render::context& ctx) {
 	border_style.fill_color = rgba(tick_color, 1.0);
 	border_style.border_width = 0.0f;
 
+	// configure style for the background rectangle
+	background_style.fill_color = rgb(0.4f);
+	background_style.border_color = rgb(0.2f);
+	background_style.feather_width = 0.0f;
+	background_style.pattern = cgv::g2d::grid2d_style::GridPattern::GP_CHECKER;
+	
 	// configure style for the color scale rectangle
 	color_map_style = border_style;
 	color_map_style.use_texture = true;
-	color_map_style.use_texture_alpha = false;
+	color_map_style.use_texture_alpha = true;
+	color_map_style.use_blending = true;
 
 	// configure text style
 	float label_border_alpha = 0.0f;
