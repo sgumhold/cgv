@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "date_time.h"
+#include "token.h"
 
 #include "lib_begin.h"
 
@@ -30,8 +31,12 @@ extern CGV_API std::string ltrim(const std::string& str, const std::string& char
 extern CGV_API std::string rtrim(const std::string& str, const std::string& chars = "\t\n\v\f\r ");
 /// trim white space or other characters from start and end of string
 extern CGV_API std::string trim(const std::string& str, const std::string& chars = "\t\n\v\f\r ");
+/// joins a given range of strings, separating them by the given separator; if trailing_sep is true, also puts a separator at the end
+extern CGV_API std::string join(const std::vector<std::string>::const_iterator first, const std::vector<std::string>::const_iterator last, const std::string& sep, bool trailing_sep = false);
 /// joins a given list of strings, separating them by the given separator; if trailing_sep is true, also puts a separator at the end
-extern CGV_API std::string join(const std::vector<std::string>& strs, const std::string& sep, bool trailing_sep = false);
+extern CGV_API std::string join(const std::vector<std::string>&strs, const std::string & sep, bool trailing_sep = false);
+/// joins a given range of tokens, separating them by the given separator; if trailing_sep is true, also puts a separator at the end
+extern CGV_API std::string join(const std::vector<token>::const_iterator first, const std::vector<token>::const_iterator last, const std::string& sep, bool trailing_sep = false);
 /// check if char is a whitespace
 extern CGV_API bool is_space(char c);
 /// check if char is a special character from an url

@@ -1,7 +1,9 @@
 #pragma once
 
+#include <algorithm>
 #include <string>
 #include <iostream>
+#include <vector>
 
 #include "lib_begin.h"
 
@@ -56,6 +58,16 @@ inline bool token::empty() const { return begin == end; }
 inline char token::operator [] (unsigned int i) const { return begin[i]; }
 /// convert to string
 inline std::string to_string(const token& t) { return t.empty()?std::string():std::string(t.begin, t.get_length()); }
+/// convert to strings
+inline std::vector<std::string> to_strings(const std::vector<token>::const_iterator first, const std::vector<token>::const_iterator last) {
+	std::vector<std::string> strs;
+	std::transform(first, last, std::back_inserter(strs), [](const cgv::utils::token& t) { return to_string(t); });
+	return strs;
+}
+/// convert to strings
+inline std::vector<std::string> to_strings(const std::vector<token>& ts) {
+	return to_strings(ts.begin(), ts.end());
+}
 /// stream out operator
 inline std::ostream& operator << (std::ostream& os, const token& t) { if (!t.empty()) os << std::string(t.begin, t.get_length()); return os; }
 
