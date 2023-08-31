@@ -27,11 +27,8 @@ namespace cgv {
 			enable_depth_test = true;
 
 			compositing_mode = CM_BLEND;
-			front_to_back = true;
 
-			enable_scale_adjustment = true;
-			size_scale = 100.0f;
-			opacity_scale = 1.0f;
+			scale_adjustment_factor = 100.0f;
 
 			enable_lighting = false;
 			light_local_to_eye = true;
@@ -109,13 +106,11 @@ namespace cgv {
 			shader_code::set_define(defines, "NUM_STEPS", vrs.integration_quality, volume_render_style::IQ_128);
 			shader_code::set_define(defines, "INTERPOLATION_MODE", vrs.interpolation_mode, volume_render_style::IP_LINEAR);
 			shader_code::set_define(defines, "ENABLE_NOISE_OFFSET", vrs.enable_noise_offset, true);
-			shader_code::set_define(defines, "ENABLE_SCALE_ADJUSTMENT", vrs.enable_scale_adjustment, false);
 			shader_code::set_define(defines, "ENABLE_LIGHTING", vrs.enable_lighting, false);
 			shader_code::set_define(defines, "USE_GRADIENT_TEXTURE", vrs.use_gradient_texture, false);
 			shader_code::set_define(defines, "ENABLE_GRADIENT_MODULATION", vrs.enable_gradient_modulation, false);
 			shader_code::set_define(defines, "ENABLE_DEPTH_TEST", vrs.enable_depth_test, false);
 			
-			shader_code::set_define(defines, "FRONT_TO_BACK", vrs.front_to_back || (vrs.isosurface_mode != volume_render_style::IM_NONE && vrs.compositing_mode == volume_render_style::CM_BLEND), false);
 			shader_code::set_define(defines, "ISOSURFACE_MODE", vrs.isosurface_mode, volume_render_style::IM_NONE);
 			shader_code::set_define(defines, "ISOSURFACE_COLOR_MODE", vrs.isosurface_color_from_transfer_function, false);
 
@@ -207,8 +202,7 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "viewport_dims", vec2(float(vp[2]-vp[0]), float(vp[3]-vp[1])));
 			ref_prog().set_uniform(ctx, "noise_offset", noise_offset);
 
-			ref_prog().set_uniform(ctx, "opacity_scale", vrs.opacity_scale);
-			ref_prog().set_uniform(ctx, "size_scale", vrs.size_scale);
+			ref_prog().set_uniform(ctx, "scale_adjustment_factor", vrs.scale_adjustment_factor);
 			
 			ref_prog().set_uniform(ctx, "light_local_to_eye", vrs.light_local_to_eye);
 			ref_prog().set_uniform(ctx, "light_direction", normalize(vrs.light_direction));
@@ -259,20 +253,16 @@ namespace cgv {
 		///
 		void volume_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{
+			ctx.push_modelview_matrix();
+
 			if(apply_bounding_box_transformation) {
-				mat4 scale = cgv::math::scale4(bounding_box.get_extent());
-				mat4 translation = cgv::math::translate4(bounding_box.get_center());
-
-				ctx.push_modelview_matrix();
-				ctx.mul_modelview_matrix(translation);
-				ctx.mul_modelview_matrix(scale);
-
-				glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)14);
-
-				ctx.pop_modelview_matrix();
-			} else {
-				glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)14);
+				ctx.mul_modelview_matrix(cgv::math::translate4(bounding_box.get_center()));
+				ctx.mul_modelview_matrix(cgv::math::scale4(bounding_box.get_extent()));
 			}
+
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)14);
+
+			ctx.pop_modelview_matrix();
 		}
 	}
 }
@@ -292,18 +282,15 @@ namespace cgv {
 				cgv::render::volume_render_style* vrs_ptr = reinterpret_cast<cgv::render::volume_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-				p->add_member_control(b, "Quality", vrs_ptr->integration_quality, "dropdown", "w=114;enums='8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024'", " ");
+				p->add_member_control(b, "Quality", vrs_ptr->integration_quality, "dropdown", "w=114;enums='8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024,2048=2048,4096=4096'", " ");
 				p->add_member_control(b, "Use Noise", vrs_ptr->enable_noise_offset, "check", "w=74");
 				p->add_member_control(b, "Interpolation", vrs_ptr->interpolation_mode, "dropdown", "enums=Nearest,Smoothed,Linear,Cubic");
 
 				p->add_member_control(b, "Depth Test", vrs_ptr->enable_depth_test, "check");
 
 				p->add_member_control(b, "Compositing Mode", vrs_ptr->compositing_mode, "dropdown", "enums='Maximum Intensity Projection, Average, Blend'");
-				p->add_member_control(b, "Front-to-Back", vrs_ptr->front_to_back, "check");
 
-				p->add_member_control(b, "Scale Adjustment", vrs_ptr->size_scale, "value_slider", "w=170;min=0.0;step=0.001;max=500.0;log=true;ticks=true", " ");
-				p->add_member_control(b, "", vrs_ptr->enable_scale_adjustment, "check", "w=30");
-				p->add_member_control(b, "Opacity Scale", vrs_ptr->opacity_scale, "value_slider", "min=0.0;step=0.001;max=1.0;ticks=true");
+				p->add_member_control(b, "Scale Adjustment", vrs_ptr->scale_adjustment_factor, "value_slider", "min=0.0;step=0.001;max=1000.0;log=true;ticks=true");
 				
 				if(p->begin_tree_node("Lighting", vrs_ptr->enable_lighting, false)) {
 					p->align("/a");
