@@ -187,324 +187,328 @@ $(document).ready(function(){initNavTree('navigator_8cxx_source.html',''); initR
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="keywordflow">if</span>(get_context()) {</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;            <a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx = *get_context();</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> mpos(<span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(me.<a class="code" href="classcgv_1_1gui_1_1mouse__event.html#a7804e283a143da1d84115734af74dbf3">get_x</a>()), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(me.<a class="code" href="classcgv_1_1gui_1_1mouse__event.html#a1c28b9816a6192c913e293f8aaffe6cd">get_y</a>()));</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            mpos = get_local_mouse_pos(mpos);</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a> window_coord = <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a>(mpos) * <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a>(2.0f) / get_overlay_size() - <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a>(1.0f);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            <span class="keywordflow">if</span>(ma == <a class="code" href="namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203a473a27e9ed6b3084fbb5b6eaeb90689e">cgv::gui::MA_LEAVE</a>) {</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                hit_axis = 0;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> mpos(<span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(me.<a class="code" href="classcgv_1_1gui_1_1mouse__event.html#a7804e283a143da1d84115734af74dbf3">get_x</a>()), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(me.<a class="code" href="classcgv_1_1gui_1_1mouse__event.html#a1c28b9816a6192c913e293f8aaffe6cd">get_y</a>()));</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            vec3 origin = vec3(window_coord, navigator_eye_pos.z());</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            vec3 direction = vec3(0.0f, 0.0f, -1.0f);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                mpos = get_local_mouse_pos(mpos);</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a> window_coord = <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a>(mpos) * <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a>(2.0f) / get_overlay_size() - <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a>(1.0f);</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;            <span class="keywordflow">if</span>(use_perspective) {</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                <a class="code" href="namespacecgv_1_1render.html#a80e5de4907c26239414021586635fe1a">mat4</a> MVP = get_projection_matrix() * get_view_matrix(ctx);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                vec3 origin = vec3(window_coord, navigator_eye_pos.z());</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                vec3 direction = vec3(0.0f, 0.0f, -1.0f);</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                <a class="code" href="namespacecgv_1_1render.html#a091ed7d82bda1371fe5339a19bd75ea0">vec4</a> world_coord(window_coord.x(), window_coord.y(), 1.0f, 1.0f);</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                world_coord = <a class="code" href="namespacecgv_1_1math.html#ad173e82d952d395213d5ab62378e79d8">inv</a>(MVP) * world_coord;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                world_coord /= world_coord.w();</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                vec3 origin = navigator_eye_pos;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                vec3 direction = <a class="code" href="namespacecgv_1_1math.html#abfa52c4120248159499bc320aba339c5">normalize</a>(vec3(world_coord) - origin);</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            }</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            </div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;            <a class="code" href="namespacecgv_1_1render.html#a80e5de4907c26239414021586635fe1a">mat4</a> IM = <a class="code" href="namespacecgv_1_1math.html#ad173e82d952d395213d5ab62378e79d8">inv</a>(get_model_matrix(ctx));</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;            origin = vec3(IM * <a class="code" href="namespacecgv_1_1render.html#a091ed7d82bda1371fe5339a19bd75ea0">vec4</a>(origin, 1.0f));</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;            direction = vec3(IM * <a class="code" href="namespacecgv_1_1render.html#a091ed7d82bda1371fe5339a19bd75ea0">vec4</a>(direction, 0.0f));</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                <span class="keywordflow">if</span>(use_perspective) {</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                    <a class="code" href="namespacecgv_1_1render.html#a80e5de4907c26239414021586635fe1a">mat4</a> MVP = get_projection_matrix() * get_view_matrix(ctx);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                    <a class="code" href="namespacecgv_1_1render.html#a091ed7d82bda1371fe5339a19bd75ea0">vec4</a> world_coord(window_coord.x(), window_coord.y(), 1.0f, 1.0f);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                    world_coord = <a class="code" href="namespacecgv_1_1math.html#ad173e82d952d395213d5ab62378e79d8">inv</a>(MVP) * world_coord;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                    world_coord /= world_coord.w();</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                    vec3 origin = navigator_eye_pos;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                    vec3 direction = <a class="code" href="namespacecgv_1_1math.html#abfa52c4120248159499bc320aba339c5">normalize</a>(vec3(world_coord) - origin);</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                }</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                <a class="code" href="namespacecgv_1_1render.html#a80e5de4907c26239414021586635fe1a">mat4</a> IM = <a class="code" href="namespacecgv_1_1math.html#ad173e82d952d395213d5ab62378e79d8">inv</a>(get_model_matrix(ctx));</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;            <span class="keywordtype">float</span> t = std::numeric_limits&lt;float&gt;::max();</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;            <span class="keywordflow">if</span>(intersect_box(origin, direction, t)) {</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                vec3 hit_pos = origin + t * direction;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                <span class="keywordtype">unsigned</span> mi = <a class="code" href="namespacecgv_1_1math.html#a92f496231d4b5519a815e6be9387f851">cgv::math::max_index</a>(<a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">cgv::math::abs</a>(hit_pos));</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                </div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                hit_axis = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(mi) + 1;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;                <span class="keywordflow">if</span>(hit_pos[mi] &lt; 0.0f)</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                    hit_axis = -hit_axis;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;            }</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;            </div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;            <span class="keywordflow">if</span>(last_hit_axis != hit_axis)</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                post_redraw();</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        }</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keywordflow">switch</span>(ma) {</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203a0091084872702ffd92ac7acaa168047b">cgv::gui::MA_PRESS</a>:</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;            <span class="keywordflow">if</span>(me.<a class="code" href="classcgv_1_1gui_1_1mouse__event.html#af85797a2c14885914cf501d1d3301e4a">get_button</a>() == <a class="code" href="namespacecgv_1_1gui.html#a7641aee24f715d0496c3e23c68faec81afcd7ad9adb7983df368ce9c5f7639433">cgv::gui::MB_LEFT_BUTTON</a>) {</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                check_for_click = me.<a class="code" href="classcgv_1_1gui_1_1event.html#a1fcaac54b1f22358cbe828cc206f1f59">get_time</a>();</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;            }</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203ad47803f350db2c7ad9b841979abec3ec">cgv::gui::MA_RELEASE</a>:</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;            <span class="keywordflow">if</span>(check_for_click != -1) {</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                <span class="keywordtype">double</span> dt = me.<a class="code" href="classcgv_1_1gui_1_1event.html#a1fcaac54b1f22358cbe828cc206f1f59">get_time</a>() - check_for_click;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;                <span class="keywordflow">if</span>(dt &lt; 0.2) {</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                    <span class="keywordflow">if</span>(hit_axis != 0) {</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                        <span class="keywordtype">int</span> axis_idx = <a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">abs</a>(hit_axis) - 1;</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;                        vec3 view_dir(0.0f);</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                        view_dir[axis_idx] = hit_axis &lt; 0.0f ? -1.0f : 1.0f;</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                        <span class="keywordflow">if</span>(view_ptr) {</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;                            vec3 focus = <a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a>-&gt;get_focus();</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;                            <span class="keywordtype">float</span> dist = (focus - <a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a>-&gt;get_eye()).<a class="code" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a>();</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                            </div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                            vec3 view_up_dir(0.0f, 1.0f, 0.0f);</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                            <span class="keywordflow">if</span>(axis_idx == 1)</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                                view_up_dir = vec3(0.0f, 0.0f, hit_axis &lt; 0 ? 1.0f : -1.0f);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                origin = vec3(IM * <a class="code" href="namespacecgv_1_1render.html#a091ed7d82bda1371fe5339a19bd75ea0">vec4</a>(origin, 1.0f));</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;                direction = vec3(IM * <a class="code" href="namespacecgv_1_1render.html#a091ed7d82bda1371fe5339a19bd75ea0">vec4</a>(direction, 0.0f));</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                <span class="keywordtype">float</span> t = std::numeric_limits&lt;float&gt;::max();</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                <span class="keywordflow">if</span>(intersect_box(origin, direction, t)) {</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                    vec3 hit_pos = origin + t * direction;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;                    <span class="keywordtype">unsigned</span> mi = <a class="code" href="namespacecgv_1_1math.html#a92f496231d4b5519a815e6be9387f851">cgv::math::max_index</a>(<a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">cgv::math::abs</a>(hit_pos));</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                    hit_axis = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(mi) + 1;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                    <span class="keywordflow">if</span>(hit_pos[mi] &lt; 0.0f)</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;                        hit_axis = -hit_axis;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                }</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;            }</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        </div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;            <span class="keywordflow">if</span>(last_hit_axis != hit_axis)</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                post_redraw();</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        }</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        <span class="keywordflow">switch</span>(ma) {</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203a0091084872702ffd92ac7acaa168047b">cgv::gui::MA_PRESS</a>:</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;            <span class="keywordflow">if</span>(me.<a class="code" href="classcgv_1_1gui_1_1mouse__event.html#af85797a2c14885914cf501d1d3301e4a">get_button</a>() == <a class="code" href="namespacecgv_1_1gui.html#a7641aee24f715d0496c3e23c68faec81afcd7ad9adb7983df368ce9c5f7639433">cgv::gui::MB_LEFT_BUTTON</a>) {</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                check_for_click = me.<a class="code" href="classcgv_1_1gui_1_1event.html#a1fcaac54b1f22358cbe828cc206f1f59">get_time</a>();</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;            }</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203ad47803f350db2c7ad9b841979abec3ec">cgv::gui::MA_RELEASE</a>:</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;            <span class="keywordflow">if</span>(check_for_click != -1) {</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                <span class="keywordtype">double</span> dt = me.<a class="code" href="classcgv_1_1gui_1_1event.html#a1fcaac54b1f22358cbe828cc206f1f59">get_time</a>() - check_for_click;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;                <span class="keywordflow">if</span>(dt &lt; 0.2) {</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                    <span class="keywordflow">if</span>(hit_axis != 0) {</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                        <span class="keywordtype">int</span> axis_idx = <a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">abs</a>(hit_axis) - 1;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;                        vec3 view_dir(0.0f);</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;                        view_dir[axis_idx] = hit_axis &lt; 0.0f ? -1.0f : 1.0f;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                        <span class="keywordflow">if</span>(view_ptr) {</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                            vec3 focus = <a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a>-&gt;get_focus();</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                            <span class="keywordtype">float</span> dist = (focus - <a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a>-&gt;get_eye()).<a class="code" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a>();</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                            </div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                            dvec3 axis;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                            <span class="keywordtype">double</span> angle;</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                            <a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a>-&gt;compute_axis_and_angle(-view_dir, view_up_dir, axis, angle);</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                            vec3 view_up_dir(0.0f, 1.0f, 0.0f);</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                            <span class="keywordflow">if</span>(axis_idx == 1)</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                                view_up_dir = vec3(0.0f, 0.0f, hit_axis &lt; 0 ? 1.0f : -1.0f);</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                            </div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                            cgv::gui::animate_with_axis_rotation(<a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a>-&gt;ref_view_dir(), axis, angle, 0.5)-&gt;set_base_ptr(<span class="keyword">this</span>);</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                            cgv::gui::animate_with_axis_rotation(<a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a>-&gt;ref_view_up_dir(), axis, angle, 0.5)-&gt;set_base_ptr(<span class="keyword">this</span>);</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                            post_redraw();</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                        }</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                    }</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                }</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;            }</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        }</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160; </div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    }</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;}</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160; </div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="keywordtype">void</span> navigator::on_set(<span class="keywordtype">void</span>* member_ptr) {</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160; </div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    <span class="keywordflow">if</span>(member_ptr == &amp;layout_size) {</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        layout_size = <a class="code" href="namespacecgv_1_1math.html#a6d164d4a63cb11523ffbbcc5178fe2f2">cgv::math::clamp</a>(layout_size, 10, 2000);</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        set_overlay_size(<a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a>(layout_size));</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    }</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    update_member(member_ptr);</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    post_redraw();</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;}</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                            dvec3 axis;</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                            <span class="keywordtype">double</span> angle;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                            <a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a>-&gt;compute_axis_and_angle(-view_dir, view_up_dir, axis, angle);</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                            </div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                            cgv::gui::animate_with_axis_rotation(<a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a>-&gt;ref_view_dir(), axis, angle, 0.5)-&gt;set_base_ptr(<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                            cgv::gui::animate_with_axis_rotation(<a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a>-&gt;ref_view_up_dir(), axis, angle, 0.5)-&gt;set_base_ptr(<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                            post_redraw();</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                        }</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                    }</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                }</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;            }</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        }</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160; </div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    }</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;}</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160; </div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;<span class="keywordtype">void</span> navigator::on_set(<span class="keywordtype">void</span>* member_ptr) {</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    <span class="keywordflow">if</span>(member_ptr == &amp;layout_size) {</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        layout_size = <a class="code" href="namespacecgv_1_1math.html#a6d164d4a63cb11523ffbbcc5178fe2f2">cgv::math::clamp</a>(layout_size, 10, 2000);</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;        set_overlay_size(<a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a>(layout_size));</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    }</div>
 <div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="keywordtype">bool</span> navigator::init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) {</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    </div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    <span class="comment">// get a bold font face to use for the cursor</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    <span class="keyword">auto</span> font = <a class="code" href="namespacecgv_1_1media_1_1font.html#a1e4663cbf69db4df186482045f888406">cgv::media::font::find_font</a>(<span class="stringliteral">&quot;Arial&quot;</span>);</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    <span class="keywordflow">if</span>(!font.empty()) {</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;        cursor_font_face = font-&gt;get_font_face(cgv::media::font::FFA_BOLD);</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    }</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    fbc.add_attachment(<span class="stringliteral">&quot;depth&quot;</span>, <span class="stringliteral">&quot;[D]&quot;</span>);</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    fbc.add_attachment(<span class="stringliteral">&quot;color&quot;</span>, <span class="stringliteral">&quot;flt32[R,G,B,A]&quot;</span>, cgv::render::TF_LINEAR);</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    fbc.set_size(2 * get_overlay_size());</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    </div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    <span class="keywordtype">bool</span> success = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160; </div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    success &amp;= fbc.ensure(ctx);</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    update_member(member_ptr);</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    post_redraw();</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;}</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="keywordtype">bool</span> navigator::init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) {</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    </div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="comment">// get a bold font face to use for the cursor</span></div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    <span class="keyword">auto</span> font = <a class="code" href="namespacecgv_1_1media_1_1font.html#a1e4663cbf69db4df186482045f888406">cgv::media::font::find_font</a>(<span class="stringliteral">&quot;Arial&quot;</span>);</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    <span class="keywordflow">if</span>(!font.empty()) {</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        cursor_font_face = font-&gt;get_font_face(cgv::media::font::FFA_BOLD);</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    }</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160; </div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    fbc.add_attachment(<span class="stringliteral">&quot;depth&quot;</span>, <span class="stringliteral">&quot;[D]&quot;</span>);</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    fbc.add_attachment(<span class="stringliteral">&quot;color&quot;</span>, <span class="stringliteral">&quot;flt32[R,G,B,A]&quot;</span>, cgv::render::TF_LINEAR);</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    fbc.set_size(2 * get_overlay_size());</div>
 <div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    </div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    success &amp;= arrow_data.init(ctx);</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    success &amp;= box_data.init(ctx);</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    success &amp;= box_wire_data.init(ctx);</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;    success &amp;= rectangle_data.init(ctx);</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    success &amp;= sphere_data.init(ctx);</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160; </div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    success &amp;= box_renderer.init(ctx);</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    blit_canvas.register_shader(<span class="stringliteral">&quot;rectangle&quot;</span>, cgv::g2d::shaders::rectangle);</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    success &amp;= blit_canvas.init(ctx);</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160; </div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    <span class="keywordflow">if</span>(success) {</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        box_data.add(vec3(0.0f));</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;        box_wire_data.add(vec3(0.0f));</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    <span class="keywordtype">bool</span> success = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160; </div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    success &amp;= fbc.ensure(ctx);</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;    </div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    success &amp;= arrow_data.init(ctx);</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    success &amp;= box_data.init(ctx);</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    success &amp;= box_wire_data.init(ctx);</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    success &amp;= rectangle_data.init(ctx);</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    success &amp;= sphere_data.init(ctx);</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160; </div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    success &amp;= box_renderer.init(ctx);</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160; </div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    blit_canvas.register_shader(<span class="stringliteral">&quot;rectangle&quot;</span>, cgv::g2d::shaders::rectangle);</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    success &amp;= blit_canvas.init(ctx);</div>
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160; </div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;        sphere_data.add(vec3(0.0f));</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160; </div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a> = 0.5f;</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    <span class="keywordflow">if</span>(success) {</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;        box_data.add(vec3(0.0f));</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;        box_wire_data.add(vec3(0.0f));</div>
 <div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;        <span class="comment">// x - red</span></div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        arrow_data.add(vec3(0.0f), vec3(length, 0.0f, 0.0f));</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;        arrow_data.add(<a class="code" href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">rgb</a>(0.85f, 0.0f, 0.0f));</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        <span class="comment">// y - green</span></div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        arrow_data.add(<a class="code" href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">rgb</a>(0.0f, 0.75f, 0.0f));</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        arrow_data.add(vec3(0.0f), vec3(0.0f, length, 0.0f));</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;        <span class="comment">// z - blue</span></div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        arrow_data.add(vec3(0.0f), vec3(0.0f, 0.0f, length));</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;        arrow_data.add(<a class="code" href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">rgb</a>(0.35f, 0.4f, 1.0f));</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        </div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        blit_style.fill_color = <a class="code" href="namespacecgv_1_1render.html#a7119f6c28a063b3cc9958b9db5ccde77">rgba</a>(1.0f);</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        blit_style.use_texture = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        blit_style.use_blending = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        blit_style.feather_width = 0.0f;</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;        <span class="keyword">auto</span>&amp; blit_prog = blit_canvas.enable_shader(ctx, <span class="stringliteral">&quot;rectangle&quot;</span>);</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        blit_style.apply(ctx, blit_prog);</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        blit_canvas.disable_current_shader(ctx);</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;    }</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    <span class="keywordflow">return</span> success;</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;}</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160; </div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="keywordtype">void</span> navigator::init_frame(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) {</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    <span class="keywordflow">if</span>(!view_ptr)</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;        <a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a> = find_view_as_node();</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160; </div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    <span class="keywordflow">if</span>(ensure_overlay_layout(ctx)) {</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;        <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> container_size = get_overlay_size();</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;        </div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;        fbc.set_size(2*container_size);</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;        fbc.ensure(ctx);</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160; </div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;        blit_canvas.set_resolution(ctx, get_viewport_size());</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    }</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;}</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;        sphere_data.add(vec3(0.0f));</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160; </div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a> = 0.5f;</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160; </div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        <span class="comment">// x - red</span></div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        arrow_data.add(vec3(0.0f), vec3(length, 0.0f, 0.0f));</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;        arrow_data.add(<a class="code" href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">rgb</a>(0.85f, 0.0f, 0.0f));</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        <span class="comment">// y - green</span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;        arrow_data.add(<a class="code" href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">rgb</a>(0.0f, 0.75f, 0.0f));</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        arrow_data.add(vec3(0.0f), vec3(0.0f, length, 0.0f));</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        <span class="comment">// z - blue</span></div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        arrow_data.add(vec3(0.0f), vec3(0.0f, 0.0f, length));</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        arrow_data.add(<a class="code" href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">rgb</a>(0.35f, 0.4f, 1.0f));</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        </div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160; </div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;        blit_style.fill_color = <a class="code" href="namespacecgv_1_1render.html#a7119f6c28a063b3cc9958b9db5ccde77">rgba</a>(1.0f);</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;        blit_style.use_texture = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        blit_style.use_blending = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        blit_style.feather_width = 0.0f;</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160; </div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;        <span class="keyword">auto</span>&amp; blit_prog = blit_canvas.enable_shader(ctx, <span class="stringliteral">&quot;rectangle&quot;</span>);</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        blit_style.apply(ctx, blit_prog);</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        blit_canvas.disable_current_shader(ctx);</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    }</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160; </div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    <span class="keywordflow">return</span> success;</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;}</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160; </div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;<span class="keywordtype">void</span> navigator::init_frame(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) {</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160; </div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    <span class="keywordflow">if</span>(!view_ptr)</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;        <a class="code" href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">view_ptr</a> = find_view_as_node();</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160; </div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    <span class="keywordflow">if</span>(ensure_overlay_layout(ctx)) {</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;        <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> container_size = get_overlay_size();</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;        </div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;        fbc.set_size(2*container_size);</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;        fbc.ensure(ctx);</div>
 <div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160; </div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="keywordtype">void</span> navigator::finish_draw(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) {</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160; </div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    <span class="keywordflow">if</span>(!show)</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;        <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160; </div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    fbc.enable(ctx);</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160; </div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    </div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#aaf95e59c03293af3f537d64720d03bf4">push_projection_matrix</a>();</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#ab655262a94e1e751c8a37ffbb96f6f38">set_projection_matrix</a>(get_projection_matrix());</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160; </div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#ae8e533212813f66b5930a62fdc327170">push_modelview_matrix</a>();</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#af80eb72358a8c7e3c1132f997fe0a572">set_modelview_matrix</a>(get_view_matrix(ctx) * get_model_matrix(ctx));</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160; </div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;    glDisable(GL_DEPTH_TEST);</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;    glEnable(GL_BLEND);</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;        blit_canvas.set_resolution(ctx, get_viewport_size());</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    }</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;}</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160; </div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;<span class="keywordtype">void</span> navigator::finish_draw(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) {</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160; </div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    <span class="keywordflow">if</span>(!show)</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160; </div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    fbc.enable(ctx);</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160; </div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;    </div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#aaf95e59c03293af3f537d64720d03bf4">push_projection_matrix</a>();</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#ab655262a94e1e751c8a37ffbb96f6f38">set_projection_matrix</a>(get_projection_matrix());</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160; </div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#ae8e533212813f66b5930a62fdc327170">push_modelview_matrix</a>();</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#af80eb72358a8c7e3c1132f997fe0a572">set_modelview_matrix</a>(get_view_matrix(ctx) * get_model_matrix(ctx));</div>
 <div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160; </div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    <span class="keywordflow">if</span>(show_box)</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;        box_data.render(ctx, box_renderer);</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160; </div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    <span class="keywordflow">if</span>(show_wireframe)</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;        box_wire_data.render(ctx);</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160; </div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    glDisable(GL_BLEND);</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    glEnable(GL_DEPTH_TEST);</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160; </div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    sphere_data.render(ctx);</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    arrow_data.render(ctx);</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160; </div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    glDisable(GL_DEPTH_TEST);</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    glEnable(GL_BLEND);</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160; </div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    <span class="keywordflow">if</span>(hit_axis != 0) {</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;        <span class="keywordtype">int</span> axis_idx = <a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">abs</a>(hit_axis) - 1;</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;        vec3 position(0.0f);</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;        position[axis_idx] = hit_axis &lt; 0.0f ? -0.5f : 0.5f;</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160; </div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">int</span> mapping[3] = {1, 0, 2};</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160; </div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        vec3 rotation_axis(0.0f);</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        rotation_axis[mapping[axis_idx]] = hit_axis &lt; 0.0f ? -1.0f : 1.0f;</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160; </div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        std::vector&lt;quat&gt; rotations;</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;        <a class="code" href="namespacecgv_1_1render.html#a77116d5f5700b4c2edfb0e3c663a8a94">quat</a> q(rotation_axis, cgv::math::deg2rad(90.0f));</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160; </div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;        rectangle_data.clear();</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;        rectangle_data.add(position);</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;        rectangle_data.add(q);</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    glDisable(GL_DEPTH_TEST);</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    glEnable(GL_BLEND);</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160; </div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    <span class="keywordflow">if</span>(show_box)</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;        box_data.render(ctx, box_renderer);</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160; </div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    <span class="keywordflow">if</span>(show_wireframe)</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        box_wire_data.render(ctx);</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160; </div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    glDisable(GL_BLEND);</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    glEnable(GL_DEPTH_TEST);</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160; </div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    sphere_data.render(ctx);</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    arrow_data.render(ctx);</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160; </div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    glDisable(GL_DEPTH_TEST);</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;    glEnable(GL_BLEND);</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160; </div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    <span class="keywordflow">if</span>(hit_axis != 0) {</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        <span class="keywordtype">int</span> axis_idx = <a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">abs</a>(hit_axis) - 1;</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        vec3 position(0.0f);</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        position[axis_idx] = hit_axis &lt; 0.0f ? -0.5f : 0.5f;</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160; </div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">int</span> mapping[3] = {1, 0, 2};</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160; </div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;        vec3 rotation_axis(0.0f);</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;        rotation_axis[mapping[axis_idx]] = hit_axis &lt; 0.0f ? -1.0f : 1.0f;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160; </div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;        std::vector&lt;quat&gt; rotations;</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;        <a class="code" href="namespacecgv_1_1render.html#a77116d5f5700b4c2edfb0e3c663a8a94">quat</a> q(rotation_axis, cgv::math::deg2rad(90.0f));</div>
 <div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160; </div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;        <span class="keyword">auto</span>&amp; rectangle_renderer = <a class="code" href="namespacecgv_1_1render.html#a3511c2e6386806c6b4d7dbedd83bcbf0">ref_rectangle_renderer</a>(ctx);</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;        rectangle_renderer.set_extent(ctx, <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a>(0.9f));</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        rectangle_data.render(ctx, rectangle_renderer);</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    }</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160; </div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#ae4af0abc9021c483180187b32d11cd7a">pop_modelview_matrix</a>();</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#a971b6a264f18a0a614c902519541ec3d">pop_projection_matrix</a>();</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160; </div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    fbc.disable(ctx);</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160; </div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;        rectangle_data.clear();</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;        rectangle_data.add(position);</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        rectangle_data.add(q);</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160; </div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        <span class="keyword">auto</span>&amp; rectangle_renderer = <a class="code" href="namespacecgv_1_1render.html#a3511c2e6386806c6b4d7dbedd83bcbf0">ref_rectangle_renderer</a>(ctx);</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;        rectangle_renderer.set_extent(ctx, <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a>(0.9f));</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        rectangle_data.render(ctx, rectangle_renderer);</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    }</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160; </div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#ae4af0abc9021c483180187b32d11cd7a">pop_modelview_matrix</a>();</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#a971b6a264f18a0a614c902519541ec3d">pop_projection_matrix</a>();</div>
 <div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160; </div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    <span class="comment">// draw frame buffer texture to screen</span></div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    <span class="keyword">auto</span>&amp; blit_prog = blit_canvas.enable_shader(ctx, <span class="stringliteral">&quot;rectangle&quot;</span>);</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160; </div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    fbc.enable_attachment(ctx, <span class="stringliteral">&quot;color&quot;</span>, 0);</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    blit_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    fbc.disable_attachment(ctx, <span class="stringliteral">&quot;color&quot;</span>);</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    fbc.disable(ctx);</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160; </div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160; </div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    <span class="comment">// draw frame buffer texture to screen</span></div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    <span class="keyword">auto</span>&amp; blit_prog = blit_canvas.enable_shader(ctx, <span class="stringliteral">&quot;rectangle&quot;</span>);</div>
 <div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160; </div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    blit_canvas.disable_current_shader(ctx);</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160; </div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    glDisable(GL_BLEND);</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    glEnable(GL_DEPTH_TEST);</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;}</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    fbc.enable_attachment(ctx, <span class="stringliteral">&quot;color&quot;</span>, 0);</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;    blit_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    fbc.disable_attachment(ctx, <span class="stringliteral">&quot;color&quot;</span>);</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160; </div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    blit_canvas.disable_current_shader(ctx);</div>
 <div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160; </div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;<span class="keywordtype">void</span> navigator::create_gui_impl() {</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160; </div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    add_member_control(<span class="keyword">this</span>, <span class="stringliteral">&quot;Size&quot;</span>, layout_size, <span class="stringliteral">&quot;value_slider&quot;</span>, <span class="stringliteral">&quot;min=50;max=300;step=1;ticks=true&quot;</span>);</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    add_member_control(<span class="keyword">this</span>, <span class="stringliteral">&quot;Show Box&quot;</span>, show_box, <span class="stringliteral">&quot;check&quot;</span>);</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    add_member_control(<span class="keyword">this</span>, <span class="stringliteral">&quot;Show Wireframe&quot;</span>, show_wireframe, <span class="stringliteral">&quot;check&quot;</span>);</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    add_member_control(<span class="keyword">this</span>, <span class="stringliteral">&quot;Use Perspective&quot;</span>, use_perspective, <span class="stringliteral">&quot;check&quot;</span>);</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;}</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160; </div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;navigator::mat4 navigator::get_model_matrix(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) {</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160; </div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a80e5de4907c26239414021586635fe1a">mat4</a> MV = ctx.<a class="code" href="classcgv_1_1render_1_1context.html#adf6b241cf3e57c435ef50cbb21427194">get_modelview_matrix</a>();</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    glDisable(GL_BLEND);</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    glEnable(GL_DEPTH_TEST);</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;}</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160; </div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;<span class="keywordtype">void</span> navigator::create_gui_impl() {</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160; </div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    add_member_control(<span class="keyword">this</span>, <span class="stringliteral">&quot;Size&quot;</span>, layout_size, <span class="stringliteral">&quot;value_slider&quot;</span>, <span class="stringliteral">&quot;min=50;max=300;step=1;ticks=true&quot;</span>);</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    add_member_control(<span class="keyword">this</span>, <span class="stringliteral">&quot;Show Box&quot;</span>, show_box, <span class="stringliteral">&quot;check&quot;</span>);</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    add_member_control(<span class="keyword">this</span>, <span class="stringliteral">&quot;Show Wireframe&quot;</span>, show_wireframe, <span class="stringliteral">&quot;check&quot;</span>);</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    add_member_control(<span class="keyword">this</span>, <span class="stringliteral">&quot;Use Perspective&quot;</span>, use_perspective, <span class="stringliteral">&quot;check&quot;</span>);</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;}</div>
 <div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160; </div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    <span class="comment">// remove translation</span></div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    MV(0, 3) = 0.0f;</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    MV(1, 3) = 0.0f;</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    MV(2, 3) = 0.0f;</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160; </div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    <span class="keywordflow">return</span> MV;</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;}</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160; </div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;navigator::mat4 navigator::get_view_matrix(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) {</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160; </div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a38b587a38ce71938fc4bfe60c29e78d1">cgv::math::look_at4</a>(navigator_eye_pos, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;}</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160; </div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;navigator::mat4 navigator::get_projection_matrix() {</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a> size = <span class="keyword">static_cast&lt;</span><a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a><span class="keyword">&gt;</span>(get_overlay_size());</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    <span class="keywordtype">float</span> aspect = size.x() / size.y();</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    </div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;    <span class="keywordflow">if</span>(use_perspective)</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#aa4b8bc7f4b44b25688a7d5fdca877615">cgv::math::perspective4</a>(45.0f, aspect, 0.1f, 10.0f);</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a2f2977addf3435b7a68d37a81f8dff5a">cgv::math::ortho4</a>(-1.0f, 1.0f, -1.0f, 1.0f, 0.01f, 5.0f);</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;}</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160; </div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;<span class="keywordtype">bool</span> navigator::intersect_box(<span class="keyword">const</span> vec3 &amp;origin, <span class="keyword">const</span> vec3&amp; direction, <span class="keywordtype">float</span>&amp; t)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160; </div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    vec3 <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>(-0.5f);</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;    vec3 <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>(+0.5f);</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160; </div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;    <span class="keywordtype">float</span> t_min, t_max;</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160; </div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    vec3 inv_dir = vec3(1.0f) / direction;</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;navigator::mat4 navigator::get_model_matrix(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) {</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160; </div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a80e5de4907c26239414021586635fe1a">mat4</a> MV = ctx.<a class="code" href="classcgv_1_1render_1_1context.html#adf6b241cf3e57c435ef50cbb21427194">get_modelview_matrix</a>();</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160; </div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    <span class="comment">// remove translation</span></div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    MV(0, 3) = 0.0f;</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    MV(1, 3) = 0.0f;</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    MV(2, 3) = 0.0f;</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160; </div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    <span class="keywordflow">return</span> MV;</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;}</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160; </div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;navigator::mat4 navigator::get_view_matrix(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) {</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160; </div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a38b587a38ce71938fc4bfe60c29e78d1">cgv::math::look_at4</a>(navigator_eye_pos, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;}</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160; </div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;navigator::mat4 navigator::get_projection_matrix() {</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160; </div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a> size = <span class="keyword">static_cast&lt;</span><a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a><span class="keyword">&gt;</span>(get_overlay_size());</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    <span class="keywordtype">float</span> aspect = size.x() / size.y();</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;    </div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    <span class="keywordflow">if</span>(use_perspective)</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#aa4b8bc7f4b44b25688a7d5fdca877615">cgv::math::perspective4</a>(45.0f, aspect, 0.1f, 10.0f);</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a2f2977addf3435b7a68d37a81f8dff5a">cgv::math::ortho4</a>(-1.0f, 1.0f, -1.0f, 1.0f, 0.01f, 5.0f);</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;}</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160; </div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;<span class="keywordtype">bool</span> navigator::intersect_box(<span class="keyword">const</span> vec3 &amp;origin, <span class="keyword">const</span> vec3&amp; direction, <span class="keywordtype">float</span>&amp; t)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160; </div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;    vec3 <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>(-0.5f);</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    vec3 <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>(+0.5f);</div>
 <div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160; </div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;    <span class="keywordtype">float</span> t1 = (<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>.x() - origin.x())*inv_dir.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>();</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;    <span class="keywordtype">float</span> t2 = (<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>.x() - origin.x())*inv_dir.x();</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160; </div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;    t_min = std::min(t1, t2);</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;    t_max = std::max(t1, t2);</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160; </div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    t1 = (<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>.y() - origin.y())*inv_dir.y();</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    t2 = (<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>.y() - origin.y())*inv_dir.y();</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160; </div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;    t_min = std::max(t_min, std::min(t1, t2));</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;    t_max = std::min(t_max, std::max(t1, t2));</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160; </div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;    t1 = (<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>.z() - origin.z())*inv_dir.z();</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;    t2 = (<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>.z() - origin.z())*inv_dir.z();</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160; </div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    t_min = std::max(t_min, std::min(t1, t2));</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;    t_max = std::min(t_max, std::max(t1, t2));</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160; </div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;    t = t_min;</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;    <span class="keywordflow">return</span> t_max &gt; std::max(t_min, 0.0f);</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;}</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;    <span class="keywordtype">float</span> t_min, t_max;</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160; </div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;    vec3 inv_dir = vec3(1.0f) / direction;</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160; </div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;    <span class="keywordtype">float</span> t1 = (<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>.x() - origin.x())*inv_dir.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>();</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    <span class="keywordtype">float</span> t2 = (<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>.x() - origin.x())*inv_dir.x();</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160; </div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    t_min = std::min(t1, t2);</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    t_max = std::max(t1, t2);</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160; </div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;    t1 = (<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>.y() - origin.y())*inv_dir.y();</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;    t2 = (<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>.y() - origin.y())*inv_dir.y();</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160; </div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;    t_min = std::max(t_min, std::min(t1, t2));</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;    t_max = std::min(t_max, std::max(t1, t2));</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160; </div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;    t1 = (<a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>.z() - origin.z())*inv_dir.z();</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    t2 = (<a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>.z() - origin.z())*inv_dir.z();</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160; </div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;    t_min = std::max(t_min, std::min(t1, t2));</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;    t_max = std::min(t_max, std::max(t1, t2));</div>
 <div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160; </div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;}</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;}</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;    t = t_min;</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;    <span class="keywordflow">return</span> t_max &gt; std::max(t_min, 0.0f);</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;}</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160; </div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;}</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1event_html"><div class="ttname"><a href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a></div><div class="ttdef"><b>Definition:</b> <a href="event_8h_source.html#l00058">event.h:59</a></div></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1event_html_a1fcaac54b1f22358cbe828cc206f1f59"><div class="ttname"><a href="classcgv_1_1gui_1_1event.html#a1fcaac54b1f22358cbe828cc206f1f59">cgv::gui::event::get_time</a></div><div class="ttdeci">double get_time() const</div><div class="ttdoc">return the time of the event in seconds</div><div class="ttdef"><b>Definition:</b> <a href="event_8cxx_source.html#l00247">event.cxx:247</a></div></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1event_html_a3a0495e3d6d0a3adf1148158d55b035e"><div class="ttname"><a href="classcgv_1_1gui_1_1event.html#a3a0495e3d6d0a3adf1148158d55b035e">cgv::gui::event::get_kind</a></div><div class="ttdeci">unsigned get_kind() const</div><div class="ttdoc">return, what kind of event this is, typically a value from the EventId enum</div><div class="ttdef"><b>Definition:</b> <a href="event_8cxx_source.html#l00202">event.cxx:202</a></div></div>
@@ -528,6 +532,7 @@ $(document).ready(function(){initNavTree('navigator_8cxx_source.html',''); initR
 <div class="ttc" id="anamespacecgv_1_1gui_html_a7641aee24f715d0496c3e23c68faec81afcd7ad9adb7983df368ce9c5f7639433"><div class="ttname"><a href="namespacecgv_1_1gui.html#a7641aee24f715d0496c3e23c68faec81afcd7ad9adb7983df368ce9c5f7639433">cgv::gui::MB_LEFT_BUTTON</a></div><div class="ttdeci">@ MB_LEFT_BUTTON</div><div class="ttdoc">left button</div><div class="ttdef"><b>Definition:</b> <a href="mouse__event_8h_source.html#l00026">mouse_event.h:26</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1gui_html_a8df984052bc15d562c44dfb9927d0203"><div class="ttname"><a href="namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203">cgv::gui::MouseAction</a></div><div class="ttdeci">MouseAction</div><div class="ttdoc">different actions that a mouse can perform</div><div class="ttdef"><b>Definition:</b> <a href="mouse__event_8h_source.html#l00012">mouse_event.h:12</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1gui_html_a8df984052bc15d562c44dfb9927d0203a0091084872702ffd92ac7acaa168047b"><div class="ttname"><a href="namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203a0091084872702ffd92ac7acaa168047b">cgv::gui::MA_PRESS</a></div><div class="ttdeci">@ MA_PRESS</div><div class="ttdoc">mouse button pressed</div><div class="ttdef"><b>Definition:</b> <a href="mouse__event_8h_source.html#l00013">mouse_event.h:13</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1gui_html_a8df984052bc15d562c44dfb9927d0203a473a27e9ed6b3084fbb5b6eaeb90689e"><div class="ttname"><a href="namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203a473a27e9ed6b3084fbb5b6eaeb90689e">cgv::gui::MA_LEAVE</a></div><div class="ttdeci">@ MA_LEAVE</div><div class="ttdoc">mouse leave window action</div><div class="ttdef"><b>Definition:</b> <a href="mouse__event_8h_source.html#l00020">mouse_event.h:19</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1gui_html_a8df984052bc15d562c44dfb9927d0203ad47803f350db2c7ad9b841979abec3ec"><div class="ttname"><a href="namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203ad47803f350db2c7ad9b841979abec3ec">cgv::gui::MA_RELEASE</a></div><div class="ttdeci">@ MA_RELEASE</div><div class="ttdoc">mouse button released</div><div class="ttdef"><b>Definition:</b> <a href="mouse__event_8h_source.html#l00014">mouse_event.h:14</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1gui_html_ac96154d54fa346efee6cef81b584e8fea9bd116f7d1494c5fdd7b61b804f62e01"><div class="ttname"><a href="namespacecgv_1_1gui.html#ac96154d54fa346efee6cef81b584e8fea9bd116f7d1494c5fdd7b61b804f62e01">cgv::gui::EID_MOUSE</a></div><div class="ttdeci">@ EID_MOUSE</div><div class="ttdoc">id for mouse event</div><div class="ttdef"><b>Definition:</b> <a href="event_8h_source.html#l00018">event.h:18</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1gui_html_aceb07fba6859effc2353f70788dd7f9b"><div class="ttname"><a href="namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b">cgv::gui::view_ptr</a></div><div class="ttdeci">data::ref_ptr&lt; abst_view &gt; view_ptr</div><div class="ttdoc">ref counted pointer to abst view</div><div class="ttdef"><b>Definition:</b> <a href="gui_2view_8h_source.html#l00036">view.h:36</a></div></div>
