@@ -31,6 +31,13 @@ public:
 		bool opacity_value_type_float = true;
 		bool apply_gamma = false;
 	};
+	static const identifier_config& default_identifier_config() {
+		static const identifier_config default_ic = [] {
+			identifier_config ic;
+			return ic;
+		}();
+		return default_ic;
+	}
 
 	// data structure of loaded color maps result
 	typedef std::vector<std::pair<std::string, cgv::render::color_map>> result;
@@ -123,7 +130,7 @@ private:
 	}
 
 public:
-	static bool read_from_xml(const tinyxml2::XMLElement& elem, result& entries, const identifier_config& config = identifier_config()) {
+	static bool read_from_xml(const tinyxml2::XMLElement& elem, result& entries, const identifier_config& config = default_identifier_config()) {
 
 		entries.clear();
 		extract_color_maps(elem, entries, config);
@@ -131,7 +138,7 @@ public:
 		return !entries.empty();
 	}
 
-	static bool read_from_xml(const tinyxml2::XMLDocument& doc, result& entries, const identifier_config& config = identifier_config()) {
+	static bool read_from_xml(const tinyxml2::XMLDocument& doc, result& entries, const identifier_config& config = default_identifier_config()) {
 
 		if(const tinyxml2::XMLElement* elem = doc.RootElement())
 			return read_from_xml(*elem, entries, config);
@@ -139,7 +146,7 @@ public:
 		return false;
 	}
 
-	static bool read_from_xml_string(const std::string& xml, result& entries, const identifier_config& config = identifier_config()) {
+	static bool read_from_xml_string(const std::string& xml, result& entries, const identifier_config& config = default_identifier_config()) {
 		
 		tinyxml2::XMLDocument doc;
 		if(doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS)
@@ -148,7 +155,7 @@ public:
 		return false;
 	}
 
-	static bool read_from_xml_file(const std::string& file_name, result& entries, const identifier_config& config = identifier_config()) {
+	static bool read_from_xml_file(const std::string& file_name, result& entries, const identifier_config& config = default_identifier_config()) {
 		
 		tinyxml2::XMLDocument doc;
 		if(doc.LoadFile(file_name.c_str()) == tinyxml2::XML_SUCCESS)
