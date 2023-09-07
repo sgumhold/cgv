@@ -32,10 +32,7 @@ public:
 		bool apply_gamma = false;
 	};
 	static const identifier_config& default_identifier_config() {
-		static const identifier_config default_ic = [] {
-			identifier_config ic;
-			return ic;
-		}();
+		static const identifier_config default_ic;
 		return default_ic;
 	}
 
