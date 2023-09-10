@@ -9,6 +9,17 @@ namespace post {
 
 class CGV_API temporal_anti_aliasing : public post_process_effect {
 protected:
+
+
+
+
+
+	size_t redraw_id = 0;
+	size_t reset_redraw_id = 0;
+
+
+
+
 	/// framebuffers used to store previous and resovled frame
 	cgv::render::managed_frame_buffer fbc_post, fbc_hist, fbc_resolve;
 	/// pointer to the current view
@@ -118,6 +129,16 @@ public:
 	const vec2 ref_viewport_size() const {
 		return viewport_size;
 	}
+
+
+
+
+
+	void set_reset_redraw_id(size_t id) {
+
+		reset_redraw_id = id;
+	}
+
 };
 
 }
