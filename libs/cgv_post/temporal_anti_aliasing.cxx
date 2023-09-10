@@ -20,6 +20,15 @@ void temporal_anti_aliasing::destruct(cgv::render::context& ctx) {
 
 bool temporal_anti_aliasing::init(cgv::render::context& ctx) {
 
+
+
+	redraw_id = ctx.request_redraw_id();
+
+
+
+
+
+
 	const std::string color_format = "flt32[R,G,B,A]";
 
 	fbc_draw.add_attachment("depth", "[D]");
@@ -78,6 +87,14 @@ void temporal_anti_aliasing::begin(cgv::render::context& ctx) {
 	
 	if(!(enable || enable_fxaa) || !view_ptr)
 		return;
+
+
+
+	if(reset_redraw_id != 0 && (unsigned)ctx.redraw_user_data == reset_redraw_id)
+		reset();
+
+
+
 
 	current_view.eye_pos = view_ptr->get_eye();
 	current_view.view_dir = view_ptr->get_view_dir();
@@ -179,7 +196,7 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx) {
 		if(static_frame_count < jitter_sample_count) {
 			++static_frame_count;
 			if(auto_redraw)
-				ctx.post_redraw();
+				ctx.post_redraw((void*)redraw_id);
 			redraw = true;
 		}
 	} else {
@@ -187,7 +204,7 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx) {
 		accumulate_count = 0;
 		if(accumulate) {
 			if(auto_redraw)
-				ctx.post_redraw();
+				ctx.post_redraw((void*)redraw_id);
 			redraw = true;
 		}
 	}

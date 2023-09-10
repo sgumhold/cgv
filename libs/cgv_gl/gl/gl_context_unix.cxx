@@ -63,7 +63,7 @@ struct unix_gl_context : public gl_context
 	/// set a user defined background color
 	void set_bg_color(float r, float g, float b, float a) {}
 	/// the context will be redrawn when the system is idle again
-	void post_redraw() {}
+	void post_redraw(void* user_data = nullptr) {}
 	/// the context will be redrawn right now. This method cannot be called inside the following methods of a drawable: init, init_frame, draw, finish_draw
 	void force_redraw() {}
 	bool is_alpha_buffer_attached() const { return true; }

@@ -155,7 +155,7 @@ public:
 	/// attach or detach (\c attach=false) multi sample buffer to the current frame buffer if not present
 	void attach_multi_sample_buffer(bool attach = true);
 	/// the context will be redrawn when the system is idle again
-	void post_redraw();
+	void post_redraw(void* user_data = nullptr);
 	/// the context will be redrawn right now. This method cannot be called inside the following methods of a drawable: init, init_frame, draw, finish_draw
 	void force_redraw();
 	/// enable the given font face with the given size in pixels
