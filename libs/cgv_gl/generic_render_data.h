@@ -104,10 +104,6 @@ protected:
 		}
 	}
 
-	bool has_indices() const {
-		return aam.has_index_buffer();
-	}
-
 	bool set_indices(const context& ctx) {
 		return aam.set_indices(ctx, idx);
 	}
@@ -117,6 +113,30 @@ protected:
 	}
 
 	virtual bool transfer(context& ctx, shader_program& prog) = 0;
+
+public:
+	void destruct(const context& ctx) {
+		aam.destruct(ctx);
+	}
+
+	bool init(context& ctx) {
+		return aam.init(ctx);
+	}
+
+	void add_idx(const unsigned int i) { idx.push_back(i); }
+
+	std::vector<unsigned>& ref_idx() { return idx; }
+	const std::vector<unsigned>& ref_idx() const { return idx; }
+
+	void set_out_of_date() {
+		state_out_of_date = true;
+	}
+
+	virtual size_t render_count() const = 0;
+
+	bool has_indices() const {
+		return aam.has_index_buffer();
+	}
 
 	bool enable(context& ctx, shader_program& prog) {
 		if(!aam.is_created())
@@ -138,26 +158,6 @@ protected:
 	bool disable(context& ctx) {
 		return aam.disable(ctx);
 	}
-
-public:
-	void destruct(const context& ctx) {
-		aam.destruct(ctx);
-	}
-
-	bool init(context& ctx) {
-		return aam.init(ctx);
-	}
-
-	void add_idx(const unsigned int i) { idx.push_back(i); }
-
-	std::vector<unsigned>& ref_idx() { return idx; }
-	const std::vector<unsigned>& ref_idx() const { return idx; }
-
-	void set_out_of_date() {
-		state_out_of_date = true;
-	}
-
-	virtual size_t render_count() const = 0;
 };
 
 }
