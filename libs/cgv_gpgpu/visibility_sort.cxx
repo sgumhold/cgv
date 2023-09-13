@@ -23,7 +23,7 @@ void visibility_sort::destruct(const cgv::render::context& ctx) {
 bool visibility_sort::load_shader_programs(cgv::render::context& ctx) {
 
 	bool res = true;
-	std::string where = "radix_sort_4way::load_shader_programs()";
+	std::string where = "cgv::gpgpu::visibility_sort::load_shader_programs()";
 
 	cgv::render::shader_define_map key_defines;
 	cgv::render::shader_code::set_define(key_defines, "ORDER", sort_order, SO_ASCENDING);
