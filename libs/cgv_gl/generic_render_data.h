@@ -151,8 +151,9 @@ public:
 			return aam.enable(ctx);
 		} else if(state_out_of_date) {
 			transfer(ctx, prog);
-			return false;
 		}
+
+		return false;
 	}
 
 	bool disable(context& ctx) {
