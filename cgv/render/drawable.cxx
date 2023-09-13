@@ -38,7 +38,15 @@ context* drawable::get_context() const
 {
 	return ctx;
 }
+
 /// posts a redraw event to the current context if one is available
+void drawable::post_redraw()
+{
+	if(ctx)
+		ctx->post_redraw();
+}
+
+/// posts a redraw event containing user data to the current context if one is available
 void drawable::post_redraw(void* user_data)
 {
 	if (ctx)
