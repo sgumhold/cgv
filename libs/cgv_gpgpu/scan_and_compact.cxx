@@ -20,7 +20,7 @@ void scan_and_compact::destruct(const cgv::render::context& ctx) {
 bool scan_and_compact::load_shader_programs(cgv::render::context& ctx) {
 
 	bool res = true;
-	std::string where = "scan_and_compact::load_shader_programs()";
+	std::string where = "cgv::gpgpu::scan_and_compact::load_shader_programs()";
 
 	cgv::render::shader_define_map vote_defines;
 	cgv::render::shader_code::set_define(vote_defines, "DATA_TYPE_DEFINITION", data_type_def, "");
