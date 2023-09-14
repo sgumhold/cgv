@@ -63,6 +63,7 @@ protected:
 	bool texture_create_from_buffer(texture_base& tb, cgv::data::data_format& df, int x, int y, int level) const;
 	bool texture_replace(texture_base& tb, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level, const std::vector<cgv::data::data_view>* palettes = 0) const;
 	bool texture_replace_from_buffer(texture_base& tb, int x, int y, int z_or_cube_side, int x_buffer, int y_buffer, unsigned int width, unsigned int height, int level) const;
+	bool texture_create_mipmaps(texture_base& tb, cgv::data::data_format& df) const;
 	bool texture_generate_mipmaps(texture_base& tb, unsigned int dim) const;
 	bool texture_destruct(texture_base& tb) const;
 	bool texture_set_state(const texture_base& tb) const;
