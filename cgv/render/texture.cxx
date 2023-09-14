@@ -505,6 +505,15 @@ bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned
 	return true;
 }
 
+/** create storage for mipmaps without computing the mipmap contents */
+bool texture::create_mipmaps(const context& ctx)
+{
+	if(!is_created()) {
+		render_component::last_error = "attempt to create mipmap levels for texture that is not created";
+		return false;
+	}
+	return ctx.texture_create_mipmaps(*this, *this);
+}
 
 /** generate mipmaps automatically, only supported if 
     framebuffer objects are supported by the GPU */

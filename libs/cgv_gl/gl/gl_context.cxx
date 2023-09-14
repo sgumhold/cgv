@@ -1922,6 +1922,109 @@ bool gl_context::texture_replace_from_buffer(
 	return result;
 }
 
+bool gl_context::texture_create_mipmaps(texture_base& tb, cgv::data::data_format& df) const
+{
+	GLuint gl_format = (const GLuint&)tb.internal_format;
+		
+	// extract component type
+	unsigned int transfer_format = map_to_gl(df.get_standard_component_format(), df.get_integer_interpretation());
+
+	if(transfer_format == -1) {
+		error("could not determine transfer format", &tb);
+		return false;
+	}
+
+	// extract texture size and compute number of mip-levels
+	uvec3 size(df.get_width(), df.get_height(), df.get_depth());
+
+	unsigned max_size = cgv::math::max_value(size);
+	unsigned num_levels = 1 + static_cast<unsigned>(log2(static_cast<float>(max_size)));
+
+	// compute mip-level sizes
+	std::vector<uvec3> level_sizes(num_levels);
+	level_sizes[0] = size;
+
+	for(unsigned level = 1; level < num_levels; ++level) {
+		uvec3 level_size = size;
+		float divisor = pow(2.0f, static_cast<float>(level));
+		level_size = static_cast<uvec3>(static_cast<vec3>(level_size) / divisor);
+		level_size = cgv::math::max(level_size, uvec3(1u));
+		level_sizes[level] = level_size;
+	}
+
+	GLuint tmp_id = texture_bind(tb.tt, get_gl_id(tb.handle));
+
+	bool result = true;
+
+	switch(tb.tt) {
+	case TT_1D:
+		for(unsigned level = 1; level < num_levels; ++level) {
+			uvec3 level_size = level_sizes[level];
+			glTexImage1D(GL_TEXTURE_1D, level, gl_format, level_size.x(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		}
+		break;
+	case TT_1D_ARRAY:
+		//glTexImage2D(GL_TEXTURE_1D_ARRAY, 0, gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		error("create mipmaps not implemented for 1D array textures", &tb);
+		result = false;
+		break;
+	case TT_2D:
+		for(unsigned level = 1; level < num_levels; ++level) {
+			uvec3 level_size = level_sizes[level];
+			glTexImage2D(GL_TEXTURE_2D, level, gl_format, level_size.x(), level_size.y(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		}
+		break;
+	case TT_MULTISAMPLE_2D:
+		//glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, tb.nr_multi_samples, gl_format, df.get_width(), df.get_height(), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
+		error("create mipmaps not implemented for 2D multisample textures", &tb);
+		result = false;
+		break;
+	case TT_2D_ARRAY:
+		//glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, gl_format, df.get_width(), df.get_height(), df.get_depth(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		error("create mipmaps not implemented for 2D array textures", &tb);
+		result = false;
+		break;
+	case TT_MULTISAMPLE_2D_ARRAY:
+		//glTexStorage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, tb.nr_multi_samples, gl_format, df.get_width(), df.get_height(), df.get_depth(), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
+		error("create mipmaps not implemented for 2D multisample array textures", &tb);
+		result = false;
+		break;
+	case TT_3D:
+		for(unsigned level = 1; level < num_levels; ++level) {
+			uvec3 level_size = level_sizes[level];
+			glTexImage3D(GL_TEXTURE_3D, level, gl_format, level_size.x(), level_size.y(), level_size.z(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		}
+		break;
+	case TT_CUBEMAP:
+		/*glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0,
+						gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0,
+						gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0,
+						gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0,
+						gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0,
+						gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0,
+						gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		*/
+		error("create mipmaps not implemented for cubemap textures", &tb);
+		result = false;
+	default:
+		break;
+	}
+
+	if(check_gl_error("gl_context::texture_create_mipmaps", &tb))
+		result = false;
+
+	if(result)
+		tb.have_mipmaps = true;
+	
+	texture_unbind(tb.tt, tmp_id);
+	return result;
+}
+
 bool gl_context::texture_generate_mipmaps(texture_base& tb, unsigned int dim) const
 {
 	GLuint tmp_id = texture_bind(tb.tt,get_gl_id(tb.handle));
