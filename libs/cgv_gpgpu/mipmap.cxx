@@ -92,22 +92,20 @@ bool mipmap::execute(cgv::render::context& ctx, cgv::render::texture& source_tex
 		
 		mipmap_prog->set_uniform(ctx, "level", level);
 
-		GLuint work_groups_x = calculate_num_groups(output_size.x(), group_size);
-		GLuint work_groups_y = calculate_num_groups(output_size.y(), group_size);
-		GLuint work_groups_z = calculate_num_groups(output_size.z(), group_size);
+		uvec3 num_groups = calculate_num_groups(output_size, group_size);
 
 		if(num_dimensions == 1) {
 			mipmap_prog->set_uniform(ctx, "output_size", output_size.x());
-			work_groups_y = 1;
-			work_groups_z = 1;
+			num_groups[1] = 1;
+			num_groups[2] = 1;
 		} else if(num_dimensions == 2) {
 			mipmap_prog->set_uniform(ctx, "output_size", uvec2(output_size));
-			work_groups_z = 1;
+			num_groups[2] = 1;
 		} else if(num_dimensions == 3) {
 			mipmap_prog->set_uniform(ctx, "output_size", output_size);
 		}
 
-		glDispatchCompute(work_groups_x, work_groups_y, work_groups_z);
+		dispatch_compute3d(num_groups);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 		input_size = output_size;

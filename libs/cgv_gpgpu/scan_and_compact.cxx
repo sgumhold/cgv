@@ -106,7 +106,7 @@ unsigned scan_and_compact::execute(cgv::render::context& ctx, const cgv::render:
 	votes_buffer.bind(ctx, 2);
 	
 	if(!vote_prog.is_enabled()) vote_prog.enable(ctx);
-	glDispatchCompute(num_scan_groups, 1, 1);
+	dispatch_compute1d(num_scan_groups);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	vote_prog.disable(ctx);
 
@@ -114,17 +114,17 @@ unsigned scan_and_compact::execute(cgv::render::context& ctx, const cgv::render:
 	block_sums_buffer.bind(ctx, 4);
 
 	scan_local_prog.enable(ctx);
-	glDispatchCompute(num_scan_groups, 1, 1);
+	dispatch_compute1d(num_scan_groups);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	scan_local_prog.disable(ctx);
 
 	scan_global_prog.enable(ctx);
-	glDispatchCompute(1, 1, 1);
+	dispatch_compute1d(1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	scan_global_prog.disable(ctx);
 
 	compact_prog.enable(ctx);
-	glDispatchCompute(num_scan_groups, 1, 1);
+	dispatch_compute1d(num_scan_groups);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	compact_prog.disable(ctx);
 
