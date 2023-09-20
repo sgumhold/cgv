@@ -1945,9 +1945,8 @@ bool gl_context::texture_create_mipmaps(texture_base& tb, cgv::data::data_format
 	level_sizes[0] = size;
 
 	for(unsigned level = 1; level < num_levels; ++level) {
-		uvec3 level_size = size;
-		float divisor = pow(2.0f, static_cast<float>(level));
-		level_size = static_cast<uvec3>(static_cast<vec3>(level_size) / divisor);
+		uvec3 level_size = level_sizes[level - 1];
+		level_size = level_size / 2u;
 		level_size = cgv::math::max(level_size, uvec3(1u));
 		level_sizes[level] = level_size;
 	}
