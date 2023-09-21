@@ -83,9 +83,11 @@ protected:
 	bool label_auto_precision;
 	bool label_integer_mode;
 	AlignmentOption title_align;
+	bool show_opacity;
 
 	// general appearance
 	cgv::g2d::shape2d_style container_style, border_style, color_map_style;
+	cgv::g2d::grid2d_style background_style;
 
 	// text appearance
 	cgv::g2d::text2d_style text_style;
@@ -129,6 +131,7 @@ public:
 	void set_label_precision(unsigned p);
 	void set_label_auto_precision(bool enabled);
 	void set_label_integer_mode(bool enabled);
+	void set_show_opacity(bool enabled);
 };
 
 typedef cgv::data::ref_ptr<color_map_legend> color_map_legend_ptr;

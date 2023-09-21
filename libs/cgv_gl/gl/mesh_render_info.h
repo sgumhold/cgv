@@ -146,6 +146,15 @@ public:
 	/// return group index of i-th fragment
 	size_t get_primitive_index(size_t i) const { return material_primitive_start[i](1); }
 
+	/// @brief Returns how many vertices the mesh has.
+	size_t get_nr_vertices() const { return nr_vertices; };
+	/// @brief Returns how many edge-indices are recorded in the element buffer.
+	size_t get_nr_edge_elements() const { return nr_edge_elements; };
+	/// @brief Returns how many triangle-indices are recorded in the element buffer.
+	size_t get_nr_triangle_elements() const { return nr_triangle_elements; };
+	/// @brief Returns how many bytes on index value takes up in the element buffer.
+	size_t get_element_size() const { return element_size; };
+
 	/// draw triangles of given mesh part or whole mesh in case part_index is not given (=-1)
 	void draw_primitive(cgv::render::context& ctx, size_t primitive_index, bool skip_opaque = false, bool skip_blended = false, bool use_materials = true);
 	/// override to restrict bind function to first aa as second is used for wireframe rendering

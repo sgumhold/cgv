@@ -109,7 +109,7 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx) {
 
 	assert_init();
 
-	if(!(enable || enable_fxaa))
+	if(!(enable || enable_fxaa) || !view_ptr)
 		return; // return false;
 
 	fbc_draw.disable(ctx);
