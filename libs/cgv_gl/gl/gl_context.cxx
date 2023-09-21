@@ -70,6 +70,15 @@ GLuint map_to_gl(MaterialSide ms)
 	return ms_to_gl[ms];
 }
 
+GLuint map_to_gl(AccessType at) {
+	static GLuint at_to_gl[] = {
+		GL_READ_ONLY,
+		GL_WRITE_ONLY,
+		GL_READ_WRITE
+	};
+	return at_to_gl[at];
+}
+
 GLuint get_gl_id(const void* handle)
 {
 	return (const GLuint&)handle - 1;
@@ -2146,6 +2155,26 @@ bool gl_context::texture_disable(
 	glBindTexture(get_tex_dim(tb.tt), old_binding);
 	if (tex_unit >= 0)
 		glActiveTexture(GL_TEXTURE0);
+	return result;
+}
+
+bool gl_context::texture_bind_as_image(texture_base& tb, int tex_unit, int level, bool bind_array, int layer, AccessType access) const
+{	
+	GLuint tex_id = (GLuint&)tb.handle - 1;
+	if(tex_id == -1) {
+		error("gl_context::texture_enable: texture not created", &tb);
+		return false;
+	}
+
+	if(!GLEW_VERSION_4_2) {
+		error("gl_context::texture_bind_as_image: image textures not supported", &tb);
+		return false;
+	}
+
+	GLuint gl_format = (const GLuint&)tb.internal_format;
+	glBindImageTexture(tex_unit, tex_id, level, bind_array ? GL_TRUE : GL_FALSE, layer, map_to_gl(access), gl_format);
+	
+	bool result = !check_gl_error("gl_context::texture_bind_as_image", &tb);
 	return result;
 }
 
