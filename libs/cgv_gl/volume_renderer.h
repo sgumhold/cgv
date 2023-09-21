@@ -29,6 +29,8 @@ namespace cgv { // @<
 				IQ_256 = 256,
 				IQ_512 = 512,
 				IQ_1024 = 1024,
+				IQ_2048 = 2048,
+				IQ_4096 = 4096
 			} integration_quality;
 			/// whether to use the noise texture to offset ray start positions in order to reduce sampling artifacts
 			bool enable_noise_offset;
@@ -48,15 +50,9 @@ namespace cgv { // @<
 				CM_AVERAGE = 1,
 				CM_BLEND = 2 // using transfer function
 			} compositing_mode;
-			/// whether to march rays front-to-back from camera into scene (default setting) or from back of volume towards the camera
-			bool front_to_back;
-
-			/// whether to enable the scale adjustment
-			bool enable_scale_adjustment;
-			/// the coefficient used to adjust for volume scaling
-			float size_scale;
-			/// opacity scaling parameter
-			float opacity_scale;
+			
+			/// the coefficient used to adjust sample opacity based on volume scaling (useful range between 50 and 500)
+			float scale_adjustment_factor;
 			
 			/// whether to enable lighting
 			bool enable_lighting;
@@ -74,6 +70,8 @@ namespace cgv { // @<
 			float specular_strength;
 			/// material roughness (inversely proportional to specular shininess)
 			float roughness;
+			/// material specular color mix factor (0 = color from transfer function, 1 = pure white)
+			float specular_color_mix;
 
 			/// whether to enable modulating the volume opacity by the gradient magnitude
 			bool enable_gradient_modulation;

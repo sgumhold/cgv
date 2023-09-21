@@ -82,7 +82,7 @@ public:
 		case Mode::kOpen: configuration = "open=true"; break;
 		case Mode::kSave: configuration = "save=true"; break;
 		case Mode::kOpenAndSave: configuration = "open=true;save=true"; break;
-		default: "open=false;save=false";
+		default: "open=false;save=false"; break;
 		}
 
 		std::string all_files_filter = allow_all_files ? "All Files (*.*):*.*" : "";

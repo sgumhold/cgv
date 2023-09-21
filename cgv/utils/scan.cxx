@@ -706,15 +706,30 @@ std::string trim(const std::string& str, const std::string& chars)
 	return ltrim(rtrim(str, chars), chars);
 }
 
-std::string join(const std::vector<std::string>& strs, const std::string& sep, bool trailing_sep)
+std::string join(const std::vector<std::string>::const_iterator first, const std::vector<std::string>::const_iterator last, const std::string& sep, bool trailing_sep)
 {
+	if(last < first)
+		return "";
+
 	std::string res = "";
-	for(size_t i = 0; i < strs.size(); ++i) {
-		res += strs[i];
-		if(i < strs.size() - 1 || trailing_sep)
+
+	for(auto curr = first; curr != last; ++curr) {
+		res += *curr;
+		if(last - curr > 1 || trailing_sep)
 			res += sep;
 	}
 	return res;
+}
+
+std::string join(const std::vector<std::string>& strs, const std::string& sep, bool trailing_sep)
+{
+	return join(strs.begin(), strs.end(), sep, trailing_sep);
+}
+
+std::string join(const std::vector<cgv::utils::token>::const_iterator first, const std::vector<cgv::utils::token>::const_iterator last, const std::string& sep, bool trailing_sep)
+{
+	std::vector<std::string> strs = to_strings(first, last);
+	return join(strs.begin(), strs.end(), sep, trailing_sep);
 }
 
 unsigned int levenshtein_distance(const std::string& s1, const std::string& s2)

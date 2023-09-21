@@ -31,6 +31,10 @@ public:
 		bool opacity_value_type_float = true;
 		bool apply_gamma = false;
 	};
+	static const identifier_config& default_identifier_config() {
+		static const identifier_config default_ic;
+		return default_ic;
+	}
 
 	// data structure of loaded color maps result
 	typedef std::vector<std::pair<std::string, cgv::render::color_map>> result;
@@ -123,36 +127,36 @@ private:
 	}
 
 public:
-	static void read_from_xml(const tinyxml2::XMLElement& elem, result& entries, const identifier_config& config = identifier_config()) {
+	static bool read_from_xml(const tinyxml2::XMLElement& elem, result& entries, const identifier_config& config = default_identifier_config()) {
 
 		entries.clear();
 		extract_color_maps(elem, entries, config);
+
+		return !entries.empty();
 	}
 
-	static void read_from_xml(const tinyxml2::XMLDocument& doc, result& entries, const identifier_config& config = identifier_config()) {
+	static bool read_from_xml(const tinyxml2::XMLDocument& doc, result& entries, const identifier_config& config = default_identifier_config()) {
 
 		if(const tinyxml2::XMLElement* elem = doc.RootElement())
-			read_from_xml(*elem, entries, config);
-	}
-
-	static bool read_from_xml_string(const std::string& xml, result& entries, const identifier_config& config = identifier_config()) {
-		
-		tinyxml2::XMLDocument doc;
-		if(doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS) {
-			read_from_xml(doc, entries, config);
-			return true;
-		}
+			return read_from_xml(*elem, entries, config);
 
 		return false;
 	}
 
-	static bool read_from_xml_file(const std::string& file_name, result& entries, const identifier_config& config = identifier_config()) {
+	static bool read_from_xml_string(const std::string& xml, result& entries, const identifier_config& config = default_identifier_config()) {
 		
 		tinyxml2::XMLDocument doc;
-		if(doc.LoadFile(file_name.c_str()) == tinyxml2::XML_SUCCESS) {
-			read_from_xml(doc, entries, config);
-			return true;
-		}
+		if(doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS)
+			return read_from_xml(doc, entries, config);
+
+		return false;
+	}
+
+	static bool read_from_xml_file(const std::string& file_name, result& entries, const identifier_config& config = default_identifier_config()) {
+		
+		tinyxml2::XMLDocument doc;
+		if(doc.LoadFile(file_name.c_str()) == tinyxml2::XML_SUCCESS)
+			return read_from_xml(doc, entries, config);
 
 		return false;
 	}

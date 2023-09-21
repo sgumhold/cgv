@@ -100,41 +100,45 @@ bool navigator::handle_event(cgv::gui::event& e) {
 		if(get_context()) {
 			cgv::render::context& ctx = *get_context();
 
-			ivec2 mpos(static_cast<int>(me.get_x()), static_cast<int>(me.get_y()));
-			
-			mpos = get_local_mouse_pos(mpos);
-			vec2 window_coord = vec2(mpos) * vec2(2.0f) / get_overlay_size() - vec2(1.0f);
+			if(ma == cgv::gui::MA_LEAVE) {
+				hit_axis = 0;
+			} else {
+				ivec2 mpos(static_cast<int>(me.get_x()), static_cast<int>(me.get_y()));
 
-			vec3 origin = vec3(window_coord, navigator_eye_pos.z());
-			vec3 direction = vec3(0.0f, 0.0f, -1.0f);
+				mpos = get_local_mouse_pos(mpos);
+				vec2 window_coord = vec2(mpos) * vec2(2.0f) / get_overlay_size() - vec2(1.0f);
 
-			if(use_perspective) {
-				mat4 MVP = get_projection_matrix() * get_view_matrix(ctx);
+				vec3 origin = vec3(window_coord, navigator_eye_pos.z());
+				vec3 direction = vec3(0.0f, 0.0f, -1.0f);
 
-				vec4 world_coord(window_coord.x(), window_coord.y(), 1.0f, 1.0f);
-				world_coord = inv(MVP) * world_coord;
-				world_coord /= world_coord.w();
+				if(use_perspective) {
+					mat4 MVP = get_projection_matrix() * get_view_matrix(ctx);
 
-				vec3 origin = navigator_eye_pos;
-				vec3 direction = normalize(vec3(world_coord) - origin);
+					vec4 world_coord(window_coord.x(), window_coord.y(), 1.0f, 1.0f);
+					world_coord = inv(MVP) * world_coord;
+					world_coord /= world_coord.w();
+
+					vec3 origin = navigator_eye_pos;
+					vec3 direction = normalize(vec3(world_coord) - origin);
+				}
+
+				mat4 IM = inv(get_model_matrix(ctx));
+
+				origin = vec3(IM * vec4(origin, 1.0f));
+				direction = vec3(IM * vec4(direction, 0.0f));
+
+				float t = std::numeric_limits<float>::max();
+				if(intersect_box(origin, direction, t)) {
+					vec3 hit_pos = origin + t * direction;
+
+					unsigned mi = cgv::math::max_index(cgv::math::abs(hit_pos));
+
+					hit_axis = static_cast<int>(mi) + 1;
+					if(hit_pos[mi] < 0.0f)
+						hit_axis = -hit_axis;
+				}
 			}
-			
-			mat4 IM = inv(get_model_matrix(ctx));
-
-			origin = vec3(IM * vec4(origin, 1.0f));
-			direction = vec3(IM * vec4(direction, 0.0f));
-
-			float t = std::numeric_limits<float>::max();
-			if(intersect_box(origin, direction, t)) {
-				vec3 hit_pos = origin + t * direction;
-
-				unsigned mi = cgv::math::max_index(cgv::math::abs(hit_pos));
-				
-				hit_axis = static_cast<int>(mi) + 1;
-				if(hit_pos[mi] < 0.0f)
-					hit_axis = -hit_axis;
-			}
-			
+		
 			if(last_hit_axis != hit_axis)
 				post_redraw();
 		}

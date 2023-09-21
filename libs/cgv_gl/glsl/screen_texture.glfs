@@ -3,6 +3,10 @@
 uniform sampler2D color_tex;
 uniform sampler2D depth_tex;
 
+uniform vec3 gamma3 = vec3(2.2);
+uniform bool apply_gamma = false;
+uniform bool alpha_is_transparency = false;
+
 in vec2 texcoord_fs;
 
 out vec4 frag_color;
@@ -10,5 +14,10 @@ out vec4 frag_color;
 void main()
 {
 	frag_color = texture(color_tex, texcoord_fs);
+	if(apply_gamma)
+		frag_color.rgb = pow(frag_color.rgb, gamma3);
+	if(alpha_is_transparency)
+		frag_color.a = 1.0 - frag_color.a;
+	
 	gl_FragDepth = texture(depth_tex, texcoord_fs).r;
 }
