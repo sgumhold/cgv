@@ -232,6 +232,13 @@ enum CompareFunction
 	CF_NEVER
 };
 
+/// different access types
+enum AccessType {
+	AT_READ_ONLY,
+	AT_WRITE_ONLY,
+	AT_READ_WRITE
+};
+
 /// different text alignments
 enum TextAlignment {
 	TA_NONE = 0,						   ///< no alignment
@@ -733,6 +740,7 @@ protected:
 	virtual bool texture_set_state			(const texture_base& tb) const = 0;
 	virtual bool texture_enable				(texture_base& tb, int tex_unit, unsigned int nr_dims) const = 0;
 	virtual bool texture_disable			(texture_base& tb, int tex_unit, unsigned int nr_dims) const = 0;
+	virtual bool texture_bind_as_image		(texture_base& tb, int tex_unit, int level, bool bind_array, int layer, AccessType access) const = 0;
 
 	virtual bool render_buffer_create       (render_buffer_base& rc, cgv::data::component_format& cf, int& _width, int& _height) const = 0;
 	virtual bool render_buffer_destruct     (render_buffer_base& rc) const = 0;

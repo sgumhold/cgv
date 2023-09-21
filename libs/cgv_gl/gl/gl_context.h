@@ -69,6 +69,7 @@ protected:
 	bool texture_set_state(const texture_base& tb) const;
 	bool texture_enable(texture_base& tb, int tex_unit, unsigned int nr_dims) const;
 	bool texture_disable(texture_base& tb, int tex_unit, unsigned int nr_dims) const;
+	bool texture_bind_as_image(texture_base& tb, int tex_unit, int level, bool bind_array, int layer, AccessType access) const;
 
 	bool render_buffer_create(render_buffer_base& rc, cgv::data::component_format& cf, int& _width, int& _height) const;
 	bool render_buffer_destruct(render_buffer_base& rc) const;

@@ -70,7 +70,7 @@ bool mipmap::execute(cgv::render::context& ctx, cgv::render::texture& source_tex
 	GLuint gl_format = (const GLuint&)source_texture.internal_format;
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(texture_target, texture_handle);
+	source_texture.enable(ctx, 0);
 
 	mipmap_prog->enable(ctx);
 
@@ -82,7 +82,7 @@ bool mipmap::execute(cgv::render::context& ctx, cgv::render::texture& source_tex
 	uvec3 input_size = size;
 
 	for(unsigned level = 0; level < num_levels - 1; ++level) {
-		glBindImageTexture(1, texture_handle, level + 1, GL_TRUE, 0, GL_WRITE_ONLY, gl_format);
+		source_texture.bind_as_image(ctx, 1, level + 1);
 		
 		uvec3 output_size = size;
 		float divisor = static_cast<float>(pow(2, level + 1));
@@ -113,7 +113,7 @@ bool mipmap::execute(cgv::render::context& ctx, cgv::render::texture& source_tex
 
 	mipmap_prog->disable(ctx);
 
-	glBindTexture(texture_target, 0);
+	source_texture.disable(ctx);
 }
 
 } // namespace gpgpu
