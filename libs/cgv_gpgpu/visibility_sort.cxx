@@ -23,7 +23,7 @@ void visibility_sort::destruct(const cgv::render::context& ctx) {
 bool visibility_sort::load_shader_programs(cgv::render::context& ctx) {
 
 	bool res = true;
-	std::string where = "radix_sort_4way::load_shader_programs()";
+	std::string where = "cgv::gpgpu::visibility_sort::load_shader_programs()";
 
 	cgv::render::shader_define_map key_defines;
 	cgv::render::shader_code::set_define(key_defines, "ORDER", sort_order, SO_ASCENDING);
@@ -124,7 +124,7 @@ void visibility_sort::execute(cgv::render::context& ctx, const cgv::render::vert
 	key_prog.enable(ctx);
 	key_prog.set_uniform(ctx, "eye_pos", eye_pos);
 	key_prog.set_uniform(ctx, "view_dir", view_dir);
-	glDispatchCompute(num_scan_groups, 1, 1);
+	dispatch_compute1d(num_scan_groups);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	key_prog.disable(ctx);
 
@@ -139,17 +139,17 @@ void visibility_sort::execute(cgv::render::context& ctx, const cgv::render::vert
 		values_out_buffer_ptr->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 3);
 
 		scan_local_prog.enable(ctx);
-		glDispatchCompute(num_scan_groups, 1, 1);
+		dispatch_compute1d(num_scan_groups);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		scan_local_prog.disable(ctx);
 
 		scan_global_prog.enable(ctx);
-		glDispatchCompute(4, 1, 1);
+		dispatch_compute1d(4);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		scan_global_prog.disable(ctx);
 
 		scatter_prog.enable(ctx);
-		glDispatchCompute(num_scan_groups, 1, 1);
+		dispatch_compute1d(num_scan_groups);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		scatter_prog.disable(ctx);
 

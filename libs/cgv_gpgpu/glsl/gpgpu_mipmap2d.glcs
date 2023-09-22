@@ -1,0 +1,41 @@
+#version 430
+
+layout(local_size_x = 4, local_size_y = 4) in;
+
+layout(binding = 0) uniform sampler2D input_tex;
+layout(binding = 1) uniform writeonly image2D output_tex;
+
+uniform uint level;
+uniform uvec2 output_size;
+
+vec4 sample_texture(in vec2 coords) {
+	
+	return textureLod(input_tex, coords, level);
+}
+
+void main() {
+	
+	// the texel coordinates of this thread
+    ivec2 idx = ivec2(gl_GlobalInvocationID);
+    
+	// this produces correct results even for odd sized input textures
+	if(idx.x < output_size.x && idx.y < output_size.y) {
+		vec2 output_size_float = vec2(output_size);
+		vec2 double_size = 2.0 * output_size_float;
+
+		vec2 fidx = idx / output_size_float;
+		vec2 fstep = 1.0 / double_size;
+		fidx += 0.5 * fstep;
+
+		vec4 result = vec4(0.0);
+		// use texture sampler filtering to average samples
+		result += sample_texture(fidx + vec2(0.0, 0.0));
+		result += sample_texture(fidx + vec2(fstep.x, 0.0));
+		result += sample_texture(fidx + vec2(0.0, fstep.y));
+		result += sample_texture(fidx + vec2(fstep.x, fstep.y));
+		
+		result /= 4.0;
+
+		imageStore(output_tex, idx, result);
+	}
+}
