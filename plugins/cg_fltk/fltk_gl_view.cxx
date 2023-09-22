@@ -541,8 +541,6 @@ void fltk_gl_view::draw()
 		else
 			fltk::remove_idle(idle_callback, this);
 	}
-
-	redraw_user_data = nullptr;
 }
 
 /// put the event focus on the given child 
@@ -745,11 +743,8 @@ void fltk_gl_view::clear_current() const
 }
 
 /// the context will be redrawn when the system is idle again
-void fltk_gl_view::post_redraw(void* user_data)
+void fltk_gl_view::post_redraw()
 {
-	if(user_data != nullptr)
-		redraw_user_data = user_data;
-
 	if(in_render_process())
 		// cannot directly issue a redraw during an active render process; instead request a redraw for next idle period
 		redraw_request = true;

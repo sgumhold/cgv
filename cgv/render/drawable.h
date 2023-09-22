@@ -40,8 +40,6 @@ public:
 	bool get_world_location(int x, int y, const cgv::render::view& V, cgv::math::fvec<double, 3>& world_location, double* window_z_ptr = 0) const;
 	/// posts a redraw event to the current context if one is available
 	void post_redraw();
-	/// posts a redraw event containing user data to the current context if one is available
-	void post_redraw(void* user_data);
 	/// forces a redraw right now. This cannot be called from init, init_frame, draw, finish_draw, finish_frame and clear
 	void force_redraw();
 

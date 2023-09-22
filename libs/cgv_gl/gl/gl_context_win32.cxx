@@ -74,7 +74,7 @@ struct win32_gl_context : public gl_context
 	/// set a user defined background color
 	void set_bg_color(float r, float g, float b, float a) {}
 	/// the context will be redrawn when the system is idle again
-	void post_redraw(void* user_data = nullptr) {}
+	void post_redraw() {}
 	/// the context will be redrawn right now. This method cannot be called inside the following methods of a drawable: init, init_frame, draw, finish_draw
 	void force_redraw() {}
 	void attach_depth_buffer(bool) {}
@@ -271,8 +271,8 @@ bool win32_gl_context::set_pixel_format()
 	int  iPixelFormat; 
 	 
 	// get the best available match of pixel format for the device context  
-	iPixelFormat = ChoosePixelFormat(hdc, &pfd); 
-	 
+	iPixelFormat = ChoosePixelFormat(hdc, &pfd);
+
 	// make that the pixel format of the device context 
 	return SetPixelFormat(hdc, iPixelFormat, &pfd) == TRUE;
 }
