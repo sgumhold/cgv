@@ -334,8 +334,8 @@ $(document).ready(function(){initNavTree('gl__context__win32_8cxx_source.html','
 <div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    <span class="keywordtype">int</span>  iPixelFormat; </div>
 <div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;     </div>
 <div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    <span class="comment">// get the best available match of pixel format for the device context  </span></div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    iPixelFormat = ChoosePixelFormat(hdc, &amp;pfd); </div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;     </div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    iPixelFormat = ChoosePixelFormat(hdc, &amp;pfd);</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
 <div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    <span class="comment">// make that the pixel format of the device context </span></div>
 <div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    <span class="keywordflow">return</span> SetPixelFormat(hdc, iPixelFormat, &amp;pfd) == TRUE;</div>
 <div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;}</div>
