@@ -1431,9 +1431,10 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>convenience function to find the view control in the current hierarchy </p>
+<p>posts a redraw event containing user data to the current context if one is available</p>
 <p>this only works if your class inherits from the <a class="el" href="classcgv_1_1base_1_1node.html" title="The node class keeps a pointer to its parent.">cgv::base::node</a> class. </p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00048">48</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00056">56</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="mesh__drawable_8cxx_source.html#l00072">cgv::render::gl::mesh_drawable::center_view()</a>.</p>
 
@@ -1690,9 +1691,9 @@ template&lt;typename T &gt; </div>
 <p>use given view together with depth buffer of context in order to compute the world location of the point at mouse pointer location (x,y) </p>
 <p>returns true if a world location could be computed which is the case when the context pointer of the drawable has been set and when the mouse location points inside a valid view panel. </p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00058">58</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00066">66</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="drawable_8cxx_source.html#l00037">cgv::render::drawable::get_context()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="context_8h_source.html#l01232">cgv::render::context::get_model_point()</a>, <a class="el" href="view_8cxx_source.html#l00277">cgv::render::view::get_modelview_projection_window_matrices()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a473170ee5d7651a063695574f4b9f91f">cgv::render::context::get_width()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a81ec9afc26401ea90bc20990fcd6d54d">cgv::render::context::get_window_z()</a>, and <a class="el" href="fmat_8h_source.html#l00072">cgv::math::fmat&lt; T, N, M &gt;::ncols()</a>.</p>
+<p class="reference">References <a class="el" href="drawable_8cxx_source.html#l00037">cgv::render::drawable::get_context()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="context_8h_source.html#l01241">cgv::render::context::get_model_point()</a>, <a class="el" href="view_8cxx_source.html#l00277">cgv::render::view::get_modelview_projection_window_matrices()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a473170ee5d7651a063695574f4b9f91f">cgv::render::context::get_width()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a81ec9afc26401ea90bc20990fcd6d54d">cgv::render::context::get_window_z()</a>, and <a class="el" href="fmat_8h_source.html#l00072">cgv::math::fmat&lt; T, N, M &gt;::ncols()</a>.</p>
 
 </div>
 </div>
@@ -2156,7 +2157,7 @@ template&lt;class T &gt; </div>
 <p>callback to announce resizing of the output window </p>
 <p>callback to anounce resizing of the output window </p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00103">103</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00111">111</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 </div>
 </div>

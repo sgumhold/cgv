@@ -470,10 +470,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a81315c47d777439da016e988229bde3a">enable</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int tex_unit=-1)</td></tr>
 <tr class="memdesc:a81315c47d777439da016e988229bde3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable this texture in the given texture unit, -1 corresponds to the current unit. <br /></td></tr>
 <tr class="separator:a81315c47d777439da016e988229bde3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b6a0d57a4c4703b97ac8cd632973b9f"><td class="memItemLeft" align="right" valign="top"><a id="a7b6a0d57a4c4703b97ac8cd632973b9f"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a7b6a0d57a4c4703b97ac8cd632973b9f">disable</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
-<tr class="memdesc:a7b6a0d57a4c4703b97ac8cd632973b9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">disable texture and restore state before last enable call <br /></td></tr>
+<tr class="memitem:a7b6a0d57a4c4703b97ac8cd632973b9f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a7b6a0d57a4c4703b97ac8cd632973b9f">disable</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="memdesc:a7b6a0d57a4c4703b97ac8cd632973b9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">disable texture and restore state from before last enable call  <a href="classcgv_1_1render_1_1texture.html#a7b6a0d57a4c4703b97ac8cd632973b9f">More...</a><br /></td></tr>
 <tr class="separator:a7b6a0d57a4c4703b97ac8cd632973b9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeffbee453aafa31808bffad5fb53b82c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#aeffbee453aafa31808bffad5fb53b82c">bind_as_image</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int tex_unit, int level=0, bool bind_array=false, int layer=0, <a class="el" href="namespacecgv_1_1render.html#a32ea24c43b283680338ab99e53de6530">AccessType</a> access=AT_WRITE_ONLY)</td></tr>
+<tr class="memdesc:aeffbee453aafa31808bffad5fb53b82c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds this texture as an image texture to the given texture unit.  <a href="classcgv_1_1render_1_1texture.html#aeffbee453aafa31808bffad5fb53b82c">More...</a><br /></td></tr>
+<tr class="separator:aeffbee453aafa31808bffad5fb53b82c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -551,6 +553,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#ab6a31e3c5d142c7edc7da3e939a80ccd">write_to_file</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;file_name, unsigned int z_or_cube_side=-1, float depth_map_gamma=1.0f, const std::string &amp;options=&quot;&quot;) const</td></tr>
 <tr class="memdesc:ab6a31e3c5d142c7edc7da3e939a80ccd"><td class="mdescLeft">&#160;</td><td class="mdescRight">write the content of the texture to a file. This method needs support for frame buffer objects. <br /></td></tr>
 <tr class="separator:ab6a31e3c5d142c7edc7da3e939a80ccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb2813451d0b8dc466e7443a2bc4d332"><td class="memItemLeft" align="right" valign="top"><a id="adb2813451d0b8dc466e7443a2bc4d332"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#adb2813451d0b8dc466e7443a2bc4d332">create_mipmaps</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="memdesc:adb2813451d0b8dc466e7443a2bc4d332"><td class="mdescLeft">&#160;</td><td class="mdescRight">create storage for mipmaps without computing the mipmap contents <br /></td></tr>
+<tr class="separator:adb2813451d0b8dc466e7443a2bc4d332"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a008ed211e6b3157cbf20ad3fa6a64093"><td class="memItemLeft" align="right" valign="top"><a id="a008ed211e6b3157cbf20ad3fa6a64093"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1texture.html#a008ed211e6b3157cbf20ad3fa6a64093">generate_mipmaps</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:a008ed211e6b3157cbf20ad3fa6a64093"><td class="mdescLeft">&#160;</td><td class="mdescRight">generate mipmaps automatically, only supported if framebuffer objects are supported by the GPU <br /></td></tr>
@@ -657,6 +663,76 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="aeffbee453aafa31808bffad5fb53b82c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeffbee453aafa31808bffad5fb53b82c">&#9670;&nbsp;</a></span>bind_as_image()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::render::texture::bind_as_image </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>tex_unit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>level</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bind_array</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>layer</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecgv_1_1render.html#a32ea24c43b283680338ab99e53de6530">AccessType</a>&#160;</td>
+          <td class="paramname"><em>access</em> = <code>AT_WRITE_ONLY</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Binds this texture as an image texture to the given texture unit. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>The graphics context. </td></tr>
+    <tr><td class="paramname">tex_unit</td><td>The texture unit the texture is bound to. </td></tr>
+    <tr><td class="paramname">level</td><td>The mipmap level of the texture to bind. </td></tr>
+    <tr><td class="paramname">bind_array</td><td>Only for array textures. If true, the complete texture array is bound and the layer ignored. If false, a single layer as specified by layer is bound. </td></tr>
+    <tr><td class="paramname">layer</td><td>Only for array textures. The array layer to bind. </td></tr>
+    <tr><td class="paramname">access</td><td>The access type: read, write, read and write. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the texture was successfully bound as an image, false otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00764">764</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00201">ensure_state()</a>, and <a class="el" href="context_8h_source.html#l00279">cgv::render::render_component::last_error</a>.</p>
+
+</div>
+</div>
 <a id="ab5967492788c5bc01af2d9bb6a9ff612"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab5967492788c5bc01af2d9bb6a9ff612">&#9670;&nbsp;</a></span>create() <span class="overload">[1/2]</span></h2>
 
@@ -710,9 +786,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>create texture from data view. </p>
 <p>Use dimension and resolution of data view but the component format of the texture. If level is not specified or set to -1 mipmaps are generated. If cube_side is specified, and data view is 2D, create one of the six sides of a cubemap. If num_array_layers is not zero a texture array is created. Set num_array_layers to -1 to automatically choose the layer number based on the data view dimensions and size, e.g. a 2D/3D data view creates a 1D/2D array with layer count equal to height/depth. Set num_array_layers to &gt; 0 to manually specify the layer count. This can be used to create a one layer 1D/2D texture array from a 1D/2D data view. Cubemap arrays are currently not suported. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00559">559</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00568">568</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00726">destruct()</a>, <a class="el" href="texture_8cxx_source.html#l00193">find_best_format()</a>, <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="component__format_8cxx_source.html#l00324">cgv::data::component_format::get_nr_components()</a>, <a class="el" href="data__format_8cxx_source.html#l00203">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="data__format_8cxx_source.html#l00213">cgv::data::data_format::get_resolution()</a>, <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, <a class="el" href="texture_8cxx_source.html#l00614">replace()</a>, <a class="el" href="data__format_8cxx_source.html#l00208">cgv::data::data_format::set_nr_dimensions()</a>, and <a class="el" href="data__format_8cxx_source.html#l00221">cgv::data::data_format::set_resolution()</a>.</p>
+<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00735">destruct()</a>, <a class="el" href="texture_8cxx_source.html#l00193">find_best_format()</a>, <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="component__format_8cxx_source.html#l00324">cgv::data::component_format::get_nr_components()</a>, <a class="el" href="data__format_8cxx_source.html#l00203">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="data__format_8cxx_source.html#l00213">cgv::data::data_format::get_resolution()</a>, <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, <a class="el" href="texture_8cxx_source.html#l00623">replace()</a>, <a class="el" href="data__format_8cxx_source.html#l00208">cgv::data::data_format::set_nr_dimensions()</a>, and <a class="el" href="data__format_8cxx_source.html#l00221">cgv::data::data_format::set_resolution()</a>.</p>
 
 </div>
 </div>
@@ -766,7 +842,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00211">211</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00726">destruct()</a>, <a class="el" href="texture_8cxx_source.html#l00193">find_best_format()</a>, <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, <a class="el" href="data__format_8cxx_source.html#l00310">cgv::data::data_format::set_depth()</a>, <a class="el" href="data__format_8cxx_source.html#l00305">cgv::data::data_format::set_height()</a>, and <a class="el" href="data__format_8cxx_source.html#l00300">cgv::data::data_format::set_width()</a>.</p>
+<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00735">destruct()</a>, <a class="el" href="texture_8cxx_source.html#l00193">find_best_format()</a>, <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, <a class="el" href="data__format_8cxx_source.html#l00310">cgv::data::data_format::set_depth()</a>, <a class="el" href="data__format_8cxx_source.html#l00305">cgv::data::data_format::set_height()</a>, and <a class="el" href="data__format_8cxx_source.html#l00300">cgv::data::data_format::set_width()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00259">create_from_image()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00104">cgv::render::a_buffer::init_frame()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, and <a class="el" href="volume__renderer_8cxx_source.html#l00072">cgv::render::volume_renderer::init_noise_texture()</a>.</p>
 
@@ -825,9 +901,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>create texture from the currently set read buffer, where x, y, width and height define the to be used rectangle of the read buffer. </p>
 <p>The dimension and resolution of the texture format are updated automatically. If level is not specified or set to -1 mipmaps are generated. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00531">531</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00540">540</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00726">destruct()</a>, <a class="el" href="texture_8cxx_source.html#l00193">find_best_format()</a>, <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, <a class="el" href="texture_8cxx_source.html#l00660">replace_from_buffer()</a>, <a class="el" href="data__format_8cxx_source.html#l00305">cgv::data::data_format::set_height()</a>, <a class="el" href="data__format_8cxx_source.html#l00208">cgv::data::data_format::set_nr_dimensions()</a>, and <a class="el" href="data__format_8cxx_source.html#l00300">cgv::data::data_format::set_width()</a>.</p>
+<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00735">destruct()</a>, <a class="el" href="texture_8cxx_source.html#l00193">find_best_format()</a>, <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, <a class="el" href="texture_8cxx_source.html#l00669">replace_from_buffer()</a>, <a class="el" href="data__format_8cxx_source.html#l00305">cgv::data::data_format::set_height()</a>, <a class="el" href="data__format_8cxx_source.html#l00208">cgv::data::data_format::set_nr_dimensions()</a>, and <a class="el" href="data__format_8cxx_source.html#l00300">cgv::data::data_format::set_width()</a>.</p>
 
 </div>
 </div>
@@ -892,7 +968,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00259">259</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00211">create()</a>, <a class="el" href="texture_8cxx_source.html#l00726">destruct()</a>, <a class="el" href="component__format_8cxx_source.html#l00318">cgv::data::component_format::empty()</a>, <a class="el" href="component__format_8cxx_source.html#l00396">cgv::data::component_format::get_entry_size()</a>, <a class="el" href="data__format_8cxx_source.html#l00267">cgv::data::data_format::get_height()</a>, <a class="el" href="image__reader_8cxx_source.html#l00112">cgv::media::image::image_reader::get_last_error()</a>, <a class="el" href="data__view_8h_source.html#l00063">cgv::data::data_view_impl&lt; D, P &gt;::get_ptr()</a>, <a class="el" href="data__format_8cxx_source.html#l00262">cgv::data::data_format::get_width()</a>, <a class="el" href="context_8h_source.html#l00272">cgv::render::render_component::last_error</a>, <a class="el" href="image__reader_8cxx_source.html#l00120">cgv::media::image::image_reader::read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00211">cgv::media::image::image_reader::read_palette()</a>, <a class="el" href="data__format_8cxx_source.html#l00305">cgv::data::data_format::set_height()</a>, and <a class="el" href="data__format_8cxx_source.html#l00300">cgv::data::data_format::set_width()</a>.</p>
+<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00211">create()</a>, <a class="el" href="texture_8cxx_source.html#l00735">destruct()</a>, <a class="el" href="component__format_8cxx_source.html#l00318">cgv::data::component_format::empty()</a>, <a class="el" href="component__format_8cxx_source.html#l00396">cgv::data::component_format::get_entry_size()</a>, <a class="el" href="data__format_8cxx_source.html#l00267">cgv::data::data_format::get_height()</a>, <a class="el" href="image__reader_8cxx_source.html#l00112">cgv::media::image::image_reader::get_last_error()</a>, <a class="el" href="data__view_8h_source.html#l00063">cgv::data::data_view_impl&lt; D, P &gt;::get_ptr()</a>, <a class="el" href="data__format_8cxx_source.html#l00262">cgv::data::data_format::get_width()</a>, <a class="el" href="context_8h_source.html#l00279">cgv::render::render_component::last_error</a>, <a class="el" href="image__reader_8cxx_source.html#l00120">cgv::media::image::image_reader::read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00211">cgv::media::image::image_reader::read_palette()</a>, <a class="el" href="data__format_8cxx_source.html#l00305">cgv::data::data_format::set_height()</a>, and <a class="el" href="data__format_8cxx_source.html#l00300">cgv::data::data_format::set_width()</a>.</p>
 
 </div>
 </div>
@@ -1005,7 +1081,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00412">412</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00331">create_from_image()</a>, <a class="el" href="texture_8cxx_source.html#l00347">deduce_file_names()</a>, and <a class="el" href="texture_8cxx_source.html#l00726">destruct()</a>.</p>
+<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00331">create_from_image()</a>, <a class="el" href="texture_8cxx_source.html#l00347">deduce_file_names()</a>, and <a class="el" href="texture_8cxx_source.html#l00735">destruct()</a>.</p>
 
 </div>
 </div>
@@ -1051,6 +1127,33 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p class="reference">References <a class="el" href="tokenizer_8cxx_source.html#l00059">cgv::utils::tokenizer::set_sep()</a>, <a class="el" href="tokenizer_8cxx_source.html#l00038">cgv::utils::tokenizer::set_ws()</a>, and <a class="el" href="context_8cxx_source.html#l00924">cgv::render::to_string()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00412">create_from_images()</a>.</p>
+
+</div>
+</div>
+<a id="a7b6a0d57a4c4703b97ac8cd632973b9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b6a0d57a4c4703b97ac8cd632973b9f">&#9670;&nbsp;</a></span>disable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::render::texture::disable </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>disable texture and restore state from before last enable call </p>
+<p>disable texture and restore state before last enable call </p>
+
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00759">759</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00203">cgv::data::data_format::get_nr_dimensions()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00081">cgv::render::gl::gl_transparent_renderer::blend_texture_over_viewport()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00177">cgv::render::a_buffer::disable()</a>, <a class="el" href="cone__renderer_8cxx_source.html#l00156">cgv::render::cone_renderer::disable()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00238">cgv::render::volume_renderer::disable()</a>, and <a class="el" href="gl__depth__peeler_8cxx_source.html#l00252">cgv::render::gl::gl_depth_peeler::end_layer()</a>.</p>
 
 </div>
 </div>
@@ -1220,7 +1323,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00213">cgv::data::data_format::get_resolution()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00259">create_from_image()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00104">cgv::render::a_buffer::init_frame()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00612">cgv::render::gl::load_texture()</a>, <a class="el" href="gl__context_8cxx_source.html#l00868">cgv::render::gl::gl_context::read_frame_buffer()</a>, <a class="el" href="bmp__reader_8cxx_source.html#l00212">cgv::media::image::bmp_reader::read_image()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00113">cgv::render::gl::image_drawable::read_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00133">cgv::render::gl::image_drawable::read_images()</a>, <a class="el" href="data__view_8cxx_source.html#l00336">cgv::data::data_view::reflect_horizontally()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>, <a class="el" href="texture_8cxx_source.html#l00699">replace_from_image()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00675">cgv::render::gl::replace_texture()</a>, <a class="el" href="context_8cxx_source.html#l00885">cgv::render::context::write_frame_buffer_to_image()</a>, <a class="el" href="bmp__writer_8cxx_source.html#l00080">cgv::media::image::bmp_writer::write_image()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">write_to_file()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00259">create_from_image()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00104">cgv::render::a_buffer::init_frame()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00612">cgv::render::gl::load_texture()</a>, <a class="el" href="gl__context_8cxx_source.html#l00877">cgv::render::gl::gl_context::read_frame_buffer()</a>, <a class="el" href="bmp__reader_8cxx_source.html#l00212">cgv::media::image::bmp_reader::read_image()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00113">cgv::render::gl::image_drawable::read_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00133">cgv::render::gl::image_drawable::read_images()</a>, <a class="el" href="data__view_8cxx_source.html#l00336">cgv::data::data_view::reflect_horizontally()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>, <a class="el" href="texture_8cxx_source.html#l00708">replace_from_image()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00675">cgv::render::gl::replace_texture()</a>, <a class="el" href="context_8cxx_source.html#l00885">cgv::render::context::write_frame_buffer_to_image()</a>, <a class="el" href="bmp__writer_8cxx_source.html#l00080">cgv::media::image::bmp_writer::write_image()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">write_to_file()</a>.</p>
 
 </div>
 </div>
@@ -1297,7 +1400,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="reference">References <a class="el" href="component__format_8h_source.html#l00067">cgv::data::component_format::component_positions</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>, <a class="el" href="texture_8cxx_source.html#l00559">create()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00511">cgv::render::gl::find_best_texture_format()</a>, <a class="el" href="component__format_8cxx_source.html#l00474">cgv::data::fmt1_compares_better()</a>, <a class="el" href="component__format_8cxx_source.html#l00330">cgv::data::component_format::get_component_index()</a>, <a class="el" href="component__format_8cxx_source.html#l00341">cgv::data::component_format::get_component_name()</a>, <a class="el" href="component__format_8cxx_source.html#l00396">cgv::data::component_format::get_entry_size()</a>, <a class="el" href="component__format_8cxx_source.html#l00353">cgv::data::component_format::get_standard_component_format()</a>, <a class="el" href="bmp__writer_8cxx_source.html#l00035">cgv::media::image::bmp_writer::is_format_supported()</a>, <a class="el" href="component__format_8cxx_source.html#l00421">cgv::data::component_format::operator==()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, <a class="el" href="bmp__reader_8cxx_source.html#l00174">cgv::media::image::bmp_reader::read_line()</a>, and <a class="el" href="bmp__writer_8cxx_source.html#l00080">cgv::media::image::bmp_writer::write_image()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>, <a class="el" href="texture_8cxx_source.html#l00568">create()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00511">cgv::render::gl::find_best_texture_format()</a>, <a class="el" href="component__format_8cxx_source.html#l00474">cgv::data::fmt1_compares_better()</a>, <a class="el" href="component__format_8cxx_source.html#l00330">cgv::data::component_format::get_component_index()</a>, <a class="el" href="component__format_8cxx_source.html#l00341">cgv::data::component_format::get_component_name()</a>, <a class="el" href="component__format_8cxx_source.html#l00396">cgv::data::component_format::get_entry_size()</a>, <a class="el" href="component__format_8cxx_source.html#l00353">cgv::data::component_format::get_standard_component_format()</a>, <a class="el" href="bmp__writer_8cxx_source.html#l00035">cgv::media::image::bmp_writer::is_format_supported()</a>, <a class="el" href="component__format_8cxx_source.html#l00421">cgv::data::component_format::operator==()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, <a class="el" href="bmp__reader_8cxx_source.html#l00174">cgv::media::image::bmp_reader::read_line()</a>, and <a class="el" href="bmp__writer_8cxx_source.html#l00080">cgv::media::image::bmp_writer::write_image()</a>.</p>
 
 </div>
 </div>
@@ -1331,7 +1434,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="reference">References <a class="el" href="data__format_8h_source.html#l00030">cgv::data::data_format::dimensions</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="frame__buffer_8cxx_source.html#l00088">cgv::render::frame_buffer::attach()</a>, <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>, <a class="el" href="data__view_8cxx_source.html#l00350">cgv::data::data_view::compose()</a>, <a class="el" href="texture_8cxx_source.html#l00559">create()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00716">cgv::render::gl::create_texture()</a>, <a class="el" href="data__view_8cxx_source.html#l00040">cgv::data::data_view_base::data_view_base()</a>, <a class="el" href="texture_8cxx_source.html#l00750">disable()</a>, <a class="el" href="texture_8cxx_source.html#l00739">enable()</a>, <a class="el" href="texture_8cxx_source.html#l00511">generate_mipmaps()</a>, <a class="el" href="data__format_8cxx_source.html#l00293">cgv::data::data_format::get_alignment()</a>, <a class="el" href="data__format_8cxx_source.html#l00285">cgv::data::data_format::get_entry_alignment()</a>, <a class="el" href="data__format_8cxx_source.html#l00229">cgv::data::data_format::get_layout_dimension()</a>, <a class="el" href="data__format_8cxx_source.html#l00246">cgv::data::data_format::get_nr_entries()</a>, <a class="el" href="data__format_8cxx_source.html#l00277">cgv::data::data_format::get_nr_time_steps()</a>, <a class="el" href="data__format_8cxx_source.html#l00213">cgv::data::data_format::get_resolution()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00612">cgv::render::gl::load_texture()</a>, <a class="el" href="data__format_8cxx_source.html#l00352">cgv::data::data_format::operator==()</a>, <a class="el" href="texture_8cxx_source.html#l00614">replace()</a>, <a class="el" href="texture_8cxx_source.html#l00660">replace_from_buffer()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00675">cgv::render::gl::replace_texture()</a>, <a class="el" href="data__format_8cxx_source.html#l00330">cgv::data::data_format::set_alignment()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00173">cgv::render::volume_renderer::set_depth_texture()</a>, <a class="el" href="data__format_8cxx_source.html#l00322">cgv::data::data_format::set_entry_alignment()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00166">cgv::render::volume_renderer::set_gradient_texture()</a>, <a class="el" href="data__format_8cxx_source.html#l00315">cgv::data::data_format::set_nr_time_steps()</a>, <a class="el" href="data__format_8cxx_source.html#l00221">cgv::data::data_format::set_resolution()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00159">cgv::render::volume_renderer::set_transfer_function_texture()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00152">cgv::render::volume_renderer::set_volume_texture()</a>, and <a class="el" href="volume__renderer_8cxx_source.html#l00102">cgv::render::volume_renderer::update_defines()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="frame__buffer_8cxx_source.html#l00088">cgv::render::frame_buffer::attach()</a>, <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>, <a class="el" href="data__view_8cxx_source.html#l00350">cgv::data::data_view::compose()</a>, <a class="el" href="texture_8cxx_source.html#l00568">create()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00716">cgv::render::gl::create_texture()</a>, <a class="el" href="data__view_8cxx_source.html#l00040">cgv::data::data_view_base::data_view_base()</a>, <a class="el" href="texture_8cxx_source.html#l00759">disable()</a>, <a class="el" href="texture_8cxx_source.html#l00748">enable()</a>, <a class="el" href="texture_8cxx_source.html#l00520">generate_mipmaps()</a>, <a class="el" href="data__format_8cxx_source.html#l00293">cgv::data::data_format::get_alignment()</a>, <a class="el" href="data__format_8cxx_source.html#l00285">cgv::data::data_format::get_entry_alignment()</a>, <a class="el" href="data__format_8cxx_source.html#l00229">cgv::data::data_format::get_layout_dimension()</a>, <a class="el" href="data__format_8cxx_source.html#l00246">cgv::data::data_format::get_nr_entries()</a>, <a class="el" href="data__format_8cxx_source.html#l00277">cgv::data::data_format::get_nr_time_steps()</a>, <a class="el" href="data__format_8cxx_source.html#l00213">cgv::data::data_format::get_resolution()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00612">cgv::render::gl::load_texture()</a>, <a class="el" href="data__format_8cxx_source.html#l00352">cgv::data::data_format::operator==()</a>, <a class="el" href="texture_8cxx_source.html#l00623">replace()</a>, <a class="el" href="texture_8cxx_source.html#l00669">replace_from_buffer()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00675">cgv::render::gl::replace_texture()</a>, <a class="el" href="data__format_8cxx_source.html#l00330">cgv::data::data_format::set_alignment()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00173">cgv::render::volume_renderer::set_depth_texture()</a>, <a class="el" href="data__format_8cxx_source.html#l00322">cgv::data::data_format::set_entry_alignment()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00166">cgv::render::volume_renderer::set_gradient_texture()</a>, <a class="el" href="data__format_8cxx_source.html#l00315">cgv::data::data_format::set_nr_time_steps()</a>, <a class="el" href="data__format_8cxx_source.html#l00221">cgv::data::data_format::set_resolution()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00159">cgv::render::volume_renderer::set_transfer_function_texture()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00152">cgv::render::volume_renderer::set_volume_texture()</a>, and <a class="el" href="volume__renderer_8cxx_source.html#l00102">cgv::render::volume_renderer::update_defines()</a>.</p>
 
 </div>
 </div>
@@ -1400,7 +1503,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="reference">References <a class="el" href="data__format_8h_source.html#l00030">cgv::data::data_format::dimensions</a>, and <a class="el" href="data__format_8cxx_source.html#l00203">cgv::data::data_format::get_nr_dimensions()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00559">create()</a>, <a class="el" href="data__format_8cxx_source.html#l00272">cgv::data::data_format::get_depth()</a>, <a class="el" href="data__format_8cxx_source.html#l00267">cgv::data::data_format::get_height()</a>, <a class="el" href="data__format_8cxx_source.html#l00246">cgv::data::data_format::get_nr_entries()</a>, <a class="el" href="data__format_8cxx_source.html#l00277">cgv::data::data_format::get_nr_time_steps()</a>, <a class="el" href="data__format_8cxx_source.html#l00262">cgv::data::data_format::get_width()</a>, and <a class="el" href="data__format_8cxx_source.html#l00352">cgv::data::data_format::operator==()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00568">create()</a>, <a class="el" href="data__format_8cxx_source.html#l00272">cgv::data::data_format::get_depth()</a>, <a class="el" href="data__format_8cxx_source.html#l00267">cgv::data::data_format::get_height()</a>, <a class="el" href="data__format_8cxx_source.html#l00246">cgv::data::data_format::get_nr_entries()</a>, <a class="el" href="data__format_8cxx_source.html#l00277">cgv::data::data_format::get_nr_time_steps()</a>, <a class="el" href="data__format_8cxx_source.html#l00262">cgv::data::data_format::get_width()</a>, and <a class="el" href="data__format_8cxx_source.html#l00352">cgv::data::data_format::operator==()</a>.</p>
 
 </div>
 </div>
@@ -1434,7 +1537,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00213">cgv::data::data_format::get_resolution()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00259">create_from_image()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00104">cgv::render::a_buffer::init_frame()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00612">cgv::render::gl::load_texture()</a>, <a class="el" href="gl__context_8cxx_source.html#l00868">cgv::render::gl::gl_context::read_frame_buffer()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00113">cgv::render::gl::image_drawable::read_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00133">cgv::render::gl::image_drawable::read_images()</a>, <a class="el" href="bmp__reader_8cxx_source.html#l00174">cgv::media::image::bmp_reader::read_line()</a>, <a class="el" href="image__reader_8cxx_source.html#l00237">cgv::media::image::image_reader::read_line()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>, <a class="el" href="texture_8cxx_source.html#l00699">replace_from_image()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00675">cgv::render::gl::replace_texture()</a>, <a class="el" href="context_8cxx_source.html#l00885">cgv::render::context::write_frame_buffer_to_image()</a>, <a class="el" href="bmp__writer_8cxx_source.html#l00080">cgv::media::image::bmp_writer::write_image()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">write_to_file()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00408">cgv::data::data_view::combine_components()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00259">create_from_image()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00104">cgv::render::a_buffer::init_frame()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00612">cgv::render::gl::load_texture()</a>, <a class="el" href="gl__context_8cxx_source.html#l00877">cgv::render::gl::gl_context::read_frame_buffer()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00113">cgv::render::gl::image_drawable::read_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00133">cgv::render::gl::image_drawable::read_images()</a>, <a class="el" href="bmp__reader_8cxx_source.html#l00174">cgv::media::image::bmp_reader::read_line()</a>, <a class="el" href="image__reader_8cxx_source.html#l00237">cgv::media::image::image_reader::read_line()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>, <a class="el" href="texture_8cxx_source.html#l00708">replace_from_image()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00675">cgv::render::gl::replace_texture()</a>, <a class="el" href="context_8cxx_source.html#l00885">cgv::render::context::write_frame_buffer_to_image()</a>, <a class="el" href="bmp__writer_8cxx_source.html#l00080">cgv::media::image::bmp_writer::write_image()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">write_to_file()</a>.</p>
 
 </div>
 </div>
@@ -1516,11 +1619,11 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>replace a block within a 1d texture with the given data. </p>
 <p>If level is not specified, level 0 is set and if a mipmap has been created before, coarser levels are updated also. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00614">614</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00623">623</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="data__format_8cxx_source.html#l00203">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00272">cgv::render::render_component::last_error</a>.</p>
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="data__format_8cxx_source.html#l00203">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00279">cgv::render::render_component::last_error</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00559">create()</a>, and <a class="el" href="texture_8cxx_source.html#l00699">replace_from_image()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00568">create()</a>, and <a class="el" href="texture_8cxx_source.html#l00708">replace_from_image()</a>.</p>
 
 </div>
 </div>
@@ -1577,9 +1680,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>replace a block within a 2d texture with the given data. </p>
 <p>If level is not specified, level 0 is set and if a mipmap has been created before, coarser levels are updated also. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00630">630</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00639">639</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="data__format_8cxx_source.html#l00203">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00272">cgv::render::render_component::last_error</a>.</p>
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="data__format_8cxx_source.html#l00203">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00279">cgv::render::render_component::last_error</a>.</p>
 
 </div>
 </div>
@@ -1642,9 +1745,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>replace a block within a 3d texture or a side of a cube map with the given data. </p>
 <p>If level is not specified, level 0 is set and if a mipmap has been created before, coarser levels are updated also. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00647">647</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00656">656</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00272">cgv::render::render_component::last_error</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00279">cgv::render::render_component::last_error</a>.</p>
 
 </div>
 </div>
@@ -1719,9 +1822,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>replace a block within a 3d texture or a side from a cube map from the current read buffer. </p>
 <p>replace a block within a 2d texture from the current read buffer. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00675">675</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00684">684</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00272">cgv::render::render_component::last_error</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01880">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00279">cgv::render::render_component::last_error</a>.</p>
 
 </div>
 </div>
@@ -1868,7 +1971,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00221">cgv::data::data_format::set_resolution()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00350">cgv::data::data_view::compose()</a>, <a class="el" href="texture_8cxx_source.html#l00211">create()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00531">create_from_buffer()</a>, <a class="el" href="texture_8cxx_source.html#l00259">create_from_image()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00162">cgv::render::gl::image_drawable::save_images()</a>, <a class="el" href="data__format_8cxx_source.html#l00191">cgv::data::data_format::set_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l00885">cgv::render::context::write_frame_buffer_to_image()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">write_to_file()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="data__view_8cxx_source.html#l00350">cgv::data::data_view::compose()</a>, <a class="el" href="texture_8cxx_source.html#l00211">create()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00540">create_from_buffer()</a>, <a class="el" href="texture_8cxx_source.html#l00259">create_from_image()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00162">cgv::render::gl::image_drawable::save_images()</a>, <a class="el" href="data__format_8cxx_source.html#l00191">cgv::data::data_format::set_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l00885">cgv::render::context::write_frame_buffer_to_image()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">write_to_file()</a>.</p>
 
 </div>
 </div>
@@ -1903,7 +2006,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="reference">References <a class="el" href="data__format_8h_source.html#l00030">cgv::data::data_format::dimensions</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00559">create()</a>, and <a class="el" href="texture_8cxx_source.html#l00531">create_from_buffer()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00568">create()</a>, and <a class="el" href="texture_8cxx_source.html#l00540">create_from_buffer()</a>.</p>
 
 </div>
 </div>
@@ -1983,7 +2086,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="reference">References <a class="el" href="data__format_8h_source.html#l00030">cgv::data::data_format::dimensions</a>, and <a class="el" href="data__format_8cxx_source.html#l00203">cgv::data::data_format::get_nr_dimensions()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00559">create()</a>, <a class="el" href="data__format_8cxx_source.html#l00310">cgv::data::data_format::set_depth()</a>, <a class="el" href="data__format_8cxx_source.html#l00305">cgv::data::data_format::set_height()</a>, <a class="el" href="data__format_8cxx_source.html#l00315">cgv::data::data_format::set_nr_time_steps()</a>, and <a class="el" href="data__format_8cxx_source.html#l00300">cgv::data::data_format::set_width()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00568">create()</a>, <a class="el" href="data__format_8cxx_source.html#l00310">cgv::data::data_format::set_depth()</a>, <a class="el" href="data__format_8cxx_source.html#l00305">cgv::data::data_format::set_height()</a>, <a class="el" href="data__format_8cxx_source.html#l00315">cgv::data::data_format::set_nr_time_steps()</a>, and <a class="el" href="data__format_8cxx_source.html#l00300">cgv::data::data_format::set_width()</a>.</p>
 
 </div>
 </div>
@@ -2018,7 +2121,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00221">cgv::data::data_format::set_resolution()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00211">create()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00531">create_from_buffer()</a>, <a class="el" href="texture_8cxx_source.html#l00259">create_from_image()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00162">cgv::render::gl::image_drawable::save_images()</a>, <a class="el" href="data__format_8cxx_source.html#l00191">cgv::data::data_format::set_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l00885">cgv::render::context::write_frame_buffer_to_image()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">write_to_file()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00211">create()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00540">create_from_buffer()</a>, <a class="el" href="texture_8cxx_source.html#l00259">create_from_image()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00162">cgv::render::gl::image_drawable::save_images()</a>, <a class="el" href="data__format_8cxx_source.html#l00191">cgv::data::data_format::set_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l00885">cgv::render::context::write_frame_buffer_to_image()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">write_to_file()</a>.</p>
 
 </div>
 </div>

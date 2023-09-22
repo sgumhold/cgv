@@ -107,6 +107,7 @@ var namespacecgv_1_1render =
     [ "vec3", "namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590", null ],
     [ "vec4", "namespacecgv_1_1render.html#a091ed7d82bda1371fe5339a19bd75ea0", null ],
     [ "vecn", "namespacecgv_1_1render.html#a86fddd200daf4c62b5a2f64634b14be4", null ],
+    [ "AccessType", "namespacecgv_1_1render.html#a32ea24c43b283680338ab99e53de6530", null ],
     [ "ArrowHeadLengthMode", "namespacecgv_1_1render.html#aa9c3365c98b31f0efbc535d46c455f98", null ],
     [ "BufferTypeBits", "namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab", [
       [ "BTB_COLOR_BIT", "namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833aba03264569ff72f15010d2538a508e5951", null ],
