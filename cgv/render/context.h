@@ -937,17 +937,7 @@ public:
 	/// return the current stencil value for clearing the background
 	int get_bg_stencil() const;
 	/// the context will be redrawn when the system is idle again
-	
-	
-	
-	void* redraw_user_data = nullptr;
-	size_t redraw_id_counter = 0;
-	size_t request_redraw_id() {
-		return ++redraw_id_counter;
-	}
-
-
-	virtual void post_redraw(void* user_data = nullptr) = 0;
+	virtual void post_redraw() = 0;
 	/// the context will be redrawn right now. This method cannot be called inside the following methods of a drawable: init, init_frame, draw, finish_draw
 	virtual void force_redraw() = 0;
 	/// announce an external frame buffer change performed with rendering API to the cgv framework providing space to temporarily store frame buffer of cgv framework
