@@ -51,7 +51,7 @@ namespace cgv {
 			clip_box = box3(vec3(0.0f), vec3(1.0f));
 		}
 
-		volume_renderer::volume_renderer() : noise_texture("flt32[R]")
+		volume_renderer::volume_renderer() : noise_texture("uint8[R]")
 		{
 			volume_texture = nullptr;
 			transfer_function_texture = nullptr;
@@ -75,15 +75,15 @@ namespace cgv {
 				noise_texture.destruct(ctx);
 
 			unsigned size = 64;
-			std::vector<float> noise_data(size*size);
+			std::vector<uint8_t> noise_data(size*size);
 
 			std::default_random_engine rng(42);
-			std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+			std::uniform_int_distribution<unsigned> dist(0u, 255u);
 
 			for(size_t i = 0; i < noise_data.size(); ++i)
-				noise_data[i] = dist(rng);
+				noise_data[i] = static_cast<uint8_t>(dist(rng));
 
-			cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, size, TI_FLT32, cgv::data::CF_R), noise_data.data());
+			cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, size, TI_UINT8, cgv::data::CF_R), noise_data.data());
 			noise_texture.create(ctx, dv, 0);
 		}
 

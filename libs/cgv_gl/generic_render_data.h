@@ -104,10 +104,6 @@ protected:
 		}
 	}
 
-	bool has_indices() const {
-		return aam.has_index_buffer();
-	}
-
 	bool set_indices(const context& ctx) {
 		return aam.set_indices(ctx, idx);
 	}
@@ -117,27 +113,6 @@ protected:
 	}
 
 	virtual bool transfer(context& ctx, shader_program& prog) = 0;
-
-	bool enable(context& ctx, shader_program& prog) {
-		if(!aam.is_created())
-			aam.init(ctx);
-
-		if(render_count() > 0) {
-			bool res = true;
-			if(state_out_of_date)
-				res = transfer(ctx, prog);
-			if(!res)
-				return false;
-			return aam.enable(ctx);
-		} else if(state_out_of_date) {
-			transfer(ctx, prog);
-			return false;
-		}
-	}
-
-	bool disable(context& ctx) {
-		return aam.disable(ctx);
-	}
 
 public:
 	void destruct(const context& ctx) {
@@ -158,6 +133,32 @@ public:
 	}
 
 	virtual size_t render_count() const = 0;
+
+	bool has_indices() const {
+		return aam.has_index_buffer();
+	}
+
+	bool enable(context& ctx, shader_program& prog) {
+		if(!aam.is_created())
+			aam.init(ctx);
+
+		if(render_count() > 0) {
+			bool res = true;
+			if(state_out_of_date)
+				res = transfer(ctx, prog);
+			if(!res)
+				return false;
+			return aam.enable(ctx);
+		} else if(state_out_of_date) {
+			transfer(ctx, prog);
+		}
+
+		return false;
+	}
+
+	bool disable(context& ctx) {
+		return aam.disable(ctx);
+	}
 };
 
 }

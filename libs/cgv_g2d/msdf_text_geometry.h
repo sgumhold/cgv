@@ -12,12 +12,12 @@ namespace g2d {
 class CGV_API msdf_text_geometry : public cgv::render::render_types {
 protected:
 	struct text_info {
-		std::string str;
-		int offset;
-		vec2 position;
-		vec2 size;
-		cgv::render::TextAlignment alignment;
-		float angle;
+		std::string str = "";
+		int offset = 0;
+		vec2 position = vec2(0.0f);
+		vec2 size = vec2(0.0f);
+		cgv::render::TextAlignment alignment = cgv::render::TextAlignment::TA_NONE;
+		float angle = 0.0f;
 
 		text_info() : text_info("", vec2(0.0f), vec2(1.0f)) {}
 

@@ -271,8 +271,8 @@ bool win32_gl_context::set_pixel_format()
 	int  iPixelFormat; 
 	 
 	// get the best available match of pixel format for the device context  
-	iPixelFormat = ChoosePixelFormat(hdc, &pfd); 
-	 
+	iPixelFormat = ChoosePixelFormat(hdc, &pfd);
+
 	// make that the pixel format of the device context 
 	return SetPixelFormat(hdc, iPixelFormat, &pfd) == TRUE;
 }
