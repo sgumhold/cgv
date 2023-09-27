@@ -38,10 +38,10 @@ bool visibility_sort::load_shader_programs(cgv::render::context& ctx) {
 	cgv::render::shader_define_map scatter_defines;
 	cgv::render::shader_code::set_define(scatter_defines, "VALUE_TYPE_DEFINITION", value_type_def, "uint");
 	
-	res = res && cgv::render::shader_library::load(ctx, key_prog, "rs4x_keys", key_defines, true, where);
-	res = res && cgv::render::shader_library::load(ctx, scan_local_prog, "rs4x_scan_local", true, where);
-	res = res && cgv::render::shader_library::load(ctx, scan_global_prog, "rs4x_scan_global", true, where);
-	res = res && cgv::render::shader_library::load(ctx, scatter_prog, "rs4x_scatter", scatter_defines, true, where);
+	res = res && cgv::render::shader_library::load(ctx, key_prog, "gpgpu_rs4x_keys", key_defines, true, where);
+	res = res && cgv::render::shader_library::load(ctx, scan_local_prog, "gpgpu_rs4x_scan_local", true, where);
+	res = res && cgv::render::shader_library::load(ctx, scan_global_prog, "gpgpu_rs4x_scan_global", true, where);
+	res = res && cgv::render::shader_library::load(ctx, scatter_prog, "gpgpu_rs4x_scatter", scatter_defines, true, where);
 
 	return res;
 }
