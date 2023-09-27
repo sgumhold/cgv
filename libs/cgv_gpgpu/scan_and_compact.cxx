@@ -31,10 +31,10 @@ bool scan_and_compact::load_shader_programs(cgv::render::context& ctx) {
 
 	cgv::render::shader_code::set_define(compact_defines, "MODE", mode, M_COPY_DATA);
 
-	res = res && cgv::render::shader_library::load(ctx, vote_prog, vote_prog_name == "" ? "sac_vote" : vote_prog_name, vote_defines, true, where);
-	res = res && cgv::render::shader_library::load(ctx, scan_local_prog, "sac_scan_local", true, where);
-	res = res && cgv::render::shader_library::load(ctx, scan_global_prog, "sac_scan_global", true, where);
-	res = res && cgv::render::shader_library::load(ctx, compact_prog, "sac_compact", compact_defines, true, where);
+	res = res && cgv::render::shader_library::load(ctx, vote_prog, vote_prog_name == "" ? "gpgpu_sac_vote" : vote_prog_name, vote_defines, true, where);
+	res = res && cgv::render::shader_library::load(ctx, scan_local_prog, "gpgpu_sac_scan_local", true, where);
+	res = res && cgv::render::shader_library::load(ctx, scan_global_prog, "gpgpu_sac_scan_global", true, where);
+	res = res && cgv::render::shader_library::load(ctx, compact_prog, "gpgpu_sac_compact", compact_defines, true, where);
 
 	return res;
 }
