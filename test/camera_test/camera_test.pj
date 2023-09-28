@@ -7,5 +7,5 @@ addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_math",
 				"cgv_media", "cgv_gui", "cgv_render", "cgv_viewer", "cg_fltk", "rgbd_capture",
 				"crg_grid", "cg_ext", "crg_stereo_view", "cgv_gl", "cmi_io", "point_cloud"];
 addIncDirs=[INPUT_DIR];
-addCommandLineArguments=[after("type(shader_config):shader_path='".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk")];
+addCommandLineArguments=[after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk")];
 

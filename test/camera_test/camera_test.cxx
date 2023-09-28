@@ -7,10 +7,12 @@
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/vertex_buffer.h>
+#include <cgv/render/texture.h>
 #include <cgv/render/frame_buffer.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <point_cloud/point_cloud.h>
 #include <rgbd_capture/frame.h>
+#include <rgbd_capture/rgbd_device.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/point_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
@@ -18,9 +20,11 @@
 #include <random>
 #include "../../3rd/json/nlohmann/json.hpp"
 #include "../../3rd/json/cgv_json/math.h"
+#include "../../3rd/json/cgv_json/rgbd.h"
 #include <fstream>
 #include <cgv/utils/file.h>
 #include <cgv/utils/convert.h>
+#include <cgv/utils/pointer_test.h>
 
 using namespace cgv::base;
 using namespace cgv::data;
@@ -228,6 +232,110 @@ struct rgbd_kinect_azure
 	}
 };
 
+bool read_rgbd_calibration(const std::string& fn, rgbd::rgbd_calibration& calib)
+{
+	nlohmann::json j;
+	std::ifstream is(fn);
+	if (is.fail())
+		return false;
+	is >> j;
+	std::string serial;
+	j.at("serial").get_to(serial);
+	j.at("calib").get_to(calib);
+	return true;
+}
+
+void set_camera_calibration_uniforms(context& ctx, shader_program& prog, const std::string& name, const cgv::math::camera<double>& calib)
+{
+	prog.set_uniform(ctx, name + ".w", int(calib.w));
+	prog.set_uniform(ctx, name + ".h", int(calib.h));
+	prog.set_uniform(ctx, name + ".max_radius_for_projection", float(calib.max_radius_for_projection));
+	prog.set_uniform(ctx, name + ".dc", vec2(calib.dc));
+	prog.set_uniform(ctx, name + ".k[0]", float(calib.k[0]));
+	prog.set_uniform(ctx, name + ".k[1]", float(calib.k[1]));
+	prog.set_uniform(ctx, name + ".k[2]", float(calib.k[2]));
+	prog.set_uniform(ctx, name + ".k[3]", float(calib.k[3]));
+	prog.set_uniform(ctx, name + ".k[4]", float(calib.k[4]));
+	prog.set_uniform(ctx, name + ".k[5]", float(calib.k[5]));
+	prog.set_uniform(ctx, name + ".p[0]", float(calib.p[0]));
+	prog.set_uniform(ctx, name + ".p[1]", float(calib.p[1]));
+	prog.set_uniform(ctx, name + ".skew", float(calib.skew));
+	prog.set_uniform(ctx, name + ".c", vec2(calib.c));
+	prog.set_uniform(ctx, name + ".s", vec2(calib.s));
+}
+void set_rgbd_calibration_uniforms(context& ctx, shader_program& prog, const rgbd::rgbd_calibration& calib)
+{
+	prog.set_uniform(ctx, "depth_scale", float(calib.depth_scale));
+	set_camera_calibration_uniforms(ctx, prog, "depth_calib", calib.depth);
+	set_camera_calibration_uniforms(ctx, prog, "color_calib", calib.color);
+	prog.set_uniform(ctx, "color_rotation", mat3(cgv::math::pose_orientation(calib.color.pose)));
+	prog.set_uniform(ctx, "color_translation", vec3(cgv::math::pose_position(calib.color.pose)));
+}
+
+class rgbd_point_renderer : public cgv::render::point_renderer
+{
+protected:
+	bool calib_set = false;
+	rgbd::rgbd_calibration calib;
+	bool use_undistortion_map = false;
+	bool undistortion_map_outofdate = true;
+	std::vector<vec2> undistortion_map;
+	cgv::render::texture undistortion_tex;
+public:
+	rgbd_point_renderer() : undistortion_tex("flt32[R,G]") {
+		undistortion_tex.set_mag_filter(cgv::render::TF_NEAREST);
+	}
+	void set_calibration(const rgbd::rgbd_calibration& _calib)
+	{
+		calib = _calib;
+		calib_set = true;
+		if (use_undistortion_map) {
+			calib.depth.compute_undistortion_map(undistortion_map);
+			undistortion_map_outofdate = true;
+		}
+	}
+	void set_undistortion_map_usage(bool do_use = true)
+	{
+		use_undistortion_map = do_use;
+		if (do_use && calib_set)
+			calib.depth.compute_undistortion_map(undistortion_map);
+	}
+	/// overload to update the shader defines based on the current render style; only called if internal shader program is used
+	void update_defines(shader_define_map& defines) {
+		point_renderer::update_defines(defines);
+		shader_code::set_define(defines, "USE_UNDISTORTION_MAP", use_undistortion_map, false);
+	}
+	bool enable(context& ctx)
+	{
+		if (!point_renderer::enable(ctx))
+			return false;
+		set_rgbd_calibration_uniforms(ctx, ref_prog(), calib);
+		if (use_undistortion_map) {
+			if (undistortion_map_outofdate) {
+				if (undistortion_tex.is_created())
+					undistortion_tex.destruct(ctx);
+				cgv::data::data_format df(calib.depth.w, calib.depth.h, cgv::type::info::TI_FLT32, cgv::data::CF_RG);
+				cgv::data::data_view dv(&df, undistortion_map.data());
+				undistortion_tex.create(ctx, dv, 0);
+				undistortion_map_outofdate = false;
+			}
+			undistortion_tex.enable(ctx, 2);
+			ref_prog().set_uniform(ctx, "undistortion_map", 2);
+		}
+		return true;
+	}
+	bool disable(context& ctx)
+	{
+		if (use_undistortion_map)
+			undistortion_tex.disable(ctx);
+		return point_renderer::disable(ctx);
+	}
+	bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+	{
+		return prog.build_program(ctx, "rgbd_pc.glpr", true, defines);
+	}
+};
+
 class camera_test :
 	public node,
 	public drawable,
@@ -235,17 +343,20 @@ class camera_test :
 {
 protected:
 	// rendering configuration
-	cgv::math::camera<double> color_calib, depth_calib;
+	rgbd_point_renderer pr;
+	rgbd::rgbd_calibration calib;
+	bool calib_outofdate = true;
 	rgbd_kinect_azure rka;
 	point_render_style prs;
-
+	cgv::render::texture color_tex;
 	enum class precision { float_precision, double_precision };
 	precision prec = precision::double_precision;
+	bool debug_mode = false;
 	bool use_pc_shader_prog = true;
 	bool use_azure_impl = false;
 	float slow_down = 1.0f;
 	unsigned sub_sample = 1;
-	unsigned sub_line_sample = 4;
+	unsigned sub_line_sample = 1;
 	unsigned nr_iterations = 20;
 	bool skip_dark = true;
 	float scale = 1.0f;
@@ -260,11 +371,17 @@ protected:
 	bool debug_colors = true;
 	float random_offset = 0.001f;
 
+	std::vector<usvec3> sP;
+	std::vector<rgb8> sC;
 	std::vector<vec3> P;
 	std::vector<rgb8> C;
 
+	rgbd::frame_type color_frame;
 	rgbd::frame_type warped_color_frame;
 	rgbd::frame_type depth_frame;
+	bool use_undistortion_map = false;
+	std::vector<vec2> undistortion_map;
+
 	point_cloud pc;
 
 	bool read_frames()
@@ -277,160 +394,211 @@ protected:
 		if (!pc.read("D:/data/images/kinect/door.bpc"))
 			return false;
 		*/
-		if (!depth_frame.read("D:/data/Anton/me_in_office.dep"))
+		if (!depth_frame.read("D:/data/mesh/kinect/test.dep"))
 			return false;
-		if (!warped_color_frame.read("D:/data/Anton/me_in_office.wrgb"))
+		if (!color_frame.read("D:/data/mesh/kinect/test.rgb"))
 			return false;
-		if (!pc.read("D:/data/Anton/me_in_office.bpc"))
+		if (!warped_color_frame.read("D:/data/mesh/kinect/test.wrgb"))
 			return false;
+		//if (!pc.read("D:/data/Anton/me_in_office.bpc"))
+		//	return false;
+		calib.depth.compute_undistortion_map(undistortion_map, sub_sample);
 		construct_point_clouds();
 		return true;
 	}
-	void construct_point_clouds()
+	template <typename T>
+	bool construct_point(vec3& p, uint16_t x, uint16_t y, uint16_t depth, const cgv::math::camera<T>& depth_calib, T depth_scale, T eps) const
+	{
+		if (depth == 0)
+			return false;
+		vec2 xd;
+		if (use_undistortion_map) {
+			xd = undistortion_map[y * depth_frame.width + x];
+			if (xd[0] < -1000.0f)
+				return false;
+		}
+		else {
+			cgv::math::camera<T>::distortion_inversion_result dir;
+			unsigned iterations = 1;
+			cgv::math::fvec<T, 2> xu = depth_calib.pixel_to_image_coordinates(cgv::math::fvec<T, 2>(T(x), T(y)));
+			cgv::math::fvec<T, 2> xd_T = xu;
+			dir = depth_calib.invert_distortion_model(xu, xd_T, true, &iterations, eps, nr_iterations, slow_down);
+			if (dir != cgv::math::distorted_pinhole_types::distortion_inversion_result::convergence)
+				return false;
+			xd = xd_T;
+		}
+		float depth_m = float(depth_scale * depth);
+		p = vec3(depth_m*xd, depth_m);
+		return true;
+	}
+	bool lookup_color(rgb8& c, const vec3& p, const cgv::math::camera<double>& color_calib) const
+	{
+		dvec3 P = (dvec3(p) + calib.depth_scale*pose_position(color_calib.pose))*pose_orientation(color_calib.pose);
+		dvec2 xu, xd(P[0] / P[2], P[1] / P[2]);
+		auto result = color_calib.apply_distortion_model(xd, xu);
+		if (result != cgv::math::distorted_pinhole_types::distortion_result::success)
+			return false;
+		dvec2 xp = color_calib.image_to_pixel_coordinates(xu);
+		if (xp[0] < 0 || xp[1] < 0 || xp[0] >= color_frame.width || xp[1] >= color_frame.height)
+			return false;
+		uint16_t x = uint16_t(xp[0]);
+		uint16_t y = uint16_t(xp[1]);
+		const uint8_t* pix_ptr = reinterpret_cast<const uint8_t*>(&color_frame.frame_data[(y * color_frame.width + x) * color_frame.get_nr_bytes_per_pixel()]);
+		c = rgb8(pix_ptr[2], pix_ptr[1], pix_ptr[0]);
+		return true;
+	}
+	template <typename T>
+	void construct_point_clouds_precision(const cgv::math::camera<T>& depth_calib, T depth_scale)
+	{
+		T eps = use_standard_epsilon ? cgv::math::distortion_inversion_epsilon<T>() : T(epsilon);
+		T sx = T(1) / depth_frame.width;
+		T sy = T(1) / depth_frame.height;
+		for (uint16_t y = 0; y < depth_frame.height; y += sub_sample) {
+			for (uint16_t x = 0; x < depth_frame.width; x += sub_sample) {
+				if (((x % sub_line_sample) != 0) && ((y % sub_line_sample) != 0))
+					continue;
+				uint8_t* pix_ptr = reinterpret_cast<uint8_t*>(&warped_color_frame.frame_data[(y * depth_frame.width + x) * warped_color_frame.get_nr_bytes_per_pixel()]);
+				uint16_t depth = reinterpret_cast<const uint16_t&>(depth_frame.frame_data[(y * depth_frame.width + x) * depth_frame.get_nr_bytes_per_pixel()]);
+				vec3 p;
+				rgb8 c(pix_ptr[2], pix_ptr[1], pix_ptr[0]);
+				if (!debug_mode) {
+					if (!construct_point(p, x, y, depth, depth_calib, depth_scale, eps))
+						continue;
+					rgb8 c1;
+					if (lookup_color(c1, p, calib.color))
+						c = c1;
+					else
+						c = rgb8(0, 0, 0);
+				}
+				else {
+					if (depth == 0)
+						continue;
+					//if (pix_ptr[0] + pix_ptr[1] + pix_ptr[2] < 16)
+					//	continue;
+					cgv::math::camera<T>::distortion_inversion_result dir;
+					unsigned iterations = 1;
+					cgv::math::fvec<T, 2> xu, xd;
+					if (debug_xu0) {
+						xd = T(xu0_rad) * cgv::math::fvec<T, 2>(sx * x - T(0.5), sy * y - T(0.5));
+						depth_calib.apply_distortion_model(xd, xu);
+						std::default_random_engine g;
+						std::uniform_real_distribution<T> d(-0.5, 0.5);
+						xd += T(random_offset) * cgv::math::fvec<T, 2>(d(g), d(g));
+						dir = depth_calib.invert_distortion_model(xu, xd, false, &iterations, eps, nr_iterations, slow_down);
+					}
+					else {
+						xu = depth_calib.pixel_to_image_coordinates(cgv::math::fvec<T, 2>(T(x), T(y)));
+						xd = xu;
+						if (!use_azure_impl)
+							dir = depth_calib.invert_distortion_model(xu, xd, true, &iterations, eps, nr_iterations, slow_down);
+						else {
+							vec3 p;
+							if (rka.map_depth_to_point(x, y, 0, &p[0])) {
+								xd[0] = p[0];
+								xd[1] = p[1];
+								dir = cgv::math::camera<T>::distortion_inversion_result::convergence;
+								/*double err = sqrt((xd[0] - p[0]) * (xd[0] - p[0]) + (xd[1] - p[1]) * (xd[1] - p[1]));
+								if (err > 0.1f) {
+									rka.map_depth_to_point(x, y, 0, &p[0]);
+									nr = depth_calib.invert_distortion_model(xu, xd, slow_down, nr_iterations);
+								}*/
+							}
+							else
+								dir = cgv::math::camera<T>::distortion_inversion_result::divergence;
+						}
+					}
+					p = vec3(vec2(T(T(1) - xu_xd_lambda) * xu + T(xu_xd_lambda) * xd), 1.0f);
+					p *= float((1 - depth_lambda) + depth_lambda * depth_scale * depth);
+
+					cgv::math::fvec<T, 2> xu_rec;
+					cgv::math::fmat<T, 2, 2> J;
+					depth_calib.apply_distortion_model(xd, xu_rec, &J);
+					T error = (xu_rec - xu).length();
+					if (debug_colors) {
+						switch (dir) {
+						case cgv::math::camera<T>::distortion_inversion_result::divergence:
+							c = rgb8(255, 0, 255);
+							break;
+						case cgv::math::camera<T>::distortion_inversion_result::division_by_zero:
+							c = rgb8(0, 255, 255);
+							break;
+						case cgv::math::camera<T>::distortion_inversion_result::max_iterations_reached:
+							if (error > error_threshold)
+								c = rgb8(cgv::media::color_scale(error_scale * error));
+							else
+								c = rgb8(pix_ptr[2], pix_ptr[1], pix_ptr[0]);
+							break;
+						case cgv::math::camera<T>::distortion_inversion_result::out_of_bounds:
+							c = rgb8(128, 128, 255);
+							break;
+						default:
+							c = rgb8(pix_ptr[2], pix_ptr[1], pix_ptr[0]);
+							break;
+						}
+					}
+				}
+				P.push_back(p);
+				C.push_back(c);
+			}
+		}
+	}
+	void construct_point_clouds(bool include_integer_points = true)
 	{
 		P.clear();
 		C.clear();
 		switch (prec) {
 		case precision::float_precision:
-			construct_point_clouds_precision(cgv::math::camera<float>(depth_calib));
+			construct_point_clouds_precision(cgv::math::camera<float>(calib.depth), float(calib.depth_scale));
 			break;
 		default:
-			construct_point_clouds_precision(depth_calib);
+			construct_point_clouds_precision(calib.depth, calib.depth_scale);
 			break;
 		}
-	} 
 
-	template <typename T>
-	void construct_point_clouds_precision(const cgv::math::camera<T>& depth_calib)
-	{
-		T eps = use_standard_epsilon ? cgv::math::distortion_inversion_epsilon<T>() : T(epsilon);
-		T sx = T(1) / depth_frame.width;
-		T sy = T(1) / depth_frame.height;
-		for (int y = 0; y < depth_frame.height; y += sub_sample) {
-			for (int x = 0; x < depth_frame.width; x += sub_sample) {
+		sP.clear();
+		sC.clear();
+		for (uint16_t y = 0; y < depth_frame.height; y += sub_sample)
+			for (uint16_t x = 0; x < depth_frame.width; x += sub_sample) {
 				if (((x % sub_line_sample) != 0) && ((y % sub_line_sample) != 0))
 					continue;
 				uint8_t* pix_ptr = reinterpret_cast<uint8_t*>(&warped_color_frame.frame_data[(y * depth_frame.width + x) * warped_color_frame.get_nr_bytes_per_pixel()]);
 				uint16_t depth = reinterpret_cast<const uint16_t&>(depth_frame.frame_data[(y * depth_frame.width + x) * depth_frame.get_nr_bytes_per_pixel()]);
 				if (depth == 0)
 					continue;
-				//if (pix_ptr[0] + pix_ptr[1] + pix_ptr[2] < 16)
-				//	continue;
-				cgv::math::camera<T>::distortion_inversion_result dir;
-				unsigned iterations = 1;
-				cgv::math::fvec<T,2> xu, xd;
-				if (debug_xu0) {
-					xd = T(xu0_rad) * cgv::math::fvec<T, 2>(sx * x - T(0.5), sy * y - T(0.5));
-					depth_calib.apply_distortion_model(xd, xu);
-					std::default_random_engine g;
-					std::uniform_real_distribution<T> d(-0.5, 0.5);
-					xd += T(random_offset)* cgv::math::fvec<T, 2>(d(g), d(g));
-					dir = depth_calib.invert_distortion_model(xu, xd, false, &iterations, eps, nr_iterations, slow_down);
-				}
-				else {
-					xu = depth_calib.pixel_to_image_coordinates(cgv::math::fvec<T, 2>(T(x), T(y)));
-					xd = xu;
-					if (!use_azure_impl)
-						dir = depth_calib.invert_distortion_model(xu, xd, true, &iterations, eps, nr_iterations, slow_down);
-					else {
-						vec3 p;
-						if (rka.map_depth_to_point(x, y, 0, &p[0])) {
-							xd[0] = p[0];
-							xd[1] = p[1];
-							dir = cgv::math::camera<T>::distortion_inversion_result::convergence;
-							/*double err = sqrt((xd[0] - p[0]) * (xd[0] - p[0]) + (xd[1] - p[1]) * (xd[1] - p[1]));
-							if (err > 0.1f) {
-								rka.map_depth_to_point(x, y, 0, &p[0]);
-								nr = depth_calib.invert_distortion_model(xu, xd, slow_down, nr_iterations);
-							}*/
-						}
-						else
-							dir = cgv::math::camera<T>::distortion_inversion_result::divergence;
-					}
-				}
-				vec3 p(vec2(T(T(1) - xu_xd_lambda) * xu + T(xu_xd_lambda) * xd), 1.0f);
-				p *= float((1 - depth_lambda) + depth_lambda * 0.001 * depth);
-				P.push_back(p);
-
-				cgv::math::fvec<T, 2> xu_rec;
-				cgv::math::fmat<T, 2, 2> J;
-				depth_calib.apply_distortion_model(xd, xu_rec, &J);
-				T error = (xu_rec - xu).length();
-				if (!debug_colors)
-					C.push_back(rgb8(pix_ptr[2], pix_ptr[1], pix_ptr[0]));
-				else {
-					switch (dir) {
-					case cgv::math::camera<T>::distortion_inversion_result::divergence:
-						C.push_back(rgb8(255, 0, 255));
-						break;
-					case cgv::math::camera<T>::distortion_inversion_result::division_by_zero:
-						C.push_back(rgb8(0, 255, 255));
-						break;
-					case cgv::math::camera<T>::distortion_inversion_result::max_iterations_reached:
-						if (error > error_threshold)
-							C.push_back(rgb8(cgv::media::color_scale(error_scale * error)));
-						else {
-							C.push_back(rgb8(pix_ptr[2], pix_ptr[1], pix_ptr[0]));
-						}
-						break;
-					case cgv::math::camera<T>::distortion_inversion_result::out_of_bounds:
-						C.push_back(rgb8(128, 128, 255));
-						break;
-					default:
-						C.push_back(rgb8(pix_ptr[2], pix_ptr[1], pix_ptr[0]));
-						break;
-					}
-				}
+				sP.push_back(usvec3(x, y, depth));
+				sC.push_back(rgb8(pix_ptr[2], pix_ptr[1], pix_ptr[0]));
 			}
-		}
 	}
-
 	bool read_calibs()
 	{
-		nlohmann::json j;
-		std::ifstream is("D:/data/Anton/me_in_office.json");
-		if (is.fail())
-			return false;
-		is >> j;
-		std::string serial;
-		j.at("serial").get_to(serial);
-		j.at("color_calib").get_to(color_calib);
-		j.at("depth_calib").get_to(depth_calib);
-		depth_calib.max_radius_for_projection = 1.7f;
-		color_calib.max_radius_for_projection = 1.7f;
-		return true;
+		return read_rgbd_calibration("D:/data/mesh/kinect/000442922212_calib.json", calib);
 	}
 	attribute_array_manager pc_aam;
-	cgv::render::shader_program pc_prog;
 	cgv::render::view* view_ptr = 0;
 public:
-	camera_test()
+	camera_test() : color_tex("uint8[R,G,B]")
 	{
-		rka.c_ptr = &depth_calib;
+		rka.c_ptr = &calib.depth;
 		set_name("camera_test");
 		prs.point_size = 5;
 		prs.blend_width_in_pixel = 0;
 	}
 	void on_set(void* member_ptr)
 	{
-		if (member_ptr == &sub_sample || member_ptr == &nr_iterations || member_ptr == &slow_down ||
-			member_ptr == & sub_line_sample ||
-			member_ptr == & xu0_rad ||
-			member_ptr == & prec ||
-			member_ptr == &random_offset ||
-			member_ptr == &use_standard_epsilon ||
-			member_ptr == & epsilon ||
-			member_ptr == & scale ||
-			member_ptr == & use_azure_impl ||
-			member_ptr == & debug_colors ||
-			member_ptr == & xu_xd_lambda ||
-			member_ptr == &depth_calib.max_radius_for_projection ||
-			member_ptr == &debug_xu0 ||
-			member_ptr == &depth_lambda ||
-			member_ptr == & error_threshold ||
-			member_ptr == & error_scale) {
+		cgv::utils::pointer_test pt(member_ptr);
+		if (pt.one_of(nr_iterations, slow_down, calib.depth.max_radius_for_projection)) {
+			calib.depth.compute_undistortion_map(undistortion_map, sub_sample);
 			construct_point_clouds();
 		}
+		else if (pt.one_of(sub_sample, sub_line_sample,xu0_rad,prec,random_offset,use_standard_epsilon,epsilon) ||
+			     pt.member_of(calib.color.pose) ||
+				 pt.one_of(scale,use_azure_impl,debug_mode,use_undistortion_map,debug_colors,xu_xd_lambda) ||
+			     pt.one_of(debug_xu0,depth_lambda,error_threshold,error_scale)) {
+			construct_point_clouds(false);
+		}
+		if (pt.is(use_undistortion_map))
+			pr.set_undistortion_map_usage(use_undistortion_map);
+
 		update_member(member_ptr);
 		post_redraw();
 	}
@@ -443,6 +611,11 @@ public:
 		add_member_control(this, "sub_sample", sub_sample, "value_slider", "min=1;max=16;ticks=true");
 		add_member_control(this, "sub_line_sample", sub_line_sample, "value_slider", "min=1;max=16;ticks=true");
 		add_member_control(this, "use_azure_impl", use_azure_impl, "toggle");
+		add_member_control(this, "debug_mode", debug_mode, "toggle");
+		add_member_control(this, "x_off", calib.color.pose(0, 3), "value_slider", "min=-100;max=100;ticks=true");
+		add_member_control(this, "y_off", calib.color.pose(1, 3), "value_slider", "min=-100;max=100;ticks=true");
+		add_member_control(this, "z_off", calib.color.pose(2, 3), "value_slider", "min=-100;max=100;ticks=true");
+		add_member_control(this, "use_undistortion_map", use_undistortion_map, "toggle");
 		add_member_control(this, "slow_down", slow_down, "value_slider", "min=0;max=1;ticks=true");
 		add_member_control(this, "precision", prec, "dropdown", "enums='float,double'");
 		add_member_control(this, "nr_iterations", nr_iterations, "value_slider", "min=0;max=30;ticks=true");
@@ -450,7 +623,7 @@ public:
 		add_member_control(this, "epsilon", epsilon, "value_slider", "min=0.000000001;step=0.00000000001;max=0.001;ticks=true;log=true");
 		add_member_control(this, "debug_colors", debug_colors, "toggle");
 		add_member_control(this, "scale", scale, "value_slider", "min=0.5;max=10;ticks=true");
-		add_member_control(this, "max_radius_for_projection", depth_calib.max_radius_for_projection, "value_slider", "min=0.5;max=10;ticks=true");
+		add_member_control(this, "max_radius_for_projection", calib.depth.max_radius_for_projection, "value_slider", "min=0.5;max=10;ticks=true");
 		add_member_control(this, "debug_xu0", debug_xu0, "toggle");
 		add_member_control(this, "random_offset", random_offset, "value_slider", "min=0.00001;max=0.01;step=0.0000001;ticks=true;log=true");
 		add_member_control(this, "xu0_rad", xu0_rad, "value_slider", "min=0.5;max=5;ticks=true");
@@ -473,12 +646,15 @@ public:
 		ref_point_renderer(ctx, 1);
 		read_calibs();
 		read_frames();
-		return pc_prog.build_program(ctx, "rgbd_pc.glpr", true);
+		cgv::data::data_format df(color_frame.width, color_frame.height, cgv::type::info::TI_UINT8, cgv::data::CF_BGRA);
+		cgv::data::data_view dv(&df, color_frame.frame_data.data());
+		color_tex.create(ctx, dv);
+		return pr.init(ctx);
 	}
 	void destruct(context& ctx)
 	{
 		ref_point_renderer(ctx, -1);
-		pc_prog.destruct(ctx);
+		pr.clear(ctx);
 	}
 	void init_frame(context& ctx)
 	{
@@ -486,12 +662,26 @@ public:
 			view_ptr = find_view_as_node();
 		pc_aam.init(ctx);
 	}
-	void draw_points(context& ctx, size_t nr_elements, const vec3* P, const rgb8* C)
+	void draw_points(context& ctx)
 	{
 		glDisable(GL_CULL_FACE);
-		if (use_pc_shader_prog && pc_prog.is_linked()) {
-			pc_prog.enable(ctx);
-			pc_prog.disable(ctx);
+		if (use_pc_shader_prog && pr.ref_prog().is_linked()) {
+			if (calib_outofdate) {
+				pr.set_calibration(calib);
+				calib_outofdate = false;
+			}
+			if (view_ptr)
+				pr.set_y_view_angle(float(view_ptr->get_y_view_angle()));
+			pr.set_render_style(prs);
+			pr.set_position_array(ctx, sP);
+			//pr.set_color_array(ctx, sC);
+			if (pr.validate_and_enable(ctx)) {
+				color_tex.enable(ctx, 1);
+				pr.ref_prog().set_uniform(ctx, "color_image", 1);
+				pr.draw(ctx, 0, sP.size());
+				pr.disable(ctx);
+				color_tex.disable(ctx);
+			}			
 		}
 		else {
 			auto& pr = ref_point_renderer(ctx);
@@ -499,16 +689,15 @@ public:
 				pr.set_y_view_angle(float(view_ptr->get_y_view_angle()));
 			pr.set_render_style(prs);
 			pr.enable_attribute_array_manager(ctx, pc_aam);
-			pr.set_position_array(ctx, P, nr_elements);
-			pr.set_color_array(ctx, C, nr_elements);
-			pr.render(ctx, 0, nr_elements);
+			pr.set_position_array(ctx, P);
+			pr.set_color_array(ctx, C);
+			pr.render(ctx, 0, P.size());
 		}
 		glEnable(GL_CULL_FACE);
 	}
 	void draw(context& ctx)
 	{
-		draw_points(ctx, P.size(), &P.front(), &C.front());
-		//draw_points(ctx, pc.get_nr_points(), &pc.pnt(0), &pc.clr(0));
+		draw_points(ctx);
 	}
 };
 
