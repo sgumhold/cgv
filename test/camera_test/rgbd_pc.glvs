@@ -1,14 +1,21 @@
 #version 330 core
 
 //***** begin interface of rgbd.glsl ***********************************
-vec3 construct_point(in vec2 xp, in float depth);
-vec4 lookup_color(vec3 p);
-vec4 lookup_color(vec3 p, float eps);
+uint get_depth_width();
+uint get_depth_height();
+uint lookup_depth(ivec2 xp);
+bool construct_point(in vec2 xp, in float depth, out vec3 p);
+bool lookup_color(vec3 p, out vec4 c);
+bool lookup_color(vec3 p, float eps, out vec4 c);
 //***** end interface of rgbd.glsl ***********************************
 
+uniform bool geometry_less_rendering = false;
+uniform bool do_lookup_color = true;
 uniform vec4 halo_color = vec4(0.5);
 uniform float halo_width_in_pixel = 0.0;
 uniform float percentual_halo_width = 0.0;
+uniform bool discard_invalid_color_points = true;
+uniform vec4 invalid_color = vec4(1.0,0.0,1.0,1.0);
 
 in ivec3 position;
 in vec4 color;
@@ -25,12 +32,31 @@ out POINT_GS {
 
 void main()
 {
-	vec3 p = construct_point(position.xy, position.z);
-	vo.color = lookup_color(p);
-	vo.halo_color = halo_color;
-	vo.halo_width_in_pixel = halo_width_in_pixel;
-	vo.percentual_halo_width = percentual_halo_width;
+	ivec2 xp = position.xy;
+	uint depth = uint(position.z);
+	if (geometry_less_rendering) {
+		xp.y = gl_InstanceID/int(get_depth_width());
+		xp.x = gl_InstanceID - xp.y*int(get_depth_width());
+		depth = lookup_depth(xp);
+	}
 	vo.depth_offset = depth_offset;
-	gl_Position = vec4(p, 1.0);
-	gl_PointSize = point_size;
+	vec3 p = vec3(0.0);
+	if (construct_point(xp, depth, p)) {
+		if (do_lookup_color) {
+			if (!lookup_color(p, vo.color)) {
+				vo.color = invalid_color;
+				if (discard_invalid_color_points)
+					vo.depth_offset = 200000.0;
+			}
+		}
+		else
+			vo.color = color;
+		vo.halo_color = halo_color;
+		vo.halo_width_in_pixel = halo_width_in_pixel;
+		vo.percentual_halo_width = percentual_halo_width;
+		gl_Position = vec4(p, 1.0);
+		gl_PointSize = point_size;
+	}
+	else
+		vo.depth_offset = 200000.0;
 }
