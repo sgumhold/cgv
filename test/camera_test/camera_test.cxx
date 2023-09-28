@@ -15,6 +15,7 @@
 #include <rgbd_capture/rgbd_device.h>
 #include <rgbd_render/rgbd_render.h>
 #include <rgbd_render/rgbd_point_renderer.h>
+#include <rgbd_render/rgbd_starter.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/point_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
@@ -230,14 +231,12 @@ struct rgbd_kinect_azure
 };
 
 class camera_test :
-	public node,
-	public drawable,
-	public provider
+	public rgbd::rgbd_starter<node>,
+	public drawable
 {
 protected:
 	// rendering configuration
 	rgbd::rgbd_point_renderer pr;
-	rgbd::rgbd_calibration calib;
 	bool calib_outofdate = true;
 	rgbd_kinect_azure rka;
 	point_render_style prs;
@@ -283,7 +282,8 @@ protected:
 			return false;
 		if (!warped_color_frame.read("D:/data/mesh/kinect/test.wrgb"))
 			return false;
-		rgbd::compute_undistortion_map(calib, undistortion_map, sub_sample);
+		color_frame_changed = true;
+		depth_frame_changed = true;
 		construct_point_clouds();
 		return true;
 	}
@@ -425,29 +425,70 @@ protected:
 	}
 	void construct_point_clouds(bool include_integer_points = true)
 	{
-		P.clear();
-		C.clear();
-		if (debug_mode) {
-			switch (prec) {
-			case precision::float_precision:
-				construct_point_clouds_precision(cgv::math::camera<float>(calib.depth), float(calib.depth_scale));
-				break;
-			default:
-				construct_point_clouds_precision(calib.depth, calib.depth_scale);
-				break;
-			}
+		if (use_pc_shader_prog) {
+			if (!pr.do_geometry_less_rendering())
+				construct_rgbd_render_data_with_color(depth_frame, warped_color_frame, sP, sC, sub_sample, sub_line_sample);
 		}
-		else
-			rgbd::construct_point_cloud(depth_frame, color_frame, P, C, calib, use_undistortion_map ? &undistortion_map : 0);
-		
-		construct_rgbd_render_data_with_color(depth_frame, warped_color_frame, sP, sC, sub_sample, sub_line_sample);
+		else {
+			P.clear();
+			C.clear();
+			if (debug_mode) {
+				switch (prec) {
+				case precision::float_precision:
+					construct_point_clouds_precision(cgv::math::camera<float>(calib.depth), float(calib.depth_scale));
+					break;
+				default:
+					construct_point_clouds_precision(calib.depth, calib.depth_scale);
+					break;
+				}
+			}
+			else
+				rgbd::construct_point_cloud(depth_frame, color_frame, P, C, calib, use_undistortion_map ? &undistortion_map : 0);
+		}
 	}
 	bool read_calibs()
 	{
-		return read_rgbd_calibration("D:/data/mesh/kinect/000442922212_calib.json", calib);
+		if (!read_rgbd_calibration("D:/data/mesh/kinect/000442922212_calib.json", calib))
+			return false;
+		rgbd::compute_undistortion_map(calib, undistortion_map, sub_sample);
+		return true;
 	}
 	attribute_array_manager pc_aam;
 	cgv::render::view* view_ptr = 0;
+	void on_attach() {
+		std::cout << "attached to " << rgbd_inp.get_serial() << std::endl;
+	}
+	void on_start() {
+		std::cout << "started device " << rgbd_inp.get_serial() << std::endl;
+		rgbd::compute_undistortion_map(calib, undistortion_map, sub_sample);
+	}
+	void on_new_frame(double t, rgbd::InputStreams new_frames) {
+#ifdef _DEBUG
+		std::cout << "received frames:";
+#endif
+		if ((new_frames & rgbd::IS_COLOR) == rgbd::IS_COLOR) {
+#ifdef _DEBUG
+			std::cout << " color";
+#endif
+			color_frame = rgbd_starter<node>::color_frame;
+		}
+		if ((new_frames & rgbd::IS_DEPTH) == rgbd::IS_DEPTH) {
+#ifdef _DEBUG
+			std::cout << " depth";
+#endif
+			depth_frame = rgbd_starter<node>::depth_frame;
+		}
+#ifdef _DEBUG
+		if ((new_frames & rgbd::IS_INFRARED) == rgbd::IS_INFRARED)
+			std::cout << " infrared";
+		std::cout << std::endl;
+#endif
+		construct_point_clouds();
+		post_redraw();
+	}
+	void on_stop() {
+		std::cout << "stopped device " << rgbd_inp.get_serial() << std::endl;
+	}
 public:
 	camera_test() : color_tex("uint8[R,G,B]"), depth_tex("uint16[R]")
 	{
@@ -463,52 +504,65 @@ public:
 			calib.depth.compute_undistortion_map(undistortion_map, sub_sample);
 			construct_point_clouds();
 		}
-		else if (pt.one_of(sub_sample, sub_line_sample,xu0_rad,prec,random_offset,use_standard_epsilon,epsilon) ||
-			     pt.member_of(calib.color.pose) ||
-				 pt.one_of(scale,use_azure_impl,debug_mode,use_undistortion_map,debug_colors,xu_xd_lambda) ||
-			     pt.one_of(debug_xu0,depth_lambda,error_threshold,error_scale)) {
+		else if (pt.one_of(sub_sample, sub_line_sample, xu0_rad, prec, random_offset, use_standard_epsilon, epsilon) ||
+			pt.member_of(calib.color.pose) ||
+			pt.one_of(scale, use_azure_impl, debug_mode, debug_colors, xu_xd_lambda) ||
+			pt.one_of(debug_xu0, depth_lambda, error_threshold, error_scale)) {
 			construct_point_clouds(false);
 		}
-		if (pt.is(use_undistortion_map))
+		else if (pt.is(use_undistortion_map)) {
+			construct_point_clouds(false);
 			pr.set_undistortion_map_usage(use_undistortion_map);
-
+		}
+		else
+			on_set_base(member_ptr, *this);
 		update_member(member_ptr);
 		post_redraw();
 	}
 	std::string get_type_name() const { return "camera_test"; }
 	void create_gui()
 	{
-		add_decorator("a_buffer", "heading", "level=1");
-		add_member_control(this, "use_pc_shader_prog", use_pc_shader_prog, "toggle");
+		add_decorator("camera_test", "heading", "level=1");
 		add_member_control(this, "sub_sample", sub_sample, "value_slider", "min=1;max=16;ticks=true");
 		add_member_control(this, "sub_line_sample", sub_line_sample, "value_slider", "min=1;max=16;ticks=true");
-		add_member_control(this, "use_azure_impl", use_azure_impl, "toggle");
-		add_member_control(this, "debug_mode", debug_mode, "toggle");
-		add_member_control(this, "x_off", calib.color.pose(0, 3), "value_slider", "min=-100;max=100;ticks=true");
-		add_member_control(this, "y_off", calib.color.pose(1, 3), "value_slider", "min=-100;max=100;ticks=true");
-		add_member_control(this, "z_off", calib.color.pose(2, 3), "value_slider", "min=-100;max=100;ticks=true");
-		add_member_control(this, "use_undistortion_map", use_undistortion_map, "toggle");
-		add_member_control(this, "slow_down", slow_down, "value_slider", "min=0;max=1;ticks=true");
-		add_member_control(this, "precision", prec, "dropdown", "enums='float,double'");
-		add_member_control(this, "nr_iterations", nr_iterations, "value_slider", "min=0;max=30;ticks=true");
-		add_member_control(this, "use_standard_epsilon", use_standard_epsilon, "check");
-		add_member_control(this, "epsilon", epsilon, "value_slider", "min=0.000000001;step=0.00000000001;max=0.001;ticks=true;log=true");
-		add_member_control(this, "debug_colors", debug_colors, "toggle");
-		add_member_control(this, "scale", scale, "value_slider", "min=0.5;max=10;ticks=true");
-		add_member_control(this, "max_radius_for_projection", calib.depth.max_radius_for_projection, "value_slider", "min=0.5;max=10;ticks=true");
-		add_member_control(this, "debug_xu0", debug_xu0, "toggle");
-		add_member_control(this, "random_offset", random_offset, "value_slider", "min=0.00001;max=0.01;step=0.0000001;ticks=true;log=true");
-		add_member_control(this, "xu0_rad", xu0_rad, "value_slider", "min=0.5;max=5;ticks=true");
-		add_member_control(this, "xu_xd_lambda", xu_xd_lambda, "value_slider", "min=0;max=1;ticks=true");
-		add_member_control(this, "depth_lambda", depth_lambda, "value_slider", "min=0;max=1;ticks=true");
-		add_member_control(this, "error_threshold", error_threshold, "value_slider", "min=0.000001;max=0.1;step=0.0000001;log=true;ticks=true");
-		add_member_control(this, "error_scale", error_scale, "value_slider", "min=1;max=10000;log=true;ticks=true");
-
+		add_member_control(this, "use_pc_shader_prog", use_pc_shader_prog, "toggle");
+		if (begin_tree_node("debugging", debug_mode)) {
+			align("\a");
+			add_member_control(this, "use_azure_impl", use_azure_impl, "toggle");
+			add_member_control(this, "debug_mode", debug_mode, "toggle");
+			add_member_control(this, "x_off", calib.color.pose(0, 3), "value_slider", "min=-100;max=100;ticks=true");
+			add_member_control(this, "y_off", calib.color.pose(1, 3), "value_slider", "min=-100;max=100;ticks=true");
+			add_member_control(this, "z_off", calib.color.pose(2, 3), "value_slider", "min=-100;max=100;ticks=true");
+			add_member_control(this, "use_undistortion_map", use_undistortion_map, "toggle");
+			add_member_control(this, "slow_down", slow_down, "value_slider", "min=0;max=1;ticks=true");
+			add_member_control(this, "precision", prec, "dropdown", "enums='float,double'");
+			add_member_control(this, "nr_iterations", nr_iterations, "value_slider", "min=0;max=30;ticks=true");
+			add_member_control(this, "use_standard_epsilon", use_standard_epsilon, "check");
+			add_member_control(this, "epsilon", epsilon, "value_slider", "min=0.000000001;step=0.00000000001;max=0.001;ticks=true;log=true");
+			add_member_control(this, "debug_colors", debug_colors, "toggle");
+			add_member_control(this, "scale", scale, "value_slider", "min=0.5;max=10;ticks=true");
+			add_member_control(this, "max_radius_for_projection", calib.depth.max_radius_for_projection, "value_slider", "min=0.5;max=10;ticks=true");
+			add_member_control(this, "debug_xu0", debug_xu0, "toggle");
+			add_member_control(this, "random_offset", random_offset, "value_slider", "min=0.00001;max=0.01;step=0.0000001;ticks=true;log=true");
+			add_member_control(this, "xu0_rad", xu0_rad, "value_slider", "min=0.5;max=5;ticks=true");
+			add_member_control(this, "xu_xd_lambda", xu_xd_lambda, "value_slider", "min=0;max=1;ticks=true");
+			add_member_control(this, "depth_lambda", depth_lambda, "value_slider", "min=0;max=1;ticks=true");
+			add_member_control(this, "error_threshold", error_threshold, "value_slider", "min=0.000001;max=0.1;step=0.0000001;log=true;ticks=true");
+			add_member_control(this, "error_scale", error_scale, "value_slider", "min=1;max=10000;log=true;ticks=true");
+			align("\b");
+			end_tree_node(debug_mode);
+		}
+		if (begin_tree_node("capture", is_running)) {
+			align("\a");
+			create_gui_base(this, *this);
+			align("\b");
+			end_tree_node(is_running);
+		}
 		if (begin_tree_node("point style", prs)) {
 			align("\a");
 			pr.create_gui(this, *this);
 			add_gui("point style", prs);
-			align("\a");
+			align("\b");
 			end_tree_node(prs);
 		}
 
@@ -519,20 +573,30 @@ public:
 		ref_point_renderer(ctx, 1);
 		read_calibs();
 		read_frames();
-		create_or_update_texture_from_frame(ctx, color_tex, color_frame);
-		create_or_update_texture_from_frame(ctx, depth_tex, depth_frame);
 		pc_aam.init(ctx);
 		return pr.init(ctx);
 	}
-	void destruct(context& ctx)
+	void clear(context& ctx)
 	{
 		ref_point_renderer(ctx, -1);
 		pr.clear(ctx);
+		if (is_running) {
+			is_running = false;
+			on_set_base(&is_running, *this);
+		}
 	}
 	void init_frame(context& ctx)
 	{
 		if (!view_ptr)
 			view_ptr = find_view_as_node();
+		if (color_frame_changed) {
+			create_or_update_texture_from_frame(ctx, color_tex, color_frame);
+			color_frame_changed = false;
+		}
+		if (depth_frame_changed) {
+			create_or_update_texture_from_frame(ctx, depth_tex, depth_frame);
+			depth_frame_changed = false;
+		}
 	}
 	void draw(context& ctx)
 	{
