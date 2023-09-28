@@ -527,7 +527,7 @@ public:
 	template <typename S>
 	void compute_undistortion_map(std::vector<cgv::math::fvec<S, 2>>& map, unsigned sub_sample = 1,
 		const cgv::math::fvec<S, 2>& invalid_point = cgv::math::fvec<S, 2>(S(-10000)),
-		T epsilon = distortion_inversion_epsilon<T>(), unsigned max_nr_iterations = get_standard_max_nr_iterations(), T slow_down = get_standard_slow_down())
+		T epsilon = distortion_inversion_epsilon<T>(), unsigned max_nr_iterations = get_standard_max_nr_iterations(), T slow_down = get_standard_slow_down()) const
 	{
 		unsigned iterations = 1;
 		map.resize(w*h);

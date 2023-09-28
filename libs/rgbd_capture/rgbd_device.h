@@ -1,6 +1,7 @@
 #pragma once
 
 #include "frame.h"
+#include "rgbd_calibration.h"
 #include <cgv/math/fvec.h>
 #include <cgv/math/camera.h>
 
@@ -17,17 +18,6 @@ namespace rgbd {
 	struct emulator_parameters {
 		camera_intrinsics intrinsics;
 		double depth_scale;
-	};
-
-	/// calibration information for an rgbd camera
-	struct rgbd_calibration
-	{
-		/// scaling of depth camera in meters, i.e. 0.001 corresponds to mm
-		double depth_scale = 0.001;
-		/// depth camera calibation
-		cgv::math::camera<double> depth;
-		/// color camera calibation
-		cgv::math::camera<double> color;
 	};
 
 	/// helper object for parsing dynamic sized frames of type PF_POINTS_AND_TRIANGLES. 

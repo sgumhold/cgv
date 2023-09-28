@@ -1,4 +1,4 @@
-#version 430 core
+#version 330 core
 
 #define USE_UNDISTORTION_MAP 0
 
