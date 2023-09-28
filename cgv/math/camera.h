@@ -188,7 +188,6 @@ bool compute_homography_from_2D_point_correspondences(const std::vector<fvec<T, 
 	}
 	return compute_homography_from_constraint_matrix(A, H);
 }
-
 // compute homography from 3D homogenous pixels \c ui to 3D point \c xi correspondences and return whether this was possible
 template <typename T>
 bool compute_homography_from_3D_point_correspondences(const std::vector<fvec<T,3>>& ui, const std::vector<fvec<T,3>>& xi, fmat<T,3,3>& H)
@@ -227,7 +226,6 @@ bool compute_homography_from_3D_point_correspondences(const std::vector<fvec<T,3
 	}
 	return compute_homography_from_constraint_matrix(A, H);
 }
-
 // compute homography from 2D lines in pixel coords \c lpi to 2D lines \c li correspondences and return whether this was possible
 template <typename T>
 bool compute_homography_from_2D_line_correspondences(const std::vector<fvec<T, 3>>& lpi, const std::vector<fvec<T, 3>>& li, fmat<T,3,3>& H)
@@ -301,7 +299,7 @@ public:
 		return { s[0], 0.0f, 0.0f, 0.0f, skew, s[1], 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, c[0], c[1], 0.0f, 1.0f };
 	}
 	fvec<T,2> image_to_pixel_coordinates(const fvec<T,2>& x) const {
-		return vec2(s[0] * x[0] + skew * x[1] + c[0], s[1] * x[1] + c[1]);
+		return fvec<T,2>(s[0] * x[0] + skew * x[1] + c[0], s[1] * x[1] + c[1]);
 	}
 	fvec<T,2> pixel_to_image_coordinates(const fvec<T,2>& p) const {
 		T y = (p[1] - c[1]) / s[1]; return fvec<T, 2>((p[0] - c[0] - skew*y)/s[0], y);
@@ -522,6 +520,30 @@ public:
 			xd += slow_down * dxd;
 		}
 		return distortion_inversion_result::max_iterations_reached;
+	}
+	/// <summary>
+	/// per pixel compute undistorted image coordinates 
+	/// </summary>
+	template <typename S>
+	void compute_undistortion_map(std::vector<cgv::math::fvec<S, 2>>& map, unsigned sub_sample = 1,
+		const cgv::math::fvec<S, 2>& invalid_point = cgv::math::fvec<S, 2>(S(-10000)),
+		T epsilon = distortion_inversion_epsilon<T>(), unsigned max_nr_iterations = get_standard_max_nr_iterations(), T slow_down = get_standard_slow_down())
+	{
+		unsigned iterations = 1;
+		map.resize(w*h);
+		size_t i = 0;
+		for (uint16_t y = 0; y < h; y += sub_sample) {
+			for (uint16_t x = 0; x < w; x += sub_sample) {
+				fvec<T, 2> xu = pixel_to_image_coordinates(fvec<T, 2>(x, y));
+				fvec<T, 2> xd = xu;
+				if (invert_distortion_model(xu, xd, true, &iterations, epsilon, max_nr_iterations, slow_down) ==
+					cgv::math::distorted_pinhole_types::distortion_inversion_result::convergence)
+					map[i] = cgv::math::fvec<S, 2>(xd);
+				else
+					map[i] = invalid_point;
+				++i;
+			}
+		}
 	}
 };
 
