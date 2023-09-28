@@ -318,7 +318,7 @@ bool rgbd_input::start(InputStreams is, std::vector<stream_format>& stream_forma
 }
 
 /// query the calibration information and return whether this was successful
-bool rgbd_input::query_calibration(InputStreams is, cgv::math::camera<double>& cam)
+bool rgbd_input::query_calibration(rgbd_calibration& calib)
 {
 	if (!is_attached()) {
 		cerr << "rgbd_input::query_calibration called on device that has not been attached" << endl;
@@ -328,7 +328,7 @@ bool rgbd_input::query_calibration(InputStreams is, cgv::math::camera<double>& c
 		cerr << "rgbd_input::query_calibration called on device that has not been started" << endl;
 		return false;
 	}
-	rgbd->query_calibration(is, cam);
+	rgbd->query_calibration(calib);
 	return true;
 }
 

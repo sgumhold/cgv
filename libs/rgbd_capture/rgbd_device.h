@@ -7,18 +7,27 @@
 #include "lib_begin.h"
 
 namespace rgbd {
-
 	struct camera_intrinsics {
 		double fx, fy; //focal length, width in pixel
 		double cx, cy; //principal point;
 		double sk; //skew
 		unsigned image_width, image_height;
 	};
-
 	///struct for representing parameters used in the device emulator
 	struct emulator_parameters {
 		camera_intrinsics intrinsics;
 		double depth_scale;
+	};
+
+	/// calibration information for an rgbd camera
+	struct rgbd_calibration
+	{
+		/// scaling of depth camera in meters, i.e. 0.001 corresponds to mm
+		double depth_scale = 0.001;
+		/// depth camera calibation
+		cgv::math::camera<double> depth;
+		/// color camera calibation
+		cgv::math::camera<double> color;
 	};
 
 	/// helper object for parsing dynamic sized frames of type PF_POINTS_AND_TRIANGLES. 
@@ -191,8 +200,8 @@ namespace rgbd {
 		virtual void query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const = 0;
 		/// start the rgbd device with standard stream formats returned in second parameter
 		virtual bool start_device(InputStreams is, std::vector<stream_format>& stream_formats) = 0;
-		/// query the calibration information and return whether this was successful
-		virtual bool query_calibration(InputStreams is, cgv::math::camera<double>& cam);
+		/// query current calibration information (device must be started) and return whether this was successful
+		virtual bool query_calibration(rgbd_calibration& calib);
 		/// start the rgbd device with given stream formats 
 		virtual bool start_device(const std::vector<stream_format>& stream_formats) = 0;
 		/// stop the rgbd device
