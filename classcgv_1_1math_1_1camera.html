@@ -134,10 +134,10 @@ template&lt;typename S &gt; </td></tr>
 <tr class="memitem:a9d873eb461f9f4a7075aabea65f52d7d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole__types.html#a5076d61991f97ecf36a6dc679762d40b">distortion_inversion_result</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a9d873eb461f9f4a7075aabea65f52d7d">invert_distortion_model</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xu, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xd, bool use_xd_as_initial_guess=false, unsigned *iteration_ptr=0, T epsilon=<a class="el" href="namespacecgv_1_1math.html#abf3e38779f899fbd4ec9b0c86b3aca3c">distortion_inversion_epsilon</a>&lt; T &gt;(), unsigned max_nr_iterations=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole__types.html#a026e015e0ea5d823ee4f8ff4a99709e7">get_standard_max_nr_iterations</a>(), T slow_down=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a1a5d09eb25a7e4f55798cf9c48937947">get_standard_slow_down</a>()) const</td></tr>
 <tr class="memdesc:a9d873eb461f9f4a7075aabea65f52d7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">invert model for image coordinate inversion  <a href="classcgv_1_1math_1_1distorted__pinhole.html#a9d873eb461f9f4a7075aabea65f52d7d">More...</a><br /></td></tr>
 <tr class="separator:a9d873eb461f9f4a7075aabea65f52d7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e24e1dd969197d17970e8d5f168265d"><td class="memTemplParams" colspan="2">template&lt;typename S &gt; </td></tr>
-<tr class="memitem:a1e24e1dd969197d17970e8d5f168265d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a1e24e1dd969197d17970e8d5f168265d">compute_undistortion_map</a> (std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; S, 2 &gt;&gt; &amp;map, unsigned sub_sample=1, const <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; S, 2 &gt; &amp;invalid_point=<a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; S, 2 &gt;(S(-10000)), T epsilon=<a class="el" href="namespacecgv_1_1math.html#abf3e38779f899fbd4ec9b0c86b3aca3c">distortion_inversion_epsilon</a>&lt; T &gt;(), unsigned max_nr_iterations=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole__types.html#a026e015e0ea5d823ee4f8ff4a99709e7">get_standard_max_nr_iterations</a>(), T slow_down=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a1a5d09eb25a7e4f55798cf9c48937947">get_standard_slow_down</a>())</td></tr>
-<tr class="memdesc:a1e24e1dd969197d17970e8d5f168265d"><td class="mdescLeft">&#160;</td><td class="mdescRight">per pixel compute undistorted image coordinates  <a href="classcgv_1_1math_1_1distorted__pinhole.html#a1e24e1dd969197d17970e8d5f168265d">More...</a><br /></td></tr>
-<tr class="separator:a1e24e1dd969197d17970e8d5f168265d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebc1fa366129a263e2189b100d44690a"><td class="memTemplParams" colspan="2">template&lt;typename S &gt; </td></tr>
+<tr class="memitem:aebc1fa366129a263e2189b100d44690a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#aebc1fa366129a263e2189b100d44690a">compute_undistortion_map</a> (std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; S, 2 &gt;&gt; &amp;map, unsigned sub_sample=1, const <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; S, 2 &gt; &amp;invalid_point=<a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; S, 2 &gt;(S(-10000)), T epsilon=<a class="el" href="namespacecgv_1_1math.html#abf3e38779f899fbd4ec9b0c86b3aca3c">distortion_inversion_epsilon</a>&lt; T &gt;(), unsigned max_nr_iterations=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole__types.html#a026e015e0ea5d823ee4f8ff4a99709e7">get_standard_max_nr_iterations</a>(), T slow_down=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a1a5d09eb25a7e4f55798cf9c48937947">get_standard_slow_down</a>()) const</td></tr>
+<tr class="memdesc:aebc1fa366129a263e2189b100d44690a"><td class="mdescLeft">&#160;</td><td class="mdescRight">per pixel compute undistorted image coordinates  <a href="classcgv_1_1math_1_1distorted__pinhole.html#aebc1fa366129a263e2189b100d44690a">More...</a><br /></td></tr>
+<tr class="separator:aebc1fa366129a263e2189b100d44690a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -222,8 +222,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a1e24e1dd969197d17970e8d5f168265d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e24e1dd969197d17970e8d5f168265d">&#9670;&nbsp;</a></span>compute_undistortion_map()</h2>
+<a id="aebc1fa366129a263e2189b100d44690a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebc1fa366129a263e2189b100d44690a">&#9670;&nbsp;</a></span>compute_undistortion_map()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -274,7 +274,7 @@ template&lt;typename S &gt; </div>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td> const</td>
         </tr>
       </table>
   </td>

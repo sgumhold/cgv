@@ -86,7 +86,7 @@ var searchData=
   ['compute_5fscreen_5frectangle_4449',['compute_screen_rectangle',['../classcgv_1_1render_1_1view.html#a9755d9c8de88e76e3d8cec015b74c3bc',1,'cgv::render::view']]],
   ['compute_5fsphere_5farea_4450',['compute_sphere_area',['../namespacecgv_1_1math.html#acf4fd0c1095e3805f69c1f5df116ca00',1,'cgv::math']]],
   ['compute_5ftick_5frender_5finformation_4451',['compute_tick_render_information',['../classcgv_1_1plot_1_1plot3d.html#a2a5f75ab5667ca955713bdc327cad698',1,'cgv::plot::plot3d']]],
-  ['compute_5fundistortion_5fmap_4452',['compute_undistortion_map',['../classcgv_1_1math_1_1distorted__pinhole.html#a1e24e1dd969197d17970e8d5f168265d',1,'cgv::math::distorted_pinhole']]],
+  ['compute_5fundistortion_5fmap_4452',['compute_undistortion_map',['../classcgv_1_1math_1_1distorted__pinhole.html#aebc1fa366129a263e2189b100d44690a',1,'cgv::math::distorted_pinhole']]],
   ['compute_5funit_5fball_5fvolume_4453',['compute_unit_ball_volume',['../namespacecgv_1_1math.html#a2a4a644a254ea830977b0d01fe93d91f',1,'cgv::math']]],
   ['compute_5funit_5fsphere_5farea_4454',['compute_unit_sphere_area',['../namespacecgv_1_1math.html#ad3d907d9219c652396ff81057de4bae6',1,'cgv::math']]],
   ['compute_5fvertex_5flocations_4455',['compute_vertex_locations',['../classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html#a32b017094d3ca6cc2282c95571dbb34a',1,'cgv::media::mesh::convex_polyhedron']]],
