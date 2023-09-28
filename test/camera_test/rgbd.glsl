@@ -5,9 +5,12 @@
 /*
 The following interface is implemented in this shader:
 //***** begin interface of rgbd.glsl ***********************************
-vec3 construct_point(in vec2 xp, in float depth);
-vec4 lookup_color(vec3 p);
-vec4 lookup_color(vec3 p, float eps);
+uint get_depth_width();
+uint get_depth_height();
+uint lookup_depth(ivec2 xp);
+bool construct_point(in vec2 xp, in float depth, out vec3 p);
+bool lookup_color(vec3 p, out vec4 c);
+bool lookup_color(vec3 p, float eps, out vec4 c);
 //***** end interface of rgbd.glsl ***********************************
 */
 
@@ -47,25 +50,42 @@ uniform sampler2D color_image;
 uniform sampler2D undistortion_map;
 #endif
 
-vec3 construct_point(in vec2 xp, in float depth)
+uint get_depth_width()
 {
+	return uint(depth_calib.w);
+}
+uint get_depth_height()
+{
+	return uint(depth_calib.h);
+}
+
+uint lookup_depth(ivec2 xp)
+{
+	return uint(65535.0*texture(depth_image, vec2((xp.x+0.5)/depth_calib.w, (xp.y+0.5)/depth_calib.h)).x);
+}
+
+bool construct_point(in vec2 xp, in float depth, out vec3 p)
+{
+	if (depth == 0)
+		return false;
 	vec2 xu = pixel_to_image_coordinates(xp, depth_calib);
 	vec2 xd = xu;
 #if USE_UNDISTORTION_MAP != 0
 	xd = texture(undistortion_map, vec2((xp.x+0.5)/depth_calib.w, (xp.y+0.5)/depth_calib.h)).xy;
 	if (xd.x < -1000.0)
-		return vec3(0.0);
+		return false;
 #else
 	int dir;
 	dir = invert_distortion_model(xu, xd, true, depth_calib);
 	if (dir != CONVERGENCE)
-		return vec3(0.0);
+		return false;
 #endif
 	float depth_m = depth_scale * depth;
-	return vec3(depth_m*xd, depth_m);
+	p = vec3(depth_m*xd, depth_m);
+	return true;
 }
 
-vec4 lookup_color(vec3 p, float eps)
+bool lookup_color(vec3 p, float eps, out vec4 c)
 {
 	p = ((p + depth_scale*color_translation)*color_rotation);
 	vec2 xu;
@@ -73,14 +93,15 @@ vec4 lookup_color(vec3 p, float eps)
 	mat2 J;
 	int result = apply_distortion_model(xd, xu, J, eps, color_calib);
 	if (result != SUCCESS)
-		return vec4(0.0);
+		return false;
 	vec2 xp = image_to_pixel_coordinates(xu, color_calib);
 	if (xp[0] < 0.0 || xp[1] < 0.0 || xp[0] >= float(color_calib.w) || xp[1] >= float(color_calib.h))
-		return vec4(0.0);
-	return texture(color_image, pixel_to_texture_coordinates(xp, color_calib));
+		return false;
+	c = texture(color_image, pixel_to_texture_coordinates(xp, color_calib));
+	return true;
 }
 
-vec4 lookup_color(vec3 p)
+bool lookup_color(vec3 p, out vec4 c)
 {
 	p = ((p + depth_scale*color_translation)*color_rotation);
 	vec2 xu;
@@ -88,9 +109,10 @@ vec4 lookup_color(vec3 p)
 	mat2 J;
 	int result = apply_distortion_model(xd, xu, J, color_calib);
 	if (result != SUCCESS)
-		return vec4(0.0);
+		return false;
 	vec2 xp = image_to_pixel_coordinates(xu, color_calib);
 	if (xp[0] < 0.0 || xp[1] < 0.0 || xp[0] >= float(color_calib.w) || xp[1] >= float(color_calib.h))
-		return vec4(0.0);
-	return texture(color_image, pixel_to_texture_coordinates(xp, color_calib));
+		return false;
+	c = texture(color_image, pixel_to_texture_coordinates(xp, color_calib));
+	return true;
 }

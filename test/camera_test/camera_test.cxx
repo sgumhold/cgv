@@ -278,13 +278,24 @@ protected:
 	bool calib_set = false;
 	rgbd::rgbd_calibration calib;
 	bool use_undistortion_map = false;
+	bool geometry_less_rendering = true;
 	bool undistortion_map_outofdate = true;
+	bool lookup_color = true;
+	bool discard_invalid_color_points = false;
+	rgba invalid_color = rgba(1, 0, 1, 1);
 	std::vector<vec2> undistortion_map;
 	cgv::render::texture undistortion_tex;
 public:
 	rgbd_point_renderer() : undistortion_tex("flt32[R,G]") {
 		undistortion_tex.set_mag_filter(cgv::render::TF_NEAREST);
 	}
+	void configure_invalid_color_handling(bool discard, const rgba& color)
+	{
+		discard_invalid_color_points = discard;
+		invalid_color = color;
+	}
+	bool do_geometry_less_rendering() const { return geometry_less_rendering; }
+	bool do_lookup_color() const { return lookup_color; }
 	void set_calibration(const rgbd::rgbd_calibration& _calib)
 	{
 		calib = _calib;
@@ -305,11 +316,22 @@ public:
 		point_renderer::update_defines(defines);
 		shader_code::set_define(defines, "USE_UNDISTORTION_MAP", use_undistortion_map, false);
 	}
+	bool validate_attributes(const context& ctx) const
+	{
+		if (geometry_less_rendering)
+			return true;
+		else
+			return cgv::render::point_renderer::validate_attributes(ctx);
+	}
 	bool enable(context& ctx)
 	{
 		if (!point_renderer::enable(ctx))
 			return false;
 		set_rgbd_calibration_uniforms(ctx, ref_prog(), calib);
+		ref_prog().set_uniform(ctx, "invalid_color", invalid_color);
+		ref_prog().set_uniform(ctx, "discard_invalid_color_points", discard_invalid_color_points);
+		ref_prog().set_uniform(ctx, "geometry_less_rendering", geometry_less_rendering);
+		ref_prog().set_uniform(ctx, "do_lookup_color", lookup_color);
 		if (use_undistortion_map) {
 			if (undistortion_map_outofdate) {
 				if (undistortion_tex.is_created())
@@ -334,7 +356,73 @@ public:
 	{
 		return prog.build_program(ctx, "rgbd_pc.glpr", true, defines);
 	}
+	void draw(context& ctx, size_t start, size_t count, bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1)
+	{
+		if (geometry_less_rendering)
+			draw_impl_instanced(ctx, PT_POINTS, 0, 1, calib.depth.w * calib.depth.h);
+		else
+			draw_impl(ctx, PT_POINTS, start, count);
+	}
+	void create_gui(cgv::base::base* bp, cgv::gui::provider& p)
+	{
+		p.add_member_control(bp, "geometry_less_rendering", geometry_less_rendering, "check");
+		p.add_member_control(bp, "lookup_color", lookup_color, "check");
+		p.add_member_control(bp, "discard_invalid_color_points", discard_invalid_color_points, "check");
+		p.add_member_control(bp, "invalid_color", invalid_color);
+	}
 };
+
+bool create_or_update_texture_from_frame(cgv::render::context& ctx,
+	cgv::render::texture& tex, const rgbd::frame_type& frame)
+{
+	const cgv::data::ComponentFormat cfs[] = {
+		cgv::data::CF_R,     // PF_I
+		cgv::data::CF_RGB,   // PF_RGB
+		cgv::data::CF_BGR,   // PF_BGR
+		cgv::data::CF_RGBA,  // PF_RGBA
+		cgv::data::CF_BGRA,  // PF_BGRA
+		cgv::data::CF_UNDEF, // PF_BAYER
+		cgv::data::CF_R,     // PF_DEPTH
+		cgv::data::CF_UNDEF, // PF_DEPTH_AND_PLAYER
+		cgv::data::CF_UNDEF, // PF_POINTS_AND_TRIANGLES
+		cgv::data::CF_R      // PF_CONFIDENCE
+	};
+	auto cf = cfs[frame.pixel_format];
+	if (cf == cgv::data::CF_UNDEF)
+		return false;
+	cgv::type::info::TypeId type = cgv::type::info::TI_UINT8;
+	switch (frame.pixel_format) {
+	case rgbd::PF_RGB:
+		if (frame.get_nr_bytes_per_pixel() == 4)
+			cf = cgv::data::CF_RGBA;
+		break;
+	case rgbd::PF_BGR:
+		if (frame.get_nr_bytes_per_pixel() == 4)
+			cf = cgv::data::CF_BGRA;
+		break;
+	case rgbd::PF_I:
+	case rgbd::PF_DEPTH:
+	case rgbd::PF_CONFIDENCE:
+		switch (frame.get_nr_bytes_per_pixel()) {
+		case 1:break;
+		case 2:type = cgv::type::info::TI_UINT16; break;
+		default:type = cgv::type::info::TI_UINT32; break;
+		}
+		break;
+	}
+	cgv::data::data_format df(frame.width, frame.height, type, cf);
+	cgv::data::const_data_view dv(&df, frame.frame_data.data());
+	if (tex.is_created()) {
+		if (tex.get_nr_dimensions() == 2 &&
+			tex.get_width() == frame.width && tex.get_height()) {
+			tex.replace(ctx, 0, 0, dv);
+			return true;
+		}
+		tex.destruct(ctx);
+	}
+	tex.create(ctx, dv);
+	return true;
+}
 
 class camera_test :
 	public node,
@@ -348,7 +436,7 @@ protected:
 	bool calib_outofdate = true;
 	rgbd_kinect_azure rka;
 	point_render_style prs;
-	cgv::render::texture color_tex;
+	cgv::render::texture depth_tex, color_tex;
 	enum class precision { float_precision, double_precision };
 	precision prec = precision::double_precision;
 	bool debug_mode = false;
@@ -576,7 +664,7 @@ protected:
 	attribute_array_manager pc_aam;
 	cgv::render::view* view_ptr = 0;
 public:
-	camera_test() : color_tex("uint8[R,G,B]")
+	camera_test() : color_tex("uint8[R,G,B]"), depth_tex("uint16[R]")
 	{
 		rka.c_ptr = &calib.depth;
 		set_name("camera_test");
@@ -634,6 +722,7 @@ public:
 
 		if (begin_tree_node("point style", prs)) {
 			align("\a");
+			pr.create_gui(this, *this);
 			add_gui("point style", prs);
 			align("\a");
 			end_tree_node(prs);
@@ -646,9 +735,9 @@ public:
 		ref_point_renderer(ctx, 1);
 		read_calibs();
 		read_frames();
-		cgv::data::data_format df(color_frame.width, color_frame.height, cgv::type::info::TI_UINT8, cgv::data::CF_BGRA);
-		cgv::data::data_view dv(&df, color_frame.frame_data.data());
-		color_tex.create(ctx, dv);
+		create_or_update_texture_from_frame(ctx, color_tex, color_frame);
+		create_or_update_texture_from_frame(ctx, depth_tex, depth_frame);
+		pc_aam.init(ctx);
 		return pr.init(ctx);
 	}
 	void destruct(context& ctx)
@@ -660,7 +749,6 @@ public:
 	{
 		if (!view_ptr)
 			view_ptr = find_view_as_node();
-		pc_aam.init(ctx);
 	}
 	void draw_points(context& ctx)
 	{
@@ -673,15 +761,20 @@ public:
 			if (view_ptr)
 				pr.set_y_view_angle(float(view_ptr->get_y_view_angle()));
 			pr.set_render_style(prs);
-			pr.set_position_array(ctx, sP);
-			//pr.set_color_array(ctx, sC);
+			if (!pr.do_geometry_less_rendering())
+				pr.set_position_array(ctx, sP);
+			if (!pr.do_lookup_color())
+				pr.set_color_array(ctx, sC);
 			if (pr.validate_and_enable(ctx)) {
+				depth_tex.enable(ctx, 0);
 				color_tex.enable(ctx, 1);
+				pr.ref_prog().set_uniform(ctx, "depth_image", 0);
 				pr.ref_prog().set_uniform(ctx, "color_image", 1);
 				pr.draw(ctx, 0, sP.size());
 				pr.disable(ctx);
 				color_tex.disable(ctx);
-			}			
+				depth_tex.disable(ctx);
+			}
 		}
 		else {
 			auto& pr = ref_point_renderer(ctx);
