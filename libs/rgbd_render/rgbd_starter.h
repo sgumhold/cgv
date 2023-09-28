@@ -61,6 +61,16 @@ class rgbd_starter : public B, public rgbd_starter_base, public cgv::gui::provid
 public:
 	typedef typename rgbd_starter<B> base_type;
 	rgbd_starter() { connect(cgv::gui::get_animation_trigger().shoot, this, &base_type::timer_event); }
+	bool start_first_device() {
+		unsigned nr = rgbd_input::get_nr_devices();
+		if (nr == 0)
+			return false;
+		device_idx = 0;
+		on_set(&device_idx);
+		is_running = true;
+		on_set(&is_running);
+		return is_running;
+	}
 	void on_set(void* member_ptr) { on_set_base(member_ptr, *this); update_member(member_ptr); }
 	void timer_event(double t, double dt) { timer_event_base(t, dt, *this);  }
 	void create_gui() {
