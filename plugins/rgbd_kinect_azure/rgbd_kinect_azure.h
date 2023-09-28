@@ -81,7 +81,7 @@ namespace rgbd {
 		/// start the rgbd device with given stream formats 
 		virtual bool start_device(const std::vector<stream_format>& stream_formats);
 		///
-		bool query_calibration(InputStreams is, cgv::math::camera<double>& cam);
+		bool query_calibration(rgbd_calibration& calib);
 		/// stop the camera
 		bool stop_device();
 		/// return whether device has been started
