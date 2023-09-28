@@ -144,11 +144,11 @@ namespace cgv { // @<
 				enabled_attribute_arrays.insert(loc);
 				return attribute_array_binding::set_global_attribute_array(ctx, loc, &elem, nr_elements, sizeof(C));
 			}
-			/// default implementation of draw method with support for indexed rendering and different primitive types
-			void draw_impl(context& ctx, PrimitiveType pt, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index);
-			/// default implementation of instanced draw method with support for indexed rendering and different primitive types
-			void draw_impl_instanced(context& ctx, PrimitiveType type, size_t start, size_t count, size_t instance_count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index);
 		public:
+			/// default implementation of draw method with support for indexed rendering and different primitive types
+			void draw_impl(context& ctx, PrimitiveType pt, size_t start, size_t count, bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
+			/// default implementation of instanced draw method with support for indexed rendering and different primitive types
+			void draw_impl_instanced(context& ctx, PrimitiveType type, size_t start, size_t count, size_t instance_count, bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 			/// construct and init attribute tracking flags
 			renderer();
 			/// destructor deletes default renderer style
