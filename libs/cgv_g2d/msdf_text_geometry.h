@@ -12,17 +12,18 @@ namespace g2d {
 class CGV_API msdf_text_geometry : public cgv::render::render_types {
 protected:
 	struct text_info {
-		std::string str;
-		int offset;
-		vec2 position;
-		vec2 size;
-		cgv::render::TextAlignment alignment;
-		float angle;
+		std::string str = "";
+		int offset = 0;
+		vec2 position = vec2(0.0f);
+		vec2 size = vec2(0.0f);
+		cgv::render::TextAlignment alignment = cgv::render::TextAlignment::TA_NONE;
+		float angle = 0.0f;
+		rgba color = rgba(0.0f, 0.0f, 0.0f, 1.0f);
 
 		text_info() : text_info("", vec2(0.0f), vec2(1.0f)) {}
 
-		text_info(const std::string& str, const vec2& position, const vec2& size, const cgv::render::TextAlignment alignment = cgv::render::TA_NONE, float angle = 0.0f)
-			: str(str), position(position), size(size), alignment(alignment), angle(angle) {}
+		text_info(const std::string& str, const vec2& position, const vec2& size, const cgv::render::TextAlignment alignment = cgv::render::TA_NONE, float angle = 0.0f, rgba color = rgba(0.0f, 0.0f, 0.0f, 1.0f))
+			: str(str), position(position), size(size), alignment(alignment), angle(angle), color(color) {}
 	};
 
 	struct vertex_type {
@@ -74,6 +75,8 @@ public:
 
 	void set_angle(unsigned i, const float angle);
 
+	void set_color(unsigned i, const rgba color);
+
 	size_t size() const { return texts.size(); }
 
 	const std::vector<text_info>& ref_texts() const { return texts; }
@@ -81,14 +84,14 @@ public:
 	vec2 get_text_render_size(unsigned i, float font_size) const;
 
 	template<typename T>
-	void add_text(const std::string& str, const cgv::math::fvec<T, 2>& position, const cgv::render::TextAlignment alignment = cgv::render::TA_NONE, float scale = 1.0f, float angle = 0.0f) {
+	void add_text(const std::string& str, const cgv::math::fvec<T, 2>& position, const cgv::render::TextAlignment alignment = cgv::render::TA_NONE, float scale = 1.0f, float angle = 0.0f, rgba color = rgba(0.0f, 0.0f, 0.0f, 1.0f)) {
 		int offset = 0;
 		if(texts.size() > 0) {
 			const text_info& last_text = texts.back();
 			offset = int(last_text.offset + last_text.str.size());
 		}
 
-		texts.emplace_back(str, static_cast<vec2>(position), vec2(compute_length(str), scale), alignment, angle);
+		texts.emplace_back(str, static_cast<vec2>(position), vec2(compute_length(str), scale), alignment, angle, color);
 		texts.back().offset = offset;
 
 		state_out_of_date = true;

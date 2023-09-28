@@ -33,8 +33,8 @@ bool enable(context& ctx, RENDERER& r, const STYLE& s) { \
 		return r.validate_and_enable(ctx); \
 	} else if(this->out_of_date) { \
 		early_transfer(ctx, r); \
-		return false; \
 	} \
+	return false; \
 }
 
 #define RDB_RENDER_FUNC3_DEF(RENDERER) \

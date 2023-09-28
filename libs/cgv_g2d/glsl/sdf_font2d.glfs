@@ -25,6 +25,7 @@ uniform float pixel_range = 2.0;
 uniform vec2 text_size;
 uniform float font_size = 32.0;
 uniform bool enable_subpixel_rendering = false;
+uniform vec4 color;
 
 in vec2 pix_coord;
 in vec2 tex_coord;
@@ -78,6 +79,6 @@ void main() {
 		signed_distance -= border_radius;
 		signed_distance -= feather_origin*get_feather_width();
 
-		finish_sdf_fragment2d(signed_distance, get_active_color(fill_color));
+		finish_sdf_fragment2d(signed_distance, get_active_color(color));
 	}	
 }

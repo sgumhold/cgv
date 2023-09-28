@@ -133,7 +133,7 @@ public:
 		switch(mode) {
 		case Mode::kOpen: configuration = "open=true"; break;
 		case Mode::kSave: configuration = "save=true"; break;
-		default: "open=false;save=false";
+		default: "open=false;save=false"; break;
 		}
 
 		if(provider_ptr)

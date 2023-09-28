@@ -150,6 +150,8 @@ public:
 	bool create_from_images(const context& ctx, const std::string& file_names, int level = -1);
 	/// write the content of the texture to a file. This method needs support for frame buffer objects.
 	bool write_to_file(context& ctx, const std::string& file_name, unsigned int z_or_cube_side = -1, float depth_map_gamma = 1.0f, const std::string& options = "") const;
+	/** create storage for mipmaps without computing the mipmap contents */
+	bool create_mipmaps(const context& ctx);
 	/** generate mipmaps automatically, only supported if 
 	    framebuffer objects are supported by the GPU */
 	bool generate_mipmaps(const context& ctx);
@@ -206,8 +208,18 @@ public:
 	/** enable this texture in the given texture unit, -1 corresponds to 
 	    the current unit. */
 	bool enable(const context& ctx, int tex_unit = -1);
-	/// disable texture and restore state before last enable call
+	/// disable texture and restore state from before last enable call
 	bool disable(const context& ctx);
+
+	/// @brief Binds this texture as an image texture to the given texture unit.
+	/// @param ctx The graphics context.
+	/// @param tex_unit The texture unit the texture is bound to.
+	/// @param level The mipmap level of the texture to bind.
+	/// @param bind_array Only for array textures. If true, the complete texture array is bound and the layer ignored. If false, a single layer as specified by layer is bound.
+	/// @param layer Only for array textures. The array layer to bind.
+	/// @param access The access type: read, write, read and write.
+	/// @return True if the texture was successfully bound as an image, false otherwise.
+	bool bind_as_image(const context& ctx, int tex_unit, int level = 0, bool bind_array = false, int layer = 0, AccessType access = AT_WRITE_ONLY);
 	//@}
 };
 
