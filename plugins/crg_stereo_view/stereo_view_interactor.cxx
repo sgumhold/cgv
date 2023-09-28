@@ -1619,6 +1619,19 @@ bool stereo_view_interactor::get_void(const std::string& property, const std::st
 
 void stereo_view_interactor::on_set(void* m)
 {
+	if (m == &view_dir) {
+		update_member(&view_dir[1]);
+		update_member(&view_dir[2]);
+	}
+	if (m == &view_up_dir) {
+		update_member(&view_up_dir[1]);
+		update_member(&view_up_dir[2]);
+	}
+	dvec3& foc = cgv::render::view::focus;
+	if (m == &foc) {
+		update_member(&foc[1]);
+		update_member(&foc[2]);
+	}
 	if (m == &stereo_enabled || m == &stereo_mode)
 		on_stereo_change();
 	update_member(m);
