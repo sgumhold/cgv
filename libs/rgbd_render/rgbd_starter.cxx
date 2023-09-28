@@ -18,7 +18,6 @@ std::string get_device_enum(const std::string& prepend)
 	device_def += "'";
 	return device_def;
 }
-
 std::string get_stream_format_enum(const std::vector<rgbd::stream_format>& sfs)
 {
 	std::string enum_def = "enums='default=-1";

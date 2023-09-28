@@ -569,10 +569,12 @@ public:
 	}
 	bool init(context& ctx)
 	{
+		if (!start_first_device()) {
+			read_calibs();
+			read_frames();
+		}
 		ctx.set_bg_clr_idx(4);
 		ref_point_renderer(ctx, 1);
-		read_calibs();
-		read_frames();
 		pc_aam.init(ctx);
 		return pr.init(ctx);
 	}
@@ -600,6 +602,8 @@ public:
 	}
 	void draw(context& ctx)
 	{
+		if (use_pc_shader_prog && !depth_tex.is_created())
+			return;
 		glDisable(GL_CULL_FACE);
 		if (use_pc_shader_prog && pr.ref_prog().is_linked()) {
 			if (calib_outofdate) {
