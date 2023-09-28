@@ -1,0 +1,36 @@
+#version 330 core
+
+//***** begin interface of rgbd.glsl ***********************************
+vec3 construct_point(in vec2 xp, in float depth);
+vec4 lookup_color(vec3 p);
+vec4 lookup_color(vec3 p, float eps);
+//***** end interface of rgbd.glsl ***********************************
+
+uniform vec4 halo_color = vec4(0.5);
+uniform float halo_width_in_pixel = 0.0;
+uniform float percentual_halo_width = 0.0;
+
+in ivec3 position;
+in vec4 color;
+in float point_size;
+in float depth_offset;
+
+out POINT_GS {
+	vec4 color;
+	vec4 halo_color;
+	float halo_width_in_pixel;
+	float percentual_halo_width;
+	float depth_offset;
+} vo;
+
+void main()
+{
+	vec3 p = construct_point(position.xy, position.z);
+	vo.color = lookup_color(p);
+	vo.halo_color = halo_color;
+	vo.halo_width_in_pixel = halo_width_in_pixel;
+	vo.percentual_halo_width = percentual_halo_width;
+	vo.depth_offset = depth_offset;
+	gl_Position = vec4(p, 1.0);
+	gl_PointSize = point_size;
+}
