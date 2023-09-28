@@ -1,4 +1,5 @@
 #include <cgv/base/base.h> // this should be first header to avoid warning
+#include <cgv/base/import.h>
 #include <omp.h>
 #include "rgbd_control.h"
 #include <cgv_gl/gl/gl.h>
@@ -27,6 +28,7 @@ using namespace rgbd;
 
 #include "../../3rd/json/nlohmann/json.hpp"
 #include "../../3rd/json/cgv_json/math.h"
+#include "../../3rd/json/cgv_json/rgbd.h"
 #include <fstream>
 
 std::string get_stream_format_enum(const std::vector<rgbd::stream_format>& sfs)
@@ -63,6 +65,7 @@ rgbd_control::rgbd_control(bool no_interactor)
 	infrared_scale = 1;
 	near_mode = true;
 	acquire_next = false;
+	cgv_reconstruct = true;
 	always_acquire_next = false;
 
 	prs.measure_point_size_in_pixel = false;
@@ -90,6 +93,7 @@ rgbd_control::rgbd_control(bool no_interactor)
 	show_grayscale = false;
 	do_bilateral_filter = false;
 
+	use_undistortion_map = false;
 	color_frame_changed = false;
 	depth_frame_changed = false;
 	infrared_frame_changed = false;
@@ -98,15 +102,21 @@ rgbd_control::rgbd_control(bool no_interactor)
 	prs.point_size = 3.0f;
 	visualisation_enabled = true;
 
+	const auto& path_list = cgv::base::ref_data_path_list();
+	if (!path_list.empty()) {
+		calib_directory = cgv::utils::file::clean_path(path_list.front());
+		if (cgv::utils::dir::exists(calib_directory + "/kinect"))
+			calib_directory += "/kinect";
+	}
 	/*
-	cgv::math::camera<double> color_calib, depth_calib;
+	cgv::math::camera<double> calib.color, calib.depth;
 	nlohmann::json j;
 	std::ifstream is("D:/kinect.json");
 	is >> j;
 	std::string serial;
 	j.at("serial").get_to(serial);
-	j.at("color_calib").get_to(color_calib);
-	j.at("depth_calib").get_to(depth_calib);
+	j.at("calib.color").get_to(calib.color);
+	j.at("calib.depth").get_to(calib.depth);
 	*/
 
 	connect(get_animation_trigger().shoot, this, &rgbd_control::timer_event);
@@ -342,7 +352,7 @@ void rgbd_control::draw(context& ctx)
 					tex_coords = reinterpret_cast<float*>(M_UV.data());
 				}
 				ctx.draw_faces(reinterpret_cast<float*>(M_POINTS.data()), nullptr,tex_coords,
-					reinterpret_cast<int32_t*>(M_TRIANGLES.data()), nullptr, reinterpret_cast<int32_t*>(M_TRIANGLES.data()), M_TRIANGLES.size(), 3);
+					reinterpret_cast<int32_t*>(M_TRIANGLES.data()), nullptr, reinterpret_cast<int32_t*>(M_TRIANGLES.data()), int(M_TRIANGLES.size()), 3);
 				glEnable(GL_CULL_FACE);
 				prog.disable(ctx);
 				color.disable(ctx);
@@ -534,6 +544,9 @@ void rgbd_control::create_gui()
 
 	if (begin_tree_node("Device", nr_color_frames, true, "level=2")) {
 		align("\a");
+		add_member_control(this, "prepend serial", prepend_serial_to_calib_file_name, "check");
+		add_gui("calib_directory", calib_directory, "directory");
+		add_member_control(this, "calib_file_name", calib_file_name);
 		add_member_control(this, "multi_device_role", multi_device_role, "dropdown", "enums='standalone,leader,follower'");
 		add_member_control(this, "stream_color", stream_color, "check");
 		add_member_control(this, "stream_depth", stream_depth, "check");
@@ -583,6 +596,8 @@ void rgbd_control::create_gui()
 	if (begin_tree_node("Point Cloud", always_acquire_next, false, "level=2")) {
 		align("\a");
 		add_member_control(this, "always_acquire_next", always_acquire_next, "toggle");
+		add_member_control(this, "cgv_reconstruct", cgv_reconstruct, "toggle");
+		add_member_control(this, "use_undistortion_map", use_undistortion_map, "toggle");
 		if (begin_tree_node("point style", prs)) {
 			align("\a");
 			add_gui("point style", prs);
@@ -610,9 +625,68 @@ cgv::signal::signal<>& rgbd_control::new_point_cloud_ready()
 	return new_point_cloud_sig;
 }
 
+void rgbd_control::compute_undistortion_map()
+{
+	calib.depth.compute_undistortion_map(undistortion_map);
+}
+
+size_t rgbd_control::construct_point_cloud_cgv()
+{
+	cgv::math::distortion_inversion_epsilon<double>();
+	for (uint16_t y = 0; y < calib.depth.h; ++y) {
+		for (uint16_t x = 0; x < calib.depth.w; ++x) {
+			uint16_t depth = reinterpret_cast<const uint16_t&>(depth_frame_2.frame_data[(y * calib.depth.w + x) * depth_frame_2.get_nr_bytes_per_pixel()]);
+			if (depth == 0)
+				continue;
+			uint8_t* pix_ptr = reinterpret_cast<uint8_t*>(&warped_color_frame_2.frame_data[(y * calib.depth.w + x) * warped_color_frame_2.get_nr_bytes_per_pixel()]);
+			rgba8 c(pix_ptr[2], pix_ptr[1], pix_ptr[0], 255);
+
+			vec3 p;
+			vec2 xd;
+			if (use_undistortion_map) {
+				xd = undistortion_map[y * calib.depth.w + x];
+				if (xd[0] < -1000.0f)
+					continue;
+			}
+			else {
+				unsigned iterations = 1;
+				dvec2 xu = calib.depth.pixel_to_image_coordinates(dvec2(double(x), double(y)));
+				dvec2 xd_T = xu;
+				auto dir = calib.depth.invert_distortion_model(xu, xd_T, true);
+				if (dir != cgv::math::distorted_pinhole_types::distortion_inversion_result::convergence)
+					continue;
+				xd = xd_T;
+			}
+			{
+				dvec3 p_d(depth * xd[0], depth * xd[1], depth);
+				p_d = 0.001 * ((p_d + pose_position(calib.color.pose)) * pose_orientation(calib.color.pose));
+				dvec2 xu, xd(p_d[0] / p_d[2], p_d[1] / p_d[2]);
+				auto result = calib.color.apply_distortion_model(xd, xu);
+				if (result != cgv::math::distorted_pinhole_types::distortion_result::success)
+					c = rgba8(128, 0, 0, 255);
+				else {
+					dvec2 xp = calib.color.image_to_pixel_coordinates(xu);
+					if (xp[0] < 0 || xp[1] < 0 || xp[0] >= color_frame.width || xp[1] >= color_frame.height)
+						c = rgba8(255, 0, 255, 255);
+					else {
+						uint16_t x = uint16_t(xp[0]);
+						uint16_t y = uint16_t(xp[1]);
+						const uint8_t* pix_ptr = reinterpret_cast<const uint8_t*>(&color_frame_2.frame_data[(y * color_frame_2.width + x) * color_frame_2.get_nr_bytes_per_pixel()]);
+						c = rgba8(pix_ptr[2], pix_ptr[1], pix_ptr[0], 255);
+					}
+				}
+			}
+			float d_m = 0.001f * depth;
+			p = vec3(-d_m*float(xd[0]), -d_m*float(xd[1]), d_m);
+			P2.push_back(p);
+			C2.push_back(c);
+		}
+	}
+	return P2.size();
+}
+
 size_t rgbd_control::construct_point_cloud()
 {
-
 	P2.clear();
 	C2.clear();
 	const unsigned short* depths = reinterpret_cast<const unsigned short*>(&depth_frame_2.frame_data.front());
@@ -624,6 +698,8 @@ size_t rgbd_control::construct_point_cloud()
 		}
 		colors = reinterpret_cast<const unsigned char*>(&warped_color_frame_2.frame_data.front());
 	}
+	if (cgv_reconstruct)
+		return construct_point_cloud_cgv();
 	unsigned bytes_per_pixel = color_frame_2.nr_bits_per_pixel / 8;
 	int i = 0;
 	float s = 1.0f / 255;
@@ -767,12 +843,22 @@ void rgbd_control::timer_event(double t, double dt)
 				post_redraw();
 			if (stream_color && stream_depth && color_frame.is_allocated() && depth_frame.is_allocated() &&
 				(color_frame_changed || depth_frame_changed) ) {
-				if (!future_handle.valid() && (always_acquire_next || acquire_next)) {
+				if (always_acquire_next || acquire_next) {
+					acquire_next = false;
+					color_frame_2 = color_frame;
+					depth_frame_2 = depth_frame;
+					construct_point_cloud();
+					P = P2;
+					C = C2;
+					post_redraw();
+					new_point_cloud_sig();
+				}
+				/*if (!future_handle.valid() && (always_acquire_next || acquire_next)) {
 					acquire_next = false;
 					color_frame_2 = color_frame;
 					depth_frame_2 = depth_frame;
 					future_handle = std::async(std::launch::async, &rgbd_control::construct_point_cloud, this);
-				}
+				}*/
 				else {
 					if (remap_color)
 						rgbd_inp.map_color_to_depth(depth_frame, color_frame, warped_color_frame);
@@ -811,7 +897,7 @@ void rgbd_control::on_start_cb()
 		if (ir_stream_format_idx == -1)
 			use_default = true;
 		else
-		sfs.push_back(ir_stream_formats[ir_stream_format_idx]);
+			sfs.push_back(ir_stream_formats[ir_stream_format_idx]);
 	}
 	if (use_default) {
 		sfs.clear();
@@ -823,17 +909,17 @@ void rgbd_control::on_start_cb()
 			for (const auto& sf : sfs) {
 				auto ci = std::find(color_stream_formats.begin(), color_stream_formats.end(), sf);
 				if (ci != color_stream_formats.end()) {
-					color_stream_format_idx = ci - color_stream_formats.begin();
+					color_stream_format_idx = int(ci - color_stream_formats.begin());
 					update_member(&color_stream_format_idx);
 				}
 				auto di = std::find(depth_stream_formats.begin(), depth_stream_formats.end(), sf);
 				if (di != depth_stream_formats.end()) {
-					depth_stream_format_idx = di - depth_stream_formats.begin();
+					depth_stream_format_idx = int(di - depth_stream_formats.begin());
 					update_member(&depth_stream_format_idx);
 				}
 				auto ii = std::find(ir_stream_formats.begin(), ir_stream_formats.end(), sf);
 				if (ii != ir_stream_formats.end()) {
-					ir_stream_format_idx = ii - ir_stream_formats.begin();
+					ir_stream_format_idx = int(ii - ir_stream_formats.begin());
 					update_member(&ir_stream_format_idx);
 				}
 			}
@@ -853,19 +939,20 @@ void rgbd_control::on_start_cb()
 		aspect = float(depth_stream_formats[depth_stream_format_idx].width) / depth_stream_formats[depth_stream_format_idx].height;
 	//std::cout << "size of header: " << sizeof(frame_format) << std::endl;
 	stopped = false;
+	rgbd_inp.query_calibration(calib);
+	compute_undistortion_map();
 
-	/*
-	cgv::math::camera<double> color_calib, depth_calib;
-	rgbd_inp.query_calibration(IS_COLOR, color_calib);
-	rgbd_inp.query_calibration(IS_DEPTH, depth_calib);
-	nlohmann::json j;
-	j["serial"] = rgbd_inp.get_serial();
-	j["color_calib"] = color_calib;
-	j["depth_calib"] = depth_calib;
-	std::ofstream os("D:/kinect.json");
-	os << std::setw(4) << j;
-	*/
-
+	if (!calib_file_name.empty()) {
+		nlohmann::json j;
+		j["serial"] = rgbd_inp.get_serial();
+		j["calib"] = calib;
+		std::string file_name = calib_directory + "/";
+		if (prepend_serial_to_calib_file_name)
+			file_name += rgbd_inp.get_serial()+"_";
+		file_name += calib_file_name;
+		std::ofstream os(file_name);
+		os << std::setw(4) << j;
+	}
 	post_redraw();
 }
 
@@ -1059,161 +1146,35 @@ void rgbd_control::on_clear_protocol_cb()
 void rgbd_control::convert_to_grayscale(const frame_type& color_frame, frame_type& gray_frame)
 {
 	unsigned bytes_per_pixel = color_frame.nr_bits_per_pixel / 8;
-	int i = 0;
-
 	// prepare grayscale frame
 	static_cast<frame_size&>(gray_frame) = color_frame;
 	gray_frame.pixel_format = color_frame.pixel_format;
 	gray_frame.nr_bits_per_pixel = color_frame.nr_bits_per_pixel;
 	gray_frame.compute_buffer_size();
 	gray_frame.frame_data.resize(gray_frame.buffer_size);
-
-	char* dest = &gray_frame.frame_data.front();
-	for (int y = 0; y < color_frame.height; ++y)
-		for (int x = 0; x < color_frame.width; ++x) {
-			//traverse all pixel
-			static char zeros_1[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-			char* src = zeros_1;
-			std::vector<char> s;
-			int a = i * bytes_per_pixel;
-			int b = i * bytes_per_pixel + 1;
-			int c = i * bytes_per_pixel + 2;
-			int d = i * bytes_per_pixel + 3;
-			switch (color_frame.pixel_format) {
-			case PF_BGR:
-			case PF_BGRA:
-					if (color_frame.nr_bits_per_pixel == 32) {
-						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
-								   color_frame.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
-								   color_frame.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame.frame_data.at(d));
-						src = &s.front();
- 					}
-					else {
-						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(a) * 0.299);
-						src = &s.front();
-					}
-					break;
-			case PF_RGB:
-			case PF_RGBA:
-					if (color_frame.nr_bits_per_pixel == 32) {
-						int a = i * bytes_per_pixel;
-						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame.frame_data.at(d));
-						src = &s.front();
-					}
-					else {
-						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(c) * 0.114);
-						src = &s.front();
-					}
-					break;
-			case PF_BAYER:
-					break;
-				}
-			std::copy(src, src + bytes_per_pixel, dest);
-			dest += bytes_per_pixel;
-			++i;
-			}
+	const uint8_t* src = reinterpret_cast<const uint8_t*>(&color_frame.frame_data.front());
+	      uint8_t* dst = reinterpret_cast<uint8_t*>(&gray_frame.frame_data.front());
+	int n = color_frame.width * color_frame.height;
+	for (int i = 0; i < n; ++i) { //traverse all pixel
+		switch (color_frame.pixel_format) {
+		case PF_BGRA: dst[3] = src[3];
+		case PF_BGR:  dst[0] = dst[1] = dst[2] = uint8_t(0.299 * src[2] + 0.587 * src[1] + 0.114 * src[0]);
+					  break;
+		case PF_RGBA: dst[3] = src[3];
+		case PF_RGB:  dst[0] = dst[1] = dst[2] = uint8_t(0.299 * src[0] + 0.587 * src[1] + 0.114 * src[2]);
+					  break;
+		default:	  break;
+		}
+		dst += bytes_per_pixel;
+		src += bytes_per_pixel;
+	}
 }
 
 void rgbd_control::bilateral_filter(const frame_type& color_frame, frame_type& bf_frame, int d, double sigma_clr,
 									double sigma_space, int border_type)
 {
-	unsigned bytes_per_pixel = color_frame.nr_bits_per_pixel / 8;
-	int i = 0;
-
-	// prepare filtered frame
-	static_cast<frame_size&>(bf_frame) = color_frame;
-	bf_frame.pixel_format = color_frame.pixel_format;
-	bf_frame.nr_bits_per_pixel = color_frame.nr_bits_per_pixel;
-	bf_frame.compute_buffer_size();
-	bf_frame.frame_data.resize(bf_frame.buffer_size);
-
-	char* dest = &bf_frame.frame_data.front();
-	for (int y = 0; y < color_frame.height; ++y)
-			for (int x = 0; x < color_frame.width; ++x) {
-			// traverse all pixel
-			static char zeros_1[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-			char* src = zeros_1;
-			std::vector<char> s;
-			int a = i * bytes_per_pixel;
-			int b = i * bytes_per_pixel + 1;
-			int c = i * bytes_per_pixel + 2;
-			int d = i * bytes_per_pixel + 3;
-
-			double weight_sum = 0;
-			double filter_value = 0;
-			switch (color_frame.pixel_format) {
-			case PF_BGR:
-			case PF_BGRA:
-					if (color_frame.nr_bits_per_pixel == 32) {
-						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame.frame_data.at(d));
-						src = &s.front();
-					}
-					else {
-						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(a) * 0.299);
-						s.emplace_back(color_frame.frame_data.at(c) * 0.114 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(a) * 0.299);
-						src = &s.front();
-					}
-					break;
-			case PF_RGB:
-			case PF_RGBA:
-					if (color_frame.nr_bits_per_pixel == 32) {
-						int a = i * bytes_per_pixel;
-						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame.frame_data.at(d));
-						src = &s.front();
-					}
-					else {
-						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(c) * 0.114);
-						s.emplace_back(color_frame.frame_data.at(a) * 0.299 + color_frame.frame_data.at(b) * 0.587 +
-									   color_frame.frame_data.at(c) * 0.114);
-						src = &s.front();
-					}
-					break;
-			case PF_BAYER:
-					break;
-			}
-			std::copy(src, src + bytes_per_pixel, dest);
-			dest += bytes_per_pixel;
-			++i;
-			}
+	std::cerr << "WARNING: bilateral_filter not implemented; converting to gray scale instead." << std::endl;
+	convert_to_grayscale(color_frame, bf_frame);
 }
 
 void rgbd_control::value_compute(const char& current_pixel, const char& center_pixel, char& output) {

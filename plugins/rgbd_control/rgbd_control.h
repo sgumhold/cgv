@@ -152,6 +152,15 @@ public:
 
 	std::future<size_t> future_handle;
 	size_t construct_point_cloud();
+	size_t construct_point_cloud_cgv();
+	bool cgv_reconstruct;
+	bool use_undistortion_map;
+	void compute_undistortion_map();
+	std::vector<vec2> undistortion_map;
+	rgbd::rgbd_calibration calib;
+	std::string calib_directory;
+	std::string calib_file_name = "calib.json";
+	bool prepend_serial_to_calib_file_name = true;
 	bool acquire_next;
 	bool always_acquire_next;
 	bool visualisation_enabled;
