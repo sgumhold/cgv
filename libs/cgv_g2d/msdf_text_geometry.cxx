@@ -54,6 +54,11 @@ void msdf_text_geometry::set_angle(unsigned i, const float angle) {
 		texts[i].angle = angle;
 }
 
+void msdf_text_geometry::set_color(unsigned i, const rgba color) {
+	if(i < texts.size())
+		texts[i].color = color;
+}
+
 msdf_text_geometry::vec2 msdf_text_geometry::get_text_render_size(unsigned i, float font_size) const {
 
 	if(i < texts.size()) {

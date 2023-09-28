@@ -1,5 +1,11 @@
 #pragma once
 
+#ifdef CGV_FORCE_STATIC
+	#define APP_PATH cgv::base::ref_prog_path_prefix();
+#else
+	#define APP_PATH QUOTE_SYMBOL_VALUE(INPUT_DIR) "/";
+#endif
+
 #include <cgv/base/node.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>

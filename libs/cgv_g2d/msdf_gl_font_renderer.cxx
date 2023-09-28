@@ -121,6 +121,7 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_text_geometry& 
 		prog.set_uniform(ctx, "alignment_offset_factors", alignment_offset_factors);
 		prog.set_uniform(ctx, "text_size", size_scale);
 		prog.set_uniform(ctx, "angle", text.angle);
+		prog.set_uniform(ctx, "color", text.color);
 
 		glDrawArraysInstancedBaseInstance(GL_TRIANGLE_STRIP, (GLint)0, (GLsizei)4, (GLsizei)text.str.size(), (GLuint)text.offset);
 	}

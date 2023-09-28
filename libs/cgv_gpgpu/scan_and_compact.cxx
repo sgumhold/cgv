@@ -20,7 +20,7 @@ void scan_and_compact::destruct(const cgv::render::context& ctx) {
 bool scan_and_compact::load_shader_programs(cgv::render::context& ctx) {
 
 	bool res = true;
-	std::string where = "scan_and_compact::load_shader_programs()";
+	std::string where = "cgv::gpgpu::scan_and_compact::load_shader_programs()";
 
 	cgv::render::shader_define_map vote_defines;
 	cgv::render::shader_code::set_define(vote_defines, "DATA_TYPE_DEFINITION", data_type_def, "");
@@ -31,10 +31,10 @@ bool scan_and_compact::load_shader_programs(cgv::render::context& ctx) {
 
 	cgv::render::shader_code::set_define(compact_defines, "MODE", mode, M_COPY_DATA);
 
-	res = res && cgv::render::shader_library::load(ctx, vote_prog, vote_prog_name == "" ? "sac_vote" : vote_prog_name, vote_defines, true, where);
-	res = res && cgv::render::shader_library::load(ctx, scan_local_prog, "sac_scan_local", true, where);
-	res = res && cgv::render::shader_library::load(ctx, scan_global_prog, "sac_scan_global", true, where);
-	res = res && cgv::render::shader_library::load(ctx, compact_prog, "sac_compact", compact_defines, true, where);
+	res = res && cgv::render::shader_library::load(ctx, vote_prog, vote_prog_name == "" ? "gpgpu_sac_vote" : vote_prog_name, vote_defines, true, where);
+	res = res && cgv::render::shader_library::load(ctx, scan_local_prog, "gpgpu_sac_scan_local", true, where);
+	res = res && cgv::render::shader_library::load(ctx, scan_global_prog, "gpgpu_sac_scan_global", true, where);
+	res = res && cgv::render::shader_library::load(ctx, compact_prog, "gpgpu_sac_compact", compact_defines, true, where);
 
 	return res;
 }
@@ -106,7 +106,7 @@ unsigned scan_and_compact::execute(cgv::render::context& ctx, const cgv::render:
 	votes_buffer.bind(ctx, 2);
 	
 	if(!vote_prog.is_enabled()) vote_prog.enable(ctx);
-	glDispatchCompute(num_scan_groups, 1, 1);
+	dispatch_compute1d(num_scan_groups);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	vote_prog.disable(ctx);
 
@@ -114,17 +114,17 @@ unsigned scan_and_compact::execute(cgv::render::context& ctx, const cgv::render:
 	block_sums_buffer.bind(ctx, 4);
 
 	scan_local_prog.enable(ctx);
-	glDispatchCompute(num_scan_groups, 1, 1);
+	dispatch_compute1d(num_scan_groups);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	scan_local_prog.disable(ctx);
 
 	scan_global_prog.enable(ctx);
-	glDispatchCompute(1, 1, 1);
+	dispatch_compute1d(1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	scan_global_prog.disable(ctx);
 
 	compact_prog.enable(ctx);
-	glDispatchCompute(num_scan_groups, 1, 1);
+	dispatch_compute1d(num_scan_groups);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	compact_prog.disable(ctx);
 

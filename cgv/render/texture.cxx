@@ -505,6 +505,15 @@ bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned
 	return true;
 }
 
+/** create storage for mipmaps without computing the mipmap contents */
+bool texture::create_mipmaps(const context& ctx)
+{
+	if(!is_created()) {
+		render_component::last_error = "attempt to create mipmap levels for texture that is not created";
+		return false;
+	}
+	return ctx.texture_create_mipmaps(*this, *this);
+}
 
 /** generate mipmaps automatically, only supported if 
     framebuffer objects are supported by the GPU */
@@ -750,6 +759,18 @@ bool texture::enable(const context& ctx, int _tex_unit)
 bool texture::disable(const context& ctx)
 {
 	return ctx.texture_disable(*this, tex_unit, get_nr_dimensions());
+}
+
+bool texture::bind_as_image(const context& ctx, int _tex_unit, int level, bool bind_array, int layer, AccessType access) {
+	if(!handle) {
+		render_component::last_error = "attempt to bind texture that is not created";
+		return false;
+	}
+	ensure_state(ctx);
+	tex_unit = _tex_unit;
+	//binding_index = ...
+
+	return ctx.texture_bind_as_image(*this, tex_unit, level, bind_array, layer, access);
 }
 
 /// check whether mipmaps have been created

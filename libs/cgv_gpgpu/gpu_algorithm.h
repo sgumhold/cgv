@@ -39,6 +39,26 @@ protected:
 		return (num_elements + num_elements_per_group - 1) / num_elements_per_group;
 	}
 
+	uvec2 calculate_num_groups(uvec2 num_elements, uvec2 num_elements_per_group) {
+		return (num_elements + num_elements_per_group - 1) / num_elements_per_group;
+	}
+
+	uvec3 calculate_num_groups(uvec3 num_elements, uvec3 num_elements_per_group) {
+		return (num_elements + num_elements_per_group - 1) / num_elements_per_group;
+	}
+
+	void dispatch_compute1d(unsigned num_groups) {
+		glDispatchCompute(num_groups, 1u, 1u);
+	}
+
+	void dispatch_compute2d(uvec2 num_groups) {
+		glDispatchCompute(num_groups[0], num_groups[1], 1u);
+	}
+
+	void dispatch_compute3d(uvec3 num_groups) {
+		glDispatchCompute(num_groups[0], num_groups[1], num_groups[2]);
+	}
+
 public:
 	gpu_algorithm() {}
 	~gpu_algorithm() {}
