@@ -3,6 +3,8 @@
 #define MODE 1
 
 //***** begin interface of shape2d.glsl ***********************************
+uniform bool origin_upper_left = false;
+
 float get_feather_width();
 vec2 get_shape_size();
 vec4 get_color();
@@ -79,6 +81,10 @@ void main() {
 	vec2 uv0 = uv_gs[0];
 	vec2 uv1 = uv_gs[1];
 #endif
+
+	if(origin_upper_left)
+		v_dir = -v_dir;
+
 	color_fs = color0;
 	uv_fs = uv0;
 	tex_coord_fs = corners[0];
