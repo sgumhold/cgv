@@ -63,7 +63,7 @@ msdf_text_geometry::vec2 msdf_text_geometry::get_text_render_size(unsigned i, fl
 
 	if(i < texts.size()) {
 		const text_info& text = texts[i];
-		return font_size * vec2(text.size.x() * text.size.y(), 1.0f);
+		return font_size * vec2(text.size.x() * text.size.y(), text.size.y());
 	}
 
 	return vec2(0.0f);

@@ -15,9 +15,11 @@ namespace g2d {
 class CGV_API canvas : public cgv::render::render_types {
 protected:
 	cgv::render::shader_library shaders;
+
 	ivec2 resolution;
-	float feather_scale;
+	bool origin_upper_left;
 	bool apply_gamma;
+	float zoom_factor;
 
 	std::stack<mat3> modelview_matrix_stack;
 
@@ -48,9 +50,13 @@ public:
 
 	void set_resolution(cgv::render::context& ctx, const ivec2& resolution);
 
-	void set_feather_scale(float s);
+	bool get_origin_upper_left() const;
+
+	void set_origin_upper_left(bool flag);
 
 	void set_apply_gamma(bool flag);
+
+	void set_zoom_factor(float zoom);
 
 	void initialize_modelview_matrix_stack();
 

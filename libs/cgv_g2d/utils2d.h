@@ -14,6 +14,7 @@ namespace g2d {
 inline cgv::render::ivec2 get_transformed_mouse_pos(const cgv::render::ivec2& mouse_pos, const cgv::render::ivec2& viewport_size) {
 
 	return cgv::render::ivec2(mouse_pos.x(), viewport_size.y() - mouse_pos.y() - 1);
+	//return cgv::render::ivec2(mouse_pos.x(), mouse_pos.y());
 }
 
 /** Returns the mouse position in OpenGL viewport space local to the

@@ -130,6 +130,7 @@ public:
 		
 		show_background = true;
 
+		canvas.set_origin_upper_left(true);
 		canvas.register_shader("rectangle", cgv::g2d::shaders::rectangle);
 		canvas.register_shader("circle", cgv::g2d::shaders::circle);
 		canvas.register_shader("ellipse", cgv::g2d::shaders::ellipse);
@@ -175,7 +176,7 @@ public:
 				cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 				cgv::gui::MouseAction ma = me.get_action();
 
-				if(ma == cgv::gui::MA_DRAG && me.get_button_state() & cgv::gui::MB_MIDDLE_BUTTON) {
+				if(ma == cgv::gui::MA_DRAG && me.get_button_state() & cgv::gui::MB_RIGHT_BUTTON) {
 					view_params.translation += vec2((float)me.get_dx(), (float)-me.get_dy());
 				}
 
@@ -362,7 +363,7 @@ public:
 		canvas.push_modelview_matrix();
 		canvas.mul_modelview_matrix(ctx, get_view_matrix());
 		canvas.mul_modelview_matrix(ctx, get_model_matrix());
-		canvas.set_feather_scale(1.0f / view_params.scale);
+		canvas.set_zoom_factor(view_params.scale);
 
 		image_tex.enable(ctx, 0);
 
@@ -416,7 +417,7 @@ public:
 		draw_control_lines(ctx);
 		draw_draggables(ctx);
 
-		canvas.set_feather_scale(1.0f);
+		canvas.set_zoom_factor(1.0f);
 		canvas.pop_modelview_matrix(ctx);
 
 		glDisable(GL_BLEND);

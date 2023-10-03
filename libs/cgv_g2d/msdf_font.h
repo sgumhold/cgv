@@ -28,6 +28,7 @@ public:
 protected:
 	float initial_font_size;
 	float pixel_range;
+	float cap_height;
 	FontFace font_face = FF_REGULAR;
 
 	std::vector<glyph_info> glyphs;
@@ -57,6 +58,8 @@ public:
 	float get_initial_font_size() const { return initial_font_size; }
 
 	float get_pixel_range() const { return pixel_range; }
+
+	float get_cap_height() const { return cap_height; }
 
 	bool enable(cgv::render::context& ctx);
 
