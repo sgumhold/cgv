@@ -1,4 +1,4 @@
-files:cubic_spline2d
+files:quadratic_spline2d
 geometry_file:shape2d.glsl
 geometry_file:quadratic_bezier2d.glsl
 fragment_file:shape2d.glsl

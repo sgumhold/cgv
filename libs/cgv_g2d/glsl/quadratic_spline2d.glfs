@@ -29,32 +29,21 @@ uniform float dash_ratio = 0.5;
 
 in flat vec4 color0_fs;
 in flat vec4 color1_fs;
+in flat vec4 color2_fs;
 in flat vec2 size_fs;
 in vec2 tex_coord_fs;
 in vec2 pix_coord_fs;
 in flat vec2 pos_a_fs;
 in flat vec2 pos_b_fs;
 in flat vec2 pos_c_fs;
-in flat vec2 pos_d_fs;
-in flat vec2 pos_e_fs;
 
 void main() {
-	
-	vec2 dist0 = ud_quadratic_bezier(pix_coord_fs, pos_a_fs, pos_b_fs, pos_c_fs);
-	vec2 dist1 = ud_quadratic_bezier(pix_coord_fs, pos_c_fs, pos_d_fs, pos_e_fs);
 
-	// union with selection of curve parameter t
-	float dist, t;
-	if(dist0.x < dist1.x) {
-		dist = dist0.x;
-		t = dist0.y;
-	} else {
-		dist = dist1.x;
-		t = dist1.y + 1.0;
-	}
+	vec2 dist_t = ud_quadratic_bezier(pix_coord_fs, pos_a_fs, pos_b_fs, pos_c_fs);
 
+	float dist = dist_t.x;
+	float t = dist_t.y;
 	dist -= 0.5 * width;
-	t *= 0.5;
 
 	float fw = get_feather_width();
 	if(dist > 0.5*fw)
@@ -69,7 +58,11 @@ void main() {
 	float dash_dist = abs(dash_coord);
 	float dash_limit = (0.5*dash_ratio*dash_length) - fw;
 
-	vec4 color = mix(color0_fs, color1_fs, t);
+	vec4 color;
+	if(t < 0.5)
+		color = mix(color0_fs, color1_fs, 2.0 * t);
+	else
+		color = mix(color1_fs, color2_fs, 2.0 * t - 1.0);
 	color = get_active_color(color);
 
 	float limit = -0.5*fw;

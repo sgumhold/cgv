@@ -58,7 +58,8 @@ vec2 ortho2d(vec2 v) {
 	return vec2(v.y, -v.x);
 }
 
-void emit_corner(in int id, in vec2 position, in vec2 u_dir, in vec2 v_dir) {
+void emit_corner(in int id, in vec2 position, in vec2 u_dir, in vec2 v_dir, in vec4 color) {
+	col = color;
 	pix_coord = position + direction_factors[id].x*u_dir + direction_factors[id].y*v_dir;
 	tex_coord = corners[id];
 	gl_Position = transform_world_to_window_space(pix_coord);
@@ -105,13 +106,13 @@ void main() {
 	vec4 color1 = color_gs[1];
 #endif
 
-	col = color0;
+	//col = color0;
 
 	if(origin_upper_left)
 		v_dir = -v_dir;
 
-	emit_corner(0, position_a, u_dir, v_dir);
-	emit_corner(1, position_b, u_dir, v_dir);
-	emit_corner(2, position_a, u_dir, v_dir);
-	emit_corner(3, position_b, u_dir, v_dir);
+	emit_corner(0, position_a, u_dir, v_dir, color0);
+	emit_corner(1, position_b, u_dir, v_dir, color1);
+	emit_corner(2, position_a, u_dir, v_dir, color0);
+	emit_corner(3, position_b, u_dir, v_dir, color1);
 }

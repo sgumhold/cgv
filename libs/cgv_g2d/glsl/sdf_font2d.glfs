@@ -37,8 +37,7 @@ float median(float r, float g, float b) {
 
 float screen_pixel_range() {
 	float screen_size = zoom_factor * font_size * text_size.y;
-	//return max((screen_size/src_size) * pixel_range, 1.0);
-	return (screen_size/src_size) * pixel_range;
+	return max((screen_size/src_size) * pixel_range, 1.0);
 }
 
 float compute_coverage(in vec2 uv) {
@@ -74,9 +73,8 @@ void main() {
 		float sd = median(mtsd.r, mtsd.g, mtsd.b);
 	
 		float signed_distance = -(screen_pixel_range()*(sd-0.5) + 0.5) / zoom_factor;
-		signed_distance -= border_radius;
-		signed_distance -= feather_origin * get_feather_width();
-
+		signed_distance -= feather_origin*get_feather_width();
+		
 		finish_sdf_fragment2d(signed_distance, get_active_color(color));
 	}	
 }

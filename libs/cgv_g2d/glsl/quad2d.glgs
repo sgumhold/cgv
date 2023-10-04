@@ -45,9 +45,6 @@ vec2 scale_corner(in vec2 a, in vec2 d0, in vec2 d1, in float scale) {
 void emit_corner(int id, vec2 p) {
 	vec2 corner = corners[id];
 
-	//if(origin_upper_left)
-	//	corner.y = -corner.y;
-
 	pix_coord = p;
 	tex_coord = corner + 0.5;
 

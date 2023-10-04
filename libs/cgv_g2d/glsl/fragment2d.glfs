@@ -47,6 +47,7 @@ out vec4 frag_color;
 void finish_sdf_fragment2d(in float signed_distance, in vec4 color) {
 	
 	signed_distance -= border_radius;
+	//signed_distance -= feather_origin*get_feather_width();
 
 	if(ring_width > 0.01)
 		signed_distance = abs(signed_distance + 0.5*ring_width) - 0.5*ring_width;
@@ -95,10 +96,10 @@ void finish_sdf_fragment2d(in float signed_distance, in vec4 color) {
 
 	// enable to show derivatives for debugging
 	//frag_color = vec4((border_width+1) * dx, (border_width+1) * dy, 0.0, 1.0);
-	
+
 	//frag_color.a *= antialias_alpha * feather_alpha;
 	frag_color.a *= feather_alpha;
-	
+
 	if(apply_gamma)
 		frag_color.rgb = clamp(pow(frag_color.rgb, vec3(2.2)), 0.0, 0.9999999);
 
