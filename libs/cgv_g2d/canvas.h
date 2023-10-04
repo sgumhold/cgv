@@ -6,6 +6,7 @@
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv_g2d/rect.h>
 #include <cgv_g2d/shaders2d.h>
+#include <cgv_g2d/utils2d.h>
 
 #include "lib_begin.h"
 
@@ -17,7 +18,7 @@ protected:
 	cgv::render::shader_library shaders;
 
 	ivec2 resolution;
-	bool origin_upper_left;
+	Origin origin_setting;
 	bool apply_gamma;
 	float zoom_factor;
 
@@ -50,9 +51,9 @@ public:
 
 	void set_resolution(cgv::render::context& ctx, const ivec2& resolution);
 
-	bool get_origin_upper_left() const;
+	Origin get_origin_setting() const;
 
-	void set_origin_upper_left(bool flag);
+	void set_origin_setting(Origin origin);
 
 	void set_apply_gamma(bool flag);
 

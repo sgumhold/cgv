@@ -248,4 +248,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new msdf font examples
-cgv::base::factory_registration<msdf_font> shapes_2d_fac("New/Demo/MSDF Font Example");
+cgv::base::factory_registration<msdf_font> msdf_font_fac("New/Demo/MSDF Font Example");
