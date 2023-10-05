@@ -58,9 +58,14 @@ public:
 template <class B>
 class rgbd_starter : public B, public rgbd_starter_base, public cgv::gui::provider
 {
+	cgv::gui::trigger my_trigger;
 public:
 	typedef typename rgbd_starter<B> base_type;
-	rgbd_starter() { connect(cgv::gui::get_animation_trigger().shoot, this, &base_type::timer_event); }
+	rgbd_starter() { 
+		connect(my_trigger.shoot, this, &base_type::timer_event); 
+		my_trigger.schedule_recuring(0.001);
+		//	connect(cgv::gui::get_animation_trigger().shoot, this, &base_type::timer_event); 
+	}
 	bool start_first_device() {
 		unsigned nr = rgbd_input::get_nr_devices();
 		if (nr == 0)

@@ -93,7 +93,7 @@ rgbd_control::rgbd_control(bool no_interactor)
 	show_grayscale = false;
 	do_bilateral_filter = false;
 
-	use_undistortion_map = false;
+	use_distortion_map = false;
 	color_frame_changed = false;
 	depth_frame_changed = false;
 	infrared_frame_changed = false;
@@ -597,7 +597,7 @@ void rgbd_control::create_gui()
 		align("\a");
 		add_member_control(this, "always_acquire_next", always_acquire_next, "toggle");
 		add_member_control(this, "cgv_reconstruct", cgv_reconstruct, "toggle");
-		add_member_control(this, "use_undistortion_map", use_undistortion_map, "toggle");
+		add_member_control(this, "use_distortion_map", use_distortion_map, "toggle");
 		if (begin_tree_node("point style", prs)) {
 			align("\a");
 			add_gui("point style", prs);
@@ -625,9 +625,9 @@ cgv::signal::signal<>& rgbd_control::new_point_cloud_ready()
 	return new_point_cloud_sig;
 }
 
-void rgbd_control::compute_undistortion_map()
+void rgbd_control::compute_distortion_map()
 {
-	calib.depth.compute_undistortion_map(undistortion_map);
+	calib.depth.compute_distortion_map(distortion_map);
 }
 
 size_t rgbd_control::construct_point_cloud_cgv()
@@ -643,8 +643,8 @@ size_t rgbd_control::construct_point_cloud_cgv()
 
 			vec3 p;
 			vec2 xd;
-			if (use_undistortion_map) {
-				xd = undistortion_map[y * calib.depth.w + x];
+			if (use_distortion_map) {
+				xd = distortion_map[y * calib.depth.w + x];
 				if (xd[0] < -1000.0f)
 					continue;
 			}
@@ -940,7 +940,7 @@ void rgbd_control::on_start_cb()
 	//std::cout << "size of header: " << sizeof(frame_format) << std::endl;
 	stopped = false;
 	rgbd_inp.query_calibration(calib);
-	compute_undistortion_map();
+	compute_distortion_map();
 
 	if (!calib_file_name.empty()) {
 		nlohmann::json j;

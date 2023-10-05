@@ -50,8 +50,8 @@ namespace rgbd {
 		unsigned max_nr_iterations = cgv::math::camera<double>::get_standard_max_nr_iterations(),
 		double slow_down = cgv::math::camera<double>::get_standard_slow_down());
 	/// compute distortion map from calibration and camera model inversion parameters
-	extern CGV_API void compute_undistortion_map(const rgbd_calibration& calib,
-		std::vector<cgv::math::fvec<float, 2>>& undistortion_map,
+	extern CGV_API void compute_distortion_map(const rgbd_calibration& calib,
+		std::vector<cgv::math::fvec<float, 2>>& distortion_map,
 		unsigned sub_sample = 1,
 		const cgv::math::fvec<float, 2>& invalid_point = cgv::math::fvec<float, 2>(-10000.0f),
 		double eps = cgv::math::distortion_inversion_epsilon<double>(),

@@ -271,8 +271,8 @@ protected:
 	rgbd::frame_type color_frame;
 	rgbd::frame_type warped_color_frame;
 	rgbd::frame_type depth_frame;
-	bool use_undistortion_map = false;
-	std::vector<vec2> undistortion_map;
+	bool use_distortion_map = false;
+	std::vector<vec2> distortion_map;
 
 	bool read_frames()
 	{
@@ -293,8 +293,8 @@ protected:
 		if (depth == 0)
 			return false;
 		vec2 xd;
-		if (use_undistortion_map) {
-			xd = undistortion_map[y * depth_frame.width + x];
+		if (use_distortion_map) {
+			xd = distortion_map[y * depth_frame.width + x];
 			if (xd[0] < -1000.0f)
 				return false;
 		}
@@ -443,14 +443,14 @@ protected:
 				}
 			}
 			else
-				rgbd::construct_point_cloud(depth_frame, color_frame, P, C, calib, use_undistortion_map ? &undistortion_map : 0);
+				rgbd::construct_point_cloud(depth_frame, color_frame, P, C, calib, use_distortion_map ? &distortion_map : 0);
 		}
 	}
 	bool read_calibs()
 	{
 		if (!read_rgbd_calibration("D:/data/mesh/kinect/000442922212_calib.json", calib))
 			return false;
-		rgbd::compute_undistortion_map(calib, undistortion_map, sub_sample);
+		rgbd::compute_distortion_map(calib, distortion_map, sub_sample);
 		return true;
 	}
 	attribute_array_manager pc_aam;
@@ -460,7 +460,7 @@ protected:
 	}
 	void on_start() {
 		std::cout << "started device " << rgbd_inp.get_serial() << std::endl;
-		rgbd::compute_undistortion_map(calib, undistortion_map, sub_sample);
+		rgbd::compute_distortion_map(calib, distortion_map, sub_sample);
 	}
 	void on_new_frame(double t, rgbd::InputStreams new_frames) {
 #ifdef _DEBUG
@@ -501,7 +501,7 @@ public:
 	{
 		cgv::utils::pointer_test pt(member_ptr);
 		if (pt.one_of(nr_iterations, slow_down, calib.depth.max_radius_for_projection)) {
-			calib.depth.compute_undistortion_map(undistortion_map, sub_sample);
+			calib.depth.compute_distortion_map(distortion_map, sub_sample);
 			construct_point_clouds();
 		}
 		else if (pt.one_of(sub_sample, sub_line_sample, xu0_rad, prec, random_offset, use_standard_epsilon, epsilon) ||
@@ -510,9 +510,9 @@ public:
 			pt.one_of(debug_xu0, depth_lambda, error_threshold, error_scale)) {
 			construct_point_clouds(false);
 		}
-		else if (pt.is(use_undistortion_map)) {
+		else if (pt.is(use_distortion_map)) {
 			construct_point_clouds(false);
-			pr.set_undistortion_map_usage(use_undistortion_map);
+			pr.set_distortion_map_usage(use_distortion_map);
 		}
 		else
 			on_set_base(member_ptr, *this);
@@ -533,7 +533,7 @@ public:
 			add_member_control(this, "x_off", calib.color.pose(0, 3), "value_slider", "min=-100;max=100;ticks=true");
 			add_member_control(this, "y_off", calib.color.pose(1, 3), "value_slider", "min=-100;max=100;ticks=true");
 			add_member_control(this, "z_off", calib.color.pose(2, 3), "value_slider", "min=-100;max=100;ticks=true");
-			add_member_control(this, "use_undistortion_map", use_undistortion_map, "toggle");
+			add_member_control(this, "use_distortion_map", use_distortion_map, "toggle");
 			add_member_control(this, "slow_down", slow_down, "value_slider", "min=0;max=1;ticks=true");
 			add_member_control(this, "precision", prec, "dropdown", "enums='float,double'");
 			add_member_control(this, "nr_iterations", nr_iterations, "value_slider", "min=0;max=30;ticks=true");
