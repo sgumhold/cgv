@@ -101,16 +101,16 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A graph represented in an adjacency list.  <a href="classcgv_1_1math_1_1adjacency__list.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1pinhole.html">pinhole</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">all members necessary for undistorted pinhole camera  <a href="classcgv_1_1math_1_1pinhole.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">class to store and use a pinhole camera model without distortion but with support for skew and different focal lengths in x and y direction  <a href="classcgv_1_1math_1_1pinhole.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole__types.html">distorted_pinhole_types</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">type declarations independent of template parameter  <a href="classcgv_1_1math_1_1distorted__pinhole__types.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">common type declarations used by <a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html" title="pinhole camera including distortion according to Brown-Conrady model">distorted_pinhole</a> class that are independent of the template parameter  <a href="classcgv_1_1math_1_1distorted__pinhole__types.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html">distorted_pinhole</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">extension of pinhole to distorted pinhole  <a href="classcgv_1_1math_1_1distorted__pinhole.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">pinhole camera including distortion according to Brown-Conrady model  <a href="classcgv_1_1math_1_1distorted__pinhole.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1camera.html">camera</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">extend distorted pinhole with external calibration  <a href="classcgv_1_1math_1_1camera.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">extend distorted pinhole with external calibration stored as a pose matrix  <a href="classcgv_1_1math_1_1camera.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1diag__mat.html">diag_mat</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A diagonal matrix type which internally stores the elements on the main diagonal in a vector.  <a href="structcgv_1_1math_1_1diag__mat.html#details">More...</a><br /></td></tr>
@@ -249,7 +249,7 @@ template&lt;typename key_type , typename idx_type &gt; </td></tr>
 <tr class="memitem:abf3e38779f899fbd4ec9b0c86b3aca3c"><td class="memTemplParams" colspan="2"><a id="abf3e38779f899fbd4ec9b0c86b3aca3c"></a>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:abf3e38779f899fbd4ec9b0c86b3aca3c"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#abf3e38779f899fbd4ec9b0c86b3aca3c">distortion_inversion_epsilon</a> ()</td></tr>
-<tr class="memdesc:abf3e38779f899fbd4ec9b0c86b3aca3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">type specific epsilon providing function <br /></td></tr>
+<tr class="memdesc:abf3e38779f899fbd4ec9b0c86b3aca3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">function to provide type specific epsilon for inversion of distortion model <br /></td></tr>
 <tr class="separator:abf3e38779f899fbd4ec9b0c86b3aca3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36c30190cfd6bcece90c27f4f3fb0f5b"><td class="memItemLeft" align="right" valign="top"><a id="a36c30190cfd6bcece90c27f4f3fb0f5b"></a>
 template&lt;&gt; </td></tr>
