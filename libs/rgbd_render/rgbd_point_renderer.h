@@ -16,18 +16,18 @@ namespace rgbd {
 	class CGV_API rgbd_point_renderer : public cgv::render::point_renderer
 	{
 		bool calib_set = false;
-		bool undistortion_map_outofdate = true;
+		bool distortion_map_outofdate = true;
 	protected:
 		// members that define shader uniforms
 		rgbd::rgbd_calibration calib;
-		bool use_undistortion_map = false;
+		bool use_distortion_map = false;
 		bool geometry_less_rendering = true;
 		bool lookup_color = true;
 		bool discard_invalid_color_points = false;
 		rgba invalid_color = rgba(1, 0, 1, 1);
 		// cpu and gpu storage of undistortion map
-		std::vector<vec2> undistortion_map;
-		cgv::render::texture undistortion_tex;
+		std::vector<vec2> distortion_map;
+		cgv::render::texture distortion_tex;
 		// internal renderer functions
 		void update_defines(cgv::render::shader_define_map& defines);
 		bool build_shader_program(cgv::render::context& ctx, cgv::render::shader_program& prog, const cgv::render::shader_define_map& defines);
@@ -35,11 +35,11 @@ namespace rgbd {
 		rgbd_point_renderer();
 		// configuration functions
 		void configure_invalid_color_handling(bool discard, const rgba& color);
-		void set_geomtry_less_rendering(bool active);
+		void set_geometry_less_rendering(bool active);
 		bool do_geometry_less_rendering() const;
 		void set_color_lookup(bool active);
 		bool do_lookup_color() const;
-		void set_undistortion_map_usage(bool do_use = true);
+		void set_distortion_map_usage(bool do_use = true);
 		void set_calibration(const rgbd::rgbd_calibration& _calib);
 		// renderer interface
 		bool validate_attributes(const cgv::render::context& ctx) const;

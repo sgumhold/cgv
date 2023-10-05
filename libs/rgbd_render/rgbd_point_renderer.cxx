@@ -5,22 +5,22 @@ namespace rgbd {
 void rgbd_point_renderer::update_defines(cgv::render::shader_define_map& defines) 
 {
 	point_renderer::update_defines(defines);
-	cgv::render::shader_code::set_define(defines, "USE_UNDISTORTION_MAP", use_undistortion_map, false);
+	cgv::render::shader_code::set_define(defines, "USE_DISTORTION_MAP", use_distortion_map, false);
 }
 bool rgbd_point_renderer::build_shader_program(cgv::render::context& ctx, cgv::render::shader_program& prog, const cgv::render::shader_define_map& defines)
 {
 	return prog.build_program(ctx, "rgbd_pc.glpr", true, defines);
 }
-rgbd_point_renderer::rgbd_point_renderer() : undistortion_tex("flt32[R,G]") 
+rgbd_point_renderer::rgbd_point_renderer() : distortion_tex("flt32[R,G]") 
 {
-	undistortion_tex.set_mag_filter(cgv::render::TF_NEAREST);
+	distortion_tex.set_mag_filter(cgv::render::TF_NEAREST);
 }
 void rgbd_point_renderer::configure_invalid_color_handling(bool discard, const rgba& color)
 {
 	discard_invalid_color_points = discard;
 	invalid_color = color;
 }
-void rgbd_point_renderer::set_geomtry_less_rendering(bool active) 
+void rgbd_point_renderer::set_geometry_less_rendering(bool active) 
 {
 	geometry_less_rendering = active; 
 }
@@ -36,19 +36,19 @@ bool rgbd_point_renderer::do_lookup_color() const
 {
 	return lookup_color; 
 }
-void rgbd_point_renderer::set_undistortion_map_usage(bool do_use)
+void rgbd_point_renderer::set_distortion_map_usage(bool do_use)
 {
-	use_undistortion_map = do_use;
+	use_distortion_map = do_use;
 	if (do_use && calib_set)
-		calib.depth.compute_undistortion_map(undistortion_map);
+		calib.depth.compute_distortion_map(distortion_map);
 }
 void rgbd_point_renderer::set_calibration(const rgbd::rgbd_calibration& _calib)
 {
 	calib = _calib;
 	calib_set = true;
-	if (use_undistortion_map) {
-		calib.depth.compute_undistortion_map(undistortion_map);
-		undistortion_map_outofdate = true;
+	if (use_distortion_map) {
+		calib.depth.compute_distortion_map(distortion_map);
+		distortion_map_outofdate = true;
 	}
 }
 bool rgbd_point_renderer::validate_attributes(const cgv::render::context& ctx) const
@@ -67,24 +67,24 @@ bool rgbd_point_renderer::enable(cgv::render::context& ctx)
 	ref_prog().set_uniform(ctx, "discard_invalid_color_points", discard_invalid_color_points);
 	ref_prog().set_uniform(ctx, "geometry_less_rendering", geometry_less_rendering);
 	ref_prog().set_uniform(ctx, "do_lookup_color", lookup_color);
-	if (use_undistortion_map) {
-		if (undistortion_map_outofdate) {
-			if (undistortion_tex.is_created())
-				undistortion_tex.destruct(ctx);
+	if (use_distortion_map) {
+		if (distortion_map_outofdate) {
+			if (distortion_tex.is_created())
+				distortion_tex.destruct(ctx);
 			cgv::data::data_format df(calib.depth.w, calib.depth.h, cgv::type::info::TI_FLT32, cgv::data::CF_RG);
-			cgv::data::data_view dv(&df, undistortion_map.data());
-			undistortion_tex.create(ctx, dv, 0);
-			undistortion_map_outofdate = false;
+			cgv::data::data_view dv(&df, distortion_map.data());
+			distortion_tex.create(ctx, dv, 0);
+			distortion_map_outofdate = false;
 		}
-		undistortion_tex.enable(ctx, 2);
-		ref_prog().set_uniform(ctx, "undistortion_map", 2);
+		distortion_tex.enable(ctx, 2);
+		ref_prog().set_uniform(ctx, "distortion_map", 2);
 	}
 	return true;
 }
 bool rgbd_point_renderer::disable(cgv::render::context& ctx)
 {
-	if (use_undistortion_map)
-		undistortion_tex.disable(ctx);
+	if (use_distortion_map)
+		distortion_tex.disable(ctx);
 	return point_renderer::disable(ctx);
 }
 void rgbd_point_renderer::draw(cgv::render::context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)

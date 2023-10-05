@@ -1,6 +1,6 @@
 #version 330 core
 
-#define USE_UNDISTORTION_MAP 0
+#define USE_DISTORTION_MAP 0
 
 /*
 The following interface is implemented in this shader:
@@ -46,8 +46,8 @@ uniform vec3 color_translation;
 uniform sampler2D depth_image;
 uniform sampler2D color_image;
 
-#if USE_UNDISTORTION_MAP != 0
-uniform sampler2D undistortion_map;
+#if USE_DISTORTION_MAP != 0
+uniform sampler2D distortion_map;
 #endif
 
 uint get_depth_width()
@@ -70,8 +70,8 @@ bool construct_point(in vec2 xp, in float depth, out vec3 p)
 		return false;
 	vec2 xu = pixel_to_image_coordinates(xp, depth_calib);
 	vec2 xd = xu;
-#if USE_UNDISTORTION_MAP != 0
-	xd = texture(undistortion_map, vec2((xp.x+0.5)/depth_calib.w, (xp.y+0.5)/depth_calib.h)).xy;
+#if USE_DISTORTION_MAP != 0
+	xd = texture(distortion_map, vec2((xp.x+0.5)/depth_calib.w, (xp.y+0.5)/depth_calib.h)).xy;
 	if (xd.x < -1000.0)
 		return false;
 #else

@@ -154,9 +154,9 @@ public:
 	size_t construct_point_cloud();
 	size_t construct_point_cloud_cgv();
 	bool cgv_reconstruct;
-	bool use_undistortion_map;
-	void compute_undistortion_map();
-	std::vector<vec2> undistortion_map;
+	bool use_distortion_map;
+	void compute_distortion_map();
+	std::vector<vec2> distortion_map;
 	rgbd::rgbd_calibration calib;
 	std::string calib_directory;
 	std::string calib_file_name = "calib.json";

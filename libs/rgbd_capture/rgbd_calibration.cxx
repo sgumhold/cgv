@@ -119,12 +119,12 @@ void construct_point_cloud(
 		}
 	}
 }
-void compute_undistortion_map(const rgbd_calibration& calib,
-	std::vector<cgv::math::fvec<float, 2>>& undistortion_map,
+void compute_distortion_map(const rgbd_calibration& calib,
+	std::vector<cgv::math::fvec<float, 2>>& distortion_map,
 	unsigned sub_sample, const cgv::math::fvec<float, 2>& invalid_point,
 	double eps, unsigned max_nr_iterations, double slow_down)
 {
-	calib.depth.compute_undistortion_map(undistortion_map, sub_sample, invalid_point, eps, max_nr_iterations, slow_down);
+	calib.depth.compute_distortion_map(distortion_map, sub_sample, invalid_point, eps, max_nr_iterations, slow_down);
 }
 
 }
