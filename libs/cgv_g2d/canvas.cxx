@@ -5,8 +5,9 @@ namespace g2d {
 
 canvas::canvas() {
 	resolution = ivec2(100);
-	feather_scale = 1.0f;
+	origin_setting = Origin::kBottomLeft;
 	apply_gamma = true;
+	zoom_factor = 1.0f;
 	initialize_modelview_matrix_stack();
 	current_shader_program = nullptr;
 }
@@ -17,9 +18,10 @@ void canvas::destruct(cgv::render::context& ctx) {
 
 void canvas::register_shader(const std::string& name, const std::string& filename, bool multi_primitive_mode) {
 	cgv::render::shader_define_map defines;
-	if(!multi_primitive_mode) {
+	
+	if(!multi_primitive_mode)
 		defines["MODE"] = "0";
-	}
+
 	shaders.add(name, filename, defines);
 }
 
@@ -67,12 +69,20 @@ void canvas::set_resolution(cgv::render::context& ctx, const ivec2& resolution) 
 	this->resolution = resolution;
 }
 
-void canvas::set_feather_scale(float s) {
-	feather_scale = s;
+Origin canvas::get_origin_setting() const {
+	return origin_setting;
+}
+
+void canvas::set_origin_setting(Origin origin) {
+	origin_setting = origin;
 }
 
 void canvas::set_apply_gamma(bool flag) {
 	apply_gamma = flag;
+}
+
+void canvas::set_zoom_factor(float zoom) {
+	zoom_factor = zoom;
 }
 
 void canvas::initialize_modelview_matrix_stack() {
@@ -121,8 +131,9 @@ void canvas::warning(const std::string& what) const {
 void canvas::set_view(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 	prog.set_uniform(ctx, "resolution", resolution);
 	prog.set_uniform(ctx, "modelview2d_matrix", modelview_matrix_stack.top());
-	prog.set_uniform(ctx, "feather_scale", feather_scale);
+	prog.set_uniform(ctx, "origin_upper_left", origin_setting == Origin::kTopLeft);
 	prog.set_uniform(ctx, "apply_gamma", apply_gamma);
+	prog.set_uniform(ctx, "zoom_factor", zoom_factor);
 }
 
 }

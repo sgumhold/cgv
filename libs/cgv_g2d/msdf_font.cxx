@@ -9,6 +9,7 @@ namespace g2d {
 msdf_font::msdf_font() {
 	initial_font_size = 0;
 	pixel_range = 0;
+	cap_height = 0.0f;
 }
 
 void msdf_font::manage_singleton(cgv::render::context& ctx, const std::string& class_name, int& ref_count, int ref_count_change) {
@@ -158,6 +159,14 @@ void msdf_font::compute_derived_glyph_attributes() {
 		glyph.size = pb - pa;
 		glyph.texcoords = glyph.atlas_bounds * inv_dimensions;
 	}
+
+	const glyph_info& glyph_m = get_glyph_info('M');
+	float baseline_offset = glyph_m.position.y();
+
+	for(glyph_info& glyph : glyphs)
+		glyph.position.y() -= baseline_offset;
+
+	cap_height = glyph_m.size.y();
 }
 
 msdf_font_regular& ref_msdf_font_regular(cgv::render::context& ctx, int ref_count_change) {
