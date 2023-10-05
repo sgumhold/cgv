@@ -30,6 +30,11 @@ namespace rgbd {
 		bool calib_set = false;
 		bool distortion_map_outofdate = true;
 	protected:
+		enum GeometryLessMode {
+			GLM_VERTEX,
+			GLM_MIXED,
+			GLM_INSTANCED
+		} geometry_less_mode = GLM_MIXED;
 		// members that define shader uniforms
 		rgbd::rgbd_calibration calib;
 		bool use_distortion_map = false;
@@ -47,7 +52,7 @@ namespace rgbd {
 		rgbd_point_renderer();
 		// configuration functions
 		void configure_invalid_color_handling(bool discard, const rgba& color);
-		void set_geometry_less_rendering(bool active);
+		void set_geometry_less_rendering(bool active, GeometryLessMode mode = GLM_VERTEX);
 		bool do_geometry_less_rendering() const;
 		void set_color_lookup(bool active);
 		bool do_lookup_color() const;

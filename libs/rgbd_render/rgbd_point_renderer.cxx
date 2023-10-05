@@ -6,6 +6,7 @@ void rgbd_point_renderer::update_defines(cgv::render::shader_define_map& defines
 {
 	point_renderer::update_defines(defines);
 	cgv::render::shader_code::set_define(defines, "USE_DISTORTION_MAP", use_distortion_map, false);
+	cgv::render::shader_code::set_define(defines, "GEOMETRY_LESS_MODE", (int&)geometry_less_mode, 0);
 }
 bool rgbd_point_renderer::build_shader_program(cgv::render::context& ctx, cgv::render::shader_program& prog, const cgv::render::shader_define_map& defines)
 {
@@ -20,9 +21,10 @@ void rgbd_point_renderer::configure_invalid_color_handling(bool discard, const r
 	discard_invalid_color_points = discard;
 	invalid_color = color;
 }
-void rgbd_point_renderer::set_geometry_less_rendering(bool active) 
+void rgbd_point_renderer::set_geometry_less_rendering(bool active, GeometryLessMode mode)
 {
 	geometry_less_rendering = active; 
+	geometry_less_mode = mode;
 }
 bool rgbd_point_renderer::do_geometry_less_rendering() const 
 {
@@ -89,18 +91,30 @@ bool rgbd_point_renderer::disable(cgv::render::context& ctx)
 }
 void rgbd_point_renderer::draw(cgv::render::context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 {
-	if (geometry_less_rendering)
-		draw_impl_instanced(ctx, cgv::render::PT_POINTS, 0, 1, calib.depth.w * calib.depth.h);
+	if (geometry_less_rendering) {
+		switch (geometry_less_mode) {
+		case GLM_VERTEX :
+			draw_impl(ctx, cgv::render::PT_POINTS, 0, calib.depth.w*calib.depth.h);
+			break;
+		case GLM_MIXED :
+			draw_impl_instanced(ctx, cgv::render::PT_POINTS, 0, calib.depth.w, calib.depth.h);
+			break;
+		case GLM_INSTANCED :
+			draw_impl_instanced(ctx, cgv::render::PT_POINTS, 0, 1, calib.depth.w * calib.depth.h);
+			break;
+		}
+	}
 	else
 		draw_impl(ctx, cgv::render::PT_POINTS, start, count);
 }
 // convenience function to add UI elements
 void rgbd_point_renderer::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
-	p.add_member_control(bp, "geometry_less_rendering", geometry_less_rendering, "check");
 	p.add_member_control(bp, "lookup_color", lookup_color, "check");
 	p.add_member_control(bp, "discard_invalid_color_points", discard_invalid_color_points, "check");
 	p.add_member_control(bp, "invalid_color", invalid_color);
+	p.add_member_control(bp, "geometry_less_rendering", geometry_less_rendering, "check");
+	p.add_member_control(bp, "geometry_less_mode", geometry_less_mode, "dropdown", "enums='vertex,mixed,instance'");
 }
 
 }
