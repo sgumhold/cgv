@@ -9,10 +9,22 @@
 
 namespace rgbd {
 
-/** interface to provided access to rgbd devices. This is independent of device driver. 
-    Different plugins can implement the rgbd_driver and rgbd_device classes and seemlessly
-	integrate into the rgbd_input class. */
-	/// rgbd point renderer can render point cloud from depth and or color images
+    //! Renderer implementation to render rgbd frames as points. 
+	/*! The rgbd_point_renderer is derived from the point_renderer and uses the 
+	    same point_render_style. Depth and color frames can either be converted
+		to integer points and colors with the rgbd::construct_rgbd_render_data_with_color()
+		or rgbd::construct_rgbd_render_data() functions and passed to the renderer
+		via the position and color arrays. Alternatively, the frames can be converted
+		to textures with the rgbd::create_or_update_texture_from_frame() function
+		and passed to the renderer by setting the uniform samplers "depth_image" and
+		"color_image" after the renderer has been enabled typically with the 
+		validate_and_enable() function. In case you configure the renderer to use
+		a distortion map, do not use texture unit 2 for depth and color images as this
+		is used by renderer for the distortion map. Configure with set_geometry_less_rendering()
+		and set_color_lookup() whether to use the depth and or color image. Query the
+		current rendering approach with the do_geometry_less_rendering() and do_lookup_color()
+		functions and provide render data to position and color attributes.
+	*/
 	class CGV_API rgbd_point_renderer : public cgv::render::point_renderer
 	{
 		bool calib_set = false;
