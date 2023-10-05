@@ -50,7 +50,7 @@ bool msdf_gl_font_renderer::enable(cgv::render::context& ctx, const ivec2& viewp
 		prog.set_uniform(ctx, "resolution", viewport_resolution);
 		prog.set_uniform(ctx, "src_size", tg.get_msdf_font()->get_initial_font_size());
 		prog.set_uniform(ctx, "pixel_range", tg.get_msdf_font()->get_pixel_range());
-		prog.set_uniform(ctx, "true_sdf_mix_factor", 0.0f);
+
 		style.apply(ctx, prog);
 
 		use_subpixel_rendering = style.enable_subpixel_rendering;
@@ -94,15 +94,12 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_text_geometry& 
 	size_t end = count < 0 ? tg.size() : offset + static_cast<size_t>(count);
 	end = std::min(end, tg.size());
 
+	float alignment_offset_scale = tg.get_msdf_font()->get_cap_height();
+
 	for(size_t i = offset; i < end; ++i) {
 		const auto& text = tg.ref_texts()[i];
 
-		vec2 position_offset = text.position;
-		
 		vec2 alignment_offset_factors(-0.5f);
-
-		alignment_offset_factors.x() = -0.5f;
-		alignment_offset_factors.y() = -0.5f;
 
 		if(text.alignment & cgv::render::TA_LEFT)
 			alignment_offset_factors.x() = 0.0f;
@@ -117,12 +114,14 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_text_geometry& 
 		vec2 size_scale = text.size;
 		size_scale.x() *= text.size.y();
 
-		prog.set_uniform(ctx, "position_offset", position_offset);
+		alignment_offset_factors.y() *= alignment_offset_scale;
+
+		prog.set_uniform(ctx, "position_offset", text.position);
 		prog.set_uniform(ctx, "alignment_offset_factors", alignment_offset_factors);
 		prog.set_uniform(ctx, "text_size", size_scale);
 		prog.set_uniform(ctx, "angle", text.angle);
 		prog.set_uniform(ctx, "color", text.color);
-
+		
 		glDrawArraysInstancedBaseInstance(GL_TRIANGLE_STRIP, (GLint)0, (GLsizei)4, (GLsizei)text.str.size(), (GLuint)text.offset);
 	}
 }

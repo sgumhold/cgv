@@ -1,6 +1,8 @@
 #version 150
 
 //***** begin interface of shape2d.glsl ***********************************
+uniform bool origin_upper_left = false;
+
 vec2 get_adjusted_size(vec2 size);
 vec4 get_active_color(vec4 color);
 vec4 transform_world_to_window_space(vec2 p);
@@ -84,6 +86,9 @@ void main() {
 	vec4 color = get_active_color(color_fs);
 	
 	vec2 uv = inv_bilinear2(pix_coord, position01_fs.zw, position01_fs.xy, position23_fs.zw, position23_fs.xy);
+
+	if(origin_upper_left)
+		uv.y = 1.0 - uv.y;
 
 	finish_sdf_fragment2d(dist, color, uv);
 }

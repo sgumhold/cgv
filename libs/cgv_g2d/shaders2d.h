@@ -11,6 +11,7 @@ struct CGV_API shaders {
 	static const std::string arrow;
 	static const std::string background;
 	static const std::string circle;
+	static const std::string quadratic_spline;
 	static const std::string cubic_spline;
 	static const std::string ellipse;
 	static const std::string grid;
