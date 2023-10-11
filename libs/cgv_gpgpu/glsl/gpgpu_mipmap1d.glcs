@@ -19,7 +19,7 @@ void main() {
     int idx = int(gl_GlobalInvocationID);
     
 	// this produces correct results even for odd sized input textures
-	if(idx.x < output_size) {
+	if(idx < output_size) {
 		float output_size_float = output_size;
 		float double_size = 2.0 * output_size_float;
 
