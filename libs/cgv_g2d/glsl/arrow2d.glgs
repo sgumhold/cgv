@@ -3,6 +3,8 @@
 #define MODE 1
 
 //***** begin interface of shape2d.glsl ***********************************
+uniform bool origin_upper_left = false;
+
 uniform float border_radius = 0.0;
 uniform float feather_origin = 0.5;
 
@@ -56,6 +58,14 @@ vec2 ortho2d(vec2 v) {
 	return vec2(v.y, -v.x);
 }
 
+void emit_corner(in int id, in vec2 position, in vec2 u_dir, in vec2 v_dir, in vec4 color) {
+	col = color;
+	pix_coord = position + direction_factors[id].x*u_dir + direction_factors[id].y*v_dir;
+	tex_coord = corners[id];
+	gl_Position = transform_world_to_window_space(pix_coord);
+	EmitVertex();
+}
+
 void main() {
 #if MODE == 0
 	vec2 position_a = gl_in[0].gl_Position.xy;
@@ -96,27 +106,13 @@ void main() {
 	vec4 color1 = color_gs[1];
 #endif
 
-	col = color0;
-	pix_coord = position_a + direction_factors[0].x*u_dir + direction_factors[0].y*v_dir;
-	tex_coord = corners[0];
-	gl_Position = transform_world_to_window_space(pix_coord);
-	EmitVertex();
+	//col = color0;
 
-	col = color1;
-	pix_coord = position_b + direction_factors[1].x*u_dir + direction_factors[1].y*v_dir;
-	tex_coord = corners[1];
-	gl_Position = transform_world_to_window_space(pix_coord);
-	EmitVertex();
+	if(origin_upper_left)
+		v_dir = -v_dir;
 
-	col = color0;
-	pix_coord = position_a + direction_factors[2].x*u_dir + direction_factors[2].y*v_dir;
-	tex_coord = corners[2];
-	gl_Position = transform_world_to_window_space(pix_coord);
-	EmitVertex();
-
-	col = color1;
-	pix_coord = position_b + direction_factors[3].x*u_dir + direction_factors[3].y*v_dir;
-	tex_coord = corners[3];
-	gl_Position = transform_world_to_window_space(pix_coord);
-	EmitVertex();
+	emit_corner(0, position_a, u_dir, v_dir, color0);
+	emit_corner(1, position_b, u_dir, v_dir, color1);
+	emit_corner(2, position_a, u_dir, v_dir, color0);
+	emit_corner(3, position_b, u_dir, v_dir, color1);
 }

@@ -22,7 +22,7 @@ namespace cgv {
 			translate2h(const fvec<T, 2>& t) { fmat<T, 3, 3> M; M.identity(); M(0, 2) = t(0); M(1, 2) = t(1); return M; }
 		/// construct homogeneous 2x2 translation matrix from xy components
 		template <typename T> fmat<T, 3, 3>
-			translate2h(const T& tx, const T& ty) { return scale2h(fvec<T, 2>(tx, ty)); }
+			translate2h(const T& tx, const T& ty) { return translate2h(fvec<T, 2>(tx, ty)); }
 		/// construct 4x4 translation matrix from vec3
 		template <typename T> fmat<T, 4, 4>
 			translate4(const fvec<T, 3>& t) { fmat<T, 4, 4> M; M.identity(); M(0, 3) = t(0); M(1, 3) = t(1); M(2, 3) = t(2); return M; }

@@ -1,6 +1,8 @@
 #version 150
 
 //***** begin interface of shape2d.glsl ***********************************
+uniform bool origin_upper_left = false;
+
 uniform float border_radius = 0.0;
 uniform float feather_origin = 0.5;
 
@@ -41,8 +43,10 @@ vec2 scale_corner(in vec2 a, in vec2 d0, in vec2 d1, in float scale) {
 }
 
 void emit_corner(int id, vec2 p) {
+	vec2 corner = corners[id];
+
 	pix_coord = p;
-	tex_coord = corners[id] + 0.5;
+	tex_coord = corner + 0.5;
 
 	gl_Position = transform_world_to_window_space(p);
 	EmitVertex();
@@ -70,6 +74,16 @@ void main() {
 
 	position01_fs = vec4(as, bs);
 	position23_fs = vec4(cs, ds);
+
+	vec2 temp;
+	if(origin_upper_left) {
+		temp = as;
+		as = cs;
+		cs = temp;
+		temp = bs;
+		bs = ds;
+		ds = temp;
+	}
 
 	emit_corner(0, as);
 	emit_corner(1, bs);
