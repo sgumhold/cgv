@@ -1,6 +1,7 @@
 #version 460
 
 //***** begin interface of shape2d.glsl ***********************************
+uniform bool origin_upper_left = false;
 vec4 transform_world_to_window_space(vec2 p);
 //***** end interface of shape2d.glsl ***********************************
 
@@ -26,7 +27,6 @@ uniform vec2 text_size;
 uniform float font_size = 32.0;
 uniform float angle;
 
-out vec2 pix_coord;
 out vec2 tex_coord;
 
 mat2 rotate(in float angle) {
@@ -50,8 +50,18 @@ void main() {
 
 	tex_coord = vec2(mix(v.texcoords.xy, v.texcoords.zw, corner));
 
+	if(origin_upper_left)
+		corner.y = 1.0 - corner.y;
+
+	vec2 final_position = v.position_size.xy;
+	vec2 alignment_factors = alignment_offset_factors;
+	if(origin_upper_left) {
+		final_position.y = -(final_position.y + v.position_size.w);
+		alignment_factors.y = -alignment_factors.y;
+	}
+
 	// offset local glyph position by text alignment
-	vec2 final_position = v.position_size.xy + (text_size * font_size * alignment_offset_factors);
+	final_position += text_size * font_size * alignment_factors;
 
 	// rotate local glyph position	
 	final_position = R * final_position;
@@ -67,7 +77,7 @@ void main() {
 	// rotate
 	corner = R * corner;
 
-	pix_coord = corner - 0.5*size;
+	//pix_coord = corner - 0.5*size;
 
 	// offset
 	corner += final_position;

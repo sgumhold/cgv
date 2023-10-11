@@ -1,0 +1,16 @@
+#version 430
+
+layout(local_size_x = 4, local_size_y = 4, local_size_z = 4) in;
+layout(r32f, binding = 0) uniform writeonly image3D tex;
+
+uniform uvec3 size;
+uniform vec4 value;
+
+void main() {
+
+	// the texel coordinates of this thread
+    ivec3 idx = ivec3(gl_GlobalInvocationID);
+    
+	if(idx.x < size.x && idx.y < size.y && idx.z < size.z)
+        imageStore(tex, idx, value);
+}

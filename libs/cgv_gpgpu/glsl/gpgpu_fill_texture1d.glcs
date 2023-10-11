@@ -1,0 +1,16 @@
+#version 430
+
+layout(local_size_x = 4) in;
+layout(binding = 0) uniform writeonly image1D tex;
+
+uniform uint size;
+uniform vec4 value;
+
+void main() {
+
+	// the texel coordinates of this thread
+    int idx = int(gl_GlobalInvocationID);
+    
+	if(idx < size)
+        imageStore(tex, idx, value);
+}

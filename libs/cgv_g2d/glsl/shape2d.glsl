@@ -5,7 +5,8 @@ The following interface is implemented in this shader:
 //***** begin interface of shape2d.glsl ***********************************
 uniform ivec2 resolution;
 uniform mat3 modelview2d_matrix = mat3(1.0);
-uniform float feather_scale = 1.0;
+uniform bool origin_upper_left = false;
+uniform float zoom_factor = 1.0;
 
 uniform vec4 fill_color;
 uniform vec4 border_color = vec4(1.0);
@@ -33,7 +34,8 @@ vec4 transform_world_to_window_space(vec2 p);
 // canvas parameters
 uniform ivec2 resolution;
 uniform mat3 modelview2d_matrix = mat3(1.0);
-uniform float feather_scale = 1.0;
+uniform bool origin_upper_left = false;
+uniform float zoom_factor = 1.0;
 
 // appearance
 uniform vec4 fill_color;
@@ -56,7 +58,7 @@ uniform bool apply_gamma = true;
 
 // returns the adjusted feather width
 float get_feather_width() {
-	return feather_scale * feather_width;
+	return feather_width / zoom_factor;
 }
 
 // return the adjusted size of the shape, which is half the actual size minus the border radius plus feather sizes
@@ -75,6 +77,8 @@ vec4 transform_world_to_window_space(vec2 p) {
 	vec2 pos = (modelview2d_matrix * vec3(p, 1.0)).xy;
 
 	// transform to window space
-	pos = (2.0*pos) / resolution;
-	return vec4(pos - 1.0, 0.0, 1.0);
+	pos /= resolution;
+	if(origin_upper_left)
+		pos.y = 1.0 - pos.y;
+	return vec4(2.0 * pos - 1.0, 0.0, 1.0);
 }
