@@ -153,6 +153,12 @@ namespace rgbd {
 		virtual bool configure_role(MultiDeviceRole mdr);
 		/// return the multi-device role of the device
 		MultiDeviceRole get_role() const { return multi_device_role; }
+		/// whether device supports external synchronization
+		virtual bool is_sync_supported() const { return false; }
+		/// return whether syncronization input jack is connected
+		virtual bool is_sync_in_connected() const { return false; }
+		/// return whether syncronization output jack is connected
+		virtual bool is_sync_out_connected() const { return false; }
 
 		/// return information about the support color control parameters
 		virtual const std::vector<color_parameter_info>& get_supported_color_control_parameter_infos() const;
