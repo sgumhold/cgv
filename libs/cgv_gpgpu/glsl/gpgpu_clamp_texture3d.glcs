@@ -1,0 +1,20 @@
+#version 430
+
+#define TEXTURE_FORMAT r32f
+
+layout(local_size_x = 4, local_size_y = 4, local_size_z = 4) in;
+layout(TEXTURE_FORMAT, binding = 0) uniform image3D tex;
+
+uniform uvec3 size;
+uniform vec2 range;
+
+void main() {
+
+	// the texel coordinates of this thread
+    ivec3 idx = ivec3(gl_GlobalInvocationID);
+    
+	if(idx.x < size.x && idx.y < size.y && idx.z < size.z) {
+        vec4 value = clamp(imageLoad(tex, idx), range.x, range.y);
+        imageStore(tex, idx, value);
+    }
+}
