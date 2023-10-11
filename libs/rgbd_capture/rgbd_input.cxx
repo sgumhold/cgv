@@ -139,13 +139,32 @@ bool rgbd_input::configure_role(MultiDeviceRole mdr)
 		return false;
 	return rgbd->configure_role(mdr);
 }
-/// return the multi-device role of the device
 MultiDeviceRole rgbd_input::get_role() const
 {
 	if (!is_attached())
 		return MDR_STANDALONE;
 	return rgbd->get_role();
 }
+
+bool rgbd_input::is_sync_supported() const
+{
+	if (!is_attached())
+		return false;
+	return rgbd->is_sync_supported();
+}
+bool rgbd_input::is_sync_in_connected() const
+{
+	if (!is_attached())
+		return false;
+	return rgbd->is_sync_in_connected();
+}
+bool rgbd_input::is_sync_out_connected() const
+{
+	if (!is_attached())
+		return false;
+	return rgbd->is_sync_out_connected();
+}
+
 
 bool rgbd_input::attach_path(const string& path)
 {

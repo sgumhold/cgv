@@ -194,7 +194,21 @@ namespace rgbd {
 		multi_device_role = mdr;
 		return true;
 	}
-
+	/// whether device supports external synchronization
+	bool rgbd_kinect_azure::is_sync_supported() const
+	{
+		return true;
+	}
+	/// return whether syncronization input jack is connected
+	bool rgbd_kinect_azure::is_sync_in_connected() const
+	{
+		return device.is_sync_in_connected();
+	}
+	/// return whether syncronization output jack is connected
+	bool rgbd_kinect_azure::is_sync_out_connected() const
+	{
+		return device.is_sync_out_connected();
+	}
 	const std::vector<color_parameter_info>& rgbd_kinect_azure::get_supported_color_control_parameter_infos() const
 	{
 		if (ccp_infos.empty()) {

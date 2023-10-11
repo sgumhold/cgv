@@ -58,6 +58,12 @@ namespace rgbd {
 		bool is_supported(MultiDeviceRole mdr) const;
 		/// configure device for a multi-device role and return whether this was successful (do this before starting)
 		bool configure_role(MultiDeviceRole mdr);
+		/// whether device supports external synchronization
+		bool is_sync_supported() const;
+		/// return whether syncronization input jack is connected
+		bool is_sync_in_connected() const;
+		/// return whether syncronization output jack is connected
+		bool is_sync_out_connected() const;
 
 		/// get range, step and default value of color control parameter
 		const std::vector<color_parameter_info>& get_supported_color_control_parameter_infos() const;
