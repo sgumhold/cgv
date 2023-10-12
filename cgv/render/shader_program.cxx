@@ -325,7 +325,7 @@ std::vector<shader_define_map> shader_program::extract_instances(std::string fil
 		return result;
 	for (unsigned int i = 0; i < lines.size(); ++i) {
 		token tok = lines[i];
-		while (tok.begin < tok.end && cgv::utils::is_space(*tok.begin))
+		while (tok.begin < tok.end && is_space(*tok.begin))
 			++tok.begin;
 		std::string l = to_string(tok);
 		if (l.empty() || l[0] == '/')
@@ -341,9 +341,9 @@ std::vector<shader_define_map> shader_program::extract_instances(std::string fil
 			split_to_tokens(t, sides, "", false, "", "", "=");
 			std::vector<std::string> S;
 			for (auto& s : sides) {
-				while (s.begin < s.end && cgv::utils::is_space(*s.begin))
+				while (s.begin < s.end && is_space(*s.begin))
 					++s.begin;
-				while (s.begin < s.end && cgv::utils::is_space(s.end[-1]))
+				while (s.begin < s.end && is_space(s.end[-1]))
 					--s.end;
 				if (s.begin < s.end)
 					S.push_back(to_string(s));
@@ -375,7 +375,7 @@ bool shader_program::attach_program(const context& ctx, std::string file_name, b
 	std::string error = "2 : attach command failed";
 	for (unsigned int i=0; i<lines.size(); ++i) {
 		token tok = lines[i];
-		while (tok.begin < tok.end && cgv::utils::is_space(*tok.begin))
+		while (tok.begin < tok.end && is_space(*tok.begin))
 			++tok.begin;
 		std::string l = to_string(tok);
 
