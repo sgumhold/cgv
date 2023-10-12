@@ -266,11 +266,11 @@ template&lt;typename T &gt; </td></tr>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a347d701dbfbd011109cba546d1faca0a"><td class="memItemLeft" align="right" valign="top"><a id="a347d701dbfbd011109cba546d1faca0a"></a>
 static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a347d701dbfbd011109cba546d1faca0a">collect_files_from_cache</a> (const std::string &amp;name, std::vector&lt; std::string &gt; &amp;file_names, bool &amp;added_files)</td></tr>
-<tr class="memdesc:a347d701dbfbd011109cba546d1faca0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">resolve file name with <a class="el" href="classcgv_1_1render_1_1shader__code.html#a67a995a8da53b28c0a250d685642e61b" title="Check if file exists.">shader_code::find_file</a> and add file to list if found <br /></td></tr>
+<tr class="memdesc:a347d701dbfbd011109cba546d1faca0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">resolve file name with <a class="el" href="classcgv_1_1render_1_1shader__code.html#a0ba2ea9d3dade1c74085b25f6838497e" title="Find the full path to a shader by its file name.">shader_code::find_file</a> and add file to list if found <br /></td></tr>
 <tr class="separator:a347d701dbfbd011109cba546d1faca0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b67eb5729d31a2a0bf39d22798ada0e"><td class="memItemLeft" align="right" valign="top"><a id="a0b67eb5729d31a2a0bf39d22798ada0e"></a>
 static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a0b67eb5729d31a2a0bf39d22798ada0e">collect_file</a> (const std::string &amp;file_name, bool use_cache, std::vector&lt; std::string &gt; &amp;file_names)</td></tr>
-<tr class="memdesc:a0b67eb5729d31a2a0bf39d22798ada0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">resolve file name with <a class="el" href="classcgv_1_1render_1_1shader__code.html#a67a995a8da53b28c0a250d685642e61b" title="Check if file exists.">shader_code::find_file</a> and add file to list if found <br /></td></tr>
+<tr class="memdesc:a0b67eb5729d31a2a0bf39d22798ada0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">resolve file name with <a class="el" href="classcgv_1_1render_1_1shader__code.html#a0ba2ea9d3dade1c74085b25f6838497e" title="Find the full path to a shader by its file name.">shader_code::find_file</a> and add file to list if found <br /></td></tr>
 <tr class="separator:a0b67eb5729d31a2a0bf39d22798ada0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a784eef71ad129bb2ddddf6dcb1e2aa7f"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a784eef71ad129bb2ddddf6dcb1e2aa7f">collect_files</a> (const std::string &amp;base_name, bool use_cache, std::vector&lt; std::string &gt; &amp;file_names)</td></tr>
 <tr class="memdesc:a784eef71ad129bb2ddddf6dcb1e2aa7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">collect shader code files that extent the given base name.  <a href="classcgv_1_1render_1_1shader__program.html#a784eef71ad129bb2ddddf6dcb1e2aa7f">More...</a><br /></td></tr>
@@ -400,7 +400,7 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 
 <p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00106">106</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="ref__ptr_8h_source.html#l00230">cgv::data::ref_ptr&lt; T, is_ref_counted &gt;::empty()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00045">cgv::render::get_shader_config()</a>.</p>
+<p class="reference">References <a class="el" href="ref__ptr_8h_source.html#l00230">cgv::data::ref_ptr&lt; T, is_ref_counted &gt;::empty()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00049">cgv::render::get_shader_config()</a>.</p>
 
 </div>
 </div>
@@ -506,7 +506,7 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 
 <p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00128">128</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00045">cgv::render::get_shader_config()</a>, <a class="el" href="import_8cxx_source.html#l00388">cgv::base::read_data_file()</a>, <a class="el" href="advanced__scan_8cxx_source.html#l00065">cgv::utils::split_to_lines()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
+<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00049">cgv::render::get_shader_config()</a>, <a class="el" href="import_8cxx_source.html#l00388">cgv::base::read_data_file()</a>, <a class="el" href="advanced__scan_8cxx_source.html#l00065">cgv::utils::split_to_lines()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
 
 </div>
 </div>

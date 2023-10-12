@@ -169,6 +169,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1textured__rectangle.html">textured_rectangle</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">simple helper class to store rectangles with texture coordinates  <a href="structcgv_1_1render_1_1textured__rectangle.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1shader__config.html">shader_config</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">a globally unique shader config is registered by default when the cgv library is used.  <a href="structcgv_1_1render_1_1shader__config.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html">shader_code</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">a shader code object holds a code fragment of a geometry vertex or fragment shader and can be added to a shader program.  <a href="classcgv_1_1render_1_1shader__code.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -453,13 +456,14 @@ typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&l
 typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; uint32_t, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#aa88a9be6bca93c1b0fbfcb3f183dd159">uvec4</a></td></tr>
 <tr class="memdesc:aa88a9be6bca93c1b0fbfcb3f183dd159"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 4d unsigned integer vectors <br /></td></tr>
 <tr class="separator:aa88a9be6bca93c1b0fbfcb3f183dd159"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e875e06326ba0599a1289f0bacdb116"><td class="memItemLeft" align="right" valign="top">typedef std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a></td></tr>
-<tr class="memdesc:a0e875e06326ba0599a1289f0bacdb116"><td class="mdescLeft">&#160;</td><td class="mdescRight">a globally unique shader config is registered by default when the cgv library is used.  <a href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">More...</a><br /></td></tr>
-<tr class="separator:a0e875e06326ba0599a1289f0bacdb116"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa37e7abafc356dc57179bc80e61b77c4"><td class="memItemLeft" align="right" valign="top"><a id="aa37e7abafc356dc57179bc80e61b77c4"></a>
-typedef <a class="el" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a>&lt; shader_config &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#aa37e7abafc356dc57179bc80e61b77c4">shader_config_ptr</a></td></tr>
+typedef <a class="el" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a>&lt; <a class="el" href="structcgv_1_1render_1_1shader__config.html">shader_config</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#aa37e7abafc356dc57179bc80e61b77c4">shader_config_ptr</a></td></tr>
 <tr class="memdesc:aa37e7abafc356dc57179bc80e61b77c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">type of ref counted pointer to shader configuration <br /></td></tr>
 <tr class="separator:aa37e7abafc356dc57179bc80e61b77c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e875e06326ba0599a1289f0bacdb116"><td class="memItemLeft" align="right" valign="top"><a id="a0e875e06326ba0599a1289f0bacdb116"></a>
+typedef std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a></td></tr>
+<tr class="memdesc:a0e875e06326ba0599a1289f0bacdb116"><td class="mdescLeft">&#160;</td><td class="mdescRight">typedef for shader define map data structure <br /></td></tr>
+<tr class="separator:a0e875e06326ba0599a1289f0bacdb116"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -761,31 +765,7 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>namespace for api independent GPU programming </p>
-</div><h2 class="groupheader">Typedef Documentation</h2>
-<a id="a0e875e06326ba0599a1289f0bacdb116"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e875e06326ba0599a1289f0bacdb116">&#9670;&nbsp;</a></span>shader_define_map</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef std::map&lt;std::string, std::string&gt; <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">cgv::render::shader_define_map</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>a globally unique shader config is registered by default when the cgv library is used. </p>
-<p>Currently it has one member only defining the search path for shader files. The shader path is initialized to the environment variable CGV_SHADER_PATH or empty otherwise. It can also be set with a command line argument of the form</p>
-<p>type(shader_config):shader_path='@(INPUT_PATH)'</p>
-<p>or in a config file as</p>
-<p>type(shader_config):shader_path='D:/my_shaders'</p>
-<p>To set the shader path at runtime, query the shader_config with the <a class="el" href="namespacecgv_1_1render.html#a5929e262d43bd2e095c4776547eebe5b" title="return a reference to the current shader configuration">get_shader_config()</a> function. typedef for shader define map data structure </p>
-
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00027">27</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="aa9c3365c98b31f0efbc535d46c455f98"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa9c3365c98b31f0efbc535d46c455f98">&#9670;&nbsp;</a></span>ArrowHeadLengthMode</h2>
 
@@ -1355,11 +1335,11 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>power_of_two_
 <p>return a reference to the current shader configuration </p>
 <p>return a pointer to the current shader configuration </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00045">45</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00049">49</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00045">get_shader_config()</a>.</p>
+<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00049">get_shader_config()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00359">cgv::render::shader_program::attach_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00106">cgv::render::shader_program::collect_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00128">cgv::render::shader_program::collect_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00175">cgv::render::shader_code::find_file()</a>, <a class="el" href="shader__code_8cxx_source.html#l00088">cgv::render::shader_code::get_last_error()</a>, <a class="el" href="shader__code_8cxx_source.html#l00045">get_shader_config()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00303">cgv::render::shader_code::read_code_file()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00359">cgv::render::shader_program::attach_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00106">cgv::render::shader_program::collect_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00128">cgv::render::shader_program::collect_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00179">cgv::render::shader_code::find_file()</a>, <a class="el" href="shader__code_8cxx_source.html#l00092">cgv::render::shader_code::get_last_error()</a>, <a class="el" href="shader__code_8cxx_source.html#l00049">get_shader_config()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00342">cgv::render::shader_code::read_code_file()</a>.</p>
 
 </div>
 </div>

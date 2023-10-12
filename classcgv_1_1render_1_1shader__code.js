@@ -6,7 +6,7 @@ var classcgv_1_1render_1_1shader__code =
     [ "decode_if_base64", "classcgv_1_1render_1_1shader__code.html#a9714d2e8ba8d61e6e676928747fd606d", null ],
     [ "destruct", "classcgv_1_1render_1_1shader__code.html#a8a3cf5e1a75373cba0a1da8ed9672318", null ],
     [ "detect_shader_type", "classcgv_1_1render_1_1shader__code.html#af74bcb73f79aafe7f783c9a8f416ce8b", null ],
-    [ "find_file", "classcgv_1_1render_1_1shader__code.html#a67a995a8da53b28c0a250d685642e61b", null ],
+    [ "find_file", "classcgv_1_1render_1_1shader__code.html#a0ba2ea9d3dade1c74085b25f6838497e", null ],
     [ "get_last_error", "classcgv_1_1render_1_1shader__code.html#aaf7764ff05b7729d356261b7547d3a44", null ],
     [ "get_shader_type", "classcgv_1_1render_1_1shader__code.html#a77134a4a792e98d63f894474baec24e0", null ],
     [ "is_compiled", "classcgv_1_1render_1_1shader__code.html#a84f593716c7261bb13874731d84c1582", null ],
@@ -25,5 +25,7 @@ var classcgv_1_1render_1_1shader__code =
     [ "code_cache", "classcgv_1_1render_1_1shader__code.html#a4f473cd5a071f98f40da5514c2ca476a", null ],
     [ "ctx_ptr", "classcgv_1_1render_1_1shader__code.html#a738cb1064e1c6fc606c018191a53f23e", null ],
     [ "last_error", "classcgv_1_1render_1_1shader__code.html#a95f40a817168467d5a0d3fdbb09e0b79", null ],
+    [ "shader_file_name_map", "classcgv_1_1render_1_1shader__code.html#ab922454f1bd868b6724015c9b30556d8", null ],
+    [ "shader_file_name_map_initialized", "classcgv_1_1render_1_1shader__code.html#a01fde57a19959312f662879a80a7e9d6", null ],
     [ "st", "classcgv_1_1render_1_1shader__code.html#aa6b747b1b10960f15fc573a3a0bdd8da", null ]
 ];
