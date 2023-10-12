@@ -28,7 +28,7 @@ protected:
 	} calibration;
 
 	bool interpolate_view_matrix = true;
-	float eye_separation_factor = 1.0f;
+	float eye_separation_factor = 10.0f;
 	vec3 light_direction;
 	bool enable_shadows = true;
 
@@ -454,7 +454,7 @@ public:
 
 		add_member_control(this, "Interpolate View Matrix", interpolate_view_matrix, "check");
 
-		add_member_control(this, "Eye Separation Factor", eye_separation_factor, "value_slider", "min=0;max=2;step=0.0625");
+		add_member_control(this, "Eye Separation Factor", eye_separation_factor, "value_slider", "min=0;max=20;ticks=true");
 
 		add_decorator("Light Direction", "separator");
 		add_member_control(this, "X", light_direction[0], "value_slider", "min=-1;max=1;step=0.0625");
