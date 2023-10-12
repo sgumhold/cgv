@@ -169,9 +169,9 @@ Static Public Member Functions</h2></td></tr>
 static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#a9714d2e8ba8d61e6e676928747fd606d">decode_if_base64</a> (std::string &amp;content)</td></tr>
 <tr class="memdesc:a9714d2e8ba8d61e6e676928747fd606d"><td class="mdescLeft">&#160;</td><td class="mdescRight">decode a string if it is base64 encoded <br /></td></tr>
 <tr class="separator:a9714d2e8ba8d61e6e676928747fd606d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67a995a8da53b28c0a250d685642e61b"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#a67a995a8da53b28c0a250d685642e61b">find_file</a> (const std::string &amp;file_name)</td></tr>
-<tr class="memdesc:a67a995a8da53b28c0a250d685642e61b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if file exists.  <a href="classcgv_1_1render_1_1shader__code.html#a67a995a8da53b28c0a250d685642e61b">More...</a><br /></td></tr>
-<tr class="separator:a67a995a8da53b28c0a250d685642e61b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ba2ea9d3dade1c74085b25f6838497e"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#a0ba2ea9d3dade1c74085b25f6838497e">find_file</a> (const std::string &amp;file_name, bool search_exhaustive=false)</td></tr>
+<tr class="memdesc:a0ba2ea9d3dade1c74085b25f6838497e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the full path to a shader by its file name.  <a href="classcgv_1_1render_1_1shader__code.html#a0ba2ea9d3dade1c74085b25f6838497e">More...</a><br /></td></tr>
+<tr class="separator:a0ba2ea9d3dade1c74085b25f6838497e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf7764ff05b7729d356261b7547d3a44"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#aaf7764ff05b7729d356261b7547d3a44">get_last_error</a> (const std::string &amp;file_name, const std::string &amp;<a class="el" href="classcgv_1_1render_1_1render__component.html#a95f40a817168467d5a0d3fdbb09e0b79">last_error</a>)</td></tr>
 <tr class="memdesc:aaf7764ff05b7729d356261b7547d3a44"><td class="mdescLeft">&#160;</td><td class="mdescRight">format given last error in a way that developer environments can locate errors in the source file  <a href="classcgv_1_1render_1_1shader__code.html#aaf7764ff05b7729d356261b7547d3a44">More...</a><br /></td></tr>
 <tr class="separator:aaf7764ff05b7729d356261b7547d3a44"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -215,15 +215,23 @@ Protected Attributes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
 Static Protected Attributes</h2></td></tr>
+<tr class="memitem:ab922454f1bd868b6724015c9b30556d8"><td class="memItemLeft" align="right" valign="top"><a id="ab922454f1bd868b6724015c9b30556d8"></a>
+static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#ab922454f1bd868b6724015c9b30556d8">shader_file_name_map</a></td></tr>
+<tr class="memdesc:ab922454f1bd868b6724015c9b30556d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">map that caches full shader file paths indexed by the shader file name <br /></td></tr>
+<tr class="separator:ab922454f1bd868b6724015c9b30556d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01fde57a19959312f662879a80a7e9d6"><td class="memItemLeft" align="right" valign="top"><a id="a01fde57a19959312f662879a80a7e9d6"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#a01fde57a19959312f662879a80a7e9d6">shader_file_name_map_initialized</a> = false</td></tr>
+<tr class="memdesc:a01fde57a19959312f662879a80a7e9d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether the shader file name map is initialized <br /></td></tr>
+<tr class="separator:a01fde57a19959312f662879a80a7e9d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f473cd5a071f98f40da5514c2ca476a"><td class="memItemLeft" align="right" valign="top"><a id="a4f473cd5a071f98f40da5514c2ca476a"></a>
 static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html#a4f473cd5a071f98f40da5514c2ca476a">code_cache</a></td></tr>
-<tr class="memdesc:a4f473cd5a071f98f40da5514c2ca476a"><td class="mdescLeft">&#160;</td><td class="mdescRight">map used to cache shader file contents indexed by their file name <br /></td></tr>
+<tr class="memdesc:a4f473cd5a071f98f40da5514c2ca476a"><td class="mdescLeft">&#160;</td><td class="mdescRight">map that caches shader file contents indexed by their file name <br /></td></tr>
 <tr class="separator:a4f473cd5a071f98f40da5514c2ca476a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>a shader code object holds a code fragment of a geometry vertex or fragment shader and can be added to a shader program. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00058">58</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00057">57</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a8a3cf5e1a75373cba0a1da8ed9672318"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8a3cf5e1a75373cba0a1da8ed9672318">&#9670;&nbsp;</a></span>destruct()</h2>
@@ -244,7 +252,7 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 <p>destruct shader code </p>
 <p>destruct shader </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00167">167</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00171">171</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
 
 </div>
 </div>
@@ -280,12 +288,12 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 <li>glcs ... ST_COMPUTE </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00233">233</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00272">272</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
 
 </div>
 </div>
-<a id="a67a995a8da53b28c0a250d685642e61b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67a995a8da53b28c0a250d685642e61b">&#9670;&nbsp;</a></span>find_file()</h2>
+<a id="a0ba2ea9d3dade1c74085b25f6838497e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ba2ea9d3dade1c74085b25f6838497e">&#9670;&nbsp;</a></span>find_file()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -297,8 +305,18 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
           <td class="memname">std::string cgv::render::shader_code::find_file </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>file_name</em></td><td>)</td>
+          <td class="paramname"><em>file_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>search_exhaustive</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -308,12 +326,20 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 </table>
 </div><div class="memdoc">
 
-<p>Check if file exists. </p>
-<p>If not, check if a resource file of this file_name has been registered. If not search it recursively in the shader_path of the shader_config that can be accessed with the function <a class="el" href="namespacecgv_1_1render.html#a5929e262d43bd2e095c4776547eebe5b" title="return a reference to the current shader configuration">get_shader_config()</a>. This path is initialized to the environment variable CGV_SHADER_PATH or empty if that is not defined. </p>
+<p>Find the full path to a shader by its file name. </p>
+<p>Check if the file exists. If not, check if a resource file of this file_name has been registered. If not, search it in the shader_file_name_map that caches paths for file names based on a recursive search through the paths given in the shader_path of the <a class="el" href="structcgv_1_1render_1_1shader__config.html" title="a globally unique shader config is registered by default when the cgv library is used.">shader_config</a>. This avoids excessive queries to the file system. The shader_path is accessed by the <a class="el" href="namespacecgv_1_1render.html#a5929e262d43bd2e095c4776547eebe5b" title="return a reference to the current shader configuration">get_shader_config()</a> method. This path is initialized to the environment variable CGV_SHADER_PATH or empty if that is not defined. If search_exhaustive is true and the file has not been found yet, search recursively in the shader_path.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">file_name</td><td>The shader file_name to search. </td></tr>
+    <tr><td class="paramname">search_exhaustive</td><td>If true, a full recursive search through the given shader_path will be performed if all other attempts have failed. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The full path of the shader file_name. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00175">175</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00179">179</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="ref__ptr_8h_source.html#l00230">cgv::data::ref_ptr&lt; T, is_ref_counted &gt;::empty()</a>, <a class="el" href="shader__code_8cxx_source.html#l00045">cgv::render::get_shader_config()</a>, <a class="el" href="register_8cxx_source.html#l00125">cgv::base::ref_prog_name()</a>, and <a class="el" href="register_8cxx_source.html#l00143">cgv::base::ref_resource_file_map()</a>.</p>
+<p class="reference">References <a class="el" href="ref__ptr_8h_source.html#l00230">cgv::data::ref_ptr&lt; T, is_ref_counted &gt;::empty()</a>, <a class="el" href="shader__code_8cxx_source.html#l00049">cgv::render::get_shader_config()</a>, <a class="el" href="register_8cxx_source.html#l00125">cgv::base::ref_prog_name()</a>, and <a class="el" href="register_8cxx_source.html#l00143">cgv::base::ref_resource_file_map()</a>.</p>
 
 </div>
 </div>
@@ -354,9 +380,9 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 <p>format given last error in a way that developer environments can locate errors in the source file </p>
 <p>query the last error in a way that developer environments can locate errors in the source file </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00088">88</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00092">92</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00045">cgv::render::get_shader_config()</a>, <a class="el" href="scan_8cxx_source.html#l00353">cgv::utils::is_integer()</a>, <a class="el" href="tokenizer_8cxx_source.html#l00059">cgv::utils::tokenizer::set_sep()</a>, <a class="el" href="tokenizer_8cxx_source.html#l00038">cgv::utils::tokenizer::set_ws()</a>, <a class="el" href="advanced__scan_8h_source.html#l00119">cgv::utils::split_to_lines()</a>, <a class="el" href="convert__string_8h_source.html#l00018">cgv::utils::to_string()</a>, and <a class="el" href="scan_8cxx_source.html#l00103">cgv::utils::to_upper()</a>.</p>
+<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00049">cgv::render::get_shader_config()</a>, <a class="el" href="scan_8cxx_source.html#l00353">cgv::utils::is_integer()</a>, <a class="el" href="tokenizer_8cxx_source.html#l00059">cgv::utils::tokenizer::set_sep()</a>, <a class="el" href="tokenizer_8cxx_source.html#l00038">cgv::utils::tokenizer::set_ws()</a>, <a class="el" href="advanced__scan_8h_source.html#l00119">cgv::utils::split_to_lines()</a>, <a class="el" href="convert__string_8h_source.html#l00018">cgv::utils::to_string()</a>, and <a class="el" href="scan_8cxx_source.html#l00103">cgv::utils::to_upper()</a>.</p>
 
 </div>
 </div>
@@ -439,7 +465,7 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 <p>read shader code from file, compile and print error message if necessary</p>
 <p>If show_error is true print error messages formated with the get_last_error method in case an error arose. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00609">609</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00648">648</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00260">cgv::render::shader_program::attach_file()</a>.</p>
 
@@ -487,7 +513,7 @@ static std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRi
 <p>read shader code from file</p>
 <p>If the shader type defaults to ST_DETECT, the <a class="el" href="classcgv_1_1render_1_1shader__code.html#af74bcb73f79aafe7f783c9a8f416ce8b" title="detect the shader type from the extension of the given file_name, i.e.">detect_shader_type()</a> method is applied to the file name. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00346">346</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00385">385</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="context_8cxx_source.html#l00197">cgv::render::context::get_gpu_vendor_id()</a>, and <a class="el" href="context_8cxx_source.html#l00419">cgv::render::context::is_shader_file_cache_enabled()</a>.</p>
 

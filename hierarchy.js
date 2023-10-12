@@ -152,7 +152,8 @@ var hierarchy =
         [ "cgv::media::video::video_reader_listener", "structcgv_1_1media_1_1video_1_1video__reader__listener.html", null ],
         [ "cgv::media::video::video_writer", "classcgv_1_1media_1_1video_1_1video__writer.html", null ],
         [ "cgv::media::video::video_writer_listener", "structcgv_1_1media_1_1video_1_1video__writer__listener.html", null ],
-        [ "cgv::render::render_config", "structcgv_1_1render_1_1render__config.html", null ]
+        [ "cgv::render::render_config", "structcgv_1_1render_1_1render__config.html", null ],
+        [ "cgv::render::shader_config", "structcgv_1_1render_1_1shader__config.html", null ]
       ] ],
       [ "cgv::math::sparse_les", "classcgv_1_1math_1_1sparse__les.html", null ],
       [ "cgv::math::sparse_les_factory", "classcgv_1_1math_1_1sparse__les__factory.html", [

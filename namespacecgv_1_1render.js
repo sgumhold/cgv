@@ -24,6 +24,7 @@ var namespacecgv_1_1render =
     [ "performance_monitor", "classcgv_1_1render_1_1performance__monitor.html", "classcgv_1_1render_1_1performance__monitor" ],
     [ "render_buffer", "classcgv_1_1render_1_1render__buffer.html", "classcgv_1_1render_1_1render__buffer" ],
     [ "textured_rectangle", "structcgv_1_1render_1_1textured__rectangle.html", null ],
+    [ "shader_config", "structcgv_1_1render_1_1shader__config.html", "structcgv_1_1render_1_1shader__config" ],
     [ "shader_code", "classcgv_1_1render_1_1shader__code.html", "classcgv_1_1render_1_1shader__code" ],
     [ "shader_library", "classcgv_1_1render_1_1shader__library.html", null ],
     [ "shader_program", "classcgv_1_1render_1_1shader__program.html", "classcgv_1_1render_1_1shader__program" ],
