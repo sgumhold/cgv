@@ -226,10 +226,16 @@ std::string shader_code::find_file(const std::string& file_name, bool search_exh
 			}
 			
 			std::vector<std::string> file_names;
-			dir::glob(path, file_names, "*.gl*", true);
+			dir::glob(path, file_names, "*gl*", true);
 
-			for(const auto& file_name : file_names)
-				shader_file_name_map.emplace(file::get_file_name(file_name), file_name);
+			for(const auto& file_name : file_names) {
+				std::string ext = file::get_extension(file_name);
+				if(ext.length() > 2) {
+					if(ext[0] == 'g' && ext[1] == 'l' ||
+					   ext[0] == 'p' && ext[1] == 'g' && ext[2] == 'l')
+						shader_file_name_map.emplace(file::get_file_name(file_name), file_name);
+				}
+			}
 		} while(pos < path_list.length());
 
 		shader_file_name_map_initialized = true;
