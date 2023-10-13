@@ -29,20 +29,6 @@ protected:
 		kCenter = 7
 	} feature = InteractionFeature::kNone;
 
-	/*struct ray {
-		cgv::render::vec3 org;
-		cgv::render::vec3 dir;
-
-		ray() : ray(cgv::render::vec3(0.0f), cgv::render::vec3(1.0f, 0.0f, 0.0f)) {}
-
-		ray(const cgv::render::vec3& org, const cgv::render::vec3& dir) : org(org), dir(dir) {}
-
-		cgv::render::vec3 pos_at(float t) const {
-
-			return org + t * dir;
-		}
-	};*/
-
 	cgv::render::view* view_ptr = nullptr;
 
 	bool align_to_view;
