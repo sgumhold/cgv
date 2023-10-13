@@ -36,7 +36,7 @@ void finish_fragment(vec4 color)
 #if USE_A_BUFFER == 0
 	frag_color = color;
 	// perform inverse gamma correction and clamp to avoid problems with on laptop screens
-	frag_color.rgb = clamp(pow(frag_color.rgb, gamma3),0.0,0.9999999);
+	frag_color.rgb = clamp(pow(frag_color.rgb, 1.0/gamma3),0.0,0.9999999);
 #else
 	a_buffer_insert_fragment(gl_FragCoord.xyz, color);
 #endif
@@ -50,7 +50,7 @@ void finish_fragment(vec4 color, float depth)
 #if USE_A_BUFFER == 0
 	frag_color = color;
 	// perform inverse gamma correction and clamp to avoid problems with on laptop screens
-	frag_color.rgb = clamp(pow(frag_color.rgb, gamma3),0.0,0.9999999);
+	frag_color.rgb = clamp(pow(frag_color.rgb, 1.0/gamma3),0.0,0.9999999);
 	gl_FragDepth = depth;
 #else
 	a_buffer_insert_fragment(vec3(gl_FragCoord.xy, depth), color);

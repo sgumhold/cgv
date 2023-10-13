@@ -297,9 +297,9 @@ namespace cgv {
 			stereo_frustum_screen4(T eye, const T& eyeSeparation, const T& screenWidth, const T& screenHeight,
 									const T& zZeroParallax, const T& zNear, const T& zFar) {
 				T aspect = screenWidth / screenHeight;
-				T top = 0.5*screenHeight*zNear / zZeroParallax;
+				T top = T(0.5)*screenHeight*zNear / zZeroParallax;
 				T bottom = -top;
-				T delta = 0.5*eyeSeparation*eye*screenWidth*zNear / zZeroParallax;
+				T delta = T(0.5)*eyeSeparation*eye*screenWidth*zNear / zZeroParallax;
 				T left = bottom * aspect - delta;
 				T right = top * aspect - delta;
 				return frustum4<T>(left, right, bottom, top, zNear, zFar);
