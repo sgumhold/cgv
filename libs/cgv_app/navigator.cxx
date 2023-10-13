@@ -353,6 +353,12 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 	glEnable(GL_DEPTH_TEST);
 }
 
+void navigator::set_size(int size) {
+
+	layout_size = size;
+	on_set(&layout_size);
+}
+
 void navigator::create_gui_impl() {
 
 	add_member_control(this, "Size", layout_size, "value_slider", "min=50;max=300;step=1;ticks=true");
