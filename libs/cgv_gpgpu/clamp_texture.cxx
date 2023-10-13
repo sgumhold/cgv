@@ -88,6 +88,7 @@ bool clamp_texture::execute(cgv::render::context& ctx, cgv::render::texture& tex
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	prog->disable(ctx);
+	return true;
 }
 
 } // namespace gpgpu

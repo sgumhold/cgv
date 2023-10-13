@@ -1,5 +1,8 @@
 #version 430
 
+uniform vec3 light_direction;
+uniform bool enable_shadows;
+
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
 mat4 get_projection_matrix();
@@ -11,182 +14,25 @@ mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
 
-//***** begin interface of fragment.glfs ***********************************
-void finish_fragment(vec4 color);
-void finish_fragment(vec4 color, float depth);
-//***** end interface of fragment.glfs ***********************************
+//***** begin interface of holo_disp.glfs ***********************************
+void compute_sub_pixel_rays(out vec3 ro[3], out vec3 rd[3]);
+bool finalize_sub_pixel_fragment(in vec3 rgb, in vec3 depth);
+//***** end interface of holo_disp.glfs ***********************************
 
-// looking Glass calibration values
-uniform float pitch  = 673.46088569750157;
-uniform float slope  = -0.074780801514116493;
-uniform float center = 0.076352536678314209;
-
-// stereoscopy parameters
-uniform vec2 viewport_dims;
-uniform vec3 eye_pos;
-uniform float eye_separation;
-uniform float screen_width;
-uniform float screen_height;
-uniform float parallax_zero_depth;
-uniform float z_near;
-uniform float z_far;
-
-uniform mat4 stereo_view_params;
-
-uniform vec3 eye_pos_left;
-uniform vec3 eye_pos_right;
-
-uniform vec3 light_direction;
-uniform bool enable_shadows;
-uniform bool interpolate_view_matrix;
-
-// input from screen_quad vertex shader (we ignore this)
-in vec2 texcoord_fs;
-
-// The MIT License
-// Copyright � 2019 Inigo Quilez
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-//===============================================================================================
-// ray-object intersection routines (from: https://iquilezles.org/articles/intersectors/)
-//===============================================================================================
-
-float plane_intersection(in vec3 ro, in vec3 rd, in vec4 p) {
-	float denom = dot(rd,p.xyz);
-	if(abs(denom) < 0.01)
-		return -1.0;
-    return -(dot(ro,p.xyz)+p.w)/denom;
-}
-
-vec2 box_intersection(in vec3 ro, in vec3 rd, in vec3 box_pos, in vec3 box_size, out vec3 outNormal) {
-	ro -= box_pos;
-    vec3 m = 1.0/rd; // can precompute if traversing a set of aligned boxes
-    vec3 n = m*ro;   // can precompute if traversing a set of aligned boxes
-    vec3 k = abs(m)*box_size;
-    vec3 t1 = -n - k;
-    vec3 t2 = -n + k;
-    float tN = max( max( t1.x, t1.y ), t1.z );
-    float tF = min( min( t2.x, t2.y ), t2.z );
-    if( tN>tF || tF<0.0) return vec2(-1.0); // no intersection
-    outNormal = (tN>0.0) ? step(vec3(tN),t1) : // ro ouside the box
-                           step(t2,vec3(tF));  // ro inside the box
-    outNormal *= -sign(rd);
-    return vec2( tN, tF );
-}
-
-vec2 sphere_intersection(in vec3 ro, in vec3 rd, in vec3 center, float rad, out vec3 outNormal) {
-    vec3 oc = ro - center;
-    float b = dot( oc, rd );
-    float c = dot( oc, oc ) - rad*rad;
-    float h = b*b - c;
-    if( h<0.0 ) return vec2(-1.0); // no intersection
-    h = sqrt( h );
-	vec3 pos = ro + (-b-h) * rd;
-	outNormal = normalize(pos - center);
-    return vec2( -b-h, -b+h );
-}
-
-float cylinder_intersection(in vec3 ro, in vec3 rd, in vec3 a, in vec3 b, float rad, out vec3 outNormal) {
-    vec3  ba = b  - a;
-    vec3  oc = ro - a;
-    float baba = dot(ba,ba);
-    float bard = dot(ba,rd);
-    float baoc = dot(ba,oc);
-    float k2 = baba            - bard*bard;
-    float k1 = baba*dot(oc,rd) - baoc*bard;
-    float k0 = baba*dot(oc,oc) - baoc*baoc - rad*rad*baba;
-    float h = k1*k1 - k2*k0;
-    if( h<0.0 ) return -1.0;//no intersection
-    h = sqrt(h);
-    float t = (-k1-h)/k2;
-    // body
-    float y = baoc + t*bard;
-    if( y>0.0 && y<baba ) {
-		outNormal = (oc+t*rd - ba*y/baba)/rad;
-		return t;
-	}
-    // caps
-    t = ( ((y<0.0) ? 0.0 : baba) - baoc)/bard;
-    if( abs(k1+k2*t)<h )
-    {
-		outNormal = ba*sign(y)/sqrt(baba);
-        return t;
-    }
-    return -1.0;//no intersection
-}
-
-float torus_intersection(in vec3 ro, in vec3 rd, in vec3 pos, in vec2 tor) {
-	ro -= pos;
-
-    float po = 1.0;
-    float Ra2 = tor.x*tor.x;
-    float ra2 = tor.y*tor.y;
-    float m = dot(ro,ro);
-    float n = dot(ro,rd);
-    float k = (m + Ra2 - ra2)/2.0;
-    float k3 = n;
-    float k2 = n*n - Ra2*dot(rd.xy,rd.xy) + k;
-    float k1 = n*k - Ra2*dot(rd.xy,ro.xy);
-    float k0 = k*k - Ra2*dot(ro.xy,ro.xy);
-    
-    if( abs(k3*(k3*k3-k2)+k1) < 0.01 )
-    {
-        po = -1.0;
-        float tmp=k1; k1=k3; k3=tmp;
-        k0 = 1.0/k0;
-        k1 = k1*k0;
-        k2 = k2*k0;
-        k3 = k3*k0;
-    }
-    
-    float c2 = k2*2.0 - 3.0*k3*k3;
-    float c1 = k3*(k3*k3-k2)+k1;
-    float c0 = k3*(k3*(c2+2.0*k2)-8.0*k1)+4.0*k0;
-    c2 /= 3.0;
-    c1 *= 2.0;
-    c0 /= 3.0;
-    float Q = c2*c2 + c0;
-    float R = c2*c2*c2 - 3.0*c2*c0 + c1*c1;
-    float h = R*R - Q*Q*Q;
-    
-    if( h>=0.0 )  
-    {
-        h = sqrt(h);
-        float v = sign(R+h)*pow(abs(R+h),1.0/3.0); // cube root
-        float u = sign(R-h)*pow(abs(R-h),1.0/3.0); // cube root
-        vec2 s = vec2( (v+u)+4.0*c2, (v-u)*sqrt(3.0));
-        float y = sqrt(0.5*(length(s)+s.x));
-        float x = 0.5*s.y/y;
-        float r = 2.0*c1/(x*x+y*y);
-        float t1 =  x - r - k3; t1 = (po<0.0)?2.0/t1:t1;
-        float t2 = -x - r - k3; t2 = (po<0.0)?2.0/t2:t2;
-        float t = 1e20;
-        if( t1>0.0 ) t=t1;
-        if( t2>0.0 ) t=min(t,t2);
-        return t;
-    }
-    
-    float sQ = sqrt(Q);
-    float w = sQ*cos( acos(-R/(sQ*Q)) / 3.0 );
-    float d2 = -(w+c2); if( d2<0.0 ) return -1.0;
-    float d1 = sqrt(d2);
-    float h1 = sqrt(w - 2.0*c2 + c1/d1);
-    float h2 = sqrt(w - 2.0*c2 - c1/d1);
-    float t1 = -d1 - h1 - k3; t1 = (po<0.0)?2.0/t1:t1;
-    float t2 = -d1 + h1 - k3; t2 = (po<0.0)?2.0/t2:t2;
-    float t3 =  d1 - h2 - k3; t3 = (po<0.0)?2.0/t3:t3;
-    float t4 =  d1 + h2 - k3; t4 = (po<0.0)?2.0/t4:t4;
-    float t = 1e20;
-    if( t1>0.0 ) t=t1;
-    if( t2>0.0 ) t=min(t,t2);
-    if( t3>0.0 ) t=min(t,t3);
-    if( t4>0.0 ) t=min(t,t4);
-    return t;
-}
-
-vec3 torus_normal(in vec3 pos, vec2 tor) {
-    return normalize( pos*(dot(pos,pos)-tor.y*tor.y - tor.x*tor.x*vec3(1.0,1.0,-1.0)));
-}
+//***** begin interface of intersect.glsl ***********************************
+// return ray parameter of intersection between ray (ro,rd) and plane p=[nx,ny,nz,d]
+float plane_intersection(in vec3 ro, in vec3 rd, in vec4 p);
+// return near and far ray parameters as well as near normal of intersection between ray (ro,rd) and axis aligned box centered around box_pos and with extents box_size
+vec2 box_intersection(in vec3 ro, in vec3 rd, in vec3 box_pos, in vec3 box_size, out vec3 outNormal);
+// return near and far ray parameters as well as near normal of intersection between ray (ro,rd) and sphere (center,rad)
+vec2 sphere_intersection(in vec3 ro, in vec3 rd, in vec3 center, float rad, out vec3 outNormal);
+// return near ray parameters as well as near normal of intersection between ray (ro,rd) and cylinder of radius rad connecting points a and b
+float cylinder_intersection(in vec3 ro, in vec3 rd, in vec3 a, in vec3 b, float rad, out vec3 outNormal);
+// return near ray parameters of intersection between ray (ro,rd) and torus in xy-plane around pos with major and minor radius given in tor
+float torus_intersection(in vec3 ro, in vec3 rd, in vec3 pos, in vec2 tor);
+// return normal of point on torus in xy-point around origin with with major and minor radius given in tor
+vec3 torus_normal(in vec3 delta_pos, vec2 tor);
+//***** end interface of intersect.glsl ***********************************
 
 //===============================================================================================
 // scene
@@ -382,110 +228,13 @@ vec3 rayTracePixel(vec3 ro, vec3 rd, out float depth) {
 	return color; 
 }
 
-mat4 compute_frustum(float l, float r, float b, float t, float n, float f) {
-	mat4 M = mat4(0.0);
-	M[0][0] = 2.0 * n / (r - l);
-	M[2][0] = (r + l) / (r - l);
-	M[1][1] = 2.0 * n / (t - b);
-	M[2][1] = (t + b) / (t - b);
-	M[2][2] = (n + f) / (n - f);
-	M[3][2] = 2.0 * n * f / (n - f);
-	M[2][3] = -1.0;
-	return M;
-}
-
-// eye from left to right / -1 to 1
-mat4 compute_stereo_frustum_screen(in float eye) {
-	float aspect = screen_width / screen_height;
-	float top = 0.5*screen_height*z_near / parallax_zero_depth;
-	float bottom = -top;
-	float delta = 0.5*eye_separation*eye*screen_width*z_near / parallax_zero_depth;
-	float left = bottom * aspect - delta;
-	float right = top * aspect - delta;
-	return compute_frustum(left, right, bottom, top, z_near, z_far);
-}
-
-// eye from left to right / -1 to 1
-void stereo_translate_modelview_matrix(in float eye, in out mat4 M) {
-	M[3].x += -0.5 * eye_separation * eye * screen_width;
-}
-
-// Compute view in [-1,1] according to calibration values (see: https://www.shadertoy.com/view/ttXSDN)
-// width of one subpixel as a fraction of full viewport width
-const float subpixel_width = 1./(3*viewport_dims.x);
-
-float view_from_fragment_component (const vec2 frag, const int component) {
-	float z = (frag.x + subpixel_width*float(component) + slope*frag.y) * pitch - center;
-	z = 1. - mod(z + ceil(abs(z)), 1.);
-	return z+z - 1.;
-}
-
-/*float view_from_pixel_component(const vec2 pixel, const int component) {
-	vec2 screen_coord = (pixel + (component/3.0)) / viewport_dims;
-	float view = screen_coord.x;
-	view += screen_coord.y * slope;
-	view *= pitch;
-	view -= center;
-	view = 1.0 - mod(view + ceil(abs(view)), 1.0);
-	return 2.0 * view - 1.0;
-}*/
-
 void main() {
-	const vec2 uv = gl_FragCoord.xy / viewport_dims;
-
+	vec3 ro[3], rd[3];
+	compute_sub_pixel_rays(ro, rd);
 	vec3 rgb, depth;
 	for (int c = 0; c < 3; c++)
-	{
-		// determine which view the subpixel belongs to
-		float view = view_from_fragment_component(uv, c);
+		rgb[c] = rayTracePixel(ro[c], rd[c], depth[c])[c];
 
-		vec3 ray_origin;
-		vec3 ray_direction;
-
-		// transform fragment coordinates from clip coordinates to object coordinates
-		if(interpolate_view_matrix) {
-			view = clamp(0.5 * view + 0.5, 0.0, 1.0);
-
-			mat4 iMVP_view = get_inverse_modelview_projection_matrix();
-
-			iMVP_view[2] = mix(stereo_view_params[0], stereo_view_params[1], view);
-			iMVP_view[3] = mix(stereo_view_params[2], stereo_view_params[3], view);
-			
-			// transform texcoord to clip coordinates
-			vec4 coord = vec4(uv, 0.0, 1.0) * vec4(2.0, 2.0, 2.0, 0.0) + vec4(-1.0, -1.0, -1.0, 1.0);
-			coord = iMVP_view * coord;
-			coord /= coord.w;
-
-			// start at object space eye position
-			ray_origin = mix(eye_pos_left, eye_pos_right, view);
-			ray_direction = normalize(coord.xyz - ray_origin);
-
-			
-		} else {
-			mat4 P = compute_stereo_frustum_screen(view);
-			mat4 MV = get_modelview_matrix();
-			stereo_translate_modelview_matrix(view, MV);
-
-			// transform texcoord to clip coordinates
-			vec4 coord = vec4(uv, 0.0, 1.0) * vec4(2.0, 2.0, 2.0, 0.0) + vec4(-1.0, -1.0, -1.0, 1.0);
-			coord = inverse(P * MV) * coord;
-			coord /= coord.w;
-
-			// start at object space eye position
-			ray_origin = inverse(MV)[3].xyz;
-			ray_direction = normalize(coord.xyz - ray_origin);
-		}
-
-		rgb[c] = rayTracePixel(ray_origin, ray_direction, depth[c])[c];
-	}
-
-	// gamma correction
-	rgb = pow(rgb, vec3(1.0 / 2.2));
-
-	// FIXME: find proper way to discard subpixels (perhaps init frag color to set background color?)
-	float min_depth = min(min(depth.r, depth.g), depth.b);
-	if (min_depth < 1.0)
-		finish_fragment(vec4(rgb, 1.0), min_depth);
-	else
+	if (!finalize_sub_pixel_fragment(rgb, depth))
 		discard;
 }

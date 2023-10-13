@@ -109,6 +109,7 @@ bool mipmap::execute(cgv::render::context& ctx, cgv::render::texture& source_tex
 	prog->disable(ctx);
 
 	source_texture.disable(ctx);
+	return true;
 }
 
 } // namespace gpgpu
