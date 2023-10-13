@@ -347,9 +347,9 @@ $(document).ready(function(){initNavTree('ftransform_8h_source.html',''); initRe
 <div class="line"><a name="l00297"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a4c11c62abcb9193409cf5f0e68fb4078">  297</a></span>&#160;            <a class="code" href="namespacecgv_1_1math.html#a4c11c62abcb9193409cf5f0e68fb4078">stereo_frustum_screen4</a>(T eye, <span class="keyword">const</span> T&amp; eyeSeparation, <span class="keyword">const</span> T&amp; screenWidth, <span class="keyword">const</span> T&amp; screenHeight,</div>
 <div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;                                    <span class="keyword">const</span> T&amp; zZeroParallax, <span class="keyword">const</span> T&amp; zNear, <span class="keyword">const</span> T&amp; zFar) {</div>
 <div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;                T aspect = screenWidth / screenHeight;</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;                T top = 0.5*screenHeight*zNear / zZeroParallax;</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;                T top = T(0.5)*screenHeight*zNear / zZeroParallax;</div>
 <div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;                T bottom = -top;</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;                T delta = 0.5*eyeSeparation*eye*screenWidth*zNear / zZeroParallax;</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;                T delta = T(0.5)*eyeSeparation*eye*screenWidth*zNear / zZeroParallax;</div>
 <div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;                T left = bottom * aspect - delta;</div>
 <div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;                T right = top * aspect - delta;</div>
 <div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;                <span class="keywordflow">return</span> frustum4&lt;T&gt;(left, right, bottom, top, zNear, zFar);</div>
