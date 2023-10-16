@@ -9,4 +9,4 @@ if(SYSTEM=="windows") {
 	addStaticDefines=["REGISTER_SHADER_FILES"];
 }
 addSharedDefines=["HOLO_DISP_EXPORTS"];
-addShaderPaths=[[INPUT_DIR,"all"]];
+addShaderPaths=[[INPUT_DIR."/glsl","all"]];
