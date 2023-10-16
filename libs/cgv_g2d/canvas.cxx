@@ -6,7 +6,7 @@ namespace g2d {
 canvas::canvas() {
 	resolution = ivec2(100);
 	origin_setting = Origin::kBottomLeft;
-	apply_gamma = true;
+	apply_gamma = false;
 	zoom_factor = 1.0f;
 	initialize_modelview_matrix_stack();
 	current_shader_program = nullptr;

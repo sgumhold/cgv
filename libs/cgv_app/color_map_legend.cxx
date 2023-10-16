@@ -330,8 +330,8 @@ void color_map_legend::init_styles(cgv::render::context& ctx) {
 	border_style.border_width = 0.0f;
 
 	// configure style for the background rectangle
-	background_style.fill_color = rgb(0.4f);
-	background_style.border_color = rgb(0.2f);
+	background_style.fill_color = rgb(0.9f);
+	background_style.border_color = rgb(0.75f);
 	background_style.feather_width = 0.0f;
 	background_style.pattern = cgv::g2d::grid2d_style::GridPattern::GP_CHECKER;
 	
