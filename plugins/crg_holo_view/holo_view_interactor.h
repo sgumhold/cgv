@@ -106,9 +106,13 @@ protected:
 
 	// stereo
 	bool stereo_translate_in_model_view;
+	float eye_separation_factor = 10.0f;
+	/// multiply inter-eye-location with eye_separation_factor
+	float compute_eye_base(int view_index) const;
 
 	// display
 	holo_display_calibration display_calib;
+
 
 	// rendering
 public:
