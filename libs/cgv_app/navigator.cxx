@@ -38,8 +38,8 @@ navigator::navigator() {
 
 	box_data.style.illumination_mode = cgv::render::IM_TWO_SIDED;
 	box_data.style.culling_mode = cgv::render::CM_OFF;
-	box_data.style.material.set_diffuse_reflectance(rgb(1.0f));
-	box_data.style.material.set_emission(rgb(0.35f));
+	box_data.style.material.set_diffuse_reflectance(rgb(0.5f));
+	box_data.style.material.set_emission(rgb(0.05f));
 	box_data.style.surface_opacity = 0.35f;
 
 	box_wire_data.style.default_color = rgb(0.75f);
@@ -56,11 +56,11 @@ navigator::navigator() {
 
 	rectangle_data.style.illumination_mode = cgv::render::IM_OFF;
 	rectangle_data.style.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
-	rectangle_data.style.surface_color = rgb(0.25f, 0.5f, 1.0f);
+	rectangle_data.style.surface_color = rgb(0.05f, 0.25f, 1.0f);
 	rectangle_data.style.surface_opacity = 0.75f;
 	rectangle_data.style.pixel_blend = 0.0f;
 	rectangle_data.style.percentual_border_width = 0.111111f;
-	rectangle_data.style.default_border_color = rgba(0.15f, 0.4f, 0.9f, 0.75f);
+	rectangle_data.style.default_border_color = rgba(0.05f, 0.15f, 0.8f, 0.75f);
 }
 
 void navigator::clear(cgv::render::context& ctx) {
@@ -245,9 +245,8 @@ bool navigator::init(cgv::render::context& ctx) {
 		arrow_data.add(vec3(0.0f), vec3(0.0f, length, 0.0f));
 		// z - blue
 		arrow_data.add(vec3(0.0f), vec3(0.0f, 0.0f, length));
-		arrow_data.add(rgb(0.35f, 0.4f, 1.0f));
+		arrow_data.add(rgb(0.0f, 0.05f, 0.95f));
 		
-
 		blit_style.fill_color = rgba(1.0f);
 		blit_style.use_texture = true;
 		blit_style.use_blending = true;
