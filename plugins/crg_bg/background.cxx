@@ -93,20 +93,6 @@ public:
 	}
 	void init_frame(context& ctx)
 	{
-
-		GLint encoding = 0;
-		glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_BACK_LEFT, GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING, &encoding);
-
-		// 0x8C40 = GL_SRGB
-		// 0x2601 = GL_LINEAR
-
-		GLboolean srgb_fb;
-		glGetBooleanv(GL_FRAMEBUFFER_SRGB, &srgb_fb);
-
-		std::cout << "_________________" << std::endl;
-		std::cout << "Default framebuffer encoding: " << encoding << std::endl;
-		std::cout << "sRGB conversion enabled: " << (srgb_fb ? "yes" : "no") << std::endl;
-
 		if (!enable)
 			return;
 		glDisable(GL_DEPTH_TEST);
