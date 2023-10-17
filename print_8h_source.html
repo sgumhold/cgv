@@ -103,20 +103,26 @@ $(document).ready(function(){initNavTree('print_8h_source.html',''); initResizab
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    printer.PushAttribute(name.c_str(), value.c_str());</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;};</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, cgv::type::u<span class="keywordtype">int</span>32_type N&gt;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keywordtype">void</span> PushAttribute(tinyxml2::XMLPrinter&amp; printer, <span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, N&gt;</a>&amp; value) {</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    PushAttribute(printer, name, <a class="code" href="namespacecgv_1_1math.html#af6832e6ddef5feaddd97f2d9599acd42">cgv::math::to_string</a>(value));</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keywordtype">void</span> PushAttribute(tinyxml2::XMLPrinter&amp; printer, <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">bool</span> value) {</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    std::string str = value ? <span class="stringliteral">&quot;true&quot;</span> : <span class="stringliteral">&quot;false&quot;</span>;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    PushAttribute(printer, name, str);</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;};</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keywordtype">void</span> PushAttribute(tinyxml2::XMLPrinter&amp; printer, <span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float, cgv::media::RGB&gt;</a>&amp; value) {</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3u&gt;</a> vec(value.R(), value.G(), value.B());</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    PushAttribute(printer, name, <a class="code" href="namespacecgv_1_1math.html#af6832e6ddef5feaddd97f2d9599acd42">cgv::math::to_string</a>(vec));</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, cgv::type::u<span class="keywordtype">int</span>32_type N&gt;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keywordtype">void</span> PushAttribute(tinyxml2::XMLPrinter&amp; printer, <span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;T, N&gt;</a>&amp; value) {</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    PushAttribute(printer, name, <a class="code" href="namespacecgv_1_1math.html#af6832e6ddef5feaddd97f2d9599acd42">cgv::math::to_string</a>(value));</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;};</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;}</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;}</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keywordtype">void</span> PushAttribute(tinyxml2::XMLPrinter&amp; printer, <span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float, cgv::media::RGB&gt;</a>&amp; value) {</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3u&gt;</a> vec(value.R(), value.G(), value.B());</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    PushAttribute(printer, name, <a class="code" href="namespacecgv_1_1math.html#af6832e6ddef5feaddd97f2d9599acd42">cgv::math::to_string</a>(vec));</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;};</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;}</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a></div><div class="ttdoc">A vector with zero based index.</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00024">fvec.h:25</a></div></div>
 <div class="ttc" id="aclasscgv_1_1media_1_1color_html"><div class="ttname"><a href="classcgv_1_1media_1_1color.html">cgv::media::color&lt; float, cgv::media::RGB &gt;</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_af6832e6ddef5feaddd97f2d9599acd42"><div class="ttname"><a href="namespacecgv_1_1math.html#af6832e6ddef5feaddd97f2d9599acd42">cgv::math::to_string</a></div><div class="ttdeci">std::string to_string(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">vector to string</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00354">fvec.h:354</a></div></div>
