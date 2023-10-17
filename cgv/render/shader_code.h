@@ -80,7 +80,7 @@ public:
 			defines.erase(name);
 	}
 
-	static void set_define(shader_define_map& defines, const std::string& name, const bool& value, const bool& default_value) {
+	static void set_define(shader_define_map& defines, const std::string& name, bool value, bool default_value) {
 		if(value != default_value)
 			defines[name] = value ? "1" : "0";
 		else
