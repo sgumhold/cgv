@@ -264,6 +264,7 @@ var namespacecgv =
     [ "utils", "namespacecgv_1_1utils.html", "namespacecgv_1_1utils" ],
     [ "xml", null, [
       [ "FindElementByNameVisitor", "classcgv_1_1xml_1_1FindElementByNameVisitor.html", "classcgv_1_1xml_1_1FindElementByNameVisitor" ],
+      [ "QueryBoolAttribute", "query_8h.html#abe49fea642853f0018184b902f923a30", null ],
       [ "QueryRGBAttribute", "query_8h.html#a00aa3faed1d421e48e280c419558c862", null ],
       [ "QueryStringAttribute", "query_8h.html#a2c6fc6ff000dafe74a4c7b2e18af29be", null ],
       [ "QueryVecAttribute", "query_8h.html#a1da3000acda4972ce0c11796161c5561", null ]
