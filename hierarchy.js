@@ -174,6 +174,7 @@ var hierarchy =
     [ "cgv::gui::application", "classcgv_1_1gui_1_1application.html", null ],
     [ "cgv::gui::base_provider_generator::gui_definition", "structcgv_1_1gui_1_1base__provider__generator_1_1gui__definition.html", null ],
     [ "cgv::gui::dialog", "classcgv_1_1gui_1_1dialog.html", null ],
+    [ "cgv::gui::directory_helper", "classcgv_1_1gui_1_1directory__helper.html", null ],
     [ "cgv::gui::event", "classcgv_1_1gui_1_1event.html", [
       [ "cgv::gui::choice_event", "classcgv_1_1gui_1_1choice__event.html", null ],
       [ "cgv::gui::key_event", "classcgv_1_1gui_1_1key__event.html", [
@@ -193,6 +194,7 @@ var hierarchy =
         [ "cgv::gui::vr_throttle_event", "classcgv_1_1gui_1_1vr__throttle__event.html", null ]
       ] ]
     ] ],
+    [ "cgv::gui::file_helper", "classcgv_1_1gui_1_1file__helper.html", null ],
     [ "cgv::gui::gui_creator", "structcgv_1_1gui_1_1gui__creator.html", null ],
     [ "cgv::gui::gui_creator_registration< T >", "classcgv_1_1gui_1_1gui__creator__registration.html", null ],
     [ "cgv::gui::menu_provider", "classcgv_1_1gui_1_1menu__provider.html", null ],
