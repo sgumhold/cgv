@@ -18,6 +18,8 @@ var namespacecgv_1_1gui =
     [ "dialog", "classcgv_1_1gui_1_1dialog.html", "classcgv_1_1gui_1_1dialog" ],
     [ "event", "classcgv_1_1gui_1_1event.html", "classcgv_1_1gui_1_1event" ],
     [ "event_handler", "classcgv_1_1gui_1_1event__handler.html", "classcgv_1_1gui_1_1event__handler" ],
+    [ "file_helper", "classcgv_1_1gui_1_1file__helper.html", "classcgv_1_1gui_1_1file__helper" ],
+    [ "directory_helper", "classcgv_1_1gui_1_1directory__helper.html", "classcgv_1_1gui_1_1directory__helper" ],
     [ "gui_creator", "structcgv_1_1gui_1_1gui__creator.html", "structcgv_1_1gui_1_1gui__creator" ],
     [ "gui_creator_registration", "classcgv_1_1gui_1_1gui__creator__registration.html", null ],
     [ "gui_driver", "classcgv_1_1gui_1_1gui__driver.html", "classcgv_1_1gui_1_1gui__driver" ],

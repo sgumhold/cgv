@@ -82,6 +82,8 @@ var namespacecgv_1_1math =
     [ "dbl_cross", "namespacecgv_1_1math.html#a2b0b909a09ab10500fd3683689258851", null ],
     [ "decompose_rotation", "namespacecgv_1_1math.html#ad13d980b9726467aeb59b55256fedda0", null ],
     [ "decompose_rotation_to_axis_and_angle", "namespacecgv_1_1math.html#ab5a5bdaef42e636106d43ad1273d6534", null ],
+    [ "det", "namespacecgv_1_1math.html#a133d06634d2086b01c9b8ef341009331", null ],
+    [ "det", "namespacecgv_1_1math.html#aecc3aa555d004997bafd25299a193891", null ],
     [ "dist_transf_2d", "namespacecgv_1_1math.html#a6fb7ef1ba387bc69a8ee0eedd008b140", null ],
     [ "distortion_inversion_epsilon", "namespacecgv_1_1math.html#abf3e38779f899fbd4ec9b0c86b3aca3c", null ],
     [ "distortion_inversion_epsilon", "namespacecgv_1_1math.html#a36c30190cfd6bcece90c27f4f3fb0f5b", null ],
