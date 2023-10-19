@@ -8,7 +8,8 @@ namespace cgv {
 		}
 		renderer::renderer()
 		{
-			current_prog_render_count = 0;
+			// initialize to the threshold count to prevent outputting warnings for the very first render procedure
+			current_prog_render_count = 10;
 			has_colors = false;
 			has_positions = false;
 			rs = default_render_style = 0;
