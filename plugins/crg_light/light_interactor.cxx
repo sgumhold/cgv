@@ -559,4 +559,4 @@ void light_interactor:: stream_help(std::ostream& os)
 
 /// register a light interactor factory
 cgv::base::factory_registration<light_interactor> li_reg("light_interactor", "menu_text='New/Light Interactor';shortcut='Ctrl-Alt-L'", true, 
-														                "menu_text='&view/light interactor';shortcut='Ctrl-L'");
+														                "menu_text='&View/Light Interactor';shortcut='Ctrl-L'");
