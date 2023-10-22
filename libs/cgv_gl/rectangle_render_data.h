@@ -24,6 +24,7 @@ protected:
 	std::vector<vec2> ext;
 	std::vector<vec3> transl;
 	std::vector<quat> rot;
+	std::vector<vec4> tex;
 
 	bool transfer(context& ctx, rectangle_renderer& r) {
 		if(super::transfer(ctx, r)) {
@@ -34,6 +35,8 @@ protected:
 				r.set_translation_array(ctx, transl);
 			if(rot.size() == this->size())
 				r.set_rotation_array(ctx, rot);
+			if(tex.size() == this->size())
+				r.set_texcoord_array(ctx, tex);
 			return true;
 		}
 		return false;
@@ -45,11 +48,13 @@ public:
 		ext.clear();
 		transl.clear();
 		rot.clear();
+		tex.clear();
 	}
 
 	std::vector<vec2>& ref_ext() { return ext; }
 	std::vector<vec3>& ref_transl() { return transl; }
 	std::vector<quat>& ref_rot() { return rot; }
+	std::vector<vec4>& ref_tex() { return tex; }
 
 	RDB_BASE_FUNC_DEF(rectangle_renderer, rectangle_render_style);
 
@@ -64,6 +69,10 @@ public:
 
 	void add(const quat& r) {
 		rot.push_back(r);
+	}
+
+	void add(const vec4& tc) {
+		tex.push_back(tc);
 	}
 
 	void add(const vec3& t, const quat& r) {
@@ -93,6 +102,11 @@ public:
 	void fill(const quat& r) {
 		for(size_t i = rot.size(); i < super::pos.size(); ++i)
 			rot.push_back(r);
+	}
+
+	void fill(const vec4& tc) {
+		for(size_t i = tex.size(); i < super::pos.size(); ++i)
+			tex.push_back(tc);
 	}
 
 	void fill(const ColorType& c) {
