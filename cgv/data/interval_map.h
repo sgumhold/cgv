@@ -3,7 +3,7 @@
 #include <map>
 
 namespace cgv {
-namespace utils {
+namespace data {
 
 /// @brief Extension of a standard map container that allows easy retreival of lower and upper bounds given a key.
 /// @tparam Key the key type
@@ -137,5 +137,5 @@ public:
 	}
 };
 
-} // namespace utils
+} // namespace data
 } // namespace cgv

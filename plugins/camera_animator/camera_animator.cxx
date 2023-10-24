@@ -459,13 +459,13 @@ void camera_animator::create_camera_render_data(const view_parameters& view) {
 		return;
 
 	if(eye_rd.render_count() == 2) {
-		eye_rd.ref_pos()[0] = view.eye_position;
-		eye_rd.ref_pos()[1] = view.focus_position;
+		eye_rd.positions[0] = view.eye_position;
+		eye_rd.positions[1] = view.focus_position;
 		eye_rd.set_out_of_date();
 	} else {
 		eye_rd.clear();
-		eye_rd.add(view.eye_position, 16.0f, eye_color);
-		eye_rd.add(view.focus_position, 12.0f, focus_color);
+		eye_rd.add(view.eye_position, eye_color, 16.0f);
+		eye_rd.add(view.focus_position, focus_color, 12.0f);
 	}
 
 	if(!view_rd.render_count()) {
@@ -478,9 +478,9 @@ void camera_animator::create_camera_render_data(const view_parameters& view) {
 		view_rd.add(org, x_axis);
 		view_rd.add(org, y_axis);
 		view_rd.add(org, z_axis);
-		view_rd.add(rgb(1.0f, 0.0f, 0.0f));
-		view_rd.add(rgb(0.0f, 1.0f, 0.0f));
-		view_rd.add(rgb(0.0f, 0.0f, 1.0f));
+		view_rd.add_segment_color(rgb(1.0f, 0.0f, 0.0f));
+		view_rd.add_segment_color(rgb(0.0f, 1.0f, 0.0f));
+		view_rd.add_segment_color(rgb(0.0f, 0.0f, 1.0f));
 
 		float a = static_cast<float>(view_ptr->get_tan_of_half_of_fovy(true));
 
@@ -500,7 +500,7 @@ void camera_animator::create_camera_render_data(const view_parameters& view) {
 		view_rd.add(corner[3], corner[2]);
 		view_rd.add(corner[2], corner[0]);
 
-		view_rd.fill(rgb(0.5f));
+		view_rd.fill_colors(rgb(0.5f));
 	}
 
 	const float scale = 0.1f;
@@ -523,25 +523,25 @@ void camera_animator::create_path_render_data() {
 		return;
 
 	for(const auto& pair : animation->ref_keyframes())
-		keyframes_rd.add(pair.second.camera_state.eye_position, 12.0f, theme.highlight());
+		keyframes_rd.add(pair.second.camera_state.eye_position, theme.highlight(), 12.0f);
 	
 	for(const auto& pair : animation->ref_keyframes())
-		keyframes_rd.add(pair.second.camera_state.focus_position, 8.0f, theme.warning());
+		keyframes_rd.add(pair.second.camera_state.focus_position, theme.warning(), 8.0f);
 	
-	for(size_t i = 1; i < keyframes_rd.ref_pos().size() / 2; ++i) {
-		const auto& position0 = keyframes_rd.ref_pos()[i - 1];
-		const auto& position1 = keyframes_rd.ref_pos()[i];
+	for(size_t i = 1; i < keyframes_rd.size() / 2; ++i) {
+		const auto& position0 = keyframes_rd.positions[i - 1];
+		const auto& position1 = keyframes_rd.positions[i];
 
 		paths_rd.add(position0, position1);
-		paths_rd.add(theme.highlight());
+		paths_rd.add_color(theme.highlight());
 	}
 
-	for(size_t i = 1 + keyframes_rd.ref_pos().size() / 2; i < keyframes_rd.ref_pos().size(); ++i) {
-		const auto& position0 = keyframes_rd.ref_pos()[i - 1];
-		const auto& position1 = keyframes_rd.ref_pos()[i];
+	for(size_t i = 1 + keyframes_rd.size() / 2; i < keyframes_rd.size(); ++i) {
+		const auto& position0 = keyframes_rd.positions[i - 1];
+		const auto& position1 = keyframes_rd.positions[i];
 
 		paths_rd.add(position0, position1);
-		paths_rd.add(theme.warning());
+		paths_rd.add_color(theme.warning());
 	}
 }
 
