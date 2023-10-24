@@ -432,6 +432,7 @@ var hierarchy =
         [ "cgv::render::vertex_buffer", "classcgv_1_1render_1_1vertex__buffer.html", null ]
       ] ]
     ] ],
+    [ "cgv::render::render_data_base< ColorType >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_info", "classcgv_1_1render_1_1render__info.html", [
       [ "cgv::render::mesh_render_info", "classcgv_1_1render_1_1mesh__render__info.html", null ]
     ] ],
@@ -590,6 +591,15 @@ var hierarchy =
     [ "cgv::data::ref_ptr< node, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
     [ "cgv::data::ref_ptr< overlay >", "classcgv_1_1data_1_1ref__ptr.html", null ],
     [ "cgv::data::ref_ptr< window >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+    [ "cgv::render::render_data_base< rgb >", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::box_render_data< ColorType >", "classcgv_1_1render_1_1box__render__data.html", null ],
+      [ "cgv::render::box_wire_render_data< ColorType >", "classcgv_1_1render_1_1box__wire__render__data.html", null ],
+      [ "cgv::render::cone_render_data< ColorType >", "classcgv_1_1render_1_1cone__render__data.html", null ],
+      [ "cgv::render::line_render_data< ColorType >", "classcgv_1_1render_1_1line__render__data.html", null ],
+      [ "cgv::render::point_render_data< ColorType >", "classcgv_1_1render_1_1point__render__data.html", null ],
+      [ "cgv::render::rectangle_render_data< ColorType >", "classcgv_1_1render_1_1rectangle__render__data.html", null ],
+      [ "cgv::render::sphere_render_data< ColorType >", "classcgv_1_1render_1_1sphere__render__data.html", null ]
+    ] ],
     [ "cgv::media::rgb_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1rgb__color__interface.html", [
       [ "cgv::media::hls_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01HLS_00_01am_01_4_01_4.html", null ]
     ] ],
