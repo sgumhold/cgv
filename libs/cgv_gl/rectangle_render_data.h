@@ -3,40 +3,33 @@
 #include "rectangle_renderer.h"
 #include "render_data_base.h"
 
-#include "gl/lib_begin.h"
-
 namespace cgv {
 namespace render {
 
-template <typename ColorType = render_types::rgb>
+/// @brief Render data for rectangle geometry with support for the rectangle_renderer. See render_data_base.
+/// @tparam ColorType The type used to represent colors. Must be cgv::render::rgb or cgv::render::rgba.
+template <typename ColorType = rgb>
 class rectangle_render_data : public render_data_base<ColorType> {
 public:
-	// Repeat automatically inherited typedefs from parent class, as they can't
-	// be inherited again according to C++ spec
-	typedef render_types::vec2 vec2;
-	typedef render_types::vec3 vec3;
-	typedef render_types::quat quat;
-
 	// Base class we're going to use virtual functions from
 	typedef render_data_base<ColorType> super;
 
-protected:
-	std::vector<vec2> ext;
-	std::vector<vec3> transl;
-	std::vector<quat> rot;
-	std::vector<vec4> tex;
+	std::vector<vec2> extents;
+	std::vector<vec3> translations;
+	std::vector<quat> rotations;
+	std::vector<vec4> texcoords;
 
+protected:
 	bool transfer(context& ctx, rectangle_renderer& r) {
 		if(super::transfer(ctx, r)) {
-			r.set_position_array(ctx, this->pos);
-			if(ext.size() == this->size())
-				r.set_extent_array(ctx, ext);
-			if(transl.size() == this->size())
-				r.set_translation_array(ctx, transl);
-			if(rot.size() == this->size())
-				r.set_rotation_array(ctx, rot);
-			if(tex.size() == this->size())
-				r.set_texcoord_array(ctx, tex);
+			if(extents.size() == super::size())
+				r.set_extent_array(ctx, extents);
+			if(translations.size() == super::size())
+				r.set_translation_array(ctx, translations);
+			if(rotations.size() == super::size())
+				r.set_rotation_array(ctx, rotations);
+			if(texcoords.size() == super::size())
+				r.set_texcoord_array(ctx, texcoords);
 			return true;
 		}
 		return false;
@@ -45,77 +38,71 @@ protected:
 public:
 	void clear() {
 		super::clear();
-		ext.clear();
-		transl.clear();
-		rot.clear();
-		tex.clear();
+		extents.clear();
+		translations.clear();
+		rotations.clear();
+		texcoords.clear();
 	}
 
-	std::vector<vec2>& ref_ext() { return ext; }
-	std::vector<vec3>& ref_transl() { return transl; }
-	std::vector<quat>& ref_rot() { return rot; }
-	std::vector<vec4>& ref_tex() { return tex; }
+	void add_extent(const vec2 extent) {
+		extents.push_back(extent);
+	}
+
+	void add_translation(const vec3 translation) {
+		translations.push_back(translation);
+	}
+
+	void add_rotation(const quat& rotation) {
+		rotations.push_back(rotation);
+	}
+
+	void add_texcoord(const vec4& texcoord) {
+		texcoords.push_back(texcoord);
+	}
+
+	// Explicitly use add from the base class since it is shadowed by the overloaded versions
+	using super::add;
+
+	void add(const vec3& position, const vec2& extent) {
+		super::add_position(position);
+		add_extent(extent);
+	}
+
+	void add(const vec3& position, const vec4& texcoord) {
+		super::add_position(position);
+		add_texcoord(texcoord);
+	}
+
+	void add(const vec3& position, const ColorType& color, const vec2& extent) {
+		super::add(position, color);
+		add_extent(extent);
+	}
+
+	void add(const vec3& position, const vec2& extent, const quat& rotation) {
+		super::add_position(position);
+		add_extent(extent);
+		add_rotation(rotation);
+	}
+
+	void add(const vec3& translation, const quat& rotation) {
+		add_translation(translation);
+		add_rotation(rotation);
+	}
+
+	void fill_extents(const vec2& extent) {
+		super::fill(extents, extent);
+	}
+
+	void fill_rotations(const quat& rotation) {
+		super::fill(rotations, rotation);
+	}
+
+	void fill_texcoords(const vec4& texcoord) {
+		super::fill(texcoords, texcoord);
+	}
 
 	RDB_BASE_FUNC_DEF(rectangle_renderer, rectangle_render_style);
-
-	void add(const vec3& p) {
-		super::pos.push_back(p);
-	}
-
-	void add(const vec3& p, const vec2& e) {
-		super::pos.push_back(p);
-		ext.push_back(e);
-	}
-
-	void add(const quat& r) {
-		rot.push_back(r);
-	}
-
-	void add(const vec4& tc) {
-		tex.push_back(tc);
-	}
-
-	void add(const vec3& t, const quat& r) {
-		transl.push_back(t);
-		rot.push_back(r);
-	}
-
-	void add(const ColorType& c) {
-		super::col.push_back(c);
-	}
-
-	void add(const vec3& p, const vec2& e, const ColorType& c) {
-		add(p, e);
-		add(c);
-	}
-
-	void add(const vec3& p, const ColorType& c) {
-		add(p);
-		add(c);
-	}
-
-	void fill(const vec2& e) {
-		for(size_t i = ext.size(); i < super::pos.size(); ++i)
-			ext.push_back(e);
-	}
-
-	void fill(const quat& r) {
-		for(size_t i = rot.size(); i < super::pos.size(); ++i)
-			rot.push_back(r);
-	}
-
-	void fill(const vec4& tc) {
-		for(size_t i = tex.size(); i < super::pos.size(); ++i)
-			tex.push_back(tc);
-	}
-
-	void fill(const ColorType& c) {
-		for(size_t i = super::col.size(); i < super::pos.size(); ++i)
-			super::col.push_back(c);
-	}
 };
 
 }
 }
-
-#include <cgv/config/lib_end.h>

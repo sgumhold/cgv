@@ -219,27 +219,24 @@ void gizmo::create_geometry() {
 	arrows.add(v0, vy);
 	arrows.add(v0, vz);
 
-	arrows.add(arrow_cols[0]);
-	arrows.add(arrow_cols[1]);
-	arrows.add(arrow_cols[2]);
+	arrows.add_color(arrow_cols[0]);
+	arrows.add_color(arrow_cols[1]);
+	arrows.add_color(arrow_cols[2]);
 
-	rectangles.add(v0 + 0.25f * (vy + vz), vec2(0.3f), plane_cols[0]);
-	rectangles.add(v0 + 0.25f * (vx + vz), vec2(0.3f), plane_cols[1]);
-	rectangles.add(v0 + 0.25f * (vx + vy), vec2(0.3f), plane_cols[2]);
+	rectangles.add(v0 + 0.25f * (vy + vz), plane_cols[0], vec2(0.3f));
+	rectangles.add(v0 + 0.25f * (vx + vz), plane_cols[1], vec2(0.3f));
+	rectangles.add(v0 + 0.25f * (vx + vy), plane_cols[2], vec2(0.3f));
 
-	quat q = quat(vy, cgv::math::deg2rad(90.0f));
-	q.normalize();
-	rectangles.add(q);
+	quat rotation = quat(vy, cgv::math::deg2rad(90.0f));
+	rectangles.add_rotation(rotation);
 
-	q = quat(vx, cgv::math::deg2rad(-90.0f));
-	q.normalize();
-	rectangles.add(q);
+	rotation = quat(vx, cgv::math::deg2rad(-90.0f));
+	rectangles.add_rotation(rotation);
 
-	q = quat();
-	q.normalize();
-	rectangles.add(q);
+	rotation = quat();
+	rectangles.add_rotation(rotation);
 
-	sphere.add(v0, 0.1f, center_col);
+	sphere.add(v0, center_col, 0.1f);
 
 	geometry_out_of_date = false;
 }
