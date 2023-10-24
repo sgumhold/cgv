@@ -227,6 +227,7 @@ $(document).ready(function(){initNavTree('functions_c.html',''); initResizable()
 , <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#af4e13e005aebdf79ee1c3f52b917a7ac">cgv::render::gl::gl_implicit_surface_drawable_base</a>
 , <a class="el" href="classcgv_1_1render_1_1gl_1_1image__drawable.html#a252a74ce9695f83d49acac1f3c0cb8a5">cgv::render::gl::image_drawable</a>
 , <a class="el" href="classcgv_1_1render_1_1gl_1_1mesh__drawable.html#a3eebbe76af2f31fd3df6a1b2e45f57c7">cgv::render::gl::mesh_drawable</a>
+, <a class="el" href="classcgv_1_1render_1_1render__data__base.html#a35307902c25fdc6fa6964bf5d1721241">cgv::render::render_data_base&lt; ColorType &gt;</a>
 , <a class="el" href="classcgv_1_1render_1_1renderer.html#a78cd29d5497c8a9d3c554266e7b171ee">cgv::render::renderer</a>
 </li>
 <li>clear_bar()
@@ -305,7 +306,7 @@ $(document).ready(function(){initNavTree('functions_c.html',''); initResizable()
 : <a class="el" href="classcgv_1_1render_1_1shader__code.html#a4f473cd5a071f98f40da5514c2ca476a">cgv::render::shader_code</a>
 </li>
 <li>col()
-: <a class="el" href="classcgv_1_1math_1_1fmat.html#a1cb9412542731c4eb5b2c2133043e281">cgv::math::fmat&lt; T, N, M &gt;</a>
+: <a class="el" href="classcgv_1_1math_1_1fmat.html#a228568ebddfd50ef5637ac6366715f3c">cgv::math::fmat&lt; T, N, M &gt;</a>
 , <a class="el" href="classcgv_1_1math_1_1mat.html#aa29a8be4ff83a057320ebb93c01131d9">cgv::math::mat&lt; T &gt;</a>
 </li>
 <li>collect_dir()
@@ -356,6 +357,9 @@ $(document).ready(function(){initNavTree('functions_c.html',''); initResizable()
 </li>
 <li>colored_model()
 : <a class="el" href="classcgv_1_1media_1_1colored__model.html#a312433d0cdfa4eceba0d7dcc6bd70e86">cgv::media::colored_model</a>
+</li>
+<li>colors
+: <a class="el" href="classcgv_1_1render_1_1render__data__base.html#ac3f48081332341db3cc3946ba321c4e9">cgv::render::render_data_base&lt; ColorType &gt;</a>
 </li>
 <li>combine_components()
 : <a class="el" href="classcgv_1_1data_1_1data__view.html#a2dbccce6f2cbda5759654d179fcb8db9">cgv::data::data_view</a>
@@ -410,7 +414,7 @@ $(document).ready(function(){initNavTree('functions_c.html',''); initResizable()
 : <a class="el" href="classcgv_1_1media_1_1mesh_1_1dual__contouring.html#a65788c8b4a3d9a921cf68a7d45a9aaca">cgv::media::mesh::dual_contouring&lt; X, T &gt;</a>
 </li>
 <li>compute_clipping_planes()
-: <a class="el" href="classcgv_1_1render_1_1clipped__view.html#a2bc15e8ec29d631db3e0d07d7b265660">cgv::render::clipped_view</a>
+: <a class="el" href="classcgv_1_1render_1_1clipped__view.html#acc62f6f7d8db6de34cf1a7041478f921">cgv::render::clipped_view</a>
 </li>
 <li>compute_distortion_map()
 : <a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a43e67cdc82472553a87e8f3602901ed9">cgv::math::distorted_pinhole&lt; T &gt;</a>
@@ -483,7 +487,7 @@ $(document).ready(function(){initNavTree('functions_c.html',''); initResizable()
 : <a class="el" href="classcgv_1_1os_1_1socket__client.html#ae872b08852e4fdbb58ae679c9f96894b">cgv::os::socket_client</a>
 </li>
 <li>const_data_view()
-: <a class="el" href="classcgv_1_1data_1_1const__data__view.html#ad1acee4830f64c891beee5f50ff0e9df">cgv::data::const_data_view</a>
+: <a class="el" href="classcgv_1_1data_1_1const__data__view.html#a0140b8a2bbe1d140984b1b58c5da3ca7">cgv::data::const_data_view</a>
 </li>
 <li>constant_attenuation
 : <a class="el" href="classcgv_1_1media_1_1illum_1_1light__source.html#a5640a5b133fe79ab8345e217020bd626">cgv::media::illum::light_source</a>
@@ -582,8 +586,8 @@ $(document).ready(function(){initNavTree('functions_c.html',''); initResizable()
 , <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__cursor.html#a5465003ac14ac87faaad5d8bb30d2784">cgv::render::gl::gl_cursor</a>
 , <a class="el" href="classcgv_1_1render_1_1render__buffer.html#a13b00ebab6222610cd9d72a813776422">cgv::render::render_buffer</a>
 , <a class="el" href="classcgv_1_1render_1_1shader__program.html#a9079b008c65987c3baa3d5314e5701aa">cgv::render::shader_program</a>
-, <a class="el" href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">cgv::render::texture</a>
-, <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a30fc2cfd4278afde0a00c0cf4e25ccf7">cgv::render::vertex_buffer</a>
+, <a class="el" href="classcgv_1_1render_1_1texture.html#ab5967492788c5bc01af2d9bb6a9ff612">cgv::render::texture</a>
+, <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#ad8e35662b4b9a096869f7b8007a1e961">cgv::render::vertex_buffer</a>
 </li>
 <li>create_and_attach_texture()
 : <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__transparent__renderer.html#a9882a4970a030f7c776577db548a30fc">cgv::render::gl::gl_transparent_renderer</a>
