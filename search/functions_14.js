@@ -37,7 +37,7 @@ var searchData=
   ['update_5fstate_6511',['update_state',['../classcgv_1_1render_1_1shader__program.html#a88e2480f41b18f91f0b13b072a0587ae',1,'cgv::render::shader_program']]],
   ['update_5fviews_6512',['update_views',['../classcgv_1_1gui_1_1abst__view.html#a92224b42f7b85894c68641670af72bba',1,'cgv::gui::abst_view']]],
   ['updatelink_6513',['updateLink',['../classcgv_1_1data_1_1dynamic__priority__queue.html#a89b5419a0ea0b0acc6ad66aa7790f893',1,'cgv::data::dynamic_priority_queue']]],
-  ['upper_5fbound_6514',['upper_bound',['../classcgv_1_1utils_1_1interval__map.html#a1391b6fa27bb1a9d8730d8249d6b6be0',1,'cgv::utils::interval_map::upper_bound(key_type key)'],['../classcgv_1_1utils_1_1interval__map.html#aa3cbd977b3fc6a45a610adf69dab6699',1,'cgv::utils::interval_map::upper_bound(key_type key) const']]],
+  ['upper_5fbound_6514',['upper_bound',['../classcgv_1_1data_1_1interval__map.html#abbe8d678681a1397ebb2bc0638c1284a',1,'cgv::data::interval_map::upper_bound(key_type key)'],['../classcgv_1_1data_1_1interval__map.html#a8ff8198783244a43d64503e6a58cbad1',1,'cgv::data::interval_map::upper_bound(key_type key) const']]],
   ['use_5ffixed_5fsample_5flocations_6515',['use_fixed_sample_locations',['../classcgv_1_1render_1_1texture.html#a55d4600cf15f6f662f0ebc0e0224b638',1,'cgv::render::texture']]],
   ['user_5ffeedback_6516',['user_feedback',['../structcgv_1_1base_1_1user__feedback.html#ad716ac4e972ed278e0f978ad9beb4565',1,'cgv::base::user_feedback']]]
 ];

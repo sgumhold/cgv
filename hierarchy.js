@@ -96,6 +96,7 @@ var hierarchy =
     ] ],
     [ "cgv::data::dynamic_priority_queue< T >", "classcgv_1_1data_1_1dynamic__priority__queue.html", null ],
     [ "cgv::data::dynamic_priority_queue< T >::extended_element", "structcgv_1_1data_1_1dynamic__priority__queue_1_1extended__element.html", null ],
+    [ "cgv::data::interval_map< Key, T >", "classcgv_1_1data_1_1interval__map.html", null ],
     [ "cgv::data::packing_info", "classcgv_1_1data_1_1packing__info.html", [
       [ "cgv::data::component_format", "classcgv_1_1data_1_1component__format.html", [
         [ "cgv::data::data_format", "classcgv_1_1data_1_1data__format.html", [
@@ -535,7 +536,6 @@ var hierarchy =
     [ "cgv::type::traits::zero< T >", "structcgv_1_1type_1_1traits_1_1zero.html", null ],
     [ "cgv::type::variant< T >", "structcgv_1_1type_1_1variant.html", null ],
     [ "cgv::utils::big_binary_file", "classcgv_1_1utils_1_1big__binary__file.html", null ],
-    [ "cgv::utils::interval_map< Key, T >", "classcgv_1_1utils_1_1interval__map.html", null ],
     [ "cgv::utils::Profiler< T >", "classcgv_1_1utils_1_1Profiler.html", null ],
     [ "cgv::utils::progression", "structcgv_1_1utils_1_1progression.html", null ],
     [ "cgv::utils::statistics", "classcgv_1_1utils_1_1statistics.html", null ],

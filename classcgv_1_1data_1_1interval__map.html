@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cgv: cgv::utils::interval_map&lt; Key, T &gt; Class Template Reference</title>
+<title>cgv: cgv::data::interval_map&lt; Key, T &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,7 +62,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('classcgv_1_1utils_1_1interval__map.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('classcgv_1_1data_1_1interval__map.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -83,45 +83,45 @@ $(document).ready(function(){initNavTree('classcgv_1_1utils_1_1interval__map.htm
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="classcgv_1_1utils_1_1interval__map-members.html">List of all members</a>  </div>
+<a href="classcgv_1_1data_1_1interval__map-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">cgv::utils::interval_map&lt; Key, T &gt; Class Template Reference</div>  </div>
+<div class="title">cgv::data::interval_map&lt; Key, T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p>Extension of a standard map container that allows easy retreival of lower and upper bounds given a key.  
- <a href="classcgv_1_1utils_1_1interval__map.html#details">More...</a></p>
+ <a href="classcgv_1_1data_1_1interval__map.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="interval__map_8h_source.html">interval_map.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aed0c41fe2fc0aeb0b86991809e0a8a01"><td class="memItemLeft" align="right" valign="top"><a id="aed0c41fe2fc0aeb0b86991809e0a8a01"></a>
-iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1interval__map.html#aed0c41fe2fc0aeb0b86991809e0a8a01">lower_bound</a> (key_type key)</td></tr>
-<tr class="memdesc:aed0c41fe2fc0aeb0b86991809e0a8a01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator pointing to the first element in the container whose key is equivalent or smaller than the given key. If no such element exists, returns end(). <br /></td></tr>
-<tr class="separator:aed0c41fe2fc0aeb0b86991809e0a8a01"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1008f06b47d29c6100cd447154fff8d8"><td class="memItemLeft" align="right" valign="top"><a id="a1008f06b47d29c6100cd447154fff8d8"></a>
-const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1interval__map.html#a1008f06b47d29c6100cd447154fff8d8">lower_bound</a> (key_type key) const</td></tr>
-<tr class="memdesc:a1008f06b47d29c6100cd447154fff8d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator pointing to the first element in the container whose key is equivalent or smaller than the given key. If no such element exists, returns end(). <br /></td></tr>
-<tr class="separator:a1008f06b47d29c6100cd447154fff8d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1391b6fa27bb1a9d8730d8249d6b6be0"><td class="memItemLeft" align="right" valign="top"><a id="a1391b6fa27bb1a9d8730d8249d6b6be0"></a>
-iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1interval__map.html#a1391b6fa27bb1a9d8730d8249d6b6be0">upper_bound</a> (key_type key)</td></tr>
-<tr class="memdesc:a1391b6fa27bb1a9d8730d8249d6b6be0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator pointing to the first element in the container whose key is greater than the given key. If no such element exists, returns end(). <br /></td></tr>
-<tr class="separator:a1391b6fa27bb1a9d8730d8249d6b6be0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3cbd977b3fc6a45a610adf69dab6699"><td class="memItemLeft" align="right" valign="top"><a id="aa3cbd977b3fc6a45a610adf69dab6699"></a>
-const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1interval__map.html#aa3cbd977b3fc6a45a610adf69dab6699">upper_bound</a> (key_type key) const</td></tr>
-<tr class="memdesc:aa3cbd977b3fc6a45a610adf69dab6699"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator pointing to the first element in the container whose key is greater than the given key. If no such element exists, returns end(). <br /></td></tr>
-<tr class="separator:aa3cbd977b3fc6a45a610adf69dab6699"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2b44926c559a7724cde23ad84db0f52"><td class="memItemLeft" align="right" valign="top">std::pair&lt; iterator, iterator &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1interval__map.html#ae2b44926c559a7724cde23ad84db0f52">bounds</a> (key_type key)</td></tr>
-<tr class="memdesc:ae2b44926c559a7724cde23ad84db0f52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pair of iterators pointing to the lower and upper bounds of the given key.  <a href="classcgv_1_1utils_1_1interval__map.html#ae2b44926c559a7724cde23ad84db0f52">More...</a><br /></td></tr>
-<tr class="separator:ae2b44926c559a7724cde23ad84db0f52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e1b57b97ca84cea25c97a807a588ce5"><td class="memItemLeft" align="right" valign="top">std::pair&lt; const_iterator, const_iterator &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1interval__map.html#a4e1b57b97ca84cea25c97a807a588ce5">bounds</a> (key_type key) const</td></tr>
-<tr class="memdesc:a4e1b57b97ca84cea25c97a807a588ce5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pair of const iterators pointing to the lower and upper bounds of the given key.  <a href="classcgv_1_1utils_1_1interval__map.html#a4e1b57b97ca84cea25c97a807a588ce5">More...</a><br /></td></tr>
-<tr class="separator:a4e1b57b97ca84cea25c97a807a588ce5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0db9d743e829a26633dc0969cb3505ca"><td class="memItemLeft" align="right" valign="top"><a id="a0db9d743e829a26633dc0969cb3505ca"></a>
+iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1interval__map.html#a0db9d743e829a26633dc0969cb3505ca">lower_bound</a> (key_type key)</td></tr>
+<tr class="memdesc:a0db9d743e829a26633dc0969cb3505ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator pointing to the first element in the container whose key is equivalent or smaller than the given key. If no such element exists, returns end(). <br /></td></tr>
+<tr class="separator:a0db9d743e829a26633dc0969cb3505ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac174b5ada0c0dff294638a914281a96"><td class="memItemLeft" align="right" valign="top"><a id="aac174b5ada0c0dff294638a914281a96"></a>
+const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1interval__map.html#aac174b5ada0c0dff294638a914281a96">lower_bound</a> (key_type key) const</td></tr>
+<tr class="memdesc:aac174b5ada0c0dff294638a914281a96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator pointing to the first element in the container whose key is equivalent or smaller than the given key. If no such element exists, returns end(). <br /></td></tr>
+<tr class="separator:aac174b5ada0c0dff294638a914281a96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbe8d678681a1397ebb2bc0638c1284a"><td class="memItemLeft" align="right" valign="top"><a id="abbe8d678681a1397ebb2bc0638c1284a"></a>
+iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1interval__map.html#abbe8d678681a1397ebb2bc0638c1284a">upper_bound</a> (key_type key)</td></tr>
+<tr class="memdesc:abbe8d678681a1397ebb2bc0638c1284a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an iterator pointing to the first element in the container whose key is greater than the given key. If no such element exists, returns end(). <br /></td></tr>
+<tr class="separator:abbe8d678681a1397ebb2bc0638c1284a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ff8198783244a43d64503e6a58cbad1"><td class="memItemLeft" align="right" valign="top"><a id="a8ff8198783244a43d64503e6a58cbad1"></a>
+const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1interval__map.html#a8ff8198783244a43d64503e6a58cbad1">upper_bound</a> (key_type key) const</td></tr>
+<tr class="memdesc:a8ff8198783244a43d64503e6a58cbad1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator pointing to the first element in the container whose key is greater than the given key. If no such element exists, returns end(). <br /></td></tr>
+<tr class="separator:a8ff8198783244a43d64503e6a58cbad1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe1090ca4a0867199acc90829c689009"><td class="memItemLeft" align="right" valign="top">std::pair&lt; iterator, iterator &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1interval__map.html#abe1090ca4a0867199acc90829c689009">bounds</a> (key_type key)</td></tr>
+<tr class="memdesc:abe1090ca4a0867199acc90829c689009"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pair of iterators pointing to the lower and upper bounds of the given key.  <a href="classcgv_1_1data_1_1interval__map.html#abe1090ca4a0867199acc90829c689009">More...</a><br /></td></tr>
+<tr class="separator:abe1090ca4a0867199acc90829c689009"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6832639717769614d79f0d49cf68cc60"><td class="memItemLeft" align="right" valign="top">std::pair&lt; const_iterator, const_iterator &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1interval__map.html#a6832639717769614d79f0d49cf68cc60">bounds</a> (key_type key) const</td></tr>
+<tr class="memdesc:a6832639717769614d79f0d49cf68cc60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pair of const iterators pointing to the lower and upper bounds of the given key.  <a href="classcgv_1_1data_1_1interval__map.html#a6832639717769614d79f0d49cf68cc60">More...</a><br /></td></tr>
+<tr class="separator:a6832639717769614d79f0d49cf68cc60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;class Key, class T&gt;<br />
-class cgv::utils::interval_map&lt; Key, T &gt;</h3>
+class cgv::data::interval_map&lt; Key, T &gt;</h3>
 
 <p>Extension of a standard map container that allows easy retreival of lower and upper bounds given a key. </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -134,8 +134,8 @@ class cgv::utils::interval_map&lt; Key, T &gt;</h3>
 
 <p class="definition">Definition at line <a class="el" href="interval__map_8h_source.html#l00012">12</a> of file <a class="el" href="interval__map_8h_source.html">interval_map.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="ae2b44926c559a7724cde23ad84db0f52"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae2b44926c559a7724cde23ad84db0f52">&#9670;&nbsp;</a></span>bounds() <span class="overload">[1/2]</span></h2>
+<a id="abe1090ca4a0867199acc90829c689009"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe1090ca4a0867199acc90829c689009">&#9670;&nbsp;</a></span>bounds() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -146,7 +146,7 @@ template&lt;class Key , class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::pair&lt;iterator, iterator&gt; <a class="el" href="classcgv_1_1utils_1_1interval__map.html">cgv::utils::interval_map</a>&lt; Key, T &gt;::bounds </td>
+          <td class="memname">std::pair&lt;iterator, iterator&gt; <a class="el" href="classcgv_1_1data_1_1interval__map.html">cgv::data::interval_map</a>&lt; Key, T &gt;::bounds </td>
           <td>(</td>
           <td class="paramtype">key_type&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
@@ -165,12 +165,12 @@ template&lt;class Key , class T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="interval__map_8h_source.html#l00126">126</a> of file <a class="el" href="interval__map_8h_source.html">interval_map.h</a>.</p>
 
-<p class="reference">References <a class="el" href="interval__map_8h_source.html#l00099">cgv::utils::interval_map&lt; Key, T &gt;::lower_bound()</a>, and <a class="el" href="interval__map_8h_source.html#l00112">cgv::utils::interval_map&lt; Key, T &gt;::upper_bound()</a>.</p>
+<p class="reference">References <a class="el" href="interval__map_8h_source.html#l00099">cgv::data::interval_map&lt; Key, T &gt;::lower_bound()</a>, and <a class="el" href="interval__map_8h_source.html#l00112">cgv::data::interval_map&lt; Key, T &gt;::upper_bound()</a>.</p>
 
 </div>
 </div>
-<a id="a4e1b57b97ca84cea25c97a807a588ce5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4e1b57b97ca84cea25c97a807a588ce5">&#9670;&nbsp;</a></span>bounds() <span class="overload">[2/2]</span></h2>
+<a id="a6832639717769614d79f0d49cf68cc60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6832639717769614d79f0d49cf68cc60">&#9670;&nbsp;</a></span>bounds() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -181,7 +181,7 @@ template&lt;class Key , class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::pair&lt;const_iterator, const_iterator&gt; <a class="el" href="classcgv_1_1utils_1_1interval__map.html">cgv::utils::interval_map</a>&lt; Key, T &gt;::bounds </td>
+          <td class="memname">std::pair&lt;const_iterator, const_iterator&gt; <a class="el" href="classcgv_1_1data_1_1interval__map.html">cgv::data::interval_map</a>&lt; Key, T &gt;::bounds </td>
           <td>(</td>
           <td class="paramtype">key_type&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
@@ -200,19 +200,19 @@ template&lt;class Key , class T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="interval__map_8h_source.html#l00134">134</a> of file <a class="el" href="interval__map_8h_source.html">interval_map.h</a>.</p>
 
-<p class="reference">References <a class="el" href="interval__map_8h_source.html#l00099">cgv::utils::interval_map&lt; Key, T &gt;::lower_bound()</a>, and <a class="el" href="interval__map_8h_source.html#l00112">cgv::utils::interval_map&lt; Key, T &gt;::upper_bound()</a>.</p>
+<p class="reference">References <a class="el" href="interval__map_8h_source.html#l00099">cgv::data::interval_map&lt; Key, T &gt;::lower_bound()</a>, and <a class="el" href="interval__map_8h_source.html#l00112">cgv::data::interval_map&lt; Key, T &gt;::upper_bound()</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>cgv/utils/<a class="el" href="interval__map_8h_source.html">interval_map.h</a></li>
+<li>cgv/data/<a class="el" href="interval__map_8h_source.html">interval_map.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespacecgv.html">cgv</a></li><li class="navelem"><a class="el" href="namespacecgv_1_1utils.html">utils</a></li><li class="navelem"><a class="el" href="classcgv_1_1utils_1_1interval__map.html">interval_map</a></li>
+    <li class="navelem"><a class="el" href="namespacecgv.html">cgv</a></li><li class="navelem"><a class="el" href="namespacecgv_1_1data.html">data</a></li><li class="navelem"><a class="el" href="classcgv_1_1data_1_1interval__map.html">interval_map</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
