@@ -230,22 +230,19 @@ bool navigator::init(cgv::render::context& ctx) {
 	success &= blit_canvas.init(ctx);
 
 	if(success) {
-		box_data.add(vec3(0.0f));
-		box_wire_data.add(vec3(0.0f));
+		box_data.add_position(vec3(0.0f));
+		box_wire_data.add_position(vec3(0.0f));
 
-		sphere_data.add(vec3(0.0f));
+		sphere_data.add_position(vec3(0.0f));
 
 		const float length = 0.5f;
 
 		// x - red
-		arrow_data.add(vec3(0.0f), vec3(length, 0.0f, 0.0f));
-		arrow_data.add(rgb(0.85f, 0.0f, 0.0f));
+		arrow_data.add(vec3(0.0f), rgb(0.85f, 0.0f, 0.0f), vec3(length, 0.0f, 0.0f));
 		// y - green
-		arrow_data.add(rgb(0.0f, 0.75f, 0.0f));
-		arrow_data.add(vec3(0.0f), vec3(0.0f, length, 0.0f));
+		arrow_data.add(vec3(0.0f), rgb(0.0f, 0.75f, 0.0f), vec3(0.0f, length, 0.0f));
 		// z - blue
-		arrow_data.add(vec3(0.0f), vec3(0.0f, 0.0f, length));
-		arrow_data.add(rgb(0.0f, 0.05f, 0.95f));
+		arrow_data.add(vec3(0.0f), rgb(0.0f, 0.05f, 0.95f), vec3(0.0f, 0.0f, length));
 		
 		blit_style.fill_color = rgba(1.0f);
 		blit_style.use_texture = true;
@@ -321,11 +318,11 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 		rotation_axis[mapping[axis_idx]] = hit_axis < 0.0f ? -1.0f : 1.0f;
 
 		std::vector<quat> rotations;
-		quat q(rotation_axis, cgv::math::deg2rad(90.0f));
+		quat rotation(rotation_axis, cgv::math::deg2rad(90.0f));
 
 		rectangle_data.clear();
-		rectangle_data.add(position);
-		rectangle_data.add(q);
+		rectangle_data.add_position(position);
+		rectangle_data.add_rotation(rotation);
 
 		auto& rectangle_renderer = ref_rectangle_renderer(ctx);
 		rectangle_renderer.set_extent(ctx, vec2(0.9f));

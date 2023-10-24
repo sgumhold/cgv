@@ -73,12 +73,12 @@ public:
 	}
 	void draw(cgv::render::context& ctx)
 	{	
-		if(!view_ptr || spheres.ref_pos().size() == 0) return;
+		if(!view_ptr || spheres.empty()) return;
 		
 		auto& sr = ref_sphere_renderer(ctx);
 		spheres.early_transfer(ctx, sr);
 
-		auto& aam = spheres.ref_aam();
+		auto& aam = spheres.ref_attribute_array_manager();
 		const cgv::render::vertex_buffer* radius_buffer_ptr = sr.get_vertex_buffer_ptr(ctx, aam, "radius");
 		const cgv::render::vertex_buffer* index_buffer_ptr = sr.get_index_buffer_ptr(aam);
 
@@ -92,7 +92,7 @@ public:
 				sac.begin_time_query();
 				unsigned count = sac.execute(ctx, *radius_buffer_ptr, *index_buffer_ptr);
 				float time = sac.end_time_query();
-				std::cout << "Filtering done in " << time << " ms. Drawing " << count << " of " << spheres.ref_pos().size() << " spheres." << std::endl;
+				std::cout << "Filtering done in " << time << " ms. Drawing " << count << " of " << spheres.size() << " spheres." << std::endl;
 
 				if(count > 0)
 					spheres.render(ctx, sr, sphere_style, 0, count);
@@ -145,14 +145,11 @@ public:
 
 			rgb col = (1.0f - t)*green + t*red;
 
-			spheres.add(pos);
-			spheres.add(rad);
-			spheres.add(col);
-
-			spheres.add_idx(i);
+			spheres.add(pos, col, rad);
+			spheres.add_index(i);
 		}
 
-		if(!sac.init(ctx, spheres.ref_rad().size()))
+		if(!sac.init(ctx, spheres.radii.size()))
 			std::cout << "Error: Could not initialize GPU scan and compact algorithm!" << std::endl;
 
 		spheres.set_out_of_date();

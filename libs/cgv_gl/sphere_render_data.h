@@ -3,28 +3,24 @@
 #include "sphere_renderer.h"
 #include "render_data_base.h"
 
-#include "gl/lib_begin.h"
-
 namespace cgv {
 namespace render {
 
-template <typename ColorType = render_types::rgb>
+/// @brief Render data for sphere geometry with support for the sphere_renderer. See render_data_base.
+/// @tparam ColorType The type used to represent colors. Must be cgv::render::rgb or cgv::render::rgba.
+template <typename ColorType = rgb>
 class sphere_render_data : public render_data_base<ColorType> {
 public:
-	// Repeat automatically inherited typedefs from parent class, as they can't
-	// be inherited again according to C++ spec
-	typedef render_types::vec3 vec3;
-
 	// Base class we're going to use virtual functions from
 	typedef render_data_base<ColorType> super;
+	
+	std::vector<float> radii;
 
 protected:
-	std::vector<float> rad;
-
 	bool transfer(context& ctx, sphere_renderer& r) {
 		if(super::transfer(ctx, r)) {
-			if(rad.size() == this->size())
-				r.set_radius_array(ctx, rad);
+			if(radii.size() == super::size())
+				r.set_radius_array(ctx, radii);
 			return true;
 		}
 		return false;
@@ -33,53 +29,32 @@ protected:
 public:
 	void clear() {
 		super::clear();
-		rad.clear();
+		radii.clear();
 	}
 
-	std::vector<float>& ref_rad() { return rad; }
+	void add_radius(const float radius) {
+		radii.push_back(radius);
+	}
+
+	// Explicitly use add from the base class since it is shadowed by the overloaded versions
+	using super::add;
+
+	void add(const vec3& position, const float radius) {
+		super::add_position(position);
+		add_radius(radius);
+	}
+
+	void add(const vec3& position, const ColorType& color, const float radius) {
+		super::add(position, color);
+		add_radius(radius);
+	}
+
+	void fill_radii(const float radius) {
+		super::fill(radii, radius);
+	}
 
 	RDB_BASE_FUNC_DEF(sphere_renderer, sphere_render_style);
-
-	void add(const vec3& p) {
-		this->pos.push_back(p);
-	}
-
-	void add(const float r) {
-		rad.push_back(r);
-	}
-
-	void add(const ColorType& c) {
-		this->col.push_back(c);
-	}
-
-	void add(const vec3& p, const float r, const ColorType& c) {
-		add(p);
-		add(r);
-		add(c);
-	}
-
-	void add(const vec3& p, const float r) {
-		add(p);
-		add(r);
-	}
-
-	void add(const vec3& p, const ColorType& c) {
-		add(p);
-		add(c);
-	}
-
-	void fill(const float& r) {
-		for(size_t i = rad.size(); i < this->pos.size(); ++i)
-			rad.push_back(r);
-	}
-
-	void fill(const ColorType& c) {
-		for(size_t i = this->col.size(); i < this->pos.size(); ++i)
-			this->col.push_back(c);
-	}
 };
 
 }
 }
-
-#include <cgv/config/lib_end.h>

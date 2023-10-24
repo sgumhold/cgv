@@ -239,9 +239,9 @@ public:
 			);
 			wire_boxes.add(pos, ext, inv_col);
 			
-			spheres.add(pos, cgv::math::lerp(0.5f, 1.0f, unorm_distr(rng)), col);
+			spheres.add(pos, col, cgv::math::lerp(0.5f, 1.0f, unorm_distr(rng)));
 
-			cones.add(pos, pos + 0.25f*(0.95f*unorm_distr(rng) + 0.05f)*dir, cgv::math::lerp(0.5f, 1.0f, unorm_distr(rng)), inv_col);
+			cones.add(pos, pos + 0.25f*(0.95f*unorm_distr(rng) + 0.05f)*dir, inv_col, cgv::math::lerp(0.5f, 1.0f, unorm_distr(rng)));
 		}
 	}
 

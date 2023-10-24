@@ -65,7 +65,7 @@ public:
 	}
 	void draw(cgv::render::context& ctx)
 	{	
-		if(!view_ptr || spheres.ref_pos().size() == 0) return;
+		if(!view_ptr || spheres.empty()) return;
 
 		glEnable(GL_BLEND);
 		glDisable(GL_DEPTH_TEST);
@@ -75,7 +75,7 @@ public:
 		auto& sr = ref_sphere_renderer(ctx);
 		spheres.early_transfer(ctx, sr);
 
-		auto& aam = spheres.ref_aam();
+		auto& aam = spheres.ref_attribute_array_manager();
 		const cgv::render::vertex_buffer* position_buffer_ptr = sr.get_vertex_buffer_ptr(ctx, aam, "position");
 		const cgv::render::vertex_buffer* index_buffer_ptr = sr.get_index_buffer_ptr(aam);
 		
@@ -135,13 +135,12 @@ public:
 				col_distr(rng)
 			);
 
-			spheres.add(pos);
-			spheres.add(col);
+			spheres.add(pos, col);
 		}
 
-		spheres.ref_idx().resize(spheres.ref_pos().size());
+		spheres.indices.resize(spheres.size());
 
-		if(!visibility_sorter.init(ctx, spheres.ref_idx().size()))
+		if(!visibility_sorter.init(ctx, spheres.indices.size()))
 			std::cout << "Error: Could not initialize GPU sorter!" << std::endl;
 
 		spheres.set_out_of_date();

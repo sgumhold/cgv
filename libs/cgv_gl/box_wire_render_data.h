@@ -3,36 +3,31 @@
 #include "box_wire_renderer.h"
 #include "render_data_base.h"
 
-#include "gl/lib_begin.h"
-
 namespace cgv {
 namespace render {
 
-template <typename ColorType = render_types::rgb>
+/// @brief Render data for box geometry with support for the box_wire_renderer. See render_data_base.
+/// @tparam ColorType The type used to represent colors. Must be cgv::render::rgb or cgv::render::rgba.
+template <typename ColorType = rgb>
 class box_wire_render_data : public render_data_base<ColorType> {
 public:
-	// Repeat automatically inherited typedefs from parent class, as they can't
-	// be inherited again according to C++ spec
-	typedef render_types::vec3 vec3;
-	typedef render_types::quat quat;
-
 	// Base class we're going to use virtual functions from
 	typedef render_data_base<ColorType> super;
 
-protected:
-	std::vector<vec3> ext;
-	std::vector<vec3> transl;
-	std::vector<quat> rot;
+	std::vector<vec3> extents;
+	std::vector<vec3> translations;
+	std::vector<quat> rotations;
 
+protected:
+	/// @brief See render_data_base::transfer.
 	bool transfer(context& ctx, box_wire_renderer& r) {
 		if(super::transfer(ctx, r)) {
-			r.set_position_array(ctx, this->pos);
-			if(ext.size() == this->size())
-				r.set_extent_array(ctx, ext);
-			if(transl.size() == this->size())
-				r.set_translation_array(ctx, transl);
-			if(rot.size() == this->size())
-				r.set_rotation_array(ctx, rot);
+			if(extents.size() == super::size())
+				r.set_extent_array(ctx, extents);
+			if(translations.size() == super::size())
+				r.set_translation_array(ctx, translations);
+			if(rotations.size() == super::size())
+				r.set_rotation_array(ctx, rotations);
 			return true;
 		}
 		return false;
@@ -41,66 +36,61 @@ protected:
 public:
 	void clear() {
 		super::clear();
-		ext.clear();
-		transl.clear();
-		rot.clear();
+		extents.clear();
+		translations.clear();
+		rotations.clear();
 	}
 
-	std::vector<vec3>& ref_ext() { return ext; }
-	std::vector<vec3>& ref_transl() { return transl; }
-	std::vector<quat>& ref_rot() { return rot; }
+	void add_extent(const vec3 extent) {
+		extents.push_back(extent);
+	}
+
+	void add_translation(const vec3 translation) {
+		translations.push_back(translation);
+	}
+
+	void add_rotation(const quat& rotation) {
+		rotations.push_back(rotation);
+	}
+
+	// Explicitly use add from the base class since it is shadowed by the overloaded versions
+	using super::add;
+
+	void add(const vec3& position, const vec3& extent) {
+		super::add_position(position);
+		add_extent(extent);
+	}
+
+	void add(const vec3& position, const vec3& extent, const quat& rotation) {
+		super::add_position(position);
+		add_extent(extent);
+		add_rotation(rotation);
+	}
+
+	void add(const vec3& position, const vec3& extent, const ColorType& color) {
+		add(position, extent);
+		super::add_color(color);
+	}
+
+	void add(const vec3& translation, const quat& rotation) {
+		add_translation(translation);
+		add_rotation(rotation);
+	}
+
+	void fill_extents(const vec3& extent) {
+		super::fill(extents, extent);
+	}
+
+	void fill_translations(const vec3& translation) {
+		super::fill(translations, translation);
+	}
+
+	void fill_rotations(const quat& rotation) {
+		super::fill(rotations, rotation);
+	}
 
 	RDB_BASE_FUNC_DEF(box_wire_renderer, box_wire_render_style);
-
-	void add(const vec3& p) {
-		super::pos.push_back(p);
-	}
-
-	void add(const vec3& p, const vec3& e) {
-		super::pos.push_back(p);
-		ext.push_back(e);
-	}
-
-	void add(const quat& r) {
-		rot.push_back(r);
-	}
-
-	void add(const vec3& t, const quat& r) {
-		transl.push_back(t);
-		rot.push_back(r);
-	}
-
-	void add(const ColorType& c) {
-		super::col.push_back(c);
-	}
-
-	void add(const vec3& p, const vec3& e, const ColorType& c) {
-		add(p, e);
-		add(c);
-	}
-
-	void add(const vec3& p, const ColorType& c) {
-		add(p);
-		add(c);
-	}
-
-	void fill(const vec3& e) {
-		for(size_t i = ext.size(); i < super::pos.size(); ++i)
-			ext.push_back(e);
-	}
-
-	void fill(const quat& r) {
-		for(size_t i = rot.size(); i < super::pos.size(); ++i)
-			rot.push_back(r);
-	}
-
-	void fill(const ColorType& c) {
-		for(size_t i = super::col.size(); i < super::pos.size(); ++i)
-			super::col.push_back(c);
-	}
 };
 
 }
 }
-
-#include <cgv/config/lib_end.h>
