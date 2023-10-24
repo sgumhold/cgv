@@ -13,6 +13,7 @@ var namespacecgv_1_1data =
     [ "data_view", "classcgv_1_1data_1_1data__view.html", "classcgv_1_1data_1_1data__view" ],
     [ "const_data_view", "classcgv_1_1data_1_1const__data__view.html", "classcgv_1_1data_1_1const__data__view" ],
     [ "dynamic_priority_queue", "classcgv_1_1data_1_1dynamic__priority__queue.html", "classcgv_1_1data_1_1dynamic__priority__queue" ],
+    [ "interval_map", "classcgv_1_1data_1_1interval__map.html", "classcgv_1_1data_1_1interval__map" ],
     [ "io_reflection_handler", "classcgv_1_1data_1_1io__reflection__handler.html", "classcgv_1_1data_1_1io__reflection__handler" ],
     [ "packing_info", "classcgv_1_1data_1_1packing__info.html", "classcgv_1_1data_1_1packing__info" ],
     [ "ref_counted", "classcgv_1_1data_1_1ref__counted.html", "classcgv_1_1data_1_1ref__counted" ],

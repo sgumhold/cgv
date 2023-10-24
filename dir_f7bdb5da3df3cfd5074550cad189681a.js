@@ -15,6 +15,7 @@ var dir_f7bdb5da3df3cfd5074550cad189681a =
     [ "grid.h", "grid_8h_source.html", null ],
     [ "image_view.cxx", "image__view_8cxx_source.html", null ],
     [ "image_view.h", "image__view_8h_source.html", null ],
+    [ "interval_map.h", "interval__map_8h_source.html", null ],
     [ "io_reflection_handler.cxx", "io__reflection__handler_8cxx_source.html", null ],
     [ "io_reflection_handler.h", "io__reflection__handler_8h_source.html", null ],
     [ "lib_begin.h", "cgv_2data_2lib__begin_8h_source.html", null ],
