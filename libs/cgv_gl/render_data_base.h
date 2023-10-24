@@ -369,15 +369,6 @@ public:
 
 		r.draw(ctx, offset, draw_count);
 	}
-
-	render_style style;
-	RDB_EARLY_TRANSFER_FUNC_DEF(renderer);
-	
-	RDB_ENABLE_FUNC_DEF(renderer, render_style);
-	RDB_RENDER_FUNC3_DEF(renderer);
-	RDB_RENDER_FUNC2_DEF(renderer, render_style);
-	RDB_RENDER_FUNC1_DEF(renderer);
-	RDB_RENDER_FUNC0_DEF(renderer, render_style);
 };
 
 }
