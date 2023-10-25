@@ -12,14 +12,17 @@ public:
 	// Base class we're going to use virtual functions from
 	typedef render_data_base<ColorType> super;
 
-	bool direction_is_endpoint = false;
+	/// stores an array of directions
 	std::vector<vec3> directions;
+	/// whether to interpret the direction attribute as the arrow end point position
+	bool direction_is_end_point = false;
 
 protected:
+	/// @brief See render_data_base::transfer.
 	bool transfer(context& ctx, arrow_renderer& r) {
 		if(super::transfer(ctx, r)) {
 			if(directions.size() == super::size()) {
-				if(direction_is_endpoint)
+				if(direction_is_end_point)
 					r.set_end_point_array(ctx, directions);
 				else
 					r.set_direction_array(ctx, directions);

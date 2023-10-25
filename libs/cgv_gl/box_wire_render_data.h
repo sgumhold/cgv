@@ -14,8 +14,11 @@ public:
 	// Base class we're going to use virtual functions from
 	typedef render_data_base<ColorType> super;
 
+	/// stores an array of extents
 	std::vector<vec3> extents;
+	/// stores an array of translations
 	std::vector<vec3> translations;
+	/// stores an array of rotations
 	std::vector<quat> rotations;
 
 protected:

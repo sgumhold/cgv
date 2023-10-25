@@ -14,9 +14,11 @@ public:
 	// Base class we're going to use virtual functions from
 	typedef render_data_base<ColorType> super;
 
+	/// stores an array of radii
 	std::vector<float> radii;
 
 protected:
+	/// @brief See render_data_base::transfer.
 	bool transfer(context& ctx, cone_renderer& r) {
 		if(super::transfer(ctx, r)) {
 			if(radii.size() == super::size())
