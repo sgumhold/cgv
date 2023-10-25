@@ -56,7 +56,7 @@ bool enable(context& ctx, RENDERER& r, const STYLE& s) { \
 		r.set_render_style(s); \
 		r.enable_attribute_array_manager(ctx, this->attribute_array); \
 		if(this->state_out_of_date) transfer(ctx, r); \
-		set_const_attributes(ctx, r); \
+		this->set_const_attributes(ctx, r); \
 		return r.validate_and_enable(ctx); \
 	} else if(this->state_out_of_date) { \
 		early_transfer(ctx, r); \
