@@ -14,10 +14,13 @@ public:
 	// Base class we're going to use virtual functions from
 	typedef render_data_base<ColorType> super;
 
+	/// stores an array of normals
 	std::vector<vec3> normals;
+	/// stores an array of widths
 	std::vector<float> widths;
 
 protected:
+	/// @brief See render_data_base::transfer.
 	bool transfer(context& ctx, line_renderer& r) {
 		if(super::transfer(ctx, r)) {
 			if(normals.size() == super::size())

@@ -14,12 +14,25 @@ public:
 	// Base class we're going to use virtual functions from
 	typedef render_data_base<ColorType> super;
 
+	/// stores an array of extents
 	std::vector<vec2> extents;
+	/// stores an array of translations
 	std::vector<vec3> translations;
+	/// stores an array of rotations
 	std::vector<quat> rotations;
+	/// stores an array of texcoords
 	std::vector<vec4> texcoords;
+	/// stores an optional constant extent used for all elements
+	cgv::data::optional<vec2> const_extent;
+	/// stores an optional constant translation used for all elements
+	cgv::data::optional<vec3> const_translation;
+	/// stores an optional constant rotation used for all elements
+	cgv::data::optional<quat> const_rotation;
+	/// stores an optional constant texcoord used for all elements
+	cgv::data::optional<vec4> const_texcoord;
 
 protected:
+	/// @brief See render_data_base::transfer.
 	bool transfer(context& ctx, rectangle_renderer& r) {
 		if(super::transfer(ctx, r)) {
 			if(extents.size() == super::size())
@@ -33,6 +46,19 @@ protected:
 			return true;
 		}
 		return false;
+	}
+
+	/// @brief See render_data_base::set_const_attributes.
+	void set_const_attributes(context& ctx, rectangle_renderer& r) {
+		super::set_const_attributes(ctx, r);
+		if(extents.empty() && const_extent)
+			r.set_extent(ctx, const_extent.value());
+		if(translations.empty() && const_translation)
+			r.set_translation(ctx, const_translation.value());
+		if(rotations.empty() && const_rotation)
+			r.set_rotation(ctx, const_rotation.value());
+		if(texcoords.empty() && const_texcoord)
+			r.set_texcoord(ctx, const_texcoord.value());
 	}
 
 public:

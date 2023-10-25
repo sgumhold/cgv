@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/data/optional.h>
 #include <cgv/render/render_types.h>
 
 #include "renderer.h"
@@ -55,6 +56,7 @@ bool enable(context& ctx, RENDERER& r, const STYLE& s) { \
 		r.set_render_style(s); \
 		r.enable_attribute_array_manager(ctx, this->attribute_array); \
 		if(this->state_out_of_date) transfer(ctx, r); \
+		set_const_attributes(ctx, r); \
 		return r.validate_and_enable(ctx); \
 	} else if(this->state_out_of_date) { \
 		early_transfer(ctx, r); \
@@ -198,6 +200,8 @@ public:
 	std::vector<vec3> positions;
 	/// stores an array of colors
 	std::vector<ColorType> colors;
+	/// stores an optional constant color used for all elements
+	cgv::data::optional<ColorType> const_color;
 
 protected:
 	/// whether the state of this render datas members are out of date with the attribute_array
@@ -233,6 +237,19 @@ protected:
 			// Return false since the attribute array manager holds no data anymore.
 			return false;
 		}
+	}
+
+	/// @brief Set constant vertex attributes if present.
+	/// 
+	/// Sets the supported vertex attributes to constant values if they are specified and if
+	/// the respective arrays are empty. This enables to set, e. g., a single color for all
+	/// elements without the need to fill the whole color array with the same value.
+	/// 
+	/// @param ctx The GL context.
+	/// @param r The used renderer instance.
+	virtual void set_const_attributes(context& ctx, renderer& r) {
+		if(colors.empty() && const_color)
+			r.set_color(ctx, const_color.value());
 	}
 
 	/// @brief Template for filling a member array to the size of the render data.
