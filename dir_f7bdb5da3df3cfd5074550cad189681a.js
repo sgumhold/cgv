@@ -19,6 +19,7 @@ var dir_f7bdb5da3df3cfd5074550cad189681a =
     [ "io_reflection_handler.cxx", "io__reflection__handler_8cxx_source.html", null ],
     [ "io_reflection_handler.h", "io__reflection__handler_8h_source.html", null ],
     [ "lib_begin.h", "cgv_2data_2lib__begin_8h_source.html", null ],
+    [ "optional.h", "optional_8h_source.html", null ],
     [ "packing_info.cxx", "packing__info_8cxx_source.html", null ],
     [ "packing_info.h", "packing__info_8h_source.html", null ],
     [ "quadtree.h", "quadtree_8h_source.html", null ],

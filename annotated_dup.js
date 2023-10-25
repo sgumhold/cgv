@@ -72,6 +72,7 @@ var annotated_dup =
         [ "dynamic_priority_queue", "classcgv_1_1data_1_1dynamic__priority__queue.html", "classcgv_1_1data_1_1dynamic__priority__queue" ],
         [ "interval_map", "classcgv_1_1data_1_1interval__map.html", "classcgv_1_1data_1_1interval__map" ],
         [ "io_reflection_handler", "classcgv_1_1data_1_1io__reflection__handler.html", "classcgv_1_1data_1_1io__reflection__handler" ],
+        [ "optional", "classcgv_1_1data_1_1optional.html", "classcgv_1_1data_1_1optional" ],
         [ "packing_info", "classcgv_1_1data_1_1packing__info.html", "classcgv_1_1data_1_1packing__info" ],
         [ "ref_counted", "classcgv_1_1data_1_1ref__counted.html", "classcgv_1_1data_1_1ref__counted" ],
         [ "ref_ptr", "classcgv_1_1data_1_1ref__ptr.html", "classcgv_1_1data_1_1ref__ptr" ],
