@@ -138,6 +138,14 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:aaf85a6c3e7bfdc6c3d99090a34fba2f3"><td class="memItemLeft" align="right" valign="top"><a id="aaf85a6c3e7bfdc6c3d99090a34fba2f3"></a>
+std::vector&lt; <a class="el" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1line__render__data.html#aaf85a6c3e7bfdc6c3d99090a34fba2f3">normals</a></td></tr>
+<tr class="memdesc:aaf85a6c3e7bfdc6c3d99090a34fba2f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores an array of normals <br /></td></tr>
+<tr class="separator:aaf85a6c3e7bfdc6c3d99090a34fba2f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66cd21e9d9a9f23183735b7208737b26"><td class="memItemLeft" align="right" valign="top"><a id="a66cd21e9d9a9f23183735b7208737b26"></a>
+std::vector&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1line__render__data.html#a66cd21e9d9a9f23183735b7208737b26">widths</a></td></tr>
+<tr class="memdesc:a66cd21e9d9a9f23183735b7208737b26"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores an array of widths <br /></td></tr>
+<tr class="separator:a66cd21e9d9a9f23183735b7208737b26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad541e7b9caacd4ea88c7da83f0da231b"><td class="memItemLeft" align="right" valign="top"><a id="ad541e7b9caacd4ea88c7da83f0da231b"></a>
 std::vector&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__data__base.html#ad541e7b9caacd4ea88c7da83f0da231b">indices</a></td></tr>
 <tr class="memdesc:ad541e7b9caacd4ea88c7da83f0da231b"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores an array of indices <br /></td></tr>
@@ -150,12 +158,23 @@ std::vector&lt; <a class="el" href="namespacecgv_1_1render.html#a50cfdc8b08d298d
 std::vector&lt; <a class="el" href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">rgb</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__data__base.html#ac3f48081332341db3cc3946ba321c4e9">colors</a></td></tr>
 <tr class="memdesc:ac3f48081332341db3cc3946ba321c4e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores an array of colors <br /></td></tr>
 <tr class="separator:ac3f48081332341db3cc3946ba321c4e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32839010d829935fb09125f7d46dab26"><td class="memItemLeft" align="right" valign="top"><a id="a32839010d829935fb09125f7d46dab26"></a>
+<a class="el" href="classcgv_1_1data_1_1optional.html">cgv::data::optional</a>&lt; <a class="el" href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">rgb</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__data__base.html#a32839010d829935fb09125f7d46dab26">const_color</a></td></tr>
+<tr class="memdesc:a32839010d829935fb09125f7d46dab26"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores an optional constant color used for all elements <br /></td></tr>
+<tr class="separator:a32839010d829935fb09125f7d46dab26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:ac284478e8d21e4fbb25f573ae72585d6"><td class="memItemLeft" align="right" valign="top"><a id="ac284478e8d21e4fbb25f573ae72585d6"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1line__render__data.html#ac284478e8d21e4fbb25f573ae72585d6">transfer</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1line__renderer.html">line_renderer</a> &amp;r)</td></tr>
+<tr class="memdesc:ac284478e8d21e4fbb25f573ae72585d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">See <a class="el" href="classcgv_1_1render_1_1render__data__base.html#a6eafc7f4d5989dfec84d7c7358ffd89d" title="Transfers the data stored in members to the attribute array.">render_data_base::transfer</a>. <br /></td></tr>
+<tr class="separator:ac284478e8d21e4fbb25f573ae72585d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6eafc7f4d5989dfec84d7c7358ffd89d"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__data__base.html#a6eafc7f4d5989dfec84d7c7358ffd89d">transfer</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1renderer.html">renderer</a> &amp;r)</td></tr>
 <tr class="memdesc:a6eafc7f4d5989dfec84d7c7358ffd89d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transfers the data stored in members to the attribute array.  <a href="classcgv_1_1render_1_1render__data__base.html#a6eafc7f4d5989dfec84d7c7358ffd89d">More...</a><br /></td></tr>
 <tr class="separator:a6eafc7f4d5989dfec84d7c7358ffd89d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a464400a1f1f1d62ef02ea8bdadae9a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__data__base.html#a1a464400a1f1f1d62ef02ea8bdadae9a">set_const_attributes</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1renderer.html">renderer</a> &amp;r)</td></tr>
+<tr class="memdesc:a1a464400a1f1f1d62ef02ea8bdadae9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set constant vertex attributes if present.  <a href="classcgv_1_1render_1_1render__data__base.html#a1a464400a1f1f1d62ef02ea8bdadae9a">More...</a><br /></td></tr>
+<tr class="separator:a1a464400a1f1f1d62ef02ea8bdadae9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af24e1bfc685ca921dfa7302d5af57afe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__data__base.html#af24e1bfc685ca921dfa7302d5af57afe">fill</a> (std::vector&lt; T &gt; &amp;vector, const T &amp;value)</td></tr>
 <tr class="memdesc:af24e1bfc685ca921dfa7302d5af57afe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Template for filling a member array to the size of the render data.  <a href="classcgv_1_1render_1_1render__data__base.html#af24e1bfc685ca921dfa7302d5af57afe">More...</a><br /></td></tr>
 <tr class="separator:af24e1bfc685ca921dfa7302d5af57afe"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -217,7 +236,7 @@ class cgv::render::line_render_data&lt; ColorType &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00261">261</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00278">278</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
 </div>
 </div>
@@ -265,7 +284,7 @@ class cgv::render::line_render_data&lt; ColorType &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if disabling was successful. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00346">346</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00363">363</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
 </div>
 </div>
@@ -327,7 +346,7 @@ class cgv::render::line_render_data&lt; ColorType &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00365">365</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00382">382</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
 </div>
 </div>
@@ -358,7 +377,7 @@ class cgv::render::line_render_data&lt; ColorType &gt;</h3>
 <p>A render data is considered to be empty when the positions array is empty.</p>
 <dl class="section return"><dt>Returns</dt><dd>True if empty, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00295">295</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00312">312</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
 </div>
 </div>
@@ -412,7 +431,7 @@ class cgv::render::line_render_data&lt; ColorType &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00247">247</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00264">264</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
 </div>
 </div>
@@ -448,7 +467,7 @@ class cgv::render::line_render_data&lt; ColorType &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00255">255</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00272">272</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
 </div>
 </div>
@@ -479,7 +498,7 @@ class cgv::render::line_render_data&lt; ColorType &gt;</h3>
 <p>Can be used to retrieve internals such as buffer handles.</p>
 <dl class="section return"><dt>Returns</dt><dd>A const reference to the <a class="el" href="classcgv_1_1render_1_1attribute__array__manager.html" title="attribute array manager used to upload arrays to gpu">attribute_array_manager</a>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00317">317</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00334">334</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
 </div>
 </div>
@@ -510,7 +529,55 @@ class cgv::render::line_render_data&lt; ColorType &gt;</h3>
 <p>Returns the number of indices if indices is not empty and the number of positions otherwise.</p>
 <dl class="section return"><dt>Returns</dt><dd>The number of specified vertices. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00305">305</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00322">322</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+
+</div>
+</div>
+<a id="a1a464400a1f1f1d62ef02ea8bdadae9a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a464400a1f1f1d62ef02ea8bdadae9a">&#9670;&nbsp;</a></span>set_const_attributes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classcgv_1_1render_1_1render__data__base.html">cgv::render::render_data_base</a>&lt; <a class="el" href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">rgb</a>  &gt;::set_const_attributes </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1renderer.html">renderer</a> &amp;&#160;</td>
+          <td class="paramname"><em>r</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set constant vertex attributes if present. </p>
+<p>Sets the supported vertex attributes to constant values if they are specified and if the respective arrays are empty. This enables to set, e. g., a single color for all elements without the need to fill the whole color array with the same value.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>The GL context. </td></tr>
+    <tr><td class="paramname">r</td><td>The used renderer instance. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00250">250</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
 </div>
 </div>
@@ -540,7 +607,7 @@ class cgv::render::line_render_data&lt; ColorType &gt;</h3>
 <p>Notify the render data about state changes. </p>
 <p>Calling this method will result in the state_out_of_date flag being set to true and a call to transfer upon the next call to render or enable. This method shall never be called implicitly as a side effect of another member method, except clear, and must always be called explicitly after changing the stored data. </p>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00280">280</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00297">297</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
 </div>
 </div>
@@ -570,7 +637,7 @@ class cgv::render::line_render_data&lt; ColorType &gt;</h3>
 <p>Return the number of stored positions. </p>
 <dl class="section return"><dt>Returns</dt><dd>The number of stored positions. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00286">286</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00303">303</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
 </div>
 </div>
@@ -618,7 +685,7 @@ class cgv::render::line_render_data&lt; ColorType &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True is successful, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00212">212</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00216">216</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
 </div>
 </div>

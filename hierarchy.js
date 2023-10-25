@@ -97,6 +97,7 @@ var hierarchy =
     [ "cgv::data::dynamic_priority_queue< T >", "classcgv_1_1data_1_1dynamic__priority__queue.html", null ],
     [ "cgv::data::dynamic_priority_queue< T >::extended_element", "structcgv_1_1data_1_1dynamic__priority__queue_1_1extended__element.html", null ],
     [ "cgv::data::interval_map< Key, T >", "classcgv_1_1data_1_1interval__map.html", null ],
+    [ "cgv::data::optional< T >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::packing_info", "classcgv_1_1data_1_1packing__info.html", [
       [ "cgv::data::component_format", "classcgv_1_1data_1_1component__format.html", [
         [ "cgv::data::data_format", "classcgv_1_1data_1_1data__format.html", [
@@ -583,6 +584,11 @@ var hierarchy =
     [ "cgv::media::opacity_alpha_interface< color< T, cm, TRANSPARENCY > >", "structcgv_1_1media_1_1opacity__alpha__interface.html", [
       [ "cgv::media::transparency_alpha_interface< color< T, cm, TRANSPARENCY > >", "structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01TRANSPARENCY_01_4_01_4.html", null ]
     ] ],
+    [ "cgv::data::optional< cgv::math::fvec >", "classcgv_1_1data_1_1optional.html", null ],
+    [ "cgv::data::optional< cgv::math::quaternion >", "classcgv_1_1data_1_1optional.html", null ],
+    [ "cgv::data::optional< fvec< float, 2 > >", "classcgv_1_1data_1_1optional.html", null ],
+    [ "cgv::data::optional< fvec< float, 4 > >", "classcgv_1_1data_1_1optional.html", null ],
+    [ "cgv::data::optional< rgb >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::ref_ptr< base, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
     [ "cgv::data::ref_ptr< font >", "classcgv_1_1data_1_1ref__ptr.html", null ],
     [ "cgv::data::ref_ptr< font_face >", "classcgv_1_1data_1_1ref__ptr.html", null ],
