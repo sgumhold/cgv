@@ -1,5 +1,6 @@
 var NAVTREEINDEX20 =
 {
+"classcgv_1_1plot_1_1axis__config.html#a8914c2c071102a7452452384334683d0":[11,0,0,8,1,22],
 "classcgv_1_1plot_1_1axis__config.html#a9d06a50821d17fc154e996198fcc3a84":[11,0,0,8,1,3],
 "classcgv_1_1plot_1_1axis__config.html#aa89056446cb396238aeb47310ee7fc46":[11,0,0,8,1,11],
 "classcgv_1_1plot_1_1axis__config.html#ab096ff107e63e1b31382f7bc482036a1":[11,0,0,8,1,33],
@@ -248,6 +249,5 @@ var NAVTREEINDEX20 =
 "classcgv_1_1plot_1_1plot3d.html#ab5691212b9bf00ff65d0304801608f55":[11,0,0,8,5,25],
 "classcgv_1_1plot_1_1plot3d.html#ab7a5699fe105d9c760d4899df5e0151a":[11,0,0,8,5,79],
 "classcgv_1_1plot_1_1plot3d.html#ab8b1990cfa56fe6323990bcf92a8da2c":[11,0,0,8,5,63],
-"classcgv_1_1plot_1_1plot3d.html#aba2c01d6ac8ea6d5a63dd9a0b45891d6":[11,0,0,8,5,78],
-"classcgv_1_1plot_1_1plot3d.html#abc27c9dd2bcb68106b4507c8689795df":[11,0,0,8,5,15]
+"classcgv_1_1plot_1_1plot3d.html#aba2c01d6ac8ea6d5a63dd9a0b45891d6":[11,0,0,8,5,78]
 };

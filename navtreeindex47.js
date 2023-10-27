@@ -1,5 +1,7 @@
 var NAVTREEINDEX47 =
 {
+"structcgv_1_1render_1_1box__render__style.html#a3cbbe8d71d4ba26a9e2709f19d52fb50":[11,0,0,11,37,1],
+"structcgv_1_1render_1_1box__render__style.html#a52caec9a8363a35db51d863033978d2c":[11,0,0,11,37,10],
 "structcgv_1_1render_1_1box__render__style.html#a865652fb13309334074a53b1f3a6cc1c":[11,0,0,11,37,5],
 "structcgv_1_1render_1_1box__render__style.html#a92ce43e7c58f74dca9713e64f86b1da4":[11,0,0,11,37,0],
 "structcgv_1_1render_1_1box__render__style.html#a92e0131be883f48e6877a29641e502ed":[11,0,0,11,37,8],
@@ -247,7 +249,5 @@ var NAVTREEINDEX47 =
 "structcgv_1_1render_1_1shader__config.html#a3e1dd0ff6fa2baf3dc2149d3acfecd45":[11,0,0,11,23,34],
 "structcgv_1_1render_1_1shader__config.html#a4d67c8d339fe06f17396aaa8625292f8":[11,0,0,11,23,17],
 "structcgv_1_1render_1_1shader__config.html#a4f4169b175c7b9c5f0078ff48dfc6bb2":[11,0,0,11,23,38],
-"structcgv_1_1render_1_1shader__config.html#a5978e45464c3fdd3083426c4b21ed28a":[11,0,0,11,23,6],
-"structcgv_1_1render_1_1shader__config.html#a5c0c21c14a4322c3edcce6018ab1c608":[11,0,0,11,23,16],
-"structcgv_1_1render_1_1shader__config.html#a5e4ce80d45ccfdc5100f7ddd2f33b64d":[11,0,0,11,23,3]
+"structcgv_1_1render_1_1shader__config.html#a5978e45464c3fdd3083426c4b21ed28a":[11,0,0,11,23,6]
 };

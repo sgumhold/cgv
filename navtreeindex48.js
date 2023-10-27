@@ -1,5 +1,7 @@
 var NAVTREEINDEX48 =
 {
+"structcgv_1_1render_1_1shader__config.html#a5c0c21c14a4322c3edcce6018ab1c608":[11,0,0,11,23,16],
+"structcgv_1_1render_1_1shader__config.html#a5e4ce80d45ccfdc5100f7ddd2f33b64d":[11,0,0,11,23,3],
 "structcgv_1_1render_1_1shader__config.html#a62d3cd5ae49c3e261f5c0e52bc59bd4f":[11,0,0,11,23,31],
 "structcgv_1_1render_1_1shader__config.html#a6401d6fb8aa227bd28cacc7e42b39e2b":[11,0,0,11,23,2],
 "structcgv_1_1render_1_1shader__config.html#a6746cd9f70fefe5a4f2b72534869fcc3":[11,0,0,11,23,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX48 =
 "structgamepad_1_1gamepad__driver.html#a92881c3912790674a3a4c851ce8782a5":[11,0,1,3,0],
 "structgamepad_1_1gamepad__driver.html#aba4f05de4ca91bd7e2a3d2dae5200bb6":[11,0,1,3,5],
 "structgamepad_1_1gamepad__driver.html#ac74802108435066efc452cc162577cb8":[11,0,1,3,6],
-"structgamepad_1_1gamepad__driver.html#ae35233c535694e3883e0c3c5fd82afd7":[11,0,1,3,1],
-"structgamepad_1_1gamepad__state.html":[11,0,1,2],
-"structgamepad_1_1gamepad__state.html#a085176ecd68c889a3f508dacf9018795":[11,0,1,2,3]
+"structgamepad_1_1gamepad__driver.html#ae35233c535694e3883e0c3c5fd82afd7":[11,0,1,3,1]
 };

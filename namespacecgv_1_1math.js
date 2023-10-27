@@ -52,6 +52,7 @@ var namespacecgv_1_1math =
     [ "bipoly_int_x2", "namespacecgv_1_1math.html#ae3d44c29d8541df107111af2d9b2e179", null ],
     [ "bipoly_val", "namespacecgv_1_1math.html#a334232cf858e03e53db9bbf416fc76e3", null ],
     [ "bipoly_val", "namespacecgv_1_1math.html#a71c3df147faeb70898d5d8be36ee6989", null ],
+    [ "bresenham", "namespacecgv_1_1math.html#a152fd39675ef61fc3253f9b29dc68ec8", null ],
     [ "bucket_sort", "namespacecgv_1_1math.html#aeb3d20eb47e56aebfa6f2208a351e668", null ],
     [ "build_orthogonal_frame", "namespacecgv_1_1math.html#ae603218d7efcd704cd6e26a753aa1f98", null ],
     [ "ceil", "namespacecgv_1_1math.html#a7bdfc685a508ef94145942bc61929185", null ],
