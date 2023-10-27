@@ -1,5 +1,6 @@
 var NAVTREEINDEX34 =
 {
+"classvr_1_1vr__kit.html#a618d2f0e426c259410816d1c659f51cf":[11,0,3,13,12],
 "classvr_1_1vr__kit.html#a6c91fbca444437befe75c129f9242827":[11,0,3,13,14],
 "classvr_1_1vr__kit.html#a7b677bfeabceb9145f7161f41ce550ea":[11,0,3,13,13],
 "classvr_1_1vr__kit.html#a815b085433b79289421efa5a481881c6":[11,0,3,13,17],
@@ -149,7 +150,7 @@ var NAVTREEINDEX34 =
 "color__model_8hh.html#a68ea948595e0dbb22ff2418dc6bb2dde":[10,0,1,7,39],
 "color__model_8hh.html#ae8ba23f18eea36b93ea371d8f7bcf446":[10,0,1,7,38],
 "color__model_8hh_source.html":[12,0,1,6,9],
-"color__operations_8h_source.html":[12,0,1,5,7],
+"color__operations_8h_source.html":[12,0,1,5,8],
 "color__selector_8cxx_source.html":[12,0,3,2,12],
 "color__selector_8h_source.html":[12,0,3,2,13],
 "color__storage_8cxx_source.html":[12,0,1,6,12],
@@ -168,7 +169,7 @@ var NAVTREEINDEX34 =
 "config__file_8cxx_source.html":[12,0,1,4,13],
 "console_8cxx_source.html":[12,0,1,0,9],
 "console_8h_source.html":[12,0,1,0,10],
-"constants_8h_source.html":[12,0,1,5,8],
+"constants_8h_source.html":[12,0,1,5,9],
 "context_8cxx_source.html":[12,0,1,10,10],
 "context_8h_source.html":[12,0,1,10,11],
 "control_8cxx_source.html":[12,0,1,4,14],
@@ -199,8 +200,8 @@ var NAVTREEINDEX34 =
 "debug__reflection__handler_8cxx_source.html":[12,0,1,9,1],
 "debug__reflection__handler_8h_source.html":[12,0,1,9,2],
 "deprecated_8h_source.html":[12,0,1,3,1],
-"det_8h_source.html":[12,0,1,5,9],
-"diag__mat_8h_source.html":[12,0,1,5,10],
+"det_8h_source.html":[12,0,1,5,10],
+"diag__mat_8h_source.html":[12,0,1,5,11],
 "dialog_8cxx_source.html":[12,0,1,4,16],
 "dialog_8h_source.html":[12,0,1,4,17],
 "dir_00ac0d9dddc3649f685e4a803f315a6b.html":[12,0,1,8],
@@ -248,6 +249,5 @@ var NAVTREEINDEX34 =
 "dir_c72e81fa4088c604798c10c3a7fbb058.html":[12,0,1,11],
 "dir_d251fc85a687a674f056c13facf782b0.html":[12,0,1,6,5],
 "dir_d2daa059f2ccfca1b58731ae40e3e794.html":[12,0,1,12,0],
-"dir_dd0e9da0b2bd8fa61c37510ce6f96f4c.html":[12,0,1,1],
-"dir_df80e2f56895c94ffe6ee6e9fd69f984.html":[12,0,3,3,0]
+"dir_dd0e9da0b2bd8fa61c37510ce6f96f4c.html":[12,0,1,1]
 };

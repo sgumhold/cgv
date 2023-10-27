@@ -3,6 +3,7 @@ var dir_eaf9d2518f1ede0a595228de81ad9d4d =
     [ "adjacency_list.h", "adjacency__list_8h_source.html", null ],
     [ "align.h", "align_8h_source.html", null ],
     [ "bi_polynomial.h", "bi__polynomial_8h_source.html", null ],
+    [ "bresenham.h", "bresenham_8h_source.html", null ],
     [ "bucket_sort.h", "bucket__sort_8h_source.html", null ],
     [ "camera.h", "camera_8h_source.html", null ],
     [ "cgv_math.pj", "cgv__math_8pj_source.html", null ],

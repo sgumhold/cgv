@@ -1,5 +1,6 @@
 var NAVTREEINDEX9 =
 {
+"classcgv_1_1gui_1_1provider.html#ac6d49da0a9a5f434b920c33d42139621":[11,0,0,4,29,33],
 "classcgv_1_1gui_1_1provider.html#ac9e752ce7a60f2e4e978a54125fa036e":[11,0,0,4,29,20],
 "classcgv_1_1gui_1_1provider.html#accde83e8bacb794c0c912334c5a743e4":[11,0,0,4,29,3],
 "classcgv_1_1gui_1_1provider.html#ace5d812a9dc6b4132b67d0077cc6e22f":[11,0,0,4,29,4],
@@ -248,6 +249,5 @@ var NAVTREEINDEX9 =
 "classcgv_1_1gui_1_1vr__key__event.html#a7bdfa88afd524c47eb91c02b6dcd141c":[11,0,0,4,2,32],
 "classcgv_1_1gui_1_1vr__key__event.html#a85698ba126b46fee36cd6e31fdfe86b5":[11,0,0,4,2,37],
 "classcgv_1_1gui_1_1vr__key__event.html#a9f77f91f3badb2105b0117d69e8f0edc":[11,0,0,4,2,20],
-"classcgv_1_1gui_1_1vr__key__event.html#aa0c88b35dd8859e3d913f342b6db87a6":[11,0,0,4,2,33],
-"classcgv_1_1gui_1_1vr__key__event.html#aa2a7780d245b816a5f7d7e68e2e85ea4":[11,0,0,4,2,31]
+"classcgv_1_1gui_1_1vr__key__event.html#aa0c88b35dd8859e3d913f342b6db87a6":[11,0,0,4,2,33]
 };
