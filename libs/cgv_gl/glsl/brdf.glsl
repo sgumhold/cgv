@@ -121,8 +121,9 @@ vec3 strauss_specular_brdf(vec3 N, vec3 L, vec3 V, float roughness, float metaln
 	float kf = 1.12;
 	float inv_sqr_kf = 1.0 / (kf*kf);
 
-	float F = (1.0/pow((2.0 * theta_L / PI - kf), 2.0) - inv_sqr_kf) /
-		      (1.0/pow((        1.0        - kf), 2.0) - inv_sqr_kf);
+	float x_minus_kf = 2.0 * theta_L / PI - kf;
+	float F = (1.0/(x_minus_kf * x_minus_kf) - inv_sqr_kf) /
+		      (1.0/((1.0 - kf) * (1.0 - kf)) - inv_sqr_kf);
 	float j = F*G_L*G_V;
 	float s = 1.0 - roughness;
 	float o = 1.0 - transparency;
