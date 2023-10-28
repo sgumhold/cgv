@@ -201,7 +201,7 @@ void button_collection::create_labels() {
 
 	for(auto& btn : buttons) {
 		ivec2 pos = btn.rect.center();
-		pos.y() += 2;
+		pos.y() += 1;
 
 		if(btn.label_alignment & TextAlignment::TA_LEFT)
 			pos.x() = 4;
