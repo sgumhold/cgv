@@ -1,6 +1,8 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
+
 #include <cgv/math/fvec.h>
 #include <cgv/math/fmat.h>
 #include <cgv/utils/file.h>
