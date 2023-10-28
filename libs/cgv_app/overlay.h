@@ -104,7 +104,7 @@ public:
 	/// implement to handle member changes
 	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
 
-	/// default implementation of that calls handle_on_set and afterwards upates the member in the gui and post a redraw
+	/// default implementation of that calls handle_member_change and afterwards upates the member in the gui and post a redraw
 	virtual void on_set(void* member_ptr);
 
 	bool blocks_events() const { return block_events; }
