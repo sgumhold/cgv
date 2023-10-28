@@ -228,7 +228,7 @@ bool gl_context::configure_gl()
 		debug = false;
 		forward_compatible = false;
 	}
-	int version = 10 * version_major * version_minor;
+	int version = 10 * version_major + version_minor;
 	if (version >= 32) {
 		GLint context_profile;
 		glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &context_profile);
