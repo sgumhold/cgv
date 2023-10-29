@@ -4,6 +4,7 @@
  * Helper functions to process strings.
  */
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
