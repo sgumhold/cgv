@@ -14,8 +14,7 @@ namespace cgv {
 ///	Needs a rotation to manipulate.
 class CGV_API rotation_gizmo : public cgv::nui::gizmo,
 	public cgv::nui::gizmo_functionality_configurable_axes,
-	public cgv::nui::gizmo_functionality_handle_states,
-	public cgv::nui::gizmo_functionality_absolute_axes_rotation
+	public cgv::nui::gizmo_functionality_handle_states
 {
 	// pointers to properties of the object the gizmo is attached to
 	quat* rotation_ptr{ nullptr };
@@ -55,7 +54,7 @@ protected:
 	void set_rotation(const quat& rotation);
 
 	// current configuration of the gizmo
-	std::vector<float> translation_axes_radii{ 0.2f };
+	std::vector<float> rotation_axes_radii{ 0.2f };
 
 	bool validate_configuration() override;
 

@@ -90,6 +90,12 @@ namespace cgv {
 						vec3 hit_normal(0.0f);
 						float hit_param;
 						size_t primitive_index = 0;
+
+						// DEBUG TO REMOVE
+						auto _named = object_ptr->get_interface<base::named>();
+						if (_named && _named->get_name() == "blue")
+							std::cout << "";
+
 						if (p->compute_intersection(gi.inter_info.ray_origin, gi.inter_info.ray_direction, hit_param, hit_normal, primitive_index)) {
 							if (hit_param > 0 && hit_param < max_pointing_distance && hit_param < gi.inter_info.ray_param) {
 								gi.inter_info.ray_param = hit_param;
@@ -306,12 +312,6 @@ namespace cgv {
 						reinterpret_cast<const hit_dispatch_info*>(*rfi.dis_info_ptr_ptr)->get_hit_info()->primitive_index !=
 						reinterpret_cast<const hit_dispatch_info*>(di_ptr)->get_hit_info()->primitive_index)
 					{
-						//std::cout << "index change:"
-						//	<< reinterpret_cast<const hit_dispatch_info*>(*rfi.dis_info_ptr_ptr)->get_hit_info()->primitive_index
-						//	<< " -> "
-						//	<< reinterpret_cast<const hit_dispatch_info*>(di_ptr)->get_hit_info()->primitive_index 
-						//	<< std::endl;
-
 						// announce change of primitive index to object and in case of refusal, detach focus
 						if (!foc_info_ptr->object->get_interface<focusable>()->focus_change(
 							focus_change_action::index_change, rfa, { foc_att, foc_info_ptr->config }, e, *di_ptr)) {

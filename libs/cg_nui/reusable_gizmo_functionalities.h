@@ -45,32 +45,6 @@ public:
 	void set_axes_scale_independent_positions(std::vector<vec3> scale_independent_axis_positions);
 };
 
-/// Adds the functionality of a toggle between orienting the gizmo in the local coordinate system of the anchor object or a root coordinate system.
-class CGV_API gizmo_functionality_absolute_axes_rotation
-{
-	/// If true orient gizmo relative to the root coordinate system instead of the anchor object coordinate system.
-	bool use_absolute_rotation{ false };
-public:
-	/// Set whether the gizmo should be oriented relative to the root coordinate system instead of the anchor object's coordinate system.
-	///	The anchor rotation offset (if set) will be applied regardless.
-	void set_use_absolute_rotation(bool value);
-	/// Get whether absolute rotation is set to be used
-	bool get_use_absolute_rotation();
-};
-
-/// Adds the functionality of a toggle between positioning the gizmo in the local coordinate system of the anchor object or a root coordinate system.
-class CGV_API gizmo_functionality_absolute_axes_position
-{
-	/// If true position gizmo relative to the root coordinate system instead of the anchor object coordinate system.
-	bool use_absolute_position{ false };
-public:
-	/// Set whether the gizmo should be positioned relative to the root coordinate system instead of the anchor object's coordinate system.
-	///	The anchor position offset (if set) will be applied regardless.
-	void set_use_absolute_position(bool value);
-	/// Get whether absolute position is set to be used
-	bool get_use_absolute_position();
-};
-
 /// Abstraction that keeps the states of a list of handles that change color if highlighted or grabbed.
 ///	The colors can be set individually for each handle or once for all handles.
 class CGV_API gizmo_functionality_handle_states
