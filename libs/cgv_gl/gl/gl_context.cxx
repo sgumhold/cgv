@@ -228,7 +228,7 @@ bool gl_context::configure_gl()
 		debug = false;
 		forward_compatible = false;
 	}
-	int version = 10 * version_major * version_minor;
+	int version = 10 * version_major + version_minor;
 	if (version >= 32) {
 		GLint context_profile;
 		glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &context_profile);
@@ -278,6 +278,9 @@ bool gl_context::configure_gl()
 		// this makes opengl normalize all surface normals before lighting calculations,
 		// which is essential when using scaling to deform tesselated primities
 		glEnable(GL_NORMALIZE);
+
+		// should be initialized by the driver, but better be safe than risk errors later
+		glMatrixMode(GL_MODELVIEW);
 	}
 	set_viewport(ivec4(0, 0, get_width(), get_height()));
 //	if (check_gl_error("gl_context::configure_gl before init of children"))
