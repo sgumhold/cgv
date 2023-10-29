@@ -62,21 +62,63 @@ bool cgv::nui::rotation_gizmo::validate_configuration()
 	return configuration_valid && gizmo::validate_configuration();
 }
 
-void cgv::nui::rotation_gizmo::set_rotation_reference(quat* _rotation_ptr, cgv::base::base_ptr _on_set_obj)
+void cgv::nui::rotation_gizmo::on_handle_grabbed()
 {
-	rotation_ptr = _rotation_ptr;
-	gizmo::set_on_set_object(_on_set_obj);
+	rotation_at_grab = get_rotation();
+	grab_handle(prim_idx);
+
+	// DEBUG
+	auto& dvh = ref_debug_visualization_helper();
+	//vec3 current_position = accumulate_transforming_hierarchy().col(3);
+	//dvh.update_debug_value_vector_position(direction_at_grab_handle, current_position);
+	//dvh.update_debug_value_vector_position(direction_currently_handle, current_position);
+	//dvh.enable_debug_value_visualization(projected_point_handle);
+	//dvh.enable_debug_value_visualization(direction_at_grab_handle);
+	//dvh.enable_debug_value_visualization(direction_currently_handle);
 }
 
-void cgv::nui::rotation_gizmo::set_rotation_reference(quat** _rotation_ptr_ptr, cgv::base::base_ptr _on_set_obj)
+void cgv::nui::rotation_gizmo::on_handle_released()
 {
-	rotation_ptr_ptr = _rotation_ptr_ptr;
-	gizmo::set_on_set_object(_on_set_obj);
+	release_handles();
 }
 
-void cgv::nui::rotation_gizmo::set_rotation_reference(rotatable* _rotatable_obj)
+void cgv::nui::rotation_gizmo::on_handle_drag()
 {
-	rotatable_obj = _rotatable_obj;
+	vec3 axis_origin = vec3(0.0f);
+	vec3 axis = axes_directions[prim_idx];
+
+	// Get actual ring radius from the already calculated splines
+	float radius = ring_splines[prim_idx].first.front().length();
+
+	vec3 closest_point;
+	if (ii_at_grab.is_pointing) {
+		// To get a point on the circle without a function for that first get the closest point on the line, then the closest point on the circle to that first point.
+		cgv::math::closest_point_on_line_to_circle(ii_during_focus[activating_hid_id].hid_position, ii_during_focus[activating_hid_id].hid_direction,
+			axis_origin, axis, radius, closest_point);
+		cgv::math::closest_point_on_circle_to_point(axis_origin, axis, radius, closest_point, closest_point);
+	}
+	else {
+		if (!cgv::math::closest_point_on_circle_to_point(axis_origin, axis, radius,
+			ii_during_focus[activating_hid_id].hid_position, closest_point))
+			return;
+	}
+
+	vec3 direction_at_grab = cross(cross(axis, ii_at_grab.query_point - axis_origin), axis);
+	vec3 direction_currently = cross(cross(axis, closest_point - axis_origin), axis);
+
+	// Transform directions into value object's parent coordinate system
+	direction_at_grab = gizmo_to_value_parent_transform_vector(direction_at_grab);
+	direction_currently = gizmo_to_value_parent_transform_vector(direction_currently);
+	axis = gizmo_to_value_parent_transform_vector(axis);
+
+	float s = dot(cross(direction_at_grab, direction_currently), axis);
+	float c = dot(direction_at_grab, direction_currently);
+	float da = atan2(s, c);
+	quat new_rotation = quat(axis, da);
+	if (is_anchor_influenced_by_gizmo)
+		set_rotation(new_rotation * get_rotation());
+	else
+		set_rotation(new_rotation * rotation_at_grab);
 }
 
 cgv::render::render_types::quat cgv::nui::rotation_gizmo::get_rotation()
@@ -103,100 +145,21 @@ void cgv::nui::rotation_gizmo::set_rotation(const quat& rotation)
 	}
 }
 
-void cgv::nui::rotation_gizmo::on_handle_grabbed()
+void cgv::nui::rotation_gizmo::set_rotation_reference(quat* _rotation_ptr, cgv::base::base_ptr _on_set_obj)
 {
-	rotation_at_grab = get_rotation();
-	grab_handle(prim_idx);
-
-	auto& dvh = ref_debug_visualization_helper();
-	//vec3 current_position = accumulate_transforming_hierarchy().col(3);
-	//dvh.update_debug_value_vector_position(direction_at_grab_handle, current_position);
-	//dvh.update_debug_value_vector_position(direction_currently_handle, current_position);
-	//dvh.enable_debug_value_visualization(projected_point_handle);
-	//dvh.enable_debug_value_visualization(direction_at_grab_handle);
-	//dvh.enable_debug_value_visualization(direction_currently_handle);
+	rotation_ptr = _rotation_ptr;
+	gizmo::set_on_set_object(_on_set_obj);
 }
 
-void cgv::nui::rotation_gizmo::on_handle_released()
+void cgv::nui::rotation_gizmo::set_rotation_reference(quat** _rotation_ptr_ptr, cgv::base::base_ptr _on_set_obj)
 {
-	release_handles();
+	rotation_ptr_ptr = _rotation_ptr_ptr;
+	gizmo::set_on_set_object(_on_set_obj);
 }
 
-void cgv::nui::rotation_gizmo::on_handle_drag()
+void cgv::nui::rotation_gizmo::set_rotation_reference(rotatable* _rotatable_obj)
 {
-	vec3 anchor_obj_parent_global_translation;
-	quat anchor_obj_parent_global_rotation;
-	vec3 anchor_obj_parent_global_scale;
-	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj->get_parent()),
-		anchor_obj_parent_global_translation, anchor_obj_parent_global_rotation, anchor_obj_parent_global_scale);
-
-	vec3 anchor_obj_global_translation;
-	quat anchor_obj_global_rotation;
-	vec3 anchor_obj_global_scale;
-	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj),
-		anchor_obj_global_translation, anchor_obj_global_rotation, anchor_obj_global_scale);
-
-	vec3 root_obj_global_translation;
-	quat root_obj_global_rotation;
-	vec3 root_obj_global_scale;
-	transforming::extract_transform_components(transforming::get_global_model_transform(root_obj),
-		root_obj_global_translation, root_obj_global_rotation, root_obj_global_scale);
-
-	quat anchor_root_diff = root_obj_global_rotation.inverse() * anchor_obj_global_rotation;
-	quat anchor_parent_root_diff = root_obj_global_rotation.inverse() * anchor_obj_parent_global_rotation;
-
-	vec3 axis_origin = vec3(0.0f);
-	vec3 axis = axes_directions[prim_idx];
-	if (use_root_for_rotation) {
-		axis = anchor_root_diff.inverse().apply(axis);
-	}
-
-	// Get actual ring radius from the already calculated splines
-	float radius = ring_splines[prim_idx].first.front().length();
-	vec3 closest_point;
-	if (ii_at_grab.is_pointing) {
-		cgv::math::closest_point_on_line_to_circle(ii_during_focus[activating_hid_id].hid_position, ii_during_focus[activating_hid_id].hid_direction,
-			axis_origin, axis, radius, closest_point);
-	}
-	else {
-		if (!cgv::math::closest_point_on_circle_to_point(axis_origin, axis, radius,
-			ii_during_focus[activating_hid_id].hid_position, closest_point))
-			return;
-	}
-
-	vec3 direction_at_grab = cross(cross(axis, ii_at_grab.query_point - axis_origin), axis);
-	vec3 direction_currently = cross(cross(axis, closest_point - axis_origin), axis);
-
-	if (use_root_for_rotation) {
-		//direction_at_grab = anchor_obj_parent_global_rotation.apply(direction_at_grab);
-		//direction_currently = anchor_obj_parent_global_rotation.apply(direction_currently);
-		//axis = anchor_obj_parent_global_rotation.apply(axis);
-		direction_at_grab = anchor_root_diff.apply(direction_at_grab);
-		direction_at_grab = anchor_parent_root_diff.inverse().apply(direction_at_grab);
-		direction_currently = anchor_root_diff.apply(direction_currently);
-		direction_currently = anchor_parent_root_diff.inverse().apply(direction_currently);
-	}
-	else
-	{
-		//vec3 anchor_obj_global_translation;
-		//quat anchor_obj_global_rotation;
-		//vec3 anchor_obj_global_scale;
-		//transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj),
-		//	anchor_obj_global_translation, anchor_obj_global_rotation, anchor_obj_global_scale);
-		//quat anchor_obj_local_rotation = anchor_obj_parent_global_rotation.inverse() * anchor_obj_global_rotation;
-		//direction_at_grab = anchor_obj_local_rotation.apply(direction_at_grab);
-		//direction_currently = anchor_obj_local_rotation.apply(direction_currently);
-		//axis = anchor_obj_local_rotation.apply(axis);
-	}
-
-	float s = dot(cross(direction_at_grab, direction_currently), axis);
-	float c = dot(direction_at_grab, direction_currently);
-	float da = atan2(s, c);
-	quat new_rotation = quat(axis, da);
-	if (is_anchor_influenced_by_gizmo)
-		set_rotation(new_rotation * get_rotation());
-	else
-		set_rotation(new_rotation * rotation_at_grab);
+	rotatable_obj = _rotatable_obj;
 }
 
 void cgv::nui::rotation_gizmo::set_axes_directions(std::vector<vec3> axes)

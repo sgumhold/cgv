@@ -40,26 +40,6 @@ void cgv::nui::gizmo_functionality_configurable_axes::set_axes_scale_independent
 	fill_with_last_value_if_not_full<vec3>(this->scale_independent_axes_positions, axes_directions.size());
 }
 
-void cgv::nui::gizmo_functionality_absolute_axes_rotation::set_use_absolute_rotation(bool value)
-{
-	use_absolute_rotation = value;
-}
-
-bool cgv::nui::gizmo_functionality_absolute_axes_rotation::get_use_absolute_rotation()
-{
-	return use_absolute_rotation;
-}
-
-void cgv::nui::gizmo_functionality_absolute_axes_position::set_use_absolute_position(bool value)
-{
-	use_absolute_position = value;
-}
-
-bool cgv::nui::gizmo_functionality_absolute_axes_position::get_use_absolute_position()
-{
-	return use_absolute_position;
-}
-
 bool cgv::nui::gizmo_functionality_handle_states::validate_handles(int handle_count)
 {
 	// Make sure the color lists are filled with as many colors as there are handles

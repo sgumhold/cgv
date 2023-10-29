@@ -84,10 +84,11 @@ void simple_object::initialize_gizmos(cgv::base::node_ptr root, cgv::base::node_
 	rot_gizmo->set_anchor_object(anchor);
 	rot_gizmo->set_root_object(root);
 	rot_gizmo->set_rotation_reference(this);
+	rot_gizmo->set_value_object(this);
 	rot_gizmo->set_is_anchor_influenced_by_gizmo(anchor_influenced_by_gizmo);
 	rot_gizmo->set_is_root_influenced_by_gizmo(root_influenced_by_gizmo);
-	trans_gizmo->set_use_root_for_rotation(false);
-	trans_gizmo->set_use_root_for_position(false);
+	rot_gizmo->set_use_root_for_rotation(false);
+	rot_gizmo->set_use_root_for_position(false);
 	rot_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
 	if (active_gizmo == ActiveGizmoOptions::AGO_ROTATION)
 		rot_gizmo->attach();
@@ -98,10 +99,11 @@ void simple_object::initialize_gizmos(cgv::base::node_ptr root, cgv::base::node_
 	scale_gizmo->set_anchor_object(anchor);
 	scale_gizmo->set_root_object(root);
 	scale_gizmo->set_scale_reference(this);
+	scale_gizmo->set_value_object(this);
 	scale_gizmo->set_is_anchor_influenced_by_gizmo(anchor_influenced_by_gizmo);
 	scale_gizmo->set_is_root_influenced_by_gizmo(root_influenced_by_gizmo);
-	trans_gizmo->set_use_root_for_rotation(false);
-	trans_gizmo->set_use_root_for_position(false);
+	scale_gizmo->set_use_root_for_rotation(false);
+	scale_gizmo->set_use_root_for_position(false);
 	scale_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
 	scale_gizmo->set_axes_positions(
 		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
