@@ -556,6 +556,7 @@ var hierarchy =
     [ "cgv::math::fvec< float, 4 >", "classcgv_1_1math_1_1fvec.html", [
       [ "cgv::math::quaternion< float >", "classcgv_1_1math_1_1quaternion.html", null ]
     ] ],
+    [ "cgv::math::fvec< int, 2 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int32_t, 2 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int32_t, 4 >", "classcgv_1_1math_1_1fvec.html", null ],
