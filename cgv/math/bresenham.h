@@ -76,6 +76,9 @@ public:
 		dy = -std::abs(_destination.y() - _origin.y());
 		sy = _origin.y() < _destination.y() ? 1 : -1;
 		error = dx + dy;
+
+		if(_position == _destination)
+			_done = true;
 	}
 
 	bool done() const {
@@ -100,9 +103,6 @@ public:
 
 	void step() {
 		
-		if(_position == _destination)
-			_done = true;
-
 		int e2 = 2 * error;
 		
 		if(e2 >= dy) {
@@ -114,6 +114,9 @@ public:
 			error += dx;
 			_position.y() += sy;
 		}
+
+		if(_position == _destination)
+			_done = true;
 	}
 
 	void operator++() {
