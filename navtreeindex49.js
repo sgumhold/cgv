@@ -1,5 +1,17 @@
 var NAVTREEINDEX49 =
 {
+"structgamepad_1_1driver__info.html#ac3a54effbd73ab474b2c73770763bef7":[11,0,1,0,0],
+"structgamepad_1_1driver__registry.html":[11,0,1,4],
+"structgamepad_1_1gamepad__driver.html":[11,0,1,3],
+"structgamepad_1_1gamepad__driver.html#a0c4b82ce7e57b3bda3a04e8e46dfbb1e":[11,0,1,3,7],
+"structgamepad_1_1gamepad__driver.html#a336861478ac05c73e69b722139a997b8":[11,0,1,3,3],
+"structgamepad_1_1gamepad__driver.html#a3a656155c1845e00c54d9ca9b9d0eb84":[11,0,1,3,4],
+"structgamepad_1_1gamepad__driver.html#a88dcd6f092276cbef68905d3817a6114":[11,0,1,3,2],
+"structgamepad_1_1gamepad__driver.html#a8fa470ae544d590dd0d935e4a27f15b2":[11,0,1,3,8],
+"structgamepad_1_1gamepad__driver.html#a92881c3912790674a3a4c851ce8782a5":[11,0,1,3,0],
+"structgamepad_1_1gamepad__driver.html#aba4f05de4ca91bd7e2a3d2dae5200bb6":[11,0,1,3,5],
+"structgamepad_1_1gamepad__driver.html#ac74802108435066efc452cc162577cb8":[11,0,1,3,6],
+"structgamepad_1_1gamepad__driver.html#ae35233c535694e3883e0c3c5fd82afd7":[11,0,1,3,1],
 "structgamepad_1_1gamepad__state.html":[11,0,1,2],
 "structgamepad_1_1gamepad__state.html#a085176ecd68c889a3f508dacf9018795":[11,0,1,2,3],
 "structgamepad_1_1gamepad__state.html#a8111170499d3033b263b92b92ac1115a":[11,0,1,2,4],
@@ -237,17 +249,5 @@ var NAVTREEINDEX49 =
 "vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657a215faa494d32e46026802926b146d6a9":[12,0,3,7,15,4,3],
 "vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657a4da1a1834eae380c122fd5054d3b827b":[12,0,3,7,15,4,7],
 "vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657a4fe0a34f979599844474454284d46f7f":[12,0,3,7,15,4,10],
-"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657a5db1266c78cb5ba15487f1d404ee0894":[12,0,3,7,15,4,4],
-"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657a71b23df71587d825f7023750b87d40e6":[12,0,3,7,15,4,2],
-"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657a7587a8aa49d72247528e596b237758c7":[12,0,3,7,15,4,14],
-"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657aa94d79a4bc5d795a8460567176fc2363":[12,0,3,7,15,4,6],
-"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657aacfea5779460fddf976a2bf72706835b":[12,0,3,7,15,4,11],
-"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657abb9a979eb5a768483dac34797bf7cd9e":[12,0,3,7,15,4,0],
-"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657abe3de330d7e0ce4b1736f9a74f36a0de":[12,0,3,7,15,4,18],
-"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657ac40bfd6ddb1500527837de49edfb522b":[12,0,3,7,15,4,16],
-"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657ac6cf48986fda88a6a816b8fb9577b6be":[12,0,3,7,15,4,8],
-"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657acb049d41401c5357b5b1540013181de6":[12,0,3,7,15,4,13],
-"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657ad4a02f876e8749836cc7d54a07e6b698":[12,0,3,7,15,4,12],
-"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657ae5d075ebaecabce063b83995a4da9e44":[12,0,3,7,15,4,17],
-"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657aebfc3592b4ffc3d89bda9a67d04c4fab":[12,0,3,7,15,4,5]
+"vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657a5db1266c78cb5ba15487f1d404ee0894":[12,0,3,7,15,4,4]
 };

@@ -12,17 +12,7 @@ var namespacecgv =
     ] ],
     [ "base", "namespacecgv_1_1base.html", "namespacecgv_1_1base" ],
     [ "data", "namespacecgv_1_1data.html", "namespacecgv_1_1data" ],
-    [ "g2d", "namespacecgv_1_1g2d.html", [
-      [ "DEFINE_GENERIC_RENDER_DATA_CLASS", "namespacecgv_1_1g2d.html#aea515fd3b465539804c1f1680243ab5d", null ],
-      [ "DEFINE_GENERIC_RENDER_DATA_CLASS", "namespacecgv_1_1g2d.html#a82d3bd3efea6f6a7f0777399a9789fd3", null ],
-      [ "DEFINE_GENERIC_RENDER_DATA_CLASS", "namespacecgv_1_1g2d.html#a68c77fa6e2382ea87077b949e1332e84", null ],
-      [ "DEFINE_GENERIC_RENDER_DATA_CLASS", "namespacecgv_1_1g2d.html#abbad1a3b9520e1cd38a1740bf2332b6b", null ],
-      [ "DEFINE_GENERIC_RENDER_DATA_CLASS", "namespacecgv_1_1g2d.html#a2ea4a88be0ac5c0dff783533ebf169c9", null ],
-      [ "DEFINE_GENERIC_RENDER_DATA_CLASS", "namespacecgv_1_1g2d.html#ab089004e0d41a13a2c04649073941e2a", null ],
-      [ "DEFINE_GENERIC_RENDER_DATA_CLASS", "namespacecgv_1_1g2d.html#a0468c7ea701600412f5fac217f13f265", null ],
-      [ "DEFINE_GENERIC_RENDER_DATA_CLASS", "namespacecgv_1_1g2d.html#a0568814f54a65e3eafb18e594c61487d", null ],
-      [ "DEFINE_GENERIC_RENDER_DATA_CLASS", "namespacecgv_1_1g2d.html#abe5e780ffd1b6795c2336e0cc7b9f863", null ]
-    ] ],
+    [ "g2d", "namespacecgv_1_1g2d.html", null ],
     [ "gui", "namespacecgv_1_1gui.html", "namespacecgv_1_1gui" ],
     [ "math", "namespacecgv_1_1math.html", "namespacecgv_1_1math" ],
     [ "media", null, [
