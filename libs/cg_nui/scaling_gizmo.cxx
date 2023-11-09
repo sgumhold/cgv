@@ -252,12 +252,15 @@ bool cgv::nui::scaling_gizmo::_compute_intersection(const vec3& ray_start, const
 	vec3 n;
 	for (size_t i = 0; i < axes_directions.size(); ++i) {
 		vec3 n0;
-		float t0 = cgv::math::ray_cylinder_intersection(
-			ray_start, ray_direction,
+		float t0;
+		int n_intersections = cgv::math::ray_cylinder_intersection(
+			cgv::math::ray<float, 3>(ray_start, ray_direction),
 			handle_positions[i],
 			handle_directions[i],
-			spline_tube_radius, n0);
-		if (t0 < t) {
+			spline_tube_radius,
+			t0,
+			&n0);
+		if (n_intersections > 0 && t0 < t) {
 			t = t0;
 			n = n0;
 			idx = i;

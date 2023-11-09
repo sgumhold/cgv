@@ -178,11 +178,13 @@ bool cgv::nui::translation_gizmo::_compute_intersection(const vec3& ray_start, c
 		vec3 norm_arrow_direction = arrow_directions[i];
 		norm_arrow_direction.normalize();
 		vec3 orth_arrow_direction_mask = vec3(1.0f) - norm_arrow_direction;
-		vec3 box_extent_half = (vec3(arrow_radius) * orth_arrow_direction_mask + arrow_directions[i]) / 2.0f;
-		auto res = cgv::math::ray_box_intersection(ro, ray_direction, -box_extent_half, box_extent_half);
-		if (res.hit && res.t_near < t) {
-			t = res.t_near;
-			n = vec3(1.0f, 0.0f, 0.0f);
+		vec3 box_half_extent = (vec3(arrow_radius) * orth_arrow_direction_mask + arrow_directions[i]) * 0.5f;
+		vec2 res;
+		vec3 normal;
+		int n_intersections = cgv::math::ray_box_intersection(cgv::math::ray<float, 3>(ro, ray_direction), box_half_extent, res, &normal);
+		if (n_intersections > 0 && res[0] < t) {
+			t = res[0];
+			n = normal;
 			idx = i;
 		}
 

@@ -133,9 +133,10 @@ bool simple_object::_compute_closest_point(const vec3& point, vec3& prj_point, v
 
 bool simple_object::_compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx)
 {
-	auto result = cgv::math::ray_box_intersection(ray_start, ray_direction, vec3(-0.5f), vec3(0.5f));
-	if (result.hit) {
-		hit_param = result.t_near;
+	vec2 result;
+	int n_intersections = cgv::math::ray_box_intersection(cgv::math::ray<float, 3>(ray_start, ray_direction), vec3(0.5f), result);
+	if (n_intersections > 0) {
+		hit_param = result[0];
 		return true;
 	}
 	return false;

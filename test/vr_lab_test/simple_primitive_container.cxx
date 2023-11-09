@@ -120,8 +120,9 @@ bool simple_primitive_container::compute_intersection(const vec3& ray_start, con
 		//}
 	
 		vec3 normal;
-		float param = cgv::math::first_ray_sphere_intersection(ro, rd, positions[i], radii[i], normal);
-		if (param < hit_param) {
+		float param;
+		int n_intersections = cgv::math::first_ray_sphere_intersection(cgv::math::ray<float, 3>(ro, rd), positions[i], radii[i], param, &normal);
+		if (n_intersections > 0 && param < hit_param) {
 			primitive_idx = i;
 			hit_param = param;
 		}
