@@ -133,6 +133,7 @@ namespace cgv {
 					if (dv.empty())
 						new(&dv) data_view(&df);
 					std::copy(content + offset, content + file_size, dv.get_ptr<char>());
+					delete[] content;
 					return true;
 				}
 				else {

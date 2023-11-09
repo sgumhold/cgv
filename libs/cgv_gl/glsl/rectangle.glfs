@@ -28,6 +28,9 @@ in RECTANGLE_FS {
 	vec2 percentual_core_size;
 } fi;
 
+layout(location = 1) out vec4 frag_position;
+layout(location = 2) out vec3 frag_normal;
+
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
 void finish_fragment(vec4 color);
@@ -116,6 +119,9 @@ void main()
 
 	vec4 color = mix(core_color, fi.border_color, border_mix);
 	color.a *= point_alpha;
+
+	frag_position = vec4(fi.position_eye, 1.0);
+	frag_normal = fi.normal_eye;
 
 	// illumination
 	color = compute_reflected_appearance(fi.position_eye, normalize(fi.normal_eye), color, fi.side);

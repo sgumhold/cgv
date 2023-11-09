@@ -51,7 +51,7 @@ bool rgbd_input::write_frame(const string& file_name,const frame_type& frame)
 	// ensure buffer size set
 	if (frame.buffer_size != frame.frame_data.size()) {
 		std::cerr << "UPS frame buffer size not set correctly" << std::endl;
-		const_cast<frame_type&>(frame).buffer_size = frame.frame_data.size();
+		const_cast<frame_type&>(frame).buffer_size = (unsigned) frame.frame_data.size();
 	}
 	return 
 		cgv::utils::file::write(file_name, reinterpret_cast<const char*>(&frame), sizeof(frame_info), false) &&
@@ -124,6 +124,47 @@ const std::string& rgbd_input::get_serial() const
 {
 	return serial;
 }
+
+/// check whether a multi-device role is supported
+bool rgbd_input::is_supported(MultiDeviceRole mdr) const
+{
+	if (!is_attached())
+		return true;
+	return rgbd->is_supported(mdr);
+}
+/// configure device for a multi-device role and return whether this was successful (do this before starting)
+bool rgbd_input::configure_role(MultiDeviceRole mdr)
+{
+	if (!is_attached())
+		return false;
+	return rgbd->configure_role(mdr);
+}
+MultiDeviceRole rgbd_input::get_role() const
+{
+	if (!is_attached())
+		return MDR_STANDALONE;
+	return rgbd->get_role();
+}
+
+bool rgbd_input::is_sync_supported() const
+{
+	if (!is_attached())
+		return false;
+	return rgbd->is_sync_supported();
+}
+bool rgbd_input::is_sync_in_connected() const
+{
+	if (!is_attached())
+		return false;
+	return rgbd->is_sync_in_connected();
+}
+bool rgbd_input::is_sync_out_connected() const
+{
+	if (!is_attached())
+		return false;
+	return rgbd->is_sync_out_connected();
+}
+
 
 bool rgbd_input::attach_path(const string& path)
 {
@@ -248,6 +289,31 @@ void rgbd_input::query_stream_formats(InputStreams is, std::vector<stream_format
 	}
 	rgbd->query_stream_formats(is, stream_formats);
 }
+const std::vector<color_parameter_info>& rgbd_input::get_supported_color_control_parameter_infos() const
+{
+	static std::vector<color_parameter_info> I;
+	if (!is_attached()) {
+		cerr << "rgbd_input::get_supported_color_control_parameter_infos called on device that has not been attached" << endl;
+		return I;
+	}
+	return rgbd->get_supported_color_control_parameter_infos();
+}
+std::pair<int32_t, bool> rgbd_input::get_color_control_parameter(ColorControlParameter ccp) const
+{
+	if (!is_attached()) {
+		cerr << "rgbd_input::get_color_control_parameter called on device that has not been attached" << endl;
+		return std::pair<int32_t, bool>(-1,false);
+	}
+	return rgbd->get_color_control_parameter(ccp);
+}
+bool rgbd_input::set_color_control_parameter(ColorControlParameter ccp, int32_t value, bool automatic_mode)
+{
+	if (!is_attached()) {
+		cerr << "rgbd_input::start called on device that has not been attached" << endl;
+		return false;
+	}
+	return rgbd->set_color_control_parameter(ccp, value, automatic_mode);
+}
 
 bool rgbd_input::start(InputStreams is, std::vector<stream_format>& stream_formats)
 {
@@ -268,6 +334,21 @@ bool rgbd_input::start(InputStreams is, std::vector<stream_format>& stream_forma
 		}
 	}
 	return started;
+}
+
+/// query the calibration information and return whether this was successful
+bool rgbd_input::query_calibration(rgbd_calibration& calib)
+{
+	if (!is_attached()) {
+		cerr << "rgbd_input::query_calibration called on device that has not been attached" << endl;
+		return false;
+	}
+	if (!is_started()) {
+		cerr << "rgbd_input::query_calibration called on device that has not been started" << endl;
+		return false;
+	}
+	rgbd->query_calibration(calib);
+	return true;
 }
 
 bool rgbd_input::start(const std::vector<stream_format>& stream_formats)

@@ -200,7 +200,6 @@ void fltk_viewer_window::theme_change_cb() {
 
 	{ // TODO: maybe move this to some other place
 		auto& ti = cgv::gui::theme_info::instance();
-		ti.set_theme_idx(idx);
 		uchar r, g, b;
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_BACKGROUND_COLOR), r, g, b);
 		ti.background(r, g, b);
@@ -220,6 +219,8 @@ void fltk_viewer_window::theme_change_cb() {
 		ti.highlight(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_WARNING_COLOR), r, g, b);
 		ti.warning(r, g, b);
+		// set theme index only after all colors have been updated
+		ti.set_index(idx);
 	}
 
 	if(tab_group) {

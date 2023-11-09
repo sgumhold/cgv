@@ -1,7 +1,6 @@
 #pragma once
 
 #include "gpu_algorithm.h"
-//#include "gpu_sorter.h"
 
 #include "lib_begin.h"
 
@@ -25,6 +24,7 @@ protected:
 	std::string data_type_def = "";
 	std::string auxiliary_type_def = "";
 	std::string key_definition = "";
+	std::string uniform_definition = "";
 
 	unsigned n = 0;
 	unsigned n_pad = 0;
@@ -34,31 +34,29 @@ protected:
 	unsigned num_scan_groups = 0;
 
 	/// buffer objects
-	GLuint keys_in_ssbo = 0;
-	GLuint keys_out_ssbo = 0;
-	GLuint values_out_ssbo = 0;
-	GLuint prefix_sums_ssbo = 0;
-	GLuint block_sums_ssbo = 0;
-	GLuint last_sum_ssbo = 0;
+	cgv::render::vertex_buffer keys_in_buffer;
+	cgv::render::vertex_buffer keys_out_buffer;
+	cgv::render::vertex_buffer values_out_buffer;
+	cgv::render::vertex_buffer prefix_sums_buffer;
+	cgv::render::vertex_buffer block_sums_buffer;
+	cgv::render::vertex_buffer last_sum_buffer;
 
 	/// shader programs
-	shader_program key_prog;
-	shader_program scan_local_prog;
-	shader_program scan_global_prog;
-	shader_program scatter_prog;
+	cgv::render::shader_program key_prog;
+	cgv::render::shader_program scan_local_prog;
+	cgv::render::shader_program scan_global_prog;
+	cgv::render::shader_program scatter_prog;
 
-	bool load_shader_programs(context& ctx);
-
-	void delete_buffers();
+	bool load_shader_programs(cgv::render::context& ctx);
 
 public:
 	visibility_sort() : gpu_algorithm() {}
 
-	void destruct(context& ctx);
+	void destruct(const cgv::render::context& ctx);
 
-	bool init(context& ctx, size_t count);
+	bool init(cgv::render::context& ctx, size_t count);
 
-	void execute(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos, const vec3& view_dir, GLuint auxiliary_buffer = 0);
+	void execute(cgv::render::context& ctx, const cgv::render::vertex_buffer& data_buffer, const cgv::render::vertex_buffer& value_buffer, const vec3& eye_pos, const vec3& view_dir, const cgv::render::vertex_buffer* auxiliary_buffer = nullptr);
 
 	/// returns the number of padding elements used to make the total count a multiple of group size
 	unsigned int get_padding() { return n_pad; }
@@ -89,7 +87,7 @@ public:
 		positions.
 		Careful: vec3 max not be used directly with a shader storage buffer (due to a bug on some older drivers), hence the three
 		separate coordinates! However, vec4 works as expected. */
-	void set_data_type_override(const std::string& def);
+	void set_data_type_override(const std::string& def) { data_type_def = def; }
 
 	/** Resets the data type definition to an empty string, which will not override the default
 		definition in the shader. */
@@ -99,7 +97,7 @@ public:
 		This will activate an additional buffer that may be used to access additional data needed
 		for calculations. The auxiliary data is accessible through the aux_values array and is
 		represented with the aux_type type. */
-	void set_auxiliary_type_override(const std::string& def);
+	void set_auxiliary_type_override(const std::string& def) { auxiliary_type_def = def; }
 
 	/** Resets the auxiliary data type definition to an empty string, which will also deactivate
 		the usage of an auxiliary buffer. */
@@ -120,11 +118,24 @@ public:
 		* in/output
 			values - the values to be sorted
 		*/
-	void set_key_definition_override(const std::string& def);
+	void set_key_definition_override(const std::string& def) { key_definition = def; }
 
 	/** Resets the key definition to an empty string, which will not override the default
 		definition in the shader. */
 	void reset_key_definition_override() { key_definition = ""; }
+
+	/** GLSL code to define the uniforms used in the key shader.
+		Example: uniform float threshold;
+		Multiple uniforms are possible.
+		The default definition is empty, i.e. no uniforms are defined.
+		Reserved uniform names: n, n_padded, eye_pos, view_dir (do not use!)
+		*/
+	void set_uniform_definition_override(const std::string& def) { uniform_definition = def; }
+
+	/** Resets the uniform definition for the vote shader. */
+	void reset_uniform_definition_override() { uniform_definition = ""; }
+
+	cgv::render::shader_program& ref_key_prog() { return key_prog; }
 };
 
 }

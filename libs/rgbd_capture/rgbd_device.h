@@ -1,40 +1,19 @@
 #pragma once
 
-#include <string>
-#include <vector>
+#include "frame.h"
+#include "rgbd_calibration.h"
 #include <cgv/math/fvec.h>
+#include <cgv/math/camera.h>
 
 #include "lib_begin.h"
 
 namespace rgbd {
-
-	// deprecated enum now split into pixel format and frame  different frame formats
-	/*
-	/// different frame formats
-	enum FrameFormat {
-		FF_COLOR_RAW,
-		FF_COLOR_RGB24,
-		FF_COLOR_RGB32,
-		// raw depth values
-		FF_DEPTH_RAW,
-		// depthCorrected8 = (256*2048) / (2048-depthRaw), range [0,255]
-		FF_DEPTH_D8,
-		// depthCorrected12 = (2048*2048) / (2048-depthRaw), range [0, 2047]
-		FF_DEPTH_D12,
-		FF_DEPTH_RGB32,
-		// infrared comes single 16 bit channel
-		FF_INFRARED
-	};
-	*/
-
-
 	struct camera_intrinsics {
 		double fx, fy; //focal length, width in pixel
 		double cx, cy; //principal point;
 		double sk; //skew
 		unsigned image_width, image_height;
 	};
-
 	///struct for representing parameters used in the device emulator
 	struct emulator_parameters {
 		camera_intrinsics intrinsics;
@@ -61,80 +40,40 @@ namespace rgbd {
 			return points != nullptr;
 		}
 	};
-	/// frame size in pixels
-	struct frame_size
+	//! different roles to support synchronized multi-rgbd-device setting
+	/** One role per rgbd device or rgbd input. Only kinect azur driver supports leader
+	    and follower role. As with the kinect Azure viewer one can start rgbd_control 
+		plugin once per attached device and configure leader role for the device that 
+		is used as master and has synch cable plugged into the Synch Out plug only, and 
+		the follower role for all other devices. All followers need to be started first
+		and actually stream data as soons as the leader has been started. */
+	enum MultiDeviceRole
 	{
-		/// width of frame in pixel
-		int width;
-		/// height of frame in pixel 
-		int height;
+		MDR_STANDALONE, /// device used without synchronization
+		MDR_LEADER,     /// device that sends synchronization signals
+		MDR_FOLLOWER    /// device that retrieves synchronization signals
 	};
 
-	/// format of individual pixels
-	enum PixelFormat {
-		PF_I, // infrared
-
-		/* TODO: add color formats in other color spaces like YUV */
-
-		PF_RGB,   // 24 or 32 bit rgb format with byte alignment
-		PF_BGR,   // 24 or 24 bit bgr format with byte alignment
-		PF_RGBA,  // 32 bit rgba format
-		PF_BGRA,  // 32 bit brga format
-		PF_BAYER, // 8 bit per pixel, raw bayer pattern values
-
-		PF_DEPTH,
-		PF_DEPTH_AND_PLAYER,
-		PF_POINTS_AND_TRIANGLES,
-		PF_CONFIDENCE
+	/// different color camera control parameters
+	enum ColorControlParameter {
+		CCP_EXPOSURE,
+		CCP_BRIGHTNESS,
+		CCP_CONTRAST,
+		CCP_SATURATION,
+		CCP_SHARPNESS,
+		CCP_WHITEBALANCE,
+		CCP_BACKLIGHT_COMPENSATION,
+		CCP_GAIN,
+		CCP_POWERLINE_FREQUENCY
 	};
-
-	/// format of a frame
-	struct CGV_API frame_format : public frame_size
+	/// information about a color control parameter
+	struct color_parameter_info
 	{
-		/// format of pixels
-		PixelFormat pixel_format;
-		// total number of bits per pixel
-		unsigned nr_bits_per_pixel; 
-		/// return number of bytes per pixel (ceil(nr_bits_per_pixel/8))
-		unsigned get_nr_bytes_per_pixel() const;
-		/// buffer size; returns width*height*get_nr_bytes_per_pixel()
-		unsigned buffer_size;
-		/// standard computation of the buffer size member
-		void compute_buffer_size();
+		std::string name;
+		ColorControlParameter parameter_id;
+		bool supports_automatic_adjustment, default_automatic_adjustment;
+		int32_t min_value, max_value, value_step, default_value;
 	};
-
-	/// struct to store single frame
-	struct frame_info : public frame_format
-	{
-		///
-		unsigned frame_index;
-		/// 
-		double time;
-	};
-	/// struct to store single frame
-	struct CGV_API frame_type: public frame_info
-	{
-		/// vector with RAW frame data 
-		std::vector<char> frame_data;
-		/// check whether frame data is allocated
-		bool is_allocated() const;
-		/// write to file
-		bool write(const std::string& fn) const;
-		/// read from file
-		bool read(const std::string& fn);
-	};
-
-	/// steam format adds frames per second
-	struct CGV_API stream_format : public frame_format
-	{
-		stream_format(int w = 640, int h = 480, PixelFormat pf = PF_RGB, float fps = 30, unsigned _nr_bits = 32, unsigned _buffer_size = -1);
-		bool operator == (const stream_format& sf) const;
-		float fps;
-	};
-
-	extern CGV_API std::ostream& operator << (std::ostream& os, const frame_size& fs);
-	extern CGV_API std::ostream& operator << (std::ostream& os, const frame_format& ff);
-	extern CGV_API std::ostream& operator << (std::ostream& os, const stream_format& sf);
 
 	/// different input streams
 	enum InputStreams {
@@ -180,10 +119,12 @@ namespace rgbd {
 	{
 		/// linear acceleration along x, y, and z axes in m/s²
 		float linear_acceleration[3];
-		/// angular acceleration around x, y, and z axes in degrees/s²
-		float angular_acceleration[3];
+		/// angular velocity around x, y, and z axes in degrees/s
+		float angular_velocity[3];
 		/// time stamp in milliseconds. Only present if supported by accelerometer
 		unsigned long long time_stamp;
+		/// additional time stamp for angular measurements
+		unsigned long long angular_time_stamp;
 	};
 	/// return the preferred extension for a given frame format
 	extern CGV_API std::string get_frame_extension(const frame_format& ff);
@@ -193,6 +134,9 @@ namespace rgbd {
 	/// interface for rgbd devices provided by a driver (this class is used by driver implementors)
 	class CGV_API rgbd_device
 	{
+	protected:
+		/// store role for starting the device
+		MultiDeviceRole multi_device_role = MDR_STANDALONE;
 	public:
 		/// virtual destructor
 		virtual ~rgbd_device();
@@ -202,6 +146,26 @@ namespace rgbd {
 		virtual bool is_attached() const = 0;
 		/// detach from serial (done automatically in constructor
 		virtual bool detach() = 0;
+
+		/// check whether a multi-device role is supported
+		virtual bool is_supported(MultiDeviceRole mdr) const;
+		/// configure device for a multi-device role and return whether this was successful (do this before starting)
+		virtual bool configure_role(MultiDeviceRole mdr);
+		/// return the multi-device role of the device
+		MultiDeviceRole get_role() const { return multi_device_role; }
+		/// whether device supports external synchronization
+		virtual bool is_sync_supported() const { return false; }
+		/// return whether syncronization input jack is connected
+		virtual bool is_sync_in_connected() const { return false; }
+		/// return whether syncronization output jack is connected
+		virtual bool is_sync_out_connected() const { return false; }
+
+		/// return information about the support color control parameters
+		virtual const std::vector<color_parameter_info>& get_supported_color_control_parameter_infos() const;
+		/// query color control value and whether its adjustment is in automatic mode
+		virtual std::pair<int32_t, bool> get_color_control_parameter(ColorControlParameter ccp) const;
+		/// set a color control value and automatic mode and return whether successful
+		virtual bool set_color_control_parameter(ColorControlParameter ccp, int32_t value, bool automatic_mode);
 
 		/// return whether rgbd device has support for view finding actuator
 		virtual bool has_view_finder() const;
@@ -232,6 +196,8 @@ namespace rgbd {
 		virtual void query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const = 0;
 		/// start the rgbd device with standard stream formats returned in second parameter
 		virtual bool start_device(InputStreams is, std::vector<stream_format>& stream_formats) = 0;
+		/// query current calibration information (device must be started) and return whether this was successful
+		virtual bool query_calibration(rgbd_calibration& calib);
 		/// start the rgbd device with given stream formats 
 		virtual bool start_device(const std::vector<stream_format>& stream_formats) = 0;
 		/// stop the rgbd device

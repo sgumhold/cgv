@@ -26,6 +26,9 @@ protected:
 	std::string file_name;
 	std::string save_file_name;
 
+	std::string dir_name;
+	std::string save_dir_name;
+
 	rgb rgb_color = rgb(0.0f);
 	rgba rgba_color = rgba(0.0f);
 
@@ -89,6 +92,8 @@ public:
 		std::string filter = "filter='Text Files (txt):*.txt|All Files:*.*'";
 		add_gui("File", file_name, "file_name", "title='Open Text File';" + filter + ";save=false;w=136;small_icon=true;align_gui=' '" + opt);
 		add_gui("save_file_name", save_file_name, "file_name", "title='Save Text ';filter='" + filter + "';save=true;control=false;small_icon=true" + opt);
+		add_gui("Directory", dir_name, "directory", "title='Open Text File';" + filter + ";save=false;w=136;small_icon=true;align_gui=' '" + opt);
+		add_gui("save Directory", save_dir_name, "directory", "title='Save Text ';filter='" + filter + "';save=true;control=false;small_icon=true" + opt);
 
 		if(begin_tree_node("Tree Node", tree_node, true, opt)) {
 			align("\a");

@@ -99,7 +99,18 @@ CGV_CHARSET="Unicode";
 if (env::CGV_CHARSET !~ UNDEF) {
 	CGV_CHARSET=env::CGV_CHARSET;
 }
-
+CGV_STDCPP="";
+if (env::CGV_OPTIONS !~ UNDEF) {
+	if ( (env::CGV_OPTIONS*"/STDCPP17//") != env::CGV_OPTIONS) {
+		CGV_STDCPP="stdcpp17";
+	}
+}
+CGV_OPENMP=0;
+if (env::CGV_OPTIONS !~ UNDEF) {
+	if ( (env::CGV_OPTIONS*"/OPENMP//") != env::CGV_OPTIONS) {
+		CGV_OPENMP=1;
+	}
+}
 //define output directory of the generated target files 
 CGV_BUILD_DIR = CGV_BUILD.'/'.CGV_COMPILER;
 if (CGV_IDE ~~ STRING) {
@@ -230,7 +241,7 @@ rules = [
 		]
 	],
 	MAP.[ 
-		["extensions",["h", "hh", "hxx"]],
+		["extensions",["h", "hh", "hxx", "hpp"]],
 		["folder","headers"] 
 	],
 	MAP.[ 

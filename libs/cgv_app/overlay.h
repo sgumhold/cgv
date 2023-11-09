@@ -5,7 +5,9 @@
 #include <cgv/gui/provider.h>
 #include <cgv/render/context.h>
 #include <cgv/render/drawable.h>
+#include <cgv/utils/pointer_test.h>
 #include <cgv_g2d/rect.h>
+#include <cgv_g2d/utils2d.h>
 
 #include "lib_begin.h"
 
@@ -35,10 +37,16 @@ public:
 		SO_PERCENTUAL,  // use percentual size
 	};
 
-protected:
+private:
 	/// the last recorded size of the viewport, is kept current with ensure_viewport
 	ivec2 last_viewport_size;
+	/// the last recorded size of this overlay
+	ivec2 last_size;
 
+	/// rectangle area this overlay is fully contained whithin
+	cgv::g2d::irect container;
+
+protected:
 	/// layout parameters
 	AlignmentOption horizontal_alignment;
 	AlignmentOption vertical_alignment;
@@ -48,12 +56,12 @@ protected:
 	vec2 percentual_offset = vec2(0.0f);
 	vec2 percentual_size = vec2(1.0f);
 
-	bool show; /// whether the overlay is visible
-	bool block_events; /// whether the overlay blocks events or lets them pass through to other handlers
-
-	/// rectangle area of this overlay is fully contained whithin
-	cgv::g2d::rect container;
-	ivec2 last_size;
+	/// whether the overlay is visible
+	bool show;
+	/// whether the overlay blocks events or lets them pass through to other handlers
+	bool block_events;
+	/// whether the overlay is
+	bool draw_in_finish_frame;
 
 	/// called when the overlay visibility is changed through the default gui
 	virtual void on_visibility_change();
@@ -81,32 +89,33 @@ public:
 	/// creates an overlay in the bottom left corner with zero size
 	overlay();
 
-	/// finalize the handle method to prevent overloading in implementations of this class, use handle_events instead
-	virtual bool handle(cgv::gui::event& e) final {
-		return false;
-	};
+	/// overload to reflect members of derived classes
+	virtual bool self_reflect(cgv::reflect::reflection_handler& _rh) { return false; }
+
 	/// overload to stream help information to the given output stream
 	virtual void stream_help(std::ostream& os) {};
+
+	/// finalize the handle method to prevent overloading in implementations of this class, use handle_events instead
+	virtual bool handle(cgv::gui::event& e) final { return false; };
 
 	/// overload this method to handle events
 	virtual bool handle_event(cgv::gui::event& e) { return false; };
 
-	bool blocks_events() { return block_events; }
+	/// implement to handle member changes
+	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
+
+	/// default implementation of that calls handle_member_change and afterwards upates the member in the gui and post a redraw
+	virtual void on_set(void* member_ptr);
+
+	bool blocks_events() const { return block_events; }
 
 	/// returns the current viewport size
-	ivec2 get_viewport_size() {
-		return last_viewport_size;
+	ivec2 get_viewport_size() const { return last_viewport_size; }
+
+	/// returns the mouse position local to the container of this overlay
+	inline ivec2 get_local_mouse_pos(ivec2 mouse_pos) const {
+		return cgv::g2d::get_transformed_mouse_pos(mouse_pos, last_viewport_size) - container.position;
 	}
-
-	/** Returns the mouse position transformed from FLTK window to OpenGL
-		viewport spaceThe OpenGL viewport origin is in the bottom left
-		while the FLTK origin is in the top left.
-	*/
-	ivec2 get_transformed_mouse_pos(ivec2 mouse_pos);
-
-	/** Returns the mouse position local to the container of this overlay.
-	*/
-	ivec2 get_local_mouse_pos(ivec2 mouse_pos);
 
 	/// sets the alignment options
 	void set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 _percentual_offset = vec2(-1.0f));
@@ -114,11 +123,8 @@ public:
 	/// sets the stretch option
 	void set_overlay_stretch(StretchOption stretch, vec2 _percentual_size = vec2(-1.0f));
 
-	/// returns the position of the overlay with origin at the bottom left
-	ivec2 get_overlay_position() { return container.pos(); }
-
 	/// returns the margin as set in the layout parameters
-	ivec2 get_overlay_margin() { return margin; }
+	ivec2 get_overlay_margin() const { return margin; }
 
 	/// sets the overlay margin
 	void set_overlay_margin(const ivec2& m) {
@@ -126,8 +132,14 @@ public:
 		update_overlay_layout();
 	}
 
-	/// returns the current size of the overlay taking strech parameters into account
-	ivec2 get_overlay_size() { return container.size(); }
+	/// returns the current rectangle area of the overlay taking layout into account
+	cgv::g2d::irect get_overlay_rectangle() const { return container; }
+
+	/// returns the position of the overlay with origin at the bottom left
+	ivec2 get_overlay_position() const { return container.position; }
+
+	/// returns the current size of the overlay taking strech layout into account
+	ivec2 get_overlay_size() const { return container.size; }
 
 	/// sets the default size of the overlay before stretch gets applied
 	void set_overlay_size(const ivec2& s) {
@@ -136,7 +148,7 @@ public:
 	}
 
 	/// return the visibility state of the overlay
-	bool is_visible() { return show; }
+	bool is_visible() const { return show; }
 
 	/// sets the visibility of the overlay to flag
 	void set_visibility(bool flag) {
@@ -149,6 +161,12 @@ public:
 		set_visibility(!show);
 	}
 
+	/// Set the draw_in_finish_frame flag.
+	/// If true, the the contents of this overlay are drawn in finish frame. Per default, the contents are drawn in draw.
+	void set_draw_in_finish_frame(bool flag) {
+		draw_in_finish_frame = flag;
+	}
+
 	/** Checks whether the viewport size has changed since the last call to
 		this method. Call this in the init_frame method of your overlay.
 		Returns true if the size changed.
@@ -158,7 +176,7 @@ public:
 	bool ensure_overlay_layout(cgv::render::context& ctx) {
 		bool ret = ensure_viewport(ctx);
 
-		ivec2 current_size = container.size();
+		ivec2 current_size = container.size;
 		if(last_size != current_size) {
 			last_size = current_size;
 			ret = true;
@@ -172,7 +190,7 @@ public:
 		is inside the rectangle defined by container. Override this method to
 		implement your own check, i.e. for different overlay shapes.
 	*/
-	virtual bool is_hit(const ivec2& mouse_pos);
+	virtual bool is_hit(const ivec2& mouse_pos) const;
 
 	/// begins a tree node if create default tree node is set in the gui options; automatically creates the layout gui
 	bool begin_overlay_gui();

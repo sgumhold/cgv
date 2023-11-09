@@ -7,7 +7,6 @@
 #include <cgv/gui/mouse_event.h>
 #include <cgv/render/view.h>
 #include <cgv/type/variant.h>
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include <cgv_gl/gl/gl.h>
 #include <stdio.h>
@@ -157,4 +156,4 @@ bool antialias::self_reflect(cgv::reflect::reflection_handler& srh)
 #include <cgv/base/register.h>
 
 cgv::base::factory_registration<antialias> anti_reg("antialias", "menu_text='New/Antialias';shortcut='Ctrl-Alt-A'", true, 
-														                "menu_text='&view/antialias';shortcut='Ctrl-A'");
+														                "menu_text='&View/Antialias';shortcut='Ctrl-A'");

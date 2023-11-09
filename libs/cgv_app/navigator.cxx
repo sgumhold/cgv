@@ -27,16 +27,10 @@ navigator::navigator() {
 	set_overlay_margin(ivec2(0));
 	set_overlay_size(ivec2(layout_size));
 	
-	fbc.add_attachment("depth", "[D]");
-	fbc.add_attachment("color", "flt32[R,G,B,A]", cgv::render::TF_LINEAR);
-	fbc.set_size(2*get_overlay_size());
-
 	show_box = true;
 	show_wireframe = true;
 	use_perspective = true;
 	hit_axis = 0;
-
-	blit_canvas.register_shader("rectangle", "rect2d.glpr");
 
 	box_data.style.default_extent = vec3(1.0f);
 	box_data.style.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
@@ -44,8 +38,8 @@ navigator::navigator() {
 
 	box_data.style.illumination_mode = cgv::render::IM_TWO_SIDED;
 	box_data.style.culling_mode = cgv::render::CM_OFF;
-	box_data.style.material.set_diffuse_reflectance(rgb(1.0f));
-	box_data.style.material.set_emission(rgb(0.35f));
+	box_data.style.material.set_diffuse_reflectance(rgb(0.5f));
+	box_data.style.material.set_emission(rgb(0.05f));
 	box_data.style.surface_opacity = 0.35f;
 
 	box_wire_data.style.default_color = rgb(0.75f);
@@ -62,17 +56,17 @@ navigator::navigator() {
 
 	rectangle_data.style.illumination_mode = cgv::render::IM_OFF;
 	rectangle_data.style.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
-	rectangle_data.style.surface_color = rgb(0.25f, 0.5f, 1.0f);
+	rectangle_data.style.surface_color = rgb(0.05f, 0.25f, 1.0f);
 	rectangle_data.style.surface_opacity = 0.75f;
 	rectangle_data.style.pixel_blend = 0.0f;
 	rectangle_data.style.percentual_border_width = 0.111111f;
-	rectangle_data.style.default_border_color = rgba(0.15f, 0.4f, 0.9f, 0.75f);
+	rectangle_data.style.default_border_color = rgba(0.05f, 0.15f, 0.8f, 0.75f);
 }
 
 void navigator::clear(cgv::render::context& ctx) {
 
 	blit_canvas.destruct(ctx);
-	fbc.clear(ctx);
+	fbc.destruct(ctx);
 
 	arrow_data.destruct(ctx);
 	box_data.destruct(ctx);
@@ -81,17 +75,10 @@ void navigator::clear(cgv::render::context& ctx) {
 	sphere_data.destruct(ctx);
 
 	box_renderer.clear(ctx);
-
-	//ref_arrow_renderer(ctx, -1);
-	//ref_box_renderer(ctx, -1);
-	//ref_box_wire_renderer(ctx, -1);
-	//ref_rectangle_renderer(ctx, -1);
-	//ref_sphere_renderer(ctx, -1);
 }
 
 bool navigator::self_reflect(cgv::reflect::reflection_handler& _rh) {
-
-	return true;
+	return _rh.reflect_member("layout_size", layout_size);
 }
 
 bool navigator::handle_event(cgv::gui::event& e) {
@@ -113,41 +100,45 @@ bool navigator::handle_event(cgv::gui::event& e) {
 		if(get_context()) {
 			cgv::render::context& ctx = *get_context();
 
-			ivec2 mpos(static_cast<int>(me.get_x()), static_cast<int>(me.get_y()));
-			
-			mpos = get_local_mouse_pos(mpos);
-			vec2 window_coord = vec2(mpos) * vec2(2.0f) / get_overlay_size() - vec2(1.0f);
+			if(ma == cgv::gui::MA_LEAVE) {
+				hit_axis = 0;
+			} else {
+				ivec2 mpos(static_cast<int>(me.get_x()), static_cast<int>(me.get_y()));
 
-			vec3 origin = vec3(window_coord, navigator_eye_pos.z());
-			vec3 direction = vec3(0.0f, 0.0f, -1.0f);
+				mpos = get_local_mouse_pos(mpos);
+				vec2 window_coord = vec2(mpos) * vec2(2.0f) / get_overlay_size() - vec2(1.0f);
 
-			if(use_perspective) {
-				mat4 MVP = get_projection_matrix() * get_view_matrix(ctx);
+				vec3 origin = vec3(window_coord, navigator_eye_pos.z());
+				vec3 direction = vec3(0.0f, 0.0f, -1.0f);
 
-				vec4 world_coord(window_coord.x(), window_coord.y(), 1.0f, 1.0f);
-				world_coord = inv(MVP) * world_coord;
-				world_coord /= world_coord.w();
+				if(use_perspective) {
+					mat4 MVP = get_projection_matrix() * get_view_matrix(ctx);
 
-				vec3 origin = navigator_eye_pos;
-				vec3 direction = normalize(vec3(world_coord) - origin);
+					vec4 world_coord(window_coord.x(), window_coord.y(), 1.0f, 1.0f);
+					world_coord = inv(MVP) * world_coord;
+					world_coord /= world_coord.w();
+
+					vec3 origin = navigator_eye_pos;
+					vec3 direction = normalize(vec3(world_coord) - origin);
+				}
+
+				mat4 IM = inv(get_model_matrix(ctx));
+
+				origin = vec3(IM * vec4(origin, 1.0f));
+				direction = vec3(IM * vec4(direction, 0.0f));
+
+				float t = std::numeric_limits<float>::max();
+				if(intersect_box(origin, direction, t)) {
+					vec3 hit_pos = origin + t * direction;
+
+					unsigned mi = cgv::math::max_index(cgv::math::abs(hit_pos));
+
+					hit_axis = static_cast<int>(mi) + 1;
+					if(hit_pos[mi] < 0.0f)
+						hit_axis = -hit_axis;
+				}
 			}
-			
-			mat4 IM = inv(get_model_matrix(ctx));
-
-			origin = vec3(IM * vec4(origin, 1.0f));
-			direction = vec3(IM * vec4(direction, 0.0f));
-
-			float t = std::numeric_limits<float>::max();
-			if(intersect_box(origin, direction, t)) {
-				vec3 hit_pos = origin + t * direction;
-
-				unsigned mi = cgv::math::max_index(cgv::math::abs(hit_pos));
-				
-				hit_axis = static_cast<int>(mi) + 1;
-				if(hit_pos[mi] < 0.0f)
-					hit_axis = -hit_axis;
-			}
-			
+		
 			if(last_hit_axis != hit_axis)
 				post_redraw();
 		}
@@ -219,11 +210,14 @@ bool navigator::init(cgv::render::context& ctx) {
 		cursor_font_face = font->get_font_face(cgv::media::font::FFA_BOLD);
 	}
 
+	fbc.add_attachment("depth", "[D]");
+	fbc.add_attachment("color", "flt32[R,G,B,A]", cgv::render::TF_LINEAR);
+	fbc.set_size(2 * get_overlay_size());
+	
 	bool success = true;
 
 	success &= fbc.ensure(ctx);
-	success &= blit_canvas.init(ctx);
-
+	
 	success &= arrow_data.init(ctx);
 	success &= box_data.init(ctx);
 	success &= box_wire_data.init(ctx);
@@ -232,31 +226,24 @@ bool navigator::init(cgv::render::context& ctx) {
 
 	success &= box_renderer.init(ctx);
 
-	//ref_arrow_renderer(ctx, 1);
-	//ref_box_renderer(ctx, 1);
-	//ref_box_wire_renderer(ctx, 1);
-	//ref_rectangle_renderer(ctx, 1);
-	//ref_sphere_renderer(ctx, 1);
+	blit_canvas.register_shader("rectangle", cgv::g2d::shaders::rectangle);
+	success &= blit_canvas.init(ctx);
 
 	if(success) {
-		box_data.add(vec3(0.0f));
-		box_wire_data.add(vec3(0.0f));
+		box_data.add_position(vec3(0.0f));
+		box_wire_data.add_position(vec3(0.0f));
 
-		sphere_data.add(vec3(0.0f));
+		sphere_data.add_position(vec3(0.0f));
 
 		const float length = 0.5f;
 
 		// x - red
-		arrow_data.add(vec3(0.0f), vec3(length, 0.0f, 0.0f));
-		arrow_data.add(rgb(0.85f, 0.0f, 0.0f));
+		arrow_data.add(vec3(0.0f), rgb(0.85f, 0.0f, 0.0f), vec3(length, 0.0f, 0.0f));
 		// y - green
-		arrow_data.add(rgb(0.0f, 0.75f, 0.0f));
-		arrow_data.add(vec3(0.0f), vec3(0.0f, length, 0.0f));
+		arrow_data.add(vec3(0.0f), rgb(0.0f, 0.75f, 0.0f), vec3(0.0f, length, 0.0f));
 		// z - blue
-		arrow_data.add(vec3(0.0f), vec3(0.0f, 0.0f, length));
-		arrow_data.add(rgb(0.35f, 0.4f, 1.0f));
+		arrow_data.add(vec3(0.0f), rgb(0.0f, 0.05f, 0.95f), vec3(0.0f, 0.0f, length));
 		
-
 		blit_style.fill_color = rgba(1.0f);
 		blit_style.use_texture = true;
 		blit_style.use_blending = true;
@@ -331,11 +318,11 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 		rotation_axis[mapping[axis_idx]] = hit_axis < 0.0f ? -1.0f : 1.0f;
 
 		std::vector<quat> rotations;
-		quat q(rotation_axis, cgv::math::deg2rad(90.0f));
+		quat rotation(rotation_axis, cgv::math::deg2rad(90.0f));
 
 		rectangle_data.clear();
-		rectangle_data.add(position);
-		rectangle_data.add(q);
+		rectangle_data.add_position(position);
+		rectangle_data.add_rotation(rotation);
 
 		auto& rectangle_renderer = ref_rectangle_renderer(ctx);
 		rectangle_renderer.set_extent(ctx, vec2(0.9f));
@@ -360,6 +347,12 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
+}
+
+void navigator::set_size(int size) {
+
+	layout_size = size;
+	on_set(&layout_size);
 }
 
 void navigator::create_gui_impl() {

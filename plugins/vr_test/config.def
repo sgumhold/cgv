@@ -15,20 +15,20 @@ type(vr_emulator):tracker_1_orientation.coords[3]=0
 type(vr_emulator):body_position.coords[0]=-0.10
 type(vr_emulator):body_position.coords[1]=-0.60
 type(vr_emulator):body_position.coords[2]=0.935
-type(vr_emulator):right_hand_position.coords[0]=-0.575
-type(vr_emulator):right_hand_position.coords[1]=0.249
-type(vr_emulator):right_hand_position.coords[2]=-0.2391
-type(vr_emulator):right_hand_orientation.coords[0]=0.49
-type(vr_emulator):right_hand_orientation.coords[1]=0
-type(vr_emulator):right_hand_orientation.coords[2]=0
-type(vr_emulator):right_hand_orientation.coords[3]=0.8717
-type(vr_emulator):left_hand_position.coords[0]=0.575
-type(vr_emulator):left_hand_position.coords[1]=0.249
-type(vr_emulator):left_hand_position.coords[2]=-0.2391
-type(vr_emulator):left_hand_orientation.coords[0]=0.49
-type(vr_emulator):left_hand_orientation.coords[1]=0
-type(vr_emulator):left_hand_orientation.coords[2]=0
-type(vr_emulator):left_hand_orientation.coords[3]=0.8717
+//type(vr_emulator):right_hand_position.coords[0]=-0.575
+//type(vr_emulator):right_hand_position.coords[1]=0.249
+//type(vr_emulator):right_hand_position.coords[2]=-0.2391
+//type(vr_emulator):right_hand_orientation.coords[0]=0.49
+//type(vr_emulator):right_hand_orientation.coords[1]=0
+//type(vr_emulator):right_hand_orientation.coords[2]=0
+//type(vr_emulator):right_hand_orientation.coords[3]=0.8717
+//type(vr_emulator):left_hand_position.coords[0]=0.575
+//type(vr_emulator):left_hand_position.coords[1]=0.249
+//type(vr_emulator):left_hand_position.coords[2]=-0.2391
+//type(vr_emulator):left_hand_orientation.coords[0]=0.49
+//type(vr_emulator):left_hand_orientation.coords[1]=0
+//type(vr_emulator):left_hand_orientation.coords[2]=0
+//type(vr_emulator):left_hand_orientation.coords[3]=0.8717
 
 // stereo shader mode indices are 
 // left only = 0, right only = 1, side by side = 2, top bottom = 3
@@ -75,10 +75,10 @@ type(vr_wall):screen_y.coords[2]=0
 //name(vr interactor):calibration_file_path="C:/develop/git/cgv/plugins/vr_test/table.cal"
 
 persistent
-name(vr interactor):tracking_rotation=-180
-name(vr interactor):tracking_origin_x=0.0151364;
-name(vr interactor):tracking_origin_y=0.930006;
-name(vr interactor):tracking_origin_z=-0.393396;
-name(vr interactor):tracking_rotation_origin_x=-0.2;
-name(vr interactor):tracking_rotation_origin_y=1.2;
-name(vr interactor):tracking_rotation_origin_z=-1.49012e-08
+name(vr interactor):tracking_rotation=-115
+name(vr interactor):tracking_origin_x=-0.324427;
+name(vr interactor):tracking_origin_y=0.8;
+name(vr interactor):tracking_origin_z=-0.32922;
+name(vr interactor):tracking_rotation_origin_x=1.35;
+name(vr interactor):tracking_rotation_origin_y=0.877787;
+name(vr interactor):tracking_rotation_origin_z=-0.651143

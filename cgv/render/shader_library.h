@@ -20,6 +20,16 @@ protected:
 	typedef std::map<std::string, shader_info> shader_lib_map;
 	shader_lib_map shaders;
 
+	shader_info& get_shader_info(const std::string& name) {
+
+		if(shaders.find(name) != shaders.end()) {
+			return shaders.at(name);
+		} else {
+			std::cerr << "Error: shader_library::get shader with name " << name << " not found!" << std::endl;
+			abort();
+		}
+	}
+
 public:
 	shader_library();
 	~shader_library();
@@ -29,12 +39,18 @@ public:
 	bool add(const std::string& name, const std::string& file, const shader_define_map& defines = {});
 
 	shader_program& get(const std::string& name) {
-		if(shaders.find(name) != shaders.end()) {
-			return shaders.at(name).prog;
-		} else {
-			std::cerr << "Error: shader_library::get shader with name " << name << " not found!" << std::endl;
-			abort();
-		}
+		
+		return get_shader_info(name).prog;
+	}
+
+	shader_define_map& get_defines(const std::string& name) {
+		
+		return get_shader_info(name).defines;
+	}
+
+	bool contains(const std::string& name) const {
+
+		return shaders.find(name) != shaders.end();
 	}
 
 	shader_lib_map::iterator begin() { return shaders.begin(); }

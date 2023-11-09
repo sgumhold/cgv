@@ -1,0 +1,24 @@
+#version 430
+
+layout (binding = 0) uniform sampler2D depth_tex;
+layout (binding = 1) uniform sampler2D color_tex;
+layout (binding = 2) uniform sampler2D occlusion_tex;
+
+uniform float strength;
+
+in vec2 texcoord_fs;
+
+out vec4 frag_color;
+
+void main()
+{
+	float depth = texture(depth_tex, texcoord_fs).r;
+	vec4 color = texture(color_tex, texcoord_fs);
+	float occlusion = texture(occlusion_tex, texcoord_fs).r;
+	
+	color.rgb *= 1.0 - clamp(occlusion * strength, 0.0, 1.0);
+	frag_color = color;
+
+	// write the frag depth to enable the framework view to work properly
+	gl_FragDepth = depth;
+}

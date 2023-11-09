@@ -10,13 +10,14 @@ overlay::overlay() {
 	stretch = SO_NONE;
 
 	margin = ivec2(0);
-	container.set_pos(ivec2(0));
-	container.set_size(ivec2(0));
+	container.position = ivec2(0);
+	container.size = ivec2(0);
 
 	last_size = ivec2(-1);
 
 	show = true;
 	block_events = true;
+	draw_in_finish_frame = false;
 }
 
 void overlay::on_visibility_change() 
@@ -31,15 +32,11 @@ void overlay::on_layout_change() {
 	post_redraw();
 }
 
-overlay::ivec2 overlay::get_transformed_mouse_pos(ivec2 mouse_pos) {
+void overlay::on_set(void* member_ptr) {
 
-	mouse_pos.y() = last_viewport_size.y() - mouse_pos.y() - 1;
-	return mouse_pos;
-}
-
-overlay::ivec2 overlay::get_local_mouse_pos(ivec2 mouse_pos) {
-
-	return get_transformed_mouse_pos(mouse_pos) - container.pos();
+	handle_member_change(cgv::utils::pointer_test(member_ptr));
+	update_member(member_ptr);
+	post_redraw();
 }
 
 void overlay::set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 _percentual_offset)
@@ -95,7 +92,7 @@ void overlay::update_overlay_layout() {
 		pos.x() = last_viewport_size.x() - size.x() - margin.x();
 		break;
 	case AO_PERCENTUAL:
-		pos.x() = margin.x() + percentual_offset.x() * max_size.x();
+		pos.x() = int32_t(margin.x() + percentual_offset.x() * max_size.x());
 		break;
 	case AO_START:
 	case AO_FREE:
@@ -112,7 +109,7 @@ void overlay::update_overlay_layout() {
 		pos.y() = last_viewport_size.y() - size.y() - margin.y();
 		break;
 	case AO_PERCENTUAL:
-		pos.y() = margin.y() + percentual_offset.y() * max_size.y();
+		pos.y() = int32_t(margin.y() + percentual_offset.y() * max_size.y());
 		break;
 	case AO_START:
 	case AO_FREE:
@@ -121,8 +118,8 @@ void overlay::update_overlay_layout() {
 		break;
 	}
 
-	container.set_pos(pos);
-	container.set_size(size);
+	container.position = pos;
+	container.size = size;
 }
 
 bool overlay::ensure_viewport(cgv::render::context& ctx) {
@@ -136,9 +133,9 @@ bool overlay::ensure_viewport(cgv::render::context& ctx) {
 	return false;
 }
 
-bool overlay::is_hit(const ivec2& mouse_pos) {
+bool overlay::is_hit(const ivec2& mouse_pos) const {
 
-	ivec2 test_pos = get_transformed_mouse_pos(mouse_pos);
+	ivec2 test_pos = cgv::g2d::get_transformed_mouse_pos(mouse_pos, last_viewport_size);
 	return container.is_inside(test_pos);
 };
 
@@ -152,7 +149,6 @@ bool overlay::begin_overlay_gui() {
 
 	if(node_is_open) {
 		align("\a");
-		create_layout_gui();
 		return true;
 	}
 
@@ -219,10 +215,12 @@ void overlay::create_gui() {
 
 	if(gui_options.create_default_tree_node) {
 		if(begin_overlay_gui()) {
+			create_layout_gui();
 			create_gui_impl();
 			end_overlay_gui();
 		}
 	} else {
+		create_layout_gui();
 		create_gui_impl();
 	}
 }

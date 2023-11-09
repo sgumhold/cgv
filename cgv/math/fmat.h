@@ -147,17 +147,55 @@ public:
 					r(i,j) += operator()(i,k) * (T)(m2(k,j)); 
 		return r;
 	}
+	///multiplication with (N-1)x(N-1) matrix, assuming the first operand represents an affine
+	///or perspective transformation to be combined with the linear transformation represented by the
+	///second operand (which will be treated as if lifted to a homogenous transformation matrix)
+	template <typename S>
+	const fmat<T,N,N> mul_h (const fmat<S,N-1,N-1>& m2) const
+	{
+		static_assert(N == M);
+		static const auto vzero = fvec<T, N-1>(0);
+		fvec<T,N> rows[N]; // extracting a row takes linear time so we only want to do it once for each row
+		for (unsigned i=0; i<N; i++)
+			rows[i] = row(i);
+		fmat<T,N,N> r;
+		// (1) multiply with implied N x (N-1) matrix that is assumed to have an all-zero last row
+		for (unsigned j=0; j<N-1; j++)
+			for (unsigned i=0; i<N; i++)
+				r(i,j) = dot_dir(rows[i], m2.col(j));
+		// (2) assume homogeneous zero position vector in last column of 2nd operand for calculating last result column
+		for (unsigned i=0; i<N; i++)
+			r(i,N-1) = dot_pos(rows[i], vzero);
+		return r;
+	}
 
 	///matrix vector multiplication
-	template < typename S>
-	const fvec<T,N> operator * (const fvec<S,M>& v) const {
-		fvec<T,N> r;
+	template <typename S>
+	const fvec<S,N> operator * (const fvec<S,M>& v) const {
+		fvec<S,N> r;
 		for(unsigned i = 0; i < N; i++)
 			r(i) = dot(row(i),v);
 		return r;
 	}
-	///extract a row from the matrix as a vector, this is done by a type cast
-	const fvec<T,M> row(unsigned i) const {
+	///multiplication with M-1 dimensional position vector which will be implicitly homogenized
+	template <typename S>
+	const fvec<S,N> mul_pos (const fvec<S,M-1>& v) const {
+		fvec<S,N> r;
+		for(unsigned i = 0; i < N; i++)
+			r(i) = dot_pos(row(i), v);
+		return r;
+	}
+	///multiplication with M-1 dimensional direction vector which will be implicitly homogenized
+	template <typename S>
+	const fvec<S,N> mul_dir (const fvec<S,M-1>& v) const {
+		fvec<S,N> r;
+		for(unsigned i = 0; i < N; i++)
+			r(i) = dot_dir(row(i), v);
+		return r;
+	}
+
+	///extract a row from the matrix as a vector, this takes time linear in the number of columns
+	fvec<T,M> row(unsigned i) const {
 		fvec<T,M> r;
 		for(unsigned j = 0; j < M; j++) 
 			r(j)=operator()(i,j);
@@ -168,15 +206,19 @@ public:
 		for(unsigned j = 0; j < M;j++) 
 			operator()(i,j)=v(j);		
 	}
-	///extract a column of the matrix as a vector
+	///reference a column of the matrix as a vector
+	fvec<T,N>& col(unsigned j) {	
+		return reinterpret_cast<fvec<T,N>*>(this)[j];
+	}
+	///read-only reference a column of the matrix as a vector
 	const fvec<T,N>& col(unsigned j) const {	
-		return *(const fvec<T,N>*)(&operator()(0,j));
+		return reinterpret_cast<const fvec<T,N>*>(this)[j];
 	}
-	///set  column j of the matrix to vector v
+	///set column j of the matrix to vector v
 	void set_col(unsigned j,const fvec<T,N>& v) {
-		for(unsigned i = 0; i < N;i++) 
-			operator()(i,j)=v(i);		
+		reinterpret_cast<fvec<T,N>*>(this)[j] = v;
 	}
+
 	///returns the trace 
 	T trace() const {
 		assert(N == M);
@@ -254,10 +296,8 @@ std::istream& operator>>(std::istream& in, fmat<T,N,M>& m)
 	return in;
 }
 
-
-
 ///returns the outer product of vector v and w
-template < typename T, cgv::type::uint32_type N, typename S, cgv::type::uint32_type M>
+template <typename T, cgv::type::uint32_type N, typename S, cgv::type::uint32_type M>
 fmat<T, N, M> dyad(const fvec<T,N>& v, const fvec<S,M>& w)
 {
 	fmat<T, N, M> m;
@@ -265,6 +305,20 @@ fmat<T, N, M> dyad(const fvec<T,N>& v, const fvec<S,M>& w)
 		for (unsigned j = 0; j < M; j++)
 			m(i, j) = v(i)*(T)w(j);
 	return m;
+}
+
+///returns the determinant of a 2x2 matrix
+template <typename T>
+T det(const fmat<T, 2, 2>& m) {
+	return m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0);
+}
+
+///returns the determinant of a 3x3 matrix
+template <typename T>
+T det(const fmat<T, 3, 3>& m) {
+	T a = m(0, 0) * m(1, 1) * m(2, 2) + m(0, 1) * m(1, 2) * m(2, 0) + m(0, 2) * m(1, 0) * m(2, 1);
+	T b = -m(2, 0) * m(1, 1) * m(0, 2) - m(2, 1) * m(1, 2) * m(0, 0) - m(2, 2) * m(1, 0) * m(0, 1);
+	return a + b;
 }
 
 ///linear interpolation returns (1-t)*m1 + t*m2

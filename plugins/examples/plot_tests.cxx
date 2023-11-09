@@ -15,6 +15,7 @@ protected:
 	cgv::plot::plot3d plot;
 	// persistent vector with plot data
 	std::vector<vec4> P1, P2;
+
 public:
 	test_plot3d() : cgv::base::node("3D Plot Test"), plot(1)
 	{
@@ -101,6 +102,7 @@ protected:
 	cgv::render::frame_buffer fbo;
 	// whether to use offscreen rendering
 	bool render_offscreen;
+
 public:
 	test_plot2d() : cgv::base::node("2D Plot Test"), tex("[R,G,B,A]"), depth("[D]"), plot("trigonometry", 2)
 	{
@@ -114,7 +116,8 @@ public:
 		unsigned p1 = plot.add_sub_plot("cos");
 		unsigned p2 = plot.add_sub_plot("sin");
 		unsigned p3 = plot.add_sub_plot("cos²");
-		//plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f));	// will be set later to the attribute with index 2
+		//plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f)); // will be set later to the attribute with index 2
+
 		plot.set_sub_plot_colors(p2, rgb(0.1f, 0.0f, 1.0f));
 		plot.set_sub_plot_colors(p3, rgb(0.0f, 1.0f, 0.1f));
 
@@ -134,6 +137,7 @@ public:
 		plot.set_sub_plot_attribute(p3, 3, &P[0][2], P.size(), sizeof(vec4));
 
 		plot.legend_components = cgv::plot::LegendComponent(cgv::plot::LC_PRIMARY_COLOR + cgv::plot::LC_PRIMARY_OPACITY);
+
 		plot.color_mapping[0] = 2;
 		plot.color_scale_index[0] = cgv::media::CS_HUE;
 		plot.opacity_mapping[0] = 3;
@@ -149,8 +153,8 @@ public:
 		//vecn ex = plot.get_extent();
 		//ex(1) *= 2.0f;
 		//plot.set_extent(ex);
+
 		render_offscreen = false;
-		
 	}
 	void on_set(void* member_ptr)
 	{
@@ -180,7 +184,7 @@ public:
 		plot.init_frame(ctx);
 		if (!fbo.is_created() || !render_offscreen)
 			return;
-		
+
 		auto ex = plot.get_extent();
 		fbo.enable(ctx);
 		fbo.push_viewport(ctx);
@@ -226,7 +230,7 @@ public:
 	void create_gui()
 	{
 		add_decorator("plot2d Test", "heading");
-		add_member_control(this, "render_offscreen", render_offscreen, "toggle");
+		add_member_control(this, "Render Offscreen", render_offscreen, "toggle");
 		plot.create_gui(this, *this);
 	}
 };

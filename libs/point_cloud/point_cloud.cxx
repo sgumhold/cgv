@@ -128,6 +128,14 @@ void point_cloud::clear()
 	T.clear();
 	I.clear();
 
+	lods.clear();
+	labels.clear();
+	//last_additional_model_matrix.identity();
+	point_cloud_scale = 1;
+	point_cloud_position = Dir(0);
+	point_cloud_rotation = Dir(0);
+	
+
 	/// container to store  one component index per point
 	component_indices.clear();
 	components.clear();
@@ -360,6 +368,77 @@ size_t point_cloud::add_point(const Pnt& p)
 	}
 	size_t idx = P.size();
 	P.push_back(p);
+	box_out_of_date = true;
+	return idx;
+}
+
+/// add a point and a normal, add a color if necessary, return index of new point
+size_t point_cloud::add_point(const Pnt& p, const Nml& n) {
+	if (has_normals())
+		N.resize(N.size() + 1);
+	if (has_colors())
+		C.resize(P.size() + 1);
+	if (has_texture_coordinates())
+		T.resize(P.size() + 1);
+	if (has_pixel_coordinates())
+		I.resize(P.size() + 1);
+	if (has_components()) {
+		if (components.empty())
+			components.push_back(component_info(0, p.size()));
+		component_indices.push_back(unsigned(components.size() - 1));
+		++components.back().nr_points;
+	}
+	size_t idx = P.size();
+	P.push_back(p);
+	N.push_back(n);
+	box_out_of_date = true;
+	return idx;
+}
+/// add a point and a color, add a normal if necessary, return index of new point
+size_t point_cloud::add_point(const Pnt& p, const Clr& c)
+{
+	if (has_normals())
+		N.resize(N.size() + 1);
+	if (has_colors())
+		C.resize(P.size() + 1);
+	if (has_texture_coordinates())
+		T.resize(P.size() + 1);
+	if (has_pixel_coordinates())
+		I.resize(P.size() + 1);
+	if (has_components()) {
+		if (components.empty())
+			components.push_back(component_info(0, p.size()));
+		component_indices.push_back(unsigned(components.size() - 1));
+		++components.back().nr_points;
+	}
+	size_t idx = P.size();
+	P.push_back(p);
+	C.push_back(c);
+	box_out_of_date = true;
+	return idx;
+}
+/// add a point, a normal and a color, return index of new point
+size_t point_cloud::add_point(const Pnt& p, const Nml& n, const Clr& c)
+{
+	if (has_normals())
+		N.resize(N.size() + 1);
+	if (has_colors())
+		C.resize(P.size() + 1);
+	if (has_texture_coordinates())
+		T.resize(P.size() + 1);
+	if (has_pixel_coordinates())
+		I.resize(P.size() + 1);
+	if (has_components()) {
+		if (components.empty())
+			components.push_back(component_info(0, p.size()));
+		component_indices.push_back(unsigned(components.size() - 1));
+		++components.back().nr_points;
+	}
+	size_t idx = P.size();
+	P.push_back(p);
+	N.push_back(n);
+	C.push_back(c);
+	box_out_of_date = true;
 	return idx;
 }
 
@@ -376,6 +455,10 @@ void point_cloud::resize(size_t nr_points)
 		I.resize(nr_points);
 	if (has_components())
 		component_indices.resize(nr_points);
+	if (has_lods())
+		lods.resize(nr_points);
+	if (has_labels())
+		labels.resize(nr_points);
 	P.resize(nr_points);
 }
 
@@ -386,6 +469,8 @@ bool point_cloud::read(const string& _file_name)
 	bool success = false;
 	if (ext == "bpc")
 		success = read_bin(_file_name);
+	if (ext == "lpc")
+		success = read_lpc(_file_name);
 	if (ext == "xyz")
 		success = read_xyz(_file_name);
 	if (ext == "pct")
@@ -402,6 +487,8 @@ bool point_cloud::read(const string& _file_name)
 		success = read_ply(_file_name);
 	if (ext == "txt")
 		success = read_txt(_file_name);
+	if (ext == "e57")
+		success = read_e57(_file_name);
 	if (success) {
 		if (N.size() > 0)
 			has_nmls = true;
@@ -550,12 +637,18 @@ bool point_cloud::write(const string& _file_name)
 	string ext = to_lower(get_extension(_file_name));
 	if (ext == "bpc")
 		return write_bin(_file_name);
+	if (ext == "lpc")
+		return write_lpc(_file_name);
 	if (ext == "apc" || ext == "pnt")
 		return write_ascii(_file_name, (ext == "apc") && has_normals());
 	if (ext == "obj" || ext == "pobj")
 		return write_obj(_file_name);
 	if (ext == "ply")
 		return write_ply(_file_name);
+	if (ext == "txt")
+		return write_txt(_file_name);
+	if (ext == "e57")
+		return write_e57(_file_name);
 	cerr << "unknown extension <." << ext << ">." << endl;
 	return false;
 }
@@ -701,12 +794,20 @@ bool point_cloud::read_txt(const std::string& file_name)
 
 		if (true) {
 			Pnt p;
-			int c[3], I;
+			int icol[3], iint;
+			double dcol[3];
 			char tmp = lines[i].end[0];
 			content[lines[i].end - content.c_str()] = 0;
-			if (sscanf(lines[i].begin, "%f %f %f %d %d %d %d", &p[0], &p[1], &p[2], &I, c, c + 1, c + 2) == 7) {
+			if (sscanf(lines[i].begin, "%f %f %f %d %d %d %d", &p[0], &p[1], &p[2], &iint, icol, icol + 1, icol + 2) == 7) 
+			{
 				P.push_back(p);
-				C.push_back(Clr(byte_to_color_component(c[0]), byte_to_color_component(c[1]), byte_to_color_component(c[2])));
+				C.push_back(Clr(byte_to_color_component(icol[0]), byte_to_color_component(icol[1]),
+								byte_to_color_component(icol[2])));
+			}
+			else if (sscanf(lines[i].begin, "%f %f %f %lf %lf %lf", &p[0], &p[1], &p[2], dcol, dcol + 1, dcol + 2) == 6) {
+				P.push_back(p);
+				C.push_back(Clr(float_to_color_component(dcol[0]), float_to_color_component(dcol[1]),
+								float_to_color_component(dcol[2])));
 			}
 			content[lines[i].end - content.c_str()] = tmp;
 		}
@@ -729,6 +830,11 @@ bool point_cloud::read_txt(const std::string& file_name)
 			cout << "read " << P.size() << " points" << endl;
 	}
 	watch.add_time();
+	return true;
+}
+/// read e57 file from leica scanner
+bool point_cloud::read_e57(const std::string& file_name) 
+{
 	return true;
 }
 
@@ -867,6 +973,118 @@ enum BPCFlags
 	BPC_HAS_BYTE_CLRS = 128
 };
 
+enum LPCFlags
+{
+	LPC_HAS_CLRS = 1,
+	LPC_HAS_NMLS = 2,
+	LPC_HAS_TCS = 4,
+	LPC_HAS_PIXCRDS = 8,
+	LPC_HAS_COMPS = 16,
+	LPC_HAS_COMP_CLRS = 32,
+	LPC_HAS_COMP_TRANS = 64,
+	LPC_HAS_BYTE_CLRS = 128,
+
+	//
+	LPC_HAS_LODS = 256,
+	LPC_HAS_TRANSFORMATION_MAT = 512,
+	LPC_HAS_RENDER_STYLE = 1024, 
+	LPC_HAS_TRANS_VECTORS = 2 * 1024,
+	LPC_HAS_LABELS= 4 * 1024
+
+};
+
+bool point_cloud::read_lpc(const std::string& file_name) {
+	FILE* fp = fopen(file_name.c_str(), "rb");
+	if (!fp)
+		return false;
+	Cnt n;
+	cgv::type::uint32_type flags = 0;
+	bool success = true;
+
+	// read the header 
+	success = success && fread(&n, sizeof(Cnt), 1, fp) == 1;
+	success = success && fread(&flags, sizeof(cgv::type::uint32_type), 1, fp) == 1;
+
+	// read file content 
+	P.resize(n);
+	success = fread(&P[0][0], sizeof(Pnt), n, fp) == n;
+	if (flags & LPC_HAS_CLRS) {
+		C.resize(n);
+		success = success && fread(&C[0][0], sizeof(Clr), n, fp) == n; 
+	}
+	if (flags & LPC_HAS_NMLS) {
+		N.resize(n);
+		success = success && (fread(&N[0][0], sizeof(Nml), n, fp) == n);
+	}
+	if (flags & LPC_HAS_LODS) {
+		lods.resize(n);
+		success = success && (fread(&lods[0], sizeof(uint8_t), n, fp) == n);
+	}
+
+	if (flags & LPC_HAS_TRANSFORMATION_MAT) { // read to tmp varible to move the reading pointer
+		HMat tmpmat;
+		success = success && fread(&tmpmat, sizeof(HMat), 1, fp) == 1;
+	}
+
+	if (flags & LPC_HAS_TRANS_VECTORS){ // read transformation matrix if present, legacy lpc files supported 
+		success = success && fread(&point_cloud_scale, sizeof(float), 1, fp) == 1;
+		success = success && fread(&point_cloud_position, sizeof(Dir), 1, fp) == 1;
+		success = success && fread(&point_cloud_rotation, sizeof(Dir), 1, fp) == 1;
+	}
+	if (flags & LPC_HAS_RENDER_STYLE) {// read render style if present, legacy lpc files supported 
+		success = success && fread(&cp_render_style, sizeof(cgv::render::clod_point_render_style), 1, fp) == 1;
+	}
+	if (flags & LPC_HAS_LABELS) {
+		labels.resize(n);
+		success = success && (fread(&labels[0], sizeof(GLint), n, fp) == n);
+	}
+
+	return fclose(fp) == 0 && success;
+}
+
+bool point_cloud::write_lpc(const std::string& file_name) {
+	FILE* fp = fopen(file_name.c_str(), "wb");
+	if (!fp)
+		return false;
+	cgv::type::uint32_type flags = 0;
+	bool success = true;
+
+	// set the header 
+	Cnt n = (Cnt)P.size();
+	flags += has_colors() ? LPC_HAS_CLRS : 0;
+	flags += has_normals() ? LPC_HAS_NMLS : 0;
+	flags += has_lods() ? LPC_HAS_LODS : 0;
+	flags += LPC_HAS_TRANS_VECTORS; // write transformation matrix by default 
+	flags += LPC_HAS_RENDER_STYLE; // write render styles from now on 
+	flags += has_labels() ? LPC_HAS_LABELS : 0;
+
+	// write header 
+	success = success && fwrite(&n, sizeof(Cnt), 1, fp) == 1;
+	success = success && fwrite(&flags, sizeof(cgv::type::uint32_type), 1, fp) == 1;
+
+	// write the content 
+	success = fwrite(&P[0][0], sizeof(Pnt), n, fp) == n;
+	if (flags & LPC_HAS_CLRS) 
+		success = success && fwrite(&C[0][0], sizeof(Clr), n, fp) == n;
+	if (flags & LPC_HAS_NMLS) 
+		success = success && (fwrite(&N[0][0], sizeof(Nml), n, fp) == n);
+	if (flags & LPC_HAS_LODS) 
+		success = success && (fwrite(&lods[0], sizeof(uint8_t), n, fp) == n);
+	if (flags & LPC_HAS_TRANS_VECTORS) {
+		success = success && fwrite(&point_cloud_scale, sizeof(float), 1, fp) == 1;
+		success = success && fwrite(&point_cloud_position, sizeof(Dir), 1, fp) == 1;
+		success = success && fwrite(&point_cloud_rotation, sizeof(Dir), 1, fp) == 1;
+	}
+	if (flags & LPC_HAS_RENDER_STYLE) {
+		success = success && fwrite(&cp_render_style, sizeof(cgv::render::clod_point_render_style), 1, fp) == 1;
+	}
+	if (flags & LPC_HAS_LABELS) {
+		success = success && (fwrite(&labels[0], sizeof(GLint), n, fp) == n);
+	}
+
+	return fclose(fp) == 0 && success;
+}
+
 bool point_cloud::read_bin(const string& file_name)
 {
 	FILE* fp = fopen(file_name.c_str(), "rb");
@@ -902,7 +1120,7 @@ bool point_cloud::read_bin(const string& file_name)
 			success = success && (fread(&N[0][0], sizeof(Nml), m, fp) == m);
 		}
 		if (flags & BPC_HAS_CLRS) {
-			bool byte_colors_in_file = (flags & BPC_HAS_BYTE_CLRS) != 0;
+			bool byte_colors_in_file = !((flags & BPC_HAS_BYTE_CLRS) != 0);
 #ifdef BYTE_COLORS
 			bool byte_colors_in_pc = true;
 #else
@@ -924,7 +1142,8 @@ bool point_cloud::read_bin(const string& file_name)
 				else {
 					std::vector<cgv::media::color<float> > tmp;
 					tmp.resize(n);
-					success = success && fread(&tmp[0][0], sizeof(cgv::media::color<float>), n, fp) == n;
+					size_t cnt = fread(&tmp[0][0], sizeof(cgv::media::color<float>), n, fp);
+					success = success && cnt == n;
 					if (success) {
 						for (size_t i = 0; i < n; ++i)
 							C[i] = Clr(float_to_color_component(tmp[i][0]), float_to_color_component(tmp[i][1]), float_to_color_component(tmp[i][2]));
@@ -1136,6 +1355,34 @@ bool point_cloud::write_ply(const std::string& file_name) const
 	put_element_setup_ply (ply_out, "face");
 	close_ply (ply_out);
 	free_ply (ply_out);
+	return true;
+}
+
+bool point_cloud::write_txt(const std::string& file_name) const
+{
+	/*if (!has_components())
+		return false;*/
+	std::ofstream os(file_name);
+	if (os.fail())
+		return false;
+	unsigned int i;
+	//I--Intensity
+	int I = 1;
+	for (i = 0; i < P.size(); ++i) {
+		if (has_colors()) {
+			os << P[i][0] << " " << P[i][1] << " " << P[i][2] << " "<< I << " " << color_component_to_float(C[i][0]) << " "
+			   << color_component_to_float(C[i][1]) << " " << color_component_to_float(C[i][2]) << endl;
+		}
+		else
+			os << P[i][0] << " " << P[i][1] << " " << P[i][2] << endl;
+	}
+	/*for (i = 0; i < N.size(); ++i)
+		os << "vn " << N[i][0] << " " << N[i][1] << " " << N[i][2] << endl;*/
+	return !os.fail();
+}
+
+bool point_cloud::write_e57(const std::string& file_name) const 
+{
 	return true;
 }
 
@@ -1409,6 +1656,32 @@ void point_cloud::create_components()
 	comp_pixrng_out_of_date.resize(1);
 	comp_pixrng_out_of_date[0] = true;
 }
+/// remove all points from the given component
+void point_cloud::clear_component(size_t i)
+{
+	if (!has_components())
+		return;
+	if (i >= components.size())
+		return;
+	size_t beg = components[i].index_of_first_point;
+	size_t cnt = components[i].nr_points;
+	size_t end = beg+cnt;
+	P.erase(P.begin() + beg, P.begin() + end);
+	if (has_components())
+		component_indices.erase(component_indices.begin() + beg, component_indices.begin() + end);
+	if (has_colors())
+		C.erase(C.begin() + beg, C.begin() + end);
+	if (has_normals())
+		N.erase(N.begin() + beg, N.begin() + end);
+	if (has_texture_coordinates())
+		T.erase(T.begin() + beg, T.begin() + end);
+	if (has_pixel_coordinates())
+		I.erase(I.begin() + beg, I.begin() + end);
+	for (size_t j = i + 1; j < get_nr_components(); ++j)
+		components[j].index_of_first_point -= cnt;
+	components[i].nr_points = 0;
+	component_boxes[i].invalidate();
+}
 
 /// deallocate component indices and point ranges
 void point_cloud::destruct_components()
@@ -1633,11 +1906,11 @@ void point_cloud::estimate_normals(const index_image& img, Crd distance_threshol
 		}
 
 		// compute cross product normal relative to current point
-		int prev = Ni.back();
+		int prev = static_cast<int>(Ni.back());
 		Nml nml(0, 0, 0);
 		for (int j = 0; j < int(Ni.size()); ++j) {
 			nml += cross(P[Ni[j]] - P[i], P[prev] - P[i]);
-			prev = Ni[j];
+			prev = static_cast<int>(Ni[j]);
 		}
 		nml.normalize();
 		N[i] = nml;
@@ -1672,4 +1945,28 @@ void point_cloud::estimate_normals(const index_image& img, Crd distance_threshol
 		*nr_iterations = iter;
 	if (nr_left_over)
 		*nr_left_over = int(not_set_normals.size());
+}
+
+bool point_cloud::mdf_clr(const RGBA gt_clr, const Idx& id) {
+	C.at(id) = gt_clr;
+	if (C.at(id).R() == gt_clr.R())
+		return true;
+	return false;
+}
+
+void point_cloud::mdf_clr_public(const RGBA gt_clr, const Idx& id) {
+	mdf_clr(gt_clr, id);
+		/*std::cout << "clr: " << gt_clr << " " << id << " " << C.at(id) << " " << C.at(id).R() << " " << C.at(id).G() << " " << C.at(id).B()
+				  << std::endl;
+	else {
+		std::cout << "clr: " << gt_clr << " " << id << " " << C.at(id) << " " << C.at(id).R() << " " << C.at(id).G()
+				  << " " << C.at(id).B() << std::endl;
+	}*/
+}
+
+void point_cloud::printClr()
+{
+	write_lpc("D:\\tf.lpc");
+	/*for (int i = 0; i < C.size(); i++)
+		std::cout << "i: " << i << " " << C.at(i) << std::endl;*/
 }

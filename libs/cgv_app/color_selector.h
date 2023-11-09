@@ -2,7 +2,7 @@
 
 #include <cgv/render/texture.h>
 #include <cgv_app/canvas_overlay.h>
-#include <cgv_g2d/draggables_collection.h>
+#include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 #include <cgv_g2d/shape2d_styles.h>
 
@@ -18,14 +18,14 @@ protected:
 		int size = 280;
 
 		// dependent members
-		cgv::g2d::rect border_rect;
-		cgv::g2d::rect color_rect;
-		cgv::g2d::rect hue_rect;
-		cgv::g2d::rect opacity_rect;
-		cgv::g2d::rect preview_rect;
+		cgv::g2d::irect border_rect;
+		cgv::g2d::irect color_rect;
+		cgv::g2d::irect hue_rect;
+		cgv::g2d::irect opacity_rect;
+		cgv::g2d::irect preview_rect;
 
-		cgv::g2d::rect hue_constraint;
-		cgv::g2d::rect opacity_constraint;
+		cgv::g2d::irect hue_constraint;
+		cgv::g2d::irect opacity_constraint;
 	} layout;
 	
 	struct selector_handle : public cgv::g2d::draggable {
@@ -40,9 +40,9 @@ protected:
 
 		void update_val() {
 			if(constraint) {
-				const cgv::g2d::rect& c = *constraint;
-				vec2 p = pos - static_cast<vec2>(c.pos());
-				ivec2 size = c.size();
+				const cgv::g2d::irect& c = *constraint;
+				vec2 p = position - static_cast<vec2>(c.position);
+				ivec2 size = c.size;
 				val = p / static_cast<vec2>(size);
 				if(size.x() == 0) val.x() = 0.0f;
 				if(size.y() == 0) val.y() = 0.0f;
@@ -52,9 +52,9 @@ protected:
 
 		void update_pos() {
 			if(constraint) {
-				const cgv::g2d::rect& c = *constraint;
+				const cgv::g2d::irect& c = *constraint;
 				val = cgv::math::clamp(val, 0.0f, 1.0f);
-				pos = static_cast<vec2>(c.pos()) + val * c.size();
+				position = static_cast<vec2>(c.position) + val * c.size;
 			}
 		}
 
@@ -73,10 +73,11 @@ protected:
 
 	cgv::g2d::msdf_text_geometry texts;
 
-	cgv::g2d::shape2d_style container_style, border_style, color_texture_style, hue_texture_style, opacity_color_style, color_handle_style, hue_handle_style, text_style;
+	cgv::g2d::shape2d_style container_style, border_style, color_texture_style, hue_texture_style, opacity_color_style, color_handle_style, hue_handle_style;
+	cgv::g2d::text2d_style text_style;
 	cgv::g2d::grid2d_style opacity_bg_style;
 
-	cgv::g2d::draggables_collection<selector_handle> selector_handles;
+	cgv::g2d::draggable_collection<selector_handle> selector_handles;
 
 	cgv::render::texture color_tex;
 	cgv::render::texture hue_tex;
@@ -86,7 +87,7 @@ protected:
 
 	void update_layout(const ivec2& parent_size);
 
-	void init_styles(cgv::render::context& ctx);
+	void init_styles(cgv::render::context& ctx) override;
 	void init_textures(cgv::render::context& ctx);
 	void update_color_texture();
 	void update_color();
@@ -106,8 +107,6 @@ public:
 	std::string get_type_name() const { return "color_selector"; }
 
 	void clear(cgv::render::context& ctx);
-
-	void stream_help(std::ostream& os) {}
 
 	bool handle_event(cgv::gui::event& e);
 	void on_set(void* member_ptr);

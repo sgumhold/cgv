@@ -6,6 +6,7 @@
 #include <cgv/utils/scan.h>
 #include <cgv/utils/file.h>
 #include <cgv/utils/progression.h>
+#include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/dir.h>
 #include <cgv/media/video/video_reader.h>
 #include <cgv/media/image/image_reader.h>
@@ -86,26 +87,48 @@ namespace cgv {
 			{
 				std::string fn_in_quotes = std::string("\"") + cgv::utils::file::platform_path(file_name) + "\"";
 				if (dims(0) == -1 || dims(1) == -1 || dims(2) < 0) {
-					std::string cmd = "ffprobe -v error ";
-					if (dims(2) == -2)
-						cmd += "-count_frames ";
-					cmd += "-select_streams v:0 -show_entries stream=width,height";
-					if (dims(2) == -2)
-						cmd += ",nb_read_frames";
-					else
-						cmd += ",nb_frames";
-					cmd += " -of default=nokey=1:noprint_wrappers=1 ";
-					cmd += fn_in_quotes;
-					std::cout << "Analyze Video with " << cmd << std::endl;
-					std::string video_info = query_system_output(cmd, false);
-					std::stringstream ss(video_info);
 					int w, h, n = dims(2);
-					ss >> w >> h;
-					if (dims(2) < 0)
-						ss >> n;
-					if (ss.fail()) {
-						std::cerr << "Error: could not analyze video file <" << file_name << "> with ffprobe" << std::endl;
-						return false;
+					while (true) {
+						std::string cmd = "ffprobe -v error ";
+						if (dims(2) == -2)
+							cmd += "-count_frames ";
+						cmd += "-select_streams v:0 -show_entries stream=width,height";
+						if (dims(2) == -2)
+							cmd += ",nb_read_frames";
+						else
+							cmd += ",nb_frames";
+						cmd += " -show_entries side_data=rotation -of default=nokey=1:noprint_wrappers=1 ";
+						cmd += fn_in_quotes;
+						std::cout << "Analyze Video with " << cmd << std::endl;
+						std::string video_info = query_system_output(cmd, false);
+						std::vector<cgv::utils::line> lines;
+						cgv::utils::split_to_lines(video_info, lines, true);
+						bool do_swap_sides = false;
+						if (lines.size() >= 4) {
+							int rot;
+							if (cgv::utils::is_integer(lines[3].begin, lines[3].end, rot)) {
+								if (rot == 90 || rot == -90)
+									do_swap_sides = true;
+							}
+						}
+						std::stringstream ss(video_info);
+						ss >> w >> h;
+						if (do_swap_sides)
+							std::swap(w, h);
+						if (dims(2) < 0)
+							ss >> n;
+						// reattempt if nb_frames not supported by video format
+						if (ss.fail()) {
+							if (dims(2) == -1) {
+								dims(2) = -2;
+								std::cerr << "Video file <" << file_name << "> does not support nb_frames - need to could frames, please wait!" << std::endl;
+								continue;
+							}
+							std::cerr << "Error: could not analyze video file <" << file_name << "> with ffprobe" << std::endl;
+							return false;
+						}
+						else
+							break;
 					}
 					if (dims(2) < 0 && offset > n) {
 						std::cerr << "Error: frame offset " << offset << " larger than frame count of video file <" << file_name << "> with ffprobe" << std::endl;
@@ -151,6 +174,7 @@ namespace cgv {
 				V.ref_extent() = extent;
 				std::string cmd = "ffmpeg -i ";
 				cmd += fn_in_quotes;
+				cmd += " -loglevel quiet";
 				if (!cycle_till_eof) {
 					cmd += " -frames:v ";
 					cmd += cgv::utils::to_string(dims(2));

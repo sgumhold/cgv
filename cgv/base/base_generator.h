@@ -15,8 +15,9 @@ namespace cgv {
 
 struct CGV_API abst_property_access
 {
-	bool has_changed;
-	abst_property_access();
+	bool has_changed{false};
+	abst_property_access() = default;
+	virtual ~abst_property_access() = default;
 	virtual const char* get_type_name() const = 0;
 	virtual bool set(const std::string& value_type, const void* value_ptr) = 0;
 	virtual bool get(const std::string& value_type, void* value_ptr) = 0;
@@ -27,9 +28,9 @@ struct standard_type_property_access : public abst_property_access
 {
 	T* ptr;
 	standard_type_property_access(T* _ptr) : ptr(_ptr) {}
-	const char* get_type_name() const { return cgv::type::info::type_name<T>::get_name(); }
-	bool set(const std::string& value_type, const void* value_ptr) { get_variant(*ptr,value_type,value_ptr); has_changed = true; return true; }
-	bool get(const std::string& value_type, void* value_ptr) { set_variant(*ptr,value_type,value_ptr); return true; }
+	const char* get_type_name() const override { return cgv::type::info::type_name<T>::get_name(); }
+	bool set(const std::string& value_type, const void* value_ptr) override { get_variant(*ptr,value_type,value_ptr); has_changed = true; return true; }
+	bool get(const std::string& value_type, void* value_ptr) override { set_variant(*ptr,value_type,value_ptr); return true; }
 };
 
 template <typename T>
@@ -37,8 +38,8 @@ struct emulated_property_access : public abst_property_access
 {
 	T* ptr;
 	emulated_property_access(T* _ptr) : ptr(_ptr) {}
-	const char* get_type_name() const { return cgv::type::info::type_name<T>::get_name(); }
-	bool set(const std::string& value_type, const void* value_ptr) {
+	const char* get_type_name() const override { return cgv::type::info::type_name<T>::get_name(); }
+	bool set(const std::string& value_type, const void* value_ptr) override {
 		if (value_type == get_type_name()) {
 			*ptr = *((const T*) value_ptr);
 			has_changed = true;
@@ -49,7 +50,7 @@ struct emulated_property_access : public abst_property_access
 		}
 		return false;
 	}
-	bool get(const std::string& value_type, void* value_ptr) {
+	bool get(const std::string& value_type, void* value_ptr) override {
 		if (value_type == get_type_name()) {
 			*((T*) value_ptr) = *ptr;
 			return true;
@@ -92,6 +93,8 @@ protected:
 	/// store the properties as map from property name to type and pointer to instance
 	map_type property_map;
 public:
+	/// during destruction free all memory allocated on heap
+	~base_generator();
 	/// overload to return the type name of this object. By default the type interface is queried over get_type.
 	std::string get_type_name() const;
 	/// add a new property

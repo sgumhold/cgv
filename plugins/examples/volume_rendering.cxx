@@ -36,7 +36,11 @@ volume_viewer::volume_viewer() : application_plugin("Volume Viewer")
 
 	show_box = true;
 	
+#ifdef _DEBUG
+	vres = uvec3(32);
+#else
 	vres = uvec3(128);
+#endif
 	vspacing = vec3(1.0f);
 
 	view_ptr = nullptr;
@@ -72,7 +76,6 @@ void volume_viewer::stream_help(std::ostream& os)
 
 bool volume_viewer::handle_event(cgv::gui::event& e) 
 {
-
 	if(e.get_kind() == cgv::gui::EID_MOUSE) {
 		auto& me = static_cast<cgv::gui::mouse_event&>(e);
 
@@ -222,6 +225,7 @@ void volume_viewer::create_gui()
 		align("/b");
 		end_tree_node(volume_bounding_box);
 	}
+
 	add_decorator("Scaling", "heading", "level=3");
 	connect_copy(add_button("Fit to Resolution")->click, cgv::signal::rebind(this, &volume_viewer::fit_to_resolution));
 	connect_copy(add_button("Fit to Spacing")->click, cgv::signal::rebind(this, &volume_viewer::fit_to_spacing));
@@ -456,7 +460,6 @@ void volume_viewer::splat_sphere(std::vector<float>& vol_data, float voxel_size,
 void volume_viewer::load_volume_from_file(const std::string& file_name) {
 
 	std::string header_content;
-	char* vox_content;
 
 	std::string hd_file_name = "";
 	std::string vox_file_name = "";
@@ -604,7 +607,7 @@ void volume_viewer::fit_to_spacing() {
 
 	volume_bounding_box.ref_min_pnt() = vec3(-0.5f*vspacing);
 	volume_bounding_box.ref_max_pnt() = vec3(+0.5f*vspacing);
-
+	
 	update_bounding_box();
 }
 
@@ -638,4 +641,3 @@ void volume_viewer::create_histogram() {
 #include <cgv/base/register.h>
 
 cgv::base::factory_registration<volume_viewer> volume_viewer_fac("New/Render/Volume Rendering");
-

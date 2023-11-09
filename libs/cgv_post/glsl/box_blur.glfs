@@ -1,0 +1,42 @@
+#version 430
+
+#define CHANNELS 4
+#define RADIUS 2
+#define SIZE (RADIUS + RADIUS + 1)
+#define NORMALIZATION_FACTOR (1.0 / (SIZE * SIZE))
+
+#if CHANNELS == 1
+	#define DATA_TYPE float
+	#define SWIZZLE_MASK r
+#elif CHANNELS == 2
+	#define DATA_TYPE vec2
+	#define SWIZZLE_MASK rg
+#elif CHANNELS == 3
+	#define DATA_TYPE vec3
+	#define SWIZZLE_MASK rgb
+#else
+	#define DATA_TYPE vec4
+	#define SWIZZLE_MASK rgba
+#endif
+
+layout (binding = 0) uniform sampler2D input_tex;
+
+in vec2 texcoord_fs;
+
+out DATA_TYPE frag_color;
+
+void main()
+{
+	vec2 texel_size = 1.0 / textureSize(input_tex, 0);
+
+	DATA_TYPE sum = DATA_TYPE(0.0);
+
+	for(int y = -RADIUS; y <= RADIUS; ++y) {
+		for(int x = -RADIUS; x <= RADIUS; ++x) {
+			vec2 offset = texel_size * vec2(x, y);
+			sum += texture(input_tex, texcoord_fs + offset).SWIZZLE_MASK;
+		}
+	}
+	
+	frag_color = sum * NORMALIZATION_FACTOR;
+}

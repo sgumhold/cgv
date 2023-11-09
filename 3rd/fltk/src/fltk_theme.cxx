@@ -36,9 +36,9 @@ extern "C" FL_API bool fltk_theme();
 
 #if USE_X11
 
-extern "C" bool fltk_theme() {return false; /* true? */}
+//extern "C" bool fltk_theme() {return false; /* true? */}
 /* Maybe _WIN32 should use the Windows version anyway? It would work! */
-//# include "x11/fltk_theme.cxx"
+# include "x11/fltk_theme.cxx"
 
 #elif defined(_WIN32)
 

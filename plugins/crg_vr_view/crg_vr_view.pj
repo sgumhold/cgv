@@ -10,10 +10,13 @@ addProjectDirs=[
 	CGV_DIR."/plugins"
 ];
 addIncDirs=[
-	CGV_DIR."/libs", 
-	[INPUT_DIR, "all"],  
+	CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName,
+	[INPUT_DIR, "all"],
 	[ CGV_DIR."/libs/vr", "all" ]
 ];
 addSharedDefines=["CGV_VR_VIEW_EXPORTS"];
 addShaderPaths=[[INPUT_DIR,"all"]];
+if(SYSTEM=="windows") {
+	addStaticDefines=["REGISTER_SHADER_FILES"];
+}
 

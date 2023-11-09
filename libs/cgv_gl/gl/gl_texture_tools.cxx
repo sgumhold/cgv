@@ -511,6 +511,8 @@ static const char* rg_texture_formats[] = {
 unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::data::component_format* best_cf, const std::vector<data_view>* palettes)
 {
 	cgv::data::component_format cf = _cf;
+	if (cf.get_nr_components() == 1 && (cf.get_component_name(0) == "L" || cf.get_component_name(0) == "I"))
+		cf.set_component_names("R");
 	cgv::data::component_format best_cf_;
 	if (!best_cf)
 		best_cf = &best_cf_;

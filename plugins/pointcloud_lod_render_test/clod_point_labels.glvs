@@ -1,0 +1,56 @@
+#version 450
+// buffers given by the clod renderer
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec4 color;
+layout(location = 2) in uint index;
+
+// own custom label buffer
+layout(std430, binding = 6) readonly buffer ssLabels
+{
+    int labels[];
+};
+
+// data passed to geometry shader
+out vec4 color_gs;
+out float point_size_gs;
+out float radius_gs;
+out float linear_depth_gs;
+out int label_gs;
+
+//***** begin interface of view.glsl **********************************/
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************/
+
+//***** begin interface of point_clod.glsl **********************************/
+void compute_point_size(in vec3 position, in vec4 color, in mat4 central_transform, in mat4 transform,in mat4 model_view_matrix, in mat4 projection_matrix,out float point_size, out float radius, out float linear_depth);
+//***** end interface of point_clod.glsl **********************************/
+
+void main()
+{
+	//test index
+	//color_gs = vec4(float(index & 0xFF)/255.0 ,float(index & 0xFF00)/255.0,float(index & 0xFF0000)/255.0,1.0);
+	int label = labels[index];
+	label_gs = label;
+	
+	//test label
+	//color_gs = vec4(float(label),0.0,0.0,1.0);
+	
+	if (label == 0)
+		return;
+
+	mat4 transform = get_modelview_projection_matrix();
+	
+	color_gs = vec4(color.rgb,1.0);
+	
+	gl_Position = vec4(position, 1.0);
+
+	compute_point_size(position, color, transform, transform, get_modelview_matrix(), get_projection_matrix(), point_size_gs, radius_gs, linear_depth_gs);
+
+	gl_PointSize = point_size_gs*0.8;
+}

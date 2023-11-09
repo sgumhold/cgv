@@ -1,0 +1,11 @@
+@=
+projectType="application_plugin";
+projectName="camera_test";
+projectGUID="0B77A3F1-9CB3-49CB-84C2-47DADBE27506";
+addProjectDirs=[CGV_DIR."/plugins", CGV_DIR."/libs"];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_math",
+				"cgv_media", "cgv_gui", "cgv_render", "cgv_viewer", "cg_fltk", "rgbd_capture",
+				"rgbd_render", "rgbd_kinect_azure", "crg_grid", "cg_ext", "crg_stereo_view", "cgv_gl", "cmi_io", "point_cloud"];
+addIncDirs=[INPUT_DIR];
+addCommandLineArguments=[after("SHADER_PATHS", "cg_fltk")];
+

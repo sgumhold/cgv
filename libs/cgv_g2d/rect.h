@@ -4,130 +4,102 @@
 
 namespace cgv {
 namespace g2d {
-	/** A wrapper class for a 2d axis aligned bounding box with integer coordinates.
-		Abstracts the box min and max points to provide position and size member
-		functionality.
-	*/
-struct rect : public cgv::render::render_types {
-	typedef cgv::media::axis_aligned_box<int, 2> ibox2;
 
-	ibox2 box;
+/// @brief A rectangle class that stores 2D position and size members and provides convenient accessors and member methods.
+/// @tparam coord_type the coordinate type
+template<typename coord_type>
+struct rect {
+	typedef cgv::math::fvec<coord_type, 2> point_type;
+	
+	point_type position;
+	point_type size;
 
 	rect() {
-		box = ibox2(ivec2(0), ivec2(0));
+		position = point_type(0);
+		size = point_type(0);
 	}
 
-	rect(const ivec2& pos, const ivec2& size) : rect() {
-		set_pos(pos);
-		set_size(size);
-	}
+	rect(const point_type& position, const point_type& size) : position(position), size(size) {}
 
 	// minimum point (bottom left)
-	ivec2& a() { return box.ref_min_pnt(); }
+	inline point_type a() const { return position; }
 	// maximum point (top right)
-	ivec2& b() { return box.ref_max_pnt(); }
+	inline point_type b() const { return position + size; }
 
 	// minimum x position (left)
-	int x() const { return box.get_min_pnt().x(); }
+	inline coord_type x() const { return position.x(); }
+	inline coord_type& x() { return position.x(); }
 	// minimum y position (bottom)
-	int y() const { return box.get_min_pnt().y(); }
+	inline coord_type y() const { return position.y(); }
+	inline coord_type& y() { return position.y(); }
 
 	// maximum x position (right)
-	int x1() const { return box.get_max_pnt().x(); }
+	inline coord_type x1() const { return position.x() + size.x(); }
 	// maximum y position (top)
-	int y1() const { return box.get_max_pnt().y(); }
+	inline coord_type y1() const { return position.y() + size.y(); }
 
 	// width
-	int w() const { return size().x(); }
+	inline coord_type w() const { return size.x(); }
+	inline coord_type& w() { return size.x(); }
 	// height
-	int h() const { return size().y(); }
+	inline coord_type h() const { return size.y(); }
+	inline coord_type& h() { return size.y(); }
 
-	// pivot position(equivalent to bottom left)
-	ivec2 pos() const {
-		return box.get_min_pnt();
+	// center position
+	template<typename coord_type_ = coord_type, typename std::enable_if_t<std::is_integral<coord_type_>::value, bool> = true>
+	inline point_type center() const {
+		return position + size / coord_type_(2);
 	}
 
-	// size (width and height)
-	ivec2 size() const {
-		return box.get_extent();
-	}
-
-	// set x position (pivot horizontal)
-	void set_x(int x) {
-		int w = b().x() - a().x();
-		a().x() = x;
-		b().x() = a().x() + w;
-	}
-
-	// set y position (pivot vertical)
-	void set_y(int y) {
-		int h = b().y() - a().y();
-		a().y() = y;
-		b().y() = a().y() + h;
-	}
-
-	// set width
-	void set_w(int w) {
-		b().x() = a().x() + w;
-	}
-
-	// set height
-	void set_h(int h) {
-		b().y() = a().y() + h;
-	}
-
-	// set pivot position
-	void set_pos(int x, int y) {
-		set_pos(ivec2(x, y));
-	}
-
-	// set pivot position
-	void set_pos(ivec2 p) {
-		ivec2 s = size();
-		box.ref_min_pnt() = p;
-		set_size(s);
-	}
-
-	// set size (width and height)
-	void set_size(int x, int y) {
-		set_size(ivec2(x, y));
-	}
-
-	// set size (width and height)
-	void set_size(ivec2 s) {
-		box.ref_max_pnt() = box.ref_min_pnt() + s;
+	// center position
+	template<typename coord_type_ = coord_type, typename std::enable_if_t<std::is_floating_point<coord_type_>::value, bool> = true>
+	inline point_type center() const {
+		return position + coord_type_(0.5) * size;
 	}
 
 	// translate (move) whole rectangle by offset
-	void translate(int dx, int dy) {
-		translate(ivec2(dx, dy));
+	inline void translate(coord_type dx, coord_type dy) {
+		translate(point_type(dx, dy));
 	}
 
 	// translate (move) whole rectangle by offset
-	void translate(ivec2 o) {
-		box.ref_min_pnt() += o;
-		box.ref_max_pnt() += o;
+	inline void translate(point_type o) {
+		position += o;
+	}
+
+	// scale from center by given size difference (delta);
+	inline void scale(coord_type dx, coord_type dy) {
+		scale(point_type(dx, dy));
+	}
+
+	// scale from center by given size difference (delta);
+	inline void scale(point_type d) {
+		position -= d;
+		size += coord_type(2) * d;
 	}
 
 	// resize by given size difference (delta); pivot unchanged
-	void resize(int dx, int dy) {
-		resize(ivec2(dx, dy));
+	inline void resize(coord_type dx, coord_type dy) {
+		resize(point_type(dx, dy));
 	}
 
 	// resize by given size difference (delta); pivot unchanged
-	void resize(ivec2 d) {
-		box.ref_max_pnt() += d;
+	inline void resize(point_type d) {
+		size += d;
 	}
 
 	// returns true if the query point is inside the rectangle, false otherwise
-	bool is_inside(ivec2 p) {
-		const ivec2& a = pos();
-		const ivec2& b = a + size();
+	inline bool is_inside(point_type p) const {
 		return
-			p.x() >= a.x() && p.x() <= b.x() &&
-			p.y() >= a.y() && p.y() <= b.y();
+			p.x() >= x() && p.x() <= x1() &&
+			p.y() >= y() && p.y() <= y1();
 	}
 };
+
+typedef rect<unsigned> urect;
+typedef rect<int> irect;
+typedef rect<float> frect;
+typedef rect<double> drect;
 
 }
 }

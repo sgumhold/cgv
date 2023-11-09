@@ -18,7 +18,7 @@ protected:
 
 	cgv::render::texture tex;
 public:
-	cone_texturing() : cgv::base::node("rounded cone texturing test") {		
+	cone_texturing() : cgv::base::node("Rounded Cone Texturing Test") {		
 		cone_style.rounded_caps = true;
 		cone_style.radius = 0.1f;
 		cone_style.surface_color = rgb(1.0f, 0.5f, 0.2f);
@@ -229,7 +229,7 @@ public:
 		for(unsigned i = 0; i < n; ++i) {
 			for(unsigned j = 0; j < sentence.length(); ++j) {
 				char c = sentence[j];
-				auto& it = rules.find(c);
+				auto it = rules.find(c);
 				if(it != rules.end()) {
 					auto& r = (*it);
 					next_sentence += r.second;
@@ -319,9 +319,7 @@ public:
 				rad_stack.push(rad);
 				break;
 			case ']':
-				leaves.add(pos);
-				leaves.add(1.5f * (0.8f*distr(rng) + 0.2f * rad));
-
+				leaves.add(pos, 1.5f * (0.8f * distr(rng) + 0.2f * rad));
 				pos = pos_stack.top();
 				dir = dir_stack.top();
 				rad = rad_stack.top();

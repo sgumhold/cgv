@@ -14,10 +14,23 @@ namespace cgv {
 		{
 			color_storage_ptr = cm.color_storage_ptr ? cm.color_storage_ptr->clone() : 0;
 		}
+		/// move constructur
+		colored_model::colored_model(colored_model&& cm)
+		{
+			color_storage_ptr = cm.color_storage_ptr;
+			cm.color_storage_ptr = nullptr;
+		}
 		/// assignment operator
 		colored_model& colored_model::operator = (const colored_model& cm)
 		{
 			color_storage_ptr = cm.color_storage_ptr ? cm.color_storage_ptr->clone() : 0;
+			return *this;
+		}
+		/// move assignment operator
+		colored_model& colored_model::operator = (colored_model&& cm)
+		{
+			color_storage_ptr = cm.color_storage_ptr;
+			cm.color_storage_ptr = nullptr;
 			return *this;
 		}
 		/// destruct colored model

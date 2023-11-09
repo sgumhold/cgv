@@ -46,7 +46,7 @@ public:
 
 	~managed_frame_buffer();
 
-	void clear(context& ctx);
+	void destruct(const context& ctx);
 
 	ivec2 get_size();
 
@@ -70,7 +70,7 @@ public:
 	bool enable(context& ctx);
 	
 	bool disable(context& ctx);
-
+	
 	frame_buffer& ref_frame_buffer() { return fb; }
 };
 

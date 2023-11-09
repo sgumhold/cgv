@@ -9,6 +9,26 @@ frame_buffer::frame_buffer()
 	height = -1;
 }
 
+void frame_buffer::blit_to(context& ctx, const ivec4& src_rect, const ivec4& dst_rect, BufferTypeBits btbs, bool interpolate) const
+{
+	ctx.frame_buffer_blit(this, src_rect, 0, dst_rect, btbs, interpolate);
+}
+
+void frame_buffer::blit_to(context& ctx, frame_buffer& dst_fbo, const ivec4& src_rect, const ivec4& dst_rect, BufferTypeBits btbs, bool interpolate) const
+{
+	ctx.frame_buffer_blit(this, src_rect, &dst_fbo, dst_rect, btbs, interpolate);
+}
+
+void frame_buffer::blit_from(context& ctx, const ivec4& dst_rect, const ivec4& src_rect, BufferTypeBits btbs, bool interpolate)
+{
+	ctx.frame_buffer_blit(0, src_rect, this, dst_rect, btbs, interpolate);
+}
+
+void frame_buffer::blit_from(context& ctx, frame_buffer& src_fbo, const ivec4& dst_rect, const ivec4& src_rect, BufferTypeBits btbs, bool interpolate)
+{
+	ctx.frame_buffer_blit(&src_fbo, src_rect, this, dst_rect, btbs, interpolate);
+}
+
 /// destructor
 frame_buffer::~frame_buffer()
 {

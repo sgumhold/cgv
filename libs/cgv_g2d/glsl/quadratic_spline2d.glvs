@@ -1,0 +1,38 @@
+#version 150
+
+/*
+	0: SINGLE
+	1: ARRAY
+*/
+#define MODE 1
+
+#if MODE == 0
+in vec2 position0; // position 0 start
+in vec2 position1; // position 1 halfway control point
+in vec2 position2; // position 2 end
+in vec4 color;
+
+flat out vec2 position2_gs;
+flat out vec4 color_gs;
+
+void main() {
+	
+	position2_gs = position2;
+	color_gs = color;
+	gl_Position = vec4(position0, position1);
+}
+
+#else
+
+in vec2 position;
+in vec4 color;
+
+flat out vec4 color_gs;
+
+void main() {
+	
+	color_gs = color;
+	gl_Position = vec4(position, 0.0, 1.0);
+}
+
+#endif

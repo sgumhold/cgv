@@ -62,5 +62,7 @@ target_include_directories(shader_test PRIVATE
         ${CGV_DIR}/libs
         ${PPP_INCLUDES})
 target_compile_definitions(shader_test PRIVATE CGV_FORCE_STATIC)
+set_target_properties(shader_test PROPERTIES CGVPROP_TYPE "app")
+set_target_properties(shader_test PROPERTIES FOLDER "App/tool")
 
 install(TARGETS shader_test EXPORT cgv_tools DESTINATION ${CGV_BIN_DEST})
