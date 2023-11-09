@@ -3,60 +3,48 @@
 namespace cgv {
 namespace gpgpu {
 
-void scan_and_compact::destruct(context& ctx) {
+void scan_and_compact::destruct(const cgv::render::context& ctx) {
 
 	vote_prog.destruct(ctx);
 	scan_local_prog.destruct(ctx);
 	scan_global_prog.destruct(ctx);
 	compact_prog.destruct(ctx);
 
-	delete_buffers();
+	delete_buffer(ctx, votes_buffer);
+	delete_buffer(ctx, prefix_sums_buffer);
+	delete_buffer(ctx, block_sums_buffer);
 
-	_is_initialized = false;
+	is_initialized_ = false;
 }
 
-bool scan_and_compact::load_shader_programs(context& ctx) {
+bool scan_and_compact::load_shader_programs(cgv::render::context& ctx) {
 
 	bool res = true;
-	std::string where = "scan_and_compact::load_shader_programs()";
+	std::string where = "cgv::gpgpu::scan_and_compact::load_shader_programs()";
 
-	shader_define_map vote_defines, compact_defines;
+	cgv::render::shader_define_map vote_defines;
+	cgv::render::shader_code::set_define(vote_defines, "DATA_TYPE_DEFINITION", data_type_def, "");
+	cgv::render::shader_define_map compact_defines = vote_defines;
 
-	if(data_type_def != "") {
-		vote_defines["DATA_TYPE_DEFINITION"] = data_type_def;
-		compact_defines = vote_defines;
-	}
-	if(uniform_definition != "")
-		vote_defines["UNIFORM_DEFINITION"] = uniform_definition;
-	if(vote_definition != "")
-		vote_defines["VOTE_DEFINITION"] = vote_definition;
-	
-	if(mode == M_CREATE_INDICES)
-		compact_defines["CREATE_INDICES"] = "1";
+	cgv::render::shader_code::set_define(vote_defines, "UNIFORM_DEFINITION", uniform_definition, "");
+	cgv::render::shader_code::set_define(vote_defines, "VOTE_DEFINITION", vote_definition, "");
 
-	res = res && cgv::render::shader_library::load(ctx, vote_prog, vote_prog_name == "" ? "sac_vote" : vote_prog_name, vote_defines, true, where);
-	res = res && cgv::render::shader_library::load(ctx, scan_local_prog, "sac_scan_local", true, where);
-	res = res && cgv::render::shader_library::load(ctx, scan_global_prog, "sac_scan_global", true, where);
-	res = res && cgv::render::shader_library::load(ctx, compact_prog, "sac_compact", compact_defines, true, where);
+	cgv::render::shader_code::set_define(compact_defines, "MODE", mode, M_COPY_DATA);
+
+	res = res && cgv::render::shader_library::load(ctx, vote_prog, vote_prog_name == "" ? "gpgpu_sac_vote" : vote_prog_name, vote_defines, true, where);
+	res = res && cgv::render::shader_library::load(ctx, scan_local_prog, "gpgpu_sac_scan_local", true, where);
+	res = res && cgv::render::shader_library::load(ctx, scan_global_prog, "gpgpu_sac_scan_global", true, where);
+	res = res && cgv::render::shader_library::load(ctx, compact_prog, "gpgpu_sac_compact", compact_defines, true, where);
 
 	return res;
 }
 
-void scan_and_compact::delete_buffers() {
+bool scan_and_compact::init(cgv::render::context& ctx, size_t count) {
 
-	delete_buffer(votes_ssbo);
-	delete_buffer(prefix_sums_ssbo);
-	delete_buffer(block_sums_ssbo);
-}
-
-bool scan_and_compact::init(context& ctx, size_t count) {
-
-	_is_initialized = false;
+	is_initialized_ = false;
 
 	if(!load_shader_programs(ctx))
 		return false;
-
-	delete_buffers();
 
 	n = unsigned(count);
 	group_size = 64;
@@ -84,9 +72,9 @@ bool scan_and_compact::init(context& ctx, size_t count) {
 	size_t data_size = (n + n_pad) * sizeof(unsigned int);
 	size_t blocksums_size = num_block_sums * sizeof(unsigned int);
 
-	create_buffer(votes_ssbo, data_size);
-	create_buffer(prefix_sums_ssbo, 4 * sizeof(unsigned int) + data_size / 4);
-	create_buffer(block_sums_ssbo, blocksums_size);
+	ensure_buffer(ctx, votes_buffer, data_size);
+	ensure_buffer(ctx, prefix_sums_buffer, 4 * sizeof(unsigned int) + data_size / 4);
+	ensure_buffer(ctx, block_sums_buffer, blocksums_size);
 
 	vote_prog.enable(ctx);
 	vote_prog.set_uniform(ctx, "n", n);
@@ -107,58 +95,51 @@ bool scan_and_compact::init(context& ctx, size_t count) {
 	compact_prog.set_uniform(ctx, "n", n + n_pad);
 	compact_prog.disable(ctx);
 
-	_is_initialized = true;
+	is_initialized_ = true;
 	return true;
 }
 
-unsigned scan_and_compact::execute(context& ctx, GLuint data_in_buffer, GLuint data_out_buffer, bool return_count) {
+unsigned scan_and_compact::execute(cgv::render::context& ctx, const cgv::render::vertex_buffer& in_buffer, const cgv::render::vertex_buffer& out_buffer, bool return_count) {
 
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, data_in_buffer);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, data_out_buffer);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, votes_ssbo);
+	in_buffer.bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
+	out_buffer.bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
+	votes_buffer.bind(ctx, 2);
 	
 	if(!vote_prog.is_enabled()) vote_prog.enable(ctx);
-	glDispatchCompute(num_scan_groups, 1, 1);
+	dispatch_compute1d(num_scan_groups);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	vote_prog.disable(ctx);
 
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, prefix_sums_ssbo);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, block_sums_ssbo);
+	prefix_sums_buffer.bind(ctx, 3);
+	block_sums_buffer.bind(ctx, 4);
 
 	scan_local_prog.enable(ctx);
-	glDispatchCompute(num_scan_groups, 1, 1);
+	dispatch_compute1d(num_scan_groups);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	scan_local_prog.disable(ctx);
 
 	scan_global_prog.enable(ctx);
-	glDispatchCompute(1, 1, 1);
+	dispatch_compute1d(1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	scan_global_prog.disable(ctx);
 
 	compact_prog.enable(ctx);
-	glDispatchCompute(num_scan_groups, 1, 1);
+	dispatch_compute1d(num_scan_groups);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	compact_prog.disable(ctx);
 
 	unsigned count = -1;
 
 	if(return_count) {
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, prefix_sums_ssbo);
+		prefix_sums_buffer.bind(ctx);
 		void* ptr = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
 		memcpy(&count, ptr, sizeof(unsigned int));
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		prefix_sums_buffer.unbind(ctx);
 	}
-
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, 0);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, 0);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, 0);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, 0);
 
 	return count;
 }
 
-}
-}
+} // namespace gpgpu
+} // namespace cgv

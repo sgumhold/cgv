@@ -134,8 +134,10 @@ void mouse_tracker::finish_frame(context& ctx)
 {
 	if (ff.empty()) {
 		cgv::media::font::font_ptr f = cgv::media::font::find_font(font_names[font_idx]);
-		ff = f->get_font_face((bold?cgv::media::font::FFA_BOLD:0)+
-			                  (italic?cgv::media::font::FFA_ITALIC:0));
+		ff = f->get_font_face(
+			static_cast<cgv::media::font::FontFaceAttributes>(
+				(bold?cgv::media::font::FFA_BOLD:0)+
+				(italic?cgv::media::font::FFA_ITALIC:0)));
 	}
 	if (ff.empty())
 		return;

@@ -2080,7 +2080,14 @@ void CreatedWindow::create(Window* window) {
     }
 
 #if USE_DRAGDROP
-    OleInitialize(0L);
+#ifndef FL_SHARED
+    static bool first_window = true;
+    if (first_window) {
+        CoUninitialize();
+        first_window = false;
+    }
+#endif
+    HRESULT hr_init = OleInitialize(0L);
 #endif
 
 #if USE_IMM
@@ -2187,7 +2194,7 @@ void CreatedWindow::create(Window* window) {
   // where bigicon & small icon are HICON
 
 #if USE_DRAGDROP
-  RegisterDragDrop(x->xid, &flDropTarget);
+  HRESULT hr = RegisterDragDrop(x->xid, &flDropTarget);
 #endif
 }
 

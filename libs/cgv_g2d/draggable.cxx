@@ -1,22 +1,15 @@
 #include "draggable.h"
 
+using namespace cgv::render;
+
 namespace cgv {
 namespace g2d {
 
-draggable::draggable() : position_is_center(false), constraint_reference(CR_FULL_SIZE) {}
-
-draggable::vec2 draggable::center() const {
-	if(position_is_center)
-		return pos;
-	else
-		return pos + size;
+void draggable::set_constraint(const irect* area) {
+	constraint = area;
 }
 
-void draggable::set_constraint(const rect* constraint) {
-	this->constraint = constraint;
-}
-
-const rect* draggable::get_constraint() const {
+const irect* draggable::get_constraint() const {
 	return constraint;
 }
 
@@ -25,15 +18,15 @@ void draggable::apply_constraint() {
 		apply_constraint(*constraint);
 }
 
-void draggable::apply_constraint(const rect& area) {
-	vec2 min_pnt = vec2(area.box.get_min_pnt());
-	vec2 max_pnt = vec2(area.box.get_max_pnt());
+void draggable::apply_constraint(const irect& area) {
+	vec2 min_pnt = vec2(area.a());
+	vec2 max_pnt = vec2(area.b());
 
 	vec2 s = size;
 
 	if(position_is_center)
 		s *= 0.5f;
-	
+
 	switch(constraint_reference) {
 	case CR_MIN_POINT:
 		if(position_is_center) {
@@ -58,16 +51,16 @@ void draggable::apply_constraint(const rect& area) {
 	default:
 		break;
 	}
-	
-	pos = cgv::math::clamp(pos, min_pnt, max_pnt);
+
+	position = cgv::math::clamp(position, min_pnt, max_pnt);
 }
 
-bool draggable::is_inside(const ivec2& p) const {
-	vec2 a = pos;
-	vec2 b = pos + size;
-	return
-		p.x() >= a.x() && p.x() <= b.x() &&
-		p.y() >= a.y() && p.y() <= b.y();
+circle_draggable::circle_draggable() : draggable() {
+	position_is_center = true;
+}
+
+circle_draggable::circle_draggable(const cgv::render::vec2& position, const cgv::render::vec2& size) : draggable(position, size) {
+	position_is_center = true;
 }
 
 }

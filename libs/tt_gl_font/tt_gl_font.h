@@ -105,20 +105,21 @@ class CGV_API tt_gl_font : public cgv::media::font::font, public cgv::render::re
 {
 protected:
 	std::string font_name;
-	tt_gl_font_face_ptr font_faces[4];
+	/// This array stores four variants of the font (i.e. normal, bold, italic, and
+	std::array<tt_gl_font_face_ptr, 4> font_faces;
 public:
 	/// contruct font from name, size and infos necessary to create font faces, where the latter can be retrieved by name from ref_font_table() after fonts have been scanned
 	tt_gl_font(const std::string& _font_name, float _font_size, const font_info& FI);
 	/// returns "tt_gl_font"
-	std::string get_type_name() const;
+	std::string get_type_name() const override;
 	/// return the name of the font
-	const char* get_name() const;
+	const char* get_name() const override;
 	/// check whether the given font includes a face that include the possibly or-ed together selection of font face attributes
-	bool supports_font_face(int ffa) const;
+	bool supports_font_face(cgv::media::font::FontFaceAttributes ffa) const override;
 	/// return a pointer to a font face or empty pointer if font face is not supported
-	cgv::media::font::font_face_ptr get_font_face(int ffa) const;
+	virtual cgv::media::font::font_face_ptr get_font_face(cgv::media::font::FontFaceAttributes ffa) const override;
 	/// does nothing to communicate that any font size is supported
-	void enumerate_sizes(std::vector<int>& supported_sizes) const;
+	void enumerate_sizes(std::vector<int>& supported_sizes) const override;
 	/// set character range for which font face glyphs are rasterized into bitmaps
 	void set_character_range(int _fst_char, unsigned _nr_chars);
 	/// set font size in pixel at which font face glyphs are rasterized into bitmaps

@@ -1,0 +1,12 @@
+@=
+projectName="holo_disp";
+projectType="library";
+projectGUID="80FC81BF-6D82-4279-9184-A9D75FF0261F";
+addIncDirs=[[CGV_DIR."/libs", "all"], CGV_DIR."/3rd/json", CGV_BUILD_DIR."/".projectName];
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd"];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_signal", "cgv_math", "cgv_media", "cgv_render", "cgv_gl"];
+if(SYSTEM=="windows") {
+	addStaticDefines=["REGISTER_SHADER_FILES"];
+}
+addSharedDefines=["HOLO_DISP_EXPORTS"];
+addShaderPaths=[[INPUT_DIR."/glsl","all"]];

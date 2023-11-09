@@ -1,0 +1,166 @@
+#version 430
+
+// 0 = Inside, 1 = Outside, 2 = Center
+#define MODE 1
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_inverse_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+layout (binding = 0) uniform sampler2D depth_tex;
+layout (binding = 1) uniform sampler2D color_tex;
+layout (binding = 2) uniform sampler2D noise_tex;
+
+uniform float strength;
+uniform float radius;
+uniform float threshold;
+uniform float depth_scale;
+
+in vec2 texcoord_fs;
+
+out vec4 frag_color;
+
+float sample_depth(vec2 coord) {
+	return texture(depth_tex, coord).r;
+}
+
+float get_scaled_eye_z(float d) {
+	mat4 P = get_projection_matrix();
+	float z_ndc = 2.0 * d - 1.0;
+	float z_eye = P[3][2] / (P[2][2] + z_ndc);
+
+	return depth_scale * z_eye;
+}
+
+/*float get_scaled_eye_z(vec2 pos_window_norm, float depth) {
+	
+	vec3 pos_ndc = vec3(pos_window_norm, depth);
+	pos_ndc = 2.0 * pos_ndc - 1.0;
+
+	mat4 PM = get_projection_matrix();
+	mat4 iPM = get_inverse_projection_matrix();
+
+	vec4 pos_clip;
+	pos_clip.w = PM[3][2] / (pos_ndc.z - (PM[2][2] / PM[2][3]));
+	pos_clip.xyz = pos_ndc * pos_clip.w;
+
+	vec4 pos_eye = iPM * pos_clip;
+
+	return -depth_scale * pos_eye.z;
+}*/
+
+// old implementation
+/*float compute_halo(float depth) {
+
+	float unprojected_depth = unproject_depth(depth);
+	
+	vec2 texel_size = 1.0 / textureSize(depth_tex, 0);
+
+	int num_samples = 4;
+	float norm = 1.0 / float(num_samples);
+
+	float max_length = num_samples * num_samples;
+	max_length = sqrt(max_length + max_length);
+
+	float depth_factor = 1.0  / unprojected_depth;
+
+	float halo = 0.0;
+	float sum = 0.0;
+
+	for(int y = -num_samples; y <= num_samples; ++y) {
+		for(int x = -num_samples; x <= num_samples; ++x) {
+			float scale = radius * depth_factor * norm;
+			scale = max(scale, 0.2);
+			vec2 sample_pos = texcoord_fs + texel_size * scale * vec2(x, y);
+
+			float current_depth = sample_depth(sample_pos);
+			
+			current_depth = unproject_depth(current_depth);
+
+			float diff = abs(unprojected_depth - current_depth);
+			diff = clamp(diff, 0.0, 1.0);
+			
+			float len = length(vec2(x, y));
+			float weight = (max_length - len) / max_length;
+			
+			//if(diff > threshold)
+			//	weight = 0.0;
+
+			weight *= exp(-diff/threshold);
+
+			halo += weight *diff;
+			sum += weight;
+		}
+	}
+
+	halo /= sum;
+	return clamp(halo, 0.0, 1.0);
+}*/
+
+float compute_halo(float depth) {
+
+	float eye_z_center = get_scaled_eye_z(depth);
+	
+	vec2 texture_size = textureSize(depth_tex, 0);
+	vec2 texel_size = 1.0 / texture_size;
+
+	int num_samples = 4;
+
+	vec2 offset = texture(noise_tex, texcoord_fs * 0.125 * texture_size).rg;
+	offset *= 1.0 - clamp(0.5*eye_z_center, 0.0, 1.0);
+
+	vec2 scale = texel_size * radius / (eye_z_center * num_samples);
+
+	float halo = 0.0;
+	float sum = 0.0;
+	
+	for(int y = -num_samples; y <= num_samples; ++y) {
+		for(int x = -num_samples; x <= num_samples; ++x) {
+			vec2 sample_pos = vec2(x, y) + offset;
+			float eye_z = get_scaled_eye_z(sample_depth(texcoord_fs + scale * sample_pos));
+
+			#if MODE == 0
+			// inside (in front of geometry)
+			float diff = -min(eye_z_center - eye_z, 0.0);
+			#elif MODE == 1
+			// outside (behind geometry)
+			float diff = max(eye_z_center - eye_z, 0.0);
+			#else
+			// center (inside and outside)
+			float diff = abs(eye_z_center - eye_z);
+			#endif
+			
+			diff = clamp(diff, 0.0, 1.0);
+			
+			float len = length(sample_pos);
+			float weight = max((num_samples - len) / num_samples, 0.0);
+			
+			//weight *= 1.0 - smoothstep(0.0, (1.0 - threshold), diff);
+			weight *= exp(-diff/(1.0 - threshold));
+			
+			halo += weight * diff;
+			sum += weight;
+		}
+	}
+
+	halo /= sum;
+	return clamp(halo, 0.0, 1.0);
+}
+
+void main()
+{
+	float depth = sample_depth(texcoord_fs);
+	vec4 color = texture(color_tex, texcoord_fs);
+	
+	color.rgb *= 1.0 - 10.0 * compute_halo(depth) * strength;
+
+	frag_color = color;
+	gl_FragDepth = depth;
+}

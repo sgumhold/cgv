@@ -38,12 +38,20 @@ context* drawable::get_context() const
 {
 	return ctx;
 }
+
 /// posts a redraw event to the current context if one is available
 void drawable::post_redraw()
 {
-	if (ctx)
+	if(ctx)
 		ctx->post_redraw();
 }
+
+/// posts a redraw event containing user data to the current context if one is available
+/*void drawable::post_redraw(void* user_data)
+{
+	if (ctx)
+		ctx->post_redraw(user_data);
+}*/
 
 cgv::render::view* drawable::find_view_as_node(size_t view_idx) const
 {

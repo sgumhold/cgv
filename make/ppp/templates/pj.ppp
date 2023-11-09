@@ -260,10 +260,11 @@ addMapDeps = [
 
 addDependencies = ["opengl","glu","glew",["Vfw32", "static"] ];
 
-// enable openmp support by the following line (0 is default value)
+// enable openmp support by the following line (default value is 0 or 1 if env::CGV_OPTIONS containts OPENMP)
 useOpenMP = 1;
 
-// set the C++ language standard to "stdcpp14" or "stdcpp17" by the following line
+// set the C++ language standard to "stdcpp14" or "stdcpp17" by the following line,
+//     which defaults to empty or "stdcpp17" if env::CGV_OPTIONS contains STDCPP17
 cppLanguageStandard = "stdcpp17";
 
 // overwrite windows character set used to encode string, which defaults to "Unicode" or if set env::CGV_CHARSET

@@ -32,8 +32,8 @@ func(read_project; :>pj_file = "", :>return = MAP)
 		:>addLibDirs=[];
 		:>addDependencies=[];
 		:>defFile = "";
-		:>useOpenMP = 0;
-		:>cppLanguageStandard = "";
+		:>useOpenMP = CGV_OPENMP;
+		:>cppLanguageStandard = CGV_STDCPP;
 		:>charset = CGV_CHARSET;
 		:>subsystem = "Console";
 		:>addRuleFiles=[];

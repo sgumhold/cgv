@@ -49,6 +49,16 @@ struct shape2d_style : cgv::render::render_types {
 	}
 };
 
+struct circle2d_style : public shape2d_style {
+	bool use_polar_texcoords = false;
+
+	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
+		shape2d_style::apply(ctx, prog);
+
+		prog.set_uniform(ctx, "use_polar_texcoords", use_polar_texcoords);
+	}
+};
+
 struct line2d_style : public shape2d_style {
 	float width = 1.0f;
 	float dash_length = 0.0f;
@@ -89,11 +99,51 @@ struct grid2d_style : public shape2d_style {
 	GridPattern pattern = GP_GRID;
 	float scale = 0.5f;
 
+	grid2d_style() {
+		feather_width = 0.0f;
+		feather_origin = 0.0f;
+	}
+
 	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
 		shape2d_style::apply(ctx, prog);
 
 		prog.set_uniform(ctx, "pattern", static_cast<int>(pattern));
 		prog.set_uniform(ctx, "scale", scale);
+	}
+};
+
+struct text2d_style : public shape2d_style {
+	float font_size = 32.0f;
+	bool enable_subpixel_rendering = false;
+
+	text2d_style() : shape2d_style() {
+		feather_origin = 0.0f;
+	}
+
+	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
+		shape2d_style::apply(ctx, prog);
+
+		prog.set_uniform(ctx, "enable_subpixel_rendering", enable_subpixel_rendering);
+		prog.set_uniform(ctx, "font_size", font_size);
+	}
+
+	static text2d_style preset_default(const rgb& fill_color = rgb(0.0f)) {
+		text2d_style s;
+		s.fill_color = rgba(fill_color, 1.0f);
+		s.use_blending = true;
+		return s;
+	}
+
+	static text2d_style preset_clear(const rgb& fill_color = rgb(0.0f)) {
+		text2d_style s = preset_default(fill_color);
+		s.enable_subpixel_rendering = true;
+		return s;
+	}
+
+	static text2d_style preset_stylized(const rgb& fill_color = rgb(0.0f)) {
+		text2d_style s = preset_default(fill_color);
+		s.feather_origin = 0.5f;
+		return s;
 	}
 };
 

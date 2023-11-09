@@ -1,0 +1,4 @@
+#!/bin/sh
+( export CGV_DIR="@CGV_DIR@";
+  export CGV_OPTIONS="@CGV_OPTIONS@";
+  cd @WORKING_DIR@ ; $<TARGET_FILE:cgv_viewer> @CMD_LINE_ARGS_STRING@ )

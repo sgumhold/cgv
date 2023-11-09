@@ -72,8 +72,23 @@ namespace cgv {
 		template <typename T>
 		struct array_descriptor_traits
 		{
-			//TODO: What is this supposed to do; prevents compilation under Linux
-			//enum dummy { d = (sizeof(struct this_type_is_not_an_array_type_or_was_not_detected_as_an_array_type) == sizeof(T)) };
+			/*
+			If your compilation fails here, this is intentional!!! It means a function template has a deduced type which
+			is not std::vector<T> or cgv::math::vec<T>. Only these two types are, what this framework considers an
+			array-like type.
+
+			To exemplify this problem, assume that vertex_buffer::resize(ctx, buf_size) is called with an unfortunately
+			choosen type for the "buf_size" parameter and uses array_descriptor_traits in its implementation. Function
+			overloads are, among others, resize(ctx, size_t) for an empty initialization and resize(ctx, const T&) for
+			copying the data.
+
+			If the buf_size parameter has the type int, the overload resolution chooses the second variant which would
+			be wrong --- we want to specify a buffer size for allocation. The overload resolution however determines the
+			second templated overload more fitting because the first would need an implicit type conversion whereas the
+			second does not. Therefore the implementation of resize(ctx, const T&) tries to treat "buf_size" like an
+			array.
+			*/
+			static_assert(sizeof(T) == 0, "This type is not an array type or was not detected as an array type");
 		};
 
 		template <typename T>

@@ -1,0 +1,152 @@
+#version 330
+
+/*
+The following interface is implemented in this shader:
+//***** begin interface of holo_disp.glfs ***********************************
+void compute_sub_pixel_rays(out vec3 ro[3], out vec3 rd[3]);
+bool finalize_sub_pixel_fragment(in vec3 rgb, in vec3 depth);
+//***** end interface of holo_disp.glfs ***********************************
+*/
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_inverse_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+
+//***** begin interface of fragment.glfs ***********************************
+void finish_fragment(vec4 color);
+void finish_fragment(vec4 color, float depth);
+//***** end interface of fragment.glfs ***********************************
+
+// looking Glass calibration values
+uniform float pitch  = 673.46088569750157;
+uniform float slope  = -0.074780801514116493;
+uniform float center = 0.076352536678314209;
+
+// stereoscopy parameters
+uniform vec2 viewport_dims;
+uniform vec3 eye_pos;
+uniform float eye_separation;
+uniform float screen_width;
+uniform float screen_height;
+uniform float parallax_zero_depth;
+uniform float z_near;
+uniform float z_far;
+
+uniform mat4 stereo_view_params;
+
+uniform vec3 eye_pos_left;
+uniform vec3 eye_pos_right;
+uniform bool interpolate_view_matrix;
+
+mat4 compute_frustum(float l, float r, float b, float t, float n, float f) {
+	mat4 M = mat4(0.0);
+	M[0][0] = 2.0 * n / (r - l);
+	M[2][0] = (r + l) / (r - l);
+	M[1][1] = 2.0 * n / (t - b);
+	M[2][1] = (t + b) / (t - b);
+	M[2][2] = (n + f) / (n - f);
+	M[3][2] = 2.0 * n * f / (n - f);
+	M[2][3] = -1.0;
+	return M;
+}
+
+// eye from left to right / -1 to 1
+mat4 compute_stereo_frustum_screen(in float eye) {
+	float aspect = screen_width / screen_height;
+	float top = 0.5*screen_height*z_near / parallax_zero_depth;
+	float bottom = -top;
+	float delta = 0.5*eye_separation*eye*screen_width*z_near / parallax_zero_depth;
+	float left = bottom * aspect - delta;
+	float right = top * aspect - delta;
+	return compute_frustum(left, right, bottom, top, z_near, z_far);
+}
+
+// eye from left to right / -1 to 1
+void stereo_translate_modelview_matrix(in float eye, in out mat4 M) {
+	M[3].x += -0.5 * eye_separation * eye * screen_width;
+}
+
+float view_from_fragment_component (const vec2 frag, const int component) {
+	// Compute view in [-1,1] according to calibration values (see: https://www.shadertoy.com/view/ttXSDN)
+	// width of one subpixel as a fraction of full viewport width
+	float subpixel_width = 1./(3*viewport_dims.x);
+	float z = (frag.x + subpixel_width*float(component) + slope*frag.y) * pitch - center;
+	z = 1. - mod(z + ceil(abs(z)), 1.);
+	return z+z - 1.;
+}
+
+/*float view_from_pixel_component(const vec2 pixel, const int component) {
+	vec2 screen_coord = (pixel + (component/3.0)) / viewport_dims;
+	float view = screen_coord.x;
+	view += screen_coord.y * slope;
+	view *= pitch;
+	view -= center;
+	view = 1.0 - mod(view + ceil(abs(view)), 1.0);
+	return 2.0 * view - 1.0;
+}*/
+
+void compute_sub_pixel_rays(out vec3 ro[3], out vec3 rd[3])
+{
+	vec2 uv = gl_FragCoord.xy / viewport_dims;
+	for (int c = 0; c < 3; c++) {
+		// determine which view the subpixel belongs to
+		float view = view_from_fragment_component(uv, c);
+
+		vec3 ray_origin;
+		vec3 ray_direction;
+
+		// transform fragment coordinates from clip coordinates to object coordinates
+		if(interpolate_view_matrix) {
+			view = clamp(0.5 * view + 0.5, 0.0, 1.0);
+
+			mat4 iMVP_view = get_inverse_modelview_projection_matrix();
+
+			iMVP_view[2] = mix(stereo_view_params[0], stereo_view_params[1], view);
+			iMVP_view[3] = mix(stereo_view_params[2], stereo_view_params[3], view);
+			
+			// transform texcoord to clip coordinates
+			vec4 coord = vec4(uv, 0.0, 1.0) * vec4(2.0, 2.0, 2.0, 0.0) + vec4(-1.0, -1.0, -1.0, 1.0);
+			coord = iMVP_view * coord;
+			coord /= coord.w;
+
+			// start at object space eye position
+			ray_origin = mix(eye_pos_left, eye_pos_right, view);
+			ray_direction = normalize(coord.xyz - ray_origin);
+
+			
+		} else {
+			mat4 P = compute_stereo_frustum_screen(view);
+			mat4 MV = get_modelview_matrix();
+			stereo_translate_modelview_matrix(view, MV);
+
+			// transform texcoord to clip coordinates
+			vec4 coord = vec4(uv, 0.0, 1.0) * vec4(2.0, 2.0, 2.0, 0.0) + vec4(-1.0, -1.0, -1.0, 1.0);
+			coord = inverse(P * MV) * coord;
+			coord /= coord.w;
+
+			// start at object space eye position
+			ray_origin = inverse(MV)[3].xyz;
+			ray_direction = normalize(coord.xyz - ray_origin);
+		}
+		ro[c] = ray_origin;
+		rd[c] = ray_direction;
+	}
+}
+
+bool finalize_sub_pixel_fragment(in vec3 rgb, in vec3 depth)
+{
+	// FIXME: find proper way to discard subpixels (perhaps init frag color to set background color?)
+	float min_depth = min(min(depth.r, depth.g), depth.b);
+	if (min_depth >= 1.0) 
+		return false;
+	finish_fragment(vec4(rgb, 1.0), min_depth);
+	return true;
+}

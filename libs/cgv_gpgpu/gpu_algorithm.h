@@ -3,31 +3,30 @@
 #include <cgv/render/context.h>
 #include <cgv/render/render_types.h>
 #include <cgv/render/shader_library.h>
+#include <cgv/render/vertex_buffer.h>
 #include <cgv_gl/gl/gl.h>
 
 #include <iostream>
 
 #include "lib_begin.h"
 
-using namespace cgv::render;
-
 namespace cgv {
 namespace gpgpu {
 
 /** Definition of base functionality for highly parallel gpu algorithms. */
-class CGV_API gpu_algorithm : public render_types {
+class CGV_API gpu_algorithm : public cgv::render::render_types {
 private:
 	/// members for timing measurements
 	GLuint time_query = 0;
 
 protected:
-	bool _is_initialized = false;
+	bool is_initialized_ = false;
 
-	void create_buffer(GLuint& buffer, size_t size, GLenum usage = GL_DYNAMIC_COPY);
+	void ensure_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer, size_t size, cgv::render::VertexBufferType type = cgv::render::VertexBufferType::VBT_STORAGE, cgv::render::VertexBufferUsage usage = cgv::render::VertexBufferUsage::VBU_STREAM_COPY);
 
-	void delete_buffer(GLuint& buffer);
+	void delete_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer);
 
-	virtual bool load_shader_programs(context& ctx) = 0;
+	virtual bool load_shader_programs(cgv::render::context& ctx) = 0;
 
 	unsigned calculate_padding(unsigned num_elements, unsigned num_elements_per_group) {
 		unsigned n_pad = num_elements_per_group - (num_elements % num_elements_per_group);
@@ -40,15 +39,35 @@ protected:
 		return (num_elements + num_elements_per_group - 1) / num_elements_per_group;
 	}
 
+	uvec2 calculate_num_groups(uvec2 num_elements, uvec2 num_elements_per_group) {
+		return (num_elements + num_elements_per_group - 1) / num_elements_per_group;
+	}
+
+	uvec3 calculate_num_groups(uvec3 num_elements, uvec3 num_elements_per_group) {
+		return (num_elements + num_elements_per_group - 1) / num_elements_per_group;
+	}
+
+	void dispatch_compute1d(unsigned num_groups) {
+		glDispatchCompute(num_groups, 1u, 1u);
+	}
+
+	void dispatch_compute2d(uvec2 num_groups) {
+		glDispatchCompute(num_groups[0], num_groups[1], 1u);
+	}
+
+	void dispatch_compute3d(uvec3 num_groups) {
+		glDispatchCompute(num_groups[0], num_groups[1], num_groups[2]);
+	}
+
 public:
 	gpu_algorithm() {}
 	~gpu_algorithm() {}
 
-	void destruct(context& ctx);
+	virtual void destruct(const cgv::render::context& ctx) = 0;
 
-	bool init(context& ctx, size_t count);
+	virtual bool init(cgv::render::context& ctx, size_t count) = 0;
 
-	bool is_initialized() const { return _is_initialized; }
+	bool is_initialized() const { return is_initialized_; }
 
 	void begin_time_query();
 
@@ -74,4 +93,3 @@ public:
 }
 
 #include <cgv/config/lib_end.h>
-

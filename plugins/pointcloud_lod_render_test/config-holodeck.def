@@ -1,0 +1,14 @@
+show all
+
+
+persistent
+type(pointcloud_lod_render_test):model_position_x=-1.2
+type(pointcloud_lod_render_test):model_position_y=0.933
+type(pointcloud_lod_render_test):model_position_z=1
+type(pointcloud_lod_render_test):model_rotation_x=270
+type(pointcloud_lod_render_test):model_rotation_y=10
+type(pointcloud_lod_render_test):model_rotation_z=0
+type(pointcloud_lod_render_test):model_put_on_table=false
+type(pointcloud_lod_render_test):model_scale=1
+type(pointcloud_lod_render_test):pointcloud_fit_table=false
+type(pointcloud_lod_render_test):point_color_based_on_lod=false

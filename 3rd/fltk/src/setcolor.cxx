@@ -21,6 +21,8 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
+#include <array>
+
 #include <fltk/Color.h>
 #include <fltk/draw.h>
 #include <config.h>
@@ -68,9 +70,7 @@ static unsigned cmap[256] = {
 };
 
 // map for colors used in current theme
-static unsigned tcmap[8] = {
-	0, 0, 0, 0, 0, 0, 0, 0
-};
+static std::array<unsigned, fltk::ThemeColorIndex::THEME_END> tcmap{};
 
 /*! Set r,g,b to the 8-bit components of this color. If it is an indexed
   color they are looked up in the table, otherwise they are simply copied

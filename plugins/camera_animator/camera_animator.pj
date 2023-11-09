@@ -1,0 +1,16 @@
+@=
+projectType="plugin";
+projectName="camera_animator";
+projectGUID="046DCF09-2321-495D-A894-DC4DDF5556D8";
+addProjectDeps=[
+	"cgv_type", "cgv_utils", "cgv_base", "cgv_data", "cgv_signal", "cgv_reflect", "cgv_reflect_types", 
+	"cgv_render", "cgv_gui", "cg_ext", "cgv_gl", "cgv_g2d", "cgv_app", "xml"];
+addProjectDirs=[
+	CGV_DIR."/libs/cgv_gl", 
+	CGV_DIR."/plugins"
+];
+addIncDirs=[
+	CGV_DIR."/libs", 
+	[INPUT_DIR, "all"]
+];
+addSharedDefines=["CGV_CAMERA_ANIMATOR_EXPORTS"];

@@ -21,6 +21,7 @@ protected:
 	point_cloud pc;
 
 	cgv::render::surfel_render_style surfel_style;
+	//cgv::render::arrow_render_style normal_style;
 	cgv::render::arrow_render_style normal_style;
 	cgv::render::surface_render_style box_style;
 	cgv::render::line_render_style box_wire_style;

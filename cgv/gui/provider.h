@@ -336,6 +336,19 @@ public:
 	control_ptr find_control_void(void* value_ptr, int* idx_ptr);
 	/// access to view of untyped member pointer
 	view_ptr find_view_void(void* value_ptr, int* idx_ptr);
+	//! Set the property value of all controls of a given class member.
+	/** Use this method to loop over all controls of the given value and set their named
+		property to the specified property value. */
+	template <typename T>
+	void set_control_property(T& value, const std::string& property_name, const std::string& property_value) {
+		int idx = 0;
+		data::ref_ptr<control<T> > control_ptr = find_control(value, &idx);
+		while(control_ptr) {
+			++idx;
+			control_ptr->set(property_name, property_value);
+			control_ptr = find_control(value, &idx);
+		}
+	}
 	//@}
 };
 

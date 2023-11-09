@@ -5,27 +5,28 @@ namespace app {
 
 canvas_overlay::canvas_overlay() : overlay() {
 
-	fbc.add_attachment("color", "uint8[R,G,B,A]");
-	fbc.set_size(get_overlay_size());
-
-	content_canvas.set_apply_gamma(false);
-
-	overlay_canvas.register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
+	blend_overlay = false;
 }
 
 void canvas_overlay::clear(cgv::render::context& ctx) {
 
 	content_canvas.destruct(ctx);
 	overlay_canvas.destruct(ctx);
-	fbc.clear(ctx);
+	fbc.destruct(ctx);
 }
 
 bool canvas_overlay::init(cgv::render::context& ctx) {
-
+	
 	bool success = true;
 
+	fbc.add_attachment("color", "uint8[R,G,B,A]");
+	fbc.set_size(get_overlay_size());
 	success &= fbc.ensure(ctx);
+
+	content_canvas.set_apply_gamma(false);
 	success &= content_canvas.init(ctx);
+
+	overlay_canvas.register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	success &= overlay_canvas.init(ctx);
 
 	if(success)
@@ -34,39 +35,43 @@ bool canvas_overlay::init(cgv::render::context& ctx) {
 	return success;
 }
 
+void canvas_overlay::on_set(void* member_ptr) {
+
+	handle_member_change(cgv::utils::pointer_test(member_ptr));
+	update_member(member_ptr);
+	post_damage();
+}
+
 void canvas_overlay::draw(cgv::render::context& ctx) {
 
-	if(!show)
-		return;
+	if(!draw_in_finish_frame && show)
+		draw_impl(ctx);
+}
 
-	GLboolean depth_test_was_enabled = false;
-	glGetBooleanv(GL_DEPTH_TEST, &depth_test_was_enabled);
-	if(depth_test_was_enabled)
-		glDisable(GL_DEPTH_TEST);
+void canvas_overlay::finish_frame(cgv::render::context& ctx) {
 
-	if(blend_overlay)
-		enable_blending();
-
-	if(has_damage)
-		draw_content(ctx);
-
-	// draw frame buffer texture to screen
-	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
-	fbc.enable_attachment(ctx, "color", 0);
-	overlay_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());
-	fbc.disable_attachment(ctx, "color");
-	overlay_canvas.disable_current_shader(ctx);
-
-	if(depth_test_was_enabled)
-		glEnable(GL_DEPTH_TEST);
-
-	if(blend_overlay)
-		disable_blending();
+	if(draw_in_finish_frame && show)
+		draw_impl(ctx);
 }
 
 void canvas_overlay::register_shader(const std::string& name, const std::string& filename) {
 
 	content_canvas.register_shader(name, filename);
+}
+
+void canvas_overlay::handle_theme_change(const cgv::gui::theme_info& theme) {
+	
+	cgv::render::context* ctx_ptr = get_context();
+	if(ctx_ptr)
+		init_styles(*ctx_ptr);
+
+	post_damage(false);
+}
+
+void canvas_overlay::post_damage(bool redraw) {
+	has_damage = true;
+	if(redraw)
+		post_redraw();
 }
 
 void canvas_overlay::init_overlay_style(cgv::render::context& ctx) {
@@ -102,30 +107,12 @@ void canvas_overlay::post_recreate_layout() {
 	recreate_layout = true;
 }
 
-void canvas_overlay::post_damage(bool redraw) {
-	has_damage = true;
-	if(redraw)
-		post_redraw();
-}
-
 void canvas_overlay::clear_damage() {
 	has_damage = false;
 }
 
 bool canvas_overlay::is_damaged() const {
 	return has_damage;
-}
-
-bool canvas_overlay::ensure_theme() {
-	
-	auto& ti = cgv::gui::theme_info::instance();
-	int theme_idx = ti.get_theme_idx();
-	if(last_theme_idx != theme_idx) {
-		last_theme_idx = theme_idx;
-		has_damage = true;
-		return true;
-	}
-	return false;
 }
 
 void canvas_overlay::begin_content(cgv::render::context& ctx, bool clear_frame_buffer) {
@@ -155,6 +142,33 @@ void canvas_overlay::disable_blending() {
 
 	if(!blending_was_enabled)
 		glDisable(GL_BLEND);
+}
+
+void canvas_overlay::draw_impl(cgv::render::context& ctx) {
+
+	GLboolean depth_test_was_enabled = false;
+	glGetBooleanv(GL_DEPTH_TEST, &depth_test_was_enabled);
+	if(depth_test_was_enabled)
+		glDisable(GL_DEPTH_TEST);
+
+	if(blend_overlay)
+		enable_blending();
+
+	if(has_damage)
+		draw_content(ctx);
+
+	// draw frame buffer texture to screen
+	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
+	fbc.enable_attachment(ctx, "color", 0);
+	overlay_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());
+	fbc.disable_attachment(ctx, "color");
+	overlay_canvas.disable_current_shader(ctx);
+
+	if(depth_test_was_enabled)
+		glEnable(GL_DEPTH_TEST);
+
+	if(blend_overlay)
+		disable_blending();
 }
 
 }

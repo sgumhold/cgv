@@ -462,6 +462,8 @@ void base_provider::create_gui()
 		nr_toggles = 0;
 		parse_definition(PT_NR_TOGGLES);
 		if (nr_toggles > 0) {
+			if (toggles)
+				delete[] toggles;
 			toggles = new bool[nr_toggles];
 			nr_toggles = 0;
 			parse_definition(PT_INIT_TOGGLES);

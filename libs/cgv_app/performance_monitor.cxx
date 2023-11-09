@@ -21,20 +21,16 @@ performance_monitor::performance_monitor() {
 	set_overlay_margin(ivec2(-3));
 	set_overlay_size(layout.total_size);
 
-	register_shader("rectangle", cgv::g2d::canvas::shaders_2d::rectangle);
-	register_shader("line", cgv::g2d::canvas::shaders_2d::line);
-
-	bar_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::canvas::shaders_2d::rectangle);
+	bar_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
 }
 
 void performance_monitor::clear(cgv::render::context& ctx) {
 
 	canvas_overlay::clear(ctx);
 
-	cgv::g2d::ref_msdf_font(ctx, -1);
+	cgv::g2d::ref_msdf_font_regular(ctx, -1);
+	cgv::g2d::ref_msdf_font_light(ctx, -1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
-
-	label_font.destruct(ctx);
 
 	bar_renderer.destruct(ctx);
 	bars.destruct(ctx);
@@ -69,11 +65,7 @@ void performance_monitor::on_set(void* member_ptr) {
 
 	if(member_ptr == &monitor.enabled) {
 		if(monitor.enabled) {
-			monitor.timer.restart();
-			monitor.total_frame_count = 0u;
-			monitor.interval_frame_count = 0u;
-			monitor.last_seconds_since_start = 0.0;
-			monitor.running_time = 0.0;
+			monitor.reset();
 		}
 	}
 
@@ -83,6 +75,9 @@ void performance_monitor::on_set(void* member_ptr) {
 
 bool performance_monitor::init(cgv::render::context& ctx) {
 
+	register_shader("rectangle", cgv::g2d::shaders::rectangle);
+	register_shader("line", cgv::g2d::shaders::line);
+
 	bool success = canvas_overlay::init(ctx);
 
 	success &= bar_renderer.init(ctx);
@@ -90,21 +85,15 @@ bool performance_monitor::init(cgv::render::context& ctx) {
 	if(success)
 		init_styles(ctx);
 
-	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font(ctx, 1);
+	cgv::g2d::msdf_font_regular& font = cgv::g2d::ref_msdf_font_regular(ctx, 1);
+	cgv::g2d::msdf_font_light& label_font = cgv::g2d::ref_msdf_font_light(ctx, 1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
 
-	if(font.is_initialized()) {
+	if(font.is_initialized())
 		texts.set_msdf_font(&font);
-		texts.set_font_size(text_font_size);
-	}
 
-	label_font.set_font_face(cgv::g2d::msdf_font::FF_LIGHT);
-	label_font.init(ctx);
-
-	if(label_font.is_initialized()) {
+	if(label_font.is_initialized())
 		labels.set_msdf_font(&label_font);
-		labels.set_font_size(label_font_size);
-	}
 
 	plot_color_map.add_color_point(0.0f, rgb(0.5f, 1.0f, 0.5f));
 	plot_color_map.add_color_point(0.25f, rgb(0.0f, 0.9f, 0.0f));
@@ -123,10 +112,11 @@ void performance_monitor::init_frame(cgv::render::context& ctx) {
 		create_labels();
 	}
 
-	if(ensure_theme())
-		init_styles(ctx);
-
-	if(monitor.enabled) {
+	bool enabled = monitor.enabled;
+	if(monitor.enabled_only_when_visible && !show) {
+		enabled = false;
+	}
+	if(enabled) {
 		if(show_plot)
 			update_plot();
 		update_stats_texts();
@@ -151,7 +141,7 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 	if(show_plot) {
 		// draw plot border
 		border_style.apply(ctx, rect_prog);
-		content_canvas.draw_shape(ctx, layout.plot_rect.pos() - 1, layout.plot_rect.size() + 2);
+		content_canvas.draw_shape(ctx, layout.plot_rect.position - 1, layout.plot_rect.size + 2);
 
 		// draw plot bars
 		bar_renderer.render(ctx, content_canvas, cgv::render::PT_POINTS, bars, bar_style);
@@ -160,7 +150,7 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 		auto& line_prog = content_canvas.enable_shader(ctx, "line");
 
 		const auto& r = layout.plot_rect;
-		ivec2 a(r.x() + 12, r.box.get_center().y());
+		ivec2 a(r.x() + 12, r.center().y());
 		ivec2 b = a;
 		b.x() = r.x1();
 
@@ -180,7 +170,11 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 
 void performance_monitor::after_finish(cgv::render::context& ctx) {
 
-	if(monitor.enabled) {
+	bool enabled = monitor.enabled;
+	if(monitor.enabled_only_when_visible && !show) {
+		enabled = false;
+	}
+	if(enabled) {
 		++monitor.total_frame_count;
 		++monitor.interval_frame_count;
 		
@@ -199,9 +193,34 @@ void performance_monitor::after_finish(cgv::render::context& ctx) {
 	}
 }
 
+void performance_monitor::set_show_background(bool flag) {
+
+	show_background = flag;
+	on_set(&show_background);
+}
+
+void performance_monitor::set_invert_color(bool flag) {
+
+	invert_color = flag;
+	on_set(&invert_color);
+}
+
 void performance_monitor::enable_monitoring(bool enabled) {
 	monitor.enabled = enabled;
 	on_set(&monitor.enabled);
+}
+
+void performance_monitor::enable_monitoring_only_when_visible(bool enabled) {
+	monitor.enabled_only_when_visible = enabled;
+}
+
+void performance_monitor::on_visibility_change() {
+
+	if(monitor.enabled_only_when_visible && show) {
+		if(monitor.enabled) {
+			monitor.reset();
+		}
+	}
 }
 
 void performance_monitor::create_gui_impl() {
@@ -262,23 +281,25 @@ void performance_monitor::init_styles(cgv::render::context& ctx) {
 	text_style.border_width = border_width;
 	text_style.feather_origin = 0.5f;
 	text_style.use_blending = true;
+	text_style.font_size = 12.0f;
 
 	label_style = text_style;
 	label_style.feather_width = 0.5f;
+	label_style.font_size = 10.0f;
 }
 
 void performance_monitor::create_texts() {
 
 	texts.clear();
 
-	const int line_spacing = static_cast<int>(1.25f* text_font_size);
+	const int line_spacing = static_cast<int>(1.25f* text_style.font_size);
 
-	ivec2 caret_pos = ivec2(layout.content_rect.x(), layout.content_rect.y1() - (int)text_font_size);
+	ivec2 caret_pos = ivec2(layout.content_rect.x(), layout.content_rect.y1() - (int)text_style.font_size);
 	texts.add_text("Frames per Second:", caret_pos, cgv::render::TA_BOTTOM_LEFT);
 	caret_pos.y() -= line_spacing;
 	texts.add_text("Frametime (ms):", caret_pos, cgv::render::TA_BOTTOM_LEFT);
 	
-	caret_pos = ivec2(layout.content_rect.x1(), layout.content_rect.y1() - (int)text_font_size);
+	caret_pos = ivec2(layout.content_rect.x1(), layout.content_rect.y1() - (int)text_style.font_size);
 	texts.add_text("", caret_pos, cgv::render::TA_BOTTOM_RIGHT);
 	caret_pos.y() -= line_spacing;
 	texts.add_text("", caret_pos, cgv::render::TA_BOTTOM_RIGHT);
@@ -313,7 +334,7 @@ void performance_monitor::create_labels() {
 
 	ivec2 caret_pos = ivec2(layout.plot_rect.x(), layout.plot_rect.y1() + 2);
 	labels.add_text("30", caret_pos, cgv::render::TA_TOP_LEFT);
-	caret_pos.y() = layout.plot_rect.box.get_center().y() + 1;
+	caret_pos.y() = layout.plot_rect.center().y() + 1;
 	labels.add_text("60", caret_pos, cgv::render::TA_LEFT);
 	caret_pos.y() = layout.plot_rect.y();
 	labels.add_text("120", caret_pos, cgv::render::TA_BOTTOM_LEFT);
@@ -321,7 +342,7 @@ void performance_monitor::create_labels() {
 
 void performance_monitor::update_plot() {
 
-	ivec2 plot_size = layout.plot_rect.size();
+	ivec2 plot_size = layout.plot_rect.size;
 
 	float a = static_cast<float>(1000.0 * monitor.delta_time / 33.333333333);
 	float b = std::min(a, 1.0f);
@@ -330,7 +351,7 @@ void performance_monitor::update_plot() {
 
 	rgb bar_color = a > 1.0f ? rgb(0.7f, 0.0f, 0.0f) : plot_color_map.interpolate_color(b);
 
-	if(bars.get_render_count() < plot_size.x()) {
+	if(bars.render_count() < plot_size.x()) {
 		for(auto& position : bars.position)
 			position.x() -= 1.0f;
 

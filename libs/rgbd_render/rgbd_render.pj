@@ -1,0 +1,13 @@
+@=
+projectName="rgbd_render";
+projectType="library";
+projectGUID="1AA6F60A-9F53-4A62-9E79-A1204C1D469F";
+addProjectDirs=[CGV_DIR."/libs"];
+addIncDirs=[[CGV_DIR."/libs", "all"], CGV_BUILD_DIR."/".projectName];
+addSharedDefines=["RGBD_RENDER_EXPORTS"];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_signal", "cgv_render", "cgv_gl", "cgv_gui", "rgbd_capture"];
+if(SYSTEM=="windows") {
+	addStaticDefines=["REGISTER_SHADER_FILES"];
+}
+addShaderPaths=[[INPUT_DIR,"all"]];
+

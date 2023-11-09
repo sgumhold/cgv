@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include <cgv/math/fvec.h>
 #include <cgv/math/fmat.h>
 #include <cgv/math/vec.h>
@@ -29,6 +31,8 @@ namespace cgv {
 		typedef cgv::math::vec<float> vecn;
 		/// declare type of 2x2 matrices
 		typedef cgv::math::fmat<float, 2, 2> mat2;
+		/// declare type of 2x3 matrices used to store camera matrix
+		typedef cgv::math::fmat<float, 2, 3> mat23;
 		/// declare type of 3x3 matrices
 		typedef cgv::math::fmat<float, 3, 3> mat3;
 		/// declare type of 4x4 matrices
@@ -147,18 +151,42 @@ namespace cgv {
 			typedef cgv::math::quaternion<float> quat;
 			/// declare type of double quaternion
 			typedef cgv::math::quaternion<double> dquat;
-			/// declare type of 2d integer vectors
+			/// declare type of 2d 16 bit integer vectors
+			typedef cgv::math::fvec<int16_t, 2> svec2;
+			/// declare type of 3d 16 bit integer vectors
+			typedef cgv::math::fvec<int16_t, 3> svec3;
+			/// declare type of 4d 16 bit integer vectors
+			typedef cgv::math::fvec<int16_t, 4> svec4;
+			/// declare type of 2d 16 bit unsigned integer vectors
+			typedef cgv::math::fvec<uint16_t, 2> usvec2;
+			/// declare type of 3d 16 bit unsigned integer vectors
+			typedef cgv::math::fvec<uint16_t, 3> usvec3;
+			/// declare type of 4d 16 bit unsigned integer vectors
+			typedef cgv::math::fvec<uint16_t, 4> usvec4;
+			/// declare type of 2d 32 bit integer vectors
 			typedef cgv::math::fvec<int32_t, 2> ivec2;
-			/// declare type of 3d integer vectors
+			/// declare type of 3d 32 bit integer vectors
 			typedef cgv::math::fvec<int32_t, 3> ivec3;
-			/// declare type of 4d integer vectors
+			/// declare type of 4d 32 bit integer vectors
 			typedef cgv::math::fvec<int32_t, 4> ivec4;
-			/// declare type of 2d unsigned integer vectors
+			/// declare type of 2d 32 bit unsigned integer vectors
 			typedef cgv::math::fvec<uint32_t, 2> uvec2;
-			/// declare type of 3d unsigned integer vectors
+			/// declare type of 3d 32 bit unsigned integer vectors
 			typedef cgv::math::fvec<uint32_t, 3> uvec3;
-			/// declare type of 4d unsigned integer vectors
+			/// declare type of 4d 32 bit unsigned integer vectors
 			typedef cgv::math::fvec<uint32_t, 4> uvec4;
+			/// declare type of 2d 64 bit integer vectors
+			typedef cgv::math::fvec<int64_t, 2> lvec2;
+			/// declare type of 3d 64 bit integer vectors
+			typedef cgv::math::fvec<int64_t, 3> lvec3;
+			/// declare type of 4d 64 bit integer vectors
+			typedef cgv::math::fvec<int64_t, 4> lvec4;
+			/// declare type of 2d 64 bit unsigned integer vectors
+			typedef cgv::math::fvec<uint64_t, 2> ulvec2;
+			/// declare type of 3d 64 bit unsigned integer vectors
+			typedef cgv::math::fvec<uint64_t, 3> ulvec3;
+			/// declare type of 4d 64 bit unsigned integer vectors
+			typedef cgv::math::fvec<uint64_t, 4> ulvec4;
 		};
 
 		/// simple helper class to store rectangles with texture coordinates

@@ -1,0 +1,47 @@
+#version 150
+
+uniform uint nr_views     =   45u;
+uniform uint view_width   = 1638u;
+uniform uint view_height  =  910u;
+uniform uint quilt_nr_cols  = 5u;
+uniform uint quilt_nr_rows  = 9u;
+uniform uint quilt_width  = 8192u;
+uniform uint quilt_height = 8192u;
+uniform bool quilt_interpolate = true;
+
+uniform sampler2D quilt_tex;
+
+vec4 sample_color(vec3 tc)
+{
+	float view_index_float = float(nr_views-1u) * tc.z;
+	if (quilt_interpolate) {
+		uint view_index = uint(floor(view_index_float));
+		if (view_index >= nr_views-1u)
+			view_index = nr_views-2u;
+		float view_index_frac = clamp(view_index_float - float(view_index), 0.0, 1.0);
+	
+		uint quilt_col_0 = view_index % quilt_nr_cols;
+		uint quilt_row_0 = view_index / quilt_nr_cols;
+		vec2 quilt_tc_0 = vec2(
+			(float(quilt_col_0)+tc.x)*float(view_width)/float(quilt_width),
+			(float(quilt_row_0)+tc.y)*float(view_height)/float(quilt_height));
+		uint quilt_col_1 = (view_index+1u) % quilt_nr_cols;
+		uint quilt_row_1 = (view_index+1u) / quilt_nr_cols;
+		vec2 quilt_tc_1 = vec2(
+			(float(quilt_col_1)+tc.x)*float(view_width)/float(quilt_width),
+			(float(quilt_row_1)+tc.y)*float(view_height)/float(quilt_height));
+
+		return mix(texture(quilt_tex, quilt_tc_0),texture(quilt_tex, quilt_tc_1),view_index_frac);
+	}
+	else {
+		uint view_index = uint(round(view_index_float));
+		if (view_index >= nr_views)
+			view_index = nr_views-1u;
+		uint quilt_col = view_index % quilt_nr_cols;
+		uint quilt_row = view_index / quilt_nr_cols;
+		vec2 quilt_tc = vec2(
+			(float(quilt_col)+tc.x)*float(view_width)/float(quilt_width),
+			(float(quilt_row)+tc.y)*float(view_height)/float(quilt_height));
+		return texture(quilt_tex, quilt_tc);
+	}
+}

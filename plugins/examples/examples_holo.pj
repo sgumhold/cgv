@@ -1,0 +1,27 @@
+@=
+projectType="application_plugin";
+projectName="examples_holo";
+projectGUID="1A7F161C-2398-46E6-89C7-8A7B30DDE8A2";
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
+addIncDirs=[CGV_DIR."/libs", CGV_DIR."/libs/delaunay"];
+addProjectDeps=[
+		"cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal", "cgv_base", "cgv_media", 
+		"cgv_gui", "cgv_render","cgv_os", "fltk", "delaunay","cgv_gl", "cgv_proc", "plot", "glew", 
+		"cgv_viewer", "holo_disp",
+		"cg_fltk", "cg_ext", "crg_holo_view", "crg_antialias", "crg_depth_of_field", 
+		"crg_light", "crg_bg", "cg_meta", "cmi_io","cmv_avi", "crg_grid", "co_web", "cg_gamepad",
+		"cmf_tt_gl_font", "cgv_g2d", "cgv_gpgpu", "cgv_app", "cgv_post"
+	];
+if (cgv_options::BUILD_WITH_AUDIO) {
+	addProjectDeps=addProjectDeps.["cgv_oal", "cg_audio"];
+}
+else
+{
+	excludeSourceFiles=[INPUT_DIR."/spatial_audio.cxx"];
+}
+addShaderPaths=[INPUT_DIR];
+addCommandLineArguments=[
+	'gui:"'.CGV_DIR.'/plugins/examples/examples.gui"',
+	'config:"'.CGV_DIR.'/plugins/examples/config.def"',
+	after("SHADER_PATHS", "cg_fltk")
+];

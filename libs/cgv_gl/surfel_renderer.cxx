@@ -19,6 +19,7 @@ namespace cgv {
 
 		surfel_render_style::surfel_render_style() : halo_color(1, 1, 1, 1)
 		{
+			surface_offset = 0.0f;
 			point_size = 1.0f;
 			use_group_point_size = false;
 			measure_point_size_in_pixel = true;
@@ -125,6 +126,7 @@ namespace cgv {
 				ref_prog().set_uniform(ctx, "halo_width_in_pixel", srs.halo_width_in_pixel);
 				ref_prog().set_uniform(ctx, "halo_color", srs.halo_color);
 				ref_prog().set_uniform(ctx, "halo_color_strength", srs.halo_color_strength);
+				ref_prog().set_uniform(ctx, "surface_offset", srs.surface_offset);
 			}
 			return res;
 		}
@@ -195,8 +197,9 @@ namespace cgv {
 				p->add_member_control(b, "px", srs_ptr->measure_point_size_in_pixel, "toggle", "w=16");
 				if (show) {
 					p->align("\a");
-					p->add_member_control(b, "Blend", srs_ptr->blend_points, "toggle", "w=50", " ");
-					p->add_member_control(b, "Orient", srs_ptr->orient_splats, "toggle", "w=60");
+					p->add_member_control(b, "Blend", srs_ptr->blend_points, "toggle", "w=90", " ");
+					p->add_member_control(b, "Orient", srs_ptr->orient_splats, "toggle", "w=90");
+					p->add_member_control(b, "Surface Offset", srs_ptr->surface_offset, "value_slider", "min=0;max=0.1;step=0.0001;log=true;ticks=true");
 					p->align("\b");
 					p->end_tree_node(srs_ptr->point_size);
 				}

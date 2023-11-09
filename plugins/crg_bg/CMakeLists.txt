@@ -1,0 +1,9 @@
+
+cgv_add_target(crg_bg
+	TYPE plugin NO_EXECUTABLE
+	SOURCES background.cxx
+	DEPENDENCIES cgv_render cgv_gl
+	OVERRIDE_SHARED_EXPORT_DEFINE CGV_RENDER_BACKGROUND_EXPORTS
+)
+
+install(TARGETS crg_bg EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})

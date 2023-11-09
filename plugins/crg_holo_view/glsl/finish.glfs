@@ -1,0 +1,48 @@
+#version 150
+
+uniform uint width = 3840u;
+uniform uint height = 2160u;
+
+uniform vec3 x_min = vec3(10.0f);
+uniform vec3 x_max = vec3(3830.0f);
+uniform vec3 y_min = vec3(10.0f);
+uniform vec3 y_max = vec3(2150.0f);
+
+uniform float length = 42.8996f;
+uniform float step_x = 35.3762f;
+uniform float step_y = 1.0f;
+uniform vec3 offset = vec3(42.4, 39.8f, 37.2f);
+
+vec4 sample_color(vec3 tc);
+
+vec3 compute_subpixel_base_line_coordinates(ivec2 pixel)
+{
+	vec3 bl_crd_0 = vec3(step_x * float(pixel.x) + step_y * float(pixel.y)) + offset;
+	vec3 bl_crd_1 = mod(bl_crd_0, vec3(length));
+	vec3 bl_crd_2 = bl_crd_1 / length;
+	return bl_crd_2;
+}
+
+vec3 compute_subpixel_x_coordinates(ivec2 pixel)
+{
+	return float(pixel.x)/float(width-1u) * (x_max-x_min) + x_min;
+}
+vec3 compute_subpixel_y_coordinates(ivec2 pixel)
+{
+	return float(pixel.y)/float(height-1u) * (y_max - y_min) + y_min;
+}
+
+void main()
+{
+	ivec2 pixel = ivec2(int(floor(gl_FragCoord.x)), int(floor(gl_FragCoord.y)));
+	vec3 x_crds = compute_subpixel_x_coordinates(pixel);
+	vec3 y_crds = compute_subpixel_y_coordinates(pixel);
+	vec3 bl_crds = compute_subpixel_base_line_coordinates(pixel);
+	vec3 color;
+	for (int i=0; i<3; ++i) {
+		vec3 tc = vec3(x_crds[i],y_crds[i],bl_crds[i]);
+		color[i] = sample_color(tc)[i];
+//		color[i] = tc.z;
+	}
+	gl_FragColor = vec4(color,1.0);
+}
