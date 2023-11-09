@@ -2,6 +2,7 @@
 
 bool cgv::nui::gizmo_functionality_configurable_axes::validate_axes()
 {
+	// Validate that there are as many position values as there are axes (number defined by direction list)
 	return axes_directions.size() == scale_dependent_axes_positions.size()
 		&& axes_directions.size() == scale_independent_axes_positions.size();
 }
@@ -12,7 +13,7 @@ void cgv::nui::gizmo_functionality_configurable_axes::set_axes_directions(std::v
 	for (int i = 0; i < this->axes_directions.size(); ++i) {
 		this->axes_directions[i].normalize();
 	}
-	// Default configuration
+	// Default configuration of required positions
 	for (int i = 0; i < this->axes_directions.size(); ++i) {
 		this->scale_dependent_axes_positions.push_back(vec3(0.0));
 		this->scale_independent_axes_positions.push_back(vec3(0.0));
@@ -30,6 +31,7 @@ void cgv::nui::gizmo_functionality_configurable_axes::set_axes_scale_dependent_p
 	std::vector<vec3> scale_dependent_axis_positions)
 {
 	this->scale_dependent_axes_positions = scale_dependent_axis_positions;
+	// Use last available value for the rest of the axes if not every axis was provided with a position
 	fill_with_last_value_if_not_full<vec3>(this->scale_dependent_axes_positions, axes_directions.size());
 }
 
@@ -37,6 +39,7 @@ void cgv::nui::gizmo_functionality_configurable_axes::set_axes_scale_independent
 	std::vector<vec3> scale_independent_axis_positions)
 {
 	this->scale_independent_axes_positions = scale_independent_axis_positions;
+	// Use last available value for the rest of the axes if not every axis was provided with a position
 	fill_with_last_value_if_not_full<vec3>(this->scale_independent_axes_positions, axes_directions.size());
 }
 
@@ -49,7 +52,7 @@ bool cgv::nui::gizmo_functionality_handle_states::validate_handles(int handle_co
 	if (handle_highlight_colors.size() < handle_count) return false;
 	fill_with_last_value_if_not_full(handle_grab_colors, handle_count);
 	if (handle_grab_colors.size() < handle_count) return false;
-	// Fill current handle colors with base colors
+	// Reset and prepare current state
 	handle_colors.clear();
 	handles_highlighted.clear();
 	handles_grabbed.clear();

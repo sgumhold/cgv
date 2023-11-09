@@ -168,26 +168,17 @@ bool cgv::nui::translation_gizmo::_compute_intersection(const vec3& ray_start, c
 {
 	compute_geometry(scale);
 
-	// DEBUG TO REMOVE
-	auto& dvh = ref_debug_visualization_helper();
-	//dvh.update_debug_value_cylinder(debug_cylinder_handle0, arrow_positions[0] + intersection_debug_position, arrow_directions[0], arrow_radius);
-	//dvh.update_debug_value_ray(debug_ray_handle0, ray_start + intersection_debug_position, ray_direction);
-
 	size_t idx = -1;
 	float t = std::numeric_limits<float>::max();
 	vec3 n;
 	for (size_t i = 0; i < arrow_positions.size(); ++i) {
 		vec3 n0;
-		// DEBUG TO REMOVE - Box version (working)
+		// DEBUG TO REMOVE - Simple box version for testing purposes (working)
 		vec3 ro = ray_start - arrow_positions[i] - (arrow_directions[i] / 2.0f);
 		vec3 norm_arrow_direction = arrow_directions[i];
 		norm_arrow_direction.normalize();
 		vec3 orth_arrow_direction_mask = vec3(1.0f) - norm_arrow_direction;
 		vec3 box_extent_half = (vec3(arrow_radius) * orth_arrow_direction_mask + arrow_directions[i]) / 2.0f;
-		if (i == 0) {
-			dvh.update_debug_value_box(debug_box_handle0, intersection_debug_position, box_extent_half * 2.0f);
-			dvh.update_debug_value_ray(debug_ray_handle0, ro + intersection_debug_position, ray_direction);
-		}
 		auto res = cgv::math::ray_box_intersection(ro, ray_direction, -box_extent_half, box_extent_half);
 		if (res.hit && res.t_near < t) {
 			t = res.t_near;
@@ -195,32 +186,36 @@ bool cgv::nui::translation_gizmo::_compute_intersection(const vec3& ray_start, c
 			idx = i;
 		}
 
-		// Using simplified ray cylinder intersection (funktioniert gar nicht)
-		//quat arrow_rot;
-		//arrow_rot.set_normal(normalize(arrow_directions[i]));
-		//quat correction_rot = arrow_rot.inverse();
-		//vec3 ro = ray_start - arrow_positions[i];
-		//correction_rot.rotate(ro);
-		//vec3 rd = ray_direction;
-		//correction_rot.rotate(rd);
-		//if (i == 0) {
-		//	dvh.update_debug_value_cylinder(debug_cylinder_handle0, intersection_debug_position, vec3(arrow_directions[i].length(), 0.0, 0.0), arrow_radius);
-		//	dvh.update_debug_value_ray(debug_ray_handle0, ro + intersection_debug_position, rd);
-		//}
-		//auto res = cgv::math::ray_cylinder_intersection(ro, ray_direction, arrow_directions[i].length(), arrow_radius);
-		//if (res.hit && res.t_near < t) {
-		//	t = res.t_near;
-		//	n = vec3(1.0f, 0.0f, 0.0f);
-		//	idx = i;
-		//}
+		// Using simplified ray cylinder intersection (not working at all for unknown reasons)
+		/*
+		quat arrow_rot;
+		arrow_rot.set_normal(normalize(arrow_directions[i]));
+		quat correction_rot = arrow_rot.inverse();
+		vec3 ro = ray_start - arrow_positions[i];
+		correction_rot.rotate(ro);
+		vec3 rd = ray_direction;
+		correction_rot.rotate(rd);
+		if (i == 0) {
+			dvh.update_debug_value_cylinder(debug_cylinder_handle0, intersection_debug_position, vec3(arrow_directions[i].length(), 0.0, 0.0), arrow_radius);
+			dvh.update_debug_value_ray(debug_ray_handle0, ro + intersection_debug_position, rd);
+		}
+		auto res = cgv::math::ray_cylinder_intersection(ro, ray_direction, arrow_directions[i].length(), arrow_radius);
+		if (res.hit && res.t_near < t) {
+			t = res.t_near;
+			n = vec3(1.0f, 0.0f, 0.0f);
+			idx = i;
+		}
+		*/
 
 		// Old ray cylinder intersection (not working for the case of root = table for unknown reasons)
-		//float t0 = cgv::math::ray_cylinder_intersection(ray_start, ray_direction, arrow_positions[i], arrow_directions[i], arrow_radius, n0);
-		//if (t0 < t) {
-		//	t = t0;
-		//	n = n0;
-		//	idx = i;
-		//}
+		/*
+		float t0 = cgv::math::ray_cylinder_intersection(ray_start, ray_direction, arrow_positions[i], arrow_directions[i], arrow_radius, n0);
+		if (t0 < t) {
+			t = t0;
+			n = n0;
+			idx = i;
+		}
+		*/
 	}
 
 	if (t == std::numeric_limits<float>::max())
@@ -241,59 +236,22 @@ bool cgv::nui::translation_gizmo::init(cgv::render::context& ctx)
 		return false;
 	cgv::render::ref_arrow_renderer(ctx, 1);
 
+	// Example of using the debug visualization helper
+	// Retrieve the debug visualization helper singleton instance. Increase ref count (same as with primitive renderer instances).
 	auto& dvh = cgv::nui::ref_debug_visualization_helper(ctx, 1);
-	debug_coord_system_handle0 = dvh.register_debug_value_coordinate_system();
+	// Register a new debug primitive, in this case a coordinate frame. Save its handle for later.
+	debug_coord_system_handle = dvh.register_debug_value_coordinate_system();
 	{
-		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle0);
+		// Retrieve the current config of the primitive using its handle. This can be done at any time, here it is done for the initial configuration.
+		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle);
+		// Change any values of the config as needed.
 		config.show_translation = false;
-		config.position = vec3(0.8f, 2.0f, 0.0f);
-		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle0, config);
-	}
-	debug_coord_system_handle1 = dvh.register_debug_value_coordinate_system();
-	{
-		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle1);
-		config.show_translation = false;
-		config.position = vec3(1.2f, 2.0f, 0.0f);
-		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle1, config);
-	}
-	debug_coord_system_handle2 = dvh.register_debug_value_coordinate_system();
-	{
-		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle2);
-		config.show_translation = false;
-		config.position = vec3(1.2f, 3.2f, 0.0f);
-		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle2, config);
-	}
-	debug_coord_system_handle3 = dvh.register_debug_value_coordinate_system();
-	{
-		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle3);
-		config.show_translation = false;
-		config.position = vec3(1.2f, 2.8f, 0.0f);
-		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle3, config);
-	}
-	debug_coord_system_handle4 = dvh.register_debug_value_coordinate_system();
-	{
-		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle4);
-		config.show_translation = false;
-		config.position = vec3(1.2f, 2.4f, 0.0f);
-		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle4, config);
-	}
-	debug_ray_handle0 = dvh.register_debug_value_ray();
-	debug_ray_handle1 = dvh.register_debug_value_ray();
-	{
-		auto config = dvh.get_config_debug_value_ray(debug_ray_handle1);
-		config.ray_color = rgb(0.2f, 1.0f, 0.2f);
-		config.start_offset = 1.0f;
-		dvh.set_config_debug_value_ray(debug_ray_handle1, config);
-	}
-	debug_cylinder_handle0 = dvh.register_debug_value_cylinder();
-	{
-		auto config = dvh.get_config_debug_value_cylinder(debug_cylinder_handle0);
-		dvh.set_config_debug_value_cylinder(debug_cylinder_handle0, config);
-	}
-	debug_box_handle0 = dvh.register_debug_value_box();
-	{
-		auto config = dvh.get_config_debug_value_box(debug_box_handle0);
-		dvh.set_config_debug_value_box(debug_box_handle0, config);
+		config.position = vec3(0.0f, 2.0f, 0.0f);
+		// Write back the modified configuration to make it active.
+		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle, config);
+		// This is only to hide the debug primitive as this is only meant as an example. This line should be removed for an actual use of the helper.
+		// The corresponding enable function would make the debug primitive visible again.
+		dvh.disable_debug_value_visualization(debug_coord_system_handle);
 	}
 
 	return true;
@@ -301,16 +259,12 @@ bool cgv::nui::translation_gizmo::init(cgv::render::context& ctx)
 
 void cgv::nui::translation_gizmo::clear(cgv::render::context& ctx)
 {
+	// Example of using the debug visualization helper
+	// Deregister debug primitive. Also decrement ref count of debug visualization helper (same as with renderer instances).
 	auto& dvh = ref_debug_visualization_helper();
-	dvh.deregister_debug_value(debug_coord_system_handle0);
-	dvh.deregister_debug_value(debug_coord_system_handle1);
-	dvh.deregister_debug_value(debug_coord_system_handle2);
-	dvh.deregister_debug_value(debug_coord_system_handle3);
-	dvh.deregister_debug_value(debug_coord_system_handle4);
-	dvh.deregister_debug_value(debug_ray_handle0);
-	dvh.deregister_debug_value(debug_ray_handle1);
-	dvh.deregister_debug_value(debug_cylinder_handle0);
+	dvh.deregister_debug_value(debug_coord_system_handle);
 	cgv::nui::ref_debug_visualization_helper(ctx, -1);
+
 	cgv::render::ref_arrow_renderer(ctx, -1);
 	gizmo::clear(ctx);
 }
@@ -319,31 +273,9 @@ void cgv::nui::translation_gizmo::_draw(cgv::render::context& ctx, const vec3& s
 {
 	compute_geometry(scale);
 
-	// DEBUG TO REMOVE
-	vec3 anchor_obj_parent_global_translation;
-	quat anchor_obj_parent_global_rotation;
-	vec3 anchor_obj_parent_global_scale;
-	transforming::extract_transform_components(transforming::get_global_model_transform(anchor_obj->get_parent()),
-		anchor_obj_parent_global_translation, anchor_obj_parent_global_rotation, anchor_obj_parent_global_scale);
-	ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle0, get_global_model_transform(this));
-
-	mat4 gtoo_transform = get_global_model_transform(this);
-	gtoo_transform = gtoo_transform * get_inverse_model_transform();
-	ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle2, gtoo_transform);
-	gtoo_transform = gtoo_transform
-		* anchor_obj->get_interface<transforming>()->get_inverse_model_transform();
-	ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle3, gtoo_transform);
-	gtoo_transform = gtoo_transform
-		* anchor_obj->get_parent()->get_interface<transforming>()->get_inverse_model_transform();
-	ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle4, gtoo_transform);
-	gtoo_transform = gtoo_transform
-		* get_global_model_transform(value_obj->get_parent());
-
-	ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle1, gtoo_transform);
-
-	//ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle1, get_global_model_transform(this) * gizmo_to_other_object_transform(value_obj->get_parent()));
-
-
+	// Example of using the debug visualization helper
+	// Set a new value for the debug primitive. This can be done at any time (does not have to happen every frame).
+	ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle, get_global_model_transform(anchor_obj));
 
 	if (!arrow_directions.empty()) {
 		auto& ar = cgv::render::ref_arrow_renderer(ctx);

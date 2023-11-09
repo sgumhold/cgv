@@ -39,9 +39,6 @@ class vr_lab_test :
 	cgv::plot::plot2d plot;
 	// persistent vector with plot data
 	std::vector<vec4> P;
-
-	// DEBUG TO REMOVE
-	int debug_coord_system_handle;
 public:
 	std::string get_type_name() const
 	{
@@ -168,13 +165,9 @@ public:
 		cgv::render::ref_sphere_renderer(ctx, 1);
 		cgv::render::ref_cone_renderer(ctx, 1);
 
-		// DEBUG TO REMOVE
+		// Example of using the debug visualization helper
+		// As the object that calls the draw function of the debug visualization helper it has to hold a reference of the instance.
 		auto& dvh = cgv::nui::ref_debug_visualization_helper(ctx, 1);
-		debug_coord_system_handle = dvh.register_debug_value_coordinate_system();
-		auto config = dvh.get_config_debug_value_coordinate_system(debug_coord_system_handle);
-		config.show_translation = false;
-		config.position = vec3(0.0f, 2.0f, 0.0f);
-		dvh.set_config_debug_value_coordinate_system(debug_coord_system_handle, config);
 
 		plot.set_view_ptr(find_view_as_node());
 		return plot.init(ctx);
@@ -231,8 +224,8 @@ public:
 	}
 	void clear(cgv::render::context& ctx)
 	{
-		auto& dvh = cgv::nui::ref_debug_visualization_helper();
-		dvh.deregister_debug_value(debug_coord_system_handle);
+		// Example of using the debug visualization helper
+		// As the object that calls the draw function of the debug visualization helper it has to hold a reference of the instance.
 		cgv::nui::ref_debug_visualization_helper(ctx, -1);
 
 		cgv::render::ref_sphere_renderer(ctx, -1);
@@ -241,9 +234,10 @@ public:
 	void draw(cgv::render::context& ctx)
 	{
 		mat4 model_transform(3, 4, &get_scene_ptr()->get_coordsystem(coordinate_system::table)(0, 0));
-		cgv::nui::ref_debug_visualization_helper().update_debug_value_coordinate_system(debug_coord_system_handle, model_transform);
 		set_model_transform(model_transform);
 
+		// Example of using the debug visualization helper
+		// The draw function of the helper instance has to be called once per frame somewhere. In this case the main application class is a good place.
 		cgv::nui::ref_debug_visualization_helper().draw(ctx);
 
 		ctx.push_modelview_matrix();

@@ -13,10 +13,17 @@ namespace cgv {
 	class gizmo;
 
 /// Abstract base class for gizmos.
-///	A gizmo has an attach function that takes at least a base_ptr to the object this gizmo attaches to. The base_ptr is
-///	used to call the on_set function when the gizmo modifies values.
-///	Specific gizmo subclasses take additional pointers to to-be-manipulated values as arguments to attach.
-///	A gizmo also has a detach function that clears the connection between object and gizmo.
+///	A gizmo requires three references to other object in the form of node_ptr: The anchor object acts as the reference frame for the transformations
+///	of the gizmo. In the scene graph the gizmo is attached to this anchor object. The root object provides an alternative reference frame that is
+///	used to remove some transformations of the anchor, such as the scale.
+///	Lastly, the value object provides the reference frame for the value that the gizmo changes.
+///	TODO: (As this only has meaning for gizmos that change the transform of an object it might be better to move this to a subclass.)
+///	Specific gizmo subclasses take additional pointers to the to-be-manipulated values.
+///	A gizmo also always has an attach function that validates the entire configuration before activating the gizmo. It has to be called before
+///	the gizmo can be used. There is also a detach function that deactivates the gizmo.
+///
+///	The main purpose of the gizmo base class is to hide all the calculations necessary between the different reference frames and to provide the
+///	specific gizmo subclasses with a clean access to a "gizmo reference frame" that automatically adapts to the configuration.
 class CGV_API gizmo : public cgv::nui::interactable, public cgv::nui::transforming
 {
 protected:
@@ -60,10 +67,6 @@ protected:
 	/// Whether the root object's transform is changed by the value manipulated by this gizmo
 	bool is_root_influenced_by_gizmo{ false };
 
-	/// Shadowed variant of ii_during_focus from interactable that has correction transform applied.
-	//std::map<hid_identifier, interaction_info> ii_during_focus;
-	/// Shadowed variant of ii_at_grab from interactable that has correction transform applied.
-	//interaction_info ii_at_grab;
 protected:
 	/// Whether this gizmo's orientation is based on that of the root object (as opposed to that of the anchor object).
 	bool use_root_for_rotation{ false };
@@ -141,10 +144,7 @@ protected:
 	vec3 gizmo_to_value_parent_transform_vector(const vec3& vector);
 
 public:
-	gizmo(const std::string& name = "") : interactable(name)
-	{
-		//gizmo_transform_corrector_ref = new gizmo_transform_corrector(this);
-	}
+	gizmo(const std::string& name = "") : interactable(name) {}
 
 	/// Validates current configuration and activates gizmo if correct.
 	void attach();
@@ -254,10 +254,6 @@ public:
 	//@name cgv::nui::transforming interface
 	//@{
 	mat4 get_model_transform() const override;
-	//mat4 get_inverse_model_transform() const override;
-	//vec3 get_local_position() const override;
-	//quat get_local_rotation() const override;
-	//vec3 get_local_scale() const override;
 	//@}
 };
 

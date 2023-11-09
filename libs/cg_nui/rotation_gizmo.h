@@ -21,18 +21,23 @@ class CGV_API rotation_gizmo : public cgv::nui::gizmo,
 	quat** rotation_ptr_ptr{ nullptr };
 	rotatable* rotatable_obj{ nullptr };
 
+	// render style for the gizmo handles
 	cgv::render::spline_tube_render_style strs;
 
+	// visual properties of the gizmo handles
 	float ring_spline_radius{ 0.05f };
 	unsigned ring_nr_spline_segments = 4;
 	float ring_radius;
 
+	// gizmo handle geometry
 	typedef std::pair<std::vector<vec3>, std::vector<vec4>> spline_data_t;
 	std::vector<spline_data_t> ring_splines;
 	std::vector<spline_data_t> precomputed_ring_splines;
 
+	// rotation of the controlled object at the start of the interaction
 	quat rotation_at_grab;
 
+	// Handles to visual debug primitives
 	int projected_point_handle;
 	int direction_at_grab_handle, direction_currently_handle;
 

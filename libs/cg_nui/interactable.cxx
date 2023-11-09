@@ -47,11 +47,6 @@ void cgv::nui::interactable::change_state(state_enum new_state)
 	}
 }
 
-cgv::nui::interactable::interactable(const std::string& name) : group(name),
-	ii_at_grab(vec3(0.0), vec3(0.0),vec3(1.0, 0.0, 0.0), true)
-{
-}
-
 void cgv::nui::interactable::stream_help(std::ostream& os)
 {
 	os << "interactable: grab and point at it" << std::endl;
@@ -186,24 +181,6 @@ bool cgv::nui::interactable::handle(const cgv::gui::event& e, const cgv::nui::di
 		return true;
 	}
 	return false;
-}
-
-bool cgv::nui::interactable::init(cgv::render::context& ctx)
-{
-	cgv::render::ref_sphere_renderer(ctx, 1);
-	return true;
-}
-
-void cgv::nui::interactable::clear(cgv::render::context& ctx)
-{
-	cgv::render::ref_sphere_renderer(ctx, -1);
-}
-
-void cgv::nui::interactable::draw(cgv::render::context& ctx)
-{
-	if (state == state_enum::idle)
-		return;
-	
 }
 
 void cgv::nui::interactable::create_gui()

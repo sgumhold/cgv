@@ -12,12 +12,11 @@ namespace cgv {
 			iM.identity();
 		}
 
-		/// read access to model transform
 		mat4 caching_transforming::get_model_transform() const
 		{
 			return M;
 		}
-		/// read access to inverse model transform
+		
 		mat4 caching_transforming::get_inverse_model_transform() const
 		{
 			return iM;
@@ -42,13 +41,12 @@ namespace cgv {
 			return vec3(vec3(transform.col(0)).length(), vec3(transform.col(1)).length(), vec3(transform.col(2)).length());
 		}
 
-		/// set model transform and compute inverse model transform
 		void caching_transforming::set_model_transform(const mat4& _M)
 		{
 			M = _M;
 			iM = inv(M);
 		}
-		/// set model transform and inverse model transform
+		
 		void caching_transforming::set_model_transform(const mat4& _M, const mat4& _iM)
 		{
 			M = _M;

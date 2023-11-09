@@ -8,6 +8,7 @@ namespace cgv {
 
 		base::node* transforming::get_node()
 		{
+			// Cast to node class only on the first call to this function
 			if (!tried_node_cast) {
 				_node = dynamic_cast<base::node*>(this);
 				tried_node_cast = true;

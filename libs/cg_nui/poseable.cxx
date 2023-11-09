@@ -97,13 +97,3 @@ bool cgv::nui::poseable::compute_intersection(const vec3& ray_start, const vec3&
 	}
 	return result;
 }
-
-void cgv::nui::poseable::draw(cgv::render::context& ctx)
-{
-	interactable::draw(ctx);
-}
-
-void cgv::nui::poseable::create_gui()
-{
-	interactable::create_gui();
-}

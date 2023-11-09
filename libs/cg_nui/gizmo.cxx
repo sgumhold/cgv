@@ -195,7 +195,7 @@ bool cgv::nui::gizmo::compute_closest_point(const vec3& point, vec3& prj_point, 
 	mat4 view_matrix;
 	view_matrix.identity(); // TODO: Get actual camera transform
 
-	// Apply correction transform to match configuration
+	// Correction is already applied by dispatcher. Anchor scale has to be provided.
 	return _compute_closest_point(point, prj_point, prj_normal, primitive_idx,
 		anchor_scale, view_matrix);
 }
@@ -222,7 +222,7 @@ bool cgv::nui::gizmo::compute_intersection(const vec3& ray_start, const vec3& ra
 	mat4 view_matrix;
 	view_matrix.identity(); // TODO: Get actual camera transform
 
-	// Apply correction transform to match configuration
+	// Correction is already applied by dispatcher. Anchor scale has to be provided.
 	bool result = _compute_intersection(ray_start, ray_direction, hit_param,
 		hit_normal, primitive_idx, anchor_scale, view_matrix);
 	// Make sure there is still an intersection if a handle is grabbed but the ray temporarily doesn't actually intersect it.
@@ -259,6 +259,7 @@ void cgv::nui::gizmo::draw(cgv::render::context& ctx)
 	mat4 view_matrix;
 	view_matrix.identity(); // TODO: Get actual camera transform
 
+	// Apply the correction to the gizmo transform
 	ctx.push_modelview_matrix();
 	ctx.mul_modelview_matrix(get_model_transform());
 
@@ -304,7 +305,6 @@ mat4 cgv::nui::gizmo::get_model_transform() const
 	mat4 transform;
 	transform.identity();
 
-	// TODO: Not yet tested
 	// Apply position difference between anchor and root
 	if (use_root_for_position) {
 		// This fixes the rotation issues but not the scale-dependency of the position
@@ -313,7 +313,6 @@ mat4 cgv::nui::gizmo::get_model_transform() const
 		transform = cgv::math::translate4(anchor_obj_global_rotation.inverse().get_rotated(anchor_root_diff_translation) / anchor_obj_parent_global_scale) * transform;
 	}
 
-	// TODO: Tested and works
 	// Apply rotation difference between anchor and root
 	if (use_root_for_rotation) {
 		transform = anchor_root_diff_rotation.get_homogeneous_matrix() * transform;

@@ -43,23 +43,6 @@ void cgv::nui::scaling_gizmo::compute_geometry(const vec3& scale)
 	}
 }
 
-void cgv::nui::scaling_gizmo::set_scale_reference(vec3* _scale_ptr, cgv::base::base_ptr _on_set_obj)
-{
-	scale_ptr = _scale_ptr;
-	gizmo::set_on_set_object(_on_set_obj);
-}
-
-void cgv::nui::scaling_gizmo::set_scale_reference(vec3** _scale_ptr_ptr, cgv::base::base_ptr _on_set_obj)
-{
-	scale_ptr_ptr = _scale_ptr_ptr;
-	gizmo::set_on_set_object(_on_set_obj);
-}
-
-void cgv::nui::scaling_gizmo::set_scale_reference(scalable* _scalable_obj)
-{
-	scalable_obj = _scalable_obj;
-}
-
 bool cgv::nui::scaling_gizmo::validate_configuration()
 {
 	bool configuration_valid = true;
@@ -130,6 +113,63 @@ void cgv::nui::scaling_gizmo::on_handle_drag()
 	}
 	ensure_scale_constraints(new_scale);
 	set_scale(new_scale);
+}
+
+cgv::render::render_types::vec3 cgv::nui::scaling_gizmo::get_scale()
+{
+	if (scalable_obj)
+		return scalable_obj->get_scale();
+	if (scale_ptr_ptr)
+		return **scale_ptr_ptr;
+	return *scale_ptr;
+}
+
+void cgv::nui::scaling_gizmo::set_scale(const vec3& scale)
+{
+	if (scalable_obj) {
+		scalable_obj->set_scale(scale);
+	}
+	else {
+		if (scale_ptr_ptr)
+			**scale_ptr_ptr = scale;
+		else
+			*scale_ptr = scale;
+		if (on_set_obj)
+			on_set_obj->on_set(scale_ptr);
+	}
+}
+
+void cgv::nui::scaling_gizmo::ensure_scale_constraints(vec3& scale)
+{
+	if (scale[0] < minimum_scale[0])
+		scale[0] = minimum_scale[0];
+	if (scale[1] < minimum_scale[1])
+		scale[1] = minimum_scale[1];
+	if (scale[2] < minimum_scale[2])
+		scale[2] = minimum_scale[2];
+	if (scale[0] > maximum_scale[0])
+		scale[0] = maximum_scale[0];
+	if (scale[1] > maximum_scale[1])
+		scale[1] = maximum_scale[1];
+	if (scale[2] > maximum_scale[2])
+		scale[2] = maximum_scale[2];
+}
+
+void cgv::nui::scaling_gizmo::set_scale_reference(vec3* _scale_ptr, cgv::base::base_ptr _on_set_obj)
+{
+	scale_ptr = _scale_ptr;
+	gizmo::set_on_set_object(_on_set_obj);
+}
+
+void cgv::nui::scaling_gizmo::set_scale_reference(vec3** _scale_ptr_ptr, cgv::base::base_ptr _on_set_obj)
+{
+	scale_ptr_ptr = _scale_ptr_ptr;
+	gizmo::set_on_set_object(_on_set_obj);
+}
+
+void cgv::nui::scaling_gizmo::set_scale_reference(scalable* _scalable_obj)
+{
+	scalable_obj = _scalable_obj;
 }
 
 void cgv::nui::scaling_gizmo::set_axes_directions(std::vector<vec3> axes_directions)
@@ -234,46 +274,6 @@ bool cgv::nui::scaling_gizmo::_compute_intersection(const vec3& ray_start, const
 	primitive_idx = idx;
 	highlight_handle(idx);
 	return true;
-}
-
-cgv::render::render_types::vec3 cgv::nui::scaling_gizmo::get_scale()
-{
-	if (scalable_obj)
-		return scalable_obj->get_scale();
-	if (scale_ptr_ptr)
-		return **scale_ptr_ptr;
-	return *scale_ptr;
-}
-
-void cgv::nui::scaling_gizmo::set_scale(const vec3& scale)
-{
-	if (scalable_obj) {
-		scalable_obj->set_scale(scale);
-	}
-	else {
-		if (scale_ptr_ptr)
-			**scale_ptr_ptr = scale;
-		else
-			*scale_ptr = scale;
-		if (on_set_obj)
-			on_set_obj->on_set(scale_ptr);
-	}
-}
-
-void cgv::nui::scaling_gizmo::ensure_scale_constraints(vec3& scale)
-{
-	if (scale[0] < minimum_scale[0])
-		scale[0] = minimum_scale[0];
-	if (scale[1] < minimum_scale[1])
-		scale[1] = minimum_scale[1];
-	if (scale[2] < minimum_scale[2])
-		scale[2] = minimum_scale[2];
-	if (scale[0] > maximum_scale[0])
-		scale[0] = maximum_scale[0];
-	if (scale[1] > maximum_scale[1])
-		scale[1] = maximum_scale[1];
-	if (scale[2] > maximum_scale[2])
-		scale[2] = maximum_scale[2];
 }
 
 bool cgv::nui::scaling_gizmo::init(cgv::render::context& ctx)

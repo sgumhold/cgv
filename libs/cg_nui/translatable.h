@@ -7,15 +7,22 @@
 namespace cgv {
 	namespace nui {
 		using namespace render;
-/// Interface for objects that have a position that can be changed
+		/// Interface for objects that have a position that can be changed.
+		///	The position is represented by a 3d vector (cgv_math::vec3).
+		///	The position value can either be held by the interface internally, supplied externally via a pointer or a pointer to a pointer,
+		///	or be handled fully custom through overriding the get_position and set_position functions.
+		///	If the implementing object extends cgv_base::base then the default implementation of set_position will call on_set with the modified value.
 class CGV_API translatable
 {
+protected:
 	vec3 internal_position{ 0.0f };
+private:
 	vec3* position_ptr{ nullptr };
 	vec3** position_ptr_ptr{ nullptr };
 
 	base::base* _base{ nullptr };
 	bool tried_base_cast{ false };
+protected:
 	base::base* get_base()
 	{
 		if (!_base && !tried_base_cast) {
@@ -29,7 +36,7 @@ public:
 	translatable() {}
 	/// Use given external position variable
 	translatable(vec3* position_ptr) : position_ptr(position_ptr) {}
-	/// Use given external position variable
+	/// Use given external position variable through one indirection
 	translatable(vec3** position_ptr_ptr) : position_ptr_ptr(position_ptr_ptr) {}
 
 	virtual vec3 get_position() const
