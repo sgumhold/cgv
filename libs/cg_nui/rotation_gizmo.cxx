@@ -239,11 +239,15 @@ bool cgv::nui::rotation_gizmo::_compute_intersection(const vec3& ray_start, cons
 	vec3 n;
 	for (size_t i = 0; i < axes_directions.size(); ++i) {
 		vec3 n0;
-		float t0 = cgv::math::ray_torus_intersection(ray_start, ray_direction,
-			vec3(0.0),
+		float t0;
+		int n_intersections = cgv::math::ray_torus_intersection(
+			cgv::math::ray<float, 3>(ray_start, ray_direction),
+			vec3(0.0f),
 			axes_directions[i],
-			vec2(radius, ring_spline_radius), n0);
-		if (t0 < t) {
+			radius,
+			ring_spline_radius,
+			t0, &n0);
+		if (n_intersections > 0 && t0 < t) {
 			t = t0;
 			n = n0;
 			idx = i;
