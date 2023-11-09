@@ -17,6 +17,7 @@
 #include <cgv_g2d/canvas.h>
 #include <cgv_g2d/draggable.h>
 #include <cgv_g2d/draggable_collection.h>
+#include <cgv_g2d/generic_2d_render_data.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 #include <cgv_g2d/rect.h>
 #include <cgv_g2d/shape2d_styles.h>
