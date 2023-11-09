@@ -12,8 +12,7 @@ namespace cgv {
 	namespace nui {
 
 /// A gizmo that provides the means to scale an object along configured axes.
-///	Needs at least a scale to manipulate.
-///	Optionally takes a position as an anchor point and a rotation to allow for scaling in the object coordinates.
+///	Needs a scale to manipulate.
 class CGV_API scaling_gizmo : public cgv::nui::gizmo,
 	public cgv::nui::gizmo_functionality_configurable_axes,
 	public cgv::nui::gizmo_functionality_handle_states
@@ -23,13 +22,15 @@ class CGV_API scaling_gizmo : public cgv::nui::gizmo,
 	vec3** scale_ptr_ptr{ nullptr };
 	scalable* scalable_obj{ nullptr };
 
+	// render styles for the gizmo handles
 	cgv::render::box_render_style brs;
 	cgv::render::spline_tube_render_style strs;
 
+	// visual properties of the gizmo handles
 	float spline_tube_radius{ 0.03f };
 	float cube_size{ 0.07f };
 
-	// geometry
+	// gizmo handle geometry
 	std::vector<vec3> cube_positions;
 	std::vector<quat> cube_rotations;
 	typedef std::pair<std::vector<vec3>, std::vector<vec4>> spline_data_t;
@@ -37,7 +38,9 @@ class CGV_API scaling_gizmo : public cgv::nui::gizmo,
 	std::vector<vec3> handle_positions;
 	std::vector<vec3> handle_directions;
 
+	// distance of intersection point to object center at the start of the interaction
 	float distance_at_grab;
+	// scale of the controlled object at the start of the interaction
 	vec3 scale_at_grab;
 
 	/// Compute the scale-dependent geometry

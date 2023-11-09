@@ -28,9 +28,6 @@ namespace cgv {
 ///	was pointing or proximity is stored continuously while the interactable has focus (ii_during_focus) and once at
 ///	the moment of grab/trigger (ii_at_grab). The stored information is available for deriving classes to be used
 ///	e.g. for determining an updated position (see translation gizmo for an example).
-///	If enabled a debug point is drawn at the intersection / closest surface point while the state is not idle.
-///	If enabled an additional debug point is drawn for the intersection/closest surface point at the start of
-///	grabbing/triggering.
 class CGV_API interactable : public cgv::base::group,
 							 public cgv::render::drawable,
 							 public cgv::nui::focusable,
@@ -81,9 +78,9 @@ protected:
 	std::set<cgv::nui::hid_identifier> selecting_hid_ids;
 	/// HID that triggered or grabbed the interactable
 	cgv::nui::hid_identifier activating_hid_id;
-	// state of object
+	/// Current state of the object
 	state_enum state = state_enum::idle;
-	// index of focused primitive (always 0 in case of only one primitive)
+	/// Index of focused primitive (always 0 in case of only one primitive)
 	int prim_idx = 0;
 
 	// State change events that can be overriden
@@ -124,7 +121,8 @@ protected:
 	virtual void on_triggered_stop() {}
 
 public:
-	interactable(const std::string& name = "");
+	interactable(const std::string& name = "") : group(name), ii_at_grab(vec3(0.0), vec3(0.0),
+		vec3(1.0, 0.0, 0.0), true) {}
 
 	//@name cgv::base::base interface
 	//@{
@@ -138,14 +136,6 @@ public:
 					  const cgv::nui::dispatch_info& dis_info) override;
 	void stream_help(std::ostream& os) override;
 	bool handle(const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info, cgv::nui::focus_request& request) override;
-	//@}
-
-	// Used for drawing debug points
-	//@name cgv::render::drawable interface
-	//@{
-	bool init(cgv::render::context& ctx) override;
-	void clear(cgv::render::context& ctx) override;
-	void draw(cgv::render::context& ctx) override;
 	//@}
 
 	//@name cgv::gui::provider interface

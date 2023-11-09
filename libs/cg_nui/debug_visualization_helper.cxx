@@ -101,12 +101,14 @@ void cgv::nui::debug_visualization_helper::draw(render::context& ctx)
 	}
 
 	// Boxes
-	auto& br = render::ref_box_renderer(ctx);
-	br.set_render_style(brs);
-	br.set_position_array(ctx, box_positions);
-	br.set_extent_array(ctx, box_extents);
-	br.set_color_array(ctx, box_colors);
-	br.render(ctx, 0, 1);
+	if (box_positions.size() > 0) {
+		auto& br = render::ref_box_renderer(ctx);
+		br.set_render_style(brs);
+		br.set_position_array(ctx, box_positions);
+		br.set_extent_array(ctx, box_extents);
+		br.set_color_array(ctx, box_colors);
+		br.render(ctx, 0, 1);
+	}
 
 	// Splines
 	auto& str = cgv::render::ref_spline_tube_renderer(ctx);
@@ -295,7 +297,7 @@ void cgv::nui::debug_visualization_helper::construct_coordinate_system_geometry(
 	if (!debug_value->is_enabled)
 		return;
 	// calculation from https://math.stackexchange.com/q/1463487 (lookup 28.06.2022)
-			// assuming no perspective transformation, no shear, no negative scaling factors
+	// assuming no perspective transformation, no shear, no negative scaling factors
 	vec3 translation = debug_value->value.col(3);
 	vec3 scale = vec3(vec3(debug_value->value.col(0)).length(), vec3(debug_value->value.col(1)).length(), vec3(debug_value->value.col(2)).length());
 	quat rotation = quat(mat3({ normalize(vec3(debug_value->value.col(0))), normalize(vec3(debug_value->value.col(1))), normalize(vec3(debug_value->value.col(2))) }));

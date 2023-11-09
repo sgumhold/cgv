@@ -10,8 +10,8 @@
 namespace cgv {
 	namespace nui {
 
-/// Base class for interactable objects that can be moved while triggered/grabbed. The movement (and rotation)
-///	is applied via the translatable (and rotatable) interfaces. These have to be implemented by the object
+/// Base class for interactable objects that can be moved while triggered/grabbed (directly following the movements of the HID).
+/// The movement (and rotation) is applied via the translatable (and rotatable) interfaces. These have to be implemented by the object
 ///	implementing this interface. (This interface does not inherit them itself to avoid virtual inheritance.)
 ///	(See simple_object and simple_primitive_container in vr_lab_test for examples of using this interface.)
 class CGV_API poseable : public interactable
@@ -41,7 +41,7 @@ protected:
 	void on_triggered_start() override;
 	void on_triggered_drag() override;
 
-	// Override this instead of compute_clostest_point
+	// Override this instead of compute_closest_point
 	virtual bool _compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx) = 0;
 	// Override this instead of compute_intersection
 	virtual bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx) = 0;
@@ -49,20 +49,8 @@ protected:
 public:
 	poseable(const std::string& name = "", bool manipulate_rotation = true) : interactable(name), manipulate_rotation(manipulate_rotation) {}
 
-	// Used for drawing debug points
-	//@name cgv::render::drawable interface
-	//@{
-	void draw(cgv::render::context& ctx) override;
-	//@}
-
 	bool compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx) override;
 	bool compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx) override;
-
-	// Used for debug settings
-	//@name cgv::gui::provider interface
-	//@{
-	void create_gui() override;
-	//@}
 };
 	}
 }

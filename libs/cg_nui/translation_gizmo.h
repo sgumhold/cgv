@@ -11,8 +11,7 @@ namespace cgv {
 	namespace nui {
 
 /// A gizmo that provides the means to translate an object along configured axes.
-///	Needs at least a position to manipulate.
-///	Optionally takes a rotation to allow for translation in the object coordinates.
+///	Needs at a position to manipulate.
 class CGV_API translation_gizmo : public cgv::nui::gizmo,
 	public cgv::nui::gizmo_functionality_configurable_axes,
 	public cgv::nui::gizmo_functionality_handle_states
@@ -22,14 +21,18 @@ class CGV_API translation_gizmo : public cgv::nui::gizmo,
 	vec3** position_ptr_ptr{ nullptr };
 	translatable* translatable_obj{ nullptr };
 
+	// render style for the gizmo handles
 	cgv::render::arrow_render_style ars;
 
+	// visual properties of the gizmo handles
 	float arrow_radius{ 0.05f };
 
+	// gizmo handle geometry
 	// only have to be recomputed if the position or rotation of the object changes
 	std::vector<vec3> arrow_positions;
 	std::vector<vec3> arrow_directions;
 
+	// position of the controlled object at the start of the interaction
 	vec3 position_at_grab;
 
 	/// Compute the scale-dependent geometry
@@ -43,17 +46,9 @@ class CGV_API translation_gizmo : public cgv::nui::gizmo,
 	bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx,
 		const vec3& scale, const mat4& view_matrix) override;
 
-	// DEBUG TO REMOVE
-	int debug_coord_system_handle0;
-	int debug_coord_system_handle1;
-	int debug_coord_system_handle2;
-	int debug_coord_system_handle3;
-	int debug_coord_system_handle4;
-	int debug_ray_handle0;
-	int debug_ray_handle1;
-	int debug_cylinder_handle0;
-	int debug_box_handle0;
-	vec3 intersection_debug_position{ 0.5f, 2.0f, 0.0f };
+	// Example of using the debug visualization helper
+	// Handle for the debug primitive, in this case a coordinate frame
+	int debug_coord_system_handle;
 
 protected:
 	// Get the position of the attached object
@@ -88,7 +83,6 @@ public:
 
 	void set_axes_directions(std::vector<vec3> axes) override;
 	/// Set various parameters of the individual arrow geometries.
-	// TODO: Add more parameters
 	void configure_axes_geometry(float radius, float length);
 
 	//@name cgv::render::drawable interface
