@@ -2,6 +2,7 @@
 
 #include <cgv/render/context.h>
 #include <cgv_gl/gl/gl.h>
+#include <cgv/render/vertex_buffer.h>
 #include "msdf_font.h" 
 
 #include "lib_begin.h"
@@ -26,40 +27,46 @@ protected:
 			: str(str), position(position), size(size), alignment(alignment), angle(angle), color(color) {}
 	};
 
-	struct vertex_type {
-		vec4 position_size;
-		vec4 texcoords;
-	};
-
-	// TODO: use a ref_ptr?
-	msdf_font* msdf_font_ptr;
-
-	GLuint ssbo;
-	bool state_out_of_date;
+	msdf_font::FontFace font_face = msdf_font::FontFace::FF_REGULAR;
+	msdf_font* msdf_font_ptr = nullptr;
+	msdf_font* custom_msdf_font_ptr = nullptr;
 
 	std::vector<text_info> texts;
-	std::vector<vertex_type> vertices;
+	std::vector<vec4> vertices;
+
+	cgv::render::vertex_buffer geometry_buffer;
+	bool state_out_of_date = true;
+
+	msdf_font& handle_font_ref(cgv::render::context& ctx, int ref_count_change);
+
+	msdf_font& ref_font() const;
 
 	float compute_length(const std::string& str) const;
 
 	void update_offsets(size_t begin);
 
-	void add_vertex(const vec4& pos, const vec4& txc);
+	void add_vertex(const vec2& position, const vec2& size, const vec4& texcoords);
 
 	void create_vertex_data();
 
 public:
 	msdf_text_geometry();
 
+	msdf_text_geometry(msdf_font::FontFace font_face);
+
 	~msdf_text_geometry();
+
+	bool init(cgv::render::context& ctx);
+
+	void destruct(cgv::render::context& ctx);
 
 	void clear();
 
 	bool is_created() const { return !state_out_of_date; }
 
-	const msdf_font* get_msdf_font() { return msdf_font_ptr; }
+	const msdf_font& get_msdf_font() { return ref_font(); }
 
-	void set_msdf_font(msdf_font* ptr, bool update_texts = true);
+	void set_msdf_font(msdf_font* font_ptr, bool update_texts = true);
 
 	void set_text(unsigned i, const std::string& text);
 
