@@ -58,6 +58,8 @@ color_map_editor::color_map_editor() {
 
 void color_map_editor::clear(cgv::render::context& ctx) {
 
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
+
 	canvas_overlay::clear(ctx);
 
 	color_handle_renderer.destruct(ctx);
@@ -69,8 +71,8 @@ void color_map_editor::clear(cgv::render::context& ctx) {
 	preview_tex.destruct(ctx);
 	hist_tex.destruct(ctx);
 
-	cgv::g2d::ref_msdf_font_regular(ctx, -1);
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
+	cursor_labels.destruct(ctx);
+	value_labels.destruct(ctx);
 }
 
 bool color_map_editor::handle_event(cgv::gui::event& e) {
@@ -249,6 +251,8 @@ void color_map_editor::on_set(void* member_ptr) {
 
 bool color_map_editor::init(cgv::render::context& ctx) {
 	
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
+	
 	register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	register_shader("circle", cgv::g2d::shaders::circle);
 	register_shader("histogram", "heightfield1d.glpr");
@@ -260,21 +264,15 @@ bool color_map_editor::init(cgv::render::context& ctx) {
 	success &= opacity_handle_renderer.init(ctx);
 	success &= line_renderer.init(ctx);
 	success &= polygon_renderer.init(ctx);
+	success &= cursor_labels.init(ctx);
+	success &= value_labels.init(ctx);
 
-	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font_regular(ctx, 1);
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
-
-	if(font.is_initialized()) {
-		cursor_labels.set_msdf_font(&font);
+	if(success) {
 		cursor_labels.add_text("-", vec2(0.0f));
 		cursor_labels.add_text("+", vec2(0.0f));
 
-		value_labels.set_msdf_font(&font);
 		value_labels.add_text("", ivec2(0), cgv::render::TA_BOTTOM);
 	}
-
-	if(success)
-		init_styles(ctx);
 
 	init_preview_texture(ctx);
 	update_color_map(false);
@@ -428,10 +426,9 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 
 void color_map_editor::handle_theme_change(const cgv::gui::theme_info& theme) {
 
-	init_styles(*get_context());
+	canvas_overlay::handle_theme_change(theme);
 	update_geometry();
 	post_recreate_gui();
-	post_damage();
 }
 
 void color_map_editor::create_gui_impl() {
@@ -583,25 +580,22 @@ void color_map_editor::set_selected_color(rgb color) {
 	}
 }
 
-void color_map_editor::init_styles(cgv::render::context& ctx) {
+void color_map_editor::init_styles() {
 	// get theme colors
 	auto& ti = cgv::gui::theme_info::instance();
 	handle_color = rgba(ti.text(), 1.0f);
 	highlight_color = rgba(ti.highlight(), 1.0f);
 	highlight_color_hex = ti.highlight_hex();
-	rgba background_color = rgba(ti.background(), 1.0f);
-	rgba group_color = rgba(ti.group(), 1.0f);
-	rgba border_color = rgba(ti.border(), 1.0f);
 
 	// configure style for the container rectangle
-	container_style.fill_color = group_color;
-	container_style.border_color = background_color;
+	container_style.fill_color = ti.group();
+	container_style.border_color = ti.background();
 	container_style.border_width = 3.0f;
 	container_style.feather_width = 0.0f;
 	
 	// configure style for the border rectangles
 	border_style = container_style;
-	border_style.fill_color = border_color;
+	border_style.fill_color = ti.border();
 	border_style.border_width = 0.0f;
 	
 	// configure style for the color scale rectangle
@@ -624,7 +618,7 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	color_handle_style.use_blending = true;
 	color_handle_style.use_fill_color = false;
 	color_handle_style.position_is_center = true;
-	color_handle_style.border_color = rgba(ti.border(), 1.0f);
+	color_handle_style.border_color = ti.border();
 	color_handle_style.border_width = 1.5f;
 	color_handle_style.border_radius = 2.0f;
 	color_handle_style.stem_width = color_point::default_width;
@@ -633,7 +627,7 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	label_box_style.position_is_center = true;
 	label_box_style.use_blending = true;
 	label_box_style.fill_color = handle_color;
-	label_box_style.border_color = rgba(ti.border(), 1.0f);
+	label_box_style.border_color = ti.border();
 	label_box_style.border_width = 1.5f;
 	label_box_style.border_radius = 4.0f;
 
@@ -641,7 +635,7 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	opacity_handle_style.use_blending = true;
 	opacity_handle_style.use_fill_color = false;
 	opacity_handle_style.position_is_center = true;
-	opacity_handle_style.border_color = rgba(ti.border(), 1.0f);
+	opacity_handle_style.border_color = ti.border();
 	opacity_handle_style.border_width = 1.5f;
 
 	// configure style for the lines and polygon
@@ -658,7 +652,7 @@ void color_map_editor::init_styles(cgv::render::context& ctx) {
 	cursor_label_style = cgv::g2d::text2d_style::preset_clear(rgb(0.0f));
 	cursor_label_style.font_size = 16.0f;
 
-	value_label_style = cgv::g2d::text2d_style::preset_clear(group_color);
+	value_label_style = cgv::g2d::text2d_style::preset_clear(ti.group());
 	value_label_style.font_size = 12.0f;
 }
 

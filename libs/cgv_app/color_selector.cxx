@@ -24,13 +24,13 @@ color_selector::color_selector() {
 
 void color_selector::clear(cgv::render::context& ctx) {
 
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
+
 	canvas_overlay::clear(ctx);
 
 	color_tex.destruct(ctx);
 	hue_tex.destruct(ctx);
-
-	cgv::g2d::ref_msdf_font_regular(ctx, -1);
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
+	texts.destruct(ctx);
 }
 
 bool color_selector::handle_event(cgv::gui::event& e) {
@@ -92,25 +92,22 @@ bool color_selector::handle_event(cgv::gui::event& e) {
 	return false;
 }
 
-void color_selector::on_set(void* member_ptr) {
+//void color_selector::on_set(void* member_ptr) {
+void color_selector::handle_member_change(const cgv::utils::pointer_test & m) {
 
-	if(member_ptr == &rgb_color) {
+	if(m.is(rgb_color))
 		set_rgb_color(rgb_color);
-	}
 
-	if(member_ptr == &rgba_color) {
+	if(m.is(rgba_color))
 		set_rgba_color(rgba_color);
-	}
 
-	if(member_ptr == &layout.size) {
+	if(m.is(layout.size))
 		set_overlay_size(ivec2(layout.size));
-	}
-
-	update_member(member_ptr);
-	post_damage();
 }
 
 bool color_selector::init(cgv::render::context& ctx) {
+	
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
 	
 	register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	register_shader("circle", cgv::g2d::shaders::circle);
@@ -118,27 +115,20 @@ bool color_selector::init(cgv::render::context& ctx) {
 	
 	bool success = canvas_overlay::init(ctx);
 
-	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font_regular(ctx, 1);
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
+	success &= texts.init(ctx);
 
-	if(success)
-		init_styles(ctx);
-	
-	init_textures(ctx);
-	
-	if(font.is_initialized()) {
-		texts.set_msdf_font(&font);
-		//texts.set_font_size(14.0f);
-
-		texts.add_text("R: ", ivec2(0), cgv::render::TA_BOTTOM_LEFT);
-		texts.add_text("0", ivec2(0), cgv::render::TA_BOTTOM_RIGHT);
-		texts.add_text("G: ", ivec2(0), cgv::render::TA_BOTTOM_LEFT);
-		texts.add_text("0", ivec2(0), cgv::render::TA_BOTTOM_RIGHT);
-		texts.add_text("B: ", ivec2(0), cgv::render::TA_BOTTOM_LEFT);
-		texts.add_text("0", ivec2(0), cgv::render::TA_BOTTOM_RIGHT);
-		texts.add_text("A:", ivec2(0), cgv::render::TA_BOTTOM_LEFT);
-		texts.add_text("0", ivec2(0), cgv::render::TA_BOTTOM_RIGHT);
+	if(success) {
+		texts.add_text("R: ", ivec2(0), cgv::render::TA_LEFT);
+		texts.add_text("0", ivec2(0), cgv::render::TA_RIGHT);
+		texts.add_text("G: ", ivec2(0), cgv::render::TA_LEFT);
+		texts.add_text("0", ivec2(0), cgv::render::TA_RIGHT);
+		texts.add_text("B: ", ivec2(0), cgv::render::TA_LEFT);
+		texts.add_text("0", ivec2(0), cgv::render::TA_RIGHT);
+		texts.add_text("A:", ivec2(0), cgv::render::TA_LEFT);
+		texts.add_text("0", ivec2(0), cgv::render::TA_RIGHT);
 	}
+
+	init_textures(ctx);
 
 	// saturation and value handle
 	selector_handle sh;
@@ -181,7 +171,7 @@ void color_selector::init_frame(cgv::render::context& ctx) {
 		int h = layout.opacity_rect.h();
 		opacity_bg_style.texcoord_scaling = vec2(1.0f, static_cast<float>(h) / static_cast<float>(w));
 
-		ivec2 text_position = ivec2(layout.preview_rect.b().x() + 10, layout.preview_rect.y() + 5);
+		ivec2 text_position = ivec2(layout.preview_rect.b().x() + 10, layout.preview_rect.center().y());
 		for(unsigned i = 0; i < texts.size(); ++i) {
 			texts.set_position(i, text_position);
 			text_position.x() += i & 1 ? 15 : 40;
@@ -335,16 +325,13 @@ void color_selector::update_layout(const ivec2& parent_size) {
 
 }
 
-void color_selector::init_styles(cgv::render::context& ctx) {
+void color_selector::init_styles() {
 	// get theme colors
 	auto& ti = cgv::gui::theme_info::instance();
-	rgba background_color = rgba(ti.background(), 1.0f);
-	rgba group_color = rgba(ti.group(), 1.0f);
-	rgba border_color = rgba(ti.border(), 1.0f);
-
+	
 	// configure style for the container rectangle
-	container_style.fill_color = group_color;
-	container_style.border_color = background_color;
+	container_style.fill_color = ti.group();
+	container_style.border_color = ti.background();
 	container_style.border_width = 3.0f;
 	container_style.feather_width = 0.0f;
 	
@@ -384,11 +371,7 @@ void color_selector::init_styles(cgv::render::context& ctx) {
 	hue_handle_style.position_is_center = false;
 	
 	// configure text style
-	float label_border_alpha = 0.0f;
-	float border_width = 0.25f;
-	
-	text_style = cgv::g2d::text2d_style::preset_stylized(ti.text());
-	text_style.feather_origin = 0.25f;
+	text_style = cgv::g2d::text2d_style::preset_default(ti.text());
 	text_style.font_size = 14.0f;
 }
 

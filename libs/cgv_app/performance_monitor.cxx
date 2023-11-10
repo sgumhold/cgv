@@ -22,58 +22,40 @@ performance_monitor::performance_monitor() {
 	set_overlay_size(layout.total_size);
 
 	bar_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
+	labels = cgv::g2d::msdf_text_geometry(cgv::g2d::msdf_font::FontFace::FF_LIGHT);
 }
 
 void performance_monitor::clear(cgv::render::context& ctx) {
 
-	canvas_overlay::clear(ctx);
-
-	cgv::g2d::ref_msdf_font_regular(ctx, -1);
-	cgv::g2d::ref_msdf_font_light(ctx, -1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
+
+	canvas_overlay::clear(ctx);
 
 	bar_renderer.destruct(ctx);
 	bars.destruct(ctx);
+	texts.destruct(ctx);
+	labels.destruct(ctx);
 }
 
-bool performance_monitor::self_reflect(cgv::reflect::reflection_handler& _rh) {
+void performance_monitor::handle_member_change(const cgv::utils::pointer_test & m) {
 
-	return false;
-}
-
-bool performance_monitor::handle_event(cgv::gui::event& e) {
-
-	return false;
-}
-
-void performance_monitor::on_set(void* member_ptr) {
-
-	if(member_ptr == &layout.total_size[0] || member_ptr == &layout.total_size[1]) {
-		
-	}
-
-	if(member_ptr == &show_plot) {
+	if(m.is(show_plot)) {
 		layout.total_size.y() = show_plot ? 90 : 55;
 		set_overlay_size(layout.total_size);
 	}
 
-	if(member_ptr == &show_background || member_ptr == &invert_color) {
-		auto ctx_ptr = get_context();
-		if(ctx_ptr)
-			init_styles(*ctx_ptr);
-	}
+	if(m.one_of(show_background, invert_color))
+		init_styles();
 
-	if(member_ptr == &monitor.enabled) {
-		if(monitor.enabled) {
+	if(m.is(monitor.enabled)) {
+		if(monitor.enabled)
 			monitor.reset();
-		}
 	}
-
-	update_member(member_ptr);
-	post_damage();
 }
 
 bool performance_monitor::init(cgv::render::context& ctx) {
+
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
 
 	register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	register_shader("line", cgv::g2d::shaders::line);
@@ -82,18 +64,11 @@ bool performance_monitor::init(cgv::render::context& ctx) {
 
 	success &= bar_renderer.init(ctx);
 
-	if(success)
-		init_styles(ctx);
-
 	cgv::g2d::msdf_font_regular& font = cgv::g2d::ref_msdf_font_regular(ctx, 1);
 	cgv::g2d::msdf_font_light& label_font = cgv::g2d::ref_msdf_font_light(ctx, 1);
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
-
-	if(font.is_initialized())
-		texts.set_msdf_font(&font);
-
-	if(label_font.is_initialized())
-		labels.set_msdf_font(&label_font);
+	
+	success &= texts.init(ctx);
+	success &= labels.init(ctx);
 
 	plot_color_map.add_color_point(0.0f, rgb(0.5f, 1.0f, 0.5f));
 	plot_color_map.add_color_point(0.25f, rgb(0.0f, 0.9f, 0.0f));
@@ -171,9 +146,9 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 void performance_monitor::after_finish(cgv::render::context& ctx) {
 
 	bool enabled = monitor.enabled;
-	if(monitor.enabled_only_when_visible && !show) {
+	if(monitor.enabled_only_when_visible && !show)
 		enabled = false;
-	}
+	
 	if(enabled) {
 		++monitor.total_frame_count;
 		++monitor.interval_frame_count;
@@ -233,11 +208,9 @@ void performance_monitor::create_gui_impl() {
 	add_member_control(this, "Invert Color", invert_color, "check", "w=88");
 }
 
-void performance_monitor::init_styles(cgv::render::context& ctx) {
+void performance_monitor::init_styles() {
 	// get theme colors
 	auto& ti = cgv::gui::theme_info::instance();
-	rgba background_color = rgba(ti.background(), 1.0f);
-	rgba group_color = rgba(ti.group(), 1.0f);
 	rgb border_color = ti.text();
 
 	if(invert_color) {
@@ -247,8 +220,8 @@ void performance_monitor::init_styles(cgv::render::context& ctx) {
 	}
 
 	// configure style for the container rectangle
-	container_style.fill_color = group_color;
-	container_style.border_color = background_color;
+	container_style.fill_color = ti.group();
+	container_style.border_color = ti.background();
 	container_style.border_width = 3.0f;
 	container_style.feather_width = 0.0f;
 

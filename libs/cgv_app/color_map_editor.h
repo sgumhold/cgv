@@ -177,7 +177,7 @@ protected:
 		}
 	} cmc;
 
-	void init_styles(cgv::render::context& ctx);
+	void init_styles() override;
 	void setup_preview_texture(cgv::render::context& ctx);
 	void init_preview_texture(cgv::render::context& ctx);
 
