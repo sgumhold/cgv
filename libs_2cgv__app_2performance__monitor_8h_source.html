@@ -158,7 +158,7 @@ $(document).ready(function(){initNavTree('libs_2cgv__app_2performance__monitor_8
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    cgv::g2d::msdf_text_geometry texts;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    cgv::g2d::msdf_text_geometry labels;</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">void</span> init_styles(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">void</span> init_styles() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">void</span> create_texts();</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">void</span> update_stats_texts();</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordtype">void</span> create_labels();</div>
@@ -173,33 +173,27 @@ $(document).ready(function(){initNavTree('libs_2cgv__app_2performance__monitor_8
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordtype">void</span> clear(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">bool</span> self_reflect(<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a>&amp; _rh);</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordtype">void</span> stream_help(std::ostream&amp; os) {}</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordtype">bool</span> handle_event(<a class="code" href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a>&amp; e);</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordtype">void</span> on_set(<span class="keywordtype">void</span>* member_ptr);</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keywordtype">bool</span> init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordtype">void</span> init_frame(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keywordtype">void</span> draw_content(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordtype">void</span> after_finish(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordtype">void</span> set_show_background(<span class="keywordtype">bool</span> flag);</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordtype">void</span> set_invert_color(<span class="keywordtype">bool</span> flag);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">void</span> handle_member_change(<span class="keyword">const</span> cgv::utils::pointer_test&amp; m);</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordtype">bool</span> init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordtype">void</span> init_frame(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordtype">void</span> draw_content(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">void</span> after_finish(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordtype">void</span> set_show_background(<span class="keywordtype">bool</span> flag);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keywordtype">void</span> set_invert_color(<span class="keywordtype">bool</span> flag);</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordtype">void</span> enable_monitoring(<span class="keywordtype">bool</span> enabled);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordtype">void</span> enable_monitoring_only_when_visible(<span class="keywordtype">bool</span> enabled);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;};</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordtype">void</span> enable_monitoring(<span class="keywordtype">bool</span> enabled);</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordtype">void</span> enable_monitoring_only_when_visible(<span class="keywordtype">bool</span> enabled);</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;};</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr&lt;performance_monitor&gt;</a> performance_monitor_ptr;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;}</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;}</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr&lt;performance_monitor&gt;</a> performance_monitor_ptr;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;}</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;}</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a></div><div class="ttdoc">reference counted pointer, which can work together with types that are derived from ref_counted,...</div><div class="ttdef"><b>Definition:</b> <a href="ref__ptr_8h_source.html#l00159">ref_ptr.h:160</a></div></div>
-<div class="ttc" id="aclasscgv_1_1gui_1_1event_html"><div class="ttname"><a href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a></div><div class="ttdef"><b>Definition:</b> <a href="event_8h_source.html#l00058">event.h:59</a></div></div>
-<div class="ttc" id="aclasscgv_1_1reflect_1_1reflection__handler_html"><div class="ttname"><a href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a></div><div class="ttdoc">the self reflection handler is passed to the virtual self_reflect() method of cgv::base::base.</div><div class="ttdef"><b>Definition:</b> <a href="reflection__handler_8h_source.html#l00062">reflection_handler.h:63</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00587">context.h:588</a></div></div>
 <div class="ttc" id="aclasscgv_1_1utils_1_1stopwatch_html"><div class="ttname"><a href="classcgv_1_1utils_1_1stopwatch.html">cgv::utils::stopwatch</a></div><div class="ttdoc">A trivial stop watch class for time measurement.</div><div class="ttdef"><b>Definition:</b> <a href="stopwatch_8h_source.html#l00034">stopwatch.h:35</a></div></div>
 <div class="ttc" id="aclasscgv_1_1utils_1_1stopwatch_html_aaa5315b7fb02ea374190c3650915d0eb"><div class="ttname"><a href="classcgv_1_1utils_1_1stopwatch.html#aaa5315b7fb02ea374190c3650915d0eb">cgv::utils::stopwatch::restart</a></div><div class="ttdeci">double restart()</div><div class="ttdoc">restart timer and return time elapsed until restart</div><div class="ttdef"><b>Definition:</b> <a href="stopwatch_8cxx_source.html#l00075">stopwatch.cxx:75</a></div></div>

@@ -113,7 +113,7 @@ $(document).ready(function(){initNavTree('overlay_8h_source.html',''); initResiz
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        AO_START,       <span class="comment">// left for horizontal, bottom for vertical direction</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        AO_CENTER,      <span class="comment">// center of the viewport for both directions</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        AO_END,         <span class="comment">// right for horizontal, top for vertical direction</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        AO_PERCENTUAL,  <span class="comment">// use percentual offset</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        AO_PERCENTUAL,  <span class="comment">// alignment based on offset from lower left corner based on percentual size of viewport</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    };</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">enum</span> StretchOption {</div>
@@ -121,7 +121,7 @@ $(document).ready(function(){initNavTree('overlay_8h_source.html',''); initResiz
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        SO_HORIZONTAL,  <span class="comment">// width is stretched to cover viewport</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        SO_VERTICAL,    <span class="comment">// height is stretched to cover viewport</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        SO_BOTH,        <span class="comment">// width and height are stretched to cover viewport</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        SO_PERCENTUAL,  <span class="comment">// use percentual size</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        SO_PERCENTUAL,  <span class="comment">// width and height are scaled according to percentual size of viewport</span></div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    };</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">private</span>:</div>
@@ -184,9 +184,9 @@ $(document).ready(function(){initNavTree('overlay_8h_source.html',''); initResiz
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="keywordflow">return</span> cgv::g2d::get_transformed_mouse_pos(mouse_pos, last_viewport_size) - container.position;</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    }</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordtype">void</span> set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 _percentual_offset = <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a>(-1.0f));</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordtype">void</span> set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 percentual_offset = <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a>(-1.0f));</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordtype">void</span> set_overlay_stretch(StretchOption stretch, vec2 _percentual_size = <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a>(-1.0f));</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordtype">void</span> set_overlay_stretch(StretchOption stretch, vec2 percentual_size = <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a>(-1.0f));</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> get_overlay_margin()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> margin; }</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
