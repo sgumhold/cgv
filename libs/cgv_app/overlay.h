@@ -26,7 +26,7 @@ public:
 		AO_START,		// left for horizontal, bottom for vertical direction
 		AO_CENTER,		// center of the viewport for both directions
 		AO_END,			// right for horizontal, top for vertical direction
-		AO_PERCENTUAL,	// use percentual offset
+		AO_PERCENTUAL,	// alignment based on offset from lower left corner based on percentual size of viewport
 	};
 
 	enum StretchOption {
@@ -34,7 +34,7 @@ public:
 		SO_HORIZONTAL,	// width is stretched to cover viewport
 		SO_VERTICAL,	// height is stretched to cover viewport
 		SO_BOTH,		// width and height are stretched to cover viewport
-		SO_PERCENTUAL,  // use percentual size
+		SO_PERCENTUAL,  // width and height are scaled according to percentual size of viewport
 	};
 
 private:
@@ -118,10 +118,10 @@ public:
 	}
 
 	/// sets the alignment options
-	void set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 _percentual_offset = vec2(-1.0f));
+	void set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 percentual_offset = vec2(-1.0f));
 
 	/// sets the stretch option
-	void set_overlay_stretch(StretchOption stretch, vec2 _percentual_size = vec2(-1.0f));
+	void set_overlay_stretch(StretchOption stretch, vec2 percentual_size = vec2(-1.0f));
 
 	/// returns the margin as set in the layout parameters
 	ivec2 get_overlay_margin() const { return margin; }

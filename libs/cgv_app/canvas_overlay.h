@@ -44,7 +44,7 @@ protected:
 
 	void draw_impl(cgv::render::context& ctx);
 
-	virtual void init_styles(cgv::render::context& ctx) {}
+	virtual void init_styles() {}
 
 public:
 	/// creates an overlay in the bottom left corner with zero size using a canvas for 2d drawing

@@ -87,7 +87,7 @@ protected:
 
 	void update_layout(const ivec2& parent_size);
 
-	void init_styles(cgv::render::context& ctx) override;
+	void init_styles() override;
 	void init_textures(cgv::render::context& ctx);
 	void update_color_texture();
 	void update_color();
@@ -109,7 +109,7 @@ public:
 	void clear(cgv::render::context& ctx);
 
 	bool handle_event(cgv::gui::event& e);
-	void on_set(void* member_ptr);
+	void handle_member_change(const cgv::utils::pointer_test& m);
 
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
