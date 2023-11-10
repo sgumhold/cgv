@@ -126,22 +126,22 @@ $(document).ready(function(){initNavTree('overlay_8cxx_source.html',''); initRes
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    post_redraw();</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;}</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keywordtype">void</span> overlay::set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 _percentual_offset)</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keywordtype">void</span> overlay::set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 percentual_offset)</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    horizontal_alignment = horizontal;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    vertical_alignment = vertical;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 2; ++i)</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">if</span> (_percentual_offset[i] != -1.0f)</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            percentual_offset[i] = _percentual_offset[i];</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; 2; ++i)</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">if</span>(percentual_offset[i] != -1.0f)</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            this-&gt;percentual_offset[i] = percentual_offset[i];</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    update_overlay_layout();</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keywordtype">void</span> overlay::set_overlay_stretch(StretchOption _stretch, vec2 _percentual_size)</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keywordtype">void</span> overlay::set_overlay_stretch(StretchOption stretch, vec2 percentual_size)</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;{</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    stretch = _stretch;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 2; ++i)</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keywordflow">if</span> (_percentual_size[i] != -1.0f)</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            percentual_size[i] = _percentual_size[i];</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    this-&gt;stretch = stretch;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; 2; ++i)</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keywordflow">if</span>(percentual_size[i] != -1.0f)</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            this-&gt;percentual_size[i] = percentual_size[i];</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    update_overlay_layout();</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;}</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
