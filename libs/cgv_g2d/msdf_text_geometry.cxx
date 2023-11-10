@@ -4,30 +4,40 @@ namespace cgv {
 namespace g2d {
 
 msdf_text_geometry::msdf_text_geometry() {
-	msdf_font_ptr = nullptr;
-	state_out_of_date = true;
+	geometry_buffer = cgv::render::vertex_buffer(cgv::render::VBT_STORAGE);
 };
+
+msdf_text_geometry::msdf_text_geometry(msdf_font::FontFace font_face) : msdf_text_geometry() {
+	this->font_face = font_face;
+}
 
 msdf_text_geometry::~msdf_text_geometry() {
 	clear();
 };
+
+bool msdf_text_geometry::init(cgv::render::context& ctx) {
+	msdf_font_ptr = &handle_font_ref(ctx, 1);
+	return msdf_font_ptr->is_initialized();
+}
+
+void msdf_text_geometry::destruct(cgv::render::context& ctx) {
+	handle_font_ref(ctx, -1);
+	msdf_font_ptr = nullptr;
+	custom_msdf_font_ptr = nullptr;
+	geometry_buffer.destruct(ctx);
+}
 
 void msdf_text_geometry::clear() {
 	state_out_of_date = true;
 
 	texts.clear();
 	vertices.clear();
-
-	if(ssbo != 0) {
-		glDeleteBuffers(1, &ssbo);
-		ssbo = 0;
-	}
 }
 
-void msdf_text_geometry::set_msdf_font(msdf_font* ptr, bool update_texts) {
-	msdf_font_ptr = ptr;
+void msdf_text_geometry::set_msdf_font(msdf_font* font_ptr, bool update_texts) {
+	custom_msdf_font_ptr = font_ptr;
 
-	if(msdf_font_ptr && update_texts) {
+	if(custom_msdf_font_ptr && update_texts) {
 		for(unsigned i = 0; i < texts.size(); ++i)
 			set_text(i, texts[i].str);
 	}
@@ -47,6 +57,11 @@ void msdf_text_geometry::set_text(unsigned i, const std::string& text) {
 void msdf_text_geometry::set_alignment(unsigned i, const cgv::render::TextAlignment alignment) {
 	if(i < texts.size())
 		texts[i].alignment = alignment;
+}
+
+void msdf_text_geometry::set_scale(unsigned i, float scale) {
+	if(i < texts.size())
+		texts[i].size.y() = scale;
 }
 
 void msdf_text_geometry::set_angle(unsigned i, const float angle) {
@@ -72,39 +87,46 @@ msdf_text_geometry::vec2 msdf_text_geometry::get_text_render_size(unsigned i, fl
 bool msdf_text_geometry::create(cgv::render::context& ctx) {
 	create_vertex_data();
 
-	if(ssbo != 0) {
-		glDeleteBuffers(1, &ssbo);
-		ssbo = 0;
+	if(vertices.empty()) {
+		geometry_buffer.destruct(ctx);
+		state_out_of_date = false;
+	} else {
+		state_out_of_date = !geometry_buffer.create_or_resize(ctx, vertices);
 	}
-
-	glGenBuffers(1, &ssbo);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, vertices.size() * sizeof(vertex_type), vertices.data(), GL_STATIC_DRAW);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-	state_out_of_date = false;
-	return true;
+	
+	return !state_out_of_date;
 }
 
 bool msdf_text_geometry::enable(cgv::render::context& ctx) {
-	if(state_out_of_date) {
+	if(state_out_of_date)
 		create(ctx);
-	}
 
-	if(!msdf_font_ptr) {
-		std::cerr << "msdf_text_geometry::enable: msdf_font is not specified" << std::endl;
-		return false;
-	}
-
-	bool success = msdf_font_ptr->enable(ctx);
-	if(success)
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
-	return success;
+	geometry_buffer.bind(ctx, 0);
+	return ref_font().enable(ctx);
 }
 
 void msdf_text_geometry::disable(cgv::render::context& ctx) {
-	msdf_font_ptr->disable(ctx);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	ref_font().disable(ctx);
+	geometry_buffer.unbind(ctx, 0);
+}
+
+msdf_font& msdf_text_geometry::handle_font_ref(cgv::render::context& ctx, int ref_count_change) {
+	switch(font_face) {
+	case msdf_font::FontFace::FF_LIGHT:
+		return ref_msdf_font_light(ctx, ref_count_change);
+	case msdf_font::FontFace::FF_BOLD:
+		return ref_msdf_font_bold(ctx, ref_count_change);
+	case msdf_font::FontFace::FF_REGULAR:
+	default:
+		return ref_msdf_font_regular(ctx, ref_count_change);
+	}
+}
+
+msdf_font& msdf_text_geometry::ref_font() const {
+	if(custom_msdf_font_ptr)
+		return *custom_msdf_font_ptr;
+	else
+		return *msdf_font_ptr;
 }
 
 float msdf_text_geometry::compute_length(const std::string& str) const {
@@ -112,7 +134,7 @@ float msdf_text_geometry::compute_length(const std::string& str) const {
 	float acc_advance = 0.0f;
 
 	for(char c : str) {
-		const msdf_font::glyph_info& g = msdf_font_ptr->get_glyph_info(static_cast<unsigned char>(c));
+		const msdf_font::glyph_info& g = ref_font().get_glyph_info(static_cast<unsigned char>(c));
 		length = acc_advance + g.size.x();
 		acc_advance += g.advance;
 	}
@@ -132,27 +154,31 @@ void msdf_text_geometry::update_offsets(size_t begin) {
 	}
 }
 
-void msdf_text_geometry::add_vertex(const vec4& pos, const vec4& txc) {
-	vertices.push_back({ pos, txc });
+void msdf_text_geometry::add_vertex(const vec2 & position, const vec2 & size, const vec4 & texcoords) {
+	vertices.emplace_back(position.x(), position.y(), size.x(), size.y());
+	vertices.push_back(texcoords);
 }
 
 void msdf_text_geometry::create_vertex_data() {
 	vertices.clear();
 
-	if(!msdf_font_ptr)
-		return;
+	size_t glyph_count = 0;
+	for(text_info& text : texts)
+		glyph_count += text.str.length();
+
+	vertices.reserve(2 * glyph_count);
 
 	for(text_info& text : texts) {
 		float acc_advance = 0.0f;
 
 		for(char c : text.str) {
-			const msdf_font::glyph_info& g = msdf_font_ptr->get_glyph_info(static_cast<unsigned char>(c));
+			const msdf_font::glyph_info& g = ref_font().get_glyph_info(static_cast<unsigned char>(c));
 
 			vec2 position = g.position + vec2(acc_advance, 0.0f);
 			vec2 size = g.size;
 			acc_advance += g.advance;
 
-			add_vertex(vec4(position.x(), position.y(), size.x(), size.y()), g.texcoords);
+			add_vertex(position, size, g.texcoords);
 		}
 	}
 }

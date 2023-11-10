@@ -48,8 +48,8 @@ bool msdf_gl_font_renderer::enable(cgv::render::context& ctx, const ivec2& viewp
 	res &= tg.enable(ctx);
 	if(res) {
 		prog.set_uniform(ctx, "resolution", viewport_resolution);
-		prog.set_uniform(ctx, "src_size", tg.get_msdf_font()->get_initial_font_size());
-		prog.set_uniform(ctx, "pixel_range", tg.get_msdf_font()->get_pixel_range());
+		prog.set_uniform(ctx, "src_size", tg.get_msdf_font().get_initial_font_size());
+		prog.set_uniform(ctx, "pixel_range", tg.get_msdf_font().get_pixel_range());
 
 		style.apply(ctx, prog);
 
@@ -94,7 +94,7 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_text_geometry& 
 	size_t end = count < 0 ? tg.size() : offset + static_cast<size_t>(count);
 	end = std::min(end, tg.size());
 
-	float alignment_offset_scale = tg.get_msdf_font()->get_cap_height();
+	float alignment_offset_scale = tg.get_msdf_font().get_cap_height();
 
 	for(size_t i = offset; i < end; ++i) {
 		const auto& text = tg.ref_texts()[i];
