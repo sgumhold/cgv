@@ -1,5 +1,6 @@
 var NAVTREEINDEX7 =
 {
+"classcgv_1_1gui_1_1control.html#ad14d6331e7487f989f0fa0f8af5c5a85":[11,0,0,4,14,35],
 "classcgv_1_1gui_1_1control.html#ad647d5c457d7a25ad907b062fd9ca36a":[11,0,0,4,14,22],
 "classcgv_1_1gui_1_1control.html#ad796aa58a0b7d9c52d724a99366f58ae":[11,0,0,4,14,40],
 "classcgv_1_1gui_1_1control.html#ad8d0e6ffe70e6d8adc43876dfca2e84a":[11,0,0,4,14,11],
@@ -248,6 +249,5 @@ var NAVTREEINDEX7 =
 "classcgv_1_1gui_1_1gui__driver.html#ad121ecb072de62a4ab4a180bc9d183bb":[11,0,0,4,22,20],
 "classcgv_1_1gui_1_1gui__driver.html#ad796aa58a0b7d9c52d724a99366f58ae":[11,0,0,4,22,42],
 "classcgv_1_1gui_1_1gui__driver.html#ad8d0e6ffe70e6d8adc43876dfca2e84a":[11,0,0,4,22,11],
-"classcgv_1_1gui_1_1gui__driver.html#adadc042f36b5bc3ae7a2a694bd148ee5":[11,0,0,4,22,56],
-"classcgv_1_1gui_1_1gui__driver.html#adbd67b04f9f297002affce8524a027a4":[11,0,0,4,22,6]
+"classcgv_1_1gui_1_1gui__driver.html#adadc042f36b5bc3ae7a2a694bd148ee5":[11,0,0,4,22,56]
 };
