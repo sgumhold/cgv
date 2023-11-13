@@ -15,37 +15,32 @@ button_collection::button_collection() {
 
 void button_collection::destruct(context& ctx) {
 
-	shaders.clear(ctx);
-
-	ref_msdf_font_regular(ctx, -1);
 	ref_msdf_gl_canvas_font_renderer(ctx, -1);
 
+	shaders.clear(ctx);
+
 	buttons.clear();
+	labels.destruct(ctx);
 }
 
 void button_collection::clear() {
 
 	buttons.clear();
+	labels.clear();
 	state_out_of_date = true;
 }
 
 bool button_collection::init(context& ctx) {
 
-	bool success = true;
-
-	shaders.add("rectangle", shaders::rectangle);
-	success &= shaders.load_all(ctx, "button_collection::init()");
-
-	msdf_font_regular& font = ref_msdf_font_regular(ctx, 1);
 	ref_msdf_gl_canvas_font_renderer(ctx, 1);
 
-	success &= font.is_initialized();
+	shaders.add("rectangle", shaders::rectangle);
+	bool success = shaders.load_all(ctx, "button_collection::init()");
 
-	if(success) {
-		labels.set_msdf_font(&font);
-		init_styles(ctx);
-	}
+	success &= labels.init(ctx);
 
+	init_styles();
+	
 	return success;
 }
 
@@ -110,9 +105,6 @@ bool button_collection::handle(cgv::gui::event& e, const ivec2& viewport_size, c
 
 void button_collection::draw(context& ctx, cgv::g2d::canvas& cnvs) {
 
-	if(style_out_of_date)
-		init_styles(ctx);
-
 	if(state_out_of_date)
 		create_labels();
 
@@ -170,7 +162,7 @@ void button_collection::add(const std::string& label, const irect& rect, TextAli
 	state_out_of_date = true;
 }
 
-void button_collection::init_styles(context& ctx) {
+void button_collection::init_styles() {
 
 	auto& ti = cgv::gui::theme_info::instance();
 
@@ -186,13 +178,11 @@ void button_collection::init_styles(context& ctx) {
 	btn_style.border_color = ti.border();
 	btn_style.feather_width = 0.0f;
 	btn_style.border_width = 0.0f;
-
-	style_out_of_date = false;
 }
 
 void button_collection::handle_theme_change(const cgv::gui::theme_info& theme) {
 
-	style_out_of_date = true;
+	init_styles();
 }
 
 void button_collection::create_labels() {
