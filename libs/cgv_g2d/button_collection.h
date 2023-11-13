@@ -15,7 +15,7 @@ namespace g2d {
 class CGV_API button_collection : cgv::gui::theme_observer {
 protected:
 	bool state_out_of_date = true;
-	bool style_out_of_date = false;
+	//bool style_out_of_date = false;
 
 	cgv::render::shader_library shaders;
 
@@ -41,7 +41,7 @@ protected:
 	size_t pressed_button_index = static_cast<size_t>(-1);
 	bool hovers_pressed_button = false;
 
-	void init_styles(cgv::render::context& ctx);
+	void init_styles();
 
 	void handle_theme_change(const cgv::gui::theme_info& theme) override;
 
