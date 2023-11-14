@@ -241,9 +241,9 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ae3d44c29d8541df107111af2d9b2e179"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1mat.html">mat</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#ae3d44c29d8541df107111af2d9b2e179">bipoly_int_x2</a> (const <a class="el" href="classcgv_1_1math_1_1mat.html">mat</a>&lt; T &gt; &amp;bp, const T &amp;k=0)</td></tr>
 <tr class="memdesc:ae3d44c29d8541df107111af2d9b2e179"><td class="mdescLeft">&#160;</td><td class="mdescRight">analytic integration of bivariate polynomial int p(x1,x2) dx2 <br /></td></tr>
 <tr class="separator:ae3d44c29d8541df107111af2d9b2e179"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a152fd39675ef61fc3253f9b29dc68ec8"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; int, 2 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a152fd39675ef61fc3253f9b29dc68ec8">bresenham</a> (<a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; int, 2 &gt; start, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; int, 2 &gt; end)</td></tr>
-<tr class="memdesc:a152fd39675ef61fc3253f9b29dc68ec8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute a list of points along a rasterized line according to Bresenham's line drawing algorithm.  <a href="namespacecgv_1_1math.html#a152fd39675ef61fc3253f9b29dc68ec8">More...</a><br /></td></tr>
-<tr class="separator:a152fd39675ef61fc3253f9b29dc68ec8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c08fa6907f5b41a0f22362f9013f220"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; int, 2 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a6c08fa6907f5b41a0f22362f9013f220">bresenham</a> (<a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; int, 2 &gt; origin, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; int, 2 &gt; destination)</td></tr>
+<tr class="memdesc:a6c08fa6907f5b41a0f22362f9013f220"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute a list of points along a rasterized line according to Bresenham's line drawing algorithm.  <a href="namespacecgv_1_1math.html#a6c08fa6907f5b41a0f22362f9013f220">More...</a><br /></td></tr>
+<tr class="separator:a6c08fa6907f5b41a0f22362f9013f220"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb3d20eb47e56aebfa6f2208a351e668"><td class="memTemplParams" colspan="2"><a id="aeb3d20eb47e56aebfa6f2208a351e668"></a>
 template&lt;typename key_type , typename idx_type &gt; </td></tr>
 <tr class="memitem:aeb3d20eb47e56aebfa6f2208a351e668"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#aeb3d20eb47e56aebfa6f2208a351e668">bucket_sort</a> (const std::vector&lt; key_type &gt; &amp;keys, size_t nr_keys, std::vector&lt; idx_type &gt; &amp;perm, std::vector&lt; idx_type &gt; *perm_in_ptr=0)</td></tr>
@@ -2289,8 +2289,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a152fd39675ef61fc3253f9b29dc68ec8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a152fd39675ef61fc3253f9b29dc68ec8">&#9670;&nbsp;</a></span>bresenham()</h2>
+<a id="a6c08fa6907f5b41a0f22362f9013f220"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c08fa6907f5b41a0f22362f9013f220">&#9670;&nbsp;</a></span>bresenham()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2302,13 +2302,13 @@ template&lt;typename T &gt; </div>
           <td class="memname">static std::vector&lt;<a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt;int, 2&gt; &gt; cgv::math::bresenham </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; int, 2 &gt;&#160;</td>
-          <td class="paramname"><em>start</em>, </td>
+          <td class="paramname"><em>origin</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; int, 2 &gt;&#160;</td>
-          <td class="paramname"><em>end</em>&#160;</td>
+          <td class="paramname"><em>destination</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

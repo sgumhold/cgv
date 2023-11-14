@@ -94,19 +94,19 @@ $(document).ready(function(){initNavTree('bresenham_8h_source.html',''); initRes
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span>math {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a152fd39675ef61fc3253f9b29dc68ec8">   15</a></span>&#160;<span class="keyword">static</span> std::vector&lt;fvec&lt;int, 2&gt;&gt; <a class="code" href="namespacecgv_1_1math.html#a152fd39675ef61fc3253f9b29dc68ec8">bresenham</a>(<a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;int, 2&gt;</a> start, <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;int, 2&gt;</a> end) {</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a6c08fa6907f5b41a0f22362f9013f220">   15</a></span>&#160;<span class="keyword">static</span> std::vector&lt;fvec&lt;int, 2&gt;&gt; <a class="code" href="namespacecgv_1_1math.html#a6c08fa6907f5b41a0f22362f9013f220">bresenham</a>(<a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;int, 2&gt;</a> origin, <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;int, 2&gt;</a> destination) {</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">bool</span> flip = std::abs(end.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() - start.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>()) &gt;= std::abs(end.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() - start.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>());</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">bool</span> flip = std::abs(destination.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() - origin.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>()) &gt;= std::abs(destination.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() - origin.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>());</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordflow">if</span>(flip) {</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        std::swap(start.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>(), start.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>());</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        std::swap(end.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>(), end.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>());</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        std::swap(origin.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>(), origin.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>());</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        std::swap(destination.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>(), destination.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>());</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    }</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordflow">if</span>(start.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() &gt; end.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>())</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        std::swap(start, end);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordflow">if</span>(origin.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() &gt; destination.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>())</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        std::swap(origin, destination);</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;int, 2&gt;</a> d = end - start;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;int, 2&gt;</a> d = destination - origin;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">int</span> yi = 1;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordflow">if</span>(d.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() &lt; 0) {</div>
@@ -114,11 +114,11 @@ $(document).ready(function(){initNavTree('bresenham_8h_source.html',''); initRes
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        d.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() = -d.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>();</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    }</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">int</span> D = (2 * d.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>()) - d.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>();</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">int</span> y = start.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>();</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">int</span> y = origin.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>();</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    std::vector&lt;fvec&lt;int, 2&gt;&gt; points;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> x = start.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>(); x &lt;= end.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>(); ++x) {</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> x = origin.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>(); x &lt;= destination.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>(); ++x) {</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        flip ? points.emplace_back(y, x) : points.emplace_back(x, y);</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordflow">if</span>(D &gt; 0) {</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            y = y + yi;</div>
@@ -145,75 +145,71 @@ $(document).ready(function(){initNavTree('bresenham_8h_source.html',''); initRes
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">int</span> error = 0;</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    bresenham_traverser(fvec&lt;int, 2&gt; origin, fvec&lt;int, 2&gt; destination) : _origin(origin), _destination(destination) {</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        _position = _origin;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">if</span>(_origin == _destination)</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            _done = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        dx = std::abs(_destination.x() - _origin.x());</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        sx = _origin.x() &lt; _destination.x() ? 1 : -1;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        dy = -std::abs(_destination.y() - _origin.y());</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        sy = _origin.y() &lt; _destination.y() ? 1 : -1;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        error = dx + dy;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    bresenham_traverser(fvec&lt;int, 2&gt; origin, fvec&lt;int, 2&gt; destination) : _origin(origin), _destination(destination) {</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        _position = _origin;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">if</span>(_origin == _destination)</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            _done = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        dx = std::abs(_destination.x() - _origin.x());</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        sx = _origin.x() &lt; _destination.x() ? 1 : -1;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        dy = -std::abs(_destination.y() - _origin.y());</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        sy = _origin.y() &lt; _destination.y() ? 1 : -1;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        error = dx + dy;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    }</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keywordflow">if</span>(_position == _destination)</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            _done = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    }</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordtype">bool</span> done()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">return</span> _done;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    }</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    fvec&lt;int, 2&gt; position()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">return</span> _position;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    }</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    fvec&lt;int, 2&gt; origin()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keywordflow">return</span> _origin;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    }</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    fvec&lt;int, 2&gt; destination()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keywordflow">return</span> _destination;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    }</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">step</a>() {</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="keywordtype">int</span> e2 = 2 * error;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        </div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <span class="keywordflow">if</span>(e2 &gt;= dy) {</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            error += dy;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            _position.x() += sx;</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        }</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        <span class="keywordflow">if</span>(e2 &lt;= dx) {</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;            error += dx;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            _position.y() += sy;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        }</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordtype">bool</span> done()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordflow">return</span> _done;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    }</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    fvec&lt;int, 2&gt; position()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordflow">return</span> _position;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    }</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    fvec&lt;int, 2&gt; origin()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keywordflow">return</span> _origin;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    }</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    fvec&lt;int, 2&gt; destination()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordflow">return</span> _destination;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    }</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">step</a>() {</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keywordtype">int</span> e2 = 2 * error;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="keywordflow">if</span>(e2 &gt;= dy) {</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            error += dy;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            _position.x() += sx;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        }</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="keywordflow">if</span>(e2 &lt;= dx) {</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            error += dx;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;            _position.y() += sy;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        }</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <span class="keywordflow">if</span>(_position == _destination)</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            _done = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    }</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keywordflow">if</span>(_position == _destination)</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;            _done = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    }</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordtype">void</span> operator++() {</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keywordtype">void</span> operator++() {</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <a class="code" href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">step</a>();</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    }</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;};</div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <a class="code" href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">step</a>();</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    }</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;};</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;} <span class="comment">// namespace math</span></div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;} <span class="comment">// namespace cgv</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;} <span class="comment">// namespace math</span></div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;} <span class="comment">// namespace cgv</span></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt; int, 2 &gt;</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a306998e8905416d17894fd66d8a15b0b"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">cgv::math::fvec::x</a></div><div class="ttdeci">T &amp; x()</div><div class="ttdoc">first element</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00154">fvec.h:154</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a8d199c8049b2ed5806be3c3af7d2860e"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">cgv::math::fvec::y</a></div><div class="ttdeci">T &amp; y()</div><div class="ttdoc">second element</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00158">fvec.h:158</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a1233597e0b02a8451d874eae9aac6773"><div class="ttname"><a href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">cgv::math::step</a></div><div class="ttdeci">T step(const T &amp;a, const T &amp;b)</div><div class="ttdoc">returns 0 for b &lt; a and 1 otherwise</div><div class="ttdef"><b>Definition:</b> <a href="functions_8h_source.html#l00018">functions.h:18</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a152fd39675ef61fc3253f9b29dc68ec8"><div class="ttname"><a href="namespacecgv_1_1math.html#a152fd39675ef61fc3253f9b29dc68ec8">cgv::math::bresenham</a></div><div class="ttdeci">static std::vector&lt; fvec&lt; int, 2 &gt; &gt; bresenham(fvec&lt; int, 2 &gt; start, fvec&lt; int, 2 &gt; end)</div><div class="ttdoc">Compute a list of points along a rasterized line according to Bresenham's line drawing algorithm.</div><div class="ttdef"><b>Definition:</b> <a href="bresenham_8h_source.html#l00015">bresenham.h:15</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1math_html_a6c08fa6907f5b41a0f22362f9013f220"><div class="ttname"><a href="namespacecgv_1_1math.html#a6c08fa6907f5b41a0f22362f9013f220">cgv::math::bresenham</a></div><div class="ttdeci">static std::vector&lt; fvec&lt; int, 2 &gt; &gt; bresenham(fvec&lt; int, 2 &gt; origin, fvec&lt; int, 2 &gt; destination)</div><div class="ttdoc">Compute a list of points along a rasterized line according to Bresenham's line drawing algorithm.</div><div class="ttdef"><b>Definition:</b> <a href="bresenham_8h_source.html#l00015">bresenham.h:15</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

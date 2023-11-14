@@ -76,7 +76,7 @@ var searchData=
   ['box_5fwire_5frender_5fstyle_236',['box_wire_render_style',['../structcgv_1_1render_1_1box__wire__render__style.html#ad4dd35d4fafc71b4aedfb032e92335f6',1,'cgv::render::box_wire_render_style::box_wire_render_style()'],['../structcgv_1_1render_1_1box__wire__render__style.html',1,'cgv::render::box_wire_render_style']]],
   ['box_5fwire_5frenderer_237',['box_wire_renderer',['../classcgv_1_1render_1_1box__wire__renderer.html',1,'cgv::render']]],
   ['brdf_5ftype_238',['brdf_type',['../classcgv_1_1media_1_1illum_1_1surface__material.html#a51fca4161b935253a23af6e2e420d9b7',1,'cgv::media::illum::surface_material']]],
-  ['bresenham_239',['bresenham',['../namespacecgv_1_1math.html#a152fd39675ef61fc3253f9b29dc68ec8',1,'cgv::math']]],
+  ['bresenham_239',['bresenham',['../namespacecgv_1_1math.html#a6c08fa6907f5b41a0f22362f9013f220',1,'cgv::math']]],
   ['broadcast_5fsignal_240',['broadcast_signal',['../structcgv_1_1os_1_1condition__mutex.html#a84fd75c3d8396860675416f042be5680',1,'cgv::os::condition_mutex']]],
   ['broadcast_5fsignal_5fwith_5flock_241',['broadcast_signal_with_lock',['../structcgv_1_1os_1_1condition__mutex.html#a7ebf26e2e75eafc3161ea69b9498254d',1,'cgv::os::condition_mutex']]],
   ['btb_5fall_5fbits_242',['BTB_ALL_BITS',['../namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c',1,'cgv::render']]],
