@@ -12,19 +12,19 @@ namespace math {
 /// @param start The line start point.
 /// @param end The line end point.
 /// @return The list of rasterized points.
-static std::vector<fvec<int, 2>> bresenham(fvec<int, 2> start, fvec<int, 2> end) {
+static std::vector<fvec<int, 2>> bresenham(fvec<int, 2> origin, fvec<int, 2> destination) {
 	
-	bool flip = std::abs(end.y() - start.y()) >= std::abs(end.x() - start.x());
+	bool flip = std::abs(destination.y() - origin.y()) >= std::abs(destination.x() - origin.x());
 
 	if(flip) {
-		std::swap(start.x(), start.y());
-		std::swap(end.x(), end.y());
+		std::swap(origin.x(), origin.y());
+		std::swap(destination.x(), destination.y());
 	}
 
-	if(start.x() > end.x())
-		std::swap(start, end);
+	if(origin.x() > destination.x())
+		std::swap(origin, destination);
 
-	fvec<int, 2> d = end - start;
+	fvec<int, 2> d = destination - origin;
 
 	int yi = 1;
 	if(d.y() < 0) {
@@ -32,11 +32,11 @@ static std::vector<fvec<int, 2>> bresenham(fvec<int, 2> start, fvec<int, 2> end)
 		d.y() = -d.y();
 	}
 	int D = (2 * d.y()) - d.x();
-	int y = start.y();
+	int y = origin.y();
 
 	std::vector<fvec<int, 2>> points;
 
-	for(int x = start.x(); x <= end.x(); ++x) {
+	for(int x = origin.x(); x <= destination.x(); ++x) {
 		flip ? points.emplace_back(y, x) : points.emplace_back(x, y);
 		if(D > 0) {
 			y = y + yi;
@@ -63,7 +63,6 @@ private:
 	int error = 0;
 
 public:
-
 	bresenham_traverser(fvec<int, 2> origin, fvec<int, 2> destination) : _origin(origin), _destination(destination) {
 		
 		_position = _origin;
@@ -76,9 +75,6 @@ public:
 		dy = -std::abs(_destination.y() - _origin.y());
 		sy = _origin.y() < _destination.y() ? 1 : -1;
 		error = dx + dy;
-
-		if(_position == _destination)
-			_done = true;
 	}
 
 	bool done() const {
