@@ -136,5 +136,10 @@ void canvas::set_view(cgv::render::context& ctx, cgv::render::shader_program& pr
 	prog.set_uniform(ctx, "zoom_factor", zoom_factor);
 }
 
+void canvas::set_style(cgv::render::context& ctx, const shape2d_style& style) {
+	if(current_shader_program)
+		style.apply(ctx, *current_shader_program);
+}
+
 }
 }

@@ -63,10 +63,6 @@ bool performance_monitor::init(cgv::render::context& ctx) {
 	bool success = canvas_overlay::init(ctx);
 
 	success &= bar_renderer.init(ctx);
-
-	cgv::g2d::msdf_font_regular& font = cgv::g2d::ref_msdf_font_regular(ctx, 1);
-	cgv::g2d::msdf_font_light& label_font = cgv::g2d::ref_msdf_font_light(ctx, 1);
-	
 	success &= texts.init(ctx);
 	success &= labels.init(ctx);
 
@@ -102,34 +98,32 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 
 	begin_content(ctx);
 
-	ivec2 container_size = get_overlay_size();
-
-	auto& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx);
-	auto& rect_prog = content_canvas.enable_shader(ctx, "rectangle");
+	content_canvas.enable_shader(ctx, "rectangle");
 
 	// draw container background
 	if(show_background) {
-		container_style.apply(ctx, rect_prog);
-		content_canvas.draw_shape(ctx, ivec2(0), container_size);
+		content_canvas.set_style(ctx, container_style);
+		content_canvas.draw_shape(ctx, ivec2(0), get_overlay_size());
 	}
+
+	auto& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx);
 
 	if(show_plot) {
 		// draw plot border
-		border_style.apply(ctx, rect_prog);
+		content_canvas.set_style(ctx, border_style);
 		content_canvas.draw_shape(ctx, layout.plot_rect.position - 1, layout.plot_rect.size + 2);
 
 		// draw plot bars
 		bar_renderer.render(ctx, content_canvas, cgv::render::PT_POINTS, bars, bar_style);
 
 		// draw line
-		auto& line_prog = content_canvas.enable_shader(ctx, "line");
-
 		const auto& r = layout.plot_rect;
 		ivec2 a(r.x() + 12, r.center().y());
 		ivec2 b = a;
 		b.x() = r.x1();
 
-		line_style.apply(ctx, line_prog);
+		content_canvas.enable_shader(ctx, "line");
+		content_canvas.set_style(ctx, line_style);
 		content_canvas.draw_shape2(ctx, a, b);
 		content_canvas.disable_current_shader(ctx);
 
