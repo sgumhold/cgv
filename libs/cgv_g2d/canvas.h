@@ -6,6 +6,7 @@
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv_g2d/rect.h>
 #include <cgv_g2d/shaders2d.h>
+#include <cgv_g2d/shape2d_styles.h>
 #include <cgv_g2d/utils2d.h>
 
 #include "lib_begin.h"
@@ -74,6 +75,8 @@ public:
 	void warning(const std::string& what) const;
 
 	void set_view(cgv::render::context& ctx, cgv::render::shader_program& prog);
+
+	void set_style(cgv::render::context& ctx, const shape2d_style& style);
 
 	template<typename T>
 	void draw_shape(const cgv::render::context& ctx, const rect<T>& r) {

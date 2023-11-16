@@ -22,6 +22,7 @@ protected:
 
 	cgv::g2d::canvas content_canvas, overlay_canvas;
 
+	/// whether to enable blending during the draw process
 	bool blend_overlay;
 	
 	void init_overlay_style(cgv::render::context& ctx);

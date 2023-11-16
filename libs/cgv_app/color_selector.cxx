@@ -10,6 +10,8 @@ namespace app {
 color_selector::color_selector() {
 
 	set_name("Color Selector");
+	block_events = true;
+	blend_overlay = true;
 
 	layout.padding = 13; // 10px plus 3px border
 
@@ -182,17 +184,14 @@ void color_selector::init_frame(cgv::render::context& ctx) {
 void color_selector::draw_content(cgv::render::context& ctx) {
 	
 	begin_content(ctx);
-	enable_blending();
-
-	ivec2 container_size = get_overlay_size();
-
+	
 	// draw container
-	auto& rect_prog = content_canvas.enable_shader(ctx, "rectangle");
-	container_style.apply(ctx, rect_prog);
-	content_canvas.draw_shape(ctx, ivec2(0), container_size);
+	content_canvas.enable_shader(ctx, "rectangle");
+	content_canvas.set_style(ctx, container_style);
+	content_canvas.draw_shape(ctx, ivec2(0), get_overlay_size());
 
 	// draw inner border
-	border_style.apply(ctx, rect_prog);
+	content_canvas.set_style(ctx, border_style);
 
 	auto& ti = cgv::gui::theme_info::instance();
 	rgba border_color = rgba(ti.border(), 1.0f);
@@ -207,20 +206,20 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 		text_bg.position.x() = static_cast<int>(texts.ref_texts()[2 * i].position.x() - 4.0f);
 		content_canvas.draw_shape(ctx, text_bg, text_background_color);
 	}
-	
-	color_texture_style.apply(ctx, rect_prog);
+
+	content_canvas.set_style(ctx, color_texture_style);
 	color_tex.enable(ctx, 0);
 	content_canvas.draw_shape(ctx, layout.color_rect);
 	color_tex.disable(ctx);
 
-	hue_texture_style.apply(ctx, rect_prog);
+	content_canvas.set_style(ctx, hue_texture_style);
 	hue_tex.enable(ctx, 0);
 	content_canvas.draw_shape(ctx, layout.hue_rect);
 	hue_tex.disable(ctx);
 
 	if(has_opacity) {
-		auto& grid_prog = content_canvas.enable_shader(ctx, "grid");
-		opacity_bg_style.apply(ctx, grid_prog);
+		content_canvas.enable_shader(ctx, "grid");
+		content_canvas.set_style(ctx, opacity_bg_style);
 		content_canvas.draw_shape(ctx, layout.opacity_rect);
 	}
 
@@ -228,27 +227,27 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	glScissor(layout.color_rect.x(), layout.color_rect.y(), layout.color_rect.w(), layout.color_rect.h());
 
 	auto& sh = selector_handles;
-	auto& circle_prog = content_canvas.enable_shader(ctx, "circle");
-	color_handle_style.apply(ctx, circle_prog);
+	content_canvas.enable_shader(ctx, "circle");
+	content_canvas.set_style(ctx, color_handle_style);
 	glScissor(layout.color_rect.x(), layout.color_rect.y(), layout.color_rect.w(), layout.color_rect.h());
 	content_canvas.draw_shape(ctx, sh[0].position + 0.5f, sh[0].size);
 
-	rect_prog = content_canvas.enable_shader(ctx, "rectangle");
-	hue_handle_style.apply(ctx, rect_prog);
+	content_canvas.enable_shader(ctx, "rectangle");
+	content_canvas.set_style(ctx, hue_handle_style);
 	glScissor(layout.hue_rect.x(), layout.hue_rect.y(), layout.hue_rect.w(), layout.hue_rect.h());
 	content_canvas.draw_shape(ctx, sh[1]);
-	
+
 	if(has_opacity) {
 		glScissor(layout.opacity_rect.x(), layout.opacity_rect.y(), layout.opacity_rect.w(), layout.opacity_rect.h());
-		
+
 		const auto& r = layout.opacity_rect;
 		content_canvas.enable_shader(ctx, "rectangle");
 		opacity_color_style.fill_color = rgba(rgb_color, 1.0f);
 		opacity_color_style.feather_width = static_cast<float>(r.h());
-		opacity_color_style.apply(ctx, rect_prog);
+		content_canvas.set_style(ctx, opacity_color_style);
 		content_canvas.draw_shape(ctx, ivec2(r.x(), r.y1() - 1), ivec2(r.w(), 1));
 
-		hue_handle_style.apply(ctx, rect_prog);
+		content_canvas.set_style(ctx, hue_handle_style);
 		content_canvas.draw_shape(ctx, sh[2]);
 	}
 
@@ -256,9 +255,8 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 
 	glDisable(GL_SCISSOR_TEST);
 
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, content_canvas, texts, text_style, 0, 2*n_labels);
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, content_canvas, texts, text_style, 0, 2 * n_labels);
 
-	disable_blending();
 	end_content(ctx);
 }
 

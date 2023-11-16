@@ -115,29 +115,25 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 
 	begin_content(ctx);
 
-	ivec2 container_size = get_overlay_size();
-
-	auto& rect_prog = content_canvas.enable_shader(ctx, "rectangle");
+	content_canvas.enable_shader(ctx, "rectangle");
 
 	// draw container background
 	if(show_background) {
-		container_style.apply(ctx, rect_prog);
-		content_canvas.draw_shape(ctx, ivec2(0), container_size);
+		content_canvas.set_style(ctx, container_style);
+		content_canvas.draw_shape(ctx, ivec2(0), get_overlay_size());
 	}
 
 	// draw inner border
-	border_style.apply(ctx, rect_prog);
+	content_canvas.set_style(ctx, border_style);
 	content_canvas.draw_shape(ctx, layout.color_map_rect.position - 1, layout.color_map_rect.size + 2);
 
 	// draw background grid as contrast for transparent color maps or indicator that no color map is set
-	auto& grid_prog = content_canvas.enable_shader(ctx, "grid");
-	background_style.apply(ctx, grid_prog);
+	content_canvas.enable_shader(ctx, "grid");
+	content_canvas.set_style(ctx, background_style);
 	content_canvas.draw_shape(ctx, layout.color_map_rect);
 
 	if(tex.is_created()) {
 		// draw the color map texture
-		content_canvas.enable_shader(ctx, rect_prog);
-
 		content_canvas.push_modelview_matrix();
 		ivec2 pos = layout.color_map_rect.position;
 		ivec2 size = layout.color_map_rect.size;
@@ -153,7 +149,8 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 		content_canvas.mul_modelview_matrix(ctx, cgv::math::rotate2h(angle));
 
 		// draw color scale texture
-		color_map_style.apply(ctx, rect_prog);
+		content_canvas.enable_shader(ctx, "rectangle");
+		content_canvas.set_style(ctx, color_map_style);
 		tex.enable(ctx, 0);
 		content_canvas.draw_shape(ctx, ivec2(0), size);
 		tex.disable(ctx);
