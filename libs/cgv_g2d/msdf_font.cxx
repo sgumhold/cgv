@@ -60,6 +60,44 @@ bool msdf_font::init(cgv::render::context& ctx) {
 	return success;
 }
 
+float msdf_font::compute_length(const std::string& str) const {
+	float length = 0.0f;
+	float acc_advance = 0.0f;
+
+	for(size_t i = 0; i < str.length(); ++i) {
+		char c = str[i];
+		const auto& glyph = get_glyph_info(static_cast<unsigned char>(c));
+		length = acc_advance + glyph.size.x();
+		acc_advance += glyph.advance;
+
+		// if the last character is a space add its advance to the length
+		if(i == str.length() - 1 && c == ' ')
+			length += glyph.advance;
+	}
+
+	return length;
+}
+
+std::vector<cgv::render::vec4> msdf_font::create_vertex_data(const std::string& str) const {
+	std::vector<cgv::render::vec4> vertices;
+	vertices.reserve(2 * str.size());
+
+	float accumulated_advance = 0.0f;
+
+	for(char c : str) {
+		const auto& glyph = get_glyph_info(static_cast<unsigned char>(c));
+
+		vec2 position = glyph.position + vec2(accumulated_advance, 0.0f);
+		vec2 size = glyph.size;
+		accumulated_advance += glyph.advance;
+
+		vertices.emplace_back(position.x(), position.y(), size.x(), size.y());
+		vertices.emplace_back(glyph.texcoords);
+	}
+
+	return vertices;
+}
+
 bool msdf_font::enable(cgv::render::context& ctx) {
 	if(atlas_texture.is_created())
 		return atlas_texture.enable(ctx, 0);

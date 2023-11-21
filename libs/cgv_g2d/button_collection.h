@@ -15,7 +15,6 @@ namespace g2d {
 class CGV_API button_collection : cgv::gui::theme_observer {
 protected:
 	bool state_out_of_date = true;
-	//bool style_out_of_date = false;
 
 	cgv::render::shader_library shaders;
 
@@ -50,7 +49,6 @@ protected:
 	void move_label(int offset);
 
 public:
-
 	button_collection();
 
 	void destruct(cgv::render::context& ctx);

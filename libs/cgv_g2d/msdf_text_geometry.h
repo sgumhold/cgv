@@ -11,7 +11,7 @@ namespace cgv {
 namespace g2d {
 
 class CGV_API msdf_text_geometry : public cgv::render::render_types {
-protected:
+public:
 	struct text_info {
 		std::string str = "";
 		int offset = 0;
@@ -27,6 +27,7 @@ protected:
 			: str(str), position(position), size(size), alignment(alignment), angle(angle), color(color) {}
 	};
 
+protected:
 	msdf_font::FontFace font_face = msdf_font::FontFace::FF_REGULAR;
 	msdf_font* msdf_font_ptr = nullptr;
 	msdf_font* custom_msdf_font_ptr = nullptr;
@@ -44,8 +45,6 @@ protected:
 	float compute_length(const std::string& str) const;
 
 	void update_offsets(size_t begin);
-
-	void add_vertex(const vec2& position, const vec2& size, const vec4& texcoords);
 
 	void create_vertex_data();
 
@@ -88,7 +87,7 @@ public:
 
 	const std::vector<text_info>& ref_texts() const { return texts; }
 
-	vec2 get_text_render_size(unsigned i, float font_size) const;
+	vec2 get_text_render_size(unsigned i, float font_size, size_t length = std::string::npos) const;
 
 	template<typename T>
 	void add_text(const std::string& str, const cgv::math::fvec<T, 2>& position, const cgv::render::TextAlignment alignment = cgv::render::TA_NONE, float scale = 1.0f, float angle = 0.0f, rgba color = rgba(0.0f, 0.0f, 0.0f, 1.0f)) {

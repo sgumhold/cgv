@@ -74,11 +74,19 @@ void msdf_text_geometry::set_color(unsigned i, const rgba color) {
 		texts[i].color = color;
 }
 
-msdf_text_geometry::vec2 msdf_text_geometry::get_text_render_size(unsigned i, float font_size) const {
+msdf_text_geometry::vec2 msdf_text_geometry::get_text_render_size(unsigned i, float font_size, size_t length) const {
 
 	if(i < texts.size()) {
 		const text_info& text = texts[i];
-		return font_size * vec2(text.size.x() * text.size.y(), text.size.y());
+
+		float size_x = text.size.x();
+
+		if(length != std::string::npos && length < text.str.length()) {
+			std::string str = text.str.substr(0, length);
+			size_x = compute_length(str);
+		}
+
+		return font_size * vec2(size_x * text.size.y(), text.size.y());
 	}
 
 	return vec2(0.0f);
@@ -130,16 +138,7 @@ msdf_font& msdf_text_geometry::ref_font() const {
 }
 
 float msdf_text_geometry::compute_length(const std::string& str) const {
-	float length = 0.0f;
-	float acc_advance = 0.0f;
-
-	for(char c : str) {
-		const msdf_font::glyph_info& g = ref_font().get_glyph_info(static_cast<unsigned char>(c));
-		length = acc_advance + g.size.x();
-		acc_advance += g.advance;
-	}
-
-	return length;
+	return ref_font().compute_length(str);
 }
 
 void msdf_text_geometry::update_offsets(size_t begin) {
@@ -154,11 +153,6 @@ void msdf_text_geometry::update_offsets(size_t begin) {
 	}
 }
 
-void msdf_text_geometry::add_vertex(const vec2 & position, const vec2 & size, const vec4 & texcoords) {
-	vertices.emplace_back(position.x(), position.y(), size.x(), size.y());
-	vertices.push_back(texcoords);
-}
-
 void msdf_text_geometry::create_vertex_data() {
 	vertices.clear();
 
@@ -169,17 +163,8 @@ void msdf_text_geometry::create_vertex_data() {
 	vertices.reserve(2 * glyph_count);
 
 	for(text_info& text : texts) {
-		float acc_advance = 0.0f;
-
-		for(char c : text.str) {
-			const msdf_font::glyph_info& g = ref_font().get_glyph_info(static_cast<unsigned char>(c));
-
-			vec2 position = g.position + vec2(acc_advance, 0.0f);
-			vec2 size = g.size;
-			acc_advance += g.advance;
-
-			add_vertex(position, size, g.texcoords);
-		}
+		auto vertex_data = ref_font().create_vertex_data(text.str);
+		vertices.insert(vertices.end(), vertex_data.begin(), vertex_data.end());
 	}
 }
 

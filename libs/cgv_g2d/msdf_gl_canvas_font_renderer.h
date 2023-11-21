@@ -10,11 +10,15 @@ namespace g2d {
 
 class CGV_API msdf_gl_canvas_font_renderer : public msdf_gl_font_renderer {
 public:
-	bool enable(cgv::render::context& ctx, canvas& cvs, msdf_text_geometry& tg, const text2d_style& style);//
-	
-	void draw(cgv::render::context& ctx, msdf_text_geometry& tg, size_t offset = 0, int count = -1);
+	bool enable(cgv::render::context& ctx, canvas& cvs, msdf_font& font, const text2d_style& style);
+
+	bool enable(cgv::render::context& ctx, canvas& cvs, msdf_text_geometry& tg, const text2d_style& style);
+
+	using msdf_gl_font_renderer::draw;
 
 	void draw(cgv::render::context& ctx, canvas& cvs, msdf_text_geometry& tg, size_t offset = 0, int count = -1);
+	
+	bool render(cgv::render::context& ctx, canvas& cvs, msdf_font& font, const std::string& text, const text2d_style& style, cgv::render::vec2 position, cgv::render::TextAlignment alignment = cgv::render::TextAlignment::TA_NONE, float scale = 1.0f);
 
 	bool render(cgv::render::context& ctx, canvas& cvs, msdf_text_geometry& tg, const text2d_style& style, size_t offset = 0, int count = -1);
 };
