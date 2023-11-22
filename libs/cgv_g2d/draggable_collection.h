@@ -56,54 +56,13 @@ protected:
 	}
 
 	bool handle_void(cgv::gui::event& e, const ivec2& viewport_size, const irect& container, Origin origin) {
-
 		unsigned et = e.get_kind();
 
 		if(et == cgv::gui::EID_MOUSE) {
 			cgv::gui::mouse_event& me = (cgv::gui::mouse_event&)e;
 
 			vec2 mouse_position = static_cast<vec2>(cgv::g2d::get_local_mouse_pos(ivec2(me.get_x(), me.get_y()), viewport_size, container, origin));
-			mouse_position = vec2(inv_transformation * vec3(mouse_position, 1.0f));
-
-			if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
-				if(me.get_action() == cgv::gui::MA_PRESS) {
-					press_inside = has_constraint && !use_individual_constraints ? constraint_area.is_inside(mouse_position) : true;
-					dragged = get_hit_draggable(mouse_position);
-
-					press_inside = press_inside || dragged;
-
-					if(press_inside) {
-						selected = dragged;
-						if(dragged) {
-							offset = dragged->position - mouse_position;
-							if(drag_start_callback) drag_start_callback();
-							return true;
-						}
-					}
-				} else if(me.get_action() == cgv::gui::MA_RELEASE) {
-					if(dragged) {
-						dragged = nullptr;
-						if(drag_end_callback) drag_end_callback();
-					} else if(press_inside) {
-						selected = get_hit_draggable(mouse_position);
-						if(selection_change_callback) selection_change_callback();
-					}
-				}
-			}
-
-			if(me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
-				if(dragged) {
-					dragged->position = mouse_position + offset;
-
-					if(use_individual_constraints && dragged->get_constraint())
-						dragged->apply_constraint();
-					else if(has_constraint)
-						dragged->apply_constraint(constraint_area);
-
-					if(drag_callback) drag_callback();
-					return true;
-				}
-			}
+			return handle_mouse_event(me, mouse_position);
 		}
 
 		return false;
@@ -203,23 +162,65 @@ public:
 		inv_transformation = cgv::math::inv(matrix);
 	}
 
+	bool handle_mouse_event(cgv::gui::mouse_event& me, vec2 mouse_position) {
+		mouse_position = vec2(inv_transformation * vec3(mouse_position, 1.0f));
+
+		if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
+			if(me.get_action() == cgv::gui::MA_PRESS) {
+				press_inside = has_constraint && !use_individual_constraints ? constraint_area.is_inside(mouse_position) : true;
+				dragged = get_hit_draggable(mouse_position);
+
+				press_inside = press_inside || dragged;
+
+				if(press_inside) {
+					selected = dragged;
+					if(dragged) {
+						offset = dragged->position - mouse_position;
+						if(drag_start_callback) drag_start_callback();
+						return true;
+					}
+				}
+			} else if(me.get_action() == cgv::gui::MA_RELEASE) {
+				if(dragged) {
+					dragged = nullptr;
+					if(drag_end_callback) drag_end_callback();
+				} else if(press_inside) {
+					selected = get_hit_draggable(mouse_position);
+					if(selection_change_callback) selection_change_callback();
+				}
+			}
+		}
+
+		if(me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
+			if(dragged) {
+				dragged->position = mouse_position + offset;
+
+				if(use_individual_constraints && dragged->get_constraint())
+					dragged->apply_constraint();
+				else if(has_constraint)
+					dragged->apply_constraint(constraint_area);
+
+				if(drag_callback) drag_callback();
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
 	bool handle(cgv::gui::event& e, const ivec2& viewport_size, Origin origin = Origin::kBottomLeft) {
-	
 		return handle_void(e, viewport_size, irect(), origin);
 	}
 
 	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const irect& container, Origin origin = Origin::kBottomLeft) {
-
 		return handle_void(e, viewport_size, container, origin);
 	}
 
 	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const canvas& cnvs) {
-
 		return handle_void(e, viewport_size, irect(), cnvs.get_origin_setting());
 	}
 
 	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const canvas& cnvs, const irect& container) {
-
 		return handle_void(e, viewport_size, container, cnvs.get_origin_setting());
 	}
 };
