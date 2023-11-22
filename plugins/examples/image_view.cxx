@@ -126,6 +126,10 @@ public:
 			find_control(animate)->set("active", tex_ids.size() > 1);
 			find_control(current_image)->set("active", tex_ids.size() > 1);
 		}
+		if (find_control(mix_with)) {
+			find_control(mix_with)->set("max", durations.size() - 1);
+			find_control(mix_with)->set("active", tex_ids.size() > 1);
+		}
 		if (find_control(selection.ref_min_pnt()(0))) {
 			find_control(selection.ref_min_pnt()(0))->set("max", W);
 			find_control(selection.ref_max_pnt()(0))->set("max", W);
@@ -191,6 +195,14 @@ public:
 			end_tree_node(use_blending);
 		}
 
+		if (begin_tree_node("mixing", use_mixing)) {
+			align("\a");	
+			add_member_control(this, "use_mixing", use_mixing, "toggle");
+			add_member_control(this, "mix_with", (int&)mix_with, "value_slider", "min=-1;max=0;ticks=true");
+			add_member_control(this, "mix_param", mix_param, "value_slider", "min=0.0;max=1.0;log=true;ticks=true");
+			align("\b");
+			end_tree_node(use_mixing);
+		}
 		if (begin_tree_node("selection", show_selection)) {
 			align("\a");	
 			add_member_control(this, "show", show_selection, "check", "shortcut='R'");
