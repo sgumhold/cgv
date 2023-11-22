@@ -61,7 +61,7 @@ public:
 
 	float get_cap_height() const { return cap_height; }
 
-	float compute_length(const std::string& str) const;
+	float compute_length(const std::string& str, size_t end = std::string::npos) const;
 
 	std::vector<cgv::render::vec4> create_vertex_data(const std::string& str) const;
 
