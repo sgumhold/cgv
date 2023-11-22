@@ -1,4 +1,4 @@
-#version 150 
+#version 330 
 
 #define ROUNDING 0
 
@@ -15,6 +15,9 @@ in float radius;
 in mat3 NM_fs;
 in vec4 secondary_color;
 #endif
+
+layout(location = 1) out vec4 frag_position;
+layout(location = 2) out vec3 frag_normal;
 
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
@@ -133,6 +136,9 @@ void main()
 {
 #if ROUNDING == 0
     finish_fragment(compute_reflected_appearance(position, normalize(normal), color_fs, side));
+
+	frag_position = vec4(position, 1.0);
+	frag_normal = normal;
 #else
     if (radius == 0.0)
         finish_fragment(compute_reflected_appearance(position, normalize(normal), color_fs, side));

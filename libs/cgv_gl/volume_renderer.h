@@ -1,6 +1,6 @@
 #pragma once
 
-#include "surface_renderer.h"
+#include "renderer.h"
 
 #include "gl/lib_begin.h"
 
@@ -19,7 +19,7 @@ namespace cgv { // @<
 		struct CGV_API volume_render_style : public render_style {
 			/*@name global volume rendering options*/
 			//@{
-			/// quality measure for the number of steps used during raymarching
+			/// quality measure for the number of steps used during ray marching
 			enum IntegrationQuality {
 				IQ_8 = 8,
 				IQ_16 = 16,
@@ -29,28 +29,71 @@ namespace cgv { // @<
 				IQ_256 = 256,
 				IQ_512 = 512,
 				IQ_1024 = 1024,
+				IQ_2048 = 2048,
+				IQ_4096 = 4096
 			} integration_quality;
-			/// the interpolation method used
-			enum InterpolationMode {
-				IP_NEAREST = 0,
-				IP_LINEAR = 1,
-				IP_SMOOTH = 2,
-				IP_CUBIC = 3
-			} interpolation_mode;
 			/// whether to use the noise texture to offset ray start positions in order to reduce sampling artifacts
 			bool enable_noise_offset;
-			/// whether to enable the scale adjustment
-			bool enable_scale_adjustment;
-			/// the coefficient used to adjust for volume scaling
-			float size_scale;
-			/// opacity scaling parameter
-			float opacity_scale;
-			/// a bounding box used to define a subspace of the volume to be visualized
-			box3 clip_box;
-			/// whether to enable lighting (gradient texture must be supplied)
-			bool enable_lighting;
+			/// the interpolation method used (supplied volume texture should be set to GL_LINEAR)
+			enum InterpolationMode {
+				IP_NEAREST = 0,		/// only the closest voxel is sampled
+				IP_SMOOTHED = 1,	/// modification of the built-in trilinear interpolation to prevent triangular artifacts (results look blockier in the volume, mid way between nearest and linear)
+				IP_LINEAR = 2,		/// default built-in trilinear interpolation
+				IP_CUBIC = 3		/// tricubic interpolation using 8 modified trlinear samples
+			} interpolation_mode;
 			/// whether to enable depth testing by reading depth from a texture to allow geometry intersecting the volume (depth texture must be supplied)
 			bool enable_depth_test;
+
+			/// the compositing mode used
+			enum CompositingMode {
+				CM_MAXIMUM_INTENSITY_PROJECTION = 0,
+				CM_AVERAGE = 1,
+				CM_BLEND = 2 // using transfer function
+			} compositing_mode;
+			
+			/// the coefficient used to adjust sample opacity based on volume scaling (useful range between 50 and 500)
+			float scale_adjustment_factor;
+			
+			/// whether to enable lighting
+			bool enable_lighting;
+			/// whether the light is local to the eye position (moves with the eye) or is static to the scene
+			bool light_local_to_eye;
+			/// whether to use a supplied gradient texture or compute gradients on the fly via central differences (default)
+			bool use_gradient_texture;
+			/// the direction of the directional light
+			vec3 light_direction;
+			/// light ambient component strength
+			float ambient_strength;
+			/// material diffuse component strength
+			float diffuse_strength;
+			/// material specular component strength
+			float specular_strength;
+			/// material roughness (inversely proportional to specular shininess)
+			float roughness;
+			/// material specular color mix factor (0 = color from transfer function, 1 = pure white)
+			float specular_color_mix;
+
+			/// whether to enable modulating the volume opacity by the gradient magnitude
+			bool enable_gradient_modulation;
+			///  influence scale for gradient-based opacity modulation
+			float gradient_lambda;
+
+			/// mode of a single supported isosurface
+			enum IsosurfaceMode{
+				IM_NONE = 0,			/// not enabled
+				IM_ISOVALUE = 1,		/// based on volume value (volume >= isovalue)
+				IM_ALPHA_THRESHOLD = 2	/// based on opacity value from transfer function (tf(volume).a >= isovalue)
+			} isosurface_mode;
+			/// the value used to check for an isosurface
+			float isovalue;
+			/// the default constant isosurface color
+			rgb isosurface_color;
+			/// whether to color the isosurface based on the transfer function
+			bool isosurface_color_from_transfer_function;
+
+			/// a bounding box used to define a subspace of the volume to be visualized
+			box3 clip_box;
+
 			//}@
 			/// construct with default values
 			volume_render_style();
@@ -59,11 +102,10 @@ namespace cgv { // @<
 		/// renderer that supports point splatting
 		class CGV_API volume_renderer : public renderer
 		{
+		private:
+			/// a private attribute array manager that holds position data that is constant for all volumes
+			cgv::render::attribute_array_manager position_aam;
 		protected:
-			// TODO: rename or use the one from the renderer base class?
-			cgv::render::attribute_array_manager aa_manager;
-
-
 			/// the 3D texture used for rendering
 			texture* volume_texture;
 			/// the 2D transfer function texture used for classification of the volume values
@@ -78,6 +120,8 @@ namespace cgv { // @<
 			box3 bounding_box;
 			/// whether to translate and scale the volume to the given bounding box during rendering
 			bool apply_bounding_box_transformation;
+			/// offset applied to the noise texture (can be used in conjunction with temporal anti aliasing)
+			vec2 noise_offset;
 			/// overload to allow instantiation of volume_renderer
 			render_style* create_render_style() const;
 			/// update shader defines based on render style
@@ -103,6 +147,8 @@ namespace cgv { // @<
 			void set_bounding_box(const box3& bbox);
 			///
 			void transform_to_bounding_box(bool flag);
+			///
+			void set_noise_offset(const vec2& offset);
 			///
 			bool enable(context& ctx);
 			///

@@ -1,0 +1,27 @@
+#version 150
+
+//***** begin interface of shape2d.glsl ***********************************
+uniform float feather_origin = 0.5;
+
+float get_feather_width();
+vec2 get_adjusted_size();
+vec4 get_color();
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+in vec2 position;
+in vec4 color;
+in vec2 texcoord;
+
+uniform ivec2 resolution;
+
+out vec4 col;
+out vec2 uv;
+
+void main() {
+	
+	col = color;
+	uv = texcoord;
+
+	gl_Position = transform_world_to_window_space(position);
+}

@@ -74,7 +74,7 @@ const char* fltk_font::get_name() const
 	return f->name();
 }
 /// check whether the given font includes a face that include the possibly or-ed together selection of font face attributes
-bool fltk_font::supports_font_face(int _ffa) const
+bool fltk_font::supports_font_face(cgv::media::font::FontFaceAttributes _ffa) const
 {
 	return (ffa & _ffa) == _ffa;
 }
@@ -87,7 +87,7 @@ void fltk_font::enumerate_sizes(std::vector<int>& supported_sizes) const
 	std::copy(ss, ss+n, supported_sizes.begin());
 }
 /// return a pointer to a font face
-font_face_ptr fltk_font::get_font_face(int _ffa) const
+font_face_ptr fltk_font::get_font_face(cgv::media::font::FontFaceAttributes _ffa) const
 {
 	if (!supports_font_face(_ffa))
 		return font_face_ptr();

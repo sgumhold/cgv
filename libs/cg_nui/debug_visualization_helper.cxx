@@ -1,4 +1,6 @@
 #include "debug_visualization_helper.h"
+#include "cgv/base/group.h"
+
 
 void cgv::nui::ref_debug_visualization_helper(cgv::nui::debug_visualization_helper** instance, int** reference_count)
 {
@@ -74,7 +76,6 @@ void cgv::nui::debug_visualization_helper::draw(render::context& ctx)
 	auto& ar = render::ref_arrow_renderer(ctx);
 	// TODO: Group together arrows with the same radius
 	for (int i = 0; i < arrow_positions.size(); ++i) {
-		auto ars = render::arrow_render_style();
 		ars.radius_relative_to_length = 1.0f / (arrow_directions[i].length() / arrow_shaft_radii[i]);
 		ar.set_render_style(ars);
 		std::vector<vec3> pos = { arrow_positions[i] };
@@ -90,7 +91,6 @@ void cgv::nui::debug_visualization_helper::draw(render::context& ctx)
 	auto& sr = render::ref_sphere_renderer(ctx);
 	// TODO: Group together spheres with the same radius
 	for (int i = 0; i < sphere_positions.size(); ++i) {
-		auto srs = render::sphere_render_style();
 		srs.radius = sphere_radii[i];
 		sr.set_render_style(srs);
 		std::vector<vec3> pos = { sphere_positions[i] };
@@ -99,6 +99,107 @@ void cgv::nui::debug_visualization_helper::draw(render::context& ctx)
 		sr.set_color_array(ctx, col);
 		sr.render(ctx, 0, 1);
 	}
+
+	// Boxes
+	if (box_positions.size() > 0) {
+		auto& br = render::ref_box_renderer(ctx);
+		br.set_render_style(brs);
+		br.set_position_array(ctx, box_positions);
+		br.set_extent_array(ctx, box_extents);
+		br.set_color_array(ctx, box_colors);
+		br.render(ctx, 0, 1);
+	}
+
+	// Splines
+	auto& str = cgv::render::ref_spline_tube_renderer(ctx);
+	str.set_render_style(strs);
+	for (int i = 0; i < splines.size(); ++i) {
+		strs.radius = spline_radii[i];
+		if (splines[i].first.empty())
+			continue;
+		str.set_position_array(ctx, splines[i].first);
+		str.set_tangent_array(ctx, splines[i].second);
+		std::vector<rgb> col;
+		for (int j = 0; j < splines[i].first.size(); ++j) {
+			col.push_back(spline_colors[i]);
+		}
+		str.set_color_array(ctx, col);
+		str.render(ctx, 0, splines[i].first.size(), true);
+	}
+}
+
+void cgv::nui::debug_visualization_helper::print_hierarchy(base::node_ptr node)
+{
+	std::cout << "Printing Hierarchy:" << std::endl;
+	std::stack<cgv::base::node_ptr> stack;
+	std::stack<int> indentation_stack;
+	stack.push(node);
+	indentation_stack.push(0);
+	while (!stack.empty()) {
+		cgv::base::node_ptr n = stack.top();
+		stack.pop();
+		int indentation = indentation_stack.top();
+		indentation_stack.pop();
+		std::string s_indent;
+		for (int i = 0; i < indentation; ++i)
+			s_indent += "-";
+		std::cout << s_indent << n->get_type_name();
+		cgv::base::named_ptr nmdp = n->cast<base::named>();
+		if (nmdp && nmdp->get_name() != "")
+			std::cout << " (" << nmdp->get_name() << ")" << std::endl;
+		else
+			std::cout << std::endl;
+		cgv::base::group_ptr grp = n->cast<base::group>();
+		if (grp) {
+			for (int i = 0; i < grp->get_nr_children(); ++i) {
+				cgv::base::node_ptr child = grp->get_child(i)->cast<base::node>();
+				if (child) {
+					stack.push(child);
+					indentation_stack.push(indentation + 1);
+				}
+			}
+		}
+	}
+	std::cout << "------------End-------------" << std::endl;
+}
+
+void cgv::nui::debug_visualization_helper::print_full_hierarchy(base::node_ptr node)
+{
+	std::cout << "Printing Full Hierarchy:" << std::endl;
+	cgv::base::node_ptr parent = node;
+	while (parent->get_parent()) {
+		parent = parent->get_parent();
+	}
+	std::stack<cgv::base::node_ptr> stack;
+	std::stack<int> indentation_stack;
+	stack.push(parent);
+	indentation_stack.push(0);
+	while (!stack.empty()) {
+		cgv::base::node_ptr n = stack.top();
+		stack.pop();
+		int indentation = indentation_stack.top();
+		indentation_stack.pop();
+		std::string s_indent;
+		for (int i = 0; i < indentation; ++i)
+			s_indent += "-";
+		std::cout << s_indent << n->get_type_name();
+		cgv::base::named_ptr nmdp = n->cast<base::named>();
+		if (nmdp && nmdp->get_name() != "")
+			std::cout << " (" << nmdp->get_name() << ")" << std::endl;
+		else
+			std::cout << std::endl;
+		cgv::base::group_ptr grp = n->cast<base::group>();
+		if (grp) {
+			for (int i = 0; i < grp->get_nr_children(); ++i) {
+				cgv::base::node_ptr child = grp->get_child(i)->cast<base::node>();
+				if (child) {
+					stack.push(child);
+					indentation_stack.push(indentation + 1);
+				}
+			}
+		}
+	}
+	std::cout << "------------End-------------" << std::endl;
 }
 
 int cgv::nui::debug_visualization_helper::register_debug_value(debug_value* value)
@@ -145,19 +246,112 @@ void cgv::nui::debug_visualization_helper::construct_sphere(int& idx, vec3 posit
 	}
 }
 
+void cgv::nui::debug_visualization_helper::construct_box(int& idx, vec3 position, vec3 extent, rgb color)
+{
+	if (idx == -1) {
+		idx = box_positions.size();
+		box_positions.push_back(position);
+		box_extents.push_back(extent);
+		box_colors.push_back(color);
+	}
+	else {
+		box_positions[idx] = position;
+		box_extents[idx] = extent;
+		box_colors[idx] = color;
+	}
+}
+
+void cgv::nui::debug_visualization_helper::construct_spline(int& idx, std::vector<vec3> positions,
+                                                            std::vector<vec4> tangents, float radius, rgb color)
+{
+	if (idx == -1) {
+		idx = splines.size();
+		splines.push_back(spline_data_t(positions, tangents));
+		spline_radii.push_back(radius);
+		spline_colors.push_back(color);
+	}
+	else {
+		splines[idx] = spline_data_t(positions, tangents);
+		spline_radii[idx] = radius;
+		spline_colors[idx] = color;
+	}
+}
+
 void cgv::nui::debug_visualization_helper::construct_position_geometry(debug_value_position* debug_value)
 {
 	if (!debug_value->is_enabled)
 		return;
-	construct_sphere(debug_value->sphere_geometry_idx, debug_value->value, debug_value->sphere_radius, debug_value->color);
+	construct_sphere(debug_value->sphere_geometry_idx, debug_value->value, debug_value->config.sphere_radius, debug_value->config.color);
 }
 
 void cgv::nui::debug_visualization_helper::construct_vector_geometry(debug_value_vector* debug_value)
 {
 	if (!debug_value->is_enabled)
 		return;
-	construct_arrow(debug_value->arrow_geometry_idx, debug_value->position, debug_value->value, debug_value->shaft_radius, debug_value->color);
+	construct_arrow(debug_value->arrow_geometry_idx, debug_value->config.position, debug_value->value, debug_value->config.shaft_radius, debug_value->config.color);
 }
+
+void cgv::nui::debug_visualization_helper::construct_coordinate_system_geometry(
+	debug_value_coordinate_system* debug_value)
+{
+	if (!debug_value->is_enabled)
+		return;
+	// calculation from https://math.stackexchange.com/q/1463487 (lookup 28.06.2022)
+	// assuming no perspective transformation, no shear, no negative scaling factors
+	vec3 translation = debug_value->value.col(3);
+	vec3 scale = vec3(vec3(debug_value->value.col(0)).length(), vec3(debug_value->value.col(1)).length(), vec3(debug_value->value.col(2)).length());
+	quat rotation = quat(mat3({ normalize(vec3(debug_value->value.col(0))), normalize(vec3(debug_value->value.col(1))), normalize(vec3(debug_value->value.col(2))) }));
+	rotation.normalize();
+	vec3 cs_pos = debug_value->config.position;
+	if (debug_value->config.show_translation)
+		cs_pos = translation;
+	vec3 cs_axis0 = vec3(1.0, 0.0, 0.0) * debug_value->config.base_axis_length;
+	vec3 cs_axis1 = vec3(0.0, 1.0, 0.0) * debug_value->config.base_axis_length;
+	vec3 cs_axis2 = vec3(0.0, 0.0, 1.0) * debug_value->config.base_axis_length;
+	if (debug_value->config.show_rotation) {
+		cs_axis0 = rotation.apply(cs_axis0);
+		cs_axis1 = rotation.apply(cs_axis1);
+		cs_axis2 = rotation.apply(cs_axis2);
+	}
+	if (debug_value->config.show_scale) {
+		cs_axis0 = cs_axis0 * scale.x();
+		cs_axis1 = cs_axis1 * scale.y();
+		cs_axis2 = cs_axis2 * scale.z();
+	}
+	construct_sphere(debug_value->sphere_geometry_idx, cs_pos, debug_value->config.center_radius, debug_value->config.center_color);
+	construct_arrow(debug_value->arrow0_geometry_idx, cs_pos, cs_axis0, debug_value->config.axis_radius, coordinate_system_arrow_colors[0]);
+	construct_arrow(debug_value->arrow1_geometry_idx, cs_pos, cs_axis1, debug_value->config.axis_radius, coordinate_system_arrow_colors[1]);
+	construct_arrow(debug_value->arrow2_geometry_idx, cs_pos, cs_axis2, debug_value->config.axis_radius, coordinate_system_arrow_colors[2]);
+}
+
+void cgv::nui::debug_visualization_helper::construct_ray_geometry(debug_value_ray* debug_value)
+{
+	if (!debug_value->is_enabled)
+		return;
+	if (debug_value->config.show_origin)
+		construct_sphere(debug_value->sphere_geometry_idx, debug_value->origin, debug_value->config.origin_radius, debug_value->config.origin_color);
+	vec3 start_point = debug_value->origin + debug_value->direction * debug_value->config.start_offset;
+	vec3 end_point = start_point + debug_value->direction * debug_value->config.length;
+	construct_spline(debug_value->spline_geometry_idx, { start_point, end_point },
+		{ vec4(debug_value->direction,0.0f), vec4(debug_value->direction, 0.0f) }, debug_value->config.ray_radius, debug_value->config.ray_color);
+}
+
+void cgv::nui::debug_visualization_helper::construct_cylinder_geometry(debug_value_cylinder* debug_value)
+{
+	if (!debug_value->is_enabled)
+		return;
+	construct_spline(debug_value->spline_geometry_idx, { debug_value->origin, debug_value->origin + debug_value->direction },
+		{ vec4(debug_value->direction, 0.0f), vec4(debug_value->direction, 0.0f) }, debug_value->radius,
+		debug_value->config.color);
+}
+
+void cgv::nui::debug_visualization_helper::construct_box_geometry(debug_value_box* debug_value)
+{
+	if (!debug_value->is_enabled)
+		return;
+	construct_box(debug_value->box_geometry_idx, debug_value->origin, debug_value->extent, debug_value->config.color);
+}
+
 
 void cgv::nui::debug_visualization_helper::reconstruct_geometry()
 {
@@ -165,10 +359,16 @@ void cgv::nui::debug_visualization_helper::reconstruct_geometry()
 	sphere_positions.clear();
 	sphere_radii.clear();
 	sphere_colors.clear();
+	box_positions.clear();
+	box_extents.clear();
+	box_colors.clear();
 	arrow_positions.clear();
 	arrow_directions.clear();
 	arrow_shaft_radii.clear();
 	arrow_colors.clear();
+	splines.clear();
+	spline_radii.clear();
+	spline_colors.clear();
 
 	// construct all geometry data
 	for (auto it : debug_values) {
@@ -182,6 +382,34 @@ void cgv::nui::debug_visualization_helper::reconstruct_geometry()
 		if (dv_vec != nullptr) {
 			dv_vec->arrow_geometry_idx = -1;
 			construct_vector_geometry(dv_vec);
+			continue;
+		}
+		debug_value_coordinate_system* dv_cs = retrieve_debug_value<debug_value_coordinate_system>(it.first);
+		if (dv_cs != nullptr) {
+			dv_cs->arrow0_geometry_idx = -1;
+			dv_cs->arrow1_geometry_idx = -1;
+			dv_cs->arrow2_geometry_idx = -1;
+			dv_cs->sphere_geometry_idx = -1;
+			construct_coordinate_system_geometry(dv_cs);
+			continue;
+		}
+		debug_value_ray* dv_ray = retrieve_debug_value<debug_value_ray>(it.first);
+		if (dv_ray != nullptr) {
+			dv_ray->spline_geometry_idx = -1;
+			dv_ray->sphere_geometry_idx = -1;
+			construct_ray_geometry(dv_ray);
+			continue;
+		}
+		debug_value_cylinder* dv_cylinder = retrieve_debug_value<debug_value_cylinder>(it.first);
+		if (dv_cylinder != nullptr) {
+			dv_cylinder->spline_geometry_idx = -1;
+			construct_cylinder_geometry(dv_cylinder);
+			continue;
+		}
+		debug_value_box* dv_box = retrieve_debug_value<debug_value_box>(it.first);
+		if (dv_box != nullptr) {
+			dv_box->box_geometry_idx = -1;
+			construct_box_geometry(dv_box);
 			continue;
 		}
 	}
@@ -198,40 +426,184 @@ void cgv::nui::debug_visualization_helper::deregister_debug_value(int handle)
 	}
 }
 
+cgv::nui::debug_value_config_position cgv::nui::debug_visualization_helper::
+get_config_debug_value_position(int handle)
+{
+	auto* debug_value = retrieve_debug_value<debug_value_position>(handle);
+	if (debug_value)
+		return debug_value->config;
+	return debug_value_config_position();
+}
+
+void cgv::nui::debug_visualization_helper::set_config_debug_value_position(int handle,
+	debug_value_config_position config)
+{
+	auto* debug_value = retrieve_debug_value<debug_value_position>(handle);
+	if (debug_value)
+		debug_value->config = config;
+}
+
+cgv::nui::debug_value_config_vector cgv::nui::debug_visualization_helper::
+get_config_debug_value_vector(int handle)
+{
+	auto* debug_value = retrieve_debug_value<debug_value_vector>(handle);
+	if (debug_value)
+		return debug_value->config;
+	return debug_value_config_vector();
+}
+
+void cgv::nui::debug_visualization_helper::
+set_config_debug_value_vector(int handle, debug_value_config_vector config)
+{
+	auto* debug_value = retrieve_debug_value<debug_value_vector>(handle);
+	if (debug_value)
+		debug_value->config = config;
+}
+
+cgv::nui::debug_value_config_coordinate_system cgv::nui::debug_visualization_helper::
+get_config_debug_value_coordinate_system(int handle)
+{
+	auto* debug_value = retrieve_debug_value<debug_value_coordinate_system>(handle);
+	if (debug_value)
+		return debug_value->config;
+	return debug_value_config_coordinate_system();
+}
+
+void cgv::nui::debug_visualization_helper::set_config_debug_value_coordinate_system(int handle,
+	debug_value_config_coordinate_system config)
+{
+	auto* debug_value = retrieve_debug_value<debug_value_coordinate_system>(handle);
+	if (debug_value)
+		debug_value->config = config;
+}
+
+cgv::nui::debug_value_config_ray cgv::nui::debug_visualization_helper::
+get_config_debug_value_ray(int handle)
+{
+	auto* debug_value = retrieve_debug_value<debug_value_ray>(handle);
+	if (debug_value)
+		return debug_value->config;
+	return debug_value_config_ray();
+}
+
+void cgv::nui::debug_visualization_helper::set_config_debug_value_ray(int handle, debug_value_config_ray config)
+{
+	auto* debug_value = retrieve_debug_value<debug_value_ray>(handle);
+	if (debug_value)
+		debug_value->config = config;
+}
+
+cgv::nui::debug_value_config_cylinder cgv::nui::debug_visualization_helper::
+get_config_debug_value_cylinder(int handle)
+{
+	auto* debug_value = retrieve_debug_value<debug_value_cylinder>(handle);
+	if (debug_value)
+		return debug_value->config;
+	return debug_value_config_cylinder();
+}
+
+void cgv::nui::debug_visualization_helper::set_config_debug_value_cylinder(int handle,
+	debug_value_config_cylinder config)
+{
+	auto* debug_value = retrieve_debug_value<debug_value_cylinder>(handle);
+	if (debug_value)
+		debug_value->config = config;
+}
+
+cgv::nui::debug_value_config_box cgv::nui::debug_visualization_helper::get_config_debug_value_box(int handle)
+{
+	auto* debug_value = retrieve_debug_value<debug_value_box>(handle);
+	if (debug_value)
+		return debug_value->config;
+	return debug_value_config_box();
+}
+
+void cgv::nui::debug_visualization_helper::set_config_debug_value_box(int handle, debug_value_config_box config)
+{
+	auto* debug_value = retrieve_debug_value<debug_value_box>(handle);
+	if (debug_value)
+		debug_value->config = config;
+}
+
+
 int cgv::nui::debug_visualization_helper::register_debug_value_position(vec3 value)
 {
-	auto dv_pos = new debug_value_position(value);
-	int handle = register_debug_value(dv_pos);
-	construct_position_geometry(dv_pos);
+	auto debug_value = new debug_value_position(value);
+	int handle = register_debug_value(debug_value);
+	construct_position_geometry(debug_value);
 	return handle;
+}
+
+int cgv::nui::debug_visualization_helper::register_debug_value_position()
+{
+	return register_debug_value_position(vec3(0.0f));
 }
 
 int cgv::nui::debug_visualization_helper::register_debug_value_vector(vec3 value)
 {
-	auto dv_vec = new debug_value_vector(value);
-	int handle = register_debug_value(dv_vec);
-	construct_vector_geometry(dv_vec);
+	auto debug_value = new debug_value_vector(value);
+	int handle = register_debug_value(debug_value);
+	construct_vector_geometry(debug_value);
 	return handle;
 }
 
-void cgv::nui::debug_visualization_helper::configure_debug_value_position(int handle, float sphere_radius, rgb color)
+int cgv::nui::debug_visualization_helper::register_debug_value_vector()
 {
-	debug_value_position* value = retrieve_debug_value<debug_value_position>(handle);
-	if (value != nullptr) {
-		value->sphere_radius = sphere_radius;
-		value->color = color;
-		construct_position_geometry(value);
-	}
+	return register_debug_value_vector(vec3(1.0f, 0.0f, 0.0f));
 }
 
-void cgv::nui::debug_visualization_helper::configure_debug_value_vector(int handle, float shaft_radius, rgb color)
+int cgv::nui::debug_visualization_helper::register_debug_value_coordinate_system(mat4 value)
 {
-	debug_value_vector* value = retrieve_debug_value<debug_value_vector>(handle);
-	if (value != nullptr) {
-		value->shaft_radius = shaft_radius;
-		value->color = color;
-		construct_vector_geometry(value);
-	}
+	auto debug_value = new debug_value_coordinate_system(value);
+	int handle = register_debug_value(debug_value);
+	construct_coordinate_system_geometry(debug_value);
+	return handle;
+}
+
+int cgv::nui::debug_visualization_helper::register_debug_value_coordinate_system()
+{
+	mat4 id;
+	id.identity();
+	return register_debug_value_coordinate_system(id);
+}
+
+int cgv::nui::debug_visualization_helper::register_debug_value_ray(vec3 origin, vec3 direction)
+{
+	auto debug_value = new debug_value_ray(origin, normalize(direction));
+	int handle = register_debug_value(debug_value);
+	construct_ray_geometry(debug_value);
+	return handle;
+}
+
+int cgv::nui::debug_visualization_helper::register_debug_value_ray()
+{
+	return register_debug_value_ray(vec3(0.0f), vec3(1.0f, 0.0f, 0.0f));
+}
+
+int cgv::nui::debug_visualization_helper::register_debug_value_cylinder(vec3 origin, vec3 direction, float radius)
+{
+	auto debug_value = new debug_value_cylinder(origin, direction, radius);
+	int handle = register_debug_value(debug_value);
+	construct_cylinder_geometry(debug_value);
+	return handle;
+}
+
+int cgv::nui::debug_visualization_helper::register_debug_value_cylinder()
+{
+	return register_debug_value_cylinder(vec3(0.0f), vec3(1.0f, 0.0f, 0.0f), 0.2f);
+}
+
+int cgv::nui::debug_visualization_helper::register_debug_value_box(vec3 origin, vec3 extent)
+{
+	auto debug_value = new debug_value_box(origin, extent);
+	int handle = register_debug_value(debug_value);
+	construct_box_geometry(debug_value);
+	return handle;
+}
+
+int cgv::nui::debug_visualization_helper::register_debug_value_box()
+{
+	return register_debug_value_box(vec3(0.0f), vec3(0.1f));
 }
 
 void cgv::nui::debug_visualization_helper::enable_debug_value_visualization(int handle)
@@ -274,6 +646,110 @@ void cgv::nui::debug_visualization_helper::update_debug_value_vector_position(in
 	debug_value_vector* dv = retrieve_debug_value<debug_value_vector>(handle);
 	if (dv == nullptr)
 		return;
-	dv->position = value;
+	dv->config.position = value;
 	construct_vector_geometry(dv);
+}
+
+void cgv::nui::debug_visualization_helper::update_debug_value_coordinate_system(int handle, mat4 value)
+{
+	debug_value_coordinate_system* dv = retrieve_debug_value<debug_value_coordinate_system>(handle);
+	if (dv == nullptr)
+		return;
+	dv->value = value;
+	construct_coordinate_system_geometry(dv);
+}
+
+void cgv::nui::debug_visualization_helper::update_debug_value_ray(int handle, vec3 origin, vec3 direction)
+{
+	debug_value_ray* dv = retrieve_debug_value<debug_value_ray>(handle);
+	if (dv == nullptr)
+		return;
+	dv->origin = origin;
+	dv->direction = direction;
+	construct_ray_geometry(dv);
+}
+
+void cgv::nui::debug_visualization_helper::update_debug_value_ray_origin(int handle, vec3 origin)
+{
+	debug_value_ray* dv = retrieve_debug_value<debug_value_ray>(handle);
+	if (dv == nullptr)
+		return;
+	dv->origin = origin;
+	construct_ray_geometry(dv);
+}
+
+void cgv::nui::debug_visualization_helper::update_debug_value_ray_direction(int handle, vec3 direction)
+{
+	debug_value_ray* dv = retrieve_debug_value<debug_value_ray>(handle);
+	if (dv == nullptr)
+		return;
+	dv->direction = direction;
+	construct_ray_geometry(dv);
+}
+
+void cgv::nui::debug_visualization_helper::update_debug_value_cylinder(int handle, vec3 origin, vec3 direction,
+	float radius)
+{
+	debug_value_cylinder* dv = retrieve_debug_value<debug_value_cylinder>(handle);
+	if (dv == nullptr)
+		return;
+	dv->origin = origin;
+	dv->direction = direction;
+	dv->radius = radius;
+	construct_cylinder_geometry(dv);
+}
+
+void cgv::nui::debug_visualization_helper::update_debug_value_cylinder_origin(int handle, vec3 origin)
+{
+	debug_value_cylinder* dv = retrieve_debug_value<debug_value_cylinder>(handle);
+	if (dv == nullptr)
+		return;
+	dv->origin = origin;
+	construct_cylinder_geometry(dv);
+}
+
+void cgv::nui::debug_visualization_helper::update_debug_value_cylinder_direction(int handle, vec3 direction)
+{
+	debug_value_cylinder* dv = retrieve_debug_value<debug_value_cylinder>(handle);
+	if (dv == nullptr)
+		return;
+	dv->direction = direction;
+	construct_cylinder_geometry(dv);
+}
+
+void cgv::nui::debug_visualization_helper::update_debug_value_cylinder_radius(int handle, float radius)
+{
+	debug_value_cylinder* dv = retrieve_debug_value<debug_value_cylinder>(handle);
+	if (dv == nullptr)
+		return;
+	dv->radius = radius;
+	construct_cylinder_geometry(dv);
+}
+
+void cgv::nui::debug_visualization_helper::update_debug_value_box(int handle, vec3 origin, vec3 extent)
+{
+	debug_value_box* dv = retrieve_debug_value<debug_value_box>(handle);
+	if (dv == nullptr)
+		return;
+	dv->origin = origin;
+	dv->extent = extent;
+	construct_box_geometry(dv);
+}
+
+void cgv::nui::debug_visualization_helper::update_debug_value_box_origin(int handle, vec3 origin)
+{
+	debug_value_box* dv = retrieve_debug_value<debug_value_box>(handle);
+	if (dv == nullptr)
+		return;
+	dv->origin = origin;
+	construct_box_geometry(dv);
+}
+
+void cgv::nui::debug_visualization_helper::update_debug_value_box_extent(int handle, vec3 extent)
+{
+	debug_value_box* dv = retrieve_debug_value<debug_value_box>(handle);
+	if (dv == nullptr)
+		return;
+	dv->extent = extent;
+	construct_box_geometry(dv);
 }

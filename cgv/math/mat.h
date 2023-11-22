@@ -917,6 +917,26 @@ public:
 			t+=operator()(i,i);
 		return t;
 	}
+	//return the maximum of all coefficients of the matrix
+	T maxcoeff() const 
+	{
+		T t = operator()(0, 0);
+		for (unsigned i = 0; i < _nrows; i++)
+			for (unsigned j = 0; j < _ncols; j++)
+				if (t < operator()(i, j))
+					t = operator()(i, j);
+		return t;	
+	}
+	//return the minimum of all coefficients of the matrix
+	T mincoeff() const
+	{
+		T t = operator()(0, 0);
+		for (unsigned i = 0; i < _nrows; i++)
+			for (unsigned j = 0; j < _ncols; j++)
+				if (t > operator()(i, j))
+					t = operator()(i, j);
+		return t;
+	}
 
 	///transpose matrix
 	void transpose()

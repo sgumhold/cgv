@@ -19,6 +19,7 @@ uniform int emission_index = -1;
 uniform int transparency_index = -1;
 // not yet implemented: uniform int propagation_slow_down_index = -1;
 uniform int specular_index = -1;
+uniform bool multiply_diffuse_texture_color = false;
 
 /*
 The following interface is implemented in this shader:
@@ -162,7 +163,10 @@ void update_material_from_texture(inout Material M, in vec2 texcoords)
 
 	if (diffuse_index > -1) {
 		vec4 col = lookup_texture(diffuse_index, texcoords, true);
-		M.diffuse_reflectance = col.rgb;
+		if (multiply_diffuse_texture_color)
+			M.diffuse_reflectance *= col.rgb;
+		else
+			M.diffuse_reflectance = col.rgb;
 		if (trans_idx == diffuse_index) {
 			M.transparency = 1.0-col.a;
 			trans_idx = -1;

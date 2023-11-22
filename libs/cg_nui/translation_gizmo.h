@@ -3,6 +3,7 @@
 #include <cg_nui/gizmo.h>
 #include <cg_nui/reusable_gizmo_functionalities.h>
 #include <cgv_gl/arrow_renderer.h>
+#include <cg_nui/translatable.h>
 
 #include "lib_begin.h"
 
@@ -10,69 +11,84 @@ namespace cgv {
 	namespace nui {
 
 /// A gizmo that provides the means to translate an object along configured axes.
-///	Needs at least a position to manipulate.
-///	Optionally takes a rotation to allow for translation in the object coordinates.
+///	Needs at a position to manipulate.
 class CGV_API translation_gizmo : public cgv::nui::gizmo,
-	public cgv::nui::gizmo_functionality_local_world_orientation,
-	public cgv::nui::gizmo_functionality_configurable_axes
+	public cgv::nui::gizmo_functionality_configurable_axes,
+	public cgv::nui::gizmo_functionality_handle_states
 {
+	// pointers to properties of the object the gizmo is attached to
+	vec3* position_ptr{ nullptr };
+	vec3** position_ptr_ptr{ nullptr };
+	translatable* translatable_obj{ nullptr };
+
+	// render style for the gizmo handles
 	cgv::render::arrow_render_style ars;
 
-	std::vector<rgb> arrow_colors;
-	float arrow_radius { 0.05f };
+	// visual properties of the gizmo handles
+	float arrow_radius{ 0.05f };
 
+	// gizmo handle geometry
 	// only have to be recomputed if the position or rotation of the object changes
 	std::vector<vec3> arrow_positions;
 	std::vector<vec3> arrow_directions;
 
+	// position of the controlled object at the start of the interaction
 	vec3 position_at_grab;
 
+	/// Compute the scale-dependent geometry
+	void compute_geometry(const vec3& scale);
+	/// Draw the handles
+	void _draw(cgv::render::context& ctx, const vec3& scale, const mat4& view_matrix) override;
+	/// Do proximity check
+	bool _compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx, const vec3& scale,
+		const mat4& view_matrix) override;
+	/// Do intersection check
+	bool _compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx,
+		const vec3& scale, const mat4& view_matrix) override;
+
+	// Example of using the debug visualization helper
+	// Handle for the debug primitive, in this case a coordinate frame
+	int debug_coord_system_handle;
+
 protected:
-	// pointers to properties of the object the gizmo is attached to
-	vec3* position_ptr { nullptr };
+	// Get the position of the attached object
+	vec3 get_position();
+	// Set the position of the attached object
+	void set_position(const vec3& position);
 
 	// current configuration of the gizmo
-	std::vector<rgb> translation_axes_colors;
-	float translation_axes_length { 0.2f };
+	float translation_axes_length{ 0.2f };
+
+	bool validate_configuration() override;
 
 	void on_handle_grabbed() override;
 	void on_handle_drag() override;
+	void on_handle_released() override;
 
-	void compute_geometry() override;
+	void precompute_geometry() override;
 
 public:
 	translation_gizmo() : gizmo("translation_gizmo") {}
 
-	/// Attach this gizmo to the given object. The given position will be manipulated and used as the anchor
-	/// for the gizmo's visual representation. The optional rotation is needed if the gizmo should operate
-	///	in the local coordinate system. The optional scale is needed if the gizmo's visuals should follow the given scale.
-	void attach(base_ptr obj, vec3* position_ptr, quat* rotation_ptr = nullptr, vec3* scale_ptr = nullptr);
-	void detach();
-
 	// Configuration functions
-	void configure_axes_directions(std::vector<vec3> axes) override;
-	/// Set colors for the visual representation of the axes. If less colors then axes are given then the
-	///	last color will be repeated.
-	// TODO: Extend with configuration of selection/grab color change
-	void configure_axes_coloring(std::vector<rgb> colors);
-	/// Set various parameters of the individual arrow geometries.
-	// TODO: Add more parameters
-	void configure_axes_geometry(float radius, float length);
 
-	//@name cgv::nui::grabable interface
-	//@{
-	bool compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx) override;
-	//@}
-	//@name cgv::nui::pointable interface
-	//@{
-	bool compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx) override;
-	//@}
+	/// Set reference to the position that will be manipulated by this gizmo as a pointer.
+	///	If a base object reference is given it will be notified of value changes through on_set.
+	void set_position_reference(vec3* _position_ptr, cgv::base::base_ptr _on_set_obj = nullptr);
+	/// Set reference to the position that will be manipulated by this gizmo as a pointer to a pointer.
+	///	If a base object reference is given it will be notified of value changes through on_set.
+	void set_position_reference(vec3** _position_ptr_ptr, cgv::base::base_ptr _on_set_obj = nullptr);
+	/// Set reference to the position that will be manipulated by this gizmo as a reference to an object implementing the translatable interface.
+	void set_position_reference(translatable* _translatable_obj);
+
+	void set_axes_directions(std::vector<vec3> axes) override;
+	/// Set various parameters of the individual arrow geometries.
+	void configure_axes_geometry(float radius, float length);
 
 	//@name cgv::render::drawable interface
 	//@{
 	bool init(cgv::render::context& ctx) override;
 	void clear(cgv::render::context& ctx) override;
-	void draw(cgv::render::context& ctx) override;
 	//@}
 
 	//@name cgv::gui::provider interface

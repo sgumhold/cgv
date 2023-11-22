@@ -30,3 +30,4 @@ if(SYSTEM=="windows") {
 	addStaticDefines=["REGISTER_SHADER_FILES"];
 }
 addSharedDefines=["CGV_RENDER_GL_EXPORTS"];
+addShaderPaths=[[INPUT_DIR,"all"]];

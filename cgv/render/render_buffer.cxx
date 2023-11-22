@@ -11,6 +11,11 @@ render_buffer::render_buffer(const std::string& description)
 	handle = 0;
 }
 
+void render_buffer::set_nr_multi_samples(unsigned _nr_samples)
+{
+	nr_multi_samples = _nr_samples;
+}
+
 render_buffer::~render_buffer()
 {
 	if (handle) {

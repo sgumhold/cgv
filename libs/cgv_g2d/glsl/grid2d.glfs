@@ -1,0 +1,92 @@
+#version 150
+
+//***** begin interface of shape2d.glsl ***********************************
+uniform vec4 border_color = vec4(1.0);
+uniform vec2 tex_scaling = vec2(1.0);
+uniform vec2 tex_offset = vec2(0.0);
+
+vec2 get_adjusted_size(vec2 size);
+vec4 get_active_color(vec4 color);
+//***** end interface of shape2d.glsl ***********************************
+
+//***** begin interface of fragment2d.glfs ***********************************
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
+void finish_fragment2d(in vec4 color);
+void finish_fragment2d(in vec4 color, in vec2 texcoords);
+//***** end interface of fragment2d.glfs ***********************************
+
+//layout(pixel_center_integer) in vec4 gl_FragCoord;
+
+uniform int pattern;
+uniform float scale;
+
+flat in vec2 size;
+in vec2 pix_coord;
+in vec2 tex_coord;
+flat in vec4 color_fs;
+
+// https://www.shadertoy.com/view/XtBfzz
+float grid_texture(in vec2 p) {
+    // coordinates
+    vec2 i = step(fract(p), vec2(scale));
+	
+    //pattern
+	switch(pattern) {
+	// grid
+	case 0: return (1.0-i.x)*(1.0-i.y);
+	// squares
+	case 1: return 1.0-i.x*i.y;
+	// checker
+	case 2: return 1.0-i.x-i.y+2.0*i.x*i.y;
+	// no pattern
+	default: return 0.0;
+	}
+}
+
+float grid_texture_grad_box(in vec2 p, in vec2 ddx, in vec2 ddy) {
+	// filter kernel
+    vec2 w = max(abs(ddx), abs(ddy)) + 0.01;
+
+	float _scale = 1.0 / scale;
+
+	// analytic (box) filtering
+    vec2 a = p + 0.5*w;                        
+    vec2 b = p - 0.5*w;           
+    vec2 i = (floor(a)+min(fract(a)*_scale,1.0)-
+              floor(b)-min(fract(b)*_scale,1.0))/(_scale*w);
+    //pattern
+    switch(pattern) {
+	// grid
+	case 0: return (1.0-i.x)*(1.0-i.y);
+	// squares
+	case 1: return 1.0-i.x*i.y;
+	// checker
+	case 2: return 1.0-i.x-i.y+2.0*i.x*i.y;
+	}
+}
+
+// https://iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
+float sd_box(in vec2 p, in vec2 b)
+{
+    vec2 d = abs(p) - b;
+    return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
+}
+
+void main() {
+	
+	float dist = sd_box(pix_coord, get_adjusted_size(size));
+	vec4 color = get_active_color(color_fs);
+
+	vec2 uv = tex_scaling * tex_coord - tex_offset;
+	
+	//float grid_factor = grid_texture(uv);
+	
+	vec2 ddx_uv = dFdx(uv);
+	vec2 ddy_uv = dFdy(uv);
+	float grid_factor = grid_texture_grad_box(uv, ddx_uv, ddy_uv);
+
+	color = mix(color, border_color, grid_factor);
+
+	finish_sdf_fragment2d(dist, color);
+}

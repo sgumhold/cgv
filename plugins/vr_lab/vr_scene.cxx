@@ -11,6 +11,7 @@
 #include <cgv/defines/quote.h>
 #include <cgv/reflect/reflection_traits.h>
 #include <random>
+#include <cgv/utils/dir.h>
 
 namespace vr {
 
@@ -35,6 +36,72 @@ namespace cgv {
 	}
 }
 namespace vr {
+static const int skybox_archive_indices[] = { 0, 1,1,1,1,1,1,1, 2,2,2,2,2 };
+struct skybox_archive_info {
+	std::string archive_name;
+	std::string url;
+	std::string subdir;
+};
+struct skybox_info {;
+	std::string test_file;
+	std::string files;
+};
+
+static const skybox_archive_info skybox_archive_infos[] = {
+	{ "vr_scene_skybox.zip", "https://learnopengl.com/img/textures/skybox.zip", "" },
+//	{ "vr_scene_cloudy.zip", "https://opengameart.org/sites/default/files/cloudy_0.zip", "/cloudy" },
+	{ "vr_scene_beach-skyboxes.zip", "https://opengameart.org/sites/default/files/beach-skyboxes.zip", "" },
+	{ "vr_scene_forest-skyboxes.zip", "https://opengameart.org/sites/default/files/forest-skyboxes.zip", "" }
+};
+
+static const skybox_info skybox_infos[] = {
+	{ "/skybox/right.jpg", "/skybox/{right,left,bottom,top,front,back}.jpg" },
+//	{ "/cloudy/bluecloud_rt.jpg", "/cloudy/{bluecloud_rt,bluecloud_lf,bluecloud_dn,bluecloud_up,bluecloud_ft,bluecloud_bk}.jpg" },
+//	{ "/cloudy/graycloud_rt.jpg", "/cloudy/{graycloud_rt,graycloud_lf,graycloud_dn,graycloud_up,graycloud_ft,graycloud_bk}.jpg" },
+//	{ "/cloudy/yellowcloud_rt.jpg", "/cloudy/{yellowcloud_rt,yellowcloud_lf,yellowcloud_dn,yellowcloud_up,yellowcloud_ft,yellowcloud_bk}.jpg" },
+//	{ "/cloudy/browncloud_rt.jpg", "/cloudy/{browncloud_rt,browncloud_lf,browncloud_dn,browncloud_up,browncloud_ft,browncloud_bk}.jpg" },
+	{ "/beach-skyboxes/HeartInTheSand/posx.jpg",     "/beach-skyboxes/HeartInTheSand/{posx,negx,negy,posy,posz,negz}.jpg" },
+	{ "/beach-skyboxes/LarnacaBeach/posx.jpg",     "/beach-skyboxes/LarnacaBeach/{posx,negx,negy,posy,posz,negz}.jpg" },
+	{ "/beach-skyboxes/PalmTrees/posx.jpg",     "/beach-skyboxes/PalmTrees/{posx,negx,negy,posy,posz,negz}.jpg" },
+	{ "/beach-skyboxes/Tenerife/posx.jpg",     "/beach-skyboxes/Tenerife/{posx,negx,negy,posy,posz,negz}.jpg" },
+	{ "/beach-skyboxes/Tenerife2/posx.jpg",     "/beach-skyboxes/Tenerife2/{posx,negx,negy,posy,posz,negz}.jpg" },
+	{ "/beach-skyboxes/Tenerife3/posx.jpg",     "/beach-skyboxes/Tenerife3/{posx,negx,negy,posy,posz,negz}.jpg" },
+	{ "/beach-skyboxes/Tenerife4/posx.jpg",     "/beach-skyboxes/Tenerife4/{posx,negx,negy,posy,posz,negz}.jpg" },
+	{ "/forest-skyboxes/Brudslojan/posx.jpg",     "/forest-skyboxes/Brudslojan/{posx,negx,negy,posy,posz,negz}.jpg" },
+	{ "/forest-skyboxes/Langholmen2/posx.jpg",   "/forest-skyboxes/Langholmen2/{posx,negx,negy,posy,posz,negz}.jpg" },
+	{ "/forest-skyboxes/Langholmen3/posx.jpg",   "/forest-skyboxes/Langholmen3/{posx,negx,negy,posy,posz,negz}.jpg" },
+	{ "/forest-skyboxes/MountainPath/posx.jpg", "/forest-skyboxes/MountainPath/{posx,negx,negy,posy,posz,negz}.jpg" },
+	{ "/forest-skyboxes/Plants/posx.jpg",             "/forest-skyboxes/Plants/{posx,negx,negy,posy,posz,negz}.jpg" }
+};
+bool ensure_skybox_file_names(Skybox skybox, std::string& skybox_file_names, const std::string& producer)
+{
+	const auto& sai = skybox_archive_infos[skybox_archive_indices[skybox]];
+	const auto& si = skybox_infos[skybox];
+	std::string zip_file_path = cgv::base::find_or_download_data_file(
+		sai.archive_name, "cmD",
+		sai.url, "Dcm", producer, "skyboxes", QUOTE_SYMBOL_VALUE(INPUT_DIR),
+		cgv::base::user_feedback(&cgv::gui::message, &cgv::gui::question, &cgv::gui::directory_save_dialog));
+	if (zip_file_path.empty()) {
+		cgv::gui::message("download of zip archive <" + sai.archive_name + ">failed");
+		return false;
+	}
+	std::string base_path = cgv::utils::file::get_path(zip_file_path);
+	bool success = true;
+	if (!cgv::utils::file::exists(base_path + si.test_file)) {
+		if (!sai.subdir.empty())
+			if (!cgv::utils::dir::mkdir(base_path + sai.subdir)) {
+				cgv::gui::message("could not create skybox archive directory <" + base_path + sai.subdir + ">!");
+				return false;
+			}
+		if (!cgv::os::expand_archive(zip_file_path, base_path + sai.subdir)) {
+			cgv::gui::message("could not uncompress downloaded zip archive <" + zip_file_path + ">!");
+			return false;
+		}
+	}
+	skybox_file_names = base_path + si.files;
+	return true;
+}
+
 cgv::reflect::enum_reflection_traits<GroundMode> get_reflection_traits(const GroundMode& gm)
 {
 	return cgv::reflect::enum_reflection_traits<GroundMode>("none,boxes,terrain");
@@ -43,6 +110,15 @@ cgv::reflect::enum_reflection_traits<EnvironmentMode> get_reflection_traits(cons
 {
 	return cgv::reflect::enum_reflection_traits<EnvironmentMode>("empty,skybox,procedural");
 }
+cgv::reflect::enum_reflection_traits<Skybox> get_reflection_traits(const Skybox& sb)
+{
+	return cgv::reflect::enum_reflection_traits<Skybox>(
+		"mountain-sea"
+//		",cloudy-blue,cloudy-gray,cloudy-yellow,cloudy-brown"
+		",beach-HeartInTheSand,beach-Larnaca,beach-PalmTrees,beach-Tenerife,beach-Tenerife2,beach-Tenerife3,beach-Tenerife4"
+		",forest-brudslojan,forest-langholmen2,forest-langholmen3,forest-mountainpath,forest-plants");
+}
+
 void vr_scene::register_object(base_ptr object, const std::string& options)
 {
 	if (object->get_interface<cgv::nui::vr_table>())
@@ -173,6 +249,7 @@ bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 	return 		
 		rh.reflect_member("invert_skybox", invert_skybox) &&
 		rh.reflect_member("skybox_file_names", skybox_file_names) &&
+		rh.reflect_member("auto_grab_focus", auto_grab_focus) &&
 		rh.reflect_member("draw_room", draw_room) &&
 		rh.reflect_member("room_width", room_width) &&
 		rh.reflect_member("room_depth", room_depth) &&
@@ -183,6 +260,7 @@ bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 		rh.reflect_member("terrain_scale", terrain_scale) &&
 		rh.reflect_member("draw_ceiling", draw_ceiling) &&
 		rh.reflect_member("ground_mode", ground_mode) &&
+		rh.reflect_member("skybox", skybox) &&
 		rh.reflect_member("ctrl_info_left", ctrl_infos[0]) &&
 		rh.reflect_member("ctrl_info_right", ctrl_infos[1]) &&
 		rh.reflect_member("ctrl_pointing_animation_duration", ctrl_pointing_animation_duration) &&
@@ -240,31 +318,14 @@ void vr_scene::on_set(void* member_ptr)
 			}
 		}
 	}
-	if (member_ptr == &environment_mode) {
+	if (member_ptr == &environment_mode || environment_mode == EM_SKYBOX && member_ptr == &skybox) {
 		if (environment_mode == EM_SKYBOX) {
-			if (skybox_file_names.empty()) {
-				std::string zip_file_path = cgv::base::find_or_download_data_file("vr_scene_skybox.zip", "cmD",
-					"https://learnopengl.com/img/textures/skybox.zip", "Dcm", "vr_scene", "skyboxes", QUOTE_SYMBOL_VALUE(INPUT_DIR),
-					cgv::base::user_feedback(&cgv::gui::message, &cgv::gui::question, &cgv::gui::directory_save_dialog));
-				if (!zip_file_path.empty()) {
-					std::string base_path = cgv::utils::file::get_path(zip_file_path);
-					bool success = true;
-					if (!cgv::utils::file::exists(base_path + "/skybox/right.jpg")) {
-						if (!cgv::os::expand_archive(zip_file_path, base_path)) {
-							cgv::gui::message("could not uncompress downloaded zip archive");
-							success = false;
-						}
-					}
-					if (success) {
-						skybox_file_names = base_path + "/skybox/{right,left,bottom,top,front,back}.jpg";
-						invert_skybox = true;
-						update_member(&invert_skybox);
-						update_member(&skybox_file_names);
-					}
-				}
-				else {
-					cgv::gui::message("download of zip archive failed");
-				}
+			std::string sbfns;
+			if (ensure_skybox_file_names(skybox, sbfns, "vr_scene") && sbfns != skybox_file_names) {
+				skybox_file_names = sbfns;
+				invert_skybox = true;
+				update_member(&invert_skybox);
+				update_member(&skybox_file_names);
 			}
 		}		
 	}
@@ -298,40 +359,42 @@ bool vr_scene::init(cgv::render::context& ctx)
 
 	cgv::gui::connect_vr_server(true);
 
-	auto view_ptr = find_view_as_node();
-	if (view_ptr) {
-		// if the view points to a vr_view_interactor
-		vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
-		if (vr_view_ptr) {
-			// configure vr event processing
-			vr_view_ptr->set_event_type_flags(
-				cgv::gui::VREventTypeFlags(
-					cgv::gui::VRE_KEY +
-					cgv::gui::VRE_ONE_AXIS +
-					cgv::gui::VRE_ONE_AXIS_GENERATES_KEY +
-					cgv::gui::VRE_TWO_AXES +
-					cgv::gui::VRE_TWO_AXES_GENERATES_DPAD +
-					cgv::gui::VRE_POSE
-				));
-			// vr_view_ptr->enable_vr_event_debugging(false);
-			// configure vr rendering
-			// vr_view_ptr->draw_action_zone(false);
-			vr_view_ptr->draw_vr_kits(true);
-			// vr_view_ptr->enable_blit_vr_views(true);
-			// vr_view_ptr->set_blit_vr_view_width(200);
-		}
-	}
 	return label_drawable::init(ctx);
 }
 void vr_scene::init_frame(cgv::render::context& ctx)
 {
+	if (!vr_view_ptr) {
+		auto view_ptr = find_view_as_node();
+		if (view_ptr) {
+			// if the view points to a vr_view_interactor
+			vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
+			if (vr_view_ptr) {
+				// configure vr event processing
+				vr_view_ptr->set_event_type_flags(
+					cgv::gui::VREventTypeFlags(
+						cgv::gui::VRE_KEY +
+						cgv::gui::VRE_ONE_AXIS +
+						cgv::gui::VRE_ONE_AXIS_GENERATES_KEY +
+						cgv::gui::VRE_TWO_AXES +
+						cgv::gui::VRE_TWO_AXES_GENERATES_DPAD +
+						cgv::gui::VRE_POSE
+					));
+				// vr_view_ptr->enable_vr_event_debugging(false);
+				// configure vr rendering
+				// vr_view_ptr->draw_action_zone(false);
+				vr_view_ptr->draw_vr_kits(true);
+				// vr_view_ptr->enable_blit_vr_views(true);
+				// vr_view_ptr->set_blit_vr_view_width(200);
+			}
+		}
+	}
 	mat34 table_pose(4, 4, table->get_transform());
 	set_coordinate_systems(vr_view_ptr ? vr_view_ptr->get_current_vr_state() : 0, table.empty() ? 0 : &table_pose);
 	label_drawable::init_frame(ctx);
 	if (environment_mode == EM_SKYBOX) {
 		static std::string last_file_names;
 		if (skybox_file_names != last_file_names) {
-			skybox.create_from_images(ctx, skybox_file_names);
+			skybox_tex.create_from_images(ctx, skybox_file_names);
 			last_file_names = skybox_file_names;
 		}
 	}
@@ -369,7 +432,7 @@ void vr_scene::draw(cgv::render::context& ctx)
 			tr.render(ctx, 0, custom_indices.size());
 		ctx.pop_modelview_matrix();
 	}
-	if (environment_mode == EM_SKYBOX && skybox.is_created()) {
+	if (environment_mode == EM_SKYBOX && skybox_tex.is_created()) {
 		// lastly render the environment
 		GLint prev_depth_func;
 		glGetIntegerv(GL_DEPTH_FUNC, &prev_depth_func);
@@ -377,13 +440,13 @@ void vr_scene::draw(cgv::render::context& ctx)
 			cubemap_prog.set_uniform(ctx, "invert", invert_skybox);
 			cubemap_prog.set_uniform(ctx, "depth_value", 1.0f);
 			glDepthFunc(GL_LEQUAL);
-				skybox.enable(ctx, 0);
+				skybox_tex.enable(ctx, 0);
 					glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-				skybox.disable(ctx);
+				skybox_tex.disable(ctx);
 			glDepthFunc(prev_depth_func);
 		cubemap_prog.disable(ctx);
 	}
-	if (draw_controller_mode) {
+	if (vr_view_ptr && draw_controller_mode) {
 		auto* state_ptr = vr_view_ptr->get_current_vr_state();
 		if (state_ptr) {
 			sphere_positions.clear();
@@ -543,7 +606,7 @@ bool vr_scene::handle(cgv::gui::event& e)
 	}
 	cgv::nui::dispatch_report report;
 	bool ret = dispatch(e, &report);
-	if (report.action != cgv::nui::refocus_action::none)
+	if (report.action != cgv::nui::refocus_action::none && auto_grab_focus)
 		grab_focus();
 	return ret;
 }
@@ -552,6 +615,7 @@ void vr_scene::create_gui()
 	add_decorator("vr_scene", "heading");
 	if (begin_tree_node("hids", ctrl_infos)) {
 		align("\a");
+		add_member_control(this, "auto_grab_focus", auto_grab_focus, "toggle");
 		add_member_control(this, "dispatch_mouse_spatial", dispatch_mouse_spatial, "toggle");
 		add_member_control(this, "ctrl_pointing_animation_duration", ctrl_pointing_animation_duration, "value_slider", "min=0;max=2;ticks=true");
 		add_member_control(this, "draw_controller_mode", draw_controller_mode, "check");
@@ -571,6 +635,12 @@ void vr_scene::create_gui()
 	if (begin_tree_node("environment", environment_mode)) {
 		align("\a");
 		add_member_control(this, "mode", environment_mode, "dropdown", "enums='empty,skybox,procedural'");
+		add_member_control(this, "skybox", skybox, "dropdown", "enums='"
+			"mountain-sea"
+//			",cloudy-blue,cloudy-gray,cloudy-yellow,cloudy-brown"
+			",beach-HeartInTheSand,beach-Larnaca,beach-PalmTrees,beach-Tenerife,beach-Tenerife2,beach-Tenerife3,beach-Tenerife4"
+			",forest-brudslojan,forest-langholmen2,forest-langholmen3,forest-mountainpath,forest-plants"
+			"'");
 		add_member_control(this, "invert_skybox", invert_skybox, "check");
 		align("\b");
 		end_tree_node(environment_mode);

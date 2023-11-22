@@ -1,0 +1,114 @@
+#version 430
+
+layout (binding = 0) uniform sampler2D curr_color_tex;
+layout (binding = 1) uniform sampler2D prev_color_tex;
+layout (binding = 2) uniform sampler2D depth_tex;
+
+uniform vec2 viewport_size;
+uniform mat4 curr_clip_to_prev_clip_matrix;
+
+uniform bool is_static;
+uniform float curr_mix_factor;
+uniform bool use_velocity;
+
+in vec2 texcoord_fs;
+
+layout(location = 0) out vec4 frag_color;
+
+const ivec2 offsets[8] = ivec2[](
+		ivec2(-1,-1),
+		ivec2(0,-1),
+		ivec2(1,-1),
+		ivec2(-1,0),
+		ivec2(1,0),
+		ivec2(-1,1),
+		ivec2(0,1),
+		ivec2(1,1)
+	);
+
+vec3 closest_fragment_coord(in float depth) {
+
+	ivec2 closest_offset = ivec2(0);
+	float closest_depth = depth;
+	for(int i = 0; i < 8; ++i) {
+		ivec2 offset = offsets[i];
+		float sample_depth = textureOffset(depth_tex, texcoord_fs, offset).r;	
+		if(sample_depth < closest_depth) {
+			closest_depth = sample_depth;
+			closest_offset = offset;
+		}
+	}
+	return vec3(gl_FragCoord.xy + closest_offset, closest_depth);
+}
+
+vec2 calculate_velocity_from_frag_coord(in vec3 frag_coord) {
+
+	// transform fragment coordinates from window coordinates to clip coordinates
+    vec4 curr_pos_clip = vec4(frag_coord, 0.0)
+        * vec4(2.0 / viewport_size.x, 2.0 / viewport_size.y, 2.0, 0.0) 
+        + vec4(-1.0, -1.0, -1.0, 1.0);
+
+    // transform fragment coordinates from clip coordinates to eye coordinates
+    //vec4 curr_pos_eye = curr_projection_inverse_matrix * curr_pos_clip;
+    //curr_pos_eye /= curr_pos_eye.w;
+
+		//vec4 curr_pos_eye = vec4(position, 1.0);
+	
+		//vec4 curr_pos_clip = curr_projection_matrix * curr_pos_eye;
+		//curr_pos_clip /= curr_pos_clip.w;
+
+	//vec4 prev_pos_clip = curr_eye_to_prev_clip_matrix * curr_pos_eye;
+
+
+	vec4 prev_pos_clip = curr_clip_to_prev_clip_matrix * curr_pos_clip;
+
+	prev_pos_clip /= prev_pos_clip.w;
+
+	return 0.5*(curr_pos_clip.xy - prev_pos_clip.xy);
+}
+
+vec3 clip(in vec3 p, in vec3 q, in vec3 aabb_min, in vec3 aabb_max) {
+
+	vec3 p_clip = 0.5 * (aabb_max + aabb_min);
+	vec3 e_clip = 0.5 * (aabb_max - aabb_min);
+
+	vec3 v_clip = q - p_clip;
+	vec3 v_unit = v_clip / e_clip;
+	vec3 a_unit = abs(v_unit);
+	float ma_unit = max(a_unit.x, max(a_unit.y, a_unit.z));
+
+	if(ma_unit > 1.0)
+		return p_clip + v_clip / ma_unit;
+	else
+		return q;
+}
+
+void main()
+{
+	float depth = texture(depth_tex, texcoord_fs).r;
+	vec3 curr_color = texture(curr_color_tex, texcoord_fs).rgb;
+	vec2 velocity = use_velocity ? calculate_velocity_from_frag_coord(closest_fragment_coord(depth)) : vec2(0.0);
+	
+	vec3 prev_color = vec3(0.0);
+
+	if(is_static)
+		prev_color = texture(prev_color_tex, texcoord_fs).rgb;
+	else
+		prev_color = texture(prev_color_tex, texcoord_fs - velocity).rgb;
+
+	vec3 cn_0 = textureOffset(curr_color_tex, texcoord_fs, ivec2(1, 0)).rgb;
+	vec3 cn_1 = textureOffset(curr_color_tex, texcoord_fs, ivec2(0, 1)).rgb;
+	vec3 cn_2 = textureOffset(curr_color_tex, texcoord_fs, ivec2(-1, 0)).rgb;
+	vec3 cn_3 = textureOffset(curr_color_tex, texcoord_fs, ivec2(0, -1)).rgb;
+
+	vec3 cn_min = min(curr_color, min(cn_0, min(cn_1, min(cn_2, cn_3))));
+	vec3 cn_max = max(curr_color, max(cn_0, max(cn_1, max(cn_2, cn_3))));
+    
+	if(!is_static)
+		prev_color = clip(curr_color, prev_color, cn_min, cn_max);
+	
+	frag_color.rgb = mix(prev_color, curr_color, curr_mix_factor);
+
+	if(isnan(frag_color.x) || isnan(frag_color.y) || isnan(frag_color.z))
+		frag_color.rgb = curr_color;
+}

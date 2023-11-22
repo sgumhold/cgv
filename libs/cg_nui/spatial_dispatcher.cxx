@@ -90,6 +90,12 @@ namespace cgv {
 						vec3 hit_normal(0.0f);
 						float hit_param;
 						size_t primitive_index = 0;
+
+						// DEBUG TO REMOVE
+						auto _named = object_ptr->get_interface<base::named>();
+						if (_named && _named->get_name() == "blue")
+							std::cout << "";
+
 						if (p->compute_intersection(gi.inter_info.ray_origin, gi.inter_info.ray_direction, hit_param, hit_normal, primitive_index)) {
 							if (hit_param > 0 && hit_param < max_pointing_distance && hit_param < gi.inter_info.ray_param) {
 								gi.inter_info.ray_param = hit_param;
@@ -133,7 +139,7 @@ namespace cgv {
 				if (gi.check_intersection) {
 					gi.inter_info.ray_origin = transforming_ptr->transform_point(gi.inter_info.ray_origin);
 					gi.inter_info.ray_direction = transforming_ptr->transform_vector(gi.inter_info.ray_direction);
-					gi.inter_info.hid_position = transforming_ptr->transform_vector(gi.inter_info.hid_position);
+					gi.inter_info.hid_position = transforming_ptr->transform_point(gi.inter_info.hid_position);
 					gi.inter_info.hid_direction = transforming_ptr->transform_vector(gi.inter_info.hid_direction);
 					gi.inter_info.hit_point = transforming_ptr->transform_point(gi.inter_info.hit_point);
 					gi.inter_info.hit_normal = transforming_ptr->transform_normal(gi.inter_info.hit_normal);
@@ -141,7 +147,7 @@ namespace cgv {
 				if (gi.check_proximity) {
 					gi.prox_info.query_point = transforming_ptr->transform_point(gi.prox_info.query_point);
 					gi.prox_info.hid_position = transforming_ptr->transform_point(gi.prox_info.hid_position);
-					gi.prox_info.hid_direction = transforming_ptr->transform_point(gi.prox_info.hid_direction);
+					gi.prox_info.hid_direction = transforming_ptr->transform_vector(gi.prox_info.hid_direction);
 					gi.prox_info.hit_point = transforming_ptr->transform_point(gi.prox_info.hit_point);
 					gi.prox_info.hit_normal = transforming_ptr->transform_normal(gi.prox_info.hit_normal);
 				}
@@ -181,13 +187,13 @@ namespace cgv {
 					if (ci >= 0 && ci <= 1) {
 						gi.check_intersection = rfi.foc_info_ptr->config.spatial.pointing && ctrl_infos[ci].pointing;
 						vrpe.get_state().controller[ci].put_ray(gi.inter_info.ray_origin, gi.inter_info.ray_direction);
+						gi.check_proximity = rfi.foc_info_ptr->config.spatial.proximity && ctrl_infos[ci].grabbing;
+						gi.prox_info.query_point = gi.inter_info.ray_origin + max_grabbing_distance*gi.inter_info.ray_direction;
+						gi.inter_info.ray_origin += (ctrl_infos[ci].grabbing ? min_pointing_distance : 0.0f) * gi.inter_info.ray_direction;
 						gi.inter_info.hid_position = gi.inter_info.ray_origin;
 						gi.inter_info.hid_direction = gi.inter_info.ray_direction;
 						gi.prox_info.hid_position = gi.inter_info.ray_origin;
 						gi.prox_info.hid_direction = gi.inter_info.ray_direction;
-						gi.check_proximity = rfi.foc_info_ptr->config.spatial.proximity && ctrl_infos[ci].grabbing;
-						gi.prox_info.query_point = gi.inter_info.ray_origin + max_grabbing_distance*gi.inter_info.ray_direction;
-						gi.inter_info.ray_origin += (ctrl_infos[ci].grabbing ? min_pointing_distance : 0.0f) * gi.inter_info.ray_direction;
 						if (!gi.check_proximity && !gi.check_intersection)
 							return false;
 					}
@@ -306,12 +312,6 @@ namespace cgv {
 						reinterpret_cast<const hit_dispatch_info*>(*rfi.dis_info_ptr_ptr)->get_hit_info()->primitive_index !=
 						reinterpret_cast<const hit_dispatch_info*>(di_ptr)->get_hit_info()->primitive_index)
 					{
-						//std::cout << "index change:"
-						//	<< reinterpret_cast<const hit_dispatch_info*>(*rfi.dis_info_ptr_ptr)->get_hit_info()->primitive_index
-						//	<< " -> "
-						//	<< reinterpret_cast<const hit_dispatch_info*>(di_ptr)->get_hit_info()->primitive_index 
-						//	<< std::endl;
-
 						// announce change of primitive index to object and in case of refusal, detach focus
 						if (!foc_info_ptr->object->get_interface<focusable>()->focus_change(
 							focus_change_action::index_change, rfa, { foc_att, foc_info_ptr->config }, e, *di_ptr)) {

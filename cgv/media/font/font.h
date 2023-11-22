@@ -60,9 +60,9 @@ public:
 	/// return the name of the font
 	virtual const char* get_name() const = 0;
 	/// check whether the given font includes a face that include the possibly or-ed together selection of font face attributes
-	virtual bool supports_font_face(int ffa) const = 0;
+	virtual bool supports_font_face(cgv::media::font::FontFaceAttributes ffa) const = 0;
 	/// return a pointer to a font face
-	virtual font_face_ptr get_font_face(int ffa) const = 0;
+	virtual font_face_ptr get_font_face(cgv::media::font::FontFaceAttributes ffa) const = 0;
 	/// enumerate the supported font sizes
 	virtual void enumerate_sizes(std::vector<int>& supported_sizes) const = 0;
 };
@@ -70,10 +70,13 @@ public:
 /// always use this ref counted pointer to store fonts
 typedef data::ref_ptr<font> font_ptr;
 
-/// find an installed font by name
+/// find an installed font by name (returns a null pointer if font could not be found)
 extern CGV_API font_ptr find_font(const std::string& font_name);
 
-/// return potentially font driver and platform specific default font
+/// find an installed font by name or return platform-specific default font if no font with that name exists
+extern CGV_API font_ptr find_font_or_default(const std::string& font_name, bool default_font_mono_space = false);
+
+/// return potentially font driver and platform-specific default font
 extern CGV_API font_ptr default_font(bool mono_space = false);
 
 

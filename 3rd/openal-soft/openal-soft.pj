@@ -1,0 +1,66 @@
+@=
+projectType="library";
+projectName="openal-soft";
+projectGUID="10779BCA-52DE-40D3-A5B8-F6611CBABD49";
+addDependencies=[["winmm","all"]];
+excludeSourceDirs=[
+	INPUT_DIR."/openal-soft", 
+	INPUT_DIR."/openal-soft/al/eax"
+];
+sourceDirs=[
+	INPUT_DIR, 
+	INPUT_DIR."/openal-soft/common",
+	INPUT_DIR."/openal-soft/core",
+	INPUT_DIR."/openal-soft/al",
+	INPUT_DIR."/openal-soft/alc"
+];
+renameObjectFiles=[
+	[ INPUT_DIR."/openal-soft/alc/backends/null.cpp"       , "alc_backends_null"       ],
+	[ INPUT_DIR."/openal-soft/alc/effects/autowah.cpp"     , "alc_effects_autowah"     ],
+	[ INPUT_DIR."/openal-soft/alc/effects/chorus.cpp"      , "alc_effects_chorus"      ],
+	[ INPUT_DIR."/openal-soft/alc/effects/compressor.cpp"  , "alc_effects_compressor"  ],
+	[ INPUT_DIR."/openal-soft/alc/effects/convolution.cpp" , "alc_effects_convolution" ],
+	[ INPUT_DIR."/openal-soft/alc/effects/dedicated.cpp"   , "alc_effects_dedicated"   ],
+	[ INPUT_DIR."/openal-soft/alc/effects/distortion.cpp"  , "alc_effects_distortion"  ],
+	[ INPUT_DIR."/openal-soft/alc/effects/echo.cpp"        , "alc_effects_echo"	       ],
+	[ INPUT_DIR."/openal-soft/alc/effects/equalizer.cpp"   , "alc_effects_equalizer"   ],
+	[ INPUT_DIR."/openal-soft/alc/effects/fshifter.cpp"    , "alc_effects_fshifter"    ],
+	[ INPUT_DIR."/openal-soft/alc/effects/modulator.cpp"   , "alc_effects_modulator"   ],
+	[ INPUT_DIR."/openal-soft/alc/effects/null.cpp"        , "alc_effects_null"        ],
+	[ INPUT_DIR."/openal-soft/alc/effects/pshifter.cpp"    , "alc_effects_pshifter"    ],
+	[ INPUT_DIR."/openal-soft/alc/effects/reverb.cpp"      , "alc_effects_reverb"      ],
+	[ INPUT_DIR."/openal-soft/alc/effects/vmorpher.cpp"    , "alc_effects_vmorpher"    ],
+	[ INPUT_DIR."/openal-soft/alc/context.cpp"             , "alc_context"             ],
+	[ INPUT_DIR."/openal-soft/alc/device.cpp"              , "alc_device"              ]
+];
+
+excludeSourceFiles=[
+	INPUT_DIR."/openal-soft/core/mixer/mixer_neon.cpp",
+	INPUT_DIR."/openal-soft/core/dbus_wrap.cpp", 
+	INPUT_DIR."/openal-soft/core/dbus_wrap.h",
+	INPUT_DIR."/openal-soft/core/rtkit.cpp", 
+	INPUT_DIR."/openal-soft/core/rtkit.h",
+	INPUT_DIR."/openal-soft/alc/backends/alsa.cpp", INPUT_DIR."/openal-soft/alc/backends/alsa.h",
+	INPUT_DIR."/openal-soft/alc/backends/coreaudio.cpp", INPUT_DIR."/openal-soft/alc/backends/coreaudio.h",
+	INPUT_DIR."/openal-soft/alc/backends/dsound.cpp", INPUT_DIR."/openal-soft/alc/backends/dsound.h",
+	INPUT_DIR."/openal-soft/alc/backends/jack.cpp", INPUT_DIR."/openal-soft/alc/backends/jack.h",
+	INPUT_DIR."/openal-soft/alc/backends/oboe.cpp", INPUT_DIR."/openal-soft/alc/backends/oboe.h",
+	INPUT_DIR."/openal-soft/alc/backends/opensl.cpp", INPUT_DIR."/openal-soft/alc/backends/opensl.h",
+	INPUT_DIR."/openal-soft/alc/backends/oss.cpp", INPUT_DIR."/openal-soft/alc/backends/oss.h",
+	INPUT_DIR."/openal-soft/alc/backends/pipewire.cpp", INPUT_DIR."/openal-soft/alc/backends/pipewire.h",
+	INPUT_DIR."/openal-soft/alc/backends/portaudio.cpp", INPUT_DIR."/openal-soft/alc/backends/portaudio.h",
+	INPUT_DIR."/openal-soft/alc/backends/pulseaudio.cpp", INPUT_DIR."/openal-soft/alc/backends/pulseaudio.h",
+	INPUT_DIR."/openal-soft/alc/backends/sdl2.cpp", INPUT_DIR."/openal-soft/alc/backends/sdl2.h",
+	INPUT_DIR."/openal-soft/alc/backends/sndio.cpp", INPUT_DIR."/openal-soft/alc/backends/sndio.h",
+	INPUT_DIR."/openal-soft/alc/backends/solaris.cpp", INPUT_DIR."/openal-soft/alc/backends/solaris.h"
+];
+addIncDirs=[
+	INPUT_DIR,
+	INPUT_DIR."/openal-soft",
+	INPUT_DIR."/openal-soft/common",
+	[INPUT_DIR."/openal-soft/include", "all"]
+];
+addDefines=["_WIN32", "NOMINMAX", "RESTRICT=__restrict", "_CRT_SECURE_NO_WARNINGS", "AL_BUILD_LIBRARY", "AL_ALEXT_PROTOTYPES"];
+addStaticDefines=[ "ALC_API=extern",                "AL_API=extern",                 "AL_LIBTYPE_STATIC" ];
+addSharedDefines=[ "ALC_API=__declspec(dllexport)", "AL_API=__declspec(dllexport)"
+];

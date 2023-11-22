@@ -1,0 +1,61 @@
+#version 430
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+layout (binding = 0) uniform sampler2D position_tex;
+layout (binding = 1) uniform sampler2D normal_tex;
+layout (binding = 2) uniform sampler2D noise_tex;
+
+uniform vec2 viewport_size;
+uniform float radius = 0.5;
+uniform float bias = 0.025;
+uniform vec3 samples[64];
+
+in vec2 texcoord_fs;
+
+out float frag_color;
+
+// https://learnopengl.com/Advanced-Lighting/SSAO
+void main()
+{
+	vec3 position = texture(position_tex, texcoord_fs).xyz;
+	vec3 normal = texture(normal_tex, texcoord_fs).rgb;
+	
+	mat4 P = get_projection_matrix();
+
+	vec2 noise_coord = texcoord_fs * 0.25 * viewport_size;
+	vec3 random_dir = texture(noise_tex, noise_coord).xyz;
+
+	vec3 tangent = normalize(random_dir - normal * dot(random_dir, normal));
+	vec3 bitangent = cross(normal, tangent);
+	mat3 TBN = mat3(tangent, bitangent, normal);
+
+	float occlusion = 0.0;
+
+	for(int i = 0; i < 64; ++i) {
+		vec3 sample_pos = TBN * samples[i];
+		sample_pos = position + sample_pos * radius;
+
+		vec4 offset = vec4(sample_pos, 1.0);
+		offset = P * offset;
+		offset.xyz /= offset.w;
+		offset.xyz = 0.5 * offset.xyz + 0.5;
+
+		float depth_sample = texture(position_tex, offset.xy).z;
+
+		float range_check = smoothstep(0.0, 1.0, radius / abs(position.z - depth_sample));
+		occlusion += (depth_sample >= sample_pos.z + bias ? 1.0 : 0.0) * range_check;
+	}
+
+	occlusion *= (1.0/64.0);
+
+	frag_color = clamp(occlusion, 0.0, 1.0);
+}

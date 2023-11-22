@@ -1,0 +1,240 @@
+#version 430
+
+uniform vec3 light_direction;
+uniform bool enable_shadows;
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_inverse_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of holo_disp.glfs ***********************************
+void compute_sub_pixel_rays(out vec3 ro[3], out vec3 rd[3]);
+bool finalize_sub_pixel_fragment(in vec3 rgb, in vec3 depth);
+//***** end interface of holo_disp.glfs ***********************************
+
+//***** begin interface of intersect.glsl ***********************************
+// return ray parameter of intersection between ray (ro,rd) and plane p=[nx,ny,nz,d]
+float plane_intersection(in vec3 ro, in vec3 rd, in vec4 p);
+// return near and far ray parameters as well as near normal of intersection between ray (ro,rd) and axis aligned box centered around box_pos and with extents box_size
+vec2 box_intersection(in vec3 ro, in vec3 rd, in vec3 box_pos, in vec3 box_size, out vec3 outNormal);
+// return near and far ray parameters as well as near normal of intersection between ray (ro,rd) and sphere (center,rad)
+vec2 sphere_intersection(in vec3 ro, in vec3 rd, in vec3 center, float rad, out vec3 outNormal);
+// return near ray parameters as well as near normal of intersection between ray (ro,rd) and cylinder of radius rad connecting points a and b
+float cylinder_intersection(in vec3 ro, in vec3 rd, in vec3 a, in vec3 b, float rad, out vec3 outNormal);
+// return near ray parameters of intersection between ray (ro,rd) and torus in xy-plane around pos with major and minor radius given in tor
+float torus_intersection(in vec3 ro, in vec3 rd, in vec3 pos, in vec2 tor);
+// return normal of point on torus in xy-point around origin with with major and minor radius given in tor
+vec3 torus_normal(in vec3 delta_pos, vec2 tor);
+//***** end interface of intersect.glsl ***********************************
+
+//===============================================================================================
+// scene
+//===============================================================================================
+
+// objects
+const vec4 back_plane = vec4(0.0, 0.0, -1.0, -1.0);
+
+const vec3 floor_box_pos = vec3(0.0, -1.0, 0.0);
+const vec3 floor_box_ext = vec3(1.0, 0.1, 1.0);
+const vec3 pillar_box_pos = vec3(0.0, 0.0, -0.9);
+const vec3 pillar_box_ext = vec3(0.1, 1.0, 0.1);
+const vec3 beam_box_pos = vec3(0.0, 0.9, 0.0);
+const vec3 beam_box_ext = vec3(0.1, 0.1, 1.0);
+
+const float rope_radius = 0.05;
+const vec3 rope0_cyl_start = vec3(0.0, 0.9, 0.0);
+const vec3 rope0_cyl_end = vec3(0.0, 0.0, 0.0);
+const vec3 rope1_cyl_start = vec3(0.0, 0.9, 0.9);
+const vec3 rope1_cyl_end = vec3(0.0, 0.3, 0.9);
+
+const vec3 torus_pos = vec3(0.0, 0.0, 0.9);
+const vec2 torus_params = vec2(0.3, 0.075);
+
+const vec4 sph = vec4(0.0, 0.0, 0.0, 0.25);
+
+float intersect(vec3 ro, vec3 rd, out vec3 pos, out vec3 nor, out int mat_id) {
+	// raytrace
+	float tmin = 1e20;
+	nor = vec3(0.0);
+	pos = ro + tmin*rd;
+	mat_id = -1;
+
+	// raytrace floor box
+	vec3 nml;
+	float h = box_intersection(ro, rd, floor_box_pos, floor_box_ext, nml).x;
+	if(h > 0.0 && h < tmin) {
+		tmin = h;
+		pos = ro + h*rd;
+		nor = nml;
+		mat_id = 0;
+	}
+
+	// raytrace pillar box
+	h = box_intersection(ro, rd, pillar_box_pos, pillar_box_ext, nml).x;
+	if(h > 0.0 && h < tmin) {
+		tmin = h;
+		pos = ro + h*rd;
+		nor = nml;
+		mat_id = 1;
+	}
+
+	// raytrace beam box
+	h = box_intersection(ro, rd, beam_box_pos, beam_box_ext, nml).x;
+	if(h > 0.0 && h < tmin) {
+		tmin = h;
+		pos = ro + h*rd;
+		nor = nml;
+		mat_id = 1;
+	}
+
+	// raytrace rope cylinders
+	h = cylinder_intersection(ro, rd, rope0_cyl_start, rope0_cyl_end, rope_radius, nml);
+	if(h > 0.0 && h < tmin) {
+		tmin = h;
+		pos = ro + h*rd;
+		nor = nml;
+		mat_id = 2;
+	}
+
+	h = cylinder_intersection(ro, rd, rope1_cyl_start, rope1_cyl_end, rope_radius, nml);
+	if(h > 0.0 && h < tmin) {
+		tmin = h;
+		pos = ro + h*rd;
+		nor = nml;
+		mat_id = 2;
+	}
+
+	// raytrace sphere
+	h = sphere_intersection(ro, rd, sph.xyz, sph.w, nml).x;
+	if(h > 0.0 && h < tmin) {
+		tmin = h;
+		pos = ro + h*rd;
+		nor = nml;
+		mat_id = 3;
+	}
+
+	// raytrace torus
+	// increase numerical stability by first intersecting with a boundign sphere and moving the ray origin closer to the torus
+	vec3 ts_nml;
+	float tsh = sphere_intersection(ro, rd, torus_pos, torus_params.x + 1.05*torus_params.y, ts_nml).x;
+	if(tsh>0.0) {
+		vec3 tro = ro + 0.95*tsh*rd;
+		float th = torus_intersection(tro, rd, torus_pos, torus_params);
+		if(th > 0.0) {
+			h = th + 0.95*tsh;
+			if(h > 0.0 && h < tmin) {
+				tmin = h;
+				pos = ro + h*rd;
+				nor = torus_normal(pos - torus_pos, torus_params);
+				mat_id = 4;
+			}
+		}
+	}
+
+	// raytrace back plane
+	h = plane_intersection(ro, rd, back_plane);
+	if(h > 0.0 && h < tmin) {
+		tmin = h;
+		pos = ro + h*rd;
+		nor = -back_plane.xyz;
+		mat_id = 5;
+	}
+
+	return tmin;
+}
+
+vec4 get_material(in int mat_id) {
+	// RGB color + texture mix factor
+	const vec4 materials[6] = vec4[6](
+		vec4(0.1, 0.1, 0.1, 0.5),
+		vec4(0.9, 0.8, 0.2, 0.0),
+		vec4(1.0, 0.5, 0.8, 0.0),
+		vec4(0.95, 0.05, 0.05, 0.0),
+		vec4(0.1, 0.1, 0.95, 0.0),
+		vec4(0.1, 0.1, 0.1, 0.05)
+	);
+
+	return materials[mat_id];
+}
+
+vec2 get_texcoords(in vec3 pos, int mat_id) {
+	vec2 uv = vec2(0.0);
+
+	if(mat_id == 0)
+		uv = pos.xz;
+	else if(mat_id== 5)
+		uv = 0.25*pos.xy;
+	
+	return uv;
+}
+
+float checker_texture(in vec2 p) {
+	vec2 i = step(fract(p), vec2(1.0/2.0));
+	return 1.0 - i.x - i.y + 2.0*i.x*i.y;
+}
+
+vec3 compute_illumination(in vec3 pos, in vec3 nor, in vec3 rd, in float shadow_factor, in vec3 albedo) {
+	float diffuse = clamp(dot(nor, light_direction), 0.0, 1.0);
+	float illum = diffuse * (1.0 - shadow_factor);
+	// ambient term
+	illum += 0.1;
+	return illum * albedo;
+}
+
+//===============================================================================================
+// render
+//===============================================================================================
+
+vec3 rayTracePixel(vec3 ro, vec3 rd, out float depth) {
+	vec3 pos, nor; // hit position and normal
+	int mat_id; // material ID
+	float t = intersect(ro, rd, pos, nor, mat_id);
+
+	vec3 color = vec3(0.9);
+	if(mat_id != -1) {
+		float shadow_factor = 0.0;
+
+		// trace a shadow ray if requested
+		if(enable_shadows) {
+			vec3 shadow_ray_origin = pos + 0.001*light_direction;
+			vec3 shadow_pos, shadow_nor;
+			int shadow_mat_id;
+			float st = intersect(shadow_ray_origin, light_direction, shadow_pos, shadow_nor, shadow_mat_id);
+		
+			if(shadow_mat_id != -1)
+				shadow_factor = 1.0;
+		}
+
+		// get color and texture coordinates depending on material
+		vec4 material = get_material(mat_id);
+		vec2 uv = get_texcoords(pos, mat_id);
+		
+		vec3 albedo = mix(material.rgb, vec3(checker_texture(0.9*uv)), material.w);
+		
+		// lighting
+		color = compute_illumination(pos, nor, rd, shadow_factor, albedo);
+	}
+	
+	vec4 pos_clip = get_modelview_projection_matrix() * vec4(pos, 1.0);
+	depth = 0.5*(pos_clip.z / pos_clip.w) + 0.5;
+	
+	return color; 
+}
+
+void main() {
+	vec3 ro[3], rd[3];
+	compute_sub_pixel_rays(ro, rd);
+	vec3 rgb, depth;
+	for (int c = 0; c < 3; c++)
+		rgb[c] = rayTracePixel(ro[c], rd[c], depth[c])[c];
+
+	if (!finalize_sub_pixel_fragment(rgb, depth))
+		discard;
+}

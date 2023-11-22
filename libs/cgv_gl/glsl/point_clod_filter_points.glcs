@@ -1,0 +1,148 @@
+#version 450
+
+// modified version of source for 
+// "Real-Time Continuous Level of Detail Rendering of Point Clouds"
+// Markus Schütz, Katharina Krösl, Michael Wimmer
+// IEEE VR 2019, March, Osaka
+// license: MIT license (https://opensource.org/licenses/MIT)
+//	
+// This compute shader is executed for each point of the 
+// full point cloud (inputBuffer) and it stores a selected subset 
+// with continuous LOD properties in a new vertex buffer (targetBuffer).
+// 
+// - This is an in-core method
+// - It downsamples ~86M points to 5M points in ~5.45ms on a GTX 1080 => 15.9M points / ms.
+// - Initial tests for an RTX 2080 TI have shown performances up to 44M points / ms.
+// - Each input point needs a level attribute in the alpha channel of the color
+// - In VR, this method is distributed over multiple frames, 
+//   e.g. process 18M points per frame of the input buffer,
+//   which takes roughly 1.1ms per frame. 
+//   After 5 frames, the new downsampled vertex buffer is finished
+//   and it will be used to render the point cloud for the next 5 frames.
+// - Points are culled against an "extented-frustum" so that enough points are available 
+//   during motion even though the rendered model is computed for the frustum from 5 frames earlier.
+// - Distribution of the downsampling step over multiple frames is actually not necessary anymore for the 2080 TI.
+//   The same models with the same LOD can be downsampled and rendered at 90FPS in a single frame on a 2080 TI, 
+//   compared to a 1080 that required distribution of the downsampling step over ~5 frames.
+//
+
+
+
+layout(local_size_x = 256, local_size_y = 1) in;
+
+struct Vertex{
+	float x;
+	float y;
+	float z;
+	uint colors;
+};
+
+layout(std430, binding = 0) restrict readonly buffer ssInputBuffer{
+	Vertex inputBuffer[];
+};
+
+layout(std430, binding = 1) restrict buffer ssTargetBuffer{
+	Vertex targetBuffer[];
+};
+
+layout(std430, binding = 2) restrict buffer ssTargetIndexBuffer{
+	uint targetIndexBuffer[];
+};
+
+//draw parameters for glDrawArraysIndirect
+layout(std430, binding = 3) restrict buffer ssDrawParameters{
+	uint count;
+	uint primCount;
+	uint first;
+	uint baseInstance;
+} drawParameters;
+
+layout(std430, binding = 4) restrict buffer ssInputIdBuffer{
+	uint inputIdBuffer[];
+};
+
+layout(location = 21) uniform int batch_offset;
+layout(location = 22) uniform int batch_size;
+
+uniform float CLOD;
+uniform float scale;
+uniform float spacing; //root_spacings
+uniform vec2 screenSize;
+uniform vec4 pivot; //pivot point in view space, usually the camera position
+
+uniform float frustum_extent;
+
+uniform uint target_buffer_size;
+
+uniform float density_decrease= 0.5;
+uniform float min_density = 0.3;
+
+uniform mat4 model_view_projection;
+uniform mat4 model_view;
+
+uniform bool use_index_as_id = true;
+
+float rand(float n){
+	return fract(cos(n) * 123456.789);
+}
+
+void main(){
+	uint inputIndex = gl_GlobalInvocationID.x;
+
+	if(inputIndex >= batch_size){
+		return;
+	}
+
+	inputIndex = inputIndex + batch_offset;
+
+	Vertex v = inputBuffer[inputIndex];
+
+	vec3 position = vec3(v.x, v.y, v.z);
+	float level = float((v.colors & 0xFF000000) >> 24);
+	float aRandom = rand(v.x + v.y + v.z);
+
+	vec4 projected = (model_view_projection * vec4(position, 1));
+	projected.xyz = projected.xyz / projected.w;
+
+	// (extented-)frustum culling and near clipping
+	if((frustum_extent < abs(projected.x) ) || ( frustum_extent < abs(projected.y)) || (projected.w < 0) ){
+		return;
+	}
+
+	//vec3 worldPos = (world * vec4(position, 1)).xyz;
+	vec3 modelPos = position;
+	vec3 viewPos = (model_view*vec4(position,1.0)).xyz;
+
+	// without level randomization
+	//float pointSpacing = uScale * uSpacing / pow(2, level);
+
+	// with level randomization
+	float pointSpacing = scale * spacing / pow(2, level + aRandom);
+	
+	float d = distance(viewPos, pivot.xyz);
+	float dc = length((projected.xy/screenSize)-vec2(1.0,1.0)); //distance to center in device coordinates, dc is zero at the center of the screen, and one at the border.
+
+	// targetSpacing dependant on camera distance
+	//float targetSpacing = (CLOD / 1000) * d;
+
+	// dependant on cam distance and distance to center of screen
+	float targetSpacing = (d * CLOD) / (1000 * max(1 - density_decrease * dc , min_density));
+	
+	if(pointSpacing < targetSpacing){
+		return;
+	}
+
+	int targetIndex = int(atomicAdd(drawParameters.count, 1));
+	if (targetIndex < target_buffer_size){
+		targetBuffer[targetIndex] = v;
+		if (use_index_as_id){
+			targetIndexBuffer[targetIndex] = inputIndex;
+		} else { 
+			targetIndexBuffer[targetIndex] = inputIdBuffer[inputIndex];
+		}
+	} else {
+		drawParameters.count = target_buffer_size;
+	}
+}
+
+

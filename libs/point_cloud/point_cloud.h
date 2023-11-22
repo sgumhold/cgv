@@ -8,6 +8,8 @@
 #include <cgv/media/color.h>
 #include <cgv/media/axis_aligned_box.h>
 
+#include <cgv_gl/clod_point_renderer.h>
+
 #include "lib_begin.h"
 
 #define BYTE_COLORS
@@ -21,7 +23,8 @@ struct point_cloud_types
 	/// type of color components
 	typedef cgv::type::uint8_type ClrComp;
 	static ClrComp byte_to_color_component(cgv::type::uint8_type c) { return c; }
-	static ClrComp float_to_color_component(double c) { return cgv::type::uint8_type(255 * c); }
+	static ClrComp int_to_color_component(int c) { return cgv::type::uint8_type(c); }
+	static ClrComp float_to_color_component(double c) { return cgv::type::uint8_type(c); }
 	static cgv::type::uint8_type color_component_to_byte(ClrComp c) { return c; }
 	static float color_component_to_float(ClrComp c) { return 1.0f/255 * c; }
 #else
@@ -32,6 +35,8 @@ struct point_cloud_types
 	static cgv::type::uint8_type color_component_to_byte(ClrComp c) { return cgv::type::uint8_type(255*c); }
 	static float color_component_to_float(ClrComp c) { return c; }
 #endif // BYTE_COLORS
+	/// floating point color type without opacity
+	typedef cgv::media::color<float, cgv::media::RGB> RGB;
 	/// floating point color type
 	typedef cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> RGBA;
 	/// 3d point type
@@ -119,6 +124,10 @@ protected:
 	std::vector<TexCrd> T;
 	/// container for point pixel coordinates 
 	std::vector<PixCrd> I;
+	/// one byte per point lod information 
+	std::vector<uint8_t> lods;
+	/// per point label, used for holding the data downloaded from GPU in the Point Cleaning Project 
+	std::vector<GLint> labels;
 
 	/// container to store  one component index per point
 	std::vector<unsigned> component_indices;
@@ -149,6 +158,7 @@ protected:
 	friend class point_cloud_interactable;
 	friend class point_cloud_viewer;
 	friend class gl_point_cloud_drawable;
+	friend class vr_rgbd;
 private:
 	mutable std::vector<bool> comp_box_out_of_date;
 	mutable std::vector<bool> comp_pixrng_out_of_date;
@@ -156,6 +166,16 @@ private:
 	mutable bool box_out_of_date;
 	/// flag to remember whether pixel coordinate range is out of date and will be recomputed in the pixel_range() method
 	mutable bool pixel_range_out_of_date;
+	/// transformation matrix that not applied to point cloud, used for rendering 
+	//HMat last_additional_model_matrix;
+
+	/// save individual parts instead
+	float point_cloud_scale = 1.f;
+	Dir point_cloud_position= Dir(0);
+	Dir point_cloud_rotation = Dir(0);
+	
+	/// dedicated rendering mode for specific point cloud (point spacing etc.)
+	cgv::render::clod_point_render_style cp_render_style;
 protected:
 	/// when true, second vector is interpreted as normals when reading an ascii format
 	bool no_normals_contained;
@@ -185,11 +205,15 @@ protected:
 	bool read_wrl(const std::string& file_name);
 	/// same as read_points but supports files with lines of <x y z r g b> in case that the internal flag no_normals_contained is set before calling read
 	bool read_ascii(const std::string& file_name);
+	/// file io for point cloud with level of detail 
+	bool read_lpc(const std::string& file_name);
+	
 	//! read binary format
 	/*! Binary format has 8 bytes header encoding two 32-bit unsigned ints n and m.
 	    n is the number of points. In case no colors are provided m is the number of normals, i.e. m=0 in case no normals are provided.
 		In case colors are present there must be the same number n of colors as points and m is set to 2*n+nr_normals. This is a hack
 		resulting from the extension of the format with colors. */
+	///
 	bool read_bin(const std::string& file_name);
 	//! read a ply format.
 	/*! Ignores all but the vertex elements and from the vertex elements the properties x,y,z,nx,ny,nz:Float32 and red,green,blue,alpha:Uint8.
@@ -197,6 +221,8 @@ protected:
 	bool read_ply(const std::string& file_name);
 	/// read txt file from leica scanner
 	bool read_txt(const std::string& file_name);
+	/// read e57 file from leica scanner
+	bool read_e57(const std::string& file_name);
 	/// write ascii format, see read_ascii for format description
 	bool write_ascii(const std::string& file_name, bool write_nmls = true) const;
 	/// write binary format, see read_bin for format description
@@ -205,7 +231,16 @@ protected:
 	bool write_obj(const std::string& file_name) const;
 	/// write ply format, see read_ply for format description
 	bool write_ply(const std::string& file_name) const;
-public:
+	/// write LOD point cloud format(.lpc), see read_lpc for format description
+	bool write_lpc(const std::string& file_name);
+	/// write txt format, see read_txt for format description
+	bool write_txt(const std::string& file_name) const;
+	/// write e57 format, see read_txt for format description
+	bool write_e57(const std::string& file_name) const;
+	/// modifiy color for ground truth s3d
+	bool mdf_clr(const RGBA gt_clr, const Idx& id);
+
+  public:
 	/// construct empty point cloud
 	point_cloud();
 	/// construct and read file with the read method
@@ -233,6 +268,12 @@ public:
 	void transform(const HMat& hmat);
 	/// add a point and allocate normal and color if necessary, return index of new point
 	size_t add_point(const Pnt& p);
+	/// add a point and a normal, add a color if necessary, return index of new point
+	size_t add_point(const Pnt& p, const Nml& n);
+	/// add a point and a color, add a normal if necessary, return index of new point
+	size_t add_point(const Pnt& p, const Clr& c);
+	/// add a point, a normal and a color, return index of new point
+	size_t add_point(const Pnt& p, const Nml& n, const Clr& c);
 	/// resize the point cloud
 	void resize(size_t nr_points);
 	//@}
@@ -245,7 +286,8 @@ public:
 		- read_bin:   *.bin
 		- read_ply:   *.ply
 		- read_obj:   *.obj
-		- read_points:*.points */
+		- read_points:*.points 
+		- read_txt:   *.txt*/
 	bool read(const std::string& file_name);
 	/// read component transformations from ascii file with 12 numbers per line (9 for rotation matrix and 3 for translation vector)
 	bool read_component_transformations(const std::string& file_name);
@@ -264,6 +306,37 @@ public:
 	Pnt& pnt(size_t i) { return P[i]; }
 	/// return the i_th point, in case components and component transformations are created, transform point with its compontent's transformation before returning it 
 	Pnt transformed_pnt(size_t i) const;
+
+	/// return render style as reference 
+	cgv::render::clod_point_render_style& ref_render_style() { return cp_render_style; }
+
+	/// return transformation matrix for positioning in vr as reference 
+	//HMat& ref_transform_matrix() { return last_additional_model_matrix; }
+
+	/// reture references to positioning components  
+	float& ref_point_cloud_scale() { return point_cloud_scale; }
+	Dir& ref_point_cloud_position() { return point_cloud_position; }
+	Dir& ref_point_cloud_rotation() { return point_cloud_rotation; }
+
+	/// return if the current point cloud has level of detail as per point attribute 
+	bool has_lods() { return lods.size() > 0; }
+	/// return i-th lod as const reference
+	const uint8_t& lod(size_t i) const { return lods[i]; }
+	/// return i-th lod 
+	uint8_t& lod(size_t i) { return lods[i]; }
+	/// resize to the same size as the points 
+	void resize_lods() { lods.resize(get_nr_points()); }
+
+	/// return if the current point cloud has label attribute 
+	bool has_labels() { return labels.size() > 0; }
+	/// return i-th label as const 
+	const GLint& label(size_t i) const { return labels[i]; }
+	/// return i-th label refernce
+	GLint& label(size_t i) { return labels[i]; }
+	/// resize to the same size as the points 
+	void resize_labels() { labels.resize(get_nr_points()); }
+	/// ref label vector to fill data 
+	std::vector<GLint>* ref_label_vector() { return &labels;}
 
 	/// return whether the point cloud has normals
 	bool has_normals() const;
@@ -317,6 +390,8 @@ public:
 	bool has_components() const;
 	/// allocate component indices and point ranges if not already allocated
 	void create_components();
+	/// remove all points from the given component
+	void clear_component(size_t i);
 	/// deallocate component indices and point ranges
 	void destruct_components();
 	/// return i-th component index as const reference
@@ -375,6 +450,9 @@ public:
 	Cnt collect_valid_image_neighbors(size_t pi, const index_image& img, std::vector<size_t>& Ni, Crd distance_threshold = 0.0f) const;
 	/// compute the normals with the help of pixel coordinates
 	void estimate_normals(const index_image& img, Crd distance_threshold = 0.0f, Idx component_idx = -1, int* nr_isolated = 0, int* nr_iterations = 0, int* nr_left_over = 0);
+	/// modifiy color for ground truth s3d
+	void mdf_clr_public(const RGBA gt_clr, const Idx& id);
+	void printClr();
 	//}
 };
 

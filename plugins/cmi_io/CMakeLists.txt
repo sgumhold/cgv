@@ -1,6 +1,14 @@
 
-add_library(cmi_io jpg_reader.cxx png_reader.cxx png_writer.cxx tiff_reader.cxx tiff_writer.cxx)
-target_link_libraries(cmi_io jpeg png tif cgv_media)
-target_compile_definitions(cmi_io PRIVATE CMI_IO_EXPORTS)
+file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
+file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
+
+cgv_add_target(cmi_io
+	TYPE plugin NO_EXECUTABLE
+	SOURCES ${SOURCES} ${HEADERS}
+	DEPENDENCIES jpeg png tif cgv_media
+
+	OVERRIDE_FORCE_STATIC_DEFINE  CGV_GUI_FORCE_STATIC
+)
 
 install(TARGETS cmi_io EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
+install(TARGETS cmi_io_static EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})

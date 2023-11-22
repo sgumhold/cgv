@@ -93,10 +93,10 @@ struct value_view_factory : public abst_view_factory
 		if (value_type == "uint16")
 			return view_ptr(new fltk_value_view<cgv::type::uint16_type>(label, 
 				*static_cast<const cgv::type::uint16_type*>(value_ptr), x, y, w, h));
-		if (value_type == "uint32")
+		if (value_type == "uint32" || (sizeof(size_t) == 4 && value_type == "m"))
 			return view_ptr(new fltk_value_view<cgv::type::uint32_type>(label, 
 				*static_cast<const cgv::type::uint32_type*>(value_ptr), x, y, w, h));
-		if (value_type == "uint64")
+		if (value_type == "uint64" || (sizeof(size_t) == 8 && value_type == "m"))
 			return view_ptr(new fltk_value_view<cgv::type::uint64_type>(label, 
 				*static_cast<const cgv::type::uint64_type*>(value_ptr), x, y, w, h));
 		if (value_type == "flt32")

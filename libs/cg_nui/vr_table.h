@@ -93,6 +93,8 @@ protected:
 	table_mode mode = table_mode::round;
 	/// width in rectangular and radius in round mode
 	float scale = 1.6f;
+	//float scale = 1.4084f;
+	//float scale = 0.7042f;
 	/// rotation angle
 	float angle = 0;
 	/// aspect ratio in rectangular and fraction of top over bottom radius in round mode

@@ -447,24 +447,30 @@ static const GLenum gl_rg_texture_format_ids[] =
 	GL_RED,
 	GL_RG,
 
-	GL_R16F,    
-	GL_R32F,   
+	GL_R16F,
+	GL_R32F,
 
-	GL_RG16F,   
-	GL_RG32F,  
+	GL_RG16F,
+	GL_RG32F,
 
-	GL_R8I,   
-	GL_R8UI,    
-	GL_R16I,    
-	GL_R16UI,   
-	GL_R32I,  
-	GL_R32UI,   
+	GL_R8,
+	GL_R16,
 
-	GL_RG8I, 
-	GL_RG8UI,   
-	GL_RG16I,   
-	GL_RG16UI,  
-	GL_RG32I, 
+	GL_R8I,
+	GL_R8UI,
+	GL_R16I,
+	GL_R16UI,
+	GL_R32I,
+	GL_R32UI,
+
+	GL_RG8,
+	GL_RG16,
+
+	GL_RG8I,
+	GL_RG8UI,
+	GL_RG16I,
+	GL_RG16UI,
+	GL_RG32I,
 	GL_RG32UI
 };
 
@@ -479,12 +485,18 @@ static const char* rg_texture_formats[] = {
 	"flt16[R,G]",
 	"flt32[R,G]",
 
+	"uint8[R]",
+	"uint16[R]",
+
 	"_int8[R]",
 	"_uint8[R]",
 	"_int16[R]",
 	"_uint16[R]",
 	"_int32[R]",
 	"_uint32[R]",
+
+	"uint8[R,G]",
+	"uint16[R,G]",
 
 	"_int8[R,G]",
 	"_uint8[R,G]",
@@ -499,6 +511,8 @@ static const char* rg_texture_formats[] = {
 unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::data::component_format* best_cf, const std::vector<data_view>* palettes)
 {
 	cgv::data::component_format cf = _cf;
+	if (cf.get_nr_components() == 1 && (cf.get_component_name(0) == "L" || cf.get_component_name(0) == "I"))
+		cf.set_component_names("R");
 	cgv::data::component_format best_cf_;
 	if (!best_cf)
 		best_cf = &best_cf_;

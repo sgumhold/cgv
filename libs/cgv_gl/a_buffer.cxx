@@ -86,7 +86,7 @@ namespace cgv {
 		}
 		bool a_buffer::init(context& ctx)
 		{
-			if (!clear_ssbo_prog.build_files(ctx, "clear_ssbo", true))
+			if (!clear_ssbo_prog.build_files(ctx, "a_buffer_clear", true))
 				return false;
 			update_defines(defines, false);
 			if (!a_buffer_prog.build_program(ctx, "a_buffer.glpr", true, defines))

@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES 
 #include "stereo_view_interactor.h"
 #include <cgv/math/geom.h>
 #include <cgv/math/ftransform.h>
@@ -15,7 +16,6 @@
 #include <cgv/gui/mouse_event.h>
 #include <cgv/media/image/image_writer.h>
 #include <cgv/type/variant.h>
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include <stdio.h>
 
@@ -1619,6 +1619,19 @@ bool stereo_view_interactor::get_void(const std::string& property, const std::st
 
 void stereo_view_interactor::on_set(void* m)
 {
+	if (m == &view_dir) {
+		update_member(&view_dir[1]);
+		update_member(&view_dir[2]);
+	}
+	if (m == &view_up_dir) {
+		update_member(&view_up_dir[1]);
+		update_member(&view_up_dir[2]);
+	}
+	dvec3& foc = cgv::render::view::focus;
+	if (m == &foc) {
+		update_member(&foc[1]);
+		update_member(&foc[2]);
+	}
 	if (m == &stereo_enabled || m == &stereo_mode)
 		on_stereo_change();
 	update_member(m);

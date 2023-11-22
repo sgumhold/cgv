@@ -2,6 +2,8 @@
 #include <cgv/math/proximity.h>
 #include <cgv/math/intersection.h>
 
+#include <cg_nui/debug_visualization_helper.h>
+
 cgv::render::shader_program simple_object::prog;
 
 simple_object::rgb simple_object::get_modified_color(const rgb& color) const
@@ -23,42 +25,18 @@ simple_object::rgb simple_object::get_modified_color(const rgb& color) const
 }
 
 simple_object::simple_object(const std::string& _name, const vec3& _position, const rgb& _color, const vec3& _extent, const quat& _rotation) :
-	cgv::nui::grabable_interactable(&position, &rotation, _name), position(_position), rotation(_rotation),
-	color(_color), extent(_extent)
+	cgv::nui::poseable(_name), transforming(), translatable(), rotatable(&rotation), scalable(&extent), rotation(_rotation), extent(_extent), color(_color)
 {
 	name = _name;
 
-	//debug_point = position + 0.5f*extent;
+	// The position is held by the translatable interface
+	set_position(_position);
+
 	brs.rounding = true;
 	brs.default_radius = 0.02f;
 
+	// The ui should show the currently active gizmo
 	active_gizmo_ui = active_gizmo;
-
-	trans_gizmo = new cgv::nui::translation_gizmo();
-	append_child(trans_gizmo);
-	trans_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
-	trans_gizmo->configure_axes_positioning(
-		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
-		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
-	);
-	if (active_gizmo == AGO_TRANSLATION)
-		trans_gizmo->attach(this, &position, &rotation, &extent);
-
-	rot_gizmo = new cgv::nui::rotation_gizmo();
-	append_child(rot_gizmo);
-	rot_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
-	if (active_gizmo == AGO_ROTATION)
-		rot_gizmo->attach(this, &position, &rotation, &extent);
-
-	scale_gizmo = new cgv::nui::scaling_gizmo();
-	append_child(scale_gizmo);
-	scale_gizmo->configure_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
-	scale_gizmo->configure_axes_positioning(
-		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
-		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
-	);
-	if (active_gizmo == AGO_SCALING)
-		scale_gizmo->attach(this, &extent, &position, &rotation);
 }
 
 std::string simple_object::get_type_name() const
@@ -66,43 +44,108 @@ std::string simple_object::get_type_name() const
 	return "simple_object";
 }
 
-bool simple_object::compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx)
+void simple_object::initialize_gizmos(cgv::base::node_ptr root, cgv::base::node_ptr anchor, bool anchor_influenced_by_gizmo, bool root_influenced_by_gizmo)
 {
-	vec3 p = point - position;
-	rotation.inverse_rotate(p);
+	// Initialization and configuration of the translation gizmo
+
+	trans_gizmo = new cgv::nui::translation_gizmo();
+	// As the gizmo is created after the hierarchy was initially traversed the context has to be set manually
+	trans_gizmo->set_context(this->get_context());
+	// Set necessary references
+	trans_gizmo->set_anchor_object(anchor);
+	trans_gizmo->set_root_object(root);
+	trans_gizmo->set_value_object(this);
+	trans_gizmo->set_position_reference(this);
+	// This depends on the anchor and root objects chosen. See vr_lab_test::init for different examples.
+	trans_gizmo->set_is_anchor_influenced_by_gizmo(anchor_influenced_by_gizmo);
+	trans_gizmo->set_is_root_influenced_by_gizmo(root_influenced_by_gizmo);
+	// Example. These both default to false.
+	//trans_gizmo->set_use_root_for_rotation(true);
+	//trans_gizmo->set_use_root_for_position(true);
+	// Configuration for the handles (arrows in case of the translation gizmo)
+	trans_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
+	trans_gizmo->set_axes_positions(
+		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
+		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
+	);
+	// Example for setting offsets. (Note: offsets are not fully implemented and untested)
+	//trans_gizmo->set_anchor_offset_position(vec3(0.0f, 0.0f, 0.0f));
+	//trans_gizmo->set_root_offset_position(vec3(0.0f, 0.0f, 0.0f));
+	//quat rot;
+	//vec3 n = vec3(1.0f, 0.0f, 1.0f);
+	//n.normalize();
+	//rot.set_normal(n);
+	//rot.normalize();
+	//trans_gizmo->set_anchor_offset_rotation(rot);
+	//n = vec3(1.0f, 0.0f, 1.0f);
+	//n.normalize();
+	//rot.set_normal(n);
+	//rot.normalize();
+	//trans_gizmo->set_root_offset_rotation(rot);
+	// Verify configuration and activate gizmo, if it is the one currently set to be active
+	if (active_gizmo == ActiveGizmoOptions::AGO_TRANSLATION)
+		trans_gizmo->attach();
+
+	// Initialization and configuration of the rotation gizmo (see above for detailed comments)
+
+	rot_gizmo = new cgv::nui::rotation_gizmo();
+	rot_gizmo->set_context(this->get_context());
+	rot_gizmo->set_anchor_object(anchor);
+	rot_gizmo->set_root_object(root);
+	rot_gizmo->set_value_object(this);
+	rot_gizmo->set_rotation_reference(this);
+	rot_gizmo->set_is_anchor_influenced_by_gizmo(anchor_influenced_by_gizmo);
+	rot_gizmo->set_is_root_influenced_by_gizmo(root_influenced_by_gizmo);
+	//rot_gizmo->set_use_root_for_rotation(true);
+	//rot_gizmo->set_use_root_for_position(true);
+	rot_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
+	if (active_gizmo == ActiveGizmoOptions::AGO_ROTATION)
+		rot_gizmo->attach();
+
+	// Initialization and configuration of the scaling gizmo (see above for detailed comments)
+
+	scale_gizmo = new cgv::nui::scaling_gizmo();
+	scale_gizmo->set_context(this->get_context());
+	scale_gizmo->set_anchor_object(anchor);
+	scale_gizmo->set_root_object(root);
+	scale_gizmo->set_scale_reference(this);
+	scale_gizmo->set_value_object(this);
+	scale_gizmo->set_is_anchor_influenced_by_gizmo(anchor_influenced_by_gizmo);
+	scale_gizmo->set_is_root_influenced_by_gizmo(root_influenced_by_gizmo);
+	//scale_gizmo->set_use_root_for_rotation(true);
+	//scale_gizmo->set_use_root_for_position(true);
+	scale_gizmo->set_axes_directions({ vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 1.0) });
+	scale_gizmo->set_axes_positions(
+		{ vec3(0.5f, 0.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 0.0f, 0.5f) },
+		{ vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.02f, 0.0f), vec3(0.0f, 0.0f, 0.02f) }
+	);
+	scale_gizmo->configure_scale_limits(vec3(0.05f), vec3(2.0f));
+	if (active_gizmo == ActiveGizmoOptions::AGO_SCALING)
+		scale_gizmo->attach();
+}
+
+bool simple_object::_compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx)
+{
 	for (int i = 0; i < 3; ++i)
-		p[i] = std::max(-0.5f * extent[i], std::min(0.5f * extent[i], p[i]));
-	rotation.rotate(p);
-	prj_point = p + position;
+		prj_point[i] = std::max(-0.5f, std::min(0.5f, prj_point[i]));
 	return true;
 }
 
-bool simple_object::compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx)
+bool simple_object::_compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx)
 {
-	vec3 ro = ray_start - position;
-	vec3 rd = ray_direction;
-	rotation.inverse_rotate(ro);
-	rotation.inverse_rotate(rd);
-	vec3 n;
-	vec2 res;
-	if (cgv::math::ray_box_intersection(ro, rd, 0.5f*extent, res, n) == 0)
-		return false;
-	if (res[0] < 0) {
-		if (res[1] < 0)
-			return false;
-		hit_param = res[1];
+	vec2 result;
+	int n_intersections = cgv::math::ray_box_intersection(cgv::math::ray<float, 3>(ray_start, ray_direction), vec3(0.5f), result);
+	if (n_intersections > 0) {
+		hit_param = result[0];
+		return true;
 	}
-	else {
-		hit_param = res[0];
-	}
-	rotation.rotate(n);
-	hit_normal = n;
-	return true;
+	return false;
 }
 
 bool simple_object::init(cgv::render::context& ctx)
 {
-	grabable_interactable::init(ctx);
+	poseable::init(ctx);
+
 	auto& br = cgv::render::ref_box_renderer(ctx, 1);
 	if (prog.is_linked())
 		return true;
@@ -114,36 +157,49 @@ void simple_object::clear(cgv::render::context& ctx)
 }
 void simple_object::draw(cgv::render::context& ctx)
 {
-	grabable_interactable::draw(ctx);
+	ctx.push_modelview_matrix();
+	ctx.mul_modelview_matrix(get_model_transform());
+
+	poseable::draw(ctx);
 	// show box
 	auto& br = cgv::render::ref_box_renderer(ctx);
 	br.set_render_style(brs);
 	if (brs.rounding)
 		br.set_prog(prog);
-	br.set_position(ctx, position);
+	br.set_position(ctx, vec3(0.0f));
 	br.set_color_array(ctx, &color, 1);
 	br.set_secondary_color(ctx, get_modified_color(color));
-	br.set_extent(ctx, extent);
-	br.set_rotation_array(ctx, &rotation, 1);
+	br.set_extent(ctx, vec3(1.0));
 	br.render(ctx, 0, 1);
+}
+
+void simple_object::finish_draw(cgv::render::context& context)
+{
+	context.pop_modelview_matrix();
 }
 
 void simple_object::on_set(void* member_ptr)
 {
 	if (member_ptr == &active_gizmo_ui)
 	{
+		// If the active gizmo changed in the ui detach old gizmo and attach new gizmo.
 		if (active_gizmo_ui != active_gizmo) {
 			switch (active_gizmo) {
-			case AGO_TRANSLATION: trans_gizmo->detach(); break;
-			case AGO_ROTATION: rot_gizmo->detach(); break;
-			case AGO_SCALING: scale_gizmo->detach(); break;
+			case ActiveGizmoOptions::AGO_TRANSLATION: trans_gizmo->detach(); break;
+			case ActiveGizmoOptions::AGO_ROTATION: rot_gizmo->detach(); break;
+			case ActiveGizmoOptions::AGO_SCALING: scale_gizmo->detach(); break;
 			}
 			switch (active_gizmo_ui) {
-			case AGO_TRANSLATION: trans_gizmo->attach(this, &position, &rotation, &extent); break;
-			case AGO_ROTATION: rot_gizmo->attach(this, &position, &rotation, &extent); break;
-			case AGO_SCALING: scale_gizmo->attach(this, &extent, &position, &rotation); break;
+			case ActiveGizmoOptions::AGO_TRANSLATION: trans_gizmo->attach(); break;
+			case ActiveGizmoOptions::AGO_ROTATION: rot_gizmo->attach(); break;
+			case ActiveGizmoOptions::AGO_SCALING: scale_gizmo->attach(); break;
 			}
 			active_gizmo = active_gizmo_ui;
+		}
+	}
+	if (member_ptr == &extent) {
+		if (extent.y() < 0.1) {
+			extent[1] = 0.1;
 		}
 	}
 	update_member(member_ptr);
@@ -165,5 +221,17 @@ void simple_object::create_gui()
 		align("\b");
 		end_tree_node(brs);
 	}
-	grabable_interactable::create_gui();
+	poseable::create_gui();
+}
+
+cgv::render::render_types::mat4 simple_object::get_model_transform() const
+{
+	// Construct transform from the values managed by the translatable, rotatable and scalable interfaces
+	return transforming::construct_transform_from_components(get_position(), get_rotation(), get_scale());
+}
+
+cgv::render::render_types::mat4 simple_object::get_inverse_model_transform() const
+{
+	// Construct transform from the values managed by the translatable, rotatable and scalable interfaces
+	return transforming::construct_inverse_transform_from_components(-1.0f * get_position(), get_rotation().inverse(), vec3(1.0) / get_scale());
 }

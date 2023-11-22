@@ -3,11 +3,6 @@
 namespace cgv {
 	namespace base {
 
-
-abst_property_access::abst_property_access() : has_changed(false)
-{
-}
-
 /// overload to return the type name of this object. By default the type interface is queried over get_type.
 std::string base_generator::get_type_name() const
 {
@@ -27,6 +22,15 @@ void base_generator::add_void(const std::string& name, abst_property_access* apa
 	else 
 		property_map[name] = apa;
 }
+
+base_generator::~base_generator()
+{
+	for (auto& p : property_map) {
+		delete p.second;
+		p.second = 0;
+	}
+}
+
 
 /// remove a property
 void base_generator::del(const std::string& name)

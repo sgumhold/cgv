@@ -10,4 +10,4 @@
 
 /// register a grid factory
 CGV_API cgv::base::factory_registration<grid> grid_fac("grid", "menu_text='New/Grid';shortcut='Ctrl-Alt-G'", true, 
-														                "menu_text='&view/grid';shortcut='Ctrl-G'");
+														                "menu_text='&View/Grid';shortcut='Ctrl-G'");

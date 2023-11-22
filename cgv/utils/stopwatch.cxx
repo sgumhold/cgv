@@ -14,22 +14,25 @@ namespace cgv {
 
 #ifdef _WIN32
 static long long frequency;
-static BOOL perfcounter_available;
 static bool queried_perfcounter = false;
+#else
+constexpr auto S_TO_NS=1000000000LL;
+constexpr auto NS_TO_S=(1.0/double(S_TO_NS));
 #endif
 
 void stopwatch::init()
 {
 #ifdef _WIN32
 	if (!queried_perfcounter) {
-		perfcounter_available = QueryPerformanceFrequency((LARGE_INTEGER*) &frequency);
+		QueryPerformanceFrequency((LARGE_INTEGER*) &frequency);
 		queried_perfcounter = true;
 	}
-	if (perfcounter_available)
-		QueryPerformanceCounter((LARGE_INTEGER*) &start);
-	else
-#endif			
-		(std::clock_t&) start = std::clock();
+	QueryPerformanceCounter((LARGE_INTEGER*) &start);
+#else
+	timespec ts;
+	clock_gettime(CLOCK_MONOTONIC, &ts);
+	start = ((long long)ts.tv_sec)*S_TO_NS + (long long)ts.tv_nsec;
+#endif
 }
 
 //standard constructor starts time measurement
@@ -50,21 +53,15 @@ double stopwatch::get_current_time(long long& end) const
 {
 	double time;
 #ifdef _WIN32
-	if(perfcounter_available)
-	{
-		QueryPerformanceCounter((LARGE_INTEGER*) &end);
-		time =(end-start)/ (double)frequency;
-	}
-	else
-	{
+	QueryPerformanceCounter((LARGE_INTEGER*) &end);
+	time =(end-start)/(double)frequency;
+#else
+	timespec ts;
+	clock_gettime(CLOCK_MONOTONIC, &ts);
+	end = ((long long)ts.tv_sec)*S_TO_NS + (long long)ts.tv_nsec;
+	time = double(end - start)*NS_TO_S;
 #endif
-		end = clock();
-		std::clock_t total = (std::clock_t)(end - start); //get elapsed time
-		time =  double(total)/CLOCKS_PER_SEC;
-#ifdef _WIN32
-	}
-#endif
-	return time;	
+	return time;
 }
 
 /// return time elpased thus far

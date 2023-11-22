@@ -32,10 +32,14 @@ public:
 	//@{
 	/// return the currently set z-value for the z-near clipping plane
 	double get_z_near() const;
+	/// reference to z_near value for ui construction
+	double& ref_z_near() { return z_near; }
 	///set the z-value for the z-near clipping plane
 	virtual void set_z_near(double z);
 	/// return the currently set z-value for the z-far clipping plane
 	double get_z_far() const;
+	/// reference to z_far value for ui construction
+	double& ref_z_far() { return z_far; }
 	/// set the z-value for the z-far clipping plane
 	virtual void set_z_far(double z);
 	/// transform a z value in eye-coordinates (should be negative!) to device coordinate

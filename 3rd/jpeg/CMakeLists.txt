@@ -70,7 +70,7 @@ install(TARGETS jpeg EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 
 # Static Library
 add_library(jpeg_static STATIC ${SOURCES})
-target_compile_definitions(jpeg_static PRIVATE JPEG_STATIC)
+target_compile_definitions(jpeg_static PUBLIC All_STATIC JPEG_STATIC)
 
 if (MSVC)
     target_compile_options(jpeg_static PRIVATE /w)

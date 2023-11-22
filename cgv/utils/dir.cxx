@@ -21,11 +21,14 @@ namespace cgv {
 bool exists(const std::string& dir_name)
 {
 #ifdef _WIN32
-	return file::find_first(dir_name+"\\*.*") != 0;
+	void* handle = file::find_first(dir_name+"\\*.*");
+	bool ret = (bool)handle;
+	if (handle)
+		file::find_close(handle);
+	return ret;
 #else
-	struct stat fileInfo;
-	int t = stat(dir_name.c_str(),&fileInfo);
-	return !t;
+	struct stat myStat;
+	return ((stat(dir_name.c_str(), &myStat) == 0) && (((myStat.st_mode) & S_IFMT) == S_IFDIR));
 #endif
 }
 

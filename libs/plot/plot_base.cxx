@@ -261,7 +261,7 @@ plot_base::vec3 plot_base::transform_to_world(const vecn& pnt_attr) const
 	unsigned n = pnt_attr.size();
 	vecn pnt_plot(n);
 	const auto& acs = get_domain_config_ptr()->axis_configs;
-	unsigned m = acs.size() < n ? acs.size() : n;
+	unsigned m = acs.size() < n ? unsigned(acs.size()) : n;
 	for (unsigned ai = 0; ai < m; ++ai) {
 		pnt_plot(ai) =
 			acs[ai].plot_space_from_window_space(
@@ -1332,8 +1332,8 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 		p.end_tree_node(center_location);
 	}
 	bool open = p.begin_tree_node("Domain", get_domain_config_ptr()->show_domain, false, "level=3;options='w=107';align=' '");
-	p.add_member_control(bp, "Show", get_domain_config_ptr()->show_domain, "toggle", "w=40", "%x+=1");
-	p.add_member_control(bp, "Fill", get_domain_config_ptr()->fill, "toggle", "w=40");
+	p.add_member_control(bp, "Fill", get_domain_config_ptr()->fill, "toggle", "w=40", "%x+=1");
+	p.add_member_control(bp, "Show", get_domain_config_ptr()->show_domain, "toggle", "w=40");
 	if (open) {
 		p.align("\a");
 		p.add_member_control(bp, "Out of Range Mode X", (cgv::type::DummyEnum&)out_of_range_mode[0], "dropdown", "enums='Keep,Discard,Clamp'");
@@ -1582,7 +1582,9 @@ void plot_base::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 	p.add_decorator("", "separator", "h=2");
 	for (unsigned i=0; i<get_nr_sub_plots(); ++i) {
 		plot_base_config& pbc = ref_sub_plot_config(i);
-		bool show = p.begin_tree_node(pbc.name, pbc.name, false, "level=3;options='w=148;font_style=italic';align=' '");
+		bool show = p.begin_tree_node(pbc.name, pbc.name, false, "level=3;options='w=138;font_style=italic';align=' '");
+		connect_copy(p.add_member_control(bp, "", pbc.ref_color.color, "", "w=10", "")->value_change,
+			cgv::signal::rebind(this, &plot_base::update_ref_color, cgv::signal::_c(i), cgv::signal::_r(p)));
 		p.add_member_control(bp, "Show", pbc.show_plot, "toggle", "w=40");
 		if (show) {
 			p.align("\a");

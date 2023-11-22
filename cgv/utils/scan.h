@@ -4,10 +4,12 @@
  * Helper functions to process strings.
  */
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
 #include "date_time.h"
+#include "token.h"
 
 #include "lib_begin.h"
 
@@ -30,6 +32,12 @@ extern CGV_API std::string ltrim(const std::string& str, const std::string& char
 extern CGV_API std::string rtrim(const std::string& str, const std::string& chars = "\t\n\v\f\r ");
 /// trim white space or other characters from start and end of string
 extern CGV_API std::string trim(const std::string& str, const std::string& chars = "\t\n\v\f\r ");
+/// joins a given range of strings, separating them by the given separator; if trailing_sep is true, also puts a separator at the end
+extern CGV_API std::string join(const std::vector<std::string>::const_iterator first, const std::vector<std::string>::const_iterator last, const std::string& sep, bool trailing_sep = false);
+/// joins a given list of strings, separating them by the given separator; if trailing_sep is true, also puts a separator at the end
+extern CGV_API std::string join(const std::vector<std::string>&strs, const std::string & sep, bool trailing_sep = false);
+/// joins a given range of tokens, separating them by the given separator; if trailing_sep is true, also puts a separator at the end
+extern CGV_API std::string join(const std::vector<token>::const_iterator first, const std::vector<token>::const_iterator last, const std::string& sep, bool trailing_sep = false);
 /// check if char is a whitespace
 extern CGV_API bool is_space(char c);
 /// check if char is a special character from an url
@@ -52,6 +60,10 @@ extern CGV_API std::string to_lower(const std::string& _s);
 extern CGV_API char to_upper(char c);
 /// convert string to upper case
 extern CGV_API std::string to_upper(const std::string& _s);
+/// remove char \c c from the given string \c s and return a reference to the same string object
+extern CGV_API std::string& remove(std::string& s, char c);
+/// return a copy of the given string \c s with all occurences of char \c removed
+extern CGV_API std::string remove_copy(const std::string& s, char c);
 /// replaces the german special characters ä,ö,ü,ß,Ä,Ö,Ü
 extern CGV_API std::string replace_special(const std::string& _s);
 /// replace char \c c1 with \c c2 in the given string \c _s and return number of replacements
@@ -94,17 +106,19 @@ extern CGV_API bool is_month(const char* begin, const char* end, unsigned char& 
 /// check and extract month from string \c s
 extern CGV_API bool is_month(const std::string& s, unsigned char& month);
 /// check and extract time from string token [\c begin, \c end]
-extern CGV_API bool is_time(const std::string& s, cgv::utils::time& t, const char **new_end = 0);
-/// check and extract time from string \c s
 extern CGV_API bool is_time(const char* begin, const char* end, cgv::utils::time& t, const char **new_end = 0);
+/// check and extract time from string \c s
+extern CGV_API bool is_time(const std::string& s, cgv::utils::time& t, const char** new_end = 0);
 /// check and extract date from string token [\c begin, \c end]
-extern CGV_API bool is_date(const std::string& s, cgv::utils::date& d, const char **new_end = 0);
-/// check and extract date from string \c s
 extern CGV_API bool is_date(const char* begin, const char* end, cgv::utils::date& d, const char **new_end = 0);
-/// check and extract end of valid url from string \c s
-extern CGV_API bool is_url(const std::string& s, const char** end = 0);
+/// check and extract date from string \c s
+extern CGV_API bool is_date(const std::string& s, cgv::utils::date& d, const char **new_end = 0);
 /// check and extract end of valid url from string token [\c begin, \c end]
 extern CGV_API bool is_url(const char* begin, const char* end, const char** new_end = 0);
+/// check and extract end of valid url from string \c s
+extern CGV_API bool is_url(const std::string& s, const char** end = 0);
+/// compute the levenshtein distance between two strings \c s1 and \c s2
+extern CGV_API unsigned int levenshtein_distance(const std::string& s1, const std::string& s2);
 
 	}
 }

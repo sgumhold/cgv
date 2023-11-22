@@ -79,6 +79,21 @@ sourceFiles = [INPUT_DIR."my_source.cxx", INPUT_DIR."my_resource.png"];
 excludeSourceFiles = [INPUT_PATH];
 
 
+// Several source files with the same name (excluding extension) in a single project
+// are auto asigned the same object file yielding linking problems. To avoid this one
+// can rename the object file of sources files by defining the list renameObjectFiles
+// of pairs of source file name (with extension) and object file name (without extension).
+// In the following example the source files INPUT_DIR."/openal-soft/alc/backends/null.cpp"
+// and INPUT_DIR."/openal-soft/alc/effects/null.cpp" are compiled to alc_backends_null.obj
+// and alc_effects_null.obj instead of both to null.obj (in openal_soft there is a third
+// source file null.cpp whose object file name is not changed):
+
+renameObjectFiles=[
+	[ INPUT_DIR."/openal-soft/alc/backends/null.cpp", "alc_backends_null" ],
+	[ INPUT_DIR."/openal-soft/alc/effects/null.cpp", "alc_effects_null" ]
+];
+
+
 //list of directories that are scanned recursively for source files, 
 //defaults to empty list [] if sourceFiles are defined or to [INPUT_DIR] if 
 //sourceFiles is not defined
@@ -134,11 +149,6 @@ addProjectDeps = ["cgv","cgv_viewer","fltk"];
 
 referenceDeps = 0;
 
-// add additional command line arguments. The most common usage of this
-// is to add a default config file as in the given example
-
-addCommandLineArguments = ['config:"'.INPUT_DIR.'/my_config.def"'];
-
 
 // working directory in which the resulting program should be started
 // this defaults to the platform specific default directories
@@ -156,6 +166,30 @@ addIncDirs = [ INPUT_DIR."/my_include_subdir",
                [ env::CGV_SUPPORT_DIR."/libs/capture", "all"] 
              ];
 
+// define shader paths added by the current project.
+// To export a shader paths to projects that depend on this project, specify
+// the shader path in a list of two strings with the second entry equal to "all".
+// The list of all shader paths per project is computed after all dependent projects 
+// have been read. You can refer to this list in the addCommandLineArguments with the string "SHADER_PATHS".
+
+addShaderPaths = [ 
+	INPUT_DIR."/private_glsl", 
+	[ INPUT_DIR."/public_glsl", "all"] 
+];
+
+// add additional command line arguments. Use the predefined functions after(argument, plugin) 
+// and "before(argument,plugin)" to place an argument after or before the command line argument
+// reading the given plugin. The most common usage of this is to add a default config file and 
+// the shader paths after the ui plugin as in the given example. The shader path argument is of
+// the form "type(shader_config):shader_path='PATH1;PATH2;...;PATHN'" and automatically assembled
+// by concatenating the shader path lists added in the current project with 
+// addShaderPaths=["PATH1","PATH2",...] and the shader paths exported by dependent project with
+// addShaderPaths=[ ["PATH1","all"], ...].
+
+addCommandLineArguments = [
+	'config:"'.INPUT_DIR.'/my_config.def"',
+	after("SHADER_PATHS", "cg_fltk")
+];
 
 //additional preprocessor definitions for all configurations. By default the
 //following symbols are defined:
@@ -226,10 +260,11 @@ addMapDeps = [
 
 addDependencies = ["opengl","glu","glew",["Vfw32", "static"] ];
 
-// enable openmp support by the following line (0 is default value)
+// enable openmp support by the following line (default value is 0 or 1 if env::CGV_OPTIONS containts OPENMP)
 useOpenMP = 1;
 
-// set the C++ language standard to "stdcpp14" or "stdcpp17" by the following line
+// set the C++ language standard to "stdcpp14" or "stdcpp17" by the following line,
+//     which defaults to empty or "stdcpp17" if env::CGV_OPTIONS contains STDCPP17
 cppLanguageStandard = "stdcpp17";
 
 // overwrite windows character set used to encode string, which defaults to "Unicode" or if set env::CGV_CHARSET

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv/render/context.h>
+#include <set>
 
 #include "lib_begin.h"
 
@@ -21,10 +22,6 @@ namespace cgv {
 	 To set the shader path at runtime, query the shader_config with the
 	 get_shader_config() function.
 */
-
-	/// typedef for shader define map data structure
-	typedef std::map<std::string, std::string> shader_define_map;
-
 struct CGV_API shader_config : public cgv::base::base
 {
 	/// the path used to find shaders with the cgv::utils::file::find_in_paths function
@@ -50,6 +47,9 @@ typedef cgv::data::ref_ptr<shader_config> shader_config_ptr;
 
 /// return a pointer to the current shader configuration
 extern CGV_API shader_config_ptr get_shader_config();
+
+/// typedef for shader define map data structure
+typedef std::map<std::string, std::string> shader_define_map;
 
 /** a shader code object holds a code fragment of a geometry
     vertex or fragment shader and can be added to a shader 
@@ -80,7 +80,7 @@ public:
 			defines.erase(name);
 	}
 
-	static void set_define(shader_define_map& defines, const std::string& name, const bool& value, const bool& default_value) {
+	static void set_define(shader_define_map& defines, const std::string& name, bool value, bool default_value) {
 		if(value != default_value)
 			defines[name] = value ? "1" : "0";
 		else
@@ -88,6 +88,13 @@ public:
 	}
 
 protected:
+	/// map that caches full shader file paths indexed by the shader file name
+	static std::map<std::string, std::string> shader_file_name_map;
+	/// whether the shader file name map is initialized
+	static bool shader_file_name_map_initialized;
+	/// map that caches shader file contents indexed by their file name
+	static std::map<std::string, std::string> code_cache;
+
 	/// store the shader type
 	ShaderType st;
 
@@ -98,25 +105,42 @@ public:
 	~shader_code();
 	/// decode a string if it is base64 encoded
 	static void decode_if_base64(std::string& content);
-	/** Check if file exists. If not, check if a resource file of this
-	    file_name has been registered. If not search it recursively in the 
-	    shader_path of the shader_config that can be accessed with the
-		 function get_shader_config(). This path is initialized to the 
-		 environment variable CGV_SHADER_PATH or empty if that is not 
-		 defined. */
-	static std::string find_file(const std::string& file_name);
+	/// @brief Find the full path to a shader by its file name.
+	/// 
+	/// Check if the file exists. If not, check if a resource file of this file_name has
+	/// been registered. If not, search it in the shader_file_name_map that caches paths
+	/// for file names based on a recursive search through the paths given in the shader_path
+	/// of the shader_config. This avoids excessive queries to the file system. The
+	/// shader_path is accessed by the get_shader_config() method. This path is initialized
+	/// to the environment variable CGV_SHADER_PATH or empty if that is not defined. If
+	/// search_exhaustive is true and the file has not been found yet, search recursively
+	/// in the shader_path.
+	/// 
+	/// @param file_name The shader file_name to search.
+	/// @param search_exhaustive If true, a full recursive search through the given shader_path will be performed if all other attempts have failed.
+	/// @return The full path of the shader file_name.
+	static std::string find_file(const std::string& file_name, bool search_exhaustive = false);
 	/** format given last error in a way that developer environments can locate errors in the source file */
 	static std::string get_last_error(const std::string& file_name, const std::string& last_error);
 	/// read shader code from file and return string with content or empty string if read failed
 	static std::string read_code_file(const std::string &file_name, std::string* _last_error = 0);
+	/// retreive shader code either by reading the file from disk or from the cache if enabled
+	static std::string retrieve_code(const std::string& file_name, bool use_cache, std::string* _last_error);
 	/** detect the shader type from the extension of the given
-		 file_name, i.e.		 
+		 file_name, i.e.
 		 - glvs ... ST_VERTEX
 		 - glgs ... ST_GEOMETRY
 		 - glfs ... ST_FRAGMENT
 		 - glcs ... ST_COMPUTE
 	*/
 	static ShaderType detect_shader_type(const std::string& file_name);
+	/// search for include directives in the given source code, replace them by the included file contents and return the full source code as well as the set of all included files
+	static std::string resolve_includes(const std::string& source, bool use_cache, std::set<std::string>& included_file_names, std::string* _last_error = 0);
+	/// search for include directives in the given source code, replace them by the included file contents and return the full source code
+	inline static std::string resolve_includes(const std::string& source, bool use_cache, std::string* _last_error = 0) {
+		std::set<std::string> dummy;
+		return resolve_includes(source, use_cache, dummy, _last_error);
+	}
 	/// destruct shader code
 	void destruct(const context& ctx);
 	/** read shader code from file that is searched for with find_file.
@@ -127,6 +151,8 @@ public:
 	bool set_code(const context& ctx, const std::string &source, ShaderType st);
 	/// set shader code defines
 	void set_defines(std::string& source, const shader_define_map& defines);
+	/// set shader code vertex attribute locations (a hotfix for AMD driver behaviour on vertex shaders)
+	void set_vertex_attrib_locations(std::string& source);
 	/// return the shader type of this code
 	ShaderType get_shader_type() const;
 	///compile attached source; returns true if successful

@@ -74,6 +74,7 @@ namespace vr {
 			break;
 		}
 		generate_screen_calib_points();
+		post_recreate_gui();
 	}
 
 	void vr_wall::generate_screen_calib_points()
@@ -141,6 +142,8 @@ namespace vr {
 		window_height = 1080;
 		window_x = 0;
 		window_y = 0;
+		calib_index = -1;
+		auto_eyes_calib = true;
 		prs.halo_color = rgba(0, 0, 0, 0.9f);
 		prs.halo_width_in_pixel = -2.0f;
 		prs.point_size = 15.0f;
@@ -197,6 +200,7 @@ namespace vr {
 		return
 			srh.reflect_member("screen_calibration_file_name", screen_calibration_file_name) &&
 			srh.reflect_member("vr_wall_kit_index", vr_wall_kit_index) &&
+			srh.reflect_member("auto_eyes_calib", auto_eyes_calib) &&
 			srh.reflect_member("vr_wall_hmd_index", vr_wall_hmd_index) &&
 			srh.reflect_member("screen_orientation", screen_orientation) &&
 			srh.reflect_member("screen_center", screen_center) &&
@@ -304,13 +308,31 @@ namespace vr {
 					post_recreate_gui();
 				}
 			}
+			else {
+				if (wall_kit_ptr->is_attached()) {
+					wall_kit_ptr->detach();
+					delete wall_kit_ptr;
+					wall_kit_ptr = 0;
+					window->hide();
+					cgv::gui::application::remove_window(window);
+					window.clear();
+					if (right_window) {
+						right_window->hide();
+						cgv::gui::application::remove_window(window);
+						right_window.clear();
+					}
+					post_recreate_gui();
+				}
+			}
 		}
 		else if (member_ptr == &stereo_window_mode && !window.empty()) {
 			if (!window.empty()) {
+				window->hide();
 				cgv::gui::application::remove_window(window);
 				window.clear();
 			}
 			if (!right_window.empty()) {
+				right_window->hide();
 				cgv::gui::application::remove_window(right_window);
 				right_window.clear();
 			}
@@ -363,7 +385,7 @@ namespace vr {
 		add_member_control(this, "vr_wall_hmd_index", vr_wall_hmd_index, "value_slider", "min=-1;max=3;ticks=true");
 		add_member_control(this, "stereo_shader_mode", stereo_shader_mode, "dropdown", "enums='left only,right only,side by side,top bottom,column interleaved,row interleaved,red|cyan anaglyph,color anaglyph,half-color anaglyph,Dubois anaglyph'");
 
-		if (begin_tree_node("screen calibration", screen_center, false, "level=2")) {
+		if (calib_points_screen.size() >= 4 && begin_tree_node("screen calibration", screen_center, false, "level=2")) {
 			align("\a");
 			add_gui("cp0", calib_points_screen[0], "", "options='min=-2;max=2;step=0.0001;ticks=true'");
 			add_gui("cp1", calib_points_screen[1], "", "options='min=-2;max=2;step=0.0001;ticks=true'");
@@ -397,6 +419,7 @@ namespace vr {
 
 		if (begin_tree_node("eye calibration", prs, false, "level=2")) {
 			align("\a");
+			add_member_control(this, "auto_eyes_calib", auto_eyes_calib, "toggle");
 			add_view("left eye", eye_calibrated[0], "check");
 			add_gui("left eye", eye_position_tracker[0], "", "options='min=-0.2;max=0.2;step=0.001;ticks=true'");
 			add_view("right eye", eye_calibrated[1], "check");
@@ -462,6 +485,7 @@ namespace vr {
 		hmd_pose = *reinterpret_cast<const mat34*>(
 			(vr_wall_hmd_index == -1) ? vrke.get_state().hmd.pose :
 										vrke.get_state().controller[vr_wall_hmd_index].pose);
+
 		if (vrke.get_key() != vr::VR_GRIP)
 			return false;
 		int ci = vrke.get_controller_index();
@@ -480,6 +504,19 @@ namespace vr {
 	///
 	bool vr_wall::handle(cgv::gui::event& e)
 	{
+		if (e.get_kind() == cgv::gui::EID_KEY) {
+			auto& ke = dynamic_cast<cgv::gui::key_event&>(e);
+			if (ke.get_action() != cgv::gui::KA_RELEASE) {
+				if (ke.get_key() == 'W' && ke.get_modifiers() == (cgv::gui::EM_ALT + cgv::gui::EM_CTRL)) {
+					if (vr_wall_kit_index == -1)
+						vr_wall_kit_index = 0;
+					else
+						vr_wall_kit_index = -1;
+					on_set(&vr_wall_kit_index);
+					return true;
+				}
+			}
+		}
 		if (wall_kit_ptr == 0)
 			return false;
 
@@ -492,13 +529,13 @@ namespace vr {
 					controller_pose[ci] = vrpe.get_pose_matrix();
 					if ((controller_pose[ci] * vec4(ctrl_down_dir, 0.0f)).y() > 0.8f) {
 						ctrl_upside_down_index = ci;
-						if (wall_state != WS_EYES_CALIB) {
+						if (auto_eyes_calib && wall_state != WS_EYES_CALIB) {
 							wall_state = WS_EYES_CALIB;
 							on_set(&wall_state);
 						}
 					}
 					else if (ci == ctrl_upside_down_index) {
-						if (wall_state == WS_EYES_CALIB) {
+						if (auto_eyes_calib && wall_state == WS_EYES_CALIB) {
 							wall_state = WS_HMD;
 							on_set(&wall_state);
 						}
@@ -517,19 +554,35 @@ namespace vr {
 		// handle common keys
 		switch (ke.get_key()) {
 		case 'S':
+			if (ke.get_modifiers() != (cgv::gui::EM_ALT + cgv::gui::EM_CTRL))
+				return false;
 			wall_state = WS_SCREEN_CALIB;
 			on_set(&wall_state);
 			return true;
+		case 'E':
+			if (ke.get_modifiers() != (cgv::gui::EM_ALT + cgv::gui::EM_CTRL))
+				return false;
+			wall_state = WS_EYES_CALIB;
+			on_set(&wall_state);
+			return true;
 		case 'H':
+			if (ke.get_modifiers() != (cgv::gui::EM_ALT + cgv::gui::EM_CTRL))
+				return false;
 			wall_state = WS_HMD;
 			on_set(&wall_state);
 			return true;
-		case vr::VR_DPAD_LEFT:
-			if (wall_state > WS_SCREEN_CALIB) {
-				wall_state = WallState(wall_state - 1);
-				on_set(&wall_state);
-			}
-			break;
+		case 'A':
+			if (ke.get_modifiers() != (cgv::gui::EM_ALT + cgv::gui::EM_CTRL))
+				return false;
+			auto_eyes_calib = !auto_eyes_calib;
+			on_set(&auto_eyes_calib);
+			return true;
+//		case vr::VR_DPAD_LEFT:
+//			if (wall_state > WS_SCREEN_CALIB) {
+//				wall_state = WallState(wall_state - 1);
+//				on_set(&wall_state);
+//			}
+//			break;
 		}
 		// for calibration specific keys we are only interested in vr keys
 		if ((ke.get_flags() & cgv::gui::EF_VR) == 0)
@@ -546,11 +599,49 @@ namespace vr {
 	void vr_wall::stream_help(std::ostream& os)
 	{
 		os << "vr_wall:\n"
-			<< "  <S|E|H> .. select mode <Screen calib|Eye calib|Hmd>\n"
+			<< "  <C+A-S|E|H> .. select mode <Screen calib|Eye calib|Hmd>, <A+C-A> toggle auto eye calib\n"
 			<< "  <left|right VR Controller Grip> .. define point\n"
 			<< "  Screen calib: touch green points with controller front\n"
-			<< "  Eye calib: aim with left|right eye through left|right controller ring to red|blue dot" << std::endl;
+			<< "  Eye calib: point with upside-down controller in between your eyes and press grip" << std::endl;
 	}
+	void vr_wall::stream_stats(std::ostream& os)
+	{
+		os << "vr_wall: WM=";
+		switch (stereo_window_mode) {
+		case SWM_SINGLE: os << "single"; break;
+		case SWM_DOUBLE: os << "double"; break;
+		case SWM_TWO: os << "two"; break;
+		}
+		os << ",kit=" << vr_wall_kit_index << ",hmd=" << vr_wall_hmd_index << ",state=";
+		switch (wall_state) {
+		case WS_SCREEN_CALIB: os << "screen"; break;
+		case WS_EYES_CALIB: os << "eye"; break;
+		case WS_HMD: os << "hmd"; break;
+		}
+		os << ",idx=" << calib_index << ",IPD=" << IPD << ",stereo=";
+		switch (stereo_shader_mode) {
+		case SSM_LEFT_ONLY: os << "L"; break;
+		case SSM_RIGHT_ONLY: os << "R"; break;
+		case SSM_SIDE_BY_SIDE: os << "SbS"; break;
+		case SSM_TOP_BOTTOM: os << "B"; break;
+		case SSM_COLUMN_INTERLEAVED: os << "CI"; break;
+		case SSM_ROW_INTERLEAVED: os << "RI"; break;
+		case SSM_ANAGLYPH_RED_CYAN: os << "ARC"; break;
+		case SSM_ANAGLYPH_COLOR: os << "ACol"; break;
+		case SSM_ANAGLYPH_HALF_COLOR: os << "AHCol"; break;
+		case SSM_ANAGLYPH_DUBOID: os << "ADub"; break;
+		}
+		os << ",eye";
+		if (auto_eyes_calib)
+			os << "*";
+		os << "=";
+		if (eye_calibrated[0])
+			os << "L";
+		if (eye_calibrated[1])
+			os << "R";
+		os << "\n";
+	}
+
 	///
 	bool vr_wall::init_cbd(cgv::render::context& ctx, bool is_right)
 	{
@@ -616,6 +707,30 @@ namespace vr {
 	{
 		if (!wall_kit_ptr)
 			return;
+
+		if (wall_state == WS_EYES_CALIB) {
+			std::vector<vec3> Ps;
+			std::vector<float> Rs;
+			std::vector<rgb> Cs;
+			for (unsigned ci = 0; ci < 2; ++ci) {
+				Ps.push_back(controller_pose[ci] * vec4(peek_point, 1.0f));
+				Rs.push_back(0.01f);
+				Cs.push_back(rgb(1.0f - ci, 0.5f, ci));
+
+				Ps.push_back(controller_pose[ci] * vec4(peek_point + 0.01f * ctrl_forward_dir - vec3(0.5f * IPD, 0.0f, 0.0f), 1.0f));
+				Rs.push_back(0.025f);
+				Cs.push_back(rgb(0.75f+0.25f*(1 - ci), 0.0f, 0.25f*ci));
+
+				Ps.push_back(controller_pose[ci] * vec4(peek_point + 0.01f * ctrl_forward_dir + vec3(0.5f * IPD, 0.0f, 0.0f), 1.0f));
+				Cs.push_back(rgb(0.25f * (1 - ci), 0.0f, 0.75f + 0.25f * ci));
+				Rs.push_back(0.025f);
+			}
+			auto& sr = cgv::render::ref_sphere_renderer(ctx);
+			sr.set_position_array(ctx, Ps);
+			sr.set_color_array(ctx, Cs);
+			sr.set_radius_array(ctx, Rs);
+			sr.render(ctx, 0, Ps.size());
+		}
 		// draw textured screen rectangle in  birds eye view
 		if (wall_state != WS_HMD || ctx.get_render_pass() == cgv::render::RP_MAIN) {
 			std::vector<vec3> P;

@@ -1,0 +1,110 @@
+#version 150
+
+in vec2 texcoord_fs;
+
+uniform vec4 color_1 = vec4(1.0,1.0,1.0,1.0);
+uniform vec4 color_2 = vec4(0.0,0.0,0.0,1.0);
+
+// different modes are 0 ... const color_1, 1 ... horizontal gradient, 2 ... vertical gradient, 3 ... checker board
+uniform int mode = 1;
+uniform int checker_step = 16;
+uniform int w = 640;
+uniform int h = 480;
+
+//***** begin interface of fragment.glfs ***********************************
+uniform vec3 gamma3 = vec3(2.2);
+void finish_fragment(vec4 color);
+void finish_fragment(vec4 color, float depth);
+//***** end interface of fragment.glfs ***********************************
+
+const vec4 panel_colors[4] = vec4[4](
+	vec4(1.0, 1.0, 1.0, 1.0),
+	vec4(1.0, 0.0, 0.0, 1.0),
+	vec4(0.0, 1.0, 0.0, 1.0),
+	vec4(0.0, 0.0, 1.0, 1.0)
+);
+
+// returns a random number in [0,1] based on normalized input coordinates in [0,1]^2
+float random(vec2 st)
+{
+    return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+}
+
+float luminance(vec4 col)
+{
+	return 0.2126*col.r + 0.7152*col.g + 0.0722*col.b;
+}
+
+// computes a per-pixel random offset scaled by the difference in luminosity of the given colors
+// this can be used to shift the interpolation parameter when generating gradients
+float compute_dither_offset(vec4 col1, vec4 col2)
+{
+	// compute delta based on perceived luminance of given colors
+	float delta = abs(luminance(col1) - luminance(col2));
+	// get a random variable in [-1,1]
+	float snorm_rand = (2.0 * random(gl_FragCoord.xy / vec2(w, h)) - 1.0);
+	// scale by delta and 8 bit color preceision
+	return snorm_rand / (256.0 * delta);
+}
+
+vec4 gradient(float s)
+{
+	// compute and apply a dither offset to remove banding artifacts
+	// since the interpoaltion parameter is independent of screen size, the dither offset is as well
+	float dither_offset = compute_dither_offset(color_1, color_2);
+	float t = clamp(s + dither_offset, 0.0, 1.0);
+	return mix(color_1, color_2, t);
+}
+
+vec4 checkerboard_pattern(ivec2 uv)
+{
+	return (mod(uv.x / checker_step, 2) == mod(uv.y / checker_step, 2) ) ? color_1 : color_2;
+}
+
+vec4 gamma_pattern(ivec2 uv)
+{
+	float y_float = 1.0-float(uv.y)/float(h);
+	int panel = int(floor(4.0*y_float));
+	float x_float = float(uv.x)/float(w);
+	float y_local = 4.0*(y_float - 0.25*float(panel));
+	if (abs(y_local - 0.5) > 0.1) {
+		if (uv.x == w/2)
+			return color_1;
+		if (uv.x == int(round(0.729740053*w)))
+			return color_1;
+		if (uv.x == int(round(0.25*w)))
+			return color_1;
+	}
+
+	vec4 panel_color = panel_colors[panel];
+	vec4 color;
+	if (y_local > 0.5)
+		color = x_float * panel_color;
+	else {
+		if ((uv.x&1)==(uv.y&1))
+			color = panel_color;
+		else
+			color = vec4(0.0,0.0,0.0,1.0);
+	}
+	return color;
+}
+
+void main()
+{
+	vec4 frag_color = color_1;
+	switch (mode) {
+	case 1 :
+		frag_color = gradient(texcoord_fs.x);
+		break;
+	case 2 :
+		frag_color = gradient(texcoord_fs.y);
+		break;
+	case 3 :
+		frag_color = checkerboard_pattern(ivec2(gl_FragCoord.xy));
+		break;
+	case 4 :
+		frag_color = gamma_pattern(ivec2(gl_FragCoord.xy));
+		break;
+	}
+	finish_fragment(frag_color);
+}

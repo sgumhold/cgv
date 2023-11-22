@@ -1,87 +1,70 @@
-#include <iostream>
-#include <cassert>
 #include <algorithm>
 #include "rgbd_device.h"
-#include <cgv/utils/file.h>
-#include <cgv/utils/convert.h>
-
-using namespace std;
 
 namespace rgbd {
 
-	std::string get_frame_extension(const frame_format& ff)
-	{
-		static const char* exts[] = {
-			"ir", "rgb", "bgr", "rgba", "bgra", "byr", "dep", "d_p"
+	mesh_data_view::mesh_data_view(char* data, const size_t size) {
+		this->parse_data(data, size);
+	}
+
+	bool mesh_data_view::parse_data(char* data, const size_t size) {
+		auto lambda = [&]() {
+			if (size < sizeof(uint32_t)) {
+				return false;
+			}
+			this->points_size = 0;
+			this->triangles_size = 0;
+			this->uv_size = 0;
+			//how many points the mesh has
+			memcpy(&this->points_size, data, sizeof(uint32_t));
+			size_t offset = sizeof(uint32_t);
+			this->points = reinterpret_cast<Point*>(data + offset);
+
+			///the number of triangles is located behind the points array
+			offset += this->points_size * sizeof(Point);
+			if (size <= offset + sizeof(uint32_t)) {
+				return (size == offset); //in this case, data only has points
+			}
+			memcpy(&this->triangles_size, data + offset, sizeof(uint32_t));
+			offset += sizeof(uint32_t);
+			this->triangles = reinterpret_cast<Triangle*>(data + offset);
+
+			///the number of texture coordinates is located behind the triangles array
+			if (size <= offset + sizeof(uint32_t)) {
+				return (size == offset); //true if data only has points and triangles
+			}
+			offset += this->triangles_size * sizeof(Triangle);
+			memcpy(&this->uv_size, data + offset, sizeof(uint32_t));
+			offset += sizeof(uint32_t);
+			this->uv = reinterpret_cast<TextureCoord*>(data + offset);
+			//final size
+			offset += sizeof(TextureCoord)*this->uv_size;
+			return size >= offset;
 		};
-		return std::string(exts[ff.pixel_format]) + to_string(ff.nr_bits_per_pixel);
-	}
 
-	string compose_file_name(const string& file_name, const frame_format& ff, unsigned idx)
-	{
-		string fn = file_name;
-		fn += cgv::utils::to_string(idx);
-		return fn + '.' + get_frame_extension(ff);
-	}
-	/// standard computation of the buffer size member
-	void frame_format::compute_buffer_size()
-	{
-		buffer_size = width * height * nr_bits_per_pixel / 8;
-	}
-
-	/// check whether frame data is allocated
-	bool frame_type::is_allocated() const
-	{
-		return !frame_data.empty();
-	}
-
-	/// write to file
-	bool frame_type::write(const std::string& fn) const
-	{
-		assert(buffer_size == frame_data.size());
-		return
-			cgv::utils::file::write(fn, reinterpret_cast<const char*>(this), sizeof(frame_format), false) &&
-			cgv::utils::file::append(fn, &frame_data.front(), frame_data.size(), false);
-	}
-
-	/// read from file
-	bool frame_type::read(const std::string& fn)
-	{
-		if (!cgv::utils::file::read(fn,
-			reinterpret_cast<char*>(this),
-			sizeof(frame_format), false))
+		if (!lambda()) {
+			points = nullptr;
 			return false;
-		frame_data.resize(buffer_size);
-		return
-			cgv::utils::file::read(fn,
-				&frame_data.front(), buffer_size, false,
-				sizeof(frame_format));
-	}
-
-	stream_format::stream_format(int w, int h, PixelFormat pf, float _fps, unsigned _nr_bits, unsigned _buffer_size)
-	{
-		width = w;
-		height = h;
-		pixel_format = pf;
-		nr_bits_per_pixel = _nr_bits;
-		buffer_size = _buffer_size;
-		if (buffer_size == -1)
-			compute_buffer_size();
-		fps = _fps;
-	}
-	bool stream_format::operator == (const stream_format& sf) const
-	{
-		return
-			width == sf.width &&
-			height == sf.height &&
-			pixel_format == sf.pixel_format &&
-			nr_bits_per_pixel == sf.nr_bits_per_pixel &&
-			fps == sf.fps;
+		}
+		return true;
 	}
 
 	/// virtual destructor
 	rgbd_device::~rgbd_device()
 	{
+	}
+	const std::vector<color_parameter_info>& rgbd_device::get_supported_color_control_parameter_infos() const
+	{
+		static std::vector<color_parameter_info> I;
+		return I;
+	}
+	std::pair<int32_t, bool> rgbd_device::get_color_control_parameter(ColorControlParameter ccp) const
+	{
+		return std::pair<int32_t, bool>(-1, false);
+	}
+	bool rgbd_device::set_color_control_parameter(ColorControlParameter ccp, int32_t value, bool automatic_mode)
+	{
+		return false;
 	}
 
 	/// return whether rgbd device has support for view finding actuator
@@ -124,6 +107,19 @@ namespace rgbd {
 	{
 		return false;
 	}
+	/// check whether a multi-device role is supported
+	bool rgbd_device::is_supported(MultiDeviceRole mdr) const
+	{
+		return mdr == MDR_STANDALONE;
+	}
+	/// configure device for a multi-device role and return whether this was successful (do this before starting)
+	bool rgbd_device::configure_role(MultiDeviceRole mdr)
+	{
+		if (!is_supported(mdr))
+			return false;
+		multi_device_role = mdr;
+		return true;
+	}
 
 	bool rgbd_device::has_IMU() const
 	{
@@ -139,29 +135,12 @@ namespace rgbd {
 	{
 		return false;
 	}
-
-	std::ostream& operator << (std::ostream& os, const frame_size& fs)
+	bool rgbd_device::query_calibration(rgbd_calibration& calib)
 	{
-		return os << fs.width << "x" << fs.height;
+		return false;
 	}
-	std::ostream& operator << (std::ostream& os, const frame_format& ff)
+	bool rgbd_device::get_emulator_configuration(emulator_parameters& cfg) const
 	{
-		os << static_cast<const frame_size&>(ff) << "|";
-		switch (ff.pixel_format) {
-		case PF_I: os << "INF" << ff.nr_bits_per_pixel; break;
-		case PF_DEPTH: os << "DEP" << ff.nr_bits_per_pixel; break;
-		case PF_DEPTH_AND_PLAYER: os << "D+P" << ff.nr_bits_per_pixel; break;
-		case PF_CONFIDENCE: os << "CNF" << ff.nr_bits_per_pixel; break;
-		case PF_RGB: os << ((ff.nr_bits_per_pixel == 24) ? "RGB24" : "RGB32"); break;
-		case PF_BGR: os << ((ff.nr_bits_per_pixel == 24) ? "BGR24" : "BGR32"); break;
-		case PF_RGBA: os << "RGB32"; break;
-		case PF_BGRA: os << "BGR32"; break;
-		case PF_BAYER:os << "Bayer"; break;
-		}
-		return os;
-	}
-	std::ostream& operator << (std::ostream& os, const stream_format& sf)
-	{
-		return os << static_cast<const frame_format&>(sf) << ":" << sf.fps;
+		return false;
 	}
 }

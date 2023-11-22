@@ -1,5 +1,10 @@
 #pragma once
 
+// make sure this is the first thing the compiler sees, while preventing warnings if
+// it happened to already be defined by something else including this header
+#ifndef _USE_MATH_DEFINES
+	#define _USE_MATH_DEFINES 1
+#endif
 #include "fvec.h"
 #include "fmat.h"
 #include "functions.h"
@@ -7,6 +12,7 @@
 namespace cgv {
 	namespace math {
 
+// floating point comparison epsilon
 #define EPSILON 1e-6
 
 /** implements a quaternion.*/
@@ -48,8 +54,9 @@ public:
 	quaternion(AxisEnum axis, coord_type angle)                      { set(axis, angle); }
 	/// construct quaternion from axis and rotation angle
 	quaternion(const vec_type& axis, coord_type angle)               { set(axis, angle); }
-	/// construct quaternion from 3x3 rotation matrix
-	quaternion(const mat_type& matrix)                             { set(matrix); }
+	/// construct quaternion from 3x3 rotation or rotational part of homogeneous 3x4 / 4x4 matrix
+	template <class rot_mat_type>
+	quaternion(const rot_mat_type& matrix)                           { set(matrix); }
 	/// construct quaternion directly
 	quaternion(coord_type w,coord_type x, coord_type y,coord_type z) { set(w,x,y,z); }
 	/// construct quaternion from real part and vector
@@ -59,14 +66,14 @@ public:
 	//@}
 	/**@name{\large c) initialization}*/
 	//@{
-	/// initialize quaternion from coordinate axis and rotation angle
+	/// set quaternion from coordinate axis and rotation angle
 	void set(AxisEnum axis, coord_type angle)
 	{
 		vec_type v(0,0,0);
 		v((int)axis) = 1;
 		set(v, angle);
 	}
-	/// initialize quaternion from axis and rotation angle
+	/// set quaternion from axis and rotation angle
 	void set(const vec_type& axis, coord_type angle)
 	{
 		angle *= (coord_type)0.5;
@@ -74,35 +81,45 @@ public:
 	}
 	/// setter from quaternion
 	void set(const quaternion<T>& quat) { *this = quat; }
-	/// initialize quaternion from 3x3 rotation matrix
-	void set(const mat_type& M)
+	/// set quaternion from 3x3 rotation or rotational part of homogeneous 3x4 / 4x4 matrix
+	template <class rot_mat_type>
+	void set(const rot_mat_type &M)
 	{
-		this->w() = sqrt(plus(T(0.25)*( M(0, 0) + M(1, 1) + M(2, 2) + T(1))));
-		this->x() = sqrt(plus(T(0.25)*( M(0, 0) - M(1, 1) - M(2, 2) + T(1))));
-		this->y() = sqrt(plus(T(0.25)*(-M(0, 0) + M(1, 1) - M(2, 2) + T(1))));
-		this->z() = sqrt(plus(T(0.25)*(-M(0, 0) - M(1, 1) + M(2, 2) + T(1))));
+		// compile-time check that matrix layout is supported
+		static_assert(
+			   (rot_mat_type::nrows() == 3 && (rot_mat_type::ncols()==3 || rot_mat_type::ncols()==4))
+			|| (rot_mat_type::nrows() == 4 && rot_mat_type::ncols() == 4), "matrix layout not supported"
+		);
+
+		// convenience constant
+		constexpr typename rot_mat_type::value_type _1o4 = .25;
+
+		this->w() = sqrt((T)plus(_1o4*( M(0, 0) + M(1, 1) + M(2, 2) + 1)));
+		this->x() = sqrt((T)plus(_1o4*( M(0, 0) - M(1, 1) - M(2, 2) + 1)));
+		this->y() = sqrt((T)plus(_1o4*(-M(0, 0) + M(1, 1) - M(2, 2) + 1)));
+		this->z() = sqrt((T)plus(_1o4*(-M(0, 0) - M(1, 1) + M(2, 2) + 1)));
 		if (this->w() >= this->x() && this->w() >= this->y() && this->w() >= this->z()) {
-			this->x() *= cgv::math::sign(M(2, 1) - M(1, 2));
-			this->y() *= cgv::math::sign(M(0, 2) - M(2, 0));
-			this->z() *= cgv::math::sign(M(1, 0) - M(0, 1));
+			this->x() *= (T)cgv::math::sign(M(2, 1) - M(1, 2));
+			this->y() *= (T)cgv::math::sign(M(0, 2) - M(2, 0));
+			this->z() *= (T)cgv::math::sign(M(1, 0) - M(0, 1));
 		}
 		else if (this->x() >= this->y() && this->x() >= this->z()) {
-			this->w() *= cgv::math::sign(M(2, 1) - M(1, 2));
-			this->y() *= cgv::math::sign(M(0, 1) + M(1, 0));
-			this->z() *= cgv::math::sign(M(2, 0) + M(0, 2));
+			this->w() *= (T)cgv::math::sign(M(2, 1) - M(1, 2));
+			this->y() *= (T)cgv::math::sign(M(0, 1) + M(1, 0));
+			this->z() *= (T)cgv::math::sign(M(2, 0) + M(0, 2));
 		}
 		else if (this->y() >= this->z()) {
-			this->w() *= cgv::math::sign(M(0, 2) - M(2, 0));
-			this->x() *= cgv::math::sign(M(0, 1) + M(1, 0));
-			this->z() *= cgv::math::sign(M(1, 2) + M(2, 1));
+			this->w() *= (T)cgv::math::sign(M(0, 2) - M(2, 0));
+			this->x() *= (T)cgv::math::sign(M(0, 1) + M(1, 0));
+			this->z() *= (T)cgv::math::sign(M(1, 2) + M(2, 1));
 		}
 		else {
-			this->w() *= cgv::math::sign(M(1, 0) - M(0, 1));
-			this->x() *= cgv::math::sign(M(0, 2) + M(2, 0));
-			this->y() *= cgv::math::sign(M(1, 2) + M(2, 1));
+			this->w() *= (T)cgv::math::sign(M(1, 0) - M(0, 1));
+			this->x() *= (T)cgv::math::sign(M(0, 2) + M(2, 0));
+			this->y() *= (T)cgv::math::sign(M(1, 2) + M(2, 1));
 		}
 	}
-	/// initialize quaternion directly
+	/// set quaternion directly
 	void set(coord_type re, coord_type ix, coord_type iy, coord_type iz)
 	{
 		this->x() = ix;
@@ -110,7 +127,7 @@ public:
 		this->z() = iz;
 		this->w() = re;
 	}
-	/// initialize quaternion from real part and vector
+	/// set quaternion from real part and vector
 	void set(coord_type re, const vec_type& im)
 	{
 		set(re, im.x(), im.y(), im.z());

@@ -1,0 +1,88 @@
+#version 430
+
+/*
+	0 : ascending (front-to-back)
+	1 : descending (back-to-front)
+*/
+#define ORDER 0
+#define INITIALIZE_VALUES 1
+#define USE_AUXILIARY_BUFFER 0
+
+#define DATA_TYPE_DEFINITION float x; float y; float z;
+#define VALUE_TYPE_DEFINITION uint
+#define AUXILIARY_TYPE_DEFINITION float x;
+
+#define KEY_DEFINITION data_type p = data[idx]; vec3 eye_to_pos = vec3(p.x, p.y, p.z) - eye_pos; float key = dot(eye_to_pos, eye_to_pos);
+#define UNIFORM_DEFINITION
+
+layout(local_size_x = 256) in;
+
+struct data_type {
+	DATA_TYPE_DEFINITION
+};
+
+layout(std430, binding = 0) readonly buffer data_buffer {
+    data_type data[];
+};
+
+layout(std430, binding = 1) writeonly buffer keys_buffer {
+    uint keys[];
+};
+
+layout(std430, binding = 2) buffer values_buffer {
+    VALUE_TYPE_DEFINITION values[];
+};
+
+#if USE_AUXILIARY_BUFFER == 1
+struct aux_type {
+	AUXILIARY_TYPE_DEFINITION
+};
+
+layout(std430, binding = 3) readonly buffer auxiliary_buffer {
+    aux_type aux_values[];
+};
+#endif
+
+uniform uint n;
+uniform uint n_padded;
+
+uniform vec3 eye_pos;
+uniform vec3 view_dir;
+
+UNIFORM_DEFINITION
+
+uint flip_float(float f) {
+	uint f_ = floatBitsToUint(f);
+	int mask = -int(f_ >> 31) | 0x80000000;
+	return f_ ^ mask;
+}
+
+/*float i_flip_float(uint f)
+{
+	uint mask = ((f >> 31) - 1) | 0x80000000;
+	return uintBitsToFloat(f ^ mask);
+}*/
+
+void main() {
+
+    for(uint idx = gl_WorkGroupID.x*gl_WorkGroupSize.x + gl_LocalInvocationID.x; idx < n_padded; idx += gl_WorkGroupSize.x*gl_NumWorkGroups.x) {
+        if(idx < n) {	
+			KEY_DEFINITION
+#if ORDER == 0
+            //keys[idx] = floatBitsToUint(key);
+            keys[idx] = flip_float(key);
+#else
+			//keys[idx] = ~floatBitsToUint(key);
+			keys[idx] = ~flip_float(key);
+#endif
+        } else {
+            keys[idx] = 0xFFFFFFFF;
+#if INITIALIZE_VALUES == 0
+			values[idx] = VALUE_TYPE_DEFINITION(0xFFFFFFFF);
+#endif
+        }
+#if INITIALIZE_VALUES == 1
+		values[idx] = VALUE_TYPE_DEFINITION(idx);
+#endif
+    }
+}
