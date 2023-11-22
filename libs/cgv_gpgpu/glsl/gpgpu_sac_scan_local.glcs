@@ -1,0 +1,108 @@
+#version 430
+
+#define LOCAL_SIZE 64
+
+layout(local_size_x = LOCAL_SIZE) in;
+
+layout(std430, binding = 2) readonly buffer values_buffer {
+    uint values[];
+};
+
+layout(std430, binding = 3) writeonly buffer prefix_sums_buffer {
+    uint last_sum;
+    uint p0, p1, p2; // padding
+    uint prefix_sums[];
+};
+
+layout(std430, binding = 4) writeonly buffer block_sums_buffer {
+    uint block_sums[];
+};
+
+uniform uint n; // the total number of items to sort
+uniform uint n_scan_groups; // the total number of local scan groups
+
+shared uint scan_values[LOCAL_SIZE + 16]; // make room for all values plus some space for offset addresses
+
+// Returns the address offset by 1 for every 32 steps to avoid bank conflicts.
+uint addr(uint i) {
+
+	return i + (i>>5);
+}
+
+void main() {
+
+    uint tid = gl_LocalInvocationID.x;
+	uint block_offset = LOCAL_SIZE*gl_WorkGroupID.x;
+    uint thread_offset = tid + block_offset; // thread offset in global memory
+
+    uint vote_ballot_idx = (tid>>3) + 8*gl_WorkGroupID.x;
+    uint vote_nibble_idx = tid&7;
+
+	// Each thread loads and scans 4 values
+    uint value_pack = bitfieldExtract(values[vote_ballot_idx], int(vote_nibble_idx<<2), 4);
+
+	uint v0, v1, v2; // pre scanned values
+    v0 = (value_pack&1);
+    v1 = ((value_pack>>1)&1) + v0;
+    v2 = ((value_pack>>2)&1) + v1;
+    scan_values[addr(tid)] = ((value_pack>>3)&1) + v2;
+
+	uint offset = 1; // start offset for prefix sum calculation
+
+	barrier();
+
+    for(uint d = LOCAL_SIZE>>1; d > 1; d >>= 1) {
+        //barrier(); // no need for barriers inside the loop because only 32 (a warp) threads at most are doing work concurrently
+
+        if(tid < d) {
+			uint to = tid * offset;
+			uint ai = to + to + offset - 1;
+			uint bi = ai + offset;
+
+            scan_values[addr(bi)] += scan_values[addr(ai)];
+        }
+        offset += offset;
+    }
+
+    if(tid < 1) {
+		uint val = (scan_values[addr(31)]&0x0000FFFF) + (scan_values[addr(63)]&0x0000FFFF);
+		
+		block_sums[gl_WorkGroupID.x] = val;
+
+        scan_values[addr(63)] = scan_values[addr(31)];
+        scan_values[addr(31)] = 0;
+    }
+
+    for(uint d = 2; d < LOCAL_SIZE; d <<= 1) {
+        offset >>= 1;
+        //barrier(); // no need for barriers inside the loop because only 32 (a warp) threads at most are doing work concurrently
+
+        if(tid < d) {
+			uint to = tid * offset;
+			uint ai = to + to + offset - 1;
+			uint bi = ai + offset;
+
+			ai = addr(ai);
+			bi = addr(bi);
+
+            uint t = scan_values[ai];
+            scan_values[ai] = scan_values[bi];
+            scan_values[bi] += t;
+        }
+    }
+
+    barrier();
+
+    uint scan_value = scan_values[addr(tid)];
+
+	uint sums = scan_value&0x000000FF;
+	sums |= ((scan_value + v0)&0x000000FF) << 8;
+	sums |= ((scan_value + v1)&0x000000FF) << 16;
+	sums |= ((scan_value + v2)&0x000000FF) << 24;
+	
+	prefix_sums[thread_offset] = sums;
+    
+    if(tid == 63 && gl_WorkGroupID.x == n_scan_groups - 1) {
+		last_sum = scan_value + ((value_pack>>3)&1) + v2;
+	}
+}

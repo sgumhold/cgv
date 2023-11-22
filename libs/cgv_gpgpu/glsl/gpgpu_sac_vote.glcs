@@ -1,0 +1,51 @@
+#version 430
+
+#extension GL_KHR_shader_subgroup_basic: enable
+#extension GL_KHR_shader_subgroup_ballot: enable
+
+#define DATA_TYPE_DEFINITION float x; float y; float z;
+
+#define VOTE_DEFINITION return false;
+#define UNIFORM_DEFINITION
+
+layout(local_size_x = 256) in;
+
+struct data_type {
+	DATA_TYPE_DEFINITION
+};
+
+layout(std430, binding = 0) readonly buffer data_buffer {
+    data_type data[];
+};
+
+layout(std430, binding = 2) writeonly buffer votes_buffer {
+    uint votes[];
+};
+
+UNIFORM_DEFINITION
+
+uniform uint n;
+uniform uint n_padded;
+
+bool get_vote(in data_type value) {
+	VOTE_DEFINITION
+}
+
+void main() {
+
+    for(uint idx = gl_WorkGroupID.x*gl_WorkGroupSize.x + gl_LocalInvocationID.x; idx < n_padded; idx += gl_WorkGroupSize.x*gl_NumWorkGroups.x) {
+        bool vote = idx < n ? get_vote(data[idx]) : false;
+
+        uint ballot = subgroupBallot(vote).x;
+
+        if(subgroupElect())
+            votes[gl_SubgroupID + 8*gl_WorkGroupID.x] = ballot;
+
+		// old version (may be needed for back compatibility), needs to be rewritten to support 32 bit vote ballots
+        /*if(idx < n) {
+            votes[idx] = get_vote(data[idx]) ? 1 : 0;
+        } else {
+            votes[idx] = uint(0);
+        }*/
+    }
+}

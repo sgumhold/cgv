@@ -8,6 +8,8 @@ namespace cgv {
 		}
 		renderer::renderer()
 		{
+			// initialize to the threshold count to prevent outputting warnings for the very first render procedure
+			current_prog_render_count = 10;
 			has_colors = false;
 			has_positions = false;
 			rs = default_render_style = 0;
@@ -52,10 +54,8 @@ namespace cgv {
 		void renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
 			aam_ptr = &aam;
-			//if (aam_ptr->has_attribute(ctx, get_prog_attribute_location(ctx, "position")))
 			if (has_attribute(ctx, "position"))
 				has_positions = true;
-			//if (aam_ptr->has_attribute(ctx, get_prog_attribute_location(ctx, "color")))
 			if (has_attribute(ctx, "color"))
 				has_colors = true;
 		}

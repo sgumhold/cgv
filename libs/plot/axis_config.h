@@ -105,6 +105,8 @@ public:
 	float line_width;
 	/// color of axis
 	rgb color;
+	/// whether to show tick marks on both axes boundaries
+	bool multi_axis_ticks;
 	/// configuration of primary tickmarks
 	tick_config primary_ticks;
 	/// configuration of secondary tickmarks

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
 #include <string>
 #include <limits>
@@ -59,7 +60,7 @@ namespace cgv {
 		{
 			hid_category category;
 			void*        kit_ptr = 0; // pointer that uniquely defines a hid kit
-			int16_t      index = std::numeric_limits<uint16_t>::min();
+			int16_t      index = 0;
 			bool operator < (const hid_identifier& di) const;
 			bool operator == (const hid_identifier& di) const;
 		};

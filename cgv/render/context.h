@@ -1,6 +1,10 @@
 #pragma once
 
-#define _USE_MATH_DEFINES
+// make sure this is the first thing the compiler sees, while preventing warnings if
+// it happened to already be defined by something else including this header
+#ifndef _USE_MATH_DEFINES
+	#define _USE_MATH_DEFINES 1
+#endif
 #include <cgv/defines/deprecated.h>
 #include <cgv/data/data_view.h>
 #include <cgv/media/font/font.h>
@@ -23,6 +27,14 @@ namespace cgv {
 
 class CGV_API drawable;
 class CGV_API textured_material;
+
+/// IDs for GPU vendors
+enum GPUVendorID {
+	GPU_VENDOR_UNKNOWN,
+	GPU_VENDOR_AMD,
+	GPU_VENDOR_INTEL,
+	GPU_VENDOR_NVIDIA
+};
 
 /// different compond types for data elements
 enum ElementType {
@@ -62,17 +74,17 @@ enum RenderAPI {
 };
 
 
-/// enumeration of different render passes, which can be queried from the context and used to specify a new render pass
+/// Enumeration of different render passes, which can be queried from the context and used to specify a new render pass.
 enum RenderPass {
-	RP_NONE,
-	RP_MAIN,                 /// the main rendering pass triggered by the redraw event
-	RP_STEREO,               /// rendering of second eye
-	RP_SHADOW_MAP,           /// construction of shadow map
-	RP_SHADOW_VOLUME,        /// construction of shadow map
-	RP_OPAQUE_SURFACES,      /// opaque surface rendering using z-Buffer
-	RP_TRANSPARENT_SURFACES, /// transparent surface rendering using depth peeling
-	RP_PICK,                 /// in picking pass a small rectangle around the mouse is rendered 
-	RP_USER_DEFINED
+	RP_NONE,                 ///< no renderpass
+	RP_MAIN,                 ///< the main rendering pass triggered by the redraw event
+	RP_STEREO,               ///< rendering of second eye
+	RP_SHADOW_MAP,           ///< construction of shadow map
+	RP_SHADOW_VOLUME,        ///< construction of shadow map
+	RP_OPAQUE_SURFACES,      ///< opaque surface rendering using z-Buffer
+	RP_TRANSPARENT_SURFACES, ///< transparent surface rendering using depth peeling
+	RP_PICK,                 ///< in picking pass a small rectangle around the mouse is rendered 
+	RP_USER_DEFINED          ///< user defined renderpass
 };
 
 /// convert render pass type into string
@@ -80,33 +92,37 @@ extern CGV_API std::string get_render_pass_name(RenderPass rp);
 
 /// available flags that can be queried from the context and set for a new render pass
 enum RenderPassFlags {
-	RPF_NONE = 0,                      // no frame initialization is performed
-	RPF_SET_PROJECTION = 1,            // whether to set default projection matrix
-	RPF_SET_MODELVIEW =  1 << 1,             // whether to set default modelview matrix
-	RPF_SET_MODELVIEW_PROJECTION = RPF_SET_PROJECTION|RPF_SET_MODELVIEW,  // whether to set default modelview and projection matrix
-	RPF_SET_LIGHTS = 1 << 2,                // whether to define default lights
-	RPF_SET_MATERIAL = 1 << 3,              // whether to define default material
-	RPF_SET_LIGHTS_ON = 1 << 4,            // whether to turn on default lights
-	RPF_ENABLE_MATERIAL = 1 << 5,          // whether to enable material
-	RPF_SET_LIGHTING = RPF_SET_LIGHTS|RPF_SET_LIGHTS_ON|RPF_ENABLE_MATERIAL,             // whether to define and enable default lighting
-	RPF_CLEAR_COLOR = 1 << 6,              // whether to clear the color buffer
-	RPF_CLEAR_DEPTH = 1 << 7,             // whether to clear the depth buffer
-	RPF_CLEAR_STENCIL = 1 << 8,             // whether to clear the depth buffer
-	RPF_CLEAR_ACCUM = 1 << 9,               // whether to clear the accumulation buffer
-	RPF_CLEAR_ALL = RPF_CLEAR_COLOR|RPF_CLEAR_DEPTH|RPF_CLEAR_STENCIL|RPF_CLEAR_ACCUM, // whether to clear all buffers
-	RPF_DRAWABLES_INIT_FRAME = 1 << 10,    // whether to call the init_frame method of the drawables
-	RPF_SET_STATE_FLAGS = 1 << 11,         // whether to set depth buffer and culling flags
-	RPF_SET_CLEAR_COLOR = 1 << 12,        // whether to set the clear color
-	RPF_SET_CLEAR_DEPTH = 1 << 13,        // whether to set the clear color
-	RPF_SET_CLEAR_STENCIL = 1 << 14,        // whether to set the clear color
-	RPF_SET_CLEAR_ACCUM = 1 << 15,        // whether to set the accumulation buffer clear color
-	RPF_DRAWABLES_DRAW = 1 << 16,         // whether to call draw and finish_draw methods of drawables
-	RPF_DRAWABLES_FINISH_FRAME = 1 << 17, // whether to call finish frame method of drawables
-	RPF_DRAW_TEXTUAL_INFO = 1 << 18,      // whether to draw textual information
-	RPF_DRAWABLES_AFTER_FINISH = 1 << 19, // whether to call after finish method of drawables
-	RPF_HANDLE_SCREEN_SHOT = 1 << 20,    // whether to perform a screen shot if this was scheduled
-	RPF_ALL = (1 << 21) - 1,            // all flags set, defines default render pass
-	RPF_DEFAULT = RPF_ALL & ~ (RPF_CLEAR_ACCUM|RPF_SET_CLEAR_ACCUM|RPF_CLEAR_STENCIL|RPF_SET_CLEAR_STENCIL)  // all flags set, defines default render pass
+	RPF_NONE = 0,				///< no frame initialization is performed
+	RPF_SET_PROJECTION = 1,		///< whether to set default projection matrix
+	RPF_SET_MODELVIEW = 1 << 1, ///< whether to set default modelview matrix
+	RPF_SET_MODELVIEW_PROJECTION =
+		  RPF_SET_PROJECTION | RPF_SET_MODELVIEW, ///< whether to set default modelview and projection matrix
+	RPF_SET_LIGHTS = 1 << 2,					  ///< whether to define default lights
+	RPF_SET_MATERIAL = 1 << 3,					  ///< whether to define default material
+	RPF_SET_LIGHTS_ON = 1 << 4,					  ///< whether to turn on default lights
+	RPF_ENABLE_MATERIAL = 1 << 5,				  ///< whether to enable material
+	RPF_SET_LIGHTING =
+		  RPF_SET_LIGHTS | RPF_SET_LIGHTS_ON | RPF_ENABLE_MATERIAL, ///< whether to define and enable default lighting
+	RPF_CLEAR_COLOR = 1 << 6,										///< whether to clear the color buffer
+	RPF_CLEAR_DEPTH = 1 << 7,										///< whether to clear the depth buffer
+	RPF_CLEAR_STENCIL = 1 << 8,										///< whether to clear the depth buffer
+	RPF_CLEAR_ACCUM = 1 << 9,										///< whether to clear the accumulation buffer
+	RPF_CLEAR_ALL =
+		  RPF_CLEAR_COLOR | RPF_CLEAR_DEPTH | RPF_CLEAR_STENCIL | RPF_CLEAR_ACCUM, ///< whether to clear all buffers
+	RPF_DRAWABLES_INIT_FRAME = 1 << 10,	  ///< whether to call the init_frame method of the drawables
+	RPF_SET_STATE_FLAGS = 1 << 11,		  ///< whether to set depth buffer and culling flags
+	RPF_SET_CLEAR_COLOR = 1 << 12,		  ///< whether to set the clear color
+	RPF_SET_CLEAR_DEPTH = 1 << 13,		  ///< whether to set the clear color
+	RPF_SET_CLEAR_STENCIL = 1 << 14,	  ///< whether to set the clear color
+	RPF_SET_CLEAR_ACCUM = 1 << 15,		  ///< whether to set the accumulation buffer clear color
+	RPF_DRAWABLES_DRAW = 1 << 16,		  ///< whether to call draw and finish_draw methods of drawables
+	RPF_DRAWABLES_FINISH_FRAME = 1 << 17, ///< whether to call finish frame method of drawables
+	RPF_DRAW_TEXTUAL_INFO = 1 << 18,	  ///< whether to draw textual information
+	RPF_DRAWABLES_AFTER_FINISH = 1 << 19, ///< whether to call after finish method of drawables
+	RPF_HANDLE_SCREEN_SHOT = 1 << 20,	  ///< whether to perform a screen shot if this was scheduled
+	RPF_ALL = (1 << 21) - 1,			  ///< all flags set, defines default render pass
+	RPF_DEFAULT = RPF_ALL & ~(RPF_CLEAR_ACCUM | RPF_SET_CLEAR_ACCUM | RPF_CLEAR_STENCIL |
+							  RPF_SET_CLEAR_STENCIL) ///< all flags set, defines default render pass
 };
 
 /// different sides of a material
@@ -160,6 +176,8 @@ enum TextureType {
 	TT_1D_ARRAY,
 	TT_2D_ARRAY,
 	TT_CUBEMAP,
+	TT_MULTISAMPLE_2D,
+	TT_MULTISAMPLE_2D_ARRAY,
 	TT_BUFFER
 };
 
@@ -197,8 +215,8 @@ enum PrimitiveType {
 /// different sampling strategies for rendering to textures that steer the computation of the \c tex_coord input to the fragment shader
 enum TextureSampling
 {
-	TS_CELL = 0,   /// for texture resulution N x M x L the \c tex_coord ranges from [1/2N, 1/2M, 1/2L] to [1-1/2N, 1-1/2M, 1-1/2P]
-	TS_VERTEX = 1  /// \c tex_coord ranges from [0,0,0] to [1,1,1]
+	TS_CELL = 0,   ///< for texture resulution N x M x L the \c tex_coord ranges from [1/2N, 1/2M, 1/2L] to [1-1/2N, 1-1/2M, 1-1/2P]
+	TS_VERTEX = 1  ///< \c tex_coord ranges from [0,0,0] to [1,1,1]
 };
 
 /// different sampling strategies for rendering to textures that steer the computation of the \c tex_coord input to the fragment shader
@@ -214,17 +232,24 @@ enum CompareFunction
 	CF_NEVER
 };
 
+/// different access types
+enum AccessType {
+	AT_READ_ONLY,
+	AT_WRITE_ONLY,
+	AT_READ_WRITE
+};
+
 /// different text alignments
 enum TextAlignment {
-	TA_NONE = 0,
-	TA_LEFT = 1,    // center of left edge of text bounds
-	TA_RIGHT = 2,   // center of right edge of text bounds
-	TA_TOP = 4,     // center of top edge of text bounds
-	TA_BOTTOM = 8,  // center of bottom edge of text bounds
-	TA_TOP_LEFT = TA_LEFT+TA_TOP,    // top left corner of text bounds
-	TA_TOP_RIGHT = TA_RIGHT+TA_TOP,  // top right corner of text bounds
-	TA_BOTTOM_LEFT = TA_LEFT+TA_BOTTOM,   // bottom left corner of text bounds
-	TA_BOTTOM_RIGHT = TA_RIGHT+TA_BOTTOM  // bottom right corner of text bounds
+	TA_NONE = 0,						   ///< no alignment
+	TA_LEFT = 1,						   ///< center of left edge of text bounds
+	TA_RIGHT = 2,						   ///< center of right edge of text bounds
+	TA_TOP = 4,							   ///< center of top edge of text bounds
+	TA_BOTTOM = 8,						   ///< center of bottom edge of text bounds
+	TA_TOP_LEFT = TA_LEFT + TA_TOP,		   ///< top left corner of text bounds
+	TA_TOP_RIGHT = TA_RIGHT + TA_TOP,	   ///< top right corner of text bounds
+	TA_BOTTOM_LEFT = TA_LEFT + TA_BOTTOM,  ///< bottom left corner of text bounds
+	TA_BOTTOM_RIGHT = TA_RIGHT + TA_BOTTOM ///< bottom right corner of text bounds
 };
 
 /// convert texture filter to string
@@ -264,6 +289,14 @@ public:
 	void put_id(T& id) const { put_id_void(&id); }
 };
 
+/// base interface for a render_buffer
+class CGV_API render_buffer_base : public render_component
+{
+public:
+	unsigned nr_multi_samples = 0;
+	render_buffer_base();
+};
+
 /// base interface for a texture 
 class CGV_API texture_base : public render_component
 {
@@ -280,6 +313,8 @@ public:
 	bool use_compare_function;
 	TextureType  tt;
 	bool have_mipmaps;
+	unsigned nr_multi_samples = 5;
+	bool fixed_sample_locations = true;
 	/// initialize members
 	texture_base(TextureType _tt = TT_UNDEF);
 };
@@ -345,21 +380,38 @@ public:
 };
 
 
-/// different vertex buffer types
+/// Provides vertex buffer types to allow implicit binding
 enum VertexBufferType {
-	VBT_UNDEF = -1,
-	VBT_VERTICES,
-	VBT_INDICES,
-	VBT_TEXTURE,
-	VBT_UNIFORM,
-	VBT_FEEDBACK,
-	VBT_STORAGE,
-	VBT_ATOMIC_COUNTER
+	VBT_UNDEF = -1,	   ///< The buffer has no type
+	VBT_VERTICES,	   ///< The buffer contains vertices and will be bound to GL_ARRAY_BUFFER
+	VBT_INDICES,	   ///< The buffer contains indices and will be bound to GL_ELEMENT_ARRAY_BUFFER
+	VBT_TEXTURE,	   ///< The buffer contains texture data and will be bound to GL_TEXTURE_BUFFER
+	VBT_UNIFORM,	   ///< The buffer contains uniforms and will be bound to GL_UNIFORM_BUFFER
+	VBT_FEEDBACK,	   ///< The buffer is used for transform&feedback and will be bound to GL_TRANSFORM_FEEDBACK_BUFFER
+	VBT_STORAGE,	   ///< The buffer contains arbitrary data and will be bound to GL_SHADER_STORAGE_BUFFER
+	VBT_ATOMIC_COUNTER ///< The buffer contains atomic counter and will be bound to GL_ATOMIC_COUNTER_BUFFER
 };
 
-/// different vertex buffer usages as defined in OpenGL
+/// Provides vertex buffer usage hints as defined in OpenGL
 enum VertexBufferUsage {
-	VBU_STREAM_DRAW, VBU_STREAM_READ, VBU_STREAM_COPY, VBU_STATIC_DRAW, VBU_STATIC_READ, VBU_STATIC_COPY, VBU_DYNAMIC_DRAW, VBU_DYNAMIC_READ, VBU_DYNAMIC_COPY
+	VBU_STREAM_DRAW,  ///< Modified once and used at most a few times; Modified by the application, and used as the
+					  ///< source for GL drawing and image specification commands.
+	VBU_STREAM_READ,  ///< Modified once and used at most a few times; Modified by reading data from the GL, and used to
+					  ///< return that data when queried by the application.
+	VBU_STREAM_COPY,  ///< Modified once and used at most a few times; Modified by reading data from the GL, and used as
+					  ///< the source for GL drawing and image specification commands.
+	VBU_STATIC_DRAW,  ///< Modified once and used many times; Modified by the application, and used as the source for GL
+					  ///< drawing and image specification commands.
+	VBU_STATIC_READ,  ///< Modified once and used many times; Modified by reading data from the GL, and used to return
+					  ///< that data when queried by the application.
+	VBU_STATIC_COPY,  ///< Modified once and used many times; Modified by reading data from the GL, and used as the
+					  ///< source for GL drawing and image specification commands.
+	VBU_DYNAMIC_DRAW, ///< Modified repeatedly and used many times; Modified by the application, and used as the source
+					  ///< for GL drawing and image specification commands.
+	VBU_DYNAMIC_READ, ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used to
+					  ///< return that data when queried by the application.
+	VBU_DYNAMIC_COPY ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used as the
+					 ///< source for GL drawing and image specification commands.
 };
 
 /// base interface for a vertex buffer
@@ -374,6 +426,14 @@ public:
 	vertex_buffer_base();
 };
 
+/// Bits for the selection of different buffer types
+enum BufferTypeBits {
+	BTB_COLOR_BIT = 1,			  ///< color buffer type
+	BTB_DEPTH_BIT = 2,			  ///< depth buffer type
+	BTB_COLOR_AND_DEPTH_BITS = 3, ///< color and depth buffer types
+	BTB_STENCIL_BIT = 4,		  ///< stencil buffer type
+	BTB_ALL_BITS = 7			  ///< all buffer types
+};
 
 /// base interface for framebuffer
 class CGV_API frame_buffer_base : public render_component
@@ -526,6 +586,9 @@ struct window_transformation
 /** base class for all drawables, which is independent of the used rendering API. */
 class CGV_API context : public render_types, public context_config
 {
+protected:
+	// store the GPU vendor id
+	GPUVendorID gpu_vendor;
 public:
 	friend class CGV_API attribute_array_manager;
 	friend class CGV_API render_component;
@@ -547,6 +610,8 @@ public:
 protected:
 	friend class shader_program_base;
 
+	/// whether to use the caching facilities of shader_program and shader_code to store loaded shader file contents as strings for faster loading
+	bool use_shader_file_cache;
 	/// whether to automatically set viewing matrixes in current shader program, defaults to true 
 	bool auto_set_view_in_current_shader_program;
 	/// whether to automatically set lights in current shader program, defaults to true 
@@ -561,14 +626,14 @@ protected:
 	bool draw_in_compatibility_mode;
 	/// whether to debug render passes
 	bool debug_render_passes;
-	/// whether vsynch should be enabled
-	bool enable_vsynch;
+	/// whether vsync should be enabled
+	bool enable_vsync;
 	/// current color value
 	rgba current_color;
 	/// whether to use opengl option to support sRGB framebuffer
 	bool sRGB_framebuffer;
-	/// gamma value passed to shader programs that have gamma uniform
-	float gamma;
+	/// per color channel gamma value passed to shader programs that have gamma uniform
+	vec3 gamma3;
 	/// keep two matrix stacks for model view and projection matrices
 	std::stack<dmat4> modelview_matrix_stack, projection_matrix_stack;
 	/// keep stack of window transformations
@@ -580,6 +645,12 @@ protected:
 public:
 	/// check for current program, prepare it for rendering and return pointer to it
 	shader_program_base* get_current_program() const;
+	/// enable the usage of the shader file caches
+	void enable_shader_file_cache();
+	/// disable the usage of the shader file caches
+	void disable_shader_file_cache();
+	/// whether the shader file caches are enabled
+	bool is_shader_file_cache_enabled() const;
 protected:
 	/// stack of currently enabled attribute array binding
 	std::stack<attribute_array_binding_base*> attribute_array_binding_stack;
@@ -663,23 +734,26 @@ protected:
 	virtual bool texture_create_from_buffer (texture_base& tb, cgv::data::data_format& df, int x, int y, int level) const = 0;
 	virtual bool texture_replace			(texture_base& tb, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
 	virtual bool texture_replace_from_buffer(texture_base& tb, int x, int y, int z_or_cube_side, int x_buffer, int y_buffer, unsigned int width, unsigned int height, int level) const = 0;
+	virtual bool texture_create_mipmaps	    (texture_base& tb, cgv::data::data_format& df) const = 0;
 	virtual bool texture_generate_mipmaps	(texture_base& tb, unsigned int dim) const = 0;
 	virtual bool texture_destruct           (texture_base& tb) const = 0;
 	virtual bool texture_set_state			(const texture_base& tb) const = 0;
 	virtual bool texture_enable				(texture_base& tb, int tex_unit, unsigned int nr_dims) const = 0;
 	virtual bool texture_disable			(texture_base& tb, int tex_unit, unsigned int nr_dims) const = 0;
+	virtual bool texture_bind_as_image		(texture_base& tb, int tex_unit, int level, bool bind_array, int layer, AccessType access) const = 0;
 
-	virtual bool render_buffer_create       (render_component& rc, cgv::data::component_format& cf, int& _width, int& _height) const = 0;
-	virtual bool render_buffer_destruct     (render_component& rc) const = 0;
+	virtual bool render_buffer_create       (render_buffer_base& rc, cgv::data::component_format& cf, int& _width, int& _height) const = 0;
+	virtual bool render_buffer_destruct     (render_buffer_base& rc) const = 0;
 
 	static void get_buffer_list(frame_buffer_base& fbb, bool& depth_buffer, std::vector<int>& buffers, int offset = 0);
 	virtual bool frame_buffer_create		   (frame_buffer_base& fbb) const;
-	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) const;
+	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const render_buffer_base& rb, bool is_depth, int i) const;
 	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const texture_base& t, bool is_depth, int level, int i, int z) const;
 	virtual bool frame_buffer_is_complete(const frame_buffer_base& fbb) const = 0;
 	virtual bool frame_buffer_enable		   (frame_buffer_base& fbb);
 	virtual bool frame_buffer_disable		   (frame_buffer_base& fbb);
-	virtual bool frame_buffer_destruct		   (frame_buffer_base& fbb) const;
+	virtual bool frame_buffer_destruct(frame_buffer_base& fbb) const;
+	virtual void frame_buffer_blit(const frame_buffer_base* src_fbb_ptr, const ivec4& S, frame_buffer_base* dst_fbb_ptr, const ivec4& _D, BufferTypeBits btbs, bool interpolate) const = 0;
 	virtual int frame_buffer_get_max_nr_color_attachments() const = 0;
 	virtual int frame_buffer_get_max_nr_draw_buffers() const = 0;
 
@@ -711,7 +785,9 @@ protected:
 	virtual bool is_attribute_array_enabled(const attribute_array_binding_base* aab, int loc) const = 0;
 
 	virtual bool vertex_buffer_bind(const vertex_buffer_base& vbb, VertexBufferType _type, unsigned _idx = -1) const = 0;
+	virtual bool vertex_buffer_unbind(const vertex_buffer_base& vbb, VertexBufferType _type, unsigned _idx = -1) const = 0;
 	virtual bool vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const = 0;
+	virtual bool vertex_buffer_resize(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const = 0;
 	virtual bool vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) const = 0;
 	virtual bool vertex_buffer_copy(const vertex_buffer_base& src, size_t src_offset, vertex_buffer_base& target, size_t target_offset, size_t size_in_bytes) const = 0;
 	virtual bool vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const = 0;
@@ -723,6 +799,8 @@ public:
 	virtual ~context();
 	/// error handling
 	virtual void error(const std::string& message, const render_component* rc = 0) const;
+	/// device information
+	virtual GPUVendorID get_gpu_vendor_id() const;
 
 	/**@name interface for implementation of specific contexts*/
 	//@{
@@ -885,10 +963,14 @@ public:
 	DEPRECATED("deprecated and ignored.") virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material());
 	DEPRECATED("deprecated, use enable_material(textured_surface_material) instead.") virtual void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
 	//DEPRECATED("deprecated, use disable_material(textured_surface_material) instead.") virtual void disable_material(const textured_material& mat) = 0;
-	/// set the current gamma values
-	virtual void set_gamma(float _gamma);
-	/// query current gamma
-	float get_gamma() const { return gamma; }
+	/// set the current per channel gamma values to single value
+	void set_gamma(float _gamma);
+	/// set the current per channel gamma values to single value
+	virtual void set_gamma3(const vec3& _gamma3);
+	/// query current gamma computed as average over gamma3 per channel values
+	float get_gamma() const { return (gamma3.x() + gamma3.y() + gamma3.z()) / 3.0f; }
+	/// query current per color channel gamma 
+	vec3 get_gamma3() const { return gamma3; }
 	/// enable or disable sRGB framebuffer
 	virtual void enable_sRGB_framebuffer(bool do_enable = true);
 	/// check whether sRGB framebuffer is enabled
@@ -909,6 +991,8 @@ public:
 	virtual void enable_material(textured_material& mat) = 0;
 	/// disable a material with textures
 	virtual void disable_material(textured_material& mat) = 0;
+	/// set the shader program gamma values
+	void set_current_gamma(shader_program& prog) const;
 	/// set the shader program view matrices to the currently enabled view matrices
 	void set_current_view(shader_program& prog, bool modelview_deps = true, bool projection_deps = true) const;
 	/// set the shader program material to the currently enabled material
@@ -955,6 +1039,8 @@ public:
 	size_t get_nr_enabled_light_sources() const;
 	/// access to handle of i-th light source
 	void* get_enabled_light_source_handle(size_t i) const;
+	/// check whether light source is enabled
+	bool is_light_source_enabled(void* handle);
 	/// enable a given light source and return whether there existed a light source with given handle
 	bool enable_light_source(void* handle);
 	/// disable a given light source and return whether there existed a light source with given handle

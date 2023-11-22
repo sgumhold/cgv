@@ -1,0 +1,11 @@
+@=
+projectType="plugin";
+projectGUID="85F746C2-3B0D-4D48-A932-C17FEB318280";
+projectName="rgbd_realsense";
+addIncDirs=[CGV_DIR."/libs/rgbd_capture",env::REALSENSE_DIR."/include"];
+addLibDirs=[env::REALSENSE_DIR."/lib/x64"];
+addMapDeps = [ ["realsense2_lib", ["realsense2","realsense2","realsense2","realsense2"] ] ];
+addProjectDirs=[CGV_DIR."/libs/rgbd_capture"];
+addProjectDeps=["rgbd_capture"];
+addDependencies=["realsense2_lib"];
+addSharedDefines=["RGBD_REALSENSE_EXPORTS"];

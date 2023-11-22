@@ -27,15 +27,31 @@ size_t vertex_buffer::get_size_in_bytes() const
 	return size_in_bytes;
 }
 
-/// bind buffer potentially overwriting buffer type
 void vertex_buffer::bind(context& ctx, VertexBufferType _type) const
 {
 	ctx.vertex_buffer_bind(*this, _type == VBT_UNDEF ? this->type : _type);
 }
-/// bind uniform, feedback, storage or atomic counter buffer to an indexed buffer target
+
+void vertex_buffer::unbind(context& ctx, VertexBufferType _type) const
+{
+	ctx.vertex_buffer_unbind(*this, _type == VBT_UNDEF ? this->type : _type);
+}
+
+void vertex_buffer::unbind(context& ctx, unsigned index) const { ctx.vertex_buffer_unbind(*this, this->type, index); }
+
+void vertex_buffer::unbind(context& ctx, VertexBufferType type, unsigned index) const
+{
+	ctx.vertex_buffer_unbind(*this, type, index);
+}
+
 void vertex_buffer::bind(context& ctx, unsigned index) const
 {
 	ctx.vertex_buffer_bind(*this, this->type, index);
+}
+
+void vertex_buffer::bind(context& ctx, VertexBufferType _type, unsigned index) const
+{
+	ctx.vertex_buffer_bind(*this, _type, index);
 }
 
 /// create empty vertex buffer of size \c size given in bytes
@@ -45,13 +61,22 @@ bool vertex_buffer::create(const context& ctx, size_t _size_in_bytes)
 	return ctx.vertex_buffer_create(*this, 0, size_in_bytes);
 }
 
-/// check whether the vertex buffer has been created
 bool vertex_buffer::is_created() const
 {
 	return handle != 0;
 }
 
-/// copy \c size_in_bytes number bytes from this vertex buffer starting at byte offset \c start_offset_in_bytes to vertex buffer \c dst starting at offest \c dst_offset_in_bytes
+bool vertex_buffer::resize(const context& ctx, size_t size_in_bytes)
+{
+	this->size_in_bytes = size_in_bytes;
+	return ctx.vertex_buffer_resize(*this, 0, size_in_bytes);
+}
+
+bool vertex_buffer::create_or_resize(const context& ctx, size_t size_in_bytes)
+{
+	return !is_created() ? create(ctx, size_in_bytes) : resize(ctx, size_in_bytes);
+}
+
 bool vertex_buffer::copy(const context& ctx, size_t src_offset_in_bytes, size_t size_in_bytes, vertex_buffer& dst, size_t dst_offset_in_bytes) const
 {
 	return ctx.vertex_buffer_copy(*this, src_offset_in_bytes, dst, dst_offset_in_bytes, size_in_bytes);

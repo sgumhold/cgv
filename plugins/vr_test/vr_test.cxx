@@ -5,13 +5,16 @@
 #include <cgv/math/ftransform.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/options.h>
+#include <cgv/utils/file.h>
 #include <cgv/gui/dialog.h>
+#include <cgv/gui/file_dialog.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cg_vr/vr_events.h>
 
 #include <random>
+#include <sstream>
 
 #include "intersection.h"
 
@@ -294,19 +297,6 @@ vr_test::vr_test()
 	label_size = 20.0f;
 	label_color = rgb(1, 1, 1);
 
-	cgv::media::font::enumerate_font_names(font_names);
-	font_enum_decl = "enums='";
-	for (unsigned i = 0; i < font_names.size(); ++i) {
-		if (i>0)
-			font_enum_decl += ";";
-		std::string fn(font_names[i]);
-		if (cgv::utils::to_lower(fn) == "calibri") {
-			label_font_face = cgv::media::font::find_font(fn)->get_font_face(label_face_type);
-			label_font_idx = i;
-		}
-		font_enum_decl += std::string(fn);
-	}
-	font_enum_decl += "'";
 	state[0] = state[1] = state[2] = state[3] = IS_NONE;
 }
 	
@@ -466,12 +456,23 @@ bool vr_test::handle(cgv::gui::event& e)
 
 bool vr_test::init(cgv::render::context& ctx)
 {
+	cgv::media::font::enumerate_font_names(font_names);
+	font_enum_decl = "enums='";
+	for (unsigned i = 0; i < font_names.size(); ++i) {
+		if (i > 0)
+			font_enum_decl += ";";
+		std::string fn(font_names[i]);
+		if (cgv::utils::to_lower(fn) == "calibri") {
+			label_font_face = cgv::media::font::find_font(fn)->get_font_face(label_face_type);
+			label_font_idx = i;
+		}
+		font_enum_decl += std::string(fn);
+	}
+	font_enum_decl += "'";
+
 	if (!cgv::utils::has_option("NO_OPENVR"))
 		ctx.set_gamma(1.0f);
 
-	if (!seethrough.build_program(ctx, "seethrough.glpr"))
-		cgv::gui::message("could not build seethrough program");
-	
 	cgv::media::mesh::simple_mesh<> M;
 //#ifdef 1
 	if (M.read("D:/data/surface/meshes/obj/Max-Planck_lowres.obj")) {
@@ -526,6 +527,10 @@ void vr_test::clear(cgv::render::context& ctx)
 
 void vr_test::init_frame(cgv::render::context& ctx)
 {
+	if (!seethrough.is_linked()) {
+		if (!seethrough.build_program(ctx, "seethrough.glpr"))
+			cgv::gui::message("could not build seethrough program");
+	}
 	if (label_fbo.get_width() != label_resolution) {
 		label_tex.destruct(ctx);
 		label_fbo.destruct(ctx);
@@ -782,32 +787,48 @@ void vr_test::draw(cgv::render::context& ctx)
 		}
 	}
 	cgv::render::box_renderer& renderer = cgv::render::ref_box_renderer(ctx);
-
-	// draw dynamic boxes 
-	renderer.set_render_style(movable_style);
-	renderer.set_box_array(ctx, movable_boxes);
-	renderer.set_color_array(ctx, movable_box_colors);
-	renderer.set_translation_array(ctx, movable_box_translations);
-	renderer.set_rotation_array(ctx, movable_box_rotations);
-	if (renderer.validate_and_enable(ctx)) {
-		if (show_seethrough) {
-			glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-			renderer.draw(ctx, 0, 3);
-			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-			renderer.draw(ctx, 3, movable_boxes.size() - 3);
+	// draw wireframe boxes
+	//TODO draw wireframe boxes
+	if (!frame_boxes.empty()) {
+		renderer.set_render_style(wire_frame_style);
+		renderer.set_box_array(ctx, frame_boxes);
+		renderer.set_color_array(ctx, frame_box_colors);
+		renderer.set_translation_array(ctx, frame_box_translations);
+		renderer.set_rotation_array(ctx, frame_box_rotations);
+		if (renderer.validate_and_enable(ctx)) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			renderer.draw(ctx, 0, frame_boxes.size());
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
-		else
-			renderer.draw(ctx, 0, movable_boxes.size());
+		renderer.disable(ctx);
 	}
-	renderer.disable(ctx);
 
+	// draw dynamic boxes
+	if (!movable_boxes.empty()) {
+		renderer.set_render_style(movable_style);
+		renderer.set_box_array(ctx, movable_boxes);
+		renderer.set_color_array(ctx, movable_box_colors);
+		renderer.set_translation_array(ctx, movable_box_translations);
+		renderer.set_rotation_array(ctx, movable_box_rotations);
+		if (renderer.validate_and_enable(ctx)) {
+			if (show_seethrough) {
+				glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+				renderer.draw(ctx, 0, 3);
+				glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+				renderer.draw(ctx, 3, movable_boxes.size() - 3);
+			}
+			else
+				renderer.draw(ctx, 0, movable_boxes.size());
+		}
+		renderer.disable(ctx);
+	}
 	// draw static boxes
-	renderer.set_render_style(style);
-	renderer.set_box_array(ctx, boxes);
-	renderer.set_color_array(ctx, box_colors);
-	renderer.render(ctx, 0, boxes.size());
-
-
+	if (!boxes.empty()) {
+		renderer.set_render_style(style);
+		renderer.set_box_array(ctx, boxes);
+		renderer.set_color_array(ctx, box_colors);
+		renderer.render(ctx, 0, boxes.size());
+	}
 	// draw intersection points
 	if (!intersection_points.empty()) {
 		auto& sr = cgv::render::ref_sphere_renderer(ctx);
@@ -882,6 +903,7 @@ void vr_test::finish_draw(cgv::render::context& ctx)
 	}
 }
 
+					//0.2f*distribution(generator)+0.1f));
 void vr_test::create_gui() {
 	add_decorator("vr_test", "heading", "level=2");
 	add_member_control(this, "mesh_scale", mesh_scale, "value_slider", "min=0.1;max=10;log=true;ticks=true");
@@ -931,6 +953,13 @@ void vr_test::create_gui() {
 			}
 		}
 	}
+	if (begin_tree_node("movable boxes", 1.f)) {
+		align("\a");
+		connect_copy(add_button("save boxes")->click, rebind(this, &vr_test::on_save_movable_boxes_cb));
+		connect_copy(add_button("load boxes")->click, rebind(this, &vr_test::on_load_movable_boxes_cb));
+		connect_copy(add_button("load target")->click, rebind(this, &vr_test::on_load_wireframe_boxes_cb));
+		align("\b");
+	}
 	if (begin_tree_node("box style", style)) {
 		align("\a");
 		add_gui("box style", style);
@@ -978,6 +1007,132 @@ void vr_test::create_gui() {
 	}
 }
 
+bool vr_test::save_boxes(const std::string fn, const std::vector<box3>& boxes, const std::vector<rgb>& box_colors, const std::vector<vec3>& box_translations, const std::vector<quat>& box_rotations)
+{
+	std::stringstream data;
+
+
+	if (boxes.size() != box_colors.size() || boxes.size() != box_translations.size() || boxes.size() != box_rotations.size()) {
+		std::cerr << "vr_test::save_boxes: passed vectors have different sizes!";
+		return false;
+	}
+
+	for (int i = 0; i < movable_boxes.size(); ++i) {
+		//format: BOX <box.min_p> <box.max_p> <trans> <rot> <col>
+		const vec3& box_translation = box_translations[i];
+		const quat& box_rotation = box_rotations[i];
+		const rgb& box_color = box_colors[i];
+		data << "BOX "
+			<< boxes[i].get_min_pnt() << " "
+			<< boxes[i].get_max_pnt() << " "
+			<< box_translation << " "
+			<< box_rotation << " "
+			<< box_color << " "
+			<< '\n';
+	}
+	std::string s = data.str();
+	if (!cgv::utils::file::write(fn, s.data(), s.size())) {
+		std::cerr << "vr_test::save_boxes: failed writing data to file: " << fn;
+	}
+	return true;
+}
+
+bool vr_test::load_boxes(const std::string fn, std::vector<box3>& boxes, std::vector<rgb>& box_colors, std::vector<vec3>& box_translations, std::vector<quat>& box_rotations)
+{
+	std::string data;
+	if (!cgv::utils::file::read(fn, data)) {
+		std::cerr << "vr_test::load_boxes: failed reading data from file: " << fn << '\n';
+		return false;
+	}
+	std::istringstream f(data);
+	std::string line;
+
+	while (!f.eof()) {
+		std::getline(f, line); 	//read a line
+		std::istringstream l(line);
+		std::string sym;
+		
+		int limit=1;
+		bool valid = true;
+		if (!l.eof()) {
+			getline(l, sym, ' '); //get the first symbol determing the type
+			if (sym == "BOX") { //in case of a box
+				vec3 minp,maxp,trans;
+				quat rot;
+				rgb col;
+				l >> minp;
+				l >> maxp;
+				l >> trans;
+				l >> rot;
+				l >> col;
+				
+				boxes.emplace_back(minp, maxp);
+				box_translations.emplace_back(trans);
+				box_rotations.emplace_back(rot);
+				box_colors.emplace_back(col);
+			}
+		}
+	}
+	return true;
+}
+
+void vr_test::on_save_movable_boxes_cb()
+{
+	std::string fn = cgv::gui::file_save_dialog("base file name", "Box configurations(txt):*.txt");
+	if (fn.empty())
+		return;
+	
+	save_boxes(fn, movable_boxes, movable_box_colors, movable_box_translations, movable_box_rotations);
+}
+
+void vr_test::on_load_movable_boxes_cb()
+{
+	std::string fn = cgv::gui::file_open_dialog("base file name", "Box configurations(txt):*.txt");
+	if (!cgv::utils::file::exists(fn)) {
+		std::cerr << "vr_test::on_load_movable_boxes_cb: file does not exist!\n";
+		return;
+	}
+	clear_movable_boxes();
+	if (!load_boxes(fn, movable_boxes, movable_box_colors, movable_box_translations, movable_box_rotations)) {
+		std::cerr << "vr_test::on_load_movable_boxes_cb: failed to parse file!\n";
+		clear_movable_boxes(); //delete all boxes after a failure to reach a valid logical state
+	}
+}
+
+void vr_test::on_load_wireframe_boxes_cb()
+{
+	std::string fn = cgv::gui::file_open_dialog("base file name", "Box configurations(txt):*.txt");
+	if (!cgv::utils::file::exists(fn)) {
+		std::cerr << "vr_test::on_load_movable_boxes_cb: file does not exist!\n";
+		return;
+	}
+	clear_frame_boxes();
+	if (!load_boxes(fn, frame_boxes, frame_box_colors, frame_box_translations, frame_box_rotations)) {
+		std::cerr << "vr_test::on_load_wireframe_boxes_cb: failed to parse file!\n";
+		clear_frame_boxes(); //delete all boxes after a failure to reach a valid logical state
+	}
+}
+
+void vr_test::clear_movable_boxes()
+{
+	movable_boxes.clear();
+	movable_box_translations.clear();
+	movable_box_rotations.clear();
+	movable_box_colors.clear();
+}
+
+void vr_test::clear_frame_boxes()
+{
+	frame_boxes.clear();
+	frame_box_translations.clear();
+	frame_box_rotations.clear();
+	frame_box_colors.clear();
+}
+
 #include <cgv/base/register.h>
 
 cgv::base::object_registration<vr_test> vr_test_reg("vr_test");
+
+#ifdef CGV_FORCE_STATIC
+cgv::base::registration_order_definition ro_def("vr_view_interactor;vr_emulator;vr_wall;vr_scene;vr_test");
+#endif

@@ -501,11 +501,12 @@ void plot2d::extract_domain_tick_rectangles_and_tick_labels(
 	tick_batches.clear();
 	for (unsigned ti = 0; ti < 2; ++ti) {
 		for (unsigned ai = 0; ai < 2; ++ai) {
+			axis_config& ac = get_domain_config_ptr()->axis_configs[ai];
 			axis_config& ao = get_domain_config_ptr()->axis_configs[1 - ai];
 			float z_plot = (ao.get_attribute_min() < 0.0f && ao.get_attribute_max() > 0.0f) ?
 				ao.plot_space_from_attribute_space(0.0f) : std::numeric_limits<float>::quiet_NaN();
 			tick_batch_info tbi(ai, 1 - ai, ti == 0, 0, (unsigned)tick_labels.size());
-			if (extract_tick_rectangles_and_tick_labels(R, C, D, tick_labels, ai, ai, ti, 0.5f * ao.extent, z_plot, 1.0f, vec2(0.0f), -3 * layer_depth)) {
+			if (extract_tick_rectangles_and_tick_labels(R, C, D, tick_labels, ai, ai, ti, 0.5f * ao.extent, z_plot, 1.0f, vec2(0.0f), -3 * layer_depth, ac.multi_axis_ticks)) {
 				if ((tbi.label_count = (unsigned)(tick_labels.size() - tbi.first_label)) > 0)
 					tick_batches.push_back(tbi);
 			}

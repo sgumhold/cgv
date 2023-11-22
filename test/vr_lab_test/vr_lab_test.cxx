@@ -3,7 +3,7 @@
 #include <cgv/gui/provider.h>
 
 #include <cg_nui/focusable.h>
-#include <cg_nui/transforming.h>
+#include <cg_nui/caching_transforming.h>
 
 #include <plugins/vr_lab/vr_tool.h>
 
@@ -19,7 +19,7 @@ class vr_lab_test :
 	public cgv::base::group,
 	public cgv::render::drawable,
 	public cgv::nui::focusable,
-	public cgv::nui::transforming,
+	public cgv::nui::caching_transforming,
 	public cgv::gui::provider,
 	public vr::vr_tool
 {
@@ -31,6 +31,7 @@ class vr_lab_test :
 	rgba stats_bgclr;
 	/// labels to show help on controllers
 	uint32_t li_help[2];
+	uint32_t test_labels[10];
 
 	// whether to show plot
 	bool show_plot;
@@ -101,19 +102,23 @@ public:
 		plot.place_center(vec3(0, 0.5f * plot.get_extent()(1), -0.5f));
 	}
 public:
-	vr_lab_test() : cgv::base::group("vr lab test"), plot("trigonometry", 2)
+	vr_lab_test() : cgv::base::group("vr lab test"), plot("trigonometry", 2), caching_transforming()
 	{
 		li_help[0] = li_help[1] = -1;
 		li_stats = -1;
 		stats_bgclr = rgba(0.8f, 0.6f, 0.0f, 0.6f);
 		show_plot = false;
 		construct_plot();
-		objects.push_back(new simple_object("ruby", vec3(-0.5f, 0.2f, 0), rgb(0.6f, 0.3f, 0.1f)));
+
+		objects.push_back(new simple_object("blue", vec3(-2.0f, 0.0f, 0.0f), rgb(0.2f, 0.6f, 0.4f), vec3(1.0f, 1.0f, 1.0f)));
 		append_child(objects.back());
-		objects.push_back(new simple_object("blue", vec3(0.5f, 0.2f, 0), rgb(0.2f, 0.6f, 0.4f)));
-		append_child(objects.back());
-		container = new simple_primitive_container("spheres");
-		append_child(container);
+		//objects.push_back(new simple_object("ruby", vec3(-1.0f, 0.0f, 0.0f), rgb(0.6f, 0.3f, 0.1f), vec3(1.0f, 1.0f, 1.0f)));
+		//append_child(objects.back());
+		//objects.push_back(new simple_object("green", vec3(1.0f, 0.0f, 0), rgb(0.2f, 0.7f, 0.2f), vec3(1.0f, 1.0f, 1.0f)));
+		//append_child(objects.back());
+
+		//container = new simple_primitive_container("spheres");
+		//append_child(container);
 	}
 	void on_set(void* member_ptr)
 	{
@@ -125,10 +130,44 @@ public:
 	}
 	bool init(cgv::render::context& ctx)
 	{
+		// Initialize the gizmos of the simple_objects. This has to happen outside of the constructors so that the hierarchy can be traversed.
+		
+		// Tests
+
+		// Funktioniert
+		objects[0]->initialize_gizmos(this->get_parent(), objects[0]);
+		//objects[1]->initialize_gizmos(this->get_parent(), objects[1]);
+		//objects[2]->initialize_gizmos(this->get_parent(), objects[2]);
+
+		// Funktioniert
+		//objects[0]->initialize_gizmos(this->get_parent(), objects[1], false);
+		//objects[1]->initialize_gizmos(this->get_parent(), objects[2], false);
+		//objects[2]->initialize_gizmos(this->get_parent(), objects[1], false);
+
+		// Funktioniert
+		//objects[0]->initialize_gizmos(objects[0], objects[0]); // Funktioniert auch ohne root_influenced_by_gizmo
+		//objects[0]->initialize_gizmos(objects[1], objects[0]); // Root ist in Hierarchie nicht ueber Gizmo
+		//objects[0]->initialize_gizmos(this, objects[0]); // Root ist table
+
+		// Funktioniert
+		//objects[0]->initialize_gizmos(this, objects[1], false);
+		//objects[0]->initialize_gizmos(objects[0], objects[1], false);
+
+		//objects[0]->initialize_gizmos(objects[0], this->get_parent(), false);
+		//objects[0]->initialize_gizmos(this->get_parent(), objects[0], true);
+		//objects[0]->initialize_gizmos(objects[2], objects[1], false);
+
+
+		// DEBUG TO REMOVE
+		//cgv::nui::debug_visualization_helper::print_hierarchy(this);
+
+
 		cgv::render::ref_sphere_renderer(ctx, 1);
 		cgv::render::ref_cone_renderer(ctx, 1);
 
-		cgv::nui::ref_debug_visualization_helper(ctx, 1);
+		// Example of using the debug visualization helper
+		// As the object that calls the draw function of the debug visualization helper it has to hold a reference of the instance.
+		auto& dvh = cgv::nui::ref_debug_visualization_helper(ctx, 1);
 
 		plot.set_view_ptr(find_view_as_node());
 		return plot.init(ctx);
@@ -157,6 +196,12 @@ public:
 					ci == 1 ? label_alignment::right : label_alignment::left, 0.2f);
 				scene_ptr->hide_label(li_help[ci]);
 			}
+			for (uint32_t i = 0; i < 10; ++i) {
+
+				test_labels[i] = scene_ptr->add_label(std::string("hellowejiopwejdfweiojdfwiopjdfwopjdfqwpodkjqwopxkl�qwkx�clkdw").substr(0,5+25*rand()/RAND_MAX) + cgv::utils::to_string(i, 3, '_'), rgba(1, 0, 1, 1));
+				scene_ptr->fix_label_size(test_labels[i]);
+				scene_ptr->place_label(test_labels[i], vec3(0.0f, 0.1f+i*0.1f, 0.0f), quat(vec3(0.0f), 1.0f), coordinate_system::table);
+			}
 		}
 		// always update visibility of visibility changing labels
 		vr_view_interactor* vr_view_ptr = get_view_ptr();
@@ -171,14 +216,16 @@ public:
 			vec3 controller_pos = reinterpret_cast<const vec3&>(state_ptr->controller[ci].pose[9]);
 			float controller_depth = dot(view_dir, controller_pos - view_pos);
 			float controller_dist = (view_pos + controller_depth * view_dir - controller_pos).length();
-			if (view_dir.y() < -0.25f && controller_depth / controller_dist > 1.0f)
+//			if (view_dir.y() < -0.25f && controller_depth / controller_dist > 1.0f)
 				scene_ptr->show_label(li_help[ci]);
-			else
-				scene_ptr->hide_label(li_help[ci]);
+//			else
+//				scene_ptr->hide_label(li_help[ci]);
 		}
 	}
 	void clear(cgv::render::context& ctx)
 	{
+		// Example of using the debug visualization helper
+		// As the object that calls the draw function of the debug visualization helper it has to hold a reference of the instance.
 		cgv::nui::ref_debug_visualization_helper(ctx, -1);
 
 		cgv::render::ref_sphere_renderer(ctx, -1);
@@ -186,14 +233,15 @@ public:
 	}
 	void draw(cgv::render::context& ctx)
 	{
-
 		mat4 model_transform(3, 4, &get_scene_ptr()->get_coordsystem(coordinate_system::table)(0, 0));
 		set_model_transform(model_transform);
 
+		// Example of using the debug visualization helper
+		// The draw function of the helper instance has to be called once per frame somewhere. In this case the main application class is a good place.
+		cgv::nui::ref_debug_visualization_helper().draw(ctx);
+
 		ctx.push_modelview_matrix();
 		ctx.mul_modelview_matrix(model_transform);
-
-		cgv::nui::ref_debug_visualization_helper().draw(ctx);
 
 		if (show_plot)
 			plot.draw(ctx);

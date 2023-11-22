@@ -1,4 +1,4 @@
-#version 460
+#version 420
 #extension GL_EXT_geometry_shader4 : enable
 
 //***** begin interface of view.glsl ***********************************

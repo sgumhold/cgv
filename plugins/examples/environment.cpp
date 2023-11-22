@@ -11,11 +11,11 @@
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv/media/illum/textured_surface_material.h>
 #include <cgv/render/drawable.h>
+#include <cgv/render/frame_buffer.h>
+#include <cgv/render/shader_library.h>
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv_gl/gl/mesh_render_info.h>
-#include <cgv_glutil/sphere_render_data.h>
-#include <cgv_glutil/frame_buffer_container.h>
-#include <cgv_glutil/shader_library.h>
+#include <cgv_gl/sphere_render_data.h>
 
 using namespace cgv::render;
 
@@ -30,7 +30,7 @@ protected:
 
 	view* view_ptr;
 
-	cgv::glutil::shader_library shaders;
+	shader_library shaders;
 
 	unsigned shadow_map_resolution = 4*256u;
 	texture depth_map;
@@ -39,7 +39,7 @@ protected:
 
 	vec2 sun_position;
 
-	cgv::glutil::sphere_render_data<> spheres;
+	sphere_render_data<> spheres;
 	sphere_render_style sphere_style;
 
 	texture environment_map;
@@ -193,7 +193,7 @@ protected:
 	float normal_map_scale = 1.0f;
 
 public:
-	environment_demo() : cgv::base::node("environment demo") {
+	environment_demo() : cgv::base::node("Environment Demo") {
 		view_ptr = nullptr;
 		shaders.add("cubemap", "cubemap.glpr");
 		shaders.add("sky_cubemap_gen", "sky_cubemap_gen.glpr");
@@ -249,7 +249,7 @@ public:
 		ref_sphere_renderer(ctx, 1);
 
 		bool success = true;
-		success &= shaders.load_shaders(ctx);
+		success &= shaders.load_all(ctx);
 		
 		if(spheres.init(ctx)) {
 			spheres.add(vec3(0.0f, -50.0f, 0.0f), 50.0f);
@@ -774,6 +774,6 @@ public:
 
 #include <cgv/base/register.h>
 
-/// register a factory to create new rounded cone texturing tests
+/// register a factory to create new environment demos
 cgv::base::factory_registration<environment_demo> environment_demo_fac("New/Demo/Environment Demo");
 //cgv::base::object_registration<environment_demo> environment_demo_fac("New/Demo/Environment Demo");

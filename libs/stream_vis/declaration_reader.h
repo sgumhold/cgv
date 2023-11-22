@@ -4,6 +4,7 @@
 #include <map>
 #include "plot_info.h"
 #include "offset_info.h"
+#include "view_info.h"
 #include "streaming_time_series.h"
 #include "lib_begin.h"
 
@@ -14,6 +15,7 @@ namespace stream_vis {
 		const std::string& declarations;
 		std::map<std::string, uint16_t>* name2index_ptr;
 		std::vector<stream_vis::streaming_time_series*>* typed_time_series_ptr;
+		std::vector<stream_vis::view_info>* view_infos_ptr;
 		std::vector<stream_vis::offset_info>* offset_infos_ptr;
 		std::vector<plot_info>* plot_pool_ptr;
 	public:
@@ -22,6 +24,7 @@ namespace stream_vis {
 			std::map<std::string, uint16_t>* _name2index_ptr,
 			std::vector<stream_vis::streaming_time_series*>* _typed_time_series_ptr,
 			std::vector<stream_vis::offset_info>* _offset_infos_ptr,
+			std::vector<stream_vis::view_info>* _view_infos_ptr,
 			std::vector<plot_info>* _plot_pool_ptr);
 		virtual bool get_value(const std::string& name, std::string& v) = 0;
 		virtual bool parse_accessor(char swizzle, TimeSeriesAccessor& tsa);
@@ -57,6 +60,7 @@ namespace stream_vis {
 		bool construct_mark(const std::string& mark, cgv::plot::plot_base_config& cfg, int dim);
 		bool construct_subplot(plot_info& pi, int dim, std::vector<attribute_definition>& ads);
 		void construct_plot(const std::string& name, int dim);
+		void construct_view(const std::string& name, int dim, const std::vector<std::string>& plot_refs);
 		void construct_resample(const std::string& name, const std::string& resampled_ts, const std::string& sampling_ts);
 		void construct_offset(const std::string& name, std::vector<std::string>& offset_refs);
 		virtual bool parse_declarations() = 0;

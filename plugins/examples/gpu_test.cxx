@@ -47,7 +47,7 @@ public:
 		depth_tex("[D]", TF_NEAREST, TF_NEAREST),
 		db("[D]")
 	{
-		font_face = find_font("Arial")->get_font_face(FFA_ITALIC);
+		font_face = find_font_or_default("Arial")->get_font_face(FFA_ITALIC);
 		angle = 0;
 		show_tex = show_img_tex = true;
 		use_depth_texture = true;
@@ -162,8 +162,10 @@ public:
 				prog.set_uniform(ctx,"tex", 0);
 				prog.set_uniform(ctx,"img_tex", 1);
 				prog.set_uniform(ctx, "map_color_to_material", 3);
+				
 				// draw scene
 				ctx.tesselate_unit_cube();
+
 			// disable shader program
 			prog.disable(ctx);
 			// and textures

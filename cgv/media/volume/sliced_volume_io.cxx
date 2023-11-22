@@ -6,6 +6,7 @@
 #include <cgv/utils/scan.h>
 #include <cgv/utils/file.h>
 #include <cgv/utils/progression.h>
+#include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/dir.h>
 #include <cgv/media/video/video_reader.h>
 #include <cgv/media/image/image_reader.h>
@@ -44,23 +45,33 @@ namespace cgv {
 				}
 				return data;
 			}
-			size_t read_system_output(std::string cmd, uint8_t* buffer, size_t buffer_size, const char* progression_text = 0, bool use_cerr = false)
+			size_t read_system_output(std::string cmd, uint8_t* buffer, size_t buffer_size, const char* progression_text = 0, bool use_cerr = false, void (*on_progress_update)(int,void*) = 0, void* user_data = 0, size_t block_size = 4096, bool cycle_till_eof = false)
 			{
-				static const unsigned BUFFER_SIZE = 4096;
 				cgv::utils::progression* prog_ptr = 0;
 				if (progression_text != 0)
-					prog_ptr = new cgv::utils::progression(progression_text, buffer_size/BUFFER_SIZE, 20);
+					prog_ptr = new cgv::utils::progression(progression_text, buffer_size/block_size, 20);
 				FILE* fp;
 				if (use_cerr)
 					cmd.append(" 2>&1");
-				fp = popen(cmd.c_str(), "rb");
+#ifdef WIN32
+				const char* mode = "rb";
+#else
+				const char* mode = "r";
+#endif
+				fp = popen(cmd.c_str(), mode);
 				size_t nr_bytes_read = 0;
+				int block_cnt = 0;
 				if (fp) {
-					while (nr_bytes_read < buffer_size && !feof(fp)) {
-						size_t nr_bytes = std::min(size_t(BUFFER_SIZE), buffer_size - nr_bytes_read);
-						size_t nr_read = fread(buffer + nr_bytes_read, 1, nr_bytes, fp);
+					while ((nr_bytes_read < buffer_size || cycle_till_eof) && !feof(fp)) {
+						size_t nr_bytes = block_size;
+						if (!cycle_till_eof)
+							nr_bytes = std::min(nr_bytes, buffer_size - nr_bytes_read);
+						size_t offset = nr_bytes_read % buffer_size;
+						size_t nr_read = fread(buffer + offset, 1, nr_bytes, fp);
 						if (prog_ptr)
 							prog_ptr->step();
+						if (on_progress_update)
+							on_progress_update(++block_cnt, user_data);
 						nr_bytes_read += nr_read;
 						if (nr_read < nr_bytes)
 							break;
@@ -72,30 +83,54 @@ namespace cgv {
 
 			bool read_volume_from_video_with_ffmpeg(volume& V, const std::string& file_name,
 				volume::dimension_type dims, volume::extent_type extent, const cgv::data::component_format& cf,
-				size_t offset, FlipType flip_t)
+				size_t offset, FlipType flip_t, void (*on_progress_update)(int,void*), void* user_data, bool cycle_till_eof)
 			{
 				std::string fn_in_quotes = std::string("\"") + cgv::utils::file::platform_path(file_name) + "\"";
-				if (dims(0) == -1 || dims(1) == -1 || dims(2) == -1) {
-					std::string cmd = "ffprobe -v error ";
-					if (dims(2) == -1)
-						cmd += "-count_frames ";
-					cmd += "-select_streams v:0 -show_entries stream=width,height";
-					if (dims(2) == -1)
-						cmd += ",nb_read_frames";
-					cmd += " -of default=nokey=1:noprint_wrappers=1 ";
-					cmd += fn_in_quotes;
-					std::cout << "Analyze Video with " << cmd << std::endl;
-					std::string video_info = query_system_output(cmd, false);
-					std::stringstream ss(video_info);
+				if (dims(0) == -1 || dims(1) == -1 || dims(2) < 0) {
 					int w, h, n = dims(2);
-					ss >> w >> h;
-					if (dims(2) == -1)
-						ss >> n;
-					if (ss.fail()) {
-						std::cerr << "Error: could not analyze video file <" << file_name << "> with ffprobe" << std::endl;
-						return false;
+					while (true) {
+						std::string cmd = "ffprobe -v error ";
+						if (dims(2) == -2)
+							cmd += "-count_frames ";
+						cmd += "-select_streams v:0 -show_entries stream=width,height";
+						if (dims(2) == -2)
+							cmd += ",nb_read_frames";
+						else
+							cmd += ",nb_frames";
+						cmd += " -show_entries side_data=rotation -of default=nokey=1:noprint_wrappers=1 ";
+						cmd += fn_in_quotes;
+						std::cout << "Analyze Video with " << cmd << std::endl;
+						std::string video_info = query_system_output(cmd, false);
+						std::vector<cgv::utils::line> lines;
+						cgv::utils::split_to_lines(video_info, lines, true);
+						bool do_swap_sides = false;
+						if (lines.size() >= 4) {
+							int rot;
+							if (cgv::utils::is_integer(lines[3].begin, lines[3].end, rot)) {
+								if (rot == 90 || rot == -90)
+									do_swap_sides = true;
+							}
+						}
+						std::stringstream ss(video_info);
+						ss >> w >> h;
+						if (do_swap_sides)
+							std::swap(w, h);
+						if (dims(2) < 0)
+							ss >> n;
+						// reattempt if nb_frames not supported by video format
+						if (ss.fail()) {
+							if (dims(2) == -1) {
+								dims(2) = -2;
+								std::cerr << "Video file <" << file_name << "> does not support nb_frames - need to could frames, please wait!" << std::endl;
+								continue;
+							}
+							std::cerr << "Error: could not analyze video file <" << file_name << "> with ffprobe" << std::endl;
+							return false;
+						}
+						else
+							break;
 					}
-					if (dims(2) == -1 && offset > n) {
+					if (dims(2) < 0 && offset > n) {
 						std::cerr << "Error: frame offset " << offset << " larger than frame count of video file <" << file_name << "> with ffprobe" << std::endl;
 						return false;
 					}
@@ -117,7 +152,7 @@ namespace cgv {
 							<< dims(1) << " in svx file '" << file_name << "' vs "
 							<< h << " in video file '" << file_name << "'" << std::endl;
 					}
-					if (dims(2) == -1) {
+					if (dims(2) < 0) {
 						dims(2) = int(n - offset);
 						extent(2) *= -dims(2);
 					}
@@ -129,11 +164,21 @@ namespace cgv {
 					//}
 				}
 				V.get_format().set_component_format(cf);
+				V.get_format().set_width(dims(0));
+				V.get_format().set_height(dims(1));
+				V.get_format().set_depth(dims(2));
+				if (on_progress_update)
+					on_progress_update(-1, user_data);
+				dims(2) = V.get_format().get_depth();
 				V.resize(dims);
 				V.ref_extent() = extent;
 				std::string cmd = "ffmpeg -i ";
 				cmd += fn_in_quotes;
-				cmd += " -frames:v "; cmd += cgv::utils::to_string(dims(2));
+				cmd += " -loglevel quiet";
+				if (!cycle_till_eof) {
+					cmd += " -frames:v ";
+					cmd += cgv::utils::to_string(dims(2));
+				}
 				if (offset > 0) {
 					cmd += " -vf \"select=gte(n\\,";
 					cmd += cgv::utils::to_string(offset);
@@ -147,7 +192,7 @@ namespace cgv {
 						cmd += "hflip ";
 					if (flip_t == FT_VERTICAL)
 						cmd += "vflip ";
-					if (flip_t == FT_HORIZONTAL)
+					if (flip_t == FT_VERTICAL_AND_HORIZONTAL)
 						cmd += "hflip vflip ";
 				}
 				cmd += " -f rawvideo -pix_fmt ";
@@ -175,10 +220,16 @@ namespace cgv {
 				}
 				cmd += " pipe:1";
 				std::cout << "COMMAND:\n" << cmd << "\n" << std::endl;
-				size_t bytes_read = read_system_output(cmd, V.get_data_ptr<uint8_t>(), V.get_size(), "reading video");
+				if (on_progress_update)
+					on_progress_update(0, user_data);
+				
+				size_t bytes_read = read_system_output(cmd, V.get_data_ptr<uint8_t>(), V.get_size(),
+					"reading video", false, on_progress_update, user_data, V.get_slice_size(), cycle_till_eof);
 				if (bytes_read < V.get_size()) {
 					std::cerr << "Warning: could only read " << bytes_read << " of volume with size " << V.get_size() << std::endl;
 				}
+				if (on_progress_update)
+					on_progress_update(V.get_dimensions()(2) + 1, user_data);
 				return true;
 			}
 			bool read_from_sliced_volume(const std::string& file_name, volume& V)

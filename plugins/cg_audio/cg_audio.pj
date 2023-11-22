@@ -1,0 +1,7 @@
+@=
+projectGUID = "11579BCB-33F3-40D3-A5B8-ABC11CBABD49";
+projectType = "static_library";
+projectName = "cg_audio";
+addProjectDirs=[CGV_DIR."/libs"];
+cppLanguageStandard="stdcpp17";
+addProjectDeps=["cgv_base", "cgv_gui", "cgv_oal"];

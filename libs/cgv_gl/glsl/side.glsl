@@ -1,4 +1,5 @@
 #version 150 
+// can be uses in vertex or geometry shader
 
 // use cgv/render/context/CullingMode enum (0 .. off, 1 .. backface, 2 .. frontface)
 uniform int culling_mode = 0;

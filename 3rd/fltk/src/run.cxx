@@ -1216,6 +1216,55 @@ bool fltk::try_shortcut() {
 #if 0 // set to 1 to dump to console non 0 events from this function
 # define DUMP_EVENTS
 # include <stdio.h>
+#include <iostream>
+
+void show_event_state ()
+{
+  int es = event_state();
+  if ((es & SHIFT) != 0) { 
+    std::cout << " SH";
+    es -= SHIFT;
+  } 
+  if ((es & CAPSLOCK) != 0){ 
+    std::cout << " CL";
+    es -= CAPSLOCK;
+  } 
+  if ((es & CTRL) != 0){ 
+    std::cout << " CT";
+    es -= CTRL;
+  } 
+  if ((es & ALT) != 0){ 
+    std::cout << " AT";
+    es -= ALT;
+  } 
+  if ((es & NUMLOCK) != 0){ 
+    std::cout << " NL";
+    es -= NUMLOCK;
+  } 
+  if ((es & META) != 0){ 
+    std::cout << " ME";
+    es -= META;
+  } 
+  if ((es & SCROLLLOCK) != 0){ 
+    std::cout << " SL";
+    es -= SCROLLLOCK;
+  } 
+  if ((es & BUTTON1) != 0){ 
+    std::cout << " LB";
+    es -= BUTTON1;
+  } 
+  if ((es & BUTTON2) != 0){ 
+    std::cout << " MB";
+    es -= BUTTON2;
+  } 
+  if ((es & BUTTON3) != 0){ 
+    std::cout << " RB";
+    es -= BUTTON3;
+  } 
+  if (es != 0)
+      std::cout << " " << es;
+  std::cout << std::endl;
+}
 #endif
 
 bool fltk::handle(int event, Window* window)
@@ -1224,7 +1273,10 @@ bool fltk::handle(int event, Window* window)
 
 #ifdef DUMP_EVENTS
   static unsigned long evtnum=0L;
-  if (event) printf("event name = %8lu %s\n", ++evtnum, fltk::event_name(event));
+  if (event) {
+    printf("event name = %8lu %s", ++evtnum, fltk::event_name(event));
+    show_event_state();
+  } 
 #endif
 
   if (fl_local_grab) return fl_local_grab(event);

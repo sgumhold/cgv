@@ -235,7 +235,7 @@ void fltk_align_group::parse_variable_change(const std::string& align, unsigned 
 /// initialize the members used for alignment
 void fltk_align_group::init_aligment()
 {
-	x_offset = 100;
+	x_offset = 120;
 	y_offset = 10;
 	x_spacing = 12;
 	y_spacing = 8;

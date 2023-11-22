@@ -28,9 +28,13 @@ protected:
 	unsigned char action;
 	/// store the corresponding ascii character
 	unsigned char character;
+	/// x position of mouse pointer
+	short x;
+	/// y position of mouse pointer
+	short y;
 public:
 	/// construct a key event from its textual description 
-	key_event(unsigned short _key = 0, KeyAction _action = KA_PRESS, unsigned char _char = 0, unsigned char _modifiers = 0, unsigned char _toggle_keys = 0, double _time = 0);
+	key_event(unsigned short _key = 0, KeyAction _action = KA_PRESS, unsigned char _char = 0, unsigned char _modifiers = 0, unsigned char _toggle_keys = 0, double _time = 0, int _x = 0, int _y = 0);
 	/// write to stream
 	void stream_out(std::ostream& os) const;
 	/// read from stream
@@ -47,6 +51,10 @@ public:
 	unsigned char get_char() const;
 	/// set the alpha numeric character
 	void set_char(unsigned char _char);
+	/// current mouse x position (origin is top-left of window)
+	short get_x() const;
+	/// current mouse y position (origin is top-left of window)
+	short get_y() const;
 };
 
 	}

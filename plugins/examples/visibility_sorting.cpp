@@ -3,9 +3,8 @@
 #include <cgv/base/node.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
-#include <cgv_glutil/sphere_render_data.h>
-#include <cgv_glutil/gpu_sorter.h>
-#include <cgv_glutil/radix_sort_4way.h>
+#include <cgv_gl/sphere_render_data.h>
+#include <cgv_gpgpu/visibility_sort.h>
 
 class visibility_sorting : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
 protected:
@@ -14,19 +13,19 @@ protected:
 	unsigned n;
 
 	cgv::render::sphere_render_style sphere_style;
-	cgv::glutil::sphere_render_data<rgba> rd;
+	cgv::render::sphere_render_data<rgba> spheres;
 
-	cgv::glutil::gpu_sorter* sorter;
+	cgv::gpgpu::visibility_sort visibility_sorter;
 	bool do_sort;
 
 public:
-	visibility_sorting() : cgv::base::node("visibility sorting test")
+	visibility_sorting() : cgv::base::node("Visibility Sorting Test")
 	{
 		view_ptr = nullptr;
 		n = 10000;
 		sphere_style.radius = 0.01f;
 		sphere_style.surface_color = rgb(1.0f, 0.5f, 0.2f);
-		sphere_style.map_color_to_material = CM_COLOR_AND_OPACITY;
+		sphere_style.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
 		do_sort = true;
 	}
 	void on_set(void* member_ptr)
@@ -41,19 +40,17 @@ public:
 	void clear(cgv::render::context& ctx)
 	{
 		cgv::render::ref_sphere_renderer(ctx, -1);
-		rd.destruct(ctx);
+		spheres.destruct(ctx);
 
-		delete sorter;
-		sorter = nullptr;
+		visibility_sorter.destruct(ctx);
 	}
 	bool init(cgv::render::context& ctx)
 	{
 		cgv::render::ref_sphere_renderer(ctx, 1);
-		if(!rd.init(ctx))
+		if(!spheres.init(ctx))
 			return false;
 		
-		sorter = new cgv::glutil::radix_sort_4way();
-		sorter->set_sort_order(cgv::glutil::gpu_sorter::SO_DESCENDING);
+		visibility_sorter.set_sort_order(cgv::gpgpu::visibility_sort::SO_DESCENDING);
 
 		create_data();
 
@@ -68,7 +65,7 @@ public:
 	}
 	void draw(cgv::render::context& ctx)
 	{	
-		if(!view_ptr || rd.ref_pos().size() == 0) return;
+		if(!view_ptr || spheres.empty()) return;
 
 		glEnable(GL_BLEND);
 		glDisable(GL_DEPTH_TEST);
@@ -76,35 +73,38 @@ public:
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		auto& sr = ref_sphere_renderer(ctx);
-		rd.early_transfer(ctx, sr);
+		spheres.early_transfer(ctx, sr);
 
-		int pos_handle = 0;
-		int idx_handle = 0;
-		auto& aam = rd.ref_aam();
+		auto& aam = spheres.ref_attribute_array_manager();
+		const cgv::render::vertex_buffer* position_buffer_ptr = sr.get_vertex_buffer_ptr(ctx, aam, "position");
+		const cgv::render::vertex_buffer* index_buffer_ptr = sr.get_index_buffer_ptr(aam);
 		
-		pos_handle = sr.get_vbo_handle(ctx, aam, "position");
-		idx_handle = sr.get_index_buffer_handle(aam);
-		
-
-		if(pos_handle > 0 && idx_handle > 0 && do_sort) {
-			sorter->sort(ctx, pos_handle, idx_handle, view_ptr->get_eye(), view_ptr->get_view_dir());
+		if(visibility_sorter.is_initialized()) {
+			if(position_buffer_ptr && index_buffer_ptr && do_sort) {
+				visibility_sorter.begin_time_query();
+				visibility_sorter.execute(ctx, *position_buffer_ptr, *index_buffer_ptr, view_ptr->get_eye(), view_ptr->get_view_dir());
+				float time = visibility_sorter.end_time_query();
+				std::cout << "Sorting done in " << time << " ms -> " << static_cast<float>(n) / (1000.0f * time) << " M/s" << std::endl;
+			}
+		} else {
+			std::cout << "Warning: GPU visibility sort is not initialized." << std::endl;
 		}
 
-		rd.render(ctx, sr, sphere_style);
+		spheres.render(ctx, sr, sphere_style);
 
 		glDisable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
 	}
 	void create_gui()
 	{
-		add_decorator("visibility sorting", "heading");
+		add_decorator("Visibility Sorting", "heading");
 
-		add_member_control(this, "n", n, "value_slider", "min=1000;max=10000000;ticks=true");
-		connect_copy(add_button("generate")->click, cgv::signal::rebind(this, &visibility_sorting::create_data));
+		add_member_control(this, "N", n, "value_slider", "min=1000;max=10000000;ticks=true");
+		connect_copy(add_button("Generate")->click, cgv::signal::rebind(this, &visibility_sorting::create_data));
 
-		add_member_control(this, "sort", do_sort, "check");
+		add_member_control(this, "Sort", do_sort, "check");
 
-		if(begin_tree_node("sphere style", sphere_style, true)) {
+		if(begin_tree_node("Sphere Style", sphere_style, false)) {
 			align("\a");
 			add_gui("", sphere_style);
 			align("\b");
@@ -115,16 +115,13 @@ public:
 	{
 		auto& ctx = *get_context();
 
-		rd.clear();
+		spheres.clear();
 
 		std::mt19937 rng(42);
 		std::uniform_real_distribution<float> pos_distr(-1.0f, 1.0f);
 		std::uniform_real_distribution<float> col_distr(0.2f, 0.9f);
 
 		for(unsigned i = 0; i < n; ++i) {
-			float x = 0.5f * static_cast<float>(i + 1);
-			float y = 0.3f * static_cast<float>(i);
-
 			vec3 pos(
 				pos_distr(rng),
 				pos_distr(rng),
@@ -138,16 +135,15 @@ public:
 				col_distr(rng)
 			);
 
-			rd.add(pos);
-			rd.add(col);
+			spheres.add(pos, col);
 		}
 
-		rd.ref_idx().resize(rd.ref_pos().size());
+		spheres.indices.resize(spheres.size());
 
-		if(!sorter->init(ctx, rd.ref_idx().size()))
-			std::cout << "Could not initialize GPU sorter" << std::endl;
+		if(!visibility_sorter.init(ctx, spheres.indices.size()))
+			std::cout << "Error: Could not initialize GPU sorter!" << std::endl;
 
-		rd.set_out_of_date();
+		spheres.set_out_of_date();
 		post_redraw();
 	}
 };

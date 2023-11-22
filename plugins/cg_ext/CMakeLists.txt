@@ -1,8 +1,16 @@
 
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
+file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 
-add_library(cg_ext ${SOURCES})
-target_compile_definitions(cg_ext PRIVATE CGV_GUI_EXT_EXPORTS)
-target_link_libraries(cg_ext cgv_base cgv_gui)
+cgv_add_target(cg_ext
+	TYPE plugin NO_EXECUTABLE
+	SOURCES ${SOURCES}
+	HEADERS ${HEADERS}
+	DEPENDENCIES cgv_base cgv_gui
+
+	OVERRIDE_SHARED_EXPORT_DEFINE CGV_GUI_EXT_EXPORTS
+	OVERRIDE_FORCE_STATIC_DEFINE  CGV_GUI_FORCE_STATIC
+)
 
 install(TARGETS cg_ext EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
+install(TARGETS cg_ext_static EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})

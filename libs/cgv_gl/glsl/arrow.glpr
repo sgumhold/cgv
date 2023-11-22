@@ -1,5 +1,5 @@
 files:arrow
-fragment_file:side.glsl
+fragment_file:side.glfs
 geometry_file:view.glsl
 geometry_file:splat.glsl
 fragment_file:view.glsl

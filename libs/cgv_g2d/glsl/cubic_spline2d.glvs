@@ -1,0 +1,40 @@
+#version 150
+
+/*
+	0: SINGLE
+	1: ARRAY
+*/
+#define MODE 1
+
+#if MODE == 0
+in vec2 position0; // position 0
+in vec2 position1; // tangent 0
+in vec2 position2; // position 1
+in vec2 position3; // tangent 1
+in vec4 color;
+
+flat out vec4 position23_gs;
+flat out vec4 color_gs;
+
+void main() {
+	
+	position23_gs = vec4(position2, position3);
+	color_gs = color;
+	gl_Position = vec4(position0, position1);
+}
+
+#else
+
+in vec2 position;
+in vec2 tangent;
+in vec4 color;
+
+flat out vec4 color_gs;
+
+void main() {
+	
+	color_gs = color;
+	gl_Position = vec4(position, tangent);
+}
+
+#endif

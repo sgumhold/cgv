@@ -1,0 +1,37 @@
+#version 450
+
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec4 color;
+
+out vec4 color_gs;
+out float point_size_gs;
+out float radius_gs;
+out float linear_depth_gs;
+
+//***** begin interface of view.glsl **********************************/
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************/
+
+//***** begin interface of point_clod.glsl **********************************/
+void compute_point_size(in vec3 position, in vec4 color, in mat4 central_transform, in mat4 transform,in mat4 model_view_matrix, in mat4 projection_matrix,out float point_size, out float radius, out float linear_depth);
+//***** end interface of point_clod.glsl **********************************/
+
+
+void main()
+{
+	mat4 transform = get_modelview_projection_matrix();
+	
+	color_gs = vec4(color.rgb,1.0);
+	
+	gl_Position = vec4(position, 1.0);
+
+	compute_point_size(position, color, transform, transform, get_modelview_matrix(), get_projection_matrix(), point_size_gs, radius_gs, linear_depth_gs);
+
+	gl_PointSize = point_size_gs*0.8;
+}

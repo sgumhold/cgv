@@ -269,10 +269,10 @@ control_ptr create_valuator_1(const std::string& label, void* value_ptr,
 	if (value_type == "uint16")
 		return control_ptr(new fltk_value_control<cgv::type::uint16_type,B>(
 			label, *static_cast<cgv::type::uint16_type*>(value_ptr), acp, x, y, w, h));
-	if (value_type == "uint32")
+	if (value_type == "uint32" || (sizeof(size_t) == 4 && value_type == "m"))
 		return control_ptr(new fltk_value_control<cgv::type::uint32_type,B>(
 			label, *static_cast<cgv::type::uint32_type*>(value_ptr), acp, x, y, w, h));
-	if (value_type == "uint64")
+	if (value_type == "uint64" || (sizeof(size_t) == 8 && value_type == "m"))
 		return control_ptr(new fltk_value_control<cgv::type::uint64_type,B>(
 			label, *static_cast<cgv::type::uint64_type*>(value_ptr), acp, x, y, w, h));
 	if (value_type == "flt32")

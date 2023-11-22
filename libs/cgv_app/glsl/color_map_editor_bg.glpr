@@ -1,0 +1,6 @@
+vertex_file:base_quad2d.glvs
+geometry_file:base_quad2d.glgs
+geometry_file:shape2d.glsl
+fragment_file:color_map_editor_bg.glfs
+fragment_file:shape2d.glsl
+fragment_file:fragment2d.glfs

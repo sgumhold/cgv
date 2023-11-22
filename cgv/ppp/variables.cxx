@@ -2,6 +2,7 @@
 #include <map>
 #include <iostream>
 #include <stdlib.h>
+#include <cgv/utils/advanced_scan.h>
 
 #ifdef WIN32
 #pragma warning (disable:4503)
@@ -189,6 +190,16 @@ namespace cgv {
 				}
 				env_map[var_name] = variant(value);
 				++glob_vars;
+			}
+			variant& opt = ref_variable("cgv_options");
+			opt.set_map();
+			auto iter = env_map.find("CGV_OPTIONS");
+			if (iter != env_map.end()) {
+				std::vector<cgv::utils::token> tokens;
+				cgv::utils::split_to_tokens(iter->second.get_str(), tokens, ";", false);
+				for (unsigned i = 0; i < tokens.size(); i += 2) {
+					opt.ref_map()[cgv::utils::to_string(tokens[i])].set_int(1);
+				}
 			}
 			variant::list_type& arg_list = (env_map["ARGS"] = variant(variant::list_type())).ref_list();
 			for (int i = 0; i < argc; ++i)

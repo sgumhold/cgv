@@ -8,17 +8,17 @@
 #include <cgv/media/image/image_reader.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/texture.h>
-#include <cgv_glutil/cone_render_data.h>
-#include <cgv_glutil/sphere_render_data.h>
+#include <cgv_gl/cone_render_data.h>
+#include <cgv_gl/sphere_render_data.h>
 
 class cone_texturing : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
 protected:
 	cgv::render::cone_render_style cone_style;
-	cgv::glutil::cone_render_data<> rd;
+	cgv::render::cone_render_data<> rd;
 
 	cgv::render::texture tex;
 public:
-	cone_texturing() : cgv::base::node("rounded cone texturing test") {		
+	cone_texturing() : cgv::base::node("Rounded Cone Texturing Test") {		
 		cone_style.rounded_caps = true;
 		cone_style.radius = 0.1f;
 		cone_style.surface_color = rgb(1.0f, 0.5f, 0.2f);
@@ -92,9 +92,9 @@ public:
 class cone_tree : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
 protected:
 	cgv::render::cone_render_style stem_style;
-	cgv::glutil::cone_render_data<> stems;
+	cgv::render::cone_render_data<> stems;
 	cgv::render::sphere_render_style leave_style;
-	cgv::glutil::sphere_render_data<> leaves;
+	cgv::render::sphere_render_data<> leaves;
 	
 	cgv::render::texture tex;
 
@@ -229,7 +229,7 @@ public:
 		for(unsigned i = 0; i < n; ++i) {
 			for(unsigned j = 0; j < sentence.length(); ++j) {
 				char c = sentence[j];
-				auto& it = rules.find(c);
+				auto it = rules.find(c);
 				if(it != rules.end()) {
 					auto& r = (*it);
 					next_sentence += r.second;
@@ -319,9 +319,7 @@ public:
 				rad_stack.push(rad);
 				break;
 			case ']':
-				leaves.add(pos);
-				leaves.add(1.5f * (0.8f*distr(rng) + 0.2f * rad));
-
+				leaves.add(pos, 1.5f * (0.8f * distr(rng) + 0.2f * rad));
 				pos = pos_stack.top();
 				dir = dir_stack.top();
 				rad = rad_stack.top();

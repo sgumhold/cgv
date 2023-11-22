@@ -121,6 +121,19 @@ public:
 		add_point(aab.minp);
 		add_point(aab.maxp);
 	}
+	/// returns intersection of this aab with the provided aab
+	axis_aligned_box<T,N> intersect(const axis_aligned_box<T,N>& aab) {
+		fpnt_type min_p = minp;
+		fpnt_type max_p = maxp;
+		if (!aab.is_valid())
+			return axis_aligned_box<T, N>(min_p, max_p);
+		
+		for (unsigned int c = 0; c<N; ++c) {
+			if (aab.maxp(c) < maxp(c)) max_p(c) = aab.maxp(c);
+			if (aab.minp(c) > minp(c)) min_p(c) = aab.minp(c);
+		}
+		return axis_aligned_box<T, N>(min_p, max_p);
+	}
 	/// scale the complete box with respect to the world coordinate origin
 	void scale(const T& f)
 	{

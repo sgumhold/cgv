@@ -1,0 +1,17 @@
+#version 150
+
+uniform vec4 color;
+uniform float depth = 0.0;
+
+uniform vec3 gamma3 = vec3(2.2);
+uniform bool apply_gamma = false;
+
+out vec4 frag_color;
+
+void main()
+{
+	frag_color = color;
+	if(apply_gamma)
+		frag_color.rgb = pow(frag_color.rgb, gamma3);
+	gl_FragDepth = depth;
+}

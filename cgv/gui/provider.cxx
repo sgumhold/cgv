@@ -134,16 +134,26 @@ gui_group_ptr provider::add_object_gui(base_ptr object, const std::string& label
 }
 
 // inline the gui of another object that must be derived from provider.
+void provider::integrate_object_gui(base_ptr object)
+{
+	provider* p = object->get_interface<provider>();
+	if (!p)
+		return;
+	p->set_parent(parent_group);
+	p->parent_provider = this;
+}
+
+// inline the gui of another object that must be derived from provider.
 void provider::inline_object_gui(base_ptr object)
 {
 	provider* p = object->get_interface<provider>();
 	if (!p)
 		return;
-	//gui_group_ptr pg = p->get_parent_group();
-	p->set_parent(parent_group);
-	p->parent_provider = this;
+	if (p->get_parent_group() != parent_group) {
+		p->set_parent(parent_group);
+		p->parent_provider = this;
+	}
 	p->create_gui();
-	//p->set_parent(pg);
 }
 
 /// add a newly created subgroup to the group
@@ -501,21 +511,19 @@ void provider::post_recreate_gui()
 	if (parent_provider)
 		parent_provider->post_recreate_gui();
 	else {
-
-		// ref_mutex().lock();
-
-		std::set<provider*>& ps = ref_providers();
-		if (ps.find(this) == ps.end()) {
-			bool dont_insert = false;
-			if (!ref_one_shot_trigger().is_scheduled() && get_trigger_server())
-				if (!ref_one_shot_trigger().schedule_one_shot(0))
-					dont_insert = true;
-			if (!dont_insert)
-				ps.insert(this);
+		if (parent_group) {
+			// ref_mutex().lock();
+			std::set<provider*>& ps = ref_providers();
+			if (ps.find(this) == ps.end()) {
+				bool dont_insert = false;
+				if (!ref_one_shot_trigger().is_scheduled() && get_trigger_server())
+					if (!ref_one_shot_trigger().schedule_one_shot(0))
+						dont_insert = true;
+				if (!dont_insert)
+					ps.insert(this);
+			}
+			// ref_mutex().unlock();
 		}
-
-		// ref_mutex().unlock();
-
 	}
 }
 

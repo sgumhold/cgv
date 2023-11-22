@@ -10,5 +10,5 @@ if(SYSTEM=="windows") {
 	excludeSourceDirs = [INPUT_DIR."/src/linux", INPUT_DIR."/src/ios"];
 	addIncDirs=addIncDirs.[INPUT_DIR."/include/windows"];
 	addDefines=["NOMINMAX"];
-	addDependencies = ["Dwmapi"];
+	addDependencies = [["Dwmapi", "all"]];
 }

@@ -6,7 +6,7 @@ name(main):W=1280;H=720
 name(main):gamma=1.0
 
 // construct an emulated vr kit 
-type(vr_emulator):current_kit_index=0
+//type(vr_emulator):current_kit_index=0
 
 // choose environment mode from empty,skybox,procedural
 //type(vr_scene):environment_mode=skybox

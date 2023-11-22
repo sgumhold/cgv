@@ -17,6 +17,8 @@ uniform float blend_width_in_pixel = 1.0;
 uniform float halo_width_in_pixel = 0.0;
 uniform float percentual_halo_width = 0.0;
 
+uniform float surface_offset;
+
 in vec3 normal_gs[];
 in vec4 color_gs[];
 
@@ -76,6 +78,8 @@ void main()
 	normal = normalize(get_normal_matrix()*normal_gs[0]);
 	// transform position to eye space
 	vec4 P = get_modelview_matrix()*gl_PositionIn[0];
+	// apply positional offset in normal direction before w-clip
+	P.xyz += surface_offset * normal;
 	vec3 position_eye = P.xyz / P.w;
 	// determine side in eye space and check for culling
 	if (!keep_this_side(position_eye, normal, side))
@@ -85,7 +89,7 @@ void main()
 	// compute extent of a pixel at point depth in eye coordinates
 	float pixel_extent = pixel_extent_per_depth * depth;
 	// compute point radius from input point size
-	float reference_point_radius = 0.5 * gl_PointSizeIn[0] * (measure_point_size_in_pixel ? pixel_extent : reference_point_size);
+	float reference_point_radius = 0.5 * gl_in[0].gl_PointSize * (measure_point_size_in_pixel ? pixel_extent : reference_point_size);
 	// compute splat parameters for fragment shader
 	prepare_splat(reference_point_radius, pixel_extent,
 	    blend_width_in_pixel, halo_width_in_pixel, percentual_halo_width,

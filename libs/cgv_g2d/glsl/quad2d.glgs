@@ -1,0 +1,92 @@
+#version 150
+
+//***** begin interface of shape2d.glsl ***********************************
+uniform bool origin_upper_left = false;
+
+uniform float border_radius = 0.0;
+uniform float feather_origin = 0.5;
+
+float get_feather_width();
+vec2 get_adjusted_size();
+vec4 get_color();
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+layout(points) in;
+layout(triangle_strip, max_vertices = 4) out;
+
+const vec2 corners[4] = vec2[](
+	vec2(-0.5, -0.5),
+	vec2(+0.5, -0.5),
+	vec2(-0.5, +0.5),
+	vec2(+0.5, +0.5)
+);
+
+uniform bool position_is_center = false;
+
+flat in vec4 position23_gs[];
+flat in vec4 color_gs[];
+
+flat out vec2 size;
+flat out vec4 position01_fs;
+flat out vec4 position23_fs;
+out vec2 pix_coord;
+out vec2 tex_coord;
+flat out vec4 color_fs;
+
+vec2 scale_corner(in vec2 a, in vec2 d0, in vec2 d1, in float scale) {
+	vec2 d = normalize(d0 + d1);
+	float alpha = dot(d0, d1);
+	
+	float l = scale / acos(0.5*alpha);
+	return a - l*d;
+}
+
+void emit_corner(int id, vec2 p) {
+	vec2 corner = corners[id];
+
+	pix_coord = p;
+	tex_coord = corner + 0.5;
+
+	gl_Position = transform_world_to_window_space(p);
+	EmitVertex();
+}
+
+void main() {
+	color_fs = color_gs[0];
+
+	float scale = 2.0*feather_origin*get_feather_width();
+	
+	vec2 a = gl_in[0].gl_Position.xy;
+	vec2 b = gl_in[0].gl_Position.zw;
+	vec2 c = position23_gs[0].xy;
+	vec2 d = position23_gs[0].zw;
+	
+	vec2 ab = normalize(b - a);
+	vec2 bd = normalize(d - b);
+	vec2 dc = normalize(c - d);
+	vec2 ca = normalize(a - c);
+
+	vec2 as = scale_corner(a, ab, -ca, scale);
+	vec2 bs = scale_corner(b, bd, -ab, scale);
+	vec2 cs = scale_corner(c, ca, -dc, scale);
+	vec2 ds = scale_corner(d, -bd, dc, scale);
+
+	position01_fs = vec4(as, bs);
+	position23_fs = vec4(cs, ds);
+
+	vec2 temp;
+	if(origin_upper_left) {
+		temp = as;
+		as = cs;
+		cs = temp;
+		temp = bs;
+		bs = ds;
+		ds = temp;
+	}
+
+	emit_corner(0, as);
+	emit_corner(1, bs);
+	emit_corner(2, cs);
+	emit_corner(3, ds);
+}

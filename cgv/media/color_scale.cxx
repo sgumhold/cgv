@@ -2,6 +2,7 @@
 #include <map>
 #include <algorithm>
 #include <cgv/utils/scan.h>
+#include <cgv/utils/convert_string.h>
 
 namespace cgv {
 	namespace media {
@@ -180,7 +181,8 @@ const std::string& get_color_scale_enum_definition(bool include_fixed, bool incl
 		if (include_fixed)
 			def += "red,green,blue,gray,temperature,hue,hue_luminance";
 		if (include_named) {
-			bool no_comma = !include_fixed, fst = true;
+			bool no_comma = !include_fixed;
+			unsigned i = 7;
 			for (const auto& p : ref_sampled_color_scale_map()) {
 				if (polarity == 0 || (polarity == (p.second.second ? 2 : 1))) {
 					if (no_comma)
@@ -188,11 +190,10 @@ const std::string& get_color_scale_enum_definition(bool include_fixed, bool incl
 					else
 						def += ",";
 					def += p.first;
-					if (fst) {
-						def += "=7";
-						fst = false;
-					}
+					def += "=";
+					def += cgv::utils::to_string(i);
 				}
+				++i;
 			}
 		}
 		def += "'";

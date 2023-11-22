@@ -150,15 +150,12 @@ public:
 	~attribute_array_manager();
 	/// check whether the given attribute is available
 	bool has_attribute(const context& ctx, int loc) const;
-	/// returns the handle to the OpenGL buffer as managed by the attribute array manager if specified
-	int get_buffer_handle(int loc) const {
+	/// returns the pointer to the vertex buffer as managed by this attribute array manager if specified and nullptr otherwise
+	const vertex_buffer* get_buffer_ptr(int loc) const {
 		auto it = vbos.find(loc);
-		if(it != vbos.end()) {
-			const vertex_buffer* vbo_ptr = it->second;// vbos[loc];
-			if(vbo_ptr->handle)
-				return (const int&)vbo_ptr->handle - 1;
-		}
-		return (const int&)-1;
+		if(it != vbos.end())
+			return it->second;
+		return nullptr;
 	}
 	///
 	bool is_created();

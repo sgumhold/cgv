@@ -4,6 +4,9 @@
 #include <cgv/gui/event_handler.h>
 #include <libs/cg_vr/vr_events.h>
 
+// TODO: Debug
+#include "pointable.h"
+
 namespace cgv {
 	namespace nui {
 
@@ -310,6 +313,13 @@ namespace cgv {
 				fr.demand.attach = rfi.foc_att;
 				if (rfi.foc_info_ptr)
 					fr.demand.config = rfi.foc_info_ptr->config;
+
+				// DEBUG TO REMOVE
+				//if (object_ptr->get_named() && object_ptr->get_named()->get_name() == "blue") {
+				//	 const auto& intersection_info = reinterpret_cast<const intersection_dispatch_info&>(dis_info);
+				//	std::cout << "Dispatch: " << intersection_info.hid_position << std::endl;
+				//}
+
 				bool ret = focusable_ptr->handle(e, dis_info, fr);
 				if (rfi.foc_info_ptr && rfi.foc_info_ptr->config.refocus.handle) {
 					switch (fr.request) {

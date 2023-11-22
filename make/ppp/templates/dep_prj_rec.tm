@@ -83,6 +83,7 @@
 			@define(prj_map::projectGUID=projectGUID)
 			@define(prj_map::addProjectDirs=addProjectDirs)
 			@define(prj_map::addIncDirs=addIncDirs)
+			@define(prj_map::addShaderPaths=addShaderPaths)
 			@define(prj_map::addLibDirs=addLibDirs)
 			@define(prj_map::addDefines=addDefines)
 			@define(prj_map::addSharedDefines=addSharedDefines)

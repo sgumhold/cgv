@@ -1,0 +1,14 @@
+@=
+projectName="cgv_gpgpu";
+projectType="library";
+projectGUID="580909C3-D638-4273-8A80-7C9B2D6D94B9";
+addSharedDefines=["CGV_GPGPU_EXPORTS"];
+addProjectDirs=[CGV_DIR."/libs"];
+addProjectDeps=[
+	"cgv_utils","cgv_type","cgv_reflect", "cgv_data","cgv_base",
+	"cgv_os", "cgv_render", "cgv_gl"];
+addIncDirs=[CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName];
+if(SYSTEM=="windows") {
+	addStaticDefines=["REGISTER_SHADER_FILES"];
+}
+addShaderPaths=[[INPUT_DIR,"all"]];

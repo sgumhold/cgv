@@ -180,6 +180,7 @@ axis_config::axis_config() : primary_ticks(true), secondary_ticks(false), color(
 	extent_scaling = 0.0f;
 	line_width = 3.0f;
 	auto_adjust_max_snd_ticks = 20;
+	multi_axis_ticks = true;
 }
 /// adjust tick marks to attribute range based on given maximum number of secondary ticks
 void axis_config::adjust_tick_marks_to_range(unsigned max_nr_secondary_ticks)
@@ -206,36 +207,38 @@ void axis_config::adjust_tick_marks_to_range(unsigned max_nr_secondary_ticks)
 
 void axis_config::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
-	bool show = p.begin_tree_node(name, color, false, "level=3;options='w=142';align=' '");
-	connect_copy(p.add_member_control(bp, "log", log_scale, "toggle", "w=50")->value_change,
+	bool show = p.begin_tree_node(name, color, false, "level=3;options='w=148';align=' '");
+	connect_copy(p.add_member_control(bp, "Log", log_scale, "toggle", "w=40")->value_change,
 		cgv::signal::rebind(this, &axis_config::update_tick_range));
 	if (show) {
 		p.align("\a");
-		p.add_member_control(bp, "extent", extent, "value_slider", "min=0.1;max=10;log=true;ticks=true");
-		p.add_member_control(bp, "extent_scaling", extent_scaling, "value_slider", "min=0;max=10;log=true;ticks=true");
-		connect_copy(p.add_member_control(bp, "attribute_min", min_attribute_value, "value_slider", "min=-10;max=10;log=true;ticks=true")->value_change,
+		p.add_member_control(bp, "Extent", extent, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+		p.add_member_control(bp, "Extent Scaling", extent_scaling, "value_slider", "min=0;max=10;log=true;ticks=true");
+		connect_copy(p.add_member_control(bp, "Attribute Min", min_attribute_value, "value_slider", "min=-10;max=10;log=true;ticks=true")->value_change,
 			cgv::signal::rebind(this, &axis_config::update_tick_range));
-		connect_copy(p.add_member_control(bp, "attribute_max", max_attribute_value, "value_slider", "min=-10;max=10;log=true;ticks=true")->value_change,
+		connect_copy(p.add_member_control(bp, "Attribute Max", max_attribute_value, "value_slider", "min=-10;max=10;log=true;ticks=true")->value_change,
 			cgv::signal::rebind(this, &axis_config::update_tick_range));
-		connect_copy(p.add_member_control(bp, "log minimum", log_minimum, "value")->value_change,
+		connect_copy(p.add_member_control(bp, "Log Minimum", log_minimum, "value")->value_change,
 			cgv::signal::rebind(this, &axis_config::update_tick_range));
-		p.add_member_control(bp, "width", line_width, "value_slider", "min=1;max=20;log=true;ticks=true");
-		p.add_member_control(bp, "color", color);
-		connect_copy(p.add_member_control(bp, "auto_adjust_max_snd_ticks", auto_adjust_max_snd_ticks, "value_slider", "min=0;max=50;log=true;ticks=true")->value_change,
+		p.add_member_control(bp, "Width", line_width, "value_slider", "min=1;max=20;log=true;ticks=true");
+		p.add_member_control(bp, "Color", color);
+		connect_copy(p.add_member_control(bp, "Max 2nd Ticks", auto_adjust_max_snd_ticks, "value_slider", "min=0;max=50;log=true;ticks=true")->value_change,
 			cgv::signal::rebind(this, &axis_config::update_tick_range));
 
-		char* tn[2] = { "primary tick", "secondary tick" };
+		p.add_member_control(bp, "Multi Axis Ticks", multi_axis_ticks, "check");
+
+		char* tn[2] = { "Primary Tick", "Secondary Tick" };
 		tick_config* tc[2] = { &primary_ticks, &secondary_ticks };
 		for (unsigned ti = 0; ti < 2; ++ti) {
 			bool vis = p.begin_tree_node(tn[ti], tc[ti]->label, false, "level=3;options='w=132';align=' '");
-			p.add_member_control(bp, "label", tc[ti]->label, "toggle", "w=60");
+			p.add_member_control(bp, "Label", tc[ti]->label, "toggle", "w=60");
 			if (vis) {
 				p.align("\a");
-				p.add_member_control(bp, "type", tc[ti]->type, "dropdown", "enums='none,dash,line,plane'");
-				p.add_member_control(bp, "step", tc[ti]->step, "value");
-				p.add_member_control(bp, "width", tc[ti]->line_width, "value_slider", "min=1;max=20;log=true;ticks=true");
-				p.add_member_control(bp, "length", tc[ti]->length, "value_slider", "min=1;max=20;log=true;ticks=true");
-				p.add_member_control(bp, "precision", tc[ti]->precision, "value_slider", "min=-1;max=5;ticks=true");
+				p.add_member_control(bp, "Type", tc[ti]->type, "dropdown", "enums='None,Dash,Line,Plane'");
+				p.add_member_control(bp, "Step", tc[ti]->step, "value");
+				p.add_member_control(bp, "Width", tc[ti]->line_width, "value_slider", "min=1;max=20;log=true;ticks=true");
+				p.add_member_control(bp, "Length", tc[ti]->length, "value_slider", "min=1;max=20;log=true;ticks=true");
+				p.add_member_control(bp, "Precision", tc[ti]->precision, "value_slider", "min=-1;max=5;ticks=true");
 				p.align("\b");
 				p.end_tree_node(tc[ti]->label);
 			}

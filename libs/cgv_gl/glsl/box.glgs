@@ -24,7 +24,6 @@ out vec3 position;
 flat out int side;
 
 #if ROUNDING == 1
-out vec3 pos_eye;
 out vec3 pos_box;
 out vec3 eye_box;
 out mat3 NM_fs;

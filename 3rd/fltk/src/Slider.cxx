@@ -367,7 +367,7 @@ void Slider::draw()
   if (!box->fills_rectangle()) draw_background();
   drawstyle(style(),flags);
   Rectangle r(w(),h());
-  box->draw(r);
+  if(slider_size_) box->draw(r);
 
   // we draw the slot if box() has a zero-sized border:
   Rectangle r1(r); box->inset(r1);

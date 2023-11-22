@@ -1,19 +1,23 @@
 #include "file.h"
-
+#include <cgv/utils/dir.h>
 #include <cgv/type/standard_types.h>
-
+#include <string.h>
+#include <vector>
 #ifdef _WIN32
 #include <io.h>
 #include <fcntl.h>
-#include <string.h>
 #else
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <iostream>
-#include <string.h>
 #include <glob.h>
+#endif
+
+#if (__cplusplus >= 201703L || _MSVC_LANG >= 201703L)
+#include <filesystem>
+#define USE_STD_FILESYSTEM
 #endif
 
 namespace cgv {
@@ -35,30 +39,53 @@ void* open(const std::string& file_name, const std::string& mode, void* buf, int
 
 bool exists(const std::string& file_name)
 {
+#ifdef USE_STD_FILESYSTEM
+	return std::filesystem::exists(file_name);
+#else
 	void* handle = find_first(file_name);
-	return handle != 0;
-	/*
-	FILE* fp = fopen(file_name.c_str(), "r");
-	if (fp) 
-		fclose(fp);
-	return fp != NULL;
-	*/
+	bool ret = (bool)handle;
+	find_close(handle);
+	return ret;
+#endif
 }
 
 std::string find_recursive(const std::string& path, const std::string& file_name)
 {
+#ifdef USE_STD_FILESYSTEM
+	if (!cgv::utils::dir::exists(path))
+		return "";
+	if(cgv::utils::file::exists(path + '/' + file_name))
+		return path + '/' + file_name;
+
+	std::filesystem::path target_file_name = file_name;
+
+	for(const std::filesystem::directory_entry& dir_entry : std::filesystem::recursive_directory_iterator(path)) {
+		if(dir_entry.is_regular_file() && !dir_entry.is_symlink()) {
+			if(dir_entry.path().filename() == target_file_name) {
+				if(cgv::utils::file::exists(dir_entry.path().string())) {
+					return dir_entry.path().string();
+				}
+			}
+		}
+	}
+
+	return "";
+#else
 	if (cgv::utils::file::exists(path+'/'+file_name))
 		return path+'/'+file_name;
 	void* h = find_first(path+"/*");
 	while (h) {
 		if (find_directory(h) && find_name(h) != "." && find_name(h) != "..") {
 			std::string res = find_recursive(path+'/'+find_name(h), file_name);
-			if (!res.empty())
+			if (!res.empty()) {
+				find_close(h);
 				return res;
+			}
 		}
 		h = find_next(h);
 	}
 	return "";
+#endif
 }
 
 /// find a file in the given paths
@@ -174,16 +201,36 @@ Result cmp(const std::string& what, const std::string& with)
 
 size_t size(const std::string& file_name, bool ascii)
 {
-	void* handle = find_first(file_name);
-	if (handle == 0)
+#ifdef USE_STD_FILESYSTEM
+	try {
+		return std::filesystem::file_size(file_name);
+	}
+	catch(...) {
 		return (size_t)-1;
-	return find_size(handle);
+	}
+#else
 #ifdef _WIN32
-	int fh = _open(file_name.c_str(), ascii ? _O_RDONLY : (_O_BINARY | _O_RDONLY) );
-	if (fh == -1) return (size_t)-1;
-	size_t l = _filelength(fh);
-	_close(fh);
-	return l;
+	if (ascii) {
+		void* handle = find_first(file_name);
+		size_t s = (size_t)-1;
+		if(handle)
+			s = find_size(handle);
+		find_close(handle);
+		return s;
+	}
+	else {
+		FILE* fp = fopen(file_name.c_str(), ascii ? "r" : "rb");
+		if (fp == 0)
+			return 0;
+		size_t s = 0;
+		if (fseek(fp, 0, SEEK_END) == 0) {
+			fpos_t pos;
+			fgetpos(fp, &pos);
+			s = size_t(pos);
+		}
+		fclose(fp);
+		return s;
+	}
 #else
 	int fh = ::open(file_name.c_str(), O_RDONLY);
 	if (fh == -1)
@@ -193,6 +240,7 @@ size_t size(const std::string& file_name, bool ascii)
 	close(fh);
 	return fileinfo.st_size;
 #endif
+#endif
 }
 
 /// read from a file into a memory block, the optional argument \c ascii tells whether to write in ascii or binary (default) mode
@@ -200,8 +248,14 @@ bool read(const std::string& filename, char* ptr, size_t size, bool ascii, size_
 {
 	FILE* fp = ::fopen(filename.c_str(), ascii ? "r" : "rb");
 	if (file_offset != 0) {
-		if (::fseek(fp, (long)file_offset, SEEK_SET) != 0)
-			return false;
+		if ( 
+#ifdef _WIN32
+			_fseeki64			
+#else
+			fseeko64
+#endif
+			(fp, file_offset, SEEK_SET) != 0)
+		return false;
 	}
 	size_t n = ::fread(ptr, 1, size, fp);
 	fclose(fp);
@@ -267,6 +321,24 @@ bool append(const std::string& file_name, const char* ptr, size_t size, bool asc
 	return res;
 }
 
+bool append(const std::string& file_name_1, const std::string& file_name_2, bool ascii)
+{
+	const size_t buffer_size = 10000000;
+	size_t N = cgv::utils::file::size(file_name_2, ascii);
+	std::vector<char> buffer(buffer_size, 0);
+	size_t off = 0;
+	while (off < N) {
+		size_t n = N - off;
+		if (n > buffer_size)
+			n = buffer_size;
+		if (!cgv::utils::file::read(file_name_2, &buffer.front(), n, ascii, off))
+			return false;
+		if (!cgv::utils::file::append(file_name_1, &buffer.front(), n, ascii))
+			return false;
+		off += n;
+	}
+	return true;
+}
 
 #ifdef _WIN32
 struct FileInfo
@@ -304,11 +376,10 @@ long long find_last_write_time(const void* handle)
 long long get_last_write_time(const std::string& file_path)
 {
 	void* handle = find_first(file_path);
-	if (!handle)
-		return -1;
-	long long time = find_last_write_time(handle);
-	// make sure that internal data structure is removed
-	find_next(handle);
+	long long time = -1;
+	if(handle)
+		time = find_last_write_time(handle);
+	find_close(handle);
 	return time;
 }
 
@@ -335,8 +406,6 @@ void* find_first(const std::string& filter)
 	//printf("filter: %s",filter.c_str());
 	//for(int i=0;i<fi->globResults->gl_pathc;i++) printf("file: %s\n",get_file_name(fi->globResults->gl_pathv[i]).c_str());
 	return fi;
-//	std::cerr << "Not Implemented" << std::endl;
-//	return NULL;
 #endif
 }
 
@@ -346,17 +415,35 @@ void* find_next(void* handle)
 	FileInfo *fi = (FileInfo*) handle;
 #ifdef _WIN32
 	if (_findnext(fi->handle, &fi->fileinfo) == -1) {
-		delete fi;
+		find_close(handle);
 		return 0;
 	}
 	return fi;
 #else
 	fi->index+=1;
-	if(fi->globResults->gl_pathc > fi->index) return fi;
-	//std::cerr << "Not Implemented" << std::endl;
+	if(fi->globResults->gl_pathc > fi->index)
+		return fi;
+	delete fi->globResults;
+	delete fi;
 	return NULL;
 #endif
 }
+
+/// close a find procedure and free FileInfo resources
+void find_close(void* handle) {
+	if(handle == 0)
+		return;
+	FileInfo* fi = (FileInfo*)handle;
+#ifdef _WIN32
+	_findclose(fi->handle);
+	delete fi;
+	handle = 0;
+#else
+	delete fi->globResults;
+	delete fi;
+#endif
+}
+
 /// return name of currently found file without path
 std::string find_name(void* handle)
 {
@@ -366,7 +453,7 @@ std::string find_name(void* handle)
 #else
 	if(fi->globResults->gl_pathc > fi->index)
 		return get_file_name(std::string(fi->globResults->gl_pathv[fi->index]));
-//	std::cerr << "Not Implemented" << std::endl;
+
 	return std::string("");
 #endif
 }
@@ -520,9 +607,9 @@ char to_lower(char c)
 	if (c >= 'A' && c <= 'Z')
 		return (c-'A')+'a';
 	switch (c) {
-		case 0xD6 : return 0xF6; // Oe -> oe
-		case 0xDC : return 0xFC; // Ue -> ue
-		case 0xC4 : return 0xE4; // Ae -> ae
+		case (char) 0xD6 : return (char) 0xF6; // Oe -> oe
+		case (char) 0xC4 : return (char) 0xE4; // Ae -> ae
+		case (char) 0xDC : return (char) 0xFC; // Ue -> ue
 		default: return c;
 	}
 }

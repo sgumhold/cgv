@@ -9,3 +9,4 @@ if(SYSTEM=="windows") {
 	addStaticDefines=["REGISTER_SHADER_FILES"];
 }
 addSharedDefines=["CGV_PROCEDURAL_EXPORTS"];
+addShaderPaths=[[INPUT_DIR,"all"]];

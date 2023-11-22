@@ -1,0 +1,94 @@
+#version 150
+
+//***** begin interface of shape2d.glsl ***********************************
+uniform bool origin_upper_left = false;
+
+vec2 get_adjusted_size(vec2 size);
+vec4 get_active_color(vec4 color);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+//***** begin interface of fragment2d.glfs ***********************************
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
+void finish_fragment2d(in vec4 color);
+void finish_fragment2d(in vec4 color, in vec2 texcoords);
+//***** end interface of fragment2d.glfs ***********************************
+
+flat in vec2 size;
+flat in vec4 position01_fs;
+flat in vec4 position23_fs;
+in vec2 pix_coord;
+in vec2 tex_coord;
+flat in vec4 color_fs;
+
+// https://www.shadertoy.com/view/lsBSDm
+float cross_2d(in vec2 a, in vec2 b) {
+	return a.x*b.y - a.y*b.x;
+}
+
+vec2 inv_bilinear2(in vec2 p, in vec2 a, in vec2 b, in vec2 c, in vec2 d) {
+	vec2 q = p - a;
+	vec2 b1 = b - a;
+	vec2 b2 = c - a;
+	vec2 b3 = a - b - c + d;
+
+	float A = cross_2d(b2, b3);
+	float B = cross_2d(b3, q) - cross_2d(b1, b2);
+	float C = cross_2d(b1, q);
+
+	// solve for v
+	vec2 uv;
+	if (abs(A) < 0.001) {
+		// linear form
+		uv.y = -C/B;
+	} else {
+		// quadratic form, take positive root for CCW winding with V-up
+		float discrim = B*B - 4*A*C;
+		uv.y = 0.5 * (-B + sqrt(discrim)) / A;
+	}
+
+	// Solve for u, using largest-magnitude component
+	vec2 denom = b1 + uv.y * b3;
+	if (abs(denom.x) > abs(denom.y))
+		uv.x = (q.x - b2.x * uv.y) / denom.x;
+	else
+		uv.x = (q.y - b2.y * uv.y) / denom.y;
+	
+	return uv;
+}
+
+// signed distance to a 2D quad (https://www.shadertoy.com/view/7dSGWK)
+float sd_quad(in vec2 p, in vec2 p0, in vec2 p1, in vec2 p2, in vec2 p3) {
+	vec2 e0 = p1 - p0; vec2 v0 = p - p0;
+	vec2 e1 = p2 - p1; vec2 v1 = p - p1;
+	vec2 e2 = p3 - p2; vec2 v2 = p - p2;
+	vec2 e3 = p0 - p3; vec2 v3 = p - p3;
+
+	vec2 pq0 = v0 - e0 * clamp(dot(v0,e0) / dot(e0,e0), 0.0, 1.0);
+	vec2 pq1 = v1 - e1 * clamp(dot(v1,e1) / dot(e1,e1), 0.0, 1.0);
+	vec2 pq2 = v2 - e2 * clamp(dot(v2,e2) / dot(e2,e2), 0.0, 1.0);
+    vec2 pq3 = v3 - e3 * clamp(dot(v3,e3) / dot(e3,e3), 0.0, 1.0);
+    
+    vec2 ds = min(min(vec2(dot(pq0, pq0), v0.x*e0.y - v0.y*e0.x),
+                      vec2(dot(pq1, pq1), v1.x*e1.y - v1.y*e1.x)),
+                  min(vec2(dot(pq2, pq2), v2.x*e2.y - v2.y*e2.x),
+                      vec2(dot(pq3, pq3), v3.x*e3.y - v3.y*e3.x))
+			  );
+
+    float d = sqrt(ds.x);
+	return (ds.y > 0.0) ? -d : d;
+}
+
+void main() {
+	
+	float dist = sd_quad(pix_coord, position01_fs.xy, position23_fs.xy, position23_fs.zw, position01_fs.zw);
+	vec4 color = get_active_color(color_fs);
+	
+	vec2 uv = inv_bilinear2(pix_coord, position01_fs.zw, position01_fs.xy, position23_fs.zw, position23_fs.xy);
+
+	if(origin_upper_left)
+		uv.y = 1.0 - uv.y;
+
+	finish_sdf_fragment2d(dist, color, uv);
+}

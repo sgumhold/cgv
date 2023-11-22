@@ -1,0 +1,179 @@
+#version 430
+
+#define MODE 1
+
+//***** begin interface of shape2d.glsl ***********************************
+uniform bool origin_upper_left = false;
+
+float get_feather_width();
+vec2 get_shape_size();
+vec4 get_color();
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+#if MODE == 0
+layout(points) in;
+#else
+layout(lines) in;
+#endif
+layout(triangle_strip, max_vertices = 4) out;
+
+const vec2 corners[4] = vec2[](
+	vec2(0.0, 0.0),
+	vec2(1.0, 0.0),
+	vec2(0.0, 1.0),
+	vec2(1.0, 1.0)
+);
+
+uniform float width = 1.0;
+
+#if MODE == 0
+flat in vec4 color0_gs[];
+flat in vec4 color1_gs[];
+flat in vec2 uv0_gs[];
+flat in vec2 uv1_gs[];
+#else
+flat in vec4 color_gs[];
+flat in vec2 uv_gs[];
+#endif
+
+out flat vec2 size_fs;
+out vec2 pix_coord_fs;
+out vec2 tex_coord_fs;
+out vec4 color_fs;
+out vec2 uv_fs;
+
+vec2 ortho2d(vec2 v) {
+	return vec2(v.y, -v.x);
+}
+
+void emit_corner(in int id, in vec2 position, in vec2 uv, in vec4 color) {
+	color_fs = color;
+	uv_fs = uv;
+	tex_coord_fs = corners[id];
+	pix_coord_fs = size_fs*corners[id] - 0.5*size_fs;
+	gl_Position = transform_world_to_window_space(position);
+	EmitVertex();
+}
+
+void main() {
+#if MODE == 0
+	vec2 start = gl_in[0].gl_Position.xy;
+	vec2 end = gl_in[0].gl_Position.zw;
+#else
+	vec2 start = gl_in[0].gl_Position.xy;
+	vec2 end = gl_in[1].gl_Position.xy;
+#endif
+
+	vec2 delta = end - start;
+	float len = length(delta);
+
+	vec2 u_dir = delta / len;
+	vec2 v_dir = ortho2d(u_dir);
+
+	float fw = get_feather_width();
+
+	float final_width = width + fw;
+	size_fs = vec2(len + 2.0 * fw, final_width);
+
+	u_dir *= fw;
+	v_dir *= 0.5*final_width;
+
+#if MODE == 0
+	vec4 color0 = color0_gs[0];
+	vec4 color1 = color1_gs[0];
+	vec2 uv0 = uv0_gs[0];
+	vec2 uv1 = uv1_gs[0];
+#else
+	vec4 color0 = color_gs[0];
+	vec4 color1 = color_gs[1];
+	vec2 uv0 = uv_gs[0];
+	vec2 uv1 = uv_gs[1];
+#endif
+
+	if(origin_upper_left)
+		v_dir = -v_dir;
+
+	emit_corner(0, start.xy - u_dir + v_dir, uv0, color0);
+	emit_corner(1, end.xy + u_dir + v_dir, uv1, color1);
+	emit_corner(2, start.xy - u_dir - v_dir, uv0, color0);
+	emit_corner(3, end.xy + u_dir - v_dir, uv1, color1);
+}
+
+/* ROUNDED CAPS
+#version 430
+
+//***** begin interface of shape2d.glsl ***********************************
+float get_feather_width();
+vec2 get_shape_size();
+vec4 get_color();
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+layout(lines) in;
+layout(triangle_strip, max_vertices = 4) out;
+
+const vec2 corners[4] = vec2[](
+	vec2(0.0, 0.0),
+	vec2(1.0, 0.0),
+	vec2(0.0, 1.0),
+	vec2(1.0, 1.0)
+);
+
+uniform float width = 1.0;
+
+flat in vec4 color0_gs[];
+flat in vec4 color1_gs[];
+
+out flat vec4 color0_fs;
+out flat vec4 color1_fs;
+out flat vec2 size_fs;
+out vec2 tex_coord_fs;
+out vec2 pix_coord_fs;
+
+vec2 ortho2d(vec2 v) {
+	return vec2(v.y, -v.x);
+}
+
+void main() {
+	
+	vec4 start = gl_in[0].gl_Position;
+	vec4 end = gl_in[1].gl_Position;
+
+	vec2 delta = end.xy - start.xy;
+	float len = length(delta);
+
+	vec2 u_dir = delta / len;
+	vec2 v_dir = ortho2d(u_dir.xy);
+
+	float fw = get_feather_width();
+
+	float final_width = width + fw;
+	size_fs = vec2(len + 2.0 * fw, final_width);
+
+	u_dir *= fw;
+	v_dir *= 0.5*final_width;
+
+	color0_fs = color_gs[0];
+	color1_fs = color_gs[1];
+
+	start.xy -= u_dir;
+	end.xy += u_dir;
+
+	tex_coord_fs = corners[2] - vec2(0.5, 0.0);
+	gl_Position = to_window_space(start.xy - v_dir);
+	EmitVertex();
+	tex_coord_fs = corners[0] - vec2(0.5, 0.0);
+	gl_Position = to_window_space(start.xy + v_dir);
+	EmitVertex();
+
+	tex_coord_fs = corners[3] * vec2(length_fs+0.5, 1.0);
+	gl_Position = to_window_space(end.xy - v_dir);
+	EmitVertex();
+	tex_coord_fs = corners[1] * vec2(length_fs+0.5, 1.0);
+	gl_Position = to_window_space(end.xy + v_dir);;
+	EmitVertex();
+#endif
+}
+
+*/

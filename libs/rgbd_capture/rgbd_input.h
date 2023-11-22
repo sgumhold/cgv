@@ -40,6 +40,7 @@ public:
 	~rgbd_input();
 	/// create a rgbd input device object and attach to device with given serial
 	rgbd_input(const std::string& serial);
+
 	/// attach to the rgbd input device of the given serial
 	bool attach(const std::string& serial);
 	/// return the serial of the device
@@ -62,6 +63,8 @@ public:
 	void enable_protocol(const std::string& path);
 	/// disable protocolation
 	void disable_protocol();
+	/// delete recorded protocol
+	void clear_protocol(const std::string& path);
 	//@}
 
 	/**@name base control*/
@@ -74,16 +77,37 @@ public:
 
 	/**@name camera control*/
 	//@{
+	/// check whether a multi-device role is supported
+	bool is_supported(MultiDeviceRole mdr) const;
+	/// configure device for a multi-device role and return whether this was successful (do this before starting)
+	bool configure_role(MultiDeviceRole mdr);
+	/// return the multi-device role of the device
+	MultiDeviceRole get_role() const;
+	/// whether device supports external synchronization
+	bool is_sync_supported() const;
+	/// return whether syncronization input jack is connected
+	bool is_sync_in_connected() const;
+	/// return whether syncronization output jack is connected
+	bool is_sync_out_connected() const;
+
 	/// check whether the device supports the given combination of input streams
 	bool check_input_stream_configuration(InputStreams is) const;
 	/// query the stream formats available for a given stream configuration
 	void query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const;
 	///
 	bool set_near_mode(bool on = true);
+	/// return information about the support color control parameters
+	const std::vector<color_parameter_info>& get_supported_color_control_parameter_infos() const;
+	/// query color control value and whether its adjustment is in automatic mode
+	std::pair<int32_t, bool> get_color_control_parameter(ColorControlParameter ccp) const;
+	/// set a color control value and automatic mode and return whether successful
+	bool set_color_control_parameter(ColorControlParameter ccp, int32_t value, bool automatic_mode);
 	/// start the rgbd input with standard stream formats returned in second parameter
 	bool start(InputStreams, std::vector<stream_format>& stream_formats);
 	/// start the rgbd input with given stream formats 
 	bool start(const std::vector<stream_format>& stream_formats);
+	/// query the calibration information and return whether this was successful
+	bool query_calibration(rgbd_calibration& calib);
 	/// check whether device is started
 	bool is_started() const;
 	/// stop the rgbd input device
@@ -91,8 +115,17 @@ public:
 	/// query a frame of the given input stream
 	bool get_frame(InputStreams is, frame_type& frame, int timeOut);
 	/// map a color frame to the image coordinates of the depth image
-	void map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
-		frame_type& warped_color_frame) const;
+	void map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame, frame_type& warped_color_frame) const;
+	//! map pixel coordinates and depth to 3d point
+	/*! return whether depth was valid
+	    point_ptr needs to provide space for 3 floats
+		resulting point coordinates are measured in meters with
+		- x pointing to the right
+		- y to the top, and
+		- z in forward direction
+		Careful: the corresponding coordinate system is left handed!
+	*/
+	bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 protected:
 	/// store whether camera has been started
 	bool started;
@@ -106,6 +139,16 @@ protected:
 	int protocol_idx;
 	/// flags used to determine which frames have been saved to file for current index
 	unsigned protocol_flags;
+public:
+	/// whether to write protocol frames asynchronously
+	bool protocol_write_async;
+protected:
+	/// store filename for protocol of warped frames
+	mutable std::string next_warped_file_name;
+	/// helper function to write protocol frame asynchronously
+	bool write_protocol_frame_async(const std::string& fn, const frame_type& frame) const;
+	/// cached stream formats
+	std::vector<stream_format> streams;
 };
 
 /// helper template to register a driver

@@ -1,0 +1,8 @@
+@=
+projectType="plugin";
+projectName="crg_bg";
+projectGUID="2CC07103-CE33-42BA-962D-83632C9E50AE";
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_reflect", "cgv_base", "cgv_signal", "cgv_media","cgv_render", "cgv_gui", "cgv_gl", "cg_ext"];
+addProjectDirs=[CGV_DIR."/libs/cgv_gl", CGV_DIR."/plugins"];
+//addIncDirs=[CGV_DIR."/libs"];
+addSharedDefines=["CGV_RENDER_BACKGROUND_EXPORTS"];

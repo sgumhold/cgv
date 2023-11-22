@@ -1,0 +1,14 @@
+@=
+projectName="cgv_app";
+projectType="library";
+projectGUID="CD4F72AA-4921-4E65-964A-93B3A88498EA";
+addSharedDefines=["CGV_APP_EXPORTS"];
+addProjectDirs=[CGV_DIR."/libs"];
+addProjectDeps=[
+	"cgv_utils","cgv_type","cgv_reflect", "cgv_data","cgv_base",
+	"cgv_media", "cgv_os", "cgv_gui", "cgv_render", "cgv_gl", "cgv_g2d", "xml"];
+addIncDirs=[CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName];
+if(SYSTEM=="windows") {
+	addStaticDefines=["REGISTER_SHADER_FILES"];
+}
+addShaderPaths=[[INPUT_DIR,"all"]];

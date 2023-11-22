@@ -248,7 +248,7 @@ void main() {
 		case 1 :    // Sobel operator
 			imageStore(gradient_tex, idx, -1.0 * vec4(sobel_x(idx), sobel_y(idx), sobel_z(idx), 0.0));
 			break;
-		case 2 : 		// Sobel operator with minimal amount of image loads
+		case 2 : 	// Sobel operator with minimal amount of image loads
 			imageStore(gradient_tex, idx, -1.0 * vec4(gradient_sobel(idx), 0.0));
 			break;
 		}
