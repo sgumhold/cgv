@@ -36,14 +36,18 @@ public:
 
 	virtual ~control_base() {}
 
+	void set_label(const std::string& label) {
+		this->label = label;
+	}
+
+	virtual const void* get_value_ptr() const = 0;
+
+	virtual void update() = 0;
+
 	virtual bool handle_key_event(cgv::gui::key_event& e) { return false; }
 	virtual bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2 mouse_position) { return false; }
 
 	virtual void draw(cgv::render::context& ctx, canvas& cnvs, const control_styles& styles) {}
-
-	void set_label(const std::string& label) {
-		this->label = label;
-	}
 };
 
 class CGV_API button_control : public control_base {
@@ -53,6 +57,12 @@ private:
 
 public:
 	using control_base::control_base;
+
+	const void* get_value_ptr() const override {
+		return nullptr;
+	};
+
+	void update() override {}
 
 	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2 mouse_position) override {
 		cgv::gui::MouseAction action = e.get_action();
@@ -115,6 +125,9 @@ public:
 	cgv::signal::signal<button_control&> on_click;
 };
 
+
+// TODO: Set value onyl once after construction and then allow arbitrary inputs. Validate each input before setting the value_ptr.
+template<typename T>
 class CGV_API text_input_control : public control_base {
 private:
 	bool focused = false;
@@ -122,14 +135,51 @@ private:
 	float focus_position;
 	size_t caret_position = 0;
 
-	std::string* value = nullptr;
+	void erase_character() {
+		text.erase(caret_position, 1);
+		update_value();
+		on_change(*this);
+	}
+
+	void insert_character(char c) {
+		text.insert(caret_position, 1, c);
+		++caret_position;
+		update_value();
+		on_change(*this);
+	}
+
+protected:
+	std::string text = "";
+	T* value_ptr = nullptr;
+
+	virtual void update_value() = 0;
 
 public:
 	using control_base::control_base;
 
+	const void* get_value_ptr() const override {
+		return value_ptr;
+	};
+
+	/*
+	void set_value_ptr(std::string* ptr) {
+		value_ptr = ptr;
+		if(ptr)
+			text = *ptr;
+	}
+	*/
+
+	virtual void set_value_ptr(T* ptr) = 0;
+	//void set_value_ptr(std::string* ptr) {
+	//	value_ptr = ptr;
+	//	update();
+	//}
+
+	virtual void update() = 0;
+
 	bool handle_key_event(cgv::gui::key_event& e) override {
-		if(!value)
-			return false;
+		//if(!value_ptr)
+		//	return false;
 
 		cgv::gui::KeyAction action = e.get_action();
 
@@ -139,50 +189,38 @@ public:
 				caret_position = 0;
 				return true;
 			case cgv::gui::KEY_End:
-				caret_position = value->length();
+				caret_position = text.length();
 				return true;
 			case cgv::gui::KEY_Left:
 				if(caret_position > 0)
 					--caret_position;
 				return true;
 			case cgv::gui::KEY_Right:
-				if(caret_position < value->length())
+				if(caret_position < text.length())
 					++caret_position;
 				return true;
 			case cgv::gui::KEY_Back_Space:
-				if(caret_position > 0 && caret_position <= value->length()) {
+				if(caret_position > 0 && caret_position <= text.length()) {
 					--caret_position;
-					value->erase(caret_position, 1);
-					on_change(*this);
+					erase_character();
 				}
 				return true;
 			case cgv::gui::KEY_Delete:
-				if(caret_position < value->length()) {
-					value->erase(caret_position, 1);
-					on_change(*this);
-				}
+				if(caret_position < text.length())
+					erase_character();
 				return true;
-			//case cgv::gui::KEY_Enter:
-				//	editing_active = false;
-				//
-				//	return true;
 			case cgv::gui::KEY_Space:
-				value->insert(caret_position, 1, ' ');
-				++caret_position;
-				on_change(*this);
+				insert_character(' ');
 				return true;
 			case '\\':
-				// capture espace sequences, e.g, when pressing '^'
+				// capture escape sequences, e.g, when pressing '^'
 				return true;
 			default:
 				if(e.get_key() < 256) {
 					//std::cout << "key = " << ke.get_key() << ", char = '" << ke.get_char() << "', char_num = " << static_cast<int>(ke.get_char()) << std::endl;
 					unsigned char c = e.get_char();
-					if(std::isprint(c)) {
-						value->insert(caret_position, 1, c);
-						++caret_position;
-						on_change(*this);
-					}
+					if(std::isprint(c))
+						insert_character(c);
 					return true;
 				}
 				break;
@@ -193,8 +231,8 @@ public:
 	}
 
 	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2 mouse_position) override {
-		if(!value)
-			return false;
+		//if(!value_ptr)
+		//	return false;
 
 		cgv::gui::MouseAction action = e.get_action();
 
@@ -204,7 +242,7 @@ public:
 					focused = true;
 					do_focus = true;
 					focus_position = mouse_position.x();
-					caret_position = value->length();
+					caret_position = text.length();
 					return true;
 				} else if(focused) {
 					// TODO: do we even need to deactivate the input? FLTK only removes the caret when the mouse leaves the gui
@@ -220,11 +258,9 @@ public:
 	}
 
 	void draw(cgv::render::context& ctx, canvas& cnvs, const control_styles& styles) override {
-
-		// TODO: place in seperate method?
 		auto& font = ref_msdf_font_regular(ctx);
 
-		if(do_focus && value) {
+		if(do_focus) {// && value_ptr) {
 			do_focus = false;
 			caret_position = 0;
 
@@ -232,8 +268,8 @@ public:
 			float closest_distance = std::abs(position - focus_position);
 			float last_distance = closest_distance;
 
-			for(size_t i = 0; i < value->length(); ++i) {
-				const auto& glyph = font.get_glyph_info(static_cast<unsigned char>(value->at(i)));
+			for(size_t i = 0; i < text.length(); ++i) {
+				const auto& glyph = font.get_glyph_info(static_cast<unsigned char>(text[i]));
 
 				position += glyph.advance * styles.text.font_size;
 				float distance = std::abs(position - focus_position);
@@ -249,10 +285,6 @@ public:
 			}
 		}
 
-
-
-
-
 		cnvs.enable_shader(ctx, "rectangle");
 		cnvs.set_style(ctx, styles.control_box);
 		cnvs.draw_shape(ctx, rectangle);
@@ -261,14 +293,14 @@ public:
 		cgv::render::ivec2 position(rectangle.x(), rectangle.center().y());
 		
 		ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, styles.text, position - cgv::render::ivec2(5, 0), cgv::render::TA_RIGHT);
-		if(value) {
-			ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, *value, styles.text, position + cgv::render::ivec2(5, 0), cgv::render::TA_LEFT);
+		//if(value_ptr) {
+			ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, text, styles.text, position + cgv::render::ivec2(5, 0), cgv::render::TA_LEFT);
 
 			if(focused) {
 				cnvs.enable_shader(ctx, "rectangle");
 				cnvs.set_style(ctx, styles.colored_box);
 
-				cgv::render::vec2 text_size = styles.text.font_size * cgv::render::vec2(font.compute_length(*value, caret_position), 1.0f);
+				cgv::render::vec2 text_size = styles.text.font_size * cgv::render::vec2(font.compute_length(text, caret_position), 1.0f);
 
 				cgv::render::vec2 position = rectangle.position;
 				position.x() += text_size.x() + 5.0f;
@@ -278,45 +310,95 @@ public:
 				cnvs.draw_shape(ctx, position, cgv::render::vec2(1.0f, 16.0f), styles.text.fill_color);
 				cnvs.disable_current_shader(ctx);
 			}
-		}
-	}
-
-	void set_value_ptr(std::string* ptr) {
-		value = ptr;
+		//}
 	}
 
 	cgv::signal::signal<text_input_control&> on_change;
 };
 
+class CGV_API text_input_control_string : public text_input_control<std::string> {
+private:
+	void update_value() override {
+		if(value_ptr)
+			*value_ptr = text;
+	}
+
+public:
+	using text_input_control<std::string>::text_input_control;
+
+	void set_value_ptr(std::string* ptr) override {
+		value_ptr = ptr;
+		update();
+		//if(ptr)
+		//	text = *ptr;
+	}
+
+	void update() override {
+		if(value_ptr)
+			text = *value_ptr;
+	}
+};
+
+class CGV_API text_input_control_float : public text_input_control<float> {
+private:
+	void update_value() override {
+		if(value_ptr)
+			// TODO: exception handling
+			*value_ptr = std::stof(text);
+	}
+
+public:
+	using text_input_control<float>::text_input_control;
+
+	void set_value_ptr(float* ptr) override {
+		value_ptr = ptr;
+		update();
+		//if(ptr)
+		//	text = std::to_string(*ptr);
+	}
+
+	void update() override {
+		if(value_ptr)
+			text = std::to_string(*value_ptr);
+	}
+};
+
+
+
+
 
 // TODO: rename to slider_control or slider_input (same for text_input_control)?
+//template<typename T>
 class CGV_API slider_input_control : public control_base {
 private:
 	cgv::g2d::draggable handle;
 	cgv::g2d::draggable_collection<cgv::g2d::draggable*> handle_draggable;
 
-	float* value = nullptr;
+	float* value_ptr = nullptr;
 	cgv::render::vec2 range = cgv::render::vec2(0.0f, 1.0f);
 
+	//T* value = nullptr;
+	//cgv::math::fvec<T, 2U> range = cgv::math::fvec<T, 2U>(std::numeric_limits<T>::min(), std::numeric_limits<T::max());
+
 	void update_value() {
-		if(value) {
+		if(value_ptr) {
 			float t = (handle.x() - rectangle.x()) / (rectangle.w() - handle.w());
 			float next_value = cgv::math::lerp(range[0], range[1], t);
 			next_value = cgv::math::clamp(next_value, range[0], range[1]);
 
 			// TODO: implement special case for integers
-			if(std::abs(*value - next_value) >= std::numeric_limits<float>::epsilon()) {
-				*value = next_value;
+			if(std::abs(*value_ptr - next_value) >= std::numeric_limits<float>::epsilon()) {
+				*value_ptr = next_value;
 				on_change(*this);
 			}
 		}
 	}
 
 	void update_handle() {
-		if(value) {
-			float t = cgv::math::clamp(*value, range[0], range[1]);
+		if(value_ptr) {
+			float t = cgv::math::clamp(*value_ptr, range[0], range[1]);
 			t = (t - range[0]) / (range[1] - range[0]);
-			handle.x() += static_cast<int>(t * (rectangle.w() - 10) + 0.5f);
+			handle.x() = rectangle.x() + static_cast<int>(t * (rectangle.w() - 10) + 0.5f);
 		}
 	}
 
@@ -329,8 +411,26 @@ public:
 		handle_draggable.set_drag_callback(std::bind(&slider_input_control::update_value, this));
 	}
 
+	const void* get_value_ptr() const override {
+		return value_ptr;
+	};
+
+	void set_value_ptr(float* ptr) {
+		value_ptr = ptr;
+		update_handle();
+	}
+
+	void set_range(cgv::render::vec2 range) {
+		this->range = range;
+		update_handle();
+	}
+
+	void update() override {
+		update_handle();
+	}
+
 	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2 mouse_position) override {
-		if(!value)
+		if(!value_ptr)
 			return false;
 
 		//if(!rectangle.is_inside(mouse_position))
@@ -376,12 +476,6 @@ public:
 
 		auto& font = ref_msdf_font_regular(ctx);
 		ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, styles.text, cgv::render::ivec2(rectangle.x() - 5, rectangle.center().y()), cgv::render::TA_RIGHT);
-	}
-
-	void set_value_ptr(float* ptr) {
-		value = ptr;
-
-		update_handle();
 	}
 
 	cgv::signal::signal<slider_input_control&> on_change;
@@ -442,8 +536,15 @@ public:
 		return add_control<button_control>(label, position);
 	}
 
-	std::shared_ptr<text_input_control> add_text_input(cgv::base::base* base_ptr, const std::string& label, cgv::render::ivec2 position, std::string& value) {
-		auto ptr = add_control<text_input_control>(label, position);
+	std::shared_ptr<text_input_control_string> add_text_input(cgv::base::base* base_ptr, const std::string& label, cgv::render::ivec2 position, std::string& value) {
+		auto ptr = add_control<text_input_control_string>(label, position);
+		ptr->set_value_ptr(&value);
+		connect_copy(ptr->on_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
+		return ptr;
+	}
+
+	std::shared_ptr<text_input_control_float> add_text_input(cgv::base::base* base_ptr, const std::string& label, cgv::render::ivec2 position, float& value) {
+		auto ptr = add_control<text_input_control_float>(label, position);
 		ptr->set_value_ptr(&value);
 		connect_copy(ptr->on_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
 		return ptr;
@@ -454,6 +555,18 @@ public:
 		ptr->set_value_ptr(&value);
 		connect_copy(ptr->on_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
 		return ptr;
+	}
+
+
+
+	void update_views(void* member_ptr) {
+		for(auto& control : controls) {
+			if(control->get_value_ptr() == member_ptr) {
+				control->update();
+
+				// post_damage()!
+			}
+		}
 	}
 };
 
