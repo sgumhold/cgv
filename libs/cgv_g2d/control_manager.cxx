@@ -1,5 +1,3 @@
-#pragma once
-
 #include "control_manager.h"
 #include <cgv_g2d/utils2d.h>
 
