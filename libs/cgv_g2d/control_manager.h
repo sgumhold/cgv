@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <cgv/gui/event.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
@@ -128,7 +130,7 @@ public:
 
 // TODO: Set value onyl once after construction and then allow arbitrary inputs. Validate each input before setting the value_ptr.
 template<typename T>
-class CGV_API text_input_control : public control_base {
+class CGV_API input_control : public control_base {
 private:
 	bool focused = false;
 	bool do_focus = false;
@@ -153,6 +155,10 @@ protected:
 	T* value_ptr = nullptr;
 
 	virtual void update_value() = 0;
+
+	virtual bool input_valid(char c) {
+		return std::isprint(c);
+	}
 
 public:
 	using control_base::control_base;
@@ -219,7 +225,7 @@ public:
 				if(e.get_key() < 256) {
 					//std::cout << "key = " << ke.get_key() << ", char = '" << ke.get_char() << "', char_num = " << static_cast<int>(ke.get_char()) << std::endl;
 					unsigned char c = e.get_char();
-					if(std::isprint(c))
+					if(input_valid(c))
 						insert_character(c);
 					return true;
 				}
@@ -313,18 +319,18 @@ public:
 		//}
 	}
 
-	cgv::signal::signal<text_input_control&> on_change;
+	cgv::signal::signal<input_control&> on_change;
 };
 
-class CGV_API text_input_control_string : public text_input_control<std::string> {
-private:
+class CGV_API string_input_control : public input_control<std::string> {
+protected:
 	void update_value() override {
 		if(value_ptr)
 			*value_ptr = text;
 	}
 
 public:
-	using text_input_control<std::string>::text_input_control;
+	using input_control<std::string>::input_control;
 
 	void set_value_ptr(std::string* ptr) override {
 		value_ptr = ptr;
@@ -339,18 +345,50 @@ public:
 	}
 };
 
-class CGV_API text_input_control_float : public text_input_control<float> {
-private:
+class CGV_API float_input_control : public input_control<float> {
+protected:
 	void update_value() override {
 		if(value_ptr)
 			// TODO: exception handling
 			*value_ptr = std::stof(text);
 	}
 
+	bool input_valid(char c) override {
+		return std::isdigit(c) || c == '.';
+	}
+
 public:
-	using text_input_control<float>::text_input_control;
+	using input_control<float>::input_control;
 
 	void set_value_ptr(float* ptr) override {
+		value_ptr = ptr;
+		update();
+		//if(ptr)
+		//	text = std::to_string(*ptr);
+	}
+
+	void update() override {
+		if(value_ptr)
+			text = std::to_string(*value_ptr);
+	}
+};
+
+class CGV_API int_input_control : public input_control<int> {
+protected:
+	void update_value() override {
+		if(value_ptr)
+			// TODO: exception handling
+			*value_ptr = static_cast<int>(std::stol(text));
+	}
+
+	bool input_valid(char c) override {
+		return std::isdigit(c);
+	}
+
+public:
+	using input_control<int>::input_control;
+
+	void set_value_ptr(int* ptr) override {
 		value_ptr = ptr;
 		update();
 		//if(ptr)
@@ -536,15 +574,22 @@ public:
 		return add_control<button_control>(label, position);
 	}
 
-	std::shared_ptr<text_input_control_string> add_text_input(cgv::base::base* base_ptr, const std::string& label, cgv::render::ivec2 position, std::string& value) {
-		auto ptr = add_control<text_input_control_string>(label, position);
+	std::shared_ptr<string_input_control> add_text_input(cgv::base::base* base_ptr, const std::string& label, cgv::render::ivec2 position, std::string& value) {
+		auto ptr = add_control<string_input_control>(label, position);
 		ptr->set_value_ptr(&value);
 		connect_copy(ptr->on_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
 		return ptr;
 	}
 
-	std::shared_ptr<text_input_control_float> add_text_input(cgv::base::base* base_ptr, const std::string& label, cgv::render::ivec2 position, float& value) {
-		auto ptr = add_control<text_input_control_float>(label, position);
+	std::shared_ptr<float_input_control> add_text_input(cgv::base::base* base_ptr, const std::string& label, cgv::render::ivec2 position, float& value) {
+		auto ptr = add_control<float_input_control>(label, position);
+		ptr->set_value_ptr(&value);
+		connect_copy(ptr->on_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
+		return ptr;
+	}
+
+	std::shared_ptr<int_input_control> add_text_input(cgv::base::base* base_ptr, const std::string& label, cgv::render::ivec2 position, int& value) {
+		auto ptr = add_control<int_input_control>(label, position);
 		ptr->set_value_ptr(&value);
 		connect_copy(ptr->on_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
 		return ptr;
