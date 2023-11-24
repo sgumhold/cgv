@@ -255,6 +255,7 @@ var hierarchy =
     [ "cgv::media::alpha_reference< T, am >", "structcgv_1_1media_1_1alpha__reference.html", null ],
     [ "cgv::media::alpha_reference< T, NO_ALPHA >", "structcgv_1_1media_1_1alpha__reference_3_01T_00_01NO__ALPHA_01_4.html", null ],
     [ "cgv::media::axis_aligned_box< T, N >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
+    [ "cgv::media::color_base< T, cm, am >", "classcgv_1_1media_1_1color__base.html", null ],
     [ "cgv::media::color_storage_traits< T >", "structcgv_1_1media_1_1color__storage__traits.html", null ],
     [ "cgv::media::color_storage_types", "structcgv_1_1media_1_1color__storage__types.html", [
       [ "cgv::media::abst_color_storage", "classcgv_1_1media_1_1abst__color__storage.html", [
@@ -313,20 +314,6 @@ var hierarchy =
     [ "cgv::media::plane< T >", "classcgv_1_1media_1_1plane.html", null ],
     [ "cgv::media::ray< T >", "classcgv_1_1media_1_1ray.html", null ],
     [ "cgv::media::rgb_color_interface< ta_derived >", "structcgv_1_1media_1_1rgb__color__interface.html", null ],
-    [ "cgv::media::rgb_color_interface< color< T, cm, am > >", "structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
-      [ "cgv::media::hls_color_interface< color< T, cm, am > >", "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
-        [ "cgv::media::xyz_color_interface< color< T, cm, am > >", "structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
-          [ "cgv::media::opacity_alpha_interface< color< T, cm, am > >", "structcgv_1_1media_1_1opacity__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
-            [ "cgv::media::transparency_alpha_interface< color< T, cm, am > >", "structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
-              [ "cgv::media::extinction_alpha_interface< color< T, cm, am > >", "structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
-                [ "cgv::media::color< T, cm, am >", "classcgv_1_1media_1_1color.html", null ]
-              ] ]
-            ] ]
-          ] ]
-        ] ]
-      ] ]
-    ] ],
-    [ "cgv::media::rgb_color_interface< color< T, RGB, am > >", "structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01RGB_00_01am_01_4_01_4.html", null ],
     [ "cgv::media::riff_handler", "structcgv_1_1media_1_1riff__handler.html", null ],
     [ "cgv::media::riff_reader", "classcgv_1_1media_1_1riff__reader.html", null ],
     [ "cgv::media::sphere< T, N >", "classcgv_1_1media_1_1sphere.html", null ],
@@ -550,6 +537,24 @@ var hierarchy =
       [ "cgv::utils::typed_token", "structcgv_1_1utils_1_1typed__token.html", null ]
     ] ],
     [ "cgv::xml::FindElementByNameVisitor", "classcgv_1_1xml_1_1FindElementByNameVisitor.html", null ],
+    [ "cgv::media::color_base< T, cm, am >", "classcgv_1_1media_1_1color__base.html", [
+      [ "cgv::media::rgb_color_interface< color< T, cm, am > >", "structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
+        [ "cgv::media::hls_color_interface< color< T, cm, am > >", "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
+          [ "cgv::media::xyz_color_interface< color< T, cm, am > >", "structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
+            [ "cgv::media::opacity_alpha_interface< color< T, cm, am > >", "structcgv_1_1media_1_1opacity__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
+              [ "cgv::media::transparency_alpha_interface< color< T, cm, am > >", "structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
+                [ "cgv::media::extinction_alpha_interface< color< T, cm, am > >", "structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
+                  [ "cgv::media::color< T, cm, am >", "classcgv_1_1media_1_1color.html", null ]
+                ] ]
+              ] ]
+            ] ]
+          ] ]
+        ] ]
+      ] ]
+    ] ],
+    [ "cgv::media::color_base< T, RGB, am >", "classcgv_1_1media_1_1color__base.html", [
+      [ "cgv::media::rgb_color_interface< color< T, RGB, am > >", "structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01RGB_00_01am_01_4_01_4.html", null ]
+    ] ],
     [ "cgv::math::diag_mat< std::complex< T > >", "structcgv_1_1math_1_1diag__mat.html", null ],
     [ "cgv::math::fvec< coord_type, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< double, 2 >", "classcgv_1_1math_1_1fvec.html", null ],

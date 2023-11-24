@@ -213,6 +213,7 @@ var annotated_dup =
           [ "ooc_sliced_volume", "structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html", "structcgv_1_1media_1_1volume_1_1ooc__sliced__volume" ]
         ] ],
         [ "axis_aligned_box", "classcgv_1_1media_1_1axis__aligned__box.html", "classcgv_1_1media_1_1axis__aligned__box" ],
+        [ "color_base", "classcgv_1_1media_1_1color__base.html", "classcgv_1_1media_1_1color__base" ],
         [ "color", "classcgv_1_1media_1_1color.html", "classcgv_1_1media_1_1color" ],
         [ "alpha_reference", "structcgv_1_1media_1_1alpha__reference.html", null ],
         [ "alpha_reference< T, NO_ALPHA >", "structcgv_1_1media_1_1alpha__reference_3_01T_00_01NO__ALPHA_01_4.html", null ],

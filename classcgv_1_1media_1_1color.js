@@ -1,6 +1,6 @@
 var classcgv_1_1media_1_1color =
 [
-    [ "component_type", "classcgv_1_1media_1_1color.html#ab785cd7276a45ab24620c33a1557066d", null ],
+    [ "component_type", "classcgv_1_1media_1_1color.html#a9c8b2ed9febcf28ae05aac8c86d4c109", null ],
     [ "color", "classcgv_1_1media_1_1color.html#a88d8f6c22bfff9b655b38ec86e365273", null ],
     [ "color", "classcgv_1_1media_1_1color.html#a537dfc216ce94ef8b45c8c6849a4f6ea", null ],
     [ "color", "classcgv_1_1media_1_1color.html#ad79c65ee6239a0d356892c805b0f4677", null ],
@@ -8,8 +8,10 @@ var classcgv_1_1media_1_1color =
     [ "color", "classcgv_1_1media_1_1color.html#a434fe234791939213c976af644cdac74", null ],
     [ "color", "classcgv_1_1media_1_1color.html#abf2ddf3d116064ec9f81e84b0ba359ea", null ],
     [ "color", "classcgv_1_1media_1_1color.html#ac103ac41011cfcfde46c564ddfeac316", null ],
-    [ "alpha", "classcgv_1_1media_1_1color.html#a386445618f578ceb5e145518423c5690", null ],
-    [ "alpha", "classcgv_1_1media_1_1color.html#a9a85e7c0d5d12841cb891aab441ac441", null ],
+    [ "alpha", "classcgv_1_1media_1_1color.html#ac29748ca35dfdae39afe1a601001fe15", null ],
+    [ "alpha", "classcgv_1_1media_1_1color.html#a694665bc328e126236447b2f4fb68bb6", null ],
+    [ "at", "classcgv_1_1media_1_1color.html#ae51ddb30993fa2ab71149fc70721e90d", null ],
+    [ "at", "classcgv_1_1media_1_1color.html#aabc825dc43a27fb735c7a50d7db6a816", null ],
     [ "B", "classcgv_1_1media_1_1color.html#a089394ee5c863eec236fd1d19ffbd2f5", null ],
     [ "clamp", "classcgv_1_1media_1_1color.html#a16efea34671618edb9c58f2f0409ca2f", null ],
     [ "drop_alpha", "classcgv_1_1media_1_1color.html#a90723fd94a11c6b1bc3b4bdc9fd8411e", null ],
@@ -38,7 +40,7 @@ var classcgv_1_1media_1_1color =
     [ "Z", "classcgv_1_1media_1_1color.html#ae7e5251b499559689af5b2884ae5422c", null ],
     [ "alp_mod", "classcgv_1_1media_1_1color.html#a3c12a6dbd9e1b0d02126c6934808bb91", null ],
     [ "clr_mod", "classcgv_1_1media_1_1color.html#a718d4e322ae9ece2becd59b2e16678a3", null ],
-    [ "nr_alpha_components", "classcgv_1_1media_1_1color.html#a068c6a0dce73e8fbda05ebde3051a99a", null ],
-    [ "nr_color_components", "classcgv_1_1media_1_1color.html#a0c950fec3c16e9000ae95fa52b591630", null ],
-    [ "nr_components", "classcgv_1_1media_1_1color.html#a3730b9c264c9e23e7d43d2c22c75aec7", null ]
+    [ "nr_alpha_components", "classcgv_1_1media_1_1color.html#a875aef7879781ed063f7893cd5274def", null ],
+    [ "nr_color_components", "classcgv_1_1media_1_1color.html#ad4cbf263c001386f6c09f8451b634c6d", null ],
+    [ "nr_components", "classcgv_1_1media_1_1color.html#ad8780363ff06c65cb856b0c64d9debf0", null ]
 ];
