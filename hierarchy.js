@@ -252,6 +252,8 @@ var hierarchy =
     [ "cgv::math::vec< T >", "classcgv_1_1math_1_1vec.html", [
       [ "cgv::math::qem< T >", "classcgv_1_1math_1_1qem.html", null ]
     ] ],
+    [ "cgv::media::alpha_reference< T, am >", "structcgv_1_1media_1_1alpha__reference.html", null ],
+    [ "cgv::media::alpha_reference< T, NO_ALPHA >", "structcgv_1_1media_1_1alpha__reference_3_01T_00_01NO__ALPHA_01_4.html", null ],
     [ "cgv::media::axis_aligned_box< T, N >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
     [ "cgv::media::color_storage_traits< T >", "structcgv_1_1media_1_1color__storage__traits.html", null ],
     [ "cgv::media::color_storage_types", "structcgv_1_1media_1_1color__storage__types.html", [
@@ -268,7 +270,8 @@ var hierarchy =
         ] ]
       ] ]
     ] ],
-    [ "cgv::media::dummy_alpha< T, AlphaModel >", "structcgv_1_1media_1_1dummy__alpha.html", null ],
+    [ "cgv::media::const_alpha_reference< T, am >", "structcgv_1_1media_1_1const__alpha__reference.html", null ],
+    [ "cgv::media::const_alpha_reference< T, NO_ALPHA >", "structcgv_1_1media_1_1const__alpha__reference_3_01T_00_01NO__ALPHA_01_4.html", null ],
     [ "cgv::media::extinction_alpha_interface< ta_derived >", "structcgv_1_1media_1_1extinction__alpha__interface.html", [
       [ "cgv::media::color< float >", "classcgv_1_1media_1_1color.html", null ],
       [ "cgv::media::color< float, RGB, OPACITY >", "classcgv_1_1media_1_1color.html", null ],
