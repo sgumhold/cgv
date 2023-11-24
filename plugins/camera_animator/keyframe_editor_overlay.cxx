@@ -37,12 +37,12 @@ keyframe_editor_overlay::keyframe_editor_overlay() {
 
 void keyframe_editor_overlay::clear(context& ctx) {
 
-	canvas_overlay::clear(ctx);
-
-	cgv::g2d::ref_msdf_font_regular(ctx, -1);
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
 
+	canvas_overlay::clear(ctx);
+
 	line_renderer.destruct(ctx);
+	labels.destruct(ctx);
 }
 
 bool keyframe_editor_overlay::handle_event(cgv::gui::event& e) {
@@ -152,6 +152,8 @@ void keyframe_editor_overlay::handle_member_change(const cgv::utils::pointer_tes
 
 bool keyframe_editor_overlay::init(context& ctx) {
 
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
+
 	register_shader("background", cgv::g2d::shaders::grid);
 	register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	register_shader("circle", cgv::g2d::shaders::circle);
@@ -159,16 +161,8 @@ bool keyframe_editor_overlay::init(context& ctx) {
 	
 	bool success = canvas_overlay::init(ctx);
 	success &= line_renderer.init(ctx);
-
-	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font_regular(ctx, 1);
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
-
-	if(font.is_initialized())
-		labels.set_msdf_font(&font);
-
-	if(success)
-		init_styles(ctx);
-
+	success &= labels.init(ctx);
+	
 	return success;
 }
 
@@ -636,7 +630,7 @@ void keyframe_editor_overlay::draw_time_marker_and_labels(cgv::render::context& 
 	font_renderer.render(ctx, content_canvas, labels, label_style, 0, 1);
 }
 
-void keyframe_editor_overlay::init_styles(context& ctx) {
+void keyframe_editor_overlay::init_styles() {
 	
 	// get theme info and colors
 	auto& theme = cgv::gui::theme_info::instance();

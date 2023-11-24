@@ -34,20 +34,20 @@ color_map_legend::color_map_legend() {
 
 void color_map_legend::clear(cgv::render::context& ctx) {
 
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
+
 	canvas_overlay::clear(ctx);
 
 	tex.destruct(ctx);
 
-	cgv::g2d::ref_msdf_font_regular(ctx, -1);
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
-
 	tick_renderer.destruct(ctx);
 	ticks.destruct(ctx);
+	labels.destruct(ctx);
 }
 
-void color_map_legend::on_set(void* member_ptr) {
+void color_map_legend::handle_member_change(const cgv::utils::pointer_test & m) {
 
-	if(member_ptr == &layout.total_size[0] || member_ptr == &layout.total_size[1]) {
+	if(m.member_of(layout.total_size)) {
 		vec2 size = get_overlay_size();
 
 		// TODO: minimum width and height depend on other layout parameters
@@ -56,39 +56,34 @@ void color_map_legend::on_set(void* member_ptr) {
 		set_overlay_size(layout.total_size);
 	}
 
-	if(member_ptr == &show_background || member_ptr == &invert_color) {
-		auto ctx_ptr = get_context();
-		if(ctx_ptr)
-			init_styles(*ctx_ptr);
-	}
+	if(m.one_of(show_background, invert_color))
+		init_styles();
 
-	if(member_ptr == &num_ticks) {
+	if(m.is(num_ticks))
 		num_ticks = cgv::math::clamp(num_ticks, 2u, 100u);
-	}
 
-	if(member_ptr == &title) {
+	if(m.is(title)) {
 		layout.title_space = title == "" ? 0 : 12;
 		post_recreate_layout();
 	}
 
-	if(member_ptr == &layout.orientation ||
-		member_ptr == &layout.label_alignment ||
-		member_ptr == &range ||
-		member_ptr == &num_ticks ||
-		member_ptr == &label_precision ||
-		member_ptr == &label_auto_precision ||
-		member_ptr == &label_integer_mode) {
+	if(m.one_of(layout.orientation,
+				layout.label_alignment,
+				range,
+				num_ticks,
+				label_precision,
+				label_auto_precision,
+				label_integer_mode)) {
 		post_recreate_layout();
 	}
 
-	if(member_ptr == &show_opacity)
+	if(m.is(show_opacity))
 		color_map_style.use_texture_alpha = show_opacity;
-
-	update_member(member_ptr);
-	post_damage();
 }
 
 bool color_map_legend::init(cgv::render::context& ctx) {
+
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
 
 	register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	register_shader("grid", cgv::g2d::shaders::grid);
@@ -97,15 +92,8 @@ bool color_map_legend::init(cgv::render::context& ctx) {
 
 	success &= tick_renderer.init(ctx);
 
-	cgv::g2d::msdf_font& font = cgv::g2d::ref_msdf_font_regular(ctx, 1);
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
-
-	if(success)
-		init_styles(ctx);
-
-	if(font.is_initialized())
-		labels.set_msdf_font(&font);
-
+	labels.init(ctx);
+	
 	return success;
 }
 
@@ -127,29 +115,25 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 
 	begin_content(ctx);
 
-	ivec2 container_size = get_overlay_size();
-
-	auto& rect_prog = content_canvas.enable_shader(ctx, "rectangle");
+	content_canvas.enable_shader(ctx, "rectangle");
 
 	// draw container background
 	if(show_background) {
-		container_style.apply(ctx, rect_prog);
-		content_canvas.draw_shape(ctx, ivec2(0), container_size);
+		content_canvas.set_style(ctx, container_style);
+		content_canvas.draw_shape(ctx, ivec2(0), get_overlay_size());
 	}
 
 	// draw inner border
-	border_style.apply(ctx, rect_prog);
+	content_canvas.set_style(ctx, border_style);
 	content_canvas.draw_shape(ctx, layout.color_map_rect.position - 1, layout.color_map_rect.size + 2);
 
 	// draw background grid as contrast for transparent color maps or indicator that no color map is set
-	auto& grid_prog = content_canvas.enable_shader(ctx, "grid");
-	background_style.apply(ctx, grid_prog);
+	content_canvas.enable_shader(ctx, "grid");
+	content_canvas.set_style(ctx, background_style);
 	content_canvas.draw_shape(ctx, layout.color_map_rect);
 
 	if(tex.is_created()) {
 		// draw the color map texture
-		content_canvas.enable_shader(ctx, rect_prog);
-
 		content_canvas.push_modelview_matrix();
 		ivec2 pos = layout.color_map_rect.position;
 		ivec2 size = layout.color_map_rect.size;
@@ -165,7 +149,8 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 		content_canvas.mul_modelview_matrix(ctx, cgv::math::rotate2h(angle));
 
 		// draw color scale texture
-		color_map_style.apply(ctx, rect_prog);
+		content_canvas.enable_shader(ctx, "rectangle");
+		content_canvas.set_style(ctx, color_map_style);
 		tex.enable(ctx, 0);
 		content_canvas.draw_shape(ctx, ivec2(0), size);
 		tex.disable(ctx);
@@ -175,7 +160,7 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 	content_canvas.disable_current_shader(ctx);
 
 	// draw tick marks
-	tick_renderer.render(ctx, content_canvas, cgv::render::PT_POINTS, ticks);
+	tick_renderer.render(ctx, content_canvas, cgv::render::PT_POINTS, ticks, tick_style);
 
 	// draw tick labels
 	auto& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx);
@@ -304,12 +289,9 @@ void color_map_legend::set_show_opacity(bool enabled) {
 	on_set(&show_opacity);
 }
 
-void color_map_legend::init_styles(cgv::render::context& ctx) {
+void color_map_legend::init_styles() {
 	// get theme colors
 	auto& ti = cgv::gui::theme_info::instance();
-	rgba background_color = rgba(ti.background(), 1.0f);
-	rgba group_color = rgba(ti.group(), 1.0f);
-	rgba border_color = rgba(ti.border(), 1.0f);
 	rgb tick_color = ti.text();
 
 	if(invert_color) {
@@ -319,8 +301,8 @@ void color_map_legend::init_styles(cgv::render::context& ctx) {
 	}
 
 	// configure style for the container rectangle
-	container_style.fill_color = group_color;
-	container_style.border_color = background_color;
+	container_style.fill_color = ti.group();
+	container_style.border_color = ti.background();
 	container_style.border_width = 3.0f;
 	container_style.feather_width = 0.0f;
 
@@ -354,12 +336,9 @@ void color_map_legend::init_styles(cgv::render::context& ctx) {
 	text_style.font_size = 12.0f;
 	
 	// configure style for tick marks
-	cgv::g2d::shape2d_style tick_style;
 	tick_style.position_is_center = true;
 	tick_style.fill_color = rgba(tick_color, 1.0f);
 	tick_style.feather_width = 0.0f;
-
-	tick_renderer.set_style(ctx, tick_style);
 }
 
 void color_map_legend::create_labels() {
@@ -468,20 +447,19 @@ void color_map_legend::create_ticks() {
 
 	cgv::render::TextAlignment title_alignment, text_alignment;
 	title_alignment = title_alignment_1;
+	text_alignment = text_v_end;
 
 	bool inside = false;
 	switch(label_alignment) {
 	case AO_START:
 		title_pos[1 - axis] -= 4;
 		tick_start[1 - axis] += color_rect_size[1 - axis] + 3;
-		text_alignment = text_v_end;
 		break;
 	case AO_CENTER:
 		title_pos[axis] += 2;
 		title_pos[1 - axis] += color_rect_size[1 - axis] - (axis ? 3 : 1);
 		tick_start[1 - axis] += 3;
 		inside = true;
-		text_alignment = text_v_end;
 		break;
 	case AO_END:
 		title_alignment = title_alignment_2;

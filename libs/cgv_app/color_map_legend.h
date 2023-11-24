@@ -86,7 +86,7 @@ protected:
 	bool show_opacity;
 
 	// general appearance
-	cgv::g2d::shape2d_style container_style, border_style, color_map_style;
+	cgv::g2d::shape2d_style container_style, border_style, color_map_style, tick_style;
 	cgv::g2d::grid2d_style background_style;
 
 	// text appearance
@@ -97,7 +97,7 @@ protected:
 	DEFINE_GENERIC_RENDER_DATA_CLASS(tick_geometry, 2, vec2, position, vec2, size);
 	tick_geometry ticks;
 
-	void init_styles(cgv::render::context& ctx) override;
+	void init_styles() override;
 	void create_labels();
 	void create_ticks();
 
@@ -109,7 +109,7 @@ public:
 
 	void clear(cgv::render::context& ctx);
 
-	void on_set(void* member_ptr);
+	void handle_member_change(const cgv::utils::pointer_test& m);
 
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);

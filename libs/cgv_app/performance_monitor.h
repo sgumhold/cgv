@@ -82,7 +82,7 @@ protected:
 	cgv::g2d::msdf_text_geometry texts;
 	cgv::g2d::msdf_text_geometry labels;
 
-	void init_styles(cgv::render::context& ctx) override;
+	void init_styles() override;
 	void create_texts();
 	void update_stats_texts();
 	void create_labels();
@@ -97,11 +97,7 @@ public:
 
 	void clear(cgv::render::context& ctx);
 
-	bool self_reflect(cgv::reflect::reflection_handler& _rh);
-	void stream_help(std::ostream& os) {}
-
-	bool handle_event(cgv::gui::event& e);
-	void on_set(void* member_ptr);
+	void handle_member_change(const cgv::utils::pointer_test& m);
 
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
