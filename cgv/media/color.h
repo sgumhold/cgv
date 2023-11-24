@@ -420,17 +420,17 @@ template <typename T, AlphaModel am>
 struct rgb_color_interface<color<T,RGB,am> > : public color_base<T, RGB,am>
 {
 	/// write access to R component of RGB color
-	T& R()             { return at(0); }
+	T& R()             { return this->at(0); }
 	/// read access to R component of RGB color
-	const T& R() const { return at(0); }
+	const T& R() const { return this->at(0); }
 	/// write access to G component of RGB color
-	T& G()             { return at(1); }
+	T& G()             { return this->at(1); }
 	/// read access to G component of RGB color
-	const T& G() const { return at(1); }
+	const T& G() const { return this->at(1); }
 	/// write access to B component of RGB color
-	T& B()             { return at(2); }
+	T& B()             { return this->at(2); }
 	/// read access to B component of RGB color
-	const T& B() const { return at(2); }
+	const T& B() const { return this->at(2); }
 };
 
 /// the hls_color_interface adds access function to the H, L, and S-channels of the color, where write access is only granted for an HLS-color
@@ -451,17 +451,17 @@ template <typename T, AlphaModel am>
 struct hls_color_interface<color<T,HLS,am> > : public rgb_color_interface<color<T, HLS, am> >
 {
 	/// write access to H component of HLS color
-	T& H()             { return at(0); }
+	T& H()             { return this->at(0); }
 	/// read access to H component of HLS color
-	const T& H() const { return at(0); }
+	const T& H() const { return this->at(0); }
 	/// write access to L component of HLS color
-	T& L()             { return at(1); }
+	T& L()             { return this->at(1); }
 	/// read access to L component of HLS color
-	const T& L() const { return at(1); }
+	const T& L() const { return this->at(1); }
 	/// write access to S component of HLS color
-	T& S()             { return at(2); }
+	T& S()             { return this->at(2); }
 	/// read access to S component of HLS color
-	const T& S() const { return at(2); }
+	const T& S() const { return this->at(2); }
 };
 
 /// the xyz_color_interface adds access function to the X, Y, and Z-channels of the color, where write access is only granted for an XYZ-color
@@ -482,17 +482,17 @@ template <typename T, AlphaModel am>
 struct xyz_color_interface<color<T,XYZ,am> > : public hls_color_interface<color<T, XYZ, am> >
 {
 	/// write access to X component of XYZ color
-	T& X()             { return at(0); }
+	T& X()             { return this->at(0); }
 	/// read access to X component of XYZ color
-	const T& X() const { return at(0); }
+	const T& X() const { return this->at(0); }
 	/// write access to Y component of XYZ color
-	T& Y()             { return at(1); }
+	T& Y()             { return this->at(1); }
 	/// read access to Y component of XYZ color
-	const T& Y() const { return at(1); }
+	const T& Y() const { return this->at(1); }
 	/// write access to Z component of XYZ color
-	T& Z()             { return at(2); }
+	T& Z()             { return this->at(2); }
 	/// read access to Z component of XYZ color
-	const T& Z() const { return at(2); }
+	const T& Z() const { return this->at(2); }
 };
 
 /// the opacity_alpha_interface adds access function to the opacity, where write access is only granted for an OPACITY-alpha
@@ -514,9 +514,9 @@ template <typename T, ColorModel cm>
 struct opacity_alpha_interface<color<T,cm,OPACITY> > :public xyz_color_interface<color<T, cm, OPACITY> >
 {
 	/// write access to opacity component 
-	T& opacity()       { return alpha(); }
+	T& opacity()       { return this->alpha(); }
 	/// read access to opacity component
-	const T& opacity() const { return alpha(); }
+	const T& opacity() const { return this->alpha(); }
 };
 
 /// the transparency_alpha_interface adds access function to the opacity, where write access is only granted for an OPACITY-alpha
@@ -538,9 +538,9 @@ template <typename T, ColorModel cm>
 struct transparency_alpha_interface<color<T,cm,TRANSPARENCY> > : public opacity_alpha_interface<color<T, cm, TRANSPARENCY> >
 {
 	/// write access to transparency component 
-	T& transparency()       { return alpha(); }
+	T& transparency()       { return this->alpha(); }
 	/// read access to transparency component
-	const T& transparency() const { return alpha(); }
+	const T& transparency() const { return this->alpha(); }
 };
 
 /// the extinction_alpha_interface adds access function to the opacity, where write access is only granted for an OPACITY-alpha
@@ -562,9 +562,9 @@ template <typename T, ColorModel cm>
 struct extinction_alpha_interface<color<T,cm,EXTINCTION> > : public transparency_alpha_interface<color<T, cm, EXTINCTION> >
 {
 	/// write access to extinction component 
-	T& extinction()       { return alpha(); }
+	T& extinction()       { return this->alpha(); }
 	/// read access to extinction component
-	const T& extinction() const { return alpha(); }
+	const T& extinction() const { return this->alpha(); }
 };
 
 /// represent a color with components of given type and color and alpha model as specified.
@@ -695,9 +695,9 @@ public:
 				components[i] = mx;
 	}
 	/// access to components
-	T& operator [] (unsigned int i) { return components[i]; }
+	T& operator [] (unsigned int i) { return this->at(i); }
 	/// const access to components
-	const T& operator [] (unsigned int i) const { return components[i]; 	}
+	const T& operator [] (unsigned int i) const { return this->at(i); 	}
 };
 
 /*********************************************************************
