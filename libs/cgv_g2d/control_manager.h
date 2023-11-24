@@ -13,6 +13,13 @@
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 #include <cgv_g2d/rect.h>
 
+
+
+#include <cgv/gui/control.h>
+#include <cgv/type/variant.h>
+#include <cgv/type/info/type_id.h>
+
+
 #include "lib_begin.h"
 
 namespace cgv {
@@ -28,13 +35,23 @@ struct control_styles {
 	cgv::render::rgb shadow_color;
 };
 
+
+
+
+
+
+
+
+
+
+
 class CGV_API control_base {
 protected:
 	std::string label;
 	irect rectangle;
-	
+
 public:
-	control_base(irect rectangle) : rectangle(rectangle) {}
+	control_base(const std::string& label, irect rectangle) : label(label), rectangle(rectangle) {}
 
 	virtual ~control_base() {}
 
@@ -50,8 +67,187 @@ public:
 	virtual bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2 mouse_position) { return false; }
 
 	virtual void draw(cgv::render::context& ctx, canvas& cnvs, const control_styles& styles) {}
+
+	// todo: make _callback and _user_data private
+	typedef void(callback_t)(control_base*, void*);
+	callback_t* _callback;
+	void* _user_data = nullptr;
+
+
+	void callback(callback_t* c, void* p) {
+		_callback = c;
+		_user_data = p;
+	}
+	void do_callback() { _callback(this, _user_data); }
 };
 
+
+class CGV_API value_control : public control_base {
+
+private:
+	double _value;
+
+public:
+	using control_base::control_base;
+
+	double value() const { return _value; }
+
+	// TODO: update_view
+	bool value(double v) {
+		//clear_changed();
+		if(v == _value)
+			return false;
+		_value = v;
+		update();
+		//value_damage();
+		return true;
+	}
+};
+
+
+
+
+
+
+
+
+/** the fltk base class keeps strings for label and tooltip and
+	implements methods corresponding to the property interface of
+	 cgv::base::base.*/
+struct CGV_API gl_widget_base {
+	gl_widget_base() {}
+
+	/*
+	/// store the cursor
+	fltk::Cursor* cursor;
+	/// store the tooltip as string
+	std::string tooltip;
+	// store the alignment as string
+	std::string alignment;
+	// default width and height of the element
+	int default_width, default_height;
+	// minimal width and height of the element
+	int minimum_width, minimum_height;
+	/// returns declarations for the reflected properties of a fltk Widget
+	std::string get_property_declarations();
+	/// set the property of a fltk widget
+	bool set_void(fltk::Widget* w, cgv::base::named* nam, const std::string& property, const std::string& type, const void* value);
+	/// get the property of a fltk widget 
+	bool get_void(const fltk::Widget* w, cgv::base::named* nam, const std::string& property, const std::string& type, void* value);
+	/// handle method that ensures that the cursor is shown correctly
+	int handle(fltk::Widget* w, int event);
+	*/
+};
+
+
+
+
+
+/// this interface is used to update the value of fltk_value_control s.
+struct CGV_API abst_gl_value_callback {
+	/// interface for value updates independent of the value and fltk Valuator type 
+	virtual void update_value_if_valid(double v) = 0;
+};
+
+
+
+
+// TODO: move to source file and remove static specifier
+static void valuator_cb(control_base* control, void* valuator_ptr) {
+	//ref_current_modifiers() = cgv_modifiers(fltk::event_state());
+	abst_gl_value_callback* value_callback = dynamic_cast<abst_gl_value_callback*>(static_cast<cgv::base::base*>(valuator_ptr));
+	if(value_callback) {
+		auto vcp = static_cast<value_control*>(control);
+		double value = vcp->value();
+		value_callback->update_value_if_valid(value);
+	}
+	//else
+	//	std::cerr << "could not locate valuator" << std::endl;
+}
+
+
+
+
+/** The control<T> is implemented with different fltk Valuator
+	widgets. The fltk_value_control is parameterized over
+	 the fltk Valuator control widget type FC and the type T
+	 of the conrolled value. */
+template <typename T, typename CV>
+struct CGV_API gl_value_control : public cgv::gui::control<T>, public abst_gl_value_callback, public gl_widget_base {
+	/// pointer to the fltk Widget that controls the value
+	std::shared_ptr<CV> control_view;
+	//CV* control_view;
+	/// construct from label, value reference and dimensions
+	gl_value_control(const std::string& label, T& value, irect rectangle) : cgv::gui::control<T>(label, &value) {
+		//control_view = new CV(this->get_name(), rectangle);
+		control_view = std::make_shared<CV>(this->get_name(), rectangle);
+		
+		// TODO: implement to set value and range
+		//configure(value, fC);
+
+		control_view->callback(valuator_cb, static_cast<cgv::base::base*>(this));
+		update();
+	}
+	/// destruct fltk value control
+	~gl_value_control() {
+		//delete control_view;
+	}
+	/// returns "fltk_value_control"
+	std::string get_type_name() const {
+		return "gl_value_control";
+	}
+	/// updates the fltk control widget in case the controlled value has been changed externally
+	void update() {
+		T tmp = this->get_value();
+		control_view->value(cgv::type::variant<double>::get(
+			cgv::type::info::type_name<T>::get_name(), &tmp));
+	}
+	/// adds to the implementation of fltk_base based on the control type
+	//std::string get_property_declarations();
+	/// abstract interface for the setter
+	//bool set_void(const std::string& property, const std::string& value_type, const void* value_ptr);
+	/// abstract interface for the getter
+	//bool get_void(const std::string& property, const std::string& value_type, void* value_ptr);
+	/// return a fltk::Widget pointer
+	void* get_user_data() const {
+		return static_cast<control_base*>(control_view.get());
+	}
+	/// interface for value updates independent of the value type T
+	void update_value_if_valid(double v) {
+		if(this->check_and_set_value((T)v) && control_view->value() != this->get_value())
+			update();
+	}
+
+
+	std::shared_ptr<CV> get_control_view() {
+		return control_view;
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 class CGV_API button_control : public control_base {
 private:
 	bool pressed = false;
@@ -173,7 +369,7 @@ public:
 		if(ptr)
 			text = *ptr;
 	}
-	*/
+	*
 
 	virtual void set_value_ptr(T* ptr) = 0;
 	//void set_value_ptr(std::string* ptr) {
@@ -400,14 +596,13 @@ public:
 			text = std::to_string(*value_ptr);
 	}
 };
+*/
 
 
 
-
-
-// TODO: rename to slider_control or slider_input (same for text_input_control)?
+/*
 //template<typename T>
-class CGV_API slider_input_control : public control_base {
+class CGV_API slider_control : public value_control {
 private:
 	cgv::g2d::draggable handle;
 	cgv::g2d::draggable_collection<cgv::g2d::draggable*> handle_draggable;
@@ -441,12 +636,12 @@ private:
 	}
 
 public:
-	slider_input_control(irect rectangle) : control_base(rectangle) {
+	slider_control(const std::string& label, irect rectangle) : value_control(label, rectangle) {
 		handle.position = static_cast<cgv::render::vec2>(rectangle.position);
 		handle.size = cgv::render::vec2(12.0f, static_cast<float>(rectangle.h()));
 		handle_draggable.add(&handle);
 		handle_draggable.set_constraint(rectangle);
-		handle_draggable.set_drag_callback(std::bind(&slider_input_control::update_value, this));
+		handle_draggable.set_drag_callback(std::bind(&slider_control::update_value, this));
 	}
 
 	const void* get_value_ptr() const override {
@@ -516,9 +711,151 @@ public:
 		ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, styles.text, cgv::render::ivec2(rectangle.x() - 5, rectangle.center().y()), cgv::render::TA_RIGHT);
 	}
 
-	cgv::signal::signal<slider_input_control&> on_change;
+	cgv::signal::signal<slider_control&> on_change;
 };
+*/
 
+class CGV_API slider_control : public value_control {
+private:
+	cgv::g2d::draggable handle;
+	cgv::g2d::draggable_collection<cgv::g2d::draggable*> handle_draggable;
+
+	cgv::render::vec2 range = cgv::render::vec2(0.0f, 1.0f);
+
+	//T* value = nullptr;
+	//cgv::math::fvec<T, 2U> range = cgv::math::fvec<T, 2U>(std::numeric_limits<T>::min(), std::numeric_limits<T::max());
+
+	void update_value() {
+		
+		float t = (handle.x() - rectangle.x()) / (rectangle.w() - handle.w());
+		float next_value = cgv::math::lerp(range[0], range[1], t);
+		next_value = cgv::math::clamp(next_value, range[0], range[1]);
+
+		// TODO: implement special case for integers
+		/*if(std::abs(value() - next_value) >= std::numeric_limits<float>::epsilon()) {
+			*value_ptr = next_value;
+			on_change(*this);
+
+		}*/
+		if(value(next_value))
+			do_callback();
+	}
+
+	void update_handle() {
+		//if(value_ptr) {
+			//TODO: remove cast to float
+			float t = cgv::math::clamp(static_cast<float>(value()), range[0], range[1]);
+			t = (t - range[0]) / (range[1] - range[0]);
+			handle.x() = rectangle.x() + static_cast<int>(t * (rectangle.w() - 10) + 0.5f);
+		//}
+	}
+
+	/* handle_drag is called after the value changed due to event interaction and shoudl call the callback
+	* // round to nearest multiple of step:
+  if (step_ >= 1) {
+	v = rint(v/step_)*step_;
+  } else if (step_ > 0) {
+	// Try to detect fractions like .1 which are actually stored as
+	// .9999999 and thus would round to unexpected values. This is done
+	// by seeing if 1/N is close to an integer:
+	double is = rint(1/step_);
+	if (fabs(is*step_-1) < .001) v = rint(v*is)/is;
+	else v = rint(v/step_)*step_;
+  } else {
+	// check for them incrementing toward zero and don't produce tiny
+	// numbers:
+	if (previous_value_ && fabs(v/previous_value_) < 1e-5) v = 0;
+  }
+  // If original value was in-range, clamp the new value:
+  double A = minimum_; double B = maximum_;
+  if (A > B) {A = B; B = minimum_;}
+  if (v < A && previous_value_ >= A) v = A;
+  else if (v > B && previous_value_ <= B) v = B;
+  // store the value, redraw the widget, and do callback:
+  if (value(v)) {
+	if (when() & WHEN_CHANGED || !pushed()) do_callback();
+	else set_changed();
+  }
+	*/
+
+public:
+	slider_control(const std::string& label, irect rectangle) : value_control(label, rectangle) {
+		handle.position = static_cast<cgv::render::vec2>(rectangle.position);
+		handle.size = cgv::render::vec2(12.0f, static_cast<float>(rectangle.h()));
+		handle_draggable.add(&handle);
+		handle_draggable.set_constraint(rectangle);
+		handle_draggable.set_drag_callback(std::bind(&slider_control::update_value, this));
+	}
+
+	const void* get_value_ptr() const override {
+		return nullptr;// value_ptr;
+	};
+
+	void set_value_ptr(float* ptr) {
+		//value_ptr = ptr;
+		update_handle();
+	}
+
+	void set_range(cgv::render::vec2 range) {
+		this->range = range;
+		update_handle();
+	}
+
+	void update() override {
+		update_handle();
+	}
+
+	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2 mouse_position) override {
+		//if(!value_ptr)
+		//	return false;
+
+		//if(!rectangle.is_inside(mouse_position))
+		//	return false;
+
+		cgv::gui::MouseAction action = e.get_action();
+
+		if(e.get_button() == cgv::gui::MB_LEFT_BUTTON && action == cgv::gui::MA_PRESS) {
+			if(rectangle.is_inside(mouse_position) && !handle.is_inside(mouse_position)) {
+				handle.position = mouse_position.x() - 0.5f * handle.w();
+				handle.apply_constraint(rectangle);
+
+				update_value();
+			}
+		}
+
+		if(action == cgv::gui::MA_WHEEL) {
+			float speed = (e.get_modifiers() & cgv::gui::EM_SHIFT) ? 4.0f : 1.0f;
+
+			handle.x() += speed * e.get_dy();
+			handle.apply_constraint(rectangle);
+
+			update_value();
+			return true;
+		}
+
+		if(handle_draggable.handle_mouse_event(e, mouse_position))
+			return true;
+
+		return false;
+	}
+
+	void draw(cgv::render::context& ctx, canvas& cnvs, const control_styles& styles) override {
+		cnvs.enable_shader(ctx, "rectangle");
+		cnvs.set_style(ctx, styles.colored_box);
+
+		irect track = rectangle;
+		track.scale(0, -5);
+		cnvs.draw_shape(ctx, track, styles.background_color);
+
+		cnvs.draw_shape(ctx, handle, styles.control_color);
+		cnvs.disable_current_shader(ctx);
+
+		auto& font = ref_msdf_font_regular(ctx);
+		ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, styles.text, cgv::render::ivec2(rectangle.x() - 5, rectangle.center().y()), cgv::render::TA_RIGHT);
+	}
+
+	cgv::signal::signal<slider_control&> on_change;
+};
 
 
 
@@ -538,6 +875,7 @@ protected:
 	cgv::render::ivec2 default_control_size = cgv::render::ivec2(200, 20);
 
 	std::vector<std::shared_ptr<control_base>> controls;
+	std::vector<cgv::gui::control_ptr> controls2;
 
 	std::function<void(void*)> default_on_change_callback;
 
@@ -547,8 +885,8 @@ protected:
 
 	template<typename T>
 	std::shared_ptr<T> add_control(const std::string& label, cgv::render::ivec2 position) {
-		auto ptr = std::make_shared<T>(irect(position, default_control_size));
-		ptr->set_label(label);
+		auto ptr = std::make_shared<T>(label, irect(position, default_control_size));
+		//ptr->set_label(label);
 		controls.push_back(ptr);
 		return ptr;
 	}
@@ -569,7 +907,7 @@ public:
 
 
 	
-
+	/*
 	std::shared_ptr<button_control> add_button(const std::string& label, cgv::render::ivec2 position) {
 		return add_control<button_control>(label, position);
 	}
@@ -594,14 +932,40 @@ public:
 		connect_copy(ptr->on_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
 		return ptr;
 	}
+	*/
 
-	std::shared_ptr<slider_input_control> add_slider_input(cgv::base::base* base_ptr, const std::string& label, cgv::render::ivec2 position, float& value) {
-		auto ptr = add_control<slider_input_control>(label, position);
+	std::shared_ptr<slider_control> add_slider_control(cgv::base::base* base_ptr, const std::string& label, cgv::render::ivec2 position, float& value) {
+		auto ptr = add_control<slider_control>(label, position);
 		ptr->set_value_ptr(&value);
 		connect_copy(ptr->on_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
 		return ptr;
 	}
 
+
+
+	//template <class B>
+	//cgv::gui::control_ptr add_test(const std::string& label, float* value_ptr, cgv::render::ivec2 position) {
+	std::shared_ptr<slider_control> add_test(cgv::base::base* base_ptr, const std::string& label, float* value_ptr, cgv::render::ivec2 position) {
+
+		auto tmp = new gl_value_control<cgv::type::flt32_type, /* B */slider_control>(
+			label, *static_cast<cgv::type::flt32_type*>(value_ptr), irect(position, default_control_size)
+		);
+
+		auto ptr = cgv::gui::control_ptr(tmp);
+		
+		data::ref_ptr<cgv::gui::control<float>> cp = ptr.up_cast<cgv::gui::control<float>>();
+
+		if(cp) {
+			connect_copy(cp->value_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, value_ptr));
+		}
+
+		auto ctrl_ptr = tmp->get_control_view();
+
+
+		controls.push_back(ctrl_ptr);
+		controls2.push_back(ptr);
+		return ctrl_ptr;
+	}
 
 
 	void update_views(void* member_ptr) {
