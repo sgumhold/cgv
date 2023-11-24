@@ -6,6 +6,86 @@ using namespace cgv::render;
 namespace cgv {
 namespace g2d {
 
+
+
+
+
+
+
+
+
+
+void input_cb(control_base* control, void* input_ptr) {
+	gl_string_control* control_ptr = static_cast<gl_string_control*>(static_cast<cgv::base::base*>(input_ptr));
+	control_ptr->in_callback = true;
+	//auto control_ptr->get_gl_control();
+
+	 //static_cast<fltk::Input*> =
+
+	//fltk::Input* fI = static_cast<fltk::Input*>(w);
+	input_control* gl_control = static_cast<input_control*>(control);
+
+	//fsc->set_new_value(fI->value());
+	control_ptr->set_new_value(gl_control->get_value());
+
+	if(control_ptr->check_value(*control_ptr)) {
+		std::string tmp_value = control_ptr->get_value();
+		control_ptr->public_set_value(control_ptr->get_new_value());
+		control_ptr->set_new_value(tmp_value);
+		control_ptr->value_change(*control_ptr);
+	}
+
+	if(control_ptr->get_value() != gl_control->get_value())
+		gl_control->set_value(control_ptr->get_value());
+
+	control_ptr->in_callback = false;
+}
+
+gl_string_control::gl_string_control(const std::string& label, std::string& value, irect rectangle) : cgv::gui::control<std::string>(label, &value) {
+	gl_control = std::make_shared<input_control>(this->get_name(), rectangle);
+	//gl_control->when(fltk::WHEN_CHANGED);
+	//gl_control->callback(input_cb, static_cast<cgv::base::base*>(this));
+	//gl_control->callback(input_cb, static_cast<cgv::base::base*>(this));
+	gl_control->callback(input_cb, this);
+	update();
+}
+
+
+// TODO: make static member of value_input_control
+void value_input_cb(control_base*, void* v) {
+	value_input_control& t = *(value_input_control*)v;
+	double next_value;
+	if(t.get_step() >= 1.0)
+		next_value = strtol(t.input.get_value().c_str(), 0, 0);
+	else
+		next_value = strtod(t.input.get_value().c_str(), 0);
+
+	if(next_value != t.get_value()) {
+		t.set_value(next_value);
+		t.do_callback();
+	}
+}
+
+value_input_control::value_input_control(const std::string& label, irect rectangle) : value_control(label, rectangle), input(label, rectangle) {
+	input.callback(value_input_cb, this);
+	// TODO: set from ouside and allow integer
+	input.type = input_control::input_type::kFloat;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 control_manager::control_manager() {
 	
 }
