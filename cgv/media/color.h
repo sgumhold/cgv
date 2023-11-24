@@ -420,17 +420,17 @@ template <typename T, AlphaModel am>
 struct rgb_color_interface<color<T,RGB,am> > : public color_base<T, RGB,am>
 {
 	/// write access to R component of RGB color
-	T& R()             { return at(0); }
+	T& R()             { return this->at(0); }
 	/// read access to R component of RGB color
-	const T& R() const { return at(0); }
+	const T& R() const { return this->at(0); }
 	/// write access to G component of RGB color
-	T& G()             { return at(1); }
+	T& G()             { return this->at(1); }
 	/// read access to G component of RGB color
-	const T& G() const { return at(1); }
+	const T& G() const { return this->at(1); }
 	/// write access to B component of RGB color
-	T& B()             { return at(2); }
+	T& B()             { return this->at(2); }
 	/// read access to B component of RGB color
-	const T& B() const { return at(2); }
+	const T& B() const { return this->at(2); }
 };
 
 /// the hls_color_interface adds access function to the H, L, and S-channels of the color, where write access is only granted for an HLS-color
@@ -451,17 +451,17 @@ template <typename T, AlphaModel am>
 struct hls_color_interface<color<T,HLS,am> > : public rgb_color_interface<color<T, HLS, am> >
 {
 	/// write access to H component of HLS color
-	T& H()             { return at(0); }
+	T& H()             { return this->at(0); }
 	/// read access to H component of HLS color
-	const T& H() const { return at(0); }
+	const T& H() const { return this->at(0); }
 	/// write access to L component of HLS color
-	T& L()             { return at(1); }
+	T& L()             { return this->at(1); }
 	/// read access to L component of HLS color
-	const T& L() const { return at(1); }
+	const T& L() const { return this->at(1); }
 	/// write access to S component of HLS color
-	T& S()             { return at(2); }
+	T& S()             { return this->at(2); }
 	/// read access to S component of HLS color
-	const T& S() const { return at(2); }
+	const T& S() const { return this->at(2); }
 };
 
 /// the xyz_color_interface adds access function to the X, Y, and Z-channels of the color, where write access is only granted for an XYZ-color
@@ -482,17 +482,17 @@ template <typename T, AlphaModel am>
 struct xyz_color_interface<color<T,XYZ,am> > : public hls_color_interface<color<T, XYZ, am> >
 {
 	/// write access to X component of XYZ color
-	T& X()             { return at(0); }
+	T& X()             { return this->at(0); }
 	/// read access to X component of XYZ color
-	const T& X() const { return at(0); }
+	const T& X() const { return this->at(0); }
 	/// write access to Y component of XYZ color
-	T& Y()             { return at(1); }
+	T& Y()             { return this->at(1); }
 	/// read access to Y component of XYZ color
-	const T& Y() const { return at(1); }
+	const T& Y() const { return this->at(1); }
 	/// write access to Z component of XYZ color
-	T& Z()             { return at(2); }
+	T& Z()             { return this->at(2); }
 	/// read access to Z component of XYZ color
-	const T& Z() const { return at(2); }
+	const T& Z() const { return this->at(2); }
 };
 
 /// the opacity_alpha_interface adds access function to the opacity, where write access is only granted for an OPACITY-alpha
@@ -514,9 +514,9 @@ template <typename T, ColorModel cm>
 struct opacity_alpha_interface<color<T,cm,OPACITY> > :public xyz_color_interface<color<T, cm, OPACITY> >
 {
 	/// write access to opacity component 
-	T& opacity()       { return alpha(); }
+	T& opacity()       { return this->alpha(); }
 	/// read access to opacity component
-	const T& opacity() const { return alpha(); }
+	const T& opacity() const { return this->alpha(); }
 };
 
 /// the transparency_alpha_interface adds access function to the opacity, where write access is only granted for an OPACITY-alpha
@@ -538,9 +538,9 @@ template <typename T, ColorModel cm>
 struct transparency_alpha_interface<color<T,cm,TRANSPARENCY> > : public opacity_alpha_interface<color<T, cm, TRANSPARENCY> >
 {
 	/// write access to transparency component 
-	T& transparency()       { return alpha(); }
+	T& transparency()       { return this->alpha(); }
 	/// read access to transparency component
-	const T& transparency() const { return alpha(); }
+	const T& transparency() const { return this->alpha(); }
 };
 
 /// the extinction_alpha_interface adds access function to the opacity, where write access is only granted for an OPACITY-alpha
@@ -562,9 +562,9 @@ template <typename T, ColorModel cm>
 struct extinction_alpha_interface<color<T,cm,EXTINCTION> > : public transparency_alpha_interface<color<T, cm, EXTINCTION> >
 {
 	/// write access to extinction component 
-	T& extinction()       { return alpha(); }
+	T& extinction()       { return this->alpha(); }
 	/// read access to extinction component
-	const T& extinction() const { return alpha(); }
+	const T& extinction() const { return this->alpha(); }
 };
 
 /// represent a color with components of given type and color and alpha model as specified.
@@ -576,39 +576,47 @@ public:
 	static const ColorModel clr_mod = cm;
 	/// static and const access to alpha model
 	static const AlphaModel alp_mod = am;
+	/// static and const access to number of color components
+	static const unsigned int nr_color_components = color_base<T,cm,am>::nr_color_components;
+	/// static and const access to number of alpha components
+	static const unsigned int nr_alpha_components = color_base<T, cm, am>::nr_alpha_components;
+	/// static and const access to total number of components
+	static const unsigned int nr_components = color_base<T, cm, am>::nr_components;
+	/// type of color components
+	typedef T component_type;
 	/// standard constructor does not initialize components
 	color() { }
 	/// set all components to given value
 	color(const T& c) { *this = c; }
 	/// set first two components to given values
 	color(const T& c0, const T& c1) { 
-		components[0] = c0; 
+		this->components[0] = c0; 
 		if (nr_components > 1)
-			components[1] = c1;
+			this->components[1] = c1;
 	}
 	/// set first three components to given values
 	color(const T& c0, const T& c1, const T& c2) { 
-		components[0] = c0; 
+		this->components[0] = c0;
 		if (nr_components > 1)
-			components[1] = c1;
+			this->components[1] = c1;
 		if (nr_components > 2)
-			components[2] = c2;
+			this->components[2] = c2;
 	}
 	/// set all four components to given values
 	color(const T& c0, const T& c1, const T& c2, const T& c3) { 
-		components[0] = c0; 
+		this->components[0] = c0;
 		if (nr_components > 1)
-			components[1] = c1;
+			this->components[1] = c1;
 		if (nr_components > 2)
-			components[2] = c2;
+			this->components[2] = c2;
 		if (nr_components > 3)
-			components[3] = c3;
+			this->components[3] = c3;
 	}
 	/// construct from non-alpha color plus alpha
 	color(const color<T, cm>& c, T a) {
-		(*this)[nr_components - 1] = a; // looks bit like a hack but avoids invalid access for NO_ALPHA
+		this->at(nr_components - 1) = a; // looks bit like a hack but avoids invalid access for NO_ALPHA
 		for (unsigned i = 0; i < nr_color_components; ++i)
-			(*this)[i] = c[i];
+			this->at(i) = c[i];
 	}
 	/// copy constructor uses color conversion if necessary
 	template <typename T2, ColorModel cm2, AlphaModel am2>
@@ -623,7 +631,7 @@ public:
 	}
 	/// assign all components including alpha to \c c
 	color<T,cm,am>& operator = (const T& c) {
-		std::fill(components, components+nr_components, c);
+		std::fill(this->components, this->components+nr_components, c);
 		return *this;
 	}
 	/// drop the alpha component if any by a cast operator
@@ -634,7 +642,7 @@ public:
 	color<T,cm,am>& operator *= (const color<T2,cm2,am2>& c2) {
 		color<T,cm,am> tmp(c2);
 		for (int i=0; i<nr_components; ++i)
-			components[i] *= tmp[i];
+			this->at(i) *= tmp[i];
 		return *this;
 	}
 	/// post multiply with color
@@ -647,7 +655,7 @@ public:
 	/// multiply with constant
 	color<T,cm,am>& operator *= (const T& c) {
 		for (unsigned i=0; i<nr_components; ++i)
-			components[i] *= c;
+			this->at(i) *= c;
 		return *this;
 	}
 	/// post multiply with constant
@@ -655,7 +663,7 @@ public:
 	color<typename type::func::promote<T,T2>::type,cm,am> operator * (const T2& c) const {
 		color<typename type::func::promote<T,T2>::type,cm,am> res;
 		for (unsigned i=0; i<nr_components; ++i)
-			res[i] = components[i]*c;
+			res[i] = this->at(i)*c;
 		return res;
 	}
 	/// add color
@@ -663,7 +671,7 @@ public:
 	color<T,cm,am>& operator += (const color<T2,cm2,am2>& c2) {
 		color<T,cm,am> tmp(c2);
 		for (unsigned i=0; i<nr_components; ++i)
-			components[i] += tmp[i];
+			this->at(i) += tmp[i];
 		return *this;
 	}
 	/// add color
@@ -676,7 +684,7 @@ public:
 	/// add constant
 	color<T,cm,am>& operator += (const T& c) {
 		for (unsigned i=0; i<nr_components; ++i)
-			components[i] += c;
+			this->at(i) += c;
 		return *this;
 	}
 	/// add constant
@@ -689,15 +697,15 @@ public:
 	void clamp(const T& mn = 0, const T& mx = color_one<T>::value(), bool skip_alpha = false) {
 		unsigned nr = skip_alpha ? nr_color_components : nr_components;
 		for (unsigned i = 0; i < nr; ++i)
-			if (components[i] < mn)
-				components[i] = mn;
-			else if (components[i] > mx)
-				components[i] = mx;
+			if (this->at(i) < mn)
+				this->at(i) = mn;
+			else if (this->at(i) > mx)
+				this->at(i) = mx;
 	}
 	/// access to components
-	T& operator [] (unsigned int i) { return components[i]; }
+	T& operator [] (unsigned int i) { return this->at(i); }
 	/// const access to components
-	const T& operator [] (unsigned int i) const { return components[i]; 	}
+	const T& operator [] (unsigned int i) const { return this->at(i); 	}
 };
 
 /*********************************************************************
