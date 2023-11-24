@@ -135,7 +135,7 @@ var NAVTREEINDEX =
 "classcgv_1_1math_1_1adjacency__list.html#a56761df5c02e9c34c44f32475f7a2af5",
 "classcgv_1_1math_1_1mat.html#a063541099a42204b667e79b6ff36bd84",
 "classcgv_1_1math_1_1quaternion.html#afaa81133284c1a5c63333ef1535f9b97",
-"classcgv_1_1media_1_1color.html#ad8780363ff06c65cb856b0c64d9debf0",
+"classcgv_1_1media_1_1color.html#ad79c65ee6239a0d356892c805b0f4677",
 "classcgv_1_1media_1_1illum_1_1phong__material.html#a47db8abbdfe349610355de6cab91caeb",
 "classcgv_1_1media_1_1image_1_1image__reader.html#a0177b30a41f7c5154316310ffd8c51b0",
 "classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a6b5c3e0092587d5357b60f088589c0d4",
