@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cgv/defines/assert.h>
 #include <cgv/type/func/promote.h>
+#include <cgv/type/func/promote_const.h>
 #include <cgv/type/traits/max.h>
 #include <cgv/type/info/type_name.h>
 #include "color_model.hh"
@@ -26,22 +27,18 @@ struct color_one<double>
 {
 	static double value() { return 1.0; }
 };
-
 template <ColorModel cm>
 struct color_model_traits {
 	static const unsigned int nr_components = 3;
 };
-
 template <>
 struct color_model_traits<LUM> {
 	static const unsigned int nr_components = 1;
 };
-
 template <AlphaModel am>
 struct alpha_model_traits {
 	static const unsigned int nr_components = 1;
 };
-
 template <>
 struct alpha_model_traits<NO_ALPHA> {
 	static const unsigned int nr_components = 0;
@@ -50,11 +47,39 @@ struct alpha_model_traits<NO_ALPHA> {
 template <typename T, ColorModel cm = RGB, AlphaModel = NO_ALPHA> 
 class color;
 
-/// this dummy class is only used for template argument matching
-template <typename T, AlphaModel = NO_ALPHA> 
-struct dummy_alpha
+/// captures reference to alpha component of color
+template <typename T, AlphaModel am> 
+struct alpha_reference
 {
-	T alpha;
+	T& alpha_ref;
+	template <ColorModel cm>
+	alpha_reference(color<T, cm, am>& c) : alpha_ref(c[color_model_traits<cm>::nr_components]) {}
+};
+/// specialize for color types without alpha where reference is to static dummy alpha
+template <typename T>
+struct alpha_reference<T,NO_ALPHA>
+{
+	T& ref_dummy_alpha() { static T dummy_alpha = color_one<T>::value(); return dummy_alpha; }
+	T& alpha_ref;
+	template <ColorModel cm>
+	alpha_reference(color<T,cm,NO_ALPHA>& c) : alpha_ref(ref_dummy_alpha()) {}
+};
+/// captures reference to alpha component of color
+template <typename T, AlphaModel am> 
+struct const_alpha_reference
+{
+	const T& alpha_ref;
+	template <ColorModel cm>
+	const_alpha_reference(const color<T, cm, am>& c) : alpha_ref(c[color_model_traits<cm>::nr_components]) {}
+};
+/// specialize for color types without alpha where reference is to static dummy alpha
+template <typename T>
+struct const_alpha_reference<T,NO_ALPHA>
+{
+	const T& ref_dummy_alpha() { static T dummy_alpha = color_one<T>::value(); return dummy_alpha; }
+	const T& alpha_ref;
+	template <ColorModel cm>
+	const_alpha_reference(const color<T,cm,NO_ALPHA>& c) : alpha_ref(ref_dummy_alpha()) {}
 };
 
 /// template for conversion of color components
@@ -62,7 +87,6 @@ template <typename T1, typename T2>
 inline void convert_color_component(const T1& from, T2& to) {
 	to = (T2)((typename type::func::promote<T1,T2>::type)(from)*color_one<T2>::value()/color_one<T1>::value());
 }
-
 /// template for conversion of color components
 template <>
 inline void convert_color_component(const unsigned int& from, unsigned short& to) {
@@ -94,23 +118,25 @@ inline void convert_color_component(const unsigned char& from, unsigned short& t
 	to = (unsigned short)from << 8;
 }
 
-/// template for conversion of one alpha model to another. By default conversion is implemented via conversion to OPACITY.
+/// template for conversion of one alpha model to another, by default conversion is implemented via conversion to OPACITY
 template <typename T1, AlphaModel am1, typename T2, AlphaModel am2>
-inline void convert_alpha_model(const dummy_alpha<T1,am1>& from, dummy_alpha<T2,am2>& to)
+inline void convert_alpha_model(const alpha_reference<T1,am1>& from, alpha_reference<T2,am2>& to)
 {
-	dummy_alpha<typename type::func::promote<T1,T2>::type,OPACITY> tmp;
+	color<typename type::func::promote<T1,T2>::type,LUM,OPACITY> tmp;
+	alpha_reference<typename type::func::promote<T1, T2>::type, OPACITY> ref(tmp);
 	convert_alpha_model(from,tmp);
 	convert_alpha_model(tmp,to);
 }
 
-template <AlphaModel am1, AlphaModel am2, typename T>
-inline T convert_alpha(const T& from)
-{
-	dummy_alpha<T,am1> to;
-	convert_alpha_model((const dummy_alpha<T,am2>&) from, to);
-	return to.alpha;
-}
-/// template for conversion of one color models. By default conversion is implemented via a conversion to XYZ.
+//template <AlphaModel am1, AlphaModel am2, typename T>
+//inline T convert_alpha(const T& from)
+//{
+//	dummy_alpha<T,am1> to;
+//	convert_alpha_model((const dummy_alpha<T,am2>&) from, to);
+//	return to.alpha;
+//}
+
+/// template for conversion of one color model to another one, by default conversion is implemented via a conversion to XYZ.
 template <typename T1, ColorModel cm1, typename T2, ColorModel cm2>
 inline void convert_color_model(const color<T1,cm1>& from, color<T2,cm2>& to)
 {
@@ -118,18 +144,16 @@ inline void convert_color_model(const color<T1,cm1>& from, color<T2,cm2>& to)
 	convert_color(from,tmp);
 	convert_color(tmp,to);
 }
-
 /// template for conversion of one color to another, where the color model and the alpha model is converted
 template <typename T1, ColorModel cm1, AlphaModel am1, typename T2, ColorModel cm2, AlphaModel am2>
 inline void convert_color(const color<T1,cm1,am1>& from, color<T2,cm2,am2>& to)
 {
 	convert_color_model(*((const color<T1,cm1>*)&from),(color<T2,cm2>&)to);
-	convert_alpha_model(*((const dummy_alpha<T1,am1>*)&from.alpha()),(dummy_alpha<T2,am2>&)(to.alpha()));
+	convert_alpha_model(const_alpha_reference<T1,am1>(from),alpha_reference<T2,am2>(to));
 }
 
 /// the rgb_color_interface adds access function to the R, G, and B-channels of the color, where write access is only granted for an RGB-color
 template <typename ta_derived> struct rgb_color_interface {};
-
 /// read only implementation of rgb color interface including automatic conversion
 template <typename T, ColorModel cm, AlphaModel am> 
 struct rgb_color_interface<color<T,cm,am> >
@@ -141,7 +165,6 @@ struct rgb_color_interface<color<T,cm,am> >
 	/// convert color to RGB and return B component
 	T B() const { return color<T,RGB>(*static_cast<const color<T,cm,am>*>(this))[2]; }
 };
-
 /// read and write access implementation of rgb color interface
 template <typename T, AlphaModel am>
 struct rgb_color_interface<color<T,RGB,am> >
@@ -162,10 +185,9 @@ struct rgb_color_interface<color<T,RGB,am> >
 
 /// the hls_color_interface adds access function to the H, L, and S-channels of the color, where write access is only granted for an HLS-color
 template <typename ta_derived> struct hls_color_interface {};
-
 /// read only implementation of hls color interface including automatic conversion
 template <typename T, ColorModel cm, AlphaModel am> 
-struct hls_color_interface<color<T,cm,am> > : public rgb_color_interface<color<T,cm,am> >
+struct hls_color_interface<color<T,cm,am> > : public rgb_color_interface<color<T, cm, am> >
 {
 	/// convert color to HLS and return H component
 	T H() const { return color<T,HLS>(*static_cast<const color<T,cm,am>*>(this))[0]; }
@@ -174,10 +196,9 @@ struct hls_color_interface<color<T,cm,am> > : public rgb_color_interface<color<T
 	/// convert color to HLS and return S component
 	T S() const { return color<T,HLS>(*static_cast<const color<T,cm,am>*>(this))[2]; }
 };
-
 /// read and write access implementation of hls color interface
 template <typename T, AlphaModel am>
-struct hls_color_interface<color<T,HLS,am> > : public rgb_color_interface<color<T,HLS,am> >
+struct hls_color_interface<color<T,HLS,am> > : public rgb_color_interface<color<T, HLS, am> >
 {
 	/// write access to H component of HLS color
 	T& H()             { return (*static_cast<color<T,HLS,am>*>(this))[0]; }
@@ -195,10 +216,9 @@ struct hls_color_interface<color<T,HLS,am> > : public rgb_color_interface<color<
 
 /// the xyz_color_interface adds access function to the X, Y, and Z-channels of the color, where write access is only granted for an XYZ-color
 template <typename ta_derived> struct xyz_color_interface {};
-
 /// read only implementation of xyz color interface including automatic conversion
 template <typename T, ColorModel cm, AlphaModel am> 
-struct xyz_color_interface<color<T,cm,am> > : public hls_color_interface<color<T,cm,am> >
+struct xyz_color_interface<color<T,cm,am> > : public hls_color_interface<color<T, cm, am> >
 {
 	/// convert color to XYZ and return X component
 	T X() const { return color<T,XYZ>(*static_cast<const color<T,cm,am>*>(this))[0]; }
@@ -207,10 +227,9 @@ struct xyz_color_interface<color<T,cm,am> > : public hls_color_interface<color<T
 	/// convert color to XYZ and return Z component
 	T Z() const { return color<T,XYZ>(*static_cast<const color<T,cm,am>*>(this))[2]; }
 };
-
 /// read and write access implementation of xyz color interface
 template <typename T, AlphaModel am>
-struct xyz_color_interface<color<T,XYZ,am> > : public hls_color_interface<color<T,XYZ,am> >
+struct xyz_color_interface<color<T,XYZ,am> > : public hls_color_interface<color<T, XYZ, am> >
 {
 	/// write access to X component of XYZ color
 	T& X()             { return (*static_cast<color<T,XYZ,am>*>(this))[0]; }
@@ -226,25 +245,23 @@ struct xyz_color_interface<color<T,XYZ,am> > : public hls_color_interface<color<
 	const T& Z() const { return (*static_cast<const color<T,XYZ,am>*>(this))[2]; }
 };
 
-
 /// the opacity_alpha_interface adds access function to the opacity, where write access is only granted for an OPACITY-alpha
 template <typename ta_derived> struct opacity_alpha_interface {};
-
 /// read only implementation of opacity alpha interface including automatic conversion
 template <typename T, ColorModel cm, AlphaModel am> 
-struct opacity_alpha_interface<color<T,cm,am> > : public xyz_color_interface<color<T,cm,am> >
+struct opacity_alpha_interface<color<T,cm,am> > : public xyz_color_interface<color<T, cm, am> >
 {
 	/// convert alpha to opacity
 	T opacity() const { 
-		dummy_alpha<T,OPACITY> opa;
-		convert_alpha_model((const dummy_alpha<T,am>&)(static_cast<const color<T,cm,am>*>(this)->alpha()),opa);
-		return opa.alpha; 
+		color<T,LUM,OPACITY> opa;
+		alpha_reference<T, OPACITY> opa_ref(opa);
+		convert_alpha_model(const_alpha_reference<T, am>(*this), opa_ref);
+		return opa_ref.alpha_ref; 
 	}
 };
-
 /// read and write access implementation of opacity alpha interface
 template <typename T, ColorModel cm>
-struct opacity_alpha_interface<color<T,cm,OPACITY> > : public xyz_color_interface<color<T,cm,OPACITY> >
+struct opacity_alpha_interface<color<T,cm,OPACITY> > :public xyz_color_interface<color<T, cm, OPACITY> >
 {
 	/// write access to opacity component 
 	T& opacity()       { return static_cast<color<T,cm,OPACITY>*>(this)->alpha(); }
@@ -254,22 +271,21 @@ struct opacity_alpha_interface<color<T,cm,OPACITY> > : public xyz_color_interfac
 
 /// the transparency_alpha_interface adds access function to the opacity, where write access is only granted for an OPACITY-alpha
 template <typename ta_derived> struct transparency_alpha_interface{};
-
 /// read only implementation of transparency alpha interface including automatic conversion
 template <typename T, ColorModel cm, AlphaModel am> 
-struct transparency_alpha_interface<color<T,cm,am> > : public opacity_alpha_interface<color<T,cm,am> >
+struct transparency_alpha_interface<color<T,cm,am> > : public opacity_alpha_interface<color<T, cm, am> >
 {
 	/// convert alpha to transparency
 	T transparency() const { 
-		dummy_alpha<T,TRANSPARENCY> tra;
-		convert_alpha_model((const dummy_alpha<T,am>&)(static_cast<const color<T,cm,am>*>(this)->alpha()),tra);
-		return tra.alpha; 
+		color<T, LUM, TRANSPARENCY> tra;
+		alpha_reference<T, TRANSPARENCY> tra_ref(tra);
+		convert_alpha_model(const_alpha_reference<T, am>(*this), tra_ref);
+		return tra_ref.alpha_ref;
 	}
 };
-
 /// read and write access implementation of transparency alpha interface
 template <typename T, ColorModel cm>
-struct transparency_alpha_interface<color<T,cm,TRANSPARENCY> > : public opacity_alpha_interface<color<T,cm,TRANSPARENCY> >
+struct transparency_alpha_interface<color<T,cm,TRANSPARENCY> > : public opacity_alpha_interface<color<T, cm, TRANSPARENCY> >
 {
 	/// write access to transparency component 
 	T& transparency()       { return static_cast<color<T,cm,TRANSPARENCY>*>(this)->alpha(); }
@@ -279,22 +295,21 @@ struct transparency_alpha_interface<color<T,cm,TRANSPARENCY> > : public opacity_
 
 /// the extinction_alpha_interface adds access function to the opacity, where write access is only granted for an OPACITY-alpha
 template <typename ta_derived> struct extinction_alpha_interface {};
-
 /// read only implementation of extinction alpha interface including automatic conversion
 template <typename T, ColorModel cm, AlphaModel am> 
-struct extinction_alpha_interface<color<T,cm,am> > : public transparency_alpha_interface<color<T,cm,am> >
+struct extinction_alpha_interface<color<T,cm,am> > : public transparency_alpha_interface<color<T, cm, am> >
 {
 	/// convert alpha to extinction
 	T extinction() const { 
-		dummy_alpha<T,EXTINCTION> ext;
-		convert_alpha_model((const dummy_alpha<T,am>&)(static_cast<const color<T,cm,am>*>(this)->alpha()),ext);
-		return ext.alpha; 
+		color<T, LUM, EXTINCTION> ext;
+		alpha_reference<T, EXTINCTION> ext_ref(ext);
+		convert_alpha_model(const_alpha_reference<T, am>(*this), ext_ref);
+		return ext_ref.alpha_ref;
 	}
 };
-
 /// read and write access implementation of extinction alpha interface
 template <typename T, ColorModel cm>
-struct extinction_alpha_interface<color<T,cm,EXTINCTION> > : public transparency_alpha_interface<color<T,cm,EXTINCTION> >
+struct extinction_alpha_interface<color<T,cm,EXTINCTION> > : public transparency_alpha_interface<color<T, cm, EXTINCTION> >
 {
 	/// write access to extinction component 
 	T& extinction()       { return static_cast<color<T,cm,EXTINCTION>*>(this)->alpha(); }
@@ -349,7 +364,11 @@ public:
 			components[3] = c3;
 	}
 	/// construct from non-alpha color plus alpha
-	color(const color<T, cm>& c, T a) : color(c.R(), c.G(), c.B(), a) {}
+	color(const color<T, cm>& c, T a) {
+		(*this)[nr_components - 1] = a; // looks bit like a hack but avoids invalid access for NO_ALPHA
+		for (unsigned i = 0; i < nr_color_components; ++i)
+			(*this)[i] = c[i];
+	}
 	/// copy constructor uses color conversion if necessary
 	template <typename T2, ColorModel cm2, AlphaModel am2>
 	color(const color<T2,cm2,am2>& c2) {
@@ -361,7 +380,7 @@ public:
 		convert_color(c2, *this);
 		return *this;
 	}
-	/// assign to color component
+	/// assign all components including alpha to \c c
 	color<T,cm,am>& operator = (const T& c) {
 		std::fill(components, components+nr_components, c);
 		return *this;
@@ -386,7 +405,7 @@ public:
 	}
 	/// multiply with constant
 	color<T,cm,am>& operator *= (const T& c) {
-		for (int i=0; i<nr_components; ++i)
+		for (unsigned i=0; i<nr_components; ++i)
 			components[i] *= c;
 		return *this;
 	}
@@ -394,7 +413,7 @@ public:
 	template <typename T2>
 	color<typename type::func::promote<T,T2>::type,cm,am> operator * (const T2& c) const {
 		color<typename type::func::promote<T,T2>::type,cm,am> res;
-		for (int i=0; i<nr_components; ++i)
+		for (unsigned i=0; i<nr_components; ++i)
 			res[i] = components[i]*c;
 		return res;
 	}
@@ -402,7 +421,7 @@ public:
 	template <typename T2, ColorModel cm2, AlphaModel am2>
 	color<T,cm,am>& operator += (const color<T2,cm2,am2>& c2) {
 		color<T,cm,am> tmp(c2);
-		for (int i=0; i<nr_components; ++i)
+		for (unsigned i=0; i<nr_components; ++i)
 			components[i] += tmp[i];
 		return *this;
 	}
@@ -415,7 +434,7 @@ public:
 	}
 	/// add constant
 	color<T,cm,am>& operator += (const T& c) {
-		for (int i=0; i<nr_components; ++i)
+		for (unsigned i=0; i<nr_components; ++i)
 			components[i] += c;
 		return *this;
 	}
@@ -427,11 +446,9 @@ public:
 	}
 	/// clamp to the given range, which defaults to [0,1] of the component type
 	void clamp(const T& mn = 0, const T& mx = color_one<T>::value(), bool skip_alpha = false) {
-	  unsigned int nr = nr_components;
-	  if (skip_alpha)
-	    nr = nr_color_components;
-		for (int i=nr-1; i>=0; --i)
-			if (components[i] < mn) 
+		unsigned nr = skip_alpha ? nr_color_components : nr_components;
+		for (unsigned i = 0; i < nr; ++i)
+			if (components[i] < mn)
 				components[i] = mn;
 			else if (components[i] > mx)
 				components[i] = mx;
@@ -463,7 +480,6 @@ bool operator == (const color<T,cm,am>& c1, const color<T,cm,am>& c2) {
 			return false;
 	return true;
 }
-
 /// pre multiply with color
 template <typename T1, ColorModel cm1, AlphaModel am1, typename T2, ColorModel cm2, AlphaModel am2>
 color<typename type::func::promote<T1,T2>::type,cm1,am1> operator * (const color<T1,cm1,am1>& c1, const color<T2,cm2,am2>& c2) {
@@ -471,7 +487,6 @@ color<typename type::func::promote<T1,T2>::type,cm1,am1> operator * (const color
 	res *= c2;
 	return res;
 }
-
 /// pre multiply with scalar
 template <typename T1, typename T2, ColorModel cm2, AlphaModel am2>
 color<typename type::func::promote<T1,T2>::type,cm2,am2> operator * (const T1& c1, const color<T2,cm2,am2>& c2) {
@@ -479,7 +494,6 @@ color<typename type::func::promote<T1,T2>::type,cm2,am2> operator * (const T1& c
 	res *= c1;
 	return res;
 }
-
 /// add color
 template <typename T1, ColorModel cm1, AlphaModel am1, typename T2, ColorModel cm2, AlphaModel am2>
 color<typename type::func::promote<T1,T2>::type,cm1,am1> operator + (const color<T1,cm1,am1>& c1, const color<T2,cm2,am2>& c2) {
@@ -487,7 +501,6 @@ color<typename type::func::promote<T1,T2>::type,cm1,am1> operator + (const color
 	res += c2;
 	return res;
 }
-
 /// stream out color
 template <typename T1, ColorModel cm1, AlphaModel am1>
 std::ostream& operator << (std::ostream& os, const color<T1,cm1,am1>& c) {
@@ -504,7 +517,6 @@ std::istream& operator >> (std::istream& is, color<T1,cm1,am1>& c) {
 		is >> c[i];
 	return is;
 }
-
 /// stream out unsigned char color
 template <ColorModel cm, AlphaModel am>
 std::ostream& operator << (std::ostream& os, const color<unsigned char,cm,am>& c) {
@@ -533,73 +545,71 @@ std::istream& operator >> (std::istream& is, color<unsigned char,cm,am>& c) {
 **
 *********************************************************************/
 
-
 /// init opacity to 1
 template <typename T1, typename T2>
-void convert_alpha_model(const dummy_alpha<T1,NO_ALPHA>& from, dummy_alpha<T2,OPACITY>& to)
+void convert_alpha_model(const_alpha_reference<T1,NO_ALPHA>& from, alpha_reference<T2,OPACITY>& to)
 {
-	to.alpha = color_one<T2>::value();
+	to.alpha_ref = color_one<T2>::value();
 }
 /// init transparency to 0
 template <typename T1, typename T2>
-void convert_alpha_model(const dummy_alpha<T1,NO_ALPHA>& from, dummy_alpha<T2,TRANSPARENCY>& to)
+void convert_alpha_model(const_alpha_reference<T1,NO_ALPHA>& from, alpha_reference<T2,TRANSPARENCY>& to)
 {
-	to.alpha = 0;
+	to.alpha_ref = T2(0);
 }
 /// init extinction to 1
 template <typename T1, typename T2>
-void convert_alpha_model(const dummy_alpha<T1,NO_ALPHA>& from, dummy_alpha<T2,EXTINCTION>& to)
+void convert_alpha_model(const_alpha_reference<T1,NO_ALPHA>& from, alpha_reference<T2,EXTINCTION>& to)
 {
-	to.alpha = color_one<T2>::value();
+	to.alpha_ref = color_one<T2>::value();
 }
 /// conversion from opacity to transparency
 template <typename T1, typename T2>
-void convert_alpha_model(const dummy_alpha<T1,OPACITY>& from, dummy_alpha<T2,TRANSPARENCY>& to)
+void convert_alpha_model(const_alpha_reference<T1,OPACITY>& from, alpha_reference<T2,TRANSPARENCY>& to)
 {
-	convert_color_component(from.alpha,to.alpha);
-	to.alpha = color_one<T2>::value()-to.alpha;
+	convert_color_component(from.alpha_ref,to.alpha_ref);
+	to.alpha_ref = color_one<T2>::value()-to.alpha_ref;
 }
 /// conversion from transparency to opacity
 template <typename T1, typename T2>
-void convert_alpha_model(const dummy_alpha<T1,TRANSPARENCY>& from, dummy_alpha<T2,OPACITY>& to)
+void convert_alpha_model(const_alpha_reference<T1,TRANSPARENCY>& from, alpha_reference<T2,OPACITY>& to)
 {
-	convert_color_component(from.alpha,to.alpha);
-	to.alpha = color_one<T2>::value()-to.alpha;
+	convert_color_component(from.alpha_ref,to.alpha_ref);
+	to.alpha_ref = color_one<T2>::value()-to.alpha_ref;
 }
 /// conversion from opacity to extinction
 template <typename T1, typename T2>
-void convert_alpha_model(const dummy_alpha<T1,OPACITY>& from, dummy_alpha<T2,EXTINCTION>& to)
+void convert_alpha_model(const_alpha_reference<T1,OPACITY>& from, alpha_reference<T2,EXTINCTION>& to)
 {
 	double tmp;
-	convert_color_component(from.alpha,tmp);
+	convert_color_component(from.alpha_ref,tmp);
 	tmp = -log(1-tmp);
-	convert_color_component(tmp, to.alpha);
+	convert_color_component(tmp, to.alpha_ref);
 }
 /// conversion from extinction to opacity
 template <typename T1, typename T2>
-void convert_alpha_model(const dummy_alpha<T1,EXTINCTION>& from, dummy_alpha<T2,OPACITY>& to)
+void convert_alpha_model(const_alpha_reference<T1,EXTINCTION>& from, alpha_reference<T2,OPACITY>& to)
 {
 	double tmp;
-	convert_color_component(from.alpha,tmp);
+	convert_color_component(from.alpha_ref,tmp);
 	tmp = 1 - exp(-tmp);
-	convert_color_component(tmp, to.alpha);
+	convert_color_component(tmp, to.alpha_ref);
 }
-
 /// nothing to be done if target alpha model is no alpha
 template <typename T1, AlphaModel am1, typename T2>
-void convert_alpha_model(const dummy_alpha<T1,am1>& from, dummy_alpha<T2,NO_ALPHA>& to)
+void convert_alpha_model(const_alpha_reference<T1,am1>& from, alpha_reference<T2,NO_ALPHA>& to)
 {
 }
 /// nothing to be done if target alpha model is no alpha, specialize also for source alpha being the same in order to avoid ambiguous calls
 template <typename T1, typename T2>
-void convert_alpha_model(const dummy_alpha<T1,NO_ALPHA>& from, dummy_alpha<T2,NO_ALPHA>& to)
+void convert_alpha_model(const_alpha_reference<T1,NO_ALPHA>& from, alpha_reference<T2,NO_ALPHA>& to)
 {
 }
 /// only alpha component conversion necessary if the alpha models are the same
 template <typename T1, AlphaModel am, typename T2>
-void convert_alpha_model(const dummy_alpha<T1,am>& from, dummy_alpha<T2,am>& to)
+void convert_alpha_model(const_alpha_reference<T1,am>& from, alpha_reference<T2,am>& to)
 {
-	convert_color_component(from.alpha, to.alpha);
+	convert_color_component(from.alpha_ref, to.alpha_ref);
 }
 
 /*********************************************************************
@@ -608,7 +618,6 @@ void convert_alpha_model(const dummy_alpha<T1,am>& from, dummy_alpha<T2,am>& to)
 **
 *********************************************************************/
 
-
 /// only color component conversion necessary if the color models are the same
 template <typename T1, ColorModel cm, typename T2>
 void convert_color_model(const color<T1,cm>& from, color<T2,cm>& to)
@@ -616,7 +625,6 @@ void convert_color_model(const color<T1,cm>& from, color<T2,cm>& to)
 	for (unsigned int i=0; i<color<T1,cm>::nr_components; ++i)
 		convert_color_component(from[i], to[i]);
 }
-
 /// only color component conversion necessary if the color models are the same
 template <typename T1, typename T2>
 void convert_color_model(const color<T1,XYZ>& from, color<T2,XYZ>& to)
@@ -624,7 +632,6 @@ void convert_color_model(const color<T1,XYZ>& from, color<T2,XYZ>& to)
 	for (unsigned int i=0; i<color<T1,XYZ>::nr_components; ++i)
 		convert_color_component(from[i], to[i]);
 }
-
 /// avoid infinite recursion by default conversion to XYZ to not implemented
 template <typename T1, ColorModel cm1, typename T2>
 void convert_color_model(const color<T1,cm1>& from, color<T2,XYZ>& to)
@@ -637,7 +644,6 @@ void convert_color_model(const color<T1,XYZ>& from, color<T2,cm2>& to)
 {
 	std::cerr << "conversion not implemented" << std::endl;
 }
-
 /// specialization for conversion from LUM to XYZ
 template <typename T1, typename T2>
 void convert_color_model(const color<T1,LUM>& c1, color<T2,XYZ>& c2) { 
@@ -666,7 +672,6 @@ void convert_color_model(const color<T1,XYZ>& _c1, color<T2,RGB>& c2) {
 	convert_color_component(-0.9692549500*c1[0]+1.8759900015*c1[1]+0.0415559266*c1[2], c2[1]);
 	convert_color_component(0.0556466391*c1[0]-0.2040413384*c1[1]+1.0573110696*c1[2], c2[2]);
 }
-
 /// specialization for conversion from RGB to HLS
 template <typename T1, typename T2>
 void convert_color_model(const color<T1,RGB>& rgb, color<T2,HLS>& hls) {
@@ -747,27 +752,25 @@ void convert_color_model(const color<T1,HLS>& hls, color<T2,RGB>& rgb) {
 		}
 	}
 }
-
 /// specialization for conversion from HLS to XYZ via conversion to RGB
 template <typename T1, typename T2>
 void convert_color_model(const color<T1,HLS>& c1, color<T2,XYZ>& c2) {
 	color<typename type::func::promote<T1,T2>::type,RGB> tmp;
-	convert_color(c1,tmp);
-	convert_color(tmp,c2);
+	convert_color_model(c1,tmp);
+	convert_color_model(tmp,c2);
 }
 /// specialization for conversion from XYZ to HLS via conversion to RGB
 template <typename T1, typename T2>
 void convert_color_model(const color<T1,XYZ>& c1, color<T2,HLS>& c2) {
 	color<typename type::func::promote<T1,T2>::type,RGB> tmp;
-	convert_color(c1,tmp);
-	convert_color(tmp,c2);
+	convert_color_model(c1,tmp);
+	convert_color_model(tmp,c2);
 }
-
 /// specialization for conversion from RGB to RGBA via extension of RGB with alpha value
-template <typename T>
-color<T, cgv::media::RGB, cgv::media::OPACITY> convert_color_model(const color<T, cgv::media::RGB>& c, T a) {
-	return color<T, cgv::media::RGB, cgv::media::OPACITY>(c.clr_mod(), c.g(), c.B(), a);
-}
+//template <typename T>
+//color<T, cgv::media::RGB, cgv::media::OPACITY> convert_color_model(const color<T, cgv::media::RGB>& c, T a) {
+//	return color<T, cgv::media::RGB, cgv::media::OPACITY>(c.clr_mod(), c.g(), c.B(), a);
+//}
 
 	}
 /*
