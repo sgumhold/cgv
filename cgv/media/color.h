@@ -162,7 +162,7 @@ inline void convert_color_component(const unsigned char& from, unsigned short& t
 *********************************************************************/
 /// template for conversion of one alpha model to another, by default conversion is implemented via conversion to OPACITY
 template <typename T1, AlphaModel am1, typename T2, AlphaModel am2>
-inline void convert_alpha_model(const_alpha_reference<T1,am1>& from, alpha_reference<T2,am2>& to)
+inline void convert_alpha_model(const_alpha_reference<T1,am1> from, alpha_reference<T2,am2> to)
 {
 	color<typename type::func::promote<T1,T2>::type,LUM,OPACITY> tmp;
 	alpha_reference<typename type::func::promote<T1, T2>::type, OPACITY> ref(tmp);
@@ -171,39 +171,39 @@ inline void convert_alpha_model(const_alpha_reference<T1,am1>& from, alpha_refer
 }
 /// init opacity to 1
 template <typename T1, typename T2>
-void convert_alpha_model(const_alpha_reference<T1, NO_ALPHA>& from, alpha_reference<T2, OPACITY>& to)
+void convert_alpha_model(const_alpha_reference<T1, NO_ALPHA> from, alpha_reference<T2, OPACITY> to)
 {
 	to.alpha_ref = color_one<T2>::value();
 }
 /// init transparency to 0
 template <typename T1, typename T2>
-void convert_alpha_model(const_alpha_reference<T1, NO_ALPHA>& from, alpha_reference<T2, TRANSPARENCY>& to)
+void convert_alpha_model(const_alpha_reference<T1, NO_ALPHA> from, alpha_reference<T2, TRANSPARENCY> to)
 {
 	to.alpha_ref = T2(0);
 }
 /// init extinction to 1
 template <typename T1, typename T2>
-void convert_alpha_model(const_alpha_reference<T1, NO_ALPHA>& from, alpha_reference<T2, EXTINCTION>& to)
+void convert_alpha_model(const_alpha_reference<T1, NO_ALPHA> from, alpha_reference<T2, EXTINCTION> to)
 {
 	to.alpha_ref = color_one<T2>::value();
 }
 /// conversion from opacity to transparency
 template <typename T1, typename T2>
-void convert_alpha_model(const_alpha_reference<T1, OPACITY>& from, alpha_reference<T2, TRANSPARENCY>& to)
+void convert_alpha_model(const_alpha_reference<T1, OPACITY> from, alpha_reference<T2, TRANSPARENCY> to)
 {
 	convert_color_component(from.alpha_ref, to.alpha_ref);
 	to.alpha_ref = color_one<T2>::value() - to.alpha_ref;
 }
 /// conversion from transparency to opacity
 template <typename T1, typename T2>
-void convert_alpha_model(const_alpha_reference<T1, TRANSPARENCY>& from, alpha_reference<T2, OPACITY>& to)
+void convert_alpha_model(const_alpha_reference<T1, TRANSPARENCY> from, alpha_reference<T2, OPACITY> to)
 {
 	convert_color_component(from.alpha_ref, to.alpha_ref);
 	to.alpha_ref = color_one<T2>::value() - to.alpha_ref;
 }
 /// conversion from opacity to extinction
 template <typename T1, typename T2>
-void convert_alpha_model(const_alpha_reference<T1, OPACITY>& from, alpha_reference<T2, EXTINCTION>& to)
+void convert_alpha_model(const_alpha_reference<T1, OPACITY> from, alpha_reference<T2, EXTINCTION> to)
 {
 	double tmp;
 	convert_color_component(from.alpha_ref, tmp);
@@ -212,7 +212,7 @@ void convert_alpha_model(const_alpha_reference<T1, OPACITY>& from, alpha_referen
 }
 /// conversion from extinction to opacity
 template <typename T1, typename T2>
-void convert_alpha_model(const_alpha_reference<T1, EXTINCTION>& from, alpha_reference<T2, OPACITY>& to)
+void convert_alpha_model(const_alpha_reference<T1, EXTINCTION> from, alpha_reference<T2, OPACITY> to)
 {
 	double tmp;
 	convert_color_component(from.alpha_ref, tmp);
@@ -221,17 +221,17 @@ void convert_alpha_model(const_alpha_reference<T1, EXTINCTION>& from, alpha_refe
 }
 /// nothing to be done if target alpha model is no alpha
 template <typename T1, AlphaModel am1, typename T2>
-void convert_alpha_model(const_alpha_reference<T1, am1>& from, alpha_reference<T2, NO_ALPHA>& to)
+void convert_alpha_model(const_alpha_reference<T1, am1> from, alpha_reference<T2, NO_ALPHA> to)
 {
 }
 /// nothing to be done if target alpha model is no alpha, specialize also for source alpha being the same in order to avoid ambiguous calls
 template <typename T1, typename T2>
-void convert_alpha_model(const_alpha_reference<T1, NO_ALPHA>& from, alpha_reference<T2, NO_ALPHA>& to)
+void convert_alpha_model(const_alpha_reference<T1, NO_ALPHA> from, alpha_reference<T2, NO_ALPHA> to)
 {
 }
 /// only alpha component conversion necessary if the alpha models are the same
 template <typename T1, AlphaModel am, typename T2>
-void convert_alpha_model(const_alpha_reference<T1, am>& from, alpha_reference<T2, am>& to)
+void convert_alpha_model(const_alpha_reference<T1, am> from, alpha_reference<T2, am> to)
 {
 	convert_color_component(from.alpha_ref, to.alpha_ref);
 }
