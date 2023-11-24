@@ -22,6 +22,7 @@ protected:
 
 	cgv::g2d::canvas content_canvas, overlay_canvas;
 
+	/// whether to enable blending during the draw process
 	bool blend_overlay;
 	
 	void init_overlay_style(cgv::render::context& ctx);
@@ -44,7 +45,7 @@ protected:
 
 	void draw_impl(cgv::render::context& ctx);
 
-	virtual void init_styles(cgv::render::context& ctx) {}
+	virtual void init_styles() {}
 
 public:
 	/// creates an overlay in the bottom left corner with zero size using a canvas for 2d drawing
