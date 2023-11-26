@@ -1,0 +1,8 @@
+@=
+projectType="plugin";
+projectName="cg_g2d";
+projectGUID="D008EC3A-0C5B-46A8-A3CA-B28268E2A7C2";
+addIncDirs=[CGV_DIR."/libs"];
+addProjectDirs=[CGV_DIR."/libs/cgv_gl"];
+addProjectDeps=["cgv_gui","cgv_render", "cgv_media", "cgv_utils", "cgv_os","cgv_base","cgv_data", "cgv_type","cgv_signal", "cgv_reflect", "cgv_gl", "cgv_g2d"];
+addSharedDefines=["CGV_GUI_G2D_EXPORTS"];
