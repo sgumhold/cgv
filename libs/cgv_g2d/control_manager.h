@@ -1469,8 +1469,6 @@ protected:
 	void handle_theme_change(const cgv::gui::theme_info& theme) override;
 
 public:
-	control_manager();
-
 	bool init(cgv::render::context& ctx);
 
 	void destruct(cgv::render::context& ctx);
@@ -1521,13 +1519,14 @@ public:
 	*/
 
 
-	//template <class B>
-	std::shared_ptr<slider_control> add_slider_control(cgv::base::base* base_ptr, const std::string& label, float* value_ptr, cgv::render::ivec2 position) {
-		auto gl_control_ptr = new gl_value_control<cgv::type::flt32_type, /* B */slider_control>(
-			label, *static_cast<cgv::type::flt32_type*>(value_ptr), irect(position, default_control_size)
+
+
+	std::shared_ptr<input_control> add_string_control(cgv::base::base* base_ptr, const std::string& label, std::string* value_ptr, cgv::render::ivec2 position) {
+		auto gl_control_ptr = new gl_string_control(
+			label, *value_ptr, irect(position, default_control_size)
 		);
 
-		data::ref_ptr<cgv::gui::control<float>> control_ptr = gl_control_ptr;
+		data::ref_ptr<cgv::gui::control<std::string>> control_ptr = gl_control_ptr;
 
 		if(control_ptr)
 			connect_copy(control_ptr->value_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, value_ptr));
@@ -1540,12 +1539,14 @@ public:
 		return control_view_ptr;
 	}
 
-	std::shared_ptr<input_control> add_string_control(cgv::base::base* base_ptr, const std::string& label, std::string* value_ptr, cgv::render::ivec2 position) {
-		auto gl_control_ptr = new gl_string_control(
-			label, *value_ptr, irect(position, default_control_size)
+
+	//template <class B>
+	std::shared_ptr<slider_control> add_slider_control(cgv::base::base* base_ptr, const std::string& label, float* value_ptr, cgv::render::ivec2 position) {
+		auto gl_control_ptr = new gl_value_control<cgv::type::flt32_type, /* B */slider_control>(
+			label, *static_cast<cgv::type::flt32_type*>(value_ptr), irect(position, default_control_size)
 		);
 
-		data::ref_ptr<cgv::gui::control<std::string>> control_ptr = gl_control_ptr;
+		data::ref_ptr<cgv::gui::control<float>> control_ptr = gl_control_ptr;
 
 		if(control_ptr)
 			connect_copy(control_ptr->value_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, value_ptr));
@@ -1575,6 +1576,9 @@ public:
 		controls.push_back(control_view_ptr);
 		return control_view_ptr;
 	}
+
+
+
 };
 
 }

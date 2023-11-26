@@ -9,12 +9,6 @@ namespace g2d {
 
 
 
-
-
-
-
-
-
 void input_cb(control_base* control, void* input_ptr) {
 	gl_string_control* control_ptr = static_cast<gl_string_control*>(static_cast<cgv::base::base*>(input_ptr));
 	control_ptr->in_callback = true;
@@ -74,21 +68,6 @@ value_input_control::value_input_control(const std::string& label, irect rectang
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-control_manager::control_manager() {
-	
-}
 
 bool control_manager::init(context& ctx) {
 
