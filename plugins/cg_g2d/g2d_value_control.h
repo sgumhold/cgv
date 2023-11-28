@@ -17,7 +17,7 @@ struct CGV_API abst_gl_value_callback {
 	virtual void update_value_if_valid(double v) = 0;
 };
 
-void valuator_cb(control_base* control, void* valuator_ptr) {
+static void valuator_cb(control_base* control, void* valuator_ptr) {
 	abst_gl_value_callback* value_callback = dynamic_cast<abst_gl_value_callback*>(static_cast<cgv::base::base*>(valuator_ptr));
 	if(value_callback)
 		value_callback->update_value_if_valid(static_cast<value_control*>(control)->get_value());
@@ -47,7 +47,7 @@ struct CGV_API g2d_value_control : public cgv::gui::control<T>, public abst_gl_v
 	~g2d_value_control() {}
 	/// returns "fltk_value_control"
 	std::string get_type_name() const {
-		return "gl_value_control";
+		return "g2d_value_control";
 	}
 	/// updates the fltk control widget in case the controlled value has been changed externally
 	void update() {
@@ -61,7 +61,7 @@ struct CGV_API g2d_value_control : public cgv::gui::control<T>, public abst_gl_v
 	/// abstract interface for the getter
 	//bool get_void(const std::string& property, const std::string& value_type, void* value_ptr);
 	/// return a fltk::Widget pointer
-	// TODO: do we ned this?
+	// TODO: do we need this?
 	void* get_user_data() const {
 		return static_cast<control_base*>(gl_control.get());
 	}

@@ -22,16 +22,30 @@ protected:
 	std::string label;
 	cgv::g2d::irect rectangle;
 
+	cgv::render::TextAlignment label_alignment = cgv::render::TextAlignment::TA_NONE;
+
 public:
 	control_base(const std::string& label, cgv::g2d::irect rectangle) : label(label), rectangle(rectangle) {}
 
 	virtual ~control_base() {}
 
-	void set_label(const std::string& label) {
-		this->label = label;
-	}
+	const std::string& get_label(const std::string& label) const { return label; }
 
-	virtual void update() = 0;
+	void set_label(const std::string& label) { this->label = label; }
+
+	cgv::render::ivec2 get_position() const { return rectangle.position; }
+
+	void set_position(cgv::render::ivec2 position) { rectangle.position = position; }
+
+	cgv::render::ivec2 get_size() const { return rectangle.size; }
+
+	void set_size(cgv::render::ivec2 size) { rectangle.size = size; }
+
+	cgv::render::TextAlignment get_label_alignment() const { return label_alignment; }
+
+	void set_label_alignment(cgv::render::TextAlignment alignment) { label_alignment = alignment; }
+
+	virtual void update() {}
 
 	void callback(callback_t c, void* p) {
 		_callback = c;

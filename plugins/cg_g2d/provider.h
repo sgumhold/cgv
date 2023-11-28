@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include <cgv/gui/button.h>
 #include <cgv/gui/control.h>
 #include <cgv/gui/event.h>
 #include <cgv/gui/key_event.h>
@@ -11,12 +12,6 @@
 #include <cgv/signal/rebind.h>
 #include <cgv/signal/signal.h>
 
-/*
-#include <cgv/gui/control.h>
-#include <cgv/type/variant.h>
-#include <cgv/type/info/type_id.h>
-*/
-
 #include "styles.h"
 
 #include "control_base.h"
@@ -25,6 +20,7 @@
 #include "value_control.h"
 #include "value_input_control.h"
 
+#include "g2d_button.h"
 #include "g2d_string_control.h"
 #include "g2d_value_control.h"
 
@@ -33,12 +29,13 @@
 namespace cg {
 namespace g2d {
 
-class CGV_API control_manager : cgv::gui::theme_observer {
+class CGV_API provider : cgv::gui::theme_observer {
 protected:
-	//cgv::render::shader_library shaders;
-
 	styles style;
 	cgv::render::ivec2 default_control_size = cgv::render::ivec2(200, 20);
+
+	std::vector<cg::g2d::g2d_button_ptr> buttons;
+	//std::vector<std::pair<cgv::gui::control_ptr, std::shared_ptr<control_base>>> controls;
 
 	std::vector<cgv::gui::control_ptr> controls;
 	std::vector<std::shared_ptr<control_base>> g2d_controls;
@@ -56,52 +53,23 @@ public:
 
 	void clear();
 
-	// TODO: remove reference of container argument and use copy instead?
 	bool handle(cgv::gui::event& e, const cgv::render::ivec2& viewport_size, const cgv::g2d::irect& container = cgv::g2d::irect());
 
 	void draw(cgv::render::context& ctx, cgv::g2d::canvas& cnvs);
 
-
-
+	cg::g2d::g2d_button_ptr add_button(const std::string& label, cgv::render::ivec2 position) {
+		auto ptr = cg::g2d::g2d_button_ptr(new g2d_button(label, { position, default_control_size }));
+		buttons.push_back(ptr);
+		return ptr;
+	}
 	
-	/*
-	std::shared_ptr<button_control> add_button(const std::string& label, cgv::render::ivec2 position) {
-		return add_control<button_control>(label, position);
-	}
-
-	std::shared_ptr<string_input_control> add_text_input(cgv::base::base* base_ptr, const std::string& label, cgv::render::ivec2 position, std::string& value) {
-		auto ptr = add_control<string_input_control>(label, position);
-		ptr->set_value_ptr(&value);
-		connect_copy(ptr->on_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
+	template<class X>
+	cg::g2d::g2d_button_ptr add_button(const std::string& label, cgv::render::ivec2 position, const X& click_handler) {
+		auto ptr = add_button(label, position);
+		if(ptr)
+			cgv::signal::connect_copy(ptr->click, click_handler);
 		return ptr;
 	}
-
-	std::shared_ptr<float_input_control> add_text_input(cgv::base::base* base_ptr, const std::string& label, cgv::render::ivec2 position, float& value) {
-		auto ptr = add_control<float_input_control>(label, position);
-		ptr->set_value_ptr(&value);
-		connect_copy(ptr->on_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
-		return ptr;
-	}
-
-	std::shared_ptr<int_input_control> add_text_input(cgv::base::base* base_ptr, const std::string& label, cgv::render::ivec2 position, int& value) {
-		auto ptr = add_control<int_input_control>(label, position);
-		ptr->set_value_ptr(&value);
-		connect_copy(ptr->on_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
-		return ptr;
-	}
-	*/
-
-	/*
-	std::shared_ptr<slider_control> add_slider_control(cgv::base::base* base_ptr, const std::string& label, cgv::render::ivec2 position, float& value) {
-		auto ptr = add_control<slider_control>(label, position);
-		ptr->set_value_ptr(&value);
-		connect_copy(ptr->on_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
-		return ptr;
-	}
-	*/
-
-
-
 
 	std::shared_ptr<input_control> add_string_control(cgv::base::base* base_ptr, const std::string& label, std::string* value_ptr, cgv::render::ivec2 position) {
 		auto gl_control_ptr = new g2d_string_control(
@@ -120,7 +88,6 @@ public:
 		g2d_controls.push_back(control_view_ptr);
 		return control_view_ptr;
 	}
-
 
 	//template <class B>
 	std::shared_ptr<slider_control> add_slider_control(cgv::base::base* base_ptr, const std::string& label, float* value_ptr, cgv::render::ivec2 position) {
