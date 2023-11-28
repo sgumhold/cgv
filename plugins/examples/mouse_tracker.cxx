@@ -63,7 +63,7 @@ bool mouse_tracker::handle(event& e)
 				post_redraw();
 				return true;
 			case KEY_Down :
-				if (font_idx == 0 && !font_names.size() == 0)
+				if (font_idx == 0 && !font_names.empty())
 					font_idx = (int)font_names.size()-1;
 				else
 					--font_idx;

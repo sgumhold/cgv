@@ -51,17 +51,17 @@ public:
 	/// creates an overlay in the bottom left corner with zero size using a canvas for 2d drawing
 	canvas_overlay();
 
-	void clear(cgv::render::context& ctx);
+	void clear(cgv::render::context& ctx) override;
 
 	/// implement to handle member changes
-	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
+	virtual void handle_member_change(const cgv::utils::pointer_test& m) override {}
 
 	/// default implementation of that calls handle_member_change and afterwards upates the member in the gui and post damage to the canvas overlay
-	virtual void on_set(void* member_ptr);
+	virtual void on_set(void* member_ptr) override;
 
-	bool init(cgv::render::context& ctx);
-	void draw(cgv::render::context& ctx);
-	void finish_frame(cgv::render::context&);
+	bool init(cgv::render::context& ctx) override;
+	void draw(cgv::render::context& ctx) override;
+	void finish_frame(cgv::render::context&) override;
 	virtual void draw_content(cgv::render::context& ctx) = 0;
 
 	void register_shader(const std::string& name, const std::string& filename);

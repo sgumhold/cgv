@@ -229,7 +229,7 @@ void APIENTRY glsuStereoFrustumFreeObserver(enum GlsuEye eye, GLdouble eyeSepara
 
 	// update clipping planes
 	if (synchClippingPlanes) {
-		double clipOffset = 0; fabs(f * eyeSeparationDirection[2]);
+		double clipOffset = 0; //fabs(f * eyeSeparationDirection[2]);
 		switch (eye) {
 		case GLSU_LEFT : 
 			if (eyeSeparationDirection[2] > 0) 

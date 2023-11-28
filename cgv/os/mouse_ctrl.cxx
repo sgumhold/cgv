@@ -54,6 +54,7 @@ void set_mouse_cursor(int x, int y)
 bool get_mouse_cursor(int& x, int& y)
 {
 	std::cerr << "cgv::os::get_mouse_cursor(x, y) not implemented on this platform" << std::endl;
+	return false;
 }
 void send_mouse_button_event(int button, bool press_not_release)
 {

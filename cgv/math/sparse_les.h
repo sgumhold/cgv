@@ -51,6 +51,8 @@ typedef cgv::data::ref_ptr<sparse_les_factory,true> sparse_les_factory_ptr;
 class CGV_API sparse_les : public cgv::data::ref_counted
 {
 public:
+	/// virtual destructor since class is abstract
+	virtual ~sparse_les() {}
 	/**@name static interface */
 	//@{
 	/// register a factory for a new type of linear equation solver

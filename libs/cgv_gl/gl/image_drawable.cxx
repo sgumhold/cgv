@@ -250,10 +250,10 @@ void image_drawable::draw(context& ctx)
 		float w = (float)selection.get_extent()(0);
 		float h = (float)selection.get_extent()(1);
 		std::vector<vec2> P;
-		P.push_back(vec2(x, y, 0));
-		P.push_back(vec2(x + w, y, 0));
-		P.push_back(vec2(x + w, y + h, 0));
-		P.push_back(vec2(x, y + h, 0));
+		P.push_back(vec2(x, y));
+		P.push_back(vec2(x + w, y));
+		P.push_back(vec2(x + w, y + h));
+		P.push_back(vec2(x, y + h));
 		shader_program& prog = ctx.ref_default_shader_program();
 		prog.enable(ctx);
 		ctx.set_color(rgb(1, 0, 0));
