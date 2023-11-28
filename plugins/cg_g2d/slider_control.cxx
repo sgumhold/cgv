@@ -62,13 +62,16 @@ bool slider_control::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_po
 	}
 
 	if(action == cgv::gui::MA_WHEEL) {
-		float speed = (e.get_modifiers() & cgv::gui::EM_SHIFT) ? 4.0f : 1.0f;
+		if(rectangle.is_inside(mouse_position)) {
+			double speed = (e.get_modifiers() & cgv::gui::EM_SHIFT) ? 4.0 : 1.0;
+			
+			double next_value = get_value();
+			next_value += e.get_dy() * speed * get_step();
+			next_value = cgv::math::clamp(next_value, get_range()[0], get_range()[1]);
 
-		handle.x() += speed * e.get_dy();
-		handle.apply_constraint(rectangle);
-
-		update_value();
-		return true;
+			handle_value_change(next_value);
+			return true;
+		}
 	}
 
 	if(handle_draggable.handle_mouse_event(e, mouse_position))

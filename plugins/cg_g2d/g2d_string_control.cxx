@@ -1,7 +1,5 @@
 #include "g2d_string_control.h"
 
-#include "lib_begin.h"
-
 namespace cg {
 namespace g2d {
 
@@ -40,28 +38,10 @@ g2d_string_control::g2d_string_control(const std::string& label, std::string& va
 	update();
 }
 
-void g2d_string_control::public_set_value(const std::string& value) {
-	set_value(value);
-}
-
-std::string g2d_string_control::get_type_name() const {
-	return "gl_string_control";
-}
-
 void g2d_string_control::update() {
 	if(!in_callback)
 		gl_control->set_value(this->get_value());
 }
 
-void* g2d_string_control::get_user_data() const {
-	return nullptr;
-}
-
-std::shared_ptr<input_control> g2d_string_control::get_gl_control() {
-	return gl_control;
-}
-
 }
 }
-
-#include <cgv/config/lib_end.h>
