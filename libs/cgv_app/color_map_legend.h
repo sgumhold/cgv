@@ -101,19 +101,19 @@ protected:
 	void create_labels();
 	void create_ticks();
 
-	virtual void create_gui_impl();
+	void create_gui_impl() override;
 
 public:
 	color_map_legend();
-	std::string get_type_name() const { return "color_map_legend"; }
+	std::string get_type_name() const override { return "color_map_legend"; }
 
-	void clear(cgv::render::context& ctx);
+	void clear(cgv::render::context& ctx) override;
 
-	void handle_member_change(const cgv::utils::pointer_test& m);
+	void handle_member_change(const cgv::utils::pointer_test& m) override;
 
-	bool init(cgv::render::context& ctx);
-	void init_frame(cgv::render::context& ctx);
-	void draw_content(cgv::render::context& ctx);
+	bool init(cgv::render::context& ctx) override;
+	void init_frame(cgv::render::context& ctx) override;
+	void draw_content(cgv::render::context& ctx) override;
 
 	void set_color_map(cgv::render::context& ctx, cgv::render::color_map& cm);
 

@@ -153,7 +153,7 @@ public:
 	template <typename S>
 	const fmat<T,N,N> mul_h (const fmat<S,N-1,N-1>& m2) const
 	{
-		static_assert(N == M);
+		static_assert(N == M, "Number of rows and columns must be equal");
 		static const auto vzero = fvec<T, N-1>(0);
 		fvec<T,N> rows[N]; // extracting a row takes linear time so we only want to do it once for each row
 		for (unsigned i=0; i<N; i++)

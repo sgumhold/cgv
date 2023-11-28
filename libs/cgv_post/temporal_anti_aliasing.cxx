@@ -1,5 +1,3 @@
-#pragma once
-
 #include "temporal_anti_aliasing.h"
 
 #include <cgv/render/view.h>

@@ -171,15 +171,15 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 	return false;
 }
 
-void color_map_editor::on_set(void* member_ptr) {
+void color_map_editor::handle_member_change(const cgv::utils::pointer_test& m) {
 
-	if(member_ptr == &layout.total_height) {
+	if(m.is(layout.total_height)) {
 		ivec2 size = get_overlay_size();
 		size.y() = layout.total_height;
 		set_overlay_size(size);
 	}
 
-	if(member_ptr == &opacity_scale_exponent) {
+	if(m.is(opacity_scale_exponent)) {
 		opacity_scale_exponent = cgv::math::clamp(opacity_scale_exponent, 1.0f, 5.0f);
 
 		update_point_positions();
@@ -187,21 +187,21 @@ void color_map_editor::on_set(void* member_ptr) {
 		update_geometry();
 	}
 
-	if(member_ptr == &resolution) {
+	if(m.is(resolution)) {
 		cgv::render::context* ctx_ptr = get_context();
 		if(cmc.cm)
 			cmc.cm->set_resolution(resolution);
 		update_color_map(false);
 	}
 
-	if(member_ptr == &use_interpolation) {
+	if(m.is(use_interpolation)) {
 		cgv::render::context* ctx_ptr = get_context();
 		if(cmc.cm)
 			cmc.cm->enable_interpolation(use_interpolation);
 		update_color_map(false);
 	}
 
-	if(member_ptr == &use_linear_filtering) {
+	if(m.is(use_linear_filtering)) {
 		cgv::render::context* ctx_ptr = get_context();
 		if(cmc.cm) {
 			cgv::render::gl_color_map* gl_cm = cmc.get_gl_color_map();
@@ -212,21 +212,21 @@ void color_map_editor::on_set(void* member_ptr) {
 	}
 
 	for(unsigned i = 0; i < cmc.color_points.size(); ++i) {
-		if(member_ptr == &cmc.color_points[i].col) {
+		if(m.is(cmc.color_points[i].col)) {
 			update_color_map(true);
 			break;
 		}
 	}
 
 	for(unsigned i = 0; i < cmc.opacity_points.size(); ++i) {
-		if(member_ptr == &cmc.opacity_points[i].val[1]) {
+		if(m.is(cmc.opacity_points[i].val[1])) {
 			cmc.opacity_points[i].update_pos(layout, opacity_scale_exponent);
 			update_color_map(true);
 			break;
 		}
 	}
 	
-	if(member_ptr == &supports_opacity) {
+	if(m.is(supports_opacity)) {
 		layout.total_height = supports_opacity ? 200 : 60;
 		on_set(&layout.total_height);
 
@@ -246,9 +246,6 @@ void color_map_editor::on_set(void* member_ptr) {
 		post_recreate_layout();
 		post_recreate_gui();
 	}
-
-	update_member(member_ptr);
-	post_damage();
 }
 
 bool color_map_editor::init(cgv::render::context& ctx) {

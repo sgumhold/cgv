@@ -69,8 +69,7 @@ public:
 						post_redraw();
 						return true;
 					}
-					default:
-						/* DoNothing() *;
+					default: break;
 				}
 			}*/
 		}
@@ -99,8 +98,7 @@ public:
 					on_set(&shader_calib.eye_separation_factor);
 					return true;
 				}
-				default:
-					/* DoNothing() */;
+				default: break;
 			}
 		}
 
