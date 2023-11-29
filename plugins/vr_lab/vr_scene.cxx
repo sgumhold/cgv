@@ -576,6 +576,7 @@ bool vr_scene::handle(cgv::gui::event& e)
 		if (ke.get_action() == cgv::gui::KA_PRESS && ke.get_modifiers() == cgv::gui::EM_CTRL && ke.get_key() == 'M') {
 			dispatch_mouse_spatial = !dispatch_mouse_spatial;
 			on_set(&dispatch_mouse_spatial);
+			return true;
 		}
 	}
 	if ((e.get_flags() & cgv::gui::EF_VR) != 0 && e.get_kind() == cgv::gui::EID_KEY) {
@@ -606,8 +607,21 @@ bool vr_scene::handle(cgv::gui::event& e)
 	}
 	cgv::nui::dispatch_report report;
 	bool ret = dispatch(e, &report);
-	if (report.action != cgv::nui::refocus_action::none && auto_grab_focus)
-		grab_focus();
+	if (report.action != cgv::nui::refocus_action::none) {
+		// std::cout << "refocus: ";
+		//switch (report.action) {
+		//case cgv::nui::refocus_action::none: std::cout << "none"; break;
+		//case cgv::nui::refocus_action::grab: std::cout << "grab"; break;
+		//case cgv::nui::refocus_action::handle: std::cout << "handle"; break;
+		//case cgv::nui::refocus_action::proximity: std::cout << "proximity"; break;
+		//case cgv::nui::refocus_action::intersection: std::cout << "intersection"; break;
+		//}
+		if (auto_grab_focus) {
+			grab_focus();
+		//	std::cout << " -> grabbing focus";
+		}
+		//std::cout << std::endl;
+	}
 	return ret;
 }
 void vr_scene::create_gui()
