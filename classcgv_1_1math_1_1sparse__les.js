@@ -1,5 +1,6 @@
 var classcgv_1_1math_1_1sparse__les =
 [
+    [ "~sparse_les", "classcgv_1_1math_1_1sparse__les.html#a613b15f705ce425712925fdd5d3722ee", null ],
     [ "create_by_cap", "classcgv_1_1math_1_1sparse__les.html#a02f99e6730454b612ac5baeae12ee885", null ],
     [ "create_by_name", "classcgv_1_1math_1_1sparse__les.html#aaf5ac482e7dd494b906e90627a8456ce", null ],
     [ "get_ref_count", "classcgv_1_1math_1_1sparse__les.html#a67b5dba890a068acef62d9c026c05320", null ],

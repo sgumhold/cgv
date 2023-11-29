@@ -188,19 +188,19 @@ $(document).ready(function(){initNavTree('color__map__legend_8h_source.html','')
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordtype">void</span> create_labels();</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordtype">void</span> create_ticks();</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> create_gui_impl();</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordtype">void</span> create_gui_impl() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    color_map_legend();</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    std::string <a class="code" href="namespacecgv_1_1type_1_1info.html#a62e63a08ae5b3c95e1dcfe6614222626">get_type_name</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;color_map_legend&quot;</span>; }</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    std::string <a class="code" href="namespacecgv_1_1type_1_1info.html#a62e63a08ae5b3c95e1dcfe6614222626">get_type_name</a>()<span class="keyword"> const override </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;color_map_legend&quot;</span>; }</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordtype">void</span> clear(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordtype">void</span> clear(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordtype">void</span> handle_member_change(<span class="keyword">const</span> cgv::utils::pointer_test&amp; m);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordtype">void</span> handle_member_change(<span class="keyword">const</span> cgv::utils::pointer_test&amp; m) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordtype">bool</span> init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordtype">void</span> init_frame(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordtype">void</span> draw_content(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordtype">bool</span> init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordtype">void</span> init_frame(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordtype">void</span> draw_content(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keywordtype">void</span> set_color_map(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx, cgv::render::color_map&amp; cm);</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>

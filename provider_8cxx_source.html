@@ -456,7 +456,7 @@ $(document).ready(function(){initNavTree('provider_8cxx_source.html',''); initRe
 <div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;    }</div>
 <div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    std::string mp = <a class="code" href="classcgv_1_1gui_1_1provider.html#a1f386dcbc43a7409fd2f3f655c938e5d">get_menu_path</a>();</div>
 <div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;    <span class="keywordflow">if</span> (!mp.empty()) {</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> pos = (<span class="keywordtype">unsigned</span> int) mp.find_last_of(<span class="charliteral">&#39;/&#39;</span>);</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        <span class="keywordtype">size_t</span> pos = mp.find_last_of(<span class="charliteral">&#39;/&#39;</span>);</div>
 <div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;        <span class="keywordflow">if</span> (pos == std::string::npos || pos == mp.size()-1)</div>
 <div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;            <span class="keywordflow">return</span> mp;</div>
 <div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        <span class="keywordflow">return</span> mp.substr(pos+1);</div>
