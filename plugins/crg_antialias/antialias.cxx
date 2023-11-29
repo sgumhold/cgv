@@ -19,7 +19,7 @@ using namespace cgv::render;
 using namespace cgv::render::gl;
 	
 ///
-antialias::antialias() : node("antialias")
+antialias::antialias() : node("Antialias")
 {
 	nr_samples = 15;
 }
