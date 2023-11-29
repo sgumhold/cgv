@@ -136,15 +136,15 @@ $(document).ready(function(){initNavTree('canvas__overlay_8h_source.html',''); i
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    canvas_overlay();</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">void</span> clear(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">void</span> clear(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> handle_member_change(<span class="keyword">const</span> cgv::utils::pointer_test&amp; m) {}</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> handle_member_change(<span class="keyword">const</span> cgv::utils::pointer_test&amp; m)<span class="keyword"> override </span>{}</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> on_set(<span class="keywordtype">void</span>* member_ptr);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> on_set(<span class="keywordtype">void</span>* member_ptr) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordtype">bool</span> init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">void</span> draw(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordtype">void</span> finish_frame(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp;);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordtype">bool</span> init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">void</span> draw(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordtype">void</span> finish_frame(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp;) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> draw_content(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) = 0;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">void</span> register_shader(<span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> std::string&amp; filename);</div>
