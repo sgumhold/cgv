@@ -202,6 +202,7 @@ namespace cgv {
 			}
 			}
 			rfi.foc_att = foc_att;
+			rfi.report_ptr->action = rfa;
 		}
 		void dispatcher::detach_focus(refocus_action rfa, focus_attachment foc_att, const focus_info& fi, const cgv::gui::event& e, const dispatch_info& dis_info, refocus_info& rfi)
 		{
@@ -464,8 +465,10 @@ namespace cgv {
 			// next check whether object wants to grab focus and in this case change focus and send event
 			if (rfi.foc_info_ptr->config.refocus.grab) {
 				for (auto root_ptr : objects)
-					if (wants_to_grab_recursive(root_ptr, root_ptr, e, hid_id, rfi))
+					if (wants_to_grab_recursive(root_ptr, root_ptr, e, hid_id, rfi)) {
+						report_ptr->action = refocus_action::grab;
 						break;
+					}
 			}
 			// next we try to dispatch spatially check for spatial refocussing that can change root and object in focus
 			bool handle_called = false;

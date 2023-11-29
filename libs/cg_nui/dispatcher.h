@@ -30,7 +30,7 @@ namespace cgv {
 			cgv::base::base_ptr focused_object = 0;
 			dispatch_mode mode = dispatch_mode::none;
 			dispatch_info** di_ptr_ptr = 0;
-			refocus_action action;
+			refocus_action action = refocus_action::none;
 		};
 
 		struct CGV_API refocus_info
