@@ -16,7 +16,7 @@ using namespace cgv::utils;
 using namespace cgv::render;
 using namespace cgv::signal;
 
-light_interactor::light_interactor() : node("light_interactor")
+light_interactor::light_interactor() : node("Light Interactor")
 {
 	last_modelview_matrix.identity();
 	min_opacity = 0.2f;
