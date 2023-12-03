@@ -4,7 +4,7 @@ namespace cg {
 namespace g2d {
 
 bool value_control::set_value(double v) {
-	if(v == value)
+	if(abs(v - value) < std::numeric_limits<double>::epsilon())
 		return false;
 
 	value = v;
@@ -51,6 +51,7 @@ void value_control::handle_value_change(double v) {
 	//	v = B;
 	// 
 	// store the value, redraw the widget, and do callback:
+
 	if(set_value(v))
 		do_callback();
 }

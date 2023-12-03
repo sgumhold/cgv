@@ -13,7 +13,8 @@ namespace g2d {
 class CGV_API slider_control : public value_control {
 private:
 	cgv::g2d::draggable handle;
-	cgv::g2d::draggable_collection<cgv::g2d::draggable*> handle_draggable;
+	cgv::g2d::draggable_collection<cgv::g2d::draggable*> draggables;
+	int handle_view_position = 0;
 
 	void update_value();
 
