@@ -94,6 +94,14 @@ struct rect {
 			p.x() >= x() && p.x() <= x1() &&
 			p.y() >= y() && p.y() <= y1();
 	}
+
+	template<typename coord_type2>
+	operator rect<coord_type2>() const {
+		return rect<coord_type2>(
+			static_cast<rect<coord_type2>::point_type>(position),
+			static_cast<rect<coord_type2>::point_type>(size)
+		);
+	}
 };
 
 typedef rect<unsigned> urect;
