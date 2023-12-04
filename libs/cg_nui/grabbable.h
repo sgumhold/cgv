@@ -22,11 +22,11 @@ namespace cgv {
 		};
 
 		/// interface for object that provides a find closest point method
-		class CGV_API grabable : public cgv::render::render_types
+		class CGV_API grabbable : public cgv::render::render_types
 		{
 		public:
 			/// empty constructor
-			grabable();
+			grabbable();
 			/// implement closest point algorithm and return whether this was found (failure only for invisible objects) and in this case set \c prj_point to closest point and \c prj_normal to corresponding surface normal
 			virtual bool compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx) = 0;
 			/// check whether event changes the default grabbing state
