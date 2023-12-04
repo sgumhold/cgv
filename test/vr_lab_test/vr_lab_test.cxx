@@ -18,7 +18,7 @@ class vr_lab_test :
 	public cgv::base::group,
 	public cgv::render::drawable,
 	public cgv::nui::focusable,
-	public cgv::nui::transforming,
+	public cgv::nui::matrix_cached_transforming,
 	public cgv::gui::provider,
 	public vr::vr_tool
 {

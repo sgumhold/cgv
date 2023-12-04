@@ -1,4 +1,4 @@
-#include "grabable.h"
+#include "grabbable.h"
 #include <cg_vr/vr_events.h>
 
 namespace cgv {
@@ -15,10 +15,10 @@ namespace cgv {
 		{
 			return new proximity_dispatch_info(*this);
 		}
-		grabable::grabable()
+		grabbable::grabbable()
 		{
 		}
-		bool grabable::is_grab_change(const cgv::gui::event& e, bool& grabbed) const
+		bool grabbable::is_grab_change(const cgv::gui::event& e, bool& grabbed) const
 		{
 			if (e.get_kind() != cgv::gui::EID_KEY)
 				return false;
@@ -30,7 +30,7 @@ namespace cgv {
 			grabbed = vrke.get_action() == cgv::gui::KA_PRESS;
 			return true;
 		}
-		bool grabable::is_grabbing(const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info) const
+		bool grabbable::is_grabbing(const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info) const
 		{
 			if (dis_info.mode != cgv::nui::dispatch_mode::proximity)
 				return false;
@@ -38,7 +38,7 @@ namespace cgv {
 				return true;
 			return false;
 		}
-		const proximity_info& grabable::get_proximity_info(const dispatch_info& dis_info) const
+		const proximity_info& grabbable::get_proximity_info(const dispatch_info& dis_info) const
 		{
 			return reinterpret_cast<const proximity_dispatch_info&>(dis_info);
 		}

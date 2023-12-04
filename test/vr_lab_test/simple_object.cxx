@@ -161,7 +161,7 @@ bool simple_object::compute_intersection(const vec3& ray_start, const vec3& ray_
 	rotation.inverse_rotate(rd);
 	vec3 n;
 	vec2 res;
-	if (cgv::math::ray_box_intersection(ro, rd, 0.5f*extent, res, n) == 0)
+	if (cgv::math::ray_box_intersection(cgv::math::ray<float,3>(ro, rd), 0.5f*extent, res, &n) == 0)
 		return false;
 	if (res[0] < 0) {
 		if (res[1] < 0)
