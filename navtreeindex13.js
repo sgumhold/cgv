@@ -1,14 +1,5 @@
 var NAVTREEINDEX13 =
 {
-"classcgv_1_1math_1_1quaternion.html#afaa81133284c1a5c63333ef1535f9b97":[11,0,0,5,17,93],
-"classcgv_1_1math_1_1quaternion.html#afc3554068914f06d45fbac8fdd919725":[11,0,0,5,17,102],
-"classcgv_1_1math_1_1quaternion.html#afea901268f6ba41a98e59d08b417f024":[11,0,0,5,17,91],
-"classcgv_1_1math_1_1ray.html":[11,0,0,5,19],
-"classcgv_1_1math_1_1ray.html#a8c20ad18d246178e1cd14181eadeb601":[11,0,0,5,19,1],
-"classcgv_1_1math_1_1ray.html#ab019e7c4b22363f09855bd44ba9e6dcb":[11,0,0,5,19,0],
-"classcgv_1_1math_1_1ray.html#af80a352b4073c6e148d65164db837d9f":[11,0,0,5,19,2],
-"classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html":[11,0,0,5,20],
-"classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html#a67fbb07141858fc42e05af0c8b25f945":[11,0,0,5,20,3],
 "classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html#a970b2d38611cb3e9d125e6685508ebcf":[11,0,0,5,20,0],
 "classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html#aa3c7216e6c3773dda8cdf6597caaa716":[11,0,0,5,20,2],
 "classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html#acf01bddd00238c552d9e2e001de38dc0":[11,0,0,5,20,1],
@@ -249,5 +240,14 @@ var NAVTREEINDEX13 =
 "classcgv_1_1media_1_1color.html#abf2ddf3d116064ec9f81e84b0ba359ea":[11,0,0,6,8,6],
 "classcgv_1_1media_1_1color.html#ac103ac41011cfcfde46c564ddfeac316":[11,0,0,6,8,7],
 "classcgv_1_1media_1_1color.html#ac29748ca35dfdae39afe1a601001fe15":[11,0,0,6,8,8],
-"classcgv_1_1media_1_1color.html#acd3d52fdac8c0762e742bdd255dc951c":[11,0,0,6,8,28]
+"classcgv_1_1media_1_1color.html#acd3d52fdac8c0762e742bdd255dc951c":[11,0,0,6,8,28],
+"classcgv_1_1media_1_1color.html#acf1dde85d2a905805107c7edec560452":[11,0,0,6,8,34],
+"classcgv_1_1media_1_1color.html#ad79c65ee6239a0d356892c805b0f4677":[11,0,0,6,8,3],
+"classcgv_1_1media_1_1color.html#ae43124fbd239077fe2485403cd7b4a46":[11,0,0,6,8,15],
+"classcgv_1_1media_1_1color.html#ae51ddb30993fa2ab71149fc70721e90d":[11,0,0,6,8,10],
+"classcgv_1_1media_1_1color.html#ae7e5251b499559689af5b2884ae5422c":[11,0,0,6,8,37],
+"classcgv_1_1media_1_1color.html#af4feef73c30a94c7fe0983fd23c8b916":[11,0,0,6,8,26],
+"classcgv_1_1media_1_1color__base.html":[11,0,0,6,7],
+"classcgv_1_1media_1_1color__base.html#a37796d69946fc66bce8702816913e702":[11,0,0,6,7,1],
+"classcgv_1_1media_1_1color__base.html#a50fd36f6d34652d1e102b2586c0777ea":[11,0,0,6,7,2]
 };

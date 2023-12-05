@@ -1,14 +1,5 @@
 var NAVTREEINDEX14 =
 {
-"classcgv_1_1media_1_1color.html#acf1dde85d2a905805107c7edec560452":[11,0,0,6,8,34],
-"classcgv_1_1media_1_1color.html#ad79c65ee6239a0d356892c805b0f4677":[11,0,0,6,8,3],
-"classcgv_1_1media_1_1color.html#ae43124fbd239077fe2485403cd7b4a46":[11,0,0,6,8,15],
-"classcgv_1_1media_1_1color.html#ae51ddb30993fa2ab71149fc70721e90d":[11,0,0,6,8,10],
-"classcgv_1_1media_1_1color.html#ae7e5251b499559689af5b2884ae5422c":[11,0,0,6,8,37],
-"classcgv_1_1media_1_1color.html#af4feef73c30a94c7fe0983fd23c8b916":[11,0,0,6,8,26],
-"classcgv_1_1media_1_1color__base.html":[11,0,0,6,7],
-"classcgv_1_1media_1_1color__base.html#a37796d69946fc66bce8702816913e702":[11,0,0,6,7,1],
-"classcgv_1_1media_1_1color__base.html#a50fd36f6d34652d1e102b2586c0777ea":[11,0,0,6,7,2],
 "classcgv_1_1media_1_1color__base.html#a694665bc328e126236447b2f4fb68bb6":[11,0,0,6,7,4],
 "classcgv_1_1media_1_1color__base.html#a875aef7879781ed063f7893cd5274def":[11,0,0,6,7,7],
 "classcgv_1_1media_1_1color__base.html#a9c8b2ed9febcf28ae05aac8c86d4c109":[11,0,0,6,7,0],
@@ -249,5 +240,14 @@ var NAVTREEINDEX14 =
 "classcgv_1_1media_1_1illum_1_1phong__material.html":[11,0,0,6,1,2],
 "classcgv_1_1media_1_1illum_1_1phong__material.html#a0396417518451fd0be0ac88070fcdec5":[11,0,0,6,1,2,0],
 "classcgv_1_1media_1_1illum_1_1phong__material.html#a0fb45dbd4b2cc1161081fffd8db3be47":[11,0,0,6,1,2,2],
-"classcgv_1_1media_1_1illum_1_1phong__material.html#a1c8bc0098838d301f33351c5ef1c0f06":[11,0,0,6,1,2,4]
+"classcgv_1_1media_1_1illum_1_1phong__material.html#a1c8bc0098838d301f33351c5ef1c0f06":[11,0,0,6,1,2,4],
+"classcgv_1_1media_1_1illum_1_1phong__material.html#a39522abf4c27e142548cc077dea2d338":[11,0,0,6,1,2,3],
+"classcgv_1_1media_1_1illum_1_1phong__material.html#a47db8abbdfe349610355de6cab91caeb":[11,0,0,6,1,2,6],
+"classcgv_1_1media_1_1illum_1_1phong__material.html#a96b13e09a14e66ec62f23b9f570b7cae":[11,0,0,6,1,2,1],
+"classcgv_1_1media_1_1illum_1_1phong__material.html#ae9aa56ed4d22d32c5cdfbd24adcf9b12":[11,0,0,6,1,2,5],
+"classcgv_1_1media_1_1illum_1_1surface__material.html":[11,0,0,6,1,3],
+"classcgv_1_1media_1_1illum_1_1surface__material.html#a1732ff7c51d2569e1702267ea2f5d079":[11,0,0,6,1,3,1],
+"classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34":[11,0,0,6,1,3,0],
+"classcgv_1_1media_1_1illum_1_1surface__material.html#a3ca6ccb522fcfb870792f5c338eb2e43":[11,0,0,6,1,3,4],
+"classcgv_1_1media_1_1illum_1_1surface__material.html#a51fca4161b935253a23af6e2e420d9b7":[11,0,0,6,1,3,3]
 };
