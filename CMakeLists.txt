@@ -66,10 +66,18 @@ else()
 	set(CGV_LTO_ON_RELEASE OFF CACHE INTERNAL "" FORCE)
 endif()
 if (NOT CMAKE_SOURCE_DIR STREQUAL CGV_DIR)
-	option(CGV_EXCLUDE_UNUSED_TARGETS "When the CGV Framework is used as a dependency from an external project, this option will exclude all CGV targets not needed by the external project form the \"build all\" operation" ON)
+	option(CGV_EXCLUDE_UNUSED_TARGETS
+		"When the CGV Framework is used as a dependency from an external project, this option will exclude all CGV targets not needed by the external project form the \"build all\" operation"
+		ON
+	)
 else()
 	# this option makes no sense when stand-alone building the CGV Framework directly
 	set(CGV_EXCLUDE_UNUSED_TARGETS OFF CACHE INTERNAL "" FORCE)
+endif()
+if (UNIX)
+	option(CGV_DEBUG_ON_NVIDIA_GPU
+		"Adds environment variables to IDE debug configs that should cause the viewer application to run on an NVIDIA GPU if present." OFF
+	)
 endif()
 
 # customize build directory
