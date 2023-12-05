@@ -1,4 +1,4 @@
-#include "input_control.h"
+#include "input.h"
 
 #include <cgv_g2d/msdf_font.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
@@ -8,22 +8,22 @@ using namespace cgv::render;
 namespace cg {
 namespace g2d {
 
-bool input_control::is_allowed(char c) {
+bool input::is_allowed(char c) {
 	switch(type) {
-	case input_type::kFloat: return std::isdigit(c) || c == '.' || c == 'e';
-	case input_type::kInteger: return std::isdigit(c);
-	case input_type::kString:
+	case Type::kFloat: return std::isdigit(c) || c == '.' || c == 'e';
+	case Type::kInteger: return std::isdigit(c);
+	case Type::kString:
 	default: return std::isprint(c);
 	}
 }
 
-void input_control::erase_at_cursor() {
+void input::erase_at_cursor() {
 	buffer.erase(cursor_position, 1);
 
 	do_callback();
 }
 
-void input_control::insert_at_cursor(char c) {
+void input::insert_at_cursor(char c) {
 	if(is_allowed(c)) {
 		buffer.insert(cursor_position, 1, c);
 		++cursor_position;
@@ -32,18 +32,20 @@ void input_control::insert_at_cursor(char c) {
 	}
 }
 
-bool input_control::set_value(const std::string& v) {
+bool input::set_value(const std::string& v) {
 	if(v == buffer)
 		return false;
 
 	buffer = v;
 
-	cursor_position = std::min(cursor_position, buffer.length());
+	//cursor_position = std::min(cursor_position, buffer.length());
+	cursor_position = buffer.length();
+	focused = false;
 	update();
 	return true;
 }
 
-bool input_control::handle_key_event(cgv::gui::key_event& e) {
+bool input::handle_key_event(cgv::gui::key_event& e) {
 	cgv::gui::KeyAction action = e.get_action();
 
 	if(focused && (action == cgv::gui::KA_PRESS || action == cgv::gui::KA_REPEAT)) {
@@ -91,7 +93,7 @@ bool input_control::handle_key_event(cgv::gui::key_event& e) {
 	return false;
 }
 
-bool input_control::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_position) {
+bool input::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_position) {
 	cgv::gui::MouseAction action = e.get_action();
 
 	if(e.get_button() == cgv::gui::MB_LEFT_BUTTON) {
@@ -115,7 +117,7 @@ bool input_control::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_pos
 	return false;
 }
 
-void input_control::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
+void input::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 	auto& font = cgv::g2d::ref_msdf_font_regular(ctx);
 
 	if(do_focus) {

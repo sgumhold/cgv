@@ -35,7 +35,7 @@ void provider::clear() {
 	buttons.clear();
 
 	controls.clear();
-	g2d_controls.clear();
+	control_widgets.clear();
 }
 
 bool provider::handle(cgv::gui::event& e, const ivec2& viewport_size, const cgv::g2d::irect& container) {
@@ -45,8 +45,8 @@ bool provider::handle(cgv::gui::event& e, const ivec2& viewport_size, const cgv:
 	if(et == cgv::gui::EID_KEY) {
 		cgv::gui::key_event& ke = dynamic_cast<cgv::gui::key_event&>(e);
 		
-		for(auto& control : g2d_controls) {
-			if(control->handle_key_event(ke))
+		for(auto& control_widget : control_widgets) {
+			if(control_widget->handle_key_event(ke))
 				return true;
 		}
 	} else if(et == cgv::gui::EID_MOUSE) {
@@ -58,8 +58,8 @@ bool provider::handle(cgv::gui::event& e, const ivec2& viewport_size, const cgv:
 				return true;
 		}
 
-		for(auto& control : g2d_controls) {
-			if(control->handle_mouse_event(me, mouse_position))
+		for(auto& control_widget : control_widgets) {
+			if(control_widget->handle_mouse_event(me, mouse_position))
 				return true;
 		}
 	}
@@ -72,8 +72,8 @@ void provider::draw(context& ctx, cgv::g2d::canvas& cnvs) {
 	for(auto& button : buttons)
 		button->draw(ctx, cnvs, style);
 
-	for(auto& control : g2d_controls)
-		control->draw(ctx, cnvs, style);
+	for(auto& control_widget : control_widgets)
+		control_widget->draw(ctx, cnvs, style);
 }
 
 void provider::init_styles() {

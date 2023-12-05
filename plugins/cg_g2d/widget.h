@@ -12,11 +12,11 @@
 namespace cg {
 namespace g2d {
 
-class control_base {
+class widget {
 private:
-	typedef std::function<void(control_base*, void*)> callback_t;
-	callback_t _callback;
-	void* _user_data = nullptr;
+	typedef std::function<void(widget*, void*)> callback_t;
+	callback_t callback;
+	void* user_data = nullptr;
 
 protected:
 	std::string label;
@@ -25,9 +25,9 @@ protected:
 	cgv::render::TextAlignment label_alignment = cgv::render::TextAlignment::TA_NONE;
 
 public:
-	control_base(const std::string& label, cgv::g2d::irect rectangle) : label(label), rectangle(rectangle) {}
+	widget(const std::string& label, cgv::g2d::irect rectangle) : label(label), rectangle(rectangle) {}
 
-	virtual ~control_base() {}
+	virtual ~widget() { user_data = nullptr; }
 
 	const std::string& get_label(const std::string& label) const { return label; }
 
@@ -47,14 +47,14 @@ public:
 
 	virtual void update() {}
 
-	void callback(callback_t c, void* p) {
-		_callback = c;
-		_user_data = p;
+	void set_callback(callback_t callback, void* user_data) {
+		this->callback = callback;
+		this->user_data = user_data;
 	}
 
 	void do_callback() {
-		if(_callback)
-			_callback(this, _user_data);
+		if(callback)
+			callback(this, user_data);
 	}
 
 	virtual bool handle_key_event(cgv::gui::key_event& e) { return false; }

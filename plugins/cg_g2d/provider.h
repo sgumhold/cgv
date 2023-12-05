@@ -14,11 +14,11 @@
 
 #include "styles.h"
 
-#include "control_base.h"
-#include "input_control.h"
-#include "slider_control.h"
-#include "value_control.h"
-#include "value_input_control.h"
+#include "widget.h"
+#include "input.h"
+#include "slider.h"
+#include "valuator.h"
+#include "value_input.h"
 
 #include "g2d_button.h"
 #include "g2d_string_control.h"
@@ -35,16 +35,31 @@ protected:
 	cgv::render::ivec2 default_control_size = cgv::render::ivec2(200, 20);
 
 	std::vector<cg::g2d::g2d_button_ptr> buttons;
-	//std::vector<std::pair<cgv::gui::control_ptr, std::shared_ptr<control_base>>> controls;
 
 	std::vector<cgv::gui::control_ptr> controls;
-	std::vector<std::shared_ptr<control_base>> g2d_controls;
-
-	std::function<void(void*)> default_on_change_callback;
+	std::vector<std::shared_ptr<widget>> control_widgets;
 
 	void init_styles();
 
 	void handle_theme_change(const cgv::gui::theme_info& theme) override;
+
+	template<typename T>
+	void connect_to_on_set(cgv::base::base* base_ptr, cgv::gui::control_ptr control, T& value) {
+		auto ptr = control.up_cast<cgv::gui::control<T>>();
+		if(ptr)
+			connect_copy(ptr->value_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
+	}
+
+	template<typename T, typename W>
+	std::shared_ptr<W> add_member_control_void(cgv::base::base* base_ptr, const std::string& label, T& value, cgv::render::ivec2 position) {
+		std::shared_ptr<W> control_widget;
+		controls.push_back(create_value_control<W>(label, &value, cgv::type::info::type_name<T>::get_name(), cgv::g2d::irect(position, default_control_size), control_widget));
+		control_widgets.push_back(control_widget);
+
+		connect_to_on_set(base_ptr, controls.back(), value);
+
+		return control_widget;
+	}
 
 public:
 	bool init(cgv::render::context& ctx);
@@ -71,59 +86,24 @@ public:
 		return ptr;
 	}
 
-	std::shared_ptr<input_control> add_string_control(cgv::base::base* base_ptr, const std::string& label, std::string* value_ptr, cgv::render::ivec2 position) {
-		auto gl_control_ptr = new g2d_string_control(
-			label, *value_ptr, cgv::g2d::irect(position, default_control_size)
-		);
-
-		cgv::data::ref_ptr<cgv::gui::control<std::string>> control_ptr = gl_control_ptr;
-
-		if(control_ptr)
-			connect_copy(control_ptr->value_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, value_ptr));
-
-		controls.push_back(cgv::gui::control_ptr(gl_control_ptr));
-
-		auto control_view_ptr = gl_control_ptr->get_gl_control();
-
-		g2d_controls.push_back(control_view_ptr);
-		return control_view_ptr;
+	template<typename T>
+	std::shared_ptr<slider> add_slider_control(cgv::base::base* base_ptr, const std::string& label, T& value, cgv::render::ivec2 position) {
+		return add_member_control_void<T, slider>(base_ptr, label, value, position);
 	}
 
-	//template <class B>
-	std::shared_ptr<slider_control> add_slider_control(cgv::base::base* base_ptr, const std::string& label, float* value_ptr, cgv::render::ivec2 position) {
-		auto gl_control_ptr = new g2d_value_control<cgv::type::flt32_type, /* B */slider_control>(
-			label, *static_cast<cgv::type::flt32_type*>(value_ptr), cgv::g2d::irect(position, default_control_size)
-		);
-
-		cgv::data::ref_ptr<cgv::gui::control<float>> control_ptr = gl_control_ptr;
-
-		if(control_ptr)
-			connect_copy(control_ptr->value_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, value_ptr));
-
-		controls.push_back(cgv::gui::control_ptr(gl_control_ptr));
-
-		auto control_view_ptr = gl_control_ptr->get_gl_control();
-
-		g2d_controls.push_back(control_view_ptr);
-		return control_view_ptr;
+	template<typename T>
+	std::shared_ptr<value_input> add_value_control(cgv::base::base* base_ptr, const std::string& label, T& value, cgv::render::ivec2 position) {
+		return add_member_control_void<T, value_input>(base_ptr, label, value, position);
 	}
 
-	std::shared_ptr<value_input_control> add_value_control(cgv::base::base* base_ptr, const std::string& label, float* value_ptr, cgv::render::ivec2 position) {
-		auto gl_control_ptr = new g2d_value_control<cgv::type::flt32_type, value_input_control>(
-			label, *static_cast<cgv::type::flt32_type*>(value_ptr), cgv::g2d::irect(position, default_control_size)
-		);
+	std::shared_ptr<input> add_string_control(cgv::base::base* base_ptr, const std::string& label, std::string& value, cgv::render::ivec2 position) {
+		std::shared_ptr<input> control_widget;
+		controls.push_back(create_string_control(label, &value, cgv::type::info::type_name<std::string>::get_name(), cgv::g2d::irect(position, default_control_size), control_widget));
+		control_widgets.push_back(control_widget);
 
-		cgv::data::ref_ptr<cgv::gui::control<float>> control_ptr = gl_control_ptr;
+		connect_to_on_set(base_ptr, controls.back(), value);
 
-		if(control_ptr)
-			connect_copy(control_ptr->value_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, value_ptr));
-
-		controls.push_back(cgv::gui::control_ptr(gl_control_ptr));
-
-		auto control_view_ptr = gl_control_ptr->get_gl_control();
-
-		g2d_controls.push_back(control_view_ptr);
-		return control_view_ptr;
+		return control_widget;
 	}
 };
 

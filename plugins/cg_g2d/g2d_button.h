@@ -2,7 +2,7 @@
 
 #include <cgv/gui/button.h>
 
-#include "control_base.h"
+#include "widget.h"
 
 #include "lib_begin.h"
 
@@ -10,7 +10,7 @@ namespace cg {
 namespace g2d {
 
 /// Implements the button gui element with a g2d button.
-class CGV_API g2d_button : public cgv::gui::button, public control_base {
+class CGV_API g2d_button : public cgv::gui::button, public widget {
 private:
 	/// whether the button was pressed on left mouse button down
 	bool pressed = false;
@@ -19,7 +19,7 @@ private:
 	
 public:
 	/// construct from label and rectangle
-	g2d_button(const std::string& label, cgv::g2d::irect rectangle);
+	g2d_button(const std::string& label, cgv::g2d::irect rectangle) : cgv::gui::button(label), widget(label, rectangle) {}
 	/// destruct g2d button
 	~g2d_button() {}
 	/// return "g2d_button"

@@ -1,19 +1,19 @@
 #pragma once
 
-#include "control_base.h"
+#include "widget.h"
 
 #include "lib_begin.h"
 
 namespace cg {
 namespace g2d {
 
-class CGV_API input_control : public control_base {
+class CGV_API input : public widget {
 public:
-	enum class input_type {
+	enum class Type {
 		kString,
 		kFloat,
 		kInteger
-	} type = input_type::kString;
+	} type = Type::kString;
 
 private:
 	bool focused = false;
@@ -30,7 +30,11 @@ private:
 	void insert_at_cursor(char c);
 
 public:
-	using control_base::control_base;
+	using widget::widget;
+
+	Type get_type() const { return type; }
+
+	void set_type(Type type) { this->type = type; }
 
 	std::string get_value() const { return buffer; }
 
