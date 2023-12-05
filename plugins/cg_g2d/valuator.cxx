@@ -1,9 +1,9 @@
-#include "value_control.h"
+#include "valuator.h"
 
 namespace cg {
 namespace g2d {
 
-bool value_control::set_value(double v) {
+bool valuator::set_value(double v) {
 	if(abs(v - value) < std::numeric_limits<double>::epsilon())
 		return false;
 
@@ -12,14 +12,14 @@ bool value_control::set_value(double v) {
 	return true;
 }
 
-void value_control::set_range(cgv::render::dvec2 range) {
+void valuator::set_range(cgv::render::dvec2 range) {
 	this->range = range;
 
 	// TODO: udpate value to be in range
 	update();
 }
 
-void value_control::handle_value_change(double v) {
+void valuator::handle_value_change(double v) {
 	// round to nearest multiple of step
 	if(step >= 1.0) {
 		v = std::round(v / step) * step;

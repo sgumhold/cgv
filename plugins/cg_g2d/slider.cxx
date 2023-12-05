@@ -1,4 +1,4 @@
-#include "slider_control.h"
+#include "slider.h"
 
 #include <cgv_g2d/msdf_font.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
@@ -8,7 +8,7 @@ using namespace cgv::render;
 namespace cg {
 namespace g2d {
 
-void slider_control::update_value() {
+void slider::update_value() {
 	dvec2 in_range(rectangle.x(), rectangle.x1() - handle.w());
 	double next_value = cgv::math::map(static_cast<double>(handle.x()), in_range[0], in_range[1], get_range()[0], get_range()[1]);
 	next_value = cgv::math::clamp(next_value, get_range()[0], get_range()[1]);
@@ -16,25 +16,25 @@ void slider_control::update_value() {
 	handle_value_change(next_value);
 }
 
-void slider_control::update_handle() {
+void slider::update_handle() {
 	dvec2 out_range(rectangle.x(), rectangle.x1() - handle.w());
 	double position = static_cast<float>(cgv::math::map(get_value(), get_range()[0], get_range()[1], out_range[0], out_range[1]));
 	handle_view_position = static_cast<int>(cgv::math::clamp(position, out_range[0], out_range[1]));
 }
 
-slider_control::slider_control(const std::string& label, cgv::g2d::irect rectangle) : value_control(label, rectangle) {
+slider::slider(const std::string& label, cgv::g2d::irect rectangle) : valuator(label, rectangle) {
 	handle = {
 		static_cast<vec2>(rectangle.position),
 		vec2(12.0f, static_cast<float>(rectangle.h()))
 	};
 	draggables.add(&handle);
 	draggables.set_constraint(rectangle);
-	draggables.set_drag_callback(std::bind(&slider_control::update_value, this));
+	draggables.set_drag_callback(std::bind(&slider::update_value, this));
 
 	handle_view_position = rectangle.x();
 }
 
-bool slider_control::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_position) {
+bool slider::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_position) {
 	//if(!rectangle.is_inside(mouse_position))
 	//	return false;
 
@@ -68,7 +68,7 @@ bool slider_control::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_po
 	return false;
 }
 
-void slider_control::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
+void slider::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 	cnvs.enable_shader(ctx, "rectangle");
 	cnvs.set_style(ctx, style.colored_box);
 

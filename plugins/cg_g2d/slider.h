@@ -1,6 +1,6 @@
 #pragma once
 
-#include "value_control.h"
+#include "valuator.h"
 
 #include <cgv_g2d/draggable.h>
 #include <cgv_g2d/draggable_collection.h>
@@ -10,7 +10,7 @@
 namespace cg {
 namespace g2d {
 
-class CGV_API slider_control : public value_control {
+class CGV_API slider : public valuator {
 private:
 	cgv::g2d::draggable handle;
 	cgv::g2d::draggable_collection<cgv::g2d::draggable*> draggables;
@@ -21,7 +21,7 @@ private:
 	void update_handle();
 
 public:
-	slider_control(const std::string& label, cgv::g2d::irect rectangle);
+	slider(const std::string& label, cgv::g2d::irect rectangle);
 
 	void update() override { update_handle(); }
 

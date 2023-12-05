@@ -1,20 +1,20 @@
 #pragma once
 
-#include "control_base.h"
+#include "widget.h"
 
 #include "lib_begin.h"
 
 namespace cg {
 namespace g2d {
 
-class CGV_API value_control : public control_base {
+class CGV_API valuator: public widget {
 private:
 	double value = 0.0;
 	cgv::render::dvec2 range = cgv::render::dvec2(0.0, 1.0);
 	double step = 1.0;
 
 public:
-	using control_base::control_base;
+	using widget::widget;
 
 	double get_value() const { return value; }
 

@@ -6,8 +6,6 @@
 namespace cg {
 namespace g2d {
 
-g2d_button::g2d_button(const std::string& label, cgv::g2d::irect rectangle) : cgv::gui::button(label), control_base(label, rectangle) {}
-
 bool g2d_button::handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2 mouse_position) {
 	cgv::gui::MouseAction action = e.get_action();
 
