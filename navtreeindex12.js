@@ -1,14 +1,5 @@
 var NAVTREEINDEX12 =
 {
-"classcgv_1_1math_1_1mat.html#a063541099a42204b667e79b6ff36bd84":[11,0,0,5,11,20],
-"classcgv_1_1math_1_1mat.html#a06d58d141ee028dddf538eea881bf103":[11,0,0,5,11,33],
-"classcgv_1_1math_1_1mat.html#a0a83f9da7317013df7060ebb94e336f6":[11,0,0,5,11,38],
-"classcgv_1_1math_1_1mat.html#a0e0e11cba05a8a7dd3a43393c328fad9":[11,0,0,5,11,28],
-"classcgv_1_1math_1_1mat.html#a0f0ad31d663806040a76052e6e978d74":[11,0,0,5,11,36],
-"classcgv_1_1math_1_1mat.html#a0f157d17bbb44bfd5c1de76b573f4ef8":[11,0,0,5,11,48],
-"classcgv_1_1math_1_1mat.html#a19a8efe08ae75801133b07bc42e773f0":[11,0,0,5,11,52],
-"classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb":[11,0,0,5,11,14],
-"classcgv_1_1math_1_1mat.html#a20918345d4b9655e5f5631b2811dceec":[11,0,0,5,11,3],
 "classcgv_1_1math_1_1mat.html#a25f831d1e88f644803cd65e015c3aad0":[11,0,0,5,11,44],
 "classcgv_1_1math_1_1mat.html#a26b8f29de574f2e6afefd35494f01ff7":[11,0,0,5,11,12],
 "classcgv_1_1math_1_1mat.html#a2f6ab9f5d5671cb2a7858fa17f0ac55c":[11,0,0,5,11,23],
@@ -249,5 +240,14 @@ var NAVTREEINDEX12 =
 "classcgv_1_1math_1_1quaternion.html#af524648d06feaaeee50abd17773761c7":[11,0,0,5,17,6],
 "classcgv_1_1math_1_1quaternion.html#af567dd18d8822167ab6ea37a20d81b6e":[11,0,0,5,17,22],
 "classcgv_1_1math_1_1quaternion.html#af56d9974185332beb4bc8e67a1d5852c":[11,0,0,5,17,36],
-"classcgv_1_1math_1_1quaternion.html#af633fbab9c6747c8901c9abd92350b8d":[11,0,0,5,17,46]
+"classcgv_1_1math_1_1quaternion.html#af633fbab9c6747c8901c9abd92350b8d":[11,0,0,5,17,46],
+"classcgv_1_1math_1_1quaternion.html#afaa81133284c1a5c63333ef1535f9b97":[11,0,0,5,17,93],
+"classcgv_1_1math_1_1quaternion.html#afc3554068914f06d45fbac8fdd919725":[11,0,0,5,17,102],
+"classcgv_1_1math_1_1quaternion.html#afea901268f6ba41a98e59d08b417f024":[11,0,0,5,17,91],
+"classcgv_1_1math_1_1ray.html":[11,0,0,5,19],
+"classcgv_1_1math_1_1ray.html#a8c20ad18d246178e1cd14181eadeb601":[11,0,0,5,19,1],
+"classcgv_1_1math_1_1ray.html#ab019e7c4b22363f09855bd44ba9e6dcb":[11,0,0,5,19,0],
+"classcgv_1_1math_1_1ray.html#af80a352b4073c6e148d65164db837d9f":[11,0,0,5,19,2],
+"classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html":[11,0,0,5,20],
+"classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html#a67fbb07141858fc42e05af0c8b25f945":[11,0,0,5,20,3]
 };

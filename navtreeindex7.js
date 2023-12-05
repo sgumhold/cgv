@@ -1,12 +1,5 @@
 var NAVTREEINDEX7 =
 {
-"classcgv_1_1gui_1_1directory__helper.html#a068939594bf04802b0e808bfe38687a0":[11,0,0,4,19,5],
-"classcgv_1_1gui_1_1directory__helper.html#a1c593e21a913854fbe2949a71c59bbbb":[11,0,0,4,19,7],
-"classcgv_1_1gui_1_1directory__helper.html#a7376e01fdfccfe0596c5b3017b0d66e3":[11,0,0,4,19,4],
-"classcgv_1_1gui_1_1directory__helper.html#a7458cd34656e0889f395dfbbb6a60d59":[11,0,0,4,19,2],
-"classcgv_1_1gui_1_1directory__helper.html#a7eb3b3bdea4d06e2141bc1adf6e7e60e":[11,0,0,4,19,3],
-"classcgv_1_1gui_1_1directory__helper.html#a81b63d1741e9b8da0f9eea490d2d63ac":[11,0,0,4,19,8],
-"classcgv_1_1gui_1_1directory__helper.html#a87adaa37a99fc1af3ac3e00644cfe7ee":[11,0,0,4,19,0],
 "classcgv_1_1gui_1_1directory__helper.html#aa4e95e9afe21c9afdc76951a701147c0":[11,0,0,4,19,6],
 "classcgv_1_1gui_1_1directory__helper.html#ad70cacf1c89a2d6d7989aaed26e01527":[11,0,0,4,19,9],
 "classcgv_1_1gui_1_1directory__helper.html#ae2325d11b32bebab4814add15ccd3ead":[11,0,0,4,19,1],
@@ -249,5 +242,12 @@ var NAVTREEINDEX7 =
 "classcgv_1_1gui_1_1gui__group.html#a072c0b97c3dd0d0b3aea1b0811010658":[11,0,0,4,23,48],
 "classcgv_1_1gui_1_1gui__group.html#a089de6c7a04697ca4c1fb84a836133c3":[11,0,0,4,23,54],
 "classcgv_1_1gui_1_1gui__group.html#a0b3db0f57373229e66422eeeb6750ebc":[11,0,0,4,23,82],
-"classcgv_1_1gui_1_1gui__group.html#a126632dbea89cec99649d1350c5f8793":[11,0,0,4,23,5]
+"classcgv_1_1gui_1_1gui__group.html#a126632dbea89cec99649d1350c5f8793":[11,0,0,4,23,5],
+"classcgv_1_1gui_1_1gui__group.html#a1ff38549b7f5c57918898543e78a416d":[11,0,0,4,23,73],
+"classcgv_1_1gui_1_1gui__group.html#a28286049d6db60c75aedf4c6358dfc12":[11,0,0,4,23,92],
+"classcgv_1_1gui_1_1gui__group.html#a2f074aea5bf4b0bfeb00845750d27623":[11,0,0,4,23,62],
+"classcgv_1_1gui_1_1gui__group.html#a3053a69b9fefa20cc4c2b851d88bbaf6":[11,0,0,4,23,41],
+"classcgv_1_1gui_1_1gui__group.html#a313232084b52192201cecaf4ae257ee8":[11,0,0,4,23,61],
+"classcgv_1_1gui_1_1gui__group.html#a322bdd4891db870dafaba22e40d99bff":[11,0,0,4,23,26],
+"classcgv_1_1gui_1_1gui__group.html#a32925eca40ca8deecd7b46fb129160cb":[11,0,0,4,23,75]
 };

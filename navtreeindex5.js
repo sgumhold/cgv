@@ -1,12 +1,5 @@
 var NAVTREEINDEX5 =
 {
-"classcgv_1_1data_1_1data__format.html#a675690df0b4f6587b6087e7f86b8bdff":[11,0,0,3,7,68],
-"classcgv_1_1data_1_1data__format.html#a689cbcb12fcc4a8b39a2fbaed161813d":[11,0,0,3,7,71],
-"classcgv_1_1data_1_1data__format.html#a6aef151cfce7ecee98128c679490174d":[11,0,0,3,7,2],
-"classcgv_1_1data_1_1data__format.html#a716faf713640333f0664d103eb787110":[11,0,0,3,7,49],
-"classcgv_1_1data_1_1data__format.html#a7304187d58c23050c39abb371c873c0a":[11,0,0,3,7,44],
-"classcgv_1_1data_1_1data__format.html#a78cd6e80341a8ae56e8bf4213c77399f":[11,0,0,3,7,36],
-"classcgv_1_1data_1_1data__format.html#a7f3679749ced2adf0d4d155a47fdd927":[11,0,0,3,7,29],
 "classcgv_1_1data_1_1data__format.html#a87c6adb3764104032af1d34abcbebf02":[11,0,0,3,7,24],
 "classcgv_1_1data_1_1data__format.html#a8ab7425b0ae917049bb64ba27c757ec6":[11,0,0,3,7,4],
 "classcgv_1_1data_1_1data__format.html#a8f9457addc136beed77ae367c87fe337":[11,0,0,3,7,25],
@@ -249,5 +242,12 @@ var NAVTREEINDEX5 =
 "classcgv_1_1data_1_1ref__ptr__tag.html#a368c94a3bf39759ac416ea2803267fb3":[11,0,0,3,19,0],
 "classcgv_1_1data_1_1ref__ptr__tag.html#a943c0313ced89c25bc571bc0cbad139c":[11,0,0,3,19,1],
 "classcgv_1_1gui_1_1abst__control.html":[11,0,0,4,11],
-"classcgv_1_1gui_1_1abst__control.html#a0b3db0f57373229e66422eeeb6750ebc":[11,0,0,4,11,46]
+"classcgv_1_1gui_1_1abst__control.html#a0b3db0f57373229e66422eeeb6750ebc":[11,0,0,4,11,46],
+"classcgv_1_1gui_1_1abst__control.html#a1c5ca2e5257ad86420b2719887dc1d64":[11,0,0,4,11,8],
+"classcgv_1_1gui_1_1abst__control.html#a1ff38549b7f5c57918898543e78a416d":[11,0,0,4,11,38],
+"classcgv_1_1gui_1_1abst__control.html#a28286049d6db60c75aedf4c6358dfc12":[11,0,0,4,11,50],
+"classcgv_1_1gui_1_1abst__control.html#a2f074aea5bf4b0bfeb00845750d27623":[11,0,0,4,11,35],
+"classcgv_1_1gui_1_1abst__control.html#a3053a69b9fefa20cc4c2b851d88bbaf6":[11,0,0,4,11,25],
+"classcgv_1_1gui_1_1abst__control.html#a313232084b52192201cecaf4ae257ee8":[11,0,0,4,11,34],
+"classcgv_1_1gui_1_1abst__control.html#a322bdd4891db870dafaba22e40d99bff":[11,0,0,4,11,12]
 };
