@@ -75,9 +75,9 @@ else()
 	set(CGV_EXCLUDE_UNUSED_TARGETS OFF CACHE INTERNAL "" FORCE)
 endif()
 if (UNIX)
-	option(CGV_DEBUG_ON_NVIDIA_GPU
-		"Adds environment variables to IDE debug configs that should cause the viewer application to run on an NVIDIA GPU if present." OFF
-	)
+	option(CGV_DEBUG_ON_NVIDIA_GPU "Adds environment variables to IDE debug configs that should cause the viewer application to run on an NVIDIA GPU if present." OFF)
+else()
+	set(CGV_DEBUG_ON_NVIDIA_GPU OFF CACHE INTERNAL "" FORCE)
 endif()
 
 # customize build directory
@@ -85,8 +85,7 @@ endif()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
-# - make sure these, the CGV_DIR and the CGV_OPTIONS are propagated to would-be parent CMake build processes
-#   that reference the CGV Framework
+# - make sure these, the CGV_DIR and the CGV_OPTIONS are propagated to would-be parent CMake build processes that reference the CGV Framework
 get_directory_property(hasParent PARENT_DIRECTORY)
 if (hasParent)
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} PARENT_SCOPE)
@@ -121,6 +120,11 @@ define_property(TARGET
 	PROPERTY CGVPROP_WORKING_DIR
 	BRIEF_DOCS "Custom working directory used in plugin launch/debug configurations"
 	FULL_DOCS "The working directory to use when creating launch/debug configurations for the target (ignored for non-plugin targets)."
+)
+define_property(TARGET
+	PROPERTY CGVPROP_INVOCATION_PROXY
+	BRIEF_DOCS "Custom proxy program or script that should launch the viewer application (or single-exe plugin build)."
+	FULL_DOCS "Custom proxy program or script that should be invoked instead of launching the viewer application (or single-exe plugin build) directly."
 )
 define_property(GLOBAL
 	PROPERTY CGVPROP_USER_TARGETS
