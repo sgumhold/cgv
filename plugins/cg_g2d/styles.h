@@ -7,13 +7,18 @@ namespace cg {
 namespace g2d {
 
 struct styles {
-	cgv::g2d::shape2d_style control_box;
-	cgv::g2d::shape2d_style colored_box;
-	cgv::g2d::text2d_style text;
-
-	cgv::render::rgb control_color;
 	cgv::render::rgb background_color;
+	cgv::render::rgb group_color;
+	cgv::render::rgb control_color;
 	cgv::render::rgb shadow_color;
+	cgv::render::rgb text_color;
+	cgv::render::rgb selection_color;
+	cgv::render::rgb highlight_color;
+
+	cgv::g2d::shape2d_style flat_box;
+	cgv::g2d::shape2d_style rounded_box;
+
+	cgv::g2d::text2d_style text;
 };
 
 }

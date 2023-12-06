@@ -40,6 +40,13 @@ public:
 
 	bool set_value(const std::string& v);
 
+
+
+	size_t get_cursor_position() const { return cursor_position; }
+	bool is_focused() const { return focused; }
+	void focus() { focused = true; }
+
+
 	void update() override {}
 
 	bool handle_key_event(cgv::gui::key_event& e) override;

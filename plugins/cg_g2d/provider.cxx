@@ -80,23 +80,24 @@ void provider::init_styles() {
 
 	auto& ti = cgv::gui::theme_info::instance();
 
-	style.control_box.use_fill_color = true;
-	style.control_box.fill_color = ti.control();
-	style.control_box.feather_width = 0.0f;
+	style.background_color = ti.background();
+	style.group_color = ti.group();
+	style.control_color = ti.control();
+	style.shadow_color = ti.shadow();
+	style.text_color = ti.text();
+	style.selection_color = ti.selection();
+	style.highlight_color = ti.highlight();
 
-	//style.control_box.feather_width = 1.0f;
-	//style.control_box.border_radius = 5.0f;
-	//style.control_box.use_blending = true;
-	
 	style.text = cgv::g2d::text2d_style::preset_default(ti.text());
 	style.text.font_size = 12.0f;
 
-	style.colored_box = style.control_box;
-	style.colored_box.use_fill_color = false;
+	style.flat_box.use_fill_color = false;
+	style.flat_box.feather_width = 0.0f;
 
-	style.control_color = ti.control();
-	style.background_color = ti.background();
-	style.shadow_color = ti.shadow();
+	style.rounded_box = style.flat_box;
+	style.rounded_box.feather_width = 1.0f;
+	style.rounded_box.border_radius = 10.0f;
+	style.rounded_box.use_blending = true;
 }
 
 void provider::handle_theme_change(const cgv::gui::theme_info& theme) {
