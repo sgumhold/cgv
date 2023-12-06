@@ -1,7 +1,6 @@
 #pragma once
 
 #include "transformation_matrix_provider.h"
-#include <cgv/math/ftransform.h>
 
 #include "lib_begin.h"
 
@@ -13,7 +12,7 @@ class CGV_API translatable : public transformation_matrix_provider
 {
 public:
 	/// default construction is empty
-	translatable() {}
+	translatable();
 	/// return position representad by translation vector
 	virtual vec3 get_position() const = 0;
 	/// set new position and return whether successful - otherwise setter can retrieve corrected position with get_position() method
@@ -28,18 +27,15 @@ protected:
 	vec3 position;
 public:
 	/// default construction is empty
-	default_translatable() {}
+	default_translatable(const vec3& _position);
 	/// return transformation matrix
-	mat4 get_transformation_matrix() const { return cgv::math::translate4<float>(position); }
+	mat4 get_transformation_matrix() const;
 	/// return inverse transformation matrix
-	mat4 get_inverse_transformation_matrix() const { return cgv::math::translate4<float>(-position); }
+	mat4 get_inverse_transformation_matrix() const;
 	/// return position representad by translation vector
-	vec3 get_position() const { return position; }
+	vec3 get_position() const;
 	/// set new position and return whether successful - otherwise setter can retrieve corrected position with get_position() method
-	bool set_position(const vec3& _position) {
-		position = _position;
-		return true;
-	}
+	bool set_position(const vec3& _position);
 };
 
 

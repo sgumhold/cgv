@@ -54,6 +54,41 @@ namespace cgv {
 			/// set model transform and inverse model transform
 			void set_model_transform(const mat4& _M, const mat4& _iM);
 		};
+		/// implement transforming interface through concatenation of transformable interfaces
+		template <typename ...Transformables>
+		class concatenating_transforming : public transforming, public Transformables...			
+		{
+		protected:
+			template <typename Head, typename ...Tail> struct model_transform_getter {
+				static mat4 matrix(const concatenating_transforming<Transformables...>* This) {
+					return ((const Head*)This)->get_transformation_matrix() *
+						model_transform_getter<Tail...>::matrix(This);
+			}	};
+			template <typename T> struct model_transform_getter<T> {
+				static mat4 matrix(const concatenating_transforming<Transformables...>* This) {
+					return ((const T*)This)->get_transformation_matrix();
+			}	};
+			template <typename Head, typename ...Tail> struct inverse_model_transform_getter {
+				static mat4 matrix(const concatenating_transforming<Transformables...>* This) {
+					return ((const Head*)This)->get_inverse_transformation_matrix() *
+						inverse_model_transform_getter<Tail...>::matrix(This);
+			}	};
+			template <typename T> struct inverse_model_transform_getter<T> {
+				static mat4 matrix(const concatenating_transforming<Transformables...>* This) {
+					return ((const T*)This)->get_inverse_transformation_matrix();
+			}	};
+		public:
+			/// constructor concatenates transformables' contructors
+			concatenating_transforming(Transformables&&... transformables) : Transformables(transformables)... {}
+			/// read access to model transform
+			mat4 get_model_transform() const { return model_transform_getter<Transformables...>::matrix(this); }
+			/// read access to inverse model transform
+			mat4 get_inverse_model_transform() const { return inverse_model_transform_getter<Transformables...>::matrix(this); }
+			/// set model transform and compute inverse model transform
+			void set_model_transform(const mat4& _M) {}
+			/// set model transform and inverse model transform
+			void set_model_transform(const mat4& _M, const mat4& _iM) {}
+		};
 	}
 }
 #include <cgv/config/lib_end.h>
