@@ -5,6 +5,10 @@
 #include <cg_nui/focusable.h>
 #include <cg_nui/pointable.h>
 #include <cg_nui/grabbable.h>
+#include <cg_nui/scalable.h>
+#include <cg_nui/rotatable.h>
+#include <cg_nui/translatable.h>
+#include <cg_nui/transforming.h>
 #include <cgv/gui/provider.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
@@ -15,6 +19,7 @@ class simple_object :
 	public cgv::nui::focusable,
 	public cgv::nui::grabbable,
 	public cgv::nui::pointable,
+	public cgv::nui::concatenating_transforming<cgv::nui::default_translatable, cgv::nui::quaternion_rotatable, cgv::nui::non_uniformly_scalable>,
 	public cgv::gui::provider
 {
 	cgv::render::box_render_style brs;

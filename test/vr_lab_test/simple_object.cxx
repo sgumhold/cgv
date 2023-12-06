@@ -22,12 +22,17 @@ simple_object::rgb simple_object::get_modified_color(const rgb& color) const
 	return mod_col;
 }
 simple_object::simple_object(const std::string& _name, const vec3& _position, const rgb& _color, const vec3& _extent, const quat& _rotation)
-	: cgv::base::node(_name), position(_position), color(_color), extent(_extent), rotation(_rotation)
+	: cgv::base::node(_name), 
+	cgv::nui::concatenating_transforming<cgv::nui::default_translatable, cgv::nui::quaternion_rotatable, cgv::nui::non_uniformly_scalable>(
+		_position, _rotation, _extent),
+	position(_position), color(_color), extent(_extent), rotation(_rotation)
 {
 	debug_point = position + 0.5f*extent;
 	brs.rounding = true;
 	brs.default_radius = 0.02f;
 	srs.radius = 0.01f;
+	std::cout << "M=" << get_model_transform() << std::endl;
+	std::cout << "\n\niM=" << get_inverse_model_transform() << std::endl;
 }
 std::string simple_object::get_type_name() const
 {
