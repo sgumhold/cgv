@@ -40,7 +40,7 @@ bool g2d_button::handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2
 
 void g2d_button::draw(cgv::render::context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 	cnvs.enable_shader(ctx, "rectangle");
-	cnvs.set_style(ctx, style.colored_box);
+	cnvs.set_style(ctx, style.flat_box);
 
 	bool active = pressed && hovered;
 

@@ -17,9 +17,11 @@
 #include "widget.h"
 #include "input.h"
 #include "slider.h"
+#include "toggle.h"
 #include "valuator.h"
 #include "value_input.h"
 
+#include "g2d_bool_control.h"
 #include "g2d_button.h"
 #include "g2d_string_control.h"
 #include "g2d_value_control.h"
@@ -51,7 +53,7 @@ protected:
 	}
 
 	template<typename T, typename W>
-	std::shared_ptr<W> add_member_control_void(cgv::base::base* base_ptr, const std::string& label, T& value, cgv::render::ivec2 position) {
+	std::shared_ptr<W> add_value_control_void(cgv::base::base* base_ptr, const std::string& label, T& value, cgv::render::ivec2 position) {
 		std::shared_ptr<W> control_widget;
 		controls.push_back(create_value_control<W>(label, &value, cgv::type::info::type_name<T>::get_name(), cgv::g2d::irect(position, default_control_size), control_widget));
 		control_widgets.push_back(control_widget);
@@ -86,14 +88,24 @@ public:
 		return ptr;
 	}
 
+	std::shared_ptr<toggle> add_bool_control(cgv::base::base* base_ptr, const std::string& label, bool& value, cgv::render::ivec2 position) {
+		std::shared_ptr<toggle> control_widget;
+		controls.push_back(create_bool_control(label, &value, cgv::type::info::type_name<bool>::get_name(), cgv::g2d::irect(position, default_control_size), control_widget));
+		control_widgets.push_back(control_widget);
+
+		connect_to_on_set(base_ptr, controls.back(), value);
+
+		return control_widget;
+	}
+
 	template<typename T>
 	std::shared_ptr<slider> add_slider_control(cgv::base::base* base_ptr, const std::string& label, T& value, cgv::render::ivec2 position) {
-		return add_member_control_void<T, slider>(base_ptr, label, value, position);
+		return add_value_control_void<T, slider>(base_ptr, label, value, position);
 	}
 
 	template<typename T>
 	std::shared_ptr<value_input> add_value_control(cgv::base::base* base_ptr, const std::string& label, T& value, cgv::render::ivec2 position) {
-		return add_member_control_void<T, value_input>(base_ptr, label, value, position);
+		return add_value_control_void<T, value_input>(base_ptr, label, value, position);
 	}
 
 	std::shared_ptr<input> add_string_control(cgv::base::base* base_ptr, const std::string& label, std::string& value, cgv::render::ivec2 position) {

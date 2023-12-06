@@ -21,20 +21,23 @@ struct CGV_API abst_g2d_value_callback {
 
 template <typename T, class W>
 static void configure(T& value, std::shared_ptr<W> w) {
-	if(cgv::type::info::type_id<T>::get_id() < cgv::type::info::TI_FLT16)
+	if(cgv::type::info::type_id<T>::get_id() < cgv::type::info::TI_FLT16) {
 		w->set_step(1.0);
+		w->set_range(cgv::render::dvec2(
+			static_cast<double>(std::numeric_limits<T>::min()),
+			static_cast<double>(std::numeric_limits<T>::max())
+		));
+	} else {
+		w->set_step(0.1);
+	}
 }
 
 template <typename T>
 static void configure(T& value, std::shared_ptr<value_input> w) {
 	if(cgv::type::info::type_id<T>::get_id() < cgv::type::info::TI_FLT16)
 		w->input_widget.set_type(input::Type::kInteger);
-}
-
-template <typename T>
-static void configure(T& value, std::shared_ptr<slider> w) {
-	if(cgv::type::info::type_id<T>::get_id() < cgv::type::info::TI_FLT16)
-		w->set_step(1.0);
+	else
+		w->set_step(0.1);
 }
 
 static void valuator_cb(widget* widget_ptr, void* valuator_ptr) {

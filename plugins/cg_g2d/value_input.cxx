@@ -30,14 +30,12 @@ void value_input_cb(widget*, void* v) {
 
 value_input::value_input(const std::string& label, cgv::g2d::irect rectangle) : valuator(label, rectangle), input_widget(label, rectangle) {
 	input_widget.set_callback(value_input_cb, this);
-	// TODO: set from outside and allow integers
 	input_widget.type = input::Type::kFloat;
 
 	update_input();
 }
 
 bool value_input::set_value(double v) {
-	
 	if(valuator::set_value(v)) {
 		update_input();
 		return true;
@@ -93,7 +91,7 @@ void value_input::update_input() {
 	} else {
 		// this is a very brute force way to allow 6 digits to the right instead
 		// of the %g default of 4:
-		int n = (int)std::ceil(std::log10(std::abs(get_value())));
+		int n = static_cast<int>(std::ceil(std::log10(std::abs(get_value()))));
 		if(n > 0 || n < -6) {
 			snprintf(buf, 32, "%g", get_value());
 		} else {

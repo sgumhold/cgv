@@ -46,9 +46,7 @@ bool input::set_value(const std::string& v) {
 }
 
 bool input::handle_key_event(cgv::gui::key_event& e) {
-	cgv::gui::KeyAction action = e.get_action();
-
-	if(focused && (action == cgv::gui::KA_PRESS || action == cgv::gui::KA_REPEAT)) {
+	if(focused && (e.get_action() == cgv::gui::KA_PRESS || e.get_action() == cgv::gui::KA_REPEAT)) {
 		switch(e.get_key()) {
 		case cgv::gui::KEY_Home:
 			cursor_position = 0;
@@ -146,8 +144,8 @@ void input::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 	}
 
 	cnvs.enable_shader(ctx, "rectangle");
-	cnvs.set_style(ctx, style.control_box);
-	cnvs.draw_shape(ctx, rectangle);
+	cnvs.set_style(ctx, style.flat_box);
+	cnvs.draw_shape(ctx, rectangle, style.control_color);
 	cnvs.disable_current_shader(ctx);
 
 	ivec2 position(rectangle.x(), rectangle.center().y());
@@ -157,7 +155,7 @@ void input::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 
 	if(focused) {
 		cnvs.enable_shader(ctx, "rectangle");
-		cnvs.set_style(ctx, style.colored_box);
+		cnvs.set_style(ctx, style.flat_box);
 
 		vec2 text_size = style.text.font_size * vec2(font.compute_length(buffer, cursor_position), 1.0f);
 

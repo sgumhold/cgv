@@ -70,7 +70,7 @@ bool slider::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_position) 
 
 void slider::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 	cnvs.enable_shader(ctx, "rectangle");
-	cnvs.set_style(ctx, style.colored_box);
+	cnvs.set_style(ctx, style.flat_box);
 
 	cgv::g2d::irect track = rectangle;
 	track.scale(0, -5);
