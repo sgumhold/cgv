@@ -4,6 +4,9 @@
 
 cgv::render::shader_program simple_object::prog;
 
+//#define USE_SCALABLE
+//#define DEBUG_INTERSECTION
+
 simple_object::rgb simple_object::get_modified_color(const rgb& color) const
 {
 	rgb mod_col(color);
@@ -23,9 +26,19 @@ simple_object::rgb simple_object::get_modified_color(const rgb& color) const
 }
 simple_object::simple_object(const std::string& _name, const vec3& _position, const rgb& _color, const vec3& _extent, const quat& _rotation)
 	: cgv::base::node(_name), 
-	cgv::nui::concatenating_transforming<cgv::nui::default_translatable, cgv::nui::quaternion_rotatable, cgv::nui::non_uniformly_scalable>(
-		_position, _rotation, _extent),
-	position(_position), color(_color), extent(_extent), rotation(_rotation)
+	  cgv::nui::concatenating_transforming<
+	    cgv::nui::default_translatable, 
+	    cgv::nui::quaternion_rotatable,
+	    cgv::nui::non_uniformly_scalable>(
+		_position, _rotation,
+#ifdef USE_SCALABLE
+			_extent), extent(vec3(1.0f)),
+
+#else
+			vec3(1.0f)), extent(_extent), 
+#endif
+	color(_color)
+	//, position(_position), rotation(_rotation)
 {
 	debug_point = position + 0.5f*extent;
 	brs.rounding = true;
@@ -150,24 +163,27 @@ bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_in
 }
 bool simple_object::compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx)
 {
-	vec3 p = point - position;
-	rotation.inverse_rotate(p);
+	prj_point = point;
 	for (int i = 0; i < 3; ++i)
-		p[i] = std::max(-0.5f * extent[i], std::min(0.5f * extent[i], p[i]));
-	rotation.rotate(p);
-	prj_point = p + position;
+		prj_point[i] = std::max(-0.5f * extent[i], std::min(0.5f * extent[i], prj_point[i]));
 	return true;
 }
 bool simple_object::compute_intersection(const vec3& ray_start, const vec3& ray_direction, float& hit_param, vec3& hit_normal, size_t& primitive_idx)
 {
-	vec3 ro = ray_start - position;
-	vec3 rd = ray_direction;
-	rotation.inverse_rotate(ro);
-	rotation.inverse_rotate(rd);
 	vec3 n;
 	vec2 res;
-	if (cgv::math::ray_box_intersection(cgv::math::ray<float,3>(ro, rd), 0.5f*extent, res, &n) == 0)
+	int nr_intersect = cgv::math::ray_box_intersection(cgv::math::ray<float, 3>(ray_start, ray_direction), 0.5f*extent, res, &n);
+#ifdef DEBUG_INTERSECTION
+	std::cout << get_name() << " [" << extent << "] : ray {" << ray_start << "|" << ray_direction << "}";
+	for (int i = 0; i < nr_intersect; ++i)
+		std::cout << " " << res[0];
+#endif
+	if (nr_intersect == 0) {
+#ifdef DEBUG_INTERSECTION
+		std::cout << " no intersection" << std::endl;
+#endif
 		return false;
+	}
 	if (res[0] < 0) {
 		if (res[1] < 0)
 			return false;
@@ -177,7 +193,9 @@ bool simple_object::compute_intersection(const vec3& ray_start, const vec3& ray_
 		hit_param = res[0];
 	}
 	hit_normal = n;
-	rotation.rotate(n);
+#ifdef DEBUG_INTERSECTION
+	std::cout << " interset at " << hit_param << std::endl;
+#endif
 	return true;
 }
 bool simple_object::init(cgv::render::context& ctx)
@@ -203,11 +221,17 @@ void simple_object::draw(cgv::render::context& ctx)
 	br.set_position(ctx, position);
 	br.set_color_array(ctx, &color, 1);
 	br.set_secondary_color(ctx, get_modified_color(color));
+#ifdef USE_SCALABLE
+	br.set_extent(ctx, scale);
+#else
 	br.set_extent(ctx, extent);
-	br.set_rotation_array(ctx, &rotation, 1);
+#endif
+	br.set_rotation_array(ctx, &quaternion, 1);
 	br.render(ctx, 0, 1);
 
 	// show points
+	ctx.push_modelview_matrix();
+	ctx.mul_modelview_matrix(get_model_transform());
 	auto& sr = cgv::render::ref_sphere_renderer(ctx);
 	sr.set_render_style(srs);
 	sr.set_position(ctx, debug_point);
@@ -223,15 +247,22 @@ void simple_object::draw(cgv::render::context& ctx)
 		sr.set_color(ctx, rgb(0.3f, 0.3f, 0.3f));
 		sr.render(ctx, 0, 1);
 	}
+	ctx.pop_modelview_matrix();
 }
 void simple_object::create_gui()
 {
 	add_decorator(get_name(), "heading", "level=2");
 	add_member_control(this, "color", color);
-	add_member_control(this, "width", extent[0], "value_slider", "min=0.01;max=1;log=true");
+#ifdef USE_SCALABLE
+	add_member_control(this, "width",  scale[0], "value_slider", "min=0.01;max=1;log=true");
+	add_member_control(this, "height", scale[1], "value_slider", "min=0.01;max=1;log=true");
+	add_member_control(this, "depth",  scale[2], "value_slider", "min=0.01;max=1;log=true");
+#else
+	add_member_control(this, "width",  extent[0], "value_slider", "min=0.01;max=1;log=true");
 	add_member_control(this, "height", extent[1], "value_slider", "min=0.01;max=1;log=true");
-	add_member_control(this, "depth", extent[2], "value_slider", "min=0.01;max=1;log=true");
-	add_gui("rotation", rotation, "direction", "options='min=-1;max=1;ticks=true'");
+	add_member_control(this, "depth",  extent[2], "value_slider", "min=0.01;max=1;log=true");
+#endif
+	add_gui("rotation", quaternion, "direction", "options='min=-1;max=1;ticks=true'");
 	if (begin_tree_node("style", brs)) {
 		align("\a");
 		add_gui("brs", brs);

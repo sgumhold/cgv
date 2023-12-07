@@ -125,6 +125,11 @@ public:
 	}
 	bool init(cgv::render::context& ctx)
 	{
+		vr::vr_scene* scene_ptr = get_scene_ptr();
+		if (scene_ptr) {
+			mat4 model_transform(3, 4, &get_scene_ptr()->get_coordsystem(coordinate_system::table)(0, 0));
+			set_model_transform(model_transform);
+		}
 		cgv::render::ref_sphere_renderer(ctx, 1);
 		cgv::render::ref_cone_renderer(ctx, 1);
 

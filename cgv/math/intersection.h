@@ -11,7 +11,7 @@ namespace cgv {
 namespace math {
 
 /// @brief Computes the intersection between a ray and axis aligned box located at the origin and returns the number of intersections.
-/// Differentiates between 0 or 2 intersections.
+/// Differentiates between 0 or 2 intersections and correctly deals with zero components in direction vector.
 /// 
 /// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
@@ -20,13 +20,31 @@ namespace math {
 /// @param [out] out_normal optional surface normal at the first intersection point.
 /// @return the number of intersections.
 template <typename T>
-int ray_box_intersection(const ray<T, 3>& ray, fvec<T, 3> extent, fvec<T, 2>& out_ts, fvec<T, 3>* out_normal = nullptr) {
-
-	fvec<T, 3> m = fvec<T, 3>(T(1)) / ray.direction; // could be precomputed if traversing a set of aligned boxes
-	fvec<T, 3> n = m * ray.origin;   // could be precomputed if traversing a set of aligned boxes
-	fvec<T, 3> k = abs(m) * extent;
-	fvec<T, 3> t1 = -n - k;
-	fvec<T, 3> t2 = -n + k;
+int ray_box_intersection(const ray<T, 3>& r, fvec<T, 3> extent, fvec<T, 2>& out_ts, fvec<T, 3>* out_normal_ptr = nullptr) {
+	fvec<T, 3> t1, t2, s;
+	for (int i = 0; i < 3; ++i) {
+		if (r.direction[i] < -std::numeric_limits<T>::epsilon()) {
+			t1[i] =  (extent[i] - r.origin[i]) / r.direction[i];
+			t2[i] = -(extent[i] + r.origin[i]) / r.direction[i];
+			s[i] = T(-1);
+		}
+		else if (r.direction[i] > std::numeric_limits<T>::epsilon()) {
+			t1[i] = -(extent[i] + r.origin[i]) / r.direction[i];
+			t2[i] =  (extent[i] - r.origin[i]) / r.direction[i];
+			s[i] = T(1);
+		}
+		else {
+			if (r.origin[i] > -extent[i] - std::numeric_limits<T>::epsilon())
+				t1[i] = -std::numeric_limits<T>::infinity();
+			else
+				t1[i] = std::numeric_limits<T>::infinity();
+			if (r.origin[i] < extent[i] + std::numeric_limits<T>::epsilon())
+				t2[i] = std::numeric_limits<T>::infinity();
+			else
+				t2[i] = -std::numeric_limits<T>::infinity();
+			s[i] = T(0);
+		}
+	}
 	T t_near = std::max(std::max(t1.x(), t1.y()), t1.z());
 	T t_far = std::min(std::min(t2.x(), t2.y()), t2.z());
 
@@ -36,11 +54,9 @@ int ray_box_intersection(const ray<T, 3>& ray, fvec<T, 3> extent, fvec<T, 2>& ou
 	out_ts[0] = t_near;
 	out_ts[1] = t_far;
 
-	if(out_normal)
-		*out_normal = -sign(ray.direction)
-		* step(fvec<T, 3>(t1.y(), t1.z(), t1.x()), fvec<T, 3>(t1.x(), t1.y(), t1.z()))
-		* step(fvec<T, 3>(t1.z(), t1.x(), t1.y()), fvec<T, 3>(t1.x(), t1.y(), t1.z()));
-
+	if(out_normal_ptr)
+		*out_normal_ptr = -s * step(fvec<T, 3>(t1.y(), t1.z(), t1.x()), fvec<T, 3>(t1.x(), t1.y(), t1.z()))
+		                 * step(fvec<T, 3>(t1.z(), t1.x(), t1.y()), fvec<T, 3>(t1.x(), t1.y(), t1.z()));
 	return 2;
 }
 
@@ -54,35 +70,10 @@ int ray_box_intersection(const ray<T, 3>& ray, fvec<T, 3> extent, fvec<T, 2>& ou
 /// @param [out] out_ts the distances to the intersection points.
 /// @return the number of intersections.
 template <typename T>
-int ray_box_intersection(const ray<T, 3> &ray, const fvec<T, 3> &min, const fvec<T, 3> &max, fvec<T, 2>& out_ts) {
-
-	fvec<T, 3> t0 = (min - ray.origin) / ray.direction;
-	fvec<T, 3> t1 = (max - ray.origin) / ray.direction;
-
-	if(t0.x() > t1.x())
-		std::swap(t0.x(), t1.x());
-
-	if(t0.y() > t1.y())
-		std::swap(t0.y(), t1.y());
-
-	if(t0.z() > t1.z())
-		std::swap(t0.z(), t1.z());
-
-	if(t0.x() > t1.y() || t0.y() > t1.x() ||
-		t0.x() > t1.z() || t0.z() > t1.x() ||
-		t0.z() > t1.y() || t0.y() > t1.z())
-		return 0;
-
-	T t_near = std::max(std::max(t0.x(), t0.y()), t0.z());
-	T t_far = std::min(std::min(t1.x(), t1.y()), t1.z());
-
-	if(t_near > t_far)
-		std::swap(t_near, t_far);
-
-	out_ts[0] = t_near;
-	out_ts[1] = t_far;
-
-	return 2;
+int ray_box_intersection(const ray<T, 3> &r, const fvec<T, 3> &mn, const fvec<T, 3> &mx, fvec<T, 2>& out_ts, fvec<T, 3>* out_normal_ptr = nullptr) {
+	fvec<T, 3> c = T(0.5)*(mn+mx);
+	fvec<T, 3> e = mx - mn;
+	return ray_box_intersection(ray<T, 3>(r.origin - c, r.direction), e, out_ts, out_normal_ptr);
 }
 
 /// @brief Computes the intersection between a ray and oriented cylinder defined by base center and axis and returns the number of intersections.
