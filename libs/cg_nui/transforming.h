@@ -70,8 +70,8 @@ namespace cgv {
 			}	};
 			template <typename Head, typename ...Tail> struct inverse_model_transform_getter {
 				static mat4 matrix(const concatenating_transforming<Transformables...>* This) {
-					return ((const Head*)This)->get_inverse_transformation_matrix() *
-						inverse_model_transform_getter<Tail...>::matrix(This);
+					return inverse_model_transform_getter<Tail...>::matrix(This) *
+						((const Head*)This)->get_inverse_transformation_matrix();
 			}	};
 			template <typename T> struct inverse_model_transform_getter<T> {
 				static mat4 matrix(const concatenating_transforming<Transformables...>* This) {

@@ -121,8 +121,10 @@ cgv::reflect::enum_reflection_traits<Skybox> get_reflection_traits(const Skybox&
 
 void vr_scene::register_object(base_ptr object, const std::string& options)
 {
-	if (object->get_interface<cgv::nui::vr_table>())
+	if (object->get_interface<cgv::nui::vr_table>()) {
 		table = object->cast<cgv::nui::vr_table>();
+		pose[static_cast<int>(coordinate_system::table)] = mat34(4, 4, table->get_transform());
+	}
 	auto* foc_ptr = object->get_interface<cgv::nui::focusable>();
 	if (!foc_ptr)
 		return;
