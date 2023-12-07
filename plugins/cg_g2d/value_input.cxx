@@ -3,7 +3,6 @@
 namespace cg {
 namespace g2d {
 
-// TODO: make static member of value_input_control?
 void value_input_cb(widget*, void* v) {
 	value_input& value_input_widget = *(value_input*)v;
 
@@ -42,6 +41,66 @@ bool value_input::set_value(double v) {
 	}
 
 	return false;
+}
+
+bool value_input::handle_key_event(cgv::gui::key_event& e) {
+	if(input_widget.is_focused() && (e.get_action() == cgv::gui::KA_PRESS || e.get_action() == cgv::gui::KA_REPEAT)) {
+		bool decrement = false;
+
+		switch(e.get_key()) {
+		case cgv::gui::KEY_Down:
+			decrement = true;
+		case cgv::gui::KEY_Up:
+		{
+			std::string text = input_widget.get_value();
+			size_t cursor_position = input_widget.get_cursor_position();
+
+			size_t count = 0;
+			bool invert = false;
+			double step = 1.0;
+
+			if(!text.empty()) {
+				if(input_widget.get_type() == input::Type::kInteger) {
+					size_t limit = text.length() - 1;
+					count = limit - std::min(limit, cursor_position);
+				} else {
+					size_t dot_position = text.find('.');
+
+					if(dot_position == std::string::npos) {
+						step = 0.1;
+					} else if(dot_position == cursor_position) {
+						count = 1;
+						invert = true;
+					} else if(cursor_position < dot_position) {
+						count = dot_position - cursor_position - 1;
+					} else {
+						count = cursor_position - dot_position;
+						invert = true;
+					}
+				}
+			}
+
+			for(size_t i = 0; i < count; ++i)
+				step *= 10.0;
+
+			if(invert)
+				step = 1.0 / step;
+
+			double next_value = get_value();
+			if(decrement)
+				next_value -= step;
+			else
+				next_value += step;
+			handle_value_change(next_value);
+			update_input();
+			input_widget.focus();
+			return true;
+		}
+		default: break;
+		}
+	}
+
+	return input_widget.handle_key_event(e);
 }
 
 void value_input::update_input() {

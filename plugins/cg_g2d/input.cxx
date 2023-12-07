@@ -10,7 +10,7 @@ namespace g2d {
 
 bool input::is_allowed(char c) {
 	switch(type) {
-	case Type::kFloat: return std::isdigit(c) || c == '.' || c == 'e';
+	case Type::kFloat: return std::isdigit(c) || c == '.' || c == 'e' || (cursor_position == 0 && c == '-');
 	case Type::kInteger: return std::isdigit(c);
 	case Type::kString:
 	default: return std::isprint(c);
@@ -36,11 +36,20 @@ bool input::set_value(const std::string& v) {
 	if(v == buffer)
 		return false;
 
+	if(type != Type::kString) {
+		if(buffer.length() < v.length())
+			cursor_position += 1;
+		else if(buffer.length() > v.length())
+			if(cursor_position > 0) cursor_position -= 1;
+
+		cursor_position = std::min(cursor_position, v.length());
+	} else {
+		cursor_position = v.length();
+		focused = false;
+	}
+
 	buffer = v;
 
-	//cursor_position = std::min(cursor_position, buffer.length());
-	cursor_position = buffer.length();
-	focused = false;
 	update();
 	return true;
 }
@@ -151,12 +160,40 @@ void input::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 	ivec2 position(rectangle.x(), rectangle.center().y());
 
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, style.text, position - ivec2(5, 0), TA_RIGHT);
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, buffer, style.text, position + ivec2(5, 0), TA_LEFT);
 
+
+
+	cgv::g2d::frect cursor_rectangle;
+	//cursor_rectangle.size = vec2(1.0f, rectangle.h() - 4.0f);
+
+	int text_offset = 0;
+	if(focused) {
+
+		vec2 text_size = style.text.font_size * vec2(font.compute_length(buffer, cursor_position), 1.0f);
+
+		cursor_rectangle.position = rectangle.position;
+		//cursor_rectangle.x() += text_size.x() + 5.0f;
+		//cursor_rectangle.x() = std::floor(position.x()) + 0.5f;
+		//cursor_rectangle.y() += 2.0f;
+
+		float distance = (rectangle.x1() - 5.0f);// -cursor_rectangle.x();
+
+		if(distance > 0.0f) {
+			text_offset = -static_cast<int>(distance + 0.5f);
+			//cursor_rectangle.x() -= std::ceil(distance);
+		}
+	}
+
+	glEnable(GL_SCISSOR_TEST);
+	glScissor(rectangle.x(), rectangle.y(), rectangle.w(), rectangle.h());
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, buffer, style.text, position + ivec2(5 + text_offset, 0), TA_LEFT);
+	glDisable(GL_SCISSOR_TEST);
+	
 	if(focused) {
 		cnvs.enable_shader(ctx, "rectangle");
 		cnvs.set_style(ctx, style.flat_box);
 
+		/*
 		vec2 text_size = style.text.font_size * vec2(font.compute_length(buffer, cursor_position), 1.0f);
 
 		vec2 position = rectangle.position;
@@ -165,6 +202,8 @@ void input::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 		position.y() += 2.0f;
 
 		cnvs.draw_shape(ctx, position, vec2(1.0f, 16.0f), style.text.fill_color);
+		*/
+		cnvs.draw_shape(ctx, cursor_rectangle, style.text.fill_color);
 		cnvs.disable_current_shader(ctx);
 	}
 }
