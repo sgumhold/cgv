@@ -19,7 +19,17 @@ simple_object::rgb simple_object::get_modified_color(const rgb& color) const
 	case state_enum::triggered:
 		mod_col[1] = std::min(1.0f, mod_col[0] + 0.2f);
 	case state_enum::pointed:
-		mod_col[2] = std::min(1.0f, mod_col[2] + (translate ? 0.1f : 0.2f));
+		switch (pointed) {
+		case pointed_type::translate:
+			mod_col[0] = std::min(1.0f, mod_col[0] + 0.2f);
+			break;
+		case pointed_type::rotate:
+			mod_col[1] = std::min(1.0f, mod_col[1] + 0.2f);
+			break;
+		case pointed_type::scale:
+			mod_col[2] = std::min(1.0f, mod_col[2] + 0.2f);
+			break;
+		}
 		break;
 	}
 	return mod_col;
@@ -145,21 +155,29 @@ bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_in
 			debug_point = inter_info.hit_point;
 			int i = max_index(abs(debug_point));
 			float r = sqrt(debug_point[(i + 1) % 3] * debug_point[(i + 1) % 3] + debug_point[(i + 2) % 3] * debug_point[(i + 2) % 3]);
-			translate = r < 0.2f;
-			if (translate) {
+			pointed = r < 0.2f ? pointed_type::translate : (r < 0.55f ? pointed_type::rotate : pointed_type::scale);
+			switch (pointed) {
+			case pointed_type::translate:
 				hit_point_at_trigger = transform_point(inter_info.hit_point);
 				position_at_trigger = position;
-			}
-			else {
+				break;
+			case pointed_type::rotate:
 				hit_point_at_trigger = transform_point(inter_info.hit_point) - position;
 				quaternion_at_trigger = quaternion;
+				break;
+			case pointed_type::scale:
+				hit_point_at_trigger = inter_info.hit_point;
+				hit_point_at_trigger *= scale;
+				scale_at_trigger = scale;
+				break;
 			}
 		}
 		else if (state == state_enum::triggered) {
 			// if we still have an intersection point, use as debug point
 			if (inter_info.ray_param != std::numeric_limits<float>::max())
 				debug_point = inter_info.hit_point;
-			if (translate) {
+			switch (pointed) {
+			case pointed_type::translate: {
 				vec3 line_projection = cgv::math::closest_point_on_line_to_point(
 					transform_point(inter_info.ray_origin),
 					transform_vector(inter_info.ray_direction),
@@ -168,16 +186,29 @@ bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_in
 				// compute translated position
 				vec3 new_position = position_at_trigger + translation;
 				position = new_position;
+				break;
 			}
-			else {
+			case pointed_type::rotate: {
 				vec3 line_projection = cgv::math::closest_point_on_line_to_point(
 					transform_point(inter_info.ray_origin) - position,
 					transform_vector(inter_info.ray_direction),
 					hit_point_at_trigger);
 				vec3 axis = cross(hit_point_at_trigger, line_projection);
-				float angle = atan2(axis.normalize(), dot(hit_point_at_trigger, line_projection) );
+				float angle = atan2(axis.normalize(), dot(hit_point_at_trigger, line_projection));
 				quat rotation(axis, angle);
 				quaternion = rotation * quaternion_at_trigger;
+				break;
+			}
+			case pointed_type::scale: {
+				vec3 ro = inter_info.ray_origin, rd = inter_info.ray_direction;
+				ro *= scale; rd *= scale;
+				vec3 line_projection = cgv::math::closest_point_on_line_to_point(ro, rd, hit_point_at_trigger);
+				vec3 new_scale = scale;
+				for (int i=0; i<3; ++i)
+					new_scale[i] = std::min(10.0f, std::max(0.01f, line_projection[i] / hit_point_at_trigger[i]));
+				scale = new_scale * scale_at_trigger;
+				break;
+			}
 			}
 		}
 		post_redraw();

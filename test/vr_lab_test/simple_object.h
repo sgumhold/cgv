@@ -28,8 +28,9 @@ class simple_object :
 	cgv::render::box_render_style brs;
 	cgv::render::sphere_render_style srs;
 	vec3 debug_point;
-	bool translate = false;
+	enum class pointed_type { none, translate, rotate, scale } pointed = pointed_type::none;
 	quat quaternion_at_trigger;
+	vec3 scale_at_trigger;
 	vec3 query_point_at_grab, position_at_grab;
 	vec3 hit_point_at_trigger, position_at_trigger;
 	cgv::nui::focus_configuration original_config;
