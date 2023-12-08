@@ -18,14 +18,14 @@ bool input::is_allowed(char c) {
 }
 
 void input::erase_at_cursor() {
-	buffer.erase(cursor_position, 1);
+	text.erase(cursor_position, 1);
 
 	do_callback();
 }
 
 void input::insert_at_cursor(char c) {
 	if(is_allowed(c)) {
-		buffer.insert(cursor_position, 1, c);
+		text.insert(cursor_position, 1, c);
 		++cursor_position;
 
 		do_callback();
@@ -33,13 +33,13 @@ void input::insert_at_cursor(char c) {
 }
 
 bool input::set_value(const std::string& v) {
-	if(v == buffer)
+	if(v == text)
 		return false;
 
 	if(type != Type::kString) {
-		if(buffer.length() < v.length())
+		if(text.length() < v.length())
 			cursor_position += 1;
-		else if(buffer.length() > v.length())
+		else if(text.length() > v.length())
 			if(cursor_position > 0) cursor_position -= 1;
 
 		cursor_position = std::min(cursor_position, v.length());
@@ -48,7 +48,7 @@ bool input::set_value(const std::string& v) {
 		focused = false;
 	}
 
-	buffer = v;
+	text = v;
 
 	update();
 	return true;
@@ -61,24 +61,24 @@ bool input::handle_key_event(cgv::gui::key_event& e) {
 			cursor_position = 0;
 			return true;
 		case cgv::gui::KEY_End:
-			cursor_position = buffer.length();
+			cursor_position = text.length();
 			return true;
 		case cgv::gui::KEY_Left:
 			if(cursor_position > 0)
 				--cursor_position;
 			return true;
 		case cgv::gui::KEY_Right:
-			if(cursor_position < buffer.length())
+			if(cursor_position < text.length())
 				++cursor_position;
 			return true;
 		case cgv::gui::KEY_Back_Space:
-			if(cursor_position > 0 && cursor_position <= buffer.length()) {
+			if(cursor_position > 0 && cursor_position <= text.length()) {
 				--cursor_position;
 				erase_at_cursor();
 			}
 			return true;
 		case cgv::gui::KEY_Delete:
-			if(cursor_position < buffer.length())
+			if(cursor_position < text.length())
 				erase_at_cursor();
 			return true;
 		case cgv::gui::KEY_Space:
@@ -109,7 +109,7 @@ bool input::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_position) {
 				focused = true;
 				do_focus = true;
 				focus_position = mouse_position.x();
-				cursor_position = buffer.length();
+				cursor_position = text.length();
 				return true;
 			} else if(focused) {
 				// TODO: do we even need to deactivate the input? FLTK for example only removes the caret when the mouse leaves the gui
@@ -135,8 +135,8 @@ void input::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 		float closest_distance = std::abs(position - focus_position);
 		float last_distance = closest_distance;
 
-		for(size_t i = 0; i < buffer.length(); ++i) {
-			const auto& glyph = font.get_glyph_info(static_cast<unsigned char>(buffer[i]));
+		for(size_t i = 0; i < text.length(); ++i) {
+			const auto& glyph = font.get_glyph_info(static_cast<unsigned char>(text[i]));
 
 			position += glyph.advance * style.text.font_size;
 			float distance = std::abs(position - focus_position);
@@ -161,48 +161,34 @@ void input::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, style.text, position - ivec2(5, 0), TA_RIGHT);
 
-
-
 	cgv::g2d::rect cursor_rectangle;
-	//cursor_rectangle.size = vec2(1.0f, rectangle.h() - 4.0f);
+	cursor_rectangle.size = vec2(1.0f, rectangle.h() - 4.0f);
 
 	int text_offset = 0;
 	if(focused) {
-
-		vec2 text_size = style.text.font_size * vec2(font.compute_length(buffer, cursor_position), 1.0f);
+		vec2 text_size = style.text.font_size * vec2(font.compute_length(text, cursor_position), 1.0f);
 
 		cursor_rectangle.position = rectangle.position;
-		//cursor_rectangle.x() += text_size.x() + 5.0f;
-		//cursor_rectangle.x() = std::floor(position.x()) + 0.5f;
-		//cursor_rectangle.y() += 2.0f;
+		cursor_rectangle.x() += text_size.x() + 5.0f;
+		cursor_rectangle.x() = std::floor(cursor_rectangle.x()) + 0.5f;
+		cursor_rectangle.y() += 2.0f;
 
-		float distance = (rectangle.x1() - 5.0f);// -cursor_rectangle.x();
+		float distance = (rectangle.x1() - 5.0f) - cursor_rectangle.x();
 
-		if(distance > 0.0f) {
-			text_offset = -static_cast<int>(distance + 0.5f);
-			//cursor_rectangle.x() -= std::ceil(distance);
+		if(distance < 0.0f) {
+			text_offset = static_cast<int>(distance + 0.5f);
+			cursor_rectangle.x() += text_offset;
 		}
 	}
 
 	glEnable(GL_SCISSOR_TEST);
 	glScissor(rectangle.x(), rectangle.y(), rectangle.w(), rectangle.h());
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, buffer, style.text, position + ivec2(5 + text_offset, 0), TA_LEFT);
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, text, style.text, position + ivec2(5 + text_offset, 0), TA_LEFT);
 	glDisable(GL_SCISSOR_TEST);
 	
 	if(focused) {
 		cnvs.enable_shader(ctx, "rectangle");
 		cnvs.set_style(ctx, style.flat_box);
-
-		/*
-		vec2 text_size = style.text.font_size * vec2(font.compute_length(buffer, cursor_position), 1.0f);
-
-		vec2 position = rectangle.position;
-		position.x() += text_size.x() + 5.0f;
-		position.x() = std::floor(position.x()) + 0.5f;
-		position.y() += 2.0f;
-
-		cnvs.draw_shape(ctx, position, vec2(1.0f, 16.0f), style.text.fill_color);
-		*/
 		cnvs.draw_shape(ctx, cursor_rectangle, style.text.fill_color);
 		cnvs.disable_current_shader(ctx);
 	}
