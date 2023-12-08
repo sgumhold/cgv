@@ -4,7 +4,7 @@
 
 cgv::render::shader_program simple_object::prog;
 
-//#define USE_SCALABLE
+#define USE_SCALABLE
 //#define DEBUG_INTERSECTION
 
 simple_object::rgb simple_object::get_modified_color(const rgb& color) const
@@ -44,8 +44,6 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 	brs.rounding = true;
 	brs.default_radius = 0.02f;
 	srs.radius = 0.01f;
-	std::cout << "M=" << get_model_transform() << std::endl;
-	std::cout << "\n\niM=" << get_inverse_model_transform() << std::endl;
 }
 std::string simple_object::get_type_name() const
 {
@@ -145,16 +143,21 @@ bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_in
 		const auto& inter_info = get_intersection_info(dis_info);
 		if (state == state_enum::pointed) {
 			debug_point = inter_info.hit_point;
-			hit_point_at_trigger = inter_info.hit_point;
+			hit_point_at_trigger = transform_point(inter_info.hit_point);
 			position_at_trigger = position;
 		}
 		else if (state == state_enum::triggered) {
 			// if we still have an intersection point, use as debug point
 			if (inter_info.ray_param != std::numeric_limits<float>::max())
 				debug_point = inter_info.hit_point;
-			// to be save even without new intersection, find closest point on ray to hit point at trigger
-			vec3 q = cgv::math::closest_point_on_line_to_point(inter_info.ray_origin, inter_info.ray_direction, hit_point_at_trigger);
-			position = position_at_trigger + q - hit_point_at_trigger;
+			vec3 line_projection = cgv::math::closest_point_on_line_to_point(
+				transform_point(inter_info.ray_origin),
+				transform_vector(inter_info.ray_direction),
+				hit_point_at_trigger);
+			vec3 translation = line_projection	- hit_point_at_trigger;
+			// compute translated position
+			vec3 new_position = position_at_trigger + translation;
+			position = new_position;
 		}
 		post_redraw();
 		return true;
@@ -243,7 +246,8 @@ void simple_object::draw(cgv::render::context& ctx)
 		sr.render(ctx, 0, 1);
 	}
 	if (state == state_enum::triggered) {
-		sr.set_position(ctx, hit_point_at_trigger);
+		vec3 hpat = inverse_transform_point(hit_point_at_trigger);
+		sr.set_position(ctx, hpat);
 		sr.set_color(ctx, rgb(0.3f, 0.3f, 0.3f));
 		sr.render(ctx, 0, 1);
 	}

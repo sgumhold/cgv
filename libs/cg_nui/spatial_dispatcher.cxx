@@ -14,7 +14,7 @@ namespace cgv {
 				auto* transforming_ptr = object_ptr->get_interface<transforming>();
 				if (transforming_ptr) {
 					M = transforming_ptr->get_model_transform() * M;
-					iM = transforming_ptr->get_inverse_model_transform() * iM;
+					iM = iM * transforming_ptr->get_inverse_model_transform();
 				}
 				if (root_ptr == object_ptr)
 					break;
@@ -61,14 +61,22 @@ namespace cgv {
 		void spatial_dispatcher::update_geometric_info_recursive(cgv::base::base_ptr root_ptr, cgv::base::base_ptr object_ptr, geometric_info& gi, bool recurse) const
 		{
 			auto* transforming_ptr = object_ptr->get_interface<transforming>();
+			vec3 tmp_pnt, tmp_dir, tmp_hit, tmp_nml;
 			if (transforming_ptr) {
 				if (gi.check_intersection) {
+					tmp_pnt = gi.inter_info.ray_origin;
+					tmp_dir = gi.inter_info.ray_direction;
+					tmp_hit = gi.inter_info.hit_point;
+					tmp_nml = gi.inter_info.hit_normal;
 					gi.inter_info.ray_origin = transforming_ptr->inverse_transform_point(gi.inter_info.ray_origin);
 					gi.inter_info.ray_direction = transforming_ptr->inverse_transform_vector(gi.inter_info.ray_direction);
 					gi.inter_info.hit_point = transforming_ptr->inverse_transform_point(gi.inter_info.hit_point);
 					gi.inter_info.hit_normal = transforming_ptr->inverse_transform_normal(gi.inter_info.hit_normal);
 				}
 				if (gi.check_proximity) {
+					tmp_pnt = gi.prox_info.query_point;
+					tmp_hit = gi.prox_info.hit_point;
+					tmp_nml = gi.prox_info.hit_normal;
 					gi.prox_info.query_point = transforming_ptr->inverse_transform_point(gi.prox_info.query_point);
 					gi.prox_info.hit_point = transforming_ptr->inverse_transform_point(gi.prox_info.hit_point);
 					gi.prox_info.hit_normal = transforming_ptr->inverse_transform_normal(gi.prox_info.hit_normal);
@@ -123,15 +131,15 @@ namespace cgv {
 			}
 			if (transforming_ptr) {
 				if (gi.check_intersection) {
-					gi.inter_info.ray_origin = transforming_ptr->transform_point(gi.inter_info.ray_origin);
-					gi.inter_info.ray_direction = transforming_ptr->transform_vector(gi.inter_info.ray_direction);
-					gi.inter_info.hit_point = transforming_ptr->transform_point(gi.inter_info.hit_point);
-					gi.inter_info.hit_normal = transforming_ptr->transform_normal(gi.inter_info.hit_normal);
+					gi.inter_info.ray_origin = tmp_pnt;
+					gi.inter_info.ray_direction = tmp_dir;
+					gi.inter_info.hit_point = tmp_hit;
+					gi.inter_info.hit_normal = tmp_nml;
 				}
 				if (gi.check_proximity) {
-					gi.prox_info.query_point = transforming_ptr->transform_point(gi.prox_info.query_point);
-					gi.prox_info.hit_point = transforming_ptr->transform_point(gi.prox_info.hit_point);
-					gi.prox_info.hit_normal = transforming_ptr->transform_normal(gi.prox_info.hit_normal);
+					gi.prox_info.query_point = tmp_pnt;
+					gi.prox_info.hit_point = tmp_hit;
+					gi.prox_info.hit_normal = tmp_nml;
 				}
 			}
 		}
