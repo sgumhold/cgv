@@ -105,7 +105,7 @@ bool input::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_position) {
 
 	if(e.get_button() == cgv::gui::MB_LEFT_BUTTON) {
 		if(action == cgv::gui::MouseAction::MA_PRESS) {
-			if(rectangle.is_inside(mouse_position)) {
+			if(rectangle.contains(mouse_position)) {
 				focused = true;
 				do_focus = true;
 				focus_position = mouse_position.x();
@@ -163,7 +163,7 @@ void input::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 
 
 
-	cgv::g2d::frect cursor_rectangle;
+	cgv::g2d::rect cursor_rectangle;
 	//cursor_rectangle.size = vec2(1.0f, rectangle.h() - 4.0f);
 
 	int text_offset = 0;

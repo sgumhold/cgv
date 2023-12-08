@@ -10,7 +10,7 @@ bool g2d_button::handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2
 	cgv::gui::MouseAction action = e.get_action();
 
 	if(e.get_button() == cgv::gui::MB_LEFT_BUTTON) {
-		bool is_hit = rectangle.is_inside(mouse_position);
+		bool is_hit = rectangle.contains(mouse_position);
 
 		if(action == cgv::gui::MouseAction::MA_PRESS && is_hit) {
 			pressed = true;
@@ -30,7 +30,7 @@ bool g2d_button::handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2
 
 	if(e.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
 		if(pressed) {
-			hovered = rectangle.is_inside(mouse_position);
+			hovered = rectangle.contains(mouse_position);
 			return true;
 		}
 	}
@@ -47,7 +47,7 @@ void g2d_button::draw(cgv::render::context& ctx, cgv::g2d::canvas& cnvs, const s
 	cnvs.draw_shape(ctx, rectangle, active ? style.shadow_color : style.background_color);
 
 	cgv::g2d::irect top_rectangle = rectangle;
-	top_rectangle.resize(0, -1);
+	top_rectangle.h() -= 1;
 
 	if(!active)
 		top_rectangle.translate(0, 1);

@@ -58,9 +58,9 @@ protected:
 			}
 		}
 
-		bool is_inside(const vec2& mp) const {
+		bool contains(const vec2& mp) const override {
 			if(is_rectangular) {
-				return draggable::is_inside(mp);
+				return draggable::contains(mp);
 			} else {
 				const auto dist = length(mp - center());
 				return dist <= 0.5f*size.x();

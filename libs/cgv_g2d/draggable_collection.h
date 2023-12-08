@@ -6,7 +6,7 @@
 
 #include "canvas.h"
 #include "draggable.h"
-#include "rect.h"
+#include "trect.h"
 #include "utils2d.h"
 
 #include "lib_begin.h"
@@ -49,7 +49,7 @@ protected:
 		for(unsigned i = 0; i < draggables.size(); ++i) {
 			ptr_type d = get_ptr(draggables[i]);
 
-			if(d && d->is_inside(pos))
+			if(d && d->contains(pos))
 				hit = d;
 		}
 		return hit;
@@ -167,7 +167,7 @@ public:
 
 		if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
 			if(me.get_action() == cgv::gui::MA_PRESS) {
-				press_inside = has_constraint && !use_individual_constraints ? constraint_area.is_inside(mouse_position) : true;
+				press_inside = has_constraint && !use_individual_constraints ? constraint_area.contains(mouse_position) : true;
 				dragged = get_hit_draggable(mouse_position);
 
 				press_inside = press_inside || dragged;

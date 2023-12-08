@@ -6,7 +6,7 @@
 #include <cgv/render/context.h>
 #include <cgv/render/drawable.h>
 #include <cgv/utils/pointer_test.h>
-#include <cgv_g2d/rect.h>
+#include <cgv_g2d/trect.h>
 #include <cgv_g2d/utils2d.h>
 
 #include "lib_begin.h"

@@ -136,7 +136,7 @@ bool overlay::ensure_viewport(cgv::render::context& ctx) {
 bool overlay::is_hit(const ivec2& mouse_pos) const {
 
 	ivec2 test_pos = cgv::g2d::get_transformed_mouse_pos(mouse_pos, last_viewport_size);
-	return container.is_inside(test_pos);
+	return container.contains(test_pos);
 };
 
 bool overlay::begin_overlay_gui() {

@@ -5,7 +5,7 @@
 #include <cgv/gui/mouse_event.h>
 #include <cgv/render/render_types.h>
 #include <cgv_g2d/canvas.h>
-#include <cgv_g2d/rect.h>
+#include <cgv_g2d/trect.h>
 
 #include "styles.h"
 
