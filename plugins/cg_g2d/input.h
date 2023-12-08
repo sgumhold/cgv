@@ -21,7 +21,7 @@ private:
 	float focus_position = 0.0f;
 	size_t cursor_position = 0;
 
-	std::string buffer;
+	std::string text;
 
 	bool is_allowed(char c);
 
@@ -36,16 +36,15 @@ public:
 
 	void set_type(Type type) { this->type = type; }
 
-	std::string get_value() const { return buffer; }
+	std::string get_value() const { return text; }
 
 	bool set_value(const std::string& v);
 
-
-
 	size_t get_cursor_position() const { return cursor_position; }
-	bool is_focused() const { return focused; }
-	void focus() { focused = true; }
 
+	bool is_focused() const { return focused; }
+
+	void focus() { focused = true; }
 
 	void update() override {}
 
