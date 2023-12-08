@@ -138,7 +138,7 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 			if (ma == cgv::gui::MA_PRESS) {
 				ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
 				
-				request_clear_selection = get_overlay_rectangle().is_inside(mpos);
+				request_clear_selection = get_overlay_rectangle().contains(mpos);
 
 				switch (modifiers) {
 				case cgv::gui::EM_CTRL:
@@ -401,7 +401,7 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 			static_cast<ivec2>(value_labels.get_text_render_size(0, value_label_style.font_size))
 		);
 		rectangle.translate(0, 5);
-		rectangle.resize(10, 6);
+		rectangle.size += ivec2(10, 6);
 
 		content_canvas.draw_shape(ctx, rectangle);
 		content_canvas.disable_current_shader(ctx);
@@ -678,14 +678,14 @@ void color_map_editor::add_point(const vec2& pos) {
 	if(cmc.cm) {
 		ivec2 test_pos = static_cast<ivec2>(pos);
 
-		if(layout.color_editor_rect.is_inside(test_pos)) {
+		if(layout.color_editor_rect.contains(test_pos)) {
 			// color point
 			color_point p;
 			p.position = ivec2(int(pos.x()), layout.color_handles_rect.y());
 			p.update_val(layout);
 			p.col = cmc.cm->interpolate_color(p.val);
 			cmc.color_points.add(p);
-		} else if(supports_opacity && layout.opacity_editor_rect.is_inside(test_pos)) {
+		} else if(supports_opacity && layout.opacity_editor_rect.contains(test_pos)) {
 			// opacity point
 			opacity_point p;
 			p.position = pos;
@@ -742,13 +742,13 @@ cgv::g2d::draggable* color_map_editor::get_hit_point(const color_map_editor::vec
 
 	for(unsigned i = 0; i < cmc.color_points.size(); ++i) {
 		color_point& p = cmc.color_points[i];
-		if(p.is_inside(pos))
+		if(p.contains(pos))
 			hit = &p;
 	}
 
 	for(unsigned i = 0; i < cmc.opacity_points.size(); ++i) {
 		opacity_point& p = cmc.opacity_points[i];
-		if(p.is_inside(pos))
+		if(p.contains(pos))
 			hit = &p;
 	}
 

@@ -2,7 +2,7 @@
 
 #include <cgv/render/render_types.h>
 
-#include "rect.h"
+#include "trect.h"
 
 namespace cgv {
 namespace g2d {

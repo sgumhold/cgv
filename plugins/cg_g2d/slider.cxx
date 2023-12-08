@@ -35,13 +35,13 @@ slider::slider(const std::string& label, cgv::g2d::irect rectangle) : valuator(l
 }
 
 bool slider::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_position) {
-	//if(!rectangle.is_inside(mouse_position))
+	//if(!rectangle.contains(mouse_position))
 	//	return false;
 
 	cgv::gui::MouseAction action = e.get_action();
 
 	if(e.get_button() == cgv::gui::MB_LEFT_BUTTON && action == cgv::gui::MA_PRESS) {
-		if(rectangle.is_inside(mouse_position) && !handle.is_inside(mouse_position)) {
+		if(rectangle.contains(mouse_position) && !handle.contains(mouse_position)) {
 			handle.position = mouse_position.x() - 0.5f * handle.w();
 			handle.apply_constraint(rectangle);
 
@@ -50,7 +50,7 @@ bool slider::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_position) 
 	}
 
 	if(action == cgv::gui::MA_WHEEL) {
-		if(rectangle.is_inside(mouse_position)) {
+		if(rectangle.contains(mouse_position)) {
 			double speed = (e.get_modifiers() & cgv::gui::EM_SHIFT) ? 4.0 : 1.0;
 			
 			double next_value = get_value();
@@ -76,7 +76,7 @@ void slider::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 	track.scale(0, -5);
 	cnvs.draw_shape(ctx, track, style.background_color);
 
-	cgv::g2d::frect handle_rectangle = handle;
+	cgv::g2d::rect handle_rectangle = handle;
 	handle_rectangle.x() = handle_view_position;
 	cnvs.draw_shape(ctx, handle_rectangle, style.control_color);
 	cnvs.disable_current_shader(ctx);

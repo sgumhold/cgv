@@ -25,7 +25,7 @@ bool toggle::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_position) 
 	cgv::gui::MouseAction action = e.get_action();
 
 	if(e.get_button() == cgv::gui::MB_LEFT_BUTTON && action == cgv::gui::MA_PRESS) {
-		if(rectangle.is_inside(mouse_position)) {
+		if(rectangle.contains(mouse_position)) {
 			if(set_value(!value))
 				do_callback();
 		}
