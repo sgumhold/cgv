@@ -108,15 +108,15 @@ struct trect {
 	}
 };
 
-// define some concrete rectangle types following the naming scheme of the cgv render_types
+// declare some concrete rectangle types following the naming scheme of the cgv render_types
 
-/// define rectangle using unsigned integer coordinates
+/// declare rectangle using unsigned integer coordinates
 typedef trect<unsigned> urect;
-/// define rectangle using signed integer coordinates
+/// declare rectangle using signed integer coordinates
 typedef trect<int> irect;
-/// define rectangle using floating point coordinates
+/// declare rectangle using floating point coordinates
 typedef trect<float> rect;
-/// define rectangle using double precision floating point coordinates
+/// declare rectangle using double precision floating point coordinates
 typedef trect<double> drect;
 
 }

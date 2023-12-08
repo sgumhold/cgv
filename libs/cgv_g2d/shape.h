@@ -4,12 +4,10 @@
 
 #include "trect.h"
 
-#include "lib_begin.h"
-
 namespace cgv {
 namespace g2d {
 
-struct CGV_API shape_base : public rect {
+struct shape_base : public rect {
 
 	using rect::rect;
 
@@ -29,5 +27,3 @@ struct CGV_API shape_base : public rect {
 
 }
 }
-
-#include <cgv/config/lib_end.h>
