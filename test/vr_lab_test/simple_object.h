@@ -31,6 +31,8 @@ class simple_object :
 	enum class pointed_type { none, translate, rotate, scale } pointed = pointed_type::none;
 	quat quaternion_at_trigger;
 	vec3 scale_at_trigger;
+	float ray_param_at_trigger;
+	bool use_line_projection = false;
 	vec3 query_point_at_grab, position_at_grab;
 	vec3 hit_point_at_trigger, position_at_trigger;
 	cgv::nui::focus_configuration original_config;
@@ -63,6 +65,7 @@ public:
 
 	bool focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info);
 	void stream_help(std::ostream& os);
+	vec3 compute_reference_point(const vec3& ro, const vec3& rd) const;
 	bool handle(const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info, cgv::nui::focus_request& request);
 
 	bool compute_closest_point(const vec3& point, vec3& prj_point, vec3& prj_normal, size_t& primitive_idx);
