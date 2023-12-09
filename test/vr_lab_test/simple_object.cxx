@@ -96,6 +96,12 @@ void simple_object::stream_help(std::ostream& os)
 {
 	os << "simple_object: grab and point at it" << std::endl;
 }
+simple_object::vec3 simple_object::compute_reference_point(const vec3& ro, const vec3& rd) const
+{
+	if (use_line_projection)
+		return cgv::math::closest_point_on_line_to_point(ro, rd, hit_point_at_trigger);
+	return ro + ray_param_at_trigger * rd;
+}
 bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info, cgv::nui::focus_request& request)
 {
 	// ignore all events in idle mode
@@ -156,6 +162,7 @@ bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_in
 			int i = max_index(abs(debug_point));
 			float r = sqrt(debug_point[(i + 1) % 3] * debug_point[(i + 1) % 3] + debug_point[(i + 2) % 3] * debug_point[(i + 2) % 3]);
 			pointed = r < 0.2f ? pointed_type::translate : (r < 0.55f ? pointed_type::rotate : pointed_type::scale);
+			ray_param_at_trigger = inter_info.ray_param;
 			switch (pointed) {
 			case pointed_type::translate:
 				hit_point_at_trigger = transform_point(inter_info.hit_point);
@@ -178,23 +185,21 @@ bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_in
 				debug_point = inter_info.hit_point;
 			switch (pointed) {
 			case pointed_type::translate: {
-				vec3 line_projection = cgv::math::closest_point_on_line_to_point(
+				vec3 ref_point = compute_reference_point(
 					transform_point(inter_info.ray_origin),
-					transform_vector(inter_info.ray_direction),
-					hit_point_at_trigger);
-				vec3 translation = line_projection - hit_point_at_trigger;
+					transform_vector(inter_info.ray_direction));
+				vec3 translation = ref_point - hit_point_at_trigger;
 				// compute translated position
 				vec3 new_position = position_at_trigger + translation;
 				position = new_position;
 				break;
 			}
 			case pointed_type::rotate: {
-				vec3 line_projection = cgv::math::closest_point_on_line_to_point(
+				vec3 ref_point = compute_reference_point(
 					transform_point(inter_info.ray_origin) - position,
-					transform_vector(inter_info.ray_direction),
-					hit_point_at_trigger);
-				vec3 axis = cross(hit_point_at_trigger, line_projection);
-				float angle = atan2(axis.normalize(), dot(hit_point_at_trigger, line_projection));
+					transform_vector(inter_info.ray_direction));
+				vec3 axis = cross(hit_point_at_trigger, ref_point);
+				float angle = atan2(axis.normalize(), dot(hit_point_at_trigger, ref_point));
 				quat rotation(axis, angle);
 				quaternion = rotation * quaternion_at_trigger;
 				break;
@@ -202,10 +207,10 @@ bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_in
 			case pointed_type::scale: {
 				vec3 ro = inter_info.ray_origin, rd = inter_info.ray_direction;
 				ro *= scale; rd *= scale;
-				vec3 line_projection = cgv::math::closest_point_on_line_to_point(ro, rd, hit_point_at_trigger);
+				vec3 ref_point = compute_reference_point(ro, rd);
 				vec3 new_scale = scale;
 				for (int i=0; i<3; ++i)
-					new_scale[i] = std::min(10.0f, std::max(0.01f, line_projection[i] / hit_point_at_trigger[i]));
+					new_scale[i] = std::min(10.0f, std::max(0.01f, ref_point[i] / hit_point_at_trigger[i]));
 				scale = new_scale * scale_at_trigger;
 				break;
 			}
@@ -308,7 +313,11 @@ void simple_object::draw(cgv::render::context& ctx)
 void simple_object::create_gui()
 {
 	add_decorator(get_name(), "heading", "level=2");
-	add_member_control(this, "color", color);
+	add_member_control(this, "use_line_projection", use_line_projection, "check");
+	add_member_control(this, "color", color);	
+	add_member_control(this, "x", position[0], "value_slider", "min=-2;max=2");
+	add_member_control(this, "y", position[1], "value_slider", "min=-2;max=2");
+	add_member_control(this, "z", position[2], "value_slider", "min=-2;max=2");
 #ifdef USE_SCALABLE
 	add_member_control(this, "width",  scale[0], "value_slider", "min=0.01;max=1;log=true");
 	add_member_control(this, "height", scale[1], "value_slider", "min=0.01;max=1;log=true");
