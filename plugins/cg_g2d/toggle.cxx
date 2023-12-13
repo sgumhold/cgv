@@ -53,7 +53,7 @@ void toggle::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 		knob.translate(box.w() - knob.w() - 2 * padding, 0);
 
 	cgv::g2d::shape2d_style box_style = style.rounded_box;
-	box_style.border_radius = box_radius;
+	box_style.border_radius = box_radius + 1;
 	cnvs.set_style(ctx, box_style);
 	cnvs.draw_shape(ctx, box, value ? style.highlight_color : style.background_color);
 
