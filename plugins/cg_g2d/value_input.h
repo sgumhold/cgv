@@ -26,6 +26,11 @@ public:
 	}
 
 	void draw(cgv::render::context& ctx, cgv::g2d::canvas& cnvs, const styles& styles) override {
+		// TODO: find a better way to propagate visual variables to the member widget
+		input_widget.set_label(get_label());
+		input_widget.set_position(get_position());
+		input_widget.set_size(get_size());
+		input_widget.set_label_alignment(get_label_alignment());
 		input_widget.draw(ctx, cnvs, styles);
 	}
 };
