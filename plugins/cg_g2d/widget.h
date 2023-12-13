@@ -29,7 +29,7 @@ public:
 
 	virtual ~widget() { user_data = nullptr; }
 
-	const std::string& get_label(const std::string& label) const { return label; }
+	const std::string& get_label() const { return label; }
 
 	void set_label(const std::string& label) { this->label = label; }
 
