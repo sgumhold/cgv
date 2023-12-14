@@ -1,10 +1,154 @@
 #include "simple_object.h"
 #include <cgv/math/proximity.h>
 #include <cgv/math/intersection.h>
+/*
+struct t 
+{
+	virtual float get_m() const { return 1.0f; }
+	virtual bool has_pre() const { return false; }
+	virtual float get_pre() const { return 1.0f; }
+	virtual bool has_post() const { return false; }
+	virtual float get_post() const { return 1.0f; }
+};
+struct A : public t
+{
+	int a;
+	A(int _a) : a(_a) {}
+	float get_m() const { return 1.5f; }
+};
+struct B : public t
+{
+	float f;
+	B(float _f) : f(_f) {}
+	float get_m() const { return 1.7f; }
+};
+struct C : public t
+{
+	std::string s;
+	C(const std::string& _s) : s(_s) {}
+	float get_m() const { return 1.1f; }
+};
+struct T
+{
+	virtual float get_t() const { return 0.0f; }
+};
+
+template <typename C, typename ...Ts>
+struct L : public C
+{
+	struct detail {
+		template <bool fst, typename Ci, typename ...Ss>
+		struct H // default handles cases where Ci as well as head of Ss are different from C independent of fst
+		{
+			static bool has() { return true; }
+			static float get(const L<C, Ts...>* This) { // concatenate pre transforms
+				return static_cast<const Ci*>(
+					static_cast<const CT<Ts...>*>(This))->get_m() *
+					H<false, Ss...>::get(This);
+			}
+		};
+		template <typename ...Ss>
+		struct H<false, C, Ss...> // case where C is head of sublist but not of Ts
+		{
+			static float get(const L<C, Ts...>* This) { return 1.0f; }
+		};
+		template <typename ...Ss>
+		struct H<true, C, Ss...> // case where C is start of Ts
+		{
+			static bool has() { return false; }
+			static float get(const L<C, Ts...>* This) { // this is never called but necessary to compile
+				return 1.0f;
+			}
+		};
+		template <bool found, typename Ci, typename ...Ss>
+		struct P // default handles found=false cases where C is different from Ci
+		{
+			static bool has() { return P<found, Ss...>::has(); }
+			static float get(const L<C, Ts...>* This) { return P<found, Ss...>::get(This); }
+		};
+		template <typename ...Ss> struct P<false, C, Ss...> // here C is head of sublist
+		{
+			static bool has() { return true; }
+			static float get(const L<C, Ts...>* This) { return P<true, Ss...>::get(This); }
+		};
+		template <>
+		struct P<false, C> // here current child is end of overall list and no post available
+		{
+			static bool has() { return false; }
+			static float get(const L<C, Ts...>* This) { return 1.0f; }
+		};
+		template <typename Ci, typename ...Ss>
+		struct P<true, Ci, Ss...> // here we need to concatenate post
+		{
+			static float get(const L<C, Ts...>* This) {
+				return static_cast<const Ci*>(
+					static_cast<const CT<Ts...>*>(This))->get_m() *
+					P<true, Ss...>::get(This);
+			}
+		};
+		template <typename Ci>
+		struct P<true, Ci> // here we are at last post
+		{
+			static float get(const L<C, Ts...>* This) {
+				return static_cast<const Ci*>(static_cast<const CT<Ts...>*>(This))->get_m();
+			}
+		};
+	};
+	L(C&& c) : C(std::forward<C>(c)) {}
+	bool has_pre() const   { return detail::H<true, Ts...>::has(); }
+	float get_pre() const  { return detail::H<true, Ts...>::get(this); }
+	bool has_post() const  { return detail::P<false, Ts...>::has(); }
+	float get_post() const { return detail::P<false,Ts...>::get(this); }
+};
+template <typename ...Ts>
+struct CT : public T, public L<Ts, Ts...>...
+{
+	struct detail { // template helpers for implementation of CT::get_t() method
+		template <typename H, typename ...Z> struct X {
+			static float t(const CT<Ts...>* This) {
+				return static_cast<const H*>(This)->get_m() * X<Z...>::t(This);
+			}
+		};
+		template <typename H> struct X<H> {
+			static float t(const CT<Ts...>* This) {
+				return static_cast<const H*>(This)->get_m();
+			}
+		};
+	};
+	CT(Ts&&... ts) : L<Ts, Ts...>(std::forward<Ts>(ts))... {}
+	float get_t() const { return detail::X<Ts...>::t(this); }
+};
+
+struct Y : public CT<A, B, C>
+{
+	Y(int _a, float _f, const std::string& _s) : CT<A, B, C>(_a, _f, _s) {}
+	void analyse_base(const std::string& n, const t* ptr)
+	{
+		std::cout << n << ": ";
+		if (ptr->has_pre())
+			std::cout << " pre = " << ptr->get_pre();
+		else
+			std::cout << " no pre";
+		if (ptr->has_post())
+			std::cout << ", post = " << ptr->get_post();
+		else
+			std::cout << ", no post";
+		std::cout << std::endl;
+	}
+	void analyse()
+	{
+		analyse_base("A", static_cast<const A*>(this));
+		analyse_base("B", static_cast<const B*>(this));
+		analyse_base("C", static_cast<const C*>(this));
+		std::cout << "T: t = " << get_t() << std::endl;
+	}
+};
+*/
 
 cgv::render::shader_program simple_object::prog;
 
 #define USE_SCALABLE
+#define USE_PARTIAL_TRANSFORMATION_INTERFACE
 //#define DEBUG_INTERSECTION
 
 simple_object::rgb simple_object::get_modified_color(const rgb& color) const
@@ -54,6 +198,10 @@ simple_object::simple_object(const std::string& _name, const vec3& _position, co
 	brs.rounding = true;
 	brs.default_radius = 0.02f;
 	srs.radius = 0.01f;
+
+//	Y y(3, 17.3f, "Hallo");
+//	y.analyse();
+	std::cout << std::endl;
 }
 std::string simple_object::get_type_name() const
 {
@@ -165,16 +313,27 @@ bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_in
 			ray_param_at_trigger = inter_info.ray_param;
 			switch (pointed) {
 			case pointed_type::translate:
+#ifdef USE_PARTIAL_TRANSFORMATION_INTERFACE
+				hit_point_at_trigger = static_cast<const translatable*>(this)->get_partial_transformation_matrix() * vec4(inter_info.hit_point, 1.0f);
+#else
 				hit_point_at_trigger = transform_point(inter_info.hit_point);
+#endif
 				position_at_trigger = position;
 				break;
 			case pointed_type::rotate:
+#ifdef USE_PARTIAL_TRANSFORMATION_INTERFACE
+				hit_point_at_trigger = static_cast<const rotatable*>(this)->get_partial_transformation_matrix() * vec4(inter_info.hit_point, 1.0f);
+#else
 				hit_point_at_trigger = transform_point(inter_info.hit_point) - position;
+#endif
 				quaternion_at_trigger = quaternion;
 				break;
 			case pointed_type::scale:
-				hit_point_at_trigger = inter_info.hit_point;
-				hit_point_at_trigger *= scale;
+#ifdef USE_PARTIAL_TRANSFORMATION_INTERFACE
+				hit_point_at_trigger = static_cast<const scalable*>(this)->get_partial_transformation_matrix() * vec4(inter_info.hit_point, 1.0f);
+#else
+				hit_point_at_trigger = inter_info.hit_point * scale;
+#endif
 				scale_at_trigger = scale;
 				break;
 			}
@@ -185,9 +344,16 @@ bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_in
 				debug_point = inter_info.hit_point;
 			switch (pointed) {
 			case pointed_type::translate: {
+#ifdef USE_PARTIAL_TRANSFORMATION_INTERFACE
+				mat4 M = static_cast<const translatable*>(this)->get_partial_transformation_matrix();
+				vec3 ro = M * vec4(inter_info.ray_origin, 1.0f);
+				vec3 rd = M * vec4(inter_info.ray_direction, 0.0f);
+				vec3 ref_point = compute_reference_point(ro, rd);
+#else
 				vec3 ref_point = compute_reference_point(
 					transform_point(inter_info.ray_origin),
 					transform_vector(inter_info.ray_direction));
+#endif
 				vec3 translation = ref_point - hit_point_at_trigger;
 				// compute translated position
 				vec3 new_position = position_at_trigger + translation;
@@ -195,9 +361,16 @@ bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_in
 				break;
 			}
 			case pointed_type::rotate: {
+#ifdef USE_PARTIAL_TRANSFORMATION_INTERFACE
+				mat4 M = static_cast<const rotatable*>(this)->get_partial_transformation_matrix();
+				vec3 ro = M * vec4(inter_info.ray_origin, 1.0f);
+				vec3 rd = M * vec4(inter_info.ray_direction, 0.0f);
+				vec3 ref_point = compute_reference_point(ro, rd);
+#else
 				vec3 ref_point = compute_reference_point(
 					transform_point(inter_info.ray_origin) - position,
 					transform_vector(inter_info.ray_direction));
+#endif
 				vec3 axis = cross(hit_point_at_trigger, ref_point);
 				float angle = atan2(axis.normalize(), dot(hit_point_at_trigger, ref_point));
 				quat rotation(axis, angle);
@@ -205,9 +378,16 @@ bool simple_object::handle(const cgv::gui::event& e, const cgv::nui::dispatch_in
 				break;
 			}
 			case pointed_type::scale: {
+#ifdef USE_PARTIAL_TRANSFORMATION_INTERFACE
+				mat4 M = static_cast<const scalable*>(this)->get_partial_transformation_matrix();
+				vec3 ro = M * vec4(inter_info.ray_origin, 1.0f);
+				vec3 rd = M * vec4(inter_info.ray_direction, 0.0f);
+				vec3 ref_point = compute_reference_point(ro, rd);
+#else
 				vec3 ro = inter_info.ray_origin, rd = inter_info.ray_direction;
 				ro *= scale; rd *= scale;
 				vec3 ref_point = compute_reference_point(ro, rd);
+#endif
 				vec3 new_scale = scale;
 				for (int i=0; i<3; ++i)
 					new_scale[i] = std::min(10.0f, std::max(0.01f, ref_point[i] / hit_point_at_trigger[i]));
