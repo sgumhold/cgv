@@ -227,16 +227,16 @@ namespace cgv {
 			/// perfect forwarding of constructor
 			transformation_matrix_provider_lifter(TMP&& tmp) : TMP(std::forward<TMP>(tmp)) {}
 			/// use detail::pre_transformer for implementation
-			bool has_pre_transformation() const { return detail::pre_transformer<true, Transformables...>::has(); }
-			mat4 get_pre_transformation_matrix() const { return detail::pre_transformer<true, Transformables...>::get(this); }
-			mat4 get_inverse_pre_transformation_matrix() const { return detail::pre_transformer<true, Transformables...>::inv(this); }
+			bool has_pre_transformation() const { return detail::template pre_transformer<true, Transformables...>::has(); }
+			mat4 get_pre_transformation_matrix() const { return detail::template pre_transformer<true, Transformables...>::get(this); }
+			mat4 get_inverse_pre_transformation_matrix() const { return detail::template pre_transformer<true, Transformables...>::inv(this); }
 			/// use detail::post_transformer for implementation
-			bool has_post_transformation() const { return detail::post_transformer<false, Transformables...>::has(); }
-			mat4 get_post_transformation_matrix() const { return detail::post_transformer<false, Transformables...>::get(this); }
-			mat4 get_inverse_post_transformation_matrix() const { return detail::post_transformer<false, Transformables...>::inv(this); }
+			bool has_post_transformation() const { return detail::template post_transformer<false, Transformables...>::has(); }
+			mat4 get_post_transformation_matrix() const { return detail::template post_transformer<false, Transformables...>::get(this); }
+			mat4 get_inverse_post_transformation_matrix() const { return detail::template post_transformer<false, Transformables...>::inv(this); }
 			/// use detail::partial_transformer for implementation
-			mat4 get_partial_transformation_matrix() const { return detail::partial_transformer<false, Transformables...>::get(this); }
-			mat4 get_inverse_partial_transformation_matrix() const { return detail::partial_transformer<false, Transformables...>::inv(this); }
+			mat4 get_partial_transformation_matrix() const { return detail::template partial_transformer<false, Transformables...>::get(this); }
+			mat4 get_inverse_partial_transformation_matrix() const { return detail::template partial_transformer<false, Transformables...>::inv(this); }
 		};
 		/// implement transforming interface through concatenation of transformable interfaces
 		template <typename ...Transformables>
@@ -274,9 +274,9 @@ namespace cgv {
 				transformation_matrix_provider_lifter<Transformables, Transformables...>(
 					std::forward<Transformables>(transformables))... {}
 			/// read access to model transform
-			mat4 get_model_transform() const { return detail::model_transform_getter<Transformables...>::matrix(this); }
+			mat4 get_model_transform() const { return detail::template model_transform_getter<Transformables...>::matrix(this); }
 			/// read access to inverse model transform
-			mat4 get_inverse_model_transform() const { return detail::inverse_model_transform_getter<Transformables...>::matrix(this); }
+			mat4 get_inverse_model_transform() const { return detail::template inverse_model_transform_getter<Transformables...>::matrix(this); }
 			/// set model transform and compute inverse model transform
 			void set_model_transform(const mat4& _M) {
 				std::cerr << "concatenating_transforming::set_model_transform(M) not implemented" << std::endl;
