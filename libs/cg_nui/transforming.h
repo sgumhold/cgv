@@ -54,6 +54,7 @@ namespace cgv {
 			/// set model transform and inverse model transform
 			void set_model_transform(const mat4& _M, const mat4& _iM);
 		};
+		template <typename ...Transformables> class concatenating_transforming;
 		//! lifts implementation of transformation_matrix_provider (TMP template argument).
 		/*! Implements access to pre/post transformation for TMPs that are concatenated 
 		    through the variadic template concatenating_transforming<Transformables...>. */
