@@ -36,9 +36,9 @@ var NAVTREE =
     ] ],
     [ "Installation and Conventions", "install.html", [
       [ "Prerequisits", "install.html#prereq", null ],
+      [ "Environment Variables", "install.html#envir", null ],
       [ "Using CMake", "install.html#cmake", null ],
-      [ "Using Internal Build System (Windows only)", "install.html#ppp", null ],
-      [ "System Configuration", "install.html#system", null ],
+      [ "Using Internal Build System (Windows with Visual Studio only)", "install.html#ppp", null ],
       [ "Third Party Libraries", "install.html#thirdparty", null ],
       [ "Creating a new Plugin Project (CMake)", "install.html#new_project", null ],
       [ "Internal Makefiles (Windows only)", "install.html#makegen", null ]

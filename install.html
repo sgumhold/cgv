@@ -88,24 +88,46 @@ $(document).ready(function(){initNavTree('install.html',''); initResizable(); })
 <div class="textblock"><h1><a class="anchor" id="prereq"></a>
 Prerequisits</h1>
 <ol type="1">
-<li>GPU and GPU drivers supporting OpenGL 3.3 minimum but better 4.6</li>
-<li>windows or linux (manual was tested on ubuntu 20.4)</li>
+<li>GPU and GPU drivers supporting OpenGL 3.3 minimum but better 4.3 or higher</li>
+<li>install windows or linux (manual was tested on ubuntu 20.4)</li>
 <li>install git</li>
-<li>install cmake (on Windows internal build system can be used instead of cmake)</li>
-<li>install compiler (gcc,clang,visual studio)</li>
+<li>install cmake (optional on Windows when using Visual Studio as internal build system can be used instead)</li>
+<li>install compiler (gcc, clang, visual studio)</li>
 <li>on linux install <code>libXi-devel</code> by, for example with<div class="fragment"><div class="line">sudo apt-get install libxi-dev</div>
 </div><!-- fragment --></li>
-<li>open shell/command prompt in parent of source directory (<b>avoid paths with spaces such as windows desktop, home or library paths</b>)</li>
+<li>choose parent of source directory and open shell/cmd prompt (<b>avoid paths with spaces such as windows desktop, home or library paths</b>)</li>
 <li>clone current version with git<div class="fragment"><div class="line">git clone https:<span class="comment">//github.com/sgumhold/cgv.git </span></div>
 </div><!-- fragment --></li>
+<li>switch to <b>develop</b> branch<div class="fragment"><div class="line">git checkout develop </div>
+</div><!-- fragment --></li>
 </ol>
+<h1><a class="anchor" id="envir"></a>
+Environment Variables</h1>
+<p>In order to be able to work with the cgv framework, the following environment variables need to be configured</p><ul>
+<li><code>CGV_DIR</code> (obligatory) ... path of cgv framework sources</li>
+<li><code>CGV_INSTALL</code> ... path, where compiled libraries and applications are installed. If not defined the Windows build rules for resource files and shaders won't find the corresponding tools and therefore fail. If these are not needed, CGV_INSTALL defaults to CGV_DIR. Executables and shared libraries / dlls are copied to <code>"$(CGV_INSTALL)/bin"</code> and libraries to <code>"$(CGV_INSTALL)/lib"</code> </li>
+<li><code>PATH</code> (optional) ... the directories <code>"$(CGV_INSTALL)/bin"</code> and <code>"$(CGV_DIR)/bin"</code> should be added to the path variable</li>
+<li><code>CGV_BUILD</code> (optional) ... path, where the intermediate files are created. For example <code>"c:/temp/build_cgv"</code>. If not set,<code>CGV_BUILD</code> defaults to <code>CGV_DIR/build</code>.</li>
+<li><code>CGV_DATA</code> (optional) ... the root paths for datasets which are used in <code>"cgv/base/import.h"</code> to find files.</li>
+<li><code>CGV_PLATFORM</code> (Windows option) ... can be WIN32 or x64 and can be defined with <code>define_platform.bat</code> script (defaults to WIN32)</li>
+<li><code>CGV_WINDOWS_SDK</code> (Windows option) ... since VS 2017; can be one of the installed toolsets of visual studio and can be defined with <code>define_windows_sdk.bat</code> (defaults to most current toolset version of selected visual studio version)</li>
+<li><code>CGV_CHARSET</code> (Windows option) ... only for Visual Studio; can be MultiByte (char is 8 bit) or Unicode (char is 16 bit) and defaults to MultiByte. Use <code>define_charset.bat</code> to change the value.</li>
+<li><code>CGV_OPTIONS</code> (optional) ... semicolon separated further options configured with <code>define_options.bat</code> that also shows all options with explanation.</li>
+</ul>
+<p>Under windows the following six scripts - located in the root directory of the cgv framework - help to manage the necessary environment variables. Just double click them to execute them:</p><ul>
+<li><code>show_system_variables.bat</code> ... shows the current settings</li>
+<li><code>define_system_variables.bat</code> ... can be started without or with one parameter. It allows to set all necessary environment variables interactively or automatically. One has to answer at least the first question for the used compiler. The <code>CGV_DIR</code> is derived from the location of the script file. <code>CGV_BUILD</code> is set to the parameter passed to the script or without parameter it is set to <code>CGV_DIR/build</code>. To specify the build path as parameter, you can drag the build path with the mouse onto the script. If the build path is set through the command line parameter, <code>CGV_INSTALL</code> is set to <code>CGV_BUILD</code>, otherwise to <code>CGV_DIR</code>. The variable <code>CGV_COMPILER</code> (see section on Makefile generation) is set from the user interaction. Finally, the user specific path extension is augmented by <code>"$(CGV_DIR)/bin"</code> and <code>"$(CGV_INSTALL)/bin"</code>.</li>
+<li><code>define_data_dir.bat</code> ... sets the system variable <code>CGV_DATA</code>. The script is started with one parameter - the path to the cgv data directory. The parameter can be defined by dragging the data directory in the windows explorer onto the batch script.</li>
+<li><code>undefine_system_variables.bat</code> ... removes all cgv specific settings from the system variables.</li>
+<li><code>build_example_solution.bat</code> ... after definition of the system variables invoke this script to start the internal makefile generation process on the examples solution.</li>
+<li><code>define_project_dir.bat</code> (deprecated) ... sets the system variable <code>CGV_PROJECT_DIR</code>. The script is started with one parameter - the path to the cgv project directory. The parameter can be defined by dragging the project directory in the windows explorer onto the batch script.</li>
+<li><code>define_support_dir.bat</code> (deprecated) ... sets the system variable <code>CGV_SUPPORT_DIR</code>. The script is started with one parameter - the path to the cgv support directory. The parameter can be defined by dragging the support directory in the windows explorer onto the batch script.</li>
+</ul>
 <h1><a class="anchor" id="cmake"></a>
 Using CMake</h1>
 <ol type="1">
-<li>switch to <b>develop</b> branch<div class="fragment"><div class="line">git checkout develop </div>
-</div><!-- fragment --></li>
 <li>set environment variable <code>CGV_DIR</code> to cgv directory created by git<ul>
-<li>windows:<div class="fragment"><div class="line">reg ADD HKEY_CURRENT_USER\Environment /v CGV_DIR /t REG_SZ /d source_parent_dir\cgv </div>
+<li>windows: see above or use<div class="fragment"><div class="line">reg ADD HKEY_CURRENT_USER\Environment /v CGV_DIR /t REG_SZ /d source_parent_dir\cgv </div>
 </div><!-- fragment --></li>
 <li>ubuntu: append<div class="fragment"><div class="line">export CGV_DIR=source_parent_dir/<a class="code" href="namespacecgv.html">cgv</a> </div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
@@ -133,48 +155,25 @@ Using CMake</h1>
 </li>
 </ol>
 <h1><a class="anchor" id="ppp"></a>
-Using Internal Build System (Windows only)</h1>
+Using Internal Build System (Windows with Visual Studio only)</h1>
 <p>For a fast start under windows with visual studio do the following:</p><ul>
-<li>Choose directory into which to clone the cgv source tree and run the following commands:</li>
 <li>create a build directory where the temporary files should be stored</li>
-<li>in case you want to use the x64 platform start the define_platform.bat script and follow instructions</li>
-<li>in case you do not want to use the most current visual studio toolset start the define_windows_sdk.bat script and follow instructions</li>
-<li>use 2 explorer windows to drag build directory onto cgv/define_system_variables.bat alternatively you can run the following command in the command prompt: <div class="fragment"><div class="line">define_system_variables.bat &lt;global-path-to-build-directory&gt;</div>
+<li>to use the x64 platform (nowadays the standard) start the <code>define_platform.bat</code> script and follow instructions</li>
+<li>in case you do not want to use the most current visual studio toolset start the <code>define_windows_sdk.bat</code> script and follow instructions</li>
+<li>use 2 explorer windows and drag the newly created build directory onto <code>cgv/define_system_variables.bat</code> alternatively you can run the following command in the command prompt: <div class="fragment"><div class="line">define_system_variables.bat &lt;full-path-to-build-directory&gt;</div>
 </div><!-- fragment --></li>
-<li>select your configuration, typically [i] for MS VS 2019</li>
-<li>close the command prompt and optionally open a new to ensure that the systems variables have been updated</li>
-<li>bind the extension .pj to cgv/bin/generate_makefile.bat by right clicking cgv/plugins/examples/examples.pj and finding cgv/bin/generate_makefile.bat as the default application for .pj files. This generates the solution of the examples plugin.</li>
-<li>alternatively you can run cgv/build_example_solution.bat or drag and drop cgv/plugins/examples/examples.pj onto cgv/bin/generate_makefile.bat</li>
-<li>after visual studio started, select configuration "Debug Dll" or "Release Dll"</li>
+<li>select your configuration</li>
+<li>close the command prompt and optionally open a new one to ensure that the systems variables have been updated</li>
+<li>bind the extension <code></code>.pj to <code>cgv/bin/generate_makefile.bat</code> by right clicking <code>cgv/plugins/examples/examples.pj</code> and finding <code>cgv/bin/generate_makefile.bat</code> as the default application for <code></code>.pj files. This generates the solution of the examples plugin.</li>
+<li>alternatively you can run <code>cgv/build_example_solution.bat</code> or drag and drop <code>cgv/plugins/examples/examples.pj</code> onto <code>cgv/bin/generate_makefile.bat</code> </li>
+<li>after visual studio started, select configuration <code>"Debug Dll"</code> or <code>"Release Dll"</code> </li>
 <li>ensure that examples plugin is the active project</li>
 <li>build solution</li>
-<li>run examples project and select example from menu (try bump mapper, which can also be created by &lt;Ctrl-B&gt;)</li>
-<li>press &lt;F1&gt; to blend in help on shortcuts and mouse control of the view</li>
-<li>try out to mouse control of the view by rotating the view, translating it and zooming in and out</li>
+<li>run examples project and select example from menu (try bump mapper, which can also be created by <code>&lt;Ctrl-B&gt;</code>)</li>
+<li>press <code></code> &lt;F1&gt; to blend in help on shortcuts and mouse control of the view</li>
+<li>try out the mouse control of the view by rotating the view, translating it and zooming in and out</li>
 <li>try out the shortcuts</li>
 <li>click through the user interface</li>
-</ul>
-<h1><a class="anchor" id="system"></a>
-System Configuration</h1>
-<p>In order to be able to work with the cgv framework, the following environment variables need to be set</p><ul>
-<li>obligatory: CGV_DIR ... path of cgv framework</li>
-<li>CGV_INSTALL ... path, where compiled libraries and applications are installed. If not defined the Windows build rules for resource files and shaders won't find the corresponding tools and therefore fail. If these are not needed, CGV_INSTALL defaults to CGV_DIR. Executables and shared libraries / dlls are copied to "$(CGV_INSTALL)/bin" and libraries to "$(CGV_INSTALL)/lib"</li>
-<li>optional: PATH ... the directories "$(CGV_INSTALL)/bin" and "$(CGV_DIR)/bin" should be added to the path variable</li>
-<li>optional: CGV_BUILD ... path, where the intermediate files are created. For example <code>"c:/temp/build_cgv"</code>. If not set,<code>CGV_BUILD</code> defaults to <code>CGV_DIR/build</code>.</li>
-<li>optional: CGV_PLATFORM ... can be WIN32 or x64 and can be defined with define_platform.bat script (defaults to WIN32)</li>
-<li>optional: CGV_WINDOWS_SDK ... since VS 2017; can be one of the installed toolsets of visual studio and can be defined with define_windows_sdk.bat (defaults to most current toolset version of selected visual studio version)</li>
-<li>optional: CGV_CHARSET ... only for Visual Studio; can be MultiByte (char is 8 bit) or Unicode (char is 16 bit) and defaults to MultiByte. Use define_charset.bat to change the value.</li>
-<li>optional: CGV_OPTIONS ... semicolon separated further options, where currently only NO_OPENVR is supported to avoid initialization of steam vr. Use define_options.bat to change the value.</li>
-<li>optional: CGV_DATA ... the root paths for datasets which are used in the cgv_data to find files.</li>
-</ul>
-<p>Under windows the following six scripts - located in the root directory of the cgv framework - help to manage the necessary environment variables. Just double click them to execute them:</p><ul>
-<li>show_system_variables.bat ... shows the current settings</li>
-<li>define_system_variables.bat ... can be started without or with one parameter. It allows to set all necessary environment variables interactively or automatically. One has to answer at least the first question for the used compiler. The CGV_DIR is derived from the location of the script file. CGV_BUILD is set to the parameter passed to the script or without parameter it is set to CGV_DIR/build. To specify the build path as parameter, you can drag the build path with the mouse onto the script. If the build path is set through the command line parameter, CGV_INSTALL is set to CGV_BUILD, otherwise to CGV_DIR. The variable CGV_COMPILER (see section on Makefile generation) is set from the user interaction. Finally, the user specific path extension is augmented by "$(CGV_DIR)/bin" and "$(CGV_INSTALL)/bin".</li>
-<li>define_project_dir.bat ... sets the system variable CGV_PROJECT_DIR. The script is started with one parameter - the path to the cgv project directory. The parameter can be defined by dragging the project directory in the windows explorer onto the batch script.</li>
-<li>define_support_dir.bat ... sets the system variable CGV_SUPPORT_DIR. The script is started with one parameter - the path to the cgv support directory. The parameter can be defined by dragging the support directory in the windows explorer onto the batch script.</li>
-<li>define_data_dir.bat ... sets the system variable CGV_DATA. The script is started with one parameter - the path to the cgv data directory. The parameter can be defined by dragging the data directory in the windows explorer onto the batch script.</li>
-<li>undefine_system_variables.bat ... removes all cgv specific settings from the system variables.</li>
-<li>build_example_solution.bat ... after definition of the system variables invoke this script to start the makefile generation process on the examples solution.</li>
 </ul>
 <h1><a class="anchor" id="thirdparty"></a>
 Third Party Libraries</h1>
@@ -212,20 +211,9 @@ Creating a new Plugin Project (CMake)</h1>
 <div class="line">cmake --build .</div>
 </div><!-- fragment --><h1><a class="anchor" id="makegen"></a>
 Internal Makefiles (Windows only)</h1>
-<p>The cgv framework comes with a generator for visual studio solutions. It is based on cgv specific project files with the extension ".pj". All project files are located in the source directories. Currently, the following target platforms are supported</p><ul>
-<li>Visual Studio 2005 (vs8)</li>
-<li>Visual Studio 2008 (vs9)</li>
-<li>Visual Studio 2008 Express (vs9e)</li>
-<li>Visual Studio 2010 (vs10)</li>
-<li>Visual Studio 2012 (vs11)</li>
-<li>Visual Studio 2013 (vs12)</li>
-<li>Visual Studio 2015 (vs14)</li>
-<li>Visual Studio 2017 (vs141)</li>
-<li>Visual Studio 2019 (vs142)</li>
-</ul>
-<p>vs8, vs9, vs9e, vs10, vs12, vs14, vs141, and vs142 are the shortcuts for the target compiler / development environment. The environment variable CGV_COMPILER is to be set to this shortcut (with the script define_system_variables.bat)</p>
-<p><em>Hint:</em> A template project file is located at <code>CGV_DIR/make/ppp/templates/pj.ppp</code>. It documents all possible entries to a project file. To write a new project file, one typically copies this template, renames it to something like "my_project.pj" and edits it with a favorite text editor. The current version of this file is inserted to the end of this page</p>
-<p>After a project file has been created, one can simply transform it to the target platform by passing the file as command line argument to the batch-script <code>"generate_makefile.bat"</code> located in <code>CGV_DIR/bin</code>. This script only runs if the system variable <code>CGV_COMPILER</code> is set.</p>
+<p>The cgv framework comes with a generator for visual studio solutions. It is based on cgv specific project files with the extension ".pj".</p>
+<p><em>Hint:</em> A template project file is located at <code>CGV_DIR/make/ppp/templates/pj.ppp</code>. It documents all possible entries to a project file. To write a new project file, one typically copies this template or <code>CGV_DIR/plugins/examples/examples.pj</code>, renames it to something like "my_project.pj" and edits it with a favorite text editor. The current version of this file is inserted to the end of this page</p>
+<p>After a project file has been created, one can generate the visual studio solutions by passing the file as command line argument to the batch-script <code>"CGV_DIR/bin/generate_makefile.bat"</code>. This script only runs if the system variable <code>CGV_COMPILER</code> is set.</p>
 <p><em>Hint:</em> It is very convenient to bind the <code>"generate_makefile.bat"</code> script as default program to the extension <code>"*.pj"</code>. This can be done by double clicking a pj-file and selecting <code>"generate_makefile.bat"</code> as default program.</p>
 <p><em>Hint:</em> In the cgv root directory there is a windows script <code>"build_example_solution.bat"</code> that can be double clicked after the system variables have been set correctly with the script define_system_variables.bat. It calls <code>"generate_makefile.bat"</code> with the examples plugin pj-File as argument. This allows you to get started very easily.</p>
 <p><em>Careful!</em> Since Visual Studio 2008 ppp also generates <code>"*.user"</code> files, which define the to be executed application and the command line arguments when starting the application from Visual Studio. If a project is opened in Visual Studio while ppp is used to generate project, solution and user files, Visual Studio only reloads the solution and the project files but <b>not</b> the user file. Therefore the command line arguments are not updated and newly added plugins won't be read when starting the application from Visual Studio. Thus take care to close or unload the main project in Visual Studio before rebuilding changed user files.</p>
