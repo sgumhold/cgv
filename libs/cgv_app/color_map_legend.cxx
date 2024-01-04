@@ -324,13 +324,6 @@ void color_map_legend::init_styles() {
 	color_map_style.use_blending = true;
 
 	// configure text style
-	float label_border_alpha = 0.0f;
-	float border_width = 0.25f;
-	if(!show_background) {
-		label_border_alpha = 1.0f;
-		border_width = 0.0f;
-	}
-
 	text_style = cgv::g2d::text2d_style::preset_stylized(tick_color);
 	text_style.feather_origin = 0.25f;
 	text_style.font_size = 12.0f;

@@ -51,10 +51,10 @@ static std::vector<fvec<int, 2>> bresenham(fvec<int, 2> origin, fvec<int, 2> des
 
 class bresenham_traverser {
 private:
-	fvec<int, 2> _origin = fvec<int, 2>(0);
-	fvec<int, 2> _destination = fvec<int, 2>(0);
-	fvec<int, 2> _position = fvec<int, 2>(0);
-	bool _done = false;
+	fvec<int, 2> origin_ = fvec<int, 2>(0);
+	fvec<int, 2> destination_ = fvec<int, 2>(0);
+	fvec<int, 2> position_ = fvec<int, 2>(0);
+	bool done_ = false;
 
 	int dx = 0;
 	int sx = 0;
@@ -63,38 +63,43 @@ private:
 	int error = 0;
 
 public:
-	bresenham_traverser(fvec<int, 2> origin, fvec<int, 2> destination) : _origin(origin), _destination(destination) {
+	bresenham_traverser(fvec<int, 2> origin, fvec<int, 2> destination) : origin_(origin), destination_(destination) {
 		
-		_position = _origin;
+		position_ = origin_;
 
-		if(_origin == _destination)
-			_done = true;
+		if(origin_ == destination_)
+			done_ = true;
 
-		dx = std::abs(_destination.x() - _origin.x());
-		sx = _origin.x() < _destination.x() ? 1 : -1;
-		dy = -std::abs(_destination.y() - _origin.y());
-		sy = _origin.y() < _destination.y() ? 1 : -1;
+		dx = std::abs(destination_.x() - origin_.x());
+		sx = origin_.x() < destination_.x() ? 1 : -1;
+		dy = -std::abs(destination_.y() - origin_.y());
+		sy = origin_.y() < destination_.y() ? 1 : -1;
 		error = dx + dy;
+	}
+
+	bool run() const {
+
+		return !done_;
 	}
 
 	bool done() const {
 
-		return _done;
+		return done_;
 	}
 
 	fvec<int, 2> position() const {
 
-		return _position;
+		return position_;
 	}
 
 	fvec<int, 2> origin() const {
 
-		return _origin;
+		return origin_;
 	}
 
 	fvec<int, 2> destination() const {
 
-		return _destination;
+		return destination_;
 	}
 
 	void step() {
@@ -103,16 +108,16 @@ public:
 		
 		if(e2 >= dy) {
 			error += dy;
-			_position.x() += sx;
+			position_.x() += sx;
 		}
 
 		if(e2 <= dx) {
 			error += dx;
-			_position.y() += sy;
+			position_.y() += sy;
 		}
 
-		if(_position == _destination)
-			_done = true;
+		if(position_ == destination_)
+			done_ = true;
 	}
 
 	void operator++() {

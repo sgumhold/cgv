@@ -4,7 +4,7 @@
 #include <cgv/render/render_types.h>
 #include <cgv/render/shader_library.h>
 #include <cgv_gl/gl/gl_context.h>
-#include <cgv_g2d/rect.h>
+#include <cgv_g2d/trect.h>
 #include <cgv_g2d/shaders2d.h>
 #include <cgv_g2d/shape2d_styles.h>
 #include <cgv_g2d/utils2d.h>
@@ -79,7 +79,7 @@ public:
 	void set_style(cgv::render::context& ctx, const shape2d_style& style);
 
 	template<typename T>
-	void draw_shape(const cgv::render::context& ctx, const rect<T>& r) {
+	void draw_shape(const cgv::render::context& ctx, const trect<T>& r) {
 		draw_shape(ctx, r.position, r.size);
 	}
 
@@ -107,7 +107,7 @@ public:
 	}
 
 	template<typename T>
-	void draw_shape(const cgv::render::context& ctx, const rect<T>& r, const rgba& color) {
+	void draw_shape(const cgv::render::context& ctx, const trect<T>& r, const rgba& color) {
 		draw_shape(ctx, r.position, r.size, color);
 	}
 
