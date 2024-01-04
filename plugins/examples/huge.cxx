@@ -82,7 +82,7 @@ public:
 
 	bool init(cgv::render::context& ctx)
 	{
-		if (view_ptr = find_view_as_node())
+		if ((view_ptr = find_view_as_node()))
 			view_ptr->set_focus(vec3(0.5f, 0.5f, 0.5f));
 		ctx.set_bg_clr_idx(4);
 

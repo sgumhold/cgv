@@ -44,7 +44,7 @@ public:
 	/// check whether the given font includes a face that include the possibly or-ed together selection of font face attributes
 	bool supports_font_face(cgv::media::font::FontFaceAttributes _ffa) const override;
 	/// enumerate the supported font sizes
-	void enumerate_sizes(std::vector<int>& supported_sizes) const;
+	void enumerate_sizes(std::vector<int>& supported_sizes) const override;
 	/// return a pointer to a font face
 	font_face_ptr get_font_face(cgv::media::font::FontFaceAttributes _ffa) const override;
 };

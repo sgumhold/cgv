@@ -160,7 +160,7 @@ void fltk_enum_dropdown_control::update_enums()
 	while (C->size() > 0)
 		C->remove(0);
 
-	for (unsigned int i = 0; i < enum_strings.size(); ++i)
+	for (size_t i = 0; i < enum_strings.size(); ++i)
 		C->add(enum_strings[i].c_str(), (void*)i);
 	
 	if (idx >= (int)enum_strings.size())
@@ -174,7 +174,7 @@ fltk_enum_dropdown_control::fltk_enum_dropdown_control(const std::string& label,
 	fltk_enum_control(label, acp, value, enum_declarations)
 {
 	container = new CW<fltk::Choice>(x,y,w,h, get_name().c_str());
-	for (unsigned int i=0; i<enum_strings.size(); ++i) {
+	for (size_t i=0; i<enum_strings.size(); ++i) {
 		static_cast<fltk::Choice*>(container)->add(enum_strings[i].c_str(), (void*)i);
 	}
 	container->callback(choice_cb,static_cast<cgv::base::base*>(this));

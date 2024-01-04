@@ -177,7 +177,7 @@ public:
 	bool init(cgv::render::context& ctx)
 	{
 		
-		if (view_ptr = find_view_as_node()) {
+		if ((view_ptr = find_view_as_node())) {
 			view_ptr->set_focus(0.0, 0.5, 0.0);
 			view_ptr->set_y_extent_at_focus(1.0);
 		}
@@ -422,7 +422,7 @@ public:
 	void create_gui()
 	{
 		add_decorator("Renderer Tests", "heading");
-		add_member_control(this, "mode", mode, "dropdown", "enums='Points,Surfels,Boxes,Box Wires,Normals,Arrows,Spheres,Cones'");
+		add_member_control(this, "Mode", mode, "dropdown", "enums='Points,Surfels,Boxes,Box Wires,Normals,Arrows,Spheres,Cones'");
 		if (begin_tree_node("Transformation", lambda, false)) {
 			align("\a");
 			add_member_control(this, "Lambda", lambda, "value_slider", "min=0;max=1;ticks=true");

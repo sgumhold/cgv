@@ -125,7 +125,7 @@ public:
 	shapes_2d() : cgv::base::node("Shapes 2D Test") {
 		viewport_rect.position = ivec2(0);
 		viewport_rect.size = ivec2(-1);
-		
+
 		show_background = true;
 
 		canvas.register_shader("rectangle", cgv::g2d::shaders::rectangle);

@@ -225,7 +225,7 @@ namespace stream_vis {
 			if ((tsa & TSA_X) != 0)
 				*output++ = float(s.second);
 			if ((tsa & TSA_LENGTH) != 0)
-				*output++ = abs(float(s.second));
+				*output++ = std::abs(float(s.second));
 			return true;
 		}
 	};
