@@ -46,8 +46,8 @@ void msdf_text_geometry::set_msdf_font(msdf_font* font_ptr, bool update_texts) {
 void msdf_text_geometry::set_text(unsigned i, const std::string& text) {
 	if(i < texts.size()) {
 		texts[i].str = text;
-		texts[i].size.x() = compute_length(text);
-
+		texts[i].size.x() = ref_font().compute_length(text);
+		
 		update_offsets(i);
 
 		state_out_of_date = true;
@@ -83,7 +83,7 @@ msdf_text_geometry::vec2 msdf_text_geometry::get_text_render_size(unsigned i, fl
 
 		if(length != std::string::npos && length < text.str.length()) {
 			std::string str = text.str.substr(0, length);
-			size_x = compute_length(str);
+			size_x = ref_font().compute_length(str);
 		}
 
 		return font_size * vec2(size_x * text.size.y(), text.size.y());
@@ -135,10 +135,6 @@ msdf_font& msdf_text_geometry::ref_font() const {
 		return *custom_msdf_font_ptr;
 	else
 		return *msdf_font_ptr;
-}
-
-float msdf_text_geometry::compute_length(const std::string& str) const {
-	return ref_font().compute_length(str);
 }
 
 void msdf_text_geometry::update_offsets(size_t begin) {

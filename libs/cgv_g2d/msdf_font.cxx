@@ -60,18 +60,21 @@ bool msdf_font::init(cgv::render::context& ctx) {
 	return success;
 }
 
-float msdf_font::compute_length(const std::string& str) const {
+float msdf_font::compute_length(const std::string& str, size_t end) const {
 	float length = 0.0f;
 	float acc_advance = 0.0f;
 
-	for(size_t i = 0; i < str.length(); ++i) {
+	if(end == std::string::npos || end > str.length())
+		end = str.length();
+
+	for(size_t i = 0; i < end; ++i) {
 		char c = str[i];
 		const auto& glyph = get_glyph_info(static_cast<unsigned char>(c));
 		length = acc_advance + glyph.size.x();
 		acc_advance += glyph.advance;
 
 		// if the last character is a space add its advance to the length
-		if(i == str.length() - 1 && c == ' ')
+		if(i == end - 1 && c == ' ')
 			length += glyph.advance;
 	}
 

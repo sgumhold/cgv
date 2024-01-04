@@ -55,17 +55,17 @@ bool color_selector::handle_event(cgv::gui::event& e) {
 				int hit_index = -1;
 				cgv::g2d::irect hit_rect;
 
-				if(layout.color_rect.is_inside(mpos)) {
+				if(layout.color_rect.contains(mpos)) {
 					hit_index = 0;
 					hit_rect = layout.color_rect;
 				}
 
-				if(layout.hue_rect.is_inside(mpos)) {
+				if(layout.hue_rect.contains(mpos)) {
 					hit_index = 1;
 					hit_rect = layout.hue_rect;
 				}
 
-				if(layout.opacity_rect.is_inside(mpos)) {
+				if(layout.opacity_rect.contains(mpos)) {
 					hit_index = 2;
 					hit_rect = layout.opacity_rect;
 				}
@@ -295,7 +295,7 @@ void color_selector::update_layout(const ivec2& parent_size) {
 
 	cgv::g2d::irect content_rect = l.border_rect;
 	content_rect.translate(1, 1);
-	content_rect.resize(-2, -2);
+	content_rect.size -= 2;
 
 	int mult = has_opacity ? 2 : 1;
 	
@@ -308,7 +308,7 @@ void color_selector::update_layout(const ivec2& parent_size) {
 	}
 
 	l.color_rect = content_rect;
-	l.color_rect.resize(-21 * mult, 0);
+	l.color_rect.w() -= 21 * mult;
 
 	l.preview_rect.position = ivec2(l.padding);
 	l.preview_rect.size = ivec2(20, 20);

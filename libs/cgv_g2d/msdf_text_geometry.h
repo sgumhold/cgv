@@ -42,8 +42,6 @@ protected:
 
 	msdf_font& ref_font() const;
 
-	float compute_length(const std::string& str) const;
-
 	void update_offsets(size_t begin);
 
 	void create_vertex_data();
@@ -97,7 +95,7 @@ public:
 			offset = int(last_text.offset + last_text.str.size());
 		}
 
-		texts.emplace_back(str, static_cast<vec2>(position), vec2(compute_length(str), scale), alignment, angle, color);
+		texts.emplace_back(str, static_cast<vec2>(position), vec2(ref_font().compute_length(str), scale), alignment, angle, color);
 		texts.back().offset = offset;
 
 		state_out_of_date = true;

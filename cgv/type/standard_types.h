@@ -5,7 +5,7 @@ namespace cgv {
 	namespace type {
 
 /// this type provides an 8 bit signed integer type
-typedef char             int8_type;
+typedef signed char             int8_type;
 /// this type provides an 16 bit signed integer type
 typedef short            int16_type;
 /// this type provides an 32 bit signed integer type
