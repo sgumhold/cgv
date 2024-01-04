@@ -596,7 +596,7 @@ $(document).ready(function(){initNavTree('shader__code_8cxx_source.html',''); in
 <div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;        <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160; </div>
 <div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;    <span class="comment">// now get all vertex attributes</span></div>
-<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;    <span class="keywordflow">for</span>(part_idx; part_idx &lt; parts.size(); ++part_idx) {</div>
+<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;    <span class="keywordflow">for</span>(; part_idx &lt; parts.size(); ++part_idx) {</div>
 <div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;        <span class="keyword">auto</span>&amp; tok = parts[part_idx];</div>
 <div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160; </div>
 <div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;        <span class="keywordflow">while</span>(tok.begin &lt; tok.end &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a81d51336fe7248cc852738af2b6adf85">is_space</a>(*tok.begin))</div>
