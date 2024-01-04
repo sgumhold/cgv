@@ -638,6 +638,16 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a109be23833f4f021174bc42277b3a128"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a109be23833f4f021174bc42277b3a128">saturate</a> (const T &amp;v)</td></tr>
 <tr class="memdesc:a109be23833f4f021174bc42277b3a128"><td class="mdescLeft">&#160;</td><td class="mdescRight">clamp v at [0,1] <br /></td></tr>
 <tr class="separator:a109be23833f4f021174bc42277b3a128"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb25a0cc8f05736dfc198866a0d632a2"><td class="memTemplParams" colspan="2"><a id="acb25a0cc8f05736dfc198866a0d632a2"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:acb25a0cc8f05736dfc198866a0d632a2"><td class="memTemplItemLeft" align="right" valign="top">const T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#acb25a0cc8f05736dfc198866a0d632a2">lerp</a> (const T &amp;a, const T &amp;b, T t)</td></tr>
+<tr class="memdesc:acb25a0cc8f05736dfc198866a0d632a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">linear interpolate between a and b; returns (1-t)*a + t*b <br /></td></tr>
+<tr class="separator:acb25a0cc8f05736dfc198866a0d632a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2ae197bbc8387de9e4a9c304f0c840f"><td class="memTemplParams" colspan="2"><a id="ac2ae197bbc8387de9e4a9c304f0c840f"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ac2ae197bbc8387de9e4a9c304f0c840f"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#ac2ae197bbc8387de9e4a9c304f0c840f">map</a> (const T &amp;v, const T &amp;a, const T &amp;b, const T &amp;c, const T &amp;d)</td></tr>
+<tr class="memdesc:ac2ae197bbc8387de9e4a9c304f0c840f"><td class="mdescLeft">&#160;</td><td class="mdescRight">map v from [a,b] to [c,d] <br /></td></tr>
+<tr class="separator:ac2ae197bbc8387de9e4a9c304f0c840f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29647d32e032cc35e52b51591295ca60"><td class="memTemplParams" colspan="2"><a id="a29647d32e032cc35e52b51591295ca60"></a>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a29647d32e032cc35e52b51591295ca60"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a29647d32e032cc35e52b51591295ca60">erf</a> (const T x)</td></tr>
@@ -2005,11 +2015,6 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ae1bd16fe490d8607e7b1051795cd9ad4"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#ae1bd16fe490d8607e7b1051795cd9ad4">lerp</a> (const <a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt; &amp;v1, const <a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt; &amp;v2, T t)</td></tr>
 <tr class="memdesc:ae1bd16fe490d8607e7b1051795cd9ad4"><td class="mdescLeft">&#160;</td><td class="mdescRight">linear interpolation returns (1-t)*v1 + t*v2 <br /></td></tr>
 <tr class="separator:ae1bd16fe490d8607e7b1051795cd9ad4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c8024d9363f76baf24254130682ec21"><td class="memTemplParams" colspan="2"><a id="a3c8024d9363f76baf24254130682ec21"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a3c8024d9363f76baf24254130682ec21"><td class="memTemplItemLeft" align="right" valign="top">const T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a3c8024d9363f76baf24254130682ec21">lerp</a> (const T &amp;s1, const T &amp;s2, T t)</td></tr>
-<tr class="memdesc:a3c8024d9363f76baf24254130682ec21"><td class="mdescLeft">&#160;</td><td class="mdescRight">linear interpolation returns (1-t)*v1 + t*v2 <br /></td></tr>
-<tr class="separator:a3c8024d9363f76baf24254130682ec21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a106cc64d2bdc02a0c169d79901eea313"><td class="memTemplParams" colspan="2"><a id="a106cc64d2bdc02a0c169d79901eea313"></a>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a106cc64d2bdc02a0c169d79901eea313"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a106cc64d2bdc02a0c169d79901eea313">slerp</a> (const <a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt; &amp;v0, const <a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt; &amp;v1, T t)</td></tr>
@@ -3057,7 +3062,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="color__operations_8h_source.html#l00024">24</a> of file <a class="el" href="color__operations_8h_source.html">color_operations.h</a>.</p>
 
-<p class="reference">References <a class="el" href="mat_8h_source.html#l00575">cgv::math::mat&lt; T &gt;::resize()</a>.</p>
+<p class="reference">References <a class="el" href="functions_8h_source.html#l00037">map()</a>.</p>
 
 </div>
 </div>

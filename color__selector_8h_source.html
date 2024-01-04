@@ -145,9 +145,9 @@ $(document).ready(function(){initNavTree('color__selector_8h_source.html',''); i
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            }</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        }</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordtype">bool</span> is_inside(<span class="keyword">const</span> vec2&amp; mp)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordtype">bool</span> contains(<span class="keyword">const</span> vec2&amp; mp)<span class="keyword"> const override </span>{</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            <span class="keywordflow">if</span>(is_rectangular) {</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <span class="keywordflow">return</span> draggable::is_inside(mp);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <span class="keywordflow">return</span> draggable::contains(mp);</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            } <span class="keywordflow">else</span> {</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                <span class="keyword">const</span> <span class="keyword">auto</span> dist = <a class="code" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a>(mp - center());</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                <span class="keywordflow">return</span> dist &lt;= 0.5f*size.x();</div>

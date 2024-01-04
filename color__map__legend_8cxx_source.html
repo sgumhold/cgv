@@ -411,191 +411,184 @@ $(document).ready(function(){initNavTree('color__map__legend_8cxx_source.html','
 <div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    color_map_style.use_blending = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160; </div>
 <div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    <span class="comment">// configure text style</span></div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    <span class="keywordtype">float</span> label_border_alpha = 0.0f;</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    <span class="keywordtype">float</span> border_width = 0.25f;</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    <span class="keywordflow">if</span>(!show_background) {</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;        label_border_alpha = 1.0f;</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        border_width = 0.0f;</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    }</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160; </div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    text_style = cgv::g2d::text2d_style::preset_stylized(tick_color);</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    text_style.feather_origin = 0.25f;</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    text_style.font_size = 12.0f;</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    </div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    <span class="comment">// configure style for tick marks</span></div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    tick_style.position_is_center = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    tick_style.fill_color = <a class="code" href="namespacecgv_1_1render.html#a7119f6c28a063b3cc9958b9db5ccde77">rgba</a>(tick_color, 1.0f);</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    tick_style.feather_width = 0.0f;</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;}</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    text_style = cgv::g2d::text2d_style::preset_stylized(tick_color);</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    text_style.feather_origin = 0.25f;</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    text_style.font_size = 12.0f;</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    </div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    <span class="comment">// configure style for tick marks</span></div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    tick_style.position_is_center = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    tick_style.fill_color = <a class="code" href="namespacecgv_1_1render.html#a7119f6c28a063b3cc9958b9db5ccde77">rgba</a>(tick_color, 1.0f);</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    tick_style.feather_width = 0.0f;</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;}</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160; </div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;<span class="keywordtype">void</span> color_map_legend::create_labels() {</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160; </div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    labels.clear();</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160; </div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    <span class="keywordflow">if</span>(layout.label_alignment == AO_FREE)</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160; </div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;<span class="keywordtype">void</span> color_map_legend::create_labels() {</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160; </div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    labels.clear();</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160; </div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    <span class="keywordflow">if</span>(layout.label_alignment == AO_FREE)</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;        <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160; </div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    <span class="keywordtype">unsigned</span> precision = label_precision;</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    <span class="keywordflow">if</span>(label_auto_precision) {</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;        <span class="keywordtype">float</span> m = std::max(<a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">abs</a>(range.x()), <a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">abs</a>(range.y()));</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;        <span class="keywordflow">if</span>(m &gt;= 10000.0f) {</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;            precision = 0;</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;            <span class="keywordflow">if</span>(m &gt;= 1000.0f)</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                precision = 4;</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span>(m &gt;= 100.0f)</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;                precision = 3;</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span>(m &gt;= 10.0f)</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;                precision = 2;</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span>(m &gt;= 1.0f)</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;                precision = 1;</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;            <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;                precision = 0;</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;        }</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    }</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    <span class="keywordtype">unsigned</span> precision = label_precision;</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;    <span class="keywordflow">if</span>(label_auto_precision) {</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;        <span class="keywordtype">float</span> m = std::max(<a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">abs</a>(range.x()), <a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">abs</a>(range.y()));</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;        <span class="keywordflow">if</span>(m &gt;= 10000.0f) {</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;            precision = 0;</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;            <span class="keywordflow">if</span>(m &gt;= 1000.0f)</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                precision = 4;</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span>(m &gt;= 100.0f)</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                precision = 3;</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span>(m &gt;= 10.0f)</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                precision = 2;</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span>(m &gt;= 1.0f)</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                precision = 1;</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;                precision = 0;</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;        }</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    }</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160; </div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    <span class="keywordtype">float</span> max_length = -1.0f;</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160; </div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; num_ticks; ++i) {</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;        <span class="keywordtype">float</span> fi = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(i);</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;        <span class="keywordtype">float</span> t = fi / <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(num_ticks - 1);</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;        <span class="keywordtype">float</span> val = <a class="code" href="namespacecgv_1_1math.html#a72cf634eb03e767e64433f0e69d27442">cgv::math::lerp</a>(range.x(), range.y(), t);</div>
 <div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160; </div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    <span class="keywordtype">float</span> max_length = -1.0f;</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        std::string str = <span class="stringliteral">&quot;&quot;</span>;</div>
 <div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160; </div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; num_ticks; ++i) {</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        <span class="keywordtype">float</span> fi = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(i);</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;        <span class="keywordtype">float</span> t = fi / <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(num_ticks - 1);</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;        <span class="keywordtype">float</span> val = <a class="code" href="namespacecgv_1_1math.html#a72cf634eb03e767e64433f0e69d27442">cgv::math::lerp</a>(range.x(), range.y(), t);</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        <span class="keywordflow">if</span>(label_integer_mode)</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;            str = <a class="code" href="namespacecgv_1_1utils.html#a6144ceadd253c1ad3a7c0095712d8075">std::to_string</a>(<span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(<a class="code" href="namespacecgv_1_1math.html#ac3ed9709b6809a4e152a44897a27a6f4">round</a>(val)));</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;            str = <a class="code" href="namespacecgv_1_1utils.html#a9584ae56050ff7dd2b881c2b60efd55b">cgv::utils::to_string</a>(val, -1, precision);</div>
 <div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160; </div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;        std::string str = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;        <span class="keywordflow">if</span>(label_integer_mode)</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;            str = <a class="code" href="namespacecgv_1_1utils.html#a6144ceadd253c1ad3a7c0095712d8075">std::to_string</a>(<span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(<a class="code" href="namespacecgv_1_1math.html#ac3ed9709b6809a4e152a44897a27a6f4">round</a>(val)));</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;            str = <a class="code" href="namespacecgv_1_1utils.html#a9584ae56050ff7dd2b881c2b60efd55b">cgv::utils::to_string</a>(val, -1, precision);</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160; </div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        labels.add_text(str, <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a>(0), cgv::render::TextAlignment::TA_NONE);</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;        max_length = std::max(max_length, labels.ref_texts().back().size.x());</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    }</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160; </div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    <span class="keywordflow">if</span>(labels.size() &gt; 1) {</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;        <span class="keywordflow">if</span>(layout.orientation == OO_HORIZONTAL)</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;            layout.x_label_size = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(std::max(labels.ref_texts().front().size.x(), labels.ref_texts().back().size.x()) * text_style.font_size);</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;            layout.x_label_size = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(max_length * text_style.font_size);</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        layout.x_label_size = 0;</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    }</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;        labels.add_text(str, <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a>(0), cgv::render::TextAlignment::TA_NONE);</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;        max_length = std::max(max_length, labels.ref_texts().back().size.x());</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    }</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160; </div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    <span class="keywordflow">if</span>(labels.size() &gt; 1) {</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;        <span class="keywordflow">if</span>(layout.orientation == OO_HORIZONTAL)</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;            layout.x_label_size = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(std::max(labels.ref_texts().front().size.x(), labels.ref_texts().back().size.x()) * text_style.font_size);</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;            layout.x_label_size = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(max_length * text_style.font_size);</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;        layout.x_label_size = 0;</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    }</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160; </div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    labels.add_text(title, <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a>(0), cgv::render::TextAlignment::TA_BOTTOM_LEFT);</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;}</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160; </div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="keywordtype">void</span> color_map_legend::create_ticks() {</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160; </div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    ticks.clear();</div>
 <div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160; </div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;    labels.add_text(title, <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a>(0), cgv::render::TextAlignment::TA_BOTTOM_LEFT);</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;}</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;    <span class="keywordflow">if</span>(layout.label_alignment == AO_FREE)</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;        <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160; </div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;<span class="keywordtype">void</span> color_map_legend::create_ticks() {</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> tick_size(1, 6);</div>
 <div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160; </div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    ticks.clear();</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160; </div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    <span class="keywordflow">if</span>(layout.label_alignment == AO_FREE)</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;        <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160; </div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> tick_size(1, 6);</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160; </div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;    <span class="keywordtype">int</span> axis = 0;</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;    <span class="keywordtype">int</span> label_offset = 4;</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;    AlignmentOption label_alignment = layout.label_alignment;</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> text_h_start = cgv::render::TextAlignment::TA_LEFT;</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> text_h_end = cgv::render::TextAlignment::TA_RIGHT;</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> text_v_start = cgv::render::TextAlignment::TA_TOP;</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> text_v_end = cgv::render::TextAlignment::TA_BOTTOM;</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> title_alignment_1 = cgv::render::TextAlignment::TA_TOP;</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> title_alignment_2 = cgv::render::TextAlignment::TA_BOTTOM;</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160; </div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;    layout.title_angle = 0.0f;</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160; </div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;    <span class="keywordflow">if</span>(layout.orientation == OO_VERTICAL) {</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;        axis = 1;</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;        label_offset = 6;</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160; </div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;        std::swap(tick_size.x(), tick_size.y());</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160; </div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;        <span class="keywordflow">if</span>(label_alignment == AO_START) label_alignment = AO_END;</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span>(label_alignment == AO_END) label_alignment = AO_START;</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160; </div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;        text_h_start = cgv::render::TextAlignment::TA_BOTTOM;</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;        text_h_end = cgv::render::TextAlignment::TA_TOP;</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;        text_v_start = cgv::render::TextAlignment::TA_RIGHT;</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;        text_v_end = cgv::render::TextAlignment::TA_LEFT;</div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;        std::swap(title_alignment_1, title_alignment_2);</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160; </div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;        layout.title_angle = 90.0f;</div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;    }</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160; </div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> color_rect_pos = layout.color_map_rect.position;</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> color_rect_size = layout.color_map_rect.<a class="code" href="classcgv_1_1math_1_1fvec.html#afea901268f6ba41a98e59d08b417f024">size</a>;</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160; </div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a> = color_rect_size[axis];</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">step</a> = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(<a class="code" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a> + 1) / <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(num_ticks - 1);</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    <span class="keywordtype">int</span> axis = 0;</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    <span class="keywordtype">int</span> label_offset = 4;</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    AlignmentOption label_alignment = layout.label_alignment;</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> text_h_start = cgv::render::TextAlignment::TA_LEFT;</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> text_h_end = cgv::render::TextAlignment::TA_RIGHT;</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> text_v_start = cgv::render::TextAlignment::TA_TOP;</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> text_v_end = cgv::render::TextAlignment::TA_BOTTOM;</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> title_alignment_1 = cgv::render::TextAlignment::TA_TOP;</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> title_alignment_2 = cgv::render::TextAlignment::TA_BOTTOM;</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160; </div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    layout.title_angle = 0.0f;</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160; </div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    <span class="keywordflow">if</span>(layout.orientation == OO_VERTICAL) {</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;        axis = 1;</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;        label_offset = 6;</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160; </div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;        std::swap(tick_size.x(), tick_size.y());</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160; </div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;        <span class="keywordflow">if</span>(label_alignment == AO_START) label_alignment = AO_END;</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span>(label_alignment == AO_END) label_alignment = AO_START;</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160; </div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;        text_h_start = cgv::render::TextAlignment::TA_BOTTOM;</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;        text_h_end = cgv::render::TextAlignment::TA_TOP;</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;        text_v_start = cgv::render::TextAlignment::TA_RIGHT;</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;        text_v_end = cgv::render::TextAlignment::TA_LEFT;</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;        std::swap(title_alignment_1, title_alignment_2);</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160; </div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;        layout.title_angle = 90.0f;</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    }</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160; </div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> color_rect_pos = layout.color_map_rect.position;</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> color_rect_size = layout.color_map_rect.<a class="code" href="classcgv_1_1math_1_1fvec.html#afea901268f6ba41a98e59d08b417f024">size</a>;</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160; </div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a> = color_rect_size[axis];</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">step</a> = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(<a class="code" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a> + 1) / <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(num_ticks - 1);</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160; </div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> title_pos = color_rect_pos;</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> tick_start = color_rect_pos;</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160; </div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> title_alignment, text_alignment;</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;    title_alignment = title_alignment_1;</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;    text_alignment = text_v_end;</div>
 <div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160; </div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> title_pos = color_rect_pos;</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> tick_start = color_rect_pos;</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160; </div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> title_alignment, text_alignment;</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;    title_alignment = title_alignment_1;</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;    text_alignment = text_v_end;</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160; </div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;    <span class="keywordtype">bool</span> inside = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;    <span class="keywordflow">switch</span>(label_alignment) {</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;    <span class="keywordflow">case</span> AO_START:</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;        title_pos[1 - axis] -= 4;</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        tick_start[1 - axis] += color_rect_size[1 - axis] + 3;</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;    <span class="keywordflow">case</span> AO_CENTER:</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;        title_pos[axis] += 2;</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;        title_pos[1 - axis] += color_rect_size[1 - axis] - (axis ? 3 : 1);</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        tick_start[1 - axis] += 3;</div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;        inside = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;    <span class="keywordtype">bool</span> inside = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;    <span class="keywordflow">switch</span>(label_alignment) {</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;    <span class="keywordflow">case</span> AO_START:</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;        title_pos[1 - axis] -= 4;</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;        tick_start[1 - axis] += color_rect_size[1 - axis] + 3;</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;    <span class="keywordflow">case</span> AO_CENTER:</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;        title_pos[axis] += 2;</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;        title_pos[1 - axis] += color_rect_size[1 - axis] - (axis ? 3 : 1);</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;        tick_start[1 - axis] += 3;</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;        inside = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;    <span class="keywordflow">case</span> AO_END:</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;        title_alignment = title_alignment_2;</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;        title_pos[1 - axis] += color_rect_size[1 - axis] + 4;</div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;        tick_start[1 - axis] -= 3;</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        label_offset = -label_offset;</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;        text_alignment = text_v_start;</div>
 <div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;    <span class="keywordflow">case</span> AO_END:</div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;        title_alignment = title_alignment_2;</div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;        title_pos[1 - axis] += color_rect_size[1 - axis] + 4;</div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;        tick_start[1 - axis] -= 3;</div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;        label_offset = -label_offset;</div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;        text_alignment = text_v_start;</div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;    <span class="keywordflow">default</span>: <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;    }</div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160; </div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;    title_alignment = <span class="keyword">static_cast&lt;</span><a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a><span class="keyword">&gt;</span>(title_alignment + cgv::render::TextAlignment::TA_LEFT);</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;    <span class="keywordflow">default</span>: <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;    }</div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160; </div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;    title_alignment = <span class="keyword">static_cast&lt;</span><a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a><span class="keyword">&gt;</span>(title_alignment + cgv::render::TextAlignment::TA_LEFT);</div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160; </div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; num_ticks; ++i) {</div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;        <span class="keywordtype">float</span> fi = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(i);</div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;        <span class="keywordtype">int</span> offset = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(<a class="code" href="namespacecgv_1_1math.html#ac3ed9709b6809a4e152a44897a27a6f4">round</a>(fi * step));</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160; </div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;        <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> tick_pos = tick_start;</div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;        tick_pos[axis] += offset;</div>
 <div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160; </div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; num_ticks; ++i) {</div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;        <span class="keywordtype">float</span> fi = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(i);</div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;        <span class="keywordtype">int</span> offset = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(<a class="code" href="namespacecgv_1_1math.html#ac3ed9709b6809a4e152a44897a27a6f4">round</a>(fi * step));</div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;        <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> label_pos = tick_start;</div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;        label_pos[1 - axis] += label_offset;</div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;        label_pos[axis] += offset;</div>
 <div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160; </div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;        <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> tick_pos = tick_start;</div>
-<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;        tick_pos[axis] += offset;</div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160; </div>
-<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;        <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> label_pos = tick_start;</div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;        label_pos[1 - axis] += label_offset;</div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;        label_pos[axis] += offset;</div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160; </div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;        <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> alignment = text_alignment;</div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;        <span class="keywordflow">if</span>(inside) {</div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;            <span class="keywordflow">if</span>(i == 0) {</div>
-<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;                label_pos[axis] += 3;</div>
-<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;                alignment = <span class="keyword">static_cast&lt;</span><a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a><span class="keyword">&gt;</span>(alignment | text_h_start);</div>
-<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;            } <span class="keywordflow">else</span> <span class="keywordflow">if</span>(i == num_ticks - 1) {</div>
-<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;                label_pos[axis] -= 3;</div>
-<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;                alignment = <span class="keyword">static_cast&lt;</span><a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a><span class="keyword">&gt;</span>(alignment | text_h_end);</div>
-<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;            }</div>
-<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;        }</div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160; </div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;        ticks.add(tick_pos, tick_size);</div>
-<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160; </div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;        labels.set_position(<span class="keywordtype">int</span>(i), label_pos);</div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;        labels.set_alignment(<span class="keywordtype">int</span>(i), alignment);</div>
-<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;    }</div>
-<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160; </div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;    layout.title_position = title_pos;</div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160; </div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;    <span class="keywordflow">if</span>(labels.size() &gt; 0)</div>
-<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;        labels.set_alignment(<span class="keywordtype">unsigned</span>(labels.ref_texts().size() - 1), title_alignment);</div>
-<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;}</div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160; </div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;}</div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;}</div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;        <a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a> alignment = text_alignment;</div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;        <span class="keywordflow">if</span>(inside) {</div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;            <span class="keywordflow">if</span>(i == 0) {</div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;                label_pos[axis] += 3;</div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;                alignment = <span class="keyword">static_cast&lt;</span><a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a><span class="keyword">&gt;</span>(alignment | text_h_start);</div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;            } <span class="keywordflow">else</span> <span class="keywordflow">if</span>(i == num_ticks - 1) {</div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;                label_pos[axis] -= 3;</div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;                alignment = <span class="keyword">static_cast&lt;</span><a class="code" href="namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457">cgv::render::TextAlignment</a><span class="keyword">&gt;</span>(alignment | text_h_end);</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;            }</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;        }</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160; </div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;        ticks.add(tick_pos, tick_size);</div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160; </div>
+<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;        labels.set_position(<span class="keywordtype">int</span>(i), label_pos);</div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;        labels.set_alignment(<span class="keywordtype">int</span>(i), alignment);</div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;    }</div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160; </div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;    layout.title_position = title_pos;</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160; </div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;    <span class="keywordflow">if</span>(labels.size() &gt; 0)</div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;        labels.set_alignment(<span class="keywordtype">unsigned</span>(labels.ref_texts().size() - 1), title_alignment);</div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;}</div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160; </div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;}</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1data_1_1data__format_html"><div class="ttname"><a href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a></div><div class="ttdoc">A data_format describes a multidimensional data block of data entries.</div><div class="ttdef"><b>Definition:</b> <a href="data__format_8h_source.html#l00018">data_format.h:19</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1data__view_html"><div class="ttname"><a href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a></div><div class="ttdoc">the data view gives access to a data array of one, two, three or four dimensions.</div><div class="ttdef"><b>Definition:</b> <a href="data__view_8h_source.html#l00154">data_view.h:155</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_afea901268f6ba41a98e59d08b417f024"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#afea901268f6ba41a98e59d08b417f024">cgv::math::fvec::size</a></div><div class="ttdeci">static cgv::type::uint32_type size()</div><div class="ttdoc">return number of elements</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00174">fvec.h:174</a></div></div>

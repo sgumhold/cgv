@@ -142,17 +142,17 @@ $(document).ready(function(){initNavTree('color__selector_8cxx_source.html','');
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                <span class="keywordtype">int</span> hit_index = -1;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                cgv::g2d::irect hit_rect;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                <span class="keywordflow">if</span>(layout.color_rect.is_inside(mpos)) {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                <span class="keywordflow">if</span>(layout.color_rect.contains(mpos)) {</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                    hit_index = 0;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                    hit_rect = layout.color_rect;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                }</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <span class="keywordflow">if</span>(layout.hue_rect.is_inside(mpos)) {</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <span class="keywordflow">if</span>(layout.hue_rect.contains(mpos)) {</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                    hit_index = 1;</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                    hit_rect = layout.hue_rect;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                }</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                <span class="keywordflow">if</span>(layout.opacity_rect.is_inside(mpos)) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                <span class="keywordflow">if</span>(layout.opacity_rect.contains(mpos)) {</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                    hit_index = 2;</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                    hit_rect = layout.opacity_rect;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                }</div>
@@ -382,7 +382,7 @@ $(document).ready(function(){initNavTree('color__selector_8cxx_source.html','');
 <div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160; </div>
 <div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    cgv::g2d::irect content_rect = l.border_rect;</div>
 <div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    content_rect.translate(1, 1);</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    content_rect.resize(-2, -2);</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    content_rect.size -= 2;</div>
 <div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160; </div>
 <div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    <span class="keywordtype">int</span> mult = has_opacity ? 2 : 1;</div>
 <div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    </div>
@@ -395,7 +395,7 @@ $(document).ready(function(){initNavTree('color__selector_8cxx_source.html','');
 <div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    }</div>
 <div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160; </div>
 <div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    l.color_rect = content_rect;</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    l.color_rect.resize(-21 * mult, 0);</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    l.color_rect.w() -= 21 * mult;</div>
 <div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160; </div>
 <div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    l.preview_rect.position = <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a>(l.padding);</div>
 <div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    l.preview_rect.size = <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a>(20, 20);</div>
