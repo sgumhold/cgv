@@ -522,7 +522,7 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 		return;
 
 	// now get all vertex attributes
-	for(part_idx; part_idx < parts.size(); ++part_idx) {
+	for(; part_idx < parts.size(); ++part_idx) {
 		auto& tok = parts[part_idx];
 
 		while(tok.begin < tok.end && is_space(*tok.begin))

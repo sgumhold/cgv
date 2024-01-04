@@ -45,6 +45,8 @@ public:
 
     TabGroupPager() : shift_(0), border_(10), slope_(5), extra_space_(5),_noclip(false) {}
     
+	virtual ~TabGroupPager() {}
+
     /* Pager template methods definition */
 
     /*! this method must update the tab positions and width array, returns the selected tab    */
