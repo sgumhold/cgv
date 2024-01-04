@@ -102,8 +102,8 @@ struct trect {
 	template<typename coord_type2>
 	operator trect<coord_type2>() const {
 		return trect<coord_type2>(
-			static_cast<trect<coord_type2>::point_type>(position),
-			static_cast<trect<coord_type2>::point_type>(size)
+			static_cast<typename trect<coord_type2>::point_type>(position),
+			static_cast<typename trect<coord_type2>::point_type>(size)
 		);
 	}
 };
