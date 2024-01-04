@@ -22,7 +22,7 @@ var namespacecgv_1_1type =
     [ "int16_type", "namespacecgv_1_1type.html#a50499c679872cbbe57b912ecd37abcc7", null ],
     [ "int32_type", "namespacecgv_1_1type.html#a4a069c98fd72278c38dc39b9ce3faecf", null ],
     [ "int64_type", "namespacecgv_1_1type.html#abba5e35ae5a2295d1c8c5928b0c991e7", null ],
-    [ "int8_type", "namespacecgv_1_1type.html#a65a8e21d2cc6ce4d5b7103da5d2af341", null ],
+    [ "int8_type", "namespacecgv_1_1type.html#a33601cfa7f4a197e11c3cd383b3acc4c", null ],
     [ "uint16_type", "namespacecgv_1_1type.html#a7640399b499ef6e8a704b62ffe05a05b", null ],
     [ "uint32_type", "namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822", null ],
     [ "uint64_type", "namespacecgv_1_1type.html#a86d2734d8037e1723ae43cd4fc5e4241", null ],

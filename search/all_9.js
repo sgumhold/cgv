@@ -53,7 +53,7 @@ var searchData=
   ['int16_5ftype_1623',['int16_type',['../namespacecgv_1_1type.html#a50499c679872cbbe57b912ecd37abcc7',1,'cgv::type']]],
   ['int32_5ftype_1624',['int32_type',['../namespacecgv_1_1type.html#a4a069c98fd72278c38dc39b9ce3faecf',1,'cgv::type']]],
   ['int64_5ftype_1625',['int64_type',['../namespacecgv_1_1type.html#abba5e35ae5a2295d1c8c5928b0c991e7',1,'cgv::type']]],
-  ['int8_5ftype_1626',['int8_type',['../namespacecgv_1_1type.html#a65a8e21d2cc6ce4d5b7103da5d2af341',1,'cgv::type']]],
+  ['int8_5ftype_1626',['int8_type',['../namespacecgv_1_1type.html#a33601cfa7f4a197e11c3cd383b3acc4c',1,'cgv::type']]],
   ['integrate_5fobject_5fgui_1627',['integrate_object_gui',['../classcgv_1_1gui_1_1provider.html#a3302fad2cb441f3c26c2979c2c064b51',1,'cgv::gui::provider']]],
   ['integrationquality_1628',['IntegrationQuality',['../structcgv_1_1render_1_1volume__render__style.html#af489215bcca2772220c2f5e7993465a2',1,'cgv::render::volume_render_style']]],
   ['interpolationmode_1629',['InterpolationMode',['../structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7',1,'cgv::render::volume_render_style']]],
