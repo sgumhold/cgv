@@ -79,7 +79,7 @@ namespace render {
 /// forward declaration to give generic renderer access to protected members
 class generic_renderer;
 
-class generic_render_data : public render_types {
+class generic_render_data {
 	friend class generic_renderer;
 	friend class cgv::g2d::generic_2d_renderer;
 private:

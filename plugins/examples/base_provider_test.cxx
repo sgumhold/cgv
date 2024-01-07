@@ -27,7 +27,7 @@ protected:
 	// define some parameters that control rendering
 	unsigned nr_lines;
 	float line_width;
-	rgb line_color;
+	cgv::rgb line_color;
 	double layout_aspect;
 	std::string some_text;
 public:
@@ -35,7 +35,7 @@ public:
 	{
 		nr_lines = 10;
 		line_width = 3;
-		line_color = rgb(1, 0, 1);
+		line_color = cgv::rgb(1, 0, 1);
 		layout_aspect = 4.0/3;
 		some_text = "Hello World";
 	}
@@ -58,12 +58,12 @@ public:
 	void draw(cgv::render::context& ctx)
 	{
 		// compute end vertex locations of nr_lines lines
-		static std::vector<vec2> P;
+		static std::vector<cgv::vec2> P;
 		if (P.size() != 2 * nr_lines) {
 			P.resize(2 * nr_lines);
 			for (unsigned i = 0; i < nr_lines; ++i) {
-				P[2 * i] = vec2((float)i / (nr_lines - 1), 0);
-				P[2 * i + 1] = vec2((float)i / (nr_lines - 1), 1);
+				P[2 * i] = cgv::vec2((float)i / (nr_lines - 1), 0);
+				P[2 * i + 1] = cgv::vec2((float)i / (nr_lines - 1), 1);
 			}
 		}
 		ctx.push_modelview_matrix();

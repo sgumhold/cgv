@@ -140,7 +140,7 @@ protected:
 	void minus_key_action(int i, cgv::gui::KeyAction action);
 
 	void timer_event(double t, double dt);
-	ivec4 split_viewport(const ivec4 vp, int col_idx, int row_idx) const;
+	cgv::ivec4 split_viewport(const cgv::ivec4 vp, int col_idx, int row_idx) const;
 	//@}
 public:
 	///

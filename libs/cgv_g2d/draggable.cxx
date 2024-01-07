@@ -1,7 +1,5 @@
 #include "draggable.h"
 
-using namespace cgv::render;
-
 namespace cgv {
 namespace g2d {
 
@@ -59,7 +57,7 @@ circle_draggable::circle_draggable() : draggable() {
 	position_is_center = true;
 }
 
-circle_draggable::circle_draggable(const cgv::render::vec2& position, const cgv::render::vec2& size) : draggable(position, size) {
+circle_draggable::circle_draggable(const vec2& position, const vec2& size) : draggable(position, size) {
 	position_is_center = true;
 }
 

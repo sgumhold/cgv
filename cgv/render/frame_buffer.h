@@ -62,7 +62,7 @@ public:
 	    specified in the given vector. */
 	bool enable(context& ctx, std::vector<int>& indices);
 	/// push a new window transformation to cover the fbo onto the window transformation stack
-	void push_viewport(context& ctx, const cgv::render::render_types::dvec2& depth_range = cgv::render::render_types::dvec2(0,1));
+	void push_viewport(context& ctx, const dvec2& depth_range = dvec2(0,1));
 	/// recover the window transformation array active before the last call to push_viewport
 	void pop_viewport(context& ctx);
 	/// disable the framebuffer object

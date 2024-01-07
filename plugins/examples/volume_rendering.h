@@ -26,15 +26,15 @@ protected:
 	cgv::app::color_map_legend_ptr transfer_function_legend_ptr;
 
 	/// resolution of the volume
-	uvec3 vres;
+	cgv::uvec3 vres;
 	/// spacing of the voxels
-	vec3 vspacing;
+	cgv::vec3 vspacing;
 	/// whether to show bounding box
 	bool show_box;
 
 	// Volume data
 	std::vector<float> vol_data;
-	box3 volume_bounding_box;
+	cgv::box3 volume_bounding_box;
 	cgv::render::texture volume_tex;
 	
 	
@@ -59,7 +59,7 @@ protected:
 
 	void create_volume(cgv::render::context& ctx);
 	void splat_spheres(std::vector<float>& vol_data, float voxel_size, std::mt19937& rng, size_t n, float radius, float contribution);
-	void splat_sphere(std::vector<float>& vol_data, float voxel_size, const vec3& pos, float radius, float contribution);
+	void splat_sphere(std::vector<float>& vol_data, float voxel_size, const cgv::vec3& pos, float radius, float contribution);
 
 	void load_volume_from_file(const std::string& file_name);
 

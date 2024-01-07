@@ -14,7 +14,7 @@ class test_plot3d : public cgv::base::node, public cgv::render::drawable, public
 protected:
 	cgv::plot::plot3d plot;
 	// persistent vector with plot data
-	std::vector<vec4> P1, P2;
+	std::vector<cgv::vec4> P1, P2;
 
 public:
 	test_plot3d() : cgv::base::node("3D Plot Test"), plot(1)
@@ -30,7 +30,7 @@ public:
 				float x = 0.5f * i;
 				float z = 0.1f * x * y;
 				float w = 0.1f * ((x - 7.0f) * (x - 7.0f) + (y - 7.0f) * (y - 3.0f));
-				P1.push_back(vec4(x, y, z, w));
+				P1.push_back(cgv::vec4(x, y, z, w));
 			}
 		}
 		for (j = 0; j < 30; ++j) {
@@ -39,15 +39,15 @@ public:
 				float x = 0.3f * i;
 				float z = 0.1f * ((x - 7.0f) * (x - 7.0f) + (y - 7.0f) * (y - 3.0f));
 				float w = 0.1f * x * y;
-				P2.push_back(vec4(x, y, z, w));
+				P2.push_back(cgv::vec4(x, y, z, w));
 			}
 		}
 		for (unsigned c = 0; c < 4; ++c) {
-			plot.set_sub_plot_attribute(0, c, &P1[0][c], P1.size(), sizeof(vec4));
-			plot.set_sub_plot_attribute(1, c, &P2[0][c], P2.size(), sizeof(vec4));
+			plot.set_sub_plot_attribute(0, c, &P1[0][c], P1.size(), sizeof(cgv::vec4));
+			plot.set_sub_plot_attribute(1, c, &P2[0][c], P2.size(), sizeof(cgv::vec4));
 		}
-		plot.set_sub_plot_colors(0, rgb(1.0f, 0.0f, 0.1f));
-		plot.set_sub_plot_colors(1, rgb(0.1f, 0.0f, 1.0f));
+		plot.set_sub_plot_colors(0, cgv::rgb(1.0f, 0.0f, 0.1f));
+		plot.set_sub_plot_colors(1, cgv::rgb(0.1f, 0.0f, 1.0f));
 
 		plot.legend_components = cgv::plot::LegendComponent(cgv::plot::LC_PRIMARY_COLOR + cgv::plot::LC_PRIMARY_OPACITY);
 		plot.color_mapping[0] = 3;
@@ -95,7 +95,7 @@ protected:
 	// plot that can manage several 2d sub plots
 	cgv::plot::plot2d plot;
 	// persistent vector with plot data
-	std::vector<vec4> P;
+	std::vector<cgv::vec4> P;
 	// GPU objects for offline 
 	cgv::render::texture tex;
 	cgv::render::render_buffer depth;
@@ -110,7 +110,7 @@ public:
 		unsigned i;
 		for (i = 1; i < 50; ++i) {
 			float x = 0.1f * i;
-			P.push_back(vec4(x, cos(x), sin(x), cos(x)*cos(x)));
+			P.push_back(cgv::vec4(x, cos(x), sin(x), cos(x)*cos(x)));
 		}
 		// create two sub plots and configure their colors
 		unsigned p1 = plot.add_sub_plot("cos");
@@ -118,23 +118,23 @@ public:
 		unsigned p3 = plot.add_sub_plot("cos²");
 		//plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f)); // will be set later to the attribute with index 2
 
-		plot.set_sub_plot_colors(p2, rgb(0.1f, 0.0f, 1.0f));
-		plot.set_sub_plot_colors(p3, rgb(0.0f, 1.0f, 0.1f));
+		plot.set_sub_plot_colors(p2, cgv::rgb(0.1f, 0.0f, 1.0f));
+		plot.set_sub_plot_colors(p3, cgv::rgb(0.0f, 1.0f, 0.1f));
 
 		// attach sub plot attributes to previously created vector
 		// CAREFUL: this creates references to P and P is not allowed to be deleted thereafter
-		plot.set_sub_plot_attribute(p1, 0, &P[0][0], P.size(), sizeof(vec4));
-		plot.set_sub_plot_attribute(p1, 1, &P[0][1], P.size(), sizeof(vec4));
-		plot.set_sub_plot_attribute(p1, 2, &P[0][2], P.size(), sizeof(vec4));
-		plot.set_sub_plot_attribute(p1, 3, &P[0][3], P.size(), sizeof(vec4));
-		plot.set_sub_plot_attribute(p2, 0, &P[0][0], P.size(), sizeof(vec4));
-		plot.set_sub_plot_attribute(p2, 1, &P[0][2], P.size(), sizeof(vec4));
-		plot.set_sub_plot_attribute(p2, 2, &P[0][0], P.size(), sizeof(vec4));
-		plot.set_sub_plot_attribute(p2, 3, &P[0][3], P.size(), sizeof(vec4));
-		plot.set_sub_plot_attribute(p3, 0, &P[0][0], P.size(), sizeof(vec4));
-		plot.set_sub_plot_attribute(p3, 1, &P[0][3], P.size(), sizeof(vec4));
-		plot.set_sub_plot_attribute(p3, 2, &P[0][1], P.size(), sizeof(vec4));
-		plot.set_sub_plot_attribute(p3, 3, &P[0][2], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p1, 0, &P[0][0], P.size(), sizeof(cgv::vec4));
+		plot.set_sub_plot_attribute(p1, 1, &P[0][1], P.size(), sizeof(cgv::vec4));
+		plot.set_sub_plot_attribute(p1, 2, &P[0][2], P.size(), sizeof(cgv::vec4));
+		plot.set_sub_plot_attribute(p1, 3, &P[0][3], P.size(), sizeof(cgv::vec4));
+		plot.set_sub_plot_attribute(p2, 0, &P[0][0], P.size(), sizeof(cgv::vec4));
+		plot.set_sub_plot_attribute(p2, 1, &P[0][2], P.size(), sizeof(cgv::vec4));
+		plot.set_sub_plot_attribute(p2, 2, &P[0][0], P.size(), sizeof(cgv::vec4));
+		plot.set_sub_plot_attribute(p2, 3, &P[0][3], P.size(), sizeof(cgv::vec4));
+		plot.set_sub_plot_attribute(p3, 0, &P[0][0], P.size(), sizeof(cgv::vec4));
+		plot.set_sub_plot_attribute(p3, 1, &P[0][3], P.size(), sizeof(cgv::vec4));
+		plot.set_sub_plot_attribute(p3, 2, &P[0][1], P.size(), sizeof(cgv::vec4));
+		plot.set_sub_plot_attribute(p3, 3, &P[0][2], P.size(), sizeof(cgv::vec4));
 
 		plot.legend_components = cgv::plot::LegendComponent(cgv::plot::LC_PRIMARY_COLOR + cgv::plot::LC_PRIMARY_OPACITY);
 
@@ -215,7 +215,7 @@ public:
 			tex.enable(ctx);
 			prog.enable(ctx);
 			prog.set_uniform(ctx, "gamma", 1.0f);
-			ctx.set_color(rgba(1, 1, 1, 1));
+			ctx.set_color(cgv::rgba(1, 1, 1, 1));
 			ctx.push_modelview_matrix();
 			ctx.mul_modelview_matrix(cgv::math::scale4<double>(plot.get_extent()(0)/2, plot.get_extent()(1)/2, 1.0));
 			ctx.tesselate_unit_square();

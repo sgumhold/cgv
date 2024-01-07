@@ -30,7 +30,7 @@ class viewport_sample :
 private:
 	int drag_pnt_idx = -1;
 	bool is_drag_action = false;
-	dmat4 MPW;
+	cgv::dmat4 MPW;
 public:
 	///
 	int col_idx = -1, row_idx = -1;
@@ -38,8 +38,8 @@ public:
 	int n = 3;
 	int m = 2;
 	int offset_x = 0, offset_y = 0;
-	std::vector<vec3> points;
-	std::vector<rgb> colors;
+	std::vector<cgv::vec3> points;
+	std::vector<cgv::rgb> colors;
 	cgv::render::sphere_render_style srs;
 	cgv::render::TextAlignment align = TA_TOP;
 	cgv::render::view* view_ptr = 0;
@@ -48,7 +48,7 @@ public:
 	{
 		srs.radius = 0.02f;
 		srs.map_color_to_material = cgv::render::CM_COLOR;
-		srs.surface_color = rgb(1, 0, 0);
+		srs.surface_color = cgv::rgb(1, 0, 0);
 
 	}
 	/// return name of type
@@ -77,7 +77,7 @@ public:
 				view_ptr->enable_viewport_individual_view(i, j);
 				auto& view = view_ptr->ref_viewport_view(i, j);
 				view.set_focus(0, 0, 0);
-				vec3 view_dir((float)i - 1, 0, 2.0f * (j - 0.5f));
+				cgv::vec3 view_dir((float)i - 1, 0, 2.0f * (j - 0.5f));
 				view.set_view_dir(view_dir);
 				view.set_view_up_dir(0, 1, 0);
 			}
@@ -98,9 +98,9 @@ public:
 			for (int j = 0; j < m; ++j) {
 				view_ptr->activate_split_viewport(ctx, i, j);
 				if (mouse_over_panel && col_idx == i && row_idx == j)
-					ctx.set_color(rgb(1, 0.6f, 0.6f));
+					ctx.set_color(cgv::rgb(1, 0.6f, 0.6f));
 				else
-					ctx.set_color(rgb(0.6f, 0.6f, 0.6f));
+					ctx.set_color(cgv::rgb(0.6f, 0.6f, 0.6f));
 				glDepthMask(GL_FALSE);
 				{
 					auto& prog = ctx.ref_default_shader_program();
@@ -113,7 +113,7 @@ public:
 					auto& prog = ctx.ref_surface_shader_program();
 					prog.set_uniform(ctx, "map_color_to_material", 3);
 					prog.enable(ctx);
-					ctx.set_color(rgb(0.7f, 0.5f, 0.4f));
+					ctx.set_color(cgv::rgb(0.7f, 0.5f, 0.4f));
 					ctx.tesselate_unit_cube();
 					prog.disable(ctx);
 				}
@@ -125,7 +125,7 @@ public:
 					sr.set_y_view_angle(float(view_ptr->get_y_view_angle()));
 					sr.render(ctx, 0, points.size());
 
-					ctx.set_color(rgb(0, 0, 0));
+					ctx.set_color(cgv::rgb(0, 0, 0));
 					for (size_t k = 0; k < points.size(); ++k) {
 						std::string text = cgv::utils::to_string(k);
 						int x, y, vp[4];
@@ -144,14 +144,14 @@ public:
 		}
 	}
 	/// check if a world point is close enough to the drawing square
-	bool is_inside(const vec3& p) const
+	bool is_inside(const cgv::vec3& p) const
 	{
 		float bound = 1.0f + 1.2f * srs.radius * srs.radius_scale;
 		return fabs(p(2)) <= bound && fabs(p(0)) <= bound && fabs(p(1)) <= bound;
 	}
-	vec3 project(const vec3& p3d) const
+	cgv::vec3 project(const cgv::vec3& p3d) const
 	{
-		vec3 p = p3d;
+		cgv::vec3 p = p3d;
 		for (unsigned i = 0; i < 3; ++i) {
 			if (p(i) < -1)
 				p(i) = -1;
@@ -160,7 +160,7 @@ public:
 		}
 		return p;
 	}
-	int find_closest(const vec3& p) const
+	int find_closest(const cgv::vec3& p) const
 	{
 		if (points.empty())
 			return -1;
@@ -186,7 +186,7 @@ public:
 	{
 		if (e.get_kind() == EID_MOUSE) {
 			mouse_event& me = static_cast<mouse_event&>(e);
-			const dmat4* MPW_ptr = 0;
+			const cgv::dmat4* MPW_ptr = 0;
 			int x_gl = me.get_x();
 			int y_gl = get_context()->get_height() - 1 - me.get_y();
 			if (me.get_action() == MA_LEAVE) {
@@ -206,7 +206,7 @@ public:
 			switch (me.get_action()) {
 			case MA_PRESS:
 				if (me.get_button() == MB_LEFT_BUTTON && me.get_modifiers() == EM_CTRL) {
-					vec3 p = get_context()->get_model_point(x_gl, y_gl, *MPW_ptr);
+					cgv::vec3 p = get_context()->get_model_point(x_gl, y_gl, *MPW_ptr);
 					if (is_inside(p)) {
 						p = project(p);
 						drag_pnt_idx = -1;
@@ -219,7 +219,7 @@ public:
 						if (is_drag_action) {
 							points.push_back(p);
 							auto c = 0.5f * (p + 1.0f);
-							colors.push_back(rgb(c.x(), c.y(), c.z()));
+							colors.push_back(cgv::rgb(c.x(), c.y(), c.z()));
 							drag_pnt_idx = (int)points.size() - 1;
 						}
 						post_redraw();
@@ -240,7 +240,7 @@ public:
 				break;
 			case MA_DRAG:
 				if (drag_pnt_idx != -1) {
-					vec3 p = get_context()->get_model_point(x_gl, y_gl, *MPW_ptr);
+					cgv::vec3 p = get_context()->get_model_point(x_gl, y_gl, *MPW_ptr);
 					if (!is_inside(p)) {
 						points.erase(points.begin() + drag_pnt_idx);
 						colors.erase(colors.begin() + drag_pnt_idx);

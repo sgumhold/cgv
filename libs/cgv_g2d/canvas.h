@@ -14,7 +14,7 @@
 namespace cgv {
 namespace g2d {
 
-class CGV_API canvas : public cgv::render::render_types {
+class CGV_API canvas {
 protected:
 	cgv::render::shader_library shaders;
 

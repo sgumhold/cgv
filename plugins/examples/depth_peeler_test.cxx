@@ -35,8 +35,8 @@ protected:
 	bool two_sided;
 	double epsilon;
 	// simple scene
-	std::vector<box3> boxes;
-	std::vector<rgba> box_colors;
+	std::vector<cgv::box3> boxes;
+	std::vector<cgv::rgba> box_colors;
 	box_render_style brs;
 	attribute_array_manager aam_boxes;
 	// debug helpers
@@ -56,7 +56,7 @@ public:
 		float step = 1.0f / (n - 1);
 		for (unsigned i = 0; i < n; ++i) {
 			float v = i * step;
-			boxes.push_back(box3(vec3(-1, -1, v), vec3(1, 1, v + 0.5f*step)));
+			boxes.push_back(cgv::box3(cgv::vec3(-1, -1, v), cgv::vec3(1, 1, v + 0.5f*step)));
 			box_colors.push_back(cgv::media::color<float, cgv::media::HLS, cgv::media::OPACITY>(v, 0.5f, 1.0f, 0.5f));
 		}
 	}

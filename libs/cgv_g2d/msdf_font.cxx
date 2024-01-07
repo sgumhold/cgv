@@ -81,8 +81,8 @@ float msdf_font::compute_length(const std::string& str, size_t end) const {
 	return length;
 }
 
-std::vector<cgv::render::vec4> msdf_font::create_vertex_data(const std::string& str) const {
-	std::vector<cgv::render::vec4> vertices;
+std::vector<vec4> msdf_font::create_vertex_data(const std::string& str) const {
+	std::vector<vec4> vertices;
 	vertices.reserve(2 * str.size());
 
 	float accumulated_advance = 0.0f;

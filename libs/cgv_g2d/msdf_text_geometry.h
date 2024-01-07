@@ -10,7 +10,7 @@
 namespace cgv {
 namespace g2d {
 
-class CGV_API msdf_text_geometry : public cgv::render::render_types {
+class CGV_API msdf_text_geometry {
 public:
 	struct text_info {
 		std::string str = "";

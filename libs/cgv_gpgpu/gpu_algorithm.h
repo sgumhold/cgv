@@ -14,7 +14,7 @@ namespace cgv {
 namespace gpgpu {
 
 /** Definition of base functionality for highly parallel gpu algorithms. */
-class CGV_API gpu_algorithm : public cgv::render::render_types {
+class CGV_API gpu_algorithm {
 private:
 	/// members for timing measurements
 	GLuint time_query = 0;

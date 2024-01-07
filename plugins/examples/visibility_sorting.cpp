@@ -13,7 +13,7 @@ protected:
 	unsigned n;
 
 	cgv::render::sphere_render_style sphere_style;
-	cgv::render::sphere_render_data<rgba> spheres;
+	cgv::render::sphere_render_data<cgv::rgba> spheres;
 
 	cgv::gpgpu::visibility_sort visibility_sorter;
 	bool do_sort;
@@ -24,7 +24,7 @@ public:
 		view_ptr = nullptr;
 		n = 10000;
 		sphere_style.radius = 0.01f;
-		sphere_style.surface_color = rgb(1.0f, 0.5f, 0.2f);
+		sphere_style.surface_color = cgv::rgb(1.0f, 0.5f, 0.2f);
 		sphere_style.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
 		do_sort = true;
 	}
@@ -122,13 +122,13 @@ public:
 		std::uniform_real_distribution<float> col_distr(0.2f, 0.9f);
 
 		for(unsigned i = 0; i < n; ++i) {
-			vec3 pos(
+			cgv::vec3 pos(
 				pos_distr(rng),
 				pos_distr(rng),
 				pos_distr(rng)
 			);
 
-			rgba col(
+			cgv::rgba col(
 				col_distr(rng),
 				col_distr(rng),
 				col_distr(rng),

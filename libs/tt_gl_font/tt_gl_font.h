@@ -30,7 +30,7 @@ extern CGV_API cgv::render::rectangle_render_style& ref_rectangle_render_style()
 /// <summary>
 /// font face with support for text drawing and generation of textured quads
 /// </summary>
-class CGV_API tt_gl_font_face : public cgv::media::font::font_face, public cgv::render::render_types
+class CGV_API tt_gl_font_face : public cgv::media::font::font_face
 {
 private:
 	bool bitmap_out_of_date;
@@ -83,8 +83,8 @@ public:
 	bool write_atlas(const std::string& file_name);
 	cgv::render::texture& ref_texture(cgv::render::context& ctx) const;
 	cgv::render::texture& ref_texture(cgv::render::context& ctx);
-	unsigned text_to_quads(vec2& p, const std::string& text, std::vector<cgv::render::textured_rectangle>& Q, float scale = 1.0f, bool flip_y = false) const;
-	unsigned text_to_quads(vec2& p, const std::string& text, std::vector<cgv::render::textured_rectangle>& Q, float scale = 1.0f, bool flip_y = false);
+	unsigned text_to_quads(vec2& p, const std::string& text, std::vector<render::textured_rectangle>& Q, float scale = 1.0f, bool flip_y = false) const;
+	unsigned text_to_quads(vec2& p, const std::string& text, std::vector<render::textured_rectangle>& Q, float scale = 1.0f, bool flip_y = false);
 	box2 compute_box(const std::string& text, float scale = 1.0f, bool flip_y = false) const;
 	vec2 align_text(const vec2& p, const std::string& text, cgv::render::TextAlignment ta, float scale = 1.0f, bool flip_y = false) const;
 };
@@ -101,7 +101,7 @@ struct font_info
 /// <summary>
 /// implementation of font interface with minor extensions to set font size and character range
 /// </summary>
-class CGV_API tt_gl_font : public cgv::media::font::font, public cgv::render::render_types
+class CGV_API tt_gl_font : public cgv::media::font::font
 {
 protected:
 	std::string font_name;

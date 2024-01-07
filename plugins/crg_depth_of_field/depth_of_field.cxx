@@ -50,7 +50,7 @@ void depth_of_field::generate_samples()
 
 void depth_of_field::update_view(cgv::render::context& ctx, int i)
 {
-	dmat4 m;
+	cgv::dmat4 m;
 	m.identity();
 	double dx,dy;
 	put_sample(i,dx,dy);
@@ -63,7 +63,7 @@ void depth_of_field::update_view(cgv::render::context& ctx, int i)
 
 void depth_of_field::restore_view(cgv::render::context& ctx, int i)
 {
-	dmat4 m;
+	cgv::dmat4 m;
 	m.identity();
 	double dx,dy;
 	put_sample(i,dx,dy);

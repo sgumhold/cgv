@@ -1270,7 +1270,7 @@ void gl_context::draw_strip_or_fan(
 }
 
 /// return homogeneous 4x4 viewing matrix, which transforms from world to eye space
-gl_context::dmat4 gl_context::get_modelview_matrix() const
+dmat4 gl_context::get_modelview_matrix() const
 {
 	if (support_compatibility_mode && !core_profile) {
 		GLdouble V[16];
@@ -1283,7 +1283,7 @@ gl_context::dmat4 gl_context::get_modelview_matrix() const
 }
 
 /// return homogeneous 4x4 projection matrix, which transforms from eye to clip space
-gl_context::dmat4 gl_context::get_projection_matrix() const
+dmat4 gl_context::get_projection_matrix() const
 {
 	if (support_compatibility_mode && !core_profile) {
 		GLdouble P[16];
@@ -2300,7 +2300,7 @@ bool gl_context::frame_buffer_destruct(frame_buffer_base& fbb) const
 	return true;
 }
 
-void complete_rect_from_vp(gl_context::ivec4& D, GLint vp[4])
+void complete_rect_from_vp(ivec4& D, GLint vp[4])
 {
 	if (D(0) == -1)
 		D(0) = vp[0];

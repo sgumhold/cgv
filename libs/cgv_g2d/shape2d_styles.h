@@ -8,7 +8,7 @@
 namespace cgv {
 namespace g2d {
 
-struct shape2d_style : cgv::render::render_types {
+struct shape2d_style {
 	// placement options
 	bool position_is_center = false;
 	// appearance options

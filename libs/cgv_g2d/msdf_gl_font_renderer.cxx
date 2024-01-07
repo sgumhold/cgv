@@ -163,11 +163,11 @@ bool msdf_gl_font_renderer::disable(cgv::render::context& ctx, msdf_text_geometr
 	return res;
 }
 
-void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_font& font, const std::string& text, cgv::render::vec2 position, cgv::render::TextAlignment alignment, rgba color, float scale) {
+void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_font& font, const std::string& text, vec2 position, cgv::render::TextAlignment alignment, rgba color, float scale) {
 	if(text.empty())
 		return;
 
-	std::vector<cgv::render::vec4> vertices = font.create_vertex_data(text);
+	std::vector<vec4> vertices = font.create_vertex_data(text);
 	cgv::g2d::msdf_text_geometry::text_info text_info(text, position, vec2(font.compute_length(text), scale), alignment, 0.0f, color);
 
 	if(geometry_buffer.create_or_resize(ctx, vertices)) {
@@ -195,7 +195,7 @@ bool msdf_gl_font_renderer::render(cgv::render::context& ctx, const ivec2& viewp
 	return disable(ctx, tg);
 }
 
-bool msdf_gl_font_renderer::render(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_font& font, const std::string& text, const text2d_style& style, cgv::render::vec2 position, cgv::render::TextAlignment alignment, float scale) {
+bool msdf_gl_font_renderer::render(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_font& font, const std::string& text, const text2d_style& style, vec2 position, cgv::render::TextAlignment alignment, float scale) {
 	if(!enable(ctx, viewport_resolution, font, style))
 	   return false;
 	draw(ctx, font, text, position, alignment, scale);

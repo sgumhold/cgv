@@ -340,9 +340,9 @@ void stereo_view_interactor::disable_viewport_splitting()
 	do_viewport_splitting = false;
 }
 
-stereo_view_interactor::ivec4 stereo_view_interactor::split_viewport(const ivec4 vp, int col_idx, int row_idx) const
+cgv::ivec4 stereo_view_interactor::split_viewport(const cgv::ivec4 vp, int col_idx, int row_idx) const
 {
-	ivec4 new_vp;
+	cgv::ivec4 new_vp;
 	new_vp[2] = vp[2] / nr_viewport_columns;
 	new_vp[0] = vp[0] + col_idx * new_vp[2];
 	new_vp[3] = vp[3] / nr_viewport_rows;
@@ -361,8 +361,8 @@ void stereo_view_interactor::activate_split_viewport(cgv::render::context& ctx, 
 {
 	if (!do_viewport_splitting)
 		return;
-	const ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
-	ivec4 new_vp = split_viewport(current_vp, col_index, row_index);
+	const cgv::ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
+	cgv::ivec4 new_vp = split_viewport(current_vp, col_index, row_index);
 	ctx.push_window_transformation_array();
 	ctx.set_viewport(new_vp);
 	double aspect = (double)new_vp[2] / new_vp[3];
@@ -384,7 +384,7 @@ void stereo_view_interactor::deactivate_split_viewport(cgv::render::context& ctx
 	if (!do_viewport_splitting)
 		return;
 	ctx.pop_window_transformation_array();
-	const ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
+	const cgv::ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
 	double aspect = (double)current_vp[2] / current_vp[3];
 	gl_set_projection_matrix(ctx, current_e, aspect);
 	gl_set_modelview_matrix(ctx, current_e, aspect, *this);
@@ -1063,9 +1063,9 @@ void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& c
 {
 	static cgv::media::illum::surface_material smp_mat_visible;
 	static cgv::media::illum::surface_material smp_mat_hidden;
-	smp_mat_visible.set_diffuse_reflectance(rgb(1, 1, 1));
-	smp_mat_hidden.set_diffuse_reflectance(rgb(0.3f, 0.3f, 0.3f));
-	smp_mat_hidden.set_emission(rgb(0.3f, 0.3f, 0.3f));
+	smp_mat_visible.set_diffuse_reflectance(cgv::rgb(1, 1, 1));
+	smp_mat_hidden.set_diffuse_reflectance(cgv::rgb(0.3f, 0.3f, 0.3f));
+	smp_mat_hidden.set_emission(cgv::rgb(0.3f, 0.3f, 0.3f));
 
 	double z0_D = get_z_D(-get_parallax_zero_depth(), z_near_derived, z_far_derived);
 

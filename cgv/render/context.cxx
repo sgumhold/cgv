@@ -432,7 +432,7 @@ size_t context::get_nr_light_sources() const
 }
 
 /// helper function to place lights 
-context::vec3 context::get_light_eye_position(const cgv::media::illum::light_source& light, bool place_now) const
+vec3 context::get_light_eye_position(const cgv::media::illum::light_source& light, bool place_now) const
 {
 	vec3 Le = light.get_position();
 	if (place_now && !light.is_local_to_eye()) {
@@ -446,7 +446,7 @@ context::vec3 context::get_light_eye_position(const cgv::media::illum::light_sou
 }
 
 /// helper function to place lights 
-context::vec3 context::get_light_eye_spot_direction(const cgv::media::illum::light_source& light, bool place_now) const
+vec3 context::get_light_eye_spot_direction(const cgv::media::illum::light_source& light, bool place_now) const
 {
 	vec3 sd = light.get_spot_direction();
 	if (place_now && !light.is_local_to_eye()) {
@@ -994,13 +994,13 @@ float blue[4]      = { 0, 0, 1, 1 };
 void compute_face_normals(const float* vertices, float* normals, const int* vertex_indices, int* normal_indices, int nr_faces, int face_degree)
 {
 	for (int i = 0; i < nr_faces; ++i) {
-		context::vec3& normal = reinterpret_cast<context::vec3&>(normals[3 * i]);
+		vec3& normal = reinterpret_cast<vec3&>(normals[3 * i]);
 		normal.zeros();
-		context::vec3 reference_pnt = *reinterpret_cast<const context::vec3*>(vertices + 3 * vertex_indices[face_degree*i + face_degree - 1]);
-		context::vec3 last_difference;
+		vec3 reference_pnt = *reinterpret_cast<const vec3*>(vertices + 3 * vertex_indices[face_degree*i + face_degree - 1]);
+		vec3 last_difference;
 		last_difference.zeros();
 		for (int j = 0; j < face_degree; ++j) {
-			context::vec3 new_difference = *reinterpret_cast<const context::vec3*>(vertices + 3 * vertex_indices[face_degree*i + j]) - reference_pnt;
+			vec3 new_difference = *reinterpret_cast<const vec3*>(vertices + 3 * vertex_indices[face_degree*i + j]) - reference_pnt;
 			normal += cross(last_difference, new_difference);
 			last_difference = new_difference;
 		}
@@ -1568,7 +1568,7 @@ const cgv::media::illum::surface_material* context::get_current_material() const
 }
 
 /// return current color
-const context::rgba& context::get_color() const
+const rgba& context::get_color() const
 {
 	return current_color;
 }
@@ -1756,7 +1756,7 @@ const std::vector<window_transformation>& context::get_window_transformation_arr
 }
 
 /// return a homogeneous 4x4 matrix to transform clip to window coordinates, optionally specify for the case of multiple viewports/depth ranges
-context::dmat4 context::get_window_matrix(unsigned array_index) const
+dmat4 context::get_window_matrix(unsigned array_index) const
 {
 	if (array_index >= window_transformation_stack.top().size()) {
 		std::string message("context::get_window_matrix() ... attempt to query window matrix with array index ");
@@ -1778,13 +1778,13 @@ context::dmat4 context::get_window_matrix(unsigned array_index) const
 	return M;
 }
 /// return a homogeneous 4x4 matrix to transfrom from model to window coordinates, i.e. the product of modelview, projection and device matrix in reversed order (window_matrix*projection_matrix*modelview_matrix)
-context::dmat4 context::get_modelview_projection_window_matrix(unsigned array_index) const
+dmat4 context::get_modelview_projection_window_matrix(unsigned array_index) const
 {
 	return get_window_matrix(array_index)*get_projection_matrix()*get_modelview_matrix();
 }
 
 //! compute model space 3D point from the given window space point and the given modelview_projection_window matrix
-context::vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) 
+vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) 
 {
 	dmat_type A(4, 4, &modelview_projection_window_matrix(0, 0));
 	dvec_type x;
@@ -1852,7 +1852,7 @@ void context::get_cursor(int& x, int& y) const
 }
 
 /// return homogeneous 4x4 matrix, which transforms from world to device space
-context::dmat4 context::get_modelview_projection_device_matrix() const
+dmat4 context::get_modelview_projection_device_matrix() const
 {
 	return get_window_matrix()*get_projection_matrix()*get_modelview_matrix();
 }

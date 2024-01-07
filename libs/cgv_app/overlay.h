@@ -5,6 +5,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/render/context.h>
 #include <cgv/render/drawable.h>
+#include <cgv/render/render_types.h>
 #include <cgv/utils/pointer_test.h>
 #include <cgv_g2d/trect.h>
 #include <cgv_g2d/utils2d.h>

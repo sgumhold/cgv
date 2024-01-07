@@ -33,19 +33,19 @@ protected:
 	} gradient_mode;
 
 	/// resolution of the volume
-	uvec3 vres;
+	cgv::uvec3 vres;
 	/// whether to show volume
 	bool show_volume;
 	/// whether to show gradients
 	bool show_gradients;
 
 	// Gradient data
-	std::vector<vec3> positions;
-	std::vector<vec3> directions;
-	std::vector<rgb> colors;
+	std::vector<cgv::vec3> positions;
+	std::vector<cgv::vec3> directions;
+	std::vector<cgv::rgb> colors;
 
 	// Volume rendering
-	box3 volume_bounding_box;
+	cgv::box3 volume_bounding_box;
 	cgv::render::texture tf_tex;
 	cgv::render::texture volume_tex;
 	cgv::render::texture gradient_tex;

@@ -25,7 +25,7 @@ void managed_frame_buffer::destruct(const context& ctx) {
 	}
 }
 
-managed_frame_buffer::ivec2 managed_frame_buffer::get_size() {
+ivec2 managed_frame_buffer::get_size() {
 
 	return ivec2(fb.get_width(), fb.get_height());
 }
@@ -161,7 +161,7 @@ bool managed_frame_buffer::create_and_validate(context& ctx, const ivec2& size) 
 	return fb.is_complete(ctx);
 }
 
-managed_frame_buffer::ivec2 managed_frame_buffer::get_actual_size(context& ctx) {
+ivec2 managed_frame_buffer::get_actual_size(context& ctx) {
 
 	ivec2 actual_size(size);
 	if(size.x() <= 0)

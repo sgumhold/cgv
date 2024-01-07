@@ -527,7 +527,7 @@ namespace cgv {
 		ensure_bitmap();
 		return const_cast<const tt_gl_font_face*>(this)->text_to_quads(p, text, Q, scale, flip_y);
 	}
-	tt_gl_font_face::box2 tt_gl_font_face::compute_box(const std::string& text, float scale, bool flip_y) const
+	box2 tt_gl_font_face::compute_box(const std::string& text, float scale, bool flip_y) const
 	{
 		box2 extent;
 		vec2 p(0.0f);
@@ -543,7 +543,7 @@ namespace cgv {
 		extent.scale(scale);
 		return extent;
 	}
-	tt_gl_font_face::vec2 tt_gl_font_face::align_text(const vec2& p, const std::string& text, cgv::render::TextAlignment ta, float scale, bool flip_y) const
+	vec2 tt_gl_font_face::align_text(const vec2& p, const std::string& text, cgv::render::TextAlignment ta, float scale, bool flip_y) const
 	{
 		box2 B = compute_box(text, scale, flip_y);
 		vec2 a = B.get_center();
