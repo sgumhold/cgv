@@ -39,7 +39,7 @@ public:
 				ctx.set_modelview_matrix(cgv::math::scale4<double>(0.25, 0.25, 0.25));
 				cgv::render::shader_program& prog = ctx.ref_default_shader_program();
 				prog.enable(ctx);
-					ctx.set_color(rgb(1,0,0));
+					ctx.set_color(cgv::rgb(1,0,0));
 					ctx.tesselate_unit_square();
 					//ctx.set_color(rgb(1, 1, 1));
 					//ctx.enable_font_face(ctx.get_current_font_face(),20);
@@ -49,7 +49,7 @@ public:
 	void large_square(context& ctx, const std::string& text)
 	{
 					ctx.mul_modelview_matrix(cgv::math::scale4<double>(2,2,2));
-					ctx.set_color(rgb(0, 1, 0));
+					ctx.set_color(cgv::rgb(0, 1, 0));
 					ctx.tesselate_unit_square();
 					//ctx.set_color(rgb(0, 0, 0));
 					//glColor3f(0, 0, 0);

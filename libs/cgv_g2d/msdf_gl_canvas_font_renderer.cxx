@@ -29,7 +29,7 @@ bool msdf_gl_canvas_font_renderer::render(cgv::render::context& ctx, canvas& cvs
 	return disable(ctx, tg);
 }
 
-bool msdf_gl_canvas_font_renderer::render(cgv::render::context& ctx, canvas& cvs, msdf_font& font, const std::string& text, const text2d_style& style, cgv::render::vec2 position, cgv::render::TextAlignment alignment, float scale) {
+bool msdf_gl_canvas_font_renderer::render(cgv::render::context& ctx, canvas& cvs, msdf_font& font, const std::string& text, const text2d_style& style, vec2 position, cgv::render::TextAlignment alignment, float scale) {
 	if(!enable(ctx, cvs, font, style))
 		return false;
 	msdf_gl_font_renderer::draw(ctx, font, text, position, alignment, rgba(0.0f, 0.0f, 0.0f, 1.0f), scale);

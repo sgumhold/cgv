@@ -11,7 +11,7 @@ namespace cgv {
 namespace render {
 
 /// provides a class that manages a frame buffer along with its attachments
-class CGV_API managed_frame_buffer : public render_types
+class CGV_API managed_frame_buffer
 {
 private:
 	ivec2 get_actual_size(context& ctx);

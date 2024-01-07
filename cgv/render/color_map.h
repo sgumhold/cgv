@@ -11,7 +11,7 @@
 namespace cgv {
 namespace render {
 
-class color_map : public render_types {
+class color_map {
 protected:
 	typedef cgv::math::control_point_container<rgb>::control_point color_control_point_type;
 	typedef cgv::math::control_point_container<float>::control_point opacity_control_point_type;

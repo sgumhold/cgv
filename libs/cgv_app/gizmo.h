@@ -37,10 +37,10 @@ protected:
 	float scale;
 	float scale_coefficient;
 
-	cgv::render::vec3 position;
-	cgv::render::vec3 last_position;
-	cgv::render::vec3 offset;
-	cgv::render::vec3 flip_factors;
+	vec3 position;
+	vec3 last_position;
+	vec3 offset;
+	vec3 flip_factors;
 
 	std::function<void(void)> move_callback;
 
@@ -78,21 +78,21 @@ protected:
 		return -1;
 	}
 
-	cgv::render::vec3 get_axis(InteractionFeature feature) {
-		cgv::render::vec3 axis(0.0f);
+	vec3 get_axis(InteractionFeature feature) {
+		vec3 axis(0.0f);
 		int idx = get_axis_idx(feature);
 		if(idx > -1)
 			axis[idx] = 1.0f;
 		return axis;
 	}
 
-	bool intersect_axis_aligned_rectangle(const cgv::math::ray3& r, int axis, const cgv::render::vec3& p, float scale, float& t) const;
+	bool intersect_axis_aligned_rectangle(const cgv::math::ray3& r, int axis, const vec3& p, float scale, float& t) const;
 
 	bool intersect(const cgv::math::ray3& r);
 
-	bool handle_drag(const cgv::math::ray3& r, const cgv::render::vec3& view_dir, bool drag_start);
+	bool handle_drag(const cgv::math::ray3& r, const vec3& view_dir, bool drag_start);
 
-	cgv::render::vec3 get_flip_factors();
+	vec3 get_flip_factors();
 
 public:
 	gizmo();
@@ -117,14 +117,14 @@ public:
 		move_callback = func;
 	}
 
-	void set_position(const cgv::render::vec3& p, bool invoke_callback = false) {
+	void set_position(const vec3& p, bool invoke_callback = false) {
 
 		position = p;
 		if(invoke_callback && move_callback)
 			move_callback();
 	}
 
-	cgv::render::vec3 get_position() const {
+	vec3 get_position() const {
 
 		return position;
 	}

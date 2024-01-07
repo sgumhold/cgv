@@ -29,7 +29,7 @@ class n_rook_estimator :
 public:
 	int x_offset, y_offset;
 	TextAlignment ta;
-	std::vector<vec2> samples;
+	std::vector<cgv::vec2> samples;
 	int sqrt_n, m;
 	enum FunctionType { FT_SIN, FT_SIN_REC, FT_GAUSS, FT_LAST };
 	enum SamplingType { ST_UNIFORM, ST_STRATIFIED, ST_N_ROOK, ST_LAST };
@@ -40,7 +40,7 @@ public:
 	FunctionType function_type;
 	SamplingType sampling_type;
 
-	double eval_func(const vec2& p) const
+	double eval_func(const cgv::vec2& p) const
 	{
 		switch (function_type) {
 		case FT_SIN :
@@ -67,12 +67,12 @@ public:
 		switch (sampling_type) {
 		case ST_UNIFORM :
 			for (i=0; i<n; ++i)
-				samples.push_back(vec2(d(g),d(g)));
+				samples.push_back(cgv::vec2(d(g),d(g)));
 			break;
 		case ST_STRATIFIED :
 			for (i=0; i<sqrt_n; ++i)
 				for (j=0; j<sqrt_n; ++j)
-					samples.push_back(vec2(inv_sqrt_n*(i+d(g)),inv_sqrt_n*(j+d(g))));
+					samples.push_back(cgv::vec2(inv_sqrt_n*(i+d(g)),inv_sqrt_n*(j+d(g))));
 			break;
 		case ST_N_ROOK :
 			{
@@ -84,7 +84,7 @@ public:
 					j = (int)((n-i)*d(g));
 					if (j == n-i)
 						j = n-i-1;
-					samples.push_back(vec2(inv_n*(i+d(g)),inv_n*(indices[j]+d(g))));
+					samples.push_back(cgv::vec2(inv_n*(i+d(g)),inv_n*(indices[j]+d(g))));
 					std::swap(indices[j],indices[n-i-1]);
 				}
 			}
@@ -124,7 +124,7 @@ public:
 		glGetFloatv(GL_LINE_WIDTH, &tmp_width);
 		glGetFloatv(GL_POINT_SIZE, &tmp_size);
 
-		std::vector<vec2> P;
+		std::vector<cgv::vec2> P;
 
 		int n = sqrt_n * sqrt_n;
 		shader_program& prog = ctx.ref_default_shader_program();
@@ -132,14 +132,14 @@ public:
 		ctx.push_modelview_matrix();
 			ctx.mul_modelview_matrix(translate4<double>(-1, -1, 0)*scale4<double>(2, 2, 2));
 
-			ctx.set_cursor(dvec2(0.0, 0.0).to_vec(), "(0,0)", ta, x_offset, y_offset);
+			ctx.set_cursor(cgv::dvec2(0.0, 0.0).to_vec(), "(0,0)", ta, x_offset, y_offset);
 			ctx.output_stream() << "(0,0)" << std::endl;
 
 			P.resize(4);
-			P[0] = vec2(0.0f, 0.0f);
-			P[1] = vec2(1.0f, 0.0f);
-			P[2] = vec2(1.0f, 1.0f);
-			P[3] = vec2(0.0f, 1.0f);
+			P[0] = cgv::vec2(0.0f, 0.0f);
+			P[1] = cgv::vec2(1.0f, 0.0f);
+			P[2] = cgv::vec2(1.0f, 1.0f);
+			P[3] = cgv::vec2(0.0f, 1.0f);
 		
 			glLineWidth(2);
 
@@ -147,27 +147,27 @@ public:
 			int pos_idx = prog.get_position_index();
 			attribute_array_binding::enable_global_array(ctx, pos_idx);
 			attribute_array_binding::set_global_attribute_array(ctx, pos_idx, P);
-			ctx.set_color(rgb(0, 0.4f, 0));
+			ctx.set_color(cgv::rgb(0, 0.4f, 0));
 			glDrawArrays(GL_LINE_LOOP, 0, 4);
 		
 			if (sampling_type == ST_STRATIFIED) {
 				P.clear();
 				float inv_sqrt_n = 1.0f / sqrt_n;
 				for (int i = 1; i < sqrt_n; ++i) {
-					P.push_back(vec2(0.0f, i*inv_sqrt_n));
-					P.push_back(vec2(1.0f, i*inv_sqrt_n));
-					P.push_back(vec2(i*inv_sqrt_n, 0));
-					P.push_back(vec2(i*inv_sqrt_n, 1));
+					P.push_back(cgv::vec2(0.0f, i*inv_sqrt_n));
+					P.push_back(cgv::vec2(1.0f, i*inv_sqrt_n));
+					P.push_back(cgv::vec2(i*inv_sqrt_n, 0));
+					P.push_back(cgv::vec2(i*inv_sqrt_n, 1));
 				}
 				glLineWidth(1);
 
 				attribute_array_binding::set_global_attribute_array(ctx, pos_idx, P);
-				ctx.set_color(rgb(0, 0.6f, 0));
+				ctx.set_color(cgv::rgb(0, 0.6f, 0));
 				glDrawArrays(GL_LINES, 0, (GLsizei)P.size());
 			}
 
 			attribute_array_binding::set_global_attribute_array(ctx, pos_idx, samples);
-			ctx.set_color(rgb(0.4f, 0.1f, 0));
+			ctx.set_color(cgv::rgb(0.4f, 0.1f, 0));
 			glPointSize(2);
 			glEnable(GL_POINT_SMOOTH);
 			glDrawArrays(GL_POINTS, 0, (GLsizei)samples.size());
@@ -176,17 +176,17 @@ public:
 				float inv_n = 1.0f/n;
 				P.clear();
 				for (int i=0; i<n; ++i) {
-					vec2 c(inv_n*(int)(samples[i](0)*n), inv_n*(int)(samples[i](1)*n));
+					cgv::vec2 c(inv_n*(int)(samples[i](0)*n), inv_n*(int)(samples[i](1)*n));
 					P.push_back(c);
-					P.push_back(vec2(c(0)+inv_n,c(1)));
-					P.push_back(vec2(c(0), c(1) + inv_n));
+					P.push_back(cgv::vec2(c(0)+inv_n,c(1)));
+					P.push_back(cgv::vec2(c(0), c(1) + inv_n));
 
-					P.push_back(vec2(c(0) + inv_n, c(1)));
-					P.push_back(vec2(c(0)+inv_n,c(1)+inv_n));
-					P.push_back(vec2(c(0), c(1) + inv_n));
+					P.push_back(cgv::vec2(c(0) + inv_n, c(1)));
+					P.push_back(cgv::vec2(c(0)+inv_n,c(1)+inv_n));
+					P.push_back(cgv::vec2(c(0), c(1) + inv_n));
 				}
 				attribute_array_binding::set_global_attribute_array(ctx, pos_idx, P);
-				ctx.set_color(rgb(0.3f, 0.7f, 1));
+				ctx.set_color(cgv::rgb(0.3f, 0.7f, 1));
 				glDrawArrays(GL_TRIANGLES, 0, (GLsizei)P.size());
 			}
 			prog.disable(ctx);

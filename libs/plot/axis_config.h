@@ -42,7 +42,7 @@ struct CGV_API tick_config
 };
 
 /// configuration information stored per domain axis
-class CGV_API axis_config : public cgv::render::render_types
+class CGV_API axis_config
 {
 private:
 	/// minimum tick space value

@@ -61,7 +61,7 @@ void canvas::disable_current_shader(cgv::render::context& ctx) {
 	current_shader_program = nullptr;
 }
 
-canvas::ivec2 canvas::get_resolution() const {
+ivec2 canvas::get_resolution() const {
 	return resolution;
 }
 
@@ -91,7 +91,7 @@ void canvas::initialize_modelview_matrix_stack() {
 	modelview_matrix_stack.push(I);
 }
 
-canvas::mat3 canvas::get_modelview_matrix() const {
+mat3 canvas::get_modelview_matrix() const {
 	return modelview_matrix_stack.top();
 }
 

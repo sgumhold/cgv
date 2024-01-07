@@ -45,15 +45,15 @@ protected:
 	float texts_offset = 0.0f;
 
 	struct {
-		vec2 translation = vec2(0.0f);
+		cgv::vec2 translation = cgv::vec2(0.0f);
 		float scale = 1.0f;
 		float angle = 0.0f;
 	} view_params;
 
 public:
 	msdf_font() : cgv::base::node("MSDF Font Example") {
-		viewport_rect.position = ivec2(0);
-		viewport_rect.size = ivec2(-1);
+		viewport_rect.position = cgv::ivec2(0);
+		viewport_rect.size = cgv::ivec2(-1);
 		
 		text_style = cgv::g2d::text2d_style::preset_default();
 		text_style.font_size = 1.0f;
@@ -75,15 +75,15 @@ public:
 				cgv::gui::MouseAction ma = me.get_action();
 
 				if(ma == cgv::gui::MA_DRAG && me.get_button_state() & cgv::gui::MB_RIGHT_BUTTON) {
-					view_params.translation += vec2((float)me.get_dx(), (float)-me.get_dy());
+					view_params.translation += cgv::vec2((float)me.get_dx(), (float)-me.get_dy());
 				}
 
 				if(ma == cgv::gui::MA_WHEEL) {
-					ivec2 mpos(me.get_x(), me.get_y());
+					cgv::ivec2 mpos(me.get_x(), me.get_y());
 					mpos.y() = viewport_rect.h() - mpos.y() - 1;
 
-					vec2 origin = viewport_rect.center();
-					vec2 offset = origin - mpos + view_params.translation;
+					cgv::vec2 origin = viewport_rect.center();
+					cgv::vec2 offset = origin - mpos + view_params.translation;
 
 					float scale = view_params.scale;
 					scale *= ((float)me.get_dy()) > 0 ? 0.5f : 2.0f;
@@ -153,7 +153,7 @@ public:
 		return success;
 	}
 	void init_frame(cgv::render::context& ctx) {
-		ivec2 viewport_resolution(ctx.get_width(), ctx.get_height());
+		cgv::ivec2 viewport_resolution(ctx.get_width(), ctx.get_height());
 
 		if(viewport_resolution != viewport_rect.size) {
 			viewport_rect.size = viewport_resolution;
@@ -196,7 +196,7 @@ public:
 		//std::vector<std::string> strs;
 		std::string str = "MSDF Font";
 
-		vec2 position(texts_origin);
+		cgv::vec2 position(texts_origin);
 		float size = 128.0f;
 
 		texts_light.clear();
@@ -220,12 +220,12 @@ public:
 		for(unsigned i = 0; i < static_cast<unsigned>(texts.size()); ++i)
 			texts.set_angle(i, text_angle);
 	}
-	mat3 get_view_matrix() {
-		mat3 T0 = cgv::math::translate2h(vec2(-viewport_rect.center()));
-		mat3 T1 = cgv::math::translate2h(vec2(viewport_rect.center()));
-		mat3 T = cgv::math::translate2h(vec2(view_params.translation));
-		mat3 S = cgv::math::scale2h(vec2(view_params.scale));
-		mat3 R = cgv::math::rotate2h(view_params.angle);
+	cgv::mat3 get_view_matrix() {
+		cgv::mat3 T0 = cgv::math::translate2h(cgv::vec2(-viewport_rect.center()));
+		cgv::mat3 T1 = cgv::math::translate2h(cgv::vec2(viewport_rect.center()));
+		cgv::mat3 T = cgv::math::translate2h(cgv::vec2(view_params.translation));
+		cgv::mat3 S = cgv::math::scale2h(cgv::vec2(view_params.scale));
+		cgv::mat3 R = cgv::math::rotate2h(view_params.angle);
 		//return T * S * R; // pivot is in lower left corner
 		return T * T1 * S * R * T0; // pivot is in viewport center
 	}

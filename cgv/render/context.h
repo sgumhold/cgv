@@ -578,13 +578,13 @@ extern CGV_API render_config_ptr get_render_config();
 struct window_transformation
 {
 	/// viewport parameters [x0,y0,width,height]
-	render_types::ivec4 viewport;
+	ivec4 viewport;
 	/// range of depth values [min_depth, max_depth]
-	render_types::dvec2 depth_range;
+	dvec2 depth_range;
 };
 
 /** base class for all drawables, which is independent of the used rendering API. */
-class CGV_API context : public render_types, public context_config
+class CGV_API context : public context_config
 {
 protected:
 	// store the GPU vendor id

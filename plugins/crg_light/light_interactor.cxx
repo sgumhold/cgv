@@ -23,7 +23,7 @@ light_interactor::light_interactor() : node("Light Interactor")
 	max_opacity = 1.0f;
 	ray_width = 4.0f;
 	color_lambda = 0.2f;
-	default_color = rgb(1, 1, 0);
+	default_color = cgv::rgb(1, 1, 0);
 	nr_light_rays = 100;
 	view_ptr = 0;
 	delta_pos.zeros();
@@ -72,26 +72,26 @@ void light_interactor::on_set(void* member_ptr)
 		for (size_t i = 0; i < n; ++i) {
 			if (member_ptr == &lights[i].ref_local_to_eye()) {
 				bool is_dir = lights[i].get_type() == cgv::media::illum::LT_DIRECTIONAL;
-				dvec4 hpos(lights[i].get_position(), is_dir ? 0.0 : 1.0);
-				dvec4 hdir(lights[i].get_spot_direction(), 0.0);
+				cgv::dvec4 hpos(lights[i].get_position(), is_dir ? 0.0 : 1.0);
+				cgv::dvec4 hdir(lights[i].get_spot_direction(), 0.0);
 				if (lights[i].is_local_to_eye()) {
 					hpos = last_modelview_matrix * hpos;
-					dvec3 pos = reinterpret_cast<dvec3&>(hpos);
+					cgv::dvec3 pos = reinterpret_cast<cgv::dvec3&>(hpos);
 					if (!is_dir)
 						pos /= 1.0 / hpos(3);
 					lights[i].set_position(pos);
-					dvec4 hspot_dir = last_modelview_matrix * hdir;
-					lights[i].set_spot_direction(reinterpret_cast<const dvec3&>(hspot_dir));
+					cgv::dvec4 hspot_dir = last_modelview_matrix * hdir;
+					lights[i].set_spot_direction(reinterpret_cast<const cgv::dvec3&>(hspot_dir));
 				}
 				else {
-					dmat4 inv_mv = inv(last_modelview_matrix);
+					cgv::dmat4 inv_mv = inv(last_modelview_matrix);
 					hpos = inv_mv * hpos;
-					dvec3 pos = reinterpret_cast<dvec3&>(hpos);
+					cgv::dvec3 pos = reinterpret_cast<cgv::dvec3&>(hpos);
 					if (!is_dir)
 						pos /= 1.0 / hpos(3);
 					lights[i].set_position(pos);
-					dvec4 hspot_dir = inv_mv * hdir;
-					lights[i].set_spot_direction(reinterpret_cast<const dvec3&>(hspot_dir));
+					cgv::dvec4 hspot_dir = inv_mv * hdir;
+					lights[i].set_spot_direction(reinterpret_cast<const cgv::dvec3&>(hspot_dir));
 				}
 				for (unsigned c = 0; c < 3; ++c) {
 					update_member(&lights[i].ref_position()[c]);
@@ -150,7 +150,7 @@ bool light_interactor::init(context& ctx)
 	light_rays.resize(2*n*nr_light_rays);
 	current_ray_indices.resize(n, -1);
 	for (unsigned i = 0; i < n; ++i) {
-		lights[i].set_position(vec3(2*(float)((i+6)&1)-1,(float)((i+6)&2)-1,(float)((i+6)&4)/2-1));
+		lights[i].set_position(cgv::vec3(2*(float)((i+6)&1)-1,(float)((i+6)&2)-1,(float)((i+6)&4)/2-1));
 		enabled[i] = i < 2 ? 1 : 0;
 		handles[i] = 0;
 		intensities[i] = 1;
@@ -238,23 +238,23 @@ void light_interactor::sample_light_rays(context& ctx, unsigned decrease_count)
 		// sample rays
 		for (size_t j = 0; j < nr_light_rays; ++j) {
 			size_t idx = 2 * (nr_light_rays*i + current_ray_indices[i]);
-			vec3 p;
+			cgv::vec3 p;
 			if (j < sample_count) {
 				// sample random position relative to current view in world coords
-				p = vec3(D(RE), D(RE), D(RE));
+				p = cgv::vec3(D(RE), D(RE), D(RE));
 				p[0] *= x_extent * ctx.get_width() / ctx.get_height();
 				p[1] *= y_extent;
 				p[2] *= 0.5f*y_extent;
 
 				// transform p to eye space
-				vec4 hP = ctx.get_modelview_matrix() * dvec4(p, 1.0f);
-				p = (1.0f / hP[3]) * reinterpret_cast<vec3&>(hP);
+				cgv::vec4 hP = ctx.get_modelview_matrix() * cgv::dvec4(p, 1.0f);
+				p = (1.0f / hP[3]) * reinterpret_cast<cgv::vec3&>(hP);
 			}
 			else {
 				p = 0.5f*(light_rays[idx]+ light_rays[idx+1]);
 			}
 			// build ray in eye space
-			vec3 dir = ctx.get_light_eye_position(lights[i], !lights[i].is_local_to_eye());;
+			cgv::vec3 dir = ctx.get_light_eye_position(lights[i], !lights[i].is_local_to_eye());;
 			if (lights[i].get_type() != cgv::media::illum::LT_DIRECTIONAL)
 				dir -= p;
 
@@ -493,8 +493,8 @@ bool light_interactor::handle(event& e)
 					lights[current_light_index].set_type(cgv::media::illum::LT_SPOT);
 					on_set(&lights[current_light_index].ref_type());
 				}
-				lights[current_light_index].set_position(vec3(0, 0, 0));
-				lights[current_light_index].set_spot_direction(vec3(0, 0, -1));
+				lights[current_light_index].set_position(cgv::vec3(0, 0, 0));
+				lights[current_light_index].set_spot_direction(cgv::vec3(0, 0, -1));
 				for (unsigned c = 0; c < 3; ++c) {
 					on_set(&lights[current_light_index].ref_position()[c]);
 					on_set(&lights[current_light_index].ref_spot_direction()[c]);

@@ -244,7 +244,7 @@ float temporal_anti_aliasing::van_der_corput(int n, int base) const {
 	return vdc;
 }
 
-temporal_anti_aliasing::vec2 temporal_anti_aliasing::sample_halton_2d(unsigned k, int base1, int base2) const {
+vec2 temporal_anti_aliasing::sample_halton_2d(unsigned k, int base1, int base2) const {
 	return vec2(van_der_corput(k, base1), van_der_corput(k, base2));
 }
 
@@ -263,7 +263,7 @@ void temporal_anti_aliasing::generate_jitter_offsets() {
 	}
 }
 
-temporal_anti_aliasing::vec2 temporal_anti_aliasing::get_current_jitter_offset() const {
+vec2 temporal_anti_aliasing::get_current_jitter_offset() const {
 	return jitter_scale * jitter_offsets[accumulate_count];
 }
 

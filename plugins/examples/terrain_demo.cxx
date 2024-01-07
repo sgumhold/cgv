@@ -26,7 +26,7 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 	bool toggle;
 
   protected:
-	std::vector<vec2> custom_positions;
+	std::vector<cgv::vec2> custom_positions;
 	std::vector<unsigned int> custom_indices;
 	terrain_render_style terrain_style;
 	int grid_width = 10;

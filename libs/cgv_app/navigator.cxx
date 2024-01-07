@@ -363,7 +363,7 @@ void navigator::create_gui_impl() {
 	add_member_control(this, "Use Perspective", use_perspective, "check");
 }
 
-navigator::mat4 navigator::get_model_matrix(cgv::render::context& ctx) {
+mat4 navigator::get_model_matrix(cgv::render::context& ctx) {
 
 	mat4 MV = ctx.get_modelview_matrix();
 
@@ -375,12 +375,12 @@ navigator::mat4 navigator::get_model_matrix(cgv::render::context& ctx) {
 	return MV;
 }
 
-navigator::mat4 navigator::get_view_matrix(cgv::render::context& ctx) {
+mat4 navigator::get_view_matrix(cgv::render::context& ctx) {
 
 	return cgv::math::look_at4(navigator_eye_pos, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
 }
 
-navigator::mat4 navigator::get_projection_matrix() {
+mat4 navigator::get_projection_matrix() {
 
 	vec2 size = static_cast<vec2>(get_overlay_size());
 	float aspect = size.x() / size.y();

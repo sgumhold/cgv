@@ -40,9 +40,9 @@ struct CGV_API circle_draggable : public draggable {
 
 	circle_draggable();
 
-	circle_draggable(const cgv::render::vec2& position, const cgv::render::vec2& size);
+	circle_draggable(const vec2& position, const vec2& size);
 
-	bool contains(const cgv::render::vec2& mp) const override {
+	bool contains(const vec2& mp) const override {
 		float dist = length(mp - center());
 		return dist <= 0.5f * size.x();
 	}

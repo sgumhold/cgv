@@ -154,7 +154,7 @@ void grid::draw_grid(context &ctx)
 	}
 	
 	// transform coordinate frame to clip space
-	dmat4 P;
+	cgv::dmat4 P;
 	P(0, 0) = 1.0; P(0, 1) = 0.0; P(0, 2) = 0.0; P(0, 3) = 0.0;
 	P(1, 0) = 0.0; P(1, 1) = 1.0; P(1, 2) = 0.0; P(1, 3) = 0.0;
 	P(2, 0) = 0.0; P(2, 1) = 0.0; P(2, 2) = 1.0; P(2, 3) = 0.0;
@@ -162,11 +162,11 @@ void grid::draw_grid(context &ctx)
 	P = ctx.get_modelview_projection_window_matrix()*P;
 
 	// compute clip space origin
-	dvec3 l, O_clip = 1 / P(3, 3)*reinterpret_cast<const dvec3&>(P.col(3));
+	cgv::dvec3 l, O_clip = 1 / P(3, 3)*reinterpret_cast<const cgv::dvec3&>(P.col(3));
 	
 	// compute length of each coordinate axes in screen space and set z_axis
 	for (unsigned i = 0; i < 3; ++i) {
-		l(i) = (1 / P(3, i)*reinterpret_cast<const dvec3&>(P.col(i)) - O_clip).length();
+		l(i) = (1 / P(3, i)*reinterpret_cast<const cgv::dvec3&>(P.col(i)) - O_clip).length();
 	//	z_axis(i) = ((l(i) < threshold) ? 1.0f : 0.0f);
 	}
 	
@@ -176,7 +176,7 @@ void grid::draw_grid(context &ctx)
 	cgv::render::shader_program& prog = ctx.ref_surface_shader_program();
 	prog.enable(ctx);
 	prog.set_uniform(ctx, "map_color_to_material", 3);
-	ctx.set_color(rgb(0.5f, 0.5f, 0.5f));
+	ctx.set_color(cgv::rgb(0.5f, 0.5f, 0.5f));
 	float r = arrow_length * arrow_aspect;
 	ctx.push_modelview_matrix();
 	ctx.mul_modelview_matrix(cgv::math::scale4<double>(r, r, r));
@@ -187,20 +187,20 @@ void grid::draw_grid(context &ctx)
 		ctx.push_modelview_matrix();
 		//z-axis
 		if (fabs(fabs(z_axis(2)) - 1.0) > auto_hide_axis_threshold) {
-			ctx.set_color(rgb(0, 0, 1));
+			ctx.set_color(cgv::rgb(0, 0, 1));
 			ctx.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
 		}
 		//x-axis
 		if (fabs(fabs(z_axis(0)) - 1.0)> auto_hide_axis_threshold) {
-			ctx.set_color(rgb(1, 0, 0));
-			ctx.mul_modelview_matrix(cgv::math::rotate4<double>(90, vec3(0, 1, 0)));
+			ctx.set_color(cgv::rgb(1, 0, 0));
+			ctx.mul_modelview_matrix(cgv::math::rotate4<double>(90, cgv::vec3(0, 1, 0)));
 			ctx.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
 		}
 
 		//y-axis
 		if (fabs(fabs(z_axis(1)) - 1.0)> auto_hide_axis_threshold) {
-			ctx.set_color(rgb(0, 1, 0));
-			ctx.mul_modelview_matrix(cgv::math::rotate4<double>(-90, vec3(1, 0, 0)));
+			ctx.set_color(cgv::rgb(0, 1, 0));
+			ctx.mul_modelview_matrix(cgv::math::rotate4<double>(-90, cgv::vec3(1, 0, 0)));
 			ctx.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
 		}
 		ctx.pop_modelview_matrix();
@@ -266,7 +266,7 @@ void grid::draw_lines(context& ctx)
 	cgv::render::shader_program& prog = ctx.ref_default_shader_program();
 	prog.enable(ctx);
 
-	ctx.set_color(rgba(0.5f, 0.5f, 0.5f, alpha));
+	ctx.set_color(cgv::rgba(0.5f, 0.5f, 0.5f, alpha));
 	ctx.push_modelview_matrix();
 	
 		if(adaptive_grid)
@@ -275,10 +275,10 @@ void grid::draw_lines(context& ctx)
 		ctx.push_modelview_matrix();
 			render_grid_lines(fabs(z_axis(1)));
 		
-			ctx.mul_modelview_matrix(cgv::math::rotate4<double>(90, vec3(0, 0, 1)));
+			ctx.mul_modelview_matrix(cgv::math::rotate4<double>(90, cgv::vec3(0, 0, 1)));
 			render_grid_lines(fabs(z_axis(0)));
 
-			ctx.mul_modelview_matrix(cgv::math::rotate4<double>(90, vec3(1, 0, 0)));
+			ctx.mul_modelview_matrix(cgv::math::rotate4<double>(90, cgv::vec3(1, 0, 0)));
 			render_grid_lines(fabs(z_axis(2)));
 		ctx.pop_modelview_matrix();
 	ctx.pop_modelview_matrix();

@@ -733,7 +733,7 @@ void color_map_editor::remove_point(const cgv::g2d::draggable* ptr) {
 		update_color_map(true);
 }
 
-cgv::g2d::draggable* color_map_editor::get_hit_point(const color_map_editor::vec2& pos) {
+cgv::g2d::draggable* color_map_editor::get_hit_point(const vec2& pos) {
 
 	cgv::g2d::draggable* hit = nullptr;
 

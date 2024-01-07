@@ -74,7 +74,7 @@ void msdf_text_geometry::set_color(unsigned i, const rgba color) {
 		texts[i].color = color;
 }
 
-msdf_text_geometry::vec2 msdf_text_geometry::get_text_render_size(unsigned i, float font_size, size_t length) const {
+vec2 msdf_text_geometry::get_text_render_size(unsigned i, float font_size, size_t length) const {
 
 	if(i < texts.size()) {
 		const text_info& text = texts[i];

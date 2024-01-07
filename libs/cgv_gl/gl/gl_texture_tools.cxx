@@ -747,7 +747,7 @@ bool cover_screen(context& ctx, shader_program* prog_ptr, bool flip_tex_v_coord,
 		}
 		else
 			if (!prog_ptr)
-				ctx.set_color(render_types::rgba(1, 1, 1, 1));
+				ctx.set_color(rgba(1, 1, 1, 1));
 	}
 	int pos_idx = prog.get_position_index();
 	int tex_idx = prog.get_texcoord_index();
@@ -762,21 +762,21 @@ bool cover_screen(context& ctx, shader_program* prog_ptr, bool flip_tex_v_coord,
 	ctx.push_projection_matrix();
 	ctx.set_projection_matrix(cgv::math::identity4<double>());
 	
-	render_types::vec4 positions[4] = {
-		render_types::vec4(xmin,ymin, 0, 1),
-		render_types::vec4(xmax,ymin, 0, 1),
-		render_types::vec4(xmin,ymax, 0, 1),
-		render_types::vec4(xmax,ymax, 0, 1)
+	vec4 positions[4] = {
+		vec4(xmin,ymin, 0, 1),
+		vec4(xmax,ymin, 0, 1),
+		vec4(xmin,ymax, 0, 1),
+		vec4(xmax,ymax, 0, 1)
 	};
-	render_types::vec2 texcoords[8] = {
-		render_types::vec2(umin, vmin),
-		render_types::vec2(umax, vmin),
-		render_types::vec2(umin, vmax),
-		render_types::vec2(umax, vmax),
-		render_types::vec2(umin, vmax),
-		render_types::vec2(umax, vmax),
-		render_types::vec2(umin, vmin),
-		render_types::vec2(umax, vmin)
+	vec2 texcoords[8] = {
+		vec2(umin, vmin),
+		vec2(umax, vmin),
+		vec2(umin, vmax),
+		vec2(umax, vmax),
+		vec2(umin, vmax),
+		vec2(umax, vmax),
+		vec2(umin, vmin),
+		vec2(umax, vmin)
 	};
 
 	attribute_array_binding::set_global_attribute_array(ctx, pos_idx, positions, 4);
@@ -951,7 +951,7 @@ bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling tex
 		T[5] = T[7] = float(1.0 + 0.5 / tex_res[1]);
 	}
 	ctx.push_window_transformation_array();
-	ctx.set_viewport(render_types::ivec4(0, 0, tex_res[0], tex_res[1]));
+	ctx.set_viewport(ivec4(0, 0, tex_res[0], tex_res[1]));
 	int slice_coord_loc = prog.get_uniform_location(ctx, "slice_coord");
 	// go through slices
 	for (int i = 0; i < (int) tex_res[2]; i++) {

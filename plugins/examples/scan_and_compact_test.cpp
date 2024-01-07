@@ -29,7 +29,7 @@ public:
 	{
 		view_ptr = nullptr;
 		n = 10000;
-		sphere_style.surface_color = rgb(0.5f);
+		sphere_style.surface_color = cgv::rgb(0.5f);
 		sphere_style.map_color_to_material = cgv::render::CM_COLOR;
 		do_sort = true;
 	}
@@ -130,11 +130,11 @@ public:
 		std::mt19937 rng(42);
 		std::uniform_real_distribution<float> snorm_distr(-1.0f, 1.0f);
 
-		rgb green(0.0f, 1.0f, 0.0f);
-		rgb red(1.0f, 0.0f, 0.0f);
+		cgv::rgb green(0.0f, 1.0f, 0.0f);
+		cgv::rgb red(1.0f, 0.0f, 0.0f);
 
 		for(unsigned i = 0; i < n; ++i) {
-			vec3 pos(
+			cgv::vec3 pos(
 				snorm_distr(rng),
 				snorm_distr(rng),
 				snorm_distr(rng)
@@ -143,7 +143,7 @@ public:
 			float t = 0.5f * snorm_distr(rng) + 0.5f;
 			float rad = cgv::math::lerp(rad_min, rad_max, t);
 
-			rgb col = (1.0f - t)*green + t*red;
+			cgv::rgb col = (1.0f - t)*green + t*red;
 
 			spheres.add(pos, col, rad);
 			spheres.add_index(i);
