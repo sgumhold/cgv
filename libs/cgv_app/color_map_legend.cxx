@@ -198,11 +198,11 @@ void color_map_legend::create_gui_impl() {
 	add_member_control(this, "Show Opacity", show_opacity, "check");
 }
 
-void color_map_legend::set_color_map(cgv::render::context& ctx, cgv::render::color_map& cm) {
+void color_map_legend::set_color_map(cgv::render::context& ctx, const cgv::render::color_map& cm) {
 
 	cgv::render::TextureFilter filter = cgv::render::TF_LINEAR;
 	if(cm.has_texture_support()) {
-		cgv::render::gl_color_map* gl_cm_ptr = dynamic_cast<cgv::render::gl_color_map*>(&cm);
+		const cgv::render::gl_color_map* gl_cm_ptr = dynamic_cast<const cgv::render::gl_color_map*>(&cm);
 		filter = gl_cm_ptr->is_linear_filtering_enabled() ? cgv::render::TF_LINEAR : cgv::render::TF_NEAREST;
 	}
 

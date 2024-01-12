@@ -115,7 +115,7 @@ public:
 	void init_frame(cgv::render::context& ctx) override;
 	void draw_content(cgv::render::context& ctx) override;
 
-	void set_color_map(cgv::render::context& ctx, cgv::render::color_map& cm);
+	void set_color_map(cgv::render::context& ctx, const cgv::render::color_map& cm);
 
 	void set_width(size_t w);
 	void set_height(size_t h);
