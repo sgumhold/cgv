@@ -285,11 +285,11 @@ $(document).ready(function(){initNavTree('color__map__legend_8cxx_source.html','
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    add_member_control(<span class="keyword">this</span>, <span class="stringliteral">&quot;Show Opacity&quot;</span>, show_opacity, <span class="stringliteral">&quot;check&quot;</span>);</div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;}</div>
 <div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="keywordtype">void</span> color_map_legend::set_color_map(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx, cgv::render::color_map&amp; cm) {</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="keywordtype">void</span> color_map_legend::set_color_map(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx, <span class="keyword">const</span> cgv::render::color_map&amp; cm) {</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea">cgv::render::TextureFilter</a> filter = cgv::render::TF_LINEAR;</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    <span class="keywordflow">if</span>(cm.has_texture_support()) {</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        cgv::render::gl_color_map* gl_cm_ptr = <span class="keyword">dynamic_cast&lt;</span>cgv::render::gl_color_map*<span class="keyword">&gt;</span>(&amp;cm);</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        <span class="keyword">const</span> cgv::render::gl_color_map* gl_cm_ptr = <span class="keyword">dynamic_cast&lt;</span><span class="keyword">const </span>cgv::render::gl_color_map*<span class="keyword">&gt;</span>(&amp;cm);</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;        filter = gl_cm_ptr-&gt;is_linear_filtering_enabled() ? cgv::render::TF_LINEAR : cgv::render::TF_NEAREST;</div>
 <div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    }</div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
