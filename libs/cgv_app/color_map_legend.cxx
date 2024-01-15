@@ -6,6 +6,16 @@
 namespace cgv {
 namespace app {
 
+// local helpers
+namespace {
+	void prune_trailing_0 (std::string &decimal_str) {
+		if (decimal_str.front() != '0') {
+			decimal_str.erase(decimal_str.find_last_not_of('0')+1, std::string::npos);
+			decimal_str.erase(decimal_str.find_last_not_of('.')+1, std::string::npos);
+		}
+	}
+};
+
 color_map_legend::color_map_legend() {
 
 	set_name("Color Map Legend");
@@ -27,6 +37,7 @@ color_map_legend::color_map_legend() {
 	num_ticks = 3;
 	label_precision = 0;
 	label_auto_precision = true;
+	label_prune_trailing_zeros = false;
 	label_integer_mode = false;
 	title_align = AO_START;
 	show_opacity = true;
@@ -73,6 +84,7 @@ void color_map_legend::handle_member_change(const cgv::utils::pointer_test & m) 
 				num_ticks,
 				label_precision,
 				label_auto_precision,
+				label_prune_trailing_zeros,
 				label_integer_mode)) {
 		post_recreate_layout();
 	}
@@ -279,6 +291,11 @@ void color_map_legend::set_label_auto_precision(bool f) {
 	on_set(&label_auto_precision);
 }
 
+void color_map_legend::set_label_prune_trailing_zeros(bool f) {
+	label_prune_trailing_zeros = f;
+	on_set(&label_prune_trailing_zeros);
+}
+
 void color_map_legend::set_label_integer_mode(bool enabled) {
 	label_integer_mode = enabled;
 	on_set(&label_integer_mode);
@@ -371,8 +388,13 @@ void color_map_legend::create_labels() {
 
 		if(label_integer_mode)
 			str = std::to_string(static_cast<int>(round(val)));
-		else
-			str = cgv::utils::to_string(val, -1, precision, /*fixed*/true);
+		else {
+			str = cgv::utils::to_string(
+				val, -1, precision, /*fixed*/std::abs(val) >= 10 // prevent scientfic notation for two-digit and up numbers
+			);
+			if (label_prune_trailing_zeros)
+				prune_trailing_0(str);
+		}
 
 		labels.add_text(str, ivec2(0), cgv::render::TextAlignment::TA_NONE);
 		max_length = std::max(max_length, labels.ref_texts().back().size.x());
