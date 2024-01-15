@@ -1,6 +1,7 @@
 var namespacecgv =
 [
     [ "app", null, [
+      [ "anonymous_namespace{color_map_legend.cxx}", "namespacecgv_1_1app_1_1anonymous__namespace_02color__map__legend_8cxx_03.html", null ],
       [ "application_plugin_base", "classcgv_1_1app_1_1application__plugin__base.html", "classcgv_1_1app_1_1application__plugin__base" ],
       [ "generic_application_plugin", "classcgv_1_1app_1_1generic__application__plugin.html", "classcgv_1_1app_1_1generic__application__plugin" ],
       [ "application_plugin", "classcgv_1_1app_1_1application__plugin.html", "classcgv_1_1app_1_1application__plugin" ]
