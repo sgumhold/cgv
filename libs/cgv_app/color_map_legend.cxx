@@ -9,7 +9,8 @@ namespace app {
 // local helpers
 namespace {
 	void prune_trailing_0 (std::string &decimal_str) {
-		if (decimal_str.front() != '0') {
+		// make sure to only touch numbers with more than 1 digit
+		if (decimal_str.length() > 1) {
 			decimal_str.erase(decimal_str.find_last_not_of('0')+1, std::string::npos);
 			decimal_str.erase(decimal_str.find_last_not_of('.')+1, std::string::npos);
 		}
@@ -204,9 +205,10 @@ void color_map_legend::create_gui_impl() {
 	add_member_control(this, "Label Alignment", layout.label_alignment, "dropdown", "enums='-,Before,Inside,After'");
 
 	add_member_control(this, "Ticks", num_ticks, "value", "min=2;max=10;step=1");
-	add_member_control(this, "Number Precision", label_precision, "value", "w=60;min=0;max=10;step=1", " ");
-	add_member_control(this, "Auto", label_auto_precision, "check", "w=44", " ");
-	add_member_control(this, "Integers", label_integer_mode, "check", "w=72");
+	add_member_control(this, "Number Precision", label_precision, "value", "w=28;min=0;max=10;step=1", " ");
+	add_member_control(this, "Auto", label_auto_precision, "check", "w=52", "");
+	add_member_control(this, "Prune 0s", label_prune_trailing_zeros, "check", "w=74", "");
+	add_member_control(this, "Int", label_integer_mode, "check", "w=40");
 	add_member_control(this, "Show Opacity", show_opacity, "check");
 }
 
@@ -390,7 +392,7 @@ void color_map_legend::create_labels() {
 			str = std::to_string(static_cast<int>(round(val)));
 		else {
 			str = cgv::utils::to_string(
-				val, -1, precision, /*fixed*/std::abs(val) >= 10 // prevent scientfic notation for two-digit and up numbers
+				val, -1, precision, true/*fixed*///std::abs(val) >= 10 // prevent scientfic notation for two-digit and up numbers
 			);
 			if (label_prune_trailing_zeros)
 				prune_trailing_0(str);
