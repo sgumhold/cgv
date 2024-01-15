@@ -150,7 +150,7 @@ $(document).ready(function(){initNavTree('base__provider_8cxx_source.html',''); 
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordflow">if</span> (*p == <span class="charliteral">&#39;\n&#39;</span>)</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            ++line_nr;</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    error += <a class="code" href="namespacecgv_1_1utils.html#a6144ceadd253c1ad3a7c0095712d8075">to_string</a>(line_nr);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    error += <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">to_string</a>(line_nr);</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    error += <span class="stringliteral">&quot;) : &quot;</span>;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordflow">return</span> error;</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}</div>
@@ -305,7 +305,7 @@ $(document).ready(function(){initNavTree('base__provider_8cxx_source.html',''); 
 <div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        }</div>
 <div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        <span class="comment">// continue if no command found</span></div>
 <div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;        <span class="keywordflow">if</span> (cis[j].cmd_id == CMD_LAST) {</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;            std::cerr &lt;&lt; error_start(T[i].begin) &lt;&lt; <span class="stringliteral">&quot;command &quot;</span> &lt;&lt; <a class="code" href="namespacecgv_1_1utils.html#a6144ceadd253c1ad3a7c0095712d8075">to_string</a>(T[i]).c_str() &lt;&lt; <span class="stringliteral">&quot; not known&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;            std::cerr &lt;&lt; error_start(T[i].begin) &lt;&lt; <span class="stringliteral">&quot;command &quot;</span> &lt;&lt; <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">to_string</a>(T[i]).c_str() &lt;&lt; <span class="stringliteral">&quot; not known&quot;</span> &lt;&lt; std::endl;</div>
 <div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;            ++i;</div>
 <div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;            <span class="keywordflow">continue</span>;</div>
 <div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        }</div>
@@ -317,7 +317,7 @@ $(document).ready(function(){initNavTree('base__provider_8cxx_source.html',''); 
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;            <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        }</div>
 <div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        <span class="keywordflow">if</span> (T[i] != <span class="stringliteral">&quot;(&quot;</span>) {</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;            std::cerr &lt;&lt; error_start(T[i].begin) &lt;&lt; <span class="stringliteral">&quot;expected ( after command &quot;</span> &lt;&lt; ci.command &lt;&lt; <span class="stringliteral">&quot; but found &quot;</span> &lt;&lt; <a class="code" href="namespacecgv_1_1utils.html#a6144ceadd253c1ad3a7c0095712d8075">to_string</a>(T[i]).c_str() &lt;&lt; <span class="stringliteral">&quot; instead&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;            std::cerr &lt;&lt; error_start(T[i].begin) &lt;&lt; <span class="stringliteral">&quot;expected ( after command &quot;</span> &lt;&lt; ci.command &lt;&lt; <span class="stringliteral">&quot; but found &quot;</span> &lt;&lt; <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">to_string</a>(T[i]).c_str() &lt;&lt; <span class="stringliteral">&quot; instead&quot;</span> &lt;&lt; std::endl;</div>
 <div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;            <span class="keywordflow">continue</span>;</div>
 <div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        }</div>
 <div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        <span class="keywordtype">bool</span> terminate = <span class="keyword">false</span>;</div>
@@ -341,7 +341,7 @@ $(document).ready(function(){initNavTree('base__provider_8cxx_source.html',''); 
 <div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;            <span class="keywordflow">else</span> {</div>
 <div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;                <span class="keywordflow">if</span> (last_was_argument) {</div>
 <div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                    args.back() += <span class="stringliteral">&quot; &quot;</span>;</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;                    args.back() += <a class="code" href="namespacecgv_1_1utils.html#a6144ceadd253c1ad3a7c0095712d8075">to_string</a>(T[i]);</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;                    args.back() += <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">to_string</a>(T[i]);</div>
 <div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;                }</div>
 <div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;                <span class="keywordflow">else</span> <span class="keywordflow">if</span> (args.size() &lt; ci.nr_arguments) {</div>
 <div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;                    <span class="keywordflow">if</span> (to_lower(ci.arguments[args.size()]) == <span class="charliteral">&#39;s&#39;</span>) {</div>
@@ -354,7 +354,7 @@ $(document).ready(function(){initNavTree('base__provider_8cxx_source.html',''); 
 <div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;                            --T[i].end;</div>
 <div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;                        }</div>
 <div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;                    }</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;                    args.push_back(<a class="code" href="namespacecgv_1_1utils.html#a6144ceadd253c1ad3a7c0095712d8075">to_string</a>(T[i]));</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;                    args.push_back(<a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">to_string</a>(T[i]));</div>
 <div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;                }</div>
 <div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;                last_was_argument = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;            }</div>
@@ -554,7 +554,7 @@ $(document).ready(function(){initNavTree('base__provider_8cxx_source.html',''); 
 <div class="ttc" id="anamespacecgv_1_1gui_html_a24b531058de9d4333ab8541c302587d7"><div class="ttname"><a href="namespacecgv_1_1gui.html#a24b531058de9d4333ab8541c302587d7">cgv::gui::gui_group_ptr</a></div><div class="ttdeci">data::ref_ptr&lt; gui_group, true &gt; gui_group_ptr</div><div class="ttdoc">ref counted pointer to a gui group</div><div class="ttdef"><b>Definition:</b> <a href="gui__group_8h_source.html#l00033">gui_group.h:33</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1gui_html_aebf3fd94311cb8a2bcffb4634f1e73b1"><div class="ttname"><a href="namespacecgv_1_1gui.html#aebf3fd94311cb8a2bcffb4634f1e73b1">cgv::gui::control_ptr</a></div><div class="ttdeci">data::ref_ptr&lt; abst_control &gt; control_ptr</div><div class="ttdoc">ref counted pointer to abst control</div><div class="ttdef"><b>Definition:</b> <a href="control_8h_source.html#l00029">control.h:29</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html"><div class="ttname"><a href="namespacecgv_1_1utils.html">cgv::utils</a></div><div class="ttdoc">namespace that holds tools that dont fit any other namespace</div><div class="ttdef"><b>Definition:</b> <a href="advanced__scan_8cxx_source.html#l00004">advanced_scan.cxx:4</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a6144ceadd253c1ad3a7c0095712d8075"><div class="ttname"><a href="namespacecgv_1_1utils.html#a6144ceadd253c1ad3a7c0095712d8075">cgv::utils::to_string</a></div><div class="ttdeci">std::string to_string(const T &amp;v, unsigned int w=-1, unsigned int p=-1)</div><div class="ttdoc">convert a numeric type T into string of width w and precision p</div><div class="ttdef"><b>Definition:</b> <a href="convert__string_8h_source.html#l00018">convert_string.h:18</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a4f918e840e035c5c0ff32d6caaa8a78a"><div class="ttname"><a href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">cgv::utils::to_string</a></div><div class="ttdeci">std::string to_string(const T &amp;v, unsigned int w=-1, unsigned int p=-1, bool fixed=false)</div><div class="ttdoc">convert a numeric type T into string of width w and precision p</div><div class="ttdef"><b>Definition:</b> <a href="convert__string_8h_source.html#l00018">convert_string.h:18</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 <div class="ttc" id="astructcgv_1_1base_1_1command__info_html"><div class="ttname"><a href="structcgv_1_1base_1_1command__info.html">cgv::base::command_info</a></div><div class="ttdoc">a structure to store an analized command</div><div class="ttdef"><b>Definition:</b> <a href="register_8h_source.html#l00485">register.h:486</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

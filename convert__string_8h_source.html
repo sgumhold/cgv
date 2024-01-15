@@ -97,42 +97,44 @@ $(document).ready(function(){initNavTree('convert__string_8h_source.html',''); i
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">namespace </span>utils {</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a6144ceadd253c1ad3a7c0095712d8075">   18</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a9584ae56050ff7dd2b881c2b60efd55b">to_string</a>(<span class="keyword">const</span> T&amp; v, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> w = -1, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> p = -1)</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">   18</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a6093acec6246f04a8698328938b9f517">to_string</a>(<span class="keyword">const</span> T&amp; v, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> w = -1, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> p = -1, <span class="keywordtype">bool</span> fixed=<span class="keyword">false</span>)</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    std::stringstream ss;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordflow">if</span> (w != (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)-1)</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        ss &lt;&lt; std::setw(w);</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordflow">if</span> (p != (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)-1)</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        ss &lt;&lt; std::setprecision(p);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    ss &lt;&lt; v;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordflow">return</span> ss.str();</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;}</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#abbede1a9f8eb142937b0fb8dfd43f059">   31</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a9584ae56050ff7dd2b881c2b60efd55b">to_string</a>(<span class="keyword">const</span> T&amp; v, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> w, <span class="keywordtype">char</span> fill_char)</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;{</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    std::stringstream ss;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    ss &lt;&lt; std::setw(w) &lt;&lt; std::setfill(fill_char) &lt;&lt; v;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordflow">return</span> ss.str();</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;}</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">template</span> &lt;&gt; CGV_API std::string <a class="code" href="namespacecgv_1_1utils.html#a9584ae56050ff7dd2b881c2b60efd55b">to_string</a>(<span class="keyword">const</span> std::string&amp; v, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> w, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> p);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#af33afeb1f6c4584325695717d1300b44">   43</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a9a1535e8aa563c690fc1880c2842727d">from_string</a>(T&amp; v, <span class="keyword">const</span> std::string&amp; s)</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;{</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    std::stringstream ss(s);</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    ss &gt;&gt; v;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordflow">return</span> !ss.fail();</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;}</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">template</span> &lt;&gt; CGV_API <span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a9a1535e8aa563c690fc1880c2842727d">from_string</a>(std::string&amp; v, <span class="keyword">const</span> std::string&amp; s);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    }</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a9584ae56050ff7dd2b881c2b60efd55b"><div class="ttname"><a href="namespacecgv_1_1utils.html#a9584ae56050ff7dd2b881c2b60efd55b">cgv::utils::to_string</a></div><div class="ttdeci">std::string to_string(const std::string &amp;v, unsigned int w, unsigned int p)</div><div class="ttdoc">specialization of conversion from string to strings</div><div class="ttdef"><b>Definition:</b> <a href="convert__string_8cxx_source.html#l00007">convert_string.cxx:7</a></div></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordflow">if</span> (fixed)</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        ss &lt;&lt; std::fixed;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordflow">if</span> (w != (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)-1)</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        ss &lt;&lt; std::setw(w);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordflow">if</span> (p != (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)-1)</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        ss &lt;&lt; std::setprecision(p);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    ss &lt;&lt; v;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">return</span> ss.str();</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#abbede1a9f8eb142937b0fb8dfd43f059">   33</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a6093acec6246f04a8698328938b9f517">to_string</a>(<span class="keyword">const</span> T&amp; v, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> w, <span class="keywordtype">char</span> fill_char)</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;{</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    std::stringstream ss;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    ss &lt;&lt; std::setw(w) &lt;&lt; std::setfill(fill_char) &lt;&lt; v;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordflow">return</span> ss.str();</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;}</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">template</span> &lt;&gt; CGV_API std::string <a class="code" href="namespacecgv_1_1utils.html#a6093acec6246f04a8698328938b9f517">to_string</a>(<span class="keyword">const</span> std::string&amp; v, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> w, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> p, <span class="keywordtype">bool</span>);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#af33afeb1f6c4584325695717d1300b44">   45</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a9a1535e8aa563c690fc1880c2842727d">from_string</a>(T&amp; v, <span class="keyword">const</span> std::string&amp; s)</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;{</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    std::stringstream ss(s);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    ss &gt;&gt; v;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">return</span> !ss.fail();</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">template</span> &lt;&gt; CGV_API <span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a9a1535e8aa563c690fc1880c2842727d">from_string</a>(std::string&amp; v, <span class="keyword">const</span> std::string&amp; s);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    }</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a6093acec6246f04a8698328938b9f517"><div class="ttname"><a href="namespacecgv_1_1utils.html#a6093acec6246f04a8698328938b9f517">cgv::utils::to_string</a></div><div class="ttdeci">std::string to_string(const std::string &amp;v, unsigned int w, unsigned int p, bool)</div><div class="ttdoc">specialization of conversion from string to strings</div><div class="ttdef"><b>Definition:</b> <a href="convert__string_8cxx_source.html#l00007">convert_string.cxx:7</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a9a1535e8aa563c690fc1880c2842727d"><div class="ttname"><a href="namespacecgv_1_1utils.html#a9a1535e8aa563c690fc1880c2842727d">cgv::utils::from_string</a></div><div class="ttdeci">bool from_string(std::string &amp;v, const std::string &amp;s)</div><div class="ttdoc">specialization to extract string value from string</div><div class="ttdef"><b>Definition:</b> <a href="convert__string_8cxx_source.html#l00013">convert_string.cxx:13</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
