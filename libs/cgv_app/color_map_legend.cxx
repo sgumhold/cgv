@@ -367,12 +367,12 @@ void color_map_legend::create_labels() {
 		float t = fi / static_cast<float>(num_ticks - 1);
 		float val = cgv::math::lerp(range.x(), range.y(), t);
 
-		std::string str = "";
+		std::string str;
 
 		if(label_integer_mode)
 			str = std::to_string(static_cast<int>(round(val)));
 		else
-			str = cgv::utils::to_string(val, -1, precision);
+			str = cgv::utils::to_string(val, -1, precision, /*fixed*/true);
 
 		labels.add_text(str, ivec2(0), cgv::render::TextAlignment::TA_NONE);
 		max_length = std::max(max_length, labels.ref_texts().back().size.x());
