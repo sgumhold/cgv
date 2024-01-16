@@ -224,8 +224,8 @@ $(document).ready(function(){initNavTree('gamepad_8cxx_source.html',''); initRes
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        <span class="keyword">auto</span>* dip = get_device_info(device_handle);</div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <span class="keywordflow">if</span> (!dip)</div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        driver_index = dip-&gt;driver_index;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <span class="keywordflow">if</span> (driver_index &gt;= <a class="code" href="namespacevr.html#a2be412eba821df5b8ccc5c621055d4db">ref_drivers</a>().size())</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        driver_index = (unsigned)dip-&gt;driver_index;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        if (driver_index &gt;= <a class="code" href="namespacevr.html#a2be412eba821df5b8ccc5c621055d4db">ref_drivers</a>().size())</div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    }</div>
