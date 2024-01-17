@@ -119,6 +119,9 @@ Public Types</h2></td></tr>
 <tr class="memitem:a6da4b7646b01842871acc2e4981c89f7"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a6da4b7646b01842871acc2e4981c89f7">IsosurfaceMode</a> {  }</td></tr>
 <tr class="memdesc:a6da4b7646b01842871acc2e4981c89f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">mode of a single supported isosurface  <a href="structcgv_1_1render_1_1volume__render__style.html#a6da4b7646b01842871acc2e4981c89f7">More...</a><br /></td></tr>
 <tr class="separator:a6da4b7646b01842871acc2e4981c89f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9267cfcf7c55547a335c0fedf707bdc7"><td class="memItemLeft" align="right" valign="top"><a id="a9267cfcf7c55547a335c0fedf707bdc7"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a9267cfcf7c55547a335c0fedf707bdc7">SliceMode</a> </td></tr>
+<tr class="memdesc:a9267cfcf7c55547a335c0fedf707bdc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">mode of slice rendering <br /></td></tr>
+<tr class="separator:a9267cfcf7c55547a335c0fedf707bdc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -197,6 +200,18 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="str
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a61e23537b6d0702534cfbf945cc6dfd9">isosurface_color_from_transfer_function</a></td></tr>
 <tr class="memdesc:a61e23537b6d0702534cfbf945cc6dfd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to color the isosurface based on the transfer function <br /></td></tr>
 <tr class="separator:a61e23537b6d0702534cfbf945cc6dfd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2340320da128529e551eb95676b567d"><td class="memItemLeft" align="right" valign="top"><a id="ad2340320da128529e551eb95676b567d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ad2340320da128529e551eb95676b567d">slice_axis</a></td></tr>
+<tr class="memdesc:ad2340320da128529e551eb95676b567d"><td class="mdescLeft">&#160;</td><td class="mdescRight">coordinate axis orthogonal to which slice is rendered <br /></td></tr>
+<tr class="separator:ad2340320da128529e551eb95676b567d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae63c8a7558fa6d59b41248c73552e19b"><td class="memItemLeft" align="right" valign="top"><a id="ae63c8a7558fa6d59b41248c73552e19b"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ae63c8a7558fa6d59b41248c73552e19b">slice_coordinate</a></td></tr>
+<tr class="memdesc:ae63c8a7558fa6d59b41248c73552e19b"><td class="mdescLeft">&#160;</td><td class="mdescRight">coordinate value along axis defining slice in range [0,1] <br /></td></tr>
+<tr class="separator:ae63c8a7558fa6d59b41248c73552e19b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8929cf23e3b8ee46e67c3c6d7eac8a4b"><td class="memItemLeft" align="right" valign="top"><a id="a8929cf23e3b8ee46e67c3c6d7eac8a4b"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#a8929cf23e3b8ee46e67c3c6d7eac8a4b">slice_opacity</a></td></tr>
+<tr class="memdesc:a8929cf23e3b8ee46e67c3c6d7eac8a4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">in case of transparent mode, slice opacity <br /></td></tr>
+<tr class="separator:a8929cf23e3b8ee46e67c3c6d7eac8a4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade3c6324e8ad62a764e67664511bbad0"><td class="memItemLeft" align="right" valign="top"><a id="ade3c6324e8ad62a764e67664511bbad0"></a>
 <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">box3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1volume__render__style.html#ade3c6324e8ad62a764e67664511bbad0">clip_box</a></td></tr>
 <tr class="memdesc:ade3c6324e8ad62a764e67664511bbad0"><td class="mdescLeft">&#160;</td><td class="mdescRight">a bounding box used to define a subspace of the volume to be visualized <br /></td></tr>
