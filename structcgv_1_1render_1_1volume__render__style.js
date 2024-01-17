@@ -11,6 +11,7 @@ var structcgv_1_1render_1_1volume__render__style =
       [ "IM_ISOVALUE", "structcgv_1_1render_1_1volume__render__style.html#a6da4b7646b01842871acc2e4981c89f7a635373527c10c077e9c1d3b456f956f2", null ],
       [ "IM_ALPHA_THRESHOLD", "structcgv_1_1render_1_1volume__render__style.html#a6da4b7646b01842871acc2e4981c89f7a12765478f53594623c24bb776689f893", null ]
     ] ],
+    [ "SliceMode", "structcgv_1_1render_1_1volume__render__style.html#a9267cfcf7c55547a335c0fedf707bdc7", null ],
     [ "volume_render_style", "structcgv_1_1render_1_1volume__render__style.html#aacc940494f593fa97d6e30cfd5839198", null ],
     [ "ambient_strength", "structcgv_1_1render_1_1volume__render__style.html#a192582d878ccb7ce636f32eb519180f2", null ],
     [ "clip_box", "structcgv_1_1render_1_1volume__render__style.html#ade3c6324e8ad62a764e67664511bbad0", null ],
@@ -27,6 +28,9 @@ var structcgv_1_1render_1_1volume__render__style =
     [ "light_local_to_eye", "structcgv_1_1render_1_1volume__render__style.html#a0050c7a4742ce78f1e03ee5e377f37dd", null ],
     [ "roughness", "structcgv_1_1render_1_1volume__render__style.html#ab3a1c304c9c6709b0c4f5ec534502a22", null ],
     [ "scale_adjustment_factor", "structcgv_1_1render_1_1volume__render__style.html#a7df7161a9db5e2aac43be8fb04550f03", null ],
+    [ "slice_axis", "structcgv_1_1render_1_1volume__render__style.html#ad2340320da128529e551eb95676b567d", null ],
+    [ "slice_coordinate", "structcgv_1_1render_1_1volume__render__style.html#ae63c8a7558fa6d59b41248c73552e19b", null ],
+    [ "slice_opacity", "structcgv_1_1render_1_1volume__render__style.html#a8929cf23e3b8ee46e67c3c6d7eac8a4b", null ],
     [ "specular_color_mix", "structcgv_1_1render_1_1volume__render__style.html#aa700054fd154b3b4e52b05e2285fa25c", null ],
     [ "specular_strength", "structcgv_1_1render_1_1volume__render__style.html#a18f34a3724ce6a2ae8c9100f8ed01c9c", null ],
     [ "use_gradient_texture", "structcgv_1_1render_1_1volume__render__style.html#ac7496465448f83cbe24dcaca237f6b5a", null ]
