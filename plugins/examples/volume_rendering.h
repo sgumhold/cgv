@@ -25,7 +25,7 @@ protected:
 	cgv::app::color_map_editor_ptr transfer_function_editor_ptr;
 	cgv::app::color_map_legend_ptr transfer_function_legend_ptr;
 
-	/// resolution of the volume
+		/// resolution of the volume
 	uvec3 vres;
 	/// spacing of the voxels
 	vec3 vspacing;
@@ -36,7 +36,8 @@ protected:
 	std::vector<float> vol_data;
 	box3 volume_bounding_box;
 	cgv::render::texture volume_tex;
-	
+	cgv::render::texture depth_tex;
+
 	
 	// Render members
 	/// store a pointer to the view
@@ -88,6 +89,7 @@ public:
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
 	void draw(cgv::render::context& ctx);
+	void after_finish(cgv::render::context& ctx);
 
 	// interface of provider
 	void create_gui();
