@@ -112,25 +112,25 @@ $(document).ready(function(){initNavTree('color__map_8h_source.html',''); initRe
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">unsigned</span> resolution = 256u;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">bool</span> use_interpolation = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    color_map() {</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        construct_interpolators();</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    }</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">virtual</span> ~color_map() {}</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> has_texture_support()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    }</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">void</span> construct_interpolators() {</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">if</span>(use_interpolation) {</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            color_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_linear_interpolator&lt;rgb&gt;&gt;();</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            opacity_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_linear_interpolator&lt;float&gt;&gt;();</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            color_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_nearest_interpolator&lt;rgb&gt;&gt;();</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            opacity_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_nearest_interpolator&lt;float&gt;&gt;();</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        }</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordtype">void</span> construct_interpolators() {</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordflow">if</span>(use_interpolation) {</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            color_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_linear_interpolator&lt;rgb&gt;&gt;();</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            opacity_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_linear_interpolator&lt;float&gt;&gt;();</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            color_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_nearest_interpolator&lt;rgb&gt;&gt;();</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            opacity_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_nearest_interpolator&lt;float&gt;&gt;();</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        }</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    }</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    color_map() {</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        construct_interpolators();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    }</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">virtual</span> ~color_map() {}</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> has_texture_support()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">void</span> clear() {</div>
@@ -253,7 +253,7 @@ $(document).ready(function(){initNavTree('color__map_8h_source.html',''); initRe
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        std::vector&lt;rgb&gt; data = interpolate_color(<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(resolution));</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        </div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        std::vector&lt;uint8_t&gt; data_8(3 * data.size());</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; data.size(); ++i) {</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; data.size(); ++i) {</div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;            <a class="code" href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">rgb</a> col = data[i];</div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            data_8[3 * i + 0] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.R());</div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            data_8[3 * i + 1] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.G());</div>
@@ -283,7 +283,7 @@ $(document).ready(function(){initNavTree('color__map_8h_source.html',''); initRe
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;        std::vector&lt;rgba&gt; data = interpolate(<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(resolution));</div>
 <div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        std::vector&lt;uint8_t&gt; data_8(4 * data.size());</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; data.size(); ++i) {</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; data.size(); ++i) {</div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;            <a class="code" href="namespacecgv_1_1render.html#a7119f6c28a063b3cc9958b9db5ccde77">rgba</a> col = data[i];</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;            data_8[4 * i + 0] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.R());</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;            data_8[4 * i + 1] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.G());</div>

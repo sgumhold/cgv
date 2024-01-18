@@ -182,7 +182,6 @@ var NAVTREEINDEX36 =
 "named_8h_source.html":[12,0,1,0,18],
 "namespaceanonymous__namespace_02clod__point__renderer_8cxx_03.html":[10,0,0],
 "namespacecgv.html":[10,0,1],
-"namespacecgv_1_1app_1_1anonymous__namespace_02color__map__legend_8cxx_03.html":[10,0,1,0,0],
 "namespacecgv_1_1base.html":[10,0,1,2],
 "namespacecgv_1_1base.html#a09823546be3c2201d20125b59e10333b":[10,0,1,2,111],
 "namespacecgv_1_1base.html#a0e53bf7a9d7dbd6173cf988e3b2b6b92":[10,0,1,2,105],
@@ -249,5 +248,6 @@ var NAVTREEINDEX36 =
 "namespacecgv_1_1base.html#ac56137cd8bf24c23f7f6ef15a417bbdd":[10,0,1,2,56],
 "namespacecgv_1_1base.html#ac63edc5ab309dd943500adb7801deeb2":[10,0,1,2,79],
 "namespacecgv_1_1base.html#ac6fa99b284a53727252312a9814a263a":[10,0,1,2,94],
-"namespacecgv_1_1base.html#acc1c8267eac5b54dcab53b3adb1fa357":[10,0,1,2,47]
+"namespacecgv_1_1base.html#acc1c8267eac5b54dcab53b3adb1fa357":[10,0,1,2,47],
+"namespacecgv_1_1base.html#acf58539e451af7248fa0d2e64bbb48f5":[10,0,1,2,84]
 };
