@@ -527,6 +527,7 @@ var hierarchy =
     [ "cgv::type::traits::zero< T >", "structcgv_1_1type_1_1traits_1_1zero.html", null ],
     [ "cgv::type::variant< T >", "structcgv_1_1type_1_1variant.html", null ],
     [ "cgv::utils::big_binary_file", "classcgv_1_1utils_1_1big__binary__file.html", null ],
+    [ "cgv::utils::guid", "structcgv_1_1utils_1_1guid.html", null ],
     [ "cgv::utils::Profiler< T >", "classcgv_1_1utils_1_1Profiler.html", null ],
     [ "cgv::utils::progression", "structcgv_1_1utils_1_1progression.html", null ],
     [ "cgv::utils::statistics", "classcgv_1_1utils_1_1statistics.html", null ],
