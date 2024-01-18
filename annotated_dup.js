@@ -447,6 +447,7 @@ var annotated_dup =
         [ "line", "structcgv_1_1utils_1_1line.html", "structcgv_1_1utils_1_1line" ],
         [ "typed_token", "structcgv_1_1utils_1_1typed__token.html", "structcgv_1_1utils_1_1typed__token" ],
         [ "big_binary_file", "classcgv_1_1utils_1_1big__binary__file.html", "classcgv_1_1utils_1_1big__binary__file" ],
+        [ "guid", "structcgv_1_1utils_1_1guid.html", null ],
         [ "Profiler", "classcgv_1_1utils_1_1Profiler.html", null ],
         [ "progression", "structcgv_1_1utils_1_1progression.html", "structcgv_1_1utils_1_1progression" ],
         [ "statistics", "classcgv_1_1utils_1_1statistics.html", "classcgv_1_1utils_1_1statistics" ],

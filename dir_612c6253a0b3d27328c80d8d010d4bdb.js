@@ -17,6 +17,8 @@ var dir_612c6253a0b3d27328c80d8d010d4bdb =
     [ "dir.h", "dir_8h_source.html", null ],
     [ "file.cxx", "file_8cxx_source.html", null ],
     [ "file.h", "file_8h_source.html", null ],
+    [ "guid.cxx", "guid_8cxx_source.html", null ],
+    [ "guid.h", "guid_8h_source.html", null ],
     [ "lib_begin.h", "cgv_2utils_2lib__begin_8h_source.html", null ],
     [ "options.cxx", "options_8cxx_source.html", null ],
     [ "options.h", "options_8h.html", "options_8h" ],
