@@ -2,20 +2,10 @@
 
 #include <cgv/gui/theme_info.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/utils/scan.h>
 
 namespace cgv {
 namespace app {
-
-// local helpers
-namespace {
-	void prune_trailing_0 (std::string &decimal_str) {
-		// make sure to only touch numbers with more than 1 digit
-		if (decimal_str.length() > 1) {
-			decimal_str.erase(decimal_str.find_last_not_of('0')+1, std::string::npos);
-			decimal_str.erase(decimal_str.find_last_not_of('.')+1, std::string::npos);
-		}
-	}
-};
 
 color_map_legend::color_map_legend() {
 
@@ -394,8 +384,12 @@ void color_map_legend::create_labels() {
 			str = cgv::utils::to_string(
 				val, -1, precision, true/*fixed*///std::abs(val) >= 10 // prevent scientfic notation for two-digit and up numbers
 			);
-			if (label_prune_trailing_zeros)
-				prune_trailing_0(str);
+			if (label_prune_trailing_zeros) {
+				if (str.length() > 1) {
+					cgv::utils::rtrim(str, "0");
+					cgv::utils::rtrim(str, ".");
+				}
+			}
 		}
 
 		labels.add_text(str, ivec2(0), cgv::render::TextAlignment::TA_NONE);
