@@ -87,27 +87,28 @@ $(document).ready(function(){initNavTree('guid_8h_source.html',''); initResizabl
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">namespace </span>utils {</div>
-<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="structcgv_1_1utils_1_1guid.html">   10</a></span>&#160;        <span class="keyword">struct </span><a class="code" href="structcgv_1_1utils_1_1guid.html">guid</a></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            uint32_t d1;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            uint16_t d2, d3;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            uint8_t d4[8];</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        };</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keyword">extern</span> CGV_API <a class="code" href="structcgv_1_1utils_1_1guid.html">guid</a> <a class="code" href="namespacecgv_1_1utils.html#a5e1992716813938f2348612ed2de0e13">guid_from_string</a>(<span class="keyword">const</span> std::string&amp; str);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keyword">extern</span> CGV_API std::string <a class="code" href="namespacecgv_1_1utils.html#a6093acec6246f04a8698328938b9f517">to_string</a>(<span class="keyword">const</span> <a class="code" href="structcgv_1_1utils_1_1guid.html">guid</a>&amp; _id);</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    }</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;}</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;cstdint&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keyword">namespace </span>utils {</div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="structcgv_1_1utils_1_1guid.html">   11</a></span>&#160;        <span class="keyword">struct </span><a class="code" href="structcgv_1_1utils_1_1guid.html">guid</a></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        {</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            uint32_t d1;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            uint16_t d2, d3;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            uint8_t d4[8];</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        };</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keyword">extern</span> CGV_API <a class="code" href="structcgv_1_1utils_1_1guid.html">guid</a> <a class="code" href="namespacecgv_1_1utils.html#a5e1992716813938f2348612ed2de0e13">guid_from_string</a>(<span class="keyword">const</span> std::string&amp; str);</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keyword">extern</span> CGV_API std::string <a class="code" href="namespacecgv_1_1utils.html#a6093acec6246f04a8698328938b9f517">to_string</a>(<span class="keyword">const</span> <a class="code" href="structcgv_1_1utils_1_1guid.html">guid</a>&amp; _id);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    }</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;}</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a5e1992716813938f2348612ed2de0e13"><div class="ttname"><a href="namespacecgv_1_1utils.html#a5e1992716813938f2348612ed2de0e13">cgv::utils::guid_from_string</a></div><div class="ttdeci">guid guid_from_string(const std::string &amp;str)</div><div class="ttdoc">convert string to guid</div><div class="ttdef"><b>Definition:</b> <a href="guid_8cxx_source.html#l00005">guid.cxx:5</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a6093acec6246f04a8698328938b9f517"><div class="ttname"><a href="namespacecgv_1_1utils.html#a6093acec6246f04a8698328938b9f517">cgv::utils::to_string</a></div><div class="ttdeci">std::string to_string(const std::string &amp;v, unsigned int w, unsigned int p, bool)</div><div class="ttdoc">specialization of conversion from string to strings</div><div class="ttdef"><b>Definition:</b> <a href="convert__string_8cxx_source.html#l00007">convert_string.cxx:7</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
-<div class="ttc" id="astructcgv_1_1utils_1_1guid_html"><div class="ttname"><a href="structcgv_1_1utils_1_1guid.html">cgv::utils::guid</a></div><div class="ttdoc">simple struct to represent guid</div><div class="ttdef"><b>Definition:</b> <a href="guid_8h_source.html#l00010">guid.h:11</a></div></div>
+<div class="ttc" id="astructcgv_1_1utils_1_1guid_html"><div class="ttname"><a href="structcgv_1_1utils_1_1guid.html">cgv::utils::guid</a></div><div class="ttdoc">simple struct to represent guid</div><div class="ttdef"><b>Definition:</b> <a href="guid_8h_source.html#l00011">guid.h:12</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
