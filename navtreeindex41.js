@@ -1,6 +1,5 @@
 var NAVTREEINDEX41 =
 {
-"namespacemembers_func_c.html":[10,1,1,2],
 "namespacemembers_func_d.html":[10,1,1,3],
 "namespacemembers_func_e.html":[10,1,1,4],
 "namespacemembers_func_f.html":[10,1,1,5],
@@ -249,5 +248,6 @@ var NAVTREEINDEX41 =
 "provider_8h_source.html":[12,0,1,4,52],
 "proximity_8h_source.html":[12,0,1,5,48],
 "pthread__lib_8cxx_source.html":[12,0,1,7,20],
-"qem_8h_source.html":[12,0,1,5,49]
+"qem_8h_source.html":[12,0,1,5,49],
+"qr_8h_source.html":[12,0,1,5,50]
 };
