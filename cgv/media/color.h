@@ -10,7 +10,7 @@
 #include <math.h>
 
 namespace cgv {
-	namespace media {
+namespace media {
 
 template <typename T>
 struct color_one
@@ -780,5 +780,20 @@ std::istream& operator >> (std::istream& is, color<unsigned char,cm,am>& c) {
 	return is;
 }
 
-	}
-}
+} // namespace media
+
+/// @name Predefined Types
+/// @{
+
+/// declare rgb color type with 32 bit components
+typedef cgv::media::color<float, cgv::media::RGB> rgb;
+/// declare rgba color type with 32 bit components
+typedef cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> rgba;
+/// declare rgb color type with 8 bit components
+typedef cgv::media::color<cgv::type::uint8_type, cgv::media::RGB> rgb8;
+/// declare rgba color type with 8 bit components
+typedef cgv::media::color<cgv::type::uint8_type, cgv::media::RGB, cgv::media::OPACITY> rgba8;
+
+/// @}
+
+} // namespace cgv

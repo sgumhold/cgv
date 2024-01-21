@@ -5,7 +5,7 @@
 #include <cgv/math/fvec.h>
 
 namespace cgv {
-	namespace media {
+namespace media {
 
 /**
  * An axis aligned box, defined by to points: min and max
@@ -171,6 +171,24 @@ std::ostream& operator<<(std::ostream& out, const axis_aligned_box<T, N>& box)
 	return out << box.get_min_pnt() << "->" << box.get_max_pnt();
 }
 
+} // namespace media
 
-	}
-}
+/// @name Predefined Types
+/// @{
+
+/// declare type of 2d boxes
+typedef cgv::media::axis_aligned_box<float, 2> box2;
+/// declare type of 3d boxes
+typedef cgv::media::axis_aligned_box<float, 3> box3;
+/// declare type of 4d boxes
+typedef cgv::media::axis_aligned_box<float, 4> box4;
+/// declare type of 2d boxes
+typedef cgv::media::axis_aligned_box<double, 2> dbox2;
+/// declare type of 3d boxes
+typedef cgv::media::axis_aligned_box<double, 3> dbox3;
+/// declare type of 4d boxes
+typedef cgv::media::axis_aligned_box<double, 4> dbox4;
+
+/// @}
+
+} // namespace cgv

@@ -5,8 +5,7 @@
 #include <cassert>
 
 namespace cgv {
-	/// namespace with classes and algorithms for mathematics
-	namespace math {
+namespace math {
 
 
 
@@ -1375,9 +1374,16 @@ mat<T> dyad(const vec<T>& v, const vec<S>& w)
 	return m;
 }
 
+} // namespace math
 
+/// @name Predefined Types
+/// @{
 
-}
+/// declare type of matrices of varying dimensions
+typedef cgv::math::mat<float> matn;
+/// declare type of matrices of varying dimensions
+typedef cgv::math::mat<double> dmatn;
 
+/// @}
 
-}
+} // namespace cgv
