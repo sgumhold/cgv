@@ -62,7 +62,7 @@ void overlay::set_overlay_stretch(StretchOption stretch, vec2 percentual_size)
 void overlay::update_overlay_layout() {
 
 	ivec2 pos = margin;
-	ivec2 size = this->size;
+	ivec2 size = container.size;
 
 	ivec2 max_size = last_viewport_size - 2 * margin;
 
