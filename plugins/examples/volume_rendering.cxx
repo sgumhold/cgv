@@ -161,6 +161,56 @@ bool volume_viewer::init(cgv::render::context& ctx)
 	transfer_function.init(ctx);
 	load_transfer_function_preset();
 
+
+
+	auto pdt = []() {
+		GLboolean state;
+		glGetBooleanv(GL_DEPTH_TEST, &state);
+		std::cout << "Depth test is " << (state ? "enabled" : "disabled") << std::endl;
+	};
+
+	auto en = [&pdt, &ctx]() {
+		std::cout << "Enable" << std::endl;
+		ctx.enable_depth_test();
+		pdt();
+	};
+
+	auto di = [&pdt, &ctx]() {
+		std::cout << "Disable" << std::endl;
+		ctx.disable_depth_test();
+		pdt();
+	};
+
+	auto re = [&pdt, &ctx]() {
+		std::cout << "Restore" << std::endl;
+		ctx.restore_depth_test_state();
+		pdt();
+	};
+
+	std::cout << "Initial" << std::endl << std::endl;
+	pdt();
+
+	di();
+	re();
+
+	//en();
+	//di();
+	//en();
+	//
+	//re();
+	//re();
+	//re();
+	//re();
+
+
+
+
+
+
+
+
+
+
 	create_volume(ctx);
 	return true;
 }

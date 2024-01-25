@@ -642,6 +642,20 @@ protected:
 	std::stack<frame_buffer_base*> frame_buffer_stack;
 	/// stack of currently enabled shader programs
 	std::stack<shader_program_base*> shader_program_stack;
+
+
+
+
+
+
+
+	std::stack<bool> depth_test_stack;
+
+
+
+
+
+
 public:
 	/// check for current program, prepare it for rendering and return pointer to it
 	shader_program_base* get_current_program() const;
@@ -1203,6 +1217,22 @@ public:
 	virtual void recover_from_external_viewport_change(const ivec4& cgv_viewport_storage) = 0;
 	/// query the maximum number of supported window transformations, which is at least 1 
 	virtual unsigned get_max_window_transformation_array_size() const = 0;
+
+
+
+	
+	
+	virtual void enable_depth_test() {}
+	virtual void disable_depth_test() {}
+
+	virtual void restore_depth_test_state() {
+		if(depth_test_stack.empty())
+			error("context::pop_depth_test_state() ... attempt to pop depth test state from empty stack.");
+		else
+			depth_test_stack.pop();
+	}
+
+
 protected:
 	bool ensure_window_transformation_index(int& array_index);
 public:
