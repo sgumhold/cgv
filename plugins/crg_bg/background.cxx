@@ -133,4 +133,4 @@ public:
 #include "lib_begin.h"
 
 /// register a light interactor factory
-extern CGV_API cgv::base::object_registration<background> bg_reg("");
+CGV_API cgv::base::object_registration<background> bg_reg("");

@@ -1,6 +1,8 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
+
 #include <cgv/math/fvec.h>
 #include <cgv/math/fmat.h>
 #include <cgv/utils/file.h>
@@ -201,11 +203,7 @@ class CGV_API simple_mesh : public simple_mesh_base
 {
 public:
 	using numeric_type = T;
-	using simple_mesh_base::idx_type;
-	using simple_mesh_base::vec2i;
-	using simple_mesh_base::vec3i;
-	using simple_mesh_base::vec4i;
-	using simple_mesh_base::mat_type;
+	
 	/// type of axis aligned 3d box
 	typedef simple_mesh<T> mesh_type;
 	/// type of axis aligned 3d box

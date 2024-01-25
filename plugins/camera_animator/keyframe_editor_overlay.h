@@ -150,7 +150,7 @@ protected:
 
 	void draw_time_marker_and_labels(cgv::render::context& ctx, cgv::g2d::canvas& cnvs);
 
-	void init_styles(cgv::render::context& ctx) override;
+	void init_styles() override;
 	
 	virtual void create_gui_impl();
 

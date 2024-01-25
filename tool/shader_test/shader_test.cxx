@@ -114,7 +114,7 @@ struct fltk_gl_context : public gl::gl_context, public fltk::GlWindow
 };
 #endif
 
-bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool skip_comments = true)
+bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool skip_comments = true, bool skip_special_comments = false)
 {
 	std::string content = shader_code::read_code_file(in_fn);
 	if (content.empty())
@@ -153,10 +153,40 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 		switch (content[i]) {
 		case '/':
 			// in case of single line comment
-			if (last_is_slash)
-				// skip till end of line or end of content
-				do { ++i; } while (i < content.size() && content[i] != '\n');
-			else
+			if(last_is_slash) {
+				bool skip = true;
+				char special_char = ' ';
+				if(!skip_special_comments) {
+					unsigned ni = i + 1;
+					if(ni < content.size() && content[ni] == '?' || content[ni] == '!') {
+						special_char = content[ni];
+						skip = false;
+					}
+				}
+
+				if(skip) {
+					// skip till end of line or end of content
+					do { ++i; } while(i < content.size() && content[i] != '\n');
+				} else {
+					// put second slash
+					os << "/";
+					++written_chars;
+
+					// print all characters till end of line or end of content
+					while(i < content.size() && content[i] != '\n') {
+						switch(content[i]) {
+						case '\t': os << "\\t"; ++written_chars; break;
+						case '"': os << "\\\""; written_chars += 2; break;
+						default: os << content[i]; ++written_chars; break;
+						}
+						++i;
+					}
+
+					// put newline
+					os << "\\n\\\n";
+					written_chars += 3;
+				}
+			} else
 				new_last_is_slash = true;
 			break;
 		case '*':

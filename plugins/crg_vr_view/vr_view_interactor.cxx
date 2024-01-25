@@ -1038,8 +1038,8 @@ bool vr_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 #include <cgv/base/register.h>
 
 /// register a newly created cube with the name "cube1" as constructor argument
-extern cgv::base::object_registration_1<vr_view_interactor,const char*> 
- obj1("vr interactor", "registration of vr interactor");
+cgv::base::object_registration_1<vr_view_interactor,const char*> 
+ vr_interactor_reg("vr interactor", "registration of vr interactor");
 
 // make sure shaders are embedded for single executable builds
 #ifdef REGISTER_SHADER_FILES

@@ -7,7 +7,7 @@ addIncDirs=[CGV_DIR."/libs", CGV_DIR."/libs/delaunay"];
 addProjectDeps=[
 		"cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal", "cgv_base", "cgv_media", 
 		"cgv_gui", "cgv_render","cgv_os", "fltk", "delaunay","cgv_gl", "cgv_proc", "plot", "glew", 
-		"cgv_viewer",
+		"cgv_viewer", "holo_disp",
 		"cg_fltk", "cg_ext", "crg_holo_view", "crg_antialias", "crg_depth_of_field", 
 		"crg_light", "crg_bg", "cg_meta", "cmi_io","cmv_avi", "crg_grid", "co_web", "cg_gamepad",
 		"cmf_tt_gl_font", "cgv_g2d", "cgv_gpgpu", "cgv_app", "cgv_post"

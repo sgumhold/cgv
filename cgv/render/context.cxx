@@ -146,7 +146,7 @@ context::context()
 	at_line_begin = true;
 	enable_vsync = true;
 	current_color = rgba(1, 1, 1, 1);
-	sRGB_framebuffer = true;
+	sRGB_framebuffer = false;
 	gamma3 = vec3(2.2f);
 
 	default_render_flags = RenderPassFlags(RPF_DEFAULT);
@@ -173,8 +173,12 @@ context::context()
 
 	default_light_source[0].set_local_to_eye(true);
 	default_light_source[0].set_position(vec3(-0.4f, 0.3f, 0.8f));
+	default_light_source[0].set_emission(rgb(0.74f));
+	default_light_source[0].set_ambient_scale(0.07f);
 	default_light_source[1].set_local_to_eye(true);
 	default_light_source[1].set_position(vec3(0.0f, 1.0f, 0.0f));
+	default_light_source[1].set_emission(rgb(0.74f));
+	default_light_source[1].set_ambient_scale(0.07f);
 	default_light_source_handles[0] = 0;
 	default_light_source_handles[1] = 0;
 

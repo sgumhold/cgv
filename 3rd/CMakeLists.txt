@@ -1,12 +1,25 @@
 # TODO old-style targets are temporarily decorated with the CGV-defined type property and
 # IDE project folder, remove when converting them to the new system
 add_subdirectory(ANN)
-set_target_properties(ann PROPERTIES CGVPROP_TYPE "library")
-set_target_properties(annf PROPERTIES CGVPROP_TYPE "library")
-set_target_properties(ann PROPERTIES FOLDER "3rd")
-set_target_properties(annf PROPERTIES FOLDER "3rd")
-set_target_properties(ann_static PROPERTIES FOLDER "_obj")
-set_target_properties(annf_static PROPERTIES FOLDER "_obj")
+set_target_properties(ann PROPERTIES
+	CGVPROP_TYPE "library"
+	FOLDER       "3rd"
+	CXX_STANDARD "14"
+)
+set_target_properties(annf PROPERTIES
+	CGVPROP_TYPE "library"
+	FOLDER       "3rd"
+	CXX_STANDARD "14"
+)
+set_target_properties(ann_static PROPERTIES
+	FOLDER       "_obj"
+	CXX_STANDARD "14"
+)
+set_target_properties(annf_static PROPERTIES
+	FOLDER       "_obj"
+	CXX_STANDARD "14"
+)
+
 add_subdirectory(fltk)
 set_target_properties(fltk PROPERTIES CGVPROP_TYPE "library")
 set_target_properties(fltk PROPERTIES FOLDER "3rd")
@@ -36,18 +49,38 @@ add_subdirectory(screen_capture_lite)
 set_target_properties(screen_capture_lite PROPERTIES CGVPROP_TYPE "library")
 set_target_properties(screen_capture_lite PROPERTIES FOLDER "3rd")
 set_target_properties(screen_capture_lite_static PROPERTIES FOLDER "_obj")
+if (NOT MSVC)
+        target_compile_options(screen_capture_lite PRIVATE -Wno-unused-variable -Wno-sign-compare)
+        target_compile_options(screen_capture_lite_static PRIVATE -Wno-unused-variable -Wno-sign-compare)
+endif()
+
 add_subdirectory(tiff)
-set_target_properties(tif PROPERTIES CGVPROP_TYPE "library")
-set_target_properties(tif PROPERTIES FOLDER "3rd")
-set_target_properties(tif_static PROPERTIES FOLDER "_obj")
+set_target_properties(tif PROPERTIES
+	CGVPROP_TYPE "library"
+	FOLDER        "3rd"
+	C_STANDARD   "90"
+)
+set_target_properties(tif_static PROPERTIES
+	FOLDER     "_obj"
+	C_STANDARD "90"
+)
+
 add_subdirectory(xml)
 set_target_properties(xml PROPERTIES CGVPROP_TYPE "library")
 set_target_properties(xml PROPERTIES FOLDER "3rd")
 set_target_properties(xml_static PROPERTIES FOLDER "_obj")
+
 add_subdirectory(zlib)
-set_target_properties(zlib PROPERTIES CGVPROP_TYPE "library")
-set_target_properties(zlib PROPERTIES FOLDER "3rd")
-set_target_properties(zlib_static PROPERTIES FOLDER "_obj")
+set_target_properties(zlib PROPERTIES
+	CGVPROP_TYPE "library"
+	FOLDER       "3rd"
+	C_STANDARD   "90"
+)
+set_target_properties(zlib_static PROPERTIES
+	FOLDER     "_obj"
+	C_STANDARD "90"
+)
+
 if(CGV_BUILD_WITH_AUDIO)
 	add_subdirectory(openal-soft)
 	add_subdirectory(sndfile)

@@ -16,6 +16,12 @@ void PushAttribute(tinyxml2::XMLPrinter& printer, const std::string& name, const
 	printer.PushAttribute(name.c_str(), value.c_str());
 };
 
+void PushAttribute(tinyxml2::XMLPrinter& printer, const std::string& name, bool value) {
+
+	std::string str = value ? "true" : "false";
+	PushAttribute(printer, name, str);
+};
+
 template<typename T, cgv::type::uint32_type N>
 void PushAttribute(tinyxml2::XMLPrinter& printer, const std::string& name, const cgv::math::fvec<T, N>& value) {
 

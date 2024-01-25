@@ -14,5 +14,11 @@ cgv_add_target(cg_fltk
 	OVERRIDE_FORCE_STATIC_DEFINE  CGV_GUI_FLTK_FORCE_STATIC
 )
 
+if (NOT MSVC)
+        target_compile_options(cg_fltk PRIVATE -Wno-deprecated-declarations)
+        target_compile_options(cg_fltk_static PRIVATE -Wno-deprecated-declarations)
+endif()
+
+
 install(TARGETS cg_fltk EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
 install(TARGETS cg_fltk_static EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})

@@ -21,7 +21,7 @@ public:
 	{
 		unsigned i, j;
 		unsigned pi1 = plot.add_sub_plot("x*y");
-		unsigned pi2 = plot.add_sub_plot("x²+y²");
+		unsigned pi2 = plot.add_sub_plot("x+y");
 		plot.set_samples_per_row(pi1, 30);
 		plot.set_samples_per_row(pi2, 50);
 		for (j = 0; j < 50; ++j) {
@@ -115,7 +115,7 @@ public:
 		// create two sub plots and configure their colors
 		unsigned p1 = plot.add_sub_plot("cos");
 		unsigned p2 = plot.add_sub_plot("sin");
-		unsigned p3 = plot.add_sub_plot("cos²");
+		unsigned p3 = plot.add_sub_plot("cos");
 		//plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f)); // will be set later to the attribute with index 2
 
 		plot.set_sub_plot_colors(p2, rgb(0.1f, 0.0f, 1.0f));

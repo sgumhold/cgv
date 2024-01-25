@@ -80,7 +80,7 @@ void label_drawable::set_coordinate_systems(const vr::vr_kit_state* state_ptr, c
 {
 	mat34 ID; ID.identity();
 	pose[0] = pose[1] = ID;
-	valid[0] = valid[1] = true, true;
+	valid[0] = valid[1] = true;
 	valid[2] = valid[3] = valid[4] = false;
 	if (table_pose_ptr)
 		pose[static_cast<int>(coordinate_system::table)] = *table_pose_ptr;

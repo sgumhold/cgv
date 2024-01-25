@@ -1,5 +1,3 @@
-#pragma once
-
 #include "outline.h"
 
 #include <random>

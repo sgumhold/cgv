@@ -27,6 +27,16 @@ protected:
 	/// whether to use interpolation between the samples or just take the nearest one
 	bool use_interpolation = true;
 	
+	void construct_interpolators() {
+		if(use_interpolation) {
+			color_interpolator_ptr = std::make_shared<cgv::math::piecewise_linear_interpolator<rgb>>();
+			opacity_interpolator_ptr = std::make_shared<cgv::math::piecewise_linear_interpolator<float>>();
+		} else {
+			color_interpolator_ptr = std::make_shared<cgv::math::piecewise_nearest_interpolator<rgb>>();
+			opacity_interpolator_ptr = std::make_shared<cgv::math::piecewise_nearest_interpolator<float>>();
+		}
+	}
+
 public:
 	color_map() {
 		construct_interpolators();
@@ -36,16 +46,6 @@ public:
 
 	virtual bool has_texture_support() const {
 		return false;
-	}
-
-	void construct_interpolators() {
-		if(use_interpolation) {
-			color_interpolator_ptr = std::make_shared<cgv::math::piecewise_linear_interpolator<rgb>>();
-			opacity_interpolator_ptr = std::make_shared<cgv::math::piecewise_linear_interpolator<float>>();
-		} else {
-			color_interpolator_ptr = std::make_shared<cgv::math::piecewise_nearest_interpolator<rgb>>();
-			opacity_interpolator_ptr = std::make_shared<cgv::math::piecewise_nearest_interpolator<float>>();
-		}
 	}
 
 	void clear() {
@@ -169,7 +169,7 @@ protected:
 		std::vector<rgb> data = interpolate_color(static_cast<size_t>(resolution));
 		
 		std::vector<uint8_t> data_8(3 * data.size());
-		for(unsigned i = 0; i < data.size(); ++i) {
+		for(size_t i = 0; i < data.size(); ++i) {
 			rgb col = data[i];
 			data_8[3 * i + 0] = static_cast<uint8_t>(255.0f * col.R());
 			data_8[3 * i + 1] = static_cast<uint8_t>(255.0f * col.G());
@@ -199,7 +199,7 @@ protected:
 		std::vector<rgba> data = interpolate(static_cast<size_t>(resolution));
 
 		std::vector<uint8_t> data_8(4 * data.size());
-		for(unsigned i = 0; i < data.size(); ++i) {
+		for(size_t i = 0; i < data.size(); ++i) {
 			rgba col = data[i];
 			data_8[4 * i + 0] = static_cast<uint8_t>(255.0f * col.R());
 			data_8[4 * i + 1] = static_cast<uint8_t>(255.0f * col.G());

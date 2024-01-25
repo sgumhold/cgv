@@ -39,23 +39,23 @@ void overlay::on_set(void* member_ptr) {
 	post_redraw();
 }
 
-void overlay::set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 _percentual_offset)
+void overlay::set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 percentual_offset)
 {
 	horizontal_alignment = horizontal;
 	vertical_alignment = vertical;
-	for (int i = 0; i < 2; ++i)
-		if (_percentual_offset[i] != -1.0f)
-			percentual_offset[i] = _percentual_offset[i];
+	for(int i = 0; i < 2; ++i)
+		if(percentual_offset[i] != -1.0f)
+			this->percentual_offset[i] = percentual_offset[i];
 	update_overlay_layout();
 }
 
 /// sets the stretch option
-void overlay::set_overlay_stretch(StretchOption _stretch, vec2 _percentual_size)
+void overlay::set_overlay_stretch(StretchOption stretch, vec2 percentual_size)
 {
-	stretch = _stretch;
-	for (int i = 0; i < 2; ++i)
-		if (_percentual_size[i] != -1.0f)
-			percentual_size[i] = _percentual_size[i];
+	this->stretch = stretch;
+	for(int i = 0; i < 2; ++i)
+		if(percentual_size[i] != -1.0f)
+			this->percentual_size[i] = percentual_size[i];
 	update_overlay_layout();
 }
 
@@ -136,7 +136,7 @@ bool overlay::ensure_viewport(cgv::render::context& ctx) {
 bool overlay::is_hit(const ivec2& mouse_pos) const {
 
 	ivec2 test_pos = cgv::g2d::get_transformed_mouse_pos(mouse_pos, last_viewport_size);
-	return container.is_inside(test_pos);
+	return container.contains(test_pos);
 };
 
 bool overlay::begin_overlay_gui() {

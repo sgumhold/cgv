@@ -1,0 +1,86 @@
+#version 430
+
+//***** begin interface of shape2d.glsl ***********************************
+uniform vec4 border_color = vec4(1.0);
+uniform float border_width = 0.0;
+
+uniform bool use_smooth_feather = false;
+
+float get_feather_width();
+vec2 get_shape_size();
+vec4 get_active_color(vec4 color);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+//***** begin interface of quadratic_bezier2d.glsl ***********************************
+vec2 ud_quadratic_bezier(in vec2 pos, in vec2 A, in vec2 B, in vec2 C);
+//***** end interface of quadratic_bezier2d.glsl ***********************************
+
+//***** begin interface of fragment2d.glfs ***********************************
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
+void finish_fragment2d(in vec4 color);
+void finish_fragment2d(in vec4 color, in vec2 texcoords);
+//***** end interface of fragment2d.glfs ***********************************
+
+uniform float width = 1.0;
+uniform float dash_length = 0.0;
+uniform float dash_ratio = 0.5;
+
+in flat vec4 color0_fs;
+in flat vec4 color1_fs;
+in flat vec4 color2_fs;
+in flat vec2 size_fs;
+in vec2 tex_coord_fs;
+in vec2 pix_coord_fs;
+in flat vec2 pos_a_fs;
+in flat vec2 pos_b_fs;
+in flat vec2 pos_c_fs;
+
+void main() {
+
+	vec2 dist_t = ud_quadratic_bezier(pix_coord_fs, pos_a_fs, pos_b_fs, pos_c_fs);
+
+	float dist = dist_t.x;
+	float t = dist_t.y;
+	dist -= 0.5 * width;
+
+	float fw = get_feather_width();
+	if(dist > 0.5*fw)
+		discard;
+
+	// texture coordinates
+	vec2 uv = vec2(t, -2.0 * dist / width);
+
+	float dist_since_start = t * (size_fs.x - fw);
+	dist_since_start = mod(dist_since_start, dash_length);
+	float dash_coord = dist_since_start - (0.5*dash_ratio*dash_length);
+	float dash_dist = abs(dash_coord);
+	float dash_limit = (0.5*dash_ratio*dash_length) - fw;
+
+	vec4 color;
+	if(t < 0.5)
+		color = mix(color0_fs, color1_fs, 2.0 * t);
+	else
+		color = mix(color1_fs, color2_fs, 2.0 * t - 1.0);
+	color = get_active_color(color);
+
+	float limit = -0.5*fw;
+	float inv_feather = 1.0 / fw;
+	
+	float feather_alpha = use_smooth_feather ?
+		1.0 - smoothstep(0.0, 1.0, (dist - limit) * inv_feather) :
+		1.0 - clamp((dist - limit) * inv_feather, 0.0, 1.0);
+
+	if(border_width > 0.0) {
+		float border_limit = -border_width - 0.5*fw;
+		float border_feather_alpha = clamp((dist - border_limit) * inv_feather, 0.0, 1.0);
+		color = mix(color, border_color, border_feather_alpha);
+	}
+	
+	float dash_alpha = 1.0 - clamp((dash_dist - dash_limit) * inv_feather, 0.0, 1.0);
+
+	color.a *= feather_alpha * dash_alpha;
+	
+	finish_fragment2d(color);
+}

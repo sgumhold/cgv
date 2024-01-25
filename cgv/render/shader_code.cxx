@@ -5,6 +5,7 @@
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/tokenizer.h>
 #include <cgv/ppp/ph_processor.h>
+#include <cgv/utils/dir.h>
 #include <cgv/utils/file.h>
 #include <cgv/type/variant.h>
 
@@ -12,15 +13,18 @@
 #pragma warning(disable:4996)
 #endif
 
-using namespace cgv::type;
-using namespace cgv::utils::file;
-using namespace cgv::utils;
 using namespace cgv::base;
+using namespace cgv::type;
+using namespace cgv::utils;
 
 namespace cgv {
 	namespace render {
 
 std::map<std::string, std::string> shader_code::code_cache;
+
+std::map<std::string, std::string> shader_code::shader_file_name_map;
+
+bool shader_code::shader_file_name_map_initialized = false;
 
 shader_config::shader_config()
 {
@@ -56,6 +60,7 @@ shader_config_ptr get_shader_config()
 				std::string(getenv("CGV_DIR")) + "/libs/cgv_app/glsl;" +
 				std::string(getenv("CGV_DIR")) + "/libs/cgv_g2d/glsl;" +
 				std::string(getenv("CGV_DIR")) + "/libs/cgv_gpgpu/glsl;" +
+				std::string(getenv("CGV_DIR")) + "/libs/holo_disp;" +
 				std::string(getenv("CGV_DIR")) + "/plugins/examples";
 	}
 	return config;
@@ -66,18 +71,18 @@ void shader_code::decode_if_base64(std::string& content) {
 	if (!content.empty()) {
 		// test if the first character is equal to the base64 prefix (ANSI 'paragraph' char with hexcode A7)
 		if(content[0] == char(0xA7))
-			content = cgv::utils::decode_base64(content.substr(1));
+			content = decode_base64(content.substr(1));
 	}
 #else
 	if (content.size() > 1) {
 		if ((uint8_t&)content[0]==0xC2 && (uint8_t&)content[1]==0xA7) // UTF-8 for '§'
-			content = cgv::utils::decode_base64(content.substr(2));
+			content = decode_base64(content.substr(2));
 		else if (
 			content.size() > 2 &&
 			(int)content[0] == -17 &&
 			(int)content[1] == -65 &&
 			(int)content[2] == -67) {
-			content = cgv::utils::decode_base64(content.substr(3));
+			content = decode_base64(content.substr(3));
 		}
 	}
 #endif
@@ -172,7 +177,7 @@ void shader_code::destruct(const context& ctx)
 	handle = 0;
 }
 
-std::string shader_code::find_file(const std::string& file_name)
+std::string shader_code::find_file(const std::string& file_name, bool search_exhaustive)
 {
 	if (file_name.substr(0, 6) == "str://" || file_name.substr(0, 6) == "res://") {
 		std::map<std::string, resource_file_info>::const_iterator it = ref_resource_file_map().find(file_name.substr(6));
@@ -181,11 +186,11 @@ std::string shader_code::find_file(const std::string& file_name)
 		else
 			return "";
 	}
-	if (exists(file_name))
+	if (file::exists(file_name))
 		return file_name;
 	
-	std::string try_name = cgv::utils::file::get_path(ref_prog_name()) + "/" + file_name;
-	if (exists(try_name))
+	std::string try_name = file::get_path(ref_prog_name()) + "/" + file_name;
+	if (file::exists(try_name))
 		return try_name;
 
 	std::map<std::string, resource_file_info>::const_iterator it = 
@@ -198,14 +203,55 @@ std::string shader_code::find_file(const std::string& file_name)
 	}
 	if (get_shader_config()->shader_path.empty()) {
 		try_name = std::string("glsl/") + file_name;
-		if (exists(try_name))
+		if (file::exists(try_name))
 			return try_name;
-		try_name = cgv::utils::file::get_path(ref_prog_name()) + "/glsl/" + file_name;
-		if (exists(try_name))
+		try_name = file::get_path(ref_prog_name()) + "/glsl/" + file_name;
+		if (file::exists(try_name))
 			return try_name;
 		return "";
 	}
-	return find_in_paths(file_name, get_shader_config()->shader_path, true);
+
+	if(!shader_file_name_map_initialized) {
+		std::string path_list = get_shader_config()->shader_path;
+
+		size_t pos = 0;
+		do {
+			size_t end_pos = path_list.find_first_of(';', pos);
+			std::string path;
+			if(end_pos == std::string::npos) {
+				path = path_list.substr(pos);
+				pos = path_list.length();
+			} else {
+				path = path_list.substr(pos, end_pos - pos);
+				pos = end_pos + 1;
+			}
+			
+			std::vector<std::string> file_names;
+			dir::glob(path, file_names, "*gl*", true);
+
+			for(const auto& file_name : file_names) {
+				std::string ext = file::get_extension(file_name);
+				if(ext.length() > 2) {
+					if(ext[0] == 'g' && ext[1] == 'l' ||
+					   ext[0] == 'p' && ext[1] == 'g' && ext[2] == 'l')
+						shader_file_name_map.emplace(file::get_file_name(file_name), file_name);
+				}
+			}
+		} while(pos < path_list.length());
+
+		shader_file_name_map_initialized = true;
+	}
+
+	std::map<std::string, std::string>::const_iterator file_name_map_it = shader_file_name_map.find(file_name);
+	if(file_name_map_it != shader_file_name_map.end()) {
+		try_name = file_name_map_it->second;
+		if(file::exists(try_name))
+		   return try_name;
+	} else if(!search_exhaustive) {
+		return "";
+	}
+
+	return file::find_in_paths(file_name, get_shader_config()->shader_path, true);
 }
 
 std::string shader_code::retrieve_code(const std::string& file_name, bool use_cache, std::string* _last_error) {
@@ -217,6 +263,8 @@ std::string shader_code::retrieve_code(const std::string& file_name, bool use_ca
 		if(it != code_cache.end()) {
 			source = it->second;
 		}
+	} else {
+		code_cache.clear();
 	}
 
 	if(source.empty())
@@ -230,7 +278,7 @@ std::string shader_code::retrieve_code(const std::string& file_name, bool use_ca
 
 ShaderType shader_code::detect_shader_type(const std::string& file_name)
 {
-	std::string ext = to_lower(get_extension(file_name));
+	std::string ext = to_lower(file::get_extension(file_name));
 	ShaderType st = ST_VERTEX;
 	if (ext == "glfs" || ext == "pglfs")
 		st = ST_FRAGMENT;
@@ -251,41 +299,41 @@ std::string shader_code::resolve_includes(const std::string& source, bool use_ca
 
 	std::string resolved_source = "";
 
-	std::vector<cgv::utils::line> lines;
-	cgv::utils::split_to_lines(source, lines);
+	std::vector<line> lines;
+	split_to_lines(source, lines);
 
 	for(size_t i = 0; i < lines.size(); ++i) {
-		std::string line = cgv::utils::to_string(lines[i]);
+		std::string current_line = to_string(lines[i]);
 
 		// search for the include identifier
-		size_t identifier_pos = line.find(identifier);
+		size_t identifier_pos = current_line.find(identifier);
 		if(identifier_pos != std::string::npos) {
 			// remove identifier and all content before; an include directive must be the first and only statement on a line
-			line.erase(0, identifier_pos + identifier.length());
+			current_line.erase(0, identifier_pos + identifier.length());
 			
 			// trim whitespace
-			cgv::utils::trim(line);
+			trim(current_line);
 
-			if(line.length() > 0) {
+			if(current_line.length() > 0) {
 				// remove quotation marks, leaving only the include path
-				std::string include_file_name = line.substr(1, line.length() - 2);
+				std::string include_file_name = current_line.substr(1, current_line.length() - 2);
 				std::string include_source = retrieve_code(include_file_name, use_cache, _last_error);
 
 				// check whether this file was already included and skip if this is the case
 				if(included_file_names.find(include_file_name) == included_file_names.end()) {
 					included_file_names.insert(include_file_name);
-					line = resolve_includes(include_source, use_cache, included_file_names, _last_error);
+					current_line = resolve_includes(include_source, use_cache, included_file_names, _last_error);
 				} else {
-					line = "";
+					current_line = "";
 				}
 			}
 
 			// skip this line if nothing needs to be included (removes the include statement from the code)
-			if(line == "")
+			if(current_line == "")
 				continue;
 		}
 
-		resolved_source += line + '\n';
+		resolved_source += current_line + '\n';
 	}
 
 	return resolved_source;
@@ -321,10 +369,10 @@ std::string shader_code::read_code_file(const std::string &file_name, std::strin
 #if WIN32
 	decode_if_base64(source);
 #endif
-	if (get_extension(file_name)[0] == 'p') {
+	if (file::get_extension(file_name)[0] == 'p') {
 		std::string code;
 		get_shader_config()->inserted_shader_file_names.clear();
-		std::string paths = get_path(fn);
+		std::string paths = file::get_path(fn);
 		if (!get_shader_config()->shader_path.empty())
 			paths = paths+";"+get_shader_config()->shader_path;
 
@@ -405,12 +453,12 @@ void shader_code::set_defines(std::string& source, const shader_define_map& defi
 void shader_code::set_vertex_attrib_locations(std::string& source)
 {
 	struct vertex_attribute {
-		cgv::utils::token tok;
+		token tok;
 		int location = -1;
 		std::string type = "";
 		std::string name = "";
 
-		vertex_attribute(const cgv::utils::token& tok) : tok(tok) {}
+		vertex_attribute(const token& tok) : tok(tok) {}
 
 		std::string to_string() {
 			std::string str = "layout (location = ";
@@ -422,8 +470,8 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 		}
 	};
 
-	std::vector<cgv::utils::token> parts;
-	std::vector<cgv::utils::token> tokens;
+	std::vector<token> parts;
+	std::vector<token> tokens;
 	std::vector<vertex_attribute> attribs;
 	std::vector<bool> attrib_flags;
 	size_t version_idx = 0;
@@ -431,9 +479,9 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 	bool is_core = false;
 	bool no_upgrade = false;
 
-	source = cgv::utils::strip_cpp_comments(source);
+	source = strip_cpp_comments(source);
 
-	cgv::utils::split_to_tokens(source, parts, "", true, "", "", ";\n");
+	split_to_tokens(source, parts, "", true, "", "", ";\n");
 
 	attrib_flags.resize(parts.size(), false);
 
@@ -441,7 +489,7 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 
 	// First read the version. The only thing allowed before the version statement is comments and empty lines.
 	// Both get removed bevore splitting the source into parts, so the first part must be the version.
-	cgv::utils::split_to_tokens(parts[part_idx], tokens, "", true, "", "", " \t");
+	split_to_tokens(parts[part_idx], tokens, "", true, "", "", " \t");
 
 	if(tokens.size() > 1 && tokens[0] == "#version") {
 		version_idx = part_idx;
@@ -460,7 +508,7 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 
 	// Search for the optional NO_UPGRADE define, which must come directly after the version statement.
 	tokens.clear();
-	cgv::utils::split_to_tokens(parts[part_idx], tokens, "", true, "", "", " \t");
+	split_to_tokens(parts[part_idx], tokens, "", true, "", "", " \t");
 
 	if(tokens.size() > 1 && tokens[0] == "#define") {
 		if(tokens[1] == "NO_UPGRADE") {
@@ -474,10 +522,10 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 		return;
 
 	// now get all vertex attributes
-	for(part_idx; part_idx < parts.size(); ++part_idx) {
+	for(; part_idx < parts.size(); ++part_idx) {
 		auto& tok = parts[part_idx];
 
-		while(tok.begin < tok.end && cgv::utils::is_space(*tok.begin))
+		while(tok.begin < tok.end && is_space(*tok.begin))
 			++tok.begin;
 
 		if(tok.size() > 2) {
@@ -494,7 +542,7 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 				if(c == ')')
 					--parentheses_count;
 
-				is_new_word = cgv::utils::is_space(c) || c == ')';
+				is_new_word = is_space(c) || c == ')';
 
 				if(c == 'i' && tok[i + 1] == 'n' && tok[i + 2] == ' ') {
 					if(was_new_word && parentheses_count == 0) {
@@ -518,7 +566,7 @@ void shader_code::set_vertex_attrib_locations(std::string& source)
 		auto& attrib = attribs[i];
 
 		tokens.clear();
-		cgv::utils::split_to_tokens(attrib.tok, tokens, "", true, "", "", " \t()");
+		split_to_tokens(attrib.tok, tokens, "", true, "", "", " \t()");
 
 		size_t size = tokens.size();
 

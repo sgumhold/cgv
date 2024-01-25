@@ -9,6 +9,7 @@ namespace g2d {
 msdf_font::msdf_font() {
 	initial_font_size = 0;
 	pixel_range = 0;
+	cap_height = 0.0f;
 }
 
 void msdf_font::manage_singleton(cgv::render::context& ctx, const std::string& class_name, int& ref_count, int ref_count_change) {
@@ -57,6 +58,47 @@ bool msdf_font::init(cgv::render::context& ctx) {
 	success &= load_atlas_texture(ctx, "res://" + font_name + "_atlas.png");
 	success &= load_atlas_metadata("res://" + font_name + "_meta.png");
 	return success;
+}
+
+float msdf_font::compute_length(const std::string& str, size_t end) const {
+	float length = 0.0f;
+	float acc_advance = 0.0f;
+
+	if(end == std::string::npos || end > str.length())
+		end = str.length();
+
+	for(size_t i = 0; i < end; ++i) {
+		char c = str[i];
+		const auto& glyph = get_glyph_info(static_cast<unsigned char>(c));
+		length = acc_advance + glyph.size.x();
+		acc_advance += glyph.advance;
+
+		// if the last character is a space add its advance to the length
+		if(i == end - 1 && c == ' ')
+			length += glyph.advance;
+	}
+
+	return length;
+}
+
+std::vector<cgv::render::vec4> msdf_font::create_vertex_data(const std::string& str) const {
+	std::vector<cgv::render::vec4> vertices;
+	vertices.reserve(2 * str.size());
+
+	float accumulated_advance = 0.0f;
+
+	for(char c : str) {
+		const auto& glyph = get_glyph_info(static_cast<unsigned char>(c));
+
+		vec2 position = glyph.position + vec2(accumulated_advance, 0.0f);
+		vec2 size = glyph.size;
+		accumulated_advance += glyph.advance;
+
+		vertices.emplace_back(position.x(), position.y(), size.x(), size.y());
+		vertices.emplace_back(glyph.texcoords);
+	}
+
+	return vertices;
 }
 
 bool msdf_font::enable(cgv::render::context& ctx) {
@@ -158,6 +200,14 @@ void msdf_font::compute_derived_glyph_attributes() {
 		glyph.size = pb - pa;
 		glyph.texcoords = glyph.atlas_bounds * inv_dimensions;
 	}
+
+	const glyph_info& glyph_m = get_glyph_info('M');
+	float baseline_offset = glyph_m.position.y();
+
+	for(glyph_info& glyph : glyphs)
+		glyph.position.y() -= baseline_offset;
+
+	cap_height = glyph_m.size.y();
 }
 
 msdf_font_regular& ref_msdf_font_regular(cgv::render::context& ctx, int ref_count_change) {

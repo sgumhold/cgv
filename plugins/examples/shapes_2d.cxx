@@ -17,8 +17,9 @@
 #include <cgv_g2d/canvas.h>
 #include <cgv_g2d/draggable.h>
 #include <cgv_g2d/draggable_collection.h>
+#include <cgv_g2d/generic_2d_render_data.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
-#include <cgv_g2d/rect.h>
+#include <cgv_g2d/trect.h>
 #include <cgv_g2d/shape2d_styles.h>
 
 using namespace cgv::render;
@@ -64,21 +65,18 @@ protected:
 	std::vector<point> points;
 	cgv::g2d::draggable_collection<point*> line_handles;
 	cgv::g2d::draggable_collection<point*> arrow_handles;
-	cgv::g2d::draggable_collection<point*> curve_handles;
+	cgv::g2d::draggable_collection<point*> quadratic_curve_handles;
+	cgv::g2d::draggable_collection<point*> cubic_curve_handles;
 	cgv::g2d::draggable_collection<point*> text_handles;
 	cgv::g2d::draggable_collection<point*> quad_handles;
 
-	cgv::render::generic_renderer line_renderer, spline_renderer, point_renderer;
+	cgv::render::generic_renderer line_renderer, quadratic_spline_renderer, cubic_spline_renderer, point_renderer;
 	
-	// TODO: find way to use ivec2 and vec2 as attribs
-	DEFINE_GENERIC_RENDER_DATA_CLASS(point_geometry, 1, vec2, position);
-	point_geometry draggable_points;
-
-	DEFINE_GENERIC_RENDER_DATA_CLASS(line_geometry, 2, vec2, position, rgba, color);
-	line_geometry lines, control_lines;
-
-	DEFINE_GENERIC_RENDER_DATA_CLASS(spline_geometry, 3, vec2, position, vec2, tangent, rgba, color);
-	spline_geometry curves;
+	cgv::g2d::generic_render_data_vec2 draggable_points, control_lines;
+	cgv::g2d::generic_render_data_vec2_rgba lines, quadratic_curves;
+	
+	DEFINE_GENERIC_RENDER_DATA_CLASS(cubic_spline_geometry, 3, vec2, position, vec2, tangent, rgba, color);
+	cubic_spline_geometry cubic_curves;
 
 	// shape appearance attributes
 	const rgba light_blue = rgba(0.7f, 0.7f, 1.0f, 1.0f);
@@ -127,7 +125,7 @@ public:
 	shapes_2d() : cgv::base::node("Shapes 2D Test") {
 		viewport_rect.position = ivec2(0);
 		viewport_rect.size = ivec2(-1);
-		
+
 		show_background = true;
 
 		canvas.register_shader("rectangle", cgv::g2d::shaders::rectangle);
@@ -138,14 +136,16 @@ public:
 		canvas.register_shader("grid", cgv::g2d::shaders::grid);
 
 		line_renderer = cgv::render::generic_renderer(cgv::g2d::shaders::line);
-		spline_renderer = cgv::render::generic_renderer(cgv::g2d::shaders::cubic_spline);
+		quadratic_spline_renderer = cgv::render::generic_renderer(cgv::g2d::shaders::quadratic_spline);
+		cubic_spline_renderer = cgv::render::generic_renderer(cgv::g2d::shaders::cubic_spline);
 		point_renderer = cgv::render::generic_renderer(cgv::g2d::shaders::circle);
 
 		text_align_h = text_align_v = cgv::render::TA_NONE;
 
 		// set callbacks for changes to draggable control points
 		line_handles.set_drag_callback(std::bind(&shapes_2d::create_line_render_data, this));
-		curve_handles.set_drag_callback(std::bind(&shapes_2d::create_curve_render_data, this));
+		quadratic_curve_handles.set_drag_callback(std::bind(&shapes_2d::create_curve_render_data, this));
+		cubic_curve_handles.set_drag_callback(std::bind(&shapes_2d::create_curve_render_data, this));
 		text_handles.set_drag_callback(std::bind(&shapes_2d::set_text_positions, this));
 	}
 	void stream_help(std::ostream& os) {
@@ -157,13 +157,15 @@ public:
 		mat3 M = get_view_matrix() * get_model_matrix();
 		arrow_handles.set_transformation(M);
 		line_handles.set_transformation(M);
-		curve_handles.set_transformation(M);
+		quadratic_curve_handles.set_transformation(M);
+		cubic_curve_handles.set_transformation(M);
 		text_handles.set_transformation(M);
 		quad_handles.set_transformation(M);
 
 		handled |= arrow_handles.handle(e, viewport_rect.size);
 		handled |= line_handles.handle(e, viewport_rect.size);
-		handled |= curve_handles.handle(e, viewport_rect.size);
+		handled |= quadratic_curve_handles.handle(e, viewport_rect.size);
+		handled |= cubic_curve_handles.handle(e, viewport_rect.size);
 		handled |= text_handles.handle(e, viewport_rect.size);
 		handled |= quad_handles.handle(e, viewport_rect.size);
 
@@ -175,7 +177,7 @@ public:
 				cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 				cgv::gui::MouseAction ma = me.get_action();
 
-				if(ma == cgv::gui::MA_DRAG && me.get_button_state() & cgv::gui::MB_MIDDLE_BUTTON) {
+				if(ma == cgv::gui::MA_DRAG && me.get_button_state() & cgv::gui::MB_RIGHT_BUTTON) {
 					view_params.translation += vec2((float)me.get_dx(), (float)-me.get_dy());
 				}
 
@@ -253,7 +255,8 @@ public:
 		success &= canvas.init(ctx);
 
 		success &= line_renderer.init(ctx);
-		success &= spline_renderer.init(ctx);
+		success &= quadratic_spline_renderer.init(ctx);
+		success &= cubic_spline_renderer.init(ctx);
 		success &= point_renderer.init(ctx);
 
 		set_default_styles();
@@ -292,7 +295,13 @@ public:
 		// add 2 control points for the line
 		points.push_back(point(vec2(100, 500)));
 		points.push_back(point(vec2(500, 600)));
-		// add 4 control points for the curve
+
+		// add 3 control points for the quadratic curve
+		points.push_back(point(vec2(300, 200)));
+		points.push_back(point(vec2(350, 300)));
+		points.push_back(point(vec2(400, 150)));
+
+		// add 4 control points for the cubic curve
 		points.push_back(point(vec2(600, 300)));
 		points.push_back(point(vec2(650, 400)));
 		points.push_back(point(vec2(700, 250)));
@@ -305,22 +314,27 @@ public:
 		points.push_back(point(ivec2(550, 450)));
 		
 		// put pointers to the control points into their respective draggables collection
-		arrow_handles.add(&points[0]);
-		arrow_handles.add(&points[1]);
+		int idx = 0;
+		arrow_handles.add(&points[idx++]);
+		arrow_handles.add(&points[idx++]);
 
-		line_handles.add(&points[2]);
-		line_handles.add(&points[3]);
+		line_handles.add(&points[idx++]);
+		line_handles.add(&points[idx++]);
 
-		curve_handles.add(&points[4]);
-		curve_handles.add(&points[5]);
-		curve_handles.add(&points[6]);
-		curve_handles.add(&points[7]);
+		quadratic_curve_handles.add(&points[idx++]);
+		quadratic_curve_handles.add(&points[idx++]);
+		quadratic_curve_handles.add(&points[idx++]);
 
-		text_handles.add(&points[8]);
-		text_handles.add(&points[9]);
+		cubic_curve_handles.add(&points[idx++]);
+		cubic_curve_handles.add(&points[idx++]);
+		cubic_curve_handles.add(&points[idx++]);
+		cubic_curve_handles.add(&points[idx++]);
 
-		quad_handles.add(&points[10]);
-		quad_handles.add(&points[11]);
+		text_handles.add(&points[idx++]);
+		text_handles.add(&points[idx++]);
+
+		quad_handles.add(&points[idx++]);
+		quad_handles.add(&points[idx++]);
 
 		create_line_render_data();
 		create_curve_render_data();
@@ -337,13 +351,15 @@ public:
 			canvas.set_resolution(ctx, viewport_rect.size);
 
 			set_resolution_uniform(ctx, line_renderer.ref_prog());
-			set_resolution_uniform(ctx, spline_renderer.ref_prog());
+			set_resolution_uniform(ctx, quadratic_spline_renderer.ref_prog());
+			set_resolution_uniform(ctx, cubic_spline_renderer.ref_prog());
 			set_resolution_uniform(ctx, point_renderer.ref_prog());
 
 			// update the constraint for all draggables
 			arrow_handles.set_constraint(viewport_rect);
 			line_handles.set_constraint(viewport_rect);
-			curve_handles.set_constraint(viewport_rect);
+			quadratic_curve_handles.set_constraint(viewport_rect);
+			cubic_curve_handles.set_constraint(viewport_rect);
 			text_handles.set_constraint(viewport_rect);
 			quad_handles.set_constraint(viewport_rect);
 		}
@@ -362,7 +378,7 @@ public:
 		canvas.push_modelview_matrix();
 		canvas.mul_modelview_matrix(ctx, get_view_matrix());
 		canvas.mul_modelview_matrix(ctx, get_model_matrix());
-		canvas.set_feather_scale(1.0f / view_params.scale);
+		canvas.set_zoom_factor(view_params.scale);
 
 		image_tex.enable(ctx, 0);
 
@@ -386,7 +402,7 @@ public:
 		auto& quad_prog = canvas.enable_shader(ctx, "quad");
 		quad_style.apply(ctx, quad_prog);
 		// takes 4 positions (must be convex)
-		canvas.draw_shape4(ctx, ivec2(400, 300), ivec2(480, 300), points[10].int_position(), points[11].int_position(), rgba(1, 1, 0, 1));
+		canvas.draw_shape4(ctx, ivec2(400, 300), ivec2(480, 300), points[13].int_position(), points[14].int_position(), rgba(1, 1, 0, 1));
 		canvas.disable_current_shader(ctx);
 
 		auto& arrow_prog = canvas.enable_shader(ctx, "arrow");
@@ -401,12 +417,19 @@ public:
 		line_prog.disable(ctx);
 		line_renderer.render(ctx, PT_LINES, lines);
 
-		shader_program& spline_prog = spline_renderer.ref_prog();
-		spline_prog.enable(ctx);
-		canvas.set_view(ctx, spline_prog);
-		line_style.apply(ctx, spline_prog);
-		spline_prog.disable(ctx);
-		spline_renderer.render(ctx, PT_LINES, curves);
+		shader_program& quadratic_spline_prog = quadratic_spline_renderer.ref_prog();
+		quadratic_spline_prog.enable(ctx);
+		canvas.set_view(ctx, quadratic_spline_prog);
+		line_style.apply(ctx, quadratic_spline_prog);
+		quadratic_spline_prog.disable(ctx);
+		quadratic_spline_renderer.render(ctx, PT_TRIANGLES, quadratic_curves);
+
+		shader_program& cubic_spline_prog = cubic_spline_renderer.ref_prog();
+		cubic_spline_prog.enable(ctx);
+		canvas.set_view(ctx, cubic_spline_prog);
+		line_style.apply(ctx, cubic_spline_prog);
+		cubic_spline_prog.disable(ctx);
+		cubic_spline_renderer.render(ctx, PT_LINES, cubic_curves);
 
 		image_tex.disable(ctx);
 
@@ -416,7 +439,7 @@ public:
 		draw_control_lines(ctx);
 		draw_draggables(ctx);
 
-		canvas.set_feather_scale(1.0f);
+		canvas.set_zoom_factor(1.0f);
 		canvas.pop_modelview_matrix(ctx);
 
 		glDisable(GL_BLEND);
@@ -466,28 +489,52 @@ public:
 		}
 		lines.set_out_of_date();
 	}
+	void create_quadratic_curve_render_data() {
+		
+	}
 	void create_curve_render_data() {
-		auto& control_points = curve_handles.ref_draggables();
+		control_lines.clear();
 
-		const rgba colors[2] = {
+		const rgba colors[3] = {
 			rgba(1.0f, 0.0f, 0.0f, 1.0f),
-			rgba(1.0f, 1.0f, 0.0f, 1.0f)
+			rgba(1.0f, 1.0f, 0.0f, 1.0f),
+			rgba(0.0f, 1.0f, 0.0f, 1.0f)
 		};
 
-		curves.clear();
-		control_lines.clear();
-		for(unsigned i = 0; i < 2; ++i) {
-			unsigned idx = 2*i;
-			unsigned si = idx;
-			unsigned ei = idx + 1;
-			unsigned pi = (i % 2) ? ei : si;
-			vec2 tangent = 3.0f * (control_points[ei]->position - control_points[si]->position);
+		{
+			auto& control_points = cubic_curve_handles.ref_draggables();
+
+			cubic_curves.clear();
 			
-			curves.add(control_points[pi]->position, tangent, colors[i]);
-			control_lines.add(control_points[si]->position, rgba(0.7f, 0.2f, 0.2f, 1.0f));
-			control_lines.add(control_points[ei]->position, rgba(0.7f, 0.2f, 0.2f, 1.0f));
+			for(unsigned i = 0; i < 2; ++i) {
+				unsigned idx = 2 * i;
+				unsigned si = idx;
+				unsigned ei = idx + 1;
+				unsigned pi = (i % 2) ? ei : si;
+				vec2 tangent = 3.0f * (control_points[ei]->position - control_points[si]->position);
+
+				cubic_curves.add(control_points[pi]->position, tangent, colors[i]);
+				control_lines.add(control_points[si]->position);
+				control_lines.add(control_points[ei]->position);
+			}
+
+			cubic_curves.set_out_of_date();
 		}
-		curves.set_out_of_date();
+		{
+			auto& control_points = quadratic_curve_handles.ref_draggables();
+
+			quadratic_curves.clear();
+			for(unsigned i = 0; i < 3; ++i)
+				quadratic_curves.add(control_points[i]->position, colors[i]);
+
+			control_lines.add(control_points[0]->position);
+			control_lines.add(control_points[1]->position);
+			control_lines.add(control_points[1]->position);
+			control_lines.add(control_points[2]->position);
+
+			quadratic_curves.set_out_of_date();
+		}
+		
 		control_lines.set_out_of_date();
 	}
 	void create_text_render_data() {
@@ -535,7 +582,8 @@ public:
 		grid_style.scale = 0.5f;
 
 		// set control line style
-		control_line_style.use_fill_color = false;
+		control_line_style.use_fill_color = true;
+		control_line_style.fill_color = rgba(0.7f, 0.2f, 0.2f, 1.0f);
 		control_line_style.width = 2.0f;
 		control_line_style.border_width = 0.0f;
 		control_line_style.dash_length = 10.0f;

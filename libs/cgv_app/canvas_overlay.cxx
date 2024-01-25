@@ -32,6 +32,8 @@ bool canvas_overlay::init(cgv::render::context& ctx) {
 	if(success)
 		init_overlay_style(ctx);
 
+	init_styles();
+
 	return success;
 }
 
@@ -61,11 +63,8 @@ void canvas_overlay::register_shader(const std::string& name, const std::string&
 
 void canvas_overlay::handle_theme_change(const cgv::gui::theme_info& theme) {
 	
-	cgv::render::context* ctx_ptr = get_context();
-	if(ctx_ptr)
-		init_styles(*ctx_ptr);
-
-	post_damage(false);
+	init_styles();
+	post_damage();
 }
 
 void canvas_overlay::post_damage(bool redraw) {

@@ -1,5 +1,3 @@
-#pragma once
-
 #include "screen_space_ambient_occlusion.h"
 
 #include <random>

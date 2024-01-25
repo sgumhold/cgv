@@ -1,5 +1,3 @@
-#pragma once
-
 #include "post_process_effect.h"
 
 namespace cgv {

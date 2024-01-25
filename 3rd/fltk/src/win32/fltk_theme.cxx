@@ -117,6 +117,7 @@ extern "C" bool fltk_theme() {
 	  fltk::set_theme_color(THEME_SELECTION_COLOR, select_background);
 	  fltk::set_theme_color(THEME_HIGHLIGHT_COLOR, select_background);
 	  fltk::set_theme_color(THEME_WARNING_COLOR, RED);
+	  fltk::set_theme_color(THEME_SHADOW_COLOR, GRAY30);
   } else {
 	  Color highlight_textcolor = foreground;
 
@@ -218,6 +219,8 @@ extern "C" bool fltk_theme() {
 		  break;
 	  }
 
+	  fltk::set_main_gui_colors(c0, c1, c2, c3, text_symbol_color);
+
 	  fltk::set_theme_color(THEME_BACKGROUND_COLOR, c0);
 	  fltk::set_theme_color(THEME_GROUP_COLOR, c1);
 	  fltk::set_theme_color(THEME_CONTROL_COLOR, c2);
@@ -227,8 +230,8 @@ extern "C" bool fltk_theme() {
 	  fltk::set_theme_color(THEME_SELECTION_COLOR, select_background);
 	  fltk::set_theme_color(THEME_HIGHLIGHT_COLOR, highlight_textcolor);
 	  fltk::set_theme_color(THEME_WARNING_COLOR, warning_color);
+	  fltk::set_theme_color(THEME_SHADOW_COLOR, GRAY30);
 
-	  fltk::set_main_gui_colors(c0, c1, c2, c3, text_symbol_color);
 	  //fltk::shift_background(background);
 	  Widget::default_style->labelcolor_ = foreground;
 	  Widget::default_style->highlight_textcolor_ = highlight_textcolor;

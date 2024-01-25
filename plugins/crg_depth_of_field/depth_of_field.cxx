@@ -18,7 +18,7 @@ using namespace cgv::utils;
 using namespace cgv::render;
 
 ///
-depth_of_field::depth_of_field() : node("depth of field")
+depth_of_field::depth_of_field() : node("Depth of Field")
 {
 	z_focus = 10;
 	nr_samples = 10;
@@ -83,7 +83,7 @@ std::string depth_of_field::get_type_name() const
 /// overload to show the content of this object
 void depth_of_field::stream_stats(std::ostream& os)
 {
-	oprintf(os,"DoF: z-focus=%.2fº, nr samples=%.1f\n", z_focus, nr_samples);
+	oprintf(os,"DoF: z-focus=%.2f, nr samples=%.1f\n", z_focus, nr_samples);
 }
 
 bool depth_of_field::init(context& ctx)
@@ -189,4 +189,4 @@ bool depth_of_field::self_reflect(cgv::reflect::reflection_handler& rh)
 #include <cgv/base/register.h>
 
 cgv::base::factory_registration<depth_of_field> dof_fac("depth_of_field", "menu_text='New/Depth of Field';shortcut='Ctrl-Alt-D'", true, 
-														                "menu_text='&view/depth of field';shortcut='Ctrl-D'");
+														                "menu_text='&View/Depth of Field';shortcut='Ctrl-D'");

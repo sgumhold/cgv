@@ -1,20 +1,19 @@
 #pragma once
 
 #include "frame.h"
+#include "rgbd_calibration.h"
 #include <cgv/math/fvec.h>
 #include <cgv/math/camera.h>
 
 #include "lib_begin.h"
 
 namespace rgbd {
-
 	struct camera_intrinsics {
 		double fx, fy; //focal length, width in pixel
 		double cx, cy; //principal point;
 		double sk; //skew
 		unsigned image_width, image_height;
 	};
-
 	///struct for representing parameters used in the device emulator
 	struct emulator_parameters {
 		camera_intrinsics intrinsics;
@@ -154,6 +153,12 @@ namespace rgbd {
 		virtual bool configure_role(MultiDeviceRole mdr);
 		/// return the multi-device role of the device
 		MultiDeviceRole get_role() const { return multi_device_role; }
+		/// whether device supports external synchronization
+		virtual bool is_sync_supported() const { return false; }
+		/// return whether syncronization input jack is connected
+		virtual bool is_sync_in_connected() const { return false; }
+		/// return whether syncronization output jack is connected
+		virtual bool is_sync_out_connected() const { return false; }
 
 		/// return information about the support color control parameters
 		virtual const std::vector<color_parameter_info>& get_supported_color_control_parameter_infos() const;
@@ -191,8 +196,8 @@ namespace rgbd {
 		virtual void query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const = 0;
 		/// start the rgbd device with standard stream formats returned in second parameter
 		virtual bool start_device(InputStreams is, std::vector<stream_format>& stream_formats) = 0;
-		/// query the calibration information and return whether this was successful
-		virtual bool query_calibration(InputStreams is, cgv::math::camera<double>& cam);
+		/// query current calibration information (device must be started) and return whether this was successful
+		virtual bool query_calibration(rgbd_calibration& calib);
 		/// start the rgbd device with given stream formats 
 		virtual bool start_device(const std::vector<stream_format>& stream_formats) = 0;
 		/// stop the rgbd device

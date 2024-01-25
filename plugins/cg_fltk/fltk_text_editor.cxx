@@ -242,8 +242,8 @@ void fltk_text_editor::set_title(fltk::Window* w)
 	if (filename.empty()) 
 		title = "Untitled.txt";
 	else {
-		unsigned int spos = (unsigned int) filename.find_last_of('/');
-		unsigned int tpos = (unsigned int) filename.find_last_of('\\');
+		size_t spos = filename.find_last_of('/');
+		size_t tpos = filename.find_last_of('\\');
 		if (tpos != std::string::npos && tpos > spos)
 			spos = tpos;
 		if (spos != std::string::npos)

@@ -1,5 +1,3 @@
-#pragma once
-
 #include "depth_halos.h"
 
 #include <random>

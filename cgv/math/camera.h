@@ -188,7 +188,6 @@ bool compute_homography_from_2D_point_correspondences(const std::vector<fvec<T, 
 	}
 	return compute_homography_from_constraint_matrix(A, H);
 }
-
 // compute homography from 3D homogenous pixels \c ui to 3D point \c xi correspondences and return whether this was possible
 template <typename T>
 bool compute_homography_from_3D_point_correspondences(const std::vector<fvec<T,3>>& ui, const std::vector<fvec<T,3>>& xi, fmat<T,3,3>& H)
@@ -227,7 +226,6 @@ bool compute_homography_from_3D_point_correspondences(const std::vector<fvec<T,3
 	}
 	return compute_homography_from_constraint_matrix(A, H);
 }
-
 // compute homography from 2D lines in pixel coords \c lpi to 2D lines \c li correspondences and return whether this was possible
 template <typename T>
 bool compute_homography_from_2D_line_correspondences(const std::vector<fvec<T, 3>>& lpi, const std::vector<fvec<T, 3>>& li, fmat<T,3,3>& H)
@@ -267,7 +265,7 @@ bool compute_homography_from_2D_line_correspondences(const std::vector<fvec<T, 3
 	return compute_homography_from_constraint_matrix(A, H);
 }
 
-/// all members necessary for undistorted pinhole camera
+/// class to store and use a pinhole camera model without distortion but with support for skew and different focal lengths in x and y direction
 template <typename T>
 class pinhole
 {
@@ -301,7 +299,7 @@ public:
 		return { s[0], 0.0f, 0.0f, 0.0f, skew, s[1], 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, c[0], c[1], 0.0f, 1.0f };
 	}
 	fvec<T,2> image_to_pixel_coordinates(const fvec<T,2>& x) const {
-		return vec2(s[0] * x[0] + skew * x[1] + c[0], s[1] * x[1] + c[1]);
+		return fvec<T,2>(s[0] * x[0] + skew * x[1] + c[0], s[1] * x[1] + c[1]);
 	}
 	fvec<T,2> pixel_to_image_coordinates(const fvec<T,2>& p) const {
 		T y = (p[1] - c[1]) / s[1]; return fvec<T, 2>((p[0] - c[0] - skew*y)/s[0], y);
@@ -379,9 +377,7 @@ public:
 	// todo: minimize reprojection error 
 };
 
-/// <summary>
-/// type declarations independent of template parameter
-/// </summary>
+/// common type declarations used by distorted_pinhole class that are independent of the template parameter
 class distorted_pinhole_types
 {
 public:
@@ -393,12 +389,12 @@ public:
 	static unsigned get_standard_max_nr_iterations() { return 20; }
 };
 
-/// type specific epsilon providing function
+/// function to provide type specific epsilon for inversion of distortion model
 template <typename T> inline T distortion_inversion_epsilon() { return 1e-12; }
 /// specialization to float
 template <> inline float distortion_inversion_epsilon() { return 1e-6f; }
 
-/// extension of pinhole to distorted pinhole
+/// pinhole camera including distortion according to Brown-Conrady model
 template <typename T>
 class distorted_pinhole : public pinhole<T>, public distorted_pinhole_types
 {
@@ -411,7 +407,7 @@ public:
 	T k[6], p[2];
 	// maximum radius allowed for projection
 	T max_radius_for_projection = T(10);
-	/// standard constructor
+	/// standard constructor initializes to no distortion
 	distorted_pinhole() : dc(T(0)) {
 		k[0] = k[1] = k[2] = k[3] = k[4] = k[5] = p[0] = p[1] = T(0);
 	}
@@ -523,9 +519,36 @@ public:
 		}
 		return distortion_inversion_result::max_iterations_reached;
 	}
+	//! compute for all pixels the distorted image coordinates with the invert_distortion_model() function and store it in a distortion map
+	/*! The distortion map can be computed to speed up distortion model inversion if these are 
+	    used multiple times per pixel. Given the pixel coordinates x and y and the image width w 
+		the distorted image coordinate is looked up via distortion_map[w*y+x]. For pixels 
+		where the inversion of the distortion model failed, the invalid_point is stored.
+		Further parameters are passed on the the invert_distortion_model() function.*/
+	template <typename S>
+	void compute_distortion_map(std::vector<cgv::math::fvec<S, 2>>& map, unsigned sub_sample = 1,
+		const cgv::math::fvec<S, 2>& invalid_point = cgv::math::fvec<S, 2>(S(-10000)),
+		T epsilon = distortion_inversion_epsilon<T>(), unsigned max_nr_iterations = get_standard_max_nr_iterations(), T slow_down = get_standard_slow_down()) const
+	{
+		unsigned iterations = 1;
+		map.resize(w*h);
+		size_t i = 0;
+		for (uint16_t y = 0; y < h; y += sub_sample) {
+			for (uint16_t x = 0; x < w; x += sub_sample) {
+				fvec<T, 2> xu = pixel_to_image_coordinates(fvec<T, 2>(x, y));
+				fvec<T, 2> xd = xu;
+				if (invert_distortion_model(xu, xd, true, &iterations, epsilon, max_nr_iterations, slow_down) ==
+					cgv::math::distorted_pinhole_types::distortion_inversion_result::convergence)
+					map[i] = cgv::math::fvec<S, 2>(xd);
+				else
+					map[i] = invalid_point;
+				++i;
+			}
+		}
+	}
 };
 
-/// extend distorted pinhole with external calibration
+/// extend distorted pinhole with external calibration stored as a pose matrix
 template <typename T>
 class camera : public distorted_pinhole<T>
 {

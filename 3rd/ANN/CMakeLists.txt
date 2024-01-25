@@ -48,4 +48,18 @@ target_include_directories(annf_static PUBLIC
         $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}>)
 target_compile_definitions(annf_static PRIVATE ANN_USE_FLOAT ANN_NO_RANDOM ANN_STATIC)
 
+# Disable warnings we can't do anything about since it would require changing the original source code
+if (NOT MSVC)
+        target_compile_options(ann PRIVATE -Wno-write-strings)
+        target_compile_options(annf PRIVATE -Wno-write-strings)
+        target_compile_options(ann_static PRIVATE -Wno-write-strings)
+        target_compile_options(annf_static PRIVATE -Wno-write-strings)
+        if (CMAKE_C_COMPILER_ID MATCHES "Clang" OR MAKE_CXX_COMPILER_ID MATCHES "Clang")
+                target_compile_options(ann PRIVATE -Wno-deprecated-register)
+                target_compile_options(annf PRIVATE -Wno-deprecated-register)
+                target_compile_options(ann_static PRIVATE -Wno-deprecated-register)
+                target_compile_options(annf_static PRIVATE -Wno-deprecated-register)
+        endif()
+endif()
+
 install(TARGETS ann_static annf_static EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})

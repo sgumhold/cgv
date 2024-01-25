@@ -219,6 +219,8 @@ void fltk_viewer_window::theme_change_cb() {
 		ti.highlight(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_WARNING_COLOR), r, g, b);
 		ti.warning(r, g, b);
+		fltk::split_color(fltk::get_theme_color(fltk::THEME_SHADOW_COLOR), r, g, b);
+		ti.shadow(r, g, b);
 		// set theme index only after all colors have been updated
 		ti.set_index(idx);
 	}

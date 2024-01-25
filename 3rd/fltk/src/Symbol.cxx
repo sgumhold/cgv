@@ -542,6 +542,21 @@ static void draw_square(Color col)
 static void draw_box(Color col)
   { BC; vv(-1,-1); vv(1,-1); vv(1,1); vv(-1,1); EC; }
 
+static void draw_tickboxempty(Color col) {
+	float o = 0.9f;
+	BP; vv(-1.0f, -0.1f + o); vv(-1.0f, 0.1f + o); vv(1.0f, 0.1f + o); vv(1.0f, -0.1f + o); EF(col);
+	o = -0.9f;
+	BP; vv(-1.0f, -0.1f + o); vv(-1.0f, 0.1f + o); vv(1.0f, 0.1f + o); vv(1.0f, -0.1f + o); EF(col);
+	BP; vv(-0.1f + o, -1.0f); vv(-0.1f + o, 1.0f); vv(0.1f + o, 1.0f); vv(0.1f + o, -1.0f); EF(col);
+	o = 0.9f;
+	BP; vv(-0.1f + o, -1.0f); vv(-0.1f + o, 1.0f); vv(0.1f + o, 1.0f); vv(0.1f + o, -1.0f); EF(col);
+}
+
+static void draw_tickboxfull(Color col) {
+	draw_tickboxempty(col);
+	rectangle(-0.4f, -0.4f, 0.4f, 0.4f, col);
+}
+
 static void draw_uparrow(Color col) {
   setcolor(GRAY99);
   BL; vv(-1.0f,1.0f); vv(-1.0f,-1.0f); vv(1.0f,0.0f); EL;
@@ -827,6 +842,8 @@ static void init_symbols(void) {
   add_symbol("->|",		draw_arrow1bar,		1);
   add_symbol("[]",		draw_box,		1);
 //  add_symbol("arrow",		draw_arrow,		1);
+  add_symbol("tickboxempty", draw_tickboxempty, 1);
+  add_symbol("tickboxfull",  draw_tickboxfull, 1);
   add_symbol("square",		draw_square,		1);
   add_symbol("circle",		draw_circle,		1);
   add_symbol("line",		draw_line,			1);

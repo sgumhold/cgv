@@ -60,7 +60,7 @@ public:
 	}
 	void init_frame(cgv::render::context& ctx) {
 		if(!view_ptr) {
-			if(view_ptr = find_view_as_node()) {}
+			if((view_ptr = find_view_as_node())) {}
 		}
 	}
 	void draw(cgv::render::context& ctx) {

@@ -389,7 +389,7 @@ std::string provider::get_gui_name() const
 	}
 	std::string mp = get_menu_path();
 	if (!mp.empty()) {
-		unsigned int pos = (unsigned int) mp.find_last_of('/');
+		size_t pos = mp.find_last_of('/');
 		if (pos == std::string::npos || pos == mp.size()-1)
 			return mp;
 		return mp.substr(pos+1);

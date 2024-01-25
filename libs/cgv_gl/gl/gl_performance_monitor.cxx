@@ -104,7 +104,7 @@ void checkClientState()
 
 	for (int i=0; i<8; ++i) {
 		glClientActiveTexture(GL_TEXTURE0+i);
-		std::cout << (glIsEnabled(GL_TEXTURE_COORD_ARRAY)?("0"+i):".");
+		std::cout << (glIsEnabled(GL_TEXTURE_COORD_ARRAY)?("0"+std::to_string(i)):".");
 	}
 	std::cout << std::endl;
 }

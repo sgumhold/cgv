@@ -74,6 +74,42 @@ tinyxml2::XMLError QueryStringAttribute(const tinyxml2::XMLElement& elem, const 
 	return result;
 };
 
+/// @brief Query a boolean attribute from a tinyxml::XMLElement.
+/// 
+/// On successful read, the attribute value is interpreted as true if the string reads
+/// 'true' or '1' and false if the string reads 'false', '0' or is empty. Case is ignored. All
+/// other values return a tinyxml2::XMLError::XML_WRONG_ATTRIBUTE_TYPE error.
+/// 
+/// @param [in] elem the tinyxml::XMLElement to query the attribute from.
+/// @param [in] name the name string of the query attribute.
+/// @param [out] value of the query attribute.
+/// @return the tinyxml2::XMLError state indicating success or failure of the query.
+tinyxml2::XMLError QueryBoolAttribute(const tinyxml2::XMLElement& elem, const std::string& name, bool& value) {
+
+	std::string str = "";
+	tinyxml2::XMLError result = QueryStringAttribute(elem, name, str);
+	if(result == tinyxml2::XML_SUCCESS) {
+		if(str.length() > 0) {
+			str = cgv::utils::to_lower(str);
+
+			if(str[0] == '0' || str == "false") {
+				value = false;
+				return result;
+			} else if(str[0] == '1' || str == "true") {
+				value = true;
+				return result;
+			}
+
+			return tinyxml2::XMLError::XML_WRONG_ATTRIBUTE_TYPE;
+		} else {
+			value = false;
+			return result;
+		}
+	}
+
+	return result;
+};
+
 /// @brief Query a cgv::math::fvec<T, N> attribute from a tinyxml::XMLElement.
 /// 
 /// Converts a given string attribute value into a cgv::math::fvec<T, N> with component

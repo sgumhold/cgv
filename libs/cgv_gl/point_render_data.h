@@ -3,28 +3,26 @@
 #include "point_renderer.h"
 #include "render_data_base.h"
 
-#include "gl/lib_begin.h"
-
 namespace cgv {
 namespace render {
 
-template <typename ColorType = render_types::rgb>
+/// @brief Render data for point geometry with support for the point_renderer. See render_data_base.
+/// @tparam ColorType The type used to represent colors. Must be cgv::render::rgb or cgv::render::rgba.
+template <typename ColorType = rgb>
 class point_render_data : public render_data_base<ColorType> {
 public:
-	// Repeat automatically inherited typedefs from parent class, as they can't
-	// be inherited again according to C++ spec
-	typedef render_types::vec3 vec3;
-
 	// Base class we're going to use virtual functions from
 	typedef render_data_base<ColorType> super;
 
-protected:
-	std::vector<float> sze;
+	/// stores an array of diameters
+	std::vector<float> diameters;
 
+protected:
+	/// @brief See render_data_base::transfer.
 	bool transfer(context& ctx, point_renderer& r) {
 		if(super::transfer(ctx, r)) {
-			if(sze.size() == this->size())
-				r.set_point_size_array(ctx, sze);
+			if(diameters.size() == super::size())
+				r.set_point_size_array(ctx, diameters);
 			return true;
 		}
 		return false;
@@ -33,53 +31,32 @@ protected:
 public:
 	void clear() {
 		super::clear();
-		sze.clear();
+		diameters.clear();
 	}
 
-	std::vector<float>& ref_sze() { return sze; }
+	void add_diameter(const float diameter) {
+		diameters.push_back(diameter);
+	}
+
+	// Explicitly use add from the base class since it is shadowed by the overloaded versions
+	using super::add;
+
+	void add(const vec3& position, const float diameter) {
+		super::add_position(position);
+		add_diameter(diameter);
+	}
+
+	void add(const vec3& position, const ColorType& color, const float diameter) {
+		super::add(position, color);
+		add_diameter(diameter);
+	}
+
+	void fill_diameters(const float diameter) {
+		super::fill(diameters, diameter);
+	}
 
 	RDB_BASE_FUNC_DEF(point_renderer, point_render_style);
-
-	void add(const vec3& p) {
-		this->pos.push_back(p);
-	}
-
-	void add(const float s) {
-		sze.push_back(s);
-	}
-
-	void add(const ColorType& c) {
-		this->col.push_back(c);
-	}
-
-	void add(const vec3& p, const float s, const ColorType& c) {
-		add(p);
-		add(s);
-		add(c);
-	}
-
-	void add(const vec3& p, const float s) {
-		add(p);
-		add(s);
-	}
-
-	void add(const vec3& p, const ColorType& c) {
-		add(p);
-		add(c);
-	}
-
-	void fill(const float s) {
-		for(size_t i = sze.size(); i < this->pos.size(); ++i)
-			sze.push_back(s);
-	}
-
-	void fill(const ColorType& c) {
-		for(size_t i = this->col.size(); i < this->pos.size(); ++i)
-			this->col.push_back(c);
-	}
 };
 
 }
 }
-
-#include <cgv/config/lib_end.h>

@@ -8,6 +8,8 @@ namespace stream_vis {
 	class streaming_aabb_base
 	{
 	public:
+		virtual ~streaming_aabb_base() {}
+
 		virtual void add_samples_base(const T* data_ptr, size_t count) = 0;
 		virtual void put_aabb(T* aabb_ptr) const = 0;
 	};

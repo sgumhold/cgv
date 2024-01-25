@@ -6,6 +6,7 @@
 #include <cgv_app/color_selector.h>
 #include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/generic_2d_renderer.h>
+#include <cgv_g2d/generic_2d_render_data.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 
 #include "lib_begin.h"
@@ -148,7 +149,6 @@ protected:
 	cgv::render::texture hist_tex;
 
 	cgv::g2d::generic_2d_renderer color_handle_renderer, opacity_handle_renderer, line_renderer, polygon_renderer;
-	DEFINE_GENERIC_RENDER_DATA_CLASS(custom_geometry, 2, vec2, position, rgba, color);
 	DEFINE_GENERIC_RENDER_DATA_CLASS(line_geometry, 2, vec2, position, vec2, texcoord);
 
 	struct cm_container {
@@ -156,7 +156,7 @@ protected:
 		cgv::g2d::draggable_collection<color_point> color_points;
 		cgv::g2d::draggable_collection<opacity_point> opacity_points;
 		
-		custom_geometry color_handles, opacity_handles;
+		cgv::g2d::generic_render_data_vec2_rgba color_handles, opacity_handles;
 		line_geometry lines;
 		line_geometry triangles;
 
@@ -177,7 +177,7 @@ protected:
 		}
 	} cmc;
 
-	void init_styles(cgv::render::context& ctx);
+	void init_styles() override;
 	void setup_preview_texture(cgv::render::context& ctx);
 	void init_preview_texture(cgv::render::context& ctx);
 
@@ -200,20 +200,20 @@ protected:
 	std::function<void(rgb)> on_color_point_select_callback;
 	std::function<void(void)> on_color_point_deselect_callback;
 
-	virtual void create_gui_impl();
+	void create_gui_impl() override;
 
 public:
 	color_map_editor();
-	std::string get_type_name() const { return "color_map_editor"; }
+	std::string get_type_name() const override { return "color_map_editor"; }
 
-	void clear(cgv::render::context& ctx);
+	void clear(cgv::render::context& ctx) override;
 
-	bool handle_event(cgv::gui::event& e);
-	void on_set(void* member_ptr);
+	bool handle_event(cgv::gui::event& e) override;
+	void handle_member_change(const cgv::utils::pointer_test& m) override;
 
-	bool init(cgv::render::context& ctx);
-	void init_frame(cgv::render::context& ctx);
-	void draw_content(cgv::render::context& ctx);
+	bool init(cgv::render::context& ctx) override;
+	void init_frame(cgv::render::context& ctx) override;
+	void draw_content(cgv::render::context& ctx) override;
 	
 	void handle_theme_change(const cgv::gui::theme_info& theme) override;
 

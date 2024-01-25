@@ -135,13 +135,11 @@ namespace rgbd {
 	{
 		return false;
 	}
-
-	bool rgbd_device::get_emulator_configuration(emulator_parameters& cfg) const
+	bool rgbd_device::query_calibration(rgbd_calibration& calib)
 	{
 		return false;
 	}
-	/// query the calibration information and return whether this was successful
-	bool rgbd_device::query_calibration(InputStreams is, cgv::math::camera<double>& cam)
+	bool rgbd_device::get_emulator_configuration(emulator_parameters& cfg) const
 	{
 		return false;
 	}

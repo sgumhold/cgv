@@ -82,31 +82,27 @@ protected:
 	cgv::g2d::msdf_text_geometry texts;
 	cgv::g2d::msdf_text_geometry labels;
 
-	void init_styles(cgv::render::context& ctx) override;
+	void init_styles() override;
 	void create_texts();
 	void update_stats_texts();
 	void create_labels();
 	void update_plot();
 
-	void on_visibility_change();
-	void create_gui_impl();
+	void on_visibility_change() override;
+	void create_gui_impl() override;
 
 public:
 	performance_monitor();
-	std::string get_type_name() const { return "performance_monitor"; }
+	std::string get_type_name() const override { return "performance_monitor"; }
 
-	void clear(cgv::render::context& ctx);
+	void clear(cgv::render::context& ctx) override;
 
-	bool self_reflect(cgv::reflect::reflection_handler& _rh);
-	void stream_help(std::ostream& os) {}
+	void handle_member_change(const cgv::utils::pointer_test& m) override;
 
-	bool handle_event(cgv::gui::event& e);
-	void on_set(void* member_ptr);
-
-	bool init(cgv::render::context& ctx);
-	void init_frame(cgv::render::context& ctx);
-	void draw_content(cgv::render::context& ctx);
-	void after_finish(cgv::render::context& ctx);
+	bool init(cgv::render::context& ctx) override;
+	void init_frame(cgv::render::context& ctx) override;
+	void draw_content(cgv::render::context& ctx) override;
+	void after_finish(cgv::render::context& ctx) override;
 
 	void set_show_background(bool flag);
 	void set_invert_color(bool flag);

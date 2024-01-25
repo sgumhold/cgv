@@ -144,7 +144,7 @@ namespace gamepad {
 		auto* dip = get_device_info(device_handle);
 		if (!dip)
 			return false;
-		driver_index = dip->driver_index;
+		driver_index = (unsigned)dip->driver_index;
 		if (driver_index >= ref_drivers().size())
 			return false;
 		return true;
