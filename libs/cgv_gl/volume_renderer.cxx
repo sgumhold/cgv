@@ -232,7 +232,8 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "clip_box_min", vrs.clip_box.get_min_pnt());
 			ref_prog().set_uniform(ctx, "clip_box_max", vrs.clip_box.get_max_pnt());
 
-			glDisable(GL_DEPTH_TEST);
+			//glDisable(GL_DEPTH_TEST);
+			ctx.disable_depth_test();
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glCullFace(GL_FRONT);
@@ -257,7 +258,8 @@ namespace cgv {
 			glCullFace(GL_BACK);
 			glDisable(GL_CULL_FACE);
 			glDisable(GL_BLEND);
-			glEnable(GL_DEPTH_TEST);
+			//glEnable(GL_DEPTH_TEST);
+			ctx.restore_depth_test_state();
 
 			return renderer::disable(ctx);
 		}

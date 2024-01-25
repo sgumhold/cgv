@@ -252,6 +252,38 @@ public:
 	void pop_window_transformation_array();
 	/// query the maximum number of supported window transformations, which is at least 1 
 	unsigned get_max_window_transformation_array_size() const;
+
+
+
+
+	void push_previous_depth_test_state() {
+		GLboolean state;
+		glGetBooleanv(GL_DEPTH_TEST, &state);
+		depth_test_stack.push(static_cast<bool>(state));
+	}
+
+	virtual void enable_depth_test() {
+		push_previous_depth_test_state();
+		glEnable(GL_DEPTH_TEST);
+	}
+
+	virtual void disable_depth_test() {
+		push_previous_depth_test_state();
+		glDisable(GL_DEPTH_TEST);
+	}
+
+	virtual void restore_depth_test_state() {
+		bool state = depth_test_stack.top();
+
+		if(state)
+			glEnable(GL_DEPTH_TEST);
+		else
+			glDisable(GL_DEPTH_TEST);
+
+		context::restore_depth_test_state();
+	}
+
+
 protected:
 	void update_window_transformation_array();
 public:
