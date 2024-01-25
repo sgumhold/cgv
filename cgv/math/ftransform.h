@@ -22,7 +22,7 @@ namespace cgv {
 			translate2h(const fvec<T, 2>& t) { fmat<T, 3, 3> M; M.identity(); M(0, 2) = t(0); M(1, 2) = t(1); return M; }
 		/// construct homogeneous 2x2 translation matrix from xy components
 		template <typename T> fmat<T, 3, 3>
-			translate2h(const T& tx, const T& ty) { return scale2h(fvec<T, 2>(tx, ty)); }
+			translate2h(const T& tx, const T& ty) { return translate2h(fvec<T, 2>(tx, ty)); }
 		/// construct 4x4 translation matrix from vec3
 		template <typename T> fmat<T, 4, 4>
 			translate4(const fvec<T, 3>& t) { fmat<T, 4, 4> M; M.identity(); M(0, 3) = t(0); M(1, 3) = t(1); M(2, 3) = t(2); return M; }
@@ -104,8 +104,8 @@ namespace cgv {
 		/// construct 3x3 rotation matrix from kardan angles (roll, pitch, yaw) in degrees
 		template <typename T> fmat<T, 3, 3>
 			rotate3(const fvec<T, 3>& A) {
-				fmat<T, 3, 3>  M;
-				fvec<T, 3> angles = cgv::math::fvec<T, 3>(T(0.01745329252))*A;
+				fmat<T, 3, 3> M;
+				fvec<T, 3> angles = cgv::math::fvec<T, 3>(T(0.01745329252)) * A;
 				T cx = cos(angles[0]);
 				T sx = sin(angles[0]);
 				T cy = cos(angles[1]);
@@ -113,11 +113,11 @@ namespace cgv {
 				T cz = cos(angles[2]);
 				T sz = sin(angles[2]);
 				M(0, 0) = cy * cz;
-				M(0, 1) = sx * sy*cz - cx * sz;
-				M(0, 2) = cx * sy*cz + sx * sz;
+				M(0, 1) = sx * sy * cz - cx * sz;
+				M(0, 2) = cx * sy * cz + sx * sz;
 				M(1, 0) = cy * sz;
-				M(1, 1) = sx * sy*sz + cx * cz;
-				M(1, 2) = cx * sy*sz - sx * cz;
+				M(1, 1) = sx * sy * sz + cx * cz;
+				M(1, 2) = cx * sy * sz - sx * cz;
 				M(2, 0) = -sy;
 				M(2, 1) = sx * cy;
 				M(2, 2) = cx * cy;
@@ -157,9 +157,9 @@ namespace cgv {
 		/// construct 4x4 rotation matrix from kardan angles (roll, pitch, yaw) in degrees
 		template <typename T> fmat<T, 4, 4>
 			rotate4(const fvec<T, 3>& A) {
-				fmat<T, 4, 4>  M;
+				fmat<T, 4, 4> M;
 				M.identity();
-				fvec<T, 3> angles = cgv::math::fvec<T, 3>(T(0.01745329252))*A;
+				fvec<T, 3> angles = cgv::math::fvec<T, 3>(T(0.01745329252)) * A;
 				T cx = cos(angles[0]);
 				T sx = sin(angles[0]);
 				T cy = cos(angles[1]);
@@ -167,11 +167,11 @@ namespace cgv {
 				T cz = cos(angles[2]);
 				T sz = sin(angles[2]);
 				M(0, 0) = cy * cz;
-				M(0, 1) = sx * sy*cz - cx * sz;
-				M(0, 2) = cx * sy*cz + sx * sz;
+				M(0, 1) = sx * sy * cz - cx * sz;
+				M(0, 2) = cx * sy * cz + sx * sz;
 				M(1, 0) = cy * sz;
-				M(1, 1) = sx * sy*sz + cx * cz;
-				M(1, 2) = cx * sy*sz - sx * cz;
+				M(1, 1) = sx * sy * sz + cx * cz;
+				M(1, 2) = cx * sy * sz - sx * cz;
 				M(2, 0) = -sy;
 				M(2, 1) = sx * cy;
 				M(2, 2) = cx * cy;
@@ -293,9 +293,9 @@ namespace cgv {
 			stereo_frustum_screen4(T eye, const T& eyeSeparation, const T& screenWidth, const T& screenHeight,
 									const T& zZeroParallax, const T& zNear, const T& zFar) {
 				T aspect = screenWidth / screenHeight;
-				T top = 0.5*screenHeight*zNear / zZeroParallax;
+				T top = T(0.5)*screenHeight*zNear / zZeroParallax;
 				T bottom = -top;
-				T delta = 0.5*eyeSeparation*eye*screenWidth*zNear / zZeroParallax;
+				T delta = T(0.5)*eyeSeparation*eye*screenWidth*zNear / zZeroParallax;
 				T left = bottom * aspect - delta;
 				T right = top * aspect - delta;
 				return frustum4<T>(left, right, bottom, top, zNear, zFar);
