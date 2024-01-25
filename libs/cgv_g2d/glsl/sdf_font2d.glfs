@@ -1,6 +1,8 @@
 #version 430
 
 //***** begin interface of shape2d.glsl ***********************************
+uniform float zoom_factor = 1.0;
+
 uniform vec4 fill_color;
 uniform float border_radius = 0.0;
 uniform float feather_origin = 0.5;
@@ -25,8 +27,8 @@ uniform float pixel_range = 2.0;
 uniform vec2 text_size;
 uniform float font_size = 32.0;
 uniform bool enable_subpixel_rendering = false;
+uniform vec4 color;
 
-in vec2 pix_coord;
 in vec2 tex_coord;
 
 float median(float r, float g, float b) {
@@ -34,9 +36,8 @@ float median(float r, float g, float b) {
 }
 
 float screen_pixel_range() {
-	float screen_size = font_size * text_size.y;
-	//return max((screen_size/src_size) * pixel_range, 1.0);
-	return (screen_size/src_size) * pixel_range;
+	float screen_size = zoom_factor * font_size * text_size.y;
+	return max((screen_size/src_size) * pixel_range, 1.0);
 }
 
 float compute_coverage(in vec2 uv) {
@@ -48,7 +49,7 @@ float compute_coverage(in vec2 uv) {
 		return 0.0;
 
 	float fw = get_feather_width();
-	float signed_distance = -(screen_pixel_range()*(sd-0.5) + 0.5);
+	float signed_distance = -(screen_pixel_range()*(sd-0.5) + 0.5) / zoom_factor;
 	signed_distance -= border_radius;
 	signed_distance -= feather_origin*fw;
 
@@ -68,16 +69,12 @@ void main() {
 
 		finish_fragment2d(vec4(coverage_r, coverage_g, coverage_b, coverage_g));
 	} else {
-		vec4 mtsd = texture(tex, tex_coord).rgba;
+		vec4 mtsd = texture(tex, tex_coord);
 		float sd = median(mtsd.r, mtsd.g, mtsd.b);
 	
-		if(sd <= 0.0)
-			discard;
-
-		float signed_distance = -(screen_pixel_range()*(sd-0.5) + 0.5);
-		signed_distance -= border_radius;
+		float signed_distance = -(screen_pixel_range()*(sd-0.5) + 0.5) / zoom_factor;
 		signed_distance -= feather_origin*get_feather_width();
-
-		finish_sdf_fragment2d(signed_distance, get_active_color(fill_color));
+		
+		finish_sdf_fragment2d(signed_distance, get_active_color(color));
 	}	
 }

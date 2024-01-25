@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include <cgv/media/image/image_writer.h>
 #include <cgv/render/color_map.h>
 #include <cgv/render/render_types.h>
 #include <cgv/utils/file.h>
@@ -87,6 +88,28 @@ public:
 	static bool write_to_xml_file(const std::string& file_name, const std::vector<std::string>& names, const std::vector<cgv::render::color_map>& color_maps, bool put_parent_tag = true) {
 
 		return cgv::utils::file::write(file_name, to_xml(names, color_maps, put_parent_tag), true);
+	}
+
+	static bool write_to_png_file(const std::string& file_name, const cgv::render::color_map& color_map, size_t resolution) {
+	
+		std::vector<rgba> data = color_map.interpolate(static_cast<size_t>(resolution));
+
+		bool has_opacity = !color_map.ref_opacity_points().empty();
+
+		std::vector<uint8_t> data_8(4 * data.size());
+		for(unsigned i = 0; i < data.size(); ++i) {
+			rgba col = data[i];
+			data_8[4 * i + 0] = static_cast<uint8_t>(255.0f * col.R());
+			data_8[4 * i + 1] = static_cast<uint8_t>(255.0f * col.G());
+			data_8[4 * i + 2] = static_cast<uint8_t>(255.0f * col.B());
+			data_8[4 * i + 3] = has_opacity ? static_cast<uint8_t>(255.0f * col.alpha()) : 255;
+		}
+
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format((unsigned)resolution, 1, TI_UINT8, cgv::data::CF_RGBA), data_8.data());
+
+		cgv::media::image::image_writer writer(file_name);
+
+		return writer.write_image(dv);
 	}
 };
 

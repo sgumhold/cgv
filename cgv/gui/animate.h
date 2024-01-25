@@ -38,6 +38,7 @@ namespace cgv {
 			virtual void set_value(double time) = 0;
 		public:
 			animation(double _start_time, double _end_time, AnimationParameterMapping _parameter_mapping = APM_LINEAR);
+			virtual ~animation() {}
 			void set_base_ptr(cgv::base::base_ptr _bp);
 			void configure(AnimationParameterMapping _parameter_mapping, cgv::base::base_ptr _bp);
 			void set_parameter_mapping(AnimationParameterMapping _parameter_mapping);

@@ -745,9 +745,9 @@ void fltk_gl_view::clear_current() const
 /// the context will be redrawn when the system is idle again
 void fltk_gl_view::post_redraw()
 {
-	if (in_render_process())
+	if(in_render_process())
+		// cannot directly issue a redraw during an active render process; instead request a redraw for next idle period
 		redraw_request = true;
-//		std::cerr << "redraw does not work in render process" << std::endl;
 	else
 		redraw();
 }

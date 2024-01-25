@@ -102,6 +102,8 @@ namespace stream_vis {
 		streaming_time_series(cgv::type::info::TypeId _type_id = cgv::type::info::TI_UNDEF);
 		/// construct a time series that resamples this time series according to the sampling time series passed in the argument
 		virtual streaming_time_series* construct_resampled_time_series(const std::string& name, streaming_time_series* sampling_ts) const;
+		/// define virtual destructor for abstract base class
+		virtual ~streaming_time_series() {}
 		/// return list of unique indices to defining inputs/outputs
 		virtual std::vector<uint16_t> get_io_indices() const = 0;
 		/// return type id of value

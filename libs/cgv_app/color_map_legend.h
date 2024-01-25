@@ -81,11 +81,14 @@ protected:
 	unsigned num_ticks;
 	unsigned label_precision;
 	bool label_auto_precision;
+	bool label_prune_trailing_zeros;
 	bool label_integer_mode;
 	AlignmentOption title_align;
+	bool show_opacity;
 
 	// general appearance
-	cgv::g2d::shape2d_style container_style, border_style, color_map_style;
+	cgv::g2d::shape2d_style container_style, border_style, color_map_style, tick_style;
+	cgv::g2d::grid2d_style background_style;
 
 	// text appearance
 	cgv::g2d::text2d_style text_style;
@@ -95,25 +98,25 @@ protected:
 	DEFINE_GENERIC_RENDER_DATA_CLASS(tick_geometry, 2, vec2, position, vec2, size);
 	tick_geometry ticks;
 
-	void init_styles(cgv::render::context& ctx) override;
+	void init_styles() override;
 	void create_labels();
 	void create_ticks();
 
-	virtual void create_gui_impl();
+	void create_gui_impl() override;
 
 public:
 	color_map_legend();
-	std::string get_type_name() const { return "color_map_legend"; }
+	std::string get_type_name() const override { return "color_map_legend"; }
 
-	void clear(cgv::render::context& ctx);
+	void clear(cgv::render::context& ctx) override;
 
-	void on_set(void* member_ptr);
+	void handle_member_change(const cgv::utils::pointer_test& m) override;
 
-	bool init(cgv::render::context& ctx);
-	void init_frame(cgv::render::context& ctx);
-	void draw_content(cgv::render::context& ctx);
+	bool init(cgv::render::context& ctx) override;
+	void init_frame(cgv::render::context& ctx) override;
+	void draw_content(cgv::render::context& ctx) override;
 
-	void set_color_map(cgv::render::context& ctx, cgv::render::color_map& cm);
+	void set_color_map(cgv::render::context& ctx, const cgv::render::color_map& cm);
 
 	void set_width(size_t w);
 	void set_height(size_t h);
@@ -128,7 +131,9 @@ public:
 
 	void set_label_precision(unsigned p);
 	void set_label_auto_precision(bool enabled);
+	void set_label_prune_trailing_zeros(bool enabled);
 	void set_label_integer_mode(bool enabled);
+	void set_show_opacity(bool enabled);
 };
 
 typedef cgv::data::ref_ptr<color_map_legend> color_map_legend_ptr;

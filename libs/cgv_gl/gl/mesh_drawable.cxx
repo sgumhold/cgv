@@ -59,14 +59,12 @@ bool mesh_drawable::read_mesh(const std::string& _file_name)
 	file_name = _file_name;
 	mesh.clear();
 	if (mesh.read(file_name)) {
+		box = mesh.compute_box();
 		rebuild_mesh_info = true;
 		return true;
 	}
-	else {
-		std::cerr << "could not read mesh " << file_name << std::endl;
-		return false;
-	}
-	box = mesh.compute_box();
+	std::cerr << "could not read mesh " << file_name << std::endl;
+	return false;
 }
 
 void mesh_drawable::center_view()

@@ -39,6 +39,7 @@ protected:
 	rgb selection_col;
 	rgb highlight_col;
 	rgb warning_col;
+	rgb shadow_col;
 
 	static std::string char_to_hex(unsigned char c) {
 		static const char hex_chars[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
@@ -80,6 +81,7 @@ public:
 	DEF_COLOR_MEMBER_METHODS(selection)
 	DEF_COLOR_MEMBER_METHODS(highlight)
 	DEF_COLOR_MEMBER_METHODS(warning)
+	DEF_COLOR_MEMBER_METHODS(shadow)
 
 	cgv::signal::signal<const theme_info&> on_change;
 };

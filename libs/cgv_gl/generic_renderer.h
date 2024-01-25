@@ -17,7 +17,9 @@ protected:
 	bool has_indices = false;
 
 	bool build_shader_program(const context& ctx, const shader_define_map& defines) {
-		return prog.build_program(ctx, prog_name, true, defines);
+		bool success = prog.build_program(ctx, prog_name, true, defines);
+		prog.allow_context_to_set_color(false);
+		return success;
 	}
 
 public:
@@ -39,13 +41,12 @@ public:
 	}
 
 	shader_program& ref_prog() {
-		assert(("generic_renderer::ref_prog shader program is not created; call init before first use", prog.is_created()));
+		assert(prog.is_created() && "generic_renderer::ref_prog shader program is not created; call init before first use");
 		return prog;
 	}
 
 	shader_program& enable_prog(context& ctx) {
-		assert(("generic_renderer::enable_prog shader program is not created; call init before first use", prog.is_created()));
-		prog.allow_context_to_set_color(false);
+		assert(prog.is_created() && "generic_renderer::enable_prog shader program is not created; call init before first use");
 		prog.enable(ctx);
 		return prog;
 	}

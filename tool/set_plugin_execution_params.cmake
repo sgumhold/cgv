@@ -32,6 +32,13 @@ function(format_vscode_launch_json_entry CONTENT_VAR TARGET_NAME)
 	endif()
 	# - generate entry content
 	if (CGVARG__DEBUGGER_TYPE STREQUAL "cppdbg")
+		set(ADDITIONAL_ENV_VARS "")
+		if(CGV_DEBUG_ON_NVIDIA_GPU)
+			set(ADDITIONAL_ENV_VARS ",
+				{ \"name\": \"__NV_PRIME_RENDER_OFFLOAD\", \"value\": \"1\" },
+				{ \"name\": \"__GLX_VENDOR_LIBRARY_NAME\", \"value\": \"nvidia\" }"
+			)
+		endif()
 		set(CONTENT_LOCAL "${CONTENT_LOCAL}		{
 			\"name\": \"Debug '${TARGET_NAME}' (cppdbg)\",
 			\"type\": \"cppdbg\",
@@ -42,7 +49,7 @@ function(format_vscode_launch_json_entry CONTENT_VAR TARGET_NAME)
 			\"cwd\": \"${CGVARG__WORKING_DIR}\",
 			\"environment\": [
 				{ \"name\": \"CGV_DIR\", \"value\": \"${CGV_DIR}\" },
-				{ \"name\": \"CGV_OPTIONS\", \"value\": \"${CGV_OPTIONS}\" }
+				{ \"name\": \"CGV_OPTIONS\", \"value\": \"${CGV_OPTIONS}\" }${ADDITIONAL_ENV_VARS}
 			],
 			\"externalConsole\": false,
 			\"MIMode\": \"gdb\",
@@ -60,6 +67,10 @@ function(format_vscode_launch_json_entry CONTENT_VAR TARGET_NAME)
 			]
 		}")
 	elseif (CGVARG__DEBUGGER_TYPE STREQUAL "CodeLLDB")
+		set(ADDITIONAL_ENV_VARS "")
+		if(CGV_DEBUG_ON_NVIDIA_GPU)
+			set(ADDITIONAL_ENV_VARS ", \"__NV_PRIME_RENDER_OFFLOAD\": \"1\", \"__GLX_VENDOR_LIBRARY_NAME\": \"nvidia\"")
+		endif()
 		set(CONTENT_LOCAL "${CONTENT_LOCAL}		{
 			\"name\": \"Debug '${TARGET_NAME}' (CodeLLDB)\",
 			\"type\": \"lldb\",
@@ -68,7 +79,7 @@ function(format_vscode_launch_json_entry CONTENT_VAR TARGET_NAME)
 		format_vscode_launch_json_args(CONTENT_LOCAL ARGUMENT_LIST ${CGVARG__CMD_ARGS})
 		set(CONTENT_LOCAL "${CONTENT_LOCAL},
 			\"cwd\": \"${CGVARG__WORKING_DIR}\",
-			\"env\": { \"CGV_DIR\": \"${CGV_DIR}\", \"CGV_OPTIONS\": \"${CGV_OPTIONS}\" }
+			\"env\": { \"CGV_DIR\": \"${CGV_DIR}\", \"CGV_OPTIONS\": \"${CGV_OPTIONS}\"${ADDITIONAL_ENV_VARS} }
 		}")
 	else()
 		message(FATAL_ERROR "format_vscode_launch_json_entry(): unknown debugger type \"${CGVARG__DEBUGGER_TYPE}\"")
@@ -80,23 +91,36 @@ endfunction()
 
 function(concat_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 	cmake_parse_arguments(
-		PARSE_ARGV 2 CGVARG_ "NO_EXECUTABLE" "WORKING_DIR" "PLUGIN_ARGS;EXE_ARGS"
+		PARSE_ARGV 2 CGVARG_ "NO_EXECUTABLE" "INVOCATION_PROXY;WORKING_DIR" "PLUGIN_ARGS;EXE_ARGS"
 	)
 
 	# determine target names
 	cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
 
+	# devide what the program to invoke will be
+	if (CGVARG__INVOCATION_PROXY)
+		set(LAUNCH_PROGRAM_PLUGIN "${CGVARG__INVOCATION_PROXY}")
+		set(LAUNCH_PROGRAM_EXE "${CGVARG__INVOCATION_PROXY}")
+		set(CMD_ARGS_PLUGIN $<TARGET_FILE:cgv_viewer> "${CGVARG__PLUGIN_ARGS}")
+		set(CMD_ARGS_EXE $<TARGET_FILE:${NAME_EXE}> "${CGVARG__EXE_ARGS}")
+	else()
+		set(LAUNCH_PROGRAM_PLUGIN $<TARGET_FILE:cgv_viewer>)
+		set(LAUNCH_PROGRAM_EXE $<TARGET_FILE:${NAME_EXE}>)
+		set(CMD_ARGS_PLUGIN "${CGVARG__PLUGIN_ARGS}")
+		set(CMD_ARGS_EXE "${CGVARG__EXE_ARGS}")
+	endif()
+
 	# compose JSON list for both plugin and executable variants
 	# - plugin build, standard VS Code C++ debugging
 	format_vscode_launch_json_entry(JSON_LIST_STRING
 		${TARGET_NAME} DEBUGGER_TYPE cppdbg
-		LAUNCH_PROGRAM $<TARGET_FILE:cgv_viewer> CMD_ARGS ${CGVARG__PLUGIN_ARGS}
+		LAUNCH_PROGRAM ${LAUNCH_PROGRAM_PLUGIN} CMD_ARGS ${CMD_ARGS_PLUGIN} 
 		WORKING_DIR ${CGVARG__WORKING_DIR}
 	)
 	# - plugin build, CodeLLDB debugging
 	format_vscode_launch_json_entry(JSON_LIST_STRING
 		${TARGET_NAME} DEBUGGER_TYPE CodeLLDB
-		LAUNCH_PROGRAM $<TARGET_FILE:cgv_viewer> CMD_ARGS ${CGVARG__PLUGIN_ARGS}
+		LAUNCH_PROGRAM ${LAUNCH_PROGRAM_PLUGIN} CMD_ARGS ${CMD_ARGS_PLUGIN}
 		WORKING_DIR ${CGVARG__WORKING_DIR}
 	)
 	# - single executable build if not disabled
@@ -104,13 +128,13 @@ function(concat_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 		# standard VS Code C++ debugging
 		format_vscode_launch_json_entry(JSON_LIST_STRING
 			${NAME_EXE} DEBUGGER_TYPE cppdbg
-			LAUNCH_PROGRAM $<TARGET_FILE:${NAME_EXE}> CMD_ARGS ${CGVARG__EXE_ARGS}
+			LAUNCH_PROGRAM ${LAUNCH_PROGRAM_EXE} CMD_ARGS ${CMD_ARGS_EXE}
 			WORKING_DIR ${CGVARG__WORKING_DIR}
 		)
 		# CodeLLDB debugging
 		format_vscode_launch_json_entry(JSON_LIST_STRING
 			${NAME_EXE} DEBUGGER_TYPE CodeLLDB
-			LAUNCH_PROGRAM $<TARGET_FILE:${NAME_EXE}> CMD_ARGS ${CGVARG__EXE_ARGS}
+			LAUNCH_PROGRAM ${LAUNCH_PROGRAM_EXE} CMD_ARGS ${CMD_ARGS_EXE}
 			WORKING_DIR ${CGVARG__WORKING_DIR}
 		)
 	endif()

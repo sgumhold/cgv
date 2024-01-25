@@ -654,7 +654,7 @@ namespace stream_vis {
 							std::cerr << "ERROR: mismatch in ringbuffer size" << std::endl;
 				}
 				if (nr_samples <= buffer_size) {
-					cfg.begin_sample;
+					//cfg.begin_sample;
 					cfg.end_sample = nr_samples;
 				}
 				else {

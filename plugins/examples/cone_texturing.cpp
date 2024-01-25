@@ -319,9 +319,7 @@ public:
 				rad_stack.push(rad);
 				break;
 			case ']':
-				leaves.add(pos);
-				leaves.add(1.5f * (0.8f*distr(rng) + 0.2f * rad));
-
+				leaves.add(pos, 1.5f * (0.8f * distr(rng) + 0.2f * rad));
 				pos = pos_stack.top();
 				dir = dir_stack.top();
 				rad = rad_stack.top();

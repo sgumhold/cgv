@@ -42,7 +42,6 @@ cgv::reflect::enum_reflection_traits<holo_view_interactor::HoloMode> get_reflect
 void holo_view_interactor::set_default_values()
 {
 	stereo_view::set_default_values();
-	eye_distance = 0.3f;
 	two_d_enabled = false;
 }
 
@@ -246,7 +245,7 @@ void holo_view_interactor::stream_stats(std::ostream& os)
 {
 	os << "holo_view_interactor:\n\a";
 
-	oprintf(os, "y_view_angle=%.1fº, y_extent=%.1f, inp_z_range:[%.2f,%.2f]",
+	oprintf(os, "y_view_angle=%.1fÂ°, y_extent=%.1f, inp_z_range:[%.2f,%.2f]",
 		y_view_angle, y_extent_at_focus, z_near, z_far);
 	if (scene_extent.is_valid()) {
 		oprintf(os, " adapted to scene: [%.2f,%.2f]\n", z_near_derived, z_far_derived);
@@ -1210,6 +1209,10 @@ bool holo_view_interactor::init(cgv::render::context& ctx)
 		return false;
 	return true;
 }
+float holo_view_interactor::compute_eye_base(int view_index) const
+{
+	return eye_separation_factor*((2.0f * view_index) / (nr_views - 1) - 1.0f);
+}
 
 /// this method is called in one pass over all drawables before the draw method
 void holo_view_interactor::init_frame(context& ctx)
@@ -1219,7 +1222,7 @@ void holo_view_interactor::init_frame(context& ctx)
 	// check mono rendering case 
 	switch (holo_mode) {
 	case HM_SINGLE :
-		current_e = (2.0f*view_index) / (nr_views-1) - 1.0f;
+		current_e = compute_eye_base(view_index);
 		last_do_viewport_splitting = do_viewport_splitting;
 		last_nr_viewport_columns = nr_viewport_columns;
 		last_nr_viewport_rows = nr_viewport_rows;
@@ -1258,7 +1261,7 @@ void holo_view_interactor::init_frame(context& ctx)
 			initiate_terminal_render_pass(nr_views - 1);
 		}
 		if (!multi_pass_ignore_finish(ctx)) {
-			current_e = (2.0f * vi) / (nr_views - 1) - 1.0f;
+			current_e = compute_eye_base(vi);
 			if (holo_mode == HM_QUILT) {
 				ivec4 vp(quilt_col * view_width, quilt_row * view_height, view_width, view_height);
 				glViewport(vp[0], vp[1], vp[2], vp[3]);
@@ -1502,6 +1505,7 @@ void holo_view_interactor::create_gui()
 		align("\a");
 		if (begin_tree_node("Stereo", eye_distance, false)) {
 			align("\a");
+			add_member_control(this, "Eye Separation Factor", eye_separation_factor, "value_slider", "min=0.1;max=100;ticks=true;step=0.01;log=true");
 			add_member_control(this, "Eye Distance", eye_distance, "value_slider", "min=0.01;max=5;ticks=true;step=0.00001;log=true");
 			add_member_control(this, "Parallax Zero Scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");
 			add_member_control(this, "Stereo Translate in Model View", stereo_translate_in_model_view, "check");
@@ -1629,6 +1633,7 @@ bool holo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("focus_y", view::focus(1)) &&
 		srh.reflect_member("focus_z", view::focus(2)) &&
 		srh.reflect_member("focus", view::focus) &&
+		srh.reflect_member("eye_separation_factor", eye_separation_factor) &&
 		srh.reflect_member("eye_distance", eye_distance) &&
 		srh.reflect_member("parallax_zero_scale", parallax_zero_scale) &&
 		srh.reflect_member("stereo_translate_in_model_view", stereo_translate_in_model_view) &&

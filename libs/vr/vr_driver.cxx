@@ -196,7 +196,7 @@ namespace vr {
 	{
 		vr_kit* kit_ptr = 0;
 		for (auto driver_ptr : ref_drivers())
-			if (kit_ptr = driver_ptr->replace_by_index(vr_kit_index, new_kit_ptr))
+			if ((kit_ptr = driver_ptr->replace_by_index(vr_kit_index, new_kit_ptr)))
 				break;
 		return kit_ptr;
 	}

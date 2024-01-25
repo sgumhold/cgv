@@ -1,4 +1,4 @@
-#version 150
+#version 330 core
 
 in vec3 position;
 in vec3 p0_fs;
@@ -7,6 +7,9 @@ in vec3 p1_fs;
 in vec4 color_fs;
 in float radius_fs;
 in float head_radius_fs;
+
+layout(location = 1) out vec4 frag_position;
+layout(location = 2) out vec3 frag_normal;
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -148,6 +151,9 @@ void main()
 		vec4 depth = get_projection_matrix() * v_eye;
 		
 		gl_FragDepth = 0.5*(depth.z / depth.w) + 0.5;
+
+		frag_position = vec4(hit_pos_eye, 1.0);
+		frag_normal = normal_eye;
 
 		finish_fragment(compute_reflected_appearance(hit_pos_eye, normal_eye, color_fs, 1));
 	} else {

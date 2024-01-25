@@ -269,7 +269,7 @@ void stereo_view_interactor::stream_stats(std::ostream& os)
 {
 	os << "stereo_view_interactor:\n\a";
 
-	oprintf(os, "y_view_angle=%.1fº, y_extent=%.1f, inp_z_range:[%.2f,%.2f]",
+	oprintf(os, "y_view_angle=%.1fÂ°, y_extent=%.1f, inp_z_range:[%.2f,%.2f]",
 		y_view_angle, y_extent_at_focus, z_near, z_far);
 	if (scene_extent.is_valid()) {
 		oprintf(os, " adapted to scene: [%.2f,%.2f]\n", z_near_derived, z_far_derived);
@@ -1619,6 +1619,19 @@ bool stereo_view_interactor::get_void(const std::string& property, const std::st
 
 void stereo_view_interactor::on_set(void* m)
 {
+	if (m == &view_dir) {
+		update_member(&view_dir[1]);
+		update_member(&view_dir[2]);
+	}
+	if (m == &view_up_dir) {
+		update_member(&view_up_dir[1]);
+		update_member(&view_up_dir[2]);
+	}
+	dvec3& foc = cgv::render::view::focus;
+	if (m == &foc) {
+		update_member(&foc[1]);
+		update_member(&foc[2]);
+	}
 	if (m == &stereo_enabled || m == &stereo_mode)
 		on_stereo_change();
 	update_member(m);

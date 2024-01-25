@@ -1,34 +1,5 @@
 #version 430
 
-#define NUM_STEPS 128
-
-// 0 - Nearest
-// 1 - Smooth
-// 2 - Linear
-// 3 - Cubic
-#define INTERPOLATION_MODE 2
-#define ENABLE_NOISE_OFFSET 1
-#define ENABLE_SCALE_ADJUSTMENT 0
-#define ENABLE_LIGHTING 0
-#define USE_GRADIENT_TEXTURE 0
-#define ENABLE_GRADIENT_MODULATION 0
-#define ENABLE_DEPTH_TEST 0
-
-#define FRONT_TO_BACK 0
-
-// 0 - Maximum intensity projection
-// 1 - Average
-// 2 - Blend (transfer function)
-#define COMPOSITING_MODE 2
-
-// 0 - None/Disabled
-// 1 - Isovalue
-// 2 - Alpha Threshold (from transfer function)
-#define ISOSURFACE_MODE 0
-#define ISOSURFACE_COLOR_MODE 0
-
-#define TRANSFER_FUNCTION_SAMPLER_DIMENSIONS 1
-
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
 void finish_fragment(vec4 color);
@@ -44,10 +15,59 @@ mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
 
-//***** begin interface of surface.glsl ***********************************
-vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
-//***** end interface of surface.glsl ***********************************
+// constant defines
+#define TRANSPARENCY_THRESHOLD 0.01
 
+// style settings defines
+#define NUM_STEPS 128
+
+// 0 - Nearest
+// 1 - Smooth
+// 2 - Linear
+// 3 - Cubic
+#define INTERPOLATION_MODE 2
+#define ENABLE_NOISE_OFFSET 1
+#define ENABLE_LIGHTING 0
+#define USE_GRADIENT_TEXTURE 0
+#define ENABLE_GRADIENT_MODULATION 0
+#define ENABLE_DEPTH_TEST 0
+
+// 0 - Maximum intensity projection
+// 1 - Average
+// 2 - Blend (transfer function)
+#define COMPOSITING_MODE 2
+
+// 0 - None/Disabled
+// 1 - Isovalue
+// 2 - Alpha Threshold (from transfer function)
+#define ISOSURFACE_MODE 0
+#define ISOSURFACE_COLOR_MODE 0
+
+// 0 - Disabled
+// 1 - Opaque
+// 2 - Transparent
+#define SLICE_MODE 0
+
+// automatic defines
+#define TRANSFER_FUNCTION_SAMPLER_DIMENSIONS 1
+
+// dependent defines
+#if ENABLE_LIGHTING == 1 || ENABLE_GRADIENT_MODULATION == 1
+	#define USES_GRADIENT
+#endif
+
+#if ENABLE_LIGHTING == 1
+	#define USES_NORMAL
+#endif
+
+// type declarations
+struct ray3 {
+	vec3 origin;
+	vec3 direction;
+	float tn, tf;
+};
+
+// uniforms
 layout (binding = 0) uniform sampler3D volume_tex;
 #if TRANSFER_FUNCTION_SAMPLER_DIMENSIONS == 1
 layout (binding = 1) uniform sampler1D transfer_function_tex;
@@ -62,25 +82,56 @@ layout (binding = 3) uniform sampler3D gradient_tex;
 layout (binding = 4) uniform sampler2D depth_tex;
 #endif
 
-uniform vec2 viewport_dims;
-uniform vec2 noise_offset;
-uniform float opacity_scale;
-uniform float size_scale;
+uniform vec2  viewport_dims;
+uniform vec2  noise_offset;
+uniform float scale_adjustment_factor;
 
-uniform bool light_local_to_eye;
-uniform vec3 light_direction;
-uniform vec4 light_parameters;
+uniform bool  light_local_to_eye;
+uniform vec3  light_direction;
+uniform float ambient_strength;
+uniform float diffuse_strength;
+uniform float specular_strength;
+uniform float specular_exponent;
+uniform float specular_color_mix;
 
 uniform float gradient_lambda;
 
 uniform float isovalue;
-uniform vec3 isosurface_color;
+uniform vec3  isosurface_color;
 
-uniform vec3 clip_box_min;
-uniform vec3 clip_box_max;
+uniform int   slice_axis;
+uniform float slice_coordinate;
+uniform float slice_opacity;
 
+uniform vec3  clip_box_min;
+uniform vec3  clip_box_max;
+
+// in/out parameters
 in vec3 position_object;
 in vec3 eye_fs;
+
+vec4 textureNearest(sampler3D tex, vec3 coord) {
+	
+	ivec3 tex_size = textureSize(tex, 0);
+	ivec3 uv = ivec3(coord * tex_size);
+
+	return texelFetch(tex, uv, 0);
+}
+
+// smooth filtering based on linear interpolated samples (https://www.shadertoy.com/view/XsfGDn)
+vec4 textureSmooth(sampler3D tex, vec3 coord) {
+	
+	vec3 tex_size = vec3(textureSize(volume_tex, 0));
+	vec3 uv = coord * tex_size + 0.5;
+
+	vec3 iuv = floor(uv);
+	vec3 fuv = fract(uv);
+
+	uv = iuv + fuv*fuv*(3.0-2.0*fuv); // fuv*fuv*fuv*(fuv*(fuv*6.0-15.0)+10.0);
+	uv = (uv - 0.5)/tex_size;
+
+	return textureLod(tex, uv, 0);
+}
 
 /*--------------------------------------------------------------------------*\
 Copyright (c) 2008-2009, Danny Ruijters. All rights reserved.
@@ -162,29 +213,6 @@ vec4 textureCubic(sampler3D tex, vec3 coord) {
 	return mix(tex001, tex000, g0.z);  //weigh along the z-direction
 }
 
-// smooth filtering from https://www.shadertoy.com/view/XsfGDn
-vec4 textureSmooth(sampler3D tex, vec3 coord) {
-	
-	vec3 tex_size = vec3(textureSize(volume_tex, 0));
-	vec3 uv = coord * tex_size + 0.5;
-
-	vec3 iuv = floor(uv);
-	vec3 fuv = fract(uv);
-
-	uv = iuv + fuv*fuv*(3.0-2.0*fuv); // fuv*fuv*fuv*(fuv*(fuv*6.0-15.0)+10.0);
-	uv = (uv - 0.5)/tex_size;
-
-	return textureLod(tex, uv, 0);
-}
-
-vec4 textureNearest(sampler3D tex, vec3 coord) {
-	
-	ivec3 tex_size = textureSize(tex, 0);
-	ivec3 uv = ivec3(coord * tex_size);
-
-	return texelFetch(tex, uv, 0);
-}
-
 vec3 central_difference(vec3 coords) {
 
 	float xr = textureOffset(volume_tex, coords, ivec3(+1, 0, 0)).r;
@@ -234,7 +262,7 @@ vec4 apply_transfer_function(in float density) {
 #endif
 }
 
-#if ENABLE_LIGHTING == 1 || ENABLE_GRADIENT_MODULATION == 1
+#ifdef USES_GRADIENT
 vec3 get_gradient(in vec3 uvw) {
 	// calculate the gradient on-the-fly via central differences
 	#if USE_GRADIENT_TEXTURE == 0
@@ -247,36 +275,43 @@ vec3 get_gradient(in vec3 uvw) {
 #endif
 
 #if ENABLE_LIGHTING == 1
-float calculate_lighting(vec3 view_dir, vec3 normal, vec3 light_dir) {
+vec3 calculate_lighting(vec3 view_dir, vec3 normal, vec3 light_dir) {
 
     float diffuse = max(dot(normal, light_dir), 0.0);
 	
 	vec3 half_dir = normalize(light_dir + view_dir);
-	float specular = pow(max(dot(normal, half_dir), 0.0), light_parameters.w);
+	float specular = pow(max(dot(normal, half_dir), 0.0), specular_exponent);
 	specular *= diffuse;
 	
-    return light_parameters.x + diffuse * light_parameters.y + specular * light_parameters.z;
+    return vec3(ambient_strength.x, diffuse * diffuse_strength, specular * specular_strength);
+}
+
+vec3 apply_lighting(vec3 color, vec3 lighting) {
+
+	vec3 illuminated_color = (lighting.x + lighting.y) * color;
+	illuminated_color += mix(vec3(1.0f), color, specular_color_mix) * lighting.z;
+	return illuminated_color;
 }
 #endif
 
-bool intersect_box(vec3 origin, vec3 direction, out float t_min, out float t_max) {
+bool intersect_box(in vec3 a, in vec3 b, in vec3 origin, in vec3 direction, out float t_min, out float t_max) {
 
 	vec3 inv_dir = 1.0 / direction;
 
-	float t1 = (-0.5 - origin.x)*inv_dir.x;
-	float t2 = (+0.5 - origin.x)*inv_dir.x;
+	float t1 = (a.x - origin.x)*inv_dir.x;
+	float t2 = (b.x - origin.x)*inv_dir.x;
 
 	t_min = min(t1, t2);
 	t_max = max(t1, t2);
 
-	t1 = (-0.5 - origin.y)*inv_dir.y;
-	t2 = (+0.5 - origin.y)*inv_dir.y;
+	t1 = (a.y - origin.y)*inv_dir.y;
+	t2 = (b.y - origin.y)*inv_dir.y;
 
 	t_min = max(t_min, min(t1, t2));
 	t_max = min(t_max, max(t1, t2));
 
-	t1 = (-0.5 - origin.z)*inv_dir.z;
-	t2 = (+0.5 - origin.z)*inv_dir.z;
+	t1 = (a.z - origin.z)*inv_dir.z;
+	t2 = (b.z - origin.z)*inv_dir.z;
 
 	t_min = max(t_min, min(t1, t2));
 	t_max = min(t_max, max(t1, t2));
@@ -284,7 +319,228 @@ bool intersect_box(vec3 origin, vec3 direction, out float t_min, out float t_max
 	return t_max > max(t_min, 0.0f);
 }
 
-void main()
+bool get_ray(in vec3 bbox_min, in vec3 bbox_max, in float step_size, out ray3 ray) {
+	
+	vec2 frag_tex_coords = gl_FragCoord.xy / viewport_dims;
+
+	ray.origin = eye_fs;
+	ray.direction = -normalize(eye_fs - position_object);
+
+	// test if ray intersects the volume bounding box, if not return false
+	if(!intersect_box(bbox_min, bbox_max, ray.origin, ray.direction, ray.tn, ray.tf))
+		return false;
+
+	// make sure the ray origin is not moved behind the eye position
+	ray.tn = max(ray.tn, 0.0);
+
+#if ENABLE_DEPTH_TEST == 1
+	float depth = texture(depth_tex, frag_tex_coords).r;
+	
+	vec4 clip_space_pos = vec4(2.0 * frag_tex_coords - 1.0, 2.0 * depth - 1.0, 1.0);
+
+	vec4 object_space_pos = get_inverse_modelview_projection_matrix() * clip_space_pos;
+	object_space_pos /= object_space_pos.w;
+
+	// the ray end distance is the minimum between the distance from the eye to the volume bounding box position or the depth buffer position
+	ray.tf = min(ray.tf, length(eye_fs - object_space_pos.xyz));
+#endif
+	
+	// discretize the ray start and end distances onto positions that are step_size apart (prevents artifacts when looking at bounding box edges and corners)
+	ray.tn = step_size * round(ray.tn / step_size);
+	ray.tf = step_size * round(ray.tf / step_size);
+
+	// update the ray origin as it may have changed
+	ray.origin += ray.tn * ray.direction;
+
+	// transform position to texture coordinates: [-0.5,0.5] -> [0.0,1.0]
+	ray.origin += 0.5;
+
+#if ENABLE_NOISE_OFFSET == 1
+	// add a small offset noise to the ray start position to prevent ring artifacts
+	vec2 noise_uv = (frag_tex_coords + noise_offset) * textureSize(noise_tex, 0);
+	ray.origin += (2.0 * ray.direction * step_size) * (texture(noise_tex, noise_uv).r + (noise_offset.x * noise_offset.y));
+#endif
+	
+	return true;
+}
+
+void main() {
+
+	const float step_size = 1.732051 / NUM_STEPS;
+	//float step_size = length(bbox_extent) / NUM_STEPS;
+	
+	//vec3 box_min = bbox_center - 0.5*bbox_extent;
+	//vec3 box_max = bbox_center + 0.5*bbox_extent;
+	
+	ray3 ray;
+	if(!get_ray(vec3(-0.5), vec3(0.5), step_size, ray)) {
+	//if(!get_ray(box_min, box_max, step_size, ray)) {
+		finish_fragment(vec4(0.0, 0.0, 0.0, 0.0));
+		return;
+	}
+
+#if ENABLE_LIGHTING == 1
+	// TODO: make this use the framework lighting system?	
+	vec3 light_dir = light_local_to_eye ?
+		normalize((get_inverse_modelview_matrix() * vec4(light_direction, 0.0)).xyz) : // light is local to eye position/static to window
+		light_direction; // light is static to scene
+#endif
+
+	// ray start and end distance delta
+	float dt = ray.tf - ray.tn;
+	// initial color with full transparency for front-to-back blending
+	vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+	// step count (needed later for averaging the density if using average compositing mode)
+#if SLICE_MODE > 0
+	bool initial_side_slice = mix(clip_box_min, clip_box_max, ray.origin)[slice_axis] > slice_coordinate;
+#endif
+	int istep = 0;
+	for(istep; istep < NUM_STEPS; ++istep) {
+		float t = istep * step_size;
+		
+		if(t > dt)
+			break;
+
+		// calculate the current ray position
+		vec3 pos = ray.origin + t*ray.direction;
+
+		// transform pos from [0,1] to uvw texture coordinate range given by [clip_box_min,clip_box_max] to allow rendering only part of the volume
+		vec3 uvw = mix(clip_box_min, clip_box_max, pos);
+
+		float density = get_density(uvw);
+
+#if COMPOSITING_MODE == 0
+
+		// red channel stores the maximum density
+		color.r = max(color.r, density);
+
+#elif COMPOSITING_MODE == 1
+
+		// red channel stores the accumulated density
+		color.r += density;
+
+#else
+
+		// apply the transfer function
+		vec4 color_in = apply_transfer_function(density);
+	#if ISOSURFACE_MODE > 0
+		#if ISOSURFACE_MODE == 1
+			bool is_isosurface = density >= isovalue;
+		#else
+			bool is_isosurface = color_in.a >= isovalue;
+		#endif
+	#endif
+
+		float opacity_modulation = 1.0;
+
+	#ifdef USES_GRADIENT
+		vec3 gradient = get_gradient(uvw);
+		float gradient_length = length(gradient);
+	#endif
+
+	#ifdef USES_NORMAL
+		// get the normal as the reversed normalized gradient
+		vec3 normal = -safe_divide(gradient, gradient_length);
+	#endif
+
+	#if ENABLE_LIGHTING == 1
+		// only compute lighting if the sample passes the opacity threshold or is on an isosurface
+		vec3 illumination =
+			#if ISOSURFACE_MODE > 0
+				(color_in.a > TRANSPARENCY_THRESHOLD || is_isosurface) ?
+			#else
+				color_in.a > TRANSPARENCY_THRESHOLD ?
+			#endif
+			calculate_lighting(-ray.direction, normal, light_dir) : vec3(0.0);
+	#endif
+
+	#if ENABLE_GRADIENT_MODULATION == 1
+		opacity_modulation = pow(gradient_length, gradient_lambda);
+	#endif
+	#if ISOSURFACE_MODE > 0
+		if(is_isosurface) {
+			#if ISOSURFACE_COLOR_MODE == 0
+				color_in = vec4(isosurface_color, 1.0);
+			#endif
+			
+			#if ENABLE_LIGHTING == 1
+				color_in.rgb = apply_lighting(color_in.rgb, illumination);
+			#endif
+
+			color.rgb = color.a*color_in.rgb + color.rgb;
+			color.a = 0.0;
+
+			break;
+		}
+	#endif
+	#if SLICE_MODE > 0
+		bool at_slice = ((uvw[slice_axis] > slice_coordinate) != initial_side_slice);
+		if (at_slice) {
+	#if SLICE_MODE == 1
+			color_in.a = 1.0;
+	#else
+			color_in.a = slice_opacity;
+	#endif
+			initial_side_slice = !initial_side_slice;
+		}
+		else {
+	#endif
+	#if ENABLE_LIGHTING == 1
+			color_in.rgb = apply_lighting(color_in.rgb, illumination);
+	#endif
+
+			// apply opacity modulation as determined by gradient length if enabled
+			color_in.a *= opacity_modulation;
+
+			color_in.a = -exp(-step_size * scale_adjustment_factor * color_in.a) + 1.0;
+	#if SLICE_MODE > 0
+		}
+	#endif
+		// premultiply alpha
+		color_in.rgb *= color_in.a;
+
+		// blend front-to-back
+		color.rgb += color.a*color_in.rgb;
+		color.a *= (1.0 - color_in.a);
+
+		// early termination when transparency threshold is reached
+	#if ENABLE_ISOSURFACE == 0
+		if(color.a < TRANSPARENCY_THRESHOLD) {
+			color.a = 0.0;
+			break;
+		}
+	#endif
+	#if SLICE_MODE == 1
+		if (at_slice) {
+			break;
+		}
+	#endif
+#endif
+	}
+
+#if COMPOSITING_MODE == 0
+
+	color = vec4(color.r);
+
+#elif COMPOSITING_MODE == 1
+
+	float average_density = istep > 0 ? color.r / float(istep) : 0.0;
+
+	average_density = -exp(-scale_adjustment_factor * average_density) + 1.0;
+
+	color = vec4(average_density);
+
+#else
+
+	// convert transparency to opacity
+	color.a = 1.0 - color.a;
+	
+#endif
+
+	finish_fragment(color);
+}
+
+/*void main()
 {
 	const float step_size = 1.732051 / NUM_STEPS;
 	vec2 frag_tex_coords = gl_FragCoord.xy / viewport_dims;
@@ -429,13 +685,13 @@ void main()
 
 		// only compute lighting if the sample passes the opacity threshold or is on an isosurface
 		
-		float illumination =
+		vec3 illumination =
 			#if ISOSURFACE_MODE > 0
 			(color_in.a > 0.05 || is_isosurface) ?
 			#else
 			color_in.a > 0.05 ?
 			#endif
-			calculate_lighting(view_dir, normal, light_dir) : 0.0;
+			calculate_lighting(view_dir, normal, light_dir) : vec3(0.0);
 	#endif
 
 	#if ENABLE_GRADIENT_MODULATION == 1
@@ -449,7 +705,7 @@ void main()
 			#endif
 			
 			#if ENABLE_LIGHTING == 1
-			color_in.rgb *= illumination;
+			color_in.rgb = apply_lighting(color_in.rgb, illumination);
 			#endif
 
 			color.rgb = color.a*color_in.rgb + color.rgb;
@@ -460,7 +716,7 @@ void main()
 	#endif
 
 	#if ENABLE_LIGHTING == 1
-		color_in.rgb *= illumination;
+		color_in.rgb = apply_lighting(color_in.rgb, illumination);
 	#endif
 
 		// apply opacity modulation as determined by gradient length if enabled
@@ -516,3 +772,4 @@ void main()
 	finish_fragment(color);
 #endif
 }
+*/

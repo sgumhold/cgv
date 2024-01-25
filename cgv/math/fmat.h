@@ -153,7 +153,7 @@ public:
 	template <typename S>
 	const fmat<T,N,N> mul_h (const fmat<S,N-1,N-1>& m2) const
 	{
-		static_assert(N == M);
+		static_assert(N == M, "Number of rows and columns must be equal");
 		static const auto vzero = fvec<T, N-1>(0);
 		fvec<T,N> rows[N]; // extracting a row takes linear time so we only want to do it once for each row
 		for (unsigned i=0; i<N; i++)
@@ -296,10 +296,8 @@ std::istream& operator>>(std::istream& in, fmat<T,N,M>& m)
 	return in;
 }
 
-
-
 ///returns the outer product of vector v and w
-template < typename T, cgv::type::uint32_type N, typename S, cgv::type::uint32_type M>
+template <typename T, cgv::type::uint32_type N, typename S, cgv::type::uint32_type M>
 fmat<T, N, M> dyad(const fvec<T,N>& v, const fvec<S,M>& w)
 {
 	fmat<T, N, M> m;
@@ -307,6 +305,20 @@ fmat<T, N, M> dyad(const fvec<T,N>& v, const fvec<S,M>& w)
 		for (unsigned j = 0; j < M; j++)
 			m(i, j) = v(i)*(T)w(j);
 	return m;
+}
+
+///returns the determinant of a 2x2 matrix
+template <typename T>
+T det(const fmat<T, 2, 2>& m) {
+	return m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0);
+}
+
+///returns the determinant of a 3x3 matrix
+template <typename T>
+T det(const fmat<T, 3, 3>& m) {
+	T a = m(0, 0) * m(1, 1) * m(2, 2) + m(0, 1) * m(1, 2) * m(2, 0) + m(0, 2) * m(1, 0) * m(2, 1);
+	T b = -m(2, 0) * m(1, 1) * m(0, 2) - m(2, 1) * m(1, 2) * m(0, 0) - m(2, 2) * m(1, 0) * m(0, 1);
+	return a + b;
 }
 
 ///linear interpolation returns (1-t)*m1 + t*m2

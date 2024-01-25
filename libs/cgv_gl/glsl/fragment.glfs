@@ -1,6 +1,6 @@
 #version 430
 
-// set this to 1 in order to write fragments to a buffer
+// set this to 1 in order to write fragments to the a-buffer
 #define USE_A_BUFFER 0
 
 /*
@@ -33,10 +33,11 @@ void finish_fragment(vec4 color)
 	// alpha test
 	if (alpha_test && color.a <= alpha_cutoff)
 		discard;
+
 #if USE_A_BUFFER == 0
 	frag_color = color;
-	// perform inverse gamma correction and clamp to avoid problems with on laptop screens
-	frag_color.rgb = clamp(pow(frag_color.rgb, gamma3),0.0,0.9999999);
+	// perform gamma correction by applying the inverse of the set per-channel gamma value
+	frag_color.rgb = pow(frag_color.rgb, 1.0/gamma3);
 #else
 	a_buffer_insert_fragment(gl_FragCoord.xyz, color);
 #endif
@@ -47,10 +48,12 @@ void finish_fragment(vec4 color, float depth)
 	// alpha test
 	if (alpha_test && color.a <= alpha_cutoff)
 		discard;
+
 #if USE_A_BUFFER == 0
 	frag_color = color;
-	// perform inverse gamma correction and clamp to avoid problems with on laptop screens
-	frag_color.rgb = clamp(pow(frag_color.rgb, gamma3),0.0,0.9999999);
+	// perform gamma correction by applying the inverse of the set per-channel gamma value
+	frag_color.rgb = pow(frag_color.rgb, 1.0/gamma3);
+
 	gl_FragDepth = depth;
 #else
 	a_buffer_insert_fragment(vec3(gl_FragCoord.xy, depth), color);

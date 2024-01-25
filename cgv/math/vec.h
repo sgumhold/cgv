@@ -1212,25 +1212,12 @@ const vec<T>  log_space(const T& first_pow_of_10, const T& last_pow_of_10, unsig
 	return lv;
 }
 
-
-
 ///linear interpolation returns (1-t)*v1 + t*v2
 template <typename T>
 const vec<T> lerp(const vec<T>& v1, const vec<T>& v2, T t)
 {
 	return (1-t)*v1+t*v2;
 }
-
-
-
-///linear interpolation returns (1-t)*v1 + t*v2
-template <typename T>
-const T lerp(const T& s1, const T& s2, T t)
-{
-	return (1-t)*s1+t*s2;
-}
-
-
 
 ///spherical linear interpolation 
 template <typename T>

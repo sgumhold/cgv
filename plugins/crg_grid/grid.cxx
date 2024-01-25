@@ -324,7 +324,7 @@ void grid::on_set(void* member_ptr)
 /// return a path in the main menu to select the gui
 std::string grid::get_menu_path() const
 {
-	return "view/grid";
+	return "View/Grid";
 }
 /// you must overload this for gui creation
 void grid::create_gui()

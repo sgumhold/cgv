@@ -114,7 +114,7 @@ public:
 			group_indices.push_back(group_index);
 			normals.push_back(points.back() - vec3(0.5f, 0.5f, 0.5f));
 			normals.back().normalize();
-			colors.push_back(vec4(0.7f*d(g), 0.6f*d(g), 0.3f*d(g), 0.4f*d(g) + 0.6f));
+			colors.push_back(vec4(0.7f*d(g), 0.6f*d(g), 0.3f*d(g), 0.8f*d(g) + 0.2f));
 			vertices.push_back(vertex());
 			vertices.back().point = points.back();
 			vertices.back().normal = normals.back();
@@ -130,14 +130,15 @@ public:
 			group_translations.push_back(vec3(0, 0, 0));
 			group_rotations.push_back(vec4(0, 0, 0, 1));
 		}
-		mode = RM_POINTS;
+		mode = RM_SPHERES;
 		point_style.measure_point_size_in_pixel = false;
 		surfel_style.point_size = 15;
 		surfel_style.measure_point_size_in_pixel = false;
 		surfel_style.illumination_mode = cgv::render::IM_TWO_SIDED;
 		arrow_style.length_scale = 0.01f;
 		sphere_style.radius = 0.01f;
-		sphere_style.use_group_color = true;
+		sphere_style.use_group_color = false;
+		sphere_style.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
 		cone_style.radius = 0.01f;
 		cone_style.rounded_caps = false;
 	}
@@ -176,7 +177,7 @@ public:
 	bool init(cgv::render::context& ctx)
 	{
 		
-		if (view_ptr = find_view_as_node()) {
+		if ((view_ptr = find_view_as_node())) {
 			view_ptr->set_focus(0.0, 0.5, 0.0);
 			view_ptr->set_y_extent_at_focus(1.0);
 		}
@@ -421,8 +422,8 @@ public:
 	void create_gui()
 	{
 		add_decorator("Renderer Tests", "heading");
-		add_member_control(this, "mode", mode, "dropdown", "enums='Points,Surfels,Boxes,Box Wires,Normals,Arrows,Spheres,Cones'");
-		if (begin_tree_node("Transformation", lambda, true)) {
+		add_member_control(this, "Mode", mode, "dropdown", "enums='Points,Surfels,Boxes,Box Wires,Normals,Arrows,Spheres,Cones'");
+		if (begin_tree_node("Transformation", lambda, false)) {
 			align("\a");
 			add_member_control(this, "Lambda", lambda, "value_slider", "min=0;max=1;ticks=true");
 			add_member_control(this, "Translation", t[0], "value", "w=100", " ");

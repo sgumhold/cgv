@@ -13,11 +13,11 @@ template <typename T = float>
 class CGV_API dynamic_mesh : public simple_mesh<T>
 {
 public:
-	using simple_mesh_base::idx_type;
-	using simple_mesh_base::vec2i;
-	using simple_mesh_base::vec3i;
-	using simple_mesh_base::vec4i;
-	using simple_mesh_base::mat_type;
+	using typename simple_mesh_base::idx_type;
+	using typename simple_mesh_base::vec2i;
+	using typename simple_mesh_base::vec3i;
+	using typename simple_mesh_base::vec4i;
+	using typename simple_mesh_base::mat_type;
 	using typename simple_mesh<T>::vec2;
 	using typename simple_mesh<T>::vec3;
 	using typename simple_mesh<T>::vec4;

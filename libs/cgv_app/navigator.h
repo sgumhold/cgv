@@ -74,6 +74,8 @@ public:
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
 	void finish_draw(cgv::render::context& ctx);
+
+	void set_size(int size);
 };
 
 typedef cgv::data::ref_ptr<navigator> navigator_ptr;

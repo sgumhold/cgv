@@ -43,6 +43,22 @@ enum EnvironmentMode {
 	EM_PROCEDURAL
 };
 
+enum Skybox {
+	SB_MOUNTAIN_AND_SEA,
+	SB_BEACH_HEARTINTHESAND,
+	SB_BEACH_LARNACA,
+	SB_BEACH_PALMTREES,
+	SB_BEACH_TENERIFE,
+	SB_BEACH_TENERIFE2,
+	SB_BEACH_TENERIFE3,
+	SB_BEACH_TENERIFE4,
+	SB_FOREST_BRUDSLOJAN,
+	SB_FOREST_LANGHOLMEN2,
+	SB_FOREST_LANGHOLMEN3,
+	SB_FOREST_MOUNTAINPATH,
+	SB_FOREST_PLANTS
+};
+
 /// support self reflection of table mode
 extern CGV_API cgv::reflect::enum_reflection_traits<TableMode> get_reflection_traits(const TableMode&);
 
@@ -51,6 +67,9 @@ extern CGV_API cgv::reflect::enum_reflection_traits<GroundMode> get_reflection_t
 
 /// support self reflection of environment mode
 extern CGV_API cgv::reflect::enum_reflection_traits<EnvironmentMode> get_reflection_traits(const EnvironmentMode&);
+
+/// support self reflection of environment mode
+extern CGV_API cgv::reflect::enum_reflection_traits<Skybox> get_reflection_traits(const Skybox&);
 
 /// class manages static and dynamic parts of scene
 class CGV_API vr_scene :
@@ -81,7 +100,7 @@ private:
 	// rendering style for rendering of boxes
 	cgv::render::box_render_style box_style;
 
-	cgv::render::texture skybox;
+	cgv::render::texture skybox_tex;
 	cgv::render::shader_program cubemap_prog;
 
 	bool invert_skybox;
@@ -99,6 +118,8 @@ private:
 	double terrain_scale;
 
 	EnvironmentMode environment_mode;
+
+	Skybox skybox = SB_MOUNTAIN_AND_SEA;
 
 	bool draw_room, draw_walls, draw_ceiling;
 	float room_width, room_depth, room_height, wall_width;

@@ -227,7 +227,7 @@ void axis_config::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 
 		p.add_member_control(bp, "Multi Axis Ticks", multi_axis_ticks, "check");
 
-		char* tn[2] = { "Primary Tick", "Secondary Tick" };
+		const char* tn[2] = { "Primary Tick", "Secondary Tick" };
 		tick_config* tc[2] = { &primary_ticks, &secondary_ticks };
 		for (unsigned ti = 0; ti < 2; ++ti) {
 			bool vis = p.begin_tree_node(tn[ti], tc[ti]->label, false, "level=3;options='w=132';align=' '");

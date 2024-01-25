@@ -3,31 +3,30 @@
 #include "line_renderer.h"
 #include "render_data_base.h"
 
-#include "gl/lib_begin.h"
-
 namespace cgv {
 namespace render {
 
-template <typename ColorType = render_types::rgb>
+/// @brief Render data for line geometry with support for the line_renderer. See render_data_base.
+/// @tparam ColorType The type used to represent colors. Must be cgv::render::rgb or cgv::render::rgba.
+template <typename ColorType = rgb>
 class line_render_data : public render_data_base<ColorType> {
 public:
-	// Repeat automatically inherited typedefs from parent class, as they can't
-	// be inherited again according to C++ spec
-	typedef render_types::vec3 vec3;
-
 	// Base class we're going to use virtual functions from
 	typedef render_data_base<ColorType> super;
 
-protected:
-	std::vector<vec3> nml;
-	std::vector<float> wdth;
+	/// stores an array of normals
+	std::vector<vec3> normals;
+	/// stores an array of widths
+	std::vector<float> widths;
 
+protected:
+	/// @brief See render_data_base::transfer.
 	bool transfer(context& ctx, line_renderer& r) {
 		if(super::transfer(ctx, r)) {
-			if(nml.size() == super::size())
-				r.set_normal_array(ctx, nml);
-			if(wdth.size() == super::size())
-				r.set_line_width_array(ctx, wdth);
+			if(normals.size() == super::size())
+				r.set_normal_array(ctx, normals);
+			if(widths.size() == super::size())
+				r.set_line_width_array(ctx, widths);
 			return true;
 		}
 		return false;
@@ -36,76 +35,82 @@ protected:
 public:
 	void clear() {
 		super::clear();
-		nml.clear();
-		wdth.clear();
+		normals.clear();
+		widths.clear();
 	}
 
-	std::vector<float>& ref_nml() { return nml; }
-	std::vector<float>& ref_wdth() { return wdth; }
+	void add_normal(const vec3& normal) {
+		normals.push_back(normal);
+	}
+
+	void add_width(const float width) {
+		widths.push_back(width);
+	}
+
+	void add_segment_normal(const vec3& normal) {
+		add_normal(normal);
+		add_normal(normal);
+	}
+
+	void add_segment_width(const float width) {
+		add_width(width);
+		add_width(width);
+	}
+
+	void add_segment_color(const ColorType& color) {
+		super::add_color(color);
+		super::add_color(color);
+	}
+
+	// Explicitly use add from the base class since it is shadowed by the overloaded versions
+	using super::add;
+
+	void add(const vec3& start_position, const vec3& end_position) {
+		super::add_position(start_position);
+		super::add_position(end_position);
+	}
+
+	void add(const vec3& start_position, const vec3& end_position, const ColorType& color) {
+		add(start_position, end_position);
+		add_segment_color(color);
+	}
+
+	void add(const vec3& start_position, const vec3& end_position, const vec3& normal) {
+		add(start_position, end_position);
+		add_segment_normal(normal);
+	}
+
+	void add(const vec3& start_position, const vec3& end_position, const float width) {
+		add(start_position, end_position);
+		add_segment_width(width);
+	}
+
+	void add(const vec3& start_position, const vec3& end_position, const ColorType& color, const float width) {
+		add(start_position, end_position);
+		add_segment_color(color);
+		add_segment_width(width);
+	}
+
+	void add(const float start_width, const float end_width) {
+		add_width(start_width);
+		add_width(end_width);
+	}
+
+	void add(const ColorType& start_color, const ColorType& end_color) {
+		super::add_color(start_color);
+		super::add_color(end_color);
+	}
+	
+	void fill_normals(const vec3& normal) {
+		super::fill(normals, normal);
+	}
+
+	void fill_widths(const float width) {
+		super::fill(widths, width);
+	}
 
 	RDB_BASE_FUNC_DEF(line_renderer, line_render_style);
-
-	void adds(const vec3& p) {
-		super::pos.push_back(p);
-	}
-
-	void add(const vec3& p0, const vec3& p1) {
-		super::pos.push_back(p0);
-		super::pos.push_back(p1);
-	}
-
-	void add(const vec3& p0, const vec3& p1, const vec3& n) {
-		super::pos.push_back(p0);
-		super::pos.push_back(p1);
-		nml.push_back(n);
-	}
-
-	void adds(const float w) {
-		wdth.push_back(w);
-	}
-
-	void add(const float r) {
-		wdth.push_back(r);
-		wdth.push_back(r);
-	}
-
-	void add(const float w0, const float w1) {
-		wdth.push_back(w0);
-		wdth.push_back(w1);
-	}
-
-	void adds(const ColorType& c) {
-		super::col.push_back(c);
-	}
-
-	void add(const ColorType& c) {
-		super::col.push_back(c);
-		super::col.push_back(c);
-	}
-
-	void add(const ColorType& c0, const ColorType& c1) {
-		super::col.push_back(c0);
-		super::col.push_back(c1);
-	}
-
-	void add(const vec3& p0, const vec3& p1, const float w, const ColorType& c) {
-		add(p0, p1);
-		add(w);
-		add(c);
-	}
-
-	void fill(const float w) {
-		for(size_t i = wdth.size(); i < super::pos.size(); ++i)
-			wdth.push_back(w);
-	}
-
-	void fill(const ColorType& c) {
-		for(size_t i = super::col.size(); i < super::pos.size(); ++i)
-			super::col.push_back(c);
-	}
 };
 
 }
 }
-
-#include <cgv/config/lib_end.h>

@@ -35,7 +35,7 @@ public:
 	/// construct empty triangle mesh
 	mesh_geometry();
 	/// generate random points
-	void generate_sample_data_set(unsigned int n, SamplingType sampling, DistributionType dt, GeneratorType gt, ShapeType shape, SamplingStrategy ss, bool do_random_shuffle);
+	void generate_sample_data_set(unsigned int n, SamplingType sampling, DistributionType distribution, GeneratorType generator, ShapeType shape, SamplingStrategy strategy, bool do_random_shuffle);
 	/// remove all vertices 
 	void clear_geometry();
 	/// return the number of vertices

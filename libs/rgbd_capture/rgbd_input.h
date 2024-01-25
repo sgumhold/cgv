@@ -83,6 +83,13 @@ public:
 	bool configure_role(MultiDeviceRole mdr);
 	/// return the multi-device role of the device
 	MultiDeviceRole get_role() const;
+	/// whether device supports external synchronization
+	bool is_sync_supported() const;
+	/// return whether syncronization input jack is connected
+	bool is_sync_in_connected() const;
+	/// return whether syncronization output jack is connected
+	bool is_sync_out_connected() const;
+
 	/// check whether the device supports the given combination of input streams
 	bool check_input_stream_configuration(InputStreams is) const;
 	/// query the stream formats available for a given stream configuration
@@ -100,7 +107,7 @@ public:
 	/// start the rgbd input with given stream formats 
 	bool start(const std::vector<stream_format>& stream_formats);
 	/// query the calibration information and return whether this was successful
-	bool query_calibration(InputStreams is, cgv::math::camera<double>& cam);
+	bool query_calibration(rgbd_calibration& calib);
 	/// check whether device is started
 	bool is_started() const;
 	/// stop the rgbd input device

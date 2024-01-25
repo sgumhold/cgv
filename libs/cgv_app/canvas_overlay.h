@@ -22,6 +22,7 @@ protected:
 
 	cgv::g2d::canvas content_canvas, overlay_canvas;
 
+	/// whether to enable blending during the draw process
 	bool blend_overlay;
 	
 	void init_overlay_style(cgv::render::context& ctx);
@@ -44,23 +45,23 @@ protected:
 
 	void draw_impl(cgv::render::context& ctx);
 
-	virtual void init_styles(cgv::render::context& ctx) {}
+	virtual void init_styles() {}
 
 public:
 	/// creates an overlay in the bottom left corner with zero size using a canvas for 2d drawing
 	canvas_overlay();
 
-	void clear(cgv::render::context& ctx);
+	void clear(cgv::render::context& ctx) override;
 
 	/// implement to handle member changes
-	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
+	virtual void handle_member_change(const cgv::utils::pointer_test& m) override {}
 
-	/// default implementation of that calls handle_on_set and afterwards upates the member in the gui and post damage to the canvas overlay
-	virtual void on_set(void* member_ptr);
+	/// default implementation of that calls handle_member_change and afterwards upates the member in the gui and post damage to the canvas overlay
+	virtual void on_set(void* member_ptr) override;
 
-	bool init(cgv::render::context& ctx);
-	void draw(cgv::render::context& ctx);
-	void finish_frame(cgv::render::context&);
+	bool init(cgv::render::context& ctx) override;
+	void draw(cgv::render::context& ctx) override;
+	void finish_frame(cgv::render::context&) override;
 	virtual void draw_content(cgv::render::context& ctx) = 0;
 
 	void register_shader(const std::string& name, const std::string& filename);

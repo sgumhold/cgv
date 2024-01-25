@@ -1,20 +1,37 @@
 #version 430
 
 #define MODE 1
+// WARNING: Setting SPLIT_SEGMENT to 1 will split the cubic segment into two
+// quadratic segments to produce 2 smaller bounding boxes per quadratic segment.
+// This reduces the amount of produced fragments. The fragemnt shader will, however,
+// still evaluate the whole cubic segment. This will result in artifacts when
+// using dashed line styles as the two bounding boxes overlap to accomodate the
+// line thickness.
+#define SPLIT_SEGMENT 0
 
 //***** begin interface of shape2d.glsl ***********************************
+uniform bool origin_upper_left = false;
+
 float get_feather_width();
 vec2 get_shape_size();
 vec4 get_color();
 vec4 transform_world_to_window_space(vec2 p);
 //***** end interface of shape2d.glsl ***********************************
 
+//***** begin interface of quadratic_bezier2d.glsl ***********************************
+vec4 compute_quadratic_bezier_bounding_box(in vec2 p0, in vec2 p1, in vec2 p2);
+//***** end interface of quadratic_bezier2d.glsl ***********************************
+
 #if MODE == 0
 layout(points) in;
 #else
 layout(lines) in;
 #endif
+#if SPLIT_SEGMENT == 0
+layout(triangle_strip, max_vertices = 4) out;
+#else
 layout(triangle_strip, max_vertices = 8) out;
+#endif
 
 struct cubic_node {
 	vec2 position;
@@ -85,50 +102,14 @@ void split_cubic_segment(in cubic_segment cseg, out quadratic_segment qseg0, out
 	SPLIT_CURVE(cseg, position, tangent, qseg0, qseg1);
 }
 
-vec2 ortho2d(vec2 v) {
-	return vec2(v.y, -v.x);
+void emit_corner(in int id, in vec2 origin, in vec2 position) {
+	tex_coord_fs = corners[id];
+	pix_coord_fs = size_fs*corners[id] + origin;
+	gl_Position = transform_world_to_window_space(position);
+	EmitVertex();
 }
 
-// https://www.shadertoy.com/view/lsyfWc
-vec4 bbox_bezier(in vec2 p0, in vec2 p1, in vec2 p2) {
-    // extremes
-    vec2 mi = min(p0,p2);
-    vec2 ma = max(p0,p2);
-
-    // maxima/minima point, if p1 is outside the current bbox/hull
-    if( p1.x<mi.x || p1.x>ma.x || p1.y<mi.y || p1.y>ma.y )
-    {
-        // p = (1-t)^2*p0 + 2(1-t)t*p1 + t^2*p2
-        // dp/dt = 2(t-1)*p0 + 2(1-2t)*p1 + 2t*p2 = t*(2*p0-4*p1+2*p2) + 2*(p1-p0)
-        // dp/dt = 0 -> t*(p0-2*p1+p2) = (p0-p1);
-
-        vec2 t = clamp((p0-p1)/(p0-2.0*p1+p2),0.0,1.0);
-        vec2 s = 1.0 - t;
-        vec2 q = s*s*p0 + 2.0*s*t*p1 + t*t*p2;
-        
-        mi = min(mi,q);
-        ma = max(ma,q);
-    }
-    
-    return vec4( mi, ma );
-}
-
-void emit_bounding_box(in quadratic_segment qseg0, in quadratic_segment qseg1) {
-
-	vec4 box0 = bbox_bezier(qseg0.s, qseg0.h, qseg0.e);
-	vec4 box1 = bbox_bezier(qseg1.s, qseg1.h, qseg1.e);
-
-	vec4 box;
-	box.xy = min(box0.xy, box1.xy);
-	box.zw = max(box0.zw, box1.zw);
-
-#if MODE == 0
-	color0_fs = color_gs[0];
-	color1_fs = color_gs[0];
-#else
-	color0_fs = color_gs[0];
-	color1_fs = color_gs[1];
-#endif
+void emit_bounding_box(vec4 box) {
 
 	float final_width = width + get_feather_width();
 
@@ -136,64 +117,19 @@ void emit_bounding_box(in quadratic_segment qseg0, in quadratic_segment qseg1) {
 	box.xy -= 0.5*final_width;
 	box.zw += 0.5*final_width;
 
+	if(origin_upper_left) {
+		float temp = box.y;
+		box.y = box.w;
+		box.w = temp;
+	}
+
 	size_fs = box.zw - box.xy;
 
-	vec2 org = box.xy;
-
-	tex_coord_fs = corners[0];
-	pix_coord_fs = size_fs*corners[0] + org;
-	gl_Position = transform_world_to_window_space(box.xy);
-	EmitVertex();
-	tex_coord_fs = corners[1];
-	pix_coord_fs = size_fs*corners[1] + org;
-	gl_Position = transform_world_to_window_space(box.zy);
-	EmitVertex();
-
-	tex_coord_fs = corners[2];
-	pix_coord_fs = size_fs*corners[2] + org;
-	gl_Position = transform_world_to_window_space(box.xw);
-	EmitVertex();
-	tex_coord_fs = corners[3];
-	pix_coord_fs = size_fs*corners[3] + org;
-	gl_Position = transform_world_to_window_space(box.zw);
-	EmitVertex();
+	emit_corner(0, box.xy, box.xy);
+	emit_corner(1, box.xy, box.zy);
+	emit_corner(2, box.xy, box.xw);
+	emit_corner(3, box.xy, box.zw);
 }
-
-/*void emit_bounding_box(in int idx, in quadratic_segment qseg) {
-
-	vec4 box = bbox_bezier(qseg.s, qseg.h, qseg.e);
-
-	idx_fs = idx;
-	color_fs = color_gs[0];
-
-	float final_width = width + feather_width;
-
-	// incorporate feather_width
-	box.xy -= 0.5*final_width;
-	box.zw += 0.5*final_width;
-
-	size_fs = box.zw - box.xy;
-
-	vec2 org = box.xy;
-
-	tex_coord_fs = corners[0];
-	pix_coord_fs = size_fs*corners[0] + org;
-	gl_Position = to_window_space(box.xy);
-	EmitVertex();
-	tex_coord_fs = corners[1];
-	pix_coord_fs = size_fs*corners[1] + org;
-	gl_Position = to_window_space(box.zy);
-	EmitVertex();
-
-	tex_coord_fs = corners[2];
-	pix_coord_fs = size_fs*corners[2] + org;
-	gl_Position = to_window_space(box.xw);
-	EmitVertex();
-	tex_coord_fs = corners[3];
-	pix_coord_fs = size_fs*corners[3] + org;
-	gl_Position = to_window_space(box.zw);
-	EmitVertex();
-}*/
 
 void main() {
 	
@@ -220,8 +156,26 @@ void main() {
 	pos_d_fs = qseg1.h;
 	pos_e_fs = qseg1.e;
 
-	emit_bounding_box(qseg0, qseg1);
+#if MODE == 0
+	color0_fs = color_gs[0];
+	color1_fs = color_gs[0];
+#else
+	color0_fs = color_gs[0];
+	color1_fs = color_gs[1];
+#endif
 
-	//emit_bounding_box(0, qseg0);
-	//emit_bounding_box(1, qseg1);
+	vec4 box0 = compute_quadratic_bezier_bounding_box(qseg0.s, qseg0.h, qseg0.e);
+	vec4 box1 = compute_quadratic_bezier_bounding_box(qseg1.s, qseg1.h, qseg1.e);
+
+#if SPLIT_SEGMENT == 0
+	// a single bounding box for the whole cubic spline segment
+	vec4 box;
+	box.xy = min(box0.xy, box1.xy);
+	box.zw = max(box0.zw, box1.zw);
+	emit_bounding_box(box);
+#else
+	// 2 bounding boxes for tighter approximation of screen coverage
+	emit_bounding_box(box0);
+	emit_bounding_box(box1);
+#endif
 }

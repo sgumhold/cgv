@@ -387,7 +387,7 @@ inline T dot(const fvec<T,N>& v, const fvec<S,N>& w)
 { 
 	T r = 0;
 	for (unsigned i=0;i<N;++i)
-		r += v(i)*w(i);
+		r += T(v(i)*w(i));
 	return r;
 }
 

@@ -33,6 +33,32 @@
 #include <vector>
 using namespace fltk;
 
+#define DEBUG_PFD (0) // 1 = PFD selection debug output, 0 = no debug output
+
+#ifdef _WIN32
+#if DEBUG_PFD
+
+static void debug_print_pfd(int pfd_id, const PIXELFORMATDESCRIPTOR& pfd) {
+    printf("pfd #%d:\n", pfd_id);
+    printf("- Composition           : %s\n", (pfd.dwFlags & PFD_SUPPORT_COMPOSITION) ? "yes" : "no");
+    printf("- Hardware acceleration : %s\n", (pfd.dwFlags & PFD_GENERIC_FORMAT) ? "no" : "yes");
+    printf("- Double Buffering      : %s\n", (pfd.dwFlags & PFD_DOUBLEBUFFER) ? "yes" : "no");
+    printf("- Overlay Planes        : %u overlay planes & %u underlay planes\n", (pfd.bReserved & 0x0F), (pfd.bReserved & 0xF0));
+    printf("- Color Buffer Depth    : %2d (excluding alpha)\n", pfd.cColorBits);
+    printf("- RGBA Bits             : %2d, %2d, %2d, %2d\n", pfd.cRedBits, pfd.cGreenBits, pfd.cBlueBits, pfd.cAlphaBits);
+    printf("- Alpha Buffer Depth    : %2d\n", pfd.cAlphaBits);
+    printf("- Accum Buffer Depth    : %2d\n", pfd.cAccumBits);
+    printf("- Accum RGBA Bits       : %2d, %2d, %2d, %2d\n", pfd.cAccumRedBits, pfd.cAccumGreenBits, pfd.cAccumBlueBits, pfd.cAccumAlphaBits);
+    printf("- Depth Buffer Depth    : %2d\n", pfd.cDepthBits);
+    printf("- Stencil Buffer Depth  : %2d\n", pfd.cStencilBits);
+    printf("- Buffer Swap Behavior  : %s\n", (pfd.dwFlags & PFD_SWAP_COPY) ? "copy" : ((pfd.dwFlags & PFD_SWAP_EXCHANGE) ? "exchange" : "unknown"));
+    printf("- Aux Buffers Count     : %d\n", pfd.cAuxBuffers);
+    printf("- Visible Mask          : %d\n", pfd.dwVisibleMask);
+}
+
+#endif // DEBUG_PFD
+#endif // _WIN32
+
 static GlChoice* first;
 
 int*& GlChoice::ref_attrib_list()
@@ -48,35 +74,66 @@ GlChoice* GlChoice::find(int mode) {
 
 #ifdef _WIN32
 
+  // STR #3119: select pixel format with composition support
+  // ... and no more than 32 color bits (8 bits/color)
+  // Ref: PixelFormatDescriptor Object
+  // https://msdn.microsoft.com/en-us/library/cc231189.aspx
+#if !defined(PFD_SUPPORT_COMPOSITION)
+# define PFD_SUPPORT_COMPOSITION (0x8000)
+#endif
+
   // Replacement for ChoosePixelFormat() that finds one with an overlay
   // if possible:
   HDC dc = getDC();
   int pixelFormat = 0;
   PIXELFORMATDESCRIPTOR chosen_pfd;
-  for (int i = 1; ; i++) {
-    PIXELFORMATDESCRIPTOR pfd;
-    if (!DescribePixelFormat(dc, i, sizeof(pfd), &pfd)) break;
-    // continue if it does not satisfy our requirements:
-    if (~pfd.dwFlags & (PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL)) continue;
-    if (pfd.iPixelType != ((mode&INDEXED_COLOR)?1:0)) continue;
-    if ((mode & ALPHA_BUFFER) && !pfd.cAlphaBits) continue;
-    if ((mode & ACCUM_BUFFER) && !pfd.cAccumBits) continue;
-    if ((!(mode & DOUBLE_BUFFER)) != (!(pfd.dwFlags & PFD_DOUBLEBUFFER))) continue;
-    if ((!(mode & STEREO)) != (!(pfd.dwFlags & PFD_STEREO))) continue;
-    if ((mode & DEPTH_BUFFER) && !pfd.cDepthBits) continue;
-    if ((mode & STENCIL_BUFFER) && !pfd.cStencilBits) continue;
-    // see if better than the one we have already:
-    if (pixelFormat) {
-      // offering overlay is better:
-      if (!(chosen_pfd.bReserved & 15) && (pfd.bReserved & 15)) {}
-      // otherwise more bit planes is better:
-      else if (chosen_pfd.cColorBits < pfd.cColorBits) {}
-      else continue;
-    }
-    pixelFormat = i;
-    chosen_pfd = pfd;
+  for(int i = 1; ; i++) {
+      PIXELFORMATDESCRIPTOR pfd;
+      if(!DescribePixelFormat(dc, i, sizeof(pfd), &pfd)) break;
+      // continue if it does not satisfy our requirements:
+      if(~pfd.dwFlags & (PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL)) continue;
+      if(pfd.iPixelType != ((mode & INDEXED_COLOR) ? PFD_TYPE_COLORINDEX : PFD_TYPE_RGBA)) continue;
+      if((mode & ALPHA_BUFFER) && !pfd.cAlphaBits) continue;
+      if((mode & ACCUM_BUFFER) && !pfd.cAccumBits) continue;
+      if((!(mode & DOUBLE_BUFFER)) != (!(pfd.dwFlags & PFD_DOUBLEBUFFER))) continue;
+      if((!(mode & STEREO)) != (!(pfd.dwFlags & PFD_STEREO))) continue;
+      if((mode & DEPTH_BUFFER) && !pfd.cDepthBits) continue;
+      if((mode & STENCIL_BUFFER) && !pfd.cStencilBits) continue;
+
+#if DEBUG_PFD
+      debug_print_pfd(i, pfd);
+#endif // DEBUG_PFD
+
+      // see if better than the one we have already:
+      if(pixelFormat) {
+          // offering non-generic rendering is better (read: hardware acceleration)
+          if(!(chosen_pfd.dwFlags & PFD_GENERIC_FORMAT) &&
+              (pfd.dwFlags & PFD_GENERIC_FORMAT))
+              continue;
+          // offering overlay is better:
+          else if(!(chosen_pfd.bReserved & 15) && (pfd.bReserved & 15)) {}
+          // otherwise prefer a format that supports composition (STR #3119)
+          else if((chosen_pfd.dwFlags & PFD_SUPPORT_COMPOSITION) &&
+              !(pfd.dwFlags & PFD_SUPPORT_COMPOSITION)) continue;
+          // otherwise more bit planes is better, but no more than 32 (8 bits per channel):
+          else if(pfd.cColorBits > 32 || chosen_pfd.cColorBits > pfd.cColorBits) continue;
+          else if(chosen_pfd.cDepthBits > pfd.cDepthBits) continue;
+      }
+      pixelFormat = i;
+      chosen_pfd = pfd;
   }
-  if (!pixelFormat) return 0;
+
+#if DEBUG_PFD
+  static int bb = 0;
+  if(!bb) {
+      bb = 1;
+      printf("PFD_SUPPORT_COMPOSITION = 0x%x\n", PFD_SUPPORT_COMPOSITION);
+  }
+  printf("\nChosen pixel format is %d\n", pixelFormat);
+  debug_print_pfd(pixelFormat, chosen_pfd);
+#endif // DEBUG_PFD
+
+  if(!pixelFormat) return 0;
 
 #elif defined(__APPLE__)
 

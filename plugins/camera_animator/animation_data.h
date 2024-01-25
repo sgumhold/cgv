@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cgv/render/render_types.h>
-#include <cgv/utils/interval_map.h>
+#include <cgv/data/interval_map.h>
 
 #include "easing_functions.h"
 
@@ -113,7 +113,7 @@ struct tween_data {
 
 class animation_data {
 public:
-	using keyframe_map = cgv::utils::interval_map<size_t, keyframe>;
+	using keyframe_map = cgv::data::interval_map<size_t, keyframe>;
 
 private:
 	/// Stores keyframes indexed by their frame number.

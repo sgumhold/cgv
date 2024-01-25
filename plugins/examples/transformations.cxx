@@ -90,7 +90,7 @@ public:
 	}
 	bool init(cgv::render::context& ctx)
 	{
-		if (view_ptr = find_view_as_node()) {
+		if ((view_ptr = find_view_as_node())) {
 //			view_ptr->set_focus(0.0, 0.0, 0.0);
 //			view_ptr->set_y_extent_at_focus(2.0);
 		}

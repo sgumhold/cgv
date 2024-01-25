@@ -12,11 +12,10 @@ uniform int w = 640;
 uniform int h = 480;
 
 //***** begin interface of fragment.glfs ***********************************
-uniform float gamma = 2.2;
+uniform vec3 gamma3 = vec3(2.2);
 void finish_fragment(vec4 color);
 void finish_fragment(vec4 color, float depth);
 //***** end interface of fragment.glfs ***********************************
-
 
 const vec4 panel_colors[4] = vec4[4](
 	vec4(1.0, 1.0, 1.0, 1.0),

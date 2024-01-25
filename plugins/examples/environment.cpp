@@ -333,7 +333,7 @@ public:
 	}
 	void init_frame(cgv::render::context& ctx) {
 		if(!view_ptr) {
-			if(view_ptr = find_view_as_node()) {}
+			if((view_ptr = find_view_as_node())) {}
 		}
 	}
 	mat3 get_normal_matrix(const mat4& M) {
@@ -662,7 +662,6 @@ public:
 
 		for(int i = 0; i < size; i++) {
 			for(int j = 0; j < size; j++) {
-				float rot_offset = ((float)rand() / RAND_MAX - 1) * 2 * 3.1415926f;
 				for(int k = 0; k < samples_u*samples_v / 2; k++) {
 
 					int x, y;
