@@ -1,0 +1,4 @@
+var structcgv_1_1media_1_1color__storage__traits_3_01color_3_01float_00_01RGB_00_01OPACITY_01_4_01_4 =
+[
+    [ "color_type", "structcgv_1_1media_1_1color__storage__traits_3_01color_3_01float_00_01RGB_00_01OPACITY_01_4_01_4.html#ad1a478766f6274146953809db5050faf", null ]
+];

@@ -1,11 +1,17 @@
 var classcgv_1_1media_1_1mesh_1_1obj__reader__base =
 [
     [ "color_type", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a84b30587cd5fdfc8a17bccf7ab78e8eb", null ],
+    [ "obj_reader_base", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#aeedad7c8127a233ceb8daf83f857c5f3", null ],
     [ "clear", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#aeee95345e87be0afbb47b845807977de", null ],
     [ "convert_to_positive", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#aff83e230e74d2e65638b1bb437c82d7d", null ],
     [ "get_current_group", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#ac100a29e63b3918427ca593d7aa238de", null ],
     [ "get_current_material", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#ae227aa4ffb4ea1b4459b387d291f40c9", null ],
+    [ "parse_and_process_normal", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a5e706fb323163eaa60646ebe4b1621c8", null ],
+    [ "parse_and_process_texcoord", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a126ef195aa68fbf6d8d838808b913af9", null ],
+    [ "parse_and_process_vertex", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a7c60d21c4e39751989851aeb83a8e107", null ],
     [ "parse_color", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a4e0b20e0fcd5c0617f45c434b2bbbd59", null ],
+    [ "parse_face", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#ae6c1d64d72611965d342ed36d7070833", null ],
+    [ "parse_material", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a2275e1e0a57902f4098cb261df860a99", null ],
     [ "process_color", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a7676c49c293db67c507fdc97d2aefc8f", null ],
     [ "process_comment", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a6cfab20fd65a0f0f6dc5fff3e441fc62", null ],
     [ "process_face", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#acb612714c1a6c8a25597d8db22649b81", null ],
@@ -15,9 +21,14 @@ var classcgv_1_1media_1_1mesh_1_1obj__reader__base =
     [ "read_mtl", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a0e702c2584c3b08ad4930ad9680a882c", null ],
     [ "read_obj", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#aa1cfd341de86b0c83dd17b85ac46d742", null ],
     [ "group_index", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a9fd7ea5f1b66917ec61177a6b3a92dc2", null ],
+    [ "have_default_material", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a46c7b2a2c08d5645aec4acdd024ce29e", null ],
     [ "material_index", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a7721a08b8dfdb2a8568d8852d51c3c92", null ],
     [ "material_index_lut", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#aa9c1a022103d0ecbc8cc9a33f215cc69", null ],
+    [ "minus", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#aa939adba8507424a712ddc899579293e", null ],
+    [ "mtl_lib_files", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a96af1a8de592c946f1aa96cdf4b2d601", null ],
     [ "nr_groups", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#af61a9fe1eb63968030964b37d4520df6", null ],
     [ "nr_materials", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#aa1b4275690171781c8a6e22f28355122", null ],
+    [ "nr_normals", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a096ce40e47577d62b4a49975a14cc271", null ],
+    [ "nr_texcoords", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a1c5bda49b390a719bcaea3e48fc9c8c8", null ],
     [ "path_name", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a8f24ca298ecae246b9af0de6d281af52", null ]
 ];

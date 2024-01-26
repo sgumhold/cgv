@@ -19,5 +19,10 @@ var classvr_1_1vr__camera =
     [ "stop", "classvr_1_1vr__camera.html#a4a5466b00dcf1dc04e6881a8623d5a51", null ],
     [ "vr_driver", "classvr_1_1vr__camera.html#a16387de322524aab65b1d7bf8481c858", null ],
     [ "vr_kit", "classvr_1_1vr__camera.html#adfa8def6bdff2d081e03aef18406f411", null ],
-    [ "last_error", "classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb", null ]
+    [ "frame_flipped", "classvr_1_1vr__camera.html#a00e84da1af57392c619eb97772b04f08", null ],
+    [ "frame_format", "classvr_1_1vr__camera.html#a09259c9f3291448fb494e80becc63552", null ],
+    [ "frame_split", "classvr_1_1vr__camera.html#a90ce130e2aecf93cafa4ae43c6efd4b9", null ],
+    [ "last_error", "classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb", null ],
+    [ "num_cameras", "classvr_1_1vr__camera.html#a25970a602855f5d2cec1e8e049152959", null ],
+    [ "state", "classvr_1_1vr__camera.html#acf229c759dbb643264948efcb650672d", null ]
 ];

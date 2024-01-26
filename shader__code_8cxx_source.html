@@ -526,13 +526,13 @@ $(document).ready(function(){initNavTree('shader__code_8cxx_source.html',''); in
 <div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160; </div>
 <div class="line"><a name="l00453"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1shader__code.html#ade42b24d937fc63102250ecb1e35908c">  453</a></span>&#160;<span class="keywordtype">void</span> shader_code::set_vertex_attrib_locations(std::string&amp; source)</div>
 <div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;{</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    <span class="keyword">struct </span>vertex_attribute {</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    <span class="keyword">struct </span><a class="code" href="structcgv_1_1render_1_1vertex__attribute.html">vertex_attribute</a> {</div>
 <div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        <a class="code" href="structcgv_1_1utils_1_1token.html">token</a> tok;</div>
 <div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;        <span class="keywordtype">int</span> location = -1;</div>
 <div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;        std::string type = <span class="stringliteral">&quot;&quot;</span>;</div>
 <div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;        std::string name = <span class="stringliteral">&quot;&quot;</span>;</div>
 <div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160; </div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        vertex_attribute(<span class="keyword">const</span> <a class="code" href="structcgv_1_1utils_1_1token.html">token</a>&amp; tok) : tok(tok) {}</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        <a class="code" href="structcgv_1_1render_1_1vertex__attribute.html">vertex_attribute</a>(<span class="keyword">const</span> <a class="code" href="structcgv_1_1utils_1_1token.html">token</a>&amp; tok) : tok(tok) {}</div>
 <div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160; </div>
 <div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;        std::string <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">to_string</a>() {</div>
 <div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;            std::string str = <span class="stringliteral">&quot;layout (location = &quot;</span>;</div>
@@ -620,7 +620,7 @@ $(document).ready(function(){initNavTree('shader__code_8cxx_source.html',''); in
 <div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160; </div>
 <div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;                <span class="keywordflow">if</span>(c == <span class="charliteral">&#39;i&#39;</span> &amp;&amp; tok[i + 1] == <span class="charliteral">&#39;n&#39;</span> &amp;&amp; tok[i + 2] == <span class="charliteral">&#39; &#39;</span>) {</div>
 <div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;                    <span class="keywordflow">if</span>(was_new_word &amp;&amp; parentheses_count == 0) {</div>
-<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;                        attribs.push_back(vertex_attribute(tok));</div>
+<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;                        attribs.push_back(<a class="code" href="structcgv_1_1render_1_1vertex__attribute.html">vertex_attribute</a>(tok));</div>
 <div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;                        attrib_flags[part_idx] = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;                        <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;                    }</div>
@@ -747,15 +747,15 @@ $(document).ready(function(){initNavTree('shader__code_8cxx_source.html',''); in
 <div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160;    }</div>
 <div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;}</div>
 <div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160; </div>
-<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;<span class="keyword">struct </span>shader_config_registration</div>
+<div class="line"><a name="l00679"></a><span class="lineno"><a class="line" href="structshader__config__registration.html">  679</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structshader__config__registration.html">shader_config_registration</a></div>
 <div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;{</div>
-<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;    shader_config_registration()</div>
+<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;    <a class="code" href="structshader__config__registration.html">shader_config_registration</a>()</div>
 <div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160;    {</div>
 <div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;        <a class="code" href="namespacecgv_1_1base.html#ad3783da9c295a7c532f2ea35d2a06abb">register_object</a>(<a class="code" href="namespacecgv_1_1render.html#a5929e262d43bd2e095c4776547eebe5b">cgv::render::get_shader_config</a>(), <span class="stringliteral">&quot;register global shader config&quot;</span>);</div>
 <div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160;    }</div>
 <div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160;};</div>
 <div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160; </div>
-<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;shader_config_registration shader_config_registration_instance;</div>
+<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;<a class="code" href="structshader__config__registration.html">shader_config_registration</a> shader_config_registration_instance;</div>
 <div class="ttc" id="aadvanced__scan_8h_html"><div class="ttname"><a href="advanced__scan_8h.html">advanced_scan.h</a></div><div class="ttdoc">More advanced text processing for splitting text into lines or tokens.</div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a></div><div class="ttdoc">reference counted pointer, which can work together with types that are derived from ref_counted,...</div><div class="ttdef"><b>Definition:</b> <a href="ref__ptr_8h_source.html#l00159">ref_ptr.h:160</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html_a064308a0ae0990b5ca8296f03e23c344"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">cgv::data::ref_ptr::empty</a></div><div class="ttdeci">bool empty() const</div><div class="ttdoc">check if pointer is not yet set</div><div class="ttdef"><b>Definition:</b> <a href="ref__ptr_8h_source.html#l00230">ref_ptr.h:230</a></div></div>
@@ -790,7 +790,9 @@ $(document).ready(function(){initNavTree('shader__code_8cxx_source.html',''); in
 <div class="ttc" id="anamespacecgv_1_1utils_html_ac2dfa4155639ce028b6b01bbb1b49b67"><div class="ttname"><a href="namespacecgv_1_1utils.html#ac2dfa4155639ce028b6b01bbb1b49b67">cgv::utils::split_to_lines</a></div><div class="ttdeci">void split_to_lines(const token &amp;tok, std::vector&lt; line &gt; &amp;lines, bool truncate_trailing_spaces=true)</div><div class="ttdoc">text range given as token</div><div class="ttdef"><b>Definition:</b> <a href="advanced__scan_8h_source.html#l00119">advanced_scan.h:119</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 <div class="ttc" id="astructcgv_1_1render_1_1shader__config_html"><div class="ttname"><a href="structcgv_1_1render_1_1shader__config.html">cgv::render::shader_config</a></div><div class="ttdoc">a globally unique shader config is registered by default when the cgv library is used.</div><div class="ttdef"><b>Definition:</b> <a href="shader__code_8h_source.html#l00025">shader_code.h:26</a></div></div>
+<div class="ttc" id="astructcgv_1_1render_1_1vertex__attribute_html"><div class="ttname"><a href="structcgv_1_1render_1_1vertex__attribute.html">cgv::render::vertex_attribute</a></div><div class="ttdef"><b>Definition:</b> <a href="render__info_8h_source.html#l00036">render_info.h:37</a></div></div>
 <div class="ttc" id="astructcgv_1_1utils_1_1token_html"><div class="ttname"><a href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a></div><div class="ttdoc">representation of a token in a text by two pointers begin and end, that point to the first character ...</div><div class="ttdef"><b>Definition:</b> <a href="token_8h_source.html#l00017">token.h:18</a></div></div>
+<div class="ttc" id="astructshader__config__registration_html"><div class="ttname"><a href="structshader__config__registration.html">shader_config_registration</a></div><div class="ttdef"><b>Definition:</b> <a href="shader__code_8cxx_source.html#l00679">shader_code.cxx:680</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

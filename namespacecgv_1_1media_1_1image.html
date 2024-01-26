@@ -82,7 +82,9 @@ $(document).ready(function(){initNavTree('namespacecgv_1_1media_1_1image.html','
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::media::image Namespace Reference</div>  </div>
 </div><!--header-->
@@ -98,6 +100,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1bmp__writer.html">bmp_writer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">implements the image writer interface for bmp files  <a href="classcgv_1_1media_1_1image_1_1bmp__writer.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image.html">image</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1image_1_1reader__listener.html">reader_listener</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">interfaces that allows to listen to registration events  <a href="structcgv_1_1media_1_1image_1_1reader__listener.html#details">More...</a><br /></td></tr>
@@ -117,6 +121,46 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__writer.html">image_writer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">the image writer chooses a specific writer automatically based on the extension of the given file name  <a href="classcgv_1_1media_1_1image_1_1image__writer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a31f354ab0f12e3332d54d628c0924455"><td class="memTemplParams" colspan="2"><a id="a31f354ab0f12e3332d54d628c0924455"></a>
+template&lt;typename T_calc , typename T_detail , typename T_store &gt; </td></tr>
+<tr class="memitem:a31f354ab0f12e3332d54d628c0924455"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>integer_wavelet_transform</b> (T_store *data, size_t nr_inside, size_t nr_outside, size_t step_inside, size_t step_outside, size_t nr_components, unsigned mask, bool do_split=true, int s_scale=1, int d_scale=2)</td></tr>
+<tr class="separator:a31f354ab0f12e3332d54d628c0924455"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55a5baa2bf8962284780dc9e34af136e"><td class="memTemplParams" colspan="2"><a id="a55a5baa2bf8962284780dc9e34af136e"></a>
+template&lt;typename T_calc , typename T_detail , typename T_store &gt; </td></tr>
+<tr class="memitem:a55a5baa2bf8962284780dc9e34af136e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>integer_inverse_wavelet_transform</b> (T_store *data, size_t nr_inside, size_t nr_outside, size_t step_inside, size_t step_outside, size_t nr_components, unsigned mask, bool do_split=true, int s_scale=1, int d_scale=2)</td></tr>
+<tr class="separator:a55a5baa2bf8962284780dc9e34af136e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0cc734f9a7bb0128a23dd42e1a919fa"><td class="memTemplParams" colspan="2"><a id="ad0cc734f9a7bb0128a23dd42e1a919fa"></a>
+template&lt;typename T_calc , typename T &gt; </td></tr>
+<tr class="memitem:ad0cc734f9a7bb0128a23dd42e1a919fa"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>subsample_image</b> (const T *image_ptr, T *subsampled_image, const int W, const int H, const int nr_components)</td></tr>
+<tr class="separator:ad0cc734f9a7bb0128a23dd42e1a919fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a553c15d0876ac24549e0e6ccf4acfb1d"><td class="memTemplParams" colspan="2"><a id="a553c15d0876ac24549e0e6ccf4acfb1d"></a>
+template&lt;typename T_calc , typename T &gt; </td></tr>
+<tr class="memitem:a553c15d0876ac24549e0e6ccf4acfb1d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>subsample_slice</b> (const T *slice0_ptr, const T *slice1_ptr, T *subsampled_slice, const int W, const int H, const int nr_components)</td></tr>
+<tr class="separator:a553c15d0876ac24549e0e6ccf4acfb1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:acf42d252c5b9896dbeaebf71fd03ed4b"><td class="memItemLeft" align="right" valign="top"><a id="acf42d252c5b9896dbeaebf71fd03ed4b"></a>
+<a class="el" href="structcgv_1_1base_1_1object__registration.html">cgv::base::object_registration</a>&lt; <a class="el" href="classcgv_1_1media_1_1image_1_1bmp__reader.html">bmp_reader</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>brr</b> (&quot;register bmp reader&quot;)</td></tr>
+<tr class="separator:acf42d252c5b9896dbeaebf71fd03ed4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cf176f169831ecdb2e9d0d914843c3a"><td class="memItemLeft" align="right" valign="top"><a id="a4cf176f169831ecdb2e9d0d914843c3a"></a>
+<a class="el" href="structcgv_1_1base_1_1object__registration.html">cgv::base::object_registration</a>&lt; <a class="el" href="classcgv_1_1media_1_1image_1_1bmp__writer.html">bmp_writer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>bwr</b> (&quot;register bmp writer&quot;)</td></tr>
+<tr class="separator:a4cf176f169831ecdb2e9d0d914843c3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78a84616a16f2d4019f9cb6c41f1ef20"><td class="memItemLeft" align="right" valign="top"><a id="a78a84616a16f2d4019f9cb6c41f1ef20"></a>
+<a class="el" href="structcgv_1_1base_1_1object__registration.html">object_registration</a>&lt; <a class="el" href="structcgv_1_1media_1_1image_1_1reader__listener.html">reader_listener</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>rlr</b> (&quot;register <a class="el" href="classcgv_1_1media_1_1image_1_1image.html">image</a> reader registry&quot;)</td></tr>
+<tr class="separator:a78a84616a16f2d4019f9cb6c41f1ef20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaae808b84b537618fd8bd0c55507ef4e"><td class="memItemLeft" align="right" valign="top"><a id="aaae808b84b537618fd8bd0c55507ef4e"></a>
+class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>image_reader</b></td></tr>
+<tr class="separator:aaae808b84b537618fd8bd0c55507ef4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23275c0847e4aa0267752c891a621fae"><td class="memItemLeft" align="right" valign="top"><a id="a23275c0847e4aa0267752c891a621fae"></a>
+<a class="el" href="structcgv_1_1base_1_1object__registration.html">object_registration</a>&lt; <a class="el" href="structcgv_1_1media_1_1image_1_1writer__listener.html">writer_listener</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>wlr</b> (&quot;register <a class="el" href="classcgv_1_1media_1_1image_1_1image.html">image</a> writer listener&quot;)</td></tr>
+<tr class="separator:a23275c0847e4aa0267752c891a621fae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76584239654cce4bd31749fac0c640ab"><td class="memItemLeft" align="right" valign="top"><a id="a76584239654cce4bd31749fac0c640ab"></a>
+class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>image_writer</b></td></tr>
+<tr class="separator:a76584239654cce4bd31749fac0c640ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>namespace for image processing </p>

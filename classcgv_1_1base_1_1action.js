@@ -9,5 +9,7 @@ var classcgv_1_1base_1_1action =
     [ "select", "classcgv_1_1base_1_1action.html#ac22321f7f2bd0306fd868dc5a90b693b", null ],
     [ "set_default_result_begin", "classcgv_1_1base_1_1action.html#a1af03b22ad5bbb71578a5fe89cad0543", null ],
     [ "set_default_result_end", "classcgv_1_1base_1_1action.html#a0d85abef42986fb291bded7c2bc4ceb1", null ],
-    [ "set_default_results", "classcgv_1_1base_1_1action.html#aa6d046c054eb1a5c95669e6ae168c742", null ]
+    [ "set_default_results", "classcgv_1_1base_1_1action.html#aa6d046c054eb1a5c95669e6ae168c742", null ],
+    [ "default_result_begin", "classcgv_1_1base_1_1action.html#a9e20ebf4596d74e50a7aca6312f3cdee", null ],
+    [ "default_result_end", "classcgv_1_1base_1_1action.html#a3914e59d9fef6011325dd4207833cc09", null ]
 ];

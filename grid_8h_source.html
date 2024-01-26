@@ -92,7 +92,7 @@ $(document).ready(function(){initNavTree('grid_8h_source.html',''); initResizabl
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    <span class="keyword">namespace </span>data {</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Pnt, <span class="keyword">typename</span> Idx = <span class="keywordtype">int</span>&gt;</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">class </span>grid : <span class="keyword">public</span> std::vector&lt;std::vector&lt;Idx&gt; &gt;</div>
+<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1grid.html">    8</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcgv_1_1data_1_1grid.html">grid</a> : <span class="keyword">public</span> std::vector&lt;std::vector&lt;Idx&gt; &gt;</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;{</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keyword">typename</span> decltype(min_pnt[0]) Crd;</div>
@@ -119,8 +119,8 @@ $(document).ready(function(){initNavTree('grid_8h_source.html',''); initResizabl
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        }</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    }</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    grid(Idx dim = 20)                 { set_dim(dim); init(); }</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    grid(Idx dimx, Idx dimy, Idx dimz) { set_dim(dimx,dimy,dimz); init(); }</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="classcgv_1_1data_1_1grid.html">grid</a>(Idx dim = 20)                 { set_dim(dim); init(); }</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="classcgv_1_1data_1_1grid.html">grid</a>(Idx dimx, Idx dimy, Idx dimz) { set_dim(dimx,dimy,dimz); init(); }</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">void</span> clear() {</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        std::vector&lt;std::vector&lt;Idx&gt; &gt;::clear();</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        min_pnt = Pnt(-1,-1,-1);</div>
@@ -154,7 +154,7 @@ $(document).ready(function(){initNavTree('grid_8h_source.html',''); initResizabl
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        compute_scales();</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    }</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Func&gt;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordtype">void</span> build(Idx nr_points, <span class="keyword">const</span> Func&amp; pnts) {</div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="classcgv_1_1data_1_1grid.html#a8f1cfd970410487ddc7c03577934c294">   71</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1data_1_1grid.html#a8f1cfd970410487ddc7c03577934c294">build</a>(Idx nr_points, <span class="keyword">const</span> Func&amp; pnts) {</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        init();</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        rmax = (Crd) (rmax_estimate_factor*sqrt(2*(extent[0]*(extent[1]+extent[2])+extent[1]*extent[2])/nr_points));</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        rmax_sqr = rmax*rmax;</div>
@@ -257,6 +257,8 @@ $(document).ready(function(){initNavTree('grid_8h_source.html',''); initResizabl
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    }</div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;}</div>
+<div class="ttc" id="aclasscgv_1_1data_1_1grid_html"><div class="ttname"><a href="classcgv_1_1data_1_1grid.html">cgv::data::grid</a></div><div class="ttdef"><b>Definition:</b> <a href="grid_8h_source.html#l00008">grid.h:9</a></div></div>
+<div class="ttc" id="aclasscgv_1_1data_1_1grid_html_a8f1cfd970410487ddc7c03577934c294"><div class="ttname"><a href="classcgv_1_1data_1_1grid.html#a8f1cfd970410487ddc7c03577934c294">cgv::data::grid::build</a></div><div class="ttdeci">void build(Idx nr_points, const Func &amp;pnts)</div><div class="ttdoc">before calling the build function, ensure that the bounding box has been set with set_box or computed...</div><div class="ttdef"><b>Definition:</b> <a href="grid_8h_source.html#l00071">grid.h:71</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a98dec8fec76658745c64947ff97a0915"><div class="ttname"><a href="namespacecgv_1_1math.html#a98dec8fec76658745c64947ff97a0915">cgv::math::sqr_length</a></div><div class="ttdeci">T sqr_length(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">returns the squared length of vector v</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00466">fvec.h:466</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

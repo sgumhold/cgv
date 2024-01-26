@@ -3,21 +3,13 @@ var structcgv_1_1render_1_1surfel__render__style =
     [ "surfel_render_style", "structcgv_1_1render_1_1surfel__render__style.html#ac54923e99000713f6aea7fe30c768d88", null ],
     [ "blend_points", "structcgv_1_1render_1_1surfel__render__style.html#a882784fc1c18d636d3f3760aa026f656", null ],
     [ "blend_width_in_pixel", "structcgv_1_1render_1_1surfel__render__style.html#a875b44fdbea4348dd6b1dfd8525bd95d", null ],
-    [ "culling_mode", "structcgv_1_1render_1_1surfel__render__style.html#a3cbbe8d71d4ba26a9e2709f19d52fb50", null ],
     [ "halo_color", "structcgv_1_1render_1_1surfel__render__style.html#ad04411b84a81cd8bfee16bdabbc5f46b", null ],
     [ "halo_color_strength", "structcgv_1_1render_1_1surfel__render__style.html#ad3e912d0cc7ad3faffdb3241531b98f6", null ],
     [ "halo_width_in_pixel", "structcgv_1_1render_1_1surfel__render__style.html#a81ea3aa6a95e9bcf90718528c5253516", null ],
-    [ "illumination_mode", "structcgv_1_1render_1_1surfel__render__style.html#a99991cb58c4a3a142c06f2a59cf2c642", null ],
-    [ "map_color_to_material", "structcgv_1_1render_1_1surfel__render__style.html#a865652fb13309334074a53b1f3a6cc1c", null ],
-    [ "material", "structcgv_1_1render_1_1surfel__render__style.html#abbf94aae29d615b8b7688f7180cf92c7", null ],
     [ "measure_point_size_in_pixel", "structcgv_1_1render_1_1surfel__render__style.html#a1ebeba8ed9e5d0a169072c1d5497b8f3", null ],
     [ "orient_splats", "structcgv_1_1render_1_1surfel__render__style.html#a7dcb5f4ba047993daa2d11d93a828cc6", null ],
     [ "percentual_halo_width", "structcgv_1_1render_1_1surfel__render__style.html#a063c8e45a69cf091442d872cc33dd328", null ],
     [ "point_size", "structcgv_1_1render_1_1surfel__render__style.html#a0736e6323efbd9fe0eed151b089854be", null ],
-    [ "surface_color", "structcgv_1_1render_1_1surfel__render__style.html#ad8f48464b480e9ecfc40ca2ab1532b69", null ],
     [ "surface_offset", "structcgv_1_1render_1_1surfel__render__style.html#a505fe2369a5b54f5b2b54329520134c9", null ],
-    [ "surface_opacity", "structcgv_1_1render_1_1surfel__render__style.html#a52caec9a8363a35db51d863033978d2c", null ],
-    [ "use_group_color", "structcgv_1_1render_1_1surfel__render__style.html#aaeef17e385a1d3ae754742b2619bd55c", null ],
-    [ "use_group_point_size", "structcgv_1_1render_1_1surfel__render__style.html#a7d36f503553b1e9719b7753ff483a70f", null ],
-    [ "use_group_transformation", "structcgv_1_1render_1_1surfel__render__style.html#a113f4aa88c33c892574038e0f2478a7a", null ]
+    [ "use_group_point_size", "structcgv_1_1render_1_1surfel__render__style.html#a7d36f503553b1e9719b7753ff483a70f", null ]
 ];

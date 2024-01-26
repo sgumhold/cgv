@@ -82,6 +82,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1view.html',''); 
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1render_1_1view-members.html">List of all members</a>  </div>
@@ -105,6 +106,21 @@ Inheritance diagram for cgv::render::view:</div>
   </map>
 </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a6259e64d1277c11bcefef5d162dd0438"><td class="memItemLeft" align="right" valign="top"><a id="a6259e64d1277c11bcefef5d162dd0438"></a>
+typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; float, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>vec3</b></td></tr>
+<tr class="separator:a6259e64d1277c11bcefef5d162dd0438"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa071fc3196248d9c25277b130a7d16b3"><td class="memItemLeft" align="right" valign="top"><a id="aa071fc3196248d9c25277b130a7d16b3"></a>
+typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; double, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>dvec3</b></td></tr>
+<tr class="separator:aa071fc3196248d9c25277b130a7d16b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac671aebbd3d44c14575de30e79a7f610"><td class="memItemLeft" align="right" valign="top"><a id="ac671aebbd3d44c14575de30e79a7f610"></a>
+typedef <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; double, 3, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>dmat3</b></td></tr>
+<tr class="separator:ac671aebbd3d44c14575de30e79a7f610"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af55136983f5921184a714ed63907dc9d"><td class="memItemLeft" align="right" valign="top"><a id="af55136983f5921184a714ed63907dc9d"></a>
+typedef <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; double, 4, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>dmat4</b></td></tr>
+<tr class="separator:af55136983f5921184a714ed63907dc9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a675b75f44bf727d3e7e0acb7b1a1356d"><td class="memItemLeft" align="right" valign="top"><a id="a675b75f44bf727d3e7e0acb7b1a1356d"></a>
@@ -312,6 +328,18 @@ Protected Attributes</h2></td></tr>
 <a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1view.html#a76bdfcb5cf9436dea5ae683b7ed970a5">focus</a></td></tr>
 <tr class="memdesc:a76bdfcb5cf9436dea5ae683b7ed970a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">focus of the view <br /></td></tr>
 <tr class="separator:a76bdfcb5cf9436dea5ae683b7ed970a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcd3ffab4f85825f73bb671c41ae9129"><td class="memItemLeft" align="right" valign="top"><a id="adcd3ffab4f85825f73bb671c41ae9129"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a>&#160;</td><td class="memItemRight" valign="bottom"><b>view_up_dir</b></td></tr>
+<tr class="separator:adcd3ffab4f85825f73bb671c41ae9129"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a4d8bf8e755d95aeec9e4b6d73fda63"><td class="memItemLeft" align="right" valign="top"><a id="a9a4d8bf8e755d95aeec9e4b6d73fda63"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a>&#160;</td><td class="memItemRight" valign="bottom"><b>view_dir</b></td></tr>
+<tr class="separator:a9a4d8bf8e755d95aeec9e4b6d73fda63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25e537c1a4022133cc313cb5215b367f"><td class="memItemLeft" align="right" valign="top"><a id="a25e537c1a4022133cc313cb5215b367f"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>y_view_angle</b></td></tr>
+<tr class="separator:a25e537c1a4022133cc313cb5215b367f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa898b12bcae436bc1b98b30bed404173"><td class="memItemLeft" align="right" valign="top"><a id="aa898b12bcae436bc1b98b30bed404173"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>y_extent_at_focus</b></td></tr>
+<tr class="separator:aa898b12bcae436bc1b98b30bed404173"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>defines a symmetric view with the following quantities: </p>
@@ -369,6 +397,8 @@ Protected Attributes</h2></td></tr>
 <p class="definition">Definition at line <a class="el" href="view_8cxx_source.html#l00027">27</a> of file <a class="el" href="view_8cxx_source.html">view.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="geom_8h_source.html#l00076">cgv::math::build_orthogonal_frame()</a>, <a class="el" href="geom_8h_source.html#l00037">cgv::math::decompose_rotation_to_axis_and_angle()</a>, and <a class="el" href="fmat_8h_source.html#l00232">cgv::math::fmat&lt; T, N, M &gt;::transpose()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="navigator_8cxx_source.html#l00084">cgv::app::navigator::handle_event()</a>.</p>
 
 </div>
 </div>
@@ -435,7 +465,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="reference">References <a class="el" href="render_2view_8h_source.html#l00030">focus</a>, and <a class="el" href="view_8cxx_source.html#l00042">get_tan_of_half_of_fovy()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="clipped__view_8cxx_source.html#l00069">cgv::render::clipped_view::compute_clipping_planes()</a>, <a class="el" href="view_8cxx_source.html#l00304">compute_screen_rectangle()</a>, <a class="el" href="stereo__view_8cxx_source.html#l00042">cgv::render::stereo_view::get_parallax_zero_depth()</a>, and <a class="el" href="view_8cxx_source.html#l00242">rotate()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="clipped__view_8cxx_source.html#l00069">cgv::render::clipped_view::compute_clipping_planes()</a>, <a class="el" href="view_8cxx_source.html#l00304">compute_screen_rectangle()</a>, <a class="el" href="stereo__view_8cxx_source.html#l00042">cgv::render::stereo_view::get_parallax_zero_depth()</a>, <a class="el" href="navigator_8cxx_source.html#l00084">cgv::app::navigator::handle_event()</a>, and <a class="el" href="view_8cxx_source.html#l00242">rotate()</a>.</p>
 
 </div>
 </div>

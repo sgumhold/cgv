@@ -15,5 +15,11 @@ var classcgv_1_1render_1_1gl_1_1gl__depth__peeler =
     [ "set_back_to_front", "classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#af125ecdd4459df43d08fec9bd3b4a5d6", null ],
     [ "set_depth_bias", "classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a7e60447971c8800dc24a91240296b530", null ],
     [ "set_front_to_back", "classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a752cfa3e2e548f9565bdbf5b9afc91a2", null ],
-    [ "last_error", "classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a569901f9d08dbe31e73c39ba494fecb2", null ]
+    [ "_invert_t", "classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a0476a4d818e936bfd7d59ca47040dd30", null ],
+    [ "ctx_ptr", "classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a9950269dcc5062a23d11c2a8ae0e6802", null ],
+    [ "depth_bias", "classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a9f3ee9cbcde7c196097a970043312a71", null ],
+    [ "depth_texture", "classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a694731d94742ddd7de48a28046e45b9d", null ],
+    [ "front_to_back", "classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#ac46f2ac0643d456fc1f8b45290f92e61", null ],
+    [ "last_error", "classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a569901f9d08dbe31e73c39ba494fecb2", null ],
+    [ "query", "classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a2a0c50ec576f1b8deafdef67e50c731f", null ]
 ];

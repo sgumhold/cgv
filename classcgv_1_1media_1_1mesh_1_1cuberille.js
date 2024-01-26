@@ -1,28 +1,11 @@
 var classcgv_1_1media_1_1mesh_1_1cuberille =
 [
+    [ "base_type", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a95f5ad0f222bd0eab9eb6baaee6d1510", null ],
     [ "pnt_type", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a3c9892c3e555845c4b5fe10b1893c446", null ],
     [ "vec_type", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a9aee04c881e3b4455cbb277c5fd20739", null ],
     [ "cuberille", "classcgv_1_1media_1_1mesh_1_1cuberille.html#ae79464bfe20fb5cc53eca4417672ad74", null ],
-    [ "drop_vertex", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a5230cf50346c8a7607ca6a7cb13a0a29", null ],
-    [ "drop_vertices", "classcgv_1_1media_1_1mesh_1_1cuberille.html#ac010fc6bbd6c6170d5606d40ab23976d", null ],
     [ "extract", "classcgv_1_1media_1_1mesh_1_1cuberille.html#aeb8e857cbb9c7d102541c272577ebc57", null ],
     [ "generate_edge_quad", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a9e7fc92ec6bc1553d1e0683d1e49602d", null ],
-    [ "get_nr_dropped_vertices", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a7f915eb6f0d0892da9ad502b788d8649", null ],
-    [ "get_nr_faces", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a9de47bf0612f0e58b30dc72f0a78224f", null ],
-    [ "get_nr_vertices", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a113662ad3f632ec26ebb0376cf158688", null ],
-    [ "new_polygon", "classcgv_1_1media_1_1mesh_1_1cuberille.html#ab3e596ea72040d3f2246fb06de5c9240", null ],
-    [ "new_quad", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a4e54daa757bb1c1c2054a8bfad038b7c", null ],
-    [ "new_triangle", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a8fda66e617d7a63073e402b3de710cdb", null ],
-    [ "new_vertex", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a1a8678193f67e23b9a31dd71db0ff856", null ],
     [ "process_slice", "classcgv_1_1media_1_1mesh_1_1cuberille.html#ac4c600e288b3874b4b8d26e3708202ff", null ],
-    [ "set_callback_handler", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a00b9debc4d84c79a7f2de509c7e92de0", null ],
-    [ "vertex_location", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a0cdd343020d77c4da4424a56bc3f2385", null ],
-    [ "vertex_location", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a64e0feea21bcda7379dda766a8bf1677", null ],
-    [ "vertex_normal", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a3e0720c3884529c6e6330f3101add4a8", null ],
-    [ "vertex_normal", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a499a5ab594907a3116ac26b0990fe980", null ],
-    [ "idx_off", "classcgv_1_1media_1_1mesh_1_1cuberille.html#ac05eb1094dc7799ceb76b07642f95656", null ],
-    [ "nmls", "classcgv_1_1media_1_1mesh_1_1cuberille.html#aa9fb63ed406a8762c8d0e4573e26660e", null ],
-    [ "nr_faces", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a9c8556e22c6323554933876e417a886b", null ],
-    [ "pnts", "classcgv_1_1media_1_1mesh_1_1cuberille.html#aef77e0eda317a0716df4196139a0336d", null ],
-    [ "smcbh", "classcgv_1_1media_1_1mesh_1_1cuberille.html#a448840b91331510822bb0e45dcd2c380", null ]
+    [ "func", "classcgv_1_1media_1_1mesh_1_1cuberille.html#af2a89c0229a2c5a1483e5f1a09ef0ccc", null ]
 ];

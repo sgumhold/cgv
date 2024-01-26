@@ -1,10 +1,25 @@
 var namespacecgv_1_1type_1_1func =
 [
-    [ "Promote", null, [
-      [ "promotion_rank", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank.html", null ]
+    [ "MakeConst", null, [
+      [ "make_const_impl", "structcgv_1_1type_1_1func_1_1MakeConst_1_1make__const__impl.html", "structcgv_1_1type_1_1func_1_1MakeConst_1_1make__const__impl" ],
+      [ "make_const_impl< T & >", "structcgv_1_1type_1_1func_1_1MakeConst_1_1make__const__impl_3_01T_01_6_01_4.html", "structcgv_1_1type_1_1func_1_1MakeConst_1_1make__const__impl_3_01T_01_6_01_4" ]
     ] ],
-    [ "clean", "structcgv_1_1type_1_1func_1_1clean.html", null ],
-    [ "clean_traits", "structcgv_1_1type_1_1func_1_1clean__traits.html", null ],
+    [ "Promote", null, [
+      [ "promotion_rank", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank.html", null ],
+      [ "promotion_rank< bool >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01bool_01_4.html", null ],
+      [ "promotion_rank< char >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01char_01_4.html", null ],
+      [ "promotion_rank< unsigned char >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01unsigned_01char_01_4.html", null ],
+      [ "promotion_rank< short >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01short_01_4.html", null ],
+      [ "promotion_rank< unsigned short >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01unsigned_01short_01_4.html", null ],
+      [ "promotion_rank< int >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01int_01_4.html", null ],
+      [ "promotion_rank< unsigned int >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01unsigned_01int_01_4.html", null ],
+      [ "promotion_rank< long >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01long_01_4.html", null ],
+      [ "promotion_rank< unsigned long >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01unsigned_01long_01_4.html", null ],
+      [ "promotion_rank< float >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01float_01_4.html", null ],
+      [ "promotion_rank< double >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01double_01_4.html", null ]
+    ] ],
+    [ "clean", "structcgv_1_1type_1_1func_1_1clean.html", "structcgv_1_1type_1_1func_1_1clean" ],
+    [ "clean_traits", "structcgv_1_1type_1_1func_1_1clean__traits.html", "structcgv_1_1type_1_1func_1_1clean__traits" ],
     [ "drop_const", "structcgv_1_1type_1_1func_1_1drop__const.html", "structcgv_1_1type_1_1func_1_1drop__const" ],
     [ "drop_const< const T >", "structcgv_1_1type_1_1func_1_1drop__const_3_01const_01T_01_4.html", "structcgv_1_1type_1_1func_1_1drop__const_3_01const_01T_01_4" ],
     [ "drop_const< T & >", "structcgv_1_1type_1_1func_1_1drop__const_3_01T_01_6_01_4.html", "structcgv_1_1type_1_1func_1_1drop__const_3_01T_01_6_01_4" ],
@@ -12,10 +27,21 @@ var namespacecgv_1_1type_1_1func =
     [ "drop_pointer< T * >", "structcgv_1_1type_1_1func_1_1drop__pointer_3_01T_01_5_01_4.html", "structcgv_1_1type_1_1func_1_1drop__pointer_3_01T_01_5_01_4" ],
     [ "drop_ref", "structcgv_1_1type_1_1func_1_1drop__ref.html", "structcgv_1_1type_1_1func_1_1drop__ref" ],
     [ "drop_ref< T & >", "structcgv_1_1type_1_1func_1_1drop__ref_3_01T_01_6_01_4.html", "structcgv_1_1type_1_1func_1_1drop__ref_3_01T_01_6_01_4" ],
-    [ "make_argument", "structcgv_1_1type_1_1func_1_1make__argument.html", null ],
+    [ "make_argument", "structcgv_1_1type_1_1func_1_1make__argument.html", "structcgv_1_1type_1_1func_1_1make__argument" ],
+    [ "make_argument< T & >", "structcgv_1_1type_1_1func_1_1make__argument_3_01T_01_6_01_4.html", "structcgv_1_1type_1_1func_1_1make__argument_3_01T_01_6_01_4" ],
     [ "make_const", "structcgv_1_1type_1_1func_1_1make__const.html", null ],
-    [ "make_ref", "structcgv_1_1type_1_1func_1_1make__ref.html", null ],
-    [ "promote", "structcgv_1_1type_1_1func_1_1promote.html", null ],
+    [ "make_ref", "structcgv_1_1type_1_1func_1_1make__ref.html", "structcgv_1_1type_1_1func_1_1make__ref" ],
+    [ "promote", "structcgv_1_1type_1_1func_1_1promote.html", "structcgv_1_1type_1_1func_1_1promote" ],
+    [ "promote< int, float >", "structcgv_1_1type_1_1func_1_1promote_3_01int_00_01float_01_4.html", "structcgv_1_1type_1_1func_1_1promote_3_01int_00_01float_01_4" ],
+    [ "promote< float, int >", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01int_01_4.html", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01int_01_4" ],
+    [ "promote< unsigned int, float >", "structcgv_1_1type_1_1func_1_1promote_3_01unsigned_01int_00_01float_01_4.html", "structcgv_1_1type_1_1func_1_1promote_3_01unsigned_01int_00_01float_01_4" ],
+    [ "promote< float, unsigned int >", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01unsigned_01int_01_4.html", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01unsigned_01int_01_4" ],
+    [ "promote< long, float >", "structcgv_1_1type_1_1func_1_1promote_3_01long_00_01float_01_4.html", "structcgv_1_1type_1_1func_1_1promote_3_01long_00_01float_01_4" ],
+    [ "promote< float, long >", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01long_01_4.html", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01long_01_4" ],
+    [ "promote< unsigned long, float >", "structcgv_1_1type_1_1func_1_1promote_3_01unsigned_01long_00_01float_01_4.html", "structcgv_1_1type_1_1func_1_1promote_3_01unsigned_01long_00_01float_01_4" ],
+    [ "promote< float, unsigned long >", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01unsigned_01long_01_4.html", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01unsigned_01long_01_4" ],
     [ "promote_const", "structcgv_1_1type_1_1func_1_1promote__const.html", null ],
-    [ "transfer_const", "structcgv_1_1type_1_1func_1_1transfer__const.html", null ]
+    [ "transfer_const", "structcgv_1_1type_1_1func_1_1transfer__const.html", "structcgv_1_1type_1_1func_1_1transfer__const" ],
+    [ "transfer_const< const T, S >", "structcgv_1_1type_1_1func_1_1transfer__const_3_01const_01T_00_01S_01_4.html", "structcgv_1_1type_1_1func_1_1transfer__const_3_01const_01T_00_01S_01_4" ],
+    [ "transfer_const< const T *, S * >", "structcgv_1_1type_1_1func_1_1transfer__const_3_01const_01T_01_5_00_01S_01_5_01_4.html", "structcgv_1_1type_1_1func_1_1transfer__const_3_01const_01T_01_5_00_01S_01_5_01_4" ]
 ];

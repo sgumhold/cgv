@@ -82,6 +82,8 @@ $(document).ready(function(){initNavTree('structcgv_1_1signal_1_1callback__strea
 
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structcgv_1_1signal_1_1callback__streambuf-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::signal::callback_streambuf Struct Reference</div>  </div>
@@ -92,8 +94,34 @@ $(document).ready(function(){initNavTree('structcgv_1_1signal_1_1callback__strea
  <a href="structcgv_1_1signal_1_1callback__streambuf.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="callback__stream_8h_source.html">callback_stream.h</a>&gt;</code></p>
-
-<p>Inherits std::streambuf.</p>
+<div class="dynheader">
+Inheritance diagram for cgv::signal::callback_streambuf:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="structcgv_1_1signal_1_1callback__streambuf.png" alt=""/>
+ </div></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:ae3b3d2d250f0674e0f0734b33c203e9b"><td class="memItemLeft" align="right" valign="top"><a id="ae3b3d2d250f0674e0f0734b33c203e9b"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>callback_streambuf</b> (cgv::signal::signal&lt; const std::string &amp; &gt; &amp;_write)</td></tr>
+<tr class="separator:ae3b3d2d250f0674e0f0734b33c203e9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a069f92d15637e81d9426554735e6696d"><td class="memItemLeft" align="right" valign="top"><a id="a069f92d15637e81d9426554735e6696d"></a>
+std::streambuf *&#160;</td><td class="memItemRight" valign="bottom"><b>setbuf</b> (char_type *buf, std::streamsize n)</td></tr>
+<tr class="separator:a069f92d15637e81d9426554735e6696d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7511ee8da9680bd03728820bce5643e"><td class="memItemLeft" align="right" valign="top"><a id="ad7511ee8da9680bd03728820bce5643e"></a>
+int_type&#160;</td><td class="memItemRight" valign="bottom"><b>overflow</b> (int_type c)</td></tr>
+<tr class="separator:ad7511ee8da9680bd03728820bce5643e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c4ea0d0b5ee50c76c47df5b580cc8c5"><td class="memItemLeft" align="right" valign="top"><a id="a0c4ea0d0b5ee50c76c47df5b580cc8c5"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>sync</b> ()</td></tr>
+<tr class="separator:a0c4ea0d0b5ee50c76c47df5b580cc8c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a527fa7b00f01eff51dec1aec4856710e"><td class="memItemLeft" align="right" valign="top"><a id="a527fa7b00f01eff51dec1aec4856710e"></a>
+cgv::signal::signal&lt; const std::string &amp; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>write</b></td></tr>
+<tr class="separator:a527fa7b00f01eff51dec1aec4856710e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>simple implementation of a streambuf that sends all written text to the write signal that is referenced from the possessing stream </p>
 

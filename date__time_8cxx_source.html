@@ -136,24 +136,24 @@ $(document).ready(function(){initNavTree('date__time_8cxx_source.html',''); init
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">return</span> date_time(time(t.tm_hour,t.tm_min,t.tm_sec),date(t.tm_year,t.tm_mon+1,t.tm_mday+1));</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keywordtype">long</span> date_time::operator - (<span class="keyword">const</span> date_time&amp; dt)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="structcgv_1_1utils_1_1date__time.html#ad55bab4931f51a4a9ec729f4850a98bc">   53</a></span>&#160;<span class="keywordtype">long</span> date_time::operator - (<span class="keyword">const</span> <a class="code" href="structcgv_1_1utils_1_1date__time.html">date_time</a>&amp; dt)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword"></span>{</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordflow">return</span> (<span class="keywordtype">long</span>)convert_to_time(*<span class="keyword">this</span>)-(long)convert_to_time(dt);</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;date_time date_time::operator + (<span class="keywordtype">long</span> secs)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="structcgv_1_1utils_1_1date__time.html#aa5e029730ba71d1e4f75a35f0e96143e">   59</a></span>&#160;<a class="code" href="structcgv_1_1utils_1_1date__time.html">date_time</a> date_time::operator + (<span class="keywordtype">long</span> secs)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword"></span>{</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordflow">return</span> convert_to_date_time(convert_to_time(*<span class="keyword">this</span>)+secs);</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;date_time date_time::operator - (<span class="keywordtype">long</span> secs)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="structcgv_1_1utils_1_1date__time.html#a6eb6f0b21bef169dde063ec8b5d9dcac">   65</a></span>&#160;<a class="code" href="structcgv_1_1utils_1_1date__time.html">date_time</a> date_time::operator - (<span class="keywordtype">long</span> secs)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword"></span>{</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordflow">return</span> convert_to_date_time(convert_to_time(*<span class="keyword">this</span>)-secs);</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;date_time now()</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<a class="code" href="structcgv_1_1utils_1_1date__time.html">date_time</a> now()</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;{</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordflow">return</span> convert_to_date_time(::time(NULL));</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordflow">return</span> convert_to_date_time(::<a class="code" href="structcgv_1_1utils_1_1time.html">time</a>(NULL));</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;}</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;std::ostream&amp; operator &lt;&lt; (std::ostream&amp; os, <span class="keyword">const</span> time&amp; T)</div>
@@ -174,6 +174,8 @@ $(document).ready(function(){initNavTree('date__time_8cxx_source.html',''); init
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    }</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;}</div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
+<div class="ttc" id="astructcgv_1_1utils_1_1date__time_html"><div class="ttname"><a href="structcgv_1_1utils_1_1date__time.html">cgv::utils::date_time</a></div><div class="ttdef"><b>Definition:</b> <a href="date__time_8h_source.html#l00026">date_time.h:27</a></div></div>
+<div class="ttc" id="astructcgv_1_1utils_1_1time_html"><div class="ttname"><a href="structcgv_1_1utils_1_1time.html">cgv::utils::time</a></div><div class="ttdef"><b>Definition:</b> <a href="date__time_8h_source.html#l00010">date_time.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

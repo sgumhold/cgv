@@ -119,6 +119,105 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a1732ff7c51d2569e1702267ea2f5d079">surface_material</a> (BrdfType _brdf_type=BrdfType(BT_STRAUSS_DIFFUSE+BT_STRAUSS), <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _diffuse_reflectance=<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(0.5f, 0.5f, 0.5f), float _roughness=0.5f, float _metalness=0.0f, float _ambient_occlusion=1.0f, <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _emission=<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(0, 0, 0), float _transparency=0.0f, const std::complex&lt; float &gt; &amp;_propagation_slow_down=std::complex&lt; float &gt;(1.5f, 0.0f), float _roughness_anisotropy=0.0f, float _roughness_orientation=0.0f, <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _specular_reflectance=<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(1, 1, 1))</td></tr>
 <tr class="memdesc:a1732ff7c51d2569e1702267ea2f5d079"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct default material <br /></td></tr>
 <tr class="separator:a1732ff7c51d2569e1702267ea2f5d079"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a683da9aeaa4e146fa107ac5a3d45b5fc"><td class="memItemLeft" align="right" valign="top"><a id="a683da9aeaa4e146fa107ac5a3d45b5fc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_brdf_type</b> (BrdfType <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a51fca4161b935253a23af6e2e420d9b7">brdf_type</a>)</td></tr>
+<tr class="separator:a683da9aeaa4e146fa107ac5a3d45b5fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84843d9859a4b614c9b9caccb2082545"><td class="memItemLeft" align="right" valign="top"><a id="a84843d9859a4b614c9b9caccb2082545"></a>
+BrdfType&#160;</td><td class="memItemRight" valign="bottom"><b>get_brdf_type</b> () const</td></tr>
+<tr class="separator:a84843d9859a4b614c9b9caccb2082545"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a562798abc92c80754e94e925bac885b4"><td class="memItemLeft" align="right" valign="top"><a id="a562798abc92c80754e94e925bac885b4"></a>
+BrdfType &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_brdf_type</b> ()</td></tr>
+<tr class="separator:a562798abc92c80754e94e925bac885b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93ebe733fd7ad6f73267111ed6e6b578"><td class="memItemLeft" align="right" valign="top"><a id="a93ebe733fd7ad6f73267111ed6e6b578"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_ambient_occlusion</b> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#ae99c554bb5e900406ea22a44641a04b9">ambient_occlusion</a>)</td></tr>
+<tr class="separator:a93ebe733fd7ad6f73267111ed6e6b578"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe69e859639ad9c963321720452b98d4"><td class="memItemLeft" align="right" valign="top"><a id="abe69e859639ad9c963321720452b98d4"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>get_ambient_occlusion</b> () const</td></tr>
+<tr class="separator:abe69e859639ad9c963321720452b98d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae46786c9e69456981a51239a9730425a"><td class="memItemLeft" align="right" valign="top"><a id="ae46786c9e69456981a51239a9730425a"></a>
+float &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_ambient_occlusion</b> ()</td></tr>
+<tr class="separator:ae46786c9e69456981a51239a9730425a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05d79d327071cb3dede4d9ebb1ca5604"><td class="memItemLeft" align="right" valign="top"><a id="a05d79d327071cb3dede4d9ebb1ca5604"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_diffuse_reflectance</b> (<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3ca6ccb522fcfb870792f5c338eb2e43">diffuse_reflectance</a>)</td></tr>
+<tr class="separator:a05d79d327071cb3dede4d9ebb1ca5604"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad20dc957dd5388eda305eabd9316a512"><td class="memItemLeft" align="right" valign="top"><a id="ad20dc957dd5388eda305eabd9316a512"></a>
+<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_diffuse_reflectance</b> () const</td></tr>
+<tr class="separator:ad20dc957dd5388eda305eabd9316a512"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dd80ddb078db32104edcea6b827b65b"><td class="memItemLeft" align="right" valign="top"><a id="a3dd80ddb078db32104edcea6b827b65b"></a>
+<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_diffuse_reflectance</b> ()</td></tr>
+<tr class="separator:a3dd80ddb078db32104edcea6b827b65b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a668cb2dcf0eaa4251a8c3c00935bd9"><td class="memItemLeft" align="right" valign="top"><a id="a5a668cb2dcf0eaa4251a8c3c00935bd9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_specular_reflectance</b> (<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a6e8b7cc53c9d7b817569f1ac68fefeaa">specular_reflectance</a>)</td></tr>
+<tr class="separator:a5a668cb2dcf0eaa4251a8c3c00935bd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ef6397f2b7c3085da8700aeebb3a7a8"><td class="memItemLeft" align="right" valign="top"><a id="a6ef6397f2b7c3085da8700aeebb3a7a8"></a>
+<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_specular_reflectance</b> () const</td></tr>
+<tr class="separator:a6ef6397f2b7c3085da8700aeebb3a7a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed175cb8b3f0290da9ba80e271f19717"><td class="memItemLeft" align="right" valign="top"><a id="aed175cb8b3f0290da9ba80e271f19717"></a>
+<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_specular_reflectance</b> ()</td></tr>
+<tr class="separator:aed175cb8b3f0290da9ba80e271f19717"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4254eedf7537c1768b4b03a0ac42a7ad"><td class="memItemLeft" align="right" valign="top"><a id="a4254eedf7537c1768b4b03a0ac42a7ad"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_emission</b> (<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a603d26b3eb0ff6c65273a333b638822d">emission</a>)</td></tr>
+<tr class="separator:a4254eedf7537c1768b4b03a0ac42a7ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d047e56998b2ab1590f379660ac33c9"><td class="memItemLeft" align="right" valign="top"><a id="a6d047e56998b2ab1590f379660ac33c9"></a>
+<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_emission</b> () const</td></tr>
+<tr class="separator:a6d047e56998b2ab1590f379660ac33c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af80415fc3575d35f1e038bbfa296e464"><td class="memItemLeft" align="right" valign="top"><a id="af80415fc3575d35f1e038bbfa296e464"></a>
+<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_emission</b> ()</td></tr>
+<tr class="separator:af80415fc3575d35f1e038bbfa296e464"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19c4e112277cf68e7489ab540ca80dc0"><td class="memItemLeft" align="right" valign="top"><a id="a19c4e112277cf68e7489ab540ca80dc0"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_transparency</b> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#ab3c0e8e96379fbda089c1f30de223498">transparency</a>)</td></tr>
+<tr class="separator:a19c4e112277cf68e7489ab540ca80dc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a066976872e6983c728979de8ab7d2e3c"><td class="memItemLeft" align="right" valign="top"><a id="a066976872e6983c728979de8ab7d2e3c"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>get_transparency</b> () const</td></tr>
+<tr class="separator:a066976872e6983c728979de8ab7d2e3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9dfac609dcef232c7132456d58ca5765"><td class="memItemLeft" align="right" valign="top"><a id="a9dfac609dcef232c7132456d58ca5765"></a>
+float &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_transparency</b> ()</td></tr>
+<tr class="separator:a9dfac609dcef232c7132456d58ca5765"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8991eb1c6848cc865b581d60e88ba8bf"><td class="memItemLeft" align="right" valign="top"><a id="a8991eb1c6848cc865b581d60e88ba8bf"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_roughness</b> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#abeea888e6dbdf16241235a08f82cdc2e">roughness</a>)</td></tr>
+<tr class="separator:a8991eb1c6848cc865b581d60e88ba8bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6111f725d14ae0e149a6cbb94875a3e8"><td class="memItemLeft" align="right" valign="top"><a id="a6111f725d14ae0e149a6cbb94875a3e8"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>get_roughness</b> () const</td></tr>
+<tr class="separator:a6111f725d14ae0e149a6cbb94875a3e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe18dbe52315c4923e51caec0dff1346"><td class="memItemLeft" align="right" valign="top"><a id="abe18dbe52315c4923e51caec0dff1346"></a>
+float &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_roughness</b> ()</td></tr>
+<tr class="separator:abe18dbe52315c4923e51caec0dff1346"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe5e67fbf7c832fea36764ae7bc47956"><td class="memItemLeft" align="right" valign="top"><a id="abe5e67fbf7c832fea36764ae7bc47956"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_metalness</b> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#aa21afe6045ae017791c89530ce3b7e6d">metalness</a>)</td></tr>
+<tr class="separator:abe5e67fbf7c832fea36764ae7bc47956"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc09fa5e2d22a860166a54b159817e15"><td class="memItemLeft" align="right" valign="top"><a id="acc09fa5e2d22a860166a54b159817e15"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>get_metalness</b> () const</td></tr>
+<tr class="separator:acc09fa5e2d22a860166a54b159817e15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef3be4d4112f8989418f62913dfa5725"><td class="memItemLeft" align="right" valign="top"><a id="aef3be4d4112f8989418f62913dfa5725"></a>
+float &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_metalness</b> ()</td></tr>
+<tr class="separator:aef3be4d4112f8989418f62913dfa5725"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af77dea726f83304f4e743646f3cacc95"><td class="memItemLeft" align="right" valign="top"><a id="af77dea726f83304f4e743646f3cacc95"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_roughness_anisotropy</b> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a865250cb2d26cf61c9769cbeb6bf4a44">roughness_anisotropy</a>)</td></tr>
+<tr class="separator:af77dea726f83304f4e743646f3cacc95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3f295a1f74771c1da5194dd9794ade5"><td class="memItemLeft" align="right" valign="top"><a id="aa3f295a1f74771c1da5194dd9794ade5"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>get_roughness_anisotropy</b> () const</td></tr>
+<tr class="separator:aa3f295a1f74771c1da5194dd9794ade5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78dd9a43c934765558f74110722cf86f"><td class="memItemLeft" align="right" valign="top"><a id="a78dd9a43c934765558f74110722cf86f"></a>
+float &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_roughness_anisotropy</b> ()</td></tr>
+<tr class="separator:a78dd9a43c934765558f74110722cf86f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a0f0bc788824c1e3fc60a1819e97671"><td class="memItemLeft" align="right" valign="top"><a id="a0a0f0bc788824c1e3fc60a1819e97671"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_roughness_orientation</b> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a612bd2956c621fa487d9ddc4e37ec686">roughness_orientation</a>)</td></tr>
+<tr class="separator:a0a0f0bc788824c1e3fc60a1819e97671"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6029b3cc91b2c0a82b0311935055e756"><td class="memItemLeft" align="right" valign="top"><a id="a6029b3cc91b2c0a82b0311935055e756"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>get_roughness_orientation</b> () const</td></tr>
+<tr class="separator:a6029b3cc91b2c0a82b0311935055e756"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a6e829d2b24d6d467619d004571f97e"><td class="memItemLeft" align="right" valign="top"><a id="a4a6e829d2b24d6d467619d004571f97e"></a>
+float &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_roughness_orientation</b> ()</td></tr>
+<tr class="separator:a4a6e829d2b24d6d467619d004571f97e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aadd4b1a6b36e4fee5f63797788473864"><td class="memItemLeft" align="right" valign="top"><a id="aadd4b1a6b36e4fee5f63797788473864"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_propagation_slow_down</b> (std::complex&lt; float &gt; <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a91dd38994fcab38d3b9b974af5f888da">propagation_slow_down</a>)</td></tr>
+<tr class="separator:aadd4b1a6b36e4fee5f63797788473864"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc5034eb044bdb5bbecd9783b9289522"><td class="memItemLeft" align="right" valign="top"><a id="acc5034eb044bdb5bbecd9783b9289522"></a>
+std::complex&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>get_propagation_slow_down</b> () const</td></tr>
+<tr class="separator:acc5034eb044bdb5bbecd9783b9289522"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7df5bef9d615eb0d7ba9cf4ce2054e14"><td class="memItemLeft" align="right" valign="top"><a id="a7df5bef9d615eb0d7ba9cf4ce2054e14"></a>
+std::complex&lt; float &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_propagation_slow_down</b> ()</td></tr>
+<tr class="separator:a7df5bef9d615eb0d7ba9cf4ce2054e14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>

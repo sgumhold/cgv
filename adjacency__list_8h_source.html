@@ -95,25 +95,25 @@ $(document).ready(function(){initNavTree('adjacency__list_8h_source.html',''); i
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">//a basic graph edge type</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">struct </span>edge</div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1edge.html">   11</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1math_1_1edge.html">edge</a></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;{</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="comment">//index of start and end vertex </span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keywordtype">unsigned</span> start,end; </div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;};</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">struct </span>weighted_edge : <span class="keyword">public</span> edge</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1weighted__edge.html">   18</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1math_1_1weighted__edge.html">weighted_edge</a> : <span class="keyword">public</span> <a class="code" href="structcgv_1_1math_1_1edge.html">edge</a></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordtype">double</span> weight;</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1weighted__edge.html#a77d777f3a618c86e4109a40dd58148db">   21</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="structcgv_1_1math_1_1weighted__edge.html#a77d777f3a618c86e4109a40dd58148db">weight</a>;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">int</span> flag;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    weighted_edge() : weight(1.0) {}</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    weighted_edge(<span class="keywordtype">double</span> w) : weight(w) {}</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1weighted__edge.html#a355fed594ee2c26503fd084dd43da1c1">   25</a></span>&#160;    <a class="code" href="structcgv_1_1math_1_1weighted__edge.html#a355fed594ee2c26503fd084dd43da1c1">weighted_edge</a>() : <a class="code" href="structcgv_1_1math_1_1weighted__edge.html#a77d777f3a618c86e4109a40dd58148db">weight</a>(1.0) {}</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="structcgv_1_1math_1_1weighted__edge.html#a355fed594ee2c26503fd084dd43da1c1">weighted_edge</a>(<span class="keywordtype">double</span> w) : <a class="code" href="structcgv_1_1math_1_1weighted__edge.html#a77d777f3a618c86e4109a40dd58148db">weight</a>(w) {}</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;};</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">//a basic graph node type</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> ET&gt;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">struct </span>vertex </div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1vertex.html">   31</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1math_1_1vertex.html">vertex</a> </div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;{</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> ET edge_type;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="comment">//incident edges</span></div>
@@ -462,6 +462,11 @@ $(document).ready(function(){initNavTree('adjacency__list_8h_source.html',''); i
 <div class="ttc" id="aclasscgv_1_1math_1_1adjacency__list_html_ae1ae4a1302baf43bf9d64e49717ccbdb"><div class="ttname"><a href="classcgv_1_1math_1_1adjacency__list.html#ae1ae4a1302baf43bf9d64e49717ccbdb">cgv::math::adjacency_list::edge_exists</a></div><div class="ttdeci">bool edge_exists(int start, int end) const</div><div class="ttdoc">checks if edge is already in list</div><div class="ttdef"><b>Definition:</b> <a href="adjacency__list_8h_source.html#l00191">adjacency_list.h:191</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1adjacency__list_html_ae36a7f8efe0c1233662a5a82ff20f700"><div class="ttname"><a href="classcgv_1_1math_1_1adjacency__list.html#ae36a7f8efe0c1233662a5a82ff20f700">cgv::math::adjacency_list::add_vertex</a></div><div class="ttdeci">void add_vertex(const vertex_type &amp;v)</div><div class="ttdoc">add new vertex to graph</div><div class="ttdef"><b>Definition:</b> <a href="adjacency__list_8h_source.html#l00266">adjacency_list.h:266</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
+<div class="ttc" id="astructcgv_1_1math_1_1edge_html"><div class="ttname"><a href="structcgv_1_1math_1_1edge.html">cgv::math::edge</a></div><div class="ttdef"><b>Definition:</b> <a href="adjacency__list_8h_source.html#l00011">adjacency_list.h:12</a></div></div>
+<div class="ttc" id="astructcgv_1_1math_1_1vertex_html"><div class="ttname"><a href="structcgv_1_1math_1_1vertex.html">cgv::math::vertex</a></div><div class="ttdef"><b>Definition:</b> <a href="adjacency__list_8h_source.html#l00031">adjacency_list.h:32</a></div></div>
+<div class="ttc" id="astructcgv_1_1math_1_1weighted__edge_html"><div class="ttname"><a href="structcgv_1_1math_1_1weighted__edge.html">cgv::math::weighted_edge</a></div><div class="ttdef"><b>Definition:</b> <a href="adjacency__list_8h_source.html#l00018">adjacency_list.h:19</a></div></div>
+<div class="ttc" id="astructcgv_1_1math_1_1weighted__edge_html_a355fed594ee2c26503fd084dd43da1c1"><div class="ttname"><a href="structcgv_1_1math_1_1weighted__edge.html#a355fed594ee2c26503fd084dd43da1c1">cgv::math::weighted_edge::weighted_edge</a></div><div class="ttdeci">weighted_edge()</div><div class="ttdoc">standard constructor</div><div class="ttdef"><b>Definition:</b> <a href="adjacency__list_8h_source.html#l00025">adjacency_list.h:25</a></div></div>
+<div class="ttc" id="astructcgv_1_1math_1_1weighted__edge_html_a77d777f3a618c86e4109a40dd58148db"><div class="ttname"><a href="structcgv_1_1math_1_1weighted__edge.html#a77d777f3a618c86e4109a40dd58148db">cgv::math::weighted_edge::weight</a></div><div class="ttdeci">double weight</div><div class="ttdoc">edge weight</div><div class="ttdef"><b>Definition:</b> <a href="adjacency__list_8h_source.html#l00021">adjacency_list.h:21</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

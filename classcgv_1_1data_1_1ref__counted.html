@@ -84,6 +84,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1data_1_1ref__counted.html'
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classcgv_1_1data_1_1ref__counted-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::data::ref_counted Class Reference</div>  </div>
@@ -100,38 +101,45 @@ Inheritance diagram for cgv::data::ref_counted:</div>
  <div class="center">
   <img src="classcgv_1_1data_1_1ref__counted.png" usemap="#cgv::data::ref_5Fcounted_map" alt=""/>
   <map id="cgv::data::ref_5Fcounted_map" name="cgv::data::ref_5Fcounted_map">
-<area href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti..." alt="cgv::base::base" shape="rect" coords="0,56,239,80"/>
-<area href="classcgv_1_1math_1_1sparse__les.html" title="interface for implementations of solvers for sparse linear systems of the form A * x = b with a squar..." alt="cgv::math::sparse_les" shape="rect" coords="249,56,488,80"/>
-<area href="classcgv_1_1math_1_1sparse__les__factory.html" title="factory class for sparse linear system solvers" alt="cgv::math::sparse_les_factory" shape="rect" coords="498,56,737,80"/>
-<area href="classcgv_1_1os_1_1socket.html" title="base class for all sockets" alt="cgv::os::socket" shape="rect" coords="747,56,986,80"/>
-<area href="classvr_1_1vr__log.html" title="helper struct for logging vr events" alt="vr::vr_log" shape="rect" coords="996,56,1235,80"/>
-<area href="classcgv_1_1base_1_1base__generator.html" title="implements a dynamic object, that can be composed of independent variables, which are handled as prop..." alt="cgv::base::base_generator" shape="rect" coords="249,112,488,136"/>
-<area href="classcgv_1_1base_1_1console.html" title="interface to the console of the application with implementation of the property interface" alt="cgv::base::console" shape="rect" coords="249,168,488,192"/>
-<area href="structcgv_1_1base_1_1factory.html" title="interface for a factory that allows to create objects derived from cgv::base::base" alt="cgv::base::factory" shape="rect" coords="249,224,488,248"/>
-<area href="classcgv_1_1base_1_1named.html" title="base class for all gui types" alt="cgv::base::named" shape="rect" coords="249,280,488,304"/>
-<area href="structcgv_1_1base_1_1object__constructor.html" title="abstract base class of helpers to perform delayed registration and creation of objects in case that t..." alt="cgv::base::object_constructor" shape="rect" coords="249,336,488,360"/>
-<area href="classcgv_1_1base_1_1test.html" title="structure used to register a test function" alt="cgv::base::test" shape="rect" coords="249,392,488,416"/>
-<area href="classcgv_1_1gui_1_1gui__driver.html" title="abstract base class for gui drivers" alt="cgv::gui::gui_driver" shape="rect" coords="249,448,488,472"/>
-<area href="classcgv_1_1media_1_1font_1_1font.html" title="interface class for fonts. Construct font with the find_font function" alt="cgv::media::font::font" shape="rect" coords="249,504,488,528"/>
-<area href="classcgv_1_1media_1_1font_1_1font__face.html" title="interface class for different faces of a font, which can be constructed from a font" alt="cgv::media::font::font_face" shape="rect" coords="249,560,488,584"/>
-<area href="classcgv_1_1media_1_1font_1_1font__server.html" title="provides the methods to create and search for fonts" alt="cgv::media::font::font_server" shape="rect" coords="249,616,488,640"/>
-<area href="classcgv_1_1media_1_1image_1_1abst__image__reader.html" title="abstract interface for image readers" alt="cgv::media::image::abst_image_reader" shape="rect" coords="249,672,488,696"/>
-<area href="classcgv_1_1media_1_1image_1_1abst__image__writer.html" title="abstract interface for image readers" alt="cgv::media::image::abst_image_writer" shape="rect" coords="249,728,488,752"/>
-<area href="classcgv_1_1media_1_1image_1_1image__reader.html" title="the image reader chooses a specific reader automatically based on the extension of the given file nam..." alt="cgv::media::image::image_reader" shape="rect" coords="249,784,488,808"/>
-<area href="classcgv_1_1media_1_1image_1_1image__writer.html" title="the image writer chooses a specific writer automatically based on the extension of the given file nam..." alt="cgv::media::image::image_writer" shape="rect" coords="249,840,488,864"/>
-<area href="structcgv_1_1media_1_1image_1_1reader__listener.html" title="interfaces that allows to listen to registration events" alt="cgv::media::image::reader_listener" shape="rect" coords="249,896,488,920"/>
-<area href="structcgv_1_1media_1_1image_1_1writer__listener.html" title="interfaces that allows to listen to registration events" alt="cgv::media::image::writer_listener" shape="rect" coords="249,952,488,976"/>
-<area href="classcgv_1_1media_1_1video_1_1abst__video__reader.html" title="abstract interface for a video reader" alt="cgv::media::video::abst_video_reader" shape="rect" coords="249,1008,488,1032"/>
-<area href="classcgv_1_1media_1_1video_1_1abst__video__writer.html" title="abstract interface for video writers" alt="cgv::media::video::abst_video_writer" shape="rect" coords="249,1064,488,1088"/>
-<area href="classcgv_1_1media_1_1video_1_1video__reader.html" title="the video reader chooses a specific reader automatically based on the extension of the given file nam..." alt="cgv::media::video::video_reader" shape="rect" coords="249,1120,488,1144"/>
-<area href="structcgv_1_1media_1_1video_1_1video__reader__listener.html" title="interfaces that allows to listen to registration events" alt="cgv::media::video::video_reader_listener" shape="rect" coords="249,1176,488,1200"/>
-<area href="classcgv_1_1media_1_1video_1_1video__writer.html" title="the image writer chooses a specific writer automatically based on the extension of the given file nam..." alt="cgv::media::video::video_writer" shape="rect" coords="249,1232,488,1256"/>
-<area href="structcgv_1_1media_1_1video_1_1video__writer__listener.html" title="interfaces that allows to listen to registration events" alt="cgv::media::video::video_writer_listener" shape="rect" coords="249,1288,488,1312"/>
-<area href="structcgv_1_1render_1_1render__config.html" title="configuration object used to define render view creation parameters including error handling configur..." alt="cgv::render::render_config" shape="rect" coords="249,1344,488,1368"/>
-<area href="structcgv_1_1render_1_1shader__config.html" title="a globally unique shader config is registered by default when the cgv library is used." alt="cgv::render::shader_config" shape="rect" coords="249,1400,488,1424"/>
-<area href="classcgv_1_1math_1_1sparse__les__factory__impl.html" title="implementation of factory class for sparse linear system solvers" alt="cgv::math::sparse_les_factory_impl&lt; T &gt;" shape="rect" coords="498,112,737,136"/>
-<area href="classcgv_1_1os_1_1socket__client.html" title="client socket" alt="cgv::os::socket_client" shape="rect" coords="996,112,1235,136"/>
-<area href="classcgv_1_1os_1_1socket__server.html" title="socket server allows to be connected to" alt="cgv::os::socket_server" shape="rect" coords="996,168,1235,192"/>
+<area href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti..." alt="cgv::base::base" shape="rect" coords="0,56,308,80"/>
+<area href="classcgv_1_1gui_1_1animation.html" alt="cgv::gui::animation" shape="rect" coords="636,56,944,80"/>
+<area href="classcgv_1_1math_1_1sparse__les.html" title="interface for implementations of solvers for sparse linear systems of the form A * x = b with a squar..." alt="cgv::math::sparse_les" shape="rect" coords="954,56,1262,80"/>
+<area href="classcgv_1_1math_1_1sparse__les__factory.html" title="factory class for sparse linear system solvers" alt="cgv::math::sparse_les_factory" shape="rect" coords="1272,56,1580,80"/>
+<area href="classcgv_1_1os_1_1socket.html" title="base class for all sockets" alt="cgv::os::socket" shape="rect" coords="1590,56,1898,80"/>
+<area href="classvr_1_1vr__log.html" title="helper struct for logging vr events" alt="vr::vr_log" shape="rect" coords="1908,56,2216,80"/>
+<area href="classcgv_1_1base_1_1base__generator.html" title="implements a dynamic object, that can be composed of independent variables, which are handled as prop..." alt="cgv::base::base_generator" shape="rect" coords="318,112,626,136"/>
+<area href="classcgv_1_1base_1_1console.html" title="interface to the console of the application with implementation of the property interface" alt="cgv::base::console" shape="rect" coords="318,168,626,192"/>
+<area href="structcgv_1_1base_1_1factory.html" title="interface for a factory that allows to create objects derived from cgv::base::base" alt="cgv::base::factory" shape="rect" coords="318,224,626,248"/>
+<area href="classcgv_1_1base_1_1named.html" title="base class for all gui types" alt="cgv::base::named" shape="rect" coords="318,280,626,304"/>
+<area href="structcgv_1_1base_1_1object__constructor.html" title="abstract base class of helpers to perform delayed registration and creation of objects in case that t..." alt="cgv::base::object_constructor" shape="rect" coords="318,336,626,360"/>
+<area href="classcgv_1_1base_1_1test.html" title="structure used to register a test function" alt="cgv::base::test" shape="rect" coords="318,392,626,416"/>
+<area href="classcgv_1_1gui_1_1base__provider.html" alt="cgv::gui::base_provider" shape="rect" coords="318,448,626,472"/>
+<area href="classcgv_1_1gui_1_1base__provider__generator.html" alt="cgv::gui::base_provider_generator" shape="rect" coords="318,504,626,528"/>
+<area href="classcgv_1_1gui_1_1gui__driver.html" title="abstract base class for gui drivers" alt="cgv::gui::gui_driver" shape="rect" coords="318,560,626,584"/>
+<area href="classcgv_1_1gui_1_1layout.html" alt="cgv::gui::layout" shape="rect" coords="318,616,626,640"/>
+<area href="classcgv_1_1gui_1_1trigger__server.html" alt="cgv::gui::trigger_server" shape="rect" coords="318,672,626,696"/>
+<area href="classcgv_1_1media_1_1font_1_1font.html" title="interface class for fonts. Construct font with the find_font function" alt="cgv::media::font::font" shape="rect" coords="318,728,626,752"/>
+<area href="classcgv_1_1media_1_1font_1_1font__face.html" title="interface class for different faces of a font, which can be constructed from a font" alt="cgv::media::font::font_face" shape="rect" coords="318,784,626,808"/>
+<area href="classcgv_1_1media_1_1font_1_1font__server.html" title="provides the methods to create and search for fonts" alt="cgv::media::font::font_server" shape="rect" coords="318,840,626,864"/>
+<area href="classcgv_1_1media_1_1image_1_1abst__image__reader.html" title="abstract interface for image readers" alt="cgv::media::image::abst_image_reader" shape="rect" coords="318,896,626,920"/>
+<area href="classcgv_1_1media_1_1image_1_1abst__image__writer.html" title="abstract interface for image readers" alt="cgv::media::image::abst_image_writer" shape="rect" coords="318,952,626,976"/>
+<area href="classcgv_1_1media_1_1image_1_1image__reader.html" title="the image reader chooses a specific reader automatically based on the extension of the given file nam..." alt="cgv::media::image::image_reader" shape="rect" coords="318,1008,626,1032"/>
+<area href="classcgv_1_1media_1_1image_1_1image__writer.html" title="the image writer chooses a specific writer automatically based on the extension of the given file nam..." alt="cgv::media::image::image_writer" shape="rect" coords="318,1064,626,1088"/>
+<area href="structcgv_1_1media_1_1image_1_1reader__listener.html" title="interfaces that allows to listen to registration events" alt="cgv::media::image::reader_listener" shape="rect" coords="318,1120,626,1144"/>
+<area href="structcgv_1_1media_1_1image_1_1writer__listener.html" title="interfaces that allows to listen to registration events" alt="cgv::media::image::writer_listener" shape="rect" coords="318,1176,626,1200"/>
+<area href="classcgv_1_1media_1_1video_1_1abst__video__reader.html" title="abstract interface for a video reader" alt="cgv::media::video::abst_video_reader" shape="rect" coords="318,1232,626,1256"/>
+<area href="classcgv_1_1media_1_1video_1_1abst__video__writer.html" title="abstract interface for video writers" alt="cgv::media::video::abst_video_writer" shape="rect" coords="318,1288,626,1312"/>
+<area href="classcgv_1_1media_1_1video_1_1video__reader.html" title="the video reader chooses a specific reader automatically based on the extension of the given file nam..." alt="cgv::media::video::video_reader" shape="rect" coords="318,1344,626,1368"/>
+<area href="structcgv_1_1media_1_1video_1_1video__reader__listener.html" title="interfaces that allows to listen to registration events" alt="cgv::media::video::video_reader_listener" shape="rect" coords="318,1400,626,1424"/>
+<area href="classcgv_1_1media_1_1video_1_1video__writer.html" title="the image writer chooses a specific writer automatically based on the extension of the given file nam..." alt="cgv::media::video::video_writer" shape="rect" coords="318,1456,626,1480"/>
+<area href="structcgv_1_1media_1_1video_1_1video__writer__listener.html" title="interfaces that allows to listen to registration events" alt="cgv::media::video::video_writer_listener" shape="rect" coords="318,1512,626,1536"/>
+<area href="structcgv_1_1render_1_1render__config.html" title="configuration object used to define render view creation parameters including error handling configur..." alt="cgv::render::render_config" shape="rect" coords="318,1568,626,1592"/>
+<area href="structcgv_1_1render_1_1shader__config.html" title="a globally unique shader config is registered by default when the cgv library is used." alt="cgv::render::shader_config" shape="rect" coords="318,1624,626,1648"/>
+<area href="classcgv_1_1gui_1_1value__animation.html" alt="cgv::gui::value_animation&lt; cgv::math::fvec&lt; T, 3 &gt; &gt;" shape="rect" coords="954,112,1262,136"/>
+<area href="classcgv_1_1gui_1_1value__animation.html" alt="cgv::gui::value_animation&lt; T &gt;" shape="rect" coords="954,168,1262,192"/>
+<area href="classcgv_1_1math_1_1sparse__les__factory__impl.html" title="implementation of factory class for sparse linear system solvers" alt="cgv::math::sparse_les_factory_impl&lt; T &gt;" shape="rect" coords="1272,112,1580,136"/>
+<area href="classcgv_1_1os_1_1socket__client.html" title="client socket" alt="cgv::os::socket_client" shape="rect" coords="1908,112,2216,136"/>
+<area href="classcgv_1_1os_1_1socket__server.html" title="socket server allows to be connected to" alt="cgv::os::socket_server" shape="rect" coords="1908,168,2216,192"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -152,6 +160,12 @@ Protected Member Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1ref__counted.html#abceffe95f08d3fc13cf9286cf360e705">set_ref_count</a> (int c) const</td></tr>
 <tr class="memdesc:abceffe95f08d3fc13cf9286cf360e705"><td class="mdescLeft">&#160;</td><td class="mdescRight">write access is also const to allow ref counted pointers to const instances <br /></td></tr>
 <tr class="separator:abceffe95f08d3fc13cf9286cf360e705"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:ac664fb804bfec3a2f6733ee50635b1c0"><td class="memItemLeft" align="right" valign="top"><a id="ac664fb804bfec3a2f6733ee50635b1c0"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><b>ref_ptr_tag</b></td></tr>
+<tr class="separator:ac664fb804bfec3a2f6733ee50635b1c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>if you derive your class from this class, a <a class="el" href="classcgv_1_1data_1_1ref__ptr.html" title="reference counted pointer, which can work together with types that are derived from ref_counted,...">ref_ptr</a> will do reference counting in the inhereted ref_count member. </p>

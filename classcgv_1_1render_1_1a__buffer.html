@@ -84,6 +84,8 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1a__buffer.html',
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-static-methods">Static Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1render_1_1a__buffer-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -135,6 +137,18 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1a__buffer.html#adf9f12d102f35ccc166d7e8bae5e214c">finish_frame</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:adf9f12d102f35ccc166d7e8bae5e214c"><td class="mdescLeft">&#160;</td><td class="mdescRight">per fragment sort nodes and blend over current framebuffer <br /></td></tr>
 <tr class="separator:adf9f12d102f35ccc166d7e8bae5e214c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b57fa4ea215e623ada619705494be1d"><td class="memItemLeft" align="right" valign="top"><a id="a0b57fa4ea215e623ada619705494be1d"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_depth_tex_unit</b> ()</td></tr>
+<tr class="separator:a0b57fa4ea215e623ada619705494be1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94ebf5467adeadbf68a8bc9c6e6f982b"><td class="memItemLeft" align="right" valign="top"><a id="a94ebf5467adeadbf68a8bc9c6e6f982b"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_node_counter_binding_point</b> ()</td></tr>
+<tr class="separator:a94ebf5467adeadbf68a8bc9c6e6f982b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e37267fa6898a701f69147f7e35fbb3"><td class="memItemLeft" align="right" valign="top"><a id="a7e37267fa6898a701f69147f7e35fbb3"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_head_pointers_binding_point</b> ()</td></tr>
+<tr class="separator:a7e37267fa6898a701f69147f7e35fbb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3ab82a6957b7cca981f126019a177f1"><td class="memItemLeft" align="right" valign="top"><a id="ac3ab82a6957b7cca981f126019a177f1"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_nodes_binding_point</b> ()</td></tr>
+<tr class="separator:ac3ab82a6957b7cca981f126019a177f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -147,6 +161,27 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <tr class="memdesc:a0b66fb7b28c9fdde1a17a9e6f899a35d"><td class="mdescLeft">&#160;</td><td class="mdescRight">to be reserved number of fragment nodes per pixel (changes are applied when in <a class="el" href="classcgv_1_1render_1_1a__buffer.html#aaba5e671255c64900a6cf0b70cb2c910" title="ensure that a_buffer size corresponds to context size">init_frame()</a> function) <br /></td></tr>
 <tr class="separator:a0b66fb7b28c9fdde1a17a9e6f899a35d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a1857b159fddf89a9916f80cc04201609"><td class="memItemLeft" align="right" valign="top"><a id="a1857b159fddf89a9916f80cc04201609"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>destruct_buffers</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="separator:a1857b159fddf89a9916f80cc04201609"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3ef966dd138c61f75d245e402f4c004"><td class="memItemLeft" align="right" valign="top"><a id="af3ef966dd138c61f75d245e402f4c004"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_buffers</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="separator:af3ef966dd138c61f75d245e402f4c004"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae82851d76d5152ad1e8f7dc318987b9c"><td class="memItemLeft" align="right" valign="top"><a id="ae82851d76d5152ad1e8f7dc318987b9c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>update_defines</b> (<a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines, bool include_binding_points)</td></tr>
+<tr class="separator:ae82851d76d5152ad1e8f7dc318987b9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-methods"></a>
+Static Protected Member Functions</h2></td></tr>
+<tr class="memitem:acee7f45701573ecf8cb8e7e9f145b8b1"><td class="memItemLeft" align="right" valign="top"><a id="acee7f45701573ecf8cb8e7e9f145b8b1"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_buffer</b> (GLuint &amp;buffer, GLenum target, GLsizeiptr size, const void *data, GLenum usage=GL_DYNAMIC_DRAW)</td></tr>
+<tr class="separator:acee7f45701573ecf8cb8e7e9f145b8b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ae0727fb81d181d71fdecc7c6b57d3c"><td class="memItemLeft" align="right" valign="top"><a id="a6ae0727fb81d181d71fdecc7c6b57d3c"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><b>destruct_buffer</b> (GLuint &amp;buffer)</td></tr>
+<tr class="separator:a6ae0727fb81d181d71fdecc7c6b57d3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a669c53051b97bcb5bff2156e47a397a1"><td class="memItemLeft" align="right" valign="top"><a id="a669c53051b97bcb5bff2156e47a397a1"></a>
@@ -157,6 +192,12 @@ Protected Attributes</h2></td></tr>
 unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1a__buffer.html#a000d5c25182df0de6df27d58a983b484">node_buffer_counter</a></td></tr>
 <tr class="memdesc:a000d5c25182df0de6df27d58a983b484"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffers used to store per pixel frament lists. <br /></td></tr>
 <tr class="separator:a000d5c25182df0de6df27d58a983b484"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a688402e428b51e2148000b44b8330c81"><td class="memItemLeft" align="right" valign="top"><a id="a688402e428b51e2148000b44b8330c81"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>head_pointer_buffer</b></td></tr>
+<tr class="separator:a688402e428b51e2148000b44b8330c81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ffb20c402f266d765efc02f354befff"><td class="memItemLeft" align="right" valign="top"><a id="a0ffb20c402f266d765efc02f354befff"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>node_buffer</b></td></tr>
+<tr class="separator:a0ffb20c402f266d765efc02f354befff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba1c95cc46ff93c601dcf4133143f2ab"><td class="memItemLeft" align="right" valign="top"><a id="aba1c95cc46ff93c601dcf4133143f2ab"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1a__buffer.html#aba1c95cc46ff93c601dcf4133143f2ab">depth_tex_unit</a></td></tr>
 <tr class="memdesc:aba1c95cc46ff93c601dcf4133143f2ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default texture unit used for depth texture. <br /></td></tr>
@@ -165,6 +206,18 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1a__buffer.html#aa5b8516e15b937f0196f3a48a72acbca">node_counter_binding_point</a></td></tr>
 <tr class="memdesc:aa5b8516e15b937f0196f3a48a72acbca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer binding point indices. <br /></td></tr>
 <tr class="separator:aa5b8516e15b937f0196f3a48a72acbca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa54b158f42b4e0be5f069e803e8697bf"><td class="memItemLeft" align="right" valign="top"><a id="aa54b158f42b4e0be5f069e803e8697bf"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>head_pointers_binding_point</b></td></tr>
+<tr class="separator:aa54b158f42b4e0be5f069e803e8697bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a709582d7d6d96dc892521869dce6c3d7"><td class="memItemLeft" align="right" valign="top"><a id="a709582d7d6d96dc892521869dce6c3d7"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>nodes_binding_point</b></td></tr>
+<tr class="separator:a709582d7d6d96dc892521869dce6c3d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9ab499e2a4a546857007b08de5e6969"><td class="memItemLeft" align="right" valign="top"><a id="af9ab499e2a4a546857007b08de5e6969"></a>
+<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>&#160;</td><td class="memItemRight" valign="bottom"><b>clear_ssbo_prog</b></td></tr>
+<tr class="separator:af9ab499e2a4a546857007b08de5e6969"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a969bfe1c4caef7a826b7c6c358303bce"><td class="memItemLeft" align="right" valign="top"><a id="a969bfe1c4caef7a826b7c6c358303bce"></a>
+<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>&#160;</td><td class="memItemRight" valign="bottom"><b>a_buffer_prog</b></td></tr>
+<tr class="separator:a969bfe1c4caef7a826b7c6c358303bce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class provides <a class="el" href="classcgv_1_1render_1_1a__buffer.html" title="This class provides a_buffer functionality.">a_buffer</a> functionality. </p>

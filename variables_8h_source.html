@@ -121,15 +121,15 @@ $(document).ready(function(){initNavTree('variables_8h_source.html',''); initRes
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keyword">extern</span> CGV_API <span class="keywordtype">void</span> set_current_namespace(<a class="code" href="structcgv_1_1ppp_1_1namespace__info.html">namespace_info</a>* _cns);</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">extern</span> CGV_API variant* find_variable(<span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">bool</span> only_current = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">extern</span> CGV_API <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a>* find_variable(<span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">bool</span> only_current = <span class="keyword">false</span>);</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keyword">extern</span> CGV_API variant&amp; ref_variable(<span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">bool</span> only_current = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keyword">extern</span> CGV_API <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a>&amp; ref_variable(<span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">bool</span> only_current = <span class="keyword">false</span>);</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keyword">extern</span> CGV_API <span class="keywordtype">void</span> clear_variables();</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keyword">extern</span> CGV_API <span class="keywordtype">void</span> init_environment(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv);</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keyword">extern</span> CGV_API <span class="keywordtype">void</span> push_namespace(variant* ns_var, <a class="code" href="structcgv_1_1ppp_1_1namespace__info.html">namespace_info</a>* environment_ns = 0);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keyword">extern</span> CGV_API <span class="keywordtype">void</span> push_namespace(<a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a>* ns_var, <a class="code" href="structcgv_1_1ppp_1_1namespace__info.html">namespace_info</a>* environment_ns = 0);</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keyword">extern</span> CGV_API <span class="keywordtype">void</span> pop_namespace();</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
@@ -144,6 +144,7 @@ $(document).ready(function(){initNavTree('variables_8h_source.html',''); initRes
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    }</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;}</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="ttc" id="aclasscgv_1_1ppp_1_1variant_html"><div class="ttname"><a href="classcgv_1_1ppp_1_1variant.html">cgv::ppp::variant</a></div><div class="ttdef"><b>Definition:</b> <a href="ppp_2variant_8h_source.html#l00029">variant.h:30</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 <div class="ttc" id="astructcgv_1_1ppp_1_1namespace__info_html"><div class="ttname"><a href="structcgv_1_1ppp_1_1namespace__info.html">cgv::ppp::namespace_info</a></div><div class="ttdoc">for each namespace the following information is stored</div><div class="ttdef"><b>Definition:</b> <a href="variables_8h_source.html#l00019">variables.h:20</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

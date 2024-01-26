@@ -14,6 +14,7 @@ var classcgv_1_1math_1_1rigid__transform =
     [ "get_translation", "classcgv_1_1math_1_1rigid__transform.html#ac8d632a51acce7883f8e95c0b5887921", null ],
     [ "get_transposed_hmat", "classcgv_1_1math_1_1rigid__transform.html#a68869f31281c319461871ae33419f130", null ],
     [ "inverse", "classcgv_1_1math_1_1rigid__transform.html#a333bc9ca1ac14f4f807a595ec22aa423", null ],
+    [ "normalize", "classcgv_1_1math_1_1rigid__transform.html#ad1263cc49935551c92f7225adf0c992e", null ],
     [ "operator*", "classcgv_1_1math_1_1rigid__transform.html#ac723f6e987233a6297149379529cf8f4", null ],
     [ "operator*", "classcgv_1_1math_1_1rigid__transform.html#a53444e81b5c6a3c403a4d4d922d528dc", null ],
     [ "operator*=", "classcgv_1_1math_1_1rigid__transform.html#aa390fde6fef976f5a8880b5973203773", null ],

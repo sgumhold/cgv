@@ -82,7 +82,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1managed__frame__
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1render_1_1managed__frame__buffer-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::render::managed_frame_buffer Class Reference</div>  </div>
@@ -100,11 +102,61 @@ Inheritance diagram for cgv::render::managed_frame_buffer:</div>
   <img src="classcgv_1_1render_1_1managed__frame__buffer.png" alt=""/>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1managed__frame__buffer_1_1attachment.html">attachment</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:ab6f9694964bb4f6fbc9795beea0cc86a"><td class="memItemLeft" align="right" valign="top"><a id="ab6f9694964bb4f6fbc9795beea0cc86a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>destruct</b> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="separator:ab6f9694964bb4f6fbc9795beea0cc86a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad28f4d310d338c0dd78ef2bc28e2b5a7"><td class="memItemLeft" align="right" valign="top"><a id="ad28f4d310d338c0dd78ef2bc28e2b5a7"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_size</b> ()</td></tr>
+<tr class="separator:ad28f4d310d338c0dd78ef2bc28e2b5a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c62f01155fb5d5815e3f4c6895d8774"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1managed__frame__buffer.html#a7c62f01155fb5d5815e3f4c6895d8774">set_size</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">ivec2</a> &amp;size)</td></tr>
 <tr class="memdesc:a7c62f01155fb5d5815e3f4c6895d8774"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the size of the framebuffer renderbuffers.  <a href="classcgv_1_1render_1_1managed__frame__buffer.html#a7c62f01155fb5d5815e3f4c6895d8774">More...</a><br /></td></tr>
 <tr class="separator:a7c62f01155fb5d5815e3f4c6895d8774"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a399ce8a90d64bc3dc5dd812c757feb2d"><td class="memItemLeft" align="right" valign="top"><a id="a399ce8a90d64bc3dc5dd812c757feb2d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>add_attachment</b> (const std::string &amp;name, const std::string &amp;format=&quot;uint8[R,G,B]&quot;, TextureFilter tf=TF_NEAREST, <a class="el" href="namespacecgv_1_1render.html#a4b3eb5abd80954194b0b60848fad0f2a">TextureWrap</a> tw=TW_CLAMP_TO_EDGE, bool attach=true)</td></tr>
+<tr class="separator:a399ce8a90d64bc3dc5dd812c757feb2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81eb40cfd4a61026e52ac7f925840fd1"><td class="memItemLeft" align="right" valign="top"><a id="a81eb40cfd4a61026e52ac7f925840fd1"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>enable_attachment</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;name, int tex_unit=-1)</td></tr>
+<tr class="separator:a81eb40cfd4a61026e52ac7f925840fd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf491e5c54c1e741c277d77cf8228ec4"><td class="memItemLeft" align="right" valign="top"><a id="adf491e5c54c1e741c277d77cf8228ec4"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>disable_attachment</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;name)</td></tr>
+<tr class="separator:adf491e5c54c1e741c277d77cf8228ec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93a7627264354f20f1b85d2abfc71f18"><td class="memItemLeft" align="right" valign="top"><a id="a93a7627264354f20f1b85d2abfc71f18"></a>
+<a class="el" href="classcgv_1_1render_1_1texture.html">texture</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>attachment_texture_ptr</b> (const std::string &amp;name)</td></tr>
+<tr class="separator:a93a7627264354f20f1b85d2abfc71f18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f1b07da53b5591cf845735de04c5e35"><td class="memItemLeft" align="right" valign="top"><a id="a5f1b07da53b5591cf845735de04c5e35"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="separator:a5f1b07da53b5591cf845735de04c5e35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c2110be61c7356fb8b09570a2ee97e1"><td class="memItemLeft" align="right" valign="top"><a id="a4c2110be61c7356fb8b09570a2ee97e1"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>enable</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="separator:a4c2110be61c7356fb8b09570a2ee97e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a276f497e193839ae541d123c21345ab2"><td class="memItemLeft" align="right" valign="top"><a id="a276f497e193839ae541d123c21345ab2"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>disable</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="separator:a276f497e193839ae541d123c21345ab2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c971e323fbbf9aaec0ad61fe3a9f3c2"><td class="memItemLeft" align="right" valign="top"><a id="a5c971e323fbbf9aaec0ad61fe3a9f3c2"></a>
+<a class="el" href="classcgv_1_1render_1_1frame__buffer.html">frame_buffer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_frame_buffer</b> ()</td></tr>
+<tr class="separator:a5c971e323fbbf9aaec0ad61fe3a9f3c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a8240a9ce4724f2ccf0f3545359e88dc7"><td class="memItemLeft" align="right" valign="top"><a id="a8240a9ce4724f2ccf0f3545359e88dc7"></a>
+<a class="el" href="classcgv_1_1render_1_1frame__buffer.html">frame_buffer</a>&#160;</td><td class="memItemRight" valign="bottom"><b>fb</b></td></tr>
+<tr class="separator:a8240a9ce4724f2ccf0f3545359e88dc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f4c528689b704669c454903eb2eb190"><td class="memItemLeft" align="right" valign="top"><a id="a4f4c528689b704669c454903eb2eb190"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>index_counter</b> = 0</td></tr>
+<tr class="separator:a4f4c528689b704669c454903eb2eb190"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3eca249ce011cd09502c307b44a1778"><td class="memItemLeft" align="right" valign="top"><a id="ad3eca249ce011cd09502c307b44a1778"></a>
+std::unordered_map&lt; std::string, <a class="el" href="structcgv_1_1render_1_1managed__frame__buffer_1_1attachment.html">attachment</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>attachments</b></td></tr>
+<tr class="separator:ad3eca249ce011cd09502c307b44a1778"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a597d28f651eca7c600c80db9ef0d8355"><td class="memItemLeft" align="right" valign="top"><a id="a597d28f651eca7c600c80db9ef0d8355"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><b>size</b></td></tr>
+<tr class="separator:a597d28f651eca7c600c80db9ef0d8355"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>provides a class that manages a frame buffer along with its attachments </p>
@@ -131,6 +183,8 @@ Public Member Functions</h2></td></tr>
 <p>Set the x and/or y-component to &lt;= 0 to use the width/height from the context. Returns false if the size is larger than the maximum allowed render buffer size, as given by the OpenGL API. </p>
 
 <p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00033">33</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="navigator_8cxx_source.html#l00205">cgv::app::navigator::init()</a>, <a class="el" href="canvas__overlay_8cxx_source.html#l00018">cgv::app::canvas_overlay::init()</a>, and <a class="el" href="navigator_8cxx_source.html#l00260">cgv::app::navigator::init_frame()</a>.</p>
 
 </div>
 </div>

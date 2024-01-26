@@ -84,7 +84,8 @@ $(document).ready(function(){initNavTree('namespacecgv_1_1reflect.html',''); ini
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::reflect Namespace Reference</div>  </div>
 </div><!--header-->
@@ -122,11 +123,17 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1method__interface.html">method_interface</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">abstract interface to call a method of a given instance.  <a href="structcgv_1_1reflect_1_1method__interface.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1method__parameter__traits__helper.html">method_parameter_traits_helper</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1method__parameter__traits__helper_3_01i_00_01i_00_01M_01_4.html">method_parameter_traits_helper&lt; i, i, M &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1method__interface__impl.html">method_interface_impl</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">forward declaration of <a class="el" href="structcgv_1_1reflect_1_1method__interface__impl.html" title="forward declaration of method_interface_impl which is implemented in &lt;cgv/reflect/method_interface_im...">method_interface_impl</a> which is implemented in &lt;cgv/reflect/method_interface_impl.ph&gt;, include the generated header &lt;cgv/reflect/method_interface_impl.h&gt;  <a href="structcgv_1_1reflect_1_1method__interface__impl.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html">reflection_handler</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">the self reflection handler is passed to the virtual self_reflect() method of <a class="el" href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti...">cgv::base::base</a>.  <a href="classcgv_1_1reflect_1_1reflection__handler.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1detail.html">detail</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">abstract interface for type reflection with basic type management and optional string conversion  <a href="structcgv_1_1reflect_1_1abst__reflection__traits.html#details">More...</a><br /></td></tr>
@@ -146,21 +153,38 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1reflection__traits.html">reflection_traits</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default implementation of the reflection traits providing type specific interface.  <a href="structcgv_1_1reflect_1_1reflection__traits.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1reflection__traits__info__self.html">reflection_traits_info_self</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1reflection__traits__info__self_3_01true_00_01T_01_4.html">reflection_traits_info_self&lt; true, T &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1reflection__traits__info__std.html">reflection_traits_info_std</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1reflection__traits__info__std_3_01true_00_01T_01_4.html">reflection_traits_info_std&lt; true, T &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1reflection__traits__info.html">reflection_traits_info</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">the <a class="el" href="structcgv_1_1reflect_1_1reflection__traits__info.html" title="the reflection_traits_info defines compile time information about reflection_traits for a given type ...">reflection_traits_info</a> defines compile time information about <a class="el" href="structcgv_1_1reflect_1_1reflection__traits.html" title="Default implementation of the reflection traits providing type specific interface.">reflection_traits</a> for a given type T  <a href="structcgv_1_1reflect_1_1reflection__traits__info.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1reflect_1_1self__reflection__tag.html">self_reflection_tag</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derive from this class to announce implementation of the method self_reflect.  <a href="structcgv_1_1reflect_1_1self__reflection__tag.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1reflect_1_1set__reflection__handler.html">set_reflection_handler</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a4efd4701fca764555762b98d1abb3da8"><td class="memItemLeft" align="right" valign="top"><a id="a4efd4701fca764555762b98d1abb3da8"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8">ReflectionTraitsKind</a> </td></tr>
+<tr class="memitem:a4efd4701fca764555762b98d1abb3da8"><td class="memItemLeft" align="right" valign="top"><a id="a4efd4701fca764555762b98d1abb3da8"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8">ReflectionTraitsKind</a> { <b>RTK_STD_TYPE</b>
+, <b>RTK_SELF_REFLECT</b>
+, <b>RTK_EXTERNAL_SELF_REFLECT</b>
+, <b>RTK_STRING</b>
+ }</td></tr>
 <tr class="memdesc:a4efd4701fca764555762b98d1abb3da8"><td class="mdescLeft">&#160;</td><td class="mdescRight">different types of reflection traits <br /></td></tr>
 <tr class="separator:a4efd4701fca764555762b98d1abb3da8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a92b3dbf6fb7a365ddddaba948af6be30"><td class="memItemLeft" align="right" valign="top"><a id="a92b3dbf6fb7a365ddddaba948af6be30"></a>
+<a class="el" href="structcgv_1_1reflect_1_1enum__reflection__traits.html">enum_reflection_traits</a>&lt; <a class="el" href="namespacecgv_1_1data.html#a23911e7b468889249037adbd0ca557dc">cgv::data::NamingConvention</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>get_reflection_traits</b> (const <a class="el" href="namespacecgv_1_1data.html#a23911e7b468889249037adbd0ca557dc">cgv::data::NamingConvention</a> &amp;)</td></tr>
+<tr class="separator:a92b3dbf6fb7a365ddddaba948af6be30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f2618fca8a0f82c9f256239e16a93f5"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Q &gt; </td></tr>
 <tr class="memitem:a9f2618fca8a0f82c9f256239e16a93f5"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1reflect.html#a9f2618fca8a0f82c9f256239e16a93f5">get_member</a> (T &amp;variable, const std::string &amp;target, Q &amp;value)</td></tr>
 <tr class="memdesc:a9f2618fca8a0f82c9f256239e16a93f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">uses <a class="el" href="classcgv_1_1reflect_1_1get__reflection__handler.html" title="provides access to a member variable of an instance.">cgv::reflect::get_reflection_handler</a> to copy the value of a member from an instance  <a href="namespacecgv_1_1reflect.html#a9f2618fca8a0f82c9f256239e16a93f5">More...</a><br /></td></tr>
@@ -168,6 +192,16 @@ Functions</h2></td></tr>
 <tr class="memitem:ga5cc650905883cc409861c2d98a6cce93"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1reflect_1_1reflection__traits.html">reflection_traits</a>&lt; bool, RTK_STD_TYPE &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__detail.html#ga5cc650905883cc409861c2d98a6cce93">get_reflection_traits</a> (const bool &amp;)</td></tr>
 <tr class="memdesc:ga5cc650905883cc409861c2d98a6cce93"><td class="mdescLeft">&#160;</td><td class="mdescRight">example implementation of the cgv::reflect::get_reflection_traits() function  <a href="group__detail.html#ga5cc650905883cc409861c2d98a6cce93">More...</a><br /></td></tr>
 <tr class="separator:ga5cc650905883cc409861c2d98a6cce93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e35a20475251a8d9d476dd4e34cb669"><td class="memTemplParams" colspan="2"><a id="a3e35a20475251a8d9d476dd4e34cb669"></a>
+template&lt;typename T , typename Q &gt; </td></tr>
+<tr class="memitem:a3e35a20475251a8d9d476dd4e34cb669"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>set_member</b> (T &amp;variable, const std::string &amp;target, const Q &amp;value)</td></tr>
+<tr class="separator:a3e35a20475251a8d9d476dd4e34cb669"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a3ea197ebd63c2d6eda404a9fc7d423fc"><td class="memItemLeft" align="right" valign="top"><a id="a3ea197ebd63c2d6eda404a9fc7d423fc"></a>
+class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>reflection_handler</b></td></tr>
+<tr class="separator:a3ea197ebd63c2d6eda404a9fc7d423fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>in this namespace reflection of types is implemented </p>

@@ -166,7 +166,7 @@ $(document).ready(function(){initNavTree('type_2variant_8h_source.html',''); ini
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;};</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="keyword">struct </span>variant&lt;bool&gt;</div>
+<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="structcgv_1_1type_1_1variant_3_01bool_01_4.html">   90</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1type_1_1variant.html">variant</a>&lt;bool&gt;</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;{</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="structcgv_1_1type_1_1variant.html#ac78cc7c9029355a381f7d3bed2b951fb">get</a>(<span class="keyword">const</span> std::string&amp; value_type, <span class="keyword">const</span> <span class="keywordtype">void</span>* value_ptr)</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    {</div>
@@ -235,7 +235,7 @@ $(document).ready(function(){initNavTree('type_2variant_8h_source.html',''); ini
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160; </div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="keyword">struct </span>variant&lt;std::string&gt;</div>
+<div class="line"><a name="l00159"></a><span class="lineno"><a class="line" href="structcgv_1_1type_1_1variant_3_01std_1_1string_01_4.html">  159</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1type_1_1variant.html">variant</a>&lt;std::string&gt;</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;{</div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="keyword">static</span> std::string <a class="code" href="structcgv_1_1type_1_1variant.html#ac78cc7c9029355a381f7d3bed2b951fb">get</a>(<span class="keyword">const</span> std::string&amp; value_type, <span class="keyword">const</span> <span class="keywordtype">void</span>* value_ptr)</div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    {</div>
@@ -303,13 +303,13 @@ $(document).ready(function(){initNavTree('type_2variant_8h_source.html',''); ini
 <div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;};</div>
 <div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160; </div>
 <div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="keyword">struct </span>variant&lt;std::wstring&gt;</div>
+<div class="line"><a name="l00227"></a><span class="lineno"><a class="line" href="structcgv_1_1type_1_1variant_3_01std_1_1wstring_01_4.html">  227</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1type_1_1variant.html">variant</a>&lt;std::wstring&gt;</div>
 <div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;{</div>
 <div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    <span class="keyword">static</span> std::wstring <a class="code" href="structcgv_1_1type_1_1variant.html#ac78cc7c9029355a381f7d3bed2b951fb">get</a>(<span class="keyword">const</span> std::string&amp; value_type, <span class="keyword">const</span> <span class="keywordtype">void</span>* value_ptr)</div>
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    {</div>
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;        <span class="keywordflow">if</span> (value_type == <a class="code" href="namespacecgv_1_1type_1_1info.html#a62e63a08ae5b3c95e1dcfe6614222626">info::get_type_name</a>(<a class="code" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752a39ff37cc71cae76d182f730c7e6a78da">info::TI_WSTRING</a>))</div>
 <div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;            <span class="keywordflow">return</span> *<span class="keyword">static_cast&lt;</span><span class="keyword">const </span>std::wstring*<span class="keyword">&gt;</span>(value_ptr);</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#ab89ee8cc10713a3df171d4a469d0e320">cgv::utils::str2wstr</a>(variant&lt;std::string&gt;::get(value_type, value_ptr));</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#ab89ee8cc10713a3df171d4a469d0e320">cgv::utils::str2wstr</a>(<a class="code" href="structcgv_1_1type_1_1variant.html">variant&lt;std::string&gt;::get</a>(value_type, value_ptr));</div>
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    }</div>
 <div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structcgv_1_1type_1_1variant.html#a405650a25a530eeca5bce4e41884c329">set</a>(<span class="keyword">const</span> std::wstring&amp; value, <span class="keyword">const</span> std::string&amp; value_type, <span class="keywordtype">void</span>* value_ptr)</div>
 <div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    {</div>
@@ -324,7 +324,7 @@ $(document).ready(function(){initNavTree('type_2variant_8h_source.html',''); ini
 <div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
 <div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
 <div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="keyword">struct </span>variant&lt;const char*&gt;</div>
+<div class="line"><a name="l00248"></a><span class="lineno"><a class="line" href="structcgv_1_1type_1_1variant_3_01const_01char_01_5_01_4.html">  248</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1type_1_1variant.html">variant</a>&lt;const char*&gt;</div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;{</div>
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> set(<span class="keyword">const</span> <span class="keywordtype">char</span>* value, <span class="keyword">const</span> std::string&amp; value_type, <span class="keywordtype">void</span>* value_ptr)</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    {</div>

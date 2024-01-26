@@ -1,11 +1,16 @@
 var classcgv_1_1render_1_1render__data__base =
 [
+    [ "add", "classcgv_1_1render_1_1render__data__base.html#a9447c97959efdcd729a0f1355cd1c871", null ],
+    [ "add_color", "classcgv_1_1render_1_1render__data__base.html#a718fe88b6329c4fcfb22a1cfa1aea059", null ],
+    [ "add_index", "classcgv_1_1render_1_1render__data__base.html#a385a8477d21aeaa15834d3617bbbd031", null ],
+    [ "add_position", "classcgv_1_1render_1_1render__data__base.html#a299a4b876e510b488da3d5eb61149a2d", null ],
     [ "clear", "classcgv_1_1render_1_1render__data__base.html#a35307902c25fdc6fa6964bf5d1721241", null ],
     [ "destruct", "classcgv_1_1render_1_1render__data__base.html#a6b9f7f8a36825156cacef6bd23f5d6d6", null ],
     [ "disable", "classcgv_1_1render_1_1render__data__base.html#aa707512debb81157e6f0e446b4e7cd01", null ],
     [ "draw", "classcgv_1_1render_1_1render__data__base.html#a267fce8e911a13a66056f24205bc422e", null ],
     [ "empty", "classcgv_1_1render_1_1render__data__base.html#a4981cda995f2b3c1bdae3eaaf6f9d59d", null ],
     [ "fill", "classcgv_1_1render_1_1render__data__base.html#af24e1bfc685ca921dfa7302d5af57afe", null ],
+    [ "fill_colors", "classcgv_1_1render_1_1render__data__base.html#ab6e53c0e2e16274892e427b5ae0ebb90", null ],
     [ "init", "classcgv_1_1render_1_1render__data__base.html#af7d61442f54de01fda0dc2f2595c499c", null ],
     [ "ref_attribute_array_manager", "classcgv_1_1render_1_1render__data__base.html#a83c0d12a34cc446f6595bc1ed396005a", null ],
     [ "render_count", "classcgv_1_1render_1_1render__data__base.html#a589922c37ca60dc09bee24b3d8202c1e", null ],

@@ -84,7 +84,8 @@ $(document).ready(function(){initNavTree('namespacecgv_1_1utils.html',''); initR
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::utils Namespace Reference</div>  </div>
 </div><!--header-->
@@ -104,8 +105,16 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1big__binary__file.html">big_binary_file</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">class to handle files with very large sizes (&gt;=2GB) hiding the ugly win32 api calls  <a href="classcgv_1_1utils_1_1big__binary__file.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1utils_1_1time.html">time</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1utils_1_1date.html">date</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1utils_1_1date__time.html">date_time</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1utils_1_1guid.html">guid</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">simple struct to represent guid  <a href="structcgv_1_1utils_1_1guid.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1pointer__test.html">pointer_test</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1Profiler.html">Profiler</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A profiler class for managing different stopwatches.  <a href="classcgv_1_1utils_1_1Profiler.html#details">More...</a><br /></td></tr>
@@ -128,7 +137,15 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a065a09a703ff8a7a3ab31b387f1c0468"><td class="memItemLeft" align="right" valign="top"><a id="a065a09a703ff8a7a3ab31b387f1c0468"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a065a09a703ff8a7a3ab31b387f1c0468">token_type</a> </td></tr>
+<tr class="memitem:a065a09a703ff8a7a3ab31b387f1c0468"><td class="memItemLeft" align="right" valign="top"><a id="a065a09a703ff8a7a3ab31b387f1c0468"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a065a09a703ff8a7a3ab31b387f1c0468">token_type</a> { <br />
+&#160;&#160;<b>PLAIN</b>
+, <b>URL</b>
+, <b>FLOAT_VALUE</b>
+, <b>TIME_VALUE</b>
+, <br />
+&#160;&#160;<b>DATE_VALUE</b>
+<br />
+ }</td></tr>
 <tr class="memdesc:a065a09a703ff8a7a3ab31b387f1c0468"><td class="mdescLeft">&#160;</td><td class="mdescRight">different types that a typed_token can have <br /></td></tr>
 <tr class="separator:a065a09a703ff8a7a3ab31b387f1c0468"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -162,6 +179,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#ac46ae8318b80b45b97fedd75a6c48dd4">split_to_lines</a> (const std::string &amp;s, std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1line.html">line</a> &gt; &amp;lines, bool truncate_trailing_spaces=true)</td></tr>
 <tr class="memdesc:ac46ae8318b80b45b97fedd75a6c48dd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">text range given as string <br /></td></tr>
 <tr class="separator:ac46ae8318b80b45b97fedd75a6c48dd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad690d67af8a94eebd3838ddb76a22745"><td class="memItemLeft" align="right" valign="top"><a id="ad690d67af8a94eebd3838ddb76a22745"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>balanced_find_content</b> (const <a class="el" href="structcgv_1_1utils_1_1token.html">token</a> &amp;expression, <a class="el" href="structcgv_1_1utils_1_1token.html">token</a> &amp;content, char open_parenthesis, char close_parenthesis)</td></tr>
+<tr class="separator:ad690d67af8a94eebd3838ddb76a22745"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52fd153ea86ec80f4d03d19bc75df3aa"><td class="memItemLeft" align="right" valign="top"><a id="a52fd153ea86ec80f4d03d19bc75df3aa"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>balanced_find_content</b> (const std::string &amp;expression, <a class="el" href="structcgv_1_1utils_1_1token.html">token</a> &amp;content, char open_parenthesis, char close_parenthesis)</td></tr>
+<tr class="separator:a52fd153ea86ec80f4d03d19bc75df3aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a481bc36ea7e12bdc82437f4d841d14ee"><td class="memItemLeft" align="right" valign="top"><a id="a481bc36ea7e12bdc82437f4d841d14ee"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a481bc36ea7e12bdc82437f4d841d14ee">is_bit_set</a> (unsigned int bit_idx, unsigned int bit_field)</td></tr>
 <tr class="memdesc:a481bc36ea7e12bdc82437f4d841d14ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if a bit of a bit field is set <br /></td></tr>
@@ -194,6 +217,9 @@ std::wstring&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#ae51531449e7c08f4306502dc502261b7">wstr2str</a> (const std::wstring &amp;s)</td></tr>
 <tr class="memdesc:ae51531449e7c08f4306502dc502261b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert a 16-bit string to a 8-bit string <br /></td></tr>
 <tr class="separator:ae51531449e7c08f4306502dc502261b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad70c8776780aec6d86af6109e70eaf7f"><td class="memItemLeft" align="right" valign="top"><a id="ad70c8776780aec6d86af6109e70eaf7f"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_base64</b> (unsigned char c)</td></tr>
+<tr class="separator:ad70c8776780aec6d86af6109e70eaf7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c8a2e0c1f84101744cbdb8503968d48"><td class="memItemLeft" align="right" valign="top"><a id="a3c8a2e0c1f84101744cbdb8503968d48"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a3c8a2e0c1f84101744cbdb8503968d48">encode_base64</a> (const std::string &amp;s)</td></tr>
 <tr class="memdesc:a3c8a2e0c1f84101744cbdb8503968d48"><td class="mdescLeft">&#160;</td><td class="mdescRight">encode a string into base64 <br /></td></tr>
@@ -227,6 +253,24 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:af33afeb1f6c4584325695717d1300b44"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#af33afeb1f6c4584325695717d1300b44">from_string</a> (T &amp;v, const std::string &amp;s)</td></tr>
 <tr class="memdesc:af33afeb1f6c4584325695717d1300b44"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract value from string <br /></td></tr>
 <tr class="separator:af33afeb1f6c4584325695717d1300b44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96bbb3a74884ae04d7a21e76aeb2800f"><td class="memItemLeft" align="right" valign="top"><a id="a96bbb3a74884ae04d7a21e76aeb2800f"></a>
+time_t&#160;</td><td class="memItemRight" valign="bottom"><b>convert_to_time</b> (const <a class="el" href="structcgv_1_1utils_1_1date__time.html">date_time</a> &amp;dt)</td></tr>
+<tr class="separator:a96bbb3a74884ae04d7a21e76aeb2800f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0c2f53c81e646637b958a8b46b7fb78"><td class="memItemLeft" align="right" valign="top"><a id="ae0c2f53c81e646637b958a8b46b7fb78"></a>
+<a class="el" href="structcgv_1_1utils_1_1date__time.html">date_time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>convert_to_date_time</b> (time_t ti)</td></tr>
+<tr class="separator:ae0c2f53c81e646637b958a8b46b7fb78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5043692539fc5d45bf2e82a496b1c214"><td class="memItemLeft" align="right" valign="top"><a id="a5043692539fc5d45bf2e82a496b1c214"></a>
+<a class="el" href="structcgv_1_1utils_1_1date__time.html">date_time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>now</b> ()</td></tr>
+<tr class="separator:a5043692539fc5d45bf2e82a496b1c214"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23d0499aa0be4b60f2712af38a0eaa17"><td class="memItemLeft" align="right" valign="top"><a id="a23d0499aa0be4b60f2712af38a0eaa17"></a>
+std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const <a class="el" href="structcgv_1_1utils_1_1time.html">time</a> &amp;T)</td></tr>
+<tr class="separator:a23d0499aa0be4b60f2712af38a0eaa17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2853b5d678fa43e79e0ecc906628d5f"><td class="memItemLeft" align="right" valign="top"><a id="ac2853b5d678fa43e79e0ecc906628d5f"></a>
+std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const <a class="el" href="structcgv_1_1utils_1_1date.html">date</a> &amp;D)</td></tr>
+<tr class="separator:ac2853b5d678fa43e79e0ecc906628d5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16e984a22c35b3d965947a469e363ecb"><td class="memItemLeft" align="right" valign="top"><a id="a16e984a22c35b3d965947a469e363ecb"></a>
+std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const <a class="el" href="structcgv_1_1utils_1_1date__time.html">date_time</a> &amp;DT)</td></tr>
+<tr class="separator:a16e984a22c35b3d965947a469e363ecb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e1992716813938f2348612ed2de0e13"><td class="memItemLeft" align="right" valign="top"><a id="a5e1992716813938f2348612ed2de0e13"></a>
 <a class="el" href="structcgv_1_1utils_1_1guid.html">guid</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a5e1992716813938f2348612ed2de0e13">guid_from_string</a> (const std::string &amp;str)</td></tr>
 <tr class="memdesc:a5e1992716813938f2348612ed2de0e13"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert string to guid <br /></td></tr>
@@ -366,19 +410,19 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <tr class="memdesc:a0ab04ba818471e0a1556c9814f92fd91"><td class="mdescLeft">&#160;</td><td class="mdescRight">check and extract month from string <code>s</code> <br /></td></tr>
 <tr class="separator:a0ab04ba818471e0a1556c9814f92fd91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab954d9a064432cbc49ebdc30e35ed3cd"><td class="memItemLeft" align="right" valign="top"><a id="ab954d9a064432cbc49ebdc30e35ed3cd"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#ab954d9a064432cbc49ebdc30e35ed3cd">is_time</a> (const std::string &amp;s, cgv::utils::time &amp;t, const char **new_end=0)</td></tr>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#ab954d9a064432cbc49ebdc30e35ed3cd">is_time</a> (const std::string &amp;s, <a class="el" href="structcgv_1_1utils_1_1time.html">cgv::utils::time</a> &amp;t, const char **new_end=0)</td></tr>
 <tr class="memdesc:ab954d9a064432cbc49ebdc30e35ed3cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">check and extract time from string <code>s</code> <br /></td></tr>
 <tr class="separator:ab954d9a064432cbc49ebdc30e35ed3cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a721b017eeba9c853fb2a8d1b91251ab6"><td class="memItemLeft" align="right" valign="top"><a id="a721b017eeba9c853fb2a8d1b91251ab6"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a721b017eeba9c853fb2a8d1b91251ab6">is_date</a> (const std::string &amp;s, cgv::utils::date &amp;d, const char **new_end=0)</td></tr>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a721b017eeba9c853fb2a8d1b91251ab6">is_date</a> (const std::string &amp;s, <a class="el" href="structcgv_1_1utils_1_1date.html">cgv::utils::date</a> &amp;d, const char **new_end=0)</td></tr>
 <tr class="memdesc:a721b017eeba9c853fb2a8d1b91251ab6"><td class="mdescLeft">&#160;</td><td class="mdescRight">check and extract date from string <code>s</code> <br /></td></tr>
 <tr class="separator:a721b017eeba9c853fb2a8d1b91251ab6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a754c29b3c9f4543fd55732682b89618d"><td class="memItemLeft" align="right" valign="top"><a id="a754c29b3c9f4543fd55732682b89618d"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a754c29b3c9f4543fd55732682b89618d">is_time</a> (const char *begin, const char *end, cgv::utils::time &amp;t, const char **new_end=0)</td></tr>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a754c29b3c9f4543fd55732682b89618d">is_time</a> (const char *begin, const char *end, <a class="el" href="structcgv_1_1utils_1_1time.html">cgv::utils::time</a> &amp;t, const char **new_end=0)</td></tr>
 <tr class="memdesc:a754c29b3c9f4543fd55732682b89618d"><td class="mdescLeft">&#160;</td><td class="mdescRight">check and extract time from string token [<code>begin</code>, <code>end</code>] <br /></td></tr>
 <tr class="separator:a754c29b3c9f4543fd55732682b89618d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac50207e5cb3cced92c622704d724ed83"><td class="memItemLeft" align="right" valign="top"><a id="ac50207e5cb3cced92c622704d724ed83"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#ac50207e5cb3cced92c622704d724ed83">is_date</a> (const char *begin, const char *end, cgv::utils::date &amp;d, const char **new_end=0)</td></tr>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#ac50207e5cb3cced92c622704d724ed83">is_date</a> (const char *begin, const char *end, <a class="el" href="structcgv_1_1utils_1_1date.html">cgv::utils::date</a> &amp;d, const char **new_end=0)</td></tr>
 <tr class="memdesc:ac50207e5cb3cced92c622704d724ed83"><td class="mdescLeft">&#160;</td><td class="mdescRight">check and extract date from string token [<code>begin</code>, <code>end</code>] <br /></td></tr>
 <tr class="separator:ac50207e5cb3cced92c622704d724ed83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e73543d632d26465fb41b3901f2a338"><td class="memItemLeft" align="right" valign="top"><a id="a1e73543d632d26465fb41b3901f2a338"></a>
@@ -465,6 +509,9 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a10e0f0ea0c5af201b21733c7f9c57a77">find_enum_name</a> (const std::string &amp;enum_declarations, int value)</td></tr>
 <tr class="memdesc:a10e0f0ea0c5af201b21733c7f9c57a77"><td class="mdescLeft">&#160;</td><td class="mdescRight">lookup name of value in enum declaration <br /></td></tr>
 <tr class="separator:a10e0f0ea0c5af201b21733c7f9c57a77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48b5d9883b19d4bdf8a690e82e7de6de"><td class="memItemLeft" align="right" valign="top"><a id="a48b5d9883b19d4bdf8a690e82e7de6de"></a>
+std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const <a class="el" href="classcgv_1_1utils_1_1statistics.html">statistics</a> &amp;s)</td></tr>
+<tr class="separator:a48b5d9883b19d4bdf8a690e82e7de6de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8af8039ea37915e9ba8ad179f1f9c600"><td class="memItemLeft" align="right" valign="top"><a id="a8af8039ea37915e9ba8ad179f1f9c600"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a8af8039ea37915e9ba8ad179f1f9c600">to_string</a> (const <a class="el" href="structcgv_1_1utils_1_1token.html">token</a> &amp;t)</td></tr>
 <tr class="memdesc:a8af8039ea37915e9ba8ad179f1f9c600"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert to string <br /></td></tr>
@@ -485,6 +532,38 @@ std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a748e89bffdda8da3a478b073bf28877a">bite_all</a> (<a class="el" href="classcgv_1_1utils_1_1tokenizer.html">tokenizer</a> &amp;t, std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">token</a> &gt; &amp;result)</td></tr>
 <tr class="memdesc:a748e89bffdda8da3a478b073bf28877a"><td class="mdescLeft">&#160;</td><td class="mdescRight">bite all tokens into a token vector <br /></td></tr>
 <tr class="separator:a748e89bffdda8da3a478b073bf28877a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a2b7c7777a04822fc5d94afb2f5026bc7"><td class="memItemLeft" align="right" valign="top">static const std::string&#160;</td><td class="memItemRight" valign="bottom"><b>base64_chars</b></td></tr>
+<tr class="separator:a2b7c7777a04822fc5d94afb2f5026bc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af02cd075a0ba4f3abcf46b51ccf7ad8c"><td class="memItemLeft" align="right" valign="top"><a id="af02cd075a0ba4f3abcf46b51ccf7ad8c"></a>
+const unsigned char&#160;</td><td class="memItemRight" valign="bottom"><b>AE</b> = static_cast&lt;unsigned char&gt;(142)</td></tr>
+<tr class="separator:af02cd075a0ba4f3abcf46b51ccf7ad8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6862813a584810d9c1f4d4fa54277970"><td class="memItemLeft" align="right" valign="top"><a id="a6862813a584810d9c1f4d4fa54277970"></a>
+const unsigned char&#160;</td><td class="memItemRight" valign="bottom"><b>ae</b> = static_cast&lt;unsigned char&gt;(132)</td></tr>
+<tr class="separator:a6862813a584810d9c1f4d4fa54277970"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e1bdca73f9199c05c7078a563bebccd"><td class="memItemLeft" align="right" valign="top"><a id="a0e1bdca73f9199c05c7078a563bebccd"></a>
+const unsigned char&#160;</td><td class="memItemRight" valign="bottom"><b>OE</b> = static_cast&lt;unsigned char&gt;(153)</td></tr>
+<tr class="separator:a0e1bdca73f9199c05c7078a563bebccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5208316a9bbab0f904fba8ccd9749a9c"><td class="memItemLeft" align="right" valign="top"><a id="a5208316a9bbab0f904fba8ccd9749a9c"></a>
+const unsigned char&#160;</td><td class="memItemRight" valign="bottom"><b>oe</b> = static_cast&lt;unsigned char&gt;(148)</td></tr>
+<tr class="separator:a5208316a9bbab0f904fba8ccd9749a9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4a5c78c41084c89d95f9acdea043d74"><td class="memItemLeft" align="right" valign="top"><a id="ad4a5c78c41084c89d95f9acdea043d74"></a>
+const unsigned char&#160;</td><td class="memItemRight" valign="bottom"><b>UE</b> = static_cast&lt;unsigned char&gt;(154)</td></tr>
+<tr class="separator:ad4a5c78c41084c89d95f9acdea043d74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a206469c2534c8287cd50e21e9b4e3f32"><td class="memItemLeft" align="right" valign="top"><a id="a206469c2534c8287cd50e21e9b4e3f32"></a>
+const unsigned char&#160;</td><td class="memItemRight" valign="bottom"><b>ue</b> = static_cast&lt;unsigned char&gt;(129)</td></tr>
+<tr class="separator:a206469c2534c8287cd50e21e9b4e3f32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c096df892b1f79c5004ead1d340722c"><td class="memItemLeft" align="right" valign="top"><a id="a7c096df892b1f79c5004ead1d340722c"></a>
+const unsigned char&#160;</td><td class="memItemRight" valign="bottom"><b>ss</b> = static_cast&lt;unsigned char&gt;(225)</td></tr>
+<tr class="separator:a7c096df892b1f79c5004ead1d340722c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54ac5c7d0065cc0d98cc6f357b5b343c"><td class="memItemLeft" align="right" valign="top"><a id="a54ac5c7d0065cc0d98cc6f357b5b343c"></a>
+constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><b>S_TO_NS</b> =1000000000LL</td></tr>
+<tr class="separator:a54ac5c7d0065cc0d98cc6f357b5b343c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a945aab5fd294dcf411bb1548a212b01f"><td class="memItemLeft" align="right" valign="top"><a id="a945aab5fd294dcf411bb1548a212b01f"></a>
+constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><b>NS_TO_S</b> =(1.0/double(S_TO_NS))</td></tr>
+<tr class="separator:a945aab5fd294dcf411bb1548a212b01f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>namespace that holds tools that dont fit any other namespace </p>
@@ -580,6 +659,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <p>If index is out of range, return empty string. </p>
 
 <p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00298">298</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="vr__emulator_8cxx_source.html#l00694">vr_emulator::stream_stats()</a>.</p>
 
 </div>
 </div>
@@ -797,6 +878,35 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <p class="definition">Definition at line <a class="el" href="advanced__scan_8cxx_source.html#l00115">115</a> of file <a class="el" href="advanced__scan_8cxx_source.html">advanced_scan.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="shader__code_8cxx_source.html#l00453">cgv::render::shader_code::set_vertex_attrib_locations()</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a2b7c7777a04822fc5d94afb2f5026bc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b7c7777a04822fc5d94afb2f5026bc7">&#9670;&nbsp;</a></span>base64_chars</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string cgv::utils::base64_chars</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line"><span class="stringliteral">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;</span></div>
+<div class="line"><span class="stringliteral">&quot;abcdefghijklmnopqrstuvwxyz&quot;</span></div>
+<div class="line"><span class="stringliteral">&quot;0123456789+/&quot;</span></div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="convert_8cxx_source.html#l00051">51</a> of file <a class="el" href="convert_8cxx_source.html">convert.cxx</a>.</p>
 
 </div>
 </div>

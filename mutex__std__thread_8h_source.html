@@ -161,19 +161,19 @@ $(document).ready(function(){initNavTree('mutex__std__thread_8h_source.html','')
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<a class="code" href="structcgv_1_1os_1_1condition__mutex.html#ab2d4b83146359e086445d2fc5c00999d">condition_mutex::condition_mutex</a>()</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;{</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    Mutex&amp; m = *((Mutex*&amp;) pmutex);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    Condition*&amp; c_ptr = (Condition*&amp;) pcond;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    c_ptr = <span class="keyword">new</span> Condition(m);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <a class="code" href="structCondition.html">Condition</a>*&amp; c_ptr = (<a class="code" href="structCondition.html">Condition</a>*&amp;) pcond;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    c_ptr = <span class="keyword">new</span> <a class="code" href="structCondition.html">Condition</a>(m);</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;}</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<a class="code" href="structcgv_1_1os_1_1condition__mutex.html#a5c80e83e797ccf0c85f35c97e5feb36e">condition_mutex::~condition_mutex</a>()</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;{</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    Condition*&amp; c_ptr = (Condition*&amp;) pcond;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <a class="code" href="structCondition.html">Condition</a>*&amp; c_ptr = (<a class="code" href="structCondition.html">Condition</a>*&amp;) pcond;</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keyword">delete</span> c_ptr;</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;}</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="keywordtype">void</span> <a class="code" href="structcgv_1_1os_1_1condition__mutex.html#a791a1c1d48a59fd91ef4a9d0bd310471">condition_mutex::send_signal</a>()</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;{</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    Condition&amp; c = *((Condition*&amp;) pcond);</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <a class="code" href="structCondition.html">Condition</a>&amp; c = *((<a class="code" href="structCondition.html">Condition</a>*&amp;) pcond);</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    c.cv.notify_one();</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;}</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
@@ -186,7 +186,7 @@ $(document).ready(function(){initNavTree('mutex__std__thread_8h_source.html','')
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="keywordtype">void</span> <a class="code" href="structcgv_1_1os_1_1condition__mutex.html#a84fd75c3d8396860675416f042be5680">condition_mutex::broadcast_signal</a>()</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;{</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    Condition&amp; c = *((Condition*&amp;) pcond);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <a class="code" href="structCondition.html">Condition</a>&amp; c = *((<a class="code" href="structCondition.html">Condition</a>*&amp;) pcond);</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    c.cv.notify_all();</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;}</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
@@ -201,6 +201,7 @@ $(document).ready(function(){initNavTree('mutex__std__thread_8h_source.html','')
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;}</div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
+<div class="ttc" id="astructCondition_html"><div class="ttname"><a href="structCondition.html">Condition</a></div><div class="ttdef"><b>Definition:</b> <a href="common__std__thread_8h_source.html#l00007">common_std_thread.h:8</a></div></div>
 <div class="ttc" id="astructcgv_1_1os_1_1condition__mutex_html_a075900146c80496274428e27e1fee88b"><div class="ttname"><a href="structcgv_1_1os_1_1condition__mutex.html#a075900146c80496274428e27e1fee88b">cgv::os::condition_mutex::send_signal_with_lock</a></div><div class="ttdeci">void send_signal_with_lock()</div><div class="ttdoc">prefered approach to send the signal and implemented as {lock();send_signal();unlock();}</div><div class="ttdef"><b>Definition:</b> <a href="mutex__pthread_8h_source.html#l00098">mutex_pthread.h:98</a></div></div>
 <div class="ttc" id="astructcgv_1_1os_1_1condition__mutex_html_a5c80e83e797ccf0c85f35c97e5feb36e"><div class="ttname"><a href="structcgv_1_1os_1_1condition__mutex.html#a5c80e83e797ccf0c85f35c97e5feb36e">cgv::os::condition_mutex::~condition_mutex</a></div><div class="ttdeci">~condition_mutex()</div><div class="ttdoc">destruct a mutex</div><div class="ttdef"><b>Definition:</b> <a href="mutex__pthread_8h_source.html#l00086">mutex_pthread.h:86</a></div></div>
 <div class="ttc" id="astructcgv_1_1os_1_1condition__mutex_html_a791a1c1d48a59fd91ef4a9d0bd310471"><div class="ttname"><a href="structcgv_1_1os_1_1condition__mutex.html#a791a1c1d48a59fd91ef4a9d0bd310471">cgv::os::condition_mutex::send_signal</a></div><div class="ttdeci">void send_signal()</div><div class="ttdoc">send the signal to unblock a thread waiting for the condition represented by this condition_mutex</div><div class="ttdef"><b>Definition:</b> <a href="mutex__pthread_8h_source.html#l00092">mutex_pthread.h:92</a></div></div>

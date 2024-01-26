@@ -120,18 +120,18 @@ $(document).ready(function(){initNavTree('group_8h_source.html',''); initResizab
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    std::string get_type_name() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;};</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">template</span> &lt;&gt; <span class="keyword">struct </span>cast_helper&lt;<a class="code" href="classcgv_1_1base_1_1group.html">group</a>&gt;</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="structcgv_1_1base_1_1cast__helper_3_01group_01_4.html">   53</a></span>&#160;<span class="keyword">template</span> &lt;&gt; <span class="keyword">struct </span><a class="code" href="structcgv_1_1base_1_1cast__helper.html">cast_helper</a>&lt;<a class="code" href="classcgv_1_1base_1_1group.html">group</a>&gt;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;{</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">group_ptr</a> cast(<a class="code" href="classcgv_1_1base_1_1base.html">base</a>* b) { <span class="keywordflow">return</span> b-&gt;get_group(); }</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;};</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">template</span> &lt;&gt; <span class="keyword">struct </span>cast_const_helper&lt;group&gt;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="structcgv_1_1base_1_1cast__const__helper_3_01group_01_4.html">   57</a></span>&#160;<span class="keyword">template</span> &lt;&gt; <span class="keyword">struct </span><a class="code" href="structcgv_1_1base_1_1cast__const__helper.html">cast_const_helper</a>&lt;<a class="code" href="classcgv_1_1base_1_1group.html">group</a>&gt;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;{</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="namespacecgv_1_1base.html#a46e8e877cbf782dcf8f019bc1816a59f">const_group_ptr</a> cast_const(<span class="keyword">const</span> base* b) { <span class="keywordflow">return</span> b-&gt;get_group_const(); }</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">const_group_ptr</a> cast_const(<span class="keyword">const</span> <a class="code" href="classcgv_1_1base_1_1base.html">base</a>* b) { <span class="keywordflow">return</span> b-&gt;get_group_const(); }</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#if _MSC_VER &gt;= 1400</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;CGV_TEMPLATE <span class="keyword">template</span> <span class="keyword">class </span>CGV_API data::ref_ptr&lt;group&gt;;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;CGV_TEMPLATE <span class="keyword">template</span> <span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr&lt;group&gt;</a>;</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;CGV_TEMPLATE <span class="keyword">template</span> <span class="keyword">class </span>CGV_API std::vector&lt;base_ptr&gt;;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
@@ -147,6 +147,8 @@ $(document).ready(function(){initNavTree('group_8h_source.html',''); initResizab
 <div class="ttc" id="anamespacecgv_1_1base_html_a46e8e877cbf782dcf8f019bc1816a59f"><div class="ttname"><a href="namespacecgv_1_1base.html#a46e8e877cbf782dcf8f019bc1816a59f">cgv::base::const_group_ptr</a></div><div class="ttdeci">data::ref_ptr&lt; const group, true &gt; const_group_ptr</div><div class="ttdoc">ref counted pointer to a node</div><div class="ttdef"><b>Definition:</b> <a href="group_8h_source.html#l00016">group.h:16</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1base_html_ac2501796ba207ee4454afee3d0ad7921"><div class="ttname"><a href="namespacecgv_1_1base.html#ac2501796ba207ee4454afee3d0ad7921">cgv::base::group_ptr</a></div><div class="ttdeci">data::ref_ptr&lt; group, true &gt; group_ptr</div><div class="ttdoc">ref counted pointer to a node</div><div class="ttdef"><b>Definition:</b> <a href="group_8h_source.html#l00014">group.h:14</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
+<div class="ttc" id="astructcgv_1_1base_1_1cast__const__helper_html"><div class="ttname"><a href="structcgv_1_1base_1_1cast__const__helper.html">cgv::base::cast_const_helper</a></div><div class="ttdef"><b>Definition:</b> <a href="base_8h_source.html#l00064">base.h:65</a></div></div>
+<div class="ttc" id="astructcgv_1_1base_1_1cast__helper_html"><div class="ttname"><a href="structcgv_1_1base_1_1cast__helper.html">cgv::base::cast_helper</a></div><div class="ttdef"><b>Definition:</b> <a href="base_8h_source.html#l00049">base.h:50</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -83,6 +83,7 @@ $(document).ready(function(){initNavTree('structcgv_1_1plot_1_1attribute__source
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structcgv_1_1plot_1_1attribute__source-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::plot::attribute_source Struct Reference</div>  </div>
@@ -116,6 +117,34 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1plot_1_1attribute__source.html#abc18898e435ac3522ab0d9d582bb8993">attribute_source</a> (const <a class="el" href="structcgv_1_1plot_1_1attribute__source.html">attribute_source</a> &amp;as)</td></tr>
 <tr class="memdesc:abc18898e435ac3522ab0d9d582bb8993"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy constructor has no magic inside <br /></td></tr>
 <tr class="separator:abc18898e435ac3522ab0d9d582bb8993"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a879b52fb4c7ff6c776689c2b7e5a440a"><td class="memItemLeft" align="right" valign="top"><a id="a879b52fb4c7ff6c776689c2b7e5a440a"></a>
+AttributeSource&#160;</td><td class="memItemRight" valign="bottom"><b>source</b></td></tr>
+<tr class="separator:a879b52fb4c7ff6c776689c2b7e5a440a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f4b1dd879d49b248d55221ecb50c649"><td class="memItemLeft" ><a id="a5f4b1dd879d49b248d55221ecb50c649"></a>
+union {</td></tr>
+<tr class="memitem:af3c25ae91c2eef6a975a8b3a02131e4e"><td class="memItemLeft" >
+&#160;&#160;&#160;int&#160;&#160;&#160;<b>sub_plot_index</b></td></tr>
+<tr class="separator:af3c25ae91c2eef6a975a8b3a02131e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47353e25205accf2d8172a518702dbc2"><td class="memItemLeft" >
+&#160;&#160;&#160;const float *&#160;&#160;&#160;<b>pointer</b></td></tr>
+<tr class="separator:a47353e25205accf2d8172a518702dbc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33a36125d8535c96d4f86e7767b36945"><td class="memItemLeft" >
+&#160;&#160;&#160;const <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">cgv::render::vertex_buffer</a> *&#160;&#160;&#160;<b>vbo_ptr</b></td></tr>
+<tr class="separator:a33a36125d8535c96d4f86e7767b36945"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f4b1dd879d49b248d55221ecb50c649"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:a5f4b1dd879d49b248d55221ecb50c649"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad8ef3486fc282421c4e810a56e42af2"><td class="memItemLeft" align="right" valign="top"><a id="aad8ef3486fc282421c4e810a56e42af2"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>offset</b></td></tr>
+<tr class="separator:aad8ef3486fc282421c4e810a56e42af2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a878360c9e8792e8950ba3d27c2079cc3"><td class="memItemLeft" align="right" valign="top"><a id="a878360c9e8792e8950ba3d27c2079cc3"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>count</b></td></tr>
+<tr class="separator:a878360c9e8792e8950ba3d27c2079cc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b75a3d7b1232ad9424a070ff7a4d1ec"><td class="memItemLeft" align="right" valign="top"><a id="a7b75a3d7b1232ad9424a070ff7a4d1ec"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>stride</b></td></tr>
+<tr class="separator:a7b75a3d7b1232ad9424a070ff7a4d1ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>store source of a single plot attribute (one coordinate axis or one float attribute) </p>

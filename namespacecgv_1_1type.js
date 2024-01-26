@@ -2,21 +2,49 @@ var namespacecgv_1_1type =
 [
     [ "cond", "namespacecgv_1_1type_1_1cond.html", "namespacecgv_1_1type_1_1cond" ],
     [ "ctrl", null, [
-      [ "if_", "structcgv_1_1type_1_1ctrl_1_1if__.html", null ]
+      [ "if_", "structcgv_1_1type_1_1ctrl_1_1if__.html", "structcgv_1_1type_1_1ctrl_1_1if__" ],
+      [ "if_< false, then_type, else_type >", "structcgv_1_1type_1_1ctrl_1_1if___3_01false_00_01then__type_00_01else__type_01_4.html", "structcgv_1_1type_1_1ctrl_1_1if___3_01false_00_01then__type_00_01else__type_01_4" ]
     ] ],
     [ "func", "namespacecgv_1_1type_1_1func.html", "namespacecgv_1_1type_1_1func" ],
     [ "info", "namespacecgv_1_1type_1_1info.html", "namespacecgv_1_1type_1_1info" ],
     [ "traits", null, [
       [ "max", "structcgv_1_1type_1_1traits_1_1max.html", null ],
-      [ "max_fct", "structcgv_1_1type_1_1traits_1_1max__fct.html", null ],
-      [ "member_pointer", "structcgv_1_1type_1_1traits_1_1member__pointer.html", null ],
+      [ "max< int8_type >", "structcgv_1_1type_1_1traits_1_1max_3_01int8__type_01_4.html", "structcgv_1_1type_1_1traits_1_1max_3_01int8__type_01_4" ],
+      [ "max< int16_type >", "structcgv_1_1type_1_1traits_1_1max_3_01int16__type_01_4.html", "structcgv_1_1type_1_1traits_1_1max_3_01int16__type_01_4" ],
+      [ "max< int32_type >", "structcgv_1_1type_1_1traits_1_1max_3_01int32__type_01_4.html", "structcgv_1_1type_1_1traits_1_1max_3_01int32__type_01_4" ],
+      [ "max< int64_type >", "structcgv_1_1type_1_1traits_1_1max_3_01int64__type_01_4.html", "structcgv_1_1type_1_1traits_1_1max_3_01int64__type_01_4" ],
+      [ "max< uint8_type >", "structcgv_1_1type_1_1traits_1_1max_3_01uint8__type_01_4.html", "structcgv_1_1type_1_1traits_1_1max_3_01uint8__type_01_4" ],
+      [ "max< uint16_type >", "structcgv_1_1type_1_1traits_1_1max_3_01uint16__type_01_4.html", "structcgv_1_1type_1_1traits_1_1max_3_01uint16__type_01_4" ],
+      [ "max< uint32_type >", "structcgv_1_1type_1_1traits_1_1max_3_01uint32__type_01_4.html", "structcgv_1_1type_1_1traits_1_1max_3_01uint32__type_01_4" ],
+      [ "max< uint64_type >", "structcgv_1_1type_1_1traits_1_1max_3_01uint64__type_01_4.html", "structcgv_1_1type_1_1traits_1_1max_3_01uint64__type_01_4" ],
+      [ "max_fct", "structcgv_1_1type_1_1traits_1_1max__fct.html", "structcgv_1_1type_1_1traits_1_1max__fct" ],
+      [ "max_fct< float >", "structcgv_1_1type_1_1traits_1_1max__fct_3_01float_01_4.html", "structcgv_1_1type_1_1traits_1_1max__fct_3_01float_01_4" ],
+      [ "max_fct< double >", "structcgv_1_1type_1_1traits_1_1max__fct_3_01double_01_4.html", "structcgv_1_1type_1_1traits_1_1max__fct_3_01double_01_4" ],
+      [ "member_pointer", "structcgv_1_1type_1_1traits_1_1member__pointer.html", "structcgv_1_1type_1_1traits_1_1member__pointer" ],
+      [ "member_pointer< M T::* >", "structcgv_1_1type_1_1traits_1_1member__pointer_3_01M_01T_1_1_5_01_4.html", "structcgv_1_1type_1_1traits_1_1member__pointer_3_01M_01T_1_1_5_01_4" ],
       [ "min", "structcgv_1_1type_1_1traits_1_1min.html", null ],
-      [ "min_fct", "structcgv_1_1type_1_1traits_1_1min__fct.html", null ],
-      [ "one", "structcgv_1_1type_1_1traits_1_1one.html", null ],
-      [ "one_fct", "structcgv_1_1type_1_1traits_1_1one__fct.html", null ],
-      [ "zero", "structcgv_1_1type_1_1traits_1_1zero.html", null ]
+      [ "min< char >", "structcgv_1_1type_1_1traits_1_1min_3_01char_01_4.html", "structcgv_1_1type_1_1traits_1_1min_3_01char_01_4" ],
+      [ "min< short >", "structcgv_1_1type_1_1traits_1_1min_3_01short_01_4.html", "structcgv_1_1type_1_1traits_1_1min_3_01short_01_4" ],
+      [ "min< int >", "structcgv_1_1type_1_1traits_1_1min_3_01int_01_4.html", "structcgv_1_1type_1_1traits_1_1min_3_01int_01_4" ],
+      [ "min< long >", "structcgv_1_1type_1_1traits_1_1min_3_01long_01_4.html", "structcgv_1_1type_1_1traits_1_1min_3_01long_01_4" ],
+      [ "min< unsigned char >", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01char_01_4.html", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01char_01_4" ],
+      [ "min< unsigned short >", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01short_01_4.html", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01short_01_4" ],
+      [ "min< unsigned int >", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01int_01_4.html", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01int_01_4" ],
+      [ "min< unsigned long >", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01long_01_4.html", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01long_01_4" ],
+      [ "min_fct", "structcgv_1_1type_1_1traits_1_1min__fct.html", "structcgv_1_1type_1_1traits_1_1min__fct" ],
+      [ "min_fct< float >", "structcgv_1_1type_1_1traits_1_1min__fct_3_01float_01_4.html", "structcgv_1_1type_1_1traits_1_1min__fct_3_01float_01_4" ],
+      [ "min_fct< double >", "structcgv_1_1type_1_1traits_1_1min__fct_3_01double_01_4.html", "structcgv_1_1type_1_1traits_1_1min__fct_3_01double_01_4" ],
+      [ "one", "structcgv_1_1type_1_1traits_1_1one.html", "structcgv_1_1type_1_1traits_1_1one" ],
+      [ "one_fct", "structcgv_1_1type_1_1traits_1_1one__fct.html", "structcgv_1_1type_1_1traits_1_1one__fct" ],
+      [ "one_fct< float >", "structcgv_1_1type_1_1traits_1_1one__fct_3_01float_01_4.html", "structcgv_1_1type_1_1traits_1_1one__fct_3_01float_01_4" ],
+      [ "one_fct< double >", "structcgv_1_1type_1_1traits_1_1one__fct_3_01double_01_4.html", "structcgv_1_1type_1_1traits_1_1one__fct_3_01double_01_4" ],
+      [ "zero", "structcgv_1_1type_1_1traits_1_1zero.html", "structcgv_1_1type_1_1traits_1_1zero" ]
     ] ],
     [ "variant", "structcgv_1_1type_1_1variant.html", "structcgv_1_1type_1_1variant" ],
+    [ "variant< bool >", "structcgv_1_1type_1_1variant_3_01bool_01_4.html", "structcgv_1_1type_1_1variant_3_01bool_01_4" ],
+    [ "variant< std::string >", "structcgv_1_1type_1_1variant_3_01std_1_1string_01_4.html", "structcgv_1_1type_1_1variant_3_01std_1_1string_01_4" ],
+    [ "variant< std::wstring >", "structcgv_1_1type_1_1variant_3_01std_1_1wstring_01_4.html", "structcgv_1_1type_1_1variant_3_01std_1_1wstring_01_4" ],
+    [ "variant< const char * >", "structcgv_1_1type_1_1variant_3_01const_01char_01_5_01_4.html", "structcgv_1_1type_1_1variant_3_01const_01char_01_5_01_4" ],
     [ "flt32_type", "namespacecgv_1_1type.html#acae674079ac81bf9feee9190627d1134", null ],
     [ "flt64_type", "namespacecgv_1_1type.html#a0b33dd599d75cadc9fc537043beaf0ee", null ],
     [ "int16_type", "namespacecgv_1_1type.html#a50499c679872cbbe57b912ecd37abcc7", null ],
@@ -28,5 +56,11 @@ var namespacecgv_1_1type =
     [ "uint64_type", "namespacecgv_1_1type.html#a86d2734d8037e1723ae43cd4fc5e4241", null ],
     [ "uint8_type", "namespacecgv_1_1type.html#af13ff82d38d19a2cc98f0f2dfb3e41ae", null ],
     [ "wchar_type", "namespacecgv_1_1type.html#a913e5c4a6b2ce4281dc381d8c71a7b57", null ],
-    [ "DummyEnum", "namespacecgv_1_1type.html#a233fac70a9d9fcfb1890a78122c1724a", null ]
+    [ "DummyEnum", "namespacecgv_1_1type.html#a233fac70a9d9fcfb1890a78122c1724a", [
+      [ "AAAAA", "namespacecgv_1_1type.html#a233fac70a9d9fcfb1890a78122c1724aad64ad68f437cf9c4036ab0214f67075d", null ],
+      [ "BBBBB", "namespacecgv_1_1type.html#a233fac70a9d9fcfb1890a78122c1724aae58737ecb2a8fe7355e2a9dd19e2e7a9", null ]
+    ] ],
+    [ "assign_variant", "namespacecgv_1_1type.html#a37965b2b5d90524bc40fe545adb6a13c", null ],
+    [ "get_variant", "namespacecgv_1_1type.html#aa609e8cee772f63e4255c7bfcd78fafe", null ],
+    [ "set_variant", "namespacecgv_1_1type.html#a86e2231d670af68e42478c2e35c3f809", null ]
 ];

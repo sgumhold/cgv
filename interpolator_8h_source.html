@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('interpolator_8h_source.html',''); init
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span>math {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">class </span>control_point_container {</div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1control__point__container.html">   12</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcgv_1_1math_1_1control__point__container.html">control_point_container</a> {</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">typedef</span> std::pair&lt;float, T&gt; control_point;</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keyword">using</span> const_iterator = <span class="keyword">typename</span> std::vector&lt;control_point&gt;::const_iterator;</div>
@@ -105,8 +105,8 @@ $(document).ready(function(){initNavTree('interpolator_8h_source.html',''); init
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    std::vector&lt;control_point&gt; control_points;</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    control_point_container() {}</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    ~control_point_container() {}</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <a class="code" href="classcgv_1_1math_1_1control__point__container.html">control_point_container</a>() {}</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    ~<a class="code" href="classcgv_1_1math_1_1control__point__container.html">control_point_container</a>() {}</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">void</span> clear() {</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        control_points.clear();</div>
@@ -138,13 +138,13 @@ $(document).ready(function(){initNavTree('interpolator_8h_source.html',''); init
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    const_iterator begin()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> control_points.cbegin(); }</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    const_iterator end()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> control_points.cend(); }</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    control_point <a class="code" href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">min</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    control_point min()<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">if</span>(size() &gt; 0)</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            <span class="keywordflow">return</span> control_points.front();</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keywordflow">return</span> std::make_pair(0.0f, (T)0);</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    }</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    control_point <a class="code" href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">max</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    control_point max()<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordflow">if</span>(size() &gt; 0)</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            <span class="keywordflow">return</span> control_points.back();</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keywordflow">return</span> std::make_pair(0.0f, (T)0);</div>
@@ -152,17 +152,17 @@ $(document).ready(function(){initNavTree('interpolator_8h_source.html',''); init
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;};</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="keyword">class </span>interpolator {</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1interpolator.html">   68</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcgv_1_1math_1_1interpolator.html">interpolator</a> {</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keyword">virtual</span> T interpolate(control_point_container&lt;T&gt; control_points, <span class="keywordtype">float</span> t) <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keyword">virtual</span> T interpolate(<a class="code" href="classcgv_1_1math_1_1control__point__container.html">control_point_container&lt;T&gt;</a> control_points, <span class="keywordtype">float</span> t) <span class="keyword">const</span> = 0;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    </div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">virtual</span> std::vector&lt;T&gt; interpolate(control_point_container&lt;T&gt; control_points, <span class="keywordtype">size_t</span> n) <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">virtual</span> std::vector&lt;T&gt; interpolate(<a class="code" href="classcgv_1_1math_1_1control__point__container.html">control_point_container&lt;T&gt;</a> control_points, <span class="keywordtype">size_t</span> n) <span class="keyword">const</span> = 0;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;};</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;}</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a0c8b00db94a659bad5e3d273bb70de66"><div class="ttname"><a href="namespacecgv_1_1math.html#a0c8b00db94a659bad5e3d273bb70de66">cgv::math::max</a></div><div class="ttdeci">const fvec&lt; T, N &gt; max(const fvec&lt; T, N &gt; &amp;v, T t)</div><div class="ttdoc">return a vector containing the maximum value of each component of v and the scalar t</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00571">fvec.h:571</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a697846f47aa6a0026f5dc1b3f7be08e8"><div class="ttname"><a href="namespacecgv_1_1math.html#a697846f47aa6a0026f5dc1b3f7be08e8">cgv::math::min</a></div><div class="ttdeci">const fvec&lt; T, N &gt; min(const fvec&lt; T, N &gt; &amp;v, T t)</div><div class="ttdoc">return a vector containing the minimum value of each component of v and the scalar t</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00553">fvec.h:553</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1control__point__container_html"><div class="ttname"><a href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a></div><div class="ttdef"><b>Definition:</b> <a href="interpolator_8h_source.html#l00012">interpolator.h:12</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1interpolator_html"><div class="ttname"><a href="classcgv_1_1math_1_1interpolator.html">cgv::math::interpolator</a></div><div class="ttdef"><b>Definition:</b> <a href="interpolator_8h_source.html#l00068">interpolator.h:68</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

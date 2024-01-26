@@ -85,7 +85,8 @@ $(document).ready(function(){initNavTree('namespacecgv_1_1type.html',''); initRe
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
-<a href="#enum-members">Enumerations</a>  </div>
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::type Namespace Reference</div>  </div>
 </div><!--header-->
@@ -110,6 +111,14 @@ Namespaces</h2></td></tr>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1type_1_1variant.html">variant</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">convenience template to access a value pointed to by a void pointer where the type of the value is given by a string as it results from <a class="el" href="structcgv_1_1type_1_1info_1_1type__name.html#a7dcb7c43dbf01bd9276508eb7e2295aa" title="return special name for standard types or type name from RTTI cleaned from keywords for all other typ...">cgv::type::info::type_name&lt;T&gt;::get_name()</a>.  <a href="structcgv_1_1type_1_1variant.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1type_1_1variant_3_01bool_01_4.html">variant&lt; bool &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1type_1_1variant_3_01std_1_1string_01_4.html">variant&lt; std::string &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1type_1_1variant_3_01std_1_1wstring_01_4.html">variant&lt; std::wstring &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1type_1_1variant_3_01const_01char_01_5_01_4.html">variant&lt; const char * &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -161,9 +170,25 @@ typedef wchar_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el"
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a233fac70a9d9fcfb1890a78122c1724a"><td class="memItemLeft" align="right" valign="top"><a id="a233fac70a9d9fcfb1890a78122c1724a"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1type.html#a233fac70a9d9fcfb1890a78122c1724a">DummyEnum</a> </td></tr>
+<tr class="memitem:a233fac70a9d9fcfb1890a78122c1724a"><td class="memItemLeft" align="right" valign="top"><a id="a233fac70a9d9fcfb1890a78122c1724a"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1type.html#a233fac70a9d9fcfb1890a78122c1724a">DummyEnum</a> { <b>AAAAA</b>
+, <b>BBBBB</b>
+ }</td></tr>
 <tr class="memdesc:a233fac70a9d9fcfb1890a78122c1724a"><td class="mdescLeft">&#160;</td><td class="mdescRight">some enum to mark an integral parameter to be of enum type <br /></td></tr>
 <tr class="separator:a233fac70a9d9fcfb1890a78122c1724a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a37965b2b5d90524bc40fe545adb6a13c"><td class="memItemLeft" align="right" valign="top"><a id="a37965b2b5d90524bc40fe545adb6a13c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>assign_variant</b> (const std::string &amp;dst_value_type, void *dst_value_ptr, const std::string &amp;src_value_type, const void *src_value_ptr)</td></tr>
+<tr class="separator:a37965b2b5d90524bc40fe545adb6a13c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86e2231d670af68e42478c2e35c3f809"><td class="memTemplParams" colspan="2"><a id="a86e2231d670af68e42478c2e35c3f809"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a86e2231d670af68e42478c2e35c3f809"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>set_variant</b> (const T &amp;value, const std::string &amp;value_type, void *value_ptr)</td></tr>
+<tr class="separator:a86e2231d670af68e42478c2e35c3f809"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa609e8cee772f63e4255c7bfcd78fafe"><td class="memTemplParams" colspan="2"><a id="aa609e8cee772f63e4255c7bfcd78fafe"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:aa609e8cee772f63e4255c7bfcd78fafe"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>get_variant</b> (T &amp;value, const std::string &amp;value_type, const void *value_ptr)</td></tr>
+<tr class="separator:aa609e8cee772f63e4255c7bfcd78fafe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>namespace for compile time type information </p>

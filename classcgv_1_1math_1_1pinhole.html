@@ -83,6 +83,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1pinhole.html','');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classcgv_1_1math_1_1pinhole-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::math::pinhole&lt; T &gt; Class Template Reference</div>  </div>
@@ -115,6 +116,42 @@ template&lt;typename S &gt; </td></tr>
 <tr class="memitem:a18eb63cbc121113d1141d7af861c700b"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1pinhole.html#a18eb63cbc121113d1141d7af861c700b">pinhole</a> (const <a class="el" href="classcgv_1_1math_1_1pinhole.html">pinhole</a>&lt; S &gt; &amp;ph)</td></tr>
 <tr class="memdesc:a18eb63cbc121113d1141d7af861c700b"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy constructor <br /></td></tr>
 <tr class="separator:a18eb63cbc121113d1141d7af861c700b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a015ffc9c4fd1b0b38645135c3f69d43b"><td class="memItemLeft" align="right" valign="top"><a id="a015ffc9c4fd1b0b38645135c3f69d43b"></a>
+<a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, 2, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>get_camera_matrix</b> () const</td></tr>
+<tr class="separator:a015ffc9c4fd1b0b38645135c3f69d43b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab44b70e1c2a664f689c84e416b649f3e"><td class="memItemLeft" align="right" valign="top"><a id="ab44b70e1c2a664f689c84e416b649f3e"></a>
+<a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, 3, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>get_squared_camera_matrix</b> () const</td></tr>
+<tr class="separator:ab44b70e1c2a664f689c84e416b649f3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6299d00124bb445ed4c23abb8ccd8ede"><td class="memItemLeft" align="right" valign="top"><a id="a6299d00124bb445ed4c23abb8ccd8ede"></a>
+<a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, 4, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>get_homogeneous_camera_matrix</b> () const</td></tr>
+<tr class="separator:a6299d00124bb445ed4c23abb8ccd8ede"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ce3ea0e37e864c611356cb3246bbf4c"><td class="memItemLeft" align="right" valign="top"><a id="a9ce3ea0e37e864c611356cb3246bbf4c"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>image_to_pixel_coordinates</b> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;x) const</td></tr>
+<tr class="separator:a9ce3ea0e37e864c611356cb3246bbf4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2126e834b14af7cf623a53611b545ccd"><td class="memItemLeft" align="right" valign="top"><a id="a2126e834b14af7cf623a53611b545ccd"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>pixel_to_image_coordinates</b> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;p) const</td></tr>
+<tr class="separator:a2126e834b14af7cf623a53611b545ccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcbd0db782f1f38959043fd2a0a12b09"><td class="memItemLeft" align="right" valign="top"><a id="afcbd0db782f1f38959043fd2a0a12b09"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>estimate_parameters</b> (const std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, 3, 3 &gt;&gt; &amp;Hs, bool quadratic_pixels=true, bool no_skew=true)</td></tr>
+<tr class="separator:afcbd0db782f1f38959043fd2a0a12b09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:af6f44a8a355630e83a5fb55baf2b2015"><td class="memItemLeft" align="right" valign="top"><a id="af6f44a8a355630e83a5fb55baf2b2015"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>w</b></td></tr>
+<tr class="separator:af6f44a8a355630e83a5fb55baf2b2015"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2395956cc77a3ce9f1b1db3a10774ed"><td class="memItemLeft" align="right" valign="top"><a id="ab2395956cc77a3ce9f1b1db3a10774ed"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>h</b></td></tr>
+<tr class="separator:ab2395956cc77a3ce9f1b1db3a10774ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbfbd0c3e79ac7c2c6a75baa81a0039c"><td class="memItemLeft" align="right" valign="top"><a id="abbfbd0c3e79ac7c2c6a75baa81a0039c"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>s</b></td></tr>
+<tr class="separator:abbfbd0c3e79ac7c2c6a75baa81a0039c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a113a0d993004c076647aa3ba87e26984"><td class="memItemLeft" align="right" valign="top"><a id="a113a0d993004c076647aa3ba87e26984"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>c</b></td></tr>
+<tr class="separator:a113a0d993004c076647aa3ba87e26984"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a965f8ffd893e6d05cc1fa8a3a9fefb3c"><td class="memItemLeft" align="right" valign="top"><a id="a965f8ffd893e6d05cc1fa8a3a9fefb3c"></a>
+T&#160;</td><td class="memItemRight" valign="bottom"><b>skew</b> = 0.0f</td></tr>
+<tr class="separator:a965f8ffd893e6d05cc1fa8a3a9fefb3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />

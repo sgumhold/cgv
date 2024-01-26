@@ -14,10 +14,7 @@ var classcgv_1_1render_1_1attribute__array__binding =
     [ "enable_array", "classcgv_1_1render_1_1attribute__array__binding.html#a80d481ff0f26352a9893ed0c019ecf8a", null ],
     [ "enable_global_array", "classcgv_1_1render_1_1attribute__array__binding.html#a151c8708e7b65c5b16be1d14946a1a7e", null ],
     [ "is_array_enabled", "classcgv_1_1render_1_1attribute__array__binding.html#a358d86f3589491d171d3f13327a662f5", null ],
-    [ "is_created", "classcgv_1_1render_1_1attribute__array__binding.html#a4c896d2654616448824f5f2f759b8947", null ],
     [ "is_global_array_enabled", "classcgv_1_1render_1_1attribute__array__binding.html#a3ba9bf85f516b3629515e9fd44ebd674", null ],
-    [ "put_id", "classcgv_1_1render_1_1attribute__array__binding.html#a06ff3003af849b32a76ec5be29bd89dc", null ],
-    [ "put_id_void", "classcgv_1_1render_1_1attribute__array__binding.html#aa5404b2aec4bbe8fd4eff1959b627709", null ],
     [ "set_attribute_array", "classcgv_1_1render_1_1attribute__array__binding.html#ada5eda284fdd99c7006f02f04b5b42f1", null ],
     [ "set_attribute_array", "classcgv_1_1render_1_1attribute__array__binding.html#a06a74fb24647f356f02ae4ad8ba7b097", null ],
     [ "set_attribute_array", "classcgv_1_1render_1_1attribute__array__binding.html#aedd78ced3f00ef5f39cb51fd0afe3e98", null ],
@@ -26,7 +23,5 @@ var classcgv_1_1render_1_1attribute__array__binding =
     [ "set_global_attribute_array", "classcgv_1_1render_1_1attribute__array__binding.html#aaec1785843fd6dce61aaf8398caf19ed", null ],
     [ "set_global_attribute_array", "classcgv_1_1render_1_1attribute__array__binding.html#a1f2453aed7059bbde3e182974030f83c", null ],
     [ "set_global_attribute_array", "classcgv_1_1render_1_1attribute__array__binding.html#af1856832ae28751f84802351dd243830", null ],
-    [ "set_global_element_array", "classcgv_1_1render_1_1attribute__array__binding.html#a412a3b543dc166192bab8fff766907d0", null ],
-    [ "ctx_ptr", "classcgv_1_1render_1_1attribute__array__binding.html#a738cb1064e1c6fc606c018191a53f23e", null ],
-    [ "last_error", "classcgv_1_1render_1_1attribute__array__binding.html#a95f40a817168467d5a0d3fdbb09e0b79", null ]
+    [ "set_global_element_array", "classcgv_1_1render_1_1attribute__array__binding.html#a412a3b543dc166192bab8fff766907d0", null ]
 ];

@@ -82,7 +82,9 @@ $(document).ready(function(){initNavTree('structcgv_1_1media_1_1mesh_1_1dc__slic
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structcgv_1_1media_1_1mesh_1_1dc__slice__info-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::media::mesh::dc_slice_info&lt; T &gt; Struct Template Reference</div>  </div>
@@ -94,12 +96,87 @@ $(document).ready(function(){initNavTree('structcgv_1_1media_1_1mesh_1_1dc__slic
 
 <p><code>#include &lt;<a class="el" href="dual__contouring_8h_source.html">dual_contouring.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a6a7c93b4ebd48f094fa986499361262d"><td class="memItemLeft" align="right" valign="top"><a id="a6a7c93b4ebd48f094fa986499361262d"></a>
+typedef <a class="el" href="classcgv_1_1math_1_1qem.html">cgv::math::qem</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>qem_type</b></td></tr>
+<tr class="separator:a6a7c93b4ebd48f094fa986499361262d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ffe24cfcb225ba579cdf3a09015b0e6"><td class="memItemLeft" align="right" valign="top"><a id="a7ffe24cfcb225ba579cdf3a09015b0e6"></a>
+typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; T, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>pnt_type</b></td></tr>
+<tr class="separator:a7ffe24cfcb225ba579cdf3a09015b0e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a68fd8c04cc7601873523ea8ab8221e55"><td class="memItemLeft" align="right" valign="top"><a id="a68fd8c04cc7601873523ea8ab8221e55"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>dc_slice_info</b> (unsigned int _resx, unsigned int _resy)</td></tr>
+<tr class="separator:a68fd8c04cc7601873523ea8ab8221e55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a6deedff617b8e6dedfa19fbb24ad28"><td class="memItemLeft" align="right" valign="top"><a id="a3a6deedff617b8e6dedfa19fbb24ad28"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> ()</td></tr>
+<tr class="separator:a3a6deedff617b8e6dedfa19fbb24ad28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a635f103c28045b7250bad3ff6414f546"><td class="memItemLeft" align="right" valign="top"><a id="a635f103c28045b7250bad3ff6414f546"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>flag</b> (int x, int y) const</td></tr>
+<tr class="separator:a635f103c28045b7250bad3ff6414f546"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a361b3975a4d730aeeb4f2d360e3e1648"><td class="memItemLeft" align="right" valign="top"><a id="a361b3975a4d730aeeb4f2d360e3e1648"></a>
+const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>value</b> (int x, int y) const</td></tr>
+<tr class="separator:a361b3975a4d730aeeb4f2d360e3e1648"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96ba6f7172d3163db633cbbb268f9938"><td class="memItemLeft" align="right" valign="top"><a id="a96ba6f7172d3163db633cbbb268f9938"></a>
+T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>value</b> (int x, int y)</td></tr>
+<tr class="separator:a96ba6f7172d3163db633cbbb268f9938"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9cb40cef3bb5dd7a1677a624977cbd44"><td class="memItemLeft" align="right" valign="top"><a id="a9cb40cef3bb5dd7a1677a624977cbd44"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1mesh_1_1dc__slice__info.html#a9cb40cef3bb5dd7a1677a624977cbd44">set_value</a> (int x, int y, T value, T iso_value)</td></tr>
 <tr class="memdesc:a9cb40cef3bb5dd7a1677a624977cbd44"><td class="mdescLeft">&#160;</td><td class="mdescRight">set value and flag at once <br /></td></tr>
 <tr class="separator:a9cb40cef3bb5dd7a1677a624977cbd44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae59cb2707f92bbaf4b89706ea5860bbb"><td class="memItemLeft" align="right" valign="top"><a id="ae59cb2707f92bbaf4b89706ea5860bbb"></a>
+const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>index</b> (int x, int y) const</td></tr>
+<tr class="separator:ae59cb2707f92bbaf4b89706ea5860bbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b137671154387c691cebb88b588f2ba"><td class="memItemLeft" align="right" valign="top"><a id="a9b137671154387c691cebb88b588f2ba"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>index</b> (int x, int y)</td></tr>
+<tr class="separator:a9b137671154387c691cebb88b588f2ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a088124b83275d177abb173af56111bcc"><td class="memItemLeft" align="right" valign="top"><a id="a088124b83275d177abb173af56111bcc"></a>
+const <a class="el" href="classcgv_1_1math_1_1qem.html">qem_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_qem</b> (int x, int y) const</td></tr>
+<tr class="separator:a088124b83275d177abb173af56111bcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e380a8a1d68af985e592c63d827bc73"><td class="memItemLeft" align="right" valign="top"><a id="a0e380a8a1d68af985e592c63d827bc73"></a>
+<a class="el" href="classcgv_1_1math_1_1qem.html">qem_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_qem</b> (int x, int y)</td></tr>
+<tr class="separator:a0e380a8a1d68af985e592c63d827bc73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a346ae767d8eaf73bdcfd49c5be561d40"><td class="memItemLeft" align="right" valign="top"><a id="a346ae767d8eaf73bdcfd49c5be561d40"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>count</b> (int x, int y) const</td></tr>
+<tr class="separator:a346ae767d8eaf73bdcfd49c5be561d40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab889effa32c5c2f90ce289bd4702187c"><td class="memItemLeft" align="right" valign="top"><a id="ab889effa32c5c2f90ce289bd4702187c"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>count</b> (int x, int y)</td></tr>
+<tr class="separator:ab889effa32c5c2f90ce289bd4702187c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65a01c81c0ff132ae8b334f00698ec24"><td class="memItemLeft" align="right" valign="top"><a id="a65a01c81c0ff132ae8b334f00698ec24"></a>
+const <a class="el" href="classcgv_1_1math_1_1fvec.html">pnt_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>center</b> (int x, int y) const</td></tr>
+<tr class="separator:a65a01c81c0ff132ae8b334f00698ec24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea80e9859f65de21e6ecc331f2ab124c"><td class="memItemLeft" align="right" valign="top"><a id="aea80e9859f65de21e6ecc331f2ab124c"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">pnt_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>center</b> (int x, int y)</td></tr>
+<tr class="separator:aea80e9859f65de21e6ecc331f2ab124c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0e139158a505e9c833adbf1788a6f14"><td class="memItemLeft" align="right" valign="top"><a id="ab0e139158a505e9c833adbf1788a6f14"></a>
+const <a class="el" href="structcgv_1_1media_1_1mesh_1_1cell__info.html">cell_info</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>info</b> (int x, int y) const</td></tr>
+<tr class="separator:ab0e139158a505e9c833adbf1788a6f14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5763306897e9df1fbcca6667cec7469"><td class="memItemLeft" align="right" valign="top"><a id="ae5763306897e9df1fbcca6667cec7469"></a>
+<a class="el" href="structcgv_1_1media_1_1mesh_1_1cell__info.html">cell_info</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>info</b> (int x, int y)</td></tr>
+<tr class="separator:ae5763306897e9df1fbcca6667cec7469"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:aa12bc6c39e6d882a7e67d9565547ebd7"><td class="memItemLeft" align="right" valign="top"><a id="aa12bc6c39e6d882a7e67d9565547ebd7"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>resx</b></td></tr>
+<tr class="separator:aa12bc6c39e6d882a7e67d9565547ebd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed02255f2d56422ac46e53921c281c61"><td class="memItemLeft" align="right" valign="top"><a id="aed02255f2d56422ac46e53921c281c61"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>resy</b></td></tr>
+<tr class="separator:aed02255f2d56422ac46e53921c281c61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78588ecee10288d3c29c69419e279eb6"><td class="memItemLeft" align="right" valign="top"><a id="a78588ecee10288d3c29c69419e279eb6"></a>
+std::vector&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>values</b></td></tr>
+<tr class="separator:a78588ecee10288d3c29c69419e279eb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c2458d65168f40dc694cadb51d79191"><td class="memItemLeft" align="right" valign="top"><a id="a8c2458d65168f40dc694cadb51d79191"></a>
+std::vector&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>flags</b></td></tr>
+<tr class="separator:a8c2458d65168f40dc694cadb51d79191"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c2e3fae879262dbd57d2eec82a37a4f"><td class="memItemLeft" align="right" valign="top"><a id="a8c2e3fae879262dbd57d2eec82a37a4f"></a>
+std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>indices</b></td></tr>
+<tr class="separator:a8c2e3fae879262dbd57d2eec82a37a4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2314432e817aa2f801e73b5fb0b039e5"><td class="memItemLeft" align="right" valign="top"><a id="a2314432e817aa2f801e73b5fb0b039e5"></a>
+std::vector&lt; <a class="el" href="structcgv_1_1media_1_1mesh_1_1cell__info.html">cell_info</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>cell_infos</b></td></tr>
+<tr class="separator:a2314432e817aa2f801e73b5fb0b039e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />

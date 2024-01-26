@@ -100,10 +100,10 @@ $(document).ready(function(){initNavTree('color__map__reader_8h_source.html','')
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span>app {</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">class </span>color_map_reader : cgv::render::render_types {</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1color__map__reader.html">   16</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcgv_1_1app_1_1color__map__reader.html">color_map_reader</a> : cgv::render::render_types {</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="comment">// configuration for xml tag and attribute name identifiers</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">struct </span>identifier_config {</div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">   19</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">identifier_config</a> {</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        std::string color_map_tag_id = <span class="stringliteral">&quot;ColorMap&quot;</span>;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        std::string point_tag_id = <span class="stringliteral">&quot;Point&quot;</span>;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        std::string color_point_tag_id = <span class="stringliteral">&quot;ColorPoint&quot;</span>;</div>
@@ -118,8 +118,8 @@ $(document).ready(function(){initNavTree('color__map__reader_8h_source.html','')
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordtype">bool</span> opacity_value_type_float = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordtype">bool</span> apply_gamma = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    };</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> identifier_config&amp; default_identifier_config() {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> identifier_config default_ic;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">identifier_config</a>&amp; default_identifier_config() {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">identifier_config</a> default_ic;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordflow">return</span> default_ic;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    }</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
@@ -160,7 +160,7 @@ $(document).ready(function(){initNavTree('color__map__reader_8h_source.html','')
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> extract_color_map(<span class="keyword">const</span> tinyxml2::XMLElement&amp; elem, result&amp; entries, <span class="keyword">const</span> identifier_config&amp; config) {</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        std::string name = elem.Attribute(<span class="stringliteral">&quot;name&quot;</span>);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        cgv::render::color_map cm;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <a class="code" href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a> cm;</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keyword">auto</span> child = elem.FirstChildElement();</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordflow">while</span>(child) {</div>
@@ -251,11 +251,14 @@ $(document).ready(function(){initNavTree('color__map__reader_8h_source.html','')
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;}</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;}</div>
+<div class="ttc" id="aclasscgv_1_1app_1_1color__map__reader_html"><div class="ttname"><a href="classcgv_1_1app_1_1color__map__reader.html">cgv::app::color_map_reader</a></div><div class="ttdef"><b>Definition:</b> <a href="color__map__reader_8h_source.html#l00016">color_map_reader.h:16</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1color__map_html"><div class="ttname"><a href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a></div><div class="ttdef"><b>Definition:</b> <a href="color__map_8h_source.html#l00014">color_map.h:14</a></div></div>
 <div class="ttc" id="aclasscgv_1_1xml_1_1FindElementByNameVisitor_html"><div class="ttname"><a href="classcgv_1_1xml_1_1FindElementByNameVisitor.html">cgv::xml::FindElementByNameVisitor</a></div><div class="ttdoc">Finds a tinyxml2::XMLElement by name.</div><div class="ttdef"><b>Definition:</b> <a href="query_8h_source.html#l00027">query.h:27</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a6d164d4a63cb11523ffbbcc5178fe2f2"><div class="ttname"><a href="namespacecgv_1_1math.html#a6d164d4a63cb11523ffbbcc5178fe2f2">cgv::math::clamp</a></div><div class="ttdeci">T clamp(const T &amp;v, const T &amp;a, const T &amp;b)</div><div class="ttdoc">clamp v at [a,b]</div><div class="ttdef"><b>Definition:</b> <a href="functions_8h_source.html#l00028">functions.h:28</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_ab41dd3e7ea6d0410abba813f0c6067b6"><div class="ttname"><a href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">cgv::math::pow</a></div><div class="ttdeci">const fvec&lt; T, N &gt; pow(const fvec&lt; T, N &gt; &amp;v, T e)</div><div class="ttdoc">pow function for fvec type</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00614">fvec.h:614</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1render_html_a02e9c0ebb98bfd66e2d56e0a5e9047c8"><div class="ttname"><a href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">cgv::render::rgb</a></div><div class="ttdeci">cgv::media::color&lt; float, cgv::media::RGB &gt; rgb</div><div class="ttdoc">declare rgb color type</div><div class="ttdef"><b>Definition:</b> <a href="render__types_8h_source.html#l00017">render_types.h:17</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
+<div class="ttc" id="astructcgv_1_1app_1_1color__map__reader_1_1identifier__config_html"><div class="ttname"><a href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">cgv::app::color_map_reader::identifier_config</a></div><div class="ttdef"><b>Definition:</b> <a href="color__map__reader_8h_source.html#l00019">color_map_reader.h:19</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

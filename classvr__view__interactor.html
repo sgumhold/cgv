@@ -82,7 +82,7 @@ $(document).ready(function(){initNavTree('classvr__view__interactor.html',''); i
 
 <div class="header">
   <div class="summary">
-<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classvr__view__interactor-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">vr_view_interactor Class Reference</div>  </div>
@@ -99,7 +99,7 @@ Inheritance diagram for vr_view_interactor:</div>
  <div class="center">
   <img src="classvr__view__interactor.png" usemap="#vr_5Fview_5Finteractor_map" alt=""/>
   <map id="vr_5Fview_5Finteractor_map" name="vr_5Fview_5Finteractor_map">
-<area href="classvr_1_1vr__calibration__base.html" title="base class with write access to driver calibration matrix" alt="vr::vr_calibration_base" shape="rect" coords="0,0,142,24"/>
+<area href="classvr_1_1vr__calibration__base.html" title="base class with write access to driver calibration matrix" alt="vr::vr_calibration_base" shape="rect" coords="152,0,294,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -259,16 +259,20 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr__view__interactor.html#a3ca41c58224aa975baa506739ca1e1a8">create_gui</a> ()</td></tr>
 <tr class="memdesc:a3ca41c58224aa975baa506739ca1e1a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">you must overload this for gui creation <br /></td></tr>
 <tr class="separator:a3ca41c58224aa975baa506739ca1e1a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:acc67bbea54ab58d3bc7ffdf017d5e7d6"><td class="memItemLeft" align="right" valign="top"><a id="acc67bbea54ab58d3bc7ffdf017d5e7d6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr_1_1vr__calibration__base.html#acc67bbea54ab58d3bc7ffdf017d5e7d6">set_driver_calibration_matrix</a> (vr_driver *driver, const float calibration_matrix[12]) const</td></tr>
-<tr class="memdesc:acc67bbea54ab58d3bc7ffdf017d5e7d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">single point of write access to calibration transformation of vr drivers <br /></td></tr>
-<tr class="separator:acc67bbea54ab58d3bc7ffdf017d5e7d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classvr_1_1vr__calibration__base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classvr_1_1vr__calibration__base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classvr_1_1vr__calibration__base.html">vr::vr_calibration_base</a></td></tr>
+<tr class="memitem:ae293bb57cd0f4cdfa8be63cc6603d81f inherit pub_methods_classvr_1_1vr__calibration__base"><td class="memItemLeft" align="right" valign="top"><a id="ae293bb57cd0f4cdfa8be63cc6603d81f"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr_1_1vr__calibration__base.html#ae293bb57cd0f4cdfa8be63cc6603d81f">vr_calibration_base</a> ()</td></tr>
+<tr class="memdesc:ae293bb57cd0f4cdfa8be63cc6603d81f inherit pub_methods_classvr_1_1vr__calibration__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">nothing to be done in contructor <br /></td></tr>
+<tr class="separator:ae293bb57cd0f4cdfa8be63cc6603d81f inherit pub_methods_classvr_1_1vr__calibration__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
+<tr class="memitem:ae66d75907cba95186980135d5332240a"><td class="memItemLeft" align="right" valign="top"><a id="ae66d75907cba95186980135d5332240a"></a>
+ivec4&#160;</td><td class="memItemRight" valign="bottom"><b>cgv_viewport</b></td></tr>
+<tr class="separator:ae66d75907cba95186980135d5332240a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb566eccc1a7973ffa004a598927f6b9"><td class="memItemLeft" align="right" valign="top"><a id="acb566eccc1a7973ffa004a598927f6b9"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>fbo_handle</b></td></tr>
+<tr class="separator:acb566eccc1a7973ffa004a598927f6b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">head tracking</div></td></tr>
 <tr class="memitem:ac27e0d84d553999873328d001943b72c"><td class="memItemLeft" align="right" valign="top"><a id="ac27e0d84d553999873328d001943b72c"></a>
 mat3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr__view__interactor.html#ac27e0d84d553999873328d001943b72c">head_tracker_orientation</a></td></tr>
@@ -467,6 +471,14 @@ vec3&#160;</td><td class="memItemRight" valign="bottom"><b>get_tracking_origin</
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr__view__interactor.html#a5ec66b40b68b4e4a7f9a4c9d7c310ee8">get_type_name</a> () const</td></tr>
 <tr class="memdesc:a5ec66b40b68b4e4a7f9a4c9d7c310ee8"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the type name <br /></td></tr>
 <tr class="separator:a5ec66b40b68b4e4a7f9a4c9d7c310ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_methods_classvr_1_1vr__calibration__base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classvr_1_1vr__calibration__base')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classvr_1_1vr__calibration__base.html">vr::vr_calibration_base</a></td></tr>
+<tr class="memitem:acc67bbea54ab58d3bc7ffdf017d5e7d6 inherit pro_methods_classvr_1_1vr__calibration__base"><td class="memItemLeft" align="right" valign="top"><a id="acc67bbea54ab58d3bc7ffdf017d5e7d6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr_1_1vr__calibration__base.html#acc67bbea54ab58d3bc7ffdf017d5e7d6">set_driver_calibration_matrix</a> (<a class="el" href="classvr_1_1vr__driver.html">vr_driver</a> *driver, const float calibration_matrix[12]) const</td></tr>
+<tr class="memdesc:acc67bbea54ab58d3bc7ffdf017d5e7d6 inherit pro_methods_classvr_1_1vr__calibration__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">single point of write access to calibration transformation of vr drivers <br /></td></tr>
+<tr class="separator:acc67bbea54ab58d3bc7ffdf017d5e7d6 inherit pro_methods_classvr_1_1vr__calibration__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>extends the stereo view interactor for vr support </p>
@@ -534,7 +546,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <p class="definition">Definition at line <a class="el" href="vr__view__interactor_8cxx_source.html#l00084">84</a> of file <a class="el" href="vr__view__interactor_8cxx_source.html">vr_view_interactor.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="vr__view__interactor_8cxx_source.html#l00919">draw()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="vr__view__interactor_8cxx_source.html#l00919">draw()</a>, and <a class="el" href="vr__test_8cxx_source.html#l00457">vr_test::init()</a>.</p>
 
 </div>
 </div>
@@ -569,6 +581,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <p class="definition">Definition at line <a class="el" href="vr__view__interactor_8cxx_source.html#l00152">152</a> of file <a class="el" href="vr__view__interactor_8cxx_source.html">vr_view_interactor.cxx</a>.</p>
 
+<p class="reference">Referenced by <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>.</p>
+
 </div>
 </div>
 <a id="aaed3b229921b8f5e7d5c06670918f9fc"></a>
@@ -592,6 +606,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <p class="definition">Definition at line <a class="el" href="vr__view__interactor_8cxx_source.html#l00132">132</a> of file <a class="el" href="vr__view__interactor_8cxx_source.html">vr_view_interactor.cxx</a>.</p>
 
+<p class="reference">Referenced by <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>.</p>
+
 </div>
 </div>
 <a id="a52ea2c50a1d56304ebe0adfcb109e8f2"></a>
@@ -614,6 +630,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>if parameter vr_kit_idx defaults to -1, the view up direction of the current vr kit is returned if there are not vr kits or the <code>vr_kit_idx</code> parameter is invalid the view up direction of the <code><a class="el" href="classvr__view__interactor.html" title="extends the stereo view interactor for vr support">vr_view_interactor</a></code> is returned </p>
 
 <p class="definition">Definition at line <a class="el" href="vr__view__interactor_8cxx_source.html#l00141">141</a> of file <a class="el" href="vr__view__interactor_8cxx_source.html">vr_view_interactor.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>.</p>
 
 </div>
 </div>

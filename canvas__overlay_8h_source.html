@@ -98,7 +98,7 @@ $(document).ready(function(){initNavTree('canvas__overlay_8h_source.html',''); i
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>app {</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">class </span>CGV_API canvas_overlay : <span class="keyword">public</span> overlay, <span class="keyword">public</span> cgv::gui::theme_observer {</div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1canvas__overlay.html">   14</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1app_1_1canvas__overlay.html">canvas_overlay</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1app_1_1overlay.html">overlay</a>, <span class="keyword">public</span> <a class="code" href="classcgv_1_1gui_1_1theme__observer.html">cgv::gui::theme_observer</a> {</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordtype">bool</span> has_damage = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">bool</span> recreate_layout = <span class="keyword">true</span>;</div>
@@ -109,7 +109,7 @@ $(document).ready(function(){initNavTree('canvas__overlay_8h_source.html',''); i
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    cgv::g2d::canvas content_canvas, overlay_canvas;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">bool</span> blend_overlay;</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1canvas__overlay.html#ac5ce7df1d87225edcbdc6d51560f0b56">   26</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1app_1_1canvas__overlay.html#ac5ce7df1d87225edcbdc6d51560f0b56">blend_overlay</a>;</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    </div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">void</span> init_overlay_style(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
@@ -134,11 +134,11 @@ $(document).ready(function(){initNavTree('canvas__overlay_8h_source.html',''); i
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> init_styles() {}</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    canvas_overlay();</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="classcgv_1_1app_1_1canvas__overlay.html">canvas_overlay</a>();</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">void</span> clear(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> handle_member_change(<span class="keyword">const</span> cgv::utils::pointer_test&amp; m)<span class="keyword"> override </span>{}</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1canvas__overlay.html#ab070bcac249ae8e87ad369a4d60e61b3">   57</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1app_1_1canvas__overlay.html#ab070bcac249ae8e87ad369a4d60e61b3">handle_member_change</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1utils_1_1pointer__test.html">cgv::utils::pointer_test</a>&amp; m)<span class="keyword"> override </span>{}</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> on_set(<span class="keywordtype">void</span>* member_ptr) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
@@ -149,7 +149,7 @@ $(document).ready(function(){initNavTree('canvas__overlay_8h_source.html',''); i
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">void</span> register_shader(<span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> std::string&amp; filename);</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> handle_theme_change(<span class="keyword">const</span> cgv::gui::theme_info&amp; theme) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> handle_theme_change(<span class="keyword">const</span> <a class="code" href="classcgv_1_1gui_1_1theme__info.html">cgv::gui::theme_info</a>&amp; theme) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordtype">void</span> post_damage(<span class="keywordtype">bool</span> redraw = <span class="keyword">true</span>);</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;};</div>
@@ -160,9 +160,16 @@ $(document).ready(function(){initNavTree('canvas__overlay_8h_source.html',''); i
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;}</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="ttc" id="aclasscgv_1_1app_1_1canvas__overlay_html"><div class="ttname"><a href="classcgv_1_1app_1_1canvas__overlay.html">cgv::app::canvas_overlay</a></div><div class="ttdef"><b>Definition:</b> <a href="canvas__overlay_8h_source.html#l00014">canvas_overlay.h:14</a></div></div>
+<div class="ttc" id="aclasscgv_1_1app_1_1canvas__overlay_html_ab070bcac249ae8e87ad369a4d60e61b3"><div class="ttname"><a href="classcgv_1_1app_1_1canvas__overlay.html#ab070bcac249ae8e87ad369a4d60e61b3">cgv::app::canvas_overlay::handle_member_change</a></div><div class="ttdeci">virtual void handle_member_change(const cgv::utils::pointer_test &amp;m) override</div><div class="ttdoc">implement to handle member changes</div><div class="ttdef"><b>Definition:</b> <a href="canvas__overlay_8h_source.html#l00057">canvas_overlay.h:57</a></div></div>
+<div class="ttc" id="aclasscgv_1_1app_1_1canvas__overlay_html_ac5ce7df1d87225edcbdc6d51560f0b56"><div class="ttname"><a href="classcgv_1_1app_1_1canvas__overlay.html#ac5ce7df1d87225edcbdc6d51560f0b56">cgv::app::canvas_overlay::blend_overlay</a></div><div class="ttdeci">bool blend_overlay</div><div class="ttdoc">whether to enable blending during the draw process</div><div class="ttdef"><b>Definition:</b> <a href="canvas__overlay_8h_source.html#l00026">canvas_overlay.h:26</a></div></div>
+<div class="ttc" id="aclasscgv_1_1app_1_1overlay_html"><div class="ttname"><a href="classcgv_1_1app_1_1overlay.html">cgv::app::overlay</a></div><div class="ttdef"><b>Definition:</b> <a href="overlay_8h_source.html#l00017">overlay.h:22</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a></div><div class="ttdoc">reference counted pointer, which can work together with types that are derived from ref_counted,...</div><div class="ttdef"><b>Definition:</b> <a href="ref__ptr_8h_source.html#l00159">ref_ptr.h:160</a></div></div>
+<div class="ttc" id="aclasscgv_1_1gui_1_1theme__info_html"><div class="ttname"><a href="classcgv_1_1gui_1_1theme__info.html">cgv::gui::theme_info</a></div><div class="ttdef"><b>Definition:</b> <a href="theme__info_8h_source.html#l00029">theme_info.h:29</a></div></div>
+<div class="ttc" id="aclasscgv_1_1gui_1_1theme__observer_html"><div class="ttname"><a href="classcgv_1_1gui_1_1theme__observer.html">cgv::gui::theme_observer</a></div><div class="ttdef"><b>Definition:</b> <a href="theme__info_8h_source.html#l00091">theme_info.h:91</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00587">context.h:588</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1managed__frame__buffer_html"><div class="ttname"><a href="classcgv_1_1render_1_1managed__frame__buffer.html">cgv::render::managed_frame_buffer</a></div><div class="ttdoc">provides a class that manages a frame buffer along with its attachments</div><div class="ttdef"><b>Definition:</b> <a href="managed__frame__buffer_8h_source.html#l00014">managed_frame_buffer.h:15</a></div></div>
+<div class="ttc" id="aclasscgv_1_1utils_1_1pointer__test_html"><div class="ttname"><a href="classcgv_1_1utils_1_1pointer__test.html">cgv::utils::pointer_test</a></div><div class="ttdef"><b>Definition:</b> <a href="pointer__test_8h_source.html#l00011">pointer_test.h:11</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

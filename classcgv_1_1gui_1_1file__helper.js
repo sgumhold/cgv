@@ -1,6 +1,10 @@
 var classcgv_1_1gui_1_1file__helper =
 [
-    [ "Mode", "classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8", null ],
+    [ "Mode", "classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8", [
+      [ "kOpen", "classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8ac76ad31b0ff1fcbb03eeae06f73420c8", null ],
+      [ "kSave", "classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8a9843e55f008d0a5971feac276539ec85", null ],
+      [ "kOpenAndSave", "classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8af15425d3b13fac24b94ab59d2a42e191", null ]
+    ] ],
     [ "file_helper", "classcgv_1_1gui_1_1file__helper.html#a38b705a78c0b40968807f6ce52dc3502", null ],
     [ "file_helper", "classcgv_1_1gui_1_1file__helper.html#a62a98f6a70cc7f29a3151ec75c12d90d", null ],
     [ "add_filter", "classcgv_1_1gui_1_1file__helper.html#a6247211e86d71a829a3cf6efc636ca67", null ],

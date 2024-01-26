@@ -1,7 +1,9 @@
 var classcgv_1_1render_1_1gl_1_1gl__cursor =
 [
     [ "gl_cursor", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#a00f5a10e2c1fb1428f0ad0ce9f1994af", null ],
+    [ "add_frame", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#a0b0cf99fc9ff7c75c65c0025f6648b61", null ],
     [ "append_step", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#a084bc7ea0a2e4ff3fa45f0bc12bc37b0", null ],
+    [ "clear", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#ad2b241f309603d40098deb22162267ad", null ],
     [ "create", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#a5465003ac14ac87faaad5d8bb30d2784", null ],
     [ "create_from_file", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#ad8bac073b71b11bee48e2df17c0bdc47", null ],
     [ "draw", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#acf070fda244141af086ca0ed077ab968", null ],
@@ -19,5 +21,14 @@ var classcgv_1_1render_1_1gl_1_1gl__cursor =
     [ "is_created", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#a2868ea228d120f0a13a67cef25668be4", null ],
     [ "set_hot_spot", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#a056a789f65cabf1efb662d6b8177fca5", null ],
     [ "set_step_frame", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#ac45d22a901c518a6f0419dd8f533335b", null ],
-    [ "set_step_period", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#a2be4f512c227b53690e050eba9a90e96", null ]
+    [ "set_step_period", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#a2be4f512c227b53690e050eba9a90e96", null ],
+    [ "update_duration", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#aaba541754b5a2cf90bf24612fca6719f", null ],
+    [ "duration", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#a1efb23202fb282d7432518844ab70245", null ],
+    [ "frames", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#a4fa9800cc5825eaa263bf20b57c58a51", null ],
+    [ "h", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#a9019bd3fb3944ffaba581c9d81d9731f", null ],
+    [ "hot_x", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#a1bff3d4076706e04e0caf86beaf6b80b", null ],
+    [ "hot_y", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#a880f85ed360b0830078f3fccf4134b16", null ],
+    [ "periods", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#ae24b6209a5ccacd21c4e55ef181455fa", null ],
+    [ "tex_ids", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#ab0b449f31ea0d99ee92f6430f804f448", null ],
+    [ "w", "classcgv_1_1render_1_1gl_1_1gl__cursor.html#a9f655e95d9eb653c5863c409bf4229a3", null ]
 ];

@@ -27,6 +27,7 @@ var classvr_1_1vr__driver =
     [ "set_calibration_transformation", "classvr_1_1vr__driver.html#a2842d97959f00de266ce44be3a71f824", null ],
     [ "set_index", "classvr_1_1vr__driver.html#a004b050d3642db06611d05e7eb17a070", null ],
     [ "register_driver", "classvr_1_1vr__driver.html#a85846213d5c9cd2574b7dfd1295beaf0", null ],
+    [ "vr_calibration_base", "classvr_1_1vr__driver.html#a7fd4ad40c2dbe5f3a4515305ee35f642", null ],
     [ "vr_kit", "classvr_1_1vr__driver.html#adfa8def6bdff2d081e03aef18406f411", null ],
     [ "tracking_system_info", "classvr_1_1vr__driver.html#a5370947258e7feda9f1745d7085ba3cd", null ]
 ];

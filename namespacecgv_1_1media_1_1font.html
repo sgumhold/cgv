@@ -123,7 +123,11 @@ typedef <a class="el" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr</a>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a3e16be534ee5f125e8a519f50e6b1539"><td class="memItemLeft" align="right" valign="top"><a id="a3e16be534ee5f125e8a519f50e6b1539"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1media_1_1font.html#a3e16be534ee5f125e8a519f50e6b1539">FontFaceAttributes</a> </td></tr>
+<tr class="memitem:a3e16be534ee5f125e8a519f50e6b1539"><td class="memItemLeft" align="right" valign="top"><a id="a3e16be534ee5f125e8a519f50e6b1539"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1media_1_1font.html#a3e16be534ee5f125e8a519f50e6b1539">FontFaceAttributes</a> { <b>FFA_REGULAR</b> = 0
+, <b>FFA_BOLD</b> = 1
+, <b>FFA_ITALIC</b> = 2
+, <b>FFA_BOLD_ITALIC</b> = 3
+ }</td></tr>
 <tr class="memdesc:a3e16be534ee5f125e8a519f50e6b1539"><td class="mdescLeft">&#160;</td><td class="mdescRight">declaration of supported attributes of font faces <br /></td></tr>
 <tr class="separator:a3e16be534ee5f125e8a519f50e6b1539"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -142,6 +146,9 @@ Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1media_1_1font.html#ae6cdd43d498d8b69c54fad78396afb0c">enumerate_font_names</a> (std::vector&lt; const char * &gt; &amp;font_names)</td></tr>
 <tr class="memdesc:ae6cdd43d498d8b69c54fad78396afb0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">enumerate the names of all installed fonts <br /></td></tr>
 <tr class="separator:ae6cdd43d498d8b69c54fad78396afb0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18899253be978f4eb4038b1ab3c91e3d"><td class="memItemLeft" align="right" valign="top"><a id="a18899253be978f4eb4038b1ab3c91e3d"></a>
+<a class="el" href="namespacecgv_1_1media_1_1font.html#a5d96171067c9c0ea143e547d89d85fa9">font_server_ptr</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_font_server</b> ()</td></tr>
+<tr class="separator:a18899253be978f4eb4038b1ab3c91e3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27f5fb0f90d77406f74b262d17911348"><td class="memItemLeft" align="right" valign="top"><a id="a27f5fb0f90d77406f74b262d17911348"></a>
 <a class="el" href="namespacecgv_1_1media_1_1font.html#a5d96171067c9c0ea143e547d89d85fa9">font_server_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1media_1_1font.html#a27f5fb0f90d77406f74b262d17911348">get_font_server</a> ()</td></tr>
 <tr class="memdesc:a27f5fb0f90d77406f74b262d17911348"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the currently installed font server or 0 if no font server available <br /></td></tr>
@@ -204,7 +211,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 
 <p class="reference">References <a class="el" href="font__server_8cxx_source.html#l00014">get_font_server()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="font_8cxx_source.html#l00040">find_font_or_default()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00319">cgv::plot::plot_base::on_font_selection()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="font_8cxx_source.html#l00040">find_font_or_default()</a>, <a class="el" href="navigator_8cxx_source.html#l00205">cgv::app::navigator::init()</a>, <a class="el" href="vr__test_8cxx_source.html#l00457">vr_test::init()</a>, <a class="el" href="plot__base_8cxx_source.html#l00319">cgv::plot::plot_base::on_font_selection()</a>, and <a class="el" href="vr__test_8cxx_source.html#l00307">vr_test::on_set()</a>.</p>
 
 </div>
 </div>

@@ -120,27 +120,27 @@ $(document).ready(function(){initNavTree('render__info_8h_source.html',''); init
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    VA_TEXCOORD,</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    VA_COLOR</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;};</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">struct </span>vertex_attribute</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="structcgv_1_1render_1_1vertex__attribute.html">   36</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1render_1_1vertex__attribute.html">vertex_attribute</a></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;{</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    VertexAttributeID vertex_attribute_id;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    std::string name;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    type_descriptor element_type;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <a class="code" href="structcgv_1_1render_1_1type__descriptor.html">type_descriptor</a> element_type;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    uint32_t vbo_index;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">size_t</span> byte_offset;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">size_t</span> element_count;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    uint32_t stride;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;};</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">struct </span>CGV_API attribute_array</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="structcgv_1_1render_1_1attribute__array.html">   46</a></span>&#160;<span class="keyword">struct </span>CGV_API <a class="code" href="structcgv_1_1render_1_1attribute__array.html">attribute_array</a></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;{</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    std::vector&lt;vertex_attribute&gt; vas;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    attribute_array_binding* aab_ptr;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    shader_program* prog;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <a class="code" href="classcgv_1_1render_1_1attribute__array__binding.html">attribute_array_binding</a>* aab_ptr;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <a class="code" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>* prog;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordtype">void</span> add_attribute(type_descriptor element_type, uint32_t vbo_index,</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordtype">void</span> add_attribute(<a class="code" href="structcgv_1_1render_1_1type__descriptor.html">type_descriptor</a> element_type, uint32_t vbo_index,</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordtype">size_t</span> byte_offset, <span class="keywordtype">size_t</span> element_count, uint32_t stride,</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        VertexAttributeID vertex_attribute_id, std::string name = <span class="stringliteral">&quot;&quot;</span>);</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">struct </span>draw_call {</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="structcgv_1_1render_1_1draw__call.html">   56</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1render_1_1draw__call.html">draw_call</a> {</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    AlphaMode alpha_mode;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">float</span> alpha_cutoff;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    DrawCallType draw_call_type;</div>
@@ -152,7 +152,7 @@ $(document).ready(function(){initNavTree('render__info_8h_source.html',''); init
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <a class="code" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752">cgv::type::info::TypeId</a> index_type;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">void</span>*    indices;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    uint32_t instance_count;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    shader_program* prog;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <a class="code" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>* prog;</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;};</div>
 <div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1render__info.html">   75</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1render_1_1render__info.html">render_info</a></div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;{</div>
@@ -164,7 +164,7 @@ $(document).ready(function(){initNavTree('render__info_8h_source.html',''); init
 <div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1render__info.html#a61948e5f9a1035db2702a050044dabf8">   86</a></span>&#160;    std::vector&lt;vertex_buffer*&gt; <a class="code" href="classcgv_1_1render_1_1render__info.html#a61948e5f9a1035db2702a050044dabf8">vbos</a>;</div>
 <div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1render__info.html#a801a9f7d88f8a57ee8ec5f635deec266">   88</a></span>&#160;    std::vector&lt;attribute_array&gt; <a class="code" href="classcgv_1_1render_1_1render__info.html#a801a9f7d88f8a57ee8ec5f635deec266">aas</a>;</div>
 <div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1render__info.html#aa5aad5079d7f5aaecfd25e71636476f8">   90</a></span>&#160;    std::vector&lt;draw_call&gt; <a class="code" href="classcgv_1_1render_1_1render__info.html#aa5aad5079d7f5aaecfd25e71636476f8">draw_calls</a>;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">void</span> draw(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx, <span class="keyword">const</span> draw_call&amp; dc, <span class="keyword">const</span> draw_call* prev_dc = 0, <span class="keyword">const</span> draw_call* next_dc = 0, <span class="keywordtype">bool</span> use_materials = <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">void</span> draw(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx, <span class="keyword">const</span> <a class="code" href="structcgv_1_1render_1_1draw__call.html">draw_call</a>&amp; dc, <span class="keyword">const</span> <a class="code" href="structcgv_1_1render_1_1draw__call.html">draw_call</a>* prev_dc = 0, <span class="keyword">const</span> <a class="code" href="structcgv_1_1render_1_1draw__call.html">draw_call</a>* next_dc = 0, <span class="keywordtype">bool</span> use_materials = <span class="keyword">true</span>);</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <a class="code" href="classcgv_1_1render_1_1render__info.html">render_info</a>();</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keyword">const</span> std::vector&lt;textured_material*&gt;&amp; get_materials() <span class="keyword">const</span>;</div>
@@ -185,6 +185,7 @@ $(document).ready(function(){initNavTree('render__info_8h_source.html',''); init
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;}</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1attribute__array__binding_html"><div class="ttname"><a href="classcgv_1_1render_1_1attribute__array__binding.html">cgv::render::attribute_array_binding</a></div><div class="ttdoc">the attribute_array_binding allows to define vertex attributes (i.e.</div><div class="ttdef"><b>Definition:</b> <a href="attribute__array__binding_8h_source.html#l00019">attribute_array_binding.h:20</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00587">context.h:588</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1render__info_html"><div class="ttname"><a href="classcgv_1_1render_1_1render__info.html">cgv::render::render_info</a></div><div class="ttdoc">the mesh_render_info structure manages vertex buffer objects for attribute and element buffers as wel...</div><div class="ttdef"><b>Definition:</b> <a href="render__info_8h_source.html#l00075">render_info.h:76</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1render__info_html_a03b0076bd3632fb03fcd8e862e744aab"><div class="ttname"><a href="classcgv_1_1render_1_1render__info.html#a03b0076bd3632fb03fcd8e862e744aab">cgv::render::render_info::textures</a></div><div class="ttdeci">std::vector&lt; texture * &gt; textures</div><div class="ttdoc">store textures</div><div class="ttdef"><b>Definition:</b> <a href="render__info_8h_source.html#l00084">render_info.h:84</a></div></div>
@@ -198,6 +199,10 @@ $(document).ready(function(){initNavTree('render__info_8h_source.html',''); init
 <div class="ttc" id="anamespacecgv_1_1type_1_1info_html_accf71420e941489dc6fb6737cd11b752"><div class="ttname"><a href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752">cgv::type::info::TypeId</a></div><div class="ttdeci">TypeId</div><div class="ttdoc">ids for the different types and type constructs</div><div class="ttdef"><b>Definition:</b> <a href="type__id_8h_source.html#l00012">type_id.h:12</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1type_html_a946d7ae2eaadfe30e5b2c66601d64822"><div class="ttname"><a href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">cgv::type::uint32_type</a></div><div class="ttdeci">unsigned int uint32_type</div><div class="ttdoc">this type provides an 32 bit unsigned integer type</div><div class="ttdef"><b>Definition:</b> <a href="standard__types_8h_source.html#l00020">standard_types.h:20</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
+<div class="ttc" id="astructcgv_1_1render_1_1attribute__array_html"><div class="ttname"><a href="structcgv_1_1render_1_1attribute__array.html">cgv::render::attribute_array</a></div><div class="ttdef"><b>Definition:</b> <a href="render__info_8h_source.html#l00046">render_info.h:47</a></div></div>
+<div class="ttc" id="astructcgv_1_1render_1_1draw__call_html"><div class="ttname"><a href="structcgv_1_1render_1_1draw__call.html">cgv::render::draw_call</a></div><div class="ttdef"><b>Definition:</b> <a href="render__info_8h_source.html#l00056">render_info.h:56</a></div></div>
+<div class="ttc" id="astructcgv_1_1render_1_1type__descriptor_html"><div class="ttname"><a href="structcgv_1_1render_1_1type__descriptor.html">cgv::render::type_descriptor</a></div><div class="ttdoc">compact type description of data that can be sent to the context; convertible to int</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00047">context.h:48</a></div></div>
+<div class="ttc" id="astructcgv_1_1render_1_1vertex__attribute_html"><div class="ttname"><a href="structcgv_1_1render_1_1vertex__attribute.html">cgv::render::vertex_attribute</a></div><div class="ttdef"><b>Definition:</b> <a href="render__info_8h_source.html#l00036">render_info.h:37</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

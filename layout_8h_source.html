@@ -125,22 +125,22 @@ $(document).ready(function(){initNavTree('layout_8h_source.html',''); initResiza
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        };</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="comment">// abstract class to define a layout on containers.</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keyword">class </span>CGV_API layout: <span class="keyword">public</span> <a class="code" href="classcgv_1_1base_1_1base.html">cgv::base::base</a></div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1layout.html">   56</a></span>&#160;        <span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1gui_1_1layout.html">layout</a>: <span class="keyword">public</span> <a class="code" href="classcgv_1_1base_1_1base.html">cgv::base::base</a></div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        {</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            <span class="comment">// constructor that sets a container</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            layout(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::base::group_ptr</a> container = 0);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            <a class="code" href="classcgv_1_1gui_1_1layout.html">layout</a>(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::base::group_ptr</a> container = 0);</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <span class="comment">// empty destructor</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            ~layout();</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            ~<a class="code" href="classcgv_1_1gui_1_1layout.html">layout</a>();</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            <span class="comment">// set a container to be layouted</span></div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            <span class="keywordtype">void</span> set_container(<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::base::group_ptr</a> container);</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            <span class="comment">// set the spacing parameters</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            <span class="keywordtype">void</span> set_spacings(<span class="keyword">const</span> layout_spacings spacings);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            <span class="keywordtype">void</span> set_spacings(<span class="keyword">const</span> <a class="code" href="structcgv_1_1gui_1_1layout__spacings.html">layout_spacings</a> spacings);</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            <span class="comment">// update children</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> update() {};</div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1layout.html#ad0d8cb63557d6eae1b0b16c1b71f669d">   71</a></span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1gui_1_1layout.html#ad0d8cb63557d6eae1b0b16c1b71f669d">update</a>() {};</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            <span class="comment">// resize</span></div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            <span class="keywordtype">void</span> resize(<span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h);</div>
@@ -153,7 +153,7 @@ $(document).ready(function(){initNavTree('layout_8h_source.html',''); initResiza
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::base::group_ptr</a> container;</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            <span class="keywordtype">int</span> w, h, true_w, true_h;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keywordtype">int</span> min_w, min_h, default_w, default_h;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            layout_spacings spacings;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <a class="code" href="structcgv_1_1gui_1_1layout__spacings.html">layout_spacings</a> spacings;</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            std::string spacings_name;</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            <span class="comment">// get the layout hints for a child</span></div>
@@ -192,9 +192,12 @@ $(document).ready(function(){initNavTree('layout_8h_source.html',''); initResiza
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 <div class="ttc" id="aclasscgv_1_1base_1_1base_html"><div class="ttname"><a href="classcgv_1_1base_1_1base.html">cgv::base::base</a></div><div class="ttdoc">base class for all classes that can be registered with support for dynamic properties (see also secti...</div><div class="ttdef"><b>Definition:</b> <a href="base_8h_source.html#l00074">base.h:75</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr&lt; group, true &gt;</a></div></div>
+<div class="ttc" id="aclasscgv_1_1gui_1_1layout_html"><div class="ttname"><a href="classcgv_1_1gui_1_1layout.html">cgv::gui::layout</a></div><div class="ttdef"><b>Definition:</b> <a href="layout_8h_source.html#l00056">layout.h:57</a></div></div>
+<div class="ttc" id="aclasscgv_1_1gui_1_1layout_html_ad0d8cb63557d6eae1b0b16c1b71f669d"><div class="ttname"><a href="classcgv_1_1gui_1_1layout.html#ad0d8cb63557d6eae1b0b16c1b71f669d">cgv::gui::layout::update</a></div><div class="ttdeci">virtual void update()</div><div class="ttdoc">this virtual update allows for example to ask a view to update the viewed value. The default implemen...</div><div class="ttdef"><b>Definition:</b> <a href="layout_8h_source.html#l00071">layout.h:71</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1base_html"><div class="ttname"><a href="namespacecgv_1_1base.html">cgv::base</a></div><div class="ttdoc">the base namespace holds the base hierarchy, support for plugin registration and signals</div><div class="ttdef"><b>Definition:</b> <a href="action_8cxx_source.html#l00004">action.cxx:4</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1gui_html_aac694bd9d4be9bef500b337cc81719f6"><div class="ttname"><a href="namespacecgv_1_1gui.html#aac694bd9d4be9bef500b337cc81719f6">cgv::gui::layout_hint</a></div><div class="ttdeci">layout_hint</div><div class="ttdoc">Allowed hints: s - horizontal shrink S - vertical shrink x - horizontal expand X - vertical expand f ...</div><div class="ttdef"><b>Definition:</b> <a href="layout_8h_source.html#l00035">layout.h:36</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
+<div class="ttc" id="astructcgv_1_1gui_1_1layout__spacings_html"><div class="ttname"><a href="structcgv_1_1gui_1_1layout__spacings.html">cgv::gui::layout_spacings</a></div><div class="ttdef"><b>Definition:</b> <a href="layout__spacings_8h_source.html#l00018">layout_spacings.h:18</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

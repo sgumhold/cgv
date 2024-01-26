@@ -328,7 +328,7 @@ $(document).ready(function(){initNavTree('eig_8h_source.html',''); initResizable
 <div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
 <div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
 <div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="keyword">struct </span>Unsymmeig </div>
+<div class="line"><a name="l00248"></a><span class="lineno"><a class="line" href="structcgv_1_1math_1_1Unsymmeig.html">  248</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1math_1_1Unsymmeig.html">Unsymmeig</a> </div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;{</div>
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    <span class="keywordtype">int</span> n;</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    <a class="code" href="classcgv_1_1math_1_1mat.html">cgv::math::mat&lt;T&gt;</a> a,zz;</div>
@@ -337,8 +337,8 @@ $(document).ready(function(){initNavTree('eig_8h_source.html',''); initResizable
 <div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">cgv::math::vec&lt;int&gt;</a> perm;</div>
 <div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;    <span class="keywordtype">bool</span> yesvecs,hessen;</div>
 <div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    Unsymmeig(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1mat.html">cgv::math::mat&lt;T&gt;</a>&amp;aa, <span class="keywordtype">bool</span> yesvec=<span class="keyword">true</span>, <span class="keywordtype">bool</span> hessenb=<span class="keyword">false</span>) :</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        n(aa.nrows()), a(aa), zz(n,n,0.0), wri(n), scale(n), perm(n),</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    <a class="code" href="structcgv_1_1math_1_1Unsymmeig.html">Unsymmeig</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1mat.html">cgv::math::mat&lt;T&gt;</a>&amp;aa, <span class="keywordtype">bool</span> yesvec=<span class="keyword">true</span>, <span class="keywordtype">bool</span> hessenb=<span class="keyword">false</span>) :</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        n(aa.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>()), a(aa), zz(n,n,0.0), wri(n), scale(n), perm(n),</div>
 <div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        yesvecs(yesvec), hessen(hessenb)</div>
 <div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    {</div>
 <div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        scale.<a class="code" href="classcgv_1_1math_1_1vec.html#af150f1c5ed2a625989b9dd12ab7358ad">ones</a>();</div>
@@ -953,6 +953,7 @@ $(document).ready(function(){initNavTree('eig_8h_source.html',''); initResizable
 <div class="ttc" id="anamespacecgv_1_1math_html_abfa52c4120248159499bc320aba339c5"><div class="ttname"><a href="namespacecgv_1_1math.html#abfa52c4120248159499bc320aba339c5">cgv::math::normalize</a></div><div class="ttdeci">fvec&lt; T, N &gt; normalize(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">return normalized vector</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00320">fvec.h:320</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 <div class="ttc" id="anamespacevr_html"><div class="ttname"><a href="namespacevr.html">vr</a></div><div class="ttdoc">the vr namespace for virtual reality support</div><div class="ttdef"><b>Definition:</b> <a href="gl__vr__display_8cxx_source.html#l00005">gl_vr_display.cxx:5</a></div></div>
+<div class="ttc" id="astructcgv_1_1math_1_1Unsymmeig_html"><div class="ttname"><a href="structcgv_1_1math_1_1Unsymmeig.html">cgv::math::Unsymmeig</a></div><div class="ttdef"><b>Definition:</b> <a href="eig_8h_source.html#l00248">eig.h:249</a></div></div>
 <div class="ttc" id="astructcgv_1_1math_1_1diag__mat_html"><div class="ttname"><a href="structcgv_1_1math_1_1diag__mat.html">cgv::math::diag_mat</a></div><div class="ttdoc">A diagonal matrix type which internally stores the elements on the main diagonal in a vector.</div><div class="ttdef"><b>Definition:</b> <a href="diag__mat_8h_source.html#l00015">diag_mat.h:16</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

@@ -83,6 +83,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1tri__diag__mat.htm
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1math_1_1tri__diag__mat-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::math::tri_diag_mat&lt; T &gt; Class Template Reference</div>  </div>
@@ -100,6 +101,12 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1tri__diag__mat.html#a02059a8f9873f6a3405c6d84b2ae450f">tri_diag_mat</a> ()</td></tr>
 <tr class="memdesc:a02059a8f9873f6a3405c6d84b2ae450f"><td class="mdescLeft">&#160;</td><td class="mdescRight">standard constructor <br /></td></tr>
 <tr class="separator:a02059a8f9873f6a3405c6d84b2ae450f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9f67b19fe7d55d058686a75044a7ba3"><td class="memItemLeft" align="right" valign="top"><a id="ad9f67b19fe7d55d058686a75044a7ba3"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>tri_diag_mat</b> (unsigned n)</td></tr>
+<tr class="separator:ad9f67b19fe7d55d058686a75044a7ba3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25e032f743dc654f5971a9ebab33a7dd"><td class="memItemLeft" align="right" valign="top"><a id="a25e032f743dc654f5971a9ebab33a7dd"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>tri_diag_mat</b> (unsigned n, const T &amp;c)</td></tr>
+<tr class="separator:a25e032f743dc654f5971a9ebab33a7dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41f910cabfeb065e5543a4f820df318d"><td class="memItemLeft" align="right" valign="top"><a id="a41f910cabfeb065e5543a4f820df318d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1tri__diag__mat.html#a41f910cabfeb065e5543a4f820df318d">tri_diag_mat</a> (const <a class="el" href="classcgv_1_1math_1_1tri__diag__mat.html">tri_diag_mat</a>&lt; T &gt; &amp;m)</td></tr>
 <tr class="memdesc:a41f910cabfeb065e5543a4f820df318d"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy constructor <br /></td></tr>
@@ -124,10 +131,25 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1tri__diag__mat.html#a7129dea86deca347322458b70c006d2f">operator const T *</a> () const</td></tr>
 <tr class="memdesc:a7129dea86deca347322458b70c006d2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">cast into array of const element type <br /></td></tr>
 <tr class="separator:a7129dea86deca347322458b70c006d2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab423c51357771674fcf3add6d8608049"><td class="memItemLeft" align="right" valign="top"><a id="ab423c51357771674fcf3add6d8608049"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>fill</b> (const T &amp;c)</td></tr>
+<tr class="separator:ab423c51357771674fcf3add6d8608049"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e3903854e54390cac1d9f6a931f48e9"><td class="memItemLeft" align="right" valign="top"><a id="a2e3903854e54390cac1d9f6a931f48e9"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1tri__diag__mat.html#a2e3903854e54390cac1d9f6a931f48e9">is_square</a> ()</td></tr>
 <tr class="memdesc:a2e3903854e54390cac1d9f6a931f48e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns true <br /></td></tr>
 <tr class="separator:a2e3903854e54390cac1d9f6a931f48e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0544d21de58f1dca62e684fd08782c8"><td class="memItemLeft" align="right" valign="top"><a id="ad0544d21de58f1dca62e684fd08782c8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>transpose</b> ()</td></tr>
+<tr class="separator:ad0544d21de58f1dca62e684fd08782c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ae91dd03fbcc1e2940a89817377c912"><td class="memItemLeft" align="right" valign="top"><a id="a2ae91dd03fbcc1e2940a89817377c912"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>zeros</b> ()</td></tr>
+<tr class="separator:a2ae91dd03fbcc1e2940a89817377c912"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0a94f97221d5e8b352b9e8d845babb6"><td class="memItemLeft" align="right" valign="top"><a id="ac0a94f97221d5e8b352b9e8d845babb6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>zeros</b> (unsigned n)</td></tr>
+<tr class="separator:ac0a94f97221d5e8b352b9e8d845babb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a723d59417ac8866ca011f90c4f6a6f77"><td class="memItemLeft" align="right" valign="top"><a id="a723d59417ac8866ca011f90c4f6a6f77"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>resize</b> (unsigned n)</td></tr>
+<tr class="separator:a723d59417ac8866ca011f90c4f6a6f77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc06ef2dc49fea38251b2f2b419d3dd9"><td class="memItemLeft" align="right" valign="top"><a id="abc06ef2dc49fea38251b2f2b419d3dd9"></a>
 unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1tri__diag__mat.html#abc06ef2dc49fea38251b2f2b419d3dd9">nrows</a> ()</td></tr>
 <tr class="memdesc:abc06ef2dc49fea38251b2f2b419d3dd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">return number of rows <br /></td></tr>
@@ -148,6 +170,21 @@ T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1tri__diag__mat.html#a452bbe70cc010bd83a1e8abf0f02b364">operator()</a> (unsigned r, int b) const</td></tr>
 <tr class="memdesc:a452bbe70cc010bd83a1e8abf0f02b364"><td class="mdescLeft">&#160;</td><td class="mdescRight">return matrix element in row r of band b <br /></td></tr>
 <tr class="separator:a452bbe70cc010bd83a1e8abf0f02b364"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b699b4e981d29ccc405977cfc835012"><td class="memItemLeft" align="right" valign="top"><a id="a3b699b4e981d29ccc405977cfc835012"></a>
+<a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>band</b> (int b) const</td></tr>
+<tr class="separator:a3b699b4e981d29ccc405977cfc835012"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40277144b19435e871ed585328363ce0"><td class="memItemLeft" align="right" valign="top"><a id="a40277144b19435e871ed585328363ce0"></a>
+<a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (const <a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt; &amp;v) const</td></tr>
+<tr class="separator:a40277144b19435e871ed585328363ce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a104ccf8ae116f24e564262d361f08441"><td class="memItemLeft" align="right" valign="top"><a id="a104ccf8ae116f24e564262d361f08441"></a>
+<a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_data</b></td></tr>
+<tr class="separator:a104ccf8ae116f24e564262d361f08441"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5cf3ec59cf3aaf2713164e4dfdff44b"><td class="memItemLeft" align="right" valign="top"><a id="ac5cf3ec59cf3aaf2713164e4dfdff44b"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>_dim</b></td></tr>
+<tr class="separator:ac5cf3ec59cf3aaf2713164e4dfdff44b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />

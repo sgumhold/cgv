@@ -40,5 +40,7 @@ var classcgv_1_1math_1_1interval =
     [ "operator==", "classcgv_1_1math_1_1interval.html#aba6979b705da74ce76232db4d9368bf6", null ],
     [ "operator>", "classcgv_1_1math_1_1interval.html#a9197e158cd53de21cf57ca1270b87be4", null ],
     [ "set_lower_bound", "classcgv_1_1math_1_1interval.html#af26667364828ab726d984d3818d7c59e", null ],
-    [ "set_upper_bound", "classcgv_1_1math_1_1interval.html#ae218b60faeb7293262c8f911d7844d7b", null ]
+    [ "set_upper_bound", "classcgv_1_1math_1_1interval.html#ae218b60faeb7293262c8f911d7844d7b", null ],
+    [ "lb", "classcgv_1_1math_1_1interval.html#a001fad6886d3d7545ccfb71ee26fca3d", null ],
+    [ "ub", "classcgv_1_1math_1_1interval.html#ab3458c49dea8088b6b308224355c317e", null ]
 ];

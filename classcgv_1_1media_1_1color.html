@@ -117,6 +117,11 @@ Public Types</h2></td></tr>
 typedef T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color.html#ab785cd7276a45ab24620c33a1557066d">component_type</a></td></tr>
 <tr class="memdesc:ab785cd7276a45ab24620c33a1557066d"><td class="mdescLeft">&#160;</td><td class="mdescRight">type of color components <br /></td></tr>
 <tr class="separator:ab785cd7276a45ab24620c33a1557066d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_types_classcgv_1_1media_1_1color__base"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classcgv_1_1media_1_1color__base')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classcgv_1_1media_1_1color__base.html">cgv::media::color_base&lt; T, cm, am &gt;</a></td></tr>
+<tr class="memitem:a9c8b2ed9febcf28ae05aac8c86d4c109 inherit pub_types_classcgv_1_1media_1_1color__base"><td class="memItemLeft" align="right" valign="top"><a id="a9c8b2ed9febcf28ae05aac8c86d4c109"></a>
+typedef T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#a9c8b2ed9febcf28ae05aac8c86d4c109">component_type</a></td></tr>
+<tr class="memdesc:a9c8b2ed9febcf28ae05aac8c86d4c109 inherit pub_types_classcgv_1_1media_1_1color__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">type of color components <br /></td></tr>
+<tr class="separator:a9c8b2ed9febcf28ae05aac8c86d4c109 inherit pub_types_classcgv_1_1media_1_1color__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -162,6 +167,9 @@ template&lt;typename T2 , ColorModel cm2, AlphaModel am2&gt; </td></tr>
 <a class="el" href="classcgv_1_1media_1_1color.html">color</a>&lt; T, cm &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color.html#a90723fd94a11c6b1bc3b4bdc9fd8411e">drop_alpha</a> ()</td></tr>
 <tr class="memdesc:a90723fd94a11c6b1bc3b4bdc9fd8411e"><td class="mdescLeft">&#160;</td><td class="mdescRight">drop the alpha component if any by a cast operator <br /></td></tr>
 <tr class="separator:a90723fd94a11c6b1bc3b4bdc9fd8411e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a0775102901abce618b0668f03ea135"><td class="memItemLeft" align="right" valign="top"><a id="a7a0775102901abce618b0668f03ea135"></a>
+const <a class="el" href="classcgv_1_1media_1_1color.html">color</a>&lt; T, cm &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>drop_alpha</b> () const</td></tr>
+<tr class="separator:a7a0775102901abce618b0668f03ea135"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14069b97f4eab0402ab4315db9d8d607"><td class="memTemplParams" colspan="2"><a id="a14069b97f4eab0402ab4315db9d8d607"></a>
 template&lt;typename T2 , ColorModel cm2, AlphaModel am2&gt; </td></tr>
 <tr class="memitem:a14069b97f4eab0402ab4315db9d8d607"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1color.html">color</a>&lt; T, cm, am &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color.html#a14069b97f4eab0402ab4315db9d8d607">operator*=</a> (const <a class="el" href="classcgv_1_1media_1_1color.html">color</a>&lt; T2, cm2, am2 &gt; &amp;c2)</td></tr>
@@ -200,7 +208,7 @@ template&lt;typename T2 , ColorModel cm2, AlphaModel am2&gt; </td></tr>
 <tr class="memdesc:a77eb40c9821613a15fefaaf93e4cd96f"><td class="mdescLeft">&#160;</td><td class="mdescRight">add constant <br /></td></tr>
 <tr class="separator:a77eb40c9821613a15fefaaf93e4cd96f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16efea34671618edb9c58f2f0409ca2f"><td class="memItemLeft" align="right" valign="top"><a id="a16efea34671618edb9c58f2f0409ca2f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color.html#a16efea34671618edb9c58f2f0409ca2f">clamp</a> (const T &amp;mn=0, const T &amp;mx=color_one&lt; T &gt;::value(), bool skip_alpha=false)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color.html#a16efea34671618edb9c58f2f0409ca2f">clamp</a> (const T &amp;mn=0, const T &amp;mx=<a class="el" href="structcgv_1_1media_1_1color__one.html">color_one</a>&lt; T &gt;::value(), bool skip_alpha=false)</td></tr>
 <tr class="memdesc:a16efea34671618edb9c58f2f0409ca2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">clamp to the given range, which defaults to [0,1] of the component type <br /></td></tr>
 <tr class="separator:a16efea34671618edb9c58f2f0409ca2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa31169be793e5b8878f6f153e701f6df"><td class="memItemLeft" align="right" valign="top"><a id="aa31169be793e5b8878f6f153e701f6df"></a>
@@ -211,70 +219,85 @@ T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color.html#a752c232cc5d3e420351d239ad6cdd445">operator[]</a> (unsigned int i) const</td></tr>
 <tr class="memdesc:a752c232cc5d3e420351d239ad6cdd445"><td class="mdescLeft">&#160;</td><td class="mdescRight">const access to components <br /></td></tr>
 <tr class="separator:a752c232cc5d3e420351d239ad6cdd445"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae43124fbd239077fe2485403cd7b4a46"><td class="memItemLeft" align="right" valign="top"><a id="ae43124fbd239077fe2485403cd7b4a46"></a>
+<tr class="inherit_header pub_methods_structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html">cgv::media::extinction_alpha_interface&lt; color&lt; T, cm, am &gt; &gt;</a></td></tr>
+<tr class="memitem:ae43124fbd239077fe2485403cd7b4a46 inherit pub_methods_structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memItemLeft" align="right" valign="top"><a id="ae43124fbd239077fe2485403cd7b4a46"></a>
 T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#ae43124fbd239077fe2485403cd7b4a46">extinction</a> () const</td></tr>
-<tr class="memdesc:ae43124fbd239077fe2485403cd7b4a46"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert alpha to extinction <br /></td></tr>
-<tr class="separator:ae43124fbd239077fe2485403cd7b4a46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf1dde85d2a905805107c7edec560452"><td class="memItemLeft" align="right" valign="top"><a id="acf1dde85d2a905805107c7edec560452"></a>
+<tr class="memdesc:ae43124fbd239077fe2485403cd7b4a46 inherit pub_methods_structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert alpha to extinction <br /></td></tr>
+<tr class="separator:ae43124fbd239077fe2485403cd7b4a46 inherit pub_methods_structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html">cgv::media::transparency_alpha_interface&lt; color&lt; T, cm, am &gt; &gt;</a></td></tr>
+<tr class="memitem:acf1dde85d2a905805107c7edec560452 inherit pub_methods_structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memItemLeft" align="right" valign="top"><a id="acf1dde85d2a905805107c7edec560452"></a>
 T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#acf1dde85d2a905805107c7edec560452">transparency</a> () const</td></tr>
-<tr class="memdesc:acf1dde85d2a905805107c7edec560452"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert alpha to transparency <br /></td></tr>
-<tr class="separator:acf1dde85d2a905805107c7edec560452"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64eb994448f538cec9715a37fd75b3a0"><td class="memItemLeft" align="right" valign="top"><a id="a64eb994448f538cec9715a37fd75b3a0"></a>
+<tr class="memdesc:acf1dde85d2a905805107c7edec560452 inherit pub_methods_structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert alpha to transparency <br /></td></tr>
+<tr class="separator:acf1dde85d2a905805107c7edec560452 inherit pub_methods_structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_structcgv_1_1media_1_1opacity__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_structcgv_1_1media_1_1opacity__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="structcgv_1_1media_1_1opacity__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html">cgv::media::opacity_alpha_interface&lt; color&lt; T, cm, am &gt; &gt;</a></td></tr>
+<tr class="memitem:a64eb994448f538cec9715a37fd75b3a0 inherit pub_methods_structcgv_1_1media_1_1opacity__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memItemLeft" align="right" valign="top"><a id="a64eb994448f538cec9715a37fd75b3a0"></a>
 T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1opacity__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a64eb994448f538cec9715a37fd75b3a0">opacity</a> () const</td></tr>
-<tr class="memdesc:a64eb994448f538cec9715a37fd75b3a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert alpha to opacity <br /></td></tr>
-<tr class="separator:a64eb994448f538cec9715a37fd75b3a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b374737b507c627d5101049c9854045"><td class="memItemLeft" align="right" valign="top"><a id="a8b374737b507c627d5101049c9854045"></a>
+<tr class="memdesc:a64eb994448f538cec9715a37fd75b3a0 inherit pub_methods_structcgv_1_1media_1_1opacity__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert alpha to opacity <br /></td></tr>
+<tr class="separator:a64eb994448f538cec9715a37fd75b3a0 inherit pub_methods_structcgv_1_1media_1_1opacity__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html">cgv::media::xyz_color_interface&lt; color&lt; T, cm, am &gt; &gt;</a></td></tr>
+<tr class="memitem:a8b374737b507c627d5101049c9854045 inherit pub_methods_structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memItemLeft" align="right" valign="top"><a id="a8b374737b507c627d5101049c9854045"></a>
 T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a8b374737b507c627d5101049c9854045">X</a> () const</td></tr>
-<tr class="memdesc:a8b374737b507c627d5101049c9854045"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to XYZ and return X component <br /></td></tr>
-<tr class="separator:a8b374737b507c627d5101049c9854045"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37284eab4a8478a9bbdafddac3dc535e"><td class="memItemLeft" align="right" valign="top"><a id="a37284eab4a8478a9bbdafddac3dc535e"></a>
+<tr class="memdesc:a8b374737b507c627d5101049c9854045 inherit pub_methods_structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to XYZ and return X component <br /></td></tr>
+<tr class="separator:a8b374737b507c627d5101049c9854045 inherit pub_methods_structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37284eab4a8478a9bbdafddac3dc535e inherit pub_methods_structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memItemLeft" align="right" valign="top"><a id="a37284eab4a8478a9bbdafddac3dc535e"></a>
 T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a37284eab4a8478a9bbdafddac3dc535e">Y</a> () const</td></tr>
-<tr class="memdesc:a37284eab4a8478a9bbdafddac3dc535e"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to XYZ and return Y component <br /></td></tr>
-<tr class="separator:a37284eab4a8478a9bbdafddac3dc535e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7e5251b499559689af5b2884ae5422c"><td class="memItemLeft" align="right" valign="top"><a id="ae7e5251b499559689af5b2884ae5422c"></a>
+<tr class="memdesc:a37284eab4a8478a9bbdafddac3dc535e inherit pub_methods_structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to XYZ and return Y component <br /></td></tr>
+<tr class="separator:a37284eab4a8478a9bbdafddac3dc535e inherit pub_methods_structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7e5251b499559689af5b2884ae5422c inherit pub_methods_structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memItemLeft" align="right" valign="top"><a id="ae7e5251b499559689af5b2884ae5422c"></a>
 T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#ae7e5251b499559689af5b2884ae5422c">Z</a> () const</td></tr>
-<tr class="memdesc:ae7e5251b499559689af5b2884ae5422c"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to XYZ and return Z component <br /></td></tr>
-<tr class="separator:ae7e5251b499559689af5b2884ae5422c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34b3ec15e5f7c000cfd5356254c91175"><td class="memItemLeft" align="right" valign="top"><a id="a34b3ec15e5f7c000cfd5356254c91175"></a>
+<tr class="memdesc:ae7e5251b499559689af5b2884ae5422c inherit pub_methods_structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to XYZ and return Z component <br /></td></tr>
+<tr class="separator:ae7e5251b499559689af5b2884ae5422c inherit pub_methods_structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html">cgv::media::hls_color_interface&lt; color&lt; T, cm, am &gt; &gt;</a></td></tr>
+<tr class="memitem:a34b3ec15e5f7c000cfd5356254c91175 inherit pub_methods_structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memItemLeft" align="right" valign="top"><a id="a34b3ec15e5f7c000cfd5356254c91175"></a>
 T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a34b3ec15e5f7c000cfd5356254c91175">H</a> () const</td></tr>
-<tr class="memdesc:a34b3ec15e5f7c000cfd5356254c91175"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to HLS and return H component <br /></td></tr>
-<tr class="separator:a34b3ec15e5f7c000cfd5356254c91175"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4fbe1a91e5d90fae8a91ff16846247c9"><td class="memItemLeft" align="right" valign="top"><a id="a4fbe1a91e5d90fae8a91ff16846247c9"></a>
+<tr class="memdesc:a34b3ec15e5f7c000cfd5356254c91175 inherit pub_methods_structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to HLS and return H component <br /></td></tr>
+<tr class="separator:a34b3ec15e5f7c000cfd5356254c91175 inherit pub_methods_structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fbe1a91e5d90fae8a91ff16846247c9 inherit pub_methods_structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memItemLeft" align="right" valign="top"><a id="a4fbe1a91e5d90fae8a91ff16846247c9"></a>
 T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a4fbe1a91e5d90fae8a91ff16846247c9">L</a> () const</td></tr>
-<tr class="memdesc:a4fbe1a91e5d90fae8a91ff16846247c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to HLS and return L component <br /></td></tr>
-<tr class="separator:a4fbe1a91e5d90fae8a91ff16846247c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d6c2dca4ed607fac123b6a83269db6a"><td class="memItemLeft" align="right" valign="top"><a id="a4d6c2dca4ed607fac123b6a83269db6a"></a>
+<tr class="memdesc:a4fbe1a91e5d90fae8a91ff16846247c9 inherit pub_methods_structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to HLS and return L component <br /></td></tr>
+<tr class="separator:a4fbe1a91e5d90fae8a91ff16846247c9 inherit pub_methods_structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d6c2dca4ed607fac123b6a83269db6a inherit pub_methods_structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memItemLeft" align="right" valign="top"><a id="a4d6c2dca4ed607fac123b6a83269db6a"></a>
 T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a4d6c2dca4ed607fac123b6a83269db6a">S</a> () const</td></tr>
-<tr class="memdesc:a4d6c2dca4ed607fac123b6a83269db6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to HLS and return S component <br /></td></tr>
-<tr class="separator:a4d6c2dca4ed607fac123b6a83269db6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4572f0a3890c422042545b1c83e2b106"><td class="memItemLeft" align="right" valign="top"><a id="a4572f0a3890c422042545b1c83e2b106"></a>
+<tr class="memdesc:a4d6c2dca4ed607fac123b6a83269db6a inherit pub_methods_structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to HLS and return S component <br /></td></tr>
+<tr class="separator:a4d6c2dca4ed607fac123b6a83269db6a inherit pub_methods_structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html">cgv::media::rgb_color_interface&lt; color&lt; T, cm, am &gt; &gt;</a></td></tr>
+<tr class="memitem:a4572f0a3890c422042545b1c83e2b106 inherit pub_methods_structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memItemLeft" align="right" valign="top"><a id="a4572f0a3890c422042545b1c83e2b106"></a>
 T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a4572f0a3890c422042545b1c83e2b106">R</a> () const</td></tr>
-<tr class="memdesc:a4572f0a3890c422042545b1c83e2b106"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to RGB and return R component <br /></td></tr>
-<tr class="separator:a4572f0a3890c422042545b1c83e2b106"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e609eec0c2461cde44e8e4004a7f24c"><td class="memItemLeft" align="right" valign="top"><a id="a8e609eec0c2461cde44e8e4004a7f24c"></a>
+<tr class="memdesc:a4572f0a3890c422042545b1c83e2b106 inherit pub_methods_structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to RGB and return R component <br /></td></tr>
+<tr class="separator:a4572f0a3890c422042545b1c83e2b106 inherit pub_methods_structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e609eec0c2461cde44e8e4004a7f24c inherit pub_methods_structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memItemLeft" align="right" valign="top"><a id="a8e609eec0c2461cde44e8e4004a7f24c"></a>
 T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a8e609eec0c2461cde44e8e4004a7f24c">G</a> () const</td></tr>
-<tr class="memdesc:a8e609eec0c2461cde44e8e4004a7f24c"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to RGB and return G component <br /></td></tr>
-<tr class="separator:a8e609eec0c2461cde44e8e4004a7f24c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a089394ee5c863eec236fd1d19ffbd2f5"><td class="memItemLeft" align="right" valign="top"><a id="a089394ee5c863eec236fd1d19ffbd2f5"></a>
+<tr class="memdesc:a8e609eec0c2461cde44e8e4004a7f24c inherit pub_methods_structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to RGB and return G component <br /></td></tr>
+<tr class="separator:a8e609eec0c2461cde44e8e4004a7f24c inherit pub_methods_structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a089394ee5c863eec236fd1d19ffbd2f5 inherit pub_methods_structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memItemLeft" align="right" valign="top"><a id="a089394ee5c863eec236fd1d19ffbd2f5"></a>
 T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a089394ee5c863eec236fd1d19ffbd2f5">B</a> () const</td></tr>
-<tr class="memdesc:a089394ee5c863eec236fd1d19ffbd2f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to RGB and return B component <br /></td></tr>
-<tr class="separator:a089394ee5c863eec236fd1d19ffbd2f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae51ddb30993fa2ab71149fc70721e90d"><td class="memItemLeft" align="right" valign="top"><a id="ae51ddb30993fa2ab71149fc70721e90d"></a>
+<tr class="memdesc:a089394ee5c863eec236fd1d19ffbd2f5 inherit pub_methods_structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert color to RGB and return B component <br /></td></tr>
+<tr class="separator:a089394ee5c863eec236fd1d19ffbd2f5 inherit pub_methods_structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classcgv_1_1media_1_1color__base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1media_1_1color__base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1media_1_1color__base.html">cgv::media::color_base&lt; T, cm, am &gt;</a></td></tr>
+<tr class="memitem:a37796d69946fc66bce8702816913e702 inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="memItemLeft" align="right" valign="top"><a id="a37796d69946fc66bce8702816913e702"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#a37796d69946fc66bce8702816913e702">color_base</a> ()</td></tr>
+<tr class="memdesc:a37796d69946fc66bce8702816913e702 inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">standard constructor does not initialize components <br /></td></tr>
+<tr class="separator:a37796d69946fc66bce8702816913e702 inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50fd36f6d34652d1e102b2586c0777ea inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="memItemLeft" align="right" valign="top"><a id="a50fd36f6d34652d1e102b2586c0777ea"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#a50fd36f6d34652d1e102b2586c0777ea">color_base</a> (const <a class="el" href="classcgv_1_1media_1_1color__base.html">color_base</a>&lt; T2, cm2, am2 &gt; &amp;c2)</td></tr>
+<tr class="memdesc:a50fd36f6d34652d1e102b2586c0777ea inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy constructor uses color conversion if necessary <br /></td></tr>
+<tr class="separator:a50fd36f6d34652d1e102b2586c0777ea inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae51ddb30993fa2ab71149fc70721e90d inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="memItemLeft" align="right" valign="top"><a id="ae51ddb30993fa2ab71149fc70721e90d"></a>
 T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#ae51ddb30993fa2ab71149fc70721e90d">at</a> (unsigned int i)</td></tr>
-<tr class="memdesc:ae51ddb30993fa2ab71149fc70721e90d"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to components <br /></td></tr>
-<tr class="separator:ae51ddb30993fa2ab71149fc70721e90d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aabc825dc43a27fb735c7a50d7db6a816"><td class="memItemLeft" align="right" valign="top"><a id="aabc825dc43a27fb735c7a50d7db6a816"></a>
+<tr class="memdesc:ae51ddb30993fa2ab71149fc70721e90d inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to components <br /></td></tr>
+<tr class="separator:ae51ddb30993fa2ab71149fc70721e90d inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabc825dc43a27fb735c7a50d7db6a816 inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="memItemLeft" align="right" valign="top"><a id="aabc825dc43a27fb735c7a50d7db6a816"></a>
 const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#aabc825dc43a27fb735c7a50d7db6a816">at</a> (unsigned int i) const</td></tr>
-<tr class="memdesc:aabc825dc43a27fb735c7a50d7db6a816"><td class="mdescLeft">&#160;</td><td class="mdescRight">const access to components <br /></td></tr>
-<tr class="separator:aabc825dc43a27fb735c7a50d7db6a816"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac29748ca35dfdae39afe1a601001fe15"><td class="memItemLeft" align="right" valign="top"><a id="ac29748ca35dfdae39afe1a601001fe15"></a>
+<tr class="memdesc:aabc825dc43a27fb735c7a50d7db6a816 inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">const access to components <br /></td></tr>
+<tr class="separator:aabc825dc43a27fb735c7a50d7db6a816 inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac29748ca35dfdae39afe1a601001fe15 inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="memItemLeft" align="right" valign="top"><a id="ac29748ca35dfdae39afe1a601001fe15"></a>
 T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#ac29748ca35dfdae39afe1a601001fe15">alpha</a> ()</td></tr>
-<tr class="memdesc:ac29748ca35dfdae39afe1a601001fe15"><td class="mdescLeft">&#160;</td><td class="mdescRight">return alpha component <br /></td></tr>
-<tr class="separator:ac29748ca35dfdae39afe1a601001fe15"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a694665bc328e126236447b2f4fb68bb6"><td class="memItemLeft" align="right" valign="top"><a id="a694665bc328e126236447b2f4fb68bb6"></a>
+<tr class="memdesc:ac29748ca35dfdae39afe1a601001fe15 inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">return alpha component <br /></td></tr>
+<tr class="separator:ac29748ca35dfdae39afe1a601001fe15 inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a694665bc328e126236447b2f4fb68bb6 inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="memItemLeft" align="right" valign="top"><a id="a694665bc328e126236447b2f4fb68bb6"></a>
 const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#a694665bc328e126236447b2f4fb68bb6">alpha</a> () const</td></tr>
-<tr class="memdesc:a694665bc328e126236447b2f4fb68bb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">return alpha component <br /></td></tr>
-<tr class="separator:a694665bc328e126236447b2f4fb68bb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:a694665bc328e126236447b2f4fb68bb6 inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">return alpha component <br /></td></tr>
+<tr class="separator:a694665bc328e126236447b2f4fb68bb6 inherit pub_methods_classcgv_1_1media_1_1color__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -298,6 +321,26 @@ static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a 
 static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color.html#a3730b9c264c9e23e7d43d2c22c75aec7">nr_components</a> = <a class="el" href="classcgv_1_1media_1_1color__base.html">color_base</a>&lt;T, cm, am&gt;::nr_components</td></tr>
 <tr class="memdesc:a3730b9c264c9e23e7d43d2c22c75aec7"><td class="mdescLeft">&#160;</td><td class="mdescRight">static and const access to total number of components <br /></td></tr>
 <tr class="separator:a3730b9c264c9e23e7d43d2c22c75aec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_attribs_classcgv_1_1media_1_1color__base"><td colspan="2" onclick="javascript:toggleInherit('pub_static_attribs_classcgv_1_1media_1_1color__base')"><img src="closed.png" alt="-"/>&#160;Static Public Attributes inherited from <a class="el" href="classcgv_1_1media_1_1color__base.html">cgv::media::color_base&lt; T, cm, am &gt;</a></td></tr>
+<tr class="memitem:ad4cbf263c001386f6c09f8451b634c6d inherit pub_static_attribs_classcgv_1_1media_1_1color__base"><td class="memItemLeft" align="right" valign="top"><a id="ad4cbf263c001386f6c09f8451b634c6d"></a>
+static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#ad4cbf263c001386f6c09f8451b634c6d">nr_color_components</a></td></tr>
+<tr class="memdesc:ad4cbf263c001386f6c09f8451b634c6d inherit pub_static_attribs_classcgv_1_1media_1_1color__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">static and const access to number of color components <br /></td></tr>
+<tr class="separator:ad4cbf263c001386f6c09f8451b634c6d inherit pub_static_attribs_classcgv_1_1media_1_1color__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a875aef7879781ed063f7893cd5274def inherit pub_static_attribs_classcgv_1_1media_1_1color__base"><td class="memItemLeft" align="right" valign="top"><a id="a875aef7879781ed063f7893cd5274def"></a>
+static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#a875aef7879781ed063f7893cd5274def">nr_alpha_components</a></td></tr>
+<tr class="memdesc:a875aef7879781ed063f7893cd5274def inherit pub_static_attribs_classcgv_1_1media_1_1color__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">static and const access to number of alpha components <br /></td></tr>
+<tr class="separator:a875aef7879781ed063f7893cd5274def inherit pub_static_attribs_classcgv_1_1media_1_1color__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8780363ff06c65cb856b0c64d9debf0 inherit pub_static_attribs_classcgv_1_1media_1_1color__base"><td class="memItemLeft" align="right" valign="top"><a id="ad8780363ff06c65cb856b0c64d9debf0"></a>
+static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#ad8780363ff06c65cb856b0c64d9debf0">nr_components</a></td></tr>
+<tr class="memdesc:ad8780363ff06c65cb856b0c64d9debf0 inherit pub_static_attribs_classcgv_1_1media_1_1color__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">static and const access to total number of components <br /></td></tr>
+<tr class="separator:ad8780363ff06c65cb856b0c64d9debf0 inherit pub_static_attribs_classcgv_1_1media_1_1color__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_attribs_classcgv_1_1media_1_1color__base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1media_1_1color__base')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1media_1_1color__base.html">cgv::media::color_base&lt; T, cm, am &gt;</a></td></tr>
+<tr class="memitem:a393c6dbe63dd3aacb69573d52a57bf30 inherit pro_attribs_classcgv_1_1media_1_1color__base"><td class="memItemLeft" align="right" valign="top"><a id="a393c6dbe63dd3aacb69573d52a57bf30"></a>
+T&#160;</td><td class="memItemRight" valign="bottom"><b>components</b> [<a class="el" href="classcgv_1_1media_1_1color__base.html#ad8780363ff06c65cb856b0c64d9debf0">nr_components</a>]</td></tr>
+<tr class="separator:a393c6dbe63dd3aacb69573d52a57bf30 inherit pro_attribs_classcgv_1_1media_1_1color__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T, ColorModel cm, AlphaModel am&gt;<br />
