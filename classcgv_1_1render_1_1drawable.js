@@ -8,10 +8,7 @@ var classcgv_1_1render_1_1drawable =
     [ "finish_draw", "classcgv_1_1render_1_1drawable.html#a3a917f5d2bdb637d9dfce7c6b4351144", null ],
     [ "finish_frame", "classcgv_1_1render_1_1drawable.html#ab5691212b9bf00ff65d0304801608f55", null ],
     [ "force_redraw", "classcgv_1_1render_1_1drawable.html#a62a95149c05a07e8a50243c7ac612fdd", null ],
-    [ "get_active", "classcgv_1_1render_1_1drawable.html#a0ebecf480e5437aa2891dee243aac0a7", null ],
     [ "get_context", "classcgv_1_1render_1_1drawable.html#a13d9f363f8618f0a8333e4e06f71ae94", null ],
-    [ "get_focused_child", "classcgv_1_1render_1_1drawable.html#ae075e6b19833e43e3d0908c8a1cfc69f", null ],
-    [ "get_policy", "classcgv_1_1render_1_1drawable.html#a276706d356dd32a65dde6062b0250937", null ],
     [ "get_world_location", "classcgv_1_1render_1_1drawable.html#a6a8441e0c02aa7ea1cc0555aff3bf23c", null ],
     [ "hide", "classcgv_1_1render_1_1drawable.html#a98393d93b5d15bd89a5970f7a8c6903b", null ],
     [ "init", "classcgv_1_1render_1_1drawable.html#acc29110926fa9e045b972b9ce4a303ba", null ],
@@ -19,11 +16,6 @@ var classcgv_1_1render_1_1drawable =
     [ "is_visible", "classcgv_1_1render_1_1drawable.html#afffd8ead513770ac167efd9a2a56fdf5", null ],
     [ "post_redraw", "classcgv_1_1render_1_1drawable.html#ae75519749727672fc4f46f925ac2af79", null ],
     [ "resize", "classcgv_1_1render_1_1drawable.html#a6603986173f87e3e817e5bd1999a5a0f", null ],
-    [ "set_active", "classcgv_1_1render_1_1drawable.html#a81ed08d30e2ca24ce81a565fa431bdac", null ],
     [ "set_context", "classcgv_1_1render_1_1drawable.html#a35ea85020228796b007bfc5921f5a378", null ],
-    [ "set_focused_child", "classcgv_1_1render_1_1drawable.html#a4a822bf58021ff2a41a6cad1411b3e9e", null ],
-    [ "set_policy", "classcgv_1_1render_1_1drawable.html#a28d54d9fc7e025a09a6f9e7f8c30a69a", null ],
-    [ "show", "classcgv_1_1render_1_1drawable.html#ae209c9b90bc83cb3c5252906c8ab9e3a", null ],
-    [ "stop_on_failure", "classcgv_1_1render_1_1drawable.html#a4936bff3707dba734680c37e1822a1a8", null ],
-    [ "stop_on_success", "classcgv_1_1render_1_1drawable.html#ac985e72d3583fa5eb114d991ab294cce", null ]
+    [ "show", "classcgv_1_1render_1_1drawable.html#ae209c9b90bc83cb3c5252906c8ab9e3a", null ]
 ];

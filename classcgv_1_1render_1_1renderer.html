@@ -308,6 +308,20 @@ template&lt;typename T &gt; </td></tr>
 virtual <a class="el" href="structcgv_1_1render_1_1render__style.html">render_style</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a3a0385be3fce7d46b315c50520d2b76e">create_render_style</a> () const =0</td></tr>
 <tr class="memdesc:a3a0385be3fce7d46b315c50520d2b76e"><td class="mdescLeft">&#160;</td><td class="mdescRight">virtual method that creates a default render style <br /></td></tr>
 <tr class="separator:a3a0385be3fce7d46b315c50520d2b76e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51fb0fce47e7cb53828e97b25231d860"><td class="memItemLeft" align="right" valign="top"><a id="a51fb0fce47e7cb53828e97b25231d860"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>get_prog_attribute_location</b> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;name, bool error_check=true)</td></tr>
+<tr class="separator:a51fb0fce47e7cb53828e97b25231d860"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7da978bdae76148db00ac0155eccf4e8"><td class="memTemplParams" colspan="2"><a id="a7da978bdae76148db00ac0155eccf4e8"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a7da978bdae76148db00ac0155eccf4e8"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>set_attribute_array</b> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;name, const T &amp;array)</td></tr>
+<tr class="separator:a7da978bdae76148db00ac0155eccf4e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a09aef4f8187d618f0aa42efb159d16"><td class="memTemplParams" colspan="2"><a id="a8a09aef4f8187d618f0aa42efb159d16"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a8a09aef4f8187d618f0aa42efb159d16"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>set_attribute_array</b> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;name, const T *array_ptr, size_t nr_elements, unsigned stride)</td></tr>
+<tr class="separator:a8a09aef4f8187d618f0aa42efb159d16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5b4d763bc1435ce298e80b73d4310e6"><td class="memItemLeft" align="right" valign="top"><a id="ac5b4d763bc1435ce298e80b73d4310e6"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>set_attribute_array</b> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;name, <a class="el" href="structcgv_1_1render_1_1type__descriptor.html">type_descriptor</a> element_type, const <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a> &amp;vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)</td></tr>
+<tr class="separator:ac5b4d763bc1435ce298e80b73d4310e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3279ec1419ef5cc3bff2b880a0522849"><td class="memTemplParams" colspan="2"><a id="a3279ec1419ef5cc3bff2b880a0522849"></a>
 template&lt;typename C , typename T &gt; </td></tr>
 <tr class="memitem:a3279ec1419ef5cc3bff2b880a0522849"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a3279ec1419ef5cc3bff2b880a0522849">set_composed_attribute_array</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;name, const C *array_ptr, size_t nr_elements, const T &amp;elem)</td></tr>
@@ -562,7 +576,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="reference">References <a class="el" href="renderer_8h_source.html#l00070">build_shader_program()</a>, <a class="el" href="context_8h_source.html#l00529">cgv::render::context_config::core_profile</a>, <a class="el" href="classcgv_1_1render_1_1renderer.html#a3a0385be3fce7d46b315c50520d2b76e">create_render_style()</a>, and <a class="el" href="renderer_8h_source.html#l00068">update_defines()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="line__renderer_8cxx_source.html#l00068">cgv::render::line_renderer::init()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00141">cgv::render::rectangle_renderer::init()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00128">cgv::render::volume_renderer::init()</a>, and <a class="el" href="renderer_8cxx_source.html#l00023">manage_singleton()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="navigator_8cxx_source.html#l00205">cgv::app::navigator::init()</a>, <a class="el" href="line__renderer_8cxx_source.html#l00068">cgv::render::line_renderer::init()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00141">cgv::render::rectangle_renderer::init()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00128">cgv::render::volume_renderer::init()</a>, and <a class="el" href="renderer_8cxx_source.html#l00023">manage_singleton()</a>.</p>
 
 </div>
 </div>
@@ -631,7 +645,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00322">322</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00568">cgv::render::gl::gl_implicit_surface_drawable_base::draw_implicit_surface()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>, and <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00568">cgv::render::gl::gl_implicit_surface_drawable_base::draw_implicit_surface()</a>.</p>
 
 </div>
 </div>

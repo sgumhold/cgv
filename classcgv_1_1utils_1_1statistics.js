@@ -15,5 +15,10 @@ var classcgv_1_1utils_1_1statistics =
     [ "init", "classcgv_1_1utils_1_1statistics.html#aaafef4fa8f5329bee7cbd7cb95aee8fd", null ],
     [ "init", "classcgv_1_1utils_1_1statistics.html#a54b6fb369c5e9db9188a0ad4eedd993d", null ],
     [ "update", "classcgv_1_1utils_1_1statistics.html#a271d32d6e9dd3cd5e6dca15907d61116", null ],
-    [ "update", "classcgv_1_1utils_1_1statistics.html#a4de345e85cb2bf1959fd5e960e5d9e77", null ]
+    [ "update", "classcgv_1_1utils_1_1statistics.html#a4de345e85cb2bf1959fd5e960e5d9e77", null ],
+    [ "cnt", "classcgv_1_1utils_1_1statistics.html#a6e43995f99b5054d477a626e8ebe2400", null ],
+    [ "max", "classcgv_1_1utils_1_1statistics.html#a6c1b99abc0c4538d7ee6d50bf06748e3", null ],
+    [ "min", "classcgv_1_1utils_1_1statistics.html#a2d6fa18b0f6c6a4097f944eb0bfc04db", null ],
+    [ "sms", "classcgv_1_1utils_1_1statistics.html#a2ecfd4e8d2795bae722844cb7908fa9f", null ],
+    [ "sum", "classcgv_1_1utils_1_1statistics.html#aebee48da4a1d34ab627eab18df7a87da", null ]
 ];

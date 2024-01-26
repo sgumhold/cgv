@@ -93,17 +93,27 @@ $(document).ready(function(){initNavTree('classcgv_1_1xml_1_1FindElementByNameVi
  <a href="classcgv_1_1xml_1_1FindElementByNameVisitor.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="query_8h_source.html">query.h</a>&gt;</code></p>
-
-<p>Inherits tinyxml2::XMLVisitor.</p>
+<div class="dynheader">
+Inheritance diagram for cgv::xml::FindElementByNameVisitor:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="classcgv_1_1xml_1_1FindElementByNameVisitor.png" alt=""/>
+ </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:aeecf95dd40ce82c9b76c18b4f7ecf1e4"><td class="memItemLeft" align="right" valign="top"><a id="aeecf95dd40ce82c9b76c18b4f7ecf1e4"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>FindElementByNameVisitor</b> (const std::string &amp;name)</td></tr>
+<tr class="separator:aeecf95dd40ce82c9b76c18b4f7ecf1e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a778eb1fa5873c8c3d4749555b9b85579"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1xml_1_1FindElementByNameVisitor.html#a778eb1fa5873c8c3d4749555b9b85579">SetQueryName</a> (const std::string &amp;name)</td></tr>
 <tr class="memdesc:a778eb1fa5873c8c3d4749555b9b85579"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the name used to find a matching element.  <a href="classcgv_1_1xml_1_1FindElementByNameVisitor.html#a778eb1fa5873c8c3d4749555b9b85579">More...</a><br /></td></tr>
 <tr class="separator:a778eb1fa5873c8c3d4749555b9b85579"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59cd78f3bb7992c341896da1ff8f686a"><td class="memItemLeft" align="right" valign="top">const tinyxml2::XMLElement *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1xml_1_1FindElementByNameVisitor.html#a59cd78f3bb7992c341896da1ff8f686a">Result</a> () const</td></tr>
 <tr class="memdesc:a59cd78f3bb7992c341896da1ff8f686a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the query result.  <a href="classcgv_1_1xml_1_1FindElementByNameVisitor.html#a59cd78f3bb7992c341896da1ff8f686a">More...</a><br /></td></tr>
 <tr class="separator:a59cd78f3bb7992c341896da1ff8f686a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad32eb85b11ae2bcadd557b102695364"><td class="memItemLeft" align="right" valign="top"><a id="aad32eb85b11ae2bcadd557b102695364"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>VisitEnter</b> (const tinyxml2::XMLElement &amp;element, const tinyxml2::XMLAttribute *attribute) override</td></tr>
+<tr class="separator:aad32eb85b11ae2bcadd557b102695364"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Finds a tinyxml2::XMLElement by name. </p>

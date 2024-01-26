@@ -1,5 +1,9 @@
 var classcgv_1_1audio_1_1OALSource =
 [
+    [ "OALSource", "classcgv_1_1audio_1_1OALSource.html#a6ae0e1971de87ed015eaaec49fff5402", null ],
+    [ "OALSource", "classcgv_1_1audio_1_1OALSource.html#a164dca902b74a4039479dc591f856e30", null ],
+    [ "OALSource", "classcgv_1_1audio_1_1OALSource.html#ae54176d2e4436fa857f41f35e6ef16ea", null ],
+    [ "~OALSource", "classcgv_1_1audio_1_1OALSource.html#a1e31e3a6d69ee2829122fb1bd4a49261", null ],
     [ "get_gain", "classcgv_1_1audio_1_1OALSource.html#aded347ef9cbc0d79b8b427a0b5976056", null ],
     [ "get_pitch", "classcgv_1_1audio_1_1OALSource.html#ae33c89245513382c3ea9f84b7c3f2c4f", null ],
     [ "get_position", "classcgv_1_1audio_1_1OALSource.html#ae4620553f331940ce977487487dae294", null ],
@@ -7,6 +11,8 @@ var classcgv_1_1audio_1_1OALSource =
     [ "init", "classcgv_1_1audio_1_1OALSource.html#a17bb054cc95d83cd46ad7ee4acfcf58e", null ],
     [ "is_looping", "classcgv_1_1audio_1_1OALSource.html#aa9debb814f016e26618bfca1979cb011", null ],
     [ "is_playing", "classcgv_1_1audio_1_1OALSource.html#aab2f07045cab91ffac966925d8ce113f", null ],
+    [ "operator=", "classcgv_1_1audio_1_1OALSource.html#af5a9389eb0a6f015efa7eed03c12793f", null ],
+    [ "operator=", "classcgv_1_1audio_1_1OALSource.html#a5c00917188278cc5c9bc9a90e22788e0", null ],
     [ "pause", "classcgv_1_1audio_1_1OALSource.html#a9c2afad2e0b8924a7ae03e3b64706c5b", null ],
     [ "play", "classcgv_1_1audio_1_1OALSource.html#a894f6d10519178265c507ff86c5b2b3c", null ],
     [ "play_pause", "classcgv_1_1audio_1_1OALSource.html#a428ff3a8a4c6aac1788eefcaba5a860d", null ],

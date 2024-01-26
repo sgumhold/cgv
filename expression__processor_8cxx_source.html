@@ -438,7 +438,7 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;        }</div>
 <div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160; </div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;        <span class="keywordtype">bool</span> expression_processor::validate(<span class="keywordtype">bool</span> allow_several_values)</div>
+<div class="line"><a name="l00354"></a><span class="lineno"><a class="line" href="classcgv_1_1ppp_1_1expression__processor.html#a829198255c8d635c7fbd01f3ee5ee5ee">  354</a></span>&#160;        <span class="keywordtype">bool</span> expression_processor::validate(<span class="keywordtype">bool</span> allow_several_values)</div>
 <div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;        {</div>
 <div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;            <span class="keywordflow">if</span> (expression_tokens.size() == 0)</div>
 <div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
@@ -452,7 +452,7 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;            <span class="keywordtype">bool</span> left_of_operand = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;            <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i;</div>
 <div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;            <span class="keywordflow">for</span> (i = 0; i &lt; expression_tokens.size(); ++i) {</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;                expression_token&amp; et = expression_tokens[i];</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;                <a class="code" href="structcgv_1_1ppp_1_1expression__token.html">expression_token</a>&amp; et = expression_tokens[i];</div>
 <div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;                <span class="keywordflow">switch</span> (et.ep) {</div>
 <div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;                <span class="keywordflow">case</span> EP_VALUE:</div>
 <div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;                    <span class="keywordflow">if</span> (left_of_operand) {</div>
@@ -554,7 +554,7 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;                        }</div>
 <div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;                        <span class="comment">// if more than one comma separated expressions are defined, only leave last value on the value stack</span></div>
 <div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;                        <span class="keywordflow">while</span> (get_nr_comma_separated_expressions(expression_stack, parenthesis_stack, value_stack) &gt; 1) {</div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;                            variant tmp = value_stack.top();</div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;                            <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a> tmp = value_stack.top();</div>
 <div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;                            value_stack.pop();</div>
 <div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;                            value_stack.pop();</div>
 <div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;                            value_stack.push(tmp);</div>
@@ -606,7 +606,7 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;                    }</div>
 <div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;                    <span class="keywordflow">if</span> (last_parenthesis == EP_LIST_OPEN) {</div>
 <div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> n = get_nr_comma_separated_expressions(expression_stack, parenthesis_stack, value_stack);</div>
-<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;                        variant v = variant(variant::list_type());</div>
+<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;                        <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a> v = <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a>(variant::list_type());</div>
 <div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;                        <span class="keywordflow">if</span> (n &gt; 0) {</div>
 <div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;                            std::vector&lt;variant&gt; tmp;</div>
 <div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;                            tmp.resize(n);</div>
@@ -642,7 +642,7 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;                            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;                        }</div>
 <div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;                        value_stack.pop();</div>
-<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;                        value_stack.push(variant());</div>
+<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;                        value_stack.push(<a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a>());</div>
 <div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;                    }</div>
 <div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;                }</div>
 <div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;                <span class="keywordflow">break</span>;</div>
@@ -678,7 +678,7 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00595"></a><span class="lineno">  595</span>&#160;        }</div>
 <div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160; </div>
 <div class="line"><a name="l00597"></a><span class="lineno">  597</span>&#160; </div>
-<div class="line"><a name="l00598"></a><span class="lineno">  598</span>&#160;        <span class="keywordtype">bool</span> expression_processor::evaluate(variant&amp; result, ph_processor* ph_proc)</div>
+<div class="line"><a name="l00598"></a><span class="lineno"><a class="line" href="classcgv_1_1ppp_1_1expression__processor.html#a17f58b7957f495007ac97edf0b11b425">  598</a></span>&#160;        <span class="keywordtype">bool</span> expression_processor::evaluate(<a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a>&amp; result, <a class="code" href="classcgv_1_1ppp_1_1ph__processor.html">ph_processor</a>* ph_proc)</div>
 <div class="line"><a name="l00599"></a><span class="lineno">  599</span>&#160;        {</div>
 <div class="line"><a name="l00600"></a><span class="lineno">  600</span>&#160;            <span class="keywordflow">if</span> (expression_tokens.size() == 0) {</div>
 <div class="line"><a name="l00601"></a><span class="lineno">  601</span>&#160;                <span class="comment">//      value_stack.push(variant(0));</span></div>
@@ -694,7 +694,7 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00615"></a><span class="lineno">  615</span>&#160;            <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i;</div>
 <div class="line"><a name="l00616"></a><span class="lineno">  616</span>&#160;            <span class="keywordtype">bool</span> empty_func_arg = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00617"></a><span class="lineno">  617</span>&#160;            <span class="keywordflow">for</span> (i = 0; i &lt; expression_tokens.size(); ++i) {</div>
-<div class="line"><a name="l00618"></a><span class="lineno">  618</span>&#160;                expression_token&amp; et = expression_tokens[i];</div>
+<div class="line"><a name="l00618"></a><span class="lineno">  618</span>&#160;                <a class="code" href="structcgv_1_1ppp_1_1expression__token.html">expression_token</a>&amp; et = expression_tokens[i];</div>
 <div class="line"><a name="l00619"></a><span class="lineno">  619</span>&#160;                <span class="keywordflow">switch</span> (et.ep) {</div>
 <div class="line"><a name="l00620"></a><span class="lineno">  620</span>&#160;                <span class="keywordflow">case</span> EP_VALUE:</div>
 <div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160;                    value_stack.push(et.value);</div>
@@ -720,22 +720,22 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;                    expression_stack.push_back(expr_stack_entry((<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)value_stack.size(), (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)operator_stack.size()));</div>
 <div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;                    parenthesis_stack.push_back(EP_FUNC);</div>
 <div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160;                    <span class="keywordflow">if</span> (value_stack.top().is_name() || value_stack.top().is_str() || value_stack.top().is_func()) {</div>
-<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;                        variant* func_var;</div>
+<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;                        <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a>* func_var;</div>
 <div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;                        <span class="keywordflow">if</span> (value_stack.top().is_func())</div>
-<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;                            func_var = &amp;value_stack.top().ref_value();</div>
+<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;                            func_var = &amp;value_stack.top().<a class="code" href="classcgv_1_1ppp_1_1variant.html#aca8b80cb698b21ebeb1293d3e9ad69b3">ref_value</a>();</div>
 <div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;                        <span class="keywordflow">else</span> {</div>
 <div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;                            std::string func_name = (value_stack.top().is_str() ? value_stack.top().get_str() : value_stack.top().get_name());</div>
 <div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;                            func_var = &amp;ref_variable(func_name);</div>
 <div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;                        }</div>
-<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;                        <span class="keywordflow">if</span> (func_var-&gt;is_func()) {</div>
-<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;                            func_type&amp; func = func_var-&gt;ref_func();</div>
+<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;                        <span class="keywordflow">if</span> (func_var-&gt;<a class="code" href="classcgv_1_1ppp_1_1variant.html#a722ed5683ff878d2471bfc5232db979d">is_func</a>()) {</div>
+<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;                            <a class="code" href="structcgv_1_1ppp_1_1func__type.html">func_type</a>&amp; func = func_var-&gt;<a class="code" href="classcgv_1_1ppp_1_1variant.html#a5d79a970510cb9d628a8b79e9af25769">ref_func</a>();</div>
 <div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;                            push_namespace(0, func.ns);</div>
 <div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;                            ref_variable(<span class="stringliteral">&quot;return&quot;</span>, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;                            variant tmp;</div>
+<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;                            <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a> tmp;</div>
 <div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;                            <span class="keywordflow">if</span> (func.ph_proc-&gt;commands[func.block_begin - 1].expressions.size() == 2) {</div>
 <div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;                                ph_proc-&gt;swap_output(*func.ph_proc);</div>
-<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;                                expression_processor&amp; ep = func.ph_proc-&gt;commands[func.block_begin - 1].expressions[1];</div>
-<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;                                <span class="keywordflow">if</span> (!ep.evaluate(tmp, ph_proc)) {</div>
+<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;                                <a class="code" href="classcgv_1_1ppp_1_1expression__processor.html">expression_processor</a>&amp; ep = func.ph_proc-&gt;commands[func.block_begin - 1].expressions[1];</div>
+<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;                                <span class="keywordflow">if</span> (!ep.<a class="code" href="classcgv_1_1ppp_1_1expression__processor.html#a17f58b7957f495007ac97edf0b11b425">evaluate</a>(tmp, ph_proc)) {</div>
 <div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;                                    <span class="keywordflow">if</span> (!ep.issued_error) {</div>
 <div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;                                        ph_proc-&gt;error(ep.last_error, ep.last_error_token);</div>
 <div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;                                        ep.issued_error = <span class="keyword">true</span>;</div>
@@ -779,7 +779,7 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160;                        }</div>
 <div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160;                        <span class="comment">// if more than one comma separated expressions are defined, only leave last value on the value stack</span></div>
 <div class="line"><a name="l00702"></a><span class="lineno">  702</span>&#160;                        <span class="keywordflow">while</span> (get_nr_comma_separated_expressions(expression_stack, parenthesis_stack, value_stack) &gt; 1) {</div>
-<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;                            variant tmp = value_stack.top();</div>
+<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;                            <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a> tmp = value_stack.top();</div>
 <div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;                            value_stack.pop();</div>
 <div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;                            value_stack.pop();</div>
 <div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;                            value_stack.push(tmp);</div>
@@ -810,7 +810,7 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;                                <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; argc; ++i) {</div>
 <div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;                                    arguments[argc - 1 - i] = value_stack.top();</div>
 <div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;                                    <span class="keywordflow">if</span> (arguments[argc - 1 - i].get_type() == NAME_VALUE) {</div>
-<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;                                        arguments[argc - 1 - i] = variant(&amp;ref_variable(arguments[argc - 1 - i].get_name()));</div>
+<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;                                        arguments[argc - 1 - i] = <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a>(&amp;ref_variable(arguments[argc - 1 - i].get_name()));</div>
 <div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;                                    }</div>
 <div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;                                    value_stack.pop();</div>
 <div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;                                    expression_stack.pop_back();</div>
@@ -830,19 +830,19 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;                            parenthesis_stack.pop_back();</div>
 <div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;                        }</div>
 <div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;                        <span class="keywordflow">if</span> (value_stack.top().is_name() || value_stack.top().is_str() || value_stack.top().is_func()) {</div>
-<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;                            variant* func_var;</div>
+<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;                            <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a>* func_var;</div>
 <div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160;                            <span class="keywordflow">if</span> (value_stack.top().is_func())</div>
-<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;                                func_var = &amp;value_stack.top().ref_value();</div>
+<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;                                func_var = &amp;value_stack.top().<a class="code" href="classcgv_1_1ppp_1_1variant.html#aca8b80cb698b21ebeb1293d3e9ad69b3">ref_value</a>();</div>
 <div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160;                            <span class="keywordflow">else</span> {</div>
 <div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;                                std::string func_name = (value_stack.top().is_str() ? value_stack.top().get_str() : value_stack.top().get_name());</div>
-<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;                                variant* func_var = &amp;ref_variable(func_name);</div>
+<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;                                <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a>* func_var = &amp;ref_variable(func_name);</div>
 <div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;                            }</div>
-<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;                            <span class="keywordflow">if</span> (func_var-&gt;is_func()) {</div>
+<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;                            <span class="keywordflow">if</span> (func_var-&gt;<a class="code" href="classcgv_1_1ppp_1_1variant.html#a722ed5683ff878d2471bfc5232db979d">is_func</a>()) {</div>
 <div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;                                goto_child_namespace();</div>
-<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;                                func_type&amp; func = func_var-&gt;ref_func();</div>
+<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;                                <a class="code" href="structcgv_1_1ppp_1_1func__type.html">func_type</a>&amp; func = func_var-&gt;<a class="code" href="classcgv_1_1ppp_1_1variant.html#a5d79a970510cb9d628a8b79e9af25769">ref_func</a>();</div>
 <div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;                                ph_proc-&gt;swap_output(*func.ph_proc);</div>
 <div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;                                <span class="keywordflow">if</span> (arguments.size() &gt; 0 &amp;&amp; func.ph_proc-&gt;commands[func.block_begin - 1].expressions.size() == 2) {</div>
-<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;                                    <span class="keyword">const</span> expression_processor&amp; ep = func.ph_proc-&gt;commands[func.block_begin - 1].expressions[1];</div>
+<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;                                    <span class="keyword">const</span> <a class="code" href="classcgv_1_1ppp_1_1expression__processor.html">expression_processor</a>&amp; ep = func.ph_proc-&gt;commands[func.block_begin - 1].expressions[1];</div>
 <div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;                                    <span class="keywordflow">if</span> (!ep.assign_func_decl(arguments)) {</div>
 <div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;                                        func.ph_proc-&gt;error(ep.get_last_error(), ep.get_last_error_token());</div>
 <div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;                                        ph_proc-&gt;swap_output(*func.ph_proc);</div>
@@ -907,7 +907,7 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00828"></a><span class="lineno">  828</span>&#160;                    }</div>
 <div class="line"><a name="l00829"></a><span class="lineno">  829</span>&#160;                    <span class="keywordflow">if</span> (last_parenthesis == EP_LIST_OPEN) {</div>
 <div class="line"><a name="l00830"></a><span class="lineno">  830</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> n = get_nr_comma_separated_expressions(expression_stack, parenthesis_stack, value_stack);</div>
-<div class="line"><a name="l00831"></a><span class="lineno">  831</span>&#160;                        variant v = variant(variant::list_type());</div>
+<div class="line"><a name="l00831"></a><span class="lineno">  831</span>&#160;                        <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a> v = <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a>(variant::list_type());</div>
 <div class="line"><a name="l00832"></a><span class="lineno">  832</span>&#160;                        <span class="keywordflow">if</span> (n &gt; 0) {</div>
 <div class="line"><a name="l00833"></a><span class="lineno">  833</span>&#160;                            std::vector&lt;variant&gt; tmp;</div>
 <div class="line"><a name="l00834"></a><span class="lineno">  834</span>&#160;                            tmp.resize(n);</div>
@@ -928,38 +928,38 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;                        value_stack.push(v);</div>
 <div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;                    }</div>
 <div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;                    <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;                        variant var_idx = value_stack.top();</div>
+<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;                        <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a> var_idx = value_stack.top();</div>
 <div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;                        value_stack.pop();</div>
 <div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;                        expression_stack.pop_back();</div>
 <div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;                        parenthesis_stack.pop_back();</div>
 <div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160;                        <span class="keywordflow">if</span> (value_stack.top().is_map()) {</div>
 <div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160;                            std::string var_name;</div>
-<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;                            <span class="keywordflow">if</span> (var_idx.is_int()) {</div>
-<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160;                                var_name = value_stack.top().get_element_name(var_idx.get_int());</div>
+<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;                            <span class="keywordflow">if</span> (var_idx.<a class="code" href="classcgv_1_1ppp_1_1variant.html#a33428506498b43ec48f94dcd62b71f7f">is_int</a>()) {</div>
+<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160;                                var_name = value_stack.top().<a class="code" href="classcgv_1_1ppp_1_1variant.html#a22c06f60440961886e0fecf1f7805b8a">get_element_name</a>(var_idx.<a class="code" href="classcgv_1_1ppp_1_1variant.html#a3e81ac11a2278fb489477769577475a7">get_int</a>());</div>
 <div class="line"><a name="l00860"></a><span class="lineno">  860</span>&#160;                                value_stack.pop();</div>
 <div class="line"><a name="l00861"></a><span class="lineno">  861</span>&#160;                                value_stack.push(var_name);</div>
 <div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160;                            }</div>
 <div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;                            <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160;                                <span class="keywordflow">if</span> (var_idx.is_str())</div>
-<div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160;                                    var_name = var_idx.get_str();</div>
+<div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160;                                <span class="keywordflow">if</span> (var_idx.<a class="code" href="classcgv_1_1ppp_1_1variant.html#ae7fd684314cca1a881000fa89461e5d1">is_str</a>())</div>
+<div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160;                                    var_name = var_idx.<a class="code" href="classcgv_1_1ppp_1_1variant.html#a06c99a47a93f244b6b98f5c4289b5691">get_str</a>();</div>
 <div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160;                                <span class="keywordflow">else</span> {</div>
 <div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;                                    last_error = <span class="stringliteral">&quot;map access key evaluate to name or string&quot;</span>;</div>
 <div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;                                    last_error_token = expression_tokens[i];</div>
 <div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160;                                    found_error = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;                                    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;                                }</div>
-<div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;                                variant tmp;</div>
+<div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;                                <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a> tmp;</div>
 <div class="line"><a name="l00873"></a><span class="lineno">  873</span>&#160;                                <span class="keywordflow">if</span> (value_stack.top().is_reference()) {</div>
-<div class="line"><a name="l00874"></a><span class="lineno">  874</span>&#160;                                    tmp = variant(&amp;value_stack.top().ref_element(var_name));</div>
+<div class="line"><a name="l00874"></a><span class="lineno">  874</span>&#160;                                    tmp = <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a>(&amp;value_stack.top().ref_element(var_name));</div>
 <div class="line"><a name="l00875"></a><span class="lineno">  875</span>&#160;                                }</div>
 <div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160;                                <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160;                                    tmp = value_stack.top().get_element(var_name);</div>
+<div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160;                                    tmp = value_stack.top().<a class="code" href="classcgv_1_1ppp_1_1variant.html#ad1ed0aae9b84b54838654e475f69d00d">get_element</a>(var_name);</div>
 <div class="line"><a name="l00878"></a><span class="lineno">  878</span>&#160;                                value_stack.pop();</div>
 <div class="line"><a name="l00879"></a><span class="lineno">  879</span>&#160;                                value_stack.push(tmp);</div>
 <div class="line"><a name="l00880"></a><span class="lineno">  880</span>&#160;                            }</div>
 <div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;                        }</div>
 <div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;                        <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160;                            <span class="keywordtype">int</span> idx = var_idx.get_int();</div>
+<div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160;                            <span class="keywordtype">int</span> idx = var_idx.<a class="code" href="classcgv_1_1ppp_1_1variant.html#a3e81ac11a2278fb489477769577475a7">get_int</a>();</div>
 <div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160;                            <span class="keywordflow">if</span> (value_stack.top().is_list()) {</div>
 <div class="line"><a name="l00885"></a><span class="lineno">  885</span>&#160;                                <span class="keywordflow">if</span> (idx &lt; 0)</div>
 <div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160;                                    idx += (int)value_stack.top().get_size();</div>
@@ -971,17 +971,17 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;                                    found_error = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160;                                    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;                                }</div>
-<div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160;                                variant tmp;</div>
+<div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160;                                <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a> tmp;</div>
 <div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160;                                <span class="keywordflow">if</span> (value_stack.top().is_reference()) {</div>
-<div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;                                    tmp = variant(&amp;value_stack.top().ref_element(idx));</div>
+<div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;                                    tmp = <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a>(&amp;value_stack.top().ref_element(idx));</div>
 <div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;                                }</div>
 <div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160;                                <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;                                    tmp = value_stack.top().get_element(idx);</div>
+<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;                                    tmp = value_stack.top().<a class="code" href="classcgv_1_1ppp_1_1variant.html#ad1ed0aae9b84b54838654e475f69d00d">get_element</a>(idx);</div>
 <div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;                                value_stack.pop();</div>
 <div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160;                                value_stack.push(tmp);</div>
 <div class="line"><a name="l00903"></a><span class="lineno">  903</span>&#160;                            }</div>
 <div class="line"><a name="l00904"></a><span class="lineno">  904</span>&#160;                            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (value_stack.top().is_str()) {</div>
-<div class="line"><a name="l00905"></a><span class="lineno">  905</span>&#160;                                <span class="keywordtype">int</span> n = (int)value_stack.top().get_str().size();</div>
+<div class="line"><a name="l00905"></a><span class="lineno">  905</span>&#160;                                <span class="keywordtype">int</span> n = (int)value_stack.top().<a class="code" href="classcgv_1_1ppp_1_1variant.html#a06c99a47a93f244b6b98f5c4289b5691">get_str</a>().size();</div>
 <div class="line"><a name="l00906"></a><span class="lineno">  906</span>&#160;                                <span class="keywordflow">if</span> (idx &lt; 0)</div>
 <div class="line"><a name="l00907"></a><span class="lineno">  907</span>&#160;                                    idx += n;</div>
 <div class="line"><a name="l00908"></a><span class="lineno">  908</span>&#160;                                <span class="keywordflow">if</span> (idx &lt; 0 || idx &gt;= n) {</div>
@@ -992,7 +992,7 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00913"></a><span class="lineno">  913</span>&#160;                                    found_error = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160;                                    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160;                                }</div>
-<div class="line"><a name="l00916"></a><span class="lineno">  916</span>&#160;                                variant tmp(std::string(1, value_stack.top().get_str()[idx]));</div>
+<div class="line"><a name="l00916"></a><span class="lineno">  916</span>&#160;                                <a class="code" href="classcgv_1_1ppp_1_1variant.html">variant</a> tmp(std::string(1, value_stack.top().get_str()[idx]));</div>
 <div class="line"><a name="l00917"></a><span class="lineno">  917</span>&#160;                                value_stack.pop();</div>
 <div class="line"><a name="l00918"></a><span class="lineno">  918</span>&#160;                                value_stack.push(tmp);</div>
 <div class="line"><a name="l00919"></a><span class="lineno">  919</span>&#160;                            }</div>
@@ -1024,7 +1024,7 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;            }</div>
 <div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160;            result = value_stack.top();</div>
 <div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;            <span class="keywordflow">if</span> (debug_evaluate)</div>
-<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;                std::cout &lt;&lt; <span class="stringliteral">&quot;expression evaluated to &quot;</span> &lt;&lt; result.get_str() &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;                std::cout &lt;&lt; <span class="stringliteral">&quot;expression evaluated to &quot;</span> &lt;&lt; result.<a class="code" href="classcgv_1_1ppp_1_1variant.html#a06c99a47a93f244b6b98f5c4289b5691">get_str</a>() &lt;&lt; std::endl;</div>
 <div class="line"><a name="l00949"></a><span class="lineno">  949</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160;        }</div>
 <div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160; </div>
@@ -1148,6 +1148,19 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160; </div>
 <div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;    }</div>
 <div class="line"><a name="l01071"></a><span class="lineno"> 1071</span>&#160;}</div>
+<div class="ttc" id="aclasscgv_1_1ppp_1_1expression__processor_html"><div class="ttname"><a href="classcgv_1_1ppp_1_1expression__processor.html">cgv::ppp::expression_processor</a></div><div class="ttdef"><b>Definition:</b> <a href="expression__processor_8h_source.html#l00031">expression_processor.h:32</a></div></div>
+<div class="ttc" id="aclasscgv_1_1ppp_1_1expression__processor_html_a17f58b7957f495007ac97edf0b11b425"><div class="ttname"><a href="classcgv_1_1ppp_1_1expression__processor.html#a17f58b7957f495007ac97edf0b11b425">cgv::ppp::expression_processor::evaluate</a></div><div class="ttdeci">bool evaluate(variant &amp;result, ph_processor *ph_proc)</div><div class="ttdef"><b>Definition:</b> <a href="expression__processor_8cxx_source.html#l00598">expression_processor.cxx:598</a></div></div>
+<div class="ttc" id="aclasscgv_1_1ppp_1_1ph__processor_html"><div class="ttname"><a href="classcgv_1_1ppp_1_1ph__processor.html">cgv::ppp::ph_processor</a></div><div class="ttdoc">the pre header processor parses a pre header file and converts it to a header file or uses the inform...</div><div class="ttdef"><b>Definition:</b> <a href="ph__processor_8h_source.html#l00100">ph_processor.h:101</a></div></div>
+<div class="ttc" id="aclasscgv_1_1ppp_1_1variant_html"><div class="ttname"><a href="classcgv_1_1ppp_1_1variant.html">cgv::ppp::variant</a></div><div class="ttdef"><b>Definition:</b> <a href="ppp_2variant_8h_source.html#l00029">variant.h:30</a></div></div>
+<div class="ttc" id="aclasscgv_1_1ppp_1_1variant_html_a06c99a47a93f244b6b98f5c4289b5691"><div class="ttname"><a href="classcgv_1_1ppp_1_1variant.html#a06c99a47a93f244b6b98f5c4289b5691">cgv::ppp::variant::get_str</a></div><div class="ttdeci">std::string get_str() const</div><div class="ttdoc">lookup names and follow references and convert to string</div><div class="ttdef"><b>Definition:</b> <a href="ppp__variant_8cxx_source.html#l00752">ppp_variant.cxx:752</a></div></div>
+<div class="ttc" id="aclasscgv_1_1ppp_1_1variant_html_a22c06f60440961886e0fecf1f7805b8a"><div class="ttname"><a href="classcgv_1_1ppp_1_1variant.html#a22c06f60440961886e0fecf1f7805b8a">cgv::ppp::variant::get_element_name</a></div><div class="ttdeci">const std::string &amp; get_element_name(unsigned int i) const</div><div class="ttdoc">return the name of the i-th element in a map</div><div class="ttdef"><b>Definition:</b> <a href="ppp__variant_8cxx_source.html#l01031">ppp_variant.cxx:1031</a></div></div>
+<div class="ttc" id="aclasscgv_1_1ppp_1_1variant_html_a33428506498b43ec48f94dcd62b71f7f"><div class="ttname"><a href="classcgv_1_1ppp_1_1variant.html#a33428506498b43ec48f94dcd62b71f7f">cgv::ppp::variant::is_int</a></div><div class="ttdeci">bool is_int() const</div><div class="ttdoc">lookup names and follow references and return whether variant is int</div><div class="ttdef"><b>Definition:</b> <a href="ppp__variant_8cxx_source.html#l00646">ppp_variant.cxx:646</a></div></div>
+<div class="ttc" id="aclasscgv_1_1ppp_1_1variant_html_a3e81ac11a2278fb489477769577475a7"><div class="ttname"><a href="classcgv_1_1ppp_1_1variant.html#a3e81ac11a2278fb489477769577475a7">cgv::ppp::variant::get_int</a></div><div class="ttdeci">int get_int() const</div><div class="ttdoc">lookup names and follow references and convert to int: undef ... -1, bool ... 0 or 1,...</div><div class="ttdef"><b>Definition:</b> <a href="ppp__variant_8cxx_source.html#l00710">ppp_variant.cxx:710</a></div></div>
+<div class="ttc" id="aclasscgv_1_1ppp_1_1variant_html_a5d79a970510cb9d628a8b79e9af25769"><div class="ttname"><a href="classcgv_1_1ppp_1_1variant.html#a5d79a970510cb9d628a8b79e9af25769">cgv::ppp::variant::ref_func</a></div><div class="ttdeci">func_type &amp; ref_func()</div><div class="ttdoc">access to func value</div><div class="ttdef"><b>Definition:</b> <a href="ppp__variant_8cxx_source.html#l00907">ppp_variant.cxx:907</a></div></div>
+<div class="ttc" id="aclasscgv_1_1ppp_1_1variant_html_a722ed5683ff878d2471bfc5232db979d"><div class="ttname"><a href="classcgv_1_1ppp_1_1variant.html#a722ed5683ff878d2471bfc5232db979d">cgv::ppp::variant::is_func</a></div><div class="ttdeci">bool is_func() const</div><div class="ttdoc">lookup names and follow references and return whether variant is func</div><div class="ttdef"><b>Definition:</b> <a href="ppp__variant_8cxx_source.html#l00672">ppp_variant.cxx:672</a></div></div>
+<div class="ttc" id="aclasscgv_1_1ppp_1_1variant_html_aca8b80cb698b21ebeb1293d3e9ad69b3"><div class="ttname"><a href="classcgv_1_1ppp_1_1variant.html#aca8b80cb698b21ebeb1293d3e9ad69b3">cgv::ppp::variant::ref_value</a></div><div class="ttdeci">variant &amp; ref_value()</div><div class="ttdoc">lookup names and follow references and return reference to the reached variant</div><div class="ttdef"><b>Definition:</b> <a href="ppp__variant_8cxx_source.html#l00922">ppp_variant.cxx:922</a></div></div>
+<div class="ttc" id="aclasscgv_1_1ppp_1_1variant_html_ad1ed0aae9b84b54838654e475f69d00d"><div class="ttname"><a href="classcgv_1_1ppp_1_1variant.html#ad1ed0aae9b84b54838654e475f69d00d">cgv::ppp::variant::get_element</a></div><div class="ttdeci">const variant &amp; get_element(unsigned int i) const</div><div class="ttdoc">return a const reference to the i-th element in a list or map</div><div class="ttdef"><b>Definition:</b> <a href="ppp__variant_8cxx_source.html#l00979">ppp_variant.cxx:979</a></div></div>
+<div class="ttc" id="aclasscgv_1_1ppp_1_1variant_html_ae7fd684314cca1a881000fa89461e5d1"><div class="ttname"><a href="classcgv_1_1ppp_1_1variant.html#ae7fd684314cca1a881000fa89461e5d1">cgv::ppp::variant::is_str</a></div><div class="ttdeci">bool is_str() const</div><div class="ttdoc">lookup names and follow references and return whether variant is string</div><div class="ttdef"><b>Definition:</b> <a href="ppp__variant_8cxx_source.html#l00656">ppp_variant.cxx:656</a></div></div>
 <div class="ttc" id="aclasscgv_1_1utils_1_1tokenizer_html"><div class="ttname"><a href="classcgv_1_1utils_1_1tokenizer.html">cgv::utils::tokenizer</a></div><div class="ttdoc">the tokenizer allows to split text into tokens in a convenient way.</div><div class="ttdef"><b>Definition:</b> <a href="tokenizer_8h_source.html#l00067">tokenizer.h:68</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html"><div class="ttname"><a href="namespacecgv_1_1utils.html">cgv::utils</a></div><div class="ttdoc">namespace that holds tools that dont fit any other namespace</div><div class="ttdef"><b>Definition:</b> <a href="advanced__scan_8cxx_source.html#l00004">advanced_scan.cxx:4</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a2c4c8257827554cb1b6e31932661493f"><div class="ttname"><a href="namespacecgv_1_1utils.html#a2c4c8257827554cb1b6e31932661493f">cgv::utils::interpret_special</a></div><div class="ttdeci">std::string interpret_special(const std::string &amp;s)</div><div class="ttdoc">interprets the C++ special characters \a, \b, \f, \n, \r, \t, \v, \\', \&quot;, \\, \?,...</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00224">scan.cxx:224</a></div></div>
@@ -1158,6 +1171,8 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="ttc" id="anamespacecgv_1_1utils_html_ac97837caa291e98373073e2d01767ac0"><div class="ttname"><a href="namespacecgv_1_1utils.html#ac97837caa291e98373073e2d01767ac0">cgv::utils::is_element</a></div><div class="ttdeci">bool is_element(char c, const std::string &amp;s)</div><div class="ttdoc">check if char c arises in string s</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00288">scan.cxx:288</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 <div class="ttc" id="ascan_8h_html"><div class="ttname"><a href="scan_8h.html">scan.h</a></div><div class="ttdoc">Helper functions to process strings.</div></div>
+<div class="ttc" id="astructcgv_1_1ppp_1_1expression__token_html"><div class="ttname"><a href="structcgv_1_1ppp_1_1expression__token.html">cgv::ppp::expression_token</a></div><div class="ttdef"><b>Definition:</b> <a href="expression__processor_8h_source.html#l00021">expression_processor.h:22</a></div></div>
+<div class="ttc" id="astructcgv_1_1ppp_1_1func__type_html"><div class="ttname"><a href="structcgv_1_1ppp_1_1func__type.html">cgv::ppp::func_type</a></div><div class="ttdef"><b>Definition:</b> <a href="ppp_2variant_8h_source.html#l00020">variant.h:21</a></div></div>
 <div class="ttc" id="astructcgv_1_1utils_1_1token_html"><div class="ttname"><a href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a></div><div class="ttdoc">representation of a token in a text by two pointers begin and end, that point to the first character ...</div><div class="ttdef"><b>Definition:</b> <a href="token_8h_source.html#l00017">token.h:18</a></div></div>
 <div class="ttc" id="astructcgv_1_1utils_1_1token_html_a69a63af3bc04b79c5ac4312aa6912729"><div class="ttname"><a href="structcgv_1_1utils_1_1token.html#a69a63af3bc04b79c5ac4312aa6912729">cgv::utils::token::get_length</a></div><div class="ttdeci">size_t get_length() const</div><div class="ttdoc">return the length of the token in number of characters</div><div class="ttdef"><b>Definition:</b> <a href="token_8h_source.html#l00052">token.h:52</a></div></div>
 <div class="ttc" id="astructcgv_1_1utils_1_1token_html_a8795f9f939f15d61b4114c370a670344"><div class="ttname"><a href="structcgv_1_1utils_1_1token.html#a8795f9f939f15d61b4114c370a670344">cgv::utils::token::begin</a></div><div class="ttdeci">const char * begin</div><div class="ttdoc">pointers that define the range of characters</div><div class="ttdef"><b>Definition:</b> <a href="token_8h_source.html#l00020">token.h:20</a></div></div>

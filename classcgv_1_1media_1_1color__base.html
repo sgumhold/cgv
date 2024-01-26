@@ -85,6 +85,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1media_1_1color__base.html'
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1media_1_1color__base-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::media::color_base&lt; T, cm, am &gt; Class Template Reference</div>  </div>
@@ -134,17 +135,23 @@ const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:ad4cbf263c001386f6c09f8451b634c6d"><td class="memItemLeft" align="right" valign="top"><a id="ad4cbf263c001386f6c09f8451b634c6d"></a>
-static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#ad4cbf263c001386f6c09f8451b634c6d">nr_color_components</a> = color_model_traits&lt;cm&gt;::<a class="el" href="classcgv_1_1media_1_1color__base.html#ad8780363ff06c65cb856b0c64d9debf0">nr_components</a></td></tr>
+static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#ad4cbf263c001386f6c09f8451b634c6d">nr_color_components</a> = <a class="el" href="structcgv_1_1media_1_1color__model__traits.html">color_model_traits</a>&lt;cm&gt;::<a class="el" href="classcgv_1_1media_1_1color__base.html#ad8780363ff06c65cb856b0c64d9debf0">nr_components</a></td></tr>
 <tr class="memdesc:ad4cbf263c001386f6c09f8451b634c6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">static and const access to number of color components <br /></td></tr>
 <tr class="separator:ad4cbf263c001386f6c09f8451b634c6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a875aef7879781ed063f7893cd5274def"><td class="memItemLeft" align="right" valign="top"><a id="a875aef7879781ed063f7893cd5274def"></a>
-static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#a875aef7879781ed063f7893cd5274def">nr_alpha_components</a> = alpha_model_traits&lt;am&gt;::<a class="el" href="classcgv_1_1media_1_1color__base.html#ad8780363ff06c65cb856b0c64d9debf0">nr_components</a></td></tr>
+static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#a875aef7879781ed063f7893cd5274def">nr_alpha_components</a> = <a class="el" href="structcgv_1_1media_1_1alpha__model__traits.html">alpha_model_traits</a>&lt;am&gt;::<a class="el" href="classcgv_1_1media_1_1color__base.html#ad8780363ff06c65cb856b0c64d9debf0">nr_components</a></td></tr>
 <tr class="memdesc:a875aef7879781ed063f7893cd5274def"><td class="mdescLeft">&#160;</td><td class="mdescRight">static and const access to number of alpha components <br /></td></tr>
 <tr class="separator:a875aef7879781ed063f7893cd5274def"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8780363ff06c65cb856b0c64d9debf0"><td class="memItemLeft" align="right" valign="top"><a id="ad8780363ff06c65cb856b0c64d9debf0"></a>
 static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1color__base.html#ad8780363ff06c65cb856b0c64d9debf0">nr_components</a> = <a class="el" href="classcgv_1_1media_1_1color__base.html#ad4cbf263c001386f6c09f8451b634c6d">nr_color_components</a> + <a class="el" href="classcgv_1_1media_1_1color__base.html#a875aef7879781ed063f7893cd5274def">nr_alpha_components</a></td></tr>
 <tr class="memdesc:ad8780363ff06c65cb856b0c64d9debf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">static and const access to total number of components <br /></td></tr>
 <tr class="separator:ad8780363ff06c65cb856b0c64d9debf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a393c6dbe63dd3aacb69573d52a57bf30"><td class="memItemLeft" align="right" valign="top"><a id="a393c6dbe63dd3aacb69573d52a57bf30"></a>
+T&#160;</td><td class="memItemRight" valign="bottom"><b>components</b> [<a class="el" href="classcgv_1_1media_1_1color__base.html#ad8780363ff06c65cb856b0c64d9debf0">nr_components</a>]</td></tr>
+<tr class="separator:a393c6dbe63dd3aacb69573d52a57bf30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T, ColorModel cm, AlphaModel am = NO_ALPHA&gt;<br />

@@ -1,7 +1,14 @@
 var classcgv_1_1media_1_1illum_1_1obj__material =
 [
-    [ "color_type", "classcgv_1_1media_1_1illum_1_1obj__material.html#a0396417518451fd0be0ac88070fcdec5", null ],
-    [ "TextureType", "classcgv_1_1media_1_1illum_1_1obj__material.html#ae5602c975089f4aa1b89d68e00bcf6df", null ],
+    [ "TextureType", "classcgv_1_1media_1_1illum_1_1obj__material.html#ae5602c975089f4aa1b89d68e00bcf6df", [
+      [ "TT_AMBIENT_TEXTURE", "classcgv_1_1media_1_1illum_1_1obj__material.html#ae5602c975089f4aa1b89d68e00bcf6dfa3959e5ff9b43742bd17f576a0c563f43", null ],
+      [ "TT_DIFFUSE_TEXTURE", "classcgv_1_1media_1_1illum_1_1obj__material.html#ae5602c975089f4aa1b89d68e00bcf6dfa8bc00f798634f7d1d8b61be70885df9f", null ],
+      [ "TT_OPACITY_TEXTURE", "classcgv_1_1media_1_1illum_1_1obj__material.html#ae5602c975089f4aa1b89d68e00bcf6dfa7584607f3dd35ddbbf2ef909ba8e8ceb", null ],
+      [ "TT_SPECULAR_TEXTURE", "classcgv_1_1media_1_1illum_1_1obj__material.html#ae5602c975089f4aa1b89d68e00bcf6dfa06bfa533e964af2000fa448bdff87fcc", null ],
+      [ "TT_EMISSION_TEXTURE", "classcgv_1_1media_1_1illum_1_1obj__material.html#ae5602c975089f4aa1b89d68e00bcf6dfa21275496fe72167f0121a209aef9f985", null ],
+      [ "TT_BUMP_TEXTURE", "classcgv_1_1media_1_1illum_1_1obj__material.html#ae5602c975089f4aa1b89d68e00bcf6dfa7f58a5d7def4406a402b3b0a6f8bc09d", null ],
+      [ "TT_ALL_TEXTURES", "classcgv_1_1media_1_1illum_1_1obj__material.html#ae5602c975089f4aa1b89d68e00bcf6dfa40553d2d5d9929616cd820205621edc6", null ]
+    ] ],
     [ "obj_material", "classcgv_1_1media_1_1illum_1_1obj__material.html#af7b24ed763b14a9521a5e03d05f903d5", null ],
     [ "get_ambient_texture_name", "classcgv_1_1media_1_1illum_1_1obj__material.html#a68f854bea2216ef72564ec5b1cf1346b", null ],
     [ "get_bump_scale", "classcgv_1_1media_1_1illum_1_1obj__material.html#a27753b5beb68b9de7428c78135ac5e88", null ],
@@ -30,18 +37,13 @@ var classcgv_1_1media_1_1illum_1_1obj__material =
     [ "set_opacity", "classcgv_1_1media_1_1illum_1_1obj__material.html#a290200703b975e626d77fc75a69f93e6", null ],
     [ "set_opacity_texture_name", "classcgv_1_1media_1_1illum_1_1obj__material.html#af850b6e018e6a488dc7e19625201a4e2", null ],
     [ "set_specular_texture_name", "classcgv_1_1media_1_1illum_1_1obj__material.html#a36b49d7d6b80a8d925817f1bf2ed39b2", null ],
-    [ "ambient", "classcgv_1_1media_1_1illum_1_1obj__material.html#a0fb45dbd4b2cc1161081fffd8db3be47", null ],
     [ "ambient_texture_name", "classcgv_1_1media_1_1illum_1_1obj__material.html#ac1e6fc07c4459a748e616dd0a24ff093", null ],
     [ "bump_scale", "classcgv_1_1media_1_1illum_1_1obj__material.html#a13abbce59a501210fb5191d0a5a57917", null ],
     [ "bump_texture_name", "classcgv_1_1media_1_1illum_1_1obj__material.html#a933b761527f207da89b6b6a4ddc74b09", null ],
-    [ "diffuse", "classcgv_1_1media_1_1illum_1_1obj__material.html#a39522abf4c27e142548cc077dea2d338", null ],
     [ "diffuse_texture_name", "classcgv_1_1media_1_1illum_1_1obj__material.html#aa69afc40684323647219c0f343cc5ff5", null ],
-    [ "emission", "classcgv_1_1media_1_1illum_1_1obj__material.html#a1c8bc0098838d301f33351c5ef1c0f06", null ],
     [ "emission_texture_name", "classcgv_1_1media_1_1illum_1_1obj__material.html#a780cd923d2a56aa2f2dbb25e23761771", null ],
     [ "name", "classcgv_1_1media_1_1illum_1_1obj__material.html#ae462b4522e90cc2f502c3474082f831b", null ],
     [ "opacity", "classcgv_1_1media_1_1illum_1_1obj__material.html#a3b5acf84794654bf04bfa607594b0e6b", null ],
     [ "opacity_texture_name", "classcgv_1_1media_1_1illum_1_1obj__material.html#aeda56f29c1491cfdf9999995321ec0aa", null ],
-    [ "shininess", "classcgv_1_1media_1_1illum_1_1obj__material.html#ae9aa56ed4d22d32c5cdfbd24adcf9b12", null ],
-    [ "specular", "classcgv_1_1media_1_1illum_1_1obj__material.html#a47db8abbdfe349610355de6cab91caeb", null ],
     [ "specular_texture_name", "classcgv_1_1media_1_1illum_1_1obj__material.html#aaa214a82fe0185cc11eb8b43d1c842c0", null ]
 ];

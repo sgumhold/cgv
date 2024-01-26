@@ -181,22 +181,62 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1frame__buffer.html#ab6b63b3efcee1209a37cf112bcb559f2">blit_to</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> btbs=<a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c">BTB_ALL_BITS</a>, bool interpolate=false) const</td></tr>
 <tr class="memdesc:ab6b63b3efcee1209a37cf112bcb559f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">different variants of blitting rectangle src_rect of this frame buffer into rectangle dest_rect of destination frame buffer <br /></td></tr>
 <tr class="separator:ab6b63b3efcee1209a37cf112bcb559f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7eaf9326dc9c08b7499d57befd837f26"><td class="memItemLeft" align="right" valign="top"><a id="a7eaf9326dc9c08b7499d57befd837f26"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>blit_to</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="namespacecgv_1_1render.html#a89e7a34fcdf2c4bfe98ecbddb2dffa8d">ivec4</a> &amp;src_rect, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> btbs=<a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c">BTB_ALL_BITS</a>, bool interpolate=false) const</td></tr>
+<tr class="separator:a7eaf9326dc9c08b7499d57befd837f26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0310c027c25f3522c796e62df42fe53a"><td class="memItemLeft" align="right" valign="top"><a id="a0310c027c25f3522c796e62df42fe53a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>blit_to</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="namespacecgv_1_1render.html#a89e7a34fcdf2c4bfe98ecbddb2dffa8d">ivec4</a> &amp;src_rect, const <a class="el" href="namespacecgv_1_1render.html#a89e7a34fcdf2c4bfe98ecbddb2dffa8d">ivec4</a> &amp;dst_rect, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> btbs=<a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c">BTB_ALL_BITS</a>, bool interpolate=false) const</td></tr>
+<tr class="separator:a0310c027c25f3522c796e62df42fe53a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a156d42b334f75797fb666fdc5628b57e"><td class="memItemLeft" align="right" valign="top"><a id="a156d42b334f75797fb666fdc5628b57e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>blit_to</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1frame__buffer.html">frame_buffer</a> &amp;dst_fbo, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> btbs=<a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c">BTB_ALL_BITS</a>, bool interpolate=false) const</td></tr>
+<tr class="separator:a156d42b334f75797fb666fdc5628b57e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56ee2a88ec93b48f30674f1a3b4acd7b"><td class="memItemLeft" align="right" valign="top"><a id="a56ee2a88ec93b48f30674f1a3b4acd7b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>blit_to</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1frame__buffer.html">frame_buffer</a> &amp;dst_fbo, const <a class="el" href="namespacecgv_1_1render.html#a89e7a34fcdf2c4bfe98ecbddb2dffa8d">ivec4</a> &amp;src_rect, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> btbs=<a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c">BTB_ALL_BITS</a>, bool interpolate=false) const</td></tr>
+<tr class="separator:a56ee2a88ec93b48f30674f1a3b4acd7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaba4b2b4465149b81abdc9a60ea5a2c"><td class="memItemLeft" align="right" valign="top"><a id="aeaba4b2b4465149b81abdc9a60ea5a2c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>blit_to</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1frame__buffer.html">frame_buffer</a> &amp;dst_fbo, const <a class="el" href="namespacecgv_1_1render.html#a89e7a34fcdf2c4bfe98ecbddb2dffa8d">ivec4</a> &amp;src_rect, const <a class="el" href="namespacecgv_1_1render.html#a89e7a34fcdf2c4bfe98ecbddb2dffa8d">ivec4</a> &amp;dst_rect, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> btbs=<a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c">BTB_ALL_BITS</a>, bool interpolate=false) const</td></tr>
+<tr class="separator:aeaba4b2b4465149b81abdc9a60ea5a2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af30b156c69a3fc0875b9970a55d20a8c"><td class="memItemLeft" align="right" valign="top"><a id="af30b156c69a3fc0875b9970a55d20a8c"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1frame__buffer.html#af30b156c69a3fc0875b9970a55d20a8c">blit_from</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> btbs=<a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c">BTB_ALL_BITS</a>, bool interpolate=false)</td></tr>
 <tr class="memdesc:af30b156c69a3fc0875b9970a55d20a8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">different variants of blitting to rectangle dst_rect of this frame buffer from rectangle src_rect of source frame buffer <br /></td></tr>
 <tr class="separator:af30b156c69a3fc0875b9970a55d20a8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c896d2654616448824f5f2f759b8947"><td class="memItemLeft" align="right" valign="top"><a id="a4c896d2654616448824f5f2f759b8947"></a>
+<tr class="memitem:ae2a7628af5197825a0120f60beac9ca8"><td class="memItemLeft" align="right" valign="top"><a id="ae2a7628af5197825a0120f60beac9ca8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>blit_from</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="namespacecgv_1_1render.html#a89e7a34fcdf2c4bfe98ecbddb2dffa8d">ivec4</a> &amp;dst_rect, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> btbs=<a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c">BTB_ALL_BITS</a>, bool interpolate=false)</td></tr>
+<tr class="separator:ae2a7628af5197825a0120f60beac9ca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab168332253db0a4e9e8962d8dcfe9cb8"><td class="memItemLeft" align="right" valign="top"><a id="ab168332253db0a4e9e8962d8dcfe9cb8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>blit_from</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="namespacecgv_1_1render.html#a89e7a34fcdf2c4bfe98ecbddb2dffa8d">ivec4</a> &amp;dst_rect, const <a class="el" href="namespacecgv_1_1render.html#a89e7a34fcdf2c4bfe98ecbddb2dffa8d">ivec4</a> &amp;src_rect, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> btbs=<a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c">BTB_ALL_BITS</a>, bool interpolate=false)</td></tr>
+<tr class="separator:ab168332253db0a4e9e8962d8dcfe9cb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a376c88e59f96bfb8c8227e09ed202f41"><td class="memItemLeft" align="right" valign="top"><a id="a376c88e59f96bfb8c8227e09ed202f41"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>blit_from</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1frame__buffer.html">frame_buffer</a> &amp;src_fbo, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> btbs=<a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c">BTB_ALL_BITS</a>, bool interpolate=false)</td></tr>
+<tr class="separator:a376c88e59f96bfb8c8227e09ed202f41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a412ec196c99ab6e86659a7304ebbba96"><td class="memItemLeft" align="right" valign="top"><a id="a412ec196c99ab6e86659a7304ebbba96"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>blit_from</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1frame__buffer.html">frame_buffer</a> &amp;src_fbo, const <a class="el" href="namespacecgv_1_1render.html#a89e7a34fcdf2c4bfe98ecbddb2dffa8d">ivec4</a> &amp;dst_rect, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> btbs=<a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c">BTB_ALL_BITS</a>, bool interpolate=false)</td></tr>
+<tr class="separator:a412ec196c99ab6e86659a7304ebbba96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28f9f373823cd4f9f4e996539af155eb"><td class="memItemLeft" align="right" valign="top"><a id="a28f9f373823cd4f9f4e996539af155eb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>blit_from</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1frame__buffer.html">frame_buffer</a> &amp;src_fbo, const <a class="el" href="namespacecgv_1_1render.html#a89e7a34fcdf2c4bfe98ecbddb2dffa8d">ivec4</a> &amp;dst_rect, const <a class="el" href="namespacecgv_1_1render.html#a89e7a34fcdf2c4bfe98ecbddb2dffa8d">ivec4</a> &amp;src_rect, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> btbs=<a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c">BTB_ALL_BITS</a>, bool interpolate=false)</td></tr>
+<tr class="separator:a28f9f373823cd4f9f4e996539af155eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classcgv_1_1render_1_1frame__buffer__base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1render_1_1frame__buffer__base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1render_1_1frame__buffer__base.html">cgv::render::frame_buffer_base</a></td></tr>
+<tr class="memitem:a7ea9f224e743d85d449f66277f78bbf6 inherit pub_methods_classcgv_1_1render_1_1frame__buffer__base"><td class="memItemLeft" align="right" valign="top"><a id="a7ea9f224e743d85d449f66277f78bbf6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1frame__buffer__base.html#a7ea9f224e743d85d449f66277f78bbf6">frame_buffer_base</a> ()</td></tr>
+<tr class="memdesc:a7ea9f224e743d85d449f66277f78bbf6 inherit pub_methods_classcgv_1_1render_1_1frame__buffer__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">initialize members <br /></td></tr>
+<tr class="separator:a7ea9f224e743d85d449f66277f78bbf6 inherit pub_methods_classcgv_1_1render_1_1frame__buffer__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classcgv_1_1render_1_1render__component"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1render_1_1render__component')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1render_1_1render__component.html">cgv::render::render_component</a></td></tr>
+<tr class="memitem:aa1aa4104a5b8d5a34538fc8a7d30c8f4 inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="memItemLeft" align="right" valign="top"><a id="aa1aa4104a5b8d5a34538fc8a7d30c8f4"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#aa1aa4104a5b8d5a34538fc8a7d30c8f4">render_component</a> ()</td></tr>
+<tr class="memdesc:aa1aa4104a5b8d5a34538fc8a7d30c8f4 inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">initialize members <br /></td></tr>
+<tr class="separator:aa1aa4104a5b8d5a34538fc8a7d30c8f4 inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c896d2654616448824f5f2f759b8947 inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="memItemLeft" align="right" valign="top"><a id="a4c896d2654616448824f5f2f759b8947"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a> () const</td></tr>
-<tr class="memdesc:a4c896d2654616448824f5f2f759b8947"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether component has been created <br /></td></tr>
-<tr class="separator:a4c896d2654616448824f5f2f759b8947"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">put_id_void</a> (void *ptr) const</td></tr>
-<tr class="memdesc:aa5404b2aec4bbe8fd4eff1959b627709"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the rendering api specific id the component to the memory location of the given pointer.  <a href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">More...</a><br /></td></tr>
-<tr class="separator:aa5404b2aec4bbe8fd4eff1959b627709"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06ff3003af849b32a76ec5be29bd89dc"><td class="memTemplParams" colspan="2"><a id="a06ff3003af849b32a76ec5be29bd89dc"></a>
+<tr class="memdesc:a4c896d2654616448824f5f2f759b8947 inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether component has been created <br /></td></tr>
+<tr class="separator:a4c896d2654616448824f5f2f759b8947 inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5404b2aec4bbe8fd4eff1959b627709 inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">put_id_void</a> (void *ptr) const</td></tr>
+<tr class="memdesc:aa5404b2aec4bbe8fd4eff1959b627709 inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the rendering api specific id the component to the memory location of the given pointer.  <a href="classcgv_1_1render_1_1render__component.html#aa5404b2aec4bbe8fd4eff1959b627709">More...</a><br /></td></tr>
+<tr class="separator:aa5404b2aec4bbe8fd4eff1959b627709 inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06ff3003af849b32a76ec5be29bd89dc inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="memTemplParams" colspan="2"><a id="a06ff3003af849b32a76ec5be29bd89dc"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a06ff3003af849b32a76ec5be29bd89dc"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#a06ff3003af849b32a76ec5be29bd89dc">put_id</a> (T &amp;id) const</td></tr>
-<tr class="memdesc:a06ff3003af849b32a76ec5be29bd89dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">cast the refence to rendering api specific representation of component id to the specified type <br /></td></tr>
-<tr class="separator:a06ff3003af849b32a76ec5be29bd89dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06ff3003af849b32a76ec5be29bd89dc inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#a06ff3003af849b32a76ec5be29bd89dc">put_id</a> (T &amp;id) const</td></tr>
+<tr class="memdesc:a06ff3003af849b32a76ec5be29bd89dc inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">cast the refence to rendering api specific representation of component id to the specified type <br /></td></tr>
+<tr class="separator:a06ff3003af849b32a76ec5be29bd89dc inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -215,10 +255,46 @@ Public Attributes</h2></td></tr>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1frame__buffer.html#ad4a2f840af52977b396fdd8a165f7dd1">last_error</a></td></tr>
 <tr class="memdesc:ad4a2f840af52977b396fdd8a165f7dd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">a string that contains the last error, which is only set by the init method <br /></td></tr>
 <tr class="separator:ad4a2f840af52977b396fdd8a165f7dd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a738cb1064e1c6fc606c018191a53f23e"><td class="memItemLeft" align="right" valign="top"><a id="a738cb1064e1c6fc606c018191a53f23e"></a>
+<tr class="inherit_header pub_attribs_classcgv_1_1render_1_1render__component"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classcgv_1_1render_1_1render__component')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classcgv_1_1render_1_1render__component.html">cgv::render::render_component</a></td></tr>
+<tr class="memitem:a3d918ef267128c9944344df20642d0c6 inherit pub_attribs_classcgv_1_1render_1_1render__component"><td class="memItemLeft" align="right" valign="top"><a id="a3d918ef267128c9944344df20642d0c6"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>handle</b></td></tr>
+<tr class="separator:a3d918ef267128c9944344df20642d0c6 inherit pub_attribs_classcgv_1_1render_1_1render__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c66f7bd55476556b2b219412d9854cd inherit pub_attribs_classcgv_1_1render_1_1render__component"><td class="memItemLeft" align="right" valign="top"><a id="a6c66f7bd55476556b2b219412d9854cd"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>internal_format</b></td></tr>
+<tr class="separator:a6c66f7bd55476556b2b219412d9854cd inherit pub_attribs_classcgv_1_1render_1_1render__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a806fc80fb0bdd6c10bd4fff020a04442 inherit pub_attribs_classcgv_1_1render_1_1render__component"><td class="memItemLeft" align="right" valign="top"><a id="a806fc80fb0bdd6c10bd4fff020a04442"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>user_data</b></td></tr>
+<tr class="separator:a806fc80fb0bdd6c10bd4fff020a04442 inherit pub_attribs_classcgv_1_1render_1_1render__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a738cb1064e1c6fc606c018191a53f23e inherit pub_attribs_classcgv_1_1render_1_1render__component"><td class="memItemLeft" align="right" valign="top"><a id="a738cb1064e1c6fc606c018191a53f23e"></a>
 const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#a738cb1064e1c6fc606c018191a53f23e">ctx_ptr</a></td></tr>
-<tr class="memdesc:a738cb1064e1c6fc606c018191a53f23e"><td class="mdescLeft">&#160;</td><td class="mdescRight">keep pointer to my context <br /></td></tr>
-<tr class="separator:a738cb1064e1c6fc606c018191a53f23e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:a738cb1064e1c6fc606c018191a53f23e inherit pub_attribs_classcgv_1_1render_1_1render__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">keep pointer to my context <br /></td></tr>
+<tr class="separator:a738cb1064e1c6fc606c018191a53f23e inherit pub_attribs_classcgv_1_1render_1_1render__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95f40a817168467d5a0d3fdbb09e0b79 inherit pub_attribs_classcgv_1_1render_1_1render__component"><td class="memItemLeft" align="right" valign="top"><a id="a95f40a817168467d5a0d3fdbb09e0b79"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#a95f40a817168467d5a0d3fdbb09e0b79">last_error</a></td></tr>
+<tr class="memdesc:a95f40a817168467d5a0d3fdbb09e0b79 inherit pub_attribs_classcgv_1_1render_1_1render__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">a string that contains the last error <br /></td></tr>
+<tr class="separator:a95f40a817168467d5a0d3fdbb09e0b79 inherit pub_attribs_classcgv_1_1render_1_1render__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_attribs_classcgv_1_1render_1_1frame__buffer__base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1render_1_1frame__buffer__base')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1render_1_1frame__buffer__base.html">cgv::render::frame_buffer_base</a></td></tr>
+<tr class="memitem:ac2d186ca24e60681e1f4f04ed099aa41 inherit pro_attribs_classcgv_1_1render_1_1frame__buffer__base"><td class="memItemLeft" align="right" valign="top"><a id="ac2d186ca24e60681e1f4f04ed099aa41"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_enabled</b></td></tr>
+<tr class="separator:ac2d186ca24e60681e1f4f04ed099aa41 inherit pro_attribs_classcgv_1_1render_1_1frame__buffer__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6c3253bd7bdc7cf8ac43ee2703bd402 inherit pro_attribs_classcgv_1_1render_1_1frame__buffer__base"><td class="memItemLeft" align="right" valign="top"><a id="ad6c3253bd7bdc7cf8ac43ee2703bd402"></a>
+std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>enabled_color_attachments</b></td></tr>
+<tr class="separator:ad6c3253bd7bdc7cf8ac43ee2703bd402 inherit pro_attribs_classcgv_1_1render_1_1frame__buffer__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59839dde3a4901360b75993a0148602f inherit pro_attribs_classcgv_1_1render_1_1frame__buffer__base"><td class="memItemLeft" align="right" valign="top"><a id="a59839dde3a4901360b75993a0148602f"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>depth_attached</b></td></tr>
+<tr class="separator:a59839dde3a4901360b75993a0148602f inherit pro_attribs_classcgv_1_1render_1_1frame__buffer__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa39e45f44d8caec73278d5daa9b6fb4 inherit pro_attribs_classcgv_1_1render_1_1frame__buffer__base"><td class="memItemLeft" align="right" valign="top"><a id="aaa39e45f44d8caec73278d5daa9b6fb4"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>attached</b> [16]</td></tr>
+<tr class="separator:aaa39e45f44d8caec73278d5daa9b6fb4 inherit pro_attribs_classcgv_1_1render_1_1frame__buffer__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f38a05fde27be7f9ae9fa26344cfaea inherit pro_attribs_classcgv_1_1render_1_1frame__buffer__base"><td class="memItemLeft" align="right" valign="top"><a id="a7f38a05fde27be7f9ae9fa26344cfaea"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>width</b></td></tr>
+<tr class="separator:a7f38a05fde27be7f9ae9fa26344cfaea inherit pro_attribs_classcgv_1_1render_1_1frame__buffer__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09c237afdc830ed62d11a1e76f96ff5d inherit pro_attribs_classcgv_1_1render_1_1frame__buffer__base"><td class="memItemLeft" align="right" valign="top"><a id="a09c237afdc830ed62d11a1e76f96ff5d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>height</b></td></tr>
+<tr class="separator:a09c237afdc830ed62d11a1e76f96ff5d inherit pro_attribs_classcgv_1_1render_1_1frame__buffer__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>this class encapsulate frame buffers that live on the GPU and can be used as destination for the render process. </p>
@@ -319,7 +395,7 @@ const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> *&#160
 
 <p class="reference">References <a class="el" href="context_8h_source.html#l00277">cgv::render::render_component::ctx_ptr</a>, and <a class="el" href="frame__buffer_8cxx_source.html#l00044">destruct()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00051">cgv::render::gl::gl_transparent_renderer::init_frame()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">cgv::render::texture::write_to_file()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00051">cgv::render::gl::gl_transparent_renderer::init_frame()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">cgv::render::texture::write_to_file()</a>.</p>
 
 </div>
 </div>
@@ -444,38 +520,7 @@ const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> *&#160
 
 <p class="definition">Definition at line <a class="el" href="frame__buffer_8cxx_source.html#l00121">121</a> of file <a class="el" href="frame__buffer_8cxx_source.html">frame_buffer.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00120">cgv::render::gl::gl_transparent_renderer::render_transparent()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">cgv::render::texture::write_to_file()</a>.</p>
-
-</div>
-</div>
-<a id="aa5404b2aec4bbe8fd4eff1959b627709"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5404b2aec4bbe8fd4eff1959b627709">&#9670;&nbsp;</a></span>put_id_void()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::render::render_component::put_id_void </td>
-          <td>(</td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>ptr</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>copy the rendering api specific id the component to the memory location of the given pointer. </p>
-<p>For opengl this the passed pointer should be of type GLint or GLuint. </p>
-
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01890">1890</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="reference">Referenced by <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00120">cgv::render::gl::gl_transparent_renderer::render_transparent()</a>, and <a class="el" href="texture_8cxx_source.html#l00429">cgv::render::texture::write_to_file()</a>.</p>
 
 </div>
 </div>

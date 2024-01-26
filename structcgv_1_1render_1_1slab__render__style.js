@@ -9,9 +9,8 @@ var structcgv_1_1render_1_1slab__render__style =
     [ "tex_idx_offset", "structcgv_1_1render_1_1slab__render__style.html#a944897363acd5ed878d58b70d7310b6c", null ],
     [ "tex_idx_stride", "structcgv_1_1render_1_1slab__render__style.html#ae7e17e1ea9c16aadadd3febd82c18a17", null ],
     [ "tex_unit", "structcgv_1_1render_1_1slab__render__style.html#a99ad129dcccc71f610b8c71579aca787", null ],
+    [ "tf_source_channel", "structcgv_1_1render_1_1slab__render__style.html#aebe0100ee206e98245cab62e96fc4012", null ],
     [ "tf_tex_unit", "structcgv_1_1render_1_1slab__render__style.html#a77c618e95ef73b34a1b54d922ab7bc69", null ],
     [ "thickness_scale", "structcgv_1_1render_1_1slab__render__style.html#adf576f0279568634ca330339e788524a", null ],
-    [ "use_group_color", "structcgv_1_1render_1_1slab__render__style.html#aaeef17e385a1d3ae754742b2619bd55c", null ],
-    [ "use_group_transformation", "structcgv_1_1render_1_1slab__render__style.html#a113f4aa88c33c892574038e0f2478a7a", null ],
     [ "use_transfer_function", "structcgv_1_1render_1_1slab__render__style.html#ad4929d9df6c5cfc69215c4abefc53bc7", null ]
 ];

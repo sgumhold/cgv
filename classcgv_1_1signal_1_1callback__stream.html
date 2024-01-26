@@ -84,6 +84,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1signal_1_1callback__stream
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1signal_1_1callback__stream-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::signal::callback_stream Class Reference</div>  </div>
@@ -94,8 +95,12 @@ $(document).ready(function(){initNavTree('classcgv_1_1signal_1_1callback__stream
  <a href="classcgv_1_1signal_1_1callback__stream.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="callback__stream_8h_source.html">callback_stream.h</a>&gt;</code></p>
-
-<p>Inherits std::ostream.</p>
+<div class="dynheader">
+Inheritance diagram for cgv::signal::callback_stream:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="classcgv_1_1signal_1_1callback__stream.png" alt=""/>
+ </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -110,6 +115,15 @@ Public Attributes</h2></td></tr>
 cgv::signal::signal&lt; const std::string &amp; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1signal_1_1callback__stream.html#afe77649eaedcad4d2e6ef9515b4408c4">write</a></td></tr>
 <tr class="memdesc:afe77649eaedcad4d2e6ef9515b4408c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">signal to which all text written to the stream is sent <br /></td></tr>
 <tr class="separator:afe77649eaedcad4d2e6ef9515b4408c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a116fa82f54a926bd468610b1f1ac95ef"><td class="memItemLeft" align="right" valign="top"><a id="a116fa82f54a926bd468610b1f1ac95ef"></a>
+<a class="el" href="structcgv_1_1signal_1_1callback__streambuf.html">callback_streambuf</a>&#160;</td><td class="memItemRight" valign="bottom"><b>buf</b></td></tr>
+<tr class="separator:a116fa82f54a926bd468610b1f1ac95ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bf187f60252248fb428f71b725cdd29"><td class="memItemLeft" align="right" valign="top"><a id="a8bf187f60252248fb428f71b725cdd29"></a>
+char&#160;</td><td class="memItemRight" valign="bottom"><b>buffer</b> [256]</td></tr>
+<tr class="separator:a8bf187f60252248fb428f71b725cdd29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>connect to the write signal of the callback stream in order to process all text written to the stream </p>

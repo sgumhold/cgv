@@ -104,6 +104,9 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 , <a class="el" href="classcgv_1_1gui_1_1text__editor.html#a3bd4d22414176d7736bcbafad3405535">cgv::gui::text_editor</a>
 , <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#a139e61353cce54c22a7a0224deecf1b1">cgv::render::gl::gl_implicit_surface_drawable_base</a>
 </li>
+<li>save_boxes()
+: <a class="el" href="classvr__test.html#a34e96e35b4bae8a8d4cf76cfcbc0f3ee">vr_test</a>
+</li>
 <li>save_images()
 : <a class="el" href="classcgv_1_1render_1_1gl_1_1image__drawable.html#a7bf90c87bdaecbac3d6dc4102caa89d6">cgv::render::gl::image_drawable</a>
 </li>
@@ -129,6 +132,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 </li>
 <li>scan_vr_kits()
 : <a class="el" href="classvr_1_1vr__driver.html#a1b8a68956599ea27e00d6b1e028b3243">vr::vr_driver</a>
+, <a class="el" href="classvr__emulator.html#a60530f019036c818608b797e46dc0623">vr_emulator</a>
 </li>
 <li>schedule_one_shot()
 : <a class="el" href="classcgv_1_1gui_1_1trigger.html#a2560201ba2b4da9bd8b8bfb2d877a63a">cgv::gui::trigger</a>
@@ -165,10 +169,16 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classcgv_1_1gui_1_1provider.html#af30ecc2b9412b158cbe774babaacd402">cgv::gui::provider</a>
 </li>
 <li>self_reflect()
-: <a class="el" href="classcgv_1_1base_1_1base.html#aa0fe4266b74ebe49de68faaab3ca7a7a">cgv::base::base</a>
+: <a class="el" href="classcgv_1_1app_1_1navigator.html#a74a00ce7a68de7dce26216d13db142be">cgv::app::navigator</a>
+, <a class="el" href="classcgv_1_1app_1_1overlay.html#a504b1642c401febdf920c84dc7bf6400">cgv::app::overlay</a>
+, <a class="el" href="classcgv_1_1base_1_1base.html#aa0fe4266b74ebe49de68faaab3ca7a7a">cgv::base::base</a>
+, <a class="el" href="classcgv_1_1gui_1_1base__provider.html#ae59a839659e9bdb34d796311f172359b">cgv::gui::base_provider</a>
+, <a class="el" href="classcgv_1_1gui_1_1base__provider__generator.html#a7923e83fb605dfcf5faf5246ea98ec0c">cgv::gui::base_provider_generator</a>
+, <a class="el" href="classcgv_1_1gui_1_1key__control.html#a5cdccfd69745935ec71d54d77589b735">cgv::gui::key_control&lt; T &gt;</a>
 , <a class="el" href="structcgv_1_1render_1_1context__config.html#ab389a641bd6b1560719e4513af2bbfab">cgv::render::context_config</a>
 , <a class="el" href="structcgv_1_1render_1_1render__config.html#a91eabc5d1bee4696cce6de5ad05dfbe8">cgv::render::render_config</a>
 , <a class="el" href="structcgv_1_1render_1_1shader__config.html#aab0aef9de8e9f9820e151f0aae8b0031">cgv::render::shader_config</a>
+, <a class="el" href="classvr__emulator.html#a2f0dc1d96f5c4865e9b12ead302e8a07">vr_emulator</a>
 , <a class="el" href="classvr__view__interactor.html#a2b565fcdf03eb7128b221d3569a056aa">vr_view_interactor</a>
 </li>
 <li>self_reflect_member()
@@ -202,7 +212,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 , <a class="el" href="classcgv_1_1math_1_1fvec.html#ac1352402a484b3bbc14bf220fc1ae740">cgv::math::fvec&lt; T, N &gt;</a>
 , <a class="el" href="classcgv_1_1math_1_1qem.html#a2b0bd801097a28ed044524fccc49057c">cgv::math::qem&lt; T &gt;</a>
 , <a class="el" href="classcgv_1_1math_1_1quaternion.html#a7c38a5d8d9cb598aba16c8294daf1024">cgv::math::quaternion&lt; T &gt;</a>
-, <a class="el" href="classcgv_1_1math_1_1vec.html#a1fa4f2c909f8449586b6e5e025e6900a">cgv::math::vec&lt; T &gt;</a>
+, <a class="el" href="classcgv_1_1math_1_1vec.html#a4d2073241cae191531195288a71215e9">cgv::math::vec&lt; T &gt;</a>
 , <a class="el" href="structcgv_1_1type_1_1info_1_1type__access.html#a2eb3866ac712c9a5bfdc8ebfe717d8a6">cgv::type::info::type_access&lt; T &gt;</a>
 , <a class="el" href="structcgv_1_1type_1_1variant.html#a405650a25a530eeca5bce4e41884c329">cgv::type::variant&lt; T &gt;</a>
 </li>
@@ -242,6 +252,9 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 </li>
 <li>set_attribute_range()
 : <a class="el" href="classcgv_1_1plot_1_1axis__config.html#a08d756110e3715a0985d6aa37edbdac0">cgv::plot::axis_config</a>
+</li>
+<li>set_auto_show()
+: <a class="el" href="classcgv_1_1app_1_1color__selector.html#ad6a1daf906d20a685356deca607cf9ec">cgv::app::color_selector</a>
 </li>
 <li>set_b_entry()
 : <a class="el" href="classcgv_1_1math_1_1sparse__les.html#aa6a96143e37efa27a9baed685adcfd5a">cgv::math::sparse_les</a>
@@ -285,7 +298,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 , <a class="el" href="classcgv_1_1render_1_1texture.html#ac92e4f64eed6735386379188320bd680">cgv::render::texture</a>
 </li>
 <li>set_border_color_array()
-: <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html#a17f8b9ec853ba55c3f4d8b7b7da1e2df">cgv::render::rectangle_renderer</a>
+: <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html#accfddcdaa794c55a718968dadd3c4cee">cgv::render::rectangle_renderer</a>
 </li>
 <li>set_border_info()
 : <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html#a8be1f511efee2e759bb2fe5d0cd71243">cgv::render::rectangle_renderer</a>
@@ -338,7 +351,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 </li>
 <li>set_color()
 : <a class="el" href="classcgv_1_1media_1_1abst__color__storage.html#a9f309363ec2f35e41de674541b33d55a">cgv::media::abst_color_storage</a>
-, <a class="el" href="classcgv_1_1media_1_1color__storage.html#aa18e0cbb7aff36f206ba6bcb98d4c7e1">cgv::media::color_storage&lt; C &gt;</a>
+, <a class="el" href="classcgv_1_1media_1_1color__storage.html#ad3f63d355d06e41eaa69c8eca250f81e">cgv::media::color_storage&lt; C &gt;</a>
 , <a class="el" href="classcgv_1_1media_1_1colored__model.html#a3ea7a7458dc59a46da3f39f3d4a94bed">cgv::media::colored_model</a>
 , <a class="el" href="classcgv_1_1render_1_1context.html#a10629d270c8f8023b525a58d795e08d1">cgv::render::context</a>
 , <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a896eecf5c410859ac72639b1b659d4f7">cgv::render::gl::gl_context</a>
@@ -363,6 +376,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 <li>set_component_format()
 : <a class="el" href="classcgv_1_1data_1_1component__format.html#a0f378a1f73f5a195fafcaa4382110cef">cgv::data::component_format</a>
 , <a class="el" href="classcgv_1_1data_1_1data__format.html#a139b41ca40af4bc346bdbd28f0bde055">cgv::data::data_format</a>
+, <a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#ac4daf0c7949e8baec65aa258c1120eaa">cgv::media::volume::volume</a>
 , <a class="el" href="classcgv_1_1render_1_1texture.html#ac8a07cf4de0257ff54b02d951804ce13">cgv::render::texture</a>
 </li>
 <li>set_component_names()
@@ -370,6 +384,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 </li>
 <li>set_component_type()
 : <a class="el" href="classcgv_1_1data_1_1component__format.html#a46f60c64ec253e9d188f4cd0dae20845">cgv::data::component_format</a>
+, <a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#aa97f12c993c4a9bd1c851f898f191440">cgv::media::volume::volume</a>
 </li>
 <li>set_components()
 : <a class="el" href="classcgv_1_1data_1_1component__format.html#ab6c76c071b0951591bc930b4a34f8db3">cgv::data::component_format</a>
@@ -459,7 +474,8 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classcgv_1_1render_1_1volume__renderer.html#ace19d995dc487ec5efd577632a3e8434">cgv::render::volume_renderer</a>
 </li>
 <li>set_device_scan_interval()
-: <a class="el" href="classcgv_1_1gui_1_1vr__server.html#adb845a6500b99fcd889caed7f653000c">cgv::gui::vr_server</a>
+: <a class="el" href="classcgv_1_1gui_1_1gamepad__server.html#aa09d5fca545e6a1856a319f4be7a4351">cgv::gui::gamepad_server</a>
+, <a class="el" href="classcgv_1_1gui_1_1vr__server.html#adb845a6500b99fcd889caed7f653000c">cgv::gui::vr_server</a>
 </li>
 <li>set_device_state()
 : <a class="el" href="structgamepad_1_1gamepad__driver.html#aba4f05de4ca91bd7e2a3d2dae5200bb6">gamepad::gamepad_driver</a>
@@ -488,6 +504,9 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 <li>set_domain_config_ptr()
 : <a class="el" href="classcgv_1_1plot_1_1plot__base.html#a5ad33b049459ae08ee6fbb217b071aff">cgv::plot::plot_base</a>
 </li>
+<li>set_draw_in_finish_frame()
+: <a class="el" href="classcgv_1_1app_1_1overlay.html#a76ddcc88818e35a934dac5b88cf69e42">cgv::app::overlay</a>
+</li>
 <li>set_driver_calibration_matrix()
 : <a class="el" href="classvr_1_1vr__calibration__base.html#acc67bbea54ab58d3bc7ffdf017d5e7d6">vr::vr_calibration_base</a>
 </li>
@@ -513,7 +532,8 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classcgv_1_1data_1_1data__format.html#a3327dd2a85b70ee221a9cc6a811c1db8">cgv::data::data_format</a>
 </li>
 <li>set_event_type_flags()
-: <a class="el" href="classcgv_1_1gui_1_1vr__server.html#a8eede4d0035c759cdccbab8a1134ee9f">cgv::gui::vr_server</a>
+: <a class="el" href="classcgv_1_1gui_1_1gamepad__server.html#ab978fd87f7ca94d2e4b1fd1b73858930">cgv::gui::gamepad_server</a>
+, <a class="el" href="classcgv_1_1gui_1_1vr__server.html#a8eede4d0035c759cdccbab8a1134ee9f">cgv::gui::vr_server</a>
 , <a class="el" href="classvr__view__interactor.html#adf4e1b4102711989f4218ba89d4add68">vr_view_interactor</a>
 </li>
 <li>set_extent()
@@ -558,7 +578,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 <li>set_focus()
 : <a class="el" href="classcgv_1_1gui_1_1application.html#aefdaa4677540764586baa305864028f0">cgv::gui::application</a>
 , <a class="el" href="classcgv_1_1gui_1_1gui__driver.html#aaf656756232f88799dce3149952112cb">cgv::gui::gui_driver</a>
-, <a class="el" href="classcgv_1_1render_1_1view.html#afad077636e4d11dd96024723c7e0f542">cgv::render::view</a>
+, <a class="el" href="classcgv_1_1render_1_1view.html#a8f8d3fb0daa80b4a763bcaa51ae20553">cgv::render::view</a>
 </li>
 <li>set_focused_child()
 : <a class="el" href="classcgv_1_1base_1_1traverse__policy.html#a4a822bf58021ff2a41a6cad1411b3e9e">cgv::base::traverse_policy</a>
@@ -598,13 +618,13 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classcgv_1_1render_1_1group__renderer.html#a792a522d7f726b34aeabd8a1addd0a40">cgv::render::group_renderer</a>
 </li>
 <li>set_group_index_array()
-: <a class="el" href="classcgv_1_1render_1_1group__renderer.html#a119e7917665a2392a0da0c67cca97192">cgv::render::group_renderer</a>
+: <a class="el" href="classcgv_1_1render_1_1group__renderer.html#a8f6259de653237369c01ae4849ccd7d7">cgv::render::group_renderer</a>
 </li>
 <li>set_group_rotations()
-: <a class="el" href="classcgv_1_1render_1_1group__renderer.html#a3d32da2c98f4d937a6b859758310dd79">cgv::render::group_renderer</a>
+: <a class="el" href="classcgv_1_1render_1_1group__renderer.html#a05278277d5068970525f0b7b79f0ea11">cgv::render::group_renderer</a>
 </li>
 <li>set_group_translations()
-: <a class="el" href="classcgv_1_1render_1_1group__renderer.html#ae30af3c303225aaf61847c1e51fece20">cgv::render::group_renderer</a>
+: <a class="el" href="classcgv_1_1render_1_1group__renderer.html#a27f8ff1174aadbf76fcb25793c82b90e">cgv::render::group_renderer</a>
 </li>
 <li>set_height()
 : <a class="el" href="classcgv_1_1data_1_1data__format.html#af3e40e9348b3c7217599106e417cf47f">cgv::data::data_format</a>
@@ -624,7 +644,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classvr_1_1vr__driver.html#a004b050d3642db06611d05e7eb17a070">vr::vr_driver</a>
 </li>
 <li>set_indices()
-: <a class="el" href="classcgv_1_1render_1_1renderer.html#a3b86e875524318c8e1bd8c2b5592f29f">cgv::render::renderer</a>
+: <a class="el" href="classcgv_1_1render_1_1renderer.html#a135f62497fe2190c79c41c133a8dcd28">cgv::render::renderer</a>
 </li>
 <li>set_integer_interpretation()
 : <a class="el" href="classcgv_1_1data_1_1component__format.html#ab160e080f8db93e55bbb81e6fa46fd12">cgv::data::component_format</a>
@@ -652,7 +672,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classcgv_1_1render_1_1line__renderer.html#a94e1b6832331be93e77e95453dffd663">cgv::render::line_renderer</a>
 </li>
 <li>set_line_width_array()
-: <a class="el" href="classcgv_1_1render_1_1line__renderer.html#af8cec9f198453b278457fc435bcb9201">cgv::render::line_renderer</a>
+: <a class="el" href="classcgv_1_1render_1_1line__renderer.html#a93716e5832a6c8b571a1327c0a0d2fd1">cgv::render::line_renderer</a>
 </li>
 <li>set_log_config()
 : <a class="el" href="classcgv_1_1plot_1_1axis__config.html#a739af58aed858ea55a1fe3011d771a9f">cgv::plot::axis_config</a>
@@ -754,6 +774,18 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 <li>set_out_of_date()
 : <a class="el" href="classcgv_1_1render_1_1render__data__base.html#a48dee1f18f7005c327bdc9572f2ef49c">cgv::render::render_data_base&lt; ColorType &gt;</a>
 </li>
+<li>set_overlay_alignment()
+: <a class="el" href="classcgv_1_1app_1_1overlay.html#a6b3c6e4744c213b1e41c3c516ce43ad8">cgv::app::overlay</a>
+</li>
+<li>set_overlay_margin()
+: <a class="el" href="classcgv_1_1app_1_1overlay.html#a72fa40f8c6ae33f848ace24aa640aa0a">cgv::app::overlay</a>
+</li>
+<li>set_overlay_size()
+: <a class="el" href="classcgv_1_1app_1_1overlay.html#a93efb0342469553208c772b62b331dd2">cgv::app::overlay</a>
+</li>
+<li>set_overlay_stretch()
+: <a class="el" href="classcgv_1_1app_1_1overlay.html#a848ab8d450d4ac1ae11d744c82a58b2f">cgv::app::overlay</a>
+</li>
 <li>set_packing()
 : <a class="el" href="classcgv_1_1data_1_1packing__info.html#ab1b16496c1613ecae04e2643d2233081">cgv::data::packing_info</a>
 </li>
@@ -776,17 +808,20 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 <li>set_plot_uniforms()
 : <a class="el" href="classcgv_1_1plot_1_1plot__base.html#adf55c28a08b3b9ec688611c79a3dcaf4">cgv::plot::plot_base</a>
 </li>
+<li>set_points()
+: <a class="el" href="classcgv_1_1render_1_1clod__point__renderer.html#a40cb51e12d04785de9efa3c2fa0f3a72">cgv::render::clod_point_renderer</a>
+</li>
 <li>set_policy()
 : <a class="el" href="classcgv_1_1base_1_1traverse__policy.html#a28d54d9fc7e025a09a6f9e7f8c30a69a">cgv::base::traverse_policy</a>
 </li>
 <li>set_position()
 : <a class="el" href="classcgv_1_1audio_1_1OALListener.html#a592a571841f089e1e70d2757aa09fa5b">cgv::audio::OALListener</a>
 , <a class="el" href="classcgv_1_1audio_1_1OALSource.html#a3ca31cf1c407eb7fcf7bef3c33c49627">cgv::audio::OALSource</a>
-, <a class="el" href="classcgv_1_1os_1_1display.html#aaf8592a5ea08d8190901225c11f4f6bd">cgv::os::display</a>
+, <a class="el" href="classcgv_1_1os_1_1display.html#acd9004a62d21a2d0ac053244f217c96e">cgv::os::display</a>
 , <a class="el" href="classcgv_1_1render_1_1renderer.html#ac0dbf6b3b6681408a28e6c1888fd2a08">cgv::render::renderer</a>
 </li>
 <li>set_position_array()
-: <a class="el" href="classcgv_1_1render_1_1renderer.html#abde6037bb9fe2e36bafce19f26aa1512">cgv::render::renderer</a>
+: <a class="el" href="classcgv_1_1render_1_1renderer.html#a661123bb90dc6a04e590e54cbf767914">cgv::render::renderer</a>
 </li>
 <li>set_position_is_center()
 : <a class="el" href="classcgv_1_1render_1_1box__renderer.html#af56e26675933a8313e8adaf2c0d1e376">cgv::render::box_renderer</a>
@@ -798,7 +833,8 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classcgv_1_1render_1_1texture.html#a6601a3a81240ebe77921831dca49798d">cgv::render::texture</a>
 </li>
 <li>set_prog()
-: <a class="el" href="classcgv_1_1render_1_1renderer.html#ad127e0d0fe08047250168ea6b2274f3f">cgv::render::renderer</a>
+: <a class="el" href="classcgv_1_1render_1_1clod__point__renderer.html#a1051e44c0dcf7cd22b1190080505ce90">cgv::render::clod_point_renderer</a>
+, <a class="el" href="classcgv_1_1render_1_1renderer.html#ad127e0d0fe08047250168ea6b2274f3f">cgv::render::renderer</a>
 </li>
 <li>set_projection_matrix()
 : <a class="el" href="classcgv_1_1render_1_1context.html#ab655262a94e1e751c8a37ffbb96f6f38">cgv::render::context</a>
@@ -819,6 +855,9 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 </li>
 <li>set_ref_count()
 : <a class="el" href="classcgv_1_1data_1_1ref__counted.html#abceffe95f08d3fc13cf9286cf360e705">cgv::data::ref_counted</a>
+</li>
+<li>set_reflection_handler()
+: <a class="el" href="classcgv_1_1reflect_1_1set__reflection__handler.html#aabf32b0a19de28f7d8b863a86dce99fe">cgv::reflect::set_reflection_handler</a>
 </li>
 <li>set_refresh_rate()
 : <a class="el" href="classcgv_1_1os_1_1display.html#a19c04996d62d76824fca659af9f435aa">cgv::os::display</a>
@@ -858,7 +897,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 </li>
 <li>set_secondary_color_array()
 : <a class="el" href="classcgv_1_1render_1_1box__renderer.html#a98ff214ff97ae2974a44928802bb1d7d">cgv::render::box_renderer</a>
-, <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html#ac0b1f57ae51b61c20e3da302a6471124">cgv::render::rectangle_renderer</a>
+, <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html#a9407ba66f8e793f6a62a2ee651f4a4b1">cgv::render::rectangle_renderer</a>
 </li>
 <li>set_seed()
 : <a class="el" href="structcgv_1_1math_1_1random.html#a6769390cf881bebefbe8b4016ad2413c">cgv::math::random</a>
@@ -919,7 +958,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classcgv_1_1render_1_1surface__renderer.html#a23e3feda58fd42fdcc9bd06503c81e40">cgv::render::surface_renderer</a>
 </li>
 <li>set_texcoord_array()
-: <a class="el" href="classcgv_1_1render_1_1surface__renderer.html#a16fc63cdd0b4671308c4f89570fc804a">cgv::render::surface_renderer</a>
+: <a class="el" href="classcgv_1_1render_1_1surface__renderer.html#a06347854ea6ca483f982a58e22820a4a">cgv::render::surface_renderer</a>
 </li>
 <li>set_text()
 : <a class="el" href="classcgv_1_1gui_1_1text__editor.html#a15f84a575601082511cd5f6eb1a87db4">cgv::gui::text_editor</a>
@@ -993,6 +1032,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 </li>
 <li>set_vibration()
 : <a class="el" href="classvr_1_1vr__kit.html#a4991812d7c96a7fa486e3a6afdef6715">vr::vr_kit</a>
+, <a class="el" href="classvr__emulated__kit.html#a161426dca7a4700a009d14644df4f7c1">vr_emulated_kit</a>
 </li>
 <li>set_view_dir()
 : <a class="el" href="classcgv_1_1render_1_1view.html#a53b4f3228f186ee4d49bf49bad43a178">cgv::render::view</a>
@@ -1001,11 +1041,14 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classcgv_1_1plot_1_1plot__base.html#a54a3c64c99a6f25aa44683cb3178bdb7">cgv::plot::plot_base</a>
 </li>
 <li>set_view_up_dir()
-: <a class="el" href="classcgv_1_1render_1_1view.html#a7c9c8f53aa37524308fadb5b90246a7d">cgv::render::view</a>
+: <a class="el" href="classcgv_1_1render_1_1view.html#a87ae2ec9533afd47e23618d3fe8442fb">cgv::render::view</a>
 </li>
 <li>set_viewport()
 : <a class="el" href="classcgv_1_1render_1_1context.html#af5a0b10387f70e5b22e3f1412e68f109">cgv::render::context</a>
 , <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a4d201de5bf23990fb7fca8aba9bed317">cgv::render::gl::gl_context</a>
+</li>
+<li>set_visibility()
+: <a class="el" href="classcgv_1_1app_1_1overlay.html#aeefcae1fc2e6ad857a3bc5759427a99a">cgv::app::overlay</a>
 </li>
 <li>set_visit_order()
 : <a class="el" href="classcgv_1_1base_1_1traverser.html#ab27af01f9825c9b1d3947982d88869b5">cgv::base::traverser</a>
@@ -1015,6 +1058,10 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 , <a class="el" href="classcgv_1_1base_1_1base__generator.html#aa69ce6781528ebf7f78412fd6c7bad5f">cgv::base::base_generator</a>
 , <a class="el" href="classcgv_1_1base_1_1console.html#a99ea2f5fa87e80338b1f996de9dc6983">cgv::base::console</a>
 , <a class="el" href="structcgv_1_1base_1_1factory.html#a03229b698d12d0da2cae1b769f0ee40e">cgv::base::factory</a>
+, <a class="el" href="classcgv_1_1gui_1_1key__control.html#a6f1a47765df04b7f6df3561cec5226b9">cgv::gui::key_control&lt; T &gt;</a>
+, <a class="el" href="classcgv_1_1gui_1_1key__control_3_01bool_01_4.html#a57bf5a68f573fa291206a455a0b65ea7">cgv::gui::key_control&lt; bool &gt;</a>
+, <a class="el" href="classcgv_1_1gui_1_1layout.html#a695fb8eb1c347f5465bdd0c7b356d37c">cgv::gui::layout</a>
+, <a class="el" href="classcgv_1_1gui_1_1layout__table.html#abcb53e1c357c0c966c3731fb5c4f4258">cgv::gui::layout_table</a>
 , <a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#aa31653a404d2100655e91db9c00cfda1">cgv::media::image::image_reader</a>
 , <a class="el" href="classcgv_1_1media_1_1image_1_1image__writer.html#a2eeade9ca2755e97f55e1f162bf495b7">cgv::media::image::image_writer</a>
 , <a class="el" href="classcgv_1_1media_1_1video_1_1video__reader.html#a702b054c51a69f3d1b982a14c99282d6">cgv::media::video::video_reader</a>
@@ -1091,14 +1138,24 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 <li>shader_program_stack
 : <a class="el" href="classcgv_1_1render_1_1context.html#a3c994c70ab71063250711517d65da2ef">cgv::render::context</a>
 </li>
+<li>shell_location_side()
+: <a class="el" href="classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#a41d65b768f7e96cb3ae7c7c1e09dca85">cgv::media::mesh::convex_polyhedron_base</a>
+</li>
+<li>shell_type
+: <a class="el" href="classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#ac86e10439f0b22ac45006b494be7f8c0">cgv::media::mesh::convex_polyhedron_base</a>
+</li>
+<li>shells
+: <a class="el" href="classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#a213cbee9c5679be356dc2be887a64324">cgv::media::mesh::convex_polyhedron_base</a>
+</li>
 <li>shininess
 : <a class="el" href="classcgv_1_1media_1_1illum_1_1phong__material.html#ae9aa56ed4d22d32c5cdfbd24adcf9b12">cgv::media::illum::phong_material</a>
 </li>
 <li>shoot
 : <a class="el" href="classcgv_1_1gui_1_1trigger.html#a2cc50a83bb4fd7c407e50b5b78082073">cgv::gui::trigger</a>
 </li>
-<li>show()
-: <a class="el" href="classcgv_1_1gui_1_1text__editor.html#ae14d5c889b33d49f8f1fcdc64c1942a6">cgv::gui::text_editor</a>
+<li>show
+: <a class="el" href="classcgv_1_1app_1_1overlay.html#a179ec4d146de8860f18291a529b87153">cgv::app::overlay</a>
+, <a class="el" href="classcgv_1_1gui_1_1text__editor.html#ae14d5c889b33d49f8f1fcdc64c1942a6">cgv::gui::text_editor</a>
 , <a class="el" href="classcgv_1_1gui_1_1window.html#a9c33504d7d1dec1e4839e0ccfc70fb72">cgv::gui::window</a>
 , <a class="el" href="classcgv_1_1render_1_1drawable.html#ae209c9b90bc83cb3c5252906c8ab9e3a">cgv::render::drawable</a>
 </li>
@@ -1110,6 +1167,9 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 </li>
 <li>show_display_modes()
 : <a class="el" href="classcgv_1_1os_1_1display.html#ae2f2a5014b286619cb21a84a880d3dbb">cgv::os::display</a>
+</li>
+<li>show_domain
+: <a class="el" href="structcgv_1_1plot_1_1domain__config.html#a18d1f25f92a319685750e03f5e41103e">cgv::plot::domain_config</a>
 </li>
 <li>show_error_on_console
 : <a class="el" href="structcgv_1_1render_1_1render__config.html#ae086670de62f95f632ec0570469aa024">cgv::render::render_config</a>
@@ -1138,8 +1198,14 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 <li>show_sticks
 : <a class="el" href="structcgv_1_1plot_1_1plot__base__config.html#aba44df469fbb076a65cfa8e05d2e8457">cgv::plot::plot_base_config</a>
 </li>
+<li>show_sub_plot_names
+: <a class="el" href="structcgv_1_1plot_1_1domain__config.html#af877ae1f81b6e5b35fc904ef69641eb1">cgv::plot::domain_config</a>
+</li>
 <li>show_surface
 : <a class="el" href="structcgv_1_1plot_1_1plot3d__config.html#af11df267281db72b34dd15df09b459a9">cgv::plot::plot3d_config</a>
+</li>
+<li>show_title
+: <a class="el" href="structcgv_1_1plot_1_1domain__config.html#af206c33495ce55b1761f7c56dcbe07e6">cgv::plot::domain_config</a>
 </li>
 <li>shows()
 : <a class="el" href="classcgv_1_1gui_1_1abst__control.html#ac1b18e8d04c417f8d73a70657114dc8c">cgv::gui::abst_control</a>
@@ -1150,7 +1216,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classcgv_1_1math_1_1fvec.html#a4e8ab8f759404ce077e80a9fd47f370d">cgv::math::fvec&lt; T, N &gt;</a>
 </li>
 <li>simple_mesh()
-: <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#af7153ca68f69a867fde321c52128cf8f">cgv::media::mesh::simple_mesh&lt; T &gt;</a>
+: <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#aecfc803f4f3672121a54d6305fefb4c2">cgv::media::mesh::simple_mesh&lt; T &gt;</a>
 </li>
 <li>simple_mesh_base()
 : <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a197a3fcf0aead6c1c50f2bd90d333252">cgv::media::mesh::simple_mesh_base</a>
@@ -1166,6 +1232,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 </li>
 <li>size()
 : <a class="el" href="classcgv_1_1data_1_1dynamic__priority__queue.html#aadaeb47729185320b59f4735e2e1afd7">cgv::data::dynamic_priority_queue&lt; T &gt;</a>
+, <a class="el" href="structcgv_1_1data_1_1quadtree_1_1node.html#a53847aa0c240de1888da28f66695c21d">cgv::data::quadtree&lt; T &gt;::node</a>
 , <a class="el" href="structcgv_1_1math_1_1diag__mat.html#a82d9f2698f92fa19ac4d9b0ee9e57361">cgv::math::diag_mat&lt; T &gt;</a>
 , <a class="el" href="classcgv_1_1math_1_1fvec.html#afea901268f6ba41a98e59d08b417f024">cgv::math::fvec&lt; T, N &gt;</a>
 , <a class="el" href="classcgv_1_1math_1_1mat.html#aa2ce337ac8ca38c4505b396262480b64">cgv::math::mat&lt; T &gt;</a>
@@ -1175,6 +1242,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 , <a class="el" href="structcgv_1_1reflect_1_1abst__reflection__traits.html#a40091b56e03db408773ef751e32aecf8">cgv::reflect::abst_reflection_traits</a>
 , <a class="el" href="structcgv_1_1reflect_1_1reflection__traits__impl.html#a9f0cfa7444ca84b6ca3011d6c4616109">cgv::reflect::reflection_traits_impl&lt; T, B, base_is_abst &gt;</a>
 , <a class="el" href="structcgv_1_1reflect_1_1reflection__traits__impl_3_01T_00_01B_00_01true_01_4.html#aa19f121402d1df04daa76a0345992380">cgv::reflect::reflection_traits_impl&lt; T, B, true &gt;</a>
+, <a class="el" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a9073bb5747aa72df9490a29a956e3d73">cgv::render::clod_point_buffer_manager</a>
 , <a class="el" href="classcgv_1_1render_1_1render__data__base.html#a1cf12b5dac4a906bf13f37d2ebbc47f9">cgv::render::render_data_base&lt; ColorType &gt;</a>
 , <a class="el" href="classcgv_1_1utils_1_1big__binary__file.html#a8d8e09d10bc57fc0038f7b6dbaeda3f3">cgv::utils::big_binary_file</a>
 , <a class="el" href="structcgv_1_1utils_1_1token.html#aa8e06c57774bb6d34436ff2e0ea22442">cgv::utils::token</a>
@@ -1276,16 +1344,22 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classcgv_1_1media_1_1illum_1_1obj__material.html#aaa214a82fe0185cc11eb8b43d1c842c0">cgv::media::illum::obj_material</a>
 </li>
 <li>sphere()
-: <a class="el" href="classcgv_1_1media_1_1sphere.html#ae856b04da0b8cde05047c38ddfad723c">cgv::media::sphere&lt; T, N &gt;</a>
+: <a class="el" href="classcgv_1_1media_1_1sphere.html#a7d4da07c5a734e42fdf01f0efa2bd05f">cgv::media::sphere&lt; T, N &gt;</a>
 </li>
 <li>sphere_render_style()
 : <a class="el" href="structcgv_1_1render_1_1sphere__render__style.html#a9193aac1897db59689e1baff1d3585b5">cgv::render::sphere_render_style</a>
+</li>
+<li>spline_tube_render_style()
+: <a class="el" href="structcgv_1_1render_1_1spline__tube__render__style.html#adf3b1804e90f3bd66edf4b8b9ff62f89">cgv::render::spline_tube_render_style</a>
 </li>
 <li>spline_tube_renderer()
 : <a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#aafe602f662824f6cede5b790239682d6">cgv::render::spline_tube_renderer</a>
 </li>
 <li>split_at_plane()
 : <a class="el" href="classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html#a89e6e93c6af42ca15eb28bb6146c58cc">cgv::media::mesh::convex_polyhedron&lt; T, TCDim &gt;</a>
+</li>
+<li>split_off_from()
+: <a class="el" href="structcgv_1_1ppp_1_1command__token.html#a95d735ae6966e92f938651061647499a">cgv::ppp::command_token</a>
 </li>
 <li>spot_cutoff
 : <a class="el" href="classcgv_1_1media_1_1illum_1_1light__source.html#af261919387791cdd33079e486b6fb9cb">cgv::media::illum::light_source</a>
@@ -1337,7 +1411,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classcgv_1_1render_1_1render__data__base.html#af4c94209ce6da95c98070d49bc099b03">cgv::render::render_data_base&lt; ColorType &gt;</a>
 </li>
 <li>statistics()
-: <a class="el" href="classcgv_1_1utils_1_1statistics.html#afebe588a2ca7562cd14597823993ac2e">cgv::utils::statistics</a>
+: <a class="el" href="classcgv_1_1utils_1_1statistics.html#af54a7f11b70d4d629eb51d79799f588f">cgv::utils::statistics</a>
 </li>
 <li>status
 : <a class="el" href="structcgv_1_1os_1_1http__request.html#a33197a0816919fac8f2503a2d0e5a076">cgv::os::http_request</a>
@@ -1391,7 +1465,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="structcgv_1_1plot_1_1plot__base__config.html#a6a40992b71ed6cd5ef5675802f4da098">cgv::plot::plot_base_config</a>
 </li>
 <li>StlMesh()
-: <a class="el" href="classstl__reader_1_1StlMesh.html#ac17e2fd33937f7977e79f229af2a0c58">stl_reader::StlMesh&lt; TNumber, TIndex &gt;</a>
+: <a class="el" href="classstl__reader_1_1StlMesh.html#a653842c6cc33405b5540ae1fd1d2fd19">stl_reader::StlMesh&lt; TNumber, TIndex &gt;</a>
 </li>
 <li>stop()
 : <a class="el" href="classcgv_1_1audio_1_1OALSource.html#a30153266030e6c12187e4155fb53b120">cgv::audio::OALSource</a>
@@ -1413,7 +1487,13 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a3eea98326d8c874604bad319a7bf5470">cgv::media::mesh::dynamic_mesh&lt; T &gt;</a>
 </li>
 <li>stream_help()
-: <a class="el" href="classcgv_1_1gui_1_1event__handler.html#a247d57486e7c06516b2b028262b6dc35">cgv::gui::event_handler</a>
+: <a class="el" href="classcgv_1_1app_1_1navigator.html#a811ce39cc582e94fb2892e36d0e7cf55">cgv::app::navigator</a>
+, <a class="el" href="classcgv_1_1app_1_1overlay.html#a08d13d1c1a4410111c067294c6ebdac6">cgv::app::overlay</a>
+, <a class="el" href="classcgv_1_1gui_1_1event__handler.html#a247d57486e7c06516b2b028262b6dc35">cgv::gui::event_handler</a>
+, <a class="el" href="classcgv_1_1gui_1_1key__control.html#a550e4659908acf522e47393a6b2e1a1f">cgv::gui::key_control&lt; T &gt;</a>
+, <a class="el" href="classcgv_1_1gui_1_1key__control_3_01bool_01_4.html#af2cda123b6ec3d624f974f05c9682c37">cgv::gui::key_control&lt; bool &gt;</a>
+, <a class="el" href="classvr__emulator.html#ab105a3d9e02758d583ad55f2638e1045">vr_emulator</a>
+, <a class="el" href="classvr__test.html#a9ed2174726c2f7e6e5372efb4b39db53">vr_test</a>
 , <a class="el" href="classvr__view__interactor.html#af414778d878ce7342def12f15fa8e5a5">vr_view_interactor</a>
 </li>
 <li>stream_in()
@@ -1446,6 +1526,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 </li>
 <li>stream_stats()
 : <a class="el" href="classcgv_1_1base_1_1base.html#a95bafefa81ebfa3206014eb198e49459">cgv::base::base</a>
+, <a class="el" href="classvr__emulator.html#a64dae2649e70557c1f43fe1113cc3b54">vr_emulator</a>
 , <a class="el" href="classvr__view__interactor.html#a67e45c1fdef3c5c4f39dd6307ab26e41">vr_view_interactor</a>
 </li>
 <li>streaming_mesh()
@@ -1469,6 +1550,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 </li>
 <li>submit_frame()
 : <a class="el" href="classvr_1_1vr__kit.html#ad6f636081ed5a43637db2ad364e324b0">vr::vr_kit</a>
+, <a class="el" href="classvr__emulated__kit.html#a1e0040ff34f9a603c6268f8e5bf90221">vr_emulated_kit</a>
 </li>
 <li>support_compatibility_mode
 : <a class="el" href="classcgv_1_1render_1_1context.html#a906b5feb9ce1eea5ca61d4eaa031d1c7">cgv::render::context</a>
@@ -1520,6 +1602,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 </li>
 <li>swap_shells()
 : <a class="el" href="classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html#a203baa00f5f77064c86ff7cf804e6951">cgv::media::mesh::convex_polyhedron&lt; T, TCDim &gt;</a>
+, <a class="el" href="classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#afe7467276b44aef786679472355313b3">cgv::media::mesh::convex_polyhedron_base</a>
 </li>
 </ul>
 </div><!-- contents -->

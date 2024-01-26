@@ -100,12 +100,16 @@ Files</h2></td></tr>
 <tr class="memdesc:vr__state_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">defines types to store the state <a class="el" href="structvr_1_1vr__kit__state.html" title="structure that stores all information describing the state of a VR kit">vr::vr_kit_state</a> of a vr kit, which is split into sub states for the hmd (<a class="el" href="structvr_1_1vr__trackable__state.html" title="a trackable knows whether it is tracked and its 6d pose stored as 3x4 matrix in column major format">vr::vr_trackable_state</a>) and the two controllers (vr::vr_conroller_state). <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:vr__emulator_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vr__emulator_8h.html">vr_emulator.h</a></td></tr>
-<tr class="memdesc:vr__emulator_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">provides vr_emulator and vr_emulated_kit classes. <br /></td></tr>
+<tr class="memdesc:vr__emulator_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">provides <a class="el" href="classvr__emulator.html">vr_emulator</a> and <a class="el" href="classvr__emulated__kit.html">vr_emulated_kit</a> classes. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:vr__test_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vr__test_8h.html">vr_test.h</a></td></tr>
 <tr class="memdesc:vr__test_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">example plugin for vr usage <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga785410ea03ccab5a21dfa1dbf16c380d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__VR.html#ga785410ea03ccab5a21dfa1dbf16c380d">VRkitVisType</a> </td></tr>
+<tr class="memitem:ga785410ea03ccab5a21dfa1dbf16c380d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__VR.html#ga785410ea03ccab5a21dfa1dbf16c380d">VRkitVisType</a> { <b>VVT_NONE</b>
+, <b>VVT_SPHERE</b> = 1
+, <b>VVT_MESH</b> = 2
+, <b>VVT_BOTH</b>
+ }</td></tr>
 <tr class="separator:ga785410ea03ccab5a21dfa1dbf16c380d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac9fb7152b92ddde4b6a048ca241bc575"><td class="memItemLeft" align="right" valign="top"><a id="gac9fb7152b92ddde4b6a048ca241bc575"></a>
 CGV_API <a class="el" href="structcgv_1_1reflect_1_1enum__reflection__traits.html">cgv::reflect::enum_reflection_traits</a>&lt; <a class="el" href="group__VR.html#ga785410ea03ccab5a21dfa1dbf16c380d">VRkitVisType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__VR.html#gac9fb7152b92ddde4b6a048ca241bc575">get_reflection_traits</a> (const <a class="el" href="group__VR.html#ga785410ea03ccab5a21dfa1dbf16c380d">VRkitVisType</a> &amp;gm)</td></tr>

@@ -82,7 +82,9 @@ $(document).ready(function(){initNavTree('classvr_1_1vr__log.html',''); initResi
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classvr_1_1vr__log-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -104,8 +106,39 @@ Inheritance diagram for vr::vr_log:</div>
   </map>
 </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a20826c93a0993b00e8caac8e48a4b9dd"><td class="memItemLeft" align="right" valign="top"><a id="a20826c93a0993b00e8caac8e48a4b9dd"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>StorageMode</b> { <b>SM_IN_MEMORY</b> = 1
+, <b>SM_OSTREAM</b> = 2
+, <b>SM_IN_MEMORY_AND_OSTREAM</b> = 3
+, <b>SM_NONE</b> = 0
+ }</td></tr>
+<tr class="separator:a20826c93a0993b00e8caac8e48a4b9dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71691af5be5b248a007f9fd395c14710"><td class="memItemLeft" align="right" valign="top"><a id="a71691af5be5b248a007f9fd395c14710"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>Filter</b> { <br />
+&#160;&#160;<b>F_POSE</b> = 1
+, <b>F_BUTTON</b> = 2
+, <b>F_AXES</b> = 4
+, <b>F_VIBRATION</b> = 8
+, <br />
+&#160;&#160;<b>F_HMD</b> = 16
+, <b>F_ALL</b> = 31
+, <b>F_NONE</b> = 0
+<br />
+ }</td></tr>
+<tr class="separator:a71691af5be5b248a007f9fd395c14710"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a041a8b19b1371b1a4e53352a3cecb960"><td class="memTemplParams" colspan="2"><a id="a041a8b19b1371b1a4e53352a3cecb960"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:a041a8b19b1371b1a4e53352a3cecb960"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>container</b> = std::vector&lt; T, std::allocator&lt; T &gt; &gt;</td></tr>
+<tr class="separator:a041a8b19b1371b1a4e53352a3cecb960"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27289f6de6451869decdc64d9551ca83"><td class="memItemLeft" align="right" valign="top"><a id="a27289f6de6451869decdc64d9551ca83"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>vec8</b> = <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; float, 8 &gt;</td></tr>
+<tr class="separator:a27289f6de6451869decdc64d9551ca83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:aa912df47e8d01ad04dff7c0bc56ed270"><td class="memItemLeft" align="right" valign="top"><a id="aa912df47e8d01ad04dff7c0bc56ed270"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>vr_log</b> (std::istringstream &amp;is)</td></tr>
+<tr class="separator:aa912df47e8d01ad04dff7c0bc56ed270"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43f4d9d35d8723d8466bfedd1cb09cfc"><td class="memItemLeft" align="right" valign="top"><a id="a43f4d9d35d8723d8466bfedd1cb09cfc"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr_1_1vr__log.html#a43f4d9d35d8723d8466bfedd1cb09cfc">log_vr_state</a> (const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;state, const double &amp;time)</td></tr>
 <tr class="memdesc:a43f4d9d35d8723d8466bfedd1cb09cfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">write <a class="el" href="structvr_1_1vr__kit__state.html" title="structure that stores all information describing the state of a VR kit">vr_kit_state</a> to log , and stream serialized <a class="el" href="structvr_1_1vr__kit__state.html" title="structure that stores all information describing the state of a VR kit">vr_kit_state</a> to log_stream if ostream_log is enabled <br /></td></tr>
@@ -126,18 +159,52 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr_1_1vr__log.html#a903809868cac3f620b924006355b48eb">set_filter</a> (int f)</td></tr>
 <tr class="memdesc:a903809868cac3f620b924006355b48eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">define what data should be recorded. <br /></td></tr>
 <tr class="separator:a903809868cac3f620b924006355b48eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aefc1faa5cd7fe9a579f2355bdab5946f"><td class="memItemLeft" align="right" valign="top"><a id="aefc1faa5cd7fe9a579f2355bdab5946f"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>get_filter</b> () const</td></tr>
+<tr class="separator:aefc1faa5cd7fe9a579f2355bdab5946f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13650ac417fba5daa21b9f2f3da94bc9"><td class="memItemLeft" align="right" valign="top"><a id="a13650ac417fba5daa21b9f2f3da94bc9"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr_1_1vr__log.html#a13650ac417fba5daa21b9f2f3da94bc9">lock_settings</a> ()</td></tr>
 <tr class="memdesc:a13650ac417fba5daa21b9f2f3da94bc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">prevent changes to settings and enables log_vr_state methods <br /></td></tr>
 <tr class="separator:a13650ac417fba5daa21b9f2f3da94bc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a201da4f7bb49073c252d631ba54173"><td class="memItemLeft" align="right" valign="top"><a id="a9a201da4f7bb49073c252d631ba54173"></a>
+const size_t&#160;</td><td class="memItemRight" valign="bottom"><b>recorded_vr_states</b> () const</td></tr>
+<tr class="separator:a9a201da4f7bb49073c252d631ba54173"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc2216227276ab5ed35d4a2d24d885d7"><td class="memItemLeft" align="right" valign="top"><a id="adc2216227276ab5ed35d4a2d24d885d7"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr_1_1vr__log.html#adc2216227276ab5ed35d4a2d24d885d7">load_state</a> (std::istringstream &amp;is)</td></tr>
 <tr class="memdesc:adc2216227276ab5ed35d4a2d24d885d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">read log from stream <br /></td></tr>
 <tr class="separator:adc2216227276ab5ed35d4a2d24d885d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67b5dba890a068acef62d9c026c05320"><td class="memItemLeft" align="right" valign="top"><a id="a67b5dba890a068acef62d9c026c05320"></a>
+<tr class="inherit_header pub_methods_classcgv_1_1data_1_1ref__counted"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1data_1_1ref__counted')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1data_1_1ref__counted.html">cgv::data::ref_counted</a></td></tr>
+<tr class="memitem:a67b5dba890a068acef62d9c026c05320 inherit pub_methods_classcgv_1_1data_1_1ref__counted"><td class="memItemLeft" align="right" valign="top"><a id="a67b5dba890a068acef62d9c026c05320"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1ref__counted.html#a67b5dba890a068acef62d9c026c05320">get_ref_count</a> () const</td></tr>
-<tr class="memdesc:a67b5dba890a068acef62d9c026c05320"><td class="mdescLeft">&#160;</td><td class="mdescRight">read access to current count <br /></td></tr>
-<tr class="separator:a67b5dba890a068acef62d9c026c05320"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:a67b5dba890a068acef62d9c026c05320 inherit pub_methods_classcgv_1_1data_1_1ref__counted"><td class="mdescLeft">&#160;</td><td class="mdescRight">read access to current count <br /></td></tr>
+<tr class="separator:a67b5dba890a068acef62d9c026c05320 inherit pub_methods_classcgv_1_1data_1_1ref__counted"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a16b2e5363c0fc517e9c8d134c12234d8"><td class="memItemLeft" align="right" valign="top"><a id="a16b2e5363c0fc517e9c8d134c12234d8"></a>
+container&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>time_stamp</b></td></tr>
+<tr class="separator:a16b2e5363c0fc517e9c8d134c12234d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71fe7008eabe25afa15c304e99ec7987"><td class="memItemLeft" align="right" valign="top"><a id="a71fe7008eabe25afa15c304e99ec7987"></a>
+container&lt; <a class="el" href="classcgv_1_1math_1_1fmat.html">mat34</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>hmd_pose</b></td></tr>
+<tr class="separator:a71fe7008eabe25afa15c304e99ec7987"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa895c93a6ddc3fe638ccf83db4ea1073"><td class="memItemLeft" align="right" valign="top"><a id="aa895c93a6ddc3fe638ccf83db4ea1073"></a>
+container&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>hmd_status</b></td></tr>
+<tr class="separator:aa895c93a6ddc3fe638ccf83db4ea1073"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a976848f24fbd09179387bb59b733dd27"><td class="memItemLeft" align="right" valign="top"><a id="a976848f24fbd09179387bb59b733dd27"></a>
+container&lt; <a class="el" href="classcgv_1_1math_1_1vec.html">vecn</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>controller_axes</b> [<a class="el" href="namespacevr.html#abcd8365da0a2174d6e6c9f1675e72421">max_nr_controllers</a>]</td></tr>
+<tr class="separator:a976848f24fbd09179387bb59b733dd27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fe3fa6327537c037ecedc632be7d87c"><td class="memItemLeft" align="right" valign="top"><a id="a4fe3fa6327537c037ecedc632be7d87c"></a>
+container&lt; <a class="el" href="classcgv_1_1math_1_1fmat.html">mat34</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>controller_pose</b> [<a class="el" href="namespacevr.html#abcd8365da0a2174d6e6c9f1675e72421">max_nr_controllers</a>]</td></tr>
+<tr class="separator:a4fe3fa6327537c037ecedc632be7d87c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af73e724c397c120e1d5163224c410001"><td class="memItemLeft" align="right" valign="top"><a id="af73e724c397c120e1d5163224c410001"></a>
+container&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">vec2</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>controller_vibration</b> [<a class="el" href="namespacevr.html#abcd8365da0a2174d6e6c9f1675e72421">max_nr_controllers</a>]</td></tr>
+<tr class="separator:af73e724c397c120e1d5163224c410001"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8cd84c2a60624e6c71895c8c0f39090"><td class="memItemLeft" align="right" valign="top"><a id="ae8cd84c2a60624e6c71895c8c0f39090"></a>
+container&lt; unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>controller_button_flags</b> [<a class="el" href="namespacevr.html#abcd8365da0a2174d6e6c9f1675e72421">max_nr_controllers</a>]</td></tr>
+<tr class="separator:ae8cd84c2a60624e6c71895c8c0f39090"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb038c4e53bb386e41fa163d731eb0b1"><td class="memItemLeft" align="right" valign="top"><a id="acb038c4e53bb386e41fa163d731eb0b1"></a>
+container&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>controller_status</b> [<a class="el" href="namespacevr.html#abcd8365da0a2174d6e6c9f1675e72421">max_nr_controllers</a>]</td></tr>
+<tr class="separator:acb038c4e53bb386e41fa163d731eb0b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -145,10 +212,15 @@ Protected Member Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr_1_1vr__log.html#abff7dea35aef73d6a12d59fe06746db6">log_vr_state</a> (const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;state, const int mode, const int filter, const double time, std::ostream *log_stream)</td></tr>
 <tr class="memdesc:abff7dea35aef73d6a12d59fe06746db6"><td class="mdescLeft">&#160;</td><td class="mdescRight">record state <br /></td></tr>
 <tr class="separator:abff7dea35aef73d6a12d59fe06746db6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abceffe95f08d3fc13cf9286cf360e705"><td class="memItemLeft" align="right" valign="top"><a id="abceffe95f08d3fc13cf9286cf360e705"></a>
+<tr class="inherit_header pro_methods_classcgv_1_1data_1_1ref__counted"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcgv_1_1data_1_1ref__counted')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcgv_1_1data_1_1ref__counted.html">cgv::data::ref_counted</a></td></tr>
+<tr class="memitem:a4abba9349b8891152032f9b386e26ab1 inherit pro_methods_classcgv_1_1data_1_1ref__counted"><td class="memItemLeft" align="right" valign="top"><a id="a4abba9349b8891152032f9b386e26ab1"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1ref__counted.html#a4abba9349b8891152032f9b386e26ab1">ref_counted</a> ()</td></tr>
+<tr class="memdesc:a4abba9349b8891152032f9b386e26ab1 inherit pro_methods_classcgv_1_1data_1_1ref__counted"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor initializes the count to 0 <br /></td></tr>
+<tr class="separator:a4abba9349b8891152032f9b386e26ab1 inherit pro_methods_classcgv_1_1data_1_1ref__counted"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abceffe95f08d3fc13cf9286cf360e705 inherit pro_methods_classcgv_1_1data_1_1ref__counted"><td class="memItemLeft" align="right" valign="top"><a id="abceffe95f08d3fc13cf9286cf360e705"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1ref__counted.html#abceffe95f08d3fc13cf9286cf360e705">set_ref_count</a> (int c) const</td></tr>
-<tr class="memdesc:abceffe95f08d3fc13cf9286cf360e705"><td class="mdescLeft">&#160;</td><td class="mdescRight">write access is also const to allow ref counted pointers to const instances <br /></td></tr>
-<tr class="separator:abceffe95f08d3fc13cf9286cf360e705"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:abceffe95f08d3fc13cf9286cf360e705 inherit pro_methods_classcgv_1_1data_1_1ref__counted"><td class="mdescLeft">&#160;</td><td class="mdescRight">write access is also const to allow ref counted pointers to const instances <br /></td></tr>
+<tr class="separator:abceffe95f08d3fc13cf9286cf360e705 inherit pro_methods_classcgv_1_1data_1_1ref__counted"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>helper struct for logging vr events </p>

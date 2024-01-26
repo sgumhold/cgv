@@ -95,11 +95,11 @@ $(document).ready(function(){initNavTree('up__tri__mat_8h_source.html',''); init
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">namespace </span>math {</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">class </span>up_tri_mat </div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1up__tri__mat.html">   11</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat</a> </div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;{</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    vec&lt;T&gt; _data;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> _data;</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">unsigned</span> _dim;</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    </div>
@@ -107,16 +107,16 @@ $(document).ready(function(){initNavTree('up__tri__mat_8h_source.html',''); init
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    </div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="comment">//standard constructor of a upper triangular matrix</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    up_tri_mat()</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat</a>()</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    {</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        _dim=0;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    }</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="comment">//constructs a upper triangular matrix from the upper triangular part of m</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    up_tri_mat(<span class="keyword">const</span> mat&lt;T&gt;&amp; m)</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>&amp; m)</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    {</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        assert(m.ncols()==m.nrows());</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        resize(m.ncols());</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        assert(m.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>()==m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>());</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        resize(m.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>());</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i =0; i &lt; _dim;i++)</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        {</div>
@@ -128,26 +128,26 @@ $(document).ready(function(){initNavTree('up__tri__mat_8h_source.html',''); init
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    }</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="comment">//creates a dim x dim upper triangular matrix</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    up_tri_mat(<span class="keywordtype">unsigned</span> dim)</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat</a>(<span class="keywordtype">unsigned</span> dim)</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    {</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        resize(dim);</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        fill(0);</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    }</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    up_tri_mat(<span class="keyword">const</span> up_tri_mat&amp; m)</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat</a>&amp; m)</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    {</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        resize(m.dim());</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        memcpy(_data,m._data,size()*<span class="keyword">sizeof</span>(T));</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    }</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="comment">//create a dim x dim upper triangular matrix with all non-zero elements set to c</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    up_tri_mat(<span class="keywordtype">unsigned</span> dim, <span class="keyword">const</span> T&amp; c)</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat</a>(<span class="keywordtype">unsigned</span> dim, <span class="keyword">const</span> T&amp; c)</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    {</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        resize(dim);</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        fill(c);</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    }</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">virtual</span> ~up_tri_mat()</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat</a>()</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    {</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    }</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
@@ -155,13 +155,13 @@ $(document).ready(function(){initNavTree('up__tri__mat_8h_source.html',''); init
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">void</span> resize(<span class="keywordtype">unsigned</span> n)</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    {</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        _dim = n;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        _data.resize(n*(n+1)/2);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        _data.<a class="code" href="classcgv_1_1math_1_1vec.html#a4ad00087a03df57550f9082992ce827b">resize</a>(n*(n+1)/2);</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            </div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    }</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keyword">operator</span> mat&lt;T&gt;() </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keyword">operator</span> <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>() </div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    {</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        mat&lt;T&gt; m(_dim,_dim);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> m(_dim,_dim);</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i =0; i &lt; _dim; i++)</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        {</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; _dim; j++)</div>
@@ -176,9 +176,9 @@ $(document).ready(function(){initNavTree('up__tri__mat_8h_source.html',''); init
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keywordflow">return</span> m;</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    }</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keyword">operator</span> <span class="keyword">const</span> mat&lt;T&gt;()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keyword">operator</span> <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        mat&lt;T&gt; m(_dim,_dim);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> m(_dim,_dim);</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i =0; i &lt; _dim;i++)</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        {</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; _dim;j++)</div>
@@ -193,7 +193,7 @@ $(document).ready(function(){initNavTree('up__tri__mat_8h_source.html',''); init
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="keywordflow">return</span> m;</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    }</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    up_tri_mat&lt;T&gt;&amp; operator = (<span class="keyword">const</span> up_tri_mat&lt;T&gt;&amp; m) </div>
+<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1up__tri__mat.html#af30991c585360219fe2a0cbbb33f6fc4">  110</a></span>&#160;    <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat&lt;T&gt;</a>&amp; <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html#af30991c585360219fe2a0cbbb33f6fc4">operator = </a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat&lt;T&gt;</a>&amp; m) </div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    {  </div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        _dim = m.dim();</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        _data = m._data;</div>
@@ -203,7 +203,7 @@ $(document).ready(function(){initNavTree('up__tri__mat_8h_source.html',''); init
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="comment">//return number of stored elements</span></div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keywordtype">unsigned</span> size()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keywordflow">return</span> _data.size();</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keywordflow">return</span> _data.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    }</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="comment">//return number of stored elements</span></div>
@@ -247,7 +247,7 @@ $(document).ready(function(){initNavTree('up__tri__mat_8h_source.html',''); init
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        <span class="keywordflow">return</span> _data[j*(j+1)/2+i]; </div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    }</div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    up_tri_mat&lt;T&gt;&amp; operator /= (<span class="keyword">const</span> T&amp; s)         </div>
+<div class="line"><a name="l00165"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1up__tri__mat.html#a3f8fd6428fb4f399438c20540effe79e">  165</a></span>&#160;    <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat&lt;T&gt;</a>&amp; <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html#a3f8fd6428fb4f399438c20540effe79e">operator /= </a>(<span class="keyword">const</span> T&amp; s)         </div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    { </div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        T val = (T)s;</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; size(); i++)</div>
@@ -256,19 +256,19 @@ $(document).ready(function(){initNavTree('up__tri__mat_8h_source.html',''); init
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>; </div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    }</div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    up_tri_mat&lt;T&gt; <a class="code" href="namespacecgv_1_1math.html#adb1c5592458b2b53ca2beb55636f23dd">operator / </a>(<span class="keyword">const</span> T&amp; s)           </div>
+<div class="line"><a name="l00175"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1up__tri__mat.html#a0a35a6db2a59e9665ad0d476367e1b03">  175</a></span>&#160;    <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat&lt;T&gt;</a> <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html#a0a35a6db2a59e9665ad0d476367e1b03">operator / </a>(<span class="keyword">const</span> T&amp; s)           </div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    { </div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        up_tri_mat&lt;T&gt; r=(*this);</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat&lt;T&gt;</a> r=(*this);</div>
 <div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        r/=s;</div>
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        <span class="keywordflow">return</span> r;</div>
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    }</div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    </div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    <span class="keyword">const</span> mat&lt;T&gt; operator*( <span class="keyword">const</span> up_tri_mat&lt;T&gt;&amp; m2) </div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> operator*( <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat&lt;T&gt;</a>&amp; m2) </div>
 <div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    {</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        assert(m2.nrows() == nrows());</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        <span class="keywordtype">unsigned</span> M = m2.ncols();</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        mat&lt;T&gt; r(nrows(),M,(T)0);</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> r(nrows(),M,(T)0);</div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; nrows(); i++)</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = i; j &lt; M;j++)</div>
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> k = i; k &lt;= j; k++)</div>
@@ -392,7 +392,7 @@ $(document).ready(function(){initNavTree('up__tri__mat_8h_source.html',''); init
 <div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160; </div>
 <div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160; </div>
 <div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00312"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ad01d48e28fc77aefd5993faaa641e01a">  312</a></span>&#160;std::ostream&amp; <a class="code" href="namespacecgv_1_1math.html#a959d852b32d156d183107537cc965ca7">operator&lt;&lt;</a>(std::ostream&amp; out, <span class="keyword">const</span> up_tri_mat&lt;T&gt;&amp; m)</div>
+<div class="line"><a name="l00312"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ad01d48e28fc77aefd5993faaa641e01a">  312</a></span>&#160;std::ostream&amp; <a class="code" href="namespacecgv_1_1math.html#a959d852b32d156d183107537cc965ca7">operator&lt;&lt;</a>(std::ostream&amp; out, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1up__tri__mat.html">up_tri_mat&lt;T&gt;</a>&amp; m)</div>
 <div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;{</div>
 <div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    </div>
 <div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i =0;i&lt; m.nrows() ;++i)</div>
@@ -414,8 +414,17 @@ $(document).ready(function(){initNavTree('up__tri__mat_8h_source.html',''); init
 <div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;}</div>
 <div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160; </div>
 <div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;}</div>
+<div class="ttc" id="aclasscgv_1_1math_1_1mat_html"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html">cgv::math::mat</a></div><div class="ttdoc">A matrix type (full column major storage) The matrix can be loaded directly into OpenGL without need ...</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00208">mat.h:209</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1mat_html_a19c47145cbe77fd7f48fd2d7dae97deb"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">cgv::math::mat::ncols</a></div><div class="ttdeci">unsigned ncols() const</div><div class="ttdoc">number of columns</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00547">mat.h:547</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1mat_html_aee1bfad9a6c73d9f5de7afaa4fe91bb9"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">cgv::math::mat::nrows</a></div><div class="ttdeci">unsigned nrows() const</div><div class="ttdoc">number of rows</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00541">mat.h:541</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1up__tri__mat_html"><div class="ttname"><a href="classcgv_1_1math_1_1up__tri__mat.html">cgv::math::up_tri_mat</a></div><div class="ttdef"><b>Definition:</b> <a href="up__tri__mat_8h_source.html#l00011">up_tri_mat.h:12</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1up__tri__mat_html_a0a35a6db2a59e9665ad0d476367e1b03"><div class="ttname"><a href="classcgv_1_1math_1_1up__tri__mat.html#a0a35a6db2a59e9665ad0d476367e1b03">cgv::math::up_tri_mat::operator/</a></div><div class="ttdeci">up_tri_mat&lt; T &gt; operator/(const T &amp;s)</div><div class="ttdoc">division by a scalar</div><div class="ttdef"><b>Definition:</b> <a href="up__tri__mat_8h_source.html#l00175">up_tri_mat.h:175</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1up__tri__mat_html_a3f8fd6428fb4f399438c20540effe79e"><div class="ttname"><a href="classcgv_1_1math_1_1up__tri__mat.html#a3f8fd6428fb4f399438c20540effe79e">cgv::math::up_tri_mat::operator/=</a></div><div class="ttdeci">up_tri_mat&lt; T &gt; &amp; operator/=(const T &amp;s)</div><div class="ttdoc">in place division by a scalar</div><div class="ttdef"><b>Definition:</b> <a href="up__tri__mat_8h_source.html#l00165">up_tri_mat.h:165</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1up__tri__mat_html_af30991c585360219fe2a0cbbb33f6fc4"><div class="ttname"><a href="classcgv_1_1math_1_1up__tri__mat.html#af30991c585360219fe2a0cbbb33f6fc4">cgv::math::up_tri_mat::operator=</a></div><div class="ttdeci">up_tri_mat&lt; T &gt; &amp; operator=(const up_tri_mat&lt; T &gt; &amp;m)</div><div class="ttdoc">assignment of a matrix with the same element type</div><div class="ttdef"><b>Definition:</b> <a href="up__tri__mat_8h_source.html#l00110">up_tri_mat.h:110</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1vec_html"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html">cgv::math::vec</a></div><div class="ttdoc">A column vector class.</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00027">vec.h:28</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1vec_html_a4ad00087a03df57550f9082992ce827b"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html#a4ad00087a03df57550f9082992ce827b">cgv::math::vec::resize</a></div><div class="ttdeci">void resize(unsigned dim)</div><div class="ttdoc">resize the vector</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00557">vec.h:557</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1vec_html_a5d6a97e9f2e2fa0d3ab722da1be2e8cc"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">cgv::math::vec::size</a></div><div class="ttdeci">unsigned size() const</div><div class="ttdoc">number of elements</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00097">vec.h:97</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a959d852b32d156d183107537cc965ca7"><div class="ttname"><a href="namespacecgv_1_1math.html#a959d852b32d156d183107537cc965ca7">cgv::math::operator&lt;&lt;</a></div><div class="ttdeci">std::ostream &amp; operator&lt;&lt;(std::ostream &amp;out, const diag_mat&lt; T &gt; &amp;m)</div><div class="ttdoc">output of a diagonal matrix onto an ostream</div><div class="ttdef"><b>Definition:</b> <a href="diag__mat_8h_source.html#l00442">diag_mat.h:442</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_adb1c5592458b2b53ca2beb55636f23dd"><div class="ttname"><a href="namespacecgv_1_1math.html#adb1c5592458b2b53ca2beb55636f23dd">cgv::math::operator/</a></div><div class="ttdeci">fvec&lt; T, N &gt; operator/(const T &amp;s, const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">returns a vector containing the quotients of a scalar s with each component of v</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00376">fvec.h:376</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_ae1f639abf33334ad93ab52dbdaa19abf"><div class="ttname"><a href="namespacecgv_1_1math.html#ae1f639abf33334ad93ab52dbdaa19abf">cgv::math::transpose</a></div><div class="ttdeci">fmat&lt; T, N, N &gt; transpose(const fmat&lt; T, N, N &gt; &amp;m)</div><div class="ttdoc">return the transposed of a square matrix</div><div class="ttdef"><b>Definition:</b> <a href="fmat_8h_source.html#l00251">fmat.h:251</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

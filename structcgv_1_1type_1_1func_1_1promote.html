@@ -82,6 +82,8 @@ $(document).ready(function(){initNavTree('structcgv_1_1type_1_1func_1_1promote.h
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="structcgv_1_1type_1_1func_1_1promote-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::type::func::promote&lt; T1, T2 &gt; Struct Template Reference</div>  </div>
@@ -92,6 +94,18 @@ $(document).ready(function(){initNavTree('structcgv_1_1type_1_1func_1_1promote.h
  <a href="structcgv_1_1type_1_1func_1_1promote.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="promote_8h_source.html">promote.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a2c3177c793c50e21c85f3da8f50bf0e3"><td class="memItemLeft" align="right" valign="top"><a id="a2c3177c793c50e21c85f3da8f50bf0e3"></a>
+typedef <a class="el" href="structcgv_1_1type_1_1ctrl_1_1if__.html">ctrl::if_</a>&lt; favour_first, T1, T2 &gt;::type&#160;</td><td class="memItemRight" valign="bottom"><b>type</b></td></tr>
+<tr class="separator:a2c3177c793c50e21c85f3da8f50bf0e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:acebcf7be153e2fdee154c3be01dd5688"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><b>favour_first</b></td></tr>
+<tr class="separator:acebcf7be153e2fdee154c3be01dd5688"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T1, typename T2&gt;<br />
 struct cgv::type::func::promote&lt; T1, T2 &gt;</h3>
@@ -99,7 +113,36 @@ struct cgv::type::func::promote&lt; T1, T2 &gt;</h3>
 <p>determine the type that should be used to represent the result of an operator or function applies to two different types </p>
 
 <p class="definition">Definition at line <a class="el" href="promote_8h_source.html#l00027">27</a> of file <a class="el" href="promote_8h_source.html">promote.h</a>.</p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="acebcf7be153e2fdee154c3be01dd5688"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acebcf7be153e2fdee154c3be01dd5688">&#9670;&nbsp;</a></span>favour_first</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T1 , typename T2 &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const bool <a class="el" href="structcgv_1_1type_1_1func_1_1promote.html">cgv::type::func::promote</a>&lt; T1, T2 &gt;::favour_first</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= </div>
+<div class="line">                    (<span class="keywordtype">unsigned</span> int) Promote::promotion_rank&lt;T1&gt;::rank &gt;(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>) Promote::promotion_rank&lt;T2&gt;::rank</div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="promote_8h_source.html#l00029">29</a> of file <a class="el" href="promote_8h_source.html">promote.h</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
 <li>cgv/type/func/<a class="el" href="promote_8h_source.html">promote.h</a></li>
 </ul>
 </div><!-- contents -->

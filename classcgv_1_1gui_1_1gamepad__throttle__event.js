@@ -1,32 +1,9 @@
 var classcgv_1_1gui_1_1gamepad__throttle__event =
 [
     [ "gamepad_throttle_event", "classcgv_1_1gui_1_1gamepad__throttle__event.html#aaab1f769689bfad3ec0a5cb98d6b5018", null ],
-    [ "get_controller_index", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a18a6ff754ed419fea71880b0283dc5d1", null ],
     [ "get_device_handle", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a52273ea527ec1f975e42698663bb90c2", null ],
-    [ "get_device_id", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a2cf741ae08d04f325553109e11d1c146", null ],
-    [ "get_flags", "classcgv_1_1gui_1_1gamepad__throttle__event.html#aab1416286305286b19ebfccc165abf67", null ],
-    [ "get_kind", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a3a0495e3d6d0a3adf1148158d55b035e", null ],
-    [ "get_last_value", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a0fe098a8069efee56799cbbba7d8ca1d", null ],
-    [ "get_modifiers", "classcgv_1_1gui_1_1gamepad__throttle__event.html#ada43c99e60a3a1cdb19f8a4b094c24be", null ],
-    [ "get_player_index", "classcgv_1_1gui_1_1gamepad__throttle__event.html#aff717f3f66e610abf368d533a042a67f", null ],
     [ "get_state", "classcgv_1_1gui_1_1gamepad__throttle__event.html#acc930842c81b5f746f40fc948dbc1aa5", null ],
-    [ "get_throttle_index", "classcgv_1_1gui_1_1gamepad__throttle__event.html#aef2b674ee4a9dbf658917cd95afc0910", null ],
-    [ "get_time", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a1fcaac54b1f22358cbe828cc206f1f59", null ],
-    [ "get_toggle_keys", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a559dc3c561b6cd9257913941a07cbd19", null ],
-    [ "get_value", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a1879f8e63ad0be83fa899ce22a00a709", null ],
-    [ "get_value_change", "classcgv_1_1gui_1_1gamepad__throttle__event.html#ac683914982c1235542ff54614d49bc40", null ],
-    [ "set_flags", "classcgv_1_1gui_1_1gamepad__throttle__event.html#af8c6041e3055dc0c6325dfed9a773dbb", null ],
-    [ "set_kind", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a9f77f91f3badb2105b0117d69e8f0edc", null ],
-    [ "set_modifiers", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a23869d5f98d5763e56aa9a28c5a6fe2a", null ],
-    [ "set_time", "classcgv_1_1gui_1_1gamepad__throttle__event.html#afee8ba3f73e81ad3f56db5ba494c2354", null ],
-    [ "set_toggle_keys", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a22a332e4a85a2d9772872436eb72782f", null ],
-    [ "stream_in", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a9fae2f6b369580e5ee7b7a983962ee55", null ],
     [ "stream_out", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a253a84ac729f2e8a148ef84426ff54e7", null ],
     [ "device_handle", "classcgv_1_1gui_1_1gamepad__throttle__event.html#ab8f06cbab7ffaf17ade3cd4b4af6edb9", null ],
-    [ "flags", "classcgv_1_1gui_1_1gamepad__throttle__event.html#ac4bd23e1fa0d8597c5b354970209d9a7", null ],
-    [ "kind", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a7bdfa88afd524c47eb91c02b6dcd141c", null ],
-    [ "modifiers", "classcgv_1_1gui_1_1gamepad__throttle__event.html#aa0c88b35dd8859e3d913f342b6db87a6", null ],
-    [ "state", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a4eed1e935cd54e69fbba0c1ab49deef0", null ],
-    [ "time", "classcgv_1_1gui_1_1gamepad__throttle__event.html#ac31bd0c22ff8cd2fffbf5c17610fb9fd", null ],
-    [ "toggle_keys", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a85698ba126b46fee36cd6e31fdfe86b5", null ]
+    [ "state", "classcgv_1_1gui_1_1gamepad__throttle__event.html#a4eed1e935cd54e69fbba0c1ab49deef0", null ]
 ];

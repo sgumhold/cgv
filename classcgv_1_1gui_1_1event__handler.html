@@ -99,11 +99,22 @@ Inheritance diagram for cgv::gui::event_handler:</div>
  <div class="center">
   <img src="classcgv_1_1gui_1_1event__handler.png" usemap="#cgv::gui::event_5Fhandler_map" alt=""/>
   <map id="cgv::gui::event_5Fhandler_map" name="cgv::gui::event_5Fhandler_map">
-<area href="classcgv_1_1base_1_1traverse__policy.html" title="nodes should inherit from this policy class to allow selective tree traversals" alt="cgv::base::traverse_policy" shape="rect" coords="187,0,552,24"/>
+<area href="classcgv_1_1base_1_1traverse__policy.html" title="nodes should inherit from this policy class to allow selective tree traversals" alt="cgv::base::traverse_policy" shape="rect" coords="1687,0,2052,24"/>
 <area href="classcgv_1_1app_1_1application__plugin__base.html" title="Abstract base class for application plugins that provides capability to handle overlays,..." alt="cgv::app::application_plugin_base" shape="rect" coords="187,112,552,136"/>
+<area href="classcgv_1_1app_1_1overlay.html" alt="cgv::app::overlay" shape="rect" coords="1125,112,1490,136"/>
+<area href="classcgv_1_1gui_1_1key__control.html" alt="cgv::gui::key_control&lt; T &gt;" shape="rect" coords="1500,112,1865,136"/>
+<area href="classcgv_1_1gui_1_1key__control_3_01bool_01_4.html" alt="cgv::gui::key_control&lt; bool &gt;" shape="rect" coords="1875,112,2240,136"/>
+<area href="classvr__emulator.html" alt="vr_emulator" shape="rect" coords="2250,112,2615,136"/>
+<area href="classvr__test.html" alt="vr_test" shape="rect" coords="2625,112,2990,136"/>
 <area href="classcgv_1_1app_1_1generic__application__plugin.html" alt="cgv::app::generic_application_plugin&lt; cgv::render::drawable &gt;" shape="rect" coords="0,168,365,192"/>
 <area href="classcgv_1_1app_1_1generic__application__plugin.html" title="Extension of application_plugin_base that allows to define a used drawable base class." alt="cgv::app::generic_application_plugin&lt; base_drawable &gt;" shape="rect" coords="375,168,740,192"/>
+<area href="classcgv_1_1app_1_1canvas__overlay.html" alt="cgv::app::canvas_overlay" shape="rect" coords="937,168,1302,192"/>
+<area href="classcgv_1_1app_1_1navigator.html" alt="cgv::app::navigator" shape="rect" coords="1312,168,1677,192"/>
 <area href="classcgv_1_1app_1_1application__plugin.html" title="Specialization of generic_application_plugin that uses the default drawable as the template argument." alt="cgv::app::application_plugin" shape="rect" coords="0,224,365,248"/>
+<area href="classcgv_1_1app_1_1color__map__editor.html" alt="cgv::app::color_map_editor" shape="rect" coords="375,224,740,248"/>
+<area href="classcgv_1_1app_1_1color__map__legend.html" alt="cgv::app::color_map_legend" shape="rect" coords="750,224,1115,248"/>
+<area href="classcgv_1_1app_1_1color__selector.html" alt="cgv::app::color_selector" shape="rect" coords="1125,224,1490,248"/>
+<area href="classcgv_1_1app_1_1performance__monitor.html" alt="cgv::app::performance_monitor" shape="rect" coords="1500,224,1865,248"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -127,38 +138,56 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a3dcd44ab999b271df3c9b6e1da9c21c4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event__handler.html#a3dcd44ab999b271df3c9b6e1da9c21c4">add_key_control</a> (const std::string &amp;property, const std::string &amp;options, <a class="el" href="namespacecgv_1_1base.html#ac2501796ba207ee4454afee3d0ad7921">cgv::base::group_ptr</a> group=<a class="el" href="namespacecgv_1_1base.html#ac2501796ba207ee4454afee3d0ad7921">cgv::base::group_ptr</a>())</td></tr>
 <tr class="memdesc:a3dcd44ab999b271df3c9b6e1da9c21c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">add a key control for the given property with the given options.  <a href="classcgv_1_1gui_1_1event__handler.html#a3dcd44ab999b271df3c9b6e1da9c21c4">More...</a><br /></td></tr>
 <tr class="separator:a3dcd44ab999b271df3c9b6e1da9c21c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a276706d356dd32a65dde6062b0250937"><td class="memItemLeft" align="right" valign="top"><a id="a276706d356dd32a65dde6062b0250937"></a>
+<tr class="inherit_header pub_methods_classcgv_1_1base_1_1traverse__policy"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1base_1_1traverse__policy')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1base_1_1traverse__policy.html">cgv::base::traverse_policy</a></td></tr>
+<tr class="memitem:af67134fa6d40c4b6add8225583a730c1 inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memItemLeft" align="right" valign="top"><a id="af67134fa6d40c4b6add8225583a730c1"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverse__policy.html#af67134fa6d40c4b6add8225583a730c1">traverse_policy</a> (int _policy=TP_ALL+<a class="el" href="namespacecgv_1_1base.html#a746925f26d076c26742b2dc558cbae36a7b2b5c718b50e4241491dcb951599a8b">TP_STOP_ON_SUCCESS</a>, bool _active=true, int _focus=-1)</td></tr>
+<tr class="memdesc:af67134fa6d40c4b6add8225583a730c1 inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct default traverse policy that visits everything <br /></td></tr>
+<tr class="separator:af67134fa6d40c4b6add8225583a730c1 inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a276706d356dd32a65dde6062b0250937 inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memItemLeft" align="right" valign="top"><a id="a276706d356dd32a65dde6062b0250937"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverse__policy.html#a276706d356dd32a65dde6062b0250937">get_policy</a> () const</td></tr>
-<tr class="memdesc:a276706d356dd32a65dde6062b0250937"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the policy without the stop on success flag <br /></td></tr>
-<tr class="separator:a276706d356dd32a65dde6062b0250937"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac985e72d3583fa5eb114d991ab294cce"><td class="memItemLeft" align="right" valign="top"><a id="ac985e72d3583fa5eb114d991ab294cce"></a>
+<tr class="memdesc:a276706d356dd32a65dde6062b0250937 inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the policy without the stop on success flag <br /></td></tr>
+<tr class="separator:a276706d356dd32a65dde6062b0250937 inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac985e72d3583fa5eb114d991ab294cce inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memItemLeft" align="right" valign="top"><a id="ac985e72d3583fa5eb114d991ab294cce"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverse__policy.html#ac985e72d3583fa5eb114d991ab294cce">stop_on_success</a> () const</td></tr>
-<tr class="memdesc:ac985e72d3583fa5eb114d991ab294cce"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether to stop on success <br /></td></tr>
-<tr class="separator:ac985e72d3583fa5eb114d991ab294cce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4936bff3707dba734680c37e1822a1a8"><td class="memItemLeft" align="right" valign="top"><a id="a4936bff3707dba734680c37e1822a1a8"></a>
+<tr class="memdesc:ac985e72d3583fa5eb114d991ab294cce inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether to stop on success <br /></td></tr>
+<tr class="separator:ac985e72d3583fa5eb114d991ab294cce inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4936bff3707dba734680c37e1822a1a8 inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memItemLeft" align="right" valign="top"><a id="a4936bff3707dba734680c37e1822a1a8"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverse__policy.html#a4936bff3707dba734680c37e1822a1a8">stop_on_failure</a> () const</td></tr>
-<tr class="memdesc:a4936bff3707dba734680c37e1822a1a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether to stop on failure <br /></td></tr>
-<tr class="separator:a4936bff3707dba734680c37e1822a1a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28d54d9fc7e025a09a6f9e7f8c30a69a"><td class="memItemLeft" align="right" valign="top"><a id="a28d54d9fc7e025a09a6f9e7f8c30a69a"></a>
+<tr class="memdesc:a4936bff3707dba734680c37e1822a1a8 inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether to stop on failure <br /></td></tr>
+<tr class="separator:a4936bff3707dba734680c37e1822a1a8 inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28d54d9fc7e025a09a6f9e7f8c30a69a inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memItemLeft" align="right" valign="top"><a id="a28d54d9fc7e025a09a6f9e7f8c30a69a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverse__policy.html#a28d54d9fc7e025a09a6f9e7f8c30a69a">set_policy</a> (int _policy)</td></tr>
-<tr class="memdesc:a28d54d9fc7e025a09a6f9e7f8c30a69a"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a new policy, always add stop on success flag if needed <br /></td></tr>
-<tr class="separator:a28d54d9fc7e025a09a6f9e7f8c30a69a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae075e6b19833e43e3d0908c8a1cfc69f"><td class="memItemLeft" align="right" valign="top"><a id="ae075e6b19833e43e3d0908c8a1cfc69f"></a>
+<tr class="memdesc:a28d54d9fc7e025a09a6f9e7f8c30a69a inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a new policy, always add stop on success flag if needed <br /></td></tr>
+<tr class="separator:a28d54d9fc7e025a09a6f9e7f8c30a69a inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae075e6b19833e43e3d0908c8a1cfc69f inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memItemLeft" align="right" valign="top"><a id="ae075e6b19833e43e3d0908c8a1cfc69f"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverse__policy.html#ae075e6b19833e43e3d0908c8a1cfc69f">get_focused_child</a> () const</td></tr>
-<tr class="memdesc:ae075e6b19833e43e3d0908c8a1cfc69f"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the focused child or -1 if none is focused <br /></td></tr>
-<tr class="separator:ae075e6b19833e43e3d0908c8a1cfc69f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a822bf58021ff2a41a6cad1411b3e9e"><td class="memItemLeft" align="right" valign="top"><a id="a4a822bf58021ff2a41a6cad1411b3e9e"></a>
+<tr class="memdesc:ae075e6b19833e43e3d0908c8a1cfc69f inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the focused child or -1 if none is focused <br /></td></tr>
+<tr class="separator:ae075e6b19833e43e3d0908c8a1cfc69f inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a822bf58021ff2a41a6cad1411b3e9e inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memItemLeft" align="right" valign="top"><a id="a4a822bf58021ff2a41a6cad1411b3e9e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverse__policy.html#a4a822bf58021ff2a41a6cad1411b3e9e">set_focused_child</a> (int _focused_child)</td></tr>
-<tr class="memdesc:a4a822bf58021ff2a41a6cad1411b3e9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the focused child <br /></td></tr>
-<tr class="separator:a4a822bf58021ff2a41a6cad1411b3e9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ebecf480e5437aa2891dee243aac0a7"><td class="memItemLeft" align="right" valign="top"><a id="a0ebecf480e5437aa2891dee243aac0a7"></a>
+<tr class="memdesc:a4a822bf58021ff2a41a6cad1411b3e9e inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the focused child <br /></td></tr>
+<tr class="separator:a4a822bf58021ff2a41a6cad1411b3e9e inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ebecf480e5437aa2891dee243aac0a7 inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memItemLeft" align="right" valign="top"><a id="a0ebecf480e5437aa2891dee243aac0a7"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverse__policy.html#a0ebecf480e5437aa2891dee243aac0a7">get_active</a> () const</td></tr>
-<tr class="memdesc:a0ebecf480e5437aa2891dee243aac0a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether the current node is active <br /></td></tr>
-<tr class="separator:a0ebecf480e5437aa2891dee243aac0a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81ed08d30e2ca24ce81a565fa431bdac"><td class="memItemLeft" align="right" valign="top"><a id="a81ed08d30e2ca24ce81a565fa431bdac"></a>
+<tr class="memdesc:a0ebecf480e5437aa2891dee243aac0a7 inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether the current node is active <br /></td></tr>
+<tr class="separator:a0ebecf480e5437aa2891dee243aac0a7 inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81ed08d30e2ca24ce81a565fa431bdac inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memItemLeft" align="right" valign="top"><a id="a81ed08d30e2ca24ce81a565fa431bdac"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverse__policy.html#a81ed08d30e2ca24ce81a565fa431bdac">set_active</a> (bool _active)</td></tr>
-<tr class="memdesc:a81ed08d30e2ca24ce81a565fa431bdac"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the active flag of the current node <br /></td></tr>
-<tr class="separator:a81ed08d30e2ca24ce81a565fa431bdac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:a81ed08d30e2ca24ce81a565fa431bdac inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the active flag of the current node <br /></td></tr>
+<tr class="separator:a81ed08d30e2ca24ce81a565fa431bdac inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_attribs_classcgv_1_1base_1_1traverse__policy"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1base_1_1traverse__policy')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1base_1_1traverse__policy.html">cgv::base::traverse_policy</a></td></tr>
+<tr class="memitem:a4f73abb60995197ad1f2e386a170e4ec inherit pro_attribs_classcgv_1_1base_1_1traverse__policy"><td class="memItemLeft" align="right" valign="top"><a id="a4f73abb60995197ad1f2e386a170e4ec"></a>
+<a class="el" href="namespacecgv_1_1base.html#a746925f26d076c26742b2dc558cbae36">TraversePolicy</a>&#160;</td><td class="memItemRight" valign="bottom"><b>policy</b></td></tr>
+<tr class="separator:a4f73abb60995197ad1f2e386a170e4ec inherit pro_attribs_classcgv_1_1base_1_1traverse__policy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe7de47a2c517d58a9dad77eb2dfdffc inherit pro_attribs_classcgv_1_1base_1_1traverse__policy"><td class="memItemLeft" align="right" valign="top"><a id="afe7de47a2c517d58a9dad77eb2dfdffc"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>active</b></td></tr>
+<tr class="separator:afe7de47a2c517d58a9dad77eb2dfdffc inherit pro_attribs_classcgv_1_1base_1_1traverse__policy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0388043206498f4b6b6fa7876a5f6c41 inherit pro_attribs_classcgv_1_1base_1_1traverse__policy"><td class="memItemLeft" align="right" valign="top"><a id="a0388043206498f4b6b6fa7876a5f6c41"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>focus</b></td></tr>
+<tr class="separator:a0388043206498f4b6b6fa7876a5f6c41 inherit pro_attribs_classcgv_1_1base_1_1traverse__policy"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>interface for all classes that want to receive events </p>
@@ -240,7 +269,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>return true for handled events and false otherwise. Other event handlers (e.g. parents) only receive unhandled events if false is returned</dd></dl>
 
-<p>Implemented in <a class="el" href="classcgv_1_1app_1_1application__plugin__base.html#af235f0a26a1d9dd7aac02e4cb0009dc4">cgv::app::application_plugin_base</a>.</p>
+<p>Implemented in <a class="el" href="classcgv_1_1gui_1_1key__control_3_01bool_01_4.html#ac9cb07706678e2b75e274b0ffe1c73c1">cgv::gui::key_control&lt; bool &gt;</a>, <a class="el" href="classcgv_1_1gui_1_1key__control.html#a96eedbd1c662ea64f9840e249a840398">cgv::gui::key_control&lt; T &gt;</a>, <a class="el" href="classcgv_1_1app_1_1application__plugin__base.html#af235f0a26a1d9dd7aac02e4cb0009dc4">cgv::app::application_plugin_base</a>, <a class="el" href="classvr__emulator.html#a015e94ee2e8282f059817a216e442610">vr_emulator</a>, <a class="el" href="classvr__test.html#accca3956f28dc94379ebcac0a7b41f53">vr_test</a>, and <a class="el" href="classcgv_1_1app_1_1overlay.html#a7ea4bf0e5dea6dea376c428e07059703">cgv::app::overlay</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="vr__server_8cxx_source.html#l00351">cgv::gui::vr_server::dispatch()</a>, and <a class="el" href="vr__server_8cxx_source.html#l00039">cgv::gui::vr_server::grab_focus()</a>.</p>
 

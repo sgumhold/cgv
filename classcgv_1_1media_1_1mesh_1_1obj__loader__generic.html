@@ -83,7 +83,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1media_1_1mesh_1_1obj__load
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
-<a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::media::mesh::obj_loader_generic&lt; T &gt; Class Template Reference</div>  </div>
@@ -107,54 +107,69 @@ Inheritance diagram for cgv::media::mesh::obj_loader_generic&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:aaf2b57e1cd1475ca84b46a95c50a78fc"><td class="memItemLeft" align="right" valign="top"><a id="aaf2b57e1cd1475ca84b46a95c50a78fc"></a>
+<tr class="memitem:a665782d8bc0570ceb8ef6dcba6a430d7"><td class="memItemLeft" align="right" valign="top"><a id="a665782d8bc0570ceb8ef6dcba6a430d7"></a>
+typedef <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html">obj_reader_generic</a>&lt; T &gt;::<a class="el" href="classcgv_1_1math_1_1fvec.html">v3d_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>v3d_type</b></td></tr>
+<tr class="separator:a665782d8bc0570ceb8ef6dcba6a430d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23e5bc0061a865275e247fa7b47414ef"><td class="memItemLeft" align="right" valign="top"><a id="a23e5bc0061a865275e247fa7b47414ef"></a>
+typedef <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html">obj_reader_generic</a>&lt; T &gt;::<a class="el" href="classcgv_1_1math_1_1fvec.html">v2d_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>v2d_type</b></td></tr>
+<tr class="separator:a23e5bc0061a865275e247fa7b47414ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f28b542e53825fdbd7e25d947b981b1"><td class="memItemLeft" align="right" valign="top"><a id="a2f28b542e53825fdbd7e25d947b981b1"></a>
+typedef <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a84b30587cd5fdfc8a17bccf7ab78e8eb">obj_reader_base::color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>color_type</b></td></tr>
+<tr class="separator:a2f28b542e53825fdbd7e25d947b981b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__generic')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html">cgv::media::mesh::obj_reader_generic&lt; T &gt;</a></td></tr>
+<tr class="memitem:aaf2b57e1cd1475ca84b46a95c50a78fc inherit pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memItemLeft" align="right" valign="top"><a id="aaf2b57e1cd1475ca84b46a95c50a78fc"></a>
 typedef T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#aaf2b57e1cd1475ca84b46a95c50a78fc">crd_type</a></td></tr>
-<tr class="memdesc:aaf2b57e1cd1475ca84b46a95c50a78fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">type of coordinates <br /></td></tr>
-<tr class="separator:aaf2b57e1cd1475ca84b46a95c50a78fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:aaf2b57e1cd1475ca84b46a95c50a78fc inherit pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="mdescLeft">&#160;</td><td class="mdescRight">type of coordinates <br /></td></tr>
+<tr class="separator:aaf2b57e1cd1475ca84b46a95c50a78fc inherit pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a090eec5014fc999e053b7d1e77bc42d1 inherit pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memItemLeft" align="right" valign="top"><a id="a090eec5014fc999e053b7d1e77bc42d1"></a>
+typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; T, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#a090eec5014fc999e053b7d1e77bc42d1">v2d_type</a></td></tr>
+<tr class="memdesc:a090eec5014fc999e053b7d1e77bc42d1 inherit pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="mdescLeft">&#160;</td><td class="mdescRight">type used to store texture coordinates <br /></td></tr>
+<tr class="separator:a090eec5014fc999e053b7d1e77bc42d1 inherit pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bb41101f16e41f413fdf489b9aba34b inherit pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memItemLeft" align="right" valign="top"><a id="a2bb41101f16e41f413fdf489b9aba34b"></a>
+typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; T, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#a2bb41101f16e41f413fdf489b9aba34b">v3d_type</a></td></tr>
+<tr class="memdesc:a2bb41101f16e41f413fdf489b9aba34b inherit pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="mdescLeft">&#160;</td><td class="mdescRight">type used to store positions and normal vectors <br /></td></tr>
+<tr class="separator:a2bb41101f16e41f413fdf489b9aba34b inherit pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__base')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html">cgv::media::mesh::obj_reader_base</a></td></tr>
+<tr class="memitem:a84b30587cd5fdfc8a17bccf7ab78e8eb inherit pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="a84b30587cd5fdfc8a17bccf7ab78e8eb"></a>
+typedef <a class="el" href="classcgv_1_1media_1_1illum_1_1phong__material.html#a0396417518451fd0be0ac88070fcdec5">illum::obj_material::color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a84b30587cd5fdfc8a17bccf7ab78e8eb">color_type</a></td></tr>
+<tr class="memdesc:a84b30587cd5fdfc8a17bccf7ab78e8eb inherit pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">type used for rgba colors <br /></td></tr>
+<tr class="separator:a84b30587cd5fdfc8a17bccf7ab78e8eb inherit pub_types_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr><td colspan="2"><div class="groupHeader">template type dependent helpers for reading</div></td></tr>
-<tr class="memitem:a4fb782d25281631f7958e15ad4d6fe47"><td class="memItemLeft" align="right" valign="top"><a id="a4fb782d25281631f7958e15ad4d6fe47"></a>
-<a class="el" href="classcgv_1_1math_1_1fvec.html">v2d_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#a4fb782d25281631f7958e15ad4d6fe47">parse_v2d</a> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;t) const</td></tr>
-<tr class="memdesc:a4fb782d25281631f7958e15ad4d6fe47"><td class="mdescLeft">&#160;</td><td class="mdescRight">parse 2d vector <br /></td></tr>
-<tr class="separator:a4fb782d25281631f7958e15ad4d6fe47"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c0703b4fe37e072d5fc1aad6c55de4b"><td class="memItemLeft" align="right" valign="top"><a id="a1c0703b4fe37e072d5fc1aad6c55de4b"></a>
-<a class="el" href="classcgv_1_1math_1_1fvec.html">v3d_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#a1c0703b4fe37e072d5fc1aad6c55de4b">parse_v3d</a> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;t) const</td></tr>
-<tr class="memdesc:a1c0703b4fe37e072d5fc1aad6c55de4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">parse 3d vector <br /></td></tr>
-<tr class="separator:a1c0703b4fe37e072d5fc1aad6c55de4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88a7fe70ff7a073d0c49b52c21065f9d"><td class="memItemLeft" align="right" valign="top"><a id="a88a7fe70ff7a073d0c49b52c21065f9d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_and_process_vertex</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens)</td></tr>
-<tr class="separator:a88a7fe70ff7a073d0c49b52c21065f9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf61c878c3c682f1d0792868be5f3485"><td class="memItemLeft" align="right" valign="top"><a id="adf61c878c3c682f1d0792868be5f3485"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_and_process_normal</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens)</td></tr>
-<tr class="separator:adf61c878c3c682f1d0792868be5f3485"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1dfcbac0b0ee337b973ae53eba95b4b"><td class="memItemLeft" align="right" valign="top"><a id="ab1dfcbac0b0ee337b973ae53eba95b4b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_and_process_texcoord</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens)</td></tr>
-<tr class="separator:ab1dfcbac0b0ee337b973ae53eba95b4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
-Protected Attributes</h2></td></tr>
-<tr class="memitem:a9fd7ea5f1b66917ec61177a6b3a92dc2"><td class="memItemLeft" align="right" valign="top"><a id="a9fd7ea5f1b66917ec61177a6b3a92dc2"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a9fd7ea5f1b66917ec61177a6b3a92dc2">group_index</a></td></tr>
-<tr class="memdesc:a9fd7ea5f1b66917ec61177a6b3a92dc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">keep track of the current group <br /></td></tr>
-<tr class="separator:a9fd7ea5f1b66917ec61177a6b3a92dc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af61a9fe1eb63968030964b37d4520df6"><td class="memItemLeft" align="right" valign="top"><a id="af61a9fe1eb63968030964b37d4520df6"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#af61a9fe1eb63968030964b37d4520df6">nr_groups</a></td></tr>
-<tr class="memdesc:af61a9fe1eb63968030964b37d4520df6"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of groups <br /></td></tr>
-<tr class="separator:af61a9fe1eb63968030964b37d4520df6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7721a08b8dfdb2a8568d8852d51c3c92"><td class="memItemLeft" align="right" valign="top"><a id="a7721a08b8dfdb2a8568d8852d51c3c92"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a7721a08b8dfdb2a8568d8852d51c3c92">material_index</a></td></tr>
-<tr class="memdesc:a7721a08b8dfdb2a8568d8852d51c3c92"><td class="mdescLeft">&#160;</td><td class="mdescRight">keep track of current material index <br /></td></tr>
-<tr class="separator:a7721a08b8dfdb2a8568d8852d51c3c92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1b4275690171781c8a6e22f28355122"><td class="memItemLeft" align="right" valign="top"><a id="aa1b4275690171781c8a6e22f28355122"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#aa1b4275690171781c8a6e22f28355122">nr_materials</a></td></tr>
-<tr class="memdesc:aa1b4275690171781c8a6e22f28355122"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of materials <br /></td></tr>
-<tr class="separator:aa1b4275690171781c8a6e22f28355122"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9c1a022103d0ecbc8cc9a33f215cc69"><td class="memItemLeft" align="right" valign="top"><a id="aa9c1a022103d0ecbc8cc9a33f215cc69"></a>
-std::map&lt; std::string, unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#aa9c1a022103d0ecbc8cc9a33f215cc69">material_index_lut</a></td></tr>
-<tr class="memdesc:aa9c1a022103d0ecbc8cc9a33f215cc69"><td class="mdescLeft">&#160;</td><td class="mdescRight">mapping from material names to material indices <br /></td></tr>
-<tr class="separator:aa9c1a022103d0ecbc8cc9a33f215cc69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a967af10c988405e4e4be67504f2b2451"><td class="memItemLeft" align="right" valign="top"><a id="a967af10c988405e4e4be67504f2b2451"></a>
+std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">v3d_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>vertices</b></td></tr>
+<tr class="separator:a967af10c988405e4e4be67504f2b2451"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6de9e62e5964611ebabc9ad465e426b"><td class="memItemLeft" align="right" valign="top"><a id="af6de9e62e5964611ebabc9ad465e426b"></a>
+std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">v3d_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>normals</b></td></tr>
+<tr class="separator:af6de9e62e5964611ebabc9ad465e426b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a086d88cfa8c8f8703cea63f9f166d66f"><td class="memItemLeft" align="right" valign="top"><a id="a086d88cfa8c8f8703cea63f9f166d66f"></a>
+std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">v2d_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>texcoords</b></td></tr>
+<tr class="separator:a086d88cfa8c8f8703cea63f9f166d66f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae47c3f74688a02f449f13d1d1c40faf8"><td class="memItemLeft" align="right" valign="top"><a id="ae47c3f74688a02f449f13d1d1c40faf8"></a>
+std::vector&lt; color_type &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>colors</b></td></tr>
+<tr class="separator:ae47c3f74688a02f449f13d1d1c40faf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31c33cee4726ff83d77b8eaaea8d9e99"><td class="memItemLeft" align="right" valign="top"><a id="a31c33cee4726ff83d77b8eaaea8d9e99"></a>
+std::vector&lt; unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>vertex_indices</b></td></tr>
+<tr class="separator:a31c33cee4726ff83d77b8eaaea8d9e99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6572193984017286b1d10413c8aae7aa"><td class="memItemLeft" align="right" valign="top"><a id="a6572193984017286b1d10413c8aae7aa"></a>
+std::vector&lt; unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>normal_indices</b></td></tr>
+<tr class="separator:a6572193984017286b1d10413c8aae7aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef10214cb55006f4a429864948ae6409"><td class="memItemLeft" align="right" valign="top"><a id="aef10214cb55006f4a429864948ae6409"></a>
+std::vector&lt; unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>texcoord_indices</b></td></tr>
+<tr class="separator:aef10214cb55006f4a429864948ae6409"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a3aa80505f011cf34c4d92902978976"><td class="memItemLeft" align="right" valign="top"><a id="a4a3aa80505f011cf34c4d92902978976"></a>
+std::vector&lt; <a class="el" href="structcgv_1_1media_1_1mesh_1_1line__info.html">line_info</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>lines</b></td></tr>
+<tr class="separator:a4a3aa80505f011cf34c4d92902978976"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adeb63f48f1e6b6c99cf3f238aff69f78"><td class="memItemLeft" align="right" valign="top"><a id="adeb63f48f1e6b6c99cf3f238aff69f78"></a>
+std::vector&lt; <a class="el" href="structcgv_1_1media_1_1mesh_1_1face__info.html">face_info</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>faces</b></td></tr>
+<tr class="separator:adeb63f48f1e6b6c99cf3f238aff69f78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8433866a15a47507d64a6ea715b31e17"><td class="memItemLeft" align="right" valign="top"><a id="a8433866a15a47507d64a6ea715b31e17"></a>
+std::vector&lt; <a class="el" href="structcgv_1_1media_1_1mesh_1_1group__info.html">group_info</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>groups</b></td></tr>
+<tr class="separator:a8433866a15a47507d64a6ea715b31e17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86558b0393eefe499714887042347186"><td class="memItemLeft" align="right" valign="top"><a id="a86558b0393eefe499714887042347186"></a>
+std::vector&lt; <a class="el" href="classcgv_1_1media_1_1illum_1_1obj__material.html">cgv::media::illum::obj_material</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>materials</b></td></tr>
+<tr class="separator:a86558b0393eefe499714887042347186"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader">virtual interface</h2></td></tr>
 <tr class="memitem:afa9e16e6cd62716c65bd398205dab182"><td class="memItemLeft" align="right" valign="top"><a id="afa9e16e6cd62716c65bd398205dab182"></a>
@@ -210,60 +225,110 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a872f95f721c1a01cf5568496d86ba6da"><td class="mdescLeft">&#160;</td><td class="mdescRight">prepare for reading another file <br /></td></tr>
 <tr class="separator:a872f95f721c1a01cf5568496d86ba6da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader">helpers for reading</h2></td></tr>
-<tr class="memitem:a4e0b20e0fcd5c0617f45c434b2bbbd59"><td class="memItemLeft" align="right" valign="top"><a id="a4e0b20e0fcd5c0617f45c434b2bbbd59"></a>
-<a class="el" href="classcgv_1_1media_1_1color.html">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a4e0b20e0fcd5c0617f45c434b2bbbd59">parse_color</a> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;t, unsigned off=0) const</td></tr>
-<tr class="memdesc:a4e0b20e0fcd5c0617f45c434b2bbbd59"><td class="mdescLeft">&#160;</td><td class="mdescRight">parse a color, if alpha not given it defaults to 1 <br /></td></tr>
-<tr class="separator:a4e0b20e0fcd5c0617f45c434b2bbbd59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6c1d64d72611965d342ed36d7070833"><td class="memItemLeft" align="right" valign="top"><a id="ae6c1d64d72611965d342ed36d7070833"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_face</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens, bool is_line=false)</td></tr>
-<tr class="separator:ae6c1d64d72611965d342ed36d7070833"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2275e1e0a57902f4098cb261df860a99"><td class="memItemLeft" align="right" valign="top"><a id="a2275e1e0a57902f4098cb261df860a99"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_material</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens)</td></tr>
-<tr class="separator:a2275e1e0a57902f4098cb261df860a99"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa939adba8507424a712ddc899579293e"><td class="memItemLeft" align="right" valign="top"><a id="aa939adba8507424a712ddc899579293e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>minus</b></td></tr>
-<tr class="separator:aa939adba8507424a712ddc899579293e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a096ce40e47577d62b4a49975a14cc271"><td class="memItemLeft" align="right" valign="top"><a id="a096ce40e47577d62b4a49975a14cc271"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>nr_normals</b></td></tr>
-<tr class="separator:a096ce40e47577d62b4a49975a14cc271"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c5bda49b390a719bcaea3e48fc9c8c8"><td class="memItemLeft" align="right" valign="top"><a id="a1c5bda49b390a719bcaea3e48fc9c8c8"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>nr_texcoords</b></td></tr>
-<tr class="separator:a1c5bda49b390a719bcaea3e48fc9c8c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46c7b2a2c08d5645aec4acdd024ce29e"><td class="memItemLeft" align="right" valign="top"><a id="a46c7b2a2c08d5645aec4acdd024ce29e"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>have_default_material</b></td></tr>
-<tr class="separator:a46c7b2a2c08d5645aec4acdd024ce29e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96af1a8de592c946f1aa96cdf4b2d601"><td class="memItemLeft" align="right" valign="top"><a id="a96af1a8de592c946f1aa96cdf4b2d601"></a>
-std::set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>mtl_lib_files</b></td></tr>
-<tr class="separator:a96af1a8de592c946f1aa96cdf4b2d601"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader">status info during reading</h2></td></tr>
-<tr class="memitem:ac100a29e63b3918427ca593d7aa238de"><td class="memItemLeft" align="right" valign="top"><a id="ac100a29e63b3918427ca593d7aa238de"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#ac100a29e63b3918427ca593d7aa238de">get_current_group</a> () const</td></tr>
-<tr class="memdesc:ac100a29e63b3918427ca593d7aa238de"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the index of the currently selected group or -1 if no group is defined <br /></td></tr>
-<tr class="separator:ac100a29e63b3918427ca593d7aa238de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae227aa4ffb4ea1b4459b387d291f40c9"><td class="memItemLeft" align="right" valign="top"><a id="ae227aa4ffb4ea1b4459b387d291f40c9"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#ae227aa4ffb4ea1b4459b387d291f40c9">get_current_material</a> () const</td></tr>
-<tr class="memdesc:ae227aa4ffb4ea1b4459b387d291f40c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the index of the currently selected material or -1 if no material is defined <br /></td></tr>
-<tr class="separator:ae227aa4ffb4ea1b4459b387d291f40c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f24ca298ecae246b9af0de6d281af52"><td class="memItemLeft" align="right" valign="top"><a id="a8f24ca298ecae246b9af0de6d281af52"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a8f24ca298ecae246b9af0de6d281af52">path_name</a></td></tr>
-<tr class="memdesc:a8f24ca298ecae246b9af0de6d281af52"><td class="mdescLeft">&#160;</td><td class="mdescRight">store the path name <br /></td></tr>
-<tr class="separator:a8f24ca298ecae246b9af0de6d281af52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader">virtual interface</h2></td></tr>
-<tr class="memitem:a6cfab20fd65a0f0f6dc5fff3e441fc62"><td class="memItemLeft" align="right" valign="top"><a id="a6cfab20fd65a0f0f6dc5fff3e441fc62"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a6cfab20fd65a0f0f6dc5fff3e441fc62">process_comment</a> (const std::string &amp;comment)</td></tr>
-<tr class="memdesc:a6cfab20fd65a0f0f6dc5fff3e441fc62"><td class="mdescLeft">&#160;</td><td class="mdescRight">overide this function to process a comment <br /></td></tr>
-<tr class="separator:a6cfab20fd65a0f0f6dc5fff3e441fc62"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff83e230e74d2e65638b1bb437c82d7d"><td class="memItemLeft" align="right" valign="top"><a id="aff83e230e74d2e65638b1bb437c82d7d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#aff83e230e74d2e65638b1bb437c82d7d">convert_to_positive</a> (unsigned vcount, int *vertices, int *texcoords, int *normals, unsigned v, unsigned n, unsigned t)</td></tr>
-<tr class="memdesc:aff83e230e74d2e65638b1bb437c82d7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert negative indices to positive ones by adding the number of elements <br /></td></tr>
-<tr class="separator:aff83e230e74d2e65638b1bb437c82d7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e702c2584c3b08ad4930ad9680a882c"><td class="memItemLeft" align="right" valign="top"><a id="a0e702c2584c3b08ad4930ad9680a882c"></a>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html">cgv::media::mesh::obj_reader_generic&lt; T &gt;</a></td></tr>
+<tr class="memitem:ab72b61d3e116eaf9c5cf58644ae29589 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memItemLeft" align="right" valign="top"><a id="ab72b61d3e116eaf9c5cf58644ae29589"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#ab72b61d3e116eaf9c5cf58644ae29589">obj_reader_generic</a> ()</td></tr>
+<tr class="memdesc:ab72b61d3e116eaf9c5cf58644ae29589 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="mdescLeft">&#160;</td><td class="mdescRight">default constructor <br /></td></tr>
+<tr class="separator:ab72b61d3e116eaf9c5cf58644ae29589 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html">cgv::media::mesh::obj_reader_base</a></td></tr>
+<tr class="memitem:aeedad7c8127a233ceb8daf83f857c5f3 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="aeedad7c8127a233ceb8daf83f857c5f3"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>obj_reader_base</b> ()</td></tr>
+<tr class="separator:aeedad7c8127a233ceb8daf83f857c5f3 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e702c2584c3b08ad4930ad9680a882c inherit pub_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="a0e702c2584c3b08ad4930ad9680a882c"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a0e702c2584c3b08ad4930ad9680a882c">read_mtl</a> (const std::string &amp;file_name)</td></tr>
-<tr class="memdesc:a0e702c2584c3b08ad4930ad9680a882c"><td class="mdescLeft">&#160;</td><td class="mdescRight">read a material file <br /></td></tr>
-<tr class="separator:a0e702c2584c3b08ad4930ad9680a882c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:a0e702c2584c3b08ad4930ad9680a882c inherit pub_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">read a material file <br /></td></tr>
+<tr class="separator:a0e702c2584c3b08ad4930ad9680a882c inherit pub_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html">cgv::media::mesh::obj_reader_generic&lt; T &gt;</a></td></tr>
+<tr class="memitem:a8d221b91130f50d5cd47fec04cbefde3 inherit pub_static_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memItemLeft" align="right" valign="top"><a id="a8d221b91130f50d5cd47fec04cbefde3"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_double</b> (const char *begin, const char *end, <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#aaf2b57e1cd1475ca84b46a95c50a78fc">crd_type</a> &amp;value)</td></tr>
+<tr class="separator:a8d221b91130f50d5cd47fec04cbefde3 inherit pub_static_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html">cgv::media::mesh::obj_reader_generic&lt; T &gt;</a></td></tr>
+<tr class="memitem:a4fb782d25281631f7958e15ad4d6fe47 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memItemLeft" align="right" valign="top"><a id="a4fb782d25281631f7958e15ad4d6fe47"></a>
+<a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#a090eec5014fc999e053b7d1e77bc42d1">v2d_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#a4fb782d25281631f7958e15ad4d6fe47">parse_v2d</a> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;t) const</td></tr>
+<tr class="memdesc:a4fb782d25281631f7958e15ad4d6fe47 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="mdescLeft">&#160;</td><td class="mdescRight">parse 2d vector <br /></td></tr>
+<tr class="separator:a4fb782d25281631f7958e15ad4d6fe47 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c0703b4fe37e072d5fc1aad6c55de4b inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memItemLeft" align="right" valign="top"><a id="a1c0703b4fe37e072d5fc1aad6c55de4b"></a>
+<a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#a2bb41101f16e41f413fdf489b9aba34b">v3d_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#a1c0703b4fe37e072d5fc1aad6c55de4b">parse_v3d</a> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;t) const</td></tr>
+<tr class="memdesc:a1c0703b4fe37e072d5fc1aad6c55de4b inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="mdescLeft">&#160;</td><td class="mdescRight">parse 3d vector <br /></td></tr>
+<tr class="separator:a1c0703b4fe37e072d5fc1aad6c55de4b inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88a7fe70ff7a073d0c49b52c21065f9d inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memItemLeft" align="right" valign="top"><a id="a88a7fe70ff7a073d0c49b52c21065f9d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_and_process_vertex</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens)</td></tr>
+<tr class="separator:a88a7fe70ff7a073d0c49b52c21065f9d inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf61c878c3c682f1d0792868be5f3485 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memItemLeft" align="right" valign="top"><a id="adf61c878c3c682f1d0792868be5f3485"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_and_process_normal</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens)</td></tr>
+<tr class="separator:adf61c878c3c682f1d0792868be5f3485 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1dfcbac0b0ee337b973ae53eba95b4b inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memItemLeft" align="right" valign="top"><a id="ab1dfcbac0b0ee337b973ae53eba95b4b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_and_process_texcoord</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens)</td></tr>
+<tr class="separator:ab1dfcbac0b0ee337b973ae53eba95b4b inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__generic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html">cgv::media::mesh::obj_reader_base</a></td></tr>
+<tr class="memitem:a4e0b20e0fcd5c0617f45c434b2bbbd59 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="a4e0b20e0fcd5c0617f45c434b2bbbd59"></a>
+<a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a84b30587cd5fdfc8a17bccf7ab78e8eb">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a4e0b20e0fcd5c0617f45c434b2bbbd59">parse_color</a> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;t, unsigned off=0) const</td></tr>
+<tr class="memdesc:a4e0b20e0fcd5c0617f45c434b2bbbd59 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">parse a color, if alpha not given it defaults to 1 <br /></td></tr>
+<tr class="separator:a4e0b20e0fcd5c0617f45c434b2bbbd59 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6c1d64d72611965d342ed36d7070833 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="ae6c1d64d72611965d342ed36d7070833"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_face</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens, bool is_line=false)</td></tr>
+<tr class="separator:ae6c1d64d72611965d342ed36d7070833 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2275e1e0a57902f4098cb261df860a99 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="a2275e1e0a57902f4098cb261df860a99"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_material</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens)</td></tr>
+<tr class="separator:a2275e1e0a57902f4098cb261df860a99 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac100a29e63b3918427ca593d7aa238de inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="ac100a29e63b3918427ca593d7aa238de"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#ac100a29e63b3918427ca593d7aa238de">get_current_group</a> () const</td></tr>
+<tr class="memdesc:ac100a29e63b3918427ca593d7aa238de inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the index of the currently selected group or -1 if no group is defined <br /></td></tr>
+<tr class="separator:ac100a29e63b3918427ca593d7aa238de inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae227aa4ffb4ea1b4459b387d291f40c9 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="ae227aa4ffb4ea1b4459b387d291f40c9"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#ae227aa4ffb4ea1b4459b387d291f40c9">get_current_material</a> () const</td></tr>
+<tr class="memdesc:ae227aa4ffb4ea1b4459b387d291f40c9 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the index of the currently selected material or -1 if no material is defined <br /></td></tr>
+<tr class="separator:ae227aa4ffb4ea1b4459b387d291f40c9 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cfab20fd65a0f0f6dc5fff3e441fc62 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="a6cfab20fd65a0f0f6dc5fff3e441fc62"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a6cfab20fd65a0f0f6dc5fff3e441fc62">process_comment</a> (const std::string &amp;comment)</td></tr>
+<tr class="memdesc:a6cfab20fd65a0f0f6dc5fff3e441fc62 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">overide this function to process a comment <br /></td></tr>
+<tr class="separator:a6cfab20fd65a0f0f6dc5fff3e441fc62 inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff83e230e74d2e65638b1bb437c82d7d inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="aff83e230e74d2e65638b1bb437c82d7d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#aff83e230e74d2e65638b1bb437c82d7d">convert_to_positive</a> (unsigned vcount, int *vertices, int *texcoords, int *normals, unsigned v, unsigned n, unsigned t)</td></tr>
+<tr class="memdesc:aff83e230e74d2e65638b1bb437c82d7d inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert negative indices to positive ones by adding the number of elements <br /></td></tr>
+<tr class="separator:aff83e230e74d2e65638b1bb437c82d7d inherit pro_methods_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html">cgv::media::mesh::obj_reader_base</a></td></tr>
+<tr class="memitem:a9fd7ea5f1b66917ec61177a6b3a92dc2 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="a9fd7ea5f1b66917ec61177a6b3a92dc2"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a9fd7ea5f1b66917ec61177a6b3a92dc2">group_index</a></td></tr>
+<tr class="memdesc:a9fd7ea5f1b66917ec61177a6b3a92dc2 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">keep track of the current group <br /></td></tr>
+<tr class="separator:a9fd7ea5f1b66917ec61177a6b3a92dc2 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af61a9fe1eb63968030964b37d4520df6 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="af61a9fe1eb63968030964b37d4520df6"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#af61a9fe1eb63968030964b37d4520df6">nr_groups</a></td></tr>
+<tr class="memdesc:af61a9fe1eb63968030964b37d4520df6 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of groups <br /></td></tr>
+<tr class="separator:af61a9fe1eb63968030964b37d4520df6 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7721a08b8dfdb2a8568d8852d51c3c92 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="a7721a08b8dfdb2a8568d8852d51c3c92"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a7721a08b8dfdb2a8568d8852d51c3c92">material_index</a></td></tr>
+<tr class="memdesc:a7721a08b8dfdb2a8568d8852d51c3c92 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">keep track of current material index <br /></td></tr>
+<tr class="separator:a7721a08b8dfdb2a8568d8852d51c3c92 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1b4275690171781c8a6e22f28355122 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="aa1b4275690171781c8a6e22f28355122"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#aa1b4275690171781c8a6e22f28355122">nr_materials</a></td></tr>
+<tr class="memdesc:aa1b4275690171781c8a6e22f28355122 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of materials <br /></td></tr>
+<tr class="separator:aa1b4275690171781c8a6e22f28355122 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9c1a022103d0ecbc8cc9a33f215cc69 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="aa9c1a022103d0ecbc8cc9a33f215cc69"></a>
+std::map&lt; std::string, unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#aa9c1a022103d0ecbc8cc9a33f215cc69">material_index_lut</a></td></tr>
+<tr class="memdesc:aa9c1a022103d0ecbc8cc9a33f215cc69 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">mapping from material names to material indices <br /></td></tr>
+<tr class="separator:aa9c1a022103d0ecbc8cc9a33f215cc69 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa939adba8507424a712ddc899579293e inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="aa939adba8507424a712ddc899579293e"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>minus</b></td></tr>
+<tr class="separator:aa939adba8507424a712ddc899579293e inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a096ce40e47577d62b4a49975a14cc271 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="a096ce40e47577d62b4a49975a14cc271"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>nr_normals</b></td></tr>
+<tr class="separator:a096ce40e47577d62b4a49975a14cc271 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c5bda49b390a719bcaea3e48fc9c8c8 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="a1c5bda49b390a719bcaea3e48fc9c8c8"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>nr_texcoords</b></td></tr>
+<tr class="separator:a1c5bda49b390a719bcaea3e48fc9c8c8 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46c7b2a2c08d5645aec4acdd024ce29e inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="a46c7b2a2c08d5645aec4acdd024ce29e"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>have_default_material</b></td></tr>
+<tr class="separator:a46c7b2a2c08d5645aec4acdd024ce29e inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96af1a8de592c946f1aa96cdf4b2d601 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="a96af1a8de592c946f1aa96cdf4b2d601"></a>
+std::set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>mtl_lib_files</b></td></tr>
+<tr class="separator:a96af1a8de592c946f1aa96cdf4b2d601 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f24ca298ecae246b9af0de6d281af52 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memItemLeft" align="right" valign="top"><a id="a8f24ca298ecae246b9af0de6d281af52"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a8f24ca298ecae246b9af0de6d281af52">path_name</a></td></tr>
+<tr class="memdesc:a8f24ca298ecae246b9af0de6d281af52 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">store the path name <br /></td></tr>
+<tr class="separator:a8f24ca298ecae246b9af0de6d281af52 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1obj__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />

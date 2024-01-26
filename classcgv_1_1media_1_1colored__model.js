@@ -1,12 +1,13 @@
 var classcgv_1_1media_1_1colored__model =
 [
-    [ "rgb", "classcgv_1_1media_1_1colored__model.html#a2b0606813dd8c5d4f17bb10afaae5c22", null ],
     [ "colored_model", "classcgv_1_1media_1_1colored__model.html#a312433d0cdfa4eceba0d7dcc6bd70e86", null ],
     [ "colored_model", "classcgv_1_1media_1_1colored__model.html#af56cd2c9e9c45fa5bc9aa13ce9697cda", null ],
     [ "colored_model", "classcgv_1_1media_1_1colored__model.html#ada461abedcac971d7ebdb257b0f91dd9", null ],
     [ "~colored_model", "classcgv_1_1media_1_1colored__model.html#a85e6410be4fbcead772545cf44ce9310", null ],
     [ "destruct_colors", "classcgv_1_1media_1_1colored__model.html#a21dc960d749c8c30a0ab9fe2ad463fe3", null ],
     [ "ensure_colors", "classcgv_1_1media_1_1colored__model.html#ab9b78630e5ce68fb0e47f2c518f34570", null ],
+    [ "get_color_data_ptr", "classcgv_1_1media_1_1colored__model.html#a038284b1888359cb101e1ee010100ccc", null ],
+    [ "get_color_data_vector_ptr", "classcgv_1_1media_1_1colored__model.html#a180c04993da030246b4df4684700a1ce", null ],
     [ "get_color_size", "classcgv_1_1media_1_1colored__model.html#a6ec1fc0b17bf761d607ce8c62b38efdf", null ],
     [ "get_color_storage_type", "classcgv_1_1media_1_1colored__model.html#a64de186cd0ac9c1cce5fd54957a16d94", null ],
     [ "get_nr_colors", "classcgv_1_1media_1_1colored__model.html#ad5b326b05eb9630b3eeff956401dc7fb", null ],

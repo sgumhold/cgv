@@ -108,13 +108,18 @@ Inheritance diagram for cgv::render::textured_material:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a2dc01136a85115d05a1de7083b093053"><td class="memItemLeft" align="right" valign="top"><a id="a2dc01136a85115d05a1de7083b093053"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1textured__material.html#a2dc01136a85115d05a1de7083b093053">AlphaTestFunc</a> </td></tr>
+<tr class="memitem:a2dc01136a85115d05a1de7083b093053"><td class="memItemLeft" align="right" valign="top"><a id="a2dc01136a85115d05a1de7083b093053"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1textured__material.html#a2dc01136a85115d05a1de7083b093053">AlphaTestFunc</a> { <b>AT_ALWAYS</b>
+, <b>AT_LESS</b>
+, <b>AT_EQUAL</b>
+, <b>AT_GREATER</b>
+ }</td></tr>
 <tr class="memdesc:a2dc01136a85115d05a1de7083b093053"><td class="mdescLeft">&#160;</td><td class="mdescRight">different test functions for alpha test <br /></td></tr>
 <tr class="separator:a2dc01136a85115d05a1de7083b093053"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c67316dfc8d7a3f18d1e6802b1a5a34"><td class="memItemLeft" align="right" valign="top"><a id="a3c67316dfc8d7a3f18d1e6802b1a5a34"></a>
-typedef color&lt; float, RGB &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a></td></tr>
-<tr class="memdesc:a3c67316dfc8d7a3f18d1e6802b1a5a34"><td class="mdescLeft">&#160;</td><td class="mdescRight">used color type <br /></td></tr>
-<tr class="separator:a3c67316dfc8d7a3f18d1e6802b1a5a34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_types_classcgv_1_1media_1_1illum_1_1surface__material"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classcgv_1_1media_1_1illum_1_1surface__material')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html">cgv::media::illum::surface_material</a></td></tr>
+<tr class="memitem:a3c67316dfc8d7a3f18d1e6802b1a5a34 inherit pub_types_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a3c67316dfc8d7a3f18d1e6802b1a5a34"></a>
+typedef <a class="el" href="classcgv_1_1media_1_1color.html">color</a>&lt; float, RGB &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a></td></tr>
+<tr class="memdesc:a3c67316dfc8d7a3f18d1e6802b1a5a34 inherit pub_types_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">used color type <br /></td></tr>
+<tr class="separator:a3c67316dfc8d7a3f18d1e6802b1a5a34 inherit pub_types_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -172,160 +177,368 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1textured__material.html#aa0abfad87fa2da6f252b3f6b9e2c5360">destruct_textures</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:aa0abfad87fa2da6f252b3f6b9e2c5360"><td class="mdescLeft">&#160;</td><td class="mdescRight">destruct textures <br /></td></tr>
 <tr class="separator:aa0abfad87fa2da6f252b3f6b9e2c5360"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f5057bf2e336d3da16338fb80331d6f"><td class="memItemLeft" align="right" valign="top"><a id="a1f5057bf2e336d3da16338fb80331d6f"></a>
+<tr class="inherit_header pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html">cgv::media::illum::textured_surface_material</a></td></tr>
+<tr class="memitem:a1e42393c56fa175158b2f2a98fa538cd inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a1e42393c56fa175158b2f2a98fa538cd"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a1e42393c56fa175158b2f2a98fa538cd">textured_surface_material</a> (const std::string &amp;_name=&quot;default&quot;, BrdfType _brdf_type=BrdfType(BT_STRAUSS_DIFFUSE+BT_STRAUSS), <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _diffuse_reflectance=0.5f, float _roughness=0.5f, float _metalness=0.0f, float _ambient_occlusion=1.0f, <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _emission=<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(0, 0, 0), float _transparency=0.0f, const std::complex&lt; float &gt; &amp;_propagation_slow_down=std::complex&lt; float &gt;(1.5f, 0.0f), float _roughness_anisotropy=0.0f, float _roughness_orientation=0.0f, <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _specular_reflectance=<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(1, 1, 1), float _bump_scale=0.1f)</td></tr>
+<tr class="memdesc:a1e42393c56fa175158b2f2a98fa538cd inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">define default material <br /></td></tr>
+<tr class="separator:a1e42393c56fa175158b2f2a98fa538cd inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af79a8316310cdb6d6e0d075906c19ec2 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="af79a8316310cdb6d6e0d075906c19ec2"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#af79a8316310cdb6d6e0d075906c19ec2">textured_surface_material</a> (const <a class="el" href="classcgv_1_1media_1_1illum_1_1obj__material.html">obj_material</a> &amp;obj_mat)</td></tr>
+<tr class="memdesc:af79a8316310cdb6d6e0d075906c19ec2 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert obj material <br /></td></tr>
+<tr class="separator:af79a8316310cdb6d6e0d075906c19ec2 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f5057bf2e336d3da16338fb80331d6f inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a1f5057bf2e336d3da16338fb80331d6f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a1f5057bf2e336d3da16338fb80331d6f">set_name</a> (std::string o)</td></tr>
-<tr class="memdesc:a1f5057bf2e336d3da16338fb80331d6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the name of the material <br /></td></tr>
-<tr class="separator:a1f5057bf2e336d3da16338fb80331d6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32aa7085110961a528770269472e2d63"><td class="memItemLeft" align="right" valign="top"><a id="a32aa7085110961a528770269472e2d63"></a>
+<tr class="memdesc:a1f5057bf2e336d3da16338fb80331d6f inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the name of the material <br /></td></tr>
+<tr class="separator:a1f5057bf2e336d3da16338fb80331d6f inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32aa7085110961a528770269472e2d63 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a32aa7085110961a528770269472e2d63"></a>
 const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a32aa7085110961a528770269472e2d63">get_name</a> () const</td></tr>
-<tr class="memdesc:a32aa7085110961a528770269472e2d63"><td class="mdescLeft">&#160;</td><td class="mdescRight">return name value <br /></td></tr>
-<tr class="separator:a32aa7085110961a528770269472e2d63"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c700c56735a324059cd67bd6df03cb0"><td class="memItemLeft" align="right" valign="top"><a id="a0c700c56735a324059cd67bd6df03cb0"></a>
+<tr class="memdesc:a32aa7085110961a528770269472e2d63 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">return name value <br /></td></tr>
+<tr class="separator:a32aa7085110961a528770269472e2d63 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c700c56735a324059cd67bd6df03cb0 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a0c700c56735a324059cd67bd6df03cb0"></a>
 std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a0c700c56735a324059cd67bd6df03cb0">ref_name</a> ()</td></tr>
-<tr class="memdesc:a0c700c56735a324059cd67bd6df03cb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference to name value <br /></td></tr>
-<tr class="separator:a0c700c56735a324059cd67bd6df03cb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31f78c66ad7ab0ac8f0f523c404bf882"><td class="memItemLeft" align="right" valign="top"><a id="a31f78c66ad7ab0ac8f0f523c404bf882"></a>
+<tr class="memdesc:a0c700c56735a324059cd67bd6df03cb0 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference to name value <br /></td></tr>
+<tr class="separator:a0c700c56735a324059cd67bd6df03cb0 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31f78c66ad7ab0ac8f0f523c404bf882 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a31f78c66ad7ab0ac8f0f523c404bf882"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a31f78c66ad7ab0ac8f0f523c404bf882">set_sRGBA_textures</a> (bool do_set=true)</td></tr>
-<tr class="memdesc:a31f78c66ad7ab0ac8f0f523c404bf882"><td class="mdescLeft">&#160;</td><td class="mdescRight">set whether textures are interpreted in sRGB format <br /></td></tr>
-<tr class="separator:a31f78c66ad7ab0ac8f0f523c404bf882"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a763ebbd83472ac0999bc3888ae43327e"><td class="memItemLeft" align="right" valign="top"><a id="a763ebbd83472ac0999bc3888ae43327e"></a>
+<tr class="memdesc:a31f78c66ad7ab0ac8f0f523c404bf882 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">set whether textures are interpreted in sRGB format <br /></td></tr>
+<tr class="separator:a31f78c66ad7ab0ac8f0f523c404bf882 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a763ebbd83472ac0999bc3888ae43327e inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a763ebbd83472ac0999bc3888ae43327e"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a763ebbd83472ac0999bc3888ae43327e">get_sRGBA_textures</a> () const</td></tr>
-<tr class="memdesc:a763ebbd83472ac0999bc3888ae43327e"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether textures are interpreted in sRGB format <br /></td></tr>
-<tr class="separator:a763ebbd83472ac0999bc3888ae43327e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1adef62aa24dd80591ad9af8630c0b42"><td class="memItemLeft" align="right" valign="top"><a id="a1adef62aa24dd80591ad9af8630c0b42"></a>
+<tr class="memdesc:a763ebbd83472ac0999bc3888ae43327e inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether textures are interpreted in sRGB format <br /></td></tr>
+<tr class="separator:a763ebbd83472ac0999bc3888ae43327e inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1adef62aa24dd80591ad9af8630c0b42 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a1adef62aa24dd80591ad9af8630c0b42"></a>
 bool &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a1adef62aa24dd80591ad9af8630c0b42">ref_sRGBA_textures</a> ()</td></tr>
-<tr class="memdesc:a1adef62aa24dd80591ad9af8630c0b42"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference to whether textures are interpreted in sRGB format <br /></td></tr>
-<tr class="separator:a1adef62aa24dd80591ad9af8630c0b42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7529be0d530eb882e8fa37bd30dfd578"><td class="memItemLeft" align="right" valign="top"><a id="a7529be0d530eb882e8fa37bd30dfd578"></a>
+<tr class="memdesc:a1adef62aa24dd80591ad9af8630c0b42 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference to whether textures are interpreted in sRGB format <br /></td></tr>
+<tr class="separator:a1adef62aa24dd80591ad9af8630c0b42 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7529be0d530eb882e8fa37bd30dfd578 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a7529be0d530eb882e8fa37bd30dfd578"></a>
 unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a7529be0d530eb882e8fa37bd30dfd578">get_nr_image_files</a> () const</td></tr>
-<tr class="memdesc:a7529be0d530eb882e8fa37bd30dfd578"><td class="mdescLeft">&#160;</td><td class="mdescRight">return number of image files <br /></td></tr>
-<tr class="separator:a7529be0d530eb882e8fa37bd30dfd578"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a9f8360dca616eaded82f192b9a01d2"><td class="memItemLeft" align="right" valign="top"><a id="a6a9f8360dca616eaded82f192b9a01d2"></a>
+<tr class="memdesc:a7529be0d530eb882e8fa37bd30dfd578 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">return number of image files <br /></td></tr>
+<tr class="separator:a7529be0d530eb882e8fa37bd30dfd578 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a9f8360dca616eaded82f192b9a01d2 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a6a9f8360dca616eaded82f192b9a01d2"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a6a9f8360dca616eaded82f192b9a01d2">add_image_file</a> (const std::string &amp;file_name)</td></tr>
-<tr class="memdesc:a6a9f8360dca616eaded82f192b9a01d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">add a new image and return its index <br /></td></tr>
-<tr class="separator:a6a9f8360dca616eaded82f192b9a01d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5113e1a126e4eb421d842cc9efd7e60"><td class="memItemLeft" align="right" valign="top"><a id="ae5113e1a126e4eb421d842cc9efd7e60"></a>
+<tr class="memdesc:a6a9f8360dca616eaded82f192b9a01d2 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">add a new image and return its index <br /></td></tr>
+<tr class="separator:a6a9f8360dca616eaded82f192b9a01d2 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5113e1a126e4eb421d842cc9efd7e60 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="ae5113e1a126e4eb421d842cc9efd7e60"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ae5113e1a126e4eb421d842cc9efd7e60">get_image_file_name</a> (int i) const</td></tr>
-<tr class="memdesc:ae5113e1a126e4eb421d842cc9efd7e60"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the name of the i-th image file <br /></td></tr>
-<tr class="separator:ae5113e1a126e4eb421d842cc9efd7e60"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e6341cc57e4a5e17de18b0074c1fdfb"><td class="memItemLeft" align="right" valign="top"><a id="a0e6341cc57e4a5e17de18b0074c1fdfb"></a>
+<tr class="memdesc:ae5113e1a126e4eb421d842cc9efd7e60 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the name of the i-th image file <br /></td></tr>
+<tr class="separator:ae5113e1a126e4eb421d842cc9efd7e60 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e6341cc57e4a5e17de18b0074c1fdfb inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a0e6341cc57e4a5e17de18b0074c1fdfb"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a0e6341cc57e4a5e17de18b0074c1fdfb">set_image_file_name</a> (int i, std::string image_file_name)</td></tr>
-<tr class="memdesc:a0e6341cc57e4a5e17de18b0074c1fdfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the image file name of i-th image file <br /></td></tr>
-<tr class="separator:a0e6341cc57e4a5e17de18b0074c1fdfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72dc3f2a69a6d18fbe144fb8cbf6d273"><td class="memItemLeft" align="right" valign="top"><a id="a72dc3f2a69a6d18fbe144fb8cbf6d273"></a>
+<tr class="memdesc:a0e6341cc57e4a5e17de18b0074c1fdfb inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the image file name of i-th image file <br /></td></tr>
+<tr class="separator:a0e6341cc57e4a5e17de18b0074c1fdfb inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72dc3f2a69a6d18fbe144fb8cbf6d273 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a72dc3f2a69a6d18fbe144fb8cbf6d273"></a>
 std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a72dc3f2a69a6d18fbe144fb8cbf6d273">ref_image_file_name</a> (int i)</td></tr>
-<tr class="memdesc:a72dc3f2a69a6d18fbe144fb8cbf6d273"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference to image file name of i-th image file <br /></td></tr>
-<tr class="separator:a72dc3f2a69a6d18fbe144fb8cbf6d273"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f7b04553dd6d9de85a45246f21357e0"><td class="memItemLeft" align="right" valign="top"><a id="a4f7b04553dd6d9de85a45246f21357e0"></a>
+<tr class="memdesc:a72dc3f2a69a6d18fbe144fb8cbf6d273 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference to image file name of i-th image file <br /></td></tr>
+<tr class="separator:a72dc3f2a69a6d18fbe144fb8cbf6d273 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8f4c679bfb63a311dd4ce88f6a25965 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="ad8f4c679bfb63a311dd4ce88f6a25965"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_diffuse_index</b> (int i)</td></tr>
+<tr class="separator:ad8f4c679bfb63a311dd4ce88f6a25965 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46b9593ac885dd22e90b5e5d1a11b81e inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a46b9593ac885dd22e90b5e5d1a11b81e"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>get_diffuse_index</b> () const</td></tr>
+<tr class="separator:a46b9593ac885dd22e90b5e5d1a11b81e inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a06ac2ea73cb8db7a68c41949b6680e inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a6a06ac2ea73cb8db7a68c41949b6680e"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_diffuse_index</b> ()</td></tr>
+<tr class="separator:a6a06ac2ea73cb8db7a68c41949b6680e inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71ffe7b7fb1445881013c401b08038aa inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a71ffe7b7fb1445881013c401b08038aa"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_roughness_index</b> (int i)</td></tr>
+<tr class="separator:a71ffe7b7fb1445881013c401b08038aa inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40db956195ebcb4a1ef6a9faabf3f6a3 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a40db956195ebcb4a1ef6a9faabf3f6a3"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>get_roughness_index</b> () const</td></tr>
+<tr class="separator:a40db956195ebcb4a1ef6a9faabf3f6a3 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a842302a864dc8afa52447b62787da780 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a842302a864dc8afa52447b62787da780"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_roughness_index</b> ()</td></tr>
+<tr class="separator:a842302a864dc8afa52447b62787da780 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab848653cc177b08d2c35ae6ed0f54edb inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="ab848653cc177b08d2c35ae6ed0f54edb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_metalness_index</b> (int i)</td></tr>
+<tr class="separator:ab848653cc177b08d2c35ae6ed0f54edb inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6c62c49757876c98d87e264ccd7065e inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="af6c62c49757876c98d87e264ccd7065e"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>get_metalness_index</b> () const</td></tr>
+<tr class="separator:af6c62c49757876c98d87e264ccd7065e inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a830cc6cb649cfcb6f0da78ae17556d20 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a830cc6cb649cfcb6f0da78ae17556d20"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_metalness_index</b> ()</td></tr>
+<tr class="separator:a830cc6cb649cfcb6f0da78ae17556d20 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8c7e8a79ec007a8edf8a90531702c62 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="af8c7e8a79ec007a8edf8a90531702c62"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_ambient_index</b> (int i)</td></tr>
+<tr class="separator:af8c7e8a79ec007a8edf8a90531702c62 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbd106d9965fcb6544baa0fe18bfcc37 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="adbd106d9965fcb6544baa0fe18bfcc37"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>get_ambient_index</b> () const</td></tr>
+<tr class="separator:adbd106d9965fcb6544baa0fe18bfcc37 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c13ce11ca9e59aa4760c101c4b781fe inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a7c13ce11ca9e59aa4760c101c4b781fe"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_ambient_index</b> ()</td></tr>
+<tr class="separator:a7c13ce11ca9e59aa4760c101c4b781fe inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa492e829254155426061003819d5c88 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="afa492e829254155426061003819d5c88"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_emission_index</b> (int i)</td></tr>
+<tr class="separator:afa492e829254155426061003819d5c88 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf6c636a3f23407b5be28defd51ce58f inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="adf6c636a3f23407b5be28defd51ce58f"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>get_emission_index</b> () const</td></tr>
+<tr class="separator:adf6c636a3f23407b5be28defd51ce58f inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5314c0c43629b37227da63cee6746fe4 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a5314c0c43629b37227da63cee6746fe4"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_emission_index</b> ()</td></tr>
+<tr class="separator:a5314c0c43629b37227da63cee6746fe4 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d11d4f5294127b26ffe6c42c8364747 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a7d11d4f5294127b26ffe6c42c8364747"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_transparency_index</b> (int i)</td></tr>
+<tr class="separator:a7d11d4f5294127b26ffe6c42c8364747 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d9b43dbbdaceceb4be2afeb7fa1d10f inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a4d9b43dbbdaceceb4be2afeb7fa1d10f"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>get_transparency_index</b> () const</td></tr>
+<tr class="separator:a4d9b43dbbdaceceb4be2afeb7fa1d10f inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab898faab91394b6164f45075fc34f239 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="ab898faab91394b6164f45075fc34f239"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_transparency_index</b> ()</td></tr>
+<tr class="separator:ab898faab91394b6164f45075fc34f239 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab242fac39321d79e40af8c224f40066f inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="ab242fac39321d79e40af8c224f40066f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_specular_index</b> (int i)</td></tr>
+<tr class="separator:ab242fac39321d79e40af8c224f40066f inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea01b05c32275490814b25e66add29fa inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="aea01b05c32275490814b25e66add29fa"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>get_specular_index</b> () const</td></tr>
+<tr class="separator:aea01b05c32275490814b25e66add29fa inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ef2d2798042cf24c17392bdbbeaa814 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a2ef2d2798042cf24c17392bdbbeaa814"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_specular_index</b> ()</td></tr>
+<tr class="separator:a2ef2d2798042cf24c17392bdbbeaa814 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c6141c0bffea5c8d3972282ce515ade inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a3c6141c0bffea5c8d3972282ce515ade"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_normal_index</b> (int i)</td></tr>
+<tr class="separator:a3c6141c0bffea5c8d3972282ce515ade inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a036144a59f3489e0ab2b3a9c5c1a9d6b inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a036144a59f3489e0ab2b3a9c5c1a9d6b"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>get_normal_index</b> () const</td></tr>
+<tr class="separator:a036144a59f3489e0ab2b3a9c5c1a9d6b inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a4a195dccc92147c079717be07556d8 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a8a4a195dccc92147c079717be07556d8"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_normal_index</b> ()</td></tr>
+<tr class="separator:a8a4a195dccc92147c079717be07556d8 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24f14514278e270030c3309049a67c3d inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a24f14514278e270030c3309049a67c3d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_bump_index</b> (int i)</td></tr>
+<tr class="separator:a24f14514278e270030c3309049a67c3d inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a448234efd66d60d7672599debda33942 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a448234efd66d60d7672599debda33942"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>get_bump_index</b> () const</td></tr>
+<tr class="separator:a448234efd66d60d7672599debda33942 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a7f4208468d599b95d7f7f2e0db8217 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a1a7f4208468d599b95d7f7f2e0db8217"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_bump_index</b> ()</td></tr>
+<tr class="separator:a1a7f4208468d599b95d7f7f2e0db8217 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f7b04553dd6d9de85a45246f21357e0 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a4f7b04553dd6d9de85a45246f21357e0"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a4f7b04553dd6d9de85a45246f21357e0">set_bump_scale</a> (float bs)</td></tr>
-<tr class="memdesc:a4f7b04553dd6d9de85a45246f21357e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">set scale of bumps <br /></td></tr>
-<tr class="separator:a4f7b04553dd6d9de85a45246f21357e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33f54806787d73a492f802e57dbaf23d"><td class="memItemLeft" align="right" valign="top"><a id="a33f54806787d73a492f802e57dbaf23d"></a>
+<tr class="memdesc:a4f7b04553dd6d9de85a45246f21357e0 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">set scale of bumps <br /></td></tr>
+<tr class="separator:a4f7b04553dd6d9de85a45246f21357e0 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33f54806787d73a492f802e57dbaf23d inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a33f54806787d73a492f802e57dbaf23d"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a33f54806787d73a492f802e57dbaf23d">get_bump_scale</a> () const</td></tr>
-<tr class="memdesc:a33f54806787d73a492f802e57dbaf23d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return bump scale <br /></td></tr>
-<tr class="separator:a33f54806787d73a492f802e57dbaf23d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab447b1448a22c74b69b089fe09129ba7"><td class="memItemLeft" align="right" valign="top"><a id="ab447b1448a22c74b69b089fe09129ba7"></a>
+<tr class="memdesc:a33f54806787d73a492f802e57dbaf23d inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">return bump scale <br /></td></tr>
+<tr class="separator:a33f54806787d73a492f802e57dbaf23d inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab447b1448a22c74b69b089fe09129ba7 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="ab447b1448a22c74b69b089fe09129ba7"></a>
 float &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ab447b1448a22c74b69b089fe09129ba7">ref_bump_scale</a> ()</td></tr>
-<tr class="memdesc:ab447b1448a22c74b69b089fe09129ba7"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference to bump scale <br /></td></tr>
-<tr class="separator:ab447b1448a22c74b69b089fe09129ba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:ab447b1448a22c74b69b089fe09129ba7 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference to bump scale <br /></td></tr>
+<tr class="separator:ab447b1448a22c74b69b089fe09129ba7 inherit pub_methods_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1media_1_1illum_1_1surface__material')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html">cgv::media::illum::surface_material</a></td></tr>
+<tr class="memitem:a1732ff7c51d2569e1702267ea2f5d079 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a1732ff7c51d2569e1702267ea2f5d079"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a1732ff7c51d2569e1702267ea2f5d079">surface_material</a> (BrdfType _brdf_type=BrdfType(BT_STRAUSS_DIFFUSE+BT_STRAUSS), <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _diffuse_reflectance=<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(0.5f, 0.5f, 0.5f), float _roughness=0.5f, float _metalness=0.0f, float _ambient_occlusion=1.0f, <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _emission=<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(0, 0, 0), float _transparency=0.0f, const std::complex&lt; float &gt; &amp;_propagation_slow_down=std::complex&lt; float &gt;(1.5f, 0.0f), float _roughness_anisotropy=0.0f, float _roughness_orientation=0.0f, <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _specular_reflectance=<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(1, 1, 1))</td></tr>
+<tr class="memdesc:a1732ff7c51d2569e1702267ea2f5d079 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct default material <br /></td></tr>
+<tr class="separator:a1732ff7c51d2569e1702267ea2f5d079 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a683da9aeaa4e146fa107ac5a3d45b5fc inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a683da9aeaa4e146fa107ac5a3d45b5fc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_brdf_type</b> (BrdfType <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a51fca4161b935253a23af6e2e420d9b7">brdf_type</a>)</td></tr>
+<tr class="separator:a683da9aeaa4e146fa107ac5a3d45b5fc inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84843d9859a4b614c9b9caccb2082545 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a84843d9859a4b614c9b9caccb2082545"></a>
+BrdfType&#160;</td><td class="memItemRight" valign="bottom"><b>get_brdf_type</b> () const</td></tr>
+<tr class="separator:a84843d9859a4b614c9b9caccb2082545 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a562798abc92c80754e94e925bac885b4 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a562798abc92c80754e94e925bac885b4"></a>
+BrdfType &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_brdf_type</b> ()</td></tr>
+<tr class="separator:a562798abc92c80754e94e925bac885b4 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93ebe733fd7ad6f73267111ed6e6b578 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a93ebe733fd7ad6f73267111ed6e6b578"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_ambient_occlusion</b> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#ae99c554bb5e900406ea22a44641a04b9">ambient_occlusion</a>)</td></tr>
+<tr class="separator:a93ebe733fd7ad6f73267111ed6e6b578 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe69e859639ad9c963321720452b98d4 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="abe69e859639ad9c963321720452b98d4"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>get_ambient_occlusion</b> () const</td></tr>
+<tr class="separator:abe69e859639ad9c963321720452b98d4 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae46786c9e69456981a51239a9730425a inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="ae46786c9e69456981a51239a9730425a"></a>
+float &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_ambient_occlusion</b> ()</td></tr>
+<tr class="separator:ae46786c9e69456981a51239a9730425a inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05d79d327071cb3dede4d9ebb1ca5604 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a05d79d327071cb3dede4d9ebb1ca5604"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_diffuse_reflectance</b> (<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3ca6ccb522fcfb870792f5c338eb2e43">diffuse_reflectance</a>)</td></tr>
+<tr class="separator:a05d79d327071cb3dede4d9ebb1ca5604 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad20dc957dd5388eda305eabd9316a512 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="ad20dc957dd5388eda305eabd9316a512"></a>
+<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_diffuse_reflectance</b> () const</td></tr>
+<tr class="separator:ad20dc957dd5388eda305eabd9316a512 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dd80ddb078db32104edcea6b827b65b inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a3dd80ddb078db32104edcea6b827b65b"></a>
+<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_diffuse_reflectance</b> ()</td></tr>
+<tr class="separator:a3dd80ddb078db32104edcea6b827b65b inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a668cb2dcf0eaa4251a8c3c00935bd9 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a5a668cb2dcf0eaa4251a8c3c00935bd9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_specular_reflectance</b> (<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a6e8b7cc53c9d7b817569f1ac68fefeaa">specular_reflectance</a>)</td></tr>
+<tr class="separator:a5a668cb2dcf0eaa4251a8c3c00935bd9 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ef6397f2b7c3085da8700aeebb3a7a8 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a6ef6397f2b7c3085da8700aeebb3a7a8"></a>
+<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_specular_reflectance</b> () const</td></tr>
+<tr class="separator:a6ef6397f2b7c3085da8700aeebb3a7a8 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed175cb8b3f0290da9ba80e271f19717 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="aed175cb8b3f0290da9ba80e271f19717"></a>
+<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_specular_reflectance</b> ()</td></tr>
+<tr class="separator:aed175cb8b3f0290da9ba80e271f19717 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4254eedf7537c1768b4b03a0ac42a7ad inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a4254eedf7537c1768b4b03a0ac42a7ad"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_emission</b> (<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a603d26b3eb0ff6c65273a333b638822d">emission</a>)</td></tr>
+<tr class="separator:a4254eedf7537c1768b4b03a0ac42a7ad inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d047e56998b2ab1590f379660ac33c9 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a6d047e56998b2ab1590f379660ac33c9"></a>
+<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_emission</b> () const</td></tr>
+<tr class="separator:a6d047e56998b2ab1590f379660ac33c9 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af80415fc3575d35f1e038bbfa296e464 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="af80415fc3575d35f1e038bbfa296e464"></a>
+<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_emission</b> ()</td></tr>
+<tr class="separator:af80415fc3575d35f1e038bbfa296e464 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19c4e112277cf68e7489ab540ca80dc0 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a19c4e112277cf68e7489ab540ca80dc0"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_transparency</b> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#ab3c0e8e96379fbda089c1f30de223498">transparency</a>)</td></tr>
+<tr class="separator:a19c4e112277cf68e7489ab540ca80dc0 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a066976872e6983c728979de8ab7d2e3c inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a066976872e6983c728979de8ab7d2e3c"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>get_transparency</b> () const</td></tr>
+<tr class="separator:a066976872e6983c728979de8ab7d2e3c inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9dfac609dcef232c7132456d58ca5765 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a9dfac609dcef232c7132456d58ca5765"></a>
+float &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_transparency</b> ()</td></tr>
+<tr class="separator:a9dfac609dcef232c7132456d58ca5765 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8991eb1c6848cc865b581d60e88ba8bf inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a8991eb1c6848cc865b581d60e88ba8bf"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_roughness</b> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#abeea888e6dbdf16241235a08f82cdc2e">roughness</a>)</td></tr>
+<tr class="separator:a8991eb1c6848cc865b581d60e88ba8bf inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6111f725d14ae0e149a6cbb94875a3e8 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a6111f725d14ae0e149a6cbb94875a3e8"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>get_roughness</b> () const</td></tr>
+<tr class="separator:a6111f725d14ae0e149a6cbb94875a3e8 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe18dbe52315c4923e51caec0dff1346 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="abe18dbe52315c4923e51caec0dff1346"></a>
+float &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_roughness</b> ()</td></tr>
+<tr class="separator:abe18dbe52315c4923e51caec0dff1346 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe5e67fbf7c832fea36764ae7bc47956 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="abe5e67fbf7c832fea36764ae7bc47956"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_metalness</b> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#aa21afe6045ae017791c89530ce3b7e6d">metalness</a>)</td></tr>
+<tr class="separator:abe5e67fbf7c832fea36764ae7bc47956 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc09fa5e2d22a860166a54b159817e15 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="acc09fa5e2d22a860166a54b159817e15"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>get_metalness</b> () const</td></tr>
+<tr class="separator:acc09fa5e2d22a860166a54b159817e15 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef3be4d4112f8989418f62913dfa5725 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="aef3be4d4112f8989418f62913dfa5725"></a>
+float &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_metalness</b> ()</td></tr>
+<tr class="separator:aef3be4d4112f8989418f62913dfa5725 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af77dea726f83304f4e743646f3cacc95 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="af77dea726f83304f4e743646f3cacc95"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_roughness_anisotropy</b> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a865250cb2d26cf61c9769cbeb6bf4a44">roughness_anisotropy</a>)</td></tr>
+<tr class="separator:af77dea726f83304f4e743646f3cacc95 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3f295a1f74771c1da5194dd9794ade5 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="aa3f295a1f74771c1da5194dd9794ade5"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>get_roughness_anisotropy</b> () const</td></tr>
+<tr class="separator:aa3f295a1f74771c1da5194dd9794ade5 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78dd9a43c934765558f74110722cf86f inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a78dd9a43c934765558f74110722cf86f"></a>
+float &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_roughness_anisotropy</b> ()</td></tr>
+<tr class="separator:a78dd9a43c934765558f74110722cf86f inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a0f0bc788824c1e3fc60a1819e97671 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a0a0f0bc788824c1e3fc60a1819e97671"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_roughness_orientation</b> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a612bd2956c621fa487d9ddc4e37ec686">roughness_orientation</a>)</td></tr>
+<tr class="separator:a0a0f0bc788824c1e3fc60a1819e97671 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6029b3cc91b2c0a82b0311935055e756 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a6029b3cc91b2c0a82b0311935055e756"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>get_roughness_orientation</b> () const</td></tr>
+<tr class="separator:a6029b3cc91b2c0a82b0311935055e756 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a6e829d2b24d6d467619d004571f97e inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a4a6e829d2b24d6d467619d004571f97e"></a>
+float &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_roughness_orientation</b> ()</td></tr>
+<tr class="separator:a4a6e829d2b24d6d467619d004571f97e inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aadd4b1a6b36e4fee5f63797788473864 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="aadd4b1a6b36e4fee5f63797788473864"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_propagation_slow_down</b> (std::complex&lt; float &gt; <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a91dd38994fcab38d3b9b974af5f888da">propagation_slow_down</a>)</td></tr>
+<tr class="separator:aadd4b1a6b36e4fee5f63797788473864 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc5034eb044bdb5bbecd9783b9289522 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="acc5034eb044bdb5bbecd9783b9289522"></a>
+std::complex&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>get_propagation_slow_down</b> () const</td></tr>
+<tr class="separator:acc5034eb044bdb5bbecd9783b9289522 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7df5bef9d615eb0d7ba9cf4ce2054e14 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a7df5bef9d615eb0d7ba9cf4ce2054e14"></a>
+std::complex&lt; float &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_propagation_slow_down</b> ()</td></tr>
+<tr class="separator:a7df5bef9d615eb0d7ba9cf4ce2054e14 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a25f95d7367a5ec090a69a0b6047d6b00"><td class="memItemLeft" align="right" valign="top"><a id="a25f95d7367a5ec090a69a0b6047d6b00"></a>
+<tr class="memitem:ac2f758b4bf8cd81d53bbb4754ed9b4e9"><td class="memItemLeft" align="right" valign="top"><a id="ac2f758b4bf8cd81d53bbb4754ed9b4e9"></a>
+std::vector&lt; <a class="el" href="classcgv_1_1render_1_1texture.html">texture</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>textures</b></td></tr>
+<tr class="separator:ac2f758b4bf8cd81d53bbb4754ed9b4e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0d3d3bd2162c2dfe32cf026d66058c6"><td class="memItemLeft" align="right" valign="top"><a id="af0d3d3bd2162c2dfe32cf026d66058c6"></a>
+<a class="el" href="classcgv_1_1render_1_1context.html">context</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>ctx_ptr</b></td></tr>
+<tr class="separator:af0d3d3bd2162c2dfe32cf026d66058c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c8fb4301bcab808cc10192a6aadbceb"><td class="memItemLeft" align="right" valign="top"><a id="a6c8fb4301bcab808cc10192a6aadbceb"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>alpha_threshold</b></td></tr>
+<tr class="separator:a6c8fb4301bcab808cc10192a6aadbceb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60a8715f925cdb767fa1c6cc165588da"><td class="memItemLeft" align="right" valign="top"><a id="a60a8715f925cdb767fa1c6cc165588da"></a>
+<a class="el" href="classcgv_1_1render_1_1textured__material.html#a2dc01136a85115d05a1de7083b093053">AlphaTestFunc</a>&#160;</td><td class="memItemRight" valign="bottom"><b>alpha_test_func</b></td></tr>
+<tr class="separator:a60a8715f925cdb767fa1c6cc165588da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html">cgv::media::illum::textured_surface_material</a></td></tr>
+<tr class="memitem:a25f95d7367a5ec090a69a0b6047d6b00 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a25f95d7367a5ec090a69a0b6047d6b00"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a25f95d7367a5ec090a69a0b6047d6b00">name</a></td></tr>
-<tr class="memdesc:a25f95d7367a5ec090a69a0b6047d6b00"><td class="mdescLeft">&#160;</td><td class="mdescRight">name of material <br /></td></tr>
-<tr class="separator:a25f95d7367a5ec090a69a0b6047d6b00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ab85431a239e37924a126f481f14fda"><td class="memItemLeft" align="right" valign="top"><a id="a4ab85431a239e37924a126f481f14fda"></a>
+<tr class="memdesc:a25f95d7367a5ec090a69a0b6047d6b00 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">name of material <br /></td></tr>
+<tr class="separator:a25f95d7367a5ec090a69a0b6047d6b00 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ab85431a239e37924a126f481f14fda inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a4ab85431a239e37924a126f481f14fda"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a4ab85431a239e37924a126f481f14fda">sRGBA_textures</a></td></tr>
-<tr class="memdesc:a4ab85431a239e37924a126f481f14fda"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether textures are in sRGB format <br /></td></tr>
-<tr class="separator:a4ab85431a239e37924a126f481f14fda"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1878908010344fd8c9388b89b73e7479"><td class="memItemLeft" align="right" valign="top"><a id="a1878908010344fd8c9388b89b73e7479"></a>
+<tr class="memdesc:a4ab85431a239e37924a126f481f14fda inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether textures are in sRGB format <br /></td></tr>
+<tr class="separator:a4ab85431a239e37924a126f481f14fda inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1878908010344fd8c9388b89b73e7479 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a1878908010344fd8c9388b89b73e7479"></a>
 std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a1878908010344fd8c9388b89b73e7479">image_file_names</a></td></tr>
-<tr class="memdesc:a1878908010344fd8c9388b89b73e7479"><td class="mdescLeft">&#160;</td><td class="mdescRight">vector of image file names <br /></td></tr>
-<tr class="separator:a1878908010344fd8c9388b89b73e7479"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5ef1a5bb16f232c61829e6dde15fabe"><td class="memItemLeft" align="right" valign="top"><a id="ae5ef1a5bb16f232c61829e6dde15fabe"></a>
+<tr class="memdesc:a1878908010344fd8c9388b89b73e7479 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">vector of image file names <br /></td></tr>
+<tr class="separator:a1878908010344fd8c9388b89b73e7479 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5ef1a5bb16f232c61829e6dde15fabe inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="ae5ef1a5bb16f232c61829e6dde15fabe"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ae5ef1a5bb16f232c61829e6dde15fabe">diffuse_index</a></td></tr>
-<tr class="memdesc:ae5ef1a5bb16f232c61829e6dde15fabe"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which diffuse_reflectance should be mapped, -1 corresponds to no mapping <br /></td></tr>
-<tr class="separator:ae5ef1a5bb16f232c61829e6dde15fabe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60489a57762d4f098cdda01f362bd2ae"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a60489a57762d4f098cdda01f362bd2ae">roughness_index</a></td></tr>
-<tr class="memdesc:a60489a57762d4f098cdda01f362bd2ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which roughness should be mapped, -1 corresponds to no mapping  <a href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a60489a57762d4f098cdda01f362bd2ae">More...</a><br /></td></tr>
-<tr class="separator:a60489a57762d4f098cdda01f362bd2ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a002fedb701c6cc7b55e54139a9da57a7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a002fedb701c6cc7b55e54139a9da57a7">metalness_index</a></td></tr>
-<tr class="memdesc:a002fedb701c6cc7b55e54139a9da57a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which metalness should be mapped, -1 corresponds to no mapping  <a href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a002fedb701c6cc7b55e54139a9da57a7">More...</a><br /></td></tr>
-<tr class="separator:a002fedb701c6cc7b55e54139a9da57a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba25cf261c1c0aac3bfab7b0b58d63af"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#aba25cf261c1c0aac3bfab7b0b58d63af">ambient_index</a></td></tr>
-<tr class="memdesc:aba25cf261c1c0aac3bfab7b0b58d63af"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which ambient_occlusion should be mapped, -1 corresponds to no mapping  <a href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#aba25cf261c1c0aac3bfab7b0b58d63af">More...</a><br /></td></tr>
-<tr class="separator:aba25cf261c1c0aac3bfab7b0b58d63af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0e0cc0efca7b7a982f2be3fb4c9cf25"><td class="memItemLeft" align="right" valign="top"><a id="ae0e0cc0efca7b7a982f2be3fb4c9cf25"></a>
+<tr class="memdesc:ae5ef1a5bb16f232c61829e6dde15fabe inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which diffuse_reflectance should be mapped, -1 corresponds to no mapping <br /></td></tr>
+<tr class="separator:ae5ef1a5bb16f232c61829e6dde15fabe inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60489a57762d4f098cdda01f362bd2ae inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a60489a57762d4f098cdda01f362bd2ae">roughness_index</a></td></tr>
+<tr class="memdesc:a60489a57762d4f098cdda01f362bd2ae inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which roughness should be mapped, -1 corresponds to no mapping  <a href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a60489a57762d4f098cdda01f362bd2ae">More...</a><br /></td></tr>
+<tr class="separator:a60489a57762d4f098cdda01f362bd2ae inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a002fedb701c6cc7b55e54139a9da57a7 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a002fedb701c6cc7b55e54139a9da57a7">metalness_index</a></td></tr>
+<tr class="memdesc:a002fedb701c6cc7b55e54139a9da57a7 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which metalness should be mapped, -1 corresponds to no mapping  <a href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a002fedb701c6cc7b55e54139a9da57a7">More...</a><br /></td></tr>
+<tr class="separator:a002fedb701c6cc7b55e54139a9da57a7 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba25cf261c1c0aac3bfab7b0b58d63af inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#aba25cf261c1c0aac3bfab7b0b58d63af">ambient_index</a></td></tr>
+<tr class="memdesc:aba25cf261c1c0aac3bfab7b0b58d63af inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which ambient_occlusion should be mapped, -1 corresponds to no mapping  <a href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#aba25cf261c1c0aac3bfab7b0b58d63af">More...</a><br /></td></tr>
+<tr class="separator:aba25cf261c1c0aac3bfab7b0b58d63af inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0e0cc0efca7b7a982f2be3fb4c9cf25 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="ae0e0cc0efca7b7a982f2be3fb4c9cf25"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ae0e0cc0efca7b7a982f2be3fb4c9cf25">emission_index</a></td></tr>
-<tr class="memdesc:ae0e0cc0efca7b7a982f2be3fb4c9cf25"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which emission should be mapped, -1 corresponds to no mapping <br /></td></tr>
-<tr class="separator:ae0e0cc0efca7b7a982f2be3fb4c9cf25"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31e6466d3cb3c6b6d0fb47f3586c9b20"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a31e6466d3cb3c6b6d0fb47f3586c9b20">transparency_index</a></td></tr>
-<tr class="memdesc:a31e6466d3cb3c6b6d0fb47f3586c9b20"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which transparency should be mapped, -1 corresponds to no mapping  <a href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a31e6466d3cb3c6b6d0fb47f3586c9b20">More...</a><br /></td></tr>
-<tr class="separator:a31e6466d3cb3c6b6d0fb47f3586c9b20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b1369127af64f7a53cb05f0e774fee0"><td class="memItemLeft" align="right" valign="top"><a id="a1b1369127af64f7a53cb05f0e774fee0"></a>
+<tr class="memdesc:ae0e0cc0efca7b7a982f2be3fb4c9cf25 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which emission should be mapped, -1 corresponds to no mapping <br /></td></tr>
+<tr class="separator:ae0e0cc0efca7b7a982f2be3fb4c9cf25 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31e6466d3cb3c6b6d0fb47f3586c9b20 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a31e6466d3cb3c6b6d0fb47f3586c9b20">transparency_index</a></td></tr>
+<tr class="memdesc:a31e6466d3cb3c6b6d0fb47f3586c9b20 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which transparency should be mapped, -1 corresponds to no mapping  <a href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a31e6466d3cb3c6b6d0fb47f3586c9b20">More...</a><br /></td></tr>
+<tr class="separator:a31e6466d3cb3c6b6d0fb47f3586c9b20 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b1369127af64f7a53cb05f0e774fee0 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a1b1369127af64f7a53cb05f0e774fee0"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a1b1369127af64f7a53cb05f0e774fee0">propagation_slow_down_index</a></td></tr>
-<tr class="memdesc:a1b1369127af64f7a53cb05f0e774fee0"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which diffuse_reflectance should be mapped, -1 corresponds to no mapping <br /></td></tr>
-<tr class="separator:a1b1369127af64f7a53cb05f0e774fee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c267163a03d2572e7e1d32c2feb646e"><td class="memItemLeft" align="right" valign="top"><a id="a9c267163a03d2572e7e1d32c2feb646e"></a>
+<tr class="memdesc:a1b1369127af64f7a53cb05f0e774fee0 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which diffuse_reflectance should be mapped, -1 corresponds to no mapping <br /></td></tr>
+<tr class="separator:a1b1369127af64f7a53cb05f0e774fee0 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c267163a03d2572e7e1d32c2feb646e inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a9c267163a03d2572e7e1d32c2feb646e"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a9c267163a03d2572e7e1d32c2feb646e">specular_index</a></td></tr>
-<tr class="memdesc:a9c267163a03d2572e7e1d32c2feb646e"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which specular_reflectance should be mapped, -1 corresponds to no mapping <br /></td></tr>
-<tr class="separator:a9c267163a03d2572e7e1d32c2feb646e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeed533b68c10172086d70578e025ba3f"><td class="memItemLeft" align="right" valign="top"><a id="aeed533b68c10172086d70578e025ba3f"></a>
+<tr class="memdesc:a9c267163a03d2572e7e1d32c2feb646e inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which specular_reflectance should be mapped, -1 corresponds to no mapping <br /></td></tr>
+<tr class="separator:a9c267163a03d2572e7e1d32c2feb646e inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeed533b68c10172086d70578e025ba3f inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="aeed533b68c10172086d70578e025ba3f"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#aeed533b68c10172086d70578e025ba3f">normal_index</a></td></tr>
-<tr class="memdesc:aeed533b68c10172086d70578e025ba3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which normals should be mapped, -1 corresponds to no mapping <br /></td></tr>
-<tr class="separator:aeed533b68c10172086d70578e025ba3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3be22efb242773e5612b1908fb4995f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ae3be22efb242773e5612b1908fb4995f">bump_index</a></td></tr>
-<tr class="memdesc:ae3be22efb242773e5612b1908fb4995f"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which bumps should be mapped, -1 corresponds to no mapping  <a href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ae3be22efb242773e5612b1908fb4995f">More...</a><br /></td></tr>
-<tr class="separator:ae3be22efb242773e5612b1908fb4995f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7808bf0a16619b4c2ca2e0591dee43a"><td class="memItemLeft" align="right" valign="top"><a id="af7808bf0a16619b4c2ca2e0591dee43a"></a>
+<tr class="memdesc:aeed533b68c10172086d70578e025ba3f inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which normals should be mapped, -1 corresponds to no mapping <br /></td></tr>
+<tr class="separator:aeed533b68c10172086d70578e025ba3f inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3be22efb242773e5612b1908fb4995f inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ae3be22efb242773e5612b1908fb4995f">bump_index</a></td></tr>
+<tr class="memdesc:ae3be22efb242773e5612b1908fb4995f inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which bumps should be mapped, -1 corresponds to no mapping  <a href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ae3be22efb242773e5612b1908fb4995f">More...</a><br /></td></tr>
+<tr class="separator:ae3be22efb242773e5612b1908fb4995f inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7808bf0a16619b4c2ca2e0591dee43a inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memItemLeft" align="right" valign="top"><a id="af7808bf0a16619b4c2ca2e0591dee43a"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#af7808bf0a16619b4c2ca2e0591dee43a">bump_scale</a></td></tr>
-<tr class="memdesc:af7808bf0a16619b4c2ca2e0591dee43a"><td class="mdescLeft">&#160;</td><td class="mdescRight">scaling factor for bump map <br /></td></tr>
-<tr class="separator:af7808bf0a16619b4c2ca2e0591dee43a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51fca4161b935253a23af6e2e420d9b7"><td class="memItemLeft" align="right" valign="top"><a id="a51fca4161b935253a23af6e2e420d9b7"></a>
+<tr class="memdesc:af7808bf0a16619b4c2ca2e0591dee43a inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">scaling factor for bump map <br /></td></tr>
+<tr class="separator:af7808bf0a16619b4c2ca2e0591dee43a inherit pro_attribs_classcgv_1_1media_1_1illum_1_1textured__surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html">cgv::media::illum::surface_material</a></td></tr>
+<tr class="memitem:a51fca4161b935253a23af6e2e420d9b7 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a51fca4161b935253a23af6e2e420d9b7"></a>
 BrdfType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a51fca4161b935253a23af6e2e420d9b7">brdf_type</a></td></tr>
-<tr class="memdesc:a51fca4161b935253a23af6e2e420d9b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">store brdf type, defaults to BT_COOK_TORRANCE <br /></td></tr>
-<tr class="separator:a51fca4161b935253a23af6e2e420d9b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ca6ccb522fcfb870792f5c338eb2e43"><td class="memItemLeft" align="right" valign="top"><a id="a3ca6ccb522fcfb870792f5c338eb2e43"></a>
+<tr class="memdesc:a51fca4161b935253a23af6e2e420d9b7 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">store brdf type, defaults to BT_COOK_TORRANCE <br /></td></tr>
+<tr class="separator:a51fca4161b935253a23af6e2e420d9b7 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ca6ccb522fcfb870792f5c338eb2e43 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a3ca6ccb522fcfb870792f5c338eb2e43"></a>
 <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3ca6ccb522fcfb870792f5c338eb2e43">diffuse_reflectance</a></td></tr>
-<tr class="memdesc:a3ca6ccb522fcfb870792f5c338eb2e43"><td class="mdescLeft">&#160;</td><td class="mdescRight">diffuse reflectance of surface, defaults to 0.5,0.5,0.5 <br /></td></tr>
-<tr class="separator:a3ca6ccb522fcfb870792f5c338eb2e43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abeea888e6dbdf16241235a08f82cdc2e"><td class="memItemLeft" align="right" valign="top"><a id="abeea888e6dbdf16241235a08f82cdc2e"></a>
+<tr class="memdesc:a3ca6ccb522fcfb870792f5c338eb2e43 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">diffuse reflectance of surface, defaults to 0.5,0.5,0.5 <br /></td></tr>
+<tr class="separator:a3ca6ccb522fcfb870792f5c338eb2e43 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abeea888e6dbdf16241235a08f82cdc2e inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="abeea888e6dbdf16241235a08f82cdc2e"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#abeea888e6dbdf16241235a08f82cdc2e">roughness</a></td></tr>
-<tr class="memdesc:abeea888e6dbdf16241235a08f82cdc2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">surface roughness in the range <a href="1/2 trace of symmetric 2x2 matrix for anisotropic case where directional roughness is represented in the uv-coordinate system of texcoords">0,1</a>, defaults to 0.5 <br /></td></tr>
-<tr class="separator:abeea888e6dbdf16241235a08f82cdc2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa21afe6045ae017791c89530ce3b7e6d"><td class="memItemLeft" align="right" valign="top"><a id="aa21afe6045ae017791c89530ce3b7e6d"></a>
+<tr class="memdesc:abeea888e6dbdf16241235a08f82cdc2e inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">surface roughness in the range <a href="1/2 trace of symmetric 2x2 matrix for anisotropic case where directional roughness is represented in the uv-coordinate system of texcoords">0,1</a>, defaults to 0.5 <br /></td></tr>
+<tr class="separator:abeea888e6dbdf16241235a08f82cdc2e inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa21afe6045ae017791c89530ce3b7e6d inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="aa21afe6045ae017791c89530ce3b7e6d"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#aa21afe6045ae017791c89530ce3b7e6d">metalness</a></td></tr>
-<tr class="memdesc:aa21afe6045ae017791c89530ce3b7e6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">metalness of surface <br /></td></tr>
-<tr class="separator:aa21afe6045ae017791c89530ce3b7e6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae99c554bb5e900406ea22a44641a04b9"><td class="memItemLeft" align="right" valign="top"><a id="ae99c554bb5e900406ea22a44641a04b9"></a>
+<tr class="memdesc:aa21afe6045ae017791c89530ce3b7e6d inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">metalness of surface <br /></td></tr>
+<tr class="separator:aa21afe6045ae017791c89530ce3b7e6d inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae99c554bb5e900406ea22a44641a04b9 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="ae99c554bb5e900406ea22a44641a04b9"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#ae99c554bb5e900406ea22a44641a04b9">ambient_occlusion</a></td></tr>
-<tr class="memdesc:ae99c554bb5e900406ea22a44641a04b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">scalar factor to down scale ambient light, defaults to 1 <br /></td></tr>
-<tr class="separator:ae99c554bb5e900406ea22a44641a04b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a603d26b3eb0ff6c65273a333b638822d"><td class="memItemLeft" align="right" valign="top"><a id="a603d26b3eb0ff6c65273a333b638822d"></a>
+<tr class="memdesc:ae99c554bb5e900406ea22a44641a04b9 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">scalar factor to down scale ambient light, defaults to 1 <br /></td></tr>
+<tr class="separator:ae99c554bb5e900406ea22a44641a04b9 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a603d26b3eb0ff6c65273a333b638822d inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a603d26b3eb0ff6c65273a333b638822d"></a>
 <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a603d26b3eb0ff6c65273a333b638822d">emission</a></td></tr>
-<tr class="memdesc:a603d26b3eb0ff6c65273a333b638822d"><td class="mdescLeft">&#160;</td><td class="mdescRight">emissive color component, defaults to 0,0,0 <br /></td></tr>
-<tr class="separator:a603d26b3eb0ff6c65273a333b638822d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3c0e8e96379fbda089c1f30de223498"><td class="memItemLeft" align="right" valign="top"><a id="ab3c0e8e96379fbda089c1f30de223498"></a>
+<tr class="memdesc:a603d26b3eb0ff6c65273a333b638822d inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">emissive color component, defaults to 0,0,0 <br /></td></tr>
+<tr class="separator:a603d26b3eb0ff6c65273a333b638822d inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3c0e8e96379fbda089c1f30de223498 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="ab3c0e8e96379fbda089c1f30de223498"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#ab3c0e8e96379fbda089c1f30de223498">transparency</a></td></tr>
-<tr class="memdesc:ab3c0e8e96379fbda089c1f30de223498"><td class="mdescLeft">&#160;</td><td class="mdescRight">modulation for transparency, defaults to 0 <br /></td></tr>
-<tr class="separator:ab3c0e8e96379fbda089c1f30de223498"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91dd38994fcab38d3b9b974af5f888da"><td class="memItemLeft" align="right" valign="top"><a id="a91dd38994fcab38d3b9b974af5f888da"></a>
+<tr class="memdesc:ab3c0e8e96379fbda089c1f30de223498 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">modulation for transparency, defaults to 0 <br /></td></tr>
+<tr class="separator:ab3c0e8e96379fbda089c1f30de223498 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91dd38994fcab38d3b9b974af5f888da inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a91dd38994fcab38d3b9b974af5f888da"></a>
 std::complex&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a91dd38994fcab38d3b9b974af5f888da">propagation_slow_down</a></td></tr>
-<tr class="memdesc:a91dd38994fcab38d3b9b974af5f888da"><td class="mdescLeft">&#160;</td><td class="mdescRight">complex fraction of complex interior over real exterior index of refraction, defaults to 1.5,0 <br /></td></tr>
-<tr class="separator:a91dd38994fcab38d3b9b974af5f888da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a865250cb2d26cf61c9769cbeb6bf4a44"><td class="memItemLeft" align="right" valign="top"><a id="a865250cb2d26cf61c9769cbeb6bf4a44"></a>
+<tr class="memdesc:a91dd38994fcab38d3b9b974af5f888da inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">complex fraction of complex interior over real exterior index of refraction, defaults to 1.5,0 <br /></td></tr>
+<tr class="separator:a91dd38994fcab38d3b9b974af5f888da inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a865250cb2d26cf61c9769cbeb6bf4a44 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a865250cb2d26cf61c9769cbeb6bf4a44"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a865250cb2d26cf61c9769cbeb6bf4a44">roughness_anisotropy</a></td></tr>
-<tr class="memdesc:a865250cb2d26cf61c9769cbeb6bf4a44"><td class="mdescLeft">&#160;</td><td class="mdescRight">difference of roughness matrix eigenvalues in range [0,1] relative to <code>roughness</code>, i.e. lambda_1 - lambda_2 = roughness_anisotropy*roughness, defaults to 0 <br /></td></tr>
-<tr class="separator:a865250cb2d26cf61c9769cbeb6bf4a44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a612bd2956c621fa487d9ddc4e37ec686"><td class="memItemLeft" align="right" valign="top"><a id="a612bd2956c621fa487d9ddc4e37ec686"></a>
+<tr class="memdesc:a865250cb2d26cf61c9769cbeb6bf4a44 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">difference of roughness matrix eigenvalues in range [0,1] relative to <code>roughness</code>, i.e. lambda_1 - lambda_2 = roughness_anisotropy*roughness, defaults to 0 <br /></td></tr>
+<tr class="separator:a865250cb2d26cf61c9769cbeb6bf4a44 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a612bd2956c621fa487d9ddc4e37ec686 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a612bd2956c621fa487d9ddc4e37ec686"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a612bd2956c621fa487d9ddc4e37ec686">roughness_orientation</a></td></tr>
-<tr class="memdesc:a612bd2956c621fa487d9ddc4e37ec686"><td class="mdescLeft">&#160;</td><td class="mdescRight">orientation of roughness in range [0,1], where 0 corresponds to u-direction and 0.5 to v direction, defaults to 0 <br /></td></tr>
-<tr class="separator:a612bd2956c621fa487d9ddc4e37ec686"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e8b7cc53c9d7b817569f1ac68fefeaa"><td class="memItemLeft" align="right" valign="top"><a id="a6e8b7cc53c9d7b817569f1ac68fefeaa"></a>
+<tr class="memdesc:a612bd2956c621fa487d9ddc4e37ec686 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">orientation of roughness in range [0,1], where 0 corresponds to u-direction and 0.5 to v direction, defaults to 0 <br /></td></tr>
+<tr class="separator:a612bd2956c621fa487d9ddc4e37ec686 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e8b7cc53c9d7b817569f1ac68fefeaa inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memItemLeft" align="right" valign="top"><a id="a6e8b7cc53c9d7b817569f1ac68fefeaa"></a>
 <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a6e8b7cc53c9d7b817569f1ac68fefeaa">specular_reflectance</a></td></tr>
-<tr class="memdesc:a6e8b7cc53c9d7b817569f1ac68fefeaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">specular color used to modulate specular reflection component, should be 1,1,1 <br /></td></tr>
-<tr class="separator:a6e8b7cc53c9d7b817569f1ac68fefeaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:a6e8b7cc53c9d7b817569f1ac68fefeaa inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">specular color used to modulate specular reflection component, should be 1,1,1 <br /></td></tr>
+<tr class="separator:a6e8b7cc53c9d7b817569f1ac68fefeaa inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>class that extends obj_material with the management of textures </p>
@@ -483,152 +696,6 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <p class="definition">Definition at line <a class="el" href="textured__material_8cxx_source.html#l00042">42</a> of file <a class="el" href="textured__material_8cxx_source.html">textured_material.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="texture_8cxx_source.html#l00331">cgv::render::texture::create_from_image()</a>, <a class="el" href="component__format_8cxx_source.html#l00303">cgv::data::component_format::get_last_error()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00022">cgv::media::illum::textured_surface_material::image_file_names</a>, <a class="el" href="texture_8cxx_source.html#l00080">cgv::render::texture::set_wrap_s()</a>, and <a class="el" href="texture_8cxx_source.html#l00086">cgv::render::texture::set_wrap_t()</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="aba25cf261c1c0aac3bfab7b0b58d63af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba25cf261c1c0aac3bfab7b0b58d63af">&#9670;&nbsp;</a></span>ambient_index</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::ambient_index</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>index of image from which ambient_occlusion should be mapped, -1 corresponds to no mapping </p>
-<p>In case of 4 component textures ambient_occlusion is mapped from the w component. </p>
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00035">35</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00010">cgv::media::illum::textured_surface_material::textured_surface_material()</a>.</p>
-
-</div>
-</div>
-<a id="ae3be22efb242773e5612b1908fb4995f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae3be22efb242773e5612b1908fb4995f">&#9670;&nbsp;</a></span>bump_index</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::bump_index</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>index of image from which bumps should be mapped, -1 corresponds to no mapping </p>
-<p>If no normal mapping is applies, bump map is also used for normal mapping. </p>
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00049">49</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00010">cgv::media::illum::textured_surface_material::textured_surface_material()</a>.</p>
-
-</div>
-</div>
-<a id="a002fedb701c6cc7b55e54139a9da57a7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a002fedb701c6cc7b55e54139a9da57a7">&#9670;&nbsp;</a></span>metalness_index</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::metalness_index</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>index of image from which metalness should be mapped, -1 corresponds to no mapping </p>
-<p>In case of 4 component textures metalness is mapped from the w component. For 2 component textures, metalness is mapped from the x-component. </p>
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00032">32</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00010">cgv::media::illum::textured_surface_material::textured_surface_material()</a>.</p>
-
-</div>
-</div>
-<a id="a60489a57762d4f098cdda01f362bd2ae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a60489a57762d4f098cdda01f362bd2ae">&#9670;&nbsp;</a></span>roughness_index</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::roughness_index</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>index of image from which roughness should be mapped, -1 corresponds to no mapping </p>
-<p>In case of 3 or 4 component textures roughness is mapped anisotropically from the xyz components. For 2 component textures, roughness is mapped from the y-component. </p>
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00028">28</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00010">cgv::media::illum::textured_surface_material::textured_surface_material()</a>.</p>
-
-</div>
-</div>
-<a id="a31e6466d3cb3c6b6d0fb47f3586c9b20"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a31e6466d3cb3c6b6d0fb47f3586c9b20">&#9670;&nbsp;</a></span>transparency_index</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::transparency_index</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>index of image from which transparency should be mapped, -1 corresponds to no mapping </p>
-<p>In case of 4 component textures transparency is mapped from the w component. </p>
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00040">40</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00010">cgv::media::illum::textured_surface_material::textured_surface_material()</a>.</p>
 
 </div>
 </div>

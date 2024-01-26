@@ -100,8 +100,9 @@ Inheritance diagram for cgv::media::mesh::obj_reader_base:</div>
  <div class="center">
   <img src="classcgv_1_1media_1_1mesh_1_1obj__reader__base.png" usemap="#cgv::media::mesh::obj_5Freader_5Fbase_map" alt=""/>
   <map id="cgv::media::mesh::obj_5Freader_5Fbase_map" name="cgv::media::mesh::obj_5Freader_5Fbase_map">
-<area href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html" title="implements the pure reading of an obj file and calls virtual callback functions to allow a derived cl..." alt="cgv::media::mesh::obj_reader_generic&lt; T &gt;" shape="rect" coords="0,56,256,80"/>
-<area href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html" title="implements the virtual interface of the obj_reader and stores all read information." alt="cgv::media::mesh::obj_loader_generic&lt; T &gt;" shape="rect" coords="0,112,256,136"/>
+<area href="classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html" title="implements the pure reading of an obj file and calls virtual callback functions to allow a derived cl..." alt="cgv::media::mesh::obj_reader_generic&lt; T &gt;" shape="rect" coords="147,56,431,80"/>
+<area href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html" title="implements the virtual interface of the obj_reader and stores all read information." alt="cgv::media::mesh::obj_loader_generic&lt; T &gt;" shape="rect" coords="0,112,284,136"/>
+<area href="classcgv_1_1media_1_1mesh_1_1simple__mesh__obj__reader.html" alt="cgv::media::mesh::simple_mesh_obj_reader&lt; T &gt;" shape="rect" coords="294,112,578,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -258,11 +259,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p>overide this function to process a color (this called for vc prefixes which is is not in the standard but for example used in pobj-files) </p>
 <p>overide this function to process a normal </p>
 
-<p>Reimplemented in <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a861fce02390bfa8d3988925ed29ee940">cgv::media::mesh::obj_loader_generic&lt; T &gt;</a>.</p>
+<p>Reimplemented in <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__obj__reader.html#aa8bb243ba1d9d729bdee824b344b6068">cgv::media::mesh::simple_mesh_obj_reader&lt; T &gt;</a>, and <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a861fce02390bfa8d3988925ed29ee940">cgv::media::mesh::obj_loader_generic&lt; T &gt;</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="obj__reader_8cxx_source.html#l00133">133</a> of file <a class="el" href="obj__reader_8cxx_source.html">obj_reader.cxx</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00629">cgv::media::mesh::simple_mesh&lt; float &gt;::transform()</a>.</p>
 
 </div>
 </div>
@@ -315,11 +314,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p>overide this function to process a face, the indices start with 0 </p>
 <p>overide this function to process a face </p>
 
-<p>Reimplemented in <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a6a482156cb74eb0ffd342b37510cb516">cgv::media::mesh::obj_loader_generic&lt; T &gt;</a>.</p>
+<p>Reimplemented in <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a6a482156cb74eb0ffd342b37510cb516">cgv::media::mesh::obj_loader_generic&lt; T &gt;</a>, and <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__obj__reader.html#a71fcfe9b9a6a2f4951abc6e5e44eaff5">cgv::media::mesh::simple_mesh_obj_reader&lt; T &gt;</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="obj__reader_8cxx_source.html#l00162">162</a> of file <a class="el" href="obj__reader_8cxx_source.html">obj_reader.cxx</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00629">cgv::media::mesh::simple_mesh&lt; float &gt;::transform()</a>.</p>
 
 </div>
 </div>
@@ -415,11 +412,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p>process a material definition. If a material with a certain name is overwritten, it will receive the same index </p>
 <p>process a material definition </p>
 
-<p>Reimplemented in <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a70b5455f33f6dcc78ab36797cef497e5">cgv::media::mesh::obj_loader_generic&lt; T &gt;</a>.</p>
+<p>Reimplemented in <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__obj__reader.html#acdcbeb6e14e93627d80d9b81b9aea9fe">cgv::media::mesh::simple_mesh_obj_reader&lt; T &gt;</a>, and <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a70b5455f33f6dcc78ab36797cef497e5">cgv::media::mesh::obj_loader_generic&lt; T &gt;</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="obj__reader_8cxx_source.html#l00172">172</a> of file <a class="el" href="obj__reader_8cxx_source.html">obj_reader.cxx</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00629">cgv::media::mesh::simple_mesh&lt; float &gt;::transform()</a>.</p>
 
 </div>
 </div>

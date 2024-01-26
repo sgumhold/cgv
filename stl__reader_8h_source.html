@@ -313,21 +313,21 @@ $(document).ready(function(){initNavTree('stl__reader_8h_source.html',''); initR
 <div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;  <span class="comment">// a coordinate triple with an additional index. The index is required</span></div>
 <div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;  <span class="comment">// for RemoveDoubles, so that triangles can be reindexed properly.</span></div>
 <div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> number_t, <span class="keyword">typename</span> index_t&gt;</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;  <span class="keyword">struct </span>CoordWithIndex {</div>
+<div class="line"><a name="l00421"></a><span class="lineno"><a class="line" href="structstl__reader_1_1stl__reader__impl_1_1CoordWithIndex.html">  421</a></span>&#160;  <span class="keyword">struct </span><a class="code" href="structstl__reader_1_1stl__reader__impl_1_1CoordWithIndex.html">CoordWithIndex</a> {</div>
 <div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;    number_t data[3];</div>
 <div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;    index_t index;</div>
 <div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160; </div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;    <span class="keywordtype">bool</span> operator == (<span class="keyword">const</span> CoordWithIndex&amp; c)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;    <span class="keywordtype">bool</span> operator == (<span class="keyword">const</span> <a class="code" href="structstl__reader_1_1stl__reader__impl_1_1CoordWithIndex.html">CoordWithIndex</a>&amp; c)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;<span class="keyword">    </span>{</div>
 <div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;      <span class="keywordflow">return</span> (c[0] == data[0]) &amp;&amp; (c[1] == data[1]) &amp;&amp; (c[2] == data[2]);</div>
 <div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;    }</div>
 <div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160; </div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    <span class="keywordtype">bool</span> operator != (<span class="keyword">const</span> CoordWithIndex&amp; c)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    <span class="keywordtype">bool</span> operator != (<span class="keyword">const</span> <a class="code" href="structstl__reader_1_1stl__reader__impl_1_1CoordWithIndex.html">CoordWithIndex</a>&amp; c)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;<span class="keyword">    </span>{</div>
 <div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;      <span class="keywordflow">return</span> (c[0] != data[0]) || (c[1] != data[1]) || (c[2] != data[2]);</div>
 <div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;    }</div>
 <div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160; </div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;    <span class="keywordtype">bool</span> operator &lt; (<span class="keyword">const</span> CoordWithIndex&amp; c)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;    <span class="keywordtype">bool</span> operator &lt; (<span class="keyword">const</span> <a class="code" href="structstl__reader_1_1stl__reader__impl_1_1CoordWithIndex.html">CoordWithIndex</a>&amp; c)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;<span class="keyword">    </span>{</div>
 <div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;      <span class="keywordflow">return</span> (data[0] &lt; c[0])</div>
 <div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;          || (data[0] == c[0] &amp;&amp; data[1] &lt; c[1])</div>
@@ -343,7 +343,7 @@ $(document).ready(function(){initNavTree('stl__reader_8h_source.html',''); initR
 <div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">class</span> TNumberContainer, <span class="keyword">class</span> TIndexContainer&gt;</div>
 <div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;  <span class="keywordtype">void</span> RemoveDoubles (TNumberContainer&amp; uniqueCoordsOut,</div>
 <div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;                      TIndexContainer&amp; trisInOut,</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;                      std::vector &lt;CoordWithIndex&lt;</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;                      std::vector &lt;<a class="code" href="structstl__reader_1_1stl__reader__impl_1_1CoordWithIndex.html">CoordWithIndex</a>&lt;</div>
 <div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;                        <span class="keyword">typename</span> TNumberContainer::value_type,</div>
 <div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;                        <span class="keyword">typename</span> TIndexContainer::value_type&gt; &gt;</div>
 <div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;                        &amp;coordsWithIndexInOut)</div>
@@ -638,6 +638,7 @@ $(document).ready(function(){initNavTree('stl__reader_8h_source.html',''); initR
 <div class="ttc" id="astl__reader_8h_html_ac46eb930e343d35b3729ed68a65787a2"><div class="ttname"><a href="stl__reader_8h.html#ac46eb930e343d35b3729ed68a65787a2">STL_READER_COND_THROW</a></div><div class="ttdeci">#define STL_READER_COND_THROW(cond, msg)</div><div class="ttdoc">Throws an std::runtime_error with the given message, if the given condition evaluates to true.</div><div class="ttdef"><b>Definition:</b> <a href="stl__reader_8h_source.html#l00144">stl_reader.h:144</a></div></div>
 <div class="ttc" id="astl__reader_8h_html_ad1f73011673b374d1131dd449757c4d7"><div class="ttname"><a href="stl__reader_8h.html#ad1f73011673b374d1131dd449757c4d7">STL_READER_THROW</a></div><div class="ttdeci">#define STL_READER_THROW(msg)</div><div class="ttdoc">Throws an std::runtime_error with the given message.</div><div class="ttdef"><b>Definition:</b> <a href="stl__reader_8h_source.html#l00141">stl_reader.h:141</a></div></div>
 <div class="ttc" id="astl__reader_8h_html_ae1637496545f2b91e2f0ca37c1dbef26"><div class="ttname"><a href="stl__reader_8h.html#ae1637496545f2b91e2f0ca37c1dbef26">stl_reader::ReadStlFile_BINARY</a></div><div class="ttdeci">bool ReadStlFile_BINARY(const char *filename, TNumberContainer1 &amp;coordsOut, TNumberContainer2 &amp;normalsOut, TIndexContainer1 &amp;trisOut, TIndexContainer2 &amp;solidRangesOut)</div><div class="ttdoc">Reads a binary stl file into several arrays.</div><div class="ttdef"><b>Definition:</b> <a href="stl__reader_8h_source.html#l00639">stl_reader.h:639</a></div></div>
+<div class="ttc" id="astructstl__reader_1_1stl__reader__impl_1_1CoordWithIndex_html"><div class="ttname"><a href="structstl__reader_1_1stl__reader__impl_1_1CoordWithIndex.html">stl_reader::stl_reader_impl::CoordWithIndex</a></div><div class="ttdef"><b>Definition:</b> <a href="stl__reader_8h_source.html#l00421">stl_reader.h:421</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

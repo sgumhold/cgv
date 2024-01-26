@@ -85,6 +85,8 @@ $(document).ready(function(){initNavTree('classcgv_1_1os_1_1thread.html',''); in
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-static-methods">Static Protected Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1os_1_1thread-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::os::thread Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -101,7 +103,9 @@ Inheritance diagram for cgv::os::thread:</div>
  <div class="center">
   <img src="classcgv_1_1os_1_1thread.png" usemap="#cgv::os::thread_map" alt=""/>
   <map id="cgv::os::thread_map" name="cgv::os::thread_map">
-<area href="classcgv_1_1os_1_1web__server__thread.html" title="web server interface that runs in its own thread" alt="cgv::os::web_server_thread" shape="rect" coords="0,56,168,80"/>
+<area href="classcgv_1_1os_1_1function__thread.html" alt="cgv::os::function_thread" shape="rect" coords="0,56,168,80"/>
+<area href="classcgv_1_1os_1_1function__thread.html" alt="cgv::os::function_thread" shape="rect" coords="178,56,346,80"/>
+<area href="classcgv_1_1os_1_1web__server__thread.html" title="web server interface that runs in its own thread" alt="cgv::os::web_server_thread" shape="rect" coords="356,56,524,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -177,6 +181,27 @@ Protected Member Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1thread.html#a0b04f390cbcb27e543e22c455ab28c19">execute</a> ()</td></tr>
 <tr class="memdesc:a0b04f390cbcb27e543e22c455ab28c19"><td class="mdescLeft">&#160;</td><td class="mdescRight">executes the run method <br /></td></tr>
 <tr class="separator:a0b04f390cbcb27e543e22c455ab28c19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-methods"></a>
+Static Protected Member Functions</h2></td></tr>
+<tr class="memitem:aa18d58e4793e466877748c436eff9238"><td class="memItemLeft" align="right" valign="top"><a id="aa18d58e4793e466877748c436eff9238"></a>
+static void *&#160;</td><td class="memItemRight" valign="bottom"><b>execute_s</b> (void *args)</td></tr>
+<tr class="separator:aa18d58e4793e466877748c436eff9238"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:ac319fb322f3394782f207cfb8fe80799"><td class="memItemLeft" align="right" valign="top"><a id="ac319fb322f3394782f207cfb8fe80799"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>thread_ptr</b></td></tr>
+<tr class="separator:ac319fb322f3394782f207cfb8fe80799"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a115467bee201d457c2a371f2d6b4c154"><td class="memItemLeft" align="right" valign="top"><a id="a115467bee201d457c2a371f2d6b4c154"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>stop_request</b></td></tr>
+<tr class="separator:a115467bee201d457c2a371f2d6b4c154"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a471fd80764c7acafcc3f88a9e8bfc28f"><td class="memItemLeft" align="right" valign="top"><a id="a471fd80764c7acafcc3f88a9e8bfc28f"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>running</b></td></tr>
+<tr class="separator:a471fd80764c7acafcc3f88a9e8bfc28f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a359e091cb9dc604e1091aef906477ddb"><td class="memItemLeft" align="right" valign="top"><a id="a359e091cb9dc604e1091aef906477ddb"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>delete_after_termination</b></td></tr>
+<tr class="separator:a359e091cb9dc604e1091aef906477ddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Thread class implementation that uses pthreads internally. </p>

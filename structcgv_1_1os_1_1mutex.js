@@ -7,5 +7,6 @@ var structcgv_1_1os_1_1mutex =
     [ "get_debug_lock_counter", "structcgv_1_1os_1_1mutex.html#a0b980fdeb7ab025bf56231d1c7aacc63", null ],
     [ "lock", "structcgv_1_1os_1_1mutex.html#ac47eb48c01c18a20d4bfc22f839568d1", null ],
     [ "try_lock", "structcgv_1_1os_1_1mutex.html#a6e650f9af49da9b48aa8d9f81b292fef", null ],
-    [ "unlock", "structcgv_1_1os_1_1mutex.html#a0976d2e9cd4c7934bf4341f3d8cf4680", null ]
+    [ "unlock", "structcgv_1_1os_1_1mutex.html#a0976d2e9cd4c7934bf4341f3d8cf4680", null ],
+    [ "pmutex", "structcgv_1_1os_1_1mutex.html#a39d0667f11bc1bddc4aa75c1cd015043", null ]
 ];

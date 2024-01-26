@@ -7,6 +7,7 @@ var classcgv_1_1media_1_1color__base =
     [ "alpha", "classcgv_1_1media_1_1color__base.html#a694665bc328e126236447b2f4fb68bb6", null ],
     [ "at", "classcgv_1_1media_1_1color__base.html#ae51ddb30993fa2ab71149fc70721e90d", null ],
     [ "at", "classcgv_1_1media_1_1color__base.html#aabc825dc43a27fb735c7a50d7db6a816", null ],
+    [ "components", "classcgv_1_1media_1_1color__base.html#a393c6dbe63dd3aacb69573d52a57bf30", null ],
     [ "nr_alpha_components", "classcgv_1_1media_1_1color__base.html#a875aef7879781ed063f7893cd5274def", null ],
     [ "nr_color_components", "classcgv_1_1media_1_1color__base.html#ad4cbf263c001386f6c09f8451b634c6d", null ],
     [ "nr_components", "classcgv_1_1media_1_1color__base.html#ad8780363ff06c65cb856b0c64d9debf0", null ]

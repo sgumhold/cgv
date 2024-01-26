@@ -83,6 +83,7 @@ $(document).ready(function(){initNavTree('structcgv_1_1math_1_1union__find.html'
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structcgv_1_1math_1_1union__find-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::math::union_find Struct Reference</div>  </div>
@@ -108,6 +109,15 @@ Public Member Functions</h2></td></tr>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1union__find.html#af34748cfca3e07c7cb7b265646151814">num_of_components</a> ()</td></tr>
 <tr class="memdesc:af34748cfca3e07c7cb7b265646151814"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of sets (initially number of all elements) <br /></td></tr>
 <tr class="separator:af34748cfca3e07c7cb7b265646151814"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a940f296c16a73530d218baa7155bfd0a"><td class="memItemLeft" align="right" valign="top"><a id="a940f296c16a73530d218baa7155bfd0a"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>num_in_set</b> (int x)</td></tr>
+<tr class="separator:a940f296c16a73530d218baa7155bfd0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a456f820b90e3cd6365fe25145d0d8bf6"><td class="memItemLeft" align="right" valign="top"><a id="a456f820b90e3cd6365fe25145d0d8bf6"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>first_set</b> ()</td></tr>
+<tr class="separator:a456f820b90e3cd6365fe25145d0d8bf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcabc5b6b8237c2e6542c4dc5e6d7d79"><td class="memItemLeft" align="right" valign="top"><a id="afcabc5b6b8237c2e6542c4dc5e6d7d79"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>next_set</b> (int x)</td></tr>
+<tr class="separator:afcabc5b6b8237c2e6542c4dc5e6d7d79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9646d9693767c3d99eaa1c3e9533a36f"><td class="memItemLeft" align="right" valign="top"><a id="a9646d9693767c3d99eaa1c3e9533a36f"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1union__find.html#a9646d9693767c3d99eaa1c3e9533a36f">find</a> (int x)</td></tr>
 <tr class="memdesc:a9646d9693767c3d99eaa1c3e9533a36f"><td class="mdescLeft">&#160;</td><td class="mdescRight">return label number of element x <br /></td></tr>
@@ -120,6 +130,21 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1union__find.html#aa32529c4381e2af91f93a3e57e8081be">find</a> (int p, int q)</td></tr>
 <tr class="memdesc:aa32529c4381e2af91f93a3e57e8081be"><td class="mdescLeft">&#160;</td><td class="mdescRight">check wether p and q are in the same set <br /></td></tr>
 <tr class="separator:aa32529c4381e2af91f93a3e57e8081be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a53d457145400bc9dc8d3c148c9d33c9f"><td class="memItemLeft" align="right" valign="top"><a id="a53d457145400bc9dc8d3c148c9d33c9f"></a>
+int *&#160;</td><td class="memItemRight" valign="bottom"><b>sz</b></td></tr>
+<tr class="separator:a53d457145400bc9dc8d3c148c9d33c9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6c6d0a1b55427bf69fa175481a28277"><td class="memItemLeft" align="right" valign="top"><a id="ae6c6d0a1b55427bf69fa175481a28277"></a>
+int *&#160;</td><td class="memItemRight" valign="bottom"><b>id</b></td></tr>
+<tr class="separator:ae6c6d0a1b55427bf69fa175481a28277"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b059dc6365b282cb6c2cddb70146280"><td class="memItemLeft" align="right" valign="top"><a id="a5b059dc6365b282cb6c2cddb70146280"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>components</b></td></tr>
+<tr class="separator:a5b059dc6365b282cb6c2cddb70146280"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4a836b314201674c9155eee11ce89e3"><td class="memItemLeft" align="right" valign="top"><a id="ac4a836b314201674c9155eee11ce89e3"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>N</b></td></tr>
+<tr class="separator:ac4a836b314201674c9155eee11ce89e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A union find data structure. </p>

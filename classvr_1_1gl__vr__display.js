@@ -13,7 +13,14 @@ var classvr_1_1gl__vr__display =
     [ "get_width", "classvr_1_1gl__vr__display.html#a287d2795bca904bc5ddd24b34fb972f0", null ],
     [ "init_fbos", "classvr_1_1gl__vr__display.html#a9c3bf4e60806e19db47aa11c0c3d9ba5", null ],
     [ "set_size", "classvr_1_1gl__vr__display.html#a4bda3adc8035a8f5a23f62f01b858440", null ],
+    [ "vr_wall_kit", "classvr_1_1gl__vr__display.html#ac69208f1be6fbf5ce92a52e61f52ef00", null ],
+    [ "fbo_id", "classvr_1_1gl__vr__display.html#a116cc440c0988942eb93631fb5ddd5d1", null ],
+    [ "height", "classvr_1_1gl__vr__display.html#af0cb829332c26583e1adc182bed0e6b6", null ],
     [ "last_error", "classvr_1_1gl__vr__display.html#a038042488c10a8d59608e736a80d7afa", null ],
     [ "multi_depth_buffer_id", "classvr_1_1gl__vr__display.html#aa905bbf9f3790d68d7cf4b216f7177ca", null ],
+    [ "multi_fbo_id", "classvr_1_1gl__vr__display.html#aef992e2d1b94658e6c429d576091d04e", null ],
+    [ "multi_tex_id", "classvr_1_1gl__vr__display.html#a61ef26b212b62ca428a6be551ce8be17", null ],
+    [ "nr_multi_samples", "classvr_1_1gl__vr__display.html#ad70ea56ef415ab1f7c406e3745125b8d", null ],
+    [ "tex_id", "classvr_1_1gl__vr__display.html#a8d5cceeb936a338557269021257d5759", null ],
     [ "width", "classvr_1_1gl__vr__display.html#a3ed3143ae5fbe0e15b2e6a0e282827cb", null ]
 ];

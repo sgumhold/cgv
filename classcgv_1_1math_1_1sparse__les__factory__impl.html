@@ -83,7 +83,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1sparse__les__facto
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1math_1_1sparse__les__factory__impl-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::math::sparse_les_factory_impl&lt; T &gt; Class Template Reference</div>  </div>
@@ -107,6 +107,9 @@ Inheritance diagram for cgv::math::sparse_les_factory_impl&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:ae14f610b28300006efe0ce28b1e9456c"><td class="memItemLeft" align="right" valign="top"><a id="ae14f610b28300006efe0ce28b1e9456c"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>sparse_les_factory_impl</b> (const std::string &amp;_solver_name, <a class="el" href="namespacecgv_1_1math.html#a22446204b5909c06423af9ce96233507">SparseLesCaps</a> _caps)</td></tr>
+<tr class="separator:ae14f610b28300006efe0ce28b1e9456c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9dc733c969a093b66f6837e2a563da97"><td class="memItemLeft" align="right" valign="top"><a id="a9dc733c969a093b66f6837e2a563da97"></a>
 <a class="el" href="namespacecgv_1_1math.html#a22446204b5909c06423af9ce96233507">SparseLesCaps</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1sparse__les__factory__impl.html#a9dc733c969a093b66f6837e2a563da97">get_caps</a> () const</td></tr>
 <tr class="memdesc:a9dc733c969a093b66f6837e2a563da97"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the supported capabilities of the solver <br /></td></tr>
@@ -119,17 +122,37 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <a class="el" href="namespacecgv_1_1math.html#a1ee5ee26c821419a8c7c5efbf583d424">sparse_les_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1sparse__les__factory__impl.html#ac8751d86e4fab8f040527556614b2187">create</a> (int n, int nr_rhs, int nr_nze)</td></tr>
 <tr class="memdesc:ac8751d86e4fab8f040527556614b2187"><td class="mdescLeft">&#160;</td><td class="mdescRight">create an instance of the solver. <br /></td></tr>
 <tr class="separator:ac8751d86e4fab8f040527556614b2187"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67b5dba890a068acef62d9c026c05320"><td class="memItemLeft" align="right" valign="top"><a id="a67b5dba890a068acef62d9c026c05320"></a>
+<tr class="inherit_header pub_methods_classcgv_1_1math_1_1sparse__les__factory"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1math_1_1sparse__les__factory')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1math_1_1sparse__les__factory.html">cgv::math::sparse_les_factory</a></td></tr>
+<tr class="memitem:a7b6f7c55b282e4ab7070bada04a001ae inherit pub_methods_classcgv_1_1math_1_1sparse__les__factory"><td class="memItemLeft" align="right" valign="top"><a id="a7b6f7c55b282e4ab7070bada04a001ae"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1sparse__les__factory.html#a7b6f7c55b282e4ab7070bada04a001ae">~sparse_les_factory</a> ()</td></tr>
+<tr class="memdesc:a7b6f7c55b282e4ab7070bada04a001ae inherit pub_methods_classcgv_1_1math_1_1sparse__les__factory"><td class="mdescLeft">&#160;</td><td class="mdescRight">make constructor virtual <br /></td></tr>
+<tr class="separator:a7b6f7c55b282e4ab7070bada04a001ae inherit pub_methods_classcgv_1_1math_1_1sparse__les__factory"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classcgv_1_1data_1_1ref__counted"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1data_1_1ref__counted')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1data_1_1ref__counted.html">cgv::data::ref_counted</a></td></tr>
+<tr class="memitem:a67b5dba890a068acef62d9c026c05320 inherit pub_methods_classcgv_1_1data_1_1ref__counted"><td class="memItemLeft" align="right" valign="top"><a id="a67b5dba890a068acef62d9c026c05320"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1ref__counted.html#a67b5dba890a068acef62d9c026c05320">get_ref_count</a> () const</td></tr>
-<tr class="memdesc:a67b5dba890a068acef62d9c026c05320"><td class="mdescLeft">&#160;</td><td class="mdescRight">read access to current count <br /></td></tr>
-<tr class="separator:a67b5dba890a068acef62d9c026c05320"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:a67b5dba890a068acef62d9c026c05320 inherit pub_methods_classcgv_1_1data_1_1ref__counted"><td class="mdescLeft">&#160;</td><td class="mdescRight">read access to current count <br /></td></tr>
+<tr class="separator:a67b5dba890a068acef62d9c026c05320 inherit pub_methods_classcgv_1_1data_1_1ref__counted"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:abceffe95f08d3fc13cf9286cf360e705"><td class="memItemLeft" align="right" valign="top"><a id="abceffe95f08d3fc13cf9286cf360e705"></a>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:ac0cbb370b3da11e2f6a298f3683adc5f"><td class="memItemLeft" align="right" valign="top"><a id="ac0cbb370b3da11e2f6a298f3683adc5f"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>solver_name</b></td></tr>
+<tr class="separator:ac0cbb370b3da11e2f6a298f3683adc5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acddf91d346f8a0cb2cea49b5f8a48bcc"><td class="memItemLeft" align="right" valign="top"><a id="acddf91d346f8a0cb2cea49b5f8a48bcc"></a>
+<a class="el" href="namespacecgv_1_1math.html#a22446204b5909c06423af9ce96233507">SparseLesCaps</a>&#160;</td><td class="memItemRight" valign="bottom"><b>caps</b></td></tr>
+<tr class="separator:acddf91d346f8a0cb2cea49b5f8a48bcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_methods_classcgv_1_1data_1_1ref__counted"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcgv_1_1data_1_1ref__counted')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcgv_1_1data_1_1ref__counted.html">cgv::data::ref_counted</a></td></tr>
+<tr class="memitem:a4abba9349b8891152032f9b386e26ab1 inherit pro_methods_classcgv_1_1data_1_1ref__counted"><td class="memItemLeft" align="right" valign="top"><a id="a4abba9349b8891152032f9b386e26ab1"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1ref__counted.html#a4abba9349b8891152032f9b386e26ab1">ref_counted</a> ()</td></tr>
+<tr class="memdesc:a4abba9349b8891152032f9b386e26ab1 inherit pro_methods_classcgv_1_1data_1_1ref__counted"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor initializes the count to 0 <br /></td></tr>
+<tr class="separator:a4abba9349b8891152032f9b386e26ab1 inherit pro_methods_classcgv_1_1data_1_1ref__counted"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abceffe95f08d3fc13cf9286cf360e705 inherit pro_methods_classcgv_1_1data_1_1ref__counted"><td class="memItemLeft" align="right" valign="top"><a id="abceffe95f08d3fc13cf9286cf360e705"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1ref__counted.html#abceffe95f08d3fc13cf9286cf360e705">set_ref_count</a> (int c) const</td></tr>
-<tr class="memdesc:abceffe95f08d3fc13cf9286cf360e705"><td class="mdescLeft">&#160;</td><td class="mdescRight">write access is also const to allow ref counted pointers to const instances <br /></td></tr>
-<tr class="separator:abceffe95f08d3fc13cf9286cf360e705"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:abceffe95f08d3fc13cf9286cf360e705 inherit pro_methods_classcgv_1_1data_1_1ref__counted"><td class="mdescLeft">&#160;</td><td class="mdescRight">write access is also const to allow ref counted pointers to const instances <br /></td></tr>
+<tr class="separator:abceffe95f08d3fc13cf9286cf360e705 inherit pro_methods_classcgv_1_1data_1_1ref__counted"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;class T&gt;<br />

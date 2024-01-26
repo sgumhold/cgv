@@ -1,9 +1,14 @@
 var searchData=
 [
-  ['sa_5fdrag_7680',['SA_DRAG',['../namespacecgv_1_1gui.html#a7f6413c952cec27ea2f560faf278bceea0019c772533e243b9ef15697a8f066fd',1,'cgv::gui']]],
-  ['sa_5fmove_7681',['SA_MOVE',['../namespacecgv_1_1gui.html#a7f6413c952cec27ea2f560faf278bceeae96813b8bb9c543c972cedfde000d42b',1,'cgv::gui']]],
-  ['sa_5fpress_7682',['SA_PRESS',['../namespacecgv_1_1gui.html#a7f6413c952cec27ea2f560faf278bceea1caa345db8fc6ab68a78f9053aa19682',1,'cgv::gui']]],
-  ['sa_5frelease_7683',['SA_RELEASE',['../namespacecgv_1_1gui.html#a7f6413c952cec27ea2f560faf278bceea0af1db606a1d997d75bbaff3018decac',1,'cgv::gui']]],
-  ['sa_5ftouch_7684',['SA_TOUCH',['../namespacecgv_1_1gui.html#a7f6413c952cec27ea2f560faf278bceea25b66c8996d819d374070a55a741f82f',1,'cgv::gui']]],
-  ['sa_5funpress_7685',['SA_UNPRESS',['../namespacecgv_1_1gui.html#a7f6413c952cec27ea2f560faf278bceea9aa56f3d418705f30d93ec4ba569b3b6',1,'cgv::gui']]]
+  ['ma_5fdrag_8885',['MA_DRAG',['../namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203aa0152d0a64a192f18e63a0fa7dd4b520',1,'cgv::gui']]],
+  ['ma_5fenter_8886',['MA_ENTER',['../namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203a7030bc5b6a31f9b7803316cc3ae03027',1,'cgv::gui']]],
+  ['ma_5fleave_8887',['MA_LEAVE',['../namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203a473a27e9ed6b3084fbb5b6eaeb90689e',1,'cgv::gui']]],
+  ['ma_5fmove_8888',['MA_MOVE',['../namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203a6b547fca620420f797f29db2a5dd2a2f',1,'cgv::gui']]],
+  ['ma_5fpress_8889',['MA_PRESS',['../namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203a0091084872702ffd92ac7acaa168047b',1,'cgv::gui']]],
+  ['ma_5frelease_8890',['MA_RELEASE',['../namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203ad47803f350db2c7ad9b841979abec3ec',1,'cgv::gui']]],
+  ['ma_5fwheel_8891',['MA_WHEEL',['../namespacecgv_1_1gui.html#a8df984052bc15d562c44dfb9927d0203a833e3e2f3d5e416be8c7906090e80225',1,'cgv::gui']]],
+  ['mb_5fleft_5fbutton_8892',['MB_LEFT_BUTTON',['../namespacecgv_1_1gui.html#a7641aee24f715d0496c3e23c68faec81afcd7ad9adb7983df368ce9c5f7639433',1,'cgv::gui']]],
+  ['mb_5fmiddle_5fbutton_8893',['MB_MIDDLE_BUTTON',['../namespacecgv_1_1gui.html#a7641aee24f715d0496c3e23c68faec81a0de4b14ad21cfa3592acc0ca37dcf782',1,'cgv::gui']]],
+  ['mb_5fno_5fbutton_8894',['MB_NO_BUTTON',['../namespacecgv_1_1gui.html#a7641aee24f715d0496c3e23c68faec81a35dcc1a61142c99b7a49c32073d6d480',1,'cgv::gui']]],
+  ['mb_5fright_5fbutton_8895',['MB_RIGHT_BUTTON',['../namespacecgv_1_1gui.html#a7641aee24f715d0496c3e23c68faec81a68f4ae0ffeae71fac7c64c9c07c0c590',1,'cgv::gui']]]
 ];

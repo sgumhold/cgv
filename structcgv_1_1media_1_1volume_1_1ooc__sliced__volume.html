@@ -83,7 +83,7 @@ $(document).ready(function(){initNavTree('structcgv_1_1media_1_1volume_1_1ooc__s
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structcgv_1_1media_1_1volume_1_1ooc__sliced__volume-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::media::volume::ooc_sliced_volume Struct Reference</div>  </div>
@@ -94,11 +94,24 @@ $(document).ready(function(){initNavTree('structcgv_1_1media_1_1volume_1_1ooc__s
  <a href="structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="sliced__volume_8h_source.html">sliced_volume.h</a>&gt;</code></p>
-
-<p>Inherits cgv::media::volume::volume.</p>
+<div class="dynheader">
+Inheritance diagram for cgv::media::volume::ooc_sliced_volume:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.png" usemap="#cgv::media::volume::ooc_5Fsliced_5Fvolume_map" alt=""/>
+  <map id="cgv::media::volume::ooc_5Fsliced_5Fvolume_map" name="cgv::media::volume::ooc_5Fsliced_5Fvolume_map">
+<area href="classcgv_1_1media_1_1volume_1_1volume.html" alt="cgv::media::volume::volume" shape="rect" coords="0,0,232,24"/>
+  </map>
+</div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a5c635eefcade49466a92d1a05c91344a"><td class="memItemLeft" align="right" valign="top"><a id="a5c635eefcade49466a92d1a05c91344a"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>get_slice_file_name</b> (int i) const</td></tr>
+<tr class="separator:a5c635eefcade49466a92d1a05c91344a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59449c925494d573556054da445e0ed0"><td class="memItemLeft" align="right" valign="top"><a id="a59449c925494d573556054da445e0ed0"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>get_nr_slices</b> () const</td></tr>
+<tr class="separator:a59449c925494d573556054da445e0ed0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b83619abd5fb7ca88863ebd428676ed"><td class="memItemLeft" align="right" valign="top"><a id="a5b83619abd5fb7ca88863ebd428676ed"></a>
 <a class="el" href="classcgv_1_1math_1_1fvec.html">dimension_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a5b83619abd5fb7ca88863ebd428676ed">get_dimensions</a> () const</td></tr>
 <tr class="memdesc:a5b83619abd5fb7ca88863ebd428676ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to compose dimensions from slice format and number dimensions <br /></td></tr>
@@ -111,6 +124,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a160fec27721c6b33c45926abe84b0aa0">open_read</a> (const std::string &amp;file_name)</td></tr>
 <tr class="memdesc:a160fec27721c6b33c45926abe84b0aa0"><td class="mdescLeft">&#160;</td><td class="mdescRight">open for read <br /></td></tr>
 <tr class="separator:a160fec27721c6b33c45926abe84b0aa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af98f6b1ccd4723ec7493768128e2b09c"><td class="memItemLeft" align="right" valign="top"><a id="af98f6b1ccd4723ec7493768128e2b09c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_open</b> () const</td></tr>
+<tr class="separator:af98f6b1ccd4723ec7493768128e2b09c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0573ccc5ea90172350e592b8315fef7a"><td class="memItemLeft" align="right" valign="top"><a id="a0573ccc5ea90172350e592b8315fef7a"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>read_slice</b> (int i, const std::string &amp;slice_file_name=&quot;&quot;)</td></tr>
+<tr class="separator:a0573ccc5ea90172350e592b8315fef7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3baed46d7936c317a10b24601e0a8df3"><td class="memItemLeft" align="right" valign="top"><a id="a3baed46d7936c317a10b24601e0a8df3"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a3baed46d7936c317a10b24601e0a8df3">open_write</a> (const std::string &amp;file_name, const std::string &amp;_file_name_pattern, unsigned nr_slices)</td></tr>
 <tr class="memdesc:a3baed46d7936c317a10b24601e0a8df3"><td class="mdescLeft">&#160;</td><td class="mdescRight">open for write, set the data format to the slice format (width, height, components, component type) before calling this function <br /></td></tr>
@@ -119,167 +138,210 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a0a037992ac82c749c10447717acb2c4d">write_slice</a> (int i) const</td></tr>
 <tr class="memdesc:a0a037992ac82c749c10447717acb2c4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the content of the data view through ref_data <br /></td></tr>
 <tr class="separator:a0a037992ac82c749c10447717acb2c4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7d54f87fcd0c3de473c53f53a2e7da8"><td class="memItemLeft" align="right" valign="top"><a id="ad7d54f87fcd0c3de473c53f53a2e7da8"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>empty</b> () const</td></tr>
-<tr class="memdesc:ad7d54f87fcd0c3de473c53f53a2e7da8"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether volume is empty <br /></td></tr>
-<tr class="separator:ad7d54f87fcd0c3de473c53f53a2e7da8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53c9f0cc1e4b82467b3833cccdc42505"><td class="memItemLeft" align="right" valign="top"><a id="a53c9f0cc1e4b82467b3833cccdc42505"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> ()</td></tr>
-<tr class="memdesc:a53c9f0cc1e4b82467b3833cccdc42505"><td class="mdescLeft">&#160;</td><td class="mdescRight">deallocate all memory and reset data format to "uint8[L]" <br /></td></tr>
-<tr class="separator:a53c9f0cc1e4b82467b3833cccdc42505"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79df7b50ae7c9ec242fc1a3dacc6a231"><td class="memItemLeft" align="right" valign="top"><a id="a79df7b50ae7c9ec242fc1a3dacc6a231"></a>
-const <a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_format</b> () const</td></tr>
-<tr class="memdesc:a79df7b50ae7c9ec242fc1a3dacc6a231"><td class="mdescLeft">&#160;</td><td class="mdescRight">return const reference to data format <br /></td></tr>
-<tr class="separator:a79df7b50ae7c9ec242fc1a3dacc6a231"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f41ee25b6734a839a9f47a054296769"><td class="memItemLeft" align="right" valign="top"><a id="a7f41ee25b6734a839a9f47a054296769"></a>
-<a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_format</b> ()</td></tr>
-<tr class="memdesc:a7f41ee25b6734a839a9f47a054296769"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference to data format <br /></td></tr>
-<tr class="separator:a7f41ee25b6734a839a9f47a054296769"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">access to voxel format (components and type)</div></td></tr>
-<tr class="memitem:ae94806cbae4dcceb0ac95beac5a66904"><td class="memItemLeft" align="right" valign="top"><a id="ae94806cbae4dcceb0ac95beac5a66904"></a>
-<a class="el" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752">cgv::type::info::TypeId</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_component_type</b> () const</td></tr>
-<tr class="memdesc:ae94806cbae4dcceb0ac95beac5a66904"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the component type <br /></td></tr>
-<tr class="separator:ae94806cbae4dcceb0ac95beac5a66904"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1af919e900127ebf56aea65440fbbca5"><td class="memItemLeft" align="right" valign="top"><a id="a1af919e900127ebf56aea65440fbbca5"></a>
-<a class="el" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979">cgv::data::ComponentFormat</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_component_format</b> () const</td></tr>
-<tr class="memdesc:a1af919e900127ebf56aea65440fbbca5"><td class="mdescLeft">&#160;</td><td class="mdescRight">return component format <br /></td></tr>
-<tr class="separator:a1af919e900127ebf56aea65440fbbca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4daf0c7949e8baec65aa258c1120eaa"><td class="memItemLeft" align="right" valign="top"><a id="ac4daf0c7949e8baec65aa258c1120eaa"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_component_format</b> (<a class="el" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979">cgv::data::ComponentFormat</a> cf)</td></tr>
-<tr class="memdesc:ac4daf0c7949e8baec65aa258c1120eaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a different component format <br /></td></tr>
-<tr class="separator:ac4daf0c7949e8baec65aa258c1120eaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15bd1ac8ecb9184d50f9cf8bf46dff8d"><td class="memItemLeft" align="right" valign="top"><a id="a15bd1ac8ecb9184d50f9cf8bf46dff8d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_component_format</b> (const std::string &amp;format)</td></tr>
-<tr class="memdesc:a15bd1ac8ecb9184d50f9cf8bf46dff8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the component format from a string according to the syntax declared in &lt;<a class="el" href="component__format_8h_source.html">cgv/data/component_format.h</a>&gt; <br /></td></tr>
-<tr class="separator:a15bd1ac8ecb9184d50f9cf8bf46dff8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa97f12c993c4a9bd1c851f898f191440"><td class="memItemLeft" align="right" valign="top"><a id="aa97f12c993c4a9bd1c851f898f191440"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_component_type</b> (<a class="el" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752">cgv::type::info::TypeId</a> <a class="el" href="structcgv_1_1type_1_1info_1_1type__id.html">type_id</a>)</td></tr>
-<tr class="memdesc:aa97f12c993c4a9bd1c851f898f191440"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the value type of the voxel components <br /></td></tr>
-<tr class="separator:aa97f12c993c4a9bd1c851f898f191440"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53da60282a1d329377120fac79c43ecc"><td class="memItemLeft" align="right" valign="top"><a id="a53da60282a1d329377120fac79c43ecc"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>get_nr_components</b> () const</td></tr>
-<tr class="memdesc:a53da60282a1d329377120fac79c43ecc"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the number of components within a voxel <br /></td></tr>
-<tr class="separator:a53da60282a1d329377120fac79c43ecc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7fa36405d0a215785f4131d4eb2ab9c"><td class="memItemLeft" align="right" valign="top"><a id="ab7fa36405d0a215785f4131d4eb2ab9c"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>get_component_size</b> () const</td></tr>
-<tr class="memdesc:ab7fa36405d0a215785f4131d4eb2ab9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the size of a voxel component in bytes <br /></td></tr>
-<tr class="separator:ab7fa36405d0a215785f4131d4eb2ab9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa6740451060ab50274acf5d11d54285"><td class="memItemLeft" align="right" valign="top"><a id="aaa6740451060ab50274acf5d11d54285"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>get_voxel_size</b> () const</td></tr>
-<tr class="memdesc:aaa6740451060ab50274acf5d11d54285"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the size of a voxel in bytes <br /></td></tr>
-<tr class="separator:aaa6740451060ab50274acf5d11d54285"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7f23125b19664fc23618230c4b867d4"><td class="memItemLeft" align="right" valign="top"><a id="aa7f23125b19664fc23618230c4b867d4"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_row_size</b> () const</td></tr>
-<tr class="memdesc:aa7f23125b19664fc23618230c4b867d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the size of a row within a slice in bytes <br /></td></tr>
-<tr class="separator:aa7f23125b19664fc23618230c4b867d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3961c8c9df0258793df630e1c27d505"><td class="memItemLeft" align="right" valign="top"><a id="af3961c8c9df0258793df630e1c27d505"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_slice_size</b> () const</td></tr>
-<tr class="memdesc:af3961c8c9df0258793df630e1c27d505"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the size of a slice in bytes <br /></td></tr>
-<tr class="separator:af3961c8c9df0258793df630e1c27d505"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc2d0a77c21cf171c62bd1dcc639e9b1"><td class="memItemLeft" align="right" valign="top"><a id="abc2d0a77c21cf171c62bd1dcc639e9b1"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_size</b> () const</td></tr>
-<tr class="memdesc:abc2d0a77c21cf171c62bd1dcc639e9b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">return size of volume in bytes <br /></td></tr>
-<tr class="separator:abc2d0a77c21cf171c62bd1dcc639e9b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">access to sampling resolution</div></td></tr>
-<tr class="memitem:a9d70f064cadff77c9855b241e9bbf61a"><td class="memItemLeft" align="right" valign="top"><a id="a9d70f064cadff77c9855b241e9bbf61a"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_nr_voxels</b> () const</td></tr>
-<tr class="memdesc:a9d70f064cadff77c9855b241e9bbf61a"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the total number of voxels <br /></td></tr>
-<tr class="separator:a9d70f064cadff77c9855b241e9bbf61a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">access to extent of volume</div></td></tr>
-<tr class="memitem:a5e1955ec77a0441793edb28d9a969097"><td class="memItemLeft" align="right" valign="top"><a id="a5e1955ec77a0441793edb28d9a969097"></a>
-<a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">box_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_box</b> () const</td></tr>
-<tr class="memdesc:a5e1955ec77a0441793edb28d9a969097"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the bounding box in volume coordinates, which is computed from spacing and dimensions and centered around the origin <br /></td></tr>
-<tr class="separator:a5e1955ec77a0441793edb28d9a969097"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaeb33e5d9c2aa9aaac302c9371998221"><td class="memItemLeft" align="right" valign="top"><a id="aaeb33e5d9c2aa9aaac302c9371998221"></a>
-const <a class="el" href="classcgv_1_1math_1_1fvec.html">extent_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_extent</b> () const</td></tr>
-<tr class="memdesc:aaeb33e5d9c2aa9aaac302c9371998221"><td class="mdescLeft">&#160;</td><td class="mdescRight">return const reference to spatial extent <br /></td></tr>
-<tr class="separator:aaeb33e5d9c2aa9aaac302c9371998221"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af53fcc485ff10cbd2bc1ce33e1a04265"><td class="memItemLeft" align="right" valign="top"><a id="af53fcc485ff10cbd2bc1ce33e1a04265"></a>
-<a class="el" href="classcgv_1_1math_1_1fvec.html">extent_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_extent</b> ()</td></tr>
-<tr class="memdesc:af53fcc485ff10cbd2bc1ce33e1a04265"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference spacing <br /></td></tr>
-<tr class="separator:af53fcc485ff10cbd2bc1ce33e1a04265"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa36cfb7ab5f454f90a35f5bd68d04766"><td class="memItemLeft" align="right" valign="top"><a id="aa36cfb7ab5f454f90a35f5bd68d04766"></a>
-<a class="el" href="classcgv_1_1math_1_1fvec.html">extent_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_spacing</b> () const</td></tr>
-<tr class="memdesc:aa36cfb7ab5f454f90a35f5bd68d04766"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the voxel spacing, computed by extent/dimensions <br /></td></tr>
-<tr class="separator:aa36cfb7ab5f454f90a35f5bd68d04766"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">access to volume data</div></td></tr>
-<tr class="memitem:ad0ba87eb47e1273286785ef22d2c1f3e"><td class="memItemLeft" align="right" valign="top"><a id="ad0ba87eb47e1273286785ef22d2c1f3e"></a>
-const <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_data_view</b> () const</td></tr>
-<tr class="memdesc:ad0ba87eb47e1273286785ef22d2c1f3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a const reference to the data view <br /></td></tr>
-<tr class="separator:ad0ba87eb47e1273286785ef22d2c1f3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33ad0364111bc1820a21ae2a85f3a320"><td class="memItemLeft" align="right" valign="top"><a id="a33ad0364111bc1820a21ae2a85f3a320"></a>
-<a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_data_view</b> ()</td></tr>
-<tr class="memdesc:a33ad0364111bc1820a21ae2a85f3a320"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a reference to the data view <br /></td></tr>
-<tr class="separator:a33ad0364111bc1820a21ae2a85f3a320"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bdd78fc18e9f16366e534281e1eb621"><td class="memTemplParams" colspan="2"><a id="a9bdd78fc18e9f16366e534281e1eb621"></a>
+<tr class="memitem:adb9531e03c96a4351320a33f72220ee1"><td class="memItemLeft" align="right" valign="top"><a id="adb9531e03c96a4351320a33f72220ee1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</td></tr>
+<tr class="separator:adb9531e03c96a4351320a33f72220ee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1media_1_1volume_1_1volume')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html">cgv::media::volume::volume</a></td></tr>
+<tr class="memitem:a6468a440c1980695fdfc394c2f3fd221 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a6468a440c1980695fdfc394c2f3fd221"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a6468a440c1980695fdfc394c2f3fd221">volume</a> ()</td></tr>
+<tr class="memdesc:a6468a440c1980695fdfc394c2f3fd221 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct empty volume with unit cube as box and "uint8[L]" as component type <br /></td></tr>
+<tr class="separator:a6468a440c1980695fdfc394c2f3fd221 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6df6d964286c4443ad87f1fb4e02f4e3 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a6df6d964286c4443ad87f1fb4e02f4e3"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a6df6d964286c4443ad87f1fb4e02f4e3">volume</a> (const <a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html">volume</a> &amp;V)</td></tr>
+<tr class="memdesc:a6df6d964286c4443ad87f1fb4e02f4e3 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy construct volume by allocating a copy of the volume data <br /></td></tr>
+<tr class="separator:a6df6d964286c4443ad87f1fb4e02f4e3 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93b3c1515d1835e0e2628f891196d25a inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a93b3c1515d1835e0e2628f891196d25a"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a93b3c1515d1835e0e2628f891196d25a">~volume</a> ()</td></tr>
+<tr class="memdesc:a93b3c1515d1835e0e2628f891196d25a inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">destruct <br /></td></tr>
+<tr class="separator:a93b3c1515d1835e0e2628f891196d25a inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7d54f87fcd0c3de473c53f53a2e7da8 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="ad7d54f87fcd0c3de473c53f53a2e7da8"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#ad7d54f87fcd0c3de473c53f53a2e7da8">empty</a> () const</td></tr>
+<tr class="memdesc:ad7d54f87fcd0c3de473c53f53a2e7da8 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether volume is empty <br /></td></tr>
+<tr class="separator:ad7d54f87fcd0c3de473c53f53a2e7da8 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53c9f0cc1e4b82467b3833cccdc42505 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a53c9f0cc1e4b82467b3833cccdc42505"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a53c9f0cc1e4b82467b3833cccdc42505">clear</a> ()</td></tr>
+<tr class="memdesc:a53c9f0cc1e4b82467b3833cccdc42505 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">deallocate all memory and reset data format to "uint8[L]" <br /></td></tr>
+<tr class="separator:a53c9f0cc1e4b82467b3833cccdc42505 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79df7b50ae7c9ec242fc1a3dacc6a231 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a79df7b50ae7c9ec242fc1a3dacc6a231"></a>
+const <a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a79df7b50ae7c9ec242fc1a3dacc6a231">get_format</a> () const</td></tr>
+<tr class="memdesc:a79df7b50ae7c9ec242fc1a3dacc6a231 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return const reference to data format <br /></td></tr>
+<tr class="separator:a79df7b50ae7c9ec242fc1a3dacc6a231 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f41ee25b6734a839a9f47a054296769 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a7f41ee25b6734a839a9f47a054296769"></a>
+<a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a7f41ee25b6734a839a9f47a054296769">get_format</a> ()</td></tr>
+<tr class="memdesc:a7f41ee25b6734a839a9f47a054296769 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference to data format <br /></td></tr>
+<tr class="separator:a7f41ee25b6734a839a9f47a054296769 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae94806cbae4dcceb0ac95beac5a66904 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="ae94806cbae4dcceb0ac95beac5a66904"></a>
+<a class="el" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752">cgv::type::info::TypeId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#ae94806cbae4dcceb0ac95beac5a66904">get_component_type</a> () const</td></tr>
+<tr class="memdesc:ae94806cbae4dcceb0ac95beac5a66904 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the component type <br /></td></tr>
+<tr class="separator:ae94806cbae4dcceb0ac95beac5a66904 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1af919e900127ebf56aea65440fbbca5 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a1af919e900127ebf56aea65440fbbca5"></a>
+<a class="el" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979">cgv::data::ComponentFormat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a1af919e900127ebf56aea65440fbbca5">get_component_format</a> () const</td></tr>
+<tr class="memdesc:a1af919e900127ebf56aea65440fbbca5 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return component format <br /></td></tr>
+<tr class="separator:a1af919e900127ebf56aea65440fbbca5 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4daf0c7949e8baec65aa258c1120eaa inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="ac4daf0c7949e8baec65aa258c1120eaa"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#ac4daf0c7949e8baec65aa258c1120eaa">set_component_format</a> (<a class="el" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979">cgv::data::ComponentFormat</a> cf)</td></tr>
+<tr class="memdesc:ac4daf0c7949e8baec65aa258c1120eaa inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a different component format <br /></td></tr>
+<tr class="separator:ac4daf0c7949e8baec65aa258c1120eaa inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa97f12c993c4a9bd1c851f898f191440 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="aa97f12c993c4a9bd1c851f898f191440"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#aa97f12c993c4a9bd1c851f898f191440">set_component_type</a> (<a class="el" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752">cgv::type::info::TypeId</a> <a class="el" href="structcgv_1_1type_1_1info_1_1type__id.html">type_id</a>)</td></tr>
+<tr class="memdesc:aa97f12c993c4a9bd1c851f898f191440 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the value type of the voxel components <br /></td></tr>
+<tr class="separator:aa97f12c993c4a9bd1c851f898f191440 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15bd1ac8ecb9184d50f9cf8bf46dff8d inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a15bd1ac8ecb9184d50f9cf8bf46dff8d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a15bd1ac8ecb9184d50f9cf8bf46dff8d">set_component_format</a> (const std::string &amp;format)</td></tr>
+<tr class="memdesc:a15bd1ac8ecb9184d50f9cf8bf46dff8d inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the component format from a string according to the syntax declared in &lt;<a class="el" href="component__format_8h_source.html">cgv/data/component_format.h</a>&gt; <br /></td></tr>
+<tr class="separator:a15bd1ac8ecb9184d50f9cf8bf46dff8d inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53da60282a1d329377120fac79c43ecc inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a53da60282a1d329377120fac79c43ecc"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a53da60282a1d329377120fac79c43ecc">get_nr_components</a> () const</td></tr>
+<tr class="memdesc:a53da60282a1d329377120fac79c43ecc inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the number of components within a voxel <br /></td></tr>
+<tr class="separator:a53da60282a1d329377120fac79c43ecc inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7fa36405d0a215785f4131d4eb2ab9c inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="ab7fa36405d0a215785f4131d4eb2ab9c"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#ab7fa36405d0a215785f4131d4eb2ab9c">get_component_size</a> () const</td></tr>
+<tr class="memdesc:ab7fa36405d0a215785f4131d4eb2ab9c inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the size of a voxel component in bytes <br /></td></tr>
+<tr class="separator:ab7fa36405d0a215785f4131d4eb2ab9c inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa6740451060ab50274acf5d11d54285 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="aaa6740451060ab50274acf5d11d54285"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#aaa6740451060ab50274acf5d11d54285">get_voxel_size</a> () const</td></tr>
+<tr class="memdesc:aaa6740451060ab50274acf5d11d54285 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the size of a voxel in bytes <br /></td></tr>
+<tr class="separator:aaa6740451060ab50274acf5d11d54285 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7f23125b19664fc23618230c4b867d4 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="aa7f23125b19664fc23618230c4b867d4"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#aa7f23125b19664fc23618230c4b867d4">get_row_size</a> () const</td></tr>
+<tr class="memdesc:aa7f23125b19664fc23618230c4b867d4 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the size of a row within a slice in bytes <br /></td></tr>
+<tr class="separator:aa7f23125b19664fc23618230c4b867d4 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3961c8c9df0258793df630e1c27d505 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="af3961c8c9df0258793df630e1c27d505"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#af3961c8c9df0258793df630e1c27d505">get_slice_size</a> () const</td></tr>
+<tr class="memdesc:af3961c8c9df0258793df630e1c27d505 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the size of a slice in bytes <br /></td></tr>
+<tr class="separator:af3961c8c9df0258793df630e1c27d505 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc2d0a77c21cf171c62bd1dcc639e9b1 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="abc2d0a77c21cf171c62bd1dcc639e9b1"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#abc2d0a77c21cf171c62bd1dcc639e9b1">get_size</a> () const</td></tr>
+<tr class="memdesc:abc2d0a77c21cf171c62bd1dcc639e9b1 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return size of volume in bytes <br /></td></tr>
+<tr class="separator:abc2d0a77c21cf171c62bd1dcc639e9b1 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d70f064cadff77c9855b241e9bbf61a inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a9d70f064cadff77c9855b241e9bbf61a"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a9d70f064cadff77c9855b241e9bbf61a">get_nr_voxels</a> () const</td></tr>
+<tr class="memdesc:a9d70f064cadff77c9855b241e9bbf61a inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the total number of voxels <br /></td></tr>
+<tr class="separator:a9d70f064cadff77c9855b241e9bbf61a inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e1955ec77a0441793edb28d9a969097 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a5e1955ec77a0441793edb28d9a969097"></a>
+<a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">box_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a5e1955ec77a0441793edb28d9a969097">get_box</a> () const</td></tr>
+<tr class="memdesc:a5e1955ec77a0441793edb28d9a969097 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the bounding box in volume coordinates, which is computed from spacing and dimensions and centered around the origin <br /></td></tr>
+<tr class="separator:a5e1955ec77a0441793edb28d9a969097 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeb33e5d9c2aa9aaac302c9371998221 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="aaeb33e5d9c2aa9aaac302c9371998221"></a>
+const <a class="el" href="classcgv_1_1math_1_1fvec.html">extent_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#aaeb33e5d9c2aa9aaac302c9371998221">get_extent</a> () const</td></tr>
+<tr class="memdesc:aaeb33e5d9c2aa9aaac302c9371998221 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return const reference to spatial extent <br /></td></tr>
+<tr class="separator:aaeb33e5d9c2aa9aaac302c9371998221 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af53fcc485ff10cbd2bc1ce33e1a04265 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="af53fcc485ff10cbd2bc1ce33e1a04265"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">extent_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#af53fcc485ff10cbd2bc1ce33e1a04265">ref_extent</a> ()</td></tr>
+<tr class="memdesc:af53fcc485ff10cbd2bc1ce33e1a04265 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference spacing <br /></td></tr>
+<tr class="separator:af53fcc485ff10cbd2bc1ce33e1a04265 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa36cfb7ab5f454f90a35f5bd68d04766 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="aa36cfb7ab5f454f90a35f5bd68d04766"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">extent_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#aa36cfb7ab5f454f90a35f5bd68d04766">get_spacing</a> () const</td></tr>
+<tr class="memdesc:aa36cfb7ab5f454f90a35f5bd68d04766 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the voxel spacing, computed by extent/dimensions <br /></td></tr>
+<tr class="separator:aa36cfb7ab5f454f90a35f5bd68d04766 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0ba87eb47e1273286785ef22d2c1f3e inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="ad0ba87eb47e1273286785ef22d2c1f3e"></a>
+const <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#ad0ba87eb47e1273286785ef22d2c1f3e">get_data_view</a> () const</td></tr>
+<tr class="memdesc:ad0ba87eb47e1273286785ef22d2c1f3e inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a const reference to the data view <br /></td></tr>
+<tr class="separator:ad0ba87eb47e1273286785ef22d2c1f3e inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33ad0364111bc1820a21ae2a85f3a320 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a33ad0364111bc1820a21ae2a85f3a320"></a>
+<a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a33ad0364111bc1820a21ae2a85f3a320">get_data_view</a> ()</td></tr>
+<tr class="memdesc:a33ad0364111bc1820a21ae2a85f3a320 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a reference to the data view <br /></td></tr>
+<tr class="separator:a33ad0364111bc1820a21ae2a85f3a320 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9bdd78fc18e9f16366e534281e1eb621 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplParams" colspan="2"><a id="a9bdd78fc18e9f16366e534281e1eb621"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a9bdd78fc18e9f16366e534281e1eb621"><td class="memTemplItemLeft" align="right" valign="top">const T *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>get_data_ptr</b> () const</td></tr>
-<tr class="memdesc:a9bdd78fc18e9f16366e534281e1eb621"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a const pointer to the data <br /></td></tr>
-<tr class="separator:a9bdd78fc18e9f16366e534281e1eb621"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88d3ee03205ae2baa9b5e1e4463e18a1"><td class="memTemplParams" colspan="2"><a id="a88d3ee03205ae2baa9b5e1e4463e18a1"></a>
+<tr class="memitem:a9bdd78fc18e9f16366e534281e1eb621 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplItemLeft" align="right" valign="top">const T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a9bdd78fc18e9f16366e534281e1eb621">get_data_ptr</a> () const</td></tr>
+<tr class="memdesc:a9bdd78fc18e9f16366e534281e1eb621 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a const pointer to the data <br /></td></tr>
+<tr class="separator:a9bdd78fc18e9f16366e534281e1eb621 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88d3ee03205ae2baa9b5e1e4463e18a1 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplParams" colspan="2"><a id="a88d3ee03205ae2baa9b5e1e4463e18a1"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a88d3ee03205ae2baa9b5e1e4463e18a1"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>get_data_ptr</b> ()</td></tr>
-<tr class="memdesc:a88d3ee03205ae2baa9b5e1e4463e18a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a pointer to the data <br /></td></tr>
-<tr class="separator:a88d3ee03205ae2baa9b5e1e4463e18a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba951b1651529ca5866b6d924be2bff9"><td class="memTemplParams" colspan="2"><a id="aba951b1651529ca5866b6d924be2bff9"></a>
+<tr class="memitem:a88d3ee03205ae2baa9b5e1e4463e18a1 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a88d3ee03205ae2baa9b5e1e4463e18a1">get_data_ptr</a> ()</td></tr>
+<tr class="memdesc:a88d3ee03205ae2baa9b5e1e4463e18a1 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a pointer to the data <br /></td></tr>
+<tr class="separator:a88d3ee03205ae2baa9b5e1e4463e18a1 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba951b1651529ca5866b6d924be2bff9 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplParams" colspan="2"><a id="aba951b1651529ca5866b6d924be2bff9"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aba951b1651529ca5866b6d924be2bff9"><td class="memTemplItemLeft" align="right" valign="top">const T *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>get_slice_ptr</b> (unsigned k) const</td></tr>
-<tr class="memdesc:aba951b1651529ca5866b6d924be2bff9"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a const pointer to the data of the k-th slice <br /></td></tr>
-<tr class="separator:aba951b1651529ca5866b6d924be2bff9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5104887bf296ecfa62de86f0f8a341e1"><td class="memTemplParams" colspan="2"><a id="a5104887bf296ecfa62de86f0f8a341e1"></a>
+<tr class="memitem:aba951b1651529ca5866b6d924be2bff9 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplItemLeft" align="right" valign="top">const T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#aba951b1651529ca5866b6d924be2bff9">get_slice_ptr</a> (unsigned k) const</td></tr>
+<tr class="memdesc:aba951b1651529ca5866b6d924be2bff9 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a const pointer to the data of the k-th slice <br /></td></tr>
+<tr class="separator:aba951b1651529ca5866b6d924be2bff9 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5104887bf296ecfa62de86f0f8a341e1 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplParams" colspan="2"><a id="a5104887bf296ecfa62de86f0f8a341e1"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a5104887bf296ecfa62de86f0f8a341e1"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>get_slice_ptr</b> (unsigned k)</td></tr>
-<tr class="memdesc:a5104887bf296ecfa62de86f0f8a341e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a pointer to the data of the k-th slice <br /></td></tr>
-<tr class="separator:a5104887bf296ecfa62de86f0f8a341e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a175b2af0fc38b9659aa91ced91abe930"><td class="memTemplParams" colspan="2"><a id="a175b2af0fc38b9659aa91ced91abe930"></a>
+<tr class="memitem:a5104887bf296ecfa62de86f0f8a341e1 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a5104887bf296ecfa62de86f0f8a341e1">get_slice_ptr</a> (unsigned k)</td></tr>
+<tr class="memdesc:a5104887bf296ecfa62de86f0f8a341e1 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a pointer to the data of the k-th slice <br /></td></tr>
+<tr class="separator:a5104887bf296ecfa62de86f0f8a341e1 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a175b2af0fc38b9659aa91ced91abe930 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplParams" colspan="2"><a id="a175b2af0fc38b9659aa91ced91abe930"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a175b2af0fc38b9659aa91ced91abe930"><td class="memTemplItemLeft" align="right" valign="top">const T *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>get_row_ptr</b> (unsigned j, unsigned k) const</td></tr>
-<tr class="memdesc:a175b2af0fc38b9659aa91ced91abe930"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a const pointer to the data of the j-th row in the k-th slice <br /></td></tr>
-<tr class="separator:a175b2af0fc38b9659aa91ced91abe930"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae25aed7baaebe7125fd272976ef6bc5"><td class="memTemplParams" colspan="2"><a id="aae25aed7baaebe7125fd272976ef6bc5"></a>
+<tr class="memitem:a175b2af0fc38b9659aa91ced91abe930 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplItemLeft" align="right" valign="top">const T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a175b2af0fc38b9659aa91ced91abe930">get_row_ptr</a> (unsigned j, unsigned k) const</td></tr>
+<tr class="memdesc:a175b2af0fc38b9659aa91ced91abe930 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a const pointer to the data of the j-th row in the k-th slice <br /></td></tr>
+<tr class="separator:a175b2af0fc38b9659aa91ced91abe930 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae25aed7baaebe7125fd272976ef6bc5 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplParams" colspan="2"><a id="aae25aed7baaebe7125fd272976ef6bc5"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aae25aed7baaebe7125fd272976ef6bc5"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>get_row_ptr</b> (unsigned j, unsigned k)</td></tr>
-<tr class="memdesc:aae25aed7baaebe7125fd272976ef6bc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a pointer to the data of the j-th row in the k-th slice <br /></td></tr>
-<tr class="separator:aae25aed7baaebe7125fd272976ef6bc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9e984234b8fdb4f41724672c2ed4f0c"><td class="memTemplParams" colspan="2"><a id="aa9e984234b8fdb4f41724672c2ed4f0c"></a>
+<tr class="memitem:aae25aed7baaebe7125fd272976ef6bc5 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#aae25aed7baaebe7125fd272976ef6bc5">get_row_ptr</a> (unsigned j, unsigned k)</td></tr>
+<tr class="memdesc:aae25aed7baaebe7125fd272976ef6bc5 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a pointer to the data of the j-th row in the k-th slice <br /></td></tr>
+<tr class="separator:aae25aed7baaebe7125fd272976ef6bc5 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9e984234b8fdb4f41724672c2ed4f0c inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplParams" colspan="2"><a id="aa9e984234b8fdb4f41724672c2ed4f0c"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aa9e984234b8fdb4f41724672c2ed4f0c"><td class="memTemplItemLeft" align="right" valign="top">const T *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>get_voxel_ptr</b> (unsigned i, unsigned j, unsigned k) const</td></tr>
-<tr class="memdesc:aa9e984234b8fdb4f41724672c2ed4f0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a const pointer to the component data of voxel (i,j,k) <br /></td></tr>
-<tr class="separator:aa9e984234b8fdb4f41724672c2ed4f0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a135e0fb932f6b1f02056c8de6716c03a"><td class="memTemplParams" colspan="2"><a id="a135e0fb932f6b1f02056c8de6716c03a"></a>
+<tr class="memitem:aa9e984234b8fdb4f41724672c2ed4f0c inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplItemLeft" align="right" valign="top">const T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#aa9e984234b8fdb4f41724672c2ed4f0c">get_voxel_ptr</a> (unsigned i, unsigned j, unsigned k) const</td></tr>
+<tr class="memdesc:aa9e984234b8fdb4f41724672c2ed4f0c inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a const pointer to the component data of voxel (i,j,k) <br /></td></tr>
+<tr class="separator:aa9e984234b8fdb4f41724672c2ed4f0c inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a135e0fb932f6b1f02056c8de6716c03a inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplParams" colspan="2"><a id="a135e0fb932f6b1f02056c8de6716c03a"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a135e0fb932f6b1f02056c8de6716c03a"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>get_voxel_ptr</b> (unsigned i, unsigned j, unsigned k)</td></tr>
-<tr class="memdesc:a135e0fb932f6b1f02056c8de6716c03a"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a pointer to the component data of voxel (i,j,k) <br /></td></tr>
-<tr class="separator:a135e0fb932f6b1f02056c8de6716c03a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6ea22fe160a701b706eb3771400ae87"><td class="memTemplParams" colspan="2"><a id="ad6ea22fe160a701b706eb3771400ae87"></a>
+<tr class="memitem:a135e0fb932f6b1f02056c8de6716c03a inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a135e0fb932f6b1f02056c8de6716c03a">get_voxel_ptr</a> (unsigned i, unsigned j, unsigned k)</td></tr>
+<tr class="memdesc:a135e0fb932f6b1f02056c8de6716c03a inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a pointer to the component data of voxel (i,j,k) <br /></td></tr>
+<tr class="separator:a135e0fb932f6b1f02056c8de6716c03a inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6ea22fe160a701b706eb3771400ae87 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplParams" colspan="2"><a id="ad6ea22fe160a701b706eb3771400ae87"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ad6ea22fe160a701b706eb3771400ae87"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>get_voxel_component</b> (unsigned i, unsigned j, unsigned k, unsigned ci=0)</td></tr>
-<tr class="memdesc:ad6ea22fe160a701b706eb3771400ae87"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a voxel component converted to type T <br /></td></tr>
-<tr class="separator:ad6ea22fe160a701b706eb3771400ae87"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">adding and replacing components of volume data</div></td></tr>
-<tr class="memitem:ae9842db7d2a0c9f86b0b40fbbef9d510"><td class="memItemLeft" align="right" valign="top"><a id="ae9842db7d2a0c9f86b0b40fbbef9d510"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>add_new_component</b> (<a class="el" href="classcgv_1_1data_1_1data__view.html">data::data_view</a> &amp;component_dv)</td></tr>
-<tr class="memdesc:ae9842db7d2a0c9f86b0b40fbbef9d510"><td class="mdescLeft">&#160;</td><td class="mdescRight">add new component on the end (if result has &lt;=4 components) <br /></td></tr>
-<tr class="separator:ae9842db7d2a0c9f86b0b40fbbef9d510"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9dc5baf73a2b329a9b9971e214f3d0b6"><td class="memItemLeft" align="right" valign="top"><a id="a9dc5baf73a2b329a9b9971e214f3d0b6"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>replace_component</b> (unsigned i, <a class="el" href="classcgv_1_1data_1_1data__view.html">data::data_view</a> &amp;component_dv)</td></tr>
-<tr class="memdesc:a9dc5baf73a2b329a9b9971e214f3d0b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">replace the i-th component in the volume data by the given data <br /></td></tr>
-<tr class="separator:a9dc5baf73a2b329a9b9971e214f3d0b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6ea22fe160a701b706eb3771400ae87 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#ad6ea22fe160a701b706eb3771400ae87">get_voxel_component</a> (unsigned i, unsigned j, unsigned k, unsigned ci=0)</td></tr>
+<tr class="memdesc:ad6ea22fe160a701b706eb3771400ae87 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a voxel component converted to type T <br /></td></tr>
+<tr class="separator:ad6ea22fe160a701b706eb3771400ae87 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9842db7d2a0c9f86b0b40fbbef9d510 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="ae9842db7d2a0c9f86b0b40fbbef9d510"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#ae9842db7d2a0c9f86b0b40fbbef9d510">add_new_component</a> (<a class="el" href="classcgv_1_1data_1_1data__view.html">data::data_view</a> &amp;component_dv)</td></tr>
+<tr class="memdesc:ae9842db7d2a0c9f86b0b40fbbef9d510 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">add new component on the end (if result has &lt;=4 components) <br /></td></tr>
+<tr class="separator:ae9842db7d2a0c9f86b0b40fbbef9d510 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9dc5baf73a2b329a9b9971e214f3d0b6 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a9dc5baf73a2b329a9b9971e214f3d0b6"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a9dc5baf73a2b329a9b9971e214f3d0b6">replace_component</a> (unsigned i, <a class="el" href="classcgv_1_1data_1_1data__view.html">data::data_view</a> &amp;component_dv)</td></tr>
+<tr class="memdesc:a9dc5baf73a2b329a9b9971e214f3d0b6 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">replace the i-th component in the volume data by the given data <br /></td></tr>
+<tr class="separator:a9dc5baf73a2b329a9b9971e214f3d0b6 inherit pub_methods_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
-Protected Attributes</h2></td></tr>
-<tr class="memitem:a52f3351c11bb5eb82b87be5875bf67c5"><td class="memItemLeft" align="right" valign="top"><a id="a52f3351c11bb5eb82b87be5875bf67c5"></a>
-<a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>&#160;</td><td class="memItemRight" valign="bottom"><b>df</b></td></tr>
-<tr class="memdesc:a52f3351c11bb5eb82b87be5875bf67c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">format description of volume data <br /></td></tr>
-<tr class="separator:a52f3351c11bb5eb82b87be5875bf67c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55e6336dd9f4d8a248ebb417b28b0164"><td class="memItemLeft" align="right" valign="top"><a id="a55e6336dd9f4d8a248ebb417b28b0164"></a>
-<a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a>&#160;</td><td class="memItemRight" valign="bottom"><b>dv</b></td></tr>
-<tr class="memdesc:a55e6336dd9f4d8a248ebb417b28b0164"><td class="mdescLeft">&#160;</td><td class="mdescRight">data storage of volume data <br /></td></tr>
-<tr class="separator:a55e6336dd9f4d8a248ebb417b28b0164"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e77d3a7eb1dd8029a1e52ead50dbf4c"><td class="memItemLeft" align="right" valign="top"><a id="a2e77d3a7eb1dd8029a1e52ead50dbf4c"></a>
-<a class="el" href="classcgv_1_1math_1_1fvec.html">extent_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>extent</b></td></tr>
-<tr class="memdesc:a2e77d3a7eb1dd8029a1e52ead50dbf4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">extent of the volume in each coordinate direction <br /></td></tr>
-<tr class="separator:a2e77d3a7eb1dd8029a1e52ead50dbf4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a8be681bc224a0b26990286d8d90cfb03"><td class="memItemLeft" align="right" valign="top"><a id="a8be681bc224a0b26990286d8d90cfb03"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>nr_slices</b></td></tr>
+<tr class="separator:a8be681bc224a0b26990286d8d90cfb03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95dc365170dc3fd75140b47d05d6c805"><td class="memItemLeft" align="right" valign="top"><a id="a95dc365170dc3fd75140b47d05d6c805"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>offset</b></td></tr>
+<tr class="separator:a95dc365170dc3fd75140b47d05d6c805"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21419f104091f07bcc73a4a1175ddf04"><td class="memItemLeft" align="right" valign="top"><a id="a21419f104091f07bcc73a4a1175ddf04"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>file_name_pattern</b></td></tr>
+<tr class="separator:a21419f104091f07bcc73a4a1175ddf04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_types_classcgv_1_1media_1_1volume_1_1volume"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classcgv_1_1media_1_1volume_1_1volume')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html">cgv::media::volume::volume</a></td></tr>
+<tr class="memitem:aa1e3aa0514c88bbe1f499a0628d05866 inherit pub_types_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="aa1e3aa0514c88bbe1f499a0628d05866"></a>
+typedef float&#160;</td><td class="memItemRight" valign="bottom"><b>coord_type</b></td></tr>
+<tr class="separator:aa1e3aa0514c88bbe1f499a0628d05866 inherit pub_types_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae87e9fb8ece9dcf9996689ce031675e9 inherit pub_types_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="ae87e9fb8ece9dcf9996689ce031675e9"></a>
+typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; int, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>index_type</b></td></tr>
+<tr class="separator:ae87e9fb8ece9dcf9996689ce031675e9 inherit pub_types_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5341dae218e0466dd06a259500ace3d3 inherit pub_types_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a5341dae218e0466dd06a259500ace3d3"></a>
+typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; int, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>dimension_type</b></td></tr>
+<tr class="separator:a5341dae218e0466dd06a259500ace3d3 inherit pub_types_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01bee524db7faaf9158d40929ae46afa inherit pub_types_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a01bee524db7faaf9158d40929ae46afa"></a>
+typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; coord_type, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>point_type</b></td></tr>
+<tr class="separator:a01bee524db7faaf9158d40929ae46afa inherit pub_types_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1389a1c2454923de94ebf07d6ff9b072 inherit pub_types_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a1389a1c2454923de94ebf07d6ff9b072"></a>
+typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; coord_type, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>extent_type</b></td></tr>
+<tr class="separator:a1389a1c2454923de94ebf07d6ff9b072 inherit pub_types_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48ccfc40d08c7613c959ae10ecec7a80 inherit pub_types_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a48ccfc40d08c7613c959ae10ecec7a80"></a>
+typedef <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::media::axis_aligned_box</a>&lt; coord_type, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>box_type</b></td></tr>
+<tr class="separator:a48ccfc40d08c7613c959ae10ecec7a80 inherit pub_types_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_classcgv_1_1media_1_1volume_1_1volume"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1media_1_1volume_1_1volume')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html">cgv::media::volume::volume</a></td></tr>
+<tr class="memitem:a52f3351c11bb5eb82b87be5875bf67c5 inherit pro_attribs_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a52f3351c11bb5eb82b87be5875bf67c5"></a>
+<a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a52f3351c11bb5eb82b87be5875bf67c5">df</a></td></tr>
+<tr class="memdesc:a52f3351c11bb5eb82b87be5875bf67c5 inherit pro_attribs_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">format description of volume data <br /></td></tr>
+<tr class="separator:a52f3351c11bb5eb82b87be5875bf67c5 inherit pro_attribs_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55e6336dd9f4d8a248ebb417b28b0164 inherit pro_attribs_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a55e6336dd9f4d8a248ebb417b28b0164"></a>
+<a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a55e6336dd9f4d8a248ebb417b28b0164">dv</a></td></tr>
+<tr class="memdesc:a55e6336dd9f4d8a248ebb417b28b0164 inherit pro_attribs_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">data storage of volume data <br /></td></tr>
+<tr class="separator:a55e6336dd9f4d8a248ebb417b28b0164 inherit pro_attribs_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e77d3a7eb1dd8029a1e52ead50dbf4c inherit pro_attribs_classcgv_1_1media_1_1volume_1_1volume"><td class="memItemLeft" align="right" valign="top"><a id="a2e77d3a7eb1dd8029a1e52ead50dbf4c"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">extent_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a2e77d3a7eb1dd8029a1e52ead50dbf4c">extent</a></td></tr>
+<tr class="memdesc:a2e77d3a7eb1dd8029a1e52ead50dbf4c inherit pro_attribs_classcgv_1_1media_1_1volume_1_1volume"><td class="mdescLeft">&#160;</td><td class="mdescRight">extent of the volume in each coordinate direction <br /></td></tr>
+<tr class="separator:a2e77d3a7eb1dd8029a1e52ead50dbf4c inherit pro_attribs_classcgv_1_1media_1_1volume_1_1volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>the <a class="el" href="structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html" title="the ooc_sliced_volume data structure allows random access to a volume that is stored as per slice fil...">ooc_sliced_volume</a> data structure allows random access to a volume that is stored as per slice file on disk. </p>

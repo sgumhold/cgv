@@ -3,6 +3,7 @@ var classcgv_1_1os_1_1thread =
     [ "thread", "classcgv_1_1os_1_1thread.html#a4ba0e1fd764d20f40099c2d8d27f6753", null ],
     [ "~thread", "classcgv_1_1os_1_1thread.html#a8a7be19409602bcc87760feca68f0ef7", null ],
     [ "execute", "classcgv_1_1os_1_1thread.html#a0b04f390cbcb27e543e22c455ab28c19", null ],
+    [ "execute_s", "classcgv_1_1os_1_1thread.html#aa18d58e4793e466877748c436eff9238", null ],
     [ "get_current_thread_id", "classcgv_1_1os_1_1thread.html#ac996692241395b46421d15c3fc3e5307", null ],
     [ "get_id", "classcgv_1_1os_1_1thread.html#a708e6bb109d18e44c87212bed08211f3", null ],
     [ "have_stop_request", "classcgv_1_1os_1_1thread.html#ad85392a3db6f7ef18be64b67d88b02a6", null ],
@@ -16,5 +17,9 @@ var classcgv_1_1os_1_1thread =
     [ "wait_for_signal", "classcgv_1_1os_1_1thread.html#a2979ad258138853206642ed4b55ce5b5", null ],
     [ "wait_for_signal_or_timeout", "classcgv_1_1os_1_1thread.html#a8e1a25228616e42bcb24bfc0b1f01bc0", null ],
     [ "wait_for_signal_or_timeout_with_lock", "classcgv_1_1os_1_1thread.html#aae51038d67fc609ce091af403e04be26", null ],
-    [ "wait_for_signal_with_lock", "classcgv_1_1os_1_1thread.html#a61de3056ba3e8b13749d595c192e6448", null ]
+    [ "wait_for_signal_with_lock", "classcgv_1_1os_1_1thread.html#a61de3056ba3e8b13749d595c192e6448", null ],
+    [ "delete_after_termination", "classcgv_1_1os_1_1thread.html#a359e091cb9dc604e1091aef906477ddb", null ],
+    [ "running", "classcgv_1_1os_1_1thread.html#a471fd80764c7acafcc3f88a9e8bfc28f", null ],
+    [ "stop_request", "classcgv_1_1os_1_1thread.html#a115467bee201d457c2a371f2d6b4c154", null ],
+    [ "thread_ptr", "classcgv_1_1os_1_1thread.html#ac319fb322f3394782f207cfb8fe80799", null ]
 ];

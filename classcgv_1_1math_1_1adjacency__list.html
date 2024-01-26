@@ -82,6 +82,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1adjacency__list.ht
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classcgv_1_1math_1_1adjacency__list-members.html">List of all members</a>  </div>
@@ -95,6 +96,15 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1adjacency__list.ht
 
 <p><code>#include &lt;<a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:ab51c7585f06e6ea17ff95a494d15de04"><td class="memItemLeft" align="right" valign="top"><a id="ab51c7585f06e6ea17ff95a494d15de04"></a>
+typedef v_type&#160;</td><td class="memItemRight" valign="bottom"><b>vertex_type</b></td></tr>
+<tr class="separator:ab51c7585f06e6ea17ff95a494d15de04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65ba6e6e7fbc9f10fef9bab21047ba3c"><td class="memItemLeft" align="right" valign="top"><a id="a65ba6e6e7fbc9f10fef9bab21047ba3c"></a>
+typedef v_type::edge_type&#160;</td><td class="memItemRight" valign="bottom"><b>edge_type</b></td></tr>
+<tr class="separator:a65ba6e6e7fbc9f10fef9bab21047ba3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a6ec1e1bcbdd5e50b438bb2980a43b98d"><td class="memItemLeft" align="right" valign="top"><a id="a6ec1e1bcbdd5e50b438bb2980a43b98d"></a>
@@ -117,6 +127,9 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1adjacency__list.html#aaf5f61715568c3aee19af4d7f4d55bea">resize</a> (const unsigned &amp;vnum)</td></tr>
 <tr class="memdesc:aaf5f61715568c3aee19af4d7f4d55bea"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize number of vertices, all edge data is removed <br /></td></tr>
 <tr class="separator:aaf5f61715568c3aee19af4d7f4d55bea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0f062439aaafca7a758014ebbc59166"><td class="memItemLeft" align="right" valign="top"><a id="af0f062439aaafca7a758014ebbc59166"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> ()</td></tr>
+<tr class="separator:af0f062439aaafca7a758014ebbc59166"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2802f4d80ff269bbf4e466d12b33191"><td class="memItemLeft" align="right" valign="top"><a id="aa2802f4d80ff269bbf4e466d12b33191"></a>
 const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1adjacency__list.html#aa2802f4d80ff269bbf4e466d12b33191">nverts</a> () const</td></tr>
 <tr class="memdesc:aa2802f4d80ff269bbf4e466d12b33191"><td class="mdescLeft">&#160;</td><td class="mdescRight">return number of vertices <br /></td></tr>
@@ -173,7 +186,7 @@ class cgv::math::adjacency_list&lt; v_type &gt;</h3>
 <p>To create a basic graph without extra information stored per vertex or edge use the predefined type cgv::math::graph: cgv::math::graph g;</p>
 <p>To create a basic weighted graph with an additional weight attribute per edge use the predefined type cgv::math::weighted_graph; cgv::math::weighted_graph wg;</p>
 <p>To create a graph with extra attributes per edge and vertex:</p>
-<p>struct my_edge: public cgv::math::edge { double my_extra_edge_attr; };</p>
+<p>struct my_edge: public <a class="el" href="structcgv_1_1math_1_1edge.html">cgv::math::edge</a> { double my_extra_edge_attr; };</p>
 <p>struct my_vertex : public cgv::math::vertex&lt;my_edge&gt; { int my_extra_vertex_attr; };</p>
 <p>typedef cgv::math::adjacency_list&lt; my_vertex &gt; my_graph; my_graph g; ... </p>
 

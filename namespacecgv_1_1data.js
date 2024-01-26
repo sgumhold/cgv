@@ -13,14 +13,22 @@ var namespacecgv_1_1data =
     [ "data_view", "classcgv_1_1data_1_1data__view.html", "classcgv_1_1data_1_1data__view" ],
     [ "const_data_view", "classcgv_1_1data_1_1const__data__view.html", "classcgv_1_1data_1_1const__data__view" ],
     [ "dynamic_priority_queue", "classcgv_1_1data_1_1dynamic__priority__queue.html", "classcgv_1_1data_1_1dynamic__priority__queue" ],
+    [ "grid", "classcgv_1_1data_1_1grid.html", "classcgv_1_1data_1_1grid" ],
+    [ "image_view", "classcgv_1_1data_1_1image__view.html", "classcgv_1_1data_1_1image__view" ],
     [ "interval_map", "classcgv_1_1data_1_1interval__map.html", "classcgv_1_1data_1_1interval__map" ],
     [ "io_reflection_handler", "classcgv_1_1data_1_1io__reflection__handler.html", "classcgv_1_1data_1_1io__reflection__handler" ],
     [ "optional", "classcgv_1_1data_1_1optional.html", "classcgv_1_1data_1_1optional" ],
     [ "packing_info", "classcgv_1_1data_1_1packing__info.html", "classcgv_1_1data_1_1packing__info" ],
+    [ "quadtree", "classcgv_1_1data_1_1quadtree.html", "classcgv_1_1data_1_1quadtree" ],
+    [ "ref_arr", "classcgv_1_1data_1_1ref__arr.html", "classcgv_1_1data_1_1ref__arr" ],
     [ "ref_counted", "classcgv_1_1data_1_1ref__counted.html", "classcgv_1_1data_1_1ref__counted" ],
     [ "ref_ptr", "classcgv_1_1data_1_1ref__ptr.html", "classcgv_1_1data_1_1ref__ptr" ],
     [ "ref_ptr_tag", "classcgv_1_1data_1_1ref__ptr__tag.html", "classcgv_1_1data_1_1ref__ptr__tag" ],
+    [ "ref_ptr_impl", "classcgv_1_1data_1_1ref__ptr__impl.html", "classcgv_1_1data_1_1ref__ptr__impl" ],
+    [ "ref_ptr_impl< T, true >", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4.html", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4" ],
+    [ "union_find", "structcgv_1_1data_1_1union__find.html", "structcgv_1_1data_1_1union__find" ],
     [ "ComponentFormat", "namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979", [
+      [ "CF_UNDEF", "namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a21e044c2db6fef80997427db99403175", null ],
       [ "CF_R", "namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a336a5038cab60a212d8a5bc4242c2586", null ],
       [ "CF_G", "namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979ac1bd1a6c7090c00c34bb7cb1883430a2", null ],
       [ "CF_B", "namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a07eafa74cdbf24f18eb46d44f52b4c41", null ],
@@ -46,11 +54,32 @@ var namespacecgv_1_1data =
       [ "CF_T4D", "namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a9f0b02b53ffb755185d1db2e86b296f6", null ],
       [ "CF_LAST", "namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a075f32dbc40b1b00a1c4688f2891e667", null ]
     ] ],
-    [ "ComponentIntegerInterpretation", "namespacecgv_1_1data.html#a7b03b31810d6f81c766bde1f7638cd61", null ],
-    [ "IOReflectionError", "namespacecgv_1_1data.html#a63cf0db0b8ed4093e9e129385cfa44a5", null ],
-    [ "NamingConvention", "namespacecgv_1_1data.html#a23911e7b468889249037adbd0ca557dc", null ],
+    [ "ComponentIntegerInterpretation", "namespacecgv_1_1data.html#a7b03b31810d6f81c766bde1f7638cd61", [
+      [ "CII_DEFAULT", "namespacecgv_1_1data.html#a7b03b31810d6f81c766bde1f7638cd61a8db659ba2ba141d8d3efd9d7f9f457f5", null ],
+      [ "CII_SNORM", "namespacecgv_1_1data.html#a7b03b31810d6f81c766bde1f7638cd61ac64d9ef1e4f49e1b328fbab8b34ca1a3", null ],
+      [ "CII_INTEGER", "namespacecgv_1_1data.html#a7b03b31810d6f81c766bde1f7638cd61acc912dc8ffa49853120242df89fff78f", null ]
+    ] ],
+    [ "IOReflectionError", "namespacecgv_1_1data.html#a63cf0db0b8ed4093e9e129385cfa44a5", [
+      [ "RE_NO_ERROR", "namespacecgv_1_1data.html#a63cf0db0b8ed4093e9e129385cfa44a5a409c66dfe3525fdafa7b6b750454a4d3", null ],
+      [ "RE_FILE_OPEN_ERROR", "namespacecgv_1_1data.html#a63cf0db0b8ed4093e9e129385cfa44a5add3a35933b24907bd75c4222be375807", null ],
+      [ "RE_FILE_READ_ERROR", "namespacecgv_1_1data.html#a63cf0db0b8ed4093e9e129385cfa44a5a34b5b35332dadf70a26dae6362dac9b6", null ],
+      [ "RE_FILE_WRITE_ERROR", "namespacecgv_1_1data.html#a63cf0db0b8ed4093e9e129385cfa44a5a021e612d225e956a891ed0f03f0d012f", null ],
+      [ "RE_CONTENT_MISMATCH", "namespacecgv_1_1data.html#a63cf0db0b8ed4093e9e129385cfa44a5af159623aef7b3ce7238119148ef8f8d9", null ],
+      [ "RE_VERSION_MISMATCH", "namespacecgv_1_1data.html#a63cf0db0b8ed4093e9e129385cfa44a5a95b19a11a2eb6ddb0a8106712db2afaf", null ]
+    ] ],
+    [ "NamingConvention", "namespacecgv_1_1data.html#a23911e7b468889249037adbd0ca557dc", [
+      [ "NC_NONE", "namespacecgv_1_1data.html#a23911e7b468889249037adbd0ca557dcad0b5fac5dc9817f6a182de2a1479dd30", null ],
+      [ "NC_SHORT", "namespacecgv_1_1data.html#a23911e7b468889249037adbd0ca557dca02e9f248a24dd3db696c86b7937f6436", null ],
+      [ "NC_LONG", "namespacecgv_1_1data.html#a23911e7b468889249037adbd0ca557dca2ded1a40693c89228092a92acbf9d9fb", null ]
+    ] ],
+    [ "copy_sub_view", "namespacecgv_1_1data.html#a6713e5f2a8666264e5ccb8a72df4a6e4", null ],
+    [ "extract_special_type", "namespacecgv_1_1data.html#a8fb715e8a744f281920098db1fb3ae3c", null ],
     [ "find_best_match", "namespacecgv_1_1data.html#a72746e597b531caf780c41d81d4151e7", null ],
     [ "fmt1_compares_better", "namespacecgv_1_1data.html#ac3e8fa9c9e306979feb1f4dfd3b20830", null ],
+    [ "get_reflection_traits", "namespacecgv_1_1data.html#aa2dc4703b731c5c368f5ea2beaf07f3a", null ],
     [ "operator<<", "namespacecgv_1_1data.html#a35a6f7270f64a7cd8197c0733bbf4d7d", null ],
-    [ "operator<<", "namespacecgv_1_1data.html#adbbf5162b8aa15daa93023b37169b165", null ]
+    [ "operator<<", "namespacecgv_1_1data.html#adbbf5162b8aa15daa93023b37169b165", null ],
+    [ "sub_sample_2_2", "namespacecgv_1_1data.html#a574f704b983c82551ecc876d344098a9", null ],
+    [ "component_formats", "namespacecgv_1_1data.html#aad395dd3626902fea5430ef67f701820", null ],
+    [ "const_data_view", "namespacecgv_1_1data.html#af451d8243357788744b7146d3e14e721", null ]
 ];

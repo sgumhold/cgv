@@ -114,18 +114,18 @@ $(document).ready(function(){initNavTree('named_8h_source.html',''); initResizab
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    std::string get_type_name() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;};</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">template</span> &lt;&gt; <span class="keyword">struct </span>cast_helper&lt;<a class="code" href="classcgv_1_1base_1_1named.html">named</a>&gt;</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="structcgv_1_1base_1_1cast__helper_3_01named_01_4.html">   41</a></span>&#160;<span class="keyword">template</span> &lt;&gt; <span class="keyword">struct </span><a class="code" href="structcgv_1_1base_1_1cast__helper.html">cast_helper</a>&lt;<a class="code" href="classcgv_1_1base_1_1named.html">named</a>&gt;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;{</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">named_ptr</a> cast(<a class="code" href="classcgv_1_1base_1_1base.html">base</a>* b) { <span class="keywordflow">return</span> b-&gt;get_named(); }</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;};</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">template</span> &lt;&gt; <span class="keyword">struct </span>cast_const_helper&lt;named&gt;</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="structcgv_1_1base_1_1cast__const__helper_3_01named_01_4.html">   46</a></span>&#160;<span class="keyword">template</span> &lt;&gt; <span class="keyword">struct </span><a class="code" href="structcgv_1_1base_1_1cast__const__helper.html">cast_const_helper</a>&lt;<a class="code" href="classcgv_1_1base_1_1named.html">named</a>&gt;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;{</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="namespacecgv_1_1base.html#acc1c8267eac5b54dcab53b3adb1fa357">const_named_ptr</a> cast_const(<span class="keyword">const</span> base* b) { <span class="keywordflow">return</span> b-&gt;get_named_const(); }</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">const_named_ptr</a> cast_const(<span class="keyword">const</span> <a class="code" href="classcgv_1_1base_1_1base.html">base</a>* b) { <span class="keywordflow">return</span> b-&gt;get_named_const(); }</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;};</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#if _MSC_VER &gt;= 1400</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;CGV_TEMPLATE <span class="keyword">template</span> <span class="keyword">class </span>CGV_API data::ref_ptr&lt;named&gt;;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;CGV_TEMPLATE <span class="keyword">template</span> <span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr&lt;named&gt;</a>;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    }</div>
@@ -139,6 +139,8 @@ $(document).ready(function(){initNavTree('named_8h_source.html',''); initResizab
 <div class="ttc" id="anamespacecgv_1_1base_html_abfcd30049d34b52e335da99b47c3979d"><div class="ttname"><a href="namespacecgv_1_1base.html#abfcd30049d34b52e335da99b47c3979d">cgv::base::named_ptr</a></div><div class="ttdeci">data::ref_ptr&lt; named, true &gt; named_ptr</div><div class="ttdoc">ref counted pointer to a node</div><div class="ttdef"><b>Definition:</b> <a href="named_8h_source.html#l00013">named.h:13</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1base_html_acc1c8267eac5b54dcab53b3adb1fa357"><div class="ttname"><a href="namespacecgv_1_1base.html#acc1c8267eac5b54dcab53b3adb1fa357">cgv::base::const_named_ptr</a></div><div class="ttdeci">data::ref_ptr&lt; const named, true &gt; const_named_ptr</div><div class="ttdoc">ref counted pointer to a const node</div><div class="ttdef"><b>Definition:</b> <a href="named_8h_source.html#l00016">named.h:16</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
+<div class="ttc" id="astructcgv_1_1base_1_1cast__const__helper_html"><div class="ttname"><a href="structcgv_1_1base_1_1cast__const__helper.html">cgv::base::cast_const_helper</a></div><div class="ttdef"><b>Definition:</b> <a href="base_8h_source.html#l00064">base.h:65</a></div></div>
+<div class="ttc" id="astructcgv_1_1base_1_1cast__helper_html"><div class="ttname"><a href="structcgv_1_1base_1_1cast__helper.html">cgv::base::cast_helper</a></div><div class="ttdef"><b>Definition:</b> <a href="base_8h_source.html#l00049">base.h:50</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

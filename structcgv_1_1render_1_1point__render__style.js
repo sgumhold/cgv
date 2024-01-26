@@ -11,7 +11,5 @@ var structcgv_1_1render_1_1point__render__style =
     [ "percentual_halo_width", "structcgv_1_1render_1_1point__render__style.html#acf569515bae254b3086dad7acdad1233", null ],
     [ "point_size", "structcgv_1_1render_1_1point__render__style.html#adfcaa8d7af142612489e4b179c857f38", null ],
     [ "screen_aligned", "structcgv_1_1render_1_1point__render__style.html#ac2f476b0536f2245383ef391a942fdbc", null ],
-    [ "use_group_color", "structcgv_1_1render_1_1point__render__style.html#aaeef17e385a1d3ae754742b2619bd55c", null ],
-    [ "use_group_point_size", "structcgv_1_1render_1_1point__render__style.html#a42db24dc82c65089650f9489c4e3dfa3", null ],
-    [ "use_group_transformation", "structcgv_1_1render_1_1point__render__style.html#a113f4aa88c33c892574038e0f2478a7a", null ]
+    [ "use_group_point_size", "structcgv_1_1render_1_1point__render__style.html#a42db24dc82c65089650f9489c4e3dfa3", null ]
 ];

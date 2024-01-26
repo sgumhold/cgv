@@ -84,6 +84,8 @@ $(document).ready(function(){initNavTree('classcgv_1_1data_1_1packing__info.html
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1data_1_1packing__info-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::data::packing_info Class Reference</div>  </div>
@@ -100,10 +102,11 @@ Inheritance diagram for cgv::data::packing_info:</div>
  <div class="center">
   <img src="classcgv_1_1data_1_1packing__info.png" usemap="#cgv::data::packing_5Finfo_map" alt=""/>
   <map id="cgv::data::packing_5Finfo_map" name="cgv::data::packing_5Finfo_map">
-<area href="classcgv_1_1data_1_1component__format.html" title="the component format inherits the information of a packing_info and adds information on the component..." alt="cgv::data::component_format" shape="rect" coords="91,56,263,80"/>
-<area href="classcgv_1_1data_1_1data__format.html" title="A data_format describes a multidimensional data block of data entries." alt="cgv::data::data_format" shape="rect" coords="0,112,172,136"/>
-<area href="classcgv_1_1render_1_1render__buffer.html" title="this class encapsulate render buffers that live on the GPU which must support frame buffer objects fo..." alt="cgv::render::render_buffer" shape="rect" coords="182,112,354,136"/>
-<area href="classcgv_1_1render_1_1texture.html" title="the texture class encapsulates all functionality independent of the rendering api." alt="cgv::render::texture" shape="rect" coords="0,168,172,192"/>
+<area href="classcgv_1_1data_1_1component__format.html" title="the component format inherits the information of a packing_info and adds information on the component..." alt="cgv::data::component_format" shape="rect" coords="182,56,354,80"/>
+<area href="classcgv_1_1data_1_1data__format.html" title="A data_format describes a multidimensional data block of data entries." alt="cgv::data::data_format" shape="rect" coords="91,112,263,136"/>
+<area href="classcgv_1_1render_1_1render__buffer.html" title="this class encapsulate render buffers that live on the GPU which must support frame buffer objects fo..." alt="cgv::render::render_buffer" shape="rect" coords="273,112,445,136"/>
+<area href="classcgv_1_1media_1_1image_1_1image.html" alt="cgv::media::image::image" shape="rect" coords="0,168,172,192"/>
+<area href="classcgv_1_1render_1_1texture.html" title="the texture class encapsulates all functionality independent of the rendering api." alt="cgv::render::texture" shape="rect" coords="182,168,354,192"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -171,6 +174,39 @@ Static Public Member Functions</h2></td></tr>
 static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1packing__info.html#a3d2868685e5680021a30e9a5131082af">align</a> (unsigned int v, unsigned int a)</td></tr>
 <tr class="memdesc:a3d2868685e5680021a30e9a5131082af"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the next integer larger or equal to v which is dividable by a <br /></td></tr>
 <tr class="separator:a3d2868685e5680021a30e9a5131082af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:ace9da831aca9609d9a71f4355e36bfc5"><td class="memItemLeft" align="right" valign="top"><a id="ace9da831aca9609d9a71f4355e36bfc5"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>prepare_bit_operation</b> (unsigned int ci, void *ptr, unsigned int &amp;off, unsigned int &amp;bd, unsigned int *&amp;iptr) const</td></tr>
+<tr class="separator:ace9da831aca9609d9a71f4355e36bfc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a420939b44aca7805b44ab1be9f8a17a1"><td class="memItemLeft" align="right" valign="top"><a id="a420939b44aca7805b44ab1be9f8a17a1"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>prepare_bit_operation</b> (unsigned int ci, const void *ptr, unsigned int &amp;off, unsigned int &amp;bd, const unsigned int *&amp;iptr) const</td></tr>
+<tr class="separator:a420939b44aca7805b44ab1be9f8a17a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3576a1951fa25a7572962cc90eca0f1"><td class="memItemLeft" align="right" valign="top"><a id="ac3576a1951fa25a7572962cc90eca0f1"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>get_bit_offset</b> (unsigned int ci) const</td></tr>
+<tr class="separator:ac3576a1951fa25a7572962cc90eca0f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a207cfd14854cedd52454ffde4fa78c6b"><td class="memItemLeft" align="right" valign="top"><a id="a207cfd14854cedd52454ffde4fa78c6b"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_packed</b>: 1</td></tr>
+<tr class="separator:a207cfd14854cedd52454ffde4fa78c6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9644c43225614f1746ffa6d4916c27b"><td class="memItemLeft" align="right" valign="top"><a id="af9644c43225614f1746ffa6d4916c27b"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>bd0</b>: 6</td></tr>
+<tr class="separator:af9644c43225614f1746ffa6d4916c27b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cec89b7eb96a1861c84daa3c88ac999"><td class="memItemLeft" align="right" valign="top"><a id="a1cec89b7eb96a1861c84daa3c88ac999"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>bd1</b>: 6</td></tr>
+<tr class="separator:a1cec89b7eb96a1861c84daa3c88ac999"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49b6f25faa2ad17966c4448f807a3dc0"><td class="memItemLeft" align="right" valign="top"><a id="a49b6f25faa2ad17966c4448f807a3dc0"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>bd2</b>: 6</td></tr>
+<tr class="separator:a49b6f25faa2ad17966c4448f807a3dc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1027f60ce132f00e3e0a3fd0d2efc99e"><td class="memItemLeft" align="right" valign="top"><a id="a1027f60ce132f00e3e0a3fd0d2efc99e"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>bd3</b>: 6</td></tr>
+<tr class="separator:a1027f60ce132f00e3e0a3fd0d2efc99e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07cad92dc6e63a46a7c7b56bc882e098"><td class="memItemLeft" align="right" valign="top"><a id="a07cad92dc6e63a46a7c7b56bc882e098"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>ca</b>: 6</td></tr>
+<tr class="separator:a07cad92dc6e63a46a7c7b56bc882e098"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>the <a class="el" href="classcgv_1_1data_1_1packing__info.html" title="the packing_info class stores information about packed integers structures.">packing_info</a> class stores information about packed integers structures. </p>

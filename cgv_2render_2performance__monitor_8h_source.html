@@ -105,19 +105,19 @@ $(document).ready(function(){initNavTree('cgv_2render_2performance__monitor_8h_s
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    PMB_AVG</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;};</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">struct </span>CGV_API performance_measurement</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structcgv_1_1render_1_1performance__measurement.html">   22</a></span>&#160;<span class="keyword">struct </span>CGV_API <a class="code" href="structcgv_1_1render_1_1performance__measurement.html">performance_measurement</a></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;{</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">double</span> time;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">int</span> task_id;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">bool</span> start;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    performance_measurement(<span class="keywordtype">double</span> _time, <span class="keywordtype">int</span> _task_id, <span class="keywordtype">bool</span> _start) : time(_time), task_id(_task_id), start(_start) {}</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="structcgv_1_1render_1_1performance__measurement.html">performance_measurement</a>(<span class="keywordtype">double</span> _time, <span class="keywordtype">int</span> _task_id, <span class="keywordtype">bool</span> _start) : time(_time), task_id(_task_id), start(_start) {}</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;};</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">struct </span>CGV_API performance_task</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="structcgv_1_1render_1_1performance__task.html">   30</a></span>&#160;<span class="keyword">struct </span>CGV_API <a class="code" href="structcgv_1_1render_1_1performance__task.html">performance_task</a></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;{</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    std::string name;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float&gt;</a> col;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    performance_task(std::string _name, <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float&gt;</a> _col) : name(_name), col(_col) {}</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="structcgv_1_1render_1_1performance__task.html">performance_task</a>(std::string _name, <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float&gt;</a> _col) : name(_name), col(_col) {}</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;};</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
 <div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1performance__monitor.html">   42</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1render_1_1performance__monitor.html">performance_monitor</a></div>
@@ -151,7 +151,7 @@ $(document).ready(function(){initNavTree('cgv_2render_2performance__monitor_8h_s
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordtype">void</span> compute_colors(<span class="keyword">const</span> frame_data&amp; fdata);</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordtype">void</span> compute_positions(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">int</span> dx, <span class="keywordtype">int</span> dy, <span class="keyword">const</span> frame_data&amp; fdata);</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    frame_data&amp; current_frame();</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordtype">void</span> add_measurement(<span class="keyword">const</span> performance_measurement&amp; pm);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordtype">void</span> add_measurement(<span class="keyword">const</span> <a class="code" href="structcgv_1_1render_1_1performance__measurement.html">performance_measurement</a>&amp; pm);</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="classcgv_1_1render_1_1performance__monitor.html">performance_monitor</a>();</div>
@@ -195,6 +195,8 @@ $(document).ready(function(){initNavTree('cgv_2render_2performance__monitor_8h_s
 <div class="ttc" id="aclasscgv_1_1utils_1_1stopwatch_html"><div class="ttname"><a href="classcgv_1_1utils_1_1stopwatch.html">cgv::utils::stopwatch</a></div><div class="ttdoc">A trivial stop watch class for time measurement.</div><div class="ttdef"><b>Definition:</b> <a href="stopwatch_8h_source.html#l00034">stopwatch.h:35</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1render_html_a79b40c1e022fe70b55c592f296dd5e29"><div class="ttname"><a href="namespacecgv_1_1render.html#a79b40c1e022fe70b55c592f296dd5e29">cgv::render::PerformanceMonitoringBar</a></div><div class="ttdeci">PerformanceMonitoringBar</div><div class="ttdoc">different items that can be shown in the long bar</div><div class="ttdef"><b>Definition:</b> <a href="cgv_2render_2performance__monitor_8h_source.html#l00015">performance_monitor.h:15</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
+<div class="ttc" id="astructcgv_1_1render_1_1performance__measurement_html"><div class="ttname"><a href="structcgv_1_1render_1_1performance__measurement.html">cgv::render::performance_measurement</a></div><div class="ttdef"><b>Definition:</b> <a href="cgv_2render_2performance__monitor_8h_source.html#l00022">performance_monitor.h:23</a></div></div>
+<div class="ttc" id="astructcgv_1_1render_1_1performance__task_html"><div class="ttname"><a href="structcgv_1_1render_1_1performance__task.html">cgv::render::performance_task</a></div><div class="ttdef"><b>Definition:</b> <a href="cgv_2render_2performance__monitor_8h_source.html#l00030">performance_monitor.h:31</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

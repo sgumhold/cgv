@@ -26,13 +26,10 @@ var classcgv_1_1render_1_1shader__program =
     [ "get_attribute_location", "classcgv_1_1render_1_1shader__program.html#a7f39539f66b2e786df0fc04612f2c3f1", null ],
     [ "get_max_nr_geometry_shader_output_vertices", "classcgv_1_1render_1_1shader__program.html#a284d348185df93093343912db7d1a497", null ],
     [ "get_uniform_location", "classcgv_1_1render_1_1shader__program.html#adaf5ad58b59cb35a3b3ac8d70210907d", null ],
-    [ "is_created", "classcgv_1_1render_1_1shader__program.html#a4c896d2654616448824f5f2f759b8947", null ],
     [ "is_enabled", "classcgv_1_1render_1_1shader__program.html#abacefc9eb248220de943d96ffd0d9e35", null ],
     [ "is_linked", "classcgv_1_1render_1_1shader__program.html#a95444d389d12928d3d0288470b09bfa5", null ],
     [ "link", "classcgv_1_1render_1_1shader__program.html#a98bd7f00b2aae4b4093fd410a0fc8e36", null ],
     [ "open_program_file", "classcgv_1_1render_1_1shader__program.html#a5ade1a394896158b6b0605e40b6e5305", null ],
-    [ "put_id", "classcgv_1_1render_1_1shader__program.html#a06ff3003af849b32a76ec5be29bd89dc", null ],
-    [ "put_id_void", "classcgv_1_1render_1_1shader__program.html#aa5404b2aec4bbe8fd4eff1959b627709", null ],
     [ "set_attribute", "classcgv_1_1render_1_1shader__program.html#a97138c2b43d9cdc43fe2a71aabf9ed32", null ],
     [ "set_attribute", "classcgv_1_1render_1_1shader__program.html#ae4ab9f8bdecc61b0f341a1ad5cf07416", null ],
     [ "set_geometry_shader_info", "classcgv_1_1render_1_1shader__program.html#a9400d31dd2c245d2cb9fba28e16dd058", null ],
@@ -46,7 +43,11 @@ var classcgv_1_1render_1_1shader__program =
     [ "set_uniform_array", "classcgv_1_1render_1_1shader__program.html#a9e1dc39cd4d74250a36c86e5d64d1ab4", null ],
     [ "set_uniform_array", "classcgv_1_1render_1_1shader__program.html#aee0c43db29be8ed42c07940123cffeb5", null ],
     [ "update_state", "classcgv_1_1render_1_1shader__program.html#a88e2480f41b18f91f0b13b072a0587ae", null ],
-    [ "ctx_ptr", "classcgv_1_1render_1_1shader__program.html#a738cb1064e1c6fc606c018191a53f23e", null ],
-    [ "last_error", "classcgv_1_1render_1_1shader__program.html#a95f40a817168467d5a0d3fdbb09e0b79", null ],
-    [ "program_file_cache", "classcgv_1_1render_1_1shader__program.html#a136af580100935a0751f226655b295ee", null ]
+    [ "files_cache", "classcgv_1_1render_1_1shader__program.html#aba6ed2b32baabff53801df5ce7f52602", null ],
+    [ "linked", "classcgv_1_1render_1_1shader__program.html#a562b9419f4114402da32ff8beda09ba1", null ],
+    [ "managed_codes", "classcgv_1_1render_1_1shader__program.html#a16bc509cc3bfb3492d01e9edc737e668", null ],
+    [ "nr_attached_geometry_shaders", "classcgv_1_1render_1_1shader__program.html#ab490db34ea38fb7895c1641a9317cefd", null ],
+    [ "program_file_cache", "classcgv_1_1render_1_1shader__program.html#a136af580100935a0751f226655b295ee", null ],
+    [ "show_code_errors", "classcgv_1_1render_1_1shader__program.html#ab894bcbbb774cb62b9d6fc4d0147cc33", null ],
+    [ "state_out_of_date", "classcgv_1_1render_1_1shader__program.html#add7893c9c6a2642476902dbaa9b73ba8", null ]
 ];

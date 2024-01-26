@@ -100,7 +100,7 @@ $(document).ready(function(){initNavTree('vr__log_8cxx_source.html',''); initRes
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">//token struct for the parser</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">struct </span>token {</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="structtoken.html">   16</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structtoken.html">token</a> {</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">enum</span> {</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        COMPOUND, <span class="comment">//&lt;name&gt; &lt;...&gt;</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        VALUE,<span class="comment">// &lt;value&gt;</span></div>
@@ -129,7 +129,7 @@ $(document).ready(function(){initNavTree('vr__log_8cxx_source.html',''); initRes
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    std::string text;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordflow">while</span> (std::getline(l, text, <span class="charliteral">&#39;,&#39;</span>)) {</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">if</span> (text.size()&gt;0 &amp;&amp; text.c_str()[0] == <span class="charliteral">&#39;{&#39;</span>) { <span class="comment">//compound</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            token t;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            <a class="code" href="structtoken.html">token</a> t;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            t.type = token::COMPOUND;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            <span class="keywordtype">size_t</span> end = text.find_first_of(<span class="stringliteral">&quot;}&quot;</span>);</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            <span class="keywordflow">if</span> (end != std::string::npos) {</div>
@@ -141,13 +141,13 @@ $(document).ready(function(){initNavTree('vr__log_8cxx_source.html',''); initRes
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            }</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        }</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (text.size() &gt; 0 &amp;&amp; text.find_first_of(<span class="stringliteral">&quot;abcdefghijklmnopqrstuvwxyz&quot;</span>) != std::string::npos) {</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            token t;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <a class="code" href="structtoken.html">token</a> t;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            t.type = token::NAME;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            t.text = text;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            buffer.push_back(t);</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        }</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (text.size() &gt; 0 &amp;&amp; text.find_first_of(<span class="stringliteral">&quot;0123456789&quot;</span>) != std::string::npos) {</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            token t;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <a class="code" href="structtoken.html">token</a> t;</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            t.type = token::VALUE;</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            t.text = text;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            buffer.push_back(t);</div>
@@ -468,6 +468,7 @@ $(document).ready(function(){initNavTree('vr__log_8cxx_source.html',''); initRes
 <div class="ttc" id="anamespacevr_html_a817502f5e6d07d631cf4b3dd489dbea7"><div class="ttname"><a href="namespacevr.html#a817502f5e6d07d631cf4b3dd489dbea7">vr::max_nr_controller_axes</a></div><div class="ttdeci">const unsigned max_nr_controller_axes</div><div class="ttdoc">maximum number of axes per controller</div><div class="ttdef"><b>Definition:</b> <a href="vr__state_8h_source.html#l00023">vr_state.h:23</a></div></div>
 <div class="ttc" id="anamespacevr_html_a97f62fa341bd860ba107738084e5cc08a3109c2db9537d1de9adf766d538b5863"><div class="ttname"><a href="namespacevr.html#a97f62fa341bd860ba107738084e5cc08a3109c2db9537d1de9adf766d538b5863">vr::VRS_TRACKED</a></div><div class="ttdeci">@ VRS_TRACKED</div><div class="ttdoc">trackable is connected and tracked</div><div class="ttdef"><b>Definition:</b> <a href="vr__state_8h_source.html#l00089">vr_state.h:88</a></div></div>
 <div class="ttc" id="anamespacevr_html_abcd8365da0a2174d6e6c9f1675e72421"><div class="ttname"><a href="namespacevr.html#abcd8365da0a2174d6e6c9f1675e72421">vr::max_nr_controllers</a></div><div class="ttdeci">const unsigned max_nr_controllers</div><div class="ttdoc">maximum number of attachable controller and tracker devices</div><div class="ttdef"><b>Definition:</b> <a href="vr__state_8h_source.html#l00019">vr_state.h:19</a></div></div>
+<div class="ttc" id="astructtoken_html"><div class="ttname"><a href="structtoken.html">token</a></div><div class="ttdef"><b>Definition:</b> <a href="vr__log_8cxx_source.html#l00016">vr_log.cxx:16</a></div></div>
 <div class="ttc" id="astructvr_1_1vr__controller__state_html"><div class="ttname"><a href="structvr_1_1vr__controller__state.html">vr::vr_controller_state</a></div><div class="ttdoc">Extends the trackable state by information on the buttons, input axes and vibration strengths.</div><div class="ttdef"><b>Definition:</b> <a href="vr__state_8h_source.html#l00117">vr_state.h:118</a></div></div>
 <div class="ttc" id="astructvr_1_1vr__controller__state_html_a0f57132c94c5a86cbb58822afdb5d6bb"><div class="ttname"><a href="structvr_1_1vr__controller__state.html#a0f57132c94c5a86cbb58822afdb5d6bb">vr::vr_controller_state::axes</a></div><div class="ttdeci">float axes[max_nr_controller_axes]</div><div class="ttdoc">up to vr::max_nr_controller_axes axis values in the range [-1,1] or 0,1</div><div class="ttdef"><b>Definition:</b> <a href="vr__state_8h_source.html#l00124">vr_state.h:124</a></div></div>
 <div class="ttc" id="astructvr_1_1vr__controller__state_html_a2049e60e70d799088e50a514e8db44f0"><div class="ttname"><a href="structvr_1_1vr__controller__state.html#a2049e60e70d799088e50a514e8db44f0">vr::vr_controller_state::vibration</a></div><div class="ttdeci">float vibration[2]</div><div class="ttdoc">strength of the vibration motors</div><div class="ttdef"><b>Definition:</b> <a href="vr__state_8h_source.html#l00126">vr_state.h:126</a></div></div>

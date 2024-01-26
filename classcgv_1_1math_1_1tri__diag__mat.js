@@ -1,7 +1,11 @@
 var classcgv_1_1math_1_1tri__diag__mat =
 [
     [ "tri_diag_mat", "classcgv_1_1math_1_1tri__diag__mat.html#a02059a8f9873f6a3405c6d84b2ae450f", null ],
+    [ "tri_diag_mat", "classcgv_1_1math_1_1tri__diag__mat.html#ad9f67b19fe7d55d058686a75044a7ba3", null ],
+    [ "tri_diag_mat", "classcgv_1_1math_1_1tri__diag__mat.html#a25e032f743dc654f5971a9ebab33a7dd", null ],
     [ "tri_diag_mat", "classcgv_1_1math_1_1tri__diag__mat.html#a41f910cabfeb065e5543a4f820df318d", null ],
+    [ "band", "classcgv_1_1math_1_1tri__diag__mat.html#a3b699b4e981d29ccc405977cfc835012", null ],
+    [ "fill", "classcgv_1_1math_1_1tri__diag__mat.html#ab423c51357771674fcf3add6d8608049", null ],
     [ "identity", "classcgv_1_1math_1_1tri__diag__mat.html#add6602c2b229805e97a361719f20b28b", null ],
     [ "is_square", "classcgv_1_1math_1_1tri__diag__mat.html#a2e3903854e54390cac1d9f6a931f48e9", null ],
     [ "ncols", "classcgv_1_1math_1_1tri__diag__mat.html#a41bf1508c017de08a082f60bd50cae16", null ],
@@ -11,6 +15,13 @@ var classcgv_1_1math_1_1tri__diag__mat =
     [ "operator T*", "classcgv_1_1math_1_1tri__diag__mat.html#aed21542791a22f532adfd231499fd818", null ],
     [ "operator()", "classcgv_1_1math_1_1tri__diag__mat.html#a37cf3d4523ba10c06a31b3c93405443e", null ],
     [ "operator()", "classcgv_1_1math_1_1tri__diag__mat.html#a452bbe70cc010bd83a1e8abf0f02b364", null ],
+    [ "operator*", "classcgv_1_1math_1_1tri__diag__mat.html#a40277144b19435e871ed585328363ce0", null ],
     [ "operator=", "classcgv_1_1math_1_1tri__diag__mat.html#a6ca3ac8a27427cf742de2dce465abc08", null ],
-    [ "size", "classcgv_1_1math_1_1tri__diag__mat.html#a62c9e472edd0209f15b3bbd5453b03f2", null ]
+    [ "resize", "classcgv_1_1math_1_1tri__diag__mat.html#a723d59417ac8866ca011f90c4f6a6f77", null ],
+    [ "size", "classcgv_1_1math_1_1tri__diag__mat.html#a62c9e472edd0209f15b3bbd5453b03f2", null ],
+    [ "transpose", "classcgv_1_1math_1_1tri__diag__mat.html#ad0544d21de58f1dca62e684fd08782c8", null ],
+    [ "zeros", "classcgv_1_1math_1_1tri__diag__mat.html#a2ae91dd03fbcc1e2940a89817377c912", null ],
+    [ "zeros", "classcgv_1_1math_1_1tri__diag__mat.html#ac0a94f97221d5e8b352b9e8d845babb6", null ],
+    [ "_data", "classcgv_1_1math_1_1tri__diag__mat.html#a104ccf8ae116f24e564262d361f08441", null ],
+    [ "_dim", "classcgv_1_1math_1_1tri__diag__mat.html#ac5cf3ec59cf3aaf2713164e4dfdff44b", null ]
 ];

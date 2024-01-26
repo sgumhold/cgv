@@ -1,6 +1,9 @@
 var classcgv_1_1gui_1_1directory__helper =
 [
-    [ "Mode", "classcgv_1_1gui_1_1directory__helper.html#a87adaa37a99fc1af3ac3e00644cfe7ee", null ],
+    [ "Mode", "classcgv_1_1gui_1_1directory__helper.html#a87adaa37a99fc1af3ac3e00644cfe7ee", [
+      [ "kOpen", "classcgv_1_1gui_1_1directory__helper.html#a87adaa37a99fc1af3ac3e00644cfe7eeac76ad31b0ff1fcbb03eeae06f73420c8", null ],
+      [ "kSave", "classcgv_1_1gui_1_1directory__helper.html#a87adaa37a99fc1af3ac3e00644cfe7eea9843e55f008d0a5971feac276539ec85", null ]
+    ] ],
     [ "directory_helper", "classcgv_1_1gui_1_1directory__helper.html#ae2325d11b32bebab4814add15ccd3ead", null ],
     [ "directory_helper", "classcgv_1_1gui_1_1directory__helper.html#a7458cd34656e0889f395dfbbb6a60d59", null ],
     [ "create_gui", "classcgv_1_1gui_1_1directory__helper.html#a7eb3b3bdea4d06e2141bc1adf6e7e60e", null ],

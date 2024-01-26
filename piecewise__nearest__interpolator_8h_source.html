@@ -93,9 +93,9 @@ $(document).ready(function(){initNavTree('piecewise__nearest__interpolator_8h_so
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>math {</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">class </span>piecewise_nearest_interpolator : <span class="keyword">public</span> interpolator&lt;T&gt; {</div>
+<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1piecewise__nearest__interpolator.html">    9</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcgv_1_1math_1_1piecewise__nearest__interpolator.html">piecewise_nearest_interpolator</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1math_1_1interpolator.html">interpolator</a>&lt;T&gt; {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    T interpolate(control_point_container&lt;T&gt; control_points, <span class="keywordtype">float</span> t)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    T interpolate(<a class="code" href="classcgv_1_1math_1_1control__point__container.html">control_point_container&lt;T&gt;</a> control_points, <span class="keywordtype">float</span> t)<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <span class="keywordtype">size_t</span> count = control_points.size();</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keywordflow">if</span>(count == 0)</div>
@@ -131,7 +131,7 @@ $(document).ready(function(){initNavTree('piecewise__nearest__interpolator_8h_so
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        }</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    }</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    std::vector&lt;T&gt; interpolate(control_point_container&lt;T&gt; control_points, <span class="keywordtype">size_t</span> n)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    std::vector&lt;T&gt; interpolate(<a class="code" href="classcgv_1_1math_1_1control__point__container.html">control_point_container&lt;T&gt;</a> control_points, <span class="keywordtype">size_t</span> n)<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordtype">size_t</span> count = control_points.size();</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        std::vector&lt;T&gt; data(n, (T)0);</div>
@@ -179,6 +179,9 @@ $(document).ready(function(){initNavTree('piecewise__nearest__interpolator_8h_so
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;}</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
+<div class="ttc" id="aclasscgv_1_1math_1_1control__point__container_html"><div class="ttname"><a href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a></div><div class="ttdef"><b>Definition:</b> <a href="interpolator_8h_source.html#l00012">interpolator.h:12</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1interpolator_html"><div class="ttname"><a href="classcgv_1_1math_1_1interpolator.html">cgv::math::interpolator</a></div><div class="ttdef"><b>Definition:</b> <a href="interpolator_8h_source.html#l00068">interpolator.h:68</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1piecewise__nearest__interpolator_html"><div class="ttname"><a href="classcgv_1_1math_1_1piecewise__nearest__interpolator.html">cgv::math::piecewise_nearest_interpolator</a></div><div class="ttdef"><b>Definition:</b> <a href="piecewise__nearest__interpolator_8h_source.html#l00009">piecewise_nearest_interpolator.h:9</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a1233597e0b02a8451d874eae9aac6773"><div class="ttname"><a href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">cgv::math::step</a></div><div class="ttdeci">T step(const T &amp;a, const T &amp;b)</div><div class="ttdoc">returns 0 for b &lt; a and 1 otherwise</div><div class="ttdef"><b>Definition:</b> <a href="functions_8h_source.html#l00018">functions.h:18</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a6d164d4a63cb11523ffbbcc5178fe2f2"><div class="ttname"><a href="namespacecgv_1_1math.html#a6d164d4a63cb11523ffbbcc5178fe2f2">cgv::math::clamp</a></div><div class="ttdeci">T clamp(const T &amp;v, const T &amp;a, const T &amp;b)</div><div class="ttdoc">clamp v at [a,b]</div><div class="ttdef"><b>Definition:</b> <a href="functions_8h_source.html#l00028">functions.h:28</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>

@@ -94,42 +94,45 @@ $(document).ready(function(){initNavTree('date__time_8h_source.html',''); initRe
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">namespace </span>utils {</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">struct </span>CGV_API time</div>
+<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="structcgv_1_1utils_1_1time.html">   10</a></span>&#160;<span class="keyword">struct </span>CGV_API <a class="code" href="structcgv_1_1utils_1_1time.html">time</a></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;{</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> h;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> minutes;</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> sec;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    time(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> _h = 0, <span class="keywordtype">unsigned</span> _min = 0, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> _sec = 0);</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <a class="code" href="structcgv_1_1utils_1_1time.html">time</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> _h = 0, <span class="keywordtype">unsigned</span> _min = 0, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> _sec = 0);</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;};</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">struct </span>CGV_API date</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="structcgv_1_1utils_1_1date.html">   18</a></span>&#160;<span class="keyword">struct </span>CGV_API <a class="code" href="structcgv_1_1utils_1_1date.html">date</a></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> year;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> month;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> day;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    date(<span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> _year, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> _month = 0, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> _day = 0);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <a class="code" href="structcgv_1_1utils_1_1date.html">date</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> _year, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> _month = 0, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> _day = 0);</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;};</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">struct </span>CGV_API date_time : <span class="keyword">public</span> date, <span class="keyword">public</span> time</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="structcgv_1_1utils_1_1date__time.html">   26</a></span>&#160;<span class="keyword">struct </span>CGV_API <a class="code" href="structcgv_1_1utils_1_1date__time.html">date_time</a> : <span class="keyword">public</span> <a class="code" href="structcgv_1_1utils_1_1date.html">date</a>, <span class="keyword">public</span> <a class="code" href="structcgv_1_1utils_1_1time.html">time</a></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;{</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    date_time(<span class="keyword">const</span> time&amp; t, <span class="keyword">const</span> date&amp; d);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    date_time(<span class="keyword">const</span> date&amp; d);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">long</span> operator - (<span class="keyword">const</span> date_time&amp; dt) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    date_time operator + (<span class="keywordtype">long</span> secs) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    date_time operator - (<span class="keywordtype">long</span> secs) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <a class="code" href="structcgv_1_1utils_1_1date__time.html">date_time</a>(<span class="keyword">const</span> <a class="code" href="structcgv_1_1utils_1_1time.html">time</a>&amp; t, <span class="keyword">const</span> <a class="code" href="structcgv_1_1utils_1_1date.html">date</a>&amp; d);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="structcgv_1_1utils_1_1date__time.html">date_time</a>(<span class="keyword">const</span> <a class="code" href="structcgv_1_1utils_1_1date.html">date</a>&amp; d);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">long</span> operator - (<span class="keyword">const</span> <a class="code" href="structcgv_1_1utils_1_1date__time.html">date_time</a>&amp; dt) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="structcgv_1_1utils_1_1date__time.html">date_time</a> operator + (<span class="keywordtype">long</span> secs) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="structcgv_1_1utils_1_1date__time.html">date_time</a> operator - (<span class="keywordtype">long</span> secs) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;};</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">extern</span> CGV_API date_time now();</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">extern</span> CGV_API <a class="code" href="structcgv_1_1utils_1_1date__time.html">date_time</a> now();</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">extern</span> CGV_API std::ostream&amp; operator &lt;&lt; (std::ostream&amp; os, <span class="keyword">const</span> time&amp; T);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">extern</span> CGV_API std::ostream&amp; operator &lt;&lt; (std::ostream&amp; os, <span class="keyword">const</span> date&amp; D);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">extern</span> CGV_API std::ostream&amp; operator &lt;&lt; (std::ostream&amp; os, <span class="keyword">const</span> date_time&amp; DT);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">extern</span> CGV_API std::ostream&amp; operator &lt;&lt; (std::ostream&amp; os, <span class="keyword">const</span> <a class="code" href="structcgv_1_1utils_1_1time.html">time</a>&amp; T);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">extern</span> CGV_API std::ostream&amp; operator &lt;&lt; (std::ostream&amp; os, <span class="keyword">const</span> <a class="code" href="structcgv_1_1utils_1_1date.html">date</a>&amp; D);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">extern</span> CGV_API std::ostream&amp; operator &lt;&lt; (std::ostream&amp; os, <span class="keyword">const</span> <a class="code" href="structcgv_1_1utils_1_1date__time.html">date_time</a>&amp; DT);</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    }</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
+<div class="ttc" id="astructcgv_1_1utils_1_1date__time_html"><div class="ttname"><a href="structcgv_1_1utils_1_1date__time.html">cgv::utils::date_time</a></div><div class="ttdef"><b>Definition:</b> <a href="date__time_8h_source.html#l00026">date_time.h:27</a></div></div>
+<div class="ttc" id="astructcgv_1_1utils_1_1date_html"><div class="ttname"><a href="structcgv_1_1utils_1_1date.html">cgv::utils::date</a></div><div class="ttdef"><b>Definition:</b> <a href="date__time_8h_source.html#l00018">date_time.h:19</a></div></div>
+<div class="ttc" id="astructcgv_1_1utils_1_1time_html"><div class="ttname"><a href="structcgv_1_1utils_1_1time.html">cgv::utils::time</a></div><div class="ttdef"><b>Definition:</b> <a href="date__time_8h_source.html#l00010">date_time.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

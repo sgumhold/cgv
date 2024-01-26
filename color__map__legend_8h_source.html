@@ -99,54 +99,54 @@ $(document).ready(function(){initNavTree('color__map__legend_8h_source.html','')
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span>app {</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">class </span>CGV_API color_map_legend : <span class="keyword">public</span> canvas_overlay {</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1color__map__legend.html">   15</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1app_1_1color__map__legend.html">color_map_legend</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1app_1_1canvas__overlay.html">canvas_overlay</a> {</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">protected</span>:</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">enum</span> OrientationOption {</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        OO_HORIZONTAL,</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        OO_VERTICAL</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    };</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">struct </span>layout_attributes {</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structcgv_1_1app_1_1color__map__legend_1_1layout__attributes.html">   22</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structcgv_1_1app_1_1color__map__legend_1_1layout__attributes.html">layout_attributes</a> {</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordtype">int</span> padding;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keywordtype">int</span> label_space = 12;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <span class="keywordtype">int</span> x_label_size = 0;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keywordtype">int</span> title_space = 0;</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> total_size;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">ivec2</a> total_size;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        OrientationOption orientation = OO_HORIZONTAL;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        AlignmentOption label_alignment = AO_END;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="comment">// dependent members</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        cgv::g2d::irect color_map_rect;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> title_position = <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a>(0);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">ivec2</a> title_position = <a class="code" href="classcgv_1_1math_1_1fvec.html">ivec2</a>(0);</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordtype">float</span> title_angle = 90.0f;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordtype">void</span> update(<span class="keyword">const</span> ivec2&amp; parent_size) {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> offset(0, 0);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            <a class="code" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a> size(parent_size);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordtype">void</span> update(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">ivec2</a>&amp; parent_size) {</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">ivec2</a> offset(0, 0);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">ivec2</a> size(parent_size);</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <span class="keywordflow">switch</span>(label_alignment) {</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <span class="keywordflow">case</span> AO_START:</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                <span class="keywordflow">if</span>(orientation == OO_HORIZONTAL) {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                    offset.x() = x_label_size / 2;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                    offset.y() = title_space;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                    offset.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() = x_label_size / 2;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                    offset.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() = title_space;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                    size.x() -= x_label_size;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                    size.y() -= label_space + title_space;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                    offset.x() = x_label_size + 4;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                    offset.y() = 0;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                    offset.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() = x_label_size + 4;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                    offset.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() = 0;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                    size.x() -= x_label_size + 4 + title_space;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                }</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <span class="keywordflow">case</span> AO_END:</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                <span class="keywordflow">if</span>(orientation == OO_HORIZONTAL) {</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                    offset.x() = x_label_size / 2;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                    offset.y() = label_space;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                    offset.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() = x_label_size / 2;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                    offset.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() = label_space;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                    size.x() -= x_label_size;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                    size.y() -= label_space + title_space;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                    offset.x() = title_space;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                    offset.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() = title_space;</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                    size.x() -= x_label_size + 4 + title_space;</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                }</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                <span class="keywordflow">break</span>;</div>
@@ -154,7 +154,7 @@ $(document).ready(function(){initNavTree('color__map__legend_8h_source.html','')
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            }</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            color_map_rect.position = offset + padding;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            color_map_rect.size = size - 2 * padding;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            color_map_rect.<a class="code" href="classcgv_1_1math_1_1fvec.html#afea901268f6ba41a98e59d08b417f024">size</a> = size - 2 * padding;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        }</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    } layout;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
@@ -164,7 +164,7 @@ $(document).ready(function(){initNavTree('color__map__legend_8h_source.html','')
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="classcgv_1_1render_1_1texture.html">cgv::render::texture</a> tex;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    std::string title;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a> range;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">vec2</a> range;</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keywordtype">unsigned</span> num_ticks;</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordtype">unsigned</span> label_precision;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keywordtype">bool</span> label_auto_precision;</div>
@@ -182,7 +182,7 @@ $(document).ready(function(){initNavTree('color__map__legend_8h_source.html','')
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    cgv::g2d::msdf_text_geometry labels;</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    cgv::g2d::generic_2d_renderer tick_renderer;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    DEFINE_GENERIC_RENDER_DATA_CLASS(tick_geometry, 2, vec2, position, vec2, size);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    DEFINE_GENERIC_RENDER_DATA_CLASS(tick_geometry, 2, <a class="code" href="classcgv_1_1math_1_1fvec.html">vec2</a>, position, <a class="code" href="classcgv_1_1math_1_1fvec.html">vec2</a>, size);</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    tick_geometry ticks;</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordtype">void</span> init_styles() <span class="keyword">override</span>;</div>
@@ -192,25 +192,25 @@ $(document).ready(function(){initNavTree('color__map__legend_8h_source.html','')
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">void</span> create_gui_impl() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    color_map_legend();</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    std::string <a class="code" href="namespacecgv_1_1type_1_1info.html#a62e63a08ae5b3c95e1dcfe6614222626">get_type_name</a>()<span class="keyword"> const override </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;color_map_legend&quot;</span>; }</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <a class="code" href="classcgv_1_1app_1_1color__map__legend.html">color_map_legend</a>();</div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1color__map__legend.html#aedba5e9b75972a9c66c3c76ac0bb9c13">  109</a></span>&#160;    std::string <a class="code" href="classcgv_1_1app_1_1color__map__legend.html#aedba5e9b75972a9c66c3c76ac0bb9c13">get_type_name</a>()<span class="keyword"> const override </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;color_map_legend&quot;</span>; }</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordtype">void</span> clear(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordtype">void</span> handle_member_change(<span class="keyword">const</span> cgv::utils::pointer_test&amp; m) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordtype">void</span> handle_member_change(<span class="keyword">const</span> <a class="code" href="classcgv_1_1utils_1_1pointer__test.html">cgv::utils::pointer_test</a>&amp; m) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordtype">bool</span> init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordtype">void</span> init_frame(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordtype">void</span> draw_content(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordtype">void</span> set_color_map(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx, <span class="keyword">const</span> cgv::render::color_map&amp; cm);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordtype">void</span> set_color_map(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx, <span class="keyword">const</span> <a class="code" href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a>&amp; cm);</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordtype">void</span> set_width(<span class="keywordtype">size_t</span> w);</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordtype">void</span> set_height(<span class="keywordtype">size_t</span> h);</div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordtype">void</span> set_title(<span class="keyword">const</span> std::string&amp; t);</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <a class="code" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a> get_range()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> range; }</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    vec2 get_range()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> range; }</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keywordtype">void</span> set_range(vec2 r);</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keywordtype">unsigned</span> get_num_ticks() { <span class="keywordflow">return</span> num_ticks; }</div>
@@ -229,14 +229,21 @@ $(document).ready(function(){initNavTree('color__map__legend_8h_source.html','')
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;}</div>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="ttc" id="aclasscgv_1_1app_1_1canvas__overlay_html"><div class="ttname"><a href="classcgv_1_1app_1_1canvas__overlay.html">cgv::app::canvas_overlay</a></div><div class="ttdef"><b>Definition:</b> <a href="canvas__overlay_8h_source.html#l00014">canvas_overlay.h:14</a></div></div>
+<div class="ttc" id="aclasscgv_1_1app_1_1color__map__legend_html"><div class="ttname"><a href="classcgv_1_1app_1_1color__map__legend.html">cgv::app::color_map_legend</a></div><div class="ttdef"><b>Definition:</b> <a href="color__map__legend_8h_source.html#l00015">color_map_legend.h:15</a></div></div>
+<div class="ttc" id="aclasscgv_1_1app_1_1color__map__legend_html_aedba5e9b75972a9c66c3c76ac0bb9c13"><div class="ttname"><a href="classcgv_1_1app_1_1color__map__legend.html#aedba5e9b75972a9c66c3c76ac0bb9c13">cgv::app::color_map_legend::get_type_name</a></div><div class="ttdeci">std::string get_type_name() const override</div><div class="ttdoc">overload to return the type name of this object</div><div class="ttdef"><b>Definition:</b> <a href="color__map__legend_8h_source.html#l00109">color_map_legend.h:109</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a></div><div class="ttdoc">reference counted pointer, which can work together with types that are derived from ref_counted,...</div><div class="ttdef"><b>Definition:</b> <a href="ref__ptr_8h_source.html#l00159">ref_ptr.h:160</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1fvec_html"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt; int32_t, 2 &gt;</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a306998e8905416d17894fd66d8a15b0b"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">cgv::math::fvec::x</a></div><div class="ttdeci">T &amp; x()</div><div class="ttdoc">first element</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00154">fvec.h:154</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a8d199c8049b2ed5806be3c3af7d2860e"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">cgv::math::fvec::y</a></div><div class="ttdeci">T &amp; y()</div><div class="ttdoc">second element</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00158">fvec.h:158</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_afea901268f6ba41a98e59d08b417f024"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#afea901268f6ba41a98e59d08b417f024">cgv::math::fvec::size</a></div><div class="ttdeci">static cgv::type::uint32_type size()</div><div class="ttdoc">return number of elements</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00174">fvec.h:174</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1color__map_html"><div class="ttname"><a href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a></div><div class="ttdef"><b>Definition:</b> <a href="color__map_8h_source.html#l00014">color_map.h:14</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00587">context.h:588</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1texture_html"><div class="ttname"><a href="classcgv_1_1render_1_1texture.html">cgv::render::texture</a></div><div class="ttdoc">the texture class encapsulates all functionality independent of the rendering api.</div><div class="ttdef"><b>Definition:</b> <a href="texture_8h_source.html#l00014">texture.h:15</a></div></div>
+<div class="ttc" id="aclasscgv_1_1utils_1_1pointer__test_html"><div class="ttname"><a href="classcgv_1_1utils_1_1pointer__test.html">cgv::utils::pointer_test</a></div><div class="ttdef"><b>Definition:</b> <a href="pointer__test_8h_source.html#l00011">pointer_test.h:11</a></div></div>
 <div class="ttc" id="aconvert__string_8h_html"><div class="ttname"><a href="convert__string_8h.html">convert_string.h</a></div><div class="ttdoc">Helper functions to convert numeric types into strings using std streams.</div></div>
-<div class="ttc" id="anamespacecgv_1_1render_html_a157618fc22b8c3f110211a4493680d42"><div class="ttname"><a href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">cgv::render::vec2</a></div><div class="ttdeci">cgv::math::fvec&lt; float, 2 &gt; vec2</div><div class="ttdoc">declare type of 2d vectors</div><div class="ttdef"><b>Definition:</b> <a href="render__types_8h_source.html#l00025">render_types.h:25</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1render_html_a6c87c1e251efa064ddfb225b4aaac933"><div class="ttname"><a href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">cgv::render::ivec2</a></div><div class="ttdeci">cgv::math::fvec&lt; int32_t, 2 &gt; ivec2</div><div class="ttdoc">declare type of 2d integer vectors</div><div class="ttdef"><b>Definition:</b> <a href="render__types_8h_source.html#l00079">render_types.h:79</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1type_1_1info_html_a62e63a08ae5b3c95e1dcfe6614222626"><div class="ttname"><a href="namespacecgv_1_1type_1_1info.html#a62e63a08ae5b3c95e1dcfe6614222626">cgv::type::info::get_type_name</a></div><div class="ttdeci">const char * get_type_name(TypeId tid)</div><div class="ttdoc">function that returns the name of a type specified through TypeId</div><div class="ttdef"><b>Definition:</b> <a href="type__id_8cxx_source.html#l00117">type_id.cxx:117</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
+<div class="ttc" id="astructcgv_1_1app_1_1color__map__legend_1_1layout__attributes_html"><div class="ttname"><a href="structcgv_1_1app_1_1color__map__legend_1_1layout__attributes.html">cgv::app::color_map_legend::layout_attributes</a></div><div class="ttdef"><b>Definition:</b> <a href="color__map__legend_8h_source.html#l00022">color_map_legend.h:22</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -111,7 +111,9 @@ $(document).ready(function(){initNavTree('functions_e.html',''); initResizable()
 : <a class="el" href="classcgv_1_1data_1_1component__format.html#aff01411f7836bbb0136a844e889ba29f">cgv::data::component_format</a>
 , <a class="el" href="classcgv_1_1data_1_1data__view__impl.html#a34041982e53f5114aa5cec4420e98e5b">cgv::data::data_view_impl&lt; D, P &gt;</a>
 , <a class="el" href="classcgv_1_1data_1_1dynamic__priority__queue.html#a9aa049ad12bd9f1cd75049864bba534b">cgv::data::dynamic_priority_queue&lt; T &gt;</a>
+, <a class="el" href="classcgv_1_1data_1_1ref__arr.html#a658ba6f0954f621eee7b26d854641849">cgv::data::ref_arr&lt; T &gt;</a>
 , <a class="el" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">cgv::data::ref_ptr&lt; T, is_ref_counted &gt;</a>
+, <a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#ad7d54f87fcd0c3de473c53f53a2e7da8">cgv::media::volume::volume</a>
 , <a class="el" href="classcgv_1_1render_1_1render__data__base.html#a4981cda995f2b3c1bdae3eaaf6f9d59d">cgv::render::render_data_base&lt; ColorType &gt;</a>
 , <a class="el" href="structcgv_1_1utils_1_1token.html#a0eb459d58bbc7d00ba91dfc42dbd5fca">cgv::utils::token</a>
 </li>
@@ -122,8 +124,9 @@ $(document).ready(function(){initNavTree('functions_e.html',''); initResizable()
 , <a class="el" href="classcgv_1_1render_1_1attribute__array__binding.html#a1444cdefabef6ea00406b1b4db900b2c">cgv::render::attribute_array_binding</a>
 , <a class="el" href="classcgv_1_1render_1_1box__renderer.html#ad2a38c3fb07a940dccafac8277b29b5b">cgv::render::box_renderer</a>
 , <a class="el" href="classcgv_1_1render_1_1box__wire__renderer.html#a2109e5951841bd52a3dcf2f90527cc85">cgv::render::box_wire_renderer</a>
+, <a class="el" href="classcgv_1_1render_1_1clod__point__renderer.html#a395aceb0771cb59738863a88a146af55">cgv::render::clod_point_renderer</a>
 , <a class="el" href="classcgv_1_1render_1_1cone__renderer.html#afe641c31a568cdfb098e589d8c85da32">cgv::render::cone_renderer</a>
-, <a class="el" href="classcgv_1_1render_1_1frame__buffer.html#ad041c20f763f8eba7109c8ee88a08083">cgv::render::frame_buffer</a>
+, <a class="el" href="classcgv_1_1render_1_1frame__buffer.html#a5a65859cf7cf0a2adf9bf1152261115a">cgv::render::frame_buffer</a>
 , <a class="el" href="classcgv_1_1render_1_1group__renderer.html#af44ec3345ceb1fb2e09ce4181e4e26ac">cgv::render::group_renderer</a>
 , <a class="el" href="classcgv_1_1render_1_1line__renderer.html#aae5ec306c6b17f7047dbb9c09874b4aa">cgv::render::line_renderer</a>
 , <a class="el" href="classcgv_1_1render_1_1normal__renderer.html#a4a3dc356e1f88e8d2be295c2bf3e6bf3">cgv::render::normal_renderer</a>
@@ -233,11 +236,15 @@ $(document).ready(function(){initNavTree('functions_e.html',''); initResizable()
 : <a class="el" href="classcgv_1_1render_1_1context.html#a2560a70c6de7a9b0ab8243203c90a843">cgv::render::context</a>
 </li>
 <li>enabled
-: <a class="el" href="structgamepad_1_1device__info.html#a7aaf963df8817b232178ae927d849b63">gamepad::device_info</a>
+: <a class="el" href="classcgv_1_1app_1_1performance__monitor.html#aa03afecc897d8e285008bd15f1d0d7f5">cgv::app::performance_monitor</a>
+, <a class="el" href="structgamepad_1_1device__info.html#a7aaf963df8817b232178ae927d849b63">gamepad::device_info</a>
 , <a class="el" href="structgamepad_1_1driver__info.html#ac3a54effbd73ab474b2c73770763bef7">gamepad::driver_info</a>
 </li>
 <li>enabled_light_source_handles
 : <a class="el" href="classcgv_1_1render_1_1context.html#af3a47c9f35b3aef52fae967a3d68d10f">cgv::render::context</a>
+</li>
+<li>enabled_only_when_visible
+: <a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a25d65e60572b97abcd5544c89158fe6a">cgv::app::performance_monitor</a>
 </li>
 <li>end()
 : <a class="el" href="classcgv_1_1base_1_1action.html#a7161e1becf22e45d312904eeb1b22e5d">cgv::base::action</a>
@@ -251,6 +258,9 @@ $(document).ready(function(){initNavTree('functions_e.html',''); initResizable()
 </li>
 <li>end_list_chunk()
 : <a class="el" href="structcgv_1_1media_1_1riff__handler.html#a83a00b9e4d6f2432ab8837dd40fe7547">cgv::media::riff_handler</a>
+</li>
+<li>end_overlay_gui()
+: <a class="el" href="classcgv_1_1app_1_1overlay.html#a116176c1cc615778a26e7dcc63880e11">cgv::app::overlay</a>
 </li>
 <li>end_sample
 : <a class="el" href="structcgv_1_1plot_1_1plot__base__config.html#afae1e32c85f99d0c3cc322d5a9d7ca66">cgv::plot::plot_base_config</a>
@@ -267,6 +277,9 @@ $(document).ready(function(){initNavTree('functions_e.html',''); initResizable()
 <li>ensure_font_names()
 : <a class="el" href="classcgv_1_1plot_1_1plot__base.html#a3ee4bf408cc5e49941e7a0b3be18b9b0">cgv::plot::plot_base</a>
 </li>
+<li>ensure_int_type()
+: <a class="el" href="classcgv_1_1ppp_1_1variant.html#abfaeca6eda1709f4d9c753759d45686d">cgv::ppp::variant</a>
+</li>
 <li>ensure_selected_in_tab_group_parent()
 : <a class="el" href="classcgv_1_1gui_1_1provider.html#a6abf8d523c9ac4d79b54ceba5edd3727">cgv::gui::provider</a>
 </li>
@@ -278,6 +291,9 @@ $(document).ready(function(){initNavTree('functions_e.html',''); initResizable()
 </li>
 <li>ensure_vertex_location_consistency()
 : <a class="el" href="classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html#a240a7f062edfba16de9eba101adcfc40">cgv::media::mesh::convex_polyhedron&lt; T, TCDim &gt;</a>
+</li>
+<li>ensure_viewport()
+: <a class="el" href="classcgv_1_1app_1_1overlay.html#a4c13e3b1cd78c998a8c7d8155c346fc6">cgv::app::overlay</a>
 </li>
 <li>enum_reflection_traits()
 : <a class="el" href="structcgv_1_1reflect_1_1enum__reflection__traits.html#a4fecec9d1e271e48ce3ea965f700cfba">cgv::reflect::enum_reflection_traits&lt; T &gt;</a>
@@ -313,6 +329,7 @@ $(document).ready(function(){initNavTree('functions_e.html',''); initResizable()
 <li>evaluate()
 : <a class="el" href="classcgv_1_1math_1_1mfunc.html#ab846453b49c87769a1666f342010c8fd">cgv::math::mfunc&lt; X, T &gt;</a>
 , <a class="el" href="classcgv_1_1math_1_1qem.html#a3e2fd58ed8f47cb2f28c516bda9a15c6">cgv::math::qem&lt; T &gt;</a>
+, <a class="el" href="classcgv_1_1ppp_1_1expression__processor.html#a17f58b7957f495007ac97edf0b11b425">cgv::ppp::expression_processor</a>
 </li>
 <li>evaluate_gradient()
 : <a class="el" href="classcgv_1_1math_1_1mfunc.html#a66dea581223b93aada7bb0868bababc2">cgv::math::mfunc&lt; X, T &gt;</a>
@@ -341,6 +358,9 @@ $(document).ready(function(){initNavTree('functions_e.html',''); initResizable()
 <li>exp()
 : <a class="el" href="classcgv_1_1math_1_1quaternion.html#aafdb697c83745d365a83cf8b5b794a41">cgv::math::quaternion&lt; T &gt;</a>
 </li>
+<li>expressions
+: <a class="el" href="structcgv_1_1ppp_1_1command__token.html#aded2addfb8365c363751b916f2c9bd1d">cgv::ppp::command_token</a>
+</li>
 <li>extend()
 : <a class="el" href="classcgv_1_1math_1_1interval.html#aae8c0b468d4471820b2231de6141d5ae">cgv::math::interval&lt; T &gt;</a>
 </li>
@@ -348,7 +368,8 @@ $(document).ready(function(){initNavTree('functions_e.html',''); initResizable()
 : <a class="el" href="classcgv_1_1math_1_1interval.html#ac5b6b8ba5d8064d5b8d62a2cef41074d">cgv::math::interval&lt; T &gt;</a>
 </li>
 <li>extent
-: <a class="el" href="classcgv_1_1plot_1_1axis__config.html#a0c50aa56a133b0182cdd5c583a809391">cgv::plot::axis_config</a>
+: <a class="el" href="classcgv_1_1media_1_1volume_1_1volume.html#a2e77d3a7eb1dd8029a1e52ead50dbf4c">cgv::media::volume::volume</a>
+, <a class="el" href="classcgv_1_1plot_1_1axis__config.html#a0c50aa56a133b0182cdd5c583a809391">cgv::plot::axis_config</a>
 , <a class="el" href="classcgv_1_1plot_1_1plot__base.html#aff24d23d4ae1e983cd4bbafba1818843">cgv::plot::plot_base</a>
 </li>
 <li>extent_scaling
@@ -386,6 +407,9 @@ $(document).ready(function(){initNavTree('functions_e.html',''); initResizable()
 </li>
 <li>extract_mesh()
 : <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#ac576baba8a5660e7db1dafddeaddcda2">cgv::render::gl::gl_implicit_surface_drawable_base</a>
+</li>
+<li>extract_touching_halfedge()
+: <a class="el" href="classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#aee9d662aa8f2276e9796b32098c26406">cgv::media::mesh::convex_polyhedron_base</a>
 </li>
 <li>extract_triangle_element_buffer()
 : <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a116d992457d26966664db28542b423ea">cgv::media::mesh::simple_mesh_base</a>

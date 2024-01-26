@@ -83,6 +83,7 @@ $(document).ready(function(){initNavTree('structcgv_1_1media_1_1mesh_1_1slice__i
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structcgv_1_1media_1_1mesh_1_1slice__info-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::media::mesh::slice_info&lt; T &gt; Struct Template Reference</div>  </div>
@@ -96,10 +97,58 @@ $(document).ready(function(){initNavTree('structcgv_1_1media_1_1mesh_1_1slice__i
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:af3eb30667f153668d46bcd9145457006"><td class="memItemLeft" align="right" valign="top"><a id="af3eb30667f153668d46bcd9145457006"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>slice_info</b> (unsigned int _resx, unsigned int _resy)</td></tr>
+<tr class="separator:af3eb30667f153668d46bcd9145457006"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b59b08db9ebd71684103cd7bed6a114"><td class="memItemLeft" align="right" valign="top"><a id="a4b59b08db9ebd71684103cd7bed6a114"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> ()</td></tr>
+<tr class="separator:a4b59b08db9ebd71684103cd7bed6a114"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a698b4eb5e61349b6f0c1d5f6aff30fe9"><td class="memItemLeft" align="right" valign="top"><a id="a698b4eb5e61349b6f0c1d5f6aff30fe9"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>flag</b> (int x, int y) const</td></tr>
+<tr class="separator:a698b4eb5e61349b6f0c1d5f6aff30fe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6347486afa516e368552dc1112b2bf6c"><td class="memItemLeft" align="right" valign="top"><a id="a6347486afa516e368552dc1112b2bf6c"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>get_bit_code</b> (int x, int y, int step=1) const</td></tr>
+<tr class="separator:a6347486afa516e368552dc1112b2bf6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9ecc4571a8d605d731b08eed3b2b6b9"><td class="memItemLeft" align="right" valign="top"><a id="ad9ecc4571a8d605d731b08eed3b2b6b9"></a>
+const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>value</b> (int x, int y) const</td></tr>
+<tr class="separator:ad9ecc4571a8d605d731b08eed3b2b6b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2726ebd39d3da4d78dfcdb58aeebea8f"><td class="memItemLeft" align="right" valign="top"><a id="a2726ebd39d3da4d78dfcdb58aeebea8f"></a>
+T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>value</b> (int x, int y)</td></tr>
+<tr class="separator:a2726ebd39d3da4d78dfcdb58aeebea8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe0a786d8820f5e3129da7aea8718758"><td class="memItemLeft" align="right" valign="top"><a id="abe0a786d8820f5e3129da7aea8718758"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1mesh_1_1slice__info.html#abe0a786d8820f5e3129da7aea8718758">set_value</a> (int x, int y, T value, T iso_value)</td></tr>
 <tr class="memdesc:abe0a786d8820f5e3129da7aea8718758"><td class="mdescLeft">&#160;</td><td class="mdescRight">set value and flag at once <br /></td></tr>
 <tr class="separator:abe0a786d8820f5e3129da7aea8718758"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94282d8182c81e73e618f2488fc247a3"><td class="memItemLeft" align="right" valign="top"><a id="a94282d8182c81e73e618f2488fc247a3"></a>
+const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>index</b> (int x, int y, int e) const</td></tr>
+<tr class="separator:a94282d8182c81e73e618f2488fc247a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a656148f4af8cab55d3c481edec09d902"><td class="memItemLeft" align="right" valign="top"><a id="a656148f4af8cab55d3c481edec09d902"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>index</b> (int x, int y, int e)</td></tr>
+<tr class="separator:a656148f4af8cab55d3c481edec09d902"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afacf90c4e89c739af98b12db74bab085"><td class="memItemLeft" align="right" valign="top"><a id="afacf90c4e89c739af98b12db74bab085"></a>
+const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>snap_index</b> (int x, int y) const</td></tr>
+<tr class="separator:afacf90c4e89c739af98b12db74bab085"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7ae4b7ae16376cc01c411243fdf0b80"><td class="memItemLeft" align="right" valign="top"><a id="ae7ae4b7ae16376cc01c411243fdf0b80"></a>
+int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>snap_index</b> (int x, int y)</td></tr>
+<tr class="separator:ae7ae4b7ae16376cc01c411243fdf0b80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:aa3343fa7bbc7e3422e2ec945a15da0f3"><td class="memItemLeft" align="right" valign="top"><a id="aa3343fa7bbc7e3422e2ec945a15da0f3"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>resx</b></td></tr>
+<tr class="separator:aa3343fa7bbc7e3422e2ec945a15da0f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90d8644fbdb244e30d9129039309562a"><td class="memItemLeft" align="right" valign="top"><a id="a90d8644fbdb244e30d9129039309562a"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>resy</b></td></tr>
+<tr class="separator:a90d8644fbdb244e30d9129039309562a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a270b3c232a779053951f10675a1c4ade"><td class="memItemLeft" align="right" valign="top"><a id="a270b3c232a779053951f10675a1c4ade"></a>
+std::vector&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>values</b></td></tr>
+<tr class="separator:a270b3c232a779053951f10675a1c4ade"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a549fb208c8a687c2d1b4caa821e54151"><td class="memItemLeft" align="right" valign="top"><a id="a549fb208c8a687c2d1b4caa821e54151"></a>
+std::vector&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>flags</b></td></tr>
+<tr class="separator:a549fb208c8a687c2d1b4caa821e54151"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7cf0750636692476e99b42dd25bf06d1"><td class="memItemLeft" align="right" valign="top"><a id="a7cf0750636692476e99b42dd25bf06d1"></a>
+std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>indices</b></td></tr>
+<tr class="separator:a7cf0750636692476e99b42dd25bf06d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />

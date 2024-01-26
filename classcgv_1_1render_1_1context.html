@@ -86,8 +86,10 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1context.html',''
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-static-methods">Static Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="#pro-static-attribs">Static Protected Attributes</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classcgv_1_1render_1_1context-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::render::context Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -646,6 +648,14 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a1122ce9221bb982f6842138ae5978b66"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a1122ce9221bb982f6842138ae5978b66">draw_light_source</a> (const <a class="el" href="classcgv_1_1media_1_1illum_1_1light__source.html">cgv::media::illum::light_source</a> &amp;l, float intensity_scale, float light_scale)</td></tr>
 <tr class="memdesc:a1122ce9221bb982f6842138ae5978b66"><td class="mdescLeft">&#160;</td><td class="mdescRight">draw a light source with an emissive material  <a href="classcgv_1_1render_1_1context.html#a1122ce9221bb982f6842138ae5978b66">More...</a><br /></td></tr>
 <tr class="separator:a1122ce9221bb982f6842138ae5978b66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_structcgv_1_1render_1_1context__config"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_structcgv_1_1render_1_1context__config')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="structcgv_1_1render_1_1context__config.html">cgv::render::context_config</a></td></tr>
+<tr class="memitem:a6a70c2df599f0aa5ce809dac0e648125 inherit pub_methods_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#a6a70c2df599f0aa5ce809dac0e648125">context_config</a> ()</td></tr>
+<tr class="memdesc:a6a70c2df599f0aa5ce809dac0e648125 inherit pub_methods_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct config with default parameters  <a href="structcgv_1_1render_1_1context__config.html#a6a70c2df599f0aa5ce809dac0e648125">More...</a><br /></td></tr>
+<tr class="separator:a6a70c2df599f0aa5ce809dac0e648125 inherit pub_methods_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab389a641bd6b1560719e4513af2bbfab inherit pub_methods_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="ab389a641bd6b1560719e4513af2bbfab"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#ab389a641bd6b1560719e4513af2bbfab">self_reflect</a> (<a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a> &amp;srh)</td></tr>
+<tr class="memdesc:ab389a641bd6b1560719e4513af2bbfab inherit pub_methods_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">reflect the shader_path member <br /></td></tr>
+<tr class="separator:ab389a641bd6b1560719e4513af2bbfab inherit pub_methods_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -661,9 +671,198 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ae2668393b0231ef5b1db07020e6a2048">draw_text</a> (const std::string &amp;text)</td></tr>
 <tr class="memdesc:ae2668393b0231ef5b1db07020e6a2048"><td class="mdescLeft">&#160;</td><td class="mdescRight">draw some text at cursor position and update cursor position <br /></td></tr>
 <tr class="separator:ae2668393b0231ef5b1db07020e6a2048"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f1da03a01a24f8182f427dd23b01c28"><td class="memItemLeft" align="right" valign="top"><a id="a4f1da03a01a24f8182f427dd23b01c28"></a>
+virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>query_integer_constant</b> (<a class="el" href="namespacecgv_1_1render.html#aa73a722ecf766e22ec05e85f8a35b9b9">ContextIntegerConstant</a> cic) const =0</td></tr>
+<tr class="separator:a4f1da03a01a24f8182f427dd23b01c28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66061c9ad03861d79beba04fe4fe160c"><td class="memItemLeft" align="right" valign="top"><a id="a66061c9ad03861d79beba04fe4fe160c"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>destruct_render_objects</b> ()</td></tr>
+<tr class="separator:a66061c9ad03861d79beba04fe4fe160c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebb996fe7a624da14de28bd86be0ab72"><td class="memItemLeft" align="right" valign="top"><a id="aebb996fe7a624da14de28bd86be0ab72"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>put_id</b> (void *handle, void *ptr) const =0</td></tr>
+<tr class="separator:aebb996fe7a624da14de28bd86be0ab72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4dec136b07f97e7a990792a9b173d36"><td class="memItemLeft" align="right" valign="top"><a id="ac4dec136b07f97e7a990792a9b173d36"></a>
+virtual <a class="el" href="classcgv_1_1data_1_1component__format.html">cgv::data::component_format</a>&#160;</td><td class="memItemRight" valign="bottom"><b>texture_find_best_format</b> (const <a class="el" href="classcgv_1_1data_1_1component__format.html">cgv::data::component_format</a> &amp;cf, <a class="el" href="classcgv_1_1render_1_1render__component.html">render_component</a> &amp;rc, const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *palettes=0) const =0</td></tr>
+<tr class="separator:ac4dec136b07f97e7a990792a9b173d36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5053bb58bd099cc688b3f3b98472ade1"><td class="memItemLeft" align="right" valign="top"><a id="a5053bb58bd099cc688b3f3b98472ade1"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>texture_create</b> (<a class="el" href="classcgv_1_1render_1_1texture__base.html">texture_base</a> &amp;tb, <a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;df) const =0</td></tr>
+<tr class="separator:a5053bb58bd099cc688b3f3b98472ade1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfd5249420c3ac303ab820436c373045"><td class="memItemLeft" align="right" valign="top"><a id="adfd5249420c3ac303ab820436c373045"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>texture_create</b> (<a class="el" href="classcgv_1_1render_1_1texture__base.html">texture_base</a> &amp;tb, <a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;target_format, const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">cgv::data::const_data_view</a> &amp;data, int level, int cube_side=-1, int num_array_layers=0, const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *palettes=0) const =0</td></tr>
+<tr class="separator:adfd5249420c3ac303ab820436c373045"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a504baf33c6b030523da89d61ea3ae103"><td class="memItemLeft" align="right" valign="top"><a id="a504baf33c6b030523da89d61ea3ae103"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>texture_create_from_buffer</b> (<a class="el" href="classcgv_1_1render_1_1texture__base.html">texture_base</a> &amp;tb, <a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;df, int x, int y, int level) const =0</td></tr>
+<tr class="separator:a504baf33c6b030523da89d61ea3ae103"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4738a259d994d1a3dc6cd7e8e42b5c14"><td class="memItemLeft" align="right" valign="top"><a id="a4738a259d994d1a3dc6cd7e8e42b5c14"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>texture_replace</b> (<a class="el" href="classcgv_1_1render_1_1texture__base.html">texture_base</a> &amp;tb, int x, int y, int z_or_cube_side, const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">cgv::data::const_data_view</a> &amp;data, int level, const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *palettes=0) const =0</td></tr>
+<tr class="separator:a4738a259d994d1a3dc6cd7e8e42b5c14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ea8b81647ec9d770d4377adde47bd1d"><td class="memItemLeft" align="right" valign="top"><a id="a7ea8b81647ec9d770d4377adde47bd1d"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>texture_replace_from_buffer</b> (<a class="el" href="classcgv_1_1render_1_1texture__base.html">texture_base</a> &amp;tb, int x, int y, int z_or_cube_side, int x_buffer, int y_buffer, unsigned int width, unsigned int height, int level) const =0</td></tr>
+<tr class="separator:a7ea8b81647ec9d770d4377adde47bd1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad49f4561ed5d0d6caeed994ff79036ee"><td class="memItemLeft" align="right" valign="top"><a id="ad49f4561ed5d0d6caeed994ff79036ee"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>texture_create_mipmaps</b> (<a class="el" href="classcgv_1_1render_1_1texture__base.html">texture_base</a> &amp;tb, <a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;df) const =0</td></tr>
+<tr class="separator:ad49f4561ed5d0d6caeed994ff79036ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92a399d90a589ad787899f48c0b10e8e"><td class="memItemLeft" align="right" valign="top"><a id="a92a399d90a589ad787899f48c0b10e8e"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>texture_generate_mipmaps</b> (<a class="el" href="classcgv_1_1render_1_1texture__base.html">texture_base</a> &amp;tb, unsigned int dim) const =0</td></tr>
+<tr class="separator:a92a399d90a589ad787899f48c0b10e8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d82c63faf8395100cc7f889c904901a"><td class="memItemLeft" align="right" valign="top"><a id="a8d82c63faf8395100cc7f889c904901a"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>texture_destruct</b> (<a class="el" href="classcgv_1_1render_1_1texture__base.html">texture_base</a> &amp;tb) const =0</td></tr>
+<tr class="separator:a8d82c63faf8395100cc7f889c904901a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3426da44711e8deebccc374f1a06e4b4"><td class="memItemLeft" align="right" valign="top"><a id="a3426da44711e8deebccc374f1a06e4b4"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>texture_set_state</b> (const <a class="el" href="classcgv_1_1render_1_1texture__base.html">texture_base</a> &amp;tb) const =0</td></tr>
+<tr class="separator:a3426da44711e8deebccc374f1a06e4b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c9181f738d225f78c293fff30c36dda"><td class="memItemLeft" align="right" valign="top"><a id="a6c9181f738d225f78c293fff30c36dda"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>texture_enable</b> (<a class="el" href="classcgv_1_1render_1_1texture__base.html">texture_base</a> &amp;tb, int tex_unit, unsigned int nr_dims) const =0</td></tr>
+<tr class="separator:a6c9181f738d225f78c293fff30c36dda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1175eb568f175f5d9c42d16d81901134"><td class="memItemLeft" align="right" valign="top"><a id="a1175eb568f175f5d9c42d16d81901134"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>texture_disable</b> (<a class="el" href="classcgv_1_1render_1_1texture__base.html">texture_base</a> &amp;tb, int tex_unit, unsigned int nr_dims) const =0</td></tr>
+<tr class="separator:a1175eb568f175f5d9c42d16d81901134"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ff7fceb5e580acdd6af4d6801bd2603"><td class="memItemLeft" align="right" valign="top"><a id="a4ff7fceb5e580acdd6af4d6801bd2603"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>texture_bind_as_image</b> (<a class="el" href="classcgv_1_1render_1_1texture__base.html">texture_base</a> &amp;tb, int tex_unit, int level, bool bind_array, int layer, <a class="el" href="namespacecgv_1_1render.html#a32ea24c43b283680338ab99e53de6530">AccessType</a> access) const =0</td></tr>
+<tr class="separator:a4ff7fceb5e580acdd6af4d6801bd2603"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ec86da350fbeed12220f81de73d433a"><td class="memItemLeft" align="right" valign="top"><a id="a9ec86da350fbeed12220f81de73d433a"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>render_buffer_create</b> (<a class="el" href="classcgv_1_1render_1_1render__buffer__base.html">render_buffer_base</a> &amp;rc, <a class="el" href="classcgv_1_1data_1_1component__format.html">cgv::data::component_format</a> &amp;cf, int &amp;_width, int &amp;_height) const =0</td></tr>
+<tr class="separator:a9ec86da350fbeed12220f81de73d433a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47d3e7a01f32ffc8f99d1ea7edc1db3b"><td class="memItemLeft" align="right" valign="top"><a id="a47d3e7a01f32ffc8f99d1ea7edc1db3b"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>render_buffer_destruct</b> (<a class="el" href="classcgv_1_1render_1_1render__buffer__base.html">render_buffer_base</a> &amp;rc) const =0</td></tr>
+<tr class="separator:a47d3e7a01f32ffc8f99d1ea7edc1db3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3289563b1ca66c76be41b8768976eb0"><td class="memItemLeft" align="right" valign="top"><a id="aa3289563b1ca66c76be41b8768976eb0"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>frame_buffer_create</b> (<a class="el" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a> &amp;fbb) const</td></tr>
+<tr class="separator:aa3289563b1ca66c76be41b8768976eb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a743529bd478a9283bdf811fa559b5ad7"><td class="memItemLeft" align="right" valign="top"><a id="a743529bd478a9283bdf811fa559b5ad7"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>frame_buffer_attach</b> (<a class="el" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a> &amp;fbb, const <a class="el" href="classcgv_1_1render_1_1render__buffer__base.html">render_buffer_base</a> &amp;rb, bool is_depth, int i) const</td></tr>
+<tr class="separator:a743529bd478a9283bdf811fa559b5ad7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdd7e075d2c56119d9200da135117226"><td class="memItemLeft" align="right" valign="top"><a id="abdd7e075d2c56119d9200da135117226"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>frame_buffer_attach</b> (<a class="el" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a> &amp;fbb, const <a class="el" href="classcgv_1_1render_1_1texture__base.html">texture_base</a> &amp;t, bool is_depth, int level, int i, int z) const</td></tr>
+<tr class="separator:abdd7e075d2c56119d9200da135117226"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10669c8e18333920365a898fe8867685"><td class="memItemLeft" align="right" valign="top"><a id="a10669c8e18333920365a898fe8867685"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>frame_buffer_is_complete</b> (const <a class="el" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a> &amp;fbb) const =0</td></tr>
+<tr class="separator:a10669c8e18333920365a898fe8867685"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b35508b26266123c6a961ea253bae7b"><td class="memItemLeft" align="right" valign="top"><a id="a9b35508b26266123c6a961ea253bae7b"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>frame_buffer_enable</b> (<a class="el" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a> &amp;fbb)</td></tr>
+<tr class="separator:a9b35508b26266123c6a961ea253bae7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f13e24f8548f4053b8f2bd3672ee58a"><td class="memItemLeft" align="right" valign="top"><a id="a0f13e24f8548f4053b8f2bd3672ee58a"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>frame_buffer_disable</b> (<a class="el" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a> &amp;fbb)</td></tr>
+<tr class="separator:a0f13e24f8548f4053b8f2bd3672ee58a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66c19fdecdc66e11ff70c2a84570b6ab"><td class="memItemLeft" align="right" valign="top"><a id="a66c19fdecdc66e11ff70c2a84570b6ab"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>frame_buffer_destruct</b> (<a class="el" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a> &amp;fbb) const</td></tr>
+<tr class="separator:a66c19fdecdc66e11ff70c2a84570b6ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addee4ad1ad39941f96a91179a95e8c05"><td class="memItemLeft" align="right" valign="top"><a id="addee4ad1ad39941f96a91179a95e8c05"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>frame_buffer_blit</b> (const <a class="el" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a> *src_fbb_ptr, const <a class="el" href="classcgv_1_1math_1_1fvec.html">ivec4</a> &amp;S, <a class="el" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a> *dst_fbb_ptr, const <a class="el" href="classcgv_1_1math_1_1fvec.html">ivec4</a> &amp;_D, <a class="el" href="namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab">BufferTypeBits</a> btbs, bool interpolate) const =0</td></tr>
+<tr class="separator:addee4ad1ad39941f96a91179a95e8c05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e8fdc7bd311c3a127ccff7d07ccb120"><td class="memItemLeft" align="right" valign="top"><a id="a0e8fdc7bd311c3a127ccff7d07ccb120"></a>
+virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>frame_buffer_get_max_nr_color_attachments</b> () const =0</td></tr>
+<tr class="separator:a0e8fdc7bd311c3a127ccff7d07ccb120"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a158d5dc0fd4ef45c1fa1a18941485099"><td class="memItemLeft" align="right" valign="top"><a id="a158d5dc0fd4ef45c1fa1a18941485099"></a>
+virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>frame_buffer_get_max_nr_draw_buffers</b> () const =0</td></tr>
+<tr class="separator:a158d5dc0fd4ef45c1fa1a18941485099"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cddec69e452d58dc4dac604c92afa27"><td class="memItemLeft" align="right" valign="top"><a id="a4cddec69e452d58dc4dac604c92afa27"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>shader_code_create</b> (<a class="el" href="classcgv_1_1render_1_1render__component.html">render_component</a> &amp;sc, <a class="el" href="namespacecgv_1_1render.html#aa829197f51559124b8c72a2bd024b8db">ShaderType</a> st, const std::string &amp;source) const =0</td></tr>
+<tr class="separator:a4cddec69e452d58dc4dac604c92afa27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31509cfdceaeb23df98b70e2e31b2d94"><td class="memItemLeft" align="right" valign="top"><a id="a31509cfdceaeb23df98b70e2e31b2d94"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>shader_code_compile</b> (<a class="el" href="classcgv_1_1render_1_1render__component.html">render_component</a> &amp;sc) const =0</td></tr>
+<tr class="separator:a31509cfdceaeb23df98b70e2e31b2d94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab490d496e40fad09493a0b4e6065252f"><td class="memItemLeft" align="right" valign="top"><a id="ab490d496e40fad09493a0b4e6065252f"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>shader_code_destruct</b> (<a class="el" href="classcgv_1_1render_1_1render__component.html">render_component</a> &amp;sc) const =0</td></tr>
+<tr class="separator:ab490d496e40fad09493a0b4e6065252f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79a878185244509ed044b43368907a62"><td class="memItemLeft" align="right" valign="top"><a id="a79a878185244509ed044b43368907a62"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>shader_program_create</b> (<a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> &amp;spb) const =0</td></tr>
+<tr class="separator:a79a878185244509ed044b43368907a62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9671964b3b325ee1cd9573ae75e80abc"><td class="memItemLeft" align="right" valign="top"><a id="a9671964b3b325ee1cd9573ae75e80abc"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>shader_program_attach</b> (<a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> &amp;spb, const <a class="el" href="classcgv_1_1render_1_1render__component.html">render_component</a> &amp;sc) const =0</td></tr>
+<tr class="separator:a9671964b3b325ee1cd9573ae75e80abc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afecd6e72acd95620ee94b609566e4f9f"><td class="memItemLeft" align="right" valign="top"><a id="afecd6e72acd95620ee94b609566e4f9f"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>shader_program_detach</b> (<a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> &amp;spb, const <a class="el" href="classcgv_1_1render_1_1render__component.html">render_component</a> &amp;sc) const =0</td></tr>
+<tr class="separator:afecd6e72acd95620ee94b609566e4f9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40f9e69e2958f526797903d5998acbd4"><td class="memItemLeft" align="right" valign="top"><a id="a40f9e69e2958f526797903d5998acbd4"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>shader_program_link</b> (<a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> &amp;spb) const</td></tr>
+<tr class="separator:a40f9e69e2958f526797903d5998acbd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12b84b719e1b6668d7a76db6121f8f2f"><td class="memItemLeft" align="right" valign="top"><a id="a12b84b719e1b6668d7a76db6121f8f2f"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>shader_program_set_state</b> (<a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> &amp;spb) const =0</td></tr>
+<tr class="separator:a12b84b719e1b6668d7a76db6121f8f2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3bf68ce6daac10466c1d8e01e2bfe34"><td class="memItemLeft" align="right" valign="top"><a id="ad3bf68ce6daac10466c1d8e01e2bfe34"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>shader_program_enable</b> (<a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> &amp;spb)</td></tr>
+<tr class="separator:ad3bf68ce6daac10466c1d8e01e2bfe34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad46954fa2b563327e1dd55889c06738b"><td class="memItemLeft" align="right" valign="top"><a id="ad46954fa2b563327e1dd55889c06738b"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>shader_program_disable</b> (<a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> &amp;spb)</td></tr>
+<tr class="separator:ad46954fa2b563327e1dd55889c06738b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c60ebad204a0d990a6ea4836d14589a"><td class="memItemLeft" align="right" valign="top"><a id="a4c60ebad204a0d990a6ea4836d14589a"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>shader_program_destruct</b> (<a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> &amp;spb) const</td></tr>
+<tr class="separator:a4c60ebad204a0d990a6ea4836d14589a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7617395822c6eb05ecaba2a0cf8f38c7"><td class="memItemLeft" align="right" valign="top"><a id="a7617395822c6eb05ecaba2a0cf8f38c7"></a>
+virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>get_uniform_location</b> (const <a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> &amp;spb, const std::string &amp;name) const =0</td></tr>
+<tr class="separator:a7617395822c6eb05ecaba2a0cf8f38c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dfccfb42b76d3e41be2f5cd9c8d3c02"><td class="memItemLeft" align="right" valign="top"><a id="a8dfccfb42b76d3e41be2f5cd9c8d3c02"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>set_uniform_void</b> (<a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> &amp;spb, int loc, <a class="el" href="structcgv_1_1render_1_1type__descriptor.html">type_descriptor</a> value_type, const void *value_ptr) const =0</td></tr>
+<tr class="separator:a8dfccfb42b76d3e41be2f5cd9c8d3c02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab474206054260d2daef80fc3dc5997a3"><td class="memItemLeft" align="right" valign="top"><a id="ab474206054260d2daef80fc3dc5997a3"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>set_uniform_array_void</b> (<a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> &amp;spb, int loc, <a class="el" href="structcgv_1_1render_1_1type__descriptor.html">type_descriptor</a> value_type, const void *value_ptr, size_t nr_elements) const =0</td></tr>
+<tr class="separator:ab474206054260d2daef80fc3dc5997a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af918c8fd314ddcedea0d9609a629b472"><td class="memItemLeft" align="right" valign="top"><a id="af918c8fd314ddcedea0d9609a629b472"></a>
+virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>get_attribute_location</b> (const <a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> &amp;spb, const std::string &amp;name) const =0</td></tr>
+<tr class="separator:af918c8fd314ddcedea0d9609a629b472"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac16dced91fa46803e5b97b108c5257fc"><td class="memItemLeft" align="right" valign="top"><a id="ac16dced91fa46803e5b97b108c5257fc"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>set_attribute_void</b> (<a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> &amp;spb, int loc, <a class="el" href="structcgv_1_1render_1_1type__descriptor.html">type_descriptor</a> value_type, const void *value_ptr) const =0</td></tr>
+<tr class="separator:ac16dced91fa46803e5b97b108c5257fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d10e3ff6ed30aaef1eae07877d36494"><td class="memItemLeft" align="right" valign="top"><a id="a3d10e3ff6ed30aaef1eae07877d36494"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>attribute_array_binding_create</b> (<a class="el" href="classcgv_1_1render_1_1attribute__array__binding__base.html">attribute_array_binding_base</a> &amp;aab) const =0</td></tr>
+<tr class="separator:a3d10e3ff6ed30aaef1eae07877d36494"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0a47e804e1365023d828ac5ee40d554"><td class="memItemLeft" align="right" valign="top"><a id="ae0a47e804e1365023d828ac5ee40d554"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>attribute_array_binding_destruct</b> (<a class="el" href="classcgv_1_1render_1_1attribute__array__binding__base.html">attribute_array_binding_base</a> &amp;aab) const</td></tr>
+<tr class="separator:ae0a47e804e1365023d828ac5ee40d554"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c4a5348c2b329b4bd00f8453c1afdfa"><td class="memItemLeft" align="right" valign="top"><a id="a0c4a5348c2b329b4bd00f8453c1afdfa"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>attribute_array_binding_enable</b> (<a class="el" href="classcgv_1_1render_1_1attribute__array__binding__base.html">attribute_array_binding_base</a> &amp;aab)</td></tr>
+<tr class="separator:a0c4a5348c2b329b4bd00f8453c1afdfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addcccd88a7e33cdcc9017b7a37b2b9d0"><td class="memItemLeft" align="right" valign="top"><a id="addcccd88a7e33cdcc9017b7a37b2b9d0"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>attribute_array_binding_disable</b> (<a class="el" href="classcgv_1_1render_1_1attribute__array__binding__base.html">attribute_array_binding_base</a> &amp;aab)</td></tr>
+<tr class="separator:addcccd88a7e33cdcc9017b7a37b2b9d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fbec37aeb572f8be469b37a053e4a68"><td class="memItemLeft" align="right" valign="top"><a id="a6fbec37aeb572f8be469b37a053e4a68"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>set_attribute_array_void</b> (<a class="el" href="classcgv_1_1render_1_1attribute__array__binding__base.html">attribute_array_binding_base</a> *aab, int loc, <a class="el" href="structcgv_1_1render_1_1type__descriptor.html">type_descriptor</a> value_type, const <a class="el" href="classcgv_1_1render_1_1vertex__buffer__base.html">vertex_buffer_base</a> *vbb, const void *ptr, size_t nr_elements=0, unsigned stride_in_bytes=0) const =0</td></tr>
+<tr class="separator:a6fbec37aeb572f8be469b37a053e4a68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf22a8fbb81c5a5896e7329b8176d28d"><td class="memItemLeft" align="right" valign="top"><a id="aaf22a8fbb81c5a5896e7329b8176d28d"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>set_element_array</b> (<a class="el" href="classcgv_1_1render_1_1attribute__array__binding__base.html">attribute_array_binding_base</a> *aab, const <a class="el" href="classcgv_1_1render_1_1vertex__buffer__base.html">vertex_buffer_base</a> *vbb) const =0</td></tr>
+<tr class="separator:aaf22a8fbb81c5a5896e7329b8176d28d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc4698559cac2dad82f3147d86836466"><td class="memItemLeft" align="right" valign="top"><a id="acc4698559cac2dad82f3147d86836466"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>enable_attribute_array</b> (<a class="el" href="classcgv_1_1render_1_1attribute__array__binding__base.html">attribute_array_binding_base</a> *aab, int loc, bool do_enable) const =0</td></tr>
+<tr class="separator:acc4698559cac2dad82f3147d86836466"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b527d0caa468de5b0cf7ec5474c17bb"><td class="memItemLeft" align="right" valign="top"><a id="a7b527d0caa468de5b0cf7ec5474c17bb"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_attribute_array_enabled</b> (const <a class="el" href="classcgv_1_1render_1_1attribute__array__binding__base.html">attribute_array_binding_base</a> *aab, int loc) const =0</td></tr>
+<tr class="separator:a7b527d0caa468de5b0cf7ec5474c17bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fbc1b7aba45f958cb215224cdf8aacf"><td class="memItemLeft" align="right" valign="top"><a id="a8fbc1b7aba45f958cb215224cdf8aacf"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>vertex_buffer_bind</b> (const <a class="el" href="classcgv_1_1render_1_1vertex__buffer__base.html">vertex_buffer_base</a> &amp;vbb, <a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3">VertexBufferType</a> _type, unsigned _idx=-1) const =0</td></tr>
+<tr class="separator:a8fbc1b7aba45f958cb215224cdf8aacf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11a6f8bc4837f782fd0f69f551d0e2b5"><td class="memItemLeft" align="right" valign="top"><a id="a11a6f8bc4837f782fd0f69f551d0e2b5"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>vertex_buffer_unbind</b> (const <a class="el" href="classcgv_1_1render_1_1vertex__buffer__base.html">vertex_buffer_base</a> &amp;vbb, <a class="el" href="namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3">VertexBufferType</a> _type, unsigned _idx=-1) const =0</td></tr>
+<tr class="separator:a11a6f8bc4837f782fd0f69f551d0e2b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43448fbd9cca118b559bd0cace23bf5d"><td class="memItemLeft" align="right" valign="top"><a id="a43448fbd9cca118b559bd0cace23bf5d"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>vertex_buffer_create</b> (<a class="el" href="classcgv_1_1render_1_1vertex__buffer__base.html">vertex_buffer_base</a> &amp;vbb, const void *array_ptr, size_t size_in_bytes) const =0</td></tr>
+<tr class="separator:a43448fbd9cca118b559bd0cace23bf5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e8b109cc76c986b903ac17ce7b392db"><td class="memItemLeft" align="right" valign="top"><a id="a8e8b109cc76c986b903ac17ce7b392db"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>vertex_buffer_resize</b> (<a class="el" href="classcgv_1_1render_1_1vertex__buffer__base.html">vertex_buffer_base</a> &amp;vbb, const void *array_ptr, size_t size_in_bytes) const =0</td></tr>
+<tr class="separator:a8e8b109cc76c986b903ac17ce7b392db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac471dbb3436153408d0b94000b68fbee"><td class="memItemLeft" align="right" valign="top"><a id="ac471dbb3436153408d0b94000b68fbee"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>vertex_buffer_replace</b> (<a class="el" href="classcgv_1_1render_1_1vertex__buffer__base.html">vertex_buffer_base</a> &amp;vbb, size_t offset, size_t size_in_bytes, const void *array_ptr) const =0</td></tr>
+<tr class="separator:ac471dbb3436153408d0b94000b68fbee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad194992c1946a1df3af123645a4dfcb2"><td class="memItemLeft" align="right" valign="top"><a id="ad194992c1946a1df3af123645a4dfcb2"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>vertex_buffer_copy</b> (const <a class="el" href="classcgv_1_1render_1_1vertex__buffer__base.html">vertex_buffer_base</a> &amp;src, size_t src_offset, <a class="el" href="classcgv_1_1render_1_1vertex__buffer__base.html">vertex_buffer_base</a> &amp;target, size_t target_offset, size_t size_in_bytes) const =0</td></tr>
+<tr class="separator:ad194992c1946a1df3af123645a4dfcb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeeed80d2acc8272daede507f6f5a95f"><td class="memItemLeft" align="right" valign="top"><a id="aaeeed80d2acc8272daede507f6f5a95f"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>vertex_buffer_copy_back</b> (<a class="el" href="classcgv_1_1render_1_1vertex__buffer__base.html">vertex_buffer_base</a> &amp;vbb, size_t offset, size_t size_in_bytes, void *array_ptr) const =0</td></tr>
+<tr class="separator:aaeeed80d2acc8272daede507f6f5a95f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8883a9745436f0d1e1d63718839b1d85"><td class="memItemLeft" align="right" valign="top"><a id="a8883a9745436f0d1e1d63718839b1d85"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>vertex_buffer_destruct</b> (<a class="el" href="classcgv_1_1render_1_1vertex__buffer__base.html">vertex_buffer_base</a> &amp;vbb) const =0</td></tr>
+<tr class="separator:a8883a9745436f0d1e1d63718839b1d85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-methods"></a>
+Static Protected Member Functions</h2></td></tr>
+<tr class="memitem:afa79bbedeeea1ddf825dcc99d5464320"><td class="memItemLeft" align="right" valign="top"><a id="afa79bbedeeea1ddf825dcc99d5464320"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><b>get_buffer_list</b> (<a class="el" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a> &amp;fbb, bool &amp;<a class="el" href="structcgv_1_1render_1_1context__config.html#afe52005a1741b6dc2f24359d4ae1429e">depth_buffer</a>, std::vector&lt; int &gt; &amp;buffers, int offset=0)</td></tr>
+<tr class="separator:afa79bbedeeea1ddf825dcc99d5464320"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
+<tr class="memitem:a68cc6d80ce690602cfb7e13ef287033f"><td class="memItemLeft" align="right" valign="top"><a id="a68cc6d80ce690602cfb7e13ef287033f"></a>
+<a class="el" href="namespacecgv_1_1render.html#af832c0efcb92dc65a54ccce773869086">GPUVendorID</a>&#160;</td><td class="memItemRight" valign="bottom"><b>gpu_vendor</b></td></tr>
+<tr class="separator:a68cc6d80ce690602cfb7e13ef287033f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80306fb1d08f59cdb7d540ae13a88e22"><td class="memItemLeft" align="right" valign="top"><a id="a80306fb1d08f59cdb7d540ae13a88e22"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a80306fb1d08f59cdb7d540ae13a88e22">use_shader_file_cache</a></td></tr>
 <tr class="memdesc:a80306fb1d08f59cdb7d540ae13a88e22"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to use the caching facilities of <a class="el" href="classcgv_1_1render_1_1shader__program.html" title="a shader program combines several shader code fragments to a complete definition of the shading pipel...">shader_program</a> and <a class="el" href="classcgv_1_1render_1_1shader__code.html" title="a shader code object holds a code fragment of a geometry vertex or fragment shader and can be added t...">shader_code</a> to store loaded shader file contents as strings for faster loading <br /></td></tr>
@@ -716,6 +915,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 std::stack&lt; <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a77c4c4d8db1cc97b1c52baf92d7f3021">modelview_matrix_stack</a></td></tr>
 <tr class="memdesc:a77c4c4d8db1cc97b1c52baf92d7f3021"><td class="mdescLeft">&#160;</td><td class="mdescRight">keep two matrix stacks for model view and projection matrices <br /></td></tr>
 <tr class="separator:a77c4c4d8db1cc97b1c52baf92d7f3021"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6425cef3c612a0d4202f842d87134cbb"><td class="memItemLeft" align="right" valign="top"><a id="a6425cef3c612a0d4202f842d87134cbb"></a>
+std::stack&lt; <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>projection_matrix_stack</b></td></tr>
+<tr class="separator:a6425cef3c612a0d4202f842d87134cbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aceba97d043929ea9b499efcf5f58abc0"><td class="memItemLeft" align="right" valign="top"><a id="aceba97d043929ea9b499efcf5f58abc0"></a>
 std::stack&lt; std::vector&lt; <a class="el" href="structcgv_1_1render_1_1window__transformation.html">window_transformation</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aceba97d043929ea9b499efcf5f58abc0">window_transformation_stack</a></td></tr>
 <tr class="memdesc:aceba97d043929ea9b499efcf5f58abc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">keep stack of window transformations <br /></td></tr>
@@ -776,6 +978,33 @@ std::stack&lt; <a class="el" href="structcgv_1_1render_1_1context_1_1render__inf
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a47d1cf071d77d6a79b5013362798f506">bg_r</a></td></tr>
 <tr class="memdesc:a47d1cf071d77d6a79b5013362798f506"><td class="mdescLeft">&#160;</td><td class="mdescRight">current background color, depth, stencil and accum color <br /></td></tr>
 <tr class="separator:a47d1cf071d77d6a79b5013362798f506"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3c27ea4716baa206c966ed93dc569cd"><td class="memItemLeft" align="right" valign="top"><a id="ab3c27ea4716baa206c966ed93dc569cd"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_g</b></td></tr>
+<tr class="separator:ab3c27ea4716baa206c966ed93dc569cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a432ec41341ceff985138744dd4cbb07f"><td class="memItemLeft" align="right" valign="top"><a id="a432ec41341ceff985138744dd4cbb07f"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_b</b></td></tr>
+<tr class="separator:a432ec41341ceff985138744dd4cbb07f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54d68938a4e25f19592d58af41124977"><td class="memItemLeft" align="right" valign="top"><a id="a54d68938a4e25f19592d58af41124977"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_a</b></td></tr>
+<tr class="separator:a54d68938a4e25f19592d58af41124977"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab756f219c54c1b24fbe43a6e7320c56d"><td class="memItemLeft" align="right" valign="top"><a id="ab756f219c54c1b24fbe43a6e7320c56d"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_d</b></td></tr>
+<tr class="separator:ab756f219c54c1b24fbe43a6e7320c56d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7037ddba91f5fc462bf263636d9f50f1"><td class="memItemLeft" align="right" valign="top"><a id="a7037ddba91f5fc462bf263636d9f50f1"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>bg_s</b></td></tr>
+<tr class="separator:a7037ddba91f5fc462bf263636d9f50f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad934ce97606ecf0a1b5c6e9e3152e110"><td class="memItemLeft" align="right" valign="top"><a id="ad934ce97606ecf0a1b5c6e9e3152e110"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_accum_r</b></td></tr>
+<tr class="separator:ad934ce97606ecf0a1b5c6e9e3152e110"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9452ad2286519b6ad1e392a061698d3"><td class="memItemLeft" align="right" valign="top"><a id="ad9452ad2286519b6ad1e392a061698d3"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_accum_g</b></td></tr>
+<tr class="separator:ad9452ad2286519b6ad1e392a061698d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86b8b3e437c1c299ebb9ee8ed771afb3"><td class="memItemLeft" align="right" valign="top"><a id="a86b8b3e437c1c299ebb9ee8ed771afb3"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_accum_b</b></td></tr>
+<tr class="separator:a86b8b3e437c1c299ebb9ee8ed771afb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44407299316c363e23cabd11924ec1fc"><td class="memItemLeft" align="right" valign="top"><a id="a44407299316c363e23cabd11924ec1fc"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_accum_a</b></td></tr>
+<tr class="separator:a44407299316c363e23cabd11924ec1fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa83ccb660cfc3ebec19ede2ef6f233a3"><td class="memItemLeft" align="right" valign="top"><a id="aa83ccb660cfc3ebec19ede2ef6f233a3"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa83ccb660cfc3ebec19ede2ef6f233a3">phong_shading</a></td></tr>
 <tr class="memdesc:aa83ccb660cfc3ebec19ede2ef6f233a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to use phong shading <br /></td></tr>
@@ -788,6 +1017,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ad0e33cb39fb981e2d5e575fe63bb1533">cursor_x</a></td></tr>
 <tr class="memdesc:ad0e33cb39fb981e2d5e575fe63bb1533"><td class="mdescLeft">&#160;</td><td class="mdescRight">current cursor location for textual output <br /></td></tr>
 <tr class="separator:ad0e33cb39fb981e2d5e575fe63bb1533"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1070eacbb79fde9f4e4fba7bcb999b76"><td class="memItemLeft" align="right" valign="top"><a id="a1070eacbb79fde9f4e4fba7bcb999b76"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>cursor_y</b></td></tr>
+<tr class="separator:a1070eacbb79fde9f4e4fba7bcb999b76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd2384f196ed5c318c3979a798c9a48b"><td class="memItemLeft" align="right" valign="top"><a id="afd2384f196ed5c318c3979a798c9a48b"></a>
 <a class="el" href="classcgv_1_1signal_1_1callback__stream.html">cgv::signal::callback_stream</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#afd2384f196ed5c318c3979a798c9a48b">out_stream</a></td></tr>
 <tr class="memdesc:afd2384f196ed5c318c3979a798c9a48b"><td class="mdescLeft">&#160;</td><td class="mdescRight">use a callback stream to write text to the opengl context <br /></td></tr>
@@ -808,6 +1040,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#acad150548a8c385d5500de242cba3282">x_offset</a></td></tr>
 <tr class="memdesc:acad150548a8c385d5500de242cba3282"><td class="mdescLeft">&#160;</td><td class="mdescRight">offset in x and y direction where text starts <br /></td></tr>
 <tr class="separator:acad150548a8c385d5500de242cba3282"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5dcae2fd809ae429c9986a55feb9f899"><td class="memItemLeft" align="right" valign="top"><a id="a5dcae2fd809ae429c9986a55feb9f899"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>y_offset</b></td></tr>
+<tr class="separator:a5dcae2fd809ae429c9986a55feb9f899"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83d0bc1d608a734299899a33c6a25689"><td class="memItemLeft" align="right" valign="top"><a id="a83d0bc1d608a734299899a33c6a25689"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a83d0bc1d608a734299899a33c6a25689">nr_identations</a></td></tr>
 <tr class="memdesc:a83d0bc1d608a734299899a33c6a25689"><td class="mdescLeft">&#160;</td><td class="mdescRight">current number of indentations <br /></td></tr>
@@ -816,6 +1051,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aeda801f0a730e2c714f36c7cf81f5309">at_line_begin</a></td></tr>
 <tr class="memdesc:aeda801f0a730e2c714f36c7cf81f5309"><td class="mdescLeft">&#160;</td><td class="mdescRight">store whether we are at the beginning of the line <br /></td></tr>
 <tr class="separator:aeda801f0a730e2c714f36c7cf81f5309"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88d2fb377f54e6e2724f7c2cdc8eac01"><td class="memItemLeft" align="right" valign="top"><a id="a88d2fb377f54e6e2724f7c2cdc8eac01"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>do_screen_shot</b></td></tr>
+<tr class="separator:a88d2fb377f54e6e2724f7c2cdc8eac01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
 Static Protected Attributes</h2></td></tr>
@@ -823,6 +1061,39 @@ Static Protected Attributes</h2></td></tr>
 static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ab6ee7800f8ab16091dc24376de9f2572">nr_default_light_sources</a> = 2</td></tr>
 <tr class="memdesc:ab6ee7800f8ab16091dc24376de9f2572"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of default light sources <br /></td></tr>
 <tr class="separator:ab6ee7800f8ab16091dc24376de9f2572"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:aff12ea23f9a2c81a4172b1af29cdbfe2"><td class="memItemLeft" align="right" valign="top"><a id="aff12ea23f9a2c81a4172b1af29cdbfe2"></a>
+class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>attribute_array_manager</b></td></tr>
+<tr class="separator:aff12ea23f9a2c81a4172b1af29cdbfe2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad830d00800a92dbf90416e083c55d4fd"><td class="memItemLeft" align="right" valign="top"><a id="ad830d00800a92dbf90416e083c55d4fd"></a>
+class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>render_component</b></td></tr>
+<tr class="separator:ad830d00800a92dbf90416e083c55d4fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec9f0acbec2c4d216760fe9338bac251"><td class="memItemLeft" align="right" valign="top"><a id="aec9f0acbec2c4d216760fe9338bac251"></a>
+class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>texture</b></td></tr>
+<tr class="separator:aec9f0acbec2c4d216760fe9338bac251"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ecef49776b47b6537d4574602004a01"><td class="memItemLeft" align="right" valign="top"><a id="a7ecef49776b47b6537d4574602004a01"></a>
+class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>render_buffer</b></td></tr>
+<tr class="separator:a7ecef49776b47b6537d4574602004a01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb3a568600ade76c69f93fac2aa0c9e8"><td class="memItemLeft" align="right" valign="top"><a id="abb3a568600ade76c69f93fac2aa0c9e8"></a>
+class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>frame_buffer</b></td></tr>
+<tr class="separator:abb3a568600ade76c69f93fac2aa0c9e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad63e9905631d8473b3825b7189dce73"><td class="memItemLeft" align="right" valign="top"><a id="aad63e9905631d8473b3825b7189dce73"></a>
+class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>shader_code</b></td></tr>
+<tr class="separator:aad63e9905631d8473b3825b7189dce73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a8bd1246fb15d1eef08f028d1a9392f"><td class="memItemLeft" align="right" valign="top"><a id="a2a8bd1246fb15d1eef08f028d1a9392f"></a>
+class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>shader_program</b></td></tr>
+<tr class="separator:a2a8bd1246fb15d1eef08f028d1a9392f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4622b6c5ba584341ebe42f931f3b722f"><td class="memItemLeft" align="right" valign="top"><a id="a4622b6c5ba584341ebe42f931f3b722f"></a>
+class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>attribute_array_binding</b></td></tr>
+<tr class="separator:a4622b6c5ba584341ebe42f931f3b722f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a453c345ceda0283479556a83abc8b0fc"><td class="memItemLeft" align="right" valign="top"><a id="a453c345ceda0283479556a83abc8b0fc"></a>
+class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>vertex_buffer</b></td></tr>
+<tr class="separator:a453c345ceda0283479556a83abc8b0fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab20aa5f79f3f8c76ad7f8c400b3c3183"><td class="memItemLeft" align="right" valign="top"><a id="ab20aa5f79f3f8c76ad7f8c400b3c3183"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><b>shader_program_base</b></td></tr>
+<tr class="separator:ab20aa5f79f3f8c76ad7f8c400b3c3183"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader">transformations</h2></td></tr>
 <tr class="memitem:a5a08641e14e33372226f2183dc111532"><td class="memItemLeft" align="right" valign="top"><a id="a5a08641e14e33372226f2183dc111532"></a>
@@ -998,75 +1269,73 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
 <tr class="memdesc:a85841c5a4bbec518e80458f85d642f60"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given window space point and the given modelview_projection_window matrix  <a href="classcgv_1_1render_1_1context.html#a85841c5a4bbec518e80458f85d642f60">More...</a><br /></td></tr>
 <tr class="separator:a85841c5a4bbec518e80458f85d642f60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader">context creation parameters</h2></td></tr>
-<tr class="memitem:ab389a641bd6b1560719e4513af2bbfab"><td class="memItemLeft" align="right" valign="top"><a id="ab389a641bd6b1560719e4513af2bbfab"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#ab389a641bd6b1560719e4513af2bbfab">self_reflect</a> (<a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a> &amp;srh)</td></tr>
-<tr class="memdesc:ab389a641bd6b1560719e4513af2bbfab"><td class="mdescLeft">&#160;</td><td class="mdescRight">reflect the shader_path member <br /></td></tr>
-<tr class="separator:ab389a641bd6b1560719e4513af2bbfab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe52005a1741b6dc2f24359d4ae1429e"><td class="memItemLeft" align="right" valign="top"><a id="afe52005a1741b6dc2f24359d4ae1429e"></a>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_attribs_structcgv_1_1render_1_1context__config"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_structcgv_1_1render_1_1context__config')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="structcgv_1_1render_1_1context__config.html">cgv::render::context_config</a></td></tr>
+<tr class="memitem:afe52005a1741b6dc2f24359d4ae1429e inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="afe52005a1741b6dc2f24359d4ae1429e"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#afe52005a1741b6dc2f24359d4ae1429e">depth_buffer</a></td></tr>
-<tr class="memdesc:afe52005a1741b6dc2f24359d4ae1429e"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: true <br /></td></tr>
-<tr class="separator:afe52005a1741b6dc2f24359d4ae1429e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a98a8b1db44d80db60fe79b0eeda876"><td class="memItemLeft" align="right" valign="top"><a id="a5a98a8b1db44d80db60fe79b0eeda876"></a>
+<tr class="memdesc:afe52005a1741b6dc2f24359d4ae1429e inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: true <br /></td></tr>
+<tr class="separator:afe52005a1741b6dc2f24359d4ae1429e inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a98a8b1db44d80db60fe79b0eeda876 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="a5a98a8b1db44d80db60fe79b0eeda876"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#a5a98a8b1db44d80db60fe79b0eeda876">double_buffer</a></td></tr>
-<tr class="memdesc:a5a98a8b1db44d80db60fe79b0eeda876"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: true <br /></td></tr>
-<tr class="separator:a5a98a8b1db44d80db60fe79b0eeda876"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b40a24a254bc728b1f54f8c1a4bcb6c"><td class="memItemLeft" align="right" valign="top"><a id="a9b40a24a254bc728b1f54f8c1a4bcb6c"></a>
+<tr class="memdesc:a5a98a8b1db44d80db60fe79b0eeda876 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: true <br /></td></tr>
+<tr class="separator:a5a98a8b1db44d80db60fe79b0eeda876 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b40a24a254bc728b1f54f8c1a4bcb6c inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="a9b40a24a254bc728b1f54f8c1a4bcb6c"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#a9b40a24a254bc728b1f54f8c1a4bcb6c">alpha_buffer</a></td></tr>
-<tr class="memdesc:a9b40a24a254bc728b1f54f8c1a4bcb6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
-<tr class="separator:a9b40a24a254bc728b1f54f8c1a4bcb6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a3d9f91f28b47b237a484044fa0a671"><td class="memItemLeft" align="right" valign="top"><a id="a9a3d9f91f28b47b237a484044fa0a671"></a>
+<tr class="memdesc:a9b40a24a254bc728b1f54f8c1a4bcb6c inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
+<tr class="separator:a9b40a24a254bc728b1f54f8c1a4bcb6c inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a3d9f91f28b47b237a484044fa0a671 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="a9a3d9f91f28b47b237a484044fa0a671"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#a9a3d9f91f28b47b237a484044fa0a671">stereo_buffer</a></td></tr>
-<tr class="memdesc:a9a3d9f91f28b47b237a484044fa0a671"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
-<tr class="separator:a9a3d9f91f28b47b237a484044fa0a671"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c0cc1d446eef227047307c204d574b5"><td class="memItemLeft" align="right" valign="top"><a id="a0c0cc1d446eef227047307c204d574b5"></a>
+<tr class="memdesc:a9a3d9f91f28b47b237a484044fa0a671 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
+<tr class="separator:a9a3d9f91f28b47b237a484044fa0a671 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c0cc1d446eef227047307c204d574b5 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="a0c0cc1d446eef227047307c204d574b5"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#a0c0cc1d446eef227047307c204d574b5">stencil_buffer</a></td></tr>
-<tr class="memdesc:a0c0cc1d446eef227047307c204d574b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
-<tr class="separator:a0c0cc1d446eef227047307c204d574b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae47197871eac2f7c445cc9e277de7abd"><td class="memItemLeft" align="right" valign="top"><a id="ae47197871eac2f7c445cc9e277de7abd"></a>
+<tr class="memdesc:a0c0cc1d446eef227047307c204d574b5 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
+<tr class="separator:a0c0cc1d446eef227047307c204d574b5 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae47197871eac2f7c445cc9e277de7abd inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="ae47197871eac2f7c445cc9e277de7abd"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#ae47197871eac2f7c445cc9e277de7abd">accumulation_buffer</a></td></tr>
-<tr class="memdesc:ae47197871eac2f7c445cc9e277de7abd"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
-<tr class="separator:ae47197871eac2f7c445cc9e277de7abd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02a3d94a5e7e7c973b7bab45ef14484e"><td class="memItemLeft" align="right" valign="top"><a id="a02a3d94a5e7e7c973b7bab45ef14484e"></a>
+<tr class="memdesc:ae47197871eac2f7c445cc9e277de7abd inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
+<tr class="separator:ae47197871eac2f7c445cc9e277de7abd inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02a3d94a5e7e7c973b7bab45ef14484e inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="a02a3d94a5e7e7c973b7bab45ef14484e"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#a02a3d94a5e7e7c973b7bab45ef14484e">multi_sample_buffer</a></td></tr>
-<tr class="memdesc:a02a3d94a5e7e7c973b7bab45ef14484e"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
-<tr class="separator:a02a3d94a5e7e7c973b7bab45ef14484e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f3095f1511792b9ee39f7f45d9d9775"><td class="memItemLeft" align="right" valign="top"><a id="a3f3095f1511792b9ee39f7f45d9d9775"></a>
+<tr class="memdesc:a02a3d94a5e7e7c973b7bab45ef14484e inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
+<tr class="separator:a02a3d94a5e7e7c973b7bab45ef14484e inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f3095f1511792b9ee39f7f45d9d9775 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="a3f3095f1511792b9ee39f7f45d9d9775"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#a3f3095f1511792b9ee39f7f45d9d9775">depth_bits</a></td></tr>
-<tr class="memdesc:a3f3095f1511792b9ee39f7f45d9d9775"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: -1 <br /></td></tr>
-<tr class="separator:a3f3095f1511792b9ee39f7f45d9d9775"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd50f5eb0ef61f51a7e30dc772c83b83"><td class="memItemLeft" align="right" valign="top"><a id="abd50f5eb0ef61f51a7e30dc772c83b83"></a>
+<tr class="memdesc:a3f3095f1511792b9ee39f7f45d9d9775 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: -1 <br /></td></tr>
+<tr class="separator:a3f3095f1511792b9ee39f7f45d9d9775 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd50f5eb0ef61f51a7e30dc772c83b83 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="abd50f5eb0ef61f51a7e30dc772c83b83"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#abd50f5eb0ef61f51a7e30dc772c83b83">stencil_bits</a></td></tr>
-<tr class="memdesc:abd50f5eb0ef61f51a7e30dc772c83b83"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: -1 <br /></td></tr>
-<tr class="separator:abd50f5eb0ef61f51a7e30dc772c83b83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb072927666ef67dbd34c9a0bdbbbb04"><td class="memItemLeft" align="right" valign="top"><a id="aeb072927666ef67dbd34c9a0bdbbbb04"></a>
+<tr class="memdesc:abd50f5eb0ef61f51a7e30dc772c83b83 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: -1 <br /></td></tr>
+<tr class="separator:abd50f5eb0ef61f51a7e30dc772c83b83 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb072927666ef67dbd34c9a0bdbbbb04 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="aeb072927666ef67dbd34c9a0bdbbbb04"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#aeb072927666ef67dbd34c9a0bdbbbb04">accumulation_bits</a></td></tr>
-<tr class="memdesc:aeb072927666ef67dbd34c9a0bdbbbb04"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: -1 <br /></td></tr>
-<tr class="separator:aeb072927666ef67dbd34c9a0bdbbbb04"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade90195cdec51432c9c545b528fc3d48"><td class="memItemLeft" align="right" valign="top"><a id="ade90195cdec51432c9c545b528fc3d48"></a>
+<tr class="memdesc:aeb072927666ef67dbd34c9a0bdbbbb04 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: -1 <br /></td></tr>
+<tr class="separator:aeb072927666ef67dbd34c9a0bdbbbb04 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade90195cdec51432c9c545b528fc3d48 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="ade90195cdec51432c9c545b528fc3d48"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#ade90195cdec51432c9c545b528fc3d48">nr_multi_samples</a></td></tr>
-<tr class="memdesc:ade90195cdec51432c9c545b528fc3d48"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: -1 <br /></td></tr>
-<tr class="separator:ade90195cdec51432c9c545b528fc3d48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d535c286342e748d0360568f8d7aeda"><td class="memItemLeft" align="right" valign="top"><a id="a5d535c286342e748d0360568f8d7aeda"></a>
+<tr class="memdesc:ade90195cdec51432c9c545b528fc3d48 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: -1 <br /></td></tr>
+<tr class="separator:ade90195cdec51432c9c545b528fc3d48 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d535c286342e748d0360568f8d7aeda inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="a5d535c286342e748d0360568f8d7aeda"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#a5d535c286342e748d0360568f8d7aeda">version_major</a></td></tr>
-<tr class="memdesc:a5d535c286342e748d0360568f8d7aeda"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: -1 ... major version of maximum supported OpenGL version <br /></td></tr>
-<tr class="separator:a5d535c286342e748d0360568f8d7aeda"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29bcff8dff9b613d9d9a8df2b67fdd78"><td class="memItemLeft" align="right" valign="top"><a id="a29bcff8dff9b613d9d9a8df2b67fdd78"></a>
+<tr class="memdesc:a5d535c286342e748d0360568f8d7aeda inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: -1 ... major version of maximum supported OpenGL version <br /></td></tr>
+<tr class="separator:a5d535c286342e748d0360568f8d7aeda inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29bcff8dff9b613d9d9a8df2b67fdd78 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="a29bcff8dff9b613d9d9a8df2b67fdd78"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#a29bcff8dff9b613d9d9a8df2b67fdd78">version_minor</a></td></tr>
-<tr class="memdesc:a29bcff8dff9b613d9d9a8df2b67fdd78"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: -1 ... minor version of maximum supported OpenGL version <br /></td></tr>
-<tr class="separator:a29bcff8dff9b613d9d9a8df2b67fdd78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a826c06a8030ff5239c4f34bc711c4440"><td class="memItemLeft" align="right" valign="top"><a id="a826c06a8030ff5239c4f34bc711c4440"></a>
+<tr class="memdesc:a29bcff8dff9b613d9d9a8df2b67fdd78 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: -1 ... minor version of maximum supported OpenGL version <br /></td></tr>
+<tr class="separator:a29bcff8dff9b613d9d9a8df2b67fdd78 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a826c06a8030ff5239c4f34bc711c4440 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="a826c06a8030ff5239c4f34bc711c4440"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#a826c06a8030ff5239c4f34bc711c4440">forward_compatible</a></td></tr>
-<tr class="memdesc:a826c06a8030ff5239c4f34bc711c4440"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
-<tr class="separator:a826c06a8030ff5239c4f34bc711c4440"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fc273c2e75fd6a690e1f6029036f431"><td class="memItemLeft" align="right" valign="top"><a id="a7fc273c2e75fd6a690e1f6029036f431"></a>
+<tr class="memdesc:a826c06a8030ff5239c4f34bc711c4440 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
+<tr class="separator:a826c06a8030ff5239c4f34bc711c4440 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7fc273c2e75fd6a690e1f6029036f431 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="a7fc273c2e75fd6a690e1f6029036f431"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#a7fc273c2e75fd6a690e1f6029036f431">debug</a></td></tr>
-<tr class="memdesc:a7fc273c2e75fd6a690e1f6029036f431"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false in release and true in debug version <br /></td></tr>
-<tr class="separator:a7fc273c2e75fd6a690e1f6029036f431"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc1a5f04f585d5427e3027fdba361382"><td class="memItemLeft" align="right" valign="top"><a id="abc1a5f04f585d5427e3027fdba361382"></a>
+<tr class="memdesc:a7fc273c2e75fd6a690e1f6029036f431 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false in release and true in debug version <br /></td></tr>
+<tr class="separator:a7fc273c2e75fd6a690e1f6029036f431 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc1a5f04f585d5427e3027fdba361382 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="abc1a5f04f585d5427e3027fdba361382"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#abc1a5f04f585d5427e3027fdba361382">core_profile</a></td></tr>
-<tr class="memdesc:abc1a5f04f585d5427e3027fdba361382"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
-<tr class="separator:abc1a5f04f585d5427e3027fdba361382"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:abc1a5f04f585d5427e3027fdba361382 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
+<tr class="separator:abc1a5f04f585d5427e3027fdba361382 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>base class for all drawables, which is independent of the used rendering API. </p>
@@ -1567,6 +1836,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 
 <p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00861">861</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
+<p class="reference">Referenced by <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>.</p>
+
 </div>
 </div>
 <a id="a7da49727fa14e1a3ae18fe0be9ef55d2"></a>
@@ -1624,7 +1895,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 
 <p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01629">1629</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="gl__texture__tools_8cxx_source.html#l00740">cgv::render::gl::cover_screen()</a>, <a class="el" href="plot2d_8cxx_source.html#l00530">cgv::plot::plot2d::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00504">cgv::plot::plot3d::draw()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>, and <a class="el" href="volume__renderer_8cxx_source.html#l00265">cgv::render::volume_renderer::draw()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="gl__texture__tools_8cxx_source.html#l00740">cgv::render::gl::cover_screen()</a>, <a class="el" href="plot2d_8cxx_source.html#l00530">cgv::plot::plot2d::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00504">cgv::plot::plot3d::draw()</a>, <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00265">cgv::render::volume_renderer::draw()</a>, <a class="el" href="navigator_8cxx_source.html#l00275">cgv::app::navigator::finish_draw()</a>, and <a class="el" href="vr__test_8cxx_source.html#l00871">vr_test::finish_draw()</a>.</p>
 
 </div>
 </div>
@@ -1655,6 +1926,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>To transform mouse pointer coordinates to opengl coordinates use get_context()-&gt;<a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168" title="return the height of the window">get_height()</a>-1-mouse_y. </p>
 
 <p>Implemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a1906f71b925fe9b670cf610e8929146f">cgv::render::gl::gl_context</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gl__performance__monitor_8cxx_source.html#l00150">cgv::render::gl::gl_performance_monitor::draw()</a>, and <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>.</p>
 
 </div>
 </div>
@@ -2064,6 +2337,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>set a new cursor position, which is only valid between calls of push_pixel_coords and pop_pixel_coords </p>
 
 <p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01797">1797</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>.</p>
 
 </div>
 </div>
@@ -2637,7 +2912,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 
 <p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01383">1383</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>, and <a class="el" href="vr__test_8cxx_source.html#l00871">vr_test::finish_draw()</a>.</p>
 
 </div>
 </div>

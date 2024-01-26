@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('provider_8h_source.html',''); initResi
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">struct </span>with_index_traits</div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="structcgv_1_1gui_1_1with__index__traits.html">   35</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1gui_1_1with__index__traits.html">with_index_traits</a></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;{</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">const</span> T* pointer_type;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">static</span> pointer_type get_value_ptr(<span class="keyword">const</span> T&amp; value) { <span class="keywordflow">return</span> &amp;value; }</div>
@@ -125,17 +125,17 @@ $(document).ready(function(){initNavTree('provider_8h_source.html',''); initResi
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;};</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">struct </span>with_index_traits&lt;with_index_struct&lt;T&gt; &gt;</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="structcgv_1_1gui_1_1with__index__traits_3_01with__index__struct_3_01T_01_4_01_4.html">   43</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcgv_1_1gui_1_1with__index__traits.html">with_index_traits</a>&lt;<a class="code" href="structcgv_1_1gui_1_1with__index__struct.html">with_index_struct</a>&lt;T&gt; &gt;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;{</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">const</span> T* pointer_type;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">static</span> pointer_type get_value_ptr(<span class="keyword">const</span> with_index_struct&lt;T&gt;&amp; value) { <span class="keywordflow">return</span> &amp;value.value; }</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> get_index(<span class="keyword">const</span> with_index_struct&lt;T&gt;&amp; value) { <span class="keywordflow">return</span> value.index; }</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">static</span> pointer_type get_value_ptr(<span class="keyword">const</span> <a class="code" href="structcgv_1_1gui_1_1with__index__struct.html">with_index_struct&lt;T&gt;</a>&amp; value) { <span class="keywordflow">return</span> &amp;value.value; }</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> get_index(<span class="keyword">const</span> <a class="code" href="structcgv_1_1gui_1_1with__index__struct.html">with_index_struct&lt;T&gt;</a>&amp; value) { <span class="keywordflow">return</span> value.index; }</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;};</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; </div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">typename</span> with_index_traits&lt;T&gt;::pointer_type wi_get_value_ptr(<span class="keyword">const</span> T&amp; value)</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;{</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordflow">return</span> with_index_traits&lt;T&gt;::get_value_ptr(value);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="structcgv_1_1gui_1_1with__index__traits.html">with_index_traits&lt;T&gt;::get_value_ptr</a>(value);</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
@@ -313,6 +313,7 @@ $(document).ready(function(){initNavTree('provider_8h_source.html',''); initResi
 <div class="ttc" id="astructcgv_1_1gui_1_1abst__control__provider_html"><div class="ttname"><a href="structcgv_1_1gui_1_1abst__control__provider.html">cgv::gui::abst_control_provider</a></div><div class="ttdoc">type independent base class of control provider interface</div><div class="ttdef"><b>Definition:</b> <a href="control_8h_source.html#l00036">control.h:37</a></div></div>
 <div class="ttc" id="astructcgv_1_1gui_1_1control__provider_html"><div class="ttname"><a href="structcgv_1_1gui_1_1control__provider.html">cgv::gui::control_provider</a></div><div class="ttdef"><b>Definition:</b> <a href="control_8h_source.html#l00051">control.h:52</a></div></div>
 <div class="ttc" id="astructcgv_1_1gui_1_1with__index__struct_html"><div class="ttname"><a href="structcgv_1_1gui_1_1with__index__struct.html">cgv::gui::with_index_struct</a></div><div class="ttdoc">helper struct to support value references as well as value references with index</div><div class="ttdef"><b>Definition:</b> <a href="provider_8h_source.html#l00019">provider.h:20</a></div></div>
+<div class="ttc" id="astructcgv_1_1gui_1_1with__index__traits_html"><div class="ttname"><a href="structcgv_1_1gui_1_1with__index__traits.html">cgv::gui::with_index_traits</a></div><div class="ttdef"><b>Definition:</b> <a href="provider_8h_source.html#l00035">provider.h:36</a></div></div>
 <div class="ttc" id="astructcgv_1_1type_1_1info_1_1type__name_html"><div class="ttname"><a href="structcgv_1_1type_1_1info_1_1type__name.html">cgv::type::info::type_name</a></div><div class="ttdoc">traits class with a static function get_name() of type const char* that returns the type name of the ...</div><div class="ttdef"><b>Definition:</b> <a href="type__name_8h_source.html#l00053">type_name.h:54</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

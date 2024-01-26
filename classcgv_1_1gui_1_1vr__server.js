@@ -1,10 +1,13 @@
 var classcgv_1_1gui_1_1vr__server =
 [
+    [ "vec2", "classcgv_1_1gui_1_1vr__server.html#a4c5bff93a0e651398d98891ca9641424", null ],
     [ "vr_server", "classcgv_1_1gui_1_1vr__server.html#a838d63f1246551bfab833b89fdd5500b", null ],
     [ "check_and_emit_events", "classcgv_1_1gui_1_1vr__server.html#ad978b353af020e60d3dd2fe9c84557a0", null ],
     [ "check_device_changes", "classcgv_1_1gui_1_1vr__server.html#a32ccf8f33c17f6e67e3ee4711ae339ab", null ],
     [ "check_new_state", "classcgv_1_1gui_1_1vr__server.html#ae637df03a763ffafc7c94fde5523ce7b", null ],
     [ "check_new_state", "classcgv_1_1gui_1_1vr__server.html#a550e4e029a0b8fd1fc34c1269da12bdd", null ],
+    [ "correct_deadzone_and_precision", "classcgv_1_1gui_1_1vr__server.html#a5f582cc126a04b0a131c41cf7df1cebd", null ],
+    [ "correct_deadzone_and_precision", "classcgv_1_1gui_1_1vr__server.html#a094712f91f6873a78a3a71ded3087c3f", null ],
     [ "disable_log", "classcgv_1_1gui_1_1vr__server.html#a286719fcc0c62ef0315218cfa51f9821", null ],
     [ "dispatch", "classcgv_1_1gui_1_1vr__server.html#a0891acc5221cdb487ad83702097c4ca6", null ],
     [ "emit_events_and_update_state", "classcgv_1_1gui_1_1vr__server.html#ad65ac9bc01994e54bf7340e87341ff47", null ],
@@ -17,7 +20,16 @@ var classcgv_1_1gui_1_1vr__server =
     [ "release_focus", "classcgv_1_1gui_1_1vr__server.html#a397ac920eeb0a5d9b4afc183d0a03bac", null ],
     [ "set_device_scan_interval", "classcgv_1_1gui_1_1vr__server.html#adb845a6500b99fcd889caed7f653000c", null ],
     [ "set_event_type_flags", "classcgv_1_1gui_1_1vr__server.html#a8eede4d0035c759cdccbab8a1134ee9f", null ],
+    [ "device_scan_interval", "classcgv_1_1gui_1_1vr__server.html#a32dea882657369ce802670be860c862b", null ],
+    [ "event_type_flags", "classcgv_1_1gui_1_1vr__server.html#a1a9cf54b877a79698c80bfa803c08bd0", null ],
+    [ "focus", "classcgv_1_1gui_1_1vr__server.html#ad01e831cbde405ebe24d17d355e863cf", null ],
+    [ "focus_type", "classcgv_1_1gui_1_1vr__server.html#a1280891ca82d3a7a6927b0859833aa83", null ],
+    [ "last_device_scan", "classcgv_1_1gui_1_1vr__server.html#ad4db0aca2c37568e1c291b27f928c3f3", null ],
+    [ "last_states", "classcgv_1_1gui_1_1vr__server.html#a78ef77c91309c4032c62bf5767c927ce", null ],
+    [ "last_time_stamps", "classcgv_1_1gui_1_1vr__server.html#a066c7c1f7c1f8f7f9e536c50b478b447", null ],
+    [ "log_data", "classcgv_1_1gui_1_1vr__server.html#a8348f2500edbe8170e1a94067212ea1d", null ],
     [ "on_device_change", "classcgv_1_1gui_1_1vr__server.html#abb09269c3ebb01fc090013c51c6e1df5", null ],
     [ "on_event", "classcgv_1_1gui_1_1vr__server.html#aff611e8278a6f1ee7eec1843366b9fbe", null ],
-    [ "on_status_change", "classcgv_1_1gui_1_1vr__server.html#a2179af42e2bf04ef58bdc2d5318d5b77", null ]
+    [ "on_status_change", "classcgv_1_1gui_1_1vr__server.html#a2179af42e2bf04ef58bdc2d5318d5b77", null ],
+    [ "vr_kit_handles", "classcgv_1_1gui_1_1vr__server.html#a3b341d7f157232e4a641f863308d6a2d", null ]
 ];

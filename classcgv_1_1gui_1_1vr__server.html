@@ -82,9 +82,11 @@ $(document).ready(function(){initNavTree('classcgv_1_1gui_1_1vr__server.html',''
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1gui_1_1vr__server-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::gui::vr_server Class Reference</div>  </div>
@@ -96,6 +98,12 @@ $(document).ready(function(){initNavTree('classcgv_1_1gui_1_1vr__server.html',''
 
 <p><code>#include &lt;<a class="el" href="vr__server_8h_source.html">vr_server.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a4c5bff93a0e651398d98891ca9641424"><td class="memItemLeft" align="right" valign="top"><a id="a4c5bff93a0e651398d98891ca9641424"></a>
+typedef <a class="el" href="classcgv_1_1gui_1_1stick__event.html#ac4be023f746e63caefd00fdd0866c9c6">stick_event::vec2</a>&#160;</td><td class="memItemRight" valign="bottom"><b>vec2</b></td></tr>
+<tr class="separator:a4c5bff93a0e651398d98891ca9641424"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a838d63f1246551bfab833b89fdd5500b"><td class="memItemLeft" align="right" valign="top"><a id="a838d63f1246551bfab833b89fdd5500b"></a>
@@ -178,6 +186,42 @@ cgv::signal::signal&lt; void *, int, <a class="el" href="namespacevr.html#a97f62
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:ad65ac9bc01994e54bf7340e87341ff47"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__server.html#ad65ac9bc01994e54bf7340e87341ff47">emit_events_and_update_state</a> (void *kit_handle, const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;new_state, int kit_index, <a class="el" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cd">VREventTypeFlags</a> flags, double time)</td></tr>
 <tr class="separator:ad65ac9bc01994e54bf7340e87341ff47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a094712f91f6873a78a3a71ded3087c3f"><td class="memItemLeft" align="right" valign="top"><a id="a094712f91f6873a78a3a71ded3087c3f"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>correct_deadzone_and_precision</b> (float value, const <a class="el" href="structvr_1_1controller__input__config.html">vr::controller_input_config</a> &amp;IC)</td></tr>
+<tr class="separator:a094712f91f6873a78a3a71ded3087c3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f582cc126a04b0a131c41cf7df1cebd"><td class="memItemLeft" align="right" valign="top"><a id="a5f582cc126a04b0a131c41cf7df1cebd"></a>
+<a class="el" href="classcgv_1_1math_1_1fvec.html">vec2</a>&#160;</td><td class="memItemRight" valign="bottom"><b>correct_deadzone_and_precision</b> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">vec2</a> &amp;position, const <a class="el" href="structvr_1_1controller__input__config.html">vr::controller_input_config</a> &amp;IC)</td></tr>
+<tr class="separator:a5f582cc126a04b0a131c41cf7df1cebd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:ad4db0aca2c37568e1c291b27f928c3f3"><td class="memItemLeft" align="right" valign="top"><a id="ad4db0aca2c37568e1c291b27f928c3f3"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>last_device_scan</b></td></tr>
+<tr class="separator:ad4db0aca2c37568e1c291b27f928c3f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32dea882657369ce802670be860c862b"><td class="memItemLeft" align="right" valign="top"><a id="a32dea882657369ce802670be860c862b"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>device_scan_interval</b></td></tr>
+<tr class="separator:a32dea882657369ce802670be860c862b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b341d7f157232e4a641f863308d6a2d"><td class="memItemLeft" align="right" valign="top"><a id="a3b341d7f157232e4a641f863308d6a2d"></a>
+std::vector&lt; void * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>vr_kit_handles</b></td></tr>
+<tr class="separator:a3b341d7f157232e4a641f863308d6a2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78ef77c91309c4032c62bf5767c927ce"><td class="memItemLeft" align="right" valign="top"><a id="a78ef77c91309c4032c62bf5767c927ce"></a>
+std::vector&lt; <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>last_states</b></td></tr>
+<tr class="separator:a78ef77c91309c4032c62bf5767c927ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a066c7c1f7c1f8f7f9e536c50b478b447"><td class="memItemLeft" align="right" valign="top"><a id="a066c7c1f7c1f8f7f9e536c50b478b447"></a>
+std::vector&lt; unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>last_time_stamps</b></td></tr>
+<tr class="separator:a066c7c1f7c1f8f7f9e536c50b478b447"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a9cf54b877a79698c80bfa803c08bd0"><td class="memItemLeft" align="right" valign="top"><a id="a1a9cf54b877a79698c80bfa803c08bd0"></a>
+<a class="el" href="namespacecgv_1_1gui.html#adf175441c50e1ab96818ddaf9fb700cd">VREventTypeFlags</a>&#160;</td><td class="memItemRight" valign="bottom"><b>event_type_flags</b></td></tr>
+<tr class="separator:a1a9cf54b877a79698c80bfa803c08bd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1280891ca82d3a7a6927b0859833aa83"><td class="memItemLeft" align="right" valign="top"><a id="a1280891ca82d3a7a6927b0859833aa83"></a>
+<a class="el" href="namespacecgv_1_1gui.html#aaefc169b4e9eeb6e2668447c661b22bd">VRFocus</a>&#160;</td><td class="memItemRight" valign="bottom"><b>focus_type</b></td></tr>
+<tr class="separator:a1280891ca82d3a7a6927b0859833aa83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad01e831cbde405ebe24d17d355e863cf"><td class="memItemLeft" align="right" valign="top"><a id="ad01e831cbde405ebe24d17d355e863cf"></a>
+<a class="el" href="classcgv_1_1gui_1_1event__handler.html">event_handler</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>focus</b></td></tr>
+<tr class="separator:ad01e831cbde405ebe24d17d355e863cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8348f2500edbe8170e1a94067212ea1d"><td class="memItemLeft" align="right" valign="top"><a id="a8348f2500edbe8170e1a94067212ea1d"></a>
+std::unordered_map&lt; int, <a class="el" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a>&lt; <a class="el" href="classvr_1_1vr__log.html">vr::vr_log</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>log_data</b></td></tr>
+<tr class="separator:a8348f2500edbe8170e1a94067212ea1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>server for vr events </p>

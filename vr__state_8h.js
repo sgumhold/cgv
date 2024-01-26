@@ -3,7 +3,11 @@ var vr__state_8h =
     [ "vr_trackable_state", "structvr_1_1vr__trackable__state.html", "structvr_1_1vr__trackable__state" ],
     [ "vr_controller_state", "structvr_1_1vr__controller__state.html", "structvr_1_1vr__controller__state" ],
     [ "vr_kit_state", "structvr_1_1vr__kit__state.html", "structvr_1_1vr__kit__state" ],
-    [ "KeyAction", "vr__state_8h.html#aef3295070e29d71a25db0d6374da32ff", null ],
+    [ "KeyAction", "vr__state_8h.html#aef3295070e29d71a25db0d6374da32ff", [
+      [ "KA_RELEASE", "vr__state_8h.html#aef3295070e29d71a25db0d6374da32ffa2cd6bb09d1633173510f01644afd8e3d", null ],
+      [ "KA_PRESS", "vr__state_8h.html#aef3295070e29d71a25db0d6374da32ffa89218f9f6b749cecbae39b82c58237a8", null ],
+      [ "KA_REPEAT", "vr__state_8h.html#aef3295070e29d71a25db0d6374da32ffaa1d12ea6bb565b72dfbac20c92e0bc18", null ]
+    ] ],
     [ "VRButtonStateFlags", "vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657", [
       [ "VRF_SYSTEM", "vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657abb9a979eb5a768483dac34797bf7cd9e", null ],
       [ "VRF_MENU", "vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657a1782838f0991efbbb7f22ddabe6b5c3d", null ],
@@ -26,6 +30,7 @@ var vr__state_8h =
       [ "VRF_PROXIMITY", "vr__state_8h.html#a2dd9724fa8c1880e426b5e3b2431e657abe3de330d7e0ce4b1736f9a74f36a0de", null ]
     ] ],
     [ "VRKeys", "vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04", [
+      [ "VR_UNKNOWN", "vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a545fbab02c591df223cf88d64ac9c3b8", null ],
       [ "VR_SYSTEM", "vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04afeb2c2a611b5691fcd5c0d45da4d7d3a", null ],
       [ "VR_MENU", "vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04a7cda4dc28be5c62a0571f5e482e34ebd", null ],
       [ "VR_GRIP", "vr__state_8h.html#afad282ce40f31e065f752f2216eb7f04ae7681399780c8b7d6a892131087f6e82", null ],

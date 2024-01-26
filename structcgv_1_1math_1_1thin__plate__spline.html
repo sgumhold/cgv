@@ -84,6 +84,7 @@ $(document).ready(function(){initNavTree('structcgv_1_1math_1_1thin__plate__spli
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structcgv_1_1math_1_1thin__plate__spline-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::math::thin_plate_spline&lt; T &gt; Struct Template Reference</div>  </div>
@@ -101,6 +102,9 @@ Public Member Functions</h2></td></tr>
 <a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1thin__plate__spline.html#a12ccf3b5e79807f1ed65e36aa5f80610">map_position</a> (const <a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt; &amp;p)</td></tr>
 <tr class="memdesc:a12ccf3b5e79807f1ed65e36aa5f80610"><td class="mdescLeft">&#160;</td><td class="mdescRight">deform a 2d point <br /></td></tr>
 <tr class="separator:a12ccf3b5e79807f1ed65e36aa5f80610"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8041721646b9196f75659b280cb2869e"><td class="memItemLeft" align="right" valign="top"><a id="a8041721646b9196f75659b280cb2869e"></a>
+<a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>map_affine_position</b> (const <a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt; &amp;p)</td></tr>
+<tr class="separator:a8041721646b9196f75659b280cb2869e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7469712d3355e748270c147990df95a2"><td class="memItemLeft" align="right" valign="top"><a id="a7469712d3355e748270c147990df95a2"></a>
 <a class="el" href="classcgv_1_1math_1_1mat.html">mat</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1thin__plate__spline.html#a7469712d3355e748270c147990df95a2">map_positions</a> (const <a class="el" href="classcgv_1_1math_1_1mat.html">mat</a>&lt; T &gt; &amp;points)</td></tr>
 <tr class="memdesc:a7469712d3355e748270c147990df95a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">deform 2d points stored as columns of the matrix points <br /></td></tr>
@@ -112,6 +116,18 @@ Static Public Member Functions</h2></td></tr>
 static T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1thin__plate__spline.html#a770be076f4cf1e2a31cdb62421b5765b">U</a> (const T &amp;sqr_dist)</td></tr>
 <tr class="memdesc:a770be076f4cf1e2a31cdb62421b5765b"><td class="mdescLeft">&#160;</td><td class="mdescRight">basis function <br /></td></tr>
 <tr class="separator:a770be076f4cf1e2a31cdb62421b5765b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:aa774e6c8819b88dd8555ec534cba81e3"><td class="memItemLeft" align="right" valign="top"><a id="aa774e6c8819b88dd8555ec534cba81e3"></a>
+<a class="el" href="classcgv_1_1math_1_1mat.html">mat</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>controlpoints</b></td></tr>
+<tr class="separator:aa774e6c8819b88dd8555ec534cba81e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a213627728f93fa60308d56611a543c21"><td class="memItemLeft" align="right" valign="top"><a id="a213627728f93fa60308d56611a543c21"></a>
+<a class="el" href="classcgv_1_1math_1_1mat.html">mat</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>weights</b></td></tr>
+<tr class="separator:a213627728f93fa60308d56611a543c21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98e302033fdf81287c48772990095795"><td class="memItemLeft" align="right" valign="top"><a id="a98e302033fdf81287c48772990095795"></a>
+<a class="el" href="classcgv_1_1math_1_1mat.html">mat</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>affine_transformation</b></td></tr>
+<tr class="separator:a98e302033fdf81287c48772990095795"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />

@@ -82,6 +82,12 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1shader__library.
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pro-types">Protected Types</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1render_1_1shader__library-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::render::shader_library Class Reference</div>  </div>
@@ -92,6 +98,72 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1shader__library.
  <a href="classcgv_1_1render_1_1shader__library.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="shader__library_8h_source.html">shader_library.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1shader__library_1_1shader__info.html">shader_info</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:abb0347c087c6c654d03ebb0662d5968e"><td class="memItemLeft" align="right" valign="top"><a id="abb0347c087c6c654d03ebb0662d5968e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="separator:abb0347c087c6c654d03ebb0662d5968e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77a936cc9109353fe8efeaad8e4cc3e3"><td class="memItemLeft" align="right" valign="top"><a id="a77a936cc9109353fe8efeaad8e4cc3e3"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (const std::string &amp;name, const std::string &amp;file, const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines={})</td></tr>
+<tr class="separator:a77a936cc9109353fe8efeaad8e4cc3e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49295665b2a553d468ebb6bedabe1c61"><td class="memItemLeft" align="right" valign="top"><a id="a49295665b2a553d468ebb6bedabe1c61"></a>
+<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> (const std::string &amp;name)</td></tr>
+<tr class="separator:a49295665b2a553d468ebb6bedabe1c61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace2e0fab59db06a64017a51750753d0b"><td class="memItemLeft" align="right" valign="top"><a id="ace2e0fab59db06a64017a51750753d0b"></a>
+<a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_defines</b> (const std::string &amp;name)</td></tr>
+<tr class="separator:ace2e0fab59db06a64017a51750753d0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a136d1ba80cbac748af91fc5dd349e1e6"><td class="memItemLeft" align="right" valign="top"><a id="a136d1ba80cbac748af91fc5dd349e1e6"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>contains</b> (const std::string &amp;name) const</td></tr>
+<tr class="separator:a136d1ba80cbac748af91fc5dd349e1e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad25706261640e5e83b3a7c6f48514e26"><td class="memItemLeft" align="right" valign="top"><a id="ad25706261640e5e83b3a7c6f48514e26"></a>
+shader_lib_map::iterator&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b> ()</td></tr>
+<tr class="separator:ad25706261640e5e83b3a7c6f48514e26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92b09d7cf9a6e18cfbdb38d654fd0f36"><td class="memItemLeft" align="right" valign="top"><a id="a92b09d7cf9a6e18cfbdb38d654fd0f36"></a>
+shader_lib_map::iterator&#160;</td><td class="memItemRight" valign="bottom"><b>end</b> ()</td></tr>
+<tr class="separator:a92b09d7cf9a6e18cfbdb38d654fd0f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afaf626f58e71e588942a310e9f57079c"><td class="memItemLeft" align="right" valign="top"><a id="afaf626f58e71e588942a310e9f57079c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>load_all</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;where=&quot;&quot;)</td></tr>
+<tr class="separator:afaf626f58e71e588942a310e9f57079c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeec5c20d9915e11c8cdfc98568f8907"><td class="memItemLeft" align="right" valign="top"><a id="aaeec5c20d9915e11c8cdfc98568f8907"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>reload</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;name, const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines={}, const std::string &amp;where=&quot;&quot;)</td></tr>
+<tr class="separator:aaeec5c20d9915e11c8cdfc98568f8907"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a0427c0ebcf96d8b30cc44519c2b3cb"><td class="memItemLeft" align="right" valign="top"><a id="a7a0427c0ebcf96d8b30cc44519c2b3cb"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>reload_all</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;where=&quot;&quot;)</td></tr>
+<tr class="separator:a7a0427c0ebcf96d8b30cc44519c2b3cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a7ddb1a746ec9f7a416300f5b3ec68bd0"><td class="memItemLeft" align="right" valign="top"><a id="a7ddb1a746ec9f7a416300f5b3ec68bd0"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><b>load</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const std::string &amp;name, const bool reload=false, const std::string &amp;where=&quot;&quot;)</td></tr>
+<tr class="separator:a7ddb1a746ec9f7a416300f5b3ec68bd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f2d8ab36fdc9fcaba3008b7d5769bd3"><td class="memItemLeft" align="right" valign="top"><a id="a8f2d8ab36fdc9fcaba3008b7d5769bd3"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><b>load</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const std::string &amp;name, const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines, const bool reload=false, const std::string &amp;where=&quot;&quot;)</td></tr>
+<tr class="separator:a8f2d8ab36fdc9fcaba3008b7d5769bd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-types"></a>
+Protected Types</h2></td></tr>
+<tr class="memitem:a6736be3aa341ac9a74fd3ddfbf5ebbd7"><td class="memItemLeft" align="right" valign="top"><a id="a6736be3aa341ac9a74fd3ddfbf5ebbd7"></a>
+typedef std::map&lt; std::string, <a class="el" href="structcgv_1_1render_1_1shader__library_1_1shader__info.html">shader_info</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>shader_lib_map</b></td></tr>
+<tr class="separator:a6736be3aa341ac9a74fd3ddfbf5ebbd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a595440293d6ebae2c14e5b2740859789"><td class="memItemLeft" align="right" valign="top"><a id="a595440293d6ebae2c14e5b2740859789"></a>
+<a class="el" href="structcgv_1_1render_1_1shader__library_1_1shader__info.html">shader_info</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_shader_info</b> (const std::string &amp;name)</td></tr>
+<tr class="separator:a595440293d6ebae2c14e5b2740859789"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:abbb136396b7419636920169060fc4612"><td class="memItemLeft" align="right" valign="top"><a id="abbb136396b7419636920169060fc4612"></a>
+shader_lib_map&#160;</td><td class="memItemRight" valign="bottom"><b>shaders</b></td></tr>
+<tr class="separator:abbb136396b7419636920169060fc4612"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>provides a shader library that handles shader loading </p>
 

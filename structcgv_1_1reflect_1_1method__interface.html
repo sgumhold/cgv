@@ -82,6 +82,7 @@ $(document).ready(function(){initNavTree('structcgv_1_1reflect_1_1method__interf
 
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="structcgv_1_1reflect_1_1method__interface-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::reflect::method_interface Struct Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -92,6 +93,13 @@ $(document).ready(function(){initNavTree('structcgv_1_1reflect_1_1method__interf
  <a href="structcgv_1_1reflect_1_1method__interface.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="reflection__handler_8h_source.html">reflection_handler.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a5011ba5e4cfbfdc5c7194c64d0737d0b"><td class="memItemLeft" align="right" valign="top"><a id="a5011ba5e4cfbfdc5c7194c64d0737d0b"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>call_void</b> (void *instance, const std::vector&lt; <a class="el" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a> * &gt; &amp;param_value_traits, const std::vector&lt; const void * &gt; &amp;param_value_ptrs, const std::vector&lt; std::string &gt; &amp;param_type_names, const <a class="el" href="structcgv_1_1reflect_1_1abst__reflection__traits.html">abst_reflection_traits</a> *result_traits=0, void *result_value_ptr=0, const std::string &amp;result_type=&quot;&quot;)=0</td></tr>
+<tr class="separator:a5011ba5e4cfbfdc5c7194c64d0737d0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>abstract interface to call a method of a given instance. </p>
 <p>For simplicity all parameters are passed as const pointers. In case the parameter should also be written by the method, a const_cast needs to be used. </p>

@@ -1,5 +1,13 @@
 var namespacecgv_1_1reflect =
 [
+    [ "compatibility", null, [
+      [ "get_member_dispatch", "structcgv_1_1reflect_1_1compatibility_1_1get__member__dispatch.html", "structcgv_1_1reflect_1_1compatibility_1_1get__member__dispatch" ],
+      [ "get_member_dispatch< true, T, Q >", "structcgv_1_1reflect_1_1compatibility_1_1get__member__dispatch_3_01true_00_01T_00_01Q_01_4.html", "structcgv_1_1reflect_1_1compatibility_1_1get__member__dispatch_3_01true_00_01T_00_01Q_01_4" ],
+      [ "set_member_dispatch", "structcgv_1_1reflect_1_1compatibility_1_1set__member__dispatch.html", "structcgv_1_1reflect_1_1compatibility_1_1set__member__dispatch" ],
+      [ "set_member_dispatch< true, T, Q >", "structcgv_1_1reflect_1_1compatibility_1_1set__member__dispatch_3_01true_00_01T_00_01Q_01_4.html", "structcgv_1_1reflect_1_1compatibility_1_1set__member__dispatch_3_01true_00_01T_00_01Q_01_4" ],
+      [ "get_member_impl", "get__reflection__handler_8h.html#a264c99e58129dc84b0627e646aef9397", null ],
+      [ "set_member_impl", "set__reflection__handler_8h.html#a30c3d0d47c021647252f414c2980baa2", null ]
+    ] ],
     [ "debug_reflection_handler", "classcgv_1_1reflect_1_1debug__reflection__handler.html", "classcgv_1_1reflect_1_1debug__reflection__handler" ],
     [ "find_reflection_handler", "classcgv_1_1reflect_1_1find__reflection__handler.html", "classcgv_1_1reflect_1_1find__reflection__handler" ],
     [ "get_reflection_handler", "classcgv_1_1reflect_1_1get__reflection__handler.html", "classcgv_1_1reflect_1_1get__reflection__handler" ],
@@ -8,18 +16,46 @@ var namespacecgv_1_1reflect =
     [ "extern_reflection_traits_impl", "structcgv_1_1reflect_1_1extern__reflection__traits__impl.html", "structcgv_1_1reflect_1_1extern__reflection__traits__impl" ],
     [ "extern_reflection_traits", "structcgv_1_1reflect_1_1extern__reflection__traits.html", "structcgv_1_1reflect_1_1extern__reflection__traits" ],
     [ "extern_string_reflection_traits", "structcgv_1_1reflect_1_1extern__string__reflection__traits.html", "structcgv_1_1reflect_1_1extern__string__reflection__traits" ],
-    [ "method_interface", "structcgv_1_1reflect_1_1method__interface.html", null ],
+    [ "method_interface", "structcgv_1_1reflect_1_1method__interface.html", "structcgv_1_1reflect_1_1method__interface" ],
+    [ "method_parameter_traits_helper", "structcgv_1_1reflect_1_1method__parameter__traits__helper.html", "structcgv_1_1reflect_1_1method__parameter__traits__helper" ],
+    [ "method_parameter_traits_helper< i, i, M >", "structcgv_1_1reflect_1_1method__parameter__traits__helper_3_01i_00_01i_00_01M_01_4.html", "structcgv_1_1reflect_1_1method__parameter__traits__helper_3_01i_00_01i_00_01M_01_4" ],
     [ "method_interface_impl", "structcgv_1_1reflect_1_1method__interface__impl.html", null ],
     [ "reflection_handler", "classcgv_1_1reflect_1_1reflection__handler.html", "classcgv_1_1reflect_1_1reflection__handler" ],
+    [ "detail", "structcgv_1_1reflect_1_1detail.html", [
+      [ "reflect_base_dispatch", "structcgv_1_1reflect_1_1detail_1_1reflect__base__dispatch.html", "structcgv_1_1reflect_1_1detail_1_1reflect__base__dispatch" ],
+      [ "reflect_base_dispatch< true, B >", "structcgv_1_1reflect_1_1detail_1_1reflect__base__dispatch_3_01true_00_01B_01_4.html", "structcgv_1_1reflect_1_1detail_1_1reflect__base__dispatch_3_01true_00_01B_01_4" ],
+      [ "reflect_const_array_dispatch", "structcgv_1_1reflect_1_1detail_1_1reflect__const__array__dispatch.html", "structcgv_1_1reflect_1_1detail_1_1reflect__const__array__dispatch" ],
+      [ "reflect_const_array_dispatch< true, T, n >", "structcgv_1_1reflect_1_1detail_1_1reflect__const__array__dispatch_3_01true_00_01T_00_01n_01_4.html", "structcgv_1_1reflect_1_1detail_1_1reflect__const__array__dispatch_3_01true_00_01T_00_01n_01_4" ],
+      [ "reflect_member_impl", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl.html", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl" ],
+      [ "reflect_member_impl< T, RTK_SELF_REFLECT >", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl_3_01T_00_01RTK__SELF__REFLECT_01_4.html", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl_3_01T_00_01RTK__SELF__REFLECT_01_4" ],
+      [ "reflect_member_impl< T, RTK_STD_TYPE >", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl_3_01T_00_01RTK__STD__TYPE_01_4.html", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl_3_01T_00_01RTK__STD__TYPE_01_4" ],
+      [ "reflect_method_impl", "structcgv_1_1reflect_1_1detail_1_1reflect__method__impl.html", "structcgv_1_1reflect_1_1detail_1_1reflect__method__impl" ],
+      [ "reflect_method_impl< M, void >", "structcgv_1_1reflect_1_1detail_1_1reflect__method__impl_3_01M_00_01void_01_4.html", "structcgv_1_1reflect_1_1detail_1_1reflect__method__impl_3_01M_00_01void_01_4" ],
+      [ "reflect_vector_dispatch", "structcgv_1_1reflect_1_1detail_1_1reflect__vector__dispatch.html", "structcgv_1_1reflect_1_1detail_1_1reflect__vector__dispatch" ],
+      [ "reflect_vector_dispatch< true, T >", "structcgv_1_1reflect_1_1detail_1_1reflect__vector__dispatch_3_01true_00_01T_01_4.html", "structcgv_1_1reflect_1_1detail_1_1reflect__vector__dispatch_3_01true_00_01T_01_4" ]
+    ] ],
     [ "abst_reflection_traits", "structcgv_1_1reflect_1_1abst__reflection__traits.html", "structcgv_1_1reflect_1_1abst__reflection__traits" ],
     [ "reflection_traits_impl", "structcgv_1_1reflect_1_1reflection__traits__impl.html", "structcgv_1_1reflect_1_1reflection__traits__impl" ],
     [ "reflection_traits_impl< T, B, true >", "structcgv_1_1reflect_1_1reflection__traits__impl_3_01T_00_01B_00_01true_01_4.html", "structcgv_1_1reflect_1_1reflection__traits__impl_3_01T_00_01B_00_01true_01_4" ],
-    [ "reflection_traits_string_impl", "structcgv_1_1reflect_1_1reflection__traits__string__impl.html", "structcgv_1_1reflect_1_1reflection__traits__string__impl" ],
+    [ "reflection_traits_string_impl", "structcgv_1_1reflect_1_1reflection__traits__string__impl.html", null ],
     [ "reflection_traits_string_impl< true, T, B >", "structcgv_1_1reflect_1_1reflection__traits__string__impl_3_01true_00_01T_00_01B_01_4.html", "structcgv_1_1reflect_1_1reflection__traits__string__impl_3_01true_00_01T_00_01B_01_4" ],
     [ "reflection_traits", "structcgv_1_1reflect_1_1reflection__traits.html", "structcgv_1_1reflect_1_1reflection__traits" ],
+    [ "reflection_traits_info_self", "structcgv_1_1reflect_1_1reflection__traits__info__self.html", "structcgv_1_1reflect_1_1reflection__traits__info__self" ],
+    [ "reflection_traits_info_self< true, T >", "structcgv_1_1reflect_1_1reflection__traits__info__self_3_01true_00_01T_01_4.html", "structcgv_1_1reflect_1_1reflection__traits__info__self_3_01true_00_01T_01_4" ],
+    [ "reflection_traits_info_std", "structcgv_1_1reflect_1_1reflection__traits__info__std.html", null ],
+    [ "reflection_traits_info_std< true, T >", "structcgv_1_1reflect_1_1reflection__traits__info__std_3_01true_00_01T_01_4.html", "structcgv_1_1reflect_1_1reflection__traits__info__std_3_01true_00_01T_01_4" ],
     [ "reflection_traits_info", "structcgv_1_1reflect_1_1reflection__traits__info.html", null ],
     [ "self_reflection_tag", "structcgv_1_1reflect_1_1self__reflection__tag.html", null ],
-    [ "ReflectionTraitsKind", "namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8", null ],
+    [ "set_reflection_handler", "classcgv_1_1reflect_1_1set__reflection__handler.html", "classcgv_1_1reflect_1_1set__reflection__handler" ],
+    [ "ReflectionTraitsKind", "namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8", [
+      [ "RTK_STD_TYPE", "namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8a1e40e31f1180eb7f721af1d388287eac", null ],
+      [ "RTK_SELF_REFLECT", "namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8a43484bfa4b1375dee6514e95c04d2213", null ],
+      [ "RTK_EXTERNAL_SELF_REFLECT", "namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8ab99b0ef0cd1aa2becf8d50f8850fca32", null ],
+      [ "RTK_STRING", "namespacecgv_1_1reflect.html#a4efd4701fca764555762b98d1abb3da8a8a1206d25313e1759306e9f3acc48990", null ]
+    ] ],
     [ "get_member", "namespacecgv_1_1reflect.html#a9f2618fca8a0f82c9f256239e16a93f5", null ],
-    [ "get_reflection_traits", "group__detail.html#ga5cc650905883cc409861c2d98a6cce93", null ]
+    [ "get_reflection_traits", "group__detail.html#ga5cc650905883cc409861c2d98a6cce93", null ],
+    [ "get_reflection_traits", "namespacecgv_1_1reflect.html#a92b3dbf6fb7a365ddddaba948af6be30", null ],
+    [ "set_member", "namespacecgv_1_1reflect.html#a3e35a20475251a8d9d476dd4e34cb669", null ],
+    [ "reflection_handler", "namespacecgv_1_1reflect.html#a3ea197ebd63c2d6eda404a9fc7d423fc", null ]
 ];

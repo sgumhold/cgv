@@ -8,5 +8,7 @@ var classcgv_1_1gui_1_1trigger =
     [ "schedule_one_shot", "classcgv_1_1gui_1_1trigger.html#a2560201ba2b4da9bd8b8bfb2d877a63a", null ],
     [ "schedule_recuring", "classcgv_1_1gui_1_1trigger.html#aa43b63773c6efb21fbb52fa8ee0433d3", null ],
     [ "stop", "classcgv_1_1gui_1_1trigger.html#a56d4b39a12d95a2c5b08ae1c7596fa80", null ],
+    [ "delay", "classcgv_1_1gui_1_1trigger.html#a8940369955eefcd499ede5b50e3e1ecc", null ],
+    [ "recur", "classcgv_1_1gui_1_1trigger.html#a0453163c163b2298edb701d3aac77e87", null ],
     [ "shoot", "classcgv_1_1gui_1_1trigger.html#a2cc50a83bb4fd7c407e50b5b78082073", null ]
 ];

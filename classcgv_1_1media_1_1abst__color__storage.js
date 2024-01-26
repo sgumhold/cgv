@@ -1,6 +1,5 @@
 var classcgv_1_1media_1_1abst__color__storage =
 [
-    [ "rgb", "classcgv_1_1media_1_1abst__color__storage.html#a2b0606813dd8c5d4f17bb10afaae5c22", null ],
     [ "abst_color_storage", "classcgv_1_1media_1_1abst__color__storage.html#a52596b08ebb823cf29b7ba250e1e85a9", null ],
     [ "~abst_color_storage", "classcgv_1_1media_1_1abst__color__storage.html#ab8e58df36c6e45314a0ad870dc1fb8eb", null ],
     [ "clone", "classcgv_1_1media_1_1abst__color__storage.html#a8950c9d7cb6416df592b0578fe69458d", null ],
@@ -19,5 +18,6 @@ var classcgv_1_1media_1_1abst__color__storage =
     [ "set_color", "classcgv_1_1media_1_1abst__color__storage.html#a494f60ad305b847ae4027fc342eacbdf", null ],
     [ "set_color", "classcgv_1_1media_1_1abst__color__storage.html#a043966e1abe5f56c0cd6cd266ef50051", null ],
     [ "set_color", "classcgv_1_1media_1_1abst__color__storage.html#a9f309363ec2f35e41de674541b33d55a", null ],
-    [ "set_color", "classcgv_1_1media_1_1abst__color__storage.html#a12a4804604b19155ba8f31926704c683", null ]
+    [ "set_color", "classcgv_1_1media_1_1abst__color__storage.html#a12a4804604b19155ba8f31926704c683", null ],
+    [ "color_type", "classcgv_1_1media_1_1abst__color__storage.html#a86bf32f1058869a62167e3c98abfad91", null ]
 ];
