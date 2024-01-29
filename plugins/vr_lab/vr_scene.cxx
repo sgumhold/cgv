@@ -388,7 +388,7 @@ void vr_scene::init_frame(cgv::render::context& ctx)
 			}
 		}
 	}
-	mat34 table_pose(4, 4, table->get_transform());
+	cgv::mat34 table_pose(4, 4, table->get_transform());
 	set_coordinate_systems(vr_view_ptr ? vr_view_ptr->get_current_vr_state() : 0, table.empty() ? 0 : &table_pose);
 	label_drawable::init_frame(ctx);
 	if (environment_mode == EM_SKYBOX) {
@@ -681,7 +681,7 @@ void vr_scene::create_gui()
 				add_member_control(this, "visible", (bool&)label_visibilities[i], "toggle");
 				add_member_control(this, "coordinate_system", (cgv::type::DummyEnum&)label_coord_systems[i], "dropdown", "enums='lab,table,head,left controller,right controller'");
 				add_gui("position", label_positions[i], "vector", "gui_type='value_slider';options='min=-2;max=2;ticks=true'");
-				add_gui("orientation", (vec4&)label_orientations[i], "direction", "gui_type='value_slider';options='min=-1;max=1;ticks=true'");
+				add_gui("orientation", (cgv::vec4&)label_orientations[i], "direction", "gui_type='value_slider';options='min=-1;max=1;ticks=true'");
 				add_gui("extent", label_extents[i], "vector", "gui_type='value_slider';options='min=0;max=1;ticks=true'");
 				align("\b");
 				end_tree_node(label_positions[i]);

@@ -80,6 +80,13 @@ class CGV_API vr_scene :
 	public cgv::nui::spatial_dispatcher,
 	public cgv::gui::provider
 {
+	using vec2 = cgv::vec2;
+	using vec3 = cgv::vec3;
+	using dvec3 = cgv::dvec3;
+	using rgb = cgv::rgb;
+	using rgba = cgv::rgba;
+	using box3 = cgv::box3;
+
 private:
 	// keep reference to vr view (initialized in init function)
 	vr_view_interactor* vr_view_ptr;

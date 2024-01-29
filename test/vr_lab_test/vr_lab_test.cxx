@@ -22,6 +22,14 @@ class vr_lab_test :
 	public cgv::gui::provider,
 	public vr::vr_tool
 {
+	using vec3 = cgv::vec3;
+	using vec4 = cgv::vec4;
+	using mat34 = cgv::mat34;
+	using mat4 = cgv::mat4;
+	using quat = cgv::quat;
+	using rgb = cgv::rgb;
+	using rgba = cgv::rgba;
+
 	cgv::render::sphere_render_style srs;
 	cgv::render::cone_render_style rcrs;
 	/// label index to show statistics
