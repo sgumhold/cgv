@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cgv/render/context.h>
-#include <cgv/render/render_types.h>
 #include <cgv/render/shader_library.h>
 #include <cgv/render/vertex_buffer.h>
 #include <cgv_gl/gl/gl.h>

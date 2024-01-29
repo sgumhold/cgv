@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv/render/render_types.h>
+#include <cgv/math/fvec.h>
 
 #include "trect.h"
 

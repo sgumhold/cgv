@@ -807,9 +807,9 @@ namespace vr {
 		// in hmd mode blit per eye renderings into the wall window
 		if (wall_state == WS_HMD) {
 			if (stereo_window_mode == SWM_SINGLE) {
-				ctx.set_viewport(ivec4(0, 0, width, height));
+				ctx.set_viewport(cgv::ivec4(0, 0, width, height));
 				ctx.set_projection_matrix(cgv::math::perspective4<double>(90, aspect, 0.1, 10.0));
-				ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
+				ctx.set_modelview_matrix(cgv::math::look_at4<double>(cgv::dvec3(0, 0, 1), cgv::dvec3(0, 0, 0), cgv::dvec3(0, 1, 0)));
 				std::vector<vec3> P;
 				std::vector<vec2> T;
 				P.push_back(vec3((float)-aspect, -1.0f, 0.0f)); T.push_back(vec2(0.0f, 0.0f));
@@ -892,9 +892,9 @@ namespace vr {
 		}
 		// use point renderer for rendering of points
 		for (int eye = 0; eye < 2; ++eye) {
-			ctx.set_viewport(ivec4(eye * x_off, eye * y_off, w, h));
+			ctx.set_viewport(cgv::ivec4(eye * x_off, eye * y_off, w, h));
 			ctx.set_projection_matrix(cgv::math::perspective4<double>(90, a, 0.1, 10.0));
-			ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
+			ctx.set_modelview_matrix(cgv::math::look_at4<double>(cgv::dvec3(0, 0, 1), cgv::dvec3(0, 0, 0), cgv::dvec3(0, 1, 0)));
 			pr.set_y_view_angle(90);
 			pr.set_render_style(prs);
 			pr.set_position_array(ctx, P);

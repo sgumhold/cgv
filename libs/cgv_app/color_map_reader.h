@@ -4,7 +4,6 @@
 
 #include <cgv/base/import.h>
 #include <cgv/render/color_map.h>
-#include <cgv/render/render_types.h>
 #include <cgv/utils/file.h>
 
 #include <tinyxml2/tinyxml2.h>
@@ -13,7 +12,7 @@
 namespace cgv {
 namespace app {
 
-class color_map_reader : cgv::render::render_types {
+class color_map_reader {
 public:
 	// configuration for xml tag and attribute name identifiers
 	struct identifier_config {

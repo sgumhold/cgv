@@ -4,7 +4,6 @@
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/math/ray.h>
-#include <cgv/render/render_types.h>
 #include <cgv/render/view.h>
 #include <cgv_gl/arrow_render_data.h>
 #include <cgv_gl/rectangle_render_data.h>

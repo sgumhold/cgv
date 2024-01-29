@@ -1786,9 +1786,9 @@ dmat4 context::get_modelview_projection_window_matrix(unsigned array_index) cons
 //! compute model space 3D point from the given window space point and the given modelview_projection_window matrix
 vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) 
 {
-	dmat_type A(4, 4, &modelview_projection_window_matrix(0, 0));
-	dvec_type x;
-	dvec_type b(p_window(0), p_window(1), p_window(2), 1.0);
+	dmatn A(4, 4, &modelview_projection_window_matrix(0, 0));
+	dvecn x;
+	dvecn b(p_window(0), p_window(1), p_window(2), 1.0);
 	svd_solve(A, b, x);
 	return vec3(float(x(0) / x(3)), float(x(1) / x(3)), float(x(2) / x(3)));
 }
@@ -1806,7 +1806,7 @@ void context::set_cursor(int x, int y)
 }
 
 /// transform point p into cursor coordinates and put x and y coordinates into the passed variables
-void context::put_cursor_coords(const vec_type& p, int& x, int& y) const
+void context::put_cursor_coords(const vecn& p, int& x, int& y) const
 {
 	dvec4 p4(0, 0, 0, 1);
 	for (unsigned int c = 0; c < p.size(); ++c)
@@ -1819,7 +1819,7 @@ void context::put_cursor_coords(const vec_type& p, int& x, int& y) const
 }
 
 /// sets the current text ouput position
-void context::set_cursor(const vec_type& pos, 
+void context::set_cursor(const vecn& pos, 
 		const std::string& text, TextAlignment ta,
 		int x_offset, int y_offset)
 {

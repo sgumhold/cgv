@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <cgv/media/axis_aligned_box.h>
-#include <cgv/render/render_types.h>
 #include <cgv/media/color.h>
 #include <cgv/gui/provider.h>
 

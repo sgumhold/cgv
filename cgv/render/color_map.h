@@ -5,7 +5,6 @@
 #include <cgv/math/piecewise_linear_interpolator.h>
 #include <cgv/math/piecewise_nearest_interpolator.h>
 #include <cgv/render/context.h>
-#include <cgv/render/render_types.h>
 #include <cgv/render/texture.h>
 
 namespace cgv {

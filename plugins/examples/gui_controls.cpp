@@ -1,7 +1,6 @@
 #include <cgv/base/node.h>
 #include <cgv/gui/provider.h>
 #include <cgv/gui/theme_info.h>
-#include <cgv/render/render_types.h>
 
 class gui_controls : public cgv::base::node, public cgv::gui::provider {
 protected:
