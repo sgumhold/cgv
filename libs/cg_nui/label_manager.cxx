@@ -128,7 +128,7 @@ namespace cgv {
 			}
 			packing_outofdate = false;
 		}
-		label_manager::vec4 label_manager::get_texcoord_range(uint32_t label_index)
+		vec4 label_manager::get_texcoord_range(uint32_t label_index)
 		{
 			const auto& R = tex_ranges[label_index];
 			float dx = 0.0f;

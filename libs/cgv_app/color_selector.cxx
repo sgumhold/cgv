@@ -94,7 +94,6 @@ bool color_selector::handle_event(cgv::gui::event& e) {
 	return false;
 }
 
-//void color_selector::on_set(void* member_ptr) {
 void color_selector::handle_member_change(const cgv::utils::pointer_test & m) {
 
 	if(m.is(rgb_color))

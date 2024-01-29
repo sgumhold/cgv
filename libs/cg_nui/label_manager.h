@@ -2,7 +2,6 @@
 
 #include <memory>
 
-#include <cgv/render/render_types.h>
 #include <cgv/media/font/font.h>
 #include <cgv_gl/rectangle_renderer.h>
 #include <cgv/render/texture.h>
@@ -24,7 +23,7 @@ namespace cgv {
 			/// label text
 			std::string text;
 			/// label background color
-			cgv::render::render_types::rgba background_color;
+			rgba background_color;
 			/// border values are also in texels
 			int border_x, border_y;
 			/// use this to query width
@@ -42,7 +41,7 @@ namespace cgv {
 		};
 
 		/// use label manager to organize an atlas texture for drawing text labeled rectangles
-		class CGV_API label_manager : public cgv::render::render_types
+		class CGV_API label_manager
 		{
 		public:
 			typedef cgv::media::axis_aligned_box<int32_t, 2> ibox2;

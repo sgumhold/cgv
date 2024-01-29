@@ -303,7 +303,7 @@ namespace stream_vis {
 			std::stringstream ss;
 			std::string fill;
 			if (tts->default_color[0] != -1) {
-				rgb8 c = tts->default_color;
+				cgv::rgb8 c = tts->default_color;
 				ss << "color=" << cgv::utils::to_hex(c[0]) << cgv::utils::to_hex(c[1]) << cgv::utils::to_hex(c[2]);
 				fill = ";";
 			}
@@ -421,19 +421,19 @@ namespace stream_vis {
 							else {
 								switch (ids.size()) {
 								case 2: {
-									dvec2 voff = dynamic_cast<fvec_time_series<2>*>(ts_ptr)->get_value_offset();
+									cgv::dvec2 voff = dynamic_cast<fvec_time_series<2>*>(ts_ptr)->get_value_offset();
 									voff[i] = oi.offset_value;
 									dynamic_cast<fvec_time_series<2>*>(ts_ptr)->set_value_offset(voff);
 									break;
 								}
 								case 3: {
-									dvec3 voff = dynamic_cast<fvec_time_series<3>*>(ts_ptr)->get_value_offset();
+									cgv::dvec3 voff = dynamic_cast<fvec_time_series<3>*>(ts_ptr)->get_value_offset();
 									voff[i] = oi.offset_value;
 									dynamic_cast<fvec_time_series<3>*>(ts_ptr)->set_value_offset(voff);
 									break;
 								}
 								case 4: {
-									dvec4 voff = dynamic_cast<fvec_time_series<4>*>(ts_ptr)->get_value_offset();
+									cgv::dvec4 voff = dynamic_cast<fvec_time_series<4>*>(ts_ptr)->get_value_offset();
 									voff[i] = oi.offset_value;
 									dynamic_cast<fvec_time_series<4>*>(ts_ptr)->set_value_offset(voff);
 									break;

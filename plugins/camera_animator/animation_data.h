@@ -1,14 +1,15 @@
 #pragma once
 
-#include <cgv/render/render_types.h>
 #include <cgv/data/interval_map.h>
+#include <cgv/math/fvec.h>
+#include <cgv/render/view.h>
 
 #include "easing_functions.h"
 
 struct view_parameters {
-	cgv::render::vec3 eye_position = cgv::render::vec3(0.0f, 0.0f, 1.0f);
-	cgv::render::vec3 focus_position = cgv::render::vec3(0.0f);
-	cgv::render::vec3 up_direction = cgv::render::vec3(0.0f, 1.0f, 0.0f);
+	cgv::vec3 eye_position = cgv::vec3(0.0f, 0.0f, 1.0f);
+	cgv::vec3 focus_position = cgv::vec3(0.0f);
+	cgv::vec3 up_direction = cgv::vec3(0.0f, 1.0f, 0.0f);
 
 	void extract(const cgv::render::view* view_ptr) {
 
@@ -24,12 +25,12 @@ struct view_parameters {
 		view_ptr->set_eye_keep_view_angle(eye_position);
 	}
 
-	cgv::render::vec3 view_direction() const {
+	cgv::vec3 view_direction() const {
 
 		return normalize(focus_position - eye_position);
 	}
 
-	cgv::render::vec3 side_direction() const {
+	cgv::vec3 side_direction() const {
 
 		return cross(view_direction(), up_direction);
 	}

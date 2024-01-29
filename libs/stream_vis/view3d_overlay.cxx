@@ -23,23 +23,23 @@ namespace stream_vis {
 	}
 	void view3d_overlay::update_views()
 	{
-		ivec4 vp;
-		mat4 PM, M;
+		cgv::ivec4 vp;
+		cgv::mat4 PM, M;
 		compute_matrices_and_viewport(PM, M, vp);
 		PM *= M;
 		for (const auto& p : plots) {
-			vec3 axes_scales(1.0f);
+			cgv::vec3 axes_scales(1.0f);
 			for (unsigned ai = 0; ai < p.second->get_dim(); ++ai)
 				axes_scales[ai] = p.second->get_domain_config_ptr()->axis_configs[ai].extent;
-			mat4 S = cgv::math::scale4<float>(axes_scales);
+			cgv::mat4 S = cgv::math::scale4<float>(axes_scales);
 			if (handler)
 				handler->handle_view3d_update(p.first, PM*S, vp);
 		}
 	}
 	void view3d_overlay::set_modelview_projection(cgv::render::context& ctx)
 	{
-		ivec4 vp;
-		mat4 P, M;
+		cgv::ivec4 vp;
+		cgv::mat4 P, M;
 		compute_matrices_and_viewport(P, M, vp);
 		ctx.set_projection_matrix(P);
 		ctx.set_modelview_matrix(M);
@@ -58,11 +58,11 @@ namespace stream_vis {
 	}
 	bool view3d_overlay::handle_mouse_event(const cgv::gui::mouse_event& me)
 	{
-		ivec2 os = get_overlay_size();
-		ivec2 cr = get_overlay_position() + os / 2;
+		cgv::ivec2 os = get_overlay_size();
+		cgv::ivec2 cr = get_overlay_position() + os / 2;
 		int x_gl = me.get_x();
 		int y_gl = get_context()->get_height() - 1 - me.get_y();
-		dvec3 x, y, z;
+		cgv::dvec3 x, y, z;
 		current_view.put_coordinate_system(x, y, z);
 		last_x = x_gl;
 		last_y = y_gl;
@@ -84,13 +84,13 @@ namespace stream_vis {
 				if (dt < 0.2) {
 					if (get_context()) {
 						cgv::render::context& ctx = *get_context();
-						dvec3 p;
+						cgv::dvec3 p;
 						ctx.make_current();
 						double z = ctx.get_window_z(x_gl, y_gl);
 						p = ctx.get_model_point(x_gl, y_gl, z, MPW);
 						if (z > 0 && z < 1) {
 							if (current_view.get_y_view_angle() > 0.1) {
-								dvec3 e = current_view.get_eye();
+								cgv::dvec3 e = current_view.get_eye();
 								double l_old = (e - current_view.get_focus()).length();
 								double l_new = dot(p - e, current_view.get_view_dir());
 								//std::cout << "e=(" << e << "), p=(" << p << "), vd=(" << view_ptr->get_view_dir() << ") l_old=" << l_old << ", l_new=" << l_new << std::endl;
@@ -168,7 +168,7 @@ namespace stream_vis {
 				double scale = exp(0.2 * me.get_dy() / zoom_sensitivity);
 				if (get_context()) {
 					cgv::render::context& ctx = *get_context();
-					dvec3 p;
+					cgv::dvec3 p;
 					ctx.make_current();
 					double z = ctx.get_window_z(x_gl, y_gl);
 					p = ctx.get_model_point(x_gl, y_gl, z, MPW);
@@ -201,10 +201,10 @@ namespace stream_vis {
 			last_view = current_view;
 		}
 	}
-	void view3d_overlay::compute_matrices_and_viewport(mat4& projection_matrix, mat4& modelview_matrix, ivec4& viewport)
+	void view3d_overlay::compute_matrices_and_viewport(cgv::mat4& projection_matrix, cgv::mat4& modelview_matrix, cgv::ivec4& viewport)
 	{
-		(ivec2&)viewport = get_overlay_position();
-		((ivec2*)&viewport)[1] = get_overlay_size();
+		(cgv::ivec2&)viewport = get_overlay_position();
+		((cgv::ivec2*)&viewport)[1] = get_overlay_size();
 		float aspect = (float)viewport[2] / viewport[3];
 		projection_matrix = cgv::math::perspective4<float>((float)current_view.get_y_view_angle(), aspect, (float)current_view.get_z_near(), (float)current_view.get_z_far());
 		modelview_matrix = cgv::math::look_at4<float>(current_view.get_eye(), current_view.get_focus(), current_view.get_view_up_dir());

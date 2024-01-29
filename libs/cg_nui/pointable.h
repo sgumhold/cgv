@@ -2,7 +2,6 @@
 
 #include "focusable.h"
 #include "hit_info.h"
-#include <cgv/render/render_types.h>
 
 #include "lib_begin.h"
 
@@ -24,7 +23,7 @@ namespace cgv {
 		};
 
 		/// interface for object that provides a ray intersection method
-		class CGV_API pointable : public cgv::render::render_types
+		class CGV_API pointable
 		{
 		public:
 			/// empty constructor
