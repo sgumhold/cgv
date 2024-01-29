@@ -174,8 +174,8 @@ bool simple_primitive_container::compute_intersection(const vec3& ray_start, con
 	vec3 rd = ray_direction;
 	hit_param = std::numeric_limits<float>::max();
 	for (size_t i = 0; i < positions.size(); ++i) {
-		vec2 res;
-		if (cgv::math::ray_sphere_intersection(ro, rd, positions[i], radii[i], res) == 0)
+		cgv::vec2 res;
+		if(cgv::math::ray_sphere_intersection({ ro, rd }, positions[i], radii[i], res) == 0)
 			continue;
 		float param;
 		if (res[0] < 0) {
