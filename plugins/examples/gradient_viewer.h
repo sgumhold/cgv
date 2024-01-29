@@ -6,7 +6,6 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv_gl/arrow_renderer.h>
 #include <cgv_gl/volume_renderer.h>
-#include <cgv/render/render_types.h>
 #include <cgv/render/shader_program.h>
 
 class gradient_viewer :

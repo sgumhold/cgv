@@ -1241,8 +1241,6 @@ const vec<T> slerp(const vec<T>& v0, const vec<T>& v1, T t)
 /// @name Predefined Types
 /// @{
 
-/// declare type of 32 bit integer vector with varying dimension
-typedef cgv::math::vec<float> vecn;
 /// declare type of single precision floating point vector with varying dimension
 typedef cgv::math::vec<float> vecn;
 /// declare type of double precision floating point vector with varying dimension

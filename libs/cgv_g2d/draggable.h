@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cgv/math/fvec.h>
+
 #include "trect.h"
 #include "shape.h"
 

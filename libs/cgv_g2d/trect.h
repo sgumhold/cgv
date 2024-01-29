@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv/render/render_types.h>
+#include <cgv/math/fvec.h>
 
 namespace cgv {
 namespace g2d {

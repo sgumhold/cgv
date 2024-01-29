@@ -5,7 +5,6 @@
 #include <cgv/gui/subprovider.h>
 #include <cgv/render/context.h>
 #include <cgv/render/managed_frame_buffer.h>
-#include <cgv/render/render_types.h>
 #include <cgv/render/shader_library.h>
 #include <cgv/render/view.h>
 #include <cgv_gl/gl/gl_context.h>

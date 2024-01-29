@@ -2,7 +2,6 @@
 
 #include <cgv/gui/event.h>
 #include <cgv/gui/mouse_event.h>
-#include <cgv/render/render_types.h>
 
 #include "canvas.h"
 #include "draggable.h"

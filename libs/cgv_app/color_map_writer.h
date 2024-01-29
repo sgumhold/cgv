@@ -4,7 +4,6 @@
 
 #include <cgv/media/image/image_writer.h>
 #include <cgv/render/color_map.h>
-#include <cgv/render/render_types.h>
 #include <cgv/utils/file.h>
 
 #include <tinyxml2/tinyxml2.h>
@@ -12,7 +11,7 @@
 namespace cgv {
 namespace app {
 
-class color_map_writer : cgv::render::render_types {
+class color_map_writer {
 private:
 	static void write_color_map(tinyxml2::XMLPrinter& printer, const std::string& name, const cgv::render::color_map& color_map) {
 

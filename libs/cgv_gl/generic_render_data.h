@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cgv/render/context.h>
-#include <cgv/render/render_types.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/attribute_array_binding.h>
 

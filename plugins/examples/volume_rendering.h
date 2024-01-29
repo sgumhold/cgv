@@ -6,7 +6,6 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
-#include <cgv/render/render_types.h>
 #include <cgv_gl/volume_renderer.h>
 #include <cgv_app/application_plugin.h>
 #include <cgv_gl/box_wire_render_data.h>

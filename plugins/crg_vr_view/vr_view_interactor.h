@@ -68,6 +68,12 @@ bool your_class::init(cgv::render::context& ctx)
 class CGV_API vr_view_interactor : public stereo_view_interactor, public vr::vr_calibration_base
 {
 protected:
+	using vec4 = cgv::vec4;
+	using ivec4 = cgv::ivec4;
+	using mat3 = cgv::mat3;
+	using mat34 = cgv::mat34;
+	using rgb = cgv::rgb;
+
 	ivec4 cgv_viewport;
 	void* fbo_handle;
 

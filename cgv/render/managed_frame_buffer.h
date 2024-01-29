@@ -3,7 +3,6 @@
 #include <unordered_map>
 
 #include <cgv/render/frame_buffer.h>
-#include <cgv/render/render_types.h>
 
 #include "lib_begin.h"
 

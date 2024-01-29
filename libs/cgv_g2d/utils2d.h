@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cgv/render/render_types.h>
-
 #include "trect.h"
 
 namespace cgv {

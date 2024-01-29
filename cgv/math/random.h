@@ -9,7 +9,7 @@
 #include <cgv/math/perm_mat.h>
 #include <cgv/math/up_tri_mat.h>
 #include <cgv/math/low_tri_mat.h>
-#include <cgv/math/quat.h>
+//#include <cgv/math/quat.h>
 #include <cmath>
 #include <set>
 //#include <cgv/math/constants.h>
