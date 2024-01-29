@@ -136,8 +136,6 @@ public:
 	//@}
 private:
 	mat34 start_pose;
-public:
-	typedef cgv::math::fmat<float,3,4> mat34;
 protected:
 	/// whether the window shows a separate view onto the scene or the one of the current vr kit
 	bool separate_view;
