@@ -354,9 +354,9 @@ void point_cloud_interactable::auto_set_view()
 		cgv::gui::message("could not find a view to adjust!!");
 		return;
 	}
-	cgv::gui::animate_with_rotation(view_ptrs[0]->ref_view_up_dir(), dvec3(0, 1, 0), 0.5)->set_base_ptr(this);
+	cgv::gui::animate_with_rotation(view_ptrs[0]->ref_view_up_dir(), cgv::dvec3(0, 1, 0), 0.5)->set_base_ptr(this);
 	cgv::gui::animate_with_geometric_blend(view_ptrs[0]->ref_y_extent_at_focus(), 1.5*pc.box().get_extent()(1), 0.5)->set_base_ptr(this);
-	cgv::gui::animate_with_linear_blend(view_ptrs[0]->ref_focus(), dvec3(pc.box().get_center()), 0.5)->set_base_ptr(this);
+	cgv::gui::animate_with_linear_blend(view_ptrs[0]->ref_focus(), cgv::dvec3(pc.box().get_center()), 0.5)->set_base_ptr(this);
 	post_redraw();
 }
 
