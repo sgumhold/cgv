@@ -81,6 +81,7 @@ protected:
 	unsigned num_ticks;
 	unsigned label_precision;
 	bool label_auto_precision;
+	bool label_prune_trailing_zeros;
 	bool label_integer_mode;
 	AlignmentOption title_align;
 	bool show_opacity;
@@ -115,7 +116,7 @@ public:
 	void init_frame(cgv::render::context& ctx) override;
 	void draw_content(cgv::render::context& ctx) override;
 
-	void set_color_map(cgv::render::context& ctx, cgv::render::color_map& cm);
+	void set_color_map(cgv::render::context& ctx, const cgv::render::color_map& cm);
 
 	void set_width(size_t w);
 	void set_height(size_t h);
@@ -130,6 +131,7 @@ public:
 
 	void set_label_precision(unsigned p);
 	void set_label_auto_precision(bool enabled);
+	void set_label_prune_trailing_zeros(bool enabled);
 	void set_label_integer_mode(bool enabled);
 	void set_show_opacity(bool enabled);
 };

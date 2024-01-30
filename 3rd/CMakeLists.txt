@@ -49,6 +49,10 @@ add_subdirectory(screen_capture_lite)
 set_target_properties(screen_capture_lite PROPERTIES CGVPROP_TYPE "library")
 set_target_properties(screen_capture_lite PROPERTIES FOLDER "3rd")
 set_target_properties(screen_capture_lite_static PROPERTIES FOLDER "_obj")
+if (NOT MSVC)
+        target_compile_options(screen_capture_lite PRIVATE -Wno-unused-variable -Wno-sign-compare)
+        target_compile_options(screen_capture_lite_static PRIVATE -Wno-unused-variable -Wno-sign-compare)
+endif()
 
 add_subdirectory(tiff)
 set_target_properties(tif PROPERTIES

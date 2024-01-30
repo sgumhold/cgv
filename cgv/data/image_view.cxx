@@ -119,7 +119,7 @@ void image_view::clear(double v)
 		std::fill(dv.get_ptr<int32_type>(), dv.get_ptr<int32_type>()+n, (int32_type)(v*2147483647));
 		break;
 	case TI_INT64 :
-		std::fill(dv.get_ptr<int64_type>(), dv.get_ptr<int64_type>()+n, (int64_type)(v*9223372036854775807));
+		std::fill(dv.get_ptr<int64_type>(), dv.get_ptr<int64_type>()+n, (int64_type)(v*double(9223372036854775807)));
 		break;
 	case TI_UINT8 :
 		std::fill(dv.get_ptr<uint8_type>(), dv.get_ptr<uint8_type>()+n, (uint8_type)(v*255));
@@ -131,7 +131,7 @@ void image_view::clear(double v)
 		std::fill(dv.get_ptr<uint32_type>(), dv.get_ptr<uint32_type>()+n, (uint32_type)(v*4294967295));
 		break;
 	case TI_UINT64 :
-		std::fill(dv.get_ptr<uint64_type>(), dv.get_ptr<uint64_type>()+n, (uint64_type)(v*18446744073709551615lu));
+		std::fill(dv.get_ptr<uint64_type>(), dv.get_ptr<uint64_type>()+n, (uint64_type)(v*double(18446744073709551615lu)));
 		break;
 	case TI_FLT32 :
 		std::fill(dv.get_ptr<flt32_type>(), dv.get_ptr<flt32_type>()+n, (flt32_type)v);

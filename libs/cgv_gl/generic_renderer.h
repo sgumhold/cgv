@@ -41,12 +41,12 @@ public:
 	}
 
 	shader_program& ref_prog() {
-		assert(("generic_renderer::ref_prog shader program is not created; call init before first use", prog.is_created()));
+		assert(prog.is_created() && "generic_renderer::ref_prog shader program is not created; call init before first use");
 		return prog;
 	}
 
 	shader_program& enable_prog(context& ctx) {
-		assert(("generic_renderer::enable_prog shader program is not created; call init before first use", prog.is_created()));
+		assert(prog.is_created() && "generic_renderer::enable_prog shader program is not created; call init before first use");
 		prog.enable(ctx);
 		return prog;
 	}

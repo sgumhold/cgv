@@ -48,6 +48,11 @@ namespace cgv {
 			isosurface_color = rgb(0.7f);
 			isosurface_color_from_transfer_function = false;
 
+			slice_mode = SM_DISABLED;
+			slice_axis = 2;
+			slice_coordinate = 0.5f;
+			slice_opacity = 0.5f;
+
 			clip_box = box3(vec3(0.0f), vec3(1.0f));
 		}
 
@@ -113,6 +118,8 @@ namespace cgv {
 			
 			shader_code::set_define(defines, "ISOSURFACE_MODE", vrs.isosurface_mode, volume_render_style::IM_NONE);
 			shader_code::set_define(defines, "ISOSURFACE_COLOR_MODE", vrs.isosurface_color_from_transfer_function, false);
+
+			shader_code::set_define(defines, "SLICE_MODE", vrs.slice_mode, volume_render_style::SM_DISABLED);
 
 			shader_code::set_define(defines, "COMPOSITING_MODE", vrs.compositing_mode, volume_render_style::CM_BLEND);
 			if(transfer_function_texture)
@@ -218,6 +225,10 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "isovalue", vrs.isovalue);
 			ref_prog().set_uniform(ctx, "isosurface_color", vrs.isosurface_color);
 
+			ref_prog().set_uniform(ctx, "slice_axis", vrs.slice_axis);
+			ref_prog().set_uniform(ctx, "slice_coordinate", vrs.slice_coordinate);
+			ref_prog().set_uniform(ctx, "slice_opacity", vrs.slice_opacity);
+
 			ref_prog().set_uniform(ctx, "clip_box_min", vrs.clip_box.get_min_pnt());
 			ref_prog().set_uniform(ctx, "clip_box_max", vrs.clip_box.get_max_pnt());
 
@@ -320,6 +331,15 @@ namespace cgv {
 					p->add_member_control(b, "Lambda", vrs_ptr->gradient_lambda, "value_slider", "min=0.001;max=10;step=0.001;ticks=true;log=true");
 					p->align("\b");
 					p->end_tree_node(vrs_ptr->enable_gradient_modulation);
+				}
+				if (p->begin_tree_node("Orthogonal Slicing", vrs_ptr->slice_mode, false)) {
+					p->align("\a");
+					p->add_member_control(b, "Mode", vrs_ptr->slice_mode, "dropdown", "enums='Disabled,Opaque,Transparent'");
+					p->add_member_control(b, "Axis", vrs_ptr->slice_axis, "value_slider", "min=0;max=2;ticks=true");
+					p->add_member_control(b, "Coordinate", vrs_ptr->slice_coordinate, "value_slider", "min=0;max=1;ticks=true");
+					p->add_member_control(b, "Opacity", vrs_ptr->slice_opacity, "value_slider", "min=0;max=1;ticks=true");
+					p->align("\b");
+					p->end_tree_node(vrs_ptr->slice_mode);
 				}
 
 				if(p->begin_tree_node("Isosurface (Blend only)", vrs_ptr->isosurface_mode, false)) {

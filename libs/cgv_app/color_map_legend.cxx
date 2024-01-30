@@ -2,6 +2,7 @@
 
 #include <cgv/gui/theme_info.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/utils/scan.h>
 
 namespace cgv {
 namespace app {
@@ -27,6 +28,7 @@ color_map_legend::color_map_legend() {
 	num_ticks = 3;
 	label_precision = 0;
 	label_auto_precision = true;
+	label_prune_trailing_zeros = false;
 	label_integer_mode = false;
 	title_align = AO_START;
 	show_opacity = true;
@@ -73,6 +75,7 @@ void color_map_legend::handle_member_change(const cgv::utils::pointer_test & m) 
 				num_ticks,
 				label_precision,
 				label_auto_precision,
+				label_prune_trailing_zeros,
 				label_integer_mode)) {
 		post_recreate_layout();
 	}
@@ -192,17 +195,18 @@ void color_map_legend::create_gui_impl() {
 	add_member_control(this, "Label Alignment", layout.label_alignment, "dropdown", "enums='-,Before,Inside,After'");
 
 	add_member_control(this, "Ticks", num_ticks, "value", "min=2;max=10;step=1");
-	add_member_control(this, "Number Precision", label_precision, "value", "w=60;min=0;max=10;step=1", " ");
-	add_member_control(this, "Auto", label_auto_precision, "check", "w=44", " ");
-	add_member_control(this, "Integers", label_integer_mode, "check", "w=72");
+	add_member_control(this, "Number Precision", label_precision, "value", "w=28;min=0;max=10;step=1", " ");
+	add_member_control(this, "Auto", label_auto_precision, "check", "w=52", "");
+	add_member_control(this, "Prune 0s", label_prune_trailing_zeros, "check", "w=74", "");
+	add_member_control(this, "Int", label_integer_mode, "check", "w=40");
 	add_member_control(this, "Show Opacity", show_opacity, "check");
 }
 
-void color_map_legend::set_color_map(cgv::render::context& ctx, cgv::render::color_map& cm) {
+void color_map_legend::set_color_map(cgv::render::context& ctx, const cgv::render::color_map& cm) {
 
 	cgv::render::TextureFilter filter = cgv::render::TF_LINEAR;
 	if(cm.has_texture_support()) {
-		cgv::render::gl_color_map* gl_cm_ptr = dynamic_cast<cgv::render::gl_color_map*>(&cm);
+		const cgv::render::gl_color_map* gl_cm_ptr = dynamic_cast<const cgv::render::gl_color_map*>(&cm);
 		filter = gl_cm_ptr->is_linear_filtering_enabled() ? cgv::render::TF_LINEAR : cgv::render::TF_NEAREST;
 	}
 
@@ -277,6 +281,11 @@ void color_map_legend::set_label_precision(unsigned p) {
 void color_map_legend::set_label_auto_precision(bool f) {
 	label_auto_precision = f;
 	on_set(&label_auto_precision);
+}
+
+void color_map_legend::set_label_prune_trailing_zeros(bool f) {
+	label_prune_trailing_zeros = f;
+	on_set(&label_prune_trailing_zeros);
 }
 
 void color_map_legend::set_label_integer_mode(bool enabled) {
@@ -367,12 +376,21 @@ void color_map_legend::create_labels() {
 		float t = fi / static_cast<float>(num_ticks - 1);
 		float val = cgv::math::lerp(range.x(), range.y(), t);
 
-		std::string str = "";
+		std::string str;
 
 		if(label_integer_mode)
 			str = std::to_string(static_cast<int>(round(val)));
-		else
-			str = cgv::utils::to_string(val, -1, precision);
+		else {
+			str = cgv::utils::to_string(
+				val, -1, precision, true/*fixed*///std::abs(val) >= 10 // prevent scientfic notation for two-digit and up numbers
+			);
+			if (label_prune_trailing_zeros) {
+				if (str.length() > 1) {
+					cgv::utils::rtrim(str, "0");
+					cgv::utils::rtrim(str, ".");
+				}
+			}
+		}
 
 		labels.add_text(str, ivec2(0), cgv::render::TextAlignment::TA_NONE);
 		max_length = std::max(max_length, labels.ref_texts().back().size.x());

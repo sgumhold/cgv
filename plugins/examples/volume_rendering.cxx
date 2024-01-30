@@ -18,7 +18,7 @@ namespace cgv {
 	}
 }
 
-volume_viewer::volume_viewer() : application_plugin("Volume Viewer")
+volume_viewer::volume_viewer() : application_plugin("Volume Viewer"), depth_tex("[D]")
 {
 	// setup volume bounding box as unit cube centered around origin
 	volume_bounding_box = cgv::box3(cgv::vec3(-0.5f), cgv::vec3(0.5f));
@@ -32,7 +32,11 @@ volume_viewer::volume_viewer() : application_plugin("Volume Viewer")
 	volume_tex.set_wrap_r(cgv::render::TW_CLAMP_TO_BORDER);
 	volume_tex.set_border_color(0.0f, 0.0f, 0.0f, 0.0f);
 
-	vstyle.enable_depth_test = false;
+	// an extra depth texture is used to enable mixing of opaque geometry and the volume
+	depth_tex.set_min_filter(cgv::render::TF_NEAREST);
+	depth_tex.set_mag_filter(cgv::render::TF_NEAREST);
+
+	vstyle.enable_depth_test = true;
 
 	show_box = true;
 	
@@ -174,16 +178,31 @@ void volume_viewer::init_frame(cgv::render::context& ctx) {
 				transfer_function_legend_ptr->set_color_map(ctx, transfer_function);
 		}
 	}
+	if (depth_tex.is_created() && (ctx.get_width() != depth_tex.get_width() || ctx.get_height() != depth_tex.get_height()))
+		depth_tex.destruct(ctx);
+
+	if (!depth_tex.is_created())
+		depth_tex.create(ctx, cgv::render::TT_2D, ctx.get_width(), ctx.get_height());
 }
 
-void volume_viewer::draw(cgv::render::context& ctx) 
+void volume_viewer::draw(cgv::render::context& ctx)
 {
 	// default render style for the bounding box
 	static const cgv::render::box_wire_render_style box_rs;
 
 	// render the wireframe bounding box if enabled
-	if(show_box)
+	if (show_box)
 		box_rd.render(ctx, cgv::render::ref_box_wire_renderer(ctx), box_rs);
+
+}
+
+void volume_viewer::after_finish(cgv::render::context & ctx)
+{
+	if (!view_ptr)
+		return;
+
+	// copy the contents of the depth buffer from the opaque geometry into the extra depth texture
+	depth_tex.replace_from_buffer(ctx, 0, 0, 0, 0, ctx.get_width(), ctx.get_height());
 
 	// render the volume
 	auto& vr = cgv::render::ref_volume_renderer(ctx);
@@ -192,8 +211,8 @@ void volume_viewer::draw(cgv::render::context& ctx)
 	vr.set_transfer_function_texture(&transfer_function.ref_texture()); // get the texture from the transfer function color map to transform scalar volume values into RGBA colors
 	// set the volume bounding box and enable transform to automatically place and size the volume to the defined bounds
 	vr.set_bounding_box(volume_bounding_box);
+	vr.set_depth_texture(&depth_tex);
 	vr.transform_to_bounding_box(true);
-
 	vr.render(ctx, 0, 0);
 }
 
@@ -640,4 +659,4 @@ void volume_viewer::create_histogram() {
 
 #include <cgv/base/register.h>
 
-cgv::base::factory_registration<volume_viewer> volume_viewer_fac("New/Render/Volume Rendering");
+cgv::base::factory_registration<volume_viewer> volume_viewer_fac("Volume Rendering", "shortcut='Ctrl-Alt-V';menu_text='New/Render/Volume Rendering'", true);

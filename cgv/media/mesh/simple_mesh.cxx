@@ -1002,7 +1002,7 @@ template <typename T> void simple_mesh<T>::construct_conway_polyhedron(const std
 		static int F[6 * 4] = { 0,2,6,4, 1,5,7,3, 0,4,5,1, 2,3,7,6, 4,6,7,5, 0,1,3,2 };
 		for (int vi = 0; vi < 8; ++vi)
 			new_position(normalize(vec3(3, &V[3 * vi])));
-		for (int ni = 0; ni < 8; ++ni)
+		for (int ni = 0; ni < 6; ++ni)
 			new_normal(vec3(3, &N[3 * ni]));
 		for (int fi = 0; fi < 6; ++fi) {
 			start_face();

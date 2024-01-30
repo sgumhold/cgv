@@ -104,7 +104,7 @@ public:
 			data_8[4 * i + 3] = has_opacity ? static_cast<uint8_t>(255.0f * col.alpha()) : 255;
 		}
 
-		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, 1, TI_UINT8, cgv::data::CF_RGBA), data_8.data());
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format((unsigned)resolution, 1, TI_UINT8, cgv::data::CF_RGBA), data_8.data());
 
 		cgv::media::image::image_writer writer(file_name);
 

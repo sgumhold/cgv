@@ -65,9 +65,9 @@ namespace vr {
 	}
 	/// compute lookat matrix for a given eye (0 ... left, 1 ... right)
 	cgv::mat4 get_world_to_eye_transform(const vr_kit* vr_kit_ptr, const vr_kit_state& state, int eye)
-	{		
+	{
 		cgv::mat4 T;
-		vr_kit_ptr->put_world_to_eye_transform(eye, state.hmd.pose, &T[0, 0]);
+		vr_kit_ptr->put_world_to_eye_transform(eye, state.hmd.pose, T);
 		return T;		
 		/*
 		float eye_to_head[12];
