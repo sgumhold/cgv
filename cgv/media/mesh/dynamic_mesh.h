@@ -41,17 +41,23 @@ protected:
 	std::vector<blend_shape> blend_shapes;
 
 public:
-	 enum class vertex_weight_mode { dense, sparse, fixed };
+	/// @brief specifies how vertex weights are stored
+	enum class vertex_weight_mode {
+		/// number joint times number vertices weights are stored - no indices necessary
+		dense,
+		/// per vertex varying number of indexed weights - vertex_weight_index_begins tells for
+		/// each vertex the index of the first weight in vertex_weight_data,
+		/// which is also the index of the first vertex index in vertex_weight_indices
+		sparse,
+		/// max_nr_weights_per_vertex are stored for each vertex with max_nr_weights_per_vertex
+		/// times the number of vertices entries in vertex_weight_data and
+		/// vertex_weight_indices.vertex_weight_index_begins is not used.If less than max_nr_weights_per_vertex are used
+		/// the additional weights are set to 0.0 and
+		/// the additional indices to 0.
+		fixed
+	};
+
 protected:
-	/** mode specifies how vertex weights are stored :
-	*   dense  ... number joint times number vertices weights are stored - no indices necessary
-	*   sparse ... per vertex varying number of indexed weights - vertex_weight_index_begins tells for
-	               each vertex the index of the first weight in vertex_weight_data, which is also the
-				   index of the first vertex index in vertex_weight_indices 
-		fixed  ... max_nr_weights_per_vertex are stored for each vertex with max_nr_weights_per_vertex
-		           times the number of vertices entries in vertex_weight_data and vertex_weight_indices.
-				   vertex_weight_index_begins is not used. If less than max_nr_weights_per_vertex are
-				   used the additional weights are set to 0.0 and the additional indices to 0. */
 	vertex_weight_mode weight_mode;
 	/// in case of fixed vertex_weight_mode the number of weights per vertex
 	int32_t          max_nr_weights_per_vertex = -1;

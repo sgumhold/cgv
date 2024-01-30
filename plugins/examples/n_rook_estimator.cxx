@@ -36,7 +36,8 @@ public:
 	double I[3];
 	double f;
 	double sigma[3];
-	std::string ft_str, st_str;
+
+	//std::string ft_str, st_str;
 	FunctionType function_type;
 	SamplingType sampling_type;
 
@@ -104,8 +105,8 @@ public:
 		f = 1;
 		function_type = FT_SIN;
 		generate_sampling();
-		ft_str = "sin(fr²)";
-		st_str = "uniform";
+		//ft_str = "sin(frï¿½)";
+		//st_str = "uniform";
 	}
 	/// return name of type
 	std::string get_type_name() const 
@@ -277,7 +278,7 @@ public:
 		add_member_control(this, "sampling type", sampling_type, "dropdown", "enums='uniform, stratified, n_rook'");
 		if (begin_tree_node("analyze", function_type)) {
 			align("\a");
-			add_member_control(this, "f", function_type, "dropdown", "enums='sin(fr²),sin(f/r²),exp(-4fr²)'");
+			add_member_control(this, "f", function_type, "dropdown", "enums='sin(frï¿½),sin(f/rï¿½),exp(-4frï¿½)'");
 			add_control("m", m, "value_slider", "min=1;max=1000;log=true;ticks=true");
 			connect_copy(add_button("analyze")->click, rebind(this, &n_rook_estimator::analyze));
 			add_view("I_uniform", I[0], "", "w=62;align='B'", " ");

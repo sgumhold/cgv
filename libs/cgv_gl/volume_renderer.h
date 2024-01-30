@@ -91,6 +91,19 @@ namespace cgv { // @<
 			/// whether to color the isosurface based on the transfer function
 			bool isosurface_color_from_transfer_function;
 
+			/// mode of slice rendering
+			enum SliceMode {
+				SM_DISABLED = 0,   // no slice
+				SM_OPAQUE = 1,     // opaque slice rendering
+				SM_TRANSPARENT = 2 // transparent slice rendering 
+			} slice_mode;
+			/// coordinate axis orthogonal to which slice is rendered
+			int   slice_axis;
+			/// coordinate value along axis defining slice in range [0,1]
+			float slice_coordinate;
+			/// in case of transparent mode, slice opacity
+			float slice_opacity;
+
 			/// a bounding box used to define a subspace of the volume to be visualized
 			box3 clip_box;
 
