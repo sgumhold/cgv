@@ -199,7 +199,7 @@ bool tiff_reader::read_image(const data_format& df, const data_view& dv)
 #if HOST_BIGENDIAN
 		TIFFSwabArrayOfLong(raster, df.get_size());
 #endif
-		int pixel_count = df.get_nr_entries();
+		int pixel_count = (int)df.get_nr_entries();
 		if (df.get_entry_size() == 3) {
 			unsigned char *src, *dst;
 			src = (unsigned char *) raster;
