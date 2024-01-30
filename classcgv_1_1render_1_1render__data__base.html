@@ -128,13 +128,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><b>add_index</b> (const uint32_t index)</td></tr>
 <tr class="separator:a385a8477d21aeaa15834d3617bbbd031"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a299a4b876e510b488da3d5eb61149a2d"><td class="memItemLeft" align="right" valign="top"><a id="a299a4b876e510b488da3d5eb61149a2d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>add_position</b> (const <a class="el" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a> &amp;position)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>add_position</b> (const <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> &amp;position)</td></tr>
 <tr class="separator:a299a4b876e510b488da3d5eb61149a2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a718fe88b6329c4fcfb22a1cfa1aea059"><td class="memItemLeft" align="right" valign="top"><a id="a718fe88b6329c4fcfb22a1cfa1aea059"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>add_color</b> (const ColorType &amp;color)</td></tr>
 <tr class="separator:a718fe88b6329c4fcfb22a1cfa1aea059"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9447c97959efdcd729a0f1355cd1c871"><td class="memItemLeft" align="right" valign="top"><a id="a9447c97959efdcd729a0f1355cd1c871"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (const <a class="el" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a> &amp;position, const ColorType &amp;color)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (const <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> &amp;position, const ColorType &amp;color)</td></tr>
 <tr class="separator:a9447c97959efdcd729a0f1355cd1c871"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6e53c0e2e16274892e427b5ae0ebb90"><td class="memItemLeft" align="right" valign="top"><a id="ab6e53c0e2e16274892e427b5ae0ebb90"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>fill_colors</b> (const ColorType &amp;color)</td></tr>
@@ -153,7 +153,7 @@ std::vector&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"
 <tr class="memdesc:ad541e7b9caacd4ea88c7da83f0da231b"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores an array of indices <br /></td></tr>
 <tr class="separator:ad541e7b9caacd4ea88c7da83f0da231b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79db8dcfb518027180880ac990c46298"><td class="memItemLeft" align="right" valign="top"><a id="a79db8dcfb518027180880ac990c46298"></a>
-std::vector&lt; <a class="el" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__data__base.html#a79db8dcfb518027180880ac990c46298">positions</a></td></tr>
+std::vector&lt; <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__data__base.html#a79db8dcfb518027180880ac990c46298">positions</a></td></tr>
 <tr class="memdesc:a79db8dcfb518027180880ac990c46298"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores an array of positions <br /></td></tr>
 <tr class="separator:a79db8dcfb518027180880ac990c46298"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3f48081332341db3cc3946ba321c4e9"><td class="memItemLeft" align="right" valign="top"><a id="ac3f48081332341db3cc3946ba321c4e9"></a>
@@ -205,12 +205,12 @@ class cgv::render::render_data_base&lt; ColorType &gt;</h3>
 <p>add_segment_&lt;attribute_name&gt;(const &lt;attribute_type&gt;&amp; value) --&gt; Add two copies of the given value to the attribute of the specified name. This is used by, e.g., line-type geometries, to quickly add a single attribute value for start and end points. Example: add_segment_color(color_for_whole_segment);</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">ColorType</td><td>The type used to represent colors. Must be <a class="el" href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8" title="declare rgb color type">cgv::render::rgb</a> or <a class="el" href="namespacecgv_1_1render.html#a7119f6c28a063b3cc9958b9db5ccde77" title="declare rgba color type">cgv::render::rgba</a>. </td></tr>
+    <tr><td class="paramname">ColorType</td><td>The type used to represent colors. Must be cgv::render::rgb or cgv::render::rgba. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00195">195</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00194">194</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a6b9f7f8a36825156cacef6bd23f5d6d6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6b9f7f8a36825156cacef6bd23f5d6d6">&#9670;&nbsp;</a></span>destruct()</h2>
@@ -246,7 +246,7 @@ template&lt;typename ColorType  = rgb&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00278">278</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00277">277</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="navigator_8cxx_source.html#l00066">cgv::app::navigator::clear()</a>.</p>
 
@@ -298,7 +298,7 @@ template&lt;typename ColorType  = rgb&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if disabling was successful. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00363">363</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00362">362</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
 <p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00209">cgv::render::renderer::disable()</a>, and <a class="el" href="renderer_8cxx_source.html#l00063">cgv::render::renderer::disable_attribute_array_manager()</a>.</p>
 
@@ -364,9 +364,9 @@ template&lt;typename ColorType  = rgb&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00382">382</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00381">381</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00317">cgv::render::renderer::draw()</a>, and <a class="el" href="render__data__base_8h_source.html#l00322">cgv::render::render_data_base&lt; ColorType &gt;::render_count()</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00317">cgv::render::renderer::draw()</a>, and <a class="el" href="render__data__base_8h_source.html#l00321">cgv::render::render_data_base&lt; ColorType &gt;::render_count()</a>.</p>
 
 </div>
 </div>
@@ -399,9 +399,9 @@ template&lt;typename ColorType  = rgb&gt; </div>
 <p>A render data is considered to be empty when the positions array is empty.</p>
 <dl class="section return"><dt>Returns</dt><dd>True if empty, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00312">312</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00311">311</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
-<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00200">cgv::render::render_data_base&lt; ColorType &gt;::positions</a>.</p>
+<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00199">cgv::render::render_data_base&lt; ColorType &gt;::positions</a>.</p>
 
 </div>
 </div>
@@ -459,9 +459,9 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00264">264</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00263">263</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
-<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00303">cgv::render::render_data_base&lt; ColorType &gt;::size()</a>.</p>
+<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00302">cgv::render::render_data_base&lt; ColorType &gt;::size()</a>.</p>
 
 </div>
 </div>
@@ -499,7 +499,7 @@ template&lt;typename ColorType  = rgb&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00272">272</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00271">271</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="navigator_8cxx_source.html#l00205">cgv::app::navigator::init()</a>.</p>
 
@@ -534,9 +534,9 @@ template&lt;typename ColorType  = rgb&gt; </div>
 <p>Can be used to retrieve internals such as buffer handles.</p>
 <dl class="section return"><dt>Returns</dt><dd>A const reference to the <a class="el" href="classcgv_1_1render_1_1attribute__array__manager.html" title="attribute array manager used to upload arrays to gpu">attribute_array_manager</a>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00334">334</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00333">333</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
-<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00210">cgv::render::render_data_base&lt; ColorType &gt;::attribute_array</a>.</p>
+<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00209">cgv::render::render_data_base&lt; ColorType &gt;::attribute_array</a>.</p>
 
 </div>
 </div>
@@ -569,11 +569,11 @@ template&lt;typename ColorType  = rgb&gt; </div>
 <p>Returns the number of indices if indices is not empty and the number of positions otherwise.</p>
 <dl class="section return"><dt>Returns</dt><dd>The number of specified vertices. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00322">322</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00321">321</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
-<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00198">cgv::render::render_data_base&lt; ColorType &gt;::indices</a>, and <a class="el" href="render__data__base_8h_source.html#l00200">cgv::render::render_data_base&lt; ColorType &gt;::positions</a>.</p>
+<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00197">cgv::render::render_data_base&lt; ColorType &gt;::indices</a>, and <a class="el" href="render__data__base_8h_source.html#l00199">cgv::render::render_data_base&lt; ColorType &gt;::positions</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="render__data__base_8h_source.html#l00382">cgv::render::render_data_base&lt; ColorType &gt;::draw()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="render__data__base_8h_source.html#l00381">cgv::render::render_data_base&lt; ColorType &gt;::draw()</a>.</p>
 
 </div>
 </div>
@@ -623,9 +623,9 @@ template&lt;typename ColorType  = rgb&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00250">250</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00249">249</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
-<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00202">cgv::render::render_data_base&lt; ColorType &gt;::colors</a>, <a class="el" href="render__data__base_8h_source.html#l00204">cgv::render::render_data_base&lt; ColorType &gt;::const_color</a>, and <a class="el" href="renderer_8h_source.html#l00190">cgv::render::renderer::set_color()</a>.</p>
+<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00201">cgv::render::render_data_base&lt; ColorType &gt;::colors</a>, <a class="el" href="render__data__base_8h_source.html#l00203">cgv::render::render_data_base&lt; ColorType &gt;::const_color</a>, and <a class="el" href="renderer_8h_source.html#l00190">cgv::render::renderer::set_color()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="rectangle__render__data_8h_source.html#l00052">cgv::render::rectangle_render_data&lt; ColorType &gt;::set_const_attributes()</a>.</p>
 
@@ -659,9 +659,9 @@ template&lt;typename ColorType  = rgb&gt; </div>
 <p>Notify the render data about state changes. </p>
 <p>Calling this method will result in the state_out_of_date flag being set to true and a call to transfer upon the next call to render or enable. This method shall never be called implicitly as a side effect of another member method, except clear, and must always be called explicitly after changing the stored data. </p>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00297">297</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00296">296</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
-<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00208">cgv::render::render_data_base&lt; ColorType &gt;::state_out_of_date</a>.</p>
+<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00207">cgv::render::render_data_base&lt; ColorType &gt;::state_out_of_date</a>.</p>
 
 </div>
 </div>
@@ -693,11 +693,11 @@ template&lt;typename ColorType  = rgb&gt; </div>
 <p>Return the number of stored positions. </p>
 <dl class="section return"><dt>Returns</dt><dd>The number of stored positions. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00303">303</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00302">302</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
-<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00200">cgv::render::render_data_base&lt; ColorType &gt;::positions</a>.</p>
+<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00199">cgv::render::render_data_base&lt; ColorType &gt;::positions</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="render__data__base_8h_source.html#l00264">cgv::render::render_data_base&lt; ColorType &gt;::fill()</a>, <a class="el" href="arrow__render__data_8h_source.html#l00022">cgv::render::arrow_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="box__render__data_8h_source.html#l00026">cgv::render::box_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="box__wire__render__data_8h_source.html#l00026">cgv::render::box_wire_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="cone__render__data_8h_source.html#l00022">cgv::render::cone_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="line__render__data_8h_source.html#l00024">cgv::render::line_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="point__render__data_8h_source.html#l00022">cgv::render::point_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="rectangle__render__data_8h_source.html#l00036">cgv::render::rectangle_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="render__data__base_8h_source.html#l00216">cgv::render::render_data_base&lt; ColorType &gt;::transfer()</a>, and <a class="el" href="sphere__render__data_8h_source.html#l00022">cgv::render::sphere_render_data&lt; ColorType &gt;::transfer()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="render__data__base_8h_source.html#l00263">cgv::render::render_data_base&lt; ColorType &gt;::fill()</a>, <a class="el" href="arrow__render__data_8h_source.html#l00022">cgv::render::arrow_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="box__render__data_8h_source.html#l00026">cgv::render::box_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="box__wire__render__data_8h_source.html#l00026">cgv::render::box_wire_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="cone__render__data_8h_source.html#l00022">cgv::render::cone_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="line__render__data_8h_source.html#l00024">cgv::render::line_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="point__render__data_8h_source.html#l00022">cgv::render::point_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="rectangle__render__data_8h_source.html#l00036">cgv::render::rectangle_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="render__data__base_8h_source.html#l00215">cgv::render::render_data_base&lt; ColorType &gt;::transfer()</a>, and <a class="el" href="sphere__render__data_8h_source.html#l00022">cgv::render::sphere_render_data&lt; ColorType &gt;::transfer()</a>.</p>
 
 </div>
 </div>
@@ -747,9 +747,9 @@ template&lt;typename ColorType  = rgb&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True is successful, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00216">216</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="render__data__base_8h_source.html#l00215">215</a> of file <a class="el" href="render__data__base_8h_source.html">render_data_base.h</a>.</p>
 
-<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00202">cgv::render::render_data_base&lt; ColorType &gt;::colors</a>, <a class="el" href="render__data__base_8h_source.html#l00198">cgv::render::render_data_base&lt; ColorType &gt;::indices</a>, <a class="el" href="render__data__base_8h_source.html#l00200">cgv::render::render_data_base&lt; ColorType &gt;::positions</a>, <a class="el" href="renderer_8cxx_source.html#l00099">cgv::render::renderer::remove_indices()</a>, <a class="el" href="renderer_8h_source.html#l00193">cgv::render::renderer::set_color_array()</a>, <a class="el" href="renderer_8h_source.html#l00213">cgv::render::renderer::set_indices()</a>, <a class="el" href="renderer_8h_source.html#l00179">cgv::render::renderer::set_position_array()</a>, <a class="el" href="render__data__base_8h_source.html#l00303">cgv::render::render_data_base&lt; ColorType &gt;::size()</a>, and <a class="el" href="render__data__base_8h_source.html#l00208">cgv::render::render_data_base&lt; ColorType &gt;::state_out_of_date</a>.</p>
+<p class="reference">References <a class="el" href="render__data__base_8h_source.html#l00201">cgv::render::render_data_base&lt; ColorType &gt;::colors</a>, <a class="el" href="render__data__base_8h_source.html#l00197">cgv::render::render_data_base&lt; ColorType &gt;::indices</a>, <a class="el" href="render__data__base_8h_source.html#l00199">cgv::render::render_data_base&lt; ColorType &gt;::positions</a>, <a class="el" href="renderer_8cxx_source.html#l00099">cgv::render::renderer::remove_indices()</a>, <a class="el" href="renderer_8h_source.html#l00193">cgv::render::renderer::set_color_array()</a>, <a class="el" href="renderer_8h_source.html#l00213">cgv::render::renderer::set_indices()</a>, <a class="el" href="renderer_8h_source.html#l00179">cgv::render::renderer::set_position_array()</a>, <a class="el" href="render__data__base_8h_source.html#l00302">cgv::render::render_data_base&lt; ColorType &gt;::size()</a>, and <a class="el" href="render__data__base_8h_source.html#l00207">cgv::render::render_data_base&lt; ColorType &gt;::state_out_of_date</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="arrow__render__data_8h_source.html#l00022">cgv::render::arrow_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="box__render__data_8h_source.html#l00026">cgv::render::box_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="box__wire__render__data_8h_source.html#l00026">cgv::render::box_wire_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="cone__render__data_8h_source.html#l00022">cgv::render::cone_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="line__render__data_8h_source.html#l00024">cgv::render::line_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="point__render__data_8h_source.html#l00022">cgv::render::point_render_data&lt; ColorType &gt;::transfer()</a>, <a class="el" href="rectangle__render__data_8h_source.html#l00036">cgv::render::rectangle_render_data&lt; ColorType &gt;::transfer()</a>, and <a class="el" href="sphere__render__data_8h_source.html#l00022">cgv::render::sphere_render_data&lt; ColorType &gt;::transfer()</a>.</p>
 

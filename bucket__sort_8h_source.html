@@ -92,7 +92,7 @@ $(document).ready(function(){initNavTree('bucket__sort_8h_source.html',''); init
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;    <span class="keyword">namespace </span>math {</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> key_type, <span class="keyword">typename</span> <span class="keywordtype">id</span>x_type&gt;</div>
-<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#aeb3d20eb47e56aebfa6f2208a351e668">    9</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#aeb3d20eb47e56aebfa6f2208a351e668">bucket_sort</a>(<span class="keyword">const</span> std::vector&lt;key_type&gt;&amp; keys, <span class="keywordtype">size_t</span> nr_keys, std::vector&lt;idx_type&gt;&amp; perm, std::vector&lt;idx_type&gt;* perm_in_ptr = 0)</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keywordtype">void</span> bucket_sort(<span class="keyword">const</span> std::vector&lt;key_type&gt;&amp; keys, <span class="keywordtype">size_t</span> nr_keys, std::vector&lt;idx_type&gt;&amp; perm, std::vector&lt;idx_type&gt;* perm_in_ptr = 0)</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        {</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;            <span class="comment">// prepare links and lookup table</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            std::vector&lt;idx_type&gt; links(keys.size(), idx_type(-1));</div>
@@ -119,7 +119,6 @@ $(document).ready(function(){initNavTree('bucket__sort_8h_source.html',''); init
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        }</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    }</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;}</div>
-<div class="ttc" id="anamespacecgv_1_1math_html_aeb3d20eb47e56aebfa6f2208a351e668"><div class="ttname"><a href="namespacecgv_1_1math.html#aeb3d20eb47e56aebfa6f2208a351e668">cgv::math::bucket_sort</a></div><div class="ttdeci">void bucket_sort(const std::vector&lt; key_type &gt; &amp;keys, size_t nr_keys, std::vector&lt; idx_type &gt; &amp;perm, std::vector&lt; idx_type &gt; *perm_in_ptr=0)</div><div class="ttdoc">compute a permutation perm with bucket_sort over index typed keys that a limited to nr_keys,...</div><div class="ttdef"><b>Definition:</b> <a href="bucket__sort_8h_source.html#l00009">bucket_sort.h:9</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">namespace </span>math { </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">namespace </span>math {</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
@@ -713,78 +713,78 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160;};</div>
 <div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160; </div>
 <div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00704"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a978d343e4d9cdf3c74249b3a9aefef15">  704</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#abfa52c4120248159499bc320aba339c5">normalize</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v)</div>
+<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;vec&lt;T&gt; normalize(<span class="keyword">const</span> vec&lt;T&gt;&amp; v)</div>
 <div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;{</div>
-<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r = v;</div>
-<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;    r.<a class="code" href="classcgv_1_1math_1_1vec.html#ad397c1a505ce48bedbe8a801cf11b039">normalize</a>();</div>
+<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;    vec&lt;T&gt; r = v;</div>
+<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;    r.normalize();</div>
 <div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;    <span class="keywordflow">return</span> r;</div>
 <div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;}</div>
 <div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160; </div>
 <div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160; </div>
 <div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00714"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a260bd673b8bd169234bb7c214f80e7c4">  714</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#a5b11c05b0b93335aff82154c9cfd0a51">safe_normalize</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v)</div>
+<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;vec&lt;T&gt; safe_normalize(<span class="keyword">const</span> vec&lt;T&gt;&amp; v)</div>
 <div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;{</div>
-<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r = v;</div>
-<div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;    r.<a class="code" href="classcgv_1_1math_1_1vec.html#ab8aa5ca020ccf8ee10c5fb8683a879c2">safe_normalize</a>();</div>
+<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;    vec&lt;T&gt; r = v;</div>
+<div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;    r.safe_normalize();</div>
 <div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;    <span class="keywordflow">return</span> r;</div>
 <div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;}</div>
 <div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160; </div>
 <div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160; </div>
 <div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T,<span class="keyword">typename</span> S&gt;</div>
-<div class="line"><a name="l00724"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a411bac494c2af0cff2a023a575ddeb2a">  724</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a411bac494c2af0cff2a023a575ddeb2a">p_norm</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values,<span class="keyword">const</span> S&amp; p=1)</div>
+<div class="line"><a name="l00724"></a><span class="lineno">  724</span>&#160;T p_norm(<span class="keyword">const</span> vec&lt;T&gt;&amp; values,<span class="keyword">const</span> S&amp; p=1)</div>
 <div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160;{   </div>
 <div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160;    assert(p &gt; 0);</div>
-<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160;    <span class="keywordtype">unsigned</span> N = values.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();</div>
+<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160;    <span class="keywordtype">unsigned</span> N = values.size();</div>
 <div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160; </div>
 <div class="line"><a name="l00729"></a><span class="lineno">  729</span>&#160;    T n=0;  </div>
 <div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160; </div>
 <div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; N;i++)</div>
 <div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;    {</div>
-<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;        n+=<a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>(fabs(values(i)),(T)p);</div>
+<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;        n+=pow(fabs(values(i)),(T)p);</div>
 <div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;    }</div>
 <div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160; </div>
-<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>(n,(T)(1.0/(T)p));</div>
+<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;    <span class="keywordflow">return</span> pow(n,(T)(1.0/(T)p));</div>
 <div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;}</div>
 <div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160; </div>
 <div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00741"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#af8d1188e252c04e6abccec35eed56d8f">  741</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#af8d1188e252c04e6abccec35eed56d8f">inf_norm</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values)</div>
+<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;T inf_norm(<span class="keyword">const</span> vec&lt;T&gt;&amp; values)</div>
 <div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;{</div>
-<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r = <a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">abs</a>(values); </div>
+<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;    vec&lt;T&gt; r = abs(values); </div>
 <div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160; </div>
-<div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a94f7f6756f02d9477d4522f74dfa0ff4">max_value</a>(r);</div>
+<div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;    <span class="keywordflow">return</span> max_value(r);</div>
 <div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;}</div>
 <div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160; </div>
 <div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160; </div>
 <div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00751"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#aaa61b101ea94ade16da7638005ec0401">  751</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">length</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v)</div>
+<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;T length(<span class="keyword">const</span> vec&lt;T&gt;&amp; v)</div>
 <div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;{</div>
-<div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;    <span class="keywordflow">return</span> v.<a class="code" href="classcgv_1_1math_1_1vec.html#a41821fb21acac4012d321720da801ab9">length</a>();</div>
+<div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;    <span class="keywordflow">return</span> v.length();</div>
 <div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;}</div>
 <div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160; </div>
 <div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00758"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ab28f6653e67305af650b4403934a1c13">  758</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a98dec8fec76658745c64947ff97a0915">sqr_length</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v)</div>
+<div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;T sqr_length(<span class="keyword">const</span> vec&lt;T&gt;&amp; v)</div>
 <div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;{</div>
-<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;    <span class="keywordflow">return</span> v.<a class="code" href="classcgv_1_1math_1_1vec.html#ab9cf7c1ea9a04b946f7316b1983c804f">sqr_length</a>();</div>
+<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;    <span class="keywordflow">return</span> v.sqr_length();</div>
 <div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;}</div>
 <div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160; </div>
 <div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00765"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#abc1b0c1188a0d3f1778c36ec35a32168">  765</a></span>&#160;std::ostream&amp; <a class="code" href="namespacecgv_1_1math.html#a959d852b32d156d183107537cc965ca7">operator&lt;&lt;</a>(std::ostream&amp; out, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v)</div>
+<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;std::ostream&amp; <a class="code" href="namespacevr.html#aec82c4df7159ce4917c6684f8c634a5d">operator&lt;&lt;</a>(std::ostream&amp; out, <span class="keyword">const</span> vec&lt;T&gt;&amp; v)</div>
 <div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;{</div>
 <div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160; </div>
-<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0;i&lt;v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>()-1;++i)</div>
+<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0;i&lt;v.size()-1;++i)</div>
 <div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;    {</div>
 <div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;        out &lt;&lt; v(i)&lt;&lt;<span class="stringliteral">&quot; &quot;</span>;   </div>
 <div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;    }</div>
-<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;    out &lt;&lt; v(v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>()-1);</div>
+<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;    out &lt;&lt; v(v.size()-1);</div>
 <div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;    <span class="keywordflow">return</span> out;</div>
 <div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160; </div>
 <div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;}</div>
 <div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160; </div>
 <div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00779"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a89ef485c2fbf3a9f9b9caed9aa4df0e1">  779</a></span>&#160;std::istream&amp; <a class="code" href="namespacecgv_1_1math.html#a4bdff18efd6afb8e7d19406cb7664e51">operator&gt;&gt;</a>(std::istream&amp; in, <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v)</div>
+<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;std::istream&amp; operator&gt;&gt;(std::istream&amp; in, vec&lt;T&gt;&amp; v)</div>
 <div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160;{</div>
 <div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160; </div>
-<div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0;i&lt;v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();++i)</div>
+<div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0;i&lt;v.size();++i)</div>
 <div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;    {</div>
 <div class="line"><a name="l00784"></a><span class="lineno">  784</span>&#160;        in &gt;&gt; v(i); </div>
 <div class="line"><a name="l00785"></a><span class="lineno">  785</span>&#160;    }</div>
@@ -795,23 +795,23 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="line"><a name="l00790"></a><span class="lineno">  790</span>&#160; </div>
 <div class="line"><a name="l00791"></a><span class="lineno">  791</span>&#160; </div>
 <div class="line"><a name="l00793"></a><span class="lineno">  793</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00794"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a0587d310c6306b8bde844d11bac48504">  794</a></span>&#160;<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> operator * (<span class="keyword">const</span> T&amp; s, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v) </div>
+<div class="line"><a name="l00794"></a><span class="lineno">  794</span>&#160;<span class="keyword">const</span> vec&lt;T&gt; operator * (<span class="keyword">const</span> T&amp; s, <span class="keyword">const</span> vec&lt;T&gt;&amp; v) </div>
 <div class="line"><a name="l00795"></a><span class="lineno">  795</span>&#160;{</div>
-<div class="line"><a name="l00796"></a><span class="lineno">  796</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r = v; r *= s; <span class="keywordflow">return</span> r; </div>
+<div class="line"><a name="l00796"></a><span class="lineno">  796</span>&#160;    vec&lt;T&gt; r = v; r *= s; <span class="keywordflow">return</span> r; </div>
 <div class="line"><a name="l00797"></a><span class="lineno">  797</span>&#160;}</div>
 <div class="line"><a name="l00798"></a><span class="lineno">  798</span>&#160; </div>
 <div class="line"><a name="l00800"></a><span class="lineno">  800</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00801"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ad04bd0d69da4c57797eb232aca3b0d6b">  801</a></span>&#160;<span class="keyword">inline</span> T <a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; w) </div>
+<div class="line"><a name="l00801"></a><span class="lineno">  801</span>&#160;<span class="keyword">inline</span> T dot(<span class="keyword">const</span> vec&lt;T&gt;&amp; v, <span class="keyword">const</span> vec&lt;T&gt;&amp; w) </div>
 <div class="line"><a name="l00802"></a><span class="lineno">  802</span>&#160;{ </div>
 <div class="line"><a name="l00803"></a><span class="lineno">  803</span>&#160;    T r = 0; </div>
-<div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0;i&lt;v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();++i) r += v(i)*(T)w(i); </div>
+<div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i=0;i&lt;v.size();++i) r += v(i)*(T)w(i); </div>
 <div class="line"><a name="l00805"></a><span class="lineno">  805</span>&#160;    <span class="keywordflow">return</span> r; </div>
 <div class="line"><a name="l00806"></a><span class="lineno">  806</span>&#160;}</div>
 <div class="line"><a name="l00807"></a><span class="lineno">  807</span>&#160; </div>
 <div class="line"><a name="l00809"></a><span class="lineno">  809</span>&#160;<span class="keyword">template</span> &lt; <span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00810"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ae9a44bdf6929252f47d50baac7da1425">  810</a></span>&#160;<span class="keyword">inline</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#a43c477a6a271f0ea40c265e5182c529e">cross</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; w) </div>
+<div class="line"><a name="l00810"></a><span class="lineno">  810</span>&#160;<span class="keyword">inline</span> vec&lt;T&gt; cross(<span class="keyword">const</span> vec&lt;T&gt;&amp; v, <span class="keyword">const</span> vec&lt;T&gt;&amp; w) </div>
 <div class="line"><a name="l00811"></a><span class="lineno">  811</span>&#160;{ </div>
-<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r(3);</div>
+<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160;    vec&lt;T&gt; r(3);</div>
 <div class="line"><a name="l00813"></a><span class="lineno">  813</span>&#160;    r(0)=  v(1)*(T)w(2) - v(2)*(T)w(1);</div>
 <div class="line"><a name="l00814"></a><span class="lineno">  814</span>&#160;    r(1)= -v(0)*(T)w(2) + v(2)*(T)w(0);</div>
 <div class="line"><a name="l00815"></a><span class="lineno">  815</span>&#160;    r(2)=  v(0)*(T)w(1) - v(1)*(T)w(0);</div>
@@ -819,35 +819,35 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="line"><a name="l00817"></a><span class="lineno">  817</span>&#160;}</div>
 <div class="line"><a name="l00818"></a><span class="lineno">  818</span>&#160; </div>
 <div class="line"><a name="l00820"></a><span class="lineno">  820</span>&#160;<span class="keyword">template</span> &lt; <span class="keyword">typename</span> T, <span class="keyword">typename</span> S, <span class="keyword">typename</span> U&gt;</div>
-<div class="line"><a name="l00821"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a2b0b909a09ab10500fd3683689258851">  821</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#a2b0b909a09ab10500fd3683689258851">dbl_cross</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;a, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;S&gt;</a> &amp;b, <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;U&gt;</a> &amp;c)</div>
+<div class="line"><a name="l00821"></a><span class="lineno">  821</span>&#160;vec&lt;T&gt; dbl_cross(<span class="keyword">const</span> vec&lt;T&gt; &amp;a, <span class="keyword">const</span> vec&lt;S&gt; &amp;b, vec&lt;U&gt; &amp;c)</div>
 <div class="line"><a name="l00822"></a><span class="lineno">  822</span>&#160;{</div>
-<div class="line"><a name="l00823"></a><span class="lineno">  823</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(a,c)*b - <a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(a,b)*c;</div>
+<div class="line"><a name="l00823"></a><span class="lineno">  823</span>&#160;    <span class="keywordflow">return</span> dot(a,c)*b - dot(a,b)*c;</div>
 <div class="line"><a name="l00824"></a><span class="lineno">  824</span>&#160;}</div>
 <div class="line"><a name="l00825"></a><span class="lineno">  825</span>&#160; </div>
 <div class="line"><a name="l00827"></a><span class="lineno">  827</span>&#160;<span class="keyword">template</span> &lt; <span class="keyword">typename</span> T, <span class="keyword">typename</span> S, <span class="keyword">typename</span> U&gt;</div>
-<div class="line"><a name="l00828"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a69a062bc927d2831ed28939db3703480">  828</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a69a062bc927d2831ed28939db3703480">spat</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;a,<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;S&gt;</a> &amp;b,<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;U&gt;</a> &amp;c)</div>
+<div class="line"><a name="l00828"></a><span class="lineno">  828</span>&#160;T spat(<span class="keyword">const</span> vec&lt;T&gt; &amp;a,<span class="keyword">const</span> vec&lt;S&gt; &amp;b,<span class="keyword">const</span> vec&lt;U&gt; &amp;c)</div>
 <div class="line"><a name="l00829"></a><span class="lineno">  829</span>&#160;{</div>
-<div class="line"><a name="l00830"></a><span class="lineno">  830</span>&#160;     <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(<a class="code" href="namespacecgv_1_1math.html#a43c477a6a271f0ea40c265e5182c529e">cross</a>(a,b),c);</div>
+<div class="line"><a name="l00830"></a><span class="lineno">  830</span>&#160;     <span class="keywordflow">return</span> dot(cross(a,b),c);</div>
 <div class="line"><a name="l00831"></a><span class="lineno">  831</span>&#160;}</div>
 <div class="line"><a name="l00832"></a><span class="lineno">  832</span>&#160; </div>
 <div class="line"><a name="l00834"></a><span class="lineno">  834</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00835"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a92f1b79975130902277a2c38eb2ad56b">  835</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#a92f1b79975130902277a2c38eb2ad56b">project</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;v, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;n)</div>
+<div class="line"><a name="l00835"></a><span class="lineno">  835</span>&#160;vec&lt;T&gt; project(<span class="keyword">const</span> vec&lt;T&gt; &amp;v, <span class="keyword">const</span> vec&lt;T&gt; &amp;n)</div>
 <div class="line"><a name="l00836"></a><span class="lineno">  836</span>&#160;{</div>
-<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(v,n)/<a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(n,n)*n;</div>
+<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;    <span class="keywordflow">return</span> dot(v,n)/dot(n,n)*n;</div>
 <div class="line"><a name="l00838"></a><span class="lineno">  838</span>&#160;}</div>
 <div class="line"><a name="l00839"></a><span class="lineno">  839</span>&#160; </div>
 <div class="line"><a name="l00840"></a><span class="lineno">  840</span>&#160; </div>
 <div class="line"><a name="l00842"></a><span class="lineno">  842</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00843"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#afa5be51992b338933231c56f5b235e3e">  843</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#afa5be51992b338933231c56f5b235e3e">reflect</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;v, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;n)</div>
+<div class="line"><a name="l00843"></a><span class="lineno">  843</span>&#160;vec&lt;T&gt; reflect(<span class="keyword">const</span> vec&lt;T&gt; &amp;v, <span class="keyword">const</span> vec&lt;T&gt; &amp;n)</div>
 <div class="line"><a name="l00844"></a><span class="lineno">  844</span>&#160;{</div>
-<div class="line"><a name="l00845"></a><span class="lineno">  845</span>&#160;    <span class="keywordflow">return</span> v-(T)2.0*<a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(v,n)/<a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(n,n)*n;</div>
+<div class="line"><a name="l00845"></a><span class="lineno">  845</span>&#160;    <span class="keywordflow">return</span> v-(T)2.0*dot(v,n)/dot(n,n)*n;</div>
 <div class="line"><a name="l00846"></a><span class="lineno">  846</span>&#160;}</div>
 <div class="line"><a name="l00847"></a><span class="lineno">  847</span>&#160; </div>
 <div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00851"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a7b97afa2f0ea55aa60e8e2bbb16da022">  851</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#a7b97afa2f0ea55aa60e8e2bbb16da022">refract</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;v,<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;n,T c1, T c2,<span class="keywordtype">bool</span>* total_reflection=NULL)</div>
+<div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;vec&lt;T&gt; refract(<span class="keyword">const</span> vec&lt;T&gt; &amp;v,<span class="keyword">const</span> vec&lt;T&gt; &amp;n,T c1, T c2,<span class="keywordtype">bool</span>* total_reflection=NULL)</div>
 <div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;{</div>
 <div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;    </div>
-<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;    T NdotV =-<a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(n,v)/<a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(n,n);</div>
+<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;    T NdotV =-dot(n,v)/dot(n,n);</div>
 <div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;    T c = c2/c1;</div>
 <div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160; </div>
 <div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160;    T cosasqr = (T)1.0-(c*c)*((T)1.0-NdotV*NdotV);</div>
@@ -857,13 +857,13 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="line"><a name="l00861"></a><span class="lineno">  861</span>&#160;    {</div>
 <div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160;        <span class="keywordflow">if</span>(total_reflection)</div>
 <div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;            *total_reflection=<span class="keyword">true</span>;</div>
-<div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#afa5be51992b338933231c56f5b235e3e">reflect</a>(v,n);</div>
+<div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160;        <span class="keywordflow">return</span> reflect(v,n);</div>
 <div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160;    }</div>
 <div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160;    <span class="keywordflow">else</span></div>
 <div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;    {</div>
 <div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;        <span class="keywordflow">if</span>(total_reflection)</div>
 <div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160;            *total_reflection=<span class="keyword">false</span>;</div>
-<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;        <span class="keywordflow">return</span>  c*v + (c*NdotV - sqrt(cosasqr)/<a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(n,n) )*n;</div>
+<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;        <span class="keywordflow">return</span>  c*v + (c*NdotV - sqrt(cosasqr)/dot(n,n) )*n;</div>
 <div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;         </div>
 <div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;    }</div>
 <div class="line"><a name="l00873"></a><span class="lineno">  873</span>&#160; </div>
@@ -872,96 +872,96 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160; </div>
 <div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160; </div>
 <div class="line"><a name="l00879"></a><span class="lineno">  879</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00880"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a769b0239ad7921d1debc13210eed9f1d">  880</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> zeros(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> dim)</div>
+<div class="line"><a name="l00880"></a><span class="lineno">  880</span>&#160;vec&lt;T&gt; zeros(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> dim)</div>
 <div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;{</div>
-<div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> v;</div>
-<div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160;    v.<a class="code" href="classcgv_1_1math_1_1vec.html#a773ce76abac576757dfd3122d5cdb565">zeros</a>(dim);</div>
+<div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;    vec&lt;T&gt; v;</div>
+<div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160;    v.zeros(dim);</div>
 <div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160;    <span class="keywordflow">return</span> v;</div>
 <div class="line"><a name="l00885"></a><span class="lineno">  885</span>&#160;}</div>
 <div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160; </div>
 <div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00889"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a0b9867b26ce794ca923d333cfaddcc5a">  889</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> ones(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> dim)</div>
+<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;vec&lt;T&gt; ones(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> dim)</div>
 <div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;{</div>
-<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> v;</div>
-<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;    v.<a class="code" href="classcgv_1_1math_1_1vec.html#af150f1c5ed2a625989b9dd12ab7358ad">ones</a>(dim);</div>
+<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;    vec&lt;T&gt; v;</div>
+<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;    v.ones(dim);</div>
 <div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160;    <span class="keywordflow">return</span> v;</div>
 <div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;}</div>
 <div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160; </div>
 <div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160; </div>
 <div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00899"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a51fdbe5f90df73b06330b40a7183aeb5">  899</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#a2a4f53fc7cb7dbcb1fa07ec66d99915d">floor</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;v)</div>
+<div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160;vec&lt;T&gt; floor(<span class="keyword">const</span> vec&lt;T&gt; &amp;v)</div>
 <div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;{</div>
-<div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r(v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>());</div>
-<div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
-<div class="line"><a name="l00903"></a><span class="lineno">  903</span>&#160;        r(i)=<a class="code" href="namespacecgv_1_1math.html#a2a4f53fc7cb7dbcb1fa07ec66d99915d">::floor</a>((T)v(i));</div>
+<div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;    vec&lt;T&gt; r(v.size());</div>
+<div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; v.size();i++)</div>
+<div class="line"><a name="l00903"></a><span class="lineno">  903</span>&#160;        r(i)=::floor((T)v(i));</div>
 <div class="line"><a name="l00904"></a><span class="lineno">  904</span>&#160;    </div>
 <div class="line"><a name="l00905"></a><span class="lineno">  905</span>&#160;    <span class="keywordflow">return</span> r;</div>
 <div class="line"><a name="l00906"></a><span class="lineno">  906</span>&#160;}</div>
 <div class="line"><a name="l00907"></a><span class="lineno">  907</span>&#160; </div>
 <div class="line"><a name="l00908"></a><span class="lineno">  908</span>&#160; </div>
 <div class="line"><a name="l00910"></a><span class="lineno">  910</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00911"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#afafe8353045ba1bc1dd078cedb40ab4b">  911</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#a7bdfc685a508ef94145942bc61929185">ceil</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;v)</div>
+<div class="line"><a name="l00911"></a><span class="lineno">  911</span>&#160;vec&lt;T&gt; ceil(<span class="keyword">const</span> vec&lt;T&gt; &amp;v)</div>
 <div class="line"><a name="l00912"></a><span class="lineno">  912</span>&#160;{</div>
-<div class="line"><a name="l00913"></a><span class="lineno">  913</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r(v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>());</div>
-<div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
-<div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160;        r(i)=<a class="code" href="namespacecgv_1_1math.html#a7bdfc685a508ef94145942bc61929185">::ceil</a>(v(i));</div>
+<div class="line"><a name="l00913"></a><span class="lineno">  913</span>&#160;    vec&lt;T&gt; r(v.size());</div>
+<div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; v.size();i++)</div>
+<div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160;        r(i)=::ceil(v(i));</div>
 <div class="line"><a name="l00916"></a><span class="lineno">  916</span>&#160;    </div>
 <div class="line"><a name="l00917"></a><span class="lineno">  917</span>&#160;    <span class="keywordflow">return</span> r;</div>
 <div class="line"><a name="l00918"></a><span class="lineno">  918</span>&#160;}</div>
 <div class="line"><a name="l00919"></a><span class="lineno">  919</span>&#160; </div>
 <div class="line"><a name="l00921"></a><span class="lineno">  921</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00922"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a944f7ad3594fbba4d34b9cef164f5943">  922</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#ac3ed9709b6809a4e152a44897a27a6f4">round</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;v)</div>
+<div class="line"><a name="l00922"></a><span class="lineno">  922</span>&#160;vec&lt;T&gt; round(<span class="keyword">const</span> vec&lt;T&gt; &amp;v)</div>
 <div class="line"><a name="l00923"></a><span class="lineno">  923</span>&#160;{</div>
-<div class="line"><a name="l00924"></a><span class="lineno">  924</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r(v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>());</div>
-<div class="line"><a name="l00925"></a><span class="lineno">  925</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
-<div class="line"><a name="l00926"></a><span class="lineno">  926</span>&#160;        r(i)=<a class="code" href="namespacecgv_1_1math.html#a2a4f53fc7cb7dbcb1fa07ec66d99915d">::floor</a>(v(i)+0.5);</div>
+<div class="line"><a name="l00924"></a><span class="lineno">  924</span>&#160;    vec&lt;T&gt; r(v.size());</div>
+<div class="line"><a name="l00925"></a><span class="lineno">  925</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; v.size();i++)</div>
+<div class="line"><a name="l00926"></a><span class="lineno">  926</span>&#160;        r(i)=::floor(v(i)+0.5);</div>
 <div class="line"><a name="l00927"></a><span class="lineno">  927</span>&#160;    </div>
 <div class="line"><a name="l00928"></a><span class="lineno">  928</span>&#160;    <span class="keywordflow">return</span> r;</div>
 <div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;}</div>
 <div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160; </div>
 <div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160; </div>
 <div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00934"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a80001be79832e6abc3a7aa6493b3ea93">  934</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">abs</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;v)</div>
+<div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;vec&lt;T&gt; abs(<span class="keyword">const</span> vec&lt;T&gt; &amp;v)</div>
 <div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;{</div>
-<div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r(v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>());</div>
-<div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();i++)</div>
+<div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;    vec&lt;T&gt; r(v.size());</div>
+<div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; v.size();i++)</div>
 <div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160;        r(i)=std::abs(v(i));</div>
 <div class="line"><a name="l00939"></a><span class="lineno">  939</span>&#160; </div>
 <div class="line"><a name="l00940"></a><span class="lineno">  940</span>&#160;    <span class="keywordflow">return</span> r;</div>
 <div class="line"><a name="l00941"></a><span class="lineno">  941</span>&#160;}</div>
 <div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160; </div>
 <div class="line"><a name="l00944"></a><span class="lineno">  944</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00945"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a20c1c814d97961c2e09941d1b139d050">  945</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a021c54ae9938e48312e58ba9497336d5">min_value</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;v)</div>
+<div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;T min_value(<span class="keyword">const</span> vec&lt;T&gt; &amp;v)</div>
 <div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160;{</div>
-<div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;    <span class="keywordflow">return</span> *(std::min_element(&amp;v(0),&amp;v(v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>()-1)+1));</div>
+<div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;    <span class="keywordflow">return</span> *(std::min_element(&amp;v(0),&amp;v(v.size()-1)+1));</div>
 <div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;}</div>
 <div class="line"><a name="l00949"></a><span class="lineno">  949</span>&#160; </div>
 <div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160; </div>
 <div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160; </div>
 <div class="line"><a name="l00953"></a><span class="lineno">  953</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00954"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#aad026e67ce49ceabab907db2eb48d418">  954</a></span>&#160;<span class="keywordtype">unsigned</span> <a class="code" href="namespacecgv_1_1math.html#ab9f32aff46cb5d2962caf1123ac1be20">min_index</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;v)</div>
+<div class="line"><a name="l00954"></a><span class="lineno">  954</span>&#160;<span class="keywordtype">unsigned</span> min_index(<span class="keyword">const</span> vec&lt;T&gt; &amp;v)</div>
 <div class="line"><a name="l00955"></a><span class="lineno">  955</span>&#160;{</div>
-<div class="line"><a name="l00956"></a><span class="lineno">  956</span>&#160;    <span class="keywordflow">return</span> (<span class="keywordtype">unsigned</span>) (std::min_element(&amp;v(0),&amp;v(v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>()-1)+1)-&amp;v(0));</div>
+<div class="line"><a name="l00956"></a><span class="lineno">  956</span>&#160;    <span class="keywordflow">return</span> (<span class="keywordtype">unsigned</span>) (std::min_element(&amp;v(0),&amp;v(v.size()-1)+1)-&amp;v(0));</div>
 <div class="line"><a name="l00957"></a><span class="lineno">  957</span>&#160;}</div>
 <div class="line"><a name="l00958"></a><span class="lineno">  958</span>&#160; </div>
 <div class="line"><a name="l00960"></a><span class="lineno">  960</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00961"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ad6b30264dcb43c9e0fc553384e2568a2">  961</a></span>&#160;<span class="keywordtype">unsigned</span> <a class="code" href="namespacecgv_1_1math.html#a92f496231d4b5519a815e6be9387f851">max_index</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;v)</div>
+<div class="line"><a name="l00961"></a><span class="lineno">  961</span>&#160;<span class="keywordtype">unsigned</span> max_index(<span class="keyword">const</span> vec&lt;T&gt; &amp;v)</div>
 <div class="line"><a name="l00962"></a><span class="lineno">  962</span>&#160;{</div>
-<div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160;    <span class="keywordflow">return</span> (<span class="keywordtype">unsigned</span>) (std::max_element(&amp;v(0),&amp;v(v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>()-1)+1)-&amp;v(0));</div>
+<div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160;    <span class="keywordflow">return</span> (<span class="keywordtype">unsigned</span>) (std::max_element(&amp;v(0),&amp;v(v.size()-1)+1)-&amp;v(0));</div>
 <div class="line"><a name="l00964"></a><span class="lineno">  964</span>&#160;}</div>
 <div class="line"><a name="l00965"></a><span class="lineno">  965</span>&#160; </div>
 <div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00968"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a711536231cafdd24b89b94059ba6ec46">  968</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a94f7f6756f02d9477d4522f74dfa0ff4">max_value</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> &amp;v)</div>
+<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160;T max_value(<span class="keyword">const</span> vec&lt;T&gt; &amp;v)</div>
 <div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160;{</div>
-<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;    <span class="keywordflow">return</span> *(std::max_element(&amp;v(0),&amp;v(v.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>()-1)+1));</div>
+<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;    <span class="keywordflow">return</span> *(std::max_element(&amp;v(0),&amp;v(v.size()-1)+1));</div>
 <div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160;}</div>
 <div class="line"><a name="l00972"></a><span class="lineno">  972</span>&#160; </div>
 <div class="line"><a name="l00973"></a><span class="lineno">  973</span>&#160; </div>
 <div class="line"><a name="l00975"></a><span class="lineno">  975</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00976"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#abbe46549a352cc0c03a921e1a54531b1">  976</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#abbe46549a352cc0c03a921e1a54531b1">mean_value</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values)</div>
+<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;T mean_value(<span class="keyword">const</span> vec&lt;T&gt;&amp; values)</div>
 <div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;{</div>
 <div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160; </div>
-<div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;    <span class="keywordtype">unsigned</span> N = values.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();</div>
+<div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;    <span class="keywordtype">unsigned</span> N = values.size();</div>
 <div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160; </div>
 <div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160;    T mu=0;</div>
 <div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160; </div>
@@ -974,11 +974,11 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="line"><a name="l00989"></a><span class="lineno">  989</span>&#160;}</div>
 <div class="line"><a name="l00990"></a><span class="lineno">  990</span>&#160; </div>
 <div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00994"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a59c378b0c8a7b79005500080d18dfdf0">  994</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a59c378b0c8a7b79005500080d18dfdf0">var_value</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values)</div>
+<div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160;T var_value(<span class="keyword">const</span> vec&lt;T&gt;&amp; values)</div>
 <div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160;{</div>
-<div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160;    <span class="keywordtype">unsigned</span> N = values.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>(); </div>
+<div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160;    <span class="keywordtype">unsigned</span> N = values.size(); </div>
 <div class="line"><a name="l00997"></a><span class="lineno">  997</span>&#160; </div>
-<div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;    T mu=<a class="code" href="namespacecgv_1_1math.html#abbe46549a352cc0c03a921e1a54531b1">mean_value</a>(values);</div>
+<div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;    T mu=mean_value(values);</div>
 <div class="line"><a name="l00999"></a><span class="lineno">  999</span>&#160;    T v = 0;</div>
 <div class="line"><a name="l01000"></a><span class="lineno"> 1000</span>&#160; </div>
 <div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; N;i++)</div>
@@ -994,33 +994,33 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="line"><a name="l01011"></a><span class="lineno"> 1011</span>&#160;}</div>
 <div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160; </div>
 <div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01015"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a3b51b9b6a031832d8f5e61daae591d23"> 1015</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a3b51b9b6a031832d8f5e61daae591d23">range_value</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values)</div>
+<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160;T range_value(<span class="keyword">const</span> vec&lt;T&gt;&amp; values)</div>
 <div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160;{</div>
-<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a94f7f6756f02d9477d4522f74dfa0ff4">max_value</a>(values)-<a class="code" href="namespacecgv_1_1math.html#a021c54ae9938e48312e58ba9497336d5">min_value</a>(values);</div>
+<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;    <span class="keywordflow">return</span> max_value(values)-min_value(values);</div>
 <div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;}</div>
 <div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160; </div>
 <div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01022"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a1d78d215cba9ac902cf783e07cacba82"> 1022</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a1d78d215cba9ac902cf783e07cacba82">mad_value</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values)</div>
+<div class="line"><a name="l01022"></a><span class="lineno"> 1022</span>&#160;T mad_value(<span class="keyword">const</span> vec&lt;T&gt;&amp; values)</div>
 <div class="line"><a name="l01023"></a><span class="lineno"> 1023</span>&#160;{</div>
-<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160;    <span class="keywordflow">return</span>  <a class="code" href="namespacecgv_1_1math.html#ab64f0dd9dca92bc57478fd01ec0abf57">median_value</a>(<a class="code" href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">abs</a>(values-<a class="code" href="namespacecgv_1_1math.html#ab64f0dd9dca92bc57478fd01ec0abf57">median_value</a>(values)));</div>
+<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160;    <span class="keywordflow">return</span>  median_value(abs(values-median_value(values)));</div>
 <div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;}</div>
 <div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160; </div>
 <div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160; </div>
 <div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01031"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a5fcaec03b9e45ded6d1f1e9eadfdffac"> 1031</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a5fcaec03b9e45ded6d1f1e9eadfdffac">std_value</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values)</div>
+<div class="line"><a name="l01031"></a><span class="lineno"> 1031</span>&#160;T std_value(<span class="keyword">const</span> vec&lt;T&gt;&amp; values)</div>
 <div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160; </div>
 <div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;{</div>
-<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;    T v = <a class="code" href="namespacecgv_1_1math.html#a59c378b0c8a7b79005500080d18dfdf0">var_value</a>(values);</div>
+<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;    T v = var_value(values);</div>
 <div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160;    <span class="keywordflow">return</span> sqrt(v);</div>
 <div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160;}</div>
 <div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160; </div>
 <div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160; </div>
 <div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160; </div>
 <div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01042"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a10a8c243810ff53fe2dba27b052ae806"> 1042</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#a10a8c243810ff53fe2dba27b052ae806">var_and_mean_value</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values, T&amp; mu, T&amp;var)</div>
+<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;<span class="keywordtype">void</span> var_and_mean_value(<span class="keyword">const</span> vec&lt;T&gt;&amp; values, T&amp; mu, T&amp;var)</div>
 <div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160;{</div>
 <div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160; </div>
-<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;    <span class="keywordtype">unsigned</span> N = values.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>(); </div>
+<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;    <span class="keywordtype">unsigned</span> N = values.size(); </div>
 <div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160;    mu=0;</div>
 <div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160; </div>
 <div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; N;i++)</div>
@@ -1040,32 +1040,32 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160; </div>
 <div class="line"><a name="l01063"></a><span class="lineno"> 1063</span>&#160; </div>
 <div class="line"><a name="l01065"></a><span class="lineno"> 1065</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01066"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#aa52846938f1183bd690188020682e84b"> 1066</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#aa52846938f1183bd690188020682e84b">sort_values</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values, <span class="keywordtype">bool</span> ascending=<span class="keyword">true</span>)</div>
+<div class="line"><a name="l01066"></a><span class="lineno"> 1066</span>&#160;<span class="keywordtype">void</span> sort_values(vec&lt;T&gt;&amp; values, <span class="keywordtype">bool</span> ascending=<span class="keyword">true</span>)</div>
 <div class="line"><a name="l01067"></a><span class="lineno"> 1067</span>&#160;{</div>
 <div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;    </div>
 <div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;    <span class="keywordflow">if</span>(ascending)</div>
-<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;        std::sort(&amp;values(0),&amp;values(values.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>()-1)+1,std::less&lt;T&gt;());</div>
+<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;        std::sort(&amp;values(0),&amp;values(values.size()-1)+1,std::less&lt;T&gt;());</div>
 <div class="line"><a name="l01071"></a><span class="lineno"> 1071</span>&#160;    <span class="keywordflow">else</span></div>
-<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;        std::sort(&amp;values(0),&amp;values(values.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>()-1)+1,std::greater&lt;T&gt;());</div>
+<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;        std::sort(&amp;values(0),&amp;values(values.size()-1)+1,std::greater&lt;T&gt;());</div>
 <div class="line"><a name="l01073"></a><span class="lineno"> 1073</span>&#160;}</div>
 <div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160; </div>
 <div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160; </div>
 <div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160; </div>
 <div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01079"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a68ebc3f83af00eb06620f61e7e3e06e4"> 1079</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a68ebc3f83af00eb06620f61e7e3e06e4">sum_values</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values)</div>
+<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;T sum_values(<span class="keyword">const</span> vec&lt;T&gt;&amp; values)</div>
 <div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;{</div>
 <div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;    T v =0;</div>
-<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; values.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>(); i++)</div>
+<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; values.size(); i++)</div>
 <div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160;        v+=values(i);</div>
 <div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160;    <span class="keywordflow">return</span> v;</div>
 <div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160;}</div>
 <div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160; </div>
 <div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01091"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a7fb1cc83fc48654f1d5bd9982e1db1e2"> 1091</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a7fb1cc83fc48654f1d5bd9982e1db1e2">cumsum_values</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values, <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; cumsumvalues)</div>
+<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160;T cumsum_values(<span class="keyword">const</span> vec&lt;T&gt;&amp; values, vec&lt;T&gt;&amp; cumsumvalues)</div>
 <div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;{</div>
-<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;    cumsumvalues.<a class="code" href="classcgv_1_1math_1_1vec.html#a4ad00087a03df57550f9082992ce827b">resize</a>(values.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>());</div>
+<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;    cumsumvalues.resize(values.size());</div>
 <div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;    T v =0;</div>
-<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; values.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>(); i++)</div>
+<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; values.size(); i++)</div>
 <div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160;    {</div>
 <div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;        cumsumvalues(i)=v;</div>
 <div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160;        v+=values(i);</div>
@@ -1076,47 +1076,47 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160; </div>
 <div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160; </div>
 <div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01107"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#adf1a24be3eae3ff595cecbaa3a4f4ad3"> 1107</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#adf1a24be3eae3ff595cecbaa3a4f4ad3">prod_values</a>(<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values)</div>
+<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;T prod_values(vec&lt;T&gt;&amp; values)</div>
 <div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;{</div>
 <div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160;    T v =1;</div>
-<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; values.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>(); i++)</div>
+<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; values.size(); i++)</div>
 <div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160;        v*=values(i);</div>
 <div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;    <span class="keywordflow">return</span> v;</div>
 <div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;}</div>
 <div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160; </div>
 <div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160; </div>
 <div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01121"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a0d9115b6999049fb851dc6da02c0ca31"> 1121</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a0d9115b6999049fb851dc6da02c0ca31">select_value</a>(<span class="keywordtype">unsigned</span> k, <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values)</div>
+<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;T select_value(<span class="keywordtype">unsigned</span> k, vec&lt;T&gt;&amp; values)</div>
 <div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;{</div>
-<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;    <span class="keywordflow">if</span> (k &gt;= values.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>())</div>
-<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;        k = values.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>()-1;</div>
-<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;    std::nth_element(&amp;values(0),&amp;values(k),&amp;values(values.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>()-1)+1);</div>
+<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;    <span class="keywordflow">if</span> (k &gt;= values.size())</div>
+<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;        k = values.size()-1;</div>
+<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;    std::nth_element(&amp;values(0),&amp;values(k),&amp;values(values.size()-1)+1);</div>
 <div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;    <span class="keywordflow">return</span> values(k);</div>
 <div class="line"><a name="l01127"></a><span class="lineno"> 1127</span>&#160;}</div>
 <div class="line"><a name="l01128"></a><span class="lineno"> 1128</span>&#160; </div>
 <div class="line"><a name="l01129"></a><span class="lineno"> 1129</span>&#160; </div>
 <div class="line"><a name="l01130"></a><span class="lineno"> 1130</span>&#160; </div>
 <div class="line"><a name="l01136"></a><span class="lineno"> 1136</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01137"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a10dff5b4a5e3e3f3727272dc9b129be5"> 1137</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a10dff5b4a5e3e3f3727272dc9b129be5">select_median_value</a>( <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values)</div>
+<div class="line"><a name="l01137"></a><span class="lineno"> 1137</span>&#160;T select_median_value( vec&lt;T&gt;&amp; values)</div>
 <div class="line"><a name="l01138"></a><span class="lineno"> 1138</span>&#160;{   </div>
-<div class="line"><a name="l01139"></a><span class="lineno"> 1139</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a0d9115b6999049fb851dc6da02c0ca31">select_value</a>((values.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>())/2,values);</div>
+<div class="line"><a name="l01139"></a><span class="lineno"> 1139</span>&#160;    <span class="keywordflow">return</span> select_value((values.size())/2,values);</div>
 <div class="line"><a name="l01140"></a><span class="lineno"> 1140</span>&#160;}</div>
 <div class="line"><a name="l01141"></a><span class="lineno"> 1141</span>&#160; </div>
 <div class="line"><a name="l01142"></a><span class="lineno"> 1142</span>&#160; </div>
 <div class="line"><a name="l01143"></a><span class="lineno"> 1143</span>&#160; </div>
 <div class="line"><a name="l01145"></a><span class="lineno"> 1145</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01146"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ab64f0dd9dca92bc57478fd01ec0abf57"> 1146</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#ab64f0dd9dca92bc57478fd01ec0abf57">median_value</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; values)</div>
+<div class="line"><a name="l01146"></a><span class="lineno"> 1146</span>&#160;T median_value(<span class="keyword">const</span> vec&lt;T&gt;&amp; values)</div>
 <div class="line"><a name="l01147"></a><span class="lineno"> 1147</span>&#160;{</div>
-<div class="line"><a name="l01148"></a><span class="lineno"> 1148</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> c = values;</div>
-<div class="line"><a name="l01149"></a><span class="lineno"> 1149</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a0d9115b6999049fb851dc6da02c0ca31">select_value</a>((c.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>())/2,c);</div>
+<div class="line"><a name="l01148"></a><span class="lineno"> 1148</span>&#160;    vec&lt;T&gt; c = values;</div>
+<div class="line"><a name="l01149"></a><span class="lineno"> 1149</span>&#160;    <span class="keywordflow">return</span> select_value((c.size())/2,c);</div>
 <div class="line"><a name="l01150"></a><span class="lineno"> 1150</span>&#160;}</div>
 <div class="line"><a name="l01151"></a><span class="lineno"> 1151</span>&#160; </div>
 <div class="line"><a name="l01152"></a><span class="lineno"> 1152</span>&#160; </div>
 <div class="line"><a name="l01153"></a><span class="lineno"> 1153</span>&#160; </div>
 <div class="line"><a name="l01155"></a><span class="lineno"> 1155</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01156"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a62d770ccb1369c369afc7f1f5b01c2c1"> 1156</a></span>&#160;<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>  <a class="code" href="namespacecgv_1_1math.html#a62d770ccb1369c369afc7f1f5b01c2c1">lin_space</a>(<span class="keyword">const</span> T&amp; first_val, <span class="keyword">const</span> T&amp; last_val, <span class="keywordtype">unsigned</span> N=10)</div>
+<div class="line"><a name="l01156"></a><span class="lineno"> 1156</span>&#160;<span class="keyword">const</span> vec&lt;T&gt;  lin_space(<span class="keyword">const</span> T&amp; first_val, <span class="keyword">const</span> T&amp; last_val, <span class="keywordtype">unsigned</span> N=10)</div>
 <div class="line"><a name="l01157"></a><span class="lineno"> 1157</span>&#160;{</div>
-<div class="line"><a name="l01158"></a><span class="lineno"> 1158</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> lv(N);</div>
+<div class="line"><a name="l01158"></a><span class="lineno"> 1158</span>&#160;    vec&lt;T&gt; lv(N);</div>
 <div class="line"><a name="l01159"></a><span class="lineno"> 1159</span>&#160;    <span class="keywordflow">if</span>(N == 1)</div>
 <div class="line"><a name="l01160"></a><span class="lineno"> 1160</span>&#160;    {</div>
 <div class="line"><a name="l01161"></a><span class="lineno"> 1161</span>&#160;        lv(0) = last_val;</div>
@@ -1153,34 +1153,34 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="line"><a name="l01192"></a><span class="lineno"> 1192</span>&#160; </div>
 <div class="line"><a name="l01193"></a><span class="lineno"> 1193</span>&#160; </div>
 <div class="line"><a name="l01196"></a><span class="lineno"> 1196</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01197"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ab33cb46398dd66cb74e2355ce3d2373f"> 1197</a></span>&#160;<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>  <a class="code" href="namespacecgv_1_1math.html#ab33cb46398dd66cb74e2355ce3d2373f">log_space</a>(<span class="keyword">const</span> T&amp; first_pow_of_10, <span class="keyword">const</span> T&amp; last_pow_of_10, <span class="keywordtype">unsigned</span> N=10)</div>
+<div class="line"><a name="l01197"></a><span class="lineno"> 1197</span>&#160;<span class="keyword">const</span> vec&lt;T&gt;  log_space(<span class="keyword">const</span> T&amp; first_pow_of_10, <span class="keyword">const</span> T&amp; last_pow_of_10, <span class="keywordtype">unsigned</span> N=10)</div>
 <div class="line"><a name="l01198"></a><span class="lineno"> 1198</span>&#160;{</div>
 <div class="line"><a name="l01199"></a><span class="lineno"> 1199</span>&#160; </div>
-<div class="line"><a name="l01200"></a><span class="lineno"> 1200</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> lv(N);</div>
+<div class="line"><a name="l01200"></a><span class="lineno"> 1200</span>&#160;    vec&lt;T&gt; lv(N);</div>
 <div class="line"><a name="l01201"></a><span class="lineno"> 1201</span>&#160;    <span class="keywordflow">if</span>(N == 1)</div>
 <div class="line"><a name="l01202"></a><span class="lineno"> 1202</span>&#160;    {</div>
-<div class="line"><a name="l01203"></a><span class="lineno"> 1203</span>&#160;        lv(0) = <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>((T)10.0,last_pow_of_10);</div>
+<div class="line"><a name="l01203"></a><span class="lineno"> 1203</span>&#160;        lv(0) = pow((T)10.0,last_pow_of_10);</div>
 <div class="line"><a name="l01204"></a><span class="lineno"> 1204</span>&#160;        <span class="keywordflow">return</span> lv;</div>
 <div class="line"><a name="l01205"></a><span class="lineno"> 1205</span>&#160;    }</div>
 <div class="line"><a name="l01206"></a><span class="lineno"> 1206</span>&#160;    T diff = last_pow_of_10 - first_pow_of_10;</div>
 <div class="line"><a name="l01207"></a><span class="lineno"> 1207</span>&#160; </div>
 <div class="line"><a name="l01208"></a><span class="lineno"> 1208</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; N; i++)</div>
 <div class="line"><a name="l01209"></a><span class="lineno"> 1209</span>&#160;    {</div>
-<div class="line"><a name="l01210"></a><span class="lineno"> 1210</span>&#160;        lv(i) = <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>((T)10.0,(T)first_pow_of_10 + (T)i*diff/((T)N-(T)1.0));</div>
+<div class="line"><a name="l01210"></a><span class="lineno"> 1210</span>&#160;        lv(i) = pow((T)10.0,(T)first_pow_of_10 + (T)i*diff/((T)N-(T)1.0));</div>
 <div class="line"><a name="l01211"></a><span class="lineno"> 1211</span>&#160;    }</div>
 <div class="line"><a name="l01212"></a><span class="lineno"> 1212</span>&#160;    <span class="keywordflow">return</span> lv;</div>
 <div class="line"><a name="l01213"></a><span class="lineno"> 1213</span>&#160;}</div>
 <div class="line"><a name="l01214"></a><span class="lineno"> 1214</span>&#160; </div>
 <div class="line"><a name="l01216"></a><span class="lineno"> 1216</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01217"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ae1bd16fe490d8607e7b1051795cd9ad4"> 1217</a></span>&#160;<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#a72cf634eb03e767e64433f0e69d27442">lerp</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v1, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v2, T t)</div>
+<div class="line"><a name="l01217"></a><span class="lineno"> 1217</span>&#160;<span class="keyword">const</span> vec&lt;T&gt; lerp(<span class="keyword">const</span> vec&lt;T&gt;&amp; v1, <span class="keyword">const</span> vec&lt;T&gt;&amp; v2, T t)</div>
 <div class="line"><a name="l01218"></a><span class="lineno"> 1218</span>&#160;{</div>
 <div class="line"><a name="l01219"></a><span class="lineno"> 1219</span>&#160;    <span class="keywordflow">return</span> (1-t)*v1+t*v2;</div>
 <div class="line"><a name="l01220"></a><span class="lineno"> 1220</span>&#160;}</div>
 <div class="line"><a name="l01221"></a><span class="lineno"> 1221</span>&#160; </div>
 <div class="line"><a name="l01223"></a><span class="lineno"> 1223</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l01224"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a106cc64d2bdc02a0c169d79901eea313"> 1224</a></span>&#160;<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#a9ce04f60bc6efa4a280d7fa69cb3151b">slerp</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v0, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v1, T t)</div>
+<div class="line"><a name="l01224"></a><span class="lineno"> 1224</span>&#160;<span class="keyword">const</span> vec&lt;T&gt; slerp(<span class="keyword">const</span> vec&lt;T&gt;&amp; v0, <span class="keyword">const</span> vec&lt;T&gt;&amp; v1, T t)</div>
 <div class="line"><a name="l01225"></a><span class="lineno"> 1225</span>&#160;{</div>
-<div class="line"><a name="l01226"></a><span class="lineno"> 1226</span>&#160;    T dotv0v1 = <a class="code" href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">dot</a>(v0,v1);</div>
+<div class="line"><a name="l01226"></a><span class="lineno"> 1226</span>&#160;    T dotv0v1 = dot(v0,v1);</div>
 <div class="line"><a name="l01227"></a><span class="lineno"> 1227</span>&#160;    <span class="comment">//clamp between [-1,1]</span></div>
 <div class="line"><a name="l01228"></a><span class="lineno"> 1228</span>&#160;    <span class="keywordflow">if</span>(dotv0v1 &lt; -1)</div>
 <div class="line"><a name="l01229"></a><span class="lineno"> 1229</span>&#160;        dotv0v1 = -1;</div>
@@ -1189,14 +1189,18 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="line"><a name="l01232"></a><span class="lineno"> 1232</span>&#160;        dotv0v1 = 1;</div>
 <div class="line"><a name="l01233"></a><span class="lineno"> 1233</span>&#160; </div>
 <div class="line"><a name="l01234"></a><span class="lineno"> 1234</span>&#160;    T theta = acos(dotv0v1)*t;</div>
-<div class="line"><a name="l01235"></a><span class="lineno"> 1235</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">cgv::math::vec&lt;T&gt;</a> v2 = <a class="code" href="namespacecgv_1_1math.html#abfa52c4120248159499bc320aba339c5">normalize</a>(v1 - (dotv0v1)*v0);</div>
+<div class="line"><a name="l01235"></a><span class="lineno"> 1235</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">cgv::math::vec&lt;T&gt;</a> v2 = normalize(v1 - (dotv0v1)*v0);</div>
 <div class="line"><a name="l01236"></a><span class="lineno"> 1236</span>&#160;    <span class="keywordflow">return</span> cos(theta)*v0 + sin(theta)*v2;</div>
 <div class="line"><a name="l01237"></a><span class="lineno"> 1237</span>&#160;}</div>
 <div class="line"><a name="l01238"></a><span class="lineno"> 1238</span>&#160; </div>
-<div class="line"><a name="l01239"></a><span class="lineno"> 1239</span>&#160; </div>
+<div class="line"><a name="l01239"></a><span class="lineno"> 1239</span>&#160;} <span class="comment">// namespace math</span></div>
 <div class="line"><a name="l01240"></a><span class="lineno"> 1240</span>&#160; </div>
-<div class="line"><a name="l01241"></a><span class="lineno"> 1241</span>&#160;    }</div>
-<div class="line"><a name="l01242"></a><span class="lineno"> 1242</span>&#160;}</div>
+<div class="line"><a name="l01243"></a><span class="lineno"> 1243</span>&#160; </div>
+<div class="line"><a name="l01245"></a><span class="lineno"><a class="line" href="namespacecgv.html#a3f00260ff233bc6c3b45006769da92fc"> 1245</a></span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1math_1_1vec.html">cgv::math::vec&lt;float&gt;</a> <a class="code" href="namespacecgv.html#a3f00260ff233bc6c3b45006769da92fc">vecn</a>;</div>
+<div class="line"><a name="l01247"></a><span class="lineno"><a class="line" href="namespacecgv.html#aa5206a03879af3fe8eaf6f99d40a905d"> 1247</a></span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1math_1_1vec.html">cgv::math::vec&lt;double&gt;</a> <a class="code" href="namespacecgv.html#aa5206a03879af3fe8eaf6f99d40a905d">dvecn</a>;</div>
+<div class="line"><a name="l01248"></a><span class="lineno"> 1248</span>&#160; </div>
+<div class="line"><a name="l01250"></a><span class="lineno"> 1250</span>&#160; </div>
+<div class="line"><a name="l01251"></a><span class="lineno"> 1251</span>&#160;}<span class="comment">// namespace cgv</span></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1vec_html"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html">cgv::math::vec</a></div><div class="ttdoc">A column vector class.</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00027">vec.h:28</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1vec_html_a07079c64e093d36e79557787778c1e92"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html#a07079c64e093d36e79557787778c1e92">cgv::math::vec::vec</a></div><div class="ttdeci">vec()</div><div class="ttdoc">standard constructor</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00109">vec.h:109</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1vec_html_a07cfdda13a3b1bdc6eca0c08b3f29554"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html#a07cfdda13a3b1bdc6eca0c08b3f29554">cgv::math::vec::operator==</a></div><div class="ttdeci">bool operator==(const vec&lt; S &gt; &amp;v) const</div><div class="ttdoc">test for equality</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00585">vec.h:585</a></div></div>
@@ -1257,48 +1261,10 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="ttc" id="aclasscgv_1_1math_1_1vec_html_af25679586927c2cd76125a6dec505ce4"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html#af25679586927c2cd76125a6dec505ce4">cgv::math::vec::abs</a></div><div class="ttdeci">void abs()</div><div class="ttdoc">componentwise absolute values</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00608">vec.h:608</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1vec_html_af26333b95866423824472ffb53a268c0"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html#af26333b95866423824472ffb53a268c0">cgv::math::vec::last</a></div><div class="ttdeci">const T &amp; last() const</div><div class="ttdoc">const element accessor for the last element</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00334">vec.h:334</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1vec_html_af53bd11ca5134bc307187fb63d79e3a4"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html#af53bd11ca5134bc307187fb63d79e3a4">cgv::math::vec::first</a></div><div class="ttdeci">const T &amp; first() const</div><div class="ttdoc">const element accessor for the first element</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00318">vec.h:318</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a021c54ae9938e48312e58ba9497336d5"><div class="ttname"><a href="namespacecgv_1_1math.html#a021c54ae9938e48312e58ba9497336d5">cgv::math::min_value</a></div><div class="ttdeci">T min_value(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">returns the minimal entry</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00495">fvec.h:495</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a096cb2f44ab3eef36e4fc867e5c2ab99"><div class="ttname"><a href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">cgv::math::abs</a></div><div class="ttdeci">fvec&lt; T, N &gt; abs(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">apply abs function component wise to vector</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00450">fvec.h:450</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a0d9115b6999049fb851dc6da02c0ca31"><div class="ttname"><a href="namespacecgv_1_1math.html#a0d9115b6999049fb851dc6da02c0ca31">cgv::math::select_value</a></div><div class="ttdeci">T select_value(unsigned k, vec&lt; T &gt; &amp;values)</div><div class="ttdoc">returns the kth-smallest value of values the input vector values will be rearranged to have this valu...</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01121">vec.h:1121</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a10a8c243810ff53fe2dba27b052ae806"><div class="ttname"><a href="namespacecgv_1_1math.html#a10a8c243810ff53fe2dba27b052ae806">cgv::math::var_and_mean_value</a></div><div class="ttdeci">void var_and_mean_value(const vec&lt; T &gt; &amp;values, T &amp;mu, T &amp;var)</div><div class="ttdoc">compute the mean and the variance (sigma^2) of all values</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01042">vec.h:1042</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a10dff5b4a5e3e3f3727272dc9b129be5"><div class="ttname"><a href="namespacecgv_1_1math.html#a10dff5b4a5e3e3f3727272dc9b129be5">cgv::math::select_median_value</a></div><div class="ttdeci">T select_median_value(vec&lt; T &gt; &amp;values)</div><div class="ttdoc">returns the value of values the input vector arr will be rearanged to have this value in location arr...</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01137">vec.h:1137</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a1d78d215cba9ac902cf783e07cacba82"><div class="ttname"><a href="namespacecgv_1_1math.html#a1d78d215cba9ac902cf783e07cacba82">cgv::math::mad_value</a></div><div class="ttdeci">T mad_value(const vec&lt; T &gt; &amp;values)</div><div class="ttdoc">compute the median absolut deviation MAD</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01022">vec.h:1022</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a2a4f53fc7cb7dbcb1fa07ec66d99915d"><div class="ttname"><a href="namespacecgv_1_1math.html#a2a4f53fc7cb7dbcb1fa07ec66d99915d">cgv::math::floor</a></div><div class="ttdeci">fvec&lt; T, N &gt; floor(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">apply floor function component wise to vector</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00458">fvec.h:458</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a2b0b909a09ab10500fd3683689258851"><div class="ttname"><a href="namespacecgv_1_1math.html#a2b0b909a09ab10500fd3683689258851">cgv::math::dbl_cross</a></div><div class="ttdeci">vec&lt; T &gt; dbl_cross(const vec&lt; T &gt; &amp;a, const vec&lt; S &gt; &amp;b, vec&lt; U &gt; &amp;c)</div><div class="ttdoc">returns the double cross product of vector a, b and c a x(b x c)</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00821">vec.h:821</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a319fcf5471db921fa80eedf62c03ff02"><div class="ttname"><a href="namespacecgv_1_1math.html#a319fcf5471db921fa80eedf62c03ff02">cgv::math::length</a></div><div class="ttdeci">T length(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">returns the length of vector v</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00438">fvec.h:438</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a3b51b9b6a031832d8f5e61daae591d23"><div class="ttname"><a href="namespacecgv_1_1math.html#a3b51b9b6a031832d8f5e61daae591d23">cgv::math::range_value</a></div><div class="ttdeci">T range_value(const vec&lt; T &gt; &amp;values)</div><div class="ttdoc">compute the range of all values</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01015">vec.h:1015</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a411bac494c2af0cff2a023a575ddeb2a"><div class="ttname"><a href="namespacecgv_1_1math.html#a411bac494c2af0cff2a023a575ddeb2a">cgv::math::p_norm</a></div><div class="ttdeci">T p_norm(const vec&lt; T &gt; &amp;values, const S &amp;p=1)</div><div class="ttdoc">return the p-norm of the vector default is p == 1</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00724">vec.h:724</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a43c477a6a271f0ea40c265e5182c529e"><div class="ttname"><a href="namespacecgv_1_1math.html#a43c477a6a271f0ea40c265e5182c529e">cgv::math::cross</a></div><div class="ttdeci">fvec&lt; T, N &gt; cross(const fvec&lt; T, N &gt; &amp;v, const fvec&lt; T, N &gt; &amp;w)</div><div class="ttdoc">returns the cross product of vector v and w</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00473">fvec.h:473</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a4bdff18efd6afb8e7d19406cb7664e51"><div class="ttname"><a href="namespacecgv_1_1math.html#a4bdff18efd6afb8e7d19406cb7664e51">cgv::math::operator&gt;&gt;</a></div><div class="ttdeci">std::istream &amp; operator&gt;&gt;(std::istream &amp;in, diag_mat&lt; T &gt; &amp;m)</div><div class="ttdoc">input of a diagonal matrix from an istream</div><div class="ttdef"><b>Definition:</b> <a href="diag__mat_8h_source.html#l00453">diag_mat.h:453</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a59c378b0c8a7b79005500080d18dfdf0"><div class="ttname"><a href="namespacecgv_1_1math.html#a59c378b0c8a7b79005500080d18dfdf0">cgv::math::var_value</a></div><div class="ttdeci">T var_value(const vec&lt; T &gt; &amp;values)</div><div class="ttdoc">compute the variance of all values, normalization is done with n-1 (unbiased estimator)</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00994">vec.h:994</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a5b11c05b0b93335aff82154c9cfd0a51"><div class="ttname"><a href="namespacecgv_1_1math.html#a5b11c05b0b93335aff82154c9cfd0a51">cgv::math::safe_normalize</a></div><div class="ttdeci">fvec&lt; T, N &gt; safe_normalize(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">return safely normalized vector</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00324">fvec.h:324</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a5fcaec03b9e45ded6d1f1e9eadfdffac"><div class="ttname"><a href="namespacecgv_1_1math.html#a5fcaec03b9e45ded6d1f1e9eadfdffac">cgv::math::std_value</a></div><div class="ttdeci">T std_value(const vec&lt; T &gt; &amp;values)</div><div class="ttdoc">compute the standard deviation (sigma) of all values, normalization is done by n-1 (unbiased estimato...</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01031">vec.h:1031</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a62d770ccb1369c369afc7f1f5b01c2c1"><div class="ttname"><a href="namespacecgv_1_1math.html#a62d770ccb1369c369afc7f1f5b01c2c1">cgv::math::lin_space</a></div><div class="ttdeci">const vec&lt; T &gt; lin_space(const T &amp;first_val, const T &amp;last_val, unsigned N=10)</div><div class="ttdoc">create a linearly spaced vector with N values starting at first_val and ending ant last_val</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01156">vec.h:1156</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a68ebc3f83af00eb06620f61e7e3e06e4"><div class="ttname"><a href="namespacecgv_1_1math.html#a68ebc3f83af00eb06620f61e7e3e06e4">cgv::math::sum_values</a></div><div class="ttdeci">T sum_values(const vec&lt; T &gt; &amp;values)</div><div class="ttdoc">returns the sum of all entries</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01079">vec.h:1079</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a69a062bc927d2831ed28939db3703480"><div class="ttname"><a href="namespacecgv_1_1math.html#a69a062bc927d2831ed28939db3703480">cgv::math::spat</a></div><div class="ttdeci">T spat(const vec&lt; T &gt; &amp;a, const vec&lt; S &gt; &amp;b, const vec&lt; U &gt; &amp;c)</div><div class="ttdoc">returns the spat product (mixed vector product) of the vectors a, b and c</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00828">vec.h:828</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a72cf634eb03e767e64433f0e69d27442"><div class="ttname"><a href="namespacecgv_1_1math.html#a72cf634eb03e767e64433f0e69d27442">cgv::math::lerp</a></div><div class="ttdeci">const fmat&lt; T, N, M &gt; lerp(const fmat&lt; T, N, M &gt; &amp;m1, const fmat&lt; T, N, M &gt; &amp;m2, T t)</div><div class="ttdoc">linear interpolation returns (1-t)*m1 + t*m2</div><div class="ttdef"><b>Definition:</b> <a href="fmat_8h_source.html#l00326">fmat.h:326</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a7b97afa2f0ea55aa60e8e2bbb16da022"><div class="ttname"><a href="namespacecgv_1_1math.html#a7b97afa2f0ea55aa60e8e2bbb16da022">cgv::math::refract</a></div><div class="ttdeci">vec&lt; T &gt; refract(const vec&lt; T &gt; &amp;v, const vec&lt; T &gt; &amp;n, T c1, T c2, bool *total_reflection=NULL)</div><div class="ttdoc">calculates the refracted direction of v on a surface with normal n and refraction indices c1,...</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00851">vec.h:851</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a7bdfc685a508ef94145942bc61929185"><div class="ttname"><a href="namespacecgv_1_1math.html#a7bdfc685a508ef94145942bc61929185">cgv::math::ceil</a></div><div class="ttdeci">fvec&lt; T, N &gt; ceil(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">apply ceil function component wise to vector</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00462">fvec.h:462</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a7fb1cc83fc48654f1d5bd9982e1db1e2"><div class="ttname"><a href="namespacecgv_1_1math.html#a7fb1cc83fc48654f1d5bd9982e1db1e2">cgv::math::cumsum_values</a></div><div class="ttdeci">T cumsum_values(const vec&lt; T &gt; &amp;values, vec&lt; T &gt; &amp;cumsumvalues)</div><div class="ttdoc">computes cumulative sums in cumsumvalues cumsumvalues[i] = values[0]+...+values[i-1] returns the sum ...</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01091">vec.h:1091</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a92f1b79975130902277a2c38eb2ad56b"><div class="ttname"><a href="namespacecgv_1_1math.html#a92f1b79975130902277a2c38eb2ad56b">cgv::math::project</a></div><div class="ttdeci">vec&lt; T &gt; project(const vec&lt; T &gt; &amp;v, const vec&lt; T &gt; &amp;n)</div><div class="ttdoc">calculates the projection of v onto n</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00835">vec.h:835</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a92f496231d4b5519a815e6be9387f851"><div class="ttname"><a href="namespacecgv_1_1math.html#a92f496231d4b5519a815e6be9387f851">cgv::math::max_index</a></div><div class="ttdeci">unsigned max_index(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">return the index of the largest entry</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00509">fvec.h:509</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a94f7f6756f02d9477d4522f74dfa0ff4"><div class="ttname"><a href="namespacecgv_1_1math.html#a94f7f6756f02d9477d4522f74dfa0ff4">cgv::math::max_value</a></div><div class="ttdeci">T max_value(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">return the value of the largest entry</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00516">fvec.h:516</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a959d852b32d156d183107537cc965ca7"><div class="ttname"><a href="namespacecgv_1_1math.html#a959d852b32d156d183107537cc965ca7">cgv::math::operator&lt;&lt;</a></div><div class="ttdeci">std::ostream &amp; operator&lt;&lt;(std::ostream &amp;out, const diag_mat&lt; T &gt; &amp;m)</div><div class="ttdoc">output of a diagonal matrix onto an ostream</div><div class="ttdef"><b>Definition:</b> <a href="diag__mat_8h_source.html#l00442">diag_mat.h:442</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a98dec8fec76658745c64947ff97a0915"><div class="ttname"><a href="namespacecgv_1_1math.html#a98dec8fec76658745c64947ff97a0915">cgv::math::sqr_length</a></div><div class="ttdeci">T sqr_length(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">returns the squared length of vector v</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00466">fvec.h:466</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a9ce04f60bc6efa4a280d7fa69cb3151b"><div class="ttname"><a href="namespacecgv_1_1math.html#a9ce04f60bc6efa4a280d7fa69cb3151b">cgv::math::slerp</a></div><div class="ttdeci">const fvec&lt; T, N &gt; slerp(const fvec&lt; T, N &gt; &amp;v0, const fvec&lt; T, N &gt; &amp;v1, T t)</div><div class="ttdoc">spherical linear interpolation</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00537">fvec.h:537</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_aa52846938f1183bd690188020682e84b"><div class="ttname"><a href="namespacecgv_1_1math.html#aa52846938f1183bd690188020682e84b">cgv::math::sort_values</a></div><div class="ttdeci">void sort_values(vec&lt; T &gt; &amp;values, bool ascending=true)</div><div class="ttdoc">sort vector elements in ascending or descending order</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01066">vec.h:1066</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_ab33cb46398dd66cb74e2355ce3d2373f"><div class="ttname"><a href="namespacecgv_1_1math.html#ab33cb46398dd66cb74e2355ce3d2373f">cgv::math::log_space</a></div><div class="ttdeci">const vec&lt; T &gt; log_space(const T &amp;first_pow_of_10, const T &amp;last_pow_of_10, unsigned N=10)</div><div class="ttdoc">create a log spaced vector with N values starting at 10^first_pow_of_10 and ending at 10 last_val</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01197">vec.h:1197</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_ab41dd3e7ea6d0410abba813f0c6067b6"><div class="ttname"><a href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">cgv::math::pow</a></div><div class="ttdeci">const fvec&lt; T, N &gt; pow(const fvec&lt; T, N &gt; &amp;v, T e)</div><div class="ttdoc">pow function for fvec type</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00614">fvec.h:614</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_ab64f0dd9dca92bc57478fd01ec0abf57"><div class="ttname"><a href="namespacecgv_1_1math.html#ab64f0dd9dca92bc57478fd01ec0abf57">cgv::math::median_value</a></div><div class="ttdeci">T median_value(const vec&lt; T &gt; &amp;values)</div><div class="ttdoc">returns median element without modifying the given vector</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01146">vec.h:1146</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_ab9371e75b15a6adc349b95b4e523c6a6"><div class="ttname"><a href="namespacecgv_1_1math.html#ab9371e75b15a6adc349b95b4e523c6a6">cgv::math::dot</a></div><div class="ttdeci">T dot(const fvec&lt; T, N &gt; &amp;v, const fvec&lt; S, N &gt; &amp;w)</div><div class="ttdoc">returns the dot product of vector v and w</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00386">fvec.h:386</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_ab9f32aff46cb5d2962caf1123ac1be20"><div class="ttname"><a href="namespacecgv_1_1math.html#ab9f32aff46cb5d2962caf1123ac1be20">cgv::math::min_index</a></div><div class="ttdeci">unsigned min_index(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">returns the index of the smallest value</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00502">fvec.h:502</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_abbe46549a352cc0c03a921e1a54531b1"><div class="ttname"><a href="namespacecgv_1_1math.html#abbe46549a352cc0c03a921e1a54531b1">cgv::math::mean_value</a></div><div class="ttdeci">T mean_value(const vec&lt; T &gt; &amp;values)</div><div class="ttdoc">compute the mean of all values</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00976">vec.h:976</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_abfa52c4120248159499bc320aba339c5"><div class="ttname"><a href="namespacecgv_1_1math.html#abfa52c4120248159499bc320aba339c5">cgv::math::normalize</a></div><div class="ttdeci">fvec&lt; T, N &gt; normalize(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">return normalized vector</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00320">fvec.h:320</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_ac3ed9709b6809a4e152a44897a27a6f4"><div class="ttname"><a href="namespacecgv_1_1math.html#ac3ed9709b6809a4e152a44897a27a6f4">cgv::math::round</a></div><div class="ttdeci">fvec&lt; T, N &gt; round(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">apply round function component wise to vector</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00454">fvec.h:454</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_adf1a24be3eae3ff595cecbaa3a4f4ad3"><div class="ttname"><a href="namespacecgv_1_1math.html#adf1a24be3eae3ff595cecbaa3a4f4ad3">cgv::math::prod_values</a></div><div class="ttdeci">T prod_values(vec&lt; T &gt; &amp;values)</div><div class="ttdoc">returns the product of all entries</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01107">vec.h:1107</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_af8d1188e252c04e6abccec35eed56d8f"><div class="ttname"><a href="namespacecgv_1_1math.html#af8d1188e252c04e6abccec35eed56d8f">cgv::math::inf_norm</a></div><div class="ttdeci">T inf_norm(const vec&lt; T &gt; &amp;values)</div><div class="ttdoc">return the infinity norm of the vector</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00741">vec.h:741</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_afa5be51992b338933231c56f5b235e3e"><div class="ttname"><a href="namespacecgv_1_1math.html#afa5be51992b338933231c56f5b235e3e">cgv::math::reflect</a></div><div class="ttdeci">vec&lt; T &gt; reflect(const vec&lt; T &gt; &amp;v, const vec&lt; T &gt; &amp;n)</div><div class="ttdoc">calculates the reflected direction of v; n is the normal of the reflecting surface</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00843">vec.h:843</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
+<div class="ttc" id="anamespacecgv_html_a3f00260ff233bc6c3b45006769da92fc"><div class="ttname"><a href="namespacecgv.html#a3f00260ff233bc6c3b45006769da92fc">cgv::vecn</a></div><div class="ttdeci">cgv::math::vec&lt; float &gt; vecn</div><div class="ttdoc">declare type of single precision floating point vector with varying dimension</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01245">vec.h:1245</a></div></div>
+<div class="ttc" id="anamespacecgv_html_aa5206a03879af3fe8eaf6f99d40a905d"><div class="ttname"><a href="namespacecgv.html#aa5206a03879af3fe8eaf6f99d40a905d">cgv::dvecn</a></div><div class="ttdeci">cgv::math::vec&lt; double &gt; dvecn</div><div class="ttdoc">declare type of double precision floating point vector with varying dimension</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l01247">vec.h:1247</a></div></div>
+<div class="ttc" id="anamespacevr_html_aec82c4df7159ce4917c6684f8c634a5d"><div class="ttname"><a href="namespacevr.html#aec82c4df7159ce4917c6684f8c634a5d">vr::operator&lt;&lt;</a></div><div class="ttdeci">std::ostream &amp; operator&lt;&lt;(std::ostream &amp;os, const vr_device_info &amp;di)</div><div class="ttdoc">stream out operator for device infos</div><div class="ttdef"><b>Definition:</b> <a href="vr__info_8cxx_source.html#l00010">vr_info.cxx:10</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

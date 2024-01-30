@@ -8,7 +8,7 @@ var classcgv_1_1render_1_1gl_1_1mesh__drawable =
     [ "draw_mesh", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#ac829f656d7d42d63523c30a3d3cfba23", null ],
     [ "draw_mesh_primitive", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#a1962dbb2a1b5d399c58599f8179598c6", null ],
     [ "finish_draw", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#a7c689c118b3986ee9909ba0f640bb0cc", null ],
-    [ "get_box", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#a014ced68c6f53d4bdde9d8ea5a94cc1d", null ],
+    [ "get_box", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#a04d957aab7b1ffdf4d779daf5030b54d", null ],
     [ "init_frame", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#a19c6edf3b5bf5095cdcb2a853515e7f2", null ],
     [ "read_mesh", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#a442f0f098bc3629904696c9e9b6cb084", null ],
     [ "box", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#afc64be8997b59edf15b825a7e4966f17", null ],

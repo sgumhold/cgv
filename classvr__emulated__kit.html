@@ -99,16 +99,28 @@ Inheritance diagram for vr_emulated_kit:</div>
  <div class="center">
   <img src="classvr__emulated__kit.png" usemap="#vr_5Femulated_5Fkit_map" alt=""/>
   <map id="vr_5Femulated_5Fkit_map" name="vr_5Femulated_5Fkit_map">
-<area href="classvr_1_1vr__kit.html" title="a vr kit is composed of headset, two controllers, and two trackers, where all devices can be attached..." alt="vr::vr_kit" shape="rect" coords="0,56,158,80"/>
-<area href="classvr_1_1gl__vr__display.html" title="implements offscreen rendering" alt="vr::gl_vr_display" shape="rect" coords="0,0,158,24"/>
+<area href="classvr_1_1vr__kit.html" title="a vr kit is composed of headset, two controllers, and two trackers, where all devices can be attached..." alt="vr::vr_kit" shape="rect" coords="0,56,106,80"/>
+<area href="classvr_1_1gl__vr__display.html" title="implements offscreen rendering" alt="vr::gl_vr_display" shape="rect" coords="0,0,106,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a05e658b6fc28f5f3264ecd91ab4d06df"><td class="memItemLeft" align="right" valign="top"><a id="a05e658b6fc28f5f3264ecd91ab4d06df"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; float, 3, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>mat3x4</b></td></tr>
-<tr class="separator:a05e658b6fc28f5f3264ecd91ab4d06df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a28a322cd69f35d9937c8a8bdd0eac9"><td class="memItemLeft" align="right" valign="top"><a id="a4a28a322cd69f35d9937c8a8bdd0eac9"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>vec3</b> = <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">cgv::vec3</a></td></tr>
+<tr class="separator:a4a28a322cd69f35d9937c8a8bdd0eac9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16bcf006c911e6011045aca58d2c12d3"><td class="memItemLeft" align="right" valign="top"><a id="a16bcf006c911e6011045aca58d2c12d3"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>vec4</b> = <a class="el" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">cgv::vec4</a></td></tr>
+<tr class="separator:a16bcf006c911e6011045aca58d2c12d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b21694964448344bc0073753bc39fc1"><td class="memItemLeft" align="right" valign="top"><a id="a2b21694964448344bc0073753bc39fc1"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>mat3</b> = <a class="el" href="namespacecgv.html#a4e88ab68744702f9b7aa559de4f31521">cgv::mat3</a></td></tr>
+<tr class="separator:a2b21694964448344bc0073753bc39fc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74c682f5367b1e4debe8fb53687627f4"><td class="memItemLeft" align="right" valign="top"><a id="a74c682f5367b1e4debe8fb53687627f4"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>mat4</b> = <a class="el" href="namespacecgv.html#aac1220367b5c60325f351a680dcc2689">cgv::mat4</a></td></tr>
+<tr class="separator:a74c682f5367b1e4debe8fb53687627f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada99ced858370396cd468da020b91b24"><td class="memItemLeft" align="right" valign="top"><a id="ada99ced858370396cd468da020b91b24"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>mat34</b> = <a class="el" href="namespacecgv.html#a2bd70a4e2538fbe6b340a0e6a2b74918">cgv::mat34</a></td></tr>
+<tr class="separator:ada99ced858370396cd468da020b91b24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -238,10 +250,10 @@ typedef <a class="el" href="classcgv_1_1math_1_1quaternion.html">cgv::math::quat
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a09844effa3466044a4ecbd0e15828496"><td class="memItemLeft" align="right" valign="top"><a id="a09844effa3466044a4ecbd0e15828496"></a>
-<a class="el" href="classcgv_1_1math_1_1fmat.html">mat3x4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr__emulated__kit.html#a09844effa3466044a4ecbd0e15828496">construct_pos_matrix</a> (const <a class="el" href="classcgv_1_1math_1_1quaternion.html">quat</a> &amp;orientation, const <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> &amp;position)</td></tr>
-<tr class="memdesc:a09844effa3466044a4ecbd0e15828496"><td class="mdescLeft">&#160;</td><td class="mdescRight">helper functions to construct matrices <br /></td></tr>
-<tr class="separator:a09844effa3466044a4ecbd0e15828496"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abaaaabf8ea2a27a46c1968598cc9554b"><td class="memItemLeft" align="right" valign="top"><a id="abaaaabf8ea2a27a46c1968598cc9554b"></a>
+<a class="el" href="classcgv_1_1math_1_1fmat.html">mat34</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvr__emulated__kit.html#abaaaabf8ea2a27a46c1968598cc9554b">construct_pos_matrix</a> (const <a class="el" href="classcgv_1_1math_1_1quaternion.html">quat</a> &amp;orientation, const <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> &amp;position)</td></tr>
+<tr class="memdesc:abaaaabf8ea2a27a46c1968598cc9554b"><td class="mdescLeft">&#160;</td><td class="mdescRight">helper functions to construct matrices <br /></td></tr>
+<tr class="separator:abaaaabf8ea2a27a46c1968598cc9554b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69948c3664b8d951b181ab8abbb6a1fa"><td class="memItemLeft" align="right" valign="top"><a id="a69948c3664b8d951b181ab8abbb6a1fa"></a>
 <a class="el" href="classcgv_1_1math_1_1fmat.html">mat4</a>&#160;</td><td class="memItemRight" valign="bottom"><b>construct_homogeneous_matrix</b> (const <a class="el" href="classcgv_1_1math_1_1quaternion.html">quat</a> &amp;orientation, const <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> &amp;position)</td></tr>
 <tr class="separator:a69948c3664b8d951b181ab8abbb6a1fa"><td class="memSeparator" colspan="2">&#160;</td></tr>

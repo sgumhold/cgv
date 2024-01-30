@@ -91,145 +91,144 @@ $(document).ready(function(){initNavTree('gizmo_8h_source.html',''); initResizab
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;cgv/gui/key_event.h&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;cgv/gui/mouse_event.h&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;cgv/math/ray.h&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;cgv/render/render_types.h&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;cgv/render/view.h&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;cgv_gl/arrow_render_data.h&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;cgv_gl/rectangle_render_data.h&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;cgv_gl/sphere_render_data.h&gt;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">namespace </span>app {</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1gizmo.html">   18</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1app_1_1gizmo.html">gizmo</a> {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">enum class</span> InteractionFeature {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        kNone = 0,</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        kXAxis = 1,</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        kYAxis = 2,</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        kZAxis = 3,</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        kYZPlane = 4,</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        kXZPlane = 5,</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        kXYPlane = 6,</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        kCenter = 7</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    } feature = InteractionFeature::kNone;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <a class="code" href="classcgv_1_1render_1_1view.html">cgv::render::view</a>* view_ptr = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">bool</span> align_to_view;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">bool</span> hover;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">bool</span> active;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">float</span> scale;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">float</span> scale_coefficient;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::render::vec3</a> position;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::render::vec3</a> last_position;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::render::vec3</a> offset;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::render::vec3</a> flip_factors;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    std::function&lt;void(<span class="keywordtype">void</span>)&gt; move_callback;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">struct </span>{</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <a class="code" href="classcgv_1_1render_1_1arrow__renderer.html">cgv::render::arrow_renderer</a> arrow;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <a class="code" href="classcgv_1_1render_1_1rectangle__renderer.html">cgv::render::rectangle_renderer</a> rectangle;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <a class="code" href="classcgv_1_1render_1_1sphere__renderer.html">cgv::render::sphere_renderer</a> sphere;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    } renderers;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="classcgv_1_1render_1_1arrow__render__data.html">cgv::render::arrow_render_data&lt;&gt;</a> arrows;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <a class="code" href="classcgv_1_1render_1_1rectangle__render__data.html">cgv::render::rectangle_render_data&lt;&gt;</a> rectangles;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <a class="code" href="classcgv_1_1render_1_1sphere__render__data.html">cgv::render::sphere_render_data&lt;&gt;</a> sphere;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">bool</span> geometry_out_of_date;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordtype">void</span> create_geometry();</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">bool</span> is_axis(InteractionFeature feature) {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keywordflow">return</span> feature == InteractionFeature::kXAxis || feature == InteractionFeature::kYAxis || feature == InteractionFeature::kZAxis;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    }</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordtype">bool</span> is_plane(InteractionFeature feature) {</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">return</span> feature == InteractionFeature::kXYPlane || feature == InteractionFeature::kXZPlane || feature == InteractionFeature::kYZPlane;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    }</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordtype">bool</span> is_center(InteractionFeature feature) {</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">return</span> feature == InteractionFeature::kCenter;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    }</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordtype">int</span> get_axis_idx(InteractionFeature feature) {</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordflow">if</span>(!is_center(feature)) {</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <span class="keywordtype">int</span> feature_id = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(feature);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <span class="keywordflow">return</span> (feature_id - 1) % 3;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        }</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    }</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::render::vec3</a> get_axis(InteractionFeature feature) {</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::render::vec3</a> axis(0.0f);</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordtype">int</span> idx = get_axis_idx(feature);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keywordflow">if</span>(idx &gt; -1)</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            axis[idx] = 1.0f;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">return</span> axis;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    }</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordtype">bool</span> intersect_axis_aligned_rectangle(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1ray.html">cgv::math::ray3</a>&amp; r, <span class="keywordtype">int</span> axis, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::render::vec3</a>&amp; p, <span class="keywordtype">float</span> scale, <span class="keywordtype">float</span>&amp; t) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordtype">bool</span> intersect(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1ray.html">cgv::math::ray3</a>&amp; r);</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordtype">bool</span> handle_drag(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1ray.html">cgv::math::ray3</a>&amp; r, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::render::vec3</a>&amp; view_dir, <span class="keywordtype">bool</span> drag_start);</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::render::vec3</a> get_flip_factors();</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <a class="code" href="classcgv_1_1app_1_1gizmo.html">gizmo</a>();</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">void</span> destruct(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordtype">bool</span> handle(<a class="code" href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a>&amp; e, <a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordtype">bool</span> init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">void</span> draw(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordtype">void</span> set_view_ptr(<a class="code" href="classcgv_1_1render_1_1view.html">cgv::render::view</a>* view_ptr);</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordtype">void</span> enable_view_alignment(<span class="keywordtype">bool</span> enable) { align_to_view = enable; }</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordtype">void</span> set_scale(<span class="keywordtype">float</span> scale) {</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        scale_coefficient = scale;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    }</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordtype">void</span> set_move_callback(std::function&lt;<span class="keywordtype">void</span>(<span class="keywordtype">void</span>)&gt; func) {</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        move_callback = func;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    }</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keywordtype">void</span> set_position(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::render::vec3</a>&amp; p, <span class="keywordtype">bool</span> invoke_callback = <span class="keyword">false</span>) {</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        position = p;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        <span class="keywordflow">if</span>(invoke_callback &amp;&amp; move_callback)</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;            move_callback();</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    }</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::render::vec3</a> get_position()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        <span class="keywordflow">return</span> position;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    }</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;};</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;cgv/render/view.h&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;cgv_gl/arrow_render_data.h&gt;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;cgv_gl/rectangle_render_data.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;cgv_gl/sphere_render_data.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span>app {</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1gizmo.html">   17</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1app_1_1gizmo.html">gizmo</a> {</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">enum class</span> InteractionFeature {</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        kNone = 0,</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        kXAxis = 1,</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        kYAxis = 2,</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        kZAxis = 3,</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        kYZPlane = 4,</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        kXZPlane = 5,</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        kXYPlane = 6,</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        kCenter = 7</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    } feature = InteractionFeature::kNone;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="classcgv_1_1render_1_1view.html">cgv::render::view</a>* view_ptr = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">bool</span> align_to_view;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">bool</span> hover;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">bool</span> active;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">float</span> scale;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">float</span> scale_coefficient;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> position;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> last_position;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> offset;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> flip_factors;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    std::function&lt;void(<span class="keywordtype">void</span>)&gt; move_callback;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <a class="code" href="classcgv_1_1render_1_1arrow__renderer.html">cgv::render::arrow_renderer</a> arrow;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <a class="code" href="classcgv_1_1render_1_1rectangle__renderer.html">cgv::render::rectangle_renderer</a> rectangle;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <a class="code" href="classcgv_1_1render_1_1sphere__renderer.html">cgv::render::sphere_renderer</a> sphere;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    } renderers;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="classcgv_1_1render_1_1arrow__render__data.html">cgv::render::arrow_render_data&lt;&gt;</a> arrows;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="classcgv_1_1render_1_1rectangle__render__data.html">cgv::render::rectangle_render_data&lt;&gt;</a> rectangles;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <a class="code" href="classcgv_1_1render_1_1sphere__render__data.html">cgv::render::sphere_render_data&lt;&gt;</a> sphere;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">bool</span> geometry_out_of_date;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">void</span> create_geometry();</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">bool</span> is_axis(InteractionFeature feature) {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordflow">return</span> feature == InteractionFeature::kXAxis || feature == InteractionFeature::kYAxis || feature == InteractionFeature::kZAxis;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    }</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordtype">bool</span> is_plane(InteractionFeature feature) {</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordflow">return</span> feature == InteractionFeature::kXYPlane || feature == InteractionFeature::kXZPlane || feature == InteractionFeature::kYZPlane;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    }</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">bool</span> is_center(InteractionFeature feature) {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keywordflow">return</span> feature == InteractionFeature::kCenter;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordtype">int</span> get_axis_idx(InteractionFeature feature) {</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordflow">if</span>(!is_center(feature)) {</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            <span class="keywordtype">int</span> feature_id = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(feature);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <span class="keywordflow">return</span> (feature_id - 1) % 3;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    }</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> get_axis(InteractionFeature feature) {</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> axis(0.0f);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordtype">int</span> idx = get_axis_idx(feature);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordflow">if</span>(idx &gt; -1)</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            axis[idx] = 1.0f;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keywordflow">return</span> axis;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    }</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordtype">bool</span> intersect_axis_aligned_rectangle(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1ray.html">cgv::math::ray3</a>&amp; r, <span class="keywordtype">int</span> axis, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>&amp; p, <span class="keywordtype">float</span> scale, <span class="keywordtype">float</span>&amp; t) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordtype">bool</span> intersect(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1ray.html">cgv::math::ray3</a>&amp; r);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">bool</span> handle_drag(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1ray.html">cgv::math::ray3</a>&amp; r, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>&amp; view_dir, <span class="keywordtype">bool</span> drag_start);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> get_flip_factors();</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <a class="code" href="classcgv_1_1app_1_1gizmo.html">gizmo</a>();</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordtype">void</span> destruct(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordtype">bool</span> handle(<a class="code" href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a>&amp; e, <a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordtype">bool</span> init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordtype">void</span> draw(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keywordtype">void</span> set_view_ptr(<a class="code" href="classcgv_1_1render_1_1view.html">cgv::render::view</a>* view_ptr);</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keywordtype">void</span> enable_view_alignment(<span class="keywordtype">bool</span> enable) { align_to_view = enable; }</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordtype">void</span> set_scale(<span class="keywordtype">float</span> scale) {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        scale_coefficient = scale;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    }</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordtype">void</span> set_move_callback(std::function&lt;<span class="keywordtype">void</span>(<span class="keywordtype">void</span>)&gt; func) {</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        move_callback = func;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    }</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordtype">void</span> set_position(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>&amp; p, <span class="keywordtype">bool</span> invoke_callback = <span class="keyword">false</span>) {</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        position = p;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="keywordflow">if</span>(invoke_callback &amp;&amp; move_callback)</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;            move_callback();</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    }</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> get_position()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        <span class="keywordflow">return</span> position;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    }</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;};</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;}</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;}</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;}</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
-<div class="ttc" id="aclasscgv_1_1app_1_1gizmo_html"><div class="ttname"><a href="classcgv_1_1app_1_1gizmo.html">cgv::app::gizmo</a></div><div class="ttdef"><b>Definition:</b> <a href="gizmo_8h_source.html#l00018">gizmo.h:18</a></div></div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="ttc" id="aclasscgv_1_1app_1_1gizmo_html"><div class="ttname"><a href="classcgv_1_1app_1_1gizmo.html">cgv::app::gizmo</a></div><div class="ttdef"><b>Definition:</b> <a href="gizmo_8h_source.html#l00017">gizmo.h:17</a></div></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1event_html"><div class="ttname"><a href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a></div><div class="ttdef"><b>Definition:</b> <a href="event_8h_source.html#l00058">event.h:59</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt; float, 3 &gt;</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1ray_html"><div class="ttname"><a href="classcgv_1_1math_1_1ray.html">cgv::math::ray</a></div><div class="ttdoc">This class defines a template for n-dimensional rays with arbitrary data type defined by origin and d...</div><div class="ttdef"><b>Definition:</b> <a href="math_2ray_8h_source.html#l00014">ray.h:14</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1arrow__render__data_html"><div class="ttname"><a href="classcgv_1_1render_1_1arrow__render__data.html">cgv::render::arrow_render_data</a></div><div class="ttdef"><b>Definition:</b> <a href="arrow__render__data_8h_source.html#l00010">arrow_render_data.h:10</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1arrow__renderer_html"><div class="ttname"><a href="classcgv_1_1render_1_1arrow__renderer.html">cgv::render::arrow_renderer</a></div><div class="ttdoc">renderer that supports point splatting</div><div class="ttdef"><b>Definition:</b> <a href="arrow__renderer_8h_source.html#l00060">arrow_renderer.h:61</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00587">context.h:588</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00586">context.h:587</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1rectangle__render__data_html"><div class="ttname"><a href="classcgv_1_1render_1_1rectangle__render__data.html">cgv::render::rectangle_render_data</a></div><div class="ttdoc">Render data for rectangle geometry with support for the rectangle_renderer.</div><div class="ttdef"><b>Definition:</b> <a href="rectangle__render__data_8h_source.html#l00012">rectangle_render_data.h:12</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1rectangle__renderer_html"><div class="ttname"><a href="classcgv_1_1render_1_1rectangle__renderer.html">cgv::render::rectangle_renderer</a></div><div class="ttdoc">renderer that supports plane rendering</div><div class="ttdef"><b>Definition:</b> <a href="rectangle__renderer_8h_source.html#l00092">rectangle_renderer.h:93</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1rectangle__renderer_html"><div class="ttname"><a href="classcgv_1_1render_1_1rectangle__renderer.html">cgv::render::rectangle_renderer</a></div><div class="ttdoc">renderer that supports plane rendering</div><div class="ttdef"><b>Definition:</b> <a href="rectangle__renderer_8h_source.html#l00093">rectangle_renderer.h:94</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1sphere__render__data_html"><div class="ttname"><a href="classcgv_1_1render_1_1sphere__render__data.html">cgv::render::sphere_render_data</a></div><div class="ttdoc">Render data for sphere geometry with support for the sphere_renderer.</div><div class="ttdef"><b>Definition:</b> <a href="sphere__render__data_8h_source.html#l00012">sphere_render_data.h:12</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1sphere__renderer_html"><div class="ttname"><a href="classcgv_1_1render_1_1sphere__renderer.html">cgv::render::sphere_renderer</a></div><div class="ttdoc">renderer that supports splatting of spheres</div><div class="ttdef"><b>Definition:</b> <a href="sphere__renderer_8h_source.html#l00045">sphere_renderer.h:46</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1view_html"><div class="ttname"><a href="classcgv_1_1render_1_1view.html">cgv::render::view</a></div><div class="ttdoc">defines a symmetric view with the following quantities:</div><div class="ttdef"><b>Definition:</b> <a href="render_2view_8h_source.html#l00021">view.h:22</a></div></div>

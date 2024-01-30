@@ -197,12 +197,6 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__buffer.html">render_buffer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">this class encapsulate render buffers that live on the GPU which must support frame buffer objects for this to work.  <a href="classcgv_1_1render_1_1render__buffer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><b>render_types</b></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">this is DEPRECATED <br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1textured__rectangle.html">textured_rectangle</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">simple helper class to store rectangles with texture coordinates  <a href="structcgv_1_1render_1_1textured__rectangle.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1shader__config.html">shader_config</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">a globally unique shader config is registered by default when the cgv library is used.  <a href="structcgv_1_1render_1_1shader__config.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -223,6 +217,9 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1textured__material.html">textured_material</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">class that extends obj_material with the management of textures  <a href="classcgv_1_1render_1_1textured__material.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1textured__rectangle.html">textured_rectangle</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This type provides a simple helper class to store rectangles with texture coordinates.  <a href="structcgv_1_1render_1_1textured__rectangle.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">a vertex buffer is an unstructured memory block on the GPU.  <a href="classcgv_1_1render_1_1vertex__buffer.html#details">More...</a><br /></td></tr>
@@ -421,154 +418,6 @@ typedef <a class="el" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_pt
 <tr class="memitem:ab82425275622154b8cfee392b4bbf4dd"><td class="memItemLeft" align="right" valign="top"><a id="ab82425275622154b8cfee392b4bbf4dd"></a>
 typedef <a class="el" href="classcgv_1_1render_1_1context.html">context</a> *(*&#160;</td><td class="memItemRight" valign="bottom"><b>context_creation_function_type</b>) (<a class="el" href="namespacecgv_1_1render.html#a04797cd64ece747a5fda1f3bd7f45ee7">RenderAPI</a> api, unsigned int w, unsigned int h, const std::string &amp;title, bool show)</td></tr>
 <tr class="separator:ab82425275622154b8cfee392b4bbf4dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02e9c0ebb98bfd66e2d56e0a5e9047c8"><td class="memItemLeft" align="right" valign="top"><a id="a02e9c0ebb98bfd66e2d56e0a5e9047c8"></a>
-typedef <a class="el" href="classcgv_1_1media_1_1color.html">cgv::media::color</a>&lt; float, cgv::media::RGB &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">rgb</a></td></tr>
-<tr class="memdesc:a02e9c0ebb98bfd66e2d56e0a5e9047c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare rgb color type <br /></td></tr>
-<tr class="separator:a02e9c0ebb98bfd66e2d56e0a5e9047c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7119f6c28a063b3cc9958b9db5ccde77"><td class="memItemLeft" align="right" valign="top"><a id="a7119f6c28a063b3cc9958b9db5ccde77"></a>
-typedef <a class="el" href="classcgv_1_1media_1_1color.html">cgv::media::color</a>&lt; float, cgv::media::RGB, cgv::media::OPACITY &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a7119f6c28a063b3cc9958b9db5ccde77">rgba</a></td></tr>
-<tr class="memdesc:a7119f6c28a063b3cc9958b9db5ccde77"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare rgba color type <br /></td></tr>
-<tr class="separator:a7119f6c28a063b3cc9958b9db5ccde77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a5302bfcfa442c68a5a319791010c2b"><td class="memItemLeft" align="right" valign="top"><a id="a8a5302bfcfa442c68a5a319791010c2b"></a>
-typedef <a class="el" href="classcgv_1_1media_1_1color.html">cgv::media::color</a>&lt; <a class="el" href="namespacecgv_1_1type.html#af13ff82d38d19a2cc98f0f2dfb3e41ae">cgv::type::uint8_type</a>, cgv::media::RGB &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a8a5302bfcfa442c68a5a319791010c2b">rgb8</a></td></tr>
-<tr class="memdesc:a8a5302bfcfa442c68a5a319791010c2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare rgb color type <br /></td></tr>
-<tr class="separator:a8a5302bfcfa442c68a5a319791010c2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2452dd2ed3f84b935eb2655fa65c5bc4"><td class="memItemLeft" align="right" valign="top"><a id="a2452dd2ed3f84b935eb2655fa65c5bc4"></a>
-typedef <a class="el" href="classcgv_1_1media_1_1color.html">cgv::media::color</a>&lt; <a class="el" href="namespacecgv_1_1type.html#af13ff82d38d19a2cc98f0f2dfb3e41ae">cgv::type::uint8_type</a>, cgv::media::RGB, cgv::media::OPACITY &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a2452dd2ed3f84b935eb2655fa65c5bc4">rgba8</a></td></tr>
-<tr class="memdesc:a2452dd2ed3f84b935eb2655fa65c5bc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare rgba color type <br /></td></tr>
-<tr class="separator:a2452dd2ed3f84b935eb2655fa65c5bc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a157618fc22b8c3f110211a4493680d42"><td class="memItemLeft" align="right" valign="top"><a id="a157618fc22b8c3f110211a4493680d42"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; float, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a157618fc22b8c3f110211a4493680d42">vec2</a></td></tr>
-<tr class="memdesc:a157618fc22b8c3f110211a4493680d42"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 2d vectors <br /></td></tr>
-<tr class="separator:a157618fc22b8c3f110211a4493680d42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50cfdc8b08d298d7465d627cdf402590"><td class="memItemLeft" align="right" valign="top"><a id="a50cfdc8b08d298d7465d627cdf402590"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; float, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a></td></tr>
-<tr class="memdesc:a50cfdc8b08d298d7465d627cdf402590"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 3d vectors <br /></td></tr>
-<tr class="separator:a50cfdc8b08d298d7465d627cdf402590"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a091ed7d82bda1371fe5339a19bd75ea0"><td class="memItemLeft" align="right" valign="top"><a id="a091ed7d82bda1371fe5339a19bd75ea0"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; float, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a091ed7d82bda1371fe5339a19bd75ea0">vec4</a></td></tr>
-<tr class="memdesc:a091ed7d82bda1371fe5339a19bd75ea0"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of homogeneous vectors <br /></td></tr>
-<tr class="separator:a091ed7d82bda1371fe5339a19bd75ea0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86fddd200daf4c62b5a2f64634b14be4"><td class="memItemLeft" align="right" valign="top"><a id="a86fddd200daf4c62b5a2f64634b14be4"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1vec.html">cgv::math::vec</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a86fddd200daf4c62b5a2f64634b14be4">vecn</a></td></tr>
-<tr class="memdesc:a86fddd200daf4c62b5a2f64634b14be4"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of vector with varying dimension <br /></td></tr>
-<tr class="separator:a86fddd200daf4c62b5a2f64634b14be4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a748ea60e64be3d59f0bc998da00a01e2"><td class="memItemLeft" align="right" valign="top"><a id="a748ea60e64be3d59f0bc998da00a01e2"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; float, 2, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a748ea60e64be3d59f0bc998da00a01e2">mat2</a></td></tr>
-<tr class="memdesc:a748ea60e64be3d59f0bc998da00a01e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 2x2 matrices <br /></td></tr>
-<tr class="separator:a748ea60e64be3d59f0bc998da00a01e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d88419209b12a87344d27465b69a719"><td class="memItemLeft" align="right" valign="top"><a id="a8d88419209b12a87344d27465b69a719"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; float, 2, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a8d88419209b12a87344d27465b69a719">mat23</a></td></tr>
-<tr class="memdesc:a8d88419209b12a87344d27465b69a719"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 2x3 matrices used to store camera matrix <br /></td></tr>
-<tr class="separator:a8d88419209b12a87344d27465b69a719"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac953a3cb849db985f1bfd86b4851aa13"><td class="memItemLeft" align="right" valign="top"><a id="ac953a3cb849db985f1bfd86b4851aa13"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; float, 3, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ac953a3cb849db985f1bfd86b4851aa13">mat3</a></td></tr>
-<tr class="memdesc:ac953a3cb849db985f1bfd86b4851aa13"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 3x3 matrices <br /></td></tr>
-<tr class="separator:ac953a3cb849db985f1bfd86b4851aa13"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80e5de4907c26239414021586635fe1a"><td class="memItemLeft" align="right" valign="top"><a id="a80e5de4907c26239414021586635fe1a"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; float, 4, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a80e5de4907c26239414021586635fe1a">mat4</a></td></tr>
-<tr class="memdesc:a80e5de4907c26239414021586635fe1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 4x4 matrices <br /></td></tr>
-<tr class="separator:a80e5de4907c26239414021586635fe1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09299973d8a3624c221d117732238747"><td class="memItemLeft" align="right" valign="top"><a id="a09299973d8a3624c221d117732238747"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; float, 3, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a09299973d8a3624c221d117732238747">mat34</a></td></tr>
-<tr class="memdesc:a09299973d8a3624c221d117732238747"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 3x4 matrices which are often used to store a pose <br /></td></tr>
-<tr class="separator:a09299973d8a3624c221d117732238747"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4559126cff7da2080bbd5ce7330faf7e"><td class="memItemLeft" align="right" valign="top"><a id="a4559126cff7da2080bbd5ce7330faf7e"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1mat.html">cgv::math::mat</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a4559126cff7da2080bbd5ce7330faf7e">matn</a></td></tr>
-<tr class="memdesc:a4559126cff7da2080bbd5ce7330faf7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of matrices of varying dimensions <br /></td></tr>
-<tr class="separator:a4559126cff7da2080bbd5ce7330faf7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f63d0fd2286868f7e1acbfa8fb00df4"><td class="memItemLeft" align="right" valign="top"><a id="a6f63d0fd2286868f7e1acbfa8fb00df4"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; double, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a6f63d0fd2286868f7e1acbfa8fb00df4">dvec2</a></td></tr>
-<tr class="memdesc:a6f63d0fd2286868f7e1acbfa8fb00df4"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 2d vectors <br /></td></tr>
-<tr class="separator:a6f63d0fd2286868f7e1acbfa8fb00df4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f04e3a2c749e200b3ec0165e38377db"><td class="memItemLeft" align="right" valign="top"><a id="a2f04e3a2c749e200b3ec0165e38377db"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; double, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a2f04e3a2c749e200b3ec0165e38377db">dvec3</a></td></tr>
-<tr class="memdesc:a2f04e3a2c749e200b3ec0165e38377db"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 3d vectors <br /></td></tr>
-<tr class="separator:a2f04e3a2c749e200b3ec0165e38377db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bdbbb764a915b5b1b46a610a65b5eed"><td class="memItemLeft" align="right" valign="top"><a id="a0bdbbb764a915b5b1b46a610a65b5eed"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; double, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a0bdbbb764a915b5b1b46a610a65b5eed">dvec4</a></td></tr>
-<tr class="memdesc:a0bdbbb764a915b5b1b46a610a65b5eed"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of homogeneous vectors <br /></td></tr>
-<tr class="separator:a0bdbbb764a915b5b1b46a610a65b5eed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a907e83c62b00ab1e38fdc8f6060b84c7"><td class="memItemLeft" align="right" valign="top"><a id="a907e83c62b00ab1e38fdc8f6060b84c7"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1vec.html">cgv::math::vec</a>&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a907e83c62b00ab1e38fdc8f6060b84c7">dvecn</a></td></tr>
-<tr class="memdesc:a907e83c62b00ab1e38fdc8f6060b84c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of vector with varying dimension <br /></td></tr>
-<tr class="separator:a907e83c62b00ab1e38fdc8f6060b84c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa35e60e321eaa53a7ccaa1933aa059b8"><td class="memItemLeft" align="right" valign="top"><a id="aa35e60e321eaa53a7ccaa1933aa059b8"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; double, 2, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#aa35e60e321eaa53a7ccaa1933aa059b8">dmat2</a></td></tr>
-<tr class="memdesc:aa35e60e321eaa53a7ccaa1933aa059b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 2x2 matrices <br /></td></tr>
-<tr class="separator:aa35e60e321eaa53a7ccaa1933aa059b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8af81a897e5f5b8132daaa820115253"><td class="memItemLeft" align="right" valign="top"><a id="ab8af81a897e5f5b8132daaa820115253"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; double, 3, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ab8af81a897e5f5b8132daaa820115253">dmat3</a></td></tr>
-<tr class="memdesc:ab8af81a897e5f5b8132daaa820115253"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 3x3 matrices <br /></td></tr>
-<tr class="separator:ab8af81a897e5f5b8132daaa820115253"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bef8b39ac2285db1a634fcf19c8b217"><td class="memItemLeft" align="right" valign="top"><a id="a7bef8b39ac2285db1a634fcf19c8b217"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; double, 4, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a7bef8b39ac2285db1a634fcf19c8b217">dmat4</a></td></tr>
-<tr class="memdesc:a7bef8b39ac2285db1a634fcf19c8b217"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 4x4 matrices <br /></td></tr>
-<tr class="separator:a7bef8b39ac2285db1a634fcf19c8b217"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae1ea37d12c29c5bd9b775cf99320155"><td class="memItemLeft" align="right" valign="top"><a id="aae1ea37d12c29c5bd9b775cf99320155"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; double, 3, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#aae1ea37d12c29c5bd9b775cf99320155">dmat34</a></td></tr>
-<tr class="memdesc:aae1ea37d12c29c5bd9b775cf99320155"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 3x4 matrices which are often used to store a pose <br /></td></tr>
-<tr class="separator:aae1ea37d12c29c5bd9b775cf99320155"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9331e9fa1040b3544d434da8bed77869"><td class="memItemLeft" align="right" valign="top"><a id="a9331e9fa1040b3544d434da8bed77869"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1mat.html">cgv::math::mat</a>&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a9331e9fa1040b3544d434da8bed77869">dmatn</a></td></tr>
-<tr class="memdesc:a9331e9fa1040b3544d434da8bed77869"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of matrices of varying dimensions <br /></td></tr>
-<tr class="separator:a9331e9fa1040b3544d434da8bed77869"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac553d049becbad3695b1c87c6c450578"><td class="memItemLeft" align="right" valign="top"><a id="ac553d049becbad3695b1c87c6c450578"></a>
-typedef <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::media::axis_aligned_box</a>&lt; float, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ac553d049becbad3695b1c87c6c450578">box2</a></td></tr>
-<tr class="memdesc:ac553d049becbad3695b1c87c6c450578"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 2d boxes <br /></td></tr>
-<tr class="separator:ac553d049becbad3695b1c87c6c450578"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a59d954eb3d790f981ee330d819e5a939"><td class="memItemLeft" align="right" valign="top"><a id="a59d954eb3d790f981ee330d819e5a939"></a>
-typedef <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::media::axis_aligned_box</a>&lt; float, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a59d954eb3d790f981ee330d819e5a939">box3</a></td></tr>
-<tr class="memdesc:a59d954eb3d790f981ee330d819e5a939"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 3d boxes <br /></td></tr>
-<tr class="separator:a59d954eb3d790f981ee330d819e5a939"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3e562b065e4c218d5c55d52e9182eeef"><td class="memItemLeft" align="right" valign="top"><a id="a3e562b065e4c218d5c55d52e9182eeef"></a>
-typedef <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::media::axis_aligned_box</a>&lt; float, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a3e562b065e4c218d5c55d52e9182eeef">box4</a></td></tr>
-<tr class="memdesc:a3e562b065e4c218d5c55d52e9182eeef"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 4d boxes <br /></td></tr>
-<tr class="separator:a3e562b065e4c218d5c55d52e9182eeef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8df3ff6fc46e553e23b1f8205d4958cd"><td class="memItemLeft" align="right" valign="top"><a id="a8df3ff6fc46e553e23b1f8205d4958cd"></a>
-typedef <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::media::axis_aligned_box</a>&lt; double, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a8df3ff6fc46e553e23b1f8205d4958cd">dbox2</a></td></tr>
-<tr class="memdesc:a8df3ff6fc46e553e23b1f8205d4958cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 2d boxes <br /></td></tr>
-<tr class="separator:a8df3ff6fc46e553e23b1f8205d4958cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af374bbdb2791acab1c70cf2561568e94"><td class="memItemLeft" align="right" valign="top"><a id="af374bbdb2791acab1c70cf2561568e94"></a>
-typedef <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::media::axis_aligned_box</a>&lt; double, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#af374bbdb2791acab1c70cf2561568e94">dbox3</a></td></tr>
-<tr class="memdesc:af374bbdb2791acab1c70cf2561568e94"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 3d boxes <br /></td></tr>
-<tr class="separator:af374bbdb2791acab1c70cf2561568e94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab87a713c6aaa665cf47cf2f1a41873be"><td class="memItemLeft" align="right" valign="top"><a id="ab87a713c6aaa665cf47cf2f1a41873be"></a>
-typedef <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::media::axis_aligned_box</a>&lt; double, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ab87a713c6aaa665cf47cf2f1a41873be">dbox4</a></td></tr>
-<tr class="memdesc:ab87a713c6aaa665cf47cf2f1a41873be"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 4d boxes <br /></td></tr>
-<tr class="separator:ab87a713c6aaa665cf47cf2f1a41873be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77116d5f5700b4c2edfb0e3c663a8a94"><td class="memItemLeft" align="right" valign="top"><a id="a77116d5f5700b4c2edfb0e3c663a8a94"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1quaternion.html">cgv::math::quaternion</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a77116d5f5700b4c2edfb0e3c663a8a94">quat</a></td></tr>
-<tr class="memdesc:a77116d5f5700b4c2edfb0e3c663a8a94"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of quaternion <br /></td></tr>
-<tr class="separator:a77116d5f5700b4c2edfb0e3c663a8a94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05bfc75d7f206a9cecc4f1b73b3e54af"><td class="memItemLeft" align="right" valign="top"><a id="a05bfc75d7f206a9cecc4f1b73b3e54af"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1quaternion.html">cgv::math::quaternion</a>&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a05bfc75d7f206a9cecc4f1b73b3e54af">dquat</a></td></tr>
-<tr class="memdesc:a05bfc75d7f206a9cecc4f1b73b3e54af"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of double quaternion <br /></td></tr>
-<tr class="separator:a05bfc75d7f206a9cecc4f1b73b3e54af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c87c1e251efa064ddfb225b4aaac933"><td class="memItemLeft" align="right" valign="top"><a id="a6c87c1e251efa064ddfb225b4aaac933"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; int32_t, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a6c87c1e251efa064ddfb225b4aaac933">ivec2</a></td></tr>
-<tr class="memdesc:a6c87c1e251efa064ddfb225b4aaac933"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 2d integer vectors <br /></td></tr>
-<tr class="separator:a6c87c1e251efa064ddfb225b4aaac933"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1c30dc02cbfdaefd131377691ea986b"><td class="memItemLeft" align="right" valign="top"><a id="aa1c30dc02cbfdaefd131377691ea986b"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; int32_t, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#aa1c30dc02cbfdaefd131377691ea986b">ivec3</a></td></tr>
-<tr class="memdesc:aa1c30dc02cbfdaefd131377691ea986b"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 3d integer vectors <br /></td></tr>
-<tr class="separator:aa1c30dc02cbfdaefd131377691ea986b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89e7a34fcdf2c4bfe98ecbddb2dffa8d"><td class="memItemLeft" align="right" valign="top"><a id="a89e7a34fcdf2c4bfe98ecbddb2dffa8d"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; int32_t, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a89e7a34fcdf2c4bfe98ecbddb2dffa8d">ivec4</a></td></tr>
-<tr class="memdesc:a89e7a34fcdf2c4bfe98ecbddb2dffa8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 4d integer vectors <br /></td></tr>
-<tr class="separator:a89e7a34fcdf2c4bfe98ecbddb2dffa8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c63df0cdcb434e709038fa63da32a9f"><td class="memItemLeft" align="right" valign="top"><a id="a8c63df0cdcb434e709038fa63da32a9f"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; uint32_t, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a8c63df0cdcb434e709038fa63da32a9f">uvec2</a></td></tr>
-<tr class="memdesc:a8c63df0cdcb434e709038fa63da32a9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 2d unsigned integer vectors <br /></td></tr>
-<tr class="separator:a8c63df0cdcb434e709038fa63da32a9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac25e568789468b18f653e7ea25704cd1"><td class="memItemLeft" align="right" valign="top"><a id="ac25e568789468b18f653e7ea25704cd1"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; uint32_t, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ac25e568789468b18f653e7ea25704cd1">uvec3</a></td></tr>
-<tr class="memdesc:ac25e568789468b18f653e7ea25704cd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 3d unsigned integer vectors <br /></td></tr>
-<tr class="separator:ac25e568789468b18f653e7ea25704cd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa88a9be6bca93c1b0fbfcb3f183dd159"><td class="memItemLeft" align="right" valign="top"><a id="aa88a9be6bca93c1b0fbfcb3f183dd159"></a>
-typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; uint32_t, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#aa88a9be6bca93c1b0fbfcb3f183dd159">uvec4</a></td></tr>
-<tr class="memdesc:aa88a9be6bca93c1b0fbfcb3f183dd159"><td class="mdescLeft">&#160;</td><td class="mdescRight">declare type of 4d unsigned integer vectors <br /></td></tr>
-<tr class="separator:aa88a9be6bca93c1b0fbfcb3f183dd159"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa37e7abafc356dc57179bc80e61b77c4"><td class="memItemLeft" align="right" valign="top"><a id="aa37e7abafc356dc57179bc80e61b77c4"></a>
 typedef <a class="el" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a>&lt; <a class="el" href="structcgv_1_1render_1_1shader__config.html">shader_config</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#aa37e7abafc356dc57179bc80e61b77c4">shader_config_ptr</a></td></tr>
 <tr class="memdesc:aa37e7abafc356dc57179bc80e61b77c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">type of ref counted pointer to shader configuration <br /></td></tr>
@@ -1054,15 +903,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>destruct_texture</b> 
 <a class="el" href="structcgv_1_1reflect_1_1extern__reflection__traits.html">cgv::reflect::extern_reflection_traits</a>&lt; <a class="el" href="structcgv_1_1render_1_1cone__render__style.html">cone_render_style</a>, <a class="el" href="structcgv_1_1render_1_1cone__render__style__reflect.html">cone_render_style_reflect</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>get_reflection_traits</b> (const <a class="el" href="structcgv_1_1render_1_1cone__render__style.html">cone_render_style</a> &amp;)</td></tr>
 <tr class="separator:acee0ec1ea916e836416e3d81a175eebb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1c6026d5e38a153edd00586bc413984"><td class="memItemLeft" align="right" valign="top"><a id="ac1c6026d5e38a153edd00586bc413984"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ac1c6026d5e38a153edd00586bc413984">DEFINE_GENERIC_RENDER_DATA_CLASS</a> (generic_render_data_vec3, 1, <a class="el" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a>, position)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ac1c6026d5e38a153edd00586bc413984">DEFINE_GENERIC_RENDER_DATA_CLASS</a> (generic_render_data_vec3, 1, <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>, position)</td></tr>
 <tr class="memdesc:ac1c6026d5e38a153edd00586bc413984"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines a generic render data class using attributes: vec3 position. <br /></td></tr>
 <tr class="separator:ac1c6026d5e38a153edd00586bc413984"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6e3efd4c7be58e391c1eb7e6086859e"><td class="memItemLeft" align="right" valign="top"><a id="ac6e3efd4c7be58e391c1eb7e6086859e"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ac6e3efd4c7be58e391c1eb7e6086859e">DEFINE_GENERIC_RENDER_DATA_CLASS</a> (generic_render_data_vec3_rgb, 2, <a class="el" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a>, position, <a class="el" href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">rgb</a>, color)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ac6e3efd4c7be58e391c1eb7e6086859e">DEFINE_GENERIC_RENDER_DATA_CLASS</a> (generic_render_data_vec3_rgb, 2, <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>, position, <a class="el" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>, color)</td></tr>
 <tr class="memdesc:ac6e3efd4c7be58e391c1eb7e6086859e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines a generic render data class using attributes: vec3 position rgb color. <br /></td></tr>
 <tr class="separator:ac6e3efd4c7be58e391c1eb7e6086859e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c0b89ba163673b126f8da598b9b9143"><td class="memItemLeft" align="right" valign="top"><a id="a4c0b89ba163673b126f8da598b9b9143"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a4c0b89ba163673b126f8da598b9b9143">DEFINE_GENERIC_RENDER_DATA_CLASS</a> (generic_render_data_vec3_rgba, 2, <a class="el" href="namespacecgv_1_1render.html#a50cfdc8b08d298d7465d627cdf402590">vec3</a>, position, <a class="el" href="namespacecgv_1_1render.html#a7119f6c28a063b3cc9958b9db5ccde77">rgba</a>, color)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a4c0b89ba163673b126f8da598b9b9143">DEFINE_GENERIC_RENDER_DATA_CLASS</a> (generic_render_data_vec3_rgba, 2, <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>, position, <a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>, color)</td></tr>
 <tr class="memdesc:a4c0b89ba163673b126f8da598b9b9143"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines a generic render data class using attributes: vec3 position rgba color. <br /></td></tr>
 <tr class="separator:a4c0b89ba163673b126f8da598b9b9143"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18ddc516f1acd59aa167bc84744508dc"><td class="memItemLeft" align="right" valign="top"><a id="a18ddc516f1acd59aa167bc84744508dc"></a>
@@ -1080,10 +929,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>destruct_texture</b> 
 <tr class="memitem:a12798b57d8a8a02953dc8aba55a08ea0"><td class="memItemLeft" align="right" valign="top"><a id="a12798b57d8a8a02953dc8aba55a08ea0"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>add_attribute</b> (<a class="el" href="structcgv_1_1render_1_1attribute__array.html">cgv::render::attribute_array</a> &amp;aa, const <a class="el" href="structfx_1_1gltf_1_1Document.html">fx::gltf::Document</a> &amp;doc, const <a class="el" href="structfx_1_1gltf_1_1Accessor.html">fx::gltf::Accessor</a> &amp;accessor, cgv::render::VertexAttributeID va_id, const std::string &amp;name=&quot;&quot;)</td></tr>
 <tr class="separator:a12798b57d8a8a02953dc8aba55a08ea0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f104db7ff3601b636c876ff92ab8852"><td class="memItemLeft" align="right" valign="top"><a id="a7f104db7ff3601b636c876ff92ab8852"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a7f104db7ff3601b636c876ff92ab8852">extract_additional_information</a> (const <a class="el" href="structfx_1_1gltf_1_1Document.html">fx::gltf::Document</a> &amp;doc, <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::render::render_types::box3</a> &amp;box, size_t &amp;vertex_count)</td></tr>
-<tr class="memdesc:a7f104db7ff3601b636c876ff92ab8852"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract bounding box and vertex count from gltf document <br /></td></tr>
-<tr class="separator:a7f104db7ff3601b636c876ff92ab8852"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa85910291a6074f0a3f451e846b43e79"><td class="memItemLeft" align="right" valign="top"><a id="aa85910291a6074f0a3f451e846b43e79"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#aa85910291a6074f0a3f451e846b43e79">extract_additional_information</a> (const <a class="el" href="structfx_1_1gltf_1_1Document.html">fx::gltf::Document</a> &amp;doc, <a class="el" href="namespacecgv.html#a1cf52fa077640959da4eb3b2728b4e47">box3</a> &amp;box, size_t &amp;vertex_count)</td></tr>
+<tr class="memdesc:aa85910291a6074f0a3f451e846b43e79"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract bounding box and vertex count from gltf document <br /></td></tr>
+<tr class="separator:aa85910291a6074f0a3f451e846b43e79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b675d0a601181144b6ce95371ad087d"><td class="memItemLeft" align="right" valign="top"><a id="a7b675d0a601181144b6ce95371ad087d"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a7b675d0a601181144b6ce95371ad087d">build_render_info</a> (const std::string &amp;file_name, const <a class="el" href="structfx_1_1gltf_1_1Document.html">fx::gltf::Document</a> &amp;doc, <a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1render__info.html">cgv::render::render_info</a> &amp;R)</td></tr>
 <tr class="memdesc:a7b675d0a601181144b6ce95371ad087d"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct render info from gltf document <br /></td></tr>
@@ -1325,7 +1174,7 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00430">430</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00429">429</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1363,7 +1212,7 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00078">78</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00077">77</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1437,7 +1286,7 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00094">94</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00093">93</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1475,7 +1324,7 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00243">243</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00242">242</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1499,7 +1348,7 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00216">216</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00215">215</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1535,7 +1384,7 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00384">384</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00383">383</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1573,7 +1422,7 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00396">396</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00395">395</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>

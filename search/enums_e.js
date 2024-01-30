@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['shadertype_8738',['ShaderType',['../namespacecgv_1_1render.html#aa829197f51559124b8c72a2bd024b8db',1,'cgv::render']]],
-  ['slicemode_8739',['SliceMode',['../structcgv_1_1render_1_1volume__render__style.html#a9267cfcf7c55547a335c0fedf707bdc7',1,'cgv::render::volume_render_style']]],
-  ['sparselescaps_8740',['SparseLesCaps',['../namespacecgv_1_1math.html#a22446204b5909c06423af9ce96233507',1,'cgv::math']]],
-  ['stickaction_8741',['StickAction',['../namespacecgv_1_1gui.html#a7f6413c952cec27ea2f560faf278bcee',1,'cgv::gui']]]
+  ['shadertype_8316',['ShaderType',['../namespacecgv_1_1render.html#aa829197f51559124b8c72a2bd024b8db',1,'cgv::render']]],
+  ['slicemode_8317',['SliceMode',['../structcgv_1_1render_1_1volume__render__style.html#a9267cfcf7c55547a335c0fedf707bdc7',1,'cgv::render::volume_render_style']]],
+  ['stickaction_8318',['StickAction',['../namespacecgv_1_1gui.html#a7f6413c952cec27ea2f560faf278bcee',1,'cgv::gui']]]
 ];

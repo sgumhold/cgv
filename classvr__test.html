@@ -97,12 +97,12 @@ Inheritance diagram for vr_test:</div>
   <img src="classvr__test.png" usemap="#vr_5Ftest_map" alt=""/>
   <map id="vr_5Ftest_map" name="vr_5Ftest_map">
 <area href="classcgv_1_1base_1_1node.html" title="The node class keeps a pointer to its parent." alt="cgv::base::node" shape="rect" coords="97,168,282,192"/>
-<area href="classcgv_1_1render_1_1drawable.html" title="base class for all drawables, which is independent of the used rendering API." alt="cgv::render::drawable" shape="rect" coords="390,168,575,192"/>
-<area href="classcgv_1_1gui_1_1event__handler.html" title="interface for all classes that want to receive events" alt="cgv::gui::event_handler" shape="rect" coords="682,168,867,192"/>
-<area href="classcgv_1_1gui_1_1provider.html" title="derive from this class to provide a gui to the current viewer" alt="cgv::gui::provider" shape="rect" coords="877,168,1062,192"/>
+<area href="classcgv_1_1render_1_1drawable.html" title="base class for all drawables, which is independent of the used rendering API." alt="cgv::render::drawable" shape="rect" coords="292,168,477,192"/>
+<area href="classcgv_1_1gui_1_1event__handler.html" title="interface for all classes that want to receive events" alt="cgv::gui::event_handler" shape="rect" coords="487,168,672,192"/>
+<area href="classcgv_1_1gui_1_1provider.html" title="derive from this class to provide a gui to the current viewer" alt="cgv::gui::provider" shape="rect" coords="682,168,867,192"/>
 <area href="classcgv_1_1base_1_1named.html" title="base class for all gui types" alt="cgv::base::named" shape="rect" coords="97,112,282,136"/>
 <area href="classcgv_1_1base_1_1traverse__policy.html" title="nodes should inherit from this policy class to allow selective tree traversals" alt="cgv::base::traverse_policy" shape="rect" coords="292,112,477,136"/>
-<area href="classcgv_1_1base_1_1traverse__policy.html" title="nodes should inherit from this policy class to allow selective tree traversals" alt="cgv::base::traverse_policy" shape="rect" coords="682,112,867,136"/>
+<area href="classcgv_1_1base_1_1traverse__policy.html" title="nodes should inherit from this policy class to allow selective tree traversals" alt="cgv::base::traverse_policy" shape="rect" coords="487,112,672,136"/>
 <area href="classcgv_1_1base_1_1base.html" title="base class for all classes that can be registered with support for dynamic properties (see also secti..." alt="cgv::base::base" shape="rect" coords="97,56,282,80"/>
 <area href="classcgv_1_1data_1_1ref__counted.html" title="if you derive your class from this class, a ref_ptr will do reference counting in the inhereted ref_c..." alt="cgv::data::ref_counted" shape="rect" coords="0,0,185,24"/>
 <area href="structcgv_1_1reflect_1_1self__reflection__tag.html" title="Derive from this class to announce implementation of the method self_reflect." alt="cgv::reflect::self_reflection_tag" shape="rect" coords="195,0,380,24"/>
@@ -634,6 +634,39 @@ Protected Types</h2></td></tr>
 , <b>IS_GRAB</b>
  }</td></tr>
 <tr class="separator:a9fe627a41bb05376398b706892398157"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af464c6c615a623ae53d7ac89f3e5b701"><td class="memItemLeft" align="right" valign="top"><a id="af464c6c615a623ae53d7ac89f3e5b701"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>vec2</b> = <a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">cgv::vec2</a></td></tr>
+<tr class="separator:af464c6c615a623ae53d7ac89f3e5b701"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa40e3c1ef8d636af2920833aee64897e"><td class="memItemLeft" align="right" valign="top"><a id="aa40e3c1ef8d636af2920833aee64897e"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>vec3</b> = <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">cgv::vec3</a></td></tr>
+<tr class="separator:aa40e3c1ef8d636af2920833aee64897e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fa5ceb5cc931bc6dce501ace52fa742"><td class="memItemLeft" align="right" valign="top"><a id="a9fa5ceb5cc931bc6dce501ace52fa742"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>dvec2</b> = <a class="el" href="namespacecgv.html#a9a83cf9fc2b423621210115e7fa77f49">cgv::dvec2</a></td></tr>
+<tr class="separator:a9fa5ceb5cc931bc6dce501ace52fa742"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6305df5cc469f43298dcfdb80b9f79f"><td class="memItemLeft" align="right" valign="top"><a id="aa6305df5cc469f43298dcfdb80b9f79f"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>dvec3</b> = <a class="el" href="namespacecgv.html#a1b017a7250682dd1414b799b73129cd6">cgv::dvec3</a></td></tr>
+<tr class="separator:aa6305df5cc469f43298dcfdb80b9f79f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf5e2cbbde63be2d62d9eacff0bf2e37"><td class="memItemLeft" align="right" valign="top"><a id="abf5e2cbbde63be2d62d9eacff0bf2e37"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>mat3</b> = <a class="el" href="namespacecgv.html#a4e88ab68744702f9b7aa559de4f31521">cgv::mat3</a></td></tr>
+<tr class="separator:abf5e2cbbde63be2d62d9eacff0bf2e37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3a5004f200fe561a7579bcef14906de"><td class="memItemLeft" align="right" valign="top"><a id="af3a5004f200fe561a7579bcef14906de"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>mat4</b> = <a class="el" href="namespacecgv.html#aac1220367b5c60325f351a680dcc2689">cgv::mat4</a></td></tr>
+<tr class="separator:af3a5004f200fe561a7579bcef14906de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59e04dbc9071f00340f8f452030b4d1a"><td class="memItemLeft" align="right" valign="top"><a id="a59e04dbc9071f00340f8f452030b4d1a"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>rgb</b> = <a class="el" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">cgv::rgb</a></td></tr>
+<tr class="separator:a59e04dbc9071f00340f8f452030b4d1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5be5e9268a9e123f35cd27d87bbb632"><td class="memItemLeft" align="right" valign="top"><a id="ae5be5e9268a9e123f35cd27d87bbb632"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>rgba</b> = <a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">cgv::rgba</a></td></tr>
+<tr class="separator:ae5be5e9268a9e123f35cd27d87bbb632"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39009beb2b19dcf447af0d4c42df57f3"><td class="memItemLeft" align="right" valign="top"><a id="a39009beb2b19dcf447af0d4c42df57f3"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>quat</b> = <a class="el" href="namespacecgv.html#a19377b8deaf65280e6c1de7ace18cab9">cgv::quat</a></td></tr>
+<tr class="separator:a39009beb2b19dcf447af0d4c42df57f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05d1cc29e4fa33f6e7fb3b0c1e6024ed"><td class="memItemLeft" align="right" valign="top"><a id="a05d1cc29e4fa33f6e7fb3b0c1e6024ed"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>dquat</b> = <a class="el" href="namespacecgv.html#a01b09f2da149e1298159d10609923e44">cgv::dquat</a></td></tr>
+<tr class="separator:a05d1cc29e4fa33f6e7fb3b0c1e6024ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a970d69e329aa7c5c809483d440c823d6"><td class="memItemLeft" align="right" valign="top"><a id="a970d69e329aa7c5c809483d440c823d6"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>box3</b> = <a class="el" href="namespacecgv.html#a1cf52fa077640959da4eb3b2728b4e47">cgv::box3</a></td></tr>
+<tr class="separator:a970d69e329aa7c5c809483d440c823d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>

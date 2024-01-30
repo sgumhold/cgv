@@ -96,11 +96,11 @@ $(document).ready(function(){initNavTree('distance__transform_8h_source.html',''
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keyword">namespace </span>math{</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a1a12451076df1957fe4247589887704d">   20</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#a1a12451076df1957fe4247589887704d">sqrdist_transf_1d</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; f, <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; d) </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keywordtype">void</span> sqrdist_transf_1d(<span class="keyword">const</span> vec&lt;T&gt;&amp; f, vec&lt;T&gt;&amp; d) </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">static</span> T INF =std::numeric_limits&lt;T&gt;::max();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">unsigned</span> n = f.<a class="code" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    d.<a class="code" href="classcgv_1_1math_1_1vec.html#a4ad00087a03df57550f9082992ce827b">resize</a>(n);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">unsigned</span> n = f.size();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    d.resize(n);</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">int</span> *v = <span class="keyword">new</span> <span class="keywordtype">int</span>[n];</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    T *z = <span class="keyword">new</span> T[n+1];</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordtype">int</span> k = 0;</div>
@@ -161,12 +161,12 @@ $(document).ready(function(){initNavTree('distance__transform_8h_source.html',''
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ae111715a4f488edeb34ecbd1d790ece3">   86</a></span>&#160;<span class="keywordtype">void</span> sqrdist_transf_2d(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>&amp; input,<a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>&amp; output,T on = 1) </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="keywordtype">void</span> sqrdist_transf_2d(<span class="keyword">const</span> mat&lt;T&gt;&amp; input,mat&lt;T&gt;&amp; output,T on = 1) </div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;{</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keyword">static</span> T INF =std::numeric_limits&lt;T&gt;::max();</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordtype">unsigned</span> width = input.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>();</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordtype">unsigned</span> height = input.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>();</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    output.<a class="code" href="classcgv_1_1math_1_1mat.html#a7e6179330388c85bfd0d5a0c17476d06">resize</a>(width,height);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordtype">unsigned</span> width = input.nrows();</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordtype">unsigned</span> height = input.ncols();</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    output.resize(width,height);</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  </div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> y = 0; y &lt; height; y++) </div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    {</div>
@@ -185,12 +185,12 @@ $(document).ready(function(){initNavTree('distance__transform_8h_source.html',''
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;}</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a6fb7ef1ba387bc69a8ee0eedd008b140">  111</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1math.html#a6fb7ef1ba387bc69a8ee0eedd008b140">dist_transf_2d</a>(<a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>&amp; input, <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>&amp; output,T on = 1) </div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="keywordtype">void</span> dist_transf_2d(mat&lt;T&gt;&amp; input, mat&lt;T&gt;&amp; output,T on = 1) </div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;{</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    sqrdist_transf_2d(input,output,on );</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> y = 0; y &lt; output.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>();y++)</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> y = 0; y &lt; output.ncols();y++)</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    {</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> x = 0; x &lt; output.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>();x++)</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> x = 0; x &lt; output.nrows();x++)</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        {</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            output(x,y)=sqrt(output(x,y));</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        }</div>
@@ -201,15 +201,6 @@ $(document).ready(function(){initNavTree('distance__transform_8h_source.html',''
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    }</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;}</div>
-<div class="ttc" id="aclasscgv_1_1math_1_1mat_html"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html">cgv::math::mat</a></div><div class="ttdoc">A matrix type (full column major storage) The matrix can be loaded directly into OpenGL without need ...</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00208">mat.h:209</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1mat_html_a19c47145cbe77fd7f48fd2d7dae97deb"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">cgv::math::mat::ncols</a></div><div class="ttdeci">unsigned ncols() const</div><div class="ttdoc">number of columns</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00547">mat.h:547</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1mat_html_a7e6179330388c85bfd0d5a0c17476d06"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html#a7e6179330388c85bfd0d5a0c17476d06">cgv::math::mat::resize</a></div><div class="ttdeci">void resize(unsigned rows, unsigned cols)</div><div class="ttdoc">resize the matrix, the content of the matrix will be destroyed</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00575">mat.h:575</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1mat_html_aee1bfad9a6c73d9f5de7afaa4fe91bb9"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">cgv::math::mat::nrows</a></div><div class="ttdeci">unsigned nrows() const</div><div class="ttdoc">number of rows</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00541">mat.h:541</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1vec_html"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html">cgv::math::vec</a></div><div class="ttdoc">A column vector class.</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00027">vec.h:28</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1vec_html_a4ad00087a03df57550f9082992ce827b"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html#a4ad00087a03df57550f9082992ce827b">cgv::math::vec::resize</a></div><div class="ttdeci">void resize(unsigned dim)</div><div class="ttdoc">resize the vector</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00557">vec.h:557</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1vec_html_a5d6a97e9f2e2fa0d3ab722da1be2e8cc"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">cgv::math::vec::size</a></div><div class="ttdeci">unsigned size() const</div><div class="ttdoc">number of elements</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00097">vec.h:97</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a1a12451076df1957fe4247589887704d"><div class="ttname"><a href="namespacecgv_1_1math.html#a1a12451076df1957fe4247589887704d">cgv::math::sqrdist_transf_1d</a></div><div class="ttdeci">void sqrdist_transf_1d(const vec&lt; T &gt; &amp;f, vec&lt; T &gt; &amp;d)</div><div class="ttdoc">Implementation of 1d and 2d linear time distance transformation see: &quot;Distance Transforms of Sampled ...</div><div class="ttdef"><b>Definition:</b> <a href="distance__transform_8h_source.html#l00020">distance_transform.h:20</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a6fb7ef1ba387bc69a8ee0eedd008b140"><div class="ttname"><a href="namespacecgv_1_1math.html#a6fb7ef1ba387bc69a8ee0eedd008b140">cgv::math::dist_transf_2d</a></div><div class="ttdeci">void dist_transf_2d(mat&lt; T &gt; &amp;input, mat&lt; T &gt; &amp;output, T on=1)</div><div class="ttdoc">compute the distance transform of an input image</div><div class="ttdef"><b>Definition:</b> <a href="distance__transform_8h_source.html#l00111">distance_transform.h:111</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

@@ -137,7 +137,7 @@ $(document).ready(function(){initNavTree('solve__polynom_8cxx_source.html',''); 
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordflow">return</span> 1;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ae4fe68403e329af9ace512b1d945bb53">   53</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="namespacecgv_1_1math.html#ae4fe68403e329af9ace512b1d945bb53">solve_quadric</a>(<span class="keywordtype">double</span> c[3], <span class="keywordtype">double</span> s[2], <span class="keywordtype">bool</span> replicate_multiple_solutions)</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keywordtype">int</span> solve_quadric(<span class="keywordtype">double</span> c[3], <span class="keywordtype">double</span> s[2], <span class="keywordtype">bool</span> replicate_multiple_solutions)</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;{</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">double</span> p, q, D;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
@@ -171,7 +171,7 @@ $(document).ready(function(){initNavTree('solve__polynom_8cxx_source.html',''); 
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;}</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a2a18eac44663bd5bff968c8a98ad4b1b">   87</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="namespacecgv_1_1math.html#a2a18eac44663bd5bff968c8a98ad4b1b">solve_cubic</a>(<span class="keywordtype">double</span> c[4], <span class="keywordtype">double</span> s[3], <span class="keywordtype">bool</span> replicate_multiple_solutions)</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keywordtype">int</span> solve_cubic(<span class="keywordtype">double</span> c[4], <span class="keywordtype">double</span> s[3], <span class="keywordtype">bool</span> replicate_multiple_solutions)</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;{</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordtype">int</span>     i, num;</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordtype">double</span>  sub;</div>
@@ -181,7 +181,7 @@ $(document).ready(function(){initNavTree('solve__polynom_8cxx_source.html',''); 
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="comment">/* normal form: x^3 + Ax^2 + Bx + C = 0 */</span></div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordflow">if</span>(c[3] == 0)</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#ae4fe68403e329af9ace512b1d945bb53">solve_quadric</a>(c,s,replicate_multiple_solutions);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordflow">return</span> solve_quadric(c,s,replicate_multiple_solutions);</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    A = c[ 2 ] / c[ 3 ];</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    B = c[ 1 ] / c[ 3 ];</div>
@@ -246,7 +246,7 @@ $(document).ready(function(){initNavTree('solve__polynom_8cxx_source.html',''); 
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;}</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
-<div class="line"><a name="l00162"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#aadc0e7b7f9374468390e175c7c8d719c">  162</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="namespacecgv_1_1math.html#aadc0e7b7f9374468390e175c7c8d719c">solve_quartic</a>(<span class="keywordtype">double</span> c[5], <span class="keywordtype">double</span> s[4])</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="keywordtype">int</span> solve_quartic(<span class="keywordtype">double</span> c[5], <span class="keywordtype">double</span> s[4])</div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;{</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordtype">double</span>  coeffs[ 4 ];</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="keywordtype">double</span>  z, u, v, sub;</div>
@@ -278,7 +278,7 @@ $(document).ready(function(){initNavTree('solve__polynom_8cxx_source.html',''); 
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        coeffs[ 2 ] = 0;</div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;        coeffs[ 3 ] = 1;</div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160; </div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        num = <a class="code" href="namespacecgv_1_1math.html#a2a18eac44663bd5bff968c8a98ad4b1b">solve_cubic</a>(coeffs, s);</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        num = solve_cubic(coeffs, s);</div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        s[ num++ ] = 0;</div>
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    }</div>
@@ -291,7 +291,7 @@ $(document).ready(function(){initNavTree('solve__polynom_8cxx_source.html',''); 
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;        coeffs[ 2 ] = - 1.0/2 * p;</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        coeffs[ 3 ] = 1;</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        <a class="code" href="namespacecgv_1_1math.html#a2a18eac44663bd5bff968c8a98ad4b1b">solve_cubic</a>(coeffs, s);</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        solve_cubic(coeffs, s);</div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        <span class="comment">/* ... and take the one real solution ... */</span></div>
 <div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
@@ -320,13 +320,13 @@ $(document).ready(function(){initNavTree('solve__polynom_8cxx_source.html',''); 
 <div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;        coeffs[ 1 ] = q &lt; 0 ? -v : v;</div>
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;        coeffs[ 2 ] = 1;</div>
 <div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;        num = <a class="code" href="namespacecgv_1_1math.html#ae4fe68403e329af9ace512b1d945bb53">solve_quadric</a>(coeffs, s);</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;        num = solve_quadric(coeffs, s);</div>
 <div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160; </div>
 <div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;        coeffs[ 0 ]= z + u;</div>
 <div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        coeffs[ 1 ] = q &lt; 0 ? v : -v;</div>
 <div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        coeffs[ 2 ] = 1;</div>
 <div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160; </div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;        num += <a class="code" href="namespacecgv_1_1math.html#ae4fe68403e329af9ace512b1d945bb53">solve_quadric</a>(coeffs, s + num);</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;        num += solve_quadric(coeffs, s + num);</div>
 <div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    }</div>
 <div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160; </div>
 <div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    <span class="comment">/* resubstitute */</span></div>
@@ -338,9 +338,6 @@ $(document).ready(function(){initNavTree('solve__polynom_8cxx_source.html',''); 
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;}</div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;}</div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a2a18eac44663bd5bff968c8a98ad4b1b"><div class="ttname"><a href="namespacecgv_1_1math.html#a2a18eac44663bd5bff968c8a98ad4b1b">cgv::math::solve_cubic</a></div><div class="ttdeci">int solve_cubic(double c[4], double s[3], bool replicate_multiple_solutions)</div><div class="ttdoc">write the solutions to c[0]+c[1]*x+c[2]*x*x+c[3]*x*x*x = 0 into s and return the number of solutions</div><div class="ttdef"><b>Definition:</b> <a href="solve__polynom_8cxx_source.html#l00087">solve_polynom.cxx:87</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_aadc0e7b7f9374468390e175c7c8d719c"><div class="ttname"><a href="namespacecgv_1_1math.html#aadc0e7b7f9374468390e175c7c8d719c">cgv::math::solve_quartic</a></div><div class="ttdeci">int solve_quartic(double c[5], double s[4])</div><div class="ttdoc">write the solutions to c[0]+c[1]*x+c[2]*x*x+c[3]*x*x*x+c[4]*x*x*x*x = 0 into s and return the number ...</div><div class="ttdef"><b>Definition:</b> <a href="solve__polynom_8cxx_source.html#l00162">solve_polynom.cxx:162</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_ae4fe68403e329af9ace512b1d945bb53"><div class="ttname"><a href="namespacecgv_1_1math.html#ae4fe68403e329af9ace512b1d945bb53">cgv::math::solve_quadric</a></div><div class="ttdeci">int solve_quadric(double c[3], double s[2], bool replicate_multiple_solutions)</div><div class="ttdoc">write the solutions to c[0]+c[1]*x+c[2]*x*x = 0 into s and return the number of solutions</div><div class="ttdef"><b>Definition:</b> <a href="solve__polynom_8cxx_source.html#l00053">solve_polynom.cxx:53</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

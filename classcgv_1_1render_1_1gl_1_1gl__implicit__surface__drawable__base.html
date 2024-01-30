@@ -102,8 +102,8 @@ Inheritance diagram for cgv::render::gl::gl_implicit_surface_drawable_base:</div
  <div class="center">
   <img src="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.png" usemap="#cgv::render::gl::gl_5Fimplicit_5Fsurface_5Fdrawable_5Fbase_map" alt=""/>
   <map id="cgv::render::gl::gl_5Fimplicit_5Fsurface_5Fdrawable_5Fbase_map" name="cgv::render::gl::gl_5Fimplicit_5Fsurface_5Fdrawable_5Fbase_map">
-<area href="classcgv_1_1render_1_1drawable.html" title="base class for all drawables, which is independent of the used rendering API." alt="cgv::render::drawable" shape="rect" coords="158,56,465,80"/>
-<area href="structcgv_1_1media_1_1mesh_1_1streaming__mesh__callback__handler.html" title="pure abstract interface to handle callbacks of a streaming mesh" alt="cgv::media::mesh::streaming_mesh_callback_handler" shape="rect" coords="475,56,782,80"/>
+<area href="classcgv_1_1render_1_1drawable.html" title="base class for all drawables, which is independent of the used rendering API." alt="cgv::render::drawable" shape="rect" coords="0,56,307,80"/>
+<area href="structcgv_1_1media_1_1mesh_1_1streaming__mesh__callback__handler.html" title="pure abstract interface to handle callbacks of a streaming mesh" alt="cgv::media::mesh::streaming_mesh_callback_handler" shape="rect" coords="317,56,624,80"/>
 <area href="classcgv_1_1base_1_1traverse__policy.html" title="nodes should inherit from this policy class to allow selective tree traversals" alt="cgv::base::traverse_policy" shape="rect" coords="0,0,307,24"/>
   </map>
 </div></div>
@@ -183,10 +183,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_grid_epsilon</b> 
 double&#160;</td><td class="memItemRight" valign="bottom"><b>get_grid_epsilon</b> () const</td></tr>
 <tr class="separator:a53c31fa4cd6a50b18c73c383410da9f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7de4979eebf31034836d8141d6181e3b"><td class="memItemLeft" align="right" valign="top"><a id="a7de4979eebf31034836d8141d6181e3b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_box</b> (const <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">dbox3</a> &amp;_box)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_box</b> (const <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#a69dc49a0be6a0dd22fff7f5b98ef4a74">dbox3</a> &amp;_box)</td></tr>
 <tr class="separator:a7de4979eebf31034836d8141d6181e3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7075d465c137db7c4c418323f2e28fd0"><td class="memItemLeft" align="right" valign="top"><a id="a7075d465c137db7c4c418323f2e28fd0"></a>
-const <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">dbox3</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_box</b> () const</td></tr>
+const <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#a69dc49a0be6a0dd22fff7f5b98ef4a74">dbox3</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_box</b> () const</td></tr>
 <tr class="separator:a7075d465c137db7c4c418323f2e28fd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6dbb45e1e071d8b23f32dd039e1a7a05"><td class="memItemLeft" align="right" valign="top"><a id="a6dbb45e1e071d8b23f32dd039e1a7a05"></a>
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>get_nr_triangles_of_last_extraction</b> () const</td></tr>
@@ -309,7 +309,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a58bd09f4485927fb11ba3ba22b24f4b8"><td class="memItemLeft" align="right" valign="top"><a id="a58bd09f4485927fb11ba3ba22b24f4b8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>add_normal</b> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a> &amp;p, const <a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a> &amp;n, std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> &gt; &amp;nml_gradient_geometry) const</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>add_normal</b> (const <a class="el" href="namespacecgv.html#a1b017a7250682dd1414b799b73129cd6">dvec3</a> &amp;p, const <a class="el" href="namespacecgv.html#a1b017a7250682dd1414b799b73129cd6">dvec3</a> &amp;n, std::vector&lt; <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> &gt; &amp;nml_gradient_geometry) const</td></tr>
 <tr class="separator:a58bd09f4485927fb11ba3ba22b24f4b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9427954355cd7030ee1f894f89e7d985"><td class="memItemLeft" align="right" valign="top"><a id="a9427954355cd7030ee1f894f89e7d985"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#a9427954355cd7030ee1f894f89e7d985">new_vertex</a> (unsigned int vi)</td></tr>
@@ -330,10 +330,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#ad0bea1118ba5c04a48834751756a59f6">surface_extraction</a> ()</td></tr>
 <tr class="memdesc:ad0bea1118ba5c04a48834751756a59f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">call the selected surface extraction method <br /></td></tr>
 <tr class="separator:ad0bea1118ba5c04a48834751756a59f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac390390fdf1f6e8a3188b6ccccac4c27"><td class="memItemLeft" align="right" valign="top"><a id="ac390390fdf1f6e8a3188b6ccccac4c27"></a>
-<a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#ac390390fdf1f6e8a3188b6ccccac4c27">compute_face_normal</a> (const std::vector&lt; unsigned int &gt; &amp;vis, <a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a> *c=0) const</td></tr>
-<tr class="memdesc:ac390390fdf1f6e8a3188b6ccccac4c27"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute the normal of a face <br /></td></tr>
-<tr class="separator:ac390390fdf1f6e8a3188b6ccccac4c27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c2aee5875b800fc983ff4db4e61632f"><td class="memItemLeft" align="right" valign="top"><a id="a5c2aee5875b800fc983ff4db4e61632f"></a>
+<a class="el" href="namespacecgv.html#a1b017a7250682dd1414b799b73129cd6">dvec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#a5c2aee5875b800fc983ff4db4e61632f">compute_face_normal</a> (const std::vector&lt; unsigned int &gt; &amp;vis, <a class="el" href="namespacecgv.html#a1b017a7250682dd1414b799b73129cd6">dvec3</a> *c=0) const</td></tr>
+<tr class="memdesc:a5c2aee5875b800fc983ff4db4e61632f"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute the normal of a face <br /></td></tr>
+<tr class="separator:a5c2aee5875b800fc983ff4db4e61632f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac576baba8a5660e7db1dafddeaddcda2"><td class="memItemLeft" align="right" valign="top"><a id="ac576baba8a5660e7db1dafddeaddcda2"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#ac576baba8a5660e7db1dafddeaddcda2">extract_mesh</a> ()</td></tr>
 <tr class="memdesc:ac576baba8a5660e7db1dafddeaddcda2"><td class="mdescLeft">&#160;</td><td class="mdescRight">helper function to extract mesh from implicit surface <br /></td></tr>
@@ -342,9 +342,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#a41526bf4bf642ddeeba84fa6128adb9b">draw_implicit_surface</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:a41526bf4bf642ddeeba84fa6128adb9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">helper function to tesselate the implicit surface <br /></td></tr>
 <tr class="separator:a41526bf4bf642ddeeba84fa6128adb9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80a6c334dc65d05543743ce20a1d6dcf"><td class="memItemLeft" align="right" valign="top"><a id="a80a6c334dc65d05543743ce20a1d6dcf"></a>
-<a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a>&#160;</td><td class="memItemRight" valign="bottom"><b>compute_corner_normal</b> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a> &amp;pk, const <a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a> &amp;pi, const <a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a> &amp;pj, const <a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a> &amp;ni)</td></tr>
-<tr class="separator:a80a6c334dc65d05543743ce20a1d6dcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c88cc102b41004e1115c0c11ee0e576"><td class="memItemLeft" align="right" valign="top"><a id="a3c88cc102b41004e1115c0c11ee0e576"></a>
+<a class="el" href="namespacecgv.html#a1b017a7250682dd1414b799b73129cd6">dvec3</a>&#160;</td><td class="memItemRight" valign="bottom"><b>compute_corner_normal</b> (const <a class="el" href="namespacecgv.html#a1b017a7250682dd1414b799b73129cd6">dvec3</a> &amp;pk, const <a class="el" href="namespacecgv.html#a1b017a7250682dd1414b799b73129cd6">dvec3</a> &amp;pi, const <a class="el" href="namespacecgv.html#a1b017a7250682dd1414b799b73129cd6">dvec3</a> &amp;pj, const <a class="el" href="namespacecgv.html#a1b017a7250682dd1414b799b73129cd6">dvec3</a> &amp;ni)</td></tr>
+<tr class="separator:a3c88cc102b41004e1115c0c11ee0e576"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -352,7 +352,7 @@ Protected Attributes</h2></td></tr>
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>res</b></td></tr>
 <tr class="separator:a0d1212228fc2168529868e909b25d661"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ab48abfe9a26d06418388d08cab4777"><td class="memItemLeft" align="right" valign="top"><a id="a7ab48abfe9a26d06418388d08cab4777"></a>
-<a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">dbox3</a>&#160;</td><td class="memItemRight" valign="bottom"><b>box</b></td></tr>
+<a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#a69dc49a0be6a0dd22fff7f5b98ef4a74">dbox3</a>&#160;</td><td class="memItemRight" valign="bottom"><b>box</b></td></tr>
 <tr class="separator:a7ab48abfe9a26d06418388d08cab4777"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af616894fea797139ba03e1c6b596b07f"><td class="memItemLeft" align="right" valign="top"><a id="af616894fea797139ba03e1c6b596b07f"></a>
 <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#ade2ff3f3ed159f28b71dd47b96ee9ef2">F</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>func_ptr</b></td></tr>

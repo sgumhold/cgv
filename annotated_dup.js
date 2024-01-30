@@ -228,7 +228,7 @@ var annotated_dup =
         [ "gamepad_stick_event", "classcgv_1_1gui_1_1gamepad__stick__event.html", "classcgv_1_1gui_1_1gamepad__stick__event" ],
         [ "gamepad_server", "classcgv_1_1gui_1_1gamepad__server.html", "classcgv_1_1gui_1_1gamepad__server" ]
       ] ],
-      [ "math", "namespacecgv_1_1math.html", [
+      [ "math", null, [
         [ "edge", "structcgv_1_1math_1_1edge.html", "structcgv_1_1math_1_1edge" ],
         [ "weighted_edge", "structcgv_1_1math_1_1weighted__edge.html", "structcgv_1_1math_1_1weighted__edge" ],
         [ "vertex", "structcgv_1_1math_1_1vertex.html", "structcgv_1_1math_1_1vertex" ],
@@ -549,7 +549,6 @@ var annotated_dup =
         [ "performance_task", "structcgv_1_1render_1_1performance__task.html", "structcgv_1_1render_1_1performance__task" ],
         [ "performance_monitor", "classcgv_1_1render_1_1performance__monitor.html", "classcgv_1_1render_1_1performance__monitor" ],
         [ "render_buffer", "classcgv_1_1render_1_1render__buffer.html", "classcgv_1_1render_1_1render__buffer" ],
-        [ "textured_rectangle", "structcgv_1_1render_1_1textured__rectangle.html", "structcgv_1_1render_1_1textured__rectangle" ],
         [ "shader_config", "structcgv_1_1render_1_1shader__config.html", "structcgv_1_1render_1_1shader__config" ],
         [ "shader_code", "classcgv_1_1render_1_1shader__code.html", "classcgv_1_1render_1_1shader__code" ],
         [ "shader_library", "classcgv_1_1render_1_1shader__library.html", "classcgv_1_1render_1_1shader__library" ],
@@ -557,6 +556,7 @@ var annotated_dup =
         [ "stereo_view", "classcgv_1_1render_1_1stereo__view.html", "classcgv_1_1render_1_1stereo__view" ],
         [ "texture", "classcgv_1_1render_1_1texture.html", "classcgv_1_1render_1_1texture" ],
         [ "textured_material", "classcgv_1_1render_1_1textured__material.html", "classcgv_1_1render_1_1textured__material" ],
+        [ "textured_rectangle", "structcgv_1_1render_1_1textured__rectangle.html", "structcgv_1_1render_1_1textured__rectangle" ],
         [ "vertex_buffer", "classcgv_1_1render_1_1vertex__buffer.html", "classcgv_1_1render_1_1vertex__buffer" ],
         [ "view", "classcgv_1_1render_1_1view.html", "classcgv_1_1render_1_1view" ],
         [ "a_buffer", "classcgv_1_1render_1_1a__buffer.html", "classcgv_1_1render_1_1a__buffer" ],

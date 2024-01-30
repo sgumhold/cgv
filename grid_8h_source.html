@@ -206,7 +206,7 @@ $(document).ready(function(){initNavTree('grid_8h_source.html',''); initResizabl
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keywordflow">for</span> (Idx i=0; i&lt;at(ci).size(); ++i) {</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            Idx ni = at(ci)[i];</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;            <span class="keywordflow">if</span> (ni != pi) {</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1math.html#a98dec8fec76658745c64947ff97a0915">sqr_length</a>(pnts(ni)-p) &lt; rmax_sqr)</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                <span class="keywordflow">if</span> (sqr_length(pnts(ni)-p) &lt; rmax_sqr)</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                    N.push_back(ni);</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;            }</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        }</div>
@@ -259,7 +259,6 @@ $(document).ready(function(){initNavTree('grid_8h_source.html',''); initResizabl
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1data_1_1grid_html"><div class="ttname"><a href="classcgv_1_1data_1_1grid.html">cgv::data::grid</a></div><div class="ttdef"><b>Definition:</b> <a href="grid_8h_source.html#l00008">grid.h:9</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1grid_html_a8f1cfd970410487ddc7c03577934c294"><div class="ttname"><a href="classcgv_1_1data_1_1grid.html#a8f1cfd970410487ddc7c03577934c294">cgv::data::grid::build</a></div><div class="ttdeci">void build(Idx nr_points, const Func &amp;pnts)</div><div class="ttdoc">before calling the build function, ensure that the bounding box has been set with set_box or computed...</div><div class="ttdef"><b>Definition:</b> <a href="grid_8h_source.html#l00071">grid.h:71</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a98dec8fec76658745c64947ff97a0915"><div class="ttname"><a href="namespacecgv_1_1math.html#a98dec8fec76658745c64947ff97a0915">cgv::math::sqr_length</a></div><div class="ttdeci">T sqr_length(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">returns the squared length of vector v</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00466">fvec.h:466</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

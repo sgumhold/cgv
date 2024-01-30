@@ -196,14 +196,13 @@ Third Party Libraries</h1>
 Creating a new Plugin Project (CMake)</h1>
 <p>A new project starts with a CMakeLists.txt file like this:</p>
 <div class="fragment"><div class="line">cmake_minimum_required(VERSION 3.15)</div>
-<div class="line"><a class="code" href="namespacecgv_1_1math.html#a92f1b79975130902277a2c38eb2ad56b">project</a>(my_plugin_project)</div>
+<div class="line">project(my_plugin_project)</div>
 <div class="line"> </div>
 <div class="line">find_package(CGV REQUIRED)</div>
 <div class="line"> </div>
 <div class="line">add_library(my_plugin SHARED my_plugin.cpp)</div>
 <div class="line">target_link_libraries(my_plugin cgv_gl)</div>
 <div class="line">add_dependencies(my_plugin cg_fltk crg_stereo_view)</div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a92f1b79975130902277a2c38eb2ad56b"><div class="ttname"><a href="namespacecgv_1_1math.html#a92f1b79975130902277a2c38eb2ad56b">cgv::math::project</a></div><div class="ttdeci">vec&lt; T &gt; project(const vec&lt; T &gt; &amp;v, const vec&lt; T &gt; &amp;n)</div><div class="ttdoc">calculates the projection of v onto n</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00835">vec.h:835</a></div></div>
 </div><!-- fragment --><p>The following commands will run CMake and then build your plugin. "&lt;path to cgv&gt;" has to point to either the locally checked out git repository, or a downloaded release of the cgv framework. The latest release can be found here: <a href="https://github.com/sgumhold/cgv/releases/latest">https://github.com/sgumhold/cgv/releases/latest</a></p>
 <div class="fragment"><div class="line">mkdir build</div>
 <div class="line">cd build</div>

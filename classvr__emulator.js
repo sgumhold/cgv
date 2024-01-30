@@ -1,6 +1,10 @@
 var classvr__emulator =
 [
-    [ "quat", "classvr__emulator.html#ae974abe055112b515a0c380d57b3ecc2", null ],
+    [ "mat3", "classvr__emulator.html#af8c442cf0c83c34ca559cedf9987011e", null ],
+    [ "mat34", "classvr__emulator.html#a46a8ff8807edb531d33ee38e7dc900c8", null ],
+    [ "quat", "classvr__emulator.html#a6e8c5d43a598ad472b35fcd237da5141", null ],
+    [ "vec3", "classvr__emulator.html#ad4cc27fec277e7780df0a5d191ffc217", null ],
+    [ "vec4", "classvr__emulator.html#a3a04920986769e25575657bce1064c20", null ],
     [ "vr_emulator", "classvr__emulator.html#adceb7f3149e90cef984a494e29ca5416", null ],
     [ "add_new_kit", "classvr__emulator.html#af9cdc8ce7f823c605260abe9fe63ce23", null ],
     [ "check_for_button_toggle", "classvr__emulator.html#a2c89bebdba8c2bb6893b608857b9c805", null ],

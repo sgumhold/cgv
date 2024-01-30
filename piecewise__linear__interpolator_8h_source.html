@@ -104,7 +104,7 @@ $(document).ready(function(){initNavTree('piecewise__linear__interpolator_8h_sou
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keywordflow">if</span>(count == 1)</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            <span class="keywordflow">return</span> control_points[0].second;</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        t = <a class="code" href="namespacecgv_1_1math.html#a6d164d4a63cb11523ffbbcc5178fe2f2">cgv::math::clamp</a>(t, control_points.min().first, control_points.max().first);</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        t = cgv::math::clamp(t, control_points.min().first, control_points.max().first);</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keywordflow">if</span>(t &gt; control_points[0].first) {</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            <span class="keywordtype">size_t</span> idx = 0;</div>
@@ -152,10 +152,10 @@ $(document).ready(function(){initNavTree('piecewise__linear__interpolator_8h_sou
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordflow">if</span>(control_points.min().first &gt; 0.0f)</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            r = 0;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordtype">float</span> <a class="code" href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">step</a> = 1.0f / <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(n - 1);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordtype">float</span> step = 1.0f / <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(n - 1);</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; n; ++i) {</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            <span class="keywordtype">float</span> t = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(i) * <a class="code" href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">step</a>;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            <span class="keywordtype">float</span> t = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(i) * step;</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            <span class="keywordflow">while</span>(t &gt; control_points[r].first &amp;&amp; l &lt; count - 1) {</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                l = r;</div>
@@ -186,8 +186,6 @@ $(document).ready(function(){initNavTree('piecewise__linear__interpolator_8h_sou
 <div class="ttc" id="aclasscgv_1_1math_1_1control__point__container_html"><div class="ttname"><a href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a></div><div class="ttdef"><b>Definition:</b> <a href="interpolator_8h_source.html#l00012">interpolator.h:12</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1interpolator_html"><div class="ttname"><a href="classcgv_1_1math_1_1interpolator.html">cgv::math::interpolator</a></div><div class="ttdef"><b>Definition:</b> <a href="interpolator_8h_source.html#l00068">interpolator.h:68</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1piecewise__linear__interpolator_html"><div class="ttname"><a href="classcgv_1_1math_1_1piecewise__linear__interpolator.html">cgv::math::piecewise_linear_interpolator</a></div><div class="ttdef"><b>Definition:</b> <a href="piecewise__linear__interpolator_8h_source.html#l00009">piecewise_linear_interpolator.h:9</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a1233597e0b02a8451d874eae9aac6773"><div class="ttname"><a href="namespacecgv_1_1math.html#a1233597e0b02a8451d874eae9aac6773">cgv::math::step</a></div><div class="ttdeci">T step(const T &amp;a, const T &amp;b)</div><div class="ttdoc">returns 0 for b &lt; a and 1 otherwise</div><div class="ttdef"><b>Definition:</b> <a href="functions_8h_source.html#l00018">functions.h:18</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a6d164d4a63cb11523ffbbcc5178fe2f2"><div class="ttname"><a href="namespacecgv_1_1math.html#a6d164d4a63cb11523ffbbcc5178fe2f2">cgv::math::clamp</a></div><div class="ttdeci">T clamp(const T &amp;v, const T &amp;a, const T &amp;b)</div><div class="ttdoc">clamp v at [a,b]</div><div class="ttdef"><b>Definition:</b> <a href="functions_8h_source.html#l00028">functions.h:28</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

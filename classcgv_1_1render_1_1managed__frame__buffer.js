@@ -11,7 +11,7 @@ var classcgv_1_1render_1_1managed__frame__buffer =
     [ "enable", "classcgv_1_1render_1_1managed__frame__buffer.html#a4c2110be61c7356fb8b09570a2ee97e1", null ],
     [ "enable_attachment", "classcgv_1_1render_1_1managed__frame__buffer.html#a81eb40cfd4a61026e52ac7f925840fd1", null ],
     [ "ensure", "classcgv_1_1render_1_1managed__frame__buffer.html#a5f1b07da53b5591cf845735de04c5e35", null ],
-    [ "get_size", "classcgv_1_1render_1_1managed__frame__buffer.html#ad28f4d310d338c0dd78ef2bc28e2b5a7", null ],
+    [ "get_size", "classcgv_1_1render_1_1managed__frame__buffer.html#a6f135bafc9a916f8f03a20f500972d63", null ],
     [ "ref_frame_buffer", "classcgv_1_1render_1_1managed__frame__buffer.html#a5c971e323fbbf9aaec0ad61fe3a9f3c2", null ],
     [ "set_size", "classcgv_1_1render_1_1managed__frame__buffer.html#a7c62f01155fb5d5815e3f4c6895d8774", null ],
     [ "attachments", "classcgv_1_1render_1_1managed__frame__buffer.html#ad3eca249ce011cd09502c307b44a1778", null ],
