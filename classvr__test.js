@@ -1,5 +1,16 @@
 var classvr__test =
 [
+    [ "box3", "classvr__test.html#a970d69e329aa7c5c809483d440c823d6", null ],
+    [ "dquat", "classvr__test.html#a05d1cc29e4fa33f6e7fb3b0c1e6024ed", null ],
+    [ "dvec2", "classvr__test.html#a9fa5ceb5cc931bc6dce501ace52fa742", null ],
+    [ "dvec3", "classvr__test.html#aa6305df5cc469f43298dcfdb80b9f79f", null ],
+    [ "mat3", "classvr__test.html#abf5e2cbbde63be2d62d9eacff0bf2e37", null ],
+    [ "mat4", "classvr__test.html#af3a5004f200fe561a7579bcef14906de", null ],
+    [ "quat", "classvr__test.html#a39009beb2b19dcf447af0d4c42df57f3", null ],
+    [ "rgb", "classvr__test.html#a59e04dbc9071f00340f8f452030b4d1a", null ],
+    [ "rgba", "classvr__test.html#ae5be5e9268a9e123f35cd27d87bbb632", null ],
+    [ "vec2", "classvr__test.html#af464c6c615a623ae53d7ac89f3e5b701", null ],
+    [ "vec3", "classvr__test.html#aa40e3c1ef8d636af2920833aee64897e", null ],
     [ "InteractionState", "classvr__test.html#a9fe627a41bb05376398b706892398157", [
       [ "IS_NONE", "classvr__test.html#a9fe627a41bb05376398b706892398157a8852848f0a2c73dd0a88e68fa2c0e05b", null ],
       [ "IS_OVER", "classvr__test.html#a9fe627a41bb05376398b706892398157af73663faa8e358fc7ab337c1c692c057", null ],

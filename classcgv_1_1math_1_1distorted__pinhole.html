@@ -118,14 +118,14 @@ template&lt;typename S &gt; </td></tr>
 <tr class="memitem:a1a4f441040c7bd6c20abac7a31befdf0"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a1a4f441040c7bd6c20abac7a31befdf0">distorted_pinhole</a> (const <a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html">distorted_pinhole</a>&lt; S &gt; &amp;dp)</td></tr>
 <tr class="memdesc:a1a4f441040c7bd6c20abac7a31befdf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy constructor <br /></td></tr>
 <tr class="separator:a1a4f441040c7bd6c20abac7a31befdf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff51ec684c3612bb1ed2ce518c0294bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole__types.html#a3641c902138487340847d88754e81398">distortion_result</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#aff51ec684c3612bb1ed2ce518c0294bd">apply_distortion_model</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xd, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xu, <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, 2, 2 &gt; *J_ptr=0, T epsilon=<a class="el" href="namespacecgv_1_1math.html#abf3e38779f899fbd4ec9b0c86b3aca3c">distortion_inversion_epsilon</a>&lt; T &gt;()) const</td></tr>
+<tr class="memitem:aff51ec684c3612bb1ed2ce518c0294bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole__types.html#a3641c902138487340847d88754e81398">distortion_result</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#aff51ec684c3612bb1ed2ce518c0294bd">apply_distortion_model</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xd, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xu, <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; T, 2, 2 &gt; *J_ptr=0, T epsilon=distortion_inversion_epsilon&lt; T &gt;()) const</td></tr>
 <tr class="memdesc:aff51ec684c3612bb1ed2ce518c0294bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">apply distortion model from distorted to undistorted image coordinates used in projection direction and return whether successful  <a href="classcgv_1_1math_1_1distorted__pinhole.html#aff51ec684c3612bb1ed2ce518c0294bd">More...</a><br /></td></tr>
 <tr class="separator:aff51ec684c3612bb1ed2ce518c0294bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d873eb461f9f4a7075aabea65f52d7d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole__types.html#a5076d61991f97ecf36a6dc679762d40b">distortion_inversion_result</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a9d873eb461f9f4a7075aabea65f52d7d">invert_distortion_model</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xu, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xd, bool use_xd_as_initial_guess=false, unsigned *iteration_ptr=0, T epsilon=<a class="el" href="namespacecgv_1_1math.html#abf3e38779f899fbd4ec9b0c86b3aca3c">distortion_inversion_epsilon</a>&lt; T &gt;(), unsigned max_nr_iterations=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole__types.html#a026e015e0ea5d823ee4f8ff4a99709e7">get_standard_max_nr_iterations</a>(), T slow_down=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a1a5d09eb25a7e4f55798cf9c48937947">get_standard_slow_down</a>()) const</td></tr>
+<tr class="memitem:a9d873eb461f9f4a7075aabea65f52d7d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole__types.html#a5076d61991f97ecf36a6dc679762d40b">distortion_inversion_result</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a9d873eb461f9f4a7075aabea65f52d7d">invert_distortion_model</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xu, <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;xd, bool use_xd_as_initial_guess=false, unsigned *iteration_ptr=0, T epsilon=distortion_inversion_epsilon&lt; T &gt;(), unsigned max_nr_iterations=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole__types.html#a026e015e0ea5d823ee4f8ff4a99709e7">get_standard_max_nr_iterations</a>(), T slow_down=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a1a5d09eb25a7e4f55798cf9c48937947">get_standard_slow_down</a>()) const</td></tr>
 <tr class="memdesc:a9d873eb461f9f4a7075aabea65f52d7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">invert model for image coordinate inversion  <a href="classcgv_1_1math_1_1distorted__pinhole.html#a9d873eb461f9f4a7075aabea65f52d7d">More...</a><br /></td></tr>
 <tr class="separator:a9d873eb461f9f4a7075aabea65f52d7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43e67cdc82472553a87e8f3602901ed9"><td class="memTemplParams" colspan="2">template&lt;typename S &gt; </td></tr>
-<tr class="memitem:a43e67cdc82472553a87e8f3602901ed9"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a43e67cdc82472553a87e8f3602901ed9">compute_distortion_map</a> (std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; S, 2 &gt;&gt; &amp;<a class="el" href="namespacecgv_1_1math.html#ac2ae197bbc8387de9e4a9c304f0c840f">map</a>, unsigned sub_sample=1, const <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; S, 2 &gt; &amp;invalid_point=<a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; S, 2 &gt;(S(-10000)), T epsilon=<a class="el" href="namespacecgv_1_1math.html#abf3e38779f899fbd4ec9b0c86b3aca3c">distortion_inversion_epsilon</a>&lt; T &gt;(), unsigned max_nr_iterations=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole__types.html#a026e015e0ea5d823ee4f8ff4a99709e7">get_standard_max_nr_iterations</a>(), T slow_down=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a1a5d09eb25a7e4f55798cf9c48937947">get_standard_slow_down</a>()) const</td></tr>
+<tr class="memitem:a43e67cdc82472553a87e8f3602901ed9"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a43e67cdc82472553a87e8f3602901ed9">compute_distortion_map</a> (std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; S, 2 &gt;&gt; &amp;map, unsigned sub_sample=1, const <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; S, 2 &gt; &amp;invalid_point=<a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; S, 2 &gt;(S(-10000)), T epsilon=distortion_inversion_epsilon&lt; T &gt;(), unsigned max_nr_iterations=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole__types.html#a026e015e0ea5d823ee4f8ff4a99709e7">get_standard_max_nr_iterations</a>(), T slow_down=<a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a1a5d09eb25a7e4f55798cf9c48937947">get_standard_slow_down</a>()) const</td></tr>
 <tr class="memdesc:a43e67cdc82472553a87e8f3602901ed9"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute for all pixels the distorted image coordinates with the <a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a9d873eb461f9f4a7075aabea65f52d7d" title="invert model for image coordinate inversion">invert_distortion_model()</a> function and store it in a distortion map  <a href="classcgv_1_1math_1_1distorted__pinhole.html#a43e67cdc82472553a87e8f3602901ed9">More...</a><br /></td></tr>
 <tr class="separator:a43e67cdc82472553a87e8f3602901ed9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcgv_1_1math_1_1pinhole"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1math_1_1pinhole')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1math_1_1pinhole.html">cgv::math::pinhole&lt; T &gt;</a></td></tr>
@@ -262,7 +262,7 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>epsilon</em> = <code><a class="el" href="namespacecgv_1_1math.html#abf3e38779f899fbd4ec9b0c86b3aca3c">distortion_inversion_epsilon</a>&lt;T&gt;()</code>&#160;</td>
+          <td class="paramname"><em>epsilon</em> = <code>distortion_inversion_epsilon&lt;T&gt;()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -321,7 +321,7 @@ template&lt;typename S &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>epsilon</em> = <code><a class="el" href="namespacecgv_1_1math.html#abf3e38779f899fbd4ec9b0c86b3aca3c">distortion_inversion_epsilon</a>&lt;T&gt;()</code>, </td>
+          <td class="paramname"><em>epsilon</em> = <code>distortion_inversion_epsilon&lt;T&gt;()</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -353,7 +353,7 @@ template&lt;typename S &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="camera_8h_source.html#l00529">529</a> of file <a class="el" href="camera_8h_source.html">camera.h</a>.</p>
 
-<p class="reference">References <a class="el" href="camera_8h_source.html#l00469">cgv::math::distorted_pinhole&lt; T &gt;::invert_distortion_model()</a>, and <a class="el" href="functions_8h_source.html#l00037">cgv::math::map()</a>.</p>
+<p class="reference">References <a class="el" href="camera_8h_source.html#l00469">cgv::math::distorted_pinhole&lt; T &gt;::invert_distortion_model()</a>.</p>
 
 </div>
 </div>
@@ -396,7 +396,7 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>epsilon</em> = <code><a class="el" href="namespacecgv_1_1math.html#abf3e38779f899fbd4ec9b0c86b3aca3c">distortion_inversion_epsilon</a>&lt;T&gt;()</code>, </td>
+          <td class="paramname"><em>epsilon</em> = <code>distortion_inversion_epsilon&lt;T&gt;()</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -440,7 +440,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="camera_8h_source.html#l00469">469</a> of file <a class="el" href="camera_8h_source.html">camera.h</a>.</p>
 
-<p class="reference">References <a class="el" href="camera_8h_source.html#l00427">cgv::math::distorted_pinhole&lt; T &gt;::apply_distortion_model()</a>, <a class="el" href="inv_8h_source.html#l00011">cgv::math::inv()</a>, and <a class="el" href="fvec_8h_source.html#l00289">cgv::math::fvec&lt; T, N &gt;::sqr_length()</a>.</p>
+<p class="reference">References <a class="el" href="camera_8h_source.html#l00427">cgv::math::distorted_pinhole&lt; T &gt;::apply_distortion_model()</a>, and <a class="el" href="fvec_8h_source.html#l00290">cgv::math::fvec&lt; T, N &gt;::sqr_length()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="camera_8h_source.html#l00529">cgv::math::distorted_pinhole&lt; T &gt;::compute_distortion_map()</a>.</p>
 
@@ -454,7 +454,7 @@ template&lt;typename T &gt; </div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespacecgv.html">cgv</a></li><li class="navelem"><a class="el" href="namespacecgv_1_1math.html">math</a></li><li class="navelem"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html">distorted_pinhole</a></li>
+    <li class="navelem"><a class="el" href="namespacecgv.html">cgv</a></li><li class="navelem"><b>math</b></li><li class="navelem"><a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html">distorted_pinhole</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>

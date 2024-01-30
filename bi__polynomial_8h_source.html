@@ -93,41 +93,41 @@ $(document).ready(function(){initNavTree('bi__polynomial_8h_source.html',''); in
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a334232cf858e03e53db9bbf416fc76e3">   20</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a334232cf858e03e53db9bbf416fc76e3">bipoly_val</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>&amp; bp, <span class="keyword">const</span> T&amp; x1, <span class="keyword">const</span> T&amp; x2)</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;T bipoly_val(<span class="keyword">const</span> mat&lt;T&gt;&amp; bp, <span class="keyword">const</span> T&amp; x1, <span class="keyword">const</span> T&amp; x2)</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">unsigned</span> n = bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">unsigned</span> m = bp.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">unsigned</span> n = bp.ncols();</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">unsigned</span> m = bp.nrows();</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    assert(n &gt; 0);</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    assert(m &gt; 0);</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r(m);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    vec&lt;T&gt; r(m);</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; m;i++)</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        r(i) = <a class="code" href="namespacecgv_1_1math.html#a9f72457452fa12679ad840de7b06df1c">poly_val</a>(bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a445e68257ac656cb7bf7656b110c23e4">row</a>(i),x1);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        r(i) = poly_val(bp.row(i),x1);</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a9f72457452fa12679ad840de7b06df1c">poly_val</a>(r,x2);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordflow">return</span> poly_val(r,x2);</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;}</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a71c3df147faeb70898d5d8be36ee6989">   38</a></span>&#160;T <a class="code" href="namespacecgv_1_1math.html#a334232cf858e03e53db9bbf416fc76e3">bipoly_val</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>&amp; bp, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; x)</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;T bipoly_val(<span class="keyword">const</span> mat&lt;T&gt;&amp; bp, <span class="keyword">const</span> vec&lt;T&gt;&amp; x)</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">unsigned</span> n = bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>();</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">unsigned</span> m = bp.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>();</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">unsigned</span> n = bp.ncols();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">unsigned</span> m = bp.nrows();</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    assert(n &gt; 0);</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    assert(m &gt; 0);</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    assert(v.size() == 2)</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r(n);</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; m;i++)</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        r(i) = <a class="code" href="namespacecgv_1_1math.html#a9f72457452fa12679ad840de7b06df1c">poly_val</a>(bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a445e68257ac656cb7bf7656b110c23e4">row</a>(i),x(0));</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    vec&lt;T&gt; r(n);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    for(<span class="keywordtype">unsigned</span> i = 0; i &lt; m;i++)</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        r(i) = poly_val(bp.row(i),x(0));</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#a9f72457452fa12679ad840de7b06df1c">poly_val</a>(r,x(1));</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    return poly_val(r,x(1));</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">//returns vandermonde matrix for bivariate polynomial fitting</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<a class="code" href="classcgv_1_1math_1_1mat.html">cgv::math::mat&lt;T&gt;</a> vander2(<span class="keywordtype">unsigned</span> degree1, <span class="keywordtype">unsigned</span> degree2,</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                  <span class="keyword">const</span> vec&lt;T&gt;&amp; X1,<span class="keyword">const</span> vec&lt;T&gt; X2)</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;template &lt;typename T&gt;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<a class="code" href="namespacecgv.html">cgv</a>::math::mat&lt;T&gt; vander2(<span class="keywordtype">unsigned</span> degree1, <span class="keywordtype">unsigned</span> degree2,</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                  const vec&lt;T&gt;&amp; X1,const vec&lt;T&gt; X2)</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;{</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    assert(X1.size()&gt;0);</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    assert(X1.size() == X2.size());</div>
@@ -167,8 +167,8 @@ $(document).ready(function(){initNavTree('bi__polynomial_8h_source.html',''); in
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    mat&lt;T&gt; A;</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    vec&lt;T&gt; b,bp;</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    AtA(V,A);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <a class="code" href="namespacecgv_1_1math.html#a2f884462214d37af98d55984170fb1c5">Atx</a>(V,Y,b);</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <a class="code" href="namespacecgv_1_1math.html#a5dbdf6fbf49a08e616601b2ac1a7895b">svd_solve</a>(A,b,bp);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    Atx(V,Y,b);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    svd_solve(A,b,bp);</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        </div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordflow">return</span> reshape(bp,degree2+1,degree1+1);</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    </div>
@@ -231,26 +231,26 @@ $(document).ready(function(){initNavTree('bi__polynomial_8h_source.html',''); in
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;}</div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00164"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#abd02962dd3e20c230b6920c4baa6b1cf">  164</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#abd02962dd3e20c230b6920c4baa6b1cf">bipoly_int_x1</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>&amp; bp,<span class="keyword">const</span> T&amp; k=0)</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;mat&lt;T&gt; bipoly_int_x1(<span class="keyword">const</span> mat&lt;T&gt;&amp; bp,<span class="keyword">const</span> T&amp; k=0)</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;{</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> m(bp.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>(),bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>()+1);</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; bp.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>();i++) </div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        m.<a class="code" href="classcgv_1_1math_1_1mat.html#a9504758351d299d0b116bd70913f03dc">set_row</a>(i,poly_int(bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a445e68257ac656cb7bf7656b110c23e4">row</a>(i),k));</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    mat&lt;T&gt; m(bp.nrows(),bp.ncols()+1);</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; bp.nrows();i++) </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        m.set_row(i,poly_int(bp.row(i),k));</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <span class="keywordflow">return</span> m;</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;}</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00174"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ae3d44c29d8541df107111af2d9b2e179">  174</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> <a class="code" href="namespacecgv_1_1math.html#ae3d44c29d8541df107111af2d9b2e179">bipoly_int_x2</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a>&amp; bp,<span class="keyword">const</span> T&amp; k=0)</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;mat&lt;T&gt; bipoly_int_x2(<span class="keyword">const</span> mat&lt;T&gt;&amp; bp,<span class="keyword">const</span> T&amp; k=0)</div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;{</div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    </div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> v(1,bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>());</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    v.<a class="code" href="classcgv_1_1math_1_1mat.html#ab9f9d6987f1c6271117a43467e057436">zeros</a>();</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    v(0,bp.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>()-1)=k;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <a class="code" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> m = vertcat(bp,v);</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    mat&lt;T&gt; v(1,bp.ncols());</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    v.zeros();</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    v(0,bp.ncols()-1)=k;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    mat&lt;T&gt; m = vertcat(bp,v);</div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    </div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>()-2;i++)</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; m.<a class="code" href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">ncols</a>();j++)</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            m(i,j)=m(i,j)/(m.<a class="code" href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">nrows</a>()-1-i);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; m.nrows()-2;i++)</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; m.ncols();j++)</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            m(i,j)=m(i,j)/(m.nrows()-1-i);</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    </div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    </div>
@@ -266,19 +266,7 @@ $(document).ready(function(){initNavTree('bi__polynomial_8h_source.html',''); in
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160; </div>
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    }</div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;}</div>
-<div class="ttc" id="aclasscgv_1_1math_1_1mat_html"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html">cgv::math::mat</a></div><div class="ttdoc">A matrix type (full column major storage) The matrix can be loaded directly into OpenGL without need ...</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00208">mat.h:209</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1mat_html_a19c47145cbe77fd7f48fd2d7dae97deb"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html#a19c47145cbe77fd7f48fd2d7dae97deb">cgv::math::mat::ncols</a></div><div class="ttdeci">unsigned ncols() const</div><div class="ttdoc">number of columns</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00547">mat.h:547</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1mat_html_a445e68257ac656cb7bf7656b110c23e4"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html#a445e68257ac656cb7bf7656b110c23e4">cgv::math::mat::row</a></div><div class="ttdeci">const vec&lt; T &gt; row(unsigned i) const</div><div class="ttdoc">extract a row from the matrix as a vector</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00816">mat.h:816</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1mat_html_a9504758351d299d0b116bd70913f03dc"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html#a9504758351d299d0b116bd70913f03dc">cgv::math::mat::set_row</a></div><div class="ttdeci">void set_row(unsigned i, const vec&lt; T &gt; &amp;v)</div><div class="ttdoc">set row i of the matrix to vector v</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00829">mat.h:829</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1mat_html_ab9f9d6987f1c6271117a43467e057436"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html#ab9f9d6987f1c6271117a43467e057436">cgv::math::mat::zeros</a></div><div class="ttdeci">void zeros()</div><div class="ttdoc">set zero matrix</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l01036">mat.h:1036</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1mat_html_aee1bfad9a6c73d9f5de7afaa4fe91bb9"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html#aee1bfad9a6c73d9f5de7afaa4fe91bb9">cgv::math::mat::nrows</a></div><div class="ttdeci">unsigned nrows() const</div><div class="ttdoc">number of rows</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00541">mat.h:541</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1vec_html"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html">cgv::math::vec</a></div><div class="ttdoc">A column vector class.</div><div class="ttdef"><b>Definition:</b> <a href="vec_8h_source.html#l00027">vec.h:28</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a2f884462214d37af98d55984170fb1c5"><div class="ttname"><a href="namespacecgv_1_1math.html#a2f884462214d37af98d55984170fb1c5">cgv::math::Atx</a></div><div class="ttdeci">void Atx(const mat&lt; T &gt; &amp;a, const vec&lt; T &gt; &amp;x, vec&lt; T &gt; &amp;atx)</div><div class="ttdoc">multiply A^T*x A is a matrix and x is a vector</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l01352">mat.h:1352</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a334232cf858e03e53db9bbf416fc76e3"><div class="ttname"><a href="namespacecgv_1_1math.html#a334232cf858e03e53db9bbf416fc76e3">cgv::math::bipoly_val</a></div><div class="ttdeci">T bipoly_val(const mat&lt; T &gt; &amp;bp, const T &amp;x1, const T &amp;x2)</div><div class="ttdoc">bivariate polynomials are stored in matrices in the following order: [a,b,c,d a*x1^3*x2^3 + b*x1^2*x2...</div><div class="ttdef"><b>Definition:</b> <a href="bi__polynomial_8h_source.html#l00020">bi_polynomial.h:20</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a5dbdf6fbf49a08e616601b2ac1a7895b"><div class="ttname"><a href="namespacecgv_1_1math.html#a5dbdf6fbf49a08e616601b2ac1a7895b">cgv::math::svd_solve</a></div><div class="ttdeci">bool svd_solve(const mat&lt; T &gt; &amp;a, const vec&lt; T &gt; &amp;b, vec&lt; T &gt; &amp;x)</div><div class="ttdoc">solve ax=b with svd decomposition</div><div class="ttdef"><b>Definition:</b> <a href="lin__solve_8h_source.html#l00300">lin_solve.h:300</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a9f72457452fa12679ad840de7b06df1c"><div class="ttname"><a href="namespacecgv_1_1math.html#a9f72457452fa12679ad840de7b06df1c">cgv::math::poly_val</a></div><div class="ttdeci">T poly_val(const vec&lt; T &gt; &amp;p, const T &amp;x)</div><div class="ttdoc">polynomials are stored in vectors in the following order: [a,b,c,d] ...a*x^3 + b*x^2 + c*x + d</div><div class="ttdef"><b>Definition:</b> <a href="polynomial_8h_source.html#l00026">polynomial.h:26</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_abd02962dd3e20c230b6920c4baa6b1cf"><div class="ttname"><a href="namespacecgv_1_1math.html#abd02962dd3e20c230b6920c4baa6b1cf">cgv::math::bipoly_int_x1</a></div><div class="ttdeci">mat&lt; T &gt; bipoly_int_x1(const mat&lt; T &gt; &amp;bp, const T &amp;k=0)</div><div class="ttdoc">analytic integration of bivariate polynomial int p(x1,x2) dx1</div><div class="ttdef"><b>Definition:</b> <a href="bi__polynomial_8h_source.html#l00164">bi_polynomial.h:164</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_ae3d44c29d8541df107111af2d9b2e179"><div class="ttname"><a href="namespacecgv_1_1math.html#ae3d44c29d8541df107111af2d9b2e179">cgv::math::bipoly_int_x2</a></div><div class="ttdeci">mat&lt; T &gt; bipoly_int_x2(const mat&lt; T &gt; &amp;bp, const T &amp;k=0)</div><div class="ttdoc">analytic integration of bivariate polynomial int p(x1,x2) dx2</div><div class="ttdef"><b>Definition:</b> <a href="bi__polynomial_8h_source.html#l00174">bi_polynomial.h:174</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1mat_html"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html">cgv::math::mat</a></div><div class="ttdoc">A matrix type (full column major storage) The matrix can be loaded directly into OpenGL without need ...</div><div class="ttdef"><b>Definition:</b> <a href="mat_8h_source.html#l00207">mat.h:208</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

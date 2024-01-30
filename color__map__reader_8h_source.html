@@ -91,174 +91,171 @@ $(document).ready(function(){initNavTree('color__map__reader_8h_source.html','')
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;cgv/base/import.h&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;cgv/render/color_map.h&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;cgv/render/render_types.h&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;cgv/utils/file.h&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;tinyxml2/tinyxml2.h&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;cgv_xml/query.h&gt;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span>app {</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1color__map__reader.html">   16</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcgv_1_1app_1_1color__map__reader.html">color_map_reader</a> : cgv::render::render_types {</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="comment">// configuration for xml tag and attribute name identifiers</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">   19</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">identifier_config</a> {</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        std::string color_map_tag_id = <span class="stringliteral">&quot;ColorMap&quot;</span>;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        std::string point_tag_id = <span class="stringliteral">&quot;Point&quot;</span>;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        std::string color_point_tag_id = <span class="stringliteral">&quot;ColorPoint&quot;</span>;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        std::string opacity_point_tag_id = <span class="stringliteral">&quot;OpacityPoint&quot;</span>;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        std::string name_value_id = <span class="stringliteral">&quot;name&quot;</span>;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        std::string position_value_id = <span class="stringliteral">&quot;x&quot;</span>;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        std::string red_value_id = <span class="stringliteral">&quot;r&quot;</span>;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        std::string green_value_id = <span class="stringliteral">&quot;g&quot;</span>;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        std::string blue_value_id = <span class="stringliteral">&quot;b&quot;</span>;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        std::string opactiy_value_id = <span class="stringliteral">&quot;o&quot;</span>;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keywordtype">bool</span> color_value_type_float = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordtype">bool</span> opacity_value_type_float = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordtype">bool</span> apply_gamma = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    };</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">identifier_config</a>&amp; default_identifier_config() {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">identifier_config</a> default_ic;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordflow">return</span> default_ic;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    }</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="comment">// data structure of loaded color maps result</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">typedef</span> std::vector&lt;std::pair&lt;std::string, cgv::render::color_map&gt;&gt; result;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">struct </span>point_info {</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">float</span> x = -1.0f;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordtype">float</span> o = -1.0f;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordtype">float</span> r = -1.0f;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordtype">float</span> g = -1.0f;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordtype">float</span> b = -1.0f;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    };</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> extract_value(<span class="keyword">const</span> tinyxml2::XMLElement&amp; elem, <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">bool</span> as_float, <span class="keywordtype">float</span>&amp; value) {</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordflow">if</span>(as_float) {</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            elem.QueryFloatAttribute(name.c_str(), &amp;value);</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            <span class="keywordtype">int</span> temp;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <span class="keywordflow">if</span>(elem.QueryIntAttribute(name.c_str(), &amp;temp) == tinyxml2::XML_SUCCESS)</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                value = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(temp) / 255.0f;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    }</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keyword">static</span> point_info extract_control_point(<span class="keyword">const</span> tinyxml2::XMLElement&amp; elem, <span class="keyword">const</span> identifier_config&amp; config) {</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        point_info pi;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        extract_value(elem, config.position_value_id, <span class="keyword">true</span>, pi.x);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        extract_value(elem, config.opactiy_value_id, config.opacity_value_type_float, pi.o);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        extract_value(elem, config.red_value_id, config.color_value_type_float, pi.r);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        extract_value(elem, config.green_value_id, config.color_value_type_float, pi.g);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        extract_value(elem, config.blue_value_id, config.color_value_type_float, pi.b);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">return</span> pi;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    }</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> extract_color_map(<span class="keyword">const</span> tinyxml2::XMLElement&amp; elem, result&amp; entries, <span class="keyword">const</span> identifier_config&amp; config) {</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        std::string name = elem.Attribute(<span class="stringliteral">&quot;name&quot;</span>);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <a class="code" href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a> cm;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keyword">auto</span> child = elem.FirstChildElement();</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordflow">while</span>(child) {</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            <span class="keywordflow">if</span>(strcmp(child-&gt;Name(), config.point_tag_id.c_str()) == 0 ||</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                strcmp(child-&gt;Name(), config.color_point_tag_id.c_str()) == 0 ||</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                strcmp(child-&gt;Name(), config.opacity_point_tag_id.c_str()) == 0) {</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                point_info pi = extract_control_point(*child, config);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                <span class="keywordflow">if</span>(!(pi.x &lt; 0.0f)) {</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                    <span class="keywordflow">if</span>(!(pi.r &lt; 0.0f || pi.g &lt; 0.0f || pi.b &lt; 0.0f)) {</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                        <a class="code" href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">rgb</a> col(0.0f);</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                        col[0] = std::min(pi.r, 1.0f);</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                        col[1] = std::min(pi.g, 1.0f);</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                        col[2] = std::min(pi.b, 1.0f);</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                        <span class="comment">// apply gamma correction if requested</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                        <span class="keywordflow">if</span>(config.apply_gamma) {</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                            col[0] = <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>(col[0], 2.2f);</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                            col[1] = <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>(col[1], 2.2f);</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                            col[2] = <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>(col[2], 2.2f);</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                        }</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                        cm.add_color_point(pi.x, col);</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                    }</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                    <span class="keywordflow">if</span>(!(pi.o &lt; 0.0f)) {</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                        cm.add_opacity_point(pi.x, <a class="code" href="namespacecgv_1_1math.html#a6d164d4a63cb11523ffbbcc5178fe2f2">cgv::math::clamp</a>(pi.o, 0.0f, 1.0f));</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                    }</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                }</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            }</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            child = child-&gt;NextSiblingElement();</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        }</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="keywordflow">if</span>(!cm.empty())</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            entries.push_back({ name, cm });</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    }</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> extract_color_maps(<span class="keyword">const</span> tinyxml2::XMLElement&amp; elem, result&amp; entries, <span class="keyword">const</span> identifier_config&amp; config) {</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <a class="code" href="classcgv_1_1xml_1_1FindElementByNameVisitor.html">cgv::xml::FindElementByNameVisitor</a> findElementByName(<span class="stringliteral">&quot;ColorMaps&quot;</span>);</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        elem.Accept(&amp;findElementByName);</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keywordflow">if</span> (<span class="keyword">auto</span> color_maps_elem = findElementByName.Result()) {</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;            <span class="keyword">auto</span> color_map_elem = color_maps_elem-&gt;FirstChildElement();</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            <span class="keywordflow">while</span> (color_map_elem) {</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                <span class="keywordflow">if</span> (strcmp(color_map_elem-&gt;Name(), config.color_map_tag_id.c_str()) == 0)</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                    extract_color_map(*color_map_elem, entries, config);</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                color_map_elem = color_map_elem-&gt;NextSiblingElement();</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;            }</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        }</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    }</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> read_from_xml(<span class="keyword">const</span> tinyxml2::XMLElement&amp; elem, result&amp; entries, <span class="keyword">const</span> identifier_config&amp; config = default_identifier_config()) {</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        entries.clear();</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        extract_color_maps(elem, entries, config);</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keywordflow">return</span> !entries.empty();</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    }</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> read_from_xml(<span class="keyword">const</span> tinyxml2::XMLDocument&amp; doc, result&amp; entries, <span class="keyword">const</span> identifier_config&amp; config = default_identifier_config()) {</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <span class="keywordflow">if</span>(<span class="keyword">const</span> tinyxml2::XMLElement* elem = doc.RootElement())</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;            <span class="keywordflow">return</span> read_from_xml(*elem, entries, config);</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160; </div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    }</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> read_from_xml_string(<span class="keyword">const</span> std::string&amp; xml, result&amp; entries, <span class="keyword">const</span> identifier_config&amp; config = default_identifier_config()) {</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        </div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        tinyxml2::XMLDocument doc;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">if</span>(doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS)</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;            <span class="keywordflow">return</span> read_from_xml(doc, entries, config);</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    }</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> read_from_xml_file(<span class="keyword">const</span> std::string&amp; file_name, result&amp; entries, <span class="keyword">const</span> identifier_config&amp; config = default_identifier_config()) {</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        tinyxml2::XMLDocument doc;</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        <span class="keywordflow">if</span>(doc.LoadFile(file_name.c_str()) == tinyxml2::XML_SUCCESS)</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;            <span class="keywordflow">return</span> read_from_xml(doc, entries, config);</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    }</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;};</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;cgv/utils/file.h&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;tinyxml2/tinyxml2.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;cgv_xml/query.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span>app {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1color__map__reader.html">   15</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcgv_1_1app_1_1color__map__reader.html">color_map_reader</a> {</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="comment">// configuration for xml tag and attribute name identifiers</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">   18</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">identifier_config</a> {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        std::string color_map_tag_id = <span class="stringliteral">&quot;ColorMap&quot;</span>;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        std::string point_tag_id = <span class="stringliteral">&quot;Point&quot;</span>;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        std::string color_point_tag_id = <span class="stringliteral">&quot;ColorPoint&quot;</span>;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        std::string opacity_point_tag_id = <span class="stringliteral">&quot;OpacityPoint&quot;</span>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        std::string name_value_id = <span class="stringliteral">&quot;name&quot;</span>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        std::string position_value_id = <span class="stringliteral">&quot;x&quot;</span>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        std::string red_value_id = <span class="stringliteral">&quot;r&quot;</span>;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        std::string green_value_id = <span class="stringliteral">&quot;g&quot;</span>;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        std::string blue_value_id = <span class="stringliteral">&quot;b&quot;</span>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        std::string opactiy_value_id = <span class="stringliteral">&quot;o&quot;</span>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordtype">bool</span> color_value_type_float = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keywordtype">bool</span> opacity_value_type_float = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordtype">bool</span> apply_gamma = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    };</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">identifier_config</a>&amp; default_identifier_config() {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">identifier_config</a> default_ic;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordflow">return</span> default_ic;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    }</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="comment">// data structure of loaded color maps result</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">typedef</span> std::vector&lt;std::pair&lt;std::string, cgv::render::color_map&gt;&gt; result;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">struct </span>point_info {</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordtype">float</span> x = -1.0f;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">float</span> o = -1.0f;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordtype">float</span> r = -1.0f;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordtype">float</span> g = -1.0f;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordtype">float</span> b = -1.0f;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    };</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> extract_value(<span class="keyword">const</span> tinyxml2::XMLElement&amp; elem, <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">bool</span> as_float, <span class="keywordtype">float</span>&amp; value) {</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordflow">if</span>(as_float) {</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            elem.QueryFloatAttribute(name.c_str(), &amp;value);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <span class="keywordtype">int</span> temp;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            <span class="keywordflow">if</span>(elem.QueryIntAttribute(name.c_str(), &amp;temp) == tinyxml2::XML_SUCCESS)</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                value = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(temp) / 255.0f;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        }</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    }</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keyword">static</span> point_info extract_control_point(<span class="keyword">const</span> tinyxml2::XMLElement&amp; elem, <span class="keyword">const</span> identifier_config&amp; config) {</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        point_info pi;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        extract_value(elem, config.position_value_id, <span class="keyword">true</span>, pi.x);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        extract_value(elem, config.opactiy_value_id, config.opacity_value_type_float, pi.o);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        extract_value(elem, config.red_value_id, config.color_value_type_float, pi.r);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        extract_value(elem, config.green_value_id, config.color_value_type_float, pi.g);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        extract_value(elem, config.blue_value_id, config.color_value_type_float, pi.b);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keywordflow">return</span> pi;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> extract_color_map(<span class="keyword">const</span> tinyxml2::XMLElement&amp; elem, result&amp; entries, <span class="keyword">const</span> identifier_config&amp; config) {</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        std::string name = elem.Attribute(<span class="stringliteral">&quot;name&quot;</span>);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <a class="code" href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a> cm;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keyword">auto</span> child = elem.FirstChildElement();</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordflow">while</span>(child) {</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <span class="keywordflow">if</span>(strcmp(child-&gt;Name(), config.point_tag_id.c_str()) == 0 ||</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                strcmp(child-&gt;Name(), config.color_point_tag_id.c_str()) == 0 ||</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                strcmp(child-&gt;Name(), config.opacity_point_tag_id.c_str()) == 0) {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                point_info pi = extract_control_point(*child, config);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                <span class="keywordflow">if</span>(!(pi.x &lt; 0.0f)) {</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                    <span class="keywordflow">if</span>(!(pi.r &lt; 0.0f || pi.g &lt; 0.0f || pi.b &lt; 0.0f)) {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                        <a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a> col(0.0f);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                        col[0] = std::min(pi.r, 1.0f);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                        col[1] = std::min(pi.g, 1.0f);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                        col[2] = std::min(pi.b, 1.0f);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                        <span class="comment">// apply gamma correction if requested</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                        <span class="keywordflow">if</span>(config.apply_gamma) {</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                            col[0] = pow(col[0], 2.2f);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                            col[1] = pow(col[1], 2.2f);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                            col[2] = pow(col[2], 2.2f);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                        }</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                        cm.add_color_point(pi.x, col);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                    }</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                    <span class="keywordflow">if</span>(!(pi.o &lt; 0.0f)) {</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                        cm.add_opacity_point(pi.x, cgv::math::clamp(pi.o, 0.0f, 1.0f));</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                    }</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                }</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            }</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            child = child-&gt;NextSiblingElement();</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        }</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <span class="keywordflow">if</span>(!cm.empty())</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            entries.push_back({ name, cm });</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    }</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> extract_color_maps(<span class="keyword">const</span> tinyxml2::XMLElement&amp; elem, result&amp; entries, <span class="keyword">const</span> identifier_config&amp; config) {</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <a class="code" href="classcgv_1_1xml_1_1FindElementByNameVisitor.html">cgv::xml::FindElementByNameVisitor</a> findElementByName(<span class="stringliteral">&quot;ColorMaps&quot;</span>);</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        elem.Accept(&amp;findElementByName);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="keywordflow">if</span> (<span class="keyword">auto</span> color_maps_elem = findElementByName.Result()) {</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            <span class="keyword">auto</span> color_map_elem = color_maps_elem-&gt;FirstChildElement();</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            <span class="keywordflow">while</span> (color_map_elem) {</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                <span class="keywordflow">if</span> (strcmp(color_map_elem-&gt;Name(), config.color_map_tag_id.c_str()) == 0)</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                    extract_color_map(*color_map_elem, entries, config);</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                color_map_elem = color_map_elem-&gt;NextSiblingElement();</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;            }</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        }</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    }</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> read_from_xml(<span class="keyword">const</span> tinyxml2::XMLElement&amp; elem, result&amp; entries, <span class="keyword">const</span> identifier_config&amp; config = default_identifier_config()) {</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        entries.clear();</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        extract_color_maps(elem, entries, config);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keywordflow">return</span> !entries.empty();</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    }</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> read_from_xml(<span class="keyword">const</span> tinyxml2::XMLDocument&amp; doc, result&amp; entries, <span class="keyword">const</span> identifier_config&amp; config = default_identifier_config()) {</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        <span class="keywordflow">if</span>(<span class="keyword">const</span> tinyxml2::XMLElement* elem = doc.RootElement())</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;            <span class="keywordflow">return</span> read_from_xml(*elem, entries, config);</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    }</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> read_from_xml_string(<span class="keyword">const</span> std::string&amp; xml, result&amp; entries, <span class="keyword">const</span> identifier_config&amp; config = default_identifier_config()) {</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        </div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        tinyxml2::XMLDocument doc;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <span class="keywordflow">if</span>(doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS)</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;            <span class="keywordflow">return</span> read_from_xml(doc, entries, config);</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    }</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> read_from_xml_file(<span class="keyword">const</span> std::string&amp; file_name, result&amp; entries, <span class="keyword">const</span> identifier_config&amp; config = default_identifier_config()) {</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        </div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        tinyxml2::XMLDocument doc;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="keywordflow">if</span>(doc.LoadFile(file_name.c_str()) == tinyxml2::XML_SUCCESS)</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;            <span class="keywordflow">return</span> read_from_xml(doc, entries, config);</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    }</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;};</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;}</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;}</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;}</div>
-<div class="ttc" id="aclasscgv_1_1app_1_1color__map__reader_html"><div class="ttname"><a href="classcgv_1_1app_1_1color__map__reader.html">cgv::app::color_map_reader</a></div><div class="ttdef"><b>Definition:</b> <a href="color__map__reader_8h_source.html#l00016">color_map_reader.h:16</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1color__map_html"><div class="ttname"><a href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a></div><div class="ttdef"><b>Definition:</b> <a href="color__map_8h_source.html#l00014">color_map.h:14</a></div></div>
+<div class="ttc" id="aclasscgv_1_1app_1_1color__map__reader_html"><div class="ttname"><a href="classcgv_1_1app_1_1color__map__reader.html">cgv::app::color_map_reader</a></div><div class="ttdef"><b>Definition:</b> <a href="color__map__reader_8h_source.html#l00015">color_map_reader.h:15</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1color__map_html"><div class="ttname"><a href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a></div><div class="ttdef"><b>Definition:</b> <a href="color__map_8h_source.html#l00013">color_map.h:13</a></div></div>
 <div class="ttc" id="aclasscgv_1_1xml_1_1FindElementByNameVisitor_html"><div class="ttname"><a href="classcgv_1_1xml_1_1FindElementByNameVisitor.html">cgv::xml::FindElementByNameVisitor</a></div><div class="ttdoc">Finds a tinyxml2::XMLElement by name.</div><div class="ttdef"><b>Definition:</b> <a href="query_8h_source.html#l00027">query.h:27</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a6d164d4a63cb11523ffbbcc5178fe2f2"><div class="ttname"><a href="namespacecgv_1_1math.html#a6d164d4a63cb11523ffbbcc5178fe2f2">cgv::math::clamp</a></div><div class="ttdeci">T clamp(const T &amp;v, const T &amp;a, const T &amp;b)</div><div class="ttdoc">clamp v at [a,b]</div><div class="ttdef"><b>Definition:</b> <a href="functions_8h_source.html#l00028">functions.h:28</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_ab41dd3e7ea6d0410abba813f0c6067b6"><div class="ttname"><a href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">cgv::math::pow</a></div><div class="ttdeci">const fvec&lt; T, N &gt; pow(const fvec&lt; T, N &gt; &amp;v, T e)</div><div class="ttdoc">pow function for fvec type</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00614">fvec.h:614</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1render_html_a02e9c0ebb98bfd66e2d56e0a5e9047c8"><div class="ttname"><a href="namespacecgv_1_1render.html#a02e9c0ebb98bfd66e2d56e0a5e9047c8">cgv::render::rgb</a></div><div class="ttdeci">cgv::media::color&lt; float, cgv::media::RGB &gt; rgb</div><div class="ttdoc">declare rgb color type</div><div class="ttdef"><b>Definition:</b> <a href="render__types_8h_source.html#l00017">render_types.h:17</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
-<div class="ttc" id="astructcgv_1_1app_1_1color__map__reader_1_1identifier__config_html"><div class="ttname"><a href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">cgv::app::color_map_reader::identifier_config</a></div><div class="ttdef"><b>Definition:</b> <a href="color__map__reader_8h_source.html#l00019">color_map_reader.h:19</a></div></div>
+<div class="ttc" id="anamespacecgv_html_a465f589beeb5e4e76eb2db8d1f6057c1"><div class="ttname"><a href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">cgv::rgb</a></div><div class="ttdeci">cgv::media::color&lt; float, cgv::media::RGB &gt; rgb</div><div class="ttdoc">declare rgb color type with 32 bit components</div><div class="ttdef"><b>Definition:</b> <a href="color_8h_source.html#l00789">color.h:789</a></div></div>
+<div class="ttc" id="astructcgv_1_1app_1_1color__map__reader_1_1identifier__config_html"><div class="ttname"><a href="structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html">cgv::app::color_map_reader::identifier_config</a></div><div class="ttdef"><b>Definition:</b> <a href="color__map__reader_8h_source.html#l00018">color_map_reader.h:18</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

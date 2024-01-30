@@ -1,11 +1,15 @@
 var classvr__emulated__kit =
 [
-    [ "mat3x4", "classvr__emulated__kit.html#a05e658b6fc28f5f3264ecd91ab4d06df", null ],
+    [ "mat3", "classvr__emulated__kit.html#a2b21694964448344bc0073753bc39fc1", null ],
+    [ "mat34", "classvr__emulated__kit.html#ada99ced858370396cd468da020b91b24", null ],
+    [ "mat4", "classvr__emulated__kit.html#a74c682f5367b1e4debe8fb53687627f4", null ],
     [ "quat", "classvr__emulated__kit.html#aa8a2dad6714c96cd35599da47e9e4691", null ],
+    [ "vec3", "classvr__emulated__kit.html#a4a28a322cd69f35d9937c8a8bdd0eac9", null ],
+    [ "vec4", "classvr__emulated__kit.html#a16bcf006c911e6011045aca58d2c12d3", null ],
     [ "vr_emulated_kit", "classvr__emulated__kit.html#a2e21f96a1c662f8a2217e87e8a9a7b68", null ],
     [ "compute_state_poses", "classvr__emulated__kit.html#a39d4397b9542c8ae6c28b096fcf161c7", null ],
     [ "construct_homogeneous_matrix", "classvr__emulated__kit.html#a69948c3664b8d951b181ab8abbb6a1fa", null ],
-    [ "construct_pos_matrix", "classvr__emulated__kit.html#a09844effa3466044a4ecbd0e15828496", null ],
+    [ "construct_pos_matrix", "classvr__emulated__kit.html#abaaaabf8ea2a27a46c1968598cc9554b", null ],
     [ "get_body_direction", "classvr__emulated__kit.html#aaf7c9999b6236d6d67931ca7654a8df8", null ],
     [ "get_controller_throttles_and_sticks", "classvr__emulated__kit.html#af0692fc5bcdc9f87bffd04f67031a230", null ],
     [ "get_controller_throttles_and_sticks_deadzone_and_precision", "classvr__emulated__kit.html#ad98de21b0deb6729d8738469a3985ded", null ],

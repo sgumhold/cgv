@@ -51,7 +51,6 @@ var dir_eaf9d2518f1ede0a595228de81ad9d4d =
     [ "proximity.h", "proximity_8h_source.html", null ],
     [ "qem.h", "qem_8h_source.html", null ],
     [ "qr.h", "qr_8h_source.html", null ],
-    [ "quat.h", "quat_8h_source.html", null ],
     [ "quaternion.h", "quaternion_8h_source.html", null ],
     [ "random.h", "random_8h_source.html", null ],
     [ "ransac.h", "ransac_8h_source.html", null ],

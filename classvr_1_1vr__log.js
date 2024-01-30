@@ -1,7 +1,9 @@
 var classvr_1_1vr__log =
 [
     [ "container", "classvr_1_1vr__log.html#a041a8b19b1371b1a4e53352a3cecb960", null ],
-    [ "vec8", "classvr_1_1vr__log.html#a27289f6de6451869decdc64d9551ca83", null ],
+    [ "mat34", "classvr_1_1vr__log.html#a9eddf2d066e155b5fbac7c6071c37fed", null ],
+    [ "vec2", "classvr_1_1vr__log.html#a4614f5e05737da7a8cda4a6035061384", null ],
+    [ "vecn", "classvr_1_1vr__log.html#a99d5045f8c5303e2aeec1fca362d3864", null ],
     [ "Filter", "classvr_1_1vr__log.html#a71691af5be5b248a007f9fd395c14710", [
       [ "F_POSE", "classvr_1_1vr__log.html#a71691af5be5b248a007f9fd395c14710a0a826130726de493196d4908af1df9ca", null ],
       [ "F_BUTTON", "classvr_1_1vr__log.html#a71691af5be5b248a007f9fd395c14710a6cd467304f7f45f72419cfe9e94dc03e", null ],

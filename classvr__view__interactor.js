@@ -1,6 +1,10 @@
 var classvr__view__interactor =
 [
-    [ "mat34", "classvr__view__interactor.html#a4957c48a09cbc4f6922af94adcfa34b7", null ],
+    [ "ivec4", "classvr__view__interactor.html#a00675f2ddd1d891bcb6f4565806521d8", null ],
+    [ "mat3", "classvr__view__interactor.html#a44edb7fe3636087bc41ff17a02aba6ba", null ],
+    [ "mat34", "classvr__view__interactor.html#a55f11faee74b463ce9100445f16353fc", null ],
+    [ "rgb", "classvr__view__interactor.html#a4f6e17a47a932da9db0e06b30a4ca2cb", null ],
+    [ "vec4", "classvr__view__interactor.html#a6b79d618d4411e412ae6d11445603595", null ],
     [ "vr_view_interactor", "classvr__view__interactor.html#a7c7472622b0df7ad704935af20ff22bb", null ],
     [ "action_zone_drawn", "classvr__view__interactor.html#ab244dce0f6e7b4083c48912b32f8cc1b", null ],
     [ "add_trackable_spheres", "classvr__view__interactor.html#ad109569973ab13b4dce93f131326e6ad", null ],

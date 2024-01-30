@@ -43,13 +43,12 @@ var structcgv_1_1math_1_1random =
     [ "uniform_direction", "structcgv_1_1math_1_1random.html#a53e7b6cebaee9aa30e5fc5aa94db3815", null ],
     [ "uniform_direction", "structcgv_1_1math_1_1random.html#a7b2da813611069c6e495f3ca7e92f143", null ],
     [ "uniform_nchoosek", "structcgv_1_1math_1_1random.html#a90a5ce8c3b3e9ba3da5c7cbd754ab3c2", null ],
-    [ "uniform_orientation", "structcgv_1_1math_1_1random.html#a538c8578c12e1657112600a45a56e8c6", null ],
-    [ "uniform_orientation", "structcgv_1_1math_1_1random.html#a587a5a024c1d4a0f595a06c4d0d0659b", null ],
+    [ "uniform_orientation", "structcgv_1_1math_1_1random.html#a4c5e655850540b4121eb5bd9f7f128ff", null ],
+    [ "uniform_orientation", "structcgv_1_1math_1_1random.html#a64e4b2543fe1605633edfc8395980853", null ],
     [ "uniform_point_in_box", "structcgv_1_1math_1_1random.html#a9208792339dc3667fa963cf0c8d6b18b", null ],
     [ "uniform_point_in_triangle", "structcgv_1_1math_1_1random.html#a36a8daff4f5830636006430acbda63c8", null ],
     [ "uniform_point_in_unit_ball", "structcgv_1_1math_1_1random.html#a74bd19c2074f3f630fe96100e68613b2", null ],
     [ "uniform_point_in_unit_box", "structcgv_1_1math_1_1random.html#aa8221d34c4a8fed6fff84e42148bd6e6", null ],
     [ "uniform_point_on_sphere", "structcgv_1_1math_1_1random.html#a16b0d2664f04f84efe1830111b702c27", null ],
-    [ "uniform_quat_orientation", "structcgv_1_1math_1_1random.html#a6da7a71b98656144064f6709505e070d", null ],
-    [ "uniform_quat_orientation", "structcgv_1_1math_1_1random.html#a181230e4abe03d25aa03ac67e7e44a86", null ]
+    [ "uniform_quat_orientation", "structcgv_1_1math_1_1random.html#a1db8a4cc3901d5b301677a9e83504787", null ]
 ];

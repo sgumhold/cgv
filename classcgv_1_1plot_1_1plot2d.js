@@ -25,7 +25,7 @@ var classcgv_1_1plot_1_1plot2d =
     [ "init", "classcgv_1_1plot_1_1plot2d.html#afe2f3cce67ece6a9059a613ed895d46c", null ],
     [ "operator=", "classcgv_1_1plot_1_1plot2d.html#a264f3cc8f4818844a35d6fd47f2df24f", null ],
     [ "ref_sub_plot2d_config", "classcgv_1_1plot_1_1plot2d.html#a842fb7a1ffc695030cc9ef909d144a0d", null ],
-    [ "ref_sub_plot_samples", "classcgv_1_1plot_1_1plot2d.html#a0b032ecb8510c869f3243f374ded52a3", null ],
+    [ "ref_sub_plot_samples", "classcgv_1_1plot_1_1plot2d.html#a3c90548e6126268cac7b0628624bd4f4", null ],
     [ "ref_sub_plot_strips", "classcgv_1_1plot_1_1plot2d.html#a7220d912e40c66e64877757ed8511f41", null ],
     [ "aam_domain", "classcgv_1_1plot_1_1plot2d.html#a4e42d5e540839187533376d29cdf91da", null ],
     [ "aam_domain_tick_labels", "classcgv_1_1plot_1_1plot2d.html#ae824d1dd45df57d9722fccedea895f4a", null ],

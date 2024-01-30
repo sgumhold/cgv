@@ -90,12 +90,6 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1clod__point__ren
 <div class="title">cgv::render::clod_point_renderer Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="dynheader">
-Inheritance diagram for cgv::render::clod_point_renderer:</div>
-<div class="dyncontent">
- <div class="center">
-  <img src="classcgv_1_1render_1_1clod__point__renderer.png" alt=""/>
- </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -115,7 +109,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a395aceb0771cb59738863a88a146af55"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets most uniforms <br /></td></tr>
 <tr class="separator:a395aceb0771cb59738863a88a146af55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3fc0ef53786e5cfb6436b7e3e534b20"><td class="memItemLeft" align="right" valign="top"><a id="ad3fc0ef53786e5cfb6436b7e3e534b20"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>enable</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="classcgv_1_1math_1_1fmat.html">mat4</a> &amp;reduction_model_view_matrix)</td></tr>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>enable</b> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="namespacecgv.html#aac1220367b5c60325f351a680dcc2689">mat4</a> &amp;reduction_model_view_matrix)</td></tr>
 <tr class="separator:ad3fc0ef53786e5cfb6436b7e3e534b20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60c8dfade89130dbf147ee8db8514954"><td class="memItemLeft" align="right" valign="top"><a id="a60c8dfade89130dbf147ee8db8514954"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>enable_buffer_manager</b> (<a class="el" href="classcgv_1_1render_1_1clod__point__buffer__manager.html">clod_point_buffer_manager</a> &amp;manager)</td></tr>
@@ -140,7 +134,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>render</b> (<a class=
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1clod__point__renderer.html#a40cb51e12d04785de9efa3c2fa0f3a72">set_points</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, const <a class="el" href="structcgv_1_1render_1_1clod__point__renderer_1_1Point.html">Point</a> *pnts, const size_t num_points)</td></tr>
 <tr class="memdesc:a40cb51e12d04785de9efa3c2fa0f3a72"><td class="mdescLeft">&#160;</td><td class="mdescRight">this method can be used if the data format of pnts matches with the internal format given by the <a class="el" href="structcgv_1_1render_1_1clod__point__renderer_1_1Point.html">Point</a> struct <br /></td></tr>
 <tr class="separator:a40cb51e12d04785de9efa3c2fa0f3a72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9fcd01416698e24578026992cfe45a47"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1clod__point__renderer.html#a9fcd01416698e24578026992cfe45a47">set_points</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, const <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> *positions, const <a class="el" href="classcgv_1_1media_1_1color.html">rgb8</a> *colors, const uint8_t *lods, const size_t num_points, const unsigned stride=0)</td></tr>
+<tr class="memitem:a9fcd01416698e24578026992cfe45a47"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1clod__point__renderer.html#a9fcd01416698e24578026992cfe45a47">set_points</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, const <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> *positions, const <a class="el" href="namespacecgv.html#a6e001bf8cb90ee62dfc1a0504b43d9e0">rgb8</a> *colors, const uint8_t *lods, const size_t num_points, const unsigned stride=0)</td></tr>
 <tr class="memdesc:a9fcd01416698e24578026992cfe45a47"><td class="mdescLeft">&#160;</td><td class="mdescRight">to use the clod point renderer lods are required, to generate them use the classes inside libs/pointcloud/octree.h  <a href="classcgv_1_1render_1_1clod__point__renderer.html#a9fcd01416698e24578026992cfe45a47">More...</a><br /></td></tr>
 <tr class="separator:a9fcd01416698e24578026992cfe45a47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e532f788f48eea2c52c91e47773b615"><td class="memItemLeft" align="right" valign="top"><a id="a5e532f788f48eea2c52c91e47773b615"></a>
@@ -150,7 +144,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_frustum_extend</b
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_max_drawn_points</b> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, const unsigned max_points)</td></tr>
 <tr class="separator:a3e7706693731af0d4374653b33f6e155"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa56d4befa4a5216d4eadfce863bcf78"><td class="memItemLeft" align="right" valign="top"><a id="afa56d4befa4a5216d4eadfce863bcf78"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_pivot_point</b> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">vec4</a> &amp;pivot)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_pivot_point</b> (const <a class="el" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> &amp;pivot)</td></tr>
 <tr class="separator:afa56d4befa4a5216d4eadfce863bcf78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1bb51cdebaad7fe3b2d51a2b86091077"><td class="memItemLeft" align="right" valign="top"><a id="a1bb51cdebaad7fe3b2d51a2b86091077"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_render_style</b> (const <a class="el" href="structcgv_1_1render_1_1render__style.html">render_style</a> &amp;rs)</td></tr>
@@ -319,13 +313,13 @@ template&lt;typename T &gt; </td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> *&#160;</td>
           <td class="paramname"><em>positions</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1media_1_1color.html">rgb8</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="namespacecgv.html#a6e001bf8cb90ee62dfc1a0504b43d9e0">rgb8</a> *&#160;</td>
           <td class="paramname"><em>colors</em>, </td>
         </tr>
         <tr>
