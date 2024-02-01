@@ -460,7 +460,7 @@ var searchData=
   ['get_5fwindow_5fmatrix_6145',['get_window_matrix',['../classcgv_1_1render_1_1context.html#a72ac82e63a67b776d4a2b8cdc49eaf81',1,'cgv::render::context']]],
   ['get_5fwindow_5ftransformation_5farray_6146',['get_window_transformation_array',['../classcgv_1_1render_1_1context.html#ac75237989dcb7ba767eabdf6c979c79c',1,'cgv::render::context']]],
   ['get_5fwindow_5fz_6147',['get_window_z',['../classcgv_1_1render_1_1gl_1_1gl__context.html#aa52252bbbcca5ffe9c2fa315be4906e0',1,'cgv::render::gl::gl_context::get_window_z()'],['../classcgv_1_1render_1_1context.html#a81ec9afc26401ea90bc20990fcd6d54d',1,'cgv::render::context::get_window_z()']]],
-  ['get_5fworld_5flocation_6148',['get_world_location',['../classcgv_1_1render_1_1drawable.html#a6a8441e0c02aa7ea1cc0555aff3bf23c',1,'cgv::render::drawable']]],
+  ['get_5fworld_5flocation_6148',['get_world_location',['../classcgv_1_1render_1_1drawable.html#a00165fd1992f7d06c1d1ddc2680f21e3',1,'cgv::render::drawable']]],
   ['get_5fworld_5fto_5fcamera_5ftransform_6149',['get_world_to_camera_transform',['../namespacevr.html#ae75e313f505840cc107976f1bb063232',1,'vr']]],
   ['get_5fworld_5fto_5feye_5ftransform_6150',['get_world_to_eye_transform',['../namespacevr.html#a971a980f71d700b8050962f23912308f',1,'vr']]],
   ['get_5fwrap_5fr_6151',['get_wrap_r',['../classcgv_1_1render_1_1texture.html#a3fd6986b73ff0194140ad7aab988515c',1,'cgv::render::texture']]],
