@@ -66,7 +66,7 @@ bool scan_and_compact::init(cgv::render::context& ctx, size_t count) {
 		num <<= 1;
 	num_block_sums = num;
 
-	unsigned num_vote_ballots = calculate_num_groups(n + n_pad, 32);
+	unsigned num_vote_ballots = calculate_num_groups(n + n_pad, 32u);
 
 	size_t votes_size = num_vote_ballots * 4;
 	size_t data_size = (n + n_pad) * sizeof(unsigned int);
