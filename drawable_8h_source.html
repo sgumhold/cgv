@@ -111,9 +111,9 @@ $(document).ready(function(){initNavTree('drawable_8h_source.html',''); initResi
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="classcgv_1_1render_1_1context.html">context</a>* get_context() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">void</span> set_context(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>* _ctx);</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="classcgv_1_1render_1_1view.html">cgv::render::view</a>* find_view_as_node(<span class="keywordtype">size_t</span> view_idx = 0) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="classcgv_1_1render_1_1view.html">view</a>* find_view_as_node(<span class="keywordtype">size_t</span> view_idx = 0) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">bool</span> get_world_location(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <a class="code" href="classcgv_1_1render_1_1view.html">cgv::render::view</a>&amp; V, <a class="code" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;double, 3&gt;</a>&amp; world_location, <span class="keywordtype">double</span>* window_z_ptr = 0) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">bool</span> get_world_location(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keyword">const</span> <a class="code" href="classcgv_1_1render_1_1view.html">view</a>&amp; V, <a class="code" href="classcgv_1_1math_1_1fvec.html">dvec3</a>&amp; world_location, <span class="keywordtype">double</span>* window_z_ptr = 0) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">void</span> post_redraw();</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">void</span> force_redraw();</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
@@ -123,7 +123,7 @@ $(document).ready(function(){initNavTree('drawable_8h_source.html',''); initResi
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> draw(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp;);</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> finish_draw(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp;);</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> finish_frame(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp;);</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> after_finish(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp;);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> after_finish(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp;);</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> clear(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp;);</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;};</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
@@ -143,8 +143,8 @@ $(document).ready(function(){initNavTree('drawable_8h_source.html',''); initResi
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordtype">bool</span> multi_pass_terminate(<span class="keyword">const</span> <a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx);</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;};</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    }</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;}</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    } <span class="comment">// namespace render</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;} <span class="comment">// namespace cgv</span></div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 <div class="ttc" id="aclasscgv_1_1base_1_1traverse__policy_html"><div class="ttname"><a href="classcgv_1_1base_1_1traverse__policy.html">cgv::base::traverse_policy</a></div><div class="ttdoc">nodes should inherit from this policy class to allow selective tree traversals</div><div class="ttdef"><b>Definition:</b> <a href="traverser_8h_source.html#l00023">traverser.h:24</a></div></div>
