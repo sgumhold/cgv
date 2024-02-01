@@ -34,20 +34,7 @@ protected:
 		return n_pad;
 	}
 
-	unsigned calculate_num_groups(unsigned num_elements, unsigned num_elements_per_group) {
-		return (num_elements + num_elements_per_group - static_cast<decltype(num_elements_per_group)>(1)) /
-			   num_elements_per_group;
-	}
-
-	uvec2 calculate_num_groups(uvec2 num_elements, uvec2 num_elements_per_group) {
-		return (num_elements + num_elements_per_group - static_cast<decltype(num_elements_per_group)>(1)) /
-			   num_elements_per_group;
-	}
-
-	uvec3 calculate_num_groups(uvec3 num_elements, uvec3 num_elements_per_group) {
-		return (num_elements + num_elements_per_group - static_cast<decltype(num_elements_per_group)>(1)) /
-			   num_elements_per_group;
-	}
+	template<typename T> T calculate_num_groups(T num_elements, T num_elements_per_group);
 
 	void dispatch_compute1d(unsigned num_groups) {
 		glDispatchCompute(num_groups, 1u, 1u);

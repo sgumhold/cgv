@@ -41,5 +41,16 @@ float gpu_algorithm::end_time_query() {
 	return elapsed_time / 1000000.0f;
 }
 
+template <typename T> T gpu_algorithm::calculate_num_groups(T num_elements, T num_elements_per_group)
+{
+	assert(T(0) != num_elements_per_group);
+	assert(T(0) != num_elements);
+	return (num_elements + num_elements_per_group - T(1)) / num_elements_per_group;
+}
+
+template unsigned gpu_algorithm::calculate_num_groups(unsigned,unsigned);
+template uvec2 gpu_algorithm::calculate_num_groups(uvec2, uvec2);
+template uvec3 gpu_algorithm::calculate_num_groups(uvec3, uvec3);
+
 }
 }
