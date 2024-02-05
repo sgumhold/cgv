@@ -61,21 +61,6 @@ public:
 	void begin_time_query();
 
 	float end_time_query();
-
-	// helper method to read contents of a buffer back to CPU main memory
-	template<typename T>
-	std::vector<T> read_buffer(GLuint buffer, unsigned int count) {
-
-		std::vector<T> data(count, (T)0);
-
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffer);
-		void* ptr = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
-		memcpy(&data[0], ptr, data.size() * sizeof(T));
-		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-		return data;
-	}
 };
 
 }
