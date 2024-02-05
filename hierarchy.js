@@ -705,6 +705,7 @@ var hierarchy =
     [ "cgv::render::gl::gl_depth_peeler", "classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html", [
       [ "cgv::render::gl::gl_transparent_renderer", "classcgv_1_1render_1_1gl_1_1gl__transparent__renderer.html", null ]
     ] ],
+    [ "cgv::render::gl::gl_time_query", "classcgv_1_1render_1_1gl_1_1gl__time__query.html", null ],
     [ "cgv::render::gl::gl_traits< T >", "structcgv_1_1render_1_1gl_1_1gl__traits.html", null ],
     [ "cgv::render::gl::gl_traits< char >", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01char_01_4.html", null ],
     [ "cgv::render::gl::gl_traits< double >", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01double_01_4.html", null ],
