@@ -14,10 +14,6 @@ namespace gpgpu {
 
 /** Definition of base functionality for highly parallel gpu algorithms. */
 class CGV_API gpu_algorithm {
-private:
-	/// members for timing measurements
-	GLuint time_query = 0;
-
 protected:
 	bool is_initialized_ = false;
 
@@ -52,15 +48,11 @@ public:
 	gpu_algorithm() {}
 	~gpu_algorithm() {}
 
-	virtual void destruct(const cgv::render::context& ctx) = 0;
-
 	virtual bool init(cgv::render::context& ctx, size_t count) = 0;
 
+	virtual void destruct(const cgv::render::context& ctx) = 0;
+
 	bool is_initialized() const { return is_initialized_; }
-
-	void begin_time_query();
-
-	float end_time_query();
 };
 
 }
