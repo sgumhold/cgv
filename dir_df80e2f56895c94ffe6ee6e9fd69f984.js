@@ -16,6 +16,8 @@ var dir_df80e2f56895c94ffe6ee6e9fd69f984 =
     [ "gl_performance_monitor.cxx", "gl__performance__monitor_8cxx_source.html", null ],
     [ "gl_performance_monitor.h", "gl__performance__monitor_8h_source.html", null ],
     [ "gl_texture_tools.cxx", "gl__texture__tools_8cxx_source.html", null ],
+    [ "gl_time_query.cxx", "gl__time__query_8cxx_source.html", null ],
+    [ "gl_time_query.h", "gl__time__query_8h_source.html", null ],
     [ "gl_tools.cxx", "gl__tools_8cxx_source.html", null ],
     [ "gl_tools.h", "gl__tools_8h_source.html", null ],
     [ "gl_transparent_renderer.cxx", "gl__transparent__renderer_8cxx_source.html", null ],

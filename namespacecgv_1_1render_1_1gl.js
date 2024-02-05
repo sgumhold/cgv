@@ -15,6 +15,7 @@ var namespacecgv_1_1render_1_1gl =
     [ "gl_depth_peeler", "classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html", "classcgv_1_1render_1_1gl_1_1gl__depth__peeler" ],
     [ "gl_implicit_surface_drawable_base", "classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html", "classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base" ],
     [ "gl_performance_monitor", "classcgv_1_1render_1_1gl_1_1gl__performance__monitor.html", "classcgv_1_1render_1_1gl_1_1gl__performance__monitor" ],
+    [ "gl_time_query", "classcgv_1_1render_1_1gl_1_1gl__time__query.html", "classcgv_1_1render_1_1gl_1_1gl__time__query" ],
     [ "gl_transparent_renderer", "classcgv_1_1render_1_1gl_1_1gl__transparent__renderer.html", "classcgv_1_1render_1_1gl_1_1gl__transparent__renderer" ],
     [ "image_drawable", "classcgv_1_1render_1_1gl_1_1image__drawable.html", "classcgv_1_1render_1_1gl_1_1image__drawable" ],
     [ "mesh_drawable", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html", "classcgv_1_1render_1_1gl_1_1mesh__drawable" ],

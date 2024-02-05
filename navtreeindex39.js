@@ -1,5 +1,16 @@
 var NAVTREEINDEX39 =
 {
+"namespacevr.html#aef3295070e29d71a25db0d6374da32ffaa1d12ea6bb565b72dfbac20c92e0bc18":[10,0,5,22,2],
+"namespacevr.html#af1222c9a6b88e565925992bb281aaf77":[10,0,5,42],
+"namespacevr.html#af194769b30a0791010d6ba35e6ccff5a":[10,0,5,49],
+"namespacevr.html#af21ee59fd7356a23f9176f098b5c9b24":[10,0,5,69],
+"namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4":[10,0,5,25],
+"namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4a1e008fd42d64a74535cffd1e5c314101":[10,0,5,25,0],
+"namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4a429d3cf45f6230dbce4000c68ad85533":[10,0,5,25,2],
+"namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4a610d16e47ec76626d51d264eaba54422":[10,0,5,25,5],
+"namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4a6916fafb9ca25652e7b3d45f37cf733c":[10,0,5,25,1],
+"namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4ae83b4959e752bee21c3d5fd5bedd115d":[10,0,5,25,4],
+"namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4afe167df1a8c0047f118f5cf0b4945559":[10,0,5,25,3],
 "namespacevr.html#afad282ce40f31e065f752f2216eb7f04":[10,0,5,28],
 "namespacevr.html#afad282ce40f31e065f752f2216eb7f04a103c5c0a92f9f9d0d628b88b1ef3257c":[10,0,5,28,22],
 "namespacevr.html#afad282ce40f31e065f752f2216eb7f04a14e3fc591ae21f90bb5a46984d424f37":[10,0,5,28,9],
@@ -238,16 +249,5 @@ var NAVTREEINDEX39 =
 "point__operations_8h.html#ac1f5f06d0205ce7cffe103c3899213a1":[10,0,1,7,258],
 "point__operations_8h.html#ac5a43b507e6de46542c40ad378471557":[10,0,1,7,562],
 "point__operations_8h.html#ad44cebc6d7efe91f426ea684b0de6dbd":[10,0,1,7,191],
-"point__operations_8h.html#ad75402440f907260dc42b4eddb0caa4f":[10,0,1,7,564],
-"point__operations_8h.html#add56cb42b150686bf69c39de5b71ae4b":[10,0,1,7,126],
-"point__operations_8h.html#aeb640ef0e72e5c7defa05acf27e7b1e1":[10,0,1,7,98],
-"point__operations_8h_source.html":[12,0,1,5,44],
-"point__render__data_8h_source.html":[12,0,3,3,29],
-"point__renderer_8cxx_source.html":[12,0,3,3,30],
-"point__renderer_8h_source.html":[12,0,3,3,31],
-"pointer__test_8h_source.html":[12,0,1,13,23],
-"polar_8h.html#a227ca8bca8d01aa6cad1f74c79994f2c":[10,0,1,7,355],
-"polar_8h.html#ad13d980b9726467aeb59b55256fedda0":[10,0,1,7,133],
-"polar_8h_source.html":[12,0,1,5,45],
-"polynomial_8h.html#a399fde9b45d9a945a195bc4f20b80c50":[10,0,1,7,554]
+"point__operations_8h.html#ad75402440f907260dc42b4eddb0caa4f":[10,0,1,7,564]
 };
