@@ -780,6 +780,39 @@ std::istream& operator >> (std::istream& is, color<unsigned char,cm,am>& c) {
 	return is;
 }
 
+/*********************************************************************
+**
+** functions
+**
+*********************************************************************/
+
+/// linear interpolate two colors, returns (1-t)*c1 + t*c2
+template <typename T, ColorModel cm, AlphaModel am>
+const color<T,cm,am> lerp(const color<T,cm,am>& c1, const color<T,cm,am>& c2, T t) {
+	return ((T)1 - t) * c1 + t * c2;
+}
+/// special pow function for colors with RGB color model using integral types, alpha model is ignored
+/// components are converted to type T2 in range [0,1] before applying the pow function
+/// to ensure correct handling of integral component types like uint8_t
+template <typename T1, typename T2, AlphaModel am,
+	typename std::enable_if<std::is_integral_v<T1>, bool>::type = true,
+	typename std::enable_if<std::is_floating_point_v<T2>, bool>::type = true>
+const color<T1,RGB,am> pow(const color<T1,RGB,am>& c, T2 e) {
+	constexpr T2 m = static_cast<T2>(std::numeric_limits<T1>::max());
+	color<T1,RGB,am> x = c;
+	for(unsigned int i=0; i<color<T1,RGB,am>::nr_color_components; ++i)
+		x[i] = static_cast<T1>(std::pow(static_cast<T2>(c[i]) / m, e) * m);
+	return x;
+}
+/// pow function for colors with RGB color model, alpha model is ignored
+template<typename T, AlphaModel am, typename std::enable_if<std::is_floating_point_v<T>, bool>::type = true>
+const color<T,RGB,am> pow(const color<T,RGB,am>& c, T e) {
+	color<T,RGB,am> x = c;
+	for(unsigned int i=0; i<color<T,RGB,am>::nr_color_components; ++i)
+		x[i] = std::pow(x[i], e);
+	return x;
+}
+
 } // namespace media
 
 /// @name Predefined Types
