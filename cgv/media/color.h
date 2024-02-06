@@ -795,8 +795,8 @@ const color<T,cm,am> lerp(const color<T,cm,am>& c1, const color<T,cm,am>& c2, T 
 /// components are converted to type T2 in range [0,1] before applying the pow function
 /// to ensure correct handling of integral component types like uint8_t
 template <typename T1, typename T2, AlphaModel am,
-	typename std::enable_if<std::is_integral_v<T1>, bool>::type = true,
-	typename std::enable_if<std::is_floating_point_v<T2>, bool>::type = true>
+	typename std::enable_if<std::is_integral<T1>::value, bool>::type = true,
+	typename std::enable_if<std::is_floating_point<T2>::value, bool>::type = true>
 const color<T1,RGB,am> pow(const color<T1,RGB,am>& c, T2 e) {
 	constexpr T2 m = static_cast<T2>(std::numeric_limits<T1>::max());
 	color<T1,RGB,am> x = c;
@@ -805,7 +805,7 @@ const color<T1,RGB,am> pow(const color<T1,RGB,am>& c, T2 e) {
 	return x;
 }
 /// pow function for colors with RGB color model, alpha model is ignored
-template<typename T, AlphaModel am, typename std::enable_if<std::is_floating_point_v<T>, bool>::type = true>
+template<typename T, AlphaModel am, typename std::enable_if<std::is_floating_point<T>::value, bool>::type = true>
 const color<T,RGB,am> pow(const color<T,RGB,am>& c, T e) {
 	color<T,RGB,am> x = c;
 	for(unsigned int i=0; i<color<T,RGB,am>::nr_color_components; ++i)
