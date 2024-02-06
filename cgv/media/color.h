@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <limits>
 #include <cgv/defines/assert.h>
 #include <cgv/type/func/promote.h>
 #include <cgv/type/func/promote_const.h>
