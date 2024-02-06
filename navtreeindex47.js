@@ -1,5 +1,8 @@
 var NAVTREEINDEX47 =
 {
+"structcgv_1_1render_1_1clod__point__render__style__reflect.html":[11,0,0,12,65],
+"structcgv_1_1render_1_1clod__point__render__style__reflect.html#af6d3b67a2a1a84cd6316a244bd9e4f18":[11,0,0,12,65,0],
+"structcgv_1_1render_1_1clod__point__renderer_1_1Point.html":[11,0,0,12,64,0],
 "structcgv_1_1render_1_1clod__point__renderer_1_1Point.html#a5cb9210eb25ed9ff38155306d3dbdd1f":[11,0,0,12,64,0,4],
 "structcgv_1_1render_1_1clod__point__renderer_1_1Point.html#a675b6ce308c4c80e4d140fd3d63e9889":[11,0,0,12,64,0,8],
 "structcgv_1_1render_1_1clod__point__renderer_1_1Point.html#a68e2d5446c1e5e17b3094cbbbd8029e8":[11,0,0,12,64,0,3],
@@ -246,8 +249,5 @@ var NAVTREEINDEX47 =
 "structcgv_1_1render_1_1shader__config.html#a4f4169b175c7b9c5f0078ff48dfc6bb2":[11,0,0,12,38,6],
 "structcgv_1_1render_1_1shader__config.html#a6d64500d1bc79e9f27a0af7d6d6bd266":[11,0,0,12,38,0],
 "structcgv_1_1render_1_1shader__config.html#a99dbf93b0b05158f137b1baeb6475859":[11,0,0,12,38,7],
-"structcgv_1_1render_1_1shader__config.html#aab0aef9de8e9f9820e151f0aae8b0031":[11,0,0,12,38,2],
-"structcgv_1_1render_1_1shader__config.html#acc36a21b80625ddf375e35379eb93b22":[11,0,0,12,38,5],
-"structcgv_1_1render_1_1shader__config.html#add9cd25961c2c07b2914254fbcf5b762":[11,0,0,12,38,3],
-"structcgv_1_1render_1_1shader__library_1_1shader__info.html":[11,0,0,12,40,0]
+"structcgv_1_1render_1_1shader__config.html#aab0aef9de8e9f9820e151f0aae8b0031":[11,0,0,12,38,2]
 };
