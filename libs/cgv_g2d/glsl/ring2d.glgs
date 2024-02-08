@@ -1,0 +1,64 @@
+#version 150
+
+//***** begin interface of shape2d.glsl ***********************************
+uniform bool origin_upper_left = false;
+uniform float feather_origin = 0.5;
+
+float get_feather_width();
+vec2 get_adjusted_size();
+vec4 get_color();
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+layout(points) in;
+layout(triangle_strip, max_vertices = 4) out;
+
+const vec2 corners[4] = vec2[](
+	vec2(-0.5, -0.5),
+	vec2(+0.5, -0.5),
+	vec2(-0.5, +0.5),
+	vec2(+0.5, +0.5)
+);
+
+uniform bool position_is_center = false;
+
+flat in vec4 color_gs[];
+
+flat out vec2 size;
+out vec2 pix_coord;
+out vec2 tex_coord;
+flat out vec4 color_fs;
+
+void emit_corner(int id, vec2 final_size) {
+	vec2 corner = corners[id];
+
+	pix_coord = final_size*corner;
+	tex_coord = corner + 0.5;
+
+	if(origin_upper_left)
+		corner.y = -corner.y;
+
+	// transform corner to world pixel coordinates
+	corner *= final_size;
+
+	if(!position_is_center)
+		corner += 0.5*size;
+
+	// offset by position
+	corner += gl_in[0].gl_Position.xy;
+
+	gl_Position = transform_world_to_window_space(corner);
+	EmitVertex();
+}
+
+void main() {
+	color_fs = color_gs[0];
+
+	size = gl_in[0].gl_Position.zw;
+	vec2 final_size = vec2(size.x + 2.0*feather_origin*get_feather_width());
+	
+	emit_corner(0, final_size);
+	emit_corner(1, final_size);
+	emit_corner(2, final_size);
+	emit_corner(3, final_size);
+}
