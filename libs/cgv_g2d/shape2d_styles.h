@@ -58,6 +58,16 @@ struct circle2d_style : public shape2d_style {
 	}
 };
 
+struct ring2d_style : public shape2d_style {
+	float thickness = 0.5f;
+
+	virtual void apply(cgv::render::context& ctx, cgv::render::shader_program& prog) const {
+		shape2d_style::apply(ctx, prog);
+
+		prog.set_uniform(ctx, "thickness", thickness);
+	}
+};
+
 struct line2d_style : public shape2d_style {
 	float width = 1.0f;
 	float dash_length = 0.0f;
