@@ -39,20 +39,19 @@ public:
 
 private:
 	/// the last recorded size of the viewport, is kept current with ensure_viewport
-	ivec2 last_viewport_size;
+	ivec2 last_viewport_size = ivec2(0);
 	/// the last recorded size of this overlay
-	ivec2 last_size;
+	ivec2 last_size = ivec2(0);
 
 	/// rectangle area this overlay is fully contained whithin
 	cgv::g2d::irect container;
 
 protected:
 	/// layout parameters
-	AlignmentOption horizontal_alignment;
-	AlignmentOption vertical_alignment;
-	StretchOption stretch;
-	ivec2 margin;
-	//ivec2 size;
+	AlignmentOption horizontal_alignment = AlignmentOption::AO_START;
+	AlignmentOption vertical_alignment = AlignmentOption::AO_START;
+	StretchOption stretch = SO_NONE;
+	ivec2 margin = vec2(0.0f);
 	vec2 percentual_offset = vec2(0.0f);
 	vec2 percentual_size = vec2(1.0f);
 
