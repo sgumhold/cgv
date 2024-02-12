@@ -171,10 +171,12 @@ var hierarchy =
         ] ],
         [ "cgv::app::overlay", "classcgv_1_1app_1_1overlay.html", [
           [ "cgv::app::canvas_overlay", "classcgv_1_1app_1_1canvas__overlay.html", [
-            [ "cgv::app::color_map_editor", "classcgv_1_1app_1_1color__map__editor.html", null ],
-            [ "cgv::app::color_map_legend", "classcgv_1_1app_1_1color__map__legend.html", null ],
-            [ "cgv::app::color_selector", "classcgv_1_1app_1_1color__selector.html", null ],
-            [ "cgv::app::performance_monitor", "classcgv_1_1app_1_1performance__monitor.html", null ]
+            [ "cgv::app::themed_canvas_overlay", "classcgv_1_1app_1_1themed__canvas__overlay.html", [
+              [ "cgv::app::color_map_editor", "classcgv_1_1app_1_1color__map__editor.html", null ],
+              [ "cgv::app::color_map_legend", "classcgv_1_1app_1_1color__map__legend.html", null ],
+              [ "cgv::app::color_selector", "classcgv_1_1app_1_1color__selector.html", null ],
+              [ "cgv::app::performance_monitor", "classcgv_1_1app_1_1performance__monitor.html", null ]
+            ] ]
           ] ],
           [ "cgv::app::navigator", "classcgv_1_1app_1_1navigator.html", null ]
         ] ],
@@ -843,7 +845,7 @@ var hierarchy =
         [ "vr_test", "classvr__test.html", null ]
       ] ],
       [ "cgv::gui::theme_observer", "classcgv_1_1gui_1_1theme__observer.html", [
-        [ "cgv::app::canvas_overlay", "classcgv_1_1app_1_1canvas__overlay.html", null ]
+        [ "cgv::app::themed_canvas_overlay", "classcgv_1_1app_1_1themed__canvas__overlay.html", null ]
       ] ],
       [ "cgv::plot::plot_base", "classcgv_1_1plot_1_1plot__base.html", null ]
     ] ],

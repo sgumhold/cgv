@@ -14,7 +14,8 @@ var annotated_dup =
         [ "gizmo", "classcgv_1_1app_1_1gizmo.html", "classcgv_1_1app_1_1gizmo" ],
         [ "navigator", "classcgv_1_1app_1_1navigator.html", "classcgv_1_1app_1_1navigator" ],
         [ "overlay", "classcgv_1_1app_1_1overlay.html", "classcgv_1_1app_1_1overlay" ],
-        [ "performance_monitor", "classcgv_1_1app_1_1performance__monitor.html", "classcgv_1_1app_1_1performance__monitor" ]
+        [ "performance_monitor", "classcgv_1_1app_1_1performance__monitor.html", "classcgv_1_1app_1_1performance__monitor" ],
+        [ "themed_canvas_overlay", "classcgv_1_1app_1_1themed__canvas__overlay.html", "classcgv_1_1app_1_1themed__canvas__overlay" ]
       ] ],
       [ "audio", null, [
         [ "OALContext", "classcgv_1_1audio_1_1OALContext.html", "classcgv_1_1audio_1_1OALContext" ],
