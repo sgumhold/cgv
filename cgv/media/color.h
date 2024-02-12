@@ -694,6 +694,33 @@ public:
 		res += c;
 		return res;
 	}
+	/// subtract color
+	template <typename T2, ColorModel cm2, AlphaModel am2>
+	color<T, cm, am>& operator -= (const color<T2, cm2, am2>& c2) {
+		color<T, cm, am> tmp(c2);
+		for(unsigned i = 0; i < nr_components; ++i)
+			this->at(i) -= tmp[i];
+		return *this;
+	}
+	/// subtract color
+	template <typename T2, ColorModel cm2, AlphaModel am2>
+	color<T, cm, am> operator - (const color<T2, cm2, am2>& c2) {
+		color<T, cm, am> res(*this);
+		res -= c2;
+		return res;
+	}
+	/// subtract constant
+	color<T, cm, am>& operator -= (const T& c) {
+		for(unsigned i = 0; i < nr_components; ++i)
+			this->at(i) -= c;
+		return *this;
+	}
+	/// subtract constant
+	color<T, cm, am> operator - (const T& c) {
+		color<T, cm, am> res(*this);
+		res -= c;
+		return res;
+	}
 	/// clamp to the given range, which defaults to [0,1] of the component type
 	void clamp(const T& mn = 0, const T& mx = color_one<T>::value(), bool skip_alpha = false) {
 		unsigned nr = skip_alpha ? nr_color_components : nr_components;
