@@ -26,7 +26,6 @@ var classcgv_1_1app_1_1performance__monitor =
     [ "bar_style", "classcgv_1_1app_1_1performance__monitor.html#aae5c9d6ed9ab38efdc1e32ce88e6402e", null ],
     [ "bars", "classcgv_1_1app_1_1performance__monitor.html#a6ea45c4d5ef52b98a4937ab361143fe9", null ],
     [ "border_style", "classcgv_1_1app_1_1performance__monitor.html#ab454cbc65f5fe2d4a972e147ec4d6af9", null ],
-    [ "container_style", "classcgv_1_1app_1_1performance__monitor.html#a07c7b76b4d010467d49766a797e5334f", null ],
     [ "delta_time", "classcgv_1_1app_1_1performance__monitor.html#a46a2af804638cd9777c3c62979ee5130", null ],
     [ "enabled", "classcgv_1_1app_1_1performance__monitor.html#aa03afecc897d8e285008bd15f1d0d7f5", null ],
     [ "enabled_only_when_visible", "classcgv_1_1app_1_1performance__monitor.html#a25d65e60572b97abcd5544c89158fe6a", null ],

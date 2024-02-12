@@ -403,207 +403,201 @@ $(document).ready(function(){initNavTree('color__selector_8cxx_source.html','');
 <div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;<span class="keywordtype">void</span> color_selector::init_styles() {</div>
 <div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    <span class="keyword">auto</span>&amp; theme = cgv::gui::theme_info::instance();</div>
 <div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    </div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    <span class="comment">// configure style for the container rectangle</span></div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    container_style.fill_color = theme.group();</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    container_style.border_color = theme.background();</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    container_style.border_width = 3.0f;</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    container_style.feather_width = 0.0f;</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    </div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    <span class="comment">// configure style for the border rectangles</span></div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    border_style = container_style;</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    border_style.border_width = 0.0f;</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    border_style.use_fill_color = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160; </div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    opacity_bg_style.feather_width = 0.0f;</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    opacity_bg_style.fill_color = <a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(<a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>(0.75f), 1.0f);</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    opacity_bg_style.border_color = <a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(<a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>(0.9f), 1.0f);</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    opacity_bg_style.pattern = cgv::g2d::grid2d_style::GP_CHECKER;</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    opacity_bg_style.scale = 0.5f;</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    </div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    opacity_color_style.use_blending = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    opacity_color_style.feather_origin = 1.0f;</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    </div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    <span class="comment">// configure style for the color and hue texture rectangles</span></div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    color_texture_style = border_style;</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    color_texture_style.use_texture = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    </div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    hue_texture_style = color_texture_style;</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    color_texture_style.texcoord_scaling = <a class="code" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>(0.5f);</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;    color_texture_style.texcoord_offset = <a class="code" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>(0.25f);</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160; </div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;    <span class="comment">// configure style for color handle</span></div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    color_handle_style.use_blending = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    color_handle_style.use_fill_color = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    color_handle_style.position_is_center = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    color_handle_style.border_color = <a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(<a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>(1.0f), 0.75f);</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    color_handle_style.border_width = 1.0f;</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    color_handle_style.fill_color = <a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(<a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>(0.0f), 1.0f);</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    color_handle_style.ring_width = 4.0f;</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160; </div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    <span class="comment">// configure style for hue handle</span></div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    hue_handle_style = color_handle_style;</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    hue_handle_style.position_is_center = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    </div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    <span class="comment">// configure text style</span></div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    text_style = cgv::g2d::text2d_style::preset_default(theme.text());</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    text_style.font_size = 14.0f;</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;}</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160; </div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;<span class="keywordtype">void</span> color_selector::init_textures(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) {</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160; </div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    std::vector&lt;uint8_t&gt; data(3*4, 0u);</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160; </div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    data[6] = 255u;</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    data[7] = 255u;</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    data[8] = 255u;</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    data[9] = 255u;</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    </div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    color_tex.<a class="code" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    <a class="code" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> color_dv = <a class="code" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a>(<span class="keyword">new</span> <a class="code" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>(2, 2, TI_UINT8, <a class="code" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a5e0a20ab9e288dea753eade67973a28d">cgv::data::CF_RGB</a>), data.data());</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;    color_tex = <a class="code" href="classcgv_1_1render_1_1texture.html">cgv::render::texture</a>(<span class="stringliteral">&quot;uint8[R,G,B]&quot;</span>, cgv::render::TF_LINEAR, cgv::render::TF_LINEAR);</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    color_tex.<a class="code" href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">create</a>(ctx, color_dv, 0);</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    <span class="comment">// configure style for the border rectangles</span></div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    border_style.border_width = 0.0f;</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    border_style.use_fill_color = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    border_style.feather_width = 0.0f;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160; </div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    opacity_bg_style.feather_width = 0.0f;</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    opacity_bg_style.fill_color = <a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(<a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>(0.75f), 1.0f);</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    opacity_bg_style.border_color = <a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(<a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>(0.9f), 1.0f);</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    opacity_bg_style.pattern = cgv::g2d::grid2d_style::GP_CHECKER;</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    opacity_bg_style.scale = 0.5f;</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    </div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    opacity_color_style.use_blending = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    opacity_color_style.feather_origin = 1.0f;</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    </div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    <span class="comment">// configure style for the color and hue texture rectangles</span></div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    color_texture_style = border_style;</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    color_texture_style.use_texture = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    </div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    hue_texture_style = color_texture_style;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    color_texture_style.texcoord_scaling = <a class="code" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>(0.5f);</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    color_texture_style.texcoord_offset = <a class="code" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>(0.25f);</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160; </div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    <span class="comment">// configure style for color handle</span></div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    color_handle_style.use_blending = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    color_handle_style.use_fill_color = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    color_handle_style.position_is_center = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;    color_handle_style.border_color = <a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(<a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>(1.0f), 0.75f);</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    color_handle_style.border_width = 1.0f;</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;    color_handle_style.fill_color = <a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(<a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>(0.0f), 1.0f);</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    color_handle_style.ring_width = 4.0f;</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160; </div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    <span class="comment">// configure style for hue handle</span></div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    hue_handle_style = color_handle_style;</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    hue_handle_style.position_is_center = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    </div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    <span class="comment">// configure text style</span></div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    text_style = cgv::g2d::text2d_style::preset_default(theme.text());</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    text_style.font_size = 14.0f;</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;}</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160; </div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;<span class="keywordtype">void</span> color_selector::init_textures(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) {</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160; </div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    std::vector&lt;uint8_t&gt; data(3*4, 0u);</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160; </div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    data[6] = 255u;</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    data[7] = 255u;</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    data[8] = 255u;</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    data[9] = 255u;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    </div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    color_tex.<a class="code" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    <a class="code" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> color_dv = <a class="code" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a>(<span class="keyword">new</span> <a class="code" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>(2, 2, TI_UINT8, <a class="code" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a5e0a20ab9e288dea753eade67973a28d">cgv::data::CF_RGB</a>), data.data());</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    color_tex = <a class="code" href="classcgv_1_1render_1_1texture.html">cgv::render::texture</a>(<span class="stringliteral">&quot;uint8[R,G,B]&quot;</span>, cgv::render::TF_LINEAR, cgv::render::TF_LINEAR);</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    color_tex.<a class="code" href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">create</a>(ctx, color_dv, 0);</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160; </div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    std::vector&lt;uint8_t&gt; hue_data(2*3*256);</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160; </div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; 256; ++i) {</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;        <span class="keywordtype">float</span> hue = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(i) / 255.0f;</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;        <a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a> color = <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float, cgv::media::HLS&gt;</a>(hue, 0.5f, 1.0f);</div>
 <div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    std::vector&lt;uint8_t&gt; hue_data(2*3*256);</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160; </div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; 256; ++i) {</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;        <span class="keywordtype">float</span> hue = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(i) / 255.0f;</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        <a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a> color = <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float, cgv::media::HLS&gt;</a>(hue, 0.5f, 1.0f);</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160; </div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;        uint8_t col8[3];</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;        col8[0] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(round(color.R() * 255.0f));</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;        col8[1] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(round(color.G() * 255.0f));</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;        col8[2] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(round(color.B() * 255.0f));</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160; </div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;        hue_data[6 * i + 0] = col8[0];</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;        hue_data[6 * i + 1] = col8[1];</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        hue_data[6 * i + 2] = col8[2];</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;        hue_data[6 * i + 3] = col8[0];</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        hue_data[6 * i + 4] = col8[1];</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        hue_data[6 * i + 5] = col8[2];</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;    }</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;        uint8_t col8[3];</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;        col8[0] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(round(color.R() * 255.0f));</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;        col8[1] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(round(color.G() * 255.0f));</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;        col8[2] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(round(color.B() * 255.0f));</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160; </div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        hue_data[6 * i + 0] = col8[0];</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;        hue_data[6 * i + 1] = col8[1];</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;        hue_data[6 * i + 2] = col8[2];</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;        hue_data[6 * i + 3] = col8[0];</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;        hue_data[6 * i + 4] = col8[1];</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;        hue_data[6 * i + 5] = col8[2];</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    }</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160; </div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;    hue_tex.<a class="code" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;    <a class="code" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> hue_dv = <a class="code" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a>(<span class="keyword">new</span> <a class="code" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>(2, 256, TI_UINT8, <a class="code" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a5e0a20ab9e288dea753eade67973a28d">cgv::data::CF_RGB</a>), hue_data.data());</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;    hue_tex = <a class="code" href="classcgv_1_1render_1_1texture.html">cgv::render::texture</a>(<span class="stringliteral">&quot;uint8[R,G,B]&quot;</span>, cgv::render::TF_LINEAR, cgv::render::TF_LINEAR);</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    hue_tex.<a class="code" href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">create</a>(ctx, hue_dv, 0);</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;}</div>
 <div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160; </div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;    hue_tex.<a class="code" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;    <a class="code" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> hue_dv = <a class="code" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a>(<span class="keyword">new</span> <a class="code" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>(2, 256, TI_UINT8, <a class="code" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a5e0a20ab9e288dea753eade67973a28d">cgv::data::CF_RGB</a>), hue_data.data());</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;    hue_tex = <a class="code" href="classcgv_1_1render_1_1texture.html">cgv::render::texture</a>(<span class="stringliteral">&quot;uint8[R,G,B]&quot;</span>, cgv::render::TF_LINEAR, cgv::render::TF_LINEAR);</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;    hue_tex.<a class="code" href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">create</a>(ctx, hue_dv, 0);</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;}</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160; </div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;<span class="keywordtype">void</span> color_selector::update_color_texture() {</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160; </div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;    <span class="keywordflow">if</span>(!color_tex.<a class="code" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>())</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;        <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;    </div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;    std::vector&lt;uint8_t&gt; data(3 * 4, 0u);</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;    data[6] = 255u;</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;    data[7] = 255u;</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    data[8] = 255u;</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;    </div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; hp = selector_handles[1];</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;    <a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a> color = <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float, cgv::media::HLS&gt;</a>(hp.val.y(), 0.5f, 1.0f);</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;<span class="keywordtype">void</span> color_selector::update_color_texture() {</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160; </div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;    <span class="keywordflow">if</span>(!color_tex.<a class="code" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>())</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    </div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    std::vector&lt;uint8_t&gt; data(3 * 4, 0u);</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    data[6] = 255u;</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    data[7] = 255u;</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;    data[8] = 255u;</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;    </div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; hp = selector_handles[1];</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;    <a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a> color = <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float, cgv::media::HLS&gt;</a>(hp.val.y(), 0.5f, 1.0f);</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160; </div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;    data[9]  = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(round(color.R() * 255.0f));</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    data[10] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(round(color.G() * 255.0f));</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;    data[11] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(round(color.B() * 255.0f));</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160; </div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;    <a class="code" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> color_dv = <a class="code" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a>(<span class="keyword">new</span> <a class="code" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>(2, 2, TI_UINT8, <a class="code" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a5e0a20ab9e288dea753eade67973a28d">cgv::data::CF_RGB</a>), data.data());</div>
 <div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160; </div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;    data[9]  = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(round(color.R() * 255.0f));</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;    data[10] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(round(color.G() * 255.0f));</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;    data[11] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(round(color.B() * 255.0f));</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;    <span class="keywordflow">if</span>(<span class="keyword">auto</span>* ctx_ptr = <a class="code" href="classcgv_1_1render_1_1drawable.html#a13d9f363f8618f0a8333e4e06f71ae94">get_context</a>())</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;        color_tex.<a class="code" href="classcgv_1_1render_1_1texture.html#ac29e0ac55e94328ffc453fdbc794ca6f">replace</a>(*ctx_ptr, 0, 0, color_dv);</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;}</div>
 <div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160; </div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;    <a class="code" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> color_dv = <a class="code" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a>(<span class="keyword">new</span> <a class="code" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>(2, 2, TI_UINT8, <a class="code" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a5e0a20ab9e288dea753eade67973a28d">cgv::data::CF_RGB</a>), data.data());</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="keywordtype">void</span> color_selector::update_color() {</div>
 <div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160; </div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;    <span class="keywordflow">if</span>(<span class="keyword">auto</span>* ctx_ptr = <a class="code" href="classcgv_1_1render_1_1drawable.html#a13d9f363f8618f0a8333e4e06f71ae94">get_context</a>())</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;        color_tex.<a class="code" href="classcgv_1_1render_1_1texture.html#ac29e0ac55e94328ffc453fdbc794ca6f">replace</a>(*ctx_ptr, 0, 0, color_dv);</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;}</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160; </div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;<span class="keywordtype">void</span> color_selector::update_color() {</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160; </div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; cp = selector_handles[0];</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; hp = selector_handles[1];</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; op = selector_handles[2];</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;    rgb_color = <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float, cgv::media::HLS&gt;</a>(hp.val.y(), 0.5f, 1.0f);</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; cp = selector_handles[0];</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; hp = selector_handles[1];</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; op = selector_handles[2];</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;    rgb_color = <a class="code" href="classcgv_1_1media_1_1color.html">cgv::media::color&lt;float, cgv::media::HLS&gt;</a>(hp.val.y(), 0.5f, 1.0f);</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160; </div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;    <span class="keywordtype">float</span> s = cp.val.x(); <span class="comment">// saturation</span></div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;    <span class="keywordtype">float</span> v = cp.val.y(); <span class="comment">// value</span></div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160; </div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;    rgb_color = v * rgb_color;</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;    rgb_color = (1.0f - s)*<a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>(v) + s * rgb_color;</div>
 <div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160; </div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    <span class="keywordtype">float</span> s = cp.val.x(); <span class="comment">// saturation</span></div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;    <span class="keywordtype">float</span> v = cp.val.y(); <span class="comment">// value</span></div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160; </div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;    rgb_color = v * rgb_color;</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;    rgb_color = (1.0f - s)*<a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>(v) + s * rgb_color;</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160; </div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;    rgba_color = <a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(rgb_color, op.val.y());</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160; </div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;    update_texts();</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160; </div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;    <span class="keywordflow">if</span>(has_opacity) {</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;        <span class="keywordflow">if</span>(on_change_rgba_callback)</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;            on_change_rgba_callback(rgba_color);</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;        <span class="keywordflow">if</span>(on_change_rgb_callback)</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;            on_change_rgb_callback(rgb_color);</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;    }</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160; </div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;    <a class="code" href="classcgv_1_1gui_1_1provider.html#a841e8ef471bf376be1c3fa97179cd218">update_member</a>(&amp;rgb_color);</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;}</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160; </div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;<span class="keywordtype">void</span> color_selector::update_texts() {</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    rgba_color = <a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(rgb_color, op.val.y());</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160; </div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;    update_texts();</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160; </div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;    <span class="keywordflow">if</span>(has_opacity) {</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;        <span class="keywordflow">if</span>(on_change_rgba_callback)</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;            on_change_rgba_callback(rgba_color);</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;        <span class="keywordflow">if</span>(on_change_rgb_callback)</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;            on_change_rgb_callback(rgb_color);</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;    }</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160; </div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;    <a class="code" href="classcgv_1_1gui_1_1provider.html#a841e8ef471bf376be1c3fa97179cd218">update_member</a>(&amp;rgb_color);</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;}</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160; </div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;<span class="keywordtype">void</span> color_selector::update_texts() {</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160; </div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;    <a class="code" href="namespacecgv.html#a31f6f176e22ec211e46f99a2b9e78e00">ivec4</a> components;</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;    components[0] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(round(rgba_color.R() * 255.0f));</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;    components[1] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(round(rgba_color.G() * 255.0f));</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;    components[2] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(round(rgba_color.B() * 255.0f));</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    components[3] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(round(rgba_color.alpha() * 255.0f));</div>
 <div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160; </div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;    <a class="code" href="namespacecgv.html#a31f6f176e22ec211e46f99a2b9e78e00">ivec4</a> components;</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;    components[0] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(round(rgba_color.R() * 255.0f));</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;    components[1] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(round(rgba_color.G() * 255.0f));</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;    components[2] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(round(rgba_color.B() * 255.0f));</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;    components[3] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(round(rgba_color.alpha() * 255.0f));</div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160; </div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;    components = cgv::math::clamp(components, 0, 255);</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;    components = cgv::math::clamp(components, 0, 255);</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160; </div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;    texts.set_text(1, <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">std::to_string</a>(components[0]));</div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;    texts.set_text(3, <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">std::to_string</a>(components[1]));</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;    texts.set_text(5, <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">std::to_string</a>(components[2]));</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;    texts.set_text(7, <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">std::to_string</a>(components[3]));</div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;}</div>
 <div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160; </div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;    texts.set_text(1, <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">std::to_string</a>(components[0]));</div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;    texts.set_text(3, <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">std::to_string</a>(components[1]));</div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;    texts.set_text(5, <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">std::to_string</a>(components[2]));</div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;    texts.set_text(7, <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">std::to_string</a>(components[3]));</div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;}</div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160; </div>
-<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;<span class="keywordtype">void</span> color_selector::handle_selector_drag() {</div>
-<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160; </div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;    <span class="keyword">auto</span>* p = selector_handles.get_dragged();</div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;    p-&gt;update_val();</div>
-<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160; </div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;    update_color();</div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;    <span class="keywordflow">if</span>(p == &amp;selector_handles[1])</div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;        update_color_texture();</div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160; </div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;    post_damage();</div>
-<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;}</div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160; </div>
-<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;<span class="keywordtype">void</span> color_selector::set_color(<a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a> color, <span class="keywordtype">bool</span> opacity, <span class="keywordtype">bool</span> init) {</div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160; </div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;    this-&gt;rgb_color.R() = color.R();</div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;    this-&gt;rgb_color.G() = color.G();</div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;    this-&gt;rgb_color.B() = color.B();</div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;    this-&gt;rgba_color = color;</div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160; </div>
-<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;    <span class="keywordtype">float</span> h = color.H();</div>
-<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;    <span class="keywordtype">float</span> v = v = color.S() * std::min(color.L(), 1.0f - color.L()) + color.L();</div>
-<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;    <span class="keywordtype">float</span> s = v ? 2.0f - 2.0f * color.L() / v : 0.0f;</div>
-<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160; </div>
-<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;    selector_handles[0].val = <a class="code" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>(s, v);</div>
-<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;    selector_handles[1].val.y() = h;</div>
-<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;    selector_handles[2].val.y() = color.alpha();</div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160; </div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;    selector_handles[0].update_pos();</div>
-<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;    selector_handles[1].update_pos();</div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;    selector_handles[2].update_pos();</div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160; </div>
-<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;    <span class="keywordflow">if</span>(has_opacity != opacity) {</div>
-<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;        <span class="comment">// need to recreate the layout and gui in case the opacity usage changed</span></div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;        post_recreate_layout();</div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;        <a class="code" href="classcgv_1_1gui_1_1provider.html#aa91a5b7508ca2f8a995a7101a80cab76">post_recreate_gui</a>();</div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;        has_opacity = opacity;</div>
-<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;    }</div>
-<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;    </div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;    update_color_texture();</div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;    update_texts();</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;<span class="keywordtype">void</span> color_selector::handle_selector_drag() {</div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160; </div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;    <span class="keyword">auto</span>* p = selector_handles.get_dragged();</div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;    p-&gt;update_val();</div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160; </div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;    update_color();</div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;    <span class="keywordflow">if</span>(p == &amp;selector_handles[1])</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;        update_color_texture();</div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160; </div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;    post_damage();</div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;}</div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160; </div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;<span class="keywordtype">void</span> color_selector::set_color(<a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a> color, <span class="keywordtype">bool</span> opacity, <span class="keywordtype">bool</span> init) {</div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160; </div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;    this-&gt;rgb_color.R() = color.R();</div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;    this-&gt;rgb_color.G() = color.G();</div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;    this-&gt;rgb_color.B() = color.B();</div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;    this-&gt;rgba_color = color;</div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160; </div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;    <span class="keywordtype">float</span> h = color.H();</div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;    <span class="keywordtype">float</span> v = v = color.S() * std::min(color.L(), 1.0f - color.L()) + color.L();</div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;    <span class="keywordtype">float</span> s = v ? 2.0f - 2.0f * color.L() / v : 0.0f;</div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160; </div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;    selector_handles[0].val = <a class="code" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>(s, v);</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;    selector_handles[1].val.y() = h;</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;    selector_handles[2].val.y() = color.alpha();</div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160; </div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;    selector_handles[0].update_pos();</div>
+<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;    selector_handles[1].update_pos();</div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;    selector_handles[2].update_pos();</div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160; </div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;    <span class="keywordflow">if</span>(has_opacity != opacity) {</div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;        <span class="comment">// need to recreate the layout and gui in case the opacity usage changed</span></div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;        post_recreate_layout();</div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;        <a class="code" href="classcgv_1_1gui_1_1provider.html#aa91a5b7508ca2f8a995a7101a80cab76">post_recreate_gui</a>();</div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;        has_opacity = opacity;</div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;    }</div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;    </div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;    update_color_texture();</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;    update_texts();</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160; </div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;    <span class="keywordflow">if</span>(!<a class="code" href="classcgv_1_1app_1_1color__selector.html#af3e8f4c80e410b3a67e7280acd71f865">init</a> &amp;&amp; auto_show)</div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;        <a class="code" href="classcgv_1_1app_1_1overlay.html#a287172ddf09c1f6ea890fb3790d72048">set_visibility</a>(<span class="keyword">true</span>);</div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160; </div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;    post_damage();</div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;}</div>
 <div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160; </div>
-<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;    <span class="keywordflow">if</span>(!<a class="code" href="classcgv_1_1app_1_1color__selector.html#af3e8f4c80e410b3a67e7280acd71f865">init</a> &amp;&amp; auto_show)</div>
-<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;        <a class="code" href="classcgv_1_1app_1_1overlay.html#a287172ddf09c1f6ea890fb3790d72048">set_visibility</a>(<span class="keyword">true</span>);</div>
-<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160; </div>
-<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;    post_damage();</div>
-<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;}</div>
-<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160; </div>
-<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;}</div>
-<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;}</div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;}</div>
+<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1app_1_1canvas__overlay_html_a5e2434f8ff34547c6ddfc43384f964fb"><div class="ttname"><a href="classcgv_1_1app_1_1canvas__overlay.html#a5e2434f8ff34547c6ddfc43384f964fb">cgv::app::canvas_overlay::clear</a></div><div class="ttdeci">void clear(cgv::render::context &amp;ctx) override</div><div class="ttdoc">clear all objects living in the context like textures or display lists</div><div class="ttdef"><b>Definition:</b> <a href="canvas__overlay_8cxx_source.html#l00031">canvas_overlay.cxx:31</a></div></div>
 <div class="ttc" id="aclasscgv_1_1app_1_1canvas__overlay_html_abd1719a9c1db8345049378c5055d3de7"><div class="ttname"><a href="classcgv_1_1app_1_1canvas__overlay.html#abd1719a9c1db8345049378c5055d3de7">cgv::app::canvas_overlay::init</a></div><div class="ttdeci">bool init(cgv::render::context &amp;ctx) override</div><div class="ttdoc">this method is called after creation or recreation of the context, return whether all necessary funct...</div><div class="ttdef"><b>Definition:</b> <a href="canvas__overlay_8cxx_source.html#l00012">canvas_overlay.cxx:12</a></div></div>
 <div class="ttc" id="aclasscgv_1_1app_1_1canvas__overlay_html_ac5ce7df1d87225edcbdc6d51560f0b56"><div class="ttname"><a href="classcgv_1_1app_1_1canvas__overlay.html#ac5ce7df1d87225edcbdc6d51560f0b56">cgv::app::canvas_overlay::blend_overlay</a></div><div class="ttdeci">bool blend_overlay</div><div class="ttdoc">whether to enable blending during the draw process</div><div class="ttdef"><b>Definition:</b> <a href="canvas__overlay_8h_source.html#l00028">canvas_overlay.h:28</a></div></div>
