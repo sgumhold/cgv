@@ -32,10 +32,9 @@ color_map_editor::color_map_editor() {
 	layout.padding = 13; // 10px plus 3px border
 	layout.total_height = supports_opacity ? 200 : 60;
 
-	set_overlay_alignment(AO_START, AO_START);
-	set_overlay_stretch(SO_HORIZONTAL);
-	set_overlay_margin(ivec2(-3));
-	set_overlay_size(ivec2(600u, layout.total_height));
+	set_stretch(SO_HORIZONTAL);
+	set_margin(ivec2(-3));
+	set_size(ivec2(600u, layout.total_height));
 	
 	mouse_is_on_overlay = false;
 	cursor_pos = ivec2(-100);
@@ -82,9 +81,6 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
 	unsigned et = e.get_kind();
 	unsigned char modifiers = e.get_modifiers();
-
-	if (!show)
-		return false;
 
 	if (et == cgv::gui::EID_KEY) {
 		cgv::gui::key_event& ke = (cgv::gui::key_event&)e;
@@ -138,7 +134,7 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 			if (ma == cgv::gui::MA_PRESS) {
 				ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
 				
-				request_clear_selection = get_overlay_rectangle().contains(mpos);
+				request_clear_selection = is_hit(mpos);
 
 				switch (modifiers) {
 				case cgv::gui::EM_CTRL:
@@ -157,9 +153,9 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 			}
 		}
 
-		if(cmc.color_points.handle(e, get_viewport_size(), get_overlay_rectangle()))
+		if(cmc.color_points.handle(e, get_viewport_size(), get_rectangle()))
 			return true;
-		if(cmc.opacity_points.handle(e, get_viewport_size(), get_overlay_rectangle()))
+		if(cmc.opacity_points.handle(e, get_viewport_size(), get_rectangle()))
 			return true;
 
 		if(request_clear_selection) {
@@ -174,9 +170,9 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 void color_map_editor::handle_member_change(const cgv::utils::pointer_test& m) {
 
 	if(m.is(layout.total_height)) {
-		ivec2 size = get_overlay_size();
+		ivec2 size = get_rectangle().size;
 		size.y() = layout.total_height;
-		set_overlay_size(size);
+		set_size(size);
 	}
 
 	if(m.is(opacity_scale_exponent)) {
@@ -291,7 +287,7 @@ bool color_map_editor::init(cgv::render::context& ctx) {
 void color_map_editor::init_frame(cgv::render::context& ctx) {
 
 	if(ensure_layout(ctx)) {
-		ivec2 container_size = get_overlay_size();
+		ivec2 container_size = get_rectangle().size;
 		layout.update(container_size, supports_opacity);
 
 		auto& bg_prog = content_canvas.enable_shader(ctx, "background");
@@ -312,12 +308,12 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 	
 	begin_content(ctx);
 	
-	ivec2 container_size = get_overlay_size();
+	ivec2 container_size = get_rectangle().size;
 
 	// draw container
 	content_canvas.enable_shader(ctx, "rectangle");
 	content_canvas.set_style(ctx, container_style);
-	content_canvas.draw_shape(ctx, ivec2(0), container_size);
+	content_canvas.draw_shape(ctx, get_local_rectangle());
 
 	// draw inner border
 	content_canvas.set_style(ctx, border_style);

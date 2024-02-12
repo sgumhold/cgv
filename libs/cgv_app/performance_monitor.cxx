@@ -9,17 +9,16 @@ namespace app {
 performance_monitor::performance_monitor() {
 
 	set_name("Performance Monitor");
-	block_events = false;
 	blend_overlay = true;
 	gui_options.allow_stretch = false;
 
 	layout.padding = 13; // 10px plus 3px border
 	layout.total_size = ivec2(180, 90);
 
-	set_overlay_alignment(AO_START, AO_END);
-	set_overlay_stretch(SO_NONE);
-	set_overlay_margin(ivec2(-3));
-	set_overlay_size(layout.total_size);
+	set_alignment(AO_START, AO_END);
+	set_stretch(SO_NONE);
+	set_margin(ivec2(-3));
+	set_size(layout.total_size);
 
 	bar_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
 	labels = cgv::g2d::msdf_text_geometry(cgv::g2d::msdf_font::FontFace::FF_LIGHT);
@@ -41,7 +40,7 @@ void performance_monitor::handle_member_change(const cgv::utils::pointer_test & 
 
 	if(m.is(show_plot)) {
 		layout.total_size.y() = show_plot ? 90 : 55;
-		set_overlay_size(layout.total_size);
+		set_size(layout.total_size);
 	}
 
 	if(m.one_of(show_background, invert_color))
@@ -77,14 +76,13 @@ bool performance_monitor::init(cgv::render::context& ctx) {
 void performance_monitor::init_frame(cgv::render::context& ctx) {
 
 	if(ensure_layout(ctx)) {
-		ivec2 container_size = get_overlay_size();
-		layout.update(container_size);
+		layout.update(get_rectangle().size);
 		create_texts();
 		create_labels();
 	}
 
 	bool enabled = monitor.enabled;
-	if(monitor.enabled_only_when_visible && !show) {
+	if(monitor.enabled_only_when_visible && !is_visible()) {
 		enabled = false;
 	}
 	if(enabled) {
@@ -103,7 +101,7 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 	// draw container background
 	if(show_background) {
 		content_canvas.set_style(ctx, container_style);
-		content_canvas.draw_shape(ctx, ivec2(0), get_overlay_size());
+		content_canvas.draw_shape(ctx, get_local_rectangle());
 	}
 
 	auto& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx);
@@ -140,7 +138,7 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 void performance_monitor::after_finish(cgv::render::context& ctx) {
 
 	bool enabled = monitor.enabled;
-	if(monitor.enabled_only_when_visible && !show)
+	if(monitor.enabled_only_when_visible && !is_visible())
 		enabled = false;
 	
 	if(enabled) {
@@ -185,10 +183,9 @@ void performance_monitor::enable_monitoring_only_when_visible(bool enabled) {
 
 void performance_monitor::on_visibility_change() {
 
-	if(monitor.enabled_only_when_visible && show) {
-		if(monitor.enabled) {
+	if(monitor.enabled_only_when_visible && is_visible()) {
+		if(monitor.enabled)
 			monitor.reset();
-		}
 	}
 }
 
