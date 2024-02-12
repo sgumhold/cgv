@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cgv/render/texture.h>
-#include <cgv_app/canvas_overlay.h>
+#include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 #include <cgv_g2d/shape2d_styles.h>
@@ -11,7 +11,7 @@
 namespace cgv {
 namespace app {
 
-class CGV_API color_selector : public canvas_overlay {
+class CGV_API color_selector : public themed_canvas_overlay {
 protected:
 	struct layout_attributes {
 		int padding;

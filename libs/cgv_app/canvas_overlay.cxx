@@ -59,11 +59,11 @@ void canvas_overlay::register_shader(const std::string& name, const std::string&
 	content_canvas.register_shader(name, filename);
 }
 
-void canvas_overlay::handle_theme_change(const cgv::gui::theme_info& theme) {
+/*void canvas_overlay::handle_theme_change(const cgv::gui::theme_info& theme) {
 	
 	init_styles();
 	post_damage();
-}
+}*/
 
 void canvas_overlay::post_damage(bool redraw) {
 	has_damage_ = true;
