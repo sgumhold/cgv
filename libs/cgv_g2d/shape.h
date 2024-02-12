@@ -9,16 +9,9 @@ namespace g2d {
 
 struct shape_base : public rect {
 
-	using rect::rect;
-
 	bool position_is_center = false;
 
-	// TODO: remove and use position_as<T> instead
-	ivec2 int_position() const { return static_cast<ivec2>(position); }
-
-	// TODO: remove and use size_as<T> instead
-	template<typename T>
-	ivec2 int_size() const { return static_cast<ivec2>(size); }
+	using rect::rect;
 
 	vec2 center() const { return position_is_center ? position : rect::center(); }
 

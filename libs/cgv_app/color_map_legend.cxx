@@ -10,16 +10,15 @@ namespace app {
 color_map_legend::color_map_legend() {
 
 	set_name("Color Map Legend");
-	block_events = false;
 	blend_overlay = true;
 
 	layout.padding = 13; // 10px plus 3px border
 	layout.total_size = ivec2(300, 60);
 
-	set_overlay_alignment(AO_START, AO_END);
-	set_overlay_stretch(SO_NONE);
-	set_overlay_margin(ivec2(-3));
-	set_overlay_size(layout.total_size);
+	set_alignment(AO_START, AO_END);
+	set_stretch(SO_NONE);
+	set_margin(ivec2(-3));
+	set_size(layout.total_size);
 
 	tick_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
 
@@ -50,12 +49,9 @@ void color_map_legend::clear(cgv::render::context& ctx) {
 void color_map_legend::handle_member_change(const cgv::utils::pointer_test & m) {
 
 	if(m.member_of(layout.total_size)) {
-		vec2 size = get_overlay_size();
-
 		// TODO: minimum width and height depend on other layout parameters
 		layout.total_size.y() = std::max(layout.total_size.y(), 2 * layout.padding + 4 + layout.label_space);
-
-		set_overlay_size(layout.total_size);
+		set_size(layout.total_size);
 	}
 
 	if(m.one_of(show_background, invert_color))
@@ -103,9 +99,8 @@ bool color_map_legend::init(cgv::render::context& ctx) {
 void color_map_legend::init_frame(cgv::render::context& ctx) {
 
 	if(ensure_layout(ctx)) {
-		ivec2 container_size = get_overlay_size();
 		create_labels();
-		layout.update(container_size);
+		layout.update(get_rectangle().size);
 		create_ticks();
 
 		float width_factor = static_cast<float>(layout.color_map_rect.w());
@@ -123,7 +118,7 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 	// draw container background
 	if(show_background) {
 		content_canvas.set_style(ctx, container_style);
-		content_canvas.draw_shape(ctx, ivec2(0), get_overlay_size());
+		content_canvas.draw_shape(ctx, get_local_rectangle());
 	}
 
 	// draw inner border
