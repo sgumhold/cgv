@@ -3,7 +3,7 @@
 #include <cgv/render/color_map.h>
 #include <cgv/render/texture.h>
 #include <cgv/utils/convert_string.h>
-#include <cgv_app/canvas_overlay.h>
+#include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 
@@ -12,7 +12,7 @@
 namespace cgv {
 namespace app {
 
-class CGV_API color_map_legend : public canvas_overlay {
+class CGV_API color_map_legend : public themed_canvas_overlay {
 protected:
 	enum OrientationOption {
 		OO_HORIZONTAL,
@@ -20,7 +20,7 @@ protected:
 	};
 
 	struct layout_attributes {
-		int padding;
+		int padding = 0;
 		int label_space = 12;
 		int x_label_size = 0;
 		int title_space = 0;
@@ -71,7 +71,6 @@ protected:
 		}
 	} layout;
 
-	bool show_background = true;
 	bool invert_color = false;
 
 	cgv::render::texture tex;
@@ -87,7 +86,7 @@ protected:
 	bool show_opacity;
 
 	// general appearance
-	cgv::g2d::shape2d_style container_style, border_style, color_map_style, tick_style;
+	cgv::g2d::shape2d_style border_style, color_map_style, tick_style;
 	cgv::g2d::grid2d_style background_style;
 
 	// text appearance

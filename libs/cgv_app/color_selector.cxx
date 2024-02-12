@@ -13,11 +13,10 @@ color_selector::color_selector() {
 	block_events = true;
 	blend_overlay = true;
 
-	layout.padding = 13; // 10px plus 3px border
+	layout.padding = padding();
 
 	set_alignment(AO_END, AO_END);
 	set_stretch(SO_NONE);
-	set_margin(ivec2(-3));
 	set_size(ivec2(layout.size));
 	
 	selector_handles.set_drag_callback(std::bind(&color_selector::handle_selector_drag, this));
@@ -180,17 +179,13 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	
 	begin_content(ctx);
 	
-	// draw container
-	content_canvas.enable_shader(ctx, "rectangle");
-	content_canvas.set_style(ctx, container_style);
-	content_canvas.draw_shape(ctx, get_local_rectangle());
-
 	// draw inner border
+	content_canvas.enable_shader(ctx, "rectangle");
 	content_canvas.set_style(ctx, border_style);
 
-	auto& ti = cgv::gui::theme_info::instance();
-	rgba border_color = rgba(ti.border(), 1.0f);
-	rgba text_background_color = rgba(ti.text_background(), 1.0f);
+	auto& theme = cgv::gui::theme_info::instance();
+	rgba border_color = rgba(theme.border(), 1.0f);
+	rgba text_background_color = rgba(theme.text_background(), 1.0f);
 	content_canvas.draw_shape(ctx, layout.border_rect, border_color);
 	content_canvas.draw_shape(ctx, layout.preview_rect, rgb_color);
 
@@ -319,12 +314,11 @@ void color_selector::update_layout(const ivec2& parent_size) {
 }
 
 void color_selector::init_styles() {
-	// get theme colors
-	auto& ti = cgv::gui::theme_info::instance();
+	auto& theme = cgv::gui::theme_info::instance();
 	
 	// configure style for the container rectangle
-	container_style.fill_color = ti.group();
-	container_style.border_color = ti.background();
+	container_style.fill_color = theme.group();
+	container_style.border_color = theme.background();
 	container_style.border_width = 3.0f;
 	container_style.feather_width = 0.0f;
 	
@@ -364,7 +358,7 @@ void color_selector::init_styles() {
 	hue_handle_style.position_is_center = false;
 	
 	// configure text style
-	text_style = cgv::g2d::text2d_style::preset_default(ti.text());
+	text_style = cgv::g2d::text2d_style::preset_default(theme.text());
 	text_style.font_size = 14.0f;
 }
 

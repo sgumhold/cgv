@@ -116,7 +116,7 @@ public:
 	/// implement to handle member changes
 	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
 
-	/// default implementation of that calls handle_member_change and afterwards upates the member in the gui and post a redraw
+	/// default implementation of that calls handle_member_change and afterwards updates the member in the gui and post a redraw
 	virtual void on_set(void* member_ptr);
 
 	/// return whether this overlay blocks events, i.e. does not pass them to the next event handler

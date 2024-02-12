@@ -352,8 +352,6 @@ void navigator::create_gui_impl() {
 	add_member_control(this, "Show Box", show_box, "check");
 	add_member_control(this, "Show Wireframe", show_wireframe, "check");
 	add_member_control(this, "Use Perspective", use_perspective, "check");
-
-	add_gui("", box_wire_data.style);
 }
 
 mat4 navigator::get_model_matrix(cgv::render::context& ctx) {

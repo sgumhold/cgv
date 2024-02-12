@@ -3,7 +3,7 @@
 #include <cgv/render/color_map.h>
 #include <cgv/utils/convert_string.h>
 #include <cgv/utils/stopwatch.h>
-#include <cgv_app/canvas_overlay.h>
+#include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 
@@ -12,7 +12,7 @@
 namespace cgv {
 namespace app {
 
-class CGV_API performance_monitor : public canvas_overlay {
+class CGV_API performance_monitor : public themed_canvas_overlay {
 protected:
 	struct layout_attributes {
 		int padding;
@@ -64,7 +64,6 @@ protected:
 		}
 	} monitor;
 
-	bool show_background = true;
 	bool invert_color = false;
 	bool show_plot = true;
 	
