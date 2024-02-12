@@ -198,14 +198,7 @@ void performance_monitor::init_styles() {
 	if(invert_color)
 		border_color = pow(rgb(1.0f) - pow(border_color, 2.2f), 1.0f / 2.2f);
 
-	// configure style for the container rectangle
-	container_style.fill_color = theme.group();
-	container_style.border_color = theme.background();
-	container_style.border_width = 3.0f;
-	container_style.feather_width = 0.0f;
-
 	// configure style for the border rectangle
-	border_style = container_style;
 	border_style.fill_color = background_visible ? rgba(theme.text_background(), 1.0f) : rgba(0.0f);
 	border_style.border_color = rgba(border_color, 1.0);
 	border_style.border_width = 1.0f;

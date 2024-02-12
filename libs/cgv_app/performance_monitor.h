@@ -72,7 +72,7 @@ protected:
 	bar_geometry bars;
 
 	// general appearance
-	cgv::g2d::shape2d_style container_style, border_style, bar_style;
+	cgv::g2d::shape2d_style border_style, bar_style;
 	cgv::g2d::line2d_style line_style;
 	cgv::render::color_map plot_color_map;
 

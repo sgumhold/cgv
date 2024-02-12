@@ -572,16 +572,10 @@ void color_map_editor::init_styles() {
 	highlight_color = rgba(theme.highlight(), 1.0f);
 	highlight_color_hex = theme.highlight_hex();
 
-	// configure style for the container rectangle
-	container_style.fill_color = theme.group();
-	container_style.border_color = theme.background();
-	container_style.border_width = 3.0f;
-	container_style.feather_width = 0.0f;
-	
 	// configure style for the border rectangles
-	border_style = container_style;
 	border_style.fill_color = theme.border();
 	border_style.border_width = 0.0f;
+	border_style.feather_width = 0.0f;
 	
 	// configure style for the color scale rectangle
 	color_map_style = border_style;
