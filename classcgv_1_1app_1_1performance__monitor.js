@@ -41,7 +41,6 @@ var classcgv_1_1app_1_1performance__monitor =
     [ "monitor", "classcgv_1_1app_1_1performance__monitor.html#a57a1991c12f61f8896ccbf51499ade28", null ],
     [ "plot_color_map", "classcgv_1_1app_1_1performance__monitor.html#a653d87ec486752f802d37579ffce4d9c", null ],
     [ "running_time", "classcgv_1_1app_1_1performance__monitor.html#a8f604e624947512390e3734e7d02f5d8", null ],
-    [ "show_background", "classcgv_1_1app_1_1performance__monitor.html#a77fcfbc6c6aaad3ad3c2efb1e07e06be", null ],
     [ "show_plot", "classcgv_1_1app_1_1performance__monitor.html#a25bc98d03963635b7263eb2106908974", null ],
     [ "text_style", "classcgv_1_1app_1_1performance__monitor.html#aa2203e2f3996b301833c0e941a27fff3", null ],
     [ "texts", "classcgv_1_1app_1_1performance__monitor.html#aaf2266787cd3fc0148dd99232c84410b", null ],

@@ -13,7 +13,6 @@ var classcgv_1_1app_1_1canvas__overlay =
     [ "ensure_layout", "classcgv_1_1app_1_1canvas__overlay.html#a4ad23ecc836ac2ff7caaceb0998cbce5", null ],
     [ "finish_frame", "classcgv_1_1app_1_1canvas__overlay.html#aca45128c35f68cb9586d4ff775782c79", null ],
     [ "handle_member_change", "classcgv_1_1app_1_1canvas__overlay.html#ab070bcac249ae8e87ad369a4d60e61b3", null ],
-    [ "handle_theme_change", "classcgv_1_1app_1_1canvas__overlay.html#acd28543b053adaf7f3e2e96e8af64c34", null ],
     [ "init", "classcgv_1_1app_1_1canvas__overlay.html#abd1719a9c1db8345049378c5055d3de7", null ],
     [ "init_styles", "classcgv_1_1app_1_1canvas__overlay.html#a820c6ffffcda5bb7823e75692d0f0dba", null ],
     [ "is_damaged", "classcgv_1_1app_1_1canvas__overlay.html#afe10a2f717f9bb52bac55dc8186a137e", null ],

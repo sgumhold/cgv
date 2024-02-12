@@ -90,7 +90,7 @@ $(document).ready(function(){initNavTree('libs_2cgv__app_2performance__monitor_8
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;cgv/render/color_map.h&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="convert__string_8h.html">cgv/utils/convert_string.h</a>&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;cgv/utils/stopwatch.h&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;cgv_app/canvas_overlay.h&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;cgv_app/themed_canvas_overlay.h&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;cgv_g2d/generic_2d_renderer.h&gt;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;cgv_g2d/msdf_gl_canvas_font_renderer.h&gt;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
@@ -99,7 +99,7 @@ $(document).ready(function(){initNavTree('libs_2cgv__app_2performance__monitor_8
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span>app {</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1performance__monitor.html">   15</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1app_1_1performance__monitor.html">performance_monitor</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1app_1_1canvas__overlay.html">canvas_overlay</a> {</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1performance__monitor.html">   15</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1app_1_1performance__monitor.html">performance_monitor</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1app_1_1themed__canvas__overlay.html">themed_canvas_overlay</a> {</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">protected</span>:</div>
 <div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="structcgv_1_1app_1_1performance__monitor_1_1layout__attributes.html">   17</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structcgv_1_1app_1_1performance__monitor_1_1layout__attributes.html">layout_attributes</a> {</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordtype">int</span> padding;</div>
@@ -140,63 +140,62 @@ $(document).ready(function(){initNavTree('libs_2cgv__app_2performance__monitor_8
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        }</div>
 <div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1performance__monitor.html#a57a1991c12f61f8896ccbf51499ade28">   65</a></span>&#160;    } monitor;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">bool</span> show_background = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">bool</span> invert_color = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordtype">bool</span> show_plot = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    cgv::g2d::generic_2d_renderer bar_renderer;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    DEFINE_GENERIC_RENDER_DATA_CLASS(bar_geometry, 3, <a class="code" href="classcgv_1_1math_1_1fvec.html">vec2</a>, position, <a class="code" href="classcgv_1_1math_1_1fvec.html">vec2</a>, size, <a class="code" href="classcgv_1_1media_1_1color.html">rgb</a>, color);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    bar_geometry bars;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="comment">// general appearance</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    cgv::g2d::shape2d_style container_style, border_style, bar_style;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    cgv::g2d::line2d_style line_style;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <a class="code" href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a> plot_color_map;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="comment">// text appearance</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    cgv::g2d::text2d_style text_style, label_style;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    cgv::g2d::msdf_text_geometry texts;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    cgv::g2d::msdf_text_geometry labels;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">void</span> init_styles() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">void</span> create_texts();</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">void</span> update_stats_texts();</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordtype">void</span> create_labels();</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordtype">void</span> update_plot();</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordtype">void</span> on_visibility_change() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">void</span> create_gui_impl() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <a class="code" href="classcgv_1_1app_1_1performance__monitor.html">performance_monitor</a>();</div>
-<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1performance__monitor.html#a114b4c1c6ee1efbab700adbb572e66bf">   96</a></span>&#160;    std::string <a class="code" href="classcgv_1_1app_1_1performance__monitor.html#a114b4c1c6ee1efbab700adbb572e66bf">get_type_name</a>()<span class="keyword"> const override </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;performance_monitor&quot;</span>; }</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordtype">void</span> clear(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">void</span> handle_member_change(<span class="keyword">const</span> <a class="code" href="classcgv_1_1utils_1_1pointer__test.html">cgv::utils::pointer_test</a>&amp; m) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordtype">bool</span> init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordtype">void</span> init_frame(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordtype">void</span> draw_content(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">void</span> after_finish(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordtype">void</span> set_show_background(<span class="keywordtype">bool</span> flag);</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keywordtype">void</span> set_invert_color(<span class="keywordtype">bool</span> flag);</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordtype">void</span> enable_monitoring(<span class="keywordtype">bool</span> enabled);</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordtype">void</span> enable_monitoring_only_when_visible(<span class="keywordtype">bool</span> enabled);</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;};</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr&lt;performance_monitor&gt;</a> performance_monitor_ptr;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">bool</span> invert_color = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">bool</span> show_plot = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    cgv::g2d::generic_2d_renderer bar_renderer;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    DEFINE_GENERIC_RENDER_DATA_CLASS(bar_geometry, 3, <a class="code" href="classcgv_1_1math_1_1fvec.html">vec2</a>, position, <a class="code" href="classcgv_1_1math_1_1fvec.html">vec2</a>, size, <a class="code" href="classcgv_1_1media_1_1color.html">rgb</a>, color);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    bar_geometry bars;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="comment">// general appearance</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    cgv::g2d::shape2d_style container_style, border_style, bar_style;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    cgv::g2d::line2d_style line_style;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a> plot_color_map;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="comment">// text appearance</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    cgv::g2d::text2d_style text_style, label_style;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    cgv::g2d::msdf_text_geometry texts;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    cgv::g2d::msdf_text_geometry labels;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordtype">void</span> init_styles() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">void</span> create_texts();</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">void</span> update_stats_texts();</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">void</span> create_labels();</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordtype">void</span> update_plot();</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordtype">void</span> on_visibility_change() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordtype">void</span> create_gui_impl() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <a class="code" href="classcgv_1_1app_1_1performance__monitor.html">performance_monitor</a>();</div>
+<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1performance__monitor.html#a114b4c1c6ee1efbab700adbb572e66bf">   95</a></span>&#160;    std::string <a class="code" href="classcgv_1_1app_1_1performance__monitor.html#a114b4c1c6ee1efbab700adbb572e66bf">get_type_name</a>()<span class="keyword"> const override </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;performance_monitor&quot;</span>; }</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordtype">void</span> clear(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordtype">void</span> handle_member_change(<span class="keyword">const</span> <a class="code" href="classcgv_1_1utils_1_1pointer__test.html">cgv::utils::pointer_test</a>&amp; m) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordtype">bool</span> init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordtype">void</span> init_frame(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordtype">void</span> draw_content(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordtype">void</span> after_finish(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keywordtype">void</span> set_show_background(<span class="keywordtype">bool</span> flag);</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordtype">void</span> set_invert_color(<span class="keywordtype">bool</span> flag);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordtype">void</span> enable_monitoring(<span class="keywordtype">bool</span> enabled);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordtype">void</span> enable_monitoring_only_when_visible(<span class="keywordtype">bool</span> enabled);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;};</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr&lt;performance_monitor&gt;</a> performance_monitor_ptr;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;}</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;}</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;}</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
-<div class="ttc" id="aclasscgv_1_1app_1_1canvas__overlay_html"><div class="ttname"><a href="classcgv_1_1app_1_1canvas__overlay.html">cgv::app::canvas_overlay</a></div><div class="ttdef"><b>Definition:</b> <a href="canvas__overlay_8h_source.html#l00014">canvas_overlay.h:14</a></div></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 <div class="ttc" id="aclasscgv_1_1app_1_1performance__monitor_html"><div class="ttname"><a href="classcgv_1_1app_1_1performance__monitor.html">cgv::app::performance_monitor</a></div><div class="ttdef"><b>Definition:</b> <a href="libs_2cgv__app_2performance__monitor_8h_source.html#l00015">performance_monitor.h:15</a></div></div>
-<div class="ttc" id="aclasscgv_1_1app_1_1performance__monitor_html_a114b4c1c6ee1efbab700adbb572e66bf"><div class="ttname"><a href="classcgv_1_1app_1_1performance__monitor.html#a114b4c1c6ee1efbab700adbb572e66bf">cgv::app::performance_monitor::get_type_name</a></div><div class="ttdeci">std::string get_type_name() const override</div><div class="ttdoc">overload to return the type name of this object</div><div class="ttdef"><b>Definition:</b> <a href="libs_2cgv__app_2performance__monitor_8h_source.html#l00096">performance_monitor.h:96</a></div></div>
+<div class="ttc" id="aclasscgv_1_1app_1_1performance__monitor_html_a114b4c1c6ee1efbab700adbb572e66bf"><div class="ttname"><a href="classcgv_1_1app_1_1performance__monitor.html#a114b4c1c6ee1efbab700adbb572e66bf">cgv::app::performance_monitor::get_type_name</a></div><div class="ttdeci">std::string get_type_name() const override</div><div class="ttdoc">overload to return the type name of this object</div><div class="ttdef"><b>Definition:</b> <a href="libs_2cgv__app_2performance__monitor_8h_source.html#l00095">performance_monitor.h:95</a></div></div>
 <div class="ttc" id="aclasscgv_1_1app_1_1performance__monitor_html_a3e189f5b35af44b44cfbcdba52a738e3"><div class="ttname"><a href="classcgv_1_1app_1_1performance__monitor.html#a3e189f5b35af44b44cfbcdba52a738e3">cgv::app::performance_monitor::timer</a></div><div class="ttdeci">cgv::utils::stopwatch timer</div><div class="ttdoc">timer to count elapsed time</div><div class="ttdef"><b>Definition:</b> <a href="libs_2cgv__app_2performance__monitor_8h_source.html#l00042">performance_monitor.h:42</a></div></div>
+<div class="ttc" id="aclasscgv_1_1app_1_1themed__canvas__overlay_html"><div class="ttname"><a href="classcgv_1_1app_1_1themed__canvas__overlay.html">cgv::app::themed_canvas_overlay</a></div><div class="ttdef"><b>Definition:</b> <a href="themed__canvas__overlay_8h_source.html#l00011">themed_canvas_overlay.h:11</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a></div><div class="ttdoc">reference counted pointer, which can work together with types that are derived from ref_counted,...</div><div class="ttdef"><b>Definition:</b> <a href="ref__ptr_8h_source.html#l00159">ref_ptr.h:160</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt; int32_t, 2 &gt;</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_afea901268f6ba41a98e59d08b417f024"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#afea901268f6ba41a98e59d08b417f024">cgv::math::fvec::size</a></div><div class="ttdeci">static cgv::type::uint32_type size()</div><div class="ttdoc">return number of elements</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00175">fvec.h:175</a></div></div>
