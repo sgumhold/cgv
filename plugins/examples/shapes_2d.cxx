@@ -400,7 +400,7 @@ public:
 		auto& quad_prog = canvas.enable_shader(ctx, "quad");
 		quad_style.apply(ctx, quad_prog);
 		// takes 4 positions (must be convex)
-		canvas.draw_shape4(ctx, cgv::ivec2(400, 300), cgv::ivec2(480, 300), points[13].int_position(), points[14].int_position(), cgv::rgba(1, 1, 0, 1));
+		canvas.draw_shape4(ctx, cgv::ivec2(400, 300), cgv::ivec2(480, 300), static_cast<cgv::ivec2>(points[13].position), static_cast<cgv::ivec2>(points[14].position), cgv::rgba(1, 1, 0, 1));
 		canvas.disable_current_shader(ctx);
 
 		auto& arrow_prog = canvas.enable_shader(ctx, "arrow");
