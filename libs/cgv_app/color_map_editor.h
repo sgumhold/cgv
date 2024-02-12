@@ -126,7 +126,7 @@ protected:
 	rgba handle_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
 	rgba highlight_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
 	std::string highlight_color_hex = "0x808080";
-	cgv::g2d::shape2d_style container_style, border_style, color_map_style, bg_style, hist_style, label_box_style, opacity_handle_style, polygon_style;
+	cgv::g2d::shape2d_style border_style, color_map_style, bg_style, hist_style, label_box_style, opacity_handle_style, polygon_style;
 	cgv::g2d::arrow2d_style color_handle_style;
 	cgv::g2d::line2d_style line_style;
 

@@ -316,16 +316,10 @@ void color_selector::update_layout(const ivec2& parent_size) {
 void color_selector::init_styles() {
 	auto& theme = cgv::gui::theme_info::instance();
 	
-	// configure style for the container rectangle
-	container_style.fill_color = theme.group();
-	container_style.border_color = theme.background();
-	container_style.border_width = 3.0f;
-	container_style.feather_width = 0.0f;
-	
 	// configure style for the border rectangles
-	border_style = container_style;
 	border_style.border_width = 0.0f;
 	border_style.use_fill_color = false;
+	border_style.feather_width = 0.0f;
 
 	opacity_bg_style.feather_width = 0.0f;
 	opacity_bg_style.fill_color = rgba(rgb(0.75f), 1.0f);
