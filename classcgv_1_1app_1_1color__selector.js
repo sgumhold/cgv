@@ -31,7 +31,6 @@ var classcgv_1_1app_1_1color__selector =
     [ "color_handle_style", "classcgv_1_1app_1_1color__selector.html#a9172709d8fef3c4c3bcc337493e4f864", null ],
     [ "color_tex", "classcgv_1_1app_1_1color__selector.html#ae34c768022ad844c6655417a6a30163d", null ],
     [ "color_texture_style", "classcgv_1_1app_1_1color__selector.html#a91ac4fa0e5b5d5a9420a7ded4410812b", null ],
-    [ "container_style", "classcgv_1_1app_1_1color__selector.html#acc8286a14ef229d1f2f1193b71866772", null ],
     [ "has_opacity", "classcgv_1_1app_1_1color__selector.html#a93592616667ee68b18f2d585951d1d6c", null ],
     [ "hue_handle_style", "classcgv_1_1app_1_1color__selector.html#a10866b0759a5184e7cadb6e7ce8a5fcf", null ],
     [ "hue_tex", "classcgv_1_1app_1_1color__selector.html#a6a43fb8d3f5a3a0d99579fd535c97c3c", null ],

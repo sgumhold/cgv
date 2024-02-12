@@ -49,7 +49,6 @@ var classcgv_1_1app_1_1color__map__editor =
     [ "color_handle_renderer", "classcgv_1_1app_1_1color__map__editor.html#aba8eceb5c3057f3f5e89b47b076c4b78", null ],
     [ "color_handle_style", "classcgv_1_1app_1_1color__map__editor.html#a8983e4f1ddc6445bbb5f6d329caa5e75", null ],
     [ "color_map_style", "classcgv_1_1app_1_1color__map__editor.html#adfd252d04c2f90c9ca50c6bb8c7db2e5", null ],
-    [ "container_style", "classcgv_1_1app_1_1color__map__editor.html#af7d0ca91fa2effc167eeb37795a58a6f", null ],
     [ "cursor_label_index", "classcgv_1_1app_1_1color__map__editor.html#adc768a0b65b174da8b4f35fc838bb375", null ],
     [ "cursor_label_style", "classcgv_1_1app_1_1color__map__editor.html#ad9d4701df19b3c7bccc1d21d7b15b10c", null ],
     [ "cursor_labels", "classcgv_1_1app_1_1color__map__editor.html#a3bf3b85d031f0d5856c3a130bec4d192", null ],
